@@ -152,10 +152,6 @@ public class CellAlgorithm extends AbstractLayout  {
 		return panel;
 	}
 
-
-	// List used to unselect register nodes.
-	// TODO: This doesn't work with ^A or other non-mouse based selections...
-	private List<NodeView> nvRegList = new ArrayList<NodeView>();
 	
 	/**
 	 * The layout protocol...
@@ -172,6 +168,8 @@ public class CellAlgorithm extends AbstractLayout  {
 		// CREATE REGIONS:
 		CellTemplate.buildRegionsFromTepmlate(distanceBetweenNodes);
 
+		List<NodeView> nvRegList = new ArrayList<NodeView>();
+		
 		// LAYOUT REGIONS:
 		double nextX = 0.0d;
 		double nextY = 0.0d;

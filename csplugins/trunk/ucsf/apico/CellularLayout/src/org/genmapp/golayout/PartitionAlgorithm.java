@@ -1,8 +1,11 @@
 package org.genmapp.golayout;
 
-import giny.model.Node;
-
 import java.awt.GridLayout;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,11 +33,13 @@ import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.view.CyDesktopManager;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 
 /**
  * PartitionAlgorithm
  */
-public class PartitionAlgorithm extends AbstractLayout {
+public class PartitionAlgorithm extends AbstractLayout implements
+		PropertyChangeListener, WindowListener, WindowStateListener {
 	double distanceBetweenNodes = 80.0d;
 	LayoutProperties layoutProperties = null;
 
@@ -54,6 +59,10 @@ public class PartitionAlgorithm extends AbstractLayout {
 	 */
 	public PartitionAlgorithm() {
 		super();
+
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(
+						CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 
 		layoutProperties = new LayoutProperties(getName());
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
@@ -230,7 +239,8 @@ public class PartitionAlgorithm extends AbstractLayout {
 		CyAttributes attribs = Cytoscape.getNodeAttributes();
 		Iterator<CyNode> it = Cytoscape.getCurrentNetwork().nodesIterator();
 		List<CyNode> selectedNodes = null;
-		List<CyNode> unassignedNodes = Cytoscape.getCurrentNetwork().nodesList();
+		List<CyNode> unassignedNodes = Cytoscape.getCurrentNetwork()
+				.nodesList();
 
 		boolean valueFound = false;
 
@@ -341,8 +351,8 @@ public class PartitionAlgorithm extends AbstractLayout {
 		} // end of if ()
 
 		List nodes = attributeValueNodeMap.get(attributeValue);
-		// System.out.println("Got nodes for attributeValue: " + attributeValue
-		// + " = " + nodes);
+		System.out.println("Got nodes for attributeValue: " + attributeValue
+				+ " = " + nodes.size());
 		if (nodes == null) {
 			return;
 		}
@@ -351,41 +361,49 @@ public class PartitionAlgorithm extends AbstractLayout {
 				.getConnectingEdges(new ArrayList(nodes)),
 		// CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				attributeValue, // for network title
-				current_network, (nodes.size() >= networkViewThreshhold)); // optional
+				current_network, (nodes.size() >= networkViewThreshhold)
+						&& nodes.size() <= 200); // optional
 		// create
 		// network
 		// view
 
-		if (new_network.nodesList().size() >= networkViewThreshhold) {
+		// if (new_network.nodesList().size() >= networkViewThreshhold &&
+		// new_network.nodesList().size() <= 200) {
 
-			CyNetworkView new_view = Cytoscape.getNetworkView(new_network
-					.getIdentifier());
+		CyNetworkView new_view = Cytoscape.getNetworkView(new_network
+				.getIdentifier());
 
-			if (new_view == Cytoscape.getNullNetworkView()) {
-				return;
-			}
+		if (new_view == Cytoscape.getNullNetworkView()) {
+			return;
+		}
 
-			views.add(new_view);
+		views.add(new_view);
 
-			// apply layout
-			if (current_network_view != Cytoscape.getNullNetworkView()) {
+		// listen for window maximize or restore.
+		// ((JFrame)
+		// Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame
+		// (new_view).getContentPane()).addWindowListener(this);
 
-				// CyLayoutAlgorithm layout =
-				// CyLayouts.getLayout("force-directed");
-				System.out.println("Layout: " + new_view.getTitle());
-				CyLayoutAlgorithm layout = CyLayouts.getLayout(this.layoutName);
-				layout.doLayout(new_view);
+		// apply layout
+		if (current_network_view != Cytoscape.getNullNetworkView()) {
 
-			}
-
-			// set graphics level of detail
-			((DingNetworkView) new_view).setGraphLOD(new CyGraphAllLOD());
-
-			Cytoscape.getVisualMappingManager().setVisualStyle(
-					PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+			// CyLayoutAlgorithm layout =
+			// CyLayouts.getLayout("force-directed");
+			System.out.println("Layout: " + new_view.getTitle());
+			CyLayoutAlgorithm layout = CyLayouts.getLayout(this.layoutName);
+			layout.doLayout(new_view);
 
 		}
+
+		// set graphics level of detail
+		((DingNetworkView) new_view).setGraphLOD(new CyGraphAllLOD());
+
+		Cytoscape.getVisualMappingManager().setVisualStyle(
+				PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+
 	}
+
+	// }
 
 	/**
 	 * layout the subnetwork views in a grid
@@ -412,7 +430,7 @@ public class PartitionAlgorithm extends AbstractLayout {
 		populateNodes(attributeName);
 
 		GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
-		
+
 		Set<Object> attributeValues = attributeValueNodeMap.keySet();
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
@@ -426,7 +444,7 @@ public class PartitionAlgorithm extends AbstractLayout {
 		tileNetworkViews(); // tile and fit content in each view
 
 	}
-	
+
 	/**
 	 * @return the layoutName
 	 */
@@ -435,11 +453,62 @@ public class PartitionAlgorithm extends AbstractLayout {
 	}
 
 	/**
-	 * @param layoutName the layoutName to set
+	 * @param layoutName
+	 *            the layoutName to set
 	 */
 	public void setLayoutName(String layoutName) {
 		this.layoutName = layoutName;
 	}
 
+	public void windowStateChanged(WindowEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("WindowListener method called: windowChanged.");
+	}
+
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("WindowListener method called: windowDeiconified.");
+	}
+
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("WindowListener method called: windowIconified.");
+
+	}
+
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Possible solution for large label drawing bug on tile view
+//		if (evt.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+//
+//			for (CyNetworkView nv : views) {
+//				nv.redrawGraph(true, true);
+//			}
+//		}
+	}
 
 }

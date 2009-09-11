@@ -66,7 +66,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 	// graphics
 	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-	private static final int TRANSLUCENCY_LEVEL = (int) (255 * .70);
+	private static final int OPACITY_LEVEL = (int) (255 * 1);
 
 	public Region(String shape, String color, double centerX, double centerY,
 			double width, double height, int zorder, double rotation,
@@ -301,7 +301,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public void doPaint(Graphics2D g2d) {
 
-		InnerCanvas canvas = dview.getCanvas();
+		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
 		AffineTransform f = canvas.getAffineTransform();
 		double affineScale  = f.getScaleX();
 		double scaledFontD  = affineScale * 30; 
@@ -397,7 +397,15 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
 
-			
+			/**
+			 * AJK: 09022009 now do fills for depth effect
+			 * 
+			 */
+			 if (this.getRegionsOverlapped().size() > 0) {
+			g2d.setColor(new Color(235, 235, 235, OPACITY_LEVEL));
+			g2d.fill3DRect(x, y, w, h, true);
+			 }
+			 
 			double scaledOffsetD = affineScale * 30;
 			int scaledOffset = 1;
 			if (scaledOffsetD > 0.5) {
@@ -408,21 +416,14 @@ public class Region extends JComponent implements ViewportChangeListener {
 			Font font = new Font("Serif", Font.BOLD, scaledFont);
 			g2d.setFont(font);
 			g2d.drawString(this.attValue, scaledOffset, scaledOffset);
-			/**
-			 * AJK: 09022009 now do fills for depth effect
-			 * 
-			 */
-			// if (this.getRegionsOverlapped().size() > 0) {
-			g2d.setColor(new Color(205, 205, 185, TRANSLUCENCY_LEVEL));
-			g2d.fill3DRect(x, y, w, h, true);
-			// }
+
 
 		} else if (this.shape == Region.COMPARTMENT_OVAL) {
 			// background "shadow" oval
 			g2d.setColor(new Color(0, 0, 0, 255));
 			g2d.fillOval(x, y, w, h);
 			// foreground oval
-			g2d.setColor(new Color(205, 205, 185, 255));
+			g2d.setColor(new Color(235, 235, 235, 255));
 			g2d.fillOval(x - 1, y - 1, w - 1, h - 1);
 
 			double scaledOffsetXD = affineScale * (this.width /2 - 40);
