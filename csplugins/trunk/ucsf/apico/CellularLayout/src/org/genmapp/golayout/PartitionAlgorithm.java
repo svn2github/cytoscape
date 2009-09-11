@@ -1,9 +1,6 @@
 package org.genmapp.golayout;
 
 import java.awt.GridLayout;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -17,8 +14,6 @@ import java.util.Set;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -387,8 +382,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 				new_view).addPropertyChangeListener(
 				JInternalFrame.IS_MAXIMUM_PROPERTY, this);
 
-		// Cytoscape.getDesktop().addWindowListener(this);
-
 		// apply layout
 		if (current_network_view != Cytoscape.getNullNetworkView()) {
 
@@ -465,19 +458,14 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		this.layoutName = layoutName;
 	}
 
-
-
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Possible solution for large label drawing bug on tile view
-		 if
-		 (evt.getPropertyName().equals(JInternalFrame.IS_MAXIMUM_PROPERTY))
-		 {
-		CyNetworkView cnv = Cytoscape.getCurrentNetworkView();
-		cnv.fitContent();
-		cnv.setZoom(cnv.getZoom() * 0.9);
-		 }
+		if (evt.getPropertyName().equals(JInternalFrame.IS_MAXIMUM_PROPERTY)) {
+			CyNetworkView cnv = Cytoscape.getCurrentNetworkView();
+			cnv.fitContent();
+			cnv.setZoom(cnv.getZoom() * 0.9);
+		}
+
 	}
-
-
 
 }

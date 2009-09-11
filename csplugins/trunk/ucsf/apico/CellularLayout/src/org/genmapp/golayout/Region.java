@@ -301,9 +301,12 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public void doPaint(Graphics2D g2d) {
 
-		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+		InnerCanvas canvas = dview.getCanvas();
 		AffineTransform f = canvas.getAffineTransform();
 		double affineScale  = f.getScaleX();
+		if (affineScale == 1.0){
+			return; //hack! to avoid region label bug
+		}
 		double scaledFontD  = affineScale * 30; 
 		int scaledFont = 1;
 		//protect again inverting matrix with zero value
