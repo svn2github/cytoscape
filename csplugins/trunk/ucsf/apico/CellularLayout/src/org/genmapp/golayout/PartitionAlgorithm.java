@@ -14,8 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -39,7 +42,7 @@ import cytoscape.view.CytoscapeDesktop;
  * PartitionAlgorithm
  */
 public class PartitionAlgorithm extends AbstractLayout implements
-		PropertyChangeListener, WindowListener, WindowStateListener {
+		PropertyChangeListener {
 	double distanceBetweenNodes = 80.0d;
 	LayoutProperties layoutProperties = null;
 
@@ -380,9 +383,11 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		views.add(new_view);
 
 		// listen for window maximize or restore.
-		// ((JFrame)
-		// Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame
-		// (new_view).getContentPane()).addWindowListener(this);
+		Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame(
+				new_view).addPropertyChangeListener(
+				JInternalFrame.IS_MAXIMUM_PROPERTY, this);
+
+		// Cytoscape.getDesktop().addWindowListener(this);
 
 		// apply layout
 		if (current_network_view != Cytoscape.getNullNetworkView()) {
@@ -460,55 +465,19 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		this.layoutName = layoutName;
 	}
 
-	public void windowStateChanged(WindowEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("WindowListener method called: windowChanged.");
-	}
 
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("WindowListener method called: windowDeiconified.");
-	}
-
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("WindowListener method called: windowIconified.");
-
-	}
-
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Possible solution for large label drawing bug on tile view
-//		if (evt.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
-//
-//			for (CyNetworkView nv : views) {
-//				nv.redrawGraph(true, true);
-//			}
-//		}
+		 if
+		 (evt.getPropertyName().equals(JInternalFrame.IS_MAXIMUM_PROPERTY))
+		 {
+		CyNetworkView cnv = Cytoscape.getCurrentNetworkView();
+		cnv.fitContent();
+		cnv.setZoom(cnv.getZoom() * 0.9);
+		 }
 	}
+
+
 
 }
