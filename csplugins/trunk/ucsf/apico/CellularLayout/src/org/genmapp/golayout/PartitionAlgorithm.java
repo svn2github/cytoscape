@@ -64,7 +64,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 		layoutProperties = new LayoutProperties(getName());
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-				Tunable.STRING, "grid"));
+				Tunable.STRING, "force-directed"));
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
