@@ -424,6 +424,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 * The layout protocol...
 	 */
 	public void construct() {
+		
+		taskMonitor.setStatus("Partitioning the network by biological process");
+		taskMonitor.setPercentCompleted(1);
+		
 		nodeAttributeValues = setupNodeAttributeValues();
 		populateNodes(attributeName);
 
@@ -433,8 +437,14 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
 
+		int nbrProcesses = attributeValues.size();
+		int count = 0;
+		
 		//		
 		for (Object val : attributeValues) {
+			count++;
+			taskMonitor.setPercentCompleted ((100 * count) / nbrProcesses);
+			taskMonitor.setStatus("building subnetwork for " + val);
 			buildSubNetwork(net, val.toString());
 		}
 
