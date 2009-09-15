@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -38,6 +39,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	public static final String MEMBRANE_LINE = "Line";
 	public static final String UKNOWN = "Vertical Divider";
 	private Color color;
+	private Color fillcolor;
 	private double centerX;
 	private double centerY;
 	private double width;
@@ -68,13 +70,22 @@ public class Region extends JComponent implements ViewportChangeListener {
 	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
 	private static final int OPACITY_LEVEL = (int) (255 * 1);
 
-	public Region(String shape, String color, double centerX, double centerY,
-			double width, double height, int zorder, double rotation,
-			String attValue) {
+	public Region(String shape, String fillcolor, String color, double centerX,
+			double centerY, double width, double height, int zorder,
+			double rotation, String attValue) {
 		super();
 
 		this.shape = shape;
-		this.color = Color.decode(color); // decode hexadecimal string
+		if (color.matches("#[0-9a-zA-Z]{6}")) { // hexadecimal string
+			this.color = Color.decode(color);
+		} else {
+			this.color = null; // e.g., "Transparent"
+		}
+		if (fillcolor.matches("#[0-9a-zA-Z]{6}")) { // hexadecimal string
+			this.fillcolor = Color.decode(fillcolor);
+		} else {
+			this.fillcolor = null; // e.g., "Transparent"
+		}
 		this.centerX = centerX;
 		this.centerY = centerY;
 		this.width = width;
@@ -129,6 +140,12 @@ public class Region extends JComponent implements ViewportChangeListener {
 				* MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
 		this.freeHeight = height - 20
 				* MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
+		
+		if (this.shape == MEMBRANE_LINE){
+			// further shrink width to leave room for in-line label
+			this.freeCenterX += 300;
+			this.freeWidth -= 600;
+		}
 
 		// define free area inside of ovals
 		if (this.shape == COMPARTMENT_OVAL) {
@@ -270,8 +287,9 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 		Rectangle b = outline.getBounds();
 		Point2D pstart = f.transform(new Point2D.Double(b.x, b.y), null);
-		setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor,
-				b.height * newScaleFactor);
+		//hack! increase bounds to accommodate layered oval and rect drawing
+		setBounds(pstart.getX() - 1, pstart.getY() - 1, (b.width + 2) * newScaleFactor,
+				(b.height + 2) * newScaleFactor);
 	}
 
 	public Rectangle2D.Double getVRectangle() {
@@ -303,29 +321,28 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 		InnerCanvas canvas = dview.getCanvas();
 		AffineTransform f = canvas.getAffineTransform();
-		double affineScale  = f.getScaleX();
-		if (affineScale == 1.0){
-			return; //hack! to avoid region label bug
+		double affineScale = f.getScaleX();
+		if (affineScale == 1.0) {
+			return; // hack! to avoid region label bug
 		}
-		double scaledFontD  = affineScale * 30; 
+		double scaledFontD = affineScale * 30;
 		int scaledFont = 1;
-		//protect again inverting matrix with zero value
-		if (scaledFontD > 0.5){
+		// protect again inverting matrix with zero value
+		if (scaledFontD > 0.5) {
 			scaledFont = (int) Math.round(scaledFontD);
 		}
-		
-		
+
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle()))
 				.getBounds();
-
-		Color linecolor = this.color;
 
 		int x = b.x;
 		int y = b.y;
 		int w = b.width - 2;
 		int h = b.height - 2;
-		int cx = x + w / 2;
-		int cy = y + h / 2;
+//		int cx = x + w / 2;
+//		int cy = y + h / 2;
+		int arcWidth = 25;
+		int arcHeight = 25;
 
 		if (this.shape == UKNOWN) { // draw vertical divider
 			Point2D src = new Point2D.Double(x, y);
@@ -334,7 +351,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 			double scaledWidthD = affineScale * 6;
 			float scaledWidth = (float) scaledWidthD;
 
-			g2d.setColor(linecolor);
+			g2d.setColor(this.color);
 			float dash[] = { 10.0f };
 			g2d.setStroke(new BasicStroke(scaledWidth, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
@@ -346,30 +363,40 @@ public class Region extends JComponent implements ViewportChangeListener {
 			if (scaledOffsetD > 0.5) {
 				scaledOffset = (int) Math.round(scaledOffsetD);
 			}
-			
-			g2d.setColor(new Color(0,0,0,255));
+
+			g2d.setColor(Color.black);
 			Font font = new Font("Serif", Font.BOLD, scaledFont);
 			g2d.setFont(font);
 			g2d.drawString(this.attValue, scaledOffset, scaledOffset);
 		} else if (this.shape == MEMBRANE_LINE) {
-			Point2D src = new Point2D.Double(x, y);
-			Point2D trgt = new Point2D.Double(x + w, y);
+//			Point2D src = new Point2D.Double(x, y);
+//			Point2D trgt = new Point2D.Double(x + w, y);
+//
+//			Point2D src2 = new Point2D.Double(x, y + h);
+//			Point2D trgt2 = new Point2D.Double(x + w, y + h);
 
-			Point2D src2 = new Point2D.Double(x, y + h);
-			Point2D trgt2 = new Point2D.Double(x + w, y + h);
+//			double scaledHeightD = affineScale * 6;
+//			float scaledHeight = (float) scaledHeightD;
 			
-			g2d.setColor(new Color(205, 205, 185, 255));
-			
-			double scaledWidthD = affineScale * 10;
-			float scaledWidth = (float) scaledWidthD;
-			
-			g2d.setStroke(new BasicStroke(scaledWidth, BasicStroke.CAP_BUTT,
-					BasicStroke.JOIN_MITER, 10.0f, null, 0.0f));
-			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
-					(int) trgt.getY());
-			g2d.drawLine((int) src2.getX(), (int) src2.getY(), (int) trgt2
-					.getX(), (int) trgt2.getY());
-			
+			g2d.setColor(this.fillcolor);
+			g2d.fillRoundRect(x, y, w , h, h, h);
+//			g2d.fillRoundRect(x, y + h, w , h, h, h);
+			// outline rect
+			g2d.setColor(this.color);
+			g2d.setStroke(new BasicStroke(0.3f));
+			g2d.drawRoundRect(x, y, w , h, h, h);
+//			g2d.drawRoundRect(x, y + h, w , h, h, h);
+
+//			double scaledWidthD = affineScale * 10;
+//			float scaledWidth = (float) scaledWidthD;
+//
+//			g2d.setStroke(new BasicStroke(scaledWidth, BasicStroke.CAP_BUTT,
+//					BasicStroke.JOIN_MITER, 10.0f, null, 0.0f));
+//			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
+//					(int) trgt.getY());
+//			g2d.drawLine((int) src2.getX(), (int) src2.getY(), (int) trgt2
+//					.getX(), (int) trgt2.getY());
+
 			double scaledOffsetXD = affineScale * 30;
 			int scaledOffsetX = 1;
 			if (scaledOffsetXD > 0.5) {
@@ -380,56 +407,63 @@ public class Region extends JComponent implements ViewportChangeListener {
 			if (scaledOffsetYD > 0.5) {
 				scaledOffsetY = (int) Math.round(scaledOffsetYD);
 			}
-			
-			g2d.setColor(new Color(0,0,0,255));
+
+			g2d.setColor(Color.black);
 			Font font = new Font("Serif", Font.BOLD, scaledFont);
 			g2d.setFont(font);
 			g2d.drawString(this.attValue, scaledOffsetX, scaledOffsetY);
 
 		} else if (this.shape == COMPARTMENT_RECT) {
-			java.awt.Shape s = null;
+//			java.awt.Shape s = null;
+//
+//			// Note restricted syntax for shape (e.g., "Rectangle"
+//			s = ShapeRegistry.getShape(this.shape, x, y, w, h);
+//
+//			AffineTransform t = new AffineTransform();
+//			t.rotate(this.rotation, cx, cy);
+//			s = t.createTransformedShape(s);
 
-			// Note restricted syntax for shape (e.g., "Rectangle"
-			s = ShapeRegistry.getShape(this.shape, x, y, w, h);
+			if (this.getRegionsOverlapped().size() > 0) {
+				// background "shadow" rect
+				g2d.setColor(this.color);
+				g2d.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
+				// foreground rect
+				g2d.setColor(this.fillcolor);
+				g2d.fillRoundRect(x - 1, y - 1, w - 1, h - 1, arcWidth,
+						arcHeight);
+				// outline rect
+				g2d.setColor(this.color);
+				g2d.setStroke(new BasicStroke(0.3f));
+				g2d.drawRoundRect(x - 1, y - 1 , w - 1, h - 1, arcWidth, arcHeight);
 
-			AffineTransform t = new AffineTransform();
-			t.rotate(this.rotation, cx, cy);
-			s = t.createTransformedShape(s);
-
-			g2d.setColor(linecolor);
-			g2d.setStroke(new BasicStroke());
-			g2d.draw(s);
-
-			/**
-			 * AJK: 09022009 now do fills for depth effect
-			 * 
-			 */
-			 if (this.getRegionsOverlapped().size() > 0) {
-			g2d.setColor(new Color(235, 235, 235, OPACITY_LEVEL));
-			g2d.fill3DRect(x, y, w, h, true);
-			 }
-			 
+			}
+			
 			double scaledOffsetD = affineScale * 30;
 			int scaledOffset = 1;
 			if (scaledOffsetD > 0.5) {
 				scaledOffset = (int) Math.round(scaledOffsetD);
 			}
-			
-			g2d.setColor(new Color(0,0,0,255));
+
+			g2d.setColor(Color.black);
 			Font font = new Font("Serif", Font.BOLD, scaledFont);
 			g2d.setFont(font);
 			g2d.drawString(this.attValue, scaledOffset, scaledOffset);
 
-
 		} else if (this.shape == Region.COMPARTMENT_OVAL) {
 			// background "shadow" oval
-			g2d.setColor(new Color(0, 0, 0, 255));
+			g2d.setColor(this.color);
 			g2d.fillOval(x, y, w, h);
 			// foreground oval
-			g2d.setColor(new Color(235, 235, 235, 255));
+			g2d.setColor(this.fillcolor);
 			g2d.fillOval(x - 1, y - 1, w - 1, h - 1);
-
-			double scaledOffsetXD = affineScale * (this.width /2 - 40);
+			// outline oval
+			g2d.setColor(this.color);
+			g2d.setStroke(new BasicStroke(0.3f));
+			g2d.drawOval(x - 1, y - 1 , w - 1, h - 1);
+			
+			// Note: the "8" is a function of font size
+			double scaledOffsetXD = affineScale
+					* (this.width / 2 - 8 * this.attValue.length());
 			int scaledOffsetX = 1;
 			if (scaledOffsetXD > 0.5) {
 				scaledOffsetX = (int) Math.round(scaledOffsetXD);
@@ -439,8 +473,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 			if (scaledOffsetYD > 0.5) {
 				scaledOffsetY = (int) Math.round(scaledOffsetYD);
 			}
-			
-			g2d.setColor(new Color(0,0,0,255));
+
+			g2d.setColor(Color.black);
 			Font font = new Font("Serif", Font.BOLD, scaledFont);
 			g2d.setFont(font);
 			g2d.drawString(this.attValue, scaledOffsetX, scaledOffsetY);

@@ -18,6 +18,7 @@ public class CellTemplate {
 		RegionManager.clearAll();
 
 		// Hard-coded templates
+		String FillColor;
 		String Color;
 		String CenterX;
 		String CenterY;
@@ -25,6 +26,7 @@ public class CellTemplate {
 		String Height;
 		String ZOrder;
 		String Rotation;
+		String fG;
 		String cG;
 		Double xG;
 		Double yG;
@@ -33,6 +35,7 @@ public class CellTemplate {
 		int zG;
 		Double rG;
 
+		FillColor = "Transparent";
 		Color = "FFFFFF";
 		CenterX = "6254.75";
 		CenterY = "1837.25";
@@ -40,6 +43,7 @@ public class CellTemplate {
 		Height = "1185.5";
 		ZOrder = "16384";
 		Rotation = "0.0";
+		fG = "#".concat(FillColor);
 		cG = "#".concat(Color);
 		xG = Double.parseDouble(CenterX);
 		yG = Double.parseDouble(CenterY);
@@ -47,16 +51,18 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region a = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+		Region a = new Region(Region.COMPARTMENT_RECT, fG, cG, xG, yG, wG, hG, zG,
 				rG, "extracellular region");
 
+		FillColor = "F0F0F0";
 		Color = "000000";
 		CenterX = "2767.25";
 		CenterY = "3877.25";
-		Width = "1305.5";
-		Height = "885.5";
+		Width = "1505.5";
+		Height = "785.5";
 		ZOrder = "16384";
 		Rotation = "0.0";
+		fG = "#".concat(FillColor);
 		cG = "#".concat(Color);
 		xG = Double.parseDouble(CenterX);
 		yG = Double.parseDouble(CenterY);
@@ -64,16 +70,18 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region f = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+		Region f = new Region(Region.COMPARTMENT_OVAL, fG, cG, xG, yG, wG, hG, zG,
 				rG, "mitochondrion");
 
+		FillColor = "F0F0F0";
 		Color = "000000";
-		CenterX = "4987.25";
+		CenterX = "4887.25";
 		CenterY = "6067.5";
-		Width = "1395.5";
+		Width = "1695.5";
 		Height = "735.0";
 		ZOrder = "16384";
 		Rotation = "0.0";
+		fG = "#".concat(FillColor);
 		cG = "#".concat(Color);
 		xG = Double.parseDouble(CenterX);
 		yG = Double.parseDouble(CenterY);
@@ -81,9 +89,10 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region g = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+		Region g = new Region(Region.COMPARTMENT_RECT, fG, cG, xG, yG, wG, hG, zG,
 				rG, "endoplasmic reticulum");
 
+		FillColor = "F0F0F0";
 		Color = "000000";
 		CenterX = "6269.75";
 		CenterY = "2635.25";
@@ -91,6 +100,7 @@ public class CellTemplate {
 		Height = "80.5";
 		ZOrder = "16384";
 		Rotation = "0.0";
+		fG = "#".concat(FillColor);
 		cG = "#".concat(Color);
 		xG = Double.parseDouble(CenterX);
 		yG = Double.parseDouble(CenterY);
@@ -98,9 +108,10 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region b = new Region(Region.MEMBRANE_LINE, cG, xG, yG, wG, hG, zG, rG,
+		Region b = new Region(Region.MEMBRANE_LINE, fG, cG, xG, yG, wG, hG, zG, rG,
 				"plasma membrane");
 
+		FillColor = "F0F0F0";
 		Color = "000000";
 		CenterX = "8479.75";
 		CenterY = "5002.25";
@@ -108,6 +119,7 @@ public class CellTemplate {
 		Height = "2685.5";
 		ZOrder = "16384";
 		Rotation = "0.0";
+		fG = "#".concat(FillColor);
 		cG = "#".concat(Color);
 		xG = Double.parseDouble(CenterX);
 		yG = Double.parseDouble(CenterY);
@@ -115,9 +127,10 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region d = new Region(Region.COMPARTMENT_OVAL, cG, xG, yG, wG, hG, zG,
+		Region d = new Region(Region.COMPARTMENT_OVAL, fG, cG, xG, yG, wG, hG, zG,
 				rG, "nucleus");
 
+		FillColor = "Transparent";
 		Color = "FFFFFF";
 		CenterX = "6269.75";
 		CenterY = "4747.25";
@@ -125,6 +138,7 @@ public class CellTemplate {
 		Height = "3765.5";
 		ZOrder = "16384";
 		Rotation = "0.0";
+		fG = "#".concat(FillColor);
 		cG = "#".concat(Color);
 		xG = Double.parseDouble(CenterX);
 		yG = Double.parseDouble(CenterY);
@@ -132,9 +146,10 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region c = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+		Region c = new Region(Region.COMPARTMENT_RECT, fG, cG, xG, yG, wG, hG, zG,
 				rG, "cytoplasm");
 
+		FillColor = "FFFFFF";
 		Color = "999999";
 		CenterX = "12089.75";
 		CenterY = "4020.0";
@@ -142,6 +157,7 @@ public class CellTemplate {
 		Height = "3990.0";
 		ZOrder = "16384";
 		Rotation = "0.0";
+		fG = "#".concat(FillColor);
 		cG = "#".concat(Color);
 		xG = Double.parseDouble(CenterX);
 		yG = Double.parseDouble(CenterY);
@@ -149,7 +165,7 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region e = new Region(Region.UKNOWN, cG, xG, yG, wG, hG, zG, rG,
+		Region e = new Region(Region.UKNOWN, fG, cG, xG, yG, wG, hG, zG, rG,
 				"unassigned");
 
 		// SIZE UP REGIONS:
