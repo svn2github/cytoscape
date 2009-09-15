@@ -167,7 +167,7 @@ public class GOLayout extends CytoscapePlugin {
 		public void construct() {
 		    pa.setLayoutName("cell-layout");
 			CyLayoutAlgorithm layout = CyLayouts.getLayout("partition");
-			layout.doLayout(Cytoscape.getCurrentNetworkView());
+			layout.doLayout(Cytoscape.getCurrentNetworkView(), taskMonitor);
 		}
 	}
 }
