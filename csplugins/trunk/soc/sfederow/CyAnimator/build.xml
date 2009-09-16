@@ -59,6 +59,7 @@
 	<copy file="${images.dir}/fastForward.png" todir="${build.classes}/CyAnimator"/>
         <copy file="${images.dir}/reverse.png" todir="${build.classes}/CyAnimator"/>
         <copy file="${images.dir}/record.png" todir="${build.classes}/CyAnimator"/>
+        <copy file="resources/plugin.props" todir="${build.classes}/CyAnimator"/>
 
  
         <!-- <mkdir dir="${dist.dir}"/> -->
