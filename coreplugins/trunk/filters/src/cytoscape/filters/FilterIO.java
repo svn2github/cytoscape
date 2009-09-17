@@ -38,55 +38,60 @@ public class FilterIO {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(pPropFile));
 
-			String oneLine = in.readLine();
+            try {
+                String oneLine = in.readLine();
 
-			if (oneLine == null) {				
-				return retValue;
-			}
-			double filterVersion = 0.0;
-			if (oneLine.trim().startsWith("FilterVersion")) {
-				String versionStr = oneLine.trim().substring(14);
-				filterVersion = Double.valueOf(versionStr);
-			}
-			
-			// Ignore filters from the old version
-			if (filterVersion <0.2) {
-				return retValue;
-			}			
-			
-			while (oneLine != null) {
-				// ignore comment, empty line or the version line
-				if (oneLine.startsWith("#") || oneLine.trim().equals("")||oneLine.startsWith("FilterVersion")) {
-					oneLine = in.readLine();
-					continue;
-				}
+                if (oneLine == null) {
+                    return retValue;
+                }
+                double filterVersion = 0.0;
+                if (oneLine.trim().startsWith("FilterVersion")) {
+                    String versionStr = oneLine.trim().substring(14);
+                    filterVersion = Double.valueOf(versionStr);
+                }
 
-				if (oneLine.trim().startsWith("<Composite>")||oneLine.trim().startsWith("<TopologyFilter>")
-						||oneLine.trim().startsWith("<InteractionFilter>")) {
-					Vector<String> filterStrVect = new Vector<String>();
-					filterStrVect.add(oneLine);
-					while ((oneLine = in.readLine()) != null) {
-						if (oneLine.trim().startsWith("</Composite>")||oneLine.trim().startsWith("</TopologyFilter>")
-								||oneLine.trim().startsWith("</InteractionFilter>")) {
-							filterStrVect.add(oneLine);
-							break;
-						}
-						filterStrVect.add(oneLine);
-					} // inner while loop
-					
-					totalCount++;
-					
-					CompositeFilter aFilter = getFilterFromStrVect(filterStrVect); 
-					if (aFilter != null && !FilterUtil.isFilterNameDuplicated(aFilter.getName())) {
-						FilterPlugin.getAllFilterVect().add(aFilter);
-						addCount++;
-					}					
-				}
-				
-				oneLine = in.readLine();
-			} // while loop
+                // Ignore filters from the old version
+                if (filterVersion <0.2) {
+                    return retValue;
+                }
 
-			in.close();
+                while (oneLine != null) {
+                    // ignore comment, empty line or the version line
+                    if (oneLine.startsWith("#") || oneLine.trim().equals("")||oneLine.startsWith("FilterVersion")) {
+                        oneLine = in.readLine();
+                        continue;
+                    }
+
+                    if (oneLine.trim().startsWith("<Composite>")||oneLine.trim().startsWith("<TopologyFilter>")
+                            ||oneLine.trim().startsWith("<InteractionFilter>")) {
+                        Vector<String> filterStrVect = new Vector<String>();
+                        filterStrVect.add(oneLine);
+                        while ((oneLine = in.readLine()) != null) {
+                            if (oneLine.trim().startsWith("</Composite>")||oneLine.trim().startsWith("</TopologyFilter>")
+                                    ||oneLine.trim().startsWith("</InteractionFilter>")) {
+                                filterStrVect.add(oneLine);
+                                break;
+                            }
+                            filterStrVect.add(oneLine);
+                        } // inner while loop
+
+                        totalCount++;
+
+                        CompositeFilter aFilter = getFilterFromStrVect(filterStrVect);
+                        if (aFilter != null && !FilterUtil.isFilterNameDuplicated(aFilter.getName())) {
+                            FilterPlugin.getAllFilterVect().add(aFilter);
+                            addCount++;
+                        }
+                    }
+
+                    oneLine = in.readLine();
+                } // while loop
+            }
+            finally {
+                if (in != null) {
+                    in.close();
+                }
+            }
 		} catch (Exception ex) {
 			
 			logger.error("Filter Read error", ex);
@@ -432,14 +437,21 @@ public class FilterIO {
 		
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(pPropFile));
-			writer.write("FilterVersion=0.2\n");			
-			
-			for (int i = 0; i < globalFilters.length; i++) {
-				CompositeFilter theFilter = (CompositeFilter) globalFilters[i];
-				writer.write(theFilter.toString());
-				writer.newLine();
-			}
-			writer.close();
+
+            try {
+                writer.write("FilterVersion=0.2\n");
+
+                for (int i = 0; i < globalFilters.length; i++) {
+                    CompositeFilter theFilter = (CompositeFilter) globalFilters[i];
+                    writer.write(theFilter.toString());
+                    writer.newLine();
+                }
+            }
+            finally {
+                if (writer != null) {
+                    writer.close();
+                }
+            }
 		} catch (Exception ex) {
 			logger.error("Global filter Write error",ex);
 		}
@@ -490,19 +502,27 @@ public class FilterIO {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(session_filter_file));
 
-			writer.write("FilterVersion=0.2\n");			
-			
-			for (int i = 0; i < sessionFilters.length; i++) {
-				CompositeFilter theFilter = (CompositeFilter) sessionFilters[i];
-				writer.write(theFilter.toString());
-				writer.newLine();
-			}
-			writer.close();
+            try {
+                writer.write("FilterVersion=0.2\n");
+
+                for (int i = 0; i < sessionFilters.length; i++) {
+                    CompositeFilter theFilter = (CompositeFilter) sessionFilters[i];
+                    writer.write(theFilter.toString());
+                    writer.newLine();
+                }
+            }
+            finally {
+                if ( writer != null) {
+                    writer.close();
+                }
+            }
 		} catch (Exception ex) {
 			logger.error("Session filter Write error",ex);
 		}
 
-		pFileList.add(session_filter_file);
+        if ((session_filter_file != null) && (session_filter_file.exists())) {
+            pFileList.add(session_filter_file);
+        }
 	}
 	
 	
