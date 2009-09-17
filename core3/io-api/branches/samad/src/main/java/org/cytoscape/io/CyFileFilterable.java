@@ -5,7 +5,7 @@ package org.cytoscape.io;
  * {@link org.cytoscape.io.read.CyWriter} the provides basic information about
  * the types of files supported.
  */
-public interface FileIOFactory {
+public interface CyFileFilterable {
 
 	public CyFileFilter getCyFileFilter();
 

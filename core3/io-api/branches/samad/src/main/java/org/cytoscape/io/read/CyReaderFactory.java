@@ -2,14 +2,13 @@ package org.cytoscape.io.read;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+import java.util.Map;
 
-import org.cytoscape.io.FileIOFactory;
+import org.cytoscape.io.CyFileFilterable;
+import org.cytoscape.work.ValuedTask;
 
-public interface CyReaderFactory extends FileIOFactory {
+public interface CyReaderFactory extends CyFileFilterable {
 
-	public CyReader getReader(URI uri) throws IOException;
-
-	public CyReader getReader(InputStream stream) throws IOException;
+	public ValuedTask<Map<Class<?>,Object>> getReader(InputStream stream) throws IOException;
 
 }

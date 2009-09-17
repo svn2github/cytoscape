@@ -38,8 +38,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 
-import org.cytoscape.io.DataCategory;
-
 /**
  * Central registry for all Cytoscape import classes.
  */
@@ -56,13 +54,11 @@ public interface CyReaderManager {
 
 	/**
 	 * Get a file reader if the file type is supported in Cytoscape.
-	 * 
-	 * @param fileName
-	 * @return
-	 * @throws IllegalArgumentException File type is not supported.
 	 */
-	public CyReader getReader(URI resourceLocation, DataCategory category) throws IllegalArgumentException;
-	
-	public CyReader getReader(InputStream stream, DataCategory category) throws IllegalArgumentException;
+	public CyReaderFactory getReaderFactoryForURI(URI resourceLocation);
+
+	public CyReaderFactory getReaderFactoryForExtensionType(String extensionType);
+
+	public CyReaderFactory getReaderFactoryForContentType(String contentType);
 
 }

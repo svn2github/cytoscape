@@ -35,8 +35,7 @@
 package org.cytoscape.io.write;
 
 import java.util.Map;
-
-import org.cytoscape.io.DataCategory;
+import java.net.URI;
 
 /**
  * Central registry for all Cytoscape import classes.
@@ -54,11 +53,9 @@ public interface CyWriterManager {
 
 	/**
 	 * Get a file writer if the file type is supported in Cytoscape.
-	 * 
-	 * @param fileName
-	 * @return
-	 * @throws IllegalArgumentException File type is not supported.
 	 */
-	public CyWriter getWriter(DataCategory category) throws IllegalArgumentException;
+	public CyWriterFactory getWriterFactoryForURI(URI uri);
+	public CyWriterFactory getWriterFactoryForExtensionType(String extensionType);
+	public CyWriterFactory getWriterFactoryForContentType(String contentType);
 
 }

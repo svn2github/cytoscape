@@ -2,14 +2,12 @@ package org.cytoscape.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Set;
+import java.net.URI;
 
-public interface CyFileFilter {
-
-	public boolean accept(URI uri, DataCategory category) throws IOException;
-	
-	public boolean accept(InputStream stream, DataCategory category) throws IOException;
+public interface CyFileFilter
+{
+	public boolean accept(URI uri) throws IOException;
 
 	/**
 	 * Returns a list of file extensions (xml, xgmml, sif) suitable for for use
@@ -26,7 +24,4 @@ public interface CyFileFilter {
 	 * to the CyReader service!
 	 */
 	public String getDescription();
-
-	public DataCategory getDataCategory();
-
 }
