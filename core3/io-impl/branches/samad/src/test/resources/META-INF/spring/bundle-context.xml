@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+            http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="true">
+
+	<context:annotation-config />
+
+	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
+		<constructor-arg ref="sifFilter" />
+		<constructor-arg ref="sifReader" />
+		<constructor-arg ref="streamUtil" />
+	</bean>
+
+	<bean id="xgmmlReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
+		<constructor-arg ref="xgmmlFilter" />
+		<constructor-arg ref="xgmmlReader" />
+		<constructor-arg ref="streamUtil" />
+	</bean>
+
+	<bean id="sifFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+				<value>sif</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="SIF files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="NETWORK" />
+		<constructor-arg ref="streamUtil" />
+	</bean>
+
+	<bean id="xgmmlFilter" class="org.cytoscape.io.internal.read.xgmml.XGMMLFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>xgmml</value>
+				<value>xml</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+				<value>text/xgmml</value>
+				<value>text/xml</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="XGMML files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="NETWORK" />
+		<constructor-arg ref="streamUtil" />
+	</bean>
+
+
+	<!-- Network Readers -->
+	<bean id="sifReader" class="org.cytoscape.io.internal.read.sif.InteractionsReader">
+		<constructor-arg ref="readUtil" />
+		<!--
+			<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
+			<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
+			<property name="layouts" ref="cyLayoutsServiceRef" />
+		-->
+	</bean>
+
+
+	<!-- Utilities for XGMML Reader -->
+	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
+	<bean id="attributeValueUtil"
+		class="org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil">
+		<property name="typeMap" ref="objectTypeMap" />
+		<property name="manager" ref="readDataManager" />
+	</bean>
+	<bean id="handlerFactory" class="org.cytoscape.io.internal.read.xgmml.HandlerFactory">
+		<constructor-arg ref="readDataManager" />
+		<constructor-arg ref="attributeValueUtil" />
+	</bean>
+
+	<bean id="readDataManager"
+		class="org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager" />
+
+	<bean id="xgmmlParser" class="org.cytoscape.io.internal.read.xgmml.XGMMLParser">
+		<property name="handlerFactory" ref="handlerFactory" />
+		<property name="readDataManager" ref="readDataManager" />
+	</bean>
+
+	<bean id="xgmmlReader" class="org.cytoscape.io.internal.read.xgmml.XGMMLReader">
+		<property name="parser" ref="xgmmlParser" />
+		<property name="readDataManager" ref="readDataManager" />
+		<property name="attributeValueUtil" ref="attributeValueUtil" />
+		<!--
+			<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
+			<property name="layouts" ref="cyLayoutsServiceRef" /> <property
+			name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
+		-->
+	</bean>
+
+	<!-- Attribute Readers -->
+
+	<!-- Property Readers -->
+
+
+	<!-- Manager for all readers -->
+	<bean id="cyReaderManager" class="org.cytoscape.io.internal.read.CyReaderManagerImpl" />
+
+	<!-- Utility for Stream/Proxy management -->
+	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
+		<constructor-arg ref="streamUtil" />
+	</bean>
+
+	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
+
+</beans>
