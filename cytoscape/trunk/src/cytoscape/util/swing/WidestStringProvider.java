@@ -48,4 +48,9 @@ public interface WidestStringProvider {
      * @return
      */
     public String getWidest();
+
+    /**
+     * Invalidate any cached longest String.
+     */
+    public void resetWidest();
 }
