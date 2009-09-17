@@ -36,30 +36,27 @@
 
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.view.cytopanels.CytoPanelName;
-import cytoscape.view.cytopanels.CytoPanel;
-
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
-import javax.swing.SwingConstants;
 import javax.swing.JCheckBoxMenuItem;
-
 import javax.swing.event.MenuEvent;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelName;
+import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
  *
  */
 public class CytoPanelAction extends CytoscapeAction {
-
-	protected static String SHOW = "Show";
-	protected static String HIDE = "Hide";
+	
+	private static final long serialVersionUID = 2069061664423847850L;
+	
+	protected static final String SHOW = "Show";
+	protected static final String HIDE = "Hide";
 
 	protected String title;
 	protected int position;
