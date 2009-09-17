@@ -114,7 +114,7 @@ public class GeneAssociationReader implements TextTableReader {
 	private static final int OBJ_NAME = 9;
 	private static final int SYNONYM = 10;
 	private static final int GOID = 4;
-	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
+	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/props/tax_report.txt";
 	private InputStream is;
 	private final String keyAttributeName;
 	private Aliases nodeAliases;
