@@ -82,30 +82,19 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 				chooser.dispose();
 
 				FileOutputStream stream = null;
-                try {
-                    try
-                    {
-                        stream = new FileOutputStream(file);
-                    }
-                    catch (Exception exp)
-                    {
-                        JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
-                                        "Could not create file " + file.getName()
-                                        + "\n\nError: " + exp.getMessage());
-                        return;
-                    }
-                    CyNetworkView view = Cytoscape.getCurrentNetworkView();
-                    filter.export(view, stream);
-                }
-                finally {
-                    if (stream != null) {
-                        try {
-                            stream.close();
-                        }
-                        catch (IOException ioe) {
-                        }
-                    }
-                }
+				try
+				{
+					stream = new FileOutputStream(file);
+				}
+				catch (Exception exp)
+				{
+					JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
+														"Could not create file " + file.getName()
+														+ "\n\nError: " + exp.getMessage());
+					return;
+				}
+				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				filter.export(view, stream);
 			}
 		};
 		chooser.addActionListener(listener);
