@@ -14,9 +14,9 @@ import java.util.concurrent.TimeoutException;
  * <br>
  * <code>
  * ValuedTask&lt;Integer&gt; myValuedTask = ...;<br>
- * TaskMonitor taskMonitor = ...;<br>
+ * TaskManager taskManager = ...;<br>
  * ValuedTaskExecutor&lt;Integer&gt; myValuedTaskExecutor = new ValuedTaskExecutor&lt;Integer&gt;(myValuedTask);<br>
- * taskMonitor.execute(myValuedTaskExecutor);<br>
+ * taskManager.execute(myValuedTaskExecutor);<br>
  * ...<br>
  * Integer result = myValuedTaskExecutor.get();<br>
  * </code></p>
