@@ -431,20 +431,20 @@ public class FilterIO {
 		Object [] sortedFilters = getSortedCompositeFilter(FilterPlugin.getAllFilterVect());		
 		Object[] globalFilters = getFiltersByScope(sortedFilters, "global");
 		
-		if (globalFilters == null || globalFilters.length == 0) {
-			return;
-		}
-		
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(pPropFile));
 
             try {
+                // Need to allow writing of header only so that when the last
+                // global filter is deleted, the props file is updated to reflect this
                 writer.write("FilterVersion=0.2\n");
 
-                for (int i = 0; i < globalFilters.length; i++) {
-                    CompositeFilter theFilter = (CompositeFilter) globalFilters[i];
-                    writer.write(theFilter.toString());
-                    writer.newLine();
+                if (globalFilters != null) {
+                    for (int i = 0; i < globalFilters.length; i++) {
+                        CompositeFilter theFilter = (CompositeFilter) globalFilters[i];
+                        writer.write(theFilter.toString());
+                        writer.newLine();
+                    }
                 }
             }
             finally {
