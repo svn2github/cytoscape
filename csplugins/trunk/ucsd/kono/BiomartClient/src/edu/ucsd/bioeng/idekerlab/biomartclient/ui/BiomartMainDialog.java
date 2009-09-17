@@ -133,16 +133,9 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 			tPanel.add(propPanel);
 		}
 		
-		
-		filterPanel = new JPanel();
-		filterPanel.setBackground(Color.white);
-		JScrollPane filterPane = new JScrollPane();
-		filterPanel.add(filterPane);
-		
 		panel = new BiomartAttrMappingPanel();
 		panel.addPropertyChangeListener(this);
 		tabs.addTab("Query", panel);
-		tabs.addTab("Filter", filterPanel);
 		tabs.addTab("Property", tPanel);
 		
 
