@@ -23,8 +23,6 @@ public interface CyReader {
 	 */
 	public Map<Class<?>, Object> read() throws IOException;
 
-	public void setInputStream(InputStream is);
-
 	/**
 	 * Cancels reading if a thread is waiting for the completion of
 	 * <code>CyReader.read()</code>.
