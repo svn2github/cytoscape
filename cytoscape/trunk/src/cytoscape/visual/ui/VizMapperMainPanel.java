@@ -2072,10 +2072,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				if (e.getNewValue().equals("Continuous Mapper")
 				    && ((dataClass != Integer.class) && (dataClass != Double.class)
 				       && (dataClass != Float.class))) {
-					JOptionPane.showMessageDialog(this,
+					
+					JOptionPane.showMessageDialog(Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedComponent(),
 					                              "Continuous Mapper can be used with Numbers only.",
 					                              "Incompatible Mapping Type!",
-					                              JOptionPane.INFORMATION_MESSAGE);
+					                              JOptionPane.ERROR_MESSAGE);
 
 					return;
 				}
