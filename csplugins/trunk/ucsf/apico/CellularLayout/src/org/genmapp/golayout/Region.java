@@ -49,7 +49,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 	private String attValue;
 
 	// additional parameters not from template
-	private String attName;
 	private List<String> nestedAttValues; // values represented by attValue
 	private List<NodeView> nodeViews;
 	private List<NodeView> filteredNodeViews = new ArrayList<NodeView>();
@@ -69,7 +68,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	// graphics
 	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
 	private static final int OPACITY_LEVEL = (int) (255 * 1);
-
+	
 	public Region(String shape, String fillcolor, String color, double centerX,
 			double centerY, double width, double height, int zorder,
 			double rotation, String attValue) {
@@ -123,11 +122,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 		else
 			nestedAttValues = Arrays.asList(this.attValue);
 
-		// additional parameters
-		this.attName = "annotation.GO CELLULAR_COMPONENT"; // hard-coded, for
-		// now
-
-		this.nodeViews = populateNodeViews();
+		//addition parameters
+		this.nodeViews = CellAlgorithm.populateNodeViews(this);
 		this.nodeCount = this.nodeViews.size();
 		this.columns = (int) Math.sqrt(this.nodeCount);
 		this.freeCenterX = centerX;
@@ -178,70 +174,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 	}
 
-	private List<NodeView> populateNodeViews() {
-		CyAttributes attribs = Cytoscape.getNodeAttributes();
-		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
-		List<NodeView> nvList = new ArrayList<NodeView>();
-		while (it.hasNext()) {
-			Node node = (Node) it.next();
-			String val = null;
-			String terms[] = new String[1];
-			// add support for parsing List type attributes
-			if (attribs.getType(attName) == CyAttributes.TYPE_SIMPLE_LIST) {
-				List valList = attribs.getListAttribute(node.getIdentifier(),
-						attName);
-				// iterate through all elements in the list
-				if (valList != null && valList.size() > 0) {
-					terms = new String[valList.size()];
-					for (int i = 0; i < valList.size(); i++) {
-						Object o = valList.get(i);
-						terms[i] = o.toString();
-					}
-				}
-				val = join(terms);
-			} else {
-				String valCheck = attribs.getStringAttribute(node
-						.getIdentifier(), attName);
-				if (valCheck != null && !valCheck.equals("")) {
-					val = valCheck;
-				}
-			}
-
-			// loop through elements in array below and match
-			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
-				for (Object o : nestedAttValues) {
-					if (val.indexOf(o.toString()) >= 0) {
-						nvList.add(Cytoscape.getCurrentNetworkView()
-								.getNodeView(node));
-						break; // stop searching after first hit
-					}
-
-				}
-			} else if (nestedAttValues.get(0).equals("unassigned")) {
-				nvList.add(Cytoscape.getCurrentNetworkView().getNodeView(node));
-			}
-
-		}
-		return nvList;
-	}
-
-	/**
-	 * generates comma-separated list as a single string
-	 * 
-	 * @param values
-	 *            array
-	 * @return string
-	 */
-	private static String join(String values[]) {
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < values.length; i++) {
-			buf.append(values[i]);
-			if (i < values.length - 1) {
-				buf.append(", ");
-			}
-		}
-		return buf.toString();
-	}
 
 	// graphics
 	public void setBounds(double x, double y, double width, double height) {
@@ -540,6 +472,14 @@ public class Region extends JComponent implements ViewportChangeListener {
 	public List<NodeView> getFilteredNodeViews() {
 		return filteredNodeViews;
 	}
+
+	/**
+	 * @return the nestedAttValues
+	 */
+	public List<String> getNestedAttValues() {
+		return nestedAttValues;
+	}
+
 
 	/**
 	 * @return the visibleBorder

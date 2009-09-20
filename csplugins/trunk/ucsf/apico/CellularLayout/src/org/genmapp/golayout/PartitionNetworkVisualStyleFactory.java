@@ -32,6 +32,7 @@ public class PartitionNetworkVisualStyleFactory {
 	 * 
 	 */
 	public static final String PartitionNetwork_VS = "MolecularFunction";
+	protected static String attributeName = "annotation.GO MOLECULAR_FUNCTION";
 
 	private static LabelPosition lp = new LabelPosition();
 	public static DiscreteMapping disMappingLabelPosition = new DiscreteMapping(
@@ -62,7 +63,6 @@ public class PartitionNetworkVisualStyleFactory {
 			nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
 					new Color(255, 255, 255));
 
-			final String attributeName = "annotation.GO MOLECULAR_FUNCTION";
 			CyAttributes attribs = Cytoscape.getNodeAttributes();
 			Map attrMap = CyAttributesUtils
 					.getAttribute(attributeName, attribs);
@@ -92,39 +92,14 @@ public class PartitionNetworkVisualStyleFactory {
 					PartitionNetwork_VS, passMappingLabel,
 					VisualPropertyType.NODE_LABEL);
 			nac.setCalculator(labelCalculator);
-			DiscreteMapping disMappingNodeW = new DiscreteMapping(
-					MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH,
-					"register_node", ObjectMapping.NODE_MAPPING);
-			disMappingNodeW.putMapValue(Boolean.TRUE, 0.1);
-			Calculator widthCalculator = new BasicCalculator(
-					PartitionNetwork_VS, disMappingNodeW,
-					VisualPropertyType.NODE_WIDTH);
-			nac.setCalculator(widthCalculator);
-			DiscreteMapping disMappingNodeH = new DiscreteMapping(
-					MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT,
-					"register_node", ObjectMapping.NODE_MAPPING);
-			disMappingNodeH.putMapValue(Boolean.TRUE, 0.1);
-			Calculator heightCalculator = new BasicCalculator(
-					PartitionNetwork_VS, disMappingNodeH,
-					VisualPropertyType.NODE_HEIGHT);
-			nac.setCalculator(heightCalculator);
-
-			DiscreteMapping disMappingFont = new DiscreteMapping(12,
-					"register_node", ObjectMapping.NODE_MAPPING);
-			disMappingFont.putMapValue(Boolean.TRUE, 24);
-			Calculator fontCalculator = new BasicCalculator(
-					PartitionNetwork_VS, disMappingFont,
-					VisualPropertyType.NODE_FONT_SIZE);
-			nac.setCalculator(fontCalculator);
-
-			/*
-			 * disMappingLabelPosition is dynamically defined in
-			 * CellAlgorithm.construct()
-			 */
-			Calculator posCalculator = new BasicCalculator(PartitionNetwork_VS,
-					disMappingLabelPosition,
-					VisualPropertyType.NODE_LABEL_POSITION);
-			nac.setCalculator(posCalculator);
+			
+			DiscreteMapping disMappingBorderColor = new DiscreteMapping(Color.black,
+					CellAlgorithm.NODE_COPIED, ObjectMapping.NODE_MAPPING);
+			disMappingBorderColor.putMapValue(Boolean.TRUE, Color.red);
+			Calculator borderColorCalculator = new BasicCalculator(
+					PartitionNetwork_VS, disMappingBorderColor,
+					VisualPropertyType.NODE_BORDER_COLOR);
+			nac.setCalculator(borderColorCalculator);
 
 			DiscreteMapping disMappingNodeFill = new DiscreteMapping(
 					Color.white, ObjectMapping.NODE_MAPPING);

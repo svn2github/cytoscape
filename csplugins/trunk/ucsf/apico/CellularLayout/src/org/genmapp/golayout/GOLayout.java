@@ -16,17 +16,15 @@ import cytoscape.visual.VisualStyle;
 
 public class GOLayout extends CytoscapePlugin {
 	
-	PartitionAlgorithm pa = new PartitionAlgorithm();
-	
 	/**
 	 * The constructor registers our layout algorithm. The CyLayouts mechanism
 	 * will worry about how to get it in the right menu, etc.
 	 */
 	public GOLayout() {
 
-		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout");
 		CyLayouts.addLayout(new GOLayoutAlgorithm(), "GO Layout");
-		CyLayouts.addLayout(pa, "GO Layout");
+		CyLayouts.addLayout(new PartitionAlgorithm(), "GO Layout");
+		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout");
 	}
 	
 	public static void createVisualStyle(CyNetworkView view){
@@ -35,7 +33,7 @@ public class GOLayout extends CytoscapePlugin {
 	}
 
 	public class GOLayoutAlgorithm extends AbstractLayout {
-		double distanceBetweenNodes = 80.0d;
+//		double distanceBetweenNodes = 80.0d;
 		LayoutProperties layoutProperties = null;
 
 		/**
@@ -44,8 +42,22 @@ public class GOLayout extends CytoscapePlugin {
 		public GOLayoutAlgorithm() {
 			super();
 			layoutProperties = new LayoutProperties(getName());
-			layoutProperties.add(new Tunable("nodeSpacing",
-					"Spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
+			layoutProperties
+			.add(new Tunable("attributePartition",
+					"The attribute to use for partitioning",
+					Tunable.NODEATTRIBUTE, PartitionAlgorithm.attributeName,
+					(Object) getInitialAttributeList(), (Object) null, 0));
+			layoutProperties
+			.add(new Tunable("attributeLayout",
+					"The attribute to use for the layout",
+					Tunable.NODEATTRIBUTE, CellAlgorithm.attributeName,
+					(Object) getInitialAttributeList(), (Object) null, 0));
+			layoutProperties
+			.add(new Tunable("attributeNodeColor",
+					"The attribute to use for node color",
+					Tunable.NODEATTRIBUTE, PartitionNetworkVisualStyleFactory.attributeName,
+					(Object) getInitialAttributeList(), (Object) null, 0));
+
 
 			/*
 			 * We've now set all of our tunables, so we can read the property
@@ -76,9 +88,23 @@ public class GOLayout extends CytoscapePlugin {
 		 */
 		public void updateSettings(boolean force) {
 			layoutProperties.updateValues();
-			Tunable t = layoutProperties.get("nodeSpacing");
-			if ((t != null) && (t.valueChanged() || force))
-				distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
+			Tunable t = layoutProperties.get("attributePartition");
+			if ((t != null) && (t.valueChanged() || force)) {
+				String newValue = (String) t.getValue();
+				PartitionAlgorithm.attributeName = newValue;
+			}
+
+			t = layoutProperties.get("attributeLayout");
+			if ((t != null) && (t.valueChanged() || force)) {
+				String newValue = (String) t.getValue();
+				CellAlgorithm.attributeName = newValue;
+			}
+			
+			t = layoutProperties.get("attributeNodeColor");
+			if ((t != null) && (t.valueChanged() || force)) {
+				String newValue = (String) t.getValue();
+				PartitionNetworkVisualStyleFactory.attributeName = newValue;
+			}
 		}
 
 		/**
@@ -94,11 +120,12 @@ public class GOLayout extends CytoscapePlugin {
 
 		/**
 		 * Returns the short-hand name of this algorithm
+		 * NOTE: is related to the menu item order
 		 * 
 		 * @return short-hand name
 		 */
 		public String getName() {
-			return "go-layout";
+			return "0-golayout";
 		}
 
 		/**
@@ -107,7 +134,7 @@ public class GOLayout extends CytoscapePlugin {
 		 * @return user visible name
 		 */
 		public String toString() {
-			return "Run All";
+			return "GO Layout";
 		}
 
 		/**
@@ -116,7 +143,7 @@ public class GOLayout extends CytoscapePlugin {
 		* @return human readable task title.
 		*/
 		public String getTitle() {
-			return new String("GO Layout: Do All");
+			return new String("GO Layout");
 		}
 		
 		/**
@@ -165,7 +192,7 @@ public class GOLayout extends CytoscapePlugin {
 		 * The layout protocol...
 		 */
 		public void construct() {
-		    pa.setLayoutName("cell-layout");
+			PartitionAlgorithm.layoutName = "cell-layout";
 			CyLayoutAlgorithm layout = CyLayouts.getLayout("partition");
 			layout.doLayout(Cytoscape.getCurrentNetworkView(), taskMonitor);
 		}

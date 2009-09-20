@@ -41,9 +41,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	double distanceBetweenNodes = 80.0d;
 	LayoutProperties layoutProperties = null;
 
-	private String layoutName = null;
+	protected static String layoutName = null;
 	private ArrayList<Object> nodeAttributeValues = new ArrayList();
-	private static final String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
+	protected static String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 	private HashMap<Object, List<CyNode>> attributeValueNodeMap = new HashMap<Object, List<CyNode>>();
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
 	private List<CyGroup> groups = new ArrayList<CyGroup>();
@@ -93,9 +93,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		Tunable t = layoutProperties.get("nodeSpacing");
 		if ((t != null) && (t.valueChanged() || force))
 			distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
-		Tunable t2 = layoutProperties.get("layoutName");
-		if ((t2 != null) && (t2.valueChanged() || force))
-			this.layoutName = t2.getValue().toString();
+		
+		t = layoutProperties.get("layoutName");
+		if ((t != null) && (t.valueChanged() || force))
+			layoutName = t.getValue().toString();
 	}
 
 	/**
@@ -111,6 +112,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 	/**
 	 * Returns the short-hand name of this algorithm
+	 * NOTE: is related to the menu item order
 	 * 
 	 * @return short-hand name
 	 */
@@ -143,7 +145,20 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 *         are not supported
 	 */
 	public byte[] supportsNodeAttributes() {
-		return null;
+
+		byte[] all = { -1 };
+
+		return all;
+	}
+
+	/**
+	 * Sets the attribute to use for the weights
+	 * 
+	 * @param value
+	 *            the name of the attribute
+	 */
+	public void setLayoutAttribute(String value) {
+		attributeName = value;
 	}
 
 	/**
@@ -360,11 +375,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		// CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				attributeValue, // for network title
 				current_network, (nodes.size() >= networkViewThreshhold)
-						&& nodes.size() <= 200); // optional
-		// create
-		// network
-		// view
-
+						&& nodes.size() <= 200);  
+		// optional create network view
+		
 		// if (new_network.nodesList().size() >= networkViewThreshhold &&
 		// new_network.nodesList().size() <= 200) {
 
@@ -387,8 +400,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 			// CyLayoutAlgorithm layout =
 			// CyLayouts.getLayout("force-directed");
-			System.out.println("Layout: " + new_view.getTitle());
-			CyLayoutAlgorithm layout = CyLayouts.getLayout(this.layoutName);
+			System.out.println("Layout: " + new_view.getTitle() +" :: "+ layoutName);
+			
+			CyLayoutAlgorithm layout = CyLayouts.getLayout(layoutName);
 			layout.doLayout(new_view);
 
 		}
@@ -424,10 +438,16 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 * The layout protocol...
 	 */
 	public void construct() {
-		
+
 		taskMonitor.setStatus("Partitioning the network by biological process");
 		taskMonitor.setPercentCompleted(1);
-		
+
+		// Reset partition groups
+		//TODO: CyGroup bug: can't get rid of groups created in previous session!
+//		for (CyGroup cg : CyGroupManager.getGroupList()) {
+//			CyGroupManager.removeGroup(cg);
+//		}
+
 		nodeAttributeValues = setupNodeAttributeValues();
 		populateNodes(attributeName);
 
@@ -439,11 +459,11 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 		int nbrProcesses = attributeValues.size();
 		int count = 0;
-		
+
 		//		
 		for (Object val : attributeValues) {
 			count++;
-			taskMonitor.setPercentCompleted ((100 * count) / nbrProcesses);
+			taskMonitor.setPercentCompleted((100 * count) / nbrProcesses);
 			taskMonitor.setStatus("building subnetwork for " + val);
 			buildSubNetwork(net, val.toString());
 		}
@@ -451,21 +471,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		buildMetaNodeView(net);
 		tileNetworkViews(); // tile and fit content in each view
 
-	}
-
-	/**
-	 * @return the layoutName
-	 */
-	public String getLayoutName() {
-		return layoutName;
-	}
-
-	/**
-	 * @param layoutName
-	 *            the layoutName to set
-	 */
-	public void setLayoutName(String layoutName) {
-		this.layoutName = layoutName;
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
