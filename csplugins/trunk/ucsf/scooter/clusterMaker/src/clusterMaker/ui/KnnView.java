@@ -129,6 +129,12 @@ public class KnnView extends TreeView {
 		return false;
 	}
 
+	public void startViz() {
+		KnnView kv = new KnnView();  // Clone ourselves
+		kv.startup();
+		// startup();
+	}
+
 	public void startup() {
 		// Get our data model
 		dataModel = new KnnViewModel(myLogger);
