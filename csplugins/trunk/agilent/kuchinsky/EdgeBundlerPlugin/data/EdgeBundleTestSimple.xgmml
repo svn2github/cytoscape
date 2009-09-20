@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<graph label="Network.1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML"  directed="1">
+  <att name="documentVersion" value="1.1"/>
+  <att name="networkMetadata">
+    <rdf:RDF>
+      <rdf:Description rdf:about="http://www.cytoscape.org/">
+        <dc:type>Protein-Protein Interaction</dc:type>
+        <dc:description>N/A</dc:description>
+        <dc:identifier>N/A</dc:identifier>
+        <dc:date>2009-09-19 13:48:00</dc:date>
+        <dc:title>Network.1</dc:title>
+        <dc:source>http://www.cytoscape.org/</dc:source>
+        <dc:format>Cytoscape-XGMML</dc:format>
+      </rdf:Description>
+    </rdf:RDF>
+  </att>
+  <att type="string" name="backgroundColor" value="#ccccff"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="1.0023131618421728"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="0.0"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="0.0"/>
+  <node label="GG" id="-26">
+    <att type="string" name="canonicalName" value="GG"/>
+    <graphics type="ELLIPSE" h="40.00001525878906" w="39.999969482421875" x="67.80304718017578" y="188.75308990478516" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="FF" id="-25">
+    <att type="string" name="canonicalName" value="FF"/>
+    <graphics type="ELLIPSE" h="40.000030517578125" w="39.99999713897705" x="-31.786149501800537" y="186.43235778808594" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="EE" id="-24">
+    <att type="string" name="canonicalName" value="EE"/>
+    <graphics type="ELLIPSE" h="40.00001525878906" w="40.0" x="-171.3892364501953" y="183.3954086303711" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="DD" id="-23">
+    <att type="string" name="canonicalName" value="DD"/>
+    <graphics type="ELLIPSE" h="40.0" w="39.999969482421875" x="-277.0707550048828" y="185.4369354248047" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="CC" id="-22">
+    <att type="string" name="canonicalName" value="CC"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="-357.88385009765625" y="189.5130157470703" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="BB" id="-21">
+    <att type="string" name="canonicalName" value="BB"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="-474.5" y="192.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="AA" id="-20">
+    <att type="string" name="canonicalName" value="AA"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="-123.5" y="-283.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <edge label="AA (pp) GG" source="-20" target="-26">
+    <att type="string" name="canonicalName" value="AA (pp) GG"/>
+    <att type="string" name="interaction" value="pp"/>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="AA (pp) FF" source="-20" target="-25">
+    <att type="string" name="canonicalName" value="AA (pp) FF"/>
+    <att type="string" name="interaction" value="pp"/>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="AA (pp) EE" source="-20" target="-24">
+    <att type="string" name="canonicalName" value="AA (pp) EE"/>
+    <att type="string" name="interaction" value="pp"/>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="AA (pp) DD" source="-20" target="-23">
+    <att type="string" name="canonicalName" value="AA (pp) DD"/>
+    <att type="string" name="interaction" value="pp"/>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="AA (pp) CC" source="-20" target="-22">
+    <att type="string" name="canonicalName" value="AA (pp) CC"/>
+    <att type="string" name="interaction" value="pp"/>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="AA (pp) BB" source="-20" target="-21">
+    <att type="string" name="canonicalName" value="AA (pp) BB"/>
+    <att type="string" name="interaction" value="pp"/>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+</graph>
