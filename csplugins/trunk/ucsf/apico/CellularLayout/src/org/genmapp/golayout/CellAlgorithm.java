@@ -37,6 +37,8 @@ public class CellAlgorithm extends AbstractLayout {
 	private static final String REGION_ATT = "_cellularLayoutRegion";
 	// store whether a node is copied
 	protected static final String NODE_COPIED = "_isInMultipleRegions";
+	// store whether a node is copied
+	protected static final String UNASSIGNED_EDGE_ATT = "_isEdgeToUnassigned";
 
 	/**
 	 * Creates a new CellularLayoutAlgorithm object.
@@ -286,7 +288,7 @@ public class CellAlgorithm extends AbstractLayout {
 					String newId = oldId.concat("__").concat(
 							nvSeen.get(nv).toString());
 					CyNode newNode = Cytoscape.getCyNode(newId, true);
-					
+
 					// copy attributes
 					/*
 					 * TODO: copy only the attribute relevant to the specific
@@ -657,6 +659,28 @@ public class CellAlgorithm extends AbstractLayout {
 
 				}
 			} // end oil & water
+
+			// mark edges from unassigned nodes
+
+			CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
+			for (NodeView nv : filteredNodeViews) {
+				Node n = nv.getNode();
+				int[] edges = Cytoscape.getCurrentNetwork()
+						.getAdjacentEdgeIndicesArray(n.getRootGraphIndex(),
+								true, true, true);
+				for (int e : edges) {
+					String edgeId = Cytoscape.getCurrentNetwork().getEdge(e)
+							.getIdentifier();
+					if (r.getAttValue() == "unassigned") {
+						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
+								true);
+					} else {
+						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
+								false);
+					}
+				}
+			}
+
 		} // end for each region
 
 		// destroy all register nodes
@@ -710,7 +734,8 @@ public class CellAlgorithm extends AbstractLayout {
 						while (cyn != null) {
 							String nodeRegion2B = attributes
 									.getStringAttribute(node2, REGION_ATT);
-							if (nodeRegion1 != nodeRegion2B && nodeRegion2B != null) {
+							if (nodeRegion1 != nodeRegion2B
+									&& nodeRegion2B != null) {
 								int[] copyEdges = Cytoscape.getCurrentNetwork()
 										.getAdjacentEdgeIndicesArray(
 												cyn.getRootGraphIndex(), true,
@@ -728,7 +753,8 @@ public class CellAlgorithm extends AbstractLayout {
 									}
 
 								}
-							} else if (nodeRegion2B != null) { // edge within same region!
+							} else if (nodeRegion2B != null) { // edge within
+								// same region!
 								doRemoveEdges = true;
 							}
 
@@ -750,7 +776,8 @@ public class CellAlgorithm extends AbstractLayout {
 						while (cyn != null) {
 							String nodeRegion1B = attributes
 									.getStringAttribute(node1, REGION_ATT);
-							if (nodeRegion1B != nodeRegion2 && nodeRegion1B != null) {
+							if (nodeRegion1B != nodeRegion2
+									&& nodeRegion1B != null) {
 								int[] copyEdges = Cytoscape.getCurrentNetwork()
 										.getAdjacentEdgeIndicesArray(
 												cyn.getRootGraphIndex(), true,
@@ -768,7 +795,8 @@ public class CellAlgorithm extends AbstractLayout {
 									}
 
 								}
-							} else if (nodeRegion1B != null){ // edge within same region!
+							} else if (nodeRegion1B != null) { // edge within
+								// same region!
 								doRemoveEdges = true;
 							}
 

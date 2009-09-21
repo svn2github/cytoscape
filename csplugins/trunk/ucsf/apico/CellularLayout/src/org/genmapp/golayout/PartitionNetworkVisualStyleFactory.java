@@ -1,7 +1,6 @@
 package org.genmapp.golayout;
 
-import giny.view.Label;
-
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +12,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.NodeAppearanceCalculator;
@@ -20,6 +20,7 @@ import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.LineStyle;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.DiscreteMapping;
@@ -51,6 +52,7 @@ public class PartitionNetworkVisualStyleFactory {
 			}
 			mfStyle.setName(PartitionNetwork_VS);
 			NodeAppearanceCalculator nac = new MFNodeAppearanceCalculator();
+			EdgeAppearanceCalculator eac = new MFEdgeAppearanceCalculator();
 			nac.getDefaultAppearance().setNodeSizeLocked(false);
 			nac.getDefaultAppearance().set(VisualPropertyType.NODE_HEIGHT,
 					MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT);
@@ -86,15 +88,18 @@ public class PartitionNetworkVisualStyleFactory {
 					}
 				}
 			}
+
+			// NODE MAPPINGS
 			PassThroughMapping passMappingLabel = new PassThroughMapping("",
 					"canonicalName");
 			Calculator labelCalculator = new BasicCalculator(
 					PartitionNetwork_VS, passMappingLabel,
 					VisualPropertyType.NODE_LABEL);
 			nac.setCalculator(labelCalculator);
-			
-			DiscreteMapping disMappingBorderColor = new DiscreteMapping(Color.black,
-					CellAlgorithm.NODE_COPIED, ObjectMapping.NODE_MAPPING);
+
+			DiscreteMapping disMappingBorderColor = new DiscreteMapping(
+					Color.black, CellAlgorithm.NODE_COPIED,
+					ObjectMapping.NODE_MAPPING);
 			disMappingBorderColor.putMapValue(Boolean.TRUE, Color.red);
 			Calculator borderColorCalculator = new BasicCalculator(
 					PartitionNetwork_VS, disMappingBorderColor,
@@ -105,6 +110,7 @@ public class PartitionNetworkVisualStyleFactory {
 					Color.white, ObjectMapping.NODE_MAPPING);
 			disMappingNodeFill.setControllingAttributeName(attributeName, view
 					.getNetwork(), false);
+
 			/*
 			 * Create random colors
 			 */
@@ -132,14 +138,40 @@ public class PartitionNetworkVisualStyleFactory {
 
 			mfStyle.setNodeAppearanceCalculator(nac);
 
+			// EDGE MAPPINGS
+			DiscreteMapping disMappingEdgeColor = new DiscreteMapping(
+					LineStyle.SOLID, CellAlgorithm.UNASSIGNED_EDGE_ATT,
+					ObjectMapping.EDGE_MAPPING);
+			disMappingEdgeColor.putMapValue(Boolean.TRUE, LineStyle.LONG_DASH);
+			disMappingEdgeColor.putMapValue(Boolean.FALSE, LineStyle.SOLID);
+			Calculator edgeColorCalculator = new BasicCalculator(
+					PartitionNetwork_VS, disMappingEdgeColor,
+					VisualPropertyType.EDGE_LINE_STYLE);
+			eac.setCalculator(edgeColorCalculator);
+
+			DiscreteMapping disMappingEdgeLineStyle = new DiscreteMapping(
+					Color.blue, CellAlgorithm.UNASSIGNED_EDGE_ATT,
+					ObjectMapping.EDGE_MAPPING);
+			disMappingEdgeLineStyle.putMapValue(Boolean.TRUE, Color.darkGray);
+			disMappingEdgeLineStyle.putMapValue(Boolean.FALSE, Color.blue);
+			Calculator edgeLineStyleCalculator = new BasicCalculator(
+					PartitionNetwork_VS, disMappingEdgeLineStyle,
+					VisualPropertyType.EDGE_COLOR);
+			eac.setCalculator(edgeLineStyleCalculator);
+
+			mfStyle.setEdgeAppearanceCalculator(eac);
+
+			// GLOBAL MAPPINGS
 			GlobalAppearanceCalculator gac = mfStyle
 					.getGlobalAppearanceCalculator();
-			// set edge opacity
 			gac.setDefaultBackgroundColor(Color.white);
+			// set edge opacity
 			VisualPropertyType type = VisualPropertyType.EDGE_OPACITY;
 			type.setDefault(mfStyle, new Integer(150));
+			// set node shape
 			type = VisualPropertyType.NODE_SHAPE;
 			type.setDefault(mfStyle, NodeShape.ELLIPSE);
+
 			mfStyle.setGlobalAppearanceCalculator(gac);
 
 			catalog.addVisualStyle(mfStyle);
