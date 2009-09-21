@@ -451,8 +451,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         Set<CyNetwork> networks = new HashSet(selectedNetworkData.getNetworkList());
         Map<String,Set<String>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
-        Map<String, String> mapTgtIDTypeAttrName = targetAttributeSelectionTable.getMapIDTypeAttrName(true);
-        Map<String, String> mapTgtAttrTypeAttrName = targetAttributeSelectionTable.getMapIDTypeAttrName(false);
+        Map<String, String> mapTgtAttrNameIDType = targetAttributeSelectionTable.getMapAttrNameIDType(true);
+        Map<String, String> mapTgtAttrNameAttr = targetAttributeSelectionTable.getMapAttrNameIDType(false);
         Map<String,Byte> mapTgtAttrNameAttrType = targetAttributeSelectionTable.getMapAttrNameAttrType();
 
         // define target attributes
@@ -460,7 +460,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         // execute task
         AttributeBasedIDMappingTask task
-                = new AttributeBasedIDMappingTask(networks, mapSrcAttrIDTypes, mapTgtIDTypeAttrName, mapTgtAttrTypeAttrName);
+                = new AttributeBasedIDMappingTask(networks, mapSrcAttrIDTypes, mapTgtAttrNameIDType, mapTgtAttrNameAttr);
         // Configure JTask Dialog Pop-Up Box
         final JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());
@@ -533,13 +533,13 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             return false;
         }
 
-        List<String> idTypes = targetAttributeSelectionTable.getTgtIDTypes();
-        Set<String> idTypesNR = new HashSet(idTypes);
-        // TODO: problem when id type and attribute have the same name
-        if (idTypesNR.size()!=idTypes.size()) {
-            JOptionPane.showMessageDialog(this, "At most one target attribute is allowed for each ID type.");
-            return false;
-        }
+//        List<String> idTypes = targetAttributeSelectionTable.getTgtIDTypes();
+//        Set<String> idTypesNR = new HashSet(idTypes);
+//        // TODO: problem when id type and attribute have the same name
+//        if (idTypesNR.size()!=idTypes.size()) {
+//            JOptionPane.showMessageDialog(this, "At most one target attribute is allowed for each ID type.");
+//            return false;
+//        }
 
         return true;
     }

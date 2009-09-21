@@ -57,17 +57,17 @@ public interface AttributeBasedIDMapping {
      * @param mapSrcAttrIDTypes
      *      key: source attribute
      *      value: corresponding ID types
-     * @param MapTgtIDTypeAttrName
-     *      key: target ID type
-     *      value: attribute name
-     * @param MapTgtAttrAttrName
-     *      key: target attribute type
-     *      value: target attribute name
+     * @param mapTgtAttrNameIDType
+     *      key: attribute name
+     *      value: target ID type
+     * @param mapTgtAttrNameAttrType
+     *      key: target Cytoscape attribute name
+     *      value: target bridgedb attribute type
      */
     public void map(Set<CyNetwork> networks, 
             Map<String,Set<String>> mapSrcAttrIDTypes,
-            Map<String, String> mapTgtIDTypeAttrName,
-            Map<String, String> mapTgtAttrAttrName) throws IDMapperException;
+            Map<String, String> mapTgtAttrNameIDType,
+            Map<String, String> mapTgtAttrNameAttrType) throws IDMapperException;
 
     public String getReport();
 }

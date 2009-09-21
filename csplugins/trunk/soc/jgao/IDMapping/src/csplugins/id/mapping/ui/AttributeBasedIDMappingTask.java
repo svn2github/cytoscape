@@ -42,8 +42,6 @@ import cytoscape.task.TaskMonitor;
 
 import cytoscape.CyNetwork;
 
-import org.bridgedb.DataSource;
-
 import java.util.Set;
 import java.util.Map;
 /**
@@ -52,8 +50,8 @@ import java.util.Map;
 public class AttributeBasedIDMappingTask implements Task {
 	private final Set<CyNetwork> networks;
     private final Map<String,Set<String>> mapSrcAttrIDTypes;
-    private final Map<String, String> mapTgtIDTypeAttrName;
-    private final Map<String, String> mapAttrTypeAttrName;
+    private final Map<String, String> mapTgtAttrNameIDType;
+    private final Map<String, String> mapAttrNameAttrType;
     private final AttributeBasedIDMappingImpl service;
     
 	private TaskMonitor taskMonitor;
@@ -67,12 +65,12 @@ public class AttributeBasedIDMappingTask implements Task {
          */
 	public AttributeBasedIDMappingTask(final Set<CyNetwork> networks,
                                        final Map<String,Set<String>> mapSrcAttrIDTypes,
-                                       final Map<String,String> mapTgtIDTypeAttrName,
-                                       final Map<String,String> mapAttrTypeAttrName) {
+                                       final Map<String,String> mapTgtAttrNameIDType,
+                                       final Map<String,String> mapAttrNameAttrType) {
 		this.networks = networks;
                 this.mapSrcAttrIDTypes = mapSrcAttrIDTypes;
-                this.mapTgtIDTypeAttrName = mapTgtIDTypeAttrName;
-                this.mapAttrTypeAttrName = mapAttrTypeAttrName;
+                this.mapTgtAttrNameIDType = mapTgtAttrNameIDType;
+                this.mapAttrNameAttrType = mapAttrNameAttrType;
                 service = new AttributeBasedIDMappingImpl();
                 success = false;
 	}
@@ -85,7 +83,7 @@ public class AttributeBasedIDMappingTask implements Task {
                 try {
                         service.setTaskMonitor(taskMonitor);
                         
-                        service.map(networks, mapSrcAttrIDTypes, mapTgtIDTypeAttrName, mapAttrTypeAttrName);
+                        service.map(networks, mapSrcAttrIDTypes, mapTgtAttrNameIDType, mapAttrNameAttrType);
 
 
                 } catch (Exception e) {

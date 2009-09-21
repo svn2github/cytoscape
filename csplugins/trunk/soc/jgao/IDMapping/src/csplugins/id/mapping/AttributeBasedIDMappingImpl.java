@@ -86,14 +86,14 @@ public class AttributeBasedIDMappingImpl
      */
     public void map(final Set<CyNetwork> networks,
                     final Map<String,Set<String>> mapSrcAttrIDTypes,
-                    final Map<String, String> mapTgtIDTypeAttrName,
-                    final Map<String, String> mapTgtAttrAttrName
+                    final Map<String, String> mapTgtAttrNameIDType,
+                    final Map<String, String> mapTgtAttrNameAttrType
                     ) throws IDMapperException {
         if (networks==null || mapSrcAttrIDTypes==null) {
             throw new IllegalArgumentException();
         }
 
-        if (mapTgtIDTypeAttrName==null && mapTgtAttrAttrName==null) {
+        if (mapTgtAttrNameIDType==null && mapTgtAttrNameAttrType==null) {
             throw new IllegalArgumentException();
         }
 
@@ -106,11 +106,10 @@ public class AttributeBasedIDMappingImpl
 
         IDMapperStack idMapperStack = IDMapperClientManager.selectedIDMapperStack();
 
-        if (mapTgtIDTypeAttrName!=null && !mapTgtIDTypeAttrName.isEmpty()) {
+        if (mapTgtAttrNameIDType!=null && !mapTgtAttrNameIDType.isEmpty()) {
             // target id types
-            Set<String> tgtTypes = mapTgtIDTypeAttrName.keySet();
-            Set<DataSource> tgtDss = new HashSet(tgtTypes.size());
-            for (String type : tgtTypes) {
+            Set<DataSource> tgtDss = new HashSet();
+            for (String type : mapTgtAttrNameIDType.values()) {
                 tgtDss.add(DataSource.getByFullName(type));
             }
 
@@ -137,25 +136,22 @@ public class AttributeBasedIDMappingImpl
             }
 
             // define target attribute
-            defineTgtAttributes(new HashSet(mapTgtIDTypeAttrName.values()));
+            defineTgtAttributes(mapTgtAttrNameIDType.keySet());
 
             // set target attribute
             Map<Node,Map<String,Set<String>>> mapNodeTgtXrefs = getNodeTgtXrefs(mapNodeSrcXrefs, idMapping);
-            setTgtAttribute(mapNodeTgtXrefs, mapTgtIDTypeAttrName);
+            setTgtAttribute(mapNodeTgtXrefs, mapTgtAttrNameIDType);
 
             report += "Identifiers mapped for "+mapNodeTgtXrefs.size()+" nodes (out of "+nodes.size()+")!\n";
         }
 
-        if (mapTgtAttrAttrName!=null && !mapTgtAttrAttrName.isEmpty()) {
-            // target attribute
-            Set<String> tgtAttr = mapTgtAttrAttrName.keySet();
-
+        if (mapTgtAttrNameAttrType!=null && !mapTgtAttrNameAttrType.isEmpty()) {
             // attribute mapping
             updateTaskMonitor("Mapping attributes...",-1);
             Map<Xref, Map<String, Set<String>>> attrMapping = new HashMap();
             for (Xref xref : srcXrefs) {
                 Map<String, Set<String>> mapAttrValues = new HashMap();
-                for (String attr : tgtAttr) {
+                for (String attr : mapTgtAttrNameAttrType.values()) {
                     Set<String> attrs = idMapperStack.getAttributes(xref, attr);
                     if (attrs!=null)
                         mapAttrValues.put(attr, attrs);
@@ -164,11 +160,11 @@ public class AttributeBasedIDMappingImpl
             }
 
             // define target attribute
-            defineTgtAttributes(new HashSet(mapTgtAttrAttrName.values()));
+            defineTgtAttributes(mapTgtAttrNameAttrType.keySet());
 
             // set target attribute
             Map<Node,Map<String,Set<String>>> mapNodeTgtAttrs = getNodeTgtXrefs(mapNodeSrcXrefs, attrMapping);
-            setTgtAttribute(mapNodeTgtAttrs, mapTgtAttrAttrName);
+            setTgtAttribute(mapNodeTgtAttrs, mapTgtAttrNameAttrType);
 
             report += "Attribute mapped for "+mapNodeTgtAttrs.size()+" nodes (out of "+nodes.size()+")!";
         }
@@ -314,11 +310,20 @@ public class AttributeBasedIDMappingImpl
     }
 
     private void setTgtAttribute(Map<Node,Map<String,Set<String>>> mapNodeTgtXrefs,
-                                 Map<String, String> MapTgtIDTypeAttrName) {
+                                 Map<String, String> mapTgtAttrNameIDType) {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         Map<String, Byte> mapAttrNameType = new HashMap();
-        for (String attrName : MapTgtIDTypeAttrName.values()) {
+        Map<String, Set<String>> mapIDTypeAttrName = new HashMap();
+        for (String attrName : mapTgtAttrNameIDType.keySet()) {
             mapAttrNameType.put(attrName, nodeAttributes.getType(attrName));
+
+            String idType = mapTgtAttrNameIDType.get(attrName);
+            Set<String> names = mapIDTypeAttrName.get(idType);
+            if (names==null) {
+                names = new HashSet();
+                mapIDTypeAttrName.put(idType, names);
+            }
+            names.add(attrName);
         }
 
         int i = 0;
@@ -335,8 +340,7 @@ public class AttributeBasedIDMappingImpl
             String nodeID = node.getIdentifier();
             for (Map.Entry<String, Set<String>> entryDsIds : tgtXrefs.entrySet()) {
                 String ds = entryDsIds.getKey();
-                String attrName = MapTgtIDTypeAttrName.get(ds);
-                if (attrName!=null) {
+                for (String attrName : mapIDTypeAttrName.get(ds)) {
                     byte attrType = mapAttrNameType.get(attrName);
                     Set<String> ids = entryDsIds.getValue();
                     if (attrType==CyAttributes.TYPE_SIMPLE_LIST) {

@@ -281,7 +281,7 @@ public class TargetAttributeSelectionTable extends JTable{
         return ret;
     }
 
-    public Map<String, String> getMapIDTypeAttrName(boolean idOrAttr) {
+    public Map<String, String> getMapAttrNameIDType(boolean idOrAttr) {
         if (supportedIDType.isEmpty()) {
             return null;
         }
@@ -294,7 +294,7 @@ public class TargetAttributeSelectionTable extends JTable{
                     ||(!idOrAttr&&dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.ATTRIBUTE)) {
                 String ds = dsw.value();
                 String name = getAttrName(i);
-                ret.put(ds, name);
+                ret.put(name, ds);
             }
         }
         return ret;

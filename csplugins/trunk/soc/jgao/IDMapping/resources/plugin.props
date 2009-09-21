@@ -10,7 +10,7 @@ pluginName=CyThesaurus-ID-Mapping
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Provides utilities for mapping attributes of source ID types to new attributes of destination ID types. <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/CyThesaurus_Plugin/ID_Mapping_Examples">Click for tutorial</a>.
+pluginDescription=Provides utilities for mapping attributes of source ID types to new attributes of destination ID types. <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/CyThesaurus_Plugin">Click for more information</a>.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=1.02
