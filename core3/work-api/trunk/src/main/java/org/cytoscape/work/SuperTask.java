@@ -28,10 +28,13 @@ package org.cytoscape.work;
  * message.</li>
  *
  * <li><b>Progress </b><code>SuperTask</code> divides its progress equally between
- * each of its subtasks. For example, if there are four subtasks: when
+ * each of its subtasks unless weights are specified. For example, if there are four subtasks: when
  * the first subtask is executing, it will set its progress to 0%; when
  * the second subtask is executing, it will set its progress to 25%;
- * and so on.</li>
+ * and so on. This behavior can be modified by specifying weights.</li>
+
+ * <li><b>Exceptions </b>If a subtask throws an exception, subtasks that follow will not be
+ * executed.</li>
  * </ul>
  *
  * @author Pasteur
@@ -39,9 +42,13 @@ package org.cytoscape.work;
 public class SuperTask implements Task
 {
 	final Task[] subtasks;
-	final String title;
+	final double[] weights;
+	double weightSum = 0.0;
+
+	String title;
 	boolean cancel = false;
 	int currentTaskIndex = -1;
+	double partialSum = 0.0;
 
 	/**
 	 * Constructs a <code>SuperTask</code> with a given list of
@@ -67,12 +74,72 @@ public class SuperTask implements Task
 	 * succinctly what the <code>SuperTask</code> does.
 	 * @param subtasks The subtasks to be grouped together by
 	 * <code>SuperTask</code>. The order of <code>subtasks</code> is the
-	 * order of execution.
+	 * order of execution. Each subtask has an equal amount of the progress bar.
 	 */
 	public SuperTask(String title, Task ... subtasks)
 	{
 		this.title = title;
 		this.subtasks = subtasks;
+		this.weights = new double[subtasks.length];
+		for (int i = 0; i < weights.length; i++)
+		{
+			weights[i] = 1.0;
+			weightSum += weights[i];
+		}
+	}
+
+	/**
+	 * Constructs a <code>SuperTask</code> with a given list of
+	 * subtasks, a title, and weights for each subtask.
+	 *
+	 * This constructor allows one to specify the weights of each
+	 * subtask. Weights specify how much of the progress bar
+	 * is given to each subtask. A weight can be any positive number,
+	 * as the proportion of the progress bar is measured against
+	 * the weight's ratio to the total sum of all weights.
+	 * To allocate 25% of the progress bar to the first task, 50% to the second,
+	 * and 25% to the third, one may do the following:
+	 *
+	 * <p><pre><code>
+	 * Task[] tasks = {
+	 *  new MyTask1(),
+	 *  new MyTask2(),
+	 *  new MyTask3()
+	 * };
+	 *
+	 * double[] weights = {
+	 *  2.0,
+	 *  4.0,
+	 *  2.0
+	 * };
+	 *
+	 * SuperTask superTask = new SuperTask("Example", tasks, weights);
+	 * </code></pre></p>
+	 *
+	 * @param title The title of the <code>SuperTask</code> that describes
+	 * succinctly what the <code>SuperTask</code> does.
+	 * @param subtasks The subtasks to be grouped together by
+	 * <code>SuperTask</code>. The order of <code>subtasks</code> is the
+	 * order of execution.
+	 * @param weights The weights allotted to each subtask. All weights
+	 * must be a positive number.
+	 * @throws IllegalArgumentException if the length of <code>weights</code>
+	 * and <code>subtasks</code> are not equal or if any of the weights are less than 0.0.
+	 */
+	public SuperTask(String title, Task[] subtasks, double[] weights)
+	{
+		this.title = title;
+		this.subtasks = subtasks;
+		this.weights = weights;
+
+		if (weights.length != subtasks.length)
+			throw new IllegalArgumentException("weights and subtasks must have the same length");
+		for (int i = 0; i < weights.length; i++)
+		{
+			if (weights[i] < 0.0)
+				throw new IllegalArgumentException(String.format("weight[%d] cannot be less than 0.0", i));
+			weightSum += weights[i];
+		}
 	}
 
 	public void run(TaskMonitor superTaskMonitor) throws Exception
@@ -80,11 +147,15 @@ public class SuperTask implements Task
 		superTaskMonitor.setTitle(title);
 		superTaskMonitor.setProgress(0.0);
 		final TaskMonitor subTaskMonitor = new SubTaskMonitor(superTaskMonitor);
-		for (currentTaskIndex = 0; currentTaskIndex < subtasks.length; currentTaskIndex++)
+		for (currentTaskIndex = 0; (currentTaskIndex < subtasks.length) && (!cancel); currentTaskIndex++)
 		{
 			subtasks[currentTaskIndex].run(subTaskMonitor);
-			if (cancel) break;
+			partialSum += weights[currentTaskIndex];
 		}
+
+		cancel = false;
+		currentTaskIndex = -1;
+		partialSum = 0.0;
 	}
 
 	public void cancel()
@@ -115,7 +186,7 @@ public class SuperTask implements Task
 
 		public void setProgress(double subprogress)
 		{
-			superTaskMonitor.setProgress((currentTaskIndex + subprogress) / ((double) subtasks.length));
+			superTaskMonitor.setProgress((partialSum + weights[currentTaskIndex] * subprogress) / weightSum);
 		}
 
 		public void setStatusMessage(String subStatusMessage)
