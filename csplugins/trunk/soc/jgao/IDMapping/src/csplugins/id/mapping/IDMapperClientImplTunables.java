@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.Vector;
 
+import org.bridgedb.AttributeMapper;
 import org.bridgedb.BridgeDb;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapper;
@@ -237,6 +238,11 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         desc.append(">> Is free-text search supported?\n");
         desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
         desc.append("\n");
+
+        if (mapper instanceof AttributeMapper) {
+            desc.append(">>Supported Attributes\n");
+            desc.append("\tSymbol\n");
+        }
 
         return desc.toString();
     }

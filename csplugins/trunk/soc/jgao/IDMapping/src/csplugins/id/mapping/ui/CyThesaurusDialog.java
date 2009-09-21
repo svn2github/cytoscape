@@ -440,6 +440,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         if (srcConfDialog.isModified()) {
             this.srcTypes = null;
             this.mapSrcTypeTgtTypes = null;
+            this.tgtAttrs = null;
             setSupportedSrcTypesInTable();
             setSupportedTgtTypesInTable();
         }
@@ -449,8 +450,9 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         if (!verifyUserInput()) return;
 
         Set<CyNetwork> networks = new HashSet(selectedNetworkData.getNetworkList());
-        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
-        Map<DataSource, String> mapTgtIDTypeAttrName = targetAttributeSelectionTable.getMapIDTypeAttrName();
+        Map<String,Set<String>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
+        Map<String, String> mapTgtIDTypeAttrName = targetAttributeSelectionTable.getMapIDTypeAttrName(true);
+        Map<String, String> mapTgtAttrTypeAttrName = targetAttributeSelectionTable.getMapIDTypeAttrName(false);
         Map<String,Byte> mapTgtAttrNameAttrType = targetAttributeSelectionTable.getMapAttrNameAttrType();
 
         // define target attributes
@@ -458,7 +460,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         // execute task
         AttributeBasedIDMappingTask task
-                = new AttributeBasedIDMappingTask(networks, mapSrcAttrIDTypes, mapTgtIDTypeAttrName);
+                = new AttributeBasedIDMappingTask(networks, mapSrcAttrIDTypes, mapTgtIDTypeAttrName, mapTgtAttrTypeAttrName);
         // Configure JTask Dialog Pop-Up Box
         final JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());
@@ -501,8 +503,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 //            return false;
 //        }
 
-        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
-        for (Set<DataSource> dss : mapSrcAttrIDTypes.values()) {
+        Map<String,Set<String>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
+        for (Set<String> dss : mapSrcAttrIDTypes.values()) {
             if (dss==null || dss.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please select at least one ID type for each source attribute.");
                 return false;
@@ -531,8 +533,9 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             return false;
         }
 
-        List<DataSource> idTypes = targetAttributeSelectionTable.getTgtIDTypes();
-        Set<DataSource> idTypesNR = new HashSet(idTypes);
+        List<String> idTypes = targetAttributeSelectionTable.getTgtIDTypes();
+        Set<String> idTypesNR = new HashSet(idTypes);
+        // TODO: problem when id type and attribute have the same name
         if (idTypesNR.size()!=idTypes.size()) {
             JOptionPane.showMessageDialog(this, "At most one target attribute is allowed for each ID type.");
             return false;
@@ -553,25 +556,34 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         OKBtn.repaint();
     }
 
-    private Set<DataSource> srcTypes = null;
-    private Map<DataSource,Set<DataSource>> mapSrcTypeTgtTypes = null;
+    private Set<String> srcTypes = null;
+    private Map<String,Set<String>> mapSrcTypeTgtTypes = null;
+    private Set<String> tgtAttrs = null;
 
-    private Set<DataSource> getSupportedSrcTypes() {
+    private Set<String> getSupportedSrcTypes() {
         if (srcTypes==null) {
             srcTypes = new HashSet();
 
             IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+            Set<DataSource> dss = null;
             try {
-                srcTypes = stack.getCapabilities().getSupportedSrcDataSources();
+                dss = stack.getCapabilities().getSupportedSrcDataSources();
             } catch (IDMapperException ex) {
                 ex.printStackTrace();
             }
+            
+            if (dss!=null) {
+                for (DataSource ds : dss) {
+                    srcTypes.add(ds.getFullName());
+                }
+            }
+
         }
 
         return srcTypes;
     }
 
-    private Set<DataSource> getSupportedTgtTypes(Set<DataSource> srcDss) {
+    private Set<String> getSupportedTgtTypes(Set<String> srcDss) {
         if (srcDss==null || srcDss.isEmpty())
             return new HashSet();
 
@@ -583,11 +595,12 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             try {
                 tgtDss = stack.getCapabilities().getSupportedTgtDataSources();
 
-                for (DataSource src : getSupportedSrcTypes()) {
-                    Set<DataSource> dss = new HashSet();
+                for (String src : getSupportedSrcTypes()) {
+                    DataSource srcDs = DataSource.getByFullName(src);
+                    Set<String> dss = new HashSet();
                     for (DataSource tgt : tgtDss) {
-                        if (stack.getCapabilities().isMappingSupported(src, tgt)) {
-                            dss.add(tgt);
+                        if (stack.getCapabilities().isMappingSupported(srcDs, tgt)) {
+                            dss.add(tgt.getFullName());
                         }
                     }
                     mapSrcTypeTgtTypes.put(src, dss);
@@ -597,12 +610,21 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             }
         }
 
-        Set<DataSource> ret = new HashSet();
-        for (DataSource src : srcDss) {
+        Set<String> ret = new HashSet();
+        for (String src : srcDss) {
             ret.addAll(mapSrcTypeTgtTypes.get(src));
         }
 
         return ret;
+    }
+
+    private Set<String> getSupportedTgtAttr() {
+        if (tgtAttrs==null) {
+            tgtAttrs = new HashSet();
+            tgtAttrs.add("Symbol");
+        }
+
+        return tgtAttrs;
     }
 
     private void setSupportedSrcTypesInTable() {
@@ -611,7 +633,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
     private void setSupportedTgtTypesInTable() {
         targetAttributeSelectionTable.setSupportedIDType(
-                getSupportedTgtTypes(sourceAttributeSelectionTable.getSelectedIDTypes()));
+                getSupportedTgtTypes(sourceAttributeSelectionTable.getSelectedIDTypes()),
+                getSupportedTgtAttr());
     }
 
 //    private Set<DataSource>[] getSupportedType() {
@@ -653,12 +676,12 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         }
     }
 
-    public Map<String,Set<DataSource>> getMapSrcAttrIDTypes() {
-        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
+    public Map<String,Set<String>> getMapSrcAttrIDTypes() {
+        Map<String,Set<String>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
         return mapSrcAttrIDTypes;
     }
 
-    public void setMapSrcAttrIDTypes(Map<String,Set<DataSource>> mapSrcAttrIDTypes) {
+    public void setMapSrcAttrIDTypes(Map<String,Set<String>> mapSrcAttrIDTypes) {
         sourceAttributeSelectionTable.setSourceAttrType(mapSrcAttrIDTypes);
         this.setSupportedTgtTypesInTable();
     }

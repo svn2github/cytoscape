@@ -41,7 +41,6 @@ import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 
-import org.bridgedb.DataSource;
 import org.bridgedb.bio.BioDataSource;
 
 import java.awt.event.ActionEvent;
@@ -53,18 +52,24 @@ import java.beans.PropertyChangeSupport;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 /**
  * Plugin for attribute-based ID mapping
  * 
  * 
  */
 public final class CyThesaurusPlugin extends CytoscapePlugin {
+    static Map<String,Set<String>> mapSrcAttrIDTypes = null;
+    private boolean initialized = false;
 
     public CyThesaurusPlugin() {
         BioDataSource.init();
         listenToSessionEvent();
         IDMappingServiceSuppport.addService();
-        installMenu();
+
+        Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
+                        .add(new IDMappingAction());
     }
 
     private void listenToSessionEvent() {
@@ -77,8 +82,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                 
                 mapSrcAttrIDTypes = null;
                 
-                // won't install before cytoscape is initialized
-                //installMenu();
+                initialized = true;
             }
         });
 
@@ -111,18 +115,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
             }
         });
     }
-    
-    private boolean installed = false;
-    private void installMenu() {
-        if (!installed) {
-            Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
-                        .add(new IDMappingAction());
-            installed = true;
-        } 
-    }
 
-    static Map<String,Set<DataSource>> mapSrcAttrIDTypes = null;
-    
     class IDMappingAction extends CytoscapeAction {
 
         public IDMappingAction() {
@@ -135,6 +128,11 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
         @Override
         public void actionPerformed(final ActionEvent ae) {
 //            prepare(); //TODO: remove in Cytoscape3
+            if (!initialized) {
+                JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Please wait util Cytoscape is initialized completely.");
+                return;
+            }
+
             final CyThesaurusDialog dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setMapSrcAttrIDTypes(mapSrcAttrIDTypes);

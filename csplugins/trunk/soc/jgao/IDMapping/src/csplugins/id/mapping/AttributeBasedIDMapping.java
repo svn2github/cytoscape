@@ -60,9 +60,14 @@ public interface AttributeBasedIDMapping {
      * @param MapTgtIDTypeAttrName
      *      key: target ID type
      *      value: attribute name
+     * @param MapTgtAttrAttrName
+     *      key: target attribute type
+     *      value: target attribute name
      */
-    public void map(Set<CyNetwork> networks, Map<String,Set<DataSource>> mapSrcAttrIDTypes,
-            Map<DataSource, String> MapTgtIDTypeAttrName) throws IDMapperException;
+    public void map(Set<CyNetwork> networks, 
+            Map<String,Set<String>> mapSrcAttrIDTypes,
+            Map<String, String> mapTgtIDTypeAttrName,
+            Map<String, String> mapTgtAttrAttrName) throws IDMapperException;
 
     public String getReport();
 }

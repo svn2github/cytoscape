@@ -51,8 +51,9 @@ import java.util.Map;
  */
 public class AttributeBasedIDMappingTask implements Task {
 	private final Set<CyNetwork> networks;
-    private final Map<String,Set<DataSource>> mapSrcAttrIDTypes;
-    private final Map<DataSource, String> MapTgtIDTypeAttrName;
+    private final Map<String,Set<String>> mapSrcAttrIDTypes;
+    private final Map<String, String> mapTgtIDTypeAttrName;
+    private final Map<String, String> mapAttrTypeAttrName;
     private final AttributeBasedIDMappingImpl service;
     
 	private TaskMonitor taskMonitor;
@@ -65,11 +66,13 @@ public class AttributeBasedIDMappingTask implements Task {
          * @param MapTgtIDTypeAttrName
          */
 	public AttributeBasedIDMappingTask(final Set<CyNetwork> networks,
-                                       final Map<String,Set<DataSource>> mapSrcAttrIDTypes,
-                                       final Map<DataSource, String> MapTgtIDTypeAttrName) {
+                                       final Map<String,Set<String>> mapSrcAttrIDTypes,
+                                       final Map<String,String> mapTgtIDTypeAttrName,
+                                       final Map<String,String> mapAttrTypeAttrName) {
 		this.networks = networks;
                 this.mapSrcAttrIDTypes = mapSrcAttrIDTypes;
-                this.MapTgtIDTypeAttrName = MapTgtIDTypeAttrName;
+                this.mapTgtIDTypeAttrName = mapTgtIDTypeAttrName;
+                this.mapAttrTypeAttrName = mapAttrTypeAttrName;
                 service = new AttributeBasedIDMappingImpl();
                 success = false;
 	}
@@ -82,7 +85,7 @@ public class AttributeBasedIDMappingTask implements Task {
                 try {
                         service.setTaskMonitor(taskMonitor);
                         
-                        service.map(networks, mapSrcAttrIDTypes, MapTgtIDTypeAttrName);
+                        service.map(networks, mapSrcAttrIDTypes, mapTgtIDTypeAttrName, mapAttrTypeAttrName);
 
 
                 } catch (Exception e) {

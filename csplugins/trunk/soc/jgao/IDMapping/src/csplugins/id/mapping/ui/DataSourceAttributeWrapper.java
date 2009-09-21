@@ -35,8 +35,6 @@
 
 package csplugins.id.mapping.ui;
 
-import org.bridgedb.DataSource;
-
 import java.util.Map;
 import java.util.HashMap;
 
@@ -44,45 +42,64 @@ import java.util.HashMap;
  *
  * @author gjj
  */
-class DataSourceWrapper implements Comparable {
-        private DataSource ds;
-        static private Map<DataSource, DataSourceWrapper> wrappers
+class DataSourceAttributeWrapper implements Comparable {
+        private String value;
+        private DsAttr da;
+
+        static private Map<String, DataSourceAttributeWrapper> dataSourceWrappers
+                = new HashMap();
+        static private Map<String, DataSourceAttributeWrapper> attributeWrappers
                 = new HashMap();
 
-        static DataSourceWrapper getInstance(DataSource ds) {
-            if (ds==null) {
+        static private DataSourceAttributeWrapper separator =
+                new DataSourceAttributeWrapper("separator",DsAttr.SEPARATOR);
+
+        enum DsAttr{
+            DATASOURCE, ATTRIBUTE, SEPARATOR;
+        };
+
+        static DataSourceAttributeWrapper getInstance(String value, DsAttr da) {
+            if (value==null) {
                 return null;
             }
 
-            DataSourceWrapper wrapper = wrappers.get(ds);
+            DataSourceAttributeWrapper wrapper;
+            if (da==DsAttr.DATASOURCE) {
+                wrapper = dataSourceWrappers.get(value);
+            } else if (da==DsAttr.ATTRIBUTE) {
+                wrapper = attributeWrappers.get(value);
+            } else {
+                wrapper = separator;
+            }
+
             if (wrapper==null) {
-                wrapper = new DataSourceWrapper(ds);
-                wrappers.put(ds, wrapper);
+                wrapper = new DataSourceAttributeWrapper(value, da);
+                if (da==DsAttr.DATASOURCE) {
+                    dataSourceWrappers.put(value, wrapper);
+                } else if (da==DsAttr.ATTRIBUTE) {
+                    attributeWrappers.put(value, wrapper);
+                }
             }
 
             return wrapper;
         }
 
-        private DataSourceWrapper(DataSource ds) {
-            this.ds = ds;
+        private DataSourceAttributeWrapper(String value, DsAttr da) {
+            this.value = value;
+            this.da = da;
         }
 
-        DataSource DataSource() {
-            return ds;
+        DsAttr getDsAttr() {
+            return da;
+        }
+
+        String value() {
+            return value;
         }
 
         @Override
         public String toString() {
-            String fullName = ds.getFullName();
-            if (fullName!=null)
-                return fullName;
-
-            String sysCode = ds.getSystemCode();
-            if (sysCode!=null) {
-                return sysCode;
-            } 
-
-            return null;
+            return value;
         }
 
         public int compareTo(Object obj) {

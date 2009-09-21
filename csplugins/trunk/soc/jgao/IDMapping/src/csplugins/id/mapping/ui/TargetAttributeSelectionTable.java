@@ -38,15 +38,16 @@ package csplugins.id.mapping.ui;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 import java.util.TreeSet;
-import java.util.HashSet;
-import java.util.Arrays;
+import java.util.Vector;
 
 import java.awt.Component;
 import java.awt.event.MouseEvent;
@@ -64,8 +65,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
-import org.bridgedb.DataSource;
-
 
 
 // support different editors for each row in a column
@@ -77,7 +76,7 @@ import org.bridgedb.DataSource;
 public class TargetAttributeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
 
-    private Set<DataSourceWrapper> supportedIDType;
+    private Set<DataSourceAttributeWrapper> supportedIDType;
 
     private int rowCount;
     private List<JComboBox> idTypeComboBoxes;
@@ -151,31 +150,45 @@ public class TargetAttributeSelectionTable extends JTable{
         setColumnEditorAndCellRenderer();
     }
 
-    public void setSupportedIDType(final Set<DataSource> types) {
-        if (types==null) {
+    public void setSupportedIDType(final Set<String> types, final Set<String> attrs) {
+        if (types==null && attrs==null) {
             throw new NullPointerException();
         }
 
-        List<DataSource> oldDss = this.getTgtIDTypes();
+        List<String> oldDss = this.getTgtIDTypes();
 
-        supportedIDType = new TreeSet();
-        for (DataSource type : types) {
-            supportedIDType.add(DataSourceWrapper.getInstance(type));
+        supportedIDType = new LinkedHashSet();
+        if (types!=null) {
+            for (String type : new TreeSet<String>(types)) {
+                supportedIDType.add(DataSourceAttributeWrapper.getInstance(type,
+                        DataSourceAttributeWrapper.DsAttr.DATASOURCE));
+            }
+        }
+
+        if (types!=null) {
+            if (!supportedIDType.isEmpty()) {
+                supportedIDType.add(DataSourceAttributeWrapper.getInstance("separator",
+                        DataSourceAttributeWrapper.DsAttr.ATTRIBUTE));
+            }
+
+            for (String attr : new TreeSet<String>(attrs)) {
+                supportedIDType.add(DataSourceAttributeWrapper.getInstance(attr,
+                        DataSourceAttributeWrapper.DsAttr.ATTRIBUTE));
+            }
         }
 
         idTypeComboBoxes.clear();
         for (int i=0; i<rowCount; i++) {
             JComboBox cb = new JComboBox(new Vector(supportedIDType));
             if (oldDss!=null) {
-                DataSourceWrapper old = DataSourceWrapper.getInstance(oldDss.get(i));
+                DataSourceAttributeWrapper old = DataSourceAttributeWrapper
+                        .getInstance(oldDss.get(i),DataSourceAttributeWrapper.DsAttr.DATASOURCE);
                 if (supportedIDType.contains(old)) {
                     cb.setSelectedItem(old);
                 }
             }
             idTypeComboBoxes.add(cb);
         }
-
-        //TODO: select the id type previously selected
 
         model.fireTableStructureChanged();
         setColumnEditorAndCellRenderer();
@@ -191,17 +204,31 @@ public class TargetAttributeSelectionTable extends JTable{
         return names.get(row);
     }
 
-    public List<DataSource> getTgtIDTypes() {
+    public List<String> getTgtIDTypes() {
         if (supportedIDType.isEmpty()) {
             return null;
         }
 
-        List<DataSource> ret = new ArrayList();
+        List<String> ret = new ArrayList();
         for (int i=0; i<rowCount; i++) {
-            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
+            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes.get(i)
                         .getSelectedItem();
-            DataSource ds = dsw.DataSource();
+            String ds = dsw.value();
             ret.add(ds);
+        }
+        return ret;
+    }
+
+    public List<Boolean> getIdOrAttr() {
+        if (supportedIDType.isEmpty()) {
+            return null;
+        }
+
+        List<Boolean> ret = new ArrayList();
+        for (int i=0; i<rowCount; i++) {
+            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes.get(i)
+                        .getSelectedItem();
+            ret.add(dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.DATASOURCE);
         }
         return ret;
     }
@@ -217,7 +244,7 @@ public class TargetAttributeSelectionTable extends JTable{
         for (int row=0; row<rowCount; row++) {
             String attr = destinationAttributes.get(row);
             if (attr.length()==0) {
-                DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes
+                DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes
                             .get(row).getSelectedItem();
                 attr = dsw.toString();
 
@@ -250,22 +277,26 @@ public class TargetAttributeSelectionTable extends JTable{
         return ret;
     }
 
-    public Map<DataSource, String> getMapIDTypeAttrName() {
+    public Map<String, String> getMapIDTypeAttrName(boolean idOrAttr) {
         if (supportedIDType.isEmpty()) {
             return null;
         }
         
-        Map<DataSource, String> ret = new HashMap();
+        Map<String, String> ret = new HashMap();
         for (int i=0; i<rowCount; i++) {
-            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
+            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes.get(i)
                         .getSelectedItem();
-            DataSource ds = dsw.DataSource();
-            String name = getAttrName(i);
-            ret.put(ds, name);
+            if ((idOrAttr&&dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.DATASOURCE)
+                    ||(!idOrAttr&&dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.ATTRIBUTE)) {
+                String ds = dsw.value();
+                String name = getAttrName(i);
+                ret.put(ds, name);
+            }
         }
         return ret;
     }
 
+    // cytoscape attr
     public Map<String,Byte> getMapAttrNameAttrType() {
         Map<String,Byte> ret = new HashMap();
         for (int i=0; i<rowCount; i++) {

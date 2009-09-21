@@ -483,8 +483,8 @@ public class IDMappingServiceSuppport {
         Map map = (Map) content;
         Set<CyNetwork> networks = new HashSet();
         Set<String> srcAttrs = new HashSet();
-        Set<DataSource> srcTypes = new HashSet();
-        Map<DataSource, String> tgtTypeAttr = new HashMap();
+        Set<String> srcTypes = new HashSet();
+        Map<String, String> tgtTypeAttr = new HashMap();
 
         if (content==null || !(content instanceof Map)) {
             succ = false;
@@ -585,32 +585,46 @@ public class IDMappingServiceSuppport {
                 succ = false;
                 error.append("No supported source or target id type");
             } else {
+                Set<String> supportedSrcTypes = new HashSet(srcDataSources.size());
+                for (DataSource ds : srcDataSources) {
+                    String fullName = ds.getFullName();
+                    if (fullName!=null) {
+                        supportedSrcTypes.add(ds.getFullName());
+                    } else {
+                        // TODO: how to deal?
+                    }
+                }
+
+                Set<String> supportedTgtTypes = new HashSet(tgtDataSources.size());
+                for (DataSource ds : tgtDataSources) {
+                    String fullName = ds.getFullName();
+                    if (fullName!=null) {
+                        supportedTgtTypes.add(ds.getFullName());
+                    } else {
+                        // TODO: how to deal?
+                    }
+                }
+
                 // parse source type
                 obj = map.get(SOURCE_ID_TYPE);
                 if (obj==null) {
-                    srcTypes.addAll(srcDataSources);
+                    srcTypes.addAll(supportedSrcTypes);
                 }else{
-                    Set<String> dss = new HashSet();
-                    for (DataSource ds : srcDataSources) {
-                        String fullName = ds.getFullName();
-                        if (fullName!=null) {
-                            dss.add(fullName);
-                        } else {
-                            //TODO: how to deal?
-                        }
-                    }
-
                     if (obj instanceof String) {
                         String type = (String)obj;
-                        if (dss.contains(type)) {
-                            srcTypes.add(DataSource.getByFullName(type));
+                        if (supportedSrcTypes.contains(type)) {
+                            srcTypes.add(type);
                         } else {
                             succ = false;
                             error.append("Source ID type "+type+" does not exist.\n");
                         }
                     } else if (obj instanceof Set) {
                         for (String type : (Set<String>)obj) {
-                            srcTypes.add(DataSource.getByFullName(type));
+                            if (supportedSrcTypes.contains(type)) {
+                                srcTypes.add(type);
+                            } else {
+                                error.append("Source ID type "+type+" does not exist.\n");
+                            }
                         }
 
                         if (srcTypes.isEmpty()) {
@@ -618,7 +632,7 @@ public class IDMappingServiceSuppport {
                         }
                     } else {
                         succ = false;
-                        error.append(SOURCE_ID_TYPE+" must be String or String[].\n");
+                        error.append(SOURCE_ID_TYPE+" must be String or Set<String>.\n");
                     }
                 }
 
@@ -628,23 +642,12 @@ public class IDMappingServiceSuppport {
                     succ = false;
                     error.append("Message content must contain a non-null \"" + MAP_TARGET_ID_TYPE_ATTR +"\"\n");
                 }else{
-                    Set<String> dss = new HashSet();
-                    for (DataSource ds : tgtDataSources) {
-                        String fullName = ds.getFullName();
-                        if (fullName!=null) {
-                            dss.add(fullName);
-                        } else {
-                            //TODO: how to deal?
-                        }
-                    }
-
                     if (obj instanceof Map) {
                         Map<String, String> mapTypeAttr = (Map)obj;
                         for (String type : mapTypeAttr.keySet()) {
-                            if (dss.contains(type)) {
-                                DataSource ds = DataSource.getByFullName(type);
+                            if (supportedTgtTypes.contains(type)) {
                                 String attr = mapTypeAttr.get(type);
-                                tgtTypeAttr.put(ds, attr);
+                                tgtTypeAttr.put(type, attr);
                             } else {
                                 error.append("Target ID type "+type+" does not exist.\n");
                             }
@@ -653,8 +656,7 @@ public class IDMappingServiceSuppport {
                     } else if (obj instanceof Set) { // only types
                         Set<String> types = (Set)obj;
                         for (String type : types) {
-                            if (dss.contains(type)) {
-                                DataSource ds = DataSource.getByFullName(type);
+                            if (supportedTgtTypes.contains(type)) {
                                 Set<String> usedName = new HashSet();
                                 usedName.add("ID"); //TODO remove in Cy3
                                 usedName.addAll(java.util.Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
@@ -668,7 +670,7 @@ public class IDMappingServiceSuppport {
                                 } else {
                                     attr = type;
                                 }
-                                tgtTypeAttr.put(ds, attr);
+                                tgtTypeAttr.put(type, attr);
                             } else {
                                 error.append("Target ID type "+type+" does not exist.\n");
                             }
@@ -687,13 +689,13 @@ public class IDMappingServiceSuppport {
         AttributeBasedIDMappingImpl service
                     = new AttributeBasedIDMappingImpl();
         if (succ) {
-            Map<String,Set<DataSource>> mapAttrTypes = new HashMap();
+            Map<String,Set<String>> mapAttrTypes = new HashMap();
             for (String attr : srcAttrs) {
                 mapAttrTypes.put(attr, srcTypes);
             }
 
             try {
-                service.map(networks, mapAttrTypes, tgtTypeAttr);
+                service.map(networks, mapAttrTypes, tgtTypeAttr, null);
             } catch (Exception e) {
                 e.printStackTrace();
                 error.append(e.getMessage());
@@ -706,11 +708,7 @@ public class IDMappingServiceSuppport {
         if (succ) {
             responseContent.put(SUCCESS, true);
             responseContent.put(REPORT, service.getReport());//+"\nErrors:\n"+error);
-            Map<String, String> mappedTypeAttr = new HashMap();
-            for (DataSource ds : tgtTypeAttr.keySet()) {
-                mappedTypeAttr.put(ds.getFullName(), tgtTypeAttr.get(ds));
-            }
-            responseContent.put(MAP_TARGET_ID_TYPE_ATTR, mappedTypeAttr);
+            responseContent.put(MAP_TARGET_ID_TYPE_ATTR, tgtTypeAttr);
         } else {
             responseContent.put(SUCCESS, false);
             responseContent.put(REPORT, "Errors:\n"+error);

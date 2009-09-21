@@ -56,7 +56,7 @@ import javax.swing.JOptionPane;
 public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private enum DBType {
-        PGDB("Apache Derby Embeded (PGDB)");
+        PGDB("BridgeDb Derby Embeded (.bridge/.pgdb)");
 
         DBType(String name) {
             this.name = name;
@@ -131,7 +131,7 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         getContentPane().add(namePanel, gridBagConstraints);
 
-        pgdbPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("PGDB File"));
+        pgdbPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("BridgeDb File (.bridge/.pgdb)"));
         pgdbPanel.setLayout(new java.awt.GridBagLayout());
 
         pgdbTextField.setPreferredSize(new java.awt.Dimension(250, 20));
@@ -190,8 +190,8 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void pgdbButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pgdbButtonActionPerformed
-        File source = FileUtil.getFile("Select a pgdb file", FileUtil.LOAD,
-                new CyFileFilter[] { new CyFileFilter("pgdb") });
+        File source = FileUtil.getFile("Select a BridgeDb file", FileUtil.LOAD,
+                new CyFileFilter[] { new CyFileFilter(new String[]{"bridge","pgdb"}, "BridgeDb Derby file") });
         if (source==null) {
             return;
         }
