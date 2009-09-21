@@ -1,5 +1,9 @@
 package org.cytoscape.io;
 
+import java.util.Map;
+import java.net.URI;
+import java.io.IOException;
+
 public interface CyIOFactoryManager<F extends CyFileFilterable>
 {
 	@SuppressWarnings("unchecked")
