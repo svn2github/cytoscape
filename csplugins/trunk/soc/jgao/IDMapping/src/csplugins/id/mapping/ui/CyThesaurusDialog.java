@@ -619,9 +619,19 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
     }
 
     private Set<String> getSupportedTgtAttr() {
+        Set<String> types = sourceAttributeSelectionTable.getSelectedIDTypes();
+        if (types==null || types.isEmpty()) {
+            return null;
+        }
+
         if (tgtAttrs==null) {
-            tgtAttrs = new HashSet();
-            tgtAttrs.add("Symbol");
+            tgtAttrs = null;
+            IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+            try {
+                tgtAttrs = stack.getAttributeSet();
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
+            }
         }
 
         return tgtAttrs;

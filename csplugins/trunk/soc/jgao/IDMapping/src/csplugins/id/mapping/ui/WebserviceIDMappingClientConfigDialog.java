@@ -136,7 +136,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         javax.swing.JPanel biomartOpPanel = new javax.swing.JPanel();
         biomartOptionCheckBox = new javax.swing.JCheckBox();
         biomartAdvancedPanel = new javax.swing.JPanel();
-        biomartFilterTgtCheckBox = new javax.swing.JCheckBox();
         javax.swing.JPanel biomartBaseUrlPanel = new javax.swing.JPanel();
         biomartBaseUrlTextField = new javax.swing.JTextField();
         javax.swing.JButton biomartBaseUrlButton = new javax.swing.JButton();
@@ -281,19 +280,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         biomartAdvancedPanel.setLayout(new java.awt.GridBagLayout());
         biomartAdvancedPanel.setVisible(biomartOptionCheckBox.isSelected());
-
-        biomartFilterTgtCheckBox.setSelected(idMapper==null ||
-            !(idMapper instanceof IDMapperBiomart) ||
-            ((IDMapperBiomart)idMapper).getIDOnlyForTgtDataSource());
-        biomartFilterTgtCheckBox.setText("Filter supported target source ID with IDs or accessions only");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartAdvancedPanel.add(biomartFilterTgtCheckBox, gridBagConstraints);
 
         biomartBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BioMart"));
         biomartBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
@@ -881,11 +867,8 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             StringBuilder connString = new StringBuilder("idmapper-biomart:") ;
             StringBuilder displayName = new StringBuilder("BioMart");
 
-            boolean filterTgt = biomartFilterTgtCheckBox.isSelected();
-            connString.append("id-type-filter="+(filterTgt?"true":"false"));
-
             String baseurl = biomartBaseUrlTextField.getText();
-            connString.append("@"+baseurl+"?");
+            connString.append(baseurl+"?");
             if (baseurl.compareTo(BiomartStub.defaultBaseURL)!=0) {
                 displayName.append("("+baseurl+")");
             }
@@ -990,7 +973,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel biomartAdvancedPanel;
     private javax.swing.JTextField biomartBaseUrlTextField;
-    private javax.swing.JCheckBox biomartFilterTgtCheckBox;
     private javax.swing.JCheckBox biomartOptionCheckBox;
     private javax.swing.JPanel biomartPanel;
     private javax.swing.JButton cancelButton;

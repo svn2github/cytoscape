@@ -778,9 +778,8 @@ public class IDMappingServiceSuppport {
                     for (String id : srcIDs) {
                         srcXrefs.add(new Xref(id, srcDs));
                     }
-
-                    Set<DataSource> tgtDataSources = new HashSet(1);
-                    tgtDataSources.add(tgtDs);
+                    
+                    DataSource[] tgtDataSources = {tgtDs};
 
                     Map<Xref,Set<Xref>> mapping = null;
                     try {

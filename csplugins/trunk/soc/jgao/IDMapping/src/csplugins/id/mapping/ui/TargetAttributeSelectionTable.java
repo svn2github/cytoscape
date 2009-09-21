@@ -140,8 +140,6 @@ public class TargetAttributeSelectionTable extends JTable{
                         this_table.addRow();
                     }
                 }
-                    
-
             }
         });
 
@@ -165,10 +163,9 @@ public class TargetAttributeSelectionTable extends JTable{
             }
         }
 
-        if (types!=null) {
+        if (attrs!=null) {
             if (!supportedIDType.isEmpty()) {
-                supportedIDType.add(DataSourceAttributeWrapper.getInstance("separator",
-                        DataSourceAttributeWrapper.DsAttr.ATTRIBUTE));
+                supportedIDType.add(DataSourceAttributeWrapper.getSeparator());
             }
 
             for (String attr : new TreeSet<String>(attrs)) {
@@ -183,10 +180,17 @@ public class TargetAttributeSelectionTable extends JTable{
             if (oldDss!=null) {
                 DataSourceAttributeWrapper old = DataSourceAttributeWrapper
                         .getInstance(oldDss.get(i),DataSourceAttributeWrapper.DsAttr.DATASOURCE);
+                if (old==null) {
+                    old = DataSourceAttributeWrapper
+                        .getInstance(oldDss.get(i),DataSourceAttributeWrapper.DsAttr.ATTRIBUTE);
+                }
                 if (supportedIDType.contains(old)) {
                     cb.setSelectedItem(old);
                 }
             }
+            cb.addActionListener(new SeparatorComboListener(cb));
+        cb.setRenderer(new SeparatorComboBoxRenderer());
+
             idTypeComboBoxes.add(cb);
         }
 
@@ -419,11 +423,13 @@ public class TargetAttributeSelectionTable extends JTable{
         JButton button = new JButton("Remove");
         rmvBtns.add(button);
 
-        JComboBox cc = new  JComboBox(new Vector(supportedIDType));
-        idTypeComboBoxes.add(cc);
+        JComboBox cb = new JComboBox(new Vector(supportedIDType));
+        cb.addActionListener(new SeparatorComboListener(cb));
+        cb.setRenderer(new SeparatorComboBoxRenderer());
+        idTypeComboBoxes.add(cb);
 
-        cc = new JComboBox(new String[]{multiIDs, oneIDOnly});
-        oneIDOnlyComboBoxes.add(cc);
+        cb = new JComboBox(new String[]{multiIDs, oneIDOnly});
+        oneIDOnlyComboBoxes.add(cb);
 
         rowCount++;
 
@@ -647,6 +653,57 @@ public class TargetAttributeSelectionTable extends JTable{
           return (JButton)value;
       }
     }
+
+    class SeparatorComboBoxRenderer extends JLabel implements javax.swing.ListCellRenderer {
+        javax.swing.JSeparator separator;
+
+        public SeparatorComboBoxRenderer() {
+            setOpaque(true);
+            setBorder(new javax.swing.border.EmptyBorder(1, 1, 1, 1));
+            separator = new javax.swing.JSeparator(javax.swing.JSeparator.HORIZONTAL);
+        }
+
+        public Component getListCellRendererComponent(javax.swing.JList list, Object value,
+            int index, boolean isSelected, boolean cellHasFocus) {
+            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper) value;
+            if (dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.SEPARATOR) {
+                return separator;
+            }
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setFont(list.getFont());
+            setText(dsw.toString());
+            return this;
+        }
+    }
+
+    class SeparatorComboListener implements java.awt.event.ActionListener {
+        JComboBox combo;
+
+        int currentIndex;
+
+        SeparatorComboListener(JComboBox combo) {
+            this.combo = combo;
+            //combo.setSelectedIndex(0);
+            currentIndex = combo.getSelectedIndex();
+        }
+
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            DataSourceAttributeWrapper tempItem = (DataSourceAttributeWrapper) combo.getSelectedItem();
+            if (tempItem.getDsAttr()==DataSourceAttributeWrapper.DsAttr.SEPARATOR) {
+                if (currentIndex==-1)
+                    currentIndex=0;
+                combo.setSelectedItem(combo.getItemAt(currentIndex));
+            } else {
+                currentIndex = combo.getSelectedIndex();
+            }
+        }
+  }
 
 }
 

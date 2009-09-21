@@ -52,11 +52,15 @@ class DataSourceAttributeWrapper implements Comparable {
                 = new HashMap();
 
         static private DataSourceAttributeWrapper separator =
-                new DataSourceAttributeWrapper("separator",DsAttr.SEPARATOR);
+                new DataSourceAttributeWrapper("==Below are attributes==",DsAttr.SEPARATOR);
 
         enum DsAttr{
             DATASOURCE, ATTRIBUTE, SEPARATOR;
         };
+
+        static DataSourceAttributeWrapper getSeparator() {
+            return separator;
+        }
 
         static DataSourceAttributeWrapper getInstance(String value, DsAttr da) {
             if (value==null) {

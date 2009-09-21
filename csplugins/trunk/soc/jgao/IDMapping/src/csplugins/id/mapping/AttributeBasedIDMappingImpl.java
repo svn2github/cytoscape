@@ -93,6 +93,12 @@ public class AttributeBasedIDMappingImpl
             throw new IllegalArgumentException();
         }
 
+        if (mapTgtIDTypeAttrName==null && mapTgtAttrAttrName==null) {
+            throw new IllegalArgumentException();
+        }
+
+        report = new String();
+
         // prepare source xrefs
         Set<Node> nodes = nodesUnion(networks);
         Map<Node,Set<Xref>> mapNodeSrcXrefs = prepareNodeSrcXrefs(nodes, mapSrcAttrIDTypes);
@@ -111,7 +117,7 @@ public class AttributeBasedIDMappingImpl
             // id mapping
             updateTaskMonitor("Mapping IDs...",-1);
             Map<Xref, Map<String, Set<String>>> idMapping = new HashMap();
-            for (Map.Entry<Xref, Set<Xref>> entry : idMapperStack.mapID(srcXrefs, tgtDss).entrySet()) {
+            for (Map.Entry<Xref, Set<Xref>> entry : idMapperStack.mapID(srcXrefs, tgtDss.toArray(new DataSource[0])).entrySet()) {
                 Xref srcXref = entry.getKey();
                 Map<String, Set<String>> mapTypeIds = new HashMap();
                 idMapping.put(srcXref, mapTypeIds);
@@ -137,7 +143,7 @@ public class AttributeBasedIDMappingImpl
             Map<Node,Map<String,Set<String>>> mapNodeTgtXrefs = getNodeTgtXrefs(mapNodeSrcXrefs, idMapping);
             setTgtAttribute(mapNodeTgtXrefs, mapTgtIDTypeAttrName);
 
-            report = "Identifiers mapped for "+mapNodeTgtXrefs.size()+" nodes (out of "+nodes.size()+")!\n";
+            report += "Identifiers mapped for "+mapNodeTgtXrefs.size()+" nodes (out of "+nodes.size()+")!\n";
         }
 
         if (mapTgtAttrAttrName!=null && !mapTgtAttrAttrName.isEmpty()) {

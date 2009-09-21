@@ -52,8 +52,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
-
 /**
  * Plugin for attribute-based ID mapping
  * 
@@ -61,10 +59,10 @@ import javax.swing.JOptionPane;
  */
 public final class CyThesaurusPlugin extends CytoscapePlugin {
     static Map<String,Set<String>> mapSrcAttrIDTypes = null;
-    private boolean initialized = false;
 
     public CyThesaurusPlugin() {
         BioDataSource.init();
+        IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
         listenToSessionEvent();
         IDMappingServiceSuppport.addService();
 
@@ -81,8 +79,6 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                 IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
                 
                 mapSrcAttrIDTypes = null;
-                
-                initialized = true;
             }
         });
 
@@ -128,11 +124,6 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
         @Override
         public void actionPerformed(final ActionEvent ae) {
 //            prepare(); //TODO: remove in Cytoscape3
-            if (!initialized) {
-                JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Please wait util Cytoscape is initialized completely.");
-                return;
-            }
-
             final CyThesaurusDialog dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setMapSrcAttrIDTypes(mapSrcAttrIDTypes);

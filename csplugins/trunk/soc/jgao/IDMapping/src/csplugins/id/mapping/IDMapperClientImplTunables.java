@@ -235,13 +235,32 @@ public class IDMapperClientImplTunables implements IDMapperClient {
             }
         }
 
-        desc.append(">> Is free-text search supported?\n");
-        desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
-        desc.append("\n");
+//        desc.append(">> Is free-text search supported?\n");
+//        desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
+//        desc.append("\n");
 
         if (mapper instanceof AttributeMapper) {
             desc.append(">>Supported Attributes\n");
-            desc.append("\tSymbol\n");
+            Set<String> attrs = null;
+            try {
+                attrs = ((AttributeMapper)mapper).getAttributeSet();
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
+            }
+
+            if (attrs!=null) {
+                Vector<String> vec = new Vector(attrs.size());
+                int i=0;
+                for (String attr : attrs) {
+                    i++;
+                    vec.add(attr);
+                }
+
+                Collections.sort(vec);
+                for (String str : vec) {
+                    desc.append("\t"+str+"\n");
+                }
+            }
         }
 
         return desc.toString();
