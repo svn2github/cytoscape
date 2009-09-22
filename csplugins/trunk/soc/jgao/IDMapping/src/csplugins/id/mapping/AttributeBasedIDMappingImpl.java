@@ -35,6 +35,10 @@
 
 package csplugins.id.mapping;
 
+import csplugins.id.mapping.util.DataSourceWrapper;
+import csplugins.id.mapping.util.IDMapperWrapper;
+import csplugins.id.mapping.util.XrefWrapper;
+
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
@@ -42,11 +46,6 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.task.TaskMonitor;
 
 import giny.model.Node;
-
-import org.bridgedb.Xref;
-import org.bridgedb.DataSource;
-import org.bridgedb.IDMapperStack;
-import org.bridgedb.IDMapperException;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,91 +83,29 @@ public class AttributeBasedIDMappingImpl
     /**
      * {@inheritDoc}
      */
-    public void map(final Set<CyNetwork> networks,
-                    final Map<String,Set<String>> mapSrcAttrIDTypes,
-                    final Map<String, String> mapTgtAttrNameIDType,
-                    final Map<String, String> mapTgtAttrNameAttrType
-                    ) throws IDMapperException {
-        if (networks==null || mapSrcAttrIDTypes==null) {
-            throw new IllegalArgumentException();
-        }
-
-        if (mapTgtAttrNameIDType==null && mapTgtAttrNameAttrType==null) {
-            throw new IllegalArgumentException();
-        }
-
-        report = new String();
+    public void map(Set<CyNetwork> networks, Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes,
+            Map<String, DataSourceWrapper> mapTgtAttrNameIDType) {
 
         // prepare source xrefs
         Set<Node> nodes = nodesUnion(networks);
-        Map<Node,Set<Xref>> mapNodeSrcXrefs = prepareNodeSrcXrefs(nodes, mapSrcAttrIDTypes);
-        Set<Xref> srcXrefs = srcXrefUnion(mapNodeSrcXrefs);
+        Map<Node,Set<XrefWrapper>> mapNodeSrcXrefs = prepareNodeSrcXrefs(nodes, mapSrcAttrIDTypes);
+        Set<XrefWrapper> srcXrefs = srcXrefUnion(mapNodeSrcXrefs);
 
-        IDMapperStack idMapperStack = IDMapperClientManager.selectedIDMapperStack();
+        // target id types
+        Set<DataSourceWrapper> tgtTypes = new HashSet(mapTgtAttrNameIDType.values());
 
-        if (mapTgtAttrNameIDType!=null && !mapTgtAttrNameIDType.isEmpty()) {
-            // target id types
-            Set<DataSource> tgtDss = new HashSet();
-            for (String type : mapTgtAttrNameIDType.values()) {
-                tgtDss.add(DataSource.getByFullName(type));
-            }
+        // id mapping
+        updateTaskMonitor("Mapping IDs...",-1);
+        Map<XrefWrapper, Set<XrefWrapper>> mapping = IDMapperWrapper.mapID(srcXrefs, tgtTypes);
 
-            // id mapping
-            updateTaskMonitor("Mapping IDs...",-1);
-            Map<Xref, Map<String, Set<String>>> idMapping = new HashMap();
-            for (Map.Entry<Xref, Set<Xref>> entry : idMapperStack.mapID(srcXrefs, tgtDss.toArray(new DataSource[0])).entrySet()) {
-                Xref srcXref = entry.getKey();
-                Map<String, Set<String>> mapTypeIds = new HashMap();
-                idMapping.put(srcXref, mapTypeIds);
+        // define target attribute
+        defineTgtAttributes(mapTgtAttrNameIDType.keySet());
 
-                Set<Xref> tgtXrefs = entry.getValue();
-                for (Xref xref : tgtXrefs) {
-                    String id = xref.getId();
-                    String type = xref.getDataSource().getFullName();
-                    Set<String> ids = mapTypeIds.get(type);
-                    if (ids==null) {
-                        ids = new TreeSet();
-                        mapTypeIds.put(type, ids);
-                    }
-                    ids.add(id);
-                }
+        // set target attribute
+        Map<Node,Set<XrefWrapper>> mapNodeTgtXrefs = getNodeTgtXrefs(mapNodeSrcXrefs, mapping);
+        setTgtAttribute(mapNodeTgtXrefs, mapTgtAttrNameIDType);
 
-            }
-
-            // define target attribute
-            defineTgtAttributes(mapTgtAttrNameIDType.keySet());
-
-            // set target attribute
-            Map<Node,Map<String,Set<String>>> mapNodeTgtXrefs = getNodeTgtXrefs(mapNodeSrcXrefs, idMapping);
-            setTgtAttribute(mapNodeTgtXrefs, mapTgtAttrNameIDType);
-
-            report += "Identifiers mapped for "+mapNodeTgtXrefs.size()+" nodes (out of "+nodes.size()+")!\n";
-        }
-
-        if (mapTgtAttrNameAttrType!=null && !mapTgtAttrNameAttrType.isEmpty()) {
-            // attribute mapping
-            updateTaskMonitor("Mapping attributes...",-1);
-            Map<Xref, Map<String, Set<String>>> attrMapping = new HashMap();
-            for (Xref xref : srcXrefs) {
-                Map<String, Set<String>> mapAttrValues = new HashMap();
-                for (String attr : mapTgtAttrNameAttrType.values()) {
-                    Set<String> attrs = idMapperStack.getAttributes(xref, attr);
-                    if (attrs!=null)
-                        mapAttrValues.put(attr, attrs);
-                }
-                attrMapping.put(xref, mapAttrValues);
-            }
-
-            // define target attribute
-            defineTgtAttributes(mapTgtAttrNameAttrType.keySet());
-
-            // set target attribute
-            Map<Node,Map<String,Set<String>>> mapNodeTgtAttrs = getNodeTgtXrefs(mapNodeSrcXrefs, attrMapping);
-            setTgtAttribute(mapNodeTgtAttrs, mapTgtAttrNameAttrType);
-
-            report += "Attribute mapped for "+mapNodeTgtAttrs.size()+" nodes (out of "+nodes.size()+")!";
-        }
-
+        report = "Identifiers mapped for "+mapNodeTgtXrefs.size()+" nodes (out of "+nodes.size()+")!";
         updateTaskMonitor(report,100);
     }
 
@@ -193,8 +130,8 @@ public class AttributeBasedIDMappingImpl
         return nodes;
     }
 
-    private Map<Node,Set<Xref>> prepareNodeSrcXrefs(Set<Node> nodes, Map<String,Set<String>> mapSrcAttrIDTypes) {
-        Map<Node,Set<Xref>> ret = new HashMap();
+    private Map<Node,Set<XrefWrapper>> prepareNodeSrcXrefs(Set<Node> nodes, Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes) {
+        Map<Node,Set<XrefWrapper>> ret = new HashMap();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
         int nNode = nodes.size();
@@ -204,18 +141,18 @@ public class AttributeBasedIDMappingImpl
             updateTaskMonitor("Preparing cross reference for nodes...\n"+i+"/"+nNode,(i+1)*100/nNode);
             i++;
 
-            Set<Xref> xrefs = new HashSet();
+            Set<XrefWrapper> xrefs = new HashSet();
             ret.put(node, xrefs);
 
             String nodeID = node.getIdentifier();
-            for (Map.Entry<String,Set<String>> entryAttrIDTypes : mapSrcAttrIDTypes.entrySet()) {
+            for (Map.Entry<String,Set<DataSourceWrapper>> entryAttrIDTypes : mapSrcAttrIDTypes.entrySet()) {
                 String attrName = entryAttrIDTypes.getKey();
-                Set<String> dss = entryAttrIDTypes.getValue();
+                Set<DataSourceWrapper> dss = entryAttrIDTypes.getValue();
 
                 //TODO: remove this in Cy3
                 if (attrName.compareTo("ID")==0) {
-                    for (String ds : dss) {
-                        xrefs.add(new Xref(nodeID, DataSource.getByFullName(ds)));
+                    for (DataSourceWrapper ds : dss) {
+                        xrefs.add(new XrefWrapper(nodeID, ds));
                     }
                     continue;
                 }
@@ -225,8 +162,8 @@ public class AttributeBasedIDMappingImpl
                     List attr = nodeAttributes.getListAttribute(nodeID, attrName);
                     for (Object obj : attr) {
                         String str = obj.toString();
-                        for (String ds : dss) {
-                            xrefs.add(new Xref(str, DataSource.getByFullName(ds)));
+                        for (DataSourceWrapper ds : dss) {
+                            xrefs.add(new XrefWrapper(str, ds));
                         }
                     }
                 } else {
@@ -234,8 +171,8 @@ public class AttributeBasedIDMappingImpl
                     if (obj!=null) {
                         String str = obj.toString();
                         if (str.length()>0) {
-                            for (String ds : dss) {
-                                xrefs.add(new Xref(str, DataSource.getByFullName(ds)));
+                            for (DataSourceWrapper ds : dss) {
+                                xrefs.add(new XrefWrapper(str, ds));
                             }
                         }
                     }
@@ -246,36 +183,27 @@ public class AttributeBasedIDMappingImpl
         return ret;
     }
 
-    private Set<Xref> srcXrefUnion(Map<Node,Set<Xref>> mapNodeSrcXrefs) {
-        Set<Xref> ret = new HashSet();
-        for (Set<Xref> xrefs : mapNodeSrcXrefs.values()) {
+    private Set<XrefWrapper> srcXrefUnion(Map<Node,Set<XrefWrapper>> mapNodeSrcXrefs) {
+        Set<XrefWrapper> ret = new HashSet();
+        for (Set<XrefWrapper> xrefs : mapNodeSrcXrefs.values()) {
             ret.addAll(xrefs);
         }
         return ret;
     }
 
-    private Map<Node,Map<String,Set<String>>> getNodeTgtXrefs (
-            Map<Node,Set<Xref>> mapNodeSrcXrefs,
-            Map<Xref, Map<String, Set<String>>> mapping) {
-        Map<Node,Map<String,Set<String>>> mapNodeTgtXrefs = new HashMap();
+    private Map<Node,Set<XrefWrapper>> getNodeTgtXrefs (Map<Node,Set<XrefWrapper>> mapNodeSrcXrefs,
+                                                 Map<XrefWrapper, Set<XrefWrapper>> idMapping) {
+        Map<Node,Set<XrefWrapper>> mapNodeTgtXrefs = new HashMap();
 
-        for (Map.Entry<Node,Set<Xref>> entryNodeXrefs : mapNodeSrcXrefs.entrySet()) {
+        for (Map.Entry<Node,Set<XrefWrapper>> entryNodeXrefs : mapNodeSrcXrefs.entrySet()) {
             Node node = entryNodeXrefs.getKey();
-            Map<String,Set<String>> tgtXrefs = new HashMap();
-            Set<Xref> srcXrefs = entryNodeXrefs.getValue();
+            Set<XrefWrapper> tgtXrefs = new HashSet();
+            Set<XrefWrapper> srcXrefs = entryNodeXrefs.getValue();
             //TODO: deal with ambiguity--same node, same attribute, different data source
-            for (Xref srcXref : srcXrefs) {
-                Map<String,Set<String>> mapTypeIds = mapping.get(srcXref);
-                if (mapTypeIds!=null) {
-                    for (Map.Entry<String,Set<String>> entryTypeIds : mapTypeIds.entrySet()) {
-                        String type = entryTypeIds.getKey();
-                        Set<String> ids = tgtXrefs.get(type);
-                        if (ids==null) {
-                            ids = new TreeSet();
-                            tgtXrefs.put(type, ids);
-                        }
-                        ids.addAll(entryTypeIds.getValue());
-                    }
+            for (XrefWrapper srcXref : srcXrefs) {
+                Set<XrefWrapper> xrefs = idMapping.get(srcXref);
+                if (xrefs!=null) {
+                    tgtXrefs.addAll(xrefs);
                 }
             }
 
@@ -309,15 +237,15 @@ public class AttributeBasedIDMappingImpl
         }
     }
 
-    private void setTgtAttribute(Map<Node,Map<String,Set<String>>> mapNodeTgtXrefs,
-                                 Map<String, String> mapTgtAttrNameIDType) {
+    private void setTgtAttribute(Map<Node,Set<XrefWrapper>> mapNodeTgtXrefs,
+                                 Map<String, DataSourceWrapper> mapTgtAttrNameIDType) {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         Map<String, Byte> mapAttrNameType = new HashMap();
-        Map<String, Set<String>> mapIDTypeAttrName = new HashMap();
+        Map<DataSourceWrapper, Set<String>> mapIDTypeAttrName = new HashMap();
         for (String attrName : mapTgtAttrNameIDType.keySet()) {
             mapAttrNameType.put(attrName, nodeAttributes.getType(attrName));
 
-            String idType = mapTgtAttrNameIDType.get(attrName);
+            DataSourceWrapper idType = mapTgtAttrNameIDType.get(attrName);
             Set<String> names = mapIDTypeAttrName.get(idType);
             if (names==null) {
                 names = new HashSet();
@@ -328,18 +256,29 @@ public class AttributeBasedIDMappingImpl
 
         int i = 0;
         int nNode = mapNodeTgtXrefs.size();
-        for (Map.Entry<Node,Map<String,Set<String>>> entryNodeXrefs : mapNodeTgtXrefs.entrySet()) {
+        for (Map.Entry<Node,Set<XrefWrapper>> entryNodeXrefs : mapNodeTgtXrefs.entrySet()) {
             if (interrupted) return;
             updateTaskMonitor("Preparing cross reference for nodes...\n"+i+"/"+nNode,(i+1)*100/nNode);
             i++;
 
-            Map<String,Set<String>> tgtXrefs = entryNodeXrefs.getValue();
+            // type wise
+            Map<DataSourceWrapper, Set<String>> mapDsIds = new HashMap();
+            Set<XrefWrapper> tgtXrefs = entryNodeXrefs.getValue();
+            for (XrefWrapper xref : tgtXrefs) {
+                DataSourceWrapper ds = xref.getDataSource();
+                Set<String> ids = mapDsIds.get(ds);
+                if (ids==null) {
+                    ids = new TreeSet(); // alphabetically
+                    mapDsIds.put(ds, ids);
+                }
+                ids.add(xref.getValue());
+            }
             
             // set attribute
             Node node = entryNodeXrefs.getKey();
             String nodeID = node.getIdentifier();
-            for (Map.Entry<String, Set<String>> entryDsIds : tgtXrefs.entrySet()) {
-                String ds = entryDsIds.getKey();
+            for (Map.Entry<DataSourceWrapper, Set<String>> entryDsIds : mapDsIds.entrySet()) {
+                DataSourceWrapper ds = entryDsIds.getKey();
                 for (String attrName : mapIDTypeAttrName.get(ds)) {
                     byte attrType = mapAttrNameType.get(attrName);
                     Set<String> ids = entryDsIds.getValue();

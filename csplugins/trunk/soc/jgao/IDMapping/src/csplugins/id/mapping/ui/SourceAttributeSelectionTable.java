@@ -35,11 +35,14 @@
 
 package csplugins.id.mapping.ui;
 
+import csplugins.id.mapping.util.DataSourceWrapper;
+
 import java.util.List;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.TreeSet;
 import java.util.Arrays;
 import java.util.Collections;
@@ -76,7 +79,7 @@ import javax.swing.JOptionPane;
 public class SourceAttributeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
 
-    private Set<DataSourceAttributeWrapper> supportedIDType;
+    private Set<DataSourceWrapper> supportedIDType;
 
     private CheckComboBoxSelectionChangedListener idTypeSelectionChangedListener;
 
@@ -101,7 +104,7 @@ public class SourceAttributeSelectionTable extends JTable{
         super();
         initializeAttibutes();
 
-        supportedIDType = new TreeSet();
+        supportedIDType = new LinkedHashSet();
         attributeComboBoxes = new Vector();
         selectedAttribute = new Vector();
         typeComboBoxes = new Vector();
@@ -168,17 +171,31 @@ public class SourceAttributeSelectionTable extends JTable{
         this.idTypeSelectionChangedListener = idTypeSelectionChangedListener;
     }
 
-    public void setSupportedIDType(final Set<String> types) {
-        if (types==null) {
+    public void setSupportedIDType(final Set<String> types, final Set<String> attrs) {
+        if (types==null && attrs==null) {
             throw new NullPointerException();
         }
 
-        Map<String,Set<String>> oldMap = this.getSourceAttrType();
-        
-        supportedIDType = new TreeSet();
-        for (String type : types) {
-            supportedIDType.add(DataSourceAttributeWrapper.getInstance(type,
-                    DataSourceAttributeWrapper.DsAttr.DATASOURCE));
+        Map<String,Set<DataSourceWrapper>> oldMap = this.getSourceAttrType();
+
+        supportedIDType = new LinkedHashSet();
+
+        if (types!=null) {
+            for (String type : new TreeSet<String>(types)) {
+                supportedIDType.add(DataSourceWrapper.getInstance(type,
+                        DataSourceWrapper.DsAttr.DATASOURCE));
+            }
+        }
+
+        if (attrs!=null && !attrs.isEmpty()) {
+            if (!supportedIDType.isEmpty()) {
+                supportedIDType.add(null);
+            }
+
+            for (String attr : new TreeSet<String>(attrs)) {
+                supportedIDType.add(DataSourceWrapper.getInstance(attr,
+                        DataSourceWrapper.DsAttr.ATTRIBUTE));
+            }
         }
 
         //select the id type previously selected
@@ -188,14 +205,14 @@ public class SourceAttributeSelectionTable extends JTable{
         setColumnEditorAndCellRenderer();
     }
 
-    public void setSourceAttrType(Map<String,Set<String>> srcAttrType) {
+    public void setSourceAttrType(Map<String,Set<DataSourceWrapper>> srcAttrType) {
         if (srcAttrType==null) return;
 
         this.clearRows();
 
-        for (Map.Entry<String,Set<String>> entry : srcAttrType.entrySet()) {
+        for (Map.Entry<String,Set<DataSourceWrapper>> entry : srcAttrType.entrySet()) {
             String attr = entry.getKey();
-            Set<String> dss = entry.getValue();
+            Set<DataSourceWrapper> dss = entry.getValue();
             this.addRow(attr, dss);
         }
 
@@ -206,11 +223,8 @@ public class SourceAttributeSelectionTable extends JTable{
 
     }
 
-    public Map<String,Set<String>> getSourceAttrType() {
-        Map<String,Set<String>> ret = new LinkedHashMap();
-//        if (supportedIDType.isEmpty()) {
-//            return ret;
-//        }
+    public Map<String,Set<DataSourceWrapper>> getSourceAttrType() {
+        Map<String,Set<DataSourceWrapper>> ret = new LinkedHashMap();
         
         for (int i=0; i<rowCount; i++) {
             String attr = (String)selectedAttribute.get(i);
@@ -219,15 +233,15 @@ public class SourceAttributeSelectionTable extends JTable{
 //                attr = cytoscape.data.Semantics.CANONICAL_NAME;
 //            }
 
-            Set<String> types = null;
+            Set<DataSourceWrapper> types = null;
             if (!supportedIDType.isEmpty()) {
-            Object[] dsws = typeComboBoxes.get(i).getSelectedItems();
-            if (dsws!=null) {
+                Object[] dsws = typeComboBoxes.get(i).getSelectedItems();
+                if (dsws!=null) {
                     types = new HashSet();
-                for (Object dsw : dsws) {
-                    types.add(((DataSourceAttributeWrapper)dsw).value());
+                    for (Object dsw : dsws) {
+                        types.add((DataSourceWrapper)dsw);
+                    }
                 }
-            }
             }
             ret.put(attr, types);
         }
@@ -235,8 +249,8 @@ public class SourceAttributeSelectionTable extends JTable{
         return ret;
     }
 
-    public Set<String> getSelectedIDTypes() {
-        Set<String> ret = new HashSet();
+    public Set<DataSourceWrapper> getSelectedIDTypes() {
+        Set<DataSourceWrapper> ret = new HashSet();
 
         if (supportedIDType.isEmpty()) {
             return ret;
@@ -246,7 +260,7 @@ public class SourceAttributeSelectionTable extends JTable{
             Object[] dsws = typeComboBoxes.get(i).getSelectedItems();
             if (dsws!=null) {
                 for (Object dsw : dsws) {
-                    ret.add(((DataSourceAttributeWrapper)dsw).value());
+                    ret.add(((DataSourceWrapper)dsw));
                 }
             }
         }
@@ -320,7 +334,7 @@ public class SourceAttributeSelectionTable extends JTable{
         addRow(null, null);
     }
 
-    private void addRow(String attr, Set<String> dss) {
+    private void addRow(String attr, Set<DataSourceWrapper> dss) {
         if (rowCount>=attributes.size()) {
             JOptionPane.showMessageDialog(cytoscape.Cytoscape.getDesktop(),
                     "All attributes have been used. Cannot add more.");
@@ -364,13 +378,11 @@ public class SourceAttributeSelectionTable extends JTable{
         selectedAttribute.add((String)cb.getSelectedItem());
         attributeComboBoxes.add(cb);
 
-        Set<DataSourceAttributeWrapper> selectedDsws = new HashSet();
+        Set<DataSourceWrapper> selectedDsws = new HashSet();
         if (dss!=null) {
-                for (String ds : dss) {
-                    DataSourceAttributeWrapper dsw = DataSourceAttributeWrapper.getInstance(ds,
-                            DataSourceAttributeWrapper.DsAttr.DATASOURCE);
-                    if (supportedIDType.contains(dsw))
-                        selectedDsws.add(dsw);
+                for (DataSourceWrapper ds : dss) {
+                    if (supportedIDType.contains(ds))
+                        selectedDsws.add(ds);
                 }
         }
         CheckComboBox cc = new CheckComboBox(supportedIDType, selectedDsws);
@@ -563,7 +575,6 @@ public class SourceAttributeSelectionTable extends JTable{
           return (JButton)value;
       }
     }
-
 }
 
 

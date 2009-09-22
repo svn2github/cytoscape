@@ -50,7 +50,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Plugin for attribute-based ID mapping
@@ -58,7 +57,7 @@ import java.util.Set;
  * 
  */
 public final class CyThesaurusPlugin extends CytoscapePlugin {
-    static Map<String,Set<String>> mapSrcAttrIDTypes = null;
+    static Map mapSrcAttrIDTypes = null;
 
     public CyThesaurusPlugin() {
         BioDataSource.init();

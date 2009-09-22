@@ -36,6 +36,7 @@
 package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.AttributeBasedIDMappingImpl;
+import csplugins.id.mapping.util.DataSourceWrapper;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -49,9 +50,8 @@ import java.util.Map;
  */
 public class AttributeBasedIDMappingTask implements Task {
 	private final Set<CyNetwork> networks;
-    private final Map<String,Set<String>> mapSrcAttrIDTypes;
-    private final Map<String, String> mapTgtAttrNameIDType;
-    private final Map<String, String> mapAttrNameAttrType;
+    private final Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes;
+    private final Map<String, DataSourceWrapper> mapTgtAttrNameIDType;
     private final AttributeBasedIDMappingImpl service;
     
 	private TaskMonitor taskMonitor;
@@ -61,16 +61,14 @@ public class AttributeBasedIDMappingTask implements Task {
          * 
          * @param networks
          * @param mapSrcAttrIDTypes
-         * @param MapTgtIDTypeAttrName
+         * @param mapTgtAttrNameIDType
          */
 	public AttributeBasedIDMappingTask(final Set<CyNetwork> networks,
-                                       final Map<String,Set<String>> mapSrcAttrIDTypes,
-                                       final Map<String,String> mapTgtAttrNameIDType,
-                                       final Map<String,String> mapAttrNameAttrType) {
+                                       final Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes,
+                                       final Map<String, DataSourceWrapper> mapTgtAttrNameIDType) {
 		this.networks = networks;
                 this.mapSrcAttrIDTypes = mapSrcAttrIDTypes;
                 this.mapTgtAttrNameIDType = mapTgtAttrNameIDType;
-                this.mapAttrNameAttrType = mapAttrNameAttrType;
                 service = new AttributeBasedIDMappingImpl();
                 success = false;
 	}
@@ -83,7 +81,7 @@ public class AttributeBasedIDMappingTask implements Task {
                 try {
                         service.setTaskMonitor(taskMonitor);
                         
-                        service.map(networks, mapSrcAttrIDTypes, mapTgtAttrNameIDType, mapAttrNameAttrType);
+                        service.map(networks, mapSrcAttrIDTypes, mapTgtAttrNameIDType);
 
 
                 } catch (Exception e) {

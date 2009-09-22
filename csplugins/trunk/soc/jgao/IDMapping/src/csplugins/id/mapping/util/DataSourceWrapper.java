@@ -33,7 +33,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package csplugins.id.mapping.ui;
+package csplugins.id.mapping.util;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -42,42 +42,45 @@ import java.util.HashMap;
  *
  * @author gjj
  */
-class DataSourceAttributeWrapper implements Comparable {
+public class DataSourceWrapper implements Comparable {
         private String value;
         private DsAttr da;
 
-        static private Map<String, DataSourceAttributeWrapper> dataSourceWrappers
+        static private Map<String, DataSourceWrapper> dataSourceWrappers
                 = new HashMap();
-        static private Map<String, DataSourceAttributeWrapper> attributeWrappers
+        static private Map<String, DataSourceWrapper> attributeWrappers
                 = new HashMap();
 
-        static private DataSourceAttributeWrapper separator =
-                new DataSourceAttributeWrapper("==Below are attributes==",DsAttr.SEPARATOR);
-
-        enum DsAttr{
-            DATASOURCE, ATTRIBUTE, SEPARATOR;
+        public enum DsAttr{
+            DATASOURCE, ATTRIBUTE;
         };
+//
+//        public static DataSourceWrapper getInstance(String value) {
+//            if (value==null)
+//                return null;
+//
+//            DataSourceWrapper dsw = dataSourceWrappers.get(value);
+//            if (value!=null) {
+//                return dsw;
+//            }
+//
+//            return attributeWrappers.get(value);
+//        }
 
-        static DataSourceAttributeWrapper getSeparator() {
-            return separator;
-        }
-
-        static DataSourceAttributeWrapper getInstance(String value, DsAttr da) {
-            if (value==null) {
+        public static DataSourceWrapper getInstance(String value, DsAttr da) {
+            if (value==null || da==null) {
                 return null;
             }
 
-            DataSourceAttributeWrapper wrapper;
+            DataSourceWrapper wrapper = null;
             if (da==DsAttr.DATASOURCE) {
                 wrapper = dataSourceWrappers.get(value);
             } else if (da==DsAttr.ATTRIBUTE) {
                 wrapper = attributeWrappers.get(value);
-            } else {
-                wrapper = separator;
             }
 
             if (wrapper==null) {
-                wrapper = new DataSourceAttributeWrapper(value, da);
+                wrapper = new DataSourceWrapper(value, da);
                 if (da==DsAttr.DATASOURCE) {
                     dataSourceWrappers.put(value, wrapper);
                 } else if (da==DsAttr.ATTRIBUTE) {
@@ -88,16 +91,16 @@ class DataSourceAttributeWrapper implements Comparable {
             return wrapper;
         }
 
-        private DataSourceAttributeWrapper(String value, DsAttr da) {
+        private DataSourceWrapper(String value, DsAttr da) {
             this.value = value;
             this.da = da;
         }
 
-        DsAttr getDsAttr() {
+        public DsAttr getDsAttr() {
             return da;
         }
 
-        String value() {
+        public String value() {
             return value;
         }
 

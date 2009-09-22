@@ -31,37 +31,64 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
-package csplugins.id.mapping;
+package csplugins.id.mapping.util;
 
-import csplugins.id.mapping.util.DataSourceWrapper;
-
-import cytoscape.CyNetwork;
-
-import java.util.Set;
-import java.util.Map;
+import org.bridgedb.Xref;
 
 /**
  *
  * @author gjj
  */
-public interface AttributeBasedIDMapping {
+public class XrefWrapper {
+    private String value;
+    private DataSourceWrapper dataSource;
+
+    public XrefWrapper(final Xref xref) {
+        this(xref.getId(),DataSourceWrapper.getInstance(
+                xref.getDataSource().getFullName(),
+                DataSourceWrapper.DsAttr.DATASOURCE));
+    }
+
+    public XrefWrapper(final String value, DataSourceWrapper dataSource) {
+        this.value = value;
+        this.dataSource = dataSource;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public DataSourceWrapper getDataSource() {
+        return dataSource;
+    }
 
     /**
-     * For each node in each network, given its attribute and the corresponding
-     * source id types, create new attributes of the destination type.
-     *
-     * @param networks
-     * @param mapSrcAttrIDTypes
-     *      key: source attribute
-     *      value: corresponding ID types
-     * @param MapTgtAttrNameIDType
-     *      key: attribute name
-     *      value: target ID type
+     * @return short string representation for this Xref, for example En:ENSG000001 or X:1004_at
+     *   This string representation is not meant to be stored or parsed, it is there mostly for
+     *   debugging purposes.
      */
-    public void map(Set<CyNetwork> networks, Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes,
-            Map<String, DataSourceWrapper> mapTgtAttrNameIDType);
+    public String toString() { return dataSource.toString()+":"+value;  }
 
-    public String getReport();
+    /**
+     * hashCode calculated from id and datasource combined.
+     * @return the hashCode
+     */
+    public int hashCode()
+    {
+        return toString().hashCode();
+    }
+
+    /**
+     * @return true if both the id and the datasource are equal.
+     * @param o Object to compare to
+     */
+    public boolean equals(Object o)
+    {
+            if (o == null) return false;
+            if(!(o instanceof XrefWrapper)) return false;
+            XrefWrapper ref = (XrefWrapper)o;
+            return value.equals(ref.value) && dataSource.equals(ref.dataSource);
+    }
 }

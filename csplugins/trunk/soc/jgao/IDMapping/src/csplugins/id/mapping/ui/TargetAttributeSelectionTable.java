@@ -35,6 +35,8 @@
 
 package csplugins.id.mapping.ui;
 
+import csplugins.id.mapping.util.DataSourceWrapper;
+
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
@@ -76,7 +78,7 @@ import javax.swing.JScrollPane;
 public class TargetAttributeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
 
-    private Set<DataSourceAttributeWrapper> supportedIDType;
+    private Set<DataSourceWrapper> supportedIDType;
 
     private int rowCount;
     private List<JComboBox> idTypeComboBoxes;
@@ -153,24 +155,24 @@ public class TargetAttributeSelectionTable extends JTable{
             throw new NullPointerException();
         }
 
-        List<String> oldDss = this.getTgtIDTypes();
+        List<DataSourceWrapper> oldDss = this.getTgtIDTypes();
 
         supportedIDType = new LinkedHashSet();
         if (types!=null) {
             for (String type : new TreeSet<String>(types)) {
-                supportedIDType.add(DataSourceAttributeWrapper.getInstance(type,
-                        DataSourceAttributeWrapper.DsAttr.DATASOURCE));
+                supportedIDType.add(DataSourceWrapper.getInstance(type,
+                        DataSourceWrapper.DsAttr.DATASOURCE));
             }
         }
 
-        if (attrs!=null) {
+        if (attrs!=null && !attrs.isEmpty()) {
             if (!supportedIDType.isEmpty()) {
-                supportedIDType.add(DataSourceAttributeWrapper.getSeparator());
+                supportedIDType.add(null);
             }
 
             for (String attr : new TreeSet<String>(attrs)) {
-                supportedIDType.add(DataSourceAttributeWrapper.getInstance(attr,
-                        DataSourceAttributeWrapper.DsAttr.ATTRIBUTE));
+                supportedIDType.add(DataSourceWrapper.getInstance(attr,
+                        DataSourceWrapper.DsAttr.ATTRIBUTE));
             }
         }
 
@@ -178,18 +180,13 @@ public class TargetAttributeSelectionTable extends JTable{
         for (int i=0; i<rowCount; i++) {
             JComboBox cb = new JComboBox(new Vector(supportedIDType));
             if (oldDss!=null) {
-                DataSourceAttributeWrapper old = DataSourceAttributeWrapper
-                        .getInstance(oldDss.get(i),DataSourceAttributeWrapper.DsAttr.DATASOURCE);
-                if (old==null) {
-                    old = DataSourceAttributeWrapper
-                        .getInstance(oldDss.get(i),DataSourceAttributeWrapper.DsAttr.ATTRIBUTE);
-                }
+                DataSourceWrapper old = oldDss.get(i);
                 if (supportedIDType.contains(old)) {
                     cb.setSelectedItem(old);
                 }
             }
             cb.addActionListener(new SeparatorComboListener(cb));
-        cb.setRenderer(new SeparatorComboBoxRenderer());
+            cb.setRenderer(new SeparatorComboBoxRenderer());
 
             idTypeComboBoxes.add(cb);
         }
@@ -208,17 +205,16 @@ public class TargetAttributeSelectionTable extends JTable{
         return names.get(row);
     }
 
-    public List<String> getTgtIDTypes() {
+    public List<DataSourceWrapper> getTgtIDTypes() {
         if (supportedIDType.isEmpty()) {
             return null;
         }
 
-        List<String> ret = new ArrayList();
+        List<DataSourceWrapper> ret = new ArrayList();
         for (int i=0; i<rowCount; i++) {
-            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes.get(i)
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
                         .getSelectedItem();
-            String ds = dsw.value();
-            ret.add(ds);
+            ret.add(dsw);
         }
         return ret;
     }
@@ -230,9 +226,9 @@ public class TargetAttributeSelectionTable extends JTable{
 
         List<Boolean> ret = new ArrayList();
         for (int i=0; i<rowCount; i++) {
-            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes.get(i)
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
                         .getSelectedItem();
-            ret.add(dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.DATASOURCE);
+            ret.add(dsw.getDsAttr()==DataSourceWrapper.DsAttr.DATASOURCE);
         }
         return ret;
     }
@@ -248,7 +244,7 @@ public class TargetAttributeSelectionTable extends JTable{
         for (int row=0; row<rowCount; row++) {
             String attr = destinationAttributes.get(row);
             if (attr.length()==0) {
-                DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes
+                DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes
                             .get(row).getSelectedItem();
                 attr = dsw.toString();
 
@@ -281,21 +277,17 @@ public class TargetAttributeSelectionTable extends JTable{
         return ret;
     }
 
-    public Map<String, String> getMapAttrNameIDType(boolean idOrAttr) {
+    public Map<String, DataSourceWrapper> getMapAttrNameIDType() {
         if (supportedIDType.isEmpty()) {
             return null;
         }
         
-        Map<String, String> ret = new HashMap();
+        Map<String, DataSourceWrapper> ret = new HashMap();
         for (int i=0; i<rowCount; i++) {
-            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper)idTypeComboBoxes.get(i)
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
                         .getSelectedItem();
-            if ((idOrAttr&&dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.DATASOURCE)
-                    ||(!idOrAttr&&dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.ATTRIBUTE)) {
-                String ds = dsw.value();
                 String name = getAttrName(i);
-                ret.put(name, ds);
-            }
+                ret.put(name, dsw);
         }
         return ret;
     }
@@ -665,8 +657,7 @@ public class TargetAttributeSelectionTable extends JTable{
 
         public Component getListCellRendererComponent(javax.swing.JList list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
-            DataSourceAttributeWrapper dsw = (DataSourceAttributeWrapper) value;
-            if (dsw.getDsAttr()==DataSourceAttributeWrapper.DsAttr.SEPARATOR) {
+            if (value==null) {
                 return separator;
             }
             if (isSelected) {
@@ -677,7 +668,7 @@ public class TargetAttributeSelectionTable extends JTable{
                 setForeground(list.getForeground());
             }
             setFont(list.getFont());
-            setText(dsw.toString());
+            setText(value.toString());
             return this;
         }
     }
@@ -694,8 +685,8 @@ public class TargetAttributeSelectionTable extends JTable{
         }
 
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            DataSourceAttributeWrapper tempItem = (DataSourceAttributeWrapper) combo.getSelectedItem();
-            if (tempItem.getDsAttr()==DataSourceAttributeWrapper.DsAttr.SEPARATOR) {
+            DataSourceWrapper tempItem = (DataSourceWrapper) combo.getSelectedItem();
+            if (tempItem==null) {
                 if (currentIndex==-1)
                     currentIndex=0;
                 combo.setSelectedItem(combo.getItemAt(currentIndex));
@@ -703,7 +694,7 @@ public class TargetAttributeSelectionTable extends JTable{
                 currentIndex = combo.getSelectedIndex();
             }
         }
-  }
+    }
 
 }
 

@@ -61,6 +61,8 @@ class CheckComboBox extends JComboBox {
    private List<CheckComboBoxSelectionChangedListener> changedListeners
            = new Vector();
 
+   private Object nullObject = new Object();
+
    public CheckComboBox(final Set objs) {
        this(objs, false);
    }
@@ -72,6 +74,8 @@ class CheckComboBox extends JComboBox {
    public CheckComboBox(final Set objs, final Set selected) {
        mapObjSelected = new LinkedHashMap();
        for (Object obj : objs) {
+           if (obj==null)
+               obj = nullObject;
            mapObjSelected.put(obj, selected.contains(obj));
        }
 
@@ -182,6 +186,10 @@ class CheckComboBox extends JComboBox {
             //Set selectedObj = getSelected();
             if (index<n-2) {
                 ObjCheckBox cb = cbs.get(index);
+                if (cb.getObj()==nullObject) {
+                    return;
+                }
+
                 if (cb.isSelected()) {
                     cb.setSelected(false);
                     mapObjSelected.put(cb.getObj(), false);
@@ -197,11 +205,13 @@ class CheckComboBox extends JComboBox {
                 }
             } else if (index==n-2) {
                 for (Object obj : mapObjSelected.keySet()) {
-                    mapObjSelected.put(obj, true);
+                    if (obj!=nullObject)
+                        mapObjSelected.put(obj, true);
                 }
 
                 for (int i=0; i<n-1; i++) {
-                    cbs.get(i).setSelected(true);
+                    if (cbs.get(i)!=nullObject)
+                        cbs.get(i).setSelected(true);
                 }
                 cbs.get(n-1).setSelected(false);
             } else { // if (index==n-1)
@@ -243,6 +253,7 @@ class CheckComboBox extends JComboBox {
     // checkbox renderer for combobox
     class CheckBoxRenderer implements ListCellRenderer {
         private final DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+        private javax.swing.JSeparator separator;
         private final List<ObjCheckBox> cbs;
         //private final Set objs;
 
@@ -250,6 +261,7 @@ class CheckComboBox extends JComboBox {
             //setOpaque(true);
             this.cbs = cbs;
             //this.objs = objs;
+            separator = new javax.swing.JSeparator(javax.swing.JSeparator.HORIZONTAL);
         }
 
         //@Override
@@ -258,9 +270,13 @@ class CheckComboBox extends JComboBox {
                                 Object value,
                                 int index,
                                 boolean isSelected,
-                                boolean cellHasFocus) {
+                                boolean cellHasFocus) {            
             if (index > 0) {
-                    JCheckBox cb = cbs.get(index-1);
+                    ObjCheckBox cb = cbs.get(index-1);
+                    if (cb.getObj()==nullObject) {
+                        return separator;
+                    }
+
                     cb.setBackground(isSelected ? Color.blue : Color.white);
                     cb.setForeground(isSelected ? Color.white : Color.black);
 

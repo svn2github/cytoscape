@@ -35,13 +35,12 @@
 
 package csplugins.id.mapping;
 
-import csplugins.id.mapping.IDMapperClient;
+import csplugins.id.mapping.util.DataSourceWrapper;
 
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 
 import org.bridgedb.DataSource;
-import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.IDMapperCapabilities;
@@ -689,13 +688,26 @@ public class IDMappingServiceSuppport {
         AttributeBasedIDMappingImpl service
                     = new AttributeBasedIDMappingImpl();
         if (succ) {
-            Map<String,Set<String>> mapAttrTypes = new HashMap();
+            Map<String,Set<DataSourceWrapper>> mapAttrTypes = new HashMap();
             for (String attr : srcAttrs) {
-                mapAttrTypes.put(attr, srcTypes);
+                Set<DataSourceWrapper> dsws = new HashSet(srcTypes.size());
+                for (String srcType : srcTypes) {
+                dsws.add(DataSourceWrapper.getInstance(srcType,
+                        DataSourceWrapper.DsAttr.DATASOURCE));
+                }
+                mapAttrTypes.put(attr, dsws);
+            }
+
+            Map<String,DataSourceWrapper> mapTgtTypeAttr = new HashMap();
+            for (Map.Entry<String,String> entry : tgtTypeAttr.entrySet()) {
+                DataSourceWrapper dsw = DataSourceWrapper.getInstance(entry.getKey(),
+                        DataSourceWrapper.DsAttr.DATASOURCE);
+                String attr = entry.getValue();
+                mapTgtTypeAttr.put(attr, dsw);
             }
 
             try {
-                service.map(networks, mapAttrTypes, tgtTypeAttr, null);
+                service.map(networks, mapAttrTypes, mapTgtTypeAttr);
             } catch (Exception e) {
                 e.printStackTrace();
                 error.append(e.getMessage());
