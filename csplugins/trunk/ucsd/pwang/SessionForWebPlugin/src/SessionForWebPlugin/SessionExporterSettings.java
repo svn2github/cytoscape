@@ -2,6 +2,7 @@ package SessionForWebPlugin;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.io.File;
 
 public class SessionExporterSettings
 {
@@ -27,4 +28,5 @@ public class SessionExporterSettings
 	public String	imageFormat         = FORMAT_PNG;
 	public int	maxThumbnailWidth   = 200;
 	public int	maxThumbnailHeight  = 200;
+	public File destinationDir = null;
 }
