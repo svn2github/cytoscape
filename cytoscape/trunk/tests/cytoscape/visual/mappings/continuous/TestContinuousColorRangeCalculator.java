@@ -65,8 +65,10 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 	 */
 	public void testCalculator1() throws Exception {
         Properties props = null;
-		InputStream in = getMapper1Props();
+		InputStream in = null;
+		
         try {
+			in = getMapper1Props();
             props = getProperties(in);
         }
         finally {
@@ -110,8 +112,10 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 	 */
 	public void testCalculator2() throws Exception {
 		Properties props = null;
-		InputStream in = getMapper2Props();
+		InputStream in = null;
+		
         try {
+			in = getMapper2Props();
             props = getProperties(in);
         }
         finally {

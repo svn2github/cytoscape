@@ -155,8 +155,7 @@ public class XGMMLWriterTest extends TestCase {
     private void compareFilesByLine(String fileToCompare, String output) throws IOException {
         String[] linesGot;
         StringBuilder sb;
-        FileInputStream fis;
-        InputStreamReader isr;
+        FileInputStream fis = null;
         int c;
         String content;
         String[] linesExptd;
@@ -168,21 +167,30 @@ public class XGMMLWriterTest extends TestCase {
 		}
 
         sb = new StringBuilder();
-        fis = new FileInputStream(fileToCompare);
-        isr = new InputStreamReader(fis, XGMMLWriter.ENCODING);
-        try {
-            c = isr.read();
-            while (c != -1)
-            {
-                sb.append((char)c);
-                c = isr.read();
-            }
-        }
-        finally {
-            if (isr != null) {
-                isr.close();
-            }
-        }
+		try {
+			InputStreamReader isr = null;
+			
+			fis = new FileInputStream(fileToCompare);
+			try {
+				isr = new InputStreamReader(fis, XGMMLWriter.ENCODING);
+				c = isr.read();
+				while (c != -1)
+				{
+					sb.append((char)c);
+					c = isr.read();
+				}
+			}
+			finally {
+				if (isr != null) {
+					isr.close();
+				}
+			}
+		}
+		finally {
+			if (fis != null) {
+				fis.close();
+			}
+		}
         content = sb.toString();
         System.out.println("Read " + content.getBytes(XGMMLWriter.ENCODING).length + " bytes");
 		linesExptd = content.split("\n");

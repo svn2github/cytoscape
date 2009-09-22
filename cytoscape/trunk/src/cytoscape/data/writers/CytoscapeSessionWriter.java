@@ -241,23 +241,32 @@ public class CytoscapeSessionWriter {
 	 *
 	 */
 	public void writeSessionToDisk() throws Exception {
-		
-		zos = new ZipOutputStream(new FileOutputStream(sessionFileName)); 
+		FileOutputStream fos = null;
 
-        try {
-            for (CyNetwork network : networks)
-                zipNetwork(network);
-            zipCySession();
-            zipVizmapProps();
-            zipCytoscapeProps();
-            zipBookmarks();
-            zipFileListMap();
-        }
-        finally {
-            if (zos != null) {
-                zos.close();
-            }
-        }
+		try {
+			fos = new FileOutputStream(sessionFileName);
+			try {
+				zos = new ZipOutputStream(fos);
+
+				for (CyNetwork network : networks)
+					zipNetwork(network);
+				zipCySession();
+				zipVizmapProps();
+				zipCytoscapeProps();
+				zipBookmarks();
+				zipFileListMap();
+			}
+			finally {
+				if (zos != null) {
+					zos.close();
+				}
+			}
+		}
+		finally {
+			if (fos != null) {
+				fos.close();
+			}
+		}
 
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
 	}
@@ -342,8 +351,14 @@ public class CytoscapeSessionWriter {
 		zos.putNextEntry(new ZipEntry(sessionDir + VIZMAP_FILE) );
 
         try {
-            Writer writer = new OutputStreamWriter( zos );
-            CalculatorIO.storeCatalog(catalog, writer);
+            Writer writer = null;
+			try {
+				writer = new OutputStreamWriter( zos );
+				CalculatorIO.storeCatalog(catalog, writer);
+			}
+			finally {
+				writer.close();
+			}
         }
         finally {
             if (zos != null) {
@@ -401,12 +416,20 @@ public class CytoscapeSessionWriter {
 		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile));
-        Writer writer = new OutputStreamWriter(zos, "UTF-8");
+        Writer writer = null;
         try {
-            // Write the XGMML file *without* our graphics attributes
-            // We'll let the Vizmapper handle those
-            XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
-            xgmmlWriter.write(writer);
+			try {
+				writer = new OutputStreamWriter(zos, "UTF-8");
+				// Write the XGMML file *without* our graphics attributes
+				// We'll let the Vizmapper handle those
+				XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
+				xgmmlWriter.write(writer);
+			}
+			finally {
+				if (writer != null) {
+					writer.close();
+				}
+			}
         }
         finally {
             if (zos != null) {
@@ -481,8 +504,9 @@ public class CytoscapeSessionWriter {
 
                     try {
                         // copy the file contents to the zip output stream
-                        FileInputStream fileIS = new FileInputStream(theFile);
+                        FileInputStream fileIS = null;
                         try {
+							fileIS = new FileInputStream(theFile);
                             int numRead = 0;
                             while ((numRead = fileIS.read(buf)) > -1)
                                 zos.write(buf, 0, numRead);

@@ -119,7 +119,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	 */
 	public InteractionsReader(String filename) {
 		this(filename, null);
-		this.inputStream = FileUtil.getInputStream(filename);
 	}
 
 	/**
@@ -129,9 +128,8 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @param monitor An optional task monitor.  May be null.
 	 */
 	public InteractionsReader(String filename, TaskMonitor monitor) {
-		super(filename);
+		this(FileUtil.getInputStream(filename), filename);
 		this.taskMonitor = monitor;
-		this.inputStream = FileUtil.getInputStream(filename);
 	}
 
 	/**
@@ -195,8 +193,12 @@ public class InteractionsReader extends AbstractGraphReader {
                 rawText = FileUtil.getInputString(inputStream);
             }
             finally {
-                if (inputStream != null) {
-                    inputStream.close();
+				InputStream is;
+
+				is = inputStream;
+				inputStream = null;
+                if (is != null) {
+                    is.close();
                 }
             }
 		} else {

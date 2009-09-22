@@ -62,8 +62,10 @@ public class CyAttributesReaderTest extends TestCase {
 		String attributeName = "TestNodeAttribute1";
 		CyAttributes cyAttributes = new CyAttributesImpl();
 		File file = new File("testData/galFiltered.nodeAttrs1");
-		FileReader reader = new FileReader(file);
+		FileReader reader = null;
+
         try {
+			reader = new FileReader(file);
             CyAttributesReader.loadAttributes(cyAttributes, reader);
         }
         finally {
@@ -99,8 +101,10 @@ public class CyAttributesReaderTest extends TestCase {
 	public void testRead2() throws IOException {
 		CyAttributes cyAttributes = new CyAttributesImpl();
 		File file = new File("testData/galFiltered.edgeAttrs2");
-		FileReader reader = new FileReader(file);
+		FileReader reader = null;
+
         try {
+			reader = new FileReader(file);
             CyAttributesReader.loadAttributes(cyAttributes, reader);
         }
         finally {
@@ -141,8 +145,10 @@ public class CyAttributesReaderTest extends TestCase {
 		//  Score (class=Java.lang.Double)
 		//  All the integer values should therefore be stored as Doubles.
 		File file = new File("testData/explicitDouble.attribute");
-		FileReader reader = new FileReader(file);
+		FileReader reader = null;
+
         try {
+			reader = new FileReader(file);
             CyAttributesReader.loadAttributes(cyAttributes, reader);
         }
         finally {
@@ -168,8 +174,10 @@ public class CyAttributesReaderTest extends TestCase {
 		String attributeName = "GO_molecular_function_level_4";
 		CyAttributes cyAttributes = new CyAttributesImpl();
 		File file = new File(fileToRead);
-		FileReader reader = new FileReader(file);
+		FileReader reader = null;
+		
         try {
+			reader = new FileReader(file);
             CyAttributesReader.loadAttributes(cyAttributes, reader);
         }
         finally {

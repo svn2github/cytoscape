@@ -263,10 +263,12 @@ class ExportAsXGMMLTask implements Task {
 	    throws IOException, JAXBException, URISyntaxException, XMLStreamException,
 	               FactoryConfigurationError {
 		// final FileWriter fileWriter = new FileWriter(fileName);
-		OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
-		final XGMMLWriter writer = new XGMMLWriter(network, view);
+		OutputStreamWriter fileWriter = null;
 
 		try {
+            fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
+            final XGMMLWriter writer = new XGMMLWriter(network, view);
+            
 			writer.write(fileWriter);
 		} finally {
             if (fileWriter != null) {

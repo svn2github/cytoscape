@@ -66,8 +66,10 @@ public class TestContinuousMappingReader extends TestCase {
 	 */
 	public void testReader() throws Exception {
 		Properties properties = new Properties();
-        InputStream in = getDataFile();
+        InputStream in = null;
+		
         try {
+			in = getDataFile();
             properties.load(in);
         }
         finally {

@@ -117,35 +117,56 @@ public class TextHttpReader {
 		int characterCount = 0;
 		StringBuffer result = new StringBuffer();
 
-		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		// Ensure we are reading the real content from url,
-		// and not some out-of-date cached content:
-		urlConnection.setUseCaches(false);
-		int responseCode = urlConnection.getResponseCode();
-		String contentType = urlConnection.getContentType();
-
-		int contentLength = urlConnection.getContentLength();
-
-		String contentEncoding = urlConnection.getContentEncoding();
-
-		if (responseCode != HttpURLConnection.HTTP_OK)
-			throw new IOException("\nHTTP response code: " + responseCode);
-
-		String thisLine;
-		BufferedReader theHTML = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+		HttpURLConnection urlConnection = null;
 
         try {
-            while ((thisLine = theHTML.readLine()) != null) {
-                result.append(thisLine);
-                result.append("\n");
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // Ensure we are reading the real content from url,
+            // and not some out-of-date cached content:
+            urlConnection.setUseCaches(false);
+            int responseCode = urlConnection.getResponseCode();
+            String contentType = urlConnection.getContentType();
+
+            int contentLength = urlConnection.getContentLength();
+
+            String contentEncoding = urlConnection.getContentEncoding();
+
+            if (responseCode != HttpURLConnection.HTTP_OK)
+                throw new IOException("\nHTTP response code: " + responseCode);
+
+            String thisLine;
+            InputStream connStrm = null;
+
+            try {
+				BufferedReader theHTML = null;
+
+                connStrm = urlConnection.getInputStream();
+				try {
+					theHTML = new BufferedReader(new InputStreamReader(connStrm));
+					while ((thisLine = theHTML.readLine()) != null) {
+						result.append(thisLine);
+						result.append("\n");
+					}
+				}
+				finally {
+					if (theHTML != null) {
+						theHTML.close();
+					}
+				}
+            }
+            finally {
+                if (connStrm != null) {
+                    connStrm.close();
+                }
             }
         }
         finally {
-            if (theHTML != null) {
-                theHTML.close();
+            if (urlConnection != null) {
+                urlConnection.disconnect();
             }
         }
-
+        
 		return result.toString();
 	} // getPage
 } // TextReader

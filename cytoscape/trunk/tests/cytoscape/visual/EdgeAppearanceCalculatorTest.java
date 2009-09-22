@@ -94,8 +94,9 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 			CyAttributesReader.loadAttributes(Cytoscape.getEdgeAttributes(),
 					new FileReader("testData/small.edgeAttr"));
 
-            InputStream is = FileUtil.getInputStream("testData/small.vizmap.props");
+            InputStream is = null;
             try {
+				is = FileUtil.getInputStream("testData/small.vizmap.props");
                 props.load(is);
             }
             finally {

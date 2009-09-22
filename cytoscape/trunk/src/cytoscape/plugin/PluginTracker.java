@@ -393,8 +393,9 @@ public class PluginTracker {
 		
 		try {
 			XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
-			FileWriter writer = new FileWriter(installFile);
+			FileWriter writer = null;
             try {
+				writer = new FileWriter(installFile);
                 out.output(trackerDoc, writer);
             }
             finally {

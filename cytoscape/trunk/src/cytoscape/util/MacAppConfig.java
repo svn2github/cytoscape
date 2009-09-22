@@ -105,8 +105,9 @@ public class MacAppConfig {
 		// jdom 1.0
 		XMLOutputter outputter = new XMLOutputter(org.jdom.output.Format.getPrettyFormat());
 
-		FileWriter writer = new FileWriter(configFile);
+		FileWriter writer = null;
         try {
+			writer = new FileWriter(configFile);
             outputter.output(doc, writer);
         }
         finally {
@@ -156,8 +157,9 @@ public class MacAppConfig {
 		Document doc = null;
 
 		try {
-			FileReader reader = new FileReader(configFile);
+			FileReader reader = null;
             try {
+				reader = new FileReader(configFile);
                 SAXBuilder saxBuilder = new SAXBuilder();
                 doc = saxBuilder.build(reader);
             }

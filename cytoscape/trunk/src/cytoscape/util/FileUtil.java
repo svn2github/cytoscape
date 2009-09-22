@@ -416,17 +416,18 @@ public abstract class FileUtil {
 		String lineSep = System.getProperty("line.separator");
 		StringBuffer sb = new StringBuffer();
 		String line = null;
-		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+		BufferedReader br = null;
 
-        try {
-            while ((line = br.readLine()) != null)
-                sb.append(line + lineSep);
-        }
-        finally {
-            if (br != null) {
-                br.close();
-            }
-        }
+		try {
+			br = new BufferedReader(new InputStreamReader(inputStream));
+			while ((line = br.readLine()) != null)
+				sb.append(line + lineSep);
+		}
+		finally {
+			if (br != null) {
+				br.close();
+			}
+		}
 
 		return sb.toString();
 	}

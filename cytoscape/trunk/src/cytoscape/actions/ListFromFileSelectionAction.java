@@ -100,22 +100,24 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
         List fileNodes = new ArrayList();
 
 		try {
-			FileReader fin = new FileReader(name);
-            try {
-                BufferedReader bin = new BufferedReader(fin);
-                String s;
+			BufferedReader bin = null;
 
-                while ((s = bin.readLine()) != null) {
-                    String trimName = s.trim();
+			try {
+				bin = new BufferedReader(new FileReader(name));
 
-                    if (trimName.length() > 0) {
-                        fileNodes.add(trimName);
-                    }
-                }
+				String s;
+
+				while ((s = bin.readLine()) != null) {
+					String trimName = s.trim();
+
+					if (trimName.length() > 0) {
+						fileNodes.add(trimName);
+					}
+				}
             }
             finally {
-                if (fin != null) {
-                    fin.close();
+                if (bin != null) {
+                    bin.close();
                 }
             }
 

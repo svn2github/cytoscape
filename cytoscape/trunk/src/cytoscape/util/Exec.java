@@ -160,8 +160,9 @@ public class Exec {
 				// automatically invoked after a byte array is written, one of
 				// the println methods is invoked, or a newline character or
 				// byte ('\n') is written.
-				PrintStream stdinWriter = new PrintStream(process.getOutputStream(), true);
+				PrintStream stdinWriter = null;
                 try {
+					stdinWriter = new PrintStream(process.getOutputStream(), true);
                     stdinWriter.print(stringToSendToStandardInput);
                 }
                 finally {

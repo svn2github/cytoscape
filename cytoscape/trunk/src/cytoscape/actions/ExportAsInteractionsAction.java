@@ -165,8 +165,9 @@ class SaveAsSifTask implements Task {
 			}
 
             CyNetwork netToSave = Cytoscape.getCurrentNetwork();
-			FileWriter f = new FileWriter(fileName);
+			FileWriter f = null;
             try {
+                f = new FileWriter(fileName);
                 InteractionWriter.writeInteractions(netToSave, f, taskMonitor);
             }
             finally {

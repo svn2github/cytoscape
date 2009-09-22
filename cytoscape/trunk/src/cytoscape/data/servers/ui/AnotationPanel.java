@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.net.URL;
@@ -574,29 +575,41 @@ public class AnotationPanel extends javax.swing.JPanel {
 		String[] rowString;
 		Vector data = new Vector();
 		Vector cn = new Vector();
-		BufferedReader spListReader = null;
 
-		try {
+        try {
 			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
-			// spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
-            // Even though taxURL is probably a local URL, error on the
-			// side of caution and use URLUtil to get the input stream (which
-			// handles proxy servers and cached pages):
-			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 
-			logger.info("Taxonomy table found in jar file...");
-		} catch (IOException e) {
+			InputStream is = null;
+			try {
+				BufferedReader spListReader = null;
+
+				is = URLUtil.getBasicInputStream(taxURL);
+				try {
+					// spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
+					// Even though taxURL is probably a local URL, error on the
+					// side of caution and use URLUtil to get the input stream (which
+					// handles proxy servers and cached pages):
+					spListReader = new BufferedReader(new InputStreamReader(is));
+
+					logger.info("Taxonomy table found in jar file...");
+					taxonMap = bdsu.getTaxonMap(spListReader);
+				}
+				finally {
+					if (spListReader != null) {
+						spListReader.close();
+					}
+				}
+			}
+			finally {
+				if (is != null) {
+					is.close();
+				}
+			}
+		}
+		catch (IOException e) {
 			logger.warn("Failed to load taxonomy table!", e);
 		}
 
-        try {
-            taxonMap = bdsu.getTaxonMap(spListReader);
-        }
-        finally {
-            if (spListReader != null) {
-                spListReader.close();
-            }
-        }
 		String[] taxonID = null;
 
 		boolean aspectErrorFlag = false;

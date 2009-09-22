@@ -230,11 +230,13 @@ class ExportAsGMLTask implements Task {
 	 *             Error Writing to File.
 	 */
 	private void saveGraph() throws IOException {
-		FileWriter fileWriter = new FileWriter(fileName);
+		FileWriter fileWriter = null;
 		List list = new Vector();
 
-		GMLWriter gmlWriter = new GMLWriter();
         try {
+            fileWriter = new FileWriter(fileName);
+
+            GMLWriter gmlWriter = new GMLWriter();
             gmlWriter.writeGML(network, view, list);
             GMLParser.printList(list, fileWriter);
         }

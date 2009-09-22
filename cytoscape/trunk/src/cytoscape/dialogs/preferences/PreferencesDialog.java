@@ -464,8 +464,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 			if (saveCyPropsAsDefault) {
 				try {
 					File file = CytoscapeInit.getConfigFile("cytoscape.props");
-					FileOutputStream output = new FileOutputStream(file);
+					FileOutputStream output = null;
                     try {
+						output = new FileOutputStream(file);
                         CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
                         logger.info("wrote Cytoscape properties file to: " + file.getAbsolutePath());
                     }

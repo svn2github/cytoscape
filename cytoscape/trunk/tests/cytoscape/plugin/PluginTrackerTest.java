@@ -366,34 +366,38 @@ public class PluginTrackerTest extends TestCase {
 		}
 	}
 	
-	
 	private File copyFileToTempDir(File fileToCopy) {
 		File tempDir = new File(System.getProperty("java.io.tmpdir"));
 		File tempFile = new File(tempDir, fileToCopy.getName());
 		
 		try {
-			BufferedReader reader = new BufferedReader( new FileReader(fileToCopy) );
-            try {
-                BufferedWriter writer = new BufferedWriter( new FileWriter(tempFile) );
-                try {
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        writer.write(line);
-                        writer.newLine();
-                        writer.flush();
-                    }
-                }
-                finally {
-                    if (writer != null) {
-                        writer.close();
-                    }
-                }
-            }
-            finally {
-                if (reader != null) {
-                    reader.close();
-                }
-            }
+			BufferedReader reader = null;
+
+			try {
+				reader = new BufferedReader(new FileReader(fileToCopy));
+
+				BufferedWriter writer = null;
+
+				try {
+					writer = new BufferedWriter(new FileWriter(tempFile));
+					String line = null;
+					while ((line = reader.readLine()) != null) {
+						writer.write(line);
+						writer.newLine();
+						writer.flush();
+					}
+				}
+				finally {
+					if (writer != null) {
+						writer.close();
+					}
+				}
+			}
+			finally {
+				if (reader != null) {
+					reader.close();
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

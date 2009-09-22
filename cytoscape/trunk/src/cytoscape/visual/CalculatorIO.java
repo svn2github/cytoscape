@@ -121,12 +121,15 @@ public class CalculatorIO {
 	 * calculators are reasonably human-readable.
 	 */
 	public static void storeCatalog(CalculatorCatalog catalog, File outFile) throws IOException {
-		final Writer writer = new FileWriter(outFile);
+		Writer writer = null;
         try {
+			writer = new FileWriter(outFile);
             storeCatalog(catalog, writer);
         }
         finally {
-            writer.close();
+			if (writer != null) {
+				writer.close();
+			}
         }
 	}
 
@@ -162,44 +165,35 @@ public class CalculatorIO {
 
 		// and dump it to a buffer of bytes
 		buffer = new ByteArrayOutputStream();
-        try {
-            props.store(buffer, header.toString());
+		props.store(buffer, header.toString());
+		buffer.close();
 
-            // convert the bytes to a String we can read from
-            reader = new BufferedReader(new StringReader(buffer.toString()));
+		// convert the bytes to a String we can read from
+		reader = new BufferedReader(new StringReader(buffer.toString()));
+		String oneLine = reader.readLine();
 
-            try {
-                String oneLine = reader.readLine();
+		while (oneLine != null) {
+			if (oneLine.startsWith("#"))
+				headerLines.add(oneLine);
+			else {
+				boolean test = true;
+				for (String key : OLD_CALC_KEYS) {
+					if (oneLine.toUpperCase().contains(key) == false)
+						continue;
+					else {
+						test = false;
+						break;
+					}
+				}
 
-                while (oneLine != null) {
-                    if (oneLine.startsWith("#"))
-                        headerLines.add(oneLine);
-                    else {
-                        boolean test = true;
-                        for (String key : OLD_CALC_KEYS) {
-                            if (oneLine.toUpperCase().contains(key) == false)
-                                continue;
-                            else {
-                                test = false;
-                                break;
-                            }
-                        }
+				if (test)
+					lines.add(oneLine);
+			}
 
-                        if (test)
-                            lines.add(oneLine);
-                    }
-
-                    oneLine = reader.readLine();
-                }
-            }
-            finally {
-                reader.close();
-            }
-        }
-        finally {
-            buffer.close();
-        }
-
+			oneLine = reader.readLine();
+		}
+		reader.close();
+		
 		// now sort all the non-header lines
 		Collections.sort(lines);
 

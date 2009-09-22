@@ -229,7 +229,6 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public GMLReader(String filename) {
 		this(filename, null);
-		inputStream = FileUtil.getInputStream(filename);
 	}
 
 	/**

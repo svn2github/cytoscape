@@ -162,51 +162,62 @@ public class ZipUtil {
 		// FileInputStream fileIS;
 		final CRC32 crc32 = new CRC32();
 		final byte[] rgb = new byte[5000];
-		final ZipOutputStream zipOS = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipArchiveName)));
+		BufferedOutputStream bos = null;
 
-        try {
-            // Tuning performance
-            zipOS.setMethod(ZipOutputStream.DEFLATED);
+		try {
+			ZipOutputStream zipOS = null;
+			
+			bos = new BufferedOutputStream(new FileOutputStream(zipArchiveName));
+			try {
+				zipOS = new ZipOutputStream(bos);
+				// Tuning performance
+				zipOS.setMethod(ZipOutputStream.DEFLATED);
 
-            if ((compressionLevel >= 0) && (compressionLevel <= 9)) {
-                zipOS.setLevel(compressionLevel);
-            } else {
-                zipOS.setLevel(DEF_COMPRESSION_LEVEL);
-            }
+				if ((compressionLevel >= 0) && (compressionLevel <= 9)) {
+					zipOS.setLevel(compressionLevel);
+				} else {
+					zipOS.setLevel(DEF_COMPRESSION_LEVEL);
+				}
 
-            String targetName = "";
+				String targetName = "";
 
-            for (int i = 0; i < fileCount; i++) {
-                final File file = new File(inputFileDir + inputFiles[i]);
-                targetName = sessionDirName + FS + inputFiles[i];
-                addEntryToZip(file, targetName, zipOS, crc32, rgb);
-            }
+				for (int i = 0; i < fileCount; i++) {
+					final File file = new File(inputFileDir + inputFiles[i]);
+					targetName = sessionDirName + FS + inputFiles[i];
+					addEntryToZip(file, targetName, zipOS, crc32, rgb);
+				}
 
-            if ((pluginFileMap != null) && (pluginFileMap.size() > 0)) {
-                Set<String> pluginSet = pluginFileMap.keySet();
+				if ((pluginFileMap != null) && (pluginFileMap.size() > 0)) {
+					Set<String> pluginSet = pluginFileMap.keySet();
 
-                for (String pluginName : pluginSet) {
-                    List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
+					for (String pluginName : pluginSet) {
+						List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
 
-                    if ((theFileList == null) || (theFileList.size() == 0))
-                        continue;
+						if ((theFileList == null) || (theFileList.size() == 0))
+							continue;
 
-                    for (File theFile : theFileList) {
-                        if ((theFile == null) || (!theFile.exists()))
-                            continue;
+						for (File theFile : theFileList) {
+							if ((theFile == null) || (!theFile.exists()))
+								continue;
 
-                        targetName = sessionDirName + FS + "plugins" + FS + pluginName + FS
-                                     + theFile.getName();
-                        addEntryToZip(theFile, targetName, zipOS, crc32, rgb);
-                    }
-                }
-            }
-        }
-        finally {
-            if (zipOS != null) {
-                zipOS.close();
-            }
-        }
+							targetName = sessionDirName + FS + "plugins" + FS + pluginName + FS
+										 + theFile.getName();
+							addEntryToZip(theFile, targetName, zipOS, crc32, rgb);
+						}
+					}
+				}
+			}
+			finally {
+				if (zipOS != null) {
+					zipOS.close();
+				}
+			}
+		}
+		finally {
+			if (bos != null) {
+				bos.close();
+			}
+		}
 
 		// final double stop = System.currentTimeMillis();
 		// final double diff = stop - start;
@@ -230,9 +241,10 @@ public class ZipUtil {
 		int numRead;
 
 		// Set CRC
-		FileInputStream fileIS = new FileInputStream(srcFile);
+		FileInputStream fileIS = null;
 
         try {
+			fileIS = new FileInputStream(srcFile);
             while ((numRead = fileIS.read(rgb)) > -1) {
                 crc32.update(rgb, 0, numRead);
             }
@@ -243,17 +255,18 @@ public class ZipUtil {
             }
         }
 
-		final ZipEntry zipEntry = new ZipEntry(targetName);
-		zipEntry.setSize(srcFile.length());
-		zipEntry.setTime(srcFile.lastModified());
-		zipEntry.setCrc(crc32.getValue());
-		zipOS.putNextEntry(zipEntry);
-
+		fileIS = null;
         try {
-            // Write the file
-            fileIS = new FileInputStream(srcFile);
+			final ZipEntry zipEntry = new ZipEntry(targetName);
+			zipEntry.setSize(srcFile.length());
+			zipEntry.setTime(srcFile.lastModified());
+			zipEntry.setCrc(crc32.getValue());
+			zipOS.putNextEntry(zipEntry);
 
+            // Write the file
             try {
+				fileIS = new FileInputStream(srcFile);
+
                 while ((numRead = fileIS.read(rgb)) > -1) {
                     zipOS.write(rgb, 0, numRead);
                 }
@@ -386,8 +399,9 @@ public class ZipUtil {
         p = Pattern.compile(fileNameRegEx);
         m = p.matcher("");
 
-		ZipFile Zip = new ZipFile(zipName);
+		ZipFile Zip = null;
         try {
+			Zip = new ZipFile(zipName);
             Enumeration Entries = Zip.entries();
 
             while (Entries.hasMoreElements()) {
@@ -427,8 +441,9 @@ public class ZipUtil {
 		int progressCount = 0;
 		double percent = 0.0d;
 		
-		ZipFile Zip = new ZipFile(zipName);
+		ZipFile Zip = null;
         try {
+			Zip = new ZipFile(zipName);
             Enumeration Entries = Zip.entries();
             int BUFFER = 2048;
 
@@ -450,52 +465,46 @@ public class ZipUtil {
                     continue;
                 }
 
-                InputStream zis = Zip.getInputStream(CurrentEntry);
+                InputStream zis = null;
                 try {
+					zis = Zip.getInputStream(CurrentEntry);
                     maxCount = zis.available();
 
-                    FileOutputStream fos = new FileOutputStream(ZipFile);
-                    try {
-                        BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
+					BufferedOutputStream dest = null;
 
-                        try {
-                            // write the files to the disk
-                            int count;
-                            byte[] data = new byte[BUFFER];
+					try {
+						dest = new BufferedOutputStream(new FileOutputStream(ZipFile), BUFFER);
+						// write the files to the disk
+						int count;
+						byte[] data = new byte[BUFFER];
 
-                            while ((count = zis.read(data, 0, BUFFER)) != -1) {
-                                dest.write(data, 0, count);
-                                //  Report on Progress
-                                if (taskMonitor != null) {
-                                    percent = ((double) progressCount / maxCount) * 100.0;
-                                    if (maxCount == -1) { // file size unknown
-                                        percent = -1;
-                                    }
+						while ((count = zis.read(data, 0, BUFFER)) != -1) {
+							dest.write(data, 0, count);
+							//  Report on Progress
+							if (taskMonitor != null) {
+								percent = ((double) progressCount / maxCount) * 100.0;
+								if (maxCount == -1) { // file size unknown
+									percent = -1;
+								}
 
-                                    JTask jTask = (JTask) taskMonitor;
-                                    // TODO erm...how?
-                                    if (jTask.haltRequested()) { //abort
-                                        taskMonitor.setStatus("Canceling the unzip ...");
-                                        taskMonitor.setPercentCompleted(100);
-                                        break;
-                                    }
-                                    taskMonitor.setPercentCompleted((int) percent);
-                                }
-                            }
+								JTask jTask = (JTask) taskMonitor;
+								// TODO erm...how?
+								if (jTask.haltRequested()) { //abort
+									taskMonitor.setStatus("Canceling the unzip ...");
+									taskMonitor.setPercentCompleted(100);
+									break;
+								}
+								taskMonitor.setPercentCompleted((int) percent);
+							}
+						}
 
-                            dest.flush();
-                        }
-                        finally {
-                            if (dest != null) {
-                                dest.close();
-                            }
-                        }
-                    }
-                    finally {
-                        if (fos != null) {
-                            fos.close();
-                        }
-                    }
+						dest.flush();
+					}
+					finally {
+						if (dest != null) {
+							dest.close();
+						}
+					}
                 }
                 finally {
                     if (zis != null) {

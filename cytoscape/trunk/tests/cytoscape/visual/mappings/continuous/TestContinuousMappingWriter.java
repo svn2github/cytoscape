@@ -63,8 +63,10 @@ public class TestContinuousMappingWriter extends TestCase {
 		String baseKey = "nodeColorCalculator.RedGreen2.mapping";
 		ValueParser parser = new ColorParser();
 		Properties properties = new Properties();
-		InputStream in = TestContinuousMappingReader.getDataFile();
+		InputStream in = null;
+		
         try {
+			in = TestContinuousMappingReader.getDataFile();
             properties.load(in);
         }
         finally {

@@ -97,9 +97,10 @@ public class CyNetworkUtilities {
 
 		try {
 			File file = new File(filename);
-			FileWriter fout = new FileWriter(file);
+			FileWriter fout = null;
 
             try {
+				fout = new FileWriter(file);
                 for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
                     CyNode node = (CyNode) i.next();
                     String nodeUID = node.getIdentifier();
@@ -141,9 +142,10 @@ public class CyNetworkUtilities {
 
 		try {
 			File file = new File(filename);
-			FileWriter fout = new FileWriter(file);
+			FileWriter fout = null;
 
             try {
+				fout = new FileWriter(file);
                 for (Iterator i = network.nodesIterator(); i.hasNext();) {
                     CyNode node = (CyNode) i.next();
                     // String canonicalName = nodeAttributes.getCanonicalName(node);

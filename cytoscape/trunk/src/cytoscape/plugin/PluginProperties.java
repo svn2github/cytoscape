@@ -4,6 +4,8 @@
 package cytoscape.plugin;
 import cytoscape.logger.CyLogger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -57,8 +59,9 @@ public class PluginProperties extends Properties {
 	 * @param fileName
 	 */
 	PluginProperties(String fileName) throws IOException {
-		java.io.FileInputStream fis = new java.io.FileInputStream( new java.io.File(fileName) );
+		FileInputStream fis = null;
         try {
+			fis = new FileInputStream(new File(fileName));
             readPluginProperties(fis);
         }
         finally {

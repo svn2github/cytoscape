@@ -198,17 +198,27 @@ public class GeneOntologyWizard {
 		String autoManifest = parentPath + FS + "auto_generated_manifest";
 
 		try {
-			FileWriter fw = new FileWriter(autoManifest, append);
-			BufferedWriter br = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(br);
-            try {
-                pw.println("species=" + species);
-            }
-            finally {
-                if (pw != null) {
-                    pw.close();
-                }
-            }
+			BufferedWriter br = null;
+
+			try {
+				PrintWriter pw = null;
+
+				br = new BufferedWriter(new FileWriter(autoManifest, append));
+				try {
+					pw = new PrintWriter(br);
+					pw.println("species=" + species);
+				}
+				finally {
+					if (pw != null) {
+						pw.close();
+					}
+				}
+			}
+			finally {
+				if (br != null) {
+					br.close();
+				}
+			}
 		} catch (Exception e) {
 			logger.warn("Unable to append species to: "+autoManifest,e);
 		}
@@ -255,20 +265,32 @@ public class GeneOntologyWizard {
 				parentPath = oboFile.getParent() + FS;
 				manifestFullPath = parentPath + AUTO_MANIFEST;
 
-				PrintWriter wt = new PrintWriter(new BufferedWriter(new FileWriter(manifestFullPath)));
-                try {
-                    wt.println("flip=" + flip);
-                    wt.println("obo=" + oboFile.getName());
+				BufferedWriter bw = null;
+				
+				try {
+					PrintWriter wt = null;
 
-                    for (int i = 0; i < gaList.length; i++) {
-                        wt.println("gene_association=" + gaList[i].getName());
-                    }
-                }
-                finally {
-                    if (wt != null) {
-                        wt.close();
-                    }
-                }
+					bw = new BufferedWriter(new FileWriter(manifestFullPath));
+					try {
+						wt = new PrintWriter(bw);
+						wt.println("flip=" + flip);
+						wt.println("obo=" + oboFile.getName());
+
+						for (int i = 0; i < gaList.length; i++) {
+							wt.println("gene_association=" + gaList[i].getName());
+						}
+					}
+					finally {
+						if (wt != null) {
+							wt.close();
+						}
+					}
+				}
+				finally {
+					if (bw != null) {
+						bw.close();
+					}
+				}
 			}
 
 			logger.info("Manifest Created.");

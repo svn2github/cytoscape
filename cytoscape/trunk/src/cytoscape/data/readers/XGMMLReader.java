@@ -257,60 +257,64 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void readXGMML() throws SAXException, IOException {
 		// Performance check
-		final long start = System.currentTimeMillis();
-		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
-		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
+//		final long start = System.currentTimeMillis();
+//		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
+//		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
+//		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
 
 //		logger.debug("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
 //		logger.debug("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
 //		logger.debug("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
 //		logger.debug("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
-		
+
 		try {
-            try {
-                /*
-                 * Read the file and map the entire XML document into data
-                 * structure.
-                 */
-                if (taskMonitor != null) {
-                    taskMonitor.setPercentCompleted(-1);
-                    taskMonitor.setStatus("Reading XGMML data...");
-                }
+			try {
+				try {
+					/*
+					 * Read the file and map the entire XML document into data
+					 * structure.
+					 */
+					if (taskMonitor != null) {
+						taskMonitor.setPercentCompleted(-1);
+						taskMonitor.setStatus("Reading XGMML data...");
+					}
 
-                // Get our parser
-                SAXParserFactory spf = SAXParserFactory.newInstance();
-                SAXParser sp = spf.newSAXParser();
-                ParserAdapter pa = new ParserAdapter(sp.getParser());
-                parser = new XGMMLParser();
-                pa.setContentHandler(parser);
-                pa.setErrorHandler(parser);
-                pa.parse(new InputSource(networkStream));
-                networkName = parser.getNetworkName();
+					// Get our parser
+					SAXParserFactory spf = SAXParserFactory.newInstance();
+					SAXParser sp = spf.newSAXParser();
+					ParserAdapter pa = new ParserAdapter(sp.getParser());
+					parser = new XGMMLParser();
+					pa.setContentHandler(parser);
+					pa.setErrorHandler(parser);
+					pa.parse(new InputSource(networkStream));
+					networkName = parser.getNetworkName();
 
-            } catch (OutOfMemoryError oe) {
-                /*
-                 * It's not generally a good idea to catch OutOfMemoryErrors, but in
-                 * this case, where we know the culprit (a file that is too large),
-                 * we can at least try to degrade gracefully.
-                 */
-                System.gc();
-                throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
-            } catch (ParserConfigurationException e) {
-            } catch (SAXParseException e) {
-                logger.error("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'", e);
-                throw e;
-            }
-		} finally {
-			if (networkStream != null) {
-				networkStream.close();
-				networkStream = null;
+				} catch (OutOfMemoryError oe) {
+					/*
+					 * It's not generally a good idea to catch OutOfMemoryErrors, but in
+					 * this case, where we know the culprit (a file that is too large),
+					 * we can at least try to degrade gracefully.
+					 */
+					System.gc();
+					throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
+				} catch (ParserConfigurationException e) {
+				} catch (SAXParseException e) {
+					logger.error("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'", e);
+					throw e;
+				}
+			} finally {
+				if (networkStream != null) {
+					networkStream.close();
+				}
 			}
 		}
+		finally {
+			networkStream = null;
+		}
 
-		heapUsage = mbean.getHeapMemoryUsage();
-		nonHeapUsage = mbean.getNonHeapMemoryUsage();
-		long memend = Runtime.getRuntime().freeMemory();
+//		heapUsage = mbean.getHeapMemoryUsage();
+//		nonHeapUsage = mbean.getNonHeapMemoryUsage();
+//		long memend = Runtime.getRuntime().freeMemory();
 
 //		logger.debug("============= Total time for " + networkName + " = "
 //		                   + (System.currentTimeMillis() - start));
