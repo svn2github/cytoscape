@@ -71,7 +71,7 @@ import cytoscape.visual.parsers.ValueParser;
  */
 public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	Object defaultObj; // the default value held by this mapping
-	Class rangeClass; // the valid range class for this mapping
+	Class<?> rangeClass; // the valid range class for this mapping
 	String attrName; // the name of the controlling data attribute
 	protected byte mapType; //  node or edge; specifies which attributes
 	                        //  to use.

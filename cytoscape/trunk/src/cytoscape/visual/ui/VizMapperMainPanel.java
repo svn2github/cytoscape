@@ -1451,12 +1451,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final List<VizMapperProperty> children = new ArrayList<VizMapperProperty>();
 
+		
 		for (Object key : attrKeys) {
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
 			valProp.setName(strVal + "-" + type.toString());
 			valProp.setParentProperty(parent);
+			
 
 			try {
 				val = discMapping.get(key);
@@ -1625,6 +1627,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					case EDGE_LINE_WIDTH:
 					case NODE_OPACITY:
 					case EDGE_OPACITY:
+					case EDGE_TGTARROW_OPACITY:
+					case EDGE_SRCARROW_OPACITY:
 					case NODE_LABEL_OPACITY:
 					case EDGE_LABEL_OPACITY:
 					case NODE_BORDER_OPACITY:
