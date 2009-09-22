@@ -2,9 +2,9 @@ package org.cytoscape.io.internal.read.xgmml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Set;
 
-import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.io.internal.CyFileFilterImpl;
 
@@ -14,17 +14,14 @@ public class XGMMLFileFilter extends CyFileFilterImpl {
 	
 
 	public XGMMLFileFilter(Set<String> extensions, Set<String> contentTypes,
-			String description, DataCategory category, StreamUtil streamUtil) {
-		super(extensions, contentTypes, description, category, streamUtil);
+			String description, StreamUtil streamUtil) {
+		super(extensions, contentTypes, description, streamUtil);
 	}
 
-	public boolean accept(InputStream stream, DataCategory category)
+	public boolean accept(URI uri)
 			throws IOException {
-
-		// Check data category
-		if (category != this.category)
-			return false;
 		
+		InputStream stream = streamUtil.getInputStream(uri.toURL());
 		final String header = this.getHeader(stream);
 		if(header.contains(XGMML_NAMESPACE_STRING))
 			return true;
