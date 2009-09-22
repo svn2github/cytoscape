@@ -36,7 +36,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * it represents the name of this dependency (i.e name of the other <code>Tunable</code>
 	 * </pre>
 	 */
-    private String depName;
+    private String dependencyName;
     
     /**
      * <pre>
@@ -44,19 +44,19 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
      * could be : "true, false, an item of a <code>ListSelection</code>, a value ..."
      * </pre>
      */
-    private String depState;
+    private String dependencyState;
 
     
-    private String depUnState;
+    private String dependencyUnState;
     
     
     /**
      * The list of dependencies between the <code>Guihandlers</code>
      */
-	private List<Guihandler> deps;
+	private List<Guihandler> dependencies;
 
 	/**
-	 * Constructs an Abstract GuiHandler
+	 * Constructs an Abstract GuiHandler with dependencies informations
 	 * 
 	 * @param f Field that is intercepted
 	 * @param o Object that is contained in the Field <code>f</code>
@@ -67,18 +67,18 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
         String s = t.dependsOn();
 		 if ( !s.equals("") ) {
 	        	if(!s.contains("!=")){
-	        		depName = s.substring(0,s.indexOf("="));
-	        		depState = s.substring(s.indexOf("=") + 1);
-	        		depUnState = "";
+	        		dependencyName = s.substring(0,s.indexOf("="));
+	        		dependencyState = s.substring(s.indexOf("=") + 1);
+	        		dependencyUnState = "";
 	        	}
 	        	else {
-	        		depName = s.substring(0,s.indexOf("!"));
-	        		depUnState = s.substring(s.indexOf("=")+1);
-	        		depState = "";
+	        		dependencyName = s.substring(0,s.indexOf("!"));
+	        		dependencyUnState = s.substring(s.indexOf("=")+1);
+	        		dependencyState = "";
 	        	}
 	        }
 	
-		deps = new LinkedList<Guihandler>();
+		dependencies = new LinkedList<Guihandler>();
 		panel = new JPanel();
 	}
 
@@ -89,6 +89,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 
 	/**
 	 * Notify a change of state of a <code>Guihandler</code>
+	 * 
+	 * @param e a modification that happened to this <code>handler</code>
 	 */
 	public void stateChanged(ChangeEvent e){
 		notifyDependents();
@@ -96,6 +98,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	
 	/**
 	 * Notify a change during the selection of an item in the <code>ListSelection</code> objects
+	 * 
+	 * @param le change in the selection of an item in a list
 	 */
     public void valueChanged(ListSelectionEvent le) {
     	boolean ok = le.getValueIsAdjusting();
@@ -111,17 +115,20 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-		for ( Guihandler gh : deps )
+		for ( Guihandler gh : dependencies )
 		gh.checkDependency( name, state );
 	}
 
 	/**
-	 *  Add a dependency on this object 
+	 *  Add a dependency on this <code>Guihandler</code> to another <code>Tunable</code>
+	 *  While the dependency rule to this other <code>Guihandler</code> doesn't match, this one won't be available
+	 *  
+	 *  @param gh <code>Handler</code> on which this one depends on. 
 	 */
 	public void addDependent(Guihandler gh) {
 		//System.out.println("adding " + gh.getName() + " dependent to " + this.getName() );
-		if ( !deps.contains(gh) )
-			deps.add(gh);
+		if ( !dependencies.contains(gh) )
+			dependencies.add(gh);
 	}
 	
 
@@ -130,7 +137,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * @return the name of the dependency
 	 */
 	public String getDependency() {
-		return depName;
+		return dependencyName;
 	}
 
 	/**
@@ -154,17 +161,17 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 */
 	public void checkDependency(String name, String state) {
 		// if we don't depend on anything, then we should be enabled
-		if ( depName == null || depState == null ) {
+		if ( dependencyName == null || dependencyState == null ) {
 			setEnabledContainer(true,panel);
 //			handle();
 			return;
 		}
 
 		// if the dependency name matches ...
-        if ( depName.equals(name) ) {
+        if ( dependencyName.equals(name) ) {
 			// ... and the state matches, then enable 
-        	if(depState!=""){
-        		if ( depState.equals(state) ){
+        	if(dependencyState!=""){
+        		if ( dependencyState.equals(state) ){
         			setEnabledContainer(true,panel);
 //        			handle();
         		}
@@ -174,7 +181,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
         		}
         	}
         	else {
-        		if ( !depUnState.equals(state) ){
+        		if ( !dependencyUnState.equals(state) ){
         			setEnabledContainer(true,panel);
 //        			handle();
         		}
@@ -194,9 +201,9 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * @param enable if we enable or not the container
 	 * @param c the container that will be enabled or not
 	 */
-	private void setEnabledContainer(boolean enable, Container c) {
-		c.setEnabled(enable);
-		for ( Component child : c.getComponents() ) {
+	private void setEnabledContainer(boolean enable, Container container) {
+		container.setEnabled(enable);
+		for ( Component child : container.getComponents() ) {
 			if ( child instanceof Container )
 				setEnabledContainer(enable,(Container)child);
 			else

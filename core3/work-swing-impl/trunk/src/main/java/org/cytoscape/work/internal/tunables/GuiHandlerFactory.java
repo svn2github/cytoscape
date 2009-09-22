@@ -8,7 +8,8 @@ import java.net.URL;
 
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.BookmarksUtil;
-import org.cytoscape.property.bookmark.*;
+import org.cytoscape.property.bookmark.Bookmarks;
+
 import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.BoundedDouble;
@@ -22,6 +23,7 @@ import org.cytoscape.work.util.FlexiblyBoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
+
 /**
  * Provides a factory to create <code>Guihandler</code> depending on their type
  * A <code>Guihandler</code> is simply a <code>Handler</code> with the GUI aspect to display the handled object to the user in a proper way.
@@ -34,6 +36,7 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	private BookmarksUtil bkUtil;
 //	public FileUtil flUtil;
 //	public StreamUtil stUtil;
+	
 	
 	/**
 	 * creates a new GuiHandlerFactory object
@@ -77,7 +80,7 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
 	
 	/**
-	 * To get a <code>Handler</code> for a Field annotated as <code>Tunable</code>
+	 * To get a <code>Handler</code> for a Field annotated as <code>Tunable</code> for a specific type of object
 	 * 
 	 * @param	m	the annotated field
 	 * @param	o	object of the <code>Handler</code>

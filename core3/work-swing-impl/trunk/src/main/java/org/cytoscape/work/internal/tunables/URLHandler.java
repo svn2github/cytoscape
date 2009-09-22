@@ -9,7 +9,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.awt.event.KeyListener;
-import javax.swing.*;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JSeparator;
+import javax.swing.ListCellRenderer;
+import javax.swing.ToolTipManager;
+import javax.swing.ComboBoxEditor;
+import javax.swing.JTextField;
 
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
@@ -19,29 +28,53 @@ import org.cytoscape.work.Tunable;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-public class URLHandler extends AbstractGuiHandler {
 
-	public URL url;
+
+/**
+ * Handler for the type <i>URL</i> of <code>Tunable</code>
+ * 
+ * @author pasteur
+ */
+public class URLHandler extends AbstractGuiHandler {
+	private URL url;
 	private BookmarksUtil bkUtil;
 	private Bookmarks theBookmarks;
 	private String bookmarkCategory = "network";
-	private String urlstr;
+	private String urlString;
 	private BookmarkComboBoxEditor bookmarkEditor;
 	private JComboBox networkFileComboBox;
 	private JLabel titleLabel;
 	private JSeparator titleSeparator;
 	private String pleaseMessage = "Please provide URL or select from list";
+	private GroupLayout layout;
 	
+	
+	
+	/**
+	 * Constructs the <code>Guihandler</code> for the <code>URL</code> type
+	 * 
+	 * It creates the GUI which displays a field to enter a URL, and a combobox which contains different registered URL with their description
+	 * 
+	 * @param f field that has been annotated
+	 * @param o object contained in <code>f</code>
+	 * @param t tunable associated to <code>f</code>
+	 */
 	public URLHandler(Field f, Object o, Tunable t,Bookmarks bookmarks,BookmarksUtil bkUtil) {
 		super(f,o,t);
-		this.bkUtil=bkUtil;
-		this.theBookmarks=bookmarks;
-		this.bookmarkEditor = new BookmarkComboBoxEditor();
-		titleSeparator = new JSeparator();
-		titleLabel = new JLabel("Import URL file");
+
 		try{
-			this.url= (URL) f.get(o);
+			this.url = (URL) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
+
+		
+		this.bkUtil = bkUtil;
+		this.theBookmarks = bookmarks;
+		
+		//creation of the GUI and layout
+		setGUI();
+		setLayout();
+		panel.setLayout(layout);
+		
 
 		Category theCategory = bkUtil.getCategory(bookmarkCategory,bookmarks.getCategory());	
 		if (theCategory == null) {
@@ -51,21 +84,86 @@ public class URLHandler extends AbstractGuiHandler {
 			List<Category> theCategoryList = bookmarks.getCategory();
 			theCategoryList.add(theCategory);
 		}
+		
+		loadBookmarkCMBox();
+	}
+	
+
+
+	/**
+	 * Set the url typed in the field, or choosen from the combobox to the object <code>URL</code> <code>o</code>
+	 */
+	public void handle() {
+		urlString = bookmarkEditor.getURLstr();
+		try{
+			if ( urlString != null ) {
+				try {
+					url = new URL(urlString);
+					f.set(o,url);
+				}catch (MalformedURLException e){e.printStackTrace();}
+			}
+		}catch (Exception e){e.printStackTrace();}
+	}
+
+	
+	/**
+	 * To reset the current url, and set it to the initial one with no path
+	 */
+	public void resetValue(){
+		try{
+			f.set(o, new URL(""));
+		}catch(Exception e){e.printStackTrace();}
+	}
+	
+	
+	/**
+	 * To get the string representing the <code>URL</code> contained in <code>URLHandler</code> : 
+	 * 
+	 * @return the representation of the object <code>o</code> contained in <code>f</code>
+	 */
+    public String getState() {
+		String state = null;
+		try {
+			if(f.get(o)!=null) state = f.get(o).toString();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			state = "";
+		}
+		return state;
+    }
+    
+    
+    
+    //Creation of the GUI :
+    //	-field that displays the URL or the bookmark
+    //	-combobox to choose a bookmark previously registered
+    
+    // Tooltips to inform the user are also provided on the combobox
+    private void setGUI(){
+    	//adding tooltips to panel components
+    	final ToolTipManager tipManager = ToolTipManager.sharedInstance();
+		tipManager.setInitialDelay(1);
+		tipManager.setDismissDelay(7500);
+    	
+		bookmarkEditor = new BookmarkComboBoxEditor();
+		bookmarkEditor.setStr(pleaseMessage);
+		titleSeparator = new JSeparator();
+		titleLabel = new JLabel("Import URL file");
+		
 		networkFileComboBox = new JComboBox();
 		networkFileComboBox.setRenderer(new MyCellRenderer());
 		networkFileComboBox.setEditor(bookmarkEditor);
 		networkFileComboBox.setEditable(true);
 		networkFileComboBox.setName("networkFileComboBox");
 		networkFileComboBox.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");
-		
-		
-		final ToolTipManager tp = ToolTipManager.sharedInstance();
-		tp.setInitialDelay(1);
-		tp.setDismissDelay(7500);
+    }
 
-
-		GroupLayout layout = new GroupLayout(panel);
-		panel.setLayout(layout);
+    
+    
+	//diplays the panel's component in a good view
+    private void setLayout(){
+    	layout = new GroupLayout(panel);
+		
 		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
 				.add(
 					layout.createSequentialGroup()
@@ -89,45 +187,34 @@ public class URLHandler extends AbstractGuiHandler {
 						.add(networkFileComboBox,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
 						.addContainerGap()));
-		
-		panel.add(new JLabel("URL Path = "));
-		panel.add(networkFileComboBox);
-		bookmarkEditor.setStr(pleaseMessage);
-		loadBookmarkCMBox();
-	}
-
-	public void handle() {
-		urlstr = bookmarkEditor.getURLstr();
-		try{
-			if ( urlstr != null ) {
-				try {
-					url = new URL(urlstr);
-					f.set(o,url);
-				}catch (MalformedURLException e){e.printStackTrace();}
-			}
-		}catch (Exception e){}
-	}
-
 	
-	public void resetValue(){
-		try{
-			f.set(o, new URL(""));
-//			System.out.println("#########Value will be reset to initial value = "+ ((URL) f.get(o)).getPath()+ "#########");				
-		}catch(Exception e){e.printStackTrace();}
-	}
-	
-    public String getState() {
-		String s = null;
-		try {
-			if(f.get(o)!=null) s = f.get(o).toString();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			s = "";
-		}
-		return s;
     }
     
     
+    
+    //add the URL entries (with their bookmarks) from an external file to the combobox
+	private void loadBookmarkCMBox() {
+		networkFileComboBox.removeAllItems();
+		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
+
+		DataSource firstDataSource = new DataSource();
+		firstDataSource.setName("");
+		firstDataSource.setHref(null);
+
+		theModel.addElement(firstDataSource);
+
+		// Extract the URL entries
+		List<DataSource> theDataSourceList = bkUtil.getDataSourceList(bookmarkCategory,theBookmarks.getCategory());
+		if (theDataSourceList != null) {
+			for (int i = 0; i < theDataSourceList.size(); i++) {
+				theModel.addElement(theDataSourceList.get(i));
+			}
+		}
+		networkFileComboBox.setModel(theModel);
+	}
+
+
+	
 	private class BookmarkComboBoxEditor implements ComboBoxEditor {
 		DataSource theDataSource = new DataSource();
 		JTextField tfInput = new JTextField(pleaseMessage);
@@ -159,7 +246,6 @@ public class URLHandler extends AbstractGuiHandler {
 			if (anObject == null) {
 				return;
 			}
-
 			if (anObject instanceof DataSource) {
 				theDataSource = (DataSource) anObject;
 				tfInput.setText(theDataSource.getHref());
@@ -167,27 +253,6 @@ public class URLHandler extends AbstractGuiHandler {
 		}
 	}
 	
-	private void loadBookmarkCMBox() {
-		networkFileComboBox.removeAllItems();
-
-		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
-
-		DataSource firstDataSource = new DataSource();
-		firstDataSource.setName("");
-		firstDataSource.setHref(null);
-
-		theModel.addElement(firstDataSource);
-
-		// Extract the URL entries
-		List<DataSource> theDataSourceList = bkUtil.getDataSourceList(bookmarkCategory,theBookmarks.getCategory());
-		if (theDataSourceList != null) {
-			for (int i = 0; i < theDataSourceList.size(); i++) {
-				theModel.addElement(theDataSourceList.get(i));
-			}
-		}
-		networkFileComboBox.setModel(theModel);
-	}
-
 	
 	private class MyCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339872997986L;
@@ -195,8 +260,7 @@ public class URLHandler extends AbstractGuiHandler {
 			setOpaque(true);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			DataSource dataSource = (DataSource) value;
 			setText(dataSource.getName());
 			if (isSelected) {
@@ -204,7 +268,6 @@ public class URLHandler extends AbstractGuiHandler {
 					list.setToolTipText(dataSource.getHref());
 				}
 			}
-
 			return this;
 		}
 	}

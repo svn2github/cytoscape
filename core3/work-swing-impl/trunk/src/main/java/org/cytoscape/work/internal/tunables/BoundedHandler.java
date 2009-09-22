@@ -21,13 +21,14 @@ import org.cytoscape.work.util.AbstractBounded;
  *
  * @param <T> type of <code>AbstractBounded</code>
  */
+@SuppressWarnings("unchecked")
 public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandler {
 
 
 	/**
 	 * <code>Bounded</code> object that need to be put in this type of <code>Guihandler</code>
 	 */
-	T bounded;
+	private T bounded;
 	
 	/**
 	 * description of the <code>Bounded</code> object that will be displayed in the JPanel of this <code>Guihandler</code>
@@ -51,7 +52,12 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandle
 	
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>Bounded</code> type
+	 * Construction of the <code>Guihandler</code> for the <code>Bounded</code> type
+	 * 
+	 * If <code>useslider</code> is set to <code>true</code> : displays the bounded object in a <code>JSlider</code> by using its bounds
+	 * else diplays it in a <code>JTextField</code> with informations about the bounds
+	 * 
+	 * The Swing representation is then added to the <code>JPanel</code> for GUI representation
 	 * 
 	 * @param f field that has been annotated
 	 * @param o object contained in <code>f</code>
@@ -66,7 +72,7 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandle
 		}
 
 		this.title = t.description();
-		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;		
+		for ( Param s : t.flag())if(s.equals(Param.slider))useslider = true;		
 		panel = new JPanel(new BorderLayout());
 		
 		try{
@@ -75,7 +81,6 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandle
 				label.setFont(new Font(null, Font.PLAIN,12));
 				panel.add(label,BorderLayout.WEST);
 				slider = new mySlider(title,(Number) bounded.getLowerBound(),(Number)bounded.getUpperBound(),(Number)bounded.getValue(),bounded.isLowerBoundStrict(),bounded.isUpperBoundStrict());
-				// Add ChangeListener????????
 				slider.addChangeListener(this);
 				panel.add(slider,BorderLayout.EAST);
 			}
@@ -91,7 +96,9 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandle
 	}
 
 	/**
-	 * To set the current value represented in the <code>Guihandler</code> to the value of the <code>Bounded</code> object, with the constraints of the bound values that have to be respected : <code>lowerBound < value < upperBound</code>
+	 * To set the value (from the JSlider or the JTextField) to the <code>Bounded</code> object
+	 * 
+	 * The constraints of the bound values have to be respected : <code>lowerBound &lt; value &lt; upperBound</code> or <code>lowerBound &lti; value &lti; upperBound</code> ....
 	 */
 	public void handle() {
 		try{
@@ -111,7 +118,11 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandle
     public String getState() {
         return bounded.getValue().toString();
     }
+    
 
+	/**
+	 * To reset the current value of this <code>BoundedHandler</code>, and set it to the initial one
+	 */
 	@Override
 	public void resetValue() {
 		// TODO Auto-generated method stub

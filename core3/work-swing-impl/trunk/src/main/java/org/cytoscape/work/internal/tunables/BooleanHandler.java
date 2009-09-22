@@ -20,13 +20,15 @@ import org.cytoscape.work.Tunable.Param;
  */
 public class BooleanHandler extends AbstractGuiHandler {
 
-	private JCheckBox jcb;
+	private JCheckBox checkBox;
 	private Boolean myBoolean;
-	private boolean horizontal=false;
+	private boolean horizontal = false;
 	
 	
 	/**
 	 * Constructs the <code>Guihandler</code> for the <code>Boolean</code> type
+	 * 
+	 * It creates the Swing component for this Object (JCheckBox) with its description/initial state,  and displays it
 	 * 
 	 * @param f field that has been annotated
 	 * @param o object contained in <code>f</code>
@@ -38,22 +40,24 @@ public class BooleanHandler extends AbstractGuiHandler {
 			this.myBoolean = (Boolean) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
+		//set Gui
 		panel = new JPanel(new BorderLayout());
-		jcb = new JCheckBox();
-		jcb.setSelected(myBoolean.booleanValue());
+		checkBox = new JCheckBox();
+		checkBox.setSelected(myBoolean.booleanValue());
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null,Font.PLAIN,12));
-		jcb.addActionListener(this);
+		checkBox.addActionListener(this);
 
-		for(Param par : t.alignment())if(par==Param.horizontal) horizontal=true;
 		
+		//choose the way the textField and its label will be displayed to user
+		for(Param s : t.alignment())if(s.equals(Param.horizontal)) horizontal = true;
 		if(horizontal){
 			panel.add(label,BorderLayout.NORTH);
-			panel.add(jcb,BorderLayout.SOUTH);
+			panel.add(checkBox,BorderLayout.SOUTH);
 		}
 		else{
 			panel.add(label,BorderLayout.WEST);
-			panel.add(jcb,BorderLayout.EAST);
+			panel.add(checkBox,BorderLayout.EAST);
 		}
 	}
 
@@ -62,7 +66,7 @@ public class BooleanHandler extends AbstractGuiHandler {
 	 */
 	public void handle() {
 		try {
-			f.set(o,jcb.isSelected());
+			f.set(o,checkBox.isSelected());
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	
@@ -80,7 +84,6 @@ public class BooleanHandler extends AbstractGuiHandler {
 	 * To get the state of the value of the <code>BooleanHandler</code> : <code>true</code> or <code>false</code>
 	 */
 	public String getState() {
-		String s = String.valueOf(jcb.isSelected());
-		return s;
+		return String.valueOf(checkBox.isSelected());
 	}
 }

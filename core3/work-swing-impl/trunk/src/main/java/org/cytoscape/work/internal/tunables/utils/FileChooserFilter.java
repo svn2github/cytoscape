@@ -21,6 +21,8 @@ public class FileChooserFilter extends FileFilter {
     		this.extensions = extensions;
     	}
     	
+    	
+    	//accept or not the file from jfilechooser
     	public boolean accept(File file){
     		if (file.isDirectory()) return true;
         
