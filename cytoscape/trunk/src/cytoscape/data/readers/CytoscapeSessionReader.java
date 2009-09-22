@@ -252,9 +252,10 @@ public class CytoscapeSessionReader {
 		final URLConnection juc = sourceURL.openConnection();
 		juc.setDefaultUseCaches(false);
 
-		ZipInputStream zis = new ZipInputStream(juc.getInputStream());
+		ZipInputStream zis = null;
 
         try {
+			zis = new ZipInputStream(juc.getInputStream());
             networkURLs = new HashMap();
 
             // Extract list of entries
@@ -487,36 +488,45 @@ public class CytoscapeSessionReader {
 					// Even though theURL derives from a File, error on the
 					// side of caution and use URLUtil to get the input stream (which
 					// handles proxy servers and cached pages):
-					InputStream is = URLUtil.getBasicInputStream(theURL);
+					InputStream is = null;
 
-					// Write input stream into tmp file
-					BufferedReader in = null;
-					BufferedWriter out = null;
+					try {
+						is = URLUtil.getBasicInputStream(theURL);
 
-					in = new BufferedReader(new InputStreamReader(is));
-                    try {
-                        out = new BufferedWriter(new FileWriter(theFile));
+						// Write input stream into tmp file
+						BufferedReader in = null;
+						BufferedWriter out = null;
 
-                        try {
-                            // Write to tmp file
-                            String inputLine;
+						in = new BufferedReader(new InputStreamReader(is));
+						try {
+							out = new BufferedWriter(new FileWriter(theFile));
 
-                            while ((inputLine = in.readLine()) != null) {
-                                out.write(inputLine);
-                                out.newLine();
-                            }
-                        }
-                        finally {
-                            if (out != null) {
-                                out.close();
-                            }
-                        }
-                    }
-                    finally {
-                        if (in != null) {
-                            in.close();
-                        }
-                    }
+							try {
+								// Write to tmp file
+								String inputLine;
+
+								while ((inputLine = in.readLine()) != null) {
+									out.write(inputLine);
+									out.newLine();
+								}
+							}
+							finally {
+								if (out != null) {
+									out.close();
+								}
+							}
+						}
+						finally {
+							if (in != null) {
+								in.close();
+							}
+						}
+					}
+					finally {
+						if (is != null) {
+							is.close();
+						}
+					}
 				} catch (IOException e) {
 					theFile = null;
 					logger.error("Error: reading from zip: " + URLstr, e);
@@ -549,9 +559,10 @@ public class CytoscapeSessionReader {
 			                                                        this.getClass().getClassLoader());
 			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-			InputStream is = URLUtil.getBasicInputStream(pBookmarksFileURL);
+			InputStream is = null;
 
             try {
+				is = URLUtil.getBasicInputStream(pBookmarksFileURL);
                 theBookmark = (Bookmarks) unmarshaller.unmarshal(is);
             }
             finally {
@@ -578,9 +589,10 @@ public class CytoscapeSessionReader {
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
 		                                                        this.getClass().getClassLoader());
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		InputStream is = URLUtil.getBasicInputStream(cysessionFileURL);
+		InputStream is = null;
 
         try {
+			is = URLUtil.getBasicInputStream(cysessionFileURL);
             session = (Cysession) unmarshaller.unmarshal(is);
         }
         finally {
@@ -657,9 +669,6 @@ public class CytoscapeSessionReader {
 		Child child;
 		Network childNet;
 		URL targetNetworkURL;
-		JarURLConnection jarConnection;
-		InputStream networkStream;
-		CyNetwork new_network = null;
 		CyNetworkView curNetView;
 
 		for (int i = 0; i < numChildren; i++) {
@@ -676,89 +685,99 @@ public class CytoscapeSessionReader {
 				continue;
 			}
 
+			CyNetwork new_network = null;
+			JarURLConnection jarConnection = null;
 			XGMMLReader reader = null;
+			Properties prop;
+			String vsbSwitch = null;
+
+			// Get the current state of the vsbSwitch
+			prop = CytoscapeInit.getProperties();
+			vsbSwitch = prop.getProperty("visualStyleBuilder");
+			// Since we're reading a session (which already has visual
+			// styles defined) force the vsbSwitch off
+			prop.setProperty("visualStyleBuilder", "off");
+
 			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
-			networkStream = (InputStream) jarConnection.getContent();
+			try {
+				InputStream networkStream = null;
+				try {
+					networkStream = (InputStream) jarConnection.getContent();
 
-            try {
-                // Get the current state of the vsbSwitch
-                Properties prop = CytoscapeInit.getProperties();
-                String vsbSwitch = prop.getProperty("visualStyleBuilder");
-                // Since we're reading a session (which already has visual
-                // styles defined) force the vsbSwitch off
-                prop.setProperty("visualStyleBuilder", "off");
+					reader = new XGMMLReader(networkStream);
+					new_network = Cytoscape.createNetwork(reader, false, parent);
+				}
+				finally {
+					if (networkStream != null) {
+						networkStream.close();
+					}
+				}
+			} catch (Exception e) {
+				String message = "Unable to read XGMML file: "+childNet.getFilename()+".  "+e.getMessage();
+				logger.error(message, e);
+				Cytoscape.destroyNetwork(new_network);
+				if (taskMonitor != null)
+					taskMonitor.setException(e, message);
+				// Load child networks, even if this network is bad
+				if (childNet.getChild().size() != 0)
+					walkTree(childNet, new_network, sessionSource);
+				continue;
+			}
+			// Restore the original state of the vsbSwitch
+			if (vsbSwitch != null)
+				prop.setProperty("visualStyleBuilder", vsbSwitch);
+			else
+				prop.remove("visualStyleBuilder");
 
-                reader = new XGMMLReader(networkStream);
-                try {
-                    new_network = Cytoscape.createNetwork(reader, false, parent);
-                } catch (Exception e) {
-                    String message = "Unable to read XGMML file: "+childNet.getFilename()+".  "+e.getMessage();
-                    logger.error(message, e);
-                    Cytoscape.destroyNetwork(new_network);
-                    if (taskMonitor != null)
-                        taskMonitor.setException(e, message);
-                    // Load child networks, even if this network is bad
-                    if (childNet.getChild().size() != 0)
-                        walkTree(childNet, new_network, sessionSource);
-                    continue;
-                }
-                logger.info("XGMMLReader " + new_network.getIdentifier() + ": "
-                                   + (System.currentTimeMillis() - start) + " msec.");
+			if ((taskMonitor != null) && (networkCounter >= 20)) {
+				netIndex++;
+				taskMonitor.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100))
+															 .intValue());
+			}
 
-                // Restore the original state of the vsbSwitch
-                if (vsbSwitch != null)
-                    prop.setProperty("visualStyleBuilder", vsbSwitch);
-                else
-                    prop.remove("visualStyleBuilder");
+			if (new_network != null) {
+				logger.info("XGMMLReader " + new_network.getIdentifier() + ": " +
+							(System.currentTimeMillis() - start) + " msec.");
 
-                if ((taskMonitor != null) && (networkCounter >= 20)) {
-                    netIndex++;
-                    taskMonitor.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100))
-                                                                 .intValue());
-                }
-            }
-            finally {
-                if (networkStream != null) {
-                    networkStream.close();
+				networkList.add(new_network.getIdentifier());
+
+				// Execute if view is available.
+				if (childNet.isViewAvailable()) {
+					// Set visual style
+					String vsName = childNet.getVisualStyle();
+
+					if (vsName == null) {
+						vsName = "default";
+					}
+
+					lastVSName = vsName;
+
+					curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
+															 reader.getLayoutAlgorithm());
+
+					//logger.debug("createNetworkView "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+					curNetView.setVisualStyle(vsName);
+
+					Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
+					Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+
+					//logger.debug("setVisualStyle stuff "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+					reader.doPostProcessing(new_network);
+					//logger.debug("doPostProcessing "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+
+					// Set hidden nodes + edges
+					setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
+					setHiddenEdges(curNetView, (HiddenEdges) childNet.getHiddenEdges());
+				}
+
+				setSelectedNodes(new_network, (SelectedNodes) childNet.getSelectedNodes());
+				setSelectedEdges(new_network, (SelectedEdges) childNet.getSelectedEdges());
+
+				// Load child networks
+				if (childNet.getChild().size() != 0) {
+					walkTree(childNet, new_network, sessionSource);
 				}
 			}
-
-			networkList.add(new_network.getIdentifier());
-
-			// Execute if view is available.
-			if (childNet.isViewAvailable()) {
-				// Set visual style
-				String vsName = childNet.getVisualStyle();
-
-				if (vsName == null)
-					vsName = "default";
-
-				lastVSName = vsName;
-
-				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
-				                                         reader.getLayoutAlgorithm());
-
-				//logger.debug("createNetworkView "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
-				curNetView.setVisualStyle(vsName);
-
-				Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
-				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-
-				//logger.debug("setVisualStyle stuff "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
-				reader.doPostProcessing(new_network);
-				//logger.debug("doPostProcessing "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
-
-				// Set hidden nodes + edges
-				setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
-				setHiddenEdges(curNetView, (HiddenEdges) childNet.getHiddenEdges());
-			}
-
-			setSelectedNodes(new_network, (SelectedNodes) childNet.getSelectedNodes());
-			setSelectedEdges(new_network, (SelectedEdges) childNet.getSelectedEdges());
-
-			// Load child networks
-			if (childNet.getChild().size() != 0)
-				walkTree(childNet, new_network, sessionSource);
 		}
 	}
 
