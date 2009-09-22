@@ -160,15 +160,23 @@ public class BioDataServer {
 
 				// Read manifest file. First, try to read new format manifest
 				// file which includes ".obo" and gene_association file.
-				final BufferedReader manFileIn = new BufferedReader(new FileReader(serverName));
+				BufferedReader manFileIn = null;
 
-				// Check file type.
-				// If the manifest contains obo or gene_association entry,
-				// handle it as a new manifest file format.
-				fileFlag = checkFileType(manFileIn);
+				try {
+					manFileIn =  new BufferedReader(new FileReader(serverName));
+					// Check file type.
+					// If the manifest contains obo or gene_association entry,
+					// handle it as a new manifest file format.
+					fileFlag = checkFileType(manFileIn);
+				}
+				finally {
+					if (manFileIn != null) {
+						manFileIn.close();
+					}
+				}
 
 				// New File Type found.
-				if (fileFlag == true) {
+				if (fileFlag) {
 					// Extract file names and flip state from the manifest file
 					String[] flags = parseLoadFile(serverName, "flip");
 
@@ -391,39 +399,45 @@ public class BioDataServer {
 			String filename = ontologyFilenames[i];
 
 			// Reader for the ".obo" file
-			BufferedReader oboReader = new BufferedReader(new OboOntologyReader(new FileReader(filename)));
+			BufferedReader oboReader = null;
+			BufferedReader oboReader2 = null;
 
-            try {
-                OntologyFlatFileReader reader = new OntologyFlatFileReader(oboReader);
-                list.add(reader.getOntology());
-            }
-            finally {
-                oboReader.close();
-            }
+			try {
+				oboReader = new BufferedReader(new OboOntologyReader(new FileReader(filename)));
+				OntologyFlatFileReader reader = new OntologyFlatFileReader(oboReader);
+				list.add(reader.getOntology());
+			}
+			finally {
+				if (oboReader != null) {
+					oboReader.close();
+				}
+			}
 
-			BufferedReader oboReader2 = new BufferedReader(new OboOntologyReader2(new FileReader(filename)));
-            try {
-                String line;
-                String[] parts = null;
+			try {
+				oboReader2 = new BufferedReader(new OboOntologyReader2(new FileReader(filename)));
+				String line;
+				String[] parts = null;
 
-                while ((line = oboReader2.readLine()) != null) {
-                    parts = line.split("=");
+				while ((line = oboReader2.readLine()) != null) {
+					parts = line.split("=");
 
-                    if (parts.length == 2) {
-                        //logger.info("ID = " + parts[0] + ", " + parts[1]);
-                        if (parts[1].equals("biological_process")) {
-                            ontologyTypeMap.put(parts[0], "P");
-                        } else if (parts[1].equals("molecular_function")) {
-                            ontologyTypeMap.put(parts[0], "F");
-                        } else if (parts[1].equals("cellular_component")) {
-                            ontologyTypeMap.put(parts[0], "C");
-                        }
-                    }
-                }
-            }
-            finally {
-                oboReader2.close();
-            }
+					if (parts.length == 2) {
+						//logger.info("ID = " + parts[0] + ", " + parts[1]);
+						if (parts[1].equals("biological_process")) {
+							ontologyTypeMap.put(parts[0], "P");
+						} else if (parts[1].equals("molecular_function")) {
+							ontologyTypeMap.put(parts[0], "F");
+						} else if (parts[1].equals("cellular_component")) {
+							ontologyTypeMap.put(parts[0], "C");
+						}
+					}
+				}
+			}
+			finally {
+				if (oboReader2 != null) {
+					oboReader2.close();
+				}
+			}
 		}
 
 		return (Ontology[]) list.toArray(new Ontology[0]);
@@ -450,14 +464,16 @@ public class BioDataServer {
 	public void loadObo(String[] annotationFilenames, String[] ontologyFilenames)
 	    throws Exception {
 		// logger.info("Loading OBO file...");
-		BufferedReader[] oboReaders = new BufferedReader[ontologyFilenames.length];
-
-		for (int i = 0; i < ontologyFilenames.length; i++) {
-			oboReaders[i] = new BufferedReader(new OboOntologyReader(new FileReader(ontologyFilenames[i])));
-		}
+//The following commented out code appears to replicate what's done in readOntologyFlatFiles2
+//		BufferedReader[] oboReaders = new BufferedReader[ontologyFilenames.length];
+//
+//		for (int i = 0; i < ontologyFilenames.length; i++) {
+//			oboReaders[i] = new BufferedReader(new OboOntologyReader(new FileReader(ontologyFilenames[i])));
+//		}
 
 		Ontology[] ontologies = readOntologyFlatFiles2(ontologyFilenames);
 
+		URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
 		/*
 		 * Since one Gene Association file is equal to the follwing:
 		 *
@@ -467,74 +483,94 @@ public class BioDataServer {
 		 * we need 3 separate readers.
 		 */
 		for (int i = 0; i < annotationFilenames.length; i++) {
-			Annotation bpAnnotation;
-			Annotation ccAnnotation;
-			Annotation mfAnnotation;
+			Annotation bpAnnotation = null;
+			Annotation ccAnnotation = null;
+			Annotation mfAnnotation = null;
 			String filename = annotationFilenames[i];
 
 			String[] thFileName = new String[1];
 			thFileName[0] = annotationFilenames[i];
 
 			// Extract taxon name.
-			BufferedReader gaFileReader = new BufferedReader(new FileReader(filename));
+			BufferedReader gaFileReader = null;
+			try {
 
-			// Create tax_report file reader
-			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
+				gaFileReader = new BufferedReader(new FileReader(filename));
 
-			// taxonFileReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
-            // Even though taxURL is probably a local URL, error on the
-			// side of caution and use URLUtil to get the input stream (which
-			// handles proxy servers and cached pages):
-			taxonFileReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
+				// Create tax_report file reader
+				// taxonFileReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
+				// Even though taxURL is probably a local URL, error on the
+				// side of caution and use URLUtil to get the input stream (which
+				// handles proxy servers and cached pages):
+				taxonFileReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 
-			// taxonName = checkSpecies(gaFileReader);
-			taxonName = bdsu.checkSpecies(gaFileReader, taxonFileReader);
+				// taxonName = checkSpecies(gaFileReader);
+				taxonName = bdsu.checkSpecies(gaFileReader, taxonFileReader);
+			}
+			finally {
+				if (gaFileReader != null) {
+					gaFileReader.close();
+				}
+			}
+
 			loadThesaurusFiles2(thFileName);
 
 			logger.info("Loading: " + annotationFilenames[i] + " (Species = " + taxonName + ")");
 
 			// Reader for the "gene_association" file
-			BufferedReader bpRd = new BufferedReader(new BiologicalProcessAnnotationReader(taxonName,
-			                                                                               ontologyTypeMap,
-			                                                                               new FileReader(filename)));
+			BufferedReader bpRd = null;
+			try {
+				bpRd = new BufferedReader(
+						   new BiologicalProcessAnnotationReader(taxonName,
+																 ontologyTypeMap,
+																 new FileReader(filename)));
+				AnnotationFlatFileReader bpReader = new AnnotationFlatFileReader(bpRd, thesaurus, flip);
+				bpAnnotation = bpReader.getAnnotation();
+			}
+			finally {
+				if (bpRd != null) {
+					bpRd.close();
+				}
+			}
 
-            try {
-                BufferedReader ccRd = new BufferedReader(new CellularComponentAnnotationReader(taxonName,
-                                                                                               ontologyTypeMap,
-                                                                                               new FileReader(filename)));
-                try {
-                    BufferedReader mfRd = new BufferedReader(new MolecularFunctionAnnotationReader(taxonName,
-                                                                                                   ontologyTypeMap,
-                                                                                                   new FileReader(filename)));
+			BufferedReader ccRd = null;
+			try {
+				ccRd = new BufferedReader(
+						   new CellularComponentAnnotationReader(taxonName,
+																 ontologyTypeMap,
+																 new FileReader(filename)));
+				AnnotationFlatFileReader ccReader = new AnnotationFlatFileReader(ccRd, thesaurus, flip);
+				ccAnnotation = ccReader.getAnnotation();
+			}
+			finally {
+				if (ccRd != null) {
+					ccRd.close();
+				}
+			}
 
-                    try {
-                        AnnotationFlatFileReader bpReader = new AnnotationFlatFileReader(bpRd, thesaurus, flip);
-                        AnnotationFlatFileReader ccReader = new AnnotationFlatFileReader(ccRd, thesaurus, flip);
-                        AnnotationFlatFileReader mfReader = new AnnotationFlatFileReader(mfRd, thesaurus, flip);
+			BufferedReader mfRd = null;
 
-                        bpAnnotation = bpReader.getAnnotation();
-                        ccAnnotation = ccReader.getAnnotation();
-                        mfAnnotation = mfReader.getAnnotation();
+			try {
+				mfRd = new BufferedReader(
+						   new MolecularFunctionAnnotationReader(taxonName,
+																 ontologyTypeMap,
+																 new FileReader(filename)));
+				AnnotationFlatFileReader mfReader = new AnnotationFlatFileReader(mfRd, thesaurus, flip);
+				mfAnnotation = mfReader.getAnnotation();
+			}
+			finally {
+				if (mfRd != null) {
+					mfRd.close();
+				}
+			}
 
-                        bpAnnotation.setOntology(pickOntology(ontologies, bpAnnotation));
-                        ccAnnotation.setOntology(pickOntology(ontologies, ccAnnotation));
-                        mfAnnotation.setOntology(pickOntology(ontologies, mfAnnotation));
+			bpAnnotation.setOntology(pickOntology(ontologies, bpAnnotation));
+			ccAnnotation.setOntology(pickOntology(ontologies, ccAnnotation));
+			mfAnnotation.setOntology(pickOntology(ontologies, mfAnnotation));
 
-                        server.addAnnotation(bpAnnotation);
-                        server.addAnnotation(ccAnnotation);
-                        server.addAnnotation(mfAnnotation);
-                    }
-                    finally {
-                        mfRd.close();
-                    }
-                }
-                finally {
-                    ccRd.close();
-                }
-            }
-            finally {
-                bpRd.close();
-            }
+			server.addAnnotation(bpAnnotation);
+			server.addAnnotation(ccAnnotation);
+			server.addAnnotation(mfAnnotation);
 		}
 	} // loadAnnotationFiles2
 
@@ -604,19 +640,21 @@ public class BioDataServer {
 		for (int i = 0; i < thesaurusFilenames.length; i++) {
 			String filename = thesaurusFilenames[i];
 
-			BufferedReader thRd = new BufferedReader(new SynonymReader(taxonName,
-			                                                           new FileReader(filename)));
+			BufferedReader thRd = null;
 
-            try {
-                ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(thRd, flip);
-                thesaurus = reader.getThesaurus();
+			try {
+				thRd = new BufferedReader(new SynonymReader(taxonName, new FileReader(filename)));
+				ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(thRd, flip);
+				thesaurus = reader.getThesaurus();
 
-                //thesaurus.dump();
-                server.addThesaurus(thesaurus.getSpecies(), thesaurus);
-            }
-            finally {
-                thRd.close();
-            }
+				//thesaurus.dump();
+				server.addThesaurus(thesaurus.getSpecies(), thesaurus);
+			}
+			finally {
+				if (thRd != null) {
+					thRd.close();
+				}
+			}
 		}
 	} // loadThesaurusFiles
 
