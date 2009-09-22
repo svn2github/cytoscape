@@ -112,8 +112,10 @@ public class BundleChooser
 				bundle = new DirectoryBundle(selectedFile);
 			else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE)
 				bundle = new ZipBundle(selectedFile);
-			else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS)
+			else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS){
+				settings.destinationDir =selectedFile;
 				bundle = new ZipBundle2(selectedFile);
+			}
 		}
 		catch (Exception e)
 		{
