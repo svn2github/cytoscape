@@ -1,6 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009 The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -414,6 +413,26 @@ public class CompositeFilter implements CyFilter {
 	public void setAdvancedSetting(AdvancedSetting pAdvancedSetting) {
 		advancedSetting = pAdvancedSetting;
 	}
+
+    /**
+     * Returns the display String used by the filter panel combobox.
+     * Required as toString is used to provide the persistable representation
+     * of the filter state.
+     *
+     * @return
+     */
+    public String getLabel() {
+        AdvancedSetting as = getAdvancedSetting();
+        String prefix = "";
+        if (as.isGlobalChecked()) {
+            prefix = "global: ";
+        }
+        if (as.isSessionChecked()) {
+            prefix += "session: ";
+        }
+
+        return prefix + getName();
+    }
 
 	/**
 	 * @return the string represention of this Filter.

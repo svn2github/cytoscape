@@ -1,6 +1,38 @@
-/**
- * 
- */
+/*
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.filters.view;
 
 import java.awt.event.ActionListener;
@@ -16,7 +48,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.Vector;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -34,6 +65,7 @@ import cytoscape.filters.view.FilterMainPanel.FilterRenderer;
 import cytoscape.filters.view.FilterMainPanel.MyCytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.filters.FilterPlugin;
+import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
 
 
 /**
@@ -48,6 +80,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
     /** Creates new form TopoFilterPanel */
     public TopoFilterPanel(TopologyFilter pFilter) {
     	theFilter = pFilter;
+        setName(theFilter.getName());
         initComponents();
 
         buildCMBmodel();
@@ -70,22 +103,47 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		// Recovery initial values if any
         tfMinNeighbors.setText(new Integer(pFilter.getMinNeighbors()).toString());        	
         tfDistance.setText(new Integer(pFilter.getDistance()).toString());
+
+		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
+		addComponentListener(cmpAdpt);
     }
-    
+
+    /**
+     * @deprecated
+     * If nothing else calls this, then it's more sensible to just pass the panel
+     * to listen to directly.
+     */
     public void addParentPanelListener() {
 		// Listen to the visible event from FilterSettingPanel
     	// To syn Filters in cmbPassFilter
 		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
-		this.getParent().getParent().addComponentListener(cmpAdpt);
+        Component comp;
+
+        comp = this;
+        while (comp != null) {
+            if (comp instanceof FilterSettingPanel) {
+                comp.addComponentListener(cmpAdpt);
+                break;
+            }
+            else {
+                comp = comp.getParent();
+            }
+        }
     }
     
+    public void addParentPanelListener(Component comp) {
+		// Listen to the visible event from FilterSettingPanel
+    	// To syn Filters in cmbPassFilter
+		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
+        comp.addComponentListener(cmpAdpt);
+    }
+
     //Each time, the FilterSettingPanel become visible, rebuild the model for the cmbPassFilter
 	class MyComponentAdapter extends ComponentAdapter {
 		public void componentShown(ComponentEvent e) {
 			buildCMBmodel();
 		}
 	}
-	
 	
 	private void buildCMBmodel() {
         // Create an empty filter, add to the top of the filter list in the combobox
@@ -95,16 +153,14 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		tmpVect.add(emptyFilter);
 		tmpVect.addAll(FilterPlugin.getAllFilterVect());
 		
-		DefaultComboBoxModel theModel = new DefaultComboBoxModel(tmpVect);
-		
-		cmbPassFilter.setModel(theModel);
+        PassFilterWidestStringComboBoxModel pfwscbm = new PassFilterWidestStringComboBoxModel(tmpVect);
+        cmbPassFilter.setModel(pfwscbm);
         if (theFilter.getPassFilter() != null) {
         	cmbPassFilter.setSelectedIndex(0);			
 			cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
 		}
 	}
 
-	
 	public void actionPerformed(ActionEvent e) {
 		Object _actionObject = e.getSource();
 		
@@ -159,6 +215,8 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
         tfDistance = new javax.swing.JTextField();
         lbThatPassTheFilter = new javax.swing.JLabel();
         cmbPassFilter = new javax.swing.JComboBox();
+        cmbPassFilter.setModel(new PassFilterWidestStringComboBoxModel());
+        cmbPassFilter.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
         lbPlaceHolder = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
@@ -228,7 +286,6 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 
     }// </editor-fold>
     
-    
     // Variables declaration - do not modify
     private javax.swing.JComboBox cmbPassFilter;
     private javax.swing.JLabel lbNeighbors;
@@ -241,35 +298,39 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
     private javax.swing.JTextField tfMinNeighbors;
     // End of variables declaration
 	
-    
-	class FilterRenderer extends JLabel implements ListCellRenderer {
-		public FilterRenderer() {
-			setOpaque(true);
-		}
+    class FilterRenderer extends JLabel implements ListCellRenderer {
+        public FilterRenderer() {
+            setOpaque(true);
+        }
 
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
-			if (value != null) {
-				if (value == theFilter) {
-					setText(""); 
-				}
-				//else if (value.toString().equalsIgnoreCase("None")) {
-				//	setText("None");
-				//}
-				else {
-					CompositeFilter tmpFilter = (CompositeFilter) value;
-					setText(tmpFilter.getName());					
-				}
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean cellHasFocus) {
+            if (value != null) {
+                if (value == theFilter) {
+                    setText("");
+                }
+                else {
+                    CompositeFilter tmpFilter = (CompositeFilter) value;
+                    setText(tmpFilter.getName());
+                }
+            }
+            else { // value == null
+                setText("");
+            }
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
 			}
-			else { // value == null
-				setText(""); 
-			}
 
-			return this;
-		}
-	}// FilterRenderer
+            return this;
+        }
+    }
 
-	class MyKeyListener extends KeyAdapter {
+class MyKeyListener extends KeyAdapter {
 		
 		public void keyReleased(KeyEvent e)  {
 			Object _actionObject = e.getSource();

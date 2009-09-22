@@ -1,3 +1,38 @@
+/*
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.filters.view;
 
 import java.awt.Component;
@@ -7,7 +42,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Vector;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -21,6 +55,7 @@ import cytoscape.filters.InteractionFilter;
 import cytoscape.filters.EdgeInteractionFilter;
 import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.util.FilterUtil;
+import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
 
 public class InteractionFilterPanel extends JPanel implements ItemListener{
 
@@ -29,6 +64,7 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
     /** Creates new form InteractionFilterPanel */
     public InteractionFilterPanel(InteractionFilter pFilter) {
     	theFilter = pFilter;
+        setName(theFilter.getName());
     	
         initComponents();
         if (pFilter instanceof EdgeInteractionFilter) {
@@ -69,6 +105,9 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
         	theFilter.setPassFilter((CompositeFilter)cmbPassFilter.getModel().getElementAt(index));
         }
 		cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
+
+		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
+		addComponentListener(cmpAdpt);
     }
     
     private void changeLabelText() {
@@ -76,14 +115,37 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
     	lbNodeType.setText("with a node");
     	lbAboveFilter.setText("which pass the filter");
     }
-    
+
+    /**
+     * @deprecated
+     * If nothing else calls this, then it's more sensible to just pass the panel
+     * to listen to directly.
+     */
     public void addParentPanelListener() {
 		// Listen to the visible event from FilterSettingPanel
     	// To syn Filters in cmbPassFilter
 		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
-		this.getParent().getParent().addComponentListener(cmpAdpt);
+        Component comp;
+
+        comp = this;
+        while (comp != null) {
+            if (comp instanceof FilterSettingPanel) {
+                comp.addComponentListener(cmpAdpt);
+                break;
+            }
+            else {
+                comp = comp.getParent();
+            }
+        }
     }
     
+    public void addParentPanelListener(Component comp) {
+		// Listen to the visible event from FilterSettingPanel
+    	// To syn Filters in cmbPassFilter
+		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
+        comp.addComponentListener(cmpAdpt);
+    }
+
     //Each time, the FilterSettingPanel become visible, rebuild the model for the cmbPassFilter
 	class MyComponentAdapter extends ComponentAdapter {
 		public void componentShown(ComponentEvent e) {
@@ -99,9 +161,12 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 		//tmpVect.add(emptyFilter);
 		tmpVect.addAll(FilterPlugin.getAllFilterVect());
 		
-		DefaultComboBoxModel theModel = new DefaultComboBoxModel(tmpVect);
-		
-		cmbPassFilter.setModel(theModel);
+        PassFilterWidestStringComboBoxModel pfwscbm = new PassFilterWidestStringComboBoxModel(tmpVect);
+        cmbPassFilter.setModel(pfwscbm);
+        if (theFilter.getPassFilter() != null) {
+        	cmbPassFilter.setSelectedIndex(0);
+			cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
+		}
 	}
     
     	
@@ -148,6 +213,8 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
         chkTarget = new javax.swing.JCheckBox();
         lbAboveFilter = new javax.swing.JLabel();
         cmbPassFilter = new javax.swing.JComboBox();
+        cmbPassFilter.setModel(new PassFilterWidestStringComboBoxModel());
+        cmbPassFilter.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
         lbPlaceHolder = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
@@ -220,7 +287,6 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
     private javax.swing.JLabel lbSelectionType;
     // End of variables declaration                   
 	
-    
 	class FilterRenderer extends JLabel implements ListCellRenderer {
 		public FilterRenderer() {
 			setOpaque(true);
@@ -230,10 +296,18 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 				int index, boolean isSelected, boolean cellHasFocus) {
 			
 			if (value == null)  {
-				setText(""); 
+				setText("");
 				return this;
 			}
-			
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+
 			//Ignore self
 			if (value == theFilter) {
 				setText(""); 
@@ -254,5 +328,4 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 			return this;
 		}
 	}// FilterRenderer
-
 }
