@@ -350,21 +350,8 @@ public class CytoscapeSessionWriter {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + VIZMAP_FILE) );
 
-        try {
-            Writer writer = null;
-			try {
-				writer = new OutputStreamWriter( zos );
-				CalculatorIO.storeCatalog(catalog, writer);
-			}
-			finally {
-				writer.close();
-			}
-        }
-        finally {
-            if (zos != null) {
-                zos.closeEntry();
-            }
-        }
+		Writer writer = new OutputStreamWriter( zos );
+		CalculatorIO.storeCatalog(catalog, writer);
 	}
 
 	/**
@@ -374,14 +361,7 @@ public class CytoscapeSessionWriter {
 	
 		zos.putNextEntry(new ZipEntry(sessionDir + CYPROP_FILE) );
 
-        try {
-            CytoscapeInit.getProperties().store(zos, "Cytoscape Property File");
-        }
-        finally {
-            if (zos != null) {
-                zos.closeEntry();
-            }
-        }
+		CytoscapeInit.getProperties().store(zos, "Cytoscape Property File");
 	}
 
 	/**
@@ -391,15 +371,8 @@ public class CytoscapeSessionWriter {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + BOOKMARKS_FILE) );
 
-        try {
-            bookmarks = Cytoscape.getBookmarks();
-            BookmarksUtil.saveBookmark(bookmarks, zos);
-        }
-        finally {
-            if (zos != null) {
-                zos.closeEntry();
-            }
-        }
+		bookmarks = Cytoscape.getBookmarks();
+		BookmarksUtil.saveBookmark(bookmarks, zos);
 	}
 
 	/**
@@ -416,26 +389,12 @@ public class CytoscapeSessionWriter {
 		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile));
-        Writer writer = null;
-        try {
-			try {
-				writer = new OutputStreamWriter(zos, "UTF-8");
-				// Write the XGMML file *without* our graphics attributes
-				// We'll let the Vizmapper handle those
-				XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
-				xgmmlWriter.write(writer);
-			}
-			finally {
-				if (writer != null) {
-					writer.close();
-				}
-			}
-        }
-        finally {
-            if (zos != null) {
-                zos.closeEntry();
-            }
-        }
+
+		Writer writer = writer = new OutputStreamWriter(zos, "UTF-8");
+		// Write the XGMML file *without* our graphics attributes
+		// We'll let the Vizmapper handle those
+		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
+		xgmmlWriter.write(writer);
 	}
 
 	/**
@@ -462,14 +421,7 @@ public class CytoscapeSessionWriter {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + CYSESSION_FILE_NAME) );
 
-        try {
-            m.marshal(session, zos);
-        }
-        finally {
-            if (zos != null) {
-                zos.closeEntry();
-            }
-        }
+		m.marshal(session, zos);
 		session = null;
 	}
 
@@ -502,26 +454,20 @@ public class CytoscapeSessionWriter {
 					zos.putNextEntry(new ZipEntry( sessionDir + "plugins/" + pluginName + 
 					                               "/" + theFile.getName() ) );
 
-                    try {
-                        // copy the file contents to the zip output stream
-                        FileInputStream fileIS = null;
-                        try {
-							fileIS = new FileInputStream(theFile);
-                            int numRead = 0;
-                            while ((numRead = fileIS.read(buf)) > -1)
-                                zos.write(buf, 0, numRead);
-                        }
-                        finally {
-                            if (fileIS != null) {
-                                fileIS.close();
-                            }
-                        }
-                    }
-                    finally {
-                        if (zos != null) {
-                            zos.closeEntry();
-                        }
-                    }
+					// copy the file contents to the zip output stream
+					FileInputStream fileIS = null;
+					try {
+						fileIS = new FileInputStream(theFile);
+						int numRead = 0;
+						while ((numRead = fileIS.read(buf)) > -1) {
+							zos.write(buf, 0, numRead);
+						}
+					}
+					finally {
+						if (fileIS != null) {
+							fileIS.close();
+						}
+					}
 				}
 			}
 		}
