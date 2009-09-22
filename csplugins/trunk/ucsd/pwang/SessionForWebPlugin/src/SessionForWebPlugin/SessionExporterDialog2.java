@@ -36,6 +36,7 @@ public class SessionExporterDialog2 extends JDialog
 	private ImagePanel imagePanel = new ImagePanel(new GridBagLayout());
 	private ThumbnailPanel thumbnailPanel = new ThumbnailPanel();
 	private SpeciesPanel speciesPanel = new SpeciesPanel(this);
+	private PubInfoPanel pubInfoPanel = new PubInfoPanel();
 	
 	public SessionExporterDialog2(Frame owner)
 	{
@@ -63,6 +64,8 @@ public class SessionExporterDialog2 extends JDialog
 
 		// Thumbnail panel			
 		tabbedPane.add("Thumbnail", thumbnailPanel);
+
+		tabbedPane.add("Pub info", pubInfoPanel);
 		
 		// Buttons panel
 		exportButton = new JButton("Export");
