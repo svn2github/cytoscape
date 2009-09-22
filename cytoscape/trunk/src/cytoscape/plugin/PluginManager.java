@@ -1010,7 +1010,7 @@ public class PluginManager {
 
 		case ZIP:
 			List<ZipEntry> Entries = ZipUtil
-					.getAllFiles(FileName, "\\w+\\.jar");
+					.getAllFiles(FileName, InstallablePlugin.MATCH_JAR_REGEXP);
 			if (Entries.size() <= 0) {
 				String[] FilePath = FileName.split("/");
 				FileName = FilePath[FilePath.length - 1];
@@ -1020,15 +1020,18 @@ public class PluginManager {
 			}
 
             ZipFile zf = null;
-            zf = new ZipFile(FileName);
             try {
+				zf = new ZipFile(FileName);
                 for (ZipEntry Entry : Entries) {
                     String EntryName = Entry.getName();
 
-                    InputStream is = ZipUtil.readFile(zf, EntryName);
+                    InputStream is = null;
                     try {
-                        JarInputStream jis = new JarInputStream(is);
+                        JarInputStream jis = null;
+
+						is = ZipUtil.readFile(zf, EntryName);
                         try {
+							jis = new JarInputStream(is);
                             PluginClassName = getManifestAttribute(jis.getManifest());
                         }
                         finally {

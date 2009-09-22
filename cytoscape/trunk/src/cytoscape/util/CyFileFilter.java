@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
@@ -468,24 +469,18 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 * Gets header of specified file.
 	 */
 	protected String getHeader(File file) throws IOException {
-		FileReader reader = null;
 		BufferedReader bufferedReader = null;
 		String header = null;
 		
 		try {
-			reader = new FileReader(file);
-			bufferedReader = new BufferedReader(reader);
+			bufferedReader = new BufferedReader(new FileReader(file));
 
 			header = parseHeader(bufferedReader);
-		} finally {
-			if (bufferedReader != null)
+		}
+		finally {
+			if (bufferedReader != null) {
 				bufferedReader.close();
-
-			if (reader != null)
-				reader.close();
-			
-			bufferedReader = null;
-			reader = null;
+			}
 		}
 		
 		return header;
@@ -493,13 +488,25 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 
 	protected String getHeader(URL url) throws IOException {
 		String header = null;
-		BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+		InputStream is = null;
+
 		try {
-			header = parseHeader(br);
-		} finally {
-			if(br != null) {
-                br.close();
-            }
+			BufferedReader br = null;
+
+			is = url.openStream();
+			try {
+				br = new BufferedReader(new InputStreamReader(is));
+				header = parseHeader(br);
+			} finally {
+				if(br != null) {
+					br.close();
+				}
+			}
+		}
+		finally {
+			if (is != null) {
+				is.close();
+			}
 		}
 
 		return header;
@@ -508,19 +515,14 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	private String parseHeader(BufferedReader bufferedReader) throws IOException {
 		StringBuffer header = new StringBuffer();
 
-		try {
-			String line = bufferedReader.readLine();
+		String line = bufferedReader.readLine();
 
-			int numLines = 0;
+		int numLines = 0;
 
-			while ((line != null) && (numLines < 20)) {
-				header.append(line + "\n");
-				line = bufferedReader.readLine();
-				numLines++;
-			}
-		} finally {
-			if (bufferedReader != null)
-				bufferedReader.close();
+		while ((line != null) && (numLines < 20)) {
+			header.append(line + "\n");
+			line = bufferedReader.readLine();
+			numLines++;
 		}
 
 		return header.toString();

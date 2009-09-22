@@ -27,9 +27,9 @@ import java.util.zip.ZipFile;
  */
 public class InstallablePlugin implements Installable {
 
-  // Bug 2055 changing regexp used to match jars
-  // Was "\\w+\\.jar", which seemed unecessarily restrictive
-  public static final String MATCH_JAR_REGEXP = ".*\\.jar$";
+	// Bug 2055 changing regexp used to match jars
+	// Was "\\w+\\.jar", which seemed unecessarily restrictive
+	public static final String MATCH_JAR_REGEXP = ".*\\.jar$";
 
   private static CyLogger logger = CyLogger.getLogger(InstallablePlugin.class);
 
@@ -299,15 +299,19 @@ public class InstallablePlugin implements Installable {
 
             ZipFile zf = null;
 
-            zf = new ZipFile(FileName);
             try {
+				zf = new ZipFile(FileName);
                 for (ZipEntry Entry : Entries) {
                     String EntryName = Entry.getName();
 
-                    InputStream is = ZipUtil.readFile(zf, EntryName);
+                    InputStream is = null;
+
                     try {
-                        JarInputStream jis = new JarInputStream(is);
+                        JarInputStream jis = null;
+
+						is = ZipUtil.readFile(zf, EntryName);
                         try {
+							jis = new JarInputStream(is);
                             PluginClassName = getManifestAttribute(jis.getManifest());
                         }
                         finally {

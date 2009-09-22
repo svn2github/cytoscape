@@ -363,23 +363,22 @@ public class CyMain implements CyInitParams {
 		Properties props = new Properties();
 		Properties argProps = new Properties();
 
-		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$")
-				.matcher("");
+		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$").matcher("");
 
 		for (int i = 0; i < potentialProps.length; i++) {
 			propPattern.reset(potentialProps[i]);
 
 			// check to see if the string is a key value pair
 			if (propPattern.matches()) {
-				argProps
-						.setProperty(propPattern.group(1), propPattern.group(3));
+				argProps.setProperty(propPattern.group(1), propPattern.group(3));
 
 				// otherwise assume it's a file/url
 			} else {
 				try {
-					InputStream in = FileUtil.getInputStream(potentialProps[i]);
+					InputStream in = null;
 
                     try {
+						in = FileUtil.getInputStream(potentialProps[i]);
                         if (in != null)
                             props.load(in);
                         else

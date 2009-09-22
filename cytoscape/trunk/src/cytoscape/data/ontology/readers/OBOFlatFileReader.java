@@ -202,55 +202,63 @@ public class OBOFlatFileReader implements OntologyReader {
 	 * @throws IOException
 	 */
 	public void readOntology() throws IOException {
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(inputStream));
-		String line;
+		try {
+			try {
+				BufferedReader bufRd = null;
+				String line;
 
-		String key;
-		String val;
-		int colonInx;
+				String key;
+				String val;
+				int colonInx;
 
-        try {
-            while ((line = bufRd.readLine()) != null) {
-                // Read header
-                if (line.startsWith(TERM_TAG)) {
-                    readEntry(bufRd);
+				try {
+					bufRd = new BufferedReader(new InputStreamReader(inputStream));
+					while ((line = bufRd.readLine()) != null) {
+						// Read header
+						if (line.startsWith(TERM_TAG)) {
+							readEntry(bufRd);
 
-                    break;
-                } else if (line.length() != 0) {
-                    colonInx = line.indexOf(':');
+							break;
+						} else if (line.length() != 0) {
+							colonInx = line.indexOf(':');
 
-                    if (colonInx == -1)
-                        continue;
+							if (colonInx == -1)
+								continue;
 
-                    key = line.substring(0, colonInx).trim();
-                    val = line.substring(colonInx + 1).trim();
-                    header.put(key, val);
-                }
-            }
+							key = line.substring(0, colonInx).trim();
+							val = line.substring(colonInx + 1).trim();
+							header.put(key, val);
+						}
+					}
 
-            while ((line = bufRd.readLine()) != null) {
-                // Read header
-                if (line.startsWith(TERM_TAG)) {
-                    readEntry(bufRd);
-                }
-            }
-        }
-        finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (bufRd != null) {
-                    bufRd.close();
-                }
-            } catch (IOException ioe) {
-            } finally {
-                inputStream = null;
-            }
-        }
+					while ((line = bufRd.readLine()) != null) {
+						// Read header
+						if (line.startsWith(TERM_TAG)) {
+							readEntry(bufRd);
+						}
+					}
 
-		buildDag();
-		setAttributeDescriptions();
+				}
+				finally {
+						if (bufRd != null) {
+							bufRd.close();
+						}
+				}
+			}
+			finally {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			}
+
+			buildDag();
+			setAttributeDescriptions();
+		}
+		catch (IOException ioe) {
+		}
+		finally {
+			inputStream = null;
+		}
 	}
 
 	/**
