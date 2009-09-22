@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 
 	/**
-	 * This interface specify all the methods that will be applied to the <code>Handler</code>.
+	 * This interface specifies all the methods that will be applied to the <code>Handler</code>.
 	 * 
 	 * <p><pre>
 	 * The <code>Handler</code> can be used for the construction of the GUI (by using the <code>Guihandler</code>), 
@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 	 * 
 	 * <code>Handler</code> will also be used to set the values that are in the <code>Handler</code> to the Properties object with <code>PropHandler</code>
 	 * 
-	 * The access to the different parts of the<code>Handler</code> is allowed by using the <code>getField()</code>, <code>getMethod()</code>, <code>getObject()</code>, and <code>getTunable</code> methods.
+	 * Access to different parts of the<code>Handler</code> is allowed by using the <code>getField()</code>, <code>getMethod()</code>, <code>getObject()</code>, and <code>getTunable</code> methods.
 	 * </pre></p>
 	 * @author pasteur
 	 *
