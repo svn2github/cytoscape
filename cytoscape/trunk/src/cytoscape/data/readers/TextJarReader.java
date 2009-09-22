@@ -52,8 +52,8 @@ import java.util.jar.*;
  *
  */
 public class TextJarReader {
-	String filename;
-	InputStreamReader reader;
+    String filename;
+    boolean oldStyle;
 	StringBuffer sb;
 
 	/**
@@ -71,26 +71,16 @@ public class TextJarReader {
 
 		sb = new StringBuffer();
 
-		InputStream is = null;
-
-		if (urlString.matches("jar\\:\\/\\/.+")) {
+        oldStyle = urlString.matches("jar\\:\\/\\/.+");
+		if (oldStyle) {
 			// to support the old way of doing things
 			filename = urlString.substring(5);
-			is = getClass().getResourceAsStream(filename);
 		} else {
 			// assume that we match proper jar url syntax 
 			// jar:<url>!/{file}  
 			// see JarURLConnection api for more details
 			filename = urlString;
-
-			URL url = new URL(urlString);
-			// is = url.openStream();
-            // Use URLUtil to get the InputStream since we might be using a proxy server 
-			// and because pages may be cached:
-			is = URLUtil.getBasicInputStream(url);
 		}
-
-		reader = new InputStreamReader(is);
 	}
 
 	/**
@@ -103,16 +93,40 @@ public class TextJarReader {
 	public int read() throws IOException {
 		CyLogger.getLogger().info("-- reading " + filename);
 
+        InputStream is = null;
 		char[] cBuffer = new char[1024];
 		int bytesRead;
 
+		// Start with an empty StringBuffer in case this method is called more than once.
+		sb = new StringBuffer();
+
         try {
-            while ((bytesRead = reader.read(cBuffer, 0, 1024)) != -1)
-                sb.append(new String(cBuffer, 0, bytesRead));
+			InputStreamReader reader = null;
+			
+            if (oldStyle) {
+                is = getClass().getResourceAsStream(filename);
+            }
+            else {
+                URL url = new URL(filename);
+                // is = url.openStream();
+                // Use URLUtil to get the InputStream since we might be using a proxy server
+                // and because pages may be cached:
+                is = URLUtil.getBasicInputStream(url);
+            }
+            try {
+                reader = new InputStreamReader(is);
+                while ((bytesRead = reader.read(cBuffer, 0, 1024)) != -1)
+                    sb.append(new String(cBuffer, 0, bytesRead));
+            }
+            finally {
+                if (reader != null) {
+                    reader.close();
+                }
+            }
         }
         finally {
-            if (reader != null) {
-                reader.close();
+            if (is != null) {
+                is.close();
             }
         }
 

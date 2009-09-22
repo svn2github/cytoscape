@@ -71,7 +71,8 @@ public class TextHttpReader {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public int read() throws Exception {
-		sb.append(getPage(uri));
+		// Start with an empty StringBuffer in case this method is called more than once.
+		sb = new StringBuffer(getPage(uri));
 
 		return sb.length();
 	} // read

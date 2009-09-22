@@ -48,7 +48,6 @@ import java.io.*;
  */
 public class TextFileReader {
 	String filename;
-	BufferedReader bufferedReader;
 	StringBuffer strbuf;
 	CyLogger logger = CyLogger.getLogger(TextFileReader.class);
 
@@ -59,17 +58,6 @@ public class TextFileReader {
 	 */
 	public TextFileReader(String filename) {
 		this.filename = filename;
-
-		try {
-			//reader = new FileReader (filename);
-			//bufferedReader = new BufferedReader (reader);
-			bufferedReader = new BufferedReader(new FileReader(filename));
-		} catch (IOException e) {
-			logger.warn("Unable to open text file '"+filename+"': "+e.getMessage(), e);
-
-			return;
-		}
-
 		strbuf = new StringBuffer();
 	} // ctor
 
@@ -80,25 +68,39 @@ public class TextFileReader {
 	 */
 	public int read() {
 		String newLineOfText;
+		BufferedReader bufferedReader = null;
+		int rv;
+
+		// Start with an empty StringBuffer in case this method is called more than once.
+		strbuf = new StringBuffer();
+        rv = -1;
 
 		try {
-            try {
-                while ((newLineOfText = bufferedReader.readLine()) != null) {
-                    strbuf.append(newLineOfText + "\n");
-                }
-            }
-            finally {
-                if (bufferedReader != null) {
-                    bufferedReader.close();
-                }
+			bufferedReader = new BufferedReader(new FileReader(filename));
+			try {
+				while ((newLineOfText = bufferedReader.readLine()) != null) {
+					strbuf.append(newLineOfText + "\n");
+				}
+				rv = strbuf.length();
+            } catch (IOException e) {
+                logger.warn("IO error reading from text file: "+e.getMessage(), e);
+
             }
 		} catch (IOException e) {
-			logger.warn("IO error reading from text file: "+e.getMessage(), e);
-
-			return -1;
+			logger.warn("Unable to open text file '"+filename+"': "+e.getMessage(), e);
+		}
+		finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				}
+				catch (IOException e) {
+					logger.warn("Unable to close text file '"+filename+"': "+e.getMessage(), e);
+				}
+			}
 		}
 
-		return (strbuf.length());
+		return rv;
 	} // read
 
 	/**
