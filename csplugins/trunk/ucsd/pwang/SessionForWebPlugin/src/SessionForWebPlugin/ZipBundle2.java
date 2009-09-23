@@ -3,6 +3,7 @@ package SessionForWebPlugin;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.FileInputStream;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
@@ -47,6 +48,24 @@ public class ZipBundle2 extends Bundle
 		zipOutput.putNextEntry(zipEntry);
 	}
 
+	public void putEntry(File pFile, String entry) throws IOException
+	{
+		FileInputStream in = new FileInputStream(pFile);
+		entries.add(entry);
+		ZipEntry zipEntry = new ZipEntry(entry);
+		zipOutput.putNextEntry(zipEntry);
+		
+		byte[] buf = new byte[1024];
+		// Transfer bytes from file to the ZIP file
+		int len;
+		while ((len=in.read(buf))>0){
+			zipOutput.write(buf,0,len);
+		}
+		in.close();
+		zipOutput.closeEntry();
+	}
+	
+	
 	public boolean hasEntry(String entry) // not used
 	{
 		return entries.contains(entry);
