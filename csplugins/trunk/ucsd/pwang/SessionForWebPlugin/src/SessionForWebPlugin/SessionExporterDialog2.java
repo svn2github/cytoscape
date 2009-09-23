@@ -228,6 +228,13 @@ public class SessionExporterDialog2 extends JDialog
 		settings.maxThumbnailWidth = ((Number) thumbnailPanel.maxThumbnailWidthSpinner.getValue()).intValue();
 		settings.maxThumbnailHeight = ((Number) thumbnailPanel.maxThumbnailHeightSpinner.getValue()).intValue();
 
+		settings.CoverImageFile = pubInfoPanel.coverImageFile;
+		settings.PDFFile = pubInfoPanel.pdfFile;
+		settings.LegendsDir = pubInfoPanel.legendsDir;
+		settings.SupplementMaterial = pubInfoPanel.supplementMaterialFile;
+		settings.SupplementURL = pubInfoPanel.supplementURLFile;
+		settings.PublicationURL = pubInfoPanel.publicationURLFile;
+		
 		return settings;
 	}
 }
