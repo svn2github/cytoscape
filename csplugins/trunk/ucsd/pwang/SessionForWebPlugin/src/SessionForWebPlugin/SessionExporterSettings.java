@@ -28,5 +28,14 @@ public class SessionExporterSettings
 	public String	imageFormat         = FORMAT_PNG;
 	public int	maxThumbnailWidth   = 200;
 	public int	maxThumbnailHeight  = 200;
+	
 	public File destinationDir = null;
+	
+	public File LegendsDir = null;
+	public File PDFFile= null;
+	public File PublicationURL = null;
+	public File SupplementMaterial = null;
+	public File SupplementURL = null;
+	public File CoverImageFile = null;
+
 }
