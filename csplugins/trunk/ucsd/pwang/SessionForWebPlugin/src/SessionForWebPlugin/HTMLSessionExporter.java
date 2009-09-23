@@ -81,7 +81,8 @@ public class HTMLSessionExporter
 							prefixDir += "/";
 						}
 						
-						generateNetworkFilesForCellCircuits(prefixDir, networkIDs);						
+						generateNetworkFilesForCellCircuits(prefixDir, networkIDs);	
+						addPubData2Zip(prefixDir);
 					}
 					else {
 						writeSession();
@@ -485,16 +486,16 @@ public class HTMLSessionExporter
 					// export the sif file
 					setStatus("Exporting SIF for: " + networkTitle);
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount);
-						ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
+					ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
 						
-						CyAttributes cyAttrs = Cytoscape.getNetworkAttributes();					  	
-						String species = cyAttrs.getStringAttribute(networkID, "species");
-						String speciesSubDir = getSpeciesSubDirectory(species);
+					CyAttributes cyAttrs = Cytoscape.getNetworkAttributes();					  	
+					String species = cyAttrs.getStringAttribute(networkID, "species");
+					String speciesSubDir = getSpeciesSubDirectory(species);
 						
-						zipBundle2.openEntry(prefixDir+"sif/"+speciesSubDir, Bundle.sifFile(networkTitle));
+					zipBundle2.openEntry(prefixDir+"sif/"+speciesSubDir, Bundle.sifFile(networkTitle));
 						
-						CyNetwork network = Cytoscape.getNetwork(networkID);
-						InteractionWriter.writeInteractions(network, zipBundle2.entryWriter(), null);						
+					CyNetwork network = Cytoscape.getNetwork(networkID);
+					InteractionWriter.writeInteractions(network, zipBundle2.entryWriter(), null);						
 					
 					bundle.closeEntry();
 
@@ -508,9 +509,9 @@ public class HTMLSessionExporter
 					BufferedImage image = GraphViewToImage.convert(view, settings);
 					if (image != null)
 					{
-							//ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
-							zipBundle2.openEntry(prefixDir+"img", zipBundle2.imageFile(networkTitle, settings.imageFormat));
-							ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
+						//ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
+						zipBundle2.openEntry(prefixDir+"img", zipBundle2.imageFile(networkTitle, settings.imageFormat));
+						ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
 						bundle.closeEntry();
 					}
 
@@ -520,10 +521,10 @@ public class HTMLSessionExporter
 					// generate thumbnail
 					setStatus("Generating thumbnail for: " + networkTitle);
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 40 / networkCount);
-						//ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
-						zipBundle2.openEntry(prefixDir+"thm_img", ZipBundle2.thumbnailFile(networkTitle, settings.imageFormat));
-						BufferedImage thumbnail = Thumbnails.createThumbnail(image, settings);
-						ImageIO.write(thumbnail, settings.imageFormat, zipBundle2.entryOutputStream());	
+					//ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
+					zipBundle2.openEntry(prefixDir+"thm_img", ZipBundle2.thumbnailFile(networkTitle, settings.imageFormat));
+					BufferedImage thumbnail = Thumbnails.createThumbnail(image, settings);
+					ImageIO.write(thumbnail, settings.imageFormat, zipBundle2.entryOutputStream());	
 					bundle.closeEntry();
 					
 					if (needToHalt)
@@ -533,7 +534,55 @@ public class HTMLSessionExporter
 				
 			} // end generateImages()
 
+			private void addPubData2Zip(String prefixDir)throws Exception {
+				// export publication info
+				setStatus("Exporting Publication info ... ");
+				setPercentCompleted(80);
+				ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
+
+				if (settings.SupplementURL != null){
+					zipBundle2.putEntry(settings.SupplementURL, prefixDir+"supplement_url.txt");					
+				}
+				if (settings.SupplementMaterial != null){
+					zipBundle2.putEntry(settings.SupplementMaterial, prefixDir+"supplement_material.doc");					
+				}
+				if (settings.PublicationURL != null){
+					zipBundle2.putEntry(settings.PublicationURL, prefixDir+"publication_url.txt");					
+				}
+				if (settings.CoverImageFile != null){
+					String ext = Utils.getExtension(settings.CoverImageFile);
+					zipBundle2.putEntry(settings.CoverImageFile, prefixDir+"coverImage."+ext);					
+				}
+				if (settings.PDFFile != null){
+					zipBundle2.putEntry(settings.PDFFile, prefixDir+"myPaper.pdf");					
+				}
+
+				if (settings.LegendsDir != null){
+					File[] files = settings.LegendsDir.listFiles();
+										
+					for (int i=0; i<files.length; i++){
+						// assume there is no nested directory in the legend directory
+						if (files[i].isDirectory()){
+							continue;
+						}
+						zipBundle2.putEntry(files[i], prefixDir+"legend/"+ files[i].getName());
+					}	
+				}
+			}
 			
+			/*
+			private List<File> getFilesFromDir(File pDir, List<File> fileList){
+				for (File file: pDir.listFiles()){
+					if (file.isDirectory()){
+						getFilesFromDir(file, fileList);
+					}
+					else {
+						fileList.add(file);
+					}
+				}
+				return fileList;
+			}
+			*/
 			
 			private void generateIndexHTML(List<String> networkIDs) throws Exception
 			{
