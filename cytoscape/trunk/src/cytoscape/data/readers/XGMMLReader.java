@@ -93,6 +93,7 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.logger.CyLogger;
 import ding.view.DGraphView;
 
+import java.io.PushbackInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -226,6 +227,12 @@ public class XGMMLReader extends AbstractGraphReader {
 
 	private void initialize() {
 		logger = CyLogger.getLogger(XGMMLReader.class);
+
+		Boolean attemptRepair = Boolean.getBoolean("cytoscape.xgmml.repair.bare.ampersands");
+
+		if (attemptRepair) {
+			networkStream = new RepairBareAmpersandsInputStream(networkStream, 512);
+		}
 	}
 
 	/**
@@ -727,5 +734,84 @@ public class XGMMLReader extends AbstractGraphReader {
 			((DGraphView) view).setCenter(center.getX(), center.getY());
 
 		Cytoscape.getVisualMappingManager().applyAppearances();
+	}
+
+	private class RepairBareAmpersandsInputStream extends PushbackInputStream {
+		private final byte[] encodedAmpersand = new byte[]{'a', 'm', 'p', ';'};
+		public RepairBareAmpersandsInputStream(InputStream in) {
+			super(in);
+		}
+
+		public RepairBareAmpersandsInputStream(InputStream in, int size) {
+			super(in, size);
+		}
+
+		@Override
+		public int read() throws IOException {
+			int c;
+
+			c = super.read();
+			if (c == (int)'&') {
+				byte[] b = new byte[7];
+				int cnt;
+
+				cnt = read(b);
+				if (cnt > 0) {
+					boolean isEntity;
+					int i;
+
+					isEntity = false;
+					i = 0;
+					while ((i < cnt) && (!isEntity)) {
+						isEntity = (b[i] == ';');
+						i++;
+					}
+
+					byte[] pb = new byte[cnt];
+					for (int p = 0; p < cnt; p++) {
+						pb[p] = b[p];
+					}
+					unread(pb);
+
+					if (!isEntity) {
+						unread(encodedAmpersand);
+					}
+				}
+			}
+
+			return c;
+		}
+
+		@Override
+		public int read(byte[] b, int off, int len) throws IOException {
+			if (b == null) {
+				throw new NullPointerException();
+			} else if (off < 0 || len < 0 || len > b.length - off) {
+				throw new IndexOutOfBoundsException();
+			} else if (len == 0) {
+				return 0;
+			}
+
+			int cnt;
+			int c = -1;
+
+			cnt = 0;
+			while (cnt < len) {
+				c = read();
+				if (c == -1) {
+					break;
+				}
+				b[off] = (byte)c;
+				off++;
+				cnt++;
+			}
+
+			if ((c == -1) && (cnt == 0))
+			{
+				cnt = -1;
+			}
+
+			return cnt;
+		}
 	}
 }
