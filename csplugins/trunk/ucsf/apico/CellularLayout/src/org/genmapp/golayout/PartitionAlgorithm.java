@@ -44,6 +44,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 	protected static String layoutName = null;
 	private ArrayList<Object> nodeAttributeValues = new ArrayList();
+	private Object[] layoutNames = null;
 	protected static String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 	private HashMap<Object, List<CyNode>> attributeValueNodeMap = new HashMap<Object, List<CyNode>>();
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
@@ -60,11 +61,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		super();
 
 		Collection<CyLayoutAlgorithm> availableLayouts = CyLayouts.getAllLayouts();
-		Object[] layoutNames = new Object[availableLayouts.size()];
+		layoutNames = new Object[availableLayouts.size()];
 		int i = 0;
-		for (CyLayoutAlgorithm ca : availableLayouts){
-			Object ln = ca.getName();
-			layoutNames[i] = ln;
+		for (CyLayoutAlgorithm ca : availableLayouts) {
+			layoutNames[i] = (Object)ca;
 			i++;
 		}
 
@@ -73,11 +73,11 @@ public class PartitionAlgorithm extends AbstractLayout implements
 						CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 
 		layoutProperties = new LayoutProperties(getName());
-		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-				Tunable.STRING, "force-directed"));
-		
 //		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-//				Tunable.LIST, (Object) "force-directed", (Object) layoutNames, (Object) null, 0 , false));
+//				Tunable.STRING, "force-directed"));
+		
+		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
+				Tunable.LIST, 0, (Object) layoutNames, new Integer(0), 0));
 		
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
@@ -110,7 +110,13 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		
 		t = layoutProperties.get("layoutName");
 		if ((t != null) && (t.valueChanged() || force))
-			layoutName = t.getValue().toString();
+			if (layoutNames.length == 1) {
+				layoutName = ((CyLayoutAlgorithm)layoutNames[0]).getName();
+			} else {
+				int index = ((Integer) t.getValue()).intValue();
+				if (index < 0) index = 0;
+				layoutName = ((CyLayoutAlgorithm)layoutNames[index]).getName();
+			}
 	}
 
 	/**
