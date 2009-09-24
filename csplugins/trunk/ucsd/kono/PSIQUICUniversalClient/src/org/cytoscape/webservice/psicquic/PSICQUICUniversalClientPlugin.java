@@ -7,12 +7,14 @@ import cytoscape.plugin.CytoscapePlugin;
 public class PSICQUICUniversalClientPlugin extends CytoscapePlugin {
 
 	public PSICQUICUniversalClientPlugin() {
-		
+
 		try {
-			WebServiceClientManager.registerClient(PSICQUICUniversalClient.getClient());
+			WebServiceClientManager.registerClient(PSICQUICUniversalClient
+					.getClient());
 		} catch (Exception e) {
-			CyLogger.getLogger().error("Failed to register PSICQUIC client.", e);
+			CyLogger.getLogger()
+					.error("Failed to register PSICQUIC client.", e);
 		}
-		
+
 	}
 }

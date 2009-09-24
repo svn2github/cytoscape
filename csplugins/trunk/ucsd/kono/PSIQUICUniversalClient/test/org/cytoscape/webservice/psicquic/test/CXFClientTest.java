@@ -1,9 +1,9 @@
 package org.cytoscape.webservice.psicquic.test;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.cxf.frontend.ClientProxyFactoryBean;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -19,13 +19,20 @@ import org.junit.Test;
 public class CXFClientTest {
 
 	public static final String INTACT = "http://www.ebi.ac.uk/intact/psicquic/webservices/psicquic";
-	public static final String IREFINDEX = "http://biotin.uio.no:8080/psicquic-ws-1/webservices/psicquic";
+	public static final String IREFINDEX = "http://biotin.uio.no:8080/psicquic-ws/webservices/psicquic";
 	public static final String MINT = "http://mint.bio.uniroma2.it/mint/psicquic/webservices/psicquic";
 	public static final String MPIDB = "http://www.jcvi.org/mpidb/servlet/webservices/psicquic";
 	public static final String BIOGRID = "http://tyerslab.bio.ed.ac.uk:8080/psicquic-ws/webservices/psicquic";
+	
+	private Map<String, String> registory; 
 
 	@Before
 	public void setUp() throws Exception {
+		registory = new HashMap<String, String>();
+		
+		
+		
+		
 	}
 
 	@After
@@ -34,6 +41,9 @@ public class CXFClientTest {
 
 	@Test
 	public void testCXF() throws Exception {
+		
+		// build registory lists
+		
 
 		List<ClientProxyFactoryBean> factoryList = new ArrayList<ClientProxyFactoryBean>();
 
@@ -46,21 +56,21 @@ public class CXFClientTest {
 		irefFactory.setServiceClass(PsicquicService.class);
 		irefFactory.setAddress(IREFINDEX);
 		factoryList.add(irefFactory);
-
-		ClientProxyFactoryBean mintFactory = new JaxWsProxyFactoryBean();
-		mintFactory.setServiceClass(PsicquicService.class);
-		mintFactory.setAddress(MINT);
-		factoryList.add(mintFactory);
-
-		ClientProxyFactoryBean mpidbFactory = new JaxWsProxyFactoryBean();
-		mpidbFactory.setServiceClass(PsicquicService.class);
-		mpidbFactory.setAddress(MPIDB);
-		factoryList.add(mpidbFactory);
-		
-		ClientProxyFactoryBean biogridFactory = new JaxWsProxyFactoryBean();
-		biogridFactory.setServiceClass(PsicquicService.class);
-		biogridFactory.setAddress(BIOGRID);
-		factoryList.add(biogridFactory);
+//
+//		ClientProxyFactoryBean mintFactory = new JaxWsProxyFactoryBean();
+//		mintFactory.setServiceClass(PsicquicService.class);
+//		mintFactory.setAddress(MINT);
+//		factoryList.add(mintFactory);
+//
+//		ClientProxyFactoryBean mpidbFactory = new JaxWsProxyFactoryBean();
+//		mpidbFactory.setServiceClass(PsicquicService.class);
+//		mpidbFactory.setAddress(MPIDB);
+//		factoryList.add(mpidbFactory);
+//		
+//		ClientProxyFactoryBean biogridFactory = new JaxWsProxyFactoryBean();
+//		biogridFactory.setServiceClass(PsicquicService.class);
+//		biogridFactory.setAddress(BIOGRID);
+//		factoryList.add(biogridFactory);
 		
 		
 		System.out.println("==================== Cleint proxy generated ===================");
