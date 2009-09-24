@@ -4,33 +4,23 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Simple REST client for PSICQUIC registory service.
@@ -39,15 +29,25 @@ import org.xml.sax.InputSource;
  * 
  */
 public class RegistoryManager {
-
+	
+	// Tag definitions
+	private static final String SOAP_URL = "soapUrl";
 	private static final String SERVICE_URL = "http://www.ebi.ac.uk/intact/psicquic-registry/registry";
 
-	public RegistoryManager() {
+	private final Map<String, String> regMap;
 
+	public RegistoryManager() throws IOException {
+		regMap = new HashMap<String, String>();
+		invoke();
 	}
 
-	public void invoke() throws IOException, Exception {
+	public Map<String, String> getRegistry() {
+		return regMap;
+	}
+
+	private void invoke() throws IOException {
 		String command = "?action=STATUS&format=xml";
+
 		URL url = new URL(SERVICE_URL + command);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
@@ -67,57 +67,62 @@ public class RegistoryManager {
 			builder.append(next);
 		}
 
-		parse(builder.toString());
+		try {
+			parse(builder.toString());
+		} catch (ParserConfigurationException e) {
+			
+			e.printStackTrace();
+			throw new IOException("Could not parse message from registry.");
+		} catch (XPathException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IOException("Could not parse message from registry.");
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IOException("Could not parse message from registry.");
+		}
 		System.out.println("==== Registory get success!! ===============\n\n"
 				+ builder.toString());
 
 	}
 
-	private void parse(String result) throws Exception {
-
-		System.out.println("@@@@@ " + result);
-
-		byte[] bytes = result.getBytes();
+	private void parse(String result) throws ParserConfigurationException, IOException, XPathException, SAXException {
 
 		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docbuilder = dbfactory.newDocumentBuilder();
 		Document doc = docbuilder.parse(new ByteArrayInputStream(result
 				.getBytes("UTF-8")));
-		
+
 		XPathFactory xpf = XPathFactory.newInstance();
 		XPath xp = xpf.newXPath();
-		NodeList l2 = (NodeList) xp.evaluate("//service", doc, XPathConstants.NODESET);
-		for(int i=0; i<l2.getLength(); i++) {
-			System.out.println("############# Service Provider: " + l2.item(i).getFirstChild().getFirstChild());
-			
-		}
-		
-		System.out.println("#L2 = " + l2);
 
-		NodeList list = doc.getElementsByTagName("service");
+		// Extract all service entries.
+		NodeList list = (NodeList) xp.evaluate("//service", doc,
+				XPathConstants.NODESET);
 
-		for(int i=0; i<list.getLength(); i++) {
-			System.out.println("############# Service Provider: " + (i+1));
-			walk(list.item(i));
+		String regName = null;
+		for (int i = 0; i < list.getLength(); i++) {
+			regName = list.item(i).getFirstChild().getFirstChild()
+					.getNodeValue();
+			System.out.println("Service Provider " + i  + ": " + regName);
+			walk(list.item(i), regName);
 		}
-		
-		
 
 	}
-	
-	private void walk(Node item) {
-		
-	
-			
+
+	private void walk(Node item, String serviceName) {
+
+			String tag = null;
 			for(Node n = item.getFirstChild(); n!=null; n = n.getNextSibling()) {
-				System.out.println("Entry = "
-						+ item.getFirstChild().getNodeName() + ", "
-						+ item.getFirstChild().getNodeType() + ", "
-						+ item.getFirstChild().getNodeValue());
-				
-				walk(n);
-			}
-		
-		
+				tag = item.getNodeName();
+				if(tag.equals(SOAP_URL)) {
+					System.out.println("SOAP = "
+							+ item.getFirstChild().getNodeValue());
+					regMap.put(serviceName, item.getFirstChild().getNodeValue());
+					return;
+				}
+				walk(n, serviceName);
+			}	
 	}
 }

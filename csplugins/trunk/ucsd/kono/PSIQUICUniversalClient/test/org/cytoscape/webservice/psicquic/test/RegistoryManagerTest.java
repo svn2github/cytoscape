@@ -1,6 +1,8 @@
 package org.cytoscape.webservice.psicquic.test;
 
 
+import static org.junit.Assert.*;
+
 import javax.xml.transform.TransformerConfigurationException;
 
 import org.cytoscape.webservice.psicquic.RegistoryManager;
@@ -22,7 +24,7 @@ public class RegistoryManagerTest {
 	public void accessRegistory() throws Exception {
 		RegistoryManager rm = new RegistoryManager();
 		
-		rm.invoke();
+		assertNotNull(rm.getRegistry());
 	}
 
 }
