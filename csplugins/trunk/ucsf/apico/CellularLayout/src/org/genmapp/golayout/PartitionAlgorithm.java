@@ -246,12 +246,8 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		// now loop through all groups and set state to 'collapsed'
 		for (CyGroup g : groups) {
 			g.setState(2);
-			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true); // set
-			// this
-			// false
-			// later
-			// for
-			// efficiency
+			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true); 
+			// set this false later for efficiency
 		}
 
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
