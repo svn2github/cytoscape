@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -462,9 +463,11 @@ public class PartitionAlgorithm extends AbstractLayout implements
 //		}
 
 		nodeAttributeValues = setupNodeAttributeValues();
+		final int SUBNETWORK_LIMIT = 100;
 		// warn before building more than 100 subnetworks;
-		if (nodeAttributeValues.size() > 100 ){
+		if (nodeAttributeValues.size() > SUBNETWORK_LIMIT ){
 			//TODO: add dialog to continue
+			JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), "Building over "+SUBNETWORK_LIMIT+" subnetworks may take a while. Are you sure you want to proceed?");
 		}
 		
 		populateNodes(attributeName);
