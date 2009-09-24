@@ -4,7 +4,10 @@ import java.io.File;
 import javax.swing.JFileChooser;
 //import java.awt.image.ImageFilter;
 import javax.swing.filechooser.FileFilter;
-
+import javax.swing.JOptionPane;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.net.URL;
 /**
 *
 * @author  pwang
@@ -204,12 +207,28 @@ public class PubInfoPanel extends javax.swing.JPanel {
     	fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     	int retValue = fc.showDialog(this, "OK");
     	if (retValue == JFileChooser.APPROVE_OPTION){
-        	this.legendsDir = fc.getSelectedFile();
-        	this.tfLegends.setText(legendsDir.getAbsolutePath());
+        	if (valiateLegends(fc.getSelectedFile())){
+        		this.legendsDir = fc.getSelectedFile();
+            	this.tfLegends.setText(legendsDir.getAbsolutePath());        		
+        	}
+        	else {
+        		JOptionPane.showMessageDialog(this, "No Legend_FAQ.html file is found in the directory", "Warning", JOptionPane.WARNING_MESSAGE);
+        	}
     	}    	
     }                                         
 
 
+    // Legends directory must have a file 'legend_FAQ.html'
+    private boolean valiateLegends(File pLegendsDir){
+    	File[] files = pLegendsDir.listFiles();
+    	for (int i=0; i< files.length; i++){
+    		if (files[i].getName().endsWith("legend_FAQ.html")){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     private void btnChooserSupplementMaterialActionPerformed(java.awt.event.ActionEvent evt) {                                                             
     	JFileChooser fc = new JFileChooser();
     	int retValue = fc.showDialog(this, "OK");
@@ -222,11 +241,39 @@ public class PubInfoPanel extends javax.swing.JPanel {
     	JFileChooser fc = new JFileChooser();
     	int retValue = fc.showDialog(this, "OK");
     	if (retValue == JFileChooser.APPROVE_OPTION){
-        	supplementURLFile = fc.getSelectedFile();
-        	this.tfSupplementURL.setText(supplementURLFile.getAbsolutePath());
+    		if (containsURL(fc.getSelectedFile())){
+            	supplementURLFile = fc.getSelectedFile();
+            	this.tfSupplementURL.setText(supplementURLFile.getAbsolutePath());    			
+    		}
+    		else {
+           		JOptionPane.showMessageDialog(this, "Please make sure URL exists in the file", "Warning", JOptionPane.WARNING_MESSAGE);
+    		}
     	}
     }                                                       
 
+    // Check if a file contains a URL
+    private boolean containsURL(File pFile){
+    	String url = "";
+    	try {
+            BufferedReader in = new BufferedReader(new FileReader(pFile));
+            String str;
+            while ((str = in.readLine()) != null) {
+                url += str;
+            }
+            in.close();
+        } catch (Exception e) {
+        }
+
+       try {
+            URL theURL = new URL(url);        	
+        }
+        catch(Exception e){
+        	return false;
+        }
+        
+    	return true;
+    }
+    
     private void btnChooserPDFFileActionPerformed(java.awt.event.ActionEvent evt) {                                                  
     	JFileChooser fc = new JFileChooser();
     	fc.addChoosableFileFilter(new PDFFilter());
@@ -252,8 +299,13 @@ public class PubInfoPanel extends javax.swing.JPanel {
     	JFileChooser fc = new JFileChooser();
     	int retValue = fc.showDialog(this, "OK");
     	if (retValue == JFileChooser.APPROVE_OPTION){
-        	this.publicationURLFile = fc.getSelectedFile();
-        	this.tfPublicationURL.setText(publicationURLFile.getAbsolutePath());
+    		if (containsURL(fc.getSelectedFile())){
+            	this.publicationURLFile = fc.getSelectedFile();
+            	this.tfPublicationURL.setText(publicationURLFile.getAbsolutePath());    			
+    		}
+    		else {
+           		JOptionPane.showMessageDialog(this, "Please make sure URL exists in the file", "Warning", JOptionPane.WARNING_MESSAGE);
+    		}
     	}
     }                                                        
     
