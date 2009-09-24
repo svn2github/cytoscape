@@ -378,8 +378,8 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		} // end of if ()
 
 		List nodes = attributeValueNodeMap.get(attributeValue);
-		System.out.println("Got nodes for attributeValue: " + attributeValue
-				+ " = " + nodes.size());
+//		System.out.println("Got nodes for attributeValue: " + attributeValue
+//				+ " = " + nodes.size());
 		if (nodes == null) {
 			return;
 		}
@@ -414,7 +414,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 			// CyLayoutAlgorithm layout =
 			// CyLayouts.getLayout("force-directed");
-			System.out.println("Layout: " + new_view.getTitle() +" :: "+ layoutName);
+//			System.out.println("Layout: " + new_view.getTitle() +" :: "+ layoutName);
 			
 			CyLayoutAlgorithm layout = CyLayouts.getLayout(layoutName);
 			layout.doLayout(new_view);

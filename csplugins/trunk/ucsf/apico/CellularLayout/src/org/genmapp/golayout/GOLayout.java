@@ -42,6 +42,8 @@ public class GOLayout extends CytoscapePlugin {
 		public GOLayoutAlgorithm() {
 			super();
 			layoutProperties = new LayoutProperties(getName());
+			layoutProperties.add(new Tunable("global", "Global Settings", Tunable.GROUP,
+                    new Integer(3)));
 			layoutProperties
 			.add(new Tunable("attributePartition",
 					"The attribute to use for partitioning",
@@ -57,7 +59,12 @@ public class GOLayout extends CytoscapePlugin {
 					"The attribute to use for node color",
 					Tunable.NODEATTRIBUTE, PartitionNetworkVisualStyleFactory.attributeName,
 					(Object) getInitialAttributeList(), (Object) null, 0));
-
+			layoutProperties.add(new Tunable("floorplan", "Floorplan Settings", Tunable.GROUP,
+                    new Integer(2)));
+			layoutProperties.add(new Tunable("nodeSpacing",
+					"Spacing between nodes", Tunable.DOUBLE, new Double(30.0)));
+			layoutProperties.add(new Tunable("pruneEdges", "Prune edges?",
+					Tunable.BOOLEAN, false));
 
 			/*
 			 * We've now set all of our tunables, so we can read the property
@@ -105,6 +112,15 @@ public class GOLayout extends CytoscapePlugin {
 				String newValue = (String) t.getValue();
 				PartitionNetworkVisualStyleFactory.attributeName = newValue;
 			}
+			t = layoutProperties.get("nodeSpacing");
+			if ((t != null) && (t.valueChanged() || force))
+				CellAlgorithm.distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
+
+			t = layoutProperties.get("pruneEdges");
+			if ((t != null) && (t.valueChanged() || force))
+				CellAlgorithm.pruneEdges = ((Boolean) t.getValue()).booleanValue();
+
+
 		}
 
 		/**

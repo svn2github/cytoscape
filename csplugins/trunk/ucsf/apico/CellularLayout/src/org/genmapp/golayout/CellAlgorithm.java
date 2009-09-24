@@ -28,10 +28,9 @@ import cytoscape.layout.Tunable;
  * regions mapped by node attribute.
  */
 public class CellAlgorithm extends AbstractLayout {
-	private boolean pruneEdges = false;
-	private double distanceBetweenNodes = 30.0d;
+	protected static boolean pruneEdges = false;
+	protected static double distanceBetweenNodes = 30.0d;
 	protected static String attributeName = "annotation.GO CELLULAR_COMPONENT";
-	LayoutProperties layoutProperties = null;
 
 	// store region assignment as node attribute
 	private static final String REGION_ATT = "_cellularLayoutRegion";
@@ -45,22 +44,6 @@ public class CellAlgorithm extends AbstractLayout {
 	 */
 	public CellAlgorithm() {
 		super();
-		layoutProperties = new LayoutProperties(getName());
-		layoutProperties.add(new Tunable("nodeSpacing",
-				"Spacing between nodes", Tunable.DOUBLE, new Double(30.0)));
-		layoutProperties.add(new Tunable("pruneEdges", "Prune edges?",
-				Tunable.BOOLEAN, false));
-		/*
-		 * We've now set all of our tunables, so we can read the property file
-		 * now and adjust as appropriate
-		 */
-		layoutProperties.initializeProperties();
-
-		/*
-		 * Finally, update everything. We need to do this to update any of our
-		 * values based on what we read from the property file
-		 */
-		updateSettings(true);
 
 	}
 
@@ -78,27 +61,10 @@ public class CellAlgorithm extends AbstractLayout {
 	 *            force the settings to be updated, if true
 	 */
 	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-		Tunable t = layoutProperties.get("nodeSpacing");
-		if ((t != null) && (t.valueChanged() || force))
-			distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("pruneEdges");
-		if ((t != null) && (t.valueChanged() || force))
-			pruneEdges = ((Boolean) t.getValue()).booleanValue();
-
+		//Nothing here... see GOLayout
 	}
 
-	/**
-	 * Reverts our settings back to the original.
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
-	}
 
-	public LayoutProperties getSettings() {
-		return layoutProperties;
-	}
 
 	/**
 	 * Returns the short-hand name of this algorithm NOTE: is related to the
@@ -161,17 +127,6 @@ public class CellAlgorithm extends AbstractLayout {
 		return null;
 	}
 
-	/**
-	 * Returns a JPanel to be used as part of the Settings dialog for this
-	 * layout algorithm.
-	 * 
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
-	}
 
 	/**
 	 * The layout protocol...
