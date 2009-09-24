@@ -537,7 +537,7 @@ public class HTMLSessionExporter
 			private void addPubData2Zip(String prefixDir)throws Exception {
 				// export publication info
 				setStatus("Exporting Publication info ... ");
-				setPercentCompleted(80);
+				setPercentCompleted(90);
 				ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
 
 				if (settings.SupplementURL != null){
@@ -549,6 +549,7 @@ public class HTMLSessionExporter
 				if (settings.PublicationURL != null){
 					zipBundle2.putEntry(settings.PublicationURL, prefixDir+"publication_url.txt");					
 				}
+				setPercentCompleted(95);
 				if (settings.CoverImageFile != null){
 					String ext = Utils.getExtension(settings.CoverImageFile);
 					zipBundle2.putEntry(settings.CoverImageFile, prefixDir+"coverImage."+ext);					
@@ -557,6 +558,8 @@ public class HTMLSessionExporter
 					zipBundle2.putEntry(settings.PDFFile, prefixDir+"myPaper.pdf");					
 				}
 
+				setPercentCompleted(98);
+				
 				if (settings.LegendsDir != null){
 					File[] files = settings.LegendsDir.listFiles();
 										
