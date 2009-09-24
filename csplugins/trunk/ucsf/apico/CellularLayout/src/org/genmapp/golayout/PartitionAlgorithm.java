@@ -58,6 +58,15 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	public PartitionAlgorithm() {
 		super();
 
+		Collection<CyLayoutAlgorithm> availableLayouts = CyLayouts.getAllLayouts();
+		Object[] layoutNames = new Object[availableLayouts.size()];
+		int i = 0;
+		for (CyLayoutAlgorithm ca : availableLayouts){
+			Object ln = ca.getName();
+			layoutNames[i] = ln;
+			i++;
+		}
+
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
@@ -65,6 +74,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		layoutProperties = new LayoutProperties(getName());
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
 				Tunable.STRING, "force-directed"));
+		
+//		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
+//				Tunable.LIST, (Object) "force-directed", (Object) layoutNames, (Object) null, 0 , false));
+		
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
@@ -449,6 +462,11 @@ public class PartitionAlgorithm extends AbstractLayout implements
 //		}
 
 		nodeAttributeValues = setupNodeAttributeValues();
+		// warn before building more than 100 subnetworks;
+		if (nodeAttributeValues.size() > 100 ){
+			//TODO: add dialog to continue
+		}
+		
 		populateNodes(attributeName);
 
 		GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());

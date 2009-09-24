@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -116,7 +116,7 @@ public class CellAlgorithm extends AbstractLayout {
 	 * @return user visible name
 	 */
 	public String toString() {
-		return "Layout";
+		return "Floorplan Only";
 	}
 
 	/**
@@ -178,384 +178,487 @@ public class CellAlgorithm extends AbstractLayout {
 	 */
 	public void construct() {
 
-		GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
-		Cytoscape.getVisualMappingManager().setVisualStyle(
-				PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
-
-		taskMonitor.setStatus("Sizing up subcellular regions");
-		taskMonitor.setPercentCompleted(1);
 
 		// CREATE REGIONS:
 		CellTemplate.buildRegionsFromTepmlate(distanceBetweenNodes);
-
-		List<NodeView> nvRegList = new ArrayList<NodeView>();
-
-		// LAYOUT REGIONS:
-		double nextX = 0.0d;
-		double nextY = 0.0d;
-		double startX = 0.0d;
-		double startY = 0.0d;
-		int nodeCount = 0; // count nodes per region
-		List<NodeView> nodeViews;
-
-		HashMap<NodeView, Integer> nvSeen = new HashMap<NodeView, Integer>();
-		int taskNodeCount = networkView.nodeCount();
-		int taskCount = 0; // count all nodes in all regions to layout
 		Region[] sra = RegionManager.getSortedRegionArray();
-		for (int i = sra.length - 1; i >= 0; i--) { // count down from
-			// largest to smallest
-			Region r = sra[i];
 
-			// Place register nodes at region corners (for fit to screen)
-			for (int j = 0; j < 4; j++) {
-				String regId = r.getAttValue().concat("_" + j);
-				CyNode regNode = Cytoscape.getCyNode(regId, true);
-				Cytoscape.getCurrentNetwork().addNode(regNode);
-				NodeView regNv = Cytoscape.getCurrentNetworkView().getNodeView(
-						regNode);
-				nvRegList.add(regNv);
-				regNv.setHeight(0.1);
-				regNv.setWidth(0.1);
-
-				Cytoscape.getNodeAttributes().setAttribute(regId,
-						"canonicalName", "");
-				// lock against future layout
-				// TODO: doesn't work!
-				lockNode(regNv);
-				switch (j) {
-				case 0:
-					regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
-					break;
-				case 1:
-					regNv.setOffset(r.getRegionLeft(), r.getRegionBottom());
-					break;
-				case 2:
-					regNv.setOffset(r.getRegionRight(), r.getRegionTop());
-					break;
-				case 3:
-					regNv.setOffset(r.getRegionRight(), r.getRegionBottom());
-					break;
-				}
+		// Check for valid region-annotation mapping
+		boolean valid = false;
+		for (Region r : sra) {
+			if (r.getAttValue() != "unassigned" && r.getNodeCount() > 0) {
+				valid = true;
 
 			}
+		}
+		if (!valid) {
+			taskMonitor.setPercentCompleted(100);
+			RegionManager.clearAll();
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			"Selected attribute does not match template floorplan");
+		} else {
 
-			nodeViews = r.getNodeViews();
-			nodeCount = r.getNodeCount();
+			GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
+			Cytoscape.getVisualMappingManager().setVisualStyle(
+					PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
 
-			/*
-			 * start x at left plus spacer start y at center minus half of the
-			 * number of rows rounded down, e.g., if the linear layout of nodes
-			 * is 2.8 times the width of the scaled region, then there will be 3
-			 * rows and you will want to shift up 1 row from center to start.
-			 */
-			startX = r.getFreeCenterX() - r.getFreeWidth() / 2
-					+ distanceBetweenNodes;
-			startY = r.getCenterY()
-					- Math.floor((nodeCount / Math.floor(r.getFreeWidth()
-							/ distanceBetweenNodes - 1)) - 0.3)
-					* distanceBetweenNodes / 2;
-			if (r.getShape() == Region.MEMBRANE_LINE) {
-				startY = r.getCenterY();
-			}
-			nextX = startX;
-			nextY = startY;
+			taskMonitor.setStatus("Sizing up subcellular regions");
+			taskMonitor.setPercentCompleted(1);
 
-			taskMonitor.setPercentCompleted(50);
-			taskMonitor.setStatus("Moving nodes");
+			List<NodeView> nvRegList = new ArrayList<NodeView>();
 
-			int remainingCount = nodeCount; // count nodes left to layout
-			int colCount = 0; // count nodes per row
-			double fillPotential = ((nodeCount + 2) * distanceBetweenNodes)
-					/ r.getFreeWidth(); // check for full row
-			double bump = ((nodeCount + 1) * distanceBetweenNodes)
-					/ r.getFreeWidth();
+			// LAYOUT REGIONS:
+			double nextX = 0.0d;
+			double nextY = 0.0d;
+			double startX = 0.0d;
+			double startY = 0.0d;
+			int nodeCount = 0; // count nodes per region
+			List<NodeView> nodeViews;
 
-			for (NodeView nv : nodeViews) {
-				taskMonitor
-						.setPercentCompleted((taskCount / taskNodeCount) * 50);
+			HashMap<NodeView, Integer> nvSeen = new HashMap<NodeView, Integer>();
+			int taskNodeCount = networkView.nodeCount();
+			int taskCount = 0; // count all nodes in all regions to layout
 
-				if (isLocked(nv)) {
-					continue;
+			for (int i = sra.length - 1; i >= 0; i--) { // count down from
+				// largest to smallest
+				Region r = sra[i];
+
+				// Place register nodes at region corners (for fit to screen)
+				for (int j = 0; j < 4; j++) {
+					String regId = r.getAttValue().concat("_" + j);
+					CyNode regNode = Cytoscape.getCyNode(regId, true);
+					Cytoscape.getCurrentNetwork().addNode(regNode);
+					NodeView regNv = Cytoscape.getCurrentNetworkView()
+							.getNodeView(regNode);
+					nvRegList.add(regNv);
+					regNv.setHeight(0.1);
+					regNv.setWidth(0.1);
+
+					Cytoscape.getNodeAttributes().setAttribute(regId,
+							"canonicalName", "");
+					// lock against future layout
+					// TODO: doesn't work!
+					lockNode(regNv);
+					switch (j) {
+					case 0:
+						regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
+						break;
+					case 1:
+						regNv.setOffset(r.getRegionLeft(), r.getRegionBottom());
+						break;
+					case 2:
+						regNv.setOffset(r.getRegionRight(), r.getRegionTop());
+						break;
+					case 3:
+						regNv
+								.setOffset(r.getRegionRight(), r
+										.getRegionBottom());
+						break;
+					}
+
 				}
-				CyAttributes attributes = Cytoscape.getNodeAttributes();
-				// attributes.setUserVisible(NODE_COPIED, false);
 
-				// have we already placed this node view?
-				if (nvSeen.containsKey(nv)) {
-					// yes, then create copy
-					Node oldNode = nv.getNode();
-					String oldId = oldNode.getIdentifier();
-					String newId = oldId.concat("__").concat(
-							nvSeen.get(nv).toString());
-					CyNode newNode = Cytoscape.getCyNode(newId, true);
+				nodeViews = r.getNodeViews();
+				nodeCount = r.getNodeCount();
 
-					// copy attributes
-					/*
-					 * TODO: copy only the attribute relevant to the specific
-					 * node so that populateNodeViews will work properly
-					 */
+				/*
+				 * start x at left plus spacer start y at center minus half of
+				 * the number of rows rounded down, e.g., if the linear layout
+				 * of nodes is 2.8 times the width of the scaled region, then
+				 * there will be 3 rows and you will want to shift up 1 row from
+				 * center to start.
+				 */
+				startX = r.getFreeCenterX() - r.getFreeWidth() / 2
+						+ distanceBetweenNodes;
+				startY = r.getCenterY()
+						- Math.floor((nodeCount / Math.floor(r.getFreeWidth()
+								/ distanceBetweenNodes - 1)) - 0.3)
+						* distanceBetweenNodes / 2;
+				if (r.getShape() == Region.MEMBRANE_LINE) {
+					startY = r.getCenterY();
+				}
+				nextX = startX;
+				nextY = startY;
 
-					String[] atts = attributes.getAttributeNames();
-					for (String att : atts) {
+				taskMonitor.setPercentCompleted(50);
+				taskMonitor.setStatus("Moving nodes");
+
+				int remainingCount = nodeCount; // count nodes left to layout
+				int colCount = 0; // count nodes per row
+				double fillPotential = ((nodeCount + 2) * distanceBetweenNodes)
+						/ r.getFreeWidth(); // check for full row
+				double bump = ((nodeCount + 1) * distanceBetweenNodes)
+						/ r.getFreeWidth();
+
+				for (NodeView nv : nodeViews) {
+					taskMonitor
+							.setPercentCompleted((taskCount / taskNodeCount) * 50);
+
+					if (isLocked(nv)) {
+						continue;
+					}
+					CyAttributes attributes = Cytoscape.getNodeAttributes();
+					// attributes.setUserVisible(NODE_COPIED, false);
+
+					// have we already placed this node view?
+					if (nvSeen.containsKey(nv)) {
+						// yes, then create copy
+						Node oldNode = nv.getNode();
+						String oldId = oldNode.getIdentifier();
+						String newId = oldId.concat("__").concat(
+								nvSeen.get(nv).toString());
+						CyNode newNode = Cytoscape.getCyNode(newId, true);
+
+						// copy attributes
 						/*
-						 * skip hidden attributes
+						 * TODO: copy only the attribute relevant to the
+						 * specific node so that populateNodeViews will work
+						 * properly
 						 */
-						if (attributes.getUserVisible(att)
-								&& attributes.hasAttribute(oldId, att)) {
-							byte type = attributes.getType(att);
-							if (type == CyAttributes.TYPE_BOOLEAN) {
-								attributes.setAttribute(newId, att, attributes
-										.getBooleanAttribute(oldId, att));
-							} else if (type == CyAttributes.TYPE_INTEGER) {
-								attributes.setAttribute(newId, att, attributes
-										.getIntegerAttribute(oldId, att));
-							} else if (type == CyAttributes.TYPE_FLOATING) {
-								attributes.setAttribute(newId, att, attributes
-										.getDoubleAttribute(oldId, att));
-							} else if (type == CyAttributes.TYPE_STRING) {
-								if (att == REGION_ATT) {
-									attributes.setAttribute(newId, att, r
-											.getAttValue());
-								} else {
+
+						String[] atts = attributes.getAttributeNames();
+						for (String att : atts) {
+							/*
+							 * skip hidden attributes
+							 */
+							if (attributes.getUserVisible(att)
+									&& attributes.hasAttribute(oldId, att)) {
+								byte type = attributes.getType(att);
+								if (type == CyAttributes.TYPE_BOOLEAN) {
 									attributes.setAttribute(newId, att,
-											attributes.getStringAttribute(
+											attributes.getBooleanAttribute(
 													oldId, att));
-								}
-							} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-								attributes
-										.setListAttribute(newId, att,
-												attributes.getListAttribute(
+								} else if (type == CyAttributes.TYPE_INTEGER) {
+									attributes.setAttribute(newId, att,
+											attributes.getIntegerAttribute(
+													oldId, att));
+								} else if (type == CyAttributes.TYPE_FLOATING) {
+									attributes.setAttribute(newId, att,
+											attributes.getDoubleAttribute(
+													oldId, att));
+								} else if (type == CyAttributes.TYPE_STRING) {
+									if (att == REGION_ATT) {
+										attributes.setAttribute(newId, att, r
+												.getAttValue());
+									} else {
+										attributes.setAttribute(newId, att,
+												attributes.getStringAttribute(
 														oldId, att));
-							} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
-								attributes.setMapAttribute(newId, att,
-										attributes.getMapAttribute(oldId, att));
+									}
+								} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+									attributes.setListAttribute(newId, att,
+											attributes.getListAttribute(oldId,
+													att));
+								} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+									attributes.setMapAttribute(newId, att,
+											attributes.getMapAttribute(oldId,
+													att));
+								}
 							}
 						}
+
+						// add attribute for copied nodes, including the
+						// original
+						attributes.setAttribute(oldId, NODE_COPIED, true);
+						attributes.setAttribute(newId, NODE_COPIED, true);
+
+						// copy edges
+						RootGraph rootGraph = Cytoscape.getRootGraph();
+
+						int[] edges = Cytoscape.getCurrentNetwork()
+								.getAdjacentEdgeIndicesArray(
+										oldNode.getRootGraphIndex(), true,
+										true, true);
+						for (int oldEdge : edges) {
+							int source = rootGraph.getEdgeSourceIndex(oldEdge);
+							int target = rootGraph.getEdgeTargetIndex(oldEdge);
+							if (source == oldNode.getRootGraphIndex()) {
+								source = newNode.getRootGraphIndex();
+							} else if (target == oldNode.getRootGraphIndex()) {
+								target = newNode.getRootGraphIndex();
+							}
+
+							int newEdge = rootGraph.createEdge(source, target);
+							Cytoscape.getCurrentNetwork().addEdge(newEdge);
+
+							// TODO: copy edge attributes??
+						}
+
+						// increment hashmap count
+						nvSeen.put(nv, (nvSeen.get(nv) + 1));
+						// update nv reference
+						Cytoscape.getCurrentNetwork().addNode(newNode);
+						nv = Cytoscape.getCurrentNetworkView().getNodeView(
+								newNode);
+						// adding new node to region nvList
+						r.addFilteredNodeView(nv);
+					} else {
+						// no, then add to tracking list
+						nvSeen.put(nv, 1);
+						r.addFilteredNodeView(nv);
+						attributes.setAttribute(nv.getNode().getIdentifier(),
+								NODE_COPIED, false);
+						attributes.setAttribute(nv.getNode().getIdentifier(),
+								REGION_ATT, r.getAttValue());
 					}
 
-					// add attribute for copied nodes, including the original
-					attributes.setAttribute(oldId, NODE_COPIED, true);
-					attributes.setAttribute(newId, NODE_COPIED, true);
+					nv.setOffset(nextX, nextY);
+					remainingCount--;
+					colCount++;
+					taskCount++;
 
-					// copy edges
-					RootGraph rootGraph = Cytoscape.getRootGraph();
+					// check for end of row
+					double fillRatio = ((colCount + 2) * distanceBetweenNodes)
+							/ r.getFreeWidth();
+					if (fillRatio >= 1) { // reached end of row
+						colCount = 0;
+						nextX = startX;
+						nextY += distanceBetweenNodes;
+						// check fill potential of next row
+						fillPotential = ((remainingCount + 2) * distanceBetweenNodes)
+								/ r.getFreeWidth();
+						bump = (remainingCount * distanceBetweenNodes)
+								/ r.getFreeWidth();
+					} else if (fillPotential < 1) { // short row
+						nextX += (distanceBetweenNodes / bump);
+					} else { // next column in normal row
+						nextX += distanceBetweenNodes;
+					}
+				}
 
-					int[] edges = Cytoscape.getCurrentNetwork()
-							.getAdjacentEdgeIndicesArray(
-									oldNode.getRootGraphIndex(), true, true,
-									true);
-					for (int oldEdge : edges) {
-						int source = rootGraph.getEdgeSourceIndex(oldEdge);
-						int target = rootGraph.getEdgeTargetIndex(oldEdge);
-						if (source == oldNode.getRootGraphIndex()) {
-							source = newNode.getRootGraphIndex();
-						} else if (target == oldNode.getRootGraphIndex()) {
-							target = newNode.getRootGraphIndex();
-						}
+				List<NodeView> filteredNodeViews = r.getFilteredNodeViews();
 
-						int newEdge = rootGraph.createEdge(source, target);
-						Cytoscape.getCurrentNetwork().addEdge(newEdge);
+				// Uncross edges
+				if (filteredNodeViews.size() < 30) {
+					UnCrossAction.unCross(filteredNodeViews, false);
+				}
+				r.repaint();
 
-						// TODO: copy edge attributes??
+				// transform nv list to node collection
+				Collection<Node> regionNodes = new ArrayList<Node>();
+				for (NodeView nv : filteredNodeViews) {
+					regionNodes.add(nv.getNode());
+				}
+
+				// force directed, selected-only, then scale
+				if (r.getShape() != Region.MEMBRANE_LINE
+						&& filteredNodeViews.size() > 3) {
+
+					// TODO: There must be a better way of deselecting all
+					// nodes!?
+					Collection<CyNode> allNodes = Cytoscape.getCyNodesList();
+					Cytoscape.getCurrentNetwork().setSelectedNodeState(
+							allNodes, false);
+
+					Cytoscape.getCurrentNetwork().setSelectedNodeState(
+							regionNodes, true);
+
+					// layout
+					CyLayoutAlgorithm layout = CyLayouts
+							.getLayout("force-directed");
+					layout.setSelectedOnly(true);
+					layout.doLayout();
+
+					// scale: find boundaries of layout result
+					double north = Double.MAX_VALUE;
+					double south = Double.MIN_VALUE;
+					double east = Double.MIN_VALUE;
+					double west = Double.MAX_VALUE;
+
+					for (NodeView nv : filteredNodeViews) {
+						double nodeY = nv.getYPosition();
+						double nodeX = nv.getXPosition();
+
+						if (nodeY < north)
+							north = nodeY;
+						if (nodeY > south)
+							south = nodeY;
+						if (nodeX > east)
+							east = nodeX;
+						if (nodeX < west)
+							west = nodeX;
 					}
 
-					// increment hashmap count
-					nvSeen.put(nv, (nvSeen.get(nv) + 1));
-					// update nv reference
-					Cytoscape.getCurrentNetwork().addNode(newNode);
-					nv = Cytoscape.getCurrentNetworkView().getNodeView(newNode);
-					// adding new node to region nvList
-					r.addFilteredNodeView(nv);
-				} else {
-					// no, then add to tracking list
-					nvSeen.put(nv, 1);
-					r.addFilteredNodeView(nv);
-					attributes.setAttribute(nv.getNode().getIdentifier(),
-							NODE_COPIED, false);
-					attributes.setAttribute(nv.getNode().getIdentifier(),
-							REGION_ATT, r.getAttValue());
+					double layoutHeight = south - north;
+					double layoutWidth = east - west;
+					double unitX = layoutWidth / 2;
+					double unitY = layoutHeight / 2;
+					double layoutCenterX = west + unitX;
+					double layoutCenterY = north + unitY;
+					double regionUnitX = r.getFreeWidth() / 2;
+					double regionUnitY = r.getFreeHeight() / 2;
+
+					for (NodeView nv : filteredNodeViews) {
+						double nodeXunits = (nv.getXPosition() - layoutCenterX);
+						double nodeYunits = (nv.getYPosition() - layoutCenterY);
+						double scaleX = nodeXunits / unitX;
+						double scaleY = nodeYunits / unitY;
+
+						nv.setOffset(r.getFreeCenterX() + regionUnitX * scaleX,
+								r.getFreeCenterY() + regionUnitY * scaleY);
+					}
+
+					// cleanup
+					Cytoscape.getCurrentNetwork().setSelectedNodeState(
+							regionNodes, false);
+					regionNodes.clear();
 				}
 
-				nv.setOffset(nextX, nextY);
-				remainingCount--;
-				colCount++;
-				taskCount++;
-
-				// check for end of row
-				double fillRatio = ((colCount + 2) * distanceBetweenNodes)
-						/ r.getFreeWidth();
-				if (fillRatio >= 1) { // reached end of row
-					colCount = 0;
-					nextX = startX;
-					nextY += distanceBetweenNodes;
-					// check fill potential of next row
-					fillPotential = ((remainingCount + 2) * distanceBetweenNodes)
-							/ r.getFreeWidth();
-					bump = (remainingCount * distanceBetweenNodes)
-							/ r.getFreeWidth();
-				} else if (fillPotential < 1) { // short row
-					nextX += (distanceBetweenNodes / bump);
-				} else { // next column in normal row
-					nextX += distanceBetweenNodes;
-				}
-			}
-
-			List<NodeView> filteredNodeViews = r.getFilteredNodeViews();
-
-			// Uncross edges
-			if (filteredNodeViews.size() < 30) {
-				UnCrossAction.unCross(filteredNodeViews, false);
-			}
-			r.repaint();
-
-			// transform nv list to node collection
-			Collection<Node> regionNodes = new ArrayList<Node>();
-			for (NodeView nv : filteredNodeViews) {
-				regionNodes.add(nv.getNode());
-			}
-
-			// force directed, selected-only, then scale
-			if (r.getShape() != Region.MEMBRANE_LINE
-					&& filteredNodeViews.size() > 3) {
-
-				// TODO: There must be a better way of deselecting all nodes!?
-				Collection<CyNode> allNodes = Cytoscape.getCyNodesList();
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(allNodes,
-						false);
-
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(regionNodes,
-						true);
-
-				// layout
-				CyLayoutAlgorithm layout = CyLayouts
-						.getLayout("force-directed");
-				layout.setSelectedOnly(true);
-				layout.doLayout();
-
-				// scale: find boundaries of layout result
-				double north = Double.MAX_VALUE;
-				double south = Double.MIN_VALUE;
-				double east = Double.MIN_VALUE;
-				double west = Double.MAX_VALUE;
-
-				for (NodeView nv : filteredNodeViews) {
-					double nodeY = nv.getYPosition();
-					double nodeX = nv.getXPosition();
-
-					if (nodeY < north)
-						north = nodeY;
-					if (nodeY > south)
-						south = nodeY;
-					if (nodeX > east)
-						east = nodeX;
-					if (nodeX < west)
-						west = nodeX;
-				}
-
-				double layoutHeight = south - north;
-				double layoutWidth = east - west;
-				double unitX = layoutWidth / 2;
-				double unitY = layoutHeight / 2;
-				double layoutCenterX = west + unitX;
-				double layoutCenterY = north + unitY;
-				double regionUnitX = r.getFreeWidth() / 2;
-				double regionUnitY = r.getFreeHeight() / 2;
-
-				for (NodeView nv : filteredNodeViews) {
-					double nodeXunits = (nv.getXPosition() - layoutCenterX);
-					double nodeYunits = (nv.getYPosition() - layoutCenterY);
-					double scaleX = nodeXunits / unitX;
-					double scaleY = nodeYunits / unitY;
-
-					nv.setOffset(r.getFreeCenterX() + regionUnitX * scaleX, r
-							.getFreeCenterY()
-							+ regionUnitY * scaleY);
-				}
-
-				// cleanup
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(regionNodes,
-						false);
-				regionNodes.clear();
-			}
-
-			// oil & water
-			if (r.getRegionsOverlapped().size() > 0) {
-				List<NodeView> nvToCheck = new ArrayList<NodeView>();
-				List<NodeView> nvToMove = new ArrayList<NodeView>();
-				for (Region or : r.getRegionsOverlapped()) {
-					nvToCheck.addAll(or.getFilteredNodeViews());
-					nvToCheck.removeAll(r.getFilteredNodeViews());
-
-					/*
-					 * returns node views that are within the bounds of this
-					 * region
-					 */
-					nvToMove = Region.bounded(nvToCheck, r);
-
-					/*
-					 * determine closest edge per excludedNodeView and move node
-					 * to mirror distance relative to new region
-					 */
-					int countN = 0;
-					int countS = 0;
-					int countE = 0;
-					int countW = 0;
-					List<Double> pastN = new ArrayList<Double>();
-					List<Double> pastS = new ArrayList<Double>();
-					List<Double> pastE = new ArrayList<Double>();
-					List<Double> pastW = new ArrayList<Double>();
-
-					for (NodeView nv : nvToMove) {
-
-						double nvX = nv.getXPosition();
-						double nvY = nv.getYPosition();
+				// oil & water
+				if (r.getRegionsOverlapped().size() > 0) {
+					List<NodeView> nvToCheck = new ArrayList<NodeView>();
+					List<NodeView> nvToMove = new ArrayList<NodeView>();
+					for (Region or : r.getRegionsOverlapped()) {
+						nvToCheck.addAll(or.getFilteredNodeViews());
+						nvToCheck.removeAll(r.getFilteredNodeViews());
 
 						/*
-						 * distance between node and boundary around all regions
+						 * returns node views that are within the bounds of this
+						 * region
 						 */
-						double bufferX = MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
-						double bufferY = MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
-						double farNorth = nvY - (r.getRegionTop() - bufferY);
-						double farSouth = (r.getRegionBottom() + bufferY) - nvY;
-						double farWest = nvX - (r.getRegionLeft() - bufferX);
-						double farEast = (r.getRegionRight() + bufferX) - nvX;
+						nvToMove = Region.bounded(nvToCheck, r);
 
 						/*
-						 * rule out directions where there is not enough room in
-						 * overlapped region
+						 * determine closest edge per excludedNodeView and move
+						 * node to mirror distance relative to new region
 						 */
-						if (!(((r.getRegionTop() - bufferY) - or.getFreeTop()) > bufferY)) {
-							farNorth = Double.MAX_VALUE;
-						}
-						if (!(((r.getRegionLeft() - bufferX) - or.getFreeLeft()) > bufferX)) {
-							farWest = Double.MAX_VALUE;
-						}
-						if (!((or.getFreeBottom() - (r.getRegionBottom() + bufferY)) > bufferY)) {
-							farSouth = Double.MAX_VALUE;
-						}
-						if (!((or.getFreeRight() - (r.getRegionRight() + bufferX)) > bufferX)) {
-							farEast = Double.MAX_VALUE;
-						}
+						int countN = 0;
+						int countS = 0;
+						int countE = 0;
+						int countW = 0;
+						List<Double> pastN = new ArrayList<Double>();
+						List<Double> pastS = new ArrayList<Double>();
+						List<Double> pastE = new ArrayList<Double>();
+						List<Double> pastW = new ArrayList<Double>();
 
-						if (farNorth < farSouth) {
-							if (farNorth < farEast) {
-								if (farNorth < farWest) {
-									countN = 1;
-									for (double pN : pastN) {
-										if (pN <= nvX + distanceBetweenNodes
+						for (NodeView nv : nvToMove) {
+
+							double nvX = nv.getXPosition();
+							double nvY = nv.getYPosition();
+
+							/*
+							 * distance between node and boundary around all
+							 * regions
+							 */
+							double bufferX = MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
+							double bufferY = MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
+							double farNorth = nvY
+									- (r.getRegionTop() - bufferY);
+							double farSouth = (r.getRegionBottom() + bufferY)
+									- nvY;
+							double farWest = nvX
+									- (r.getRegionLeft() - bufferX);
+							double farEast = (r.getRegionRight() + bufferX)
+									- nvX;
+
+							/*
+							 * rule out directions where there is not enough
+							 * room in overlapped region
+							 */
+							if (!(((r.getRegionTop() - bufferY) - or
+									.getFreeTop()) > bufferY)) {
+								farNorth = Double.MAX_VALUE;
+							}
+							if (!(((r.getRegionLeft() - bufferX) - or
+									.getFreeLeft()) > bufferX)) {
+								farWest = Double.MAX_VALUE;
+							}
+							if (!((or.getFreeBottom() - (r.getRegionBottom() + bufferY)) > bufferY)) {
+								farSouth = Double.MAX_VALUE;
+							}
+							if (!((or.getFreeRight() - (r.getRegionRight() + bufferX)) > bufferX)) {
+								farEast = Double.MAX_VALUE;
+							}
+
+							if (farNorth < farSouth) {
+								if (farNorth < farEast) {
+									if (farNorth < farWest) {
+										countN = 1;
+										for (double pN : pastN) {
+											if (pN <= nvX
+													+ distanceBetweenNodes / 2
+													&& pN >= nvX
+															- distanceBetweenNodes
+															/ 2) {
+												countN++;
+											}
+										}
+										nv.setYPosition(nvY
+												- (farNorth + countN
+														* distanceBetweenNodes
+														/ 2));
+										pastN.add(nvX);
+									} else {
+										countW = 1;
+										for (double pW : pastW) {
+											if (pW <= nvY
+													+ distanceBetweenNodes / 2
+													&& pW >= nvY
+															- distanceBetweenNodes
+															/ 2) {
+												countW++;
+											}
+										}
+										nv.setXPosition(nvX
+												- (farWest + countW
+														* distanceBetweenNodes
+														/ 2));
+										pastW.add(nvY);
+									}
+								} else if (farEast < farWest) {
+									countE = 1;
+									for (double pE : pastE) {
+										if (pE <= nvY + distanceBetweenNodes
 												/ 2
-												&& pN >= nvX
+												&& pE >= nvY
 														- distanceBetweenNodes
 														/ 2) {
-											countN++;
+											countE++;
+										}
+									}
+									nv
+											.setXPosition(nvX
+													+ (farEast + countE
+															* distanceBetweenNodes
+															/ 2));
+									pastE.add(nvY);
+								} else {
+									countW = 1;
+									for (double pW : pastW) {
+										if (pW <= nvY + distanceBetweenNodes
+												/ 2
+												&& pW >= nvY
+														- distanceBetweenNodes
+														/ 2) {
+											countW++;
+										}
+									}
+									nv
+											.setXPosition(nvX
+													- (farWest + countW
+															* distanceBetweenNodes
+															/ 2));
+									pastW.add(nvY);
+								}
+
+							} else if (farSouth < farEast) {
+								if (farSouth < farWest) {
+									countS = 1;
+									for (double pS : pastN) {
+										if (pS <= nvX + distanceBetweenNodes
+												/ 2
+												&& pS >= nvX
+														- distanceBetweenNodes
+														/ 2) {
+											countS++;
 										}
 									}
 									nv
 											.setYPosition(nvY
-													- (farNorth + countN
+													+ (farSouth + countS
 															* distanceBetweenNodes
 															/ 2));
-									pastN.add(nvX);
+									pastS.add(nvX);
 								} else {
 									countW = 1;
 									for (double pW : pastW) {
@@ -601,224 +704,179 @@ public class CellAlgorithm extends AbstractLayout {
 												* distanceBetweenNodes / 2));
 								pastW.add(nvY);
 							}
+						}
 
-						} else if (farSouth < farEast) {
-							if (farSouth < farWest) {
-								countS = 1;
-								for (double pS : pastN) {
-									if (pS <= nvX + distanceBetweenNodes / 2
-											&& pS >= nvX - distanceBetweenNodes
-													/ 2) {
-										countS++;
-									}
-								}
-								nv.setYPosition(nvY
-										+ (farSouth + countS
-												* distanceBetweenNodes / 2));
-								pastS.add(nvX);
-							} else {
-								countW = 1;
-								for (double pW : pastW) {
-									if (pW <= nvY + distanceBetweenNodes / 2
-											&& pW >= nvY - distanceBetweenNodes
-													/ 2) {
-										countW++;
-									}
-								}
-								nv.setXPosition(nvX
-										- (farWest + countW
-												* distanceBetweenNodes / 2));
-								pastW.add(nvY);
-							}
-						} else if (farEast < farWest) {
-							countE = 1;
-							for (double pE : pastE) {
-								if (pE <= nvY + distanceBetweenNodes / 2
-										&& pE >= nvY - distanceBetweenNodes / 2) {
-									countE++;
-								}
-							}
-							nv.setXPosition(nvX
-									+ (farEast + countE * distanceBetweenNodes
-											/ 2));
-							pastE.add(nvY);
+					}
+				} // end oil & water
+
+				// mark edges from unassigned nodes
+
+				CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
+				for (NodeView nv : filteredNodeViews) {
+					Node n = nv.getNode();
+					int[] edges = Cytoscape.getCurrentNetwork()
+							.getAdjacentEdgeIndicesArray(n.getRootGraphIndex(),
+									true, true, true);
+					for (int e : edges) {
+						String edgeId = Cytoscape.getCurrentNetwork()
+								.getEdge(e).getIdentifier();
+						if (r.getAttValue() == "unassigned") {
+							eAttributes.setAttribute(edgeId,
+									UNASSIGNED_EDGE_ATT, true);
 						} else {
-							countW = 1;
-							for (double pW : pastW) {
-								if (pW <= nvY + distanceBetweenNodes / 2
-										&& pW >= nvY - distanceBetweenNodes / 2) {
-									countW++;
-								}
-							}
-							nv.setXPosition(nvX
-									- (farWest + countW * distanceBetweenNodes
-											/ 2));
-							pastW.add(nvY);
+							eAttributes.setAttribute(edgeId,
+									UNASSIGNED_EDGE_ATT, false);
 						}
 					}
-
 				}
-			} // end oil & water
 
-			// mark edges from unassigned nodes
+			} // end for each region
 
-			CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
-			for (NodeView nv : filteredNodeViews) {
-				Node n = nv.getNode();
-				int[] edges = Cytoscape.getCurrentNetwork()
-						.getAdjacentEdgeIndicesArray(n.getRootGraphIndex(),
-								true, true, true);
-				for (int e : edges) {
-					String edgeId = Cytoscape.getCurrentNetwork().getEdge(e)
-							.getIdentifier();
-					if (r.getAttValue() == "unassigned") {
-						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
-								true);
-					} else {
-						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
-								false);
-					}
-				}
+			// destroy all register nodes
+			for (NodeView regNv : nvRegList) {
+				Cytoscape.getCurrentNetwork().removeNode(
+						regNv.getNode().getRootGraphIndex(), true);
 			}
+			// prune edges
+			if (pruneEdges) {
+				int[] allNodes = Cytoscape.getCurrentNetwork()
+						.getNodeIndicesArray();
+				CyAttributes attributes = Cytoscape.getNodeAttributes();
 
-		} // end for each region
-
-		// destroy all register nodes
-		for (NodeView regNv : nvRegList) {
-			Cytoscape.getCurrentNetwork().removeNode(
-					regNv.getNode().getRootGraphIndex(), true);
-		}
-		// prune edges
-		if (pruneEdges) {
-			int[] allNodes = Cytoscape.getCurrentNetwork()
-					.getNodeIndicesArray();
-			CyAttributes attributes = Cytoscape.getNodeAttributes();
-
-			for (int cn : allNodes) {
-				int[] edges = Cytoscape.getCurrentNetwork()
-						.getAdjacentEdgeIndicesArray(cn, true, true, true);
-				for (int edgeInt : edges) {
-					int nodeInt1 = Cytoscape.getRootGraph().getEdgeSourceIndex(
-							edgeInt);
-					int nodeInt2 = Cytoscape.getRootGraph().getEdgeTargetIndex(
-							edgeInt);
-					String node1 = Cytoscape.getCurrentNetwork().getNode(
-							nodeInt1).getIdentifier();
-					String node2 = Cytoscape.getCurrentNetwork().getNode(
-							nodeInt2).getIdentifier();
-					String nodeRegion1 = attributes.getStringAttribute(node1,
-							REGION_ATT);
-					String nodeRegion2 = attributes.getStringAttribute(node2,
-							REGION_ATT);
-					if (node1.contains("__")) {
-						if (node2.contains("__")) {
+				for (int cn : allNodes) {
+					int[] edges = Cytoscape.getCurrentNetwork()
+							.getAdjacentEdgeIndicesArray(cn, true, true, true);
+					for (int edgeInt : edges) {
+						int nodeInt1 = Cytoscape.getRootGraph()
+								.getEdgeSourceIndex(edgeInt);
+						int nodeInt2 = Cytoscape.getRootGraph()
+								.getEdgeTargetIndex(edgeInt);
+						String node1 = Cytoscape.getCurrentNetwork().getNode(
+								nodeInt1).getIdentifier();
+						String node2 = Cytoscape.getCurrentNetwork().getNode(
+								nodeInt2).getIdentifier();
+						String nodeRegion1 = attributes.getStringAttribute(
+								node1, REGION_ATT);
+						String nodeRegion2 = attributes.getStringAttribute(
+								node2, REGION_ATT);
+						if (node1.contains("__")) {
+							if (node2.contains("__")) {
+								if (nodeRegion1 != nodeRegion2) {
+									Cytoscape.getCurrentNetwork().removeEdge(
+											edgeInt, false);
+								}
+							}
+						} else if (node2.contains("__")) {
+							// do nothing
+						} else { // both are original nodes
+							boolean doRemoveEdges = false;
+							List<Integer> edgesToRemove = new ArrayList<Integer>();
 							if (nodeRegion1 != nodeRegion2) {
-								Cytoscape.getCurrentNetwork().removeEdge(
-										edgeInt, false);
-							}
-						}
-					} else if (node2.contains("__")) {
-						// do nothing
-					} else { // both are original nodes
-						boolean doRemoveEdges = false;
-						List<Integer> edgesToRemove = new ArrayList<Integer>();
-						if (nodeRegion1 != nodeRegion2) {
-							edgesToRemove.add(edgeInt);
-						} else {
-							doRemoveEdges = true;
-						}
-						int m = 1;
-						String nodeName2 = node2;
-						node2 = nodeName2.concat("__").concat("" + m);
-						CyNode cyn = Cytoscape.getCyNode(node2);
-						while (cyn != null) {
-							String nodeRegion2B = attributes
-									.getStringAttribute(node2, REGION_ATT);
-							if (nodeRegion1 != nodeRegion2B
-									&& nodeRegion2B != null) {
-								int[] copyEdges = Cytoscape.getCurrentNetwork()
-										.getAdjacentEdgeIndicesArray(
-												cyn.getRootGraphIndex(), true,
-												true, true);
-								for (int copyEdgeInt : copyEdges) {
-									int copyNodeInt1 = Cytoscape.getRootGraph()
-											.getEdgeSourceIndex(copyEdgeInt);
-									int copyNodeInt2 = Cytoscape.getRootGraph()
-											.getEdgeTargetIndex(copyEdgeInt);
-									if (nodeInt1 == copyNodeInt1
-											|| nodeInt1 == copyNodeInt2) {
-										edgesToRemove.add(copyEdgeInt);
-										break; // there will only be a
-										// single hit
-									}
-
-								}
-							} else if (nodeRegion2B != null) { // edge within
-								// same region!
+								edgesToRemove.add(edgeInt);
+							} else {
 								doRemoveEdges = true;
 							}
-
-							m++;
+							int m = 1;
+							String nodeName2 = node2;
 							node2 = nodeName2.concat("__").concat("" + m);
-							cyn = Cytoscape.getCyNode(node2);
-						}
-						if (doRemoveEdges) {
-							for (int e : edgesToRemove) {
-								Cytoscape.getCurrentNetwork().removeEdge(e,
-										false);
-							}
-						}
-						// now check for the reverse case
-						m = 1;
-						String nodeName1 = node1;
-						node1 = nodeName1.concat("__").concat("" + m);
-						cyn = Cytoscape.getCyNode(node1);
-						while (cyn != null) {
-							String nodeRegion1B = attributes
-									.getStringAttribute(node1, REGION_ATT);
-							if (nodeRegion1B != nodeRegion2
-									&& nodeRegion1B != null) {
-								int[] copyEdges = Cytoscape.getCurrentNetwork()
-										.getAdjacentEdgeIndicesArray(
-												cyn.getRootGraphIndex(), true,
-												true, true);
-								for (int copyEdgeInt : copyEdges) {
-									int copyNodeInt1 = Cytoscape.getRootGraph()
-											.getEdgeSourceIndex(copyEdgeInt);
-									int copyNodeInt2 = Cytoscape.getRootGraph()
-											.getEdgeTargetIndex(copyEdgeInt);
-									if (nodeInt2 == copyNodeInt1
-											|| nodeInt2 == copyNodeInt2) {
-										edgesToRemove.add(copyEdgeInt);
-										break; // there will only be a
-										// single hit
+							CyNode cyn = Cytoscape.getCyNode(node2);
+							while (cyn != null) {
+								String nodeRegion2B = attributes
+										.getStringAttribute(node2, REGION_ATT);
+								if (nodeRegion1 != nodeRegion2B
+										&& nodeRegion2B != null) {
+									int[] copyEdges = Cytoscape
+											.getCurrentNetwork()
+											.getAdjacentEdgeIndicesArray(
+													cyn.getRootGraphIndex(),
+													true, true, true);
+									for (int copyEdgeInt : copyEdges) {
+										int copyNodeInt1 = Cytoscape
+												.getRootGraph()
+												.getEdgeSourceIndex(copyEdgeInt);
+										int copyNodeInt2 = Cytoscape
+												.getRootGraph()
+												.getEdgeTargetIndex(copyEdgeInt);
+										if (nodeInt1 == copyNodeInt1
+												|| nodeInt1 == copyNodeInt2) {
+											edgesToRemove.add(copyEdgeInt);
+											break; // there will only be a
+											// single hit
+										}
+
 									}
-
+								} else if (nodeRegion2B != null) { // edge
+																	// within
+									// same region!
+									doRemoveEdges = true;
 								}
-							} else if (nodeRegion1B != null) { // edge within
-								// same region!
-								doRemoveEdges = true;
-							}
 
-							m++;
+								m++;
+								node2 = nodeName2.concat("__").concat("" + m);
+								cyn = Cytoscape.getCyNode(node2);
+							}
+							if (doRemoveEdges) {
+								for (int e : edgesToRemove) {
+									Cytoscape.getCurrentNetwork().removeEdge(e,
+											false);
+								}
+							}
+							// now check for the reverse case
+							m = 1;
+							String nodeName1 = node1;
 							node1 = nodeName1.concat("__").concat("" + m);
 							cyn = Cytoscape.getCyNode(node1);
-						}
-						if (doRemoveEdges) {
-							for (int e : edgesToRemove) {
-								Cytoscape.getCurrentNetwork().removeEdge(e,
-										false);
+							while (cyn != null) {
+								String nodeRegion1B = attributes
+										.getStringAttribute(node1, REGION_ATT);
+								if (nodeRegion1B != nodeRegion2
+										&& nodeRegion1B != null) {
+									int[] copyEdges = Cytoscape
+											.getCurrentNetwork()
+											.getAdjacentEdgeIndicesArray(
+													cyn.getRootGraphIndex(),
+													true, true, true);
+									for (int copyEdgeInt : copyEdges) {
+										int copyNodeInt1 = Cytoscape
+												.getRootGraph()
+												.getEdgeSourceIndex(copyEdgeInt);
+										int copyNodeInt2 = Cytoscape
+												.getRootGraph()
+												.getEdgeTargetIndex(copyEdgeInt);
+										if (nodeInt2 == copyNodeInt1
+												|| nodeInt2 == copyNodeInt2) {
+											edgesToRemove.add(copyEdgeInt);
+											break; // there will only be a
+											// single hit
+										}
+
+									}
+								} else if (nodeRegion1B != null) { // edge
+																	// within
+									// same region!
+									doRemoveEdges = true;
+								}
+
+								m++;
+								node1 = nodeName1.concat("__").concat("" + m);
+								cyn = Cytoscape.getCyNode(node1);
 							}
+							if (doRemoveEdges) {
+								for (int e : edgesToRemove) {
+									Cytoscape.getCurrentNetwork().removeEdge(e,
+											false);
+								}
+							}
+
 						}
 
 					}
-
 				}
+
 			}
 
+			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 		}
-
-		Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 	}
 
 	public static List<NodeView> populateNodeViews(Region r) {
