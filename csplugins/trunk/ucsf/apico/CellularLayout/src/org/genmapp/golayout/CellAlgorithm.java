@@ -147,10 +147,8 @@ public class CellAlgorithm extends AbstractLayout {
 			}
 		}
 		if (!valid) {
-			taskMonitor.setPercentCompleted(100);
 			RegionManager.clearAll();
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-			"Selected attribute does not match template floorplan");
+			JOptionPane.showMessageDialog((java.awt.Window)taskMonitor, "Selected attribute does not match template floorplan");
 		} else {
 
 			GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());

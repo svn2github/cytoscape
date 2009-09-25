@@ -67,7 +67,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		int i = 0;
 		for (CyLayoutAlgorithm ca : availableLayouts) {
 			layoutNames[i] = (Object)ca;
-			if (ca.getName().equals("force-directed")){
+
+			// We want to offer some guidance...
+			if (ca.getName() == "force-directed")
 				fdInt = i;
 			}
 			i++;
@@ -82,7 +84,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 //				Tunable.STRING, "force-directed"));
 		
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-				Tunable.LIST, (Object) fdInt, (Object) layoutNames, new Integer(0), 0));
+				Tunable.LIST, 0, (Object) layoutNames, new Integer(fdInt), 0));
 		
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
@@ -473,7 +475,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		// warn before building more than 100 subnetworks;
 		if (nodeAttributeValues.size() > SUBNETWORK_LIMIT ){
 			//TODO: add dialog to continue
-			JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), "Building over "+SUBNETWORK_LIMIT+" subnetworks may take a while. Are you sure you want to proceed?");
+			JOptionPane.showConfirmDialog((java.awt.Window)taskMonitor, "Building over "+SUBNETWORK_LIMIT+" subnetworks may take a while. Are you sure you want to proceed?");
 		}
 		
 		populateNodes(attributeName);
