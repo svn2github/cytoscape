@@ -1,6 +1,5 @@
 package org.genmapp.golayout;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,17 +14,21 @@ import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.LabelPosition;
+import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.LineStyle;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.LinearNumberToNumberInterpolator;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
+
 
 public class PartitionNetworkVisualStyleFactory {
 
@@ -34,6 +37,7 @@ public class PartitionNetworkVisualStyleFactory {
 	 */
 	public static final String PartitionNetwork_VS = "MolecularFunction";
 	protected static String attributeName = "annotation.GO MOLECULAR_FUNCTION";
+	private static final String NumChildren = "NumChildren";
 
 	private static LabelPosition lp = new LabelPosition();
 	public static DiscreteMapping disMappingLabelPosition = new DiscreteMapping(
@@ -105,6 +109,27 @@ public class PartitionNetworkVisualStyleFactory {
 					PartitionNetwork_VS, disMappingBorderColor,
 					VisualPropertyType.NODE_BORDER_COLOR);
 			nac.setCalculator(borderColorCalculator);
+
+			
+			ContinuousMapping contMappingNodeWidth = new ContinuousMapping(PartitionAlgorithm.NETWORK_LIMIT_MIN, ObjectMapping.NODE_MAPPING);
+			contMappingNodeWidth.setControllingAttributeName(
+					NumChildren, view.getNetwork(),
+					false);
+			contMappingNodeWidth.setInterpolator(new LinearNumberToNumberInterpolator());
+			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 10, 10));
+			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(60, 60, 60));
+			Calculator nodeWidthCalculator = new BasicCalculator(PartitionNetwork_VS, contMappingNodeWidth, VisualPropertyType.NODE_WIDTH);
+			nac.setCalculator(nodeWidthCalculator);
+
+			ContinuousMapping contMappingNodeHeight = new ContinuousMapping(PartitionAlgorithm.NETWORK_LIMIT_MIN, ObjectMapping.NODE_MAPPING);
+			contMappingNodeHeight.setControllingAttributeName(
+					NumChildren, view.getNetwork(),
+					false);
+			contMappingNodeHeight.setInterpolator(new LinearNumberToNumberInterpolator());
+			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 10, 10));
+			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(60, 60, 60));
+			Calculator nodeHeightCalculator = new BasicCalculator(PartitionNetwork_VS, contMappingNodeHeight, VisualPropertyType.NODE_HEIGHT);
+			nac.setCalculator(nodeHeightCalculator);
 
 			DiscreteMapping disMappingNodeFill = new DiscreteMapping(
 					Color.white, ObjectMapping.NODE_MAPPING);

@@ -50,7 +50,8 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
 	private List<CyGroup> groups = new ArrayList<CyGroup>();
 	private List<CyNode> unconnectedNodes = new ArrayList<CyNode>();
-	private int networkViewThreshhold = 5; // necessary size to show network
+	protected static final int NETWORK_LIMIT_MIN = 5; // necessary size to show network
+	protected static final int NETWORK_LIMIT_MAX = 200; 
 
 	// view in the tiling
 
@@ -62,9 +63,13 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 		Collection<CyLayoutAlgorithm> availableLayouts = CyLayouts.getAllLayouts();
 		layoutNames = new Object[availableLayouts.size()];
+		int fdInt = 0; //store position of "force-directed" in list
 		int i = 0;
 		for (CyLayoutAlgorithm ca : availableLayouts) {
 			layoutNames[i] = (Object)ca;
+			if (ca.getName().equals("force-directed")){
+				fdInt = i;
+			}
 			i++;
 		}
 
@@ -77,7 +82,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 //				Tunable.STRING, "force-directed"));
 		
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-				Tunable.LIST, 0, (Object) layoutNames, new Integer(0), 0));
+				Tunable.LIST, (Object) fdInt, (Object) layoutNames, new Integer(0), 0));
 		
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
@@ -146,7 +151,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 * @return user visible name
 	 */
 	public String toString() {
-		return "Partition";
+		return "Partition Only";
 	}
 
 	/**
@@ -234,7 +239,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	public void buildMetaNodeView(CyNetwork net) {
 		// create an 'uber' view of the network as group nodes
 		CyNetwork group_network = Cytoscape.createNetwork(net.nodesList(), net
-				.edgesList(), "overView", net);
+				.edgesList(), "Overview", net);
 		CyNetworkView group_view = Cytoscape.getNetworkView(group_network
 				.getIdentifier());
 
@@ -250,16 +255,18 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		groups.add(group);
 
 		// now loop through all groups and set state to 'collapsed'
+		CyAttributes attribs = Cytoscape.getNodeAttributes();
 		for (CyGroup g : groups) {
 			g.setState(2);
 			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true); 
 			// set this false later for efficiency
+
 		}
 
-		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
-		layout.doLayout(group_view);
 		Cytoscape.getVisualMappingManager().setVisualStyle(
 				PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+		CyLayoutAlgorithm layout = CyLayouts.getLayout("circular");
+		layout.doLayout(group_view);
 
 	}
 
@@ -390,12 +397,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 				.getConnectingEdges(new ArrayList(nodes)),
 		// CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				attributeValue, // for network title
-				current_network, (nodes.size() >= networkViewThreshhold)
-						&& nodes.size() <= 200);  
+				current_network, (nodes.size() >= NETWORK_LIMIT_MIN)
+						&& nodes.size() <= NETWORK_LIMIT_MAX);  
 		// optional create network view
-		
-		// if (new_network.nodesList().size() >= networkViewThreshhold &&
-		// new_network.nodesList().size() <= 200) {
 
 		CyNetworkView new_view = Cytoscape.getNetworkView(new_network
 				.getIdentifier());
