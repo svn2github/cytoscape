@@ -46,7 +46,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	private ArrayList<Object> nodeAttributeValues = new ArrayList();
 	private Object[] layoutNames = null;
 	protected static String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
-	private HashMap<Object, List<CyNode>> attributeValueNodeMap = new HashMap<Object, List<CyNode>>();
+	private HashMap<Object, List<CyNode>> attributeValueNodeMap;
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
 	private List<CyGroup> groups = new ArrayList<CyGroup>();
 	private List<CyNode> unconnectedNodes = new ArrayList<CyNode>();
@@ -71,7 +71,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 			// We want to offer some guidance...
 			if (ca.getName() == "force-directed")
 				fdInt = i;
-			}
 			i++;
 		}
 
@@ -460,6 +459,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 * The layout protocol...
 	 */
 	public void construct() {
+
+		// Our node map needs to be reset in case we have a new network
+		attributeValueNodeMap = new HashMap<Object, List<CyNode>>();
 
 		taskMonitor.setStatus("Partitioning the network by biological process");
 		taskMonitor.setPercentCompleted(1);
