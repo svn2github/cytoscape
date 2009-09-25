@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * @author kono
  * 
  */
-public class RegistoryManager {
+public class RegistryManager {
 	
 	// Tag definitions
 	private static final String SOAP_URL = "soapUrl";
@@ -36,7 +36,7 @@ public class RegistoryManager {
 
 	private final Map<String, String> regMap;
 
-	public RegistoryManager() throws IOException {
+	public RegistryManager() throws IOException {
 		regMap = new HashMap<String, String>();
 		invoke();
 	}
@@ -46,7 +46,7 @@ public class RegistoryManager {
 	}
 
 	private void invoke() throws IOException {
-		String command = "?action=STATUS&format=xml";
+		String command = "?action=ACTIVE&format=xml";
 
 		URL url = new URL(SERVICE_URL + command);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();

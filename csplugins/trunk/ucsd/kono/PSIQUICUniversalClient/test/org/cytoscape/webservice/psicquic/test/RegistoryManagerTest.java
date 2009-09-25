@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.cytoscape.webservice.psicquic.RegistoryManager;
+import org.cytoscape.webservice.psicquic.RegistryManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class RegistoryManagerTest {
 	
 	@Test
 	public void accessRegistory() throws Exception {
-		RegistoryManager rm = new RegistoryManager();
+		RegistryManager rm = new RegistryManager();
 		
 		assertNotNull(rm.getRegistry());
 	}

@@ -30,40 +30,13 @@ import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.logger.CyLogger;
 
 public class PSICQUICServiceRegistory {
+	
+	private static RegistryManager manager;
 
 	private enum OperationType {
 		GET_COUNT, IMPORT;
 	}
 
-	// Will be moved to Spring config files in 3
-	private static final String INTACT_URL = "http://www.ebi.ac.uk/intact/psicquic/webservices/psicquic";
-	private static final String IREFINDEX_URL = "http://biotin.uio.no:8080/psicquic-ws-1/webservices/psicquic";
-	private static final String MINT_URL = "http://mint.bio.uniroma2.it/mint/psicquic/webservices/psicquic";
-	private static final String MPIDB_URL = "http://www.jcvi.org/mpidb/servlet/webservices/psicquic";
-	private static final String BIOGRID_URL = "http://tyerslab.bio.ed.ac.uk:8080/psicquic-ws/webservices/psicquic";
-
-	private enum PSICQUICService {
-		INTACT("IntAct", INTACT_URL), IREFINDEX("iRefIndex", IREFINDEX_URL), MINT(
-				"MINT", MINT_URL), MPIDB("MPIDB", MPIDB_URL), BIOGRID(
-				"BioGRID", BIOGRID_URL);
-
-		private String sourceName;
-		private String location;
-
-		private PSICQUICService(String sourceName, String location) {
-			this.sourceName = sourceName;
-			this.location = location;
-		}
-
-		public String getName() {
-			return sourceName;
-		}
-
-		public String getLocation() {
-			return location;
-		}
-
-	}
 
 	private static Map<URI, PsicquicService> services;
 	private static Map<URI, String> serviceNames;
@@ -80,15 +53,17 @@ public class PSICQUICServiceRegistory {
 		try {
 			// Human-readable database name should be taken from PSI-MI 2.5
 			// ontology.
-
-			for (PSICQUICService psi : PSICQUICService.values()) {
+			
+			manager = new RegistryManager();
+			
+			for (String serviceName: manager.getRegistry().keySet()) {
 				final ClientProxyFactoryBean factory = new JaxWsProxyFactoryBean();
 				factory.setServiceClass(PsicquicService.class);
-				factory.setAddress(psi.getLocation());
-				serviceNames.put(new URI(psi.getLocation()), psi.getName());
+				factory.setAddress(manager.getRegistry().get(serviceName));
+				serviceNames.put(new URI(manager.getRegistry().get(serviceName)), serviceName);
 				final PsicquicService port = (PsicquicService) factory.create();
 				ports.add(port);
-				services.put(new URI(psi.getLocation()), port);
+				services.put(new URI(manager.getRegistry().get(serviceName)), port);
 			}
 		} catch (Exception e) {
 			CyLogger.getLogger().error("Could not initialize PSICQUIC ports.",
@@ -292,12 +267,15 @@ public class PSICQUICServiceRegistory {
 				ret = (QueryResponse) method.invoke(port, new Object[] {
 						interactorList, reqInfo, operator });
 			} catch (IllegalArgumentException e3) {
+				System.err.println("IllegalArgumentException !!");
 				e3.printStackTrace();
 				return null;
 			} catch (IllegalAccessException e3) {
+				System.err.println("IllegalAccessException !!");
 				e3.printStackTrace();
 				return null;
 			} catch (InvocationTargetException e3) {
+				System.err.println("InvocationTargetException !!");
 				e3.getCause().printStackTrace();
 				return null;
 			}
