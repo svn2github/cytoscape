@@ -159,6 +159,7 @@ public class MetaNode {
 	 * @param groupNode the CyNode that maps to the metaNode
 	 */
 	static public void removeMetaNode(CyNode groupNode) {
+		// Remove the metanode
 		if (metaMap.containsKey(groupNode))
 			metaMap.remove(groupNode);
 	}
@@ -647,6 +648,7 @@ public class MetaNode {
 			} else {
 				List<CyEdge> innerEdges = metaGroup.getInnerEdges();
 				for (CyNode node: metaGroup.getNodes()) {
+					// System.out.println("MetaNode: expanding "+groupNode+" node "+node);
 					CyEdge edge = Cytoscape.getCyEdge(groupNode, node, Semantics.INTERACTION, "member", true);
 					if (!innerEdges.contains(edge)) {
 						metaGroup.addInnerEdge(edge);

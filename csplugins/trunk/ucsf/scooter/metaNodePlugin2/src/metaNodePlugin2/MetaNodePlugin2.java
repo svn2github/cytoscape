@@ -70,6 +70,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
 
 import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupChangeListener;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
 
@@ -87,6 +88,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
                              implements CyGroupViewer, 
                                         NodeContextMenuListener,
                                         PropertyChangeListener,
+																				CyGroupChangeListener,
 	                                      GraphViewChangeListener {
 
 	public static final String viewerName = "metaNode";
@@ -168,6 +170,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		// later if we fail now.
 		registerWithGroupPanel();
 
+		CyGroupManager.addGroupChangeListener(this);
+
 		try {
 			// Initialize the settings dialog -- we do this here so that our properties
 			// get read in.
@@ -202,8 +206,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			MetaNode newNode = new MetaNode(group);
 		}
 		// Update the attributes of the group node
-		// logger.debug("registering");
-		registerWithGroupPanel();
+		logger.info("updating group panel for new group: "+group);
+		updateGroupPanel();
 		// logger.debug("done");
 	}
 
@@ -233,7 +237,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			}
 		}
 		// logger.debug("registering");
-		registerWithGroupPanel();
+		logger.info("updating group panel for new group: "+group);
+		updateGroupPanel();
 		// logger.debug("done");
 	}
 
@@ -252,7 +257,18 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		mn.expand(true, null, true);
 
 		// Get rid of the MetaNode
+		logger.info("updating group panel for removed group: "+group);
 		MetaNode.removeMetaNode(mn);
+	}
+
+	/**
+	 */
+	public void groupChanged(CyGroup group, CyGroupChangeListener.ChangeType change) {
+		// Special-case for deleted groups
+		if (change == CyGroupChangeListener.ChangeType.GROUP_DELETED) {
+			updateGroupPanel();
+			return;
+		}
 	}
 
 	/**
@@ -263,20 +279,22 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * @param node the CyNode that caused the change
 	 * @param change the change that occured
 	 */
-	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
+	public void groupChanged(CyGroup group, CyNode node, CyGroupViewer.ChangeType change) { 
+
 		MetaNode mn = MetaNode.getMetaNode(group);
 		if (mn == null) return;
 
-		if (change == ChangeType.NODE_ADDED)
+		if (change == CyGroupViewer.ChangeType.NODE_ADDED) {
 			mn.nodeAdded(node);
-		else if (change == ChangeType.NODE_REMOVED)
+		} else if (change == CyGroupViewer.ChangeType.NODE_REMOVED) {
 			mn.nodeRemoved(node);
-		else if (change == ChangeType.STATE_CHANGED)
+		} else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
 			if (group.getState() == COLLAPSED) {
 				mn.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
 			} else {
 				mn.expand(recursive, Cytoscape.getCurrentNetworkView(), true);
 			}
+		}
 	}
 
 	// PropertyChange support
@@ -367,16 +385,20 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		return menu;
 	}
 
-	private void registerWithGroupPanel() {
-		if (registeredWithGroupPanel) {
+	private void updateGroupPanel() {
+		if (!registeredWithGroupPanel) {
+			registerWithGroupPanel();
+		} else {
 			try {
 				updateMethod.invoke(namedSelectionViewer);
 			} catch (Exception e) {
-				System.err.println(e);
+				logger.warning(e.getMessage());
 			}
-			return;
 		}
+		return;
+	}
 
+	private void registerWithGroupPanel() {
 		namedSelectionViewer = CyGroupManager.getGroupViewer("namedSelection");
 		if (namedSelectionViewer == null)
 			return;
@@ -390,7 +412,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				regMethod.invoke(namedSelectionViewer, (CyGroupViewer)this);
 				registeredWithGroupPanel = true;
 			} catch (Exception e) {
-				System.err.println(e);
+				logger.warning(e.getMessage());
 				return;
 			}
 			// Invoke it
@@ -700,8 +722,6 @@ public class MetaNodePlugin2 extends CytoscapePlugin
      * This method is called when the user selects the menu item.
      */
     public void actionPerformed(ActionEvent ae) {
-
-			registerWithGroupPanel();
 
 			String label = ae.getActionCommand();
 			if (command == Command.COLLAPSE) {
