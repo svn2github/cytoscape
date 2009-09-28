@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.genmapp.golayout.GOLayout.GOLayoutAlgorithm;
+
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -50,8 +52,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
 	private List<CyGroup> groups = new ArrayList<CyGroup>();
 	private List<CyNode> unconnectedNodes = new ArrayList<CyNode>();
-	protected static final int NETWORK_LIMIT_MIN = 5; // necessary size to show network
-	protected static final int NETWORK_LIMIT_MAX = 200; 
+	protected static int NETWORK_LIMIT_MIN = 5; // necessary size to show
+	// network
+	protected static int NETWORK_LIMIT_MAX = 200;
+	private static final int SUBNETWORK_COUNT_WARNING = 100; // will warn if >
 
 	// view in the tiling
 
@@ -61,12 +65,16 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	public PartitionAlgorithm() {
 		super();
 
-		Collection<CyLayoutAlgorithm> availableLayouts = CyLayouts.getAllLayouts();
+		Collection<CyLayoutAlgorithm> availableLayouts = CyLayouts
+				.getAllLayouts();
 		layoutNames = new Object[availableLayouts.size()];
-		int fdInt = 0; //store position of "force-directed" in list
+		int fdInt = 0; // store position of "force-directed" in list
 		int i = 0;
 		for (CyLayoutAlgorithm ca : availableLayouts) {
-			layoutNames[i] = (Object)ca;
+			// skip "GO Layout" to avoid creating a rift space-time
+			if (ca.getName() != GOLayoutAlgorithm.LAYOUT_NAME) {
+				layoutNames[i] = (Object) ca;
+			}
 
 			// We want to offer some guidance...
 			if (ca.getName() == "force-directed")
@@ -79,12 +87,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 						CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 
 		layoutProperties = new LayoutProperties(getName());
-//		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-//				Tunable.STRING, "force-directed"));
-		
+
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
 				Tunable.LIST, fdInt, (Object) layoutNames, 0, 0));
-		
+
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
@@ -113,15 +119,16 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		Tunable t = layoutProperties.get("nodeSpacing");
 		if ((t != null) && (t.valueChanged() || force))
 			distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
-		
+
 		t = layoutProperties.get("layoutName");
 		if ((t != null) && (t.valueChanged() || force))
 			if (layoutNames.length == 1) {
-				layoutName = ((CyLayoutAlgorithm)layoutNames[0]).getName();
+				layoutName = ((CyLayoutAlgorithm) layoutNames[0]).getName();
 			} else {
 				int index = ((Integer) t.getValue()).intValue();
-				if (index < 0) index = 0;
-				layoutName = ((CyLayoutAlgorithm)layoutNames[index]).getName();
+				if (index < 0)
+					index = 0;
+				layoutName = ((CyLayoutAlgorithm) layoutNames[index]).getName();
 			}
 	}
 
@@ -137,8 +144,8 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	}
 
 	/**
-	 * Returns the short-hand name of this algorithm
-	 * NOTE: is related to the menu item order
+	 * Returns the short-hand name of this algorithm NOTE: is related to the
+	 * menu item order
 	 * 
 	 * @return short-hand name
 	 */
@@ -259,13 +266,13 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		CyAttributes attribs = Cytoscape.getNodeAttributes();
 		for (CyGroup g : groups) {
 			g.setState(2);
-			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true); 
+			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true);
 			// set this false later for efficiency
 
 		}
 
 		Cytoscape.getVisualMappingManager().setVisualStyle(
-				PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+				PartitionNetworkVisualStyleFactory.attributeName);
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("circular");
 		layout.doLayout(group_view);
 
@@ -388,8 +395,8 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		} // end of if ()
 
 		List nodes = attributeValueNodeMap.get(attributeValue);
-//		System.out.println("Got nodes for attributeValue: " + attributeValue
-//				+ " = " + nodes.size());
+		// System.out.println("Got nodes for attributeValue: " + attributeValue
+		// + " = " + nodes.size());
 		if (nodes == null) {
 			return;
 		}
@@ -399,7 +406,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		// CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				attributeValue, // for network title
 				current_network, (nodes.size() >= NETWORK_LIMIT_MIN)
-						&& nodes.size() <= NETWORK_LIMIT_MAX);  
+						&& nodes.size() <= NETWORK_LIMIT_MAX);
 		// optional create network view
 
 		CyNetworkView new_view = Cytoscape.getNetworkView(new_network
@@ -421,8 +428,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 			// CyLayoutAlgorithm layout =
 			// CyLayouts.getLayout("force-directed");
-//			System.out.println("Layout: " + new_view.getTitle() +" :: "+ layoutName);
-			
+			// System.out.println("Layout: " + new_view.getTitle() +" :: "+
+			// layoutName);
+
 			CyLayoutAlgorithm layout = CyLayouts.getLayout(layoutName);
 			layout.doLayout(new_view);
 
@@ -431,9 +439,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		// set graphics level of detail
 		((DingNetworkView) new_view).setGraphLOD(new CyGraphAllLOD());
 
-		Cytoscape.getVisualMappingManager().setVisualStyle(
-				PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
-
+		if (PartitionNetworkVisualStyleFactory.attributeName != null) {
+			Cytoscape.getVisualMappingManager().setVisualStyle(
+					PartitionNetworkVisualStyleFactory.attributeName);
+		}
 	}
 
 	// }
@@ -460,48 +469,74 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 */
 	public void construct() {
 
-		// Our node map needs to be reset in case we have a new network
-		attributeValueNodeMap = new HashMap<Object, List<CyNode>>();
+		// if "(none)" was selected in setting, then skip partitioning
+		if (null == attributeName) {
 
-		taskMonitor.setStatus("Partitioning the network by biological process");
-		taskMonitor.setPercentCompleted(1);
+			// create visual style if set
+			if (PartitionNetworkVisualStyleFactory.attributeName != null) {
+				// if a non-null attribute has been selection for node coloring
+				// and if not running PartitionOnly
+				GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
+			}
 
-		// Reset partition groups
-		//TODO: CyGroup bug: can't get rid of groups created in previous session!
-//		for (CyGroup cg : CyGroupManager.getGroupList()) {
-//			CyGroupManager.removeGroup(cg);
-//		}
+			// pass on to CellAlgorithm
+			CyLayoutAlgorithm layout = CyLayouts.getLayout(layoutName);
+			layout.doLayout(Cytoscape.getCurrentNetworkView());
+		} else {
 
-		nodeAttributeValues = setupNodeAttributeValues();
-		final int SUBNETWORK_LIMIT = 100;
-		// warn before building more than 100 subnetworks;
-		if (nodeAttributeValues.size() > SUBNETWORK_LIMIT ){
-			//TODO: add dialog to continue
-			JOptionPane.showConfirmDialog((java.awt.Window)taskMonitor, "Building over "+SUBNETWORK_LIMIT+" subnetworks may take a while. Are you sure you want to proceed?");
+			// Our node map needs to be reset in case we have a new network
+			attributeValueNodeMap = new HashMap<Object, List<CyNode>>();
+
+			taskMonitor.setStatus("Partitioning the network by "
+					+ attributeName);
+			taskMonitor.setPercentCompleted(1);
+
+			// Reset partition groups
+			// TODO: CyGroup bug: can't get rid of groups created in previous
+			// session!
+			// for (CyGroup cg : CyGroupManager.getGroupList()) {
+			// CyGroupManager.removeGroup(cg);
+			// }
+
+			nodeAttributeValues = setupNodeAttributeValues();
+			// warn before building more than 100 subnetworks;
+			if (nodeAttributeValues.size() > SUBNETWORK_COUNT_WARNING) {
+				// TODO: add dialog to continue
+				JOptionPane
+						.showConfirmDialog(
+								(java.awt.Window) taskMonitor,
+								"Building over "
+										+ SUBNETWORK_COUNT_WARNING
+										+ " subnetworks may take a while. Are you sure you want to proceed?");
+			}
+
+			populateNodes(attributeName);
+
+			if (PartitionNetworkVisualStyleFactory.attributeName != null) {
+				// if a non-null attribute has been selection for node coloring
+				// and if not running Floorplan Only
+				GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
+			}
+
+			Set<Object> attributeValues = attributeValueNodeMap.keySet();
+			CyNetwork net = Cytoscape.getCurrentNetwork();
+			CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
+
+			int nbrProcesses = attributeValues.size();
+			int count = 0;
+
+			//		
+			for (Object val : attributeValues) {
+				count++;
+				taskMonitor.setPercentCompleted((100 * count) / nbrProcesses);
+				taskMonitor.setStatus("building subnetwork for " + val);
+				buildSubNetwork(net, val.toString());
+			}
+
+			buildMetaNodeView(net);
+			tileNetworkViews(); // tile and fit content in each view
+
 		}
-		
-		populateNodes(attributeName);
-
-		GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
-
-		Set<Object> attributeValues = attributeValueNodeMap.keySet();
-		CyNetwork net = Cytoscape.getCurrentNetwork();
-		CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
-
-		int nbrProcesses = attributeValues.size();
-		int count = 0;
-
-		//		
-		for (Object val : attributeValues) {
-			count++;
-			taskMonitor.setPercentCompleted((100 * count) / nbrProcesses);
-			taskMonitor.setStatus("building subnetwork for " + val);
-			buildSubNetwork(net, val.toString());
-		}
-
-		buildMetaNodeView(net);
-		tileNetworkViews(); // tile and fit content in each view
-
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -511,7 +546,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 			cnv.fitContent();
 			cnv.setZoom(cnv.getZoom() * 0.9);
 		}
-
 	}
 
 }

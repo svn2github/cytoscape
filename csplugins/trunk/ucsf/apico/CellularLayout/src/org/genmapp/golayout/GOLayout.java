@@ -1,6 +1,8 @@
 package org.genmapp.golayout;
 
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -15,7 +17,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 
 public class GOLayout extends CytoscapePlugin {
-	
+
 	/**
 	 * The constructor registers our layout algorithm. The CyLayouts mechanism
 	 * will worry about how to get it in the right menu, etc.
@@ -26,14 +28,15 @@ public class GOLayout extends CytoscapePlugin {
 		CyLayouts.addLayout(new PartitionAlgorithm(), "GO Layout");
 		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout");
 	}
-	
-	public static void createVisualStyle(CyNetworkView view){
+
+	public static void createVisualStyle(CyNetworkView view) {
 		PartitionNetworkVisualStyleFactory.createVisualStyle(view);
 
 	}
 
 	public class GOLayoutAlgorithm extends AbstractLayout {
-//		double distanceBetweenNodes = 80.0d;
+
+		protected static final String LAYOUT_NAME = "0-golayout";
 		LayoutProperties layoutProperties = null;
 
 		/**
@@ -42,29 +45,36 @@ public class GOLayout extends CytoscapePlugin {
 		public GOLayoutAlgorithm() {
 			super();
 			layoutProperties = new LayoutProperties(getName());
-			layoutProperties.add(new Tunable("global", "Global Settings", Tunable.GROUP,
-                    new Integer(3)));
-			layoutProperties
-			.add(new Tunable("attributePartition",
+			layoutProperties.add(new Tunable("global", "Global Settings",
+					Tunable.GROUP, new Integer(3)));
+			layoutProperties.add(new Tunable("attributePartition",
 					"The attribute to use for partitioning",
 					Tunable.NODEATTRIBUTE, PartitionAlgorithm.attributeName,
 					(Object) getInitialAttributeList(), (Object) null, 0));
-			layoutProperties
-			.add(new Tunable("attributeLayout",
+			layoutProperties.add(new Tunable("attributeLayout",
 					"The attribute to use for the layout",
 					Tunable.NODEATTRIBUTE, CellAlgorithm.attributeName,
 					(Object) getInitialAttributeList(), (Object) null, 0));
-			layoutProperties
-			.add(new Tunable("attributeNodeColor",
+			layoutProperties.add(new Tunable("attributeNodeColor",
 					"The attribute to use for node color",
-					Tunable.NODEATTRIBUTE, PartitionNetworkVisualStyleFactory.attributeName,
+					Tunable.NODEATTRIBUTE,
+					PartitionNetworkVisualStyleFactory.attributeName,
 					(Object) getInitialAttributeList(), (Object) null, 0));
-			layoutProperties.add(new Tunable("floorplan", "Floorplan Settings", Tunable.GROUP,
-                    new Integer(2)));
+			layoutProperties.add(new Tunable("partition", "Partition Settings",
+					Tunable.GROUP, new Integer(2)));
+			layoutProperties.add(new Tunable("partitionMin",
+					"Don't show subnetworks with fewer nodes than",
+					Tunable.INTEGER, PartitionAlgorithm.NETWORK_LIMIT_MIN));
+			layoutProperties.add(new Tunable("partitionMax",
+					"Don't show subnetworks with more nodes than",
+					Tunable.INTEGER, PartitionAlgorithm.NETWORK_LIMIT_MAX));
+			layoutProperties.add(new Tunable("floorplan", "Floorplan Settings",
+					Tunable.GROUP, new Integer(2)));
 			layoutProperties.add(new Tunable("nodeSpacing",
-					"Spacing between nodes", Tunable.DOUBLE, new Double(30.0)));
-			layoutProperties.add(new Tunable("pruneEdges", "Prune edges?",
-					Tunable.BOOLEAN, false));
+					"Spacing between nodes", Tunable.DOUBLE,
+					CellAlgorithm.distanceBetweenNodes));
+			layoutProperties.add(new Tunable("pruneEdges",
+					"Prune cross-region edges?", Tunable.BOOLEAN, false));
 
 			/*
 			 * We've now set all of our tunables, so we can read the property
@@ -98,28 +108,52 @@ public class GOLayout extends CytoscapePlugin {
 			Tunable t = layoutProperties.get("attributePartition");
 			if ((t != null) && (t.valueChanged() || force)) {
 				String newValue = (String) t.getValue();
-				PartitionAlgorithm.attributeName = newValue;
+				if (newValue.equals("(none)")) {
+					PartitionAlgorithm.attributeName = null;
+				} else {
+					PartitionAlgorithm.attributeName = newValue;
+				}
 			}
 
 			t = layoutProperties.get("attributeLayout");
 			if ((t != null) && (t.valueChanged() || force)) {
 				String newValue = (String) t.getValue();
-				CellAlgorithm.attributeName = newValue;
+				if (newValue.equals("(none)")) {
+					CellAlgorithm.attributeName = null;
+				} else {
+					CellAlgorithm.attributeName = newValue;
+				}
 			}
-			
+
 			t = layoutProperties.get("attributeNodeColor");
 			if ((t != null) && (t.valueChanged() || force)) {
 				String newValue = (String) t.getValue();
-				PartitionNetworkVisualStyleFactory.attributeName = newValue;
+				if (newValue.equals("(none)")) {
+					PartitionNetworkVisualStyleFactory.attributeName = null;
+				} else {
+					PartitionNetworkVisualStyleFactory.attributeName = newValue;
+				}
 			}
+
+			t = layoutProperties.get("partitionMin");
+			if ((t != null) && (t.valueChanged() || force))
+				PartitionAlgorithm.NETWORK_LIMIT_MIN = ((Integer) t.getValue())
+						.intValue();
+
+			t = layoutProperties.get("partitionMax");
+			if ((t != null) && (t.valueChanged() || force))
+				PartitionAlgorithm.NETWORK_LIMIT_MAX = ((Integer) t.getValue())
+						.intValue();
+
 			t = layoutProperties.get("nodeSpacing");
 			if ((t != null) && (t.valueChanged() || force))
-				CellAlgorithm.distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
+				CellAlgorithm.distanceBetweenNodes = ((Double) t.getValue())
+						.doubleValue();
 
 			t = layoutProperties.get("pruneEdges");
 			if ((t != null) && (t.valueChanged() || force))
-				CellAlgorithm.pruneEdges = ((Boolean) t.getValue()).booleanValue();
-
+				CellAlgorithm.pruneEdges = ((Boolean) t.getValue())
+						.booleanValue();
 
 		}
 
@@ -135,13 +169,13 @@ public class GOLayout extends CytoscapePlugin {
 		}
 
 		/**
-		 * Returns the short-hand name of this algorithm
-		 * NOTE: is related to the menu item order
+		 * Returns the short-hand name of this algorithm NOTE: is related to the
+		 * menu item order
 		 * 
 		 * @return short-hand name
 		 */
 		public String getName() {
-			return "0-golayout";
+			return LAYOUT_NAME;
 		}
 
 		/**
@@ -154,14 +188,14 @@ public class GOLayout extends CytoscapePlugin {
 		}
 
 		/**
-		* Gets the Task Title.
-		*
-		* @return human readable task title.
-		*/
+		 * Gets the Task Title.
+		 * 
+		 * @return human readable task title.
+		 */
 		public String getTitle() {
 			return new String("GO Layout");
 		}
-		
+
 		/**
 		 * Return true if we support performing our layout on a limited set of
 		 * nodes
@@ -205,10 +239,25 @@ public class GOLayout extends CytoscapePlugin {
 		}
 
 		/**
+		 * 
+		 * Add "(none)" to the list
+		 * 
+		 * @returns List of our "special" weights
+		 */
+		public List<String> getInitialAttributeList() {
+			ArrayList<String> attList = new ArrayList<String>();
+			attList.add("(none)");
+
+			return attList;
+		}
+
+		/**
 		 * The layout protocol...
 		 */
 		public void construct() {
-			PartitionAlgorithm.layoutName = "cell-layout";
+			if (null != CellAlgorithm.attributeName) {
+				PartitionAlgorithm.layoutName = CellAlgorithm.LAYOUT_NAME;
+			}
 			CyLayoutAlgorithm layout = CyLayouts.getLayout("partition");
 			layout.doLayout(Cytoscape.getCurrentNetworkView(), taskMonitor);
 		}

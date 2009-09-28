@@ -35,7 +35,6 @@ public class PartitionNetworkVisualStyleFactory {
 	/**
 	 * 
 	 */
-	public static final String PartitionNetwork_VS = "MolecularFunction";
 	protected static String attributeName = "annotation.GO MOLECULAR_FUNCTION";
 	private static final String NumChildren = "NumChildren";
 
@@ -47,14 +46,14 @@ public class PartitionNetworkVisualStyleFactory {
 
 		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-		VisualStyle mfStyle = catalog.getVisualStyle(PartitionNetwork_VS);
+		VisualStyle mfStyle = catalog.getVisualStyle(attributeName);
 		if (mfStyle == null) { // Create the MF visual style
 			try {
 				mfStyle = (VisualStyle) vmm.getVisualStyle().clone();
 			} catch (CloneNotSupportedException e) {
-				mfStyle = new VisualStyle(PartitionNetwork_VS);
+				mfStyle = new VisualStyle(attributeName);
 			}
-			mfStyle.setName(PartitionNetwork_VS);
+			mfStyle.setName(attributeName);
 			NodeAppearanceCalculator nac = new MFNodeAppearanceCalculator();
 			EdgeAppearanceCalculator eac = new MFEdgeAppearanceCalculator();
 			nac.getDefaultAppearance().setNodeSizeLocked(false);
@@ -97,7 +96,7 @@ public class PartitionNetworkVisualStyleFactory {
 			PassThroughMapping passMappingLabel = new PassThroughMapping("",
 					"canonicalName");
 			Calculator labelCalculator = new BasicCalculator(
-					PartitionNetwork_VS, passMappingLabel,
+					attributeName, passMappingLabel,
 					VisualPropertyType.NODE_LABEL);
 			nac.setCalculator(labelCalculator);
 
@@ -106,7 +105,7 @@ public class PartitionNetworkVisualStyleFactory {
 					ObjectMapping.NODE_MAPPING);
 			disMappingBorderColor.putMapValue(Boolean.TRUE, Color.red);
 			Calculator borderColorCalculator = new BasicCalculator(
-					PartitionNetwork_VS, disMappingBorderColor,
+					attributeName, disMappingBorderColor,
 					VisualPropertyType.NODE_BORDER_COLOR);
 			nac.setCalculator(borderColorCalculator);
 
@@ -118,7 +117,7 @@ public class PartitionNetworkVisualStyleFactory {
 			contMappingNodeWidth.setInterpolator(new LinearNumberToNumberInterpolator());
 			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 10, 10));
 			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(60, 60, 60));
-			Calculator nodeWidthCalculator = new BasicCalculator(PartitionNetwork_VS, contMappingNodeWidth, VisualPropertyType.NODE_WIDTH);
+			Calculator nodeWidthCalculator = new BasicCalculator(attributeName, contMappingNodeWidth, VisualPropertyType.NODE_WIDTH);
 			nac.setCalculator(nodeWidthCalculator);
 
 			ContinuousMapping contMappingNodeHeight = new ContinuousMapping(PartitionAlgorithm.NETWORK_LIMIT_MIN, ObjectMapping.NODE_MAPPING);
@@ -128,7 +127,7 @@ public class PartitionNetworkVisualStyleFactory {
 			contMappingNodeHeight.setInterpolator(new LinearNumberToNumberInterpolator());
 			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 10, 10));
 			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(60, 60, 60));
-			Calculator nodeHeightCalculator = new BasicCalculator(PartitionNetwork_VS, contMappingNodeHeight, VisualPropertyType.NODE_HEIGHT);
+			Calculator nodeHeightCalculator = new BasicCalculator(attributeName, contMappingNodeHeight, VisualPropertyType.NODE_HEIGHT);
 			nac.setCalculator(nodeHeightCalculator);
 
 			DiscreteMapping disMappingNodeFill = new DiscreteMapping(
@@ -156,7 +155,7 @@ public class PartitionNetworkVisualStyleFactory {
 				i++;
 			}
 			Calculator colorCalculator = new BasicCalculator(
-					PartitionNetwork_VS, disMappingNodeFill,
+					attributeName, disMappingNodeFill,
 					VisualPropertyType.NODE_FILL_COLOR);
 
 			nac.setCalculator(colorCalculator);
@@ -170,7 +169,7 @@ public class PartitionNetworkVisualStyleFactory {
 			disMappingEdgeColor.putMapValue(Boolean.TRUE, LineStyle.LONG_DASH);
 			disMappingEdgeColor.putMapValue(Boolean.FALSE, LineStyle.SOLID);
 			Calculator edgeColorCalculator = new BasicCalculator(
-					PartitionNetwork_VS, disMappingEdgeColor,
+					attributeName, disMappingEdgeColor,
 					VisualPropertyType.EDGE_LINE_STYLE);
 			eac.setCalculator(edgeColorCalculator);
 
@@ -180,7 +179,7 @@ public class PartitionNetworkVisualStyleFactory {
 			disMappingEdgeLineStyle.putMapValue(Boolean.TRUE, Color.darkGray);
 			disMappingEdgeLineStyle.putMapValue(Boolean.FALSE, Color.blue);
 			Calculator edgeLineStyleCalculator = new BasicCalculator(
-					PartitionNetwork_VS, disMappingEdgeLineStyle,
+					attributeName, disMappingEdgeLineStyle,
 					VisualPropertyType.EDGE_COLOR);
 			eac.setCalculator(edgeLineStyleCalculator);
 
@@ -204,7 +203,7 @@ public class PartitionNetworkVisualStyleFactory {
 		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
 		vmm.setNetworkView(myView);
 		vmm.setVisualStyle(mfStyle);
-		myView.setVisualStyle(PartitionNetwork_VS);
+		myView.setVisualStyle(attributeName);
 
 		Cytoscape.getVisualMappingManager().setNetworkView(myView);
 		Cytoscape.getVisualMappingManager().applyAppearances();
