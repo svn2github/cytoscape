@@ -424,24 +424,24 @@ public enum VisualPropertyType {
 		
 		Object ret = method.invoke(null, action.getParameters());
 
+		if ( ret == null )
+			return null;
+
 		// This is an editor.
-		if ((ret != null) && ret instanceof ContinuousMappingEditorPanel)
+		if ( ret instanceof ContinuousMappingEditorPanel) {
 			return ret;
-		
-		else if ((ret != null) && this == EDGE_LINE_WIDTH) {
+		} else if (this == EDGE_LINE_WIDTH) {
 			try {
 				ret = Float.valueOf(((String)ret));
 			} catch (NumberFormatException e){
 				ret = 1f;
 			}
-		} else if ((ret != null) && (action.getCompatibleClass() != ret.getClass())) {
+		} else if ((action.getCompatibleClass() != ret.getClass())) {
 			try {
 				ret = Double.parseDouble(ret.toString());
 			} catch (NumberFormatException e){
 				ret = 1d;
 			}
-			
-			
 		}
 		
 		// If size, it should be greater than 0.  Otherwise, 1 will be set.
