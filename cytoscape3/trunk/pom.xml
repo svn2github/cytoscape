@@ -210,7 +210,7 @@
 						<param>--platform=felix</param>
 						<param>--profiles=minimal</param>
 						<param>--noDownloadFeedback</param>
-						<param>--vmOptions=-Xss10M -Xmx512M -Dawt.useSystemAAFontSettings=lcd -Dapple.laf.useScreenMenuBar=false -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3 -Dorg.ops4j.pax.logging.DefaultServiceLog.level=NONE</param>
+						<param>--vmOptions=-Xss10M -Xmx512M -Dawt.useSystemAAFontSettings=lcd -Dapple.laf.useScreenMenuBar=false -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3 -Dorg.ops4j.pax.logging.DefaultServiceLog.level=NONE -Dbundles.configuration.location=../configurations</param>
 						<param>--repositories=+http://scm.ops4j.org/repos/ops4j/projects/pax/runner-repository/</param>
 						<param>scan-pom:file:provision/config-pom.xml@2</param>
 						<param>scan-pom:file:provision/logging-pom.xml@3</param>
