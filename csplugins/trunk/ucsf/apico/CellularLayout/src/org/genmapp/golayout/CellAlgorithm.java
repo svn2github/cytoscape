@@ -159,10 +159,8 @@ public class CellAlgorithm extends AbstractLayout {
 							.getCurrentNetworkView());
 				}
 				if (PartitionNetworkVisualStyleFactory.attributeName != null) {
-					Cytoscape
-							.getVisualMappingManager()
-							.setVisualStyle(
-									PartitionNetworkVisualStyleFactory.attributeName);
+					Cytoscape.getVisualMappingManager().setVisualStyle(
+							PartitionNetworkVisualStyleFactory.attributeName);
 				}
 
 				taskMonitor.setStatus("Sizing up floorplan regions");
@@ -701,28 +699,6 @@ public class CellAlgorithm extends AbstractLayout {
 						}
 					} // end oil & water
 
-					// mark edges from unassigned nodes
-
-					CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
-					for (NodeView nv : filteredNodeViews) {
-						Node n = nv.getNode();
-						int[] edges = Cytoscape
-								.getCurrentNetwork()
-								.getAdjacentEdgeIndicesArray(
-										n.getRootGraphIndex(), true, true, true);
-						for (int e : edges) {
-							String edgeId = Cytoscape.getCurrentNetwork()
-									.getEdge(e).getIdentifier();
-							if (r.getAttValue() == "unassigned") {
-								eAttributes.setAttribute(edgeId,
-										UNASSIGNED_EDGE_ATT, true);
-							} else {
-								eAttributes.setAttribute(edgeId,
-										UNASSIGNED_EDGE_ATT, false);
-							}
-						}
-					}
-
 				} // end for each region
 
 				// destroy all register nodes
@@ -730,30 +706,43 @@ public class CellAlgorithm extends AbstractLayout {
 					Cytoscape.getCurrentNetwork().removeNode(
 							regNv.getNode().getRootGraphIndex(), true);
 				}
-				// prune edges
-				if (pruneEdges) {
-					taskMonitor.setStatus("Pruning cross-region edges");
-					int[] allNodes = Cytoscape.getCurrentNetwork()
-							.getNodeIndicesArray();
-					CyAttributes attributes = Cytoscape.getNodeAttributes();
+				// prune and annotate edges
 
-					for (int cn : allNodes) {
-						int[] edges = Cytoscape.getCurrentNetwork()
-								.getAdjacentEdgeIndicesArray(cn, true, true,
-										true);
-						for (int edgeInt : edges) {
-							int nodeInt1 = Cytoscape.getRootGraph()
-									.getEdgeSourceIndex(edgeInt);
-							int nodeInt2 = Cytoscape.getRootGraph()
-									.getEdgeTargetIndex(edgeInt);
-							String node1 = Cytoscape.getCurrentNetwork()
-									.getNode(nodeInt1).getIdentifier();
-							String node2 = Cytoscape.getCurrentNetwork()
-									.getNode(nodeInt2).getIdentifier();
-							String nodeRegion1 = attributes.getStringAttribute(
-									node1, REGION_ATT);
-							String nodeRegion2 = attributes.getStringAttribute(
-									node2, REGION_ATT);
+				int[] allNodes = Cytoscape.getCurrentNetwork()
+						.getNodeIndicesArray();
+				CyAttributes attributes = Cytoscape.getNodeAttributes();
+				CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
+
+				for (int cn : allNodes) {
+					int[] edges = Cytoscape.getCurrentNetwork()
+							.getAdjacentEdgeIndicesArray(cn, true, true, true);
+					for (int edgeInt : edges) {
+						int nodeInt1 = Cytoscape.getRootGraph()
+								.getEdgeSourceIndex(edgeInt);
+						int nodeInt2 = Cytoscape.getRootGraph()
+								.getEdgeTargetIndex(edgeInt);
+						String node1 = Cytoscape.getCurrentNetwork().getNode(
+								nodeInt1).getIdentifier();
+						String node2 = Cytoscape.getCurrentNetwork().getNode(
+								nodeInt2).getIdentifier();
+						String nodeRegion1 = attributes.getStringAttribute(
+								node1, REGION_ATT);
+						String nodeRegion2 = attributes.getStringAttribute(
+								node2, REGION_ATT);
+
+						// annotate edges to and from unassigned nodes
+						String edgeId = Cytoscape.getCurrentNetwork().getEdge(
+								edgeInt).getIdentifier();
+						if (nodeRegion1 == "unassigned"
+								|| nodeRegion2 == "unassigned") {
+							eAttributes.setAttribute(edgeId,
+									UNASSIGNED_EDGE_ATT, true);
+						} else {
+							eAttributes.setAttribute(edgeId,
+									UNASSIGNED_EDGE_ATT, false);
+						}
+						if (pruneEdges) {
+							taskMonitor.setStatus("Pruning cross-region edges");
 							if (node1.contains("__")) {
 								if (node2.contains("__")) {
 									if (nodeRegion1 != nodeRegion2) {
