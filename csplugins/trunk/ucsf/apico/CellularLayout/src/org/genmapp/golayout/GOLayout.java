@@ -25,8 +25,8 @@ public class GOLayout extends CytoscapePlugin {
 	public GOLayout() {
 
 		CyLayouts.addLayout(new GOLayoutAlgorithm(), "GO Layout");
-		CyLayouts.addLayout(new PartitionAlgorithm(), "GO Layout");
-		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout");
+		CyLayouts.addLayout(new PartitionAlgorithm(), null);
+		CyLayouts.addLayout(new CellAlgorithm(), null);
 	}
 
 	public static void createVisualStyle(CyNetworkView view) {

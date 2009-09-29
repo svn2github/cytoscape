@@ -100,10 +100,7 @@ public class CellAlgorithm extends AbstractLayout {
 	 *         are not supported
 	 */
 	public byte[] supportsNodeAttributes() {
-
-		byte[] all = { -1 };
-
-		return all;
+		return null;
 	}
 
 	/**

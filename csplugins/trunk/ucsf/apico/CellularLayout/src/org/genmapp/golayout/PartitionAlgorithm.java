@@ -44,9 +44,9 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	double distanceBetweenNodes = 80.0d;
 	LayoutProperties layoutProperties = null;
 
-	protected static String layoutName = null;
+	protected static String layoutName = "force-directed";
 	private ArrayList<Object> nodeAttributeValues = new ArrayList();
-	private Object[] layoutNames = null;
+//	private Object[] layoutNames = null;
 	protected static String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 	private HashMap<Object, List<CyNode>> attributeValueNodeMap;
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
@@ -65,40 +65,10 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	public PartitionAlgorithm() {
 		super();
 
-		Collection<CyLayoutAlgorithm> availableLayouts = CyLayouts
-				.getAllLayouts();
-		layoutNames = new Object[availableLayouts.size()];
-		int fdInt = 0; // store position of "force-directed" in list
-		int i = 0;
-		for (CyLayoutAlgorithm ca : availableLayouts) {
-			// skip "GO Layout" to avoid creating a rift space-time
-			if (ca.getName() != GOLayoutAlgorithm.LAYOUT_NAME) {
-				layoutNames[i] = (Object) ca;
-			}
-
-			// We want to offer some guidance...
-			if (ca.getName() == "force-directed")
-				fdInt = i;
-			i++;
-		}
-
+		// support fit-to-screen when maximizing tiled subnetworks
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
-
-		layoutProperties = new LayoutProperties(getName());
-
-		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-				Tunable.LIST, fdInt, (Object) layoutNames, 0, 0));
-
-		// We've now set all of our tunables, so we can read the property
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
-
-		// Finally, update everything. We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-
 	}
 
 	/**
@@ -115,32 +85,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 *            force the settings to be updated, if true
 	 */
 	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-		Tunable t = layoutProperties.get("nodeSpacing");
-		if ((t != null) && (t.valueChanged() || force))
-			distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("layoutName");
-		if ((t != null) && (t.valueChanged() || force))
-			if (layoutNames.length == 1) {
-				layoutName = ((CyLayoutAlgorithm) layoutNames[0]).getName();
-			} else {
-				int index = ((Integer) t.getValue()).intValue();
-				if (index < 0)
-					index = 0;
-				layoutName = ((CyLayoutAlgorithm) layoutNames[index]).getName();
-			}
-	}
-
-	/**
-	 * Reverts our settings back to the original.
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
-	}
-
-	public LayoutProperties getSettings() {
-		return layoutProperties;
+		// nothing here... see GOLayout
 	}
 
 	/**
@@ -178,10 +123,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 *         are not supported
 	 */
 	public byte[] supportsNodeAttributes() {
-
-		byte[] all = { -1 };
-
-		return all;
+		return null;
 	}
 
 	/**
@@ -202,18 +144,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	 */
 	public byte[] supportsEdgeAttributes() {
 		return null;
-	}
-
-	/**
-	 * Returns a JPanel to be used as part of the Settings dialog for this
-	 * layout algorithm.
-	 * 
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
 	}
 
 	/**
