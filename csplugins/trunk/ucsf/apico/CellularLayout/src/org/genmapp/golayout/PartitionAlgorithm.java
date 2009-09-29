@@ -46,7 +46,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 	protected static String layoutName = "force-directed";
 	private ArrayList<Object> nodeAttributeValues = new ArrayList();
-//	private Object[] layoutNames = null;
+	// private Object[] layoutNames = null;
 	protected static String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 	private HashMap<Object, List<CyNode>> attributeValueNodeMap;
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
@@ -430,42 +430,50 @@ public class PartitionAlgorithm extends AbstractLayout implements
 
 			nodeAttributeValues = setupNodeAttributeValues();
 			// warn before building more than 100 subnetworks;
+			int response = JOptionPane.YES_OPTION;
 			if (nodeAttributeValues.size() > SUBNETWORK_COUNT_WARNING) {
 				// TODO: add dialog to continue
-				JOptionPane
+				response = JOptionPane
 						.showConfirmDialog(
 								(java.awt.Window) taskMonitor,
 								"Building over "
 										+ SUBNETWORK_COUNT_WARNING
-										+ " subnetworks may take a while. Are you sure you want to proceed?");
+										+ " subnetworks may take a while. Are you sure you want to proceed?",
+								"Warning", JOptionPane.YES_NO_OPTION);
 			}
+			if (JOptionPane.YES_OPTION == response) {
 
-			populateNodes(attributeName);
+				populateNodes(attributeName);
 
-			if (PartitionNetworkVisualStyleFactory.attributeName != null) {
-				// if a non-null attribute has been selection for node coloring
-				// and if not running Floorplan Only
-				GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
+				if (PartitionNetworkVisualStyleFactory.attributeName != null) {
+					// if a non-null attribute has been selection for node
+					// coloring
+					// and if not running Floorplan Only
+					GOLayout.createVisualStyle(Cytoscape
+							.getCurrentNetworkView());
+				}
+
+				Set<Object> attributeValues = attributeValueNodeMap.keySet();
+				CyNetwork net = Cytoscape.getCurrentNetwork();
+				CyNetworkView view = Cytoscape.getNetworkView(net
+						.getIdentifier());
+
+				int nbrProcesses = attributeValues.size();
+				int count = 0;
+
+				//		
+				for (Object val : attributeValues) {
+					count++;
+					taskMonitor.setPercentCompleted((100 * count)
+							/ nbrProcesses);
+					taskMonitor.setStatus("building subnetwork for " + val);
+					buildSubNetwork(net, val.toString());
+				}
+
+				buildMetaNodeView(net);
+				tileNetworkViews(); // tile and fit content in each view
+
 			}
-
-			Set<Object> attributeValues = attributeValueNodeMap.keySet();
-			CyNetwork net = Cytoscape.getCurrentNetwork();
-			CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
-
-			int nbrProcesses = attributeValues.size();
-			int count = 0;
-
-			//		
-			for (Object val : attributeValues) {
-				count++;
-				taskMonitor.setPercentCompleted((100 * count) / nbrProcesses);
-				taskMonitor.setStatus("building subnetwork for " + val);
-				buildSubNetwork(net, val.toString());
-			}
-
-			buildMetaNodeView(net);
-			tileNetworkViews(); // tile and fit content in each view
-
 		}
 	}
 

@@ -145,6 +145,7 @@ public class CellAlgorithm extends AbstractLayout {
 
 				}
 			}
+			taskMonitor.setStatus("Checking attribute mappings");
 			if (!valid) {
 				RegionManager.clearAll();
 				JOptionPane.showMessageDialog((java.awt.Window) taskMonitor,
