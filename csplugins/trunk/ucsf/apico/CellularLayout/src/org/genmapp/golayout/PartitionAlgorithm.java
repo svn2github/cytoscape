@@ -55,7 +55,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	protected static int NETWORK_LIMIT_MIN = 5; // necessary size to show
 	// network
 	protected static int NETWORK_LIMIT_MAX = 200;
-	private static final int SUBNETWORK_COUNT_WARNING = 100; // will warn if >
+	private static final int SUBNETWORK_COUNT_WARNING = 30; // will warn if >
 
 	// view in the tiling
 

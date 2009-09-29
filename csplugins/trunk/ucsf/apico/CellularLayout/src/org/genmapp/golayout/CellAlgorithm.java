@@ -706,16 +706,16 @@ public class CellAlgorithm extends AbstractLayout {
 					Cytoscape.getCurrentNetwork().removeNode(
 							regNv.getNode().getRootGraphIndex(), true);
 				}
+				
 				// prune and annotate edges
-
-				int[] allNodes = Cytoscape.getCurrentNetwork()
-						.getNodeIndicesArray();
+//				int[] allNodes = Cytoscape.getCurrentNetwork()
+//						.getNodeIndicesArray();
 				CyAttributes attributes = Cytoscape.getNodeAttributes();
 				CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
 
-				for (int cn : allNodes) {
-					int[] edges = Cytoscape.getCurrentNetwork()
-							.getAdjacentEdgeIndicesArray(cn, true, true, true);
+//				for (int cn : allNodes) {
+					int[] edges = Cytoscape.getCurrentNetwork().getEdgeIndicesArray();
+//							.getAdjacentEdgeIndicesArray(cn, true, true, true);
 					for (int edgeInt : edges) {
 						int nodeInt1 = Cytoscape.getRootGraph()
 								.getEdgeSourceIndex(edgeInt);
@@ -865,7 +865,7 @@ public class CellAlgorithm extends AbstractLayout {
 						}
 					}
 
-				}
+//				}
 
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 			}
