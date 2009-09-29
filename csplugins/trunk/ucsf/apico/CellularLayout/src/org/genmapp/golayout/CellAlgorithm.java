@@ -177,6 +177,8 @@ public class CellAlgorithm extends AbstractLayout {
 				List<NodeView> nodeViews;
 
 				HashMap<NodeView, Integer> nvSeen = new HashMap<NodeView, Integer>();
+				List<Node> firstCopies = new ArrayList<Node>();
+
 				int taskNodeCount = networkView.nodeCount();
 				int taskCount = 0; // count all nodes in all regions to layout
 
@@ -272,17 +274,20 @@ public class CellAlgorithm extends AbstractLayout {
 							// yes, then create copy
 							Node oldNode = nv.getNode();
 							String oldId = oldNode.getIdentifier();
-							String newId = oldId.concat("__").concat(
-									nvSeen.get(nv).toString());
+							// collect unique list to rename later
+							if (!firstCopies.contains(oldNode))
+								firstCopies.add(oldNode);
+							Integer next = nvSeen.get(nv) + 1; 
+							String cleanOldId = oldId;
+							if (oldId.contains("__1")){
+							//clean up name from prior runs of GO Layout
+							cleanOldId = oldId.substring(0, oldId.lastIndexOf("__1"));
+							}
+							String newId = cleanOldId.concat("__").concat(
+									next.toString());
 							CyNode newNode = Cytoscape.getCyNode(newId, true);
 
 							// copy attributes
-							/*
-							 * TODO: copy only the attribute relevant to the
-							 * specific node so that populateNodeViews will work
-							 * properly
-							 */
-
 							String[] atts = attributes.getAttributeNames();
 							for (String att : atts) {
 								/*
@@ -706,166 +711,222 @@ public class CellAlgorithm extends AbstractLayout {
 					Cytoscape.getCurrentNetwork().removeNode(
 							regNv.getNode().getRootGraphIndex(), true);
 				}
-				
-				// prune and annotate edges
-//				int[] allNodes = Cytoscape.getCurrentNetwork()
-//						.getNodeIndicesArray();
+
+				// rename first copies of replicated nodes
 				CyAttributes attributes = Cytoscape.getNodeAttributes();
-				CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
+				for (Node n : firstCopies) {
 
-//				for (int cn : allNodes) {
-					int[] edges = Cytoscape.getCurrentNetwork().getEdgeIndicesArray();
-//							.getAdjacentEdgeIndicesArray(cn, true, true, true);
-					for (int edgeInt : edges) {
-						int nodeInt1 = Cytoscape.getRootGraph()
-								.getEdgeSourceIndex(edgeInt);
-						int nodeInt2 = Cytoscape.getRootGraph()
-								.getEdgeTargetIndex(edgeInt);
-						String node1 = Cytoscape.getCurrentNetwork().getNode(
-								nodeInt1).getIdentifier();
-						String node2 = Cytoscape.getCurrentNetwork().getNode(
-								nodeInt2).getIdentifier();
-						String nodeRegion1 = attributes.getStringAttribute(
-								node1, REGION_ATT);
-						String nodeRegion2 = attributes.getStringAttribute(
-								node2, REGION_ATT);
+					String oldId = n.getIdentifier();
+					HashMap<String, Object> atthash = new HashMap<String, Object>();
 
-						// annotate edges to and from unassigned nodes
-						String edgeId = Cytoscape.getCurrentNetwork().getEdge(
-								edgeInt).getIdentifier();
-						if (nodeRegion1 == "unassigned"
-								|| nodeRegion2 == "unassigned") {
-							eAttributes.setAttribute(edgeId,
-									UNASSIGNED_EDGE_ATT, true);
-						} else {
-							eAttributes.setAttribute(edgeId,
-									UNASSIGNED_EDGE_ATT, false);
-						}
-						if (pruneEdges) {
-							taskMonitor.setStatus("Pruning cross-region edges");
-							if (node1.contains("__")) {
-								if (node2.contains("__")) {
-									if (nodeRegion1 != nodeRegion2) {
-										Cytoscape.getCurrentNetwork()
-												.removeEdge(edgeInt, false);
-									}
-								}
-							} else if (node2.contains("__")) {
-								// do nothing
-							} else { // both are original nodes
-								boolean doRemoveEdges = false;
-								List<Integer> edgesToRemove = new ArrayList<Integer>();
-								if (nodeRegion1 != nodeRegion2) {
-									edgesToRemove.add(edgeInt);
-								} else {
-									doRemoveEdges = true;
-								}
-								int m = 1;
-								String nodeName2 = node2;
-								node2 = nodeName2.concat("__").concat("" + m);
-								CyNode cyn = Cytoscape.getCyNode(node2);
-								while (cyn != null) {
-									String nodeRegion2B = attributes
-											.getStringAttribute(node2,
-													REGION_ATT);
-									if (nodeRegion1 != nodeRegion2B
-											&& nodeRegion2B != null) {
-										int[] copyEdges = Cytoscape
-												.getCurrentNetwork()
-												.getAdjacentEdgeIndicesArray(
-														cyn.getRootGraphIndex(),
-														true, true, true);
-										for (int copyEdgeInt : copyEdges) {
-											int copyNodeInt1 = Cytoscape
-													.getRootGraph()
-													.getEdgeSourceIndex(
-															copyEdgeInt);
-											int copyNodeInt2 = Cytoscape
-													.getRootGraph()
-													.getEdgeTargetIndex(
-															copyEdgeInt);
-											if (nodeInt1 == copyNodeInt1
-													|| nodeInt1 == copyNodeInt2) {
-												edgesToRemove.add(copyEdgeInt);
-												break; // there will only be a
-												// single hit
-											}
+					// copy attributes
+					String[] atts = attributes.getAttributeNames();
+					for (String att : atts) {
+						/*
+						 * skip hidden attributes
+						 */
+						if (attributes.getUserVisible(att)
+								&& attributes.hasAttribute(oldId, att)) {
+							byte type = attributes.getType(att);
+							if (type == CyAttributes.TYPE_BOOLEAN) {
+								atthash.put(att, attributes
+										.getBooleanAttribute(oldId, att));
+							} else if (type == CyAttributes.TYPE_INTEGER) {
+								atthash.put(att, attributes
+										.getIntegerAttribute(oldId, att));
+							} else if (type == CyAttributes.TYPE_FLOATING) {
+								atthash.put(att, attributes.getDoubleAttribute(
+										oldId, att));
+							} else if (type == CyAttributes.TYPE_STRING) {
+								atthash.put(att, attributes.getStringAttribute(
+										oldId, att));
 
-										}
-									} else if (nodeRegion2B != null) { // edge
-										// within
-										// same region!
-										doRemoveEdges = true;
-									}
-
-									m++;
-									node2 = nodeName2.concat("__").concat(
-											"" + m);
-									cyn = Cytoscape.getCyNode(node2);
-								}
-								if (doRemoveEdges) {
-									for (int e : edgesToRemove) {
-										Cytoscape.getCurrentNetwork()
-												.removeEdge(e, false);
-									}
-								}
-								// now check for the reverse case
-								m = 1;
-								String nodeName1 = node1;
-								node1 = nodeName1.concat("__").concat("" + m);
-								cyn = Cytoscape.getCyNode(node1);
-								while (cyn != null) {
-									String nodeRegion1B = attributes
-											.getStringAttribute(node1,
-													REGION_ATT);
-									if (nodeRegion1B != nodeRegion2
-											&& nodeRegion1B != null) {
-										int[] copyEdges = Cytoscape
-												.getCurrentNetwork()
-												.getAdjacentEdgeIndicesArray(
-														cyn.getRootGraphIndex(),
-														true, true, true);
-										for (int copyEdgeInt : copyEdges) {
-											int copyNodeInt1 = Cytoscape
-													.getRootGraph()
-													.getEdgeSourceIndex(
-															copyEdgeInt);
-											int copyNodeInt2 = Cytoscape
-													.getRootGraph()
-													.getEdgeTargetIndex(
-															copyEdgeInt);
-											if (nodeInt2 == copyNodeInt1
-													|| nodeInt2 == copyNodeInt2) {
-												edgesToRemove.add(copyEdgeInt);
-												break; // there will only be a
-												// single hit
-											}
-
-										}
-									} else if (nodeRegion1B != null) { // edge
-										// within
-										// same region!
-										doRemoveEdges = true;
-									}
-
-									m++;
-									node1 = nodeName1.concat("__").concat(
-											"" + m);
-									cyn = Cytoscape.getCyNode(node1);
-								}
-								if (doRemoveEdges) {
-									for (int e : edgesToRemove) {
-										Cytoscape.getCurrentNetwork()
-												.removeEdge(e, false);
-									}
-								}
-
+							} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+								atthash.put(att, attributes.getListAttribute(
+										oldId, att));
+							} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+								atthash.put(att, attributes.getMapAttribute(
+										oldId, att));
 							}
-
 						}
 					}
 
-//				}
+					String cleanOldId = n.getIdentifier();
+					if (oldId.contains("__1")){
+					//clean up name from prior runs of GO Layout
+					cleanOldId = n.getIdentifier().substring(0, oldId.lastIndexOf("__1"));
+					}
+					n.setIdentifier(cleanOldId.concat("__1"));
+					String newId = n.getIdentifier();
+
+					for (String att : atthash.keySet()) {
+						/*
+						 * skip hidden attributes
+						 */
+						if (attributes.getUserVisible(att)
+								&& attributes.hasAttribute(oldId, att)) {
+							byte type = attributes.getType(att);
+							if (type == CyAttributes.TYPE_BOOLEAN) {
+								attributes.setAttribute(newId, att,
+										(Boolean) atthash.get(att));
+							} else if (type == CyAttributes.TYPE_INTEGER) {
+								attributes.setAttribute(newId, att,
+										(Integer) atthash.get(att));
+							} else if (type == CyAttributes.TYPE_FLOATING) {
+								attributes.setAttribute(newId, att,
+										(Double) atthash.get(att));
+							} else if (type == CyAttributes.TYPE_STRING) {
+								attributes.setAttribute(newId, att,
+										(String) atthash.get(att));
+							} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+								attributes.setListAttribute(newId, att,
+										(List) atthash.get(att));
+							} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+								attributes.setMapAttribute(newId, att,
+										(HashMap) atthash.get(att));
+							}
+						}
+					}
+				}
+
+				// prune and annotate edges
+				List<Integer> edgesToRemove = new ArrayList<Integer>();
+				CyAttributes nAttributes = Cytoscape.getNodeAttributes();
+				CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
+
+				int[] edges = Cytoscape.getCurrentNetwork()
+						.getEdgeIndicesArray();
+				for (int edgeInt : edges) {
+					int nodeInt1 = Cytoscape.getRootGraph().getEdgeSourceIndex(
+							edgeInt);
+					int nodeInt2 = Cytoscape.getRootGraph().getEdgeTargetIndex(
+							edgeInt);
+					String node1 = Cytoscape.getCurrentNetwork().getNode(
+							nodeInt1).getIdentifier();
+					String node2 = Cytoscape.getCurrentNetwork().getNode(
+							nodeInt2).getIdentifier();
+					String nodeRegion1 = nAttributes.getStringAttribute(node1,
+							REGION_ATT);
+					String nodeRegion2 = nAttributes.getStringAttribute(node2,
+							REGION_ATT);
+
+					// annotate edges to and from unassigned nodes
+					String edgeId = Cytoscape.getCurrentNetwork().getEdge(
+							edgeInt).getIdentifier();
+					if (nodeRegion1 == "unassigned"
+							|| nodeRegion2 == "unassigned") {
+						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
+								true);
+					} else {
+						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
+								false);
+					}
+					if (pruneEdges) {
+						taskMonitor.setStatus("Pruning cross-region edges");
+
+						boolean doRemoveEdges = false;
+						List<Integer> edgesToHold = new ArrayList<Integer>();
+						if (nodeRegion1 != nodeRegion2) {
+							edgesToHold.add(edgeInt);
+							// add to remove list and search all other copies
+						}
+						int m = 1;
+						if (node2.contains("__")) {
+							node2 = node2.substring(0, node2.lastIndexOf("__"));
+						}
+						node2 = node2.concat("__").concat("" + m);
+						CyNode cyn = Cytoscape.getCyNode(node2);
+						while (cyn != null) {
+							String nodeRegion2B = nAttributes
+									.getStringAttribute(node2, REGION_ATT);
+							if (nodeRegion1 != nodeRegion2B
+									&& nodeRegion2B != null) {
+								int[] copyEdges = Cytoscape.getCurrentNetwork()
+										.getAdjacentEdgeIndicesArray(
+												cyn.getRootGraphIndex(), true,
+												true, true);
+								for (int copyEdgeInt : copyEdges) {
+									int copyNodeInt1 = Cytoscape.getRootGraph()
+											.getEdgeSourceIndex(copyEdgeInt);
+									int copyNodeInt2 = Cytoscape.getRootGraph()
+											.getEdgeTargetIndex(copyEdgeInt);
+									if (nodeInt1 == copyNodeInt1
+											|| nodeInt1 == copyNodeInt2) {
+										edgesToHold.add(copyEdgeInt);
+										break; // there will only be a
+										// single hit
+									}
+
+								}
+							} else if (nodeRegion2B != null) { // edge
+								// within
+								// same region!
+								doRemoveEdges = true;
+							}
+
+							m++;
+							node2 = node2.substring(0, node2.lastIndexOf("__"));
+							node2 = node2.concat("__").concat("" + m);
+							cyn = Cytoscape.getCyNode(node2);
+						}
+						if (doRemoveEdges) {
+							for (int e : edgesToHold) {
+								Cytoscape.getCurrentNetwork().removeEdge(e,
+										false);
+							}
+						}
+						// now check for the reverse case
+						m = 1;
+						if (node1.contains("__")) {
+							node1 = node1.substring(0, node1.lastIndexOf("__"));
+						}
+						node1 = node1.concat("__").concat("" + m);
+						cyn = Cytoscape.getCyNode(node1);
+						while (cyn != null) {
+							String nodeRegion1B = nAttributes
+									.getStringAttribute(node1, REGION_ATT);
+							if (nodeRegion1B != nodeRegion2
+									&& nodeRegion1B != null) {
+								int[] copyEdges = Cytoscape.getCurrentNetwork()
+										.getAdjacentEdgeIndicesArray(
+												cyn.getRootGraphIndex(), true,
+												true, true);
+								for (int copyEdgeInt : copyEdges) {
+									int copyNodeInt1 = Cytoscape.getRootGraph()
+											.getEdgeSourceIndex(copyEdgeInt);
+									int copyNodeInt2 = Cytoscape.getRootGraph()
+											.getEdgeTargetIndex(copyEdgeInt);
+									if (nodeInt2 == copyNodeInt1
+											|| nodeInt2 == copyNodeInt2) {
+										edgesToHold.add(copyEdgeInt);
+										break; // there will only be a
+										// single hit
+									}
+
+								}
+							} else if (nodeRegion1B != null) { // edge
+								// within
+								// same region!
+								doRemoveEdges = true;
+							}
+
+							m++;
+							node1 = node1.substring(0, node1.lastIndexOf("__"));
+							node1 = node1.concat("__").concat("" + m);
+							cyn = Cytoscape.getCyNode(node1);
+						}
+						if (doRemoveEdges) {
+							for (int e : edgesToHold) {
+								edgesToRemove.add(e);
+							}
+						}
+
+					}
+
+				}
+				for (int e : edgesToRemove) {
+					Cytoscape.getCurrentNetwork().removeEdge(e, false);
+				}
 
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 			}

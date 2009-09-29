@@ -49,7 +49,7 @@ public class RegionManager {
 		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
 		while (it.hasNext()) {
 			Node node = (Node) it.next();
-			if (node.getIdentifier().contains("__")) {
+			if (node.getIdentifier().contains("__") && !node.getIdentifier().contains("__1")) {
 				Cytoscape.getCurrentNetwork().removeNode(
 						node.getRootGraphIndex(), true);
 			}
