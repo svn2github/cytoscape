@@ -24,6 +24,7 @@
 	-->
 
 	<dependencies>
+	<!--
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.eventadmin</artifactId>
@@ -39,6 +40,7 @@
 			<artifactId>pax-logging-service</artifactId>
 			<version>1.3.0</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -80,6 +82,7 @@
 			<artifactId>spring-osgi-io</artifactId>
 			<version>${spring.osgi.version}</version>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.configadmin</artifactId>
@@ -90,6 +93,7 @@
 			<artifactId>pax-confman-propsloader</artifactId>
 			<version>0.2.2</version>
 		</dependency>
+-->
 		<dependency>
 			<groupId>edu.emory.mathcs.backport</groupId>
 			<artifactId>com.springsource.edu.emory.mathcs.backport
