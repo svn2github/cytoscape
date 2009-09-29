@@ -277,11 +277,12 @@ public class CellAlgorithm extends AbstractLayout {
 							// collect unique list to rename later
 							if (!firstCopies.contains(oldNode))
 								firstCopies.add(oldNode);
-							Integer next = nvSeen.get(nv) + 1; 
+							Integer next = nvSeen.get(nv) + 1;
 							String cleanOldId = oldId;
-							if (oldId.contains("__1")){
-							//clean up name from prior runs of GO Layout
-							cleanOldId = oldId.substring(0, oldId.lastIndexOf("__1"));
+							if (oldId.contains("__1")) {
+								// clean up name from prior runs of GO Layout
+								cleanOldId = oldId.substring(0, oldId
+										.lastIndexOf("__1"));
 							}
 							String newId = cleanOldId.concat("__").concat(
 									next.toString());
@@ -752,9 +753,10 @@ public class CellAlgorithm extends AbstractLayout {
 					}
 
 					String cleanOldId = n.getIdentifier();
-					if (oldId.contains("__1")){
-					//clean up name from prior runs of GO Layout
-					cleanOldId = n.getIdentifier().substring(0, oldId.lastIndexOf("__1"));
+					if (oldId.contains("__1")) {
+						// clean up name from prior runs of GO Layout
+						cleanOldId = n.getIdentifier().substring(0,
+								oldId.lastIndexOf("__1"));
 					}
 					n.setIdentifier(cleanOldId.concat("__1"));
 					String newId = n.getIdentifier();
@@ -811,8 +813,9 @@ public class CellAlgorithm extends AbstractLayout {
 							REGION_ATT);
 
 					// annotate edges to and from unassigned nodes
-					String edgeId = Cytoscape.getCurrentNetwork().getEdge(
-							edgeInt).getIdentifier();
+
+					String edgeId = Cytoscape.getRootGraph().getEdge(edgeInt)
+							.getIdentifier();
 					if (nodeRegion1 == "unassigned"
 							|| nodeRegion2 == "unassigned") {
 						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
