@@ -49,6 +49,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 
 import java.util.*;
@@ -102,7 +103,17 @@ public class PluginTracker {
 		if (installFile.exists() && installFile.length() > 0) {
 			SAXBuilder Builder = new SAXBuilder(false);
 			try {
-				trackerDoc = Builder.build(installFile);
+				FileInputStream is = null;
+
+				try {
+					is = new FileInputStream(installFile);
+					trackerDoc = Builder.build(is, installFile.toURI().toURL().toString());
+				}
+				finally {
+					if (is != null) {
+						is.close();
+					}
+				}
 				removeMissingIdEntries();
 				write();
 			} catch (JDOMException jde) {

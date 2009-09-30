@@ -45,10 +45,11 @@ public class PluginFileReader {
 		InputStream is = null;
 
         try {
-			is = URLUtil.getInputStream(new URL(downloadUrl));
+			URL dlUrl = new URL(downloadUrl);
+			is = URLUtil.getInputStream(dlUrl);
             // would be nice to validate later
             SAXBuilder Builder = new SAXBuilder(false);
-            document = Builder.build(is);
+            document = Builder.build(is, dlUrl.toString());
         }
         finally {
             if (is != null) {

@@ -161,7 +161,7 @@ public class MacAppConfig {
             try {
 				reader = new FileReader(configFile);
                 SAXBuilder saxBuilder = new SAXBuilder();
-                doc = saxBuilder.build(reader);
+                doc = saxBuilder.build(reader, new File(configFile).toURI().toURL().toString());
             }
             finally {
                 if (reader != null) {
