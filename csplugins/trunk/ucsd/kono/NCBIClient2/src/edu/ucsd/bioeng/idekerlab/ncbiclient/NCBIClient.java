@@ -744,6 +744,12 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 									// Use original database ID
 									continue;
 								}
+								
+								//Check source Type
+								System.out.println("DB Tag for nodeID: " + nodeid
+						                   + ", " + itr.getGeneCommentaryComment().getGeneCommentary().get(1)
+								            .getGeneCommentarySource().getOtherSource().get(0)
+								            .getOtherSourceSrc().getDbtag().getDbtagDb());
 
 								n1 = Cytoscape.getCyNode(nodeid, true);
 								nodeList.add(n1);
@@ -867,6 +873,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 			String query = builder.toString();
 			query = query.substring(0, query.length() - 1);
+			System.out.println("Current Query String ====> " + query);
 			parameters.setId(query);
 
 			EFetchResult res = null;
@@ -884,7 +891,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 					try {
 						retry++;
 						System.out.println("Data fetching failed for: "
-						                   + query.substring(0, query.length() - 1));
+						                   + query.substring(0, query.length()));
 						TimeUnit.SECONDS.sleep(1);
 					} catch (InterruptedException e2) {
 						// TODO Auto-generated catch block

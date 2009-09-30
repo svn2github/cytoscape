@@ -25,8 +25,9 @@ public class Test2 {
 			EUtilsServiceSoap ss = service.getEUtilsServiceSoap();
 			ESearchRequest req = new ESearchRequest();
 			req.setDb("gene");
-			req.setTerm("tp53");
+			req.setTerm("2276311");
 			req.setRetMax("15");
+	
 
 			ESearchResult res = ss.runESearch(req);
 
@@ -40,7 +41,7 @@ public class Test2 {
 			System.out.println();
 			
 			EFetchRequest req2 = new EFetchRequest();
-			req2.setId("7157,24842");
+			req2.setId("6599,6598,6597,3621,983,25898,8837,55339,4860");
 			
 			EFetchGeneService geneService = new EFetchGeneService();
 			gov.nih.ncbi.soap.eutils.gene.EUtilsServiceSoap service2 = geneService.getEUtilsServiceSoap();
@@ -50,6 +51,7 @@ public class Test2 {
 			
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.toString());
 		}
 	}
