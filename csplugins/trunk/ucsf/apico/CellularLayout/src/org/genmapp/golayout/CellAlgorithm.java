@@ -4,7 +4,6 @@ import giny.model.Node;
 import giny.model.RootGraph;
 import giny.view.NodeView;
 
-import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,16 +11,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
+import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeModifiedNetworkManager;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
 
 /**
  * CellularLayoutAlgorithm will layout nodes according to a template of cellular
@@ -34,7 +32,7 @@ public class CellAlgorithm extends AbstractLayout {
 	protected static final String LAYOUT_NAME = "cell-layout";
 
 	// store region assignment as node attribute
-	private static final String REGION_ATT = "_cellularLayoutRegion";
+	protected static final String REGION_ATT = "_cellularLayoutRegion";
 	// store whether a node is copied
 	protected static final String NODE_COPIED = "_isInMultipleRegions";
 	// store whether a node is copied
@@ -146,9 +144,11 @@ public class CellAlgorithm extends AbstractLayout {
 				}
 			}
 			taskMonitor.setStatus("Checking attribute mappings");
+			taskMonitor.setPercentCompleted(1);
 			if (!valid) {
 				RegionManager.clearAll();
-				JOptionPane.showMessageDialog((java.awt.Window) taskMonitor,
+				//(java.awt.Window) taskMonitor
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 						"Selected attribute does not match floorplan");
 			} else {
 
@@ -164,7 +164,7 @@ public class CellAlgorithm extends AbstractLayout {
 				}
 
 				taskMonitor.setStatus("Sizing up floorplan regions");
-				taskMonitor.setPercentCompleted(1);
+				//taskMonitor.setPercentCompleted(1);
 
 				List<NodeView> nvRegList = new ArrayList<NodeView>();
 
@@ -790,7 +790,7 @@ public class CellAlgorithm extends AbstractLayout {
 						}
 					}
 				}
-
+				
 				// prune and annotate edges
 				List<Integer> edgesToRemove = new ArrayList<Integer>();
 				CyAttributes nAttributes = Cytoscape.getNodeAttributes();
@@ -932,6 +932,9 @@ public class CellAlgorithm extends AbstractLayout {
 				}
 
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+				
+				// update quick find indexes
+				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, "GO Layout", Cytoscape.getCurrentNetwork());
 			}
 		}
 	}
