@@ -8,7 +8,7 @@ pluginName=SessionForWeb
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Saves the current Cytoscape session as a web page with images thumbnails, and legends of each network, or as zip file compatible with the CellCircuit website. For zip file for CellCircuits website, publication information can also be included in the Zip file.
+pluginDescription=Saves the current Cytoscape session as a web page with images thumbnails, and legends of each network, or as zip file compatible with the CellCircuit website. For zip file for CellCircuits website, publication information can also be included in the Zip file. Please look at this page (http://www.cellcircuits.org/search/zipFormatDefinition.html) for the directory structure of ZIP file.  
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=3.1
