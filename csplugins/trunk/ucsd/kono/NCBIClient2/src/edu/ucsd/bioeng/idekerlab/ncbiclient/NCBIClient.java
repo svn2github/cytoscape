@@ -50,7 +50,6 @@ import gov.nih.ncbi.soap.eutils.gene.GeneRef;
 import gov.nih.ncbi.soap.eutils.gene.OtherSource;
 import gov.nih.ncbi.soap.eutils.gene.Pub;
 import gov.nih.ncbi.soap.eutils.gene.Entrezgene.EntrezgeneType;
-import gov.nih.ncbi.soap.eutils.gene.GeneCommentary.GeneCommentaryType;
 import gov.nih.ncbi.soap.eutils.gene.GeneRef.GeneRefDb;
 import gov.nih.ncbi.soap.eutils.gene.GeneRef.GeneRefSyn;
 import gov.nih.nlm.ncbi.soap.eutils.EUtilsService;
@@ -61,7 +60,6 @@ import gov.nih.nlm.ncbi.soap.eutils.esearch.IdListType;
 
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,6 +121,9 @@ import cytoscape.visual.mappings.PassThroughMapping;
  */
 public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, JPanel>
     implements NetworkImportWebServiceClient {
+	
+	private static final long serialVersionUID = -8920082175139743743L;
+
 	private static final Icon ABOUT_ICON = new ImageIcon(NCBIClient.class.getResource("/images/entrez32.png"));
 
 	/**
@@ -647,6 +648,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 				builder.append(id + ",");
 
 			String query = builder.toString();
+			System.out.println("Current Query ====> " + query);
 			parameters.setId(query.substring(0, query.length() - 1));
 		
 
@@ -664,7 +666,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 					try {
 						System.out.println("Could not fetch data from NCBI: "
-						                   + query.substring(0, query.length() - 1));
+						                   + query.substring(0, query.length()));
 						TimeUnit.SECONDS.sleep(1);
 					} catch (InterruptedException e2) {
 						System.out.println("Interrupted: " + query.substring(0, query.length() - 1));
