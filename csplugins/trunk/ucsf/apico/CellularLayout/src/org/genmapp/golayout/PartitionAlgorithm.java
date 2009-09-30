@@ -1,6 +1,7 @@
 package org.genmapp.golayout;
 
-import java.awt.GridLayout;
+import giny.model.Edge;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -13,16 +14,15 @@ import java.util.Set;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.genmapp.golayout.GOLayout.GOLayoutAlgorithm;
-
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.Semantics;
 import cytoscape.ding.CyGraphAllLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.groups.CyGroup;
@@ -31,7 +31,6 @@ import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
 import cytoscape.view.CyDesktopManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -174,39 +173,92 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		return uniqueValueList;
 	}
 
-	public void buildMetaNodeView(CyNetwork net) {
-		// create an 'uber' view of the network as group nodes
-		CyNetwork group_network = Cytoscape.createNetwork(net.nodesList(), net
-				.edgesList(), "Overview", net);
-		CyNetworkView group_view = Cytoscape.getNetworkView(group_network
+	public void buildSubnetworkOverview(CyNetwork net) {
+
+		CyNetwork overview_network = Cytoscape.createNetwork(new int[0],
+				new int[0], "Overview", net);
+		CyNetworkView overview_view = Cytoscape.getNetworkView(overview_network
 				.getIdentifier());
 
-		for (Object val : attributeValueNodeMap.keySet()) {
-			List<CyNode> memberNodes = attributeValueNodeMap.get(val);
-			CyGroup group = CyGroupManager.createGroup(val.toString(),
-					memberNodes, null);
-			groups.add(group);
+		// set up matrix
+//		HashMap<Object, Integer> subnetHash = new HashMap<Object, Integer>();
+//		int count = 0;
+//		for (Object subnet : nodeAttributeValues) {
+//			subnetHash.put(subnet, count);
+//			count++;
+//
+//			// create subnetwork nodes
+//			// overview_network.addNode(Cytoscape.getCyNode(subnet.toString(),
+//			// true));
+//		}
+////		int[][] subnetMatrix = new int[nodeAttributeValues.size()][nodeAttributeValues
+//				.size()];
+
+		CyAttributes nAttributes = Cytoscape.getNodeAttributes();
+		CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
+
+		int[] edges = net.getEdgeIndicesArray();
+
+		for (int edgeInt : edges) {
+			int nodeInt1 = Cytoscape.getRootGraph().getEdgeSourceIndex(edgeInt);
+			int nodeInt2 = Cytoscape.getRootGraph().getEdgeTargetIndex(edgeInt);
+			String node1 = net.getNode(nodeInt1)
+					.getIdentifier();
+			String node2 = net.getNode(nodeInt2)
+					.getIdentifier();
+			if (nAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
+				List<Object> nodeRegionList1 = nAttributes.getListAttribute(
+						node1, attributeName);
+				List<Object> nodeRegionList2 = nAttributes.getListAttribute(
+						node2, attributeName);
+
+				for (Object nr1 : nodeRegionList1) {
+					for (Object nr2 : nodeRegionList2) {
+//						subnetMatrix[subnetHash.get(nr1)][subnetHash.get(nr2)] = subnetMatrix[subnetHash
+//								.get(nr1)][subnetHash.get(nr2)] + 1;
+
+						// create nodes and edges
+						CyNode cn1 = Cytoscape.getCyNode(nr1.toString(), true);
+						CyNode cn2 = Cytoscape.getCyNode(nr2.toString(), true);
+						CyEdge ce = Cytoscape.getCyEdge(cn1, cn2,
+								Semantics.INTERACTION, "subnetworkInteraction", true);
+						overview_network.addNode(cn1);
+						overview_network.addNode(cn2);
+
+//						int newEdge = rootGraph.createEdge(source,
+//								target);
+
+						overview_network.addEdge(ce);
+						if (null != eAttributes.getIntegerAttribute(ce.getIdentifier(), "_nodesInSubnetwork")){
+							
+					
+						eAttributes.setAttribute(ce.getIdentifier(),
+								"_nodesInSubnetwork", eAttributes
+										.getIntegerAttribute(
+												ce.getIdentifier(),
+												"_nodesInSubnetwork") + 1);
+						} else { // first pass; thus create attribute
+							eAttributes.setAttribute(ce.getIdentifier(),
+									"_nodesInSubnetwork", 1);
+						}
+					}
+				}
+
+			} else { // TODO: fix assumption of String!
+
+				String nodeRegion1 = nAttributes.getStringAttribute(node1,
+						attributeName);
+				String nodeRegion2 = nAttributes.getStringAttribute(node2,
+						attributeName);
+			}
 		}
-		// group unconnected nodes
-		CyGroup group = CyGroupManager.createGroup("unConnected",
-				unconnectedNodes, null);
-		groups.add(group);
-
-		// now loop through all groups and set state to 'collapsed'
-		CyAttributes attribs = Cytoscape.getNodeAttributes();
-		for (CyGroup g : groups) {
-			g.setState(2);
-			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true);
-			// set this false later for efficiency
-
-		}
-
+		
 		Cytoscape.getVisualMappingManager().setVisualStyle(
 				PartitionNetworkVisualStyleFactory.attributeName);
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("circular");
-		layout.doLayout(group_view);
-
+		layout.doLayout(overview_view);
 	}
+
 
 	public void populateNodes(String attributeName) {
 
@@ -469,8 +521,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 					taskMonitor.setStatus("building subnetwork for " + val);
 					buildSubNetwork(net, val.toString());
 				}
-
-				buildMetaNodeView(net);
+				buildSubnetworkOverview(net);
 				tileNetworkViews(); // tile and fit content in each view
 
 			}
