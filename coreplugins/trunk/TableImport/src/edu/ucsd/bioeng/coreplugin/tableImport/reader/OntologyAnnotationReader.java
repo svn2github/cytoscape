@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -94,34 +94,50 @@ public class OntologyAnnotationReader implements TextTableReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void readTable() throws IOException {
-		InputStream is = URLUtil.getInputStream(source);
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
-		String line;
-		int lineCount = 0;
+		InputStream is = null;
 
-		/*
-		 * Read & extract one line at a time. The line can be Tab delimited,
-		 */
-		while ((line = bufRd.readLine()) != null) {
-			/*
-			 * Ignore Empty & Commnet lines.
-			 */
-			if ((commentChar != null) && line.startsWith(commentChar)) {
-				// Do nothing
-			} else if ((lineCount > startLineNumber) && (line.trim().length() > 0)) {
-				String[] parts = line.split(mapping.getDelimiterRegEx());
-				try {
-					parser.parseEntry(parts);
-				} catch (Exception ex) {
-					logger.warn("Couldn't parse line: " + lineCount, ex);
+		try {
+			BufferedReader bufRd = null;
+
+			is = URLUtil.getInputStream(source);
+			try {
+				bufRd = new BufferedReader(new InputStreamReader(is));
+
+				String line;
+				int lineCount = 0;
+
+				/*
+				 * Read & extract one line at a time. The line can be Tab delimited,
+				 */
+				while ((line = bufRd.readLine()) != null) {
+					/*
+					 * Ignore Empty & Commnet lines.
+					 */
+					if ((commentChar != null) && line.startsWith(commentChar)) {
+						// Do nothing
+					} else if ((lineCount > startLineNumber) && (line.trim().length() > 0)) {
+						String[] parts = line.split(mapping.getDelimiterRegEx());
+						try {
+							parser.parseEntry(parts);
+						} catch (Exception ex) {
+							logger.warn("Couldn't parse line: " + lineCount, ex);
+						}
+					}
+
+					lineCount++;
 				}
 			}
-
-			lineCount++;
+			finally {
+				if (bufRd != null) {
+					bufRd.close();
+				}
+			}
 		}
-
-		is.close();
-		bufRd.close();
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 	}
 
 	/**

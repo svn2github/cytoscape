@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -181,11 +181,18 @@ public class GeneAssociationReader implements TextTableReader {
 	public GeneAssociationReader(final String ontologyName, final InputStream is,
 	                             final String keyAttributeName, final boolean importAll, final int mappingKey)
 	    throws IOException {
+		this(ontologyName, is, keyAttributeName, importAll, mappingKey, true);
+	}
+
+	public GeneAssociationReader(final String ontologyName, final InputStream is,
+	                             final String keyAttributeName, final boolean importAll,
+								 final int mappingKey, final boolean caseSensitive)
+		throws IOException {
 		this.importAll = importAll;
 		this.is = is;
 		this.keyAttributeName = keyAttributeName;
 		key = mappingKey;
-		
+
 		// System.out.println("Primary Key column is " + key);
 
 		// GA file is only for nodes!
@@ -205,18 +212,25 @@ public class GeneAssociationReader implements TextTableReader {
 			throw new IOException("Given ontology is not GO.");
 		}
 
-		final BufferedReader taxonFileReader = new BufferedReader(new InputStreamReader(getClass()
-		                                                                                    .getResource(TAXON_RESOURCE_FILE)
-		                                                                                    .openStream()));
-		final BioDataServerUtil bdsu = new BioDataServerUtil();
-		this.speciesMap = bdsu.getTaxonMap(taxonFileReader);
+		URL taxUrl = getClass().getResource(TAXON_RESOURCE_FILE);
 
-		taxonFileReader.close();
+		BufferedReader taxonFileReader = null;
+
+		try {
+			taxonFileReader = new BufferedReader(new InputStreamReader(taxUrl.openStream()));
+			final BioDataServerUtil bdsu = new BioDataServerUtil();
+			this.speciesMap = bdsu.getTaxonMap(taxonFileReader);
+		}
+		finally {
+			if (taxonFileReader != null) {
+				taxonFileReader.close();
+			}
+		}
 
 		if ((this.keyAttributeName != null) && !this.keyAttributeName.equals(ID)) {
 			buildMap();
+			}
 		}
-	}
 
 	private void buildMap() {
 		attr2id = new HashMap<String, List<String>>();
@@ -252,29 +266,40 @@ public class GeneAssociationReader implements TextTableReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void readTable() throws IOException {
-		BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
-		String line = null;
-		String[] parts;
+		try {
+			try {
+				BufferedReader bufRd = null;
+				
+				try {
+					String line = null;
+					String[] parts;
 
-		int global = 0;
+					int global = 0;
 
-		while ((line = bufRd.readLine()) != null) {
-			global++;
-			parts = line.split(GA_DELIMITER);
+					bufRd = new BufferedReader(new InputStreamReader(is));
+					while ((line = bufRd.readLine()) != null) {
+						global++;
+						parts = line.split(GA_DELIMITER);
 
-			if (parts.length == EXPECTED_COL_COUNT) {
-				parseGA(parts);
+						if (parts.length == EXPECTED_COL_COUNT) {
+							parseGA(parts);
+						}
+					}
+				}
+				finally {
+					if (bufRd != null) {
+						bufRd.close();
+					}
+				}
+			}
+			finally {
+				if (is != null) {
+					is.close();
+				}
 			}
 		}
-
-		if (is != null) {
-			is.close();
+		finally {
 			is = null;
-		}
-
-		if (bufRd != null) {
-			bufRd.close();
-			bufRd = null;
 		}
 	}
 

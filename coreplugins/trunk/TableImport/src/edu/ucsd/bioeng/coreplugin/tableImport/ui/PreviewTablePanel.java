@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -82,6 +82,7 @@ import java.beans.PropertyChangeSupport;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.net.URL;
@@ -713,43 +714,60 @@ public class PreviewTablePanel extends JPanel {
 	}
 
 	protected boolean isCytoscapeAttributeFile(final URL sourceURL) throws IOException {
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(URLUtil.getInputStream(sourceURL)));
-		String line = null;
-		int i = 0;
+		InputStream is = null;
 
 		boolean testResult = true;
 
-		// Test first two lines to check the file type.
-		while ((line = bufRd.readLine()) != null) {
-			if (i == 0) {
-				String[] elements = line.split(" +");
+		try {
+			BufferedReader bufRd = null;
 
-				if (elements.length == 1) {
-					// True so far.
-				} else {
-					elements = line.split("[(]");
+			is = URLUtil.getInputStream(sourceURL);
+			try {
+				String line = null;
+				int i = 0;
 
-					if ((elements.length == 2) && elements[1].startsWith("class=")) {
-						// true so far.
-					} else {
-						testResult = false;
+				bufRd = new BufferedReader(new InputStreamReader(is));
+				// Test first two lines to check the file type.
+				while ((line = bufRd.readLine()) != null) {
+					if (i == 0) {
+						String[] elements = line.split(" +");
 
+						if (elements.length == 1) {
+							// True so far.
+						} else {
+							elements = line.split("[(]");
+
+							if ((elements.length == 2) && elements[1].startsWith("class=")) {
+								// true so far.
+							} else {
+								testResult = false;
+
+								break;
+							}
+						}
+					} else if (i == 1) {
+						String[] elements = line.split(" += +");
+
+						if (elements.length != 2)
+							testResult = false;
+					} else if (i >= 2) {
 						break;
 					}
+
+					i++;
 				}
-			} else if (i == 1) {
-				String[] elements = line.split(" += +");
-
-				if (elements.length != 2)
-					testResult = false;
-			} else if (i >= 2) {
-				break;
 			}
-
-			i++;
+			finally {
+				if (bufRd != null) {
+					bufRd.close();
+				}
+			}
 		}
-
-		bufRd.close();
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 
 		return testResult;
 	}
@@ -854,85 +872,103 @@ public class PreviewTablePanel extends JPanel {
 
 	private TableModel parseText(URL sourceURL, int size, TableCellRenderer renderer,
 	                             List<String> delimiters, int startLine) throws IOException {
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(URLUtil.getInputStream(sourceURL)));
+		InputStream is = null;
 		String line;
-
-		/*
-		 * Generate reg. exp. for delimiter.
-		 */
-		final String delimiterRegEx;
 		String attrName = "Attr1";
-		
-		if (delimiters != null) {
-			StringBuffer delimiterBuffer = new StringBuffer();
+		Vector data;
+		int maxColumn;
 
-			if (delimiters.size() != 0) {
-				delimiterBuffer.append("[");
+		try {
+			BufferedReader bufRd = null;
 
-				for (String delimiter : delimiters) {
-					delimiterBuffer.append(delimiter);
-				}
+			is = URLUtil.getInputStream(sourceURL);
+			try {
+				bufRd = new BufferedReader(new InputStreamReader(is));
+				/*
+				 * Generate reg. exp. for delimiter.
+				 */
+				final String delimiterRegEx;
 
-				delimiterBuffer.append("]");
-			}
+				if (delimiters != null) {
+					StringBuffer delimiterBuffer = new StringBuffer();
 
-			delimiterRegEx = delimiterBuffer.toString();
-		} else {
-			// treat as cytoscape attribute files.
-			delimiterRegEx = " += +";
-			// Extract first column for attr name.
-			line = bufRd.readLine();
-			String[] line1 = line.split(" +");
-			attrName= line1[0];
-		}
+					if (delimiters.size() != 0) {
+						delimiterBuffer.append("[");
 
-		/*
-		 * Read & extract one line at a time. The line can be Tab delimited,
-		 */
-		boolean importAll = false;
+						for (String delimiter : delimiters) {
+							delimiterBuffer.append(delimiter);
+						}
 
-		if (size == -1) {
-			importAll = true;
-		}
+						delimiterBuffer.append("]");
+					}
 
-		int counter = 0;
-		int maxColumn = 0;
-		String[] parts;
-		Vector data = new Vector();
-
-		while ((line = bufRd.readLine()) != null) {
-			if (((commentChar != null) && line.startsWith(commentChar))
-			    || (line.trim().length() == 0) || (counter < startLine)) {
-				// ignore
-			} else {
-				Vector row = new Vector();
-
-				if (delimiterRegEx.length() == 0) {
-					parts = new String[1];
-					parts[0] = line;
+					delimiterRegEx = delimiterBuffer.toString();
 				} else {
-					parts = line.split(delimiterRegEx);
+					// treat as cytoscape attribute files.
+					delimiterRegEx = " += +";
+					// Extract first column for attr name.
+					line = bufRd.readLine();
+					String[] line1 = line.split(" +");
+					attrName= line1[0];
 				}
 
-				for (String entry : parts) {
-					row.add(entry);
+				/*
+				 * Read & extract one line at a time. The line can be Tab delimited,
+				 */
+				boolean importAll = false;
+
+				if (size == -1) {
+					importAll = true;
 				}
 
-				if (parts.length > maxColumn) {
-					maxColumn = parts.length;
-				}
+				int counter = 0;
+				String[] parts;
+				maxColumn = 0;
+				data = new Vector();
 
-				data.add(row);
+				while ((line = bufRd.readLine()) != null) {
+					if (((commentChar != null) && line.startsWith(commentChar))
+						|| (line.trim().length() == 0) || (counter < startLine)) {
+						// ignore
+					} else {
+						Vector row = new Vector();
+
+						if (delimiterRegEx.length() == 0) {
+							parts = new String[1];
+							parts[0] = line;
+						} else {
+							parts = line.split(delimiterRegEx);
+						}
+
+						for (String entry : parts) {
+							row.add(entry);
+						}
+
+						if (parts.length > maxColumn) {
+							maxColumn = parts.length;
+						}
+
+						data.add(row);
+					}
+
+					counter++;
+
+					if ((importAll == false) && (counter >= size)) {
+						break;
+					}
+				}
 			}
-
-			counter++;
-
-			if ((importAll == false) && (counter >= size)) {
-				break;
+			finally {
+				if (bufRd != null) {
+					bufRd.close();
+				}
 			}
 		}
-
-		bufRd.close();
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 
 		if(delimiters == null) {
 			// Cytoscape attr file.

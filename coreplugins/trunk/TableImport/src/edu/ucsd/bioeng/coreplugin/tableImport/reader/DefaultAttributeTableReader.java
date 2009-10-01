@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -184,44 +184,59 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 * Read table from the data source.
 	 */
 	public void readTable() throws IOException {
-		final InputStream is = URLUtil.getInputStream(source);
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
-		String line;
-		int lineCount = 0;
+		InputStream is = null;
 
-		/*
-		 * Read & extract one line at a time. The line can be Tab delimited,
-		 */
-		String[] parts = null;
-		
-		final String delimiter = mapping.getDelimiterRegEx();
-		while ((line = bufRd.readLine()) != null) {
-			/*
-			 * Ignore Empty & Commnet lines.
-			 */
-			if ((commentChar != null) && line.startsWith(commentChar)) {
-				// Do nothing
-			} else if ((lineCount >= startLineNumber) && (line.trim().length() > 0)) {
-				parts = line.split(delimiter);
-				// If key dos not exists, ignore the line.
-				if(parts.length>=mapping.getKeyIndex()+1) {
-					try {
-					if(importAll) {
-						parser.parseAll(parts);
-					} else
-						parser.parseEntry(parts);
-					} catch (Exception ex) {
-						logger.warn("Couldn't parse row: "+ lineCount);
+		try {
+			BufferedReader bufRd = null;
+
+			is = URLUtil.getInputStream(source);
+			try {
+				String line;
+				int lineCount = 0;
+				
+				bufRd = new BufferedReader(new InputStreamReader(is));
+				/*
+				 * Read & extract one line at a time. The line can be Tab delimited,
+				 */
+				String[] parts = null;
+
+				final String delimiter = mapping.getDelimiterRegEx();
+				while ((line = bufRd.readLine()) != null) {
+					/*
+					 * Ignore Empty & Commnet lines.
+					 */
+					if ((commentChar != null) && line.startsWith(commentChar)) {
+						// Do nothing
+					} else if ((lineCount >= startLineNumber) && (line.trim().length() > 0)) {
+						parts = line.split(delimiter);
+						// If key dos not exists, ignore the line.
+						if(parts.length>=mapping.getKeyIndex()+1) {
+							try {
+							if(importAll) {
+								parser.parseAll(parts);
+							} else
+								parser.parseEntry(parts);
+							} catch (Exception ex) {
+								logger.warn("Couldn't parse row: "+ lineCount);
+							}
+							globalCounter++;
+						}
 					}
-					globalCounter++;
+
+					lineCount++;
 				}
 			}
-
-			lineCount++;
+			finally {
+				if (bufRd != null) {
+					bufRd.close();
+				}
+			}
 		}
-
-		is.close();
-		bufRd.close();
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 	}
 
 	/**

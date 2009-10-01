@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -118,37 +118,51 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void readTable() throws IOException {
-		InputStream is = URLUtil.getInputStream(sourceURL);
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
+		InputStream is = null;
 		String line;
 
-		/*
-		 * Read & extract one line at a time. The line can be Tab delimited,
-		 */
-		int lineCount = 0;
-		int skipped = 0;
+		try {
+			BufferedReader bufRd = null;
 
-		while ((line = bufRd.readLine()) != null) {
-			/*
-			 * Ignore Empty & Commnet lines.
-			 */
-			if ((commentChar != null) && (commentChar.trim().length() != 0)
-			    && line.startsWith(commentChar)) {
-				skipped++;
-			} else if ((line.trim().length() > 0) && ((startLineNumber + skipped) <= lineCount)) {
-				String[] parts = line.split(nmp.getDelimiterRegEx());
-				try {
-					parser.parseEntry(parts);
-				} catch (Exception ex) {
-					logger.warn("Couldn't parse row: " + lineCount, ex);
+			is = URLUtil.getInputStream(sourceURL);
+			try {
+				bufRd = new BufferedReader(new InputStreamReader(is));
+				/*
+				 * Read & extract one line at a time. The line can be Tab delimited,
+				 */
+				int lineCount = 0;
+				int skipped = 0;
+
+				while ((line = bufRd.readLine()) != null) {
+					/*
+					 * Ignore Empty & Commnet lines.
+					 */
+					if ((commentChar != null) && (commentChar.trim().length() != 0)
+						&& line.startsWith(commentChar)) {
+						skipped++;
+					} else if ((line.trim().length() > 0) && ((startLineNumber + skipped) <= lineCount)) {
+						String[] parts = line.split(nmp.getDelimiterRegEx());
+						try {
+							parser.parseEntry(parts);
+						} catch (Exception ex) {
+							logger.warn("Couldn't parse row: " + lineCount, ex);
+						}
+					}
+
+					lineCount++;
 				}
 			}
-
-			lineCount++;
+			finally {
+				if (bufRd != null) {
+					bufRd.close();
+				}
+			}
 		}
-
-		is.close();
-		bufRd.close();
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 	}
 
 	/**
