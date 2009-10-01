@@ -1,0 +1,60 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.equinox.p2.ui
+Bundle-SymbolicName: org.eclipse.equinox.p2.ui;singleton:=true
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-ClassPath: .
+Bundle-Activator: org.eclipse.equinox.internal.p2.ui.ProvUIActivator
+Bundle-Localization: plugin
+Import-Package: com.ibm.icu.text,org.eclipse.equinox.internal.p2.core.
+ helpers,org.eclipse.equinox.internal.p2.metadata,org.eclipse.equinox.
+ internal.p2.metadata.repository,org.eclipse.equinox.internal.p2.rollb
+ ack,org.eclipse.equinox.internal.provisional.configurator,org.eclipse
+ .equinox.internal.provisional.p2.artifact.repository,org.eclipse.equi
+ nox.internal.provisional.p2.artifact.repository.processing,org.eclips
+ e.equinox.internal.provisional.p2.core,org.eclipse.equinox.internal.p
+ rovisional.p2.core.eventbus,org.eclipse.equinox.internal.provisional.
+ p2.director,org.eclipse.equinox.internal.provisional.p2.engine,org.ec
+ lipse.equinox.internal.provisional.p2.engine.phases,org.eclipse.equin
+ ox.internal.provisional.p2.metadata,org.eclipse.equinox.internal.prov
+ isional.p2.metadata.query,org.eclipse.equinox.internal.provisional.p2
+ .metadata.repository,org.eclipse.equinox.internal.provisional.p2.quer
+ y,org.eclipse.equinox.internal.provisional.p2.repository,org.eclipse.
+ equinox.internal.provisional.spi.p2.repository,org.eclipse.osgi.servi
+ ce.resolver;version="1.1.0",org.eclipse.osgi.util;version="1.1.0",org
+ .osgi.framework;version="1.3.0",org.osgi.service.packageadmin;version
+ ="1.2.0"
+Require-Bundle: org.eclipse.equinox.simpleconfigurator,org.eclipse.cor
+ e.runtime;bundle-version="3.5.0",wizard
+Eclipse-LazyStart: true
+Export-Package: org.eclipse.equinox.internal.p2.ui;x-internal:=true,or
+ g.eclipse.equinox.internal.p2.ui.dialogs;x-internal:=true,org.eclipse
+ .equinox.internal.p2.ui.model;x-internal:=true,org.eclipse.equinox.in
+ ternal.p2.ui.query;x-internal:=true,org.eclipse.equinox.internal.p2.u
+ i.viewers;x-internal:=true,org.eclipse.equinox.internal.provisional.p
+ 2.ui.actions;x-internal:=false,org.eclipse.equinox.internal.provision
+ al.p2.ui; x-friends:="org.eclipse.equinox.p2.ui.admin,  org.eclipse.e
+ quinox.p2.ui.admin.rcp,  org.eclipse.equinox.p2.ui.sdk,  org.eclipse.
+ equinox.p2.ui.sdk.scheduler,  org.eclipse.pde.ui",org.eclipse.equinox
+ .internal.provisional.p2.ui.actions; x-friends:="org.eclipse.equinox.
+ p2.ui.admin,  org.eclipse.equinox.p2.ui.admin.rcp,  org.eclipse.equin
+ ox.p2.ui.sdk,  org.eclipse.equinox.p2.ui.sdk.scheduler,  org.eclipse.
+ pde.ui",org.eclipse.equinox.internal.provisional.p2.ui.dialogs; x-fri
+ ends:="org.eclipse.equinox.p2.ui.admin,  org.eclipse.equinox.p2.ui.ad
+ min.rcp,  org.eclipse.equinox.p2.ui.sdk,  org.eclipse.equinox.p2.ui.s
+ dk.scheduler,  org.eclipse.pde.ui",org.eclipse.equinox.internal.provi
+ sional.p2.ui.model; x-friends:="org.eclipse.equinox.p2.ui.admin,   or
+ g.eclipse.equinox.p2.ui.admin.rcp,   org.eclipse.equinox.p2.ui.sdk,  
+  org.eclipse.equinox.p2.ui.sdk.scheduler",org.eclipse.equinox.interna
+ l.provisional.p2.ui.operations; x-friends:="org.eclipse.equinox.p2.ui
+ .admin,  org.eclipse.equinox.p2.ui.admin.rcp,  org.eclipse.equinox.p2
+ .ui.sdk,  org.eclipse.equinox.p2.ui.sdk.scheduler,  org.eclipse.pde.u
+ i",org.eclipse.equinox.internal.provisional.p2.ui.policy; x-friends:=
+ "org.eclipse.equinox.p2.ui.admin,  org.eclipse.equinox.p2.ui.admin.rc
+ p,  org.eclipse.equinox.p2.ui.sdk,  org.eclipse.equinox.p2.ui.sdk.sch
+ eduler,  org.eclipse.pde.ui",org.eclipse.equinox.internal.provisional
+ .p2.ui.viewers;x-friends:="org.eclipse.equinox.p2.ui.admin,org.eclips
+ e.equinox.p2.ui.admin.rcp,org.eclipse.equinox.p2.ui.sdk"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+
