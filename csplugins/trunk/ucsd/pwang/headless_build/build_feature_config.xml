@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cytoscape feature build configuration">
+
+	<!-- Define the location of Eclipse -->
+	<property name="base" location="c:/eclipse35" />
+	<property name="baseLocation" location="${base}/eclipse" />
+	
+	<!-- Location of feature coniguration files -->
+	<property name="builder" location="." />
+	<property name="buildDirectory" location="${builder}/build_feature" />
+
+	<!-- Define the location of cytoscape bundles and rootfiles -->	
+	<property name="cy3bundleDirectory" location="C:/work_cy3/eclipse35_ws/cy3bundles/plugins" />
+	<property name="rootfilesDirectory" location="./rootfiles" />
+
+	<!-- Identifier for the feature being built-->
+	<property name="topLevelElementId" value="cytoscape_product_feature" /> 
+	<property name="archivePrefix" value="cytoscape" />
+	<property name="buildId" value="featureBuild" />
+
+	<pathconvert property="equinoxLauncher">
+		<path>
+			<fileset dir="${baseLocation}/plugins" includes="**/*.jar" />
+		</path>
+		<regexpmapper from="(org\.eclipse\.equinox\.launcher)(_)(.*)\.jar" to="\0" />
+	</pathconvert>
+
+	<pathconvert property="pdeBuild">
+	<path>
+	  <fileset dir="${baseLocation}/plugins" includes="**/*build.xml" /> 
+	  </path>
+	  <regexpmapper from="(org\.eclipse\.pde\.build)(_)(.*)" to="\0" /> 
+	</pathconvert>	
+	
+</project>

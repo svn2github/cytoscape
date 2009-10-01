@@ -1,0 +1,43 @@
+<project name="Repository-categorize.build" default="repository-categorize-build">
+
+	<!-- Beginning of configuration section -->
+	
+	<property name="base" location="c:/eclipse35" />
+	<property name="baseLocation" location="${base}/eclipse" />
+	<property name="cy3repo" location="./cy3repository" />
+	<property name="categoryDefinition" value="file:C:/work_cy3/eclipse35_ws/headless_build_product/category.xml" />
+		
+	<!-- End of configuration section -->
+	
+	<pathconvert property="equinoxLauncher">
+		<path>
+			<fileset dir="${baseLocation}/plugins" includes="**/*.jar" />
+		</path>
+		<regexpmapper from="(org\.eclipse\.equinox\.launcher)(_)(.*)\.jar" to="\0" />
+	</pathconvert>
+
+	<!--
+		This target actually executes the PDE Build process by launching the 
+		Eclipse antRunner application.
+	-->
+	<target name="repository-categorize-build">	
+
+		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true" >
+			<arg value="-console" />
+			<arg value="-consolelog" />
+			<arg value="-application" />
+			<arg value="org.eclipse.equinox.p2.publisher.CategoryPublisher" />
+			<arg value="-metadataRepository" />
+			<arg value="${cy3repo}" />
+			<arg value="-categoryDefinition" />
+			<arg value="${categoryDefinition}" />
+			<arg value="-categoryQualifier" />
+			
+			<classpath>
+				<pathelement location="${baseLocation}/plugins/${equinoxLauncher}" />
+			</classpath>
+
+		</java>	
+	</target>
+
+</project>

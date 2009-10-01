@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/cytoscape_product_feature_3.0.0.jar" id="cytoscape_product_feature" version="3.0.0">
+      <category name="cytoscape release"/>
+   </feature>
+   <category-def name="cytoscape release" label="cytoscape release">
+      <description>
+         Cytoscape release 3.0.0
+      </description>
+   </category-def>
+</site>
