@@ -1,93 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-<!-- 
-  <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.cytoscape.pluginmanager.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
- -->
- 
-  <properties>
-    <bundle.symbolicName>org.cytoscape.product</bundle.symbolicName>
-    <bundle.namespace>org.cytoscape.product</bundle.namespace>
-    <spring.maven.artifact.version>2.5.4</spring.maven.artifact.version>
-  </properties>
+	<!--
+		<parent> <relativePath>../poms/compiled/</relativePath>
+		<groupId>org.cytoscape.pluginmanager.build</groupId>
+		<artifactId>compiled-bundle-settings</artifactId>
+		<version>1.0-SNAPSHOT</version> </parent>
+	-->
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.cytoscape.pluginmanager</groupId>
-  <artifactId>org.cytoscape.product</artifactId>
-  <version>1.0-SNAPSHOT</version>
+	<properties>
+		<bundle.symbolicName>org.cytoscape.product</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.product</bundle.namespace>
+		<spring.maven.artifact.version>2.5.4</spring.maven.artifact.version>
+	</properties>
 
-  <name>${bundle.symbolicName}</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.cytoscape.pluginmanager</groupId>
+	<artifactId>org.cytoscape.product</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 
-  <packaging>bundle</packaging>
+	<name>${bundle.symbolicName}</name>
 
-  <dependencies>
-    <!--
-     | uncomment to add all imported (non-local) bundles to your compilation classpath
-    <dependency>
-      <type>pom</type>
-      <groupId>${parent.groupId}</groupId>
-      <artifactId>provision</artifactId>
-      <optional>true</optional>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_core</artifactId>
-      <version>1.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_compendium</artifactId>
-      <version>1.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>${spring.maven.artifact.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${spring.maven.artifact.version}</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${spring.maven.artifact.version}</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-      <version>${spring.maven.artifact.version}</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.eclipse.equinox</groupId>
-      <artifactId>app</artifactId>
-      <version>1.2.0-v20090520-1800</version>
-      <scope>provided</scope>
-    </dependency>
-    
-  </dependencies>
+	<packaging>bundle</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.0.0</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!--
+			| uncomment to add all imported (non-local) bundles to your
+			compilation classpath <dependency> <type>pom</type>
+			<groupId>${parent.groupId}</groupId>
+			<artifactId>provision</artifactId> <optional>true</optional>
+			</dependency>
+		-->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<version>1.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.maven.artifact.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.maven.artifact.version}</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.maven.artifact.version}</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.maven.artifact.version}</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>app</artifactId>
+			<version>1.2.0-v20090520-1800</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
 
 </project>
