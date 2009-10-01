@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <relativePath>../poms/compiled/</relativePath>
+    <groupId>org.cytoscape.pluginmanager.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>org.eclipse.equinox.p2.ui.sdk</bundle.symbolicName>
+    <bundle.namespace>org.eclipse.equinox.p2.ui.sdk</bundle.namespace>
+    <spring.maven.artifact.version>2.5.4</spring.maven.artifact.version>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cytoscape.pluginmanager</groupId>
+  <artifactId>org.eclipse.equinox.p2.ui.sdk</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>${bundle.symbolicName}</name>
+
+  <!-- We use the package type jar, not bundle, because the manifest file is from Equinox -->
+  <packaging>jar</packaging>
+
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <!--
+       | example additional resource entries, useful when building Eclipse RCP applications
+      -->
+      <resource>
+        <directory>.</directory>
+        <includes>
+          <include>plugin.xml</include>
+          <include>plugin.properties</include>
+          <include>icons/**</include>
+        </includes>
+      </resource>
+    </resources>
+    
+    <plugins>
+    	<plugin>
+    	<!--  Adding OSGi metadata to existing projects without changing the packaging type -->
+		  <artifactId>maven-jar-plugin</artifactId>
+		  <configuration>
+		    <archive>  
+		      <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+		    </archive> 
+		  </configuration>
+		</plugin> 
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!--
+     | uncomment to add all imported (non-local) bundles to your compilation classpath
+    <dependency>
+      <type>pom</type>
+      <groupId>${parent.groupId}</groupId>
+      <artifactId>provision</artifactId>
+      <optional>true</optional>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_compendium</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.maven.artifact.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.maven.artifact.version}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.maven.artifact.version}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.maven.artifact.version}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>runtime</artifactId>
+      <version>3.5.0-v20090525</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>osgi</artifactId>
+      <version>3.5.0-v20090520</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>common</artifactId>
+      <version>3.5.0-v20090520-1800</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>jobs</artifactId>
+      <version>3.4.100-v20090429-1800</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>registry</artifactId>
+      <version>3.4.100-v20090520-1800</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>preferences</artifactId>
+      <version>3.2.300-v20090520-1800</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>contenttype</artifactId>
+      <version>3.4.0-v20090429-1800</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>app</artifactId>
+      <version>1.2.0-v20090520-1800</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox.p2.artifact</groupId>
+      <artifactId>repository</artifactId>
+      <version>1.0.100-v20090527-1812</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox.p2</groupId>
+      <artifactId>core</artifactId>
+      <version>1.0.100-v20090520-1905</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox.p2</groupId>
+      <artifactId>director</artifactId>
+      <version>1.0.100-v20090520-1905</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox.p2</groupId>
+      <artifactId>engine</artifactId>
+      <version>1.0.100-v20090525</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox.p2.metadata</groupId>
+      <artifactId>repository</artifactId>
+      <version>1.0.100-v20090525</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox.p2</groupId>
+      <artifactId>metadata</artifactId>
+      <version>1.0.100-v20090525</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.equinox.p2</groupId>
+      <artifactId>repository</artifactId>
+      <version>1.0.0-v20090601-1921</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.ecf</groupId>
+      <artifactId>filetransfer</artifactId>
+      <version>3.0.0-v20090604-1131</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>ecf</artifactId>
+      <version>3.0.0-v20090604-1131</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.sat4j</groupId>
+      <artifactId>core</artifactId>
+      <version>2.1.0-v20090520</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.sat4j</groupId>
+      <artifactId>pb</artifactId>
+      <version>2.1.0-v20090520</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>application</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>session-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.cytoscape.pluginmanager</groupId>
+      <artifactId>org.eclipse.equinox.p2.ui</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    
+  </dependencies>
+
+</project>
