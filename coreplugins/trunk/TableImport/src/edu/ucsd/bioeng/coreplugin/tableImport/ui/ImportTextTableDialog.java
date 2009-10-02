@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -353,8 +353,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				final JTable curTable = aliasTableMap.get(previewPanel.getSelectedSheetName());
 				curTable.setDefaultRenderer(Object.class,
 				                            new AliasTableRenderer(attributeDataTypes,
-				                                                   primaryKeyComboBox
-				                                                                                                                                                                                                                                                                                                                                               .getSelectedIndex()));
+				                                                   primaryKeyComboBox.getSelectedIndex()));
 				curTable.repaint();
 			}
 		} else if (evt.getPropertyName().equals(ATTRIBUTE_NAME_CHANGED)) {
@@ -673,6 +672,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						                                                                        cellHasFocus);
 						String url = ontologyUrlMap.get(value);
 
+						if (isSelected) {
+							ontologyItem.setBackground(list.getSelectionBackground());
+							ontologyItem.setForeground(list.getSelectionForeground());
+						} else {
+							ontologyItem.setBackground(list.getBackground());
+							ontologyItem.setForeground(list.getForeground());
+						}
+
 						if ((url != null) && url.startsWith("http://")) {
 							ontologyItem.setIcon(REMOTE_SOURCE_ICON.getIcon());
 						} else {
@@ -736,6 +743,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						                                                       isSelected,
 						                                                       cellHasFocus);
 						String url = annotationUrlMap.get(value);
+
+						if (isSelected) {
+							cmp.setBackground(list.getSelectionBackground());
+							cmp.setForeground(list.getSelectionForeground());
+						} else {
+							cmp.setBackground(list.getBackground());
+							cmp.setForeground(list.getForeground());
+						}
 
 						if (value.toString().equals(DEF_ANNOTATION_ITEM)) {
 							cmp.setIcon(null);
@@ -1689,9 +1704,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 * @throws Exception
 	 */
 	private void importButtonActionPerformed(ActionEvent evt) throws Exception {
-		boolean importAll = importAllCheckBox.isSelected();
 		if (checkDataSourceError() == false)
 			return;
+
+		boolean importAll = importAllCheckBox.isSelected();
 
 		/*
 		 * Get start line number. If "transfer" check box is true, then start
@@ -1828,23 +1844,21 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 				// Build mapping parameter object.
 				final AttributeMappingParameters mapping;
+				final List<String> del;
 
+				System.out.println("IsCytoscapeAttributeFile " + previewPanel.isCytoscapeAttributeFile(source));
 				if (previewPanel.isCytoscapeAttributeFile(source)) {
-					List<String> del = new ArrayList<String>();
+					del = new ArrayList<String>();
 					del.add(" += +");
-					mapping = new AttributeMappingParameters(objType, del,
-                            listDelimiter, keyInFile,
-                            mappingAttribute, aliasList,
-                            attributeNames, attributeTypes,
-                            listDataTypes, importFlag,
-                            caseSensitive);
-				} else
-					mapping = new AttributeMappingParameters(objType, checkDelimiter(),
-					                                         listDelimiter, keyInFile,
-					                                         mappingAttribute, aliasList,
-					                                         attributeNames, attributeTypes,
-					                                         listDataTypes, importFlag,
-					                                         caseSensitive);
+				} else {
+					del = checkDelimiter();
+				}
+				mapping = new AttributeMappingParameters(objType, del,
+														 listDelimiter, keyInFile,
+														 mappingAttribute, aliasList,
+														 attributeNames, attributeTypes,
+														 listDataTypes, importFlag,
+														 caseSensitive);
 
 				if (source.toString().endsWith(EXCEL_EXT)) {
 					/*
@@ -1870,13 +1884,15 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						HSSFSheet sheet = wb.getSheetAt(i);
 
 						loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
-						                                             startLineNumber, importAll),
-						               source.toString());
+						                                             startLineNumber,
+																	 importAll),
+									   source.toString());
 					}
 				} else {
 					loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-					                                               startLineNumber, null, importAll),
-					               source.toString());
+																   startLineNumber,
+																   null, importAll),
+								   source.toString());
 				}
 
 				break;
@@ -1898,8 +1914,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				/*
 				 * Now, load & map annotation.
 				 */
-				final String annotationSource = annotationUrlMap.get(annotationComboBox
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getSelectedItem());
+				final String annotationSource = annotationUrlMap.get(annotationComboBox.getSelectedItem());
+				final URL annotationSourceUrl = new URL(annotationSource);
 
 				if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
 					/*
@@ -1910,7 +1926,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 					InputStream is = null;
 					try {
-						is = URLUtil.getInputStream(new URL(annotationSource));
+						is = URLUtil.getInputStream(annotationSourceUrl);
 						gaReader = new GeneAssociationReader(selectedOntologyName,
 															 is, mappingAttribute,
 															 importAll, keyInFile,
@@ -1943,7 +1959,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					                                                                                                  ontologyIndex,
 					                                                                                                  selectedOntologyName,
 																													  caseSensitive);
-					final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(new URL(annotationSource),
+					final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(annotationSourceUrl,
 					                                                                       aoMapping,
 					                                                                       commentChar,
 					                                                                       startLineNumber);
@@ -1999,7 +2015,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					if (sources[i].toString().endsWith(EXCEL_EXT)) {
 						// Extract name from the sheet name.
 						InputStream is = null;
-						POIFSFileSystem excelIn = new POIFSFileSystem(sources[i].openStream());
+						POIFSFileSystem excelIn;
 
 						try {
 							is = sources[i].openStream();
@@ -2010,7 +2026,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 								is.close();
 							}
 						}
-
+						
 						HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 						HSSFSheet sheet = wb.getSheetAt(0);
 						networkName = wb.getSheetName(0);
@@ -3596,6 +3612,7 @@ class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 	 */
 	public ComboBoxRenderer(List<Byte> attributeDataTypes) {
 		this.attributeDataTypes = attributeDataTypes;
+		setOpaque(true);
 	}
 
 	/**
@@ -3612,6 +3629,13 @@ class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 	public Component getListCellRendererComponent(JList list, Object value, int index,
 	                                              boolean isSelected, boolean cellHasFocus) {
 		setText(value.toString());
+		if (isSelected) {
+			setBackground(list.getSelectionBackground());
+			setForeground(list.getSelectionForeground());
+		} else {
+			setBackground(list.getBackground());
+			setForeground(list.getForeground());
+		}
 
 		if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
 		    && (index < attributeDataTypes.size()) && (index >= 0)) {
@@ -3624,8 +3648,7 @@ class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 			}
 		} else if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
 		           && (index < attributeDataTypes.size())) {
-			setIcon(ImportTextTableDialog.getDataTypeIcon(attributeDataTypes.get(list
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getSelectedIndex())));
+			setIcon(ImportTextTableDialog.getDataTypeIcon(attributeDataTypes.get(list.getSelectedIndex())));
 		}
 
 		return this;
