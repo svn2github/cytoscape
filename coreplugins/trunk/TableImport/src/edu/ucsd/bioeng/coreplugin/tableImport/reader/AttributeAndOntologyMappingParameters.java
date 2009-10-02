@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -77,9 +77,42 @@ public class AttributeAndOntologyMappingParameters extends AttributeMappingParam
 	                                             Byte[] listAttributeTypes, boolean[] importFlag,
 	                                             int ontologyIndex, final String ontologyName)
 	    throws Exception {
+		this(objectType, delimiters, listDelimiter, keyIndex, mappingAttribute,
+			 aliasIndex, attributeNames, attributeTypes, listAttributeTypes,
+			 importFlag, ontologyIndex, ontologyName, true);
+	}
+
+	/**
+	 * Creates a new AttributeAndOntologyMappingParameters object.
+	 * This constructor takes an additional parameter to allow case sensitivity
+	 * to be specified.
+	 *
+	 * @param objectType  DOCUMENT ME!
+	 * @param delimiters  DOCUMENT ME!
+	 * @param listDelimiter  DOCUMENT ME!
+	 * @param keyIndex  DOCUMENT ME!
+	 * @param mappingAttribute  DOCUMENT ME!
+	 * @param aliasIndex  DOCUMENT ME!
+	 * @param attributeNames  DOCUMENT ME!
+	 * @param attributeTypes  DOCUMENT ME!
+	 * @param listAttributeTypes  DOCUMENT ME!
+	 * @param importFlag  DOCUMENT ME!
+	 * @param ontologyIndex  DOCUMENT ME!
+	 * @param ontologyName  DOCUMENT ME!
+	 * @param caseSensitive  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public AttributeAndOntologyMappingParameters(ObjectType objectType, List<String> delimiters,
+	                                             String listDelimiter, int keyIndex,
+	                                             String mappingAttribute, List<Integer> aliasIndex,
+	                                             String[] attributeNames, Byte[] attributeTypes,
+	                                             Byte[] listAttributeTypes, boolean[] importFlag,
+	                                             int ontologyIndex, final String ontologyName,
+												 boolean caseSensitive)
+	    throws Exception {
 		super(objectType, delimiters, listDelimiter, keyIndex, mappingAttribute, aliasIndex,
-		      attributeNames, attributeTypes, listAttributeTypes, importFlag);
-		// TODO Auto-generated constructor stub
+		      attributeNames, attributeTypes, listAttributeTypes, importFlag, caseSensitive);
 		this.ontologyName = ontologyName;
 		this.ontologyIndex = ontologyIndex;
 	}
