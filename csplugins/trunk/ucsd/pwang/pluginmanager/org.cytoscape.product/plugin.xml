@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.5"?>
+<plugin>
+   <extension
+         id="application"
+         name="cytoscape"
+         point="org.eclipse.core.runtime.applications">
+         <application thread="any">
+         <run class="org.cytoscape.product.Application">
+         </run>
+         </application>
+   </extension>
+   <extension
+         id="product"
+         name="cytoscape"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.cytoscape.pdoduct.application"
+            name="Cytoscape">
+         <property
+               name="appName"
+               value="Cytoscape">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
