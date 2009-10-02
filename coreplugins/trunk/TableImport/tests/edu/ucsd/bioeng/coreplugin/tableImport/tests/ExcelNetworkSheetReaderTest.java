@@ -55,6 +55,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import java.io.File;
 import java.io.FileInputStream;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +90,19 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 	public void testReadTable() throws Exception {
 		File network = new File(NETWORK_FILE);
 
-		POIFSFileSystem excelIn = new POIFSFileSystem(new FileInputStream(network));
+		InputStream is =null;
+		POIFSFileSystem excelIn;
+
+		try {
+			is = new FileInputStream(network);
+			excelIn = new POIFSFileSystem(is);
+		}
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
+
 		HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 
 		HSSFSheet sheet = wb.getSheetAt(0);
@@ -140,7 +153,19 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 	public void testReadTableWithEmptyRows() throws Exception {
 		File network = new File("testData/empty_attr_row.xls");
 
-		POIFSFileSystem excelIn = new POIFSFileSystem(new FileInputStream(network));
+		InputStream is = null;
+		POIFSFileSystem excelIn;
+
+		try {
+			is = new FileInputStream(network);
+			excelIn = new POIFSFileSystem(is);
+		}
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
+		
 		HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 
 		HSSFSheet sheet = wb.getSheetAt(0);

@@ -56,6 +56,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import java.io.File;
 import java.io.FileInputStream;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +91,18 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 		/*
 		 * Single Sheet Test
 		 */
-		POIFSFileSystem excelIn = new POIFSFileSystem(new FileInputStream(WORKBOOK1));
+		InputStream is = null;
+		POIFSFileSystem excelIn;
+		try {
+			is = new FileInputStream(WORKBOOK1);
+			excelIn = new POIFSFileSystem(is);
+		}
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
+		
 		HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 
 		HSSFSheet sheet = wb.getSheetAt(0);
