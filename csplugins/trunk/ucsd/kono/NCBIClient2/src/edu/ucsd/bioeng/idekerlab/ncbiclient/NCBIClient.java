@@ -1206,14 +1206,14 @@ public class NCBIClient extends
 
 											if (goCategory
 													.getGeneCommentaryLabel()
-													.equals("Function")) {
+													.equals("Function") && goTermIDs.contains(goTermID) == false) {
 												goTerms.add(goTerm);
 												goTermIDs.add(goTermID);
 												evidenceCodes.add(evidence
 														.split(": ")[1]);
 											} else if (goCategory
 													.getGeneCommentaryLabel()
-													.equals("Process")) {
+													.equals("Process") && goTermIDsProcess.contains(goTermID) == false) {
 												goTermsProcess.add(goTerm);
 												goTermIDsProcess.add(goTermID);
 												evidenceCodesProcess
@@ -1221,7 +1221,7 @@ public class NCBIClient extends
 																.split(": ")[1]);
 											} else if (goCategory
 													.getGeneCommentaryLabel()
-													.equals("Component")) {
+													.equals("Component") && goTermIDsComponent.contains(goTermID) == false) {
 												goTermsComponent.add(goTerm);
 												goTermIDsComponent
 														.add(goTermID);

@@ -21,11 +21,18 @@ import cytoscape.visual.mappings.PassThroughMapping;
 
 public class VisualStyleBuilder {
 
+	private static final String NUCLEOTIDE = "Nucleotide";
+	private static final String PROTEIN = "Protein";
+	private static final String GENE_ID = "GeneID";
 	private VisualStyle defaultVS = null;
 	private VisualStyle newVS = null;
 
 	private static final String DEF_VS_NAME = "Entrez Gene Style";
 	private static final String NEW_VS_NAME = "Entrez Gene Style 2";
+	
+	
+	// Tag definitions
+	
 	
 	private static VisualStyleBuilder builder = new VisualStyleBuilder();
 	
@@ -160,7 +167,7 @@ public class VisualStyleBuilder {
 
 		gac.setDefaultBackgroundColor(Color.white);
 
-		PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
+		PassThroughMapping m = new PassThroughMapping("", "Alt Name");
 
 		NodeCalculator calc = new NodeCalculator(NEW_VS_NAME + "-"
 				+ "NodeLabelMapping", m, null, NODE_LABEL);
@@ -170,6 +177,8 @@ public class VisualStyleBuilder {
 				+ "EdgeLabelMapping", me, null, EDGE_LABEL);
 		nac.setCalculator(calc);
 
+		
+		// Setup default view
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
 				NODE_COLOR);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR,
@@ -194,14 +203,14 @@ public class VisualStyleBuilder {
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL_COLOR,
 				EDGE_LABEL_COLOR);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_FONT_SIZE, 5);
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, 90);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, 200);
 		eac.getDefaultAppearance().set(
 				VisualPropertyType.EDGE_SRCARROW_OPACITY, 120);
 		eac.getDefaultAppearance().set(
 				VisualPropertyType.EDGE_TGTARROW_OPACITY, 120);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL_OPACITY,
 				70);
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LINE_WIDTH, 3);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LINE_WIDTH, 2);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL, "");
 
 		
@@ -211,23 +220,37 @@ public class VisualStyleBuilder {
 		DiscreteMapping nodeColor = new DiscreteMapping(NODE_COLOR,
 				"Interactor Type", ObjectMapping.NODE_MAPPING);
 
-		nodeColor.putMapValue("GeneID", new Color(Integer.decode("#b0c4de")));
-		nodeColor.putMapValue("Protein", new Color(Integer.decode("#3cb371")));
-		nodeColor.putMapValue("Nucleotide", new Color(Integer.decode("#800000")));
+		nodeColor.putMapValue(GENE_ID, NODE_COLOR);
+		nodeColor.putMapValue(PROTEIN, new Color(0x64, 0x95, 0xed));
+		nodeColor.putMapValue(NUCLEOTIDE, new Color(0xff, 0x7f, 0x50));
 		
 		NodeCalculator nodeColorCalc = new NodeCalculator(NEW_VS_NAME + "-"
 				+ "NodeColorMapping", nodeColor, null,
 				VisualPropertyType.NODE_FILL_COLOR);
 
 		nac.setCalculator(nodeColorCalc);
+		
+		// Border Color
+		DiscreteMapping nodeBorderColor = new DiscreteMapping(NODE_BORDER_COLOR,
+				"Interactor Type", ObjectMapping.NODE_MAPPING);
+
+		nodeBorderColor.putMapValue(GENE_ID, NODE_BORDER_COLOR);
+		nodeBorderColor.putMapValue(PROTEIN, new Color(0x0000cd));
+		nodeBorderColor.putMapValue(NUCLEOTIDE, new Color(0x800000));
+		
+		NodeCalculator nodeBorderColorCalc = new NodeCalculator(NEW_VS_NAME + "-"
+				+ "NodeBorderColorMapping", nodeBorderColor, null,
+				VisualPropertyType.NODE_BORDER_COLOR);
+
+		nac.setCalculator(nodeBorderColorCalc);
 
 		// Shape
 		DiscreteMapping nodeShape = new DiscreteMapping(NodeShape.RECT,
 				"Interactor Type", ObjectMapping.NODE_MAPPING);
 
-		nodeShape.putMapValue("GeneID", NodeShape.RECT);
-		nodeShape.putMapValue("Protein", NodeShape.ELLIPSE);
-		nodeShape.putMapValue("Nucleotide", NodeShape.DIAMOND);
+		nodeShape.putMapValue(GENE_ID, NodeShape.RECT);
+		nodeShape.putMapValue(PROTEIN, NodeShape.ELLIPSE);
+		nodeShape.putMapValue(NUCLEOTIDE, NodeShape.OCTAGON);
 		
 		NodeCalculator nodeShapeCalc = new NodeCalculator(NEW_VS_NAME + "-"
 				+ "NodeShapeMapping", nodeShape, null,
@@ -260,6 +283,19 @@ public class VisualStyleBuilder {
 				VisualPropertyType.EDGE_LINE_STYLE);
 
 		eac.setCalculator(edgeLineStyleCalc);
+		
+		// Edge line width mapping.
+		DiscreteMapping edgeWidth = new DiscreteMapping(2,
+				"interaction type", ObjectMapping.EDGE_MAPPING);
+
+		edgeWidth.putMapValue("physical", 3);
+		edgeWidth.putMapValue("genetic", 2);
+
+		EdgeCalculator edgeWidthCalc = new EdgeCalculator(NEW_VS_NAME + "-"
+				+ "EdgeWidthMapping", edgeWidth, null,
+				VisualPropertyType.EDGE_LINE_WIDTH);
+
+		eac.setCalculator(edgeWidthCalc);
 
 		return newStyle;
 	}
