@@ -26,6 +26,7 @@ public class Application implements IApplication {
 		// Start Cytoscape.application bundle here ??? 
 		//????
 		//????
+        String[] args = (String[]) context.getArguments().get("application.argvs");
 		
 		while (true) {
 			try {
