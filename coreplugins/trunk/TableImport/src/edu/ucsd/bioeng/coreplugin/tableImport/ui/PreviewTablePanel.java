@@ -660,7 +660,18 @@ public class PreviewTablePanel extends JPanel {
 			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
 			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
 
-			POIFSFileSystem excelIn = new POIFSFileSystem(sourceURL.openStream());
+			InputStream is = null;
+			POIFSFileSystem excelIn;
+			try {
+				is = sourceURL.openStream();
+				excelIn = new POIFSFileSystem(is);
+			}
+			finally {
+				if (is != null) {
+					is.close();
+				}
+			}
+
 			HSSFWorkbook wb = new HSSFWorkbook(excelIn, true);
 
 			if (wb.getNumberOfSheets() == 0) {

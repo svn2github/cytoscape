@@ -122,6 +122,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -1688,6 +1689,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 * @throws Exception
 	 */
 	private void importButtonActionPerformed(ActionEvent evt) throws Exception {
+		boolean importAll = importAllCheckBox.isSelected();
 		if (checkDataSourceError() == false)
 			return;
 
@@ -1848,33 +1850,33 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					/*
 					 * Read one sheet at a time
 					 */
-					POIFSFileSystem excelIn = new POIFSFileSystem(source.openStream());
+					InputStream is = null;
+					POIFSFileSystem excelIn;
+
+					try {
+						is = source.openStream();
+						excelIn = new POIFSFileSystem(is);
+					}
+					finally {
+						if (is != null) {
+							is.close();
+						}
+					}
+
 					HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 
 					// Load all sheets in the table
 					for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 						HSSFSheet sheet = wb.getSheetAt(i);
 
-						if (importAllCheckBox.isSelected()) {
-							loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
-							                                             startLineNumber, true),
-							               source.toString());
-						} else {
-							loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
-							                                             startLineNumber, false),
-							               source.toString());
-						}
+						loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
+						                                             startLineNumber, importAll),
+						               source.toString());
 					}
 				} else {
-					if (importAllCheckBox.isSelected()) {
-						loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-						                                               startLineNumber, null, true),
-						               source.toString());
-					} else {
-						loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-						                                               startLineNumber, null, false),
-						               source.toString());
-					}
+					loadAnnotation(new DefaultAttributeTableReader(source, mapping,
+					                                               startLineNumber, null, importAll),
+					               source.toString());
 				}
 
 				break;
@@ -1903,17 +1905,22 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					/*
 					 * This is a Gene Association file.
 					 */
-					final GeneAssociationReader gaReader;
+					GeneAssociationReader gaReader = null;
 					keyInFile = this.primaryKeyComboBox.getSelectedIndex();
 
-					if (importAllCheckBox.isSelected()) {
+					InputStream is = null;
+					try {
+						is = URLUtil.getInputStream(new URL(annotationSource));
 						gaReader = new GeneAssociationReader(selectedOntologyName,
-						                                     URLUtil.getInputStream(new URL(annotationSource)),
-						                                     mappingAttribute, true, keyInFile);
-					} else {
-						gaReader = new GeneAssociationReader(selectedOntologyName,
-						                                     URLUtil.getInputStream(new URL(annotationSource)),
-						                                     mappingAttribute, false, keyInFile);
+															 is, mappingAttribute,
+															 importAll, keyInFile,
+															 caseSensitive);
+					}
+					catch (Exception e) {
+						if (is != null) {
+							is.close();
+						}
+						throw e;
 					}
 
 					loadGeneAssociation(gaReader, selectedOntologyName, annotationSource);
@@ -1934,7 +1941,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					                                                                                                  listDataTypes,
 					                                                                                                  importFlag,
 					                                                                                                  ontologyIndex,
-					                                                                                                  selectedOntologyName);
+					                                                                                                  selectedOntologyName,
+																													  caseSensitive);
 					final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(new URL(annotationSource),
 					                                                                       aoMapping,
 					                                                                       commentChar,
@@ -1990,7 +1998,19 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				for (int i = 0; i < sources.length; i++) {
 					if (sources[i].toString().endsWith(EXCEL_EXT)) {
 						// Extract name from the sheet name.
-						final POIFSFileSystem excelIn = new POIFSFileSystem(sources[i].openStream());
+						InputStream is = null;
+						POIFSFileSystem excelIn = new POIFSFileSystem(sources[i].openStream());
+
+						try {
+							is = sources[i].openStream();
+							excelIn = new POIFSFileSystem(is);
+						}
+						finally {
+							if (is != null) {
+								is.close();
+							}
+						}
+
 						HSSFWorkbook wb = new HSSFWorkbook(excelIn);
 						HSSFSheet sheet = wb.getSheetAt(0);
 						networkName = wb.getSheetName(0);
