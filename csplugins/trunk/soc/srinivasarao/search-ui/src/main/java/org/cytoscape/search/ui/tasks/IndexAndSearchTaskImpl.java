@@ -106,6 +106,15 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 				return;
 			}
 		}
+		
+		CyNetworkView view = netmgr.getCurrentNetworkView();
+
+		// To unselect all the Nodes and Edges
+		SelectUtils.setSelectedNodes(network.getNodeList(), false);
+		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+		if (view != null) {
+			view.updateView();
+		}
 
 		// Execute query
 		taskMonitor.setStatusMessage("Executing query");
@@ -136,15 +145,6 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 		String result = SearchPanelFactory.getGlobalInstance(netmgr)
 				.getmainPanel().getResult();
 		//System.out.println("Selected Option: " + result);
-
-		CyNetworkView view = netmgr.getCurrentNetworkView();
-
-		// To unselect all the Nodes and Edges
-		SelectUtils.setSelectedNodes(network.getNodeList(), false);
-		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
-		if (view != null) {
-			view.updateView();
-		}
 
 		if (result.equals("Select")) {
 			SelectUtils.setSelectedNodes(nodeList, true);

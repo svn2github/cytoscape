@@ -24,6 +24,7 @@ import org.cytoscape.search.EnhancedSearchQuery;
 import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
 import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
+import org.cytoscape.search.ui.SearchComboBox;
 import org.cytoscape.search.ui.tasks.SelectUtils;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -37,6 +38,7 @@ public class TopologyFilter extends JPanel {
 	private JTextField neighbourField = null;
 	private JLabel jLabel2 = null;
 	private JLabel jLabel3 = null;
+	private SearchComboBox queryBox = null;
 	private JTextField queryField = null;
 	private JTextField distanceField = null;
 	private JLabel jLabel4 = null;
@@ -178,7 +180,7 @@ public class TopologyFilter extends JPanel {
 			jPanel.add(getNeighbourField(), gridBagConstraints3);
 			jPanel.add(jLabel2, gridBagConstraints4);
 			jPanel.add(jLabel3, gridBagConstraints5);
-			jPanel.add(getQueryField(), gridBagConstraints6);
+			jPanel.add(getQueryBox(), gridBagConstraints6);
 			jPanel.add(getDistanceField(), gridBagConstraints7);
 			jPanel.add(jLabel4, gridBagConstraints8);
 			jPanel.add(getApplyButton(), gridBagConstraints);
@@ -205,12 +207,16 @@ public class TopologyFilter extends JPanel {
 	 * 
 	 * @return javax.swing.JTextField
 	 */
-	private JTextField getQueryField() {
-		if (queryField == null) {
-			queryField = new JTextField();
-			queryField.setPreferredSize(new Dimension(40, 20));
+	private SearchComboBox getQueryBox() {
+		if (queryBox == null) {
+			queryBox = new SearchComboBox(netmgr);
+			queryField = (JTextField) queryBox.getEditor().getEditorComponent();
+			/*
+			 * queryField = new JTextField();
+			 */
+			queryField.setPreferredSize(new Dimension(30, 20));
 		}
-		return queryField;
+		return queryBox;
 	}
 
 	/**
@@ -237,6 +243,10 @@ public class TopologyFilter extends JPanel {
 			applyButton.setText("Apply");
 			applyButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (queryField.getText() != null
+							&& queryField.getText() != "") {
+						queryBox.addMenuItem(queryField.getText());
+					}
 					performTopologySearch(neighbourField.getText(),
 							distanceField.getText(), queryField.getText());
 				}

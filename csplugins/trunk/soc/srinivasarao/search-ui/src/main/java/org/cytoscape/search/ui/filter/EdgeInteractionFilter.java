@@ -23,6 +23,7 @@ import org.cytoscape.search.EnhancedSearchQuery;
 import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
 import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
+import org.cytoscape.search.ui.SearchComboBox;
 import org.cytoscape.search.ui.tasks.SelectUtils;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -37,6 +38,7 @@ public class EdgeInteractionFilter extends JPanel {
 	private JCheckBox sourceBox = null;
 	private JCheckBox targetBox = null;
 	private JLabel jLabel3 = null;
+	private SearchComboBox queryBox = null;
 	private JTextField queryField = null;
 	private JButton applyButton = null;
 	private CyNetworkManager netmgr;
@@ -150,7 +152,7 @@ public class EdgeInteractionFilter extends JPanel {
 			filterPanel.add(getSourceBox(), gridBagConstraints3);
 			filterPanel.add(getTargetBox(), gridBagConstraints4);
 			filterPanel.add(jLabel3, gridBagConstraints5);
-			filterPanel.add(getQueryField(), gridBagConstraints6);
+			filterPanel.add(getQueryBox(), gridBagConstraints6);
 			filterPanel.add(getApplyButton(), gridBagConstraints8);
 
 		}
@@ -188,12 +190,16 @@ public class EdgeInteractionFilter extends JPanel {
 	 * 
 	 * @return javax.swing.JTextField
 	 */
-	private JTextField getQueryField() {
-		if (queryField == null) {
-			queryField = new JTextField();
-			queryField.setPreferredSize(new Dimension(60, 20));
+	private SearchComboBox getQueryBox() {
+		if (queryBox == null) {
+			queryBox = new SearchComboBox(netmgr);
+			queryField = (JTextField) queryBox.getEditor().getEditorComponent();
+			/*
+			 * queryField = new JTextField();
+			 */
+			queryField.setPreferredSize(new Dimension(50, 20));
 		}
-		return queryField;
+		return queryBox;
 	}
 
 	/**
@@ -213,6 +219,10 @@ public class EdgeInteractionFilter extends JPanel {
 						source = true;
 					if (targetBox.isSelected())
 						target = true;
+					if (queryField.getText() != null
+							&& queryField.getText() != "") {
+						queryBox.addMenuItem(queryField.getText());
+					}
 					findEdges(source, target, queryField.getText());
 				}
 			});

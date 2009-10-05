@@ -22,6 +22,7 @@ import org.cytoscape.search.EnhancedSearchQuery;
 import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
 import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
+import org.cytoscape.search.ui.SearchComboBox;
 import org.cytoscape.search.ui.tasks.SelectUtils;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -37,6 +38,7 @@ public class NodeInteractionFilter extends JPanel {
 	private JCheckBox targetBox = null;
 	private JLabel jLabel3 = null;
 	private JLabel jLabel4 = null;
+	private SearchComboBox queryBox = null;
 	private JTextField queryField = null;
 	private JButton applyButton = null;
 	private CyNetworkManager netmgr;
@@ -116,7 +118,7 @@ public class NodeInteractionFilter extends JPanel {
 			gridBagConstraints11.gridwidth = 3;
 			gridBagConstraints11.weightx = 1.0;
 			jLabel4 = new JLabel();
-			jLabel4.setText("and which match the query");
+			jLabel4.setText("which match the query");
 
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
 			gridBagConstraints10.gridwidth = GridBagConstraints.REMAINDER;
@@ -126,7 +128,7 @@ public class NodeInteractionFilter extends JPanel {
 			gridBagConstraints10.weightx = 1.0;
 
 			jLabel3 = new JLabel();
-			jLabel3.setText("of atleast one edge");
+			jLabel3.setText("of atleast one edge and");
 
 			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
 			gridBagConstraints9.gridx = 3;
@@ -163,7 +165,7 @@ public class NodeInteractionFilter extends JPanel {
 			filterPanel.add(getTargetBox(), gridBagConstraints9);
 			filterPanel.add(jLabel3, gridBagConstraints10);
 			filterPanel.add(jLabel4, gridBagConstraints11);
-			filterPanel.add(getQueryField(), gridBagConstraints12);
+			filterPanel.add(getQueryBox(), gridBagConstraints12);
 			filterPanel.add(getApplyButton(), gridBagConstraints13);
 			filterPanel.setVisible(false);
 		}
@@ -201,12 +203,16 @@ public class NodeInteractionFilter extends JPanel {
 	 * 
 	 * @return javax.swing.JTextField
 	 */
-	private JTextField getQueryField() {
-		if (queryField == null) {
-			queryField = new JTextField();
-			queryField.setPreferredSize(new Dimension(40, 20));
+	private SearchComboBox getQueryBox() {
+		if (queryBox == null) {
+			queryBox = new SearchComboBox(netmgr);
+			queryField = (JTextField) queryBox.getEditor().getEditorComponent();
+			/*
+			 * queryField = new JTextField();
+			 */
+			queryField.setPreferredSize(new Dimension(30, 20));
 		}
-		return queryField;
+		return queryBox;
 	}
 
 	/**
@@ -227,6 +233,10 @@ public class NodeInteractionFilter extends JPanel {
 						source = true;
 					if (targetBox.isSelected())
 						target = true;
+					if (queryField.getText() != null
+							&& queryField.getText() != "") {
+						queryBox.addMenuItem(queryField.getText());
+					}
 					findNodes(source, target, queryField.getText());
 				}
 			});

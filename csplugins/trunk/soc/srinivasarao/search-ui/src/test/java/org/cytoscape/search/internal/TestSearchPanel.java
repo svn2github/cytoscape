@@ -86,7 +86,7 @@ public class TestSearchPanel {
 		r3.set("testDoubleAttr", 4217.64);
 
 		CyRow r4 = nodetable.getRow(n4.getSUID());
-		r4.set("Official HUGO Symbol", "KLF4");
+		r4.set("Official HUGO Symbol", "KL F4");
 		r4.set("CanonicalName", "9314");
 		r4.set("TestNodeNumericAttr", 99807);
 		r4.set("testDoubleAttr", 1129.08);
