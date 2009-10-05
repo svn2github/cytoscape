@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="cytoscapeProjectBuilder"
+         name="Cytoscape Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.cytoscape.ide.eclipse.setup.builder.CytoscapeProjectBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="cytoscapeNature"
+         name="Cytoscape Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.cytoscape.ide.eclipse.setup.builder.CytoscapeNature">
+         </run>
+      </runtime>
+      <builder
+            id="org.cytoscape.ide.eclipse.setup.cytoscapeProjectBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="org.cytoscape.ide.eclipse.setup.contribution1">
+         <action
+               label="Add/Remove Sample Nature"
+               class="org.cytoscape.ide.eclipse.setup.builder.ToggleNatureAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="org.cytoscape.ide.eclipse.setup.addRemoveNatureAction">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="xmlProblem"
+         name="XML Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.cytoscape.ide.eclipse.setup.perspectives.CyPerspective"
+            icon="icons/icon32x32.png"
+            id="org.cytoscape.ide.eclipse.setup.perspectives.CyPerspective"
+            name="Cytoscape IDE">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="intro2cytoscape/cytoscape_ide.xml">
+      </configExtension>
+   </extension>
+
+</plugin>

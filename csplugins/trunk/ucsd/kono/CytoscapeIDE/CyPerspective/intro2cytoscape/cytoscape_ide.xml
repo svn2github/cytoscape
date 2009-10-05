@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+	<extensionContent id="orgcytoscapeideeclipsesetup-introExtension"
+		style="css/sample.css" name="Sample Extension" path="overview/@">
+		<group style-id="content-group" id="orgcytoscapeideeclipsesetup-introLink-group">
+			<link label="Cytoscape IDE for Eclipse" url="http://www.cytoscape.org"
+				id="orgcytoscapeideeclipsesetup-introLink" style-id="content-link">
+				<text>Cytoscape IDE is a set of plugins for OSGi-based Cytoscape core and plugin development.</text>
+			</link>
+		</group>
+	</extensionContent>
+</introContent>
