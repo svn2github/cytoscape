@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.cytoscape.ide.eclipse_0.2.2.jar" id="org.cytoscape.ide.eclipse" version="0.2.2">
+      <category name="cytoscape"/>
+   </feature>
+   <category-def name="cytoscape" label="Cytoscape"/>
+</site>
