@@ -16,9 +16,9 @@
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cytoscape.pluginmanager</groupId>
-	<artifactId>org.cytoscape.product</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<groupId>org.cytoscape</groupId>
+	<artifactId>product</artifactId>
+	<version>3.0.0</version>
 
 	<name>${bundle.symbolicName}</name>
 
