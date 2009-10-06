@@ -92,7 +92,7 @@
     <td>Alex Pico</td>
     <td>Kristina<br/> Hanspers</td>
     <td>John "Scooter"<br /> Morris</td>
-    <td>Peng Wang</td>
+    <td>Peng-Liang<br/> Wang</td>
     <td>Sarah Killcoyne</td>
    </tr>
 
