@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Export-Package: org.cytoscape.*
-Import-Package: com.sun.xml.bind.v2,*
+Import-Package: *
