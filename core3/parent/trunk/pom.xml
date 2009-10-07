@@ -48,8 +48,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.5</source>
+					<target>1.5</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArguments>
@@ -212,7 +212,7 @@
 					<linkXref>true</linkXref>
 					<sourceEncoding>utf-8</sourceEncoding>
 					<minimumTokens>100</minimumTokens>
-					<targetJdk>1.6</targetJdk>
+					<targetJdk>1.5</targetJdk>
 					<excludes>
 						<exclude>**/*Bean.java</exclude>
 						<exclude>**/generated/*.java</exclude>
