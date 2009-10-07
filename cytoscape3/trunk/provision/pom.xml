@@ -24,22 +24,15 @@
 	-->
 
 	<dependencies>
-	<!--
-		<dependency>
-			<groupId>org.apache.felix</groupId>
+		<!--
+			<dependency> <groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.eventadmin</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
+			<version>1.0.0</version> </dependency> <dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-api</artifactId>
-			<version>1.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-service</artifactId>
-			<version>1.3.0</version>
-		</dependency>
+			<artifactId>pax-logging-api</artifactId> <version>1.3.0</version>
+			</dependency> <dependency> <groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-service</artifactId> <version>1.3.0</version>
+			</dependency>
 		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -82,18 +75,14 @@
 			<artifactId>spring-osgi-io</artifactId>
 			<version>${spring.osgi.version}</version>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>org.apache.felix</groupId>
+		<!--
+			<dependency> <groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.configadmin</artifactId>
-			<version>1.0.4</version>
-		</dependency>
-		<dependency>
+			<version>1.0.4</version> </dependency> <dependency>
 			<groupId>org.ops4j.pax.confman</groupId>
 			<artifactId>pax-confman-propsloader</artifactId>
-			<version>0.2.2</version>
-		</dependency>
--->
+			<version>0.2.2</version> </dependency>
+		-->
 		<dependency>
 			<groupId>edu.emory.mathcs.backport</groupId>
 			<artifactId>com.springsource.edu.emory.mathcs.backport
@@ -274,7 +263,7 @@
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap-gui</artifactId>
+			<artifactId>vizmap-gui-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
@@ -314,71 +303,71 @@
 			</artifactId>
 			<version>7.3</version>
 		</dependency>
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>log-swing</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>editor-impl</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>log-swing</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>editor-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-	<!-- cytoscape layouts -->
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>layout-cytoscape-impl</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<!-- cytoscape layouts -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-cytoscape-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-	<!-- jgraph layouts -->
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>layout-jgraph-impl</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape-temp</groupId>
-        <artifactId>org.jgraph.jgraph</artifactId>
-        <version>5.10.0.2</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape-temp</groupId>
-        <artifactId>org.jgraph.jgraphpad</artifactId>
-        <version>5.10.0.2</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape-temp</groupId>
-        <artifactId>org.jgraph.layouts</artifactId>
-        <version>5.10.0.2</version>
-    </dependency>
+		<!-- jgraph layouts -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-jgraph-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>org.jgraph.jgraph</artifactId>
+			<version>5.10.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>org.jgraph.jgraphpad</artifactId>
+			<version>5.10.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>org.jgraph.layouts</artifactId>
+			<version>5.10.0.2</version>
+		</dependency>
 
-	<!-- prefuse layouts -->
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>layout-prefuse-impl</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape-temp</groupId>
-        <artifactId>prefuse</artifactId>
-        <version>20071021</version>
-    </dependency>
+		<!-- prefuse layouts -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-prefuse-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>prefuse</artifactId>
+			<version>20071021</version>
+		</dependency>
 
-	<!-- linkout plugin -->
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>linkout-impl</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<!-- linkout plugin -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>linkout-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-	<!-- A utility that allows you to register services dynamically -->
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>service-util</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<!-- A utility that allows you to register services dynamically -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>service-util</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>
