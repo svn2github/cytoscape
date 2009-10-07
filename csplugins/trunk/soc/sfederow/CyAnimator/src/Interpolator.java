@@ -54,9 +54,12 @@ public class Interpolator {
 		nodeInterpolators.add(new interpolateNodePosition());
 		nodeInterpolators.add(new interpolateNodeColor());
 		nodeInterpolators.add(new interpolateNodeOpacity());
+		nodeInterpolators.add(new interpolateNodeSize());
+		nodeInterpolators.add(new interpolateNodeBorderWidth());
 
 		edgeInterpolators.add(new interpolateEdgeColor());
 		edgeInterpolators.add(new interpolateEdgeOpacity());
+		edgeInterpolators.add(new interpolateEdgeWidth());
 
 		networkInterpolators.add(new interpolateNetworkZoom());
 		networkInterpolators.add(new interpolateNetworkColor());
@@ -532,7 +535,118 @@ public class Interpolator {
 		}
 	}
 	
+	/**
+	 * 
+	 * Linearly interpolates both the height and width of a node simultaneously 
+	 * to achieve the affect of interpolating the size.
+	 *
+	 */
+	class interpolateNodeSize implements FrameInterpolator {
+
+		public interpolateNodeSize(){
+
+		}
+
+		public CyFrame[] interpolate(List valueList, CyFrame frameOne, CyFrame frameTwo, 
+				int start, int stop, CyFrame[] cyFrameArray){
+
+			int framenum = (stop-start) - 1;	
+			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
+			List<NodeView> nodeViewList = valueList;
+
+			for(NodeView nv: nodeViewList){
+
+				Node node = nv.getNode();
+				String nodeid = node.getIdentifier();
+				
+				
+				//Get the node transparencies and set up the transparency interpolation
+				double[] sizeOne = frameOne.getNodeSize(nodeid);
+				double[] sizeTwo = frameTwo.getNodeSize(nodeid);
+
+				if (sizeOne == null) sizeOne = new double[2];
+				if (sizeTwo == null) sizeTwo = new double[2];
+				
+				
+				if (sizeOne[0] == sizeTwo[0] && sizeOne[1] == sizeTwo[1]) {
+					for(int k=1; k<framenum+1; k++){
+						cyFrameArray[start+k].setNodeSize(node.getIdentifier(), sizeOne);
+					}
+					continue;
+				}
+
+				double sizeIncXlength = (sizeTwo[0] - sizeOne[0])/framenum;
+				double sizeIncYlength = (sizeTwo[1] - sizeOne[1])/framenum;
+				double[] sizeXArray = new double[framenum+2];
+				double[] sizeYArray = new double[framenum+2];
+				sizeXArray[1] = sizeOne[0] + sizeIncXlength;
+				sizeYArray[1] = sizeOne[1] + sizeIncYlength;
+					
+				for(int k=1; k<framenum+1; k++){
+					sizeXArray[k+1] = sizeXArray[k] + sizeIncXlength;
+					sizeYArray[k+1] = sizeYArray[k] + sizeIncYlength;
+					double[] temp = {sizeXArray[k], sizeYArray[k]};
+					cyFrameArray[start+k].setNodeSize(node.getIdentifier(), temp);
+				}	
+
+			}
+			return cyFrameArray;
+		}
+	}
 	
+	/**
+	 * 
+	 * Linearly interpolates the node border width.
+	 *
+	 */
+	class interpolateNodeBorderWidth implements FrameInterpolator {
+
+		public interpolateNodeBorderWidth(){
+
+		}
+
+		public CyFrame[] interpolate(List valueList, CyFrame frameOne, CyFrame frameTwo, 
+				int start, int stop, CyFrame[] cyFrameArray){
+
+			int framenum = (stop-start) - 1;	
+			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
+			List<NodeView> nodeViewList = valueList;
+
+			for(NodeView nv: nodeViewList){
+
+				Node node = nv.getNode();
+				String nodeID = node.getIdentifier();
+				
+				
+				//get the border widths of the node from each of the two frames
+				float widthOne = frameOne.getNodeBorderWidth(nodeID);
+				float widthTwo = frameTwo.getNodeBorderWidth(nodeID);
+				
+				
+				//if (widthOne == null) sizeOne = new Integer(1);
+				//if (widthTwo == null) sizeTwo = new Integer(1);
+				
+				
+				if (widthOne == widthTwo) {
+					for(int k=1; k<framenum+1; k++){
+						cyFrameArray[start+k].setNodeBorderWidth(node.getIdentifier(), widthOne);
+					}
+					continue;
+				}
+
+				float widthInclength = (widthTwo - widthOne)/framenum;
+				float[] widthArray = new float[framenum+2];
+				widthArray[1] = widthOne + widthInclength;
+					
+				for(int k=1; k<framenum+1; k++){
+					widthArray[k+1] = widthArray[k] + widthInclength;
+					cyFrameArray[start+k].setNodeBorderWidth(node.getIdentifier(), widthArray[k]);
+				}	
+
+			}
+			return cyFrameArray;
+		}
+	}
 	/**
 	 * Interpolates edgeColor using the interpolateColor() method.
 	 */
@@ -647,6 +761,63 @@ public class Interpolator {
 					cyFrameArray[start+k].setEdgeOpacity(edge.getIdentifier(), transArray[k]);
 				}	
 				
+			}
+			return cyFrameArray;
+		}
+	}
+	
+	/**
+	 * 
+	 * Linearly interpolates the edge line width.
+	 *
+	 */
+	class interpolateEdgeWidth implements FrameInterpolator {
+
+		public interpolateEdgeWidth(){
+
+		}
+		/**
+		 * 
+		 * 
+		 */
+		public CyFrame[] interpolate(List valueList, CyFrame frameOne, CyFrame frameTwo, 
+				int start, int stop, CyFrame[] cyFrameArray){
+			
+			int framenum = (stop-start) - 1;	
+			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
+			List<EdgeView> edgeViewList = valueList;
+		
+			for(EdgeView ev: edgeViewList){
+				
+				Edge edge = ev.getEdge();
+			  String edgeID = edge.getIdentifier();
+				
+				
+				//get the edge widths of the edge from each of the two frames
+				float widthOne = frameOne.getEdgeWidth(edgeID);
+				float widthTwo = frameTwo.getEdgeWidth(edgeID);
+				
+				
+				//if (widthOne == null) sizeOne = new Integer(1);
+				//if (widthTwo == null) sizeTwo = new Integer(1);
+				
+				
+				if (widthOne == widthTwo) {
+					for(int k=1; k<framenum+1; k++){
+						cyFrameArray[start+k].setEdgeWidth(edgeID, widthOne);
+					}
+					continue;
+				}
+
+				float widthInclength = (widthTwo - widthOne)/framenum;
+				float[] widthArray = new float[framenum+2];
+				widthArray[1] = widthOne + widthInclength;
+					
+				for(int k=1; k<framenum+1; k++){
+					widthArray[k+1] = widthArray[k] + widthInclength;
+					cyFrameArray[start+k].setEdgeWidth(edgeID, widthArray[k]);
+				}	
+
 			}
 			return cyFrameArray;
 		}

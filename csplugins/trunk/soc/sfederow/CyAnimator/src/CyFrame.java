@@ -65,10 +65,12 @@ public class CyFrame {
 	private HashMap<String, double[]> nodePosMap;
 	private HashMap<String, Color> nodeColMap;
 	private HashMap<String, Integer> nodeOpacityMap;
-	private HashMap<String, Double> nodeBorderMap;
+	private HashMap<String, Float> nodeBorderWidthMap;
+	private HashMap<String, double[]> nodeSizeMap;
 
 	private HashMap<String, Integer> edgeOpacityMap;
 	private HashMap<String, Color> edgeColMap;
+	private HashMap<String, Float> edgeWidthMap;
 	
 	private Paint backgroundPaint = null;
 	private double zoom = 0;
@@ -98,11 +100,14 @@ public class CyFrame {
 	public CyFrame(CyNetwork currentNetwork){
 		nodePosMap = new HashMap<String, double[]>();
 		nodeColMap = new HashMap<String, Color>();
+		nodeSizeMap = new HashMap<String, double[]>();
+		nodeBorderWidthMap = new HashMap<String, Float>();
 		edgeMap = new HashMap();
 		nodeMap = new HashMap();
 		nodeOpacityMap = new HashMap<String, Integer>();
 		edgeOpacityMap = new HashMap<String, Integer>();
 		edgeColMap = new HashMap<String, Color>();
+		edgeWidthMap = new HashMap<String, Float>();
 		this.currentNetwork = currentNetwork;
 		networkView = Cytoscape.getCurrentNetworkView();
 		this.dview = (DGraphView)networkView;
@@ -162,6 +167,14 @@ public class CyFrame {
 			xy[1] = nodeView.getYPosition();
 			nodePosMap.put(node.getIdentifier(), xy);
 			
+			double height = nodeView.getHeight();
+			double width = nodeView.getWidth();
+			double[] size = {height, width};
+			nodeSizeMap.put(node.getIdentifier(), size);
+			
+			float borderWidth = nodeView.getBorderWidth();
+			nodeBorderWidthMap.put(node.getIdentifier(), borderWidth);
+			
 			//grab color and opacity
 			Color nodeColor = (Color)nodeView.getUnselectedPaint();
 			Integer trans = nodeColor.getAlpha();
@@ -184,7 +197,7 @@ public class CyFrame {
 			//store in respective hashmap
 			edgeColMap.put(edge.getIdentifier(), p);
 			edgeOpacityMap.put(edge.getIdentifier(), trans);
-		
+			edgeWidthMap.put(edge.getIdentifier(), edgeView.getStrokeWidth());
 		}
 	}
 	
@@ -273,6 +286,13 @@ public class CyFrame {
 			
 			nodeView.setXPosition(xy[0]);
 			nodeView.setYPosition(xy[1]);
+			
+			double[] size = nodeSizeMap.get(node.getIdentifier());
+			nodeView.setHeight(size[0]);
+			nodeView.setWidth(size[1]);
+			
+			nodeView.setBorderWidth(nodeBorderWidthMap.get(node.getIdentifier()));
+			
 			nodeView.setUnselectedPaint(new Color(p.getRed(), p.getGreen(), p.getBlue(), trans));
 			
 		}
@@ -287,6 +307,7 @@ public class CyFrame {
 			if (p == null || edgeView == null) continue;
 			Integer trans = edgeOpacityMap.get(edge.getIdentifier());
 			edgeView.setUnselectedPaint(new Color(p.getRed(), p.getGreen(), p.getBlue(), trans));
+			edgeView.setStrokeWidth(edgeWidthMap.get(edge.getIdentifier()));
 		}
 		currentView.setBackgroundPaint(backgroundPaint);
 		currentView.setZoom(zoom);
@@ -481,6 +502,64 @@ public class CyFrame {
 		nodeOpacityMap.put(nodeID, opacity);
 	}
 
+	/**
+	 * Gets node size of an individual node
+	 * 
+	 * @param nodeID
+	 * @return node size
+	 */
+	public double[] getNodeSize(String nodeID) {
+		double[] size = nodeSizeMap.get(nodeID);
+		return size;
+	}
+	
+	/**
+	 * Sets node size of an individual node
+	 * 
+	 * @param nodeID
+	 * @param size
+	 */
+	public void setNodeSize(String nodeID, double[] size){
+		nodeSizeMap.put(nodeID, size);
+	}
+	
+	/**
+	 * 
+	 * @param nodeID
+	 * @return width of node border
+	 */
+	public float getNodeBorderWidth(String nodeID){
+		float width = nodeBorderWidthMap.get(nodeID);
+		return width;
+	}
+	
+	/**
+	  * 
+	  * @param nodeID
+	  * @param width
+	  */
+	public void setNodeBorderWidth(String nodeID, float width){
+		nodeBorderWidthMap.put(nodeID, width);
+	}
+	
+	/**
+	 * 
+	 * @param edgeID
+	 * @return the edge width 
+	 */
+	public float getEdgeWidth(String edgeID){
+		return edgeWidthMap.get(edgeID);
+	}
+	
+	/**
+	 * 
+	 * @param nodeID
+	 * @param width
+	 */
+	public void setEdgeWidth(String edgeID, float width){
+		edgeWidthMap.put(edgeID, width);
+	}
+	
 	/**
 	 * Get the list of nodes in this frame
 	 *

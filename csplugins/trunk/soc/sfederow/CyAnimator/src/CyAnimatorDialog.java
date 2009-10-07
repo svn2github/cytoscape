@@ -503,6 +503,8 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	        	
 	        	//fps is frames per second
 	            int fps = (int)source.getValue();
+	            //fps = fps/60;
+	            int  f = fps*fps;
 	            if(frameManager.timer == null){ return; }
 	            System.out.println("FPS: "+fps);
 	            
