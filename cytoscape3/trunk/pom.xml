@@ -101,6 +101,7 @@
 		<spring.version>2.5.6</spring.version>
 		<spring.osgi.version>1.2.0</spring.osgi.version>
 		<slf4j.version>1.5.0</slf4j.version>
+		<junit.version>4.7.0</junit.version>
 		<!-- some example OSGi runtime properties -->
 		<org.osgi.service.http.port>8080</org.osgi.service.http.port>
 		<org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>

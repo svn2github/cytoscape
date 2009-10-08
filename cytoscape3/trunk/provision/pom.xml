@@ -17,11 +17,6 @@
 
 	<packaging>pom</packaging>
 
-	<!--
-		| imported (non-local) bundles are listed here as dependencies | and
-		will be deployed by pax:provision unless they are marked | with
-		<optional>true</optional>
-	-->
 
 	<dependencies>
 		<!--
@@ -34,6 +29,8 @@
 			<artifactId>pax-logging-service</artifactId> <version>1.3.0</version>
 			</dependency>
 		-->
+
+		<!-- Spring Framework Bundles -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -61,6 +58,12 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>com.springsource.javax.jms
+			</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>spring-osgi-extender</artifactId>
 			<version>${spring.osgi.version}</version>
@@ -75,108 +78,7 @@
 			<artifactId>spring-osgi-io</artifactId>
 			<version>${spring.osgi.version}</version>
 		</dependency>
-		<!--
-			<dependency> <groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.configadmin</artifactId>
-			<version>1.0.4</version> </dependency> <dependency>
-			<groupId>org.ops4j.pax.confman</groupId>
-			<artifactId>pax-confman-propsloader</artifactId>
-			<version>0.2.2</version> </dependency>
-		-->
-		<dependency>
-			<groupId>edu.emory.mathcs.backport</groupId>
-			<artifactId>com.springsource.edu.emory.mathcs.backport
-			</artifactId>
-			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>com.springsource.javax.annotation
-			</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jdom</groupId>
-			<artifactId>com.springsource.org.jdom
-			</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.oswego.cs.concurrent</groupId>
-			<artifactId>com.springsource.edu.oswego.cs.dl.util.concurrent
-			</artifactId>
-			<version>1.3.4</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>com.springsource.javax.xml.bind
-			</artifactId>
-			<version>2.1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml</groupId>
-			<artifactId>com.springsource.com.sun.xml.bind
-			</artifactId>
-			<version>2.1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml</groupId>
-			<artifactId>com.springsource.com.sun.xml.fastinfoset
-			</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>com.springsource.javax.activation
-			</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.stream</groupId>
-			<artifactId>com.springsource.javax.xml.stream
-			</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jvnet.staxex</groupId>
-			<artifactId>com.springsource.org.jvnet.staxex
-			</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>model-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.lang
-			</artifactId>
-			<version>2.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.jms</groupId>
-			<artifactId>com.springsource.javax.jms
-			</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>com.springsource.javax.transaction
-			</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.lowagie.text</groupId>
-			<artifactId>com.springsource.com.lowagie.text
-			</artifactId>
-			<version>2.0.8</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>com.springsource.org.aspectj.weaver
@@ -189,91 +91,24 @@
 			</artifactId>
 			<version>1.6.3.RELEASE</version>
 		</dependency>
+
+
+		<!-- 3rd Party Libraries -->
 		<dependency>
-			<groupId>net.sourceforge.cglib</groupId>
-			<artifactId>com.springsource.net.sf.cglib
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.lang
 			</artifactId>
-			<version>2.1.3</version>
+			<version>2.4.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>model-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>work-swing-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>core-task-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>session-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>com.lowagie.text</groupId>
+			<artifactId>com.springsource.com.lowagie.text
+			</artifactId>
+			<version>2.0.8</version>
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>io-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>work-spring-hack</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>viewmodel-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<!-- BEGIN presentation -->
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>graph-render</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>util-intr</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>spacial</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>ding-presentation-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<!-- END presentation -->
-
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap-gui-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>default-mappings</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<!-- Wrapped libraries -->
+		<!-- Wrapped 3rd Party Libraries -->
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
 			<artifactId>com.l2fprod.common.sheet
@@ -303,16 +138,104 @@
 			</artifactId>
 			<version>7.3</version>
 		</dependency>
+
+
+		<!-- Cytoscape Core Bundles -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>model-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>model-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>work-swing-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>core-task-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>session-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>io-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>work-spring-hack</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>viewmodel-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>vizmap-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>graph-render</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>util-intr</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>spacial</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>ding-presentation-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>vizmap-gui-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>default-mappings</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>log-swing</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<!-- A utility that allows you to register services dynamically -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>service-util</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- Editor Plugin -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>editor-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
 
 		<!-- cytoscape layouts -->
 		<dependency>
@@ -320,6 +243,7 @@
 			<artifactId>layout-cytoscape-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
 
 		<!-- jgraph layouts -->
 		<dependency>
@@ -343,6 +267,7 @@
 			<version>5.10.0.2</version>
 		</dependency>
 
+
 		<!-- prefuse layouts -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -355,19 +280,18 @@
 			<version>20071021</version>
 		</dependency>
 
+
 		<!-- linkout plugin -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>linkout-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		
+		
+		<!-- If you want to run your plugin, add dependencies below -->
 
-		<!-- A utility that allows you to register services dynamically -->
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>service-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
+
 	</dependencies>
 
 </project>
