@@ -61,11 +61,17 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<!-- Plugin for generating Javadoc. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<encoding>UTF-8</encoding>	
 					<locale>en</locale>
+					<javadocVersion>1.6</javadocVersion>
+					<links>
+						<link>http://java.sun.com/javase/6/docs/api/</link>
+						<link>http://cytoscape.wodaklab.org/javadoc/</link>
+					</links>
 				</configuration>
 				<executions>
 					<execution>
