@@ -118,18 +118,20 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
-			<artifactId>org.swinglabs.swing-layout</artifactId>
-			<version>1.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape.wrappers</groupId>
 			<artifactId>com.l2fprod.common.shared</artifactId>
 			<version>7.3</version>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
 			<artifactId>com.l2fprod.common.fontchooser</artifactId>
 			<version>7.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5.6</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
