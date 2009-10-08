@@ -21,10 +21,6 @@
 	<property name="buildId" value= "CytoscapeBuild" />
 
 	<property name="pluginPath" location="${buildDirectory}/target/cytoscape" />	
-	
-	<echo>
-		pluginPath = "${pluginPath}"
-	</echo>
 		
 	<!-- End of configuration section -->
 	
