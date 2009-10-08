@@ -18,7 +18,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<!--  <groupId>org.cytoscape</groupId> -->
 	<artifactId>cytoscape_product</artifactId>
-	<version>3.0.0</version>
+	<version>1.0.0</version>
 
 	<name>Cytoscape entry point</name>
 
