@@ -50,6 +50,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<optimize>true</optimize>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArguments>
@@ -72,6 +73,9 @@
 						<link>http://java.sun.com/javase/6/docs/api/</link>
 						<link>http://cytoscape.wodaklab.org/javadoc/</link>
 					</links>
+					<footer>Cytoscape 3 Core API</footer>
+					<header>Cytoscape 3 Core API</header>
+					<bottom>Copyright 2009 Cytoscape Consortium.  All rights reserved.</bottom>
 				</configuration>
 				<executions>
 					<execution>
