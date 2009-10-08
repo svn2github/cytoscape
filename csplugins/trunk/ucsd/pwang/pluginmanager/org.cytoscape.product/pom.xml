@@ -10,19 +10,20 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.product</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.product</bundle.namespace>
+		<bundle.symbolicName>cytoscape_product</bundle.symbolicName>
+		<bundle.namespace>cytoscape_product</bundle.namespace>
 		<spring.maven.artifact.version>2.5.4</spring.maven.artifact.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cytoscape</groupId>
-	<artifactId>product</artifactId>
+	<!--  <groupId>org.cytoscape</groupId> -->
+	<artifactId>cytoscape_product</artifactId>
 	<version>3.0.0</version>
 
-	<name>${bundle.symbolicName}</name>
+	<name>Cytoscape entry point</name>
 
 	<packaging>bundle</packaging>
+
 
 	<build>
 		<plugins>
@@ -31,10 +32,21 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>2.0.0</version>
 				<extensions>true</extensions>
+		        <configuration>
+		          <instructions>
+		          <!-- Very important: Bundle-SymbolicName must be a single word without '.', otherwise P2 build will fail
+		           Not sure this is a feature or bug of P2 -->
+		            <Bundle-SymbolicName>cytoscape_product;singleton:=true</Bundle-SymbolicName>
+		            <Bundle-Name>cytoscape_product</Bundle-Name>
+		          </instructions>
+		        </configuration>
+		         
 			</plugin>
+			
 		</plugins>
 	</build>
 
+ 
 	<repositories>
 		<!--
 			bootstrap for cytoscape dependencies, namely the parent POM snapshots
