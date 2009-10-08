@@ -4,14 +4,16 @@
 	<!-- Define the location of Eclipse -->
 	<property name="base" location="c:/eclipse35" />
 	<property name="baseLocation" location="${base}/eclipse" />
+
+	<!-- Define the location of cytoscape bundles -->	
+	<property name="cy3bundleDirectory" location="C:/work_cy3/eclipse35_ws/cy3bundles/plugins" />
+
 	
-	<!-- Location of feature coniguration files -->
+	<!-- Please do not change the following settings -->
+	
+	<!-- Location of feature configuration files -->
 	<property name="builder" location="." />
 	<property name="buildDirectory" location="${builder}/build_feature" />
-
-	<!-- Define the location of cytoscape bundles and rootfiles -->	
-	<property name="cy3bundleDirectory" location="C:/work_cy3/eclipse35_ws/cy3bundles/plugins" />
-	<property name="rootfilesDirectory" location="./rootfiles" />
 
 	<!-- Identifier for the feature being built-->
 	<property name="topLevelElementId" value="cytoscape_product_feature" /> 
