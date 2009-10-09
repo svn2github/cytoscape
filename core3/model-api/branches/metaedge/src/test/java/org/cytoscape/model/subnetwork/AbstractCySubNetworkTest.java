@@ -77,7 +77,6 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 	private CyEdge e1;
 	private CyEdge e2;
 	private CyEdge e3;
-	private List<CyNode> nl; 
 	private CySubNetwork sub;
 
 
@@ -95,11 +94,10 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		e2 = root.addEdge(n3,n2,true);
 		e3 = root.addEdge(n1,n3,false);
 
-        nl = new ArrayList<CyNode>(2);
-        nl.add(n1);
-        nl.add(n2);
-
-        sub = root.addSubNetwork(nl);
+        sub = root.addMetaNode().getSubNetwork();
+		sub.addNode(n1);
+		sub.addNode(n2);
+		sub.addEdge(e1);
 	}
 
 
@@ -128,19 +126,17 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertTrue("contains edge1",sub.containsEdge(e1));
 		assertTrue("contains edge1",sub.containsEdge(n1,n2));
 
-		// TODO assuming this will also copy any edges connecting to existing 
-		// nodes in the subnetwork
 		sub.addNode(n3);
 
 		assertEquals("num nodes",4,sub.getNodeCount());
-		assertEquals("num edges",3,sub.getEdgeCount());
+		assertEquals("num edges",1,sub.getEdgeCount());
 		assertTrue("contains node1",sub.containsNode(n1));
 		assertTrue("contains node2",sub.containsNode(n2));
 		assertTrue("contains node3",sub.containsNode(n3));
 		assertTrue("contains node4",sub.containsNode(n4));
 		assertTrue("contains edge1",sub.containsEdge(e1));
-		assertTrue("contains edge2",sub.containsEdge(e2));
-		assertTrue("contains edge3",sub.containsEdge(e3));
+		assertFalse("contains edge2",sub.containsEdge(e2));
+		assertFalse("contains edge3",sub.containsEdge(e3));
 
     }
 
@@ -173,9 +169,11 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 	public void testRemoveNode() {
 		defaultSetup();
 
-		nl.add(n4);
-
-        CySubNetwork sub2 = root.addSubNetwork(nl);
+        CySubNetwork sub2 = root.addMetaNode().getSubNetwork();
+		sub2.addNode(n1);
+		sub2.addNode(n2);
+		sub2.addNode(n4);
+		sub2.addEdge(e1);
 
         assertNotNull("metanode is not null",sub2);
 		assertEquals("num nodes",3,sub2.getNodeCount());
@@ -240,52 +238,4 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertEquals("edge list size",r2.getEdgeList().size(),root.getEdgeList().size());
 	}
 
-	public void testGetExternalNeighborSet() {
-		defaultSetup();
-
-		Set<CyNode> ex = sub.getExternalNeighborSet();
-
-		assertNotNull(ex);
-		assertEquals("set size",1,ex.size());
-		assertTrue("contains n3",ex.contains(n3));
-
-		// now modify the root network
-		CyEdge e4 = root.addEdge(n1,n4,true);
-		CyEdge e5 = root.addEdge(n5,n2,true);
-		
-		Set<CyNode> ex1 = sub.getExternalNeighborSet();
-	
-		assertNotNull(ex1);
-		assertEquals("set size",3,ex1.size());
-		assertTrue("contains n3",ex1.contains(n3));
-		assertTrue("contains n4",ex1.contains(n4));
-		assertTrue("contains n5",ex1.contains(n5));
-
-		// now modify the sub network
-		sub.addNode(n4);
-
-		Set<CyNode> ex3 = sub.getExternalNeighborSet();
-	
-		assertNotNull(ex3);
-		assertEquals("set size",2,ex3.size());
-		assertTrue("contains n3",ex3.contains(n3));
-		assertTrue("contains n5",ex3.contains(n5));
-
-		// note switch to root2
-
-        CyNode nn1 = root2.addNode();
-        CyNode nn2 = root2.addNode();
-        CyNode nn3 = root2.addNode();
-
-        List<CyNode> nnl = new ArrayList<CyNode>(2);
-        nnl.add(nn1);
-        nnl.add(nn2);
-
-        CySubNetwork sub2 = root2.addSubNetwork(nnl);
-
-		Set<CyNode> ex2 = sub2.getExternalNeighborSet();
-
-		assertNotNull(ex2);
-		assertEquals("set size",0,ex2.size());
-	}
 }
