@@ -824,6 +824,10 @@ public class CellAlgorithm extends AbstractLayout {
 						eAttributes.setAttribute(edgeId, UNASSIGNED_EDGE_ATT,
 								false);
 					}
+					
+		            /* Delete edge anchors */
+					Cytoscape.getCurrentNetworkView().getEdgeView(Cytoscape.getRootGraph().getEdge(edgeInt)).getBend().removeAllHandles();
+
 					if (pruneEdges) {
 						taskMonitor.setStatus("Pruning cross-region edges");
 
