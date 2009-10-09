@@ -37,7 +37,6 @@ package org.cytoscape.view.vizmap.gui.internal;
 import static org.cytoscape.model.GraphObject.EDGE;
 import static org.cytoscape.model.GraphObject.NETWORK;
 import static org.cytoscape.model.GraphObject.NODE;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_TITLE;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -55,6 +54,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
+import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -63,10 +63,13 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.LayoutStyle;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
@@ -79,9 +82,6 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
-
-import org.cytoscape.model.GraphObject;
-import org.cytoscape.session.CyNetworkManager;
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -113,9 +113,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private EditorManager editorFactory;
 
 	private VisualStyle selectedStyle;
-	
+
 	private VisualMappingManager vmm;
-	
+
 	private JPopupMenu contextMenu;
 
 	/**
@@ -128,7 +128,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
-			final CyNetworkManager cyNetworkManager, VisualStyle defaultStyle, VisualMappingManager vmm) {
+			final CyNetworkManager cyNetworkManager, VisualStyle defaultStyle,
+			VisualMappingManager vmm) {
 
 		super();
 		this.vmm = vmm;
@@ -151,13 +152,13 @@ public class DefaultViewEditorImpl extends JDialog implements
 			public void componentResized(ComponentEvent e) {
 				defaultObjectTabbedPane.repaint();
 				mainView.repaint();
-				//mainView.updateView();
+				// mainView.updateView();
 			}
 		});
-		
+
 		setupPopupMenu();
 	}
-	
+
 	private void setupPopupMenu() {
 		this.contextMenu = new JPopupMenu();
 	}
@@ -189,12 +190,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// lockSize();
 		// lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
 
-		//mainView.updateView();
-		
+		// mainView.updateView();
+
 		updateVisualPropertyLists();
-		//initComponents();
+		// initComponents();
 		buildList();
-		
+
 		repaint();
 		setLocationRelativeTo(parent);
 		setVisible(true);
@@ -212,7 +213,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// mainView.updateBackgroungColor(vmm.getVisualStyle()
 		// .getGlobalAppearanceCalculator().getDefaultBackgroundColor());
 
-		//mainView.updateView();
+		// mainView.updateView();
 
 		return mainView;
 	}
@@ -270,15 +271,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 		mainView.setBorder(new javax.swing.border.LineBorder(
 				java.awt.Color.darkGray, 1, true));
 
-		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(
-				mainView);
+		GroupLayout jXPanel2Layout = new GroupLayout(mainView);
 		mainView.setLayout(jXPanel2Layout);
 		jXPanel2Layout.setHorizontalGroup(jXPanel2Layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(0, 300,
-				Short.MAX_VALUE));
+				GroupLayout.Alignment.LEADING).addGap(0, 300, Short.MAX_VALUE));
 		jXPanel2Layout.setVerticalGroup(jXPanel2Layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(0, 237,
-				Short.MAX_VALUE));
+				GroupLayout.Alignment.LEADING).addGap(0, 237, Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
 		// TODO: fix gradient
@@ -299,19 +297,17 @@ public class DefaultViewEditorImpl extends JDialog implements
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
 		defaultObjectTabbedPane.addTab("Network", globalScrollPane);
 
-		org.jdesktop.layout.GroupLayout jXTitledPanel1Layout = new org.jdesktop.layout.GroupLayout(
-				jXTitledPanel1.getContentContainer());
+		GroupLayout jXTitledPanel1Layout = new GroupLayout(jXTitledPanel1
+				.getContentContainer());
 		jXTitledPanel1.getContentContainer().setLayout(jXTitledPanel1Layout);
 		jXTitledPanel1Layout.setHorizontalGroup(jXTitledPanel1Layout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(defaultObjectTabbedPane,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 250,
-						Short.MAX_VALUE));
+				.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(defaultObjectTabbedPane,
+						GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE));
 		jXTitledPanel1Layout.setVerticalGroup(jXTitledPanel1Layout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(defaultObjectTabbedPane,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 243,
-						Short.MAX_VALUE));
+				.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(defaultObjectTabbedPane,
+						GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE));
 
 		lockNodeSizeCheckBox.setFont(new java.awt.Font("SansSerif", 1, 12));
 		lockNodeSizeCheckBox.setText("Lock Node Width/Height");
@@ -344,111 +340,107 @@ public class DefaultViewEditorImpl extends JDialog implements
 			}
 		});
 
-		org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(
-				jXPanel1);
+		GroupLayout jXPanel1Layout = new GroupLayout(jXPanel1);
 		jXPanel1.setLayout(jXPanel1Layout);
 		jXPanel1Layout
 				.setHorizontalGroup(jXPanel1Layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
+						.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addGroup(
 								jXPanel1Layout
 										.createSequentialGroup()
 										.addContainerGap()
-										.add(
+										.addGroup(
 												jXPanel1Layout
 														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
+																GroupLayout.Alignment.LEADING)
+														.addGroup(
 																jXPanel1Layout
 																		.createSequentialGroup()
-																		.add(
+																		.addComponent(
 																				lockNodeSizeCheckBox,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				GroupLayout.DEFAULT_SIZE,
 																				138,
 																				Short.MAX_VALUE)
 																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
+																				LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(
 																				cancelButton)
 																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
+																				LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(
 																				applyButton))
-														.add(
+														.addComponent(
 																mainView,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.DEFAULT_SIZE,
 																Short.MAX_VALUE))
 										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												jXTitledPanel1,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												198, Short.MAX_VALUE).add(12,
-												12, 12)));
+												LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jXTitledPanel1,
+												GroupLayout.PREFERRED_SIZE,
+												198, Short.MAX_VALUE).addGap(
+												12, 12, 12)));
 		jXPanel1Layout
 				.setVerticalGroup(jXPanel1Layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
+						.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addGroup(
+								GroupLayout.Alignment.TRAILING,
 								jXPanel1Layout
 										.createSequentialGroup()
 										.addContainerGap()
-										.add(
+										.addGroup(
 												jXPanel1Layout
 														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.TRAILING)
-														.add(
-																org.jdesktop.layout.GroupLayout.LEADING,
+																GroupLayout.Alignment.TRAILING)
+														.addComponent(
 																jXTitledPanel1,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																GroupLayout.Alignment.LEADING,
+																GroupLayout.DEFAULT_SIZE,
 																270,
 																Short.MAX_VALUE)
-														.add(
+														.addGroup(
 																jXPanel1Layout
 																		.createSequentialGroup()
-																		.add(
+																		.addComponent(
 																				mainView,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				GroupLayout.DEFAULT_SIZE,
+																				GroupLayout.DEFAULT_SIZE,
 																				Short.MAX_VALUE)
 																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
+																				LayoutStyle.ComponentPlacement.RELATED)
+																		.addGroup(
 																				jXPanel1Layout
 																						.createParallelGroup(
-																								org.jdesktop.layout.GroupLayout.BASELINE)
-																						.add(
+																								GroupLayout.Alignment.BASELINE)
+																						.addComponent(
 																								lockNodeSizeCheckBox)
-																						.add(
+																						.addComponent(
 																								cancelButton)
-																						.add(
+																						.addComponent(
 																								applyButton))))
 										.addContainerGap()));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
-				getContentPane());
+		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(jXPanel1,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+				GroupLayout.Alignment.LEADING).addComponent(jXPanel1,
+				GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+				Short.MAX_VALUE));
 		layout.setVerticalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(jXPanel1,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+				GroupLayout.Alignment.LEADING).addComponent(jXPanel1,
+				GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+				Short.MAX_VALUE));
 		pack();
 	} // </editor-fold>
 
 	private <V> void listActionPerformed(MouseEvent e) {
 		V newValue = null;
 		final JList list = (JList) e.getSource();
-		final VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
-		
+		final VisualProperty<V> vp = (VisualProperty<V>) list
+				.getSelectedValue();
+
 		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
-			
+
 			try {
 				newValue = editorFactory.showVisualPropertyValueEditor(this,
 						vp, null);
@@ -475,32 +467,35 @@ public class DefaultViewEditorImpl extends JDialog implements
 			buildList();
 			cyNetworkManager.getCurrentNetworkView().updateView();
 			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-//			mainView.updateView();
-//			mainView.repaint();
-		} else if(SwingUtilities.isRightMouseButton(e)) {
-			if(vp != null) {
-				
+			// mainView.updateView();
+			// mainView.repaint();
+		} else if (SwingUtilities.isRightMouseButton(e)) {
+			if (vp != null) {
+
 				contextMenu.removeAll();
-				final CyNetworkView networkView = cyNetworkManager.getCurrentNetworkView();
-				
-				System.out.println("##### target value =======> " + vp.getDisplayName());
-				
-				final JMenuItem lockItemMenu = new JCheckBoxMenuItem("Lock this Visual Property") {
-					
+				final CyNetworkView networkView = cyNetworkManager
+						.getCurrentNetworkView();
+
+				System.out.println("##### target value =======> "
+						+ vp.getDisplayName());
+
+				final JMenuItem lockItemMenu = new JCheckBoxMenuItem(
+						"Lock this Visual Property") {
+
 					public void ActionPerformed(ActionEvent e) {
 						boolean lock = false;
-						if(vp.getObjectType().equals(GraphObject.NETWORK)) {
+						if (vp.getObjectType().equals(GraphObject.NETWORK)) {
 							lock = networkView.isValueLocked(vp);
-						} else if(vp.getObjectType().equals(GraphObject.NODE)) {
-							
+						} else if (vp.getObjectType().equals(GraphObject.NODE)) {
+
 						}
-						
-						if(lock)
+
+						if (lock)
 							this.setSelected(false);
 						else
 							this.setSelected(true);
 					}
-					
+
 				};
 				contextMenu.add(lockItemMenu);
 				// Display Context menu here
@@ -511,12 +506,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private void applyNewStyle(CyNetworkView view) {
 		VisualStyle curVS = vmm.getVisualStyle(view);
-		
-		if(curVS == null) {
+
+		if (curVS == null) {
 			// Set new style
 			vmm.setVisualStyle(selectedStyle, view);
 		}
-		
+
 		System.out.println("Cur VS = " + curVS);
 		selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
 		view.updateView();
@@ -560,8 +555,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 			list.setCellRenderer(renderer);
 		}
 
-//		mainView.updateView();
-//		mainView.repaint();
+		// mainView.updateView();
+		// mainView.repaint();
 	}
 
 	private void lockSize() {
@@ -611,10 +606,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 			if (value instanceof VisualProperty<?>) {
 				vp = (VisualProperty<?>) value;
 
-				RenderingEngine presentation = cyNetworkManager.getCurrentPresentation();
+				RenderingEngine presentation = cyNetworkManager
+						.getCurrentPresentation();
 				icon = presentation.getDefaultIcon(vp);
 			}
-			setText(vp.getDisplayName() + "  =  " + selectedStyle.getDefaultValue(vp));
+			setText(vp.getDisplayName() + "  =  "
+					+ selectedStyle.getDefaultValue(vp));
 			setToolTipText(vp.getDisplayName());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
@@ -623,7 +620,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 			this.setVerticalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(55);
 
-			if (vp != null && vp.getType()!= null && vp.getType().equals(String.class))
+			if (vp != null && vp.getType() != null
+					&& vp.getType().equals(String.class))
 				this.setToolTipText(vp.getDefault().toString());
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
@@ -665,7 +663,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	// }
 
 	public Component getDefaultView(VisualStyle vs) {
-		//mainView.updateView();
+		// mainView.updateView();
 
 		return mainView;
 	}

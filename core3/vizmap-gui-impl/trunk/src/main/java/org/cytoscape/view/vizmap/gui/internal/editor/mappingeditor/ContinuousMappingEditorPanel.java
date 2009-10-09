@@ -43,9 +43,11 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.LayoutStyle;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -244,151 +246,110 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 		slider.setMaximumValue(100.0F);
 		rotaryEncoder.setMaximumValue(100.0F);
 
-		org.jdesktop.layout.GroupLayout sliderLayout = new org.jdesktop.layout.GroupLayout(
-				slider);
+		GroupLayout sliderLayout = new GroupLayout(slider);
 		slider.setLayout(sliderLayout);
 		sliderLayout.setHorizontalGroup(sliderLayout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(0, 486,
-				Short.MAX_VALUE));
+				GroupLayout.Alignment.LEADING).addGap(0, 486, Short.MAX_VALUE));
 		sliderLayout.setVerticalGroup(sliderLayout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(0, 116,
-				Short.MAX_VALUE));
+				GroupLayout.Alignment.LEADING).addGap(0, 116, Short.MAX_VALUE));
 
 		attrNameLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
 		attrNameLabel.setForeground(java.awt.Color.darkGray);
 		attrNameLabel.setText("Attribute Name");
 
-		org.jdesktop.layout.GroupLayout jXMultiThumbSlider1Layout = new org.jdesktop.layout.GroupLayout(
-				rotaryEncoder);
+		GroupLayout jXMultiThumbSlider1Layout = new GroupLayout(rotaryEncoder);
 		rotaryEncoder.setLayout(jXMultiThumbSlider1Layout);
 		jXMultiThumbSlider1Layout.setHorizontalGroup(jXMultiThumbSlider1Layout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(0, 84, Short.MAX_VALUE));
+				.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0,
+						84, Short.MAX_VALUE));
 		jXMultiThumbSlider1Layout.setVerticalGroup(jXMultiThumbSlider1Layout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(0, 65, Short.MAX_VALUE));
+				.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0,
+						65, Short.MAX_VALUE));
 
 		visualPropertyLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
 		visualPropertyLabel.setForeground(java.awt.Color.darkGray);
 
-		org.jdesktop.layout.GroupLayout rangeSettingPanelLayout = new org.jdesktop.layout.GroupLayout(
-				rangeSettingPanel);
+		GroupLayout rangeSettingPanelLayout = new GroupLayout(rangeSettingPanel);
 		rangeSettingPanel.setLayout(rangeSettingPanelLayout);
 		rangeSettingPanelLayout
 				.setHorizontalGroup(rangeSettingPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
+						.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addGroup(
 								rangeSettingPanelLayout
 										.createSequentialGroup()
 										.addContainerGap()
-										.add(
-												valueSpinner,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												67,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addComponent(valueSpinner,
+												GroupLayout.PREFERRED_SIZE, 67,
+												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
+												LayoutStyle.ComponentPlacement.RELATED,
 												118, Short.MAX_VALUE)
-										.add(
-												minMaxButton,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												62,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addComponent(minMaxButton,
+												GroupLayout.PREFERRED_SIZE, 62,
+												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												addButton,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												55,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(addButton,
+												GroupLayout.PREFERRED_SIZE, 55,
+												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(deleteButton).add(10, 10, 10)));
-		rangeSettingPanelLayout
-				.setVerticalGroup(rangeSettingPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								rangeSettingPanelLayout
-										.createParallelGroup(
-												org.jdesktop.layout.GroupLayout.BASELINE)
-										.add(
-												valueSpinner,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.add(minMaxButton)
-										.add(deleteButton)
-										.add(
-												addButton,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+												LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(deleteButton).addGap(10,
+												10, 10)));
+		rangeSettingPanelLayout.setVerticalGroup(rangeSettingPanelLayout
+				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
+						rangeSettingPanelLayout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE).addComponent(
+								valueSpinner, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE).addComponent(
+								minMaxButton).addComponent(deleteButton)
+								.addComponent(addButton,
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
-				mainPanel);
+		GroupLayout layout = new GroupLayout(mainPanel);
 		mainPanel.setLayout(layout);
 
-		layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(rangeSettingPanel,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)
-						.add(
-								layout
-										.createSequentialGroup()
-										.add(
-												iconPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.add(
-												belowPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.add(
-												slider,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												243, Short.MAX_VALUE)
-										.add(
-												abovePanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		layout.setHorizontalGroup(layout.createParallelGroup(
+				GroupLayout.Alignment.LEADING).addComponent(rangeSettingPanel,
+				GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+				Short.MAX_VALUE).addGroup(
+				layout.createSequentialGroup().addComponent(iconPanel,
+						GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE).addComponent(belowPanel,
+						GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE).addComponent(slider,
+						GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+						.addComponent(abovePanel, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)));
 		layout.setVerticalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(
-				layout.createSequentialGroup().add(
+				GroupLayout.Alignment.LEADING).addGroup(
+				layout.createSequentialGroup().addGroup(
 						layout.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING).add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
-								slider,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								145, Short.MAX_VALUE).add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
-								iconPanel,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE).add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
-								belowPanel,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE).add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
-								abovePanel,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)).addPreferredGap(
-						org.jdesktop.layout.LayoutStyle.RELATED).add(
-						rangeSettingPanel,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+								GroupLayout.Alignment.LEADING).addComponent(
+								slider, GroupLayout.Alignment.TRAILING,
+								GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+								.addComponent(iconPanel,
+										GroupLayout.Alignment.TRAILING,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE).addComponent(
+										belowPanel,
+										GroupLayout.Alignment.TRAILING,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE).addComponent(
+										abovePanel,
+										GroupLayout.Alignment.TRAILING,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)).addPreferredGap(
+						LayoutStyle.ComponentPlacement.RELATED).addComponent(
+						rangeSettingPanel, GroupLayout.PREFERRED_SIZE,
+						GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
 
 		// add the main panel to the dialog.
 		this.add(mainPanel);

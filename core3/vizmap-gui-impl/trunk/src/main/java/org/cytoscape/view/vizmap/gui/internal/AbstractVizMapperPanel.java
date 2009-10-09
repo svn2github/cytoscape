@@ -47,17 +47,19 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.LayoutStyle;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
@@ -68,11 +70,9 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListe
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.event.SelectedVisualStyleSwitchedEventImpl;
-import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.IconManager;
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
+import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
@@ -80,7 +80,6 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
-import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
 
 /**
@@ -98,7 +97,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 	// TODO remove this
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
-
 
 	// Test
 	protected static final String DEFAULT_VS_TITLE2 = "Default 2";
@@ -170,11 +168,10 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	protected EditorWindowManager editorWindowManager;
 
 	protected CyNetworkManager cyNetworkManager;
-	
+
 	protected AttributeComboBoxPropertyEditor nodeAttributeEditor;
 	protected AttributeComboBoxPropertyEditor edgeAttributeEditor;
 	protected AttributeComboBoxPropertyEditor networkAttributeEditor;
-	
 
 	protected SwingPropertyChangeSupport spcs;
 	protected static final long serialVersionUID = -6839011300709287662L;
@@ -187,7 +184,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
-			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper, VisualStyle defStyle) {
+			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
+			VisualStyle defStyle) {
 
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -211,8 +209,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 		this.defaultVS = defStyle;
 		vmm.createVisualStyle(DEFAULT_VS_TITLE2);
-		
-		
+
 	}
 
 	private void initDefaultEditors() {
@@ -299,16 +296,16 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		GroupLayout bottomPanelLayout = new GroupLayout(bottomPanel);
 		bottomPanel.setLayout(bottomPanelLayout);
 		bottomPanelLayout.setHorizontalGroup(bottomPanelLayout
-				.createParallelGroup(GroupLayout.LEADING).add(
-						noMapListScrollPane, GroupLayout.DEFAULT_SIZE, 272,
-						Short.MAX_VALUE).add(buttonPanel,
+				.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(noMapListScrollPane, GroupLayout.DEFAULT_SIZE,
+						272, Short.MAX_VALUE).addComponent(buttonPanel,
 						GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
 						Short.MAX_VALUE));
 		bottomPanelLayout.setVerticalGroup(bottomPanelLayout
-				.createParallelGroup(GroupLayout.LEADING).add(
-						bottomPanelLayout.createSequentialGroup().add(
+				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
+						bottomPanelLayout.createSequentialGroup().addComponent(
 								buttonPanel, GroupLayout.PREFERRED_SIZE, 25,
-								GroupLayout.PREFERRED_SIZE).add(
+								GroupLayout.PREFERRED_SIZE).addComponent(
 								noMapListScrollPane, GroupLayout.DEFAULT_SIZE,
 								135, Short.MAX_VALUE)));
 
@@ -350,23 +347,25 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		GroupLayout vsSelectPanelLayout = new GroupLayout(vsSelectPanel);
 		vsSelectPanel.setLayout(vsSelectPanelLayout);
 		vsSelectPanelLayout.setHorizontalGroup(vsSelectPanelLayout
-				.createParallelGroup(GroupLayout.LEADING).add(
+				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 						vsSelectPanelLayout.createSequentialGroup()
-								.addContainerGap().add(vsComboBox, 0, 146,
-										Short.MAX_VALUE).addPreferredGap(
-										LayoutStyle.RELATED).add(optionButton,
+								.addContainerGap().addComponent(vsComboBox, 0,
+										146, Short.MAX_VALUE).addPreferredGap(
+										LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(optionButton,
 										GroupLayout.PREFERRED_SIZE, 64,
 										GroupLayout.PREFERRED_SIZE)
 								.addContainerGap()));
 		vsSelectPanelLayout.setVerticalGroup(vsSelectPanelLayout
-				.createParallelGroup(GroupLayout.LEADING).add(
-						vsSelectPanelLayout.createSequentialGroup().add(
+				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
+						vsSelectPanelLayout.createSequentialGroup().addGroup(
 								vsSelectPanelLayout.createParallelGroup(
-										GroupLayout.BASELINE).add(vsComboBox,
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE).add(
-										optionButton)) // .addContainerGap(
+										GroupLayout.Alignment.BASELINE)
+										.addComponent(vsComboBox,
+												GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(optionButton)) // .addContainerGap(
 				// GroupLayout.DEFAULT_SIZE,
 				// Short.MAX_VALUE)
 				));
@@ -374,23 +373,18 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		GroupLayout layout = new GroupLayout(this);
 		this.setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(
-				GroupLayout.LEADING).add(vsSelectPanel,
+				GroupLayout.Alignment.LEADING).addComponent(vsSelectPanel,
 				GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-				Short.MAX_VALUE).add(mainSplitPane, GroupLayout.DEFAULT_SIZE,
-				280, Short.MAX_VALUE));
-		layout
-				.setVerticalGroup(layout.createParallelGroup(
-						GroupLayout.LEADING)
-						.add(
-								layout.createSequentialGroup().add(
-										vsSelectPanel,
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(LayoutStyle.RELATED)
-										.add(mainSplitPane,
-												GroupLayout.DEFAULT_SIZE, 510,
-												Short.MAX_VALUE)));
+				Short.MAX_VALUE).addComponent(mainSplitPane,
+				GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE));
+		layout.setVerticalGroup(layout.createParallelGroup(
+				GroupLayout.Alignment.LEADING).addGroup(
+				layout.createSequentialGroup().addComponent(vsSelectPanel,
+						GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE).addPreferredGap(
+						LayoutStyle.ComponentPlacement.RELATED).addComponent(
+						mainSplitPane, GroupLayout.DEFAULT_SIZE, 510,
+						Short.MAX_VALUE)));
 	} // </editor-fold>
 
 	// Variables declaration - do not modify

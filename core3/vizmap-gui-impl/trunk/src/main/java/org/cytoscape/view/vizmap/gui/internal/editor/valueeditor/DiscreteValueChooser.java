@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.internal.editor.valueeditor;
 
 import java.awt.Color;
@@ -42,14 +42,14 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
+import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.LayoutStyle;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -57,28 +57,27 @@ import javax.swing.SwingConstants;
 import org.cytoscape.view.model.VisualProperty;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
-
 /**
- * Chooser for any discrete values.  This includes:
+ * Chooser for any discrete values. This includes:
  * <ul>
- *     <li>node shape</li>
- *     <li>arrow shape</li>
- *     <li>line style</li>
- *     <li>etc.</li>
+ * <li>node shape</li>
+ * <li>arrow shape</li>
+ * <li>line style</li>
+ * <li>etc.</li>
  * </ul>
- *
+ * 
  * @author kono
  */
 public class DiscreteValueChooser<T> extends JDialog {
 	private final static long serialVersionUID = 1202339876950593L;
-	
+
 	private final VisualProperty<T> type;
-	
+
 	private Map<T, Icon> valueMap;
 	private List<T> orderedKeyList;
 	private T defaultValue;
 	private boolean canceled = false;
-	
+
 	public DiscreteValueChooser(VisualProperty<T> vp) {
 		this(vp, null, null);
 	}
@@ -86,11 +85,13 @@ public class DiscreteValueChooser<T> extends JDialog {
 	/**
 	 * Creates a new DiscreteValueChooser object.
 	 * 
-	 * If List of discrete values and 
-	 *
-	 * @param vp  DOCUMENT ME!
+	 * If List of discrete values and
+	 * 
+	 * @param vp
+	 *            DOCUMENT ME!
 	 */
-	public DiscreteValueChooser(VisualProperty<T> vp, Map<T, Icon> valueMap, T defaultValue) {
+	public DiscreteValueChooser(VisualProperty<T> vp, Map<T, Icon> valueMap,
+			T defaultValue) {
 		super();
 		this.setModal(true);
 		this.type = vp;
@@ -106,12 +107,10 @@ public class DiscreteValueChooser<T> extends JDialog {
 	/**
 	 * This should be a listener for OSGi service.
 	 */
-	
-	
-	
+
 	/**
 	 * Static method to show dialog and get a value from user.
-	 *
+	 * 
 	 * @param type
 	 * @param parent
 	 * @return
@@ -139,14 +138,15 @@ public class DiscreteValueChooser<T> extends JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Select New Value");
-		
+
 		// TODO: should change the design
-//		mainPanel.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-//		                                                   new Color(Color.gray.getRed(),
-//		                                                             Color.gray.getGreen(),
-//		                                                             Color.gray.getBlue(), 100),
-//		                                                   new Point2D.Double(.8d, 0), Color.WHITE));
-		
+		// mainPanel.setTitlePainter(new BasicGradientPainter(new
+		// Point2D.Double(.2d, 0),
+		// new Color(Color.gray.getRed(),
+		// Color.gray.getGreen(),
+		// Color.gray.getBlue(), 100),
+		// new Point2D.Double(.8d, 0), Color.WHITE));
+
 		mainPanel.setTitleFont(new java.awt.Font("SansSerif", 1, 14));
 
 		iconList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -154,59 +154,56 @@ public class DiscreteValueChooser<T> extends JDialog {
 
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					applyButtonActionPerformed(evt);
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				applyButtonActionPerformed(evt);
+			}
+		});
 
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					cancelButtonActionPerformed(evt);
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				cancelButtonActionPerformed(evt);
+			}
+		});
 		// Currently not implemented
 		cancelButton.setVisible(true);
 
-		org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel
-		                                                                                      .getContentContainer());
+		GroupLayout mainPanelLayout = new GroupLayout(mainPanel
+				.getContentContainer());
 		mainPanel.getContentContainer().setLayout(mainPanelLayout);
-		mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                  .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                       mainPanelLayout.createSequentialGroup()
-		                                                                      .addContainerGap(128,
-		                                                                                       Short.MAX_VALUE)
-		                                                                      .add(cancelButton)
-		                                                                      .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                      .add(applyButton)
-		                                                                      .addContainerGap())
-		                                                  .add(iconListScrollPane,
-		                                                       org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                       291, Short.MAX_VALUE));
-		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                     mainPanelLayout.createSequentialGroup()
-		                                                                    .add(iconListScrollPane,
-		                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                         312,
-		                                                                         Short.MAX_VALUE)
-		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                    .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                        .add(applyButton)
-		                                                                                        .add(cancelButton))
-		                                                                    .addContainerGap()));
+		mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(
+				GroupLayout.Alignment.LEADING)
+				.addGroup(
+						GroupLayout.Alignment.TRAILING,
+						mainPanelLayout.createSequentialGroup()
+								.addContainerGap(128, Short.MAX_VALUE)
+								.addComponent(cancelButton).addPreferredGap(
+										LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(applyButton).addContainerGap())
+				.addComponent(iconListScrollPane, GroupLayout.DEFAULT_SIZE,
+						291, Short.MAX_VALUE));
+		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(
+				GroupLayout.Alignment.LEADING).addGroup(
+				GroupLayout.Alignment.TRAILING,
+				mainPanelLayout.createSequentialGroup().addComponent(
+						iconListScrollPane, GroupLayout.DEFAULT_SIZE, 312,
+						Short.MAX_VALUE).addPreferredGap(
+						LayoutStyle.ComponentPlacement.RELATED).addGroup(
+						mainPanelLayout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE).addComponent(
+								applyButton).addComponent(cancelButton))
+						.addContainerGap()));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(mainPanel,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(mainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   Short.MAX_VALUE));
+		layout.setHorizontalGroup(layout.createParallelGroup(
+				GroupLayout.Alignment.LEADING).addComponent(mainPanel,
+				GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+				Short.MAX_VALUE));
+		layout.setVerticalGroup(layout.createParallelGroup(
+				GroupLayout.Alignment.LEADING).addComponent(mainPanel,
+				GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+				Short.MAX_VALUE));
 		pack();
 	} // </editor-fold>
 
@@ -230,7 +227,7 @@ public class DiscreteValueChooser<T> extends JDialog {
 	// End of variables declaration
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public T getValue() {
@@ -245,7 +242,6 @@ public class DiscreteValueChooser<T> extends JDialog {
 
 			return defaultValue;
 	}
-
 
 	private void setListItems() {
 		List<Icon> icons = new ArrayList<Icon>();
@@ -268,11 +264,11 @@ public class DiscreteValueChooser<T> extends JDialog {
 		iconList.repaint();
 	}
 
-	
 	// TODO: tuning icon layout
 	public class IconCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876940871L;
-		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 18);
+		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,
+				18);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 14);
 		private final Color SELECTED_COLOR = new Color(30, 30, 80, 25);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 120);
@@ -281,13 +277,13 @@ public class DiscreteValueChooser<T> extends JDialog {
 			setOpaque(true);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value, int index,
-		                                              boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
 			// Get icon for the target value
 			final Icon icon = valueMap.get(value);
 
 			setText(value.toString());
-			//icon.setLeftPadding(15);
+			// icon.setLeftPadding(15);
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
@@ -296,8 +292,10 @@ public class DiscreteValueChooser<T> extends JDialog {
 			this.setIconTextGap(35);
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
-			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
-			setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 20));
+			setForeground(isSelected ? SELECTED_FONT_COLOR : list
+					.getForeground());
+			setPreferredSize(new Dimension(icon.getIconWidth(), icon
+					.getIconHeight() + 20));
 			this.setBorder(new DropShadowBorder());
 
 			return this;
