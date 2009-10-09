@@ -631,7 +631,9 @@ public class PreviewTablePanel extends JPanel {
 		if ((commentLineChar != null) && (commentLineChar.trim().length() != 0)) {
 			this.commentChar = commentLineChar;
 		}
-
+		else {
+			this.commentChar = null;
+		}
 		/*
 		 * If rendrer is null, create default one.
 		 */
