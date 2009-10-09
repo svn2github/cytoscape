@@ -1,10 +1,14 @@
 package org.genmapp.golayout;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import cytoscape.Cytoscape;
 import cytoscape.layout.AbstractLayout;
@@ -38,6 +42,7 @@ public class GOLayout extends CytoscapePlugin {
 
 		protected static final String LAYOUT_NAME = "0-golayout";
 		LayoutProperties layoutProperties = null;
+		private static final String HELP = "GOLayout Help";
 
 		/**
 		 * Creates a new CellularLayoutAlgorithm object.
@@ -87,6 +92,13 @@ public class GOLayout extends CytoscapePlugin {
 			 * our values based on what we read from the property file
 			 */
 			updateSettings(true);
+			
+			// Add help menu item
+			JMenuItem getHelp = new JMenuItem(HELP);
+			getHelp.setToolTipText("Open online help for GOLayout");
+			GetHelpListener getHelpListener = new GetHelpListener();
+			getHelp.addActionListener(getHelpListener);
+			Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(getHelp);
 
 		}
 
@@ -263,3 +275,16 @@ public class GOLayout extends CytoscapePlugin {
 		}
 	}
 }
+
+/**
+ * This class direct a browser to the help manual web page.
+ */
+class GetHelpListener implements ActionListener {
+	private String helpURL = "http://genmapp.org/GOLayout/GOLayout.html";
+
+	public void actionPerformed(ActionEvent ae) {
+		cytoscape.util.OpenBrowser.openURL(helpURL);
+	}
+
+}
+
