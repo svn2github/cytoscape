@@ -36,7 +36,6 @@ public class PartitionNetworkVisualStyleFactory {
 	 * 
 	 */
 	protected static String attributeName = "annotation.GO MOLECULAR_FUNCTION";
-	private static final String NumChildren = "NumChildren";
 
 	private static LabelPosition lp = new LabelPosition();
 	public static DiscreteMapping disMappingLabelPosition = new DiscreteMapping(
@@ -112,21 +111,21 @@ public class PartitionNetworkVisualStyleFactory {
 			
 			ContinuousMapping contMappingNodeWidth = new ContinuousMapping(PartitionAlgorithm.NETWORK_LIMIT_MIN, ObjectMapping.NODE_MAPPING);
 			contMappingNodeWidth.setControllingAttributeName(
-					NumChildren, view.getNetwork(),
+					PartitionAlgorithm.SUBNETWORK_SIZE, view.getNetwork(),
 					false);
 			contMappingNodeWidth.setInterpolator(new LinearNumberToNumberInterpolator());
-			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 10, 10));
-			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(60, 60, 60));
+			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 20, 20));
+			contMappingNodeWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(80, 80, 100));
 			Calculator nodeWidthCalculator = new BasicCalculator(attributeName, contMappingNodeWidth, VisualPropertyType.NODE_WIDTH);
 			nac.setCalculator(nodeWidthCalculator);
 
 			ContinuousMapping contMappingNodeHeight = new ContinuousMapping(PartitionAlgorithm.NETWORK_LIMIT_MIN, ObjectMapping.NODE_MAPPING);
 			contMappingNodeHeight.setControllingAttributeName(
-					NumChildren, view.getNetwork(),
+					PartitionAlgorithm.SUBNETWORK_SIZE, view.getNetwork(),
 					false);
 			contMappingNodeHeight.setInterpolator(new LinearNumberToNumberInterpolator());
-			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 10, 10));
-			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(60, 60, 60));
+			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(10, 20, 20));
+			contMappingNodeHeight.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(80, 80, 100));
 			Calculator nodeHeightCalculator = new BasicCalculator(attributeName, contMappingNodeHeight, VisualPropertyType.NODE_HEIGHT);
 			nac.setCalculator(nodeHeightCalculator);
 
@@ -182,6 +181,16 @@ public class PartitionNetworkVisualStyleFactory {
 					attributeName, disMappingEdgeLineStyle,
 					VisualPropertyType.EDGE_COLOR);
 			eac.setCalculator(edgeLineStyleCalculator);
+			
+			ContinuousMapping contMappingLineWidth = new ContinuousMapping(1, ObjectMapping.EDGE_MAPPING);
+			contMappingLineWidth.setControllingAttributeName(
+					PartitionAlgorithm.SUBNETWORK_CONNECTIONS, view.getNetwork(),
+					false);
+			contMappingLineWidth.setInterpolator(new LinearNumberToNumberInterpolator());
+			contMappingLineWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MIN, new BoundaryRangeValues(1, 2, 2));
+			contMappingLineWidth.addPoint(PartitionAlgorithm.NETWORK_LIMIT_MAX, new BoundaryRangeValues(70, 70, 90));
+			Calculator lineWidthCalculator = new BasicCalculator(attributeName, contMappingLineWidth, VisualPropertyType.EDGE_LINE_WIDTH);
+			eac.setCalculator(lineWidthCalculator);
 
 			mfStyle.setEdgeAppearanceCalculator(eac);
 

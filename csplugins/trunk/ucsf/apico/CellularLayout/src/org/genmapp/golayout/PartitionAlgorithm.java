@@ -1,7 +1,5 @@
 package org.genmapp.golayout;
 
-import giny.model.Edge;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -26,7 +24,6 @@ import cytoscape.data.Semantics;
 import cytoscape.ding.CyGraphAllLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
@@ -51,12 +48,11 @@ public class PartitionAlgorithm extends AbstractLayout implements
 	private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
 	private List<CyGroup> groups = new ArrayList<CyGroup>();
 	private List<CyNode> unconnectedNodes = new ArrayList<CyNode>();
-	protected static int NETWORK_LIMIT_MIN = 5; // necessary size to show
-	// network
+	protected static int NETWORK_LIMIT_MIN = 5; // min to show network
 	protected static int NETWORK_LIMIT_MAX = 200;
 	private static final int SUBNETWORK_COUNT_WARNING = 30; // will warn if >
-
-	// view in the tiling
+	protected static final String SUBNETWORK_CONNECTIONS = "_subnetworkConnections";
+	protected static final String SUBNETWORK_SIZE = "_subnetworkSize";
 
 	/**
 	 * Creates a new PartitionAlgorithm object.
@@ -180,20 +176,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		CyNetworkView overview_view = Cytoscape.getNetworkView(overview_network
 				.getIdentifier());
 
-		// set up matrix
-//		HashMap<Object, Integer> subnetHash = new HashMap<Object, Integer>();
-//		int count = 0;
-//		for (Object subnet : nodeAttributeValues) {
-//			subnetHash.put(subnet, count);
-//			count++;
-//
-//			// create subnetwork nodes
-//			// overview_network.addNode(Cytoscape.getCyNode(subnet.toString(),
-//			// true));
-//		}
-////		int[][] subnetMatrix = new int[nodeAttributeValues.size()][nodeAttributeValues
-//				.size()];
-
 		CyAttributes nAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
 
@@ -202,44 +184,40 @@ public class PartitionAlgorithm extends AbstractLayout implements
 		for (int edgeInt : edges) {
 			int nodeInt1 = Cytoscape.getRootGraph().getEdgeSourceIndex(edgeInt);
 			int nodeInt2 = Cytoscape.getRootGraph().getEdgeTargetIndex(edgeInt);
-			String node1 = net.getNode(nodeInt1)
-					.getIdentifier();
-			String node2 = net.getNode(nodeInt2)
-					.getIdentifier();
+			String node1 = net.getNode(nodeInt1).getIdentifier();
+			String node2 = net.getNode(nodeInt2).getIdentifier();
 			if (nAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
-				List<Object> nodeRegionList1 = nAttributes.getListAttribute(
+				List<Object> nodePartitionList1 = nAttributes.getListAttribute(
 						node1, attributeName);
-				List<Object> nodeRegionList2 = nAttributes.getListAttribute(
+				List<Object> nodePartitionList2 = nAttributes.getListAttribute(
 						node2, attributeName);
 
-				for (Object nr1 : nodeRegionList1) {
-					for (Object nr2 : nodeRegionList2) {
-//						subnetMatrix[subnetHash.get(nr1)][subnetHash.get(nr2)] = subnetMatrix[subnetHash
-//								.get(nr1)][subnetHash.get(nr2)] + 1;
-
+				for (Object np1 : nodePartitionList1) {
+					for (Object np2 : nodePartitionList2) {
+						// skip if same partition
+						if (np1.toString().equalsIgnoreCase(np2.toString()))
+							continue;
 						// create nodes and edges
-						CyNode cn1 = Cytoscape.getCyNode(nr1.toString(), true);
-						CyNode cn2 = Cytoscape.getCyNode(nr2.toString(), true);
+						CyNode cn1 = Cytoscape.getCyNode(np1.toString(), true);
+						CyNode cn2 = Cytoscape.getCyNode(np2.toString(), true);
 						CyEdge ce = Cytoscape.getCyEdge(cn1, cn2,
-								Semantics.INTERACTION, "subnetworkInteraction", true);
+								Semantics.INTERACTION, "subnetworkInteraction",
+								true);
 						overview_network.addNode(cn1);
 						overview_network.addNode(cn2);
-
-//						int newEdge = rootGraph.createEdge(source,
-//								target);
-
 						overview_network.addEdge(ce);
-						if (null != eAttributes.getIntegerAttribute(ce.getIdentifier(), "_nodesInSubnetwork")){
-							
-					
-						eAttributes.setAttribute(ce.getIdentifier(),
-								"_nodesInSubnetwork", eAttributes
-										.getIntegerAttribute(
-												ce.getIdentifier(),
-												"_nodesInSubnetwork") + 1);
+						if (null != eAttributes.getDoubleAttribute(ce
+								.getIdentifier(), SUBNETWORK_CONNECTIONS)) {
+							eAttributes
+									.setAttribute(ce.getIdentifier(),
+											SUBNETWORK_CONNECTIONS,
+											eAttributes.getDoubleAttribute(ce
+													.getIdentifier(),
+													SUBNETWORK_CONNECTIONS) + 1.0);
+
 						} else { // first pass; thus create attribute
-							eAttributes.setAttribute(ce.getIdentifier(),
-									"_nodesInSubnetwork", 1);
+							//use double so you can passThrough to Edge Line Width
+							eAttributes.setAttribute(ce.getIdentifier(), SUBNETWORK_CONNECTIONS, 1.0);
 						}
 					}
 				}
@@ -252,14 +230,20 @@ public class PartitionAlgorithm extends AbstractLayout implements
 						attributeName);
 			}
 		}
-		
+
+		Iterator<CyNode> nodeIt = overview_network.nodesIterator();
+		while (nodeIt.hasNext()) {
+			String nodeId = nodeIt.next().getIdentifier();
+			nAttributes.setAttribute(nodeId, SUBNETWORK_SIZE,
+					attributeValueNodeMap.get(nodeId).size());
+		}
+
 		Cytoscape.getVisualMappingManager().setVisualStyle(
 				PartitionNetworkVisualStyleFactory.attributeName);
-		CyLayoutAlgorithm layout = CyLayouts.getLayout("circular");
+		CyLayoutAlgorithm layout = CyLayouts.getLayout("degree-circle");
 		layout.doLayout(overview_view);
 		views.add(0, overview_view);
 	}
-
 
 	public void populateNodes(String attributeName) {
 
@@ -313,8 +297,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
 
 				for (Object o : nodeAttributeValues) {
-					// System.out.println ("checking node value " + val +
-					// " against " + o.toString());
 					if (val.indexOf(o.toString()) >= 0) {
 						selectedNodes = attributeValueNodeMap.get(o);
 						if (selectedNodes == null) {
@@ -326,9 +308,6 @@ public class PartitionAlgorithm extends AbstractLayout implements
 									selectedNodes);
 							valueFound = true;
 						}
-						// System.out.println ("selected nodes for value: " +
-						// o.toString() + " = " +
-						// selectedNodes);
 					}
 				}
 			}
@@ -439,7 +418,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 				CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.GRID);
 				// finally loop through the network views and fitContent
 				for (CyNetworkView view : views) {
-					//Cytoscape.setCurrentNetworkView(view.getIdentifier());
+					// Cytoscape.setCurrentNetworkView(view.getIdentifier());
 					view.fitContent();
 				}
 
