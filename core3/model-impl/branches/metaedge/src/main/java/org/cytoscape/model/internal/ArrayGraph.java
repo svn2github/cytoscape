@@ -153,7 +153,7 @@ public class ArrayGraph implements CyRootNetwork {
 		subNets = new ArrayList<CySubNetwork>();
 		metaNodes = new ArrayList<CyMetaNode>();
 
-		base = addSubNetwork(new ArrayList<CyNode>());
+		base = addSubNetwork(); 
 	}
 
 	/**
@@ -184,7 +184,6 @@ public class ArrayGraph implements CyRootNetwork {
 		if ((e >= 0) && (e < edgePointers.size()))
 			return edgePointers.get(e).cyEdge;
 		else
-
 			return null;
 	}
 
@@ -212,14 +211,14 @@ public class ArrayGraph implements CyRootNetwork {
 		NodePointer node = first;
 
 		synchronized (this) {
-		while (numRemaining > 0) {
-			// possible NPE here if the linked list isn't constructed correctly
-			// this is the correct behavior
-			final CyNode toAdd = node.cyNode;
-			node = node.nextNode[inId];
-			ret.add(toAdd);
-			numRemaining--;
-		}
+			while (numRemaining > 0) {
+				// possible NPE here if the linked list isn't constructed correctly
+				// this is the correct behavior
+				final CyNode toAdd = node.cyNode;
+				node = node.nextNode[inId];
+				ret.add(toAdd);
+				numRemaining--;
+			}
 		}
 
 		return ret;
@@ -238,24 +237,26 @@ public class ArrayGraph implements CyRootNetwork {
 		EdgePointer edge = null;
 
 		synchronized (this) {
-		NodePointer node = first;
-		while (numRemaining > 0) {
-			final CyEdge retEdge;
+			NodePointer node = first;
+			while (numRemaining > 0) {
+				final CyEdge retEdge;
 
-			if (edge != null) {
-				retEdge = edge.cyEdge;
-			} else {
-				for (edge = node.firstOutEdge[inId]; edge == null; node = node.nextNode[inId], edge = node.firstOutEdge[inId]);
+				if (edge != null) {
+					retEdge = edge.cyEdge;
+				} else {
+					for (edge = node.firstOutEdge[inId]; 
+					     edge == null; 
+					     node = node.nextNode[inId], edge = node.firstOutEdge[inId]);
 
-				node = node.nextNode[inId];
-				retEdge = edge.cyEdge;
+					node = node.nextNode[inId];
+					retEdge = edge.cyEdge;
+				}
+
+				edge = edge.nextOutEdge[inId];
+				numRemaining--;
+
+				ret.add(retEdge);
 			}
-
-			edge = edge.nextOutEdge[inId];
-			numRemaining--;
-
-			ret.add(retEdge);
-		}
 		}
 
 		return ret;
@@ -352,8 +353,7 @@ public class ArrayGraph implements CyRootNetwork {
 		}
 
 		eventHelper.fireSynchronousEvent(new AddedNodeEventImpl(n.cyNode, this),
-		                                 AddedNodeListener.class);
-
+			                                 AddedNodeListener.class);
 		return n.cyNode;
 	}
 
@@ -857,16 +857,9 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CySubNetwork addSubNetwork(final List<CyNode> nodes) {
-		return addSubNetwork(nodes, null);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public CySubNetwork addSubNetwork(final List<CyNode> nodes, final List<CyEdge> edges) {
+	private CySubNetwork addSubNetwork() {
 		final int newId = ++numSubNetworks;
-		final ArraySubGraph sub = new ArraySubGraph(this,nodes,edges,newId);
+		final ArraySubGraph sub = new ArraySubGraph(this,newId);
 		subNets.add(sub);
 		return sub;
 	}
@@ -874,7 +867,7 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeSubNetwork(final CySubNetwork sub) {
+	private void removeSubNetwork(final CySubNetwork sub) {
 		if ( sub == null )
 			throw new NullPointerException("subnetwork is null");
 
@@ -894,16 +887,10 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyMetaNode addMetaNode(final CySubNetwork sub) {
-		
-		//System.out.println("meta addNode sub");
-		final CyMetaNode newNode = addNode( sub );
+	public CyMetaNode addMetaNode() {
 
-		// TODO do we need to preserve directedness?
-		for ( CyNode exNode : sub.getExternalNeighborSet() )
-			// important to call edgeAdd so as not to add this
-			// metanode edge to the base network
-			edgeAdd(newNode, exNode, false); 
+		//System.out.println("meta addNode sub");
+		final CyMetaNode newNode = addNode( addSubNetwork() );
 
 		metaNodes.add(newNode);
 
@@ -927,13 +914,6 @@ public class ArrayGraph implements CyRootNetwork {
 		metaNodes.remove(n);
 
 		removeNode(n);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<CySubNetwork> getSubNetworkList() {
-		return new ArrayList<CySubNetwork>(subNets);
 	}
 
 	/**
