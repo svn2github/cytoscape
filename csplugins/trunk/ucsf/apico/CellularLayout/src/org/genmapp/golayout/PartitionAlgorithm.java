@@ -257,6 +257,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 				PartitionNetworkVisualStyleFactory.attributeName);
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("circular");
 		layout.doLayout(overview_view);
+		views.add(0, overview_view);
 	}
 
 
@@ -438,7 +439,7 @@ public class PartitionAlgorithm extends AbstractLayout implements
 				CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.GRID);
 				// finally loop through the network views and fitContent
 				for (CyNetworkView view : views) {
-					Cytoscape.setCurrentNetworkView(view.getIdentifier());
+					//Cytoscape.setCurrentNetworkView(view.getIdentifier());
 					view.fitContent();
 				}
 
