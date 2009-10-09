@@ -3,30 +3,30 @@ package org.cytoscape.work.internal.tunables;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
+import java.awt.event.KeyListener;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.awt.event.KeyListener;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
 import javax.swing.ListCellRenderer;
 import javax.swing.ToolTipManager;
-import javax.swing.ComboBoxEditor;
-import javax.swing.JTextField;
 
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
+
 
 
 
@@ -164,28 +164,28 @@ public class URLHandler extends AbstractGuiHandler {
     private void setLayout(){
     	layout = new GroupLayout(panel);
 		
-		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-				.add(
+		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(
 					layout.createSequentialGroup()
 						.addContainerGap()
-						.add(layout.createParallelGroup(GroupLayout.LEADING)
-							.add(networkFileComboBox,0, 350,Short.MAX_VALUE)
-							.add(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
-							.add(titleSeparator,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+							.addComponent(networkFileComboBox,0, 350,Short.MAX_VALUE)
+							.addComponent(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
+							.addComponent(titleSeparator,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
 							)
 						.addContainerGap()));
 		
-		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-				.add(
+		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(
 					layout.createSequentialGroup()
 						.addContainerGap()
-						.add(titleLabel)
-						.add(8, 8, 8)
-						.add(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-						.add(7, 7, 7)
-						.addPreferredGap(LayoutStyle.RELATED)
-						.add(networkFileComboBox,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
+						.addComponent(titleLabel)
+						.addGap(8, 8, 8)
+						.addComponent(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
+						.addGap(7, 7, 7)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(networkFileComboBox,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,3, Short.MAX_VALUE)
 						.addContainerGap()));
 	
     }

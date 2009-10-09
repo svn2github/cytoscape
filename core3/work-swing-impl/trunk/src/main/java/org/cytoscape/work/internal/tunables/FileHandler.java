@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.lang.reflect.Field;
 
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -16,6 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
@@ -23,8 +25,6 @@ import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
 
 import cytoscape.Cytoscape;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 
 /**
  * Handler for the type <i>File</i> of <code>Tunable</code>
@@ -208,31 +208,31 @@ public class FileHandler extends AbstractGuiHandler {
 	private void setLayout(){
 		layout = new GroupLayout(panel);
 		
-		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-				.add(layout.createSequentialGroup()
+		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
 						.addContainerGap()
-						.add(layout.createParallelGroup(GroupLayout.LEADING)
-								.add(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
-								.add(titleSeparator,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
-								.add(layout.createSequentialGroup()
-										.add(fileTextField,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
-										.addPreferredGap(LayoutStyle.RELATED)
-										.add(chooseButton))
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
+								.addComponent(titleSeparator,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(fileTextField,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(chooseButton))
 						)
 						.addContainerGap()));
 		
-		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-				.add(layout.createSequentialGroup()
+		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
 						.addContainerGap()
-						.add(titleLabel)
-						.add(8, 8, 8)
-						.add(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-						.add(7, 7, 7)
-						.addPreferredGap(LayoutStyle.RELATED)
-						.add(layout.createParallelGroup(GroupLayout.BASELINE)
-								.add(chooseButton)
-								.add(fileTextField))
-						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
+						.addComponent(titleLabel)
+						.addGap(8, 8, 8)
+						.addComponent(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
+						.addGap(7, 7, 7)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+								.addComponent(chooseButton)
+								.addComponent(fileTextField))
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,3, Short.MAX_VALUE)
 						.addContainerGap()));
 	}
     
