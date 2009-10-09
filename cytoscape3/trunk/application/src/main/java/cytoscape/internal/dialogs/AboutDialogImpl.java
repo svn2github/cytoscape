@@ -34,20 +34,19 @@
 */
 package cytoscape.internal.dialogs;
 
-import java.awt.Component;
 import java.awt.Window;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.JEditorPane;
+import javax.swing.LayoutStyle;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-
-import cytoscape.util.OpenBrowser;
 
 import cytoscape.dialogs.AboutDialog;
+import cytoscape.util.OpenBrowser;
 
 
 /**
@@ -136,21 +135,21 @@ class AboutDialogImpl extends javax.swing.JDialog implements AboutDialog {
 		titleLabel.setFont(new java.awt.Font("SansSerif", 0, 18));
 		titleLabel.setText("Client Name Here");
 
-		org.jdesktop.layout.GroupLayout titlePanelLayout = new org.jdesktop.layout.GroupLayout(titlePanel);
+		GroupLayout titlePanelLayout = new GroupLayout(titlePanel);
 		titlePanel.setLayout(titlePanelLayout);
-		titlePanelLayout.setHorizontalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                    .add(titlePanelLayout.createSequentialGroup()
+		titlePanelLayout.setHorizontalGroup(titlePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		                                                    .addGroup(titlePanelLayout.createSequentialGroup()
 		                                                                         .addContainerGap()
-		                                                                         .add(titleLabel,
-		                                                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                         .addComponent(titleLabel,
+		                                                                              GroupLayout.DEFAULT_SIZE,
 		                                                                              339,
 		                                                                              Short.MAX_VALUE)
 		                                                                         .addContainerGap()));
-		titlePanelLayout.setVerticalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                  .add(titlePanelLayout.createSequentialGroup()
+		titlePanelLayout.setVerticalGroup(titlePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		                                                  .addGroup(titlePanelLayout.createSequentialGroup()
 		                                                                       .addContainerGap()
-		                                                                       .add(titleLabel,
-		                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                       .addComponent(titleLabel,
+		                                                                            GroupLayout.DEFAULT_SIZE,
 		                                                                            32,
 		                                                                            Short.MAX_VALUE)
 		                                                                       .addContainerGap()));
@@ -163,43 +162,43 @@ class AboutDialogImpl extends javax.swing.JDialog implements AboutDialog {
 		mainEditorPane.setEditable(false);
 		mainScrollPane.setViewportView(mainEditorPane);
 
-		org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel);
+		GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
 		mainPanel.setLayout(mainPanelLayout);
-		mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                  .add(mainPanelLayout.createSequentialGroup()
+		mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		                                                  .addGroup(mainPanelLayout.createSequentialGroup()
 		                                                                      .addContainerGap()
-		                                                                      .add(mainScrollPane)
+		                                                                      .addComponent(mainScrollPane)
 		                                                                      .addContainerGap()));
-		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                .add(mainPanelLayout.createSequentialGroup()
+		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		                                                .addGroup(mainPanelLayout.createSequentialGroup()
 		                                                                    .addContainerGap()
-		                                                                    .add(mainScrollPane,
-		                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                    .addComponent(mainScrollPane,
+		                                                                         GroupLayout.DEFAULT_SIZE,
 		                                                                         215,
 		                                                                         Short.MAX_VALUE)
 		                                                                    .addContainerGap()));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(titlePanel,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		                                .addComponent(titlePanel,
+		                                     GroupLayout.DEFAULT_SIZE,
+		                                     GroupLayout.DEFAULT_SIZE,
 		                                     Short.MAX_VALUE)
-		                                .add(org.jdesktop.layout.GroupLayout.TRAILING, mainPanel,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                .addComponent(mainPanel,GroupLayout.Alignment.TRAILING,
+		                                     GroupLayout.DEFAULT_SIZE,
+		                                     GroupLayout.DEFAULT_SIZE,
 		                                     Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(layout.createSequentialGroup()
-		                                         .add(titlePanel,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                         .add(mainPanel,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		                              .addGroup(layout.createSequentialGroup()
+		                                         .addComponent(titlePanel,
+		                                              GroupLayout.PREFERRED_SIZE,
+		                                              GroupLayout.DEFAULT_SIZE,
+		                                              GroupLayout.PREFERRED_SIZE)
+		                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+		                                         .addComponent(mainPanel,
+		                                              GroupLayout.DEFAULT_SIZE,
+		                                              GroupLayout.DEFAULT_SIZE,
 		                                              Short.MAX_VALUE)));
 
 		pack();
