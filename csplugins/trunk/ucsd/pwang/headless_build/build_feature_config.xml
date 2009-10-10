@@ -8,7 +8,9 @@
 	<!-- Define the location of cytoscape bundles -->	
 	<property name="cy3bundleDirectory" location="C:/work_cy3/eclipse35_ws/cy3bundles/plugins" />
 
-	
+	<!-- Define the location of rootfiles -->	
+	<property name="rootfilesDirectory" location="C:/work_cy3/eclipse35_ws/cy3rootfiles" />
+
 	<!-- Please do not change the following settings -->
 	
 	<!-- Location of feature configuration files -->
