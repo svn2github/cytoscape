@@ -37,9 +37,13 @@ import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
+import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.data.writers.CytoscapeSessionWriter;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +59,7 @@ public class SessionCommand extends AbstractCommand {
 		// Define our subcommands
 		settingsMap = new HashMap();
 		addSetting("open", "file");
-		addSetting("close");
+		addSetting("new");
 		addSetting("save", "file");
 	}
 
@@ -70,9 +74,59 @@ public class SessionCommand extends AbstractCommand {
 
 	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
+
 		if (subCommand.equals("open")) {
-		} else if (subCommand.equals("close")) {
+			// Load a session from a file
+			String fileName = null;
+			if (args.containsKey("file"))
+				fileName = args.get("file");
+			else
+				throw new CyCommandException("session: need file argument to open a session");
+
+			try {
+				CytoscapeSessionReader reader = new CytoscapeSessionReader(fileName);
+				reader.read();
+			} catch (Exception e) {
+				throw new CyCommandException("session: unable to open session file "+
+				                             fileName+": "+e.getMessage());
+			}
+	
+			result.addMessage("session: opened session: "+fileName);
+			
+			// TODO: figure some things out about the session
+			// TODO: Get the number of networks
+			// TODO: Get the current network
+
+		} else if (subCommand.equals("new")) {
+			// Create a new session
+			Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
+			Cytoscape.createNewSession();
+			Cytoscape.getDesktop().setTitle("Cytoscape Desktop (New Session)");
+			Cytoscape.getDesktop().getNetworkPanel().repaint();
+			Cytoscape.getDesktop().repaint();
+			Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
+			result.addMessage("session: created new session");
+
 		} else if (subCommand.equals("save")) {
+			// Save a session.  If no file argument is given, save the current session
+			String fileName = null;
+			if (args.containsKey("file"))
+				fileName = args.get("file");
+			else
+				fileName = Cytoscape.getCurrentSessionFileName();
+
+			if (!fileName.endsWith(".cys"))
+				fileName = fileName + ".cys";
+				
+			try {
+				CytoscapeSessionWriter writer = new CytoscapeSessionWriter(fileName);
+				writer.writeSessionToDisk();
+			} catch (Exception e) {
+				throw new CyCommandException("session: unable to save session file "+
+				                             fileName+": "+e.getMessage());
+			}
+			result.addMessage("session: saved session to file "+fileName);
 		}
 		return result;
 	}

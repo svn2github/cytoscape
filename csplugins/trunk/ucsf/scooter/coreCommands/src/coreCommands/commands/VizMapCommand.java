@@ -39,6 +39,7 @@ import cytoscape.command.CyCommandResult;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
@@ -81,14 +82,20 @@ public class VizMapCommand extends AbstractCommand {
 			if (args.containsKey("style"))
 				styleName = args.get("style");
 
+			// Make sure the style exists
 			CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 			VisualMappingManager vizMapper = 
 				new VisualMappingManager(networkView);
-			// Do the appropriate substitutions (if any)
-			VisualStyle style = vizMapper.setVisualStyle(styleName);
-			if (style == null) {
+
+			// We need to get the visual style directly from the catalog because,
+			// unlike what the documentation says, setVisualStyle does /not/ return
+			// null if the style doesn't exist!
+			CalculatorCatalog catalog = vizMapper.getCalculatorCatalog();
+			VisualStyle vs = catalog.getVisualStyle(styleName);
+			if (vs == null)
 				throw new CyCommandException("Unknown style "+styleName);
-			}
+			vizMapper.setVisualStyle(vs);
+
 			vizMapper.applyAppearances();
 			networkView.updateView();
 			result.addMessage("vizmap: applied style "+styleName);

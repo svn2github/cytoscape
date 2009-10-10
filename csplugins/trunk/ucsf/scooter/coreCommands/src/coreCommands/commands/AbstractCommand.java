@@ -33,6 +33,7 @@
 package coreCommands.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public abstract class AbstractCommand implements CyCommand {
 	/**
 	 * Override if the sub-commands support Tunables directly (recommended)
 	 */
-	public CyCommandResult execute(String subCommand, List<Tunable>args) throws CyCommandException { 
+	public CyCommandResult execute(String subCommand, Collection<Tunable>args) throws CyCommandException { 
 		return execute(subCommand, createKVMap(args));
 	}
 
@@ -138,7 +139,7 @@ public abstract class AbstractCommand implements CyCommand {
 		return createKVMap(settingsMap.get(subCommand));
 	}
 
-	protected Map<String, String> createKVMap(List<Tunable> tList) {
+	protected Map<String, String> createKVMap(Collection<Tunable> tList) {
 		Map<String, String> kvSettings = new HashMap();
 		for (Tunable t: tList) {
 			Object v = t.getValue();

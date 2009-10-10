@@ -59,6 +59,7 @@ public class NetworkViewCommand extends AbstractCommand {
 		addSetting("create", "network", "current");
 		addSetting("get current");
 		addSetting("make current", "network", "current");
+		addSetting("layout", "algorithm", "default");
 	}
 
 
