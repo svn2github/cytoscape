@@ -1,0 +1,347 @@
+package cytoscape.coreplugins.biopax.ui;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.coreplugins.biopax.util.BioPAXUtilRex;
+
+import cytoscape.task.util.TaskManager;
+import cytoscape.task.ui.JTaskConfig;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import java.awt.event.*;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.text.DecimalFormat;
+
+import org.biopax.paxtools.controller.Integrator;
+import org.biopax.paxtools.controller.ConversionScore;
+import org.biopax.paxtools.model.Model;
+
+public class IntegrateBioPAXDialog extends JDialog {
+    private JPanel contentPane;
+    private JButton buttonOK;
+    private JButton buttonCancel;
+    private JComboBox firstNetworkComboBox;
+    private JComboBox secondNetworkComboBox;
+    private JSlider slider1;
+    private JSpinner spinner1;
+    private JTable scoresTable;
+    private JButton previewButton;
+    private JCheckBox colorizeNodesAccordingToCheckBox;
+    private JButton firstColorButton;
+    private JButton secondColorButton;
+    private JButton mergedColorButton;
+    private JPanel thresholdPanel;
+    private JPanel colorizeMain;
+    private JPanel colorsPanel;
+    private JCheckBox mergeSimilarReactionsCheckBox;
+    private JPanel previewPanel;
+
+    private ArrayList<CyNetwork> bpNetworks = new ArrayList<CyNetwork>();
+    private Integrator integrator = null;
+    private List<ConversionScore> scores;
+
+    private Color firstColor = new Color(255, 0, 0),
+            secondColor = new Color(0, 255, 0),
+            mergedColor = new Color(255, 255, 0);
+
+    private boolean isColorPanelEnabled = false;
+    private boolean isScoringEnabled = true;
+
+    private final int checkBoxColumn = 3;
+
+
+    // Keep track to reduce CPU work
+    private Model oldModel1 = null, oldModel2 = null;
+    private Double oldThreshold;
+
+
+    private int MAX_SCORE = 100;
+
+    public IntegrateBioPAXDialog() {
+        setContentPane(contentPane);
+        setModal(true);
+        getRootPane().setDefaultButton(buttonOK);
+
+        setTitle("Integrate BioPAX networks");
+
+        spinner1.setModel(new SpinnerNumberModel(1, .0, MAX_SCORE, .1));
+        slider1.setModel(new DefaultBoundedRangeModel(1, 0, 0, MAX_SCORE));
+        slider1.setMinorTickSpacing(5);
+        slider1.setMajorTickSpacing(MAX_SCORE);
+
+        colorsPanel.setVisible(isColorPanelEnabled);
+        colorizeNodesAccordingToCheckBox.setSelected(isColorPanelEnabled);
+        mergeSimilarReactionsCheckBox.setSelected(isScoringEnabled);
+        thresholdPanel.setVisible(isScoringEnabled);
+        previewPanel.setVisible(isScoringEnabled);
+
+        firstColorButton.setBackground(firstColor);
+        secondColorButton.setBackground(secondColor);
+        mergedColorButton.setBackground(mergedColor);
+
+        ArrayList<String> comboList = new ArrayList<String>();
+
+        for (CyNetwork cyNetwork : Cytoscape.getNetworkSet()) {
+            if (BioPAXUtilRex.isBioPAXNetwork(cyNetwork)) {
+                comboList.add(cyNetwork.getTitle());
+                bpNetworks.add(cyNetwork);
+            }
+        }
+        ComboBoxModel comboModel1 = new DefaultComboBoxModel(comboList.toArray()),
+                comboModel2 = new DefaultComboBoxModel(comboList.toArray());
+
+        firstNetworkComboBox.setModel(comboModel1);
+        secondNetworkComboBox.setModel(comboModel2);
+
+        buttonOK.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onOK();
+            }
+        });
+
+        buttonCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        });
+
+        // call onCancel() when cross is clicked
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
+
+        // call onCancel() on ESCAPE
+        contentPane.registerKeyboardAction(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        previewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onPreview();
+            }
+        });
+
+        spinner1.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                Double val = (Double) spinner1.getValue();
+                slider1.setValue((int) val.doubleValue());
+            }
+        });
+        slider1.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                double val = slider1.getValue();
+                spinner1.setValue(val);
+            }
+        });
+
+        scoresTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = scoresTable.getSelectedRow();
+                    ConversionScore convScore = scores.get(index);
+                    if (convScore == null)
+                        return;
+
+                    IntegrateBioPAXDetailsDialog dialog = new IntegrateBioPAXDetailsDialog(convScore);
+                    dialog.setTitle("Match #" + (index + 1));
+                    dialog.setSize(400, 400);
+                    dialog.pack();
+                    dialog.setVisible(true);
+
+                }
+            }
+        });
+
+        colorizeNodesAccordingToCheckBox.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                colorsPanel.setVisible(colorizeNodesAccordingToCheckBox.isSelected());
+            }
+        });
+
+        mergeSimilarReactionsCheckBox.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                thresholdPanel.setVisible(mergeSimilarReactionsCheckBox.isSelected());
+                previewPanel.setVisible(mergeSimilarReactionsCheckBox.isSelected());
+            }
+        });
+
+        firstColorButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Color tempColor = JColorChooser.showDialog(IntegrateBioPAXDialog.this,
+                        "Choose Node Color",
+                        firstColor);
+
+                if (tempColor != null)
+                    firstColor = tempColor;
+
+                firstColorButton.setBackground(firstColor);
+            }
+        });
+
+        secondColorButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Color tempColor = JColorChooser.showDialog(IntegrateBioPAXDialog.this,
+                        "Choose Node Color",
+                        secondColor);
+
+                if (tempColor != null)
+                    secondColor = tempColor;
+
+                secondColorButton.setBackground(secondColor);
+            }
+        });
+
+        mergedColorButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Color tempColor = JColorChooser.showDialog(IntegrateBioPAXDialog.this,
+                        "Choose Node Color",
+                        mergedColor);
+
+                if (tempColor != null)
+                    mergedColor = tempColor;
+
+                mergedColorButton.setBackground(mergedColor);
+            }
+        });
+
+
+    }
+
+    private void onPreview() {
+        CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex()),
+                network2 = bpNetworks.get(secondNetworkComboBox.getSelectedIndex());
+
+        Model model1 = BioPAXUtilRex.getNetworkModel(network1),
+                model2 = BioPAXUtilRex.getNetworkModel(network2);
+
+        if (model1 == null || model2 == null) {
+            JOptionPane.showMessageDialog(null,
+                    "BioPAX models cannot be accessed.",
+                    "Invalid BioPAX",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Double threshold = (mergeSimilarReactionsCheckBox.isSelected())
+                ? (Double) spinner1.getValue()
+                : MAX_SCORE;
+
+        if (!(oldModel1 == model1 && oldModel2 == model2)) {
+            integrator = new Integrator(model1, model2);
+            integrator.setOnlyMapping(true);
+            integrator.setScoresOver(MAX_SCORE);
+        }
+
+        integrator.setThreshold(threshold);
+        scores = integrator.integrate();
+
+        Set<ConversionScore> toBeRemoved = new HashSet<ConversionScore>();
+        for (ConversionScore aScore : scores)
+            if (aScore.getScore() < integrator.getThreshold())
+                toBeRemoved.add(aScore);
+        for (ConversionScore aScore : toBeRemoved)
+            scores.remove(aScore);
+
+        if (scores.isEmpty()) {
+            String[][] tableData = {{"No results"}};
+            String[] tableHeader = {""};
+
+            scoresTable.setModel(new DefaultTableModel(tableData, tableHeader));
+            scoresTable.setEnabled(false);
+
+            return;
+        }
+
+        scoresTable.setEnabled(true);
+        Object[][] tableData = new Object[scores.size()][];
+
+        DecimalFormat df = new DecimalFormat("###.00");
+
+        int cnt = 0;
+        for (ConversionScore aScore : scores) {
+            Object[] cols = {
+                    "" + df.format(aScore.getScore()),
+                    BioPAXUtilRex.getShortNameSmart(aScore.getConversion1()),
+                    BioPAXUtilRex.getShortNameSmart(aScore.getConversion2()),
+                    true
+            };
+            tableData[cnt++] = cols;
+        }
+
+        String[] tableHeader = {
+                "Score (over " /* + df.format(integrator.getScoresOver()) */ + ")",
+                "Reaction Name 1",
+                "Reaction Name 2",
+                "Merge?"
+        };
+
+        scoresTable.setModel(new DefaultTableModel(tableData, tableHeader) {
+            public boolean isCellEditable(int row, int column) {
+                return (column == checkBoxColumn);
+            }
+
+            public Class getColumnClass(int column) {
+                return getValueAt(0, column).getClass();
+            }
+        });
+        scoresTable.getColumnModel().getColumn(0).setWidth(5);
+        scoresTable.getColumnModel().getColumn(checkBoxColumn).setWidth(5);
+
+        oldModel1 = model1;
+        oldModel2 = model2;
+        oldThreshold = threshold;
+    }
+
+    private void onOK() {
+        CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex()),
+                network2 = bpNetworks.get(secondNetworkComboBox.getSelectedIndex());
+
+        if (BioPAXUtilRex.getNetworkModel(network1) != oldModel1
+                || BioPAXUtilRex.getNetworkModel(network2) != oldModel2
+                || !integrator.getThreshold().equals(oldThreshold))
+            onPreview();
+
+        integrator.setOnlyMapping(false);
+
+        List<ConversionScore> alternativeScores = new ArrayList<ConversionScore>();
+        for (int rowCnt = 0; rowCnt < scoresTable.getRowCount(); rowCnt++) {
+            Boolean isMerge = (Boolean) scoresTable.getValueAt(rowCnt, checkBoxColumn);
+            if (isMerge) {
+                alternativeScores.add(scores.get(rowCnt));
+            }
+        }
+
+        boolean isColorize = colorizeNodesAccordingToCheckBox.isSelected();
+
+        IntegrateBioPAXTask task = new IntegrateBioPAXTask(integrator,
+                network1, network2,
+                alternativeScores,
+                isColorize,
+                firstColor, secondColor, mergedColor);
+
+        JTaskConfig jTaskConfig = new JTaskConfig();
+        jTaskConfig.setOwner(Cytoscape.getDesktop());
+        jTaskConfig.displayCloseButton(true);
+        jTaskConfig.displayStatus(true);
+        jTaskConfig.setAutoDispose(false);
+
+        dispose();
+        TaskManager.executeTask(task, jTaskConfig);
+    }
+
+    private void onCancel() {
+        dispose();
+    }
+
+}
+

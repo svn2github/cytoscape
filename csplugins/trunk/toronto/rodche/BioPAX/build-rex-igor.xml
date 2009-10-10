@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="biopax" default="all">
+
+	<path id="classpath">
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="runtime.classpath">
+		<pathelement location="build/classes"/>
+		<path refid="classpath"/>
+	</path>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="build/classes" fork="true">
+			<classpath refid="classpath"/>
+		</javac>
+		<copy todir="build/classes">
+			<fileset dir="src">
+				<patternset refid="compiler.resources"/>
+				<type type="file"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean" description="cleanup">
+		<delete dir="build"/>
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="build"/>
+		<mkdir dir="build/jars"/>
+		<unjar dest="build/classes">
+			<fileset dir="${basedir}" includes="lib/*.jar"/>
+		</unjar>
+	</target>
+
+	<target name="jar" depends="init, compile">
+		<copy file="resources/plugin.props" todir="${paxtoolsplugin.output.dir}/org/biyoenformatik/cytoscape/" />
+		<jar destfile="build/jars/biopax.jar">
+			<manifest>
+				<attribute name="Cytoscape-Plugin" value="cytoscape.coreplugins.biopax.BiopaxPlugin" />
+			</manifest>
+			<fileset dir="build/classes" />
+		</jar>
+	</target>
+
+	<target name="all" depends="jar"/>
+
+</project>
