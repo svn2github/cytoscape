@@ -73,6 +73,7 @@ public class CommandToolDialog extends JDialog
                              implements ActionListener {
 
 	private CyLogger logger;
+	private List<String> commandList;
 
 	// Dialog components
 	private JResultsPane resultsText;
@@ -81,6 +82,7 @@ public class CommandToolDialog extends JDialog
 	public CommandToolDialog (Frame parent, CyLogger logger) {
 		super(parent, false);
 		this.logger = logger;
+		commandList = new ArrayList();
 		initComponents();
 	}
 
@@ -110,6 +112,7 @@ public class CommandToolDialog extends JDialog
 		inputField = new JTextField(80);
 		inputField.setBorder(BorderFactory.createTitledBorder(etchedBorder, "Command"));
 		inputField.addActionListener(this);
+		inputField.requestFocusInWindow();
 		dataPanel.add(inputField);
 		inputField.setMaximumSize(new Dimension(1000,45));
 
@@ -141,6 +144,7 @@ public class CommandToolDialog extends JDialog
 		} else {
 			String command = inputField.getText();
 			resultsText.appendCommand(command);
+			commandList.add(command);
 
 			handleCommand(command);
 
@@ -197,16 +201,6 @@ public class CommandToolDialog extends JDialog
 		if (sub == null && (subCom != null && subCom.length() > 0))
 			throw new CyCommandException("Unknown argument: "+subCom);
 		
-		Map<String,String> commandSettings = comm.getSettings(sub);
-
-		if (commandSettings == null && settings.keySet().size() > 0)
-			throw new CyCommandException("Command "+comm.getCommandName()+" "+sub+" doesn't take settings");
-
-		for (String key: settings.keySet()) {
-			if (!commandSettings.containsKey(key)) {
-				throw new CyCommandException("Unknown setting: "+key);
-			}
-		}
 		return comm.execute(sub, settings);
 	}
 
