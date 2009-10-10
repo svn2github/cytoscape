@@ -5,8 +5,8 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Logger;
 
 import de.layclust.layout.IParameters;
-import de.layclust.taskmanaging.gui.TransClustGui;
-import de.layclust.taskmanaging.io.Console;
+// import de.layclust.taskmanaging.gui.TransClustGui;
+// import de.layclust.taskmanaging.io.Console;
 import de.layclust.taskmanaging.io.InfoFile;
 
 
@@ -22,13 +22,14 @@ import de.layclust.taskmanaging.io.InfoFile;
  */
 public class ClusteringManagerTask implements Runnable {
 
-	private static Logger log = Logger.getLogger(Console.class.getName());
+	// private static Logger log = Logger.getLogger(Console.class.getName());
+	private static Logger log = Logger.getLogger(ClusteringManagerTask.class.getName());
 
 	private Semaphore semaphore;
 	
 	private ClusteringManager clusterManager;
 	
-	private TransClustGui gui;
+	// private TransClustGui gui;
 
 	public void run() {
 		/* start clustering with given configuration */
@@ -141,6 +142,7 @@ public class ClusteringManagerTask implements Runnable {
 		
 		
 		/* reset the run button back to "RUN" and reset action command */
+/*
 		if(gui != null){
 			System.out.println("results1");
 			gui.runStopButton.setActionCommand(TransClustGui.EXECUTE_RUN);
@@ -148,7 +150,7 @@ public class ClusteringManagerTask implements Runnable {
 			gui.guiListener.buildResultsView();
 			gui.validate();		
 		}
-		
+*/		
 
 	}
 	
@@ -186,8 +188,10 @@ public class ClusteringManagerTask implements Runnable {
 	 * Sets the GraCEGui for this class.
 	 * @param gui The {@link TransClustGui} instance.
 	 */
+/*
 	public void setGui(TransClustGui gui){
 		this.gui = gui;
 	}
+*/
 
 }

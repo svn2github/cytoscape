@@ -90,9 +90,6 @@ public class TransClust {
 				log.severe(e.getMessage());
 				log.severe("ERROR: please see usage details!");
 				System.out.println(ArgsUtility.createUsage().toString());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 	}
