@@ -64,15 +64,12 @@ class ArraySubGraph implements CySubNetwork {
 	private Set<CyEdge> edgeSet;
 
 	ArraySubGraph(final ArrayGraph par, final int inId) {
-		internalId = inId;
-		internalSUID = SUIDFactory.getNextSUID();
-		//System.out.println("new ArraySubGraph " + internalSUID + "  " + inId);
-
-		if (par == null)
-			throw new NullPointerException("parent network is null");
-
+		assert(par!=null);
 		parent = par;
+		internalId = inId;
 
+		internalSUID = SUIDFactory.getNextSUID();
+		
 		nodeSet = new HashSet<CyNode>();
 		edgeSet = new HashSet<CyEdge>();
 
