@@ -1,6 +1,7 @@
 package org.cytoscape.io;
 
 import java.util.Map;
+import java.util.Set;
 import java.net.URI;
 import java.io.IOException;
 
@@ -11,6 +12,8 @@ public interface CyIOFactoryManager<F extends CyFileFilterable>
 
 	@SuppressWarnings("unchecked")
 	public void removeFactory(F factory, Map props);
+
+	public Set<F> getAllFactories();
 
 	public F getFactoryFromURI(URI resourceLocation) throws IOException;
 
