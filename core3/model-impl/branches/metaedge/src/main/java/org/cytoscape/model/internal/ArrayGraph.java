@@ -340,10 +340,10 @@ public class ArrayGraph implements CyRootNetwork {
 		return base.addNode();
 	}
 
-	CyMetaNode addNode(final CySubNetwork sub) {
+	CyMetaNode nodeAdd(final CySubNetwork sub) {
 		final NodePointer n;
 
-		//System.out.println("addNode");
+		//System.out.println("nodeAdd");
 		synchronized (this) {
 			final int index = nodePointers.size();
 			n = new NodePointer(index, new CyNodeImpl(this, index, nodeAttrMgr, sub));
@@ -886,8 +886,8 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public CyMetaNode addMetaNode() {
 
-		//System.out.println("meta addNode sub");
-		final CyMetaNode newNode = addNode( addSubNetwork() );
+		//System.out.println("meta nodeAdd sub");
+		final CyMetaNode newNode = nodeAdd( addSubNetwork() );
 
 		metaNodes.add(newNode);
 
