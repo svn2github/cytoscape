@@ -64,6 +64,7 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	 */
 	public CyNetwork getInstance() {
 		//return new MGraph(help);
-		return new ArrayGraph(help);
+		ArrayGraph net = new ArrayGraph(help);
+		return net.getBaseNetwork(); 
 	}
 }
