@@ -47,11 +47,11 @@ import java.util.Set;
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTable;
 
-import org.cytoscape.io.read.CyNetworkReaderFactory;
+import org.cytoscape.io.read.CyNetworkViewReaderFactory;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
@@ -60,7 +60,7 @@ import org.cytoscape.work.TaskMonitor;
  * Reader for graphs in the interactions file format. Given the filename,
  * provides the graph and attributes objects constructed from the file.
  */
-public class InteractionsReaderFactory implements CyNetworkReaderFactory {
+public class InteractionsReaderFactory implements CyNetworkViewReaderFactory {
 
 	private static final String DEF_DELIMITER = " ";
 	private static final String LINE_SEP = System.getProperty("line.separator");
@@ -82,9 +82,9 @@ public class InteractionsReaderFactory implements CyNetworkReaderFactory {
 		return fileFilter;
 	}
 
-	public Task getReader(InputStream stream, CyNetwork network, CyDataTable dataTable)
+	public Task getReader(InputStream stream, CyNetworkView networkView)
 	{
-		return new InteractionsReader(stream, network);
+		return new InteractionsReader(stream, networkView.getSource());
 	}
 
 	class InteractionsReader implements Task
@@ -104,6 +104,7 @@ public class InteractionsReaderFactory implements CyNetworkReaderFactory {
 			Set<Interaction> interactions = new HashSet<Interaction>();
 			String delimiter = DEF_DELIMITER;
 
+			taskMonitor.setStatusMessage("Reading contents of file");
 			final String rawText = readUtil.getInputString(inputStream);
 			if (cancel) return;
 
@@ -113,14 +114,17 @@ public class InteractionsReaderFactory implements CyNetworkReaderFactory {
 			final String[] lines = rawText.split(LINE_SEP);
 			if (cancel) return;
 
+			taskMonitor.setStatusMessage("Parsing contents of file");
 			final int size = lines.length;
 			for (int i = 0; i < size; i++) {
+				taskMonitor.setProgress(i / ((double) size));
 				if (cancel) return;
 				if (lines[i].length() <= 0)
 					continue;
 				interactions.add(new Interaction(lines[i], delimiter));
 			}
 
+			taskMonitor.setStatusMessage("Creating network topology");
 			Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
 
 			// put all node names in the Set
@@ -131,6 +135,7 @@ public class InteractionsReaderFactory implements CyNetworkReaderFactory {
 					nodeMap.put(target, null);
 			}
 
+			taskMonitor.setStatusMessage("Assigning node attributes");
 			CyNode node;
 			for (String nodeName : nodeMap.keySet()) {
 				if (cancel) return;
@@ -139,6 +144,7 @@ public class InteractionsReaderFactory implements CyNetworkReaderFactory {
 				nodeMap.put(nodeName, node);
 			}
 
+			taskMonitor.setStatusMessage("Assigning edge attributes");
 			// Now loop over the interactions again, this time creating edges
 			// between
 			// all sources and each of their respective targets.
