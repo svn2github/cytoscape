@@ -334,6 +334,52 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		assertEquals( "base after base-meta edge add edge count",8,root.getBaseNetwork().getEdgeCount());  
 	}
 
+	public void testAddMetaNodeToSubNetwork() {
+		optionalSetup();
+		createMetaNode1();
+
+		m2 = root.addMetaNode();
+		m2s = m2.getSubNetwork();
+
+		m2s.addNode(n4);
+		m2s.addNode(n5);
+		m2s.addNode(m1);
+
+		assertEquals( "m2s two nodes and a metanode",3,m2.getSubNetwork().getNodeCount());  
+	}
+
+	public void testAddMetaNodeEdgeToSubNetwork() {
+		optionalSetup();
+		createMetaNode1();
+
+		m2 = root.addMetaNode();
+		m2s = m2.getSubNetwork();
+
+		m2s.addNode(n4);
+		m2s.addNode(n5);
+		m2s.addNode(m1);
+
+		m2s.addEdge(m1,n4,true);
+
+		assertEquals( "m2s metanode to node edge",1,m2.getSubNetwork().getEdgeCount());  
+	}
+
+	public void testAddTwoMetaNodeEdgeToRoot() {
+		optionalSetup();
+		createMetaNode1();
+
+		m2 = root.addMetaNode();
+		m2s = m2.getSubNetwork();
+
+		m2s.addNode(n4);
+		m2s.addNode(n5);
+
+		root.addEdge(m1,m2,true);
+
+		assertEquals( "metanode to metanode edge",8,root.getEdgeCount());  
+	}
+
+
 	/** 
 	 * add edge between m1 n3 (between meta node in root and base)
     public void testMetaNodeToNormalNode() {
