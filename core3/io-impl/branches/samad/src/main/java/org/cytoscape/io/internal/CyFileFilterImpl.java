@@ -48,7 +48,6 @@ import java.util.Set;
 import javax.swing.filechooser.FileFilter;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.util.StreamUtil;                                                                              
 
 public class CyFileFilterImpl implements CyFileFilter {
@@ -57,11 +56,10 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 * Basic information for compatible file type. Everything will be injected
 	 * through DI container.
 	 */
-	private Set<String> extensions;
-	private Set<String> contentTypes;
-	private String description;
-	protected DataCategory category;
-	private StreamUtil streamUtil;
+	protected Set<String> extensions;
+	protected Set<String> contentTypes;
+	protected String description;
+	protected StreamUtil streamUtil;
 
 	/**
 	 * Creates a file filter from the given string array and description.
@@ -73,11 +71,10 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 */
 	public CyFileFilterImpl(final Set<String> extensions,
 			final Set<String> contentTypes, final String description,
-			final DataCategory category, StreamUtil streamUtil) {
+			StreamUtil streamUtil) {
 
 		this.extensions = extensions;
 		this.contentTypes = contentTypes;
-		this.category = category;
 
 		String d = description == null ? "(" : description + " (";
 
@@ -101,11 +98,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 * @throws MalformedURLException
 	 * 
 	 */
-	public boolean accept(URI uri, DataCategory category) throws IOException {
-
-		// Check data category
-		if (category != this.category)
-			return false;
+	public boolean accept(URI uri) throws IOException {
 
 		final URLConnection connection = streamUtil.getURLConnection(uri.toURL());
 		final String contentType = connection.getContentType();
@@ -120,16 +113,6 @@ public class CyFileFilterImpl implements CyFileFilter {
 			return true;
 
 		return false;
-	}
-
-	/**
-	 * Must be overridden by subclasses.
-	 */
-	public boolean accept(InputStream stream, DataCategory category)
-			throws IOException {
-
-		return false;
-
 	}
 
 	public Set<String> getExtensions() {
@@ -163,10 +146,6 @@ public class CyFileFilterImpl implements CyFileFilter {
 		}
 
 		return null;
-	}
-
-	public DataCategory getDataCategory() {
-		return category;
 	}
 
 	protected String getHeader(InputStream stream) throws IOException {
