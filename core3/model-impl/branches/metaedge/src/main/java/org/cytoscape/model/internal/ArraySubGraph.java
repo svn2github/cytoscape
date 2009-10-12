@@ -118,7 +118,7 @@ class ArraySubGraph implements CySubNetwork {
 		//System.out.println("base addNode null");
 		final CyNode ret; 
 		synchronized (this) {
-			ret = parent.addNode(null);
+			ret = parent.nodeAdd(this);
 			updateNode(ret);
 			internalNodeCount++;
 			nodeSet.add(ret);
@@ -288,26 +288,6 @@ class ArraySubGraph implements CySubNetwork {
 			updateNode(node);
 		}
 
-		// add any adjacent edges	
-		/*
-		final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(node, CyEdge.Type.ANY, 0); // 0 == ROOT
-		final Set<CyEdge> tmpSet = new HashSet<CyEdge>();
-
-		for (CyEdge edge : adjEdges) {
-			//System.out.println(" copy adjEdge: " + edge.getIndex());
-			// check the nodeSet because containsNode won't yet be updated
-			if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget())) {
-				//System.out.println(" copy ADDING adjEdge: " + edge.getIndex());
-				tmpSet.add(edge);
-			}
-		}
-
-		for (CyEdge edge : tmpSet) 
-			addEdge(edge);
-			
-		}
-		*/
-
 		return true;
 	}
 
@@ -316,23 +296,22 @@ class ArraySubGraph implements CySubNetwork {
 			throw new NullPointerException("edge is null");
 		
 		synchronized (this) {
-		if (containsEdge(edge))
-			return false;
+			if (containsEdge(edge))
+				return false;
 
-		if (!parent.containsEdge(edge))
-			throw new IllegalArgumentException("edge is not contained in parent network!");
+			if (!parent.containsEdge(edge))
+				throw new IllegalArgumentException("edge is not contained in parent network!");
 
-		// TODO, an alternative here might be to add the source and target nodes...
-		if (!containsNode(edge.getSource()))
-			throw new IllegalArgumentException("source node of edge is not contained in network!");
+			if (!containsNode(edge.getSource()))
+				throw new IllegalArgumentException("source node of edge is not contained in network!");
 
-		if (!containsNode(edge.getTarget()))
-			throw new IllegalArgumentException("target node of edge is not contained in network!");
+			if (!containsNode(edge.getTarget()))
+				throw new IllegalArgumentException("target node of edge is not contained in network!");
 
-		// add edge 
-		internalEdgeCount++;
-		edgeSet.add(edge);
-		updateEdge(edge);
+			// add edge 
+			internalEdgeCount++;
+			edgeSet.add(edge);
+			updateEdge(edge);
 		}
 
 		return true;
