@@ -325,4 +325,13 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		fail();
 	}
 
+	public void addNodeInSubNetwork() {
+		defaultSetup();
+
+		CyNode nz1 = sub.addNode();
+
+		assertEquals("num nodes in subnetwork",3,sub.getNodeCount());
+		assertEquals("num nodes in root network",6,root.getNodeCount());
+	}
+
 }
