@@ -34,7 +34,6 @@ package coreCommands.commands;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
@@ -69,28 +68,28 @@ public class PropertyCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "property"; }
+	public String getHandlerName() { return "property"; }
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 		Properties props = CytoscapeInit.getProperties();
 
 		if (args == null || args.size() == 0 || !args.containsKey("name"))
-			throw new CyCommandException("property: no property name to "+subCommand);
+			throw new CyCommandException("property: no property name to "+command);
 
 		String propertyName = args.get("name");
-		if ("set".equals(subCommand)) {
+		if ("set".equals(command)) {
 			if (!args.containsKey("value"))
 				throw new CyCommandException("property: no 'value' to set "+propertyName+" to");
 			props.setProperty(propertyName, args.get("value"));
 			result.addMessage("property: set "+propertyName+" to "+args.get("value"));
 
-		} else if ("get".equals(subCommand)) {
+		} else if ("get".equals(command)) {
 			String value = props.getProperty(propertyName);
 			result.addMessage("property: "+propertyName+" = "+value);
 			result.addResult(propertyName, value);
 
-		} else if ("clear".equals(subCommand)) {
+		} else if ("clear".equals(command)) {
 			props.remove(propertyName);
 			result.addMessage("property: cleared "+propertyName);
 		}

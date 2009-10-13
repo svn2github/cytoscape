@@ -33,8 +33,8 @@
 package coreCommands.commands;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 import cytoscape.layout.Tunable;
@@ -64,10 +64,10 @@ public class HelpCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "help"; }
+	public String getHandlerName() { return "help"; }
 
-	public List<String> getSubCommands() {
-		List<String> subList = getCommandNameList();
+	public List<String> getCommands() {
+		List<String> subList = getHandlerNameList();
 
 		// Add the empty command
 		subList.add("");
@@ -75,23 +75,23 @@ public class HelpCommand extends AbstractCommand {
 		return subList;
 	}
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
-		if (subCommand == null || subCommand.length() == 0) {
+		if (command == null || command.length() == 0) {
 			result.addMessage("Available commands: ");
-			for (String comm: getCommandNameList()) {
+			for (String comm: getHandlerNameList()) {
 				result.addMessage("  "+comm);
 			}
 			result.addMessage("For more information about a command, type 'help command'");
 		} else {
-			CyCommand command = CyCommandManager.getCommand(subCommand);
-			if (command == null)
-				throw new CyCommandException("help: No such command: "+subCommand);
+			CyCommandHandler handler = CyCommandManager.getHandler(command);
+			if (handler == null)
+				throw new CyCommandException("help: No such command: "+handler);
 
-			result.addMessage("Subcommands for "+subCommand+":");
-			for (String sub: command.getSubCommands()) {
-				List<String> argList = command.getArguments(sub);
+			result.addMessage("Commands for "+handler+":");
+			for (String sub: handler.getCommands()) {
+				List<String> argList = handler.getArguments(sub);
 				if (argList == null || argList.size() == 0) {
 					result.addMessage("  "+sub);
 				} else {
@@ -108,13 +108,13 @@ public class HelpCommand extends AbstractCommand {
 		return result;
 	}
 
-	private List<String> getCommandNameList() {
+	private List<String> getHandlerNameList() {
 		List<String> subList = new ArrayList();
 
 		// Get the list of commands
-		List<CyCommand> comList = CyCommandManager.getCommandList();
-		for (CyCommand c: comList)
-			subList.add(c.getCommandName());
+		List<CyCommandHandler> comList = CyCommandManager.getHandlerList();
+		for (CyCommandHandler c: comList)
+			subList.add(c.getHandlerName());
 		return subList;
 	}
 }

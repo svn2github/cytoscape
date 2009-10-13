@@ -33,7 +33,6 @@
 package coreCommands.commands;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
@@ -82,26 +81,26 @@ public class LayoutCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "layout"; }
+	public String getHandlerName() { return "layout"; }
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
 		List<Tunable> tL = new ArrayList();
 		if (args == null || args.size() == 0) {
-			return execute(subCommand, tL);
+			return execute(command, tL);
 		}
 
-		if (!getSubCommands().contains(subCommand.toLowerCase()))
-			throw new CyCommandException("layout: unknown algorithm: "+subCommand.toLowerCase());
+		if (!getCommands().contains(command.toLowerCase()))
+			throw new CyCommandException("layout: unknown algorithm: "+command.toLowerCase());
 
-		if (subCommand.equalsIgnoreCase("get current") || 
-		    subCommand.equalsIgnoreCase("get default") ||
-		    subCommand.equalsIgnoreCase("default")) {
-			throw new CyCommandException("layout: "+subCommand+" doesn't take any arguments");
+		if (command.equalsIgnoreCase("get current") || 
+		    command.equalsIgnoreCase("get default") ||
+		    command.equalsIgnoreCase("default")) {
+			throw new CyCommandException("layout: "+command+" doesn't take any arguments");
 		}
 
-		Map<String, Tunable> tMap = getTunables(subCommand);
+		Map<String, Tunable> tMap = getTunables(command);
 
 		for (String key: args.keySet()) {
 			if (tMap.containsKey(key)) {
@@ -109,19 +108,19 @@ public class LayoutCommand extends AbstractCommand {
 				t.setValue(args.get(key));
 				tL.add(t);
 			} else {
-				result.addError("layout: algorithm '"+subCommand+"' doesn't have a '"+key+"' parameter");
+				result.addError("layout: algorithm '"+command+"' doesn't have a '"+key+"' parameter");
 			}	
 		}
 		if (result.successful())
-			return execute(subCommand, tL);
+			return execute(command, tL);
 
 		return result;
 	}
 
-	public CyCommandResult execute(String subCommand, List<Tunable> args) throws CyCommandException { 
+	public CyCommandResult execute(String command, List<Tunable> args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
-		if (subCommand.equalsIgnoreCase("get current")) {
+		if (command.equalsIgnoreCase("get current")) {
 			CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 			String networkID = Cytoscape.getCurrentNetwork().getIdentifier();
 
@@ -131,23 +130,23 @@ public class LayoutCommand extends AbstractCommand {
 			} else {
 				result.addMessage("layout: last layout information is unavailable for '"+networkID+"'");
 			}
-		}else if (subCommand.equalsIgnoreCase("get default")) {
+		}else if (command.equalsIgnoreCase("get default")) {
 			CyLayoutAlgorithm alg = CyLayouts.getDefaultLayout();
 			result.addMessage("layout: default algorithm is "+alg.getName());
 			result.addResult("algorithm", alg);
 			result.addResult("name", alg.getName());
-		} else if (subCommand.equalsIgnoreCase("default")) {
+		} else if (command.equalsIgnoreCase("default")) {
 			CyLayoutAlgorithm alg = CyLayouts.getDefaultLayout();
 			alg.doLayout();
 			result.addMessage("layout: laid current network out using "+alg.getName()+"(default) algorithm");
 		} else {
-			CyLayoutAlgorithm alg = CyLayouts.getLayout(subCommand);
+			CyLayoutAlgorithm alg = CyLayouts.getLayout(command);
 			LayoutProperties props = alg.getSettings();
 			
 			for (Tunable t: args) {
 				Tunable layoutTunable = props.get(t.getName());
 				if (layoutTunable == null) {
-					result.addError("layout: algorithm '"+subCommand+"' doesn't have a '"+t.getName()+"' parameter");
+					result.addError("layout: algorithm '"+command+"' doesn't have a '"+t.getName()+"' parameter");
 					continue;
 				}
 				layoutTunable.setValue(t.getValue());

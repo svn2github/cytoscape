@@ -33,7 +33,6 @@
 package coreCommands;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandManager;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeInit;

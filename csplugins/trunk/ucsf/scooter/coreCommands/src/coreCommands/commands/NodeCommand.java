@@ -35,7 +35,6 @@ package coreCommands.commands;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
@@ -86,14 +85,14 @@ public class NodeCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "node"; }
+	public String getHandlerName() { return "node"; }
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
 		// Import node attributes from a file
-		if ("import attributes".equals(subCommand)) {
-			String fileName = getArg(subCommand, "file", args);
+		if ("import attributes".equals(command)) {
+			String fileName = getArg(command, "file", args);
 			if (fileName == null)
 				throw new CyCommandException("node: filename is required to import attributes");
 			try {
@@ -106,11 +105,11 @@ public class NodeCommand extends AbstractCommand {
 			}
 
 		// Export node attributes to a file
-		// } else if ("export attributes".equals(subCommand)) {
+		// } else if ("export attributes".equals(command)) {
 
 		// Select some ndoes
-		} else if ("select".equals(subCommand)) {
-			CyNetwork net = getNetwork(subCommand, args);
+		} else if ("select".equals(command)) {
+			CyNetwork net = getNetwork(command, args);
 			List<CyNode> nodeList = getNodeList(net, result, args);
 			if (nodeList == null)
 				throw new CyCommandException("node: nothing to select");
@@ -121,8 +120,8 @@ public class NodeCommand extends AbstractCommand {
 			}
 
 		// de-select some ndoes
-		} else if ("deselect".equals(subCommand)) {
-			CyNetwork net = getNetwork(subCommand, args);
+		} else if ("deselect".equals(command)) {
+			CyNetwork net = getNetwork(command, args);
 			try {
 				List<CyNode> nodeList = getNodeList(net, result, args);
 				if (nodeList == null)
@@ -141,17 +140,17 @@ public class NodeCommand extends AbstractCommand {
 			}
 
 		// return the list of currently selected nodes
-		} else if ("get selected".equals(subCommand)) {
-			CyNetwork net = getNetwork(subCommand, args);
+		} else if ("get selected".equals(command)) {
+			CyNetwork net = getNetwork(command, args);
 			Set<CyNode>nodes = net.getSelectedNodes();
 			result.addMessage("node: returned "+nodes.size()+" selected nodes");
 			result.addResult("nodes", makeNodeList(nodes));
 
 		// Get attribute values
-		} else if ("get attribute".equals(subCommand)) {
-			CyNetwork net = getNetwork(subCommand, args);
+		} else if ("get attribute".equals(command)) {
+			CyNetwork net = getNetwork(command, args);
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			String attrName = getArg(subCommand, "name", args);
+			String attrName = getArg(command, "name", args);
 			if (attrName == null)
 				throw new CyCommandException("node: attribute 'name' is required");
 			else if (nodeAttributes.getType(attrName) == CyAttributes.TYPE_UNDEFINED)
@@ -173,11 +172,11 @@ public class NodeCommand extends AbstractCommand {
 			}
 
 		// Set attribute values
-		} else if ("set attribute".equals(subCommand)) {
-			CyNetwork net = getNetwork(subCommand, args);
+		} else if ("set attribute".equals(command)) {
+			CyNetwork net = getNetwork(command, args);
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			String attrName = getArg(subCommand, "name", args);
-			String value = getArg(subCommand, "value", args);
+			String attrName = getArg(command, "name", args);
+			String value = getArg(command, "value", args);
 			if (attrName == null || value == null)
 				throw new CyCommandException("node: attribute 'name' and 'value' are required");
 
@@ -185,7 +184,7 @@ public class NodeCommand extends AbstractCommand {
 			if (nodeList == null)
 				nodeList = net.nodesList();
 
-			String typeName = getArg(subCommand, "type", args);
+			String typeName = getArg(command, "type", args);
 			byte attributeType = nodeAttributes.getType(attrName);
 			if (attributeType == CyAttributes.TYPE_UNDEFINED && typeName == null)
 				attributeType = CyAttributes.TYPE_STRING;
@@ -203,14 +202,14 @@ public class NodeCommand extends AbstractCommand {
 			result.addMessage("node: set "+count+" attributes (out of "+nodeCount+")");
 
 		// find nodes based on an expression
-		} else if ("find".equals(subCommand)) {
+		} else if ("find".equals(command)) {
 		}
 
 		return result;
 	}
 
-	private CyNetwork getNetwork(String subCommand, Map<String, String> args) throws CyCommandException {
-		String netName = getArg(subCommand, "network", args);
+	private CyNetwork getNetwork(String command, Map<String, String> args) throws CyCommandException {
+		String netName = getArg(command, "network", args);
 		if (netName == null || netName.equals("current"))
 			return Cytoscape.getCurrentNetwork();
 

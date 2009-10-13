@@ -35,7 +35,6 @@ package coreCommands.commands;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
@@ -93,14 +92,14 @@ public class NetworkCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "network"; }
+	public String getHandlerName() { return "network"; }
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
 		// Import a network
-		if (subCommand.equals("import")) {
-			String fileName = getArg(subCommand, "file", args);
+		if (command.equals("import")) {
+			String fileName = getArg(command, "file", args);
 			if (fileName == null)
 				throw new CyCommandException("network: 'file' must be specified for import");
 
@@ -111,7 +110,7 @@ public class NetworkCommand extends AbstractCommand {
 			// Handle create view
 			boolean createView = true;
 			{
-				String cv = getArg(subCommand, "createview", args);
+				String cv = getArg(command, "createview", args);
 				if (cv != null && (cv.equalsIgnoreCase("false") || cv.equalsIgnoreCase("no"))) 
 					createView = false;
 			}
@@ -119,7 +118,7 @@ public class NetworkCommand extends AbstractCommand {
 			// Handle parent network name
 			CyNetwork parent = null;
 			{
-				String pName = getArg(subCommand, "parent", args);
+				String pName = getArg(command, "parent", args);
 				if (pName != null) {
 					parent = Cytoscape.getNetwork(pName);
 					if (parent == null)
@@ -139,8 +138,8 @@ public class NetworkCommand extends AbstractCommand {
 			}
 
 		// Destroy an existing network
-		} else if (subCommand.equals("destroy")) {
-			String netName = getArg(subCommand, "name", args);
+		} else if (command.equals("destroy")) {
+			String netName = getArg(command, "name", args);
 			if (netName == null)
 				throw new CyCommandException("network: need the name of the network to destroy");
 
@@ -154,10 +153,10 @@ public class NetworkCommand extends AbstractCommand {
 			Cytoscape.destroyNetwork(net);
 
 		// Export a network
-		} else if (subCommand.equals("export")) {
-			String netName = getArg(subCommand, "name", args);
-			String type = getArg(subCommand, "type", args);
-			String fileName = getArg(subCommand, "file", args);
+		} else if (command.equals("export")) {
+			String netName = getArg(command, "name", args);
+			String type = getArg(command, "type", args);
+			String fileName = getArg(command, "file", args);
 			Object[] ret_val = new Object[3]; // For property change event
 
 			if (fileName == null)
@@ -244,15 +243,15 @@ public class NetworkCommand extends AbstractCommand {
 			}
 
 		// Create a network
-		} else if (subCommand.equals("create")) {
-			String netName = getArg(subCommand, "name", args);
+		} else if (command.equals("create")) {
+			String netName = getArg(command, "name", args);
 			if (netName == null)
 				throw new CyCommandException("network: need a network name for the new network");
 
 			// Handle create view
 			boolean createView = true;
 			{
-				String cv = getArg(subCommand, "createview", args);
+				String cv = getArg(command, "createview", args);
 				if (cv != null && (cv.equalsIgnoreCase("false") || cv.equalsIgnoreCase("no")))
 					createView = false;
 			}
@@ -260,7 +259,7 @@ public class NetworkCommand extends AbstractCommand {
 			// Handle parent network name
 			CyNetwork parent = null;
 			{
-				String pName = getArg(subCommand, "parent", args);
+				String pName = getArg(command, "parent", args);
 				if (pName != null) {
 					parent = Cytoscape.getNetwork(pName);
 					if (parent == null)
@@ -275,14 +274,14 @@ public class NetworkCommand extends AbstractCommand {
 				result.addMessage("network: created new network "+netName);
 
 		// Return the current network
-		} else if (subCommand.equals("get current")) {
+		} else if (command.equals("get current")) {
 			CyNetwork current = Cytoscape.getCurrentNetwork();
 			result.addMessage("network: current network is "+current.getIdentifier()+": "+current.getTitle());
 			result.addResult("currentnetwork", current);
 
 		// Make the designated network current
-		} else if (subCommand.equals("make current")) {
-			String netName = getArg(subCommand, "name", args);
+		} else if (command.equals("make current")) {
+			String netName = getArg(command, "name", args);
 			if (netName == null)
 				throw new CyCommandException("network: need a network name to make current");
 
@@ -295,7 +294,7 @@ public class NetworkCommand extends AbstractCommand {
 			result.addMessage("network: set current network to "+netName);
 
 		// Return a list of all networks
-		} else if (subCommand.equals("list")) {
+		} else if (command.equals("list")) {
 			Set<CyNetwork>networkList = Cytoscape.getNetworkSet();
 			result.addMessage("network: network list:");
 			result.addResult("networks",networkList);
@@ -304,7 +303,7 @@ public class NetworkCommand extends AbstractCommand {
 			}
 
 		} else {
-			throw new CyCommandException("network: unknown command "+subCommand);
+			throw new CyCommandException("network: unknown command "+command);
 		}
 
 		return result;

@@ -37,7 +37,6 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
@@ -99,19 +98,19 @@ public class NetworkViewCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "networkview"; }
+	public String getHandlerName() { return "networkview"; }
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 		Map<String, CyNetworkView> viewMap = Cytoscape.getNetworkViewMap();
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 
-		if (subCommand.equals("get current")) {
+		if (command.equals("get current")) {
 			CyNetworkView current = Cytoscape.getCurrentNetworkView();
 			result.addMessage("networkview: current network view is "+current.getIdentifier());
 			result.addResult("currentview", current);
 			return result;
-		} else if (subCommand.equals("list")) {
+		} else if (command.equals("list")) {
 			result.addResult("views",viewMap.keySet());
 
 			result.addMessage("networkview: current network views:");
@@ -121,23 +120,23 @@ public class NetworkViewCommand extends AbstractCommand {
 			return result;
 		}
 
-		String netName = getArg(subCommand, "network", args);
+		String netName = getArg(command, "network", args);
 		if (netName == null) {
-			throw new CyCommandException("networkview: "+subCommand+" requires network argument");
+			throw new CyCommandException("networkview: "+command+" requires network argument");
 		}
 		if (!netName.equalsIgnoreCase("current")) {
 			net = Cytoscape.getNetwork(netName);
 			if (net == null)
 				throw new CyCommandException("networkview: can't find network: "+netName);
-			if (!viewMap.containsKey(netName) && !subCommand.equals("create"))
+			if (!viewMap.containsKey(netName) && !command.equals("create"))
 				throw new CyCommandException("networkview: can't find view for network: "+netName);
 		}
 
-		if (subCommand.equals("export")) {
+		if (command.equals("export")) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
-			float zoom = Float.parseFloat(getArg(subCommand, "zoom", args));
-			String type = getArg(subCommand, "type", args);
-			String fileName = getArg(subCommand, "file", args);
+			float zoom = Float.parseFloat(getArg(command, "zoom", args));
+			String type = getArg(command, "type", args);
+			String fileName = getArg(command, "file", args);
 			if (fileName == null)
 				throw new CyCommandException("networkview: no file name specified for export");
 
@@ -177,27 +176,27 @@ public class NetworkViewCommand extends AbstractCommand {
 			}
 			result.addMessage("networkview: exported view for "+net.getIdentifier()+" to "+fileName);
 
-		} else if (subCommand.equals("create")) {
+		} else if (command.equals("create")) {
 			CyNetworkView view = Cytoscape.createNetworkView(net);
 			result.addResult("newview",view);
 			result.addMessage("networkview: created view for :"+view.getIdentifier());
 
-		} else if (subCommand.equals("make current")) {
+		} else if (command.equals("make current")) {
 			Cytoscape.setCurrentNetworkView(net.getIdentifier());
 			result.addMessage("networkview: set network view for "+net.getIdentifier()+" as current");
-		} else if (subCommand.equals("fit")) {
+		} else if (command.equals("fit")) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
 			view.fitContent();
 			result.addMessage("networkview: fit view to content for "+net.getIdentifier());
 
-		} else if (subCommand.equals("update")) {
+		} else if (command.equals("update")) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
 			view.updateView();
 			result.addMessage("networkview: view '"+net.getIdentifier()+"' updated");
 
-		} else if (subCommand.equals("focus")) {
+		} else if (command.equals("focus")) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
-			String nodes = getArg(subCommand, "nodelist", args);
+			String nodes = getArg(command, "nodelist", args);
 			if (nodes == null || nodes.length() == 0) {
 				((DingNetworkView) view).fitSelected();
 				view.updateView();
@@ -226,10 +225,10 @@ public class NetworkViewCommand extends AbstractCommand {
 				view.updateView();
 				result.addMessage("networkview: focused '"+net.getIdentifier()+"' on node(s)");
 			}
-		} else if (subCommand.equals("zoom")) {
+		} else if (command.equals("zoom")) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
-			double factor = Double.parseDouble(getArg(subCommand, "factor", args));
-			String scale = getArg(subCommand, "scale", args);
+			double factor = Double.parseDouble(getArg(command, "factor", args));
+			String scale = getArg(command, "scale", args);
 			double zoom = view.getZoom();
 			// If we have a scale, use that -- otherwise, use the factor
 			if (scale != null) {
@@ -240,12 +239,12 @@ public class NetworkViewCommand extends AbstractCommand {
 			result.addMessage("networkview: network '"+net.getIdentifier()+"' zoom set to "+view.getZoom());
 			result.addResult("scale", new Double(view.getZoom()));
 
-		} else if (subCommand.equals("get size")) {
+		} else if (command.equals("get size")) {
 
-		} else if (subCommand.equals("set window")) {
+		} else if (command.equals("set window")) {
 
 		} else {
-			throw new CyCommandException("networkview: unknown command "+subCommand);
+			throw new CyCommandException("networkview: unknown command "+command);
 		}
 
 		return result;

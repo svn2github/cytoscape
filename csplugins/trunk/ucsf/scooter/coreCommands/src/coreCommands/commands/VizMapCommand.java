@@ -33,7 +33,6 @@
 package coreCommands.commands;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandResult;
 import cytoscape.layout.Tunable;
@@ -73,11 +72,11 @@ public class VizMapCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "vizmap"; }
+	public String getHandlerName() { return "vizmap"; }
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
-		if (subCommand.equals("apply")) {
+		if (command.equals("apply")) {
 			// We want to apply a vizmap to the current network
 			if (args.containsKey("style"))
 				styleName = args.get("style");
@@ -100,7 +99,7 @@ public class VizMapCommand extends AbstractCommand {
 			networkView.updateView();
 			result.addMessage("vizmap: applied style "+styleName);
 			return result;
-		} else if (subCommand.equals("import")) {
+		} else if (command.equals("import")) {
 			if (!args.containsKey("file") || args.get("file") == null)
 				throw new CyCommandException("vizmap: no filename specified for import");
 
@@ -116,7 +115,7 @@ public class VizMapCommand extends AbstractCommand {
 			result.addMessage("vizmap: new style imported");
 			return result;
 		}
-		throw new CyCommandException("vizmap: unknown subcommand: "+subCommand);
+		throw new CyCommandException("vizmap: unknown subcommand: "+command);
 	}
 
 }

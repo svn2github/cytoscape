@@ -33,7 +33,6 @@
 package coreCommands.commands;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
@@ -70,12 +69,12 @@ public class SessionCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getCommandName() { return "session"; }
+	public String getHandlerName() { return "session"; }
 
-	public CyCommandResult execute(String subCommand, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
-		if (subCommand.equals("open")) {
+		if (command.equals("open")) {
 			// Load a session from a file
 			String fileName = null;
 			if (args.containsKey("file"))
@@ -97,7 +96,7 @@ public class SessionCommand extends AbstractCommand {
 			// TODO: Get the number of networks
 			// TODO: Get the current network
 
-		} else if (subCommand.equals("new")) {
+		} else if (command.equals("new")) {
 			// Create a new session
 			Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
 			Cytoscape.createNewSession();
@@ -108,7 +107,7 @@ public class SessionCommand extends AbstractCommand {
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 			result.addMessage("session: created new session");
 
-		} else if (subCommand.equals("save")) {
+		} else if (command.equals("save")) {
 			// Save a session.  If no file argument is given, save the current session
 			String fileName = null;
 			if (args.containsKey("file"))
