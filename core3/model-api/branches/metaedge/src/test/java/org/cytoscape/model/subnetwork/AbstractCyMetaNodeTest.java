@@ -108,9 +108,9 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 	protected void optionalSetup() {
 
 		// just in base
-		n1 = root.addNode();
-		n2 = root.addNode();
-		n3 = root.addNode();
+		n1 = root.getBaseNetwork().addNode();
+		n2 = root.getBaseNetwork().addNode();
+		n3 = root.getBaseNetwork().addNode();
 
 		// in metanode 2
 		n4 = root.addNode();
@@ -143,14 +143,6 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 	}
 
 	protected void createMetaNode1() {
-		// create metanode 1
-//		List<CyNode> m1sl = new ArrayList<CyNode>(2);
-//		m1sl.add(n7);
-//		m1sl.add(n8);
-
-//		m1s = root.addSubNetwork(m1sl);
-//		m1 = root.addMetaNode(m1s);
-
 		m1 = root.addMetaNode();
 		m1s = m1.getSubNetwork();
 
@@ -164,14 +156,6 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 	}
 
 	protected void createMetaNode2() {
-//		List<CyNode> m2sl = new ArrayList<CyNode>(3);
-//		m2sl.add(n4);
-//		m2sl.add(n5);
-//		m2sl.add(n6);
-
-//		m2s = root.addSubNetwork(m2sl);
-//		m2 = root.addMetaNode(m2s);
-
 		m2 = root.addMetaNode();
 		m2s = m2.getSubNetwork();
 
@@ -201,14 +185,6 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 
 		assertEquals(3,root.getEdgeCount());
 
-//        List<CyNode> nl = new ArrayList<CyNode>(2);
- //       nl.add(n1);
-  //      nl.add(n2);
-
-
-//        CySubNetwork s1 = root.addSubNetwork(nl);
-
-
         CyMetaNode m1 = root.addMetaNode();
         CySubNetwork sub = m1.getSubNetwork(); 
 		sub.addNode(n1);
@@ -237,18 +213,18 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		createMetaNode1();
 
 		assertEquals( "root after m1 node count",9,root.getNodeCount());  
-		assertEquals( "base after m1 node count",8,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "base after m1 node count",3,root.getBaseNetwork().getNodeCount());  
 
 		assertEquals( "root after m1 edge count",7,root.getEdgeCount());  
-		assertEquals( "base after m1 edge count",7,root.getBaseNetwork().getEdgeCount());  
+		assertEquals( "base after m1 edge count",0,root.getBaseNetwork().getEdgeCount());  
 
 		createMetaNode2();
 
 		assertEquals( "root after m2 node count",10,root.getNodeCount());  
-		assertEquals( "base after m2 node count",8,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "base after m2 node count",3,root.getBaseNetwork().getNodeCount());  
 
 		assertEquals( "root after m2 edge count",7,root.getEdgeCount());  
-		assertEquals( "base after m2 edge count",7,root.getBaseNetwork().getEdgeCount());  
+		assertEquals( "base after m2 edge count",0,root.getBaseNetwork().getEdgeCount());  
 	}
 
 
@@ -264,8 +240,8 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 
 		// no change
 		assertEquals( "root after m2 edge add node count",10,root.getNodeCount());  
-		assertEquals( "base after m2 edge add node count",8,root.getBaseNetwork().getNodeCount());  
-		assertEquals( "base after m2 edge add edge count",7,root.getBaseNetwork().getEdgeCount());  
+		assertEquals( "base after m2 edge add node count",3,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "base after m2 edge add edge count",0,root.getBaseNetwork().getEdgeCount());  
 
 		// increase by one
 		assertEquals( "root after m2 edge add edge count",8,root.getEdgeCount());  
@@ -284,13 +260,13 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 
 		// no change
 		assertEquals( "root after base edge add node count",10,root.getNodeCount());  
-		assertEquals( "base after base edge add node count",8,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "base after base edge add node count",3,root.getBaseNetwork().getNodeCount());  
 		assertEquals( "m1 after base edge add edge count",1,m1.getSubNetwork().getEdgeCount());  
 		assertEquals( "m2 after base edge add edge count",2,m2.getSubNetwork().getEdgeCount());  
 
 		// increase by one
 		assertEquals( "root after base edge add edge count",8,root.getEdgeCount());  
-		assertEquals( "base after base edge add edge count",8,root.getBaseNetwork().getEdgeCount());  
+		assertEquals( "base after base edge add edge count",1,root.getBaseNetwork().getEdgeCount());  
 	}
 
 	/** 
@@ -301,16 +277,22 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		createMetaNode1();
 		createMetaNode2();
 
+		try {
+
 		CyEdge ex1 = root.getBaseNetwork().addEdge(n6,n2,true);
+		
+		} catch (Exception e) {
+			// no change
+			assertEquals( "root after base-meta edge add node count",10,root.getNodeCount());  
+			assertEquals( "base after base-meta edge add node count",3,root.getBaseNetwork().getNodeCount());  
+			assertEquals( "m2 after base-meta edge add edge count",2,m2.getSubNetwork().getEdgeCount());  
+			assertEquals( "base after base-meta edge add edge count",0,root.getBaseNetwork().getEdgeCount());  
+			return;
+			
+		}
 
-		// no change
-		assertEquals( "root after base-meta edge add node count",10,root.getNodeCount());  
-		assertEquals( "base after base-meta edge add node count",8,root.getBaseNetwork().getNodeCount());  
-		assertEquals( "m2 after base-meta edge add edge count",2,m2.getSubNetwork().getEdgeCount());  
-
-		// increase by one
-		assertEquals( "root after base-meta edge add edge count",8,root.getEdgeCount());  
-		assertEquals( "base after base-meta edge add edge count",8,root.getBaseNetwork().getEdgeCount());  
+		// if the exception isn't thrown...
+		fail();
 	}
 
 
@@ -322,16 +304,16 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		createMetaNode1();
 		createMetaNode2();
 
-		CyEdge ex1 = root.getBaseNetwork().addEdge(n6,n8,true);
+		CyEdge ex1 = root.addEdge(n6,n8,true);
 
 		// no change
 		assertEquals( "root after base-meta edge add node count",10,root.getNodeCount());  
-		assertEquals( "base after base-meta edge add node count",8,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "base after base-meta edge add node count",3,root.getBaseNetwork().getNodeCount());  
 		assertEquals( "m2 after base-meta edge add edge count",2,m2.getSubNetwork().getEdgeCount());  
+		assertEquals( "base after base-meta edge add edge count",0,root.getBaseNetwork().getEdgeCount());  
 
 		// increase by one
 		assertEquals( "root after base-meta edge add edge count",8,root.getEdgeCount());  
-		assertEquals( "base after base-meta edge add edge count",8,root.getBaseNetwork().getEdgeCount());  
 	}
 
 	public void testAddMetaNodeToSubNetwork() {
@@ -382,6 +364,7 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 
 	/** 
 	 * add edge between m1 n3 (between meta node in root and base)
+	 */
     public void testMetaNodeToNormalNode() {
 		optionalSetup();
 		createMetaNode1();
@@ -391,17 +374,17 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 
 		// no change
 		assertEquals( "root after base-meta edge add node count",10,root.getNodeCount());  
-		assertEquals( "base after base-meta edge add node count",8,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "base after base-meta edge add node count",3,root.getBaseNetwork().getNodeCount());  
 		assertEquals( "m1 after base-meta edge add edge count",1,m1.getSubNetwork().getEdgeCount());  
-		assertEquals( "base after base-meta edge add edge count",7,root.getBaseNetwork().getEdgeCount());  
+		assertEquals( "base after base-meta edge add edge count",0,root.getBaseNetwork().getEdgeCount());  
 
 		// increase by one
 		assertEquals( "root after base-meta edge add edge count",8,root.getEdgeCount());  
 	}
-	 */
 
 	/** 
 	 * add edge between m1 m2 (just in root)
+	 */
     public void testMetaNodeToMetaNodeEdge() {
 		optionalSetup();
 		createMetaNode1();
@@ -410,15 +393,15 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		CyEdge ex1 = root.addEdge(m1,m2,true);
 
 		// no change
-		assertEquals( "base after base-meta edge add edge count",7,root.getBaseNetwork().getEdgeCount());  
+		assertEquals( "base after base-meta edge add edge count",0,root.getBaseNetwork().getEdgeCount());  
 		// increase by one
 		assertEquals( "root after base-meta edge add edge count",8,root.getEdgeCount());  
 	}
-	 */
 
 	/** 
 	 * Adding an edge between two nodes in the same subnetwork,
 	 * but doing it from the root network.
+	 */
     public void testAddingEdgeToSubNetworkFromRoot() {
 		optionalSetup();
 		createMetaNode1();
@@ -426,12 +409,10 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		CyEdge ex1 = root.addEdge(n4,n6,true);
 
 		// no change
-		assertEquals( "base after base-meta edge add edge count",7,root.getBaseNetwork().getEdgeCount());  
+		assertEquals( "base after base-meta edge add edge count",0,root.getBaseNetwork().getEdgeCount());  
 		assertEquals( "base after base-meta edge add edge count",2,m2s.getEdgeCount());  
 
 		// increase by one
 		assertEquals( "root after base-meta edge add edge count",8,root.getEdgeCount());  
 	}
-	 */
-
 }
