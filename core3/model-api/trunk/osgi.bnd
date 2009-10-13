@@ -2,5 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Export-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork,org.cytoscape.event,org.cytoscape.model.util
+Export-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork,org.cytoscape.event
 Import-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork,org.cytoscape.event,org.cytoscape.work
