@@ -64,9 +64,9 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
 			NODE, 0.0, "NODE_Y_LOCATION", "Node Y Location");
 	public static final VisualProperty<Double> NODE_X_SIZE = new DoubleVisualProperty(
-			NODE, 0.0, "NODE_X_SIZE", "Node X size (width)");
+			NODE, 45.0d, "NODE_X_SIZE", "Node X size (width)");
 	public static final VisualProperty<Double> NODE_Y_SIZE = new DoubleVisualProperty(
-			NODE, 0.0, "NODE_Y_SIZE", "Node y size (height)");
+			NODE, 25.0d, "NODE_Y_SIZE", "Node y size (height)");
 	public static final VisualProperty<Boolean> NODE_VISIBLE = new BooleanVisualProperty(
 			NODE, true, "NODE_VISIBLE", "Node Visible");
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
