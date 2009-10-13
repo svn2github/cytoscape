@@ -1347,7 +1347,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @param position DOCUMENT ME!
 	 */
 	public void setTextAnchor(int position) {
-		System.out.println("setTextAnchor");
+		//System.out.println("setTextAnchor");
 	}
 
 	/**
@@ -1356,7 +1356,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @param justify DOCUMENT ME!
 	 */
 	public void setJustify(int justify) {
-		System.out.println("setJustify");
+		//System.out.println("setJustify");
 	}
 
 	/**
@@ -1365,7 +1365,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @return  DOCUMENT ME!
 	 */
 	public int getTextAnchor() {
-		System.out.println("getTextAnchor");
+		//System.out.println("getTextAnchor");
 
 		return 0;
 	}
@@ -1376,7 +1376,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @return  DOCUMENT ME!
 	 */
 	public int getJustify() {
-		System.out.println("getJustify");
+		//System.out.println("getJustify");
 
 		return 0;
 	}
@@ -1387,7 +1387,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @param x DOCUMENT ME!
 	 */
 	public void setLabelOffsetX(double x) {
-		System.out.println("setLabelOffsetX");
+		//System.out.println("setLabelOffsetX");
 	}
 
 	/**
@@ -1396,7 +1396,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @param y DOCUMENT ME!
 	 */
 	public void setLabelOffsetY(double y) {
-		System.out.println("setLabelOffsetY");
+		//System.out.println("setLabelOffsetY");
 	}
 
 	/**
@@ -1405,7 +1405,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @param position DOCUMENT ME!
 	 */
 	public void setEdgeLabelAnchor(int position) {
-		System.out.println("setEdgeLabelAnchor");
+		//System.out.println("setEdgeLabelAnchor");
 	}
 
 	/**
@@ -1414,7 +1414,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @return  DOCUMENT ME!
 	 */
 	public double getLabelOffsetX() {
-		System.out.println("getLabelOffsetX");
+		//System.out.println("getLabelOffsetX");
 
 		return 0.0;
 	}
@@ -1425,7 +1425,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @return  DOCUMENT ME!
 	 */
 	public double getLabelOffsetY() {
-		System.out.println("getLabelOffsetY");
+		//System.out.println("getLabelOffsetY");
 
 		return 0.0;
 	}
@@ -1436,7 +1436,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	 * @return  DOCUMENT ME!
 	 */
 	public int getEdgeLabelAnchor() {
-		System.out.println("getEdgeLabelAnchor");
+		//System.out.println("getEdgeLabelAnchor");
 
 		return 0;
 	}

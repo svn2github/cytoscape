@@ -77,10 +77,6 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<? extends Stroke> NODE_BORDER_STROKE = new StrokeTwoDVisualProperty(
 			NODE, new BasicStroke(), "NODE_BORDER_STROKE", "Node Border Stroke");
 
-	public static final VisualProperty<Double> NODE_WIDTH = new DoubleVisualProperty(
-			NODE, 40.0, "NODE_WIDTH", "Node Width");
-	public static final VisualProperty<Double> NODE_HEIGHT = new DoubleVisualProperty(
-			NODE, 40.0, "NODE_HEIGHT", "Node Height");
 	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
 			NODE, "", "NODE_TOOLTIP", "Node Tooltip");
 	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
@@ -179,8 +175,6 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		visualPropertySet.add(NODE_BORDER_PAINT);
 		visualPropertySet.add(NODE_BORDER_WIDTH);
 		visualPropertySet.add(NODE_BORDER_STROKE);
-		visualPropertySet.add(NODE_WIDTH);
-		visualPropertySet.add(NODE_HEIGHT);
 		visualPropertySet.add(NODE_TRANSPARENCY);
 		visualPropertySet.add(EDGE_SELECTED_PAINT);
 		visualPropertySet.add(EDGE_STROKE);

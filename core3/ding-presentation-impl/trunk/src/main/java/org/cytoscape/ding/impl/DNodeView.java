@@ -1294,13 +1294,14 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		else if ( vp == DVisualLexicon.NODE_TRANSPARENCY ) {
 			setTransparency(((Integer)o).floatValue());
 		}
-		else if ( vp == DVisualLexicon.NODE_WIDTH ) {
+		else if ( vp == TwoDVisualLexicon.NODE_X_SIZE ) {
 			setWidth(((Double)o).doubleValue());
 		}
-		else if ( vp == DVisualLexicon.NODE_HEIGHT ) {
+		else if ( vp == TwoDVisualLexicon.NODE_Y_SIZE ) {
 			setHeight(((Double)o).doubleValue());
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_LABEL ) {
+			System.out.println("Setting Label: " + o);
 			setText((String)o);
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_X_LOCATION ) {
