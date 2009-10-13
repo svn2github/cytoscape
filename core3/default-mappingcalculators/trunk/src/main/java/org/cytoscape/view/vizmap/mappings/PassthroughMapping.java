@@ -74,9 +74,10 @@ public class PassthroughMapping<K, V> extends
 	public <G extends GraphObject> void apply(ViewColumn<V> column,
 			List<? extends View<G>> views) {
 		if(views == null || views.size() < 1)
-			return; // empty list, nothing to do
-
+			return; // empty list, nothing to do		
+		
 		CyRow row;
+		K value;
 		
 		// FIXME: also check that column's vp is internally-stored vp!
 		if (vp.getType().isAssignableFrom(attrType)) { // can simply copy object
@@ -86,13 +87,15 @@ public class PassthroughMapping<K, V> extends
 			final List<View<G>> valuesToClear = new ArrayList<View<G>>();
 			
 			for (View<G> v : views) {
+				
 				row = v.getSource().attrs();
 				if (row.contains(attrName, attrType)) {
 					// skip Views where source attribute is not defined;
 					// ViewColumn will automatically substitute the per-VS or
 					// global default, as appropriate
-					final K value = row.get(attrName, attrType);
+					value = row.get(attrName, attrType);
 					valuesToSet.put(v, value);
+					v.setVisualProperty((VisualProperty<? extends K>)vp, value);
 				} else { // remove value so that default value will be used:
 					valuesToClear.add(v);
 				}
