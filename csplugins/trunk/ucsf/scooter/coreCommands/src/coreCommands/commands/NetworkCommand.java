@@ -277,7 +277,7 @@ public class NetworkCommand extends AbstractCommand {
 		// Return the current network
 		} else if (subCommand.equals("get current")) {
 			CyNetwork current = Cytoscape.getCurrentNetwork();
-			result.addMessage("network: current network is "+current.getIdentifier());
+			result.addMessage("network: current network is "+current.getIdentifier()+": "+current.getTitle());
 			result.addResult("currentnetwork", current);
 
 		// Make the designated network current
@@ -300,7 +300,7 @@ public class NetworkCommand extends AbstractCommand {
 			result.addMessage("network: network list:");
 			result.addResult("networks",networkList);
 			for (CyNetwork net: networkList) {
-				result.addMessage("  "+net.getIdentifier());
+				result.addMessage("  "+net.getIdentifier()+": "+net.getTitle());
 			}
 
 		} else {

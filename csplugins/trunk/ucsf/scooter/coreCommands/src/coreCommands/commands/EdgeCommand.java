@@ -210,11 +210,11 @@ public class EdgeCommand extends AbstractCommand {
 
 	private CyNetwork getNetwork(String subCommand, Map<String, String> args) throws CyCommandException {
 		String netName = getArg(subCommand, "network", args);
-		if (netName == null)
+		if (netName == null || netName.equals("current"))
 			return Cytoscape.getCurrentNetwork();
 
 		CyNetwork net = Cytoscape.getNetwork(netName);
-		if (net == null)
+		if (net == Cytoscape.getNullNetwork())
 			throw new CyCommandException("edge: no such network "+netName);
 		return net;
 	}
