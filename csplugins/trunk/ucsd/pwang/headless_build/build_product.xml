@@ -1,9 +1,0 @@
-<project name="Definition of cytoscape build properties" default="runBuild">
-
-	<import file= "./build_product_config.xml"/>
-		
-	<import file= "${baseLocation}/plugins/${pdeBuild}"/>
-	
-	<target name="runBuild" depends="main" />
-
-</project>
