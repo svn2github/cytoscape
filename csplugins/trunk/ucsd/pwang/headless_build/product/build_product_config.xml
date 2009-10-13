@@ -1,0 +1,43 @@
+<project name="cytoscape.build">
+
+	<!-- Beginning of configuration section -->
+	
+	<property name="base" location="c:/eclipse35" />
+	<property name="baseLocation" location="${base}/eclipse" />
+	
+	<property name="buildDirectory" location="./build_product" />
+
+	<property name="p2.category.definition" value="file:C:/work_cy3/eclipse35_ws/headless_build/category.xml" />
+	<property name="product" location="./cytoscape300.product" />		
+	<property name="p2.gathering" value= "true" />
+	<property name="p2.metadata.repo" value= "file:${buildDirectory}/../cy3repository" />
+	<property name="p2.artifact.repo" value= "file:${buildDirectory}/../cy3repository" />
+	<property name="p2.metadata.repo.name" value= "Cytoscape 3.0.0 metadata Repository" />
+	<property name="p2.artifact.repo.name" value= "Cytoscape 3.0.0 artifact Repository" />
+	<property name="p2.flavor" value= "tooling" />
+	<property name="p2.director.profile" value= "CytoscapeProfile" />
+	
+	<property name="archivePrefix" value= "cytoscape" />
+	<property name="buildId" value= "CytoscapeBuild" />
+
+	<property name="pluginPath" location="${buildDirectory}/target/cytoscape" />	
+		
+	<!-- End of configuration section -->
+	
+	<property file="build.properties" />
+	
+	<pathconvert property="equinoxLauncher">
+	<path>
+	  <fileset dir="${baseLocation}/plugins" includes="**/*.jar" /> 
+	  </path>
+	  <regexpmapper from="(org\.eclipse\.equinox\.launcher)(_)(.*)\.jar" to="\0" /> 
+	</pathconvert>
+	
+	<pathconvert property="pdeBuild">
+	<path>
+	  <fileset dir="${baseLocation}/plugins" includes="**/*productBuild.xml" /> 
+	  </path>
+	  <regexpmapper from="(org\.eclipse\.pde\.build)(_)(.*)" to="\0" /> 
+	</pathconvert>	
+		
+</project>
