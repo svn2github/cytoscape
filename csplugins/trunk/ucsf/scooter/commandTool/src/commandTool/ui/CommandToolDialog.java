@@ -63,9 +63,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import cytoscape.command.CyCommandManager;
-import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandHandler;
+import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 import cytoscape.logger.CyLogger;
 
@@ -142,25 +142,25 @@ public class CommandToolDialog extends JDialog
 		} else if ("clear".equals(e.getActionCommand())) {
 			resultsText.setStyledDocument(new DefaultStyledDocument());
 		} else {
-			String command = inputField.getText();
-			resultsText.appendCommand(command);
-			commandList.add(command);
+			String input = inputField.getText();
+			resultsText.appendCommand(input);
+			commandList.add(input);
 
-			handleCommand(command);
+			handleCommand(input);
 
 			inputField.selectAll();
 		}
 	}
 
-	private void handleCommand(String command) {
+	private void handleCommand(String input) {
 		CyCommandResult results = null;
 		try {
 			String builtIn = null;
-			CyCommand comm = null;
-			if ((comm = isCommand(command)) != null) {
-				results = handleCommand(command, comm);
+			CyCommandHandler comm = null;
+			if ((comm = isCommand(input)) != null) {
+				results = handleCommand(input, comm);
 			} else {
-				throw new CyCommandException("Unknown command: "+command);
+				throw new CyCommandException("Unknown command: "+input);
 			}
 			// Get all of the messages from our results
 			for (String s: results.getMessages()) {
@@ -172,28 +172,28 @@ public class CommandToolDialog extends JDialog
 		resultsText.appendMessage("\n");
 	}
 
-	private CyCommand isCommand(String command) {
-		for (CyCommand comm: CyCommandManager.getCommandList()) {
-			String s = comm.getCommandName();
-			if (command.toLowerCase().startsWith(s.toLowerCase()))
+	private CyCommandHandler isCommand(String input) {
+		for (CyCommandHandler comm: CyCommandManager.getHandlerList()) {
+			String s = comm.getHandlerName();
+			if (input.toLowerCase().startsWith(s.toLowerCase()))
 				return comm;
 		}
 		return null;
 	}
 
-	private CyCommandResult handleCommand(String inputLine, CyCommand comm) throws CyCommandException {
+	private CyCommandResult handleCommand(String inputLine, CyCommandHandler comm) throws CyCommandException {
 		String sub = null;
 		// Parse the input, breaking up the tokens into appropriate
 		// commands, subcommands, and maps
 
-		int subIndex = comm.getCommandName().length();
+		int subIndex = comm.getHandlerName().length();
 
 		Map<String,String> settings = new HashMap();
 		String subCom = parseInput(inputLine.substring(subIndex).trim(), settings);
 		
-		for (String subCommand: comm.getSubCommands()) {
-			if (subCommand.toLowerCase().equals(subCom.toLowerCase())) {
-				sub = subCommand;
+		for (String command: comm.getCommands()) {
+			if (command.toLowerCase().equals(subCom.toLowerCase())) {
+				sub = command;
 				break;
 			}
 		}
@@ -205,7 +205,7 @@ public class CommandToolDialog extends JDialog
 	}
 
 	private String parseInput(String input, Map<String,String> settings) {
-		String subCommand = "";
+		String command = "";
 
 		// Tokenize
 		String[] tokens = input.split(" ");
@@ -215,12 +215,12 @@ public class CommandToolDialog extends JDialog
 				String[] setting = tokens[i].split("=");
 				settings.put(setting[0],setting[1]);
 			} else {
-				subCommand += tokens[i].trim()+" ";
+				command += tokens[i].trim()+" ";
 			}
 		}
 
 		// Now, the last token of the args goes with the first setting
-		return subCommand.trim();
+		return command.trim();
 	}
 
 	class JResultsPane extends JTextPane {
