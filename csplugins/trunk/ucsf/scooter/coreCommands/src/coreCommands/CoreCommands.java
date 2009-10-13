@@ -53,14 +53,15 @@ public class CoreCommands extends CytoscapePlugin {
 		// Register our built-ins -- these should really be
 		// provided directly by the core...
 		try {
+			CyCommandManager.register(new EdgeCommand());
 			CyCommandManager.register(new HelpCommand());
-			CyCommandManager.register(new VizMapCommand());
+			CyCommandManager.register(new LayoutCommand());
 			CyCommandManager.register(new NetworkCommand());
 			CyCommandManager.register(new NetworkViewCommand());
 			CyCommandManager.register(new NodeCommand());
-			CyCommandManager.register(new EdgeCommand());
-			CyCommandManager.register(new SessionCommand());
 			CyCommandManager.register(new PropertyCommand());
+			CyCommandManager.register(new SessionCommand());
+			CyCommandManager.register(new VizMapCommand());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

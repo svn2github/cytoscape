@@ -39,6 +39,7 @@ import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
@@ -60,15 +61,22 @@ public class EdgeCommand extends AbstractCommand {
 	public EdgeCommand() {
 		// Define our subcommands
 		settingsMap = new HashMap();
-		addSetting("import attributes", "file");
-		addSetting("export attributes", "file");
-		// addSetting("export attributes", "attribute");
-		addSetting("select", "edge");
-		addSetting("select", "edgeList");
 		addSetting("deselect", "edge");
 		addSetting("deselect", "edgeList");
-		addSetting("find", "expression");
+		// addSetting("export attributes", "file");
+		// addSetting("export attributes", "attribute");
+		// addSetting("find", "expression");
+		addSetting("get attribute", "edge");
+		addSetting("get attribute", "edgelist");
+		addSetting("get attribute", "name");
 		addSetting("get selected", "network", "current");
+		addSetting("import attributes", "file");
+		addSetting("select", "edge");
+		addSetting("select", "edgelist");
+		addSetting("set attribute", "edge");
+		addSetting("set attribute", "edgelist");
+		addSetting("set attribute", "name");
+		addSetting("set attribute", "value");
 
 		// Handle table import????
 	}
@@ -87,9 +95,10 @@ public class EdgeCommand extends AbstractCommand {
 
 		// Import edge attributes from a file
 		if ("import attributes".equals(subCommand)) {
-			if (!haveKey(args, "file"))
+			String fileName = getArg("import attributes", "file", args);
+			if (fileName == null)
 				throw new CyCommandException("edge: filename is required to import attributes");
-			String fileName = args.get("file");
+
 			try {
 				File file = new File(fileName);
 				Cytoscape.loadAttributes(new String[] { file.getAbsolutePath() },
@@ -104,7 +113,7 @@ public class EdgeCommand extends AbstractCommand {
 
 		// Select some ndoes
 		} else if ("select".equals(subCommand)) {
-			CyNetwork net = getNetwork(args);
+			CyNetwork net = getNetwork("select", args);
 			List<CyEdge> edgeList = getEdgeList(net, result, args);
 			if (edgeList == null)
 				throw new CyCommandException("edge: nothing to select");
@@ -116,7 +125,7 @@ public class EdgeCommand extends AbstractCommand {
 
 		// de-select some ndoes
 		} else if ("deselect".equals(subCommand)) {
-			CyNetwork net = getNetwork(args);
+			CyNetwork net = getNetwork("deselect", args);
 			try {
 				List<CyEdge> edgeList = getEdgeList(net, result, args);
 				net.setSelectedNodeState(edgeList, false);
@@ -132,10 +141,65 @@ public class EdgeCommand extends AbstractCommand {
 
 		// return the list of currently selected edges
 		} else if ("get selected".equals(subCommand)) {
-			CyNetwork net = getNetwork(args);
+			CyNetwork net = getNetwork("get selected", args);
 			Set<CyEdge>edges = net.getSelectedEdges();
 			result.addMessage("edge: returned "+edges.size()+" selected edges");
 			result.addResult("edges", makeEdgeList(edges));
+
+		// Get attribute values
+		} else if ("get attribute".equals(subCommand)) {
+			CyNetwork net = getNetwork(subCommand, args);
+			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+			String attrName = getArg(subCommand, "name", args);
+			if (attrName == null)
+				throw new CyCommandException("edge: attribute 'name' is required");
+			else if (edgeAttributes.getType(attrName) == CyAttributes.TYPE_UNDEFINED)
+				throw new CyCommandException("edge: attribute 'name' does not exist");
+
+			List<CyEdge> edgeList = getEdgeList(net, result, args);
+			if (edgeList == null)
+				edgeList = net.edgesList();
+
+			byte attributeType = edgeAttributes.getType(attrName);
+			result.addResult("attribute type", attributeType);
+			result.addMessage("edge: values for '"+attrName+"' attribute:");
+			for (CyEdge edge: edgeList) {
+				if (edgeAttributes.hasAttribute(edge.getIdentifier(), attrName)) {
+					Object attr = edgeAttributes.getAttribute(edge.getIdentifier(), attrName);
+					result.addResult(edge.getIdentifier(), attr);
+					result.addMessage("   "+edge.getIdentifier()+"='"+AttributeUtils.attributeToString(attr, attributeType)+"'");
+				}
+			}
+
+		// Set attribute values
+		} else if ("set attribute".equals(subCommand)) {
+			CyNetwork net = getNetwork(subCommand, args);
+			CyAttributes edgeAttributes = Cytoscape.getNodeAttributes();
+			String attrName = getArg(subCommand, "name", args);
+			String value = getArg(subCommand, "value", args);
+			if (attrName == null || value == null)
+				throw new CyCommandException("edge: attribute 'name' and 'value' are required");
+
+			List<CyEdge> edgeList = getEdgeList(net, result, args);
+			if (edgeList == null)
+				edgeList = net.edgesList();
+
+			String typeName = getArg(subCommand, "type", args);
+			byte attributeType = edgeAttributes.getType(attrName);
+			if (attributeType == CyAttributes.TYPE_UNDEFINED && typeName == null)
+				attributeType = CyAttributes.TYPE_STRING;
+			else if (attributeType == CyAttributes.TYPE_UNDEFINED && typeName != null) {
+				attributeType = AttributeUtils.attributeStringToByte(typeName);
+			}
+
+			int count = 0;
+			int edgeCount = edgeList.size();
+			for (CyEdge edge: edgeList) {
+				String id = edge.getIdentifier();
+				if (AttributeUtils.setAttribute(result, "edge", edgeAttributes, attributeType, id, attrName, value))
+					count++;
+			}
+			result.addMessage("edge: set "+count+" attributes (out of "+edgeCount+")");
 
 		// find edges based on an expression
 		} else if ("find".equals(subCommand)) {
@@ -144,11 +208,11 @@ public class EdgeCommand extends AbstractCommand {
 		return result;
 	}
 
-	private CyNetwork getNetwork(Map<String, String> args) throws CyCommandException {
-		if (!haveKey(args,"network"))
+	private CyNetwork getNetwork(String subCommand, Map<String, String> args) throws CyCommandException {
+		String netName = getArg(subCommand, "network", args);
+		if (netName == null)
 			return Cytoscape.getCurrentNetwork();
 
-		String netName = args.get("network");
 		CyNetwork net = Cytoscape.getNetwork(netName);
 		if (net == null)
 			throw new CyCommandException("edge: no such network "+netName);
@@ -193,11 +257,5 @@ public class EdgeCommand extends AbstractCommand {
 		else
 			list.add(edge);
 		return;
-	}
-
-	private boolean haveKey(Map<String,String>map, String key) {
-		if (map == null || map.size() == 0 || !map.containsKey(key))
-			return false;
-		return true;
 	}
 }

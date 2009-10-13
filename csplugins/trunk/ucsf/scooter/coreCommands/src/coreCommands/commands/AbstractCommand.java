@@ -38,9 +38,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
 import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandResult;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 
 /**
@@ -149,6 +153,61 @@ public abstract class AbstractCommand implements CyCommand {
 				kvSettings.put(t.getName(), null);
 		}
 		return kvSettings;
+	}
+
+	/**
+ 	 * Some additional utility routines
+ 	 */
+
+	protected String getArg(String subCommand, String key, Map<String,String>args) {
+		// Do we have the key in our settings map?
+		String value = null;
+
+		if (settingsMap.containsKey(subCommand)) {
+			List<Tunable> tL = settingsMap.get(subCommand);
+			for (Tunable t: tL) {
+				if (t.getName().equals(key)) {
+					Object v = t.getValue();
+					if (v != null)
+						value = v.toString();
+					break;
+				}
+			}
+		}
+
+		if (args == null || args.size() == 0 || !args.containsKey(key))
+			return value;
+
+		return args.get(key);
+	}
+
+	protected static List<CyNode> getNodeList(CyNetwork net, CyCommandResult result, 
+	                                          Map<String, String> args) {
+		if (args == null || args.size() == 0)
+			return null;
+
+		List<CyNode> retList = new ArrayList();
+		if (args.containsKey("nodelist")) {
+			String[] nodes = args.get("nodelist").split(",");
+			for (int nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
+				addNode(net, nodes[nodeIndex], retList, result);
+			}
+		} else if (args.containsKey("node")) {
+			String nodeName = args.get("node");
+			addNode(net, nodeName, retList, result);
+		} else {
+			return null;
+		}
+		return retList;
+	}
+
+	protected static void addNode(CyNetwork net, String nodeName, List<CyNode> list, CyCommandResult result) {
+		CyNode node = Cytoscape.getCyNode(nodeName, false);
+		if (node == null) 
+			result.addError("node: can't find node "+nodeName);
+		else
+			list.add(node);
+		return;
 	}
 
 }
