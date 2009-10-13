@@ -73,8 +73,9 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
+	 @Override
 	public String toString() {
-		return "Node suid: " + Long.toString(getSUID()) + " index: " + Integer.toString(index) + " network suid: " + Long.toString(net.getSUID());
+		return "Node suid: " + getSUID() + " index: " + index + " network suid: " + net.getSUID();
 	}
 
 	/**

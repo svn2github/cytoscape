@@ -161,14 +161,14 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyNode> getNodeList() {
+	public synchronized List<CyNode> getNodeList() {
 		return parent.getNodeList(inFirstNode, internalId, internalNodeCount);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getEdgeList() {
+	public synchronized List<CyEdge> getEdgeList() {
 		return parent.getEdgeList(inFirstNode, internalId, internalEdgeCount);
 	}
 

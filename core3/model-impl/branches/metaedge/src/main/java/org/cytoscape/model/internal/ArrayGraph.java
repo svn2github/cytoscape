@@ -166,21 +166,21 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNodeCount() {
+	public synchronized int getNodeCount() {
 		return nodeCount; 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getEdgeCount() {
+	public synchronized int getEdgeCount() {
 		return edgeCount; 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyEdge getEdge(final int e) {
+	public synchronized CyEdge getEdge(final int e) {
 		if ((e >= 0) && (e < edgePointers.size()))
 			return edgePointers.get(e).cyEdge;
 		else
@@ -190,7 +190,7 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyNode getNode(final int n) {
+	public synchronized CyNode getNode(final int n) {
 		if ((n >= 0) && (n < nodePointers.size()))
 			return nodePointers.get(n).cyNode;
 		else
@@ -200,7 +200,7 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyNode> getNodeList() {
+	public synchronized List<CyNode> getNodeList() {
 		return getNodeList(firstNode,ROOT,nodeCount);
 	}
 
@@ -227,7 +227,7 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getEdgeList() {
+	public synchronized List<CyEdge> getEdgeList() {
 		return getEdgeList(firstNode,ROOT,edgeCount);
 	}
 
