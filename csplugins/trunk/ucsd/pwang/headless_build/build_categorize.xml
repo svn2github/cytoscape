@@ -1,12 +1,11 @@
 <project name="Repository-categorize.build" default="repository-categorize-build">
-
-	<!-- Beginning of configuration section -->
+    <!-- categorizing Installable Unit in a given repository -->
 	
+	<!-- Beginning of configuration section -->
 	<property name="base" location="c:/eclipse35" />
 	<property name="baseLocation" location="${base}/eclipse" />
 	<property name="cy3repo" location="./cy3repository" />
 	<property name="categoryDefinition" value="file:C:/work_cy3/eclipse35_ws/headless_build_product/category.xml" />
-		
 	<!-- End of configuration section -->
 	
 	<pathconvert property="equinoxLauncher">
