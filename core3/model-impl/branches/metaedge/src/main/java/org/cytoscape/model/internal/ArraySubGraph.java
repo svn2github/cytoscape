@@ -134,7 +134,7 @@ class ArraySubGraph implements CySubNetwork {
 		// important that it's edgeAdd and not addEdge
 		final CyEdge ret; 
 		synchronized (this) {
-			ret = parent.edgeAdd(source, target, isDirected); 
+			ret = parent.edgeAdd(source, target, isDirected,this); 
 			updateEdge(ret);
 			internalEdgeCount++;
 			edgeSet.add(ret);

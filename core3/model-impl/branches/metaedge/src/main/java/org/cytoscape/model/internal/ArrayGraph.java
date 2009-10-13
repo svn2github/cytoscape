@@ -337,7 +337,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyNode addNode() {
-		return base.addNode();
+		return nodeAdd(null);
 	}
 
 	CyMetaNode nodeAdd(final CySubNetwork sub) {
@@ -402,19 +402,19 @@ public class ArrayGraph implements CyRootNetwork {
 	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) {
 		// by calling base.addEdge() we'll update both the base network AND
 		// the root network.  base.addEdge() calls edgeAdd().
-		return base.addEdge(s,t,directed);
+		return edgeAdd(s,t,directed,this);
 	}
 
 	// will be called from base.addEdge()!
-	CyEdge edgeAdd(final CyNode s, final CyNode t, final boolean directed) {
+	CyEdge edgeAdd(final CyNode s, final CyNode t, final boolean directed, final CyNetwork net) {
 
 		final EdgePointer e;
 
 		synchronized (this) {
-			if (!containsNode(s))
+			if (!net.containsNode(s))
 				throw new IllegalArgumentException("source node is not a member of this network");
 
-			if (!containsNode(t))
+			if (!net.containsNode(t))
 				throw new IllegalArgumentException("target node is not a member of this network");
 
 			final NodePointer source = getNodePointer(s);
@@ -424,7 +424,8 @@ public class ArrayGraph implements CyRootNetwork {
 			e = new EdgePointer(source, target, directed, index, 
 			                    new CyEdgeImpl(s, t, directed, index, edgeAttrMgr));
 
-			e.insert(ROOT);
+			// adds to the root network, adding to the subnetwork is handled by that code
+			e.insert(ROOT); 
 
 			edgePointers.add(e);
 
