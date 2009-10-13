@@ -44,9 +44,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * CyCommandResult returns the results that result from the execution of a
- * {@link CyCommand} execution.  Generally, a CyCommand would create a CyCommandResult
- * object at the beginning of the execute() method.  A CyCommand should never
+ * CyCommandResult returns the results from the execution of a
+ * command handled by a {@link CyCommandHandler}.  Generally, a command would create a CyCommandResult
+ * object at the beginning of the execute() method.  A command should never
  * return a <b>null</b> to indicate failure, and should throw {@link CyCommandException}
  * instead.  This will avoid a lot of redundant checking for null returns.
  */

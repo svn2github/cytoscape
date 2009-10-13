@@ -39,7 +39,7 @@
 package cytoscape.command;
 
 /**
- * The CyCommandException is thrown when a CyCommand execution encounters an
+ * The CyCommandException is thrown when a CyCommandHandler encounters an
  * exception condition. 
  */
 public class CyCommandException extends Exception {

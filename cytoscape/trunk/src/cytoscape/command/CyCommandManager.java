@@ -44,43 +44,43 @@ import java.util.HashMap;
 
 /**
  * CyCommandManager is a singleton Cytoscape class that provides a global registry
- * of {@link CyCommands}.  Each CyCommand is added to the registry through the register
+ * of {@link CyCommandHandler}.  Each CyCommandHandler is added to the registry through the register
  * method.  This method registers both the command name (e.g. "view layout") as well as
  * the class name (e.g. ViewLayoutCommand).  Both may be accessed by calling the getCommand
  * method.
  */
 public class CyCommandManager {
-       private static HashMap<String, CyCommand> classMap = new HashMap();
-       private static HashMap<String, CyCommand> nameMap = new HashMap();
+       private static HashMap<String, CyCommandHandler> classMap = new HashMap();
+       private static HashMap<String, CyCommandHandler> nameMap = new HashMap();
 
        /**
-        * register a new CyCommand.
+        * register a new CyCommandHandler.
         *
-        * @param command the command we want to register
+        * @param handler the handler we want to register
         * @throws Exception if the command is already registered
         */
-       public static void register(CyCommand command) throws Exception {
-               if (command == null) return;
+       public static void register(CyCommandHandler handler) throws Exception {
+               if (handler == null) return;
 
                // Register the class name
-               if (classMap.containsKey(command.getClass().getName()))
-                       throw new Exception("Command "+command.getClass().getName()+" is already registered");
+               if (classMap.containsKey(handler.getClass().getName()))
+                       throw new Exception("Handler "+handler.getClass().getName()+" is already registered");
 
                // Register the command name
-               if (nameMap.containsKey(command.getCommandName()))
-                       throw new Exception("Command "+command.getCommandName()+" is already registered");
+               if (nameMap.containsKey(handler.getHandlerName()))
+                       throw new Exception("Handler "+handler.getHandlerName()+" is already registered");
 
-               classMap.put(command.getClass().getName(), command);
-               nameMap.put(command.getCommandName(), command);
+               classMap.put(handler.getClass().getName(), handler);
+               nameMap.put(handler.getHandlerName(), handler);
        }
 
        /**
-        * return a CyCommand by either name or class name.
+        * return a CyCommandHandler by either name or class name.
         *
         * @param name either the name of the class or command
-        * @return the command, or null if a command with name or class doesn't exist
+        * @return the handler, or null if a handler with name or class doesn't exist
         */
-       public static CyCommand getCommand(String name) {
+       public static CyCommandHandler getHandler(String name) {
                if (classMap.containsKey(name))
                        return classMap.get(name);
 
@@ -91,24 +91,24 @@ public class CyCommandManager {
        }
 
        /**
-        * Get the list of all commands that are currently registered.
+        * Get the list of all handlers that are currently registered.
         *
-        * @return the list of commands that are currently registered
+        * @return the list of handlers that are currently registered
         */
-       public static List<CyCommand> getCommandList() {
-               List<CyCommand> list = new ArrayList();
+       public static List<CyCommandHandler> getHandlerList() {
+               List<CyCommandHandler> list = new ArrayList();
                list.addAll(classMap.values());
                return list;
        }
 
        /**
-        * Unregister a command
+        * Unregister a command handler
         *
-        * @param command the command to unregister
+        * @param handler the command handler to unregister
         */
-       public static void unRegister(CyCommand command) {
-               classMap.remove(command.getClass().getName());
-               nameMap.remove(command.getCommandName());
+       public static void unRegister(CyCommandHandler handler) {
+               classMap.remove(handler.getClass().getName());
+               nameMap.remove(handler.getHandlerName());
        }
 }
 
