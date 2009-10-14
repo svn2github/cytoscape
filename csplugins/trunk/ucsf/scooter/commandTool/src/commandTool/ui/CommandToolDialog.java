@@ -38,9 +38,6 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.io.StreamTokenizer;
-import java.io.StringReader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +73,8 @@ import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 import cytoscape.logger.CyLogger;
+
+import commandTool.CommandInputUtil;
 
 public class CommandToolDialog extends JDialog 
                              implements ActionListener {
@@ -178,8 +177,8 @@ public class CommandToolDialog extends JDialog
 		CyCommandResult results = null;
 		try {
 			CyCommandHandler comm = null;
-			if ((comm = isCommand(input)) != null) {
-				results = handleCommand(input, comm);
+			if ((comm = CommandInputUtil.isCommand(input)) != null) {
+				results = CommandInputUtil.handleCommand(input, comm);
 			} else {
 				throw new CyCommandException("Unknown command: "+input);
 			}
@@ -191,88 +190,6 @@ public class CommandToolDialog extends JDialog
 			resultsText.appendError("  "+e.getMessage()+"\n");
 		}
 		resultsText.appendMessage("\n");
-	}
-
-	private CyCommandHandler isCommand(String input) {
-		for (CyCommandHandler comm: CyCommandManager.getHandlerList()) {
-			String s = comm.getHandlerName();
-			if (input.toLowerCase().startsWith(s.toLowerCase()))
-				return comm;
-		}
-		return null;
-	}
-
-	private CyCommandResult handleCommand(String inputLine, CyCommandHandler comm) throws CyCommandException {
-		String sub = null;
-		// Parse the input, breaking up the tokens into appropriate
-		// commands, subcommands, and maps
-
-		int subIndex = comm.getHandlerName().length();
-
-		Map<String,String> settings = new HashMap();
-		String subCom = parseInput(inputLine.substring(subIndex).trim(), settings);
-		
-		for (String command: comm.getCommands()) {
-			if (command.toLowerCase().equals(subCom.toLowerCase())) {
-				sub = command;
-				break;
-			}
-		}
-
-		if (sub == null && (subCom != null && subCom.length() > 0))
-			throw new CyCommandException("Unknown argument: "+subCom);
-		
-		return comm.execute(sub, settings);
-	}
-
-	private String parseInput(String input, Map<String,String> settings) {
-
-		// Tokenize
-		StringReader reader = new StringReader(input);
-		StreamTokenizer st = new StreamTokenizer(reader);
-
-		// We don't really want to parse numbers as numbers...
-		st.ordinaryChar('-');
-		st.ordinaryChar('.');
-		st.ordinaryChars('0', '9');
-
-		st.wordChars('-', '-');
-		st.wordChars('.', '.');
-		st.wordChars('0', '9');
-
-		List<String> tokenList = new ArrayList();
-		int tokenIndex = 0;
-		int i;
-		try {
-			while ((i = st.nextToken()) != StreamTokenizer.TT_EOF) {
-				switch(i) {
-					case '=':
-						// Get the next token
-						i = st.nextToken();
-						if (i == StreamTokenizer.TT_WORD || i == '"') {
-							tokenIndex--;
-							String key = tokenList.get(tokenIndex);
-							settings.put(key, st.sval);
-							tokenList.remove(tokenIndex);
-						}
-						break;
-					case '"':
-					case StreamTokenizer.TT_WORD:
-						tokenList.add(st.sval);
-						tokenIndex++;
-						break;
-					default:
-						break;
-				}
-			} 
-		} catch (Exception e) {}
-
-		// Concatenate the commands together
-		String command = "";
-		for (String word: tokenList) command += word+" ";
-
-		// Now, the last token of the args goes with the first setting
-		return command.trim();
 	}
 
 	class JResultsPane extends JTextPane {
