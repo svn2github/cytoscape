@@ -58,6 +58,8 @@ import javax.swing.event.PopupMenuListener;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.events.NetworkViewAddedEvent;
+import org.cytoscape.session.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -98,7 +100,7 @@ import cytoscape.view.CySwingApplication;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		VisualStyleCreatedListener, PropertyChangeListener, PopupMenuListener {
+		VisualStyleCreatedListener, PropertyChangeListener, PopupMenuListener, NetworkViewAddedListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 	
@@ -246,7 +248,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			vmm.setVisualStyle((VisualStyle) vsComboBox.getModel()
 					.getSelectedItem(), currentView);
 			style.apply(cyNetworkManager.getCurrentNetworkView());
-			cyNetworkManager.getCurrentNetworkView().updateView();
 		}
 		
 		/*
@@ -703,5 +704,17 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		System.out.println("<<<<<<<<<<<<<<<<<<< Got event: " + e.getSource()
 				+ ", item = " + vsComboBox.getItemCount());
 
+	}
+	
+	@Override
+	public void handleEvent(NetworkViewAddedEvent e) {
+		VisualStyle targetStyle = lastVS;
+		
+		if(targetStyle == null) {
+			targetStyle = defaultVS;
+		}
+		vmm.setVisualStyle(targetStyle, e.getNetworkView());
+		targetStyle.apply(e.getNetworkView());
+		
 	}
 }

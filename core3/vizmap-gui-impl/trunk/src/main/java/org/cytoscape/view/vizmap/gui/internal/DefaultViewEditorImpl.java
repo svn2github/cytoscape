@@ -461,7 +461,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 				selectedStyle.setDefaultValue(vp, newValue);
 				selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
-				cyNetworkManager.getCurrentNetworkView().updateView();
 			}
 			updateVisualPropertyLists();
 			buildList();
@@ -514,7 +513,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		System.out.println("Cur VS = " + curVS);
 		selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
-		view.updateView();
 	}
 
 	// Variables declaration - do not modify
