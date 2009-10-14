@@ -156,4 +156,9 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	public void removeViewChangeListener(ViewChangeListener vcl) {
 		listeners.remove(vcl);
 	}
+
+	@Override
+	public String toString() {
+		return "View suid: " + suid + "  source: " + source.toString();
+	}
 }
