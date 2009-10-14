@@ -38,20 +38,28 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.KeyStroke;
 
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -74,6 +82,7 @@ public class CommandToolDialog extends JDialog
 
 	private CyLogger logger;
 	private List<String> commandList;
+	private int commandIndex = 0;
 
 	// Dialog components
 	private JResultsPane resultsText;
@@ -84,6 +93,11 @@ public class CommandToolDialog extends JDialog
 		this.logger = logger;
 		commandList = new ArrayList();
 		initComponents();
+	}
+
+	public void setVisible(boolean tf) {
+		super.setVisible(tf);
+		inputField.requestFocusInWindow();
 	}
 
 	/**
@@ -111,8 +125,16 @@ public class CommandToolDialog extends JDialog
 
 		inputField = new JTextField(80);
 		inputField.setBorder(BorderFactory.createTitledBorder(etchedBorder, "Command"));
+		// Set up our up-arrow/down-arrow actions
+		Action previousAction = new LineAction("previous");
+		inputField.getInputMap().put(KeyStroke.getKeyStroke("UP"), "previous");
+		inputField.getActionMap().put("previous", previousAction);
+
+		Action nextAction = new LineAction("next");
+		inputField.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "next");
+		inputField.getActionMap().put("next", nextAction);
+
 		inputField.addActionListener(this);
-		inputField.requestFocusInWindow();
 		dataPanel.add(inputField);
 		inputField.setMaximumSize(new Dimension(1000,45));
 
@@ -145,17 +167,16 @@ public class CommandToolDialog extends JDialog
 			String input = inputField.getText();
 			resultsText.appendCommand(input);
 			commandList.add(input);
+			commandIndex = commandList.size();
 
 			handleCommand(input);
-
-			inputField.selectAll();
+			inputField.setText("");
 		}
 	}
 
 	private void handleCommand(String input) {
 		CyCommandResult results = null;
 		try {
-			String builtIn = null;
 			CyCommandHandler comm = null;
 			if ((comm = isCommand(input)) != null) {
 				results = handleCommand(input, comm);
@@ -205,19 +226,50 @@ public class CommandToolDialog extends JDialog
 	}
 
 	private String parseInput(String input, Map<String,String> settings) {
-		String command = "";
 
 		// Tokenize
-		String[] tokens = input.split(" ");
+		StringReader reader = new StringReader(input);
+		StreamTokenizer st = new StreamTokenizer(reader);
 
-		for (int i = 0; i < tokens.length; i++) {
-			if (tokens[i].indexOf('=') > 0) {
-				String[] setting = tokens[i].split("=");
-				settings.put(setting[0],setting[1]);
-			} else {
-				command += tokens[i].trim()+" ";
-			}
-		}
+		// We don't really want to parse numbers as numbers...
+		st.ordinaryChar('-');
+		st.ordinaryChar('.');
+		st.ordinaryChars('0', '9');
+
+		st.wordChars('-', '-');
+		st.wordChars('.', '.');
+		st.wordChars('0', '9');
+
+		List<String> tokenList = new ArrayList();
+		int tokenIndex = 0;
+		int i;
+		try {
+			while ((i = st.nextToken()) != StreamTokenizer.TT_EOF) {
+				switch(i) {
+					case '=':
+						// Get the next token
+						i = st.nextToken();
+						if (i == StreamTokenizer.TT_WORD || i == '"') {
+							tokenIndex--;
+							String key = tokenList.get(tokenIndex);
+							settings.put(key, st.sval);
+							tokenList.remove(tokenIndex);
+						}
+						break;
+					case '"':
+					case StreamTokenizer.TT_WORD:
+						tokenList.add(st.sval);
+						tokenIndex++;
+						break;
+					default:
+						break;
+				}
+			} 
+		} catch (Exception e) {}
+
+		// Concatenate the commands together
+		String command = "";
+		for (String word: tokenList) command += word+" ";
 
 		// Now, the last token of the args goes with the first setting
 		return command.trim();
@@ -236,8 +288,8 @@ public class CommandToolDialog extends JDialog
 			commandAttributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.TRUE);
 
 			messageAttributes = new SimpleAttributeSet();
-			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.GREEN);
-			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Italic, Boolean.TRUE);
+			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLUE);
+			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Italic, Boolean.FALSE);
 			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.FALSE);
 
 			errorAttributes = new SimpleAttributeSet();
@@ -267,6 +319,43 @@ public class CommandToolDialog extends JDialog
 				doc.insertString(doc.getLength(), s, set);
 			} catch (BadLocationException badLocationException) {
 			}
+		}
+	}
+
+	class LineAction extends AbstractAction {
+		String action = null;
+		public LineAction(String action) {
+			super();
+			this.action = action;
+		}
+			
+		public void actionPerformed(ActionEvent e) {
+			if (commandList.size() == 0) return;
+
+			// System.out.println("in: size = "+commandList.size()+", index = "+commandIndex);
+
+			if (action.equals("next")) {
+				commandIndex++;
+			} else if (action.equals("previous")) {
+				commandIndex--;
+			} else
+				return;
+
+
+			String inputCommand;
+			if (commandIndex >= commandList.size()) {
+				inputCommand = "";
+				commandIndex = commandList.size();
+			} else if (commandIndex < 0) {
+				inputCommand = "";
+				commandIndex = -1;
+			} else {
+				inputCommand = commandList.get(commandIndex);
+			}
+
+			// System.out.println("out: size = "+commandList.size()+", index = "+commandIndex);
+			inputField.setText(inputCommand);
+			inputField.selectAll();
 		}
 	}
 }
