@@ -208,7 +208,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		initDefaultEditors();
 
 		this.defaultVS = defStyle;
-		vmm.createVisualStyle(DEFAULT_VS_TITLE2);
 
 	}
 

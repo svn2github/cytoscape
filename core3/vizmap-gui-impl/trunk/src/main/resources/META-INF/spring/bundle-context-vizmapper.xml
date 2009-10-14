@@ -25,6 +25,11 @@
 	<context:annotation-config />
 
 
+	<!-- Default Visual Style Builder -->
+	<bean name="defaultVisualStyleBuilder" class="org.cytoscape.view.vizmap.gui.internal.util.DefaultVisualStyleBuilder">
+		<constructor-arg ref="vmmServiceRef" />
+	</bean>
+
 	<!-- Property Sheet -->
 	<bean id="propertySheetPanel" class="com.l2fprod.common.propertysheet.PropertySheetPanel" />
 
@@ -247,8 +252,7 @@
 	</bean>
 
 	<!-- Create Default Visual Style using VMM -->
-	<bean id="defaultVS" factory-bean="vmmServiceRef" factory-method="createVisualStyle">
-		<constructor-arg value="default" />
+	<bean id="defaultVS" factory-bean="defaultVisualStyleBuilder" factory-method="getDefaultStyle">
 	</bean>
 
 	<bean name="vizMapperMainPanel"

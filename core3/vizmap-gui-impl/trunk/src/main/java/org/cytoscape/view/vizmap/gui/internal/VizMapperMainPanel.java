@@ -101,6 +101,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		VisualStyleCreatedListener, PropertyChangeListener, PopupMenuListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
+	
+	private static final String TAB_TITLE = "VizMapper\u2122";
 
 	private boolean ignore = false;
 	private VisualStyle lastVS = null;
@@ -155,7 +157,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		refreshUI();
 
 		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add(
-				"VizMapper\u2122", this);
+				TAB_TITLE, this);
 		// cytoscapeDesktop.getSwingPropertyChangeSupport()
 		// .addPropertyChangeListener(this);
 
@@ -195,7 +197,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		System.out.println("================== Switching Visual Style to " + style.getTitle() +" =====================");
 		
-		
 		editorWindowManager.closeAllEditorWindows();
 		
 		vizMapPropertySheetBuilder.setSelectedStyle(style);
@@ -220,6 +221,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				if (prop.getCategory().startsWith(CATEGORY_UNUSED) == false) {
 					propertySheetPanel.addProperty(prop);
 				} else {
+					System.out.println("@@@@ Adding unused: " + prop.getDisplayName());
 					unused.put(prop.getDisplayName(), prop);
 				}
 			}

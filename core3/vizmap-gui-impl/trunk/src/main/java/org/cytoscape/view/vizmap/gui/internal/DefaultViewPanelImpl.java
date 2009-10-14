@@ -35,7 +35,7 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -136,6 +136,11 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 		dummyview.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
 		dummyview.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 10d);
 		
+//		dummyview.getNodeView(target).setVisualProperty(NODE_X_SIZE, 30.0);
+//		dummyview.getNodeView(target).setVisualProperty(NODE_Y_SIZE, 30.0);
+//		dummyview.getNodeView(source).setVisualProperty(NODE_X_SIZE, 30.0);
+//		dummyview.getNodeView(source).setVisualProperty(NODE_Y_SIZE, 30.0);
+		
 		dummyview.setVisualProperty(NETWORK_TITLE, "Dummy Network View");
 		
 		System.out.println("#### " + dummyview.getVisualProperty(NETWORK_TITLE));
@@ -145,7 +150,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 //		view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
 
 		// put it in this panel
-		presentationFactory.addPresentation(this, dummyview);
+		//presentationFactory.addPresentation(this, dummyview);
 		
 		System.out.println("######## Dummy Network Had Been Created! ##########");
 		
