@@ -209,15 +209,16 @@ public class VisualStyleImpl implements VisualStyle {
 	                                                 final List<View<G>> views,
 	                                                 final VisualProperty<V> vp) {
 		ViewColumn<V> column = view.getColumn(vp);
-		final VisualMappingFunction<?, V> c = getVisualMappingFunction(vp);
-		final V perVSDefault = getDefaultValue(vp);
+		final VisualMappingFunction<?, V> mapping = getVisualMappingFunction(vp);
+		final V defaultValue = getDefaultValue(vp);
 
-		if (perVSDefault != null) {
-			column.setDefaultValue(perVSDefault);
-		}
+		// If default valur is available, use it.
+		if (defaultValue != null)
+			column.setDefaultValue(defaultValue);
 
-		if (c != null) {
-			c.apply(column, views);
+		// If mapping is available for this VP, apply the mapping.
+		if (mapping != null) {
+			mapping.apply(column, views);
 		} else {
 			// reset all rows to allow usage of default value:
 			for(View<G> v: views) {
