@@ -4,7 +4,10 @@
 	
 	<property name="base" location="c:/eclipse35" />
 	<property name="baseLocation" location="${base}/eclipse" />
-	
+
+	<!-- Define the location of rootfiles -->	
+	<property name="rootfilesDirectory" location="C:/work_cy3/eclipse35_ws/cy3rootfiles" />
+
 	<property name="buildDirectory" location="./build_product" />
 
 	<property name="p2.category.definition" value="file:C:/work_cy3/eclipse35_ws/headless_build/category.xml" />
