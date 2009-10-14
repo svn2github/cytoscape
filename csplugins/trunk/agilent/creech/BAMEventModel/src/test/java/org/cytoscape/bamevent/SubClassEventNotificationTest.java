@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 import org.cytoscape.bamevent.impl.EventNotificationImpl;
 
 /**
- * Test that an EventNotification can be subclassed and passed to an
+ * Test that an EventNotification can be subclassed and passed to a
  * Listener. Show this by creating an AttributeEventNotification
  * that passes extra information about attribute changes to a CyRow
  * and compare it with the generic EventNofication for a CyRow.
