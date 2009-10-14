@@ -6,7 +6,7 @@ package org.cytoscape.bamevent;
 public enum DeliveryTiming {
     // uses constant-specific methods:
     /** 
-     * The Listener should immediately be notified. An
+     * The Listener should immediately be notified. A
      * Listener should only specify DELIVER_IMMEDIATELY
      * when absolutely necessary (e.g., for tasks like showing a
      * progress bar). There may be restrictions on DELIVER_IMMEDIATELY

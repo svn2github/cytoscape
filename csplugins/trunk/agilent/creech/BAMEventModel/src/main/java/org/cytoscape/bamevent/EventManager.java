@@ -167,7 +167,7 @@ public interface EventManager {
      * </LI></OL>
      * @param notifier the Notifier object for which notified 
      *                 wishes to receive events of interest.  The
-     *                 notifier should clearly define what an
+     *                 notifier should clearly define what a
      *                 Listener will find in an EventNotification
      *                 from a dispatch().
      * @param notified the object that wishes to receive the events of interest.
@@ -185,7 +185,7 @@ public interface EventManager {
      *                 wish to receive notifications from.  This is
      *                 commonly used for receiving notifications about
      *                 created objects.  notifierClass must implement
-     *                 Notifier, or a IllegalArgumentException will be
+     *                 Notifier, or an IllegalArgumentException will be
      *                 thrown.  The notifier should clearly define
      *                 what a Listener will find in an
      *                 EventNotification from a dispatch().
@@ -218,7 +218,7 @@ public interface EventManager {
      *                 wishes to stop receiving notifications about.
      *                 This is commonly used for receiving
      *                 notifications about created objects.
-     *                 notifierClass must implement Notifier, or a
+     *                 notifierClass must implement Notifier, or an
      *                 IllegalArgumentException will be thrown.
      * @param notified the object that wishes to non longer receive the events of interest.
      * @param conditions details on the conditions under which notified wishes to no

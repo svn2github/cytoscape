@@ -13,7 +13,7 @@ package org.cytoscape.bamevent;
      * method for each event.
      * <P>This alleviates
      * the problem of the Notifier having to write different
-     * specific methods for each type of event--a good thing. If an
+     * specific methods for each type of event--a good thing. If a
      * Listener wishes to monitor many events, it should
      * define separate Listeners as nested anonymous or
      * private classes for each event type. This is cleaner

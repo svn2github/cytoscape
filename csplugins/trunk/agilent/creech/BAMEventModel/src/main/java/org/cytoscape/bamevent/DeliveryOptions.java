@@ -8,7 +8,7 @@ public interface DeliveryOptions {
     /**
      * Returns whether the Listener wishes to receive the
      * events as soon as they occur versus possibly having them
-     * accumulate before notification (for safety and optimization). An
+     * accumulate before notification (for safety and optimization). A
      * Listener should only specify it wants immediate events
      * when absolutely necessary (e.g., for tasks like showing a
      * progress bar). There may be restrictions on immediate
