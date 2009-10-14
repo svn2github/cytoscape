@@ -742,9 +742,9 @@ public class DGraphView implements RenderingEngine, GraphView, Printable,
 		// read in visual properties from view obj
 		Collection<VisualProperty<?>> nodeVPs = rootLexicon
 				.getVisualProperties(NODE);
-		for (VisualProperty<?> vp : nodeVPs)
+		for (VisualProperty<?> vp : nodeVPs) {
 			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
-
+		}
 		return newView;
 	}
 

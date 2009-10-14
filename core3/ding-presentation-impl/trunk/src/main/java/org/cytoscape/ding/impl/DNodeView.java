@@ -83,12 +83,15 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
+	static final float DEFAULT_TRANSPARENCY = 255;
 	DGraphView m_view;
 	final int m_inx; // The FixedGraph index (non-negative).
 	boolean m_selected;
 	Paint m_unselectedPaint;
 	Paint m_selectedPaint;
 	Paint m_borderPaint;
+	
+	float transparency;
 
 	/**
 	 * Stores the position of a nodeView when it's hidden so that when the 
@@ -133,6 +136,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
 		m_graphicShapes = null;
 		m_graphicPaints = null;
+		transparency = DEFAULT_TRANSPARENCY;
 	}
 
 	/**
@@ -391,6 +395,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	 * @param trans DOCUMENT ME!
 	 */
 	public void setTransparency(float trans) {
+		//TODO: implement this
 	}
 
 	/**
@@ -1301,7 +1306,6 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			setHeight(((Double)o).doubleValue());
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_LABEL ) {
-			System.out.println("Setting Label: " + o);
 			setText((String)o);
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_X_LOCATION ) {

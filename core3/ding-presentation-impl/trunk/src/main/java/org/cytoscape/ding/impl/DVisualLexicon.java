@@ -54,6 +54,9 @@ import org.cytoscape.view.presentation.property.StringVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 public class DVisualLexicon extends TwoDVisualLexicon {
+	
+	private static final int DEF_FONT_SIZE = 10;
+	private static final double DEF_BORDER_WIDTH = 0.0d;
 
 	public static final VisualProperty<Boolean> NETWORK_NODE_SELECTION = new BooleanVisualProperty(
 			NETWORK, Boolean.TRUE, "NETWORK_NODE_SELECTION",
@@ -63,7 +66,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			"Network Edge Selection");
 
 	public static final VisualProperty<NodeShape> NODE_SHAPE = new NodeShapeTwoDVisualProperty(
-			NODE, NodeShape.ELLIPSE, "NODE_SHAPE", "Node Shape");
+			NODE, NodeShape.ROUND_RECT, "NODE_SHAPE", "Node Shape");
 
 	public static final VisualProperty<? extends Paint> NODE_SELECTED_PAINT = new ColorVisualProperty(
 			NODE, Color.YELLOW, "NODE_SELECTED_PAINT", "Node Selected Paint");
@@ -72,7 +75,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			NODE, Color.BLACK, "NODE_BORDER_PAINT", "Node Border Paint");
 
 	public static final VisualProperty<Double> NODE_BORDER_WIDTH = new DoubleVisualProperty(
-			NODE, 2.0, "NODE_BORDER_WIDTH", "Node Border Width");
+			NODE, DEF_BORDER_WIDTH, "NODE_BORDER_WIDTH", "Node Border Width");
 
 	public static final VisualProperty<? extends Stroke> NODE_BORDER_STROKE = new StrokeTwoDVisualProperty(
 			NODE, new BasicStroke(), "NODE_BORDER_STROKE", "Node Border Stroke");
@@ -80,16 +83,16 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
 			NODE, "", "NODE_TOOLTIP", "Node Tooltip");
 	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
-			NODE, new Font("SansSerif", Font.PLAIN, 10),
+			NODE, new Font("SansSerif", Font.PLAIN, DEF_FONT_SIZE),
 			"NODE_LABEL_FONT_FACE", "Node Label Font Face");
 	public static final VisualProperty<Integer> NODE_LABEL_FONT_SIZE = new IntegerTwoDVisualProperty(
-			NODE, 10, "NODE_LABEL_FONT_SIZE", "Node Label Font Size");
+			NODE, DEF_FONT_SIZE, "NODE_LABEL_FONT_SIZE", "Node Label Font Size");
 
 	public static final VisualProperty<Anchor> NODE_LABEL_TEXT_ANCHOR = new AnchorTwoDVisualProperty(
-			NODE, Anchor.CENTER, "NODE_LABEL_TEXT_ANCHOR",
+			NODE, Anchor.SOUTHEAST, "NODE_LABEL_TEXT_ANCHOR",
 			"Node Label Text Anchor");
 	public static final VisualProperty<Anchor> NODE_LABEL_NODE_ANCHOR = new AnchorTwoDVisualProperty(
-			NODE, Anchor.CENTER, "NODE_LABEL_NODE_ANCHOR",
+			NODE, Anchor.SOUTHEAST, "NODE_LABEL_NODE_ANCHOR",
 			"Node Label Node Anchor");
 
 	public static final VisualProperty<Double> NODE_LABEL_ANCHOR_X_OFFSET = new DoubleVisualProperty(
@@ -102,7 +105,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<Justify> NODE_LABEL_JUSTIFY = new JustifyTwoDVisualProperty(
 			NODE, Justify.LEFT, "NODE_LABEL_JUSTIFY", "Node Label Justify");
 	public static final VisualProperty<Integer> NODE_TRANSPARENCY = new IntegerTwoDVisualProperty(
-			NODE, 255, "NODE_TRANSPARENCY", "Node Transparency");
+			NODE, 200, "NODE_TRANSPARENCY", "Node Transparency");
 
 	public static final VisualProperty<? extends Paint> EDGE_SELECTED_PAINT = new ColorVisualProperty(
 			EDGE, Color.RED, "EDGE_SELECTED_PAINT", "Edge Selected Paint");
