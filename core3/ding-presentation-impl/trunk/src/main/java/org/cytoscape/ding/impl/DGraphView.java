@@ -379,9 +379,7 @@ public class DGraphView implements RenderingEngine, GraphView, Printable,
 		m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
 		// creating empty subnetworks
-		m_drawPersp = cyRoot.convert(m_perspective).addSubNetwork(
-				new ArrayList<CyNode>());
-		// m_structPersp = CyNetworkFactory.getInstance();
+		m_drawPersp = cyRoot.convert(m_perspective).addMetaNode().getSubNetwork();
 
 		m_spacial = spacialFactory.createSpacialIndex2D();
 		m_spacialA = spacialFactory.createSpacialIndex2D();
@@ -733,7 +731,7 @@ public class DGraphView implements RenderingEngine, GraphView, Printable,
 
 		final View<CyNode> nv = cyNetworkView.getNodeView(node);
 		final NodeView newView = new DNodeView(this, nodeInx, nv);
-		cyNetworkView.getNodeView(node).addViewChangeListener(newView);
+		nv.addViewChangeListener(newView);
 
 		m_nodeViewMap.put(nodeInx, newView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
