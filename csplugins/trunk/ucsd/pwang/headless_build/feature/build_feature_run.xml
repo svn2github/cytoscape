@@ -41,14 +41,6 @@
 			</fileset>
 		</copy>
 		
-		 
-		<mkdir dir="${buildDirectory}/rootfiles" />
-		<copy todir="${buildDirectory}/features/cytoscape_product_feature/rootfiles" >
-			<fileset dir="${rootfilesDirectory}">
-				<include name="**" />
-			</fileset>
-		</copy>
-		
 	</target>
 
 </project>
