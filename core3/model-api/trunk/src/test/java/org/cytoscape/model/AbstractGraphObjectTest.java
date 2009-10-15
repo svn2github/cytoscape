@@ -125,4 +125,13 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 		assertTrue("cyattrs is CyRow", n1.attrs() instanceof CyRow);
 		assertTrue("attrs equals getCyRow", n1.attrs().equals(n1.getCyRow("USER")));
 	}
+
+	/**
+	 *
+	 */
+	public void testEqualsInstanceOf() {
+		CyNode n1 = net.addNode();
+		Object n2 = new Object();
+		assertFalse("objects aren't of same type",n1.equals(n2));
+	}
 }

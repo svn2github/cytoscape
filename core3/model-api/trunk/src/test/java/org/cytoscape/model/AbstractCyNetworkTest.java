@@ -659,7 +659,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 			return;
 		}
 
-		fail("didn't catch thrown exception");
+		fail("unexpected exception thrown");
 	}
 
 	/**

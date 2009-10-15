@@ -56,16 +56,6 @@ public interface CySubNetwork extends CyNetwork {
 	CyRootNetwork getRootNetwork(); 
 
 	/**
-	 * Return a set of nodes that are neighbors of nodes in this {@link CySubNetwork}
-	 * in the {@link CyRootNetwork} but are not themselves part of the {@link CySubNetwork}.
-	 * This is a housekeeping method and shouldn't be used in normal operation.
-	 * 
-	 * @return  a set of nodes that are neighbors of nodes in this {@link CySubNetwork}
-	 * in the {@link CyRootNetwork} but are not themselves part of the {@link CySubNetwork}.
-	 */
-	Set<CyNode> getExternalNeighborSet(); 
-
-	/**
 	 * Adds a node to this {@link CySubNetwork}.  Note that the added node
 	 * is not a new node, and must already exist in the {@link CyRootNetwork}.
 	 * This method also allows {@link CyMetaNode} to be added to subnetworks.
@@ -90,6 +80,15 @@ public interface CySubNetwork extends CyNetwork {
 	 * {@link CyRootNetwork}.
 	 */
 	CyNode addNode();
+
+	/**
+	 * A shortcut method that Creates a new {@link CyEdge} in both this subnetwork 
+	 * <b>AND</b> in the {@link CyRootNetwork}.
+	 *
+	 * @return A new CyEdge that exists in both this subnetwork and the associated
+	 * {@link CyRootNetwork}.
+	 */
+	CyEdge addEdge(CyNode src, CyNode tgt, boolean directed);
 
 	/**
 	 * Removes a node from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
