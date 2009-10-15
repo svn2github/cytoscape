@@ -102,8 +102,6 @@ public class VizMapPropertySheetBuilder implements
 		if(selectedStyle == null || cyNetworkManager.getCurrentPresentation() == null)
 			return;
 		
-		System.out.println("!!!!!!!!!!!! Building property sheet");
-		
 		setPropertySheetAppearence();
 
 		for (Property item : propertySheetPanel.getProperties())
@@ -238,8 +236,12 @@ public class VizMapPropertySheetBuilder implements
 
 		for (String cat : CATEGORY) {
 
+			
 			for (VisualMappingFunction<?, ?> mapping : selectedStyle
 					.getAllVisualMappingFunctions()) {
+				
+				if(cat.equalsIgnoreCase(mapping.getVisualProperty().getObjectType()) == false) continue;
+				
 				VisualProperty<?> type = null;
 
 				final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
@@ -261,14 +263,18 @@ public class VizMapPropertySheetBuilder implements
 										calculatorTypeProp,
 										editorManager
 												.getDefaultComboBoxEditor("nodeAttrEditor"));
-					} else {
+					} else if(type.getObjectType().equals(EDGE)) {
 						((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory())
 								.registerEditor(
 										calculatorTypeProp,
 										editorManager
 												.getDefaultComboBoxEditor("edgeAttrEditor"));
+					} else {
+						// Network
+						
 					}
 				}
+				System.out.println("\t\tAdding!! " + calculatorTypeProp.getDisplayName());
 				props.add(calculatorTypeProp);
 			}
 		}
