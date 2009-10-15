@@ -63,88 +63,18 @@ class ArraySubGraph implements CySubNetwork {
 	private Set<CyNode> nodeSet;
 	private Set<CyEdge> edgeSet;
 
-	ArraySubGraph(final ArrayGraph par, final List<CyNode> nodes, final List<CyEdge> edges, final int inId) {
-		internalId = inId;
-		internalSUID = SUIDFactory.getNextSUID();
-		//System.out.println("new ArraySubGraph " + internalSUID + "  " + inId);
-
-		if (par == null)
-			throw new NullPointerException("parent network is null");
-
+	ArraySubGraph(final ArrayGraph par, final int inId) {
+		assert(par!=null);
 		parent = par;
+		internalId = inId;
 
-		if (nodes == null)
-			throw new NullPointerException("node list is null");
+		internalSUID = SUIDFactory.getNextSUID();
+		
+		nodeSet = new HashSet<CyNode>();
+		edgeSet = new HashSet<CyEdge>();
 
-		nodeSet = new HashSet<CyNode>(nodes);
-
-		internalNodeCount = nodeSet.size();
-		//System.out.println("node size: " + internalNodeCount);
-
-		// add this network's internal id to each NodePointer 
-		inFirstNode = null;
-
-		for (CyNode n : nodeSet) {
-			if (!parent.containsNode(n))
-				throw new IllegalArgumentException("node is not contained in parent network");
-
-			updateNode(n);
-		}
-
-
-		// find all adjacent edges of the nodes, determine if the 
-		// target node is in the subnetwork, and if so, add it 
-		// to the edge set
-		if ( edges == null ) {
-			edgeSet = new HashSet<CyEdge>();
-
-			for (CyNode n : nodeSet) {
-				//System.out.println(" checking edges for NODE: " + n.getIndex());
-				// note that we're getting the adj edges from the *parent* network
-				final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n, CyEdge.Type.ANY);
-
-				for (CyEdge edge : adjEdges) {
-					//System.out.println("  evaluating: " + edge.getIndex());
-
-					// check the nodeSet because containsNode won't yet be updated
-					if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget())) {
-						//System.out.println("    adding edge: " + edge.getIndex());
-						edgeSet.add(edge);
-					} 
-				}
-			}
-		} else {
-			edgeSet = new HashSet<CyEdge>(edges);
-		}
-
-		internalEdgeCount = edgeSet.size();
-
-		// now add this network's internal id to each EdgePointer	
-		for (CyEdge edge : edgeSet)
-			updateEdge(edge);
-	}
-
-	/**
-	 * {@inheritDoc} 
-	 */
-	public Set<CyNode> getExternalNeighborSet() {
-		// Do this dynamically to account for any edges that get added
-		// after the subnetwork is created.
-		Set<CyNode> externalNodeSet = new HashSet<CyNode>();
-		for (CyNode n : nodeSet) {
-			final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n, CyEdge.Type.ANY);
-			for (CyEdge edge : adjEdges) {
-				if (nodeSet.contains(edge.getSource())
-				           && !nodeSet.contains(edge.getTarget())) {
-					externalNodeSet.add(edge.getTarget());
-				} else if (!nodeSet.contains(edge.getSource())
-				           && nodeSet.contains(edge.getTarget())) {
-					externalNodeSet.add(edge.getSource());
-				} // else ignore
-			}
-		}
-
-		return externalNodeSet;
+		internalNodeCount = 0; 
+		internalEdgeCount = 0; 
 	}
 
 	private void updateNode(final CyNode n) {
@@ -188,7 +118,7 @@ class ArraySubGraph implements CySubNetwork {
 		//System.out.println("base addNode null");
 		final CyNode ret; 
 		synchronized (this) {
-			ret = parent.addNode(null);
+			ret = parent.nodeAdd(this);
 			updateNode(ret);
 			internalNodeCount++;
 			nodeSet.add(ret);
@@ -204,7 +134,7 @@ class ArraySubGraph implements CySubNetwork {
 		// important that it's edgeAdd and not addEdge
 		final CyEdge ret; 
 		synchronized (this) {
-			ret = parent.edgeAdd(source, target, isDirected); 
+			ret = parent.edgeAdd(source, target, isDirected,this); 
 			updateEdge(ret);
 			internalEdgeCount++;
 			edgeSet.add(ret);
@@ -231,14 +161,14 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyNode> getNodeList() {
+	public synchronized List<CyNode> getNodeList() {
 		return parent.getNodeList(inFirstNode, internalId, internalNodeCount);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getEdgeList() {
+	public synchronized List<CyEdge> getEdgeList() {
 		return parent.getEdgeList(inFirstNode, internalId, internalEdgeCount);
 	}
 
@@ -346,33 +276,16 @@ class ArraySubGraph implements CySubNetwork {
 			throw new NullPointerException("node is null");
 		
 		synchronized (this) {
-		if (containsNode(node))
-			return false;	
+			if (containsNode(node))
+				return false;	
 
-		if (!parent.containsNode(node))
-			throw new IllegalArgumentException("node is not contained in parent network!");
+			if (!parent.containsNode(node))
+				throw new IllegalArgumentException("node is not contained in parent network!");
 
-		// add node 
-		internalNodeCount++;
-		nodeSet.add(node);
-		updateNode(node);
-
-		// add any adjacent edges	
-		final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(node, CyEdge.Type.ANY, 0); // 0 == ROOT
-		final Set<CyEdge> tmpSet = new HashSet<CyEdge>();
-
-		for (CyEdge edge : adjEdges) {
-			//System.out.println(" copy adjEdge: " + edge.getIndex());
-			// check the nodeSet because containsNode won't yet be updated
-			if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget())) {
-				//System.out.println(" copy ADDING adjEdge: " + edge.getIndex());
-				tmpSet.add(edge);
-			}
-		}
-
-		for (CyEdge edge : tmpSet) 
-			addEdge(edge);
-			
+			// add node 
+			internalNodeCount++;
+			nodeSet.add(node);
+			updateNode(node);
 		}
 
 		return true;
@@ -383,16 +296,22 @@ class ArraySubGraph implements CySubNetwork {
 			throw new NullPointerException("edge is null");
 		
 		synchronized (this) {
-		if (containsEdge(edge))
-			return false;
+			if (containsEdge(edge))
+				return false;
 
-		if (!parent.containsEdge(edge))
-			throw new IllegalArgumentException("edge is not contained in parent network!");
+			if (!parent.containsEdge(edge))
+				throw new IllegalArgumentException("edge is not contained in parent network!");
 
-		// add edge 
-		internalEdgeCount++;
-		edgeSet.add(edge);
-		updateEdge(edge);
+			if (!containsNode(edge.getSource()))
+				throw new IllegalArgumentException("source node of edge is not contained in network!");
+
+			if (!containsNode(edge.getTarget()))
+				throw new IllegalArgumentException("target node of edge is not contained in network!");
+
+			// add edge 
+			internalEdgeCount++;
+			edgeSet.add(edge);
+			updateEdge(edge);
 		}
 
 		return true;

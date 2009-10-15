@@ -52,10 +52,6 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 	final private CyNetwork net;
 	final private CySubNetwork subNet;
 
-	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr) {
-		this(n,ind,attrMgr,null);
-	}
-
 	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr, CySubNetwork sub) {
 		super(attrMgr);
 		net = n;
@@ -77,8 +73,9 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
+	 @Override
 	public String toString() {
-		return Integer.toString(index);
+		return "Node suid: " + getSUID() + " index: " + index + " network suid: " + net.getSUID();
 	}
 
 	/**

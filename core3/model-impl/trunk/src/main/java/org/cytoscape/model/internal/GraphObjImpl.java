@@ -94,8 +94,8 @@ class GraphObjImpl implements GraphObject, Identifiable {
 		return getCyRow(CyNetwork.DEFAULT_ATTRS);
 	}
 
-    public @Override
-    boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
         if (!(o instanceof GraphObjImpl))
             return false;
 
@@ -108,8 +108,8 @@ class GraphObjImpl implements GraphObject, Identifiable {
             return false;
     }
 
-    public @Override
-    int hashCode() {
+	@Override
+    public int hashCode() {
         return (int) (suid ^ (suid >>> 32));
     }
 }

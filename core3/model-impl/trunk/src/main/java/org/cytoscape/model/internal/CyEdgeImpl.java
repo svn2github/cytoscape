@@ -99,6 +99,7 @@ class CyEdgeImpl extends GraphObjImpl implements CyEdge {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("source: ");
