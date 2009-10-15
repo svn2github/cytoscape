@@ -106,7 +106,12 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 		}
 
 		final CySubNetwork new_network = cyroot.convert(current_network)
-				.addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
+				.addMetaNode().getSubNetwork();
+		for ( CyNode n1 : nodes )
+			new_network.addNode(n1);
+		for ( CyEdge e1 : edges )
+			new_network.addEdge(e1);
+
 		new_network.attrs().set("name",
 				cyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
