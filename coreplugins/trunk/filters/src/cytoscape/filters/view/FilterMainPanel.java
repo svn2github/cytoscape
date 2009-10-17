@@ -85,6 +85,7 @@ import cytoscape.util.swing.WidestStringComboBoxModel;
 import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
 import cytoscape.util.swing.WidestStringProvider;
 import javax.swing.ComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * 
@@ -158,6 +159,16 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		//Initialize the UI components 
 		initComponents();
 
+		
+		//
+		String data[][] = {{"testNetwork","12/15","51/90"}};
+		String col[] = {"Network","Nodes","Edges"};
+		DefaultTableModel model = new DefaultTableModel(data,col);
+
+        tblFeedBack.setModel(model);
+        //tblFeedBack.getColumnModel().getColumn(0).setHeaderValue("Network");
+        
+		
 		addEventListeners();
 	
 		//btnApplyFilter.setVisible(false);
@@ -512,6 +523,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		btnApplyFilter = new javax.swing.JButton();
 		lbPlaceHolder_pnlFilterDefinition = new javax.swing.JLabel();
 
+        pnlFeedBack = new javax.swing.JPanel();
+        tblFeedBack = new javax.swing.JTable();
+		
 		setLayout(new java.awt.GridBagLayout());
 
 		pnlCurrentFilter.setLayout(new java.awt.GridBagLayout());
@@ -604,6 +618,32 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		gridBagConstraints.weighty = 1.0;
 		add(lbPlaceHolder_pnlFilterDefinition, gridBagConstraints);
 
+		// feedback panel
+        pnlFeedBack.setLayout(new java.awt.GridBagLayout());
+
+        pnlFeedBack.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        
+        tblFeedBack.setAutoCreateColumnsFromModel(false);
+        tblFeedBack.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tblFeedBack.setEnabled(false);
+        tblFeedBack.setFocusable(false);
+        tblFeedBack.setRequestFocusEnabled(false);
+        tblFeedBack.setRowSelectionAllowed(false);
+        tblFeedBack.setTableHeader(null);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        pnlFeedBack.add(tblFeedBack, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(pnlFeedBack, gridBagConstraints);
+
 		// Set customized renderer for attributes/filter combobox
 		cmbAttributes.setRenderer(new AttributeFilterRenderer());
 
@@ -631,6 +671,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private javax.swing.JPanel pnlFilterDefinition;
 
+    private javax.swing.JPanel pnlFeedBack;
+    private javax.swing.JTable tblFeedBack;
 	// End of variables declaration
 	
 	
