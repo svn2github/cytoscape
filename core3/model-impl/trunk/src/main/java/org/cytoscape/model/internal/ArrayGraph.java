@@ -924,4 +924,21 @@ public class ArrayGraph implements CyRootNetwork {
 		return base;
 	}
 
+	public CyMetaNode convert(CyNode n) {
+		if ( n == null )
+			throw new NullPointerException("node to convert is null");
+
+		if ( !containsNode(n) )
+			throw new IllegalArgumentException("network does not contains this node");
+
+		if ( !(n instanceof CyNodeImpl) ) 
+			throw new IllegalArgumentException("unrecognized node");
+		
+		CyNodeImpl ni = (CyNodeImpl)n;
+		if ( ni.getSubNetwork() == null )
+			ni.setSubNetwork( addSubNetwork() );
+
+		return ni;
+	}
+
 }

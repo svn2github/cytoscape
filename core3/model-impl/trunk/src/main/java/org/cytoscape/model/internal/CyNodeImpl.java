@@ -50,7 +50,8 @@ import java.util.Map;
 class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 	final private int index;
 	final private CyNetwork net;
-	final private CySubNetwork subNet;
+
+	private CySubNetwork subNet;
 
 	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr, CySubNetwork sub) {
 		super(attrMgr);
@@ -112,7 +113,11 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 		return net.getConnectingEdgeList(this, target, edgeType);
 	}
 
-	public CySubNetwork getSubNetwork() {
+	public synchronized CySubNetwork getSubNetwork() {
 		return subNet;
+	}
+
+	synchronized void setSubNetwork(CySubNetwork s) {
+		subNet = s;
 	}
 }
