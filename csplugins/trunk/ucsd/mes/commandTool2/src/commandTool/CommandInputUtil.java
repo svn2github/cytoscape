@@ -40,93 +40,108 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import cytoscape.command.CyCommandException;
-import cytoscape.command.CyCommandHandler;
+import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 
+/**
+ * An interpreter that will attempt to parse a string and based on the contents, 
+ * execute the specified command.  The Syntax of the string is:
+ * <br/>
+ * namespace  command  arguments...
+ */
 public class CommandInputUtil {
 
-	public static CyCommandHandler isCommand(String input) {
-		for (CyCommandHandler comm: CyCommandManager.getHandlerList()) {
-			String s = comm.getHandlerName();
-			if (input.toLowerCase().startsWith(s.toLowerCase()))
-				return comm;
-		}
-		return null;
-	}
+    /**
+     * Attempts to execute the command specified by the input string.
+     *
+     * @param input The input string that specifies the command to be executed.
+     */
+    public static CyCommandResult executeCommand(String input) throws CyCommandException {
 
-	public static CyCommandResult handleCommand(String inputLine, 
-	                                            CyCommandHandler comm) throws CyCommandException {
-		String sub = null;
-		// Parse the input, breaking up the tokens into appropriate
-		// commands, subcommands, and maps
-
-		int subIndex = comm.getHandlerName().length();
-
-		Map<String,String> settings = new HashMap();
-		String subCom = parseInput(inputLine.substring(subIndex).trim(), settings);
-		
-		for (String command: comm.getCommands()) {
-			if (command.toLowerCase().equals(subCom.toLowerCase())) {
-				sub = command;
-				break;
-			}
+		// special case for help
+		if ( input.matches("^\\s*help\\s*$") ) {
+			return CyCommandManager.getCommand("help","help").execute( new HashMap<String,String>()); 
 		}
 
-		if (sub == null && (subCom != null && subCom.length() > 0))
-			throw new CyCommandException("Unknown argument: "+subCom);
-		
-		return comm.execute(sub, settings);
+		// now loop through normal commands
+		for (CyCommand com : CyCommandManager.getCommandList() ) {
+
+			String key = genKey(com.getNamespace(),com.getCommandName());
+            Pattern p = Pattern.compile(key);
+            Matcher m = p.matcher(input);
+			
+            if (m.matches()) {
+                Map<String, String> settings = parseSettings(m.group(2));
+                return com.execute(settings);
+            }
+        }
+
+		// no commands match
+        throw new CyCommandException("Unrecognized Command: '" + input +
+                                     "'   Type \"help\" for available commands");
+    }
+
+    private static Map<String, String> parseSettings(String input) {
+        Map<String, String> settings = new HashMap<String, String>();
+
+        // Tokenize
+        StringReader reader = new StringReader(input);
+        StreamTokenizer st = new StreamTokenizer(reader);
+
+        // We don't really want to parse numbers as numbers...
+        st.ordinaryChar('-');
+        st.ordinaryChar('.');
+        st.ordinaryChars('0', '9');
+
+        st.wordChars('-', '-');
+        st.wordChars('.', '.');
+        st.wordChars('0', '9');
+
+        List<String> tokenList = new ArrayList();
+        int tokenIndex = 0;
+        int i;
+
+        try {
+            while ((i = st.nextToken()) != StreamTokenizer.TT_EOF) {
+                switch (i) {
+                case '=':
+                    // Get the next token
+                    i = st.nextToken();
+
+                    if ((i == StreamTokenizer.TT_WORD) || (i == '"')) {
+                        tokenIndex--;
+
+                        String key = tokenList.get(tokenIndex);
+                        settings.put(key, st.sval);
+                        tokenList.remove(tokenIndex);
+                    }
+
+                    break;
+
+                case '"':
+                case StreamTokenizer.TT_WORD:
+                    tokenList.add(st.sval);
+                    tokenIndex++;
+
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        return settings;
+    }
+
+	private static String genKey(String ns, String n) {
+		return "^(" + ns + "\\s+" + n + ")((\\s+\\S+)*)$";
 	}
 
-	private static String parseInput(String input, Map<String,String> settings) {
-
-		// Tokenize
-		StringReader reader = new StringReader(input);
-		StreamTokenizer st = new StreamTokenizer(reader);
-
-		// We don't really want to parse numbers as numbers...
-		st.ordinaryChar('-');
-		st.ordinaryChar('.');
-		st.ordinaryChars('0', '9');
-
-		st.wordChars('-', '-');
-		st.wordChars('.', '.');
-		st.wordChars('0', '9');
-
-		List<String> tokenList = new ArrayList();
-		int tokenIndex = 0;
-		int i;
-		try {
-			while ((i = st.nextToken()) != StreamTokenizer.TT_EOF) {
-				switch(i) {
-					case '=':
-						// Get the next token
-						i = st.nextToken();
-						if (i == StreamTokenizer.TT_WORD || i == '"') {
-							tokenIndex--;
-							String key = tokenList.get(tokenIndex);
-							settings.put(key, st.sval);
-							tokenList.remove(tokenIndex);
-						}
-						break;
-					case '"':
-					case StreamTokenizer.TT_WORD:
-						tokenList.add(st.sval);
-						tokenIndex++;
-						break;
-					default:
-						break;
-				}
-			} 
-		} catch (Exception e) {}
-
-		// Concatenate the commands together
-		String command = "";
-		for (String word: tokenList) command += word+" ";
-
-		// Now, the last token of the args goes with the first setting
-		return command.trim();
-	}
 }

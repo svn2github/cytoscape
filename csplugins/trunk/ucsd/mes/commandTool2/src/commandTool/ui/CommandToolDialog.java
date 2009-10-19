@@ -69,7 +69,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import cytoscape.command.CyCommandException;
-import cytoscape.command.CyCommandHandler;
+import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 import cytoscape.logger.CyLogger;
@@ -176,12 +176,8 @@ public class CommandToolDialog extends JDialog
 	private void handleCommand(String input) {
 		CyCommandResult results = null;
 		try {
-			CyCommandHandler comm = null;
-			if ((comm = CommandInputUtil.isCommand(input)) != null) {
-				results = CommandInputUtil.handleCommand(input, comm);
-			} else {
-				throw new CyCommandException("Unknown command: "+input);
-			}
+			results = CommandInputUtil.executeCommand(input);
+
 			// Get all of the messages from our results
 			for (String s: results.getMessages()) {
 				resultsText.appendMessage("  "+s+"\n");
