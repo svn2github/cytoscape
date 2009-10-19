@@ -234,12 +234,13 @@ public class VizMapPropertySheetBuilder implements
 
 		final List<Property> props = new ArrayList<Property>();
 
+		// Loop for each category: node, edge, and network
 		for (String cat : CATEGORY) {
-
 			
 			for (VisualMappingFunction<?, ?> mapping : selectedStyle
 					.getAllVisualMappingFunctions()) {
 				
+				// execute the following only if category matches.
 				if(cat.equalsIgnoreCase(mapping.getVisualProperty().getObjectType()) == false) continue;
 				
 				VisualProperty<?> type = null;

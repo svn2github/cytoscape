@@ -157,10 +157,15 @@ public class VizMapPropertyBuilder {
 					.getEditorFactory()).registerEditor(calculatorTypeProp,
 					editorFactory.getDefaultComboBoxEditor("nodeAttrEditor"));
 		} else if (vp.getObjectType().equals(EDGE)) {
-			it = targetNetwork.getNodeList().iterator();
+			it = targetNetwork.getEdgeList().iterator();
 			((PropertyEditorRegistry) propertySheetPanel.getTable()
 					.getEditorFactory()).registerEditor(calculatorTypeProp,
 					editorFactory.getDefaultComboBoxEditor("edgeAttrEditor"));
+		} else {
+			it = cyNetworkManager.getNetworkSet().iterator();
+			((PropertyEditorRegistry) propertySheetPanel.getTable()
+					.getEditorFactory()).registerEditor(calculatorTypeProp,
+					editorFactory.getDefaultComboBoxEditor("networkAttrEditor"));
 		}
 
 		/*
@@ -185,8 +190,8 @@ public class VizMapPropertyBuilder {
 
 			// FIXME
 			setDiscreteProps(vp, discMapping, attrSet, editorFactory
-					.getVisualPropertyEditor(vp),
-					calculatorTypeProp, propertySheetPanel);
+					.getVisualPropertyEditor(vp), calculatorTypeProp,
+					propertySheetPanel);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
 			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
@@ -200,43 +205,48 @@ public class VizMapPropertyBuilder {
 			calculatorTypeProp.addSubProperty(graphicalView);
 
 			// FIXME
-//			TableCellRenderer crenderer = editorFactory
-//					.getVisualPropertyEditor(vp).getContinuousMappingEditor();
-//			
-//			((PropertyRendererRegistry) propertySheetPanel.getTable()
-//					.getRendererFactory()).registerRenderer(graphicalView,
-//					crenderer);
+			// TableCellRenderer crenderer = editorFactory
+			// .getVisualPropertyEditor(vp).getContinuousMappingEditor();
+			//			
+			// ((PropertyRendererRegistry) propertySheetPanel.getTable()
+			// .getRendererFactory()).registerRenderer(graphicalView,
+			// crenderer);
 		} else if (visualMapping instanceof PassthroughMapping
 				&& (attrName != null)) {
 			// Passthrough
-			String id;
-			String value;
+
+			Object id;
+			Object value;
+			String stringVal;
+			
 			VizMapperProperty<K> oneProperty;
 
-			// Accept String only.
-			if (attr.getColumnTypeMap().get(attrName) == String.class) {
-				while (it.hasNext()) {
-					GraphObject go = it.next();
-					id = go.attrs().get("name", String.class);
+			while (it.hasNext()) {
+				GraphObject go = it.next();
+				Class<?> attrClass = attr.getColumnTypeMap().get(attrName);
+				id = go.attrs().get("name", String.class);
+				
 
-					value = go.attrs().get(attrName, String.class);
-					oneProperty = new VizMapperProperty();
+				value = go.attrs().get(attrName, attrClass);
+				if(value != null)
+					stringVal = value.toString();
+				else
+					stringVal = null;
+				
+				oneProperty = new VizMapperProperty();
 
-					if (attrName.equals("ID"))
-						oneProperty.setValue(id);
-					else
-						oneProperty.setValue(value);
+				oneProperty.setValue(stringVal);
+				
+				// This prop. should not be editable!
+				oneProperty.setEditable(false);
 
-					// This prop. should not be editable!
-					oneProperty.setEditable(false);
+				oneProperty.setParentProperty(calculatorTypeProp);
+				oneProperty.setDisplayName(id.toString());
+				oneProperty.setType(String.class);
 
-					oneProperty.setParentProperty(calculatorTypeProp);
-					oneProperty.setDisplayName(id);
-					oneProperty.setType(String.class);
-
-					calculatorTypeProp.addSubProperty(oneProperty);
-				}
+				calculatorTypeProp.addSubProperty(oneProperty);
 			}
+
 		}
 
 		propertySheetPanel.addProperty(0, calculatorTypeProp);
@@ -256,7 +266,8 @@ public class VizMapPropertyBuilder {
 	 */
 	private <K, V> void setDiscreteProps(VisualProperty<V> vp,
 			Map<K, V> discMapping, SortedSet<K> attrSet,
-			VisualPropertyEditor<V> visualPropertyEditor, DefaultProperty parent, PropertySheetPanel propertySheetPanel) {
+			VisualPropertyEditor<V> visualPropertyEditor,
+			DefaultProperty parent, PropertySheetPanel propertySheetPanel) {
 		if (attrSet == null)
 			return;
 
@@ -280,14 +291,14 @@ public class VizMapPropertyBuilder {
 				valProp.setType(val.getClass());
 
 			children.add(valProp);
-			
-			//FIXME!
-//			((PropertyRendererRegistry) propertySheetPanel.getTable()
-//					.getRendererFactory()).registerRenderer(valProp, rend);
-			
-			//FIXME!!
-//			((PropertyEditorRegistry) propertySheetPanel.getTable()
-//					.getEditorFactory()).registerEditor(valProp, editor);
+
+			// FIXME!
+			// ((PropertyRendererRegistry) propertySheetPanel.getTable()
+			// .getRendererFactory()).registerRenderer(valProp, rend);
+
+			// FIXME!!
+			// ((PropertyEditorRegistry) propertySheetPanel.getTable()
+			// .getEditorFactory()).registerEditor(valProp, editor);
 
 			valProp.setValue(val);
 		}
