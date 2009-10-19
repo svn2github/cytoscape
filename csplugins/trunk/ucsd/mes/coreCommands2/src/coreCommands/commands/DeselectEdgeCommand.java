@@ -58,11 +58,10 @@ import java.util.Set;
 public class DeselectEdgeCommand extends AbstractEdgeCommand {
 
 	public DeselectEdgeCommand() {
+		super("deselect");
 		addSetting("edge");
 		addSetting("edgeList");
 	}
-
-	public String getCommandName() { return "deselect"; }
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

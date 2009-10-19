@@ -54,6 +54,21 @@ import cytoscape.layout.Tunable;
  */
 public abstract class AbstractCommand implements CyCommand {
 	List<Tunable> settings = null;
+	String namespace;
+	String commandName;
+
+	AbstractCommand(String namespace, String commandName) {
+		this.namespace = namespace;
+		this.commandName = commandName;
+	}
+
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public String getCommandName() {
+		return commandName;
+	}
 
 	/**
 	 * Override to return the arguments supported for a specific command

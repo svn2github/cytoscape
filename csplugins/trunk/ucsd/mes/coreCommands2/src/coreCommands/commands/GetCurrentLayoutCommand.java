@@ -54,8 +54,9 @@ import java.util.Map;
  */
 public class GetCurrentLayoutCommand extends AbstractCommand {
 
-	public String getNamespace() { return "layout"; }
-	public String getCommandName() { return "get current"; }
+	public GetCurrentLayoutCommand() {
+		super("layout","get current");
+	}
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

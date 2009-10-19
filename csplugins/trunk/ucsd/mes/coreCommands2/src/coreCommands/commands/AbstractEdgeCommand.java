@@ -57,7 +57,9 @@ import java.util.Set;
  */
 public abstract class AbstractEdgeCommand extends AbstractCommand {
 
-	public String getNamespace() { return "edge"; }
+	public AbstractEdgeCommand(String commandName) {
+		super("edge",commandName);
+	}
 
 	protected CyNetwork getNetwork(Map<String, String> args) throws CyCommandException {
 		String netName = getArg("network", args);

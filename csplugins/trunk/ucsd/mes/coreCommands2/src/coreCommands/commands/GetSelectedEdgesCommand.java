@@ -58,10 +58,10 @@ import java.util.Set;
 public class GetSelectedEdgesCommand extends AbstractEdgeCommand {
 
 	public GetSelectedEdgesCommand() {
+		super("get selected");
+
 		addSetting("network", "current");
 	}
-
-	public String getCommandName() { return "get selected"; }
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

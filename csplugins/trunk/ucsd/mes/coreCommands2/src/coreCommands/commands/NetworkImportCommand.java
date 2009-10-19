@@ -68,22 +68,12 @@ import java.util.Vector;
 public class NetworkImportCommand extends AbstractCommand {
 
 	public NetworkImportCommand() {
-		// Define our settings
+		super("network","import");
+
 		addSetting("file");
 		addSetting("createview", "true");
 		addSetting("parent");
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getCommandName() { return "import"; }
-
-	public String getNamespace() { return "network"; }
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 	System.out.println("network import");

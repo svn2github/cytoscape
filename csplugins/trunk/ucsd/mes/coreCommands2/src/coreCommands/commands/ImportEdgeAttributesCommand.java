@@ -58,10 +58,10 @@ import java.util.Set;
 public class ImportEdgeAttributesCommand extends AbstractEdgeCommand {
 
 	public ImportEdgeAttributesCommand() {
+		super("import attributes");
+
 		addSetting("file");
 	}
-
-	public String getCommandName() { return "import attributes"; }
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

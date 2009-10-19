@@ -58,24 +58,16 @@ public class ApplyLayoutCommand extends AbstractCommand {
 	private CyLayoutAlgorithm alg;
 
 	public ApplyLayoutCommand(CyLayoutAlgorithm alg) {
-		this.alg = alg; 
+		super("layout",alg.getName());
+
 		this.layoutName = alg.getName();
+		this.alg = alg; 
 
 		LayoutProperties props = alg.getSettings();
 		if ( props != null )
 			for (Tunable t: props.getTunables())
 				addSetting(t);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getNamespace() { return "layout"; }
-	public String getCommandName() { return layoutName; }
 
     public CyCommandResult execute(Map<String, String> args) throws CyCommandException {
         CyCommandResult result = new CyCommandResult();

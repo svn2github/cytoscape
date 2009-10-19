@@ -58,11 +58,11 @@ import java.util.Set;
 public class SelectEdgeCommand extends AbstractEdgeCommand {
 
 	public SelectEdgeCommand() {
+		super("select");
+
 		addSetting("edge");
 		addSetting("edgelist");
 	}
-
-	public String getCommandName() { return "select"; }
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

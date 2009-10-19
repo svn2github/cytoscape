@@ -58,13 +58,12 @@ import java.util.Set;
 public class GetEdgeAttributeCommand extends AbstractEdgeCommand {
 
 	public GetEdgeAttributeCommand() {
+		super("get attribute");
+
 		addSetting("edge");
 		addSetting("edgelist");
 		addSetting("name");
-
 	}
-
-	public String getCommandName() { return "get attribute"; }
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 

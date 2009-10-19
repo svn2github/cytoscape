@@ -68,15 +68,12 @@ import java.util.Vector;
 public class NetworkCreateCommand extends AbstractCommand {
 
 	public NetworkCreateCommand() {
-		// Define our settings
+		super("network","create");
+
 		addSetting("name", "NewNetwork");
 		addSetting("createview", "true");
 		addSetting("parent");
 	}
-
-	public String getCommandName() { return "create"; }
-
-	public String getNamespace() { return "network"; }
 
 	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
