@@ -535,4 +535,35 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("root edges",0,root.getEdgeCount());
 		assertEquals("root nodes",0,root.getNodeCount());
 	}
+
+	public void testConverCyNode() {
+		CyNode n = root.addNode();
+		CyMetaNode m = root.convert(n);
+
+		assertNotNull("converted node to metanode subnetwork",m.getSubNetwork());
+
+		CyNode nn = m.getSubNetwork().addNode();
+
+		assertNotNull("node from subnetwork",nn);
+		assertEquals("num nodes in root",2,root.getNodeCount());
+	}
+
+	public void testConvertBadCyNode() {
+		CyNode n2 = root2.addNode();
+		try {
+			CyMetaNode m2 = root.convert(n2);
+		} catch (Exception e) {
+			return;
+		}
+		fail();
+	}
+
+	public void testConvertNullCyNode() {
+		try {
+			CyMetaNode m2 = root.convert(null);
+		} catch (Exception e) {
+			return;
+		}
+		fail();
+	}
 }

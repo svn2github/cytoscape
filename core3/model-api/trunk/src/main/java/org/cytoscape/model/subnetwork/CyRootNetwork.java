@@ -102,4 +102,10 @@ public interface CyRootNetwork extends CyNetwork {
 	 * {@link CyMetaNode}s.
 	 */
 	CySubNetwork getBaseNetwork();
+
+	/**
+	 * Will convert any {@link CyNode} object into a {@link CyMetaNode}. If the
+	 * node is already metanode, this method will return the metanode. 
+	 */
+	CyMetaNode convert(CyNode node);
 }
