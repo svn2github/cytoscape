@@ -1,5 +1,5 @@
  /*
-  File: CyCommandHandler.java
+  File: CyCommand.java
 
   Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -45,16 +45,16 @@ import java.util.Map;
 import cytoscape.layout.Tunable;
 
 /**
- * The CyCommandHandler interface allows a Cytoscape plugin to make it's functions
+ * The CyCommand interface allows a Cytoscape plugin to make it's functions
  * available to other plugins in a loosely-coupled manner (by passing command
  * strings and arguments).  
  * <p>
- * CyCommandHandler provide a simple method for a plugin to expose some functionality
+ * CyCommand provide a simple method for a plugin to expose some functionality
  * that can be used by other plugins.  The idea is simple: a plugin registers
- * one or more CyCommandHandlers with the {@link CyCommandManager}.  In the simplest
- * case, the plugin will directly implement CyCommandHandler:
+ * one or more CyCommandwith the {@link CyCommandManager}.  In the simplest
+ * case, the plugin will directly implement CyCommand:
  * <pre><code>
- * public class MyPlugin extend CytoscapePlugin implements CyCommandHandler {
+ * public class MyPlugin extend CytoscapePlugin implements CyCommand{
  *   public MyPlugin() {
  *      // Plugin initialization
  *      try {
@@ -65,7 +65,7 @@ import cytoscape.layout.Tunable;
  *   }
  * }
  * </code></pre>
- * Alternatively, a plugin could implement multiple CyCommandHandlers, but it's useful
+ * Alternatively, a plugin could implement multiple CyCommand, but it's useful
  * whenever possible to avoid having a single plugin implement more than one or
  * two sets of commands.
  * <h3>Commands</h3>
@@ -81,19 +81,19 @@ import cytoscape.layout.Tunable;
  * that is useful to allow client plugins to perform some limited validation.  In
  * either case, both signatures (maps and Tunables) should be supported.
  * <h3>Return Values</h3>
- * CyCommandHandlers pass information about the execution of a command in a {@link CyCommandResult}.  It is
+ * CyCommandpass information about the execution of a command in a {@link CyCommandResult}.  It is
  * expected that a command will provide some limited information in the CyCommandResult
  * message and the actual information in the results map.
  * <h3>Exceptions</h3>
- * A CyCommandHandler should always return a valid CyCommandResult to provide feedback to the user
- * about the execution.  If a processing error occurs, the CyCommandHandler should throw a
+ * A CyCommandshould always return a valid CyCommandResult to provide feedback to the user
+ * about the execution.  If a processing error occurs, the CyCommandshould throw a
  * CyCommandException with an appropriate message.
  * <h3>Client Usage</h3>
- * Using a CyCommandHandler from another plugin is relatively straightforward: get the CyCommandHandler,
+ * Using a CyCommandfrom another plugin is relatively straightforward: get the CyCommand,
  * get the arguments for the desired command, set the arguments, and execute the
  * the command:
  * <pre><code>
- *     CyCommandHandler handler = CyCommandManager.getCommand("view layout");
+ *     CyCommandhandler = CyCommandManager.getCommand("view layout");
  *     Map<String,Tunable> layoutTunables = handler.getTunables("force-directed");
  *     Tunable t = layoutTunables.get("iterations");
  *     t.setValue("100");
@@ -103,7 +103,7 @@ import cytoscape.layout.Tunable;
  *     }
  * </code></pre>
  */
-public interface CyCommandHandler {
+public interface CyCommand{
 	/**
  	 * This get the name for this handler.  This is the index that will be used by
 	 * other plugins to request access to this functionality through {@link CyCommandManager},
@@ -113,26 +113,25 @@ public interface CyCommandHandler {
  	 *
  	 * @return handler name
  	 */
-	public String getHandlerName();
+	public String getNamespace();
 
 	/**
- 	 * Return the list of commands supported by this CyCommandHandler.  This
- 	 * implies that a single CyCommandHandler might support multiple commands, which is
+ 	 * Return the list of commands supported by this CyCommand.  This
+ 	 * implies that a single CyCommandmight support multiple commands, which is
  	 * the intent.  
  	 *
- 	 * @return list of commands supported by this CyCommandHandler
+ 	 * @return list of commands supported by this CyCommand
  	 */
-	public List<String> getCommands();
+	public String getCommandName();
 
 	/**
- 	 * Return the list of arguments supported by a particular command.  CyCommandHandler
+ 	 * Return the list of arguments supported by a particular command.  CyCommand
  	 * argument values are always Strings that can be converted to base types
  	 * when passed.  Internally, these are usually directly mapped to Tunables.
  	 *
- 	 * @param command the command we're inquiring about
  	 * @return list of arguments supported by that command 
  	 */
-	public List<String> getArguments(String command);
+	public List<String> getArguments();
 
 	/**
  	 * Get the current values for all of the arguments for a specific command.
@@ -141,43 +140,39 @@ public interface CyCommandHandler {
  	 * Cytoscape 3.0 where everything is expected to be based on the new Tunable
  	 * implementation.
  	 *
- 	 * @param command the subCommand we're inquiring about
- 	 * @return map of arguments supported by that command, where the key is the
+ 	 * @return map of arguments supported by this command, where the key is the
  	 * argument and the value is the String value for that argument. 
  	 */
-	public Map<String, String> getSettings(String command);
+	public Map<String, String> getSettings();
 
 	/**
  	 * Get the current Tunables for all of the arguments for a specific command.
  	 * This is an alternative to getSettings for plugins that provide tunables,
  	 * and is expected to be the standard approach for Cytoscape 3.0 and beyond.
  	 *
- 	 * @param command the subCommand we're inquiring about
- 	 * @return map of Tunables indexed by Tunable name supported by that command, 
+ 	 * @return List of Tunables supported by that command, 
 	 * or null if the plugin doesn't support tunables.
  	 */
-	public Map<String,Tunable> getTunables(String command);
+	public List<Tunable> getTunables();
 
 	/**
  	 * Execute a given command with a particular set of arguments.  As with the
  	 * getSettings method above, this is expected to be retired in 3.0 when most
  	 * things will use Tunables.
  	 *
- 	 * @param command the subCommand we're executing
  	 * @param arguments to map of key, value pairs for the arguments we want to pass
  	 * @return the results as a map of key, value pairs.  If null, then the execution failed.
 	 * @throws CyCommandException
  	 */
-	public CyCommandResult execute(String command, Map<String, String>arguments) throws CyCommandException;
+	public CyCommandResult execute(Map<String, String> arguments) throws CyCommandException;
 
 	/**
  	 * Execute a given command with a particular set of arguments.  This is the preferred
  	 * method signature.
  	 *
- 	 * @param command the subCommand we're executing
  	 * @param arguments the list of Tunables
  	 * @return the results as a map of key, value pairs.  If null, then the execution failed.
 	 * @throws CyCommandException
  	 */
-	public CyCommandResult execute(String command, Collection<Tunable>arguments) throws CyCommandException;
+	public CyCommandResult execute(List<Tunable> arguments) throws CyCommandException;
 }

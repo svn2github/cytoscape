@@ -45,24 +45,24 @@ import java.util.Map;
 
 /**
  * CyCommandResult returns the results from the execution of a
- * command handled by a {@link CyCommandHandler}.  Generally, a command would create a CyCommandResult
+ * command.  Generally, a command would create a CyCommandResult
  * object at the beginning of the execute() method.  A command should never
  * return a <b>null</b> to indicate failure, and should throw {@link CyCommandException}
  * instead.  This will avoid a lot of redundant checking for null returns.
  */
 public class CyCommandResult {
 	private boolean errors;
-	private List<String>messages;
-	private List<String>errorMessages;
+	private List<String> messages;
+	private List<String> errorMessages;
 	private Map<String,Object> results;
 
 	/**
 	 * Create a new empty CyCommandResult.
 	 */
 	public CyCommandResult() {
-		messages = new ArrayList();
+		messages = new ArrayList<String>();
 		results = null;
-		errorMessages = new ArrayList();
+		errorMessages = new ArrayList<String>();
 		errors = false;
 	}
 
@@ -74,9 +74,7 @@ public class CyCommandResult {
 	 * @param results a map of the results from the execution.
 	 */
 	public CyCommandResult(String message, Map<String,Object> results) {
-		errors = false;
-		messages = new ArrayList();
-		errorMessages = new ArrayList();
+		this();
 		messages.add(message);
 		this.results = results;
 	}
@@ -193,5 +191,4 @@ public class CyCommandResult {
 	public List<String> getErrors() {
 		return errorMessages;
 	}
-	
 }
