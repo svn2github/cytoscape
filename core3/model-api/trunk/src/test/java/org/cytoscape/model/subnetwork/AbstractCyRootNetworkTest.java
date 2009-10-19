@@ -566,4 +566,11 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		}
 		fail();
 	}
+
+	public void testConvertMetaNodeReturnsMetaNode() {
+		CyMetaNode m = root.addMetaNode();
+		CyMetaNode m2 = root.convert(m);
+
+		assertTrue("should be the same object", m==m2);
+	}
 }
