@@ -30,53 +30,46 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package coreCommands;
+package coreCommands.commands;
 
 import cytoscape.Cytoscape;
+import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.CytoscapeInit;
-import cytoscape.logger.CyLogger;
+import cytoscape.command.CyCommandResult;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
+import cytoscape.logger.CyLogger;
+import cytoscape.view.CyNetworkView;
 
-import coreCommands.commands.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class CoreCommands extends CytoscapePlugin {
-	private CyLogger logger = null;
+/**
+ * XXX FIXME XXX Description 
+ */
+public class GetCurrentLayoutCommand extends AbstractCommand {
 
-	/**
-	 * We don't do much at initialization time
-	 */
-	public CoreCommands() {
-		logger = CyLogger.getLogger(CoreCommands.class);
+	public String getNamespace() { return "layout"; }
+	public String getCommandName() { return "get current"; }
 
-		// Register our built-ins -- these should really be
-		// provided directly by the core...
-		try {
-			CyCommandManager.register(new SelectEdgeCommand());
-			CyCommandManager.register(new DeselectEdgeCommand());
-			CyCommandManager.register(new GetEdgeAttributeCommand());
-			CyCommandManager.register(new ImportEdgeAttributesCommand());
-			CyCommandManager.register(new SetEdgeAttributeCommand());
-			CyCommandManager.register(new GetSelectedEdgesCommand());
+	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
+		CyCommandResult result = new CyCommandResult();
 
-			CyCommandManager.register(new NetworkCreateCommand());
-			CyCommandManager.register(new NetworkImportCommand());
-//			CyCommandManager.register(new NetworkViewCommand());
-//			CyCommandManager.register(new NodeCommand());
-//			CyCommandManager.register(new PropertyCommand());
-//			CyCommandManager.register(new SessionCommand());
-//			CyCommandManager.register(new VizMapCommand());
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		String networkID = Cytoscape.getCurrentNetwork().getIdentifier();
 
-			CyCommandManager.register(new GetDefaultLayoutCommand());
-			CyCommandManager.register(new GetCurrentLayoutCommand());
-			CyCommandManager.register(new ApplyDefaultLayoutCommand());
-			for ( CyLayoutAlgorithm alg : CyLayouts.getAllLayouts() )
-				CyCommandManager.register(new ApplyLayoutCommand(alg));
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
+		if (networkAttributes.hasAttribute(networkID, "__layoutAlgorithm")) {
+			String alg = (String)networkAttributes.getAttribute(networkID, "__layoutAlgorithm");
+			result.addMessage("layout: last layout of network '"+networkID+"' was with "+alg); 
+		} else { 
+			result.addMessage("layout: last layout information is unavailable for '"+networkID+"'");
 		}
+
+		return result;
 	}
 }

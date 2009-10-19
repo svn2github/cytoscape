@@ -41,7 +41,7 @@ import java.util.Map;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommandHandler;
+import cytoscape.command.CyCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandResult;
 import cytoscape.data.CyAttributes;
@@ -52,24 +52,15 @@ import cytoscape.layout.Tunable;
  * For efficiency reasons, this should be done assuming we're in headless
  * mode.
  */
-public abstract class AbstractCommand implements CyCommandHandler {
-	protected Map<String, List<Tunable>> settingsMap = null;
-
-	/**
-	 * Override if this handler supports subcommands
-	 */
-	public List<String> getCommands() { return new ArrayList(settingsMap.keySet()); }
+public abstract class AbstractCommand implements CyCommand {
+	List<Tunable> settings = null;
 
 	/**
 	 * Override to return the arguments supported for a specific command
 	 */
-	public List<String> getArguments(String command) { 
-		if (!settingsMap.containsKey(command)) {
-			return null;
-		}
-
+	public List<String> getArguments() { 
 		List<String> argList = new ArrayList();
-		for (Tunable t: settingsMap.get(command)) {
+		for (Tunable t: settings) {
 			argList.add(t.getName());
 		}
 		return argList;
@@ -78,8 +69,8 @@ public abstract class AbstractCommand implements CyCommandHandler {
 	/**
 	 * Override to return the current values for a specific command
 	 */
-	public Map<String, String> getSettings(String command) { 
-		Map<String, String> kvSettings = createKVSettings(command);
+	public Map<String, String> getSettings() { 
+		Map<String, String> kvSettings = createKVMap(settings);
 		if (kvSettings != null)
 			return kvSettings;
 		return null;
@@ -88,64 +79,39 @@ public abstract class AbstractCommand implements CyCommandHandler {
 	/**
 	 * Override to return the Tunables supported for a specific command
 	 */
-	public Map<String, Tunable> getTunables(String command) { 
-		if (settingsMap.containsKey(command)) {
-			Map<String, Tunable> tunableMap = new HashMap();
-			for (Tunable t: settingsMap.get(command)) {
-				tunableMap.put(t.getName(), t);
-			}
-			return tunableMap;
-		}
-		return null;
+	public List<Tunable> getTunables() { 
+		return new ArrayList<Tunable>( settings );
 	}
+
+	public abstract CyCommandResult execute(Map<String,String> args) throws CyCommandException;
 
 	/**
 	 * Override if the commands support Tunables directly (recommended)
 	 */
-	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException { 
-		return execute(command, createKVMap(args));
+	public CyCommandResult execute(List<Tunable> args) throws CyCommandException { 
+		return execute(createKVMap(args));
 	}
 
-	protected void addSetting(String command) {
-		if (settingsMap == null)
-			settingsMap = new HashMap();
-		if (!settingsMap.containsKey(command)) {
-			settingsMap.put(command, new ArrayList());
-		}
+
+	protected void addSetting(String vKey) {
+		addSetting(vKey, null);
 	}
 
-	protected void addSetting(String command, String vKey) {
-		addSetting(command, vKey, null);
-	}
-
-	protected void addSetting(String command, String vKey, String value) {
+	protected void addSetting(String vKey, String value) {
 		Tunable t = new Tunable(vKey, vKey, Tunable.STRING, value);
-		addSetting(command, t);
+		addSetting(t);
 	}
 
-	protected void addSetting(String command, Tunable t) {
-		if (settingsMap == null)
-			settingsMap = new HashMap();
-		
-		if (!settingsMap.containsKey(command)) {
-			settingsMap.put(command, new ArrayList());
-		}
-
-		List<Tunable> tList = settingsMap.get(command);
-		tList.add(t);
+	protected void addSetting(Tunable t) {
+		if (settings == null)
+			settings = new ArrayList<Tunable>();
+	
+		settings.add(t);
 	}
 
-	/**
-	 * This method is useful for converting from Tunable lists to key-value settings
-	 */
-	protected	Map<String, String> createKVSettings(String command) {
-		if (!settingsMap.containsKey(command)) return null;
-		return createKVMap(settingsMap.get(command));
-	}
-
-	protected Map<String, String> createKVMap(Collection<Tunable> tList) {
-		Map<String, String> kvSettings = new HashMap();
-		for (Tunable t: tList) {
+	protected Map<String, String> createKVMap(List<Tunable> tuns) {
+		Map<String,String> kvSettings = new HashMap<String,String>();
+		for (Tunable t: tuns) {
 			Object v = t.getValue();
 			if (v != null)
 				kvSettings.put(t.getName(), v.toString());
@@ -159,19 +125,16 @@ public abstract class AbstractCommand implements CyCommandHandler {
  	 * Some additional utility routines
  	 */
 
-	protected String getArg(String command, String key, Map<String,String>args) {
+	protected String getArg(String key, Map<String,String> args) {
 		// Do we have the key in our settings map?
 		String value = null;
 
-		if (settingsMap.containsKey(command)) {
-			List<Tunable> tL = settingsMap.get(command);
-			for (Tunable t: tL) {
-				if (t.getName().equals(key)) {
-					Object v = t.getValue();
-					if (v != null)
-						value = v.toString();
-					break;
-				}
+		for (Tunable t: settings) {
+			if (t.getName().equals(key)) {
+				Object v = t.getValue();
+				if (v != null)
+					value = v.toString();
+				break;
 			}
 		}
 

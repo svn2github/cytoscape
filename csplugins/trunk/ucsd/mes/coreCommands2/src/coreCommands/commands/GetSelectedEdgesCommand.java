@@ -32,67 +32,45 @@
  */
 package coreCommands.commands;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
+import java.io.File;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 
 /**
  * XXX FIXME XXX Description 
  */
-public class PropertyCommand extends AbstractCommand {
+public class GetSelectedEdgesCommand extends AbstractEdgeCommand {
 
-	public PropertyCommand() {
-		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting("set", "name");
-		addSetting("set", "value");
-		addSetting("get", "name");
-		addSetting("clear", "name");
+	public GetSelectedEdgesCommand() {
+		addSetting("network", "current");
 	}
 
+	public String getCommandName() { return "get selected"; }
 
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return "property"; }
-
-	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
-		Properties props = CytoscapeInit.getProperties();
 
-		if (args == null || args.size() == 0 || !args.containsKey("name"))
-			throw new CyCommandException("property: no property name to "+command);
+		CyNetwork net = getNetwork(args);
+		Set<CyEdge>edges = net.getSelectedEdges();
+		result.addMessage("edge: returned "+edges.size()+" selected edges");
+		result.addResult("edges", makeEdgeList(edges));
 
-		String propertyName = args.get("name");
-		if ("set".equals(command)) {
-			if (!args.containsKey("value"))
-				throw new CyCommandException("property: no 'value' to set "+propertyName+" to");
-			props.setProperty(propertyName, args.get("value"));
-			result.addMessage("property: set "+propertyName+" to "+args.get("value"));
-
-		} else if ("get".equals(command)) {
-			String value = props.getProperty(propertyName);
-			result.addMessage("property: "+propertyName+" = "+value);
-			result.addResult(propertyName, value);
-
-		} else if ("clear".equals(command)) {
-			props.remove(propertyName);
-			result.addMessage("property: cleared "+propertyName);
-		}
 		return result;
 	}
 }

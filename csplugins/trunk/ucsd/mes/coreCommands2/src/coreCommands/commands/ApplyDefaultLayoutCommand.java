@@ -34,9 +34,12 @@ package coreCommands.commands;
 
 import cytoscape.Cytoscape;
 import cytoscape.command.CyCommandException;
-import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
+import cytoscape.data.CyAttributes;
+import cytoscape.layout.CyLayouts;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
@@ -47,74 +50,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This Command provides an interface to list commands, subcommands and
- * their settings
+ * XXX FIXME XXX Description 
  */
-public class HelpCommand extends AbstractCommand {
+public class ApplyDefaultLayoutCommand extends AbstractCommand {
 
-	public HelpCommand() {
-		// Define our subcommands
-		settingsMap = new HashMap();
-	}
+	public String getNamespace() { return "layout"; }
+	public String getCommandName() { return "default"; }
 
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return "help"; }
-
-	public List<String> getCommands() {
-		List<String> subList = getHandlerNameList();
-
-		// Add the empty command
-		subList.add("");
-
-		return subList;
-	}
-
-	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
+	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
-		if (command == null || command.length() == 0) {
-			result.addMessage("Available commands: ");
-			for (String comm: getHandlerNameList()) {
-				result.addMessage("  "+comm);
-			}
-			result.addMessage("For more information about a command, type 'help command'");
-		} else {
-			CyCommandHandler handler = CyCommandManager.getHandler(command);
-			if (handler == null)
-				throw new CyCommandException("help: No such command: "+handler);
+		CyLayoutAlgorithm alg = CyLayouts.getDefaultLayout();
+		alg.doLayout();
+		result.addMessage("layout: laid current network out using "+alg.getName()+"(default) algorithm");
 
-			result.addMessage("Commands for "+handler+":");
-			for (String sub: handler.getCommands()) {
-				List<String> argList = handler.getArguments(sub);
-				if (argList == null || argList.size() == 0) {
-					result.addMessage("  "+sub);
-				} else {
-					sub += " [";
-					for (String subArg: argList) {
-						sub += subArg+", ";
-					}
-
-					// Remove the training ','
-					result.addMessage("  "+sub.substring(0, sub.length()-2)+"]");
-				}
-			}
-		}
 		return result;
-	}
-
-	private List<String> getHandlerNameList() {
-		List<String> subList = new ArrayList();
-
-		// Get the list of commands
-		List<CyCommandHandler> comList = CyCommandManager.getHandlerList();
-		for (CyCommandHandler c: comList)
-			subList.add(c.getHandlerName());
-		return subList;
 	}
 }

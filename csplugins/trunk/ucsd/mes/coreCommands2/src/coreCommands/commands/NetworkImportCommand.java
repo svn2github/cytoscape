@@ -32,34 +32,46 @@
  */
 package coreCommands.commands;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
-import cytoscape.data.readers.CytoscapeSessionReader;
-import cytoscape.data.writers.CytoscapeSessionWriter;
+
+import cytoscape.data.readers.GMLParser;
+import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.GMLWriter;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.data.writers.InteractionWriter;
+import cytoscape.data.writers.XGMMLWriter;
+
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import java.io.File;
+import java.io.FileWriter;
+
+import java.net.URI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * XXX FIXME XXX Description 
  */
-public class SessionCommand extends AbstractCommand {
+public class NetworkImportCommand extends AbstractCommand {
 
-	public SessionCommand() {
-		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting("open", "file");
-		addSetting("new");
-		addSetting("save", "file");
+	public NetworkImportCommand() {
+		// Define our settings
+		addSetting("file");
+		addSetting("createview", "true");
+		addSetting("parent");
 	}
 
 
@@ -69,64 +81,53 @@ public class SessionCommand extends AbstractCommand {
 	 *
 	 * @return name of the command
 	 */
-	public String getHandlerName() { return "session"; }
+	public String getCommandName() { return "import"; }
 
-	public CyCommandResult execute(String command, Map<String, String>args) throws CyCommandException { 
+	public String getNamespace() { return "network"; }
+
+	public CyCommandResult execute(Map<String, String>args) throws CyCommandException { 
+	System.out.println("network import");
 		CyCommandResult result = new CyCommandResult();
 
-		if (command.equals("open")) {
-			// Load a session from a file
-			String fileName = null;
-			if (args.containsKey("file"))
-				fileName = args.get("file");
-			else
-				throw new CyCommandException("session: need file argument to open a session");
+			String fileName = getArg("file", args);
+			if (fileName == null)
+				throw new CyCommandException("network: 'file' must be specified for import");
+
+			System.out.println("got file: " + fileName);
+			File file = new File(fileName);
+			GraphReader reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
+			URI uri = file.toURI();
+
+			// Handle create view
+			boolean createView = true;
+			{
+				String cv = getArg("createview", args);
+				if (cv != null && (cv.equalsIgnoreCase("false") || cv.equalsIgnoreCase("no"))) 
+					createView = false;
+			}
+
+			// Handle parent network name
+			CyNetwork parent = null;
+			{
+				String pName = getArg("parent", args);
+				if (pName != null) {
+					parent = Cytoscape.getNetwork(pName);
+					if (parent == null)
+						throw new CyCommandException("network: parent network "+pName+" doesn't exist");
+				}
+			}
 
 			try {
-				CytoscapeSessionReader reader = new CytoscapeSessionReader(fileName);
-				reader.read();
+				CyNetwork cyNetwork = Cytoscape.createNetwork(reader, createView, parent);
+				result.addMessage("network: import complete.  Network has "+cyNetwork.getNodeCount()+
+                          " nodes and "+cyNetwork.getEdgeCount()+" edges");
+				result.addResult("nodecount",""+cyNetwork.getNodeCount());
+				result.addResult("edgecount",""+cyNetwork.getEdgeCount());
 			} catch (Exception e) {
-				throw new CyCommandException("session: unable to open session file "+
-				                             fileName+": "+e.getMessage());
+				throw new CyCommandException("network: unable to import network from file '"+
+				                             file.getAbsolutePath()+"': "+e.getMessage());
 			}
-	
-			result.addMessage("session: opened session: "+fileName);
-			
-			// TODO: figure some things out about the session
-			// TODO: Get the number of networks
-			// TODO: Get the current network
 
-		} else if (command.equals("new")) {
-			// Create a new session
-			Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
-			Cytoscape.createNewSession();
-			Cytoscape.getDesktop().setTitle("Cytoscape Desktop (New Session)");
-			Cytoscape.getDesktop().getNetworkPanel().repaint();
-			Cytoscape.getDesktop().repaint();
-			Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
-			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
-			result.addMessage("session: created new session");
-
-		} else if (command.equals("save")) {
-			// Save a session.  If no file argument is given, save the current session
-			String fileName = null;
-			if (args.containsKey("file"))
-				fileName = args.get("file");
-			else
-				fileName = Cytoscape.getCurrentSessionFileName();
-
-			if (!fileName.endsWith(".cys"))
-				fileName = fileName + ".cys";
-				
-			try {
-				CytoscapeSessionWriter writer = new CytoscapeSessionWriter(fileName);
-				writer.writeSessionToDisk();
-			} catch (Exception e) {
-				throw new CyCommandException("session: unable to save session file "+
-				                             fileName+": "+e.getMessage());
-			}
-			result.addMessage("session: saved session to file "+fileName);
-		}
 		return result;
 	}
 }
