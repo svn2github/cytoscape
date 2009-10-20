@@ -1,5 +1,5 @@
 /*
-  File: AbstractNetworkCollectionTask.java
+  File: AbstractTask.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -37,18 +37,29 @@
 
 package org.cytoscape.task;
 
-import org.cytoscape.model.CyNetwork;
-import java.util.Collection;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
 
+/**
+ * Provides a default implementation of the cancel() method along
+ * with the boolean field <i>cancelTask</i> that can be checked to 
+ * cancel running tasks.
+ */
+public abstract class AbstractTask implements Task {
 
-public abstract class AbstractNetworkCollectionTask extends AbstractTask {
+	/**
+	 * Can be checked to determine whether or not to cancel
+	 * the task during execution.  Is initialized to false
+	 * and set to true by the cancel() method.
+	 */
+	protected boolean cancelTask = false;
 
-	final protected Collection<CyNetwork> networks;
+	public abstract void run(TaskMonitor e) throws Exception;
 
-	public AbstractNetworkCollectionTask(final Collection<CyNetwork> networks) {
-		if ( networks == null )
-			throw new NullPointerException("CyNetwork Collection is null");
-
-		this.networks = networks;	
+	/**
+	 * Sets the field <i>cancelTask</i> to true.
+	 */
+	public void cancel() {
+		cancelTask = true;
 	}
 }

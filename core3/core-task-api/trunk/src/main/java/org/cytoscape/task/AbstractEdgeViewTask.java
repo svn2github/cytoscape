@@ -38,16 +38,15 @@ package org.cytoscape.task;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
 
 
-public abstract class AbstractEdgeViewTask implements Task {
+public abstract class AbstractEdgeViewTask extends AbstractTask {
 
 	final protected View<CyEdge> edgeView;
 	final protected CyNetworkView netView;
 
 	public AbstractEdgeViewTask(final View<CyEdge> edgeView, final CyNetworkView netView) {
+		super();
 		if ( edgeView == null )
 			throw new NullPointerException("EdgeView is null");
 		if ( netView == null )
@@ -56,8 +55,4 @@ public abstract class AbstractEdgeViewTask implements Task {
 		this.edgeView = edgeView;	
 		this.netView = netView;	
 	}
-
-	public abstract void run(TaskMonitor e) throws Exception;
-
-	public void cancel() {}
 }

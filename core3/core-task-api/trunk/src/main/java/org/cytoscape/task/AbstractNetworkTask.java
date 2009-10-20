@@ -38,11 +38,8 @@
 package org.cytoscape.task;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
 
-
-public abstract class AbstractNetworkTask implements Task {
+public abstract class AbstractNetworkTask extends AbstractTask {
 
 	final protected CyNetwork net;
 
@@ -52,8 +49,4 @@ public abstract class AbstractNetworkTask implements Task {
 
 		this.net = net;	
 	}
-
-	public abstract void run(TaskMonitor e) throws Exception;
-
-	public void cancel() {}
 }

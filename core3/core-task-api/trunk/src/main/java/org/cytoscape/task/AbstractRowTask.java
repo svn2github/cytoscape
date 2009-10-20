@@ -37,11 +37,9 @@
 package org.cytoscape.task;
 
 import org.cytoscape.model.CyRow;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
 
 
-public abstract class AbstractRowTask implements Task {
+public abstract class AbstractRowTask extends AbstractTask {
 
 	final protected CyRow row;
 
@@ -51,8 +49,4 @@ public abstract class AbstractRowTask implements Task {
 
 		this.row = row;	
 	}
-
-	public abstract void run(TaskMonitor e) throws Exception;
-
-	public void cancel() {}
 }

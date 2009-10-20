@@ -36,12 +36,10 @@
 package org.cytoscape.task;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
 import java.util.Collection;
 
 
-public abstract class AbstractNetworkViewCollectionTask implements Task {
+public abstract class AbstractNetworkViewCollectionTask extends AbstractTask {
 
 	final protected Collection<CyNetworkView> networkViews;
 
@@ -51,8 +49,4 @@ public abstract class AbstractNetworkViewCollectionTask implements Task {
 
 		this.networkViews = networkViews;	
 	}
-
-	public abstract void run(TaskMonitor e) throws Exception;
-
-	public void cancel() {}
 }

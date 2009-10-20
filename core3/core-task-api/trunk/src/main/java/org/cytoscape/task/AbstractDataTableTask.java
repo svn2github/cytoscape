@@ -37,11 +37,9 @@
 package org.cytoscape.task;
 
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
 
 
-public abstract class AbstractDataTableTask implements Task {
+public abstract class AbstractDataTableTask extends AbstractTask {
 
 	final protected CyDataTable table;
 
@@ -51,8 +49,4 @@ public abstract class AbstractDataTableTask implements Task {
 
 		this.table = table;	
 	}
-
-	public abstract void run(TaskMonitor e) throws Exception;
-
-	public void cancel() {}
 }

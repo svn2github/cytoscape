@@ -40,11 +40,9 @@ package org.cytoscape.task;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
 
 
-public abstract class AbstractNodeViewTask implements Task {
+public abstract class AbstractNodeViewTask extends AbstractTask {
 
 	final protected View<CyNode> nodeView;
 	final protected CyNetworkView netView;
@@ -58,8 +56,4 @@ public abstract class AbstractNodeViewTask implements Task {
 		this.nodeView = nodeView;	
 		this.netView = netView;	
 	}
-
-	public abstract void run(TaskMonitor e) throws Exception;
-
-	public void cancel() {}
 }
