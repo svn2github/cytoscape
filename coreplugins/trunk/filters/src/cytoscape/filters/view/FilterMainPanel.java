@@ -161,12 +161,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		
 		//
-		String data[][] = {{"testNetwork","12/15","51/90"}};
-		String col[] = {"Network","Nodes","Edges"};
+		String[][] data = {{"testNetwork","12/15","51/90"}};
+		String[] col = {"Network","Nodes","Edges"};
 		DefaultTableModel model = new DefaultTableModel(data,col);
 
         tblFeedBack.setModel(model);
-        //tblFeedBack.getColumnModel().getColumn(0).setHeaderValue("Network");
+
         
 		
 		addEventListeners();
@@ -370,6 +370,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
+	
+		btnSelectAll.addActionListener(this);
+		btnDeSelect.addActionListener(this);
 	}
 
 	public void initCMBSelectFilter(){
@@ -526,6 +529,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         pnlFeedBack = new javax.swing.JPanel();
         tblFeedBack = new javax.swing.JTable();
 		
+        pnlSelectButtons = new javax.swing.JPanel();
+        btnSelectAll = new javax.swing.JButton();
+        btnDeSelect = new javax.swing.JButton();
+        
 		setLayout(new java.awt.GridBagLayout());
 
 		pnlCurrentFilter.setLayout(new java.awt.GridBagLayout());
@@ -623,13 +630,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
         pnlFeedBack.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         
-        tblFeedBack.setAutoCreateColumnsFromModel(false);
-        tblFeedBack.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        //tblFeedBack.setAutoCreateColumnsFromModel(true);
+        //tblFeedBack.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tblFeedBack.setEnabled(false);
         tblFeedBack.setFocusable(false);
-        tblFeedBack.setRequestFocusEnabled(false);
-        tblFeedBack.setRowSelectionAllowed(false);
-        tblFeedBack.setTableHeader(null);
+        //tblFeedBack.setRequestFocusEnabled(false);
+        //tblFeedBack.setRowSelectionAllowed(false);
+        //tblFeedBack.setTableHeader(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -644,6 +651,19 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         add(pnlFeedBack, gridBagConstraints);
 
+        //
+        btnSelectAll.setText("Select All");
+        pnlSelectButtons.add(btnSelectAll);
+
+        btnDeSelect.setText("De-select");
+        pnlSelectButtons.add(btnDeSelect);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(pnlSelectButtons, gridBagConstraints);
+
+        
 		// Set customized renderer for attributes/filter combobox
 		cmbAttributes.setRenderer(new AttributeFilterRenderer());
 
@@ -673,6 +693,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
     private javax.swing.JPanel pnlFeedBack;
     private javax.swing.JTable tblFeedBack;
+    
+    private javax.swing.JPanel pnlSelectButtons;
+    private javax.swing.JButton btnDeSelect;
+    private javax.swing.JButton btnSelectAll;
 	// End of variables declaration
 	
 	
@@ -776,6 +800,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				}
 				theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
 			}
+			if (_btn == btnSelectAll){
+				System.out.println("btnSelectAll is clicked");
+			}
+			if (_btn == btnDeSelect){
+				System.out.println("btnDeSelect is clicked");				
+			}
+			
 		} // JButton event
 		
 		if (_actionObject instanceof JMenuItem) {
