@@ -60,7 +60,7 @@ public class TestBioPaxUtil extends TestCase {
 		assertEquals(4, model.getObjects(interaction.class).size());
 		assertEquals(1, model.getObjects(pathway.class).size());
 
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("catalysis43"));
+		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("catalysis43")).toString();
 		assertTrue(pathways.contains("pathway50"));
 	}
 
@@ -71,7 +71,7 @@ public class TestBioPaxUtil extends TestCase {
 	 */
 	public void testUtil2() throws Exception {
 		Model model = BioPaxUtil.readFile("testData/biopax_complex.owl");
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("CPATH-124"));
+		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("CPATH-124")).toString();
 		assertTrue(pathways.length() == 0);
 	}
 
@@ -88,13 +88,13 @@ public class TestBioPaxUtil extends TestCase {
 	 */
 	public void testUtil3() throws Exception {
 		Model model = BioPaxUtil.readFile("testData/Apoptosis_modified.owl");
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("Pubmed_7530336"));
+		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("Pubmed_7530336")).toString();
 		assertTrue(pathways.length() > 0);
 
 		assertTrue(pathways.contains("Apoptosis"));
 		assertTrue(pathways.contains("Apoptosis2"));
 		
-		pathways = BioPaxUtil.getParentPathwayName(model.getByID("cell"));
+		pathways = BioPaxUtil.getParentPathwayName(model.getByID("cell")).toString();
 		assertTrue(pathways.contains("Apoptosis"));
 		assertTrue(pathways.contains("Apoptosis2"));
 	}
@@ -106,7 +106,7 @@ public class TestBioPaxUtil extends TestCase {
 	 */
 	public void testUtil4() throws Exception {
 		Model model = BioPaxUtil.readFile("testData/biopax_sample1.owl");
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("protein45"));
+		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("protein45")).toString();
 		assertTrue(pathways.length() > 0);
 	}
 }

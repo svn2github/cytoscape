@@ -42,6 +42,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import ding.view.DNodeView;
@@ -51,7 +52,6 @@ import giny.view.NodeView;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.physicalEntityParticipant;
-
 
 import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
@@ -70,6 +70,8 @@ import java.util.List;
  * @author Igor Rodchenkov (re-factoring, using PaxTools API)
  */
 public class MapNodeAttributes {
+	private static final CyLogger log = CyLogger.getLogger(MapNodeAttributes.class);
+	
 	/**
 	 * Cytoscape Attribute:  BioPAX RDF ID.
 	 */
@@ -182,12 +184,6 @@ public class MapNodeAttributes {
 	private static BufferedImage phosNodeSelectedRight = null;
 	private static BufferedImage phosNodeSelectedBottom = null;
 	private static BufferedImage phosNodeSelectedLeft = null;
-
-	
-    public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
-    public static final String DEFAULT_CHARSET = "UTF-8";
-    public static final String BIOPAX_MERGE_SRC = "biopax.merge.src";
-	
 	
 	static {
 		try {
@@ -221,6 +217,8 @@ public class MapNodeAttributes {
 	 * @param nodeList Nodes
 	 */
 	public static void doMapping(Model model, Collection<CyNode> nodeList) {
+		log.setDebug(true);
+		
 		// get the node attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		initAttributes(nodeAttributes);
@@ -233,19 +231,21 @@ public class MapNodeAttributes {
 			String biopaxID = nodeAttributes.getStringAttribute(nodeID, BIOPAX_RDF_ID);
 			BioPAXElement resource = model.getByID(biopaxID);
 			
-            mapNodeAttribute(resource, nodeAttributes);
+            mapNodeAttribute(resource, nodeID, nodeAttributes);
         }
+		
+		log.setDebug(false);
 	}
 
     /**
      * Maps Attributes for a Single Node.
      * @param resource          BioPAX Object.
+     * @param nodeId TODO
      * @param nodeAttributes    Node Attributes.
      */
-    public static void mapNodeAttribute(BioPAXElement resource, CyAttributes nodeAttributes) {
+    public static void mapNodeAttribute(BioPAXElement resource, String nodeID, CyAttributes nodeAttributes) {
         if (resource != null) {
             String stringRef;
-            String nodeID = BioPaxUtil.getLocalPartRdfId(resource);
 
             // type
             stringRef = addType(resource, nodeAttributes);
@@ -267,7 +267,7 @@ public class MapNodeAttributes {
 
             // synonyms
             List<String> synList = new ArrayList<String>(BioPaxUtil.getSynonymList(resource));
-            if (synList != null) {
+            if (synList != null && !synList.isEmpty()) {
                 nodeAttributes.setListAttribute(nodeID, BIOPAX_SYNONYMS, synList);
             }
 
@@ -328,7 +328,7 @@ public class MapNodeAttributes {
             }
 
             // pathway name
-            stringRef = BioPaxUtil.getParentPathwayName(resource);
+            stringRef = BioPaxUtil.getParentPathwayName(resource).toString();
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
             }
@@ -336,7 +336,7 @@ public class MapNodeAttributes {
             //  add all xref ids for global lookup
             List<ExternalLink> xList = BioPaxUtil.getAllXRefs(resource);
             List<String> idList = addXRefIds(xList);
-            if (idList != null) {
+            if (idList != null && !idList.isEmpty()) {
                 nodeAttributes.setListAttribute(nodeID, BIOPAX_XREF_IDS, idList);
                 for (ExternalLink link : xList) {
                     String key = BIOPAX_XREF_PREFIX + link.getDbName().toUpperCase();
@@ -354,12 +354,9 @@ public class MapNodeAttributes {
             if (label == null) {
                 label = BioPaxUtil.getNodeName(resource);
                 if (label != null) {
-                    //  Truncate long labels.
-                    if (label.length() > 25) {
-                        label = label.substring(0, 25) + "...";
-                    }
-                    nodeAttributes.setAttribute(nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
-                            label);
+                    nodeAttributes.setAttribute(nodeID, 
+                    		BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
+                    		BioPaxUtil.truncateLongStr(label));
                 }
             }
         }

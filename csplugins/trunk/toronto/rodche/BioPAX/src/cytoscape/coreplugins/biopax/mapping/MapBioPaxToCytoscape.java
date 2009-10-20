@@ -43,6 +43,7 @@ import cytoscape.data.Semantics;
 
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.task.TaskMonitor;
 
@@ -78,6 +79,9 @@ import javax.swing.*;
  * TODO This probably must be re-written from scratch - using PaxTools 'Traverser' class, so that all the properties will be mapped...
  */
 public class MapBioPaxToCytoscape {
+	
+	private static final CyLogger log = CyLogger.getLogger(MapBioPaxToCytoscape.class);
+	
 	/**
 	 * Cytoscape Attribute:  BioPAX Network.
 	 * Stores boolean indicating this CyNetwork
@@ -125,6 +129,7 @@ public class MapBioPaxToCytoscape {
 	 */
 	public static final String CONTAINS = "CONTAINS";
 		
+	
 	private Model model;
 	private List<CyNode> nodeList = new ArrayList<CyNode>();
 	private List<Edge> edgeList = new ArrayList<Edge>();
@@ -146,19 +151,19 @@ public class MapBioPaxToCytoscape {
 	class NodeAttributesWrapper {
 		// map of cellular location
 		// or chemical modifications
-		private Map<String, String> attributesMap;
+		private Map<String, Object> attributesMap;
 
 		// abbreviations string
 		private String abbreviationString;
 
 		// contructor
-		NodeAttributesWrapper(Map<String,String> attributesMap, String abbreviationString) {
+		NodeAttributesWrapper(Map<String,Object> attributesMap, String abbreviationString) {
 			this.attributesMap = attributesMap;
 			this.abbreviationString = abbreviationString;
 		}
 
 		// gets the attributes map
-		Map<String,String> getMap() {
+		Map<String,Object> getMap() {
 			return attributesMap;
 		}
 
@@ -202,10 +207,11 @@ public class MapBioPaxToCytoscape {
 	 * @throws JDOMException Error Parsing XML via JDOM.
 	 */
 	public void doMapping()  {
-
+		log.setDebug(true);
 		// map interactions
 		// note: this will now map complex nodes that participate in interactions.
 		mapInteractionNodes();
+		
 		mapInteractionEdges();
 
 		// process all complexes
@@ -213,6 +219,12 @@ public class MapBioPaxToCytoscape {
 
 		// map attributes
 		MapNodeAttributes.doMapping(model, nodeList);
+		
+		for(String mess : getWarningList()) {
+			log.warn(mess);
+		}
+		
+		log.setDebug(false);
 	}
 
 	/**
@@ -327,6 +339,10 @@ public class MapBioPaxToCytoscape {
 		int i=0; // progress counter
 		for (BioPAXElement itr : interactionList) {
 			String id = BioPaxUtil.getLocalPartRdfId(itr);
+			
+			if(log.isDebugging()) {
+				log.debug("Mapping " + BioPaxUtil.getType(itr) + " node : " + id);
+			}
 
 			// have we already created this interaction ?
 			if (createdCyNodes.containsKey(id)) {
@@ -340,7 +356,7 @@ public class MapBioPaxToCytoscape {
 			nodeList.add(interactionNode);
 
 			//  Set Node Identifier
-			interactionNode.setIdentifier(id);
+			//interactionNode.setIdentifier(id);
 
 			//  set node attributes
 			setNodeAttributes(interactionNode, itr, null);
@@ -355,6 +371,7 @@ public class MapBioPaxToCytoscape {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void mapInteractionEdges() {
 		//  Extract the List of all Interactions
 		Collection<? extends BioPAXElement> interactionList = 
@@ -369,6 +386,11 @@ public class MapBioPaxToCytoscape {
 		for (BioPAXElement itr : interactionList) {
 			String id = BioPaxUtil.getLocalPartRdfId(itr);
 
+			
+			if(log.isDebugging()) {
+				log.debug("Mapping " + BioPaxUtil.getType(itr) + " edges : " + id);
+			}
+			
 			//  Get the node symbolizing the interaction
 			CyNode interactionNode = Cytoscape.getCyNode(id, true);
 
@@ -385,13 +407,6 @@ public class MapBioPaxToCytoscape {
 				taskMonitor.setPercentCompleted((int) (100.0 * perc));
 			}
 		}
-	}
-
-	private String truncateLongStr(String str) {
-		if (str.length() > 25) {
-			str = str.substring(0, 25) + "...";
-		}
-		return str;
 	}
 
 	/**
@@ -656,7 +671,12 @@ public class MapBioPaxToCytoscape {
 		// create a node label & CyNode id
 		String cyNodeId = id;
 		String nodeName = BioPaxUtil.getNodeName(bpe);
-		String cyNodeLabel = truncateLongStr(nodeName);
+		String cyNodeLabel = BioPaxUtil.truncateLongStr(nodeName);
+		
+		if(log.isDebugging()) {
+			log.debug("label " + id + " as " + cyNodeLabel);
+		}
+		
 		NodeAttributesWrapper cellularLocationsWrapper = null;
 		NodeAttributesWrapper chemicalModificationsWrapper = null;
 
@@ -731,7 +751,7 @@ public class MapBioPaxToCytoscape {
 
 		// create node id & label strings
 		String complexMemberCyNodeId = complexMemberId;
-		String complexMemberCyNodeLabel = truncateLongStr(complexMemberNodeName);
+		String complexMemberCyNodeLabel = BioPaxUtil.truncateLongStr(complexMemberNodeName);
 
 		// add modifications to id & label
 		// note: modifications do not get set on a complex, so if modifications string
@@ -807,7 +827,7 @@ public class MapBioPaxToCytoscape {
 		
 		// both of these objects will be used to contruct
 		// the NodeAttributesWrapper which gets returned
-		Map<String,String> chemicalModificationsMap = null;
+		Map<String,Object> chemicalModificationsMap = null;
 		String chemicalModifications = null;
 
 		// if we are dealing with PARTICIPANTS (physical interactions
@@ -828,10 +848,12 @@ public class MapBioPaxToCytoscape {
 					? "-" : chemicalModifications;
 				// initialize chemicalModifications hashmap if necessary
 				chemicalModificationsMap = (chemicalModificationsMap == null) 
-					? new HashMap<String, String>() : chemicalModificationsMap;
+					? new HashMap<String, Object>() : chemicalModificationsMap;
 
-				String mod = BioPaxUtil.getValue((BioPAXElement)modification, 
-						"FEATURE_TYPE", "modificationType").toString();
+				Object value = BioPaxUtil.getValue((BioPAXElement)modification, 
+						"FEATURE_TYPE", "modificationType");
+				String mod = (value == null) ? "" : value.toString();
+				
 				// is this a new type of modification ?
 				if (!chemicalModificationsMap.containsKey(mod)) {
 					// determine abbreviation
@@ -842,11 +864,11 @@ public class MapBioPaxToCytoscape {
 					chemicalModifications += abbr;
 
 					// update our map - modification, count
-					chemicalModificationsMap.put(mod, "1");
+					chemicalModificationsMap.put(mod, new Integer(1));
 				} else {
 					// we've seen this modification before, just update the count
-					int count = Integer.parseInt(chemicalModificationsMap.get(mod));
-					chemicalModificationsMap.put(mod, ++count+"");
+					Integer count = (Integer) chemicalModificationsMap.get(mod);
+					chemicalModificationsMap.put(mod, ++count);
 				}
 			}
 		}
@@ -869,7 +891,7 @@ public class MapBioPaxToCytoscape {
 		// both of these objects will be used to contruct
 		// the NodeAttributesWrapper which gets returned
 		String cellularLocation = null;
-		Map<String, String> nodeAttributes = new HashMap<String, String>();
+		Map<String, Object> nodeAttributes = new HashMap<String, Object>();
 
 		// if we are dealing with PARTICIPANTS (physical interactions
 		// or complexes), we have to through the participants to get the
@@ -879,7 +901,7 @@ public class MapBioPaxToCytoscape {
 		if (location != null) {
 			cellularLocation = BioPaxUtil.getAbbrCellLocation(location.toString());
 			// add location to attributes list (we dont care about key)
-			nodeAttributes.put(cellularLocation, null);
+			nodeAttributes.put(cellularLocation, cellularLocation);
 		}
 
 		return new NodeAttributesWrapper(nodeAttributes, cellularLocation);
@@ -959,7 +981,7 @@ public class MapBioPaxToCytoscape {
 	 */
 	private void setChemicalModificationAttributes(String cyNodeId, NodeAttributesWrapper chemicalModificationsWrapper) {
 		
-		Map<String, String> modificationsMap = (chemicalModificationsWrapper != null)
+		Map<String, Object> modificationsMap = (chemicalModificationsWrapper != null)
 		                       ? chemicalModificationsWrapper.getMap() : null;
 
 		if (modificationsMap != null) {

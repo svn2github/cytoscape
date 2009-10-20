@@ -70,6 +70,8 @@ public class BioPaxUtil {
 	
 	protected BioPaxUtil() {}
 	
+	public static final int MAX_DISPLAY_STRING_LEN = 25;
+
 	/**
 	 * BioPAX Class:  phosphorylation site
 	 */
@@ -338,6 +340,7 @@ public class BioPaxUtil {
 	 */
 	public static String getShortName(BioPAXElement bpe) {
 		String shortName = null;
+		
 		if(bpe instanceof Named) {
 			shortName = ((Named)bpe).getDisplayName();
 		} else if(bpe instanceof sequenceFeature) {
@@ -367,6 +370,10 @@ public class BioPaxUtil {
 			stdName = getStandardName(((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY());
 		} else if(bpe instanceof entity) {
 			stdName = ((entity)bpe).getNAME();
+		} else if(bpe instanceof bioSource) {
+			stdName = ((bioSource)bpe).getNAME();
+		} else if(bpe instanceof dataSource) {
+			stdName = ((dataSource)bpe).getNAME().toString();
 		} 
 		return stdName;
 	}
@@ -749,26 +756,65 @@ public class BioPaxUtil {
 	 * @param bpe
 	 * @return
 	 */
-	public static String getParentPathwayName(BioPAXElement bpe) {
-		StringBuffer sb = new StringBuffer();
+	public static Set<String> getParentPathwayName(BioPAXElement bpe) {
+		Set<String> pathways = new HashSet<String>();
 		
 		if(bpe instanceof process) { // interaction or pathway
-			sb.append(joinNames(((process)bpe).isPATHWAY_COMPONENTSof()));
+			process pr = (process) bpe;
+			pathways.add(getNodeName(pr));
+			for(pathway pw:  pr.isPATHWAY_COMPONENTSof()) {
+				pathways.addAll(getParentPathwayName(pw));
+			}
+			for(pathwayStep st : pr.isSTEP_INTERACTIONSOf()) {
+				pathways.addAll(getParentPathwayName(st));
+			}	
 		} else if(bpe instanceof Process) { // Interaction or Pathway
-			sb.append(joinNames(((Process)bpe).isPathwayComponentsOf()));
-		} else if(bpe instanceof entity) {
-			for(interaction p : ((entity)bpe).isPARTICIPANTSof()) { // interaction is process
-				sb.append(getParentPathwayName(p)).append("; ");
+			Process pr = (Process) bpe;
+			pathways.add(getNodeName(pr));
+			for(Pathway pw:  pr.isPathwayComponentsOf()) {
+				pathways.addAll(getParentPathwayName(pw));
 			}
-		} else if(bpe instanceof Entity) {
-			for(Interaction p : ((Entity)bpe).isParticipantsOf()) { // Interaction is Process
-				sb.append(getParentPathwayName(p)).append("; ");
+			for(PathwayStep st : pr.isStepInteractionsOf()) {
+				pathways.addAll(getParentPathwayName(st));
 			}
-		} else {
-			return "";
+			
+		} else if(bpe instanceof pathwayStep) {
+			for(pathway pw : ((pathwayStep)bpe).isPATHWAY_COMPONENTSof()) {
+				pathways.addAll(getParentPathwayName(pw));
+			}
+		} else if (bpe instanceof PathwayStep) {
+			for(Pathway pw : ((PathwayStep)bpe).isPathwayOrdersOf()) {
+				pathways.addAll(getParentPathwayName(pw));
+			}
+		} else if(bpe instanceof physicalEntity) {
+			for(physicalEntityParticipant p : ((physicalEntity)bpe).isPHYSICAL_ENTITYof()) { 
+				pathways.addAll(getParentPathwayName(p));
+			}
+		} else if(bpe instanceof PhysicalEntity) {
+			for(Complex c : ((PhysicalEntity)bpe).isComponentOf()) { 
+				pathways.addAll(getParentPathwayName(c));
+			}
+		} else if(bpe instanceof physicalEntityParticipant) {
+			for(interaction p : ((physicalEntityParticipant)bpe).isPARTICIPANTSof()) { 
+				pathways.addAll(getParentPathwayName(p));
+			}
+			complex c = ((physicalEntityParticipant)bpe).isCOMPONENTof();
+			pathways.addAll(getParentPathwayName(c));
 		}
 		
-		return sb.toString();
+		
+		// anyway
+		if(bpe instanceof entity) {
+			for(interaction p : ((entity)bpe).isPARTICIPANTSof()) {
+				pathways.addAll(getParentPathwayName(p));
+			}
+		} else if(bpe instanceof Entity) {
+			for(Interaction p : ((Entity)bpe).isParticipantsOf()) {
+				pathways.addAll(getParentPathwayName(p));
+			}
+		} 
+		
+		return pathways;
 	}
 	
 	// convenience proc.
@@ -841,4 +887,14 @@ public class BioPaxUtil {
 		return cellLocationMap;
 	}
 	
+	
+	public static String truncateLongStr(String str) {
+		if(str != null) {
+			str = str.replaceAll("[\n\r \t]+", " ");
+			if (str.length() > MAX_DISPLAY_STRING_LEN) {
+				str = str.substring(0, MAX_DISPLAY_STRING_LEN) + "...";
+			}
+		}
+		return str;
+	}
 }

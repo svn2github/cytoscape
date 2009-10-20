@@ -37,7 +37,6 @@ import giny.view.GraphView;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
@@ -76,8 +75,6 @@ public class BioPaxGraphReader implements GraphReader {
 	private String networkName;
 	private boolean validNetworkName;
 	private CyLayoutAlgorithm layout;
-	private TaskMonitor taskMonitor;
-	
 
 	private static boolean createNodesForControls;
 	private static CyLayoutAlgorithm defaultLayout;
@@ -129,6 +126,7 @@ public class BioPaxGraphReader implements GraphReader {
 	public void read() throws IOException {
 
 		Model model = BioPaxUtil.readFile(fileName);
+		
 		if(model == null) {
 			log.error("Failed to read BioPAX model");
 			return;
@@ -141,11 +139,10 @@ public class BioPaxGraphReader implements GraphReader {
 		// Set network name (also checks if it exists)
 		networkName = getNetworkName(model);
 
-		
 		// Map BioPAX Data to Cytoscape Nodes/Edges (run as task)
-		MapBioPaxToCytoscape mapper = 
-			new MapBioPaxToCytoscape(model, taskMonitor);
+		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(model);
 		mapper.doMapping();
+		
 		nodeIndices = mapper.getNodeIndices();
 		if (nodeIndices.length == 0) {
 			log.error("Pathway is empty!  " +
@@ -153,19 +150,7 @@ public class BioPaxGraphReader implements GraphReader {
 			return;
 		}
 		edgeIndices = mapper.getEdgeIndices();
-		
-		
-		/*
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayCancelButton(true);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(false);
-		
-		MappingTask task = new MappingTask(model);		
-		TaskManager.executeTask(task, jTaskConfig);
-		*/
+
 	}
 
 	private String getNetworkName(Model model) {
@@ -292,9 +277,9 @@ public class BioPaxGraphReader implements GraphReader {
 		}
 
 		//  Set-up the BioPax Visual Style
-		final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
-		final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-		final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+		VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
+		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
 		view.setVisualStyle(bioPaxVisualStyle.getName());
 		manager.setVisualStyle(bioPaxVisualStyle);
 		view.applyVizmapper(bioPaxVisualStyle);
@@ -342,12 +327,6 @@ public class BioPaxGraphReader implements GraphReader {
 	 */
 	public CyAttributes getEdgeAttributes() {
 		return null;
-	}
-
-
-	public void setTaskMonitor(TaskMonitor tm)
-			throws IllegalThreadStateException {
-		this.taskMonitor = tm;
 	}
 		
 }

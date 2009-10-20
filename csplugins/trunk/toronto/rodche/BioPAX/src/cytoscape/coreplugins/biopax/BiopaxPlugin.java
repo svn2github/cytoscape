@@ -37,6 +37,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.coreplugins.biopax.action.ExportAsBioPAXAction;
 import cytoscape.coreplugins.biopax.action.IntegrateBioPAXAction;
 import cytoscape.coreplugins.biopax.action.MergeBioPAXAction;
+import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.data.ImportHandler;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
@@ -95,6 +96,7 @@ public class BiopaxPlugin extends CytoscapePlugin {
 	 * This method is called by the main Cytoscape Application upon startup.
 	 */
 	public BiopaxPlugin() {
+		
 		ImportHandler importHandler = new ImportHandler();
 		importHandler.addFilter(new BioPaxFilter());
 
@@ -129,6 +131,11 @@ public class BiopaxPlugin extends CytoscapePlugin {
 			cyMenus.addAction(new SelectDefaultLayoutAction(algo));
 		}
 
+		// we are now interested in receiving all network events
+		// like a load of a network from a session
+		// to start listening to network events, we grab an instance of
+		// a BioPaxContainerClass - this contains the network listener
+		BioPaxContainer.getInstance();
 	}
 	
 	/**
