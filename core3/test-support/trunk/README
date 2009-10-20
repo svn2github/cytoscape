@@ -1,0 +1,19 @@
+
+This is a special package designed to allow objects that are normally
+provided as OSGi services to be created without an OSGi environment
+for unit testing purposes.  This allows unit tests to be run without
+a lot of overhead and at the same time allows unit tests to be written 
+without explicitly depending on implementation code.
+
+For example, instead of getting a CyNetworkFactory injected into your 
+code using Spring+OSGi framework, just create a NetworkTestSupport object 
+and and then call getNetwork() to get a CyNetwork object:
+
+	...
+	NetworkTestSupport support = new NetworkTestSupport();
+	CyNetwork net = support.getNetwork();
+	...
+
+Of course, this code should NOT be used as a substitute for Spring+OSGi
+in a production environment.
+

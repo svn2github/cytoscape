@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cytoscape</groupId>
+  <artifactId>test-support</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>test-support</name>
+  <url>http://maven.apache.org</url>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <optimize>true</optimize>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                    <compilerArguments>
+                        <Xlint:all></Xlint:all>
+                        <Xlint:-path></Xlint:-path>
+                        <Xmaxwarns>10000</Xmaxwarns>
+                        <Xmaxerrs>10000</Xmaxerrs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+  <dependencies>
+    <!-- testing the testers!!! -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>model-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+	<!-- the APIs we're supporting - these should remain relatively static -->
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>model-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>viewmodel-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <!-- implementations of the APIs - these can change as things evolve -->
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>model-impl</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>viewmodel-impl</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>
