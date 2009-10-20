@@ -41,7 +41,6 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 
 import java.util.*;
-import java.util.List;
 
 
 /**
@@ -128,7 +127,7 @@ public class BioPAXL2Util extends BioPAXUtilRex {
                                                            Semantics.INTERACTION, controlStr,
                                                            CREATE);
 
-                       edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE,"control");
+                      Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE,"control");
 
                        edges.put(edge.getRootGraphIndex(), edge);
                    } // TODO: else? what we gonna do if it is a pathway? Wups?
@@ -164,7 +163,7 @@ public class BioPAXL2Util extends BioPAXUtilRex {
 
        }
 
-       MapNodeAttributes.initAttributes(nodeAttributes);
+       MapNodeAttributes.initAttributes(Cytoscape.getNodeAttributes());
 
        return new CytoscapeGraphElements(nodes.values(), edges.values());
    }
@@ -216,7 +215,7 @@ public class BioPAXL2Util extends BioPAXUtilRex {
                                                            Semantics.INTERACTION, controlStr,
                                                            CREATE);
 
-                       edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE,
+                       Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE,
                                                                                            "control");
 
                        edges.put(edge.getRootGraphIndex(), edge);
@@ -253,7 +252,7 @@ public class BioPAXL2Util extends BioPAXUtilRex {
 
        }
 
-       MapNodeAttributes.initAttributes(nodeAttributes);
+       MapNodeAttributes.initAttributes(Cytoscape.getNodeAttributes());
 
        return new CytoscapeGraphElements(nodes.values(), edges.values());
    }
@@ -293,7 +292,7 @@ public class BioPAXL2Util extends BioPAXUtilRex {
        setNodeAttribute(nodeID, MapNodeAttributes.BIOPAX_RDF_ID, rdfID);
 
        ArrayList<String> synList = new ArrayList<String>(bpe.getSYNONYMS());
-       nodeAttributes.setListAttribute(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, synList);
+       Cytoscape.getNodeAttributes().setListAttribute(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, synList);
 
        String comment = "";
        for(String aComment: bpe.getCOMMENT())
@@ -354,7 +353,7 @@ public class BioPAXL2Util extends BioPAXUtilRex {
            setNodeAttribute(nodeID, MapNodeAttributes.BIOPAX_PUBLICATION_REFERENCES, pubRefs);
 
        if( !otherRefs.isEmpty() )
-           nodeAttributes.setListAttribute(nodeID, MapNodeAttributes.BIOPAX_AFFYMETRIX_REFERENCES_LIST, otherRefs);
+           Cytoscape.getNodeAttributes().setListAttribute(nodeID, MapNodeAttributes.BIOPAX_AFFYMETRIX_REFERENCES_LIST, otherRefs);
 
        String avaliability = "";
        for( String anAvaliability : bpe.getAVAILABILITY() )
@@ -419,7 +418,7 @@ public class BioPAXL2Util extends BioPAXUtilRex {
        else
            edge = Cytoscape.getCyEdge(peNode, mainNode, Semantics.INTERACTION, type, CREATE);
 
-       edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE, type);
+       Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE, type);
        edges.put(edge.getRootGraphIndex(), edge);
    }
 
@@ -490,9 +489,10 @@ public class BioPAXL2Util extends BioPAXUtilRex {
        setNodeAttributes(nid, pe, nodeName);
 
        List<String> chemModList = new ArrayList<String>(BioPaxUtil.getChemModificationsMap().keySet());
-       nodeAttributes.setListAttribute(nid, MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, chemModList);
-       setMultiHashMap(nid, nodeAttributes,
-			                MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, chemModCounts);
+       Cytoscape.getNodeAttributes().setListAttribute(nid, 
+    		   MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, chemModList);
+       setMultiHashMap(nid, Cytoscape.getNodeAttributes(),
+			   MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, chemModCounts);
 
 	    if (chemModCounts.containsKey(BioPaxUtil.PHOSPHORYLATION_SITE)) {
 		    setNodeAttribute(nid, MapNodeAttributes.BIOPAX_ENTITY_TYPE,

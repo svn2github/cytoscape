@@ -32,19 +32,34 @@
 package cytoscape.coreplugins.biopax;
 
 
+import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.coreplugins.biopax.view.BioPaxContainer;
+import cytoscape.coreplugins.biopax.action.ExportAsBioPAXAction;
+import cytoscape.coreplugins.biopax.action.IntegrateBioPAXAction;
+import cytoscape.coreplugins.biopax.action.MergeBioPAXAction;
 import cytoscape.data.ImportHandler;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyMenus;
 
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Properties;
 
 /**
  * BioPAX Import PlugIn.
  *
- * @author Ethan Cerami.
+ * @author Ethan Cerami, B. Arman Aksoy, Rex Dwyer, Igor Rodchenkov
  */
 public class BiopaxPlugin extends CytoscapePlugin {
+	
+	protected static final CyLogger log = CyLogger.getLogger(BiopaxPlugin.class);
+	
+	
 	/**
 	 * Version Major Number.
 	 */
@@ -93,6 +108,69 @@ public class BiopaxPlugin extends CytoscapePlugin {
 			System.getProperties().put("proxyHost", proxyHost);
 			System.getProperties().put("proxyPort", proxyPort);
 		}
+		
+		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
+		cyMenus.addAction(new ExportAsBioPAXAction());
+		cyMenus.addAction(new MergeBioPAXAction());
+		cyMenus.addAction(new IntegrateBioPAXAction());
+		cyMenus.addAction(new CreateNodesForControlsAction());
+		CyLayoutAlgorithm allLayouts[] = CyLayouts.getAllLayouts()
+			.toArray(new CyLayoutAlgorithm[1]);
+		
+		// Put layout names in alphabetical order.
+		Arrays.sort(allLayouts, new Comparator<CyLayoutAlgorithm>() {
+			public int compare(CyLayoutAlgorithm o1, CyLayoutAlgorithm o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		
+		// For each layout algorithm, create a menu item to select it as default when reading.
+		for (CyLayoutAlgorithm algo : allLayouts) {
+			cyMenus.addAction(new SelectDefaultLayoutAction(algo));
+		}
 
 	}
+	
+	/**
+	 * For "Plugins->BioPaX Import->Create Nodes for Controls" menu item.
+	 * If checked, the reader creates cytoscape nodes for Controls (Catalysis, etc.) 
+	 * in the BioPaX file.  If not checked, the reader represent Controls by edges.	 *
+	 */
+	public class CreateNodesForControlsAction extends CytoscapeAction {
+		private static final long serialVersionUID = 1L;
+		
+		public CreateNodesForControlsAction() {
+			super("Create Nodes for Controls");
+			this.setPreferredMenu("Plugins.BioPaX Import");
+			useCheckBoxMenuItem = true;
+		}
+
+		public void actionPerformed(ActionEvent ae) {
+			BioPaxGraphReader.setCreateNodesForControls(!BioPaxGraphReader.getCreateNodesForControls());
+			if(log.isDebugging()) {
+				log.debug("createNodesForControls = " + BioPaxGraphReader.getCreateNodesForControls());
+			}
+		}
+	}
+
+	/**
+	 * For "Plugins->BioPaX Import->Default Layout" menu.
+	 * One of these actions exists for each known layout.
+	 * When the layout name is clicked, it becomes the default initial layout for future biopax reads.
+	 */
+	public class SelectDefaultLayoutAction extends CytoscapeAction {
+		private static final long serialVersionUID = 1L;
+		private CyLayoutAlgorithm algo = BioPaxGraphReader.getDefaultLayoutAlgorithm();
+		
+		public SelectDefaultLayoutAction(CyLayoutAlgorithm algo) {
+			super(algo.getName());
+			this.algo = algo;
+			this.setPreferredMenu("Plugins.BioPaX Import.Default Layout");
+		}
+
+		public void actionPerformed(ActionEvent ae) {
+			BioPaxGraphReader.setDefaultLayoutAlgorithm(algo);
+		}
+	}
+	
 }

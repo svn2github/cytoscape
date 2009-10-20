@@ -51,14 +51,12 @@ import giny.model.Edge;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.complex;
-import org.biopax.paxtools.model.level2.complexAssembly;
 import org.biopax.paxtools.model.level2.control;
 import org.biopax.paxtools.model.level2.conversion;
 import org.biopax.paxtools.model.level2.interaction;
 import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level2.physicalEntityParticipant;
 import org.biopax.paxtools.model.level3.Complex;
-import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Control;
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.Interaction;
@@ -148,25 +146,25 @@ public class MapBioPaxToCytoscape {
 	class NodeAttributesWrapper {
 		// map of cellular location
 		// or chemical modifications
-		private Map attributesMap;
+		private Map<String, String> attributesMap;
 
 		// abbreviations string
 		private String abbreviationString;
 
 		// contructor
-		NodeAttributesWrapper(Map attributesMap, String abbreviationString) {
+		NodeAttributesWrapper(Map<String,String> attributesMap, String abbreviationString) {
 			this.attributesMap = attributesMap;
 			this.abbreviationString = abbreviationString;
 		}
 
 		// gets the attributes map
-		Map getMap() {
+		Map<String,String> getMap() {
 			return attributesMap;
 		}
 
 		// gets the attributes map as list
-		List getList() {
-			return (attributesMap != null) ? new ArrayList(attributesMap.keySet()) : null;
+		List<String> getList() {
+			return (attributesMap != null) ? new ArrayList<String>(attributesMap.keySet()) : null;
 		}
 
 		// gets the abbrevation string (used in node label)
@@ -254,7 +252,7 @@ public class MapBioPaxToCytoscape {
 	 *
 	 * @return ArrayList of String Objects.
 	 */
-	public List getWarningList() {
+	public List<String> getWarningList() {
 		return warningList;
 	}
 
@@ -273,7 +271,6 @@ public class MapBioPaxToCytoscape {
 			CyNode node = (CyNode) iter.next();
 			String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
 			                                                 BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-
 			if (label != null) {
 				nodeAttributes.setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME, label);
 			}
@@ -329,7 +326,7 @@ public class MapBioPaxToCytoscape {
 
 		int i=0; // progress counter
 		for (BioPAXElement itr : interactionList) {
-			String id = itr.getRDFId();
+			String id = BioPaxUtil.getLocalPartRdfId(itr);
 
 			// have we already created this interaction ?
 			if (createdCyNodes.containsKey(id)) {
@@ -370,7 +367,7 @@ public class MapBioPaxToCytoscape {
 
 		int i = 0;
 		for (BioPAXElement itr : interactionList) {
-			String id = itr.getRDFId();
+			String id = BioPaxUtil.getLocalPartRdfId(itr);
 
 			//  Get the node symbolizing the interaction
 			CyNode interactionNode = Cytoscape.getCyNode(id, true);
@@ -418,7 +415,7 @@ public class MapBioPaxToCytoscape {
 		
 		Map<String, String> localCreatedCyNodes = (Map<String,String>)(((HashMap)createdCyNodes).clone());
 		for (BioPAXElement complexElement : complexElementListClone) {
-			String complexCPathId = complexElement.getRDFId();
+			String complexCPathId = BioPaxUtil.getLocalPartRdfId(complexElement);
 			if (localCreatedCyNodes.containsValue(complexCPathId)) {
 				// a cynode for this complex has already been created, remove from complex element list
 				complexElementList.remove(complexElement);
@@ -455,7 +452,7 @@ public class MapBioPaxToCytoscape {
 		for (BioPAXElement complexElement : complexElementListClone) {
 
 			// get source id
-			String complexCPathId = complexElement.getRDFId();
+			String complexCPathId = BioPaxUtil.getLocalPartRdfId(complexElement);
 
 			// iterate through all created nodes
 			// note: a complex can occur multiple times in createdNodes map
@@ -555,49 +552,53 @@ public class MapBioPaxToCytoscape {
 	 */
 	private void addControlInteraction(BioPAXElement interactionElement) {
 		//  Get the Interaction Node represented by this Interaction Element
-		String interactionId = interactionElement.getRDFId();
+		String interactionId = BioPaxUtil.getLocalPartRdfId(interactionElement);
 		CyNode interactionNode = Cytoscape.getCyNode(interactionId);
 
 		//  Get the Controlled Element
-		//  For now, we assume there is only 1 controlled element
-		// TODO shall we loose the "one controlled element" assumption?
+		//  We assume there is only 1 or no controlled element
 		Collection<?> controlledList = 
 			BioPaxUtil.getValues(interactionElement, "CONTROLLED", "controlled");
-
-		if (controlledList.size() == 1) {
-			BioPAXElement controlledElement = (BioPAXElement) controlledList.iterator().next();
-			String controlledId = controlledElement.getRDFId();
-			CyNode controlledNode = Cytoscape.getCyNode(controlledId);
-
-			if (controlledNode == null) {
-				this.warningList.add(new String("Warning!  Cannot find:  " + controlledId));
-			} else {
-				//  Determine the BioPAX Edge Type
-				String typeStr = CONTROLLED;
-				String controlType = 
-					BioPaxUtil.getValue(interactionElement, "CONTROL-TYPE","controlType").toString();
-
-				//  Create Edge from Control Interaction Node to the
-				//  Controlled Node
-				Edge edge = Cytoscape.getCyEdge(interactionNode, controlledNode,
-				                                Semantics.INTERACTION, typeStr, true);
-				//Cytoscape.setEdgeAttributeValue(edge, BIOPAX_EDGE_TYPE, typeStr);
-				Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, typeStr);
-				edgeList.add(edge);
-
-				//  Create Edges from the Controller(s) to the
-				//  Control Interaction
-				Collection<?> controllerList = 
-					BioPaxUtil.getValues(interactionElement, "CONTROLLER","controller");
-				for (Object controllerElement : controlledList) {
-					linkNodes(interactionElement, interactionNode, (BioPAXElement) controllerElement, CONTROLLER);
-				}
-
-				mapCoFactors(interactionElement);
-			}
-		} else {
+		
+		if (controlledList.size() > 1) {
 			warningList.add("Warning!  Control Interaction: " + interactionId
-			                + "has more than one CONTROLLED " + "Element.");
+		                + "has more than one CONTROLLED " + "Element.");
+		}
+		
+		BioPAXElement controlledElement = 
+			(BioPAXElement) controlledList.iterator().next();
+		
+		String controlledId = BioPaxUtil.getLocalPartRdfId(controlledElement);
+		CyNode controlledNode = Cytoscape.getCyNode(controlledId);
+
+		if (controlledNode == null) {
+			this.warningList.add(new String("Warning!  Cannot find:  "
+					+ controlledId));
+		} else {
+			// Determine the BioPAX Edge Type
+			String typeStr = CONTROLLED;
+			Object cType = BioPaxUtil.getValue(interactionElement,
+					"CONTROL-TYPE", "controlType");
+			String controlType = (cType == null) ? null : cType.toString();
+
+			// Create Edge from Control Interaction Node to the
+			// Controlled Node
+			Edge edge = Cytoscape.getCyEdge(interactionNode, controlledNode,
+					Semantics.INTERACTION, typeStr, true);
+			Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(),
+					BIOPAX_EDGE_TYPE, typeStr);
+			edgeList.add(edge);
+
+			// Create Edges from the Controller(s) to the
+			// Control Interaction
+			Collection<?> controllerList = BioPaxUtil.getValues(
+					interactionElement, "CONTROLLER", "controller");
+			for (Object controllerElement : controlledList) {
+				linkNodes(interactionElement, interactionNode,
+						(BioPAXElement) controllerElement, CONTROLLER);
+			}
+
+			mapCoFactors(interactionElement);
 		}
 	}
 
@@ -605,13 +606,12 @@ public class MapBioPaxToCytoscape {
 	 * Map All Co-Factors.
 	 */
 	private void mapCoFactors(BioPAXElement interactionElement) {
-		String interactionId = interactionElement.getRDFId();
 		Collection<?> coFactorList = BioPaxUtil.getValues(interactionElement, "COFACTOR","cofactor");
 
 		if (coFactorList.size() == 1) {
 			BioPAXElement coFactor = (BioPAXElement) coFactorList.iterator().next();
 			if (coFactor!= null) {
-				String coFactorId = coFactor.getRDFId();
+				String coFactorId = BioPaxUtil.getLocalPartRdfId(coFactor);
 				CyNode coFactorNode = Cytoscape.getCyNode(coFactorId);
 
 				if (coFactorNode == null) {
@@ -626,7 +626,7 @@ public class MapBioPaxToCytoscape {
 				}
 			} 
 		} else if (coFactorList.size() > 1) {
-			warningList.add("Warning!  Control Interaction:  " + interactionId
+			warningList.add("Warning!  Control Interaction:  " + BioPaxUtil.getLocalPartRdfId(interactionElement)
 			                + " has more than one COFACTOR Element.  " + "I am not yet equipped "
 			                + "to handle this.");
 		}
@@ -646,7 +646,7 @@ public class MapBioPaxToCytoscape {
 		boolean isInteraction = BioPaxUtil.isOneOfBiopaxClasses(bpe, interaction.class, Interaction.class);
 
 		// extract id
-		String id = bpe.getRDFId();
+		String id = BioPaxUtil.getLocalPartRdfId(bpe);
 		if ((id == null) || (id.length() == 0)) return null; // this should never happen
 
 		if (createdCyNodes.containsKey(id)) {
@@ -716,7 +716,7 @@ public class MapBioPaxToCytoscape {
 	private CyNode getComplexCyNode(BioPAXElement complexElement, String complexCyNodeId, BioPAXElement complexMemberElement) {
 
 		// extract id
-		String complexMemberId = complexMemberElement.getRDFId();
+		String complexMemberId = BioPaxUtil.getLocalPartRdfId(complexMemberElement);
 		if ((complexMemberId == null) || (complexMemberId.length() == 0)) return null;
 
 		// get node attributes
@@ -807,7 +807,7 @@ public class MapBioPaxToCytoscape {
 		
 		// both of these objects will be used to contruct
 		// the NodeAttributesWrapper which gets returned
-		Map chemicalModificationsMap = null;
+		Map<String,String> chemicalModificationsMap = null;
 		String chemicalModifications = null;
 
 		// if we are dealing with PARTICIPANTS (physical interactions
@@ -828,7 +828,7 @@ public class MapBioPaxToCytoscape {
 					? "-" : chemicalModifications;
 				// initialize chemicalModifications hashmap if necessary
 				chemicalModificationsMap = (chemicalModificationsMap == null) 
-					? new HashMap() : chemicalModificationsMap;
+					? new HashMap<String, String>() : chemicalModificationsMap;
 
 				String mod = BioPaxUtil.getValue((BioPAXElement)modification, 
 						"FEATURE_TYPE", "modificationType").toString();
@@ -842,16 +842,15 @@ public class MapBioPaxToCytoscape {
 					chemicalModifications += abbr;
 
 					// update our map - modification, count
-					chemicalModificationsMap.put(modification, new Integer(1));
+					chemicalModificationsMap.put(mod, "1");
 				} else {
 					// we've seen this modification before, just update the count
-					int count = ((Integer) chemicalModificationsMap.get(modification)).intValue();
-					chemicalModificationsMap.put(modification, new Integer(count + 1));
+					int count = Integer.parseInt(chemicalModificationsMap.get(mod));
+					chemicalModificationsMap.put(mod, ++count+"");
 				}
 			}
 		}
 
-		// outta here
 		return new NodeAttributesWrapper(chemicalModificationsMap, chemicalModifications);
 	}
 
@@ -870,7 +869,7 @@ public class MapBioPaxToCytoscape {
 		// both of these objects will be used to contruct
 		// the NodeAttributesWrapper which gets returned
 		String cellularLocation = null;
-		Map nodeAttributes = new HashMap();
+		Map<String, String> nodeAttributes = new HashMap<String, String>();
 
 		// if we are dealing with PARTICIPANTS (physical interactions
 		// or complexes), we have to through the participants to get the
@@ -880,10 +879,9 @@ public class MapBioPaxToCytoscape {
 		if (location != null) {
 			cellularLocation = BioPaxUtil.getAbbrCellLocation(location.toString());
 			// add location to attributes list (we dont care about key)
-			nodeAttributes.put(location, location);
+			nodeAttributes.put(cellularLocation, null);
 		}
 
-		// outta here
 		return new NodeAttributesWrapper(nodeAttributes, cellularLocation);
 	}
 
@@ -936,10 +934,18 @@ public class MapBioPaxToCytoscape {
 
 		attributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_NAME, name);
 		
-		attributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE, bpe.getModelInterface().getSimpleName());
+		attributes.setAttribute(nodeID, 
+				MapNodeAttributes.BIOPAX_ENTITY_TYPE, BioPaxUtil.getType(bpe));
 		
-		attributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_RDF_ID, bpe.getRDFId());
-
+		if(bpe instanceof physicalEntityParticipant 
+				&& ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY() != null) {
+			attributes.setAttribute(nodeID, 
+					MapNodeAttributes.BIOPAX_RDF_ID, 
+					((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY().getRDFId());
+		} else {
+			attributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_RDF_ID, bpe.getRDFId());
+		}
+			
 		if ((label != null) && (label.length() > 0)) {
 			attributes.setAttribute(nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, label);
 		}
@@ -953,7 +959,7 @@ public class MapBioPaxToCytoscape {
 	 */
 	private void setChemicalModificationAttributes(String cyNodeId, NodeAttributesWrapper chemicalModificationsWrapper) {
 		
-		Map modificationsMap = (chemicalModificationsWrapper != null)
+		Map<String, String> modificationsMap = (chemicalModificationsWrapper != null)
 		                       ? chemicalModificationsWrapper.getMap() : null;
 
 		if (modificationsMap != null) {
@@ -971,9 +977,7 @@ public class MapBioPaxToCytoscape {
 			//  rendering engine for, e.g. drawing number of phosphorylation sies.
 
 			//  Store List of Chemical Modifications Only
-			Set keySet = modificationsMap.keySet();
-			List list = new ArrayList();
-			list.addAll(keySet);
+			List<String> list = new ArrayList<String>(modificationsMap.keySet());
 			nodeAttributes.setListAttribute(cyNodeId,
 			                            MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, list);
 
@@ -993,10 +997,10 @@ public class MapBioPaxToCytoscape {
 	 */
 	private void setCellularLocationAttributes(String cyNodeId, NodeAttributesWrapper cellularLocationsWrapper) {
 
-		List cellularLocationsList = (cellularLocationsWrapper != null)
+		List<String> cellularLocationsList = (cellularLocationsWrapper != null)
 		                             ? cellularLocationsWrapper.getList() : null;
 
-		if (cellularLocationsList != null) {
+		if (cellularLocationsList != null && !cellularLocationsList.isEmpty()) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 			nodeAttributes.setListAttribute(cyNodeId, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
 											cellularLocationsList);

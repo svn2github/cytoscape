@@ -9,7 +9,7 @@
 	<!-- tools dir -->
 	<property name="pathway.tools.root" value="${env.PATHWAY_TOOLS_ROOT}"/>
     <!-- version numbers -->
-    <property name="biopax_version" value="0_6"/>
+    <property name="biopax_version" value="0_7"/>
     <!--  define check style task -->
     <taskdef resource="checkstyletask.properties"/>
     <!-- source code dir -->
@@ -43,8 +43,7 @@
     <!-- temp dir -->
     <property name="temp.dir" value="temp"/>
     <!-- LayoutUtil.java file -->
-    <property name="layout.util.file"
-			  value="${src.dir}/org/mskcc/biopax_plugin/util/cytoscape/LayoutUtil.java"/>
+    <property name="layout.util.file" value="${src.dir}/cytoscape/coreplugins/biopax/util/cytoscape/LayoutUtil.java"/>
 	<!-- jar file -->
     <property name="jar_file" value="${project_name}.jar"/>
 	<!-- obfuscation file -->
@@ -56,6 +55,9 @@
     <!-- classpath without reference to yfiles -->
     <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
+        <fileset dir="lib">
+                <include name="*.jar"/>
+        </fileset>
         <fileset dir="${cytoscape.dir}/lib">
                 <include name="*.jar"/>
         </fileset>
@@ -177,12 +179,12 @@
         <mkdir dir="${jars.dir}"/>
 
         <!--  create jar -->
-		<copy todir="${build.classes}/org/mskcc/biopax_plugin/plugin" file="${resources.dir}/plugin.props"/>
+		<copy todir="${build.classes}/cytoscape/coreplugins/biopax" file="${resources.dir}/plugin.props"/>
         <jar destfile="${jars.dir}/${jar_file}">
             <fileset dir="${build.classes}"/>
-	    <manifest>
-	    	<attribute name="Cytoscape-Plugin" value="cytoscape.coreplugins.biopax.BiopaxPlugin"/>
-	    </manifest>
+	    	<manifest>
+	    		<attribute name="Cytoscape-Plugin" value="cytoscape.coreplugins.biopax.BiopaxPlugin"/>
+	    	</manifest>
         </jar>
     </target>
 

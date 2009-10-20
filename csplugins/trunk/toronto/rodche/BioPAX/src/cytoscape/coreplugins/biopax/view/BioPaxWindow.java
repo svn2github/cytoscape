@@ -31,11 +31,7 @@
  **/
 package cytoscape.coreplugins.biopax.view;
 
-import cytoscape.coreplugins.biopax.util.BioPaxUtil;
-
 import java.awt.*;
-
-import java.io.FileInputStream;
 
 import javax.swing.*;
 
@@ -77,13 +73,14 @@ public class BioPaxWindow extends JFrame {
 	 */
 	public static void main(String[] args) throws Exception {
 		//FileInputStream in = new FileInputStream("testData/biopax_complex.owl");
-		BioPaxWindow bioPaxWindow = new BioPaxWindow();
+		final BioPaxWindow bioPaxWindow = new BioPaxWindow();
 		SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
 					try {
 						BioPaxContainer bpContainer = BioPaxContainer.getInstance();
 						BioPaxDetailsPanel bpPanel = bpContainer.getBioPaxDetailsPanel();
 						bpPanel.showDetails("CPATH-124");
+						//bioPaxWindow.add(bpPanel);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

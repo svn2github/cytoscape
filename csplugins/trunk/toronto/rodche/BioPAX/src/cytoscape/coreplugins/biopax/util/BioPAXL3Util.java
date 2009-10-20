@@ -30,12 +30,15 @@ import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.BioPAXElement;
+
+import cytoscape.coreplugins.biopax.BioPaxGraphReader;
 import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.util.links.ExternalLinkUtil;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
+import cytoscape.Cytoscape;
 import cytoscape.coreplugins.biopax.style.BioPax3VisualStyleUtil;
 import cytoscape.data.Semantics;
 
@@ -79,7 +82,7 @@ public class BioPAXL3Util extends BioPAXUtilRex {
        /* Part 1 : Let's create all interactions ... not quite sure why we can't wait.  */
        log.setDebug(true);
        for(Interaction anInteraction: interactions) {
-    	   if ((anInteraction instanceof Control) && !createNodesForControls) continue;
+    	   if ((anInteraction instanceof Control) && !BioPaxGraphReader.getCreateNodesForControls()) continue;
     	   String interactionID = anInteraction.getRDFId();
            CyNode interactionNode = getCyNode(interactionID, CREATE);
            log.debug(" creating node: "+interactionID+" "+interactionNode);
@@ -105,7 +108,7 @@ public class BioPAXL3Util extends BioPAXUtilRex {
            else if (anInteraction instanceof TemplateReaction) bpToGraph((TemplateReaction) anInteraction, nodes,edges);
            else bpToGraph((Interaction) anInteraction, nodes,edges);
        }
-       MapNodeAttributes.initAttributes(nodeAttributes);
+       MapNodeAttributes.initAttributes(Cytoscape.getNodeAttributes());
        
        return new CytoscapeGraphElements(nodes.values(), edges.values());
    }
@@ -153,7 +156,7 @@ public class BioPAXL3Util extends BioPAXUtilRex {
 	   if (controlType==null) controlType = ControlType.ACTIVATION;  // e.g., Catalysis
 	   String controlStr = controlType.toString();
 	   
-	   if (createNodesForControls) {
+	   if (BioPaxGraphReader.getCreateNodesForControls()) {
 		   for(PhysicalEntity pep: aControl.getController()) {
 			   createNodesAndEdges(nodes, edges, pep, interactionNode, MapBioPaxToCytoscape.CONTROLLER);
 		   }
@@ -447,7 +450,7 @@ public class BioPAXL3Util extends BioPAXUtilRex {
         			   BioPaxUtil.PROTEIN_PHOSPHORYLATED);
            }
        }
-       setMultiHashMap(nodeId, nodeAttributes,
+       setMultiHashMap(nodeId, Cytoscape.getNodeAttributes(),
     		   MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, chemModCounts);
 
        if (!nul(cellularLocation)) {

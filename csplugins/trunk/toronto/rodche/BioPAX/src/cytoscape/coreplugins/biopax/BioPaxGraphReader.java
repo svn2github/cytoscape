@@ -37,6 +37,7 @@ import giny.view.GraphView;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
@@ -67,13 +68,26 @@ import java.net.URLDecoder;
  * @author Igor Rodchenkov (re-factoring, using PaxTools API)
  */
 public class BioPaxGraphReader implements GraphReader {
+	private static final CyLogger log = CyLogger.getLogger(BioPaxGraphReader.class);
+	
 	private int[] nodeIndices;
 	private int[] edgeIndices;
 	private String fileName;
 	private String networkName;
 	private boolean validNetworkName;
-	private CyLayoutAlgorithm layoutUtil;
+	private CyLayoutAlgorithm layout;
+	private TaskMonitor taskMonitor;
+	
 
+	private static boolean createNodesForControls;
+	private static CyLayoutAlgorithm defaultLayout;
+	
+	static {
+		defaultLayout = new LayoutUtil();
+		createNodesForControls = false;
+	}
+	
+	
 	/**
 	 * Constructor
 	 *
@@ -81,38 +95,77 @@ public class BioPaxGraphReader implements GraphReader {
 	 */
 	public BioPaxGraphReader(String fileName) {
 		this.fileName = fileName;
-		layoutUtil = new LayoutUtil();
+		layout = getDefaultLayoutAlgorithm();
 	}
 
+	
+	public static void setCreateNodesForControls(Boolean b) {
+		createNodesForControls = b;
+		if(log.isDebugging()) {
+			log.debug("createNodesForControls = " + createNodesForControls);  
+		}
+	}
+	
+	
+	public static boolean getCreateNodesForControls() {
+		return createNodesForControls;
+	}
+	
+	
+	public static void setDefaultLayoutAlgorithm(CyLayoutAlgorithm algo) { 
+		defaultLayout = algo; 
+	}
+	
+	public static CyLayoutAlgorithm getDefaultLayoutAlgorithm() { 
+		return defaultLayout; 
+	}
+	
+	
 	/**
 	 * Read file.
 	 *
 	 * @throws IOException IO Error.
 	 */
 	public void read() throws IOException {
-		// Load up Data
-		Model model = BioPaxUtil.readFile(fileName);
 
+		Model model = BioPaxUtil.readFile(fileName);
 		if(model == null) {
+			log.error("Failed to read BioPAX model");
 			return;
 		}
 		
-		CyLogger.getLogger(BioPaxGraphReader.class).warn(
-				"Model contains " + model.getObjects().size()
-				+ " BioPAX elements.");
+		log.info("Model contains " + model.getObjects().size()
+				+ " BioPAX elements");
+		
 		
 		// Set network name (also checks if it exists)
 		networkName = getNetworkName(model);
 
-		// Map BioPAX Data to Cytoscape Nodes/Edges
-		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(model);
+		
+		// Map BioPAX Data to Cytoscape Nodes/Edges (run as task)
+		MapBioPaxToCytoscape mapper = 
+			new MapBioPaxToCytoscape(model, taskMonitor);
 		mapper.doMapping();
 		nodeIndices = mapper.getNodeIndices();
 		if (nodeIndices.length == 0) {
-			throw new IOException(
-					"Pathway is empty!  Please check the BioPAX source file.");
+			log.error("Pathway is empty!  " +
+					"Please check the BioPAX source file.");
+			return;
 		}
 		edgeIndices = mapper.getEdgeIndices();
+		
+		
+		/*
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(true);
+		jTaskConfig.displayCancelButton(true);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(false);
+		
+		MappingTask task = new MappingTask(model);		
+		TaskManager.executeTask(task, jTaskConfig);
+		*/
 	}
 
 	private String getNetworkName(Model model) {
@@ -147,7 +200,7 @@ public class BioPaxGraphReader implements GraphReader {
 	 * Our implementation of GraphReader.getLayoutAlgorithm().
 	 */
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
-		return layoutUtil;
+		return layout;
 	}
 
 	/**
@@ -158,7 +211,7 @@ public class BioPaxGraphReader implements GraphReader {
 	 * @param view CyNetworkView Object.
 	 */
 	public void layout(GraphView view) {
-		layoutUtil.doLayout((CyNetworkView)view);
+		layout.doLayout((CyNetworkView)view);
 	}
 
 	/**
@@ -291,4 +344,10 @@ public class BioPaxGraphReader implements GraphReader {
 		return null;
 	}
 
+
+	public void setTaskMonitor(TaskMonitor tm)
+			throws IllegalThreadStateException {
+		this.taskMonitor = tm;
+	}
+		
 }

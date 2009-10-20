@@ -48,7 +48,6 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMap;
-import cytoscape.layout.CyLayoutAlgorithm;
 
 import java.util.*;
 import java.io.ByteArrayOutputStream;
@@ -62,16 +61,6 @@ import java.io.UnsupportedEncodingException;
  */
 public class BioPAXUtilRex {
 	
-	protected static boolean createNodesForControls = false;
-	public static boolean getCreateNodesForControls() { return createNodesForControls; }
-	public static void setCreateNodesForControls(Boolean b) { System.err.println(createNodesForControls = b); }
-	public static void toggleCreateNodesForControls() {
-		System.err.println(createNodesForControls = !createNodesForControls); }
-	
-	public static CyLayoutAlgorithm defaultLayoutAlgorithm;
-	public static void setDefaultLayoutAlgorithm(CyLayoutAlgorithm algo) { defaultLayoutAlgorithm = algo; }
-	public static CyLayoutAlgorithm getDefaultLayoutAlgorithm() { return defaultLayoutAlgorithm; }
-
 	private static boolean inputLevel3 = true;
 	public static boolean getInputLevel3() { return inputLevel3; }
 	public static void setInputLevel3(Boolean b) { System.err.println(inputLevel3 = b); }
@@ -89,18 +78,13 @@ public class BioPAXUtilRex {
 
     protected static final boolean CREATE = true;
     
-    // Just to shorten the names
-    protected static CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-    protected static CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-    protected static CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-
     protected static void setNodeAttribute(String arg1, String arg2, String arg3) {
     	log.debug("setNodeAttribute("+arg1+","+arg2+","+arg3+")");
-    	nodeAttributes.setAttribute(arg1, arg2, arg3);
+    	Cytoscape.getNodeAttributes().setAttribute(arg1, arg2, arg3);
     }
     protected static void setNodeListAttribute(String arg1, String arg2, List arg3) {
     	log.debug("setNodeListAttribute("+arg1+","+arg2+","+arg3+")");
-    	nodeAttributes.setListAttribute(arg1, arg2, arg3);
+    	Cytoscape.getNodeAttributes().setListAttribute(arg1, arg2, arg3);
     }
     
     protected static void setEdgeType(CyEdge edge, String type) {
@@ -112,11 +96,11 @@ public class BioPAXUtilRex {
     
     protected static void setEdgeAttribute(String arg1, String arg2, String arg3) {
     	log.debug("setEdgeAttribute("+arg1+","+arg2+","+arg3+")");
-    	edgeAttributes.setAttribute(arg1, arg2, arg3);
+    	 Cytoscape.getEdgeAttributes().setAttribute(arg1, arg2, arg3);
     }
     protected static void setNetAttribute(String arg1, String arg2, String arg3) {
     	log.debug("setNetAttribute("+arg1+","+arg2+","+arg3+")");
-    	networkAttributes.setAttribute(arg1, arg2, arg3);
+    	Cytoscape.getNetworkAttributes().setAttribute(arg1, arg2, arg3);
     }
     protected static CyNode getCyNode(String nodeID, boolean create) { 
     	return Cytoscape.getCyNode(nodeID, create); 
@@ -229,7 +213,7 @@ public class BioPAXUtilRex {
         }
 
         try {
-            networkAttributes.setAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING,
+            Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING,
                                                          outputStream.toString(DEFAULT_CHARSET));
         } catch (UnsupportedEncodingException e) {
             System.out.println(DEFAULT_CHARSET + " is not supported. BioPAX model could not be saved.");
@@ -243,7 +227,7 @@ public class BioPAXUtilRex {
         if( bpModel != null )
             return bpModel;
 
-        String modelStr = (String) networkAttributes.getAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING);
+        String modelStr = (String) Cytoscape.getNetworkAttributes().getAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING);
         if( modelStr == null )
             return bpModel; // return null
         else
@@ -265,7 +249,7 @@ public class BioPAXUtilRex {
     }
 
     public static boolean isBioPAXNetwork(CyNetwork cyNetwork) {
-        Object answer = networkAttributes.getAttribute(cyNetwork.getIdentifier(),
+        Object answer = Cytoscape.getNetworkAttributes().getAttribute(cyNetwork.getIdentifier(),
                 MapBioPaxToCytoscape.BIOPAX_NETWORK);
 
         return (answer != null) && answer.equals(Boolean.TRUE);

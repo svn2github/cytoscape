@@ -50,6 +50,7 @@ import giny.view.NodeView;
 
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level2.physicalEntityParticipant;
 
 
 import java.awt.Paint;
@@ -182,18 +183,24 @@ public class MapNodeAttributes {
 	private static BufferedImage phosNodeSelectedBottom = null;
 	private static BufferedImage phosNodeSelectedLeft = null;
 
+	
+    public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
+    public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String BIOPAX_MERGE_SRC = "biopax.merge.src";
+	
+	
 	static {
 		try {
 			phosNode = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node.jpg"));
+                    (MapNodeAttributes.class.getResource("phos-node.jpg"));
 			phosNodeSelectedTop = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-top.jpg"));
+                    (MapNodeAttributes.class.getResource("phos-node-selected-top.jpg"));
 			phosNodeSelectedRight = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-right.jpg"));
+                    (MapNodeAttributes.class.getResource("phos-node-selected-right.jpg"));
 			phosNodeSelectedBottom = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-bottom.jpg"));
+                    (MapNodeAttributes.class.getResource("phos-node-selected-bottom.jpg"));
 			phosNodeSelectedLeft = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-left.jpg"));
+                    (MapNodeAttributes.class.getResource("phos-node-selected-left.jpg"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -238,7 +245,7 @@ public class MapNodeAttributes {
     public static void mapNodeAttribute(BioPAXElement resource, CyAttributes nodeAttributes) {
         if (resource != null) {
             String stringRef;
-            String nodeID = resource.getRDFId();
+            String nodeID = BioPaxUtil.getLocalPartRdfId(resource);
 
             // type
             stringRef = addType(resource, nodeAttributes);
@@ -548,12 +555,17 @@ public class MapNodeAttributes {
 
 
 	private static String addType(BioPAXElement bpe, CyAttributes nodeAttributes) {
+		
+		if(bpe instanceof physicalEntityParticipant) {
+			return addType(((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY(), nodeAttributes);
+		}
+		
+		
 		MultiHashMapDefinition mhmdef = nodeAttributes.getMultiHashMapDefinition();
-
 		// first check if attribute exists
 		if (mhmdef.getAttributeValueType(BIOPAX_CHEMICAL_MODIFICATIONS_MAP) != -1) {
 			MultiHashMap mhmap = nodeAttributes.getMultiHashMap();
-			CountedIterator modsIt = mhmap.getAttributeKeyspan(bpe.getRDFId(),
+			CountedIterator modsIt = mhmap.getAttributeKeyspan(BioPaxUtil.getLocalPartRdfId(bpe),
 			                                                   BIOPAX_CHEMICAL_MODIFICATIONS_MAP,
 			                                                   null);
 			while (modsIt.hasNext()) {
@@ -564,7 +576,7 @@ public class MapNodeAttributes {
 			}
 		}
 
-		return BioPaxUtil.getTypeInPlainEnglish(bpe.getModelInterface().getSimpleName());
+		return BioPaxUtil.getType(bpe);
 	}
 
 	private static String addDataSource(BioPAXElement resource) {
@@ -573,8 +585,10 @@ public class MapNodeAttributes {
 
 	private static String addPublicationXRefs(BioPAXElement resource) {
 		
-		if(!(resource instanceof org.biopax.paxtools.model.level2.XReferrable 
-				|| resource instanceof org.biopax.paxtools.model.level3.XReferrable)) {
+		if( !(resource instanceof org.biopax.paxtools.model.level2.XReferrable)
+			&& 
+			!(resource instanceof org.biopax.paxtools.model.level3.XReferrable) 
+		) {
 			return null;
 		}
 		

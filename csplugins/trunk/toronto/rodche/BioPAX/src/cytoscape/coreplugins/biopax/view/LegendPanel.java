@@ -42,9 +42,9 @@ public class LegendPanel extends JPanel {
 
         URL legendUrl;
         if (mode == BIOPAX_LEGEND) {
-            legendUrl = LegendPanel.class.getResource("resources/legend.html");
+            legendUrl = LegendPanel.class.getResource("legend.html");
         } else {
-            legendUrl = LegendPanel.class.getResource("resources/binary_legend.html");
+            legendUrl = LegendPanel.class.getResource("binary_legend.html");
         }
         StringBuffer temp = new StringBuffer();
 		temp.append("<HTML><BODY>");

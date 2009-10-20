@@ -113,7 +113,7 @@ public class CytoscapeWrapper {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     CytoPanel cytoPanel = desktop.getCytoPanel(BioPaxContainer.CYTO_PANEL_LOCATION);
-                    URL url = BioPaxDetailsPanel.class.getResource("resources/read_obj.gif");
+                    URL url = BioPaxDetailsPanel.class.getResource("read_obj.gif");
                     Icon icon = new ImageIcon(url);
                     cytoPanel.add("Node Details", icon, bpContainer, "Node Details");
                     cytoPanel.setState(CytoPanelState.DOCK);

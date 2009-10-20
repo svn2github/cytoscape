@@ -182,8 +182,8 @@ public class BioPaxVisualStyleUtil {
 
 		//  map all physical entities to circles
 		for (Class<? extends BioPAXElement> claz : BioPaxUtil.getSubclassNames(PhysicalEntity.class, physicalEntity.class)) {
-			discreteMapping.putMapValue(BioPaxUtil.getTypeInPlainEnglish(claz.getSimpleName()),
-			                            NodeShape.ELLIPSE);
+			String name =BioPaxUtil.getTypeInPlainEnglish(claz.getSimpleName());
+			discreteMapping.putMapValue(name, NodeShape.ELLIPSE);
 		}
 		
 		// hack for phosphorylated proteins
@@ -193,13 +193,11 @@ public class BioPaxVisualStyleUtil {
 		// - control to triangles
 		// - others to square
 		for (Class<?> c : BioPaxUtil.getSubclassNames(Interaction.class, interaction.class)) {
-			String entityName = c.getSimpleName();
+			String entityName = BioPaxUtil.getTypeInPlainEnglish(c.getSimpleName());
 			if (Control.class.isAssignableFrom(c) || control.class.isAssignableFrom(c)) {
-				discreteMapping.putMapValue(BioPaxUtil.getTypeInPlainEnglish(entityName),
-				                            NodeShape.TRIANGLE);
+				discreteMapping.putMapValue(entityName, NodeShape.TRIANGLE);
 			} else {
-				discreteMapping.putMapValue(BioPaxUtil.getTypeInPlainEnglish(entityName),
-				                            NodeShape.RECT);
+				discreteMapping.putMapValue(entityName, NodeShape.RECT);
 			}
 		}
 		
@@ -341,7 +339,7 @@ public class BioPaxVisualStyleUtil {
 		//  Activation Edges
 		for (ControlType controlType : ControlType.values()) {
 			if(controlType.toString().startsWith("A")) {
-				discreteMapping.putMapValue(controlType, ArrowShape.DELTA);
+				discreteMapping.putMapValue(controlType.toString(), ArrowShape.DELTA);
 			}
 		}
 

@@ -261,8 +261,7 @@ public class BioPaxDetailsPanel extends JPanel {
 
 				if ((listItem != null) && (listItem.length() > 0)) {
 					String plainEnglish = BioPaxUtil.getTypeInPlainEnglish(listItem);
-                    displayString.append("<LI> - " + ((plainEnglish != null)
-                            ? plainEnglish : listItem));
+                    displayString.append("<LI> - " + plainEnglish);
                     displayString.append("</LI>"); 
 				}
 			}

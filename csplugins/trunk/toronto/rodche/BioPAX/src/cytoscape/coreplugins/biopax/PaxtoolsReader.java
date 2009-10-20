@@ -42,7 +42,6 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.logger.*;
 
-import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
@@ -59,13 +58,11 @@ import giny.view.GraphView;
  * TODO check and merge with BioPaxUtils
  * 
  * @deprecated
- *
  */
 public class PaxtoolsReader implements GraphReader {
     private Model biopaxModel = null;
     private String fileName = null;
     private CyLayoutAlgorithm layoutAlgorithm;
-    private BioPAXLevel bplevel;
 
     protected static final CyLogger log = CyLogger.getLogger(PaxtoolsReader.class);
 
@@ -73,53 +70,27 @@ public class PaxtoolsReader implements GraphReader {
 
     public PaxtoolsReader(String fileName) {
         this.fileName = fileName;
-        this.layoutAlgorithm = BioPAXUtilRex.getDefaultLayoutAlgorithm();
+        this.layoutAlgorithm = BioPaxGraphReader.getDefaultLayoutAlgorithm();
     }
 
     public PaxtoolsReader(Model biopaxModel) {
         this.biopaxModel = biopaxModel;
-        this.layoutAlgorithm = BioPAXUtilRex.getDefaultLayoutAlgorithm();
+        this.layoutAlgorithm = BioPaxGraphReader.getDefaultLayoutAlgorithm();
         //this.layoutAlgorithm = new LayoutUtil();
-        this.bplevel = biopaxModel.getLevel();
     }
 
     public void read() throws IOException {
+    	int size = 0;
         if( biopaxModel == null ) {
             log.setDebug(true);
-            InputStreamReader ioReader = new InputStreamReader(new FileInputStream(fileName),"UTF-8");
-            char [] buf = new char[1000];
-            ioReader.read(buf);
-            String s = new String(buf);
-            boolean b2 = s.contains("biopax-level2.owl");
-            boolean b3 = s.contains("biopax-level3.owl");
-            //boolean b3 = Pattern.compile("biopax-level3.owl").matcher(s).find();
-        	FileInputStream ioStream = new FileInputStream(fileName);
-            if (b2 != b3) {
-            	this.bplevel = b2 ? BioPAXLevel.L2 : BioPAXLevel.L3;
-            	log.debug("File "+fileName+ " matched only " + this.bplevel);
-                biopaxModel = new SimpleReader(this.bplevel).convertFromOWL(ioStream);
-            }
-            else {
-            	biopaxModel = new SimpleReader(BioPAXLevel.L3).convertFromOWL(ioStream);
-            	int size = biopaxModel==null? 0 : biopaxModel.getObjects().size();
-            	if ((biopaxModel != null) && biopaxModel.getObjects().size()>0) this.bplevel = BioPAXLevel.L3;
-            	else {
-            		// say what went wrong...
-                	if (biopaxModel == null) log.debug("L3 model is null");
-                	else log.debug("non-null L3 model size is "+size);
-                	ioStream = new FileInputStream(fileName);
-                	biopaxModel = new SimpleReader(BioPAXLevel.L2).convertFromOWL(ioStream);
-                	size = biopaxModel==null? 0 : biopaxModel.getObjects().size();
-                	if ((biopaxModel != null) && size>0) this.bplevel = BioPAXLevel.L3;
-                	else if (biopaxModel == null) log.debug("L2 model is null");
-                	else log.debug("non-null L2 model size is "+size);
-            	} 
-            }
-            log.setDebug(false);
+         	FileInputStream ioStream = new FileInputStream(fileName);
+           	biopaxModel = new SimpleReader().convertFromOWL(ioStream);
+           	size = biopaxModel.getObjects().size();
         }
-    	int size = biopaxModel==null? 0 : biopaxModel.getObjects().size();
-        if ((biopaxModel == null) || size==0) log.error("Failed to read non-empty biopax model from "+fileName);
-        else log.info("Successfully read biopax "+this.bplevel+" model from "+fileName);
+    	     
+    	if (size==0) log.error("Failed to read non-empty biopax model from "+fileName);
+        else log.info("Successfully read biopax " + biopaxModel.getLevel() 
+        		+ " model from " + fileName);
 
         BioPAXUtilRex.CytoscapeGraphElements csGraphEls
                         = BioPAXUtilRex.bioPAXtoCytoscapeGraph(biopaxModel);
