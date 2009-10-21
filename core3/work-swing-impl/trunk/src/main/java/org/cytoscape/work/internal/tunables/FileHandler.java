@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -18,12 +20,18 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
-import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
+import org.cytoscape.work.util.FileTypeChoice;
+import org.cytoscape.io.CyFileFilter;
 
 import cytoscape.Cytoscape;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 
 /**
@@ -42,9 +50,10 @@ public class FileHandler extends AbstractGuiHandler {
 	private JSeparator titleSeparator;
 	private MouseClic mouseClic;
 	private GroupLayout layout;
-	private enum Type {NETWORK,SESSION,ATTRIBUTES};
-	private Type type;	
+	private FileTypeChoice fileTypeChoice;
+	private Map<FileFilter,CyFileFilter> fileFilterMap;
 	//private FileUtil flUtil;
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	
 	/**
@@ -64,14 +73,52 @@ public class FileHandler extends AbstractGuiHandler {
 		
 		//Construction of GUI
 		fileChooser = new JFileChooser();
-		setFileType(t);
-		setGui(type);
+		setGui();
 		setLayout();
 		panel.setLayout(layout);
 		
 		try{
 			this.file=(File)f.get(o);
 		}catch(Exception e){e.printStackTrace();}		
+
+		detectFileTypeChoice();
+
+	}
+
+	void detectFileTypeChoice()
+	{
+		String fieldName = t.fileTypeChoiceName();
+		if (fieldName == null || fieldName.length() == 0)
+		{
+			fileTypeChoice = null;
+			fileFilterMap = null;
+			return;
+		}
+
+		try
+		{
+			Field field = o.getClass().getDeclaredField(fieldName);
+			if (!field.getType().equals(FileTypeChoice.class))
+				throw new Exception("the variable is declared as " + field.getType().toString() + ", not org.cytoscape.work.util.FileTypeChoice");
+			fileTypeChoice = (FileTypeChoice) field.get(o);
+
+			fileFilterMap = new HashMap<FileFilter,CyFileFilter>();
+			for (CyFileFilter cyFileFilter : fileTypeChoice.getChoices())
+			{
+				String[] extensions = cyFileFilter.getExtensions().toArray(new String[0]);
+				FileFilter filter = new FileNameExtensionFilter(cyFileFilter.getDescription(), extensions);
+				fileChooser.addChoosableFileFilter(filter);
+				fileFilterMap.put(filter, cyFileFilter);
+			}
+			fileChooser.setAcceptAllFileFilterUsed(fileTypeChoice.allowAcceptAll());
+
+		}
+		catch (Exception e)
+		{
+			logger.debug("Could not access variable \'" + fieldName + "\' in Tunable \'" + t.toString() + "\'  because: " + e.getMessage());
+			fileTypeChoice = null;
+			fileFilterMap = null;
+		}
 	}
 
 	
@@ -85,7 +132,7 @@ public class FileHandler extends AbstractGuiHandler {
 		try{
 			f.set(o,new File(fileTextField.getText()));
 		}catch(Exception e){e.printStackTrace();}
-		System.out.println("File selected is : " + fileTextField.getText());
+		logger.debug("File selected is : " + fileTextField.getText());
 	}
 
 	
@@ -122,19 +169,11 @@ public class FileHandler extends AbstractGuiHandler {
     
     
     
-    //set the type of file that will be imported depending on the "Param" Tunable annotation of the file
-    private void setFileType(Tunable tunable){
-    	for(Param s :tunable.flag())if(s.equals(Param.network))type = Type.NETWORK;
-		for(Param s :tunable.flag())if(s.equals(Param.session))type = Type.SESSION;
-		for(Param s :tunable.flag())if(s.equals(Param.attributes))type = Type.ATTRIBUTES;    	
-    }    
-
-    
     //construction of the GUI depending on the file type expected: 
     //	-field to display the file's path
     //	-button to open the FileCHooser
     //add listener to the field and button
-    private void setGui(Type type){
+    private void setGui(){
 		titleSeparator = new JSeparator();
 		titleLabel = new JLabel();
 		image = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_open.png"));
@@ -149,58 +188,9 @@ public class FileHandler extends AbstractGuiHandler {
 		chooseButton.addActionListener(new myFileActionListener());
 		
 
-		//for each type of file : set titlelabel and fileTextField text, and set FileChooser in order to just display files of the specified "Param" : network,attributes,session
-		switch (type){
-			case NETWORK : {
-				//set title and textfield text for network type
-				fileTextField.setText("Please select a network file...");
-				titleLabel.setText("import network file");
-				
-				//set filters for filechooser
-				String[] biopax = {".xml",".rdf",".owl"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("BioPAX files",biopax));
-				String[] xgmml ={".xml",".xgmml"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("XGMML files",xgmml));
-				String[] psi ={".xml"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("PSI-MI",psi));
-				String[] sif={".sif"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("SIF files",sif));
-				String[] gml={".gml"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("GML files",gml));
-				String[] sbml={".xml",".sbml"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("SBML files",sbml));
-				String[] allnetworks = {".xml",".rdf",".owl",".xgmml",".sif",".sbml"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("All network files (*.xml, *.rdf, *.owl, *.xgmml, *.sif, *.sbml)",allnetworks));
-				break;
-			}
-			
-			case SESSION : {
-				//set title and textfield text for session type
-				fileTextField.setText("Please select a session file...");
-				titleLabel.setText("import session file");
-				
-				//set session filter for filechooser
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("Session files (*.cys)",".cys"));
-				break;
-			}
-			
-			case ATTRIBUTES : {
-				//set title and textfield text for attribute type
-				fileTextField.setText("Please select an attributes file...");
-				titleLabel.setText("import attributes file");
-
-				//set filters for filechooser
-				String[] attr = {"attr","attrs"};
-				fileChooser.addChoosableFileFilter(new FileChooserFilter("Attributes files",attr));
-				break;
-			}
-			
-			default : {
-				//set title and textfield text for attribute type
-				fileTextField.setText("Please select a file...");
-				titleLabel.setText("import file");
-			}
-		}
+		//set title and textfield text for attribute type
+		fileTextField.setText("Please select a file...");
+		titleLabel.setText("import file");
     }
    
    
@@ -242,6 +232,8 @@ public class FileHandler extends AbstractGuiHandler {
     private class myFileActionListener implements ActionListener{
     	public void actionPerformed(ActionEvent ae){
     		if(ae.getActionCommand().equals("open")){
+			if (fileChooser.getChoosableFileFilters().length != 0)
+				fileChooser.setFileFilter(fileChooser.getChoosableFileFilters()[0]);
     			int ret = fileChooser.showOpenDialog(panel);
     			if (ret == JFileChooser.APPROVE_OPTION) {
     				File file = fileChooser.getSelectedFile();
@@ -250,6 +242,11 @@ public class FileHandler extends AbstractGuiHandler {
     					fileTextField.setFont(new Font(null, Font.PLAIN,10));
     					fileTextField.setText(file.getAbsolutePath());
     					fileTextField.removeMouseListener(mouseClic);
+					if (fileTypeChoice != null)
+					{
+						CyFileFilter cyFileFilter = fileFilterMap.get(fileChooser.getFileFilter());
+						fileTypeChoice.setSelectedFileFilter(cyFileFilter);
+					}
     				}
     			}
     		}
