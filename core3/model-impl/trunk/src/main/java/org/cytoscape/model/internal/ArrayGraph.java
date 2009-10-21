@@ -935,8 +935,10 @@ public class ArrayGraph implements CyRootNetwork {
 			throw new IllegalArgumentException("unrecognized node");
 		
 		CyNodeImpl ni = (CyNodeImpl)n;
-		if ( ni.getSubNetwork() == null )
+		if ( ni.getSubNetwork() == null ) {
 			ni.setSubNetwork( addSubNetwork() );
+			metaNodes.add(ni);
+		}
 
 		return ni;
 	}
