@@ -1,0 +1,15 @@
+<archetype>
+  <id>task-plugin-archetype</id>
+  <sources>
+    <source>src/main/java/internal/SampleTask.java</source>
+    <source>src/main/java/internal/SampleTaskFactory.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/internal/SampleTaskTest.java</source>
+  </testSources>
+  <resources>
+    <resource>osgi.bnd</resource>
+    <resource>src/main/resources/META-INF/spring/bundle-context.xml</resource>
+    <resource>src/main/resources/META-INF/spring/bundle-context-osgi.xml</resource>
+  </resources>
+</archetype>
