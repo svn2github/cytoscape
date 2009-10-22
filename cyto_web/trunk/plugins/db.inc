@@ -17,10 +17,4 @@ function showerror() {
 		die("Could not connect to the DBMS");
 }
 
-// Secure the user data by escaping characters and shortening the input string
-function clean($input, $maxlength) {
-	$input = substr($input, 0, $maxlength);
-	$input = EscapeShellCmd($input);
-	return ($input);
-}
 ?>

@@ -14,7 +14,10 @@
 <?php include "../nav.php"; ?>
 
 <?php
-$pluginID = $_GET['pluginid'];
+
+include 'clean.inc';
+
+$pluginID = cleanInt($_GET['pluginid']);
 
 //echo 'pluginID = '.$pluginID;
 
