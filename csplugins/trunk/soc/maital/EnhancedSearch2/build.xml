@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!--
+	Enhanced Search Ant Build Script.
+	Author:  Maital Ashkenazi
+-->
+
+<project name="EnhancedSearch" default="run" basedir=".">
+
+    <!-- Plugin directories -->
+    <property name="build.dir"    value="${basedir}/build"/>
+    <property name="src.dir"      value="${basedir}/src"/>
+    <property name="lib.dir"       value="${basedir}/lib"/>
+    <property name="junit.dir"       value="${basedir}/junit"/>
+    <property name="testData.dir"    value="${basedir}/testData"/>
+
+    <!-- The cytoscape directory -->
+    <property name="cytoscape.dir"    value="../cytoscape"/>
+
+	<!--  ============ Compilation Control Options ======================= -->
+  	<property name="compile.debug"       value="true"/>
+  	<property name="compile.deprecation" value="true"/>
+  	<property name="compile.optimize"    value="true"/>
+
+	
+	<!-- ==================== Compilation Classpath ====================== -->
+    <!--
+        NB:  Compilation classpath assumes that main cytoscape project is checked out,
+        and compiled.
+    -->
+    <path id="compile.classpath">
+		<pathelement path="${build.dir}/classes"/>
+		<fileset dir="${lib.dir}">
+       		 	<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.dir}/lib">
+       		 	<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.dir}/plugins/core">
+       		 	<include name="quick_find.jar"/>
+		</fileset>
+         <fileset dir="${cytoscape.dir}">
+                     <include name="cytoscape.jar"/>
+         </fileset>
+  	</path>
+
+    <!-- ==================== Clean Target =============================== -->
+    <target name="clean"
+        description="Deletes all build files and starts fresh">
+        <delete dir="${build.dir}"/>
+        <delete file="${basedir}/EnhancedSearch.jar"/>
+    </target>
+
+    <!-- ==================== Compile Target ============================= -->
+    <target name="compile" depends="prepare"
+        description="Compiles all Java source files">
+        <mkdir dir="${build.dir}/classes"/>
+        <javac srcdir="${src.dir}"
+		    source="1.5"
+            destdir="${build.dir}/classes"
+            debug="${compile.debug}"
+            deprecation="${compile.deprecation}"
+            optimize="${compile.optimize}">
+        <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <!-- ==================== Jar Target ================================= -->
+    <target name="jar" depends="compile"
+            description="Creates Plugin Jar: EnhancedSearch.jar">
+       <unzip dest="${build.dir}/classes">
+         <fileset dir="${lib.dir}">
+           <include name="*.jar"/>
+         </fileset>
+       </unzip>
+        <copy file="${basedir}/plugin.props" todir="${build.dir}/classes/csplugins/enhanced/search" />
+        <jar destfile="${basedir}/EnhancedSearch.jar"
+             basedir="${build.dir}/classes">
+	    	<manifest>
+	     		<attribute name="Cytoscape-Plugin" 
+		           value="csplugins.enhanced.search.EnhancedSearchPlugin"/>
+	     	</manifest>
+		</jar>
+        <copy todir="${cytoscape.dir}/plugins/core">
+            <fileset file="${basedir}/EnhancedSearch.jar"/>
+        </copy>
+    </target>
+
+    <!-- ==================== Run Target ================================= -->
+    <target description="Runs Latest Version of Cytoscape with EnhancedSearch Plugin"
+        name="run">
+        <java classname="cytoscape.CyMain" classpathref="compile.classpath"
+            fork="true" maxmemory="1000M">
+            <arg line="-p ${cytoscape.dir}/plugins/core"/>
+            <!--arg line="-N ${testData.dir}/network.sif -n ${testData.dir}/AGI.NA -n ${testData.dir}/Chromosome.NA 
+            	-n ${testData.dir}/DesiccationResponse.NA -n ${testData.dir}/GeneTitle.NA 
+            	-n ${testData.dir}/GOBiologicalProcess.NA -n ${testData.dir}/GOCellularComponent.NA 
+            	-n ${testData.dir}/GOMolecularFunction.NA -e ${testData.dir}/interaction.EA 
+            	-e ${testData.dir}/weight.EA -p ${cytoscape.dir}/plugins/core"/-->
+        </java>
+    </target>
+
+
+	<!-- ==================== Build jar and run ========================== -->
+    <target name="all" depends="jar"/>
+
+
+	<!-- ==================== Prepare Target ============================= -->
+    <target name="prepare">
+        <!-- Create build directories as needed -->
+        <mkdir  dir="${build.dir}"/>
+        <mkdir  dir="${build.dir}/classes"/>
+    </target>
+
+
+    <!-- ==================== JUnit Test Target =========================== -->
+    <target name="test" description="Runs all JUnit tests" depends="compile">
+            <junit printsummary="yes" fork="yes" haltonfailure="yes">
+            <formatter type="plain" usefile="false"/>
+            <test name="csplugins.enhanced.search.TestEnhancedSearch"/>
+            <classpath refid="compile.classpath"/>
+        </junit>
+    </target>
+	
+</project>
