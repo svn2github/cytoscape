@@ -759,6 +759,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				JPopupMenu menu = new JPopupMenu(edgeLabel);
 
 				for ( EdgeViewTaskFactory evtf : usableTFs ) {
+					// TODO reconcile whether we should use title or preferredMenu or both
 					String pref = (String)(m_view.edgeViewTFs.get( evtf ).get("preferredMenu"));
 					evtf.setEdgeView(ev,m_view.cyNetworkView);
 					menu.add( createMenuItem( evtf, pref ) );
@@ -781,11 +782,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			View<CyNode> nv = nview.getNodeView();
 
 			// build a menu of actions if more than factory exists
-			if ( m_view.nodeViewTFs.size() > 1) {
+			if ( usableTFs.size() > 1) {
 				String nodeLabel = nv.getSource().attrs().get("name",String.class);
 				JPopupMenu menu = new JPopupMenu(nodeLabel);
 
 				for ( NodeViewTaskFactory nvtf : usableTFs ) {
+					// TODO reconcile whether we should use title or preferredMenu or both
 					String pref = (String)(m_view.nodeViewTFs.get( nvtf ).get("preferredMenu"));
 					nvtf.setNodeView(nv,m_view.cyNetworkView);
 					menu.add( createMenuItem( nvtf, pref ) );
@@ -805,10 +807,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private void createEmptySpaceMenu(int x, int y, String action) {
 		// build a menu of actions if more than factory exists
 		Collection<NetworkViewTaskFactory> usableTFs = getPreferredActions(m_view.emptySpaceTFs,action);
-		if ( m_view.emptySpaceTFs.size() > 1 ) {
+		if ( usableTFs.size() > 1 ) {
 			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
 			for ( NetworkViewTaskFactory nvtf : usableTFs ) {
-				String pref = (String)(m_view.emptySpaceTFs.get( nvtf ).get("preferredMenu"));
+				// TODO reconcile whether we should use title or preferredMenu or both
+				String pref = (String)(m_view.emptySpaceTFs.get( nvtf ).get("title"));
 				nvtf.setNetworkView(m_view.cyNetworkView);
 				menu.add( createMenuItem( nvtf, pref ) );
 			}
