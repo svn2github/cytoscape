@@ -1,5 +1,5 @@
 <archetype>
-  <id>task-plugin-archetype</id>
+  <id>task-plugin</id>
   <sources>
     <source>src/main/java/internal/SampleTask.java</source>
     <source>src/main/java/internal/SampleTaskFactory.java</source>
