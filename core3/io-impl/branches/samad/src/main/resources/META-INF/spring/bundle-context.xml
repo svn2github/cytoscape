@@ -15,158 +15,60 @@
 	default-lazy-init="true">
 
 	<context:annotation-config />
-	
-	<bean id="nodeTextDataTableReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
-		<constructor-arg ref="textDatatableFilter" />
-		<constructor-arg ref="nodeTextDataTableReader" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
-			<ref bean="streamUtil"/>
-		</constructor-arg>
-	</bean>
 
-	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
-		<constructor-arg ref="sifFilter" />
-		<constructor-arg ref="sifReader" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
-			<ref bean="streamUtil"/>
-		</constructor-arg>
-	</bean>
-
-	<bean id="xgmmlReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
-		<constructor-arg ref="xgmmlFilter" />
-		<constructor-arg ref="xgmmlReader" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
-			<ref bean="streamUtil"/>
-		</constructor-arg>
-	</bean>
-	
-	<bean id="textDatatableFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
-		<constructor-arg index="0">
-			<set>
-				<value>txt</value>
-			</set>
-		</constructor-arg>
-		<constructor-arg index="1">
-			<set>
-				<value>text/plain</value>
-			</set>
-		</constructor-arg>
-		<constructor-arg value="Text data table files" />
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="TABLE" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
-			<ref bean="streamUtil"/>
-		</constructor-arg>
-	</bean>
-
-	<bean id="sifFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
-		<constructor-arg index="0">
-			<set>
-				<value>sif</value>
-			</set>
-		</constructor-arg>
-		<constructor-arg index="1">
-			<set>
-				<value>text/plain</value>
-			</set>
-		</constructor-arg>
-		<constructor-arg value="SIF files" />
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="NETWORK" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
-			<ref bean="streamUtil"/>
-		</constructor-arg>
-	</bean>
-
-	<bean id="xgmmlFilter" class="org.cytoscape.io.internal.read.xgmml.XGMMLFileFilter">
-		<constructor-arg index="0">
-			<set>
-				<value>xgmml</value>
-				<value>xml</value>
-			</set>
-		</constructor-arg>
-		<constructor-arg index="1">
-			<set>
-				<value>text/plain</value>
-				<value>text/xgmml</value>
-				<value>text/xml</value>
-			</set>
-		</constructor-arg>
-		<constructor-arg value="XGMML files" />
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="NETWORK" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
-			<ref bean="streamUtil"/>
-		</constructor-arg>
-	</bean>
-
-
-	<!-- Network Readers -->
-	<bean id="sifReader" class="org.cytoscape.io.internal.read.sif.InteractionsReader">
-		<constructor-arg ref="readUtil" />
-		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
-		<property name="cyNetworkViewFactory" ref="cyNetworkViewFactoryServiceRef" />
-		<property name="layouts" ref="cyLayoutsServiceRef" />
-	</bean>
-
-
-	<!-- Utilities for XGMML Reader -->
-	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
-	<bean id="attributeValueUtil"
-		class="org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil">
-		<property name="typeMap" ref="objectTypeMap" />
-		<property name="manager" ref="readDataManager" />
-	</bean>
-	<bean id="handlerFactory" class="org.cytoscape.io.internal.read.xgmml.HandlerFactory">
-		<constructor-arg ref="readDataManager" />
-		<constructor-arg ref="attributeValueUtil" />
-	</bean>
-
-	<bean id="readDataManager"
-		class="org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager" />
-
-	<bean id="xgmmlParser" class="org.cytoscape.io.internal.read.xgmml.XGMMLParser">
-		<property name="handlerFactory" ref="handlerFactory" />
-		<property name="readDataManager" ref="readDataManager" />
-	</bean>
-
-	<bean id="xgmmlReader" class="org.cytoscape.io.internal.read.xgmml.XGMMLReader">
-		<property name="parser" ref="xgmmlParser" />
-		<property name="readDataManager" ref="readDataManager" />
-		<property name="attributeValueUtil" ref="attributeValueUtil" />
-
-		<property name="cyNetworkViewFactory" ref="cyNetworkViewFactoryServiceRef" />
-		<property name="layouts" ref="cyLayoutsServiceRef" />
-		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
-
-	</bean>
-
-	<!-- Attribute Readers -->
-	<bean id="nodeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg value="NODE" />
-	</bean>
-	<bean id="edgeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg value="EDGE" />
-	</bean>
-	<bean id="networkTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg value="NETWORK" />
-	</bean>
-
-	<!-- Property Readers -->
-
-
-	<!-- Manager for all readers -->
-	<bean id="cyReaderManager" class="org.cytoscape.io.internal.read.CyReaderManagerImpl" />
-
-
-	<!-- Utility for Stream/Proxy management -->
+	<!-- *** Utility for Stream/Proxy management *** -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
 		<constructor-arg ref="streamUtil" />
 	</bean>
 
 	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
 
+	<!-- *** CyNetworkViewReaderFactory *** -->
+
+	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.sif.InteractionsReaderFactory">
+		<constructor-arg index="0" ref="readUtil"/>
+		<constructor-arg index="1">
+			<bean class="org.cytoscape.io.internal.CyFileFilterImpl">
+				<constructor-arg index="0">
+					<set>
+						<value>sif</value>
+					</set>
+				</constructor-arg>
+				<constructor-arg index="1">
+					<set>
+						<value>text/plain</value>
+					</set>
+				</constructor-arg>
+				<constructor-arg index="2" value="simple interaction file (sif)"/>
+				<constructor-arg index="3" ref="streamUtil"/>
+			</bean>
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="cyIOFactoryManager-CyNetworkViewReaderFactory" class="org.cytoscape.io.internal.CyIOFactoryManagerImpl"/>
+
+	<!-- *** CyDataTableReaderFactory *** -->
+
+	<bean id="textDataTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
+		<constructor-arg index="0">
+			<bean class="org.cytoscape.io.internal.CyFileFilterImpl">
+				<constructor-arg index="0">
+					<set>
+						<value>txt</value>
+						<value>csv</value>
+					</set>
+				</constructor-arg>
+				<constructor-arg index="1">
+					<set>
+						<value>text/plain</value>
+					</set>
+				</constructor-arg>
+				<constructor-arg index="2" value="tab delimited text data table"/>
+				<constructor-arg index="3" ref="streamUtil"/>
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="cyIOFactoryManager-CyDataTableReaderFactory" class="org.cytoscape.io.internal.CyIOFactoryManagerImpl"/>
 </beans>

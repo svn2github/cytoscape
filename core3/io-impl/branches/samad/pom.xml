@@ -17,7 +17,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>io-impl</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT-samad</version>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
@@ -199,7 +199,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-SNAPSHOT-samad</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -212,6 +212,11 @@
 			<artifactId>session-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.3.0</version>
 		</dependency>
 	</dependencies>
 
