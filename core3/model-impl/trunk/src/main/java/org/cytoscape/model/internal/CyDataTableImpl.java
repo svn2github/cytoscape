@@ -273,6 +273,11 @@ public class CyDataTableImpl implements CyDataTable {
 		return row;
 	}
 
+	public List<CyRow> getAllRows()
+	{
+		return new ArrayList<CyRow>(rows.values());
+	}
+
 	/**
 	 * DOCUMENT ME!
 	 * 
