@@ -125,4 +125,9 @@ public interface CyDataTable {
 	 * @return A new {@link CyRow} object for this CyDataTable.
 	 */
 	CyRow addRow();
+
+	/**
+	 * Return a list of all the rows stored in this data table
+	 */
+	List<CyRow> getAllRows();
 }

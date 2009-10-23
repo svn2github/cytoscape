@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Export-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork,org.cytoscape.event
-Import-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork,org.cytoscape.event,org.cytoscape.work
+Import-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork,org.cytoscape.event
