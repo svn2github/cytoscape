@@ -24,8 +24,33 @@
 
 	<context:annotation-config/>
 
+	<bean id="loadSIFNetworkTaskFactory" 
+	      class="org.cytoscape.task.internal.loadnetwork.LoadSIFNetworkTaskFactoryImpl">
+
+	      <constructor-arg ref="cyNetworkFactoryServiceRef" />
+	      <constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+	      <constructor-arg ref="cyLayoutsServiceRef" />
+	      <constructor-arg ref="cyIOFactoryManager-CyNetworkViewReaderFactoryRef" />
+	      <constructor-arg ref="streamUtilRef" />
+	      <constructor-arg ref="cyNetworkManagerServiceRef" />
+	      <constructor-arg ref="cyNetworkNamingServiceRef" />
+	</bean>
+
+	<bean id="cyDataTableMapperTaskFactoryImpl"
+		class="org.cytoscape.task.internal.loaddatatable.CyDataTableMapperTaskFactoryImpl"/>
+
+	<bean id="loadNodeAttrsTaskFactory" 
+	      class="org.cytoscape.task.internal.loaddatatable.LoadDataTableTaskFactoryImpl">
+
+	      <constructor-arg ref="textDataTableReaderRef" />
+	      <constructor-arg ref="cyDataTableMapperTaskFactoryImpl" />
+	      <constructor-arg ref="cyNetworkManagerServiceRef" />
+	      <constructor-arg ref="cyDataTableFactoryRef" />
+	</bean>
+	
 	<!-- this creates a LoadPropsInterceptor object --> 
 	
+	<!--
 	<bean id="loadDataTableTaskFactory" 
 	      class="org.cytoscape.task.internal.loaddatatable.LoadDataTableTaskFactoryImpl">
 		<constructor-arg ref="cyReaderManagerServiceRef" />
@@ -40,8 +65,10 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
+	-->
 
 	<!-- this creates a LoadPropsInterceptor object --> 
+	<!--
 	<bean id="loadNetworkURLTaskFactory" 
 	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTaskFactoryImpl">
 		<constructor-arg ref="cyReaderManagerServiceRef" />
@@ -62,6 +89,7 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
+	-->
 
 
 <!--To set the Current Network through another TaskFactory-->
@@ -178,6 +206,7 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
+	<!--
 	<bean id="newNetworkSelectedNodesOnlyTaskFactory" 
 	      class="org.cytoscape.task.internal.creation.NewNetworkSelectedNodesOnlyTaskFactory">
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
@@ -186,6 +215,7 @@
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="visualMappingManagerServiceRef" />
 	</bean>
+	-->
 
 	<!-- destruction -->
 	<bean id="destroyNetworkTaskFactory" 

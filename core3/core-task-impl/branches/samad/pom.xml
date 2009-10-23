@@ -15,7 +15,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>core-task-impl</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT-samad</version>
 
   <name>${bundle.symbolicName}</name>
 
@@ -83,6 +83,7 @@
             <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
             <Bundle-Version>${pom.version}</Bundle-Version>
             <_include>-osgi.bnd</_include>
+	    <Import-Package>org.cytoscape.model.subnetwork,org.cytoscape.view.vizmap,*</Import-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -111,7 +112,7 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>io-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0-SNAPSHOT-samad</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>

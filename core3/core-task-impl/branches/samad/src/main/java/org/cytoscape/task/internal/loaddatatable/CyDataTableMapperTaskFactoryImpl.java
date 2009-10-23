@@ -13,11 +13,8 @@ public class CyDataTableMapperTaskFactoryImpl implements CyDataTableMapperTaskFa
 {
 	CyDataTable source = null;
 	String sourceColumn = null;
-	List<Long> sourceRows = null;
-
 	CyDataTable target = null;
 	String targetColumn = null;
-	List<Long> targetRows = null;
 
 	public CyDataTableMapperTaskFactoryImpl()
 	{
@@ -32,12 +29,6 @@ public class CyDataTableMapperTaskFactoryImpl implements CyDataTableMapperTaskFa
 	{
 		this.sourceColumn = sourceColumn;
 	}
-
-	public void setSourceRows(List<Long> sourceRows)
-	{
-		this.sourceRows = sourceRows;
-	}
-
 	public void setTarget(CyDataTable target)
 	{
 		this.target = target;
@@ -47,12 +38,6 @@ public class CyDataTableMapperTaskFactoryImpl implements CyDataTableMapperTaskFa
 	{
 		this.targetColumn = targetColumn;
 	}
-
-	public void setTargetRows(List<Long> targetRows)
-	{
-		this.targetRows = targetRows;
-	}
-
 	public Task getTask()
 	{
 		return new Task()
@@ -74,13 +59,15 @@ public class CyDataTableMapperTaskFactoryImpl implements CyDataTableMapperTaskFa
 
 				// Copy contents
 				monitor.setStatusMessage("Mapping contents between tables");
+				List<CyRow> sourceRows = source.getAllRows();
 				for (int i = 0; i < sourceRows.size(); i++)
 				{
 					monitor.setProgress(i / ((double) sourceRows.size()));
-					CyRow sourceRow = source.getRow(sourceRows.get(i));
+					List<CyRow> targetRows = target.getAllRows();
+					CyRow sourceRow = sourceRows.get(i);
 					for (int j = 0; j < targetRows.size(); j++)
 					{
-						CyRow targetRow = target.getRow(targetRows.get(j));
+						CyRow targetRow = targetRows.get(j);
 						processRow(sourceRow, targetRow);
 					}
 				}

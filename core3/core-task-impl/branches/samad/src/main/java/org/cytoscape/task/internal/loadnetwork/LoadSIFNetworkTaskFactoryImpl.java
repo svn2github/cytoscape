@@ -1,5 +1,5 @@
 /*
- File: LoadNetworkTaskFactory.java
+ File: LoadNetworkFileTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -37,47 +37,49 @@
 
 package org.cytoscape.task.internal.loadnetwork;
 
-import java.util.Properties;
+import java.io.File;
 
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.view.layout.CyLayouts;
-import org.cytoscape.property.CyProperty;
-import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
-
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
+import org.cytoscape.io.CyIOFactoryManager;
+import org.cytoscape.io.read.CyNetworkViewReaderFactory;
+import org.cytoscape.io.util.StreamUtil;
+import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 
 /**
- * Task to load a new network.
+ * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
-public class LoadInputStreamTaskFactoryImpl implements TaskFactory {
+public class LoadSIFNetworkTaskFactoryImpl implements TaskFactory {
+	CyNetworkFactory networkFactory;
+	CyNetworkViewFactory networkViewFactory;
+	CyLayouts layouts;
+	CyNetworkViewReaderFactory networkViewReaderFactory;
+	StreamUtil streamUtil;
+	CyNetworkManager netManager;
+	CyNetworkNaming networkNaming;
 
-	private CyReaderManager mgr;
-	private CyNetworkViewFactory gvf;
-	private CyLayouts cyl;
-	private CyNetworkManager netmgr;
-	private Properties props;
-	
-	private CyNetworkNaming cyNetworkNaming;
-
-	public LoadInputStreamTaskFactoryImpl(CyReaderManager mgr,
-			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
-			CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
-		this.mgr = mgr;
-		this.gvf = gvf;
-		this.cyl = cyl;
-		this.netmgr = netmgr;
-		this.props = cyProp.getProperties();
-		this.cyNetworkNaming = cyNetworkNaming;
-	}
-	
-	public void setNamingUtil(CyNetworkNaming namingUtil) {
-		this.cyNetworkNaming = namingUtil;
+	public LoadSIFNetworkTaskFactoryImpl(CyNetworkFactory networkFactory, CyNetworkViewFactory networkViewFactory, CyLayouts layouts, CyIOFactoryManager<CyNetworkViewReaderFactory> manager, StreamUtil streamUtil, CyNetworkManager netManager, CyNetworkNaming networkNaming)
+	{
+		this.networkFactory = networkFactory;
+		this.networkViewFactory = networkViewFactory;
+		this.layouts = layouts;
+		this.networkViewReaderFactory = manager.getFactoryFromExtensionType("sif");
+		this.streamUtil = streamUtil;
+		this.netManager = netManager;
+		this.networkNaming = networkNaming;
 	}
 
-	public Task getTask() {
-		return new LoadInputStreamTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
+	public Task getTask()
+	{
+		return new LoadSIFNetworkTask(networkFactory, networkViewFactory, layouts, networkViewReaderFactory, streamUtil, netManager, networkNaming);
 	}
 }
+
