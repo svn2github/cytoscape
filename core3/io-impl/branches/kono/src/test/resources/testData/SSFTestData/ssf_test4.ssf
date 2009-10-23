@@ -1,0 +1,10 @@
+M1	A	pp	B
+M1	B	pp	A
+-	C	pp	B
+M2	D
+-	A	pp	M2
+-	D	pp	C
+M3	D	pp	F
+M3	D	pp	E
+M3	E	pp	F
+M3	M2
