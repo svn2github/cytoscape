@@ -10,7 +10,7 @@
 		interface="org.cytoscape.task.NetworkViewTaskFactory">
         <osgi:service-properties>
            <entry key="title" value="SIF Interpreter" />
-           <entry key="preferredMenu" value="SIF Interpreter" />
+           <entry key="preferredMenu" value="Plugins" />
            <entry key="preferredAction" value="OPEN" />
         </osgi:service-properties>
 	</osgi:service>
