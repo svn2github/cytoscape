@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype>
+  <id>api-provider-plugin</id>
+  <sources>
+    <source>src/main/java/internal/SampleAnalyzerImpl.java</source>
+    <source>src/main/java/SampleAnalyzer.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/internal/SampleAnalyzerImplTest.java</source>
+  </testSources>
+  <resources>
+    <resource>src/main/resources/META-INF/spring/bundle-context-osgi.xml</resource>
+    <resource>src/main/resources/META-INF/spring/bundle-context.xml</resource>
+    <resource>osgi.bnd</resource>
+  </resources>
+</archetype>
