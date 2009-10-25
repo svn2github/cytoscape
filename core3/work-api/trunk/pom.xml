@@ -94,12 +94,4 @@
       </plugin>
     </plugins>
   </build>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>io-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
 </project>
