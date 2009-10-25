@@ -6,9 +6,9 @@ import java.net.URI;
 import java.util.Set;
 
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.io.internal.CyFileFilterImpl;
+import org.cytoscape.io.BaseCyFileFilterImpl;
 
-public class XGMMLFileFilter extends CyFileFilterImpl {
+public class XGMMLFileFilter extends BaseCyFileFilterImpl {
 	
 	private static final String XGMML_NAMESPACE_STRING = "http://www.cs.rpi.edu/XGMML";
 	

@@ -28,7 +28,7 @@
 	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.sif.InteractionsReaderFactory">
 		<constructor-arg index="0" ref="readUtil"/>
 		<constructor-arg index="1">
-			<bean class="org.cytoscape.io.internal.CyFileFilterImpl">
+			<bean class="org.cytoscape.io.BaseCyFileFilterImpl">
 				<constructor-arg index="0">
 					<set>
 						<value>sif</value>
@@ -52,7 +52,7 @@
 
 	<bean id="textDataTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
 		<constructor-arg index="0">
-			<bean class="org.cytoscape.io.internal.CyFileFilterImpl">
+			<bean class="org.cytoscape.io.BaseCyFileFilterImpl">
 				<constructor-arg index="0">
 					<set>
 						<value>txt</value>
