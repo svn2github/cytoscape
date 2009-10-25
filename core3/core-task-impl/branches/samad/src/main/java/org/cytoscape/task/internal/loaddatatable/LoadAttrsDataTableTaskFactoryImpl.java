@@ -4,30 +4,34 @@ import java.util.Properties;
 
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.io.CyIOFactoryManager;
 import org.cytoscape.io.read.CyDataTableReaderFactory;
 import org.cytoscape.task.CyDataTableMapperTaskFactory;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyDataTableFactory;
 
-public class LoadDataTableTaskFactoryImpl implements TaskFactory {
-	CyDataTableReaderFactory readerFactory;
+public class LoadAttrsDataTableTaskFactoryImpl implements TaskFactory {
+	CyIOFactoryManager<CyDataTableReaderFactory> iomanager;
 	CyDataTableMapperTaskFactory mapperFactory;
 	CyNetworkManager manager;
 	CyDataTableFactory tableFactory;
+	String objType;
 
-	public LoadDataTableTaskFactoryImpl(
-		CyDataTableReaderFactory readerFactory,
+	public LoadAttrsDataTableTaskFactoryImpl(
+		CyIOFactoryManager<CyDataTableReaderFactory> iomanager,
 		CyDataTableMapperTaskFactory mapperFactory,
 		CyNetworkManager manager,
-		CyDataTableFactory tableFactory)
+		CyDataTableFactory tableFactory,
+		String objType)
 	{
-		this.readerFactory = readerFactory;
+		this.iomanager = iomanager;
 		this.mapperFactory = mapperFactory;
 		this.manager = manager;
 		this.tableFactory = tableFactory;
+		this.objType = objType;
 	}
 
 	public Task getTask() {
-		return new LoadDataTableTask(readerFactory, mapperFactory, manager, tableFactory);
+		return new LoadAttrsDataTableTask(iomanager, mapperFactory, manager, tableFactory, objType);
 	}
 }

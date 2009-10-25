@@ -47,13 +47,6 @@
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
 
-	<osgi:reference id="sifReaderRef"
-		interface="org.cytoscape.io.read.CyNetworkViewReaderFactory"
-		filter="(id=sif)" />
-
-	<osgi:reference id="textDataTableReaderRef"
-		interface="org.cytoscape.io.read.CyDataTableReaderFactory"
-		filter="(id=textDataTable)" />
 	
 	<osgi:reference id="cyDataTableFactoryRef"
 		interface="org.cytoscape.model.CyDataTableFactory" />
@@ -66,18 +59,30 @@
 		interface="org.cytoscape.io.CyIOFactoryManager"
 		filter="(type=org.cytoscape.io.read.CyNetworkViewReaderFactory)" />
 
-	<osgi:service id="loadSIFNetworkTaskFactoryService" ref="loadSIFNetworkTaskFactory"
+	<osgi:reference id="cyIOFactoryManager-CyDataTableReaderFactoryRef"
+		interface="org.cytoscape.io.CyIOFactoryManager"
+		filter="(type=org.cytoscape.io.read.CyDataTableReaderFactory)" />
+
+	<osgi:service id="loadNetworkTaskFactoryService" ref="loadNetworkTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Load SIF File..." />
+			<entry key="title" value="Load Network File..." />
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="loadNodeAttrsTaskFactoryService" ref="loadNodeAttrsTaskFactory"
+	<osgi:service id="loadNodeAttrsTaskFactoryService" ref="loadNodeAttrsDataTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Load Node Attributes File..." />
+			<entry key="preferredMenu" value="File.Import" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="loadEdgeAttrsTaskFactoryService" ref="loadEdgeAttrsDataTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Load Edge Attributes File..." />
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>

@@ -57,21 +57,21 @@ import org.cytoscape.session.CyNetworkNaming;
 /**
  * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
-public class LoadSIFNetworkTaskFactoryImpl implements TaskFactory {
+public class LoadNetworkTaskFactoryImpl implements TaskFactory {
 	CyNetworkFactory networkFactory;
 	CyNetworkViewFactory networkViewFactory;
 	CyLayouts layouts;
-	CyNetworkViewReaderFactory networkViewReaderFactory;
+	CyIOFactoryManager<CyNetworkViewReaderFactory> manager;
 	StreamUtil streamUtil;
 	CyNetworkManager netManager;
 	CyNetworkNaming networkNaming;
 
-	public LoadSIFNetworkTaskFactoryImpl(CyNetworkFactory networkFactory, CyNetworkViewFactory networkViewFactory, CyLayouts layouts, CyIOFactoryManager<CyNetworkViewReaderFactory> manager, StreamUtil streamUtil, CyNetworkManager netManager, CyNetworkNaming networkNaming)
+	public LoadNetworkTaskFactoryImpl(CyNetworkFactory networkFactory, CyNetworkViewFactory networkViewFactory, CyLayouts layouts, CyIOFactoryManager<CyNetworkViewReaderFactory> manager, StreamUtil streamUtil, CyNetworkManager netManager, CyNetworkNaming networkNaming)
 	{
 		this.networkFactory = networkFactory;
 		this.networkViewFactory = networkViewFactory;
 		this.layouts = layouts;
-		this.networkViewReaderFactory = manager.getFactoryFromExtensionType("sif");
+		this.manager = manager;
 		this.streamUtil = streamUtil;
 		this.netManager = netManager;
 		this.networkNaming = networkNaming;
@@ -79,7 +79,7 @@ public class LoadSIFNetworkTaskFactoryImpl implements TaskFactory {
 
 	public Task getTask()
 	{
-		return new LoadSIFNetworkTask(networkFactory, networkViewFactory, layouts, networkViewReaderFactory, streamUtil, netManager, networkNaming);
+		return new LoadNetworkTask(networkFactory, networkViewFactory, layouts, manager, streamUtil, netManager, networkNaming);
 	}
 }
 

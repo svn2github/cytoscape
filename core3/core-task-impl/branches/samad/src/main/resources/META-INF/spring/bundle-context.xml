@@ -24,8 +24,8 @@
 
 	<context:annotation-config/>
 
-	<bean id="loadSIFNetworkTaskFactory" 
-	      class="org.cytoscape.task.internal.loadnetwork.LoadSIFNetworkTaskFactoryImpl">
+	<bean id="loadNetworkTaskFactory" 
+	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkTaskFactoryImpl">
 
 	      <constructor-arg ref="cyNetworkFactoryServiceRef" />
 	      <constructor-arg ref="cyNetworkViewFactoryServiceRef" />
@@ -39,15 +39,26 @@
 	<bean id="cyDataTableMapperTaskFactoryImpl"
 		class="org.cytoscape.task.internal.loaddatatable.CyDataTableMapperTaskFactoryImpl"/>
 
-	<bean id="loadNodeAttrsTaskFactory" 
-	      class="org.cytoscape.task.internal.loaddatatable.LoadDataTableTaskFactoryImpl">
+	<bean id="loadNodeAttrsDataTaskFactory" 
+	      class="org.cytoscape.task.internal.loaddatatable.LoadAttrsDataTableTaskFactoryImpl">
 
-	      <constructor-arg ref="textDataTableReaderRef" />
+	      <constructor-arg ref="cyIOFactoryManager-CyDataTableReaderFactoryRef" />
 	      <constructor-arg ref="cyDataTableMapperTaskFactoryImpl" />
 	      <constructor-arg ref="cyNetworkManagerServiceRef" />
 	      <constructor-arg ref="cyDataTableFactoryRef" />
+	      <constructor-arg value="NODE" />
 	</bean>
 	
+	<bean id="loadEdgeAttrsDataTaskFactory" 
+	      class="org.cytoscape.task.internal.loaddatatable.LoadAttrsDataTableTaskFactoryImpl">
+
+	      <constructor-arg ref="cyIOFactoryManager-CyDataTableReaderFactoryRef" />
+	      <constructor-arg ref="cyDataTableMapperTaskFactoryImpl" />
+	      <constructor-arg ref="cyNetworkManagerServiceRef" />
+	      <constructor-arg ref="cyDataTableFactoryRef" />
+	      <constructor-arg value="EDGE" />
+	</bean>
+
 	<!-- this creates a LoadPropsInterceptor object --> 
 	
 	<!--

@@ -2,8 +2,10 @@ package org.cytoscape.task.internal.loaddatatable;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Set;
 
 import org.cytoscape.io.CyIOFactoryManager;
+import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.CyDataTableReaderFactory;
 import org.cytoscape.task.CyDataTableMapperTaskFactory;
 import org.cytoscape.work.TaskMonitor;
@@ -17,35 +19,40 @@ import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
-public class LoadDataTableTask implements Task{
+public class LoadAttrsDataTableTask implements Task{
 
-	@Tunable(description = "Data table file to load")
+	@Tunable(description = "Data table file to load", flag={Param.attributes})
 	public File file;
 
-	final CyDataTableReaderFactory readerFactory;
+	final CyIOFactoryManager<CyDataTableReaderFactory> ioManager;
 	final CyDataTableMapperTaskFactory mapperFactory;
 	final CyNetworkManager networkManager;
 	final CyDataTableFactory tableFactory;
+	final String objType;
 
 	Task superTask = null;
 
-	public LoadDataTableTask(
-		CyDataTableReaderFactory readerFactory,
+	public LoadAttrsDataTableTask(
+		CyIOFactoryManager<CyDataTableReaderFactory> ioManager,
 		CyDataTableMapperTaskFactory mapperFactory,
 		CyNetworkManager networkManager,
-		CyDataTableFactory tableFactory)
+		CyDataTableFactory tableFactory,
+		String objType)
 	{
-		this.readerFactory = readerFactory;
+		this.ioManager = ioManager;
 		this.mapperFactory = mapperFactory;
 		this.networkManager = networkManager;
 		this.tableFactory = tableFactory;
+		this.objType = objType;
 	}
 
 	/**
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-
+		final CyDataTableReaderFactory readerFactory = ioManager.getFactoryFromURI(file.toURI());
+		if (readerFactory == null)
+			throw new Exception(makeReaderNotFoundMessage());
 		final CyDataTable table = tableFactory.createTable("tmp", false);
 		final Task readerTask = readerFactory.getReader(new FileInputStream(file), table);
 
@@ -57,9 +64,9 @@ public class LoadDataTableTask implements Task{
 				CyNetwork network = networkManager.getCurrentNetwork();
 				if( network == null)
 					throw new IllegalStateException("Could not find current network.");
-				CyDataTable targetTable = network.getCyDataTables("NODE").get(CyNetwork.DEFAULT_ATTRS);
+				CyDataTable targetTable = network.getCyDataTables(objType).get(CyNetwork.DEFAULT_ATTRS);
 				if(targetTable == null)
-					throw new IllegalStateException("Could not find target CyDataTable for " + "NODE");
+					throw new IllegalStateException("Could not find target CyDataTable for " + objType);
 				dumpTable(table);
 				mapperFactory.setSource(table);
 				mapperFactory.setSourceColumn("name");
@@ -67,6 +74,7 @@ public class LoadDataTableTask implements Task{
 				mapperFactory.setTargetColumn("name");
 				actualMapper = mapperFactory.getTask();
 				actualMapper.run(monitor);
+				actualMapper = null;
 
 				for(CyNode node: network.getNodeList()) {
 					System.out.println("Attr for " + node.getSUID() + " =========> " + node.attrs().toString());
@@ -97,5 +105,30 @@ public class LoadDataTableTask implements Task{
 		{
 			System.out.println(row.toString());
 		}
+	}
+
+	String makeReaderNotFoundMessage()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("<html><p>Could not open specified file \'" + file.getName() + "\' because the file type is not supported.</p>");
+		Set<CyDataTableReaderFactory> factories = ioManager.getAllFactories();
+		if (factories.size() == 0)
+		{
+			builder.append("<p>No readers for data tables could be found.</p>");
+		}
+		else
+		{
+			builder.append("<p>The following file types are supported:</p><p><ul>");
+			for (CyDataTableReaderFactory factory : factories)
+			{
+				CyFileFilter fileFilter = factory.getCyFileFilter();
+				builder.append("<li>");
+				builder.append(fileFilter.getDescription());
+				builder.append("</li>");
+			}
+			builder.append("</ul></p>");
+		}
+		builder.append("</html>");
+		return builder.toString();
 	}
 }
