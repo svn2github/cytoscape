@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.cytoscape.work.util.FileTypeChoice;
-
 
 
 
@@ -201,13 +199,6 @@ public @interface Tunable{
 	 * </pre></p>
 	 */
 	Param[] groupTitles() default {};
-
-	/**
-	 *  The name of the public member that stores a FileTypeChoice object.
-	 *  This parameter is only used for a Tunable attached to a File object.
-	 *  If this parameter does not point to a valid FileTypeChoice member, it will be ignored.
-	 */
-	String fileTypeChoiceName() default "";
 	
 	
 	/**
@@ -246,6 +237,21 @@ public @interface Tunable{
 		collapsed,
 		
 		/**
+		 * Filter for network files in a <code>Tunable File</code> : only network files will be choosable in the JFileChooser dialog
+		 */
+		network,
+		
+		/**
+		 * Filter for session files in a <code>Tunable File</code> : only session files will be choosable in the JFileChooser dialog
+		 */
+		session,
+		
+		/**
+		 * Filter for attributes files in a <code>Tunable File</code> : only attributes files will be choosable in the JFileChooser dialog
+		 */
+		attributes,
+		
+		/**
 		 * The name of the group whose this <code>Tunable</code> is taking part shouldn't be displayed in the Borders in the GUI
 		 */
 		hidden,
@@ -255,6 +261,4 @@ public @interface Tunable{
 		 * This is the default state
 		 */
 		displayed}
-	
-
 }
