@@ -23,8 +23,6 @@
     <property name="build.classes" value="${build.dir}/classes"/>
     <!-- jars dir -->
     <property name="jars.dir" value="${build.dir}/jars"/>
-    <!-- plugins dir -->
-    <property name="plugins.dir" value="plugins"/>
     <!-- resources dir -->
     <property name="resources.dir" value="resources"/>
     <!-- styles dir -->
@@ -49,9 +47,11 @@
 	<!-- obfuscation file -->
     <property name="obfuscationlog" value="${project_name}_obflog.xml.gz"/>
 
-		<!-- cytoscape dir -->
-		<property name="cytoscape.dir" value="../../cytoscape"/>
-	
+    <!-- cytoscape dir -->
+    <property name="cytoscape.dir" value="../../cytoscape"/>	
+    <!-- plugins dir -->
+    <property name="plugins.dir" value="${cytoscape.dir}/plugins"/>
+    
     <!-- classpath without reference to yfiles -->
     <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
@@ -128,7 +128,6 @@
     <target description="Removes all generated files." name="clean">
         <delete dir="${build.dir}"/>
         <delete dir="${jars.dir}"/>
-        <delete dir="${plugins.dir}"/>
         <delete dir="${junit.dir}"/>
         <delete dir="${temp.dir}"/>
         <delete>
@@ -162,12 +161,12 @@
     <!--  target to run cytoscape with biopax plugin -->
     <target depends="check.yfiles,set.classpath,jar" description="Runs Cytoscape with BioPAX Data."
         name="run">
-        <copy todir="${plugins.dir}">
+        <copy todir="${plugins.dir}" overwrite="true">
             <fileset dir="${jars.dir}"/>
         </copy>
         <java classname="cytoscape.CyMain" classpathref="${classpath}"
             fork="true" maxmemory="1000M">
-            <arg line="-p plugins"/>
+            <arg line="-p ${plugins.dir}"/>
         </java>
     </target>
 
