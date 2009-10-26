@@ -14,11 +14,12 @@ import org.biopax.paxtools.model.level2.physicalEntityParticipant;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.coreplugins.biopax.PaxtoolsReader;
-import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
+import cytoscape.coreplugins.biopax.BioPaxGraphReader;
+import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.style.BioPAXMergeVisualStyleUtil;
-import cytoscape.coreplugins.biopax.util.BioPAXUtilRex;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
@@ -56,13 +57,13 @@ class IntegrateBioPAXTask implements Task {
         List<ConversionScore> convScores = new ArrayList<ConversionScore>();
 
         taskMonitor.setStatus("Creating network from integration...");
-        Model integratedModel = BioPAXUtilRex.getNetworkModel(network1);
-        CyNetwork cyNetwork = Cytoscape.createNetwork(new PaxtoolsReader(integratedModel), true, null);
+        Model integratedModel = BioPaxUtil.getNetworkModel(network1);
+        CyNetwork cyNetwork = Cytoscape.createNetwork(new BioPaxGraphReader(integratedModel), true, null);
         cyNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("(Integrated) " + cyNetwork.getTitle()));
 
         taskMonitor.setStatus("Recovering integrated models...");
-        BioPAXUtilRex.resetNetworkModel(network1);
-        BioPAXUtilRex.resetNetworkModel(network2);
+        BioPaxUtil.resetNetworkModel(network1);
+        BioPaxUtil.resetNetworkModel(network2);
 
         if(isColorize) {
             taskMonitor.setStatus("Colorizing nodes...");
@@ -87,19 +88,19 @@ class IntegrateBioPAXTask implements Task {
 
             for(int index: cyNetwork.getNodeIndicesArray()) {
                 String nodeID = cyNetwork.getNode(index).getIdentifier();
-                String rdfId = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_RDF_ID);
+                String rdfId = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_RDF_ID);
 
                 if(rdfId == null)
                     rdfId = "";
 
                 if(n1_nodeIDs.contains(nodeID) && !n2_nodeIDs.contains(nodeID) && !integratedRDFs.contains(rdfId))
-                    nodeAttributes.setAttribute(nodeID, BioPAXUtilRex.BIOPAX_MERGE_SRC,
+                    nodeAttributes.setAttribute(nodeID, BioPaxUtil.BIOPAX_MERGE_SRC,
                                                     BioPAXMergeVisualStyleUtil.BIOPAX_MERGE_SRC_FIRST);
                 else if(!n1_nodeIDs.contains(nodeID) && n2_nodeIDs.contains(nodeID) && !integratedRDFs.contains(rdfId))
-                    nodeAttributes.setAttribute(nodeID, BioPAXUtilRex.BIOPAX_MERGE_SRC,
+                    nodeAttributes.setAttribute(nodeID, BioPaxUtil.BIOPAX_MERGE_SRC,
                                                     BioPAXMergeVisualStyleUtil.BIOPAX_MERGE_SRC_SECOND);
                 else
-                    nodeAttributes.setAttribute(nodeID, BioPAXUtilRex.BIOPAX_MERGE_SRC,
+                    nodeAttributes.setAttribute(nodeID, BioPaxUtil.BIOPAX_MERGE_SRC,
                                                     BioPAXMergeVisualStyleUtil.BIOPAX_MERGE_SRC_MERGE);
             }
 

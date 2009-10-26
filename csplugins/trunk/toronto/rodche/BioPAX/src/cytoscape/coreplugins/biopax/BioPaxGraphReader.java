@@ -39,7 +39,6 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
 import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.util.cytoscape.CytoscapeWrapper;
@@ -72,6 +71,7 @@ public class BioPaxGraphReader implements GraphReader {
 	private int[] nodeIndices;
 	private int[] edgeIndices;
 	private String fileName;
+	private Model model;
 	private String networkName;
 	private boolean validNetworkName;
 	private CyLayoutAlgorithm layout;
@@ -92,9 +92,20 @@ public class BioPaxGraphReader implements GraphReader {
 	 */
 	public BioPaxGraphReader(String fileName) {
 		this.fileName = fileName;
+		this.model = null;
 		layout = getDefaultLayoutAlgorithm();
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param model PaxTools BioPAX Model
+	 */
+	public BioPaxGraphReader(Model model) {
+		this.model= model;
+		this.fileName=null;
+		layout = getDefaultLayoutAlgorithm();
+	}
 	
 	public static void setCreateNodesForControls(Boolean b) {
 		createNodesForControls = b;
@@ -125,7 +136,9 @@ public class BioPaxGraphReader implements GraphReader {
 	 */
 	public void read() throws IOException {
 
-		Model model = BioPaxUtil.readFile(fileName);
+		if(fileName != null) { // import new data
+			model = BioPaxUtil.readFile(fileName);
+		}
 		
 		if(model == null) {
 			log.error("Failed to read BioPAX model");
@@ -140,8 +153,8 @@ public class BioPaxGraphReader implements GraphReader {
 		networkName = getNetworkName(model);
 
 		// Map BioPAX Data to Cytoscape Nodes/Edges (run as task)
-		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(model);
-		mapper.doMapping();
+		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
+		mapper.doMapping(model);
 		
 		nodeIndices = mapper.getNodeIndices();
 		if (nodeIndices.length == 0) {
@@ -151,6 +164,7 @@ public class BioPaxGraphReader implements GraphReader {
 		}
 		edgeIndices = mapper.getEdgeIndices();
 
+		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 
 	private String getNetworkName(Model model) {
@@ -254,7 +268,7 @@ public class BioPaxGraphReader implements GraphReader {
 
 		//  Set default Quick Find Index
 		networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
-		                               MapNodeAttributes.BIOPAX_SHORT_NAME);
+		                               MapBioPaxToCytoscape.BIOPAX_SHORT_NAME);
 
 		// set url to pathway commons -
 		// used for pathway commons context menus
@@ -277,9 +291,9 @@ public class BioPaxGraphReader implements GraphReader {
 		}
 
 		//  Set-up the BioPax Visual Style
-		VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
-		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+		final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
+		final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+		final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
 		view.setVisualStyle(bioPaxVisualStyle.getName());
 		manager.setVisualStyle(bioPaxVisualStyle);
 		view.applyVizmapper(bioPaxVisualStyle);

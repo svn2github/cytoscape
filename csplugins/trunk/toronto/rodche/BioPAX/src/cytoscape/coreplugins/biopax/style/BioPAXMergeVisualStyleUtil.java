@@ -1,7 +1,7 @@
 package cytoscape.coreplugins.biopax.style;
 
-import cytoscape.coreplugins.biopax.BioPaxGraphReader;
 import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.BasicCalculator;
@@ -15,9 +15,6 @@ public class BioPAXMergeVisualStyleUtil extends BioPaxVisualStyleUtil {
     public static final String BIOPAX_MERGE_SRC_FIRST = "1";
     public static final String BIOPAX_MERGE_SRC_SECOND = "2";
     public static final String BIOPAX_MERGE_SRC_MERGE = "M";
-    public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
-    public static final String DEFAULT_CHARSET = "UTF-8";
-    public static final String BIOPAX_MERGE_SRC = "biopax.merge.src";
 
     public static final String BIOPAX_MERGE_VISUAL_STYLE =
                 "Merge Specific " + BioPaxVisualStyleUtil.BIO_PAX_VISUAL_STYLE;
@@ -51,7 +48,7 @@ public class BioPAXMergeVisualStyleUtil extends BioPaxVisualStyleUtil {
     private static void createNodeBorderColor(NodeAppearanceCalculator nac,
                                               Color src1_color, Color src2_color, Color merge_color) {
         DiscreteMapping discreteMapping = new DiscreteMapping(DEFAULT_NODE_BORDER_COLOR,
-                                                              BIOPAX_MERGE_SRC,
+                                                              BioPaxUtil.BIOPAX_MERGE_SRC,
                                                               ObjectMapping.NODE_MAPPING);
 
         discreteMapping.putMapValue(BIOPAX_MERGE_SRC_FIRST,  src1_color);

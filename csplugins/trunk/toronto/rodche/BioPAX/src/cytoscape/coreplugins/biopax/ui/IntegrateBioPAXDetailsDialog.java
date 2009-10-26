@@ -1,15 +1,19 @@
 package cytoscape.coreplugins.biopax.ui;
 
 import org.biopax.paxtools.controller.ConversionScore;
+import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level2.physicalEntityParticipant;
+
+import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 
-import cytoscape.coreplugins.biopax.util.BioPAXUtilRex;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
 public class IntegrateBioPAXDetailsDialog extends JDialog {
@@ -40,14 +44,17 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
         });
 
 // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(
+        		new ActionListener() {
+        			public void actionPerformed(ActionEvent e) {
+        				onCancel();
+        			}
+        		}, 
+        		KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), 
+        		JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        convName1.setText(BioPAXUtilRex.getNameSmart(convScore.getConversion1()));
-        convName2.setText(BioPAXUtilRex.getNameSmart(convScore.getConversion2()));
+        convName1.setText(BioPaxUtil.getNodeName(convScore.getConversion1()));
+        convName2.setText(BioPaxUtil.getNodeName(convScore.getConversion2()));
         cScore.setText("" + convScore.getScore());
 
         String[] tableHeader = {"First Reaction Component", "->", "Second Reaction Component"};
@@ -55,14 +62,14 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
 
         int count = 0;
         for (physicalEntityParticipant pep : convScore.getMatchedPEPs()) {
-            String node1 = BioPAXUtilRex.getPEPStateNode(pep).getIdentifier(),
-                    node2 = BioPAXUtilRex.getPEPStateNode(convScore.getMatch(pep)).getIdentifier();
+            String nodeId1 = addNode(pep);
+            String nodeId2 = addNode(convScore.getMatch(pep));
 
             CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
             String name1 =
-                    nodeAttributes.getStringAttribute(node1, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL),
+                    nodeAttributes.getStringAttribute(nodeId1, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL),
                     name2 =
-                            nodeAttributes.getStringAttribute(node2, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+                            nodeAttributes.getStringAttribute(nodeId2, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
             String[] tableRow = {name1, "->", name2};
             tableData[count++] = tableRow;
         }
@@ -77,6 +84,16 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
 
     }
 
+    private String addNode(BioPAXElement bpe) {
+    	CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+    	String nodeID = BioPaxUtil.getLocalPartRdfId(bpe);
+		CyNode node = Cytoscape.getCyNode(nodeID, true);
+		MapBioPaxToCytoscape.setBasicNodeAttributes(node, bpe, null);
+		MapBioPaxToCytoscape.mapNodeAttribute(bpe, nodeID, nodeAttributes);
+        return node.getIdentifier();
+    }
+    
+    
     private void onOK() {
         dispose();
     }

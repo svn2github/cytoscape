@@ -36,7 +36,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
+import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.cytoscape.CySessionUtil;
 import cytoscape.coreplugins.biopax.util.cytoscape.CytoscapeWrapper;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
@@ -113,7 +113,7 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 		}
 
 		// update custom nodes
-		MapNodeAttributes.customNodes(Cytoscape.getCurrentNetworkView());
+		MapBioPaxToCytoscape.customNodes(Cytoscape.getCurrentNetworkView());
 	}
 
 	private void displayDetails(String id) {

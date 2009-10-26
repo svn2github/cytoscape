@@ -36,7 +36,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
+import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
@@ -99,7 +99,7 @@ public class CyNetworkViewUtil {
 			if (applyVisualStyle) {
 				taskMonitor.setStatus("Applying Visual Styles");
 				Cytoscape.getVisualMappingManager().applyAppearances();
-				MapNodeAttributes.customNodes(networkView);
+				MapBioPaxToCytoscape.customNodes(networkView);
 			}
 
 			//  Lastly, make the GraphView Canvas Visible.

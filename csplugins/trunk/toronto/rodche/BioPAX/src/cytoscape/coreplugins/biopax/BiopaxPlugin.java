@@ -131,6 +131,7 @@ public class BiopaxPlugin extends CytoscapePlugin {
 			cyMenus.addAction(new SelectDefaultLayoutAction(algo));
 		}
 
+		
 		// we are now interested in receiving all network events
 		// like a load of a network from a session
 		// to start listening to network events, we grab an instance of

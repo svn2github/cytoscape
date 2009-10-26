@@ -31,11 +31,15 @@
  **/
 package cytoscape.coreplugins.biopax.util;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.links.ExternalLink;
 import cytoscape.logger.CyLogger;
 
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
+import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -46,8 +50,11 @@ import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.util.ClassFilterSet;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 
 import java.util.*;
@@ -65,13 +72,23 @@ public class BioPaxUtil {
 	private static final Map<String,String> chemModificationsMap;
 	private static final EditorMap editorMapLevel3;
 	private static final EditorMap editorMapLevel2;
-	
-	protected static final CyLogger log = CyLogger.getLogger(BioPaxUtil.class);
+	private static final CyLogger log = CyLogger.getLogger(BioPaxUtil.class);
 	
 	protected BioPaxUtil() {}
 	
-	public static final int MAX_DISPLAY_STRING_LEN = 25;
+	
+    private static Map<CyNetwork, Model> networkModelMap = new HashMap<CyNetwork, Model>();
 
+    public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
+    
+    public static final String DEFAULT_CHARSET = "UTF-8";
+    
+    public static final String BIOPAX_MERGE_SRC = "biopax.merge.src";
+	
+    public static final int MAX_DISPLAY_STRING_LEN = 25;
+
+	public static final String NULL_ELEMENT_TYPE = "BioPAX Element";
+	
 	/**
 	 * BioPAX Class:  phosphorylation site
 	 */
@@ -102,10 +119,14 @@ public class BioPaxUtil {
 		plainEnglishMap.put("modulation", "Modulation");
 		plainEnglishMap.put("conversion", "Conversion");
 		plainEnglishMap.put("biochemicalreaction", "Biochemical Reaction");
+		plainEnglishMap.put("molecularinteraction", "Molecular Interaction");
 		plainEnglishMap.put("complexassembly", "Complex Assembly");
 		plainEnglishMap.put("transportwithbiochemicalreaction", "Transport with Biochemical Reaction");
 		plainEnglishMap.put("transport", "Transport");
 		plainEnglishMap.put("transportwithbiochemicalreaction", "Transport with Biochemical Reaction");
+		plainEnglishMap.put("geneticinteraction", "Genetic Interaction");
+		plainEnglishMap.put("templatereaction", "Template Reaction");
+		plainEnglishMap.put("degradation", "Degradation");
 		// chemical modifications
 		plainEnglishMap.put("acetylation site", "Acetylation Site");
 		plainEnglishMap.put("glycosylation site", "Glycosylation Site");
@@ -195,8 +216,10 @@ public class BioPaxUtil {
 		if(bpe instanceof physicalEntityParticipant) {
 			return getType(((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY());
 		}
-		
-		return getTypeInPlainEnglish(bpe.getModelInterface().getSimpleName().toLowerCase());	
+
+		return (bpe != null) 
+			? getTypeInPlainEnglish(bpe.getModelInterface().getSimpleName())
+			: NULL_ELEMENT_TYPE;	
 	}
 	
 	
@@ -216,6 +239,10 @@ public class BioPaxUtil {
 	 */
 	public static String getNodeName(BioPAXElement bpe) {
 
+		if(bpe == null) {
+			return null;
+		}
+				
 		String nodeName = getShortName(bpe);
 
 		if ((nodeName != null) && (nodeName.length() > 0)) {
@@ -228,7 +255,7 @@ public class BioPaxUtil {
 		}
 
 		Collection<String> names = getSynonymList(bpe);
-		if (names != null) {
+		if (names != null && !names.isEmpty()) {
 			return getTheShortestString(names);
 		}
 
@@ -238,7 +265,7 @@ public class BioPaxUtil {
 	
 	public static String getLocalPartRdfId(BioPAXElement bpe) {
 		if(bpe == null) {
-			return null;
+			return "";
 		} 
 		// also fix pEPs
 		String id = (bpe instanceof physicalEntityParticipant 
@@ -385,7 +412,8 @@ public class BioPaxUtil {
 	 * @return Collection of Synonym String Objects.
 	 */
 	public static Collection<String> getSynonymList(BioPAXElement bpe) {
-		Collection<String> names = null;
+		Collection<String> names = new HashSet<String>();
+		
 		if(bpe instanceof Named) {
 			names = ((Named)bpe).getName();
 		} else if(bpe instanceof sequenceFeature) {
@@ -896,5 +924,72 @@ public class BioPaxUtil {
 			}
 		}
 		return str;
+	}
+
+	public static Map<CyNetwork, Model> getNetworkModelMap() {
+		return networkModelMap;
+	}
+
+	public static void resetNetworkModel(CyNetwork cyNetwork) {
+	    networkModelMap.remove(cyNetwork);
+	    getNetworkModel(cyNetwork);
+	}
+
+	public static boolean setNetworkModel(CyNetwork cyNetwork, Model bpModel) {
+		networkModelMap.put(cyNetwork, bpModel);
+
+		SimpleExporter simpleExporter = new SimpleExporter(bpModel.getLevel());
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try {
+			simpleExporter.convertToOWL(bpModel, outputStream);
+		} catch (Exception e) {
+			return false;
+		}
+
+		try {
+			Cytoscape.getNetworkAttributes().setAttribute(
+					cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING,
+					outputStream.toString(DEFAULT_CHARSET));
+		} catch (UnsupportedEncodingException e) {
+			System.out.println(DEFAULT_CHARSET
+					+ " is not supported. BioPAX model could not be saved.");
+		}
+
+		return true;
+	}
+
+	public static Model getNetworkModel(CyNetwork cyNetwork) {
+		Model bpModel = networkModelMap.get(cyNetwork);
+		if (bpModel != null)
+			return bpModel;
+
+		String modelStr = (String) Cytoscape.getNetworkAttributes()
+				.getAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING);
+		if (modelStr == null)
+			return bpModel; // return null
+		else
+			modelStr = modelStr.replace("\\n", "\n"); // Hrr...
+
+		ByteArrayInputStream inputStream;
+		try {
+			inputStream = new ByteArrayInputStream(modelStr
+					.getBytes(DEFAULT_CHARSET));
+		} catch (UnsupportedEncodingException e) {
+			return bpModel; // return null
+		}
+
+		bpModel = new SimpleReader().convertFromOWL(inputStream);
+
+		if (bpModel != null)
+			setNetworkModel(cyNetwork, bpModel);
+
+		return bpModel;
+	}
+
+	public static boolean isBioPAXNetwork(CyNetwork cyNetwork) {
+		Object answer = Cytoscape.getNetworkAttributes().getAttribute(
+				cyNetwork.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_NETWORK);
+
+		return (answer != null) && answer.equals(Boolean.TRUE);
 	}
 }

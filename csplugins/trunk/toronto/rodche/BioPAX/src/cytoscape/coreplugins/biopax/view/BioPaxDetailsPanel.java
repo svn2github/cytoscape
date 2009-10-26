@@ -35,7 +35,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 
 import cytoscape.coreplugins.biopax.action.LaunchExternalBrowser;
-import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
+import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
 
@@ -153,10 +153,10 @@ public class BioPaxDetailsPanel extends JPanel {
 		StringBuffer buf = new StringBuffer("<HTML>");
 
         // name, shortname
-        stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_NAME);
+        stringRef = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_NAME);
 
         String shortName = nodeAttributes.getStringAttribute(nodeID,
-            MapNodeAttributes.BIOPAX_SHORT_NAME);
+            MapBioPaxToCytoscape.BIOPAX_SHORT_NAME);
 
         if ((shortName != null) && (shortName.length() > 0)) {
                 buf.append("<h2>" + shortName + "</h2>");
@@ -167,7 +167,7 @@ public class BioPaxDetailsPanel extends JPanel {
         addType(nodeID, buf);
 
         // organism
-        stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ORGANISM_NAME);
+        stringRef = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_ORGANISM_NAME);
         if (stringRef != null) {
             buf.append("<h3>" + stringRef + "</h3>");
         }
@@ -176,14 +176,14 @@ public class BioPaxDetailsPanel extends JPanel {
         addCPathLink(nodeID, buf);
 
         // synonyms
-        addAttributeList(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, "Synonyms:", buf);
+        addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_SYNONYMS, "Synonyms:", buf);
         
 		// cellular location
-		addAttributeList(nodeID, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
+		addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_CELLULAR_LOCATIONS,
 		                 "Cellular Location(s):", buf);
 
 		// chemical modification
-		addAttributeList(nodeID, MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST,
+		addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_CHEMICAL_MODIFICATIONS_LIST,
 		                 "Chemical Modifications:", buf);
 
 		// links
@@ -212,7 +212,7 @@ public class BioPaxDetailsPanel extends JPanel {
                 "CPATH_SERVER_DETAILS_URL");
         if (serverName != null && serverDetailsUrl != null) {
             String type = nodeAttributes.getStringAttribute(nodeID,
-                    MapNodeAttributes.BIOPAX_ENTITY_TYPE);
+                    MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE);
             if (BioPaxUtil.getSubclassNames(physicalEntity.class, PhysicalEntity.class).contains(type)) {
                 String url = serverDetailsUrl + nodeID;
                 buf.append ("<h3><A href='" + url + "'>" + serverName + ": " + nodeID + "</A>");
@@ -221,15 +221,15 @@ public class BioPaxDetailsPanel extends JPanel {
     }
 
     private void addType(String nodeID, StringBuffer buf) {
-        String type = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE);
+        String type = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE);
         buf.append("<h3>" + type + "</h3>");
     }
 
     private void addLinks(String nodeID, StringBuffer buf) {
 		String xrefs1 = nodeAttributes.getStringAttribute(nodeID,
-            MapNodeAttributes.BIOPAX_UNIFICATION_REFERENCES);
+            MapBioPaxToCytoscape.BIOPAX_UNIFICATION_REFERENCES);
         String xrefs2 = nodeAttributes.getStringAttribute(nodeID,
-            MapNodeAttributes.BIOPAX_RELATIONSHIP_REFERENCES);
+            MapBioPaxToCytoscape.BIOPAX_RELATIONSHIP_REFERENCES);
 
 		if (xrefs1 != null || xrefs2 != null) {
 			appendHeader("Links:", buf);
@@ -294,7 +294,7 @@ public class BioPaxDetailsPanel extends JPanel {
 
 	private void addIHOPLinks(String nodeID, StringBuffer buf) {
 		String ihopLinks = nodeAttributes.getStringAttribute(nodeID,
-                     MapNodeAttributes.BIOPAX_IHOP_LINKS);
+                     MapBioPaxToCytoscape.BIOPAX_IHOP_LINKS);
 
 		if (ihopLinks != null) {
 			appendData(ihopLinks, buf, false);

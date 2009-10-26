@@ -36,7 +36,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
-import cytoscape.coreplugins.biopax.util.BioPAXUtilRex;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
 
 import javax.swing.event.MenuEvent;
@@ -90,7 +90,7 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
     public void menuSelected(MenuEvent e) {
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 
-        if( BioPAXUtilRex.isBioPAXNetwork(cyNetwork) )
+        if( BioPaxUtil.isBioPAXNetwork(cyNetwork) )
             enableForNetwork();
         else
             setEnabled(false);
@@ -107,11 +107,11 @@ class ExportAsBioPAXTask implements Task {
 
     public void run() {
 		taskMonitor.setStatus("Saving BioPAX...");
-        Model bpModel = BioPAXUtilRex.getNetworkModel(Cytoscape.getCurrentNetwork());
+        Model bpModel = BioPaxUtil.getNetworkModel(Cytoscape.getCurrentNetwork());
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-        String bpModelStr = (String) networkAttributes.getAttribute(Cytoscape.getCurrentNetwork().getIdentifier(),
-                                                                BioPAXUtilRex.BIOPAX_MODEL_STRING);
-
+        String bpModelStr = (String) networkAttributes
+        	.getAttribute(Cytoscape.getCurrentNetwork().getIdentifier(),
+        		BioPaxUtil.BIOPAX_MODEL_STRING);
         try {
             FileOutputStream fOutput = new FileOutputStream(fileName);
 

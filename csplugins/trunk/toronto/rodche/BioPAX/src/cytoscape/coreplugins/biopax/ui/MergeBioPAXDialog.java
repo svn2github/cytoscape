@@ -3,8 +3,8 @@ package cytoscape.coreplugins.biopax.ui;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.util.CyNetworkNaming;
-import cytoscape.coreplugins.biopax.PaxtoolsReader;
-import cytoscape.coreplugins.biopax.util.BioPAXUtilRex;
+import cytoscape.coreplugins.biopax.BioPaxGraphReader;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.Task;
@@ -38,7 +38,7 @@ public class MergeBioPAXDialog extends JDialog {
         DefaultListModel listModel = new DefaultListModel();
 
         for (CyNetwork cyNetwork : Cytoscape.getNetworkSet()) {
-            if (BioPAXUtilRex.isBioPAXNetwork(cyNetwork)) {
+            if (BioPaxUtil.isBioPAXNetwork(cyNetwork)) {
                 listModel.addElement(cyNetwork.getTitle());
                 bpNetworks.add(cyNetwork);
             }
@@ -216,21 +216,21 @@ class MergeBioPAXTask implements Task {
         Merger merger = new Merger(editorMap);
 
         assert selectedNetworks.size() > 1;
-        Model base = BioPAXUtilRex.getNetworkModel(selectedNetworks.get(0));
+        Model base = BioPaxUtil.getNetworkModel(selectedNetworks.get(0));
         CyNetwork baseNetwork = selectedNetworks.remove(0);
 
         Model[] models = new Model[ selectedNetworks.size() ];
         int cnt = 0;
         for(CyNetwork cyNetwork: selectedNetworks)
-            models[cnt++] = BioPAXUtilRex.getNetworkModel(cyNetwork);
+            models[cnt++] = BioPaxUtil.getNetworkModel(cyNetwork);
 
         merger.merge(base, models);
 
         // Base model (in the memory) modified, we should better restore it
-        BioPAXUtilRex.resetNetworkModel(baseNetwork);
+        BioPaxUtil.resetNetworkModel(baseNetwork);
 
-        PaxtoolsReader paxtoolsReader = new PaxtoolsReader(base);
-        CyNetwork newNetwork = Cytoscape.createNetwork(paxtoolsReader, true, null);
+        BioPaxGraphReader reader = new BioPaxGraphReader(base);
+        CyNetwork newNetwork = Cytoscape.createNetwork(reader, true, null);
         newNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("(Merged) " + newNetwork.getTitle()));
 
         taskMonitor.setPercentCompleted(100);

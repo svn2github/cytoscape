@@ -28,7 +28,7 @@
 package cytoscape.coreplugins.biopax.action;
 
 import cytoscape.coreplugins.biopax.ui.IntegrateBioPAXDialog;
-import cytoscape.coreplugins.biopax.util.BioPAXUtilRex;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -52,7 +52,7 @@ public class IntegrateBioPAXAction extends CytoscapeAction {
 
     public void menuSelected(MenuEvent e) {
         for(CyNetwork cyNetwork: Cytoscape.getNetworkSet()) {
-            if( BioPAXUtilRex.isBioPAXNetwork(cyNetwork) ) {
+            if( BioPaxUtil.isBioPAXNetwork(cyNetwork) ) {
                 enableForNetwork();
                 return;
             }

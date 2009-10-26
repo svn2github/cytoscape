@@ -35,7 +35,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.coreplugins.biopax.BiopaxPlugin;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.mapping.MapNodeAttributes;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.visual.*;
 
@@ -177,8 +176,7 @@ public class BioPaxVisualStyleUtil {
 	private static void createNodeShape(NodeAppearanceCalculator nac) {
 		//  create a discrete mapper, for mapping a biopax type to a shape
 		DiscreteMapping discreteMapping = new DiscreteMapping(NodeShape.RECT,
-		                                                      MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-		                                                      ObjectMapping.NODE_MAPPING);
+				MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
 
 		//  map all physical entities to circles
 		for (Class<? extends BioPAXElement> claz : BioPaxUtil.getSubclassNames(PhysicalEntity.class, physicalEntity.class)) {
@@ -212,11 +210,9 @@ public class BioPaxVisualStyleUtil {
 		// create a discrete mapper, for mapping biopax node type
 		// to a particular node size.
 		DiscreteMapping discreteMappingWidth = new DiscreteMapping(new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH),
-		                                                           MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-		                                                           ObjectMapping.NODE_MAPPING);
+				MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
 		DiscreteMapping discreteMappingHeight = new DiscreteMapping(new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT),
-		                                                            MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-		                                                            ObjectMapping.NODE_MAPPING);
+				MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
 
 		//  map all interactions to required size
 		for (Class c : BioPaxUtil.getSubclassNames(Interaction.class, interaction.class)) {
@@ -280,8 +276,7 @@ public class BioPaxVisualStyleUtil {
 		// create a discrete mapper, for mapping biopax node type
 		// to a particular node color
 		DiscreteMapping discreteMapping = new DiscreteMapping(DEFAULT_NODE_COLOR,
-		                                                      MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-		                                                      ObjectMapping.NODE_MAPPING);
+				MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
 
 		//  map all complex to black
 		discreteMapping.putMapValue("Complex", COMPLEX_NODE_COLOR);
@@ -301,8 +296,7 @@ public class BioPaxVisualStyleUtil {
 		// create a discrete mapper, for mapping biopax node type
 		// to a particular node color
 		DiscreteMapping discreteMapping = new DiscreteMapping(DEFAULT_NODE_BORDER_COLOR,
-		                                                      MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-		                                                      ObjectMapping.NODE_MAPPING);
+				MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
 
 		//  map all complex to black
 		discreteMapping.putMapValue("Complex", COMPLEX_NODE_BORDER_COLOR);

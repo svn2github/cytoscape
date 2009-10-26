@@ -14,13 +14,15 @@
     <taskdef resource="checkstyletask.properties"/>
     <!-- source code dir -->
     <property name="src.dir" value="src"/>
-    <!-- scripts/bin dir -->
+    <property name="test.src.dir" value="test"/>
+	<!-- scripts/bin dir -->
     <property name="bin.dir" value="bin"/>
     <!-- config dir -->
     <property name="config.dir" value="config"/>
     <!-- build dir -->
     <property name="build.dir" value="build"/>
     <property name="build.classes" value="${build.dir}/classes"/>
+    <property name="build.test.classes" value="${build.dir}/test-classes"/>
     <!-- jars dir -->
     <property name="jars.dir" value="${build.dir}/jars"/>
     <!-- resources dir -->
@@ -48,22 +50,28 @@
     <property name="obfuscationlog" value="${project_name}_obflog.xml.gz"/>
 
     <!-- cytoscape dir -->
-    <property name="cytoscape.dir" value="../../cytoscape"/>	
+    <property name="cytoscape.dir" value="../../cytoscape"/>
+	
     <!-- plugins dir -->
     <property name="plugins.dir" value="${cytoscape.dir}/plugins"/>
-    
+	
+	<!-- runtime classpath -->
+	<path id="runtime.classpath">
+	    <fileset dir="${cytoscape.dir}/lib">
+	        <include name="*.jar"/>
+	    </fileset>
+	    <fileset dir="${cytoscape.dir}">
+	        <include name="cytoscape.jar"/>
+	    </fileset>
+	</path>
+	
     <!-- classpath without reference to yfiles -->
     <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
-        <fileset dir="lib">
+        <fileset dir="${basedir}/lib">
                 <include name="*.jar"/>
         </fileset>
-        <fileset dir="${cytoscape.dir}/lib">
-                <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${cytoscape.dir}">
-                <include name="cytoscape.jar"/>
-        </fileset>
+		<path refid="runtime.classpath"/>
     </path>
 
 	<!-- classpath with reference to yfiles -->
@@ -120,13 +128,21 @@
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build.dir}/docs"/>
         <mkdir dir="${build.classes}"/>
+    	<mkdir dir="${build.test.classes}"/>
         <mkdir dir="${jars.dir}"/>
+    	
+		<unjar dest="${build.classes}">
+			<fileset dir="${basedir}/lib" includes="*.jar"/>
+		</unjar>
+    	
 	<echo>"basedir ${basedir}"</echo>
     </target>
 
     <!--  target to clean out all directories -->
     <target description="Removes all generated files." name="clean">
         <delete dir="${build.dir}"/>
+    	<delete dir="${build.classes}"/>
+    	<delete dir="${build.test.classes}"/>
         <delete dir="${jars.dir}"/>
         <delete dir="${junit.dir}"/>
         <delete dir="${temp.dir}"/>
@@ -150,9 +166,14 @@
 			classpathref="${classpath}">
         </javac>
 
+        <javac debug="true" debuglevel="source,lines,var"
+            destdir="${build.test.classes}" nowarn="on" srcdir="${test.src.dir}" deprecation="true"
+			classpathref="${classpath}">
+        </javac>    	
+    	
         <!-- copy all resources -->
         <copy todir="${build.classes}">
-            <fileset dir="${src.dir}">
+            <fileset dir="${resources.dir}">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -161,10 +182,8 @@
     <!--  target to run cytoscape with biopax plugin -->
     <target depends="check.yfiles,set.classpath,jar" description="Runs Cytoscape with BioPAX Data."
         name="run">
-        <copy todir="${plugins.dir}" overwrite="true">
-            <fileset dir="${jars.dir}"/>
-        </copy>
-        <java classname="cytoscape.CyMain" classpathref="${classpath}"
+    	<copy file="${jars.dir}/${jar_file}" todir="${plugins.dir}" overwrite="true" />
+        <java classname="cytoscape.CyMain" classpathref="runtime.classpath"
             fork="true" maxmemory="1000M">
             <arg line="-p ${plugins.dir}"/>
         </java>
@@ -229,7 +248,6 @@
                         <include name="cytoscape.coreplugins.biopax.mapping.*"/>
                         <include name="cytoscape.coreplugins.biopax.*"/>
                         <include name="cytoscape.coreplugins.biopax.style.*"/>
-                        <include name="cytoscape.coreplugins.biopax.task.*"/>
                         <include name="cytoscape.coreplugins.biopax.util.*"/>
                         <include name="cytoscape.coreplugins.biopax.util.cytoscape.*"/>
                         <include name="cytoscape.coreplugins.biopax.util.links.*"/>
@@ -246,5 +264,7 @@
     <!-- 
     <target depends="jar,obfuscate,test" description="Builds and tests everything" name="all"/>
      -->
-	<target depends="jar,obfuscate" description="Builds and tests everything" name="all"/>
+	<target depends="jar,obfuscate" description="Builds and tests everything" name="all">
+	</target>
+	
 </project>

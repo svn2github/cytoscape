@@ -2,7 +2,7 @@ package cytoscape.coreplugins.biopax.ui;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.coreplugins.biopax.util.BioPAXUtilRex;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
@@ -87,7 +87,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         ArrayList<String> comboList = new ArrayList<String>();
 
         for (CyNetwork cyNetwork : Cytoscape.getNetworkSet()) {
-            if (BioPAXUtilRex.isBioPAXNetwork(cyNetwork)) {
+            if (BioPaxUtil.isBioPAXNetwork(cyNetwork)) {
                 comboList.add(cyNetwork.getTitle());
                 bpNetworks.add(cyNetwork);
             }
@@ -221,8 +221,8 @@ public class IntegrateBioPAXDialog extends JDialog {
         CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex()),
                 network2 = bpNetworks.get(secondNetworkComboBox.getSelectedIndex());
 
-        Model model1 = BioPAXUtilRex.getNetworkModel(network1),
-                model2 = BioPAXUtilRex.getNetworkModel(network2);
+        Model model1 = BioPaxUtil.getNetworkModel(network1),
+                model2 = BioPaxUtil.getNetworkModel(network2);
 
         if (model1 == null || model2 == null) {
             JOptionPane.showMessageDialog(null,
@@ -271,8 +271,8 @@ public class IntegrateBioPAXDialog extends JDialog {
         for (ConversionScore aScore : scores) {
             Object[] cols = {
                     "" + df.format(aScore.getScore()),
-                    BioPAXUtilRex.getShortNameSmart(aScore.getConversion1()),
-                    BioPAXUtilRex.getShortNameSmart(aScore.getConversion2()),
+                    BioPaxUtil.getNodeName(aScore.getConversion1()),
+                    BioPaxUtil.getNodeName(aScore.getConversion2()),
                     true
             };
             tableData[cnt++] = cols;
@@ -306,8 +306,8 @@ public class IntegrateBioPAXDialog extends JDialog {
         CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex()),
                 network2 = bpNetworks.get(secondNetworkComboBox.getSelectedIndex());
 
-        if (BioPAXUtilRex.getNetworkModel(network1) != oldModel1
-                || BioPAXUtilRex.getNetworkModel(network2) != oldModel2
+        if (BioPaxUtil.getNetworkModel(network1) != oldModel1
+                || BioPaxUtil.getNetworkModel(network2) != oldModel2
                 || !integrator.getThreshold().equals(oldThreshold))
             onPreview();
 

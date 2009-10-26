@@ -52,8 +52,8 @@ public class LegendPanel extends JPanel {
 		try {
 			String legendHtml = WebFileConnect.retrieveDocument(legendUrl.toString());
 			temp.append(legendHtml);
-		} catch (IOException e) {
-			temp.append("Could not load legend...");
+		} catch (Exception e) {
+			temp.append("Could not load legend... " + e.toString());
 		}
 
 		temp.append("</BODY></HTML>");

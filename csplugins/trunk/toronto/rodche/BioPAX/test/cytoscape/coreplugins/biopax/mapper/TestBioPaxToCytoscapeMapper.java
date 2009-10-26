@@ -88,8 +88,8 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 */
 	public void testMapper1() throws Exception {
 		Model model =BioPaxUtil.readFile("testData/biopax_sample1.owl");
-		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(model);
-		mapper.doMapping();
+		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
+		mapper.doMapping(model);
 
 		CyNetwork cyNetwork = createNetwork("network1", mapper);
 		verifyNodeList(cyNetwork);
@@ -105,8 +105,8 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 */
 	public void testComplexMapping() throws Exception {
 		Model model =BioPaxUtil.readFile("testData/biopax_complex.owl");
-		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(model);
-		mapper.doMapping();
+		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
+		mapper.doMapping(model);
 
 		CyNetwork cyNetwork = createNetwork("network1", mapper);
 		int nodeCount = cyNetwork.getNodeCount();
@@ -167,8 +167,8 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 */
 	public void testPhysicalInteractions() throws Exception {
 		Model model = BioPaxUtil.readFile("testData/DIP_ppi.owl");
-		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(model);
-		mapper.doMapping();
+		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
+		mapper.doMapping(model);
 
 		CyNetwork cyNetwork = createNetwork("network1", mapper);
 		int nodeCount = cyNetwork.getNodeCount();
