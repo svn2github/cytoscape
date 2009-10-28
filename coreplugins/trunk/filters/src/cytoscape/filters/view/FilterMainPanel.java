@@ -50,11 +50,16 @@ import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.view.NetworkPanel.NetworkTreeNode;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.data.SelectEventListener;
+import cytoscape.data.SelectEvent;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -86,12 +91,13 @@ import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
 import cytoscape.util.swing.WidestStringProvider;
 import javax.swing.ComboBoxModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * 
  */
 public class FilterMainPanel extends JPanel implements ActionListener,
-		ItemListener, PropertyChangeListener {
+		ItemListener,SelectEventListener, PropertyChangeListener {
 
     // String constants used for seperator entries in the attribute combobox
     private static final String filtersSeperator = "-- Filters --";
@@ -159,9 +165,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		//Initialize the UI components 
 		initComponents();
 
-		
+		this.btnSelectAll.setEnabled(false);
+		this.btnDeSelect.setEnabled(false);
+
 		//
-		String[][] data = {{"testNetwork","12/15","51/90"}};
+		String[][] data = {{"testNetwork","12(5)","21(9)"}};
 		String[] col = {"Network","Nodes","Edges"};
 		DefaultTableModel model = new DefaultTableModel(data,col);
 
@@ -204,9 +212,116 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(selectedFilter);
 			theSettingPanel.refreshIndicesForWidgets();
 		}
+		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_CREATED)
+				|| e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_DESTROYED)
+				||e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_LOADED)){
+			enableForNetwork();	
+		}
+
+		
+		
+		// For turning off listener during session loading
+		boolean ignore = false;
+
+		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+			ignore = true;
+		} else if(e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED) || e.getPropertyName().equals(Cytoscape.SESSION_LOADED) ) {
+			ignore = false;
+		}
+		
+		// Ignore all signal if this flag is on.
+		if(ignore) return;
+		
+		
+		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
+		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
+			//tableModel.setTableData();
+		}
+
+		if ((e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
+		    || e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
+		    || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+			if (currentNetwork != null) {
+				currentNetwork.removeSelectEventListener(this);
+			}
+
+			// Change the target network
+			currentNetwork = Cytoscape.getCurrentNetwork();
+
+			if (currentNetwork != null) {
+				currentNetwork.addSelectEventListener(this);
+				//	tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork()
+				//
+			}
+
+		}
+		
+		
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param arg0 DOCUMENT ME!
+	 */
+	public void onSelectEvent(SelectEvent event) {
+		if (
+		     ((event.getTargetType() == SelectEvent.SINGLE_NODE)
+		       || (event.getTargetType() == SelectEvent.NODE_SET))) {
 
+			System.out.println("SelectEvent is received");
+			//tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
+			  //                                                          .getSelectedNodes()), null);
+		} 
+	}
+
+	/**
+	 * Enable select/deselect buttons if the current network exists and is not null.
+	 */
+	protected void enableForNetwork() {
+		
+		CyNetwork n = Cytoscape.getCurrentNetwork();
+
+		if ( n == null || n == Cytoscape.getNullNetwork() ) {
+			this.btnSelectAll.setEnabled(false);
+			this.btnDeSelect.setEnabled(false);
+		}
+		else {
+			this.btnSelectAll.setEnabled(true);
+			this.btnDeSelect.setEnabled(true);	
+		}
+	}
+	
+	
+	// Target network to watch selection
+	private CyNetwork currentNetwork;
+
+	
+	
+	
+	/*
+	????
+	public Object getValueAt(Object node, int column) {
+		if (column == 0)
+			return ((DefaultMutableTreeNode) node).getUserObject();
+		else if (column == 1) {
+			CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
+
+			return "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size()
+			       + ")";
+		} else if (column == 2) {
+			CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
+
+			return "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()
+			       + ")";
+		}
+
+		return "";
+	}
+*/
+	
+	
+	
 	public void refreshFilterSelectCMB() {
         ComboBoxModel cbm;
 
@@ -369,8 +484,16 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cytoPanelWest.addCytoPanelListener(l);
 		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
-	
+
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_CREATED, this);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED, this);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
+
+
+		
 		btnSelectAll.addActionListener(this);
 		btnDeSelect.addActionListener(this);
 	}
@@ -655,7 +778,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         btnSelectAll.setText("Select All");
         pnlSelectButtons.add(btnSelectAll);
 
-        btnDeSelect.setText("De-select");
+        btnDeSelect.setText("Deselect All");
         pnlSelectButtons.add(btnDeSelect);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -801,10 +924,23 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
 			}
 			if (_btn == btnSelectAll){
-				System.out.println("btnSelectAll is clicked");
+				//System.out.println("btnSelectAll is clicked");
+				Cytoscape.getCurrentNetwork().selectAllNodes();
+				Cytoscape.getCurrentNetwork().selectAllEdges();
+
+				if (Cytoscape.getCurrentNetworkView() != null) {
+					Cytoscape.getCurrentNetworkView().updateView();
+				}
+				
+				//System.out.println("BBB id =" + Cytoscape.getCurrentNetwork().getIdentifier());
+				//System.out.println("BBB nodeCount =" + Cytoscape.getCurrentNetwork().getNodeCount());
+
 			}
 			if (_btn == btnDeSelect){
-				System.out.println("btnDeSelect is clicked");				
+				//System.out.println("btnDeSelect is clicked");
+				Cytoscape.getCurrentNetwork().unselectAllNodes();
+				Cytoscape.getCurrentNetwork().unselectAllEdges();
+				Cytoscape.getCurrentNetworkView().updateView();
 			}
 			
 		} // JButton event
