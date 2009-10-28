@@ -11,8 +11,9 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.task.AbstractTask;
 
-public abstract class AbstractLoadDataTableTask implements Task {
+public abstract class AbstractLoadDataTableTask extends AbstractTask {
 
 	protected CyReader reader;
 	protected URI uri;
@@ -80,6 +81,7 @@ public abstract class AbstractLoadDataTableTask implements Task {
 	}
 
 	public void cancel() {
+		super.cancel();
 		if (reader != null) {
 			reader.cancel();
 		}

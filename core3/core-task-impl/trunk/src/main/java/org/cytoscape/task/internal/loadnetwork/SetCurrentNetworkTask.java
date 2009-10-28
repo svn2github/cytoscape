@@ -4,9 +4,10 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.task.AbstractTask;
 
 
-public class SetCurrentNetworkTask implements Task{
+public class SetCurrentNetworkTask extends AbstractTask {
 
 	CyNetworkManager netmgr;
 	TaskMonitor taskMonitor;
@@ -23,8 +24,4 @@ public class SetCurrentNetworkTask implements Task{
 		System.out.println("current network ID : " + netmgr.getCurrentNetwork().getSUID());
 	}
 
-	
-	public void cancel() {
-		// TODO Auto-generated method stub		
-	}
 }

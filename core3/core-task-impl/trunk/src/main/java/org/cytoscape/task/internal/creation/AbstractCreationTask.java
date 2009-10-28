@@ -40,16 +40,13 @@ package org.cytoscape.task.internal.creation;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.task.AbstractTask;
 
-public abstract class AbstractCreationTask implements Task {
+public abstract class AbstractCreationTask extends AbstractTask {
 
 	protected CyNetworkManager netmgr;
 
 	public AbstractCreationTask(CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
 	}
-
-	public abstract void run(TaskMonitor monitor) throws Exception;
-
-	public void cancel() { }
 }

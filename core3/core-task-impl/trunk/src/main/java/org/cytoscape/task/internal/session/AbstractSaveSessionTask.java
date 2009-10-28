@@ -44,13 +44,14 @@ import org.cytoscape.io.DataCategory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.task.AbstractTask;
 
 import org.cytoscape.session.CySessionManager;
 
 import java.io.File;
 
 
-abstract class AbstractSaveSessionTask implements Task {
+abstract class AbstractSaveSessionTask extends AbstractTask {
 
 	private String SESSION_EXT = ".cys";
 	
@@ -94,10 +95,6 @@ abstract class AbstractSaveSessionTask implements Task {
 
 		// TODO  This should fire an event that updates appropriate windows and such-like.
 		mgr.setCurrentSessionFileName(file.getName());
-	}
-
-	public void cancel() {
-		System.out.println(" Task can not currently be halted.");
 	}
 
 } 

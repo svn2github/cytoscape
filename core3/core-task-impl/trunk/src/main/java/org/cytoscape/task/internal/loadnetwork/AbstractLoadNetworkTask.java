@@ -53,6 +53,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.task.AbstractTask;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
@@ -60,7 +61,7 @@ import org.cytoscape.session.CyNetworkNaming;
 /**
  * Task to load a new network.
  */
-abstract class AbstractLoadNetworkTask implements Task {
+abstract class AbstractLoadNetworkTask extends AbstractTask {
 
 	protected CyReader reader;
 	protected URI uri;
@@ -168,6 +169,7 @@ abstract class AbstractLoadNetworkTask implements Task {
 	}
 
 	public void cancel() {
+		super.cancel();
 		if (reader != null)
 		{
 			reader.cancel();

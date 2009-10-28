@@ -40,6 +40,7 @@ package org.cytoscape.task.internal.session;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.task.AbstractTask;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.io.read.CyReader;
@@ -52,7 +53,7 @@ import java.io.File;
  * Call the session reader and read everything in the zip archive.<br>
  * setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
  */
-public class OpenSessionTask implements Task {
+public class OpenSessionTask extends AbstractTask {
 
 
 	private CySessionManager mgr;
@@ -100,10 +101,5 @@ public class OpenSessionTask implements Task {
 
 		taskMonitor.setProgress(1.0);
 		taskMonitor.setStatusMessage("Session file " + name + " successfully loaded.");
-	}
-
-	public void cancel() {
-		
-		System.out.println("Not actually cancelling anything!!!");
 	}
 }

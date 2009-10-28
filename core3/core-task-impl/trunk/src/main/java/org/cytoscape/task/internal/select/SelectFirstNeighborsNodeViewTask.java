@@ -43,11 +43,12 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.task.AbstractTask;
 
 import java.util.Set;
 import java.util.HashSet;
 
-public class SelectFirstNeighborsNodeViewTask implements Task {
+public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 
 	private View<CyNode> nodeView;
 	private CyNetworkView netView;
@@ -72,6 +73,4 @@ public class SelectFirstNeighborsNodeViewTask implements Task {
 
 		netView.updateView();
 	} 
-
-	public void cancel() {}
 }
