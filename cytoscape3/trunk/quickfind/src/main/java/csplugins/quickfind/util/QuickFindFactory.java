@@ -36,7 +36,6 @@
 
 package csplugins.quickfind.util;
 
-import cytoscape.Cytoscape;
 
 
 /**
@@ -54,8 +53,7 @@ public class QuickFindFactory {
 	 */
 	public static QuickFind getGlobalQuickFindInstance() {
 		if (quickFind == null) {
-			quickFind = new QuickFindImpl(Cytoscape.getNodeAttributes(),
-			                              Cytoscape.getEdgeAttributes());
+			quickFind = new QuickFindImpl();
 		}
 
 		return quickFind;

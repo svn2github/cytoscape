@@ -215,6 +215,7 @@
 						<param>--repositories=+http://scm.ops4j.org/repos/ops4j/projects/pax/runner-repository/</param>
 						<param>scan-pom:file:provision/config-pom.xml@2</param>
 						<param>scan-pom:file:provision/logging-pom.xml@3</param>
+						<param>--executor=script</param>
 					</provision>
 				</configuration>
 				<!--
@@ -325,6 +326,7 @@
 		<module>phoebe.dnd</module>
 		<module>wrappers</module>
 		<module>application</module>
+		<module>quickfind</module>
 		<!--
 			<module>webservice</module> <module>vizmap-gui</module>
 			<module>cpath</module>
