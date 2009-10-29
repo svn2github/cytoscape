@@ -175,8 +175,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
         tblFeedBack.setModel(model);
 
-        
-		
 		addEventListeners();
 	
 		//btnApplyFilter.setVisible(false);
@@ -189,6 +187,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	// Listen to ATTRIBUTES_CHNAGED and NETWORK_VIEW_FOCUSED event
 	public void propertyChange(PropertyChangeEvent e) {
+		
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
 		{	
 			refreshAttributeCMB();
@@ -212,51 +211,41 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(selectedFilter);
 			theSettingPanel.refreshIndicesForWidgets();
 		}
+		
+		//Enable/disable select/deselect buttons
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_CREATED)
 				|| e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_DESTROYED)
 				||e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_LOADED)){
 			enableForNetwork();	
 		}
-
-		
 		
 		// For turning off listener during session loading
-		boolean ignore = false;
-
 		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
-			ignore = true;
-		} else if(e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED) || e.getPropertyName().equals(Cytoscape.SESSION_LOADED) ) {
-			ignore = false;
-		}
-		
-		// Ignore all signal if this flag is on.
-		if(ignore) return;
-		
+			return; //ignore = true;
+		} 
 		
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
 		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
-			//tableModel.setTableData();
+			updateFeedbackTableModel();
 		}
 
-		if ((e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
+		if (   e.getPropertyName().equalsIgnoreCase(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
 		    || e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
-		    || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+		    || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)
+		    || e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEWS_SELECTED)) {
+
 			if (currentNetwork != null) {
 				currentNetwork.removeSelectEventListener(this);
 			}
-
+			
 			// Change the target network
 			currentNetwork = Cytoscape.getCurrentNetwork();
 
 			if (currentNetwork != null) {
 				currentNetwork.addSelectEventListener(this);
-				//	tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork()
-				//
+				updateFeedbackTableModel();
 			}
-
 		}
-		
-		
 	}
 
 	/**
@@ -268,13 +257,24 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (
 		     ((event.getTargetType() == SelectEvent.SINGLE_NODE)
 		       || (event.getTargetType() == SelectEvent.NODE_SET))) {
-
-			System.out.println("SelectEvent is received");
-			//tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
-			  //                                                          .getSelectedNodes()), null);
+			updateFeedbackTableModel();
 		} 
 	}
 
+	private void updateFeedbackTableModel(){
+		System.out.println("update the feedback table");
+
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+
+		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size() + ")";
+		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size() + ")";
+		//"" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()+ ")";
+		
+		tblFeedBack.getModel().setValueAt(cyNetwork.getIdentifier(), 0, 0);
+		tblFeedBack.getModel().setValueAt(nodeStr, 0, 1);
+		tblFeedBack.getModel().setValueAt(edgeStr, 0, 2);
+	}
+	
 	/**
 	 * Enable select/deselect buttons if the current network exists and is not null.
 	 */
@@ -484,7 +484,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cytoPanelWest.addCytoPanelListener(l);
 		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+
+		// SelectEvent -- used to update feedback Panel
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEWS_SELECTED,this);
 
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 
@@ -492,8 +494,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED, this);
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
 
-
-		
 		btnSelectAll.addActionListener(this);
 		btnDeSelect.addActionListener(this);
 	}
@@ -728,9 +728,18 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		gridBagConstraints.weighty = 1.0;
 		add(pnlFilterDefinition, gridBagConstraints);
 
-		btnApplyFilter.setText("Apply");
+		///
+		btnApplyFilter.setText("Apply Filter");
 		pnlButton.add(btnApplyFilter);
 
+        btnSelectAll.setText("Select All");
+        pnlButton.add(btnSelectAll);
+
+        btnDeSelect.setText("Deselect All");
+
+        pnlButton.add(btnDeSelect);
+		
+		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
@@ -774,19 +783,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         add(pnlFeedBack, gridBagConstraints);
 
-        //
-        btnSelectAll.setText("Select All");
-        pnlSelectButtons.add(btnSelectAll);
-
-        btnDeSelect.setText("Deselect All");
-        pnlSelectButtons.add(btnDeSelect);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(pnlSelectButtons, gridBagConstraints);
-
-        
 		// Set customized renderer for attributes/filter combobox
 		cmbAttributes.setRenderer(new AttributeFilterRenderer());
 
