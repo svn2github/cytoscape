@@ -730,7 +730,7 @@ class DetermineDistinctValuesTask implements ValuedTask<List<String>> {
 			iterator = network.getEdgeList().iterator();
 		}
 
-		String[] values = CyAttributesUtil.getDistinctAttributeValues(iterator, attributes,
+		String[] values = CyAttributesUtil.getDistinctAttributeValues(iterator, network, attributes,
 		                                                              attributeKey, maxValues);
 		return Arrays.asList(values);
 	}
