@@ -39,10 +39,14 @@ package csplugins.quickfind.util;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.CyRow;
 
+import java.awt.geom.Arc2D.Float;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 
 /**
@@ -64,30 +68,40 @@ public class CyAttributesUtil {
 	 * @param attributeKey  Attribute Key.
 	 * @return array of String Objects or null.
 	 */
-	public static String[] getAttributeValues(CyAttributes attributes, String graphObjectId,
+	public static String[] getAttributeValues(CyNetwork cyNetwork, CyDataTable attributes, Long graphObjectId,
 	                                          String attributeKey) {
 		String[] terms = new String[1];
 
+		/*
 		if (attributeKey.equals(QuickFind.UNIQUE_IDENTIFIER)) {
-			terms[0] = graphObjectId;
+			terms[0] = graphObjectId.toString();
 		} else {
-			boolean hasAttribute = attributes.hasAttribute(graphObjectId, attributeKey);
+			//boolean hasAttribute = attributes.hasAttribute(graphObjectId, attributeKey);
 
+			CyNode n = cyNetwork.getNode(graphObjectId);
+			boolean hasAttribute = n.attrs().getDataTable().getColumnTypeMap().containsKey(attributeKey);
+			
 			if (hasAttribute) {
 				//  Convert all types to String array.
-				byte type = attributes.getType(attributeKey);
+				//byte type = attributes.getType(attributeKey);
 
-				if (type == CyAttributes.TYPE_BOOLEAN) {
-					terms[0] = attributes.getBooleanAttribute(graphObjectId, attributeKey).toString();
-				} else if (type == CyAttributes.TYPE_INTEGER) {
-					terms[0] = attributes.getIntegerAttribute(graphObjectId, attributeKey).toString();
-				} else if (type == CyAttributes.TYPE_FLOATING) {
-					terms[0] = attributes.getDoubleAttribute(graphObjectId, attributeKey).toString();
-				} else if (type == CyAttributes.TYPE_STRING) {
-					terms[0] = attributes.getStringAttribute(graphObjectId, attributeKey);
-				} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-					List list = attributes.getListAttribute(graphObjectId, attributeKey);
-
+				Class<?> attributeType = attributes.getColumnTypeMap().get(attributeKey);
+				
+				//if (type == CyAttributes.TYPE_BOOLEAN) {
+				if (attributeType == Boolean.class) {
+					//terms[0] = attributes.getBooleanAttribute(graphObjectId, attributeKey).toString();
+					terms[0] = n.attrs().get(attributeKey, Boolean.class).toString();
+				} else if (attributeType == Integer.class) {
+					//terms[0] = attributes.getIntegerAttribute(graphObjectId, attributeKey).toString();
+					terms[0] = n.attrs().get(attributeKey, Integer.class).toString();
+				} else if (attributeType == Float.class) {
+					//terms[0] = attributes.getDoubleAttribute(graphObjectId, attributeKey).toString();
+					terms[0] = n.attrs().get(attributeKey, Float.class).toString();
+				} else if (attributeType == String.class) {
+					//terms[0] = attributes.getStringAttribute(graphObjectId, attributeKey);
+					terms[0] = n.attrs().get(attributeKey, String.class);
+				} else if (attributeType == List.class) {
+					List list = n.attrs().get(attributeKey, List.class);
 					//  Iterate through all elements in the list
 					if ((list != null) && (list.size() > 0)) {
 						terms = new String[list.size()];
@@ -97,8 +111,8 @@ public class CyAttributesUtil {
 							terms[i] = o.toString();
 						}
 					}
-				} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
-					Map map = attributes.getMapAttribute(graphObjectId, attributeKey);
+				} else if (attributeType == Map.class) {
+					Map map = n.attrs().get(attributeKey, Map.class);
 
 					//  Iterate through all values in the map
 					if ((map != null) && (map.size() > 0)) {
@@ -112,9 +126,10 @@ public class CyAttributesUtil {
 							terms[index++] = o.toString();
 						}
 					}
-				} else if (type == CyAttributes.TYPE_COMPLEX) {
-					return null;
-				}
+				} 
+				//else if (attributeType == CyAttributes.TYPE_COMPLEX) {
+				//	return null;
+				//}
 			} else {
 				return null;
 			}
@@ -125,6 +140,7 @@ public class CyAttributesUtil {
 			terms[i] = terms[i].replaceAll("\n", " ");
 		}
 
+		*/
 		return terms;
 	}
 
@@ -137,15 +153,15 @@ public class CyAttributesUtil {
 	 * @param numDistinctValues Number of Distinct Values.
 	 * @return Array of Distinct Value Strings.
 	 */
-	public static String[] getDistinctAttributeValues(Iterator iterator, CyAttributes attributes,
+	public static String[] getDistinctAttributeValues(Iterator iterator, CyNetwork cyNetwork, CyDataTable attributes,
 	                                                  String attributeKey, int numDistinctValues) {
 		HashSet set = new HashSet();
 		int counter = 0;
 
 		while (iterator.hasNext() && (counter < numDistinctValues)) {
 			GraphObject graphObject = (GraphObject) iterator.next();
-			String[] values = CyAttributesUtil.getAttributeValues(attributes,
-			                                                      graphObject.getIdentifier(),
+			String[] values = CyAttributesUtil.getAttributeValues(cyNetwork, attributes,
+			                                                      graphObject.getSUID(), //.getIdentifier(),
 			                                                      attributeKey);
 
 			if ((values != null) && (values.length > 0)) {
