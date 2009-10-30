@@ -40,13 +40,17 @@ import csplugins.quickfind.util.CyAttributesUtil;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.widgets.autocomplete.index.GenericIndex;
-import cytoscape.Cytoscape;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
+import cytoscape.view.CySwingApplication;
+
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.ValuedTask;
+import org.cytoscape.work.ValuedTaskExecutor;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -56,9 +60,14 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -116,13 +125,38 @@ public class QuickFindConfigDialog extends JDialog {
 	 * Flag to indicate that we are currently adding new attributes.
 	 */
 	private boolean addingNewAttributeList = false;
-
+	
+	/**
+	 * Network manager to get current network
+	 */
+	private final CyNetworkManager netMgr;
+	
+	/**
+	 * The Cytoscape desktop
+	 */
+	private final CySwingApplication cyDesktop;
+	
+	/**
+	 * Cytoscape task manager
+	 */
+	private final TaskManager taskMgr;
+	
+	/**
+	 * Number of rows to show in table of distinct values
+	 */
+	private static final int NUM_DISTINCT_VALS = 5;
+	
 	/**
 	 * Constructor.
 	 */
-	public QuickFindConfigDialog() {
+	public QuickFindConfigDialog(CyNetworkManager netMgr,
+	                             CySwingApplication cyDesktop,
+	                             TaskManager taskMgr) {
+	    this.netMgr = netMgr;
+	    this.cyDesktop = cyDesktop;
+	    this.taskMgr = taskMgr;
 		//  Initialize, based on currently selected network
-		currentNetwork = Cytoscape.getCurrentNetwork();
+		currentNetwork = netMgr.getCurrentNetwork();
 
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		currentIndex = quickFind.getIndex(currentNetwork);
@@ -130,7 +164,9 @@ public class QuickFindConfigDialog extends JDialog {
 
 		Container container = getContentPane();
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		this.setTitle("Configure Search Options for:  " + currentNetwork.getTitle());
+		// FIXME: is this the correct way to get the network title?
+		String netTitle = currentNetwork.attrs().get("title", String.class);
+		this.setTitle("Configure Search Options for:  " + netTitle);
 
 		//  If we are working on Linux, set always on top to true.
 		//  This is a hack to deal with numerous z-ordering bugs on Linux.
@@ -173,7 +209,7 @@ public class QuickFindConfigDialog extends JDialog {
 		//  Pack, set modality, and center on screen
 		pack();
 		setModal(true);
-		setLocationRelativeTo(Cytoscape.getDesktop());
+		setLocationRelativeTo(cyDesktop.getJFrame());
 		setVisible(true);
 	}
 
@@ -223,21 +259,23 @@ public class QuickFindConfigDialog extends JDialog {
 					QuickFindConfigDialog.this.dispose();
 
 					String newAttribute = (String) attributeComboBox.getSelectedItem();
-					ReindexQuickFind task = new ReindexQuickFind(currentNetwork, indexType,
+					Task task = new ReindexQuickFind(currentNetwork, indexType,
 					                                             newAttribute);
-					JTaskConfig config = new JTaskConfig();
+					
+					// FIXME what is this?
+					/*JTaskConfig config = new JTaskConfig();
 					config.setAutoDispose(true);
 					config.displayStatus(true);
 					config.displayTimeElapsed(false);
 					config.displayCloseButton(true);
 					config.setOwner(Cytoscape.getDesktop());
-					config.setModal(true);
+					config.setModal(true);*/
 
 					//  Execute Task via TaskManager
 					//  This automatically pops-open a JTask Dialog Box.
 					//  This method will block until the JTask Dialog Box
 					//  is disposed.
-					TaskManager.executeTask(task, config);
+					taskMgr.execute(task);
 				}
 			});
 		buttonPanel.add(Box.createHorizontalGlue());
@@ -296,7 +334,6 @@ public class QuickFindConfigDialog extends JDialog {
 	 */
 	private void setAttributeDescription() {
 		Object selectedAttribute = attributeComboBox.getSelectedItem();
-		CyAttributes attributes = getCyAttributes();
 		String attributeKey;
 
 		if (selectedAttribute != null) {
@@ -315,7 +352,9 @@ public class QuickFindConfigDialog extends JDialog {
 			              + "widest search scope possible.  Note that indexing "
 			              + "all attributes on very large networks may take a few " + "seconds.";
 		} else {
-			description = attributes.getAttributeDescription(attributeKey);
+		    // FIXME how do descriptions work in 3.0 API?
+		    description = null;
+			//description = attributes.getAttributeDescription(attributeKey);
 		}
 
 		if (description == null) {
@@ -342,27 +381,63 @@ public class QuickFindConfigDialog extends JDialog {
 		}
 
 		//  Create column names
-		Vector columnNames = new Vector();
+		Vector<String> columnNames = new Vector<String>();
 		columnNames.add(attributeKey);
 
-		TableModel model = new DefaultTableModel(columnNames, 5);
+		TableModel model = new DefaultTableModel(columnNames, NUM_DISTINCT_VALS);
+		
+		DetermineDistinctValuesTask task = 
+		    new DetermineDistinctValuesTask(currentNetwork, 
+		                                    attributeKey,
+		                                    getIndexType(),
+		                                    NUM_DISTINCT_VALS);
 
-		DetermineDistinctValuesTask task = new DetermineDistinctValuesTask(model, attributeKey, this);
-
-		JTaskConfig config = new JTaskConfig();
+		// FIXME what is this doing?
+		/*JTaskConfig config = new JTaskConfig();
 		config.setAutoDispose(true);
 		config.displayStatus(true);
 		config.displayTimeElapsed(false);
 		config.displayCloseButton(true);
 		config.setOwner(Cytoscape.getDesktop());
-		config.setModal(true);
+		config.setModal(true);*/
 
 		//  Execute Task via TaskManager
 		//  This automatically pops-open a JTask Dialog Box.
 		//  This method will block until the JTask Dialog Box
 		//  is disposed.
 		table.setModel(model);
-		TaskManager.executeTask(task, config);
+		
+		ValuedTaskExecutor<List<String>> executor = 
+		    new ValuedTaskExecutor<List<String>>(task);
+		// Disable apply button, while task is in progress.
+        enableApplyButton(false);
+		taskMgr.execute(executor);
+		
+		// FIXME how to handle this possible exception?
+		List<String> values = null;
+        try {
+            values = executor.get();
+        } catch (CancellationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+		if ((values != null) && (values.size() > 0)) {
+            for (int i = 0; i < values.size(); i++) {
+                model.setValueAt(values.get(i), i, 0);
+            }
+
+            enableApplyButton(true);
+        } else {
+            // FIXME how to get network title
+            model.setValueAt("No values found in network:  " + currentNetwork.attrs().get("title", String.class)
+                             + ".  Cannot create index.", 0, 0);
+        }
 	}
 
 	private JPanel createNodeEdgePanel() {
@@ -399,7 +474,7 @@ public class QuickFindConfigDialog extends JDialog {
 					indexType = type;
 					addingNewAttributeList = true;
 
-					Vector attributeList = createAttributeList();
+					Vector<String> attributeList = createAttributeList();
 					attributeComboBox.removeAllItems();
 
 					for (int i = 0; i < attributeList.size(); i++) {
@@ -440,7 +515,7 @@ public class QuickFindConfigDialog extends JDialog {
 		attributePanel.setLayout(new BoxLayout(attributePanel, BoxLayout.X_AXIS));
 
 		//  Create ComboBox
-		Vector attributeList = createAttributeList();
+		Vector<String> attributeList = createAttributeList();
 		attributeComboBox = new JComboBox(attributeList);
 
 		String currentAttribute = currentIndex.getControllingAttribute();
@@ -478,14 +553,15 @@ public class QuickFindConfigDialog extends JDialog {
 		return attributePanel;
 	}
 
-	private Vector createAttributeList() {
-		Vector attributeList = new Vector();
-		CyAttributes attributes = getCyAttributes();
-		String[] attributeNames = attributes.getAttributeNames();
+	private Vector<String> createAttributeList() {
+		Vector<String> attributeList = new Vector<String>();
+		Set<String> attributeNames = 
+		    currentNetwork.attrs().getDataTable().getColumnTypeMap().keySet();
 
+		
 		if (attributeNames != null) {
 			//  Show all attributes, except those of TYPE_COMPLEX
-			for (int i = 0; i < attributeNames.length; i++) {
+			/*for (int i = 0; i < attributeNames.length; i++) {
 				int type = attributes.getType(attributeNames[i]);
 
 				//  only show user visible attributes
@@ -494,9 +570,10 @@ public class QuickFindConfigDialog extends JDialog {
 						attributeList.add(attributeNames[i]);
 					}
 				}
-			}
+			}*/
 
 			//  Alphabetical sort
+		    attributeList.addAll(attributeList);
 			Collections.sort(attributeList);
 
 			//  Add default:  Unique Identifier
@@ -512,18 +589,24 @@ public class QuickFindConfigDialog extends JDialog {
 		return attributeList;
 	}
 
-	CyAttributes getCyAttributes() {
-		CyAttributes attributes;
+	CyDataTable getCyAttributes() {
+		CyDataTable attributes;
 
 		if (indexType == QuickFind.INDEX_NODES) {
-			attributes = Cytoscape.getNodeAttributes();
+		    // FIXME: is this correct?
+			attributes = netMgr.getCurrentNetwork().getCyDataTables("node").get(CyNetwork.DEFAULT_ATTRS);
 		} else {
-			attributes = Cytoscape.getEdgeAttributes();
+		    // FIXME: is this correct?
+			attributes = netMgr.getCurrentNetwork().getCyDataTables("edge").get(CyNetwork.DEFAULT_ATTRS);
 		}
 
 		return attributes;
 	}
-
+	
+	CyNetworkManager getCyNetworkMgr() {
+	    return netMgr;
+	}
+	
 	/**
 	 * Sets the Visible Row Count.
 	 *
@@ -542,14 +625,6 @@ public class QuickFindConfigDialog extends JDialog {
 		                                                       height));
 	}
 
-	/**
-	 * Main method:  used for local debugging purposes only.
-	 *
-	 * @param args No command line arguments expected.
-	 */
-	public static void main(String[] args) {
-		new QuickFindConfigDialog();
-	}
 }
 
 
@@ -579,16 +654,9 @@ class ReindexQuickFind implements Task {
 	/**
 	 * Executes Task:  Reindex.
 	 */
-	public void run() {
+	public void run(TaskMonitor monitor) {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		quickFind.reindexNetwork(cyNetwork, indexType, newAttributeKey, taskMonitor);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void halt() {
-		// No-op
 	}
 
 	/**
@@ -601,14 +669,9 @@ class ReindexQuickFind implements Task {
 		this.taskMonitor = taskMonitor;
 	}
 
-	/**
-	 * Gets Title of Task.
-	 *
-	 * @return Title of Task.
-	 */
-	public String getTitle() {
-		return "ReIndexing";
-	}
+    @Override
+    public void cancel() {}
+
 }
 
 
@@ -617,91 +680,62 @@ class ReindexQuickFind implements Task {
  *
  * @author Ethan Cerami.
  */
-class DetermineDistinctValuesTask implements Task {
-	private TableModel tableModel;
+class DetermineDistinctValuesTask implements ValuedTask<List<String>> {
+    private CyNetwork network;
+    private int indexType;
 	private String attributeKey;
-	private QuickFindConfigDialog parentDialog;
-	private TaskMonitor taskMonitor;
+	private int maxValues;
 
 	/**
 	 * Creates a new DetermineDistinctValuesTask object.
 	 *
-	 * @param tableModel  DOCUMENT ME!
-	 * @param attributeKey  DOCUMENT ME!
-	 * @param parentDialog  DOCUMENT ME!
+	 * @param network 
+	 * @param attributeKey
+	 * @param indexType
+	 * @param maxValues
 	 */
-	public DetermineDistinctValuesTask(TableModel tableModel, String attributeKey,
-	                                   QuickFindConfigDialog parentDialog) {
-		this.tableModel = tableModel;
-
+	public DetermineDistinctValuesTask(CyNetwork network, 
+	                                   String attributeKey,
+	                                   int indexType,
+	                                   int maxValues) {
+	    
 		if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
 			attributeKey = QuickFind.UNIQUE_IDENTIFIER;
 		}
 
+		this.network = network;
 		this.attributeKey = attributeKey;
-
-		//  Disable apply button, while task is in progress.
-		parentDialog.enableApplyButton(false);
-		this.parentDialog = parentDialog;
+		this.maxValues = maxValues;
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void run() {
-		taskMonitor.setPercentCompleted(-1);
+	public List<String> run(TaskMonitor taskMonitor) {
+		taskMonitor.setProgress(0);
 
-		//  Obtain distinct attribute values
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-		CyAttributes attributes = parentDialog.getCyAttributes();
+		CyDataTable attributes;
+        if (indexType == QuickFind.INDEX_NODES) {
+            // FIXME: is this correct?
+            attributes = network.getCyDataTables("node").get(CyNetwork.DEFAULT_ATTRS);
+        } else {
+            // FIXME: is this correct?
+            attributes = network.getCyDataTables("edge").get(CyNetwork.DEFAULT_ATTRS);
+        }
 
-		Iterator iterator;
-
-		if (parentDialog.getIndexType() == QuickFind.INDEX_NODES) {
-			iterator = network.nodesIterator();
+		Iterator<? extends GraphObject> iterator;
+		if (indexType == QuickFind.INDEX_NODES) {
+			iterator = network.getNodeList().iterator();
 		} else {
-			iterator = network.edgesIterator();
+			iterator = network.getEdgeList().iterator();
 		}
 
 		String[] values = CyAttributesUtil.getDistinctAttributeValues(iterator, attributes,
-		                                                              attributeKey, 5);
-
-		if ((values != null) && (values.length > 0)) {
-			for (int i = 0; i < values.length; i++) {
-				tableModel.setValueAt(values[i], i, 0);
-			}
-
-			parentDialog.enableApplyButton(true);
-		} else {
-			tableModel.setValueAt("No values found in network:  " + network.getTitle()
-			                      + ".  Cannot create index.", 0, 0);
-		}
+		                                                              attributeKey, maxValues);
+		return Arrays.asList(values);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void halt() {
-		//  No-op
-	}
+    @Override
+    public void cancel() {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param taskMonitor DOCUMENT ME!
-	 *
-	 * @throws IllegalThreadStateException DOCUMENT ME!
-	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
-		this.taskMonitor = taskMonitor;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getTitle() {
-		return "Accessing sample attribute data";
-	}
 }

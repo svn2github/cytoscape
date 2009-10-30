@@ -44,12 +44,17 @@ import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
 import csplugins.widgets.slider.JRangeSliderExtended;
+import cytoscape.view.CySwingApplication;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.util.ui.JRangeSlider;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.TaskManager;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,11 +73,21 @@ public class QuickFindPanel extends JPanel {
 	private JLabel label;
 	private static final String SEARCH_STRING = "Search:  ";
 	private static final String SELECT_STRING = "Select:  ";
+	
+	private final CyNetworkManager netMgr;
+	private final CySwingApplication cyDesktop;
+	private final TaskManager taskMgr;
 
 	/**
 	 * Constructor.
 	 */
-	public QuickFindPanel() {
+	public QuickFindPanel(CyNetworkManager netMgr,
+                          CySwingApplication cyDesktop,
+                          TaskManager taskMgr) {
+	    this.netMgr = netMgr;
+	    this.cyDesktop = cyDesktop;
+	    this.taskMgr = taskMgr;
+	    
 		//  Must use BoxLayout, as we want to control width
 		//  of all components.
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -194,7 +209,7 @@ public class QuickFindPanel extends JPanel {
 		button.setEnabled(false);
 		button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					new QuickFindConfigDialog();
+					new QuickFindConfigDialog(netMgr, cyDesktop, taskMgr);
 				}
 			});
 		button.setBorderPainted(false);
