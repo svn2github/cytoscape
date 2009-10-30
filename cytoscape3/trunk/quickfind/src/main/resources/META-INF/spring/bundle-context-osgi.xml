@@ -15,7 +15,7 @@
   <osgi:reference id="cytoscapeDesktopRef" interface="cytoscape.view.CySwingApplication" />
   <osgi:reference id="taskManagerRef" interface="org.cytoscape.work.TaskManager"/>
 
-  <osgi:service id="networkPanelService" ref="networkPanel">
+  <osgi:service id="quickFindService" ref="QuickFindPlugInBean">
     <osgi:interfaces>
       <value>org.cytoscape.session.events.SetCurrentNetworkViewListener
       </value>
