@@ -131,7 +131,7 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
 				cells[i] = cell.getRichStringCellValue().getString();
 			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-				if (nmp.getAttributeTypes()[i] == CyAttributes.TYPE_INTEGER) {
+				if (nmp.getAttributeTypes()[i] == Integer.class || nmp.getAttributeTypes()[i] == int.class) {
 					Double dblValue = cell.getNumericCellValue();
 					Integer intValue = dblValue.intValue();
 					cells[i] = intValue.toString();

@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.cytoscape.model.CyNetworkFactory;
+
 
 /**
  * Network text table reader. This implemets GraphReader just like other network
@@ -104,7 +106,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		this.edgeList = new ArrayList<Integer>();
 		this.commentChar = commentChar;
 
-		parser = new NetworkLineParser(nodeList, edgeList, nmp, directed_edges);
+		parser = new NetworkLineParser(nodeList, edgeList, nmp, directed_edges, );
 	}
 
 	/**
@@ -166,7 +168,6 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	@Override
 	public int[] getNodeIndicesArray() {
 		final int[] nodeArray = new int[nodeList.size()];
 
@@ -182,7 +183,6 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	@Override
 	public int[] getEdgeIndicesArray() {
 		final int[] edgeArray = new int[edgeList.size()];
 
@@ -198,7 +198,6 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	@Override
 	public void read() throws IOException {
 		readTable();
 	}

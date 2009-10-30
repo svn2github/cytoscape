@@ -151,7 +151,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
 				cells[i] = cell.getRichStringCellValue().getString();
 			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-				if (mapping.getAttributeTypes()[i] == CyAttributes.TYPE_INTEGER) {
+				if (mapping.getAttributeTypes()[i] == Integer.class || mapping.getAttributeTypes()[i] == int.class) {
 					Double dblValue = cell.getNumericCellValue();
 					Integer intValue = dblValue.intValue();
 					cells[i] = intValue.toString();

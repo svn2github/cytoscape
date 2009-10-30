@@ -107,8 +107,9 @@ public class NetworkLineParser {
 		final CyNode source;
 		
 		if (nmp.getSourceIndex().equals(-1) == false && (nmp.getSourceIndex() <= (parts.length - 1)) && (parts[nmp.getSourceIndex()] != null)) {
+			//TODO: needs a network. Use factory?
 			source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()].trim(), true);
-			nodeList.add(source.getRootGraphIndex());
+			nodeList.add(source.getIndex());
 		} else {
 			source = null;
 		}
@@ -117,7 +118,7 @@ public class NetworkLineParser {
 
 		if (nmp.getTargetIndex().equals(-1) == false && (nmp.getTargetIndex() <= (parts.length - 1)) && (parts[nmp.getTargetIndex()] != null)) {
 			target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()].trim(), true);
-			nodeList.add(target.getRootGraphIndex());
+			nodeList.add(target.getIndex());
 		} else {
 			target = null;
 		}
@@ -138,8 +139,8 @@ public class NetworkLineParser {
 		}
 
 		final CyEdge edge;
-		edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, directed_edges);
-		edgeList.add(edge.getRootGraphIndex());
+		edge = Cytoscape.getCyEdge(source, target, "pp", interaction, true, directed_edges);
+		edgeList.add(edge.getIndex());
 		
 		return edge;
 	}
@@ -149,7 +150,7 @@ public class NetworkLineParser {
 			if ((i != nmp.getSourceIndex()) && (i != nmp.getTargetIndex())
 			    && (i != nmp.getInteractionIndex()) && parts[i] != null ) {
 				if ((nmp.getImportFlag().length > i) && (nmp.getImportFlag()[i] == true)) {
-					mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
+					mapAttribute(edge.getSUID(), parts[i].trim(), i);
 				}
 			}
 		}
@@ -162,54 +163,37 @@ public class NetworkLineParser {
 	 * @param entry
 	 * @param index
 	 */
-	private void mapAttribute(final String key, final String entry, final int index) {
-		Byte type = nmp.getAttributeTypes()[index];
+	private void mapAttribute(final long key, final String entry, final int index) {
+		Class<?> type = nmp.getAttributeTypes()[index];
 
-		switch (type) {
-			case CyAttributes.TYPE_BOOLEAN:
-				nmp.getAttributes()
-				   .setAttribute(key, nmp.getAttributeNames()[index], new Boolean(entry));
+		if (type == Boolean.class || type == boolean.class){
+			nmp.getAttributes()
+			   .setAttribute(key, nmp.getAttributeNames()[index], new Boolean(entry));
+		} else if ( type == Integer.class || type == int.class){
+			nmp.getAttributes()
+			   .setAttribute(key, nmp.getAttributeNames()[index], Integer.valueOf(entry));
+		} else if (type == Double.class || type == double.class) {
+			nmp.getAttributes()
+			   .setAttribute(key, nmp.getAttributeNames()[index], new Double(entry));
+		} else if (type == String.class) {
+			nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
+		} else if (type == ArrayList.class){
+			/*
+			 * In case of list, not overwrite the attribute. Get the existing
+			 * list, and add it to the list.
+			 */
+			List curList = nmp.getAttributes()
+			                  .getListAttribute(key, nmp.getAttributeNames()[index]);
 
-				break;
+			if (curList == null) {
+				curList = new ArrayList();
+			}
 
-			case CyAttributes.TYPE_INTEGER:
-				nmp.getAttributes()
-				   .setAttribute(key, nmp.getAttributeNames()[index], Integer.valueOf(entry));
+			curList.addAll(buildList(entry));
 
-				break;
-
-			case CyAttributes.TYPE_FLOATING:
-				nmp.getAttributes()
-				   .setAttribute(key, nmp.getAttributeNames()[index], new Double(entry));
-
-				break;
-
-			case CyAttributes.TYPE_STRING:
-				nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
-
-				break;
-
-			case CyAttributes.TYPE_SIMPLE_LIST:
-
-				/*
-				 * In case of list, not overwrite the attribute. Get the existing
-				 * list, and add it to the list.
-				 */
-				List curList = nmp.getAttributes()
-				                  .getListAttribute(key, nmp.getAttributeNames()[index]);
-
-				if (curList == null) {
-					curList = new ArrayList();
-				}
-
-				curList.addAll(buildList(entry));
-
-				nmp.getAttributes().setListAttribute(key, nmp.getAttributeNames()[index], curList);
-
-				break;
-
-			default:
-				nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
+			nmp.getAttributes().setListAttribute(key, nmp.getAttributeNames()[index], curList);
+		} else {
+			nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
 		}
 	}
 

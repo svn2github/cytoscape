@@ -39,7 +39,7 @@ package org.cytoscape.io.internal.reader.table;
 import cytoscape.Cytoscape;
 import cytoscape.data.ontology.GeneOntology;
 import cytoscape.data.ontology.Ontology;
-import cytoscape.data.synonyms.Aliases;
+//import cytoscape.data.synonyms.Aliases;
 import static org.cytoscape.io.internal.reader.table.TextFileDelimiters.PIPE;
 import static org.cytoscape.io.internal.reader.table.TextFileDelimiters.TAB;
 import cytoscape.util.BioDataServerUtil;
@@ -111,7 +111,7 @@ public class GeneAssociationReader implements TextTableReader {
 	private static final String TAXON_RESOURCE_FILE = "/resources/tax_report.txt";
 	private InputStream is;
 	private final String keyAttributeName;
-	private Aliases nodeAliases;
+//	private Aliases nodeAliases;
 	private Map<String, List<String>> attr2id;
 	private CyAttributes nodeAttributes;
 	private GeneOntology geneOntology;

@@ -112,83 +112,83 @@ public class AttributeLineParser {
 		 *
 		 * The variable aliasSet has non-redundant set of object names.
 		 */
-		final Set<String> aliasSet = new TreeSet<String>();
-
-		if (mapping.getAliasIndexList().size() != 0) {
-			/*
-			 * Alias column exists. Extract those keys.
-			 */
-			String aliasCell = null;
-
-			for (int aliasIndex : mapping.getAliasIndexList()) {
-				if (parts.length > aliasIndex) {
-					aliasCell = parts[aliasIndex];
-
-					if ((aliasCell != null) && (aliasCell.trim().length() != 0)) {
-						aliasSet.addAll(buildList(aliasCell, CyAttributes.TYPE_STRING));
-					}
-				}
-			}
-		}
-		aliasSet.add(primaryKey);
+//		final Set<String> aliasSet = new TreeSet<String>();
+//
+//		if (mapping.getAliasIndexList().size() != 0) {
+//			/*
+//			 * Alias column exists. Extract those keys.
+//			 */
+//			String aliasCell = null;
+//
+//			for (int aliasIndex : mapping.getAliasIndexList()) {
+//				if (parts.length > aliasIndex) {
+//					aliasCell = parts[aliasIndex];
+//
+//					if ((aliasCell != null) && (aliasCell.trim().length() != 0)) {
+//						aliasSet.addAll(buildList(aliasCell, String.class));
+//					}
+//				}
+//			}
+//		}
+//		aliasSet.add(primaryKey);
 
 		/*
 		 * Case 1: use node ID as the key
 		 */
 		if (mapping.getMappingAttribute().equals(mapping.ID)) {
-			transfer2cyattributes(primaryKey, aliasSet, parts);
+			transfer2cyattributes(primaryKey, parts);
 		} else {
 			/*
 			 * Case 2: use an attribute as the key.
 			 */
-			List<String> objectIDs = null;
-
-			for (String id : aliasSet) {
-				// Normal Mapping.  Case sensitive.
-				
-				if (mapping.getAttributeToIDMap().containsKey(id)) {
-					objectIDs = mapping.toID(id);
-
-					for (String objectID : objectIDs) {
-						mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
-					}
-
-					break;
-				} else if (mapping.getCaseSensitive() == false) {
-					
-					Set<String> keySet = mapping.getAttributeToIDMap().keySet();
-
-					String newKey = null;
-
-					for (String key : keySet) {
-						if (key.equalsIgnoreCase(id)) {
-							newKey = key;
-							
-							break;
-						}
-					}
-
-					if (newKey != null) {
-						objectIDs = mapping.toID(newKey);
-
-						for (String objectID : objectIDs) {
-							mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
-						}
-
-						break;
-					}
-				}
-			}
-
-			if (objectIDs != null) {
-				for (String key : objectIDs) {
-					transfer2cyattributes(key, aliasSet, parts);
-				}
-			}
+//			List<String> objectIDs = null;
+//
+//			for (String id : aliasSet) {
+//				// Normal Mapping.  Case sensitive.
+//				
+//				if (mapping.getAttributeToIDMap().containsKey(id)) {
+//					objectIDs = mapping.toID(id);
+//
+////					for (String objectID : objectIDs) {
+////						mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
+////					}
+//
+//					break;
+//				} else if (mapping.getCaseSensitive() == false) {
+//					
+//					Set<String> keySet = mapping.getAttributeToIDMap().keySet();
+//
+//					String newKey = null;
+//
+//					for (String key : keySet) {
+//						if (key.equalsIgnoreCase(id)) {
+//							newKey = key;
+//							
+//							break;
+//						}
+//					}
+//
+//					if (newKey != null) {
+//						objectIDs = mapping.toID(newKey);
+//
+////						for (String objectID : objectIDs) {
+////							mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
+////						}
+//
+//						break;
+//					}
+//				}
+//			}
+//
+//			if (objectIDs != null) {
+//				for (String key : objectIDs) {
+//					transfer2cyattributes(key, aliasSet, parts);
+//				}
+//			}
 		}
 	}
 
-	private void transfer2cyattributes(String primaryKey, Set<String> aliasSet, String[] parts) {
+	private void transfer2cyattributes(String primaryKey, String[] parts) {
 		String altKey = null;
 		String targetNetworkID = null;
 
@@ -196,113 +196,115 @@ public class AttributeLineParser {
 		 * Search the key
 		 */
 		switch (mapping.getObjectType()) {
+		// TODO: capture mapping type as CyDataTable meta data
+		
 			case NODE:
 
-				CyNode node = Cytoscape.getCyNode(primaryKey);
+//				CyNode node = Cytoscape.getCyNode(primaryKey);
+//
+//				if ((mapping.getCaseSensitive() == false) && (node == null)) {
+//					// This is extremely slow, but we have no choice.
+//					final RootGraph rg = Cytoscape.getRootGraph();
+//					int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
+//					int nodeCount = nodes.length;
+//
+//					for (int i = 0; i < nodeCount; i++) {
+//						if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+//							node = rg.getNode(nodes[i]);
+//							primaryKey = node.getIdentifier();
+//
+//							break;
+//						}
+//					}
+//				}
 
-				if ((mapping.getCaseSensitive() == false) && (node == null)) {
-					// This is extremely slow, but we have no choice.
-					final RootGraph rg = Cytoscape.getRootGraph();
-					int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
-					int nodeCount = nodes.length;
-
-					for (int i = 0; i < nodeCount; i++) {
-						if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
-							node = rg.getNode(nodes[i]);
-							primaryKey = node.getIdentifier();
-
-							break;
-						}
-					}
-				}
-
-				if (node == null) {
-					for (String alias : aliasSet) {
-						node = Cytoscape.getCyNode(alias);
-
-						if ((mapping.getCaseSensitive() == false) && (node == null)) {
-							// This is extremely slow, but we have no choice.
-							final RootGraph rg = Cytoscape.getRootGraph();
-							int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
-							int nodeCount = nodes.length;
-
-							for (int i = 0; i < nodeCount; i++) {
-								if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(alias)) {
-									node = rg.getNode(nodes[i]);
-									alias = node.getIdentifier();
-
-									break;
-								}
-							}
-						}
-
-						if (node != null) {
-							altKey = alias;
-
-							break;
-						}
-					}
-
-					if (node == null) {
-						return;
-					}
-				}
+//				if (node == null) {
+//					for (String alias : aliasSet) {
+//						node = Cytoscape.getCyNode(alias);
+//
+//						if ((mapping.getCaseSensitive() == false) && (node == null)) {
+//							// This is extremely slow, but we have no choice.
+//							final RootGraph rg = Cytoscape.getRootGraph();
+//							int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
+//							int nodeCount = nodes.length;
+//
+//							for (int i = 0; i < nodeCount; i++) {
+//								if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(alias)) {
+//									node = rg.getNode(nodes[i]);
+//									alias = node.getIdentifier();
+//
+//									break;
+//								}
+//							}
+//						}
+//
+//						if (node != null) {
+//							altKey = alias;
+//
+//							break;
+//						}
+//					}
+//
+//					if (node == null) {
+//						return;
+//					}
+//				}
 
 				break;
 
 			case EDGE:
 
-				CyEdge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
+//				CyEdge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
+//
+//				if ((mapping.getCaseSensitive() == false) && (edge == null)) {
+//					// This is extremely slow, but we have no choice.
+//					final RootGraph rg = Cytoscape.getRootGraph();
+//					int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
+//					int edgeCount = edges.length;
+//
+//					for (int i = 0; i < edgeCount; i++) {
+//						if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+//							edge = rg.getEdge(edges[i]);
+//							primaryKey = edge.getIdentifier();
+//
+//							break;
+//						}
+//					}
+//				}
 
-				if ((mapping.getCaseSensitive() == false) && (edge == null)) {
-					// This is extremely slow, but we have no choice.
-					final RootGraph rg = Cytoscape.getRootGraph();
-					int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
-					int edgeCount = edges.length;
-
-					for (int i = 0; i < edgeCount; i++) {
-						if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
-							edge = rg.getEdge(edges[i]);
-							primaryKey = edge.getIdentifier();
-
-							break;
-						}
-					}
-				}
-
-				if (edge == null) {
-					for (String alias : aliasSet) {
-						edge = Cytoscape.getRootGraph().getEdge(alias);
-
-						if ((mapping.getCaseSensitive() == false) && (edge == null)) {
-							// This is extremely slow, but we have no choice.
-							final RootGraph rg = Cytoscape.getRootGraph();
-							int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
-							int edgeCount = edges.length;
-
-							for (int i = 0; i < edgeCount; i++) {
-								if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(alias)) {
-									edge = rg.getEdge(edges[i]);
-									alias = edge.getIdentifier();
-
-									break;
-								}
-							}
-						}
-
-						if (edge != null) {
-							altKey = alias;
-
-							break;
-						}
-					}
-
-					if (edge == null) {
-						return;
-					}
-				} else {
-					break;
-				}
+//				if (edge == null) {
+//					for (String alias : aliasSet) {
+//						edge = Cytoscape.getRootGraph().getEdge(alias);
+//
+//						if ((mapping.getCaseSensitive() == false) && (edge == null)) {
+//							// This is extremely slow, but we have no choice.
+//							final RootGraph rg = Cytoscape.getRootGraph();
+//							int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
+//							int edgeCount = edges.length;
+//
+//							for (int i = 0; i < edgeCount; i++) {
+//								if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(alias)) {
+//									edge = rg.getEdge(edges[i]);
+//									alias = edge.getIdentifier();
+//
+//									break;
+//								}
+//							}
+//						}
+//
+//						if (edge != null) {
+//							altKey = alias;
+//
+//							break;
+//						}
+//					}
+//
+//					if (edge == null) {
+//						return;
+//					}
+//				} else {
+//					break;
+//				}
 
 				break;
 
@@ -312,30 +314,30 @@ public class AttributeLineParser {
 				 * This is a special case: Since network IDs are only integers and
 				 * not always the same, we need to use title instead of ID.
 				 */
-				if (mapping.getnetworkTitleMap().containsKey(primaryKey)) {
-					targetNetworkID = mapping.getnetworkTitleMap().get(primaryKey);
+					if (mapping.getnetworkTitleMap().containsKey(primaryKey)) {
+						targetNetworkID = mapping.getnetworkTitleMap().get(primaryKey);
+
+						break;
+					}
+
+//					if (targetNetworkID == null) {
+//						for (String alias : aliasSet) {
+//							if (mapping.getnetworkTitleMap().containsKey(alias)) {
+//								targetNetworkID = mapping.getnetworkTitleMap().get(alias);
+//
+//								break;
+//							}
+//						}
+//					}
+
+					if (targetNetworkID == null) {
+						/*
+						 * Network not found: just ignore this line.
+						 */
+						return;
+					}
 
 					break;
-				}
-
-				if (targetNetworkID == null) {
-					for (String alias : aliasSet) {
-						if (mapping.getnetworkTitleMap().containsKey(alias)) {
-							targetNetworkID = mapping.getnetworkTitleMap().get(alias);
-
-							break;
-						}
-					}
-				}
-
-				if (targetNetworkID == null) {
-					/*
-					 * Network not found: just ignore this line.
-					 */
-					return;
-				}
-
-				break;
 
 			default:
 		}
@@ -355,7 +357,7 @@ public class AttributeLineParser {
 				 * First, check the node exists or not with the primary key
 				 */
 				else if (altKey == null) {
-					mapAttribute(primaryKey, parts[i].trim(), i);
+					mapAttribute(netSUID, parts[i].trim(), i);
 				} else {
 					mapAttribute(altKey, parts[i].trim(), i);
 				}
@@ -365,9 +367,9 @@ public class AttributeLineParser {
 		/*
 		 * Finally, add aliases and primary key.
 		 */
-		mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
+//		mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
 		mapping.getAttributes()
-		       .setAttribute(primaryKey, mapping.getAttributeNames()[mapping.getKeyIndex()],
+		       .setAttribute(netSUID, mapping.getAttributeNames()[mapping.getKeyIndex()],
 		                     parts[mapping.getKeyIndex()]);
 
 		/*
@@ -383,104 +385,54 @@ public class AttributeLineParser {
 	 * @param index
 	 */
 	private void mapAttribute(final String key, final String entry, final int index) {
-		final Byte type = mapping.getAttributeTypes()[index];
+		final Class<?> type = mapping.getAttributeTypes()[index];
 
 		//		System.out.println("Index = " + mapping.getAttributeNames()[index] + ", " + key + " = "
 		//		                   + entry);
-		switch (type) {
-			case CyAttributes.TYPE_BOOLEAN:
+		
+		if (type == Boolean.class || type == boolean.class){
+			mapping.getAttributes()
+		       .setAttribute(key, mapping.getAttributeNames()[index], new Boolean(entry));			
+		} else if (type == Integer.class || type == int.class){
+			mapping.getAttributes()
+		       .setAttribute(key, mapping.getAttributeNames()[index], Integer.valueOf(entry));		
+		} else if (type == Double.class || type == double.class){
+			mapping.getAttributes()
+		       .setAttribute(key, mapping.getAttributeNames()[index], new Double(entry));			
+		} else if (type == String.class) {
+			mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+		} else if (type == ArrayList.class) {
+			/*
+			 * In case of list, not overwrite the attribute. Get the existing
+			 * list, and add it to the list.
+			 *
+			 * Since list has data types for their data types, so we need to
+			 * extract it first.
+			 *
+			 */
+			final Byte[] listTypes = mapping.getListAttributeTypes();
+			final Byte listType;
 
-				Boolean newBool;
+			if (index == mapping.getOntologyIndex()) {
+				listType = CyAttributes.TYPE_STRING;
+			} else if (listTypes != null) {
+				listType = listTypes[index];
+			} else {
+				listType = CyAttributes.TYPE_STRING;
+			}
 
-				try {
-					newBool = new Boolean(entry);
-					mapping.getAttributes()
-					       .setAttribute(key, mapping.getAttributeNames()[index], newBool);
-				} catch (Exception e) {
-					invalid.put(key, entry);
-				}
+			List curList = mapping.getAttributes()
+			                      .getListAttribute(key, mapping.getAttributeNames()[index]);
 
-				break;
+			if (curList == null) {
+				curList = new ArrayList();
+			}
 
-			case CyAttributes.TYPE_INTEGER:
-
-				Integer newInt;
-
-				try {
-					newInt = Integer.valueOf(entry);
-					mapping.getAttributes()
-					       .setAttribute(key, mapping.getAttributeNames()[index], newInt);
-				} catch (Exception e) {
-					invalid.put(key, entry);
-				}
-
-				break;
-
-			case CyAttributes.TYPE_FLOATING:
-
-				Double newDouble;
-
-				try {
-					newDouble = new Double(entry);
-					mapping.getAttributes()
-					       .setAttribute(key, mapping.getAttributeNames()[index], newDouble);
-				} catch (Exception e) {
-					invalid.put(key, entry);
-				}
-
-				break;
-
-			case CyAttributes.TYPE_STRING:
-				try {
-					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
-				} catch (Exception e) {
-					invalid.put(key, entry);
-				}
-
-				break;
-
-			case CyAttributes.TYPE_SIMPLE_LIST:
-
-				/*
-				 * In case of list, not overwrite the attribute. Get the existing
-				 * list, and add it to the list.
-				 *
-				 * Since list has data types for their data types, so we need to
-				 * extract it first.
-				 *
-				 */
-				final Byte[] listTypes = mapping.getListAttributeTypes();
-				final Byte listType;
-
-				if (listTypes != null) {
-					listType = listTypes[index];
-				} else {
-					listType = CyAttributes.TYPE_STRING;
-				}
-
-				List curList = mapping.getAttributes()
-				                      .getListAttribute(key, mapping.getAttributeNames()[index]);
-
-				if (curList == null) {
-					curList = new ArrayList();
-				}
-
-				curList.addAll(buildList(entry, listType));
-				try {
-					mapping.getAttributes()
-					       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
-				} catch (Exception e) {
-					invalid.put(key, entry);
-				}
-
-				break;
-
-			default:
-				try {
-					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
-				} catch (Exception e) {
-					invalid.put(key, entry);
-				}
+			curList.addAll(buildList(entry, listType));
+			mapping.getAttributes()
+			       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
+		} else {
+			mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
 		}
 	}
 
@@ -493,7 +445,7 @@ public class AttributeLineParser {
 	 *
 	 * @return
 	 */
-	private List buildList(final String entry, final Byte dataType) {
+	private List buildList(final String entry, final Class<?> dataClass) {
 		if (entry == null) {
 			return null;
 		}
@@ -503,29 +455,16 @@ public class AttributeLineParser {
 		final List listAttr = new ArrayList();
 
 		for (String listItem : parts) {
-			switch (dataType) {
-				case CyAttributes.TYPE_BOOLEAN:
+			if (dataClass == Boolean.class || dataClass == boolean.class){
 					listAttr.add(Boolean.parseBoolean(listItem.trim()));
-
-					break;
-
-				case CyAttributes.TYPE_INTEGER:
+			} else if ( dataClass == Integer.class || dataClass == int.class) {
 					listAttr.add(Integer.parseInt(listItem.trim()));
-
-					break;
-
-				case CyAttributes.TYPE_FLOATING:
+			} else if (dataClass == Double.class || dataClass == double.class) {
 					listAttr.add(Double.parseDouble(listItem.trim()));
-
-					break;
-
-				case CyAttributes.TYPE_STRING:
+			} else if (dataClass == String.class){
 					listAttr.add(listItem.trim());
-
-					break;
-
-				default:
-					break;
+			} else {
+				
 			}
 		}
 

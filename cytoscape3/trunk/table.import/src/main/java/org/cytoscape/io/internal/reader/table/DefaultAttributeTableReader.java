@@ -128,7 +128,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	                                   final List<String> delimiters, final String listDelimiter,
 	                                   final int keyIndex, final String mappingAttribute,
 	                                   final List<Integer> aliasIndexList,
-	                                   final String[] attributeNames, final Byte[] attributeTypes,
+	                                   final String[] attributeNames, final Class<?>[] attributeTypes,
 	                                   final boolean[] importFlag, final int startLineNumber)
 	    throws Exception {
 		this.source = source;

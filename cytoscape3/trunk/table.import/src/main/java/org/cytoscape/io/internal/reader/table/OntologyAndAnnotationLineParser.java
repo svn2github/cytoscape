@@ -81,111 +81,113 @@ public class OntologyAndAnnotationLineParser {
 		 *
 		 * The variable aliasSet has non-redundant set of object names.
 		 */
-		final Set<String> aliasSet = new TreeSet<String>();
-
-		if (mapping.getAliasIndexList().size() != 0) {
-			/*
-			 * Alias column exists. Extract those keys.
-			 */
-			String aliasCell = null;
-
-			for (int aliasIndex : mapping.getAliasIndexList()) {
-				if (parts.length > aliasIndex) {
-					aliasCell = parts[aliasIndex];
-
-					if ((aliasCell != null) && (aliasCell.trim().length() != 0)) {
-						aliasSet.addAll(buildList(aliasCell, CyAttributes.TYPE_STRING));
-					}
-				}
-			}
-		}
-
-		aliasSet.add(primaryKey);
+//		final Set<String> aliasSet = new TreeSet<String>();
+//
+//		if (mapping.getAliasIndexList().size() != 0) {
+//			/*
+//			 * Alias column exists. Extract those keys.
+//			 */
+//			String aliasCell = null;
+//
+//			for (int aliasIndex : mapping.getAliasIndexList()) {
+//				if (parts.length > aliasIndex) {
+//					aliasCell = parts[aliasIndex];
+//
+//					if ((aliasCell != null) && (aliasCell.trim().length() != 0)) {
+//						aliasSet.addAll(buildList(aliasCell, String.class));
+//					}
+//				}
+//			}
+//		}
+//
+//		aliasSet.add(primaryKey);
 
 		/*
 		 * Case 1: use node ID as the key
 		 */
 		if (mapping.getMappingAttribute().equals(mapping.ID)) {
-			transfer2cyattributes(primaryKey, aliasSet, parts);
+			transfer2cyattributes(primaryKey, parts);
 		} else {
 			/*
 			 * Case 2: use an attribute as the key.
 			 */
-			List<String> objectIDs = null;
-
-			for (String id : aliasSet) {
-				if (mapping.getAttributeToIDMap().containsKey(id)) {
-					objectIDs = mapping.toID(id);
-
-					for (String objectID : objectIDs) {
-						mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
-					}
-
-					break;
-				}
-			}
-
-			if (objectIDs != null) {
-				for (String key : objectIDs) {
-					transfer2cyattributes(key, aliasSet, parts);
-				}
-			}
+//			List<String> objectIDs = null;
+//
+//			for (String id : aliasSet) {
+//				if (mapping.getAttributeToIDMap().containsKey(id)) {
+//					objectIDs = mapping.toID(id);
+//
+//					for (String objectID : objectIDs) {
+//						mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
+//					}
+//
+//					break;
+//				}
+//			}
+//
+//			if (objectIDs != null) {
+//				for (String key : objectIDs) {
+//					transfer2cyattributes(key, aliasSet, parts);
+//				}
+//			}
 		}
 	}
 
-	private void transfer2cyattributes(String primaryKey, Set<String> aliasSet, String[] parts) {
-		String altKey = null;
+	private void transfer2cyattributes(String primaryKey, String[] parts) {
+//		String altKey = null;
 		String targetNetworkID = null;
 
 		/*
 		 * Search the key
 		 */
 		switch (mapping.getObjectType()) {
+		// TODO: capture mapping type as CyDataTable meta data
+		
 			case NODE:
 
-				CyNode node = Cytoscape.getCyNode(primaryKey);
-
-				if (node == null) {
-					for (String alias : aliasSet) {
-						node = Cytoscape.getCyNode(alias);
-
-						if (node != null) {
-							altKey = alias;
-
-							break;
-						}
-					}
-
-					if (node == null) {
-						return;
-					}
-				} else {
-					break;
-				}
+//				CyNode node = Cytoscape.getCyNode(primaryKey);
+//
+//				if (node == null) {
+//					for (String alias : aliasSet) {
+//						node = Cytoscape.getCyNode(alias);
+//
+//						if (node != null) {
+//							altKey = alias;
+//
+//							break;
+//						}
+//					}
+//
+//					if (node == null) {
+//						return;
+//					}
+//				} else {
+//					break;
+//				}
 
 				break;
 
 			case EDGE:
 
-				CyEdge edge = Cytoscape.getCyEdge(primaryKey);
-
-				if (edge == null) {
-					for (String alias : aliasSet) {
-						edge = Cytoscape.getCyEdge(alias);
-
-						if (edge != null) {
-							altKey = alias;
-
-							break;
-						}
-					}
-
-					if (edge == null) {
-						return;
-					}
-				} else {
-					break;
-				}
+//				CyEdge edge = Cytoscape.getCyEdge(primaryKey);
+//
+//				if (edge == null) {
+//					for (String alias : aliasSet) {
+//						edge = Cytoscape.getCyEdge(alias);
+//
+//						if (edge != null) {
+//							altKey = alias;
+//
+//							break;
+//						}
+//					}
+//
+//					if (edge == null) {
+//						return;
+//					}
+//				} else {
+//					break;
+//				}
 
 				break;
 
@@ -201,15 +203,15 @@ public class OntologyAndAnnotationLineParser {
 					break;
 				}
 
-				if (targetNetworkID == null) {
-					for (String alias : aliasSet) {
-						if (mapping.getnetworkTitleMap().containsKey(alias)) {
-							targetNetworkID = mapping.getnetworkTitleMap().get(alias);
-
-							break;
-						}
-					}
-				}
+//				if (targetNetworkID == null) {
+//					for (String alias : aliasSet) {
+//						if (mapping.getnetworkTitleMap().containsKey(alias)) {
+//							targetNetworkID = mapping.getnetworkTitleMap().get(alias);
+//
+//							break;
+//						}
+//					}
+//				}
 
 				if (targetNetworkID == null) {
 					/*
@@ -237,93 +239,76 @@ public class OntologyAndAnnotationLineParser {
 				/*
 				 * Frist, check the node exists or not with the primary key
 				 */
-				else if (altKey == null) {
+//				else if (altKey == null) {
 					mapAttribute(primaryKey, parts[i].trim(), i);
-				} else {
-					mapAttribute(altKey, parts[i].trim(), i);
-				}
+//				} else {
+//					mapAttribute(altKey, parts[i].trim(), i);
+//				}
 			}
 		}
 
 		/*
 		 * Finally, add aliases
 		 */
-		if (altKey == null) {
-			mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
-		} else {
-			mapping.getAlias().add(altKey, new ArrayList<String>(aliasSet));
-		}
+//		if (altKey == null) {
+//			mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
+//		} else {
+//			mapping.getAlias().add(altKey, new ArrayList<String>(aliasSet));
+//		}
 	}
 
 	private void mapAttribute(final String key, final String entry, final int index) {
-		final Byte type;
+		final Class<?> type;
 
 		if (index == mapping.getOntologyIndex()) {
-			type = CyAttributes.TYPE_SIMPLE_LIST;
+			type = ArrayList.class;
 		} else {
 			type = mapping.getAttributeTypes()[index];
 		}
 
-		switch (type) {
-			case CyAttributes.TYPE_BOOLEAN:
-				mapping.getAttributes()
-				       .setAttribute(key, mapping.getAttributeNames()[index], new Boolean(entry));
+		if (type == Boolean.class || type == boolean.class){
+			mapping.getAttributes()
+		       .setAttribute(key, mapping.getAttributeNames()[index], new Boolean(entry));			
+		} else if (type == Integer.class || type == int.class){
+			mapping.getAttributes()
+		       .setAttribute(key, mapping.getAttributeNames()[index], Integer.valueOf(entry));		
+		} else if (type == Double.class || type == double.class){
+			mapping.getAttributes()
+		       .setAttribute(key, mapping.getAttributeNames()[index], new Double(entry));			
+		} else if (type == String.class) {
+			mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+		} else if (type == ArrayList.class) {
+			/*
+			 * In case of list, not overwrite the attribute. Get the existing
+			 * list, and add it to the list.
+			 *
+			 * Since list has data types for their data types, so we need to
+			 * extract it first.
+			 *
+			 */
+			final Class<?>[] listTypes = mapping.getListAttributeTypes();
+			final Class<?> listType;
 
-				break;
+			if (index == mapping.getOntologyIndex()) {
+				listType = String.class;
+			} else if (listTypes != null) {
+				listType = listTypes[index];
+			} else {
+				listType = String.class;
+			}
 
-			case CyAttributes.TYPE_INTEGER:
-				mapping.getAttributes()
-				       .setAttribute(key, mapping.getAttributeNames()[index], Integer.valueOf(entry));
+			List curList = mapping.getAttributes()
+			                      .getListAttribute(key, mapping.getAttributeNames()[index]);
 
-				break;
+			if (curList == null) {
+				curList = new ArrayList();
+			}
 
-			case CyAttributes.TYPE_FLOATING:
-				mapping.getAttributes()
-				       .setAttribute(key, mapping.getAttributeNames()[index], new Double(entry));
-
-				break;
-
-			case CyAttributes.TYPE_STRING:
-				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
-
-				break;
-
-			case CyAttributes.TYPE_SIMPLE_LIST:
-
-				/*
-				 * In case of list, not overwrite the attribute. Get the existing
-				 * list, and add it to the list.
-				 *
-				 * Since list has data types for their data types, so we need to
-				 * extract it first.
-				 *
-				 */
-				final Byte[] listTypes = mapping.getListAttributeTypes();
-				final Byte listType;
-
-				if (index == mapping.getOntologyIndex()) {
-					listType = CyAttributes.TYPE_STRING;
-				} else if (listTypes != null) {
-					listType = listTypes[index];
-				} else {
-					listType = CyAttributes.TYPE_STRING;
-				}
-
-				List curList = mapping.getAttributes()
-				                      .getListAttribute(key, mapping.getAttributeNames()[index]);
-
-				if (curList == null) {
-					curList = new ArrayList();
-				}
-
-				curList.addAll(buildList(entry, listType));
-				mapping.getAttributes()
-				       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
-
-				break;
-
-			default:
-				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+			curList.addAll(buildList(entry, listType));
+			mapping.getAttributes()
+			       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
+		} else {
+			mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
 		}
 	}
 
@@ -332,7 +317,7 @@ public class OntologyAndAnnotationLineParser {
 	 *
 	 * @return
 	 */
-	private List buildList(final String entry, final Byte dataType) {
+	private List buildList(final String entry, final Class<?> dataClass) {
 		if (entry == null) {
 			return null;
 		}
@@ -342,32 +327,20 @@ public class OntologyAndAnnotationLineParser {
 		final List listAttr = new ArrayList();
 
 		for (String listItem : parts) {
-			switch (dataType) {
-				case CyAttributes.TYPE_BOOLEAN:
+			if (dataClass == Boolean.class || dataClass == boolean.class){
 					listAttr.add(Boolean.parseBoolean(listItem.trim()));
-
-					break;
-
-				case CyAttributes.TYPE_INTEGER:
+			} else if ( dataClass == Integer.class || dataClass == int.class) {
 					listAttr.add(Integer.parseInt(listItem.trim()));
-
-					break;
-
-				case CyAttributes.TYPE_FLOATING:
+			} else if (dataClass == Double.class || dataClass == double.class) {
 					listAttr.add(Double.parseDouble(listItem.trim()));
-
-					break;
-
-				case CyAttributes.TYPE_STRING:
+			} else if (dataClass == String.class){
 					listAttr.add(listItem.trim());
-
-					break;
-
-				default:
-					break;
+			} else {
+				
 			}
 		}
 
 		return listAttr;
 	}
+
 }
