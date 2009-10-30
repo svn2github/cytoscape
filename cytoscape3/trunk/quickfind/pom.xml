@@ -38,6 +38,14 @@
       <artifactId>osgi_R4_compendium</artifactId>
       <optional>true</optional>
     </dependency>
+    
+    <!-- unit testing -->
+    <dependency>
+      <groupId>org.junit</groupId>
+      <artifactId>com.springsource.org.junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
