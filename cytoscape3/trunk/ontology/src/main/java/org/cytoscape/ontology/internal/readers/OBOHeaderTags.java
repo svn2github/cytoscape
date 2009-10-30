@@ -32,43 +32,27 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology.readers;
+package org.cytoscape.ontology.internal.readers;
 
-import org.cytoscape.model.CyNetwork;
-
-import java.io.IOException;
-import java.util.Map;
-
-
-/**
- * Interface for all ontology file readers.
- *
- * Basic function of the readers are build ontology DAG/Tree and its header.
- *
- * Actual data steructure is always CyNetwork and CyAttributes.
- *
- * @author kono
- *
- */
-public interface OntologyReader {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @throws IOException DOCUMENT ME!
-	 */
-	public void readOntology() throws IOException;
+public enum OBOHeaderTags {
+	FORMAT_VERSION,
+	TYPEREF,
+	VERSION,
+	DATE,
+	SAVED_BY,
+	AUTO_GENERATED_BY,
+	DEFAULT_NAMESPACE,
+	REMARK,
+	SUBSETDEF;
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyNetwork getDag();
+	public String toString() {
+		String name = name().toLowerCase();
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Map getHeader();
+		return name.replace('_', '-');
+	}
 }

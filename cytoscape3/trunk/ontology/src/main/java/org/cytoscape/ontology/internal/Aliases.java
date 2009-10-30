@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology;
+package org.cytoscape.ontology.internal;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.model.CyEdge;
@@ -69,7 +69,7 @@ public class Aliases {
 	 * Name of the attribute for aliases
 	 */
 	public static final String ALIAS = "cytoscape.alias.list";
-	private final AliasType objectType;
+	private final String objectType;
 	CyRow attributes;
 
 	/**
@@ -78,7 +78,7 @@ public class Aliases {
 	 * @param type
 	 *            Type of alias: node, edge, or network.
 	 */
-	public Aliases(AliasType type) {
+	public Aliases(String type) {
 		this.objectType = type;
 
 		switch (objectType) {

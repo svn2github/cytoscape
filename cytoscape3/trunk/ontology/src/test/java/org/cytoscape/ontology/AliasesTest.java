@@ -37,6 +37,8 @@ package cytoscape.data.synonyms;
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.ontology.internal.AliasType;
+import org.cytoscape.ontology.internal.Aliases;
 
 import java.util.ArrayList;
 import java.util.Iterator;

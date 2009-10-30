@@ -32,18 +32,23 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology.readers;
+package org.cytoscape.ontology.internal.readers;
 
-public enum OBOHeaderTags {
-	FORMAT_VERSION,
-	TYPEREF,
-	VERSION,
-	DATE,
-	SAVED_BY,
-	AUTO_GENERATED_BY,
-	DEFAULT_NAMESPACE,
-	REMARK,
-	SUBSETDEF;
+public enum DBXrefKeywords {
+	ABBREVIATION("abbreviation"),
+	DATABASE("database"),
+	GENERIC_URL("generic_url"),
+	URL_SYNTAX("url_syntax"),
+	URL_EXAMPLE("url_example"),
+	OBJECT("object"),
+	EXAMPLE_ID("example_id"),
+	SYNONYM("synonym");
+
+	private String keyword;
+
+	private DBXrefKeywords(String keyword) {
+		this.keyword = keyword;
+	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -51,8 +56,6 @@ public enum OBOHeaderTags {
 	 * @return  DOCUMENT ME!
 	 */
 	public String toString() {
-		String name = name().toLowerCase();
-
-		return name.replace('_', '-');
+		return keyword;
 	}
 }

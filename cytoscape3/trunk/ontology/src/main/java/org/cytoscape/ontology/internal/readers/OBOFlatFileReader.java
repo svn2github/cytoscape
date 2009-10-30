@@ -32,12 +32,15 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology.readers;
+package org.cytoscape.ontology.internal.readers;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
-import org.cytoscape.ontology.Ontology;
-import static org.cytoscape.ontology.readers.OBOTags.*;
+
+import org.cytoscape.ontology.internal.OntologyImpl;
+
+import static org.cytoscape.ontology.internal.readers.OBOTags.*;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -146,7 +149,7 @@ public class OBOFlatFileReader implements OntologyReader {
 		/*
 		 * Ontology DAGs will be distinguished by this attribute.
 		 */
-		networkAttributes.setAttribute(name, Ontology.IS_ONTOLOGY, true);
+		networkAttributes.setAttribute(name, OntologyImpl.IS_ONTOLOGY, true);
 		// TODO attributes are implicitly visible/invisible based on attr namespace
 		//networkAttributes.setUserVisible(Ontology.IS_ONTOLOGY, false);
 		// TODO attributes are implicitly visible/invisible based on attr namespace

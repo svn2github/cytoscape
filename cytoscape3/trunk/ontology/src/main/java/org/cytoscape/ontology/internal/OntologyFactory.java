@@ -32,10 +32,11 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology;
+package org.cytoscape.ontology.internal;
 
-import org.cytoscape.ontology.readers.OBOFlatFileReader;
-import static org.cytoscape.ontology.readers.OBOHeaderTags.DATE;
+import org.cytoscape.ontology.internal.readers.OBOFlatFileReader;
+
+import static org.cytoscape.ontology.internal.readers.OBOHeaderTags.DATE;
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
 
@@ -63,12 +64,12 @@ public class OntologyFactory {
 	 * @throws IOException DOCUMENT ME!
 	 * @throws URISyntaxException DOCUMENT ME!
 	 */
-	public Ontology createBasicOntology(URL dataSource, String name, String description)
+	public OntologyImpl createBasicOntology(URL dataSource, String name, String description)
 	    throws IOException, URISyntaxException {
 		OBOFlatFileReader reader = new OBOFlatFileReader(dataSource, name);
 		reader.readOntology();
 
-		Ontology onto = new Ontology(name, "General Ontology", description, reader.getDag());
+		OntologyImpl onto = new OntologyImpl(name, "General Ontology", description, reader.getDag());
 
 		Map header = reader.getHeader();
 

@@ -32,13 +32,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology; 
+package org.cytoscape.ontology.internal; 
 
 import cytoscape.Cytoscape;
 import cytoscape.data.synonyms.AliasType;
 import cytoscape.data.synonyms.Aliases;
 
 import javax.xml.bind.JAXBException;
+
+import org.cytoscape.ontology.Ontology;
+import org.cytoscape.ontology.OntologyManager;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -58,7 +62,7 @@ import java.util.Set;
  * @author kono
  *
  */
-public class OntologyServer implements PropertyChangeListener {
+public class OntologyManagerImpl implements OntologyManager, PropertyChangeListener {
 	public static enum OntologyType {
 		BASIC,
 		GO;
@@ -67,7 +71,7 @@ public class OntologyServer implements PropertyChangeListener {
 	/**
 	 * Map of Ontologies.
 	 */
-	private HashMap<String, Ontology> ontologies;
+	private HashMap<String, OntologyImpl> ontologies;
 
 	/*
 	 * Aliases
@@ -107,11 +111,11 @@ public class OntologyServer implements PropertyChangeListener {
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public OntologyServer() throws IOException, JAXBException {
+	public OntologyManagerImpl() throws IOException, JAXBException {
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 
 		factory = new OntologyFactory();
-		this.ontologies = new HashMap<String, Ontology>();
+		this.ontologies = new HashMap<String, OntologyImpl>();
 		this.ontologySources = new HashMap<String, URL>();
 
 		xref = new DBCrossReferences();
@@ -133,17 +137,17 @@ public class OntologyServer implements PropertyChangeListener {
 	 * @return Returns the ontologies.
 	 * @uml.property name="ontologies"
 	 */
-	public HashMap<String, Ontology> getOntologies() {
+	public HashMap<String, OntologyImpl> getOntologies() {
 		return ontologies;
 	}
 
-	public void addOntology(Ontology onto) {
+	public void addOntology(OntologyImpl onto) {
 		ontologies.put(onto.getName(), onto);
 	}
 
 	public void addOntology(URL dataSource, OntologyType type, String ontologyName,
 	                        String description) throws IOException, URISyntaxException {
-		Ontology onto;
+		OntologyImpl onto;
 
 		switch (type) {
 			case BASIC:
@@ -167,7 +171,7 @@ public class OntologyServer implements PropertyChangeListener {
 		return ontologies.size();
 	}
 
-	public void setOntology(Ontology onto) {
+	public void setOntology(OntologyImpl onto) {
 		ontologies.put(onto.getName(), onto);
 	}
 
@@ -202,5 +206,23 @@ public class OntologyServer implements PropertyChangeListener {
 			 */
 			ontologies.remove(Cytoscape.getNetwork((String) e.getNewValue()).attrs().get("title",String.class));
 		}
+	}
+
+	@Override
+	public void addOntology(Ontology ontology) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteOntology(Ontology ontology) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Ontology getOntology(String ontologyID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

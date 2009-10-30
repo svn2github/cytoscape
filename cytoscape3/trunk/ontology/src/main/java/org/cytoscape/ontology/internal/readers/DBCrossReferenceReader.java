@@ -32,10 +32,12 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology.readers;
+package org.cytoscape.ontology.internal.readers;
 
-import org.cytoscape.ontology.DBReference;
-import static org.cytoscape.ontology.readers.DBXrefKeywords.*;
+import org.cytoscape.ontology.internal.DBReference;
+
+import static org.cytoscape.ontology.internal.readers.DBXrefKeywords.*;
+
 import org.cytoscape.io.read.URLUtil;
 import java.io.BufferedReader;
 import java.io.IOException;

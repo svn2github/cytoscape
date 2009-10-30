@@ -31,11 +31,13 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.ontology;
+ */
+package org.cytoscape.ontology.internal;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.ontology.readers.OBOTags;
+
+import org.cytoscape.ontology.Term;
+import org.cytoscape.ontology.internal.readers.OBOTags;
 import org.biojava.bio.Annotation;
 import org.biojava.ontology.Ontology;
 import org.biojava.utils.AbstractChangeable;
@@ -43,52 +45,29 @@ import org.biojava.utils.AbstractChangeable;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Simple in-memory implementation of an ontology term based on BioJava's
  * interface.<br>
- *
+ * 
  * <p>
  * This implementation uses CyNetwork and CyAttributes as its actual data
  * storage. A term is equal to a CyNode and the node can have attributes like
  * other regular nodes in CyNetwork. Synonyms, description, etc are stored in
  * CyAttributes.
  * </p>
- *
+ * 
  * @since Cytoscape 2.4
  * @version 0.8
  * @author kono
- *
+ * 
  */
-@SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
-public class OntologyTerm extends AbstractChangeable implements org.biojava.ontology.OntologyTerm {
+public class OntologyTerm implements Term {
 	/*
 	 * These constants will be used as the attribute names in CyAttributes.
 	 */
 
-	//protected static final String DESCRIPTION = "description";
+	// protected static final String DESCRIPTION = "description";
 	protected static final String SYNONYM = "synonym";
-
-	/*
-	 * Type of Synonyms used in OBO
-	 */
-	public enum SynonymType {
-		NORMAL("synonym"),
-		RELATED("related_synonym"),
-		EXACT("exact_synonym"),
-		BROAD("broad_synonym"),
-		NARROW("narrow_synonym");
-
-		private String typeText;
-
-		private SynonymType(String type) {
-			this.typeText = type;
-		}
-
-		public String toString() {
-			return typeText;
-		}
-	}
 
 	/**
 	 * ID of this ontology term.
@@ -102,8 +81,9 @@ public class OntologyTerm extends AbstractChangeable implements org.biojava.onto
 
 	/**
 	 * Constructor.<br>
-	 *
-	 * @param name ID of this term.  SHOULD NOT BE NULL.
+	 * 
+	 * @param name
+	 *            ID of this term. SHOULD NOT BE NULL.
 	 * @param ontologyName
 	 * @param description
 	 */
@@ -112,9 +92,9 @@ public class OntologyTerm extends AbstractChangeable implements org.biojava.onto
 		this.ontologyName = ontologyName;
 
 		if (description != null) {
-			Cytoscape.getNodeAttributes()
-			         .setAttribute(name, OBOTags.getPrefix() + "." + OBOTags.DEF.toString(),
-			                       description);
+			Cytoscape.getNodeAttributes().setAttribute(name,
+					OBOTags.getPrefix() + "." + OBOTags.DEF.toString(),
+					description);
 		}
 	}
 
@@ -137,60 +117,58 @@ public class OntologyTerm extends AbstractChangeable implements org.biojava.onto
 	 * type.
 	 */
 	public void addSynonym(Object synonym) {
-		addSynonym(synonym, SynonymType.NORMAL);
+		addSynonym(synonym, OBOSynonym.NORMAL);
 	}
 
 	/**
 	 * In this implementation, key is the synonym name, and value is the synonym
 	 * type.
 	 */
-	@SuppressWarnings("unchecked") // TODO fix cyattributes to return the proper type
-	public void addSynonym(Object synonym, SynonymType type) {
-		Map<Object, SynonymType> synoMap = Cytoscape.getNodeAttributes()
-		                                            .getMapAttribute(name,
-		                                                             OBOTags.getPrefix() + "."
-		                                                             + SYNONYM);
+	@SuppressWarnings("unchecked")
+	// TODO fix cyattributes to return the proper type
+	public void addSynonym(Object synonym, OBOSynonym type) {
+		Map<Object, OBOSynonym> synoMap = Cytoscape.getNodeAttributes()
+				.getMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM);
 
 		if (synoMap == null) {
 			synoMap = new HashMap();
 		}
 
 		synoMap.put(synonym, type);
-		Cytoscape.getNodeAttributes()
-		         .setMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM, synoMap);
+		Cytoscape.getNodeAttributes().setMapAttribute(name,
+				OBOTags.getPrefix() + "." + SYNONYM, synoMap);
 	}
 
 	/**
 	 * Return a human-readable description of this term, or the empty string if
 	 * none is available.
-	 *
+	 * 
 	 */
 	public String getDescription() {
-		return Cytoscape.getNodeAttributes()
-		                .getStringAttribute(name, OBOTags.getPrefix() + "."
-		                                    + OBOTags.DEF.toString());
+		return Cytoscape.getNodeAttributes().getStringAttribute(name,
+				OBOTags.getPrefix() + "." + OBOTags.DEF.toString());
 	}
 
 	/**
 	 * Return sysnonym attributes for this term.
 	 */
 	public Object[] getSynonyms() {
-		return Cytoscape.getNodeAttributes()
-		                .getMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM).keySet()
-		                .toArray();
+		return Cytoscape.getNodeAttributes().getMapAttribute(name,
+				OBOTags.getPrefix() + "." + SYNONYM).keySet().toArray();
 	}
 
 	/**
 	 * Remove a synonym for this term.<br>
-	 *
+	 * 
 	 */
 	public void removeSynonym(Object synonym) {
-		Map synoMap = Cytoscape.getNodeAttributes().getMapAttribute(name, SYNONYM);
+		Map synoMap = Cytoscape.getNodeAttributes().getMapAttribute(name,
+				SYNONYM);
 
 		if (synoMap != null) {
 			synoMap.remove(synonym);
-			Cytoscape.getNodeAttributes()
-			         .setMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM, synoMap);
+			Cytoscape.getNodeAttributes().setMapAttribute(name,
+					OBOTags.getPrefix() + "." + SYNONYM, synoMap);
 		}
 	}
 
@@ -200,5 +178,17 @@ public class OntologyTerm extends AbstractChangeable implements org.biojava.onto
 	 */
 	public Annotation getAnnotation() {
 		return Annotation.EMPTY_ANNOTATION;
+	}
+
+	@Override
+	public String getID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getTermAnnotation(Class<T> type, String annotationName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

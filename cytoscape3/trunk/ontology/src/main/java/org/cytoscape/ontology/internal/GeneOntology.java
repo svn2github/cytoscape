@@ -32,11 +32,13 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ontology;
+package org.cytoscape.ontology.internal;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.ontology.readers.OBOTags;
-import static org.cytoscape.ontology.readers.OBOTags.*;
+
+import org.cytoscape.ontology.internal.readers.OBOTags;
+
+import static org.cytoscape.ontology.internal.readers.OBOTags.*;
 import static cytoscape.data.readers.MetadataEntries.SOURCE;
 import org.biojava.ontology.Term;
 import org.cytoscape.model.CyNetwork;
@@ -55,7 +57,7 @@ import java.util.List;
  *
  */
 @SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
-public class GeneOntology extends Ontology {
+public class GeneOntology extends OntologyImpl {
 	private CyAttributes goTermAttributes = Cytoscape.getNodeAttributes();
 	public enum GOAspect {
 		BIOLOGICAL_PROCESS("P"),
