@@ -66,7 +66,8 @@ public class RunQuickFindPanel {
 	 */
 	private static void createAndShowGUI() {
 		JFrame frame = new JFrame();
-		final QuickFindPanel panel = new QuickFindPanel();
+		//final QuickFindPanel panel = new QuickFindPanel();
+		final QuickFindPanel panel = null;
 		panel.enableAllQuickFindButtons();
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
 

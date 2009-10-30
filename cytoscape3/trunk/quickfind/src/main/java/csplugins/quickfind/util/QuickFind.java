@@ -114,7 +114,7 @@ public interface QuickFind {
 	/**
 	 * Node / Edge Unique Identifier.
 	 */
-	String UNIQUE_IDENTIFIER = "Unique Identifier";
+	String UNIQUE_IDENTIFIER = "name";
 
 	/**
 	 * Index all attributes.

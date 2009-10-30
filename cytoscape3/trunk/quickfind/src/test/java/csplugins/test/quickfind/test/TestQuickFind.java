@@ -64,15 +64,20 @@ public class TestQuickFind extends TestCase {
 	private static final String SCORE = "score";
 	private static final String PMID = "pmid";
 
-	private final NetworkTestSupport testSupport = new NetworkTestSupport();
+	private final NetworkTestSupport testSupport;
+	private final CyNetwork cyNetwork;
+	
+	public TestQuickFind() {
+	    //  Create Sample Network
+        //CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
+	    testSupport = new NetworkTestSupport();
+        cyNetwork = testSupport.getNetwork();
+	}
 	
 	/**
 	 * Runs basic tests to verify node indexing.
 	 */
 	public void testNodeIndexing() {
-		//  Create Sample Network
-		//CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
-	    CyNetwork cyNetwork = testSupport.getNetwork();
 		/*CyNode node0 = Cytoscape.getCyNode("rain", true);
 		CyNode node1 = Cytoscape.getCyNode("rainbow", true);
 		CyNode node2 = Cytoscape.getCyNode("rabbit", true);
@@ -180,19 +185,34 @@ public class TestQuickFind extends TestCase {
 		nodeAttributes.setAttribute(node1.getIdentifier(), LOCATION, CYTOPLASM);
 		nodeAttributes.setAttribute(node2.getIdentifier(), LOCATION, NUCLEUS);
 		nodeAttributes.setAttribute(node3.getIdentifier(), LOCATION, NUCLEUS);*/
+	    node0.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node0.attrs().set(LOCATION, CYTOPLASM);
+		
+		node1.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node1.attrs().set(LOCATION, CYTOPLASM);
+		
+		node2.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node2.attrs().set(LOCATION, NUCLEUS);
+		
+		node3.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node3.attrs().set(LOCATION, NUCLEUS);
+		
 
 		//  Create Sample Integer Attributes
 		/*nodeAttributes.setAttribute(node0.getIdentifier(), RANK, 4);
 		nodeAttributes.setAttribute(node1.getIdentifier(), RANK, 3);
 		nodeAttributes.setAttribute(node2.getIdentifier(), RANK, 1);
 		nodeAttributes.setAttribute(node3.getIdentifier(), RANK, 2);*/
+		node0.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node0.attrs().set(RANK, 4);
+		
+		node1.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node1.attrs().set(RANK, 3);
+		
+		node2.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node2.attrs().set(RANK, 1);
+		
+		node3.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node3.attrs().set(RANK, 2);
 
 		//  Create Sample Double Attributes
@@ -200,9 +220,16 @@ public class TestQuickFind extends TestCase {
 		nodeAttributes.setAttribute(node1.getIdentifier(), SCORE, 3.211);
 		nodeAttributes.setAttribute(node2.getIdentifier(), SCORE, 22.2);
 		nodeAttributes.setAttribute(node3.getIdentifier(), SCORE, 2.1);*/
+		node0.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node0.attrs().set(SCORE, 45.2);
+		
+		node1.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node1.attrs().set(SCORE, 3.211);
+		
+		node2.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node2.attrs().set(SCORE, 22.2);
+		
+		node3.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node3.attrs().set(SCORE, 2.1);
 	}
 
@@ -212,8 +239,13 @@ public class TestQuickFind extends TestCase {
 		edgeAttributes.setAttribute(edge0.getIdentifier(), PMID, "12345");
 		edgeAttributes.setAttribute(edge1.getIdentifier(), PMID, "12345");
 		edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "12666");*/
+	    edge0.attrs().getDataTable().createColumn(PMID, String.class, false);
 		edge0.attrs().set(PMID, "12345");
+		
+		edge1.attrs().getDataTable().createColumn(PMID, String.class, false);
 		edge1.attrs().set(PMID, "12345");
+		
+		edge2.attrs().getDataTable().createColumn(PMID, String.class, false);
 		edge2.attrs().set(PMID, "12666");
 	}
 
