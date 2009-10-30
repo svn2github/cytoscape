@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.session.events.NetworkViewDestroyedEvent;
 import org.cytoscape.session.events.NetworkViewAddedEvent;
@@ -88,8 +89,11 @@ import org.cytoscape.model.CyDataTableUtil;
 
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.session.events.NetworkViewAddedListener;
-import org.cytoscape.session.events.NetworkViewDestroyedListener;;
+import org.cytoscape.session.events.NetworkViewDestroyedListener;
 
+import org.cytoscape.session.CyNetworkManager;
+import cytoscape.view.CySwingApplication;
+import org.cytoscape.work.TaskManager;
 
 /**
  * Quick Find PlugIn.
@@ -104,15 +108,16 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 
 	public static CySwingApplication cytoscapeDesktop;
 	public static CyNetworkManager cyNetworkManagerServiceRef;
-	
+	public static TaskManager taskManager;	
 	/**
 	 * Constructor.
 	 */	
-	public QuickFindPlugIn(CySwingApplication cytoscapeDesktop, CyNetworkManager cyNetworkManagerServiceRef){
-		
-		this.cytoscapeDesktop = cytoscapeDesktop;
-		this.cyNetworkManagerServiceRef = cyNetworkManagerServiceRef;
-		
+	public QuickFindPlugIn(CySwingApplication cytoscapeDesktop, CyNetworkManager cyNetworkManagerServiceRef,
+			TaskManager taskmgr){
+		QuickFindPlugIn.cytoscapeDesktop = cytoscapeDesktop;
+		QuickFindPlugIn.cyNetworkManagerServiceRef = cyNetworkManagerServiceRef;
+		QuickFindPlugIn.taskManager = taskmgr;
+				
 		initListeners();
 		initToolBar();
 		initIndex();
@@ -140,9 +145,10 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 	 */
 	private void initToolBar() {
 		
-		CyMenus cyMenus = this.cytoscapeDesktop.getCyMenus();
+		CyMenus cyMenus = QuickFindPlugIn.cytoscapeDesktop.getCyMenus();
 		CyToolBar toolBar = cyMenus.getToolBar();
-		quickFindToolBar = new QuickFindPanel();
+		quickFindToolBar = new QuickFindPanel( QuickFindPlugIn.cyNetworkManagerServiceRef, 
+				QuickFindPlugIn.cytoscapeDesktop, QuickFindPlugIn.taskManager);
 
 		TextIndexComboBox comboBox = quickFindToolBar.getTextIndexComboBox();
 		ActionListener listener = new UserSelectionListener(comboBox);
