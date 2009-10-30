@@ -36,7 +36,7 @@
 
 package csplugins.quickfind.util;
 
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 
 
 /**
@@ -46,7 +46,7 @@ import cytoscape.task.TaskMonitor;
  */
 public class TaskMonitorBase implements TaskMonitor {
 	private String status;
-	private int percentComplete;
+	private double percentComplete;
 
 	/**
 	 * Sets Percent Completed.
@@ -55,7 +55,7 @@ public class TaskMonitorBase implements TaskMonitor {
 	 * @throws IllegalThreadStateException Illegal Thread State.
 	 * @throws IllegalArgumentException    Illegal Argument.
 	 */
-	public void setPercentCompleted(int percentComplete)
+	public void setProgress(double percentComplete)
 	    throws IllegalThreadStateException, IllegalArgumentException {
 		this.percentComplete = percentComplete;
 	}
@@ -97,7 +97,7 @@ public class TaskMonitorBase implements TaskMonitor {
 	 * @throws IllegalThreadStateException Illegal Thread State.
 	 * @throws NullPointerException        NullPointer Error.
 	 */
-	public void setStatus(String status) throws IllegalThreadStateException, NullPointerException {
+	public void setStatusMessage(String status) throws IllegalThreadStateException, NullPointerException {
 		this.status = status;
 	}
 
@@ -115,7 +115,10 @@ public class TaskMonitorBase implements TaskMonitor {
 	 *
 	 * @return percent complete.
 	 */
-	public int getPercentComplete() {
+	public double getPercentComplete() {
 		return percentComplete;
+	}
+	public void setTitle(String title){
+		
 	}
 }
