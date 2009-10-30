@@ -51,11 +51,11 @@ public class TestBioPaxImportWrapper extends TestCase {
 		BioPaxFilter filter = new BioPaxFilter();
 
 		//  This should be accepted
-		boolean acceptFlag = filter.accept(new File("testData/biopax_sample1.owl"));
+		boolean acceptFlag = filter.accept(new File("test-resources/biopax_sample1.owl"));
 		assertEquals(true, acceptFlag);
 
 		//  This should be rejected
-		acceptFlag = filter.accept(new File("testData/psi_sample1.xml"));
+		acceptFlag = filter.accept(new File("test-resources/psi_sample1.xml"));
 		assertEquals(false, acceptFlag);
 	}
 }

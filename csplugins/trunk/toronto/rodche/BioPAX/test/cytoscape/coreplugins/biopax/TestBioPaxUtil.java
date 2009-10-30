@@ -53,7 +53,7 @@ public class TestBioPaxUtil extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testUtil() throws Exception {
-		Model model = BioPaxUtil.readFile("testData/biopax_sample1.owl");
+		Model model = BioPaxUtil.readFile("test-resources/biopax_sample1.owl");
 		// Validate Number of Entities
 		assertNotNull(model);
 		assertEquals(8, model.getObjects(physicalEntity.class).size());
@@ -70,7 +70,7 @@ public class TestBioPaxUtil extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testUtil2() throws Exception {
-		Model model = BioPaxUtil.readFile("testData/biopax_complex.owl");
+		Model model = BioPaxUtil.readFile("test-resources/biopax_complex.owl");
 		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("CPATH-124")).toString();
 		assertTrue(pathways.length() == 0);
 	}
@@ -87,7 +87,7 @@ public class TestBioPaxUtil extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testUtil3() throws Exception {
-		Model model = BioPaxUtil.readFile("testData/Apoptosis_modified.owl");
+		Model model = BioPaxUtil.readFile("test-resources/Apoptosis_modified.owl");
 		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("Pubmed_7530336")).toString();
 		assertTrue(pathways.length() > 0);
 
@@ -105,7 +105,7 @@ public class TestBioPaxUtil extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testUtil4() throws Exception {
-		Model model = BioPaxUtil.readFile("testData/biopax_sample1.owl");
+		Model model = BioPaxUtil.readFile("test-resources/biopax_sample1.owl");
 		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("protein45")).toString();
 		assertTrue(pathways.length() > 0);
 	}

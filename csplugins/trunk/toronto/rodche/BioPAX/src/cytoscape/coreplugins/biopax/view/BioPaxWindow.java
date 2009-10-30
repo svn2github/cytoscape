@@ -72,7 +72,6 @@ public class BioPaxWindow extends JFrame {
 	 * @throws Exception All Exceptions.
 	 */
 	public static void main(String[] args) throws Exception {
-		//FileInputStream in = new FileInputStream("testData/biopax_complex.owl");
 		final BioPaxWindow bioPaxWindow = new BioPaxWindow();
 		SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
@@ -80,7 +79,7 @@ public class BioPaxWindow extends JFrame {
 						BioPaxContainer bpContainer = BioPaxContainer.getInstance();
 						BioPaxDetailsPanel bpPanel = bpContainer.getBioPaxDetailsPanel();
 						bpPanel.showDetails("CPATH-124");
-						//bioPaxWindow.add(bpPanel);
+						bioPaxWindow.add(bpPanel);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

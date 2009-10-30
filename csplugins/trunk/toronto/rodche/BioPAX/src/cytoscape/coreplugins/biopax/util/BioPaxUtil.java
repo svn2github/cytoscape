@@ -738,8 +738,8 @@ public class BioPaxUtil {
 		if(model.getLevel() == BioPAXLevel.L3) {
 			Collection<Pathway> pws = model.getObjects(Pathway.class);
 			for(Pathway pw: pws) {
-				if(!pw.isPathwayComponentsOf().isEmpty()
-						|| !pw.isParticipantsOf().isEmpty()) {
+				if(!pw.getPathwayComponentsOf().isEmpty()
+						|| !pw.getParticipantsOf().isEmpty()) {
 					continue; // skipping sub-pathways
 				}
 				modelName.append(" ").append(getNodeName(pw)); 
@@ -799,10 +799,10 @@ public class BioPaxUtil {
 		} else if(bpe instanceof Process) { // Interaction or Pathway
 			Process pr = (Process) bpe;
 			pathways.add(getNodeName(pr));
-			for(Pathway pw:  pr.isPathwayComponentsOf()) {
+			for(Pathway pw:  pr.getPathwayComponentsOf()) {
 				pathways.addAll(getParentPathwayName(pw));
 			}
-			for(PathwayStep st : pr.isStepInteractionsOf()) {
+			for(PathwayStep st : pr.getStepInteractionsOf()) {
 				pathways.addAll(getParentPathwayName(st));
 			}
 			
@@ -811,7 +811,7 @@ public class BioPaxUtil {
 				pathways.addAll(getParentPathwayName(pw));
 			}
 		} else if (bpe instanceof PathwayStep) {
-			for(Pathway pw : ((PathwayStep)bpe).isPathwayOrdersOf()) {
+			for(Pathway pw : ((PathwayStep)bpe).getPathwayOrdersOf()) {
 				pathways.addAll(getParentPathwayName(pw));
 			}
 		} else if(bpe instanceof physicalEntity) {
@@ -819,7 +819,7 @@ public class BioPaxUtil {
 				pathways.addAll(getParentPathwayName(p));
 			}
 		} else if(bpe instanceof PhysicalEntity) {
-			for(Complex c : ((PhysicalEntity)bpe).isComponentOf()) { 
+			for(Complex c : ((PhysicalEntity)bpe).getComponentOf()) { 
 				pathways.addAll(getParentPathwayName(c));
 			}
 		} else if(bpe instanceof physicalEntityParticipant) {
@@ -837,7 +837,7 @@ public class BioPaxUtil {
 				pathways.addAll(getParentPathwayName(p));
 			}
 		} else if(bpe instanceof Entity) {
-			for(Interaction p : ((Entity)bpe).isParticipantsOf()) {
+			for(Interaction p : ((Entity)bpe).getParticipantsOf()) {
 				pathways.addAll(getParentPathwayName(p));
 			}
 		} 

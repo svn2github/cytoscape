@@ -50,7 +50,7 @@ public class TestWebFileConnect extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testFileConnect() throws Exception {
-		String str = WebFileConnect.retrieveDocument(new File("testData/biopax_sample1.owl"));
+		String str = WebFileConnect.retrieveDocument(new File("test-resources/biopax_sample1.owl"));
 		assertTrue(str.startsWith("<?xml version=\"1.0\" " + "encoding=\"UTF-8\" ?>"));
 	}
 

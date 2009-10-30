@@ -87,7 +87,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testMapper1() throws Exception {
-		Model model =BioPaxUtil.readFile("testData/biopax_sample1.owl");
+		Model model =BioPaxUtil.readFile("biopax_sample1.owl");
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
 
@@ -104,7 +104,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testComplexMapping() throws Exception {
-		Model model =BioPaxUtil.readFile("testData/biopax_complex.owl");
+		Model model =BioPaxUtil.readFile("test-resources/biopax_complex.owl");
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
 
@@ -166,7 +166,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testPhysicalInteractions() throws Exception {
-		Model model = BioPaxUtil.readFile("testData/DIP_ppi.owl");
+		Model model = BioPaxUtil.readFile("test-resources/DIP_ppi.owl");
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
 
