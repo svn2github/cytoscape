@@ -15,4 +15,10 @@
         </osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="dropListenerService" ref="dropListener"
+		interface="org.cytoscape.dnd.DropTaskFactory">
+        <osgi:service-properties>
+           <entry key="title" value="Drop Listener Service" />
+        </osgi:service-properties>
+	</osgi:service>
 </beans>

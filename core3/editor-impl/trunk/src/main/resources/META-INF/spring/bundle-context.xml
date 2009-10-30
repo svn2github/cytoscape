@@ -13,5 +13,9 @@
 		class="org.cytoscape.editor.internal.SIFInterpreterTaskFactory">
 	</bean>
 
+	<bean id="dropListener"
+		class="org.cytoscape.editor.internal.DropListener">
+	</bean>
+
 
 </beans>
