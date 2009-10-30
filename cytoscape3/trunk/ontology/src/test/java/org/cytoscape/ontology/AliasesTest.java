@@ -38,7 +38,7 @@ import cytoscape.Cytoscape;
 import junit.framework.TestCase;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.ontology.internal.AliasType;
-import org.cytoscape.ontology.internal.Aliases;
+import org.cytoscape.ontology.internal.AliasImpl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,7 +49,7 @@ import java.util.List;
  *
  */
 public class AliasesTest extends TestCase {
-	Aliases al;
+	AliasImpl al;
 	List<String> sampleData;
 
 	protected void setUp() throws Exception {
@@ -60,7 +60,7 @@ public class AliasesTest extends TestCase {
 		sampleData.add("alias2");
 		sampleData.add("alias3");
 
-		al = new Aliases(AliasType.NODE);
+		al = new AliasImpl(AliasType.NODE);
 	}
 
 	protected void tearDown() throws Exception {

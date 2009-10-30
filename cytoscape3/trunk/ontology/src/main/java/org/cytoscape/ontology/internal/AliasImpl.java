@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.ontology.Alias;
 
 import java.util.*;
 
@@ -64,7 +65,7 @@ import java.util.*;
  * @author kono
  *
  */
-public class Aliases {
+public class AliasImpl implements Alias {
 	/**
 	 * Name of the attribute for aliases
 	 */
@@ -78,7 +79,7 @@ public class Aliases {
 	 * @param type
 	 *            Type of alias: node, edge, or network.
 	 */
-	public Aliases(String type) {
+	public AliasImpl(String type) {
 		this.objectType = type;
 
 		switch (objectType) {
@@ -111,7 +112,6 @@ public class Aliases {
 	 * @param alias
 	 *            New alias to be added.
 	 */
-	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
 	public void add(String key, String alias) {
 		List<String> aliasList = attributes.get(ALIAS,List.class);
 

@@ -76,9 +76,9 @@ public class OntologyManagerImpl implements OntologyManager, PropertyChangeListe
 	/*
 	 * Aliases
 	 */
-	private Aliases nodeAliases;
-	private Aliases edgeAliases;
-	private Aliases networkAliases;
+	private AliasImpl nodeAliases;
+	private AliasImpl edgeAliases;
+	private AliasImpl networkAliases;
 
 	/*
 	 * Factory to create actual Ontology objects.
@@ -122,9 +122,9 @@ public class OntologyManagerImpl implements OntologyManager, PropertyChangeListe
 		xref.load();
 
 		//loadBookmarks();
-		nodeAliases = new Aliases(AliasType.NODE);
-		edgeAliases = new Aliases(AliasType.EDGE);
-		networkAliases = new Aliases(AliasType.NETWORK);
+		nodeAliases = new AliasImpl(AliasType.NODE);
+		edgeAliases = new AliasImpl(AliasType.EDGE);
+		networkAliases = new AliasImpl(AliasType.NETWORK);
 	}
 
 	public DBCrossReferences getCrossReferences() {
@@ -187,15 +187,15 @@ public class OntologyManagerImpl implements OntologyManager, PropertyChangeListe
 		ontologySources = newMap;
 	}
 
-	public Aliases getNodeAliases() {
+	public AliasImpl getNodeAliases() {
 		return nodeAliases;
 	}
 
-	public Aliases getEdgeAliases() {
+	public AliasImpl getEdgeAliases() {
 		return edgeAliases;
 	}
 
-	public Aliases getNetworkAliases() {
+	public AliasImpl getNetworkAliases() {
 		return networkAliases;
 	}
 
