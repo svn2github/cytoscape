@@ -208,5 +208,17 @@ public abstract class AbstractCyDataTableTest extends TestCase {
 		fail();
 	}
 
+	// You can't have an attribute with the same name, but
+	// a different type.
+	public void testAddDuplicateNameAttr() {
+		mgr.createColumn("something", String.class, false);
+		try {
+			mgr.createColumn("something", Integer.class, false);
+		} catch (Exception e) {
+			return;
+		}
+		fail();
+	}
+
 	// lots more needed
 }
