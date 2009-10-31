@@ -76,7 +76,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                 new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
-                
+
                 mapSrcAttrIDTypes = null;
             }
         });

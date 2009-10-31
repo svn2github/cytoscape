@@ -144,9 +144,6 @@
                   <StringArray count="0"/>
                 </Property>
               </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null) {&#xa;    setDatasetsCombo();&#xa;} else if(idMapper instanceof IDMapperBiomart) {&#xa;    String dataset = ((IDMapperBiomart)idMapper).getDataset();&#xa;    String display = biomartStub.datasetDisplayName(dataset);&#xa;    mapDatasetDisplayName = new HashMap(1);&#xa;    mapDatasetDisplayName.put(display, dataset);&#xa;    chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new String[] {display}));&#xa;    chooseDatasetComboBox.setEnabled(false);&#xa;}"/>
-              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
@@ -211,32 +208,23 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTextField" name="biomartBaseUrlTextField">
+                    <Component class="javax.swing.JComboBox" name="bioMartBaseUrlComboBox">
                       <Properties>
-                        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="idMapper==null || !(idMapper instanceof IDMapperBiomart)?&#xa;    biomartStub.defaultBaseURL:((IDMapperBiomart)idMapper).getBaseURL()" type="code"/>
+                        <Property name="editable" type="boolean" value="true"/>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="0"/>
                         </Property>
                       </Properties>
-                      <Constraints>
-                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                          <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="1.0" weightY="0.0"/>
-                        </Constraint>
-                      </Constraints>
-                    </Component>
-                    <Component class="javax.swing.JButton" name="biomartBaseUrlButton">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Change"/>
-                      </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="biomartBaseUrlButtonActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bioMartBaseUrlComboBoxActionPerformed"/>
                       </Events>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                        <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private BioMartComboBoxEditor bioMartComboBoxEditor;"/>
+                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="DefaultComboBoxModel theModel = new DefaultComboBoxModel();&#xa;theModel.addElement(new BioMartWrapper(&quot;BioMart (EBI UK)&quot;,&quot;http://www.biomart.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;Ensembl (EBI UK)&quot;,&quot;http://www.ensembl.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;HIGH THROUGHPUT GENE TARGETING AND TRAPPING (SANGER UK)&quot;,&quot;http://www.sanger.ac.uk/htgt/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;WORMBASE (CSHL US)&quot;,&quot;http://www.wormbase.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;REACTOME (CSHL US)&quot;,&quot;http://banon.cshl.edu:5555/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;DICTYBASE (NORTHWESTERN US)&quot;,&quot;http://www.dictybase.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;MCWMart (US)&quot;,&quot;http://rote.hmgc.mcw.edu:9999/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;HGNC (EBI UK)&quot;,&quot;http://www.genenames.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PRIDE (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/pride/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;INTERPRO (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/interpro/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;UNIPROT (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/uniprot/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;EURATMART (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/euratools/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PARAMECIUM GENOME (CNRS FRANCE)&quot;,&quot;http://paramecium.cgm.cnrs-gif.fr/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;EUREXPRESS (MRC EDINBURGH UK)&quot;,&quot;http://biomart.eurexpress.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PEPSEEKER (UNIVERSITY OF MANCHESTER UK)&quot;,&quot;http://www.ispider.manchester.ac.uk/pepseeker/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PANCREATIC EXPRESSION DATABAS (INSTITUTE OF CANCER UK&quot;,&quot;http://www.pancreasexpression.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;Human genome sequence&quot;,&quot;http://www.pancreasexpression.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;VectorBase&quot;,&quot;http://biomart.vectorbase.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;Phytozome&quot;,&quot;http://www.phytozome.net/biomart/martservice&quot;));&#xa;&#xa;bioMartBaseUrlComboBox.setModel(theModel);&#xa;bioMartComboBoxEditor = new BioMartComboBoxEditor(idMapper==null || !(idMapper instanceof IDMapperBiomart)?&#xa;    biomartStub.defaultBaseURL:((IDMapperBiomart)idMapper).getBaseURL());&#xa;bioMartComboBoxEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        bioMartBaseUrlComboBoxActionPerformed(evt);&#xa;    }&#xa;});&#xa;&#xa;bioMartBaseUrlComboBox.setEditor(bioMartComboBoxEditor);"/>
                       </AuxValues>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                          <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                          <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="0.0"/>
                         </Constraint>
                       </Constraints>
                     </Component>

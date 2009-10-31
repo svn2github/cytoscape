@@ -38,6 +38,11 @@ package csplugins.id.mapping.ui;
 import csplugins.id.mapping.IDMapperClient;
 import csplugins.id.mapping.IDMapperClientImplTunables;
 
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+
 import cytoscape.util.OpenBrowser;
 
 import org.bridgedb.IDMapperException;
@@ -111,7 +116,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         
         initComponents();
 
-        initMapTypePanel();
+        postInit();
         
     }
 
@@ -137,8 +142,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         biomartOptionCheckBox = new javax.swing.JCheckBox();
         biomartAdvancedPanel = new javax.swing.JPanel();
         javax.swing.JPanel biomartBaseUrlPanel = new javax.swing.JPanel();
-        biomartBaseUrlTextField = new javax.swing.JTextField();
-        javax.swing.JButton biomartBaseUrlButton = new javax.swing.JButton();
+        bioMartBaseUrlComboBox = new javax.swing.JComboBox();
         picrPanel = new javax.swing.JPanel();
         javax.swing.JPanel picrOpPanel = new javax.swing.JPanel();
         picrOptionCheckBox = new javax.swing.JCheckBox();
@@ -240,16 +244,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         chooseDatasetPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Dataset"));
         chooseDatasetPanel.setLayout(new javax.swing.BoxLayout(chooseDatasetPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        if (idMapper==null) {
-            setDatasetsCombo();
-        } else if(idMapper instanceof IDMapperBiomart) {
-            String dataset = ((IDMapperBiomart)idMapper).getDataset();
-            String display = biomartStub.datasetDisplayName(dataset);
-            mapDatasetDisplayName = new HashMap(1);
-            mapDatasetDisplayName.put(display, dataset);
-            chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new String[] {display}));
-            chooseDatasetComboBox.setEnabled(false);
-        }
         chooseDatasetPanel.add(chooseDatasetComboBox);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -284,23 +278,47 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         biomartBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BioMart"));
         biomartBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
 
-        biomartBaseUrlTextField.setText(idMapper==null || !(idMapper instanceof IDMapperBiomart)?
-            biomartStub.defaultBaseURL:((IDMapperBiomart)idMapper).getBaseURL());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartBaseUrlPanel.add(biomartBaseUrlTextField, gridBagConstraints);
+        DefaultComboBoxModel theModel = new DefaultComboBoxModel();
+        theModel.addElement(new BioMartWrapper("BioMart (EBI UK)","http://www.biomart.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("Ensembl (EBI UK)","http://www.ensembl.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("HIGH THROUGHPUT GENE TARGETING AND TRAPPING (SANGER UK)","http://www.sanger.ac.uk/htgt/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("WORMBASE (CSHL US)","http://www.wormbase.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("REACTOME (CSHL US)","http://banon.cshl.edu:5555/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("DICTYBASE (NORTHWESTERN US)","http://www.dictybase.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("MCWMart (US)","http://rote.hmgc.mcw.edu:9999/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("HGNC (EBI UK)","http://www.genenames.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("PRIDE (EBI UK)","http://www.ebi.ac.uk/pride/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("INTERPRO (EBI UK)","http://www.ebi.ac.uk/interpro/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("UNIPROT (EBI UK)","http://www.ebi.ac.uk/uniprot/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("EURATMART (EBI UK)","http://www.ebi.ac.uk/euratools/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("PARAMECIUM GENOME (CNRS FRANCE)","http://paramecium.cgm.cnrs-gif.fr/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("EUREXPRESS (MRC EDINBURGH UK)","http://biomart.eurexpress.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("PEPSEEKER (UNIVERSITY OF MANCHESTER UK)","http://www.ispider.manchester.ac.uk/pepseeker/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("PANCREATIC EXPRESSION DATABAS (INSTITUTE OF CANCER UK","http://www.pancreasexpression.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("Human genome sequence","http://www.pancreasexpression.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("VectorBase","http://biomart.vectorbase.org/biomart/martservice"));
+        theModel.addElement(new BioMartWrapper("Phytozome","http://www.phytozome.net/biomart/martservice"));
 
-        biomartBaseUrlButton.setText("Change");
-        biomartBaseUrlButton.addActionListener(new java.awt.event.ActionListener() {
+        bioMartBaseUrlComboBox.setModel(theModel);
+        bioMartComboBoxEditor = new BioMartComboBoxEditor(idMapper==null || !(idMapper instanceof IDMapperBiomart)?
+            biomartStub.defaultBaseURL:((IDMapperBiomart)idMapper).getBaseURL());
+        bioMartComboBoxEditor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                biomartBaseUrlButtonActionPerformed(evt);
+                bioMartBaseUrlComboBoxActionPerformed(evt);
             }
         });
-        biomartBaseUrlPanel.add(biomartBaseUrlButton, new java.awt.GridBagConstraints());
+
+        bioMartBaseUrlComboBox.setEditor(bioMartComboBoxEditor);
+        bioMartBaseUrlComboBox.setEditable(true);
+        bioMartBaseUrlComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bioMartBaseUrlComboBoxActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        biomartBaseUrlPanel.add(bioMartBaseUrlComboBox, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -581,48 +599,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         this.setDatasetsCombo();
     }//GEN-LAST:event_chooseDBComboBoxActionPerformed
 
-    private void biomartBaseUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_biomartBaseUrlButtonActionPerformed
-        String baseUrl = biomartBaseUrlTextField.getText();
-        if (baseUrl==null || baseUrl.length()==0) {
-            int ret = JOptionPane.showConfirmDialog(this,
-                    "Error: the Biomart URL is empty. \n" +
-                    "Use default: "+BiomartStub.defaultBaseURL+"?",
-                    "Empty URL", JOptionPane.YES_NO_OPTION);
-            if (ret==JOptionPane.YES_OPTION) {
-                biomartBaseUrlTextField.setText(BiomartStub.defaultBaseURL);
-                baseUrl = BiomartStub.defaultBaseURL;
-            } else {
-                return;
-            }
-        }
-
-        try {
-            biomartStub = BiomartStub.getInstance(baseUrl);
-        } catch (Exception e) {
-            int ret = JOptionPane.showConfirmDialog(this,
-                    "Error: failed to connect to the Biomart. \n" +
-                    "Use default: "+BiomartStub.defaultBaseURL+"?",
-                    "Failed", JOptionPane.YES_NO_OPTION);
-            if (ret==JOptionPane.YES_OPTION) {
-                biomartBaseUrlTextField.setText(BiomartStub.defaultBaseURL);
-                baseUrl = BiomartStub.defaultBaseURL;
-                try {
-                    biomartStub = BiomartStub.getInstance(baseUrl);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Error: failed to connect to the Biomart. \n" +
-                            "Please try later.");
-                    return;
-                }
-
-            } else {
-                return;
-            }
-        }
-
-        setChooseDBComboBox();
-        setDatasetsCombo();
-    }//GEN-LAST:event_biomartBaseUrlButtonActionPerformed
-
     private void picrOptionCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_picrOptionCheckBoxActionPerformed
         picrAdvancedPanel.setVisible(picrOptionCheckBox.isSelected());
         this.pack();
@@ -700,6 +676,48 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             OpenBrowser.openURL("http://llama.med.harvard.edu/synergizer/translate/");
         }
     }//GEN-LAST:event_infoButtonActionPerformed
+
+    private void bioMartBaseUrlComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bioMartBaseUrlComboBoxActionPerformed
+        String baseUrl = bioMartComboBoxEditor.getURLstr();
+        if (baseUrl==null || baseUrl.length()==0) {
+            int ret = JOptionPane.showConfirmDialog(this,
+                    "Error: the Biomart URL is empty. \n" +
+                    "Use default: "+BiomartStub.defaultBaseURL+"?",
+                    "Empty URL", JOptionPane.YES_NO_OPTION);
+            if (ret==JOptionPane.YES_OPTION) {
+                bioMartComboBoxEditor.setURLStr(BiomartStub.defaultBaseURL);
+                baseUrl = BiomartStub.defaultBaseURL;
+            } else {
+                return;
+            }
+        }
+
+        try {
+            biomartStub = BiomartStub.getInstance(baseUrl);
+        } catch (Exception e) {
+            int ret = JOptionPane.showConfirmDialog(this,
+                    "Error: failed to connect to the Biomart. \n" +
+                    "Use default: "+BiomartStub.defaultBaseURL+"?",
+                    "Failed", JOptionPane.YES_NO_OPTION);
+            if (ret==JOptionPane.YES_OPTION) {
+                bioMartComboBoxEditor.setURLStr(BiomartStub.defaultBaseURL);
+                baseUrl = BiomartStub.defaultBaseURL;
+                try {
+                    biomartStub = BiomartStub.getInstance(baseUrl);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error: failed to connect to the Biomart. \n" +
+                            "Please try later.");
+                    return;
+                }
+
+            } else {
+                return;
+            }
+        }
+
+        setChooseDBComboBox();
+        setDatasetsCombo();
+    }//GEN-LAST:event_bioMartBaseUrlComboBoxActionPerformed
 
     private boolean verifyInput() {
         if (typeComboBox.getSelectedItem()==ClientType.BIOMART &&
@@ -779,7 +797,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         this.chooseSpeciesComboBox.setModel(new DefaultComboBoxModel(species));
     }
 
-    private void setDatasets() {
+    private boolean setDatasets() {
         mapDatasetDisplayName = new HashMap();
         String dbDisplay = (String) chooseDBComboBox.getSelectedItem();
         String db = mapMartDisplayName.get(dbDisplay);
@@ -788,6 +806,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             datasets = biomartStub.availableDatasets(db);
         } catch(IDMapperException e) {
             e.printStackTrace();
+            return false;
         }
 
         for (String ds : datasets) {
@@ -796,14 +815,37 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                 mapDatasetDisplayName.put(display, ds);
             }
         }
+
+        return true;
     }
 
     private void setDatasetsCombo() {
-        setDatasets();
-        Vector<String> dss = new Vector(mapDatasetDisplayName.keySet());
-        Collections.sort(dss);
+        final JTaskConfig jTaskConfig = new JTaskConfig();
+        jTaskConfig.setOwner(cytoscape.Cytoscape.getDesktop());
+        jTaskConfig.displayCloseButton(true);
+        jTaskConfig.displayCancelButton(false);
+        jTaskConfig.displayStatus(true);
+        jTaskConfig.setAutoDispose(true);
+        jTaskConfig.setMillisToPopup(100);
 
-        chooseDatasetComboBox.setModel(new DefaultComboBoxModel(dss));
+        SetDataSetsTask task = new SetDataSetsTask();
+        TaskManager.executeTask(task, jTaskConfig);
+
+        if (task.success()) {
+            Vector<String> dss = new Vector(mapDatasetDisplayName.keySet());
+            Collections.sort(dss);
+
+            chooseDatasetComboBox.setModel(new DefaultComboBoxModel(dss));
+        } else {
+            chooseDatasetComboBox.setModel(new DefaultComboBoxModel());
+            JOptionPane.showMessageDialog(this, "Failed to connect to the selected mart.\n" +
+                    "Please select select another mart or change the base URL of BioMart.");
+            if (!biomartOptionCheckBox.isSelected()) {
+                biomartOptionCheckBox.setSelected(true);
+                biomartAdvancedPanel.setVisible(biomartOptionCheckBox.isSelected());
+                this.pack();
+            }
+        }
     }
 
     private boolean connectSynergizer() {
@@ -867,7 +909,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             StringBuilder connString = new StringBuilder("idmapper-biomart:") ;
             StringBuilder displayName = new StringBuilder("BioMart");
 
-            String baseurl = biomartBaseUrlTextField.getText();
+            String baseurl = bioMartComboBoxEditor.getURLstr();
             connString.append(baseurl+"?");
             if (baseurl.compareTo(BiomartStub.defaultBaseURL)!=0) {
                 displayName.append("("+baseurl+")");
@@ -922,11 +964,22 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         return cancelled;
     }
 
-    private void initMapTypePanel() {
+    private void postInit() {
         mapTypePanel = new HashMap();
         mapTypePanel.put(ClientType.BIOMART, biomartPanel);
         mapTypePanel.put(ClientType.PICR, picrPanel);
         mapTypePanel.put(ClientType.SYNERGIZER, synergizerPanel);
+
+        if (idMapper==null) {
+            setDatasetsCombo();
+        } else if(idMapper instanceof IDMapperBiomart) {
+            String dataset = ((IDMapperBiomart)idMapper).getDataset();
+            String display = biomartStub.datasetDisplayName(dataset);
+            mapDatasetDisplayName = new HashMap(1);
+            mapDatasetDisplayName.put(display, dataset);
+            chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new String[] {display}));
+            chooseDatasetComboBox.setEnabled(false);
+        }
     }
 
     private static final String FILTER_TXT = "/resources/biomart_dataset_filter.txt";
@@ -971,8 +1024,9 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private Map<String, String> mapDatasetDisplayName;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox bioMartBaseUrlComboBox;
+    private BioMartComboBoxEditor bioMartComboBoxEditor;
     private javax.swing.JPanel biomartAdvancedPanel;
-    private javax.swing.JTextField biomartBaseUrlTextField;
     private javax.swing.JCheckBox biomartOptionCheckBox;
     private javax.swing.JPanel biomartPanel;
     private javax.swing.JButton cancelButton;
@@ -991,5 +1045,108 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private javax.swing.JPanel synergizerPanel;
     private javax.swing.JComboBox typeComboBox;
     // End of variables declaration//GEN-END:variables
+
+    private class SetDataSetsTask implements Task {
+        private TaskMonitor taskMonitor;
+        private boolean success = false;
+
+        public void run() {
+                try {
+                        taskMonitor.setStatus("Loading...");
+                        taskMonitor.setPercentCompleted(-1);
+                        success = setDatasets();
+                        taskMonitor.setStatus("Done");
+                        taskMonitor.setPercentCompleted(100);
+                } catch (Exception e) {
+                        taskMonitor.setPercentCompleted(100);
+                        taskMonitor.setStatus("failed.\n");
+                        e.printStackTrace();
+                }
+
+	}
+
+        public boolean success() {
+            return success;
+        }
+
+        public void halt() {
+	}
+
+        public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
+
+        public String getTitle() {
+		return new String("Load biomart");
+	}
+    }
+
+    private class BioMartComboBoxEditor implements javax.swing.ComboBoxEditor {
+            BioMartWrapper bmw;
+            javax.swing.JTextField tfInput;
+
+            public BioMartComboBoxEditor(String defaultURL) {
+                this.bmw = new BioMartWrapper(null, null);
+                tfInput = new javax.swing.JTextField(defaultURL);
+            }
+
+            public String getURLstr() {
+                    return tfInput.getText();
+            }
+
+            public void setURLStr(String urlStr) {
+                    tfInput.setText(urlStr);
+            }
+
+            public void addActionListener(java.awt.event.ActionListener l) {
+                    tfInput.addActionListener(l);
+            }
+//
+//            public void addKeyListener(java.awt.event.KeyListener l) {
+//                    tfInput.addKeyListener(l);
+//            }
+
+            public java.awt.Component getEditorComponent() {
+                    return tfInput;
+            }
+
+            public Object getItem() {
+                    return bmw;
+            }
+
+            public void removeActionListener(java.awt.event.ActionListener l) {
+            }
+
+            public void selectAll() {
+            }
+
+            public void setItem(Object anObject) {
+                    if (anObject == null) {
+                            return;
+                    }
+
+                    if (anObject instanceof BioMartWrapper) {
+                            bmw = (BioMartWrapper) anObject;
+                            tfInput.setText(bmw.getUrl());
+                    }
+            }
+    } // BioMartComboBoxEditor
+
+    private class BioMartWrapper {
+        private String name;
+        private String url;
+        public BioMartWrapper(String name, String url) {
+            this.name = name;
+            this.url = url;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
 
 }
