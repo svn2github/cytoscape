@@ -34,16 +34,11 @@
  */
 package org.cytoscape.ontology.internal;
 
-import cytoscape.Cytoscape;
-
+import org.cytoscape.model.CyNode;
+import org.cytoscape.ontology.Alias;
+import org.cytoscape.ontology.Ontology;
 import org.cytoscape.ontology.Term;
 import org.cytoscape.ontology.internal.readers.OBOTags;
-import org.biojava.bio.Annotation;
-import org.biojava.ontology.Ontology;
-import org.biojava.utils.AbstractChangeable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Simple in-memory implementation of an ontology term based on BioJava's
@@ -69,15 +64,15 @@ public class OntologyTerm implements Term {
 	// protected static final String DESCRIPTION = "description";
 	protected static final String SYNONYM = "synonym";
 
-	/**
-	 * ID of this ontology term.
-	 */
-	private String name;
+	private static final String ID = "Term ID";
+	private static final String NAME = "Term Name";
 
 	/**
-	 * Name (ID) of the ontology which contains this term.
+	 * Node represents an ontology Term
 	 */
-	private String ontologyName;
+	private final CyNode node;
+	
+	private final Alias alias;
 
 	/**
 	 * Constructor.<br>
@@ -87,56 +82,31 @@ public class OntologyTerm implements Term {
 	 * @param ontologyName
 	 * @param description
 	 */
-	public OntologyTerm(String name, String ontologyName, String description) {
-		this.name = name;
-		this.ontologyName = ontologyName;
+	public OntologyTerm(Ontology parent, String id, String ontologyName,
+			String description) {
+		if (id == null)
+			throw new IllegalArgumentException("id cannot be null.");
+		if (ontologyName == null)
+			throw new IllegalArgumentException("ontologyName cannot be null.");
+		node = parent.getDAG().addNode();
+
+		node.attrs().set(ID, id);
+		node.attrs().set(NAME, ontologyName);
 
 		if (description != null) {
-			Cytoscape.getNodeAttributes().setAttribute(name,
+			node.attrs().set(
 					OBOTags.getPrefix() + "." + OBOTags.DEF.toString(),
 					description);
 		}
+		
+		alias = new AliasImpl(node);
 	}
 
 	/**
 	 * Return name (ID) of this term.<br>
 	 */
 	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Get ontology object which contains this term.<br>
-	 */
-	public Ontology getOntology() {
-		return Cytoscape.getOntologyServer().getOntologies().get(ontologyName);
-	}
-
-	/**
-	 * In this implementation, key is the synonym name, and value is the synonym
-	 * type.
-	 */
-	public void addSynonym(Object synonym) {
-		addSynonym(synonym, OBOSynonym.NORMAL);
-	}
-
-	/**
-	 * In this implementation, key is the synonym name, and value is the synonym
-	 * type.
-	 */
-	@SuppressWarnings("unchecked")
-	// TODO fix cyattributes to return the proper type
-	public void addSynonym(Object synonym, OBOSynonym type) {
-		Map<Object, OBOSynonym> synoMap = Cytoscape.getNodeAttributes()
-				.getMapAttribute(name, OBOTags.getPrefix() + "." + SYNONYM);
-
-		if (synoMap == null) {
-			synoMap = new HashMap();
-		}
-
-		synoMap.put(synonym, type);
-		Cytoscape.getNodeAttributes().setMapAttribute(name,
-				OBOTags.getPrefix() + "." + SYNONYM, synoMap);
+		return node.attrs().get(ID, String.class);
 	}
 
 	/**
@@ -145,50 +115,27 @@ public class OntologyTerm implements Term {
 	 * 
 	 */
 	public String getDescription() {
-		return Cytoscape.getNodeAttributes().getStringAttribute(name,
-				OBOTags.getPrefix() + "." + OBOTags.DEF.toString());
-	}
-
-	/**
-	 * Return sysnonym attributes for this term.
-	 */
-	public Object[] getSynonyms() {
-		return Cytoscape.getNodeAttributes().getMapAttribute(name,
-				OBOTags.getPrefix() + "." + SYNONYM).keySet().toArray();
-	}
-
-	/**
-	 * Remove a synonym for this term.<br>
-	 * 
-	 */
-	public void removeSynonym(Object synonym) {
-		Map synoMap = Cytoscape.getNodeAttributes().getMapAttribute(name,
-				SYNONYM);
-
-		if (synoMap != null) {
-			synoMap.remove(synonym);
-			Cytoscape.getNodeAttributes().setMapAttribute(name,
-					OBOTags.getPrefix() + "." + SYNONYM, synoMap);
-		}
-	}
-
-	/**
-	 * Always return empty annotation object. Instead of using this, use normal
-	 * Cyattributes API.
-	 */
-	public Annotation getAnnotation() {
-		return Annotation.EMPTY_ANNOTATION;
+		return node.attrs().get(
+				OBOTags.getPrefix() + "." + OBOTags.DEF.toString(), String.class);
 	}
 
 	@Override
 	public String getID() {
-		// TODO Auto-generated method stub
-		return null;
+		return node.attrs().get(ID, String.class);
 	}
 
 	@Override
-	public <T> T getTermAnnotation(Class<T> type, String annotationName) {
-		// TODO Auto-generated method stub
-		return null;
+	public <T> T getTermAnnotation(String annotationName, Class<T> type) {
+		return node.attrs().get(annotationName, type);
+	}
+
+	@Override
+	public CyNode getNode() {
+		return node;
+	}
+
+	@Override
+	public Alias getAlias() {
+		return alias;
 	}
 }

@@ -37,6 +37,8 @@ package org.cytoscape.ontology.internal;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 
+import org.cytoscape.ontology.Ontology;
+import org.cytoscape.ontology.Term;
 import org.cytoscape.ontology.internal.readers.OBOTags;
 
 import cytoscape.data.readers.MetadataEntries;
@@ -71,26 +73,12 @@ import java.util.Set;
  * @author kono
  *
  */
-@SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
-public class OntologyImpl extends AbstractChangeable implements org.biojava.ontology.Ontology {
-	/*
-	 * For metadata
-	 */
-	private static final String CURATOR = "curator";
-	private static final String OBO_FORMAT = "OBO Flat File";
-	private static final String DATA_TYPE = "Ontology DAG";
-
-	// This network attribute indicates this is an ontology or not.
-	/**
-	 *
-	 */
-	public static final String IS_ONTOLOGY = "Is_Ontology";
+public class OntologyImpl implements Ontology {
 
 	/**
 	 * Name of this ontorogy. This will be used as the ID of this ontology.
 	 */
 	protected String name;
-	protected MetadataParser metaParser;
 
 	/*
 	 * Currently not used.
@@ -416,6 +404,30 @@ public class OntologyImpl extends AbstractChangeable implements org.biojava.onto
 	 */
 	public Term importTerm(Term arg0, String arg1)
 	    throws ChangeVetoException, IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CyNetwork getDAG() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Ontology getPathToRoot(Term target) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Term getRootTerm() {
 		// TODO Auto-generated method stub
 		return null;
 	}

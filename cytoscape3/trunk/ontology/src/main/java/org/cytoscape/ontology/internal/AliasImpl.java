@@ -31,238 +31,134 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.ontology.internal;
 
-import cytoscape.Cytoscape;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.cytoscape.model.GraphObject;
 import org.cytoscape.ontology.Alias;
 
-import java.util.*;
-
-
 /**
- *
+ * 
  * Simpler version of Thesaurus.<br>
- *
+ * 
  * <p>
  * Purpose of this class is providing simple aliasing without biological
  * context. No species, commonname, nor canonical name are available. Just
  * maintains keys (IDs) and their aliases in CyAttributes.<br>
  * This will be used for importing attribute data.
  * </p>
- *
+ * 
  * <p>
  * This class has no redundant data structure: everything will be stored in
  * CyAttributes, and uses immutable special attributes called Alias
  * </p>
- *
+ * 
  * @since Cytoscape 2.4
  * @version 0.6
- *
+ * 
  * @author kono
- *
+ * 
  */
 public class AliasImpl implements Alias {
-	/**
-	 * Name of the attribute for aliases
-	 */
+
+	// Name of Alias attributes
 	public static final String ALIAS = "cytoscape.alias.list";
-	private final String objectType;
-	CyRow attributes;
 
-	/**
-	 * Constructor for the aliases object.<br>
-	 *
-	 * @param type
-	 *            Type of alias: node, edge, or network.
-	 */
-	public AliasImpl(String type) {
-		this.objectType = type;
+	private final GraphObject obj;
+	private final String key;
 
-		switch (objectType) {
-			case NODE:
-				attributes = Cytoscape.getNodeAttributes();
-
-				break;
-
-			case EDGE:
-				attributes = Cytoscape.getEdgeAttributes();
-
-				break;
-
-			case NETWORK:
-				attributes = Cytoscape.getNetworkAttributes();
-
-				break;
-
-			default:
-				// This should not happen
-				attributes = null;
+	public AliasImpl(GraphObject obj) {
+		this.obj = obj;
+		this.key = this.obj.attrs().get("name", String.class);
+		if (obj.attrs().getDataTable().getUniqueColumns().contains(ALIAS) == false) {
+			obj.attrs().getDataTable().createColumn(ALIAS, List.class, false);
 		}
 	}
 
 	/**
 	 * Add new alias for an object.
-	 *
+	 * 
 	 * @param key
 	 *            ID of the object.
 	 * @param alias
 	 *            New alias to be added.
 	 */
-	public void add(String key, String alias) {
-		List<String> aliasList = attributes.get(ALIAS,List.class);
+	@Override
+	public void add(String alias) {
+		List<String> aliasList = obj.attrs().get(ALIAS, List.class);
 
-		// If there is no alias attributes, create new one.
-		if (aliasList != null) {
-			aliasList.add(alias);
-
-			Set<String> aliasSet = new TreeSet<String>(aliasList);
-			attributes.set(ALIAS, new ArrayList<String>(aliasSet));
-		} else {
+		if (aliasList == null) {
 			aliasList = new ArrayList<String>();
 			aliasList.add(alias);
-			attributes.set(ALIAS, aliasList);
+		} else if (aliasList.contains(alias) == false) {
+			aliasList.add(alias);
 		}
+
+		obj.attrs().set(ALIAS, aliasList);
 	}
 
 	/**
 	 * Add list of aliases to the existing alias lists.<br>
-	 *
+	 * 
 	 * @param key
 	 * @param aliaseList
 	 */
-	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
-	public void add(String key, List<String> aliasList) {
-		List<String> curAliasList = attributes.get(ALIAS,List.class);
+	@Override
+	public void add(Set<String> aliases) {
+		List<String> aliasList = obj.attrs().get(ALIAS, List.class);
 
-		// If there is no alias attributes, add the given list as the new one.
-		if (curAliasList != null) {
-			curAliasList.addAll(aliasList);
+		if (aliasList == null) {
+			aliasList = new ArrayList<String>(aliases);
+		} else {
+			Set<String> aliasSet = new HashSet<String>(aliasList);
+			aliasSet.addAll(aliases);
+			aliasList = new ArrayList<String>(aliasSet);
 		}
 
-		// Remove duplicates
-		Set<String> aliasSet = new TreeSet<String>(aliasList);
-		attributes.set(ALIAS, new ArrayList<String>(aliasSet));
+		obj.attrs().set(ALIAS, aliasList);
 	}
 
 	/**
 	 * Remove an alias.<br>
-	 *
+	 * 
 	 * @param key
 	 *            ID of the object.
 	 * @param alias
 	 *            Alias to be removed.
 	 */
-	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
-	public void remove(String key, String alias) {
-		List<String> curAliasList = attributes.get(ALIAS,List.class);
+	public void remove(String alias) {
+		List<String> curAliasList = obj.attrs().get(ALIAS, List.class);
 
-		/*
-		 * Need to remove the alias only when alias attributes exist.
-		 */
-		if (curAliasList != null) {
-			curAliasList.remove(alias);
-			attributes.set(ALIAS, curAliasList);
-		}
+		if (curAliasList != null)
+			obj.attrs().get(ALIAS, List.class).remove(alias);
 	}
 
 	/**
-	 *
-	 * @param key
-	 * @return
-	 */
-	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
-	public List<String> getAliases(String key) {
-		return attributes.get(ALIAS,List.class);
-	}
-
-	/**
-	 *
+	 * 
 	 * Returns true if the object with the alias wxists in the memory
 	 * (rootGraph).
-	 *
+	 * 
 	 * This is an O(n) operation, which is expensive!
-	 *
+	 * 
 	 * @param key
 	 * @param alias
 	 * @return Key for this alias. If it does not exist, return null.
 	 */
-	public String getKey(String alias) {
-		final Iterator it;
-		String id = null;
-
-		switch (objectType) {
-			case NODE:
-				List<CyNode> nodes = Cytoscape.getCyNodesList();
-				for ( CyNode n : nodes ) {
-					id = n.getIdentifier();
-
-					final List aliases = attributes.getListAttribute(id, ALIAS);
-
-					if ((aliases != null) && aliases.contains(alias)) {
-						return id;
-					}
-				}
-
-				break;
-
-			case EDGE:
-				List<CyEdge> edges = Cytoscape.getCyEdgesList();
-				for ( CyEdge e : edges ) {
-					id = e.getIdentifier();
-
-					final List aliases = attributes.getListAttribute(id, ALIAS);
-
-					if ((aliases != null) && aliases.contains(alias)) {
-						return id;
-					}
-				}
-
-				break;
-
-			case NETWORK:
-				it = Cytoscape.getNetworkSet().iterator();
-
-				while (it.hasNext()) {
-					id = ((CyNode) it.next()).getIdentifier();
-
-					final List aliases = attributes.getListAttribute(id, ALIAS);
-
-					if ((aliases != null) && aliases.contains(alias)) {
-						return id;
-					}
-				}
-
-				break;
-
-			default:
-
-			// This should not happen
-		}
-
-		return null;
+	public String getKey() {
+		return this.key;
 	}
 
-	/**
-	 * Return set of all names for the key (including key itself.)
-	 *
-	 * @param key
-	 * @return
-	 */
-	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
-	public Set<String> getIdSet(String key) {
-		List<String> curAliases = attributes.getListAttribute(key, ALIAS);
-		Set<String> allNames = new TreeSet<String>();
-
-		if (curAliases != null) {
-			allNames.addAll(curAliases);
-		}
-
-		allNames.add(key);
-
-		return allNames;
+	@Override
+	public Set<String> getAliasSet() {
+		List<String> aliasSet = obj.attrs().get(ALIAS, List.class);
+		if (aliasSet != null) {
+			return new HashSet<String>(aliasSet);
+		} else
+			return null;
 	}
 }
