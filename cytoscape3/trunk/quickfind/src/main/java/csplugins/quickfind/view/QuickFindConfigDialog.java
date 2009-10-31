@@ -36,6 +36,8 @@
 
 package csplugins.quickfind.view;
 
+import csplugins.quickfind.tasks.DetermineDistinctValuesTask;
+import csplugins.quickfind.tasks.ReindexQuickFindTask;
 import csplugins.quickfind.util.CyAttributesUtil;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
@@ -259,8 +261,9 @@ public class QuickFindConfigDialog extends JDialog {
 					QuickFindConfigDialog.this.dispose();
 
 					String newAttribute = (String) attributeComboBox.getSelectedItem();
-					Task task = new ReindexQuickFind(currentNetwork, indexType,
-					                                             newAttribute);
+					Task task = new ReindexQuickFindTask(currentNetwork,
+					                                     indexType,
+					                                     newAttribute);
 					
 					// FIXME what is this?
 					/*JTaskConfig config = new JTaskConfig();
@@ -624,118 +627,5 @@ public class QuickFindConfigDialog extends JDialog {
 		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getPreferredScrollableViewportSize().width,
 		                                                       height));
 	}
-
-}
-
-
-/**
- * Long-term task to Reindex QuickFind.
- *
- * @author Ethan Cerami.
- */
-class ReindexQuickFind implements Task {
-	private String newAttributeKey;
-	private CyNetwork cyNetwork;
-	private int indexType;
-	private TaskMonitor taskMonitor;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param indexType       Index Type.
-	 * @param newAttributeKey New Attribute Key for Indexing.
-	 */
-	ReindexQuickFind(CyNetwork cyNetwork, int indexType, String newAttributeKey) {
-		this.cyNetwork = cyNetwork;
-		this.indexType = indexType;
-		this.newAttributeKey = newAttributeKey;
-	}
-
-	/**
-	 * Executes Task:  Reindex.
-	 */
-	public void run(TaskMonitor monitor) {
-		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-		quickFind.reindexNetwork(cyNetwork, indexType, newAttributeKey, taskMonitor);
-	}
-
-	/**
-	 * Sets the TaskMonitor.
-	 *
-	 * @param taskMonitor TaskMonitor Object.
-	 * @throws IllegalThreadStateException Illegal Thread State.
-	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
-		this.taskMonitor = taskMonitor;
-	}
-
-    @Override
-    public void cancel() {}
-
-}
-
-
-/**
- * Long-term task to determine distinct attribute values.
- *
- * @author Ethan Cerami.
- */
-class DetermineDistinctValuesTask implements ValuedTask<List<String>> {
-    private CyNetwork network;
-    private int indexType;
-	private String attributeKey;
-	private int maxValues;
-
-	/**
-	 * Creates a new DetermineDistinctValuesTask object.
-	 *
-	 * @param network 
-	 * @param attributeKey
-	 * @param indexType
-	 * @param maxValues
-	 */
-	public DetermineDistinctValuesTask(CyNetwork network, 
-	                                   String attributeKey,
-	                                   int indexType,
-	                                   int maxValues) {
-	    
-		if (attributeKey.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
-			attributeKey = QuickFind.UNIQUE_IDENTIFIER;
-		}
-
-		this.network = network;
-		this.attributeKey = attributeKey;
-		this.maxValues = maxValues;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public List<String> run(TaskMonitor taskMonitor) {
-		taskMonitor.setProgress(0);
-
-		CyDataTable attributes;
-        if (indexType == QuickFind.INDEX_NODES) {
-            // FIXME: is this correct?
-            attributes = network.getCyDataTables("node").get(CyNetwork.DEFAULT_ATTRS);
-        } else {
-            // FIXME: is this correct?
-            attributes = network.getCyDataTables("edge").get(CyNetwork.DEFAULT_ATTRS);
-        }
-
-		Iterator<? extends GraphObject> iterator;
-		if (indexType == QuickFind.INDEX_NODES) {
-			iterator = network.getNodeList().iterator();
-		} else {
-			iterator = network.getEdgeList().iterator();
-		}
-
-		String[] values = CyAttributesUtil.getDistinctAttributeValues(iterator, network, attributes,
-		                                                              attributeKey, maxValues);
-		return Arrays.asList(values);
-	}
-
-    @Override
-    public void cancel() {}
 
 }
