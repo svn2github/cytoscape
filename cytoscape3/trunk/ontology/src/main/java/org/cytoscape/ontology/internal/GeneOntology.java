@@ -100,7 +100,7 @@ public class GeneOntology extends OntologyImpl {
 		                  Cytoscape.getNodeAttributes()
 		                           .getStringAttribute(goID,
 		                                               OBOTags.getPrefix() + "." + NAME.toString()),
-		                  name,
+		                  id,
 		                  goTermAttributes.getStringAttribute(goID,
 		                                                      OBOTags.getPrefix() + "."
 		                                                      + DEF.toString()));
