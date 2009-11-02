@@ -169,7 +169,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		this.btnDeSelect.setEnabled(false);
 
 		//
-		String[][] data = {{"testNetwork","12(5)","21(9)"}};
+		String[][] data = {{"","",""}};
 		String[] col = {"Network","Nodes","Edges"};
 		DefaultTableModel model = new DefaultTableModel(data,col);
 
@@ -254,25 +254,25 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	 * @param arg0 DOCUMENT ME!
 	 */
 	public void onSelectEvent(SelectEvent event) {
-		if (
-		     ((event.getTargetType() == SelectEvent.SINGLE_NODE)
+		if (((event.getTargetType() == SelectEvent.SINGLE_NODE)
 		       || (event.getTargetType() == SelectEvent.NODE_SET))) {
 			updateFeedbackTableModel();
 		} 
+		if (((event.getTargetType() == SelectEvent.SINGLE_EDGE)
+			       || (event.getTargetType() == SelectEvent.EDGE_SET))) {
+				updateFeedbackTableModel();
+			} 		
 	}
 
-	private void updateFeedbackTableModel(){
-		System.out.println("update the feedback table");
-
+	private void updateFeedbackTableModel(){		
 		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		tblFeedBack.getModel().setValueAt(cyNetwork.getIdentifier(), 0, 0);
 
 		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size() + ")";
-		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size() + ")";
-		//"" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()+ ")";
-		
-		tblFeedBack.getModel().setValueAt(cyNetwork.getIdentifier(), 0, 0);
 		tblFeedBack.getModel().setValueAt(nodeStr, 0, 1);
-		tblFeedBack.getModel().setValueAt(edgeStr, 0, 2);
+
+		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size() + ")";
+		tblFeedBack.getModel().setValueAt(edgeStr, 0, 2);				
 	}
 	
 	/**
@@ -655,6 +655,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         pnlSelectButtons = new javax.swing.JPanel();
         btnSelectAll = new javax.swing.JButton();
         btnDeSelect = new javax.swing.JButton();
+        pnlScroll = new javax.swing.JScrollPane();
         
 		setLayout(new java.awt.GridBagLayout());
 
@@ -739,7 +740,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
         pnlButton.add(btnDeSelect);
 		
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
@@ -759,9 +759,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		// feedback panel
         pnlFeedBack.setLayout(new java.awt.GridBagLayout());
-
         pnlFeedBack.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        pnlFeedBack.setMinimumSize(new java.awt.Dimension(200,52));
         
+        pnlScroll.setViewportView(tblFeedBack);
+
         //tblFeedBack.setAutoCreateColumnsFromModel(true);
         //tblFeedBack.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tblFeedBack.setEnabled(false);
@@ -770,19 +772,19 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         //tblFeedBack.setRowSelectionAllowed(false);
         //tblFeedBack.setTableHeader(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH; //.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        pnlFeedBack.add(tblFeedBack, gridBagConstraints);
+        //gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 1);
+        pnlFeedBack.add(pnlScroll, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
-        add(pnlFeedBack, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(1, 1, 2, 1);
 
+        add(pnlFeedBack, gridBagConstraints);
 		// Set customized renderer for attributes/filter combobox
 		cmbAttributes.setRenderer(new AttributeFilterRenderer());
 
@@ -816,6 +818,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
     private javax.swing.JPanel pnlSelectButtons;
     private javax.swing.JButton btnDeSelect;
     private javax.swing.JButton btnSelectAll;
+    private javax.swing.JScrollPane pnlScroll;
 	// End of variables declaration
 	
 	
