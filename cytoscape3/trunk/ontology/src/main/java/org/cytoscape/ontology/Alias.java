@@ -3,7 +3,9 @@ package org.cytoscape.ontology;
 import java.util.Set;
 
 /**
- * Alias: Utility object for graph objects.
+ * Alias: Utility for ID mapping for all graph objects.
+ * 
+ * TODO: Is ontology a right bundle to put this class?
  * 
  * @author kono
  *
