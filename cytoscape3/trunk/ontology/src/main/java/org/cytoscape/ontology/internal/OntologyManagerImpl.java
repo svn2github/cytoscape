@@ -35,8 +35,6 @@
 package org.cytoscape.ontology.internal; 
 
 import cytoscape.Cytoscape;
-import cytoscape.data.synonyms.AliasType;
-import cytoscape.data.synonyms.Aliases;
 
 import javax.xml.bind.JAXBException;
 
@@ -63,27 +61,16 @@ import java.util.Set;
  *
  */
 public class OntologyManagerImpl implements OntologyManager, PropertyChangeListener {
-	public static enum OntologyType {
-		BASIC,
-		GO;
-	}
 
 	/**
 	 * Map of Ontologies.
 	 */
-	private HashMap<String, OntologyImpl> ontologies;
-
-	/*
-	 * Aliases
-	 */
-	private AliasImpl nodeAliases;
-	private AliasImpl edgeAliases;
-	private AliasImpl networkAliases;
+	private Map<String, Ontology> ontologies;
 
 	/*
 	 * Factory to create actual Ontology objects.
 	 */
-	private OntologyFactory factory;
+	private OntologyFactoryImpl factory;
 
 	/*
 	 * Bookmarks. This can be used not only for ontology stuff, but also network
@@ -114,7 +101,7 @@ public class OntologyManagerImpl implements OntologyManager, PropertyChangeListe
 	public OntologyManagerImpl() throws IOException, JAXBException {
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-		factory = new OntologyFactory();
+		factory = new OntologyFactoryImpl();
 		this.ontologies = new HashMap<String, OntologyImpl>();
 		this.ontologySources = new HashMap<String, URL>();
 

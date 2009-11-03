@@ -49,8 +49,7 @@ import java.util.Map;
 /**
  *
  */
-public class OntologyFactory {
-	private MetadataParser mdp;
+public class OntologyFactoryImpl {
 
 	/**
 	 *  DOCUMENT ME!
