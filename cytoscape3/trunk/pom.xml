@@ -326,7 +326,8 @@
 		<module>phoebe.dnd</module>
 		<module>wrappers</module>
 		<module>application</module>
-		<module>quickfind</module>
+		<!--   <module>quickfind</module> -->
+		<module>table.import</module> 
 		<!--
 			<module>webservice</module> <module>vizmap-gui</module>
 			<module>cpath</module>
@@ -336,7 +337,7 @@
 			<module>attribute.browser</module> <module>cpath2</module>
 			<module>filters.old</module> <module>filters</module>
 			<module>sbml.reader</module> <module>manual.layout</module>
-			<module>quickfind</module> <module>table.import</module>
+			
 			<module>ontology</module>
 		-->
 	</modules>
