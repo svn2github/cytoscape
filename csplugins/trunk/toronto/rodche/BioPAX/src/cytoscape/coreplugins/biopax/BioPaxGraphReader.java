@@ -36,6 +36,7 @@ import giny.model.RootGraph;
 import giny.view.GraphView;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
@@ -46,6 +47,7 @@ import cytoscape.coreplugins.biopax.util.cytoscape.LayoutUtil;
 import cytoscape.coreplugins.biopax.util.cytoscape.NetworkListener;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualMappingManager;
@@ -58,6 +60,9 @@ import org.biopax.paxtools.model.Model;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Iterator;
+
+import javax.swing.SwingUtilities;
 
 /**
  * GraphReader Implementation for BioPAX Files.
@@ -75,6 +80,7 @@ public class BioPaxGraphReader implements GraphReader {
 	private String networkName;
 	private boolean validNetworkName;
 	private CyLayoutAlgorithm layout;
+	private String networkId;
 
 	private static boolean createNodesForControls;
 	private static CyLayoutAlgorithm defaultLayout;
@@ -107,6 +113,10 @@ public class BioPaxGraphReader implements GraphReader {
 		layout = getDefaultLayoutAlgorithm();
 	}
 	
+	public String getNetworkId() {
+		return networkId;
+	}
+	
 	public static void setCreateNodesForControls(Boolean b) {
 		createNodesForControls = b;
 		if(log.isDebugging()) {
@@ -136,7 +146,7 @@ public class BioPaxGraphReader implements GraphReader {
 	 */
 	public void read() throws IOException {
 
-		if(fileName != null) { // import new data
+		if(model == null && fileName != null) { // import new data
 			model = BioPaxUtil.readFile(fileName);
 		}
 		
@@ -151,6 +161,11 @@ public class BioPaxGraphReader implements GraphReader {
 		
 		// Set network name (also checks if it exists)
 		networkName = getNetworkName(model);
+		
+		if(networkName==null 
+				|| networkName.trim().equals("")) {
+			networkName = fileName;
+		}
 
 		// Map BioPAX Data to Cytoscape Nodes/Edges (run as task)
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
@@ -163,8 +178,7 @@ public class BioPaxGraphReader implements GraphReader {
 			return;
 		}
 		edgeIndices = mapper.getEdgeIndices();
-
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		
 	}
 
 	private String getNetworkName(Model model) {
@@ -253,17 +267,16 @@ public class BioPaxGraphReader implements GraphReader {
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 
 		// get cyNetwork id
-		String networkID = cyNetwork.getIdentifier();
+		this.networkId = cyNetwork.getIdentifier();
 
 		// set biopax network attribute
-		networkAttributes.setAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
+		networkAttributes.setAttribute(networkId, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
 		//  Repair Canonical Name 
-		MapBioPaxToCytoscape.repairCanonicalName(cyNetwork);
-
+		repairCanonicalName(cyNetwork);
 		// repair network name
 		if (!validNetworkName) {
-			MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
+			repairNetworkName(cyNetwork);
 		}
 
 		//  Set default Quick Find Index
@@ -290,6 +303,12 @@ public class BioPaxGraphReader implements GraphReader {
 			System.setProperty("biopax.data_sources", "");
 		}
 
+		// associate the new network with its model
+		BioPaxUtil.setNetworkModel(cyNetwork, model);
+		String modelString = (fileName!=null) ? fileName : "";
+		Cytoscape.getNetworkAttributes().setAttribute(
+				networkId, BioPaxUtil.BIOPAX_MODEL_STRING,	modelString);
+		
 		//  Set-up the BioPax Visual Style
 		final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
 		final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
@@ -300,7 +319,6 @@ public class BioPaxGraphReader implements GraphReader {
 
 		//  Set up BP UI
 		CytoscapeWrapper.initBioPaxPlugInUI();
-
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
         bpContainer.showLegend();
         NetworkListener networkListener = bpContainer.getNetworkListener();
@@ -343,4 +361,58 @@ public class BioPaxGraphReader implements GraphReader {
 		return null;
 	}
 		
+	
+	/**
+	 * Repairs Network Name.  Temporary fix to automatically set network
+	 * name to match BioPAX Pathway name.
+	 *
+	 * @param cyNetwork CyNetwork Object.
+	 */
+	private static void repairNetworkName(final CyNetwork cyNetwork) {
+		try {
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			Iterator<CyNode> iter = cyNetwork.nodesIterator();
+			CyNode node = iter.next();
+
+			if (node != null) {
+				String pathwayName = 
+					nodeAttributes.getStringAttribute(node.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_PATHWAY_NAME);
+				if (pathwayName != null) {
+					cyNetwork.setTitle(pathwayName);
+
+					//  Update UI.  Must be done via SwingUtilities,
+					// or it won't work.
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
+							}
+						});
+				}
+			}
+		}
+		catch (java.util.NoSuchElementException e) {
+			// network is empty, do nothing
+		}
+	}
+	
+
+	/**
+	 * Repairs Canonical Name;  temporary fix for bug:  1001.
+	 * By setting Canonical name to BIOPAX_NODE_LABEL, users can search for
+	 * nodes via the Select Nodes --> By Name feature.
+	 *
+	 * @param cyNetwork CyNetwork Object.
+	 */
+	private static void repairCanonicalName(CyNetwork cyNetwork) {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		Iterator<CyNode> iter = cyNetwork.nodesIterator();
+		while (iter.hasNext()) {
+			CyNode node = iter.next();
+			String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
+			                                                 BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+			if (label != null) {
+				nodeAttributes.setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME, label);
+			}
+		}
+	}
 }

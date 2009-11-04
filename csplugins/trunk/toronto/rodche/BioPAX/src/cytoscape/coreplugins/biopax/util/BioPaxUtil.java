@@ -39,7 +39,6 @@ import cytoscape.logger.CyLogger;
 
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -49,12 +48,8 @@ import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.util.ClassFilterSet;
 
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 
 import java.util.*;
@@ -142,12 +137,13 @@ public class BioPaxUtil {
 		plainEnglishMap.put("extracellular", "Extracellular");
 		plainEnglishMap.put("golgi apparatus", "Golgi Apparatus");
 		plainEnglishMap.put("mitochondrion", "Mitochondrion");
-		plainEnglishMap.put("nucleoplasm", "NP");
+		plainEnglishMap.put("nucleoplasm", "Nucleoplasm");
 		plainEnglishMap.put("nucleus", "Nucleus");
 		plainEnglishMap.put("plasma membrane", "Plasma Membrane");
 		plainEnglishMap.put("ribosome", "Ribosome");
-		plainEnglishMap.put("transmembrane", "TM");
+		plainEnglishMap.put("transmembrane", "Transmembrane");
 		
+		// the following is for node labels
 		cellLocationMap = new HashMap<String, String>();
 		cellLocationMap.put("cellular component unknown", "");
 		cellLocationMap.put("centrosome", "CE");
@@ -240,7 +236,7 @@ public class BioPaxUtil {
 	public static String getNodeName(BioPAXElement bpe) {
 
 		if(bpe == null) {
-			return null;
+			return "";
 		}
 				
 		String nodeName = getShortName(bpe);
@@ -930,59 +926,17 @@ public class BioPaxUtil {
 		return networkModelMap;
 	}
 
-	public static void resetNetworkModel(CyNetwork cyNetwork) {
+	public static void removeNetworkModel(CyNetwork cyNetwork) {
 	    networkModelMap.remove(cyNetwork);
-	    getNetworkModel(cyNetwork);
 	}
 
 	public static boolean setNetworkModel(CyNetwork cyNetwork, Model bpModel) {
 		networkModelMap.put(cyNetwork, bpModel);
-
-		SimpleExporter simpleExporter = new SimpleExporter(bpModel.getLevel());
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try {
-			simpleExporter.convertToOWL(bpModel, outputStream);
-		} catch (Exception e) {
-			return false;
-		}
-
-		try {
-			Cytoscape.getNetworkAttributes().setAttribute(
-					cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING,
-					outputStream.toString(DEFAULT_CHARSET));
-		} catch (UnsupportedEncodingException e) {
-			System.out.println(DEFAULT_CHARSET
-					+ " is not supported. BioPAX model could not be saved.");
-		}
-
 		return true;
 	}
 
 	public static Model getNetworkModel(CyNetwork cyNetwork) {
 		Model bpModel = networkModelMap.get(cyNetwork);
-		if (bpModel != null)
-			return bpModel;
-
-		String modelStr = (String) Cytoscape.getNetworkAttributes()
-				.getAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING);
-		if (modelStr == null)
-			return bpModel; // return null
-		else
-			modelStr = modelStr.replace("\\n", "\n"); // Hrr...
-
-		ByteArrayInputStream inputStream;
-		try {
-			inputStream = new ByteArrayInputStream(modelStr
-					.getBytes(DEFAULT_CHARSET));
-		} catch (UnsupportedEncodingException e) {
-			return bpModel; // return null
-		}
-
-		bpModel = new SimpleReader().convertFromOWL(inputStream);
-
-		if (bpModel != null)
-			setNetworkModel(cyNetwork, bpModel);
-
 		return bpModel;
 	}
 

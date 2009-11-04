@@ -76,8 +76,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
-import javax.swing.*;
-
 
 /**
  * Maps a BioPAX Model to Cytoscape Nodes/Edges.
@@ -399,59 +397,6 @@ public class MapBioPaxToCytoscape {
 
 
 	/**
-	 * Repairs Canonical Name;  temporary fix for bug:  1001.
-	 * By setting Canonical name to BIOPAX_NODE_LABEL, users can search for
-	 * nodes via the Select Nodes --> By Name feature.
-	 *
-	 * @param cyNetwork CyNetwork Object.
-	 */
-	public static void repairCanonicalName(CyNetwork cyNetwork) {
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		Iterator<CyNode> iter = cyNetwork.nodesIterator();
-		while (iter.hasNext()) {
-			CyNode node = iter.next();
-			String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
-			                                                 BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-			if (label != null) {
-				nodeAttributes.setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME, label);
-			}
-		}
-	}
-
-	/**
-	 * Repairs Network Name.  Temporary fix to automatically set network
-	 * name to match BioPAX Pathway name.
-	 *
-	 * @param cyNetwork CyNetwork Object.
-	 */
-	public static void repairNetworkName(final CyNetwork cyNetwork) {
-		try {
-			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			Iterator<CyNode> iter = cyNetwork.nodesIterator();
-			CyNode node = iter.next();
-
-			if (node != null) {
-				String pathwayName = 
-					nodeAttributes.getStringAttribute(node.getIdentifier(), BIOPAX_PATHWAY_NAME);
-				if (pathwayName != null) {
-					cyNetwork.setTitle(pathwayName);
-
-					//  Update UI.  Must be done via SwingUtilities,
-					// or it won't work.
-					SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
-								Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
-							}
-						});
-				}
-			}
-		}
-		catch (java.util.NoSuchElementException e) {
-			// network is empty, do nothing
-		}
-	}
-
-	/**
 	 * Maps Select Interactions to Cytoscape Nodes.
 	 */
 	private void mapInteractionNodes(Model model) {
@@ -672,10 +617,6 @@ public class MapBioPaxToCytoscape {
 			physicalEntity pe = 
 				((physicalEntityParticipant)participantElement).getPHYSICAL_ENTITY();
 			if(pe != null) {
-				//for PEPs we also need to set cellular location for its PE
-				
-				
-				
 				linkNodes(interactionElement, nodeA, pe, type);
 			}
 		}
@@ -842,7 +783,7 @@ public class MapBioPaxToCytoscape {
 				getInteractionChemicalModifications(bindingElement, bpe);
 			// add modifications to id & label
 			String modificationsString = getModificationsString(chemicalModificationsWrapper);
-			cyNodeId += modificationsString;
+			//cyNodeId += modificationsString;
 			cyNodeLabel += modificationsString;
 			
 			if(bpe instanceof physicalEntity) 
@@ -852,8 +793,7 @@ public class MapBioPaxToCytoscape {
 					Object location = 
 						BioPaxUtil.getValue(pep, "CELLULAR-LOCATION", "cellularLocation");
 					if (location != null) {
-						cellLocations
-							.add(BioPaxUtil.getAbbrCellLocation(location.toString()));
+						cellLocations.add(location.toString()); 
 					}
 				}
 			} 
@@ -862,15 +802,20 @@ public class MapBioPaxToCytoscape {
 				Object location = 
 					BioPaxUtil.getValue(bpe, "CELLULAR-LOCATION", "cellularLocation");
 				if (location != null) {
-					cellLocations.add(BioPaxUtil.getAbbrCellLocation(location.toString()));
+					cellLocations.add(location.toString()); 
 				}
 			}
 
-			// add cellular location str to node id & label
+			// add cellular location to the node label (and id?)
 			if(!cellLocations.isEmpty()) {
-				String cellularLocationString = cellLocations.toString().trim();
-				cyNodeId += cellularLocationString;
-				cyNodeLabel += (cellularLocationString.trim().length() > 0) 
+				Set<String> abbreviatedCLs = new HashSet<String>(cellLocations.size());
+				for(String cl : cellLocations) {
+					abbreviatedCLs.add(BioPaxUtil.getAbbrCellLocation(cl));
+				}
+				String cellularLocationString = 
+					abbreviatedCLs.toString().replaceAll("\\[|\\]", "");
+				//cyNodeId += cellularLocationString;
+				cyNodeLabel += (cellularLocationString.length() > 0) 
 					? ("\n" + cellularLocationString) : "";
 			}
 			
@@ -941,7 +886,7 @@ public class MapBioPaxToCytoscape {
 		// note: modifications do not get set on a complex, so if modifications string
 		// is null, we do not try to inherit complex modifications
 		String modificationsString = getModificationsString(chemicalModificationsWrapper);
-		complexMemberCyNodeId += modificationsString;
+		//complexMemberCyNodeId += modificationsString;
 		complexMemberCyNodeLabel += modificationsString;
 		
 		Set<String> parentLocations = new HashSet<String>();
@@ -959,7 +904,7 @@ public class MapBioPaxToCytoscape {
 				Object location = 
 					BioPaxUtil.getValue(pep, "CELLULAR-LOCATION", "cellularLocation");
 				if (location != null) {
-					parentLocations.add(BioPaxUtil.getAbbrCellLocation(location.toString()));
+					parentLocations.add(location.toString());
 				}
 			}
 		} 
@@ -968,7 +913,7 @@ public class MapBioPaxToCytoscape {
 			Object location = 
 				BioPaxUtil.getValue(complexMemberElement, "CELLULAR-LOCATION", "cellularLocation");
 			if (location != null) {
-				parentLocations.add(BioPaxUtil.getAbbrCellLocation(location.toString()));
+				parentLocations.add(location.toString());
 			}
 		}
 					
@@ -980,8 +925,14 @@ public class MapBioPaxToCytoscape {
 			}
 		}
 		
-		String cellularLocationString = parentLocations.toString().trim();
-		complexMemberCyNodeId += cellularLocationString;
+	
+		Set<String> abbreviatedCLs = new HashSet<String>(parentLocations.size());
+		for(String cl : parentLocations) {
+			abbreviatedCLs.add(BioPaxUtil.getAbbrCellLocation(cl));
+		}
+		String cellularLocationString = 
+			abbreviatedCLs.toString().replaceAll("\\[|\\]", "");
+		//complexMemberCyNodeId += cellularLocationString;
 		complexMemberCyNodeLabel += "\n" + cellularLocationString;
 		// tack on complex id
 		complexMemberCyNodeId += ("-" + complexCyNodeId);
@@ -1228,7 +1179,7 @@ public class MapBioPaxToCytoscape {
 			String biopaxID = nodeAttributes.getStringAttribute(nodeID, BIOPAX_RDF_ID);
 			BioPAXElement resource = model.getByID(biopaxID);
 			
-            mapNodeAttribute(resource, nodeID, nodeAttributes);
+            mapNodeAttribute(resource, nodeID);
         }
 		
 		log.setDebug(false);
@@ -1240,9 +1191,11 @@ public class MapBioPaxToCytoscape {
      * @param nodeId TODO
      * @param nodeAttributes    Node Attributes.
      */
-    public static void mapNodeAttribute(BioPAXElement resource, String nodeID, CyAttributes nodeAttributes) {
+    public static void mapNodeAttribute(BioPAXElement resource, String nodeID) {
         if (resource != null) {
             String stringRef;
+            
+            CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
             // type
             stringRef = addType(resource, nodeAttributes);
@@ -1683,5 +1636,5 @@ public class MapBioPaxToCytoscape {
 
 		return null;
 	}
-	
+
 }

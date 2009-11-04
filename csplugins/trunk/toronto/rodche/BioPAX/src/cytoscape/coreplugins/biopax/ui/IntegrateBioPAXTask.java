@@ -19,7 +19,6 @@ import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.style.BioPAXMergeVisualStyleUtil;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
@@ -53,8 +52,8 @@ class IntegrateBioPAXTask implements Task {
 
     public void run() {
         taskMonitor.setStatus("Integrating BioPAX networks...");
-        //List<ConversionScore> convScores = integrator.integrate(alternativeScores);
-        List<ConversionScore> convScores = new ArrayList<ConversionScore>();
+        List<ConversionScore> convScores = integrator.integrate(alternativeScores);
+        //List<ConversionScore> convScores = new ArrayList<ConversionScore>();
 
         taskMonitor.setStatus("Creating network from integration...");
         Model integratedModel = BioPaxUtil.getNetworkModel(network1);
@@ -62,8 +61,6 @@ class IntegrateBioPAXTask implements Task {
         cyNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("(Integrated) " + cyNetwork.getTitle()));
 
         taskMonitor.setStatus("Recovering integrated models...");
-        BioPaxUtil.resetNetworkModel(network1);
-        BioPaxUtil.resetNetworkModel(network2);
 
         if(isColorize) {
             taskMonitor.setStatus("Colorizing nodes...");

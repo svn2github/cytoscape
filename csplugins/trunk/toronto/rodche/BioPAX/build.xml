@@ -163,12 +163,12 @@
 			description="Compiles all source code." name="compile">
         <javac debug="true" debuglevel="source,lines,var"
             destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true"
-			classpathref="${classpath}">
+			classpathref="${classpath}" target="1.5">
         </javac>
 
         <javac debug="true" debuglevel="source,lines,var"
             destdir="${build.test.classes}" nowarn="on" srcdir="${test.src.dir}" deprecation="true"
-			classpathref="${classpath}">
+			classpathref="${classpath}" target="1.5">
         </javac>    	
     	
         <!-- copy all resources -->

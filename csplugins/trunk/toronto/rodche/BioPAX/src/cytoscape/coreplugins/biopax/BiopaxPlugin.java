@@ -37,6 +37,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.coreplugins.biopax.action.ExportAsBioPAXAction;
 import cytoscape.coreplugins.biopax.action.IntegrateBioPAXAction;
 import cytoscape.coreplugins.biopax.action.MergeBioPAXAction;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.data.ImportHandler;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -143,6 +144,9 @@ public class BiopaxPlugin extends CytoscapePlugin {
 	 * For "Plugins->BioPaX Import->Create Nodes for Controls" menu item.
 	 * If checked, the reader creates cytoscape nodes for Controls (Catalysis, etc.) 
 	 * in the BioPaX file.  If not checked, the reader represent Controls by edges.	 *
+	 * 
+	 * TODO does not work
+	 * 
 	 */
 	public class CreateNodesForControlsAction extends CytoscapeAction {
 		private static final long serialVersionUID = 1L;

@@ -68,7 +68,6 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
     public void actionPerformed(ActionEvent e) {
 		File file = FileUtil.getFile("Save Network as BioPAX", FileUtil.SAVE,
 		                             new CyFileFilter[] {  });
-
 		if (file != null) {
 			String fileName = file.getAbsolutePath();
 

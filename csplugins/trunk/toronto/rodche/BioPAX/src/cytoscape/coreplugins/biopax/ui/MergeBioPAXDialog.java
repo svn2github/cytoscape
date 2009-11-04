@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.controller.Merger;
-import org.biopax.paxtools.controller.EditorMap;
+import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.Model;
 
 public class MergeBioPAXDialog extends JDialog {
@@ -212,27 +212,35 @@ class MergeBioPAXTask implements Task {
     public void run() {
         taskMonitor.setStatus("Merging BioPAX networks...");
 
-        EditorMap editorMap = new SimpleEditorMap();
-        Merger merger = new Merger(editorMap);
+        Merger merger = new Merger( new SimpleEditorMap());
 
         assert selectedNetworks.size() > 1;
-        Model base = BioPaxUtil.getNetworkModel(selectedNetworks.get(0));
-        CyNetwork baseNetwork = selectedNetworks.remove(0);
-
+        final BioPAXFactory factory = 
+        	BioPaxUtil.getNetworkModel(
+        			selectedNetworks.get(0)).getLevel().getDefaultFactory();
+        //CyNetwork baseNetwork = selectedNetworks.remove(0);
+        /*
         Model[] models = new Model[ selectedNetworks.size() ];
         int cnt = 0;
         for(CyNetwork cyNetwork: selectedNetworks)
+        {
             models[cnt++] = BioPaxUtil.getNetworkModel(cyNetwork);
-
-        merger.merge(base, models);
-
-        // Base model (in the memory) modified, we should better restore it
-        BioPaxUtil.resetNetworkModel(baseNetwork);
-
+        }
+        */
+        
+        Model base = factory.createModel();
+        for(CyNetwork cn : selectedNetworks) {
+        	Model m = BioPaxUtil.getNetworkModel(cn);
+        	merger.merge(base, m);
+        }
+        
         BioPaxGraphReader reader = new BioPaxGraphReader(base);
         CyNetwork newNetwork = Cytoscape.createNetwork(reader, true, null);
+        BioPaxUtil.setNetworkModel(newNetwork, base);
         newNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("(Merged) " + newNetwork.getTitle()));
-
+        Cytoscape.setCurrentNetwork(newNetwork.getIdentifier());
+        Cytoscape.setCurrentNetworkView(newNetwork.getIdentifier());
+        
         taskMonitor.setPercentCompleted(100);
 	    taskMonitor.setStatus("Networks successfully merged.");
     }
