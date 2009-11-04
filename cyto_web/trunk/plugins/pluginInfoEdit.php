@@ -6,11 +6,13 @@
 // If versionid is provided through URL, it is in edit mode
 $versionID = NULL; // used for edit mode only
 
-if (isset ($_GET['versionid'])) {
+include 'clean.inc';
+
+if (isset (cleanInt($_GET['versionid']))) {
 	$versionID = $_GET['versionid'];
 	$pageTitle = "Edit plugin Info";
 }
-if (isset ($_POST['versionID'])) { // hidden field
+if (isset (cleanInt($_POST['versionID']))) { // hidden field
 	$versionID = $_POST['versionID'];
 }
 

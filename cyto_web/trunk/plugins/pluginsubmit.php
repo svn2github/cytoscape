@@ -13,11 +13,13 @@ $isZipFile = false;
 // If versionid is provided through URL, it is in edit mode
 $versionID = NULL; // used for edit mode only
 
+include 'clean.inc';
+
 if (isset ($_GET['versionid'])) {
-	$versionID = $_GET['versionid'];
+	$versionID = cleanInt($_GET['versionid']);
 }
 if (isset ($_POST['versionID'])) { // hidden field
-	$versionID = $_POST['versionID'];
+	$versionID = cleanInt($_POST['versionID']);
 }
 
 if ($versionID != NULL) {

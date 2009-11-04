@@ -22,12 +22,14 @@
 <?php include "../nav.php"; ?>
 
 <?php
+include 'clean.inc';
+
 $versionID = NULL;
 if (isset ($_GET['versionid'])) {
-	$versionID = $_GET['versionid'];
+	$versionID = cleanInt($_GET['versionid']);
 }
 if (isset ($_POST['versionid'])) {
-	$versionID = $_POST['versionid'];
+	$versionID = cleanInt($_POST['versionid']);
 }
 
 $deleteAction = NULL;

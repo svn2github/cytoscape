@@ -41,8 +41,9 @@ if (!($connection = @ mysql_pconnect($dbServer, $dbUser, $dbPass)))
 // Use the CyPluginDB database
 if (!mysql_select_db($dbName, $connection))
 	showerror();
-
-$plugin_file_id = $_GET['id'];
+	
+include 'clean.inc';
+$plugin_file_id = cleanInt($_GET['id']);
 
 $dbQuery = "SELECT * FROM plugin_files ".
 			"WHERE plugin_file_auto_id = $plugin_file_id";

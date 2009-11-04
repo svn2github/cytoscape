@@ -305,9 +305,9 @@ $mode = 'new'; // by default it is 'new'
 
 // If versionid is provided through URL, it is in edit mode
 $themeID = NULL; // used for edit mode only
-
+include 'clean.inc';
 if (isset ($_GET['versionid'])) {
-	$themeID = $_GET['versionid'];
+	$themeID = cleanInt($_GET['versionid']);
 }
 
 if ($themeID != NULL) {
