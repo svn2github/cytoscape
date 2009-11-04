@@ -145,8 +145,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	Profile calculationProfile;
 	Profile distanceProfile;
 
-	private CyLogger logger = null;
-
 	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 * @param supportEdgeWeights a boolean to indicate whether we should

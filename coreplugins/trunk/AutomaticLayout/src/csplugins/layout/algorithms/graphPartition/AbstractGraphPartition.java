@@ -179,8 +179,12 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 			if (partition.nodeCount() > 1) {
 				try {
 					layoutPartion(partition);
-				} catch (Throwable _e) {
-					logger.error("Layout algorithm failed: ", _e);
+				} catch (OutOfMemoryError _e) {
+					System.gc();
+					logger.error("Layout algorithm failed: Out of memory");
+					return;
+				} catch (Exception _e) {
+					logger.error("Layout algorithm failed: ", (Throwable)_e);
 					return;
 				}
 

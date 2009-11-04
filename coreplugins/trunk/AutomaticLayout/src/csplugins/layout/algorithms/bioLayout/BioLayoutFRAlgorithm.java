@@ -141,8 +141,6 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private double width = 0;
 	private double height = 0;
 
-	private CyLogger logger = null;
-
 	/**
 	 * Profile data -- not used, for now
 	Profile initProfile;
