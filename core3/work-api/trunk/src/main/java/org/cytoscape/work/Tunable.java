@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 
 @Retention(RetentionPolicy.RUNTIME)// makes this availabe for reflection
-@Target({ElementType.FIELD,ElementType.TYPE}) // says we're just looking at fields and  methods 
+@Target({ElementType.FIELD,ElementType.METHOD}) // says we're just looking at fields and  methods 
 
 /**
  * Annotation type that can be applied to a<i>Field</i> or <i>Method</i> in order to allow <code>TunableInterceptor</code> to catch it, and so use its value to create a proper interface for the user.
