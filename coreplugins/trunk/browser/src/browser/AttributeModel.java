@@ -34,6 +34,7 @@
 */
 package browser;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 
@@ -49,12 +50,13 @@ import javax.swing.ComboBoxModel;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
  */
-public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDefinitionListener {
+public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDefinitionListener, PropertyChangeListener {
 	private Vector listeners = new Vector();
 	private final CyAttributes attributes;
 	private List<String> attributeNames;
@@ -69,8 +71,17 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 		this.attributes = data;
 		data.getMultiHashMapDefinition().addDataDefinitionListener(this);
 		sortAtttributes();
+
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
 	}
 
+	public void propertyChange(PropertyChangeEvent e) {
+		// This will handle the case for the change of attribute userVisibility
+		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED)){
+			sortAtttributes();
+		}
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 */
