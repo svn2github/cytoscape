@@ -113,7 +113,6 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 				view = gvf.getNetworkViewFor(cyNetwork);
 
 			view.fitContent();
-			view.updateView();
 
 			netmgr.addNetwork(cyNetwork);
 			netmgr.addNetworkView(view);
