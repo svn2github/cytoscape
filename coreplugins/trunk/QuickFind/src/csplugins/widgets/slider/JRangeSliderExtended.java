@@ -154,8 +154,7 @@ public class JRangeSliderExtended extends JRangeSlider implements ChangeListener
             lowStr = format.format(low);
             highStr = format.format(high);
         }
-
-
+ 
 		if (isVisible()) {
 			if (popup == null) {
 				PopupFactory popupFactory = PopupFactory.getSharedInstance();
@@ -173,8 +172,10 @@ public class JRangeSliderExtended extends JRangeSlider implements ChangeListener
 				popup = popupFactory.getPopup(this, panel, getLocationOnScreen().x,
 				                              getLocationOnScreen().y + getPreferredSize().height
 				                              + 2);
-				popupDaemon = new PopupDaemon(this, 1000);
+				popupDaemon = new PopupDaemon(this, 2000);
+				
 				popup.show();
+				popupDaemon.restart();
 			} else {
 				popupLow.setText(lowStr);
 				popupHigh.setText(highStr);
