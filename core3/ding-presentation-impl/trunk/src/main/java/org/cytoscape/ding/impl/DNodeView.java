@@ -586,7 +586,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	 */
 	public void setXPosition(double xPos) {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0) || Double.isNaN(xPos))
 				return;
 
 			final double wDiv2 = (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
@@ -635,7 +635,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	 */
 	public void setYPosition(double yPos) {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0) || Double.isNaN(yPos))
 				return;
 
 			final double hDiv2 = (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
