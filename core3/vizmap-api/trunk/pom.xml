@@ -19,7 +19,7 @@
 	<artifactId>vizmap-api</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
-	<name>${bundle.symbolicName}</name>
+	<name>${bundle.symbolicName} (VizMap API Bundle)</name>
 
 	<packaging>bundle</packaging>
 
