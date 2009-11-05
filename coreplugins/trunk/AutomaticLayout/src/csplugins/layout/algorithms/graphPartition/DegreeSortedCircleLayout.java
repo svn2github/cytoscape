@@ -89,6 +89,11 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 				}
 			});
 
+		// make 'Degree' attribute user visible, if it is invisible (might be set by other plugin)
+		if (!Cytoscape.getNodeAttributes().getUserVisible(DEGREE)){
+			Cytoscape.getNodeAttributes().setUserVisible(DEGREE, true);
+		}
+		
 		if (canceled)
 			return;
 
