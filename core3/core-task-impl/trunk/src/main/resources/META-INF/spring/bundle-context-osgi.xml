@@ -215,7 +215,6 @@
 		interface="org.cytoscape.task.NodeViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Select First Neighbors" />
-			<entry key="preferredMenu" value="Select First Neighbors" />
 		</osgi:service-properties>
 	</osgi:service>
 
