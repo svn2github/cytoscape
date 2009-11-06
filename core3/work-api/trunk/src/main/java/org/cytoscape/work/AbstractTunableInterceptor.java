@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -92,12 +91,12 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
 	 *
-	 * @param tunablehandlerfactory  Factory of <code>Handlers</code> = can be <code>GuiHandlerFactory</code> to make the GUI with the <code>Handlers</code>,
+	 * @param tunableHandlerFactory  Factory of <code>Handlers</code> = can be <code>GuiHandlerFactory</code> to make the GUI with the <code>Handlers</code>,
 	 * 	<code>CLHandlerFactory</code> to get the <code>Handlers</code> that will create the <i>Options</i> for the <code>Tasks</code> runnable through the CommandLine Interface,
 	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */
-	public AbstractTunableInterceptor(HandlerFactory<H> tunablehandlerfactory) {
-		this.factory = tunablehandlerfactory;
+	public AbstractTunableInterceptor(HandlerFactory<H> tunableHandlerFactory) {
+		this.factory = tunableHandlerFactory;
 		handlerMap = new HashMap<Object, LinkedHashMap<String, H>>();
 	}
 
@@ -115,15 +114,16 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 				// See if the field is annotated as a Tunable.
 				if (field.isAnnotationPresent(Tunable.class)) {
 					try {
-						//get the Tunables annotations
-						Tunable tunable = field.getAnnotation(Tunable.class);
-						//get a Handler for this type of Tunable
+						// Get the tunable's annotations
+						final Tunable tunable = field.getAnnotation(Tunable.class);
+
+						// Get a Handler for this type of Tunable and...
 						H handler = factory.getHandler(field, obj, tunable);
 
-						//add it to the list of Handlers
-						if (handler != null) {
+						// ...add it to the list of Handlers
+						if (handler != null)
 							handlerList.put(field.getName(), handler);
-						} else
+						else
 							System.out.println("No handler for type: " + field.getType().getName());
 					} catch (Throwable ex) {
 						System.out.println("tunable field intercept failed: " + field.toString());
@@ -144,33 +144,38 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
    				if (method.isAnnotationPresent(Tunable.class)) {
 					try {
 						Tunable tunable = method.getAnnotation(Tunable.class);
-						if(method.getName().startsWith("get")){
+						if (method.getName().startsWith("get")) {
 							getMethodsMap.put(method.getName().substring(3),method);
 							getTunableMap.put(method.getName().substring(3),tunable);
-							if(setMethodsMap.containsKey(method.getName().substring(3))){
+							if (setMethodsMap.containsKey(method.getName().substring(3))){
 								//get a handler with the getMethod and setMethod
-								H handler = factory.getHandler(getMethodsMap.get(method.getName().substring(3)),setMethodsMap.get(method.getName().substring(3)), obj, getTunableMap.get(method.getName().substring(3)),setTunableMap.get(method.getName().substring(3)));
-								if ( handler != null ) {
-								 	handlerList.put( "getset" + method.getName().substring(3), handler ); 
-								}
+								H handler = factory.getHandler(getMethodsMap.get(method.getName().substring(3)),
+											       setMethodsMap.get(method.getName().substring(3)), obj,
+											       getTunableMap.get(method.getName().substring(3)),
+											       setTunableMap.get(method.getName().substring(3)));
+								if (handler != null)
+								 	handlerList.put("getset" + method.getName().substring(3), handler); 
 							}
 						}
-						else if(method.getName().startsWith("set")){
-							setMethodsMap.put(method.getName().substring(3),method);
-							setTunableMap.put(method.getName().substring(3),tunable);
-							if(getMethodsMap.containsKey(method.getName().substring(3))){
+						else if (method.getName().startsWith("set")) {
+							setMethodsMap.put(method.getName().substring(3), method);
+							setTunableMap.put(method.getName().substring(3), tunable);
+							if (getMethodsMap.containsKey(method.getName().substring(3))) {
 								//get a handler with the getMethod and setMethod
-								H handler = factory.getHandler(getMethodsMap.get(method.getName().substring(3)),setMethodsMap.get(method.getName().substring(3)), obj, getTunableMap.get(method.getName().substring(3)),setTunableMap.get(method.getName().substring(3)));
+								H handler = factory.getHandler(getMethodsMap.get(method.getName().substring(3)),
+											       setMethodsMap.get(method.getName().substring(3)), obj,
+											       getTunableMap.get(method.getName().substring(3)),
+											       setTunableMap.get(method.getName().substring(3)));
 								//add it to the list
-								if ( handler != null ) {
-								 	handlerList.put( "getset" + method.getName().substring(3), handler ); 
-								}
+								if (handler != null)
+								 	handlerList.put("getset" + method.getName().substring(3), handler); 
 							}
 						}
-						else throw new Exception("the name of the method has to start with \"set\" or \"get\"");
+						else
+							throw new Exception("the name of the method has to start with \"set\" or \"get\"");
 
 					} catch (Throwable ex) {
-						System.out.println("tunable method intercept failed: " + method.toString() );
+						System.out.println("tunable method intercept failed: " + method.toString());
 						ex.printStackTrace();
 					}
 				}

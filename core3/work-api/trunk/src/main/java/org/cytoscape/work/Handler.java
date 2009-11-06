@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 // The <code>Handler</code> may also be modified. Thus, need to add some listeners to catch the modifications.
 // Possibility to change the handler by setting it a new one.
 
-public interface Handler{
+public interface Handler {
 	
 	/**
 	 * To get the Handler's Field
