@@ -73,7 +73,7 @@
 			<fileset dir="${ncbiClient.lib.dir}">
 				<include name="*.jar" />
 			</fileset>
-			
+
 			<fileset dir="${cytoscape.dir}">
 				<include name="*.jar" />
 			</fileset>
@@ -94,7 +94,7 @@
 	<target name="clean" depends="init-ncbiClient">
 		<delete dir="${ncbiClient.classes.dir}" />
 		<delete dir="${ncbiClient.testclasses.dir}" />
-		<delete dir="${ncbiClient.tests.reports.dir}"/>
+		<delete dir="${ncbiClient.tests.reports.dir}" />
 		<delete file="ncbiClient.jar" />
 		<delete file="${ncbiClient.lib.dir}/ncbiClient.jar" />
 	</target>
@@ -107,7 +107,17 @@
 		<echo message=" COMPILE ncbiClient " />
 
 		<mkdir dir="${ncbiClient.classes.dir}" />
-		<javac srcdir="${ncbiClient.src.dir}" excludes="${ncbiClient.excludes}" classpathref="ncbiClient.project.class.path" destdir="${ncbiClient.classes.dir}" debug="${debug}" nowarn="${nowarn}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+		<javac srcdir="${ncbiClient.src.dir}" 
+			excludes="${ncbiClient.excludes}" 
+			classpathref="ncbiClient.project.class.path" 
+			destdir="${ncbiClient.classes.dir}" 
+			source="1.5" 
+			target="1.5"
+			debug="${debug}" 
+			nowarn="${nowarn}" 
+			deprecation="${deprecation}" 
+			optimize="${optimize}" 
+			fork="${fork}" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -118,9 +128,8 @@
 		<copy todir="${ncbiClient.classes.dir}/images">
 			<fileset dir="${ncbiClient.root.dir}/images" />
 		</copy>
-		
-		<copy todir="${ncbiClient.classes.dir}/edu/ucsd/bioeng/idekerlab/ncbiclient" 
-					file="${ncbiClient.manifest.dir}/plugin.props"/>
+
+		<copy todir="${ncbiClient.classes.dir}/edu/ucsd/bioeng/idekerlab/ncbiclient" file="${ncbiClient.manifest.dir}/plugin.props" />
 
 		<unjar dest="${ncbiClient.classes.dir}">
 			<fileset dir="${ncbiClient.lib.dir}">
@@ -129,7 +138,7 @@
 				<exclude name="ncbiClient.jar" />
 				<exclude name="ncbiClientTest.jar" />
 			</fileset>
-			
+
 		</unjar>
 		<jar destfile="ncbiClient.jar" manifest="${ncbiClient.manifest.dir}/ncbiClient.manifest">
 			<fileset dir="${ncbiClient.classes.dir}" includes="**" />
@@ -192,10 +201,10 @@
 	<!-- ======================================================= -->
 	<!-- Run all of the Swing Unit Tests                       -->
 	<!-- ======================================================= -->
-	<target name="test-swing" depends="ncbiClient" >
+	<target name="test-swing" depends="ncbiClient">
 		<mkdir dir="${ncbiClient.tests.reports.dir}" />
 		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
-			
+
 			<classpath>
 				<fileset dir="${ncbiClient.root.dir}">
 					<include name="**/*.jar" />
@@ -213,12 +222,12 @@
 					<include name="**/*.jar" />
 				</fileset>
 				<fileset dir="${ncbiClient.root.dir}/testClasses">
-									<include name="**/*" />
+					<include name="**/*" />
 				</fileset>
 			</classpath>
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />
-			<batchtest fork="yes" todir="${ncbiClient.tests.reports.dir}"  >
+			<batchtest fork="yes" todir="${ncbiClient.tests.reports.dir}">
 				<fileset dir="${ncbiClient.tests.dir}" includes="**/*TestSwing.java" />
 			</batchtest>
 
