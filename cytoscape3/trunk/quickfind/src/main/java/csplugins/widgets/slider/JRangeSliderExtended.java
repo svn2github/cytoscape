@@ -170,7 +170,8 @@ public class JRangeSliderExtended extends JRangeSlider implements ChangeListener
 				popup = popupFactory.getPopup(this, panel, getLocationOnScreen().x,
 				                              getLocationOnScreen().y + getPreferredSize().height
 				                              + 2);
-				popupDaemon = new PopupDaemon(this, 1000);
+				popupDaemon = new PopupDaemon(this, 2000);
+				popupDaemon.restart();
 				popup.show();
 			} else {
 				popupLow.setText(lowStr);
