@@ -46,6 +46,8 @@ import java.util.StringTokenizer;
 import cytoscape.view.CyMenuBar;
 import cytoscape.view.CyAction;
 
+import org.cytoscape.util.swing.JMenuTracker;
+
 /**
  *
  */
@@ -59,7 +61,7 @@ public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 	protected String defaultMenuSpecifier = DEFAULT_MENU_SPECIFIER;
 	protected Set actionMembersSet = null;
 	protected Map<Action,JMenuItem> actionMenuItemMap = null;
-	protected Map<String,JMenu> menuMap = null;
+	protected JMenuTracker menuTracker;
 
 
 	/**
@@ -78,8 +80,8 @@ public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 	 */
 	public CytoscapeMenuBar() {
 		menuEffectiveLastIndexMap = new HashMap<JMenu,Integer>();
-		menuMap = new HashMap<String,JMenu>();
 		actionMenuItemMap = new HashMap<Action,JMenuItem>();
+		menuTracker = new JMenuTracker(this);
 
 		// Load the first menu, just to please the layouter. Also make sure the
 		// menu bar doesn't get too small.
@@ -293,40 +295,13 @@ public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 	 *         dot or, if there is none, then as a child of this MenuBar.
 	 */
 	public JMenu getMenu(String menu_string, int parentPosition) {
-		if (menu_string == null) {
+		if ( menu_string == null )
 			menu_string = getDefaultMenuSpecifier();
-		}
 
-		StringTokenizer st = new StringTokenizer(menu_string, ".");
-		String menu_token;
-		JMenu parent_menu = null;
-		JMenu menu = null;
-
-		while (st.hasMoreTokens()) {
-			menu_token = (String) st.nextToken();
-
-			if (menuMap.containsKey(menu_token)) {
-				parent_menu = (JMenu) menuMap.get(menu_token);
-			} else {
-				menu = createJMenu(menu_token);
-
-				if (parent_menu == null) {
-					this.add(menu);
-					invalidate();
-				} else {
-					parent_menu.add(menu, parentPosition);
-				}
-
-				menuMap.put(menu_token, menu);
-				parent_menu = menu;
-			}
-		}
-
-		if (menu == null) {
-			return parent_menu;
-		}
-
-		return menu;
+		final JMenu menu = menuTracker.getMenu(menu_string, parentPosition);
+		revalidate();
+		repaint();
+		return menu; 
 	}
 
 	/**
@@ -379,17 +354,6 @@ public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 	 */
 	public String toString() {
 		return getIdentifier();
-	}
-
-	/**
-	 * Factory method for instantiating objects of type JMenu
-	 */
-	public JMenu createJMenu(String title) {
-		JMenu menu = new JMenu(title);
-		revalidate();
-		repaint();
-
-		return menu;
 	}
 
 	/**

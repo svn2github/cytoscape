@@ -59,6 +59,5 @@ public interface CyMenuBar {
 	public String getIdentifier();
 	public void setIdentifier(String new_identifier);
 	public String toString();
-	public JMenu createJMenu(String title);
 	public JMenuBar getJMenuBar();
 }
