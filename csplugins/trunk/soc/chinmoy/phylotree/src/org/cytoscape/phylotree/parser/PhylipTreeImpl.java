@@ -13,12 +13,15 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import cytoscape.logger.CyLogger;
+
 
 
 public class PhylipTreeImpl implements Phylotree {
 
 	private String treeStr; // The tree in string format
 	private List<PhylotreeNode> nodeList = null;   // List of all nodes in the tree
+	private CyLogger logger = CyLogger.getLogger("phylotree.parser");
 
 
 	// Constructors
@@ -46,13 +49,14 @@ public class PhylipTreeImpl implements Phylotree {
 	 * Reads a PHYLIP file and returns the tree in string format
 	 */
 	public String getTreeTextFromFile(File pTreeFile){
-		String retStr = null;
+		String retStr = "";
 
 		try
 		{
 			// Read the file to obtain the tree
 			BufferedReader reader = new BufferedReader(new FileReader(pTreeFile));
-			retStr = reader.readLine();
+			String line = null;
+			while ((line = reader.readLine()) != null) retStr += line;
 			return retStr;
 		}      
 		catch(IOException l)
@@ -83,36 +87,37 @@ public class PhylipTreeImpl implements Phylotree {
 			{
 				while(str.charAt(i)!='(' && str.charAt(i)!=')'&& str.charAt(i)!=';')
 				{ 
-
 					// Create multiple words for those separated by a ','
 					if(str.charAt(i)==',')
 					{
-
 						break; 
 					}
-
-
-
 					word = word+str.charAt(i);
 					i++;
-
 					if(i>=str.length())
 						break;
-
 				}
 
 				// Add the word to the list
 				if(!word.equals(""))
 				{
+					// System.out.println("See word: "+word);
 					if(word.charAt(0)!=':'){
+						// OK, we've got a word, but it doesn't start with a colon.  If
+						// we see a colon, then we have a name:length pair
 						String [] subWords = word.split(":");
-						for(int x = 0; x<subWords.length; x++)
-						{
-							if(!subWords[x].equals(""))
-							{
-								//System.out.println(subWords[x]);
+						if (subWords.length > 0) {
+							// Do we have a name?
+							if (!subWords[0].equals("")) {
+								list.add(subWords[0].trim());		// Yes, add it as a string
+								// System.out.println("Added: "+subWords[0].trim());
+							}
 
-								list.add(subWords[x].trim());
+							// Do we have a number?
+							if (subWords.length == 2 && !subWords[1].equals("")) {
+								list.add(":");
+								list.add(subWords[1].trim());
+								// System.out.println("Added: "+": + "+subWords[1].trim());
 							}
 						}
 					}
@@ -121,13 +126,11 @@ public class PhylipTreeImpl implements Phylotree {
 					{
 						String [] lengths = word.split(":");
 						list.add(":");
-						list.add(lengths[1]);
+						list.add(lengths[1].trim());
 					}
 				}
-
 				word = "";
 			}
-
 
 			// End of the tree string
 			else if(i<str.length() && str.charAt(i)==';')
@@ -137,44 +140,47 @@ public class PhylipTreeImpl implements Phylotree {
 			else  
 			{
 				list.add(""+str.charAt(i));
-
 				i++;
-
 				if(i>=str.length())
 					break;
 			}
-
 		}
+
+		// For debugging
+		// System.out.println("Node List before refinement: ");
+		// for (String s: list)
+		// 	System.out.println("Node: "+s);
 
 		// Refine the list
 
 		ListIterator<String> ite = list.listIterator();
-
 		List<Integer> replaceList = new LinkedList<Integer>();
 		List<Integer> ancestorList = new LinkedList<Integer>();
 
 		// Get indices of unnamed nodes
 		while(ite.hasNext())
 		{
-
 			int previousIndex = 0;
 			int index = 0;
 
 			if(ite.hasPrevious())
 				previousIndex = ite.previousIndex();
+
 			String listEle = ite.next();
+			// System.out.println("List refine - 1.  Element = "+listEle+", previous element = "+list.get(previousIndex));
 
-
-			if((listEle.equals(",") && list.get(previousIndex).equals("(")) ||(listEle.equals(":") && list.get(previousIndex).equals("(")))
+			if((listEle.equals(",") && list.get(previousIndex).equals("(")) ||
+			   (listEle.equals(":") && list.get(previousIndex).equals("(")))
 			{
 				index = ite.nextIndex();
 				replaceList.add(index);
+				// System.out.println("Adding "+list.get(index)+" to replaceList");
 			}
 			else if ((listEle.equals(")")||listEle.equals(":")) && list.get(previousIndex).equals(","))
 			{ 
 				index = ite.nextIndex();
-
 				replaceList.add(index);
+				// System.out.println("Adding "+list.get(index)+" to replaceList");
 			}
 			// And the unnamed parents as well
 			else if((listEle.equals(",") && list.get(previousIndex).equals(")"))
@@ -183,12 +189,9 @@ public class PhylipTreeImpl implements Phylotree {
 			{
 				index = ite.nextIndex();
 				ancestorList.add(index-1);
-
+				// System.out.println("Adding "+list.get(index-1)+" to ancestor list");
 			}
-
-
 		}
-
 
 		// Add unnamed nodes to marked indices
 		ListIterator<Integer> ite2 = replaceList.listIterator();
@@ -197,6 +200,7 @@ public class PhylipTreeImpl implements Phylotree {
 		{
 			int addIndex = ite2.next();
 			list.add(addIndex+unIndex+ancestorNumber, "Unnamed Node"+unIndex);
+			// System.out.println("Adding Unnamed Node"+unIndex+" to list");
 			unIndex++;
 		}
 
@@ -204,8 +208,8 @@ public class PhylipTreeImpl implements Phylotree {
 		while(ite2.hasNext())
 		{
 			int ancestorIndex = ite2.next();
-
 			list.add(ancestorIndex+ancestorNumber+unIndex, "Ancestor"+ancestorNumber);
+			// System.out.println("Adding Ancestor"+ancestorNumber+" to list");
 			ancestorNumber++;
 		}
 
@@ -215,10 +219,15 @@ public class PhylipTreeImpl implements Phylotree {
 		{
 			String ele = ite.next();
 
-			if(ele.equals(",")||ele.equals(":"))
+			if(ele.equals(","))
 				ite.remove();
 		}
 		// list.add(";");
+
+		// For debugging
+		// System.out.println("Node List after refinement: ");
+		// for (String s: list)
+		// 	System.out.println("Node: "+s);
 
 		return list;
 		}
@@ -241,7 +250,6 @@ public class PhylipTreeImpl implements Phylotree {
 		List<Double> branchLengthList = new LinkedList<Double>(); 
 		// Reflects the ChildNodeList but records the edge lengths instead of the child nodes. 
 
-
 		// Iterators for lists
 		ListIterator<String> iterator;
 		Iterator<PhylipNode> childNodeListIterator;
@@ -251,17 +259,17 @@ public class PhylipTreeImpl implements Phylotree {
 
 		iterator = list.listIterator();
 
+		// System.out.println("Creating stack");
 
 		//stack.push("Root Node"); // Something for the highest ancestor to connect to
 		while(iterator.hasNext())
 		{
-
 			String tempStr = iterator.next(); 
-
 
 			//if(!tempStr.equals(")")&&!tempStr.equals(";"))
 			if(!tempStr.equals(")"))
 			{
+				// System.out.println("Push "+tempStr);
 				stack.push(tempStr);
 				// Ignore
 			}
@@ -274,17 +282,29 @@ public class PhylipTreeImpl implements Phylotree {
 
 				String stackTop = stack.pop();
 
+
 				while(!stackTop.equals("("))
 				{
-					try 
-					{
-						// If the item popped off is a branch length, store it in the branchLength variable
-						// so that it may be associated with the edge later
-						branchLength = Double.parseDouble(stackTop);
-					}
-					catch(NumberFormatException f)
-					{
-						// Failure to parseDouble() indicates that the item is a node name
+					// System.out.println("stackTop "+stackTop);
+
+					// See if this is a branch length
+					if (stack.peek().equals(":")) {
+						// System.out.println("BranchLength = "+stackTop);
+						try 
+						{
+							// If the item popped off is a branch length, store it in the branchLength variable
+							// so that it may be associated with the edge later
+							branchLength = Double.parseDouble(stackTop);
+						}
+						catch(NumberFormatException f)
+						{
+							logger.warning("Can't parse branch length: "+f.getMessage(), f);
+						}
+						// Skip over the ":" and get it
+						if(!stack.isEmpty()) {
+							stackTop = stack.pop();
+						}
+					} else {
 						// Add a PhylipNode
 
 						PhylipNode nodeA;
@@ -293,12 +313,13 @@ public class PhylipTreeImpl implements Phylotree {
 							// This scenario indicates that the stackTop is a parentNode which has previous associated edges
 							nodeA = parentNodeStack.pop();
 							nodeList.add(nodeA); 
-
+							// System.out.println("Added parent node "+nodeA.getName());
 						}
 						else{
 							// This scenario indicates that stackTop is a previously unencountered node
 							nodeA = new PhylipNode(stackTop);
 							nodeList.add(nodeA);
+							// System.out.println("Added new node "+nodeA.getName());
 						}
 						// Also store the node in the childNodeList and its branch length in the branchLengthList
 						// for the purpose of adding edges from the parent node when it is created
@@ -330,6 +351,7 @@ public class PhylipTreeImpl implements Phylotree {
 						ancestor = "Root Node";
 					}
 					PhylipNode parentNode = new PhylipNode(ancestor);
+					// System.out.println("Added new parent node "+parentNode.getName());
 					// Add a parent node even when there are only two nodes in the entire tree
 					if(stack.isEmpty())
 					{
@@ -359,9 +381,7 @@ public class PhylipTreeImpl implements Phylotree {
 						childNode.nodeEdges.add(edge);
 
 						//Used during development
-						//   System.out.println(edge.getSourceNode().getName()+"<-->"+edge.getTargetNode().getName()+":"+edgeLength);
-
-
+						// System.out.println(edge.getSourceNode().getName()+"<-->"+edge.getTargetNode().getName()+":"+edgeLength);
 					}
 					childNodeList.clear();
 
@@ -390,8 +410,6 @@ public class PhylipTreeImpl implements Phylotree {
 		if(list!=null)
 			// Traverse the list into node and edge lists using a stack
 			readListIntoStack(list);
-
-
 	}
 
 
