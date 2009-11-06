@@ -44,6 +44,7 @@ import org.cytoscape.graph.render.stateful.GraphRenderer;
 import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
+import org.cytoscape.util.swing.JMenuTracker;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -124,6 +125,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private int m_lastRenderDetail = 0;
 	private Rectangle m_selectionRect = null;
 	private ViewChangeEdit m_undoable_edit;
+	private PopupMenuHelper popup;
 
 	//final boolean[] m_printingTextAsShape = new boolean[1];
 	FontMetrics m_fontMetrics = null;
@@ -183,7 +185,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		dropTarget = new DropTarget(this, // component
 		                            DnDConstants.ACTION_COPY, // actions
 		                            this); // DropTargetListener
-
+		popup = new PopupMenuHelper(m_view, this);
 	}
 
 	/**
@@ -676,7 +678,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				System.out.println("left control click ----------");
 				// clicking on empty space
 				if ((getChosenNode() == 0) && (getChosenEdge() == 0) && (getChosenAnchor() < 0)) {
-					createEmptySpaceMenu(e.getX(), e.getY(),"NEW"); 
+					popup.createEmptySpaceMenu(e.getX(), e.getY(),"NEW"); 
 				}
 			}
 	
@@ -700,10 +702,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				m_lastYMousePos = e.getY();
 	
 				NodeView nview = m_view.getPickedNodeView(e.getPoint());
-				createNodeViewMenu(nview,e.getX(),e.getY(),null);
+				popup.createNodeViewMenu(nview,e.getX(),e.getY(),null);
 	
 				EdgeView edgeView = m_view.getPickedEdgeView(e.getPoint());
-				createEdgeViewMenu(edgeView,e.getX(),e.getY(),null);
+				popup.createEdgeViewMenu(edgeView,e.getX(),e.getY(),null);
 			} 
 
 		// double click
@@ -716,120 +718,15 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 				NodeView nview = m_view.getPickedNodeView(e.getPoint());
 				if ( nview != null )
-					createNodeViewMenu(nview,e.getX(),e.getY(),"OPEN");
+					popup.createNodeViewMenu(nview,e.getX(),e.getY(),"OPEN");
 				else 
-					createEmptySpaceMenu(e.getX(), e.getY(),"OPEN"); 
+					popup.createEmptySpaceMenu(e.getX(), e.getY(),"OPEN"); 
 			}
 		}
 
 		requestFocusInWindow();
 	}
 
-	/**
-	 * Extract and return all T's that match the defined action.  If action is null,
-	 * then return everything.
-	 */
-	private <T> Collection<T> getPreferredActions(Map<T,Map> tfs, String action) {
-		// if the action is null, return all available
-		if ( action == null ) {
-			System.out.println("returning all actions");
-			return tfs.keySet();
-		}
-
-		// otherwise figure out if any TaskFactories match the specified preferred action
-		java.util.List<T> usableTFs = new ArrayList<T>();
-		for ( T evtf : tfs.keySet() ) {
-			String prefAction = (String)(tfs.get( evtf ).get("preferredAction"));
-			if ( action != null && action.equals(prefAction) )
-				usableTFs.add(evtf);
-		}
-			System.out.println("returning " + usableTFs.size() + " actions");
-		return usableTFs;
-	}
-
-	private void createEdgeViewMenu(EdgeView edgeView, int x, int y, String action) {
-		if (edgeView != null ) {
-
-			Collection<EdgeViewTaskFactory> usableTFs = getPreferredActions(m_view.edgeViewTFs,action);
-			View<CyEdge> ev = edgeView.getEdgeView();	
-
-			// build a menu of actions if more than factory exists
-			if ( usableTFs.size() > 1) {
-				String edgeLabel = ev.getSource().attrs().get("interaction",String.class);
-				JPopupMenu menu = new JPopupMenu(edgeLabel);
-
-				for ( EdgeViewTaskFactory evtf : usableTFs ) {
-					// TODO reconcile whether we should use title or preferredMenu or both
-					String pref = (String)(m_view.edgeViewTFs.get( evtf ).get("preferredMenu"));
-					evtf.setEdgeView(ev,m_view.cyNetworkView);
-					menu.add( createMenuItem( evtf, pref ) );
-				}
-
-				menu.show(this, x, y);
-
-			// execute the task directly if only one factory exists 
-			} else if ( usableTFs.size() == 1) {
-				EdgeViewTaskFactory tf  = usableTFs.iterator().next();
-				tf.setEdgeView(ev,m_view.cyNetworkView);
-				executeTask(tf);
-			}
-		}
-	}
-
-	private void createNodeViewMenu(NodeView nview, int x, int y , String action) {
-		if (nview != null ) {
-			Collection<NodeViewTaskFactory> usableTFs = getPreferredActions(m_view.nodeViewTFs,action);
-			View<CyNode> nv = nview.getNodeView();
-
-			// build a menu of actions if more than factory exists
-			if ( usableTFs.size() > 1) {
-				String nodeLabel = nv.getSource().attrs().get("name",String.class);
-				JPopupMenu menu = new JPopupMenu(nodeLabel);
-
-				for ( NodeViewTaskFactory nvtf : usableTFs ) {
-					// TODO reconcile whether we should use title or preferredMenu or both
-					String pref = (String)(m_view.nodeViewTFs.get( nvtf ).get("preferredMenu"));
-					nvtf.setNodeView(nv,m_view.cyNetworkView);
-					menu.add( createMenuItem( nvtf, pref ) );
-				}
-
-				menu.show(this, x, y);
-
-			// execute the task directly if only one factory exists 
-			} else if ( usableTFs.size() == 1) {
-				NodeViewTaskFactory tf  = usableTFs.iterator().next();
-				tf.setNodeView(nv,m_view.cyNetworkView);
-				executeTask(tf);
-			}
-		}
-	}
-
-	private void createEmptySpaceMenu(int x, int y, String action) {
-		// build a menu of actions if more than factory exists
-		Collection<NetworkViewTaskFactory> usableTFs = getPreferredActions(m_view.emptySpaceTFs,action);
-		if ( usableTFs.size() > 1 ) {
-			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
-			for ( NetworkViewTaskFactory nvtf : usableTFs ) {
-				// TODO reconcile whether we should use title or preferredMenu or both
-				String pref = (String)(m_view.emptySpaceTFs.get( nvtf ).get("title"));
-				nvtf.setNetworkView(m_view.cyNetworkView);
-				menu.add( createMenuItem( nvtf, pref ) );
-			}
-			menu.show(this, x, y);
-		// execute the task directly if only one factory exists 
-		} else if ( usableTFs.size() == 1) {
-			NetworkViewTaskFactory tf = usableTFs.iterator().next();
-			tf.setNetworkView(m_view.cyNetworkView);
-			executeTask(tf);
-		}
-	}
-
-	private JMenuItem createMenuItem( TaskFactory tf , String pref ) { 
-		// in the future parse the menu into submenus, etc.
-		return new JMenuItem(new PopupAction( tf, pref ));
-	}
-	
-	
 	private int[] setSelectedNodes ()
 	{
 		int [] selectedNodes = null;
@@ -1608,24 +1505,4 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return !(this.NodeMovement);
 	}
 
-
-	private class PopupAction extends AbstractAction {
-		TaskFactory tf;
-		PopupAction(TaskFactory tf, String preferredMenu) {
-			super( preferredMenu );
-			this.tf = tf;
-		}
-
-		public void actionPerformed(ActionEvent ae) {
-			executeTask(tf);
-		}
-	}
-
-	private void executeTask(TaskFactory tf) {
-		Task task = tf.getTask();
-		m_view.interceptor.loadTunables(task);	
-		if ( !m_view.interceptor.createUI(task) )
-           	return;
-		m_view.manager.execute(task);
-	}
 }
