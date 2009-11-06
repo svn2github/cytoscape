@@ -11,7 +11,7 @@ public class BookmarkFactory implements PropertyFactory<BookmarkCyProperty> {
 	private BookmarkReader reader;
 	
 	
-	public BookmarkFactory(String bookmarkLocation) throws IOException {
+	public BookmarkFactory(final String bookmarkLocation) throws IOException {
 		this.resourceLocation = bookmarkLocation;
 		reader = new BookmarkReader(bookmarkLocation);
 		reader.read();
