@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+	<!-- Services provided by this bundle -->
+	<osgi:service id="undoSupportService"
+		ref="undoSupport" interface="org.cytoscape.work.UndoSupport">
+	</osgi:service>
+	
+	<osgi:service id="guiTunableInterceptorService"
+		ref="guiTunableInterceptor" interface="org.cytoscape.work.TunableInterceptor">
+	</osgi:service>
+	
+	<osgi:service id="swingTaskManagerService"
+		ref="swingTaskManager" interface="org.cytoscape.work.TaskManager">
+	</osgi:service>
+	
+	<osgi:service id="guiHandlerFactoryService"
+		ref="guiHandlerFactory" interface="org.cytoscape.work.HandlerFactory">
+	</osgi:service>
+
+
+
+    <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=bookmarks)" />
+    <osgi:reference id="bookmarksUtilServiceRef" interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+<!-- 	<osgi:reference id="fileUtilServiceRef" interface="org.cytoscape.io.util.FileUtil"/>-->
+<!--	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil"/> -->
+   	
+</beans>
