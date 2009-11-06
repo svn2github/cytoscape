@@ -12,7 +12,7 @@
 		<tstamp />
 		<property name="ncbiClient.Name" value="NCBI Web Service Client Plugin" />
 		<property name="ncbiClient.name" value="ncbiClient" />
-		<property name="ncbiClient.version" value="0.5" />
+		<property name="ncbiClient.version" value="0.7" />
 		<property name="ncbiClient.year" value="200" />
 
 		<echo message="Building ${ncbiClient.name} version ${ncbiClient.version}." />
@@ -30,7 +30,7 @@
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
-		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.6.3" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.7.0" />
 
 		<!-- JUnit report directory -->
 		<property name="junit.report.dir" value="${ncbiClient.root.dir}/junit-reports" />
