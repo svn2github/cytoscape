@@ -147,11 +147,6 @@ public class LinkOut {
 	}
 
 	public void addLinksFromProperties() {
-		// AJK: 06/11/09 just a test, get rid of this later
-		Dictionary<String, String> dict1 = new Hashtable<String, String>();
-		dict1.put("preferredMenu", "Linkout menus here");
-		NodeViewTaskFactory nvtf1 = new LinkoutTaskFactory("testURL");
-		registrar.registerService(nvtf1, NodeViewTaskFactory.class, dict1);
 
 		// iterate through properties list
 		try {
@@ -189,8 +184,7 @@ public class LinkOut {
 				Dictionary<String, String> dict = new Hashtable<String, String>();
 				dict.put("preferredMenu", propKey);
 				NodeViewTaskFactory nvtf = new LinkoutTaskFactory(url);
-				registrar
-						.registerService(nvtf, NodeViewTaskFactory.class, dict);
+				registrar.registerService(nvtf, NodeViewTaskFactory.class, dict);
 			}
 
 			// Now, see if the user has specified their own URL to add to
