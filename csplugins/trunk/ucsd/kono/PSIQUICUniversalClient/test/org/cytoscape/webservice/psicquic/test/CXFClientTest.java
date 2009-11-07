@@ -94,8 +94,13 @@ public class CXFClientTest {
 			System.out.println(bean.getServiceClass());
 			
 			QueryResponse res = port.getByInteractor(ref, info);
+			QueryResponse res2 = port.getByQuery("pubauth:kelly", info);
+			
+			
 			res.getResultInfo().getTotalResults();
 			System.out.println("number of result = " + res.getResultInfo().getTotalResults());
+			System.out.println("number of result2 = " + res2.getResultInfo().getTotalResults());
+			
 //			Method[] methods = port.getClass().getMethods();
 //			for (Method m : methods) {
 //				System.out.println(m.getName()

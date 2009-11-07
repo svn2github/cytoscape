@@ -11,10 +11,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
-import javax.xml.namespace.QName;
 
 import org.cytoscape.webservice.psicquic.mapper.Mitab25Mapper;
-import org.cytoscape.webservice.psicquic.ontology.UniprotSearchUtil;
 import org.cytoscape.webservice.psicquic.ui.ResultDialog;
 import org.hupo.psi.mi.psicquic.DbRef;
 import org.hupo.psi.mi.psicquic.QueryResponse;
@@ -51,40 +49,32 @@ public class PSICQUICUniversalClient extends
 	private enum Mode {
 		SEARCH, IMPORT;
 	}
+	
+	private enum QueryMode {
+		GET_BY_INTERACTOR, GET_BY_QUERY;
+	}
 
 	private void setDescription() {
 		description = "http://code.google.com/p/psicquic/";
 	}
+	
+	private QueryMode qMode = QueryMode.GET_BY_INTERACTOR;
 
 	private void setProperty() {
 		props = new ModulePropertiesImpl(clientID, "wsc");
 
-		final PSICQUICServiceRegistory searchClient = ((PSICQUICServiceRegistory) clientStub);
-		final Map<URI, String> serviceNames = searchClient.getServiceNames();
-		int serviceCount = serviceNames.size();
-
 		// General setting
-
-//		props.add(new Tunable("search_mode", "Search Mode",
-//				Tunable.LIST, new Integer(0), (Object) SEARCH_MODE,
-//				(Object) null, 0));
 		props.add(new Tunable("block_size", "Block Size", Tunable.INTEGER,
 				new Integer(100)));
 		props.add(new Tunable("timeout", "Timeout (sec.)", Tunable.INTEGER,
 				new Integer(6000)));
-
-//		int count = 1;
-//		for (URI key : serviceNames.keySet()) {
-//			props.add(new Tunable(serviceNames.get(key), "Service " + count + ": " + key,
-//					Tunable.GROUP, new Integer(2)));
-//			props.add(new Tunable(serviceNames.get(key) + "_data_format", "Data format",
-//					Tunable.LIST, new Integer(0), (Object) IMPORT_DATA_FORMAT,
-//					(Object) null, 0));
-//			props.add(new Tunable(serviceNames.get(key) + "_edge_creation", "Edge creation mode",
-//					Tunable.LIST, new Integer(0), (Object) IMPORT_MODE,
-//					(Object) null, 0));
-//			count++;
-//		}
+		props.add(new Tunable("active_only", "Active Services Only", Tunable.BOOLEAN,
+				new Boolean(true)));
+		
+		final String[] modeArray = {QueryMode.GET_BY_INTERACTOR.name(), QueryMode.GET_BY_QUERY.toString()};
+		props.add(new Tunable("query_mode", "Query Mode",
+                Tunable.LIST, new Integer(0), 
+                (Object) modeArray, (Object) null, 0));
 
 	}
 
@@ -106,6 +96,7 @@ public class PSICQUICUniversalClient extends
 
 	private Map<URI, QueryResponse> sResult;
 	private List<DbRef> queryList;
+	private String query;
 	
 	static {
 		 try {
@@ -150,7 +141,7 @@ public class PSICQUICUniversalClient extends
 
 	
 	
-	private void search(String query, CyWebServiceEvent<?> e)
+	private void search(String queryString, CyWebServiceEvent<?> e)
 			throws CyWebServiceException {
 
 		final PSICQUICServiceRegistory searchClient = ((PSICQUICServiceRegistory) clientStub);
@@ -162,24 +153,27 @@ public class PSICQUICUniversalClient extends
 			blockSize = 100;
 		}
 		
+		this.query = queryString;
 		final RequestInfo info = new RequestInfo();
 		info.setResultType(PSICQUICReturnType.COUNT.getTypeName());
 		info.setBlockSize(blockSize);
 		try {
 			System.out.println("** Submit Search Query: " + query);
 			
-//			List<String> candidates = UniprotSearchUtil.getInteractorByKeyword(query);
-//			StringBuilder builder = new StringBuilder();
-//			int i=1;
-//			for(String id: candidates) {
-//				builder.append(id + " ");
-//				System.out.println(i + ": " + id);
-//				i++;
-//			}
+			Tunable mode = props.get("query_mode");
+			System.out.println("QueryMode ====> " + mode.getValue());
 			
-			queryList = buildInteractorList(query);
 			
-			sResult = searchClient.getCount(queryList, info, "OR");
+			if(mode.getValue().equals(QueryMode.GET_BY_INTERACTOR.ordinal())) {
+				System.out.println("QueryMode ====> " + mode.getValue());
+				queryList = buildInteractorList(query);
+				sResult = searchClient.getCount(queryList, info, "OR");
+			} else {
+				// Get by Query (MIQL)
+				sResult = searchClient.getCount(query, info);
+			}
+			
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new CyWebServiceException(
@@ -206,8 +200,6 @@ public class PSICQUICUniversalClient extends
 	private void importNetwork(Object result, CyNetwork e)
 			throws CyWebServiceException {
 		
-		System.out.println("========Import called!!!!!!!!!!!!!!!!!");
-
 		PSICQUICServiceRegistory importClient = ((PSICQUICServiceRegistory) clientStub);
 		Map<URI, List<QueryResponse>> importResult = null;
 		final RequestInfo info = new RequestInfo();
@@ -215,7 +207,13 @@ public class PSICQUICUniversalClient extends
 		info.setResultType(PSICQUICReturnType.MITAB25.getTypeName());
 		info.setBlockSize(100);
 		try {
-			importResult = importClient.getByInteractorList(queryList, info, "OR");
+			if(queryList != null) {
+				System.out.println("========Get by List");
+				importResult = importClient.getByInteractorList(queryList, info, "OR");
+			} else {
+				System.out.println("========Get by Query");
+				importResult = importClient.getByQuery(query, info);
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new CyWebServiceException(
@@ -232,7 +230,7 @@ public class PSICQUICUniversalClient extends
 		Map<URI, String> newNameMap = new HashMap<URI, String>();
 		String netName = null;
 		for(URI name: importResult.keySet()) {
-			netName = time.toString() + ": PSICQUIC: " + nameMap.get(name);
+			netName = nameMap.get(name);
 			defNetworkNames.add(netName);
 			newNameMap.put(name, netName);
 		}
@@ -246,6 +244,14 @@ public class PSICQUICUniversalClient extends
 		final Mitab25Mapper mapper = new Mitab25Mapper();
 		List<CyNetwork> target = new ArrayList<CyNetwork>();
 		
+		// Create parent empty network
+		final String parentName;
+		if(query != null) {
+			parentName = "PSICQUIC Query Result: " + time.toString() + " (" + query +")";
+		} else {
+			parentName = "PSICQUIC Query Result: " + time.toString();
+		}
+		final CyNetwork parentNetwork = Cytoscape.createNetwork(parentName, false);
 		
 		for (URI key : importResult.keySet()) {
 
@@ -257,7 +263,7 @@ public class PSICQUICUniversalClient extends
 			for(QueryResponse qr: res) {
 				builder.append(qr.getResultSet().getMitab());
 			}
-			final CyNetwork net = mapper.map(builder.toString(), newNameMap.get(key)); 
+			final CyNetwork net = mapper.map(builder.toString(), newNameMap.get(key), parentNetwork); 
 			if(net != null)
 				target.add(net);
 		}
@@ -272,6 +278,9 @@ public class PSICQUICUniversalClient extends
 			Cytoscape.getNetworkView(net.getIdentifier()).setVisualStyle(PSI25VisualStyleBuilder.getDefVS().getName());
 			Cytoscape.getNetworkView(net.getIdentifier()).redrawGraph(true, false);
 		}
+		
+		query = null;
+		queryList = null;
 	}
 
 	// Build interactor list

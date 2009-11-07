@@ -187,21 +187,21 @@ public class PSI25VisualStyleBuilder {
 	private static void generateInteractionTypeMap(DiscreteMapping lineStyle,
 			DiscreteMapping lineWidth, DiscreteMapping edgeColor) {
 		// TODO Auto-generated method stub
-		for (String childTerm : type.keySet()) {
-			if ((type.get(childTerm)).equals("MI:0208")) {
-				lineStyle.putMapValue(childTerm, LineStyle.LONG_DASH);
-				lineWidth.putMapValue(childTerm, 2.0);
-				edgeColor.putMapValue(childTerm, Color.CYAN);
-			} else if ((type.get(childTerm)).equals("MI:0403")) {
-				lineStyle.putMapValue(childTerm, LineStyle.SOLID);
-				lineWidth.putMapValue(childTerm, 2.0);
-				edgeColor.putMapValue(childTerm, Color.green);
-			} else if ((type.get(childTerm)).equals("MI:0914")) {
-				lineStyle.putMapValue(childTerm, LineStyle.SOLID);
-				lineWidth.putMapValue(childTerm, 3.0);
-				edgeColor.putMapValue(childTerm, Color.DARK_GRAY);
-			}
-		}
+//		for (String childTerm : type.keySet()) {
+//			if ((type.get(childTerm)).equals("MI:0208")) {
+//				lineStyle.putMapValue(childTerm, LineStyle.LONG_DASH);
+//				lineWidth.putMapValue(childTerm, 2.0);
+//				edgeColor.putMapValue(childTerm, Color.CYAN);
+//			} else if ((type.get(childTerm)).equals("MI:0403")) {
+//				lineStyle.putMapValue(childTerm, LineStyle.SOLID);
+//				lineWidth.putMapValue(childTerm, 2.0);
+//				edgeColor.putMapValue(childTerm, Color.green);
+//			} else if ((type.get(childTerm)).equals("MI:0914")) {
+//				lineStyle.putMapValue(childTerm, LineStyle.SOLID);
+//				lineWidth.putMapValue(childTerm, 3.0);
+//				edgeColor.putMapValue(childTerm, Color.DARK_GRAY);
+//			}
+//		}
 
 		lineStyle.putMapValue("MI:0208", LineStyle.LONG_DASH);
 		lineWidth.putMapValue("MI:0208", 3.0);
@@ -218,23 +218,23 @@ public class PSI25VisualStyleBuilder {
 
 	private static void buildOntologyMap() {
 
-		try {
-			System.out.println("############Ontology Test=============");
-
-			// Get child terms for each interaction type category.
-			for (String rootTerm : ITR_TYPE_ROOT_TERMS) {
-				final Map<String, String> children = OLSUtil
-						.getAllChildren(rootTerm);
-				for (String childTerm : children.keySet()) {
-					type.put(childTerm, rootTerm);
-					System.out.println(childTerm + ", root = " + rootTerm);
-				}
-			}
-
-			System.out.println("############Ontology Test DONE!=============");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			System.out.println("############Ontology Test=============");
+//
+//			// Get child terms for each interaction type category.
+//			for (String rootTerm : ITR_TYPE_ROOT_TERMS) {
+//				final Map<String, String> children = OLSUtil
+//						.getAllChildren(rootTerm);
+//				for (String childTerm : children.keySet()) {
+//					type.put(childTerm, rootTerm);
+//					System.out.println(childTerm + ", root = " + rootTerm);
+//				}
+//			}
+//
+//			System.out.println("############Ontology Test DONE!=============");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 	}
 

@@ -65,7 +65,7 @@ public class Mitab25Mapper {
 		networkAttr = Cytoscape.getNetworkAttributes();
 	}
 
-	public CyNetwork map(String mitab, String networkName) {
+	public CyNetwork map(String mitab, String networkName, CyNetwork parentNetwork) {
 
 		// Read the long string of MITAB
 		String[] lines = mitab.split("\n");
@@ -166,7 +166,7 @@ public class Mitab25Mapper {
 
 		if (edges.size() != 0) {
 			final CyNetwork network = Cytoscape.createNetwork(nodes, edges,
-					networkName, null);
+					networkName, parentNetwork);
 
 			nodes.clear();
 			edges.clear();

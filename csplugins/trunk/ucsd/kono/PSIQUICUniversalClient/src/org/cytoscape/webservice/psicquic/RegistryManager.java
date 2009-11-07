@@ -32,7 +32,12 @@ public class RegistryManager {
 	
 	// Tag definitions
 	private static final String SOAP_URL = "soapUrl";
-	private static final String SERVICE_URL = "http://www.ebi.ac.uk/intact/psicquic-registry/registry";
+	private static final String SERVICE_URL = "http://www.ebi.ac.uk/Tools/webservices/psicquic/registry/registry";
+	
+	//Defines action command
+	public enum STATE {
+		ACTIVE, INACTIVE, STATUS;
+	}
 
 	private final Map<String, String> regMap;
 
@@ -46,7 +51,7 @@ public class RegistryManager {
 	}
 
 	private void invoke() throws IOException {
-		String command = "?action=ACTIVE&format=xml";
+		String command = "?action=" + STATE.ACTIVE.name() +"&format=xml";
 
 		URL url = new URL(SERVICE_URL + command);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -82,8 +87,8 @@ public class RegistryManager {
 			e.printStackTrace();
 			throw new IOException("Could not parse message from registry.");
 		}
-		System.out.println("==== Registory get success!! ===============\n\n"
-				+ builder.toString());
+		
+		System.out.println("PSICQUIC Registory Manager is ready.");
 
 	}
 
