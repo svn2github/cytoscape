@@ -36,6 +36,7 @@ package cytoscape.render.immed;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.EventQueue;
@@ -239,11 +240,11 @@ public final class GraphGraphics {
 	private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
 	private boolean m_cleared;
 
-	// The three following member variables shall only be referenced from
-	// the scope of setStroke() definition.
-	private float m_currStrokeWidth;
-	private final float[] m_currDash = new float[] { 0.0f, 0.0f };
-	private int m_currCapType;
+//	// The three following member variables shall only be referenced from
+//	// the scope of setStroke() definition.
+//	private float m_currStrokeWidth;
+//	private final float[] m_currDash = new float[] { 0.0f, 0.0f };
+//	private int m_currCapType;
 
 	// This member variable only to be used from within defineCustomNodeShape().
 	private byte m_lastCustomShapeType = s_last_shape;
@@ -377,7 +378,8 @@ public final class GraphGraphics {
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 		m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
 				RenderingHints.VALUE_STROKE_PURE);
-		setStroke(0.0f, 0.0f, BasicStroke.CAP_ROUND, true);
+		//setStroke(0.0f, 0.0f, BasicStroke.CAP_ROUND, true);
+		m_g2d.setStroke(new BasicStroke(0.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f));
 
 		m_currXform.setToTranslation(0.5d * image.getWidth(null), 0.5d * image
 				.getHeight(null));
@@ -387,7 +389,7 @@ public final class GraphGraphics {
 		m_currNativeXform.setTransform(m_g2d.getTransform());
 		m_cleared = true;
 	}
-
+/*
 	private final void setStroke(final float width, final float dashLength,
 			final int capType, final boolean ignoreCache) {
 		if ((!ignoreCache) && (width == m_currStrokeWidth)
@@ -410,6 +412,7 @@ public final class GraphGraphics {
 					BasicStroke.JOIN_ROUND, 10.0f, m_currDash, 0.0f));
 		}
 	}
+	*/
 
 	/**
 	 * Uses the current transform to map the specified image coordinates to node
@@ -1569,8 +1572,8 @@ public final class GraphGraphics {
 			final byte arrow1Type, final float arrow1Size,
 			final Paint arrow1Paint, final float x0, final float y0,
 			EdgeAnchors anchors, final float x1, final float y1,
-			final float edgeThickness, final Paint edgePaint,
-			final float dashLength) {
+			final float edgeThickness, final Stroke edgeStroke, final Paint edgePaint
+			) {
 		final double curveFactor = CURVE_ELLIPTICAL;
 
 		if (anchors == null) {
@@ -1579,7 +1582,7 @@ public final class GraphGraphics {
 
 		if (m_debug) {
 			edgeFullDebug(arrow0Type, arrow0Size, arrow1Type, arrow1Size,
-					edgeThickness, dashLength, anchors);
+					edgeStroke, edgeThickness, anchors);
 		}
 
 		if (!computeCubicPolyEdgePath(arrow0Type,
@@ -1593,19 +1596,22 @@ public final class GraphGraphics {
 						arrow1Type, arrow1Size, arrow1Paint,
 						(float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
 						(float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
-						edgeThickness, edgePaint, dashLength);
+						edgeThickness, edgeStroke, edgePaint );
 			}
 
 			return;
 		}
 
 		{ // Render the edge polypath.
+			final boolean simpleSegment = arrow0Type == ARROW_NONE && arrow1Type == ARROW_NONE;
+			m_g2d.setStroke(edgeStroke);
 
-			final boolean simpleSegment = (arrow0Type == ARROW_NONE)
-					&& (arrow1Type == ARROW_NONE) && (dashLength == 0.0f);
-			setStroke(edgeThickness, dashLength,
-					simpleSegment ? BasicStroke.CAP_ROUND
-							: BasicStroke.CAP_BUTT, false);
+//			final boolean simpleSegment = (arrow0Type == ARROW_NONE)
+//					&& (arrow1Type == ARROW_NONE) && (dashLength == 0.0f);
+//			setStroke(edgeThickness, dashLength,
+//					simpleSegment ? BasicStroke.CAP_ROUND
+//							: BasicStroke.CAP_BUTT, false);
+
 			// Set m_path2d to contain the cubic curves computed in
 			// m_edgePtsBuff.
 			m_path2d.reset();
@@ -1653,7 +1659,8 @@ public final class GraphGraphics {
 		final double cosTheta1 = dx1 / len1;
 		final double sinTheta1 = dy1 / len1;
 
-		if (dashLength == 0.0f) { // Render arrow cap at origin of poly path.
+	//	if (dashLength == 0.0f) 
+		{ // Render arrow cap at origin of poly path.
 
 			final Shape arrow0Cap = computeUntransformedArrowCap(arrow0Type,
 					((double) arrow0Size) / edgeThickness);
@@ -1669,7 +1676,8 @@ public final class GraphGraphics {
 			}
 		}
 
-		if (dashLength == 0.0f) { // Render arrow cap at end of poly path.
+	//	if (dashLength == 0.0f) 
+		{ // Render arrow cap at end of poly path.
 
 			final Shape arrow1Cap = computeUntransformedArrowCap(arrow1Type,
 					((double) arrow1Size) / edgeThickness);
@@ -1723,24 +1731,19 @@ public final class GraphGraphics {
 	@SuppressWarnings("fallthrough")
 	private final void edgeFullDebug(final byte arrow0Type,
 			final float arrow0Size, final byte arrow1Type, float arrow1Size,
-			final float edgeThickness, final float dashLength,
+			final Stroke edgeStroke,
+			final float edgeThickness, 
 			final EdgeAnchors anchors) {
 		if (!EventQueue.isDispatchThread()) {
-			throw new IllegalStateException(
-					"calling thread is not AWT event dispatcher");
+			throw new IllegalStateException("calling thread is not AWT event dispatcher");
 		}
 
 		if (!m_cleared) {
-			throw new IllegalStateException(
-					"clear() has not been called previously");
+			throw new IllegalStateException("clear() has not been called previously");
 		}
 
 		if (!(edgeThickness >= 0.0f)) {
 			throw new IllegalArgumentException("edgeThickness < 0");
-		}
-
-		if (!(dashLength >= 0.0f)) {
-			throw new IllegalArgumentException("dashLength < 0");
 		}
 
 		switch (arrow0Type) {
@@ -1822,10 +1825,10 @@ public final class GraphGraphics {
 			final byte arrow1Type, final float arrow1Size,
 			final Paint arrow1Paint, final float x0, final float y0,
 			final float x1, final float y1, final float edgeThickness,
-			final Paint edgePaint, final float dashLength) {
-		final double len = Math
-				.sqrt(((((double) x1) - x0) * (((double) x1) - x0))
-						+ ((((double) y1) - y0) * (((double) y1) - y0)));
+			final Stroke edgeStroke,
+			final Paint edgePaint) {
+		final double len = Math.sqrt(((((double) x1) - x0) * (((double) x1) - x0))
+		                           + ((((double) y1) - y0) * (((double) y1) - y0)));
 
 		// If the length of the edge is zero we're going to skip completely over
 		// all rendering. This check is now redundant because the code that
@@ -1865,9 +1868,10 @@ public final class GraphGraphics {
 			m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
 					x0, y0);
 			m_path2d.transform(m_xformUtil);
-			setStroke(edgeThickness, dashLength,
-					(dashLength == 0.0f) ? BasicStroke.CAP_ROUND
-							: BasicStroke.CAP_BUTT, false);
+//			setStroke(edgeThickness, dashLength,
+//					(dashLength == 0.0f) ? BasicStroke.CAP_ROUND
+//							: BasicStroke.CAP_BUTT, false);
+			m_g2d.setStroke(edgeStroke);
 			m_g2d.setPaint(edgePaint);
 			m_g2d.draw(m_path2d);
 
@@ -1878,7 +1882,8 @@ public final class GraphGraphics {
 			m_g2d.setPaint(edgePaint); // We're going to render at least one
 			// segment.
 
-			setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
+			//setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
+			m_g2d.setStroke(edgeStroke);
 
 			final double deltaLen = getT(ARROW_DELTA) * arrow0Size;
 			final double tDeltaLenFactor = 0.5d - (deltaLen / len);
@@ -1903,7 +1908,8 @@ public final class GraphGraphics {
 			final double cosTheta = (((double) x0) - x1) / len;
 			final double sinTheta = (((double) y0) - y1) / len;
 
-			if ((tDeltaLenFactor > 0.0d) && (dashLength == 0.0f)) { // Render
+			//if ((tDeltaLenFactor > 0.0d) && (dashLength == 0.0f)) { // Render
+			if ( tDeltaLenFactor > 0.0d ) { // Render
 				// begin
 				// cap.
 				m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta,
@@ -1915,7 +1921,8 @@ public final class GraphGraphics {
 				m_g2d.setTransform(m_currNativeXform);
 			}
 
-			if (dashLength == 0.0f) { // Render end cap.
+			//if (dashLength == 0.0f) { // Render end cap.
+			{ // Render end cap.
 				m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta,
 						-cosTheta, x1, y1);
 				m_g2d.transform(m_xformUtil);
@@ -1925,7 +1932,8 @@ public final class GraphGraphics {
 				m_g2d.setTransform(m_currNativeXform);
 			}
 
-			if (dashLength == 0.0f) { // Render delta wedge cap.
+			//if (dashLength == 0.0f) { // Render delta wedge cap.
+			{ // Render delta wedge cap.
 				m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta,
 						-cosTheta, midX, midY);
 				m_g2d.transform(m_xformUtil);
@@ -1967,6 +1975,7 @@ public final class GraphGraphics {
 			// If the vector point0->point1 is pointing opposite to
 			// adj0->adj1, then don't render the line segment.
 			// Dot product determines this.
+			/*
 			if ((((((double) x1) - x0) * (x1Adj - x0Adj)) + ((((double) y1) - y0) * (y1Adj - y0Adj))) > 0.0d) {
 				// Must render the line segment.
 				if ((arrow0Type == ARROW_NONE) && (arrow1Type == ARROW_NONE)
@@ -1989,6 +1998,16 @@ public final class GraphGraphics {
 			} else {
 				simpleSegment = 0;
 			} // Did not render segment.
+			*/
+			if (arrow0Type == ARROW_NONE && arrow1Type == ARROW_NONE) {
+				simpleSegment = 1; 
+			} else { 
+				simpleSegment = 0; 
+			}
+			m_g2d.setStroke(edgeStroke);
+			m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
+			m_g2d.setPaint(edgePaint);
+			m_g2d.draw(m_line2d);
 		} // End rendering of line segment.
 
 		// Using x0, x1, y0, and y1 instead of the "adjusted" endpoints is
@@ -1999,7 +2018,8 @@ public final class GraphGraphics {
 		final double cosTheta = (((double) x0) - x1) / len;
 		final double sinTheta = (((double) y0) - y1) / len;
 
-		if ((simpleSegment < 0) && (dashLength == 0.0f)) { // Arrow cap at
+		//if ((simpleSegment < 0) && (dashLength == 0.0f)) { // Arrow cap at
+		if ( simpleSegment < 0 ) { // Arrow cap at
 			// point 0.
 
 			final Shape arrow0Cap = computeUntransformedArrowCap(arrow0Type,
@@ -2016,7 +2036,8 @@ public final class GraphGraphics {
 			}
 		}
 
-		if ((simpleSegment < 0) && (dashLength == 0.0f)) { // Arrow cap at
+		//if ((simpleSegment < 0) && (dashLength == 0.0f)) { // Arrow cap at
+		if ( simpleSegment < 0 ) { // Arrow cap at
 			// point 1.
 
 			final Shape arrow1Cap = computeUntransformedArrowCap(arrow1Type,

@@ -56,6 +56,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.awt.BasicStroke;
 import java.awt.geom.Point2D;
 
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	static final float DEFAULT_ARROW_SIZE = 5.0f;
 	static final Paint DEFAULT_ARROW_PAINT = Color.black;
 	static final float DEFAULT_EDGE_THICKNESS = 1.0f;
+	static final Stroke DEFAULT_EDGE_STROKE = new BasicStroke(); 
 	static final Color DEFAULT_EDGE_PAINT = Color.black;
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
@@ -169,6 +171,11 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 * @param stroke DOCUMENT ME!
 	 */
 	public void setStroke(Stroke stroke) {
+		synchronized (m_view.m_lock) {
+			m_view.m_edgeDetails.overrideSegmentStroke(m_inx, stroke);
+			m_view.m_contentChanged = true;
+		}
+	/*
 		if (stroke instanceof BasicStroke) {
 			synchronized (m_view.m_lock) {
 				final BasicStroke bStroke = (BasicStroke) stroke;
@@ -184,6 +191,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				m_view.m_contentChanged = true;
 			}
 		}
+		*/
 	}
 
 	/**
@@ -193,6 +201,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	public Stroke getStroke() {
 		synchronized (m_view.m_lock) {
+		/*
 			final float segmentThickness = m_view.m_edgeDetails.segmentThickness(m_inx);
 			final float segmentDashLength = m_view.m_edgeDetails.segmentDashLength(m_inx);
 
@@ -204,6 +213,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			} else
 
 				return new BasicStroke(segmentThickness);
+			*/
+			return m_view.m_edgeDetails.segmentStroke(m_inx);
 		}
 	}
 

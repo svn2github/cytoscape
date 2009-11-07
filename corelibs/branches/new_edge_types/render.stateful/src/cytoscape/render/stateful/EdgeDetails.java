@@ -42,6 +42,8 @@ import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 
 
 /**
@@ -203,6 +205,11 @@ public class EdgeDetails {
 		return 0.0f;
 	}
 
+	private static final Stroke default_stroke = new BasicStroke();
+	public Stroke segmentStroke(final int edge) {
+		return default_stroke;
+	}
+
 	/**
 	 * Returns the paint of the edge segment.
 	 * By default this method returns Color.blue.  It is an error to
@@ -216,9 +223,9 @@ public class EdgeDetails {
 	 * Returns the length of dashes on edge segment, or zero to indicate
 	 * that the edge segment is solid.  By default this method returns zero.
 	 */
-	public float segmentDashLength(final int edge) {
-		return 0.0f;
-	}
+//	public float segmentDashLength(final int edge) {
+//		return 0.0f;
+//	}
 
 	/**
 	 * Returns the number of labels that this edge has.  By default this method

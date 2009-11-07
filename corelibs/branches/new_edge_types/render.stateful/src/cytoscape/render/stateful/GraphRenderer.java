@@ -49,6 +49,7 @@ import cytoscape.util.intr.IntHash;
 
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
@@ -397,6 +398,7 @@ public final class GraphRenderer {
 
 							// Compute visual attributes that do not depend on LOD.
 							final float thickness = edgeDetails.segmentThickness(edge);
+							final Stroke edgeStroke = edgeDetails.segmentStroke(edge);
 							final Paint segPaint = edgeDetails.segmentPaint(edge);
 
 							// Compute arrows.
@@ -434,9 +436,9 @@ public final class GraphRenderer {
 							}
 
 							// Compute dash length.
-							final float dashLength = (((lodBits & LOD_DASHED_EDGES) == 0) ? 0.0f
-							                                                              : edgeDetails
-							                                                                .segmentDashLength(edge));
+//							final float dashLength = (((lodBits & LOD_DASHED_EDGES) == 0) ? 0.0f
+//							                                                              : edgeDetails
+//							                                                                .segmentDashLength(edge));
 
 							// Compute the anchors to use when rendering edge.
 							final EdgeAnchors anchors = (((lodBits & LOD_EDGE_ANCHORS) == 0) ? null
@@ -452,10 +454,13 @@ public final class GraphRenderer {
 							final float srcYAdj = floatBuff3[1];
 							final float trgXAdj = floatBuff4[0];
 							final float trgYAdj = floatBuff4[1];
+//							grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint, trgArrow,
+//							                   trgArrowSize, trgArrowPaint, srcXAdj, srcYAdj,
+//							                   anchors, trgXAdj, trgYAdj, thickness, segPaint,
+//							                   dashLength);
 							grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint, trgArrow,
 							                   trgArrowSize, trgArrowPaint, srcXAdj, srcYAdj,
-							                   anchors, trgXAdj, trgYAdj, thickness, segPaint,
-							                   dashLength);
+							                   anchors, trgXAdj, trgYAdj, thickness, edgeStroke, segPaint);
 
 							// Take care of edge anchor rendering.
 							if (anchors != null) {

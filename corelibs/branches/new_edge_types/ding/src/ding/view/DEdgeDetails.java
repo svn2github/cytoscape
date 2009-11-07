@@ -48,6 +48,7 @@ import cytoscape.util.intr.MinIntHeap;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Stroke;
 
 import java.util.HashMap;
 
@@ -57,12 +58,13 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	final IntObjHash m_colorsLowDetail = new IntObjHash();
 	final Object m_deletedEntry = new Object();
 	final HashMap m_segmentThicknesses = new HashMap();
+	final HashMap m_segmentStrokes = new HashMap();
 	final HashMap m_sourceArrows = new HashMap();
 	final HashMap m_sourceArrowPaints = new HashMap();
 	final HashMap m_targetArrows = new HashMap();
 	final HashMap m_targetArrowPaints = new HashMap();
 	final HashMap m_segmentPaints = new HashMap();
-	final HashMap m_segmentDashLengths = new HashMap();
+	//final HashMap m_segmentDashLengths = new HashMap();
 	final HashMap m_labelCounts = new HashMap();
 	final HashMap m_labelTexts = new HashMap();
 	final HashMap m_labelFonts = new HashMap();
@@ -80,12 +82,13 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 
 		final Integer key = new Integer(edge);
 		m_segmentThicknesses.remove(key);
+		m_segmentStrokes.remove(key);
 		m_sourceArrows.remove(key);
 		m_sourceArrowPaints.remove(key);
 		m_targetArrows.remove(key);
 		m_targetArrowPaints.remove(key);
 		m_segmentPaints.remove(key);
-		m_segmentDashLengths.remove(key);
+//		m_segmentDashLengths.remove(key);
 		m_labelCounts.remove(key);
 		m_labelTexts.remove(key);
 		m_labelFonts.remove(key);
@@ -427,6 +430,72 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @param edge DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
+	public Paint segmentPaint(int edge) {
+		final Object o = m_segmentPaints.get(new Integer(edge));
+
+		if (o == null)
+			return super.segmentPaint(edge);
+
+		return (Paint) o;
+	}
+	 */
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public Stroke segmentStroke(int edge) {
+		final Object o = m_segmentStrokes.get(new Integer(edge));
+
+		if (o == null)
+			return super.segmentStroke(edge);
+
+		return (Stroke) o;
+	}
+
+	/*
+	 * A null paint has the special meaning to remove overridden paint.
+	void overrideSegmentPaint(int edge, Paint paint) {
+		if ((paint == null) || paint.equals(super.segmentPaint(edge)))
+			m_segmentPaints.remove(new Integer(edge));
+		else
+			m_segmentPaints.put(new Integer(edge), paint);
+	}
+	 */
+	/*
+	 * A null paint has the special meaning to remove overridden paint.
+	 */
+	void overrideSegmentStroke(int edge, Stroke stroke) {
+		if ((stroke == null) || stroke.equals(super.segmentStroke(edge)))
+			m_segmentStrokes.remove(new Integer(edge));
+		else
+			m_segmentStrokes.put(new Integer(edge), stroke);
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	public float segmentDashLength(int edge) {
+		final Object o = m_segmentDashLengths.get(new Integer(edge));
+
+		if (o == null)
+			return super.segmentDashLength(edge);
+
+		return ((Float) o).floatValue();
+	}
+	 */
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
 	 */
 	public Paint segmentPaint(int edge) {
 		final Object o = m_segmentPaints.get(new Integer(edge));
@@ -438,40 +507,26 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	}
 
 	/*
-	 * A null paint has the special meaning to remove overridden paint.
-	 */
-	void overrideSegmentPaint(int edge, Paint paint) {
-		if ((paint == null) || paint.equals(super.segmentPaint(edge)))
-			m_segmentPaints.remove(new Integer(edge));
-		else
-			m_segmentPaints.put(new Integer(edge), paint);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param edge DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public float segmentDashLength(int edge) {
-		final Object o = m_segmentDashLengths.get(new Integer(edge));
-
-		if (o == null)
-			return super.segmentDashLength(edge);
-
-		return ((Float) o).floatValue();
-	}
-
-	/*
 	 * A negative length value has the special meaning to remove overridden
 	 * length.
-	 */
 	void overrideSegmentDashLength(int edge, float length) {
 		if ((length < 0.0f) || (length == super.segmentDashLength(edge)))
 			m_segmentDashLengths.remove(new Integer(edge));
 		else
 			m_segmentDashLengths.put(new Integer(edge), new Float(length));
+	}
+	 */
+
+
+	/*
+	 * A negative length value has the special meaning to remove overridden
+	 * length.
+	 */
+	void overrideSegmentPaint(int edge, Paint paint) {
+		if ((paint == null) || (paint == super.segmentPaint(edge)))
+			m_segmentPaints.remove(new Integer(edge));
+		else
+			m_segmentPaints.put(new Integer(edge), paint);
 	}
 
 	/**
