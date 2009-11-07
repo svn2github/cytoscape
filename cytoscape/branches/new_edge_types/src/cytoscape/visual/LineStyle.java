@@ -38,6 +38,8 @@ package cytoscape.visual;
 
 import java.awt.BasicStroke;
 import java.awt.Stroke;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import javax.swing.Icon;
 import java.util.Map;
 import java.util.HashMap;
@@ -55,26 +57,19 @@ import cytoscape.visual.ui.icon.*;
  *
  */
 public enum LineStyle {
-	SOLID(null,"line"),
-	LONG_DASH("10.0f,4.0f","dash");
+	SOLID("line"),
+	LONG_DASH( "dash"),
+	DOUBLE("double"),
+	SHAPE("shape"),
+	ZIGZAG("zigzag"),
+	;
 
 	// DASH("4.0f,4.0f"),
 	// DASH_DOT("12.0f,3.0f,3.0f,3.0f"),
 
-	private final float[] strokeDef;
 	private String regex;
 
-	private LineStyle(String def, String regex) {
-		if (def == null)
-			strokeDef = null;
-		else {
-			final String[] parts = def.split(",");
-			strokeDef = new float[parts.length];
-
-			for (int i = 0; i < strokeDef.length; i++)
-				strokeDef[i] = Float.parseFloat(parts[i]);
-		}
-
+	private LineStyle(String regex) {
 		this.regex = regex;
 	}
 
@@ -138,36 +133,37 @@ public enum LineStyle {
 		return SOLID;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
 	public Stroke getStroke(float width) {
-		if (strokeDef != null)
+		// OH God!
+		if ( regex.equals("dash") )
 			return new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f,
-			                       strokeDef, 0.0f);
+			                       new float[]{10.0f,4.0f}, 0.0f);
+		else if ( regex.equals("double") )
+			return new DoubleStroke(width,width);
+		else if ( regex.equals("shape") )
+			return new ShapeStroke( new Shape[] { new Ellipse2D.Float(0, 0, 4, 4) }, 15.0f );
+			///return new ShapStroke( new Shape[] { new Star( 5, 0, 0, 0, 0.5f, 6.0f), new Ellipse2D.Float(0, 0, 4, 4) }, 15.0f );
+		else if ( regex.equals("zigzag") )
+			return new ZigzagStroke(new BasicStroke(2.0f),5.0f,10.0f);
+
 		else
 			return new BasicStroke(width);
 	}
 	
-	public float[] getDashDef() {
-		return strokeDef;
-	}
-
     public static Map<Object,Icon> getIconSet() {
+		System.out.println("in getIconSet");
         Map<Object,Icon> icons = new HashMap<Object,Icon>();
 
         for (LineStyle def : values()) {
-            LineTypeIcon icon = new LineTypeIcon((BasicStroke) def.getStroke(5.0f), 
+            LineTypeIcon icon = new LineTypeIcon(def.getStroke(5.0f), 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE, 
 												 def.name());
+			System.out.println("created icon " + def);
             icons.put(def, icon);
         }
 
+		System.out.println("about to return icons");
         return icons;
     }
 }

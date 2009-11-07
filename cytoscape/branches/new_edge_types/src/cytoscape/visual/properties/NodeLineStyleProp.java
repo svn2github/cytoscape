@@ -120,9 +120,10 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 		if ((o == null) || (nv == null))
 			return;
 
-		if (((LineStyle) o).getDashDef() != (((BasicStroke) nv.getBorder()).getDashArray())) {
 			nv.setBorder(((LineStyle) o).getStroke(nv.getBorderWidth()));
-		}
+//		if (((LineStyle) o).getDashDef() != (((BasicStroke) nv.getBorder()).getDashArray())) {
+//			nv.setBorder(((LineStyle) o).getStroke(nv.getBorderWidth()));
+//		}
 	}
 
 	/**
