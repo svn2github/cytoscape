@@ -42,7 +42,6 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.awt.Shape;
 

@@ -1,5 +1,5 @@
 
-package cytoscape.visual;
+package cytoscape.visual.strokes;
 
 import java.awt.BasicStroke;
 import java.awt.Stroke;
@@ -14,12 +14,17 @@ import java.awt.Shape;
  * For a commercial use license, or to purchase the book (recommended),
  * visit http://www.davidflanagan.com/javaexamples2.
  */
-class DoubleStroke implements Stroke {
+public class DoubleStroke implements WidthStroke {
 	BasicStroke stroke1, stroke2; // the two strokes to use
 
-	public DoubleStroke(float width1, float width2) {
-		stroke1 = new BasicStroke(width1); // Constructor arguments specify
-		stroke2 = new BasicStroke(width2); // the line widths for the strokes
+	String name;
+	float width;
+
+	public DoubleStroke(float width, String name) {
+		this.name = name;
+		this.width = width;
+		stroke1 = new BasicStroke(width); 
+		stroke2 = new BasicStroke(width * 2); 
 	}
 
 	public Shape createStrokedShape(Shape s) {
@@ -29,6 +34,16 @@ class DoubleStroke implements Stroke {
 		// It is this outline of the outline that will be filled in
 		return stroke2.createStrokedShape(outline);
 	}
+
+	public WidthStroke newInstanceForWidth(float w) {
+		return new DoubleStroke(w,name);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String toString() { return name + " " + Float.toString(width); }
 }
 
 

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cytoscape.visual; 
+package cytoscape.visual.strokes; 
 
 import java.awt.*;
 import java.awt.geom.*;

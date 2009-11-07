@@ -46,31 +46,29 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.strokes.*;
 
 /**
- *
  * Define line stroke.
  *
- * TODO: need to modify rendering engine to fully support dash lines.
- *
  * @author kono
- *
  */
 public enum LineStyle {
-	SOLID("line"),
-	LONG_DASH( "dash"),
-	DOUBLE("double"),
-	SHAPE("shape"),
-	ZIGZAG("zigzag"),
+	SOLID("line", new SolidStroke(1.0f,"line")),
+	LONG_DASH( "dash", new LongDashStroke(1.0f,"dash")),
+	EQUAL( "equal", new EqualDashStroke(1.0f,"equal")),
+	UNEVEN( "uneven", new DashDotStroke(1.0f,"uneven")),
+	DOUBLE("double", new DoubleStroke(1.0f,"double")),
+	DOT("dot", new DotStroke(1.0f,"dot")),
+	ZIGZAG("zigzag", new ZigzagStroke(1.0f,"zigzag")),
 	;
 
-	// DASH("4.0f,4.0f"),
-	// DASH_DOT("12.0f,3.0f,3.0f,3.0f"),
-
 	private String regex;
+	private WidthStroke stroke;
 
-	private LineStyle(String regex) {
+	private LineStyle(String regex, WidthStroke stroke) {
 		this.regex = regex;
+		this.stroke = stroke;
 	}
 
 	private String getRegex() {
@@ -116,42 +114,26 @@ public enum LineStyle {
 	}
 
 	/**
-	 * A method that attempts to figure out if a stroke is dashed
-	 * or not.  If the Stroke object is not a BasicStroke, it will
-	 * return SOLID by default.
-	 * @return the LineStyle guessed based on the BasicStroke dash array.
+	 * Will attempt to find the LineStyle based on the type of stroke.
+	 * If it doesn't match a known stroke, it will return SOLID.
+	 * @return the LineStyle guessed from the stroke. 
 	 */
-	public static LineStyle extractLineStyle(Stroke stroke) {
-		if ( stroke instanceof BasicStroke ) {
-        	final float[] dash = ((BasicStroke)stroke).getDashArray();
-			if ( dash == null )
-				return SOLID;
-			else
-				return LONG_DASH;
+	public static LineStyle extractLineStyle(Stroke s) {
+		if ( s instanceof WidthStroke ) {
+			System.out.println("extracted line style " + ((WidthStroke)s).getName());
+			return LineStyle.parse( ((WidthStroke)s).getName() );	
 		} 
+		System.out.println("extracted line style line");
 
 		return SOLID;
 	}
 
 	public Stroke getStroke(float width) {
-		// OH God!
-		if ( regex.equals("dash") )
-			return new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f,
-			                       new float[]{10.0f,4.0f}, 0.0f);
-		else if ( regex.equals("double") )
-			return new DoubleStroke(width,width);
-		else if ( regex.equals("shape") )
-			return new ShapeStroke( new Shape[] { new Ellipse2D.Float(0, 0, 4, 4) }, 15.0f );
-			///return new ShapStroke( new Shape[] { new Star( 5, 0, 0, 0, 0.5f, 6.0f), new Ellipse2D.Float(0, 0, 4, 4) }, 15.0f );
-		else if ( regex.equals("zigzag") )
-			return new ZigzagStroke(new BasicStroke(2.0f),5.0f,10.0f);
-
-		else
-			return new BasicStroke(width);
+		System.out.println("getting stroke for " + regex);
+		return stroke.newInstanceForWidth( width );
 	}
 	
     public static Map<Object,Icon> getIconSet() {
-		System.out.println("in getIconSet");
         Map<Object,Icon> icons = new HashMap<Object,Icon>();
 
         for (LineStyle def : values()) {
@@ -159,11 +141,9 @@ public enum LineStyle {
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE, 
 												 def.name());
-			System.out.println("created icon " + def);
             icons.put(def, icon);
         }
 
-		System.out.println("about to return icons");
         return icons;
     }
 }

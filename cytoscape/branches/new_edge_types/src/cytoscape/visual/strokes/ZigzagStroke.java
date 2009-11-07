@@ -14,21 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cytoscape.visual; 
+package cytoscape.visual.strokes; 
 
 import java.awt.*;
 import java.awt.geom.*;
 
-public class ZigzagStroke implements Stroke {
+public class ZigzagStroke implements WidthStroke {
 	private float amplitude = 10.0f;
 	private float wavelength = 10.0f;
     private Stroke stroke;
 	private static final float FLATNESS = 1;
+	private String name;
+	private float width;
 
-	public ZigzagStroke( Stroke stroke, float amplitude, float wavelength ) {
-        this.stroke = stroke;
-        this.amplitude = amplitude;
-        this.wavelength = wavelength;
+	// TODO we can do fancier stuff if we pass in Stroke, amplitude and wavelength
+	// as params
+	public ZigzagStroke( float width, String name ) {
+		this.name = name;
+		this.width = width;
+        this.stroke = new BasicStroke(width);
 	}
 
 	public Shape createStrokedShape( Shape shape ) {
@@ -95,6 +99,18 @@ public class ZigzagStroke implements Stroke {
 		}
 
 		return stroke.createStrokedShape( result );
+	}
+
+	public String getName() {
+		return getName();
+	}
+
+	public WidthStroke newInstanceForWidth(float w) {
+		return new ZigzagStroke(w,name);
+	}
+
+	public String toString() {
+		return name + " " + Float.toString(width);
 	}
 
 }
