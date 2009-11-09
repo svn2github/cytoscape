@@ -12,8 +12,8 @@ public class EqualDashStroke extends BasicStroke implements WidthStroke {
 	float width;
 
 	public EqualDashStroke(float width, String name) {
-		super(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 
-		      10.0f, new float[]{4.0f,4.0f}, 0.0f);
+		super(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 
+		      10.0f, new float[]{width * 2f,width * 2f}, 0.0f);
 
 		this.name = name;
 		this.width = width;
