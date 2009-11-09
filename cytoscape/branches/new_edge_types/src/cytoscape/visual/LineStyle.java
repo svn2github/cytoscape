@@ -120,16 +120,13 @@ public enum LineStyle {
 	 */
 	public static LineStyle extractLineStyle(Stroke s) {
 		if ( s instanceof WidthStroke ) {
-			System.out.println("extracted line style " + ((WidthStroke)s).getName());
 			return LineStyle.parse( ((WidthStroke)s).getName() );	
 		} 
-		System.out.println("extracted line style line");
 
 		return SOLID;
 	}
 
 	public Stroke getStroke(float width) {
-		System.out.println("getting stroke for " + regex);
 		return stroke.newInstanceForWidth( width );
 	}
 	
