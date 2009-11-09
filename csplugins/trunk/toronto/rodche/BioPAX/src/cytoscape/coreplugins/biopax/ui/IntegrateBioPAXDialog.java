@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 
 import org.biopax.paxtools.controller.Integrator;
 import org.biopax.paxtools.controller.ConversionScore;
+import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.model.Model;
 
 public class IntegrateBioPAXDialog extends JDialog {
@@ -236,7 +237,7 @@ public class IntegrateBioPAXDialog extends JDialog {
                 : MAX_SCORE;
 
         if (!(oldModel1 == model1 && oldModel2 == model2)) {
-            integrator = new Integrator(model1, model2);
+            integrator = new Integrator(new SimpleEditorMap(), model1, model2);
             integrator.setOnlyMapping(true);
             integrator.setScoresOver(MAX_SCORE);
         }

@@ -53,7 +53,6 @@ class IntegrateBioPAXTask implements Task {
     public void run() {
         taskMonitor.setStatus("Integrating BioPAX networks...");
         List<ConversionScore> convScores = integrator.integrate(alternativeScores);
-        //List<ConversionScore> convScores = new ArrayList<ConversionScore>();
 
         taskMonitor.setStatus("Creating network from integration...");
         Model integratedModel = BioPaxUtil.getNetworkModel(network1);
