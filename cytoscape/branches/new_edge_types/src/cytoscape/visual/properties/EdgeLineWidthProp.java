@@ -95,9 +95,7 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 		float width = ((Number)o).floatValue();
 		if (ev.getStrokeWidth() != width) {
 			final Stroke oldStroke = ev.getStroke();
-			System.out.println("ELW oldStroke " + oldStroke.toString() + "  for " + ev.toString());
 			final Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(width);
-			System.out.println("ELW setting stroke " + newStroke.toString() + "  for " + ev.toString());
 			ev.setStroke(newStroke);
 			ev.setStrokeWidth(width);
 		}
