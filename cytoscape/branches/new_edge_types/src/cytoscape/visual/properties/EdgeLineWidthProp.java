@@ -37,7 +37,6 @@ package cytoscape.visual.properties;
 import cytoscape.Cytoscape;
 
 import cytoscape.visual.LineStyle;
-import cytoscape.visual.LineType;
 import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 
@@ -100,6 +99,7 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 			final Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(width);
 			System.out.println("ELW setting stroke " + newStroke.toString() + "  for " + ev.toString());
 			ev.setStroke(newStroke);
+			ev.setStrokeWidth(width);
 		}
 	}
 
