@@ -9,9 +9,8 @@ public class DotStroke extends ShapeStroke implements WidthStroke {
 	String name;
 	float width;
 
-	// TODO width isn't doing anything here!
 	public DotStroke(float width, String name) {
-		super( new Shape[] { new Ellipse2D.Float(0, 0, 4, 4) }, 15.0f );
+		super( new Shape[] { new Ellipse2D.Float(0, 0, width, width) }, width * 2f );
 		this.name = name;
 		this.width = width;
 	}
