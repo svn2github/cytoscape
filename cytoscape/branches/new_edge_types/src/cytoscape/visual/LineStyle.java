@@ -61,7 +61,9 @@ public enum LineStyle {
 	DOT("dot", new DotStroke(1.0f,"dot")),
 	ZIGZAG("zigzag", new ZigzagStroke(1.0f,"zigzag")),
 	SINEWAVE("sinewave", new SineWaveStroke(1.0f,"sinewave")),
-	MICRO("micro", new MicroDashStroke(1.0f,"micro")),
+	VERTICAL_SLASH("vertical_slash", new PipeStroke(1.0f,PipeStroke.Type.VERTICAL,"vertical_slash")),
+	FORWARD_SLASH("forward_slash", new PipeStroke(1.0f,PipeStroke.Type.FORWARD,"forward_slash")),
+	BACKWARD_SLASH("backward_slash", new PipeStroke(1.0f,PipeStroke.Type.BACKWARD,"backward_slash")),
 	;
 
 	private String regex;
