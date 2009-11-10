@@ -65,6 +65,7 @@ public enum LineStyle {
 	FORWARD_SLASH("forward_slash",new PipeStroke(1.0f,PipeStroke.Type.FORWARD,"forward_slash")),
 	BACKWARD_SLASH("backward_slash",new PipeStroke(1.0f,PipeStroke.Type.BACKWARD,"backward_slash")),
 	PARALLEL_LINES("parallel_lines", new ParallelStroke(1.0f,"parallel_lines")),
+	ARROW("arrow", new ArrowStroke(1.0f,"arrow")),
 	;
 
 	private String regex;
