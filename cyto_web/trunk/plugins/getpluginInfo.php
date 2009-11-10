@@ -131,10 +131,11 @@ function getPluginInfoPage($connection, $pluginList_row) {
 			$pluginInfoPage .= "\n<b>Release notes:</b>" .
 			"  <a href=\"" . $versionSpecific_row["release_note_url"] . "\">" . $versionSpecific_row["release_note_url"] . "</a><br>";
 		} else if (($versionSpecific_row["release_note"] != null)&&(strlen(trim($versionSpecific_row["release_note"]))!=0)) {
-				$data = array($pluginList_row["name"],$versionSpecific_row["version"], stripslashes($versionSpecific_row["release_note"]));				
-				$data = base64_encode(serialize($data));
+				//$data = array($pluginList_row["name"],$versionSpecific_row["version"], stripslashes($versionSpecific_row["release_note"]));				
+				//$data = base64_encode(serialize($data));
+				$version_auto_id = $versionSpecific_row["version_auto_id"];
 				$pluginInfoPage .= "\n<b>Release notes:</b>" .
-				" click <a href=\"displayreleasenote.php?data=$data\">here</a><br>";
+				" click <a href=\"displayreleasenote.php?version_id=$version_auto_id\">here</a><br>";
 			}
 
 		if ($versionSpecific_row["cy_version"]) {
