@@ -28,6 +28,13 @@ function updateUsageLog($connection, $plugin_file_id) {
         // Run the query
         if (!($result = @ mysql_query($dbQuery,$connection)))
                 showerror();
+								
+        // update the download_count in plugin_version table
+        $dbQuery = "update plugin_version set download_count = download_count + 1 where version_auto_id = $plugin_version_id";
+
+        // Run the query
+        if (!($result = @ mysql_query($dbQuery,$connection)))
+                showerror();
 }
 
 

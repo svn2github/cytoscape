@@ -44,20 +44,20 @@ $tmpCountArray[] = $tmp_row["userCount"];
 $distinctUsers =$tmpCountArray[0]; 
 
 ?>
-<p align="left">Since the release of Cytoscape 2.5 (July 2007), there are  <?php echo $distinctUsers; ?> users (distinct IP addresses) downloaded plugins from this site.</p>
+<br><p align="left">Since the release of Cytoscape 2.5 (July 2007), there are  <?php echo $distinctUsers; ?> users (distinct IP addresses) downloaded plugins from this site.</p>
 <?php
 
-
-$oneDayAgo = strtotime ( '-1 day' , strtotime ( date("y-m-d") ) ) ; 
-$date_1dayago = date ( 'Y-m-j' , $oneDayAgo);
+//$oneDayAgo = strtotime ( '-1 day' , strtotime ( date("y-m-d") ) ) ; 
+//$date_1dayago = date ( 'Y-m-j' , $oneDayAgo);
 
 $oneMonthAgo = strtotime ( '-1 month' , strtotime ( date("y-m-d") ) ) ; 
 $date_30daysago = date ( 'Y-m-j' , $oneMonthAgo );
 
-$query1 = "select plugin_list.name as name, plugin_version.version as version, usagelog.plugin_version_id as plugin_version_id, count(log_auto_id) as totalCount".
-	" from usagelog, plugin_version, plugin_list".
-	" where usagelog.plugin_version_id = plugin_version.version_auto_id and plugin_list.plugin_auto_id = plugin_version.plugin_id ".
-	"group by usagelog.plugin_version_id order by plugin_list.category_id, plugin_list.name";
+
+$query1 = "select plugin_list.name as name, plugin_version.version as version, plugin_version.version_auto_id as plugin_version_id, download_count as totalCount ".
+	"from plugin_list, plugin_version ".
+	"where plugin_list.plugin_auto_id=plugin_version.plugin_id order by name, version DESC";
+
 
 // Run the query
 if (!($statArray= @ mysql_query ($query1, $connection)))
@@ -71,26 +71,8 @@ while($stat_row = @ mysql_fetch_array($statArray))
 	$plugunTotalArray[] =$stat_row["totalCount"];
 }
 
-for ($i=0; $i<count($plugunVersionIDArray); $i++ ) {
-	$queryToday = "select count(log_auto_id) as totalCount".
-		" from usagelog".
-		" where ".
-		" usagelog.sysdat>="."'$date_1dayago' and usagelog.plugin_version_id = $plugunVersionIDArray[$i] ";
-	if (!($statArrayToday= @ mysql_query ($queryToday, $connection)))
-	   showerror();
-	
-	$stat_row = @ mysql_fetch_array($statArrayToday);
-	$plugunTotalArrayToday[] =$stat_row["totalCount"];
-
-	$queryLast30days = "select count(log_auto_id) as totalCount".
-		" from usagelog".
-		" where ".
-		" usagelog.sysdat>="."'$date_30daysago' and usagelog.plugin_version_id = $plugunVersionIDArray[$i] ";
-	if (!($statArrayLast30days= @ mysql_query ($queryLast30days, $connection)))
-	   showerror();
-	
-	$stat_row = @ mysql_fetch_array($statArrayLast30days);
-	$plugunTotalArraylast30days[] =$stat_row["totalCount"];
+for ($i=0; $i<count($plugunVersionIDArray); $i++ ) {	
+	$plugunTotalArraylast30days[] ="<a href=\"displaydownloadlast30days.php?plugin_version_id=$plugunVersionIDArray[$i]\">click here</a>";
 }
 
 ?>
@@ -102,24 +84,33 @@ for ($i=0; $i<count($plugunVersionIDArray); $i++ ) {
     <th width="130" scope="col"><div align="center">Total download</div></th>
     <th width="250" scope="col"><p align="center">Total downlaod </p>
     <p align="center">last 30 days</p></th>
-    <th width="187" scope="col"><p align="center">Total downlaod</p>
-    <p align="center">Today</p></th>
+
   </tr>
 <?php
 
+$lastPluginName = "&nbsp;";
+
 for ($i= 0; $i<count($plugunNameArray); $i++) {
-	$name =  $plugunNameArray[$i];
+	
+	if ($plugunNameArray[$i] == $lastPluginName){
+		$name ="&nbsp;";
+	}
+	else {
+		$name =  $plugunNameArray[$i];
+	}
 	$version = $plugunVersionArray[$i];
 	$totalCount = $plugunTotalArray[$i];
 	$totalCountLast30days = $plugunTotalArraylast30days[$i];
-	$totalCountToday = $plugunTotalArrayToday[$i];
+	if ($totalCount == NULL){
+		continue;
+	}
+	$lastPluginName = $plugunNameArray[$i];
 	?>
 	 <tr>
 	    <th width="180" scope="row"><div align="right"><?php echo $name; ?></div></th>
 	    <td><div align="right"><?php echo $version; ?></div></td>
 	    <td><div align="right"><?php echo $totalCount; ?></div></td>
 	    <td><div align="right"><?php  echo $totalCountLast30days; ?></div></td>
-	    <td><div align="right"><?php  echo $totalCountToday; ?></div></td>
   </tr>
 <?php
 }
