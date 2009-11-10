@@ -10,9 +10,11 @@ public class SineWaveStroke extends ShapeStroke implements WidthStroke {
 	String name;
 	float width;
 
+	// TODO consider making the wavelength and amplitude Cytoscape properties.
+
 	public SineWaveStroke(float width, String name) {
 		// second arg here is the advance - advance must equal wavelength below
-		super( new Shape[] { getSineWave(width) }, 20f );
+		super( new Shape[] { getSineWave(width) }, 10f );
 		this.name = name;
 		this.width = width;
 	}
@@ -27,13 +29,13 @@ public class SineWaveStroke extends ShapeStroke implements WidthStroke {
 
 	public String toString() { return name + " " + Float.toString(width); }
 
-	public static Shape getSineWave(final float width) {
+	static Shape getSineWave(final float width) {
 		GeneralPath shape = new GeneralPath();
 
 		// wavelength must equal advance specified in constructor or 
 		// else the waves won't line up!
-		final float wavelength = 20f;
-		final float amplitude = 10f;
+		final float wavelength = 10f; 
+		final float amplitude = 5f; 
 
 		shape.moveTo(0f,0f);
 		shape.lineTo(0f,width);
@@ -45,7 +47,6 @@ public class SineWaveStroke extends ShapeStroke implements WidthStroke {
 
 		return shape;
 	}
-
 }
 
 
