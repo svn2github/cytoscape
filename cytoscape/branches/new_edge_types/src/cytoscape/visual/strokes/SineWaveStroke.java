@@ -5,29 +5,18 @@ package cytoscape.visual.strokes;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
-public class SineWaveStroke extends ShapeStroke implements WidthStroke {
-
-	String name;
-	float width;
+public class SineWaveStroke extends ShapeStroke {
 
 	// TODO consider making the wavelength and amplitude Cytoscape properties.
 
 	public SineWaveStroke(float width, String name) {
 		// second arg here is the advance - advance must equal wavelength below
-		super( new Shape[] { getSineWave(width) }, 10f );
-		this.name = name;
-		this.width = width;
+		super( new Shape[] { getSineWave(width) }, 10f, name, width );
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
 		return new SineWaveStroke(w,name);
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String toString() { return name + " " + Float.toString(width); }
 
 	static Shape getSineWave(final float width) {
 		GeneralPath shape = new GeneralPath();

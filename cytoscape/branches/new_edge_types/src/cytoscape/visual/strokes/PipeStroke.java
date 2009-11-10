@@ -5,10 +5,7 @@ package cytoscape.visual.strokes;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
-public class PipeStroke extends ShapeStroke implements WidthStroke {
-
-	String name;
-	float width;
+public class PipeStroke extends ShapeStroke {
 
 	public enum Type {
 		VERTICAL(0f),
@@ -29,21 +26,13 @@ public class PipeStroke extends ShapeStroke implements WidthStroke {
 	private Type offsetType;
 
 	public PipeStroke(float width, Type offsetType, String name) {
-		super( new Shape[] { getShape(width, offsetType) },  width );
-		this.name = name;
-		this.width = width;
+		super( new Shape[] { getShape(width, offsetType) },  width, name, width );
 		this.offsetType = offsetType;
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
 		return new PipeStroke(w,offsetType,name);
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String toString() { return name + " " + Float.toString(width); }
 
 	static Shape getShape(final float input, final Type offsetType) {
 		GeneralPath shape = new GeneralPath();

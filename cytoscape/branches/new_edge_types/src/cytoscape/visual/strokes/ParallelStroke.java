@@ -5,13 +5,10 @@ package cytoscape.visual.strokes;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
-public class ParallelStroke extends ShapeStroke implements WidthStroke {
-
-	String name;
-	float width;
+public class ParallelStroke extends ShapeStroke {
 
 	public ParallelStroke(float width, String name) {
-		super( new Shape[] { getParallelStroke(width) }, 1f );
+		super( new Shape[] { getParallelStroke(width) }, 1f, name, width );
 		this.name = name;
 		this.width = width;
 	}
@@ -19,12 +16,6 @@ public class ParallelStroke extends ShapeStroke implements WidthStroke {
 	public WidthStroke newInstanceForWidth(float w) {
 		return new ParallelStroke(w,name);
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String toString() { return name + " " + Float.toString(width); }
 
 	static Shape getParallelStroke(final float width) {
 		GeneralPath shape = new GeneralPath();

@@ -19,26 +19,26 @@ package cytoscape.visual.strokes;
 import java.awt.*;
 import java.awt.geom.*;
 
-public class ShapeStroke implements Stroke {
+public abstract class ShapeStroke implements WidthStroke {
 	private Shape shapes[];
 	private float advance;
-	private boolean stretchToFit = false;
 	private boolean repeat = true;
-	private AffineTransform t = new AffineTransform();
+	private AffineTransform transform = new AffineTransform();
 	private static final float FLATNESS = 1;
 
-	public ShapeStroke( Shape shapes, float advance ) {
-		this( new Shape[] { shapes }, advance );
-	}
+	protected String name;
+	protected float width;
 
-	public ShapeStroke( Shape shapes[], float advance ) {
+	public ShapeStroke( Shape shapes[], float advance, String name, float width ) {
 		this.advance = advance;
 		this.shapes = new Shape[shapes.length];
+		this.name = name;
+		this.width = width;
 
 		for ( int i = 0; i < this.shapes.length; i++ ) {
 			Rectangle2D bounds = shapes[i].getBounds2D();
-			t.setToTranslation( -bounds.getCenterX(), -bounds.getCenterY() );
-			this.shapes[i] = t.createTransformedShape( shapes[i] );
+			transform.setToTranslation( -bounds.getCenterX(), -bounds.getCenterY() );
+			this.shapes[i] = transform.createTransformedShape( shapes[i] );
 		}
 	}
 
@@ -85,9 +85,10 @@ public class ShapeStroke implements Stroke {
 					while ( currentShape < length && distance >= next ) {
 						float x = lastX + next*dx*r;
 						float y = lastY + next*dy*r;
-						t.setToTranslation( x, y );
-						t.rotate( angle );
-						result.append( t.createTransformedShape( shapes[currentShape] ), false );
+						transform.setToTranslation( x, y );
+						transform.rotate( angle );
+						result.append( transform.createTransformedShape( shapes[currentShape] ), 
+						               false );
 						next += advance;
 						currentShape++;
 						if ( repeat )
@@ -106,4 +107,14 @@ public class ShapeStroke implements Stroke {
 		return result;
 	}
 
+
+	public String getName() {
+		return name;
+	}
+
+	public String toString() { 
+		return name + " " + Float.toString(width); 
+	}
+	
+	abstract public WidthStroke newInstanceForWidth(float w);
 }
