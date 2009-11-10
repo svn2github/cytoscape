@@ -5,15 +5,15 @@ package cytoscape.visual.strokes;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
-public class ArrowStroke extends ShapeStroke {
+public class ContiguousArrowStroke extends ShapeStroke {
 
 
-	public ArrowStroke(float width, String name) {
+	public ContiguousArrowStroke(float width, String name) {
 		super( new Shape[] { getArrowStroke(width) }, 3f*width, name, width );
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
-		return new ArrowStroke(w,name);
+		return new ContiguousArrowStroke(w,name);
 	}
 
 	static Shape getArrowStroke(final float width) {
