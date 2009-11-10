@@ -35,16 +35,19 @@ if (!mysql_select_db($dbName, $connection))
    showerror();
 
 // Get the distinct IP addresses 
-$query0 = 'select count(distinct ip_address) as userCount from usagelog';
+$query0 = 'select count(distinct ip_address) as userCount, count(log_auto_id) as totalCount from usagelog';
 // Run the query
 if (!($tmpArray= @ mysql_query ($query0, $connection)))
    showerror();
 $tmp_row = @ mysql_fetch_array($tmpArray);
 $tmpCountArray[] = $tmp_row["userCount"];
+$tmpCountArray2[] = $tmp_row["totalCount"];
+
 $distinctUsers =$tmpCountArray[0]; 
+$totalCount =$tmpCountArray2[0]; 
 
 ?>
-<br><p align="left">Since the release of Cytoscape 2.5 (July 2007), there are  <?php echo $distinctUsers; ?> users (distinct IP addresses) downloaded plugins from this site.</p>
+<br><p align="left">Since the release of Cytoscape 2.5 (July 2007), there are  <?php echo $distinctUsers; ?> users (distinct IP addresses) downloaded plugins from this site. Total download count is <?php echo $totalCount ?>.</p>
 <?php
 
 //$oneDayAgo = strtotime ( '-1 day' , strtotime ( date("y-m-d") ) ) ; 
