@@ -124,7 +124,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 			$pluginInfoPage .= "\n<b>Release Date:</b>Unknown<br>";
 		}
 
-		$pluginInfoPage .= "\n<b>Released by:</b> " .
+		$pluginInfoPage .= "\n<b>Authors:</b> " .
 		getAuthorInfo($connection, $versionSpecific_row['version_auto_id']);
 
 		if ($versionSpecific_row["release_note_url"] != null) {
