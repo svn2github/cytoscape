@@ -117,7 +117,6 @@ public class LineType
      *
      */
     public static final LineType DASHED_5 = new LineType("DASHED_5");
-    public static final LineType DOUBLE_1 = new LineType("DOUBLE_1");
     String name;
     Stroke stroke;
 
@@ -163,9 +162,6 @@ public class LineType
         } else if (name.equals("DASHED_5")) {
             width = 5.0f;
 			type = LineStyle.LONG_DASH;
-        } else if (name.equals("DOUBLE_1")) {
-            width = 1.0f;
-			type = LineStyle.DOUBLE;
         } else
             width = 1.0f;
 
@@ -204,8 +200,6 @@ public class LineType
             return LineType.LINE_6;
         else if (lttext.equalsIgnoreCase("line7"))
             return LineType.LINE_7;
-        else if (lttext.equalsIgnoreCase("double1"))
-            return LineType.DOUBLE_1;
         else
             return LineType.LINE_1;
     }

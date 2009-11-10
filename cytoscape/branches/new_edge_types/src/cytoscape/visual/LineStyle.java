@@ -58,9 +58,10 @@ public enum LineStyle {
 	LONG_DASH( "dash", new LongDashStroke(1.0f,"dash")),
 	EQUAL( "equal", new EqualDashStroke(1.0f,"equal")),
 	UNEVEN( "uneven", new DashDotStroke(1.0f,"uneven")),
-	DOUBLE("double", new DoubleStroke(1.0f,"double")),
 	DOT("dot", new DotStroke(1.0f,"dot")),
 	ZIGZAG("zigzag", new ZigzagStroke(1.0f,"zigzag")),
+	SINEWAVE("sinewave", new SineWaveStroke(1.0f,"sinewave")),
+	MICRO("micro", new MicroDashStroke(1.0f,"micro")),
 	;
 
 	private String regex;
