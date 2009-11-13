@@ -47,7 +47,7 @@ import java.util.Map;
 public interface AttributeConflictHandler {
 
         /**
-         * Handle attribute conflict when merging (copying from one attr to another)
+         * Handle attribute conflict when merging (copying from one attr to another).
          *
          * @param conflict
          *      attribute conflict

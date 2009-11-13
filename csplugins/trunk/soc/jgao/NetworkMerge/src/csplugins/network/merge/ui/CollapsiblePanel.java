@@ -1,17 +1,3 @@
-package csplugins.network.merge.ui;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.net.URL;
-
-import java.util.Vector;
-
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
@@ -47,6 +33,20 @@ import java.util.Vector;
  * Time: 5:34:46 PM
  * Description: The user-triggered collapsable panel containing the component (trigger) in the titled border
  */
+
+package csplugins.network.merge.ui;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.net.URL;
+
+import java.util.Vector;
 
 /**
  * The user-triggered collapsable panel containing the component (trigger) in the titled border

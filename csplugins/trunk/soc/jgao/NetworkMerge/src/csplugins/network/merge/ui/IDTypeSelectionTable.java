@@ -44,8 +44,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.HashMap;
-import java.util.EventObject;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -54,7 +52,6 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
@@ -63,12 +60,9 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.DefaultCellEditor;
-import javax.swing.table.TableCellEditor;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.JTextField;
-import javax.swing.event.CellEditorListener;
 
 /**
  * Table for selecting which attribute to use for matching nodes

@@ -56,7 +56,6 @@ public class DefaultAttributeConflictHandler implements AttributeConflictHandler
          * @return
          *      true if successful, false if failed
          */
-        //@Override
         public boolean handleIt(final String toID,
                                 final String toAttr,
                                 final Map<String,String> mapFromIDFromAttr,

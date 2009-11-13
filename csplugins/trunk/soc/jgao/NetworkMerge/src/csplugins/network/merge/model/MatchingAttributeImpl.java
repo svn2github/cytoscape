@@ -58,16 +58,16 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         attributeForMatching = new HashMap<String,String>();
     }
 
-    //@Override
+    /**
+     * {@inheritDoc}
+     */
     public Map<String,String> getNetAttrMap() {
         return attributeForMatching;
     }
     
-    /*
-     * Get the attribute of network for matching node
-     * 
+    /**
+     * {@inheritDoc}
      */
-    //@Override
     public String getAttributeForMatching(final String netID) {
         if (netID == null) {
             throw new java.lang.NullPointerException();
@@ -76,11 +76,9 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         return attributeForMatching.get(netID);
     }
     
-    /*
-     * Set the attribute of network for matching node
-     * 
+    /**
+     * {@inheritDoc}
      */
-    //@Override
     public void putAttributeForMatching(final String netID, final String attributeName) {
         if (netID==null || attributeName==null) {
             throw new java.lang.NullPointerException();
@@ -89,11 +87,9 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         attributeForMatching.put(netID, attributeName);
     }
 
-    /*
-     * add/select the attribute of network for matching node
-     * 
+    /**
+     * {@inheritDoc}
      */
-    //@Override
     public void addNetwork(final String netID) {
         if (netID == null) {
             throw new java.lang.NullPointerException();
@@ -114,11 +110,9 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         //putAttributeForMatching(netID,attributeNames[i]); //use in Cytoscape3
     }
             
-    /*
-     * Remove the network, return the attribute
-     * 
+    /**
+     * {@inheritDoc}
      */
-    //@Override
     public String removeNetwork(final String netID) {
         if (netID == null) {
             throw new java.lang.NullPointerException();
@@ -127,24 +121,23 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         return attributeForMatching.remove(netID);
     }
     
-    /*
-     * 
-     * 
+    /**
+     * {@inheritDoc}
      */
-    //@Override
     public int getSizeNetwork() {
         return attributeForMatching.size();
     }
     
-    /*
-     * 
-     * 
+    /**
+     * {@inheritDoc}
      */
-    //@Override
     public Set<String> getNetworkSet() {
         return attributeForMatching.keySet();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void clear() {
         attributeForMatching.clear();
     }

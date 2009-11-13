@@ -69,7 +69,6 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
              }
 
              this.parameter = parameter;
-             //status = "Merging networks... 0%";
              taskMonitor = null;
              interrupted = false;
      }
@@ -158,13 +157,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
     }
     
     /**
-     * Merge networks into one
-     *
-     * @param networks 
-     *            Networks to be merged
-     * @param title
-     *            The title of the new network
-     * @return merged Node
+     * {@inheritDoc}
      */
     public CyNetwork mergeNetwork(final List<CyNetwork> networks, final Operation op, final String title) {
         if (networks==null || op==null || title==null) {

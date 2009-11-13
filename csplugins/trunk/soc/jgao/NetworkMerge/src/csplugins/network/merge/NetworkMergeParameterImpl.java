@@ -57,7 +57,4 @@ public class NetworkMergeParameterImpl implements NetworkMergeParameter {
         public void enableInNetworkMerge(boolean enabled) {
                 inNetworkMerge = enabled;
         }
-
-        //public boolean intersectionEdges();
-
 }

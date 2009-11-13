@@ -52,8 +52,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 
 /**
- * Table for selecting which attribute to use for matching nodes
- * 
+ * Table for selecting which attribute to use for matching nodes 
  * 
  */
 class MatchNodeTable extends JTable{ 

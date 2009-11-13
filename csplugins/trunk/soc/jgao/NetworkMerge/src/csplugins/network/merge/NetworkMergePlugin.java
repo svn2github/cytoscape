@@ -60,12 +60,11 @@ import java.util.Arrays;
 public class NetworkMergePlugin extends CytoscapePlugin {
     public NetworkMergePlugin() {
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new NetworkMergeAction());
-        //Cytoscape.createNetworkFromFile("testData\\data1.cys");
     }
     
     class NetworkMergeAction extends CytoscapeAction {
         public NetworkMergeAction() {
-            super("Advanced Network Merge"); //TODO rename
+            super("Advanced Network Merge");
 	}
 
         /**

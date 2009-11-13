@@ -127,12 +127,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
     
     
     /**
-     * Check whether two nodes match
-     *
-     * @param net1,net2 two networks
-     * @param n1,n2 two nodes belongs to net1 and net2 respectively
-     * 
-     * @return true if n1 and n2 matches
+     * {@inheritDoc}
      */
     @Override
     public boolean matchNode(final CyNetwork net1, 
@@ -176,12 +171,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
     }
     
     /**
-     * Merge (matched) nodes into one. This method will be refactored in Cytoscape3
-     * 
-     * @param mapNetNode 
-     *              map of network to node, node in the network to be merged
-     * 
-     * @return merged Node
+     * {@inheritDoc}
      */
     @Override
     public Node mergeNode(final Map<CyNetwork,Set<GraphObject>> mapNetNode) {
@@ -243,14 +233,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
     }
     
     /**
-     * Merge (matched) nodes into one. This method will be refactored in Cytoscape3
-     * 
-     * @param mapNetEdge 
-     *              map from network to Edge, Edge in the network to be merged
-     * @param source, target
-     *              source and target nodes in the merge network
-     * 
-     * @return merged Node
+     * {@inheritDoc}
      */
     @Override
     public Edge mergeEdge(final Map<CyNetwork,Set<GraphObject>> mapNetEdge,

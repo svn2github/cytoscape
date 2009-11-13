@@ -47,48 +47,56 @@ import java.util.Map;
  */
 public interface MatchingAttribute {
     
-    /*
-     * Get map of network to attribute
+    /**
      * 
+     * @return map of network to attribute
      */
     public Map<String,String> getNetAttrMap();
 
-    /*
-     * Get the attribute of network for matching node
+    /**
      * 
+     * @param netID
+     * @return the attribute of network for matching node
      */
     public String getAttributeForMatching(String netID);
     
-    /*
+    /**
+     *
      * Set the attribute of network for matching node
-     * 
+     *
+     * @param netID
+     * @param attributeName
      */
     public void putAttributeForMatching(String netID, String attributeName);
     
-    /*
+    /**
      * add/select the attribute of network for matching node
-     * 
+     * @param netID
      */
     public void addNetwork(String netID);
     
-    /*
+    /**
      * Remove the network, return the attribute
-     * 
+     * @param netID
+     * @return
      */
     public String removeNetwork(String netID);
     
-    /*
-     * 
-     * 
+    /**
+     *
+     * @return
      */
     public int getSizeNetwork();
     
-    /*
-     * 
-     * 
+    /**
+     *
+     * @return
      */
     public Set<String> getNetworkSet();
 
+    /**
+     * 
+     */
     public void clear();
             
     //TODO: ID types of the attribute could be store here

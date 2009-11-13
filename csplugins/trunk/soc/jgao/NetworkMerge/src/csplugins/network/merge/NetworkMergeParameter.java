@@ -41,10 +41,8 @@ package csplugins.network.merge;
  * 
  */
 public interface NetworkMergeParameter {
+
         public boolean inNetworkMergeEnabled();
 
         public void enableInNetworkMerge(boolean enabled);
-
-        //public boolean intersectionEdges();
-
 }

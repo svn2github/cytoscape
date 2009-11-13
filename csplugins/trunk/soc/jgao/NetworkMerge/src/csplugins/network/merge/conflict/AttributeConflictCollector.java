@@ -39,7 +39,6 @@ package csplugins.network.merge.conflict;
 
 import cytoscape.data.CyAttributes;
 
-import java.util.Set;
 import java.util.Map;
 
 /**
