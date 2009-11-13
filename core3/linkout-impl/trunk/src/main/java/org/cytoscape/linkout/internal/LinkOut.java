@@ -38,7 +38,7 @@ import cytoscape.util.OpenBrowser;
  */
 
 /**
- * AJK: 06/09/2009: porting to Cytoscape 3.0. Under 3.0, should take the form:
+ * AJK: 06/0  9/2009: porting to Cytoscape 3.0. Under 3.0, should take the form:
  * 
  * 
  * 
@@ -182,7 +182,13 @@ public class LinkOut {
 
 				// AJK: 06/11/09 code to set preferred menu
 				Dictionary<String, String> dict = new Hashtable<String, String>();
-				dict.put("preferredMenu", propKey);
+				
+				// AJK: 11/12/09 need to substitute "LinkOut" for nodeMarker in the property key
+				
+//				dict.put("preferredMenu", propKey);
+				String menuKey = "LinkOut." + propKey.substring(p);
+				dict.put("preferredMenu", menuKey);
+				
 				NodeViewTaskFactory nvtf = new LinkoutTaskFactory(url);
 				registrar.registerService(nvtf, NodeViewTaskFactory.class, dict);
 			}
