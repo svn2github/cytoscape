@@ -238,4 +238,12 @@ public class CytoscapeTest extends TestCase {
 		// make sure we got the node we created
 		assertNotNull(Cytoscape.getCyEdge(a, c, attr, "pd", false, true));
 	}
+
+	public void testSetNestedNetworkAndGetNestedNetwork() throws Exception {
+		CyNode node = Cytoscape.getCyNode("a");
+		assertNull(node.getNestedNetwork());
+		CyNetwork network = Cytoscape.createNetwork("A title");
+		node.setNestedNetwork(network);
+		assertEquals(network, node.getNestedNetwork());
+	}
 }

@@ -57,6 +57,8 @@ public class CyNode implements giny.model.Node {
 	int m_rootGraphIndex = 0;
 	String m_identifier = null;
 	ArrayList<CyGroup> groupList = null;
+	GraphPerspective graphPerspective;
+
 
 	/**
 	 * Creates a new CyNode object.
@@ -70,6 +72,7 @@ public class CyNode implements giny.model.Node {
 		this.m_identifier = new Integer(m_rootGraphIndex).toString();
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -79,6 +82,7 @@ public class CyNode implements giny.model.Node {
 		return m_rootGraph.createGraphPerspective(m_rootGraph.getNodeMetaChildIndicesArray(m_rootGraphIndex),
 		                                          m_rootGraph.getEdgeMetaChildIndicesArray(m_rootGraphIndex));
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -103,6 +107,7 @@ public class CyNode implements giny.model.Node {
 		return true;
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -111,6 +116,7 @@ public class CyNode implements giny.model.Node {
 	public RootGraph getRootGraph() {
 		return m_rootGraph;
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -121,6 +127,7 @@ public class CyNode implements giny.model.Node {
 		return m_rootGraphIndex;
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -129,6 +136,7 @@ public class CyNode implements giny.model.Node {
 	public String getIdentifier() {
 		return m_identifier;
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -149,6 +157,7 @@ public class CyNode implements giny.model.Node {
 		return true;
 	}
 
+
 	/**
 	 * Add this node to the specified group.
 	 *
@@ -166,6 +175,7 @@ public class CyNode implements giny.model.Node {
 			group.addNode(this);
 	}
 
+
 	/**
 	 * Remove this node from the specified group.
 	 *
@@ -179,6 +189,7 @@ public class CyNode implements giny.model.Node {
 			group.removeNode(this);
 	}
 
+
 	/**
 	 * Return the list of groups this node is a member of
 	 *
@@ -187,6 +198,7 @@ public class CyNode implements giny.model.Node {
 	public List<CyGroup> getGroups() {
 		return groupList;
 	}
+
 
 	/**
 	 * Check to see if this node is a member of the requested group
@@ -201,6 +213,7 @@ public class CyNode implements giny.model.Node {
 		return groupList.contains(group);
 	}
 
+
 	/**
 	 * Check to see if this node is a group
 	 *
@@ -210,6 +223,7 @@ public class CyNode implements giny.model.Node {
 		return CyGroupManager.isaGroup(this);
 	}
 
+
 	/**
 	 * Return the "name" of a node
 	 *
@@ -217,5 +231,23 @@ public class CyNode implements giny.model.Node {
 	 */
 	public String toString() {
 		return getIdentifier();
+	}
+
+
+	/**
+	 * Assign a graph perspective reference to this node.
+	 */
+	public void setNestedNetwork(final GraphPerspective graphPerspective) {
+		this.graphPerspective = graphPerspective;
+	}
+	
+		
+	/**
+	 * Return the currently set graph perspective (may be null) associated with this node.
+	 *
+	 *  @return a network reference or null.
+	 */
+	public GraphPerspective getNestedNetwork() {
+		return graphPerspective;
 	}
 }
