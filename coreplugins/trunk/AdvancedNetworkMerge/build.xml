@@ -1,0 +1,80 @@
+
+
+<project name="NetworkMerge" default="jar" basedir=".">
+  <description>Builds, tests, and runs the project NetworkMerge.</description>
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <tstamp/>
+    <property name="src" location="src"/>
+    <property name="images" value="images"/>
+    <property name="lib" location="lib"/>
+    <property name="cyrelease" location="../cytoscape"/>
+    <property name="cylib" location="${cyrelease}/lib"/>
+    <property name="build" location="build"/>
+    <property name="build.classes" location="${build}/classes"/>
+    <property name="build.images" location="${build.classes}/images"/>
+
+    <!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+    <path id="classpath">
+        <fileset dir="${cylib}">
+            <include name="*.jar"/>
+        </fileset>
+
+        <!-- include cytoscape.jar, which is it release directory top level -->
+        <fileset dir="${cyrelease}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+  </target>
+
+  
+
+  <!-- =================================================================== -->
+  <!-- Compiles the project                                                -->
+  <!-- =================================================================== -->
+  <target name="compile" depends="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build.classes}"/>
+    <javac srcdir="${src}" destdir="${build.classes}">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init">
+    <echo message="delete ${build}"/>
+    <delete dir="${build}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the project jar file                                        -->
+  <!-- =================================================================== -->
+  <target name="jar" depends="compile">
+    <copy file="plugin.props" todir="${build.classes}/csplugins/network/merge" />
+    <copy todir="${build.images}">
+      <fileset dir="${images}"/>
+    </copy>
+    <jar destfile="AdvancedNetworkMerge.jar">
+      <manifest>
+        <attribute name="Cytoscape-Plugin"
+          value="csplugins.network.merge.NetworkMergePlugin" />
+      </manifest>
+
+      <fileset dir= "${build.classes}" />
+      <zipfileset src="${lib}/CyThesaurusService.jar" excludes="META-INF/*"/>
+
+    </jar>
+  </target>
+  
+</project>
+
+
+
