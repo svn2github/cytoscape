@@ -23,7 +23,8 @@
 		<ant dir="TableImport" />
 		<ant dir="linkout" />
 		<ant dir="filters" />
-		
+		<ant dir="AdvancedNetworkMerge" />
+
 		<mkdir dir="${build.dir}" />
 		<copy todir="${build.dir}" file="browser/browser.jar" />
 		<copy todir="${build.dir}" file="ManualLayout/ManualLayout.jar" />
@@ -40,6 +41,7 @@
 		<copy todir="${build.dir}" file="TableImport/TableImport.jar" />
 		<copy todir="${build.dir}" file="linkout/linkout.jar" />
 		<copy todir="${build.dir}" file="filters/plugins/filters.jar" />
+		<copy todir="${build.dir}" file="AdvancedNetworkMerge/AdvancedNetworkMerge.jar" />
 	</target>
 
 	<!-- clean all coreplugin projects  -->
@@ -59,6 +61,7 @@
 		<ant dir="TableImport" target="clean" />
 		<ant dir="linkout" target="clean" />
 		<ant dir="filters" target="clean" />
+		<ant dir="AdvancedNetworkMerge" target="clean" />
 		<delete dir="${build.dir}" />
 	</target>
 
