@@ -8,12 +8,12 @@ $versionID = NULL; // used for edit mode only
 
 include 'clean.inc';
 
-if (isset (cleanInt($_GET['versionid']))) {
-	$versionID = $_GET['versionid'];
+if (isset($_GET['versionid'])) {
+	$versionID = cleanInt($_GET['versionid']);
 	$pageTitle = "Edit plugin Info";
 }
-if (isset (cleanInt($_POST['versionID']))) { // hidden field
-	$versionID = $_POST['versionID'];
+if (isset ($_POST['versionID'])) { // hidden field
+	$versionID = cleanInt($_POST['versionID']);
 }
 
 ?>
