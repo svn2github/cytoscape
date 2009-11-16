@@ -3,7 +3,7 @@ package giny.model;
 import java.util.*;
 
 public interface Node extends GraphObject {
-
+ 
   /**
    * If a Node is a meta-parent of any other nodes and edges,
    * then it contains those nodes and edges 
@@ -31,5 +31,15 @@ public interface Node extends GraphObject {
    */
   public boolean setGraphPerspective ( GraphPerspective gp );
 
-
+  /**
+    * Assign a graph perspective reference to this node.
+    */
+  public void setNestedNetwork(final GraphPerspective graphPerspective);
+		
+  /**
+    * Return the currently set graph perspective (may be null) associated with this node.
+    *
+    *  @return a network reference or null.
+    */
+  public GraphPerspective getNestedNetwork();
 } // interface Node
