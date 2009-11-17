@@ -49,7 +49,7 @@ public class NNFParser {
 		// Split with white space chars
 		parts = line.split("\\s");
 		length = parts.length;
-
+//
 //		if (length == 2) {
 //			// This is a line with no edge.
 //			metaNode = processModule(parts[0], rootNetwork);
