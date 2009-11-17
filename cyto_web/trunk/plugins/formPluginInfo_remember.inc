@@ -37,58 +37,8 @@ if (isset ($_POST['tfYear'])) {
 	$releaseDate = $year . '-' . $month . '-' . $day;
 }
 
-
-if (isset ($_POST['chk2p0'])) {
-	$Cy2p0_checked = "checked";
-	$cyVersion = '2.0';
-}
-if (isset ($_POST['chk2p1'])) {
-	$Cy2p1_checked = "checked";
-	if ($cyVersion == NULL) {
-		$cyVersion = '2.1';
-	} else {
-		$cyVersion .= ',2.1';
-	}
-}
-if (isset ($_POST['chk2p2'])) {
-	$Cy2p2_checked = "checked";
-	if ($cyVersion == NULL) {
-		$cyVersion = '2.2';
-	} else {
-		$cyVersion .= ',2.2';
-	}
-}
-if (isset ($_POST['chk2p3'])) {
-	$Cy2p3_checked = "checked";
-	if ($cyVersion == NULL) {
-		$cyVersion = '2.3';
-	} else {
-		$cyVersion .= ',2.3';
-	}
-}
-if (isset ($_POST['chk2p4'])) {
-	$Cy2p4_checked = "checked";
-	if ($cyVersion == NULL) {
-		$cyVersion = '2.4';
-	} else {
-		$cyVersion .= ',2.4';
-	}
-}
-if (isset ($_POST['chk2p5'])) {
-	$Cy2p5_checked = "checked";
-	if ($cyVersion == NULL) {
-		$cyVersion = '2.5';
-	} else {
-		$cyVersion .= ',2.5';
-	}
-}
-if (isset ($_POST['chk2p6'])) {
-	$Cy2p6_checked = "checked";
-	if ($cyVersion == NULL) {
-		$cyVersion = '2.6';
-	} else {
-		$cyVersion .= ',2.6';
-	}
+if (isset ($_POST['tfCyVersion'])) {
+	$cyVersion = $_POST['tfCyVersion'];
 }
 
 //Authors
