@@ -87,7 +87,7 @@
 		}
 		$dbQuery .= ',"' . $pluginProps['pluginVersion'] . '",\'' .
 		$pluginProps['releaseDate'] . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $pluginProps['minimumJavaVersion'] . '","' . $comment . '","' . $jarURL . '","' .
-		$sourceURL . '","' . $pluginProps['cytoscapeVersion'] . '","' . $status . '","' . $reference.'","' .$pluginProps['themeOnly'].'", now())';
+		$sourceURL . '","' . $pluginProps['cytoscapeVersion'] . '","' . $status . '","' . $reference.'","' .$pluginProps['themeOnly'].'", 0,now())';
 		
 		// Run the query
 		if (!(@ mysql_query($dbQuery, $connection)))
