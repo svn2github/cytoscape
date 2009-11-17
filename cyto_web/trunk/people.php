@@ -68,7 +68,7 @@
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Ethan Cerami</td>
     <td>Mike Smoot</td>
-    <td><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/KeiichiroOno">Keiichiro Ono</a></td>
+    <td><a href="http://cytoscape.wodaklab.org/wiki/KeiichiroOno">Keiichiro Ono</a></td>
     <td>Allan Kuchinsky</td>
     <td><a href="http://chianti.ucsd.edu/~slotia/">Samad Lotia</a></td>
     <td>Mathieu Michaud</td>

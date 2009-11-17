@@ -22,11 +22,11 @@
 		</p>
 	</div>
 	<div class="naventry2">
-		<h1><a href="http://cytoscape.org/cgi-bin/moin.cgi/Presentations">
+		<h1><a href="http://cytoscape.wodaklab.org/wiki/Presentations">
 		Online Tutorials</a></h1>
 		<p>
 			Get Started with the expanded Cytoscape 
-			<a href="http://cytoscape.org/cgi-bin/moin.cgi/Presentations">online tutorials</a>.  
+			<a href="http://cytoscape.wodaklab.org/wiki/Presentations">online tutorials</a>.  
 			Eight tutorials describe Cytoscape from basic operation to detailed plugin operation.
 		</p>
 	</div>
@@ -40,10 +40,10 @@
 		</p>
 	</div>
 	<div class="naventry3">
-		<h1><a href="cgi-bin/moin.cgi/">Developers</a></h1>
-		<item><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Future_Cytoscape_Features">Roadmap</a></item>
+		<h1><a href="http://cytoscape.wodaklab.org/wiki">Developers</a></h1>
+		<item><a href="http://cytoscape.wodaklab.org/wiki/Future_Cytoscape_Features">Roadmap</a></item>
     	<item><a href="<?= $latest_javadoc?>">Javadoc API</a></item>
-    	<item><a href="cgi-bin/moin.cgi/">Wiki</a></item>
+    	<item><a href="http://cytoscape.wodaklab.org/wiki">Wiki</a></item>
 		<item><a href="http://csbi.sourceforge.net/">Graph INterface librarY (GINY)</a></item>
 		<item><a href="download_list.php#cvs">Download Source from SVN</a></item>
 	

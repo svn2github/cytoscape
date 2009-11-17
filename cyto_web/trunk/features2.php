@@ -125,7 +125,7 @@
 	<img src="images/intro_7.png" />
 	<p>
 		Customize network data display using powerful 
-		<a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_User_Manual/Visual_Styles">
+		<a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Visual_Styles">
 		<strong><i>Visual Styles</i></strong></a>.  
 		View a superposition of gene expression ratios and p-values on the network. &nbsp;
 		Expression data can be mapped to node color, label, border thickness, or border color, 
@@ -239,7 +239,7 @@
 	Cytoscape Core developer team continue to work on this project and near future, we are going to 
 	release next major version, Cytoscape 3.0.  It will be more modularized and scalable version 
 	of Cytoscape.  This release includes server-side features.  For more information about version 
-	3.0, please visit <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_3.0">developer's 
+	3.0, please visit <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_3.0">developer's 
 	wiki page</a>.
 	</p>
 </div>
