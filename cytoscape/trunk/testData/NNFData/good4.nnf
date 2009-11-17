@@ -1,0 +1,18 @@
+root	M1	
+	
+root	M3	
+	
+M1	A	pp	B
+M1	B	pp	A
+root	C	pp	B
+M3	M2	
+	
+M2	D	
+	
+M3	E	pp	F
+M3	D	pp	F
+M3	D	pp	E
+root	D	pp	C
+root	A	pp	M2
+root	B	pp	M3
+root	M2	pp	B
