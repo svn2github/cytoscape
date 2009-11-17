@@ -55,34 +55,14 @@
     <td><div align="right"></div></td>
     <td><label></label></td>
   </tr>
+  
   <tr>
-    <td><div align="right"><span class="style4">*</span>Cytoscape versions </div></td>
-    <td><table width="553" border="0">
-      <tr>
-        <td width="72"><label>2.0
-            <input name="chk2p0" type="checkbox" id="chk2p0" value="Cy2p0" <?php echo $Cy2p0_checked ?> />
-        </label></td>
-        <td width="73"><label>2.1
-            <input name="chk2p1" type="checkbox" id="chk2p1" value="Cy2p1" <?php echo $Cy2p1_checked ?> />
-        </label></td>
-        <td width="72"><label>2.2
-            <input name="chk2p2" type="checkbox" id="chk2p2" value="Cy2p2" <?php echo $Cy2p2_checked ?> />
-        </label></td>
-        <td width="72"><label>2.3
-            <input name="chk2p3" type="checkbox" id="chk2p3" value="Cy2p3" <?php echo $Cy2p3_checked ?> />
-        </label></td>
-        <td width="72"><label>
-          2.4
-          <input name="chk2p4" type="checkbox" id="chk2p4" value="Cy2p4" <?php echo $Cy2p4_checked ?> />
-        </label></td>
-        <td width="63">2.5          
-          <input name="chk2p5" type="checkbox" id="chk2p5" value="Cy2p5" <?php echo $Cy2p5_checked ?> /></td>
-        <td width="99"><label>2.6
-            <input name="chk2p6" type="checkbox" id="chk2p6" value="Cy2p6" <?php echo $Cy2p6_checked ?> />
-        </label></td>
-      </tr>
-    </table></td>
+    <td width="208"><div align="right" ><span class="style4">*</span>Cytoscape versions</div></td>
+    <td width="660"><input name="tfCyVersion" type="text" value ="<?php echo $cyVersion ?>" size="40" /></td>
   </tr>
+
+  
+  
   <tr>
     <td><div align="right"></div></td>
     <td><label></label></td>
