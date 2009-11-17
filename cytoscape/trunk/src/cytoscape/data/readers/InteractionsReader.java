@@ -193,12 +193,9 @@ public class InteractionsReader extends AbstractGraphReader {
                 rawText = FileUtil.getInputString(inputStream);
             }
             finally {
-				InputStream is;
-
-				is = inputStream;
-				inputStream = null;
-                if (is != null) {
-                    is.close();
+                if (inputStream != null) {
+                		inputStream.close();	
+                		inputStream = null;		
                 }
             }
 		} else {
