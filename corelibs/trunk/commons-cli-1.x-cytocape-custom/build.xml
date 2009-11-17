@@ -71,7 +71,7 @@
   <target name="compile" description="o Compile the code" depends="get-deps">
     <mkdir dir="${classesdir}">
     </mkdir>
-    <javac destdir="${classesdir}" deprecation="true" debug="true" optimize="false" excludes="**/package.html">
+    <javac destdir="${classesdir}" deprecation="true" debug="true" optimize="false" source="1.5" target="1.5" excludes="**/package.html">
       <src>
         <pathelement location="${basedir}/src/java">
         </pathelement>
