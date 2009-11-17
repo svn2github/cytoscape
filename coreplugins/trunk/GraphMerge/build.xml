@@ -154,6 +154,8 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
+		   source="1.5"
+		   target="1.5"
            fork="${fork}"/>
      <echo message="Successfully ran compile task!"/>
   </target>

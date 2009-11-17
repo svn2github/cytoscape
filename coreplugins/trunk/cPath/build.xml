@@ -78,6 +78,8 @@
 
         <javac srcdir="${src.dir}" destdir="${build.classes}"
             nowarn="on" debug="true" deprecation="yes" 
+		   source="1.5"
+		   target="1.5"
 	    debuglevel="source,lines,var">
     		<classpath refid="classpath"/>
     	</javac>

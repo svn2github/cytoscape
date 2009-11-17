@@ -106,7 +106,10 @@
 		<echo message=" COMPILE tableImport " />
 
 		<mkdir dir="${tableImport.classes.dir}" />
-		<javac srcdir="${tableImport.src.dir}" excludes="${tableImport.excludes}" classpathref="tableImport.project.class.path" destdir="${tableImport.classes.dir}" debug="${debug}" nowarn="${nowarn}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+		<javac srcdir="${tableImport.src.dir}" excludes="${tableImport.excludes}" classpathref="tableImport.project.class.path" destdir="${tableImport.classes.dir}" debug="${debug}" nowarn="${nowarn}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}"
+		   source="1.5"
+		   target="1.5"
+		/>
 	</target>
 
 	<!-- =================================================================== -->

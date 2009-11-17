@@ -90,6 +90,8 @@
            nowarn="${nowarn}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
+		   source="1.5"
+		   target="1.5"
            fork="${fork}"/>
   </target>
 
