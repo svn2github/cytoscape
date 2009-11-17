@@ -65,13 +65,6 @@ $month = NULL;
 $day = NULL;
 $year = NULL;
 
-$Cy2p0_checked = NULL;
-$Cy2p1_checked = NULL;
-$Cy2p2_checked = NULL;
-$Cy2p3_checked = NULL;
-$Cy2p4_checked = NULL;
-$Cy2p5_checked = NULL;
-$Cy2p6_checked = NULL;
 $cyVersion = NULL;
 $names = NULL; // author names
 $emails = NULL;
