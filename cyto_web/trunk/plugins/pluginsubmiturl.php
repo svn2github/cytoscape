@@ -91,13 +91,6 @@ $month = NULL;
 $day = NULL;
 $year = NULL;
 
-$Cy2p0_checked = NULL; // not used
-$Cy2p1_checked = NULL; // not used
-$Cy2p2_checked = NULL; // not used
-$Cy2p3_checked = NULL; // not used
-$Cy2p4_checked = NULL;
-$Cy2p5_checked = NULL;
-$Cy2p6_checked = NULL;
 
 $cyVersion = NULL;
 $names = NULL; // author names
@@ -202,7 +195,8 @@ else {
 	$category_id = $the_row['category_id'];		
 
 	//echo "category_id = ",$category_id, "<br>";
-
+	$pluginProps['themeOnly'] = false; // this property does not apply for plugin URL, always false
+	
 	include "uploadNewPluginData.inc";
 }
 ?>
