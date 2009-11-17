@@ -51,9 +51,10 @@
 			<?php
 		}
 	//}
+	
 	//Validate the Cytoscape version
-	
-	
+	// value of $cyVersion must have the pattern like '2.5,2.6,2.61,2.7'
+	// ??? validation code here
 	
 	
 //} 
