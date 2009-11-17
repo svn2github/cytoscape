@@ -79,9 +79,9 @@ public class NNFReader extends AbstractGraphReader {
 		try {
 			while ((line = in.readLine()) != null) {
 				line = processComment(line);
-				if (line.isEmpty()) {
-					continue;
-				}
+				if (line.length() == 0)
+					continue; // Empty line => nothing to do!
+
 				rootNetworkHasBeenCreated = true;
 //				parser.parse(line);
 			}
