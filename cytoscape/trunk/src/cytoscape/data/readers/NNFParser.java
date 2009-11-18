@@ -9,6 +9,12 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 
+
+/**
+ * Parser for NNF files.
+ * 
+ * @author kono, ruschein
+ */
 public class NNFParser {
 	// For performance, these fields will be reused.
 	private String[] parts;
@@ -21,14 +27,15 @@ public class NNFParser {
 	// Hash map from title to actual network
 	private Map<String, CyNetwork> networkMap;
 
+
 	public NNFParser() {
 		networkMap = new HashMap<String, CyNetwork>();
 	}
 
+
 	/**
-	 * Parse an entry in NNF file.
+	 * Parse an entry/line in an NNF file.
 	 * 
-	 * @param rootNetwork
 	 * @param line
 	 */
 	public boolean parse(String line) {
@@ -79,8 +86,7 @@ public class NNFParser {
 				target.setNestedNetwork(nestedNetwork);
 			}
 
-			final CyEdge edge = Cytoscape.getCyEdge(source, target,
-					Semantics.INTERACTION, parts[2], true);
+			final CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, parts[2], true);
 			network.addEdge(edge);
 		} else {
 			// Invalid number of columns.

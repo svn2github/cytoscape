@@ -10,6 +10,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 
+
 /**
  * Graph file reader for NNF files.
  * 
@@ -18,7 +19,6 @@ import cytoscape.util.PercentUtil;
  * 
  */
 public class NNFReader extends AbstractGraphReader implements MultiGraphFileReader {
-
 	// Optional comments start with this character and extend to the end of line.
 	private static final char COMMENT_CHAR = '#';
 	
@@ -29,6 +29,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 	private TaskMonitor taskMonitor;
 	private PercentUtil percentUtil;
 
+
 	/**
 	 * Creates an interaction reader based on the string file name.
 	 * 
@@ -38,6 +39,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 	public NNFReader(String filename) {
 		this(filename, null);
 	}
+
 
 	/**
 	 * Creates an interaction reader based on the string file name.
@@ -51,6 +53,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 		this(FileUtil.getInputStream(filename), filename);
 		this.taskMonitor = monitor;
 	}
+
 
 	/**
 	 * Constructor.<br>
@@ -66,6 +69,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 		this.parser = new NNFParser();
 	}
 
+
 	/**
 	 * Sets the task monitor we want to use
 	 * 
@@ -76,11 +80,10 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 		this.taskMonitor = monitor;
 	}
 
-	public void read() throws IOException {
 
+	public void read() throws IOException {
 		// Create buffered reader from given InputStream
-		final BufferedReader in = new BufferedReader(new InputStreamReader(
-				inputStream));
+		final BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
 
 		String line;
 		try {
@@ -112,6 +115,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 		return null;
 	}
 	
+
 	private String processComment(String line) {
 		final int hashPos = line.indexOf(COMMENT_CHAR);
 		if (hashPos != -1) {
@@ -119,6 +123,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 		}
 		return line.trim();
 	}
+
 
 	/**
  	 * Returns root network.
@@ -130,6 +135,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 	public CyNetwork getFirstNetwork() {
 		return parser.getRootNetwork();
 	}
+
 	
 	/**
 	 * Always returns root network title.
