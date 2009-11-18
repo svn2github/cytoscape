@@ -115,13 +115,13 @@ public class ImportHandlerTest extends TestCase {
 	 * Tests ImportHandler Default Constructor.
 	 */
 	public void testConstructor() {
-		// should contain three filters + the ALL File filter
+		// should contain four (SIF, XGMML, NNF, and GML) filters + the ALL File filter
 		DUMMY_LIST = importHandler.getAllFilters();
 		assertTrue(DUMMY_LIST != null);
 
 		// test getSize
 		int value = DUMMY_LIST.size();
-		assertEquals(4, value);
+		assertEquals(5, value);
 	}
 
 	/**
@@ -131,7 +131,8 @@ public class ImportHandlerTest extends TestCase {
 		// Try getting descriptions for all files of type:  GRAPH_NATURE.
 		dummyCollection = importHandler.getAllTypes(ImportHandler.GRAPH_NATURE);
 		assertTrue(dummyCollection != null);
-		assertEquals(3, dummyCollection.size());
+		// By default, there are four supported graph file types (SIF, XGMML, NNF, and GML)
+		assertEquals(4, dummyCollection.size());
 
 		//  Validate one filter description
 		boolean xgmmlFlag = false;
@@ -150,7 +151,7 @@ public class ImportHandlerTest extends TestCase {
 		// Try getting a list of all registered file extensions.
 		dummyCollection = importHandler.getAllExtensions();
 		assertTrue(dummyCollection != null);
-		assertEquals(4, dummyCollection.size());
+		assertEquals(5, dummyCollection.size());
 
 		//  Validate one file extension.
 		boolean sifFlag = false;
@@ -169,7 +170,7 @@ public class ImportHandlerTest extends TestCase {
 		// Try getting a list of all filter descriptions  (w/ file extensions).
 		dummyCollection = importHandler.getAllDescriptions();
 		assertTrue(dummyCollection != null);
-		assertEquals(3, dummyCollection.size());
+		assertEquals(4, dummyCollection.size());
 
 		//  Validate one filter description
 		boolean gmlFlag = false;
@@ -203,7 +204,7 @@ public class ImportHandlerTest extends TestCase {
 		// Try getting all filters
 		dummyCollection = importHandler.getAllFilters();
 		assertTrue(dummyCollection != null);
-		assertEquals(4, dummyCollection.size());
+		assertEquals(5, dummyCollection.size());
 
 		//  Validate one filter
 		sifFlag = false;
@@ -222,7 +223,7 @@ public class ImportHandlerTest extends TestCase {
 		//  Try getting only filters of a good nature
 		DUMMY_LIST = importHandler.getAllFilters(DUMMY_GRAPH_NATURE);
 		assertTrue(dummyCollection != null);
-		assertEquals(4, dummyCollection.size());
+		assertEquals(5, dummyCollection.size());
 
 		//  Validate one filter
 		sifFlag = false;
@@ -253,9 +254,9 @@ public class ImportHandlerTest extends TestCase {
 		success = importHandler.addFilter(DUMMY_DOC_FILTER);
 		assertEquals(true, success);
 
-		//  Should now have 5 filters.
+		//  Should now have 6 filters.
 		DUMMY_LIST = importHandler.getAllFilters();
-		assertEquals(5, DUMMY_LIST.size());
+		assertEquals(6, DUMMY_LIST.size());
 	}
 
 	/**
@@ -265,26 +266,26 @@ public class ImportHandlerTest extends TestCase {
 		CyFileFilter[] cff1 = { DUMMY_SIF_FILTER, DUMMY_XML_FILTER };
 		CyFileFilter[] cff2 = { DUMMY_DOC_FILTER, DUMMY_XLS_FILTER };
 
-		//  reset, should have 4 filters
+		//  reset, should have 5 filters (graph readers + all)
 		importHandler.resetImportHandler();
 		DUMMY_LIST = importHandler.getAllFilters();
-		assertEquals(4, DUMMY_LIST.size());
+		assertEquals(5, DUMMY_LIST.size());
 
 		// try adding two duplicate filters;  this should fail
 		boolean success = importHandler.addFilter(cff1);
 		assertEquals(false, success);
 
-		//  should still have 4 filters
+		//  should still have 5 filters
 		DUMMY_LIST = importHandler.getAllFilters();
-		assertEquals(4, DUMMY_LIST.size());
+		assertEquals(5, DUMMY_LIST.size());
 
-		// try adding two new filters
+		// try adding a new filter
 		success = importHandler.addFilter(cff2);
 		assertEquals(true, success);
 
-		// should now have six filers
+		// should now have seven filers
 		DUMMY_LIST = importHandler.getAllFilters();
-		assertEquals(6, DUMMY_LIST.size());
+		assertEquals(7, DUMMY_LIST.size());
 	}
 
 	/**

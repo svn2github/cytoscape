@@ -44,6 +44,7 @@ import cytoscape.task.ui.JTask;
 
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.GMLFileFilter;
+import cytoscape.util.NNFFileFilter;
 import cytoscape.util.ProxyHandler;
 import cytoscape.util.SIFFileFilter;
 import cytoscape.util.XGMMLFileFilter;
@@ -100,7 +101,7 @@ public class ImportHandler {
 	 * Constructor.
 	 */
 	public ImportHandler() {
-		//  By default, register SIF, XGMML and GML File Filters
+		//  By default, register SIF, XGMML, NNF, and GML File Filters
 		init();
 	}
 
@@ -111,6 +112,7 @@ public class ImportHandler {
 		addFilter(new SIFFileFilter());
 		addFilter(new XGMMLFileFilter());
 		addFilter(new GMLFileFilter());
+		addFilter(new NNFFileFilter());
 	}
 
 	/**
