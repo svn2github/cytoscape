@@ -49,6 +49,7 @@ import cytoscape.util.intr.IntHash;
 
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
@@ -397,6 +398,7 @@ public final class GraphRenderer {
 
 							// Compute visual attributes that do not depend on LOD.
 							final float thickness = edgeDetails.segmentThickness(edge);
+							final Stroke edgeStroke = edgeDetails.segmentStroke(edge);
 							final Paint segPaint = edgeDetails.segmentPaint(edge);
 
 							// Compute arrows.
@@ -416,27 +418,22 @@ public final class GraphRenderer {
 							} else { // Rendering edge arrows.
 								srcArrow = edgeDetails.sourceArrow(edge);
 								trgArrow = edgeDetails.targetArrow(edge);
-								srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f
-								                                                       : edgeDetails
-								                                                         .sourceArrowSize(edge));
-								trgArrowSize = (((trgArrow == GraphGraphics.ARROW_NONE)
-								                || (trgArrow == GraphGraphics.ARROW_MONO)) ? 0.0f
-								                                                           : edgeDetails
-								                                                             .targetArrowSize(edge));
-								srcArrowPaint = (((srcArrow == GraphGraphics.ARROW_NONE)
-								                 || (srcArrow == GraphGraphics.ARROW_BIDIRECTIONAL))
+								srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) 
+								                 ? 0.0f
+								                 : edgeDetails.sourceArrowSize(edge));
+								trgArrowSize = ((trgArrow == GraphGraphics.ARROW_NONE)
+								                 ? 0.0f
+								                 : edgeDetails.targetArrowSize(edge));
+								srcArrowPaint = ((srcArrow == GraphGraphics.ARROW_NONE)
 								                 ? null : edgeDetails.sourceArrowPaint(edge));
-								trgArrowPaint = (((trgArrow == GraphGraphics.ARROW_NONE)
-								                 || (trgArrow == GraphGraphics.ARROW_BIDIRECTIONAL)
-								                 || (trgArrow == GraphGraphics.ARROW_MONO)) ? null
-								                                                            : edgeDetails
-								                                                              .targetArrowPaint(edge));
+								trgArrowPaint = ((trgArrow == GraphGraphics.ARROW_NONE)
+								                 ? null : edgeDetails.targetArrowPaint(edge));
 							}
 
 							// Compute dash length.
-							final float dashLength = (((lodBits & LOD_DASHED_EDGES) == 0) ? 0.0f
-							                                                              : edgeDetails
-							                                                                .segmentDashLength(edge));
+//							final float dashLength = (((lodBits & LOD_DASHED_EDGES) == 0) ? 0.0f
+//							                                                              : edgeDetails
+//							                                                                .segmentDashLength(edge));
 
 							// Compute the anchors to use when rendering edge.
 							final EdgeAnchors anchors = (((lodBits & LOD_EDGE_ANCHORS) == 0) ? null
@@ -452,10 +449,13 @@ public final class GraphRenderer {
 							final float srcYAdj = floatBuff3[1];
 							final float trgXAdj = floatBuff4[0];
 							final float trgYAdj = floatBuff4[1];
+//							grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint, trgArrow,
+//							                   trgArrowSize, trgArrowPaint, srcXAdj, srcYAdj,
+//							                   anchors, trgXAdj, trgYAdj, thickness, segPaint,
+//							                   dashLength);
 							grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint, trgArrow,
 							                   trgArrowSize, trgArrowPaint, srcXAdj, srcYAdj,
-							                   anchors, trgXAdj, trgYAdj, thickness, segPaint,
-							                   dashLength);
+							                   anchors, trgXAdj, trgYAdj, thickness, edgeStroke, segPaint);
 
 							// Take care of edge anchor rendering.
 							if (anchors != null) {

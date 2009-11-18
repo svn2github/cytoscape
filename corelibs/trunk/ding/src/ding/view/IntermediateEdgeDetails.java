@@ -41,6 +41,7 @@ import cytoscape.render.stateful.EdgeDetails;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Stroke;
 
 
 class IntermediateEdgeDetails extends EdgeDetails {
@@ -109,6 +110,17 @@ class IntermediateEdgeDetails extends EdgeDetails {
 	 */
 	public float segmentThickness(int edge) {
 		return DEdgeView.DEFAULT_EDGE_THICKNESS;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public Stroke segmentStroke(int edge) {
+		return DEdgeView.DEFAULT_EDGE_STROKE;
 	}
 
 	/**
