@@ -36,19 +36,12 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-
-import giny.model.RootGraph;
-
 import giny.view.GraphView;
 
 import java.io.IOException;
+
+import cytoscape.CyNetwork;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 
 /**
