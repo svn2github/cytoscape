@@ -57,25 +57,23 @@ public enum ArrowShape {
 	DIAMOND("Diamond", "COLOR_DIAMOND", EdgeView.EDGE_COLOR_DIAMOND,
 	     new int[]{EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND,EdgeView.BLACK_DIAMOND},
 	     new String[]{"EDGE_COLOR_DIAMOND", "WHITE_DIAMOND","BLACK_DIAMOND"}),
-	DELTA("Delta", "COLOR_DELTA", EdgeView.EDGE_COLOR_DELTA,
-	     new int[]{EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA},
-	     new String[]{"EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}),
 	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_DELTA,
-	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW},
-	     new String[]{"EDGE_COLOR_ARROW", "WHITE_ARROW","BLACK_ARROW"}),
+	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW,
+	               EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA},
+	     new String[]{"EDGE_COLOR_ARROW", "WHITE_ARROW","BLACK_ARROW", 
+		              "EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}),
 	T("T", "COLOR_T", EdgeView.EDGE_COLOR_T,
 	     new int[]{EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T,EdgeView.BLACK_T},
 	     new String[]{"EDGE_COLOR_T", "WHITE_T","BLACK_T"}),
 	CIRCLE("Circle", "COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE,
 	     new int[]{EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE,EdgeView.BLACK_CIRCLE},
 	     new String[]{"EDGE_COLOR_CIRCLE", "WHITE_CIRCLE","BLACK_CIRCLE"}),
+	HALF_ARROW_TOP("Half Arrow Top", "HALF_ARROW_TOP", EdgeView.EDGE_HALF_ARROW_TOP,
+	     new int[]{EdgeView.EDGE_HALF_ARROW_TOP}, new String[]{"HALF_ARROW_TOP"}),
+	HALF_ARROW_BOTTOM("Half Arrow Bottom", "HALF_ARROW_BOTTOM", EdgeView.EDGE_HALF_ARROW_BOTTOM,
+	     new int[]{EdgeView.EDGE_HALF_ARROW_BOTTOM}, new String[]{"HALF_ARROW_BOTTOM"}),
 
-	// Not yet implemented
-	//	REVERSE_ARROW("Reverse Arrow", "REVERSE_ARROW", -1,
-	//	     new int[]{-1},
-	//		 new String[]{""}),
 	;
-
 
 	private static Map<Integer,Shape> arrowShapes = DGraphView.getArrowShapes();
 
@@ -201,12 +199,8 @@ public enum ArrowShape {
 	public static Map<Object, Icon> getIconSet() {
 		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
 
-		for (ArrowShape shape : values()) {
-			ArrowIcon icon = new ArrowIcon(arrowShapes.get(shape.getGinyArrow()), 
-			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
-			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
-										   shape.getName());
-			arrowShapeIcons.put(shape, icon);
+		for (ArrowShape arrow : values()) {
+			arrowShapeIcons.put(arrow, new ArrowIcon(arrow, VisualPropertyIcon.DEFAULT_ICON_SIZE) );
 		}
 
 		return arrowShapeIcons;

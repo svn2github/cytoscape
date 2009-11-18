@@ -73,9 +73,9 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 	 */
 	public Icon getIcon(final Object value) {
 		final ArrowShape arrow = (ArrowShape) VisualPropertyType.EDGE_SRCARROW_SHAPE
-		                                                                    .getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                         .getVisualStyle());
-		final ArrowIcon icon = new ArrowIcon(arrow.getShape());
+		                               .getDefault(Cytoscape.getVisualMappingManager()
+		                               .getVisualStyle());
+		final ArrowIcon icon = new ArrowIcon(arrow);
 		icon.setColor((Color) value);
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
