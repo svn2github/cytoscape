@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import cytoscape.CyNetwork;
 import cytoscape.task.TaskMonitor;
@@ -18,7 +19,7 @@ import cytoscape.util.PercentUtil;
  * @since Cytoscape 2.7.0
  * 
  */
-public class NNFReader extends AbstractGraphReader implements MultiGraphFileReader {
+public class NNFReader extends AbstractGraphReader implements NestedNetworkReader {
 	// Optional comments start with this character and extend to the end of line.
 	private static final char COMMENT_CHAR = '#';
 	
@@ -101,7 +102,7 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 		}
 		
 		if (parser.getRootNetwork() == null) {
-			throw new IOException("Input NNF file is empty.");
+			throw new IOException("Input NNF file is empty!");
 		}
 	}
 	
@@ -132,8 +133,8 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
  	 * Usually used by the caller of reader.
  	 * 
 	 */
-	public CyNetwork getFirstNetwork() {
-		return parser.getRootNetwork();
+	public List<CyNetwork> getNetworks() {
+		return parser.getNetworks();
 	}
 
 	

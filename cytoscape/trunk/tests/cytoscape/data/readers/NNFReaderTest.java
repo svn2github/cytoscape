@@ -30,8 +30,8 @@ public class NNFReaderTest extends TestCase {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good1.nnf");
 		reader.read();
 		
-		assertNotNull(reader.getFirstNetwork());
-		assertEquals("root", reader.getFirstNetwork().getTitle());
+		assertNotNull(reader.getNetworks().get(0));
+		assertEquals("root", reader.getNetworks().get(0).getTitle());
 	}
 	
 	
@@ -39,8 +39,8 @@ public class NNFReaderTest extends TestCase {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good2.nnf");
 		reader.read();
 		
-		assertNotNull(reader.getFirstNetwork());
-		assertEquals("root", reader.getFirstNetwork().getTitle());
+		assertNotNull(reader.getNetworks().get(0));
+		assertEquals("root", reader.getNetworks().get(0).getTitle());
 	}
 	
 	
@@ -48,8 +48,8 @@ public class NNFReaderTest extends TestCase {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good3.nnf");
 		reader.read();
 		
-		assertNotNull(reader.getFirstNetwork());
-		assertEquals("root", reader.getFirstNetwork().getTitle());
+		assertNotNull(reader.getNetworks().get(0));
+		assertEquals("root", reader.getNetworks().get(0).getTitle());
 	}
 	
 	
@@ -57,8 +57,8 @@ public class NNFReaderTest extends TestCase {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good4.nnf");
 		reader.read();
 		
-		assertNotNull(reader.getFirstNetwork());
-		assertEquals("root", reader.getFirstNetwork().getTitle());
+		assertNotNull(reader.getNetworks().get(0));
+		assertEquals("root", reader.getNetworks().get(0).getTitle());
 	}
 	
 	
@@ -66,8 +66,8 @@ public class NNFReaderTest extends TestCase {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good5.nnf");
 		reader.read();
 		
-		assertNotNull(reader.getFirstNetwork());
-		assertEquals("TopLevelNetwork", reader.getFirstNetwork().getTitle());
+		assertNotNull(reader.getNetworks().get(0));
+		assertEquals("TopLevelNetwork", reader.getNetworks().get(0).getTitle());
 	}
 	
 	
@@ -77,7 +77,7 @@ public class NNFReaderTest extends TestCase {
 			reader.read();
 		} catch (IOException e) {
 			e.printStackTrace();
-			assertNotNull(reader.getFirstNetwork());
+			assertNotNull(reader.getNetworks().get(0));
 			return;
 		}
 		
@@ -92,7 +92,7 @@ public class NNFReaderTest extends TestCase {
 			reader.read();
 		} catch (IOException e) {
 			e.printStackTrace();
-			assertNotNull(reader.getFirstNetwork());
+			assertNotNull(reader.getNetworks().get(0));
 			return;
 		}
 		

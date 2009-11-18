@@ -70,7 +70,7 @@ import cytoscape.data.Semantics;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.MultiGraphFileReader;
+import cytoscape.data.readers.NestedNetworkReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.data.servers.OntologyServer;
 import cytoscape.ding.CyGraphLOD;
@@ -1121,12 +1121,14 @@ public abstract class Cytoscape {
 			getDesktop().setFocus(currentNetworkID);
 	}
 
+
 	/**
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(String network_view_id) {
 		destroyNetworkView((CyNetworkView) getNetworkViewMap().get(network_view_id));
 	}
+
 
 	/**
 	 * destroys the networkview, including any layout information
@@ -1135,25 +1137,20 @@ public abstract class Cytoscape {
 		destroyNetworkView(getNetworkViewMap().get(network.getIdentifier()));
 	}
 
-	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent,
-	                                 boolean create_view) {
+
+	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent, boolean create_view) {
 		getNetworkMap().put(network.getIdentifier(), network);
 		network.setTitle(title);
 
-		String parentID = null;
-
-		if (parent != null) {
-			parentID = parent.getIdentifier();
-		}
-
+		String parentID = (parent != null) ? parentID = parent.getIdentifier() : null;
 		firePropertyChange(NETWORK_CREATED, parentID, network.getIdentifier());
 
 		final String propVal = CytoscapeInit.getProperties().getProperty("viewThreshold");
-		if (propVal != null && (network.getNodeCount() < Integer.parseInt(propVal))
-		    && create_view) {
+		if (propVal != null && (network.getNodeCount() < Integer.parseInt(propVal)) && create_view) {
 			createNetworkView(network);
 		}
 	}
+
 
 	/**
 	 * Creates a new, empty Network.
@@ -1387,45 +1384,47 @@ public abstract class Cytoscape {
 			throw new RuntimeException(e);
 		}
 
-		final String title = reader.getNetworkName();
-
-		// get the RootGraph indices of the nodes and
-		// edges that were just created
-		final int[] nodes = reader.getNodeIndicesArray();
-		final int[] edges = reader.getEdgeIndicesArray();
-
-		if (nodes == null) {
-			logger.warn("Network reader didn't return any nodes");
-		}
-
-		if (edges == null) {
-			logger.warn("Network reader didn't return any edges");
-		}
-
 		// Create the network if any nodes/edges exists in the file.
-		final CyNetwork network;
-		if (reader instanceof MultiGraphFileReader) {
-			network = ((MultiGraphFileReader)reader).getFirstNetwork();
+		if (reader instanceof NestedNetworkReader) {
+			final List<CyNetwork> networks = ((NestedNetworkReader)reader).getNetworks();
+			for (CyNetwork network : networks) {
+				getNetworkMap().put(network.getIdentifier(), network);
+				firePropertyChange(NETWORK_CREATED, null /* parentID */, network.getIdentifier());
+			}
+
+			return networks.get(0); // Root network.
 		} else {
-			network = getRootGraph().createNetwork(nodes, edges);
-		}
+			// get the RootGraph indices of the nodes and
+			// edges that were just created
+			final int[] nodes = reader.getNodeIndicesArray();
+			final int[] edges = reader.getEdgeIndicesArray();
 		
-		// Change the identifier
-		network.setIdentifier(title);
+			if (nodes == null) {
+				logger.warn("Network reader didn't return any nodes");
+			}
 
-		// network.putClientData(READER_CLIENT_KEY, reader);
-		addNetwork(network, title, parent, false);
+			if (edges == null) {
+				logger.warn("Network reader didn't return any edges");
+			}
 
-		if (create_view
-		    && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                               .getProperty("viewThreshold")))) {
-			createNetworkView(network, title, reader.getLayoutAlgorithm());
+			// Change the identifier
+			final String title = reader.getNetworkName();
+			final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+			network.setIdentifier(title);
+
+			// network.putClientData(READER_CLIENT_KEY, reader);
+			addNetwork(network, title, parent, false);
+
+			if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+										      .getProperty("viewThreshold")))) {
+				createNetworkView(network, title, reader.getLayoutAlgorithm());
+			}
+
+			// Execute any necessary post-processing.
+			reader.doPostProcessing(network);
+
+			return network;
 		}
-
-		// Execute any necessary post-processing.
-		reader.doPostProcessing(network);
-
-		return network;
 	}
 
 	// --------------------//

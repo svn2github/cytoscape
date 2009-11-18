@@ -2,6 +2,8 @@ package cytoscape.data.readers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -23,6 +25,9 @@ public class NNFParser {
 	// Parent network of all graph objects in the file
 	private CyNetwork rootNetwork;
 
+	// List of root network plus all nested networks.
+	private final List<CyNetwork> networks;
+
 	private String rootNetworkTitle;
 	// Hash map from title to actual network
 	private Map<String, CyNetwork> networkMap;
@@ -30,6 +35,7 @@ public class NNFParser {
 
 	public NNFParser() {
 		networkMap = new HashMap<String, CyNetwork>();
+		networks = new ArrayList<CyNetwork>();
 	}
 
 
@@ -52,6 +58,7 @@ public class NNFParser {
 			rootNetwork = Cytoscape.createNetwork(rootNetworkTitle);
 			rootNetwork.setTitle(rootNetworkTitle);
 			networkMap.put(rootNetworkTitle, rootNetwork);
+			networks.add(rootNetwork);
 		}
 
 		CyNetwork network = networkMap.get(parts[0]);
@@ -61,6 +68,7 @@ public class NNFParser {
 			networkMap.put(parts[0], network);
 		}
 
+System.out.println("length = " + length);
 		if (length == 2) {
 			final CyNode node = Cytoscape.getCyNode(parts[1], true);
 			if (network != null) {
@@ -68,6 +76,7 @@ public class NNFParser {
 				final CyNetwork nestedNetwork = networkMap.get(parts[1]);
 				if (nestedNetwork != null) {
 					node.setNestedNetwork(nestedNetwork);
+					networks.add(nestedNetwork);
 				}
 			}
 
@@ -77,6 +86,7 @@ public class NNFParser {
 			CyNetwork nestedNetwork = networkMap.get(parts[1]);
 			if (nestedNetwork != null) {
 				source.setNestedNetwork(nestedNetwork);
+				networks.add(nestedNetwork);
 			}
 
 			final CyNode target = Cytoscape.getCyNode(parts[3], true);
@@ -84,6 +94,7 @@ public class NNFParser {
 			nestedNetwork = networkMap.get(parts[3]);
 			if (nestedNetwork != null) {
 				target.setNestedNetwork(nestedNetwork);
+				networks.add(nestedNetwork);
 			}
 
 			final CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, parts[2], true);
@@ -97,7 +108,13 @@ public class NNFParser {
 		return true;
 	}
 	
+
+	protected List<CyNetwork> getNetworks() {
+		return networks;
+	}
+
 	protected CyNetwork getRootNetwork() {
 		return rootNetwork;
 	}
+	
 }
