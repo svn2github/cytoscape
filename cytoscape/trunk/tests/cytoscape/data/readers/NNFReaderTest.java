@@ -1,8 +1,8 @@
 package cytoscape.data.readers;
 
-import java.io.File;
-import junit.framework.TestCase;
 import java.io.IOException;
+
+import junit.framework.TestCase;
 
 
 public class NNFReaderTest extends TestCase {
@@ -21,81 +21,75 @@ public class NNFReaderTest extends TestCase {
 
 	public void testGood1() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good1.nnf");
-		try {
-			reader.read();
-		}
-		catch (final IOException e) {
-			assertTrue(false); // We should never get here!
-		}
+		reader.read();
+		
+		assertNotNull(reader.getFirstNetwork());
+		assertEquals("root", reader.getFirstNetwork().getTitle());
 	}
 	
 	
-	public void testGood2() {
+	public void testGood2() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good2.nnf");
-		try {
-			reader.read();
-		}
-		catch (final IOException e) {
-			assertTrue(false); // We should never get here!
-		}
+		reader.read();
+		
+		assertNotNull(reader.getFirstNetwork());
+		assertEquals("root", reader.getFirstNetwork().getTitle());
 	}
 	
 	
-	public void testGood3() {
+	public void testGood3() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good3.nnf");
-		try {
-			reader.read();
-		}
-		catch (final IOException e) {
-			assertTrue(false); // We should never get here!
-		}
+		reader.read();
+		
+		assertNotNull(reader.getFirstNetwork());
+		assertEquals("root", reader.getFirstNetwork().getTitle());
 	}
 	
 	
-	public void testGood4() {
+	public void testGood4() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good4.nnf");
-		try {
-			reader.read();
-		}
-		catch (final IOException e) {
-			assertTrue(false); // We should never get here!
-		}
+		reader.read();
+		
+		assertNotNull(reader.getFirstNetwork());
+		assertEquals("root", reader.getFirstNetwork().getTitle());
 	}
 	
 	
-	public void testGood5() {
+	public void testGood5() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good5.nnf");
-		try {
-			reader.read();
-		}
-		catch (final IOException e) {
-			assertTrue(false); // We should never get here!
-		}
+		reader.read();
+		
+		assertNotNull(reader.getFirstNetwork());
+		assertEquals("TopLevelNetwork", reader.getFirstNetwork().getTitle());
 	}
 	
 	
-	public void testBad1() {
+	public void testBad1() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "bad1.nnf");
 		try {
 			reader.read();
-		}
-		catch (final IOException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertNotNull(reader.getFirstNetwork());
 			return;
 		}
-
-		assertTrue(false); // We should never get here!
+		
+		//If not caught by the above, something is wrong!
+		fail();
 	}
 	
 	
-	public void testBad2() {
+	public void testBad2() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "bad2.nnf");
 		try {
 			reader.read();
-		}
-		catch (final IOException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertNotNull(reader.getFirstNetwork());
 			return;
 		}
-
-		assertTrue(false); // We should never get here!
+		
+		//If not caught by the above, something is wrong!
+		fail();
 	}
 }

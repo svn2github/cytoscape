@@ -6,35 +6,23 @@ import java.util.Map;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-
+import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
 
 public class NNFParser {
-	private static final String INTERACTION = "interaction";
-	private static final String NAME = "name";
-
-	private static final String ROOT = "-";
-
 	// For performance, these fields will be reused.
 	private String[] parts;
 	private int length;
 
-	private String moduleName;
-	private String sourceName;
-
-	private Map<String, CyNode> nodeMap;
-	private Map<String, CyEdge> edgeMap;
-
-//	private CyMetaNode metaNode;
-	private CyNode sourceNode;
-	private CyNode targetNode;
-	private CyEdge edge;
-	
 	// Parent network of all graph objects in the file
 	private CyNetwork rootNetwork;
 
+	private String rootNetworkTitle;
+	// Hash map from title to actual network
+	private Map<String, CyNetwork> networkMap;
+
 	public NNFParser() {
-		nodeMap = new HashMap<String, CyNode>();
-		edgeMap = new HashMap<String, CyEdge>();
+		networkMap = new HashMap<String, CyNetwork>();
 	}
 
 	/**
@@ -43,113 +31,67 @@ public class NNFParser {
 	 * @param rootNetwork
 	 * @param line
 	 */
-	public void parse(String line) {
-		System.out.println("\n\nCurrent Line: " + line);
-		
+	public boolean parse(String line) {
+		System.out.println("Current Line: " + line);
+
 		// Split with white space chars
-		parts = line.split("\\s");
+		parts = line.split("\\s+");
 		length = parts.length;
-//
-//		if (length == 2) {
-//			// This is a line with no edge.
-//			metaNode = processModule(parts[0], rootNetwork);
-//			sourceNode = processNode(parts[1], rootNetwork, null);
-//			if (metaNode != null && sourceNode != null)
-//				metaNode.getSubNetwork().addNode(sourceNode);
-//
-//		} else if (length == 4) {
-//			// Line with an edge
-//			metaNode = processModule(parts[0], rootNetwork);
-//			processEdge(metaNode, parts[1], parts[2], parts[3], rootNetwork);
-//		} else {
-//			// TODO: Other length is invalid.  Handle error here.
-//		}
+
+		// Create root network if necessary.
+		if (networkMap.size() == 0) {
+			// This is the first non-empty line.
+			rootNetworkTitle = parts[0];
+			rootNetwork = Cytoscape.createNetwork(rootNetworkTitle);
+			rootNetwork.setTitle(rootNetworkTitle);
+			networkMap.put(rootNetworkTitle, rootNetwork);
+		}
+
+		CyNetwork network = networkMap.get(parts[0]);
+		if (network == null) {
+			network = Cytoscape.createNetwork(parts[0]);
+			network.setTitle(parts[0]);
+			networkMap.put(parts[0], network);
+		}
+
+		if (length == 2) {
+			final CyNode node = Cytoscape.getCyNode(parts[1], true);
+			if (network != null) {
+				network.addNode(node);
+				final CyNetwork nestedNetwork = networkMap.get(parts[1]);
+				if (nestedNetwork != null) {
+					node.setNestedNetwork(nestedNetwork);
+				}
+			}
+
+		} else if (length == 4) {
+			final CyNode source = Cytoscape.getCyNode(parts[1], true);
+			network.addNode(source);
+			CyNetwork nestedNetwork = networkMap.get(parts[1]);
+			if (nestedNetwork != null) {
+				source.setNestedNetwork(nestedNetwork);
+			}
+
+			final CyNode target = Cytoscape.getCyNode(parts[3], true);
+			network.addNode(target);
+			nestedNetwork = networkMap.get(parts[3]);
+			if (nestedNetwork != null) {
+				target.setNestedNetwork(nestedNetwork);
+			}
+
+			final CyEdge edge = Cytoscape.getCyEdge(source, target,
+					Semantics.INTERACTION, parts[2], true);
+			network.addEdge(edge);
+		} else {
+			// Invalid number of columns.
+			System.out.println("Invalid line found: Length = " + length);
+			return false;
+		}
+
+		return true;
 	}
-
-//	private CyMetaNode processModule(String entry) {
-//		CyMetaNode module = null;
-//		if ((moduleName = entry.trim()) != null
-//				&& moduleName.equals(ROOT) == false
-//				&& nodeMap.containsKey(moduleName) == false) {
-//			module = rootNetwork.addMetaNode();
-//			module.attrs().set(NAME, moduleName);
-//			nodeMap.put(moduleName, module);
-//		} else if (nodeMap.containsKey(moduleName)) {
-//			System.out.println("\tModule already exist: " + moduleName);
-//			// This metanode already exists.  But not sure actually metanode or regular node
-////			if (nodeMap.get(moduleName) instanceof CyMetaNode && ((CyMetaNode)nodeMap.get(moduleName)).getSubNetwork() != null){
-//			if(rootNetwork.getMetaNodeList().contains(nodeMap.get(moduleName))) {
-//				module = (CyMetaNode) nodeMap.get(moduleName);
-//			} else {
-//				System.out.println("\tConverting: " + moduleName + ", metanode count = " + rootNetwork.getMetaNodeList());
-//				
-//				module = rootNetwork.convert(nodeMap.get(moduleName));
-//				nodeMap.put(moduleName, module);
-//				System.out.println("\tConverting: " + moduleName + ", metanode count = " + rootNetwork.getMetaNodeList());
-//			}
-//		}
-//		if(module != null)
-//			System.out.println("\tGot Module: " + module.attrs().get(NAME, String.class));
-//		return module;
-//	}
-//
-//	private void processEdge(CyMetaNode parent, String source, String edgeType,
-//			String target) {
-//		// Create source and target
-//
-//		if (parent == null) {
-//			sourceNode = processNode(source, rootNetwork, null);
-//			targetNode = processNode(target, rootNetwork, null);
-//			edge = rootNetwork.addEdge(sourceNode, targetNode, true);
-//		} else {
-//			sourceNode = processNode(source, rootNetwork, parent.getSubNetwork());
-//			targetNode = processNode(target, rootNetwork, parent.getSubNetwork());
-//			edge = parent.getSubNetwork().addEdge(sourceNode, targetNode, true);
-//		}
-//
-//		edge.attrs().set(INTERACTION, edgeType.trim());
-//		edgeMap.put(
-//				source.trim() + "(" + edgeType.trim() + ")" + target.trim(),
-//				edge);
-//
-//	}
-//
-//	private CyNode processNode(String nodeName, CyRootNetwork network, CySubNetwork parent) {
-//		CyNode node = null;
-//		if ((sourceName = nodeName.trim()) != null
-//				&& nodeMap.containsKey(sourceName) == false) {
-//			
-//			System.out.println("\tNode does not exist yet.  Creating: " + sourceName);
-//			node = network.addNode();
-//			if(parent != null)
-//				parent.addNode(node);
-//			
-//			node.attrs().set(NAME, sourceName);
-//			nodeMap.put(sourceName, node);
-//		
-//		} else {
-//			node = nodeMap.get(sourceName);
-//			 
-//			if (parent != null) {
-//				parent.addNode(node);
-//				
-//				if(node instanceof CyMetaNode && ((CyMetaNode) node).getSubNetwork() != null) {
-//					System.out.println("\tGot Meta Node: " +  node.attrs().get(NAME, String.class) + ", Type = " + node.getClass());
-//					
-//					for(CyNode n: ((CyMetaNode) node).getSubNetwork().getNodeList()) {
-//						parent.addNode(n);
-//					}
-//				}
-//				
-//			}
-//			
-//		}
-//		
-//		return node;
-//	}
-//	
-//	private void recursiveAdd() {
-//		
-//	}
-
+	
+	protected CyNetwork getRootNetwork() {
+		return rootNetwork;
+	}
 }

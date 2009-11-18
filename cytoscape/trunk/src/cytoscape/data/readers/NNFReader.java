@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import cytoscape.CyNetwork;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 
-public class NNFReader extends AbstractGraphReader {
+public class NNFReader extends AbstractGraphReader implements MultiGraphFileReader {
 
 	// Optional comments start with this character and extend to the end of line.
 	private static final char COMMENT_CHAR = '#';
@@ -75,24 +76,23 @@ public class NNFReader extends AbstractGraphReader {
 				inputStream));
 
 		String line;
-		boolean rootNetworkHasBeenCreated = false;
 		try {
-			while ((line = in.readLine()) != null) {
+			for (int lineNumber = 1; (line = in.readLine()) != null; ++lineNumber) {
 				line = processComment(line);
-				if (line.length() == 0)
-					continue; // Empty line => nothing to do!
-
-				rootNetworkHasBeenCreated = true;
-//				parser.parse(line);
+				if (line.length() == 0) {
+					continue;
+				}
+				if (!parser.parse(line)) {
+					throw new IOException("Malformed line in NNF file: " + lineNumber + " \"" + line + "\"");
+				}
 			}
 		} finally {
 			in.close();
 		}
 		
-		if (!rootNetworkHasBeenCreated) {
+		if (parser.getRootNetwork() == null) {
 			throw new IOException("Input NNF file is empty.");
 		}
-
 	}
 	
 	
@@ -111,5 +111,14 @@ public class NNFReader extends AbstractGraphReader {
 			line = line.substring(0, hashPos);
 		}
 		return line.trim();
+	}
+
+	public CyNetwork getFirstNetwork() {
+		return parser.getRootNetwork();
+	}
+	
+	@Override
+	public String getNetworkName() {
+		return parser.getRootNetwork().getTitle();
 	}
 }

@@ -70,6 +70,7 @@ import cytoscape.data.Semantics;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.GraphReader;
+import cytoscape.data.readers.MultiGraphFileReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.data.servers.OntologyServer;
 import cytoscape.ding.CyGraphLOD;
@@ -1147,8 +1148,8 @@ public abstract class Cytoscape {
 
 		firePropertyChange(NETWORK_CREATED, parentID, network.getIdentifier());
 
-		if ((network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                            .getProperty("viewThreshold")))
+		final String propVal = CytoscapeInit.getProperties().getProperty("viewThreshold");
+		if (propVal != null && (network.getNodeCount() < Integer.parseInt(propVal))
 		    && create_view) {
 			createNetworkView(network);
 		}
@@ -1401,8 +1402,14 @@ public abstract class Cytoscape {
 			logger.warn("Network reader didn't return any edges");
 		}
 
-		// Create the network
-		final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+		// Create the network if any nodes/edges exists in the file.
+		final CyNetwork network;
+		if (reader instanceof MultiGraphFileReader) {
+			network = ((MultiGraphFileReader)reader).getFirstNetwork();
+		} else {
+			network = getRootGraph().createNetwork(nodes, edges);
+		}
+		
 		// Change the identifier
 		network.setIdentifier(title);
 
