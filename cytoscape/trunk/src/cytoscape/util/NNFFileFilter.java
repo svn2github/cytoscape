@@ -5,7 +5,7 @@ import java.net.URLConnection;
 
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.InteractionsReader;
+import cytoscape.data.readers.NNFReader;
 import cytoscape.logger.CyLogger;
 
 /**
@@ -55,7 +55,7 @@ public class NNFFileFilter extends CyFileFilter {
 	 * @return GraphReader Object.
 	 */
 	public GraphReader getReader(String fileName) {
-		reader = new InteractionsReader(fileName);
+		reader = new NNFReader(fileName);
 
 		return reader;
 	}
@@ -70,11 +70,9 @@ public class NNFFileFilter extends CyFileFilter {
 	public GraphReader getReader(URL url, URLConnection conn) {
 		try {
 			// Get the input stream
-			reader = new InteractionsReader(conn.getInputStream(), url
-					.toString());
+			reader = new NNFReader(conn.getInputStream(), url.toString());
 		} catch (Exception e) {
-			CyLogger.getLogger(NNFFileFilter.class).error(
-					"Unable to get NNF reader: " + e.getMessage());
+			CyLogger.getLogger(NNFFileFilter.class).error("Unable to get NNF reader: " + e.getMessage());
 			reader = null;
 		}
 		return reader;
