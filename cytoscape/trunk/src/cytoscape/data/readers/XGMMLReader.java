@@ -159,18 +159,19 @@ public class XGMMLReader extends AbstractGraphReader {
 	private int nextID = 0; // Used to assign ID's to nodes that didn't have them
 	private CyLogger logger = null;
 
+
 	/**
 	 * Constructor.<br>
 	 * This is for local XGMML file.
 	 *
-	 * @param fileName
-	 *            File name of local XGMML file.
+	 * @param fileName  File name of local XGMML file.
 	 * @throws FileNotFoundException
 	 *
 	 */
-	public XGMMLReader(String fileName) {
+	public XGMMLReader(final String fileName) {
 		this(fileName, null);
 	}
+
 
 	/**
 	 * Constructor.<br>
@@ -185,6 +186,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		this.networkStream = is;
 		initialize();
 	}
+
 
 	/**
 	 * Constructor.<br>
@@ -201,6 +203,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		initialize();
 	}
 
+
 	/**
 	 * Creates a new XGMMLReader object.
 	 *
@@ -215,6 +218,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		initialize();
 	}
 
+
 	/**
  	 * Sets the task monitor we want to use
  	 *
@@ -225,6 +229,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		percentUtil = new PercentUtil(3);
 	}
 
+
 	private void initialize() {
 		logger = CyLogger.getLogger(XGMMLReader.class);
 
@@ -234,6 +239,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			networkStream = new RepairBareAmpersandsInputStream(networkStream, 512);
 		}
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -251,6 +257,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			throw new IOException(e.getMessage());
 		}
 	}
+
 
 	/**
 	 * Actual method to read XGMML documents.
@@ -331,13 +338,16 @@ public class XGMMLReader extends AbstractGraphReader {
 //			                   + "KB");
 	}
 
+
 	public int[] getNodeIndicesArray() {
 		return parser.getNodeIndicesArray();
 	}
 
+
 	public int[] getEdgeIndicesArray() {
 		return parser.getEdgeIndicesArray();
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -348,6 +358,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		return networkName;
 	}
 
+
 	/**
 	 * @return Returns the networkName.
 	 * @uml.property name="networkName"
@@ -355,6 +366,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	public String getNetworkName() {
 		return networkName;
 	}
+
 
 	/**
 	 * getLayoutAlgorithm is called to get the Layout Algorithm that will be used
@@ -372,6 +384,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		};
 	}
 
+
 	/**
 	 * layout the graph based on the graphic attributes
 	 *
@@ -385,27 +398,23 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		// Create our visual style creator.  We use the vsbSwitch to tell the style builder
 		// whether to create the override attributes or not
-		boolean buildStyle = true;
-		if (vsbSwitch != null && vsbSwitch.equals("off"))
-			buildStyle = false;
+		final boolean buildStyle = vsbSwitch == null || vsbSwitch.equals("on");
 
 		VisualStyleBuilder graphStyle = new VisualStyleBuilder(parser.getNetworkName(), false);
 
-		// Set background clolor
+		// Set background color
 		if (parser.getBackgroundColor() != null) {
 			myView.setBackgroundPaint(parser.getBackgroundColor());
 			graphStyle.setBackgroundColor(parser.getBackgroundColor());
 		}
 
-		// Layout nodes
 		layoutNodes(myView, graphStyle, buildStyle);
-
-		// Layout edges
 		layoutEdges(myView, graphStyle, buildStyle);
 
 		if (buildStyle)
 			graphStyle.buildStyle();
 	}
+
 
 	/**
 	 * Layout nodes if view is available.
@@ -415,15 +424,13 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param graphStyle the visual style creator object
 	 * @param buildStyle if true, build the graphical style
 	 */
-	private void layoutNodes(final GraphView myView, 
-	                         final VisualStyleBuilder graphStyle, 
-	                         boolean buildStyle) {
+	private void layoutNodes(final GraphView myView, final VisualStyleBuilder graphStyle, boolean buildStyle) {
 		String label = null;
 		int tempid = 0;
 		NodeView view = null;
 		HashMap<CyNode, Attributes> nodeGraphicsMap = parser.getNodeGraphics();
 
-		for (CyNode node: nodeGraphicsMap.keySet()) {
+		for (CyNode node : nodeGraphicsMap.keySet()) {
 			view = myView.getNodeView(node.getRootGraphIndex());
 
 			if ((label != null) && (view != null)) {
@@ -439,6 +446,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
+
 	/**
 	 * Extract node graphics information from JAXB object.<br>
 	 *
@@ -450,11 +458,8 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param buildStyle if true, build the graphical style
 	 *
 	 */
-	private void layoutNodeGraphics(final Attributes graphics, 
-	                                final NodeView nodeView,
-	                                final VisualStyleBuilder graphStyle,
+	private void layoutNodeGraphics(final Attributes graphics, final NodeView nodeView, final VisualStyleBuilder graphStyle,
 	                                final boolean buildStyle) {
-
 		// The identifier of this node
 		String nodeID = nodeView.getNode().getIdentifier();
 
@@ -482,6 +487,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			// nodeView.setHeight(h);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_HEIGHT, ""+h);
 		}
+
 		if (buildStyle && w != 0.0) {
 			// nodeView.setWidth(w);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_WIDTH, ""+w);
@@ -539,23 +545,21 @@ public class XGMMLReader extends AbstractGraphReader {
 		String type = XGMMLParser.getAttribute(graphics,"type");
 		if (buildStyle && type != null) {
 			if (type.equals("rhombus"))
-				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,"parallelogram");
+				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE, "parallelogram");
 			else
-				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,type);
+				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE, type);
 		}
 	}
+
 
 	/**
 	 * Layout edges if view is available.
 	 *
-	 * @param myView
-	 *            GINY's graph view object for the current network.
+	 * @param myView GINY's graph view object for the current network.
 	 * @param graphStyle the visual style creator object
 	 * @param buildStyle if true, build the graphical style
 	 */
-	private void layoutEdges(final GraphView myView, 
-	                         final VisualStyleBuilder graphStyle,
-	                         final boolean buildStyle) {
+	private void layoutEdges(final GraphView myView, final VisualStyleBuilder graphStyle, final boolean buildStyle) {
 		String label = null;
 		int tempid = 0;
 		EdgeView view = null;
@@ -574,6 +578,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
+
 	/**
 	 * Layout an edge using the stored graphics attributes
 	 *
@@ -583,49 +588,40 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *            Actual edge view for the target edge.
 	 *
 	 */
-	private void layoutEdgeGraphics(final Attributes graphics, 
-	                                final EdgeView edgeView,
-	                                final VisualStyleBuilder graphStyle,
+	private void layoutEdgeGraphics(final Attributes graphics, final EdgeView edgeView, final VisualStyleBuilder graphStyle,
 	                                final boolean buildStyle) {
-	/*
-		logger.debug("LayoutEdgeGraphics: ");
-		for (int i = 0; i < graphics.getLength(); i++) {
-			logger.debug(graphics.getQName(i)+"="+graphics.getValue(i)+" ");
-		}
-		logger.debug();
-	*/
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		String edgeID = edgeView.getEdge().getIdentifier();
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"width") != null) {
-			String lineWidth = XGMMLParser.getAttribute(graphics,"width");
+		if (buildStyle && XGMMLParser.getAttribute(graphics, "width") != null) {
+			String lineWidth = XGMMLParser.getAttribute(graphics, "width");
 			// edgeView.setStrokeWidth(lineWidth);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_WIDTH, lineWidth);
 		}
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"fill") != null) {
+		if (buildStyle && XGMMLParser.getAttribute(graphics, "fill") != null) {
 			String edgeColor = XGMMLParser.getAttribute(graphics, "fill");
 			// edgeView.setUnselectedPaint(edgeColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_COLOR, edgeColor);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"sourceArrow", CY_NAMESPACE) != null) {
-			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics,"sourceArrow", CY_NAMESPACE);
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "sourceArrow", CY_NAMESPACE) != null) {
+			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics, "sourceArrow", CY_NAMESPACE);
 			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
 			String arrowName = shape.getName();
 			// edgeView.setSourceEdgeEnd(arrowType);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"targetArrow", CY_NAMESPACE) != null) {
-			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics,"targetArrow", CY_NAMESPACE);
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "targetArrow", CY_NAMESPACE) != null) {
+			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics, "targetArrow", CY_NAMESPACE);
 			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
 			String arrowName = shape.getName();
 			// edgeView.setTargetEdgeEnd(arrowType);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"sourceArrowColor", CY_NAMESPACE) != null) {
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "sourceArrowColor", CY_NAMESPACE) != null) {
 			String arrowColor = XGMMLParser.getAttributeNS(graphics, "sourceArrowColor", CY_NAMESPACE);
 			// edgeView.setSourceEdgeEndPaint(arrowColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW_COLOR, arrowColor);
@@ -637,12 +633,12 @@ public class XGMMLReader extends AbstractGraphReader {
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW_COLOR, arrowColor);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"edgeLineType", CY_NAMESPACE) != null) {
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "edgeLineType", CY_NAMESPACE) != null) {
 			String value = XGMMLParser.getAttributeNS(graphics, "edgeLineType", CY_NAMESPACE);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_STYLE, value);
 		}
 
-		if (XGMMLParser.getAttributeNS(graphics,"curved", CY_NAMESPACE) != null) {
+		if (XGMMLParser.getAttributeNS(graphics, "curved", CY_NAMESPACE) != null) {
 			String value = XGMMLParser.getAttributeNS(graphics, "curved", CY_NAMESPACE);
 			if (value.equals("STRAIGHT_LINES")) {
 				edgeView.setLineType(EdgeView.STRAIGHT_LINES);
@@ -652,7 +648,6 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 
 	 	if (XGMMLParser.getAttribute(graphics,"edgeHandleList") != null) {
-			// logger.debug("See edgeHandleList");
 			String handles[] = XGMMLParser.getAttribute(graphics, "edgeHandleList").split(";");
 			for (int i = 0; i < handles.length; i++) {
 				String points[] = handles[i].split(",");
@@ -664,6 +659,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 		}
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -687,10 +683,9 @@ public class XGMMLReader extends AbstractGraphReader {
 
 			CyGroup newGroup = null;
 			String viewer = null;
-			for (CyNode groupNode: groupMap.keySet()) {
+			for (CyNode groupNode : groupMap.keySet()) {
 				List<CyNode> childList = groupMap.get(groupNode);
-				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
-				                                           CyGroup.GROUP_VIEWER_ATTR);
+				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(), CyGroup.GROUP_VIEWER_ATTR);
 
 				// Note that we need to leave the group node in the network so that the saved
 				// location information (if there is any) can be utilized by the group viewer.
@@ -736,6 +731,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		Cytoscape.getVisualMappingManager().applyAppearances();
 	}
 
+
 	private class RepairBareAmpersandsInputStream extends PushbackInputStream {
 		private final byte[] encodedAmpersand = new byte[]{'a', 'm', 'p', ';'};
 		public RepairBareAmpersandsInputStream(InputStream in) {
@@ -745,6 +741,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		public RepairBareAmpersandsInputStream(InputStream in, int size) {
 			super(in, size);
 		}
+
 
 		@Override
 		public int read() throws IOException {
@@ -782,6 +779,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			return c;
 		}
 
+
 		@Override
 		public int read(byte[] b, int off, int len) throws IOException {
 			if (b == null) {
@@ -806,8 +804,7 @@ public class XGMMLReader extends AbstractGraphReader {
 				cnt++;
 			}
 
-			if ((c == -1) && (cnt == 0))
-			{
+			if ((c == -1) && (cnt == 0)) {
 				cnt = -1;
 			}
 
