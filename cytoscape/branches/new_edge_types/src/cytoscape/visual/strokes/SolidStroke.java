@@ -11,7 +11,7 @@ public class SolidStroke extends BasicStroke implements WidthStroke {
 	float width;
 
 	public SolidStroke(float width, String name) {
-		super(width);
+		super(width,BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND);
 		this.name = name;
 		this.width = width;
 	}
