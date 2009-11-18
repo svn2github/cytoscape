@@ -1143,13 +1143,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						} else {
 							srcArrow = m_view.m_edgeDetails.sourceArrow(edge);
 							trgArrow = m_view.m_edgeDetails.targetArrow(edge);
-							srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f
-							                                                       : m_view.m_edgeDetails
-							                                                         .sourceArrowSize(edge));
-							trgArrowSize = (((trgArrow == GraphGraphics.ARROW_NONE)
-							                || (trgArrow == GraphGraphics.ARROW_MONO)) ? 0.0f
-							                                                           : m_view.m_edgeDetails
-							                                                             .targetArrowSize(edge));
+							srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) 
+							                ? 0.0f
+							                : m_view.m_edgeDetails.sourceArrowSize(edge));
+							trgArrowSize = ((trgArrow == GraphGraphics.ARROW_NONE) 
+							                ? 0.0f
+							                : m_view.m_edgeDetails.targetArrowSize(edge));
 						}
 
 						final EdgeAnchors anchors = (((m_lastRenderDetail

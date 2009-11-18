@@ -39,6 +39,7 @@ package ding.view;
 import cytoscape.graph.fixed.FixedGraph;
 
 import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.render.immed.GraphGraphics;
 
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
@@ -649,13 +650,32 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * The arrow size will scale with the edge width.
 	 */
 	public float sourceArrowSize(int edge) {
-		return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
+		// For the half arrows, we need to scale multiplicatively
+		// so that the arrow matches the line.
+		int arrowType = sourceArrow(edge);
+		if ( arrowType == GraphGraphics.ARROW_HALF_TOP ||
+		     arrowType == GraphGraphics.ARROW_HALF_BOTTOM )
+			 return (segmentThickness(edge) * DEdgeView.DEFAULT_ARROW_SIZE);
+
+		// For all other arrows we can scale additively.  This produces
+		// less egregiously big arrows.
+		else
+			return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
 	}
 
 	/**
 	 * The arrow size will scale with the edge width.
 	 */
 	public float targetArrowSize(int edge) {
-		return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
+		// For the half arrows, we need to scale multiplicatively
+		// so that the arrow matches the line.
+		int arrowType = targetArrow(edge);
+		if ( arrowType == GraphGraphics.ARROW_HALF_TOP ||
+		     arrowType == GraphGraphics.ARROW_HALF_BOTTOM )
+			 return (segmentThickness(edge) * DEdgeView.DEFAULT_ARROW_SIZE);
+		// For all other arrows we can scale additively.  This produces
+		// less egregiously big arrows.
+		else
+			return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
 	}
 }

@@ -5,6 +5,8 @@ import static cytoscape.render.immed.GraphGraphics.ARROW_DIAMOND;
 import static cytoscape.render.immed.GraphGraphics.ARROW_DISC;
 import static cytoscape.render.immed.GraphGraphics.ARROW_NONE;
 import static cytoscape.render.immed.GraphGraphics.ARROW_TEE;
+import static cytoscape.render.immed.GraphGraphics.ARROW_HALF_TOP;
+import static cytoscape.render.immed.GraphGraphics.ARROW_HALF_BOTTOM;
 import static cytoscape.render.immed.GraphGraphics.SHAPE_DIAMOND;
 import static cytoscape.render.immed.GraphGraphics.SHAPE_ELLIPSE;
 import static cytoscape.render.immed.GraphGraphics.SHAPE_HEXAGON;
@@ -18,6 +20,8 @@ import static giny.view.EdgeView.EDGE_COLOR_CIRCLE;
 import static giny.view.EdgeView.EDGE_COLOR_DELTA;
 import static giny.view.EdgeView.EDGE_COLOR_DIAMOND;
 import static giny.view.EdgeView.EDGE_COLOR_T;
+import static giny.view.EdgeView.EDGE_HALF_ARROW_TOP;
+import static giny.view.EdgeView.EDGE_HALF_ARROW_BOTTOM;
 import static giny.view.EdgeView.NO_END;
 import static giny.view.NodeView.DIAMOND;
 import static giny.view.NodeView.ELLIPSE;
@@ -122,6 +126,12 @@ class GinyUtil {
         case ARROW_TEE:
             return EDGE_COLOR_T;
 
+        case ARROW_HALF_TOP:
+            return EDGE_HALF_ARROW_TOP;
+
+        case ARROW_HALF_BOTTOM:
+            return EDGE_HALF_ARROW_BOTTOM;
+
         default:
             return NO_END;
         }
@@ -143,6 +153,12 @@ class GinyUtil {
 
         case EDGE_COLOR_T:
         	return ARROW_TEE;
+
+        case EDGE_HALF_ARROW_TOP:
+        	return ARROW_HALF_TOP;
+
+        case EDGE_HALF_ARROW_BOTTOM:
+        	return ARROW_HALF_BOTTOM;
 
         default:
             return ARROW_NONE;

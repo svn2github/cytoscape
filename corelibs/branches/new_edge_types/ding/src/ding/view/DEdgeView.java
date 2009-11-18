@@ -681,6 +681,13 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 
 					break;
 
+				case EDGE_HALF_ARROW_BOTTOM:
+					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
+					break;
+				case EDGE_HALF_ARROW_TOP:
+					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
+					break;
+
 				default:
 					throw new IllegalArgumentException("unrecognized edge end type");
 			}
@@ -777,6 +784,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
 					//setTargetEdgeEndPaint(getUnselectedPaint());
 
+					break;
+				case EDGE_HALF_ARROW_BOTTOM:
+					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
+					break;
+				case EDGE_HALF_ARROW_TOP:
+					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
 					break;
 
 				default:
