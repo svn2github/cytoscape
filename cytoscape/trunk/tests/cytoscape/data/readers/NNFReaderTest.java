@@ -4,8 +4,15 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-
+/**
+ * Test code for Nested Network Format file reader.
+ * 
+ * @author kono, ruschein
+ * @since Cytoscape 2.7.0
+ */
 public class NNFReaderTest extends TestCase {
+	
+	// All test data files are in this directory.
 	private static final String FILE_LOCATION = "testData/NNFData/";
 
 	
