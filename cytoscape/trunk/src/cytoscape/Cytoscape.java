@@ -1366,8 +1366,7 @@ public abstract class Cytoscape {
 	 * @param create_view
 	 *            whether or not a view will be created
 	 */
-	public static CyNetwork createNetwork(final GraphReader reader, final boolean create_view,
-	                                      final CyNetwork parent) {
+	public static CyNetwork createNetwork(final GraphReader reader, final boolean create_view, final CyNetwork parent) {
 		if (reader == null) {
 			throw new RuntimeException("Couldn't read specified file.");
 		}
@@ -1390,6 +1389,10 @@ public abstract class Cytoscape {
 			for (CyNetwork network : networks) {
 				getNetworkMap().put(network.getIdentifier(), network);
 				firePropertyChange(NETWORK_CREATED, null /* parentID */, network.getIdentifier());
+				if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+											      .getProperty("viewThreshold")))) {
+					reader.getLayoutAlgorithm().doLayout(getNetworkView(network.getIdentifier()));
+				}
 			}
 
 			return networks.get(0); // Root network.
@@ -1660,8 +1663,7 @@ public abstract class Cytoscape {
 	 * @param layout
 	 *            the CyLayoutAlgorithm to use to lay this out by default
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title,
-	                                              CyLayoutAlgorithm layout) {
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout) {
 		return createNetworkView(network, title, layout, null);
 	}
 
@@ -1680,8 +1682,7 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title,
-	                                              CyLayoutAlgorithm layout, VisualStyle vs) {
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout, VisualStyle vs) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}
