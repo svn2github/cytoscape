@@ -35,6 +35,8 @@ public interface EdgeView  {
   public static int WHITE_T = 13;
   public static int BLACK_T = 14;
   public static int EDGE_COLOR_T = 15;
+  public static int EDGE_HALF_ARROW_TOP = 16;
+  public static int EDGE_HALF_ARROW_BOTTOM = 17;
 
 
   //------------------------------------------------------//
