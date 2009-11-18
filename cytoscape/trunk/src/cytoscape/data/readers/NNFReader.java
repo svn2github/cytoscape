@@ -10,6 +10,13 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 
+/**
+ * Graph file reader for NNF files.
+ * 
+ * @author kono, ruschein
+ * @since Cytoscape 2.7.0
+ * 
+ */
 public class NNFReader extends AbstractGraphReader implements MultiGraphFileReader {
 
 	// Optional comments start with this character and extend to the end of line.
@@ -113,10 +120,21 @@ public class NNFReader extends AbstractGraphReader implements MultiGraphFileRead
 		return line.trim();
 	}
 
+	/**
+ 	 * Returns root network.
+ 	 * 
+ 	 * <p>
+ 	 * Usually used by the caller of reader.
+ 	 * 
+	 */
 	public CyNetwork getFirstNetwork() {
 		return parser.getRootNetwork();
 	}
 	
+	/**
+	 * Always returns root network title.
+	 * 
+	 */
 	@Override
 	public String getNetworkName() {
 		return parser.getRootNetwork().getTitle();
