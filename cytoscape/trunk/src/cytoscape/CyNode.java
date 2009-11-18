@@ -239,6 +239,20 @@ public class CyNode implements giny.model.Node {
 	 */
 	public void setNestedNetwork(final GraphPerspective graphPerspective) {
 		this.graphPerspective = graphPerspective;
+		
+		// create a Node Attribute "nested.network.name" for this Node
+		//final String testVal = "dummy";
+		String networkName = ((CyNetwork) this.graphPerspective).getIdentifier();
+		Cytoscape.getNodeAttributes().setAttribute(networkName, "nested.network.name", networkName);
+		
+		// create a Network Attribute "parent.node.name.list" for the Network		
+		ArrayList<String> nodeNameList = new ArrayList<String>();
+		int[] indices = this.graphPerspective.getNodeIndicesArray();
+		for (int i=0; i< indices.length; i++){
+			nodeNameList.add(this.graphPerspective.getNode(indices[i]).getIdentifier());
+		}
+		
+		Cytoscape.getNetworkAttributes().setListAttribute(networkName, "parent.node.name.List", nodeNameList);
 	}
 	
 		
