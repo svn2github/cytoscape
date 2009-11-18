@@ -418,21 +418,16 @@ public final class GraphRenderer {
 							} else { // Rendering edge arrows.
 								srcArrow = edgeDetails.sourceArrow(edge);
 								trgArrow = edgeDetails.targetArrow(edge);
-								srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f
-								                                                       : edgeDetails
-								                                                         .sourceArrowSize(edge));
-								trgArrowSize = (((trgArrow == GraphGraphics.ARROW_NONE)
-								                || (trgArrow == GraphGraphics.ARROW_MONO)) ? 0.0f
-								                                                           : edgeDetails
-								                                                             .targetArrowSize(edge));
-								srcArrowPaint = (((srcArrow == GraphGraphics.ARROW_NONE)
-								                 || (srcArrow == GraphGraphics.ARROW_BIDIRECTIONAL))
+								srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) 
+								                 ? 0.0f
+								                 : edgeDetails.sourceArrowSize(edge));
+								trgArrowSize = ((trgArrow == GraphGraphics.ARROW_NONE)
+								                 ? 0.0f
+								                 : edgeDetails.targetArrowSize(edge));
+								srcArrowPaint = ((srcArrow == GraphGraphics.ARROW_NONE)
 								                 ? null : edgeDetails.sourceArrowPaint(edge));
-								trgArrowPaint = (((trgArrow == GraphGraphics.ARROW_NONE)
-								                 || (trgArrow == GraphGraphics.ARROW_BIDIRECTIONAL)
-								                 || (trgArrow == GraphGraphics.ARROW_MONO)) ? null
-								                                                            : edgeDetails
-								                                                              .targetArrowPaint(edge));
+								trgArrowPaint = ((trgArrow == GraphGraphics.ARROW_NONE)
+								                 ? null : edgeDetails.targetArrowPaint(edge));
 							}
 
 							// Compute dash length.

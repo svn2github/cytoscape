@@ -118,9 +118,8 @@ public class EdgeDetails {
 	/**
 	 * Returns the paint of the arrow at edge endpoint touching source node.
 	 * By default this method returns null.  This return value is ignored if
-	 * sourceArrow(edge) returns GraphGraphics.ARROW_NONE or
-	 * GraphGraphics.ARROW_BIDIRECTIONAL; otherwise, it is an error to return
-	 * null.
+	 * sourceArrow(edge) returns GraphGraphics.ARROW_NONE 
+	 *  it is an error to return null.
 	 */
 	public Paint sourceArrowPaint(final int edge) {
 		return null;
@@ -139,9 +138,8 @@ public class EdgeDetails {
 
 	/**
 	 * Returns the size of the arrow at edge endpoint touching target node.
-	 * By default this method returns zero.  This return value is ignored
-	 * if targetArrow(edge) returns GraphGraphics.ARROW_NONE or
-	 * GraphGraphics.ARROW_MONO.  Take note of certain constraints specified
+	 * By default this method returns zero.  
+	 * Take note of certain constraints specified
 	 * in GraphGraphics.drawEdgeFull().
 	 */
 	public float targetArrowSize(final int edge) {
@@ -152,8 +150,7 @@ public class EdgeDetails {
 	 * Returns the paint of the arrow at edge endpoint touching target node.
 	 * By default this method returns null.  This return value is ignored if
 	 * targetArrow(edge) returns GraphGraphics.ARROW_NONE,
-	 * GraphGraphics.ARROW_BIDIRECTIONAL, or GraphGraphics.ARROW_MONO;
-	 * otherwise, it is an error to return null.
+	 * it is an error to return null.
 	 */
 	public Paint targetArrowPaint(final int edge) {
 		return null;
