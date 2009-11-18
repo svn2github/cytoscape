@@ -53,25 +53,25 @@ import cytoscape.visual.ui.icon.*;
 public enum ArrowShape {
 	NONE("No Arrow", "NONE", EdgeView.NO_END, 
 	     new int[]{EdgeView.NO_END},
-		 new String[]{"NO_END"}),
+		 new String[]{"NO_END"}, true),
 	DIAMOND("Diamond", "COLOR_DIAMOND", EdgeView.EDGE_COLOR_DIAMOND,
 	     new int[]{EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND,EdgeView.BLACK_DIAMOND},
-	     new String[]{"EDGE_COLOR_DIAMOND", "WHITE_DIAMOND","BLACK_DIAMOND"}),
+	     new String[]{"EDGE_COLOR_DIAMOND", "WHITE_DIAMOND","BLACK_DIAMOND"}, true),
 	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_DELTA,
 	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW,
 	               EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA},
 	     new String[]{"EDGE_COLOR_ARROW", "WHITE_ARROW","BLACK_ARROW", 
-		              "EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}),
+		              "EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}, true),
 	T("T", "COLOR_T", EdgeView.EDGE_COLOR_T,
 	     new int[]{EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T,EdgeView.BLACK_T},
-	     new String[]{"EDGE_COLOR_T", "WHITE_T","BLACK_T"}),
+	     new String[]{"EDGE_COLOR_T", "WHITE_T","BLACK_T"}, true),
 	CIRCLE("Circle", "COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE,
 	     new int[]{EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE,EdgeView.BLACK_CIRCLE},
-	     new String[]{"EDGE_COLOR_CIRCLE", "WHITE_CIRCLE","BLACK_CIRCLE"}),
+	     new String[]{"EDGE_COLOR_CIRCLE", "WHITE_CIRCLE","BLACK_CIRCLE"}, true),
 	HALF_ARROW_TOP("Half Arrow Top", "HALF_ARROW_TOP", EdgeView.EDGE_HALF_ARROW_TOP,
-	     new int[]{EdgeView.EDGE_HALF_ARROW_TOP}, new String[]{"HALF_ARROW_TOP"}),
+	     new int[]{EdgeView.EDGE_HALF_ARROW_TOP}, new String[]{"HALF_ARROW_TOP"}, false),
 	HALF_ARROW_BOTTOM("Half Arrow Bottom", "HALF_ARROW_BOTTOM", EdgeView.EDGE_HALF_ARROW_BOTTOM,
-	     new int[]{EdgeView.EDGE_HALF_ARROW_BOTTOM}, new String[]{"HALF_ARROW_BOTTOM"}),
+	     new int[]{EdgeView.EDGE_HALF_ARROW_BOTTOM}, new String[]{"HALF_ARROW_BOTTOM"}, false),
 
 	;
 
@@ -82,14 +82,16 @@ public enum ArrowShape {
 	private int ginyType;
 	private int[] possibleGinyTypes;
 	private String[] possibleGinyNames;
+	private boolean renderEdgeWithArrow;
 
 	private ArrowShape(String shapeName, String ginyShapeName, int ginyType, int[] possibleGinyTypes,
-	                   String[] possibleGinyNames) {
+	                   String[] possibleGinyNames, boolean renderEdgeWithArrow) {
 		this.shapeName = shapeName;
 		this.ginyShapeName = ginyShapeName;
 		this.ginyType = ginyType;
 		this.possibleGinyTypes = possibleGinyTypes;
 		this.possibleGinyNames = possibleGinyNames;
+		this.renderEdgeWithArrow = renderEdgeWithArrow;
 	}
 
 	/**
@@ -187,6 +189,13 @@ public enum ArrowShape {
 	 */
 	public Shape getShape() {
 		return arrowShapes.get(ginyType);
+	}
+
+	/**
+	 * A method that helps render the arrow shape icon properly.
+	 */
+	public boolean renderEdgeWithArrow() {
+		return renderEdgeWithArrow;
 	}
 
 	/**

@@ -66,29 +66,36 @@ public class ArrowIcon extends VisualPropertyIcon {
 	                                                                BasicStroke.JOIN_MITER);
 	private static final int DEF_L_PAD = 15;
 
-	/**
-	 * Creates a new ArrowIcon object.
-	 */
-	public ArrowIcon(ArrowShape arrow) {
-		super(arrow.getShape(), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE, 
-		      arrow.getName(), DEFAULT_ICON_COLOR);
-	}
+	private final ArrowShape arrow;
 
 	/**
 	 * Creates a new ArrowIcon object.
+	 * @param arrow The ArrowShape to create the icon for.
+	 * @param width The width of the icon.
 	 */
 	public ArrowIcon(ArrowShape arrow, int width) {
 		super(arrow.getShape(), width, DEFAULT_ICON_SIZE, 
 		      arrow.getName(), DEFAULT_ICON_COLOR);
+		this.arrow = arrow;
 	}
+
+	/**
+	 * Creates a new ArrowIcon object.
+	 * @param arrow The ArrowShape to create the icon for.
+	 */
+	public ArrowIcon(ArrowShape arrow) {
+		this(arrow, DEFAULT_ICON_SIZE * 3);
+	}
+
 
 	/**
 	 * Draw icon using Java2D.
 	 *
-	 * @param c DOCUMENT ME!
-	 * @param g DOCUMENT ME!
-	 * @param x DOCUMENT ME!
-	 * @param y DOCUMENT ME!
+	 * @param c The component that the icon is being rendered in.  
+	 * Used to calculate width and height of the icon.
+	 * @param g The Graphics used to render the icon. 
+	 * @param x Not used in this implementation. 
+	 * @param y Not used in this implementation.
 	 */
 	public void paintIcon(Component c, Graphics g, int x, int y) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -146,15 +153,17 @@ public class ArrowIcon extends VisualPropertyIcon {
 
 		g2d.fill(newShape);
 
-		// Finally, draw an edge (line) to the arrow head.
-		if ((width < 20) || (height < 20)) {
-			g2d.translate(-leftPad, -bottomPad);
-			g2d.setStroke(EDGE_STROKE_SMALL);
-			g2d.drawLine(3, c.getHeight()/2, width/2 +10, c.getHeight()/2);
-		} else {
-			g2d.setStroke(EDGE_STROKE);
-			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
-		             (int) (newShape.getBounds2D().getCenterX()) - 2, (height + 20) / 2);
+		// Finally, draw an edge (line) to the arrow head if desired.
+		if ( arrow.renderEdgeWithArrow() ) {
+			if ((width < 20) || (height < 20)) {
+				g2d.translate(-leftPad, -bottomPad);
+				g2d.setStroke(EDGE_STROKE_SMALL);
+				g2d.drawLine(3, c.getHeight()/2, width/2 +10, c.getHeight()/2);
+			} else {
+				g2d.setStroke(EDGE_STROKE);
+				g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
+			             (int) (newShape.getBounds2D().getCenterX()) - 2, (height + 20) / 2);
+			}
 		}
 	}
 }
