@@ -71,7 +71,7 @@ public class Arrow
     /**
      * DOCUMENT ME!
      */
-    public static final Arrow DELTA = new Arrow(ArrowShape.DELTA,
+    public static final Arrow DELTA = new Arrow(ArrowShape.ARROW,
             DEFAULT_ARROW_COLOR);
 
     /**
@@ -151,7 +151,7 @@ public class Arrow
      * @deprecated Will be removed 5/2008
      */
     @Deprecated
-    public static final Arrow BLACK_DELTA = new Arrow(ArrowShape.DELTA,
+    public static final Arrow BLACK_DELTA = new Arrow(ArrowShape.ARROW,
             Color.BLACK);
 
     /**
@@ -159,7 +159,7 @@ public class Arrow
      * @deprecated Will be removed 5/2008
      */
     @Deprecated
-    public static final Arrow WHITE_DELTA = new Arrow(ArrowShape.DELTA,
+    public static final Arrow WHITE_DELTA = new Arrow(ArrowShape.ARROW,
             Color.WHITE);
 
     /**
@@ -368,7 +368,7 @@ public class Arrow
             return DIAMOND;
 
         else if (arrowtext.equals("WHITE_DELTA"))
-            return new Arrow(ArrowShape.DELTA, Color.white);
+            return new Arrow(ArrowShape.ARROW, Color.white);
         else if (arrowtext.equals("BLACK_DELTA"))
             return DELTA;
         else if (arrowtext.equals("COLOR_DELTA"))

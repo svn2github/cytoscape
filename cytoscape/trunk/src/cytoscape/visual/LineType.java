@@ -42,8 +42,8 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import java.awt.BasicStroke;
 import java.awt.Stroke;
+import java.awt.Shape;
 
 //----------------------------------------------------------------------------
 import java.io.Serializable;
@@ -251,12 +251,7 @@ public class LineType
     }
 
     private Stroke makeStroke() {
-		if ( type == LineStyle.LONG_DASH ) { 
-        	float[] dash = { 5.0f, 3.0f };
-        	return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash, 0.0f);
-		} else {
-			return new BasicStroke(width);
-		}
+		return type.getStroke(width);
     }
 
 

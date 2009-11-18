@@ -37,7 +37,6 @@ package cytoscape.visual.properties;
 import cytoscape.Cytoscape;
 
 import cytoscape.visual.LineStyle;
-import cytoscape.visual.LineType;
 import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 
@@ -93,15 +92,12 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 		if ((o == null) || (ev == null))
 			return;
 
-		if (ev.getStrokeWidth() != ((Number)o).floatValue()) {
-			final BasicStroke oldValue = (BasicStroke) ev.getStroke();
-			final Stroke newLine = new BasicStroke(((Number)o).floatValue(), oldValue.getEndCap(), oldValue.getLineJoin(),
-					oldValue.getMiterLimit(), oldValue.getDashArray(), oldValue.getDashPhase() );
-		
-			//CyLogger.getLogger().info("*** o = " + o + ", new w = " + ev.getStrokeWidth());
-			
-			ev.setStroke(newLine);
-			//CyLogger.getLogger().info("Changed w = " + ev.getStrokeWidth());
+		float width = ((Number)o).floatValue();
+		if (ev.getStrokeWidth() != width) {
+			final Stroke oldStroke = ev.getStroke();
+			final Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(width);
+			ev.setStroke(newStroke);
+			ev.setStrokeWidth(width);
 		}
 	}
 

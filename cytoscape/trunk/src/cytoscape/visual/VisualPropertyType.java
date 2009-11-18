@@ -507,9 +507,9 @@ public enum VisualPropertyType {
 
 	/**
 	 * Gets the current default value for this type in the specified
-	     * visual style. Returns null if the style is null.
-	     * @param style The visual style we want to get the default for.
-	     * @return the default object for this type and the specified style.
+	 * visual style. Returns null if the style is null.
+	 * @param style The visual style we want to get the default for.
+	 * @return the default object for this type and the specified style.
 	 */
 	public Object getDefault(VisualStyle style) {
 		if (style == null)
@@ -528,8 +528,8 @@ public enum VisualPropertyType {
 	/**
 	 * Sets the default value for the visual attribute for this type
 	 * in the specified visual style. No-op if either arg is null.
-	     * @param style The visual style to be set.
-	     * @param c The new default value.
+	 * @param style The visual style to be set.
+	 * @param c The new default value.
 	 */
 	public void setDefault(VisualStyle style, Object c) {
 		if ((style == null) || (c == null))
@@ -550,10 +550,10 @@ public enum VisualPropertyType {
 
 	/**
 	 * Gets the current calculator for the visual attribute for this type
-	     * and the specified visual style.  This may be null if no calculator
-	     * is currently specified. Returns null if the style is null.
-	     * @param style The style we're getting the calculator for.
-	     * @return the current calculator for this style and type
+	 * and the specified visual style.  This may be null if no calculator
+	 * is currently specified. Returns null if the style is null.
+	 * @param style The style we're getting the calculator for.
+	 * @return the current calculator for this style and type
 	 */
 	public Calculator getCurrentCalculator(VisualStyle style) {
 		if (style == null)
@@ -569,10 +569,10 @@ public enum VisualPropertyType {
 	/**
 	 * Sets the current calculator for the visual attribute for this type
 	 * and the specified visual style. If the new calculator is null, then
-	     * the calculator for this type will be removed. This method does
+	 * the calculator for this type will be removed. This method does
 	 * nothing if the first argument specifying the visual style is null.
-	     * @param style The style to set the calculator for.
-	     * @param c The calculator to set.
+	 * @param style The style to set the calculator for.
+	 * @param c The calculator to set.
 	 */
 	public void setCurrentCalculator(VisualStyle style, Calculator c) {
 		if (style == null)

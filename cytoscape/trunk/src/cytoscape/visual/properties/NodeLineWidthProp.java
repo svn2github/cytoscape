@@ -39,6 +39,7 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.FloatParser;
 
 import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.LineStyle;
 
 import giny.view.NodeView;
 
@@ -100,13 +101,11 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 		if ((o == null) || (nv == null))
 			return;
 
-		if (nv.getBorderWidth() != ((Number) o).floatValue()) {
-			final BasicStroke oldValue = (BasicStroke) nv.getBorder();
-			final Stroke newLine = new BasicStroke(((Number) o).floatValue(), oldValue.getEndCap(),
-			                                       oldValue.getLineJoin(),
-			                                       oldValue.getMiterLimit(),
-			                                       oldValue.getDashArray(), oldValue.getDashPhase());
-			nv.setBorder(newLine);
+		float width =((Number) o).floatValue();
+		if (nv.getBorderWidth() != width ) {
+			final Stroke oldStroke = nv.getBorder();
+			final Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(width);
+			nv.setBorder(newStroke);
 		}
 	}
 

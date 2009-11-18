@@ -38,44 +38,43 @@ package cytoscape.visual;
 
 import java.awt.BasicStroke;
 import java.awt.Stroke;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import javax.swing.Icon;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.strokes.*;
 
 /**
- *
  * Define line stroke.
  *
- * TODO: need to modify rendering engine to fully support dash lines.
- *
  * @author kono
- *
  */
 public enum LineStyle {
-	SOLID(null,"line"),
-	LONG_DASH("10.0f,4.0f","dash");
+	SOLID("line", new SolidStroke(1.0f,"line")),
+	LONG_DASH( "dash", new LongDashStroke(1.0f,"dash")),
+	EQUAL( "equal", new EqualDashStroke(1.0f,"equal")),
+	UNEVEN( "uneven", new DashDotStroke(1.0f,"uneven")),
+	DOT("dot", new DotStroke(1.0f,"dot")),
+	ZIGZAG("zigzag", new ZigzagStroke(1.0f,"zigzag")),
+	SINEWAVE("sinewave", new SineWaveStroke(1.0f,"sinewave")),
+	VERTICAL_SLASH("vertical_slash",new PipeStroke(1.0f,PipeStroke.Type.VERTICAL,"vertical_slash")),
+	FORWARD_SLASH("forward_slash",new PipeStroke(1.0f,PipeStroke.Type.FORWARD,"forward_slash")),
+	BACKWARD_SLASH("backward_slash",new PipeStroke(1.0f,PipeStroke.Type.BACKWARD,"backward_slash")),
+	PARALLEL_LINES("parallel_lines", new ParallelStroke(1.0f,"parallel_lines")),
+	CONTIGUOUS_ARROW("contiguous_arrow", new ContiguousArrowStroke(1.0f,"contiguous_arrow")),
+	SEPARATE_ARROW("separate_arrow", new SeparateArrowStroke(1.0f,"separate_arrow")),
+	;
 
-	// DASH("4.0f,4.0f"),
-	// DASH_DOT("12.0f,3.0f,3.0f,3.0f"),
-
-	private final float[] strokeDef;
 	private String regex;
+	private WidthStroke stroke;
 
-	private LineStyle(String def, String regex) {
-		if (def == null)
-			strokeDef = null;
-		else {
-			final String[] parts = def.split(",");
-			strokeDef = new float[parts.length];
-
-			for (int i = 0; i < strokeDef.length; i++)
-				strokeDef[i] = Float.parseFloat(parts[i]);
-		}
-
+	private LineStyle(String regex, WidthStroke stroke) {
 		this.regex = regex;
+		this.stroke = stroke;
 	}
 
 	private String getRegex() {
@@ -121,47 +120,27 @@ public enum LineStyle {
 	}
 
 	/**
-	 * A method that attempts to figure out if a stroke is dashed
-	 * or not.  If the Stroke object is not a BasicStroke, it will
-	 * return SOLID by default.
-	 * @return the LineStyle guessed based on the BasicStroke dash array.
+	 * Will attempt to find the LineStyle based on the type of stroke.
+	 * If it doesn't match a known stroke, it will return SOLID.
+	 * @return the LineStyle guessed from the stroke. 
 	 */
-	public static LineStyle extractLineStyle(Stroke stroke) {
-		if ( stroke instanceof BasicStroke ) {
-        	final float[] dash = ((BasicStroke)stroke).getDashArray();
-			if ( dash == null )
-				return SOLID;
-			else
-				return LONG_DASH;
+	public static LineStyle extractLineStyle(Stroke s) {
+		if ( s instanceof WidthStroke ) {
+			return LineStyle.parse( ((WidthStroke)s).getName() );	
 		} 
 
 		return SOLID;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
 	public Stroke getStroke(float width) {
-		if (strokeDef != null)
-			return new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f,
-			                       strokeDef, 0.0f);
-		else
-			return new BasicStroke(width);
+		return stroke.newInstanceForWidth( width );
 	}
 	
-	public float[] getDashDef() {
-		return strokeDef;
-	}
-
     public static Map<Object,Icon> getIconSet() {
         Map<Object,Icon> icons = new HashMap<Object,Icon>();
 
         for (LineStyle def : values()) {
-            LineTypeIcon icon = new LineTypeIcon((BasicStroke) def.getStroke(5.0f), 
+            LineTypeIcon icon = new LineTypeIcon(def.getStroke(5.0f), 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE, 
 												 def.name());

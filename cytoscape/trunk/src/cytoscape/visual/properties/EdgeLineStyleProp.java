@@ -91,10 +91,11 @@ public class EdgeLineStyleProp extends AbstractVisualProperty {
 	public void applyToEdgeView(EdgeView ev, Object o) {
 		if ((o == null) || (ev == null))
 			return;
-
-		if (((LineStyle) o).getDashDef() != (((BasicStroke) ev.getStroke()).getDashArray())) {
-			ev.setStroke(((LineStyle) o).getStroke(ev.getStrokeWidth()));
-		}
+		
+		ev.setStroke(((LineStyle)o).getStroke(ev.getStrokeWidth()));
+//		if (((LineStyle) o).getDashDef() != (((BasicStroke) ev.getStroke()).getDashArray())) {
+//			ev.setStroke(((LineStyle) o).getStroke(ev.getStrokeWidth()));
+//		}
 	}
 
 	/**
