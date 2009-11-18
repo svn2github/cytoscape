@@ -24,7 +24,7 @@ public abstract class ShapeStroke implements WidthStroke {
 	private float advance;
 	private boolean repeat = true;
 	private AffineTransform transform = new AffineTransform();
-	private static final float FLATNESS = 1;
+	private static final float FLATNESS = 0.1f;
 
 	protected String name;
 	protected float width;
