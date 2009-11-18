@@ -313,26 +313,6 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
-	/**
-	 * Return the Color attribute value for the attribute indicated by "key".  If
-	 * no such attribute exists, return null.  In particular, this routine looks
-	 * for an attribute with a <b>name</b> or <b>label</b> of <i>key</i> and 
-	 * returns the <b>value</b> of that attribute.
-	 *
-	 * @param atts the attributes
-	 * @param key the specific attribute to get
-	 * @return the value for "key" or null if no such attribute exists
-	 */
-	Color getColorAttributeValue(final Attributes atts, final String key) throws SAXParseException{
-		String attribute = getAttributeValue(atts, key);
-		if (attribute == null)
-			return null;
-		try {
-			return new Color(Integer.parseInt(attribute.substring(1), 16));
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '" + attribute + "' to a color", locator);
-		}
-	}
 
 	/**
 	 * Return the typed attribute value for the passed attribute.  In this case,
@@ -353,6 +333,7 @@ class XGMMLParser extends DefaultHandler {
 			throw new SAXParseException("Unable to convert '" + value + "' to type " + type.toString(), locator);
 		}
 	}
+
 
 	/**
 	 * Return the typed value for the passed value.
