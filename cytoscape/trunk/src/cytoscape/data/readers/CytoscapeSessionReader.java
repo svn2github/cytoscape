@@ -407,8 +407,10 @@ public class CytoscapeSessionReader {
 		for (final CyNetwork network:Cytoscape.getNetworkSet()) {
 			for (final Object nodeObject:network.nodesList()) {
 				CyNode node = (CyNode) nodeObject;
-				final String nestedNetworkTitle = (String) Cytoscape.getNodeAttributes().getAttribute(node.getIdentifier(), CyNode.NESTED_NETWORK_ID_ATTR);
-				node.setNestedNetwork(Cytoscape.getNetwork(titleToIdMap.get(nestedNetworkTitle)));
+				final String nestedNetworkTitle = (String)Cytoscape.getNodeAttributes().getAttribute(node.getIdentifier(),
+														     CyNode.NESTED_NETWORK_ID_ATTR);
+				if (nestedNetworkTitle != null)
+					node.setNestedNetwork(Cytoscape.getNetwork(titleToIdMap.get(nestedNetworkTitle)));
 			}
 		}
 	}
