@@ -1146,7 +1146,7 @@ public abstract class Cytoscape {
 		firePropertyChange(NETWORK_CREATED, parentID, network.getIdentifier());
 
 		final String propVal = CytoscapeInit.getProperties().getProperty("viewThreshold");
-		if (propVal != null && (network.getNodeCount() < Integer.parseInt(propVal)) && create_view) {
+		if (create_view && propVal != null && (network.getNodeCount() < Integer.parseInt(propVal))) {
 			createNetworkView(network);
 		}
 	}
