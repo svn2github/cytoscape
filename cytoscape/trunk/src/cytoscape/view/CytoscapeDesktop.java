@@ -76,6 +76,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
+import cytoscape.visual.ui.NestedNetworkListener;
 import cytoscape.visual.ui.VizMapUI;
 import cytoscape.visual.ui.VizMapperMainPanel;
 
@@ -313,6 +314,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// add a listener for node bypass
 		Cytoscape.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
+
+		// add a listener for nestedNetwork
+		Cytoscape.getSwingPropertyChangeSupport()
+		         .addPropertyChangeListener(new NestedNetworkListener());
+
 		
 		// Web Service Client context menu.
 		Cytoscape.getSwingPropertyChangeSupport()
