@@ -131,7 +131,7 @@ public class SBMLVisualStyleFactory {
 		nodeAppCalc.setNodeSizeLocked(true);
 
 		// ------------------------------ Set edge arrow shape ---------------------------//
-		DiscreteMapping arrowMapping = new DiscreteMapping(ArrowShape.DELTA,
+		DiscreteMapping arrowMapping = new DiscreteMapping(ArrowShape.ARROW,
 		                                                   ObjectMapping.NODE_MAPPING);
 		arrowMapping.setControllingAttributeName(EDGE_TYPE_ATT, network, false);
 		arrowMapping.putMapValue("reaction-product", ArrowShape.ARROW);
