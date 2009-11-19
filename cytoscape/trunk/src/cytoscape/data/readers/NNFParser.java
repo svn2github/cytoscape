@@ -52,6 +52,7 @@ public class NNFParser {
 			// Create network without view.  View will be created later in class Cytoscape.
 			network = Cytoscape.createNetwork(parts[0], false);
 			network.setTitle(parts[0]);
+			network.setIdentifier(parts[0]);
 			networkMap.put(parts[0], network);
 			networks.add(network);
 			CyNode parent = Cytoscape.getCyNode(parts[0]);
