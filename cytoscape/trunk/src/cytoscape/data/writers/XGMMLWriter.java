@@ -36,32 +36,6 @@
  */
 package cytoscape.data.writers;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CyEdgeView;
-
-import cytoscape.visual.LineStyle;
-
-import ding.view.DGraphView;
-import ding.view.DingCanvas;
-
-import giny.model.RootGraph;
-
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -71,21 +45,31 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.geom.Point2D;
-
 import java.io.IOException;
 import java.io.Writer;
-import java.io.UnsupportedEncodingException;
-
-import java.math.BigInteger;
-
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
+
+import javax.xml.bind.JAXBException;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.LineStyle;
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
 
 enum GraphicsType {
 	ARC("arc"),
@@ -94,28 +78,29 @@ enum GraphicsType {
 	LINE("line"),
 	OVAL("oval"), 
 	POLYGON("polygon"),
-  RECTANGLE("rectangle"),
-  TEXT("text"),
-  BOX("box"),
-  CIRCLE("circle"),
-  VER_ELLIPSIS("ver_ellipsis"),
-  HOR_ELLIPSIS("hor_ellipsis"),
-  RHOMBUS("rhombus"),
-  TRIANGLE("triangle"),
-  PENTAGON("pentagon"),
-  HEXAGON("hexagon"),
-  OCTAGON("octagon"),
-  ELLIPSE("ellipse"),
-  DIAMOND("diamond"),
-  PARALLELOGRAM("parallelogram"),
-  ROUNDED_RECTANGLE("rounded_rectangle");
-  private final String value;
+	RECTANGLE("rectangle"),
+	TEXT("text"),
+	BOX("box"),
+	CIRCLE("circle"),
+	VER_ELLIPSIS("ver_ellipsis"),
+	HOR_ELLIPSIS("hor_ellipsis"),
+	RHOMBUS("rhombus"),
+	TRIANGLE("triangle"),
+	PENTAGON("pentagon"),
+	HEXAGON("hexagon"),
+	OCTAGON("octagon"),
+	ELLIPSE("ellipse"),
+	DIAMOND("diamond"),
+	PARALLELOGRAM("parallelogram"),
+	ROUNDED_RECTANGLE("rounded_rectangle");
 
-  GraphicsType(String v) {
-  	value = v;
-  }
+	private final String value;
+	
+	private GraphicsType(String v) {
+		value = v;
+	}
 
-	String value() {
+	public String value() {
 		return value;
 	}
 }
