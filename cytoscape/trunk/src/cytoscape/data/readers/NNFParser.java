@@ -54,20 +54,33 @@ public class NNFParser {
 			networkMap.put(parts[0], network);
 			networks.add(network);
 			CyNode parent = Cytoscape.getCyNode(parts[0]);
-			if (parent != null)
+			if (parent != null) {
 				parent.setNestedNetwork(network);
+			}
 		}
 
 		if (length == 2) {
 			final CyNode node = Cytoscape.getCyNode(parts[1], true);
 			network.addNode(node);
+			CyNetwork nestedNetwork = networkMap.get(parts[1]);
+			if (nestedNetwork != null) {
+				node.setNestedNetwork(nestedNetwork);
+			}
 
 		} else if (length == 4) {
 			final CyNode source = Cytoscape.getCyNode(parts[1], true);
 			network.addNode(source);
+			CyNetwork nestedNetwork = networkMap.get(parts[1]);
+			if (nestedNetwork != null) {
+				source.setNestedNetwork(nestedNetwork);
+			}
 
 			final CyNode target = Cytoscape.getCyNode(parts[3], true);
 			network.addNode(target);
+			nestedNetwork = networkMap.get(parts[3]);
+			if (nestedNetwork != null) {
+				target.setNestedNetwork(nestedNetwork);
+			}
 
 			final CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, parts[2], true);
 			network.addEdge(edge);
