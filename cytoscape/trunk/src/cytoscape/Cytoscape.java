@@ -1385,13 +1385,14 @@ public abstract class Cytoscape {
 
 		// Create the network if any nodes/edges exists in the file.
 		if (reader instanceof NestedNetworkReader) {
+			// This is a reader which creates multiple networks.
 			final List<CyNetwork> networks = ((NestedNetworkReader)reader).getNetworks();
 			for (CyNetwork network : networks) {
 				getNetworkMap().put(network.getIdentifier(), network);
 				firePropertyChange(NETWORK_CREATED, null /* parentID */, network.getIdentifier());
 				if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
 											      .getProperty("viewThreshold")))) {
-					reader.getLayoutAlgorithm().doLayout(getNetworkView(network.getIdentifier()));
+					createNetworkView(network);
 				}
 			}
 
