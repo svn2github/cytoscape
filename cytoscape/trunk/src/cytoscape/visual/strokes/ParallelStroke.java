@@ -21,13 +21,13 @@ public class ParallelStroke extends ShapeStroke {
 		GeneralPath shape = new GeneralPath();
 
 		shape.moveTo(0f,-0.5f*width);
-		shape.lineTo(1f,-0.5*width);
+		shape.lineTo(1f,-0.5f*width);
 		shape.lineTo(1f,-1f*width);
 		shape.lineTo(0f,-1f*width);
 		shape.lineTo(0f,-0.5f*width);
 
 		shape.moveTo(0f,0.5f*width);
-		shape.lineTo(1f,0.5*width);
+		shape.lineTo(1f,0.5f*width);
 		shape.lineTo(1f,1f*width);
 		shape.lineTo(0f,1f*width);
 		shape.lineTo(0f,0.5f*width);
