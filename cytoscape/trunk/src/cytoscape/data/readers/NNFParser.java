@@ -18,6 +18,9 @@ import cytoscape.data.Semantics;
  * @author kono, ruschein
  */
 public class NNFParser {
+	
+	private static final String IMMUTABLE_ID = "immutable_id";
+	
 	// For performance, these fields will be reused.
 	private String[] parts;
 	private int length;
@@ -53,6 +56,8 @@ public class NNFParser {
 			network = Cytoscape.createNetwork(parts[0], false);
 			networkMap.put(parts[0], network);
 			networks.add(network);
+			// Create node attribute called IMMUTABLE_ID
+			Cytoscape.getNetworkAttributes().setAttribute(network.getIdentifier(), IMMUTABLE_ID, network.getIdentifier());
 			CyNode parent = Cytoscape.getCyNode(parts[0]);
 			if (parent != null) {
 				parent.setNestedNetwork(network);
