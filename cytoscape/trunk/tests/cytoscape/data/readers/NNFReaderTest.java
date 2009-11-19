@@ -1,6 +1,10 @@
 package cytoscape.data.readers;
 
 import java.io.IOException;
+import java.util.Set;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 
 import junit.framework.TestCase;
 
@@ -49,7 +53,19 @@ public class NNFReaderTest extends TestCase {
 		reader.read();
 		
 		assertNotNull(reader.getNetworks().get(0));
-		assertEquals("root", reader.getNetworks().get(0).getTitle());
+		assertEquals("Module_Overview", reader.getNetworks().get(0).getTitle());
+		
+		// Check number of graph objects
+		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		CyNetwork targetNetwork = null;
+		for (CyNetwork net:networks) {
+			if (net.getTitle().equals("Module_Overview")) {
+				targetNetwork = net;
+			}
+		}
+		assertNotNull(targetNetwork);
+		assertEquals(4, targetNetwork.getNodeCount());
+		assertEquals(5, targetNetwork.getEdgeCount());
 	}
 	
 	
