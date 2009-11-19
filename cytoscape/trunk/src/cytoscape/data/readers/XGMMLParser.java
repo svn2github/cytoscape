@@ -267,6 +267,7 @@ class XGMMLParser extends DefaultHandler {
 		{ParseState.MAPATT, "att", ParseState.NONE, new handleMapAttributeDone()},
 	};
 
+
 	/********************************************************************
 	 * Routines to handle attributes
 	 *******************************************************************/
@@ -292,24 +293,25 @@ class XGMMLParser extends DefaultHandler {
 		return null;
 	}
 
+
 	/**
-	 * Return the double attribute value for the attribute indicated by "key".  If
-	 * no such attribute exists, return null.  In particular, this routine looks
-	 * for an attribute with a <b>name</b> or <b>label</b> of <i>key</i> and 
-	 * returns the <b>value</b> of that attribute.
+	 * Return the double attribute value for the attribute indicated by "key".  If no such attribute exists, we throw a SAXParseException.
+	 * In particular, this routine looks for an attribute with a <b>name</b> or <b>label</b> of <i>key</i> and  returns the <b>value</b>
+	 * of that attribute.
 	 *
 	 * @param atts the attributes
 	 * @param key the specific attribute to get
-	 * @return the value for "key" or null if no such attribute exists
+	 * @return the value for "key."
+	 * @throws SAXParseException if we either can't find the requested attribute or if its value cannot be converted to a double.
 	 */
-	double getDoubleAttributeValue(Attributes atts, String key) throws SAXParseException {
-		String attribute = getAttributeValue(atts, key);
+	double getDoubleAttributeValue(final Attributes atts, final String key) throws SAXParseException {
+		final String attribute = getAttributeValue(atts, key);
 		if (attribute == null)
 			return 0.0;
 		try {
-			return (new Double(attribute)).doubleValue();
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to a DOUBLE", locator);
+			return Double.parseDouble(attribute);
+		} catch (final Exception e) {
+			throw new SAXParseException("Unable to convert '" + attribute + "' to a DOUBLE", locator);
 		}
 	}
 
@@ -325,7 +327,7 @@ class XGMMLParser extends DefaultHandler {
 	 * @return the value of the attribute in the appropriate type
 	 */
 	Object getTypedAttributeValue(final ObjectType type, final Attributes atts) throws SAXParseException {
-		String value = atts.getValue("value");
+		final String value = atts.getValue("value");
 		Object obj = null;
 		try {
 			return getTypedValue(type, value);
