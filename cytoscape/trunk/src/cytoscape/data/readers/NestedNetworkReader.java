@@ -41,9 +41,8 @@ import cytoscape.CyNetwork;
  * 
  */
 public interface NestedNetworkReader {
-
 	/**
-	 * Returns the root network first, followed by all nested networks, if any.
+	 * Returns all networks, whether nested or not.
 	 * 
 	 * @return A list of networks.
 	 * 
