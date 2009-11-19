@@ -52,6 +52,10 @@ import java.util.List;
  *
  */
 public class CyNode implements giny.model.Node {
+	
+	public static final String NESTED_NETWORK_ID_ATTR = "nested_network_id";
+	public static final String PARENT_NODES_ATTR = "parent_nodes";
+	
 	// Variables specific to public get/set methods.
 	CytoscapeFingRootGraph m_rootGraph = null;
 	int m_rootGraphIndex = 0;
@@ -242,18 +246,17 @@ public class CyNode implements giny.model.Node {
 		
 		// create a Node Attribute "nested.network.id" for this Node
 		String networkID = ((CyNetwork) this.graphPerspective).getIdentifier();
-		Cytoscape.getNodeAttributes().setAttribute(networkID, "nested.network.id", networkID);
+		Cytoscape.getNodeAttributes().setAttribute(this.getIdentifier(), NESTED_NETWORK_ID_ATTR, networkID);
 		
 		// create a Network Attribute "parent.node.name.list" for the Network		
-		ArrayList<String> nodeNameList = new ArrayList<String>();
-		
-		int[] indices = this.graphPerspective.getNodeIndicesArray();
+		final List<String> nodeNameList = new ArrayList<String>();
+		final int[] indices = this.graphPerspective.getNodeIndicesArray();
 		
 		for (int i=0; i< indices.length; i++){
 			nodeNameList.add(this.graphPerspective.getNode(indices[i]).getIdentifier());
 		}
 		
-		Cytoscape.getNetworkAttributes().setListAttribute(networkID, "parent.node.name.list", nodeNameList);
+		Cytoscape.getNetworkAttributes().setListAttribute(networkID, PARENT_NODES_ATTR, nodeNameList);
 	}
 	
 		
