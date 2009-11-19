@@ -36,53 +36,61 @@
  */
 package cytoscape.data.readers;
 
-import cytoscape.Cytoscape;
 import junit.framework.TestCase;
+import cytoscape.Cytoscape;
 
 /**
  * Tests the CytoscapeSessionReader class.
- *
+ * 
  * @author noel.ruddock
  */
 public class CytoscapeSessionReaderTest extends TestCase {
-    public void testDummy() throws Exception {
-    }
 
-    // These tests work and pass, but are commented out because they disturb
-    // one of the PluginManager tests when run using "ant test"
-    // All tests function undisturbed when run using "ant test-slow"
-//    public void testBug0001929a() throws Exception {
-//		  CytoscapeSessionReader sr;
-//
-//    	  Cytoscape.buildOntologyServer();
-//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestA.cys", null);
-//        sr.read();
-//    }
-//
-//    public void testBug0001929b() throws Exception {
-//		  CytoscapeSessionReader sr;
-//
-//        //new CytoscapeInit().init(null);
-//    	  Cytoscape.buildOntologyServer();
-//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestB.cys", null);
-//        sr.read();
-//    }
-//
-//    public void testBug0001929c() throws Exception {
-//		  CytoscapeSessionReader sr;
-//
-//        //new CytoscapeInit().init(null);
-//    	  Cytoscape.buildOntologyServer();
-//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestC.cys", null);
-//        sr.read();
-//    }
-//
-//    public void testBug0001929d() throws Exception {
-//        CytoscapeSessionReader sr;
-//
-//        //new CytoscapeInit().init(null);
-//    	  Cytoscape.buildOntologyServer();
-//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestD.cys", null);
-//        sr.read();
-//    }
+	public void testNestedNetworkReconstruction() throws Exception {
+		
+		CytoscapeSessionReader sr;
+		Cytoscape.buildOntologyServer();
+		sr = new CytoscapeSessionReader("testData/NNFData/t3.cys", null);
+		
+		// TODO: Run without Desktop.
+		//sr.read();
+	}
+
+	// These tests work and pass, but are commented out because they disturb
+	// one of the PluginManager tests when run using "ant test"
+	// All tests function undisturbed when run using "ant test-slow"
+	// public void testBug0001929a() throws Exception {
+	// CytoscapeSessionReader sr;
+	//
+	// Cytoscape.buildOntologyServer();
+	// sr = new CytoscapeSessionReader("testData/Bug1929TestA.cys", null);
+	// sr.read();
+	// }
+	//
+	// public void testBug0001929b() throws Exception {
+	// CytoscapeSessionReader sr;
+	//
+	// //new CytoscapeInit().init(null);
+	// Cytoscape.buildOntologyServer();
+	// sr = new CytoscapeSessionReader("testData/Bug1929TestB.cys", null);
+	// sr.read();
+	// }
+	//
+	// public void testBug0001929c() throws Exception {
+	// CytoscapeSessionReader sr;
+	//
+	// //new CytoscapeInit().init(null);
+	// Cytoscape.buildOntologyServer();
+	// sr = new CytoscapeSessionReader("testData/Bug1929TestC.cys", null);
+	// sr.read();
+	// }
+	//
+	// public void testBug0001929d() throws Exception {
+	// CytoscapeSessionReader sr;
+	//
+	// //new CytoscapeInit().init(null);
+	// Cytoscape.buildOntologyServer();
+	// sr = new CytoscapeSessionReader("testData/Bug1929TestD.cys", null);
+	// sr.read();
+	// }
 }
