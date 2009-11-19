@@ -22,13 +22,9 @@ public class NNFParser {
 	private String[] parts;
 	private int length;
 
-	// Parent network of all graph objects in the file
-	private CyNetwork rootNetwork;
-
 	// List of root network plus all nested networks.
 	private final List<CyNetwork> networks;
 
-	private String rootNetworkTitle;
 	// Hash map from title to actual network
 	private Map<String, CyNetwork> networkMap;
 
@@ -51,51 +47,27 @@ public class NNFParser {
 		parts = line.split("\\s+");
 		length = parts.length;
 
-		// Create root network if necessary.
-		if (networkMap.size() == 0) {
-			// This is the first non-empty line.
-			rootNetworkTitle = parts[0];
-			rootNetwork = Cytoscape.createNetwork(rootNetworkTitle);
-			rootNetwork.setTitle(rootNetworkTitle);
-			networkMap.put(rootNetworkTitle, rootNetwork);
-			networks.add(rootNetwork);
-		}
-
 		CyNetwork network = networkMap.get(parts[0]);
 		if (network == null) {
 			network = Cytoscape.createNetwork(parts[0]);
 			network.setTitle(parts[0]);
 			networkMap.put(parts[0], network);
+			networks.add(network);
+			CyNode parent = Cytoscape.getCyNode(parts[0]);
+			if (parent != null)
+				parent.setNestedNetwork(network);
 		}
 
-System.out.println("length = " + length);
 		if (length == 2) {
 			final CyNode node = Cytoscape.getCyNode(parts[1], true);
-			if (network != null) {
-				network.addNode(node);
-				final CyNetwork nestedNetwork = networkMap.get(parts[1]);
-				if (nestedNetwork != null) {
-					node.setNestedNetwork(nestedNetwork);
-					networks.add(nestedNetwork);
-				}
-			}
+			network.addNode(node);
 
 		} else if (length == 4) {
 			final CyNode source = Cytoscape.getCyNode(parts[1], true);
 			network.addNode(source);
-			CyNetwork nestedNetwork = networkMap.get(parts[1]);
-			if (nestedNetwork != null) {
-				source.setNestedNetwork(nestedNetwork);
-				networks.add(nestedNetwork);
-			}
 
 			final CyNode target = Cytoscape.getCyNode(parts[3], true);
 			network.addNode(target);
-			nestedNetwork = networkMap.get(parts[3]);
-			if (nestedNetwork != null) {
-				target.setNestedNetwork(nestedNetwork);
-				networks.add(nestedNetwork);
-			}
 
 			final CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, parts[2], true);
 			network.addEdge(edge);
@@ -112,9 +84,4 @@ System.out.println("length = " + length);
 	protected List<CyNetwork> getNetworks() {
 		return networks;
 	}
-
-	protected CyNetwork getRootNetwork() {
-		return rootNetwork;
-	}
-	
 }

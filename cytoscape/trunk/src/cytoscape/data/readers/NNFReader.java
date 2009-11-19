@@ -101,7 +101,7 @@ public class NNFReader extends AbstractGraphReader implements NestedNetworkReade
 			in.close();
 		}
 		
-		if (parser.getRootNetwork() == null) {
+		if (parser.getNetworks().size() == 0) {
 			throw new IOException("Input NNF file is empty!");
 		}
 	}
@@ -144,6 +144,6 @@ public class NNFReader extends AbstractGraphReader implements NestedNetworkReade
 	 */
 	@Override
 	public String getNetworkName() {
-		return parser.getRootNetwork().getTitle();
+		return "";
 	}
 }
