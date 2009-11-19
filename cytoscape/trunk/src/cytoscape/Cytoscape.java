@@ -1389,7 +1389,7 @@ public abstract class Cytoscape {
 			final List<CyNetwork> networks = ((NestedNetworkReader)reader).getNetworks();
 			for (CyNetwork network : networks) {
 				getNetworkMap().put(network.getIdentifier(), network);
-				firePropertyChange(NETWORK_CREATED, null /* parentID */, network.getIdentifier());
+				//firePropertyChange(NETWORK_CREATED, null /* parentID */, network.getIdentifier());
 				if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
 											      .getProperty("viewThreshold")))) {
 					createNetworkView(network);

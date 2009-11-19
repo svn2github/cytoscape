@@ -63,8 +63,9 @@ public class NNFReaderTest extends TestCase {
 				targetNetwork = net;
 			}
 		}
+
 		assertNotNull(targetNetwork);
-		assertEquals("Module_Overview", targetNetwork.getIdentifier());
+		assertEquals("Module_Overview", targetNetwork.getTitle());
 		assertEquals(4, targetNetwork.getNodeCount());
 		assertEquals(5, targetNetwork.getEdgeCount());
 	}
