@@ -363,6 +363,8 @@ public class CytoscapeSessionReader {
 			//logger.debug("restoreOntologyServerStatus: " + (System.currentTimeMillis() - start) + " msec.");
 		}
 
+		restoreNestedNetworkLinks();
+		
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
@@ -396,6 +398,33 @@ public class CytoscapeSessionReader {
 		logger.info("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");
 	}
 
+	
+	/**
+	 * 
+	 */
+	private void restoreNestedNetworkLinks() {
+		final Map<String, String> titleToIdMap = createNetworkTitleToIDMap();
+		for (final CyNetwork network:Cytoscape.getNetworkSet()) {
+			for (final Object nodeObject:network.nodesList()) {
+				CyNode node = (CyNode) nodeObject;
+				final String nestedNetworkTitle = (String) Cytoscape.getNodeAttributes().getAttribute(node.getIdentifier(), CyNode.NESTED_NETWORK_ID_ATTR);
+				node.setNestedNetwork(Cytoscape.getNetwork(titleToIdMap.get(nestedNetworkTitle)));
+			}
+		}
+	}
+	
+	
+	private Map<String, String> createNetworkTitleToIDMap() {
+		final Map<String, String> titleToIdMap = new HashMap<String, String>();
+		
+		Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		for (CyNetwork network:networks) {
+			titleToIdMap.put(network.getTitle(), network.getIdentifier());
+		}
+		return titleToIdMap;
+	}
+
+	
 	// Delete tmp files (the plugin state files) to cleanup
 	private void deleteTmpPluginFiles() {
 		if ((pluginFileListMap == null) || (pluginFileListMap.size() == 0))

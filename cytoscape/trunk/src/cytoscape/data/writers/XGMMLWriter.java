@@ -730,6 +730,7 @@ public class XGMMLWriter {
 		writeElement("</graphics>\n");
 	}
 
+	
 	/**
 	 * Creates an attribute to write into XGMML file.
 	 *
@@ -769,7 +770,11 @@ public class XGMMLWriter {
 			if (sAttr != null) {
 				sAttr = sAttr.replace("\n", "\\n");
 				sAttr = sAttr.replace("\t", "\\t");
-			} 
+			}
+			if(attributeName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
+				// This is a special attribute for nested network.
+				sAttr = Cytoscape.getNetwork(sAttr).getTitle();
+			}
 			writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true, hidden, editable);
 		}
 		// process boolean
