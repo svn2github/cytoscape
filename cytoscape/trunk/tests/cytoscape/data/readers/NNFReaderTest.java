@@ -88,6 +88,15 @@ public class NNFReaderTest extends TestCase {
 	}
 	
 	
+	public void testGood6() throws Exception {
+		final NNFReader reader = new NNFReader(FILE_LOCATION + "good6.nnf");
+		reader.read();
+		
+		assertNotNull(reader.getNetworks().get(0));
+		assertNotNull(reader.getNetworks().get(1));
+	}
+	
+	
 	public void testBad1() throws Exception {
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "bad1.nnf");
 		try {
