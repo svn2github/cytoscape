@@ -233,8 +233,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	private void initialize() {
 		logger = CyLogger.getLogger(XGMMLReader.class);
 
-		Boolean attemptRepair = Boolean.getBoolean("cytoscape.xgmml.repair.bare.ampersands");
-
+		final boolean attemptRepair = Boolean.getBoolean("cytoscape.xgmml.repair.bare.ampersands");
 		if (attemptRepair) {
 			networkStream = new RepairBareAmpersandsInputStream(networkStream, 512);
 		}
@@ -302,7 +301,6 @@ public class XGMMLReader extends AbstractGraphReader {
 					pa.setErrorHandler(parser);
 					pa.parse(new InputSource(networkStream));
 					networkName = parser.getNetworkName();
-
 				} catch (OutOfMemoryError oe) {
 					/*
 					 * It's not generally a good idea to catch OutOfMemoryErrors, but in
