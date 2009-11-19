@@ -58,6 +58,7 @@ public class NNFParser {
 			networks.add(network);
 			// Create node attribute called IMMUTABLE_ID
 			Cytoscape.getNetworkAttributes().setAttribute(network.getIdentifier(), IMMUTABLE_ID, network.getIdentifier());
+			Cytoscape.getNetworkAttributes().setUserEditable(IMMUTABLE_ID, false);
 			CyNode parent = Cytoscape.getCyNode(parts[0]);
 			if (parent != null) {
 				parent.setNestedNetwork(network);
