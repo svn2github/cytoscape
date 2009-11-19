@@ -63,6 +63,9 @@ public class Bug646Test {
 		final RootGraph m_rootGraph;
 		final int m_rootGraphIndex;
 		String m_identifier = null;
+		
+		// New feature in 2.7 Nested network
+		private GraphPerspective nestedNetwork;
 
 		MyNode(RootGraph root, int index, String id) {
 			m_rootGraph = root;
@@ -107,6 +110,14 @@ public class Bug646Test {
 			m_identifier = new_id;
 
 			return true;
+		}
+
+		public GraphPerspective getNestedNetwork() {
+			return nestedNetwork;
+		}
+
+		public void setNestedNetwork(GraphPerspective nestedNetwork) {
+			this.nestedNetwork = nestedNetwork;
 		}
 	}
 

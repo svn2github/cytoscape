@@ -47,6 +47,9 @@ class FNode implements Node {
 	RootGraph m_rootGraph = null;
 	int m_rootGraphIndex = 0;
 	String m_identifier = null;
+	
+	// New feature in 2.7: Nexted Network
+	private GraphPerspective nextedNetwork;
 
 	// Package visible constructor.
 	FNode() {
@@ -123,5 +126,13 @@ class FNode implements Node {
 		m_identifier = new_id;
 
 		return true;
+	}
+
+	public GraphPerspective getNestedNetwork() {
+		return nextedNetwork;
+	}
+
+	public void setNestedNetwork(GraphPerspective nextedNetwork) {
+		this.nextedNetwork = nextedNetwork;
 	}
 }
