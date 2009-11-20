@@ -89,8 +89,8 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 		}
 		
 		public void actionPerformed(ActionEvent e) {
-			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true, 
-					"Set Nested Network for " + nodeView.getNode().getIdentifier());
+			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true, this.nodeView);
+					//"Set Nested Network for " + nodeView.getNode().getIdentifier());
 			dlg.setLocationRelativeTo(Cytoscape.getDesktop());
 			dlg.setVisible(true);
 		}
