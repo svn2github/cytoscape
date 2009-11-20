@@ -34,26 +34,21 @@
 */
 package cytoscape.dialogs;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
+import giny.view.NodeView;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import java.util.Set;
+import java.util.ArrayList;
+import javax.swing.ListCellRenderer;
+import java.awt.Color;
 /**
  *
  */
-public class SetNestedNetworkDialog extends JDialog {
+public class SetNestedNetworkDialog extends JDialog implements ListSelectionListener {
 	/**
 	 * Creates a new EditNetworkTitleDialog object.
 	 *
@@ -61,9 +56,27 @@ public class SetNestedNetworkDialog extends JDialog {
 	 * @param modal  DOCUMENT ME!
 	 * @param pName  DOCUMENT ME!
 	 */
-	public SetNestedNetworkDialog(JFrame parent, boolean modal, String title) {
-        super(parent, title, modal);
+	NodeView nodeView;
+	
+	public SetNestedNetworkDialog(JFrame parent, boolean modal, NodeView nodeView) {
+        super(parent, "Set Nested Network for " + nodeView.getNode().getIdentifier(), modal);
+        this.nodeView = nodeView;
+        
         initComponents();
+        this.lstNetwork.addListSelectionListener(this);
+        this.lstNetwork.setCellRenderer(new MyCellRenderer());
+        this.btnOK.setEnabled(false);
+        
+        Object[] objs = Cytoscape.getNetworkSet().toArray();
+        
+        
+        CyNetwork[] networkArray = new CyNetwork[objs.length];
+        for (int i=0; i< networkArray.length; i++){
+        	networkArray[i] = (CyNetwork) objs[i];
+        }
+        
+        this.lstNetwork.setListData(networkArray);
+        
 		setSize(new java.awt.Dimension(500, 300));
 	}
 
@@ -144,26 +157,48 @@ public class SetNestedNetworkDialog extends JDialog {
     private javax.swing.JPanel pnlButtons;
     // End of variables declaration                   
 	
+    
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {                                      
-    	// TODO add your handling code here:
-    	System.out.println("SetNestedNetworkDialog: Button OK is pressed!");
-    	//this.dispose();
+    	CyNetwork selectedNetwork = (CyNetwork) this.lstNetwork.getSelectedValue();
+    	this.nodeView.getNode().setNestedNetwork(selectedNetwork);
+    	this.dispose();
     }                                     
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {                                          
-    // TODO add your handling code here:
         this.dispose();
     }                                         
 
-   /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SetNestedNetworkDialog(new javax.swing.JFrame(), true,"Set Nested Network for XXX").setVisible(true);
-            }
-        });
+    
+    public void valueChanged(ListSelectionEvent e) {
+    	// DIsable the OK button if no row is selected in the list
+    	if (this.lstNetwork.getSelectedIndex() == -1){
+    		this.btnOK.setEnabled(false);
+    	}
+    	else {
+    		this.btnOK.setEnabled(true);
+    	}
     }
+    
 
+    class MyCellRenderer extends javax.swing.JLabel implements ListCellRenderer {
+
+        public MyCellRenderer() {
+            setOpaque(true);
+        }
+        public java.awt.Component getListCellRendererComponent(
+            javax.swing.JList list,
+            Object value,
+            int index,
+            boolean isSelected,
+            boolean cellHasFocus)
+        {
+        	CyNetwork cyNetwork = (CyNetwork) value;
+            setText(cyNetwork.getTitle());
+            setBackground(isSelected ? SELECTED_CELL_COLOR: Color.white);
+            setForeground(isSelected ? Color.BLACK : Color.black);
+            return this;
+        }
+    }
+    
+	private static final Color SELECTED_CELL_COLOR = new Color(0, 100, 255, 40);
 }
