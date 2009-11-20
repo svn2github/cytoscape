@@ -36,6 +36,8 @@
  */
 package cytoscape.data.readers;
 
+import giny.model.Node;
+
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -65,7 +67,7 @@ public class CytoscapeSessionReaderTest extends TestCase {
 	}
 	
 	
-	public void testNestedNetworkReconstruction() throws Exception {
+	public void testNestedNetworkReconstruction1() throws Exception {
 		invokeReader("testData/NNFData/t3.cys");
 		
 		//Check all networks are available.
@@ -90,6 +92,39 @@ public class CytoscapeSessionReaderTest extends TestCase {
 		assertNotNull(m1InOverview.getNestedNetwork());
 		assertTrue(m1InOverview.getNestedNetwork() instanceof CyNetwork);
 		assertTrue(((CyNetwork)m1InOverview.getNestedNetwork()).getTitle().equals("M1"));
+	}
+	
+	public void testNestedNetworkReconstruction2() throws Exception {
+		invokeReader("testData/NNFData/t4.cys");
+		
+		//Check all networks are available.
+		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		
+		CyNetwork targetNet = null;
+		for (CyNetwork net:networks) {
+			if (net.getTitle().equals("Top_Level_Network")) {
+				targetNet = net;
+			}
+		}
+		
+		assertNotNull(targetNet);
+		assertEquals(7, targetNet.getNodeCount());
+		assertEquals(5, targetNet.getEdgeCount());
+		
+		CyNode m3 = Cytoscape.getCyNode("M3");
+		assertNotNull(m3);
+		Node m3InOverview = targetNet.getNode(m3.getRootGraphIndex());
+		assertNotNull(m3InOverview);
+		CyNetwork nestedNetwork = (CyNetwork) m3InOverview.getNestedNetwork();
+		assertNotNull(nestedNetwork);
+		assertTrue(nestedNetwork.getTitle().equals("M3"));
+		assertEquals(4, nestedNetwork.getNodeCount());
+		assertEquals(3, nestedNetwork.getEdgeCount());
+		CyNode m2 = (CyNode) nestedNetwork.getNode(Cytoscape.getCyNode("M2").getRootGraphIndex());
+		assertNotNull(m2);
+		assertNotNull(m2.getNestedNetwork());
+		assertNotNull(m2.getNestedNetwork().getNode(Cytoscape.getCyNode("D").getRootGraphIndex()));
+
 	}
 
 	// These tests work and pass, but are commented out because they disturb

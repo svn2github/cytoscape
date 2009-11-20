@@ -1,9 +1,13 @@
 package cytoscape.data.readers;
 
+import giny.model.GraphPerspective;
+import giny.model.Node;
+
 import java.io.IOException;
 import java.util.Set;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
 import junit.framework.TestCase;
@@ -76,7 +80,29 @@ public class NNFReaderTest extends TestCase {
 		reader.read();
 		
 		assertNotNull(reader.getNetworks().get(0));
-		assertEquals("root", reader.getNetworks().get(0).getTitle());
+		assertEquals("Top_Level_Network", reader.getNetworks().get(0).getTitle());
+		
+		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		CyNetwork targetNetwork = null;
+		for (CyNetwork net:networks) {
+			if (net.getTitle().equals("M3")) {
+				targetNetwork = net;
+			}
+		}
+		
+		assertNotNull(targetNetwork);
+		assertEquals("M3", targetNetwork.getTitle());
+		assertEquals(4, targetNetwork.getNodeCount());
+		assertEquals(3, targetNetwork.getEdgeCount());
+		CyNode node = Cytoscape.getCyNode("M2");
+		assertNotNull(node);
+		Node m2 = targetNetwork.getNode(node.getRootGraphIndex());
+		assertNotNull(m2);
+		GraphPerspective nestedNetwork = m2.getNestedNetwork();
+		assertNotNull(nestedNetwork);
+		assertTrue(((CyNetwork)nestedNetwork).getTitle().equals("M2"));
+		assertEquals(1, nestedNetwork.getNodeCount());
+		assertEquals(0, nestedNetwork.getEdgeCount());
 	}
 	
 	
