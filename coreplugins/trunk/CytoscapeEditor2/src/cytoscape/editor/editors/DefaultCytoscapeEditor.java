@@ -193,7 +193,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
             return Arrow.ARROW;
         } else if (as == ArrowShape.CIRCLE) {
             return Arrow.CIRCLE;
-        } else if (as == ArrowShape.ARROW) {
+        } else if (as == ArrowShape.DELTA) {
             return Arrow.DELTA;
         } else if (as == ArrowShape.DIAMOND) {
             return Arrow.DIAMOND;

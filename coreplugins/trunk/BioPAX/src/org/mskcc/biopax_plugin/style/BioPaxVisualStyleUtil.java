@@ -362,9 +362,9 @@ public class BioPaxVisualStyleUtil {
 		                                                      MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE,
 		                                                      ObjectMapping.EDGE_MAPPING);
 
-		discreteMapping.putMapValue(MapBioPaxToCytoscape.RIGHT, ArrowShape.ARROW);
-		discreteMapping.putMapValue(MapBioPaxToCytoscape.CONTROLLED, ArrowShape.ARROW);
-		discreteMapping.putMapValue(MapBioPaxToCytoscape.COFACTOR, ArrowShape.ARROW);
+		discreteMapping.putMapValue(MapBioPaxToCytoscape.RIGHT, ArrowShape.DELTA);
+		discreteMapping.putMapValue(MapBioPaxToCytoscape.CONTROLLED, ArrowShape.DELTA);
+		discreteMapping.putMapValue(MapBioPaxToCytoscape.COFACTOR, ArrowShape.DELTA);
 		discreteMapping.putMapValue(MapBioPaxToCytoscape.CONTAINS, ArrowShape.CIRCLE);
 
 		//  Inhibition Edges
@@ -382,7 +382,7 @@ public class BioPaxVisualStyleUtil {
 
 		while (iterator.hasNext()) {
 			String controlType = (String) iterator.next();
-			discreteMapping.putMapValue(controlType, ArrowShape.ARROW);
+			discreteMapping.putMapValue(controlType, ArrowShape.DELTA);
 		}
 
 		Calculator edgeTargetArrowCalculator = new BasicCalculator("BioPAX Target Arrows"

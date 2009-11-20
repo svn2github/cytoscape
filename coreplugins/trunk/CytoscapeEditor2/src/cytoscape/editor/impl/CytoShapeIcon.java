@@ -170,7 +170,7 @@ public class CytoShapeIcon implements Icon {
 			// MLC 05/09/07:
 			// if (_arrowType == Arrow.DELTA) {
 			// MLC 05/09/07:
-			if (_arrowType.getShape() == ArrowShape.ARROW) {
+			if (_arrowType.getShape() == ArrowShape.DELTA) {
 				g.fillPolygon(new int[] {
 				                  x, x + ((3 * width) / 4), x + ((3 * width) / 4), x + width,
 				                  x + ((3 * width) / 4), x + ((3 * width) / 4), x
