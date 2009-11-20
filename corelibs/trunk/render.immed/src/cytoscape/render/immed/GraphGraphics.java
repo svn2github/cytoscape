@@ -58,6 +58,10 @@ import java.awt.geom.Rectangle2D;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
+import cytoscape.render.immed.arrow.*;
 
 /**
  * The purpose of this class is to make the proper calls on a Graphics2D object
@@ -97,6 +101,7 @@ import java.util.Map;
  * thread.
  */
 public final class GraphGraphics {
+
 	/**
 	 * 
 	 */
@@ -188,7 +193,8 @@ public final class GraphGraphics {
 	 */
 	public static final byte ARROW_ARROWHEAD = -8;
 
-	private static final byte last_arrow_shape = ARROW_ARROWHEAD;
+
+	public static final List<Arrow> arrows;
 
 	/**
 	 * This value is currently 64.
@@ -208,6 +214,16 @@ public final class GraphGraphics {
 
 	static {
 		dummyGraphics = new GraphGraphics(null, false);
+
+		arrows = new ArrayList<Arrow>();
+		arrows.add( new NoArrow() );
+		arrows.add( new DeltaArrow() );
+		arrows.add( new DiscArrow() );
+		arrows.add( new DiamondArrow() );
+		arrows.add( new TeeArrow() );
+		arrows.add( new ArrowheadArrow() );
+		arrows.add( new HalfTopArrow() );
+		arrows.add( new HalfBottomArrow() );
 	}
 
 	private static final double DEF_SHAPE_SIZE = 32;
@@ -1247,50 +1263,18 @@ public final class GraphGraphics {
 	 * @return
 	 */
 	public static Map<Byte, Shape> getNodeShapes() {
-		return getShapes(ShapeTypes.NODE_SHAPE);
-	}
-
-	/**
-	 * Get list of arrow heads.
-	 * 
-	 * @return
-	 */
-	public static Map<Byte, Shape> getArrowShapes() {
-		return getShapes(ShapeTypes.ARROW_SHAPE);
-	}
-
-	/**
-	 * Actually create map of shapes.
-	 * 
-	 * @param type
-	 * @return
-	 */
-	private static Map<Byte, Shape> getShapes(final ShapeTypes type) {
 		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
 
 		final int minIndex;
 		final int maxIndex;
 
-		if (type == ShapeTypes.NODE_SHAPE) {
-			minIndex = 0;
-			maxIndex = s_last_shape;
-		} else if (type == ShapeTypes.ARROW_SHAPE) {
-			minIndex = last_arrow_shape;
-			maxIndex = -1;
-		} else {
-			minIndex = 0;
-			maxIndex = s_last_shape;
-		}
+		minIndex = 0;
+		maxIndex = s_last_shape;
 
 		Shape shape;
 
 		for (int i = minIndex; i <= maxIndex; i++) {
-			if (type == ShapeTypes.NODE_SHAPE) {
-				shape = dummyGraphics.getShape((byte) i, 0, 0, DEF_SHAPE_SIZE,
-						DEF_SHAPE_SIZE);
-			} else {
-				shape = dummyGraphics.computeUntransformedArrow((byte) i);
-			}
+			shape = dummyGraphics.getShape((byte) i, 0, 0, DEF_SHAPE_SIZE, DEF_SHAPE_SIZE);
 
 			if ((shape != null) && (shape.getClass() == GeneralPath.class)) {
 				final Shape copiedShape = (Shape) ((GeneralPath) shape).clone();
@@ -1299,6 +1283,19 @@ public final class GraphGraphics {
 				shapeMap.put((byte) i, shape);
 			}
 		}
+
+		return shapeMap;
+	}
+
+	/**
+	 * Get list of arrow heads.
+	 * 
+	 * @return
+	 */
+	public static Map<Byte, Shape> getArrowShapes() {
+		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
+		for ( Arrow a : arrows )
+			shapeMap.put( a.getType(), a.getArrowShape() );
 
 		return shapeMap;
 	}
@@ -1565,6 +1562,7 @@ public final class GraphGraphics {
 			EdgeAnchors anchors, final float x1, final float y1,
 			final float edgeThickness, final Stroke edgeStroke, final Paint edgePaint
 			) {
+		final long startTime = System.nanoTime();
 		final double curveFactor = CURVE_ELLIPTICAL;
 
 		if (anchors == null) {
@@ -2039,161 +2037,39 @@ public final class GraphGraphics {
 
 	/*
 	 * Returns non-null if and only if an arrow is necessary for the arrow type
-	 * specified. m_path2d and m_ellp2d may be mangled as a side effect.
-	 * arrowType must be one of the primitive arrow types or ARROW_NONE. 
+	 * specified. 
 	 */
 	private final Shape computeUntransformedArrow(final byte arrowType) {
-		switch (arrowType) {
-		case ARROW_NONE:
-			return null;
+		for ( Arrow a : arrows )
+			if ( a.getType() == arrowType )
+				return a.getArrowShape();
 
-		case ARROW_DELTA:
-			m_path2d.reset();
-			m_path2d.moveTo(-2.0f, -0.5f);
-			m_path2d.lineTo(0.0f, 0.0f);
-			m_path2d.lineTo(-2.0f, 0.5f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_ARROWHEAD:
-			m_path2d.reset();
-			m_path2d.moveTo(-2.0f, -0.5f);
-			m_path2d.quadTo(-1.0f, 0f, 0.0f, 0.0f);
-			m_path2d.quadTo(-1.0f, 0f, -2.0f, 0.5f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-
-		case ARROW_DIAMOND:
-			m_path2d.reset();
-			m_path2d.moveTo(-1.0f, -0.5f);
-			m_path2d.lineTo(0.0f, 0.0f);
-			m_path2d.lineTo(-1.0f, 0.5f);
-			m_path2d.lineTo(-2.0f, 0.0f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_DISC:
-			m_ellp2d.setFrame(-0.5d, -0.5d, 1.0d, 1.0d);
-
-			return m_ellp2d;
-
-		case ARROW_TEE:
-			m_path2d.reset();
-			m_path2d.moveTo(-0.125f, -1.0f);
-			m_path2d.lineTo(0.125f, -1.0f);
-			m_path2d.lineTo(0.125f, 1.0f);
-			m_path2d.lineTo(-0.125f, 1.0f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		// The half arrow shapes are meant to align exactly with
-		// the Parallel stroke provided by Cytoscape. Any other
-		// stroke will not line up well.
-
-		case ARROW_HALF_TOP:
-			m_path2d.reset();
-			m_path2d.moveTo(-0.3f,-0.1f);
-			m_path2d.lineTo(-1.3f, -1.1f);
-			m_path2d.lineTo(-1.435f, -1.1f);
-			m_path2d.lineTo(-0.535f, -0.2f);
-			m_path2d.lineTo(-0.535f, -0.1f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_HALF_BOTTOM:
-			m_path2d.reset();
-			m_path2d.moveTo(-0.3f,0.1f);
-			m_path2d.lineTo(-1.3f,1.1f);
-			m_path2d.lineTo(-1.435f, 1.1f);
-			m_path2d.lineTo(-0.535f, 0.2f);
-			m_path2d.lineTo(-0.535f, 0.1f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		default: 
-			return null;
-		}
+		return null;
 	}
 
 	/*
 	 * The ratio parameter specifies the ratio of arrow size (disc diameter) to
 	 * edge thickness (only used for some arrow types). Returns non-null if and
-	 * only if a cap is necessary for the arrow type specified. If non-null is
-	 * returned then m_path2d and m_arc2d may be mangled as a side effect.
+	 * only if a cap is necessary for the arrow type specified. 
 	 */
 	private final Shape computeUntransformedArrowCap(final byte arrowType,
 			final double ratio) {
-		switch (arrowType) {
-		case ARROW_NONE:
-			m_arc2d.setArc(-0.5d, -0.5d, 1.0d, 1.0d, 270.0d, 180.0d,
-					Arc2D.CHORD);
+		for ( Arrow a : arrows )
+			if ( a.getType() == arrowType )
+				return a.getCapShape(ratio);
 
-			return m_arc2d;
-
-		case ARROW_DIAMOND:
-			m_path2d.reset();
-			m_path2d.moveTo(0.0f, -0.5f);
-			m_path2d.lineTo(1.0f, -0.5f);
-			m_path2d.lineTo(0.0f, 0.0f);
-			m_path2d.lineTo(1.0f, 0.5f);
-			m_path2d.lineTo(0.0f, 0.5f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_DISC:
-
-			final double theta = Math.toDegrees(Math.asin(1.0d / ratio));
-			m_arc2d.setArc(0.0d, ratio / -2.0d, ratio, ratio, 180.0d - theta,
-					theta * 2, Arc2D.OPEN);
-			m_path2d.reset();
-			m_path2d.append(m_arc2d, false);
-			m_path2d.lineTo(0.0f, 0.5f);
-			m_path2d.lineTo(0.0f, -0.5f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_DELTA:
-		case ARROW_ARROWHEAD:
-		case ARROW_TEE:
-		case ARROW_HALF_TOP:
-		case ARROW_HALF_BOTTOM:
-		default: 
-
-			return null;
-		}
+		return null;
 	}
 
 	/*
 	 * 
 	 */
 	private final static double getT(final byte arrowType) { 
-		switch (arrowType) {
-		case ARROW_NONE:
-			return 0.0d;
+		for ( Arrow a : arrows )
+			if ( a.getType() == arrowType )
+				return a.getTOffset();
 
-		case ARROW_DELTA:
-		case ARROW_ARROWHEAD:
-		case ARROW_DIAMOND:
-			return 2.0d;
-
-		case ARROW_HALF_TOP:
-		case ARROW_HALF_BOTTOM:
-		case ARROW_DISC:
-			return 0.5d;
-
-		case ARROW_TEE:
-		default: 
-			return 0.125d;
-		}
+		return 0.125;
 	}
 
 	/*
