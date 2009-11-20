@@ -25,6 +25,7 @@
 		<property name="target.version" value="1.5" />
 		
 		<property name="author" value="Jianjiong Gao" />
+		<property name="jar.file" value="AdvancedNetworkMerge.jar" />
 
 		<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 		<path id="classpath">
@@ -68,6 +69,7 @@
 		<echo message="delete ${build}" />
 		<delete dir="${build}" />
 		<delete file="build.number" />
+		<delete file="${jar.file}" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -78,7 +80,7 @@
 		<copy todir="${build.images}">
 			<fileset dir="${images}" />
 		</copy>
-		<jar destfile="AdvancedNetworkMerge.jar">
+		<jar destfile="${jar.file}">
 			<manifest>
 				<attribute name ="Author" value="${author}"/>
 				<attribute name="Cytoscape-Plugin" value="csplugins.network.merge.NetworkMergePlugin" />
