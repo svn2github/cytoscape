@@ -45,6 +45,7 @@ import junit.framework.TestCase;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 /**
  * Tests the CytoscapeSessionReader class.
@@ -124,6 +125,17 @@ public class CytoscapeSessionReaderTest extends TestCase {
 		assertNotNull(m2);
 		assertNotNull(m2.getNestedNetwork());
 		assertNotNull(m2.getNestedNetwork().getNode(Cytoscape.getCyNode("D").getRootGraphIndex()));
+		
+		// Check attributes
+		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		assertTrue(nodeAttr.getStringAttribute("M1", CyNode.NESTED_NETWORK_ID_ATTR).equals("M1"));
+		assertTrue(nodeAttr.getStringAttribute("M2", CyNode.NESTED_NETWORK_ID_ATTR).equals("M2"));
+		assertTrue(nodeAttr.getStringAttribute("M3", CyNode.NESTED_NETWORK_ID_ATTR).equals("M3"));
+		assertNull(nodeAttr.getStringAttribute("M4", CyNode.NESTED_NETWORK_ID_ATTR));
+		assertNull(nodeAttr.getStringAttribute("A", CyNode.NESTED_NETWORK_ID_ATTR));
+		assertNull(nodeAttr.getStringAttribute("B", CyNode.NESTED_NETWORK_ID_ATTR));
+		assertNull(nodeAttr.getStringAttribute("C", CyNode.NESTED_NETWORK_ID_ATTR));
+		assertNull(nodeAttr.getStringAttribute("D", CyNode.NESTED_NETWORK_ID_ATTR));
 
 	}
 

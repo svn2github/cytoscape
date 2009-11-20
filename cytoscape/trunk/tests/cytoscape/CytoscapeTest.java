@@ -240,10 +240,12 @@ public class CytoscapeTest extends TestCase {
 	}
 
 	public void testSetNestedNetworkAndGetNestedNetwork() throws Exception {
-		CyNode node = Cytoscape.getCyNode("a");
+		CyNode node = Cytoscape.getCyNode("nestedNode", true);
 		assertNull(node.getNestedNetwork());
-		CyNetwork network = Cytoscape.createNetwork("A title");
+		CyNetwork network = Cytoscape.createNetwork("nestedTest");
 		node.setNestedNetwork(network);
 		assertEquals(network, node.getNestedNetwork());
+		String id = network.getIdentifier();
+		assertTrue(((CyNetwork)node.getNestedNetwork()).getIdentifier().equals(id));
 	}
 }
