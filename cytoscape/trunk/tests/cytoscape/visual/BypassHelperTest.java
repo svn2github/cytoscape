@@ -126,7 +126,7 @@ public class BypassHelperTest extends TestCase {
 
 		o = Appearance.getBypass(edgeAttrs, lisa.getIdentifier(),
 		                         VisualPropertyType.EDGE_SRCARROW_SHAPE);
-		assertTrue("arrow equals", ArrowShape.ARROW == (ArrowShape) o);
+		assertTrue("arrow equals", ArrowShape.DELTA == (ArrowShape) o);
 	}
 
 	/**

@@ -1049,7 +1049,7 @@ public class GMLReader extends AbstractGraphReader {
 		String shape = ArrowShape.NONE.getName();
 
 		if (yedArrow.equals(YED_DELTA) || yedArrow.equals(YED_WHITE_DELTA))
-			shape = ArrowShape.ARROW.getName();
+			shape = ArrowShape.DELTA.getName();
 		else if (yedArrow.equals(YED_DIAMOND) || yedArrow.equals(YED_WHITE_DIAMOND))
 			shape = ArrowShape.DIAMOND.getName();
 		else if (yedArrow.equals(YED_STANDARD) || yedArrow.equals(YED_SHORT))
