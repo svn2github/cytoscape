@@ -51,6 +51,7 @@ import cytoscape.visual.properties.EdgeLabelPositionProp;
 import cytoscape.visual.properties.EdgeLabelProp;
 import cytoscape.visual.properties.EdgeLineStyleProp;
 import cytoscape.visual.properties.EdgeLineTypeProp;
+import cytoscape.visual.properties.EdgeLabelWidthProp;
 import cytoscape.visual.properties.EdgeLineWidthProp;
 import cytoscape.visual.properties.EdgeOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowColorProp;
@@ -72,6 +73,7 @@ import cytoscape.visual.properties.NodeLabelColorProp;
 import cytoscape.visual.properties.NodeLabelOpacityProp;
 import cytoscape.visual.properties.NodeLabelPositionProp;
 import cytoscape.visual.properties.NodeLabelProp;
+import cytoscape.visual.properties.NodeLabelWidthProp;
 import cytoscape.visual.properties.NodeLineStyleProp;
 import cytoscape.visual.properties.NodeLineTypeProp;
 import cytoscape.visual.properties.NodeLineWidthProp;
@@ -222,6 +224,14 @@ public enum VisualPropertyType {
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
 	                    "defaultEdgeLabelPosition", null, new EdgeLabelPositionProp(),
 						new LabelPositionParser(), false, false),
+
+	NODE_LABEL_WIDTH("Node Label Width", "nodeLabelWidthCalculator", "node.labelWidth",
+	                    "defaultNodeLabelWidth", Number.class, new NodeLabelWidthProp(),
+						new FloatParser(), true, true),
+	EDGE_LABEL_WIDTH("Edge Label Width", "edgeLabelWidthCalculator", "edge.labelWidth",
+	                    "defaultEdgeLabelWidth", Number.class, new EdgeLabelWidthProp(),
+						new FloatParser(), false, true),
+	
 						
 	;
 	/*

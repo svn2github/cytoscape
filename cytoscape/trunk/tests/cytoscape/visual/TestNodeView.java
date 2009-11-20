@@ -71,6 +71,7 @@ public class TestNodeView implements NodeView {
 	double label_offset_x = 0.0;
 	double label_offset_y = 0.0;
 	int node_label_anchor = 0;
+	double label_width = 100.0;
 
 	/**
 	 * Creates a new TestNodeView object.
@@ -512,5 +513,13 @@ public class TestNodeView implements NodeView {
 	 */
 	public int getNodeLabelAnchor() {
 		return node_label_anchor;
+	}
+
+	public double getLabelWidth() {
+		return label_width;
+	}
+
+	public void setLabelWidth(double w) {
+		label_width = w;
 	}
 }
