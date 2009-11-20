@@ -36,7 +36,12 @@
  */
 package cytoscape.data.readers;
 
+import java.lang.reflect.Method;
+import java.util.Set;
+
 import junit.framework.TestCase;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
 /**
@@ -46,14 +51,45 @@ import cytoscape.Cytoscape;
  */
 public class CytoscapeSessionReaderTest extends TestCase {
 
-	public void testNestedNetworkReconstruction() throws Exception {
-		
+	
+	private void invokeReader(String file) throws Exception {
 		CytoscapeSessionReader sr;
 		Cytoscape.buildOntologyServer();
-		sr = new CytoscapeSessionReader("testData/NNFData/t3.cys", null);
+		sr = new CytoscapeSessionReader(file, null);
+
+		// Run session reader without Desktop using reflection
+		Class<?> cls = sr.getClass();
+		Method method = cls.getDeclaredMethod("unzipSessionFromURL", boolean.class);
+		method.setAccessible(true);
+		Object ret = method.invoke(sr, false);
+	}
+	
+	
+	public void testNestedNetworkReconstruction() throws Exception {
+		invokeReader("testData/NNFData/t3.cys");
 		
-		// TODO: Run without Desktop.
-		//sr.read();
+		//Check all networks are available.
+		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		
+		CyNetwork targetNet = null;
+		for (CyNetwork net:networks) {
+			if (net.getTitle().equals("Module_Overview")) {
+				targetNet = net;
+			}
+		}
+		
+		assertNotNull(targetNet);
+		assertEquals(4, targetNet.getNodeCount());
+		assertEquals(5, targetNet.getEdgeCount());
+		
+		CyNode m1 = Cytoscape.getCyNode("M1");
+		assertNotNull(m1);
+		CyNode m1InOverview = (CyNode) targetNet.getNode(m1.getRootGraphIndex());
+		assertNotNull(m1InOverview);
+		assertTrue(m1InOverview.getIdentifier().equals("M1"));
+		assertNotNull(m1InOverview.getNestedNetwork());
+		assertTrue(m1InOverview.getNestedNetwork() instanceof CyNetwork);
+		assertTrue(((CyNetwork)m1InOverview.getNestedNetwork()).getTitle().equals("M1"));
 	}
 
 	// These tests work and pass, but are commented out because they disturb

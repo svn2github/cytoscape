@@ -340,13 +340,11 @@ public class CytoscapeSessionReader {
 
 		// All listeners should listen to this event to ignore unnecessary events!
 		Cytoscape.firePropertyChange(Integer.toString(Cytoscape.SESSION_OPENED), null, true);
-
-		if (Cytoscape.getDesktop() != null) {
-			Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
-		}
+		
+		Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
 
 		try {
-			unzipSessionFromURL();
+			unzipSessionFromURL(true);
 		} catch (cytoscape.visual.DuplicateCalculatorNameException dcne) {
 			logger.warn("Duplicate VS name found.  It will be ignored...", dcne);
 		}
@@ -363,7 +361,7 @@ public class CytoscapeSessionReader {
 			//logger.debug("restoreOntologyServerStatus: " + (System.currentTimeMillis() - start) + " msec.");
 		}
 
-		restoreNestedNetworkLinks();
+		//restoreNestedNetworkLinks();
 		
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
@@ -444,14 +442,14 @@ public class CytoscapeSessionReader {
 			}
 		}
 	}
-
+	
 	/**
 	 * Decompress session file
 	 *
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	private void unzipSessionFromURL() throws IOException, JAXBException, Exception {
+	private void unzipSessionFromURL(boolean loadVizmap) throws IOException, JAXBException, Exception {
 		extractEntry();
 		logger.info("extractEntry: " + (System.currentTimeMillis() - start) + " msec.");
 
@@ -463,30 +461,29 @@ public class CytoscapeSessionReader {
 			throw e;
 		}
 
-		// restore vizmap.props
-		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null, vizmapFileURL);
-
+		if (loadVizmap) {
+			// restore vizmap.props
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null, vizmapFileURL);
+		}
 		// Restore bookmarks
 		if (bookmarksFileURL != null) {
 			bookmarks = getBookmarksFromZip(bookmarksFileURL);
 			Cytoscape.setBookmarks(bookmarks);
-//			logger.debug("getBookmarksFromZip: " + (System.currentTimeMillis() - start)
-//			                   + " msec.");
 		}
 
-		// restore cytoscape properties
-		// CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
-		// Even though cytoscapePropsURL is probably a local URL, error on the
-		// side of caution and use URLUtil to get the input stream (which
-		// handles proxy servers and cached pages):
+		 /*
+		  * Even though cytoscapePropsURL is probably a local URL, error on the 
+		  * side of caution and use URLUtil to get the input stream (which 
+		  * handles proxy servers and cached pages):
+		  */
 		CytoscapeInit.getProperties().load(URLUtil.getBasicInputStream(cytoscapePropsURL));
 		loadCySession();
-		logger.info("loadCySession: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// restore plugin state files
 		restorePlugnStateFilesFromZip();
-//		logger.debug("restorePlugnStateFilesFromZip: " + (System.currentTimeMillis() - start)
-//		                   + " msec.");
+		
+		// Restore Nested Networks
+		restoreNestedNetworkLinks();
 	}
 
 	private void restorePlugnStateFilesFromZip() {
