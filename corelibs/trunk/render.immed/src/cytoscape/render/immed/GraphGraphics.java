@@ -183,7 +183,12 @@ public final class GraphGraphics {
 	 */
 	public static final byte ARROW_HALF_BOTTOM = -7;
 
-	private static final byte last_arrow_shape = ARROW_HALF_BOTTOM;
+	/**
+	 * 
+	 */
+	public static final byte ARROW_ARROWHEAD = -8;
+
+	private static final byte last_arrow_shape = ARROW_ARROWHEAD;
 
 	/**
 	 * This value is currently 64.
@@ -1726,6 +1731,7 @@ public final class GraphGraphics {
 			break;
 
 		case ARROW_DELTA:
+		case ARROW_ARROWHEAD:
 		case ARROW_DIAMOND:
 		case ARROW_DISC:
 		case ARROW_TEE:
@@ -1748,6 +1754,7 @@ public final class GraphGraphics {
 			break;
 
 		case ARROW_DELTA:
+		case ARROW_ARROWHEAD:
 		case ARROW_DIAMOND:
 		case ARROW_DISC:
 		case ARROW_TEE:
@@ -1955,6 +1962,7 @@ public final class GraphGraphics {
 			switch (arrow0Type) {
 			case ARROW_NONE:
 			case ARROW_DELTA:
+			case ARROW_ARROWHEAD:
 			case ARROW_DIAMOND:
 			case ARROW_DISC:
 			case ARROW_TEE:
@@ -1970,6 +1978,7 @@ public final class GraphGraphics {
 			switch (arrow1Type) {
 			case ARROW_NONE:
 			case ARROW_DELTA:
+			case ARROW_ARROWHEAD:
 			case ARROW_DIAMOND:
 			case ARROW_DISC:
 			case ARROW_TEE:
@@ -2046,6 +2055,16 @@ public final class GraphGraphics {
 			m_path2d.closePath();
 
 			return m_path2d;
+
+		case ARROW_ARROWHEAD:
+			m_path2d.reset();
+			m_path2d.moveTo(-2.0f, -0.5f);
+			m_path2d.quadTo(-1.0f, 0f, 0.0f, 0.0f);
+			m_path2d.quadTo(-1.0f, 0f, -2.0f, 0.5f);
+			m_path2d.closePath();
+
+			return m_path2d;
+
 
 		case ARROW_DIAMOND:
 			m_path2d.reset();
@@ -2143,6 +2162,7 @@ public final class GraphGraphics {
 			return m_path2d;
 
 		case ARROW_DELTA:
+		case ARROW_ARROWHEAD:
 		case ARROW_TEE:
 		case ARROW_HALF_TOP:
 		case ARROW_HALF_BOTTOM:
@@ -2161,6 +2181,7 @@ public final class GraphGraphics {
 			return 0.0d;
 
 		case ARROW_DELTA:
+		case ARROW_ARROWHEAD:
 		case ARROW_DIAMOND:
 			return 2.0d;
 

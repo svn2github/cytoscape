@@ -7,6 +7,7 @@ import static cytoscape.render.immed.GraphGraphics.ARROW_NONE;
 import static cytoscape.render.immed.GraphGraphics.ARROW_TEE;
 import static cytoscape.render.immed.GraphGraphics.ARROW_HALF_TOP;
 import static cytoscape.render.immed.GraphGraphics.ARROW_HALF_BOTTOM;
+import static cytoscape.render.immed.GraphGraphics.ARROW_ARROWHEAD;
 import static cytoscape.render.immed.GraphGraphics.SHAPE_DIAMOND;
 import static cytoscape.render.immed.GraphGraphics.SHAPE_ELLIPSE;
 import static cytoscape.render.immed.GraphGraphics.SHAPE_HEXAGON;
@@ -18,6 +19,7 @@ import static cytoscape.render.immed.GraphGraphics.SHAPE_TRIANGLE;
 import static cytoscape.render.immed.GraphGraphics.SHAPE_VEE;
 import static giny.view.EdgeView.EDGE_COLOR_CIRCLE;
 import static giny.view.EdgeView.EDGE_COLOR_DELTA;
+import static giny.view.EdgeView.EDGE_COLOR_ARROW;
 import static giny.view.EdgeView.EDGE_COLOR_DIAMOND;
 import static giny.view.EdgeView.EDGE_COLOR_T;
 import static giny.view.EdgeView.EDGE_HALF_ARROW_TOP;
@@ -132,6 +134,9 @@ class GinyUtil {
         case ARROW_HALF_BOTTOM:
             return EDGE_HALF_ARROW_BOTTOM;
 
+        case ARROW_ARROWHEAD:
+            return EDGE_COLOR_ARROW;
+
         default:
             return NO_END;
         }
@@ -141,6 +146,9 @@ class GinyUtil {
         switch (ginyType) {
         case NO_END:
         	return ARROW_NONE;
+
+        case EDGE_COLOR_ARROW:
+        	return ARROW_ARROWHEAD;
 
         case EDGE_COLOR_DELTA:
         	return ARROW_DELTA;
