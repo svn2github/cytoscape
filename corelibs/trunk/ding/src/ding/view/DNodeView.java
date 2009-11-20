@@ -80,6 +80,7 @@ public class DNodeView implements NodeView, Label {
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
+	static final double DEFAULT_LABEL_WIDTH = 100.0;
 	DGraphView m_view;
 	final int m_inx; // The FixedGraph index (non-negative).
 	boolean m_selected;
@@ -1382,6 +1383,19 @@ public class DNodeView implements NodeView, Label {
 	public int getNodeLabelAnchor() {
 		synchronized (m_view.m_lock) {
 			return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelNodeAnchor(m_inx, 0));
+		}
+	}
+
+	public double getLabelWidth() {
+		synchronized (m_view.m_lock) {
+			return m_view.m_nodeDetails.labelWidth(m_inx);
+		}
+	}
+
+	public void setLabelWidth(double width) {
+		synchronized (m_view.m_lock) {
+			m_view.m_nodeDetails.overrideLabelWidth(m_inx, width);
+			m_view.m_contentChanged = true;
 		}
 	}
 }

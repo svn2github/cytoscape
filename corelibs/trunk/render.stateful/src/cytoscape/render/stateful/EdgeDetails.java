@@ -390,4 +390,14 @@ public class EdgeDetails {
 	//    */
 	//   public boolean labelHorizontal(final int edge, final int labelInx) {
 	//     return true; }
+
+	/**
+	 * Returns the width of the label. 
+	 * <font color="red">By default this method returns 100.</font>
+	 * Take note of certain constraints specified in
+	 * GraphGraphics.drawEdgeFull().
+	 */
+	public double labelWidth(final int edge) {
+		return 100.0;
+	}
 }

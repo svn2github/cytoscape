@@ -70,6 +70,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	final HashMap m_labelTexts = new HashMap();
 	final HashMap m_labelFonts = new HashMap();
 	final HashMap m_labelPaints = new HashMap();
+	final HashMap m_labelWidths = new HashMap();
 
 	DEdgeDetails(DGraphView view) {
 		m_view = view;
@@ -94,6 +95,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		m_labelTexts.remove(key);
 		m_labelFonts.remove(key);
 		m_labelPaints.remove(key);
+		m_labelWidths.remove(key);
 	}
 
 	/**
@@ -678,4 +680,31 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		else
 			return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
 	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public double labelWidth(int edge) {
+		final Object o = m_labelWidths.get(new Integer(edge));
+
+		if (o == null)
+			return super.labelWidth(edge);
+
+		return ((Double) o).doubleValue();
+	}
+
+	/*
+	 * A negative width value has the special meaning to remove overridden width.
+	 */
+	void overrideLabelWidth(int edge, double width) {
+		if ((width < 0.0) || (width == super.labelWidth(edge)))
+			m_labelWidths.remove(new Integer(edge));
+		else
+			m_labelWidths.put(new Integer(edge), new Double(width));
+	}
+
 }

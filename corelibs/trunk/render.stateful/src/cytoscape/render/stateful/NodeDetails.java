@@ -557,4 +557,13 @@ public class NodeDetails {
 		}
 		return false;
 	}
+
+	/**
+	 * Returns the label width of the node.  By default this method
+	 * returns 100.  Take note of certain constraints specified in
+	 * GraphGraphics.drawNodeFull().
+	 */
+	public double labelWidth(final int node) {
+		return 100.0;
+	}
 }

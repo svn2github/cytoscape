@@ -250,4 +250,7 @@ public interface NodeView  {
   public double getLabelOffsetX();
   public double getLabelOffsetY();
   public int getNodeLabelAnchor();
+
+  public double getLabelWidth();
+  public void setLabelWidth(double width);
 }

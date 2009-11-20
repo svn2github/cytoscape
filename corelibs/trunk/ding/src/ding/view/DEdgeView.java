@@ -1463,4 +1463,29 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 
 		return 0;
 	}
+
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param width DOCUMENT ME!
+	 */
+	public void setLabelWidth(double width) {
+		synchronized (m_view.m_lock) {
+			m_view.m_edgeDetails.overrideLabelWidth(m_inx, width);
+			m_view.m_contentChanged = true;
+		}
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public double getLabelWidth() {
+		synchronized (m_view.m_lock) {
+			return m_view.m_edgeDetails.labelWidth(m_inx);
+		}
+	}
+
 }

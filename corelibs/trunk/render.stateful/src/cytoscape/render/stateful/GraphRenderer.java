@@ -507,6 +507,8 @@ public final class GraphRenderer {
 									final double edgeAnchorPointX;
 									final double edgeAnchorPointY;
 
+									final double edgeLabelWidth = edgeDetails.labelWidth(edge);
+
 									if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_SOURCE) {
 										edgeAnchorPointX = srcXAdj;
 										edgeAnchorPointY = srcYAdj;
@@ -615,23 +617,25 @@ public final class GraphRenderer {
 										throw new IllegalStateException("encountered an invalid EDGE_ANCHOR_* constant: "
 										                                + edgeAnchor);
 
-									TextRenderingUtils.computeTextDimensions(grafx, text, font,
-									                                         fontScaleFactor,
-									                                         (lodBits
-									                                         & LOD_TEXT_AS_SHAPE) != 0,
-									                                         floatBuff3);
-									doubleBuff1[0] = -0.5d * floatBuff3[0];
-									doubleBuff1[1] = -0.5d * floatBuff3[1];
-									doubleBuff1[2] = 0.5d * floatBuff3[0];
-									doubleBuff1[3] = 0.5d * floatBuff3[1];
+									final MeasuredLineCreator measuredText = 
+										new MeasuredLineCreator(text,font,
+										                         grafx.getFontRenderContextFull(),
+										                         fontScaleFactor, 
+										                         (lodBits&LOD_TEXT_AS_SHAPE)!= 0, 
+										                         edgeLabelWidth);
+
+									doubleBuff1[0] = -0.5d * measuredText.getMaxLineWidth();
+									doubleBuff1[1] = -0.5d * measuredText.getTotalHeight(); 
+									doubleBuff1[2] = 0.5d * measuredText.getMaxLineWidth(); 
+									doubleBuff1[3] = 0.5d * measuredText.getTotalHeight(); 
 									lemma_computeAnchor(textAnchor, doubleBuff1, doubleBuff2);
 
 									final double textXCenter = edgeAnchorPointX - doubleBuff2[0]
 									                           + offsetVectorX;
 									final double textYCenter = edgeAnchorPointY - doubleBuff2[1]
 									                           + offsetVectorY;
-									TextRenderingUtils.renderHorizontalText(grafx, text, font,
-									                                        fontScaleFactor,
+									TextRenderingUtils.renderHorizontalText(grafx, measuredText, 
+									                                        font, fontScaleFactor,
 									                                        (float) textXCenter,
 									                                        (float) textYCenter,
 									                                        justify, paint,
@@ -775,6 +779,8 @@ public final class GraphRenderer {
 							else
 								justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER;
 
+							final double nodeLabelWidth = nodeDetails.labelWidth(node);
+
 							doubleBuff1[0] = floatBuff1[0];
 							doubleBuff1[1] = floatBuff1[1];
 							doubleBuff1[2] = floatBuff1[2];
@@ -783,21 +789,21 @@ public final class GraphRenderer {
 
 							final double nodeAnchorPointX = doubleBuff2[0];
 							final double nodeAnchorPointY = doubleBuff2[1];
-							TextRenderingUtils.computeTextDimensions(grafx, text, font,
-							                                         fontScaleFactor,
-							                                         (lodBits & LOD_TEXT_AS_SHAPE) != 0,
-							                                         floatBuff3);
-							doubleBuff1[0] = -0.5d * floatBuff3[0];
-							doubleBuff1[1] = -0.5d * floatBuff3[1];
-							doubleBuff1[2] = 0.5d * floatBuff3[0];
-							doubleBuff1[3] = 0.5d * floatBuff3[1];
+							final MeasuredLineCreator measuredText = new MeasuredLineCreator(
+							    text, font, grafx.getFontRenderContextFull(), fontScaleFactor,
+							    (lodBits & LOD_TEXT_AS_SHAPE) != 0, nodeLabelWidth);
+
+							doubleBuff1[0] = -0.5d * measuredText.getMaxLineWidth();
+							doubleBuff1[1] = -0.5d * measuredText.getTotalHeight();
+							doubleBuff1[2] = 0.5d * measuredText.getMaxLineWidth();
+							doubleBuff1[3] = 0.5d * measuredText.getTotalHeight();
 							lemma_computeAnchor(textAnchor, doubleBuff1, doubleBuff2);
 
 							final double textXCenter = nodeAnchorPointX - doubleBuff2[0]
 							                           + offsetVectorX;
 							final double textYCenter = nodeAnchorPointY - doubleBuff2[1]
 							                           + offsetVectorY;
-							TextRenderingUtils.renderHorizontalText(grafx, text, font,
+							TextRenderingUtils.renderHorizontalText(grafx, measuredText, font,
 							                                        fontScaleFactor,
 							                                        (float) textXCenter,
 							                                        (float) textYCenter, justify,

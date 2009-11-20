@@ -289,4 +289,7 @@ public interface EdgeView  {
   public double getLabelOffsetX();
   public double getLabelOffsetY();
   public int getEdgeLabelAnchor();
+
+  public double getLabelWidth();
+  public void setLabelWidth(double width);
 }

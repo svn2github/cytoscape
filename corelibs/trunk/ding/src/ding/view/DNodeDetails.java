@@ -76,6 +76,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	final HashMap m_labelJustifys = new HashMap();
 	final HashMap m_labelOffsetXs = new HashMap();
 	final HashMap m_labelOffsetYs = new HashMap();
+	final HashMap m_labelWidths = new HashMap();
 
 	DNodeDetails(DGraphView view) {
 		m_view = view;
@@ -97,6 +98,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 		m_labelJustifys.remove(key);
 		m_labelOffsetXs.remove(key);
 		m_labelOffsetYs.remove(key);
+		m_labelWidths.remove(key);
 
 		final Object intr = m_labelCounts.remove(key);
 		final int labelCount = ((intr == null) ? 0 : ((Integer) intr).intValue());
@@ -551,6 +553,32 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_labelJustifys.remove(new Integer(node));
 		else
 			m_labelJustifys.put(new Integer(node), new Integer(justify));
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param node DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public double labelWidth(int node) {
+		final Object o = m_labelWidths.get(new Integer(node));
+
+		if (o == null)
+			return super.labelWidth(node);
+
+		return ((Double) o).doubleValue();
+	}
+
+	/*
+	 * A negative width value has the special meaning to remove overridden width.
+	 */
+	void overrideLabelWidth(int node, double width) {
+		if ((width < 0.0) || (width == super.labelWidth(node)))
+			m_labelWidths.remove(new Integer(node));
+		else
+			m_labelWidths.put(new Integer(node), new Double(width));
 	}
 
 	static byte convertG2ND(int giny) {
