@@ -1,4 +1,4 @@
-<project name="AdvancedNetworkMerge" default="jar" basedir=".">
+<project name="AdvancedNetworkMerge" default="all" basedir=".">
 	<description>Builds, tests, and runs the project AdvancedNetworkMerge.</description>
 	
 	<!-- Advanced Network Merge Plugin Build Script by Jianjiong Gao and Keiichiro Ono -->
@@ -67,6 +67,7 @@
 	<target name="clean" depends="init">
 		<echo message="delete ${build}" />
 		<delete dir="${build}" />
+		<delete file="build.number" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -89,6 +90,10 @@
 			<zipfileset src="${lib}/CyThesaurusService.jar" excludes="META-INF/*" />
 
 		</jar>
+	</target>
+
+	<!-- to be consistent with other plugins -->
+	<target name="all" depends="jar">
 	</target>
 
 </project>
