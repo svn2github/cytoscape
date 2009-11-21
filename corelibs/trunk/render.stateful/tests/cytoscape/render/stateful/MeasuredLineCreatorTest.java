@@ -117,6 +117,36 @@ public class MeasuredLineCreatorTest extends TestCase {
 		assertFalse( ml.get(ml.size()-1).getLine().equals("") );
 	}
 
+	public void testTotalHeight() {
+		mlc = new MeasuredLineCreator("homerbart lisa margesmithers",serif,frc,2.0,false,10);
+		printLines("total height",mlc);
+		double h = mlc.getTotalHeight();
+		double total = 0;
+		for ( MeasuredLine ml : mlc.getMeasuredLines() )
+			total += ml.getHeight();
+
+		assertEquals( total, h, 0.001 ); 
+	}
+
+	public void testRespectFontHeight() {
+		mlc = new MeasuredLineCreator("homerbart lisa margesmithers",serif,frc,2.0,false,10);
+		double h1 = mlc.getTotalHeight();
+		printLines("respect font height 1",mlc);
+		mlc = new MeasuredLineCreator("homerbart lisa margesmithers",sansSerif,frc,2.0,false,10);
+		double h2 = mlc.getTotalHeight();
+		printLines("respect font height 2",mlc);
+
+		assertTrue( h1 < h2 );
+	}
+
+	public void testRespectOverallWidthLimit() {
+		mlc = new MeasuredLineCreator("homer marge bart lisa maggie smithers",
+		                              serif,frc,2.0,false,50.0);
+		double mw = mlc.getMaxLineWidth();
+		printLines("respect overall width",mlc);
+		
+		assertTrue( mw < (50.0*2.0) );
+	}
 
 	private void printLines(String title, MeasuredLineCreator mlx) {
 		System.out.println("------------------------- " + title);
