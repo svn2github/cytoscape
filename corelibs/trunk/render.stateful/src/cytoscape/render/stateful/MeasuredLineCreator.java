@@ -90,7 +90,7 @@ class MeasuredLineCreator {
 		totalHeight = 0;
 		for ( String line : rawLines ) { 
 			final Rectangle2D bounds = calcBounds(line);
-			updateBounds(bounds.getWidth(),bounds.getHeight());
+			updateBounds(bounds.getWidth()*fontScaleFactor,bounds.getHeight()*fontScaleFactor);
 		}
 	}
 
@@ -99,8 +99,8 @@ class MeasuredLineCreator {
 	 * to make sure we do it consistently.
 	 */
 	private void updateBounds(final double newWidth, final double newHeight ) {
-		maxLineWidth = Math.max( maxLineWidth, newWidth * fontScaleFactor );
-		totalHeight += newHeight * fontScaleFactor;
+		maxLineWidth = Math.max( maxLineWidth, newWidth );
+		totalHeight += newHeight;
 	}
 
 	/**
@@ -153,16 +153,19 @@ class MeasuredLineCreator {
 			for (String w : words) {
 				String word = w + " ";	
 				Rectangle2D bounds = calcBounds(word);
-				wordWidth = bounds.getWidth();
-				wordHeight = bounds.getHeight();
+				wordWidth = bounds.getWidth()*fontScaleFactor;
+				wordHeight = bounds.getHeight()*fontScaleFactor;
 
 				// If the current line width plus the new word
 				// width is >= than the label width save the line
 				if (currentWidth + wordWidth >= labelWidth) {
-					measuredLines.add( new MeasuredLine(currentLine.toString(),
-					                                    currentWidth,wordHeight) );
-					updateBounds(currentWidth,wordHeight);
-					currentLine.delete(0,currentLine.length());
+					// only write the string if something is there
+					if ( currentWidth > 0 ) {
+						measuredLines.add( new MeasuredLine(currentLine.toString(),
+					   	                                    currentWidth,wordHeight) );
+						updateBounds(currentWidth,wordHeight);
+						currentLine.delete(0,currentLine.length());
+					}
 
 					// if the word itself is >= the label width,
 					// make the word itself a new line
@@ -184,10 +187,12 @@ class MeasuredLineCreator {
 				}
 			}
 
-			// add the last line
-			measuredLines.add( new MeasuredLine(currentLine.toString(),
-			                                    currentWidth, wordHeight) );
-			updateBounds(currentWidth,wordHeight);
+			// add the last line if there's anything there
+			if ( currentWidth > 0 ) {
+				measuredLines.add( new MeasuredLine(currentLine.toString(),
+			                                        currentWidth, wordHeight) );
+				updateBounds(currentWidth,wordHeight);
+			}
 		}
 	}
 

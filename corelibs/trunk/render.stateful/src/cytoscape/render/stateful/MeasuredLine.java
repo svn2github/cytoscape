@@ -65,6 +65,6 @@ class MeasuredLine {
 	}
 
 	public String toString() {
-		return line + " w:" + width + " h:" + height;
+		return "'" + line + "'  w:" + width + " h:" + height;
 	}
 }
