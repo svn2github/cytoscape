@@ -103,48 +103,16 @@ import cytoscape.render.immed.arrow.*;
 public final class GraphGraphics {
 
 	/**
-	 * 
+	 * Node shape constants
 	 */
 	public static final byte SHAPE_RECTANGLE = 0;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_DIAMOND = 1;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_ELLIPSE = 2;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_HEXAGON = 3;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_OCTAGON = 4;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_PARALLELOGRAM = 5;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_ROUNDED_RECTANGLE = 6;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_TRIANGLE = 7;
-
-	/**
-	 * 
-	 */
 	public static final byte SHAPE_VEE = 8;
 	private static final byte s_last_shape = SHAPE_VEE;
 
@@ -154,47 +122,21 @@ public final class GraphGraphics {
 	public static final int CUSTOM_SHAPE_MAX_VERTICES = 100;
 
 	/**
-	 * 
+	 * Arrow shape constants
 	 */
 	public static final byte ARROW_NONE = -1;
-
-	/**
-	 * 
-	 */
 	public static final byte ARROW_DELTA = -2;
-
-	/**
-	 * 
-	 */
 	public static final byte ARROW_DIAMOND = -3;
-
-	/**
-	 * 
-	 */
 	public static final byte ARROW_DISC = -4;
-
-	/**
-	 * 
-	 */
 	public static final byte ARROW_TEE = -5;
-
-	/**
-	 * 
-	 */
 	public static final byte ARROW_HALF_TOP = -6;
-
-	/**
-	 * 
-	 */
 	public static final byte ARROW_HALF_BOTTOM = -7;
-
-	/**
-	 * 
-	 */
 	public static final byte ARROW_ARROWHEAD = -8;
 
-
-	public static final List<Arrow> arrows;
+	/**
+	 * The list of arrow shape objects.
+	 */
+	private static final List<Arrow> arrows;
 
 	/**
 	 * This value is currently 64.
