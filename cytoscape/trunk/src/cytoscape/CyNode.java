@@ -242,21 +242,47 @@ public class CyNode implements giny.model.Node {
 	 * Assign a graph perspective reference to this node.
 	 */
 	public void setNestedNetwork(final GraphPerspective graphPerspective) {
-		this.graphPerspective = graphPerspective;
+		// Sanity check.
+		if (graphPerspective == this.graphPerspective)
+			return;
 		
 		// create a Node Attribute "nested.network.id" for this Node
-		String networkID = ((CyNetwork) this.graphPerspective).getIdentifier();
+		final String networkID = ((CyNetwork)(graphPerspective == null ? this.graphPerspective
+				                                                        : graphPerspective)).getIdentifier();
+		this.graphPerspective = graphPerspective;
+		
 		Cytoscape.getNodeAttributes().setAttribute(this.getIdentifier(), NESTED_NETWORK_ID_ATTR, networkID);
 		
-		// create a Network Attribute "parent.node.name.list" for the Network		
-		final List<String> nodeNameList = new ArrayList<String>();
-		final int[] indices = this.graphPerspective.getNodeIndicesArray();
-		
-		for (int i=0; i< indices.length; i++){
-			nodeNameList.add(this.graphPerspective.getNode(indices[i]).getIdentifier());
+		// create or update Network Attribute "parent.node.name.list" for the Network	
+		final String[] attributeNames = Cytoscape.getNetworkAttributes().getAttributeNames();
+		boolean attrFound = false;
+		for (String name: attributeNames) {
+			if (name.equals(PARENT_NODES_ATTR)) {
+				attrFound = true;
+				break;
+			}
 		}
+		List<String> parentNodeList;
+		if (!attrFound) {
+			parentNodeList = new ArrayList<String>();
+			parentNodeList.add(this.getIdentifier());
+		} else {
+			parentNodeList = (List<String>) Cytoscape.getNetworkAttributes().getListAttribute(networkID, PARENT_NODES_ATTR);
+			if (this.graphPerspective != null) {
+				parentNodeList.add(this.getIdentifier());
+			} else {
+				parentNodeList.remove(this.getIdentifier());
+			}
+		}
+		Cytoscape.getNetworkAttributes().setListAttribute(networkID, PARENT_NODES_ATTR, parentNodeList);
 		
-		Cytoscape.getNetworkAttributes().setListAttribute(networkID, PARENT_NODES_ATTR, nodeNameList);
+		// Let listeners know nested network was assigned to this node.
+		if (this.graphPerspective == null) {
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_DESTROYED, this, null);
+		} else {
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_CREATED, this, graphPerspective);
+	
+		}
 	}
 	
 		

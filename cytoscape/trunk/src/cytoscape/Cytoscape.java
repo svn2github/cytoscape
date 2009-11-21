@@ -221,6 +221,21 @@ public abstract class Cytoscape {
 	 * internet have been changed.
 	 */
 	public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
+	
+	/**
+	 * Fired every time a nested network is assigned to a node.
+	 * This event contains the following values:
+	 * <ul>
+	 * 	<li>oldValue - CyNode whose nested network was set.
+	 * 	<li>newValue - The network assigned to the node above.
+	 * </ul>
+	 */
+	public static final String NESTED_NETWORK_CREATED = "NESTED_NETWORK_CREATED";
+	
+	/**
+	 * Fired every time a nested network is removed from a node.
+	 */
+	public static final String NESTED_NETWORK_DESTROYED = "NESTED_NETWORK_DESTROYED";
 
 	/**
 	 * When creating a network, use one of the standard suffixes to have it
