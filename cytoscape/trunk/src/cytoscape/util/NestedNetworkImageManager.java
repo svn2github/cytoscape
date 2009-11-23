@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
@@ -46,7 +47,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 		return this.networkToImageMap.size();
 	}
 
-	public void propertyChange(final PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {		
 		if (evt.getPropertyName().equals(Cytoscape.NESTED_NETWORK_CREATED)) {
 			final CyNetwork network = (CyNetwork) evt.getNewValue();
 			if (this.networkToImageMap.containsKey(network)) {
@@ -72,6 +73,10 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 				this.networkToImageMap.remove(network);
 			}
 		}
+	}
+	
+	private void addCustomGraphics(final CyNetwork network, final CyNode parentNode) {
+		
 	}
 	
 	

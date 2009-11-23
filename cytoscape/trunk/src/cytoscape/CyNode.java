@@ -281,7 +281,6 @@ public class CyNode implements giny.model.Node {
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_DESTROYED, this, null);
 		} else {
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_CREATED, this, graphPerspective);
-	
 		}
 	}
 	

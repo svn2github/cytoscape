@@ -49,6 +49,7 @@ import cytoscape.logger.ConsoleLogger;
 import cytoscape.plugin.PluginManager;
 
 import cytoscape.util.FileUtil;
+import cytoscape.util.NestedNetworkImageManager;
 
 import cytoscape.util.shadegrown.WindowUtilities;
 
@@ -159,6 +160,9 @@ public class CytoscapeInit {
 
 			// Build the OntologyServer.
 			Cytoscape.buildOntologyServer();
+			
+			// Instantiate Nested Network Image Manager singleton
+			NestedNetworkImageManager.getNetworkImageGenerator();
 
 			// get the manager so it can test for webstart before menus are
 			// created (little hacky)
@@ -307,7 +311,7 @@ public class CytoscapeInit {
 		long endtime = System.currentTimeMillis() - begintime;
 		logger.info("Cytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
-
+		
 		return true;
 	}
 
