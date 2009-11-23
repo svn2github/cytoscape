@@ -35,6 +35,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 
 	private NestedNetworkImageManager() {
 		networkToImageMap = new HashMap<CyNetwork, ImageAndReferenceCount>();
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 	
 	public Image getImage(final CyNetwork network) {
@@ -46,8 +47,8 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	}
 
 	public void propertyChange(final PropertyChangeEvent evt) {
-		final CyNetwork network = (CyNetwork) evt.getNewValue();
 		if (evt.getPropertyName().equals(Cytoscape.NESTED_NETWORK_CREATED)) {
+			final CyNetwork network = (CyNetwork) evt.getNewValue();
 			if (this.networkToImageMap.containsKey(network)) {
 				this.networkToImageMap.get(network).incRefCount();
 				return;
@@ -64,6 +65,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			}
 			
 		} else if (evt.getPropertyName().equals(Cytoscape.NESTED_NETWORK_DESTROYED)) {
+			final CyNetwork network = (CyNetwork) evt.getNewValue();
 			final ImageAndReferenceCount imageAndRefCount = networkToImageMap.get(network);
 			imageAndRefCount.decRefCount();
 			if (imageAndRefCount.getRefCount() == 0) {
