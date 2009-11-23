@@ -58,6 +58,9 @@
     <ant dir="undo.support"/>
     <copy todir="${build.dir}" file="undo.support/undo.support.jar"/>
 
+    <ant dir="phoebe.dnd"/>
+    <copy todir="${build.dir}" file="phoebe.dnd/phoebe.dnd.jar"/>
+
   </target>
 
   <!-- clean all corelib projects  -->
@@ -78,6 +81,7 @@
     <ant dir="task" target="clean"/>
     <ant dir="util.intr" target="clean"/>
     <ant dir="undo.support" target="clean"/>
+    <ant dir="phoebe.dnd" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 
