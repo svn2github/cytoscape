@@ -54,8 +54,6 @@ import cytoscape.view.CyNetworkView;
 
 import org.freehep.util.export.ExportDialog;
 
-import phoebe.util.*;
-
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import java.awt.print.PageFormat;

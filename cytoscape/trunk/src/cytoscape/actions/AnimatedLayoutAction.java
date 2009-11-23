@@ -47,12 +47,6 @@ import giny.model.*;
 
 import giny.view.*;
 
-import phoebe.*;
-
-import phoebe.event.*;
-
-import phoebe.util.*;
-
 import java.awt.event.ActionEvent;
 
 import java.util.*;
