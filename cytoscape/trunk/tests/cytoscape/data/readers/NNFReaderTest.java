@@ -12,6 +12,7 @@ import cytoscape.Cytoscape;
 
 import junit.framework.TestCase;
 
+
 /**
  * Test code for Nested Network Format file reader.
  * 
@@ -34,7 +35,20 @@ public class NNFReaderTest extends TestCase {
 	}
 
 
+	/**
+	 * Destroys all networks in the root graph.  Please note that the nodes and edges of said networks are also being destroyed.
+	 */
+	private static void destroyNetworksEdgesAndNodes() {
+		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		for (final CyNetwork network : networks) {
+			Cytoscape.destroyNetwork(network, /* destroy_unique = */true);
+		}
+	}
+
+
 	public void testGood1() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good1.nnf");
 		reader.read();
 		
@@ -44,6 +58,8 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood2() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good2.nnf");
 		reader.read();
 		
@@ -53,6 +69,8 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood3() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good3.nnf");
 		reader.read();
 		
@@ -76,6 +94,8 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood4() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good4.nnf");
 		reader.read();
 		
@@ -84,7 +104,7 @@ public class NNFReaderTest extends TestCase {
 		
 		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
 		CyNetwork targetNetwork = null;
-		for (CyNetwork net:networks) {
+		for (CyNetwork net : networks) {
 			if (net.getTitle().equals("M3")) {
 				targetNetwork = net;
 			}
@@ -107,6 +127,8 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood5() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good5.nnf");
 		reader.read();
 		
@@ -116,6 +138,8 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood6() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good6.nnf");
 		reader.read();
 		
@@ -125,6 +149,8 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testBad1() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "bad1.nnf");
 		try {
 			reader.read();
@@ -140,6 +166,8 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testBad2() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "bad2.nnf");
 		try {
 			reader.read();
@@ -151,5 +179,27 @@ public class NNFReaderTest extends TestCase {
 		
 		//If not caught by the above, something is wrong!
 		fail();
+	}
+
+	public void testMultipleFiles() throws Exception {
+		destroyNetworksEdgesAndNodes();
+
+		final NNFReader reader1 = new NNFReader(FILE_LOCATION + "good3.nnf");
+		reader1.read();
+
+		final NNFReader reader2 = new NNFReader(FILE_LOCATION + "good4.nnf");
+		reader2.read();
+		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		CyNetwork targetNetwork = null;
+		for (CyNetwork net : networks) {
+			if (net.getTitle().equals("M3")) {
+				targetNetwork = net;
+			}
+		}
+		
+		assertNotNull(targetNetwork);
+		assertEquals("M3", targetNetwork.getTitle());
+		assertEquals(6, targetNetwork.getNodeCount());
+		assertEquals(4, targetNetwork.getEdgeCount());
 	}
 }

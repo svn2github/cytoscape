@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -38,28 +39,47 @@ public class NNFParser {
 	}
 
 
+	/** Returns the first network with title "networkTitle" or null, if there is no network w/ this title.
+	 */
+	private CyNetwork getNetworkByTitle(final String networkTitle) {
+		Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+		for (final CyNetwork network : networks) {
+			if (network.getTitle().equals(networkTitle))
+				return network;
+		}
+
+		return null;
+	}
+	
+
 	/**
 	 * Parse an entry/line in an NNF file.
 	 * 
 	 * @param line
 	 */
 	public boolean parse(String line) {
-		System.out.println("Current Line: " + line);
-
 		// Split with white space chars
 		parts = line.split("\\s+");
 		length = parts.length;
 
 		CyNetwork network = networkMap.get(parts[0]);
 		if (network == null) {
-			// Create network without view.  View will be created later in class Cytoscape.
-			network = Cytoscape.createNetwork(parts[0], false);
+			// Reuse existing networks, if possible:
+			network = getNetworkByTitle(parts[0]);
+			if (network == null) {
+				// Create network without view.  View will be created later in class Cytoscape.
+				network = Cytoscape.createNetwork(parts[0], /* create_view = */false);
+			}
+
 			networkMap.put(parts[0], network);
 			networks.add(network);
+
 			// Create node attribute called IMMUTABLE_ID
 			Cytoscape.getNetworkAttributes().setAttribute(network.getIdentifier(), IMMUTABLE_ID, network.getIdentifier());
 			Cytoscape.getNetworkAttributes().setUserEditable(IMMUTABLE_ID, false);
-			CyNode parent = Cytoscape.getCyNode(parts[0]);
+
+			// Attempt to nest network within the node with the same name
+			final CyNode parent = Cytoscape.getCyNode(parts[0]);
 			if (parent != null) {
 				parent.setNestedNetwork(network);
 			}
@@ -68,7 +88,7 @@ public class NNFParser {
 		if (length == 2) {
 			final CyNode node = Cytoscape.getCyNode(parts[1], true);
 			network.addNode(node);
-			CyNetwork nestedNetwork = networkMap.get(parts[1]);
+			final CyNetwork nestedNetwork = networkMap.get(parts[1]);
 			if (nestedNetwork != null) {
 				node.setNestedNetwork(nestedNetwork);
 			}
@@ -88,7 +108,8 @@ public class NNFParser {
 				target.setNestedNetwork(nestedNetwork);
 			}
 
-			final CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, parts[2], true);
+			final CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, parts[2], /* create = */true,
+								/* directed = */true);
 			network.addEdge(edge);
 		} else {
 			// Invalid number of columns.
