@@ -39,12 +39,11 @@
 -->
     </style>
 </head>
-<body>
-<div id="container">
-
+<body bgcolor="#ffffff">
 <div id="topbar">
 	<div class="title">Cytoscape 2.x Plugins</div>
 </div>
+<div id="container">
 <?php include "../nav.php"; ?>
 <div align="left">
   <p align="right"><a href="pluginadmin.php">Admin only</a>&nbsp;&nbsp;<a href="plugindownloadstatistics.php">View download activities</a>&nbsp;&nbsp;<a href="pluginsubmittype.php">Submit a plugin</span> to Cytoscape</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</p>
@@ -142,7 +141,7 @@
 	"<p>" .
 	"\n<p><big><b>Writing Your Own Plugins</b></big>" .
 	"\n<p>" . 
-	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial\">" .
+	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://cytoscape.wodaklab.org/wiki/Cytoscape_Plugin_Tutorial\">" .
 	"\nCytoscape Plugin Tutorial</a>" .
 	"\n</p>" . 
 	"\n<p><big><b>Old Plugins</b></big>" .
@@ -161,9 +160,9 @@
 
  ?>
 </div>
+</div>
 </span>
 <?php include "../footer.php"; ?>
 <br>
-</div>
 </body>
 </html>
