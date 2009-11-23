@@ -22,7 +22,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	
 	private static NestedNetworkImageManager networkImageGenerator;
 	
-	private final Map<CyNetwork, Image> networkToImageMap;
+	private final Map<CyNetwork, ImageAndReferenceCount> networkToImageMap;
 	
 	static {
 		networkImageGenerator = new NestedNetworkImageManager();
@@ -34,29 +34,73 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	}
 
 	private NestedNetworkImageManager() {
-		networkToImageMap = new HashMap<CyNetwork, Image>();
+		networkToImageMap = new HashMap<CyNetwork, ImageAndReferenceCount>();
 	}
 	
 	public Image getImage(final CyNetwork network) {
-		return networkToImageMap.get(network);
+		return networkToImageMap.get(network).getImage();
+	}
+	
+	public int getImageCount() {
+		return this.networkToImageMap.size();
 	}
 
 	public void propertyChange(final PropertyChangeEvent evt) {
+		final CyNetwork network = (CyNetwork) evt.getNewValue();
 		if (evt.getPropertyName().equals(Cytoscape.NESTED_NETWORK_CREATED)) {
-			final CyNetwork network = (CyNetwork) evt.getNewValue();
-			final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+			if (this.networkToImageMap.containsKey(network)) {
+				this.networkToImageMap.get(network).incRefCount();
+				return;
+			}
 			
+			final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 			if (view == Cytoscape.getNullNetworkView()) {
 				// View does not exist
-				networkToImageMap.put(network, DEF_IMAGE);
+				networkToImageMap.put(network, new ImageAndReferenceCount(DEF_IMAGE));
 			} else {
 				// Create image from this view.
 				final DGraphView dView = (DGraphView) view;
-				networkToImageMap.put(network, dView.createImage(DEF_WIDTH, DEF_HEIGHT, 1.0));
+				networkToImageMap.put(network, new ImageAndReferenceCount(dView.createImage(DEF_WIDTH, DEF_HEIGHT, 1.0)));
 			}
 			
 		} else if (evt.getPropertyName().equals(Cytoscape.NESTED_NETWORK_DESTROYED)) {
-			// ?
+			final ImageAndReferenceCount imageAndRefCount = networkToImageMap.get(network);
+			imageAndRefCount.decRefCount();
+			if (imageAndRefCount.getRefCount() == 0) {
+				this.networkToImageMap.remove(network);
+			}
+		}
+	}
+	
+	
+	static class ImageAndReferenceCount {
+		private Image image;
+		private int refCount;
+		
+		
+		public ImageAndReferenceCount(final Image image) {
+			this.image = image;
+			this.refCount = 1;
+		}
+		
+		
+		public void incRefCount() {
+			this.refCount++;
+		}
+		
+		
+		public void decRefCount() {
+			this.refCount--;
+		}
+		
+		
+		public int getRefCount() {
+			return refCount;
+		}
+		
+		
+		public Image getImage() {
+			return image;
 		}
 	}
 	

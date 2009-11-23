@@ -9,6 +9,7 @@ import java.util.Set;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.util.TestUtil;
 
 import junit.framework.TestCase;
 
@@ -35,19 +36,8 @@ public class NNFReaderTest extends TestCase {
 	}
 
 
-	/**
-	 * Destroys all networks in the root graph.  Please note that the nodes and edges of said networks are also being destroyed.
-	 */
-	private static void destroyNetworksEdgesAndNodes() {
-		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
-		for (final CyNetwork network : networks) {
-			Cytoscape.destroyNetwork(network, /* destroy_unique = */true);
-		}
-	}
-
-
 	public void testGood1() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good1.nnf");
 		reader.read();
@@ -58,7 +48,7 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood2() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good2.nnf");
 		reader.read();
@@ -69,7 +59,7 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood3() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good3.nnf");
 		reader.read();
@@ -94,7 +84,7 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood4() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good4.nnf");
 		reader.read();
@@ -127,7 +117,7 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood5() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good5.nnf");
 		reader.read();
@@ -138,7 +128,7 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testGood6() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "good6.nnf");
 		reader.read();
@@ -149,7 +139,7 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testBad1() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "bad1.nnf");
 		try {
@@ -166,7 +156,7 @@ public class NNFReaderTest extends TestCase {
 	
 	
 	public void testBad2() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader = new NNFReader(FILE_LOCATION + "bad2.nnf");
 		try {
@@ -182,7 +172,7 @@ public class NNFReaderTest extends TestCase {
 	}
 
 	public void testMultipleFiles() throws Exception {
-		destroyNetworksEdgesAndNodes();
+		TestUtil.destroyNetworksEdgesAndNodes();
 
 		final NNFReader reader1 = new NNFReader(FILE_LOCATION + "good3.nnf");
 		reader1.read();
