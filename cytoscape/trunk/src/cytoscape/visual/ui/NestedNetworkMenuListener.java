@@ -1,5 +1,5 @@
 /*
- File: NodeBypassMenuListener.java
+ File: NestedNetworkMenuListener.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -68,15 +68,23 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 	 * @param nodeView The clicked NodeView
 	 * @param menu popup menu to add the Bypass menu
 	 */
-	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-		
+	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {		
 		if (menu == null){
 			menu = new JPopupMenu();		
 		}
+		JMenu jm = new JMenu("Nested network");
+				
+		final JMenuItem jm1 = new JCheckBoxMenuItem(new SetNestedNetworkMenuItemAction(nodeView));
+		final JMenuItem jm2 = new JCheckBoxMenuItem(new DeleteNestedNetworkMenuItemAction(nodeView));
 
-		final JMenuItem jmi = new JCheckBoxMenuItem(new SetNestedNetworkMenuItemAction(nodeView));
-
-		menu.add(jmi);
+		if (nodeView.getNode().getNestedNetwork() == null){
+			jm2.setEnabled(false);
+		}
+		
+		jm.add(jm1);
+		jm.add(jm2);
+				
+		menu.add(jm);
 	}
 	
 
@@ -95,4 +103,21 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 			dlg.setVisible(true);
 		}
 	}
+
+	//
+	class DeleteNestedNetworkMenuItemAction extends AbstractAction {
+		NodeView nodeView;
+		public DeleteNestedNetworkMenuItemAction(NodeView nodeView){
+			super("Delete Nested Network");
+			this.nodeView = nodeView;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			if (this.nodeView.getNode().getNestedNetwork() == null){
+				return;
+			}
+			this.nodeView.getNode().setNestedNetwork(null);
+		}
+	}
+
 }
