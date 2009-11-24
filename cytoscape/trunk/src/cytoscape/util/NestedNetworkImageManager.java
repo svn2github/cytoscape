@@ -16,9 +16,14 @@ import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import cytoscape.CyNetwork;
@@ -32,7 +37,7 @@ import ding.view.DNodeView;
 
 
 public class NestedNetworkImageManager implements PropertyChangeListener {
-	private static final Image DEF_IMAGE;
+	private final Image DEF_IMAGE;
 	
 	private static final int DEF_WIDTH = 100;
 	private static final int DEF_HEIGHT = 100;
@@ -42,8 +47,12 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	private final Map<CyNetwork, ImageAndReferenceCount> networkToImageMap;
 	
 	static {
-		networkImageGenerator = new NestedNetworkImageManager();
-		DEF_IMAGE = (new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/default_network.png"))).getImage();
+		try {
+			networkImageGenerator = new NestedNetworkImageManager();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	
@@ -52,7 +61,8 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	}
 
 
-	private NestedNetworkImageManager() {
+	private NestedNetworkImageManager() throws IOException {
+		DEF_IMAGE = ImageIO.read(Cytoscape.class.getResource("/cytoscape/images/default_network.png"));
 		networkToImageMap = new HashMap<CyNetwork, ImageAndReferenceCount>();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		
@@ -60,6 +70,11 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	
 	
 	public Image getImage(final CyNetwork network) {
+		
+		System.out.println("!!!!!! Image map size = " + this.networkToImageMap.size() + 
+				", network = " + network + ", val = " + networkToImageMap.get(network));
+		
+		
 		if (networkToImageMap.get(network) == null) {
 			return null;
 		} else {
@@ -91,15 +106,45 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 		} else if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evt.getPropertyName())) {
 			//TODO: Need to sync. image update timing.
 			final CyNetworkView view = (CyNetworkView)evt.getNewValue();
-			final CyNetwork network = view.getNetwork();
-			for (final Object node : network.nodesList()) {
-				final CyNode cyNode = (CyNode)node;
-				final GraphPerspective nestedNetwork = cyNode.getNestedNetwork();
+			final CyNetwork viewNetwork = view.getNetwork();
+			if (networkToImageMap.containsKey(viewNetwork)) {
+				updateImage(viewNetwork, view);
+				refreshViews(viewNetwork);
+			}
+			
+			boolean updateView = false;
+			for (final CyNode node: (List<CyNode>)viewNetwork.nodesList()) {
+				final CyNetwork nestedNetwork = (CyNetwork) node.getNestedNetwork();
 				if (nestedNetwork != null) {
-					updateImage((CyNetwork)nestedNetwork, Cytoscape.getNetworkView(((CyNetwork)nestedNetwork).getIdentifier()));
-					addCustomGraphics(network, Cytoscape.getNetworkView(network.getIdentifier()), cyNode);
+					updateView = true;
+					addCustomGraphics(viewNetwork, view, node);
 				}
 			}
+			if (updateView) {
+				view.updateView();
+			}
+			
+			System.out.println("**** updating network: " + viewNetwork.getTitle());			
+			refreshViews(viewNetwork);
+		}
+	}
+	
+	
+	private void refreshViews(final CyNetwork nestedNetwork) {
+		final List<CyNode> nodes = Cytoscape.getRootGraph().nodesList();
+		final Set<CyNetworkView> updateViews = new HashSet<CyNetworkView>();
+		for (final CyNode node: nodes) {
+			if (node.getNestedNetwork() == nestedNetwork) {
+				for (final CyNetworkView view: Cytoscape.getNetworkViewMap().values()) {
+					if (view.getNodeView(node) != null) {
+						updateViews.add(view);
+					}
+				}
+			}
+		}
+		
+		for (final CyNetworkView view: updateViews) {
+			view.updateView();
 		}
 	}
 
@@ -111,95 +156,27 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			networkToImageMap.put(network, new ImageAndReferenceCount(DEF_IMAGE));
 		} else {
 			// Create image from this view.
-			System.out.println("*************View FOUND for: " + network.getTitle() +" == " + view.getNetwork().getTitle());
 			final DGraphView dView = (DGraphView) view;
-			networkToImageMap.put(network, new ImageAndReferenceCount(dView.createImage(DEF_WIDTH, DEF_HEIGHT, 1.0)));
+			final Image image = dView.createImage(DEF_WIDTH, DEF_HEIGHT, 1.0);
+			System.out.println("*************View FOUND for: " + network.getTitle() +" == " + view.getNetwork().getTitle() + image);
+			networkToImageMap.put(network, new ImageAndReferenceCount(image));
 		}
 	}
 
 	
 	private void addCustomGraphics(final CyNetwork network, final CyNetworkView dView, final CyNode parentNode) {
 		System.out.println("*** Adding custom graphics: Count = " + dView.getNodeViewCount() + " node = " + parentNode.getIdentifier());
-		final Image networkImage = getImage(network);
-		final BufferedImage img = toBufferedImage(networkImage == null ? DEF_IMAGE : networkImage);
+		Image networkImage = getImage(network);
 		final DNodeView nodeView = (DNodeView)dView.getNodeView(parentNode);
 		final Rectangle2D rect = new Rectangle2D.Double(-50.0, -50.0, 50.0, 50.0);
 		
-		System.out.println("*** ADD CUSTOM: " + nodeView);
+		System.out.println("*** ADD CUSTOM: " + nodeView + ", IMG = " + networkImage +", RECT = " + rect);
 		if (nodeView != null) {
-			nodeView.addCustomGraphic(rect, new TexturePaint(img, rect), NodeDetails.ANCHOR_CENTER);
-		}
-	}
-
-
-	private BufferedImage toBufferedImage(Image image) {
-		if (image instanceof BufferedImage) {
-			return (BufferedImage)image;
-	        }
-	    
-	        // This code ensures that all the pixels in the image are loaded
-	        image = new ImageIcon(image).getImage();
-	    
-		// Determine if the image has transparent pixels; for this method's
-		// implementation, see e661 Determining If an Image Has Transparent Pixels
-		boolean hasAlpha = hasAlpha(image);
-	    
-	        // Create a buffered image with a format that's compatible with the screen
-	        BufferedImage bimage = null;
-	        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	        try {
-			// Determine the type of transparency of the new buffered image
-			int transparency = Transparency.OPAQUE;
-			if (hasAlpha) {
-				transparency = Transparency.BITMASK;
+			if (networkImage == null) {
+				networkImage = DEF_IMAGE;
 			}
-	    
-			// Create the buffered image
-			GraphicsDevice gs = ge.getDefaultScreenDevice();
-			GraphicsConfiguration gc = gs.getDefaultConfiguration();
-			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
-	        } catch (final HeadlessException e) {
-			// The system does not have a screen
-	        }
-	    
-	        if (bimage == null) {
-	            // Create a buffered image using the default color model
-	            int type = BufferedImage.TYPE_INT_RGB;
-	            if (hasAlpha) {
-	                type = BufferedImage.TYPE_INT_ARGB;
-	            }
-	            bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
-	        }
-
-		// Copy image to buffered image
-		Graphics g = bimage.createGraphics();
-
-		// Paint the image onto the buffered image
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
-	    
-		return bimage;
-	 }
-
-	 
-	 private boolean hasAlpha(final Image image) {
-		 // If buffered image, the color model is readily available
-		 if (image instanceof BufferedImage) {
-			 BufferedImage bimage = (BufferedImage)image;
-			 return bimage.getColorModel().hasAlpha();
-		 }
-	    
-		 // Use a pixel grabber to retrieve the image's color model;
-		 // grabbing a single pixel is usually sufficient
-	         PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
-		 try {
-			 pg.grabPixels();
-		 } catch (final InterruptedException e) {
-		 }
-	    
-		 // Get the image's color model
-		 ColorModel cm = pg.getColorModel();
-		 return cm.hasAlpha();
+			nodeView.addCustomGraphic(rect, new TexturePaint((BufferedImage) networkImage, rect), NodeDetails.ANCHOR_CENTER);
+		}
 	}
 	
 	
