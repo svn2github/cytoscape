@@ -13,9 +13,7 @@ public class NestedNetworkImageManagerTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-
-		// Instantiate Nested Network Image Manager singleton
-		NestedNetworkImageManager.getNetworkImageGenerator();
+		NestedNetworkImageManager.instantiateNestedNetworkImageManagerSingleton();
 	}
 
 
@@ -35,9 +33,9 @@ public class NestedNetworkImageManagerTest extends TestCase {
 		assertNotNull(m1);
 		assertNotNull(Cytoscape.getCyNode("M2"));
 		assertNotNull(Cytoscape.getCyNode("M3"));
-		assertEquals(3, NestedNetworkImageManager.getNetworkImageGenerator().getImageCount());
+		assertEquals(3, NestedNetworkImageManager.getImageCount());
 
 		m1.setNestedNetwork(null);
-		assertEquals(2, NestedNetworkImageManager.getNetworkImageGenerator().getImageCount());	
+		assertEquals(2, NestedNetworkImageManager.getImageCount());	
 	}
 }

@@ -35,34 +35,28 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	private static final int DEF_WIDTH = 500;
 	private static final int DEF_HEIGHT = 500;
 	
-	private static NestedNetworkImageManager networkImageGenerator;
-	
-	private final Map<CyNetwork, ImageAndReferenceCount> networkToImageMap;
-	
-	static {
-		try {
-			networkImageGenerator = new NestedNetworkImageManager();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	private static NestedNetworkImageManager theNestedNetworkImageManager = null;
+	private static Map<CyNetwork, ImageAndReferenceCount> networkToImageMap;
 
 	
-	public static NestedNetworkImageManager getNetworkImageGenerator() {
-		return networkImageGenerator;
+	public static void instantiateNestedNetworkImageManagerSingleton() {
+		try {
+			if (theNestedNetworkImageManager == null)
+				theNestedNetworkImageManager = new NestedNetworkImageManager();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
 	private NestedNetworkImageManager() throws IOException {
 		DEF_IMAGE = ImageIO.read(Cytoscape.class.getResource("/cytoscape/images/default_network.png"));
-		networkToImageMap = new HashMap<CyNetwork, ImageAndReferenceCount>();
+		NestedNetworkImageManager.networkToImageMap = new HashMap<CyNetwork, ImageAndReferenceCount>();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
-		
 	}
-	
-	
-	public Image getImage(final CyNetwork network) {
+
+
+	private Image getImage(final CyNetwork network) {
 		if (networkToImageMap.get(network) == null) {
 			return null;
 		} else {
@@ -71,8 +65,9 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	}
 	
 	
-	public int getImageCount() {
-		return this.networkToImageMap.size();
+	/** Used for unit tests. */
+	static int getImageCount() {
+		return NestedNetworkImageManager.networkToImageMap.size();
 	}
 
 
