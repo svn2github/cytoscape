@@ -88,16 +88,15 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			if (imageAndRefCount.getRefCount() == 0) {
 				this.networkToImageMap.remove(network);
 			}
-		} else if(CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evt.getPropertyName())) {
+		} else if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evt.getPropertyName())) {
 			//TODO: Need to sync. image update timing.
 			final CyNetworkView view = (CyNetworkView)evt.getNewValue();
 			final CyNetwork network = view.getNetwork();
-			for(Object node: network.nodesList()) {
-				CyNode cyNode = (CyNode) node;
-				GraphPerspective nestedNetwork = cyNode.getNestedNetwork();
+			for (final Object node : network.nodesList()) {
+				final CyNode cyNode = (CyNode)node;
+				final GraphPerspective nestedNetwork = cyNode.getNestedNetwork();
 				if (nestedNetwork != null) {
-					updateImage((CyNetwork) nestedNetwork, Cytoscape.getNetworkView(((CyNetwork)nestedNetwork).getIdentifier()));
-					
+					updateImage((CyNetwork)nestedNetwork, Cytoscape.getNetworkView(((CyNetwork)nestedNetwork).getIdentifier()));
 					addCustomGraphics(network, Cytoscape.getNetworkView(network.getIdentifier()), cyNode);
 				}
 			}
