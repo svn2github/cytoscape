@@ -1,20 +1,9 @@
 package cytoscape.util;
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
-
-import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.TexturePaint;
-import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.PixelGrabber;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -25,11 +14,11 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.layout.CyLayouts;
 import cytoscape.render.stateful.NodeDetails;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -40,8 +29,8 @@ import ding.view.DNodeView;
 public class NestedNetworkImageManager implements PropertyChangeListener {
 	private final Image DEF_IMAGE;
 	
-	private static final int DEF_WIDTH = 100;
-	private static final int DEF_HEIGHT = 100;
+	private static final int DEF_WIDTH = 200;
+	private static final int DEF_HEIGHT = 200;
 	
 	private static NestedNetworkImageManager networkImageGenerator;
 	
@@ -71,13 +60,6 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	
 	
 	public Image getImage(final CyNetwork network) {
-		
-		System.out.println("!!!!!! Image map size = " + this.networkToImageMap.size() + 
-				", network = " + network + ", val = " + networkToImageMap.get(network));
-		for(CyNetwork key:this.networkToImageMap.keySet()) {
-			System.out.println("Key ==> " + key);
-		}
-		
 		if (networkToImageMap.get(network) == null) {
 			return null;
 		} else {
@@ -107,27 +89,29 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 				this.networkToImageMap.remove(network);
 			}
 		} else if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evt.getPropertyName())) {
-			//TODO: Need to sync. image update timing.
 			final CyNetworkView view = (CyNetworkView)evt.getNewValue();
 			final CyNetwork viewNetwork = view.getNetwork();
+			System.out.println("--------- creating : " + viewNetwork.getTitle());
 			if (networkToImageMap.containsKey(viewNetwork)) {
 				updateImage(viewNetwork, view);
 				refreshViews(viewNetwork);
 			}
-			
-			boolean updateView = false;
-			for (final CyNode node: (List<CyNode>)viewNetwork.nodesList()) {
-				final CyNetwork nestedNetwork = (CyNetwork) node.getNestedNetwork();
-				if (nestedNetwork != null) {
-					updateView = true;
-					addCustomGraphics(nestedNetwork, view, node);
-				}
+			refreshView(viewNetwork, view);
+			System.out.println("--------- event handling finished for: " + viewNetwork.getTitle());
+		}
+	}
+	
+	private void refreshView(final CyNetwork viewNetwork, final CyNetworkView view) {
+		boolean updateView = false;
+		for (final CyNode node: (List<CyNode>)viewNetwork.nodesList()) {
+			final CyNetwork nestedNetwork = (CyNetwork) node.getNestedNetwork();
+			if (nestedNetwork != null) {
+				updateView = true;
+				addCustomGraphics(nestedNetwork, view, node);
 			}
-			if (updateView) {
-				view.updateView();
-			}
-			
-			System.out.println("**** updating network: " + viewNetwork.getTitle());			
+		}
+		if (updateView) {
+			view.updateView();
 		}
 	}
 	
@@ -139,14 +123,14 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			if (node.getNestedNetwork() == nestedNetwork) {
 				for (final CyNetworkView view: Cytoscape.getNetworkViewMap().values()) {
 					if (view.getNodeView(node) != null) {
-						updateViews.add(view);
+						updateViews.add(view);						
 					}
 				}
 			}
 		}
 		
 		for (final CyNetworkView view: updateViews) {
-			view.updateView();
+			refreshView(view.getNetwork(), view);
 		}
 	}
 
@@ -158,9 +142,12 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			networkToImageMap.put(network, new ImageAndReferenceCount(DEF_IMAGE));
 		} else {
 			// Create image from this view.
+			view.applyLayout(CyLayouts.getLayout("force-directed"));
 			final DGraphView dView = (DGraphView) view;
+			dView.fitContent();
+			dView.updateView();
 			final Image image = dView.createImage(DEF_WIDTH, DEF_HEIGHT, 1.0);
-			System.out.println("*************View FOUND for: " + network.getTitle() +" == " + view.getNetwork().getTitle() + image);
+			System.out.println("*************View FOUND for: " + network.getTitle() +" == " + view.getNetwork().getNodeCount());
 			networkToImageMap.put(network, new ImageAndReferenceCount(image));
 		}
 	}
@@ -170,15 +157,10 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 		System.out.println("*** Adding custom graphics: Count = " + dView.getNodeViewCount() + " node = " + parentNode.getIdentifier());
 		Image networkImage = getImage(network);
 		final DNodeView nodeView = (DNodeView)dView.getNodeView(parentNode);
-		final Rectangle2D rect = new Rectangle2D.Double(-50.0, -50.0, 50.0, 50.0);
+		final Rectangle2D rect = new Rectangle2D.Double(0.0, 0.0, 200.0, 200.0);
 		
-		System.out.println("*** ADD CUSTOM: " + nodeView + ", IMG = " + networkImage +", RECT = " + rect);
-		if (nodeView != null) {
-			if (networkImage == null) {
-				networkImage = DEF_IMAGE;
-			}
-			nodeView.addCustomGraphic(rect, new TexturePaint((BufferedImage) networkImage, rect), NodeDetails.ANCHOR_CENTER);
-		}
+		System.out.println("*** ADD CUSTOM: " + nodeView);
+		nodeView.addCustomGraphic(rect, new TexturePaint((BufferedImage) networkImage, rect), NodeDetails.ANCHOR_CENTER);
 	}
 	
 	
