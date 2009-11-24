@@ -281,8 +281,7 @@ public class CyNode implements giny.model.Node {
 		Cytoscape.getNetworkAttributes().setListAttribute(networkID, PARENT_NODES_ATTR, parentNodeList);
 		
 		// Let listeners know nested network was assigned to this node.
-		if (this.graphPerspective == null) {
-		} else {
+		if (this.graphPerspective != null) {
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_CREATED, this, graphPerspective);
 		}
 	}
