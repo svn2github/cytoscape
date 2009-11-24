@@ -134,8 +134,8 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 
 
 	private BufferedImage toBufferedImage(Image image) {
-	        if (image instanceof BufferedImage) {
-	            return (BufferedImage)image;
+		if (image instanceof BufferedImage) {
+			return (BufferedImage)image;
 	        }
 	    
 	        // This code ensures that all the pixels in the image are loaded
