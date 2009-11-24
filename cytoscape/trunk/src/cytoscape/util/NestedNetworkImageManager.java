@@ -14,8 +14,8 @@ import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 
+
 public class NestedNetworkImageManager implements PropertyChangeListener {
-	
 	private static final Image DEF_IMAGE;
 	
 	private static final int DEF_WIDTH = 100;
@@ -29,27 +29,32 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 		networkImageGenerator = new NestedNetworkImageManager();
 		DEF_IMAGE = (new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/default_network.png"))).getImage();
 	}
+
 	
 	public static NestedNetworkImageManager getNetworkImageGenerator() {
 		return networkImageGenerator;
 	}
 
+
 	private NestedNetworkImageManager() {
 		networkToImageMap = new HashMap<CyNetwork, ImageAndReferenceCount>();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
+
 	
 	public Image getImage(final CyNetwork network) {
 		return networkToImageMap.get(network).getImage();
 	}
 	
+
 	public int getImageCount() {
 		return this.networkToImageMap.size();
 	}
 
-	public void propertyChange(final PropertyChangeEvent evt) {		
+
+	public void propertyChange(final PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(Cytoscape.NESTED_NETWORK_CREATED)) {
-			final CyNetwork network = (CyNetwork) evt.getNewValue();
+			final CyNetwork network = (CyNetwork)evt.getNewValue();
 			if (this.networkToImageMap.containsKey(network)) {
 				this.networkToImageMap.get(network).incRefCount();
 				return;
@@ -66,7 +71,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			}
 			
 		} else if (evt.getPropertyName().equals(Cytoscape.NESTED_NETWORK_DESTROYED)) {
-			final CyNetwork network = (CyNetwork) evt.getNewValue();
+			final CyNetwork network = (CyNetwork)evt.getNewValue();
 			final ImageAndReferenceCount imageAndRefCount = networkToImageMap.get(network);
 			imageAndRefCount.decRefCount();
 			if (imageAndRefCount.getRefCount() == 0) {
@@ -74,6 +79,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			}
 		}
 	}
+
 	
 	private void addCustomGraphics(final CyNetwork network, final CyNode parentNode) {
 		
