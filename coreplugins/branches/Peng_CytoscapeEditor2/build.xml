@@ -7,7 +7,8 @@
 	<property name="doc.dir" value="${root.dir}/doc"/> 
 	<property name="lib.dir" value="${root.dir}/lib"/>
  	<property name="build.dir" value="${root.dir}/build"/>
-
+	<property name="images.dir" value="${root.dir}/images"/>
+		
 	<property name="cytoscape.dir" value="../../cytoscape"/>
 	<property name="cytoscape.lib.dir" value = "${cytoscape.dir}/lib"/>
 
@@ -79,6 +80,9 @@
 			<fileset dir="${lib.dir}"/>
        		</unjar>
 		<copy todir="${build.dir}/cytoscape/editor" file="plugin.props"/>
+    	<copy todir="${build.dir}">
+            <fileset dir="${images.dir}"/> 
+    	</copy>
 		<jar destfile="${plugin.jar}">
 			<manifest>
 				<attribute name="Cytoscape-Plugin" 
