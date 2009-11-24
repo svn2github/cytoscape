@@ -30,8 +30,8 @@ import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.DNodeView;
 
+
 public class NestedNetworkImageManager implements PropertyChangeListener {
-	
 	private static final Image DEF_IMAGE;
 	
 	private static final int DEF_WIDTH = 100;
@@ -45,10 +45,12 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 		networkImageGenerator = new NestedNetworkImageManager();
 		DEF_IMAGE = (new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/default_network.png"))).getImage();
 	}
+
 	
 	public static NestedNetworkImageManager getNetworkImageGenerator() {
 		return networkImageGenerator;
 	}
+
 
 	private NestedNetworkImageManager() {
 		networkToImageMap = new HashMap<CyNetwork, ImageAndReferenceCount>();
@@ -101,6 +103,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			}
 		}
 	}
+
 	
 	private void updateImage(CyNetwork network, CyNetworkView view) {
 		if (view == Cytoscape.getNullNetworkView()) {
@@ -114,26 +117,23 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			networkToImageMap.put(network, new ImageAndReferenceCount(dView.createImage(DEF_WIDTH, DEF_HEIGHT, 1.0)));
 		}
 	}
+
 	
 	private void addCustomGraphics(final CyNetwork network, final CyNetworkView dView, final CyNode parentNode) {
 		System.out.println("*** Adding custom graphics: Count = " + dView.getNodeViewCount() + " node = " + parentNode.getIdentifier());
-		Image networkImage = getImage(network);
-		BufferedImage img;
-		if (networkImage == null) {
-			img = toBufferedImage(DEF_IMAGE);
-		} else {
-			img = toBufferedImage(networkImage);
-		}
-		
-		DNodeView nodeView =(DNodeView) dView.getNodeView(parentNode);
+		final Image networkImage = getImage(network);
+		final BufferedImage img = toBufferedImage(networkImage == null ? DEF_IMAGE : networkImage);
+		final DNodeView nodeView = (DNodeView)dView.getNodeView(parentNode);
 		final Rectangle2D rect = new Rectangle2D.Double(-50.0, -50.0, 50.0, 50.0);
 		
 		System.out.println("*** ADD CUSTOM: " + nodeView);
-		if(nodeView !=null)
-		nodeView.addCustomGraphic(rect, new TexturePaint(img, rect), NodeDetails.ANCHOR_CENTER);
+		if (nodeView != null) {
+			nodeView.addCustomGraphic(rect, new TexturePaint(img, rect), NodeDetails.ANCHOR_CENTER);
+		}
 	}
-	
-	 public BufferedImage toBufferedImage(Image image) {
+
+
+	private BufferedImage toBufferedImage(Image image) {
 	        if (image instanceof BufferedImage) {
 	            return (BufferedImage)image;
 	        }
@@ -141,27 +141,26 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	        // This code ensures that all the pixels in the image are loaded
 	        image = new ImageIcon(image).getImage();
 	    
-	        // Determine if the image has transparent pixels; for this method's
-	        // implementation, see e661 Determining If an Image Has Transparent Pixels
-	        boolean hasAlpha = hasAlpha(image);
+		// Determine if the image has transparent pixels; for this method's
+		// implementation, see e661 Determining If an Image Has Transparent Pixels
+		boolean hasAlpha = hasAlpha(image);
 	    
 	        // Create a buffered image with a format that's compatible with the screen
 	        BufferedImage bimage = null;
 	        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	        try {
-	            // Determine the type of transparency of the new buffered image
-	            int transparency = Transparency.OPAQUE;
-	            if (hasAlpha) {
-	                transparency = Transparency.BITMASK;
-	            }
+			// Determine the type of transparency of the new buffered image
+			int transparency = Transparency.OPAQUE;
+			if (hasAlpha) {
+				transparency = Transparency.BITMASK;
+			}
 	    
-	            // Create the buffered image
-	            GraphicsDevice gs = ge.getDefaultScreenDevice();
-	            GraphicsConfiguration gc = gs.getDefaultConfiguration();
-	            bimage = gc.createCompatibleImage(
-	                image.getWidth(null), image.getHeight(null), transparency);
-	        } catch (HeadlessException e) {
-	            // The system does not have a screen
+			// Create the buffered image
+			GraphicsDevice gs = ge.getDefaultScreenDevice();
+			GraphicsConfiguration gc = gs.getDefaultConfiguration();
+			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+	        } catch (final HeadlessException e) {
+			// The system does not have a screen
 	        }
 	    
 	        if (bimage == null) {
@@ -172,39 +171,40 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	            }
 	            bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
 	        }
+
+		// Copy image to buffered image
+		Graphics g = bimage.createGraphics();
+
+		// Paint the image onto the buffered image
+		g.drawImage(image, 0, 0, null);
+		g.dispose();
 	    
-	        // Copy image to buffered image
-	        Graphics g = bimage.createGraphics();
-	    
-	        // Paint the image onto the buffered image
-	        g.drawImage(image, 0, 0, null);
-	        g.dispose();
-	    
-	        return bimage;
-	    }
+		return bimage;
+	 }
+
 	 
-	 public boolean hasAlpha(Image image) {
-	        // If buffered image, the color model is readily available
-	        if (image instanceof BufferedImage) {
-	            BufferedImage bimage = (BufferedImage)image;
-	            return bimage.getColorModel().hasAlpha();
-	        }
+	 private boolean hasAlpha(final Image image) {
+		 // If buffered image, the color model is readily available
+		 if (image instanceof BufferedImage) {
+			 BufferedImage bimage = (BufferedImage)image;
+			 return bimage.getColorModel().hasAlpha();
+		 }
 	    
-	        // Use a pixel grabber to retrieve the image's color model;
-	        // grabbing a single pixel is usually sufficient
+		 // Use a pixel grabber to retrieve the image's color model;
+		 // grabbing a single pixel is usually sufficient
 	         PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
-	        try {
-	            pg.grabPixels();
-	        } catch (InterruptedException e) {
-	        }
+		 try {
+			 pg.grabPixels();
+		 } catch (final InterruptedException e) {
+		 }
 	    
-	        // Get the image's color model
-	        ColorModel cm = pg.getColorModel();
-	        return cm.hasAlpha();
-	    }
+		 // Get the image's color model
+		 ColorModel cm = pg.getColorModel();
+		 return cm.hasAlpha();
+	}
 	
 	
-	static class ImageAndReferenceCount {
+	private static class ImageAndReferenceCount {
 		private Image image;
 		private int refCount;
 		
