@@ -1,6 +1,7 @@
 package cytoscape.util;
 
 import giny.model.GraphPerspective;
+import giny.model.Node;
 
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
@@ -73,7 +74,9 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 		
 		System.out.println("!!!!!! Image map size = " + this.networkToImageMap.size() + 
 				", network = " + network + ", val = " + networkToImageMap.get(network));
-		
+		for(CyNetwork key:this.networkToImageMap.keySet()) {
+			System.out.println("Key ==> " + key);
+		}
 		
 		if (networkToImageMap.get(network) == null) {
 			return null;
@@ -117,7 +120,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 				final CyNetwork nestedNetwork = (CyNetwork) node.getNestedNetwork();
 				if (nestedNetwork != null) {
 					updateView = true;
-					addCustomGraphics(viewNetwork, view, node);
+					addCustomGraphics(nestedNetwork, view, node);
 				}
 			}
 			if (updateView) {
@@ -125,7 +128,6 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			}
 			
 			System.out.println("**** updating network: " + viewNetwork.getTitle());			
-			refreshViews(viewNetwork);
 		}
 	}
 	
