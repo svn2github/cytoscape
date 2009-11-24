@@ -32,8 +32,8 @@ import ding.view.DNodeView;
 public class NestedNetworkImageManager implements PropertyChangeListener {
 	private final Image DEF_IMAGE;
 	
-	private static final int DEF_WIDTH = 200;
-	private static final int DEF_HEIGHT = 200;
+	private static final int DEF_WIDTH = 500;
+	private static final int DEF_HEIGHT = 500;
 	
 	private static NestedNetworkImageManager networkImageGenerator;
 	
@@ -189,7 +189,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	private void addCustomGraphics(final CyNetwork nestedNetwork, final CyNetworkView networkView, final CyNode parentNode) {
 		Image networkImage = getImage(nestedNetwork);
 		final DNodeView nodeView = (DNodeView)networkView.getNodeView(parentNode);
-		final Rectangle2D rect = new Rectangle2D.Double(0.0, 0.0, 200.0, 200.0);
+		final Rectangle2D rect = new Rectangle2D.Double(-DEF_WIDTH/2, -DEF_HEIGHT/2, DEF_WIDTH, DEF_HEIGHT);		
 		nodeView.addCustomGraphic(rect, new TexturePaint((BufferedImage) networkImage, rect), NodeDetails.ANCHOR_CENTER);
 	}
 	
