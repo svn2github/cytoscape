@@ -117,6 +117,9 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 				return;
 			}
 			this.nodeView.getNode().setNestedNetwork(null);
+			
+			// also delete attribute for this nested network
+			Cytoscape.getNodeAttributes().deleteAttribute(this.nodeView.getNode().getIdentifier(), cytoscape.CyNode.NESTED_NETWORK_ID_ATTR);
 		}
 	}
 
