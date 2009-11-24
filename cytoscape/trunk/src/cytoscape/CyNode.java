@@ -47,12 +47,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// Package visible class.
 /**
  *
  */
 public class CyNode implements giny.model.Node {
-	
 	public static final String NESTED_NETWORK_ID_ATTR = "nested_network_id";
 	public static final String PARENT_NODES_ATTR = "parent_nodes";
 	
@@ -70,7 +68,7 @@ public class CyNode implements giny.model.Node {
 	 * @param root  DOCUMENT ME!
 	 * @param rootGraphIndex  DOCUMENT ME!
 	 */
-	public CyNode(RootGraph root, int rootGraphIndex) {
+	public CyNode(final RootGraph root, final int rootGraphIndex) {
 		this.m_rootGraph = (CytoscapeFingRootGraph) root;
 		this.m_rootGraphIndex = rootGraphIndex;
 		this.m_identifier = new Integer(m_rootGraphIndex).toString();
@@ -149,7 +147,7 @@ public class CyNode implements giny.model.Node {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setIdentifier(String new_id) {
+	public boolean setIdentifier(final String new_id) {
 		if (new_id == null) {
 			m_rootGraph.setNodeIdentifier(m_identifier, 0);
 		} else {
@@ -167,7 +165,7 @@ public class CyNode implements giny.model.Node {
 	 *
 	 * @param group CyGroup to add this group to
 	 */
-	public void addToGroup(CyGroup group) {
+	public void addToGroup(final CyGroup group) {
 		// We want to create this lazily to avoid any unnecessary performance/memory
 		// hits on CyNodes!
 		if (groupList == null)
@@ -185,7 +183,7 @@ public class CyNode implements giny.model.Node {
 	 *
 	 * @param group CyGroup to remove this group from
 	 */
-	public void removeFromGroup(CyGroup group) {
+	public void removeFromGroup(final CyGroup group) {
 		groupList.remove(group);
 		groupList.trimToSize();
 
