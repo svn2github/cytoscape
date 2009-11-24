@@ -215,6 +215,8 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static final String NODE_TYPE = "NODE_TYPE";
 
+	public static final String NETWORK_TYPE = "NETWORK_TYPE";
+	
 	// MLC 08/06/06 TODO: This should not be here!:
 	/**
 	 * attribute used for BioPAX-like editor
@@ -246,7 +248,7 @@ public abstract class CytoscapeEditorManager {
 
 
 	// AJK: 12/06/06: flag for "logging" diagnostic output
-	private static boolean loggingEnabled = false;
+	private static boolean loggingEnabled = true;
 
 	private static CyLogger logger = null;
 
@@ -369,7 +371,7 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void register(String editorName) {
 		register(editorName, "BasicNetworkEventHandler", CytoscapeEditorManager.NODE_TYPE,
-		         CytoscapeEditorManager.EDGE_TYPE, CytoscapeEditorManager.ANY_VISUAL_STYLE);
+		         CytoscapeEditorManager.EDGE_TYPE, CytoscapeEditorManager.NETWORK_TYPE, CytoscapeEditorManager.ANY_VISUAL_STYLE);
 	}
 
 	/**
@@ -385,7 +387,7 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void register(String editorName, String networkEditAdapterName) {
 		register(editorName, networkEditAdapterName, CytoscapeEditorManager.NODE_TYPE,
-		         CytoscapeEditorManager.EDGE_TYPE, CytoscapeEditorManager.ANY_VISUAL_STYLE);
+		         CytoscapeEditorManager.EDGE_TYPE, CytoscapeEditorManager.NETWORK_TYPE, CytoscapeEditorManager.ANY_VISUAL_STYLE);
 	}
 
 	/**
@@ -405,7 +407,7 @@ public abstract class CytoscapeEditorManager {
 	public static void register(String editorName, String networkEditAdapterName,
 	                            String visualStyleName) {
 		register(editorName, networkEditAdapterName, CytoscapeEditorManager.NODE_TYPE,
-		         CytoscapeEditorManager.EDGE_TYPE, visualStyleName);
+		         CytoscapeEditorManager.EDGE_TYPE, CytoscapeEditorManager.NETWORK_TYPE, visualStyleName);
 	}
 
 	/**
@@ -427,9 +429,9 @@ public abstract class CytoscapeEditorManager {
 	 *
 	 */
 	public static void register(String editorName, String networkEditAdapterName,
-	                            String controllingNodeAttribute, String controllingEdgeAttribute) {
+	                            String controllingNodeAttribute, String controllingEdgeAttribute, String controllingNetworkAttribute) {
 		register(editorName, networkEditAdapterName, controllingNodeAttribute,
-		         controllingEdgeAttribute, CytoscapeEditorManager.ANY_VISUAL_STYLE);
+		         controllingEdgeAttribute, controllingNetworkAttribute, CytoscapeEditorManager.ANY_VISUAL_STYLE);
 	}
 
 	/**
@@ -454,7 +456,7 @@ public abstract class CytoscapeEditorManager {
 	 *
 	 */
 	public static void register(String editorName, String networkEditAdapterName,
-	                            String controllingNodeAttribute, String controllingEdgeAttribute,
+	                            String controllingNodeAttribute, String controllingEdgeAttribute, String controllingNetworkAttribute,
 	                            String visualStyleName) {
 	    // ASSUME: We have been initialized() before register() is ever called.
 	    logger.debug ("BEGIN CEM.register()");
@@ -471,6 +473,7 @@ public abstract class CytoscapeEditorManager {
 			                           + controllingEdgeAttribute);
 			cyEditor.setControllingNodeAttribute(controllingNodeAttribute);
 			cyEditor.setControllingEdgeAttribute(controllingEdgeAttribute);
+			cyEditor.setControllingNetworkAttribute(controllingNetworkAttribute);
 			CytoscapeEditorManager.log("now controlling attributes for editor " + cyEditor);
 			CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute() + " and "
 						   + cyEditor.getControllingEdgeAttribute());

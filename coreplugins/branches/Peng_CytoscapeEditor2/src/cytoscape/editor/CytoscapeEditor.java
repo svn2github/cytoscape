@@ -350,6 +350,12 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 */
 	public void setControllingNodeAttribute(String controllingNodeAttribute);
 
+	
+	public String getControllingNetworkAttribute();
+	
+	public void setControllingNetworkAttribute(String controllingNetworkAttribute);
+
+	
 	/**
 	 *
 	 * @return the network event handler that is associated with this editor
