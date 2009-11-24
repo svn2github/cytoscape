@@ -35,6 +35,7 @@ package coreCommands.namespaces.network;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandNamespace;
@@ -55,11 +56,10 @@ import java.io.File;
 import java.io.FileWriter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import coreCommands.namespaces.AbstractCommand;
 
 /**
  * XXX FIXME XXX Description 
@@ -83,13 +83,12 @@ public class ExportNetwork extends AbstractCommand {
 	static String SIF = "sif";
 
 	public ExportNetwork(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(EXPORT, NAME , CURRENT);
-		addSetting(EXPORT, FILE);
-		addSetting(EXPORT, TYPE, XGMML);
+		addArgument(EXPORT, NAME , CURRENT);
+		addArgument(EXPORT, FILE);
+		addArgument(EXPORT, TYPE, XGMML);
 	}
 
 
@@ -100,6 +99,10 @@ public class ExportNetwork extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return EXPORT; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

@@ -33,6 +33,7 @@
 package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -47,6 +48,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,24 +63,23 @@ public class LayoutNamespace extends AbstractCommand {
 	private static String DEFAULT = "default";
 
 	protected LayoutNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(GETCURRENT);
-		addSetting(GETDEFAULT);
-		addSetting(DEFAULT);
+		addArgument(GETCURRENT);
+		addArgument(GETDEFAULT);
+		addArgument(DEFAULT);
 
 		// Get the list of layouts from the layout manager
 		for (CyLayoutAlgorithm alg: CyLayouts.getAllLayouts()) {
 			String layout = alg.getName();
 			LayoutProperties props = alg.getSettings();
 			if (props == null) {
-				addSetting(layout);
+				addArgument(layout);
 				continue;
 			}
 			for (Tunable t: props.getTunables())
-				addSetting(layout, t);
+				addArgument(layout, t);
 		}
 	}
 
@@ -90,6 +91,10 @@ public class LayoutNamespace extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return LAYOUT; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

@@ -37,6 +37,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -49,6 +50,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,27 +80,26 @@ public class NetworkViewNamespace extends AbstractCommand {
 	static String SCALE = "scale";
 
 	public NetworkViewNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(CREATE, NETWORK, CURRENT);
-		addSetting(GETCURRENT);
-		// addSetting("get size", "network", "current");
-		addSetting(FIT, NETWORK, CURRENT);
-		addSetting(FOCUS, NODELIST);
-		addSetting(FOCUS, NETWORK, CURRENT);
-		addSetting(LIST);
-		addSetting(MAKECURRENT, NETWORK);
-		// addSetting("set window", "network", "current");
-		// addSetting("set window", "x");
-		// addSetting("set window", "y");
-		// addSetting("set window", "height");
-		// addSetting("set window", "width");
-		addSetting(UPDATE, NETWORK, CURRENT);
-		addSetting(ZOOM, FACTOR, "2.0");
-		addSetting(ZOOM, SCALE);
-		addSetting(ZOOM, NETWORK, CURRENT);
+		addArgument(CREATE, NETWORK, CURRENT);
+		addArgument(GETCURRENT);
+		// addArgument("get size", "network", "current");
+		addArgument(FIT, NETWORK, CURRENT);
+		addArgument(FOCUS, NODELIST);
+		addArgument(FOCUS, NETWORK, CURRENT);
+		addArgument(LIST);
+		addArgument(MAKECURRENT, NETWORK);
+		// addArgument("set window", "network", "current");
+		// addArgument("set window", "x");
+		// addArgument("set window", "y");
+		// addArgument("set window", "height");
+		// addArgument("set window", "width");
+		addArgument(UPDATE, NETWORK, CURRENT);
+		addArgument(ZOOM, FACTOR, "2.0");
+		addArgument(ZOOM, SCALE);
+		addArgument(ZOOM, NETWORK, CURRENT);
 	}
 
 
@@ -109,6 +110,10 @@ public class NetworkViewNamespace extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return NETWORKVIEW; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
@@ -169,7 +174,7 @@ public class NetworkViewNamespace extends AbstractCommand {
 				result.addMessage("networkview: focused '"+net.getIdentifier()+"' on selected nodes/edges");
 			} else {
 				// get the list of nodes
-				List<CyNode> nodeList = getNodeList(net, result, args);
+				List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
 
 				// Remember our currently selected nodes and edges
 				List<CyNode>selNodes = new ArrayList(net.getSelectedNodes());

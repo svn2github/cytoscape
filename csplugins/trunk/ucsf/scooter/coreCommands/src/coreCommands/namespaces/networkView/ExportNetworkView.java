@@ -37,6 +37,8 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -58,13 +60,13 @@ import ding.view.DGraphView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import coreCommands.namespaces.AbstractCommand;
 
 /**
  * XXX FIXME XXX Description 
@@ -89,14 +91,13 @@ public class ExportNetworkView extends AbstractCommand {
 	private static String BMP = "bmp";
 
 	public ExportNetworkView(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(EXPORT, FILE);
-		addSetting(EXPORT, NETWORK, CURRENT);
-		addSetting(EXPORT, TYPE, PNG);
-		addSetting(EXPORT, ZOOM, "1.0");
+		addArgument(EXPORT, FILE);
+		addArgument(EXPORT, NETWORK, CURRENT);
+		addArgument(EXPORT, TYPE, PNG);
+		addArgument(EXPORT, ZOOM, "1.0");
 	}
 
 
@@ -107,6 +108,10 @@ public class ExportNetworkView extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return EXPORT; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

@@ -34,6 +34,7 @@ package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -44,6 +45,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +57,8 @@ import java.util.Properties;
 public class QuitNamespace extends AbstractCommand {
 
 	public QuitNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
-		addSetting("");
+		super(ns);
+		addArgument("");
 	}
 
 
@@ -68,11 +70,14 @@ public class QuitNamespace extends AbstractCommand {
 	 */
 	public String getHandlerName() { return namespace.getNamespaceName(); }
 
-	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
-		CyCommandResult result = new CyCommandResult();
-
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		System.exit(0);
-		return result;
+		return null;
+	}
+
+	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
+		System.exit(0);
+		return null;
 	}
 
 	public static CyCommandHandler register(String namespace) throws RuntimeException {

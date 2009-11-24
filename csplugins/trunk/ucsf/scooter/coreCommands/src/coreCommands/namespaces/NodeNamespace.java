@@ -35,6 +35,7 @@ package coreCommands.namespaces;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -76,27 +77,26 @@ public class NodeNamespace extends AbstractCommand {
 	private static String TYPE = "type";
 
 	public NodeNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(DESELECT, NODE);
-		addSetting(DESELECT, NODELIST);
-		// addSetting("export attributes", "file");
-		// addSetting("export attributes", "attribute");
-		// addSetting("find", "expression");
-		addSetting(GETATTR, NODE);
-		addSetting(GETATTR, NODELIST);
-		addSetting(GETATTR, NAME);
-		addSetting(GETSEL, NETWORK, "current");
-		addSetting(IMPORTATTR, FILE);
-		addSetting(SELECT, NODE);
-		addSetting(SELECT, NODELIST);
-		addSetting(SETATTR, NODE);
-		addSetting(SETATTR, NODELIST);
-		addSetting(SETATTR, NAME);
-		addSetting(SETATTR, VALUE);
-		addSetting(SETATTR, TYPE);
+		addArgument(DESELECT, NODE);
+		addArgument(DESELECT, NODELIST);
+		// addArgument("export attributes", "file");
+		// addArgument("export attributes", "attribute");
+		// addArgument("find", "expression");
+		addArgument(GETATTR, NODE);
+		addArgument(GETATTR, NODELIST);
+		addArgument(GETATTR, NAME);
+		addArgument(GETSEL, NETWORK, "current");
+		addArgument(IMPORTATTR, FILE);
+		addArgument(SELECT, NODE);
+		addArgument(SELECT, NODELIST);
+		addArgument(SETATTR, NODE);
+		addArgument(SETATTR, NODELIST);
+		addArgument(SETATTR, NAME);
+		addArgument(SETATTR, VALUE);
+		addArgument(SETATTR, TYPE);
 	}
 
 
@@ -107,6 +107,10 @@ public class NodeNamespace extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return NODE; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
@@ -131,7 +135,7 @@ public class NodeNamespace extends AbstractCommand {
 		// Select some ndoes
 		} else if (SELECT.equals(command)) {
 			CyNetwork net = getNetwork(command, args);
-			List<CyNode> nodeList = getNodeList(net, result, args);
+			List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
 			if (nodeList == null)
 				throw new CyCommandException("node: nothing to select");
 			net.setSelectedNodeState(nodeList, true);
@@ -144,7 +148,7 @@ public class NodeNamespace extends AbstractCommand {
 		} else if (DESELECT.equals(command)) {
 			CyNetwork net = getNetwork(command, args);
 			try {
-				List<CyNode> nodeList = getNodeList(net, result, args);
+				List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
 				if (nodeList == null)
 					throw new CyCommandException("node: nothing to deselect");
 
@@ -177,7 +181,7 @@ public class NodeNamespace extends AbstractCommand {
 			else if (nodeAttributes.getType(attrName) == CyAttributes.TYPE_UNDEFINED)
 				throw new CyCommandException("node: attribute 'name' does not exist");
 
-			List<CyNode> nodeList = getNodeList(net, result, args);
+			List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
 			if (nodeList == null)
 				nodeList = net.nodesList();
 
@@ -201,7 +205,7 @@ public class NodeNamespace extends AbstractCommand {
 			if (attrName == null || value == null)
 				throw new CyCommandException("node: attribute 'name' and 'value' are required");
 
-			List<CyNode> nodeList = getNodeList(net, result, args);
+			List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
 			if (nodeList == null)
 				nodeList = net.nodesList();
 

@@ -34,6 +34,7 @@ package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -44,6 +45,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,14 +65,13 @@ public class PropertyNamespace extends AbstractCommand {
 	static String VALUE = "value";
 
 	public PropertyNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(SET, NAME);
-		addSetting(SET, VALUE);
-		addSetting(GET, NAME);
-		addSetting(CLEAR, NAME);
+		addArgument(SET, NAME);
+		addArgument(SET, VALUE);
+		addArgument(GET, NAME);
+		addArgument(CLEAR, NAME);
 	}
 
 
@@ -81,6 +82,10 @@ public class PropertyNamespace extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return PROPERTY; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

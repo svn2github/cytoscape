@@ -33,6 +33,7 @@
 package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -47,6 +48,7 @@ import cytoscape.visual.VisualStyle;
 
 import java.io.File;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,13 +69,12 @@ public class VizMapNamespace extends AbstractCommand {
 	static String FILE = "file";
 
 	public VizMapNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(APPLY, STYLE, "default");
+		addArgument(APPLY, STYLE, "default");
 
-		addSetting(IMPORT, FILE, null);
+		addArgument(IMPORT, FILE, null);
 	}
 
 
@@ -84,6 +85,10 @@ public class VizMapNamespace extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return VIZMAP; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

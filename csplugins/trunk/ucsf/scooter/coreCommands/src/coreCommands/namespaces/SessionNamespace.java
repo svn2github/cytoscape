@@ -33,6 +33,7 @@
 package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -47,6 +48,7 @@ import cytoscape.view.CyNetworkView;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,12 +66,12 @@ public class SessionNamespace extends AbstractCommand {
 	static String FILE = "file";
 
 	public SessionNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
+
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(OPEN, FILE);
-		addSetting(NEW);
-		addSetting(SAVE, FILE);
+		addArgument(OPEN, FILE);
+		addArgument(NEW);
+		addArgument(SAVE, FILE);
 	}
 
 
@@ -80,6 +82,10 @@ public class SessionNamespace extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return SESSION; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();

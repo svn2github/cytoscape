@@ -35,6 +35,7 @@ package coreCommands.namespaces;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.command.AbstractCommand;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -76,26 +77,25 @@ public class EdgeNamespace extends AbstractCommand {
 	private static String VALUE = "value";
 
 	protected EdgeNamespace(CyCommandNamespace ns) {
-		this.namespace = ns;
+		super(ns);
 
 		// Define our subcommands
-		settingsMap = new HashMap();
-		addSetting(DESELECT, EDGE);
-		addSetting(DESELECT, EDGELIST);
-		// addSetting("export attributes", "file");
-		// addSetting("export attributes", "attribute");
-		// addSetting("find", "expression");
-		addSetting(GETATTR, EDGE);
-		addSetting(GETATTR, EDGELIST);
-		addSetting(GETATTR, NAME);
-		addSetting(GETSEL, NETWORK, "current");
-		addSetting(IMPORTATTR, FILE);
-		addSetting(SELECT, EDGE);
-		addSetting(SELECT, EDGELIST);
-		addSetting(SETATTR, EDGE);
-		addSetting(SETATTR, EDGELIST);
-		addSetting(SETATTR, NAME);
-		addSetting(SETATTR, VALUE);
+		addArgument(DESELECT, EDGE);
+		addArgument(DESELECT, EDGELIST);
+		// addArgument("export attributes", "file");
+		// addArgument("export attributes", "attribute");
+		// addArgument("find", "expression");
+		addArgument(GETATTR, EDGE);
+		addArgument(GETATTR, EDGELIST);
+		addArgument(GETATTR, NAME);
+		addArgument(GETSEL, NETWORK, "current");
+		addArgument(IMPORTATTR, FILE);
+		addArgument(SELECT, EDGE);
+		addArgument(SELECT, EDGELIST);
+		addArgument(SETATTR, EDGE);
+		addArgument(SETATTR, EDGELIST);
+		addArgument(SETATTR, NAME);
+		addArgument(SETATTR, VALUE);
 
 		// Handle table import????
 	}
@@ -108,6 +108,10 @@ public class EdgeNamespace extends AbstractCommand {
 	 * @return name of the command
 	 */
 	public String getHandlerName() { return EDGE; }
+
+	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		return execute(command, createKVMap(args));
+	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
