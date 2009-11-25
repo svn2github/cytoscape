@@ -534,6 +534,7 @@ public class DGraphView implements GraphView, Printable {
 		m_lis[0] = GraphViewChangeListenerChain.add(m_lis[0], l);
 	}
 
+
 	/**
 	 * Remove GraphViewChangeListener from linked list of GraphViewChangeListeners.
 	 * AAAAAARRRGGGGHHHHHH!!!!
@@ -544,21 +545,23 @@ public class DGraphView implements GraphView, Printable {
 		m_lis[0] = GraphViewChangeListenerChain.remove(m_lis[0], l);
 	}
 
+
 	/**
 	 * Sets the background color on the canvas.
 	 *
 	 * @param paint The Paint (color) to apply to the background.
 	 */
-	public void setBackgroundPaint(Paint paint) {
+	public void setBackgroundPaint(final Paint paint) {
 		synchronized (m_lock) {
 			if (paint instanceof Color) {
-				m_backgroundCanvas.setBackground((Color) paint);
+				m_backgroundCanvas.setBackground((Color)paint);
 				m_contentChanged = true;
 			} else {
-				System.out.println("DGraphView.setBackgroundPaint(), Color not found!");
+				System.out.println("DGraphView.setBackgroundPaint(): Paint argument must be a Color instance!");
 			}
 		}
 	}
+
 
 	/**
 	 * Returns the background color on the canvas.
@@ -569,6 +572,7 @@ public class DGraphView implements GraphView, Printable {
 		return m_backgroundCanvas.getBackground();
 	}
 
+
 	/**
 	 * Returns the InnerCanvas object.  The InnerCanvas object is the actual component
 	 * that the network is rendered on.
@@ -578,6 +582,7 @@ public class DGraphView implements GraphView, Printable {
 	public Component getComponent() {
 		return m_networkCanvas;
 	}
+
 
 	/**
 	 * Adds a NodeView object to the GraphView. Creates NodeView if one doesn't already exist.
@@ -611,6 +616,7 @@ public class DGraphView implements GraphView, Printable {
 		return newView;
 	}
 
+
 	/**
 	 * Should synchronize around m_lock.
 	 */
@@ -640,6 +646,7 @@ public class DGraphView implements GraphView, Printable {
 
 		return newView;
 	}
+
 
 	/**
 	 * Adds EdgeView to the GraphView.
@@ -716,6 +723,7 @@ public class DGraphView implements GraphView, Printable {
 		return edgeView;
 	}
 
+
 	/**
 	 * Will thrown an UnsupportedOperationException. Don't use this.
 	 *
@@ -727,6 +735,7 @@ public class DGraphView implements GraphView, Printable {
 	public EdgeView addEdgeView(String className, int edgeInx) {
 		throw new UnsupportedOperationException("not implemented");
 	}
+
 
 	/**
 	 * Will thrown an UnsupportedOperationException. Don't use this.
@@ -740,6 +749,7 @@ public class DGraphView implements GraphView, Printable {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
+
 	/**
 	 * Will thrown an UnsupportedOperationException. Don't use this.
 	 *
@@ -752,6 +762,7 @@ public class DGraphView implements GraphView, Printable {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
+
 	/**
 	 * Removes a NodeView based on specified NodeView.
 	 *
@@ -763,6 +774,7 @@ public class DGraphView implements GraphView, Printable {
 		return removeNodeView(nodeView.getRootGraphIndex());
 	}
 
+
 	/**
 	 * Removes a NodeView based on specified Node.
 	 *
@@ -773,6 +785,7 @@ public class DGraphView implements GraphView, Printable {
 	public NodeView removeNodeView(Node node) {
 		return removeNodeView(node.getRootGraphIndex());
 	}
+
 
 	/**
 	 * Removes a NodeView based on a specified index.
@@ -2259,6 +2272,7 @@ public class DGraphView implements GraphView, Printable {
 		return m_networkCanvas;
 	}
 
+
 	/**
 	 * Method to return a reference to a DingCanvas object,
 	 * given a canvas id.
@@ -2279,6 +2293,7 @@ public class DGraphView implements GraphView, Printable {
 		return null;
 	}
 
+
 	/**
 	 * Method to return a reference to an Image object,
 	 * which represents the current network view.
@@ -2292,11 +2307,10 @@ public class DGraphView implements GraphView, Printable {
 	 * @throws IllegalArgumentException
 	 */
 	public Image createImage(int width, int height, double shrink) {
-
 		// check args
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): " +
-											   "width and height arguments must be greater than zero");
+			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): "
+							   + "width and height arguments must be greater than zero");
 		}
 
 		if ( shrink < 0 || shrink > 1.0 ) {
@@ -2306,8 +2320,8 @@ public class DGraphView implements GraphView, Printable {
 		}
 
 		// create image to return
-        Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);		
-        Graphics g = image.getGraphics();
+		Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);		
+		Graphics g = image.getGraphics();
 
 		// paint background canvas into image
 		Dimension dim = m_backgroundCanvas.getSize();
@@ -2318,7 +2332,7 @@ public class DGraphView implements GraphView, Printable {
 		// paint inner canvas (network)
 		dim = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
-        fitContent();
+		fitContent();
 		setZoom( getZoom() * shrink );
 		m_networkCanvas.paint(g);
 		m_networkCanvas.setSize(dim);
@@ -2332,6 +2346,7 @@ public class DGraphView implements GraphView, Printable {
 		// outta here
 		return image;
 	}
+
 
 	/**
 	 * utility that returns the nodeView that is located at input point
