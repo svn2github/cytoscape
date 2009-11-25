@@ -52,6 +52,7 @@ import java.util.List;
  */
 public class CyNode implements giny.model.Node {
 	public static final String NESTED_NETWORK_ID_ATTR = "nested_network_id";
+	public static final String HAS_NESTED_NETWORK_ATTR = "has_nested_network";
 	public static final String PARENT_NODES_ATTR = "parent_nodes";
 	
 	// Variables specific to public get/set methods.
@@ -258,7 +259,7 @@ public class CyNode implements giny.model.Node {
 		// create or update Network Attribute "parent.node.name.list" for the Network	
 		final String[] attributeNames = Cytoscape.getNetworkAttributes().getAttributeNames();
 		boolean attrFound = false;
-		for (String name : attributeNames) {
+		for (final String name : attributeNames) {
 			if (name.equals(PARENT_NODES_ATTR)) {
 				attrFound = true;
 				break;
@@ -277,6 +278,13 @@ public class CyNode implements giny.model.Node {
 			}
 		}
 		Cytoscape.getNetworkAttributes().setListAttribute(networkID, PARENT_NODES_ATTR, parentNodeList);
+
+		// tag or untag the node as having a nested network
+		if (graphPerspective != null) {
+			Cytoscape.getNodeAttributes().setAttribute(this.getIdentifier(), HAS_NESTED_NETWORK_ATTR, "yes");
+		} else {
+			Cytoscape.getNodeAttributes().deleteAttribute(this.getIdentifier(), HAS_NESTED_NETWORK_ATTR);
+		}
 		
 		// Let listeners know nested network was assigned to this node.
 		if (this.graphPerspective != null) {
