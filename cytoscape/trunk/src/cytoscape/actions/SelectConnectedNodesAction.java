@@ -40,23 +40,17 @@ package cytoscape.actions;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
-
-//-------------------------------------------------------------------------
 import giny.model.Node;
 import giny.model.Edge;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.KeyStroke;
-
 import javax.swing.event.MenuEvent;
+import java.util.Set;
+import java.util.HashSet;
+import cytoscape.CyEdge;
 
 //-------------------------------------------------------------------------
 /**
@@ -79,14 +73,17 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-		final List<Edge> selectedEdges = new ArrayList<Edge>(currentNetwork.getSelectedEdges());
+		Set<CyEdge> edgeSet = currentNetwork.getSelectedEdges();
+		final List<Edge> selectedEdges = new ArrayList<Edge>(edgeSet);
 
+		final Set<Node>nodesToSelect = new HashSet<Node>();
 		for (Edge edge: selectedEdges) {
-			currentNetwork.setSelectedNodeState(edge.getSource(), true);
-			currentNetwork.setSelectedNodeState(edge.getTarget(), true);
+			nodesToSelect.add(edge.getSource());
+			nodesToSelect.add(edge.getTarget());
 		}
-
+		currentNetwork.setSelectedNodeState(nodesToSelect, true);
 		Cytoscape.getCurrentNetworkView().updateView();
+
 	} // actionPerformed
 
     public void menuSelected(MenuEvent e) {
