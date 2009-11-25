@@ -2320,7 +2320,7 @@ public class DGraphView implements GraphView, Printable {
 		}
 
 		// create image to return
-		Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);		
+		Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);		
 		Graphics g = image.getGraphics();
 
 		// paint background canvas into image
