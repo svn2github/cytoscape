@@ -109,6 +109,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 */
 	public static final String EDGE_TYPE = "EDGE_TYPE";
 
+	public static final String NETWORK_TYPE = "NETWORK_TYPE";
+
 	/**
 	 * 
 	 */
@@ -119,6 +121,12 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 */
 	public static final String DEFAULT_EDGE = "DefaultEdge";
 
+	/**
+	 * 
+	 */
+	public static final String DEFAULT_NETWORK = "DefaultNetwork";
+
+	
 	/**
 	 * the node that will be dropped
 	 */
@@ -183,6 +191,16 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 */
 	protected String edgeAttributeName = EDGE_TYPE;
 
+	/**
+	 * attribute used to set NETWORK_TYPE
+	 */
+	protected String networkAttributeName = NETWORK_TYPE;
+
+	/**
+	 * value for attribute used in setting NETWORK_TYPE
+	 */
+	protected String networkAttributeValue = DEFAULT_NETWORK;
+	
 	/**
 	 * value for attribute used in setting EDGE_TYPE
 	 */
@@ -1018,6 +1036,30 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		this.edgeAttributeName = edgeAttributeName;
 	}
 
+	/**
+	 * @return Returns the networkAttributeName.
+	 */
+	public String getNetworkAttributeName() {
+		return networkAttributeName;
+	}
+
+	/**
+	 * @param networkAttributeName
+	 *            The networkAttributeName to set.
+	 */
+	public void setNetworkAttributeName(String networkAttributeName) {
+		this.networkAttributeName = networkAttributeName;
+	}
+
+	/**
+	 * @param edgeAttributeValue
+	 *            The edgeAttributeValue to set.
+	 */
+	public void setNetworkAttributeValue(String networkAttributeValue) {
+		this.networkAttributeValue = networkAttributeValue;
+	}
+
+	
 	/**
 	 * @return Returns the nodeAttributeValue.
 	 */

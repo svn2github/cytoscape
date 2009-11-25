@@ -155,6 +155,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 */
 	private String _controllingEdgeAttribute;
 
+	private String _controllingNetworkAttribute;
+
 	/**
 	 *
 	 * the network event handler that is associated with this editor
@@ -810,6 +812,15 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		_controllingNodeAttribute = controllingNodeAttribute;
 	}
 
+	
+	public String getControllingNetworkAttribute() {
+		return _controllingNetworkAttribute;
+	}
+
+	public void setControllingNetworkAttribute(String controllingNetworkAttribute) {
+		_controllingNetworkAttribute = controllingNetworkAttribute;
+	}
+	
 	/**
 	 *
 	 * @return the network event handler that is associated with this editor

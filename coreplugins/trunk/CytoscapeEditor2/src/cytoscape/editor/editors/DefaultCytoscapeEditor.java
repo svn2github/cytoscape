@@ -48,6 +48,7 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -142,6 +143,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 		CytoscapeEditorManager.log("for editor " + this);
 		generateEdgePaletteEntries(getControllingEdgeAttribute());
 		generateNodePaletteEntries(getControllingNodeAttribute());
+		generateNetworkPaletteEntries(getControllingNetworkAttribute());
 	}
 
 	protected void generateEdgePaletteEntries(String controllingAttribute) {
@@ -249,6 +251,19 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 		}
 	}
 
+
+	protected void generateNetworkPaletteEntries(String controllingAttribute) {
+		
+		javax.swing.ImageIcon icon = new ImageIcon(getClass().getResource("/network.png"));
+		
+		shapePalette.addShape(controllingAttribute, "DefaultNestedNetwork",
+			                      new CytoShapeIcon(icon.getImage()),
+								"Add a Nested Network",
+								null);
+	}
+
+	
+	
 	protected ShapePalette getShapePalette() {
 		return shapePalette;
 	}

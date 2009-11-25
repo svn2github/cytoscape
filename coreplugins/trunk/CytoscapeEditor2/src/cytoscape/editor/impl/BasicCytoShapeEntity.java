@@ -216,6 +216,12 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 										  + "OR<br>"
 										  + "CTRL-click on the first node and then<br>"
 										  + "click on the second node. </html>");
+			} else if (this.attributeName.equals("NETWORK_TYPE")) {
+				_cytoShape.setToolTipText("<html>To create a nested network<br>"
+				                          + "drag and drop the network onto a node<br>"
+										  + "to assign a nested network,<br>" 
+										  + "or on the canvas to create a new node and<br>"
+										  + "assign a nested network. </html>");
 			}
 		}
 

@@ -42,6 +42,7 @@ import java.io.IOException;
 import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.dialogs.SetNestedNetworkDialog;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
@@ -195,7 +196,10 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 				setEdgeAttributeName(attributeName);
 				setEdgeAttributeValue(attributeValue);
 				handleDroppedEdge(attributeName, attributeValue, location);
-			}
+			} else if (attributeName.equals(get_caller().getControllingNetworkAttribute())){
+				setNetworkAttributeName(attributeName);
+				setNetworkAttributeValue(attributeValue);
+				handleDroppedNetwork(getNodeAttributeName(), getNodeAttributeValue(), location);			}
 		}
 	}
 
@@ -231,6 +235,33 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		beginEdge(location, targetNode);
 	}
 
+	// Support Nested Network
+	protected void handleDroppedNetwork(String attributeName, String attributeValue, Point location) {
+		//get_caller().addNetwork("network" + counter, attributeName, attributeValue, location);
+		//counter++;
+
+		NodeView targetNode = getCurrentDGraphView().getPickedNodeView(location);
+		if (targetNode == null) {
+			// Create a new Node
+			CyNode newNode = get_caller().addNode("node" + counter, attributeName, attributeValue, location);
+			counter++;
+			
+			// Set a nested network for this newly created node
+			NodeView newNodeView = Cytoscape.getCurrentNetworkView().getNodeView(newNode);
+			
+			if (newNodeView == null){
+				return;
+			}
+			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true, newNodeView);
+			dlg.setLocationRelativeTo(Cytoscape.getDesktop());	
+			dlg.setVisible(true);
+		}
+		else {
+			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true, targetNode);
+			dlg.setLocationRelativeTo(Cytoscape.getDesktop());	
+			dlg.setVisible(true);
+		}
+	}
 
 	/**
 	 * A stub routine that currently just adds a node at the drop position. In

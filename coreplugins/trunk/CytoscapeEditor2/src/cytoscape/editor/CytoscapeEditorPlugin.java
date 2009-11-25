@@ -47,7 +47,6 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.plugin.CytoscapePlugin;
 
-
 /**
  * core plugin for CytoscapeEditor.
  *
@@ -123,7 +122,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 		                                "cytoscape.editor.event.PaletteNetworkEditEventHandler",
 		                                // AJK: 02/03/06 have Default editor use current visual
 		// style
-		CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE,
+		CytoscapeEditorManager.NODE_TYPE, CytoscapeEditorManager.EDGE_TYPE, CytoscapeEditorManager.NETWORK_TYPE,
 		                                CytoscapeEditorManager.ANY_VISUAL_STYLE);
 
 		// AJK: 12/09/06 SimpleBioMoleculeEditor deleted 
