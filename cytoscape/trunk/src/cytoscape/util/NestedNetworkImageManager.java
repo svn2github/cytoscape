@@ -1,5 +1,6 @@
 package cytoscape.util;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.TexturePaint;
 import java.awt.geom.Rectangle2D;
@@ -24,6 +25,8 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.DNodeView;
+import ding.view.DingCanvas;
+import ding.view.DGraphView.Canvas;
 
 
 /** This class manages images that represent nested networks.  This "management" includes creation, updating and destruction of such images as well
@@ -31,9 +34,11 @@ import ding.view.DNodeView;
  */
 public class NestedNetworkImageManager implements PropertyChangeListener {
 	private final Image DEF_IMAGE;
+		
+	private static final int DEF_WIDTH = 100;
+	private static final int DEF_HEIGHT = 100;
 	
-	private static final int DEF_WIDTH = 500;
-	private static final int DEF_HEIGHT = 500;
+	private static final int IMG_SIZE = 500;
 	
 	private static NestedNetworkImageManager theNestedNetworkImageManager = null;
 	private static Map<CyNetwork, ImageAndReferenceCount> networkToImageMap;
@@ -165,11 +170,12 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 			networkToImageMap.put(nestedNetwork, new ImageAndReferenceCount(DEF_IMAGE));
 		} else {
 			// Create image from this view.
-			view.applyLayout(CyLayouts.getLayout("force-directed"));
+			//view.applyLayout(CyLayouts.getLayout("force-directed"));
 			final DGraphView dView = (DGraphView) view;
-			dView.fitContent();
-			dView.updateView();
-			final Image image = dView.createImage(DEF_WIDTH, DEF_HEIGHT, 1.0);
+			final DingCanvas bCanvas = dView.getCanvas(Canvas.BACKGROUND_CANVAS);
+			bCanvas.setOpaque(false);
+			final Image image = dView.createImage(IMG_SIZE, IMG_SIZE, 1.0);
+			bCanvas.setOpaque(true);
 			networkToImageMap.put(nestedNetwork, new ImageAndReferenceCount(image));
 		}
 	}
@@ -182,9 +188,9 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 	 * @param parentNode     the node that contains the nested network "nestedNetwork" and displayed in the view "networkView"
 	 */
 	private void addCustomGraphics(final CyNetwork nestedNetwork, final CyNetworkView networkView, final CyNode parentNode) {
-		Image networkImage = getImage(nestedNetwork);
+		final Image networkImage = getImage(nestedNetwork);
 		final DNodeView nodeView = (DNodeView)networkView.getNodeView(parentNode);
-		final Rectangle2D rect = new Rectangle2D.Double(-DEF_WIDTH/2, -DEF_HEIGHT/2, DEF_WIDTH, DEF_HEIGHT);		
+		final Rectangle2D rect = new Rectangle2D.Double(-DEF_WIDTH/2, -DEF_HEIGHT/2, DEF_WIDTH, DEF_HEIGHT);
 		nodeView.addCustomGraphic(rect, new TexturePaint((BufferedImage) networkImage, rect), NodeDetails.ANCHOR_CENTER);
 	}
 	

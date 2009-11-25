@@ -1724,13 +1724,11 @@ public abstract class Cytoscape {
 			layout = CyLayouts.getDefaultLayout();
 		}
 
-		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
-		                             view);
-
 		layout.doLayout(view);
 
-		view.fitContent();
+		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
 
+		view.fitContent();
 		view.redrawGraph(false, true);
 
 		return view;
