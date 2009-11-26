@@ -4,6 +4,12 @@ import giny.filter.Filter;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Basic graph API
+ * 
+ * TODO: Remove deprecated methods and add generics parameters.
+ *
+ */
 public interface GraphPerspective {
 
  
@@ -40,14 +46,14 @@ public interface GraphPerspective {
    * @return an Iterator over the Nodes in this graph; each Object in the
    *   returned Iterator is of type giny.model.Node.
    */
-   public Iterator<Node> nodesIterator () ;
+   public Iterator nodesIterator () ;
    
  
   /**
    * Returns a list of Node objects.
    * @see #nodesIterator()
    */
-   public List<Node> nodesList () ;
+   public List nodesList () ;
  
   /**
    * Returns an array of length getNodeCount(); the array contains
@@ -61,13 +67,13 @@ public interface GraphPerspective {
   /**
    * @return an Iterator over the Edges in this graph.
    */
-   public Iterator<Edge> edgesIterator () ;
+   public Iterator edgesIterator () ;
    
   /**
    * Returns a list of Edge objects.
    * @see #edgesIterator()
    */
-   public List<Edge> edgesList () ;
+   public List edgesList () ;
  
   /**
    * Returns an array of length getEdgeCount(); the array contains
@@ -503,7 +509,7 @@ public interface GraphPerspective {
    * <tt>to</tt> Node, or the empty List if none exist; null is returned if either
    * of the specified nodes is not in this GraphPerspective.
    */
-   public List<Edge> edgesList ( Node from, Node to ) ;
+   public List edgesList ( Node from, Node to ) ;
  
   /**
    * Return an array of the indices in this GraphPerspective of all Edges from
@@ -1164,7 +1170,7 @@ public interface GraphPerspective {
   /**
    * This will return a List of giny.model.Edge objects that are the Edges between Nodes.
    */
-  public List<Edge> getConnectingEdges ( List<Node> nodes );
+  public List getConnectingEdges ( List nodes );
 
   /**
    * This will return an array of Edge indices that are the Edges between Nodes.
