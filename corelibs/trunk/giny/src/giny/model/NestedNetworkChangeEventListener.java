@@ -1,5 +1,7 @@
 package giny.model;
 
+import java.util.EventListener;
+
 /**
  * Listener for nested network change events.
  * <p>
@@ -8,7 +10,7 @@ package giny.model;
  * @author kono
  *
  */
-public interface NestedNetworkChangeEventListener {
+public interface NestedNetworkChangeEventListener extends EventListener {
 	
 	public void nestedNetworkChanged(NestedNetworkChangeEvent evt);
 
