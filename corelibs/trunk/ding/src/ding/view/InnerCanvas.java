@@ -36,90 +36,63 @@
 
 package ding.view;
 
-import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
-
-import cytoscape.graph.fixed.FixedGraph;
-
-import cytoscape.render.export.ImageImposter;
-
-import cytoscape.render.immed.EdgeAnchors;
-import cytoscape.render.immed.GraphGraphics;
-
-import cytoscape.render.stateful.GraphLOD;
-import cytoscape.render.stateful.GraphRenderer;
-
-import cytoscape.util.intr.IntEnumerator;
-import cytoscape.util.intr.IntHash;
-import cytoscape.util.intr.IntStack;
-
-import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 
-// AJK: 04/02/06 BEGIN
-import phoebe.*;
-
-//import java.awt.*;
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-
-//import java.awt.event.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
-import java.util.*;
-
-// AJK: 04/26/06 BEGIN
-//    for tooltips
-import javax.swing.AbstractAction;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.JToolTip;
 import javax.swing.TransferHandler;
 
-import java.awt.FontMetrics;
+import phoebe.PhoebeCanvasDropEvent;
+import phoebe.PhoebeCanvasDropListener;
+import phoebe.PhoebeCanvasDroppable;
+import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.export.ImageImposter;
+import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.GraphLOD;
+import cytoscape.render.stateful.GraphRenderer;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntHash;
+import cytoscape.util.intr.IntStack;
 
 
-// AJK: 04/26/06 END
 /**
- *
+ * The GUI component for drawing networks.
+ * 
  */
 public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotionListener,
                                                        java.awt.dnd.DropTargetListener,
                                                        PhoebeCanvasDroppable, KeyListener,
                                                        MouseWheelListener {
+
 	final double[] m_ptBuff = new double[2];
 	final float[] m_extentsBuff2 = new float[4];
 	final float[] m_floatBuff1 = new float[2];
