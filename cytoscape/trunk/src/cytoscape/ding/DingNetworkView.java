@@ -154,10 +154,10 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Apply visual style and redraw graph.
 	 *
-	 * @param layout DOCUMENT ME!
-	 * @param vizmap DOCUMENT ME!
+	 * @param layout Always ignored!
+	 * @param vizmap Always ignored!
 	 */
 	public void redrawGraph(boolean layout, boolean vizmap) {
 		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
@@ -165,6 +165,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 		vmm.applyAppearances();
 		updateView();
 	}
+	
 
 	/**
 	 *  DOCUMENT ME!
