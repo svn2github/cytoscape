@@ -96,6 +96,9 @@ import java.util.Map;
  * @author Nerius Landys
  */
 public class DGraphView implements GraphView, Printable {
+	// Size of snapshot image
+	private static final int DEF_SNAPSHOT_SIZE = 500;
+	
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
 	static final Paint DEFAULT_ANCHOR_UNSELECTED_PAINT = Color.black;
@@ -297,7 +300,19 @@ public class DGraphView implements GraphView, Printable {
 	 * Used for caching texture paint.
 	 */
 	Paint m_lastTexturePaint = null;
-
+	
+	/**
+	 * Snapshot of current view.  Will be updated by CONTENT_CHANGED event.
+	 * 
+	 * This is used by a new nested network feature from 2.7.
+	 */
+	private Image snapshotImage;
+	
+	/**
+	 * Represents current snapshot is latest version or not.
+	 */
+	private boolean latest;
+	
 	/**
 	 * Creates a new DGraphView object.
 	 *
@@ -331,6 +346,12 @@ public class DGraphView implements GraphView, Printable {
 		m_selectedNodes = new IntBTree();
 		m_selectedEdges = new IntBTree();
 		m_selectedAnchors = new IntBTree();
+		
+		// Add ContentChange Listener for handling nested network.
+		this.addContentChangeListener(new DGraphViewContentChangeListener());
+		// Snapshot image is always null at this point.
+		this.snapshotImage = null;
+		this.latest = false;
 	}
 
 	/**
@@ -2515,5 +2536,40 @@ public class DGraphView implements GraphView, Printable {
 	
 		System.out.println("invalid zoom: " + zoom + "   using orig: " + orig);
 		return orig;
+	}
+	
+	
+	/**
+	 * Returns the current snapshot image of this view.
+	 * 
+	 * <p>
+	 * This will be used nested network manager.
+	 * No unnecessary image object will be created if networks in the current
+	 * session does not contain any nested network, i.e., should not have 
+	 * performance/memory issue. 
+	 *  
+	 * @return Image of this view.  It is always up-to-date.
+	 */
+	public Image getSnapshot() {
+		if(!latest) {
+			// Need to update snapshot.
+			snapshotImage = createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1);
+			latest = true;
+		} 
+		
+		return snapshotImage;
+	}
+	
+	
+	/**
+	 * Listener for update flag of snapshot image.
+	 * 
+	 * @author kono
+	 *
+	 */
+	private final class DGraphViewContentChangeListener implements ContentChangeListener {
+		public void contentChanged() {
+			latest = false;
+		}
 	}
 }
