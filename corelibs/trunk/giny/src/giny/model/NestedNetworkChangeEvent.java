@@ -1,5 +1,7 @@
 package giny.model;
 
+import giny.view.GraphView;
+
 /**
  * This event will be fired when nested network is created/removed.
  * 
@@ -14,10 +16,11 @@ public interface NestedNetworkChangeEvent {
 	public Node getNestedNode();
 	
 	/**
-	 * Nested network pointed by a node in other network.
+	 * Nested network view pointed by a node in other network.
+	 * This can be null because network view may not be available at this point.
 	 * 
 	 * @return nested network.
 	 */
-	public GraphPerspective getNestedNetwork();
+	public GraphView getNestedNetworkView();
 
 }
