@@ -102,6 +102,18 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.*;
+import java.util.EventObject;
+import javax.swing.*;
+import javax.swing.JTable;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.*;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
+
 
 
 /**
@@ -231,6 +243,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 		this.setDefaultRenderer(Object.class, new BrowserTableCellRenderer(false, objectType));
 		this.getColumnModel().addColumnModelListener(this);
+		this.setDefaultEditor(Object.class, new MultiLineTableCellEditor() );
 	}
 
 	private void setKeyStroke() {
@@ -1194,6 +1207,180 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	public void mouseMoved(MouseEvent e) {
 		
 	}
+
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param row DOCUMENT ME!
+	 * @param column DOCUMENT ME!
+	 * @param e DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean editCellAt(int row, int column, EventObject e) {
+		if ((cellEditor != null) && !cellEditor.stopCellEditing()) {
+			return false;
+		}
+
+		if ((row < 0) || (row >= getRowCount()) || (column < 0) || (column >= getColumnCount())) {
+			return false;
+		}
+
+		if (!isCellEditable(row, column))
+			return false;
+
+		if (editorRemover == null) {
+			KeyboardFocusManager fm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+			editorRemover = new CellEditorRemover(fm);
+			fm.addPropertyChangeListener("permanentFocusOwner", editorRemover);
+		}
+
+		TableCellEditor editor = getCellEditor(row, column);
+
+		if ((editor != null) && editor.isCellEditable(e)) {
+
+			// Do this first so that the bounds of the JTextArea editor
+			// will be correct.
+			setEditingRow(row);
+			setEditingColumn(column);
+			setCellEditor(editor);
+			editor.addCellEditorListener(this);
+
+			editorComp = prepareEditor(editor, row, column);
+
+			if (editorComp == null) {
+				removeEditor();
+				return false;
+			}
+
+			Rectangle cellRect = getCellRect(row, column, false);
+
+			if (editor instanceof MultiLineTableCellEditor) {
+				Dimension prefSize = editorComp.getPreferredSize();
+				((JComponent) editorComp).putClientProperty(MultiLineTableCellEditor.UPDATE_BOUNDS,
+				                                            Boolean.TRUE);
+				editorComp.setBounds(cellRect.x, cellRect.y,
+				                     Math.max(cellRect.width, prefSize.width),
+				                     Math.max(cellRect.height, prefSize.height));
+				((JComponent) editorComp).putClientProperty(MultiLineTableCellEditor.UPDATE_BOUNDS,
+				                                            Boolean.FALSE);
+			} else
+				editorComp.setBounds(cellRect);
+
+			add(editorComp);
+			editorComp.validate();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		if (isEditing()) {
+			Component component = getEditorComponent();
+			component.repaint();
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void removeNotify() {
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+		                    .removePropertyChangeListener("permanentFocusOwner", editorRemover);
+		editorRemover = null;
+		super.removeNotify();
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void removeEditor() {
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+		                    .removePropertyChangeListener("permanentFocusOwner", editorRemover);
+		editorRemover = null;
+
+		TableCellEditor editor = getCellEditor();
+
+		if (editor != null) {
+			editor.removeCellEditorListener(this);
+
+			Rectangle cellRect = getCellRect(editingRow, editingColumn, false);
+
+			if (editorComp != null) {
+				cellRect = cellRect.union(editorComp.getBounds());
+				remove(editorComp);
+			}
+
+			setCellEditor(null);
+			setEditingColumn(-1);
+			setEditingRow(-1);
+			editorComp = null;
+			repaint(cellRect);
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean getScrollableTracksViewportHeight() {
+		if (getParent() instanceof JViewport)
+			return getParent().getHeight() > getPreferredSize().height;
+		else
+			return false;
+	}
+
+	private PropertyChangeListener editorRemover = null;
+
+	private class CellEditorRemover implements PropertyChangeListener {
+		KeyboardFocusManager focusManager;
+
+		public CellEditorRemover(KeyboardFocusManager fm) {
+			this.focusManager = fm;
+		}
+
+		public void propertyChange(PropertyChangeEvent ev) {
+			if (!isEditing() || (getClientProperty("terminateEditOnFocusLost") != Boolean.TRUE)) {
+				return;
+			}
+
+			Component c = focusManager.getPermanentFocusOwner();
+
+			while (c != null) {
+				if (c == CyAttributeBrowserTable.this) {
+					// focus remains inside the table
+					return;
+				} else if (c instanceof Window) {
+					if (c == SwingUtilities.getRoot(CyAttributeBrowserTable.this)) {
+						if (!getCellEditor().stopCellEditing()) {
+							getCellEditor().cancelCellEditing();
+						}
+					}
+
+					break;
+				}
+
+				c = c.getParent();
+			}
+		}
+	}
+
+//	public void tableChanged(TableModelEvent tme) {
+//		if ( tme.getType() == TableModelEvent.INSERT ||
+//		     tme.getType() == TableModelEvent.DELETE )
+//		for (String colName : orderedColumn ) {
+//			System.out.println("setting cell editor for col: " + colName);
+//			TableColumn col = attributeTable.getColumn(colName);
+//			col.setCellEditor(new MultiLineTableCellEditor());
+//		}
+//	}
+
 }
 
 
@@ -1317,9 +1504,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 
 		if (type == NODES) {
 			if (netview != Cytoscape.getNullNetworkView()) {
-				NodeView nodeView = netview.getNodeView(Cytoscape.getCyNode((String) table
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getValueAt(row,
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            column)));
+				NodeView nodeView = netview.getNodeView(Cytoscape.getCyNode((String) table.getValueAt(row, column)));
 
 				if (nodeView != null) {
 					Color nodeColor = (Color) nodeView.getUnselectedPaint();
@@ -1329,8 +1514,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		} else if (type == EDGES) {
 			if (netview != Cytoscape.getNullNetworkView()) {
 				final String edgeName = (String) table.getValueAt(row, column);
-				final EdgeView edgeView = netview.getEdgeView(((CyAttributeBrowserTable) table)
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getEdge(edgeName));
+				final EdgeView edgeView = netview.getEdgeView(((CyAttributeBrowserTable) table).getEdge(edgeName));
 
 				if (edgeView != null) {
 					Color edgeColor = (Color) edgeView.getUnselectedPaint();
@@ -1370,3 +1554,5 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		return html.toString();
 	}
 }
+
+
