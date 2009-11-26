@@ -1164,7 +1164,7 @@ public interface GraphPerspective {
   /**
    * This will return a List of giny.model.Edge objects that are the Edges between Nodes.
    */
-  public List<Edge> getConnectingEdges ( List nodes );
+  public List<Edge> getConnectingEdges ( List<Node> nodes );
 
   /**
    * This will return an array of Edge indices that are the Edges between Nodes.
