@@ -35,7 +35,7 @@ package coreCommands.namespaces.network;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandNamespace;
@@ -63,7 +63,7 @@ import java.util.Map;
 /**
  * XXX FIXME XXX Description 
  */
-public class ImportNetwork extends AbstractCommand {
+public class ImportNetwork extends AbstractCommandHandler {
 	static String NETWORK = "network";
 
 	// Commands

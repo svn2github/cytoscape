@@ -37,7 +37,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -61,7 +61,7 @@ import coreCommands.namespaces.networkView.ExportNetworkView;
 /**
  * XXX FIXME XXX Description 
  */
-public class NetworkViewNamespace extends AbstractCommand {
+public class NetworkViewNamespace extends AbstractCommandHandler {
 	static String NETWORKVIEW = "networkview";
 
 	static String CREATE = "create";

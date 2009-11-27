@@ -33,7 +33,7 @@
 package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -56,7 +56,7 @@ import java.util.Map;
 /**
  * XXX FIXME XXX Description 
  */
-public class SessionNamespace extends AbstractCommand {
+public class SessionNamespace extends AbstractCommandHandler {
 	static String SESSION = "session";
 
 	static String OPEN = "open";

@@ -34,7 +34,7 @@ package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -54,7 +54,7 @@ import java.util.Properties;
 /**
  * XXX FIXME XXX Description 
  */
-public class QuitNamespace extends AbstractCommand {
+public class QuitNamespace extends AbstractCommandHandler {
 
 	public QuitNamespace(CyCommandNamespace ns) {
 		super(ns);

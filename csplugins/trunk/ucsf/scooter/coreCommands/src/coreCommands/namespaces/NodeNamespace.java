@@ -35,7 +35,7 @@ package coreCommands.namespaces;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -57,7 +57,7 @@ import java.util.Set;
 /**
  * XXX FIXME XXX Description 
  */
-public class NodeNamespace extends AbstractCommand {
+public class NodeNamespace extends AbstractCommandHandler {
 
 	// Commands
 	private static String DESELECT = "deselect";

@@ -33,7 +33,7 @@
 package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -57,7 +57,7 @@ import java.util.Map;
  * This Command provides a set of subcommands related to the management
  * and setting of VizMaps
  */
-public class VizMapNamespace extends AbstractCommand {
+public class VizMapNamespace extends AbstractCommandHandler {
 	String styleName = "default";
 	CyLogger logger = CyLogger.getLogger(VizMapNamespace.class);
 

@@ -34,7 +34,7 @@ package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -54,7 +54,7 @@ import java.util.Properties;
 /**
  * XXX FIXME XXX Description 
  */
-public class PropertyNamespace extends AbstractCommand {
+public class PropertyNamespace extends AbstractCommandHandler {
 	static String PROPERTY = "property";
 
 	static String SET = "set";

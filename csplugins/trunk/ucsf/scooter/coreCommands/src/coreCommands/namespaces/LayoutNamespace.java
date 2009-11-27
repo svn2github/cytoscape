@@ -33,7 +33,7 @@
 package coreCommands.namespaces;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.AbstractCommand;
+import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
@@ -56,7 +56,7 @@ import java.util.Map;
 /**
  * XXX FIXME XXX Description 
  */
-public class LayoutNamespace extends AbstractCommand {
+public class LayoutNamespace extends AbstractCommandHandler {
 	private static String LAYOUT = "layout";
 	private static String GETCURRENT = "get current";
 	private static String GETDEFAULT = "get default";
