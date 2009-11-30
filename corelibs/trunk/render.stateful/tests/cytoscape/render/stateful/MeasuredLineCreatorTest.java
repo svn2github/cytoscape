@@ -40,6 +40,7 @@ import junit.framework.*;
 
 import java.awt.Font;
 import java.awt.font.*;
+import java.awt.GraphicsEnvironment;
 import java.util.List;
 
 public class MeasuredLineCreatorTest extends TestCase {
@@ -51,6 +52,11 @@ public class MeasuredLineCreatorTest extends TestCase {
 
 
 	public void setUp() {
+		// For whatever reason, this will force a GraphicsEnvironment to be created,
+		// which ensures that all of the tests work that make use of GlyphVectors
+		// work as designed.
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
 		serif = new Font("Serif",Font.PLAIN,10);
 		sansSerif = new Font("SansSerif",Font.BOLD,12);
 		frc = new FontRenderContext(null,true,true);
@@ -155,5 +161,11 @@ public class MeasuredLineCreatorTest extends TestCase {
 		for ( MeasuredLine ml : mlc.getMeasuredLines() )
 			System.out.println(ml.toString());
 		System.out.println();
+	}
+
+	// This will run the JUnit gui, which can be useful for debugging. 
+	public static void main(String[] args) {
+		String[] newargs = { "cytoscape.render.stateful.MeasuredLineCreatorTest", "-noloading" };
+		junit.swingui.TestRunner.main(newargs);
 	}
 }
