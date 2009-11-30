@@ -108,6 +108,8 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
+           source="1.5"
+           target="1.5"
            fork="${fork}">
       <compilerarg line="-Xlint:all -Xlint:-path"/>
     </javac>
@@ -162,6 +164,35 @@
           if="junit.test.failure"/>
     <echo message="Successfully ran test task!"/>
   </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Runs a the junit gui - useful for verifying that things work in a   -->
+  <!-- given graphical context.                                            -->
+  <!-- =================================================================== -->
+  <target name="test-gui"
+          depends="jar-tests"
+          description="Runs specified unit tests in the JUnit gui.">
+
+    <!-- Create a new classpath so that we're running from a jar file
+         that includes the main class. -->
+    <path id="junit.classpath">
+      <fileset dir="${lib.dir}">
+        <include name="**/*.jar" />
+      </fileset>
+      <fileset dir="${basedir}">
+        <include name="cytoscape-render-stateful-tests.jar" />
+      </fileset>
+    </path>
+  
+    <java classname="cytoscape.render.stateful.MeasuredLineCreatorTest"
+          classpathref="junit.classpath"
+          fork="true"
+          maxmemory="512m">
+      <arg line="-ui" />
+    </java>
+  </target>
+
 
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
