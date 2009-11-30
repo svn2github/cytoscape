@@ -39,8 +39,10 @@
 package cytoscape;
 
 import giny.model.Edge;
+import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.GraphView;
+import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
@@ -86,6 +88,8 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.logger.CyLogger;
+import ding.view.DGraphView;
+import ding.view.DNodeView;
 
 
 /**
@@ -1708,6 +1712,15 @@ public abstract class Cytoscape {
 		}
 
 		final DingNetworkView view = new DingNetworkView(network, title);
+		for (final NodeView nv: (List<NodeView>)view.getNodeViewsList()) {
+			final GraphPerspective nestedNetwork = nv.getNode().getNestedNetwork();
+			if (nestedNetwork != null) {
+				final CyNetworkView nestedNetworkView = Cytoscape.getNetworkView(((CyNetwork)nestedNetwork).getIdentifier());
+				if (!nestedNetworkView.equals(Cytoscape.getNullNetworkView()))
+					((DNodeView)nv).setNestedNetworkView((DGraphView) nestedNetworkView);
+			}
+		}
+		
 		view.setGraphLOD(new CyGraphLOD());
 		view.setIdentifier(network.getIdentifier());
 		view.setTitle(network.getTitle());
