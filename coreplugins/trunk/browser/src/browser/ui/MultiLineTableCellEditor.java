@@ -1,97 +1,26 @@
 
 package browser.ui;
 
-import static browser.DataObjectType.EDGES;
-import static browser.DataObjectType.NETWORK;
-import static browser.DataObjectType.NODES;
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
-import giny.view.EdgeView;
-import giny.view.NodeView;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
+import java.awt.Rectangle;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 
-import browser.AttributeBrowser;
-import browser.AttributeBrowserPlugin;
-import browser.DataObjectType;
-import browser.DataTableModel;
-import browser.SortTableModel;
-import browser.util.HyperLinkOut;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
-import cytoscape.data.Semantics;
-import cytoscape.dialogs.NetworkMetaDataDialog;
-import cytoscape.logger.CyLogger;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-import cytoscape.util.OpenBrowser;
-import cytoscape.util.swing.ColumnResizer;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.VisualMappingManager;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.EventObject;
-import javax.swing.*;
-import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JTextArea;
 
+import java.util.EventObject;
 
 /**
  *

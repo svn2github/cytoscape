@@ -102,19 +102,14 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.EventObject;
-import javax.swing.*;
-import javax.swing.JTable;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.*;
+import javax.swing.JViewport;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
-
-
+import java.awt.Window;
+import java.awt.Rectangle;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.KeyboardFocusManager;
+import java.util.EventObject;
 
 /**
  * Based on JSortTable and completely rewrote by kono
