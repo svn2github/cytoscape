@@ -89,16 +89,18 @@ public class CustomGraphic {
     private Shape _shape;
     private Paint _paint;
     private byte  _anchor;
+    
     public CustomGraphic (Shape shape, Paint paint, byte anchor) {
-    	if ((shape == null) || (paint == null))
-    	    throw new IllegalArgumentException("The shape or paint given was null.");
-	if ((anchor < 0) || (anchor > NodeDetails.MAX_ANCHOR_VAL)) {
-    	    throw new IllegalArgumentException("The anchor value " + anchor + " is not in the range 0 <= anchor <= " + NodeDetails.MAX_ANCHOR_VAL + ".");
-	}
-	_shape = shape;
-	_paint = paint;
-	_anchor = anchor;
+    		if ((shape == null) || (paint == null))
+    			throw new IllegalArgumentException("The shape or paint given was null.");
+    		if ((anchor < 0) || (anchor > NodeDetails.MAX_ANCHOR_VAL)) {
+    			throw new IllegalArgumentException("The anchor value " + anchor + " is not in the range 0 <= anchor <= " + NodeDetails.MAX_ANCHOR_VAL + ".");
+    		}
+    		_shape = shape;
+    		_paint = paint;
+    		_anchor = anchor;
     }
+    
     /**
      * Return the Shape that makes up this CustomGraphic.
      */

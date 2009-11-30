@@ -36,15 +36,15 @@
 
 package cytoscape.render.stateful;
 
-import cytoscape.render.immed.GraphGraphics;
-import cytoscape.render.stateful.CustomGraphic;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import cytoscape.render.immed.GraphGraphics;
 
 
 /**
@@ -565,5 +565,10 @@ public class NodeDetails {
 	 */
 	public double labelWidth(final int node) {
 		return 100.0;
+	}
+	
+	
+	public TexturePaint getNestedNetworkTexturePaint(final int node) {
+		return null;
 	}
 }

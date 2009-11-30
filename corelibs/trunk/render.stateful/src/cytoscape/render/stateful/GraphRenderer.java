@@ -36,24 +36,21 @@
 
 package cytoscape.render.stateful;
 
-import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
-import cytoscape.geom.spacial.SpacialIndex2D;
-
-import cytoscape.graph.fixed.FixedGraph;
-
-import cytoscape.render.immed.EdgeAnchors;
-import cytoscape.render.immed.GraphGraphics;
-
-import cytoscape.util.intr.IntEnumerator;
-import cytoscape.util.intr.IntHash;
-
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
-import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.Iterator;
+
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
+import cytoscape.geom.spacial.SpacialIndex2D;
+import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.render.immed.GraphGraphics;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntHash;
 
 
 /**
@@ -669,91 +666,11 @@ public final class GraphRenderer {
 						                  floatBuff1[3], nodeDetails.colorLowDetail(node));
 				}
 			} else { // High detail.
-
 				while (nodeHits.numRemaining() > 0) {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
-
-					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
-						// Compute visual attributes that do not depend on LOD.
-						final byte shape = nodeDetails.shape(node);
-						final Paint fillPaint = nodeDetails.fillPaint(node);
-
-						// Compute node border information.
-						final float borderWidth;
-						final Paint borderPaint;
-
-						if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
-							borderWidth = 0.0f;
-							borderPaint = null;
-						} else { // Rendering node borders.
-							borderWidth = nodeDetails.borderWidth(node);
-
-							if (borderWidth == 0.0f)
-								borderPaint = null;
-							else
-								borderPaint = nodeDetails.borderPaint(node);
-						}
-
-						// Draw the node.
-						grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1], floatBuff1[2],
-						                   floatBuff1[3], fillPaint, borderWidth, borderPaint);
-					}
-
-					// Take care of custom graphic rendering.
-					if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
-					    // NOTE: The following block of code should be removed when the deprecated index-based API
-					    //       methods are removed:
-					    // BEGIN BLOCK TO REMOVE.
-						final int graphicCount = nodeDetails.graphicCount(node);
-
-						for (int graphicInx = 0; graphicInx < graphicCount; graphicInx++) {
-							final Shape gShape = nodeDetails.graphicShape(node, graphicInx);
-							final Paint paint = nodeDetails.graphicPaint(node, graphicInx);
-							final byte anchor = nodeDetails.graphicNodeAnchor(node, graphicInx);
-							// Shouldn't these be graphicOffsetVectorX and Y versus labelOffsetVectorX and Y:
-							final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
-							                                                           graphicInx);
-							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
-							                                                           graphicInx);
-							doubleBuff1[0] = floatBuff1[0];
-							doubleBuff1[1] = floatBuff1[1];
-							doubleBuff1[2] = floatBuff1[2];
-							doubleBuff1[3] = floatBuff1[3];
-							lemma_computeAnchor(anchor, doubleBuff1, doubleBuff2);
-							grafx.drawCustomGraphicFull(gShape,
-							                            (float) (doubleBuff2[0] + offsetVectorX),
-							                            (float) (doubleBuff2[1] + offsetVectorY),
-							                            paint);
-						}
-						// END BLOCK TO REMOVE.
-
-						// don't allow our custom graphics to mutate while we iterate over them:
-						synchronized (nodeDetails.customGraphicsLock(node)) {
-						    // This iterator will return CustomGraphics in rendering order:
-						    Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
-						    CustomGraphic cg = null;
-						    // The graphic index used to retrieve non custom graphic info corresponds to the zero-based
-						    // index of the CustomGraphic returned by the iterator:
-						    int graphicInx = 0;
-						    while (dNodeIt.hasNext()) {
-							cg = dNodeIt.next();
-							final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
-														   graphicInx);
-							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
-														   graphicInx);
-							doubleBuff1[0] = floatBuff1[0];
-							doubleBuff1[1] = floatBuff1[1];
-							doubleBuff1[2] = floatBuff1[2];
-							doubleBuff1[3] = floatBuff1[3];
-							lemma_computeAnchor(cg.getAnchor(), doubleBuff1, doubleBuff2);
-							grafx.drawCustomGraphicFull(cg.getShape(),
-										    (float) (doubleBuff2[0] + offsetVectorX),
-										    (float) (doubleBuff2[1] + offsetVectorY),
-										    cg.getPaint());
-							graphicInx++;
-						    }
-						}
-					}
+					
+					renderNodeHigh(graph, grafx, node, floatBuff1, doubleBuff1, doubleBuff2, nodeDetails, lodBits);
+				
 
 					// Take care of label rendering.
 					if ((lodBits & LOD_NODE_LABELS) != 0) { // Potential label rendering.
@@ -1210,5 +1127,100 @@ public final class GraphRenderer {
 
 			return true;
 		}
+	}
+	
+	
+	private static final void renderNodeHigh(final FixedGraph graph, final GraphGraphics grafx, final int node, final float[] floatBuff1, final double[] doubleBuff1, final double[] doubleBuff2, final NodeDetails nodeDetails, final int lodBits) {
+		if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
+				// Compute visual attributes that do not depend on LOD.
+				final byte shape = nodeDetails.shape(node);
+				final Paint fillPaint = nodeDetails.fillPaint(node);
+
+				// Compute node border information.
+				final float borderWidth;
+				final Paint borderPaint;
+
+				if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
+					borderWidth = 0.0f;
+					borderPaint = null;
+				} else { // Rendering node borders.
+					borderWidth = nodeDetails.borderWidth(node);
+
+					if (borderWidth == 0.0f)
+						borderPaint = null;
+					else
+						borderPaint = nodeDetails.borderPaint(node);
+				}
+
+				// Draw the node.
+				
+				grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1], floatBuff1[2], floatBuff1[3], 
+						fillPaint, borderWidth, borderPaint);
+			}
+
+			// Take care of custom graphic rendering.
+			if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
+				final TexturePaint nestedNetworkPaint = nodeDetails.getNestedNetworkTexturePaint(node);
+				if (nestedNetworkPaint != null) {
+					doubleBuff1[0] = floatBuff1[0];
+		    			doubleBuff1[1] = floatBuff1[1];
+		    			doubleBuff1[2] = floatBuff1[2];
+		    			doubleBuff1[3] = floatBuff1[3];
+		    			lemma_computeAnchor(NodeDetails.ANCHOR_CENTER, doubleBuff1, doubleBuff2);
+					grafx.drawCustomGraphicFull(nestedNetworkPaint.getAnchorRect(),  (float)doubleBuff2[0],  (float)doubleBuff2[1], nestedNetworkPaint); 
+				}
+				// NOTE: The following block of code should be removed when the deprecated index-based API
+			    //       methods are removed:
+//			    // BEGIN BLOCK TO REMOVE.
+//				final int graphicCount = nodeDetails.graphicCount(node);
+//
+//				for (int graphicInx = 0; graphicInx < graphicCount; graphicInx++) {
+//					final Shape gShape = nodeDetails.graphicShape(node, graphicInx);
+//					final Paint paint = nodeDetails.graphicPaint(node, graphicInx);
+//					final byte anchor = nodeDetails.graphicNodeAnchor(node, graphicInx);
+//					// Shouldn't these be graphicOffsetVectorX and Y versus labelOffsetVectorX and Y:
+//					final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
+//					                                                           graphicInx);
+//					final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
+//					                                                           graphicInx);
+//					doubleBuff1[0] = floatBuff1[0];
+//					doubleBuff1[1] = floatBuff1[1];
+//					doubleBuff1[2] = floatBuff1[2];
+//					doubleBuff1[3] = floatBuff1[3];
+//					lemma_computeAnchor(anchor, doubleBuff1, doubleBuff2);
+//					grafx.drawCustomGraphicFull(gShape,
+//					                            (float) (doubleBuff2[0] + offsetVectorX),
+//					                            (float) (doubleBuff2[1] + offsetVectorY),
+//					                            paint);
+//				}
+//				// END BLOCK TO REMOVE.
+
+				// don't allow our custom graphics to mutate while we iterate over them:
+				synchronized (nodeDetails.customGraphicsLock(node)) {
+				    // This iterator will return CustomGraphics in rendering order:
+				    Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
+				    CustomGraphic cg = null;
+				    // The graphic index used to retrieve non custom graphic info corresponds to the zero-based
+				    // index of the CustomGraphic returned by the iterator:
+				    int graphicInx = 0;
+				    while (dNodeIt.hasNext()) {
+				    		cg = dNodeIt.next();
+				    		final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
+												   graphicInx);
+				    		final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
+												   graphicInx);
+				    		doubleBuff1[0] = floatBuff1[0];
+				    		doubleBuff1[1] = floatBuff1[1];
+				    		doubleBuff1[2] = floatBuff1[2];
+				    		doubleBuff1[3] = floatBuff1[3];
+				    		lemma_computeAnchor(cg.getAnchor(), doubleBuff1, doubleBuff2);
+				    		grafx.drawCustomGraphicFull(cg.getShape(),
+								    (float) (doubleBuff2[0] + offsetVectorX),
+								    (float) (doubleBuff2[1] + offsetVectorY),
+								    cg.getPaint());
+				    		graphicInx++;
+				    }
+				}
+			}
 	}
 }
