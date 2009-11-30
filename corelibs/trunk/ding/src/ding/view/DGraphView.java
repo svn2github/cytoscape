@@ -53,6 +53,8 @@ import cytoscape.util.intr.IntStack;
 
 import giny.model.Edge;
 import giny.model.GraphPerspective;
+import giny.model.NestedNetworkChangeEvent;
+import giny.model.NestedNetworkChangeEventListener;
 import giny.model.Node;
 import giny.model.RootGraph;
 
@@ -69,17 +71,23 @@ import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Dimension;
+import java.awt.TexturePaint;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 
 /**
@@ -306,7 +314,7 @@ public class DGraphView implements GraphView, Printable {
 	 * 
 	 * This is used by a new nested network feature from 2.7.
 	 */
-	private Image snapshotImage;
+	private TexturePaint snapshotImage;
 	
 	/**
 	 * Represents current snapshot is latest version or not.
@@ -2543,17 +2551,23 @@ public class DGraphView implements GraphView, Printable {
 	 * Returns the current snapshot image of this view.
 	 * 
 	 * <p>
-	 * This will be used nested network manager.
 	 * No unnecessary image object will be created if networks in the current
 	 * session does not contain any nested network, i.e., should not have 
 	 * performance/memory issue. 
 	 *  
 	 * @return Image of this view.  It is always up-to-date.
 	 */
-	public Image getSnapshot() {
-		if(!latest) {
+	public TexturePaint getSnapshot(int width, int height) {
+		if (!latest) {
 			// Need to update snapshot.
-			snapshotImage = createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1);
+			final Rectangle2D rect = new Rectangle2D.Double(-width/2, -height/2, width, height);
+			snapshotImage = new TexturePaint((BufferedImage) createImage(width, height, 1), rect);
+//			try {
+//				snapshotImage = new TexturePaint(ImageIO.read(new File("/Users/kono/Documents/workspace/cytoscape/images/default_network.png")), rect);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			latest = true;
 		} 
 		

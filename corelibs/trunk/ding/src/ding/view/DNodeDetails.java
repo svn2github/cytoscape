@@ -41,12 +41,16 @@ import cytoscape.render.stateful.NodeDetails;
 
 import cytoscape.util.intr.IntObjHash;
 
+import giny.model.GraphPerspective;
 import giny.view.Label;
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.TexturePaint;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -569,6 +573,18 @@ class DNodeDetails extends IntermediateNodeDetails {
 			return super.labelWidth(node);
 
 		return ((Double) o).doubleValue();
+	}
+	
+	
+	@Override
+	public TexturePaint getNestedNetworkTexturePaint(final int node) {
+		final DNodeView dNodeView = (DNodeView) m_view.getNodeView(~node);
+		final GraphPerspective nestedNetwork = dNodeView.getNode().getNestedNetwork();
+		if (nestedNetwork == null) {
+			return null;
+		}
+		
+		return dNodeView.getNestedNetworkTexturePaint();
 	}
 
 	/*

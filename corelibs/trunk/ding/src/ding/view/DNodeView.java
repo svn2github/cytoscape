@@ -36,12 +36,7 @@
 
 package ding.view;
 
-import cytoscape.render.immed.GraphGraphics;
-import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.render.stateful.NodeDetails;
-
 import giny.model.Node;
-
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.Label;
@@ -59,12 +54,14 @@ import java.awt.TexturePaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.CustomGraphic;
 
 
 /**
@@ -113,6 +110,8 @@ public class DNodeView implements NodeView, Label {
     private final static HashSet<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(0);
 	// AJK: 04/26/06 for tooltip
 	String m_toolTipText = null;
+	
+	private DGraphView nestedNetworkView;
 
 	/*
 	 * @param inx the RootGraph index of node (a negative number).
@@ -126,6 +125,8 @@ public class DNodeView implements NodeView, Label {
 		m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
 		m_graphicShapes = null;
 		m_graphicPaints = null;
+		
+		nestedNetworkView = null;
 	}
 
 	/**
@@ -1397,5 +1398,18 @@ public class DNodeView implements NodeView, Label {
 			m_view.m_nodeDetails.overrideLabelWidth(m_inx, width);
 			m_view.m_contentChanged = true;
 		}
+	}
+
+	public TexturePaint getNestedNetworkTexturePaint() {
+		synchronized (m_view.m_lock) {
+			if (this.getNode().getNestedNetwork() != null && nestedNetworkView != null)
+				return nestedNetworkView.getSnapshot((int)this.getWidth(), (int)this.getHeight());
+			else
+				return null;
+		}
+	}
+	
+	public void setNestedNetworkView(final DGraphView nestedNetworkView) {
+		this.nestedNetworkView = nestedNetworkView;
 	}
 }
