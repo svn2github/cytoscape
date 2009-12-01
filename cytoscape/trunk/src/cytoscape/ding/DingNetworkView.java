@@ -38,7 +38,6 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,9 +62,9 @@ import ding.view.EdgeContextMenuListener;
 import ding.view.NodeContextMenuListener;
 
 
-// AJK: 05/19/06 END
 /**
- *
+ * Extended version of DGraphView defined in Ding.
+ * 
  */
 public class DingNetworkView extends DGraphView implements CyNetworkView {
 	private String title;
