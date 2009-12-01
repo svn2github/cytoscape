@@ -310,8 +310,8 @@ public class SpringEmbeddedLayouter{
 		// Calculate the rest lengths and strengths based on the node distance data
 		for( int node_i = 0; node_i < nodeCount; node_i++ ) {
 			for( int node_j = ( node_i + 1 ); node_j < nodeCount; node_j++ ) {
-				Node i = (Node)nodeList.get(node_i);
-				Node j = (Node)nodeList.get(node_j);
+				Node i = nodeList.get(node_i);
+				Node j = nodeList.get(node_j);
 				if(!homologyPairSet.contains(i,j)){
 					//there is not a homology edge between these two nodes
 					nodeDistanceSpringRestLengths[ node_i ][ node_j ] = ( node_distance_rest_length_constant * node_distances[ node_i ][ node_j ] );

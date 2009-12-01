@@ -93,11 +93,11 @@ public class DualLayoutTask extends Thread{
      * @param view The graph view used for creating the layout.
      */
     public void layoutNetwork(PGraphView view) {
-		((PGraphView)view).getCanvas().paintImmediately();
+		view.getCanvas().paintImmediately();
 		SpringEmbeddedLayouter layouter =
 			new SpringEmbeddedLayouter(view,node2Species,homologyPairSet);
 		layouter.doLayout();
-		((PGraphView)view).getCanvas().paintImmediately();
+		view.getCanvas().paintImmediately();
 		
 		// This array holds the min & max x positions for the species
 		double [] min_x = new double[k];		
@@ -138,7 +138,7 @@ public class DualLayoutTask extends Thread{
 		while(nodeViewIt.hasNext()) {
 			((NodeView)nodeViewIt.next()).setNodePosition(true);
 		}
-		((PGraphView)view).getCanvas().paintImmediately();
+		view.getCanvas().paintImmediately();
     }
 
     /**
@@ -269,7 +269,7 @@ public class DualLayoutTask extends Thread{
 					if (null == neighborEdges || neighborEdges.length == 0) {
 						splitNetwork.addEdge(
 											 Cytoscape.getCyEdge( sourceSplat[idx],idxName,targetSplat[idx],
-																  (String)interactionTypes.get(idx) ) );
+																  interactionTypes.get(idx) ) );
 						//System.out.println( "DBG: Added spec edge " + idxName );
 					}
 				} 
