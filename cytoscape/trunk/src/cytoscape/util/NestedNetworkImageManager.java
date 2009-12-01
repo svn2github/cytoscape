@@ -92,26 +92,7 @@ public class NestedNetworkImageManager implements PropertyChangeListener {
 				this.networkToImageMap.remove(network);
 			}
 		} else if (Cytoscape.NETWORK_MODIFIED.equals(evt.getPropertyName())) {
-			System.out.println("----------- Got NETWORK_MODIFIED: " + ((CyNetwork)evt.getNewValue()).getTitle());
-			// Here we have to do 2 things:
-			// 1) if the newly created view is that of a network that is a nested network of any node, we need to recreate an image for
-			//    this network based on the newly created view and then rerender all the views that contain parent nodes of this nested
-			//    network
-			// 2) We may have to rerender the newly created view if any of its nodes have a nested network and therefore need custom
-			//    graphics
-			if (!(evt.getOldValue() instanceof CyNetworkView)) {
-				return;
-			}
-			final CyNetworkView view = (CyNetworkView)evt.getOldValue();
-			final CyNetwork viewNetwork = view.getNetwork();
-//			if (networkToImageMap.containsKey(viewNetwork)) {
-				// implement 1)
-				updateImage(viewNetwork, view);
-				refreshViews(viewNetwork);
-//			}
-//
-//			// implement 2)
-			refreshView(viewNetwork, view);
+
 		}
 	}
 	
