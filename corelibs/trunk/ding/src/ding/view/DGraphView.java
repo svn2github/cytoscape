@@ -986,19 +986,29 @@ public class DGraphView implements GraphView, Printable {
 	 * @param zoom
 	 *            DOCUMENT ME!
 	 */
-	public void setZoom(double zoom) {
+	private void setZoom(final double zoom, final boolean updateView) {
 		synchronized (m_lock) {
 			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 
-		updateView();
+		if (updateView) {
+			this.updateView();
+		}
+	}
+	
+	
+	/**
+	 * Set the zoom level and redraw the view.
+	 */
+	public void setZoom(final double zoom) {
+		setZoom(zoom, /* updateView = */ true);
 	}
 
 	/**
 	 * DOCUMENT ME!
 	 */
-	public void fitContent() {
+	private void fitContent(final boolean updateView) {
 		synchronized (m_lock) {
 			if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
 			                           Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
@@ -1017,9 +1027,18 @@ public class DGraphView implements GraphView, Printable {
 			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
-
-		updateView();
+		if (updateView) {
+			this.updateView();
+		}
 	}
+	
+	/**
+	 * Resize the network view to the size of the canvas and redraw it. 
+	 */
+	public void fitContent() {
+		fitContent(/* updateView = */ true);
+	}
+	
 
 	/**
 	 * DOCUMENT ME!
@@ -2338,43 +2357,44 @@ public class DGraphView implements GraphView, Printable {
 	 * @throws IllegalArgumentException
 	 */
 	public Image createImage(int width, int height, double shrink) {
-		// check args
+		// Validate arguments
 		if (width < 0 || height < 0) {
 			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): "
 							   + "width and height arguments must be greater than zero");
 		}
 
-		if ( shrink < 0 || shrink > 1.0 ) {
+		if (shrink < 0 || shrink > 1.0) {
 			System.out.println("DGraphView.createImage(width,height,shrink) shrink is invalid: "
 			                   + shrink + "  using default of 1.0");
 			shrink = 1.0;
 		}
 
 		// create image to return
-		Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);		
-		Graphics g = image.getGraphics();
+		final Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);		
+		final Graphics g = image.getGraphics();
 
 		// paint background canvas into image
-		Dimension dim = m_backgroundCanvas.getSize();
+		Dimension originalSize = m_backgroundCanvas.getSize();
 		m_backgroundCanvas.setSize(width, height);
 		m_backgroundCanvas.paint(g);
-		m_backgroundCanvas.setSize(dim);
+		// Restore background size
+		m_backgroundCanvas.setSize(originalSize);
 
 		// paint inner canvas (network)
-		dim = m_networkCanvas.getSize();
+		originalSize = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
-		fitContent();
-		setZoom( getZoom() * shrink );
+		fitContent(/* updateView = */ false);
+		setZoom(getZoom() * shrink, /* updateView = */ false);
 		m_networkCanvas.paint(g);
-		m_networkCanvas.setSize(dim);
+		// Restore network to original size
+		m_networkCanvas.setSize(originalSize);
 
 		// paint foreground canvas
-		dim = m_foregroundCanvas.getSize();
+		originalSize = m_foregroundCanvas.getSize();
 		m_foregroundCanvas.setSize(width, height);
 		m_foregroundCanvas.paint(g);
-		m_foregroundCanvas.setSize(dim);
+		m_foregroundCanvas.setSize(originalSize);
 
-		// outta here
 		return image;
 	}
 
