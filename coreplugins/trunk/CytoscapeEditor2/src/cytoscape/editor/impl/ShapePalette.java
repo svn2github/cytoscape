@@ -96,7 +96,7 @@ public class ShapePalette extends JPanel {
 
 		_controlPane = new JPanel();
 		_controlPane.setLayout(new BoxLayout(_controlPane, BoxLayout.Y_AXIS));
-		_controlPane.setPreferredSize(new Dimension(300, 200));
+		//_controlPane.setPreferredSize(new Dimension(300, 200));
 		TitledBorder t2 = BorderFactory.createTitledBorder("Instructions:");
 		_controlPane.setBorder(t2);
 		String instructions = new String ("To add a node: " + 
@@ -113,7 +113,28 @@ public class ShapePalette extends JPanel {
 		_controlPane.add(instructionsArea);
 		_controlPane.setBackground(Cytoscape.getDesktop().getBackground());
 		
-
+		//
+		JPanel pnlSpecifyIdentifier = new JPanel();
+		pnlSpecifyIdentifier.setMaximumSize(new java.awt.Dimension(32767, 100));
+        chkSpecifyIdentifier = new javax.swing.JCheckBox("Specify Identifier");
+		pnlSpecifyIdentifier.setLayout(new java.awt.GridBagLayout());
+		pnlSpecifyIdentifier.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        chkSpecifyIdentifier.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            	CheckBoxSpecifyIdentifierStateChanged(evt);
+            }
+        });
+        chkSpecifyIdentifier.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        chkSpecifyIdentifier.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        chkSpecifyIdentifier.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        chkSpecifyIdentifier.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        pnlSpecifyIdentifier.add(chkSpecifyIdentifier, gridBagConstraints);
+        //
+		
 		listModel = new DefaultListModel();
 		dataList = new JList(listModel);
 		dataList.setCellRenderer(new MyCellRenderer());
@@ -131,11 +152,31 @@ public class ShapePalette extends JPanel {
  
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.setLayout(new BorderLayout());
-		this.add(_controlPane, BorderLayout.NORTH);
-		this.add(scrollPane, BorderLayout.CENTER);
-		this.setPreferredSize(new Dimension(300, 300));
-		this.setMaximumSize(new Dimension(300, 300));
+		//this.setLayout(new BorderLayout());
+		//this.add(_controlPane, BorderLayout.NORTH);
+		//this.add(pnlSpecifyIdentifier, BorderLayout.CENTER);
+		//this.add(scrollPane, BorderLayout.SOUTH);
+		//this.setPreferredSize(new Dimension(300, 300));
+		//this.setMaximumSize(new Dimension(300, 300));
+		
+		// Add check box "Specify Identifier" and change layout manager 11/30/2009
+        this.setLayout(new java.awt.GridBagLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(_controlPane, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(pnlSpecifyIdentifier, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        this.add(scrollPane, gridBagConstraints);
+
 		// AJK: 12/10/06 END
 		CytoscapeEditorManager.setCurrentShapePalette(this);
 
@@ -146,6 +187,18 @@ public class ShapePalette extends JPanel {
 		this.setVisible(true);
 	}
 
+    private javax.swing.JCheckBox chkSpecifyIdentifier;
+    public void CheckBoxSpecifyIdentifierStateChanged(javax.swing.event.ChangeEvent evt){
+    	if (chkSpecifyIdentifier.isSelected()){
+    		specifyIdentifier = true;
+    	}
+    	else {
+    		specifyIdentifier = false;
+    	}
+    }
+    
+    public static boolean specifyIdentifier = false;
+    
 	/**
 	 * clear the ShapePalette by removing all its shape components
 	 *
