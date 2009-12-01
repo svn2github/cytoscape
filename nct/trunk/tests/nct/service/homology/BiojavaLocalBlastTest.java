@@ -107,7 +107,7 @@ public class BiojavaLocalBlastTest extends TestCase {
 
 	private void checkMap(Map<String,Map<String,Double>> map,boolean nonHomologs) {
 		System.out.println("map size: " + map.size());
-		assertTrue( map.size() > 0 );
+		assertTrue("The blast executable is likely either missing or doesn't work on this platform. Either change the location of the blast executable in examples/blast.properties or comment out this test!", map.size() > 0 );
 		for ( String key : map.keySet() ) {
 			System.out.println("key " + key);
 			for ( String key2 : map.get(key).keySet() ) {
