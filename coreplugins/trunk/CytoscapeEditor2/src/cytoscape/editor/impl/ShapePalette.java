@@ -32,6 +32,7 @@ package cytoscape.editor.impl;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +46,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JEditorPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.TitledBorder;
 
@@ -96,36 +98,34 @@ public class ShapePalette extends JPanel {
 
 		_controlPane = new JPanel();
 		_controlPane.setLayout(new BoxLayout(_controlPane, BoxLayout.Y_AXIS));
-		//_controlPane.setPreferredSize(new Dimension(300, 200));
 		TitledBorder t2 = BorderFactory.createTitledBorder("Instructions:");
 		_controlPane.setBorder(t2);
-		String instructions = new String ("To add a node: " + 
-				"drag/drop a node shape onto the network view.\n" +
-				"To add an edge: " + "drag/drop an edge " + 
-				"shape onto source node, then click on target node.\n" +
-				"To add interactions: double-click on an empty space and enter " +
-				"a line of SIF. ");
+		String instructions = "<html><style type='text/css'>body{ font-family: sans-serif; font-size: 11pt; }</style><b>Drag and Drop:</b> <ul> <li>A node shape onto the network view.  <li>An edge shape onto the source node, then click on the target node.  </ul> <b>Double-click:</b> <ul> <li>To add nodes and edges specified in SIF format </ul>" + (System.getProperty("os.name").startsWith("Mac") ? "<b>CMD-click:</b>" : "<b>CTRL-click:</b>") + "<ul> <li>On empty space to create a node.  <li>On a node to begin an edge and specify the source node. Then click on the target node to finish the edge.  </ul></html>";
 		
-		JTextArea instructionsArea = new JTextArea(instructions);
-		instructionsArea.setLineWrap(true);
-		instructionsArea.setWrapStyleWord(true);
+		JEditorPane instructionsArea = new JEditorPane("text/html",instructions);
+		// 32767 ????
+		instructionsArea.setPreferredSize(new java.awt.Dimension(32767, 400));
 		instructionsArea.setBackground(Cytoscape.getDesktop().getBackground());
 		_controlPane.add(instructionsArea);
 		_controlPane.setBackground(Cytoscape.getDesktop().getBackground());
 		
-		//
 		JPanel pnlSpecifyIdentifier = new JPanel();
+		// 32767 ????
 		pnlSpecifyIdentifier.setMaximumSize(new java.awt.Dimension(32767, 100));
-        chkSpecifyIdentifier = new javax.swing.JCheckBox("Specify Identifier");
+		JLabel chkSpecifyLabel = new JLabel("Specify Identifier:");
+        chkSpecifyIdentifier = new javax.swing.JCheckBox();
+		chkSpecifyIdentifier.setToolTipText("Checking the box will allow you to choose the identifier for added nodes and edges.");
 		pnlSpecifyIdentifier.setLayout(new java.awt.GridBagLayout());
-		pnlSpecifyIdentifier.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+		pnlSpecifyIdentifier.setBorder(BorderFactory.createTitledBorder(""));
         chkSpecifyIdentifier.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
             	CheckBoxSpecifyIdentifierStateChanged(evt);
             }
         });
+		pnlSpecifyIdentifier.add(chkSpecifyLabel);
+		pnlSpecifyIdentifier.add(chkSpecifyIdentifier);
         chkSpecifyIdentifier.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        chkSpecifyIdentifier.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        chkSpecifyIdentifier.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         chkSpecifyIdentifier.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         chkSpecifyIdentifier.setMargin(new java.awt.Insets(0, 0, 0, 0));
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -133,7 +133,6 @@ public class ShapePalette extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         pnlSpecifyIdentifier.add(chkSpecifyIdentifier, gridBagConstraints);
-        //
 		
 		listModel = new DefaultListModel();
 		dataList = new JList(listModel);
@@ -152,14 +151,7 @@ public class ShapePalette extends JPanel {
  
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		//this.setLayout(new BorderLayout());
-		//this.add(_controlPane, BorderLayout.NORTH);
-		//this.add(pnlSpecifyIdentifier, BorderLayout.CENTER);
-		//this.add(scrollPane, BorderLayout.SOUTH);
-		//this.setPreferredSize(new Dimension(300, 300));
-		//this.setMaximumSize(new Dimension(300, 300));
 		
-		// Add check box "Specify Identifier" and change layout manager 11/30/2009
         this.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -177,7 +169,6 @@ public class ShapePalette extends JPanel {
         gridBagConstraints.weighty = 1.0;
         this.add(scrollPane, gridBagConstraints);
 
-		// AJK: 12/10/06 END
 		CytoscapeEditorManager.setCurrentShapePalette(this);
 
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
