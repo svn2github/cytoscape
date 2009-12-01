@@ -54,6 +54,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -73,8 +74,17 @@ import cytoscape.render.stateful.CustomGraphic;
 public class DNodeView implements NodeView, Label {
 	// For Cytoscape 2.7: Nested Network Image size
 	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.7f;
-	private static BufferedImage defaultNestedNetworkImage = null;
-
+	private static BufferedImage DEFAULT_NESTED_NETWORK_IMAGE;
+	
+	static {
+		try {
+			DEFAULT_NESTED_NETWORK_IMAGE = ImageIO.read(DNodeView.class.getClassLoader().getResource("resources/images/default_network.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			DEFAULT_NESTED_NETWORK_IMAGE = null;
+		}
+	}
+	
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final byte DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -1414,17 +1424,11 @@ public class DNodeView implements NodeView, Label {
 					return nestedNetworkView.getSnapshot(IMAGE_WIDTH, IMAGE_HEIGHT);
 				}
 				else {
-					if (defaultNestedNetworkImage == null) {
-//						try {
-//							defaultNestedNetworkImage = ImageIO.read(new File("/cellar/users/ruschein/code/cytoscape/images/default_network.png"));
-//						}
-//						catch (final Exception e) {
-							return null;
-//						}
+					if (DEFAULT_NESTED_NETWORK_IMAGE == null) {
+						return null;
 					}
-
 					final Rectangle2D rect = new Rectangle2D.Double(-IMAGE_WIDTH/2, -IMAGE_HEIGHT/2, IMAGE_WIDTH, IMAGE_HEIGHT);
-					return new TexturePaint(defaultNestedNetworkImage, rect);
+					return new TexturePaint(DEFAULT_NESTED_NETWORK_IMAGE, rect);
 				}
 			} else {
 				return null;
