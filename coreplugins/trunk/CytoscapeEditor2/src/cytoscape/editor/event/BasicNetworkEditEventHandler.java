@@ -54,6 +54,8 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JOptionPane;
+
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -61,6 +63,7 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
 import cytoscape.editor.impl.SIF_Interpreter;
+import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -491,19 +494,56 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 
 		Node source_node = source.getNode();
 		Node target_node = target.getNode();
+		
+		CyEdge myEdge;
+		if (ShapePalette.specifyIdentifier){
+			String _edgeAttributeValue = getEdgeAttributeValueFromUser(source_node, target_node);
+			if (_edgeAttributeValue == null){
+				return null;
+			}
+			myEdge = _caller.addEdge(source_node, target_node,
+                cytoscape.data.Semantics.INTERACTION,
+                _edgeAttributeValue, true,
+                _edgeAttributeValue);						
+		}
+		else {
+			myEdge = _caller.addEdge(source_node, target_node,
+                cytoscape.data.Semantics.INTERACTION,
+                (this.getEdgeAttributeValue() != null)
+                ? this.getEdgeAttributeValue()
+                : BasicNetworkEditEventHandler.DEFAULT_EDGE, true,
+                (this.getEdgeAttributeValue() != null)
+                ? this.getEdgeAttributeValue()
+                : BasicNetworkEditEventHandler.DEFAULT_EDGE);			
+		}
 
-		CyEdge myEdge = _caller.addEdge(source_node, target_node,
-		                                cytoscape.data.Semantics.INTERACTION,
-		                                (this.getEdgeAttributeValue() != null)
-		                                ? this.getEdgeAttributeValue()
-		                                : BasicNetworkEditEventHandler.DEFAULT_EDGE, true,
-		                                (this.getEdgeAttributeValue() != null)
-		                                ? this.getEdgeAttributeValue()
-		                                : BasicNetworkEditEventHandler.DEFAULT_EDGE);
 		completeFinishEdge();
 		return myEdge;
 	}
 
+	
+	private String getEdgeAttributeValueFromUser(Node source_node, Node target_node) {
+		String _edgeAttributeValue = null;
+
+		while (true){
+			_edgeAttributeValue = JOptionPane.showInputDialog(Cytoscape.getDesktop(),"Please Specify Edge Interaction Type", this.getEdgeAttributeValue());
+			if (_edgeAttributeValue == null){
+				return null;
+			}
+			// Check if the Edge ID already existed				
+			CyEdge aEdge = Cytoscape.getCyEdge(source_node, target_node, cytoscape.data.Semantics.INTERACTION, _edgeAttributeValue, false, true);
+	
+			if (aEdge == null){
+				break;
+			}
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), _edgeAttributeValue + " already existed!", "Duplicated Edge Identifier", 
+					JOptionPane.WARNING_MESSAGE);
+		}
+
+		return _edgeAttributeValue;
+	}
+	
+	
 	/**
 	 * Perform all cleanup and refresh activities to complete
 	 * finishEdge().
