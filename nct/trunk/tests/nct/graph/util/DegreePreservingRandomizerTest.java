@@ -58,7 +58,7 @@ public class DegreePreservingRandomizerTest extends TestCase {
 		g.addEdge("d", "e", 1.0);
 		g.addEdge("e", "f", 1.0);
 
-		deg = new DegreePreservingRandomizer<String, Double>(new Random(10), false);
+		deg = new DegreePreservingRandomizer<String, Double>(new Random(20), false);
 	}
 
 	/**
@@ -102,20 +102,20 @@ public class DegreePreservingRandomizerTest extends TestCase {
 
 		// check new edges
 		assertTrue("edge a c", g.isEdge("a", "c"));
-		assertTrue("edge a d", g.isEdge("a", "d"));
-		assertTrue("edge b c", g.isEdge("b", "c"));
+		assertTrue("edge a f", g.isEdge("a", "f"));
+		assertTrue("edge b d", g.isEdge("b", "d"));
 		assertTrue("edge b e", g.isEdge("b", "e"));
 		assertTrue("edge b f", g.isEdge("b", "f"));
 		assertTrue("edge c d", g.isEdge("c", "d"));
+		assertTrue("edge c e", g.isEdge("c", "e"));
 		assertTrue("edge d f", g.isEdge("d", "f"));
-		assertTrue("edge e f", g.isEdge("e", "f"));
 
 		// check old edges
-		assertFalse("edge a f", g.isEdge("a", "f"));
 		assertFalse("edge a b", g.isEdge("a", "b"));
-		assertFalse("edge d e", g.isEdge("d", "e"));
-		assertFalse("edge b d", g.isEdge("b", "d"));
+		assertFalse("edge b c", g.isEdge("b", "c"));
 		assertFalse("edge c f", g.isEdge("c", "f"));
+		assertFalse("edge d e", g.isEdge("d", "e"));
+		assertFalse("edge e f", g.isEdge("e", "f"));
 
 	}
 

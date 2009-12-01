@@ -98,6 +98,16 @@ public class PathGraph<NodeType extends Comparable<? super NodeType>>
 		return ns;
 	}
 
+	public List<NodeType> getNeighborList(NodeType node) {
+		Set<NodeType> ns = getNeighbors(node);
+		if ( ns == null )
+			return null;
+		
+		List<NodeType> nl = new ArrayList<NodeType>(ns);
+		Collections.sort(nl);
+		return nl;
+	}
+
 	public String getId() {
 		return "asdfasdf";
 	}

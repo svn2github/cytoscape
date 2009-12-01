@@ -104,6 +104,7 @@ public interface Graph<NodeType extends Comparable<? super NodeType>,
 	 * @return A set of all neighbor nodes. 
 	 */
 	public Set<NodeType> getNeighbors(NodeType node);
+	public List<NodeType> getNeighborList(NodeType node);
 
 	/**
 	 * Returns the id of the graph.

@@ -243,6 +243,16 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 			return wm.keySet();
 	}
 
+	public List<NodeType> getNeighborList(NodeType node) {
+		Set<NodeType> ns = getNeighbors(node);
+		if ( ns == null )
+			return null;
+		
+		List<NodeType> nl = new ArrayList<NodeType>(ns);
+		Collections.sort(nl);
+		return nl;
+	}
+
         /**
          * Returns the id of the graph, in this case the filename of the input
 	 * file that specifies the graph.

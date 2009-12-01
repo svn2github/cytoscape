@@ -55,15 +55,15 @@ public class DegreePreservingRandomizer<NodeType extends Comparable<? super Node
 		for ( int e = 0; e < g.numberOfEdges(); e++ ) {
 			NodeType i;
 			NodeType j;
-			NodeType va;
-			NodeType vb;
+			NodeType vi;
+			NodeType vj;
 			
 			while (true) {
 				i = nodes.get( rand.nextInt(nodes.size()) );
 				j = nodes.get( rand.nextInt(nodes.size()) );
 		
-				List<NodeType> iNeighbors = new ArrayList<NodeType>(g.getNeighbors(i));
-				List<NodeType> jNeighbors = new ArrayList<NodeType>(g.getNeighbors(j));
+				List<NodeType> iNeighbors = g.getNeighborList(i);
+				List<NodeType> jNeighbors = g.getNeighborList(j);
 
 				
 				int iDegree = iNeighbors.size();
@@ -72,28 +72,28 @@ public class DegreePreservingRandomizer<NodeType extends Comparable<? super Node
 				if ( i.compareTo(j) == 0 || iDegree <= 0 || jDegree <= 0 )
 				     continue;
 
-				va = iNeighbors.get( rand.nextInt(iNeighbors.size()) );
-				vb = jNeighbors.get( rand.nextInt(jNeighbors.size()) );					
-				if ( va.compareTo(vb) == 0 || va.compareTo(j) == 0 || vb.compareTo(i) == 0 )
+				vi = iNeighbors.get( rand.nextInt(iNeighbors.size()) );
+				vj = jNeighbors.get( rand.nextInt(jNeighbors.size()) );					
+				if ( vi.compareTo(vj) == 0 || vi.compareTo(j) == 0 || vj.compareTo(i) == 0 )
 					continue;
 
 				// don't want to stomp on existing edges
-				if ( g.isEdge(i,vb) || g.isEdge(j,va) )
+				if ( g.isEdge(i,vj) || g.isEdge(j,vi) )
 					continue;
 
-				if (ignoreWeights || weightsSimilar(g.getEdgeWeight(i,va),g.getEdgeWeight(j,vb)))
+				if (ignoreWeights || weightsSimilar(g.getEdgeWeight(i,vi),g.getEdgeWeight(j,vj)))
 					break;
 
 			}
 			
-			WeightType iWeight = g.getEdgeWeight(i,va);
-			WeightType jWeight = g.getEdgeWeight(j,vb);
+			WeightType iWeight = g.getEdgeWeight(i,vi);
+			WeightType jWeight = g.getEdgeWeight(j,vj);
 
-			g.removeEdge(i,va);
-			g.removeEdge(j,vb);
+			g.removeEdge(i,vi);
+			g.removeEdge(j,vj);
 
-			g.addEdge(i,vb,jWeight);
-			g.addEdge(j,va,iWeight);
+			g.addEdge(i,vj,jWeight);
+			g.addEdge(j,vi,iWeight);
 
 			//System.out.println("interim randomized graph:");
 			//System.out.println(g.toString());
