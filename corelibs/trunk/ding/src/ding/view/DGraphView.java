@@ -2388,11 +2388,13 @@ public class DGraphView implements GraphView, Printable {
 		m_networkCanvas.paint(g);
 		// Restore network to original size
 		m_networkCanvas.setSize(originalSize);
-
+		fitContent(/* updateView = */ false);
+		
 		// paint foreground canvas
 		originalSize = m_foregroundCanvas.getSize();
 		m_foregroundCanvas.setSize(width, height);
 		m_foregroundCanvas.paint(g);
+		// Restore foreground to original size
 		m_foregroundCanvas.setSize(originalSize);
 
 		return image;
