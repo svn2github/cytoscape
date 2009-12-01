@@ -51,6 +51,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -205,10 +206,40 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 
 	// overwridden by subclasses:
 	protected void handleDroppedNode(String attributeName, String attributeValue, Point location) {
-		get_caller().addNode("node" + counter, attributeName, attributeValue, location);
+		String nodeID = "node" + counter;
+
+		if (ShapePalette.specifyIdentifier){
+			nodeID = getNodeID(nodeID);
+			if (nodeID == null){
+				return;
+			}
+		}
+
+		get_caller().addNode(nodeID, attributeName, attributeValue, location);
 		counter++;
 	}
 
+	private String getNodeID(String nodeID){
+		String newNodeID = null;
+
+		while (true){
+			newNodeID = JOptionPane.showInputDialog(Cytoscape.getDesktop(),"Please Specify Node identifier", nodeID);
+			if (newNodeID == null){
+				return null;
+			}
+
+			// Check if the nodeID already existed				
+			CyNode aNode = Cytoscape.getCyNode(newNodeID);
+			if (aNode == null){
+				break;
+			}
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), newNodeID + " already existed!", "Duplicated Identifier", 
+					JOptionPane.WARNING_MESSAGE);
+		}
+
+		return newNodeID;
+	}
+	
 	// overwridden by subclasses:
 	protected void handleDroppedEdge(String attributeName, String attributeValue, Point location) {
 		if (isEdgeStarted()) {
@@ -243,7 +274,16 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		NodeView targetNode = getCurrentDGraphView().getPickedNodeView(location);
 		if (targetNode == null) {
 			// Create a new Node
-			CyNode newNode = get_caller().addNode("node" + counter, attributeName, attributeValue, location);
+			String nodeID = "node" + counter;
+			
+			if (ShapePalette.specifyIdentifier){
+				nodeID = getNodeID(nodeID);
+				if (nodeID == null){
+					return;
+				}
+			}
+						
+			CyNode newNode = get_caller().addNode(nodeID, attributeName, attributeValue, location);				
 			counter++;
 			
 			// Set a nested network for this newly created node
