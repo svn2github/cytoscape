@@ -1,10 +1,6 @@
 package cytoscape.util;
 
 import junit.framework.TestCase;
-import java.util.List;
-import cytoscape.Cytoscape;
-import cytoscape.CyNode;
-import cytoscape.data.readers.NNFReader;
 
 
 public class NestedNetworkImageManagerTest extends TestCase {
@@ -13,7 +9,6 @@ public class NestedNetworkImageManagerTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		NestedNetworkImageManager.instantiateNestedNetworkImageManagerSingleton();
 	}
 
 

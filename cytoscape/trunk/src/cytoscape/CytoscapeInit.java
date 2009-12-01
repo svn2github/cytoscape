@@ -161,8 +161,6 @@ public class CytoscapeInit {
 			// Build the OntologyServer.
 			Cytoscape.buildOntologyServer();
 
-			NestedNetworkImageManager.instantiateNestedNetworkImageManagerSingleton();
-
 			// get the manager so it can test for webstart before menus are
 			// created (little hacky)
 			PluginManager.getPluginManager();
