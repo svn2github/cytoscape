@@ -530,13 +530,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			if (_edgeAttributeValue == null){
 				return null;
 			}
-			// Check if the Edge ID already existed				
+			// Check if the Edge ID already exists
 			CyEdge aEdge = Cytoscape.getCyEdge(source_node, target_node, cytoscape.data.Semantics.INTERACTION, _edgeAttributeValue, false, true);
 	
 			if (aEdge == null){
 				break;
 			}
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), _edgeAttributeValue + " already existed!", "Duplicated Edge Identifier", 
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), _edgeAttributeValue + " already exists!", "Duplicated Edge Identifier", 
 					JOptionPane.WARNING_MESSAGE);
 		}
 
@@ -1092,8 +1092,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	}
 
 	/**
-	 * @param edgeAttributeValue
-	 *            The edgeAttributeValue to set.
+	 * @param networkAttributeValue
+	 *            The networkAttributeValue to set.
 	 */
 	public void setNetworkAttributeValue(String networkAttributeValue) {
 		this.networkAttributeValue = networkAttributeValue;

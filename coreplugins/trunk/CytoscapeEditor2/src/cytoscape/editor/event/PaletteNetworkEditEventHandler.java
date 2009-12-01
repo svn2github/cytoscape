@@ -228,12 +228,12 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 				return null;
 			}
 
-			// Check if the nodeID already existed				
+			// Check if the nodeID already exists
 			CyNode aNode = Cytoscape.getCyNode(newNodeID);
 			if (aNode == null){
 				break;
 			}
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), newNodeID + " already existed!", "Duplicated Identifier", 
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), newNodeID + " already exists!", "Duplicated Identifier", 
 					JOptionPane.WARNING_MESSAGE);
 		}
 
