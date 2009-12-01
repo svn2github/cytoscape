@@ -105,7 +105,7 @@ import javax.imageio.ImageIO;
  */
 public class DGraphView implements GraphView, Printable {
 	// Size of snapshot image
-	private static final int DEF_SNAPSHOT_SIZE = 500;
+	private static final int DEF_SNAPSHOT_SIZE = 2000;
 	
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
@@ -2561,13 +2561,7 @@ public class DGraphView implements GraphView, Printable {
 		if (!latest) {
 			// Need to update snapshot.
 			final Rectangle2D rect = new Rectangle2D.Double(-width/2, -height/2, width, height);
-			snapshotImage = new TexturePaint((BufferedImage) createImage(width, height, 1), rect);
-//			try {
-//				snapshotImage = new TexturePaint(ImageIO.read(new File("/Users/kono/Documents/workspace/cytoscape/images/default_network.png")), rect);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			snapshotImage = new TexturePaint((BufferedImage) createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1), rect);
 			latest = true;
 		} 
 		

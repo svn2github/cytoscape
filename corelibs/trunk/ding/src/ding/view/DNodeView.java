@@ -70,6 +70,9 @@ import cytoscape.render.stateful.CustomGraphic;
  * @author $author$
  */
 public class DNodeView implements NodeView, Label {
+	// For Cytoscape 2.7: Nested Network Image size
+	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.7f;
+	
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final byte DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -1007,11 +1010,11 @@ public class DNodeView implements NodeView, Label {
      * @see #addCustomGraphic(CustomGraphic)
      * @see cytoscape.render.stateful.CustomGraphic
      */
-      public CustomGraphic addCustomGraphic(Shape shape, Paint paint, byte anchor) {
-	  CustomGraphic cg = new CustomGraphic (shape, paint, anchor);
-	  addCustomGraphic (cg);
-	  return cg;
-      }
+	public CustomGraphic addCustomGraphic(Shape shape, Paint paint, byte anchor) {
+    	  	CustomGraphic cg = new CustomGraphic (shape, paint, anchor);
+    	  	addCustomGraphic (cg);
+    	  	return cg;
+	}
 
     /**
      * Adds a given CustomGraphic, <EM>in draw order</EM>, to this
@@ -1402,10 +1405,11 @@ public class DNodeView implements NodeView, Label {
 
 	public TexturePaint getNestedNetworkTexturePaint() {
 		synchronized (m_view.m_lock) {
-			if (this.getNode().getNestedNetwork() != null && nestedNetworkView != null)
-				return nestedNetworkView.getSnapshot((int)this.getWidth(), (int)this.getHeight());
-			else
+			if (this.getNode().getNestedNetwork() != null && nestedNetworkView != null) {
+				return nestedNetworkView.getSnapshot((int)(getWidth()*NESTED_IMAGE_SCALE_FACTOR), (int)(getHeight()*NESTED_IMAGE_SCALE_FACTOR));
+			} else {
 				return null;
+			}
 		}
 	}
 	
