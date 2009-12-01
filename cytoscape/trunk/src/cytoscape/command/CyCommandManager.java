@@ -54,31 +54,56 @@ import java.util.regex.Pattern;
  * method. Commands may be accessed with a combination of command name and namespace.
  */
 public class CyCommandManager {
-	private static Map<String, Map<String,CyCommand>> comMap;
-	private final static String HELP = "help";
+	private static Map<CyCommandNamespace, Map<String,CyCommand>> comMap;
+	private static Map<String, CyCommandNamespace> nsMap;
+	private final static String HELP = "help"; 
+	private final static CyCommandNamespace HELP_NS = new CyCommandNamespaceImpl(HELP);
 
 	static {
-		comMap = new HashMap<String, Map<String,CyCommand>>();
+		comMap = new HashMap<CyCommandNamespace, Map<String,CyCommand>>();
+		nsMap = new HashMap<String, CyCommandNamespace>();
 
 		// special case for help
-		comMap.put( HELP, new HashMap<String,CyCommand>());
-		comMap.get(HELP).put(HELP, new HelpCommand());
+		comMap.put(HELP_NS, new HashMap<String,CyCommand>());
+		comMap.get(HELP_NS).put(HELP, new HelpCommand());
+		nsMap.put(HELP,HELP_NS);
+	}
+
+    public static CyCommandNamespace reserveNamespace(final String namespace) 
+		throws RuntimeException {
+
+		if (nsMap.containsKey(namespace))
+			throw new RuntimeException("Command namespace: "+namespace+" is already reserved");
+		
+		CyCommandNamespace ns = new CyCommandNamespaceImpl(namespace);
+		nsMap.put(namespace, ns);
+		comMap.put(ns, new HashMap<String,CyCommand>());
+		
+		comMap.get(HELP_NS).put(namespace, new HelpSpecificCommand(namespace));
+
+		return ns;
 	}
 
     /**
-     * register a new CyCommandHandler.
+     * register a new CyCommand.
      *
      * @param com the command we want to register
      * @throws RuntimeException if the command is already registered
      */
-	public static void register(CyCommand com) throws RuntimeException {
+	public static void register(CyCommandNamespace ns, CyCommand com) throws RuntimeException {
 		if (com == null) 
 			return;
+		if (ns == null) 
+			return;
 
-		if (!comMap.containsKey( com.getNamespace())) 
-			comMap.put( com.getNamespace(), new HashMap<String,CyCommand>() );
+		if ( !ns.getNamespaceName().equals(com.getNamespace()) ) 
+			throw new RuntimeException("Command: " + com.toString() + 
+			                           " is not part of namespace: " + ns.getNamespaceName());
 
-		Map<String,CyCommand> subComMap = comMap.get(com.getNamespace());
+		Map<String,CyCommand> subComMap = comMap.get(ns);
+
+		if ( subComMap == null ) 
+			throw new RuntimeException("Namespace is not registered!");
 
 		if ( subComMap.containsKey( com.getCommandName() ) )
 			throw new RuntimeException("Command: " + com.getNamespace() + " " + 
@@ -88,7 +113,7 @@ public class CyCommandManager {
 
 		// add help for this namespace if necessary
 		if ( subComMap.size() == 1 )
-			comMap.get(HELP).put(com.getNamespace(), 
+			comMap.get(HELP_NS).put(com.getNamespace(), 
 			                       new HelpSpecificCommand(com.getNamespace()));
 	}
 
@@ -105,9 +130,12 @@ public class CyCommandManager {
 		if ((name == null) || (name.length() == 0)) 
 			throw new RuntimeException("null or zero length command name");
 
-		Map<String,CyCommand> subComMap = comMap.get(namespace);
-		if ( subComMap == null )
-			throw new RuntimeException("namespace " + namespace + " does not exist!");
+		CyCommandNamespace ns = nsMap.get(namespace);
+
+		if ( ns == null )
+			throw new RuntimeException("namespace has not been registered");
+
+		Map<String,CyCommand> subComMap = comMap.get(ns);
 
 		return subComMap.get(name);
 	}
@@ -134,10 +162,17 @@ public class CyCommandManager {
      * @return the list of commands that are currently registered
      */
 	public static List<CyCommand> getCommandList(String namespace) {
+		if ((namespace == null) || (namespace.length() == 0)) 
+			throw new RuntimeException("null or zero length namespace");
+
+		CyCommandNamespace ns = nsMap.get(namespace);
+
+		if ( ns == null )
+			throw new RuntimeException("namespace has not been registered");
+
 		List<CyCommand> list = new ArrayList<CyCommand>();
 
-		if ( comMap.containsKey( namespace ) )
-			list.addAll( comMap.get(namespace).values() ); 
+		list.addAll( comMap.get(ns).values() ); 
 
 		return list;
 	}
@@ -148,14 +183,32 @@ public class CyCommandManager {
      * @param com the command to unregister
      */
 	public static void unRegister(CyCommand com) {
+		CyCommandNamespace ns = nsMap.get(com.getNamespace());
+		if ( ns == null )
+			throw new RuntimeException("namespace has not been registered");
 
-		Map<String,CyCommand> subComMap = comMap.get(com.getNamespace());
+		Map<String,CyCommand> subComMap = comMap.get(ns);
 
 		subComMap.remove( com.getCommandName() );
 
 		// if this is the last command for a namespace, 
 		// remove the help for the namespace
-		if ( subComMap.size() == 0 )
-			comMap.get(HELP).remove(com.getNamespace());
+		if ( subComMap.size() == 0 ) {
+			comMap.get(HELP_NS).remove(com.getNamespace());
+			// TODO also make the namespace available again?
+		}
 	}
+
+    /**
+     * Internal implementation for the CyCommandNamespace class.
+     */
+    private static class CyCommandNamespaceImpl implements CyCommandNamespace {
+        private String namespace;
+
+        CyCommandNamespaceImpl(String namespace) {
+            this.namespace = namespace;
+        }
+
+        public String getNamespaceName() { return namespace; }
+    }
 }
