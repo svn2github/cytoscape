@@ -188,4 +188,8 @@ public abstract class AbstractCommand implements CyCommand {
 		return;
 	}
 
+	public String toString() {
+		return namespace + " " + commandName;
+	}
+
 }

@@ -34,6 +34,7 @@ package coreCommands;
 
 import cytoscape.Cytoscape;
 import cytoscape.command.CyCommandManager;
+import cytoscape.command.CyCommandNamespace;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeInit;
 import cytoscape.logger.CyLogger;
@@ -54,26 +55,36 @@ public class CoreCommands extends CytoscapePlugin {
 		// Register our built-ins -- these should really be
 		// provided directly by the core...
 		try {
-			CyCommandManager.register(new SelectEdgeCommand());
-			CyCommandManager.register(new DeselectEdgeCommand());
-			CyCommandManager.register(new GetEdgeAttributeCommand());
-			CyCommandManager.register(new ImportEdgeAttributesCommand());
-			CyCommandManager.register(new SetEdgeAttributeCommand());
-			CyCommandManager.register(new GetSelectedEdgesCommand());
+			CyCommandNamespace selectNS = CyCommandManager.reserveNamespace("edge");
+			CyCommandManager.register(selectNS, new SelectEdgeCommand());
+			CyCommandManager.register(selectNS, new DeselectEdgeCommand());
+			CyCommandManager.register(selectNS, new GetEdgeAttributeCommand());
+			CyCommandManager.register(selectNS, new ImportEdgeAttributesCommand());
+			CyCommandManager.register(selectNS, new SetEdgeAttributeCommand());
+			CyCommandManager.register(selectNS, new GetSelectedEdgesCommand());
 
-			CyCommandManager.register(new NetworkCreateCommand());
-			CyCommandManager.register(new NetworkImportCommand());
+			CyCommandNamespace networkNS = CyCommandManager.reserveNamespace("network");
+			CyCommandManager.register(networkNS, new NetworkCreateCommand());
+			CyCommandManager.register(networkNS, new NetworkImportCommand());
 //			CyCommandManager.register(new NetworkViewCommand());
-//			CyCommandManager.register(new NodeCommand());
 //			CyCommandManager.register(new PropertyCommand());
 //			CyCommandManager.register(new SessionCommand());
 //			CyCommandManager.register(new VizMapCommand());
 
-			CyCommandManager.register(new GetDefaultLayoutCommand());
-			CyCommandManager.register(new GetCurrentLayoutCommand());
-			CyCommandManager.register(new ApplyDefaultLayoutCommand());
+			CyCommandNamespace layoutNS = CyCommandManager.reserveNamespace("layout");
+			CyCommandManager.register(layoutNS, new GetDefaultLayoutCommand());
+			CyCommandManager.register(layoutNS, new GetCurrentLayoutCommand());
+			CyCommandManager.register(layoutNS, new ApplyDefaultLayoutCommand());
 			for ( CyLayoutAlgorithm alg : CyLayouts.getAllLayouts() )
-				CyCommandManager.register(new ApplyLayoutCommand(alg));
+				CyCommandManager.register(layoutNS, new ApplyLayoutCommand(alg));
+
+			CyCommandNamespace nodeNS = CyCommandManager.reserveNamespace("node");
+			CyCommandManager.register(nodeNS, new NodeCommandCollection("select"));
+			CyCommandManager.register(nodeNS, new NodeCommandCollection("deselect"));
+			CyCommandManager.register(nodeNS, new NodeCommandCollection("get selected"));
+			CyCommandManager.register(nodeNS, new NodeCommandCollection("get attribute"));
+			CyCommandManager.register(nodeNS, new NodeCommandCollection("set attribute"));
+			CyCommandManager.register(nodeNS, new NodeCommandCollection("import attributes"));
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
