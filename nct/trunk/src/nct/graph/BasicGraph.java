@@ -224,6 +224,12 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 		return weightMap.keySet();
 	}
 
+	public List<NodeType> getNodeList() {
+		List<NodeType> l = new ArrayList<NodeType>( weightMap.keySet());
+		Collections.sort(l);
+		return l;
+	}
+
         /**
          * Returns a set all nodes adjacent to the specified node.
          * @param node The node whose neighbors we're requesting.
@@ -275,7 +281,9 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 	}
 
 	public List<Edge<NodeType,WeightType>> getEdgeList() { 
-		return new ArrayList<Edge<NodeType,WeightType>>( getEdges() );
+		List<Edge<NodeType,WeightType>> l =  new ArrayList<Edge<NodeType,WeightType>>( getEdges() );
+		Collections.sort(l);
+		return l; 
 	}
 
         /**

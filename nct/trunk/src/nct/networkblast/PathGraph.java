@@ -79,6 +79,10 @@ public class PathGraph<NodeType extends Comparable<? super NodeType>>
 		return ns;
 	}
 
+	public List<NodeType> getNodeList() {
+		return Collections.unmodifiableList(nodes);
+	}
+
 	public Set<NodeType> getNeighbors(NodeType node) {
 		HashSet<NodeType> ns = new HashSet<NodeType>();
 		int ind = nodes.indexOf( node );

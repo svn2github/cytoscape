@@ -50,7 +50,7 @@ public class DegreePreservingRandomizer<NodeType extends Comparable<? super Node
 	 */
 	public void randomize(Graph<NodeType,WeightType> g) {
 		
-		List<NodeType> nodes = new ArrayList<NodeType>(g.getNodes());
+		List<NodeType> nodes = g.getNodeList();
 		
 		for ( int e = 0; e < g.numberOfEdges(); e++ ) {
 			NodeType i;

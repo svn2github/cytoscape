@@ -96,6 +96,7 @@ public interface Graph<NodeType extends Comparable<? super NodeType>,
 	 * @return A set of all nodes in the graph. 
 	 */
 	public Set<NodeType> getNodes(); 
+	public List<NodeType> getNodeList(); 
 
 	/**
 	 * Returns a set all nodes adjacent to the specified node. 

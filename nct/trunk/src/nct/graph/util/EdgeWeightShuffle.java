@@ -46,7 +46,7 @@ public class EdgeWeightShuffle<NodeType extends Comparable<? super NodeType>,Wei
 	 */
 	public void randomize(Graph<NodeType,WeightType> g) {
 
-		List<Edge<NodeType,WeightType>> edges = new ArrayList<Edge<NodeType,WeightType>>(g.getEdges());
+		List<Edge<NodeType,WeightType>> edges = g.getEdgeList(); 
 		int size = edges.size();
 
 		for ( int i = 0; i < size; i++ ) {
