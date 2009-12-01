@@ -41,7 +41,6 @@ import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.Label;
 import giny.view.NodeView;
-
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -54,11 +53,13 @@ import java.awt.TexturePaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.CustomGraphic;
@@ -72,7 +73,8 @@ import cytoscape.render.stateful.CustomGraphic;
 public class DNodeView implements NodeView, Label {
 	// For Cytoscape 2.7: Nested Network Image size
 	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.7f;
-	
+	private static BufferedImage defaultNestedNetworkImage = null;
+
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final byte DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -1405,8 +1407,25 @@ public class DNodeView implements NodeView, Label {
 
 	public TexturePaint getNestedNetworkTexturePaint() {
 		synchronized (m_view.m_lock) {
-			if (this.getNode().getNestedNetwork() != null && nestedNetworkView != null) {
-				return nestedNetworkView.getSnapshot((int)(getWidth()*NESTED_IMAGE_SCALE_FACTOR), (int)(getHeight()*NESTED_IMAGE_SCALE_FACTOR));
+			if (this.getNode().getNestedNetwork() != null) {
+				final double IMAGE_WIDTH  = getWidth()*NESTED_IMAGE_SCALE_FACTOR;
+				final double IMAGE_HEIGHT = getHeight()*NESTED_IMAGE_SCALE_FACTOR;
+				if (nestedNetworkView != null) {
+					return nestedNetworkView.getSnapshot(IMAGE_WIDTH, IMAGE_HEIGHT);
+				}
+				else {
+					if (defaultNestedNetworkImage == null) {
+//						try {
+//							defaultNestedNetworkImage = ImageIO.read(new File("/cellar/users/ruschein/code/cytoscape/images/default_network.png"));
+//						}
+//						catch (final Exception e) {
+							return null;
+//						}
+					}
+
+					final Rectangle2D rect = new Rectangle2D.Double(-IMAGE_WIDTH/2, -IMAGE_HEIGHT/2, IMAGE_WIDTH, IMAGE_HEIGHT);
+					return new TexturePaint(defaultNestedNetworkImage, rect);
+				}
 			} else {
 				return null;
 			}

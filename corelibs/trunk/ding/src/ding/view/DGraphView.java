@@ -67,6 +67,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
@@ -2557,7 +2559,7 @@ public class DGraphView implements GraphView, Printable {
 	 *  
 	 * @return Image of this view.  It is always up-to-date.
 	 */
-	public TexturePaint getSnapshot(int width, int height) {
+	public TexturePaint getSnapshot(final double width, final double height) {
 		if (!latest) {
 			// Need to update snapshot.
 			final Rectangle2D rect = new Rectangle2D.Double(-width/2, -height/2, width, height);
