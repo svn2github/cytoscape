@@ -1728,7 +1728,6 @@ public abstract class Cytoscape {
 		if (layout == null) {
 			layout = CyLayouts.getDefaultLayout();
 		}
-
 		layout.doLayout(view);
 
 		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
