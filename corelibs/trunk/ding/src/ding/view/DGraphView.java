@@ -2350,13 +2350,14 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @param width Width of desired image.
 	 * @param height Height of desired image.
-	 * @param shrink Percent to shrink the network shown in the image. 
+	 * @param shrink Percent to shrink the network shown in the image.
+	 * @param skipBackground If true, we don't draw the background
 	 * This doesn't shrink the image, just the network shown, as if the user zoomed out.
 	 * Can be between 0 and 1, if not it will default to 1.  
 	 * @return Image
 	 * @throws IllegalArgumentException
 	 */
-	public Image createImage(int width, int height, double shrink) {
+	private Image createImage(final int width, final int height, double shrink, final boolean skipBackground) {
 		// Validate arguments
 		if (width < 0 || height < 0) {
 			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): "
@@ -2373,13 +2374,17 @@ public class DGraphView implements GraphView, Printable {
 		final Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);		
 		final Graphics g = image.getGraphics();
 
-		// paint background canvas into image
-		Dimension originalSize = m_backgroundCanvas.getSize();
-		m_backgroundCanvas.setSize(width, height);
-		m_backgroundCanvas.paint(g);
-		// Restore background size
-		m_backgroundCanvas.setSize(originalSize);
+		Dimension originalSize;
 
+		if (!skipBackground) {
+			// paint background canvas into image
+			originalSize = m_backgroundCanvas.getSize();
+			m_backgroundCanvas.setSize(width, height);
+			m_backgroundCanvas.paint(g);
+			// Restore background size
+			m_backgroundCanvas.setSize(originalSize);
+		}
+		
 		// paint inner canvas (network)
 		originalSize = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
@@ -2398,6 +2403,23 @@ public class DGraphView implements GraphView, Printable {
 		m_foregroundCanvas.setSize(originalSize);
 
 		return image;
+	}
+
+
+	/**
+	 * Method to return a reference to an Image object,
+	 * which represents the current network view.
+	 *
+	 * @param width Width of desired image.
+	 * @param height Height of desired image.
+	 * @param shrink Percent to shrink the network shown in the image. 
+	 * This doesn't shrink the image, just the network shown, as if the user zoomed out.
+	 * Can be between 0 and 1, if not it will default to 1.  
+	 * @return Image
+	 * @throws IllegalArgumentException
+	 */
+	public Image createImage(int width, int height, double shrink) {
+		return createImage(width, height, shrink, /* skipBackground = */ false);
 	}
 
 
@@ -2585,7 +2607,7 @@ public class DGraphView implements GraphView, Printable {
 		if (!latest) {
 			// Need to update snapshot.
 			final Rectangle2D rect = new Rectangle2D.Double(-width/2, -height/2, width, height);
-			snapshotImage = new TexturePaint((BufferedImage) createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1), rect);
+			snapshotImage = new TexturePaint((BufferedImage) createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1, /* skipBackground = */ true), rect);
 			latest = true;
 		} 
 		
