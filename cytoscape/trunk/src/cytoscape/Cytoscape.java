@@ -1702,9 +1702,7 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout, VisualStyle vs) {	
-		Thread.dumpStack();
-		
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout, VisualStyle vs) {			
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}
@@ -1714,14 +1712,6 @@ public abstract class Cytoscape {
 		}
 
 		final DingNetworkView view = new DingNetworkView(network, title);
-//		for (final NodeView nv: (List<NodeView>)view.getNodeViewsList()) {
-//			final GraphPerspective nestedNetwork = nv.getNode().getNestedNetwork();
-//			if (nestedNetwork != null) {
-//				final CyNetworkView nestedNetworkView = Cytoscape.getNetworkView(((CyNetwork)nestedNetwork).getIdentifier());
-//				if (!nestedNetworkView.equals(Cytoscape.getNullNetworkView()))
-//					((DNodeView)nv).setNestedNetworkView((DGraphView) nestedNetworkView);
-//			}
-//		}
 		
 		view.setGraphLOD(new CyGraphLOD());
 		view.setIdentifier(network.getIdentifier());

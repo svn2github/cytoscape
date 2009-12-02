@@ -22,10 +22,12 @@ import ding.view.DNodeView;
 public class NestedNetworkViewUpdater implements PropertyChangeListener {
 
 	public NestedNetworkViewUpdater() {
+		//Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
-	public void propertyChange(final PropertyChangeEvent evt) {		
+	public void propertyChange(final PropertyChangeEvent evt) {
+		//System.out.println("------- Got Signal --------> " + evt.getPropertyName() + ", " + evt.getSource());
 		if (evt.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED) ||
 				evt.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
 			
