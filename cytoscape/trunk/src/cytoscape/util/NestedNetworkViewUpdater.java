@@ -32,7 +32,7 @@ public class NestedNetworkViewUpdater implements PropertyChangeListener {
 			final boolean created = evt.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED);
 			final CyNetworkView view = (CyNetworkView) evt.getNewValue();
 			final List<String> parents = Cytoscape.getNetworkAttributes().getListAttribute(view.getNetwork().getIdentifier(), CyNode.PARENT_NODES_ATTR);
-			if (parents.isEmpty()) {
+			if (parents == null || parents.isEmpty()) {
 				return;  // Not a nested network.
 			}
 			
