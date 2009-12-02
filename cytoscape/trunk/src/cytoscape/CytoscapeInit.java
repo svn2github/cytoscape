@@ -49,7 +49,7 @@ import cytoscape.logger.ConsoleLogger;
 import cytoscape.plugin.PluginManager;
 
 import cytoscape.util.FileUtil;
-import cytoscape.util.NestedNetworkImageManager;
+import cytoscape.util.NestedNetworkViewUpdater;
 
 import cytoscape.util.shadegrown.WindowUtilities;
 
@@ -112,6 +112,7 @@ public class CytoscapeInit {
 	private static Properties properties;
 	private static Properties visualProperties;
 	private static CyLogger logger = null;
+	private static NestedNetworkViewUpdater nestedNetworkViewUpdater;
 
 	static {
 		logger = CyLogger.getLogger(CytoscapeInit.class);
@@ -160,6 +161,9 @@ public class CytoscapeInit {
 
 			// Build the OntologyServer.
 			Cytoscape.buildOntologyServer();
+			
+			// Instantiate a NestedNetworkViewUpdater
+			nestedNetworkViewUpdater = new NestedNetworkViewUpdater();
 
 			// get the manager so it can test for webstart before menus are
 			// created (little hacky)
