@@ -43,8 +43,8 @@ public class NestedNetworkViewUpdater implements PropertyChangeListener {
 					// If this view contains a parentNode, then update its nested network view.
 					final NodeView nodeView = networkView.getNodeView(Cytoscape.getCyNode(parentNode));
 					if (nodeView != null) {
-						((DNodeView)nodeView).setNestedNetworkView((DGraphView) Cytoscape.getNetworkView(
-								created ? ((CyNetwork)nodeView.getNode().getNestedNetwork()).getIdentifier() : null));
+						((DNodeView)nodeView).setNestedNetworkView(
+							created ? (DGraphView) Cytoscape.getNetworkView(((CyNetwork)nodeView.getNode().getNestedNetwork()).getIdentifier()) : null);
 					}
 				}
 			}
