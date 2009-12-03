@@ -67,9 +67,11 @@ public class SetNestedNetworkDialog extends JDialog implements ListSelectionList
         this.lstNetwork.setCellRenderer(new MyCellRenderer());
         this.btnOK.setEnabled(false);
         
-        Object[] objs = Cytoscape.getNetworkSet().toArray();
+        Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+        networkSet.remove(Cytoscape.getCurrentNetwork());
         
-        
+        Object[] objs = networkSet.toArray();
+              
         CyNetwork[] networkArray = new CyNetwork[objs.length];
         for (int i=0; i< networkArray.length; i++){
         	networkArray[i] = (CyNetwork) objs[i];
