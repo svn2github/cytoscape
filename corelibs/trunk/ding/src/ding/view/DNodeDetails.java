@@ -579,14 +579,10 @@ class DNodeDetails extends IntermediateNodeDetails {
 	@Override
 	public TexturePaint getNestedNetworkTexturePaint(final int node) {
 		final DNodeView dNodeView = (DNodeView) m_view.getNodeView(~node);
-		final GraphPerspective nestedNetwork = dNodeView.getNode().getNestedNetwork();
-		if (nestedNetwork == null) {
-			return null;
-		}
-		
 		return dNodeView.getNestedNetworkTexturePaint();
 	}
 
+	
 	/*
 	 * A negative width value has the special meaning to remove overridden width.
 	 */

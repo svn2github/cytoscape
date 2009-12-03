@@ -34,30 +34,10 @@
  */
 package ding.view;
 
-import cytoscape.geom.rtree.RTree;
-
-import cytoscape.geom.spacial.MutableSpacialIndex2D;
-import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
-
-import cytoscape.graph.fixed.FixedGraph;
-
-import cytoscape.render.immed.GraphGraphics;
-
-import cytoscape.render.stateful.GraphLOD;
-import cytoscape.render.stateful.GraphRenderer;
-
-import cytoscape.util.intr.IntBTree;
-import cytoscape.util.intr.IntEnumerator;
-import cytoscape.util.intr.IntHash;
-import cytoscape.util.intr.IntStack;
-
 import giny.model.Edge;
 import giny.model.GraphPerspective;
-import giny.model.NestedNetworkChangeEvent;
-import giny.model.NestedNetworkChangeEventListener;
 import giny.model.Node;
 import giny.model.RootGraph;
-
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
@@ -65,31 +45,36 @@ import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.Dimension;
 import java.awt.TexturePaint;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
+import cytoscape.geom.rtree.RTree;
+import cytoscape.geom.spacial.MutableSpacialIndex2D;
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
+import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.GraphLOD;
+import cytoscape.render.stateful.GraphRenderer;
+import cytoscape.util.intr.IntBTree;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntHash;
+import cytoscape.util.intr.IntStack;
 
 
 /**
@@ -107,7 +92,7 @@ import javax.imageio.ImageIO;
  */
 public class DGraphView implements GraphView, Printable {
 	// Size of snapshot image
-	private static final int DEF_SNAPSHOT_SIZE = 2000;
+	private static final int DEF_SNAPSHOT_SIZE = 1500;
 	
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;

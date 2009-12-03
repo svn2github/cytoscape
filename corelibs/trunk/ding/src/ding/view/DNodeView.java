@@ -41,6 +41,7 @@ import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.Label;
 import giny.view.NodeView;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -53,13 +54,13 @@ import java.awt.TexturePaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+
 import javax.imageio.ImageIO;
 
 import cytoscape.render.immed.GraphGraphics;
@@ -67,15 +68,16 @@ import cytoscape.render.stateful.CustomGraphic;
 
 
 /**
- * DOCUMENT ME!
+ * Ding implementation of GINY NodeView.
  *
  * @author $author$
  */
 public class DNodeView implements NodeView, Label {
 	// For Cytoscape 2.7: Nested Network Image size
-	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.7f;
-	private static BufferedImage DEFAULT_NESTED_NETWORK_IMAGE;
+	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.6f;
 	
+	// This image will be used when view is not available for a nested network.
+	private static BufferedImage DEFAULT_NESTED_NETWORK_IMAGE;
 	static {
 		try {
 			DEFAULT_NESTED_NETWORK_IMAGE = ImageIO.read(DNodeView.class.getClassLoader().getResource("resources/images/default_network.png"));
@@ -141,6 +143,7 @@ public class DNodeView implements NodeView, Label {
 		m_graphicShapes = null;
 		m_graphicPaints = null;
 		
+		// By default, no nested network is available.
 		nestedNetworkView = null;
 	}
 
@@ -1422,8 +1425,7 @@ public class DNodeView implements NodeView, Label {
 				final double IMAGE_HEIGHT = getHeight()*NESTED_IMAGE_SCALE_FACTOR;
 				if (nestedNetworkView != null) {
 					return nestedNetworkView.getSnapshot(IMAGE_WIDTH, IMAGE_HEIGHT);
-				}
-				else {
+				} else {
 					if (DEFAULT_NESTED_NETWORK_IMAGE == null) {
 						return null;
 					}
