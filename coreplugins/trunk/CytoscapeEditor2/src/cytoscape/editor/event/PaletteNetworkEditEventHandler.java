@@ -52,7 +52,7 @@ import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 import javax.swing.JOptionPane;
-
+import cytoscape.CyNetwork;
 
 /**
  *
@@ -273,8 +273,16 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 
 		NodeView targetNode = getCurrentDGraphView().getPickedNodeView(location);
 		if (targetNode == null) {
+
+			// Select the nested network
+			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true);
+			dlg.setLocationRelativeTo(Cytoscape.getDesktop());	
+			dlg.setVisible(true);
+			
+			CyNetwork selectedNetwork = dlg.getSelectedNetwork();
+
 			// Create a new Node
-			String nodeID = "node" + counter;
+			String nodeID = selectedNetwork.getIdentifier();//"node" + counter;
 			
 			if (ShapePalette.specifyIdentifier){
 				nodeID = getNodeID(nodeID);
@@ -292,9 +300,8 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 			if (newNodeView == null){
 				return;
 			}
-			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true, newNodeView);
-			dlg.setLocationRelativeTo(Cytoscape.getDesktop());	
-			dlg.setVisible(true);
+			newNode.setNestedNetwork(selectedNetwork);
+			
 		}
 		else {
 			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true, targetNode);
