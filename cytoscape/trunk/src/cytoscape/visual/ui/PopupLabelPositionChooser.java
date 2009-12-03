@@ -36,20 +36,13 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.LabelPosition;
-import cytoscape.Cytoscape;
-import cytoscape.visual.parsers.ObjectToString;
-import cytoscape.visual.VisualPropertyType;
-
-import giny.view.Label;
 import giny.model.GraphObject;
-
+import giny.view.Label;
 
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -58,38 +51,53 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import cytoscape.Cytoscape;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.ObjectToString;
 
 /**
  *
  */
-public class PopupLabelPositionChooser extends JDialog implements PropertyChangeListener {
+public class PopupLabelPositionChooser extends JDialog implements
+		PropertyChangeListener {
 	protected LabelPosition lp;
 	protected LabelPosition newlp;
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param f DOCUMENT ME!
-	 * @param pos DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param f
+	 *            DOCUMENT ME!
+	 * @param pos
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static LabelPosition showDialog(Dialog f, LabelPosition pos) {
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f, true, pos);
+		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,
+				true, pos);
 
 		return placer.getLabelPosition();
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param f DOCUMENT ME!
-	 * @param pos DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param f
+	 *            DOCUMENT ME!
+	 * @param pos
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static LabelPosition showDialog(Frame f, LabelPosition pos) {
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f, true, pos);
+		final LabelPosition position = (LabelPosition) Cytoscape
+				.getVisualMappingManager().getVisualStyle()
+				.getNodeAppearanceCalculator().getDefaultAppearance().get(
+						VisualPropertyType.NODE_LABEL_POSITION);
+		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,
+				true, position);
 
 		return placer.getLabelPosition();
 	}
@@ -106,7 +114,8 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 
 	private void init(LabelPosition pos) {
 		if (pos == null)
-			lp = new LabelPosition(Label.NONE, Label.NONE, Label.JUSTIFY_CENTER, 0.0, 0.0);
+			lp = new LabelPosition(Label.NONE, Label.NONE,
+					Label.JUSTIFY_CENTER, 0.0, 0.0);
 		else
 			lp = pos;
 
@@ -116,11 +125,13 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 
 		JPanel placer = new JPanel();
 		placer.setLayout(new BoxLayout(placer, BoxLayout.Y_AXIS));
-		placer.setOpaque(true); //content panes must be opaque
+		placer.setOpaque(true); // content panes must be opaque
 
-		//Set up and connect the gui components.
-		LabelPlacerGraphic graphic = new LabelPlacerGraphic(new LabelPosition(lp));
-		LabelPlacerControl control = new LabelPlacerControl(new LabelPosition(lp));
+		// Set up and connect the gui components.
+		LabelPlacerGraphic graphic = new LabelPlacerGraphic(new LabelPosition(
+				lp));
+		LabelPlacerControl control = new LabelPlacerControl(new LabelPosition(
+				lp));
 
 		control.addPropertyChangeListener(graphic);
 		control.addPropertyChangeListener(this);
@@ -134,19 +145,19 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 		JPanel buttonPanel = new JPanel();
 		final JButton ok = new JButton("OK");
 		ok.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					lp = newlp;
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				lp = newlp;
+				dispose();
+			}
+		});
 		ok.addActionListener(control);
 
 		final JButton cancel = new JButton("Cancel");
 		cancel.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 
 		buttonPanel.add(ok);
 		buttonPanel.add(cancel);
@@ -172,11 +183,14 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 
 			// horrible, horrible hack
 			GraphObject go = BypassHack.getCurrentObject();
-			if ( go != null ) {
+			if (go != null) {
 				String val = ObjectToString.getStringValue(newlp);
-				Cytoscape.getNodeAttributes().setAttribute(go.getIdentifier(), 
-				                   VisualPropertyType.NODE_LABEL_POSITION.getBypassAttrName(), val);
-				Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+				Cytoscape.getNodeAttributes().setAttribute(
+						go.getIdentifier(),
+						VisualPropertyType.NODE_LABEL_POSITION
+								.getBypassAttrName(), val);
+				Cytoscape.getVisualMappingManager().getNetworkView()
+						.redrawGraph(false, true);
 			}
 		}
 	}

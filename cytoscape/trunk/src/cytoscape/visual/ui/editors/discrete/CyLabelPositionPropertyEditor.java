@@ -31,17 +31,8 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.visual.ui.editors.discrete;
-
-import com.l2fprod.common.swing.ComponentFactory;
-import com.l2fprod.common.swing.PercentLayout;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.LabelPosition;
-
-import cytoscape.visual.ui.PopupLabelPositionChooser;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,11 +40,18 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.l2fprod.common.swing.ComponentFactory;
+import com.l2fprod.common.swing.PercentLayout;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.ui.PopupLabelPositionChooser;
 
 /**
  *
  */
-public class CyLabelPositionPropertyEditor extends com.l2fprod.common.beans.editor.AbstractPropertyEditor {
+public class CyLabelPositionPropertyEditor extends
+		com.l2fprod.common.beans.editor.AbstractPropertyEditor {
 	private LabelPositionCellRenderer label;
 	private JButton button;
 	private LabelPosition position;
@@ -65,38 +63,41 @@ public class CyLabelPositionPropertyEditor extends com.l2fprod.common.beans.edit
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
 		((JPanel) editor).add("*", label = new LabelPositionCellRenderer());
 		label.setOpaque(false);
-		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
+		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory()
+				.createMiniButton());
 		button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					editLabelPosition();
-				}
-			});
-		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
+			public void actionPerformed(ActionEvent e) {
+				editLabelPosition();
+			}
+		});
+		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory()
+				.createMiniButton());
 		button.setText("X");
 		button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					LabelPosition old = position;
-					label.setValue(null);
-					position = null;
-					firePropertyChange(old, null);
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				LabelPosition old = position;
+				label.setValue(null);
+				position = null;
+				firePropertyChange(old, null);
+			}
+		});
 		((JPanel) editor).setOpaque(false);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Object getValue() {
 		return position;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param value
+	 *            DOCUMENT ME!
 	 */
 	public void setValue(Object value) {
 		position = (LabelPosition) value;
@@ -104,8 +105,8 @@ public class CyLabelPositionPropertyEditor extends com.l2fprod.common.beans.edit
 	}
 
 	protected void editLabelPosition() {
-		final LabelPosition newVal = PopupLabelPositionChooser.showDialog(Cytoscape.getDesktop(),
-		                                                                  position);
+		final LabelPosition newVal = PopupLabelPositionChooser.showDialog(
+				Cytoscape.getDesktop(), position);
 
 		if (newVal != null) {
 			final LabelPosition old = position;

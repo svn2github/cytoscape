@@ -36,12 +36,14 @@
  */
 package cytoscape.visual.ui;
 
+import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.logger.CyLogger;
 
 import java.awt.Color;
