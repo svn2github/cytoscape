@@ -59,8 +59,17 @@ public class SetNestedNetworkDialog extends JDialog implements ListSelectionList
 	NodeView nodeView;
 	
 	public SetNestedNetworkDialog(JFrame parent, boolean modal, NodeView nodeView) {
-        super(parent, "Set Nested Network for " + nodeView.getNode().getIdentifier(), modal);
-        this.nodeView = nodeView;
+		super(parent, "Set Nested Network for " + nodeView.getNode().getIdentifier(), modal);
+		init(nodeView);
+	}
+	
+	public SetNestedNetworkDialog(JFrame parent, boolean modal) {
+		super(parent, "Set Nested Network for new node", modal);
+		init(null);
+	}
+	
+	private void init(NodeView nodeView){
+		this.nodeView = nodeView;
         
         initComponents();
         this.lstNetwork.addListSelectionListener(this);
@@ -79,9 +88,10 @@ public class SetNestedNetworkDialog extends JDialog implements ListSelectionList
         
         this.lstNetwork.setListData(networkArray);
         
-		setSize(new java.awt.Dimension(500, 300));
+		setSize(new java.awt.Dimension(500, 300));				
 	}
-
+	
+	
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -159,10 +169,17 @@ public class SetNestedNetworkDialog extends JDialog implements ListSelectionList
     private javax.swing.JPanel pnlButtons;
     // End of variables declaration                   
 	
+    private CyNetwork selectedNetwork = null;
+    
+    public CyNetwork getSelectedNetwork(){
+    	return selectedNetwork;
+    }
     
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {                                      
-    	CyNetwork selectedNetwork = (CyNetwork) this.lstNetwork.getSelectedValue();
-    	this.nodeView.getNode().setNestedNetwork(selectedNetwork);
+    	selectedNetwork = (CyNetwork) this.lstNetwork.getSelectedValue();
+    	if (this.nodeView != null) {
+        	this.nodeView.getNode().setNestedNetwork(selectedNetwork);    		
+    	}
     	this.dispose();
     }                                     
 
