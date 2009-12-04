@@ -41,13 +41,18 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CytoscapeInit;
+import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
@@ -234,11 +239,13 @@ public class VisualMappingManager extends SubjectBase {
 	public void applyNodeAppearances(final CyNetwork network, final CyNetworkView network_view) {
 		final NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
 
+		List<VisualPropertyType> bypassedVPs = getBypassedVPs("NODE",Cytoscape.getNodeAttributes()); 
+
 		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
 			NodeView nodeView = (NodeView) i.next();
 			Node node = nodeView.getNode();
 
-			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network);
+			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network,bypassedVPs);
 			myNodeApp.applyAppearance(nodeView);
 		}
 	}
@@ -262,6 +269,8 @@ public class VisualMappingManager extends SubjectBase {
 
 		EdgeView edgeView;
 
+		List<VisualPropertyType> bypassedVPs = getBypassedVPs("EDGE",Cytoscape.getEdgeAttributes()); 
+	
 		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
 			edgeView = (EdgeView) i.next();
 
@@ -271,9 +280,20 @@ public class VisualMappingManager extends SubjectBase {
 				// for now do this! (iliana)
 				continue;
 
-			edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edgeView.getEdge(), network);
+			edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edgeView.getEdge(), network, bypassedVPs);
 			myEdgeApp.applyAppearance(edgeView);
 		}
+	}
+
+	private List<VisualPropertyType> getBypassedVPs(final String prefix, final CyAttributes attrs) {
+		MultiHashMapDefinition mhmd = attrs.getMultiHashMapDefinition();
+		List<VisualPropertyType> bypassAttrs = new ArrayList<VisualPropertyType>();
+		for (VisualPropertyType vp : VisualPropertyType.values() )
+			if ( vp.getName().startsWith(prefix) &&
+			     mhmd.getAttributeValueType( vp.getBypassAttrName() ) >= 0 )
+				bypassAttrs.add(vp);
+
+		return bypassAttrs;
 	}
 
 	/**
@@ -347,8 +367,9 @@ public class VisualMappingManager extends SubjectBase {
 	 */
 	public void vizmapNode(NodeView nodeView, CyNetworkView network_view) {
 		CyNode node = (CyNode) nodeView.getNode();
+		List<VisualPropertyType> bypassedVPs = getBypassedVPs("NODE", Cytoscape.getNodeAttributes()); 
 		NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
-		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getNetwork());
+		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getNetwork(),bypassedVPs);
 		myNodeApp.applyAppearance(nodeView);
 	}
 
@@ -360,8 +381,9 @@ public class VisualMappingManager extends SubjectBase {
 	 */
 	public void vizmapEdge(EdgeView edgeView, CyNetworkView network_view) {
 		CyEdge edge = (CyEdge) edgeView.getEdge();
+		List<VisualPropertyType> bypassedVPs = getBypassedVPs("EDGE", Cytoscape.getEdgeAttributes()); 
 		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
-		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getNetwork());
+		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getNetwork(),bypassedVPs);
 		myEdgeApp.applyAppearance(edgeView);
 	}
 }

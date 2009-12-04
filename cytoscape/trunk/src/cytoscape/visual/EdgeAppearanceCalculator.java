@@ -62,6 +62,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import java.util.Properties;
+import java.util.List;
 
 
 //----------------------------------------------------------------------------
@@ -129,7 +130,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 */
 	public EdgeAppearance calculateEdgeAppearance(Edge edge, CyNetwork network) {
 		EdgeAppearance appr = (EdgeAppearance) defaultAppearance.clone();
-		calculateEdgeAppearance(appr, edge, network);
+		calculateEdgeAppearance(appr,edge,network,VisualPropertyType.getEdgeVisualPropertyList());
 
 		return appr;
 	}
@@ -141,12 +142,16 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * new values.
 	 */
 	public void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, CyNetwork network) {
+		calculateEdgeAppearance(appr,edge,network,VisualPropertyType.getEdgeVisualPropertyList());
+	}
+
+	void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, CyNetwork network, List<VisualPropertyType> bypassedVPs) {
 		appr.copy(defaultAppearance); // set default values
 
 		for (Calculator c : calcs)
 			c.apply(appr, edge, network);
 
-		appr.applyBypass(edge);
+		appr.applyBypass(edge,bypassedVPs);
 	}
 
 	/**

@@ -52,6 +52,7 @@ import giny.view.NodeView;
 
 import java.util.Properties;
 import java.util.Map;
+import java.util.List;
 import java.util.HashMap;
 
 import java.awt.Color;
@@ -263,8 +264,11 @@ public class Appearance {
 	 * @param n The {@link Node} or {@link Edge} object that the visual bypass 
 	 *          should be applied to.
 	 */
-	public void applyBypass(final GraphObject n) {
+	public void applyBypass(final GraphObject n, List<VisualPropertyType> bypassedVPs) {
 		if (n == null)
+			return;
+
+		if ( bypassedVPs == null || bypassedVPs.size() <= 0 )
 			return;
 
 		final String id = n.getIdentifier();
@@ -275,10 +279,9 @@ public class Appearance {
 		else if (n instanceof Edge)
 			attrs = Cytoscape.getEdgeAttributes();
 		else
-
 			return;
 
-		for (VisualPropertyType type : VisualPropertyType.values()) {
+		for (VisualPropertyType type : bypassedVPs) {
 			Object bypass = getBypass(attrs, id, type);
 
 			if (bypass != null)
