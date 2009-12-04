@@ -1,0 +1,1 @@
+java -cp "JyConsole.jar:thirdpart/jython2.2/jython.jar:thirdpart/ArtTk/ArtTk.jar" com.artenum.jyconsole.JyConsole

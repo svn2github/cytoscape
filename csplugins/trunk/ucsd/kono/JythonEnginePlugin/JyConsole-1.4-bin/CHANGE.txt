@@ -1,0 +1,19 @@
+JyConsole 1.4
+- Make JyConsole completion work with Jython 2.2
+
+JyConsole 1.3
+- Improvement made in the management of thread in command execution.
+- Add property to specify the behavior related to command execution. (SingleThread/ANewThreadPerCommand)
+- Add property to specify if JyConsole should grab the Standard+Error Java output or not.
+- Add property to specify a script to load at startup.
+
+JyConsole 1.2
+- Fixed completion window flashing under Linux with JVM 1.5
+
+JyConsole 1.1
+- Enhance graphical comportement compatiblity.
+
+JyConsole 1.0
+- 100% Java application
+- Includes the Jython.jar
+- Generic Java/Python completion.

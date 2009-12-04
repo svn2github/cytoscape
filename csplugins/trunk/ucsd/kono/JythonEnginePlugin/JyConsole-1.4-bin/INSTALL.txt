@@ -1,0 +1,80 @@
+
+                          JyConsole 
+             Advanced Java based Jython graphic console
+                 (c) Artenum, Paris, France, 2005
+                 http://www.artenum.com/jyconsole
+                 
+                    Version 1.4 (August 2007)
+
+Authors: 
+    - Sebastien Jourdain (Artenum), contact: sebastien.Jourdain@artenum.com
+    - Artenum SARL, Paris, France. 
+
+1) Introduction / Purpose
+
+   JyConsole is an advanced Java console for Jython, able to manipulate
+   Python and Java objects.
+
+   JyConsole is fully written in Java and based on the Jython library and
+   modules. It answers to several requirements of modern consoles, such as
+   command history, completion, easy script loading and basic GUI preference
+   management.
+
+   More especially, JyConsole provides an advanced object oriented completion
+   on Java and Python objects. JyConsole allows the direct manipulation of any
+   objects used in the python and class paths, independently of their initial
+   language (Java/Python).
+ 
+   JyConsole can be extended as any application, but its first goal is to
+   offer a simple and powerful Java/Python console fully portable. JyConsole
+   can be directly used as standalone application or as a embedded
+   graphical component into a Java or Jython application.
+
+2) Install and use
+
+   To install the JyConsole just drag and drop the standalone binary package
+   that should have been done for any operating system since it's 100% Java.
+
+   To use the JyConsole in your project add the JyConsole.jar
+   file in your class path project with its thirdpart (ArtTk + Jython).
+   
+   This is the main of the JyConsole class, which could be taken as an example
+   for further use.
+
+   public static void main(String[] args) {
+       // Load external properties from a file
+        try {
+             if (args.length > 0) {
+                PropertyLoader.loadProperties(args[0]);
+            } else {
+                PropertyLoader.loadProperties("./jyconsole.properties");
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+        JyConsole console = new JyConsole();
+
+        JFrame f = new JFrame("JyConsole by Artenum");
+        //f.setIconImage(new ImageIcon(JyConsole.class.getResource("logo.gif")).getImage());
+        f.getContentPane().add(console, BorderLayout.CENTER);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(600, 400);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+   }
+   
+
+3) Contact
+
+    E-mail: jourdain@artenum.com
+
+    Mail: Artenum SARL
+          101-103, Bd Mac Donald
+          75019 PARIS, FRANCE
+
+    Phone: +33(0)1 44 89 45 15
+    Fax:   +33(0)1 44 89 45 17
+
+
+

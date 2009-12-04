@@ -1,0 +1,246 @@
+#############################################################################
+#                    JyConsole : Thirdpart components                       #
+#############################################################################
+
+ JyConsole require for its compilation and execution some parts of the 
+ listed library. 
+ 
+ After the installation of those library, don't forget to rename or copy 
+ config.sample to config.properties in the current directory and update 
+ properly the properties. 
+
+ All components included in this Third-Part are external software components 
+ and projects, with their own copyright and licensing rules. Please, see 
+ their licenses and conditions-to-use before using, downloading or 
+ redistribute them.
+
+ These software components are not supported by Artenum. Artenum has no 
+ resposability regarding their use and possible damages resulting of their
+ use. 
+
+ MORE GENERALLY, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT 
+ PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE 
+ COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT 
+ WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT 
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+ PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF 
+ THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME 
+ THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+ 
+ IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL 
+ ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND USE THE PORGRAM, 
+ BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR 
+ CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM 
+ (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE 
+ OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO 
+ OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS 
+ BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
+
+#############################################################################
+# Jython                                                                    #
+#############################################################################
+
+ Description: Jython is an implementation of the high-level, dynamic, 
+              object-oriented language Python written in 100% Pure Java, 
+              and seamlessly integrated with the Java platform. It thus 
+              allows you to run Python on any Java platform.
+
+ Version:     2.1
+
+ License:     HISTORY OF THE SOFTWARE
+              =======================
+
+              JPython was created in late 1997 by Jim Hugunin. Jim was also the
+              primary developer while he was at CNRI. In February 1999 Barry Warsaw
+              took over as primary developer and released JPython version 1.1.
+              In October 2000 Barry helped move the software to SourceForge
+              where it was renamed to Jython. Jython is developed by a group
+              of volunteers.
+
+              The standard library is covered by the BeOpen / CNRI license. See the
+              Lib/LICENSE file for details.
+
+              The oro regular expresion matcher is covered by the apache license.
+              See the org/apache/LICENSE file for details.
+
+              The zxJDBC package was written by Brian Zimmer and originally licensed
+              under the GNU Public License.  The package is now covered by the Jython
+              Software License.
+
+              Jython changes Software License.
+              ================================
+
+              Copyright (c) 2000, Jython Developers
+              All rights reserved.
+
+              Redistribution and use in source and binary forms, with or without
+              modification, are permitted provided that the following conditions
+              are met:
+
+               - Redistributions of source code must retain the above copyright
+                 notice, this list of conditions and the following disclaimer.
+              
+               - Redistributions in binary form must reproduce the above copyright
+                 notice, this list of conditions and the following disclaimer in
+                 the documentation and/or other materials provided with the distribution.
+
+               - Neither the name of the Jython Developers nor the names of
+                 its contributors may be used to endorse or promote products
+                 derived from this software without specific prior written permission.
+
+              THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+              ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+              LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+              A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+              CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+              EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+              PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+              PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+              OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+              NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+              SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+              JPython Software License.
+              =========================
+
+              JPython version 1.1.x
+
+                1. This LICENSE AGREEMENT is between the Corporation for National Research
+                   Initiatives, having an office at 1895 Preston White Drive, Reston, VA
+                   20191 ("CNRI"), and the Individual or Organization ("Licensee")
+                   accessing and using JPython version 1.1.x in source or binary form and
+                   its associated documentation as provided herein ("Software").
+              
+                2. Subject to the terms and conditions of this License Agreement, CNRI
+                   hereby grants Licensee a non-exclusive, non-transferable, royalty-free,
+                   world-wide license to reproduce, analyze, test, perform and/or display
+                   publicly, prepare derivative works, distribute, and otherwise use the
+                   Software alone or in any derivative version, provided, however, that
+                   CNRI's License Agreement and CNRI's notice of copyright, i.e.,
+                   "Copyright ©1996-1999 Corporation for National Research Initiatives;
+                   All Rights Reserved" are both retained in the Software, alone or in any
+                   derivative version prepared by Licensee.
+
+                   Alternatively, in lieu of CNRI's License Agreement, Licensee may
+                   substitute the following text (omitting the quotes), provided, however,
+                   that such text is displayed prominently in the Software alone or in any
+                   derivative version prepared by Licensee: "JPython (Version 1.1.x) is
+                   made available subject to the terms and conditions in CNRI's License
+                   Agreement. This Agreement may be located on the Internet using the
+                   following unique, persistent identifier (known as a handle):
+                   1895.22/1006. The License may also be obtained from a proxy server on
+                   the Web using the following URL: http://hdl.handle.net/1895.22/1006."
+
+                3. In the event Licensee prepares a derivative work that is based on or
+                   incorporates the Software or any part thereof, and wants to make the
+                   derivative work available to the public as provided herein, then
+                   Licensee hereby agrees to indicate in any such work, in a prominently
+                   visible way, the nature of the modifications made to CNRI's Software.
+              
+                4. Licensee may not use CNRI trademarks or trade name, including JPython
+                   or CNRI, in a trademark sense to endorse or promote products or
+                   services of Licensee, or any third party. Licensee may use the mark
+                   JPython in connection with Licensee's derivative versions that are
+                   based on or incorporate the Software, but only in the form
+                   "JPython-based ___________________," or equivalent.
+
+                5. CNRI is making the Software available to Licensee on an "AS IS" basis.
+                   CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY
+                   OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND DISCLAIMS ANY
+                   REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY
+                   PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT INFRINGE
+                   ANY THIRD PARTY RIGHTS.
+
+                6. CNRI SHALL NOT BE LIABLE TO LICENSEE OR OTHER USERS OF THE SOFTWARE FOR
+                   ANY INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF
+                   USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY DERIVATIVE
+                   THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF. SOME STATES DO NOT
+                   ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY SO THE ABOVE DISCLAIMER
+                   MAY NOT APPLY TO LICENSEE.
+
+                7. This License Agreement may be terminated by CNRI (i) immediately upon
+                   written notice from CNRI of any material breach by the Licensee, if the
+                   nature of the breach is such that it cannot be promptly remedied; or
+                   (ii) sixty (60) days following notice from CNRI to Licensee of a
+                   material remediable breach, if Licensee has not remedied such breach
+                   within that sixty-day period.
+
+                8. This License Agreement shall be governed by and interpreted in all
+                   respects by the law of the State of Virginia, excluding conflict of law
+                   provisions. Nothing in this Agreement shall be deemed to create any
+                   relationship of agency, partnership, or joint venture between CNRI and
+                   Licensee.
+
+                9. By clicking on the "ACCEPT" button where indicated, or by installing,
+                   copying or otherwise using the Software, Licensee agrees to be bound by
+                   the terms and conditions of this License Agreement.
+
+ Required:    For compilation and execution
+
+ URL:         http://www.jython.org/
+
+#############################################################################
+# ArtTk                                                                     #
+#############################################################################
+
+ Description: ArtTk is a library that provide a set of helper class that 
+              allow quick definition of Menu, toolbar. It also provide 
+              a new component that support multi-desktop and stream 
+              management.
+
+ Version:     1.0
+
+ License:     QPL (See the LICENSE.txt file)
+
+ Required:    For compilation and execution
+
+ URL:         http://dev.artenum.com/projects/ArtTk
+
+#############################################################################
+# Jalopy                                                                    #
+#############################################################################
+
+ Description: The source code beautifier originally built by Marco Hunsicker 
+              and enhanced for Java 5 by Steve Heyns. This version is 
+              NOT the same as the version at TRIEMAX. 
+
+ Version:     jalopy-ant-0.1-1.5rc3.tar.gz
+
+ License:     The Jalopy BSD License
+
+              Copyright (c) 2001-2002, Marco Hunsicker. All rights reserved.
+
+              Redistribution and use in source and binary forms, with or 
+              without modification, are permitted provided that the following 
+              conditions are met:
+
+                 * Redistributions of source code must retain the above 
+                   copyright notice, this list of conditions and the following
+                   disclaimer.
+                 * Redistributions in binary form must reproduce the above 
+                   copyright notice, this list of conditions and the following 
+                   disclaimer in the documentation and/or other materials 
+                   provided with the distribution.
+                 * Neither the name of the Jalopy Group nor the names of its 
+                   contributors may be used to endorse or promote products 
+                   derived from this software without specific prior written 
+                   permission. 
+
+              THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+              CONTRIBUTORS "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, 
+              INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+              MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+              ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER 
+              OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+              SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+              BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+              LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+              HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+              CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+              OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+              SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+ Required:    Only for the source code formating. This library is not needed 
+              in case of using a binary package of the application.
+
+ URL:         http://jalopy.sourceforge.net/jalopy-ant/downloads.html
