@@ -1,0 +1,18 @@
+#!/bin/sh
+
+##############################################################################
+##                                                                          ##
+##  Groovy Console script for UN*X                                          ##
+##                                                                          ##
+##############################################################################
+
+##
+## $Revision: 9540 $
+## $Date: 2007-11-29 18:00:39 +0100 (Do, 29. Nov 2007) $
+##
+
+GROOVY_APP_NAME=GroovyConsole
+DIRNAME=`dirname "$0"`
+. "$DIRNAME/startGroovy"
+
+startGroovy groovy.ui.Console "$@"

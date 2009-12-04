@@ -1,0 +1,20 @@
+#!/bin/sh
+
+##############################################################################
+##                                                                          ##
+##  Groovy JVM Bootstrap for UN*X                                           ##
+##                                                                          ##
+##  use -cp or -classpath just as in java to use a custom classpath         ##
+##                                                                          ##
+##############################################################################
+
+##
+## $Revision: 10787 $
+## $Date: 2008-02-11 01:34:37 +0100 (Mo, 11. Feb 2008) $
+##
+
+GROOVY_APP_NAME=Groovy
+DIRNAME=`dirname "$0"`
+. "$DIRNAME/startGroovy"
+
+startGroovy groovy.ui.GroovyMain "$@"

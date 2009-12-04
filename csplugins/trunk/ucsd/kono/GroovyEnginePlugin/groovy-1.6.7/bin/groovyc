@@ -1,0 +1,18 @@
+#!/bin/sh
+
+##############################################################################
+##                                                                          ##
+##  Groovy JVM Bootstrap for UN*X                                           ##
+##                                                                          ##
+##############################################################################
+
+##
+## $Revision: 10787 $
+## $Date: 2008-02-11 01:34:37 +0100 (Mo, 11. Feb 2008) $
+##
+
+GROOVY_APP_NAME=GroovyC
+DIRNAME=`dirname "$0"`
+. "$DIRNAME/startGroovy"
+
+startGroovy org.codehaus.groovy.tools.FileSystemCompiler "$@"
