@@ -1,0 +1,22 @@
+# -- The following properties are REQUIRED -- #
+
+# The plugin name that will be displayed to users
+pluginName=JavaScriptEngine
+
+# Description used to give users information about the plugin such as what it does.  
+# Html tags are encouraged for formatting purposes.
+pluginDescription=<p>Rhino JavaScript engine version 1.7.2.  You can run JavaScript on Cytoscape.  To use this, you need ScriptEngineManager Plugin.</p>
+
+# Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
+pluginVersion=0.10
+
+# Compatible Cytoscape version
+cytoscapeVersion=2.6, 2.7
+
+# Category, use one of the categories listed on the website or create your own
+pluginCategory=Communication/Scripting
+
+
+# List of authors.  Note each author and institution pair are separated by a : (colon)
+# each additional author institution pair must be separated from other pairs bye a ; (semicolon)
+pluginAuthorsIntsitutions=Keiichiro Ono:UCSD Department of Medicine
