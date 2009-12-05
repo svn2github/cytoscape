@@ -296,16 +296,6 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 		return ui;
 	}
 
-	/**
-	 * Returns a JPanel containing a legend for this mapping.
-	 * @param visualAttr The name of the visual attribute using this mapping.
-	 * @return JPanel Object.
-	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public JPanel getLegend(String visualAttr, byte b) {
-		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
-	}
 
 	/**
 	 *  DOCUMENT ME!

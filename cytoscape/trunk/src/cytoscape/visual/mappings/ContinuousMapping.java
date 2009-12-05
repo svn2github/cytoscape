@@ -285,14 +285,6 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	}
 
 	/**
-	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public JPanel getLegend(String visualAttr, byte b) {
-		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
-	}
-
-	/**
 	 *
 	 */
 	public JPanel getLegend(VisualPropertyType vpt) {

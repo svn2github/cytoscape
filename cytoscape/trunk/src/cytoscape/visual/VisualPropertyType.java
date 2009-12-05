@@ -333,36 +333,6 @@ public enum VisualPropertyType {
 	}
 
 	/**
-	 * Return position in thie enum as byte.<br>
-	 * Will be used as type.
-	 *
-	 * DO NOT USE THIS. This is only for backward compatibility.<br>
-	 * Replace your "byte" with is emum!
-	 *
-	 * @return byte type
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public byte getType() {
-		return (byte) ordinal();
-	}
-
-	/**
-	 * DO NOT USE THIS. This is only for backward compatibility.
-	 *
-	 * @param type
-	 * @return
-	 * @deprecated Will be removed 5/2008.
-	 */
-	@Deprecated
-	public static VisualPropertyType getVisualPorpertyType(byte type) {
-		/*
-		 * Type is always equal to ordinal.
-		 */
-		return values()[type];
-	}
-
-	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!

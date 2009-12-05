@@ -116,21 +116,6 @@ public class CalculatorCatalog {
 		mappers = new HashMap<String, Class>();
 	}
 
-	/**
-	 * Given a type argument, returns the List structure that holds the
-	 * listeners for that type.
-	 *
-	 * @param type
-	 *            type of calculator to add to, one of {@link VizMapUI}'s
-	 *            constants
-	 * @throws IllegalArgumentException
-	 *             if unknown type passed in
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	protected List getListenerList(byte type) throws IllegalArgumentException {
-		return getListenerList(VisualPropertyType.getVisualPorpertyType(type));
-	}
 
 	protected List getListenerList(final VisualPropertyType type) throws IllegalArgumentException {
 		List l = listeners.get(type);
@@ -141,29 +126,6 @@ public class CalculatorCatalog {
 		}
 
 		return l;
-	}
-
-	/**
-	 * Add a ChangeListener to the catalog. Depending on the passed-in type, the
-	 * catalog will add the ChangeListener to the appropriate listener vector
-	 * for the associated set of calculators. When the catalog's database of
-	 * calculators changes, the ChangeListener will be notified.
-	 *
-	 * This is used in the UI classes to ensure that the UI panes stay
-	 * consistent with the data held in the catalog.
-	 *
-	 * @param l
-	 *            ChangeListener to add
-	 * @param type
-	 *            type of calculator to add to, one of {@link VizMapUI}'s
-	 *            constants
-	 * @throws IllegalArgumentException
-	 *             if unknown type passed in
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void addChangeListener(ChangeListener l, byte type) throws IllegalArgumentException {
-		addChangeListener(l, VisualPropertyType.getVisualPorpertyType(type));
 	}
 
 	/**
@@ -178,30 +140,6 @@ public class CalculatorCatalog {
 	    throws IllegalArgumentException {
 		List theListeners = getListenerList(type);
 		theListeners.add(l);
-	}
-
-	/**
-	 * Notifies all listeners that have registered interest for notification on
-	 * this event type. The event instance is lazily created.
-	 *
-	 * Note that fireStateChanged is only triggered by calling
-	 * {@link #addCalculator}, {@link #renameCalculator}, or
-	 * {@link #removeCalculator}. Manipulating each type explicitly does not
-	 * trigger ChangeEvents to be fired. This is because the UI classes only use
-	 * the more general methods.
-	 *
-	 * However, this behavior does not permit "hidden" calculators. Upon the
-	 * next refresh, all calculators contained will be visible.
-	 *
-	 * @param type
-	 *            one of VizMapUI constants, which set of listeners to notify
-	 * @throws IllegalArgumentException
-	 *             if type is unknown
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	protected void fireStateChanged(byte type) throws IllegalArgumentException {
-		fireStateChanged(VisualPropertyType.getVisualPorpertyType(type));
 	}
 
 	protected void fireStateChanged(final VisualPropertyType type) throws IllegalArgumentException {
@@ -266,23 +204,6 @@ public class CalculatorCatalog {
 		fireStateChanged(calcType);
 	}
 
-	/**
-	 * Checks whether a name for a calculator is valid
-	 *
-	 * @param calcName
-	 *            Name to check
-	 * @param calcType
-	 *            Type of calculator {@link cytoscape.visual.ui.VizMapUI}
-	 *
-	 * @return a valid name for the calculator. If the given name was not valid,
-	 *         numbers are appended until a valid name is found; this valid name
-	 *         is returned to the caller.
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String checkCalculatorName(String calcName, byte calcType) {
-		return checkCalculatorName(calcName, VisualPropertyType.getVisualPorpertyType(calcType));
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -559,17 +480,6 @@ public class CalculatorCatalog {
 		return calcList;
 	}
 
-	/**
-	 * Use public Collection<Calculator> getCalculators(VisualPropertyType type) instead.
-	 *
-	 * @param type
-	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Collection<Calculator> getCalculators(byte type) {
-		return getCalculators(VisualPropertyType.getVisualPorpertyType(type));
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -584,18 +494,6 @@ public class CalculatorCatalog {
 		return m.values();
 	}
 
-	/**
-	 * Use public Calculator getCalculator(VisualPropertyType type, String name) instead.
-	 *
-	 * @param type
-	 * @param name
-	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Calculator getCalculator(byte type, String name) {
-		return getCalculator(VisualPropertyType.getVisualPorpertyType(type), name);
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -612,19 +510,6 @@ public class CalculatorCatalog {
 	}
 
 	/**
-	 * Use public String checkCalculatorName(VisualPropertyType type, String name) instead.
-	 *
-	 * @param type
-	 * @param name
-	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String checkCalculatorName(byte type, String name) {
-		return checkCalculatorName(VisualPropertyType.getVisualPorpertyType(type), name);
-	}
-
-	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param type DOCUMENT ME!
@@ -636,18 +521,6 @@ public class CalculatorCatalog {
 		return checkName(name, getCalculatorMap(type));
 	}
 
-	/**
-	 * Use public Calculator removeCalculator(VisualPropertyType type, String name) instead.
-	 *
-	 * @param type
-	 * @param name
-	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Calculator removeCalculator(byte type, String name) {
-		return removeCalculator(VisualPropertyType.getVisualPorpertyType(type), name);
-	}
 
 	/**
 	 * DOCUMENT ME!

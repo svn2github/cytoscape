@@ -305,19 +305,6 @@ public class PassThroughMapping implements ObjectMapping {
 		return newProps;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param visualAttr DOCUMENT ME!
-	 * @param b DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public JPanel getLegend(String visualAttr, byte b) {
-		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
-	}
 
 	/**
 	 *  DOCUMENT ME!

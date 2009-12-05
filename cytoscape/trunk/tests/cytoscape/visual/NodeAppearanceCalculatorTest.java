@@ -62,6 +62,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.util.FileUtil;
+import static cytoscape.visual.VisualPropertyType.*;
 
 /**
  * 
@@ -121,91 +122,91 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		NodeAppearance na = nac.calculateNodeAppearance(a, cyNet);
 
 		// this tests that the default node appearance is correct
-		assertTrue("a color  " + na.getFillColor() + " expect "
-				+ Color.WHITE.toString(), na.getFillColor().equals(Color.WHITE));
-		assertTrue("a border color  " + na.getBorderColor() + " expect "
-				+ Color.BLACK.toString(), na.getBorderColor().equals(
+		assertTrue("a color  " + na.get(NODE_FILL_COLOR) + " expect "
+				+ Color.WHITE.toString(), ((Color)na.get(NODE_FILL_COLOR)).equals(Color.WHITE));
+		assertTrue("a border color  " + na.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLACK.toString(), ((Color)na.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("a lineType  ", LineType.LINE_1, na.getBorderLineType());
-		assertEquals("a shape  ", ShapeNodeRealizer.RECT, na.getShape());
+		assertEquals("a lineType  ", LineType.LINE_1, ((LineType)na.get(NODE_LINETYPE)));
+		assertEquals("a shape  ", NodeShape.RECT, ((NodeShape)na.get(NODE_SHAPE)));
 
 		// node size is locked so all should be the same
-		assertEquals("a width  ", 35.0, na.getWidth());
-		assertEquals("a height  ", 35.0, na.getHeight());
-		assertEquals("a size  ", 35.0, na.getSize());
+		assertEquals("a width  ", 35.0, getWidth(na));
+		assertEquals("a height  ", 35.0, getHeight(na));
+		assertEquals("a size  ", 35.0, ((Double)na.get(NODE_SIZE)).doubleValue());
 
-		assertEquals("a label  ", "", na.getLabel());
-		assertEquals("a tooltip  ", "", na.getToolTip());
-		assertEquals("a font size  ", 12, na.getFont().getSize());
-		assertEquals("a font style  ", Font.PLAIN, na.getFont().getStyle());
-		assertTrue("a label color  " + na.getLabelColor() + " expect "
-				+ Color.BLACK, na.getLabelColor().equals(Color.BLACK));
+		assertEquals("a label  ", "", ((String)na.get(NODE_LABEL)));
+		assertEquals("a tooltip  ", "", ((String)na.get(NODE_TOOLTIP)));
+		assertEquals("a font size  ", 12, ((Number)na.get(NODE_FONT_SIZE)).intValue());
+		assertEquals("a font style  ", Font.PLAIN, ((Font)na.get(NODE_FONT_FACE)).getStyle());
+		assertTrue("a label color  " + na.get(NODE_LABEL_COLOR) + " expect "
+				+ Color.BLACK, ((Color)na.get(NODE_LABEL_COLOR)).equals(Color.BLACK));
 
 		// should still be default for node b
 		NodeAppearance nb = nac.calculateNodeAppearance(b, cyNet);
 
-		assertTrue("b color  " + nb.getFillColor() + " expect "
-				+ Color.WHITE.toString(), nb.getFillColor().equals(Color.WHITE));
-		assertTrue("b border color  " + nb.getBorderColor() + " expect "
-				+ Color.BLACK.toString(), nb.getBorderColor().equals(
+		assertTrue("b color  " + nb.get(NODE_FILL_COLOR) + " expect "
+				+ Color.WHITE.toString(), ((Color)nb.get(NODE_FILL_COLOR)).equals(Color.WHITE));
+		assertTrue("b border color  " + nb.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLACK.toString(), ((Color)nb.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("b lineType  ", LineType.LINE_1, nb.getBorderLineType());
-		assertEquals("b shape  ", ShapeNodeRealizer.RECT, nb.getShape());
+		assertEquals("b lineType  ", LineType.LINE_1, ((LineType)nb.get(NODE_LINETYPE)));
+		assertEquals("b shape  ", NodeShape.RECT, ((NodeShape)nb.get(NODE_SHAPE)));
 		// still locked
-		assertEquals("b width  ", 35.0, nb.getWidth());
-		assertEquals("b height  ", 35.0, nb.getHeight());
-		assertEquals("b size  ", 35.0, nb.getSize());
+		assertEquals("b width  ", 35.0, getWidth(nb));
+		assertEquals("b height  ", 35.0, getHeight(nb));
+		assertEquals("b size  ", 35.0, ((Double)nb.get(NODE_SIZE)).doubleValue());
 
-		assertEquals("b label  ", "", nb.getLabel());
-		assertEquals("b tooltip  ", "", nb.getToolTip());
-		assertEquals("b font size  ", 12, nb.getFont().getSize());
-		assertEquals("b font style  ", Font.PLAIN, nb.getFont().getStyle());
-		assertTrue("b label color  " + nb.getLabelColor() + " expect "
-				+ Color.BLACK, nb.getLabelColor().equals(Color.BLACK));
+		assertEquals("b label  ", "", ((String)nb.get(NODE_LABEL)));
+		assertEquals("b tooltip  ", "", ((String)nb.get(NODE_TOOLTIP)));
+		assertEquals("b font size  ", 12, ((Number)nb.get(NODE_FONT_SIZE)).intValue());
+		assertEquals("b font style  ", Font.PLAIN, ((Font)nb.get(NODE_FONT_FACE)).getStyle());
+		assertTrue("b label color  " + nb.get(NODE_LABEL_COLOR) + " expect "
+				+ Color.BLACK, ((Color)nb.get(NODE_LABEL_COLOR)).equals(Color.BLACK));
 
 		nac.setNodeSizeLocked(false);
 
 		NodeAppearance nc = nac.calculateNodeAppearance(c, cyNet);
 
-		assertTrue("c color  " + nc.getFillColor() + " expect "
-				+ Color.WHITE.toString(), nc.getFillColor().equals(Color.WHITE));
-		assertTrue("c border color  " + nc.getBorderColor() + " expect "
-				+ Color.BLACK.toString(), nc.getBorderColor().equals(
+		assertTrue("c color  " + nc.get(NODE_FILL_COLOR) + " expect "
+				+ Color.WHITE.toString(), ((Color)nc.get(NODE_FILL_COLOR)).equals(Color.WHITE));
+		assertTrue("c border color  " + nc.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLACK.toString(), ((Color)nc.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("c lineType  ", LineType.LINE_1, nc.getBorderLineType());
-		assertEquals("c shape  ", ShapeNodeRealizer.RECT, nc.getShape());
+		assertEquals("c lineType  ", LineType.LINE_1, ((LineType)nc.get(NODE_LINETYPE)));
+		assertEquals("c shape  ", NodeShape.RECT, ((NodeShape)nc.get(NODE_SHAPE)));
 		// now we see the default width and height
-		assertEquals("c width  ", 70.0, nc.getWidth());
-		assertEquals("c height  ", 30.0, nc.getHeight());
-		assertEquals("c size  ", 35.0, nc.getSize());
-		assertEquals("c label  ", "", nc.getLabel());
-		assertEquals("c tooltip  ", "", nc.getToolTip());
-		assertEquals("c font size  ", 12, nc.getFont().getSize());
-		assertEquals("c font style  ", Font.PLAIN, nc.getFont().getStyle());
-		assertTrue("c label color  " + nc.getLabelColor() + " expect "
-				+ Color.BLACK, nc.getLabelColor().equals(Color.BLACK));
+		assertEquals("c width  ", 70.0, getWidth(nc));
+		assertEquals("c height  ", 30.0, getHeight(nc));
+		assertEquals("c size  ", 35.0, ((Double)nc.get(NODE_SIZE)).doubleValue());
+		assertEquals("c label  ", "", ((String)nc.get(NODE_LABEL)));
+		assertEquals("c tooltip  ", "", ((String)nc.get(NODE_TOOLTIP)));
+		assertEquals("c font size  ", 12, ((Number)nc.get(NODE_FONT_SIZE)).intValue());
+		assertEquals("c font style  ", Font.PLAIN, ((Font)nc.get(NODE_FONT_FACE)).getStyle());
+		assertTrue("c label color  " + nc.get(NODE_LABEL_COLOR) + " expect "
+				+ Color.BLACK, ((Color)nc.get(NODE_LABEL_COLOR)).equals(Color.BLACK));
 
 		NodeAppearance def = nac.getDefaultAppearance();
-		def.setFillColor(Color.GREEN);
-		def.setBorderColor(Color.BLUE);
-		def.setWidth(47.0);
-		def.setHeight(23.0);
+		def.set(NODE_FILL_COLOR,Color.GREEN);
+		def.set(NODE_BORDER_COLOR,Color.BLUE);
+		def.set(NODE_WIDTH,47.0);
+		def.set(NODE_HEIGHT,23.0);
 
 		na = nac.calculateNodeAppearance(a, cyNet);
-		assertTrue("color  " + na.getFillColor() + " expect "
-				+ Color.GREEN.toString(), na.getFillColor().equals(Color.GREEN));
-		assertTrue("border color  " + na.getBorderColor() + " expect "
-				+ Color.BLUE.toString(), na.getBorderColor().equals(Color.BLUE));
-		assertEquals("width  ", 47.0, na.getWidth());
-		assertEquals("height  ", 23.0, na.getHeight());
+		assertTrue("color  " + na.get(NODE_FILL_COLOR) + " expect "
+				+ Color.GREEN.toString(), ((Color)na.get(NODE_FILL_COLOR)).equals(Color.GREEN));
+		assertTrue("border color  " + na.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLUE.toString(), ((Color)na.get(NODE_BORDER_COLOR)).equals(Color.BLUE));
+		assertEquals("width  ", 47.0, getWidth(na));
+		assertEquals("height  ", 23.0, getHeight(na));
 
 		nb = nac.calculateNodeAppearance(b, cyNet);
-		assertTrue("color  " + nb.getFillColor() + " expect "
-				+ Color.GREEN.toString(), nb.getFillColor().equals(Color.GREEN));
-		assertTrue("border color  " + nb.getBorderColor() + " expect "
-				+ Color.BLUE.toString(), nb.getBorderColor().equals(Color.BLUE));
-		assertEquals("width  ", 47.0, nb.getWidth());
-		assertEquals("height  ", 23.0, nb.getHeight());
+		assertTrue("color  " + nb.get(NODE_FILL_COLOR) + " expect "
+				+ Color.GREEN.toString(), ((Color)nb.get(NODE_FILL_COLOR)).equals(Color.GREEN));
+		assertTrue("border color  " + nb.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLUE.toString(), ((Color)nb.get(NODE_BORDER_COLOR)).equals(Color.BLUE));
+		assertEquals("width  ", 47.0, getWidth(nb));
+		assertEquals("height  ", 23.0, getHeight(nb));
 
 		System.out
 				.println("end NodeAppearanceCalculatorTest.testDefaultAppearance()");
@@ -230,24 +231,23 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		System.out.println("NodeAppearance a\n" + na.getDescription());
 
 		Color ca = new Color(246, 242, 103);
-		assertTrue(
-				"a color  " + na.getFillColor() + " expect " + ca.toString(),
-				na.getFillColor().equals(ca));
-		assertTrue("a border color  " + na.getBorderColor() + " expect "
-				+ Color.BLACK.toString(), na.getBorderColor().equals(
+		assertTrue( "a color  " + na.get(NODE_FILL_COLOR) + " expect " + ca.toString(),
+				((Color)na.get(NODE_FILL_COLOR)).equals(ca));
+		assertTrue("a border color  " + na.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLACK.toString(), ((Color)na.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("a lineType  ", LineType.LINE_1, na.getBorderLineType());
-		assertEquals("a shape  ", ShapeNodeRealizer.RECT, na.getShape());
-		assertEquals("a width  ", 70.0, na.getWidth());
-		assertEquals("a height  ", 10.0, na.getHeight()); // only height has a
+		assertEquals("a lineType  ", LineType.LINE_1, ((LineType)na.get(NODE_LINETYPE)));
+		assertEquals("a shape  ", NodeShape.RECT, ((NodeShape)na.get(NODE_SHAPE)));
+		assertEquals("a width  ", 70.0, getWidth(na));
+		assertEquals("a height  ", 10.0, getHeight(na)); // only height has a
 															// calc set
-		assertEquals("a size  ", 35.0, na.getSize()); // props don't set size
-		assertEquals("a label  ", "a", na.getLabel());
-		assertEquals("a tooltip  ", "", na.getToolTip());
-		assertEquals("a font size  ", 12, na.getFont().getSize());
-		assertEquals("a font style  ", Font.PLAIN, na.getFont().getStyle());
-		assertTrue("a label color  " + na.getLabelColor() + " expect "
-				+ Color.BLACK, na.getLabelColor().equals(Color.BLACK));
+		assertEquals("a size  ", 35.0, ((Double)na.get(NODE_SIZE)).doubleValue()); // props don't set size
+		assertEquals("a label  ", "a", ((String)na.get(NODE_LABEL)));
+		assertEquals("a tooltip  ", "", ((String)na.get(NODE_TOOLTIP)));
+		assertEquals("a font size  ", 12, ((Number)na.get(NODE_FONT_SIZE)).intValue());
+		assertEquals("a font style  ", Font.PLAIN, ((Font)na.get(NODE_FONT_FACE)).getStyle());
+		assertTrue("a label color  " + na.get(NODE_LABEL_COLOR) + " expect "
+				+ Color.BLACK, ((Color)na.get(NODE_LABEL_COLOR)).equals(Color.BLACK));
 
 		// node b
 		NodeAppearance nb = nac.calculateNodeAppearance(b, cyNet);
@@ -255,26 +255,24 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 
 		Color cb = new Color(87, 25, 230);
 		assertTrue(
-				"b color  " + nb.getFillColor() + " expect " + cb.toString(),
-				nb.getFillColor().equals(cb));
-		assertTrue("b border color  " + nb.getBorderColor() + " expect "
-				+ Color.BLACK, nb.getBorderColor().equals(Color.BLACK));
-		//assertEquals("b lineType  ", LineType.LINE_5, nb.getBorderLineType());
-		//assertEquals("b line width  ", 5.0f, nb.getBorderLineType().getWidth());
+				"b color  " + nb.get(NODE_FILL_COLOR) + " expect " + cb.toString(),
+				((Color)nb.get(NODE_FILL_COLOR)).equals(cb));
+		assertTrue("b border color  " + nb.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLACK, ((Color)nb.get(NODE_BORDER_COLOR)).equals(Color.BLACK));
 		assertEquals("b line width  ", 1.0f, nb.get(VisualPropertyType.NODE_LINE_WIDTH));
 		
 		assertEquals("b line style  ", LineStyle.SOLID, nb.get(VisualPropertyType.NODE_LINE_STYLE));
 		
-		assertEquals("b shape  ", ShapeNodeRealizer.RECT, nb.getShape());
-		assertEquals("b width  ", 70.0, nb.getWidth());
-		assertEquals("b height  ", 30.0, nb.getHeight());
-		assertEquals("b size  ", 35.0, nb.getSize()); // props don't set size
-		assertEquals("b label  ", "b", nb.getLabel());
-		assertEquals("b tooltip  ", "", nb.getToolTip());
-		assertEquals("b font size  ", 12, nb.getFont().getSize());
-		assertEquals("b font style  ", Font.PLAIN, nb.getFont().getStyle());
-		assertTrue("b label color  " + nb.getLabelColor() + " expect "
-				+ Color.BLACK.toString(), nb.getLabelColor()
+		assertEquals("b shape  ", NodeShape.RECT, ((NodeShape)nb.get(NODE_SHAPE)));
+		assertEquals("b width  ", 70.0, getWidth(nb));
+		assertEquals("b height  ", 30.0, getHeight(nb));
+		assertEquals("b size  ", 35.0, ((Double)nb.get(NODE_SIZE)).doubleValue()); // props don't set size
+		assertEquals("b label  ", "b", ((String)nb.get(NODE_LABEL)));
+		assertEquals("b tooltip  ", "", ((String)nb.get(NODE_TOOLTIP)));
+		assertEquals("b font size  ", 12, ((Number)nb.get(NODE_FONT_SIZE)).intValue());
+		assertEquals("b font style  ", Font.PLAIN, ((Font)nb.get(NODE_FONT_FACE)).getStyle());
+		assertTrue("b label color  " + nb.get(NODE_LABEL_COLOR) + " expect "
+				+ Color.BLACK.toString(), ((Color)nb.get(NODE_LABEL_COLOR))
 				.equals(Color.BLACK));
 
 		nac.setNodeSizeLocked(true);
@@ -284,25 +282,25 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 
 		Color cc = new Color(209, 205, 254);
 		assertTrue(
-				"c color  " + nc.getFillColor() + " expect " + cc.toString(),
-				nc.getFillColor().equals(cc));
-		assertTrue("c border color  " + nc.getBorderColor() + " expect "
-				+ Color.BLACK, nc.getBorderColor().equals(Color.BLACK));
+				"c color  " + nc.get(NODE_FILL_COLOR) + " expect " + cc.toString(),
+				((Color)nc.get(NODE_FILL_COLOR)).equals(cc));
+		assertTrue("c border color  " + nc.get(NODE_BORDER_COLOR) + " expect "
+				+ Color.BLACK, ((Color)nc.get(NODE_BORDER_COLOR)).equals(Color.BLACK));
 		assertEquals("c line Type  ", LineStyle.SOLID, nb.get(VisualPropertyType.NODE_LINE_STYLE));
-		assertEquals("c line width  ", 1.0f, nc.getBorderLineType().getWidth());
+		assertEquals("c line width  ", 1.0f, ((LineType)nc.get(NODE_LINETYPE)).getWidth());
 		
-		assertEquals("c shape  ", ShapeNodeRealizer.RECT, nc.getShape());
-		assertEquals("c width  ", 35.0, nc.getWidth()); // since node size is
+		assertEquals("c shape  ", NodeShape.RECT, ((NodeShape)nc.get(NODE_SHAPE)));
+		assertEquals("c width  ", 35.0, getWidth(nc)); // since node size is
 														// locked
-		assertEquals("c height  ", 35.0, nc.getHeight()); // since node size
+		assertEquals("c height  ", 35.0, getHeight(nc)); // since node size
 															// is locked
-		assertEquals("c size  ", 35.0, nc.getSize());
-		assertEquals("c label  ", "c", nc.getLabel());
-		assertEquals("c tooltip  ", "", nc.getToolTip());
-		assertEquals("c font size  ", 12, nc.getFont().getSize());
-		assertEquals("c font style  ", Font.PLAIN, nc.getFont().getStyle());
-		assertTrue("c label color  " + nc.getLabelColor() + " expect "
-				+ Color.BLACK.toString(), nc.getLabelColor()
+		assertEquals("c size  ", 35.0, ((Double)nc.get(NODE_SIZE)).doubleValue());
+		assertEquals("c label  ", "c", ((String)nc.get(NODE_LABEL)));
+		assertEquals("c tooltip  ", "", ((String)nc.get(NODE_TOOLTIP)));
+		assertEquals("c font size  ", 12, ((Number)nc.get(NODE_FONT_SIZE)).intValue());
+		assertEquals("c font style  ", Font.PLAIN, ((Font)nc.get(NODE_FONT_FACE)).getStyle());
+		assertTrue("c label color  " + nc.get(NODE_LABEL_COLOR) + " expect "
+				+ Color.BLACK.toString(), ((Color)nc.get(NODE_LABEL_COLOR))
 				.equals(Color.BLACK));
 
 		System.out
@@ -369,7 +367,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 //		String borderColorString = "100,100,50";
 //		LineType lineType = LineType.DASHED_3;
 //		String lineTypeString = "DASHED_3";
-		byte shape = ShapeNodeRealizer.DIAMOND;
+		NodeShape shape = NodeShape.DIAMOND;
 		double width = 49.0;
 		double height = 79.0;
 		String label = "testLabel";
@@ -408,25 +406,19 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		NodeAppearance secondApp = nac
 				.calculateNodeAppearance(second, network2);
 		System.out.println("secondApp\n" + secondApp.getDescription());
-		assertTrue(secondApp.getFillColor().equals(fillColor));
-		assertTrue(secondApp.getBorderColor().equals(borderColor));
+		assertTrue(((Color)secondApp.get(NODE_FILL_COLOR)).equals(fillColor));
+		assertTrue(((Color)secondApp.get(NODE_BORDER_COLOR)).equals(borderColor));
 		
-		/*
-		 * Need to figure out why this fails.
-		 */
-		//assertEquals(secondApp.getBorderLineType().getType(), LineStyle.DASH);
-		//assertEquals(secondApp.getBorderLineType().getWidth(), 3.0f);
-		
-		assertTrue(secondApp.getShape() == shape);
-		assertEquals("width ", secondApp.getWidth(), width, 0.0001);
-		assertEquals("height ", secondApp.getHeight(), height, 0.0001);
-		assertTrue(secondApp.getLabel().equals(label));
-		assertTrue(secondApp.getToolTip().equals(toolTip));
-		assertTrue(secondApp.getFont().equals(font));
+		assertTrue(((NodeShape)secondApp.get(NODE_SHAPE)) == shape);
+		assertEquals("width ", getWidth(secondApp), width, 0.0001);
+		assertEquals("height ", getHeight(secondApp), height, 0.0001);
+		assertTrue(((String)secondApp.get(NODE_LABEL)).equals(label));
+		assertTrue(((String)secondApp.get(NODE_TOOLTIP)).equals(toolTip));
+		assertTrue(((Font)secondApp.get(NODE_FONT_FACE)).equals(font));
 
 		nac.setNodeSizeLocked(true);
 		nac.calculateNodeAppearance(secondApp, second, network2);
-		assertEquals("width", secondApp.getWidth(), 32.0, 0.0001);
+		assertEquals("width", getWidth(secondApp), 32.0, 0.0001);
 	}
 
 	/**
@@ -438,5 +430,18 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(
 				NodeAppearanceCalculatorTest.class));
+	}
+
+	private double getWidth(NodeAppearance na) {
+		if (na.getNodeSizeLocked())
+			return ((Double)(na.get(NODE_SIZE))).doubleValue();
+		else
+			return ((Double)(na.get(NODE_WIDTH))).doubleValue();
+	}
+	private double getHeight(NodeAppearance na) {
+		if (na.getNodeSizeLocked())
+			return ((Double)(na.get(NODE_SIZE))).doubleValue();
+		else
+			return ((Double)(na.get(NODE_HEIGHT))).doubleValue();
 	}
 }

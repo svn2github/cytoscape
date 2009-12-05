@@ -79,21 +79,6 @@ public class ContinuousLegend extends JPanel {
 	/**
 	 * Creates a new ContinuousLegend object.
 	 *
-	 * @param visualAttr  DOCUMENT ME!
-	 * @param dataAttr  DOCUMENT ME!
-	 * @param points  DOCUMENT ME!
-	 * @param obj  DOCUMENT ME!
-	 * @param b  DOCUMENT ME!
-	 * @deprecated Use constructor with VisualPropertyType instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public ContinuousLegend(String visualAttr, String dataAttr, List points, Object obj, byte b) {
-		this(dataAttr, points, obj, VisualPropertyType.getVisualPorpertyType(b));
-	}
-
-	/**
-	 * Creates a new ContinuousLegend object.
-	 *
 	 * @param dataAttr  DOCUMENT ME!
 	 * @param points  DOCUMENT ME!
 	 * @param obj  DOCUMENT ME!
