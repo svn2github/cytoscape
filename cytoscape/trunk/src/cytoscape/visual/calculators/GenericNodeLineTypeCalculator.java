@@ -57,20 +57,21 @@ import giny.model.Node;
 import java.util.Properties;
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericNodeLineTypeCalculator extends NodeCalculator
-    implements NodeLineTypeCalculator {
+class GenericNodeLineTypeCalculator extends BasicCalculator {
     /**
      * Creates a new GenericNodeLineTypeCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericNodeLineTypeCalculator(String name, ObjectMapping m) {
-        super(name, m, LineType.class, NODE_LINETYPE);
+    GenericNodeLineTypeCalculator(String name, ObjectMapping m) {
+        super(name, m, NODE_LINETYPE);
     }
 
     /**
@@ -80,26 +81,7 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericNodeLineTypeCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1, NODE_LINETYPE);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public LineType calculateNodeLineType(Node e, CyNetwork n) {
-        final Appearance ea = new Appearance();
-        apply(ea, e, n);
-
-        return (LineType)ea.get(type);
+    GenericNodeLineTypeCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, NODE_LINETYPE);
     }
 }

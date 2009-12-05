@@ -108,14 +108,6 @@ public interface CyNetworkView extends GraphView {
 
 	/**
 	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public cytoscape.visual.ui.VizMapUI getVizMapUI();
-
-
-	/**
-	 *  DOCUMENT ME!
 	 */
 	public void toggleVisualMapperEnabled();
 

@@ -225,16 +225,10 @@ public class CalculatorCatalog {
 	 * Given a known byte identifier, returns the matching Map structure holding
 	 * calculators of that type.
 	 *
-	 * @param type
+	 * @param VisualPropertyType
 	 *            a known type identifier
 	 * @return Map the matching Map structure
-	 * @deprecated Will be removed 5/2008
 	 */
-	@Deprecated
-	protected Map<String, Calculator> getCalculatorMap(byte type) {
-		return getCalculatorMap(VisualPropertyType.getVisualPorpertyType(type));
-	}
-
 	protected Map<String, Calculator> getCalculatorMap(final VisualPropertyType type) {
 		Map<String, Calculator> m = calculators.get(type);
 

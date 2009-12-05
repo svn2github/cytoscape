@@ -77,7 +77,6 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
 import cytoscape.visual.ui.NestedNetworkListener;
-import cytoscape.visual.ui.VizMapUI;
 import cytoscape.visual.ui.VizMapperMainPanel;
 
 
@@ -190,15 +189,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * CyNetworkViews
 	 */
 	protected VisualMappingManager vmm;
-
-	/**
-	 * user interface to the {@link VisualMappingManager VisualMappingManager}
-	 * {@link #vmm vizMapper}.
-	 *
-	 *  @deprecated Use VizMapperMainPanel instead.
-	 */
-	@Deprecated
-	protected VizMapUI vizMapUI;
 
 	/**
 	 * New VizMapper UI
@@ -447,16 +437,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 
 	/**
-	 * returns the top-level UI object for the visual mapper.
-	 *
-	 * @deprecated use getVizMapperUI() isntead.
-	 */
-	@Deprecated
-	public VizMapUI getVizMapUI() {
-		return vizMapUI;
-	}
-
-	/**
 	 *  Returns new vizmapper GUI.
 	 *
 	 * @return  DOCUMENT ME!
@@ -470,47 +450,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		}
 
 		return vizmapperUI;
-	}
-
-	/**
-	 * Create the VizMapper and the UI for it.
-	 *
-	 * @deprecated use VizMapperMainPanel instead.
-	 *
-	 */
-	@Deprecated
-	public void setupVizMapper() {
-		this.vmm = Cytoscape.getVisualMappingManager();
-
-		// create the VizMapUI
-		vizMapUI = new VizMapUI(vmm, this);
-		vizMapUI.setName("vizMapUI");
-
-		// In order for the VizMapper to run when the StyleSelector is
-		// run, it needs to listen to the selector.
-		vmm.addChangeListener(vizMapUI.getStyleSelector());
-
-		// Add the StyleSelector to the ToolBar
-		// TODO: maybe put this somewhere else to make it easier to make
-		// vertical ToolBars.
-		JComboBox styleBox = vizMapUI.getStyleSelector().getToolbarComboBox();
-		Dimension newSize = new Dimension(150, (int) styleBox.getPreferredSize().getHeight());
-		styleBox.setMaximumSize(newSize);
-		styleBox.setPreferredSize(newSize);
-
-		JToolBar toolBar = cyMenus.getToolBar();
-
-		// first time
-		if (styleBoxIndex == -1) {
-			toolBar.add(styleBox);
-			styleBoxIndex = toolBar.getComponentCount() - 1;
-			toolBar.addSeparator();
-
-			// subsequent times
-		} else {
-			toolBar.remove(styleBoxIndex);
-			toolBar.add(styleBox, styleBoxIndex);
-		}
 	}
 
 	// ----------------------------------------//

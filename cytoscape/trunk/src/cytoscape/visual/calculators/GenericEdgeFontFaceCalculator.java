@@ -61,20 +61,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeFontFaceCalculator extends EdgeCalculator
-    implements EdgeFontFaceCalculator {
+class GenericEdgeFontFaceCalculator extends BasicCalculator {
     /**
      * Creates a new GenericEdgeFontFaceCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericEdgeFontFaceCalculator(String name, ObjectMapping m) {
-        super(name, m, Font.class, EDGE_FONT_FACE);
+    GenericEdgeFontFaceCalculator(String name, ObjectMapping m) {
+        super(name, m, EDGE_FONT_FACE);
     }
 
     /**
@@ -84,24 +85,7 @@ public class GenericEdgeFontFaceCalculator extends EdgeCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericEdgeFontFaceCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new FontParser(),
-            new Font(null, Font.PLAIN, 12), EDGE_FONT_FACE);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Font calculateEdgeFontFace(Edge e, CyNetwork n) {
-        final Appearance ea = new Appearance();
-        apply(ea, e, n);
-
-        return (Font)ea.get(type);
+    GenericEdgeFontFaceCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, EDGE_FONT_FACE);
     }
 }

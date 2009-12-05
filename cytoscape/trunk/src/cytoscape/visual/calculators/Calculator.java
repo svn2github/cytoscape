@@ -61,13 +61,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
 
-//------------------------------------------------------------------------------
 /**
- * Calculator specifies a super-interface for all calculator interfaces. <b>DO
- * NOT</b> create classes that only implement Calculator! When writing
- * calculators, you <b>MUST</b> extend one of {@link NodeCalculator} or
- * {@link EdgeCalculator} and implement one of the 11 attribute calculator
- * interfaces.
  */
 public interface Calculator extends Cloneable {
 
@@ -134,33 +128,6 @@ public interface Calculator extends Cloneable {
     /*
      * Use public VisualPropertyType getVisualPropertyType() instead.
      */
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public byte getType();
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public String getTypeName();
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public String getPropertyLabel();
 
     /**
      *

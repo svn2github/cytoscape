@@ -82,12 +82,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
-//------------------------------------------------------------------------------
 /**
- * AbstractCalculator is the top of the tree for the Calculator classes. <b>DO
- * NOT</b> extend this class directly! All calculators should extend one of
- * {@link NodeCalculator} or {@link EdgeCalculator} TODO this shouldn't be
- * public
  */
 public abstract class AbstractCalculator implements Calculator {
 
@@ -123,22 +118,6 @@ public abstract class AbstractCalculator implements Calculator {
 	 */
 	protected transient ChangeEvent changeEvent;
 
-	/**
-	 * Create a calculator with the specified object mapping and name. The
-	 * object mapping is used to determine what classes of attribute data this
-	 * calculator can map from. If the object mapping is null, no filtration on
-	 * the attribute data is performed.
-	 *
-	 * @param m
-	 *            Object mapping for this calculator, or null
-	 * @param name
-	 *            Name of this calculator
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public AbstractCalculator(String name, ObjectMapping m, Class c) {
-		this(name, m, VisualPropertyType.NODE_FILL_COLOR);
-	}
 
 	/**
 	 * Creates a new AbstractCalculator object.
@@ -290,14 +269,6 @@ public abstract class AbstractCalculator implements Calculator {
 	 */
 	protected String getClassName() {
 		return this.getClass().getName();
-	}
-
-	/**
-	 * @deprecated Just use getProperties() - baseKey is already known by the
-	 *             calculator. This will be removed 10/2007.
-	 */
-	public Properties getProperties(String baseKey) {
-		return getProperties();
 	}
 
 	/**
@@ -656,36 +627,4 @@ public abstract class AbstractCalculator implements Calculator {
 		return type;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public byte getType() {
-		return type.getType();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String getPropertyLabel() {
-		return type.getPropertyLabel();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String getTypeName() {
-		return type.toString();
-	}
 }

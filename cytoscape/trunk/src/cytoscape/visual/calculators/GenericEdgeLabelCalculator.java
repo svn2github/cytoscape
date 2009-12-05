@@ -58,20 +58,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeLabelCalculator extends EdgeCalculator
-    implements EdgeLabelCalculator {
+class GenericEdgeLabelCalculator extends BasicCalculator {
     /**
      * Creates a new GenericEdgeLabelCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericEdgeLabelCalculator(String name, ObjectMapping m) {
-        super(name, m, String.class, EDGE_LABEL);
+    GenericEdgeLabelCalculator(String name, ObjectMapping m) {
+        super(name, m, EDGE_LABEL);
     }
 
     /**
@@ -81,24 +82,7 @@ public class GenericEdgeLabelCalculator extends EdgeCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericEdgeLabelCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new StringParser(), new String(), EDGE_LABEL);
-    }
-
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String calculateEdgeLabel(Edge e, CyNetwork n) {
-        final Appearance ea = new Appearance();
-        apply(ea, e, n);
-
-        return (String)ea.get(type);
+    GenericEdgeLabelCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, EDGE_LABEL);
     }
 }

@@ -54,26 +54,13 @@ import java.util.Properties;
 
 
 /**
- * Double deprecated! Use NodeWidth,NodeHeight, or NodeUniformSize instead. 
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
  */
-@Deprecated
-public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
-    implements NodeSizeCalculator {
-
-    protected String getClassName() {
-        if (type == VisualPropertyType.NODE_SIZE)
-            return "cytoscape.visual.calculators.GenericNodeUniformSizeCalculator";
-
-        if (type == VisualPropertyType.NODE_WIDTH)
-            return "cytoscape.visual.calculators.GenericNodeWidthCalculator";
-
-        if (type == VisualPropertyType.NODE_HEIGHT)
-            return "cytoscape.visual.calculators.GenericNodeHeightCalculator";
-
-        return getClass().getName();
-    }
+class GenericNodeSizeCalculator extends BasicCalculator {
 
     /**
      * Creates a new GenericNodeSizeCalculator object.
@@ -81,10 +68,8 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      * 
-     * @deprecated Will be removed 5/2008
      */
-    @Deprecated
-    public GenericNodeSizeCalculator(String name, ObjectMapping m) {
+    GenericNodeSizeCalculator(String name, ObjectMapping m) {
         this(name, m, VisualPropertyType.NODE_SIZE);
     }
 
@@ -95,7 +80,7 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericNodeSizeCalculator(String name, ObjectMapping m, VisualPropertyType type) {
+    GenericNodeSizeCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
     }
 
@@ -106,8 +91,7 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    @Deprecated
-    public GenericNodeSizeCalculator(String name, Properties props, String baseKey) {
+    GenericNodeSizeCalculator(String name, Properties props, String baseKey) {
         this(name, props, baseKey, VisualPropertyType.NODE_SIZE);
     }
 
@@ -119,7 +103,7 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      * @param baseKey DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericNodeSizeCalculator(String name, Properties props,
+    GenericNodeSizeCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, type);
     }

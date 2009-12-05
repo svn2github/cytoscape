@@ -59,20 +59,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericNodeShapeCalculator extends NodeCalculator
-    implements NodeShapeCalculator {
+class GenericNodeShapeCalculator extends BasicCalculator {
     /**
      * Creates a new GenericNodeShapeCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericNodeShapeCalculator(String name, ObjectMapping m) {
-        super(name, m, NodeShape.class, NODE_SHAPE);
+    GenericNodeShapeCalculator(String name, ObjectMapping m) {
+        super(name, m, NODE_SHAPE);
     }
 
     /**
@@ -82,24 +83,7 @@ public class GenericNodeShapeCalculator extends NodeCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericNodeShapeCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new NodeShapeParser(), NodeShape.RECT,
-            NODE_SHAPE);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public byte calculateNodeShape(Node e, CyNetwork n) {
-        final Appearance na = new Appearance();
-        apply(na, e, n);
-
-        return (byte)(((NodeShape)na.get(type)).ordinal());
+    GenericNodeShapeCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, NODE_SHAPE);
     }
 }

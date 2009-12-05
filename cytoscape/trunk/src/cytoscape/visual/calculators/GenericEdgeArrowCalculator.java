@@ -56,34 +56,23 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
  */
-@Deprecated
-public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
-    implements EdgeArrowCalculator {
+class GenericEdgeArrowCalculator extends BasicCalculator {
     
-    protected String getClassName() {
-        if (type == VisualPropertyType.EDGE_SRCARROW)
-            return "cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator";
-
-        if (type == VisualPropertyType.EDGE_TGTARROW)
-            return "cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator";
-
-        return getClass().getName();
-    }
-
     /**
      * Creates a new GenericEdgeArrowCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      * 
-     * @deprecated Will be removed 5/2008
      */
-    @Deprecated
-    public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
-        this(name, m, VisualPropertyType.EDGE_TGTARROW);
+    GenericEdgeArrowCalculator(String name, ObjectMapping m) {
+        super(name, m, VisualPropertyType.EDGE_TGTARROW);
     }
 
     /**
@@ -93,21 +82,10 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericEdgeArrowCalculator(String name, ObjectMapping m, VisualPropertyType type) {
+    GenericEdgeArrowCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
     }
 
-    /**
-     * Creates a new GenericEdgeArrowCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param props DOCUMENT ME!
-     * @param baseKey DOCUMENT ME!
-     */
-    @Deprecated
-    public GenericEdgeArrowCalculator(String name, Properties props, String baseKey) {
-        this(name, props, baseKey, VisualPropertyType.EDGE_TGTARROW);
-    }
 
     /**
      * Creates a new GenericEdgeArrowCalculator object.
@@ -117,8 +95,8 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
      * @param baseKey DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericEdgeArrowCalculator(String name, Properties props,
-        String baseKey, VisualPropertyType type) {
+    GenericEdgeArrowCalculator(String name, Properties props,
+                                      String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, type);
     }
 

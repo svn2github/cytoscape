@@ -12,19 +12,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericNodeLineWidthCalculator extends NodeCalculator {
+class GenericNodeLineWidthCalculator extends BasicCalculator {
     /**
      * Creates a new GenericNodeLineWidthCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericNodeLineWidthCalculator(String name, ObjectMapping m) {
-        super(name, m, Float.class, NODE_LINE_WIDTH);
+    GenericNodeLineWidthCalculator(String name, ObjectMapping m) {
+        super(name, m, NODE_LINE_WIDTH);
     }
 
     /**
@@ -34,9 +36,8 @@ public class GenericNodeLineWidthCalculator extends NodeCalculator {
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericNodeLineWidthCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new FloatParser(), Float.class, NODE_LINE_WIDTH);
+    GenericNodeLineWidthCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, NODE_LINE_WIDTH);
     }
     
 }

@@ -13,19 +13,21 @@ import cytoscape.visual.parsers.ColorParser;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeSourceArrowColorCalculator extends EdgeCalculator {
+class GenericEdgeSourceArrowColorCalculator extends BasicCalculator {
     /**
      * Creates a new GenericEdgeSourceArrowColorCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericEdgeSourceArrowColorCalculator(String name, ObjectMapping m) {
-        super(name, m, Color.class, EDGE_SRCARROW_COLOR);
+    GenericEdgeSourceArrowColorCalculator(String name, ObjectMapping m) {
+        super(name, m, EDGE_SRCARROW_COLOR);
     }
 
     /**
@@ -35,9 +37,8 @@ public class GenericEdgeSourceArrowColorCalculator extends EdgeCalculator {
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericEdgeSourceArrowColorCalculator(String name, Properties props,
-        String baseKey) {
-		super(name, props, baseKey, new ColorParser(), Color.black, EDGE_SRCARROW_COLOR);
+    GenericEdgeSourceArrowColorCalculator(String name, Properties props, String baseKey) {
+		super(name, props, baseKey, EDGE_SRCARROW_COLOR);
     }
 
 }

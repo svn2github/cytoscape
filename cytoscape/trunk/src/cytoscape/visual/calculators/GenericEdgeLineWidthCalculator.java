@@ -15,19 +15,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeLineWidthCalculator extends EdgeCalculator {
+class GenericEdgeLineWidthCalculator extends BasicCalculator {
     /**
      * Creates a new GenericEdgeLineWidthCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericEdgeLineWidthCalculator(String name, ObjectMapping m) {
-        super(name, m, Float.class, EDGE_LINE_WIDTH);
+    GenericEdgeLineWidthCalculator(String name, ObjectMapping m) {
+        super(name, m, EDGE_LINE_WIDTH);
     }
 
     /**
@@ -37,8 +39,8 @@ public class GenericEdgeLineWidthCalculator extends EdgeCalculator {
     * @param m DOCUMENT ME!
     * @param c DOCUMENT ME!
     */
-    public GenericEdgeLineWidthCalculator(String name, ObjectMapping m, Class c) {
-        super(name, m, c, EDGE_LINE_WIDTH);
+    GenericEdgeLineWidthCalculator(String name, ObjectMapping m, Class c) {
+        super(name, m, EDGE_LINE_WIDTH);
     }
 
     /**
@@ -48,9 +50,8 @@ public class GenericEdgeLineWidthCalculator extends EdgeCalculator {
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericEdgeLineWidthCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new FloatParser(), new Float(0), EDGE_LINE_WIDTH);
+    GenericEdgeLineWidthCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, EDGE_LINE_WIDTH);
     }
 
 }

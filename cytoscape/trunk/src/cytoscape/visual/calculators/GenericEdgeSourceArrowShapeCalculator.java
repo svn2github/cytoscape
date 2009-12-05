@@ -47,19 +47,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeSourceArrowShapeCalculator extends EdgeCalculator {
+class GenericEdgeSourceArrowShapeCalculator extends BasicCalculator {
 	/**
 	 * Creates a new GenericEdgeSourceArrowShapeCalculator object.
 	 *
 	 * @param name DOCUMENT ME!
 	 * @param m DOCUMENT ME!
 	 */
-	public GenericEdgeSourceArrowShapeCalculator(String name, ObjectMapping m) {
-		super(name, m, ArrowShape.class, EDGE_SRCARROW_SHAPE);
+	GenericEdgeSourceArrowShapeCalculator(String name, ObjectMapping m) {
+		super(name, m, EDGE_SRCARROW_SHAPE);
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class GenericEdgeSourceArrowShapeCalculator extends EdgeCalculator {
 	 * @param props DOCUMENT ME!
 	 * @param baseKey DOCUMENT ME!
 	 */
-	public GenericEdgeSourceArrowShapeCalculator(String name, Properties props, String baseKey) {
-		super(name, props, baseKey, new ArrowShapeParser(), ArrowShape.NONE, EDGE_SRCARROW_SHAPE);
+	GenericEdgeSourceArrowShapeCalculator(String name, Properties props, String baseKey) {
+		super(name, props, baseKey, EDGE_SRCARROW_SHAPE);
 	}
 }

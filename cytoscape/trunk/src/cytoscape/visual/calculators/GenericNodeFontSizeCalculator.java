@@ -57,20 +57,21 @@ import giny.model.Node;
 import java.util.Properties;
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericNodeFontSizeCalculator extends NodeCalculator
-    implements NodeFontSizeCalculator {
+class GenericNodeFontSizeCalculator extends BasicCalculator {
     /**
      * Creates a new GenericNodeFontSizeCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericNodeFontSizeCalculator(String name, ObjectMapping m) {
-        super(name, m, Number.class, NODE_FONT_SIZE);
+    GenericNodeFontSizeCalculator(String name, ObjectMapping m) {
+        super(name, m, NODE_FONT_SIZE);
     }
 
     /**
@@ -80,24 +81,7 @@ public class GenericNodeFontSizeCalculator extends NodeCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericNodeFontSizeCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new DoubleParser(), new Double(12),
-            NODE_FONT_SIZE);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public float calculateNodeFontSize(Node e, CyNetwork n) {
-        final Appearance ea = new Appearance();
-        apply(ea, e, n);
-
-        return ((Double)ea.get(type)).floatValue();
+    GenericNodeFontSizeCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, NODE_FONT_SIZE);
     }
 }
