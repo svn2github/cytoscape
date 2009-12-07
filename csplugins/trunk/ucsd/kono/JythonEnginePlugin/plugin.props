@@ -5,10 +5,10 @@ pluginName=PythonScriptingEngine
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=<p>Scripting engine based on Jython 2.5.1 implementation.  This plugin uses JyConsole library by Artenum OpenSource project.</p><p><strong><font color="red">This plugin is for technology evaluation purpose ONLY!  Totally experimental.</font></strong>
+pluginDescription=<p>Scripting engine based on Jython 2.5.1 implementation.  This plugin uses JyConsole library by Artenum OpenSource project.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.20
+pluginVersion=0.21
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6, 2.7
