@@ -123,22 +123,54 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		                                                .getTunables();
 		final JPanel tPanel = new JPanel();
 		
-	
-		
 		tPanel.setBackground(Color.white);
-		tPanel.setLayout(new GridLayout(tunables.size(), 1));
+		tPanel.setLayout(new java.awt.GridBagLayout());
+		
+		java.awt.GridBagConstraints gridBagConstraints;
+		
 		for (Tunable t : tunables) {
-			JPanel propPanel = t.getPanel();
+			JPanel propPanel = t.getPanel(); 
+			
 			propPanel.setBackground(Color.white);
-			tPanel.add(propPanel);
+			
+			if (t.getDescription().equalsIgnoreCase("Import all available entries")){
+				gridBagConstraints = new java.awt.GridBagConstraints();
+		        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+		        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		        tPanel.add(propPanel, gridBagConstraints);
+			}
+			if (t.getDescription().equalsIgnoreCase("Show all available filters")){
+		        gridBagConstraints = new java.awt.GridBagConstraints();
+		        gridBagConstraints.gridy = 1;
+		        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+		        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		        tPanel.add(propPanel, gridBagConstraints);
+			}
+			if (t.getDescription().equalsIgnoreCase("Biomart Base URL")){
+				System.out.println("BiomartMainDialog():t.getDescription() = " + t.getDescription());
+		        gridBagConstraints = new java.awt.GridBagConstraints();
+		        gridBagConstraints.gridy = 2;
+		        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+		        gridBagConstraints.weightx = 1.0;
+		        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+			    tPanel.add(propPanel, gridBagConstraints);
+			}
 		}
 		
+		// Add a label for place holder 
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel("");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        tPanel.add(jLabel4, gridBagConstraints);
+		//
+        
 		panel = new BiomartAttrMappingPanel();
 		panel.addPropertyChangeListener(this);
 		tabs.addTab("Query", panel);
 		tabs.addTab("Property", tPanel);
-		
-
+				
 		add(tabs);
 
 		pack();
