@@ -2380,11 +2380,8 @@ System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_netwo
 		// paint inner canvas (network)
 		originalSize = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
-if(skipBackground) {System.out.print("->the one!!!         "); }
 		fitContent(/* updateView = */ false);
-		double theZoom = getZoom();
-if(skipBackground) System.out.println("-> zoom = " + theZoom);
-		setZoom(theZoom * shrink, /* updateView = */ false);
+		setZoom(getZoom() * shrink, /* updateView = */ false);
 		m_networkCanvas.paint(g);
 		// Restore network to original size
 		m_networkCanvas.setSize(originalSize);
