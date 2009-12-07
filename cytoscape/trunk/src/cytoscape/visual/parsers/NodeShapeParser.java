@@ -45,7 +45,6 @@ package cytoscape.visual.parsers;
 
 //----------------------------------------------------------------------------
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.ShapeNodeRealizer;
 
 
 //----------------------------------------------------------------------------
@@ -67,19 +66,6 @@ public class NodeShapeParser
         return parseNodeShapeEnum(value);
     }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public Byte parseNodeShape(String value) {
-        return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
-    }
 
     /**
      * DOCUMENT ME!
@@ -103,19 +89,4 @@ public class NodeShapeParser
         return NodeShape.isValidShape(shape);
     }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param shape DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static boolean isValidShape(byte shape) {
-        final NodeShape nShape = ShapeNodeRealizer.getNodeShape(shape);
-
-        return NodeShape.isValidShape(nShape);
-    }
 }

@@ -36,8 +36,8 @@ package cytoscape.visual.ui.icon;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.LineType;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.LineStyle;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -69,26 +69,14 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * Creates a new LineTypeIcon object.
 	 */
 	public LineTypeIcon() {
-		this(((LineType) VisualPropertyType.EDGE_LINETYPE.getDefault(Cytoscape.getVisualMappingManager() .getVisualStyle()))
-		     .getStroke(), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
-		     ((LineType) VisualPropertyType.EDGE_LINETYPE
-		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).getType().toString(),
+		this(((LineStyle) VisualPropertyType.EDGE_LINE_STYLE.getDefault(Cytoscape.getVisualMappingManager() .getVisualStyle()))
+		     .getStroke(2f), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
+		     ((LineStyle) VisualPropertyType.EDGE_LINE_STYLE
+		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).toString(),
 		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
 		                                                               .getVisualStyle()));
 	}
 
-	/**
-	 * Creates a new LineTypeIcon object.
-	 *
-	 * @param lineType  DOCUMENT ME!
-	 */
-	public LineTypeIcon(Object lineType) {
-		this(((LineType) lineType).getStroke(), DEFAULT_ICON_SIZE * 3,
-		     DEFAULT_ICON_SIZE,
-		     ((LineType) lineType).getType().toString(),
-		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
-		                                                               .getVisualStyle()));
-	}
 	
 	public LineTypeIcon(cytoscape.visual.LineStyle style) {
 		this(style.getStroke(2f), DEFAULT_ICON_SIZE * 3,

@@ -50,17 +50,14 @@ import cytoscape.visual.properties.EdgeLabelOpacityProp;
 import cytoscape.visual.properties.EdgeLabelPositionProp;
 import cytoscape.visual.properties.EdgeLabelProp;
 import cytoscape.visual.properties.EdgeLineStyleProp;
-import cytoscape.visual.properties.EdgeLineTypeProp;
 import cytoscape.visual.properties.EdgeLabelWidthProp;
 import cytoscape.visual.properties.EdgeLineWidthProp;
 import cytoscape.visual.properties.EdgeOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowColorProp;
 import cytoscape.visual.properties.EdgeSourceArrowOpacityProp;
-import cytoscape.visual.properties.EdgeSourceArrowProp;
 import cytoscape.visual.properties.EdgeSourceArrowShapeProp;
 import cytoscape.visual.properties.EdgeTargetArrowColorProp;
 import cytoscape.visual.properties.EdgeTargetArrowOpacityProp;
-import cytoscape.visual.properties.EdgeTargetArrowProp;
 import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
 import cytoscape.visual.properties.EdgeToolTipProp;
 import cytoscape.visual.properties.NodeBorderColorProp;
@@ -75,7 +72,6 @@ import cytoscape.visual.properties.NodeLabelPositionProp;
 import cytoscape.visual.properties.NodeLabelProp;
 import cytoscape.visual.properties.NodeLabelWidthProp;
 import cytoscape.visual.properties.NodeLineStyleProp;
-import cytoscape.visual.properties.NodeLineTypeProp;
 import cytoscape.visual.properties.NodeLineWidthProp;
 import cytoscape.visual.properties.NodeOpacityProp;
 import cytoscape.visual.properties.NodeShapeProp;
@@ -106,9 +102,10 @@ public enum VisualPropertyType {
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", 
 	                  Color.class, new NodeBorderColorProp(), new ColorParser(), true, true ), 
+	// exists only for backwards compatibility
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-	              "defaultNodeLineType", LineType.class,
-	              new NodeLineTypeProp(), new LineTypeParser(), true, false ), 
+	              "defaultNodeLineType", LineStyle.class,
+	              new NodeLineStyleProp(), new LineStyleParser(), true, false ), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
 	           NodeShape.class, new NodeShapeProp(),
 			   new NodeShapeParser(), true, true), 
@@ -142,15 +139,18 @@ public enum VisualPropertyType {
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           Color.class, new EdgeColorProp(),
 			   new ColorParser(), false, true), 
+	// exists only for backwards compatibility
 	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-	              "defaultEdgeLineType", LineType.class,
-	              new EdgeLineTypeProp(), new LineTypeParser(), false, false), 
+	              "defaultEdgeLineType", LineStyle.class,
+	              new EdgeLineStyleProp(), new LineStyleParser(), false, false), 
+	// exists only for backwards compatibility
 	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
-	              "defaultEdgeSourceArrow", Arrow.class,
-	              new EdgeSourceArrowProp(), new ArrowParser(), false, false), 
+	              "defaultEdgeSourceArrow", ArrowShape.class,
+	              new EdgeSourceArrowShapeProp(), new ArrowShapeParser(), false, false), 
+	// exists only for backwards compatibility
 	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
-	              "defaultEdgeTargetArrow", Arrow.class,
-	              new EdgeTargetArrowProp(), new ArrowParser(), false, false), 
+	              "defaultEdgeTargetArrow", ArrowShape.class,
+	              new EdgeTargetArrowShapeProp(), new ArrowShapeParser(), false, false), 
 	EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
 	           String.class, new EdgeLabelProp(),
 			   new StringParser(), false, true), 

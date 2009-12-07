@@ -45,8 +45,6 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.Appearance;
-import cytoscape.visual.LineType;
-import cytoscape.visual.parsers.LineTypeParser;
 
 import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
 

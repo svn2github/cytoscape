@@ -123,7 +123,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 
 		// this tests that the default edge appearance is correct
 		assertTrue("color", ((Color)ea.get(EDGE_COLOR)).equals(Color.BLACK));
-		assertTrue("lineType", ((LineType)ea.get(EDGE_LINETYPE)) == LineType.LINE_1);
+		assertTrue("lineType", ((LineStyle)ea.get(EDGE_LINETYPE)) == LineStyle.SOLID);
 		assertTrue("src arrow", ((ArrowShape)ea.get(EDGE_SRCARROW_SHAPE)) == ArrowShape.NONE);
 		assertTrue("trg arrow", ((ArrowShape)ea.get(EDGE_TGTARROW_SHAPE)) == ArrowShape.NONE);
 		assertTrue("label", ((String)ea.get(EDGE_LABEL)).equals(""));
@@ -143,7 +143,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 		System.out.println(eac.getDescription());
 
 		System.out.println("color " + ea.get(EDGE_COLOR));
-		System.out.println("linetype " + ((LineType)ea.get(EDGE_LINETYPE)).toString());
+		System.out.println("linetype " + ((LineStyle)ea.get(EDGE_LINETYPE)).toString());
 		System.out.println("src arrow " + ea.get(EDGE_SRCARROW_SHAPE));
 		System.out.println("trg arrow " + ea.get(EDGE_TGTARROW_SHAPE));
 		System.out.println("label " + ((String)ea.get(EDGE_LABEL)));

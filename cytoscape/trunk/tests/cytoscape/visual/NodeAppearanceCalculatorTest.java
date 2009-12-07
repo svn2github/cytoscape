@@ -127,7 +127,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		assertTrue("a border color  " + na.get(NODE_BORDER_COLOR) + " expect "
 				+ Color.BLACK.toString(), ((Color)na.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("a lineType  ", LineType.LINE_1, ((LineType)na.get(NODE_LINETYPE)));
+		assertEquals("a lineType  ", LineStyle.SOLID, ((LineStyle)na.get(NODE_LINETYPE)));
 		assertEquals("a shape  ", NodeShape.RECT, ((NodeShape)na.get(NODE_SHAPE)));
 
 		// node size is locked so all should be the same
@@ -150,7 +150,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		assertTrue("b border color  " + nb.get(NODE_BORDER_COLOR) + " expect "
 				+ Color.BLACK.toString(), ((Color)nb.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("b lineType  ", LineType.LINE_1, ((LineType)nb.get(NODE_LINETYPE)));
+		assertEquals("b lineType  ", LineStyle.SOLID, ((LineStyle)nb.get(NODE_LINETYPE)));
 		assertEquals("b shape  ", NodeShape.RECT, ((NodeShape)nb.get(NODE_SHAPE)));
 		// still locked
 		assertEquals("b width  ", 35.0, getWidth(nb));
@@ -173,7 +173,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		assertTrue("c border color  " + nc.get(NODE_BORDER_COLOR) + " expect "
 				+ Color.BLACK.toString(), ((Color)nc.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("c lineType  ", LineType.LINE_1, ((LineType)nc.get(NODE_LINETYPE)));
+		assertEquals("c lineType  ", LineStyle.SOLID, ((LineStyle)nc.get(NODE_LINETYPE)));
 		assertEquals("c shape  ", NodeShape.RECT, ((NodeShape)nc.get(NODE_SHAPE)));
 		// now we see the default width and height
 		assertEquals("c width  ", 70.0, getWidth(nc));
@@ -236,7 +236,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		assertTrue("a border color  " + na.get(NODE_BORDER_COLOR) + " expect "
 				+ Color.BLACK.toString(), ((Color)na.get(NODE_BORDER_COLOR)).equals(
 				Color.BLACK));
-		assertEquals("a lineType  ", LineType.LINE_1, ((LineType)na.get(NODE_LINETYPE)));
+		assertEquals("a lineType  ", LineStyle.SOLID, ((LineStyle)na.get(NODE_LINETYPE)));
 		assertEquals("a shape  ", NodeShape.RECT, ((NodeShape)na.get(NODE_SHAPE)));
 		assertEquals("a width  ", 70.0, getWidth(na));
 		assertEquals("a height  ", 10.0, getHeight(na)); // only height has a
@@ -287,7 +287,8 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		assertTrue("c border color  " + nc.get(NODE_BORDER_COLOR) + " expect "
 				+ Color.BLACK, ((Color)nc.get(NODE_BORDER_COLOR)).equals(Color.BLACK));
 		assertEquals("c line Type  ", LineStyle.SOLID, nb.get(VisualPropertyType.NODE_LINE_STYLE));
-		assertEquals("c line width  ", 1.0f, ((LineType)nc.get(NODE_LINETYPE)).getWidth());
+
+		assertEquals("c line width  ", 1.0f, ((Number)nc.get(NODE_LINE_WIDTH)).floatValue());
 		
 		assertEquals("c shape  ", NodeShape.RECT, ((NodeShape)nc.get(NODE_SHAPE)));
 		assertEquals("c width  ", 35.0, getWidth(nc)); // since node size is
@@ -365,7 +366,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		Color borderColor = new Color(100, 100, 50);
 //		String fillColorString = "63,128,255";
 //		String borderColorString = "100,100,50";
-//		LineType lineType = LineType.DASHED_3;
+//		LineStyle lineType = LineStyle.DASHED_3;
 //		String lineTypeString = "DASHED_3";
 		NodeShape shape = NodeShape.DIAMOND;
 		double width = 49.0;

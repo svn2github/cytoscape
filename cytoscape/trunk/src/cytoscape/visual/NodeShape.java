@@ -49,7 +49,6 @@ import java.util.Map;
 import javax.swing.Icon;
 
 /**
- * This is a replacement for ShapeNodeRealizer.java
  *
  * @since Cytoscape 2.5
  * @version 0.7

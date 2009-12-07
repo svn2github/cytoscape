@@ -1,5 +1,5 @@
 /*
-  File: ContinuousUI.java
+  File: ContinuousLegend.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 

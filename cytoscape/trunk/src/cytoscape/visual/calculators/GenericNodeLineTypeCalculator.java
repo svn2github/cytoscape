@@ -44,13 +44,11 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.LineType;
 import cytoscape.visual.Appearance;
 
 import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
 
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.LineTypeParser;
 
 import giny.model.Node;
 

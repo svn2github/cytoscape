@@ -45,7 +45,6 @@ package cytoscape.visual.mappings;
 import cytoscape.CyNetwork;
 import cytoscape.logger.CyLogger;
 
-import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.parsers.ValueParser;
@@ -100,12 +99,6 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @param defaultObj  DOCUMENT ME!
 	 */
 	public PassThroughMapping(Object defaultObj) {
-		// TODO
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (defaultObj instanceof Byte)
-			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte) defaultObj).byteValue());
-
 		this.rangeClass = defaultObj.getClass();
 	}
 
@@ -116,12 +109,6 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @param attrName  DOCUMENT ME!
 	 */
 	public PassThroughMapping(Object defaultObj, String attrName) {
-		// TODO
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (defaultObj instanceof Byte)
-			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte) defaultObj).byteValue());
-
 		this.rangeClass = defaultObj.getClass();
 		setControllingAttributeName(attrName, null, false);
 	}

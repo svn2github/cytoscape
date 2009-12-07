@@ -44,7 +44,6 @@ package cytoscape.visual.parsers;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
 import cytoscape.logger.CyLogger;
 
@@ -87,8 +86,6 @@ public class ParserFactory {
             parser = new DoubleParser();
         else if (c.isAssignableFrom(Arrow.class))
             parser = new ArrowParser();
-        else if (c.isAssignableFrom(LineType.class))
-            parser = new LineTypeParser();
         else if (c.isAssignableFrom(Byte.class) ||
                 c.isAssignableFrom(NodeShape.class))
             parser = new NodeShapeParser();

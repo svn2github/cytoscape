@@ -82,13 +82,14 @@ public enum LineStyle {
 	}
 
 	public static LineStyle parse(String val) {
-		// first check the style names
+		// First check the style names.
 		for ( LineStyle ls : values() ) {
 			if ( ls.toString().equals(val) )
 				return ls;
 		}
 
-		// then try regex matching instead 
+		// Then try regex matching. This is for legacy line types and 
+		// should really only either match "line" or "dash".
 		for ( LineStyle ls : values() ) {
 			Pattern p = Pattern.compile(ls.getRegex(),Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(val);

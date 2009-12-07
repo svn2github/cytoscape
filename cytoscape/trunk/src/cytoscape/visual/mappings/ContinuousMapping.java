@@ -44,7 +44,6 @@ package cytoscape.visual.mappings;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
 
@@ -53,7 +52,6 @@ import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 import cytoscape.visual.mappings.continuous.ContinuousMappingReader;
 import cytoscape.visual.mappings.continuous.ContinuousMappingWriter;
 import cytoscape.visual.mappings.continuous.ContinuousRangeCalculator;
-import cytoscape.visual.mappings.continuous.ContinuousUI;
 
 import cytoscape.visual.parsers.ValueParser;
 
@@ -65,6 +63,7 @@ import java.util.Properties;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JLabel;
 import javax.swing.event.ChangeListener;
 
 
@@ -94,13 +93,6 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 *  {@link ObjectMapping#EDGE_MAPPING} or {@link ObjectMapping#NODE_MAPPING}
 	 */
 	public ContinuousMapping(Object defaultObj, byte mapType) throws IllegalArgumentException {
-		// TODO
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (defaultObj instanceof Byte) {
-			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte) defaultObj).byteValue());
-		}
-
 		this.rangeClass = defaultObj.getClass();
 		this.defaultObj = defaultObj;
 		this.mapType = mapType;
@@ -279,9 +271,10 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 * @return JPanel Object.
 	 */
 	public JPanel getUI(JDialog dialog, CyNetwork network) {
-		ContinuousUI ui = new ContinuousUI(dialog, defaultObj, network, this);
+		JPanel ret = new JPanel();
+		ret.add( new JLabel("this ui is no longer used"));
 
-		return ui;
+		return ret;
 	}
 
 	/**

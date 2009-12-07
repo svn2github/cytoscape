@@ -298,24 +298,6 @@ public class PluginInfo extends DownloadableInfo {
 	}
 	
 	/**
-	 * @deprecated See {@link cytoscape.plugin.DownloadableInfo#getLicenseText()} will be removed June 2008
-	 * @return The text of the license for this plugin if available.
-	 */
-	public String getLicenseText() {
-		return super.getLicenseText();
-	}
-
-	/**
-	 * @deprecated See {@link cytoscape.plugin.DownloadableInfo#isLicenseRequired()} will be removed June 2008
-	 * @return If the license is always required to be accepted for installs and
-	 *         updates this returns true. If it only is required at install time
-	 *         (never at update) returns false.
-	 */
-	public boolean isLicenseRequired() {
-		return super.isLicenseRequired();
-	}
-
-	/**
 	 * @return FileType of file type for plugin. PluginInfo.JAR or
 	 *         PluginInfo.ZIP
 	 */
