@@ -91,6 +91,8 @@ import cytoscape.util.intr.IntStack;
  * @author Nerius Landys
  */
 public class DGraphView implements GraphView, Printable {
+	boolean calledFromGetSnapshot = false;
+
 	// Size of snapshot image
 	private static final int DEF_SNAPSHOT_SIZE = 400;
 	
@@ -1010,6 +1012,11 @@ public class DGraphView implements GraphView, Printable {
 			                             (((double) m_extentsBuff[3]) - 
 			                              ((double) m_extentsBuff[1])));
 			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
+if (calledFromGetSnapshot) {
+calledFromGetSnapshot = false;
+m_networkCanvas.m_scaleFactor = 1.0;
+System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_networkCanvas.m_scaleFactor);
+}
 			m_viewportChanged = true;
 		}
 		if (updateView) {
@@ -2373,8 +2380,11 @@ public class DGraphView implements GraphView, Printable {
 		// paint inner canvas (network)
 		originalSize = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
+if(skipBackground) {System.out.print("->the one!!!         "); }
 		fitContent(/* updateView = */ false);
-		setZoom(getZoom() * shrink, /* updateView = */ false);
+		double theZoom = getZoom();
+if(skipBackground) System.out.println("-> zoom = " + theZoom);
+		setZoom(theZoom * shrink, /* updateView = */ false);
 		m_networkCanvas.paint(g);
 		// Restore network to original size
 		m_networkCanvas.setSize(originalSize);
@@ -2592,6 +2602,8 @@ public class DGraphView implements GraphView, Printable {
 		if (!latest) {
 			// Need to update snapshot.
 			final Rectangle2D rect = new Rectangle2D.Double(-width/2, -height/2, width, height);
+System.out.println("in getSnapshot(), width = " + width + ", height = " + height);
+calledFromGetSnapshot = true;
 			snapshotImage = new TexturePaint((BufferedImage) createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1, /* skipBackground = */ true), rect);
 			latest = true;
 		} 
