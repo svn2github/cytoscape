@@ -69,10 +69,6 @@ public class FastGreedyAlgorithm implements GAlgorithm {
         /*Initialize*/
         
         CyNetwork network = Cytoscape.getCurrentNetwork();
-        List<Node> nodeList = network.nodesList();
-        List<Edge> edgeList = network.edgesList();
-        //int nodeCount = nodeList.size();
-        //int edgeCount = edgeList.size();
 
         double[] ai = new double[g.nodeCount];
         double qInitial = 0;
@@ -98,8 +94,6 @@ public class FastGreedyAlgorithm implements GAlgorithm {
         //    }
         //}
 
-
-        
         SparseDoubleMatrix2D deltaQMx = new SparseDoubleMatrix2D(g.nodeCount, g.nodeCount);
         
         //if(this.mode == 0){
@@ -122,10 +116,7 @@ public class FastGreedyAlgorithm implements GAlgorithm {
                 if(i == j){
                     continue;
                 }
-                if(//network.getEdgeCount(network.getNode(graphIndex[i]), network.getNode(graphIndex[j]), false)>0 || network.getEdgeCount(network.getNode(graphIndex[j]), network.getNode(graphIndex[i]), false)>0
-                    //ijTotalEdgeCount > 0
-                       g.hasEdge(i, j) && i < j
-                   ){
+                if (g.hasEdge(i, j) && i < j) {
                     deltaQ = (1.0d/(2*g.edgeCount)-(g.degree[i]*g.degree[j])/(4.0*Math.pow(g.edgeCount, 2.0))) * 2;                    
                     deltaQMx.setQuick(i, j, deltaQ);
                     if(maxDeltaQ <= deltaQ){
@@ -133,8 +124,7 @@ public class FastGreedyAlgorithm implements GAlgorithm {
                         maxI = i;
                         maxJ = j;
                     }
-                }
-                else if(g.hasEdge(i, j) && i > j){
+                } else if(g.hasEdge(i, j) && i > j) {
                     deltaQMx.setQuick(i, j, deltaQMx.getQuick(j, i));
                 }
 
@@ -168,8 +158,8 @@ public class FastGreedyAlgorithm implements GAlgorithm {
             //System.out.println(q);
         
         for(int k=0; k<g.nodeCount; k++){
-								if (halt)
-									return;
+                if (halt)
+                    return;
                 if(k==maxJ || k==maxI){
                     continue;
                 }

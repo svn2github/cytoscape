@@ -32,12 +32,18 @@
  */
 package clusterMaker.algorithms.glay;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 
 // Cytoscape imports
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
@@ -45,8 +51,9 @@ import cytoscape.task.TaskMonitor;
 import giny.model.Node;
 
 import clusterMaker.ClusterMaker;
-import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.ClusterStatistics;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.NewNetworkView;
 
@@ -152,18 +159,28 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 		//fa.partition(simpleGraph);
 		fa.execute(simpleGraph, monitor);
 
+		NumberFormat nf = NumberFormat.getInstance();
+		String modularityString = nf.format(fa.getModularity());
 		Tunable t = clusterProperties.get("modularity");
-		t.setValue(new Double(fa.getModularity()));
+		t.setValue(new Double(modularityString));
 
 		t = clusterProperties.get("clusters");
 		t.setValue(new Integer(fa.getClusterNumber()));
+
+		List<List<CyNode>> clusterList = new ArrayList();
+		for (int cluster = 0; cluster < fa.getClusterNumber(); cluster++) {
+			clusterList.add(new ArrayList());
+		}
 
 		// Create and assign the cluster attribute
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		int membership[] = fa.getMembership();
     for(int index=0; index < simpleGraph.graphIndices.length; index++){
-			Node node = network.getNode(simpleGraph.graphIndices[index]);
-			nodeAttributes.setAttribute(node.getIdentifier(), clusterAttrName, new Integer(membership[index]));
+			int cluster = membership[index];
+			CyNode node = (CyNode) network.getNode(simpleGraph.graphIndices[index]);
+			nodeAttributes.setAttribute(node.getIdentifier(), clusterAttrName, 
+			                            new Integer(cluster));
+			clusterList.get(cluster).add(node);
 		}
 
 		// Set up the appropriate attributes
@@ -173,7 +190,25 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 			
 		// Create groups (if desired)
 		if (createMetaNodes) {
+			CyGroup first = null;
+			for (int cluster = 0; cluster < fa.getClusterNumber(); cluster++) {
+				List<CyNode> nodeList = clusterList.get(cluster);
+				String groupName = clusterAttrName+"_"+cluster;
+				CyGroup newgroup = CyGroupManager.createGroup(groupName, nodeList, null);
+				if (newgroup != null) {
+					first = newgroup;
+					// Now tell the metanode viewer about it
+					CyGroupManager.setGroupViewer(newgroup, "metaNode", 
+					                              Cytoscape.getCurrentNetworkView(), false);
+				}
+			}
+			if (first != null)
+				CyGroupManager.setGroupViewer(first, "metaNode", 
+				                              Cytoscape.getCurrentNetworkView(), true);
 		}
+
+		ClusterStatistics stats = new ClusterStatistics(network, clusterList);
+		monitor.setStatus("Done.  GLay results:\n"+stats+"\n  Modularity: "+modularityString);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

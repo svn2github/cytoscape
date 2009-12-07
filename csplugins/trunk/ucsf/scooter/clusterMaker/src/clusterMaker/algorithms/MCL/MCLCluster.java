@@ -52,6 +52,9 @@ import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
+import cern.colt.matrix.DoubleFactory2D;
+import cern.colt.matrix.DoubleMatrix2D;
+
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
@@ -69,6 +72,7 @@ public class MCLCluster extends AbstractClusterAlgorithm
 	int rNumber = 8;
 	double clusteringThresh = 1e-15;
 	boolean takeNegLOG = false;
+	boolean distanceValues = false;
 	boolean createMetaNodes = false;
 	boolean selectedOnly = false;
 	boolean adjustLoops = true;
@@ -76,6 +80,8 @@ public class MCLCluster extends AbstractClusterAlgorithm
 	double maxResidual = 0.001;
 	Double edgeCutOff = null;
 	HistogramDialog histo = null;
+
+	DistanceMatrix matrix = null;
 
 	String[] attributeArray = new String[1];
 
@@ -147,8 +153,9 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		                                  Tunable.GROUP, new Integer(3)));
 
 		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		Tunable selTune = new Tunable("selectedOnly","Cluster only selected nodes",
+		                              Tunable.BOOLEAN, new Boolean(false));
+		clusterProperties.add(selTune);
 
 		//Whether or not to assume the edges are undirected
 		clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
@@ -160,7 +167,7 @@ public class MCLCluster extends AbstractClusterAlgorithm
 
 		clusterProperties.add(new Tunable("attributeListGroup",
 		                                  "Source for array data",
-		                                  Tunable.GROUP, new Integer(4)));
+		                                  Tunable.GROUP, new Integer(5)));
 
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();
@@ -171,6 +178,11 @@ public class MCLCluster extends AbstractClusterAlgorithm
 
 		clusterProperties.add(attrTunable);
 
+		//Whether the attribute values are weights or distances
+		Tunable dValue = new Tunable("distanceValues","Attributes represent distance (use 1/value)",
+		                           Tunable.BOOLEAN, new Boolean(false));
+		clusterProperties.add(dValue);
+
 		//Whether or not take -LOG of Edge-Weights
 		Tunable tLog = new Tunable("takeNegLOG","Take the -LOG of Edge Weights in Network",
 		                           Tunable.BOOLEAN, new Boolean(false));
@@ -179,6 +191,8 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		// We want to "listen" for changes to these
 		attrTunable.addTunableValueListener(this);
 		tLog.addTunableValueListener(this);
+		dValue.addTunableValueListener(this);
+		selTune.addTunableValueListener(this);
 
 		clusterProperties.add(new Tunable("edgeCutoffGroup",
 		                                  "Edge weight cutoff",
@@ -233,6 +247,10 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
+		t = clusterProperties.get("distanceValues");
+		if ((t != null) && (t.valueChanged() || force))
+			distanceValues = ((Boolean) t.getValue()).booleanValue();
+
 		t = clusterProperties.get("takeNegLOG");
 		if ((t != null) && (t.valueChanged() || force))
 			takeNegLOG = ((Boolean) t.getValue()).booleanValue();
@@ -272,8 +290,9 @@ public class MCLCluster extends AbstractClusterAlgorithm
 	}
 
 	public void actionPerformed(ActionEvent e) {
-
-		double dataArray[] = getData(dataAttribute);
+		if (this.matrix == null)
+			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
+		double dataArray[] = matrix.getEdgeValues();
 
 		int nbins = 100;
 		if (dataArray.length < 100)
@@ -288,6 +307,7 @@ public class MCLCluster extends AbstractClusterAlgorithm
 	}
 
 	public void histoValueChanged(double cutoffValue) {
+		// System.out.println("Changing cutoff value to "+cutoffValue);
 		Tunable edgeCutoff = clusterProperties.get("edgeCutOff");
 		edgeCutoff.setValue(cutoffValue);
 	}
@@ -303,26 +323,14 @@ public class MCLCluster extends AbstractClusterAlgorithm
 			t.clearFlag(Tunable.IMMUTABLE);
 		}
 
-		try {
-			double[] span = getSpan(dataAttribute);
-
-			double range = span[1]-span[0];
-			if (range == 0) return;
-			edgeCutOffTunable.setUpperBound(span[1]);
-			edgeCutOffTunable.setLowerBound(span[0]);
-			edgeCutOffTunable.setValue(span[0]+(range/1000));
-		} catch (ArithmeticException e) {
-			logger.error(e.getMessage());
-			if (takeNegLOG) {
-				Tunable t = clusterProperties.get("takeNegLOG");
-				t.removeTunableValueListener(this);
-				t.setValue(false);
-				t.addTunableValueListener(this);
-			}
-		}
+		this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
+		double dataArray[] = matrix.getEdgeValues();
+		double range = matrix.getMaxWeight() - matrix.getMinWeight();
+		edgeCutOffTunable.setUpperBound(matrix.getMaxWeight());
+		edgeCutOffTunable.setLowerBound(matrix.getMinWeight());
+		edgeCutOffTunable.setValue(matrix.getMinWeight()+(range/1000));
 
 		if (histo != null) {
-			double dataArray[] = getData(dataAttribute);
 			histo.updateData(dataArray);
 			histo.pack();
 		}
@@ -334,28 +342,23 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		if (debug)
 			logger.debug("Performing MCL clustering with attributes: "+dataAttribute);
 
+		if (this.matrix == null) {
+			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
+		}
+
+		matrix.setEdgeCutOff(edgeCutOff);
+		matrix.setUndirectedEdges(undirectedEdges);
+
+		if (adjustLoops)
+			matrix.adjustLoops();
+
 		String clusterAttrName = Cytoscape.getCurrentNetwork().getIdentifier()+"_cluster";
 		//Cluster the nodes
-		runMCL = new RunMCL(clusterAttrName, dataAttribute, inflation_parameter, 
-		                           rNumber, clusteringThresh, maxResidual, logger);
-
-		if (selectedOnly)
-			runMCL.selectedOnly();
+		runMCL = new RunMCL(clusterAttrName, matrix, inflation_parameter, 
+		                    rNumber, clusteringThresh, maxResidual, logger);
 
 		if (createMetaNodes)
 			runMCL.createMetaNodes();
-
-		if (!undirectedEdges)
-			runMCL.setDirectedEdges();
-
-		if (adjustLoops)
-			runMCL.setAdjustLoops();
-
-		if (edgeCutOff != null)
-			runMCL.setEdgeCutOff(edgeCutOff);
-
-		if (takeNegLOG)
-			runMCL.setTakeNegLog(true);
 
 		runMCL.run(monitor);
 
@@ -394,75 +397,4 @@ public class MCLCluster extends AbstractClusterAlgorithm
 			Arrays.sort(attrArray);
 		return attrArray;
 	}
-
-	private double[] getData(String attribute) {
-		// Get the currently selected attribute
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		byte type = edgeAttributes.getType(attribute);
-		List attrList = new ArrayList();
-		for (CyEdge edge: (List<CyEdge>)Cytoscape.getCurrentNetwork().edgesList()) {
-			if (edgeAttributes.hasAttribute(edge.getIdentifier(), attribute)) {
-				attrList.add(edgeAttributes.getAttribute(edge.getIdentifier(), attribute));
-			}
-		}
-
-		double dataArray[] = new double[attrList.size()];
-		int index = 0;
-		for (Object obj: attrList) {
-			if (type == CyAttributes.TYPE_FLOATING) {
-				dataArray[index] = ((Double)obj).doubleValue();
-			} else {
-				dataArray[index] = ((Integer)obj).doubleValue();
-			}
-			if (takeNegLOG) {
-				if (dataArray[index] == 0)
-					dataArray[index] = 500; // Arbitrarily small value (1X10^-500)
-				else 
-					dataArray[index] = -Math.log10(dataArray[index]);
-			}
-			index++;
-		}
-		return dataArray;
-	}
-
-	private double[] getSpan(String attr) throws ArithmeticException {
-		CyNetwork net = Cytoscape.getCurrentNetwork();
-		CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-		byte type = edgeAttrs.getType(attr);
-		double lower = Double.MAX_VALUE;
-		double upper = Double.MIN_VALUE;
-		boolean zeroLog = false;
-		for (Object e: net.edgesList()) {
-			CyEdge edge = (CyEdge)e;
-			if (edgeAttrs.hasAttribute(edge.getIdentifier(), attr)) {
-				double val;
-				if (type == CyAttributes.TYPE_FLOATING)
-					val = (edgeAttrs.getDoubleAttribute(edge.getIdentifier(), attr)).doubleValue();
-				else
-					val = (edgeAttrs.getIntegerAttribute(edge.getIdentifier(), attr)).doubleValue();
-
-				if (takeNegLOG) {
-					if (val < 0)
-						throw new ArithmeticException("Can't take log of negative values");
-					if (val == 0) {
-						zeroLog = true;
-						continue;
-					}
-					double nl = -Math.log10(val);
-					lower = Math.min(lower,nl);
-					upper = Math.max(upper,nl);
-				} else {
-					lower = Math.min(lower,val);
-					upper = Math.max(upper,val);
-				}
-			}
-		}
-		if (zeroLog)
-			upper = upper+10;	// Sort of arbitrary....
-		double[] d = new double[2];
-		d[0] = lower;
-		d[1] = upper;
-		return d;
-	}
-
 }

@@ -106,10 +106,10 @@ public class ClusterTask implements Task {
 		JTaskConfig result = new JTaskConfig();
 
 		result.displayCancelButton(true);
-		result.displayCloseButton(false);
+		result.displayCloseButton(true);
 		result.displayStatus(true);
 		result.displayTimeElapsed(false);
-		result.setAutoDispose(true);
+		result.setAutoDispose(false);
 		result.setModal(true);
 		result.setOwner(Cytoscape.getDesktop());
 

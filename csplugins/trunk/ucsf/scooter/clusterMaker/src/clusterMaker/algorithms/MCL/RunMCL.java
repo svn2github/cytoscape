@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.lang.Math;
+
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyEdge;
@@ -17,12 +18,11 @@ import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.CyLayouts;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.VisualStyle;
+
+import clusterMaker.algorithms.ClusterStatistics;
 
 import cern.colt.function.IntIntDoubleFunction;
 import cern.colt.matrix.DoubleFactory2D;
@@ -38,37 +38,31 @@ public class RunMCL {
 	private List<CyNode> nodes;
 	private List<CyEdge> edges;
 	private String nodeClusterAttributeName;
-	private String edgeAttributeName;
-	private boolean takeNegLOG;
-	private boolean selectedOnly;
 	private boolean canceled = false;
 	private CyLogger logger;
-	final static String GROUP_ATTRIBUTE = "__MCLGroups";
+	public final static String GROUP_ATTRIBUTE = "__MCLGroups";
 	protected int clusterCount = 0;
 	private boolean debug = false;
 	private boolean createMetaNodes = false;
-	private boolean adjustLoops = false;
-	private boolean directedEdges = false;
-	private Double edgeCutoff = null;
+	private DistanceMatrix distanceMatrix = null;
+	private DoubleMatrix2D matrix = null;
 	
-	public RunMCL(String nodeClusterAttributeName, String edgeAttributeName, 
+	public RunMCL(String nodeClusterAttributeName, DistanceMatrix dMat,
 	              double inflationParameter, int num_iterations, 
 	              double clusteringThresh, double maxResidual,
 	              CyLogger logger )
 	{
-		
+		this.distanceMatrix = dMat;
 		this.nodeClusterAttributeName = nodeClusterAttributeName;
-		this.edgeAttributeName = edgeAttributeName;
 		this.inflationParameter = inflationParameter;
 		this.number_iterations = num_iterations;
 		this.clusteringThresh = clusteringThresh;
 		this.maxResidual = maxResidual;
-		this.takeNegLOG = false;
 		this.logger = logger;
-		this.selectedOnly = false;
 		this.createMetaNodes = false;
-		this.adjustLoops = false;
-		this.edgeCutoff = null;
+		nodes = distanceMatrix.getNodes();
+		edges = distanceMatrix.getEdges();
+		this.matrix = distanceMatrix.getDistanceMatrix();
 		// logger.info("InflationParameter = "+inflationParameter);
 		// logger.info("Iterations = "+num_iterations);
 		// logger.info("Clustering Threshold = "+clusteringThresh);
@@ -76,94 +70,18 @@ public class RunMCL {
 
 	public void halt () { canceled = true; }
 
-	public void selectedOnly() { selectedOnly = true; }
 	public void createMetaNodes() { createMetaNodes = true; }
-	public void setDirectedEdges() { directedEdges = true; }
-	public void setAdjustLoops() { adjustLoops = true; }
-	public void setEdgeCutOff(Double e) { edgeCutoff = e; }
-	public void setTakeNegLog(boolean t) { takeNegLOG = t; }
 	
 	public void run(TaskMonitor monitor)
 	{
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-		if (!selectedOnly) {
-			nodes = network.nodesList();
-			edges = network.edgesList();
-		} else {
-			nodes = new ArrayList();
-			nodes.addAll(network.getSelectedNodes());
-			edges = network.getConnectingEdges(nodes);
-		}
-
-		// double[][] graph = new double[this.nodes.size()][this.nodes.size()];
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
 		String networkID = network.getIdentifier();
+
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		// Matrix matrix;
 		double numClusters;
-		double edgeWeight;
-		double minEdgeWeight = Double.MAX_VALUE;
-		double maxEdgeWeight = Double.MIN_VALUE;
-		int sourceIndex;
-		int targetIndex;
-
-		monitor.setStatus("Setting up distance matrix");
-
-		DoubleMatrix2D matrix = DoubleFactory2D.sparse.make(nodes.size(),nodes.size());
-
-		// logger.info("Getting edge weights from network");
-		//Get Edge Weights From Network
-		for(CyEdge edge: edges) {
-			String id = edge.getIdentifier();
-
-			if(!edgeAttributes.hasAttribute(id,edgeAttributeName))
-				continue;
-		
-			if(edgeAttributes.getType(edgeAttributeName) == edgeAttributes.TYPE_FLOATING)
-				edgeWeight = edgeAttributes.getDoubleAttribute(id,edgeAttributeName).doubleValue();
-		
-			else if(edgeAttributes.getType(edgeAttributeName) == edgeAttributes.TYPE_INTEGER)
-				edgeWeight = edgeAttributes.getIntegerAttribute(id,edgeAttributeName).doubleValue();
-		
-			else
-				continue;
-
-		  /*Take -LOG of edge weight (E-Value) if so specified*/
-			if(takeNegLOG)
-				if(edgeWeight != 0.0)
-					edgeWeight = -Math.log(edgeWeight);
-				else
-					edgeWeight = 500; // Assume 1e-500 as a reasonble upper bound
-
-			if (edgeCutoff != null && edgeWeight < edgeCutoff.doubleValue()) {
-				continue;
-			}
-
-			if(edgeWeight < minEdgeWeight)
-				minEdgeWeight = edgeWeight;
-
-			if(edgeWeight > maxEdgeWeight)
-				maxEdgeWeight = edgeWeight;
-		      
-			/*Add edge to matrix*/
-			sourceIndex = nodes.indexOf(edge.getSource());
-			targetIndex = nodes.indexOf(edge.getTarget());
-			//graph[targetIndex][sourceIndex] = edgeWeight;
-			matrix.set(targetIndex,sourceIndex,edgeWeight);
-
-			if(!directedEdges)
-				matrix.set(sourceIndex,targetIndex,edgeWeight);
-				// graph[sourceIndex][targetIndex] = edgeWeight;
-
-			if (canceled) {
-				monitor.setStatus("canceled");
-				return;
-			}
-		}
-
-		// normalizeWeights(matrix, minEdgeWeight, maxEdgeWeight);
 
 		debugln("Initial matrix:");
 		printMatrix(matrix);
@@ -173,14 +91,6 @@ public class RunMCL {
 
 		debugln("Normalized matrix:");
 		printMatrix(matrix);
-
-		if (adjustLoops) {
-			// Adjust loops
-			adjustLoops(matrix);
-
-			// debugln("Adjusted matrix:");
-			// printMatrix(matrix);
-		}
 
 		// logger.info("Calculating clusters");
 
@@ -265,61 +175,20 @@ public class RunMCL {
 
 		Set<Cluster>clusters = cMap.keySet();
 
-		//Assign the node attributes
-		assignAttributes(nodeAttributes, clusters);
-
 		logger.info("Removing groups");
 
 		// Remove any leftover groups from previous runs
 		removeGroups(netAttributes, networkID);
 
 		logger.info("Creating groups");
+		monitor.setStatus("Creating groups");
 
-		List<String> groupList = null;;
+		List<List<CyNode>> nodeClusters = 
+		     createGroups(netAttributes, networkID, nodeAttributes, clusters, createMetaNodes);
 
-		if (createMetaNodes) {
-			// Now, create the groups
-			groupList = createGroups(clusters);
-
-			// Now notify the metanode viewer
-			CyGroup group = CyGroupManager.findGroup(groupList.get(0));
-			CyGroupManager.setGroupViewer(group, "metaNode", Cytoscape.getCurrentNetworkView(), true);
-		} else {
-			groupList = new ArrayList(); // keep track of the groups we create
-			for (Cluster cluster: clusters) {
-				String groupName = nodeClusterAttributeName+"_"+cluster.getClusterNumber();
-				groupList.add(groupName);
-			}
-		}
-
-		// Save the network attribute so we remember which groups are ours
-		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
+		ClusterStatistics stats = new ClusterStatistics(network, nodeClusters);
+		monitor.setStatus("Done.  MCL results:\n"+stats);
 	}	
-
-	/**
-   * This method handles the loop adjustment, if desired by the user.
-   * The basic approach is to go through the diagonal and set the value of the
-   * diagonal to the maximum value of the column.  In the von Dongen code, this
-   * is handled in separate steps (zero the diagonal, (maybe) preinflate, set diagonal
-   * to max).
-   *
-   * @param matrix the (sparse) data matrix we're going to adjust
-   */
-	private void adjustLoops(DoubleMatrix2D matrix)
-	{
-		double [] max = new double[matrix.columns()];
-		// Calculate the max value for each column
-		matrix.forEachNonZero(new MatrixFindMax(max));
-
-		// Set it in the diagonal
-		for (int col = 0; col < matrix.columns(); col++) {
-			if (max[col] != 0.0)
-				matrix.set(col,col,max[col]);
-			else
-				matrix.set(col,col,1.0);
-		}
-		
-	}
 
 	/**
 	 * This method does threshold and normalization.  First, we get rid of
@@ -415,18 +284,6 @@ public class RunMCL {
 		debugln(" cardinality is "+matrix.cardinality());
 	}
 
-
-	private void assignAttributes(CyAttributes nodeAttributes, 
-	                              Set<Cluster> cMap) {
-		for (Cluster cluster: cMap) {
-			int clusterNumber = cluster.getClusterNumber();
-			for (Integer nodeIndex: cluster) {
-				CyNode node = this.nodes.get(nodeIndex);
-				nodeAttributes.setAttribute(node.getIdentifier(),nodeClusterAttributeName,clusterNumber);
-			}
-		}
-	}
-
 	private void removeGroups(CyAttributes netAttributes, String networkID) {
 		// See if we already have groups defined (from a previous run?)
 		if (netAttributes.hasAttribute(networkID, GROUP_ATTRIBUTE)) {
@@ -439,26 +296,47 @@ public class RunMCL {
 		}
 	}
 
-	private List<String> createGroups(Set<Cluster> cMap) {
-		List<String>groupList = new ArrayList(); // keep track of the groups we create
-		for (Cluster cluster: cMap) {
+	private List<List<CyNode>> createGroups(CyAttributes netAttributes, 
+	                                        String networkID,
+	                                        CyAttributes nodeAttributes, 
+	                                        Set<Cluster> cMap, 
+	                                        boolean createMetaNodes) {
 
-			String groupName = nodeClusterAttributeName+"_"+cluster.getClusterNumber();
+		List<List<CyNode>> clusterList = new ArrayList(); // List of node lists
+		List<String>groupList = new ArrayList(); // keep track of the groups we create
+		CyGroup first = null;
+		for (Cluster cluster: cMap) {
+			int clusterNumber = cluster.getClusterNumber();
+			String groupName = nodeClusterAttributeName+"_"+clusterNumber;
 			List<CyNode>nodeList = new ArrayList();
+
 			for (Integer nodeIndex: cluster) {
 				CyNode node = this.nodes.get(nodeIndex);
 				nodeList.add(node);
+				nodeAttributes.setAttribute(node.getIdentifier(),
+				                            nodeClusterAttributeName, clusterNumber);
 			}
-			// logger.info("Group: "+clusterNumber+": "+groupName);
-			// Create the group
-			CyGroup newgroup = CyGroupManager.createGroup(groupName, nodeList, null);
-			if (newgroup != null) {
-				// Now tell the metanode viewer about it
-				CyGroupManager.setGroupViewer(newgroup, "metaNode", Cytoscape.getCurrentNetworkView(), false);
-				groupList.add(groupName);
+			
+			if (createMetaNodes) {
+				// Create the group
+				CyGroup newgroup = CyGroupManager.createGroup(groupName, nodeList, null);
+				if (newgroup != null) {
+					first = newgroup;
+					// Now tell the metanode viewer about it
+					CyGroupManager.setGroupViewer(newgroup, "metaNode", 
+					                              Cytoscape.getCurrentNetworkView(), false);
+				}
 			}
+			clusterList.add(nodeList);
+			groupList.add(groupName);
 		}
-		return groupList;
+		if (first != null)
+			CyGroupManager.setGroupViewer(first, "metaNode", 
+			                              Cytoscape.getCurrentNetworkView(), true);
+		
+		// Save the network attribute so we remember which groups are ours
+		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
+		return clusterList;
 	}
 
 	private void debugln(String message) {
@@ -546,25 +424,6 @@ public class RunMCL {
 		public double apply(int row, int column, double value) {
 			colSums[column] += value;
 			sumSquares[column] += value*value;
-			return value;
-		}
-	}
-
-	/**
- 	 * MatrixFindMax simply records the maximum value in a column
- 	 */
-	private class MatrixFindMax implements IntIntDoubleFunction {
-		double [] colMax;
-
-		public MatrixFindMax(double[] colMax) {
-			this.colMax = colMax;
-		}
-
-		public double apply(int row, int column, double value) {
-			if (canceled) { return 0.0; }
-
-			if (value > colMax[column])
-				colMax[column] = value;
 			return value;
 		}
 	}

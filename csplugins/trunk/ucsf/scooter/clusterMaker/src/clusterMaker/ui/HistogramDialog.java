@@ -110,10 +110,9 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 
 		// Create and add the histogram component
 		histo = new Histogram(inputArray, nBins);
+		histo.addHistoChangeListener(this);
 		mainPanel.add(histo);
 			
-		addHistoChangeListener(this);
-		
 		// TODO: Add box to set lower and upper bounds.  Look at JText and JLabel
 
 		// Create our button box
@@ -180,7 +179,7 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 			
 		// Create a new histogram
 		histo = new Histogram(inputArray, currentBins);
-		addHistoChangeListener(this);
+		histo.addHistoChangeListener(this);
 
 		// Get the size of the dialog
 		Dimension dim = this.getSize();
