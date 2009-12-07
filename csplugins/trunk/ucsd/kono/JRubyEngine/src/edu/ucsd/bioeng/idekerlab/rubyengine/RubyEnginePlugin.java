@@ -63,6 +63,7 @@ public class RubyEnginePlugin extends CytoscapePlugin implements ScriptingEngine
 	private static final String ENGINE_DISPLAY_NAME = "Ruby Scripting Engine (based on JRuby v1.4.0)";
 	private static final Icon ICON = new ImageIcon(RubyEnginePlugin.class.getResource("/images/ruby.png"));
 	private static final RubyEnginePlugin engine = new RubyEnginePlugin();
+	
 
 	/**
 	 * Creates a new RubyEnginePlugin object.

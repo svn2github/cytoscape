@@ -1,5 +1,6 @@
 $LOAD_PATH << ENV['JRUBY_HOME'] + '/lib/ruby/1.8'
 $LOAD_PATH << ENV['JRUBY_HOME'] + '/lib/ruby/gems/1.8/gems/bio-1.3.1/lib'
+$LOAD_PATH << ENV['HOME'] + '/.gem/ruby/1.8/gems/bio-1.3.1/lib'
 
 #puts "LOAD_PATH: " + $:.inspect
 

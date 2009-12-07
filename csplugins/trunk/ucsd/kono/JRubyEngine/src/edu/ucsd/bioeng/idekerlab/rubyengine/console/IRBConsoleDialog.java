@@ -3,25 +3,15 @@ package edu.ucsd.bioeng.idekerlab.rubyengine.console;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import org.jruby.Ruby;
-import org.jruby.demo.TextAreaReadline;
-
-import sun.misc.RequestProcessor;
-
-import com.sun.jmx.snmp.tasks.Task;
 
 public class IRBConsoleDialog extends JDialog {
 
