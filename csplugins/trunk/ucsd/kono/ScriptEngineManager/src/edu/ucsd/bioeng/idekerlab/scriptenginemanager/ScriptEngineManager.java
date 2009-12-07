@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package edu.ucsd.bioeng.idekerlab.scriptenginemanager;
 
 import cytoscape.Cytoscape;
@@ -61,7 +61,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-
 /**
  *
  */
@@ -80,12 +79,16 @@ public class ScriptEngineManager implements PropertyChangeListener {
 	 */
 	public ScriptEngineManager() {
 		menu = new JMenu("Execute Scripts...");
-		menu.setIcon(new ImageIcon(ScriptEngineManager.class.getResource("/images/stock_run-macro.png")));
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins").add(menu);
+		menu.setIcon(new ImageIcon(ScriptEngineManager.class
+				.getResource("/images/stock_run-macro.png")));
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins")
+				.add(menu);
 
 		consoleMenu = new JMenu("Scripting Language Consoles");
-		consoleMenu.setIcon(new ImageIcon(ScriptEngineManager.class.getResource("/images/gnome-terminal.png")));
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins").add(consoleMenu);
+		consoleMenu.setIcon(new ImageIcon(ScriptEngineManager.class
+				.getResource("/images/gnome-terminal.png")));
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins")
+				.add(consoleMenu);
 	}
 
 	protected static BSFManager getManager() {
@@ -93,54 +96,64 @@ public class ScriptEngineManager implements PropertyChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param engine DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param id
+	 *            DOCUMENT ME!
+	 * @param engine
+	 *            DOCUMENT ME!
 	 */
-	public static void registerEngine(final String id, final ScriptingEngine engine) {
+	public static void registerEngine(final String id,
+			final ScriptingEngine engine) {
 		registeredNames.put(id, engine);
 
 		menu.add(new JMenuItem(new AbstractAction(engine.getDisplayName()) {
-				public void actionPerformed(ActionEvent e) {
-					SelectScriptDialog.showDialog(id);
-				}
-			}));
+			public void actionPerformed(ActionEvent e) {
+				SelectScriptDialog.showDialog(id);
+			}
+		}));
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param consoleMenuItem DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param consoleMenuItem
+	 *            DOCUMENT ME!
 	 */
 	public static void addConsoleMenu(final JMenuItem consoleMenuItem) {
 		consoleMenu.add(consoleMenuItem);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param engineID DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param engineID
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public ScriptingEngine getEngine(String engineID) {
 		return registeredNames.get(engineID);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param engineName DOCUMENT ME!
-	 * @param scriptFileName DOCUMENT ME!
-	 * @param arguments DOCUMENT ME!
-	 *
-	 * @throws BSFException DOCUMENT ME!
-	 * @throws IOException DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param engineName
+	 *            DOCUMENT ME!
+	 * @param scriptFileName
+	 *            DOCUMENT ME!
+	 * @param arguments
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws BSFException
+	 *             DOCUMENT ME!
+	 * @throws IOException
+	 *             DOCUMENT ME!
 	 */
-	public static void execute(final String engineName, final String scriptFileName,
-	                           final Map<String, String> arguments)
-	    throws BSFException, IOException {
+	public static void execute(final String engineName,
+			final String scriptFileName, final Map<String, String> arguments)
+			throws BSFException, IOException {
 		if (BSFManager.isLanguageRegistered(engineName) == false) {
 			// Register Engine
 			System.out.println("Error: Can't find " + engineName);
@@ -150,31 +163,40 @@ public class ScriptEngineManager implements PropertyChangeListener {
 
 		manager.terminate();
 
-		// This is a hack...  I need to decide which version of Scripting System is apropreate for Cytoscape 3.
-		if (engineName != "jython") {
-			final Object returnVal = manager.eval(engineName, scriptFileName, 1, 1,
-			                                      IOUtils.getStringFromReader(new FileReader(scriptFileName)));
+		try {
+			// This is a hack... I need to decide which version of Scripting
+			// System is appropriate for Cytoscape 3.
+			if (engineName != "jython") {
+				final Object returnVal = manager.eval(engineName,
+						scriptFileName, 1, 1, IOUtils
+								.getStringFromReader(new FileReader(
+										scriptFileName)));
 
-			if (returnVal != null) {
-				System.out.println("Return Val = [" + returnVal + "]");
-			}
-		} else {
-			// Jython uses special console to execute script.
-			try {
-				final Class engineClass = Class.forName("edu.ucsd.bioeng.idekerlab.pythonengine.PythonEnginePlugin");
+				if (returnVal != null) {
+					System.out.println("Return Val = [" + returnVal + "]");
+				}
+			} else {
+				// Jython uses special console to execute script.
+
+				final Class engineClass = Class
+						.forName("edu.ucsd.bioeng.idekerlab.pythonengine.PythonEnginePlugin");
 				Method method = engineClass.getMethod("executePythonScript",
-				                                      new Class[] { String.class });
-				Object ret = method.invoke(null, new Object[] { scriptFileName });
-			} catch (Exception e) {
-				e.printStackTrace();
+						new Class[] { String.class });
+				Object ret = method.invoke(null,
+						new Object[] { scriptFileName });
+
 			}
+		} catch (Exception e) {
+			throw new BSFException(BSFException.REASON_EXECUTION_ERROR,
+					"Error found in your script", e);
 		}
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param arg0 DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param arg0
+	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent arg0) {
 		// TODO Auto-generated method stub
