@@ -303,7 +303,7 @@ public class DGraphView implements GraphView, Printable {
 	 * 
 	 * This is used by a new nested network feature from 2.7.
 	 */
-	private TexturePaint snapshotImage;
+	private BufferedImage snapshotImage;
 	
 	/**
 	 * Represents current snapshot is latest version or not.
@@ -2601,14 +2601,13 @@ if(skipBackground) System.out.println("-> zoom = " + theZoom);
 	public TexturePaint getSnapshot(final double width, final double height) {
 		if (!latest) {
 			// Need to update snapshot.
-			final Rectangle2D rect = new Rectangle2D.Double(-width/2, -height/2, width, height);
-System.out.println("in getSnapshot(), width = " + width + ", height = " + height);
-calledFromGetSnapshot = true;
-			snapshotImage = new TexturePaint((BufferedImage) createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1, /* skipBackground = */ true), rect);
+			snapshotImage = (BufferedImage)createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1, /* skipBackground = */ true);
 			latest = true;
 		} 
-		
-		return snapshotImage;
+
+		final Rectangle2D rect = new Rectangle2D.Double(-width / 2, -height / 2, width, height);
+		final TexturePaint texturePaint = new TexturePaint(snapshotImage, rect);
+		return texturePaint;
 	}
 	
 	
