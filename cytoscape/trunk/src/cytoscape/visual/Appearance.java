@@ -54,6 +54,7 @@ import java.util.Properties;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
+import java.util.EnumMap;
 
 import java.awt.Color;
 
@@ -67,17 +68,17 @@ import java.awt.Color;
 public class Appearance {
 
 	private static final String NODE_SIZE_LOCKED = ".nodeSizeLocked";
-	protected Object[] vizProps;
+	protected Map<VisualPropertyType,Object> vizProps;
 	protected boolean nodeSizeLocked = true;
 
 	/**
 	 * Creates a new Appearance object.
 	 */
 	public Appearance() {
-		vizProps = new Object[VisualPropertyType.values().length];
+		vizProps = new EnumMap<VisualPropertyType,Object>(VisualPropertyType.class);
 
 		for (VisualPropertyType type : VisualPropertyType.values())
-					vizProps[type.ordinal()] = type.getVisualProperty().getDefaultAppearanceObject();
+			vizProps.put(type, type.getVisualProperty().getDefaultAppearanceObject());
 	}
 
 	/**
@@ -90,7 +91,7 @@ public class Appearance {
 	 */
 	public void set(VisualPropertyType p, Object o) {
 		if (o != null)
-			vizProps[p.ordinal()] = o;
+			vizProps.put(p, o);
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class Appearance {
 	 *         VisualPropertyType enum defines what the type of this object will be.
 	 */
 	public Object get(VisualPropertyType p) {
-		return vizProps[p.ordinal()];
+		return vizProps.get(p);
 	}
 
 	/**
@@ -114,16 +115,16 @@ public class Appearance {
         for ( VisualPropertyType type : VisualPropertyType.values() )
             if ( type == VisualPropertyType.NODE_SIZE ) {
                 if ( nodeSizeLocked )
-                    type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);
+                    type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type));
                 else
                     continue;
             } else if ( type == VisualPropertyType.NODE_WIDTH || type == VisualPropertyType.NODE_HEIGHT ) {
                 if ( nodeSizeLocked )
                     continue;
                 else
-                    type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);
+                    type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type));
             } else
-                type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);	
+                type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type));	
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class Appearance {
 	 */
 	public void applyAppearance(final EdgeView edgeView) {
 		for (VisualPropertyType type : VisualPropertyType.values())
-			type.getVisualProperty().applyToEdgeView(edgeView, vizProps[type.ordinal()]);
+			type.getVisualProperty().applyToEdgeView(edgeView, vizProps.get(type));
 	}
 
 	/**
@@ -148,7 +149,7 @@ public class Appearance {
 			Object o = type.getVisualProperty().parseProperty(nacProps, baseKey);
 
 			if (o != null)
-				vizProps[type.ordinal()] = o;
+				vizProps.put(type,o);
 		}
 		
 		// Apply nodeSizeLock
@@ -173,7 +174,7 @@ public class Appearance {
 
 		for (VisualPropertyType type : VisualPropertyType.values()) {
 			String key = type.getDefaultPropertyKey(baseKey);
-			String value = ObjectToString.getStringValue(vizProps[type.ordinal()]);
+			String value = ObjectToString.getStringValue(vizProps.get(type));
 			if ( key != null && value != null ) {
 //				CyLogger.getLogger().info("(Key,val) = " + key + ", " + value + ", basekey = " + baseKey);
 				props.setProperty(key,value);
@@ -203,11 +204,11 @@ public class Appearance {
 		final StringBuilder sb = new StringBuilder();
 
 		for (VisualPropertyType type : VisualPropertyType.values()) {
-			if (vizProps[type.ordinal()] != null) {
+			if (vizProps.get(type) != null) {
 				sb.append(prefix);
 				sb.append(type.getName());
 				sb.append(" = ");
-				sb.append(ObjectToString.getStringValue(vizProps[type.ordinal()]));
+				sb.append(ObjectToString.getStringValue(vizProps.get(type)));
 				sb.append(lineSep);
 			}
 		}
@@ -238,7 +239,7 @@ public class Appearance {
         na.setNodeSizeLocked(false);
 
 		for (VisualPropertyType type : VisualPropertyType.values())
-			this.vizProps[type.ordinal()] = na.get(type);
+			this.vizProps.put(type, na.get(type));
 
         // now set the lock state correctly
         setNodeSizeLocked(actualLockState);
@@ -285,7 +286,7 @@ public class Appearance {
 			Object bypass = getBypass(attrs, id, type);
 
 			if (bypass != null)
-				vizProps[type.ordinal()] = bypass;
+				vizProps.put(type,bypass);
 		}
 	}
 
