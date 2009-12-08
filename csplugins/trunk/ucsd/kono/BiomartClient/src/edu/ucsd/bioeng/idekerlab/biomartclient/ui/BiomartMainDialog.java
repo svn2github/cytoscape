@@ -147,7 +147,6 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		        tPanel.add(propPanel, gridBagConstraints);
 			}
 			if (t.getDescription().equalsIgnoreCase("Biomart Base URL")){
-				System.out.println("BiomartMainDialog():t.getDescription() = " + t.getDescription());
 		        gridBagConstraints = new java.awt.GridBagConstraints();
 		        gridBagConstraints.gridy = 2;
 		        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -211,7 +210,7 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 			try {
 				mainDialog = new BiomartMainDialog();
 			} catch (InterruptedException ie) {
-				System.out.println("============== GOT interaption");
+				//System.out.println("============== GOT interaption");
 			} catch (Exception e) {
 				taskMonitor.setException(e, "Failed to initialize the Biomart dialog.");
 			}
@@ -223,7 +222,7 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 				mainDialog.setVisible(true);
 				initialized = true;
 			} else {
-				System.out.println("Biomart initialization process canceled by user.");
+				//System.out.println("Biomart initialization process canceled by user.");
 			}
 		}
 
