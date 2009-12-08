@@ -155,16 +155,17 @@ public class PluginProperties extends Properties {
 		if (containsKey(PluginProperty.DOWNLOAD_URL.getPropertyKey())) {
 			pi.setDownloadableURL(getProperty(PluginProperty.DOWNLOAD_URL.getPropertyKey()));
 		}
-		
-		if (containsKey(PluginProperty.AUTHORS.getPropertyKey())) {
+
+		if (containsKey(PluginProperty.AUTHORS.getPropertyKey()) || containsKey("pluginAuthorsIntsitutions")) {
 			// split up the value and add each
 			String AuthorProp = getProperty(PluginProperty.AUTHORS.getPropertyKey());
 
-      // bug fix, misspelled the property file key but need to be sure anyone who used the
-      // misspelling is taken care of for now
-      if (AuthorProp == null) 
-        AuthorProp = getProperty("pluginAuthorsIntsitutions");
-      String[] AuthInst = AuthorProp.split(";");
+			// bug fix, misspelled the property file key but need to be sure anyone who used the
+			// misspelling is taken care of for now
+			if (AuthorProp == null) 
+				AuthorProp = getProperty("pluginAuthorsIntsitutions");
+
+			String[] AuthInst = AuthorProp.split(";");
 
 			for (String ai: AuthInst) {
 				String[] CurrentAI = ai.split(":");
@@ -175,7 +176,7 @@ public class PluginProperties extends Properties {
 				pi.addAuthor(CurrentAI[0], CurrentAI[1]);
 			}
 		}
-		
+
 		if (containsKey(PluginProperty.RELEASE_DATE.getPropertyKey())) {
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 		}
