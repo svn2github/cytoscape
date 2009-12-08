@@ -305,7 +305,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 		// Name of the datasource
 		dataset = new Dataset(datasource);
-		System.out.println("Target Dataset = " + dataset.getName());
+		//System.out.println("Target Dataset = " + dataset.getName());
 
 		final Object[] selectedAttr = attrList.getSelectedValues();
 		attrs = new Attribute[selectedAttr.length + 1];
@@ -313,14 +313,14 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		// This is the mapping key
 		String filterName = fMap.get(attributeTypeComboBox.getSelectedItem());
 		String dbName = this.databaseComboBox.getSelectedItem().toString();
-		System.out.println("Filter Name = " + filterName);
+		//System.out.println("Filter Name = " + filterName);
 
 		// Database-specific modification.
 		// This is not the best way, but cannot provide universal solution.
 		if (dbName.contains("REACTOME")) {
 			attrs[0] = new Attribute(stub.toAttributeName("REACTOME", filterName));
 		} else if (dbName.contains("UNIPROT")) {
-			System.out.println("UNIPROT found");
+			//System.out.println("UNIPROT found");
 			attrs[0] = new Attribute(stub.toAttributeName("UNIPROT", filterName));
 		} else if (dbName.contains("VARIATION")) {
 //			String newName = filterName.replace("_id", "_stable_id");
@@ -344,7 +344,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		for (String key : attrMap.keySet()) {
 			if (attrMap.get(key).equals(filterName)) {
 				keyInHeader = key.split("\\t")[1];
-				System.out.println("Key Attr = " + keyInHeader);
+				//System.out.println("Key Attr = " + keyInHeader);
 			}
 		}
 
@@ -521,7 +521,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equals("CANCEL")) {
 			this.cancelFlag = true;
-			System.out.println("Cancelling Biomart client initialization...");
+			//System.out.println("Cancelling Biomart client initialization...");
 		}
 	}
 }

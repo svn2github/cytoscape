@@ -253,7 +253,7 @@ public class BiomartStub {
 
 		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
 		                + detail.get("path") + "?type=datasets&mart=" + detail.get("name");
-		System.out.println("DB name = " + martName + ", Target URL = " + urlStr + "\n");
+		//System.out.println("DB name = " + martName + ", Target URL = " + urlStr + "\n");
 
 		URL url = new URL(urlStr);
 		InputStream is = URLUtil.getBasicInputStream(url);

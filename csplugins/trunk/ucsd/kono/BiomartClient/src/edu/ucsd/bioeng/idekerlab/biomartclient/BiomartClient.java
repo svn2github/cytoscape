@@ -132,7 +132,7 @@ public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 			if (e.getEventType().equals(WSEventType.IMPORT_ATTRIBUTE)) {
 				importAttributes((AttributeImportQuery) e.getParameter());
 			} else if(e.getEventType().equals(WSEventType.CANCEL)) {
-				System.out.println("========Cancelling...");
+				//System.out.println("========Cancelling...");
 				cancelImport = true;
 			}
 		} 
@@ -181,7 +181,7 @@ public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 	
 	private List<String> mapping(BufferedReader reader, String key, String keyAttrName) throws IOException, CyWebServiceException {
 		String line = reader.readLine();
-		System.out.println("Table Header: " + line);
+		//System.out.println("Table Header: " + line);
 		final String[] columnNames = line.split("\\t");
 		
 		if (columnNames[0].contains("Query ERROR"))
@@ -304,7 +304,7 @@ public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 			}
 		}
 		
-		System.out.println("Time =====> " + (System.currentTimeMillis()-start));
+		//System.out.println("Time =====> " + (System.currentTimeMillis()-start));
 		
 		reader.close();
 		reader = null;
