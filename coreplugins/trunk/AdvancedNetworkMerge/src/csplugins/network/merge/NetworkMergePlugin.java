@@ -46,7 +46,6 @@ import cytoscape.util.CytoscapeAction;
 
 import giny.model.Node;
 
-
 import java.awt.event.ActionEvent;
 
 import java.util.List;
@@ -55,58 +54,77 @@ import java.util.Arrays;
 /**
  * Plugin to merge networks
  * 
- * 
+ * @since Cytoscape 2.7.0
  */
 public class NetworkMergePlugin extends CytoscapePlugin {
-    public NetworkMergePlugin() {
-        Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new NetworkMergeAction());
-    }
-    
-    class NetworkMergeAction extends CytoscapeAction {
-        public NetworkMergeAction() {
-            super("Advanced Network Merge");
+	
+	private static final CytoscapeAction action = new NetworkMergeAction();
+
+	/**
+	 * Add new menu item under "Plugins"
+	 */
+	public NetworkMergePlugin() {
+		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
+				action);
+	}
+	
+	/**
+	 * Call the action directly.
+	 * This feature used by other plugins.
+	 * 
+	 * @return
+	 */
+	public static void invokeAction() {
+		action.actionPerformed(null);
 	}
 
-        /**
-         * This method is called when the user selects the menu item.
-         */
-        @Override
-        public void actionPerformed(final ActionEvent ae) {
-            prepare(); //TODO: remove in Cytoscape3
-            
-            final NetworkMergeFrame frame = new NetworkMergeFrame();
-            frame.setLocationRelativeTo(Cytoscape.getDesktop());
-            frame.setVisible(true);
-            //frame.setAlwaysOnTop(true);
-        }
-        
-        //TODO: remove in Cytoscape3
-        /*
-         * Copy node ID to canonicalName if canonicalName does not exist
-         * 
-         */
-        private void prepare() {
-            CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
-            if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(Semantics.CANONICAL_NAME)) {
-                List<Node> nodeList = Cytoscape.getCyNodesList();
-                int n = nodeList.size();
-                for (int i=0; i<n; i++) {
-                    String nodeID = nodeList.get(i).getIdentifier();
-                    cyAttributes.setAttribute(nodeID, Semantics.CANONICAL_NAME, nodeID);
-                }
-            }
+	private static class NetworkMergeAction extends CytoscapeAction {
+		public NetworkMergeAction() {
+			super("Advanced Network Merge");
+		}
 
-            cyAttributes = Cytoscape.getEdgeAttributes();
-            if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(Semantics.CANONICAL_NAME)) {
-                List<Node> edgeList = Cytoscape.getCyEdgesList();
-                int n = edgeList.size();
-                for (int i=0; i<n; i++) {
-                    String edgeID = edgeList.get(i).getIdentifier();
-                    cyAttributes.setAttribute(edgeID, Semantics.CANONICAL_NAME, edgeID);
-                }
-            }
-        }//TODO: remove in Cytoscape3
-    }
+		/**
+		 * This method is called when the user selects the menu item.
+		 */
+		@Override
+		public void actionPerformed(final ActionEvent ae) {
+			prepare(); // TODO: remove in Cytoscape3
+
+			final NetworkMergeFrame frame = new NetworkMergeFrame();
+			frame.setLocationRelativeTo(Cytoscape.getDesktop());
+			frame.setVisible(true);
+			// TODO: make this value user-editable (always on top or not).
+			//frame.setAlwaysOnTop(true);
+		}
+
+		// TODO: remove in Cytoscape3
+		/*
+		 * Copy node ID to canonicalName if canonicalName does not exist
+		 */
+		private void prepare() {
+			CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
+			if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(
+					Semantics.CANONICAL_NAME)) {
+				List<Node> nodeList = Cytoscape.getCyNodesList();
+				int n = nodeList.size();
+				for (int i = 0; i < n; i++) {
+					String nodeID = nodeList.get(i).getIdentifier();
+					cyAttributes.setAttribute(nodeID, Semantics.CANONICAL_NAME,
+							nodeID);
+				}
+			}
+
+			cyAttributes = Cytoscape.getEdgeAttributes();
+			if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(
+					Semantics.CANONICAL_NAME)) {
+				List<Node> edgeList = Cytoscape.getCyEdgesList();
+				int n = edgeList.size();
+				for (int i = 0; i < n; i++) {
+					String edgeID = edgeList.get(i).getIdentifier();
+					cyAttributes.setAttribute(edgeID, Semantics.CANONICAL_NAME,
+							edgeID);
+				}
+			}
+		}// TODO: remove in Cytoscape3
+	}
 }
-
-
