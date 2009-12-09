@@ -767,12 +767,14 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (m_currMouseButton == 2)
 				m_currMouseButton = 0;
 
-			m_undoable_edit.post();
+			if (m_undoable_edit != null)
+				m_undoable_edit.post();
 		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			if (m_currMouseButton == 3)
 				m_currMouseButton = 0;
 
-			m_undoable_edit.post();
+			if (m_undoable_edit != null)
+				m_undoable_edit.post();
 		}
 	}
 
