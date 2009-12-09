@@ -2,34 +2,21 @@ package org.cytoscape.webservice.psicquic.ui;
 
 import java.awt.Frame;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.xml.namespace.QName;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * PSICQUICResultDialog.java
- *
- * Created on 2009/01/28, 14:38:03
- */
 
 /**
- * 
+ * Display result of the query.
  * @author kono
  */
 public class ResultDialog extends javax.swing.JDialog {
 
+	private static final long serialVersionUID = 6996385373168492882L;
 	private Map<URI, String> dbNames;
 	private DefaultTableModel model;
+	
+	private boolean mergeNetworks;
 
 	/** Creates new form PSICQUICResultDialog */
 	public ResultDialog(Frame parent, boolean modal, Map<URI, String> dbNames) {
@@ -37,6 +24,7 @@ public class ResultDialog extends javax.swing.JDialog {
 		this.dbNames = dbNames;
 		setTableModel();
 		initComponents();
+		mergeNetworks = false;
 	}
 
 	private void setTableModel() {
@@ -77,7 +65,8 @@ public class ResultDialog extends javax.swing.JDialog {
 
 		buttonPanel = new javax.swing.JPanel();
 		okButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
+		mergeButton = new javax.swing.JButton();
+		mergeButton = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -116,11 +105,11 @@ public class ResultDialog extends javax.swing.JDialog {
 			}
 		});
 
-		cancelButton.setText("Cancel");
-		cancelButton.setPreferredSize(new java.awt.Dimension(70, 26));
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+		mergeButton.setText("Merge");
+		mergeButton.setPreferredSize(new java.awt.Dimension(70, 26));
+		mergeButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
+				mergeButtonActionPerformed(evt);
 			}
 		});
 
@@ -137,7 +126,7 @@ public class ResultDialog extends javax.swing.JDialog {
 										.createSequentialGroup()
 										.addContainerGap(491, Short.MAX_VALUE)
 										.add(
-												cancelButton,
+												mergeButton,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -170,7 +159,7 @@ public class ResultDialog extends javax.swing.JDialog {
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																cancelButton,
+																mergeButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -219,12 +208,16 @@ public class ResultDialog extends javax.swing.JDialog {
 	}// </editor-fold>
 
 	private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
 		this.dispose();
 	}
 
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void mergeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		mergeNetworks = true;
 		this.dispose();
+	}
+	
+	public boolean isMerge() {
+		return mergeNetworks;
 	}
 
 	public Map<URI, String> getNewNames() {
@@ -237,7 +230,7 @@ public class ResultDialog extends javax.swing.JDialog {
 
 	// Variables declaration - do not modify
 	private javax.swing.JPanel buttonPanel;
-	private javax.swing.JButton cancelButton;
+	private javax.swing.JButton mergeButton;
 	private javax.swing.JButton okButton;
 	private javax.swing.JScrollPane resultScrollPane;
 	private javax.swing.JTable resultTable;
