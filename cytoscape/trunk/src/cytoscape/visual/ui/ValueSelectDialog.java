@@ -98,8 +98,13 @@ public class ValueSelectDialog extends JDialog {
 
 		setList();
 		
-		// get original value and sete the selected item.
-		originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
+		// get original value and set the selected item.
+		if ( type.isNodeProp() )
+			originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
+		else 
+			originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getEdgeAppearanceCalculator().getDefaultAppearance().get(type);
+		
+		// what about global visual properties?
 	}
 
 	/**
