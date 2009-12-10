@@ -781,9 +781,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// End of variables declaration
 	private void vsNameComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		final String vsName = (String) vsNameComboBox.getSelectedItem();
-
+		final CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
+		
 		if (vsName != null) {
-			if (Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView())) {
+			if (currentView.equals(Cytoscape.getNullNetworkView()) || 
+					vsName.equals(lastVSName) || currentView.getVisualStyle().getName().equals(vsName)) {
 				switchVS(vsName, false);
 			} else {
 				switchVS(vsName, true);
@@ -928,7 +930,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
 		// Switch back to the original style.
-		switchVS(style.getName());
+		switchVS(style.getName(), false);
 		
 		// Sync check box and actual lock state
 		switchNodeSizeLock(lockSize.isSelected());
@@ -1970,7 +1972,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			lastVSName = null;
 			initVizmapperGUI();
-			switchVS(vsName);
+			switchVS(vsName, false);
 			vsNameComboBox.setSelectedItem(vsName);
 			vmm.setVisualStyle(vsName);
 
@@ -1983,7 +1985,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
 				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					//TODO: is this necessary?
+					//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 				} else {
 					switchVS(vs.getName(), false);
 					vsNameComboBox.setSelectedItem(vs.getName());

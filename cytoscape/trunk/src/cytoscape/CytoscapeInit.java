@@ -553,7 +553,7 @@ public class CytoscapeInit {
 		 * Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus(); Add a
 		 * listener that will apply vizmaps every time attributes change
 		 */
-		PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
+		final PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 					// apply vizmaps

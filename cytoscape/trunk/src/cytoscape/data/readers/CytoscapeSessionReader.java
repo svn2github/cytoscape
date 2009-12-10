@@ -387,7 +387,8 @@ public class CytoscapeSessionReader {
 				curView.setVisualStyle(lastVSName);
 				Cytoscape.getVisualMappingManager().setNetworkView(curView);
 				Cytoscape.getVisualMappingManager().setVisualStyle(curView.getVisualStyle());
-				curView.redrawGraph(false, true);
+				//TODO: is this necessary?
+				//curView.redrawGraph(false, true);
 			}
 
 			Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);

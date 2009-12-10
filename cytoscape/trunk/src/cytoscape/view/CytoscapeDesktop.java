@@ -503,8 +503,13 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			if (new_style.getName().equals(old_style.getName()) == false) {
 				vmm.setVisualStyle(new_style);
 				
-				// Is this necessary?
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				// Redraw Graph only when current network view's style is not equal to the selected style.
+				final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
+				final VisualStyle curViewStyle = curView.getVisualStyle();
+				if (curView != Cytoscape.getNullNetworkView() && curViewStyle != null) {
+					if (new_style.getName().equals(curViewStyle.getName()) == false)
+						Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				}
 			}
 		}
 	}

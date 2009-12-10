@@ -503,7 +503,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 		});
 	}
 
-	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void searchButtonActionPerformed(final ActionEvent evt) {
 		selectedClientID = clientNames
 				.get(datasourceComboBox.getSelectedItem());
 
@@ -518,18 +518,17 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 		tConfig.setOwner(Cytoscape.getDesktop());
 		tConfig.displayCloseButton(true);
 		tConfig.displayCancelButton(true);
-		tConfig.displayStatus(true);
-		tConfig.setAutoDispose(false);
+		tConfig.displayStatus(false);
+		tConfig.setAutoDispose(true);
 
 		// Execute Task in New Thread; pops open JTask Dialog Box.
 		TaskManager.executeTask(task, tConfig);
 
 		logger.info("Network Import from WS Success!");
-		dispose();
 	}
 
-	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		WebServiceClient wsc = WebServiceClientManager
+	private void aboutButtonActionPerformed(ActionEvent evt) {
+		final WebServiceClient<?> wsc = WebServiceClientManager
 				.getClient(selectedClientID);
 		final String clientName = wsc.getDisplayName();
 		final String description = wsc.getDescription();
@@ -548,10 +547,13 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 	 * Clear query text field.
 	 */
 	private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// Just set empty string for the field.
 		queryTextPane.setText("");
 	}
 
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// Do nothing.  Just hide this window.
+		queryTextPane.setText("");
 		dispose();
 	}
 
@@ -584,11 +586,10 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 	}
 
 	private void setProperty(String clientID) {
-		WebServiceClient client = WebServiceClientManager.getClient(clientID);
+		final WebServiceClient<?> client = WebServiceClientManager.getClient(clientID);
 
-		if (client == null) {
+		if (client == null)
 			return;
-		}
 
 		ModuleProperties props = client.getProps();
 		List<Tunable> tunables = props.getTunables();
@@ -652,21 +653,20 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 	private javax.swing.JPanel buttonPanel;
 	private JPanel queryPanel;
 	private JPanel installPanel;
-
-	// private javax.swing.JButton cancelButton;
 	private javax.swing.JButton clearButton;
 	private javax.swing.JPanel dataQueryPanel;
-
-	// private javax.swing.JComboBox datasourceComboBox;
-	// private javax.swing.JLabel datasourceLabel;
 	private javax.swing.JPanel datasourcePanel;
-
-	// private javax.swing.JButton searchButton;
 	private javax.swing.JLabel titleIconLabel;
 	private javax.swing.JPanel titlePanel;
 
-	// End of variables declaration
-	class WSNetworkImportTask implements Task {
+
+	/**
+	 * Task to import network from web service.
+	 * 
+	 * @author kono
+	 *
+	 */
+	private class WSNetworkImportTask implements Task {
 		private String serviceName;
 		private CyWebServiceEvent<String> evt;
 		private TaskMonitor taskMonitor;
@@ -694,27 +694,23 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 				WebServiceClientManager.getCyWebServiceEventSupport()
 						.fireCyWebServiceEvent(cancelEvent);
 			} catch (CyWebServiceException e) {
-				// TODO Auto-generated catch block
 				taskMonitor.setException(e, "Cancel Failed.");
 			}
 		}
 
 		public void run() {
 			cancelFlag = false;
-			taskMonitor.setStatus("Loading interactions from " + serviceName);
+			taskMonitor.setStatus("Loading network from " + serviceName);
 			taskMonitor.setPercentCompleted(-1);
 
-			// this even will load the file
 			try {
 				WebServiceClientManager.getCyWebServiceEventSupport()
 						.fireCyWebServiceEvent(evt);
 			} catch (Exception e) {
 				taskMonitor.setException(e,
 						"Failed to load network from web service.");
-
 				return;
 			}
-
 			taskMonitor.setPercentCompleted(100);
 			taskMonitor.setStatus("Network successfully loaded.");
 		}
@@ -781,23 +777,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 		} else if (evt.getPropertyName().equals(
 				WSResponseType.DATA_IMPORT_FINISHED.toString())) {
 
-			// If network is empty, just ignore it.
+			// If result is empty, just ignore it.
 			if (evt.getNewValue() == null)
 				return;
-
-			// Old value contains optional parameter
-			final Object options = evt.getOldValue();
-
-			String[] message = { "Network loaded.",
-					"Please enter name for new network:" };
-			String value = JOptionPane.showInputDialog(Cytoscape.getDesktop(),
-					message, "Name new network", JOptionPane.QUESTION_MESSAGE);
-			if (value == null || value.length() == 0)
-				value = selectedClientID + " Network";
-
-			final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-			Cytoscape.getCurrentNetwork().setTitle(value);
-			Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
 			VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
 					.getClient(selectedClientID)).getDefaultVisualStyle();
@@ -811,6 +793,18 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 						.addVisualStyle(style);
 
 			Cytoscape.getVisualMappingManager().setVisualStyle(style);
+			
+			// Name the network
+			final String[] message = { "Network Loaded from " + selectedClientID,
+					"Please enter title for new network:" };
+			String value = JOptionPane.showInputDialog(Cytoscape.getDesktop(),
+					message, "Name new network", JOptionPane.QUESTION_MESSAGE);
+			if (value == null || value.length() == 0)
+				value = selectedClientID + " Network";
+
+			final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+			Cytoscape.getCurrentNetwork().setTitle(value);
+			Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 		}
 	}
 }
