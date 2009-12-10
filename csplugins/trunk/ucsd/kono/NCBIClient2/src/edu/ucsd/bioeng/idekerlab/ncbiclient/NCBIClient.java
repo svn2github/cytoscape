@@ -594,8 +594,9 @@ public class NCBIClient extends
 			}
 
 			if (net == null) {
+				// Create network without view
 				net = Cytoscape.createNetwork(nodeList, edgeList, "NCBI-Net",
-						null);
+						null, false);
 				Cytoscape.firePropertyChange(
 						WSResponseType.DATA_IMPORT_FINISHED.toString(), null,
 						net);
@@ -799,8 +800,8 @@ public class NCBIClient extends
 										.getOtherSourceSrc().getDbtag()
 										.getDbtagDb();
 
-								System.out.println("DB Tag for nodeID: "
-										+ nodeid + " = " + nodeType);
+//								System.out.println("DB Tag for nodeID: "
+//										+ nodeid + " = " + nodeType);
 
 								// In case ID is not GeneID, put tag
 								if (nodeType.equals(GENE_ID_TAG) == false) {
