@@ -36,43 +36,31 @@
  */
 package cytoscape;
 
-import cytoscape.data.readers.CytoscapeSessionReader;
-
-import cytoscape.dialogs.logger.LoggerDialog;
-
-import cytoscape.init.CyInitParams;
-
-import cytoscape.logger.LogLevel;
-import cytoscape.logger.CyLogger;
-import cytoscape.logger.ConsoleLogger;
-
-import cytoscape.plugin.PluginManager;
-
-import cytoscape.util.FileUtil;
-import cytoscape.util.NestedNetworkViewUpdater;
-
-import cytoscape.util.shadegrown.WindowUtilities;
-
 import java.awt.Cursor;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import java.net.MalformedURLException;
 import java.net.URL;
-
-//import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-//import java.util.Set;
 import javax.swing.ImageIcon;
+
+import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.dialogs.logger.LoggerDialog;
+import cytoscape.init.CyInitParams;
+import cytoscape.logger.ConsoleLogger;
+import cytoscape.logger.CyLogger;
+import cytoscape.logger.LogLevel;
+import cytoscape.plugin.PluginManager;
+import cytoscape.util.FileUtil;
+import cytoscape.util.NestedNetworkViewUpdater;
+import cytoscape.util.shadegrown.WindowUtilities;
+import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -569,7 +557,9 @@ public class CytoscapeInit {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 					// apply vizmaps
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					final CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
+					if (currentView != Cytoscape.getNullNetworkView())
+						Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 				}
 			}
 		};
