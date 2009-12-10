@@ -2386,7 +2386,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
 		}
 
-		// vmm.getNetworkView().redrawGraph(false, true);
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		parent = null;
 	}
@@ -2562,7 +2561,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-			//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			switchVS(name);
 		}
 	}
@@ -2693,7 +2691,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				vmm.setVisualStyle(currentStyle);
 				vmm.getNetworkView().setVisualStyle(currentStyle.getName());
-				// vmm.getNetworkView().redrawGraph(false, true);
 				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			}
 		}
@@ -3861,7 +3858,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// if attribute is not in attrEditorNames, add it if we support its type
 			if (!attrEditorNames.contains(attributeName)) {
 				byte type = attr.getType(attributeName);
-				if (attr.getUserVisible(attributeName) && (type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
+				if (attr.getUserVisible(attributeName) && 
+				    (type != CyAttributes.TYPE_UNDEFINED) && 
+				    (type != CyAttributes.TYPE_COMPLEX)) {
 					attrEditorNames.add(attributeName);
 					Collections.sort(attrEditorNames);
 					attrEditor.setAvailableValues(attrEditorNames.toArray());
@@ -3948,7 +3947,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			Class dataClass;
 			for (String name : nameArray) {
 				type = attr.getType(name);
-				if (attr.getUserVisible(name) && (type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
+				if (attr.getUserVisible(name) && 
+				    (type != CyAttributes.TYPE_UNDEFINED) && 
+					(type != CyAttributes.TYPE_COMPLEX)) {
 					attrEditorNames.add(name);
 				}
 				dataClass = CyAttributesUtils.getClass(name, attr);
