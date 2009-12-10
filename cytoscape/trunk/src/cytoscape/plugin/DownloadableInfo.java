@@ -297,30 +297,38 @@ public abstract class DownloadableInfo {
 
 	/**
 	 * @return Compatible Cytocape version of this object.
-   *
-   * BUG: THIS IS WRONG, I need to be getting the version that MATCHES the current version
-   * not the one that is newest!!
-   *
+	 *
+	 * BUG: THIS IS WRONG, I need to be getting the version that MATCHES the current version
+	 * not the one that is newest!!
+	 *
 	 */
 	public String getCytoscapeVersion() {
+
+		//Bug fix, if currentVersion matches one of compatible versions of Cytosape, just return current version
+		for (String v : this.compatibleCyVersions) {
+			if (isCytoscapeVersionCurrent(v)){
+				return v;
+			}
+		}		
+
 		String currentPluginVersion = null;
-    String all = "";
-    for (String v : this.compatibleCyVersions) {
-      all += v + " ";      
+		String all = "";
+		for (String v : this.compatibleCyVersions) {
+			all += v + " ";      
 
-      if (currentPluginVersion != null) {
+			if (currentPluginVersion != null) {
 				currentPluginVersion = getNewerVersion(v, currentPluginVersion);
-        // compare to cytoscape version
-        if ( isCytoscapeVersionCurrent(currentPluginVersion) )
-          return currentPluginVersion; 
-      }
-      else {
+				// compare to cytoscape version
+				if ( isCytoscapeVersionCurrent(currentPluginVersion) )
+					return currentPluginVersion; 
+			}
+			else {
 				currentPluginVersion = v;
-      }
-    }
+			}
+		}
 
-    logger.debug(getName() +": Compatible: " + all + " cyvers: " + currentPluginVersion
-        + "(cyversion " + cytoscape.CytoscapeVersion.version +")");
+		logger.debug(getName() +": Compatible: " + all + " cyvers: " + currentPluginVersion
+				+ "(cyversion " + cytoscape.CytoscapeVersion.version +")");
 		return currentPluginVersion;
 	}
 
