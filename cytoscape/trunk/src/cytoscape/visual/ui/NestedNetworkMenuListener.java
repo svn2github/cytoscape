@@ -37,25 +37,17 @@
 package cytoscape.visual.ui;
 
 import ding.view.NodeContextMenuListener;
-
 import giny.view.NodeView;
-
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.border.EmptyBorder;
-
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
-import cytoscape.visual.parsers.ObjectToString;
 import cytoscape.dialogs.SetNestedNetworkDialog;
-
 
 /**
  * NestedNetworkMenuListener implements NodeContextMenuListener
@@ -76,14 +68,17 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 				
 		final JMenuItem jm1 = new JCheckBoxMenuItem(new SetNestedNetworkMenuItemAction(nodeView));
 		final JMenuItem jm2 = new JCheckBoxMenuItem(new DeleteNestedNetworkMenuItemAction(nodeView));
+		final JMenuItem jm3 = new JCheckBoxMenuItem(new GotoNestedNetworkMenuItemAction(nodeView));
 
 		if (nodeView.getNode().getNestedNetwork() == null){
 			jm2.setEnabled(false);
+			jm3.setEnabled(false);
 		}
-		
+
 		jm.add(jm1);
 		jm.add(jm2);
-				
+		jm.add(jm3);
+		
 		menu.add(jm);
 	}
 	
@@ -116,11 +111,30 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 			if (this.nodeView.getNode().getNestedNetwork() == null){
 				return;
 			}
-			this.nodeView.getNode().setNestedNetwork(null);
-			
-			// also delete attribute for this nested network
-			Cytoscape.getNodeAttributes().deleteAttribute(this.nodeView.getNode().getIdentifier(), cytoscape.CyNode.NESTED_NETWORK_ID_ATTR);
+			this.nodeView.getNode().setNestedNetwork(null);			
 		}
 	}
 
+	class GotoNestedNetworkMenuItemAction extends AbstractAction {
+		NodeView nodeView;
+		public GotoNestedNetworkMenuItemAction(NodeView nodeView){
+			super("Go to Nested Network");
+			this.nodeView = nodeView;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			if (this.nodeView.getNode().getNestedNetwork() == null){
+				return;
+			}
+		
+			CyNetwork nestedNetwork = (CyNetwork) this.nodeView.getNode().getNestedNetwork();
+			
+			CyNetworkView theView = Cytoscape.getNetworkView(nestedNetwork.getIdentifier());
+			if (theView == null){
+				theView = Cytoscape.createNetworkView(nestedNetwork);
+			}
+
+			Cytoscape.getDesktop().setFocus(nestedNetwork.getIdentifier());
+		}
+	}
 }
