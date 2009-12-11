@@ -82,25 +82,29 @@ final class DynamicGraphRepresentation implements DynamicGraph, java.io.External
 	 * @return DOCUMENT ME!
 	 */
 	public final IntEnumerator nodes() {
-		final int nodeCount = m_nodeCount;
-		final Node firstNode = m_firstNode;
+		return new NodesEnumerator(m_nodeCount, m_firstNode);
+	}
 
-		return new IntEnumerator() {
-				private int numRemaining = nodeCount;
-				private Node node = firstNode;
+	private class NodesEnumerator implements IntEnumerator {
+		private int numRemaining;
+		private Node node;
 
-				public final int numRemaining() {
-					return numRemaining;
-				}
+		NodesEnumerator(final int nodeCount, final Node firstNode) {
+			numRemaining = nodeCount;
+			node = firstNode;
+		}
 
-				public final int nextInt() {
-					final int returnThis = node.nodeId;
-					node = node.nextNode;
-					numRemaining--;
+		public final int numRemaining() {
+			return numRemaining;
+		}
 
-					return returnThis;
-				}
-			};
+		public final int nextInt() {
+			final int returnThis = node.nodeId;
+			node = node.nextNode;
+			numRemaining--;
+
+			return returnThis;
+		}
 	}
 
 	/**
@@ -109,38 +113,43 @@ final class DynamicGraphRepresentation implements DynamicGraph, java.io.External
 	 * @return DOCUMENT ME!
 	 */
 	public final IntEnumerator edges() {
-		final int edgeCount = m_edgeCount;
-		final Node firstNode = m_firstNode;
+		return new EdgesEnumerator(m_edgeCount,m_firstNode);
+	}
 
-		return new IntEnumerator() {
-				private int numRemaining = edgeCount;
-				private Node node = firstNode;
-				private Edge edge = null;
+	private class EdgesEnumerator implements IntEnumerator {
 
-				public final int numRemaining() {
-					return numRemaining;
+		private int numRemaining; 
+		private Node node; 
+		private Edge edge;
+
+		EdgesEnumerator(final int edgeCount, final Node firstNode) {	
+			numRemaining = edgeCount;
+			node = firstNode;
+		}
+
+		public final int numRemaining() {
+			return numRemaining;
+		}
+
+		public final int nextInt() {
+			final int returnThis;
+
+			if (edge != null) {
+				returnThis = edge.edgeId;
+			} else {
+				for (edge = node.firstOutEdge; edge == null;
+				     node = node.nextNode, edge = node.firstOutEdge) {
 				}
 
-				public final int nextInt() {
-					final int returnThis;
+				node = node.nextNode;
+				returnThis = edge.edgeId;
+			}
 
-					if (edge != null) {
-						returnThis = edge.edgeId;
-					} else {
-						for (edge = node.firstOutEdge; edge == null;
-						     node = node.nextNode, edge = node.firstOutEdge) {
-						}
+			edge = edge.nextOutEdge;
+			numRemaining--;
 
-						node = node.nextNode;
-						returnThis = edge.edgeId;
-					}
-
-					edge = edge.nextOutEdge;
-					numRemaining--;
-
-					return returnThis;
-				}
-			};
+			return returnThis;
+		}
 	}
 
 	/**
@@ -497,57 +506,70 @@ final class DynamicGraphRepresentation implements DynamicGraph, java.io.External
 			tentativeEdgeCount -= n.selfEdges;
 		}
 
-		final int edgeCount = tentativeEdgeCount;
+		return new EdgesAdjacentEnumerator(tentativeEdgeCount,edgeLists,undirected,incoming,outgoing );
+	}
 
-		return new IntEnumerator() {
-				private int numRemaining = edgeCount;
-				private int edgeListIndex = -1;
-				private Edge edge = null;
+	private class EdgesAdjacentEnumerator implements IntEnumerator {
 
-				public final int numRemaining() {
-					return numRemaining;
-				}
+		private int numRemaining; 
+		private int edgeListIndex = -1;
+		private Edge edge = null;
+		private final Edge[] edgeLists;
+		private final boolean undirected;
+		private final boolean incoming;
+		private final boolean outgoing;
 
-				public final int nextInt() {
-					while (edge == null)
+		EdgesAdjacentEnumerator(final int edgeCount,final Edge[] edgeLists, final boolean undirected, final boolean incoming, final boolean outgoing ) {
+			this.numRemaining = edgeCount;
+			this.edgeLists = edgeLists;
+			this.undirected = undirected;
+			this.incoming = incoming;
+			this.outgoing = outgoing;
+		}
+
+		public final int numRemaining() {
+			return numRemaining;
+		}
+
+		public final int nextInt() {
+			while (edge == null)
+				edge = edgeLists[++edgeListIndex];
+
+				int returnThis = -1;
+
+			if (edgeListIndex == 0) {
+				while ((edge != null)
+				       && !((outgoing && edge.directed) || (undirected && !edge.directed))) {
+					edge = edge.nextOutEdge;
+
+					if (edge == null) {
 						edge = edgeLists[++edgeListIndex];
 
-					int returnThis = -1;
-
-					if (edgeListIndex == 0) {
-						while ((edge != null)
-						       && !((outgoing && edge.directed) || (undirected && !edge.directed))) {
-							edge = edge.nextOutEdge;
-
-							if (edge == null) {
-								edge = edgeLists[++edgeListIndex];
-
-								break;
-							}
-						}
-
-						if ((edge != null) && (edgeListIndex == 0)) {
-							returnThis = edge.edgeId;
-							edge = edge.nextOutEdge;
-						}
+						break;
 					}
-
-					if (edgeListIndex == 1) {
-						while (((edge.sourceNode == edge.targetNode)
-						       && ((outgoing && edge.directed) || (undirected && !edge.directed)))
-						       || !((incoming && edge.directed) || (undirected && !edge.directed))) {
-							edge = edge.nextInEdge;
-						}
-
-						returnThis = edge.edgeId;
-						edge = edge.nextInEdge;
-					}
-
-					numRemaining--;
-
-					return returnThis;
 				}
-			};
+
+				if ((edge != null) && (edgeListIndex == 0)) {
+					returnThis = edge.edgeId;
+					edge = edge.nextOutEdge;
+				}
+			}
+
+			if (edgeListIndex == 1) {
+				while (((edge.sourceNode == edge.targetNode)
+				       && ((outgoing && edge.directed) || (undirected && !edge.directed)))
+				       || !((incoming && edge.directed) || (undirected && !edge.directed))) {
+					edge = edge.nextInEdge;
+				}
+
+				returnThis = edge.edgeId;
+				edge = edge.nextInEdge;
+			}
+
+			numRemaining--;
+
+			return returnThis;
+		}
 	}
 
 	/**
@@ -571,7 +593,6 @@ final class DynamicGraphRepresentation implements DynamicGraph, java.io.External
 			return null;
 		}
 
-		final DynamicGraph graph = this;
 		final IntEnumerator theAdj;
 		final int nodeZero;
 		final int nodeOne;
@@ -586,46 +607,60 @@ final class DynamicGraphRepresentation implements DynamicGraph, java.io.External
 			nodeOne = node0;
 		}
 
-		return new IntIterator() {
-				private int nextEdge = -1;
+		return new ConnectingEdgesIterator(theAdj, nodeZero, nodeOne, this);
+	}
 
-				private void ensureComputeNext() {
-					if (nextEdge != -1) {
-						return;
-					}
+	private class ConnectingEdgesIterator implements IntIterator {
+		private int nextEdge = -1;
+		private final IntEnumerator theAdj;
+		private final int nodeZero;
+		private final int nodeOne;
+		private final DynamicGraph graph;
 
-					while (theAdj.numRemaining() > 0) {
-						final int edge = theAdj.nextInt();
+		ConnectingEdgesIterator(final IntEnumerator theAdj, final int nodeZero, 
+		                        final int nodeOne, final DynamicGraph graph) {
+			this.theAdj = theAdj;
+			this.nodeZero = nodeZero;
+			this.nodeOne = nodeOne;
+			this.graph = graph;
+		}
 
-						if (nodeOne == (nodeZero ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge))) {
-							nextEdge = edge;
+		private void ensureComputeNext() {
+			if (nextEdge != -1) {
+				return;
+			}
 
-							return;
-						}
-					}
+			while (theAdj.numRemaining() > 0) {
+				final int edge = theAdj.nextInt();
 
-					nextEdge = -2;
+				if (nodeOne == (nodeZero ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge))) {
+					nextEdge = edge;
+
+					return;
 				}
+			}
 
-				public final boolean hasNext() {
-					ensureComputeNext();
+			nextEdge = -2;
+		}
 
-					if (nextEdge < 0) {
-						return false;
-					} else {
-						return true;
-					}
-				}
+		public final boolean hasNext() {
+			ensureComputeNext();
 
-				public final int nextInt() {
-					ensureComputeNext();
+			if (nextEdge < 0) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 
-					final int returnThis = nextEdge;
-					nextEdge = -1;
+		public final int nextInt() {
+			ensureComputeNext();
 
-					return returnThis;
-				}
-			};
+			final int returnThis = nextEdge;
+			nextEdge = -1;
+
+			return returnThis;
+		}
 	}
 
 	// Externalizable methods.
