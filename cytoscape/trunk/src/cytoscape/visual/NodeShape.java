@@ -66,7 +66,9 @@ public enum NodeShape {
 	DIAMOND(NodeView.DIAMOND, "Diamond", true),
 	ELLIPSE(NodeView.ELLIPSE, "Ellipse", true),
 	HEXAGON(NodeView.HEXAGON, "Hexagon", true),
-	OCTAGON(NodeView.OCTAGON, "Octagon", true);
+	OCTAGON(NodeView.OCTAGON, "Octagon", true),
+	VEE(NodeView.VEE, "V", true),
+	;
 
 	private int ginyShape;
 	private String name;
@@ -204,7 +206,7 @@ public enum NodeShape {
 		Map<Object, Icon> nodeShapeIcons = new HashMap<Object, Icon>();
 
 		for (NodeShape shape : values()) {
-			NodeIcon icon = new NodeIcon(nodeShapes.get(shape.getGinyShape()),
+			NodeIcon icon = new NodeIcon(shape.getShape(),
 			                             VisualPropertyIcon.DEFAULT_ICON_SIZE,
 			                             VisualPropertyIcon.DEFAULT_ICON_SIZE, shape.getShapeName());
 			nodeShapeIcons.put(shape, icon);
