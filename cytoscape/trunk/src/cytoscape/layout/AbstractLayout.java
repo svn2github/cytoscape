@@ -280,14 +280,14 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		// update the view 
 		if (!selectedOnly)
 			networkView.fitContent();
-
-		networkView.updateView();
+		else
+			networkView.updateView();
 
 		// post the edit 
 		undoableEdit.post();
 
 		// update the __layoutAlgorithm attribute
-		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		final CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		networkAttributes.setAttribute(network.getIdentifier(), "__layoutAlgorithm", getName());
 		networkAttributes.setUserVisible("__layoutAlgorithm", false);
 

@@ -664,11 +664,11 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @param network DOCUMENT ME!
 	 */
-	public void doPostProcessing(CyNetwork network) {
+	public void doPostProcessing(final CyNetwork network) {
 		parser.setMetaData(network);
 
 		// Get the view.  Note that for large networks this might be the null view
-		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Now that we have a network, handle the groups
 		// This is done here rather than in layout because layout is
@@ -713,7 +713,10 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (view == Cytoscape.getNullNetworkView())
 			return;
-
+		
+		// Apply visual style before updateView().
+		Cytoscape.getVisualMappingManager().applyAppearances();
+		
 		// set view zoom
 		final Double zoomLevel = parser.getGraphViewZoomLevel();
 
@@ -725,8 +728,6 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (center != null)
 			((DGraphView) view).setCenter(center.getX(), center.getY());
-
-		Cytoscape.getVisualMappingManager().applyAppearances();
 	}
 
 

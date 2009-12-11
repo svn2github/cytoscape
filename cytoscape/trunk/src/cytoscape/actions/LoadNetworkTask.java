@@ -241,19 +241,7 @@ public class LoadNetworkTask implements Task {
 
 			taskMonitor.setStatus("Creating Cytoscape Network...");
 
-			CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
-
-			// Are we supposed to lay this out?
-			CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-
-			if ((layoutAlgorithm != null) && (view != null)) {
-				// Yes, do it
-				// Layouts are, in general cancelable
-				((JTask) taskMonitor).setCancel(true);
-				taskMonitor.setStatus("Performing layout...");
-				layoutAlgorithm.doLayout(view, taskMonitor);
-				taskMonitor.setStatus("Layout complete");
-			}
+			final CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
 			Object[] ret_val = new Object[2];
 			ret_val[0] = cyNetwork;

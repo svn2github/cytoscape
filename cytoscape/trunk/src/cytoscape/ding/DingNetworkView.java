@@ -161,6 +161,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 		vmm.setNetworkView(this);
 		vmm.applyAppearances();
+		// This simply repaints the canvas.
 		updateView();
 	}
 	

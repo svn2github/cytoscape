@@ -820,15 +820,12 @@ public abstract class Cytoscape {
 
 	/**
 	 * @return a CyNetworkView for the given ID, if one exists, otherwise
-	 *         returns null
+	 *         returns NullNetworkView
 	 */
 	public static CyNetworkView getNetworkView(String network_id) {
 		if ((network_id == null) || !(getNetworkViewMap().containsKey(network_id)))
 			return nullNetworkView;
-
-		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(network_id);
-
-		return nview;
+		return  (CyNetworkView) getNetworkViewMap().get(network_id);
 	}
 
 	/**
@@ -1713,7 +1710,6 @@ public abstract class Cytoscape {
 
 		final DingNetworkView view = new DingNetworkView(network, title);
 		
-		view.setGraphLOD(new CyGraphLOD());
 		view.setIdentifier(network.getIdentifier());
 		view.setTitle(network.getTitle());
 		getNetworkViewMap().put(network.getIdentifier(), view);
@@ -1728,12 +1724,15 @@ public abstract class Cytoscape {
 		if (layout == null) {
 			layout = CyLayouts.getDefaultLayout();
 		}
+		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		vmm.setNetworkView(view);
+		vmm.applyAppearances();
 		layout.doLayout(view);
-
+		view.setGraphLOD(new CyGraphLOD());
 		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
-
-		view.fitContent();
-		view.redrawGraph(false, true);
+		
+		//view.fitContent();
+		//view.redrawGraph(false, true);
 		
 		return view;
 	}
