@@ -276,10 +276,10 @@ public final class GraphConverter2 {
 				}
 
 				private void checkPosition(double xPos, double yPos) {
-					if ((xPos < 0.0d) || (xPos > getMaxWidth()))
+					if (Double.isNaN(xPos) || (xPos < 0.0d) || (xPos > getMaxWidth()))
 						throw new IllegalArgumentException("X position out of bounds");
 
-					if ((yPos < 0.0d) || (yPos > getMaxHeight()))
+					if (Double.isNaN(yPos) || (yPos < 0.0d) || (yPos > getMaxHeight()))
 						throw new IllegalArgumentException("Y position out of bounds");
 				}
 
