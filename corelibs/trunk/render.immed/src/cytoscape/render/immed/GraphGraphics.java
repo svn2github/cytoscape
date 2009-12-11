@@ -58,8 +58,6 @@ import java.awt.geom.Rectangle2D;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 import cytoscape.render.immed.arrow.*;
 
@@ -121,9 +119,9 @@ public final class GraphGraphics {
 	 */
 	public static final int CUSTOM_SHAPE_MAX_VERTICES = 100;
 
-	/**
-	 * Arrow shape constants
-	 */
+	//
+	// Arrow shape constants. 
+	//
 	public static final byte ARROW_NONE = -1;
 	public static final byte ARROW_DELTA = -2;
 	public static final byte ARROW_DIAMOND = -3;
@@ -133,10 +131,8 @@ public final class GraphGraphics {
 	public static final byte ARROW_HALF_BOTTOM = -7;
 	public static final byte ARROW_ARROWHEAD = -8;
 
-	/**
-	 * The list of arrow shape objects.
-	 */
-	private static final List<Arrow> arrows;
+	// The way to access all Arrow objects.
+	private static final Map<Byte,Arrow> arrows;
 
 	/**
 	 * This value is currently 64.
@@ -157,15 +153,16 @@ public final class GraphGraphics {
 	static {
 		dummyGraphics = new GraphGraphics(null, false);
 
-		arrows = new ArrayList<Arrow>();
-		arrows.add( new NoArrow() );
-		arrows.add( new DeltaArrow() );
-		arrows.add( new DiscArrow() );
-		arrows.add( new DiamondArrow() );
-		arrows.add( new TeeArrow() );
-		arrows.add( new ArrowheadArrow() );
-		arrows.add( new HalfTopArrow() );
-		arrows.add( new HalfBottomArrow() );
+		arrows = new HashMap<Byte,Arrow>();
+
+		arrows.put(ARROW_NONE, new NoArrow() );
+		arrows.put(ARROW_DELTA, new DeltaArrow() );
+		arrows.put(ARROW_DISC, new DiscArrow() );
+		arrows.put(ARROW_DIAMOND, new DiamondArrow() );
+		arrows.put(ARROW_TEE, new TeeArrow() );
+		arrows.put(ARROW_ARROWHEAD, new ArrowheadArrow() );
+		arrows.put(ARROW_HALF_TOP, new HalfTopArrow() );
+		arrows.put(ARROW_HALF_BOTTOM, new HalfBottomArrow() );
 	}
 
 	private static final double DEF_SHAPE_SIZE = 32;
@@ -1202,7 +1199,7 @@ public final class GraphGraphics {
 	/**
 	 * get list of node shapes.
 	 * 
-	 * @return
+	 * @return A map of node shape bytes to Shape objects.
 	 */
 	public static Map<Byte, Shape> getNodeShapes() {
 		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
@@ -1232,13 +1229,13 @@ public final class GraphGraphics {
 	/**
 	 * Get list of arrow heads.
 	 * 
-	 * @return
+	 * @return A map of arrow shape bytes to Shape objects.
 	 */
 	public static Map<Byte, Shape> getArrowShapes() {
 		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
-		for ( Arrow a : arrows )
+		for ( Arrow a : arrows.values() )
 			shapeMap.put( a.getType(), a.getArrowShape() );
-
+ 
 		return shapeMap;
 	}
 
@@ -1485,25 +1482,21 @@ public final class GraphGraphics {
 	 * @param edgeThickness
 	 *            the thickness of the edge segment; the edge segment is the
 	 *            part of the edge between the two endpoint arrows.
+	 * @param edgeStroke
+	 *            the Stroke to use when drawing the edge segment.
 	 * @param edgePaint
 	 *            the paint to use when drawing the edge segment.
-	 * @param dashLength
-	 *            a positive value representing the length of dashes on the
-	 *            edge, or zero to indicate that the edge is solid; note that
-	 *            drawing dashed segments is computationally expensive.
 	 * @exception IllegalArgumentException
-	 *                if edgeThickness is less than zero, if dashLength is less
-	 *                than zero, if any one of the arrow configurations does not
-	 *                meet specified criteria, or if more than MAX_EDGE_ANCHORS
-	 *                anchors are specified.
+	 *                if edgeThickness is less than zero, if any one of the arrow 
+	 *                configurations does not meet specified criteria, or if more 
+	 *                than MAX_EDGE_ANCHORS anchors are specified.
 	 */
 	public final void drawEdgeFull(final byte arrow0Type,
 			final float arrow0Size, final Paint arrow0Paint,
 			final byte arrow1Type, final float arrow1Size,
 			final Paint arrow1Paint, final float x0, final float y0,
 			EdgeAnchors anchors, final float x1, final float y1,
-			final float edgeThickness, final Stroke edgeStroke, final Paint edgePaint
-			) {
+			final float edgeThickness, final Stroke edgeStroke, final Paint edgePaint) {
 		final long startTime = System.nanoTime();
 		final double curveFactor = CURVE_ELLIPTICAL;
 
@@ -1982,11 +1975,11 @@ public final class GraphGraphics {
 	 * specified. 
 	 */
 	private final Shape computeUntransformedArrow(final byte arrowType) {
-		for ( Arrow a : arrows )
-			if ( a.getType() == arrowType )
-				return a.getArrowShape();
-
-		return null;
+		Arrow a = arrows.get(arrowType);
+		if ( a != null )
+			return a.getArrowShape();
+		else
+			return null;
 	}
 
 	/*
@@ -1994,24 +1987,23 @@ public final class GraphGraphics {
 	 * edge thickness (only used for some arrow types). Returns non-null if and
 	 * only if a cap is necessary for the arrow type specified. 
 	 */
-	private final Shape computeUntransformedArrowCap(final byte arrowType,
-			final double ratio) {
-		for ( Arrow a : arrows )
-			if ( a.getType() == arrowType )
-				return a.getCapShape(ratio);
-
-		return null;
+	private final Shape computeUntransformedArrowCap(final byte arrowType, final double ratio) {
+		Arrow a = arrows.get(arrowType);
+		if ( a != null )
+			return a.getCapShape(ratio);
+		else
+			return null;
 	}
 
 	/*
 	 * 
 	 */
 	private final static double getT(final byte arrowType) { 
-		for ( Arrow a : arrows )
-			if ( a.getType() == arrowType )
-				return a.getTOffset();
-
-		return 0.125;
+		Arrow a = arrows.get(arrowType);
+		if ( a != null )
+			return a.getTOffset();
+		else
+			return 0.125;
 	}
 
 	/*
