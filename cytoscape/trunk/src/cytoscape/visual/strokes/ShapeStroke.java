@@ -18,6 +18,7 @@ package cytoscape.visual.strokes;
 
 import java.awt.*;
 import java.awt.geom.*;
+import cytoscape.visual.LineStyle;
 
 public abstract class ShapeStroke implements WidthStroke {
 	private Shape shapes[];
@@ -26,13 +27,13 @@ public abstract class ShapeStroke implements WidthStroke {
 	private AffineTransform transform = new AffineTransform();
 	private static final float FLATNESS = 0.1f;
 
-	protected String name;
+	protected LineStyle lineStyle;
 	protected float width;
 
-	public ShapeStroke( Shape shapes[], float advance, String name, float width ) {
+	public ShapeStroke( Shape shapes[], float advance, LineStyle lineStyle, float width ) {
 		this.advance = advance;
 		this.shapes = new Shape[shapes.length];
-		this.name = name;
+		this.lineStyle = lineStyle;
 		this.width = width;
 
 		for ( int i = 0; i < this.shapes.length; i++ ) {
@@ -108,12 +109,12 @@ public abstract class ShapeStroke implements WidthStroke {
 	}
 
 
-	public String getName() {
-		return name;
+	public LineStyle getLineStyle() {
+		return lineStyle;
 	}
 
 	public String toString() { 
-		return name + " " + Float.toString(width); 
+		return lineStyle.toString() + " " + Float.toString(width); 
 	}
 	
 	abstract public WidthStroke newInstanceForWidth(float w);

@@ -4,19 +4,19 @@ package cytoscape.visual.strokes;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import static cytoscape.visual.LineStyle.CONTIGUOUS_ARROW;
 
 public class ContiguousArrowStroke extends ShapeStroke {
 
-
-	public ContiguousArrowStroke(float width, String name) {
-		super( new Shape[] { getArrowStroke(width) }, 3f*width, name, width );
+	public ContiguousArrowStroke(float width) {
+		super( new Shape[] { getArrowStroke(width) }, 3f*width, CONTIGUOUS_ARROW, width );
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
-		return new ContiguousArrowStroke(w,name);
+		return new ContiguousArrowStroke(w);
 	}
 
-	static Shape getArrowStroke(final float width) {
+	private static Shape getArrowStroke(final float width) {
 		GeneralPath shape = new GeneralPath();
 
 		// change these to change the arrow proportions 

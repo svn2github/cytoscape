@@ -4,21 +4,22 @@ package cytoscape.visual.strokes;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import static cytoscape.visual.LineStyle.SINEWAVE;
 
 public class SineWaveStroke extends ShapeStroke {
 
 	// TODO consider making the wavelength and amplitude Cytoscape properties.
 
-	public SineWaveStroke(float width, String name) {
+	public SineWaveStroke(float width) {
 		// second arg here is the advance - advance must equal wavelength below
-		super( new Shape[] { getSineWave(width) }, 10f, name, width );
+		super( new Shape[] { getSineWave(width) }, 10f, SINEWAVE, width );
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
-		return new SineWaveStroke(w,name);
+		return new SineWaveStroke(w);
 	}
 
-	static Shape getSineWave(final float width) {
+	private static Shape getSineWave(final float width) {
 		GeneralPath shape = new GeneralPath();
 
 		// wavelength must equal advance specified in constructor or 

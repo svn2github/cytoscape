@@ -4,19 +4,19 @@ package cytoscape.visual.strokes;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import static cytoscape.visual.LineStyle.SEPARATE_ARROW;
 
 public class SeparateArrowStroke extends ShapeStroke {
 
-
-	public SeparateArrowStroke(float width, String name) {
-		super( new Shape[] { getArrowStroke(width) }, 5f*width, name, width );
+	public SeparateArrowStroke(float width) {
+		super( new Shape[] { getArrowStroke(width) }, 5f*width, SEPARATE_ARROW, width );
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
-		return new SeparateArrowStroke(w,name);
+		return new SeparateArrowStroke(w);
 	}
 
-	static Shape getArrowStroke(final float width) {
+	private static Shape getArrowStroke(final float width) {
 		GeneralPath shape = new GeneralPath();
 
 		// change these to change the arrow proportions 

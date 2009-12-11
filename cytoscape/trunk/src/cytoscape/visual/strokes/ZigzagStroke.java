@@ -18,19 +18,20 @@ package cytoscape.visual.strokes;
 
 import java.awt.*;
 import java.awt.geom.*;
+import cytoscape.visual.LineStyle;
+import static cytoscape.visual.LineStyle.ZIGZAG;
 
 public class ZigzagStroke implements WidthStroke {
+
 	private float amplitude = 10.0f;
 	private float wavelength = 10.0f;
     private Stroke stroke;
 	private static final float FLATNESS = 1;
-	private String name;
 	private float width;
 
 	// TODO we can do fancier stuff if we pass in Stroke, amplitude and wavelength
 	// as params
-	public ZigzagStroke( float width, String name ) {
-		this.name = name;
+	public ZigzagStroke( float width ) {
 		this.width = width;
         this.stroke = new BasicStroke(width);
 	}
@@ -101,16 +102,16 @@ public class ZigzagStroke implements WidthStroke {
 		return stroke.createStrokedShape( result );
 	}
 
-	public String getName() {
-		return getName();
+	public LineStyle getLineStyle() {
+		return ZIGZAG;
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
-		return new ZigzagStroke(w,name);
+		return new ZigzagStroke(w);
 	}
 
 	public String toString() {
-		return name + " " + Float.toString(width);
+		return ZIGZAG.toString() + " " + Float.toString(width);
 	}
 
 }

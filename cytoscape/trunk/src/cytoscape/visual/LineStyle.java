@@ -54,19 +54,20 @@ import cytoscape.visual.strokes.*;
  * @author kono
  */
 public enum LineStyle {
-	SOLID("line", new SolidStroke(1.0f,"line")),
-	LONG_DASH( "dash", new LongDashStroke(1.0f,"dash")),
-	EQUAL( "equal", new EqualDashStroke(1.0f,"equal")),
-	UNEVEN( "uneven", new DashDotStroke(1.0f,"uneven")),
-	DOT("dot", new DotStroke(1.0f,"dot")),
-	ZIGZAG("zigzag", new ZigzagStroke(1.0f,"zigzag")),
-	SINEWAVE("sinewave", new SineWaveStroke(1.0f,"sinewave")),
-	VERTICAL_SLASH("vertical_slash",new PipeStroke(1.0f,PipeStroke.Type.VERTICAL,"vertical_slash")),
-	FORWARD_SLASH("forward_slash",new PipeStroke(1.0f,PipeStroke.Type.FORWARD,"forward_slash")),
-	BACKWARD_SLASH("backward_slash",new PipeStroke(1.0f,PipeStroke.Type.BACKWARD,"backward_slash")),
-	PARALLEL_LINES("parallel_lines", new ParallelStroke(1.0f,"parallel_lines")),
-	CONTIGUOUS_ARROW("contiguous_arrow", new ContiguousArrowStroke(1.0f,"contiguous_arrow")),
-	SEPARATE_ARROW("separate_arrow", new SeparateArrowStroke(1.0f,"separate_arrow")),
+	// note that "line" and "dash" regexs are legacy, so don't change them!
+	SOLID("line", new SolidStroke(1.0f)),
+	LONG_DASH( "dash", new LongDashStroke(1.0f)),
+	EQUAL_DASH( "equal_dash", new EqualDashStroke(1.0f)),
+	DASH_DOT( "dash_dot", new DashDotStroke(1.0f)),
+	DOT("dot_dot", new DotStroke(1.0f)),
+	ZIGZAG("zigzag", new ZigzagStroke(1.0f)),
+	SINEWAVE("sinewave", new SineWaveStroke(1.0f)),
+	VERTICAL_SLASH("vertical_slash",new VerticalSlashStroke(1.0f,PipeStroke.Type.VERTICAL)),
+	FORWARD_SLASH("forward_slash",new ForwardSlashStroke(1.0f,PipeStroke.Type.FORWARD)),
+	BACKWARD_SLASH("backward_slash",new BackwardSlashStroke(1.0f,PipeStroke.Type.BACKWARD)),
+	PARALLEL_LINES("parallel_lines", new ParallelStroke(1.0f)),
+	CONTIGUOUS_ARROW("contiguous_arrow", new ContiguousArrowStroke(1.0f)),
+	SEPARATE_ARROW("separate_arrow", new SeparateArrowStroke(1.0f)),
 	;
 
 	private String regex;
@@ -81,6 +82,12 @@ public enum LineStyle {
 		return regex;
 	}
 
+	/**
+	 * Attempts to parse a LineStyle object from a string.  If the string does
+	 * not match any LineStyle.toString() value exactly, then it attempts a regular
+	 * expression match on regex pattern defined in this Enum. The regex support
+	 * exists primarily to support legacy file formats.  
+	 */
 	public static LineStyle parse(String val) {
 		// First check the style names.
 		for ( LineStyle ls : values() ) {
@@ -102,24 +109,6 @@ public enum LineStyle {
 		return SOLID;
 	}
 
-	private static Pattern numPattern = Pattern.compile("(\\d+)");
-
-	/** 
-	 * This method attempts to extract a width from a string that has
-	 * a number in it like "dashed1" or "line2". This exists to support
-	 * old-style line type definitions.
-	 * @return The parsed value or if something doesn't match, 1.0
-	 */
-	public static float parseWidth(String s) {
-		Matcher m = numPattern.matcher(s);
-		if ( m.matches() ) {
-			try {
-				return (new Float(m.group(1))).floatValue();
-			} catch (Exception e) { }
-		}
-		return 1.0f;
-	}
-
 	/**
 	 * Will attempt to find the LineStyle based on the type of stroke.
 	 * If it doesn't match a known stroke, it will return SOLID.
@@ -127,16 +116,22 @@ public enum LineStyle {
 	 */
 	public static LineStyle extractLineStyle(Stroke s) {
 		if ( s instanceof WidthStroke ) {
-			return LineStyle.parse( ((WidthStroke)s).getName() );	
+			return ((WidthStroke)s).getLineStyle();	
 		} 
 
 		return SOLID;
 	}
 
+	/**
+	 * Creates a new stroke of this LineStyle with the specified width.
+	 */
 	public Stroke getStroke(float width) {
 		return stroke.newInstanceForWidth( width );
 	}
-	
+
+	/**
+	 * Returns a map of Icons that can be used for user interfaces.
+	 */
     public static Map<Object,Icon> getIconSet() {
         Map<Object,Icon> icons = new HashMap<Object,Icon>();
 

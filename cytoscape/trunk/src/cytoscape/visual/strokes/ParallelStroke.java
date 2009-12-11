@@ -4,20 +4,20 @@ package cytoscape.visual.strokes;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import static cytoscape.visual.LineStyle.PARALLEL_LINES;
 
 public class ParallelStroke extends ShapeStroke {
 
-	public ParallelStroke(float width, String name) {
-		super( new Shape[] { getParallelStroke(width) }, 1f, name, width );
-		this.name = name;
+	public ParallelStroke(float width) {
+		super( new Shape[] { getParallelStroke(width) }, 1f, PARALLEL_LINES, width );
 		this.width = width;
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
-		return new ParallelStroke(w,name);
+		return new ParallelStroke(w);
 	}
 
-	static Shape getParallelStroke(final float width) {
+	private static Shape getParallelStroke(final float width) {
 		GeneralPath shape = new GeneralPath();
 
 		shape.moveTo(0f,-0.5f*width);

@@ -4,6 +4,7 @@ package cytoscape.visual.strokes;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import cytoscape.visual.LineStyle;
 
 public class PipeStroke extends ShapeStroke {
 
@@ -25,16 +26,17 @@ public class PipeStroke extends ShapeStroke {
 
 	private Type offsetType;
 
-	public PipeStroke(float width, Type offsetType, String name) {
-		super( new Shape[] { getShape(width, offsetType) },  width, name, width );
+	PipeStroke(float width, Type offsetType, LineStyle lineStyle) {
+		super( new Shape[] { getShape(width, offsetType) },  width, lineStyle, width );
 		this.offsetType = offsetType;
+		this.lineStyle = lineStyle;
 	}
 
 	public WidthStroke newInstanceForWidth(float w) {
-		return new PipeStroke(w,offsetType,name);
+		return new PipeStroke(w,offsetType,lineStyle);
 	}
 
-	static Shape getShape(final float input, final Type offsetType) {
+	private static Shape getShape(final float input, final Type offsetType) {
 		GeneralPath shape = new GeneralPath();
 		float height = input;
 		float width = input/5f;
