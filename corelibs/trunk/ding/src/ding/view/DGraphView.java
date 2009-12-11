@@ -1012,11 +1012,11 @@ public class DGraphView implements GraphView, Printable {
 			                             (((double) m_extentsBuff[3]) - 
 			                              ((double) m_extentsBuff[1])));
 			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
-if (calledFromGetSnapshot) {
-calledFromGetSnapshot = false;
-m_networkCanvas.m_scaleFactor = 1.0;
-System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_networkCanvas.m_scaleFactor);
-}
+			if (calledFromGetSnapshot) {
+				calledFromGetSnapshot = false;
+				m_networkCanvas.m_scaleFactor = 1.0;
+				//System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_networkCanvas.m_scaleFactor);
+			}
 			m_viewportChanged = true;
 		}
 		if (updateView) {
@@ -1033,9 +1033,14 @@ System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_netwo
 	
 
 	/**
-	 * DOCUMENT ME!
+	 * Repaint network canvas.
 	 */
 	public void updateView() {
+		// Following is for performance testing 
+		//System.out.println("**************** DGraph Redraw Called ***************** " + this.getGraphPerspective());
+		//Thread.dumpStack();
+		//System.out.println("**************** DGraph Redraw Finished *****************\n\n" );
+		
 		m_networkCanvas.repaint();
 	}
 
@@ -2041,7 +2046,8 @@ System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_netwo
 			m_contentChanged = true;
 		}
 
-		updateView();
+		// This is not necessary
+		//updateView();
 	}
 
 	/**
