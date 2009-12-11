@@ -19,6 +19,7 @@ public interface NodeView  {
   public static final int PARALELLOGRAM = 5;
   public static final int RECTANGLE = 6;
   public static final int ROUNDED_RECTANGLE = 7;
+  public static final int VEE = 8;
 
   /**
    * @return the view we are in
