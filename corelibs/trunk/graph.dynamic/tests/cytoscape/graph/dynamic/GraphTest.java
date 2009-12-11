@@ -34,28 +34,18 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.graph.dynamic.util.test;
+package cytoscape.graph.dynamic;
 
-import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
+import junit.framework.*;
 
-/**
- * DOCUMENT ME!
- *
- * @author $author$
- * @version $Revision$
-  */
-public class GraphTest {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 */
-	public static void main(String[] args) {
+public class GraphTest extends TestCase {
+
+	public void testGraph() {
 		final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
 		System.out.println("Creating 10 nodes...");
 

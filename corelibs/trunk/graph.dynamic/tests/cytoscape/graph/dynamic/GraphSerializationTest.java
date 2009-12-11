@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.graph.dynamic.util.test;
+package cytoscape.graph.dynamic;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
@@ -44,24 +44,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import junit.framework.*;
 
-/**
- * DOCUMENT ME!
- *
- * @author $author$
- * @version $Revision$
-  */
-public class GraphSerializationTest {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 * @throws IllegalStateException DOCUMENT ME!
-	 * @throws NullPointerException DOCUMENT ME!
-	 */
-	public static void main(String[] args) throws Exception {
+public class GraphSerializationTest extends TestCase {
+	public void testGraphSerialization() {
+		try {
 		{
 			DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -187,6 +174,10 @@ public class GraphSerializationTest {
 			if (graphs[0] != graphs[1]) {
 				throw new IllegalStateException("not the same reference");
 			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 }

@@ -34,29 +34,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.graph.dynamic.util.test;
+package cytoscape.graph.dynamic;
 
-import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 
+import junit.framework.*;
 
-/**
- * DOCUMENT ME!
- *
- * @author $author$
- * @version $Revision$
-  */
-public class AddRemoveTest {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 */
-	public static void main(String[] args) {
+public class AddRemoveTest extends TestCase {
+
+	public void testAddRemove() {
 		final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
 		final int[][] nodesArr = new int[][] { new int[100000], new int[99980], new int[100010] };
 		final int[] edges = new int[1000000];
-		final int iterations = 10000;
+		final int iterations = 10;
 
 		for (int foo = 0; foo < iterations; foo++) {
 			boolean print = false;
