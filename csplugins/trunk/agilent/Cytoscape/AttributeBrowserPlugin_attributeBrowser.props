@@ -1,0 +1,6 @@
+#Cytoscape Attribute Browser Plugin Properties
+#Tue Jan 06 06:32:24 PST 2009
+attributeBrowser.edge.selectedAttr0=ID
+attributeBrowser.node.selectedAttr0=ID
+attributeBrowser.network.selectedAttr1=Value
+attributeBrowser.network.selectedAttr0=Network Attribute Name

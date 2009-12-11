@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+<TITLE>Cytoscape-AG Release Notes (version 0.01)</TITLE>
+</HEAD>
+<BODY>
+
+<H1>Cytoscape-AG Release Notes (version 0.01)</H1>
+
+This is a modified version of Cytoscape 2.6.3 for use where Cytoscape is not
+the top-level application and a parent application wishes to only use
+certain parts of the Cytoscape UI.  For example, making the network
+viewer and birds eye viewer accessable independent of the rest of the
+Cytoscape UI.  Following is a list of the modifications (see comments
+with "MLC 12/08/09"):
+<OL>
+<LI> "Lobotomized" the plugin manager.to stop remembering previously loaded plugins.
+<P>This is necessary to ensure only the plugins given in the command
+line of this version of Cytoscape are used for the parent
+application. This stops unwanted interactions in between an existing
+regular Cytoscape and the use of this version of Cytoscape within the
+parent application. The problem is that the pluginManager will
+remember what plugins were loaded in passed runs of Cytoscape.
+<P>This change is performed in CytoscapeInit.init().</P></LI>
+<LI>Added a AGMode that is set by the runstring parameter ("A").
+<P>This is done in CyMain.java and includes the additional static
+  method CyMain.isAGMode(). When in this mode, Cytoscape's GUI will
+  not be presented, and Agilent-specific behavior will be executed. This
+  includes:
+<OL type=a>
+<LI>The Cytoscape master pane is just a blank JPanel().
+  <P>This is done through several changes in CytoscapeDesktop.java
+  including not setting up and adding to CytoPanels for the vizmapper
+  UI and toolbar.</P></LI>
+<LI>Removing the use of the VizMapBypassNetworkListener.
+<P>We don't want popup menu items on Network nodes and edges for
+  changing the visual style properties of these Nodes and Edges. This
+  change is located in the CytoscapeDesktop constructor.</P></LI>
+<LI>Not calling System.exit() when Cytoscape is exited.
+  <P>This is required to stop Cytoscape from exiting its parent application.
+    Instead, getDesktop().dispose() is called. This change is in Cytoscape.exit().</P></LI>
+</OL>
+<P></P><LI>Added runstring parameter ("E").
+<P>Sets Cytoscape in EMBEDDED_WINDOW mode to stop Cytoscape from exiting when run by a parent application.</P></LI>
+<P></P><LI>Added CytoscapeDesktop.getBirdsEyeView().</LI>
+<P></P><LI>Stopped setting the look-and-feel.
+<P>This is necessary because the parent application will set the
+   look-and-feel. This change is in CyMain.parseCommandLine().</P.</LI>
+
+</OL>
+<HR>
+<SMALL><EM>This page was last updated: 12/08/09</EM></SMALL>
+
+</BODY>
+</HTML>
