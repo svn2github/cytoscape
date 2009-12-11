@@ -33,6 +33,7 @@ import static giny.view.NodeView.PARALELLOGRAM;
 import static giny.view.NodeView.RECTANGLE;
 import static giny.view.NodeView.ROUNDED_RECTANGLE;
 import static giny.view.NodeView.TRIANGLE;
+import static giny.view.NodeView.VEE;
 
 /**
  *
@@ -71,9 +72,7 @@ class GinyUtil {
             return TRIANGLE;
 
         case SHAPE_VEE:
-
-            // Not implemented yet.
-            return RECTANGLE;
+            return VEE;
 
         default:
             return TRIANGLE;
@@ -105,6 +104,9 @@ class GinyUtil {
 
         case TRIANGLE:
         	return SHAPE_TRIANGLE;
+
+        case VEE:
+        	return SHAPE_VEE;
 
         default:
         	return -1;
