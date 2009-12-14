@@ -246,10 +246,7 @@ public class CyNode implements giny.model.Node {
 		if (graphPerspective == this.nestedNetwork)
 			return;
 
-		// Let listeners know that the previous nested network was removed
-		if (this.nestedNetwork != null) {
-			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_DESTROYED, this, this.nestedNetwork);
-		}
+		final GraphPerspective oldNestedNetwork = this.nestedNetwork;
 		
 		// create a Node Attribute "nested.network.id" for this Node
 		final String networkID = ((CyNetwork)(graphPerspective == null ? this.nestedNetwork : graphPerspective)).getIdentifier();
@@ -286,6 +283,10 @@ public class CyNode implements giny.model.Node {
 		} else {
 			Cytoscape.getNodeAttributes().deleteAttribute(this.getIdentifier(), HAS_NESTED_NETWORK_ATTR);
 		}
+		
+		// Let listeners know that the previous nested network was removed
+		if (oldNestedNetwork != null)
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_DESTROYED, this, oldNestedNetwork);
 		
 		// Let listeners know nested network was assigned to this node.
 		if (this.nestedNetwork != null) {
