@@ -106,10 +106,10 @@ public class DNodeView implements NodeView, Label {
 	 * Stores the position of a nodeView when it's hidden so that when the 
 	 * nodeView is restored we can restore the view into the same position.
 	 */
-	float m_hiddenXMin;
-	float m_hiddenYMin;
-	float m_hiddenXMax;
-	float m_hiddenYMax;
+	float m_hiddenXMin = Float.MIN_VALUE;
+	float m_hiddenYMin = Float.MIN_VALUE;
+	float m_hiddenXMax = Float.MAX_VALUE;
+	float m_hiddenYMax = Float.MAX_VALUE;
 
 	ArrayList m_graphicShapes;
 	ArrayList m_graphicPaints;
@@ -589,10 +589,14 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public void setXPosition(double xPos) {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
-				return;
+			final double wDiv2;
+			final boolean nodeVisible = m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0);
 
-			final double wDiv2 = (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
+			if ( nodeVisible ) 
+				wDiv2 = (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
+			else
+				wDiv2 = (double)(m_hiddenXMax - m_hiddenXMin)/2.0d;
+
 			final float xMin = (float) (xPos - wDiv2);
 			final float xMax = (float) (xPos + wDiv2);
 
@@ -600,12 +604,23 @@ public class DNodeView implements NodeView, Label {
 				throw new IllegalStateException("width of node has degenerated to zero after "
 				                                + "rounding");
 
-			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1], xMax,
-			                        m_view.m_extentsBuff[3]);
-			m_view.m_contentChanged = true;
+			// If the node is visible, set the extents.
+			if ( nodeVisible ) {
+				m_view.m_spacial.delete(m_inx);
+				m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1], xMax,
+				   	                     m_view.m_extentsBuff[3]);
+				m_view.m_contentChanged = true;
+
+			// If the node is NOT visible (hidden), then update the hidden extents.  Doing
+			// this will mean that the node view will be properly scaled and rotated
+			// relative to the other nodes.
+			} else {
+				m_hiddenXMax = xMax;
+				m_hiddenXMin = xMin;
+			}
 		}
 	}
+
 
 	/**
 	 * DOCUMENT ME!
@@ -624,10 +639,10 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public double getXPosition() {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
-				return Double.NaN;
-
-			return (((double) m_view.m_extentsBuff[0]) + m_view.m_extentsBuff[2]) / 2.0d;
+			if (m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+				return (((double) m_view.m_extentsBuff[0]) + m_view.m_extentsBuff[2]) / 2.0d;
+			else
+				return (double)(m_hiddenXMin + m_hiddenXMax)/2.0;
 		}
 	}
 
@@ -638,10 +653,14 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public void setYPosition(double yPos) {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
-				return;
+			final double hDiv2; 
+			final boolean nodeVisible = m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0);
 
-			final double hDiv2 = (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
+			if ( nodeVisible )
+				hDiv2 = (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
+			else
+				hDiv2 = (double)(m_hiddenYMax - m_hiddenYMin) / 2.0d;
+
 			final float yMin = (float) (yPos - hDiv2);
 			final float yMax = (float) (yPos + hDiv2);
 
@@ -649,10 +668,20 @@ public class DNodeView implements NodeView, Label {
 				throw new IllegalStateException("height of node has degenerated to zero after "
 				                                + "rounding");
 
-			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin, m_view.m_extentsBuff[2],
-			                        yMax);
-			m_view.m_contentChanged = true;
+			// If the node is visible, set the extents.
+			if ( nodeVisible ) {
+				m_view.m_spacial.delete(m_inx);
+				m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin, 
+				                        m_view.m_extentsBuff[2], yMax);
+				m_view.m_contentChanged = true;
+
+			// If the node is NOT visible (hidden), then update the hidden extents.  Doing
+			// this will mean that the node view will be properly scaled and rotated
+			// relative to the other nodes.
+			} else {
+				m_hiddenYMax = yMax;
+				m_hiddenYMin = yMin;
+			}
 		}
 	}
 
@@ -673,10 +702,10 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public double getYPosition() {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
-				return Double.NaN;
-
-			return (((double) m_view.m_extentsBuff[1]) + m_view.m_extentsBuff[3]) / 2.0d;
+			if (m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+				return (((double) m_view.m_extentsBuff[1]) + m_view.m_extentsBuff[3]) / 2.0d;
+			else
+				return ((double)(m_hiddenYMin + m_hiddenYMax))/2.0d;
 		}
 	}
 
