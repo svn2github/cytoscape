@@ -48,6 +48,7 @@ import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.dialogs.SetNestedNetworkDialog;
+import javax.swing.JOptionPane;
 
 /**
  * NestedNetworkMenuListener implements NodeContextMenuListener
@@ -111,6 +112,12 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 			if (this.nodeView.getNode().getNestedNetwork() == null){
 				return;
 			}
+			int user_says = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), 
+					"Are you sure you want to delete this nested network?","Confirm Delete Nested Network", JOptionPane.YES_NO_OPTION);
+			if (user_says == JOptionPane.NO_OPTION){
+				return;
+			}
+				
 			this.nodeView.getNode().setNestedNetwork(null);			
 		}
 	}
