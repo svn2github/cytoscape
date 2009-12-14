@@ -126,15 +126,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	static final String MAC_OS_ID = "mac";
 
-	//AJK: 04/02/06 BEGIN
 	private DropTarget dropTarget;
 	private String CANVAS_DROP = "CanvasDrop";
 
-	// AJK: 1/14/2007 BEGIN
 	//  for turning selection rectangle on and off
 	private boolean selecting = true;
-
-	// AJK: 1/14/2007 END
 
 	/**
 	 * DOCUMENT ME!
@@ -181,12 +177,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		addKeyListener(this);
 		setFocusable(true);
 
-		// AJK: 04/02/06 BEGIN
 		dropTarget = new DropTarget(this, // component
 		                            DnDConstants.ACTION_COPY, // actions
 		                            this); // DropTargetListener
-
-		// AJK: 04/02/06 END
 	}
 
 	/**
