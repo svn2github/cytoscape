@@ -39,10 +39,7 @@
 package ding.view;
 
 import giny.model.GraphPerspective;
-
-// import
 import giny.model.Node;
-
 import giny.view.NodeView;
 
 import java.awt.AlphaComposite;
@@ -53,7 +50,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,22 +68,22 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	/**
 	 * Our reference to the GraphPerspective our view belongs to
 	 */
-	private GraphPerspective m_graphPerspective;
+	private final GraphPerspective m_graphPerspective;
 
 	/**
 	 * Our reference to the DGraphView we live within
 	 */
-	private DGraphView m_dGraphView;
+	private final DGraphView m_dGraphView;
 
 	/**
 	 * Our reference to the inner canvas
 	 */
-	private InnerCanvas m_innerCanvas;
+	private final InnerCanvas m_innerCanvas;
 
 	/*
 	 * Map of component(s) to hidden node(s)
 	 */
-	private Map<Component, Node> m_componentToNodeMap;
+	private final Map<Component, Node> m_componentToNodeMap;
 
 	/**
 	 * Constructor.
@@ -119,13 +115,13 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		if (USE_REPOSITION_CODE) {
 			// create an "anchor node"
 			int nodeIndex = m_graphPerspective.getRootGraph().createNode();
-			Node node = m_graphPerspective.getRootGraph().getNode(nodeIndex);
+			final Node node = m_graphPerspective.getRootGraph().getNode(nodeIndex);
 			node.setIdentifier(component.toString());
 			m_graphPerspective.restoreNode(node);
 
 			// set its node view coordinates
-			NodeView nodeView = m_dGraphView.getNodeView(node);
-			double[] nodeCanvasCoordinates = new double[2];
+			final NodeView nodeView = m_dGraphView.getNodeView(node);
+			final double[] nodeCanvasCoordinates = new double[2];
 			nodeCanvasCoordinates[0] = component.getX();
 			nodeCanvasCoordinates[1] = component.getY();
 			m_dGraphView.xformComponentToNodeCoords(nodeCanvasCoordinates);
@@ -164,7 +160,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		super.setBounds(x, y, width, height);
 
 		// our bounds have changed, create a new image with new size
-		if ((width > 0) && (height > 0)) {
+		if ((width > 1) && (height > 1)) {
 			// create the buffered image
 			m_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -185,7 +181,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		// only paint if we have an image to paint on
 		if (m_img != null) {
 			// get image graphics
-			Graphics2D image2D = ((BufferedImage) m_img).createGraphics();
+			final Graphics2D image2D = ((BufferedImage) m_img).createGraphics();
 
 			// first clear the image
 			clearImage(image2D);
