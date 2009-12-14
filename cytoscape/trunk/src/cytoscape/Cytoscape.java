@@ -1089,6 +1089,8 @@ public abstract class Cytoscape {
 			}
 		}
 
+		updateNestedNetworkNodes(network);
+		
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		network = null;
@@ -1098,6 +1100,15 @@ public abstract class Cytoscape {
 		// in destroyNetworkView
 		if ((currentNetworkID != null) && (currentNetworkViewID == null))
 			getDesktop().setFocus(currentNetworkID);
+	}
+	
+	
+	private static void updateNestedNetworkNodes(final GraphPerspective destroyedNetwork) {
+		for (final CyNode node: (List<CyNode>)Cytoscape.getRootGraph().nodesList()) {
+			if (node.getNestedNetwork() == destroyedNetwork) {
+				node.setNestedNetwork(null);
+			}
+		}
 	}
 
 	/**
