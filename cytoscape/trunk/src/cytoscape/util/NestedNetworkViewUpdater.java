@@ -77,6 +77,7 @@ public class NestedNetworkViewUpdater implements PropertyChangeListener {
 	private void setNestedNetworkViews(final List<String> parents, final boolean created) {
 		final Collection<CyNetworkView> networkViews = Cytoscape.getNetworkViewMap().values();
 		for (final CyNetworkView networkView: networkViews) {
+			boolean applyStyle = false;
 			for (final String parentNode: parents) {
 				// If this view contains a parentNode, then update its nested network view.
 				final CyNode node = Cytoscape.getCyNode(parentNode);
@@ -94,8 +95,13 @@ public class NestedNetworkViewUpdater implements PropertyChangeListener {
 						}
 						((DNodeView)nodeView).setNestedNetworkView(created ? (DGraphView) nestedNetworkView : null);
 					}
+					applyStyle = true;
 				}
 			}
+			
+			// Apply visual style if necessary
+			if (applyStyle)
+				networkView.redrawGraph(/* do layout = */ false, /* apply visual style = */ true);
 		}
 	}
 	
