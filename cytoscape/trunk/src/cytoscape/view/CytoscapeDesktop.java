@@ -51,14 +51,12 @@ import java.util.List;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
@@ -75,8 +73,8 @@ import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
 import cytoscape.visual.ui.NestedNetworkListener;
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
 import cytoscape.visual.ui.VizMapperMainPanel;
 
 

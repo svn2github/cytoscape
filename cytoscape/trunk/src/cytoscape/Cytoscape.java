@@ -1403,15 +1403,25 @@ public abstract class Cytoscape {
 		if (reader instanceof NestedNetworkReader) {
 			// This is a reader which creates multiple networks.
 			final List<CyNetwork> networks = ((NestedNetworkReader)reader).getNetworks();
+			
+			// Turn views off for performance
+			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
 			for (CyNetwork network : networks) {
 				getNetworkMap().put(network.getIdentifier(), network);
-				//firePropertyChange(NETWORK_CREATED, null /* parentID */, network.getIdentifier());
 				if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
 											      .getProperty("viewThreshold")))) {
 					createNetworkView(network);
 				}
 			}
-
+			final CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+			for (CyNetworkView dview : Cytoscape.getNetworkViewMap().values()) {
+				final List<String> parents = netAttr.getListAttribute(dview.getNetwork().getIdentifier(), CyNode.PARENT_NODES_ATTR);
+				if (parents != null && parents.size() != 0) {
+					((DingNetworkView)dview).getSnapshot(1, 1);
+				}
+			}
+			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
+			
 			return networks.get(0); // Root network.
 		} else {
 			// get the RootGraph indices of the nodes and
