@@ -282,7 +282,7 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 			CyNetwork selectedNetwork = dlg.getSelectedNetwork();
 
 			// Create a new Node
-			String nodeID = selectedNetwork.getIdentifier();//"node" + counter;
+			String nodeID = getSuggestedNodeID(selectedNetwork);//selectedNetwork.getIdentifier();//"node" + counter;
 			
 			if (ShapePalette.specifyIdentifier){
 				nodeID = getNodeID(nodeID);
@@ -310,6 +310,23 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		}
 	}
 
+	private String getSuggestedNodeID(CyNetwork pSelectedNetwork){
+	
+		String suggestedNodeID = pSelectedNetwork.getIdentifier();
+		
+		while (true){
+			CyNode aNode = Cytoscape.getCyNode(suggestedNodeID);
+			if (aNode == null){
+				// suggestedNodeID is still available, so we get one we need
+				break;				
+			}
+			
+			suggestedNodeID += suggestedNodeID + "_"+counter;		
+		}
+		
+		return suggestedNodeID;
+	}
+	
 	/**
 	 * A stub routine that currently just adds a node at the drop position. In
 	 * theory, the URL can be traversed and the retrieved document parsed to
