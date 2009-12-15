@@ -60,9 +60,13 @@ import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
 import clusterMaker.algorithms.TransClust.TransClustCluster;
+import clusterMaker.algorithms.FORCE.FORCECluster;
 import clusterMaker.algorithms.MCL.MCLCluster;
 import clusterMaker.algorithms.glay.GLayCluster;
-// import clusterMaker.algorithms.SOMCluster;
+// import clusterMaker.algorithms.QT.QTCluster;
+// import clusterMaker.algorithms.Spectral.SpectralCluster;
+// import clusterMaker.algorithms.CP.CPCluster;
+// import clusterMaker.algorithms.AP.APCluster;
 
 /**
  * The ClusterMaker class provides the primary interface to the
@@ -94,9 +98,14 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
-		addClusterAlgorithm(menu, new TransClustCluster());
+		// addClusterAlgorithm(menu, new QTCluster());
 		addClusterAlgorithm(menu, new MCLCluster());
+		// addClusterAlgorithm(menu, new SpectralCluster());
+		// addClusterAlgorithm(menu, new CPCluster());
+		// addClusterAlgorithm(menu, new APCluster());
 		addClusterAlgorithm(menu, new GLayCluster());
+		addClusterAlgorithm(menu, new FORCECluster());
+		addClusterAlgorithm(menu, new TransClustCluster());
 		// addClusterAlgorithm(new HOPACHCluster());
 		menu.addSeparator();
 
