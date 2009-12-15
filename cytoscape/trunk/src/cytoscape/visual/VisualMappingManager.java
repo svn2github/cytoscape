@@ -289,7 +289,7 @@ public class VisualMappingManager extends SubjectBase {
 		MultiHashMapDefinition mhmd = attrs.getMultiHashMapDefinition();
 		List<VisualPropertyType> bypassAttrs = new ArrayList<VisualPropertyType>();
 		for (VisualPropertyType vp : VisualPropertyType.values() )
-			if ( vp.getName().startsWith(prefix) &&
+			if ( vp.toString().startsWith(prefix) &&
 			     mhmd.getAttributeValueType( vp.getBypassAttrName() ) >= 0 )
 				bypassAttrs.add(vp);
 
