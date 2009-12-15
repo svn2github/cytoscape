@@ -94,7 +94,7 @@ public class NetworkMergePlugin extends CytoscapePlugin {
 			frame.setLocationRelativeTo(Cytoscape.getDesktop());
 			frame.setVisible(true);
 			// TODO: make this value user-editable (always on top or not).
-			//frame.setAlwaysOnTop(true);
+			frame.setAlwaysOnTop(true);
 		}
 
 		// TODO: remove in Cytoscape3

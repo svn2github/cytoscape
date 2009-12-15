@@ -127,7 +127,7 @@ import javax.swing.WindowConstants;
  *
  * Main frame for advance network merge
  */
-public class NetworkMergeFrame extends javax.swing.JFrame {
+public class NetworkMergeFrame extends JFrame {
 
     /** Creates new form NetworkMergeFrame */
     public NetworkMergeFrame() {
@@ -212,7 +212,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
-        setTitle("Network Merge");
+        setTitle("Advanced Network Merge");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         operationPanel.setMinimumSize(new java.awt.Dimension(211, 20));
