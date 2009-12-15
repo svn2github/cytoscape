@@ -2586,7 +2586,6 @@ public class DGraphView implements GraphView, Printable {
 		if ( zoom > 0 ) 
 			return zoom;
 	
-		System.out.println("invalid zoom: " + zoom + "   using orig: " + orig);
 		return orig;
 	}
 	
