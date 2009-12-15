@@ -2,7 +2,6 @@ package org.cytoscape.webservice.psicquic;
 
 import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.SEARCH_FINISHED;
 
-import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -162,8 +161,6 @@ public class PSICQUICUniversalClient extends
 		info.setResultType(PSICQUICReturnType.COUNT.getTypeName());
 		info.setBlockSize(blockSize);
 		try {
-			System.out.println("** Submit Search Query: " + query);
-
 			Tunable mode = props.get("query_mode");
 			System.out.println("QueryMode ====> " + mode.getValue());
 
@@ -210,11 +207,10 @@ public class PSICQUICUniversalClient extends
 		info.setBlockSize(100);
 		try {
 			if (queryList != null) {
-				System.out.println("========Get by List");
+				// Use OR as operand
 				importResult = importClient.getByInteractorList(queryList,
 						info, "OR");
 			} else {
-				System.out.println("========Get by Query");
 				importResult = importClient.getByQuery(query, info);
 			}
 		} catch (Exception ex) {
@@ -233,15 +229,20 @@ public class PSICQUICUniversalClient extends
 		Map<URI, String> newNameMap = new HashMap<URI, String>();
 		String netName = null;
 		for (URI name : importResult.keySet()) {
+			if (importClient.isEmpty(name))
+				continue;
+			else {
 			netName = nameMap.get(name);
 			defNetworkNames.add(netName);
 			newNameMap.put(name, netName);
+			}
 		}
 
 		final ResultDialog report = new ResultDialog(Cytoscape.getDesktop(),
 				true, newNameMap);
 		report.setLocationRelativeTo(Cytoscape.getDesktop());
 		report.setVisible(true);
+		report.setModal(true);
 
 		newNameMap = report.getNewNames();
 
@@ -258,9 +259,6 @@ public class PSICQUICUniversalClient extends
 				false);
 
 		for (URI key : importResult.keySet()) {
-
-			System.out.println("========Import Finished2!!!!!!!!!!!!!!!!!!!\n"
-					+ importResult.get(key).size());
 
 			StringBuilder builder = new StringBuilder();
 			List<QueryResponse> res = importResult.get(key);

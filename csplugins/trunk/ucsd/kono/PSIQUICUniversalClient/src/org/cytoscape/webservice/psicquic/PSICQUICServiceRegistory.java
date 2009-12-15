@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,63 +92,20 @@ public class PSICQUICServiceRegistory {
 	 */
 	public Map<URI, QueryResponse> getCount(List<DbRef> interactors,
 			RequestInfo reqInfo, String operator) throws CyWebServiceException {
-		final Map<URI, QueryResponse> result = new ConcurrentHashMap<URI, QueryResponse>();
 
-		System.out.println("===== Search Start ====");
-		final ExecutorService exe = Executors.newCachedThreadPool();
-		final long startTime = System.currentTimeMillis();
-
-		final CompletionService<List<Object>> cs = new ExecutorCompletionService<List<Object>>(
-				exe);
-
-		Future<List<Object>> res = null;
-
-		// Submit tasks
-		Object port;
-		for (URI key : services.keySet()) {
-			port = services.get(key);
-			cs.submit(new PSICQUICRemoteTask(interactors, reqInfo, operator,
-					port, key, OperationType.GET_COUNT));
-			System.out.println("Submit search query to " + key);
-		}
-
-		try {
-			for (int i = 0; i < services.size(); i++) {
-				res = cs.take();
-				URI name = (URI) res.get().get(0);
-				QueryResponse qr = (QueryResponse) res.get().get(1);
-				if (qr != null) {
-					result.put(name, qr);
-					System.out.println("End: " + name + " ---> "
-							+ qr.getResultInfo().getTotalResults());
-				}
-			}
-
-			long endTime = System.currentTimeMillis();
-			double sec = (endTime - startTime) / (1000.0);
-			System.out.println("PSICQUIC DB search finished in " + sec
-					+ " msec.");
-		} catch (Exception ee) {
-			ee.printStackTrace();
-			CyLogger.getLogger().fatal(
-					"Could not complete PSICQUIC search task.", ee);
-			throw new CyWebServiceException(
-					CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
-
-		} finally {
-			// res.cancel(true);
-			exe.shutdown();
-		}
-
-		return result;
+		return submitTask(null, interactors, reqInfo, operator);
 	}
 
 	public Map<URI, QueryResponse> getCount(String query, RequestInfo reqInfo)
 			throws CyWebServiceException {
 
-		final Map<URI, QueryResponse> result = new ConcurrentHashMap<URI, QueryResponse>();
+		return submitTask(query, null, reqInfo, null);
+	}
 
-		System.out.println("===== Search Start ====");
+	private Map<URI, QueryResponse> submitTask(String query,
+			List<DbRef> interactors, RequestInfo reqInfo, String operator)
+			throws CyWebServiceException {
+		final Map<URI, QueryResponse> result = new ConcurrentHashMap<URI, QueryResponse>();
 		final ExecutorService exe = Executors.newCachedThreadPool();
 		final long startTime = System.currentTimeMillis();
 
@@ -162,11 +118,17 @@ public class PSICQUICServiceRegistory {
 		Object port;
 		for (URI key : services.keySet()) {
 			port = services.get(key);
-			cs.submit(new PSICQUICRemoteTask(query, reqInfo, port, key,
-					OperationType.GET_COUNT));
+			if (query != null) {
+				cs.submit(new PSICQUICRemoteTask(query, reqInfo, port, key,
+						OperationType.GET_COUNT));
+			} else {
+				cs.submit(new PSICQUICRemoteTask(interactors, reqInfo,
+						operator, port, key, OperationType.GET_COUNT));
+			}
 			System.out.println("Submit search query to " + key);
 		}
 
+		emptyResults.clear();
 		try {
 			for (int i = 0; i < services.size(); i++) {
 				res = cs.take();
@@ -174,7 +136,8 @@ public class PSICQUICServiceRegistory {
 				QueryResponse qr = (QueryResponse) res.get().get(1);
 				if (qr != null) {
 					result.put(name, qr);
-					System.out.println("End: " + name + " ---> "
+					System.out.println(name.toASCIIString()
+							+ ": Interactions Found =  "
 							+ qr.getResultInfo().getTotalResults());
 					if (qr.getResultInfo().getTotalResults() == 0) {
 						emptyResults.add(name);
@@ -194,18 +157,16 @@ public class PSICQUICServiceRegistory {
 					CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
 
 		} finally {
-			// res.cancel(true);
 			exe.shutdown();
 		}
 
 		return result;
-
 	}
 
 	public Map<URI, List<QueryResponse>> getByInteractorList(
 			List<DbRef> interactors, RequestInfo reqInfo, String operator)
 			throws CyWebServiceException {
-		
+
 		return doImport(null, interactors, reqInfo, operator);
 	}
 
@@ -257,7 +218,14 @@ public class PSICQUICServiceRegistory {
 
 				final List<QueryResponse> qrList = new ArrayList<QueryResponse>();
 				for (int j = 1; j < res.get().size(); j++) {
-					qrList.add((QueryResponse) res.get().get(j));
+					// Add only non-empty results.
+					final QueryResponse response = (QueryResponse) res.get()
+							.get(j);
+					// System.out.println(response.getResultSet().getMitab() +
+					// "\n\n");
+					final String mitab = response.getResultSet().getMitab();
+					if (mitab != null && mitab.length() != 0)
+						qrList.add(response);
 				}
 				result.put(name, qrList);
 				System.out.println("End: " + name);
@@ -279,9 +247,14 @@ public class PSICQUICServiceRegistory {
 			exe.shutdown();
 		}
 
-		emptyResults.clear();
-
 		return result;
+	}
+
+	protected boolean isEmpty(final URI serviceURI) {
+		if (this.emptyResults.contains(serviceURI))
+			return true;
+		else
+			return false;
 	}
 
 	class PSICQUICRemoteTask implements Callable<List<Object>>,
