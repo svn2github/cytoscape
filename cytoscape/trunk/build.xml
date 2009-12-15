@@ -783,6 +783,7 @@
 		<copy file="testData/human_interactome_may07_small.tab.gz" todir="${release.dir}/sampleData" />
 		<copy file="testData/Apoptosis_BioPAX.xml" todir="${release.dir}/sampleData" />
 		<copy file="testData/sampleStyles.props" todir="${release.dir}/sampleData" />
+		<copy file="testData/NNFData/Sample.nnf" todir="${release.dir}/sampleData" />
 		
 		<!-- Copy over Third Party Licenses -->
 		<echo>
