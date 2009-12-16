@@ -73,10 +73,17 @@ public class TestNodeView implements NodeView {
 	int node_label_anchor = 0;
 	double label_width = 100.0;
 
+	int rootGraphIndex;
+
 	/**
 	 * Creates a new TestNodeView object.
 	 */
 	public TestNodeView() {
+		this(1);
+	}
+
+	public TestNodeView(int index) {
+		rootGraphIndex = 1;
 	}
 
 	/**
@@ -103,7 +110,7 @@ public class TestNodeView implements NodeView {
 	 * @return  DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
-		return 1;
+		return rootGraphIndex;
 	}
 
 	/**
@@ -112,7 +119,7 @@ public class TestNodeView implements NodeView {
 	 * @return  DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
-		return 1;
+		return rootGraphIndex;
 	}
 
 	/**
