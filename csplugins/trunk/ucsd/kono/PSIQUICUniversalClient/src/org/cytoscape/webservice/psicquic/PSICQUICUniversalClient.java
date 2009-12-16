@@ -21,6 +21,7 @@ import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.CyWebServiceException;
@@ -275,13 +276,23 @@ public class PSICQUICUniversalClient extends
 		if (vmm.getCalculatorCatalog().getVisualStyle(defaultVS.getName()) == null)
 			vmm.getCalculatorCatalog().addVisualStyle(defaultVS);
 
+		
+		// Use nested network feature
+		final CyNode centerNode = Cytoscape.getCyNode(parentName, true);
+		parentNetwork.addNode(centerNode);
+		
 		for (CyNetwork net : target) {
 			vmm.setVisualStyle(defaultVS);
 			final CyNetworkView targetView = Cytoscape.getNetworkView(net
 					.getIdentifier());
 			targetView.setVisualStyle(defaultVS.getName());
 			targetView.redrawGraph(true, false);
+			CyNode nestedNode = Cytoscape.getCyNode(net.getTitle(), true);
+			nestedNode.setNestedNetwork(net);
+			parentNetwork.addNode(nestedNode);
+			parentNetwork.addEdge(Cytoscape.getCyEdge(nestedNode, centerNode, "interaction", "query_result", true));
 		}
+		Cytoscape.createNetworkView(parentNetwork);
 
 		query = null;
 		queryList = null;
