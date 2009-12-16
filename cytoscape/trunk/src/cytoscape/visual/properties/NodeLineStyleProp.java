@@ -44,7 +44,7 @@ import cytoscape.visual.ui.icon.*;
 
 import giny.view.NodeView;
 
-import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -79,12 +79,9 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
 				super.paintIcon(c, g, x, y);
-
-				final BasicStroke stroke = (BasicStroke) ((LineStyle) value)
-				                                                                    .getStroke(((Number) VisualPropertyType.NODE_LINE_WIDTH
-				                                                                                .getDefault(Cytoscape.getVisualMappingManager()
-				                                                                                                     .getVisualStyle()))
-				                                                                               .floatValue());
+				
+				final float width = ((Number) VisualPropertyType.NODE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).floatValue();
+				final Stroke stroke = ((LineStyle) value).getStroke(width);
 				g2d.setStroke(stroke);
 				g2d.setColor(Color.DARK_GRAY);
 				g2d.translate(15, 4);

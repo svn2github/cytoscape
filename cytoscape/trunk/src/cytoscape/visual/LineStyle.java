@@ -126,7 +126,10 @@ public enum LineStyle {
 	 * Creates a new stroke of this LineStyle with the specified width.
 	 */
 	public Stroke getStroke(float width) {
-		return stroke.newInstanceForWidth( width );
+		if ( width <= 0 )
+			return new ZeroStroke(stroke);
+		else
+			return stroke.newInstanceForWidth( width );
 	}
 
 	/**
