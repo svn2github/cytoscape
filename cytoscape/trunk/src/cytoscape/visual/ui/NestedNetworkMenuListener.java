@@ -137,7 +137,7 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 			CyNetwork nestedNetwork = (CyNetwork) this.nodeView.getNode().getNestedNetwork();
 			
 			CyNetworkView theView = Cytoscape.getNetworkView(nestedNetwork.getIdentifier());
-			if (theView == null){
+			if (theView == null || theView.getIdentifier() == null){
 				theView = Cytoscape.createNetworkView(nestedNetwork);
 			}
 
