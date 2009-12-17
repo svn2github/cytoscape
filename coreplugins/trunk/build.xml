@@ -13,7 +13,6 @@
 		<ant dir="RFilters" />
 		<ant dir="CytoscapeEditor2" />
 		<ant dir="AutomaticLayout" />
-		<ant dir="GraphMerge" />
 		<ant dir="QuickFind" />
 		<ant dir="BioPAX" />
 		<ant dir="PSI-MI" />
@@ -31,7 +30,6 @@
 		<copy todir="${build.dir}" file="RFilters/filter.jar" />
 		<copy todir="${build.dir}" file="CytoscapeEditor2/CytoscapeEditor.jar" />
 		<copy todir="${build.dir}" file="AutomaticLayout/AutomaticLayout.jar" />
-		<copy todir="${build.dir}" file="GraphMerge/GraphMerge.jar" />
 		<copy todir="${build.dir}" file="QuickFind/plugins/quick_find.jar" />
 		<copy todir="${build.dir}" file="BioPAX/build/jars/biopax.jar" />
 		<copy todir="${build.dir}" file="PSI-MI/build/jars/psi_mi.jar" />
@@ -51,7 +49,6 @@
 		<ant dir="RFilters" target="clean" />
 		<ant dir="CytoscapeEditor2" target="clean" />
 		<ant dir="AutomaticLayout" target="clean" />
-		<ant dir="GraphMerge" target="clean" />
 		<ant dir="QuickFind" target="clean" />
 		<ant dir="BioPAX" target="clean" />
 		<ant dir="PSI-MI" target="clean" />
