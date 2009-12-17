@@ -142,7 +142,7 @@ public class NetworkMergeFrame extends JFrame {
         nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());
         edgeAttributeMapping = new AttributeMappingImpl(Cytoscape.getEdgeAttributes());
 
-        advancedNetworkMergeCollapsiblePanel = new CollapsiblePanel("Advance Network Merge");
+        advancedNetworkMergeCollapsiblePanel = new CollapsiblePanel("Advanced Network Merge");
         advancedNetworkMergeCollapsiblePanel.addCollapeListener(new CollapsiblePanel.CollapeListener() {
                 public void collaped() {
                         updateOKButtonEnable();
@@ -155,7 +155,7 @@ public class NetworkMergeFrame extends JFrame {
                 }
         });
 
-        advancedOptionCollapsiblePanel = new CollapsiblePanel("Advance Option");
+        advancedOptionCollapsiblePanel = new CollapsiblePanel("Advanced Option");
 
         initComponents();
 
