@@ -48,6 +48,8 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
+import cytoscape.Cytoscape;
+import java.util.Set;
 
 
 /**
@@ -102,12 +104,20 @@ public abstract class AbstractGraphReader implements GraphReader {
 			File tempFile = new File(fileName);
 			t = tempFile.getName();
 
-			// Remove the file extension '.sif' or '.gml' as network title
-			if (Pattern.matches(".+\\.SIF$", t.toUpperCase()) ||
-					Pattern.matches(".+\\.GML$", t.toUpperCase()))
-			{
-				t = t.substring(0, t.length()-4);
-			}			
+			// Remove the file extension '.sif' or '.gml' or '.xgmml' as network title
+			// 1. determine the extension of file
+			String ext = "";			
+			int dotIndex = t.lastIndexOf(".");			
+			if (dotIndex != -1){
+				ext = t.substring(dotIndex+1);
+			}
+			
+			// 2. check if the file ext is one of the pre-defined exts
+			Set extSets = (Set) Cytoscape.getImportHandler().getAllExtensions();			
+			if (extSets.contains(ext)){
+				// if the file ext is pre-defined, remove it from network title
+				t = t.substring(0, dotIndex);
+			}
 		}
 
 		return CyNetworkNaming.getSuggestedNetworkTitle(t);
