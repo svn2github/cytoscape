@@ -78,6 +78,10 @@ public class DNodeView implements NodeView, Label {
 	
 	// This image will be used when view is not available for a nested network.
 	private static BufferedImage DEFAULT_NESTED_NETWORK_IMAGE;
+
+	// Used to detect recursive rendering of nested networks.
+	private static int nestedNetworkPaintingDepth = 0;
+
 	static {
 		try {
 			DEFAULT_NESTED_NETWORK_IMAGE = ImageIO.read(DNodeView.class.getClassLoader().getResource("resources/images/default_network.png"));
@@ -1449,20 +1453,24 @@ public class DNodeView implements NodeView, Label {
 
 	TexturePaint getNestedNetworkTexturePaint() {
 		synchronized (m_view.m_lock) {
-			if (this.getNode().getNestedNetwork() != null) {
+			++nestedNetworkPaintingDepth;
+			try {
+				if (nestedNetworkPaintingDepth > 1 || getNode().getNestedNetwork() == null)
+					return null;
+
 				final double IMAGE_WIDTH  = getWidth()*NESTED_IMAGE_SCALE_FACTOR;
 				final double IMAGE_HEIGHT = getHeight()*NESTED_IMAGE_SCALE_FACTOR;
-				if (nestedNetworkView != null) {
+				if (nestedNetworkView != null)
 					return nestedNetworkView.getSnapshot(IMAGE_WIDTH, IMAGE_HEIGHT);
-				} else {
-					if (DEFAULT_NESTED_NETWORK_IMAGE == null) {
+				else {
+					if (DEFAULT_NESTED_NETWORK_IMAGE == null)
 						return null;
-					}
+
 					final Rectangle2D rect = new Rectangle2D.Double(-IMAGE_WIDTH/2, -IMAGE_HEIGHT/2, IMAGE_WIDTH, IMAGE_HEIGHT);
 					return new TexturePaint(DEFAULT_NESTED_NETWORK_IMAGE, rect);
 				}
-			} else {
-				return null;
+			} finally {
+				--nestedNetworkPaintingDepth;
 			}
 		}
 	}
