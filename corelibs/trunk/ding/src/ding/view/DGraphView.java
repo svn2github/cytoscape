@@ -2600,7 +2600,7 @@ public class DGraphView implements GraphView, Printable {
 	 *  
 	 * @return Image of this view.  It is always up-to-date.
 	 */
-	public TexturePaint getSnapshot(final double width, final double height) {
+	TexturePaint getSnapshot(final double width, final double height) {
 		if (!latest) {
 			// Need to update snapshot.
 			snapshotImage = (BufferedImage)createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1, /* skipBackground = */ true);

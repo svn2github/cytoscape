@@ -1447,7 +1447,7 @@ public class DNodeView implements NodeView, Label {
 		}
 	}
 
-	public TexturePaint getNestedNetworkTexturePaint() {
+	TexturePaint getNestedNetworkTexturePaint() {
 		synchronized (m_view.m_lock) {
 			if (this.getNode().getNestedNetwork() != null) {
 				final double IMAGE_WIDTH  = getWidth()*NESTED_IMAGE_SCALE_FACTOR;
