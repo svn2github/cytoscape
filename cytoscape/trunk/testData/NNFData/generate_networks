@@ -47,7 +47,7 @@ def ProcessArgs(argv):
         min_network_size          = int(argv[2])
         max_network_size          = int(argv[3])
         link_factor               = float(argv[4])
-    except exceptions.ValueError:
+    except ValueError:
         Usage()
 
     if number_of_nested_networks < 1 or min_network_size < 1 or max_network_size < min_network_size or link_factor < 0.0:
