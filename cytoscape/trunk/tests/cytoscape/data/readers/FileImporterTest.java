@@ -91,7 +91,7 @@ public class FileImporterTest extends TestCase {
 		network = Cytoscape.createNetworkFromFile(location);
 
 		title = network.getTitle();
-		assertEquals("gal.gml", title);
+		assertEquals("gal", title);
 
 		nodeCount = network.getNodeCount();
 		assertEquals("number of nodes", 11, nodeCount);
@@ -129,7 +129,7 @@ public class FileImporterTest extends TestCase {
 		network = Cytoscape.createNetworkFromFile(location, false);
 
 		title = network.getTitle();
-		assertEquals("galFiltered.sif", title);
+		assertEquals("galFiltered", title);
 
 		nodeCount = network.getNodeCount();
 		assertEquals("num nodes", 331, nodeCount);

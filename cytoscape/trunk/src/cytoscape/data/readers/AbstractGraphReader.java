@@ -40,6 +40,7 @@ import giny.view.GraphView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import cytoscape.CyNetwork;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -100,6 +101,13 @@ public abstract class AbstractGraphReader implements GraphReader {
 		if (fileName != null) {
 			File tempFile = new File(fileName);
 			t = tempFile.getName();
+
+			// Remove the file extension '.sif' or '.gml' as network title
+			if (Pattern.matches(".+\\.SIF$", t.toUpperCase()) ||
+					Pattern.matches(".+\\.GML$", t.toUpperCase()))
+			{
+				t = t.substring(0, t.length()-4);
+			}			
 		}
 
 		return CyNetworkNaming.getSuggestedNetworkTitle(t);
