@@ -1419,16 +1419,8 @@ public abstract class Cytoscape {
 			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
 			for (CyNetwork network : networks) {
 				getNetworkMap().put(network.getIdentifier(), network);
-				if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-											      .getProperty("viewThreshold")))) {
+				if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties() .getProperty("viewThreshold")))) {
 					createNetworkView(network);
-				}
-			}
-			final CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-			for (CyNetworkView dview : Cytoscape.getNetworkViewMap().values()) {
-				final List<String> parents = netAttr.getListAttribute(dview.getNetwork().getIdentifier(), CyNode.PARENT_NODES_ATTR);
-				if (parents != null && parents.size() != 0) {
-					((DingNetworkView)dview).getSnapshot(1, 1);
 				}
 			}
 			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
