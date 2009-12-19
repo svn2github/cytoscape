@@ -70,7 +70,7 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 
 	// Labels for the sub-panels.
 	private static final String DATASOURCE = "Data Source";
-	private static final String KEY_ATTR = "Key Attribute";
+	private static final String KEY_ATTR = "Key Attribute in Cytoscape";
 	private static final String ATTR_PANEL_TITLE = "Available Annotations";
 
 	// Title of the panel.
