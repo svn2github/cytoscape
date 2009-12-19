@@ -72,7 +72,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
-
+import cytoscape.data.readers.NNFReader;
 
 /**
  * Task to load a new network.
@@ -291,7 +291,15 @@ public class LoadNetworkTask implements Task {
 	private void informUserOfGraphStats(CyNetwork newNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
-
+		
+		String msg = "";
+		if (reader instanceof NNFReader){
+			NNFReader theReader = (NNFReader) reader;
+			msg += "Successfully loaded "+ theReader.getNetworks().size() +" nested networks from " + name;
+			taskMonitor.setStatus(msg);
+			return;
+		}
+		
 		// Give the user some confirmation
 		sb.append("Successfully loaded network from:  ");
 		sb.append(name);
@@ -303,7 +311,7 @@ public class LoadNetworkTask implements Task {
 		                                                              .getProperty("viewThreshold"))) {
 			sb.append("Network is under "
 			          + CytoscapeInit.getProperties().getProperty("viewThreshold")
-			          + " nodes.  A view will be automatically created.");
+			          + " nodes.  A view has been created automatically.");
 		} else {
 			sb.append("Network is over "
 			          + CytoscapeInit.getProperties().getProperty("viewThreshold")
@@ -345,6 +353,10 @@ public class LoadNetworkTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Loading Network");
+		if (reader instanceof NNFReader){
+			return new String("Loaded Networks");
+		}
+		
+		return new String("Loaded Network");
 	}
 }
