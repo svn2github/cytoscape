@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-Program for generating random multi-level nested network files.
+Program for generating multi-level nested network files.
 """
 from sets import Set
 from random import randint
@@ -37,7 +37,7 @@ def Usage():
     sys.exit(1)
 
 
-# Returns the approx. sum of nodes and edges per network.
+# Returns the approx. no of nodes per network.
 def CalcApproxNetworkSize(levels, object_count):
     def f(x):
         return math.pow(x, levels + 1) - (object_count + 1) * x + object_count
@@ -78,12 +78,11 @@ def ProcessArgs(argv):
 
 (levels, object_count, link_factor) = ProcessArgs(sys.argv)
 
-approx_no_of_objects_per_network = CalcApproxNetworkSize(levels, object_count)
-nodes_per_network                = approx_no_of_objects_per_network / (1.0 + link_factor)
-edges_per_network                = nodes_per_network * link_factor
-nodes_per_network                = int(nodes_per_network + 0.5) # Round to nearest integer.
-edges_per_network                = int(edges_per_network + 0.5) # Round to nearest integer.
-individual_network_size          = nodes_per_network + edges_per_network
+approx_total_node_count = object_count / (1.0 + link_factor)
+nodes_per_network       = CalcApproxNetworkSize(levels, approx_total_node_count)
+edges_per_network       = nodes_per_network * link_factor
+nodes_per_network       = int(nodes_per_network + 0.5) # Round to nearest integer.
+edges_per_network       = int(edges_per_network + 0.5) # Round to nearest integer.
 
 # Create a header comment for the output file:
 print "# Generated with " + sys.argv[0]
@@ -93,6 +92,7 @@ print "# link_factor          = " + str(link_factor)
 print "# nodes_per_network    = " + str(nodes_per_network)
 print "# edges_per_network    = " + str(edges_per_network)
 
+actual_object_count = 0 # Counts the sum of all nodes and edges.
 no_of_networks = 1 # The number of networks on a level.
 for level in range(1, levels + 1):
     if level > 1:
@@ -105,8 +105,11 @@ for level in range(1, levels + 1):
         network_name = network_name_prefix + str(network)
         node_name_prefix = "L" + str(level + 1) + "_"
         GenerateNetwork(network_name, node_name_prefix, nodes_per_network, edges_per_network)
+        actual_object_count += nodes_per_network + edges_per_network
 
-    no_of_networks *= individual_network_size
+    no_of_networks *= nodes_per_network
+
+print "#\n# Sum of all nodes plus edges = " + str(actual_object_count)
 
 
     
