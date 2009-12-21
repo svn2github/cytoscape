@@ -2,7 +2,7 @@
 """
 Program for generating multi-level nested network files.
 """
-from sets import Set
+#from sets import Set
 from random import randint
 import sys, os, math
 
@@ -38,21 +38,23 @@ def Usage():
 
 
 # Returns the approx. no of nodes per network.
-def CalcApproxNetworkSize(levels, object_count):
-    def f(x):
-        return math.pow(x, levels + 1) - (object_count + 1) * x + object_count
-    def f_prime(x):
-        return (levels + 1) * math.pow(x, levels) - object_count - 1
-    def root(k, x):
+def CalcApproxNetworkSize(levels, link_factor, object_count):
+    def f(n):
+        return (1.0 + link_factor) * math.pow(n, levels + 1.0) - (1.0 + link_factor + object_count) * n + object_count
+    def f_prime(n):
+        return (1.0 + link_factor) * (levels + 1.0) * math.pow(n, levels) - 1.0 - link_factor - object_count
+    def root(k, x): # k-th root of x
         return math.pow(x, 1.0 / k)
     
     # Use Newton-Raphson to find the root of f()
-    x = root(levels, object_count) # initial approximation
+    no_of_nodes_per_network = root(levels, object_count) # initial approximation
     iteration_count = 10
-    for i in range(0, iteration_count):
-        x = x - f(x) / f_prime(x)
-
-    return x
+    max_rel_error   = 1.0e-10
+    while True:
+        old_no_of_nodes_per_network = no_of_nodes_per_network
+        no_of_nodes_per_network = no_of_nodes_per_network - f(no_of_nodes_per_network) / f_prime(no_of_nodes_per_network)
+        if math.fabs(old_no_of_nodes_per_network - no_of_nodes_per_network) < max_rel_error:
+            return no_of_nodes_per_network
 
 
 # Command-line argument processing.  Returns the triple (levels, object_count, link_factor).
@@ -78,8 +80,7 @@ def ProcessArgs(argv):
 
 (levels, object_count, link_factor) = ProcessArgs(sys.argv)
 
-approx_total_node_count = object_count / (1.0 + link_factor)
-nodes_per_network       = CalcApproxNetworkSize(levels, approx_total_node_count)
+nodes_per_network       = CalcApproxNetworkSize(levels, link_factor, object_count)
 edges_per_network       = nodes_per_network * link_factor
 nodes_per_network       = int(nodes_per_network + 0.5) # Round to nearest integer.
 edges_per_network       = int(edges_per_network + 0.5) # Round to nearest integer.
@@ -98,13 +99,13 @@ for level in range(1, levels + 1):
     if level > 1:
         print # Output a blank line.
 
-    print "# Starting level " + str(level)
+#    print "# Starting level " + str(level)
 
     network_name_prefix = "L" + str(level) + "_"
     for network in range(1, no_of_networks + 1):
         network_name = network_name_prefix + str(network)
         node_name_prefix = "L" + str(level + 1) + "_"
-        GenerateNetwork(network_name, node_name_prefix, nodes_per_network, edges_per_network)
+#        GenerateNetwork(network_name, node_name_prefix, nodes_per_network, edges_per_network)
         actual_object_count += nodes_per_network + edges_per_network
 
     no_of_networks *= nodes_per_network
