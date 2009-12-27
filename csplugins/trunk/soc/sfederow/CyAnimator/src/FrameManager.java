@@ -167,16 +167,18 @@ public class FrameManager {
 	 * can be easily compressed into a standard movie format.
 	 * 
 	 */
-	public void recordAnimation() throws IOException {
+	public void recordAnimation(String directory) throws IOException {
 		
 		//gets the directory from which cytoscape is running
 		String curDir = System.getProperty("user.dir");
-		
+		curDir = directory;
 		//assigns the output directory, for now it is by default cytoscape/outputImgs
-		File file = new File(curDir+"/outputImgs");
+		File file = new File(curDir); //+"/outputImgs");
 		
 		//make the directory
-		file.mkdir();
+		if(!file.exists()){
+			file.mkdir();
+		}
 		
 		
 		for(int i=0; i<frames.length; i++){
@@ -184,7 +186,7 @@ public class FrameManager {
 			
 			//assign the appropriate path and extension
 			//String name = curDir+"/outputImgs/Frame_"+frame.format(i)+".png";
-			String name = curDir+"/outputImgs/Frame_"+frame.format(i)+".jpeg";
+			String name = curDir+"/Frame_"+frame.format(i)+".jpeg";
 			
 			frames[i].writeImage(name);
 		}

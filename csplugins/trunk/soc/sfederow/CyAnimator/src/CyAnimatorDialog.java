@@ -35,6 +35,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.table.*;
 import javax.swing.Timer;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.*;
 
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -113,6 +115,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	private JPanel mainPanel;
 	private JPopupMenu thumbnailMenu;
 	private JSlider speedSlider;
+	final JFileChooser fc = new JFileChooser();
 	
 	private ArrayList<JPopupMenu> menuList;
 	private ArrayList<JButton> thumbnailList;
@@ -244,7 +247,6 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		//add current frame to key frame list
 		if(command.equals("capture")){
 			frameManager.addKeyFrame();
-
 			updateThumbnails();
 		}
 		
@@ -277,11 +279,21 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		
 		if(command.equals("record")){
-			try{
-				frameManager.recordAnimation();
-			}catch (Exception excp) {
-				System.out.println(excp.getMessage()); 
-			}
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY );
+			int returnVal = fc.showSaveDialog(new JPanel());
+			 if (returnVal == JFileChooser.APPROVE_OPTION) {
+	                File file = fc.getSelectedFile();
+	                String filePath = file.getPath();
+	                System.out.println(filePath+" "+file.getName());
+	                try{
+	    				frameManager.recordAnimation(filePath);
+	    			}catch (Exception excp) {
+	    				System.out.println(excp.getMessage()); 
+	    			}
+			 } else {
+	                
+	         }
+			
 			
 			updateThumbnails();
 			frameManager.makeTimer();

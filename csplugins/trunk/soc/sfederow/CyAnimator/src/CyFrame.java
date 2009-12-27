@@ -672,7 +672,7 @@ public class CyFrame {
 			//
 		}
 		
-		System.out.println("written?");
+		System.out.println("writing...");
 	}
 
 	/**
