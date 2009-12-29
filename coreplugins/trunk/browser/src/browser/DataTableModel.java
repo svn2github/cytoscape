@@ -536,8 +536,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		if (objectType != null) {
 			if (colIndex == 0) {
 				return false;
-			} else if (objectType == ArrayList.class) {
-				return false;
 			} else if (objectType == HashMap.class) {
 				return false;
 			} else {
