@@ -80,9 +80,9 @@ public class CyAttributesReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public static void loadAttributes(CyAttributes cyAttrs, Reader fileIn) throws IOException {
-        CyAttributesReader ar = new CyAttributesReader();
-        ar.loadAttributesInternal(cyAttrs, fileIn);
-    }
+		CyAttributesReader ar = new CyAttributesReader();
+		ar.loadAttributesInternal(cyAttrs, fileIn);
+	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -93,9 +93,9 @@ public class CyAttributesReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void loadAttributesInternal(CyAttributes cyAttrs, Reader fileIn)
-	    throws IOException {
+		throws IOException {
 
-        badDecode = false;
+		badDecode = false;
 
 		try {
 			final BufferedReader reader;
@@ -176,7 +176,7 @@ public class CyAttributesReader {
 				String key = line.substring(0, inx).trim();
 				String val = line.substring(inx + 1).trim();
 
-                key = decodeString(key);
+				key = decodeString(key);
 
 				if (firstLine && val.startsWith("(")) {
 					list = true;
@@ -187,14 +187,14 @@ public class CyAttributesReader {
 					val = val.substring(1).trim();
 					val = val.substring(0, val.length() - 1).trim();
 
-                    String[] elms = val.split("::");
+					String[] elms = val.split("::");
 					final ArrayList elmsBuff = new ArrayList();
 
-                    for (String vs : elms) {
-                        vs = decodeString(vs);
-                        vs = decodeSlashEscapes(vs);
-                        elmsBuff.add(vs);
-                    }
+					for (String vs : elms) {
+						vs = decodeString(vs);
+						vs = decodeSlashEscapes(vs);
+						elmsBuff.add(vs);
+					}
 
 					if (firstLine) {
 						if (type < 0) {
@@ -243,8 +243,8 @@ public class CyAttributesReader {
 
 					cyAttrs.setListAttribute(key, attributeName, elmsBuff);
 				} else { // Not a list.
-                    val = decodeString(val);
-                    val = decodeSlashEscapes(val);
+					val = decodeString(val);
+					val = decodeSlashEscapes(val);
 
 					if (firstLine) {
 						if (type < 0) {
@@ -298,23 +298,23 @@ public class CyAttributesReader {
 		}
 	}
 
-    private String decodeString(String in) throws IOException {
-        if (doDecoding) {
-            try {
-                in = URLDecoder.decode(in, CyAttributesWriter.ENCODING_SCHEME);
-            }
-            catch (IllegalArgumentException iae) {
-                if (!badDecode) {
-                    CyLogger.getLogger(CyAttributesReader.class).info(MessageFormat.format(badDecodeMessage, lineNum), iae);
-                    badDecode = true;
-                }
-            }
-        }
+	private String decodeString(String in) throws IOException {
+		if (doDecoding) {
+			try {
+				in = URLDecoder.decode(in, CyAttributesWriter.ENCODING_SCHEME);
+			}
+			catch (IllegalArgumentException iae) {
+				if (!badDecode) {
+					CyLogger.getLogger(CyAttributesReader.class).info(MessageFormat.format(badDecodeMessage, lineNum), iae);
+					badDecode = true;
+				}
+			}
+		}
 
-        return in;
-    }
+		return in;
+	}
 
-    private static String decodeSlashEscapes(String in) {
+	private static String decodeSlashEscapes(String in) {
         final StringBuilder elmBuff = new StringBuilder();
         int inx2;
 
