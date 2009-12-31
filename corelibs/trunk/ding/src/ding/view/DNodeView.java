@@ -75,7 +75,7 @@ import cytoscape.render.stateful.CustomGraphic;
 public class DNodeView implements NodeView, Label {
 	// For Cytoscape 2.7: Nested Network Image size
 	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.6f;
-	
+
 	// This image will be used when view is not available for a nested network.
 	private static BufferedImage DEFAULT_NESTED_NETWORK_IMAGE;
 
@@ -90,7 +90,7 @@ public class DNodeView implements NodeView, Label {
 			DEFAULT_NESTED_NETWORK_IMAGE = null;
 		}
 	}
-	
+
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final byte DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -107,7 +107,7 @@ public class DNodeView implements NodeView, Label {
 	Paint m_borderPaint;
 
 	/**
-	 * Stores the position of a nodeView when it's hidden so that when the 
+	 * Stores the position of a nodeView when it's hidden so that when the
 	 * nodeView is restored we can restore the view into the same position.
 	 */
 	float m_hiddenXMin = Float.MIN_VALUE;
@@ -131,7 +131,7 @@ public class DNodeView implements NodeView, Label {
     private final static HashSet<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(0);
 	// AJK: 04/26/06 for tooltip
 	String m_toolTipText = null;
-	
+
 	private DGraphView nestedNetworkView;
 
 	/*
@@ -146,7 +146,7 @@ public class DNodeView implements NodeView, Label {
 		m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
 		m_graphicShapes = null;
 		m_graphicPaints = null;
-		
+
 		// By default, no nested network is available.
 		nestedNetworkView = null;
 	}
@@ -596,7 +596,7 @@ public class DNodeView implements NodeView, Label {
 			final double wDiv2;
 			final boolean nodeVisible = m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0);
 
-			if ( nodeVisible ) 
+			if ( nodeVisible )
 				wDiv2 = (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
 			else
 				wDiv2 = (double)(m_hiddenXMax - m_hiddenXMin)/2.0d;
@@ -657,7 +657,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public void setYPosition(double yPos) {
 		synchronized (m_view.m_lock) {
-			final double hDiv2; 
+			final double hDiv2;
 			final boolean nodeVisible = m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0);
 
 			if ( nodeVisible )
@@ -675,7 +675,7 @@ public class DNodeView implements NodeView, Label {
 			// If the node is visible, set the extents.
 			if ( nodeVisible ) {
 				m_view.m_spacial.delete(m_inx);
-				m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin, 
+				m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
 				                        m_view.m_extentsBuff[2], yMax);
 				m_view.m_contentChanged = true;
 
@@ -1135,12 +1135,12 @@ public class DNodeView implements NodeView, Label {
     public Iterator<CustomGraphic> customGraphicIterator() {
 	Iterator<CustomGraphic> retVal = null;
 	final Iterable<CustomGraphic> toIterate;
-	//	CG_RW_LOCK.readLock().lock();	
+	//	CG_RW_LOCK.readLock().lock();
 	//	if (_customGraphics == null) {
 	//	    toIterate = EMPTY_CUSTOM_GRAPHICS;
 	//	} else {
 	//	    toIterate = _customGraphics;
-	//	}	    
+	//	}
 	//	retVal = new LockingIterator<CustomGraphic>(toIterate);
 	//	retVal = new Iterator<CustomGraphic>() {
 	//	    Iterator<? extends CustomGraphic> i = toIterate.iterator();
@@ -1150,7 +1150,7 @@ public class DNodeView implements NodeView, Label {
 	//		throw new UnsupportedOperationException();
 	//	    }
 	//	};
-	//	CG_RW_LOCK.readLock().unlock();		   
+	//	CG_RW_LOCK.readLock().unlock();
 	//	return retVal;
 	synchronized (CG_LOCK) {
 	    if (_customGraphics == null) {
@@ -1164,7 +1164,7 @@ public class DNodeView implements NodeView, Label {
 
     /**
      * A thread-safe method for removing a given custom graphic from this DNodeView.
-     * @return true if the custom graphic was found an removed. Returns false if 
+     * @return true if the custom graphic was found an removed. Returns false if
      *         cg is null or is not a custom graphic associated with this DNodeView.
      * @since Cytoscape 2.6
      */
@@ -1173,9 +1173,9 @@ public class DNodeView implements NodeView, Label {
 	//	CG_RW_LOCK.writeLock().lock();
 	//	if (_customGraphics != null) {
 	//	    retVal = _customGraphics.remove (cg);
-	//	}	
+	//	}
 	//	CG_RW_LOCK.writeLock().unlock();
-	synchronized (CG_LOCK) {	
+	synchronized (CG_LOCK) {
 	    if (_customGraphics != null) {
 		retVal = _customGraphics.remove (cg);
 	    }
@@ -1206,7 +1206,7 @@ public class DNodeView implements NodeView, Label {
 	}
     }
 
-    
+
     private void ensureContentChanged () {
 	synchronized (m_view.m_lock) {
 	    m_view.m_contentChanged = true;
@@ -1455,7 +1455,7 @@ public class DNodeView implements NodeView, Label {
 		synchronized (m_view.m_lock) {
 			++nestedNetworkPaintingDepth;
 			try {
-				if (nestedNetworkPaintingDepth > 1 || getNode().getNestedNetwork() == null)
+				if (nestedNetworkPaintingDepth > 1 || getNode().getNestedNetwork() == null || !getNode().nestedNetworkIsVisible())
 					return null;
 
 				final double IMAGE_WIDTH  = getWidth()*NESTED_IMAGE_SCALE_FACTOR;
@@ -1474,7 +1474,7 @@ public class DNodeView implements NodeView, Label {
 			}
 		}
 	}
-	
+
 	public void setNestedNetworkView(final DGraphView nestedNetworkView) {
 		this.nestedNetworkView = nestedNetworkView;
 	}
