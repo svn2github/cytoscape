@@ -1558,15 +1558,15 @@ public abstract class Cytoscape {
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
 				try {
 					InputStreamReader reader = null;
-                    try {
+					try {
 						reader = new InputStreamReader(FileUtil.getInputStream(nodeAttrLocations[i]));
-                        CyAttributesReader.loadAttributes(nodeAttributes, reader);
-                    }
-                    finally {
-                        if (reader != null) {
-                            reader.close();
-                        }
-                    }
+						CyAttributesReader.loadAttributes(nodeAttributes, reader);
+					}
+					finally {
+						if (reader != null) {
+							reader.close();
+						}
+					}
 					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
 					// e.printStackTrace();
