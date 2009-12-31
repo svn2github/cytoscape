@@ -50,6 +50,7 @@ import cytoscape.Cytoscape;
 import cytoscape.dialogs.SetNestedNetworkDialog;
 import javax.swing.JOptionPane;
 
+
 /**
  * NestedNetworkMenuListener implements NodeContextMenuListener
  * When a node is selected it calls NestedNetwork and add
@@ -61,17 +62,20 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 	 * @param nodeView The clicked NodeView
 	 * @param menu popup menu to add the Bypass menu
 	 */
-	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {		
-		if (menu == null){
-			menu = new JPopupMenu();		
-		}
-		JMenu jm = new JMenu("Nested network");
-				
+	public void addNodeContextMenuItems(final NodeView nodeView, JPopupMenu menu) {
+		if (menu == null)
+			menu = new JPopupMenu();
+
+		JMenu jm = new JMenu("Nested Network");
+
 		final JMenuItem jm1 = new JCheckBoxMenuItem(new SetNestedNetworkMenuItemAction(nodeView));
 		final JMenuItem jm2 = new JCheckBoxMenuItem(new DeleteNestedNetworkMenuItemAction(nodeView));
 		final JMenuItem jm3 = new JCheckBoxMenuItem(new GotoNestedNetworkMenuItemAction(nodeView));
+		final JMenuItem jm4 = nodeView.getNode().nestedNetworkIsVisible()
+			? new JCheckBoxMenuItem(new HideNestedNetworkMenuItemAction(nodeView))
+			: new JCheckBoxMenuItem(new ShowNestedNetworkMenuItemAction(nodeView));
 
-		if (nodeView.getNode().getNestedNetwork() == null){
+		if (nodeView.getNode().getNestedNetwork() == null) {
 			jm2.setEnabled(false);
 			jm3.setEnabled(false);
 		}
@@ -79,69 +83,97 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 		jm.add(jm1);
 		jm.add(jm2);
 		jm.add(jm3);
-		
+		jm.add(jm4);
+
 		menu.add(jm);
 	}
-	
 
-	//
+
 	class SetNestedNetworkMenuItemAction extends AbstractAction {
 		NodeView nodeView;
-		public SetNestedNetworkMenuItemAction(NodeView nodeView){
+		public SetNestedNetworkMenuItemAction(NodeView nodeView) {
 			super("Set Nested Network");
 			this.nodeView = nodeView;
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			SetNestedNetworkDialog dlg = new SetNestedNetworkDialog(Cytoscape.getDesktop(), true, this.nodeView);
-					//"Set Nested Network for " + nodeView.getNode().getIdentifier());
 			dlg.setLocationRelativeTo(Cytoscape.getDesktop());
 			dlg.setVisible(true);
 		}
 	}
 
-	//
+
 	class DeleteNestedNetworkMenuItemAction extends AbstractAction {
 		NodeView nodeView;
-		public DeleteNestedNetworkMenuItemAction(NodeView nodeView){
+		public DeleteNestedNetworkMenuItemAction(NodeView nodeView) {
 			super("Delete Nested Network");
 			this.nodeView = nodeView;
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
-			if (this.nodeView.getNode().getNestedNetwork() == null){
+			if (this.nodeView.getNode().getNestedNetwork() == null) {
 				return;
 			}
-			int user_says = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), 
+			int user_says = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
 					"Are you sure you want to delete this nested network?","Confirm Delete Nested Network", JOptionPane.YES_NO_OPTION);
-			if (user_says == JOptionPane.NO_OPTION){
+			if (user_says == JOptionPane.NO_OPTION) {
 				return;
 			}
-				
-			this.nodeView.getNode().setNestedNetwork(null);			
+
+			this.nodeView.getNode().setNestedNetwork(null);
 		}
 	}
 
+
 	class GotoNestedNetworkMenuItemAction extends AbstractAction {
 		NodeView nodeView;
-		public GotoNestedNetworkMenuItemAction(NodeView nodeView){
+		public GotoNestedNetworkMenuItemAction(NodeView nodeView) {
 			super("Go to Nested Network");
 			this.nodeView = nodeView;
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
-			if (this.nodeView.getNode().getNestedNetwork() == null){
+			if (this.nodeView.getNode().getNestedNetwork() == null) {
 				return;
 			}
-		
+
 			CyNetwork nestedNetwork = (CyNetwork) this.nodeView.getNode().getNestedNetwork();
-			
+
 			CyNetworkView theView = Cytoscape.getNetworkView(nestedNetwork.getIdentifier());
-			if (theView == null || theView.getIdentifier() == null){
+			if (theView == null || theView.getIdentifier() == null) {
 				theView = Cytoscape.createNetworkView(nestedNetwork);
 			}
 
 			Cytoscape.getDesktop().setFocus(nestedNetwork.getIdentifier());
+		}
+	}
+
+
+	class ShowNestedNetworkMenuItemAction extends AbstractAction {
+		NodeView nodeView;
+		public ShowNestedNetworkMenuItemAction(final NodeView nodeView) {
+			super("Show Nested Network");
+			this.nodeView = nodeView;
+		}
+
+		public void actionPerformed(final ActionEvent e) {
+			this.nodeView.getNode().showNestedNetwork(true);
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		}
+	}
+
+
+	class HideNestedNetworkMenuItemAction extends AbstractAction {
+		NodeView nodeView;
+		public HideNestedNetworkMenuItemAction(final NodeView nodeView) {
+			super("Hide Nested Network");
+			this.nodeView = nodeView;
+		}
+
+		public void actionPerformed(final ActionEvent e) {
+			this.nodeView.getNode().showNestedNetwork(false);
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
 	}
 }

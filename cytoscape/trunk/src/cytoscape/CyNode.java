@@ -52,15 +52,16 @@ import cytoscape.groups.CyGroupManager;
  */
 public class CyNode implements giny.model.Node {
 	public static final String NESTED_NETWORK_ID_ATTR = "nested_network_id";
+	public static final String NESTED_NETWORK_IS_VISIBLE_ATTR = "nested_network_is_visible";
 	public static final String HAS_NESTED_NETWORK_ATTR = "has_nested_network";
 	public static final String PARENT_NODES_ATTR = "parent_nodes";
-	
+
 	// Variables specific to public get/set methods.
 	CytoscapeFingRootGraph m_rootGraph = null;
 	int m_rootGraphIndex = 0;
 	String m_identifier = null;
 	ArrayList<CyGroup> groupList = null;
-	
+
 	private GraphPerspective nestedNetwork;
 
 	/**
@@ -247,14 +248,13 @@ public class CyNode implements giny.model.Node {
 			return;
 
 		final GraphPerspective oldNestedNetwork = this.nestedNetwork;
-		
+		final String nodeID = this.getIdentifier();
+
 		// create a Node Attribute "nested.network.id" for this Node
 		final String networkID = ((CyNetwork)(graphPerspective == null ? this.nestedNetwork : graphPerspective)).getIdentifier();
 		this.nestedNetwork = graphPerspective;
-		
-		Cytoscape.getNodeAttributes().setAttribute(this.getIdentifier(), NESTED_NETWORK_ID_ATTR, networkID);
-		
-		// create or update Network Attribute "parent.node.name.list" for the Network	
+
+		// create or update Network Attribute "parent.node.name.list" for the Network
 		final String[] attributeNames = Cytoscape.getNetworkAttributes().getAttributeNames();
 		boolean attrFound = false;
 		for (final String name : attributeNames) {
@@ -266,35 +266,39 @@ public class CyNode implements giny.model.Node {
 		List<String> parentNodeList;
 		if (!attrFound) {
 			parentNodeList = new ArrayList<String>();
-			parentNodeList.add(this.getIdentifier());
+			parentNodeList.add(nodeID);
 		} else {
 			parentNodeList = (List<String>) Cytoscape.getNetworkAttributes().getListAttribute(networkID, PARENT_NODES_ATTR);
 			if (this.nestedNetwork != null) {
-				parentNodeList.add(this.getIdentifier());
+				parentNodeList.add(nodeID);
 			} else {
-				parentNodeList.remove(this.getIdentifier());
+				parentNodeList.remove(nodeID);
 			}
 		}
 		Cytoscape.getNetworkAttributes().setListAttribute(networkID, PARENT_NODES_ATTR, parentNodeList);
 
 		// tag or untag the node as having a nested network
 		if (graphPerspective != null) {
-			Cytoscape.getNodeAttributes().setAttribute(this.getIdentifier(), HAS_NESTED_NETWORK_ATTR, "yes");
+			Cytoscape.getNodeAttributes().setAttribute(nodeID, HAS_NESTED_NETWORK_ATTR, "yes");
+			Cytoscape.getNodeAttributes().setAttribute(nodeID, NESTED_NETWORK_IS_VISIBLE_ATTR, new Boolean(true));
+			Cytoscape.getNodeAttributes().setAttribute(nodeID, NESTED_NETWORK_ID_ATTR, networkID);
 		} else {
-			Cytoscape.getNodeAttributes().deleteAttribute(this.getIdentifier(), HAS_NESTED_NETWORK_ATTR);
+			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, HAS_NESTED_NETWORK_ATTR);
+			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, NESTED_NETWORK_IS_VISIBLE_ATTR);
+			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, NESTED_NETWORK_ID_ATTR);
 		}
-		
+
 		// Let listeners know that the previous nested network was removed
 		if (oldNestedNetwork != null)
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_DESTROYED, this, oldNestedNetwork);
-		
+
 		// Let listeners know nested network was assigned to this node.
 		if (this.nestedNetwork != null) {
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_CREATED, this, graphPerspective);
 		}
 	}
-	
-		
+
+
 	/**
 	 * Return the currently set graph perspective (may be null) associated with this node.
 	 *
@@ -302,5 +306,24 @@ public class CyNode implements giny.model.Node {
 	 */
 	public GraphPerspective getNestedNetwork() {
 		return nestedNetwork;
+	}
+
+	/** Determines whether a nested network should be rendered as part of a node's view or not.
+	 * @return true if the node has a nested network and we want it rendered, else false.
+	 */
+	public boolean nestedNetworkIsVisible() {
+		final Boolean nestedNetworkIsVisibleAttr = Cytoscape.getNodeAttributes().getBooleanAttribute(this.getIdentifier(), NESTED_NETWORK_IS_VISIBLE_ATTR);
+		return nestedNetworkIsVisibleAttr != null && nestedNetworkIsVisibleAttr;
+	}
+
+	/** Set the visibility of a node's nested network when rendered.
+	 * @param makeVisible forces the visibility of a nested network.
+	 * Please note that this call has no effect if a node has no associated nested network!
+	 */
+	public void showNestedNetwork(final boolean makeVisible) {
+		if (getNestedNetwork() == null || nestedNetworkIsVisible() == makeVisible)
+			return;
+
+		Cytoscape.getNodeAttributes().setAttribute(this.getIdentifier(), NESTED_NETWORK_IS_VISIBLE_ATTR, new Boolean(makeVisible));
 	}
 }
