@@ -1,4 +1,4 @@
-package clusterMaker.algorithms.MCL;
+package clusterMaker.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;

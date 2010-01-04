@@ -52,40 +52,25 @@ import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
-import cern.colt.matrix.DoubleFactory2D;
-import cern.colt.matrix.DoubleMatrix2D;
-
 import clusterMaker.ClusterMaker;
-import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.DistanceMatrix;
+import clusterMaker.algorithms.EdgeAttributeHandler;
 import clusterMaker.ui.ClusterViz;
-import clusterMaker.ui.HistogramDialog;
-import clusterMaker.ui.HistoChangeListener;
 import clusterMaker.ui.NewNetworkView;
 
 // clusterMaker imports
 
-public class MCLCluster extends AbstractClusterAlgorithm 
-                        implements TunableListener, ActionListener, HistoChangeListener {
+public class MCLCluster extends AbstractClusterAlgorithm  {
 	
 	double inflation_parameter = 2.0;
 	int rNumber = 8;
 	double clusteringThresh = 1e-15;
-	boolean takeNegLOG = false;
-	boolean distanceValues = false;
 	boolean createMetaNodes = false;
-	boolean selectedOnly = false;
-	boolean adjustLoops = true;
-	boolean undirectedEdges = true;
 	double maxResidual = 0.001;
-	Double edgeCutOff = null;
-	HistogramDialog histo = null;
+	EdgeAttributeHandler edgeAttributeHandler = null;
 
-	DistanceMatrix matrix = null;
-
-	String[] attributeArray = new String[1];
-
-	String dataAttribute = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
 	RunMCL runMCL = null;
@@ -101,12 +86,7 @@ public class MCLCluster extends AbstractClusterAlgorithm
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
-		Tunable attributeTunable = clusterProperties.get("attributeList");
-		attributeArray = getAllAttributes();
-		attributeTunable.setLowerBound((Object)attributeArray);
-		if (dataAttribute == null && attributeArray.length > 0)
-			dataAttribute = attributeArray[0];
-		tunableChanged(attributeTunable);
+		edgeAttributeHandler.updateAttributeList();
 
 		return clusterProperties.getTunablePanel();
 	}
@@ -152,60 +132,8 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		                                  "Data value options",
 		                                  Tunable.GROUP, new Integer(3)));
 
-		// Whether or not to create a new network from the results
-		Tunable selTune = new Tunable("selectedOnly","Cluster only selected nodes",
-		                              Tunable.BOOLEAN, new Boolean(false));
-		clusterProperties.add(selTune);
-
-		//Whether or not to assume the edges are undirected
-		clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
-
-		// Whether or not to adjust loops before clustering
-		clusterProperties.add(new Tunable("adjustLoops","Adjust loops before clustering",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
-
-		clusterProperties.add(new Tunable("attributeListGroup",
-		                                  "Source for array data",
-		                                  Tunable.GROUP, new Integer(5)));
-
-		// The attribute to use to get the weights
-		attributeArray = getAllAttributes();
-		Tunable attrTunable = new Tunable("attributeList",
-		                                  "Array sources",
-		                                  Tunable.LIST, 0,
-		                                  (Object)attributeArray, new Integer(0), 0);
-
-		clusterProperties.add(attrTunable);
-
-		//Whether the attribute values are weights or distances
-		Tunable dValue = new Tunable("distanceValues","Attributes represent distance (use 1/value)",
-		                           Tunable.BOOLEAN, new Boolean(false));
-		clusterProperties.add(dValue);
-
-		//Whether or not take -LOG of Edge-Weights
-		Tunable tLog = new Tunable("takeNegLOG","Take the -LOG of Edge Weights in Network",
-		                           Tunable.BOOLEAN, new Boolean(false));
-		clusterProperties.add(tLog);
-
-		// We want to "listen" for changes to these
-		attrTunable.addTunableValueListener(this);
-		tLog.addTunableValueListener(this);
-		dValue.addTunableValueListener(this);
-		selTune.addTunableValueListener(this);
-
-		clusterProperties.add(new Tunable("edgeCutoffGroup",
-		                                  "Edge weight cutoff",
-		                                  Tunable.GROUP, new Integer(2)));
-
-		clusterProperties.add(new Tunable("edgeCutOff",
-		                                  "",
-		                                  Tunable.DOUBLE, new Double(0), 
-		                                  new Double(0), new Double(1), Tunable.USESLIDER));
-
-		clusterProperties.add(new Tunable("edgeHistogram",
-		                                  "Set Edge Cutoff Using Histogram",
-		                                  Tunable.BUTTON, "Edge Histogram", this, null, Tunable.IMMUTABLE));
+		// Use the standard edge attribute handling stuff....
+		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties);
 
 		clusterProperties.add(new Tunable("options_panel2",
 		                                  "Results options",
@@ -247,110 +175,17 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
-		t = clusterProperties.get("distanceValues");
-		if ((t != null) && (t.valueChanged() || force))
-			distanceValues = ((Boolean) t.getValue()).booleanValue();
-
-		t = clusterProperties.get("takeNegLOG");
-		if ((t != null) && (t.valueChanged() || force))
-			takeNegLOG = ((Boolean) t.getValue()).booleanValue();
-
 		t = clusterProperties.get("createMetaNodes");
 		if ((t != null) && (t.valueChanged() || force))
 			createMetaNodes = ((Boolean) t.getValue()).booleanValue();
 
-		t = clusterProperties.get("selectedOnly");
-		if ((t != null) && (t.valueChanged() || force))
-			selectedOnly = ((Boolean) t.getValue()).booleanValue();
-
-		t = clusterProperties.get("undirectedEdges");
-		if ((t != null) && (t.valueChanged() || force))
-			undirectedEdges = ((Boolean) t.getValue()).booleanValue();
-
-		t = clusterProperties.get("adjustLoops");
-		if ((t != null) && (t.valueChanged() || force))
-			adjustLoops = ((Boolean) t.getValue()).booleanValue();
-		
-		t = clusterProperties.get("edgeCutOff");
-		if ((t != null) && (t.valueChanged() || force)) {
-			edgeCutOff = (Double) t.getValue();
-		}
-		
-		t = clusterProperties.get("attributeList");
-		if ((t != null) && (t.valueChanged() || force)) {
-			if (attributeArray.length == 1) {
-				dataAttribute = attributeArray[0];
-			} else {
-				int index = ((Integer) t.getValue()).intValue();
-				if (index < 0) index = 0;
-				dataAttribute = attributeArray[index];
-			}
-			// tunableChanged(t);
-		}
-	}
-
-	public void actionPerformed(ActionEvent e) {
-		if (this.matrix == null)
-			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
-		double dataArray[] = matrix.getEdgeValues();
-
-		int nbins = 100;
-		if (dataArray.length < 100)
-			nbins = 10;
-		else if (dataArray.length > 10000)
-			nbins = 1000;
-		String title = "Histogram for "+dataAttribute+" edge attribute";
-		histo = new HistogramDialog(title, dataArray, nbins);
-		histo.pack();
-		histo.setVisible(true);
-		histo.addHistoChangeListener(this);
-	}
-
-	public void histoValueChanged(double cutoffValue) {
-		// System.out.println("Changing cutoff value to "+cutoffValue);
-		Tunable edgeCutoff = clusterProperties.get("edgeCutOff");
-		edgeCutoff.setValue(cutoffValue);
-	}
-
-	public void tunableChanged(Tunable tunable) {
-		updateSettings(false);
-		Tunable edgeCutOffTunable = clusterProperties.get("edgeCutOff");
-		if (edgeCutOffTunable == null || dataAttribute == null) 
-			return;
-
-		if (dataAttribute != null) {
-			Tunable t = clusterProperties.get("edgeHistogram");
-			t.clearFlag(Tunable.IMMUTABLE);
-		}
-
-		this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
-		double dataArray[] = matrix.getEdgeValues();
-		double range = matrix.getMaxWeight() - matrix.getMinWeight();
-		edgeCutOffTunable.setUpperBound(matrix.getMaxWeight());
-		edgeCutOffTunable.setLowerBound(matrix.getMinWeight());
-		edgeCutOffTunable.setValue(matrix.getMinWeight()+(range/1000));
-
-		if (histo != null) {
-			histo.updateData(dataArray);
-			histo.pack();
-		}
+		edgeAttributeHandler.updateSettings(force);
 	}
 
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
-		// Sanity check all of our settings
-		if (debug)
-			logger.debug("Performing MCL clustering with attributes: "+dataAttribute);
 
-		if (this.matrix == null) {
-			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
-		}
-
-		matrix.setEdgeCutOff(edgeCutOff);
-		matrix.setUndirectedEdges(undirectedEdges);
-
-		if (adjustLoops)
-			matrix.adjustLoops();
+		DistanceMatrix matrix = edgeAttributeHandler.getMatrix();
 
 		String clusterAttrName = Cytoscape.getCurrentNetwork().getIdentifier()+"_cluster";
 		//Cluster the nodes
@@ -375,26 +210,5 @@ public class MCLCluster extends AbstractClusterAlgorithm
 
 	public void halt() {
 		runMCL.halt();
-	}
-
-	private void getAttributesList(List<String>attributeList, CyAttributes attributes) {
-		String[] names = attributes.getAttributeNames();
-		for (int i = 0; i < names.length; i++) {
-			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
-			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
-				attributeList.add(names[i]);
-			}
-		}
-	}
-
-	private String[] getAllAttributes() {
-		attributeArray = new String[1];
-		// Create the list by combining node and edge attributes into a single list
-		List<String> attributeList = new ArrayList<String>();
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes());
-		String[] attrArray = attributeList.toArray(attributeArray);
-		if (attrArray.length > 1) 
-			Arrays.sort(attrArray);
-		return attrArray;
 	}
 }

@@ -23,6 +23,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 
 import clusterMaker.algorithms.ClusterStatistics;
+import clusterMaker.algorithms.DistanceMatrix;
 
 import cern.colt.function.IntIntDoubleFunction;
 import cern.colt.matrix.DoubleFactory2D;
