@@ -48,6 +48,7 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	protected ClusterProperties clusterProperties = null;
 	protected PropertyChangeSupport pcs;
 	protected boolean debug = false;
+	protected String clusterAttributeName = null;
 	boolean canceled = false;
 
 	public AbstractClusterAlgorithm() {
@@ -70,15 +71,25 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	 ***********************************************************************/
 
 	protected void initializeProperties() {
+	}
+
+	protected void advancedProperties() {
+		clusterProperties.add(new Tunable("advancedGroup", "Advanced",
+		                                  Tunable.GROUP, new Integer(2),
+		                                  new Boolean(true), null, Tunable.COLLAPSABLE));
+		clusterProperties.add(new Tunable("clusterAttrName", "Cluster Attribute", 
+		                                  Tunable.STRING, clusterAttributeName));
 		clusterProperties.add(new Tunable("debug", "Enable debugging", 
-		                                   Tunable.BOOLEAN, new Boolean(false), 
-                                       Tunable.NOINPUT));
+		                                   Tunable.BOOLEAN, new Boolean(false))); 
 	}
 
 	public void updateSettings(boolean force) {
 		Tunable t = clusterProperties.get("debug");
 		if ((t != null) && (t.valueChanged() || force))
 			debug = ((Boolean) t.getValue()).booleanValue();
+		t = clusterProperties.get("clusterAttrName");
+		if ((t != null) && (t.valueChanged() || force))
+			clusterAttributeName = (String) t.getValue();
 	}
 
 	public void revertSettings() {

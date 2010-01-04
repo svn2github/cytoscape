@@ -120,8 +120,12 @@ public class EdgeAttributeHandler
 		selTune.addTunableValueListener(this);
 
 		clusterProperties.add(new Tunable("edgeCutoffGroup",
+		                                  "Edge weight cutoff",
+		                                  Tunable.GROUP, new Integer(2)));
+
+   clusterProperties.add(new Tunable("edgeCutOff",
 		                                  "",
-		                                  Tunable.DOUBLE, new Double(0), 
+		                                  Tunable.DOUBLE, new Double(0),
 		                                  new Double(0), new Double(1), Tunable.USESLIDER));
 
 		clusterProperties.add(new Tunable("edgeHistogram",
@@ -164,6 +168,10 @@ public class EdgeAttributeHandler
 				if (index < 0) index = 0;
 				dataAttribute = attributeArray[index];
 			}
+			if (dataAttribute != null) {
+				Tunable et = clusterProperties.get("edgeHistogram");
+				et.clearFlag(Tunable.IMMUTABLE);
+			}
 			// tunableChanged(t);
 		}
 	}
@@ -189,10 +197,8 @@ public class EdgeAttributeHandler
 		if (edgeCutOffTunable == null || dataAttribute == null) 
 			return;
 
-		if (dataAttribute != null) {
-			Tunable t = clusterProperties.get("edgeHistogram");
-			t.clearFlag(Tunable.IMMUTABLE);
-		}
+		Tunable t = clusterProperties.get("edgeHistogram");
+		t.clearFlag(Tunable.IMMUTABLE);
 
 		this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
 		double dataArray[] = matrix.getEdgeValues();

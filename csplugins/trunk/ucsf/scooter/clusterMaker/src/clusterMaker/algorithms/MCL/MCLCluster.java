@@ -77,6 +77,7 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 
 	public MCLCluster() {
 		super();
+		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_MCL_cluster";
 		logger = CyLogger.getLogger(MCLCluster.class);
 		initializeProperties();
 	}
@@ -146,6 +147,8 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		// TODO: Add a results panel that sets the number of clusters, average # of nodes/cluster, 
 		//       average # of inter-cluster edges, average # of intra-cluster edges
 
+		super.advancedProperties();
+
 		clusterProperties.initializeProperties();
 		updateSettings(true);
 	}
@@ -155,7 +158,6 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 	}
 
 	public void updateSettings(boolean force) {
-		
 		clusterProperties.updateValues();
 		super.updateSettings(force);
 
@@ -187,9 +189,8 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 
 		DistanceMatrix matrix = edgeAttributeHandler.getMatrix();
 
-		String clusterAttrName = Cytoscape.getCurrentNetwork().getIdentifier()+"_cluster";
 		//Cluster the nodes
-		runMCL = new RunMCL(clusterAttrName, matrix, inflation_parameter, 
+		runMCL = new RunMCL(clusterAttributeName, matrix, inflation_parameter, 
 		                    rNumber, clusteringThresh, maxResidual, logger);
 
 		if (createMetaNodes)
@@ -202,7 +203,7 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
 		                     ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "mcl");
 		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                     ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttrName);
+		                     ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
