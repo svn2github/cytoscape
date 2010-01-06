@@ -93,7 +93,7 @@ public class DistanceMatrix {
 					edgeWeight += Math.abs(minAttribute);
 
 				if(edgeWeight != 0.0 && edgeWeight != Double.MAX_VALUE)
-					edgeWeight = -Math.log(edgeWeight);
+					edgeWeight = -Math.log10(edgeWeight);
 				else
 					edgeWeight = 500; // Assume 1e-500 as a reasonble upper bound
 			}
@@ -119,6 +119,7 @@ public class DistanceMatrix {
 	public DoubleMatrix2D getDistanceMatrix(Double edgeCutOff, boolean undirectedEdges) {
 		setEdgeCutOff(edgeCutOff);
 		setUndirectedEdges(undirectedEdges);
+		matrix = null;
 		return getDistanceMatrix();
 	}
 
@@ -129,6 +130,7 @@ public class DistanceMatrix {
 		matrix = DoubleFactory2D.sparse.make(nodes.size(),nodes.size());
 		int sourceIndex;
 		int targetIndex;
+
 		for(int edgeIndex = 0; edgeIndex < edges.size(); edgeIndex++) {
 			CyEdge edge = edges.get(edgeIndex);
 
@@ -156,10 +158,12 @@ public class DistanceMatrix {
 	public List<CyEdge> getEdges() {return edges;}
 
 	public void setEdgeCutOff(Double edgeCutOff) { 
+		matrix = null;
 		this.edgeCutOff = edgeCutOff.doubleValue(); 
 	}
 
 	public void	setUndirectedEdges(boolean undirectedEdges) { 
+		matrix = null;
 		this.unDirectedEdges = undirectedEdges; 
 	}
 

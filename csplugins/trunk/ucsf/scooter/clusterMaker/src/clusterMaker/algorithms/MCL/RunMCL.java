@@ -43,10 +43,10 @@ public class RunMCL {
 	private CyLogger logger;
 	public final static String GROUP_ATTRIBUTE = "__MCLGroups";
 	protected int clusterCount = 0;
-	private boolean debug = false;
 	private boolean createMetaNodes = false;
 	private DistanceMatrix distanceMatrix = null;
 	private DoubleMatrix2D matrix = null;
+	private boolean debug = false;
 	
 	public RunMCL(String nodeClusterAttributeName, DistanceMatrix dMat,
 	              double inflationParameter, int num_iterations, 
@@ -72,6 +72,8 @@ public class RunMCL {
 	public void halt () { canceled = true; }
 
 	public void createMetaNodes() { createMetaNodes = true; }
+
+	public void setDebug(boolean debug) { this.debug = debug; }
 	
 	public void run(TaskMonitor monitor)
 	{

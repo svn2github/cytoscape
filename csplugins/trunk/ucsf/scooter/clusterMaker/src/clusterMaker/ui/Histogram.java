@@ -154,11 +154,11 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	public void mouseReleased(MouseEvent e){
 		int histoMousePos = (int)(((double)(e.getX()-XSTART))/xIncrement);
 		if(e.getX()>XSTART && e.getX()<(XSTART+xIncrement*histoArray.length) && boolShowLine){
-			double binValue = minValue+(xInterval*histoMousePos);
-			// System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+form.format((binValue)));
+			double binValue = xInterval*histoMousePos;
+			// System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
 			if (listeners.size() == 0) return;
 			for (HistoChangeListener listener: listeners)
-				listener.histoValueChanged(binValue);
+				listener.histoValueChanged(Double.parseDouble(form.format(binValue)));
 		}
 
 	}
@@ -194,7 +194,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		g.drawLine(mX, YEND, mX, height);
 		g.setColor(Color.black);
 		g.setFont(adjFont);
-		g.drawString(toSciNotation(form.format((minValue+(xInterval*histoMousePos))).toString()," ("+histoArray[histoMousePos]+" values)"),mX-50,YEND-5);
+		g.drawString(toSciNotation(form.format(xInterval*histoMousePos).toString()," ("+histoArray[histoMousePos]+" values)"),mX-50,YEND-5);
 	}
 
 	private void createHistogram(double[] inputData){

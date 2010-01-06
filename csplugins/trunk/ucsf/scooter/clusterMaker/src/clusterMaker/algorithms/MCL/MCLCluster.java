@@ -196,6 +196,8 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		if (createMetaNodes)
 			runMCL.createMetaNodes();
 
+		runMCL.setDebug(debug);
+
 		runMCL.run(monitor);
 
 		// Set up the appropriate attributes

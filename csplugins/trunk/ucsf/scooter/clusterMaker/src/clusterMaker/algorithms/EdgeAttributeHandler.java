@@ -186,7 +186,7 @@ public class EdgeAttributeHandler
 	}
 
 	public void histoValueChanged(double cutoffValue) {
-		// System.out.println("Changing cutoff value to "+cutoffValue);
+		// System.out.println("New cutoff value: "+cutoffValue);
 		Tunable edgeCutoff = clusterProperties.get("edgeCutOff");
 		edgeCutoff.setValue(cutoffValue);
 	}
@@ -206,6 +206,7 @@ public class EdgeAttributeHandler
 		edgeCutOffTunable.setUpperBound(matrix.getMaxWeight());
 		edgeCutOffTunable.setLowerBound(matrix.getMinWeight());
 		edgeCutOffTunable.setValue(matrix.getMinWeight()+(range/1000));
+		edgeCutOff = (Double) edgeCutOffTunable.getValue();
 
 		if (histo != null) {
 			histo.updateData(dataArray);
@@ -236,6 +237,10 @@ public class EdgeAttributeHandler
 		}
 
 		matrix.setUndirectedEdges(undirectedEdges);
+
+		if (edgeCutOff != null)
+			matrix.setEdgeCutOff(edgeCutOff.doubleValue());
+
 		if (adjustLoops)
 			matrix.adjustLoops();
 
