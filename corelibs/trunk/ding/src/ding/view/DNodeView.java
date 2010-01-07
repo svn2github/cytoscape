@@ -133,6 +133,7 @@ public class DNodeView implements NodeView, Label {
 	String m_toolTipText = null;
 
 	private DGraphView nestedNetworkView;
+	private boolean nestedNetworkVisible = true;
 
 	/*
 	 * @param inx the RootGraph index of node (a negative number).
@@ -1455,7 +1456,7 @@ public class DNodeView implements NodeView, Label {
 		synchronized (m_view.m_lock) {
 			++nestedNetworkPaintingDepth;
 			try {
-				if (nestedNetworkPaintingDepth > 1 || getNode().getNestedNetwork() == null || !getNode().nestedNetworkIsVisible())
+				if (nestedNetworkPaintingDepth > 1 || getNode().getNestedNetwork() == null || !nestedNetworkVisible)
 					return null;
 
 				final double IMAGE_WIDTH  = getWidth()*NESTED_IMAGE_SCALE_FACTOR;
@@ -1477,5 +1478,22 @@ public class DNodeView implements NodeView, Label {
 
 	public void setNestedNetworkView(final DGraphView nestedNetworkView) {
 		this.nestedNetworkView = nestedNetworkView;
+	}
+
+	/** 
+	 * Determines whether a nested network should be rendered as part of a node's view or not.
+	 * @return true if the node has a nested network and we want it rendered, else false.
+	 */
+	public boolean nestedNetworkIsVisible() {
+		return nestedNetworkVisible;
+	}
+
+	/** 
+	 * Set the visibility of a node's nested network when rendered.
+	 * @param makeVisible forces the visibility of a nested network.
+	 * Please note that this call has no effect if a node has no associated nested network!
+	 */
+	public void showNestedNetwork(final boolean makeVisible) {
+		nestedNetworkVisible = makeVisible;
 	}
 }
