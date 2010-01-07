@@ -1,0 +1,1 @@
+Example for <?php echo $_GET["function"]; ?>

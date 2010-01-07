@@ -1,0 +1,8 @@
+#content .left label { display: block; padding: 1em 0 0 0; }
+#content .left li { margin: 0; }
+a.dl { margin-left: 1em; }
+#content .left label.date { display: inline; }
+.subtitle { padding-top: 0.5em; }
+
+/* emphasise the download of the latest--most supported--version */
+.subtitle.latest .dl { border: 1px solid #c1c1c1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; padding: 0.25em; background: #62977c url("../../img/layout/big_red_button.png") repeat-x center center; color: #ffffff; text-decoration: none; }

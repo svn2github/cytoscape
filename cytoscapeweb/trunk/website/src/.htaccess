@@ -1,0 +1,14 @@
+Options FollowSymLinks
+RewriteEngine On
+
+# Overrides for PHP get
+RewriteRule ^get/(.+)$ php/content/$1
+
+# Do not allow access to PHP dir
+RewriteRule ^php/.*$ ?id=error
+
+# Nice URLs for pages
+RewriteRule ^(([a-z]|[A-Z]|[\_])+)/?$ ?id=$1
+RewriteRule ^(([a-z]|[A-Z]|[\_])+)/(([a-z]|[A-Z]|[\_])+)/?$ ?id=$1&page=$3
+
+ErrorDocument 404 /error

@@ -1,0 +1,9 @@
+#content .left label { display: block; margin: 2em 0 0 0; }
+#content .left input, #content .left textarea  { width: 25em; }
+#content .left input[disabled], #content .left textarea[disabled] { color: #000000; }
+#content .left button { margin: 2em 0 0 0; }
+#content .left textarea { height: 10em; } 
+.example { color: #909090; display: none; }
+.ui-validation-completion { margin-left: -20px; margin-top: 3px; }
+#error_msg { display: none; }
+.hidden { display: none; }

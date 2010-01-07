@@ -1,0 +1,21 @@
+.api label { padding: 1em 0 0 0; display: block; border-bottom: 1px solid #cfcfcf; }
+h1.selected, h1.unselected { cursor: pointer; }
+h1.selected, h1.unselected { margin-left: -16px; padding-left: 16px; }
+h1.selected { background: url("../../img/layout/open_arrow/blue/down.png") center left no-repeat; }
+h1.unselected { background: url("../../img/layout/open_arrow/blue/right.png") center left no-repeat; }
+.unselected.details { display: none; }
+.description, .details, .description.selected, .description.unselected, .details.selected, .details.unselected { border-left: 1px solid #cfcfcf; padding-left: 9px; margin-left: -9px; }
+.description.selected, .details.selected{ border-left: 1px solid #0b94b1; }
+.api h1 { }
+.api .arguments, .api .field_type { color: #707070; font-size: 0.75em; }
+.parameter + .parameter, .return_value + .return_value, .field + .field { border-top: 1px dashed #cfcfcf; }
+.examples { padding-top: 0.5em; }
+.examples .example, .examples .pre_plain { margin-bottom: 1em; }
+.api h1 { }
+.api .description { padding-top: 0.5em; background-color: #f0f0f0; }
+
+#example.loading { background: url("../../img/layout/loader.gif") top left no-repeat; }
+#example iframe { width: 100%; height: 100%; overflow-x: hidden; }
+.see_also { margin-top: 0.5em; line-height: 1; }
+
+.left iframe { width: 100%; height: 300px;  border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; border: 1px solid #cfcfcf; }

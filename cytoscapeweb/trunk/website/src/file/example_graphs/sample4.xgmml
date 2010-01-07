@@ -1,0 +1,232 @@
+<graph label="InteractionDB.sif" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML"  directed="1">
+  <att name="documentVersion" value="1.1"/>
+  <att name="networkMetadata">
+    <rdf:RDF>
+      <rdf:Description rdf:about="http://www.cytoscape.org/">
+        <dc:type>Protein-Protein Interaction</dc:type>
+        <dc:description>N/A</dc:description>
+        <dc:identifier>N/A</dc:identifier>
+        <dc:date>2009-09-08 14:56:20</dc:date>
+        <dc:title>InteractionDB.sif</dc:title>
+        <dc:source>http://www.cytoscape.org/</dc:source>
+        <dc:format>Cytoscape-XGMML</dc:format>
+      </rdf:Description>
+    </rdf:RDF>
+  </att>
+  <att type="string" name="backgroundColor" value="#ccccff"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="0.7367634542731971"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="494.8458170448245"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="494.68493427766117"/>
+  <att type="string" name="__layoutAlgorithm" value="kamada-kawai" cy:hidden="true"/>
+  <node label="MINT" id="-55">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="417.5661926269531" y="406.6658020019531" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="BioGRID" id="-38">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="214.67202758789062" y="473.4602355957031" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="EntrezGene" id="-26">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="525.6050415039062" y="601.6078491210938" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="EMBL" id="-69">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="348.88397216796875" y="673.0570068359375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="STRING" id="-68">
+    <att type="string" name="node.fillColor" value="255,255,0"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="553.8311767578125" y="387.6565246582031" fill="#ffff00" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="SMART" id="-67">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="549.7449340820312" y="341.9162292480469" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ChEBI" id="-53">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="287.1884460449219" y="634.8031005859375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="IntAct" id="-23">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="360.52166748046875" y="572.9978637695312" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="Phospho.ELM" id="-66">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="494.53912353515625" y="441.94189453125" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="S.pombe@GeneDB" id="-65">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="176.75437927246094" y="409.2679748535156" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="MPIDB" id="-64">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="434.8499755859375" y="515.7791137695312" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="HPRD" id="-49">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="228.2891387939453" y="563.7777099609375" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="MoleculePages" id="-63">
+    <att type="string" name="node.fillColor" value="51,204,0"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="463.5603332519531" y="630.423583984375" fill="#33cc00" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="GenBank" id="-62">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="309.78460693359375" y="667.2561645507812" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="PubMed" id="-48">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="506.9637451171875" y="342.82769775390625" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="MSD" id="-61">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="555.24462890625" y="465.71722412109375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="DIP" id="-47">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="363.0049743652344" y="491.8572998046875" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="BIND" id="-18">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="498.35400390625" y="545.953369140625" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="Uniprot" id="-7">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="575.9789428710938" y="422.5348205566406" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="DDBJ" id="-60">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="386.9925231933594" y="662.5394287109375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ELM" id="-59">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="522.8818969726562" y="492.68853759765625" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="Flybase" id="-58">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="144.47154235839844" y="505.43743896484375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="MatrixDB" id="-57">
+    <att type="string" name="node.fillColor" value="0,153,255"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="301.64208984375" y="527.0882568359375" fill="#0099ff" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="DroID" id="-56">
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="308.8974304199219" y="429.53515625" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <edge label="MINT (exchange_IMEx) IntAct" source="-55" target="-23">
+    <att type="string" name="interaction" value="exchange_IMEx"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="BioGRID (exchange) S.pombe@GeneDB" source="-38" target="-65">
+    <att type="string" name="interaction" value="exchange"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="BioGRID (mines) HPRD" source="-38" target="-49">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="BioGRID (exchange) Flybase" source="-38" target="-58">
+    <att type="string" name="interaction" value="exchange"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="IntAct (maps) GenBank" source="-23" target="-62">
+    <att type="string" name="interaction" value="maps"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="9" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="IntAct (maps) EMBL" source="-23" target="-69">
+    <att type="string" name="interaction" value="maps"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="9" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="IntAct (maps) DDBJ" source="-23" target="-60">
+    <att type="string" name="interaction" value="maps"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="9" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="IntAct (maps) ChEBI" source="-23" target="-53">
+    <att type="string" name="interaction" value="maps"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="9" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="Phospho.ELM (crossreferences) STRING" source="-66" target="-68">
+    <att type="string" name="interaction" value="crossreferences"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="15" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="Phospho.ELM (crossreferences) MINT" source="-66" target="-55">
+    <att type="string" name="interaction" value="crossreferences"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="15" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="Phospho.ELM (crossreferences) MSD" source="-66" target="-61">
+    <att type="string" name="interaction" value="crossreferences"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="15" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="Phospho.ELM (crossreferences) SMART" source="-66" target="-67">
+    <att type="string" name="interaction" value="crossreferences"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="15" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="Phospho.ELM (crossreferences) PubMed" source="-66" target="-48">
+    <att type="string" name="interaction" value="crossreferences"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="15" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="Phospho.ELM (crossreferences) Uniprot" source="-66" target="-7">
+    <att type="string" name="interaction" value="crossreferences"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="15" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MPIDB (mines) DIP" source="-64" target="-47">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MPIDB (mines) BIND" source="-64" target="-18">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MPIDB (mines) MINT" source="-64" target="-55">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MPIDB (mines) IntAct" source="-64" target="-23">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MoleculePages (mines) IntAct" source="-63" target="-23">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MoleculePages (mines) BIND" source="-63" target="-18">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MoleculePages (mines) EntrezGene" source="-63" target="-26">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="DIP (exchange_IMEx) MINT" source="-47" target="-55">
+    <att type="string" name="interaction" value="exchange_IMEx"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="DIP (exchange_IMEx) IntAct" source="-47" target="-23">
+    <att type="string" name="interaction" value="exchange_IMEx"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="ELM (exchange) Phospho.ELM" source="-59" target="-66">
+    <att type="string" name="interaction" value="exchange"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MatrixDB (mines) MINT" source="-57" target="-55">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MatrixDB (mines) HPRD" source="-57" target="-49">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MatrixDB (mines) BioGRID" source="-57" target="-38">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MatrixDB (mines) IntAct" source="-57" target="-23">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="MatrixDB (mines) DIP" source="-57" target="-47">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="DroID (mines) IntAct" source="-56" target="-23">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="DroID (mines) MINT" source="-56" target="-55">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="DroID (mines) BioGRID" source="-56" target="-38">
+    <att type="string" name="interaction" value="mines"/>
+    <graphics width="1" fill="#011e59" cy:sourceArrow="3" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+</graph>

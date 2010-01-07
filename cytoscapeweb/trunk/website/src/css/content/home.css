@@ -1,0 +1,28 @@
+/* main */
+#content.full { padding: 50px; }
+
+/* side links to right */
+#side_links { float: right; width: 230px; }
+#side_links a { text-decoration: underline; }
+.link a { text-decoration: none !important; }
+.button { text-align: center; cursor: pointer; background: #097288 url("../../img/layout/button_blue.png") repeat-x top center; border: 1px solid #adadad; height: 36px; font-size: 1.4em; line-height: 36px; padding: 0 0.5em 0 0.5em; border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; color: #ffffff; }
+#download_latest { background: #9a0b0b url("../../img/layout/big_red_button.png") top center repeat-x; }
+#download a { color: #ffffff; text-decoration: none; }
+#download { margin-bottom: 3em; }
+.link { margin-bottom: 2em; }
+#version { float: left; padding: 0 0 0 0.1em; color: #adadad; }
+#date { float: right; padding: 0 0.1em 0 0; color: #adadad; }
+
+/* features */
+#features { padding: 0.5em; }
+#features ul { margin: 0; list-style: none; }
+#features li { margin: 0; padding: 0.25em; border-bottom: 1px solid #cfcfcf; }
+#features li:first-child { border-top: 1px solid #cfcfcf; }
+
+/* about */
+#about { width: 570px; float: left; margin: 0 50px 0 0; font-size: 1.25em; }
+#use_line { height: 23px; line-height: 23px; width: 100%; text-align: center; }
+#example { position: relative; width: 570px; height: 475px; background: red; margin-top: 25px; background: url("../../img/bg/browser_screen_with_peterson.png"); }
+#viz, #loader { width: 543px; height: 410px; margin: 0; position: absolute; top: 51px; left: 13px; }
+#loader { display: none; background-color: #ffffff; background-image: url("../../img/layout/loader.gif"); z-index: 1; background-repeat: no-repeat; background-position: center center;}
+#location { position: absolute; height: 10px; width: 325px; left: 63px; top: 26px; line-height: 10px; padding-left: 2px; font-size: 8px; cursor: default; }

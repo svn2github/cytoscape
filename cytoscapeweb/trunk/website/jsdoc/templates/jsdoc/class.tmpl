@@ -1,0 +1,475 @@
+<?php
+                {! Link.base = "../"; /* all generated links will be relative to this */ !}
+
+                {!
+					var classType = "";
+					
+					if (data.isBuiltin()) {
+						classType += "Built-In ";
+					}
+					
+					if (data.isNamespace) {
+						if (data.is('FUNCTION')) {
+							classType += "Function ";
+						}
+						classType += "Namespace ";
+					}
+					else {
+						classType += "Class ";
+					}
+				!}
+
+                {!
+                   
+                   /* 
+                   make strings escaped so they can be used in other languages (i.e. php)
+                   
+                   replace (") with (\") etc
+                   */
+                    function safe_string(str){
+                        var string = "" + str;
+                        return "\"" + string.replace(/(\"|\\)/g, "\\$&") + "\"" ;
+                    }
+                    
+                    
+                !}
+
+
+ /*<!-- ============================== class summary ========================== -->	*/ 		
+            
+             
+                $cls_info = new cls();
+                $cls_info->name = {+safe_string(data.alias)+};
+             
+            
+            <if test="data.version">
+                 $cls_info->version = {+safe_string(data.version)+}; 
+            </if>
+                        
+             $cls_info->description = {+safe_string(data.classDesc)+}; 
+            
+            <if test="!data.isBuiltin()">{# isn't defined in any file #}
+                 $cls_info->file = {+safe_string(data.srcFile)+}; 
+            </if>
+
+ /*<!-- ============================== properties summary ===================== -->*/ 
+			<if test="data.properties.length">
+				{! var ownProperties = data.properties.filter(function($){return $.memberOf == data.alias && !$.isNamespace}).sort(makeSortby("name")); !}
+            </if>
+            
+ /*<!-- ============================== methods summary ======================== -->*/ 
+			<if test="data.methods.length">
+				{! var ownMethods = data.methods.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
+            </if>
+
+ /*<!-- ============================== events summary ======================== -->*/ 
+			<if test="data.events.length">
+				{! var ownEvents = data.events.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
+            </if>
+
+ /*<!-- ============================== constructor details ==================== -->	*/ 	
+			<if test="!data.isBuiltin() && (data.isNamespace || data.is('CONSTRUCTOR'))">
+				
+				    $fn = new func();
+                    
+                    $fn->is_constructor = true;
+                    
+				    $fn->name = {+ safe_string(data.alias) +};
+				
+				    $fn->description = {+safe_string(data.desc)+};
+				
+				    $fn->is_constructor = true;
+				
+				<if test="data.example.length">
+				<for each="example" in="data.example">
+				     $fn->examples[] = {+ safe_string(example) +}; 
+				</for>
+				</if>
+				
+				
+                <if test="data.params.length">
+                    <for each="item" in="data.params">
+                        
+                        
+                            
+                            $param = new param();
+                            
+                            $param->name = {+safe_string(item.name)+};
+                            
+                            <if test="item.type">
+                                $param->type = {+safe_string(item.type)+};
+                            </if>
+                            
+                            <if test="item.isOptional">
+                                $param->optional = true;
+                            </if>
+                            
+                            <if test="item.defaultValue">
+                                $param->default_value = {+safe_string(item.defaultValue)+};
+                            </if>
+                            
+                            $param->description = {+safe_string(item.desc)+};
+                            
+                            // add parameter to function
+                            $fn->params[$param->name] = $param;
+                        
+                        
+                    </for>
+                </if>
+					
+					<if test="data.deprecated">
+						 $fn->depreciated = {+safe_string(data.depreciated)+}; 
+					</if>
+					<if test="data.since">
+						 $fn->version = {+ safe_string(data.since) +}; 
+					</if>
+					<if test="data.exceptions.length">
+						<for each="item" in="data.exceptions">
+					        
+					            $except = new param();
+					            
+					            $except->name = {+safe_string(item.name)+};
+					            
+					            $except->description = {+safe_string(item.desc)+};
+					            
+					            <if test="item.type">
+					                $except->type = {+safe_string(item.type)+};
+					            </if>
+					            
+					            // add exception to function
+					            $fn->exceptions[$exception->name] = $except;
+					        
+						</for>
+					</if>
+					
+					<if test="data.returns.length">
+						<for each="item" in="data.returns">
+						    
+						        $ret = new param();
+						        
+						        <if test="item.type">
+					                $ret->type = {+safe_string(item.type)+};
+					            </if>
+					            
+					            $ret->description = {+safe_string(item.desc)+};
+					            
+					            // add return to function 
+					            $fn->return_value = $ret;
+						    
+						</for>
+					</if>
+					
+					<if test="data.requires.length">
+						<for each="item" in="data.requires">
+							 $fn->preconditions[] = {+ safe_string(item) +}; 
+						</for>
+					</if>
+					
+					<if test="data.see.length">
+						<for each="item" in="data.see">
+							 
+							    $fn->see[] = {+ safe_string(item) +};
+							
+						</for>
+					</if>
+					
+					
+					    // add function to class
+					    $cls_info->funcs[$fn->name] = $fn;
+					    $cls_info->constructor = $fn;
+					
+			</if>
+
+ /*<!-- ============================== field details ========================== -->		*/ 
+			<if test="defined(ownProperties) && ownProperties.length">
+
+				<for each="member" in="ownProperties">
+						
+                        $field = new param();
+                        
+                        <if test="member.type">
+                            $field->type = {+safe_string(member.type)+};
+                        </if>
+                        
+                        $field->name = {+safe_string(member.name)+};
+						$field->description = {+safe_string(member.desc)+};
+					
+					
+					
+					<if test="member.example.length">
+					<for each="example" in="member.example">
+					     $field->example[] = {+safe_string(example)+}; 
+					</for>
+					</if>
+
+						<if test="member.deprecated">
+							
+								$field->depreciated = {+safe_string(member.depreciated)+};
+							
+						</if>
+						<if test="member.since">
+							
+								$field->version = {+safe_string(member.since)+};
+							
+						</if>
+						<if test="member.see.length">
+							<for each="item" in="member.see">
+							        
+							        $field->see[] = {+ safe_string(item) +};
+
+							</for>
+						</if>
+						<if test="member.defaultValue">
+						     $field->default_value = {+safe_string(member.defaultValue)+}; 
+						</if>
+						
+			        
+					    // add field x to class
+					    $cls_info->fields[$field->name] = $field;
+					
+				</for>
+			</if>
+
+ /*<!-- ============================== method details ========================= -->	*/ 	
+			<if test="defined(ownMethods) && ownMethods.length">
+
+				<for each="member" in="ownMethods">
+
+                     
+                    
+                        $fn = new func();
+                        $fn->name = {+safe_string(member.name)+};
+                    
+
+					<if test="member.type">
+					     $fn->type = {+safe_string(member.type)+}; 
+					</if>
+						
+				     $fn->description = {+safe_string(member.desc)+}; 
+						<if test="member.srcFile != data.srcFile">
+							 $fn->file = {+safe_string(member.srcFile)+}; 
+						</if>
+					
+					<if test="member.example.length">
+					<for each="example" in="member.example">
+					     $fn->examples[] = {+safe_string(example)+};
+					</for>
+					</if>
+					
+						<if test="member.params.length">
+							<for each="item" in="member.params">
+								    
+								        $param = new param();
+								        
+								        $param->name = {+safe_string(item.name)+};
+								        
+								        <if test="item.type">
+								            $param->type = {+safe_string(item.type)+};
+								        </if>
+								        
+								        <if test="item.isOptional">
+								            $param->optional = true;
+								        </if>
+								        
+								        $param->description = {+safe_string(item.desc)+};
+								        
+								        // add param to function
+								        $fn->params[$param->name] = $param;
+								    
+									
+							</for>
+						</if>
+						<if test="member.deprecated">
+							 $fn->depreciated = {+safe_string(member.depreciated)+}; 
+						</if>
+						<if test="member.since">
+							 $fn->version = {+safe_string(member.since)+} 
+						</if>
+						<if test="member.exceptions.length">
+							<for each="item" in="member.exceptions">
+							
+							
+							
+							    $throws = new param();
+							    
+							    <if test="item.type">
+							        $throws->type = {+safe_string(item.type)+};
+							    </if>
+							    
+							    $throws->name = {+safe_string(item.name)+};
+							    $throws->description = {+safe_string(item.desc)+};
+							    
+							    // add throws to function
+							    $fn->exceptions[$throws->name] = $throws;
+							
+
+							</for>
+						</if>
+						<if test="member.returns.length">
+							<for each="item" in="member.returns">
+							    
+							        $ret = new param();
+							        
+							        <if test="item.type">
+							            $ret->type = {+safe_string(item.type)+};
+							        </if>
+							        
+							        $ret->description = {+safe_string(item.desc)+};
+							        
+							        // add return to function
+							        $fn->return_value = $ret;
+							    
+								
+							</for>
+						</if>
+						<if test="member.requires.length">
+							
+							<for each="item" in="member.requires">
+							    
+							        $fn->preconditions[] = {+safe_string(item)+};
+							    
+							</for>
+
+						</if>
+						<if test="member.see.length">
+							
+							<for each="item" in="member.see">
+								    
+								    $fn->see[] = {+ safe_string(item) +};
+								    
+								    /*
+							        $see = preg_split("/(\\s)+/", {+ safe_string(item) +});
+							        foreach($see as $tag){
+							            $fn->tags[] = $tag;
+							            $cls_info->function_tags[] = $tag;
+							        }
+							        */
+							    
+							</for>
+
+						</if>
+
+                    
+                        // add function to class
+                        $cls_info->funcs[$fn->name] = $fn;
+                    
+				</for>
+			</if>
+			
+ /*<!-- ============================== event details ========================= -->		*/ 
+			<if test="defined(ownEvents) && ownEvents.length">
+
+				<for each="member" in="ownEvents">
+					<a name="event:{+Link.symbolNameToLinkName(member)+}"> </a>
+						
+				    
+				        $event = new func();
+				    
+				    
+					<if test="member.type">
+					     $event->type = {+safe_string(member.type)+}; 
+					</if>
+					
+					
+					    $event->description = {+safe_string(member.desc)+};
+					    $event->file = {+safe_string(member.srcFile)+};
+					    $event->name = {+safe_string(member.name)+};
+					
+					
+					<if test="member.example.length">
+					<for each="example" in="member.example">
+					     $event->examples[] = {+safe_string(example)+}; 
+					</for>
+					</if>
+					
+						<if test="member.params.length">
+							
+							<for each="item" in="member.params">
+								
+								 
+								    $param = new param();
+								    
+								    $param->description = {+safe_string(item.desc)+};
+								    $param->name =  {+safe_string(item.name)+};
+								    
+								    <if test="item.type">
+								        $param->type = {+safe_string(item.type)+};
+								    </if>
+								    
+								    <if test="item.isOptional">
+								        $param->optional = true;
+								    </if>
+								    
+								    <if test="item.defaultValue">
+								        $param->default_value = {+safe_string(item.defaultValue)+};
+								    </if>
+								    
+								    // add param to event
+								    $event->params[$param->name] = $param;
+								
+								
+							</for>
+						</if>
+						
+						<if test="member.deprecated">
+							 $event->depreciated = {+safe_string(member.depreciated)+}; 
+						</if>
+						<if test="member.since">
+						     $event->version = {+ safe_string(member.since) +}; 
+						</if>
+						<if test="member.exceptions.length">
+							<for each="item" in="member.exceptions">
+							    
+							        $exception = new param();
+							        
+							        <if test="item.type">
+							            $exception->type = {+safe_string(item.type)+};
+							        </if>
+							        
+							        $exception->name = {+safe_string(item.name)+};
+							        $exception->description = {+safe_string(item.desc)+};
+							        
+							        // add exception to event
+							        $event->exceptions[$exception->name] = $exception;
+							    
+
+							</for>
+						</if>
+						<if test="member.returns.length">
+							<for each="item" in="member.returns">
+							
+							    $ret = new param();
+							    $ret->description = {+safe_string(item.desc)+};
+							    <if test="item.type">
+							        $ret->type = {+safe_string(item.type)+};
+							    </if>
+							    
+							    // add return to event
+							    $event->return_value = $ret;
+							
+							</for>
+						</if>
+						<if test="member.requires.length">
+							<for each="item" in="member.requires">
+								
+								    $event->preconditions[] = {+ safe_string(item) +};
+								
+						    </for>
+						</if>
+						<if test="member.see.length">
+							<for each="item" in="member.see">
+								 
+								    $event->see[] = {+ safe_string(item) +};
+
+                                
+							</for>
+							</dl>
+						</if>
+                        
+                        
+                            // add event to class
+                            $cls_info->events[$event->name] = $event;
+                        
+				</for>
+			</if>
+?>
