@@ -37,34 +37,23 @@
 package filter.cytoscape;
 
 import cytoscape.*;
-
 import cytoscape.data.*;
-
 import cytoscape.plugin.*;
-
 import cytoscape.util.*;
-
 import cytoscape.view.*;
-
 import filter.model.*;
-
 import filter.view.*;
-
 import java.awt.event.*;
-
 import java.beans.*;
-
 import java.io.*;
-
 import java.util.*;
-
 import javax.swing.*;
 
 
 /**
  *
  */
-public class CsFilter extends CytoscapePlugin implements PropertyChangeListener {
+public class CsFilter extends CytoscapePlugin { //implements PropertyChangeListener {
 	protected JFrame frame;
 	protected FilterUsePanel filterUsePanel;
 
@@ -74,86 +63,21 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 	public CsFilter() {
 		initialize();
 	}
-
 	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT) {
-			Iterator i = FilterManager.defaultManager().getFilters();
-
-			// StringBuffer buffer = new StringBuffer();
-			try {
-				File filter_file = CytoscapeInit.getConfigFile("filter.props");
-
-				BufferedWriter writer = new BufferedWriter(new FileWriter(filter_file));
-
-				while (i.hasNext()) {
-					try {
-						Filter f = (Filter) i.next();
-						writer.write(FilterManager.defaultManager().getFilterID(f) + "\t"
-						             + f.getClass() + "\t" + f.output());
-						writer.newLine();
-					} catch (Exception ex) {
-						cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Error with Filter output");
-					}
-				}
-
-				writer.close();
-			} catch (Exception ex) {
-				cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Write error",ex);
-			}
-		}
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void initialize() {
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-
-		try {
-			File filter_file = CytoscapeInit.getConfigFile("filter.props");
-			BufferedReader in = new BufferedReader(new FileReader(filter_file));
-			String oneLine = in.readLine();
-
-			while (oneLine != null) {
-				if (oneLine.startsWith("#")) {
-					// comment
-				} else {
-					FilterManager.defaultManager().createFilterFromString(oneLine);
-				}
-
-				oneLine = in.readLine();
-			}
-
-			in.close();
-		} catch (Exception ex) {
-			cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Read error",ex);
-		}
 
 		// create icons
 		ImageIcon icon = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria.png"));
 		ImageIcon icon2 = new ImageIcon(getClass()
 		                                    .getResource("/stock_filter-data-by-criteria-16.png"));
 
-		// 
 		//FilterPlugin action = new FilterPlugin(icon, this);
 		FilterMenuItem menu_action = new FilterMenuItem(icon2, this);
 		//Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) menu_action);
-
-		//CytoscapeDesktop desktop = Cytoscape.getDesktop();
-		//CyMenus cyMenus = desktop.getCyMenus();
-		//CytoscapeToolBar toolBar = cyMenus.getToolBar();
-		//JButton button = new JButton(icon);
-		//button.addActionListener(action);
-		//button.setToolTipText("Create and apply filters");
-		//button.setBorderPainted(false);
-		//toolBar.add(button);
 
 		FilterEditorManager.defaultManager().addEditor(new NumericAttributeFilterEditor());
 		FilterEditorManager.defaultManager().addEditor(new StringPatternFilterEditor());
@@ -184,10 +108,94 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 			frame = new JFrame("Use Filters");
 			frame.getContentPane().add(getFilterUsePanel());
 			frame.pack();
-
-			//Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).add(getFilterUsePanel()); 
 		}
 
 		frame.setVisible(true);
+	}
+	
+	// override the following two methods to save state.
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param pStateFileList
+	 *            DOCUMENT ME!
+	 */
+	public void restoreSessionState(List<File> pStateFileList) {
+	
+		if ((pStateFileList == null) || (pStateFileList.size() == 0)) {
+			cytoscape.logger.CyLogger.getLogger(CsFilter.class).warn("\tNo previous old filter state to restore.");
+			return;
+		}
+
+		try {
+			File filter_file = pStateFileList.get(0);
+			BufferedReader in = new BufferedReader(new FileReader(filter_file));
+			String oneLine = in.readLine();
+
+			while (oneLine != null) {
+				if (oneLine.startsWith("#")) {
+					// comment
+				} else {
+					FilterManager.defaultManager().createFilterFromString(oneLine);
+				}
+
+				oneLine = in.readLine();
+			}
+			in.close();
+		} catch (Exception ex) {
+			cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Read error",ex);
+		}
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param pFileList
+	 *            DOCUMENT ME!
+	 */
+	public void saveSessionStateFiles(List<File> pFileList) {
+		
+		Iterator i = FilterManager.defaultManager().getFilters();
+
+		// If not filter defined, do nothing
+		if (!i.hasNext()){
+			return;
+		}
+
+		// There are filters, save them now
+		
+		// Create an empty file on system temp directory
+		String tmpDir = System.getProperty("java.io.tmpdir");
+		File session_filter_file = new File(tmpDir, "old_filters.props");
+
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(session_filter_file));
+			while (i.hasNext()) {
+				Filter f = (Filter) i.next();
+				writer.write(FilterManager.defaultManager().getFilterID(f) + "\t"
+						+ f.getClass() + "\t" + f.output());
+				writer.newLine();
+			}
+		} 
+
+		catch (Exception ex) {
+			cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Session old filter Write error",ex);
+		}
+
+		finally {
+			if ( writer != null) {
+				try {
+					writer.close();            		
+				}
+				catch (Exception ex){
+					cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Session old filter Write error",ex);            		
+				}
+			}
+		}	
+
+        if ((session_filter_file != null) && (session_filter_file.exists())) {
+            pFileList.add(session_filter_file);
+        }
 	}
 }
