@@ -44,7 +44,9 @@ public class ApplyVisualStyleAction extends CytoscapeAction {
 			System.out.println("Apply Visual Style: " + view.getNetwork().getTitle());
 			view.setVisualStyle(styleName);
 			view.redrawGraph(false, true);
+			Cytoscape.getVisualMappingManager().setNetworkView(view);
 		}
+		
 		
 	}
 	
