@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="Cytoscape Web - File" basedir="." default="info">
+    <taskdef resource="flexTasks.tasks" classpath="${basedir}/lib-dev/flexTasks.jar"/>
+    
+    <!-- 
+         This file should be created by each user when he/she needs to override particular values. 
+         Do NOT place it under version control.
+    -->
+    <property file="build.properties"/>
+    
+    <property file="default.properties"/>
+    
+    <property environment="env"/>
+    
+    <property name="flex.src.dir" value="src"/>
+    <property name="flex.bin.dir" value="bin"/>
+    
+    <target name="build" depends="compile, copy resources to bin">
+    </target>
+    
+    <target name="compile" depends="clean">
+        <mxmlc file="${flex.src.dir}/Importer.mxml" output="${flex.bin.dir}/Importer.swf"
+               actionscript-file-encoding="UTF-8" optimize="true" debug="false" incremental="true"
+               locale="en_US" keep-generated-actionscript="false" allow-source-path-overlap="true"
+        	   target-player="10.0.0">
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+            <compiler.source-path path-element="${flex.src.dir}"/>
+            <compiler.external-library-path dir="${FLEX_HOME}/frameworks"/>
+        </mxmlc>
+        <mxmlc file="${flex.src.dir}/Exporter.mxml" output="${flex.bin.dir}/Exporter.swf"
+               actionscript-file-encoding="UTF-8" optimize="true" debug="false" incremental="true"
+               locale="en_US" keep-generated-actionscript="false" allow-source-path-overlap="true"
+        	   target-player="10.0.0">
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+            <compiler.source-path path-element="${flex.src.dir}"/>
+            <compiler.external-library-path dir="${FLEX_HOME}/frameworks"/>
+        </mxmlc>
+    </target>
+
+    <target name="copy resources to bin">
+        <copy todir="${flex.bin.dir}" overwrite="true">
+            <fileset dir="html-template" includes="**/**"/>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete dir="${flex.bin.dir}" />
+        <mkdir dir="${flex.bin.dir}"/>
+    </target>
+    
+    <target name="info">
+        <echo>*******************************************************************</echo>
+        <echo>*   This script builds Cytoscape Web                              *</echo>
+        <echo>*   The following targets are available in this script:           *</echo>
+        <echo>*       build - compile and copy the static files to bin          *</echo>
+        <echo>*       compile - compile the Flex code                           *</echo>
+        <echo>*       info - (default) prints this text                         *</echo>
+        <echo>*******************************************************************</echo>
+    </target>
+    
+</project>

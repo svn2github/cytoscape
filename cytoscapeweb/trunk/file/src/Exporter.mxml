@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+    backgroundColor="#ffffff"
+    backgroundAlpha="0"
+    width="100%"
+    height="100%"
+    verticalScrollPolicy="off" 
+    horizontalScrollPolicy="off"
+    buttonMode="true"
+    applicationComplete="onReady()"
+    click="onClick()">
+
+    <mx:Script>
+        <![CDATA[
+            import mx.utils.Base64Decoder;
+            import flash.net.FileReference;
+
+            import flash.events.IOErrorEvent;
+            import flash.events.Event;
+
+            private var _fr:FileReference;
+            private var _fileName:String = "";
+            private var _isBase64:Boolean;
+
+	        public function callExternalInterface(functionName:String, argument:*=undefined):* {
+	            if (ExternalInterface.available) {
+	                functionName = "_cytoscapeWebExporterInstances." + root.loaderInfo.parameters.id + "." + functionName;
+	                try {
+	                    return ExternalInterface.call(functionName, argument);
+	                } catch (err:Error) {
+	                    // TODO...
+	                }
+	            } else {
+	                trace("Error [callExternalInterface]: ExternalInterface is NOT available!");
+	                return undefined;
+	            }
+	        }
+
+            private function onReady():void {
+                // allow client to set type
+                ExternalInterface.addCallback("fileName", function(name:String):void {
+                    _fileName = name;
+                });
+                ExternalInterface.addCallback("base64", function(base64:Boolean=false):void {
+                    _isBase64 = base64;
+                });
+                callExternalInterface("_onReady");
+            }
+
+            //called when the user clicks the load file button
+            private function onClick():void {
+                var data:* = callExternalInterface("_onClick");
+                if (data is Array) {
+                    var array:ByteArray = new ByteArray();
+                    for (var i:* in data) {
+                        array.writeByte( data[i] );
+                    }
+                    data = array;
+                } else if (_isBase64) {
+                    var decoder:Base64Decoder = new Base64Decoder();
+                    decoder.decode(data);
+                    data = decoder.toByteArray();
+                }
+                
+                _fr = new FileReference();
+//                fr.addEventListener(Event.COMPLETE, onFileSave);
+//                fr.addEventListener(Event.CANCEL, onCancel);
+//                fr.addEventListener(Event.SELECT, onFileSelect);
+//                fr.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+
+                    
+                //open a native save file dialog, using the default file name
+                _fr.save(data, _fileName);
+                //ExternalInterface.call( fn("dialog") );
+            }
+            
+            /***** File Save Event Handlers ******/
+
+//            //called once the file has been saved
+//            private function onFileSelect(e:Event):void {
+//                Alert.show("select");
+//            }
+//
+//            //called once the file has been saved
+//            private function onFileSave(e:Event):void {
+//                 Alert.show("save");
+//            }
+//
+//            //called if the user cancels out of the file save dialog
+//            private function onCancel(e:Event):void {
+//                 Alert.show("cancel");
+//            }
+//
+//            //called if an error occurs while saving the file
+//            private function onSaveError(e:IOErrorEvent):void {
+//                Alert.show("error");
+//                fr = null;
+//            }
+        ]]>
+    </mx:Script>
+
+</mx:Application>

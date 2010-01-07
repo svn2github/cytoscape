@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+    backgroundColor="#ffffff"
+    backgroundAlpha="0"
+    width="100%"
+    height="100%"
+    verticalScrollPolicy="off" 
+    horizontalScrollPolicy="off"
+    buttonMode="true"
+    applicationComplete="onReady()"
+    click="onClick()">
+
+    <mx:Script>
+        <![CDATA[
+            import flash.net.FileReference;
+
+            import flash.events.IOErrorEvent;
+            import flash.events.Event;
+
+            private var _fr:FileReference;
+            private var _typeFilter:String = "*;*.*";
+            private var _typeDescription:String = "Any file";
+
+            public function callExternalInterface(functionName:String, argument:*=undefined):* {
+                if (ExternalInterface.available) {
+                    functionName = "_cytoscapeWebImporterInstances." + root.loaderInfo.parameters.id + "." + functionName;
+                    try {
+                        return ExternalInterface.call(functionName, argument);
+                    } catch (err:Error) {
+                        // TODO...
+                    }
+                } else {
+                    trace("Error [callExternalInterface]: ExternalInterface is NOT available!");
+                    return undefined;
+                }
+            }
+
+            private function onReady():void {
+                // allow client to set type
+                ExternalInterface.addCallback("typeFilter", function(filter:String):void {
+                    _typeFilter = filter;
+                });
+                ExternalInterface.addCallback("typeDescription", function(desc:String):void {
+                    _typeDescription = desc;
+                });
+                callExternalInterface("_onReady");
+            }
+
+            //called when the user clicks the load file button
+            private function onClick():void {
+                _fr = new FileReference();
+                _fr.addEventListener(Event.SELECT, onFileSelect);
+                _fr.addEventListener(Event.CANCEL,onCancel);
+
+                var fileTypes:Array = [new FileFilter(_typeDescription, _typeFilter)];
+                _fr.browse(fileTypes);
+                
+//                callExternalInterface("dialog");
+            }
+            
+            /***** File Save Event Handlers ******/
+
+            //called once the file has been saved
+            private function onFileSelect(e:Event):void {
+                callExternalInterface("_onStart", metadata());
+                
+                _fr.addEventListener(Event.COMPLETE, onLoadComplete);
+                _fr.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+
+                _fr.load();
+            }
+
+            //called if the user cancels out of the file save dialog
+            private function onCancel(e:Event):void {
+                callExternalInterface("_onCancel");
+                _fr = null;
+            }
+            
+            private function onLoadComplete(e:Event):void {
+                //get the data from the file as a ByteArray
+                var data:ByteArray = _fr.data;
+                var bytes:Array = [];
+
+                //read the bytes of the file as a string
+                var string:String = data.toString();
+                
+                //read bytes as primitive
+                while (data.bytesAvailable > 0) {
+                    bytes.push(data.readByte());
+                }
+                
+                var dataObj:Object = { bytes: bytes, string: string, metadata: metadata() };
+                
+                //fire fopen
+                callExternalInterface("_onComplete", dataObj);
+                
+                //clean up the FileReference instance
+                _fr = null;
+            }
+
+            //called if an error occurs while loading the file contents
+            private function onLoadError(e:IOErrorEvent):void {
+                callExternalInterface("_onError", e.text);
+            }
+            
+            private function metadata():Object {
+            	return { name: _fr.name, size: _fr.size };
+            }
+        ]]>
+    </mx:Script>
+
+</mx:Application>
