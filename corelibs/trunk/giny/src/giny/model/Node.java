@@ -44,14 +44,4 @@ public interface Node extends GraphObject {
 	 */
 	public GraphPerspective getNestedNetwork();
 
-	/** Determines whether a nested network should be rendered as part of a node's view or not.
-	 * @return true if the node has a nested network and we want it rendered, else false.
-	 */
-	boolean nestedNetworkIsVisible();
-
-	/** Set the visibility of a node's nested network when rendered.
-	 * @param makeVisible forces the visibility of a nested network.
-	 * Please note that this call has no effect if a node has no associated nested network!
-	 */
-	void showNestedNetwork(final boolean makeVisible);
 } // interface Node
