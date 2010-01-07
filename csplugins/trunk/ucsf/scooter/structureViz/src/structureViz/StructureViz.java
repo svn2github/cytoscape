@@ -421,7 +421,7 @@ public class StructureViz extends CytoscapePlugin
 
 		/**
  		 * Open the structures (if necessary) and select the residues.  Residues
- 		 * can be formatted as pdb1:res1,pdb1:res2,pdb2:res1 or just res1,res2,res3.
+ 		 * can be formatted as pdb1#res1,pdb1#res2,pdb2#res1 or just res1,res2,res3.
  		 * In the latter case, the residues are assumed to be on all of the associated
  		 * structures.
  		 */
@@ -442,6 +442,7 @@ public class StructureViz extends CytoscapePlugin
 					residues = residues.concat(residue+",");
 				}
 				residues = residues.substring(0,residues.length()-1);
+				// System.out.println("structure: "+structure+" residues: "+residues);
 
 				command = command.concat(" #"+structure.modelNumber()+":"+residues);
 			}
@@ -523,7 +524,9 @@ public class StructureViz extends CytoscapePlugin
 				String structureName = structure.name();
 				for (Structure openStructure: openStructs) {
 					if (structureName.equals(openStructure.name())) {
-						newList.add(openStructure);
+						// Map the model numbers
+						structure.setModelNumber(openStructure.modelNumber());
+						newList.add(structure);
 						open = true;
 						break;
 					}
