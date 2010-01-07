@@ -308,22 +308,4 @@ public class CyNode implements giny.model.Node {
 		return nestedNetwork;
 	}
 
-	/** Determines whether a nested network should be rendered as part of a node's view or not.
-	 * @return true if the node has a nested network and we want it rendered, else false.
-	 */
-	public boolean nestedNetworkIsVisible() {
-		final Boolean nestedNetworkIsVisibleAttr = Cytoscape.getNodeAttributes().getBooleanAttribute(this.getIdentifier(), NESTED_NETWORK_IS_VISIBLE_ATTR);
-		return nestedNetworkIsVisibleAttr != null && nestedNetworkIsVisibleAttr;
-	}
-
-	/** Set the visibility of a node's nested network when rendered.
-	 * @param makeVisible forces the visibility of a nested network.
-	 * Please note that this call has no effect if a node has no associated nested network!
-	 */
-	public void showNestedNetwork(final boolean makeVisible) {
-		if (getNestedNetwork() == null || nestedNetworkIsVisible() == makeVisible)
-			return;
-
-		Cytoscape.getNodeAttributes().setAttribute(this.getIdentifier(), NESTED_NETWORK_IS_VISIBLE_ATTR, new Boolean(makeVisible));
-	}
 }

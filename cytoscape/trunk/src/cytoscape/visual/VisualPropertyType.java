@@ -78,6 +78,7 @@ import cytoscape.visual.properties.NodeShapeProp;
 import cytoscape.visual.properties.NodeSizeProp;
 import cytoscape.visual.properties.NodeToolTipProp;
 import cytoscape.visual.properties.NodeWidthProp;
+import cytoscape.visual.properties.NodeNestedNetworkVisibleProp;
 import cytoscape.visual.parsers.*;
 import cytoscape.visual.ui.EditorDisplayer;
 import cytoscape.visual.ui.EditorDisplayer.EditorType;
@@ -226,13 +227,17 @@ public enum VisualPropertyType {
 						new LabelPositionParser(), false, false),
 
 	NODE_LABEL_WIDTH("Node Label Width", "nodeLabelWidthCalculator", "node.labelWidth",
-	                    "defaultNodeLabelWidth", Number.class, new NodeLabelWidthProp(),
-						new FloatParser(), true, true),
+	                 "defaultNodeLabelWidth", Number.class, new NodeLabelWidthProp(),
+	                 new FloatParser(), true, true),
 	EDGE_LABEL_WIDTH("Edge Label Width", "edgeLabelWidthCalculator", "edge.labelWidth",
-	                    "defaultEdgeLabelWidth", Number.class, new EdgeLabelWidthProp(),
-						new FloatParser(), false, true),
+	                 "defaultEdgeLabelWidth", Number.class, new EdgeLabelWidthProp(),
+	                 new FloatParser(), false, true),
 	
-						
+	NODE_NESTED_NETWORK_VISIBLE("Node Nested Network Visible", "nodeNestedNetworkVisible", 
+	                            "node.nestedNetworkVisible", "defaultNodeNestedNetworkVisible", 
+	                            Boolean.class, new NodeNestedNetworkVisibleProp(),
+	                            new BooleanParser(), true, true),
+
 	;
 	/*
 	 * String returned by toString() method.

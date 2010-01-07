@@ -72,6 +72,7 @@ public class TestNodeView implements NodeView {
 	double label_offset_y = 0.0;
 	int node_label_anchor = 0;
 	double label_width = 100.0;
+	boolean nestedNetworkVisible = true;
 
 	int rootGraphIndex;
 
@@ -529,4 +530,14 @@ public class TestNodeView implements NodeView {
 	public void setLabelWidth(double w) {
 		label_width = w;
 	}
+
+
+	public boolean nestedNetworkIsVisible() {
+		return nestedNetworkVisible;
+	}
+	
+	public void showNestedNetwork(final boolean makeVisible) {
+		nestedNetworkVisible = makeVisible;
+	}
+
 }

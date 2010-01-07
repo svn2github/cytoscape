@@ -71,9 +71,6 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 		final JMenuItem jm1 = new JCheckBoxMenuItem(new SetNestedNetworkMenuItemAction(nodeView));
 		final JMenuItem jm2 = new JCheckBoxMenuItem(new DeleteNestedNetworkMenuItemAction(nodeView));
 		final JMenuItem jm3 = new JCheckBoxMenuItem(new GotoNestedNetworkMenuItemAction(nodeView));
-		final JMenuItem jm4 = nodeView.getNode().nestedNetworkIsVisible()
-			? new JCheckBoxMenuItem(new HideNestedNetworkMenuItemAction(nodeView))
-			: new JCheckBoxMenuItem(new ShowNestedNetworkMenuItemAction(nodeView));
 
 		if (nodeView.getNode().getNestedNetwork() == null) {
 			jm2.setEnabled(false);
@@ -83,7 +80,6 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 		jm.add(jm1);
 		jm.add(jm2);
 		jm.add(jm3);
-		jm.add(jm4);
 
 		menu.add(jm);
 	}
@@ -146,34 +142,6 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 			}
 
 			Cytoscape.getDesktop().setFocus(nestedNetwork.getIdentifier());
-		}
-	}
-
-
-	class ShowNestedNetworkMenuItemAction extends AbstractAction {
-		NodeView nodeView;
-		public ShowNestedNetworkMenuItemAction(final NodeView nodeView) {
-			super("Show Nested Network");
-			this.nodeView = nodeView;
-		}
-
-		public void actionPerformed(final ActionEvent e) {
-			this.nodeView.getNode().showNestedNetwork(true);
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-		}
-	}
-
-
-	class HideNestedNetworkMenuItemAction extends AbstractAction {
-		NodeView nodeView;
-		public HideNestedNetworkMenuItemAction(final NodeView nodeView) {
-			super("Hide Nested Network");
-			this.nodeView = nodeView;
-		}
-
-		public void actionPerformed(final ActionEvent e) {
-			this.nodeView.getNode().showNestedNetwork(false);
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
 	}
 }
