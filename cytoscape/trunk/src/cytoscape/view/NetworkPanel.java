@@ -40,6 +40,7 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetworkTitleChange;
 import cytoscape.logger.CyLogger;
+import cytoscape.actions.ApplyVisualStyleAction;
 import cytoscape.actions.CreateNetworkViewAction;
 
 import cytoscape.data.SelectEvent;
@@ -66,11 +67,14 @@ import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Set;
 
 import javax.swing.InputMap;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -79,6 +83,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.ToolTipManager;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.event.TreeSelectionEvent;
@@ -101,10 +106,13 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	private JPanel navigatorPanel;
 	private JPopupMenu popup;
 	private PopupActionListener popupActionListener;
+	
 	private JMenuItem createViewItem;
 	private JMenuItem destroyViewItem;
 	private JMenuItem destroyNetworkItem;
 	private JMenuItem editNetworkTitle;
+	public JMenuItem applyVisualStyleMenu;
+	
 	private BiModalJSplitPane split;
 	private final NetworkTreeTableModel treeTableModel;
 	private final CytoscapeDesktop cytoscapeDesktop;
@@ -121,6 +129,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		root = new NetworkTreeNode("Network Root", "root");
 		treeTableModel = new NetworkTreeTableModel(root);
 		treeTable = new JTreeTable(treeTableModel);
+		treeTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		initialize();
 
 		/*
@@ -177,6 +186,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		createViewItem = new JMenuItem(PopupActionListener.CREATE_VIEW);
 		destroyViewItem = new JMenuItem(PopupActionListener.DESTROY_VIEW);
 		destroyNetworkItem = new JMenuItem(PopupActionListener.DESTROY_NETWORK);
+		applyVisualStyleMenu = new JMenu(PopupActionListener.APPLY_VISUAL_STYLE);
 
 		// action listener which performs the tasks associated with the popup
 		// listener
@@ -185,10 +195,23 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		createViewItem.addActionListener(popupActionListener);
 		destroyViewItem.addActionListener(popupActionListener);
 		destroyNetworkItem.addActionListener(popupActionListener);
+		applyVisualStyleMenu.addActionListener(popupActionListener);
+		addVisualStyleName();
 		popup.add(editNetworkTitle);
 		popup.add(createViewItem);
 		popup.add(destroyViewItem);
 		popup.add(destroyNetworkItem);
+		popup.addSeparator();
+		popup.add(applyVisualStyleMenu);
+	}
+	
+	private void addVisualStyleName() {
+		final Set<String> vsNames = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames();
+		for (String name: vsNames) {
+			final JMenuItem styleMenu = new JMenuItem(name);
+			styleMenu.setAction(new ApplyVisualStyleAction(name));
+			applyVisualStyleMenu.add(styleMenu);
+		}
 	}
 
 	/**
@@ -626,7 +649,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
  * performing actions related to destroying and creating views, and destroying
  * the network.
  */
-class PopupActionListener implements ActionListener {
+class PopupActionListener implements ActionListener  {
 	/**
 	 * Constants for JMenuItem labels
 	 */
@@ -646,6 +669,8 @@ class PopupActionListener implements ActionListener {
 	 *
 	 */
 	public static final String EDIT_TITLE = "Edit Network Title";
+	
+	public static final String APPLY_VISUAL_STYLE = "Apply Visual Style";
 
 	/**
 	 * This is the network which originated the mouse-click event (more
@@ -653,6 +678,7 @@ class PopupActionListener implements ActionListener {
 	 * associated with the JTable that originated the popup event
 	 */
 	protected CyNetwork cyNetwork;
+
 
 	/**
 	 * Based on the action event, destroy or create a view, or destroy a network
@@ -662,19 +688,25 @@ class PopupActionListener implements ActionListener {
 
 		// Figure out the appropriate action
 		if (DESTROY_VIEW.equals(label)) {
-			Cytoscape.destroyNetworkView(cyNetwork);
+			final List<CyNetwork> selected = Cytoscape.getSelectedNetworks();			
+			for (final CyNetwork network: selected) {
+				final CyNetworkView targetView = Cytoscape.getNetworkView(network.getIdentifier());
+				if (targetView != Cytoscape.getNullNetworkView()) {
+					Cytoscape.destroyNetworkView(targetView);
+				}
+			}
 		} // end of if ()
 		else if (CREATE_VIEW.equals(label)) {
 			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork);
 		} // end of if ()
 		else if (DESTROY_NETWORK.equals(label)) {
-			Cytoscape.destroyNetwork(cyNetwork);
-		} // end of if ()
-		else if (EDIT_TITLE.equals(label)) {
+			final List<CyNetwork> selected = Cytoscape.getSelectedNetworks();	
+			for (CyNetwork network: selected)
+				Cytoscape.destroyNetwork(network);
+		} else if (EDIT_TITLE.equals(label)) {
 			CyNetworkNaming.editNetworkTitle(cyNetwork);
 			Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
-		} // end of if ()
-		else {
+		} else {
 			// throw an exception here?
 			NetworkPanel.logger.warn("Unexpected network panel popup option");
 		} // end of else
