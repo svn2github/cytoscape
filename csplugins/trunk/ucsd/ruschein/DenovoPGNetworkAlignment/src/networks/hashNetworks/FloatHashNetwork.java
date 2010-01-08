@@ -1,5 +1,7 @@
 package networks.hashNetworks;
 
+import giny.model.Edge;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,6 +21,9 @@ import networks.linkedNetworks.TypedLinkNetwork;
 import utilities.IIterator;
 import utilities.files.FileIterator;
 import utilities.files.FileUtil;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import data.StringVector;
 
 public class FloatHashNetwork extends SFNetwork implements Iterable<SFEdge> {
@@ -41,6 +46,23 @@ public class FloatHashNetwork extends SFNetwork implements Iterable<SFEdge> {
 		super(selfOk, directed);
 		Load(file, n1col, n2col, valcol);
 	}
+	
+	public FloatHashNetwork(final CyNetwork network, final String edgeAttrName, boolean selfOk, boolean directed) {
+		super(selfOk, directed);
+		this.edgeMap = new HashMap<SEdge, SFEdge>(network.getEdgeCount());
+		this.nodeMap = new HashMap<String, Set<SEdge>>();
+		final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+		
+		for (Integer edgeIdx: network.getEdgeIndicesArray()) {
+			final Edge edge = network.getEdge(edgeIdx);
+			final Double attrValue = edgeAttrs.getDoubleAttribute(edge.getIdentifier(), edgeAttrName);
+			if (attrValue != null)
+				add(new UndirectedSFEdge(edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), 
+					 attrValue.floatValue()));
+		}
+		
+	}
+	
 
 	public FloatHashNetwork(TypedLinkNetwork<String, Float> net) {
 		super(net.isSelfOK(), net.isDirected());
@@ -51,6 +73,10 @@ public class FloatHashNetwork extends SFNetwork implements Iterable<SFEdge> {
 
 		for (TypedLinkEdge<String, Float> e : net.edgeIterator())
 			this.add(e.source().value(), e.target().value(), e.value());
+	}
+	
+	private void convert(final CyNetwork network, final CyAttributes edgeAttr, final String attrName) {
+		
 	}
 
 	protected void Load(String file, int n1col, int n2col, int valcol) {
