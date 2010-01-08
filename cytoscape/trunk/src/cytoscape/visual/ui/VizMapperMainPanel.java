@@ -34,6 +34,7 @@
  */
 package cytoscape.visual.ui;
 
+import com.l2fprod.common.beans.editor.BooleanPropertyEditor;
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -755,6 +756,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// For label positions
 	private LabelPositionCellRenderer labelPositionRenderer = new LabelPositionCellRenderer();
 	private CyLabelPositionPropertyEditor labelPositionEditor = new CyLabelPositionPropertyEditor();
+	
+	// For boolean attributes
+	private BooleanPropertyEditor booleanCellEditor = new BooleanPropertyEditor();
 
 	// Others
 	private DefaultTableCellRenderer emptyBoxRenderer = new DefaultTableCellRenderer();
@@ -1453,7 +1457,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final List<VizMapperProperty> children = new ArrayList<VizMapperProperty>();
 
-		
+		System.out.println("======= Setting Props: " + type.getName() + ", attrKeys = " + attrKeys.size());
 		for (Object key : attrKeys) {
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
@@ -1647,7 +1651,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						                 labelPositionRenderer, calculatorTypeProp);
 
 						break;
-
+					
+					case NODE_NESTED_NETWORK_VISIBLE:
+						setDiscreteProps(type, discMapping, attrSet, booleanCellEditor,
+				                 defCellRenderer, calculatorTypeProp);
+						break;
+						
 					default:
 						break;
 				}
@@ -1754,7 +1763,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return loadID(nOre);
 		}
 
-		Map mapAttrs;
+		final Map mapAttrs;
 		mapAttrs = CyAttributesUtils.getAttribute(attrName, attrs);
 
 		if ((mapAttrs == null) || (mapAttrs.size() == 0))
@@ -1773,6 +1782,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * Loads the Key Set.
 	 */
 	private Set<Object> loadKeySet(final Map mapAttrs) {
+		
 		final Set<Object> mappedKeys = new TreeSet<Object>();
 
 		final Iterator keyIter = mapAttrs.values().iterator();
