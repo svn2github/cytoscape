@@ -1,0 +1,132 @@
+---------
+Structure
+=========
+
+The file structure mimics that of the navigation of the site.
+
+
+.htaccess
+=========
+
+This file creates the nice URLs of pages.
+
+http://host/foo/bar     =>      http://host/index.php?navigation_link=foo&page_link=bar
+http://host/get/foo     =>      http://host/php/content/foo
+http://host/file/foo    =>      http://host/file/foo
+
+Because the first rule is automatic, the get and foo directories are overridden to provide access
+to specific PHP files in HTML (e.g. in an iframe) and files to download.
+
+Just remember to set the "AllowOverride" directive to "All" (http://httpd.apache.org/docs/1.3/mod/core.html#allowoverride).
+
+
+file/
+=====
+
+Put files here if you want to make them available for download or external access.
+
+
+==
+
+index.php
+=========
+
+The index.php file ensures that all references to files within the site's PHP code is relative to
+the root directory of the site.
+
+
+php/
+====
+
+
+    layout/
+    =======
+    
+    The layout mechanism allows for the site to use a like template for all pages.  Each page has
+    a page ID ($page_link) and a top level navigation link ($navigation_link).  The URL of a page
+    is then
+    
+    http://host/$navigation_link/$page_link
+    
+    
+        page.php
+        ========
+        
+        This file is the template of the site.  Its structure is as follows.
+        
+        * Declaration
+        * Header
+        * Page content (include)
+        * Footer
+        
+        
+        declaration.php
+        ===============
+        
+        This file contains the functionality for automatic inclusion of secondary files (CSS, JS, 
+        et cetera) based on file name for the pages of the site.
+        
+        It also contains the top level navigation list.  You need to modify the list to change the
+        links listed across the top of the site.  DO NOT MODIFY header.php TO CHANGE THE LINKS.  THE
+        LINKS IN header.php ARE AUTOMATICALLY GENERATED TO MATCH WHAT IS LISTED IN declaration.php.
+        
+        
+        header.php
+        ==========
+        
+        This file contains the top of the page, including navigation.
+        
+        
+        footer.php
+        ==========
+        
+        This file contains the footer of the page, including link outs.
+        
+        
+        functions.php
+        =============
+        
+        This file contains functions common to the pages so that they can be used throughout the
+        site.  The page.php file includes functions.php so that the functions are available in all
+        subsequent PHP code.
+
+
+    content
+    =======
+    
+    For a page, its PHP content is grabbed from the content directory.
+    
+    URL                                                     Page content
+    ---------------------------------------                 ---------------------------------------
+    http://host/$navigation_link/$page_link                 content/$navigation_link/$page_link.php
+    http://host/$navigation_link                            content/$navigation_link.php
+    
+    Similarly, .declaration.php files are included automatically for pages under the
+    $navigation_link and $page_link.  Thus,
+    
+    content/about.declaration.php           applies to        http://host/about
+                                                and to        http://host/about/*
+        
+    And,
+    
+    content/about/license.declaration.php   applies to        http://host/about/license
+    
+    A $navigation_link page can be made to have pages underneath it by defining the $page_links
+    array in $navigation_link.declaration.php.
+    
+    $page_links = array(
+        "page_id1" => "Page name 1",
+        "page_id2" => "Page name 2"
+    );
+    
+    The first page in the list will be the page that is displayed after clicking the top level
+    navigation link.
+    
+    The value of the $content_style variable determines what the layout of the page will be.
+    
+    
+    lib
+    ===
+    
+    This directory contains libraries.
+    

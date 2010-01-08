@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<project name="Cytoscape Web - Site" basedir="." default="info">
+    <taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit" 
+                                 classpath="${basedir}/jsdoc/jsdoctoolkit-ant-task-1.0.1.jar;${basedir}/jsdoc/js.jar"/>
+    
+    
+    <!-- 
+         This file should be created by each user when he/she needs to override particular values. 
+         Do NOT place it under version control.
+    -->
+    <property file="build.properties"/>
+    
+    <property file="default.properties"/>
+    
+    <property environment="env"/>
+    
+    <!-- From the Cytoscape Web sub-project -->
+    <property name="cw.dir" value="${CYTOSCAPEWEB_HOME}"/>
+    <property name="cw.bin.dir" value="${cw.dir}/bin"/>
+    <property name="cw.build.dir" value="${cw.dir}/build"/>
+    <property name="cw.build.version" value="${cw.dir}/build"/>
+    
+    <!-- From the File sub-project -->
+    <property name="cwfile.dir" value="${CW_FILE_HOME}"/>
+    
+    <property name="src.dir" value="src"/>
+    <property name="jsdoc.dir" value="jsdoc"/>
+    <property name="temp.dir" value="temp"/>
+    <property name="build.dir" value="build"/>
+    <property name="js.dir" value="${src.dir}/js"/>
+    <property name="swf.dir" value="${src.dir}/swf"/>
+    <property name="download.dir" value="${src.dir}/file/lib"/>
+    <property name="php.dir" value="${src.dir}/php"/>
+    <property name="api.dir" value="${php.dir}/content/documentation/api/${build.version}"/>
+    
+    <tstamp>
+        <format property="date.today" pattern="yyyy-MM-dd"/>
+    </tstamp>
+    <tstamp>
+        <format property="date.now" pattern="yyyyMMdd-HHmm"/>
+    </tstamp>
+    
+    <target name="build" depends="files, api">
+    	<delete dir="${build.dir}" />
+    	<mkdir dir="${build.dir}"/>
+    	<zip destfile="${build.dir}/cytoscapeweb_site_${date.now}.zip"
+             basedir="${src.dir}"
+             update="true"
+    		 excludes="cache/**"
+        />
+    </target>
+    
+    <target name="api">
+        <!-- Recreate the temporary folder -->
+        <delete dir="${temp.dir}" />
+        <mkdir dir="${temp.dir}"/>
+        <!-- Create the API files. It requires version 1.7 of Rhino!  -->
+        <jsdoctoolkit jsdochome="${jsdoc.dir}/" template="jsdoc" outputdir="${temp.dir}">
+            <source file="${cw.bin.dir}/js/cytoscapeweb.js" />
+        </jsdoctoolkit>
+        
+        <!-- Recreate the API folder for current version -->
+        <delete dir="${api.dir}" />
+        <mkdir dir="${api.dir}"/>
+        
+        <!-- Copy the API files to the correct folders in the website -->
+        <mkdir dir="${api.dir}/shapes"/>
+        <copy todir="${api.dir}/shapes" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**Shape.php"/>
+        </copy>
+        
+        <mkdir dir="${api.dir}/mappers"/>
+        <copy todir="${api.dir}/mappers" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**Mapper.php"/>
+        </copy>
+        
+        <mkdir dir="${api.dir}/elements"/>
+        <copy todir="${api.dir}/elements" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**.Edge.php **.Node.php **.Group.php"/>
+        </copy>
+        
+        <mkdir dir="${api.dir}/events"/>
+        <copy todir="${api.dir}/events" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**Event**.php **.Error.php"/>
+        </copy>
+        
+        <mkdir dir="${api.dir}/visual_style"/>
+        <copy todir="${api.dir}/visual_style" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**.VisualStyle.php"/>
+        </copy>
+        
+        <mkdir dir="${api.dir}/layout"/>
+        <copy todir="${api.dir}/layout" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**.Layout.php"/>
+        </copy>
+        
+        <mkdir dir="${api.dir}/cytoscape_web"/>
+        <copy todir="${api.dir}/cytoscape_web" file="${jsdoc.dir}/metadata/empty.txt" />
+        <move file="${api.dir}/cytoscape_web/empty.txt" toFile="${api.dir}/cytoscape_web/.real_class"/>
+        <copy todir="${api.dir}/cytoscape_web" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**.Visualization.php"/>
+        </copy>
+        
+        <!-- Create release info and date files --> 
+        <copy todir="${api.dir}" file="${jsdoc.dir}/metadata/date.txt" />
+        <move file="${api.dir}/date.txt" tofile="${api.dir}/.date"/>
+        <replace file="${api.dir}/.date" token="${date}" value="${date.today}"/>
+        
+        <copy todir="${api.dir}" file="${jsdoc.dir}/metadata/release.txt" />
+        <move file="${api.dir}/release.txt" tofile="${api.dir}/.release_info"/>
+        
+        <!-- Delete the temp folder -->
+        <delete dir="${temp.dir}" />
+    </target>
+
+    <target name="files">
+        <!-- Copy Flash files -->
+        <copy todir="${swf.dir}" overwrite="true">
+            <fileset dir="${cw.bin.dir}" includes="CytoscapeWeb.swf playerProductInstall.swf"/>
+            <fileset dir="${cwfile.dir}/bin" includes="Importer.swf Exporter.swf"/>
+        </copy>
+        <!-- Copy JavaScript files -->
+        <copy todir="${js.dir}/cytoscape_web"  overwrite="true">
+            <fileset dir="${cw.bin.dir}/js" includes="cytoscapeweb.min.js AC_OETags.min.js json2.min.js"/>
+            <fileset dir="${cwfile.dir}/bin/js" includes="cytoscapeweb-file.js"/>
+        </copy>
+        <!-- Copy the downloadable zip file -->
+        <copy todir="${download.dir}" overwrite="true">
+            <fileset dir="${cw.dir}/build" includes="*.zip"/>
+        </copy>
+    </target>
+    
+    
+    
+    <target name="info">
+        <echo>*********************************************************************</echo>
+        <echo>*   This script builds Cytoscape Web Website                         *</echo>
+        <echo>*   The following targets are available in this script:              *</echo>
+        <echo>*       build - generate the zip file foir the website deplooyement  *</echo>
+        <echo>*       files - copy the necessary files from the other sub-projects *</echo>
+        <echo>*       api   - generate the API documentation                       *</echo>
+        <echo>*       info  - (default) prints this text                           *</echo>
+        <echo>**********************************************************************</echo>
+    </target>
+    
+</project>
