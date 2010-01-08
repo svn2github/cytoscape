@@ -41,6 +41,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 
+import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -75,7 +76,13 @@ public enum EditorDisplayer {
 	DISCRETE_NUMBER(JOptionPane.class, "showInputDialog",
 	                new Class[] { Component.class, Object.class },
 	                new Object[] { Cytoscape.getDesktop(), "Please enter new numeric value:" },
-	                Number.class), 
+	                Number.class),
+	DISCRETE_BOOLEAN(JOptionPane.class, "showInputDialog",
+			new Class[] { Component.class, Object.class, String.class, int.class, 
+							Icon.class, Object[].class, Object.class},
+	    	    new Object[] { Cytoscape.getDesktop(), "Please select:", "Select true or false", 
+							JOptionPane.QUESTION_MESSAGE, null, new Object[] {true, false}, Boolean.TRUE}, 
+			Boolean.class), 
 	DISCRETE_STRING(JOptionPane.class, "showInputDialog",
 	                new Class[] { Component.class, Object.class },
 	                new Object[] { Cytoscape.getDesktop(), "Please enter new text value:" },
@@ -130,7 +137,7 @@ public enum EditorDisplayer {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class getActionClass() {
+	public Class<?> getActionClass() {
 		return chooserClass;
 	}
 

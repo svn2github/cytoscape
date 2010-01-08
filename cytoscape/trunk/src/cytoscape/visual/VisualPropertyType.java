@@ -403,9 +403,9 @@ public enum VisualPropertyType {
 	private Object showEditor(EditorDisplayer action)
 	    throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
 	               SecurityException, NoSuchMethodException {
-		Method method = action.getActionClass()
-		                      .getMethod(action.getCommand(), action.getParamTypes());
 		
+		final Method method = action.getActionClass()
+		                      .getMethod(action.getCommand(), action.getParamTypes());
 		
 		Object ret = method.invoke(null, action.getParameters());
 

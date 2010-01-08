@@ -306,6 +306,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		arrowCellEditor.addPropertyChangeListener(this);
 
 		labelPositionEditor.addPropertyChangeListener(this);
+		
+		booleanCellEditor.addPropertyChangeListener(this);
+		booleanCellEditor.setAvailableValues(new Boolean[] {true, false});
 	}
 
 	/**
@@ -758,7 +761,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private CyLabelPositionPropertyEditor labelPositionEditor = new CyLabelPositionPropertyEditor();
 	
 	// For boolean attributes
-	private BooleanPropertyEditor booleanCellEditor = new BooleanPropertyEditor();
+	private CyComboBoxPropertyEditor booleanCellEditor = new CyComboBoxPropertyEditor();
 
 	// Others
 	private DefaultTableCellRenderer emptyBoxRenderer = new DefaultTableCellRenderer();
@@ -1457,7 +1460,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final List<VizMapperProperty> children = new ArrayList<VizMapperProperty>();
 
-		System.out.println("======= Setting Props: " + type.getName() + ", attrKeys = " + attrKeys.size());
 		for (Object key : attrKeys) {
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
