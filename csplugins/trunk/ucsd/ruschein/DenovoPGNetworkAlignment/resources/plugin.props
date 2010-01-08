@@ -1,7 +1,7 @@
-pluginName=PinnacleZ
-pluginDescription=<html>An implementation of the PinnacleZ algorithm as specified in Chuang, H. Y. and Lee, E., et al., "Network-based classification of breast cancer metastasis," <i>Molecular Systems Biology</i> 3:140 (2007).</html>
+pluginName=DenovoPGNetworkAlignment
+pluginDescription=test
 pluginVersion=1.0
-cytoscapeVersion=2.5,2.6,3.0
+cytoscapeVersion=2.6,2.7
 pluginCategory=Analysis
-pluginAuthorsInstitutions=Samad Lotia and Han-Yu Chuang:UCSD
-releaseDate=June 16, 2008
+pluginAuthorsInstitutions=Kei Ono:UCSD
+releaseDate=January 8, 2010

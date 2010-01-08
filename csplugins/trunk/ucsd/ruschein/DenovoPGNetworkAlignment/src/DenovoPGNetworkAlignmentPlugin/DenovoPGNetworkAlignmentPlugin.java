@@ -1,39 +1,39 @@
 package DenovoPGNetworkAlignmentPlugin;
 
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JMenuItem;
+import javax.swing.SwingConstants;
+
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
-
-public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin
-{
+public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin {
 	SearchPanel searchPanel = null;
-	public DenovoPGNetworkAlignmentPlugin()
-	{
+
+	public DenovoPGNetworkAlignmentPlugin() {
 		JMenuItem menuItem = new JMenuItem("DenovoPGNetworkAlignment...");
 		menuItem.addActionListener(new PluginAction());
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins").add(menuItem);
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins")
+				.add(menuItem);
 	}
 
-	class PluginAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			if (searchPanel == null)
-			{
+	class PluginAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if (searchPanel == null) {
 				searchPanel = new SearchPanel();
 				searchPanel.addSearchActionListener(new SearchAction());
 			}
 
-			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
+					SwingConstants.WEST);
 			int index = cytoPanel.indexOfComponent(searchPanel);
-			if (index < 0)
-			{
+			if (index < 0) {
 				searchPanel.setVisible(true);
 				cytoPanel.add("DenovoPGNetworkAlignment", searchPanel);
 				index = cytoPanel.indexOfComponent(searchPanel);
@@ -43,10 +43,8 @@ public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin
 		}
 	}
 
-	class SearchAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
+	class SearchAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.displayCancelButton(true);
 			jTaskConfig.displayCloseButton(false);

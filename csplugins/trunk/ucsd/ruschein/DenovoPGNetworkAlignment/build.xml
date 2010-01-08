@@ -52,7 +52,8 @@
 	<target name="compile" description="compile project's class files">
 
 		<mkdir dir="${build.dir}" />
-		<javac srcdir="${project.src.dir}" destdir="${build.dir}" classpathref="project.class.path" debug="yes" />
+		<javac srcdir="${project.src.dir}" destdir="${build.dir}" classpathref="project.class.path" debug="yes" source="1.5"
+			   target="1.5" optimize="on" />
 
 	</target>
 
@@ -61,9 +62,11 @@
 	<!-- ===================================================================	-->
 
 	<target name="jar" depends="compile" description="package all class files into a jar">
+		<copy todir="${build.dir}/DenovoPGNetworkAlignmentPlugin" 
+			file="${root.dir}/resources/plugin.props"/>
 		<jar jarfile="${project.jar}" basedir="${build.dir}">
 			<manifest>
-				<attribute name="Cytoscape-Plugin" value="${project.jar.main.class}" />
+				<attribute name="Cytoscape-Plugin" value="DenovoPGNetworkAlignmentPlugin.DenovoPGNetworkAlignmentPlugin" />
 			</manifest>
 		</jar>
 	</target>
