@@ -35,7 +35,6 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
 import giny.view.EdgeView;
 import java.util.Properties;
 
@@ -92,15 +91,6 @@ public class EdgeLabelPositionProp extends AbstractVisualProperty {
             ev.setLabelOffsetY(newOffsetY);
     }
 */
-
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_LABEL_POSITION.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new LabelPositionParser()).parseLabelPosition(s);
-        else
-            return null;
-    }
 
     public Object getDefaultAppearanceObject() { return new LabelPosition(); }
 }

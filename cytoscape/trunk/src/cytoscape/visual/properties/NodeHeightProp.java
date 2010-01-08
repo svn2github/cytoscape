@@ -36,8 +36,6 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.DoubleParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
 
 import giny.view.NodeView;
@@ -103,24 +101,6 @@ public class NodeHeightProp extends AbstractVisualProperty {
 
 		if (Math.abs(difference) > 0.1)
 			nv.setHeight(height);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_HEIGHT.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new DoubleParser()).parseDouble(s);
-		else
-
-			return null;
 	}
 
 	/**

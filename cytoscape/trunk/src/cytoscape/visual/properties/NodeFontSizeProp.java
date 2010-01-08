@@ -36,8 +36,6 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.FloatParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
 
 import giny.view.Label;
@@ -105,24 +103,6 @@ public class NodeFontSizeProp extends AbstractVisualProperty {
 
 		if (newFontSize != f.getSize2D())
 			nodelabel.setFont(f.deriveFont(newFontSize));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_FONT_SIZE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s);
-		else
-
-			return null;
 	}
 
 	/**

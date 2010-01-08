@@ -39,8 +39,6 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.ColorParser;
-
 import cytoscape.visual.ui.icon.ArrowIcon;
 
 import giny.view.EdgeView;
@@ -97,24 +95,6 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 
 		if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
 			ev.setTargetEdgeEndPaint(newTargetArrowColor);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_TGTARROW_COLOR.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ColorParser()).parseColor(s);
-		else
-
-			return null;
 	}
 
 	/**

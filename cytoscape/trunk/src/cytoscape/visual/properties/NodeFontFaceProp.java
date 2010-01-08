@@ -36,8 +36,6 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.FontParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
 
 import giny.view.Label;
@@ -103,24 +101,6 @@ public class NodeFontFaceProp extends AbstractVisualProperty {
 
 		if (!((Font) o).equals(nodelabel.getFont()))
 			nodelabel.setFont((Font) o);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_FONT_FACE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FontParser()).parseFont(s);
-		else
-
-			return null;
 	}
 
 	/**

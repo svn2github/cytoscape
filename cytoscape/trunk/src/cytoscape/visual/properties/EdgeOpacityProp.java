@@ -47,7 +47,6 @@ import java.util.Properties;
 import javax.swing.Icon;
 
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
 
@@ -106,24 +105,6 @@ public class EdgeOpacityProp extends AbstractVisualProperty {
 			ev.setUnselectedPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
 			                                oldPaint.getBlue(), newTp));
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_OPACITY.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s).intValue();
-		else
-
-			return null;
 	}
 
 	/**

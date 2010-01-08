@@ -36,8 +36,6 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.FloatParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.LineStyle;
 
@@ -107,24 +105,6 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 			final Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(width);
 			nv.setBorder(newStroke);
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LINE_WIDTH.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s);
-		else
-
-			return null;
 	}
 
 	/**

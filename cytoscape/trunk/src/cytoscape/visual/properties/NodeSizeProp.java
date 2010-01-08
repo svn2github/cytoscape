@@ -113,24 +113,6 @@ public class NodeSizeProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_SIZE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new DoubleParser()).parseDouble(s);
-		else
-
-			return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {

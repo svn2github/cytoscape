@@ -132,7 +132,12 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Object parseProperty(Properties props, String baseKey) {
-		return null;
+		final VisualPropertyType type = getType();
+        String s = props.getProperty(type.getDefaultPropertyKey(baseKey));
+        if (s != null)
+            return type.getValueParser().parseStringValue(s);
+        else
+            return null;
 	}
 
 	/**

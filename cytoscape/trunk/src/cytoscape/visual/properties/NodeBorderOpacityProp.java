@@ -13,7 +13,6 @@ import javax.swing.Icon;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.ui.icon.NodeIcon;
 
 public class NodeBorderOpacityProp extends AbstractVisualProperty {
@@ -78,24 +77,6 @@ public class NodeBorderOpacityProp extends AbstractVisualProperty {
 			nv.setBorderPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
 			                                oldPaint.getBlue(), newTp));
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_BORDER_OPACITY.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s).intValue();
-		else
-
-			return null;
 	}
 
 	/**

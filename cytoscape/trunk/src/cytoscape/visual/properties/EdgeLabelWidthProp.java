@@ -39,7 +39,6 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL_WIDTH;
 
-import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
 import giny.view.EdgeView;
@@ -108,24 +107,6 @@ public class EdgeLabelWidthProp extends AbstractVisualProperty {
 		if (ev.getLabelWidth() != width) {
 			ev.setLabelWidth(width);
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_LABEL_WIDTH.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s);
-		else
-
-			return null;
 	}
 
 	/**

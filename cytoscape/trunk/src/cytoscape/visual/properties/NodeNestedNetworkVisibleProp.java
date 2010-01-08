@@ -36,8 +36,6 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.BooleanParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
 
 import giny.view.NodeView;
@@ -101,24 +99,6 @@ public class NodeNestedNetworkVisibleProp extends AbstractVisualProperty {
 
 		if (((Boolean) o) != nv.nestedNetworkIsVisible())
 			nv.showNestedNetwork((Boolean) o);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_NESTED_NETWORK_VISIBLE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new BooleanParser()).parseBoolean(s);
-		else
-
-			return null;
 	}
 
 	/**

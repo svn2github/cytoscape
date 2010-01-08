@@ -44,7 +44,6 @@ import javax.swing.Icon;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.ArrowShapeParser;
 import cytoscape.visual.ui.icon.ArrowIcon;
 
 
@@ -98,24 +97,6 @@ public class EdgeSourceArrowShapeProp extends AbstractVisualProperty {
 
 		if (newSourceEnd != ev.getSourceEdgeEnd())
 			ev.setSourceEdgeEnd(newSourceEnd);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_SRCARROW_SHAPE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ArrowShapeParser()).parseArrowShape(s);
-		else
-
-			return null;
 	}
 
 	/**

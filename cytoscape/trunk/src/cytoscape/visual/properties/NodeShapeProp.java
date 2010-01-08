@@ -37,8 +37,6 @@ package cytoscape.visual.properties;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.NodeShapeParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
 
 import giny.view.NodeView;
@@ -97,24 +95,6 @@ public class NodeShapeProp extends AbstractVisualProperty {
 
 		if (nv.getShape() != newShape)
 			nv.setShape(newShape);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_SHAPE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new NodeShapeParser()).parseNodeShapeEnum(s);
-		else
-
-			return null;
 	}
 
 	/**

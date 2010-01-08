@@ -39,8 +39,6 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.LabelPositionParser;
-
 import cytoscape.visual.ui.LabelPlacerGraphic;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
@@ -137,24 +135,6 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 
 		if (nv.getLabelOffsetY() != newOffsetY)
 			nv.setLabelOffsetY(newOffsetY);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LABEL_POSITION.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new LabelPositionParser()).parseLabelPosition(s);
-		else
-
-			return null;
 	}
 
 	/**

@@ -94,24 +94,6 @@ public class EdgeColorProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_COLOR.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ColorParser()).parseColor(s);
-		else
-
-			return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {

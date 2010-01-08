@@ -111,24 +111,6 @@ public class NodeLabelProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LABEL.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return s;
-		else
-
-			return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {

@@ -38,8 +38,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.visual.*;
 
-import cytoscape.visual.parsers.*;
-
 import cytoscape.visual.ui.icon.*;
 
 import giny.view.NodeView;
@@ -121,24 +119,6 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 //		if (((LineStyle) o).getDashDef() != (((BasicStroke) nv.getBorder()).getDashArray())) {
 //			nv.setBorder(((LineStyle) o).getStroke(nv.getBorderWidth()));
 //		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LINE_STYLE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new LineStyleParser()).parseLineStyle(s);
-		else
-
-			return null;
 	}
 
 	/**
