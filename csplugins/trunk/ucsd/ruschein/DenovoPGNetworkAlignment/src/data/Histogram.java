@@ -89,7 +89,7 @@ public class Histogram {
 	{
 		double eta = (numbins+1)*Double.MIN_VALUE;
 		leftbin = DoubleVector.getScale(low, low+numbins*binsize, binsize);
-		if (leftbin.size()>numbins) leftbin.remove(leftbin.size()-1);
+		if (leftbin.size()>numbins) leftbin = new DoubleVector(DoubleVector.resize(leftbin.getData(), leftbin.size()-1));
 		
 		bincount = new DoubleVector(numbins);
 		for (int i=0;i<numbins;i++)

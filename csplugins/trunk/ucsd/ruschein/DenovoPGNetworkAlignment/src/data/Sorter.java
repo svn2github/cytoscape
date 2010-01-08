@@ -84,7 +84,7 @@ public class Sorter {
 		
 		float[] mydata = fv.asFloatArray();
 		sortwI(mydata,0,fv.size(),index);
-		fv.set(mydata);
+		fv = new FloatVector(mydata);
 
 		if (fv.hasElementNames())
 		{
@@ -108,7 +108,7 @@ public class Sorter {
 		
 		byte[] mydata = dv.asByteArray();
 		sortwI(mydata,0,dv.size(),index);
-		dv.set(mydata);
+		dv = new ByteVector(mydata);
 
 		if (dv.hasElementNames())
 		{

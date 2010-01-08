@@ -1,13 +1,20 @@
 package networks.denovoPGNetworkAlignment;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import networks.hashNetworks.*;
-import networks.linkedNetworks.*;
-import networks.hashNetworks.*;
-import data.*;
-import networks.*;
+import networks.SFNetwork;
+import networks.SNodeModule;
+import networks.hashNetworks.FloatHashNetwork;
+import networks.linkedNetworks.TypedLinkEdge;
+import networks.linkedNetworks.TypedLinkNetwork;
+import networks.linkedNetworks.TypedLinkNode;
+import networks.linkedNetworks.TypedLinkNodeModule;
+import data.StringTable;
 
 public class HCSearch_Runner {
 

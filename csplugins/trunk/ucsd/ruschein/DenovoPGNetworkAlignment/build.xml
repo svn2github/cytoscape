@@ -15,80 +15,73 @@
 
 <project name="DenovoPGNetworkAlignment" default="all" basedir=".">
 
-  <!-- ===================================================================	-->
-  <!-- Properties								-->
-  <!-- ===================================================================	-->
+	<!-- ===================================================================	-->
+	<!-- Properties								-->
+	<!-- ===================================================================	-->
 
-  <property name="root.dir"			location="."/>
-  <property name="build.dir"			location="${root.dir}/build"/>
-  <property name="resources.dir"		location="${root.dir}/resources"/>
-  <property name="lib.dir"			location="${root.dir}/lib"/>
+	<property name="root.dir" location="." />
+	<property name="build.dir" location="${root.dir}/build" />
+	<property name="resources.dir" location="${root.dir}/resources" />
+	<property name="lib.dir" location="${root.dir}/lib" />
 
-  <!-- Project directories and files -->
-  <property name="project.src.dir"		location="${root.dir}/src"/>
-  <property name="project.jar"			location="${root.dir}/DenovoPGNetworkAlignment.jar"/>
+	<!-- Project directories and files -->
+	<property name="project.src.dir" location="${root.dir}/src" />
+	<property name="project.jar" location="${root.dir}/DenovoPGNetworkAlignment.jar" />
 
-  <!-- Cytoscape directories and files needed for compiling -->
-  <property name="cytoscape.root.dir"		location="../cytoscape"/>
-  <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
+	<!-- Cytoscape directories and files needed for compiling -->
+	<property name="cytoscape.root.dir" location="../cytoscape" />
+	<property name="cytoscape.lib.dir" location="${cytoscape.root.dir}/lib" />
 
-  <!-- Define the class path - Defaults to everything in the lib.dir -->
-  <path id="project.class.path">
-    <fileset dir="${cytoscape.root.dir}">
-      <include name="cytoscape.jar"/>
-    </fileset>
-    <fileset dir="${lib.dir}">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${cytoscape.lib.dir}">
-      <include name="**/*.jar"/>
-    </fileset>
-  </path>
-  
-  <!-- ===================================================================	-->
-  <!-- compile									-->
-  <!-- ===================================================================	-->
+	<!-- Define the class path - Defaults to everything in the lib.dir -->
+	<path id="project.class.path">
+		<fileset dir="${cytoscape.root.dir}">
+			<include name="cytoscape.jar" />
+		</fileset>
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${cytoscape.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
 
-  <target	name="compile"
-  		description="compile project's class files">
+	<!-- ===================================================================	-->
+	<!-- compile									-->
+	<!-- ===================================================================	-->
 
-    <mkdir dir="${build.dir}" />
-    <javac	srcdir="${project.src.dir}"
-    		destdir="${build.dir}"
-		classpathref="project.class.path"
-		debug="yes" />
-    
-  </target>
+	<target name="compile" description="compile project's class files">
 
-  <!-- ===================================================================	-->
-  <!-- jar									-->
-  <!-- ===================================================================	-->
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="${project.src.dir}" destdir="${build.dir}" classpathref="project.class.path" debug="yes" />
 
-  <target	name="jar"
-  		depends="compile"
-		description="package all class files into a jar">
-    <jar jarfile="${project.jar}"
-    	 basedir="${build.dir}">
-    	<manifest>
-	      <attribute name="Cytoscape-Plugin" value="${project.jar.main.class}"/>
-   	 	</manifest>
-	</jar>
-  </target>
-  
-  <!-- ===================================================================	-->
-  <!-- all				                                      	-->
-  <!-- ===================================================================	-->
-  <target name="all" depends="jar"/>
+	</target>
 
-  <!-- ===================================================================	-->
-  <!-- clean 									-->
-  <!-- ===================================================================	-->
-  <target name="clean">
-  
-    <delete dir="${build.dir}"/>
-    <delete dir="${manifest.dir}"/>
-    <delete file="${project.jar}"/>
-    
-  </target>
+	<!-- ===================================================================	-->
+	<!-- jar									-->
+	<!-- ===================================================================	-->
+
+	<target name="jar" depends="compile" description="package all class files into a jar">
+		<jar jarfile="${project.jar}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Cytoscape-Plugin" value="${project.jar.main.class}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- ===================================================================	-->
+	<!-- all				                                      	-->
+	<!-- ===================================================================	-->
+	<target name="all" depends="jar" />
+
+	<!-- ===================================================================	-->
+	<!-- clean 									-->
+	<!-- ===================================================================	-->
+	<target name="clean">
+
+		<delete dir="${build.dir}" />
+		<delete dir="${manifest.dir}" />
+		<delete file="${project.jar}" />
+
+	</target>
 
 </project>

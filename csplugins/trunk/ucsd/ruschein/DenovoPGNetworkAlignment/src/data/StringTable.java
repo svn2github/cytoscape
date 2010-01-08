@@ -95,6 +95,11 @@ public class StringTable extends DataTable{
 		data.get(row).add(String.valueOf(val));
 	}
 	
+	public void add(int row, char val)
+	{
+		data.get(row).add(String.valueOf(val));
+	}
+	
 	public void add(int row, double val)
 	{
 		data.get(row).add(String.valueOf(val));

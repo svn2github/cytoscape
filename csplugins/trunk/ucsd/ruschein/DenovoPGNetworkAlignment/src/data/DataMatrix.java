@@ -310,6 +310,15 @@ public abstract class DataMatrix {
 		return lis;
 	}
 	
+	protected IntVector getColIs(StringVector rnames)
+	{
+		IntVector lis = DataUtil.getSListIs(colnames,rnames);
+		
+		while (lis.contains(-1)) lis.removeElement(-1);
+		
+		return lis;
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected IntVector getColIs(List<?> indexes)
 	{

@@ -1,11 +1,11 @@
 package DenovoPGNetworkAlignmentPlugin;
 
-import java.util.Iterator;
 import java.io.BufferedReader;
 import java.io.StringReader;
-import cytoscape.CyNetwork;
+import java.util.Iterator;
+
 import cytoscape.CyEdge;
-import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 
 
 public class CyNetworkConverter
