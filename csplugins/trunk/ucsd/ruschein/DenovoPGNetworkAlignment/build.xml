@@ -62,11 +62,11 @@
 	<!-- ===================================================================	-->
 
 	<target name="jar" depends="compile" description="package all class files into a jar">
-		<copy todir="${build.dir}/DenovoPGNetworkAlignmentPlugin" 
+		<copy todir="${build.dir}/org/cytoscape/DenovoPGNetworkAlignmentPlugin" 
 			file="${root.dir}/resources/plugin.props"/>
 		<jar jarfile="${project.jar}" basedir="${build.dir}">
 			<manifest>
-				<attribute name="Cytoscape-Plugin" value="DenovoPGNetworkAlignmentPlugin.DenovoPGNetworkAlignmentPlugin" />
+				<attribute name="Cytoscape-Plugin" value="org.cytoscape.DenovoPGNetworkAlignmentPlugin.DenovoPGNetworkAlignmentPlugin" />
 			</manifest>
 		</jar>
 	</target>
