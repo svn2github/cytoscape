@@ -29,14 +29,20 @@
   <property name="project.jar"			location="${root.dir}/DenovoPGNetworkAlignment.jar"/>
 
   <!-- Cytoscape directories and files needed for compiling -->
-  <property name="cytoscape.root.dir"		location="../../../cytoscape"/>
+  <property name="cytoscape.root.dir"		location="../cytoscape"/>
   <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
 
-  <!-- Project jar properties -->
-  <property name="project.jar.main.class"	value="DenovoPGNetworkAlignment.DenovoPGNetworkAlignment"/>
-  <path id="project.jar.class.path">
-    <pathelement location="${cytoscape.root.dir}/cytoscape.jar"/>
-    <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
+  <!-- Define the class path - Defaults to everything in the lib.dir -->
+  <path id="project.class.path">
+    <fileset dir="${cytoscape.root.dir}">
+      <include name="cytoscape.jar"/>
+    </fileset>
+    <fileset dir="${lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${cytoscape.lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
   </path>
   
   <!-- ===================================================================	-->
@@ -46,11 +52,11 @@
   <target	name="compile"
   		description="compile project's class files">
 
-    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.dir}" />
     <javac	srcdir="${project.src.dir}"
     		destdir="${build.dir}"
-		debug="yes"
-		classpathref="project.jar.class.path"/>
+		classpathref="project.class.path"
+		debug="yes" />
     
   </target>
 
