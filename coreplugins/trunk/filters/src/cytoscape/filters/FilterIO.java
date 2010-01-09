@@ -263,14 +263,19 @@ public class FilterIO {
 				retFilter.setNegation(false);
 			}
 			if (line.startsWith("StringFilter=")) {
-				String[] _values = line.substring(13).split(":");
+				String _stringFilterValue = line.substring(13); 
+				String[] _values = _stringFilterValue.split(":");
 				//controllingAttribute+":" + negation+ ":"+searchStr+":"+index_type;
 				StringFilter _strFilter = new StringFilter();
 				_strFilter.setParent(retFilter);
 				_strFilter.setControllingAttribute(_values[0]);
-				_strFilter.setNegation((new Boolean(_values[1])).booleanValue());				
-				_strFilter.setSearchStr(_values[2]);
-				_strFilter.setIndexType((new Integer(_values[3])).intValue());
+				_strFilter.setNegation((new Boolean(_values[1])).booleanValue());	
+				
+				// handle the case where ':' is part of the search string
+				String _searchStr = _stringFilterValue.substring(_values[0].length()+_values[1].length()+2, _stringFilterValue.length()-_values[_values.length-1].length()-1);		
+				_strFilter.setSearchStr(_searchStr);
+				
+				_strFilter.setIndexType((new Integer(_values[_values.length-1])).intValue());
 				retFilter.addChild(_strFilter);
 			}
 			if (line.startsWith("NumericFilter=")) {
