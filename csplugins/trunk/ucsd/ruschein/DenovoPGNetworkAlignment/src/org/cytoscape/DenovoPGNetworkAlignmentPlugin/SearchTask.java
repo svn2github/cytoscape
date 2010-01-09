@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.SwingConstants;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -15,40 +16,18 @@ public class SearchTask implements Task {
 	private TaskMonitor taskMonitor = null;
 	boolean needsToHalt = false;
 	static int numOfRuns = 1;
+	
+	private SearchParameters parameters;
 
-	public SearchTask() {
+	public SearchTask(final SearchParameters parameters) {
+		this.parameters = parameters;
 	}
 
 	public void run() {
-		//
-		// Stage 1.A: Read input files
-		//
-
 		setPercentCompleted(0);
-		setStatus("Reading class file...");
-		try {
-		} catch (Exception e) {
-			setException(e, e.getMessage());
-			return;
-		}
+		setStatus("Searching...");
 
-		if (needsToHalt)
-			return;
-
-		//
-		// Stage 1.B: Read expression matrix file
-		//
-
-		setPercentCompleted(5);
-		setStatus("Reading expression matrix file...");
-		try {
-		} catch (final Exception e) {
-			setException(e, e.getMessage());
-			return;
-		}
-
-		if (needsToHalt)
-			return;
+		final CyNetwork network = parameters.network;
 
 		//
 		// Stage 1.C: Read network file

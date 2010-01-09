@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
+import org.cytoscape.DenovoPGNetworkAlignmentPlugin.ui.SearchPropertyPanel;
+
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.task.ui.JTaskConfig;
@@ -14,20 +16,20 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
 public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin {
-	SearchPanel searchPanel = null;
+	
+	private SearchPropertyPanel searchPanel;
 
 	public DenovoPGNetworkAlignmentPlugin() {
-		JMenuItem menuItem = new JMenuItem("DenovoPGNetworkAlignment...");
+		final JMenuItem menuItem = new JMenuItem("DenovoPGNetworkAlignment...");
 		menuItem.addActionListener(new PluginAction());
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins")
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...")
 				.add(menuItem);
 	}
 
 	class PluginAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (searchPanel == null) {
-				searchPanel = new SearchPanel();
-				searchPanel.addSearchActionListener(new SearchAction());
+				searchPanel = new SearchPropertyPanel();
 			}
 
 			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
@@ -54,7 +56,7 @@ public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin {
 			jTaskConfig.setAutoDispose(true);
 			jTaskConfig.setModal(true);
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
-			TaskManager.executeTask(new SearchTask(), jTaskConfig);
+			TaskManager.executeTask(new SearchTask(searchPanel.getParameters()), jTaskConfig);
 		}
 	}
 }
