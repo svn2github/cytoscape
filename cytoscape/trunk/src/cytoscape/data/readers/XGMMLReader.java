@@ -377,6 +377,13 @@ public class XGMMLReader extends AbstractGraphReader {
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
 			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+				
+				// Set 'networkView' as currentView, so that 
+				//the VisualStyle created for this view will be applied to this 'networkView' only
+				if (networkView != null && networkView.getIdentifier() != null){
+					Cytoscape.setCurrentNetworkView(networkView.getIdentifier());
+				}
+				
 				layout(networkView);
 			}
 		};
