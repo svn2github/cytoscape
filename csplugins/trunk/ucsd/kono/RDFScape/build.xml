@@ -1,8 +1,13 @@
-<!-- RDFScape ant build file -->
+<!-- RDFScape ant build file modified by Kei-->
 
-<project name="RDFScape" default="dev">
+<project name="RDFScape" default="jar" basedir=".">
 
 	<description>Simple build file for my plugin</description>
+
+	<!-- You need modify this to your Cytoscape -->
+	<property name="cytoscape.dir" value="../cytoscape" />
+	
+	<property name="plugin.jar" value="RDFScape.jar" />
 
 	<property name="src" location="${basedir}/src" />
 	<property name="bin" location="${basedir}/bin" />
@@ -10,10 +15,35 @@
 	<property name="plugin" location="${basedir}/plugin/" />
 	<property name="dist" location="${basedir}/dist/" />
 	<property name="extlibdir" location="${basedir}/extlibdir/" />
-	<!-- edit this for your environment -->
-	<property name="deploy" location="${basedir}/../cytoscape/plugins/core/" />
-	<property name="deployApple" location="${basedir}/../cytoscape/plugins/core/" />
 
+	<!-- edit this for your environment -->
+	<property name="deploy" location="${cytoscape.dir}/plugins/core/" />
+	<property name="deployApple" location="${cytoscape.dir}/plugins/core/" />
+
+	<!-- Library locations -->
+	<property name="jena.dir" location="${basedir}/lib/jena-2.6.2" />
+	<property name="pellet.dir" location="${basedir}/lib/pellet-2.0.1" />
+
+
+
+	<!-- ==================== Compilation Classpath ====================== -->
+	<path id="compile.classpath">
+		<fileset dir="${cytoscape.dir}">
+			<include name="cytoscape.jar" />
+		</fileset>
+		<fileset dir="${cytoscape.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${basedir}/lib">
+			<include name="*/**" />
+		</fileset>
+	</path>
+
+	<!-- ==================== Clean Target =============================== -->
+	<target name="clean" description="Deletes all build files and starts fresh">
+		<delete dir="${bin}" />
+		<delete file="${basedir}/plugin/${plugin.jar}" />
+	</target>
 
 
 	<target name="init">
@@ -21,9 +51,12 @@
 		<mkdir dir="${bin}" />
 	</target>
 
+	<!-- Compile RDF Scape -->
 	<target name="compile" depends="init">
-		<!-- delete dir="${build}" -->
-		<javac srcdir="${src}" destdir="${bin}" />
+		<javac source="1.5" target="1.5" srcdir="${src}" destdir="${bin}">
+			<classpath refid="compile.classpath" />
+		</javac>
+
 		<copy todir="${bin}/images">
 			<fileset dir="${src}/images" />
 		</copy>
@@ -32,17 +65,24 @@
 		</copy>
 	</target>
 
-	<target name="dev" depends="compile">
+	<target name="jar" depends="compile">
+		<unjar dest="${bin}">
+
+			<fileset dir="${basedir}/lib">
+				<include name="*/**" />
+			</fileset>
+		</unjar>
+
 		<jar jarfile="${plugin}/RDFScape.jar" basedir="${bin}" />
 	</target>
 
-	<target name="deploy" depends="dev">
+	<target name="deploy" depends="jar">
 		<copy file="${plugin}/RDFScape.jar" todir="${deploy}" />
 	</target>
-	<target name="deployApple" depends="dev">
+	<target name="deployApple" depends="jar">
 		<copy file="${plugin}/RDFScape.jar" todir="${deployApple}" />
 	</target>
-	<target name="makeDistribution" depends="dev">
+	<target name="makeDistribution" depends="jar">
 		<mkdir dir="${dist}/plugins" />
 		<mkdir dir="${dist}/extlibs" />
 		<mkdir dir="${dist}/rdfscapecontexts" />

@@ -27,56 +27,37 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-
-import antlr.collections.List;
-
-//import obsolete.RuleObject;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.ExpressionData;
-import cytoscape.ding.DingNetworkView;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
-import cytoscape.layout.LayoutAlgorithm;
-import cytoscape.view.CyEdgeView;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
-import ding.view.NodeContextMenuListener;
-import ding.view.DGraphView.Canvas;
 import fr.pasteur.sysbio.rdfscape.CommonMemory;
 import fr.pasteur.sysbio.rdfscape.DefaultSettings;
 import fr.pasteur.sysbio.rdfscape.MemoryViewer;
 import fr.pasteur.sysbio.rdfscape.RDFScape;
 import fr.pasteur.sysbio.rdfscape.knowledge.KnowledgeWrapper;
-import fr.pasteur.sysbio.rdfscape.ontologyhandling.RDFResourceWrapper;
 import fr.pasteur.sysbio.rdfscape.query.AbstractQueryResultTable;
 import fr.pasteur.sysbio.rdfscape.query.GraphQueryAnswerer;
 import giny.model.Edge;
 import giny.model.Node;
-import giny.util.JUNGSpringLayout;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
