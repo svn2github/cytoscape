@@ -137,9 +137,8 @@ public class HCSearch2 {
 	/**
 	 * Constructs the base network for performing the network search.
 	 * This network contains both physical and genetic interactions.
-	 * @param pnet: Physical network
-	 * @param gnet: Genetic network
-	 * @return
+	 * @param pnet  Physical network
+	 * @param gnet  Genetic network
 	 */
 	public static TypedLinkNetwork<TypedLinkNodeModule<String,BFEdge>,BFEdge> constructBaseNetwork(SFNetwork pnet, SFNetwork gnet)
 	{

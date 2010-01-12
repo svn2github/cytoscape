@@ -540,7 +540,6 @@ public class BooleanMatrixNetwork extends SBNetwork
 	/**
 	 * Gets the neighborhood of a node, excluding interactions which contain a node (other than the anchor) in the given set
 	 * @param nodeIndex
-	 * @return
 	 */
 	public SBNetwork getNeighborhoodExclusive(int nodeIndex, Set<Integer> exclude)
 	{
@@ -594,7 +593,6 @@ public class BooleanMatrixNetwork extends SBNetwork
 	
 	/**
 	 * Caution: For speed, this returns the actual reference, not a copy. Do not modify it.
-	 * @return
 	 */
 	public List<String> nodeValues()
 	{
@@ -608,7 +606,6 @@ public class BooleanMatrixNetwork extends SBNetwork
 	
 	/**
 	 * Caution: For speed, this returns the actual connectivity matrix, not a copy. Do not modify it.
-	 * @return
 	 */
 	public boolean[][] connectivity()
 	{

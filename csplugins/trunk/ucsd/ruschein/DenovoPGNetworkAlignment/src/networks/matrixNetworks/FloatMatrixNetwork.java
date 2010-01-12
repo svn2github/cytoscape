@@ -117,7 +117,6 @@ public class FloatMatrixNetwork extends SFNetwork
 	
 	/**
 	 * Returns the actual reference to the nodelist data. Use this carefully and only when speed is needed.
-	 * @return
 	 */
 	public List<String> getNodeListData()
 	{

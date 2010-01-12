@@ -120,7 +120,6 @@ public class DoubleMatrixNetwork extends SDNetwork implements Iterable<SDEdge>
 	
 	/**
 	 * Returns the actual reference. Do not modify.
-	 * @return
 	 */
 	public Map<String,Integer> getNodeLookupData()
 	{
@@ -149,7 +148,6 @@ public class DoubleMatrixNetwork extends SDNetwork implements Iterable<SDEdge>
 	
 	/**
 	 * Returns the actual reference to the nodelist data. Use this carefully and only when speed is needed.
-	 * @return
 	 */
 	public List<String> getNodeListData()
 	{
@@ -698,7 +696,6 @@ public class DoubleMatrixNetwork extends SDNetwork implements Iterable<SDEdge>
 	 * The merge object is used to define the function for combining edge scores. 
 	 * @param nets
 	 * @param merge
-	 * @return
 	 */
 	public static DoubleHashNetwork mergeNetworksExclusive(Collection<DoubleMatrixNetwork> nets, Mergers merge)
 	{
@@ -735,7 +732,6 @@ public class DoubleMatrixNetwork extends SDNetwork implements Iterable<SDEdge>
 	 * The merge object is used to define the function for combining edge scores. 
 	 * @param nets
 	 * @param merge
-	 * @return
 	 */
 	public static DoubleMatrixNetwork mergeNetworksIdentical(Collection<DoubleMatrixNetwork> nets, Mergers merge)
 	{

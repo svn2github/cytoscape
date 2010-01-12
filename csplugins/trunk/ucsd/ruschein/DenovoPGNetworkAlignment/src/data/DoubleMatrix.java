@@ -47,8 +47,6 @@ public class DoubleMatrix extends DataMatrix {
 
 	/**
 	 * Gets the reference to the data;
-	 * 
-	 * @return
 	 */
 	public double[][] getData() {
 		return data;

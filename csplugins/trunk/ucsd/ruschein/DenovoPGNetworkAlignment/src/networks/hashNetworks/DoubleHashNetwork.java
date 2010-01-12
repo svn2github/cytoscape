@@ -207,7 +207,6 @@ public class DoubleHashNetwork extends SDNetwork implements Iterable<SDEdge>
 	 * The merge object is used to define the function for combining edge scores. 
 	 * @param nets
 	 * @param merge
-	 * @return
 	 */
 	public static DoubleHashNetwork mergeNetworksExclusive(Collection<DoubleHashNetwork> nets, Mergers merge)
 	{

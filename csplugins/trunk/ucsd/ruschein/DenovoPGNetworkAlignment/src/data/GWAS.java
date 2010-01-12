@@ -99,7 +99,6 @@ public class GWAS implements Externalizable
 	/**
 	 * Utility function in order to 
 	 * @param fileName
-	 * @return
 	 */
 	public static ByteMatrix readInBinaryFile (String fileName, int markers, int disease)
 	{
@@ -166,7 +165,6 @@ public class GWAS implements Externalizable
 	
 	/**
 	 * Utility function in order to convert tab delimited files to a single binary file
-	 * @param tabFileName
 	 */
 	public static void convertAllTabFiles2BinaryFile (String tabFileDir, int markerCount, int peopleCount, String diseaseID, String outputFileName)
 	{

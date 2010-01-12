@@ -35,8 +35,8 @@ public class Many2ManyTranslator {
 	
 	/**
 	 * Loads a single map.
-	 * @param file: The filepath
-	 * @param reversed: Is the map reversed? (columns need to be swapped)
+	 * @param file      The filepath
+	 * @param reversed  Is the map reversed? (columns need to be swapped)
 	 */
 	public Many2ManyTranslator(String file, boolean reversed)
 	{
@@ -45,9 +45,9 @@ public class Many2ManyTranslator {
 	
 	/**
 	 * Loads two maps, in priority order.
-	 * @param file1: The first filepath
-	 * @param file2: The second filepath
-	 * @param reversed: Are the maps reversed? (columns need to be swapped)
+	 * @param file1     The first filepath
+	 * @param file2     The second filepath
+	 * @param reversed  Are the maps reversed? (columns need to be swapped)
 	 */
 	public Many2ManyTranslator(String file1,String file2, boolean reversed)
 	{
@@ -278,7 +278,6 @@ public class Many2ManyTranslator {
 	
 	/**
 	 * Builds a deep copy of the primary map.
-	 * @return
 	 */
 	public Map<String,List<String>> getPrimaryMap()
 	{

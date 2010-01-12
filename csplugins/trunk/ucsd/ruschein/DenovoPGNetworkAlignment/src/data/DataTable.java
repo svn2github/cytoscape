@@ -108,7 +108,6 @@ public abstract class DataTable {
 	/**
 	 * Get the name of the row at the given index.
 	 * @param index
-	 * @return
 	 */
 	public String getRowName(int index)
 	{
@@ -119,7 +118,6 @@ public abstract class DataTable {
 	/**
 	 * Get the name of the column at the given index.
 	 * @param index
-	 * @return
 	 */
 	public String getColName(int index)
 	{
@@ -129,7 +127,6 @@ public abstract class DataTable {
 	
 	/**
 	 * Gets a copy of the rownames list.
-	 * @return
 	 */
 	public ArrayList<String> getRowNames()
 	{
@@ -138,7 +135,6 @@ public abstract class DataTable {
 	
 	/**
 	 * Gets a copy of the colnames list.
-	 * @return
 	 */
 	public ArrayList<String> getColNames()
 	{
@@ -162,7 +158,6 @@ public abstract class DataTable {
 	
 	/**
 	 * Returns whether this DataTable has column names.
-	 * @return
 	 */
 	public boolean hasColNames()
 	{
@@ -171,7 +166,6 @@ public abstract class DataTable {
 	
 	/**
 	 * Returns whether this DataTable has row names.
-	 * @return
 	 */
 	public boolean hasRowNames()
 	{
@@ -203,7 +197,6 @@ public abstract class DataTable {
 	/**
 	 * Gets the row index corresponding to a the first row with the given name.
 	 * @param rname
-	 * @return
 	 */
 	protected int getRowIndex(String rname)
 	{
@@ -219,7 +212,6 @@ public abstract class DataTable {
 	/**
 	 * Gets the row indexes, each corresponding to the first row with the given name.
 	 * @param rnames
-	 * @return
 	 */
 	protected IntVector getRowIs(String[] rnames)
 	{
@@ -244,7 +236,6 @@ public abstract class DataTable {
 	/**
 	 * Gets the row indexes, each corresponding to the first row with the given name.
 	 * @param rnames
-	 * @return
 	 */
 	protected IntVector getRowIs(StringVector rnames)
 	{
@@ -270,7 +261,6 @@ public abstract class DataTable {
 	 * Gets the row indexes corresponding to a list of indexes.
 	 * Accepts lists of types: Double, Integer, String (rownames)
 	 * @param indexes
-	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	protected IntVector getRowIs(List<?> indexes)
