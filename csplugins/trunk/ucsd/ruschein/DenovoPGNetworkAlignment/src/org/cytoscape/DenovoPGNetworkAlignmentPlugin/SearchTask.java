@@ -1,13 +1,17 @@
 package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
 
+import java.util.ArrayList;
+
 import networks.denovoPGNetworkAlignment.BFEdge;
 import networks.denovoPGNetworkAlignment.HCScoringFunction;
 import networks.denovoPGNetworkAlignment.HCSearch2;
 import networks.denovoPGNetworkAlignment.SouravScore;
+import networks.linkedNetworks.TypedLinkEdge;
 import networks.linkedNetworks.TypedLinkNetwork;
 import networks.linkedNetworks.TypedLinkNodeModule;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import data.StringTable;
 
 public class SearchTask implements Task {
 	private TaskMonitor taskMonitor = null;

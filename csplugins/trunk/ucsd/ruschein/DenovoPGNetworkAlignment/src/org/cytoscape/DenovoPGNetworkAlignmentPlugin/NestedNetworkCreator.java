@@ -1,6 +1,5 @@
 package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
-
 /**
  * Creates an overview network for the detected complexes and nested networks
  * for each complex.
@@ -26,63 +24,68 @@ class NestedNetworkCreator {
 	private CyNetwork overviewNetwork = null;
 	private Map<Integer, String> nodeIndexToNodeNameMap;
 
-
 	/**
 	 * Instantiates an overview network of complexes (modules) and one nested
 	 * network for each node in the overview network.
 	 */
-	NestedNetworkCreator(final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules,
-	                     final List<EdgeProperties> edgeProperties)
-	{
+	NestedNetworkCreator(
+			final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules) {
 		nodeIndexToNodeNameMap = new HashMap<Integer, String>();
 		createOverviewNetworkNodes(networkOfModules.nodes());
-		createOverviewNetworkEdges(edgeProperties);
+		//createOverviewNetworkEdges(edgeProperties);
 	}
-
 
 	CyNetwork getOverviewNetwork() {
 		return overviewNetwork;
 	}
 
-
-	private void createOverviewNetworkNodes(final Set<TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge>> overviewNodes) {
-		overviewNetwork = Cytoscape.createNetwork(findNextAvailableNetworkName("Complex Search Result: " + new java.util.Date()),
-		                                          /* create_view = */ true);
+	private void createOverviewNetworkNodes(
+			final Set<TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge>> overviewNodes) {
+		overviewNetwork = Cytoscape.createNetwork(
+				findNextAvailableNetworkName("Complex Search Result: "
+						+ new java.util.Date()),
+				/* create_view = */true);
 
 		int nodeIndex = 1;
 		for (final TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge> module : overviewNodes) {
-			final String nodeName = findNextAvailableNodeName("Complex" + nodeIndex);
+			final String nodeName = findNextAvailableNodeName("Complex"
+					+ nodeIndex);
 			nodeIndexToNodeNameMap.put(nodeIndex, nodeName);
-			final CyNode newNode = Cytoscape.getCyNode(nodeName, /* create = */ true);
+			final CyNode newNode = Cytoscape.getCyNode(nodeName, /* create = */
+					true);
 			overviewNetwork.addNode(newNode);
 
 			++nodeIndex;
 		}
 	}
 
-
-	private void createOverviewNetworkEdges(final List<EdgeProperties> edgeProperties) {
+	private void createOverviewNetworkEdges(
+			final List<EdgeProperties> edgeProperties) {
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
 		for (final EdgeProperties edgeProps : edgeProperties) {
-			final String sourceNodeName = nodeIndexToNodeNameMap.get(Integer.valueOf(edgeProps.getSourceNodeIndex()));
+			final String sourceNodeName = nodeIndexToNodeNameMap.get(Integer
+					.valueOf(edgeProps.getSourceNodeIndex()));
 			if (sourceNodeName == null)
-				throw new IllegalStateException("this should be impossible: can't find source node name!");
+				throw new IllegalStateException(
+						"this should be impossible: can't find source node name!");
 
-			final String targetNodeName = nodeIndexToNodeNameMap.get(Integer.valueOf(edgeProps.getTargetNodeIndex()));
+			final String targetNodeName = nodeIndexToNodeNameMap.get(Integer
+					.valueOf(edgeProps.getTargetNodeIndex()));
 			if (targetNodeName == null)
-				throw new IllegalStateException("this should be impossible: can't find target node name!");
+				throw new IllegalStateException(
+						"this should be impossible: can't find target node name!");
 
 			final CyNode sourceNode = Cytoscape.getCyNode(sourceNodeName);
 			final CyNode targetNode = Cytoscape.getCyNode(targetNodeName);
-			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION, "complex-complex",
-								   /* create = */ true);
-			
+			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
+					Semantics.INTERACTION, "complex-complex",
+					/* create = */true);
 
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score", Double.valueOf(edgeProps.getEdgeScore()));
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score",
+					Double.valueOf(edgeProps.getEdgeScore()));
 		}
 	}
-
 
 	/**
 	 * Finds an unused network name starting with a first choice. If the first
@@ -107,7 +110,6 @@ class NestedNetworkCreator {
 		}
 	}
 
-
 	/**
 	 * Finds an unused node name starting with a first choice. If the first
 	 * choice is not available, we will successively try to append -1 -2, -3 and
@@ -131,7 +133,6 @@ class NestedNetworkCreator {
 				return titleCandidate;
 		}
 	}
-
 
 	/**
 	 * Returns the first network with title "networkTitle" or null, if there is
