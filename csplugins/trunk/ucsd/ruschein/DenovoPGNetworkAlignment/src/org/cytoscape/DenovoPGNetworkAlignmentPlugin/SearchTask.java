@@ -37,7 +37,8 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = HCSearch2
 				.search(converter.getPhysicalNetwork(), converter.getGeneticNetwork(), hcScoringFunction);
 		
-		setStatus("Search finished!");
+		setStatus("Search finished!\n\n" + HCSearch2.report(results));
+		
 		setPercentCompleted(100);
 
 	}
@@ -51,7 +52,7 @@ public class SearchTask implements Task {
 	}
 
 	public String getTitle() {
-		return "DenovoPGNetworkAlignment";
+		return "Denovo PG Network Alignment";
 	}
 
 	private void setPercentCompleted(int percent) {
