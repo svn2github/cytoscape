@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.SwingConstants;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -27,7 +26,7 @@ public class SearchTask implements Task {
 		setPercentCompleted(0);
 		setStatus("Searching...");
 
-		final CyNetwork network = parameters.network;
+		
 
 		//
 		// Stage 1.C: Read network file
