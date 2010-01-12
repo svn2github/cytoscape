@@ -5,6 +5,6 @@ import junit.framework.*;
 
 
 public class ConvertCyNetworkToSFNetworksTest extends TestCase {
-	public void testNothing() {
+	public void testConversion() {
 	}
 }
