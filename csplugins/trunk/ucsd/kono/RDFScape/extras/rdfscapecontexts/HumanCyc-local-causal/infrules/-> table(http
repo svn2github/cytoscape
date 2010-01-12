@@ -1,0 +1,11 @@
+Y
+STAGE	POST
+RULE
+-> table(http://sysbio.pasteur.fr/analysis#affects) .
+transitivity: (?x http://sysbio.pasteur.fr/analysis#affects ?y) <-
+ (?x http://sysbio.pasteur.fr/analysis#affects ?z)
+ (?z http://sysbio.pasteur.fr/analysis#affects ?y)
+ 
+ ]
+
+

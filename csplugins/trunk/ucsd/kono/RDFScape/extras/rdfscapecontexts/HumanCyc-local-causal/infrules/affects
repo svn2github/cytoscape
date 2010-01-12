@@ -1,0 +1,17 @@
+Y
+STAGE	POST
+RULE
+[affects: (?x http://sysbio.pasteur.fr/analysis#affects ?y) 
+<- (?r1 http://www.biopax.org/release/biopax-level1.owl#LEFT ?xpep ) 
+(?r1 http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.biopax.org/release/biopax-level1.owl#biochemicalReaction)
+(?xpep http://www.biopax.org/release/biopax-level1.owl#PHYSICAL-ENTITY ?x )
+(?r1 http://www.biopax.org/release/biopax-level1.owl#RIGHT ?zpep1)
+(?zpep1 http://www.biopax.org/release/biopax-level1.owl#PHYSICAL-ENTITY ?z )
+(?zpep2 http://www.biopax.org/release/biopax-level1.owl#PHYSICAL-ENTITY ?z )
+(?r2 http://www.biopax.org/release/biopax-level1.owl#LEFT ?zpep2 ) 
+(?r2 http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.biopax.org/release/biopax-level1.owl#biochemicalReaction)
+(?r2 http://www.biopax.org/release/biopax-level1.owl#RIGHT ?ypep)
+(?ypep http://www.biopax.org/release/biopax-level1.owl#PHYSICAL-ENTITY ?y )
+]
+
+

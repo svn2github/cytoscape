@@ -1,0 +1,12 @@
+RDFScape - Licensing and Copyright
+
+Copyright 2005-2008 Andrea Splendiani
+
+Released under LGPL license http://www.gnu.org/licenses/lgpl.html
+
+This distribution includes:
+the Jena Semantic Web Library (© Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP)
+Pellet Copyright (c) 2003 Ron Alford, Mike Grove, Bijan Parsia, Evren Siri
+
+OWLAPI library (http://sourceforge.net/projects/owlapi) developed by WonderWeb project
+ATerm library (http://www.cwi.nl/htbin/sen1/twiki/bin/view/SEN1/ATermLibrary) developed by CWI, LORIA-INRIA

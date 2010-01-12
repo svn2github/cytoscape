@@ -1,0 +1,7 @@
+http://biocyc.org/biopax/biopax# hc PINK Y
+http://www.w3.org/2000/01/rdf-schema# rdfs GREEN Y
+http://www.biopax.org/release/biopax-level1.owl# bp BLUE Y
+http://www.w3.org/2002/07/owl# owl YELLOW Y
+http://www.w3.org/1999/02/22-rdf-syntax-ns# rdf GREEN Y
+http://www.w3.org/2001/XMLSchema# xsd ORANGE Y
+http://sysbio.pasteur.fr/analysis# an RED Y

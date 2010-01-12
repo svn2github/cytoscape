@@ -1,0 +1,7 @@
+Y
+STAGE	POST
+RULE
+[Skip-Context1: (?i http://sysbio.pasteur.fr/analysis#directp ?p) 
+<-(?i http://www.biopax.org/release/biopax-level2.owl#PARTICIPANTS ?p )
+(?p http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.biopax.org/release/biopax-level2#entity)]
+

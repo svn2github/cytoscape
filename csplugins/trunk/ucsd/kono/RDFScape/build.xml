@@ -1,0 +1,62 @@
+<!-- RDFScape ant build file -->
+
+<project name="RDFScape" default="dev">
+
+	<description>Simple build file for my plugin</description>
+
+	<property name="src" location="${basedir}/src" />
+	<property name="bin" location="${basedir}/bin" />
+
+	<property name="plugin" location="${basedir}/plugin/" />
+	<property name="dist" location="${basedir}/dist/" />
+	<property name="extlibdir" location="${basedir}/extlibdir/" />
+	<!-- edit this for your environment -->
+	<property name="deploy" location="${basedir}/../cytoscape/plugins/core/" />
+	<property name="deployApple" location="${basedir}/../cytoscape/plugins/core/" />
+
+
+
+	<target name="init">
+		<delete dir="${bin}" />
+		<mkdir dir="${bin}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<!-- delete dir="${build}" -->
+		<javac srcdir="${src}" destdir="${bin}" />
+		<copy todir="${bin}/images">
+			<fileset dir="${src}/images" />
+		</copy>
+		<copy todir="${bin}/extras">
+			<fileset dir="${src}/extras" />
+		</copy>
+	</target>
+
+	<target name="dev" depends="compile">
+		<jar jarfile="${plugin}/RDFScape.jar" basedir="${bin}" />
+	</target>
+
+	<target name="deploy" depends="dev">
+		<copy file="${plugin}/RDFScape.jar" todir="${deploy}" />
+	</target>
+	<target name="deployApple" depends="dev">
+		<copy file="${plugin}/RDFScape.jar" todir="${deployApple}" />
+	</target>
+	<target name="makeDistribution" depends="dev">
+		<mkdir dir="${dist}/plugins" />
+		<mkdir dir="${dist}/extlibs" />
+		<mkdir dir="${dist}/rdfscapecontexts" />
+
+		<copy file="${plugin}/RDFScape.jar" todir="${dist}/plugins" />
+		<copy todir="${dist}/rdfscapecontexts">
+			<fileset dir="${basedir}/extras/rdfscapecontexts/" />
+		</copy>
+		<copy todir="${dist}/extlibs">
+			<fileset dir="${extlibdir}" />
+		</copy>
+		<copy file="${basedir}/extras/cytordfscape.sh" todir="${dist}" />
+		<copy file="${basedir}/extras/cytordfscape.bat" todir="${dist}" />
+	</target>
+
+
+</project>

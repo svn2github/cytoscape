@@ -1,0 +1,8 @@
+Y
+STAGE	POST
+RULE
+[interacts: (?x http://sysbio.pasteur.fr/analysis#interacts ?y) 
+<- (?z http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.biopax.org/release/biopax-level2.owl#interaction)
+      (?z http://sysbio.pasteur.fr/analysis#directp ?x) 
+      (?z http://sysbio.pasteur.fr/analysis#directp ?y)]
+
