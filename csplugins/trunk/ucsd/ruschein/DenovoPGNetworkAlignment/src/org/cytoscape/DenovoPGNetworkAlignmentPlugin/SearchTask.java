@@ -35,10 +35,15 @@ public class SearchTask implements Task {
 		hcScoringFunction.Initialize(converter.getPhysicalNetwork(), converter
 				.getGeneticNetwork());
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = HCSearch2
-				.search(converter.getPhysicalNetwork(), converter.getGeneticNetwork(), hcScoringFunction);
-		
-		setStatus("Search finished!\n\n" + HCSearch2.report(results));
-		
+				.search(converter.getPhysicalNetwork(), converter
+						.getGeneticNetwork(), hcScoringFunction);
+
+		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results);
+
+		setStatus("Search finished!\n\n" + "Number of Complexes = "
+				+ nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
+				+ HCSearch2.report(results));
+
 		setPercentCompleted(100);
 
 	}

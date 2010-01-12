@@ -362,7 +362,7 @@ public class HCSearch2 {
 
 	public static String report(
 			TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results) {
-		
+
 		final StringBuilder builder = new StringBuilder();
 
 		DoubleVector cscores = new DoubleVector(results.numNodes());
@@ -377,7 +377,6 @@ public class HCSearch2 {
 		builder.append("Best cluster score: " + cscores.max(false) + "\n");
 		builder.append("Worst cluster score: " + cscores.min(false) + "\n");
 		builder.append("Largest cluster size: " + csizes.max(false) + "\n");
-		
 
 		DoubleVector escores = new DoubleVector(results.numEdges());
 		for (TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> ed : results
@@ -386,13 +385,13 @@ public class HCSearch2 {
 			if (score != -1)
 				escores.add(score);
 		}
-		
+
 		builder.append("Best edge score: " + escores.max(false) + "\n");
 
 		// csizes.plothist(30);
 
 		System.out.println(builder.toString());
-		
+
 		return builder.toString();
 	}
 
