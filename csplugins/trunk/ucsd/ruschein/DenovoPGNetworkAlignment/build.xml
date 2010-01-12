@@ -1,161 +1,227 @@
-<!--
-  ** build.xml - ant build file
-  ** Adapted by Johannes Ruscheinski
-  **
-  ** ################################
-  **
-  **          COMPILING ISSUES
-  **
-  ** If you're having trouble with compiling,
-  ** make sure to update the cytoscape.root.dir
-  ** property.
-  **
-  ** ################################
-  -->
 
 <project name="DenovoPGNetworkAlignment" default="all" basedir=".">
-	<!-- =================================================================== -->
-	<!-- Properties								 -->
-	<!-- =================================================================== -->
-	<property name="root.dir" location="." />
-	<property name="build.dir" location="${root.dir}/build" />
-	<property name="resources.dir" location="${root.dir}/resources" />
-	<property name="lib.dir" location="${root.dir}/lib" />
 
-	<!-- Project directories and files -->
-	<property name="src.dir" location="${root.dir}/src" />
-	<property name="test.src.dir" value="${root.dir}/tests" />
-	<property name="junit.report.dir"    value="${build.dir}/junit-reports"/>
-	<property name="jar" location="DenovoPGNetworkAlignment.jar" />
-	<property name="test.jar" location="DenovoPGNetworkAlignmentTest.jar" />
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <tstamp/>
+    <property name="name" value="DenovoPGNetworkAlignment"/>
+    <property name="version" value="1.0.0"/>
 
-	<!-- Cytoscape directories and files needed for compiling -->
-	<property name="cytoscape.root.dir" location="../cytoscape" />
-	<property name="cytoscape.lib.dir" location="${cytoscape.root.dir}/lib" />
+    <echo message="Building ${name} version ${version} ..."/>
 
-	<!-- Define the class path - Defaults to everything in the lib.dir -->
-	<path id="class.path">
-	  <fileset dir="${cytoscape.root.dir}">
-	    <include name="cytoscape.jar" />
-	  </fileset>
-	  <fileset dir="${lib.dir}">
-	    <include name="*.jar" />
-	  </fileset>
-	</path>
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="fork" value="false"/>
 
-	<!-- Define the test class path -->
-	<path id="test.class.path">
-	  <fileset dir="${cytoscape.root.dir}">
-	    <include name="cytoscape.jar" />
-	  </fileset>
-	  <fileset dir="${lib.dir}">
-	    <include name="*.jar" />
-	  </fileset>
-	  <pathelement location="${root.dir}/${test.jar}"/>
-	</path>
+    <!-- Define the directories -->
+    <property name="root.dir" value="."/>
+    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
+    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+    <property name="lib.dir" value="${root.dir}/lib"/>
+    <property name="resources.dir" value="${root.dir}/resources"/>
+    <property name="src.dir" value="${root.dir}/src"/>
+    <property name="tests.dir" value="${root.dir}/tests"/>
+    <property name="build.dir" value="${root.dir}/build"/>
+    <property name="javadoc.dir" value="${root.dir}/API"/>
+    <property name="log.dir" value="${build.dir}/logs" />
+    <property name="junit.report.dir" value="${log.dir}/junit-reports" />
 
-	<!-- Outputs Current compilation classpath -->
-	<target name="show_cp">
-	  <property name="temp" refid="test.class.path" />
-	  <echo message="Classpath:  ${temp}" />
-	</target>
+    <!-- Define the relevant files -->
+    <property name="project.jar" value="${name}.jar"/>
+    <property name="test.jar" value="${name}-tests.jar"/>
 
-	<!-- =================================================================== -->
-	<!-- prepare target							 -->
-	<!-- =================================================================== -->
-	<target name="prepare" description="Create needed directories">
-	  <!-- Create build directories as needed -->
-	  <mkdir  dir="${build.dir}"/>
-	</target>
+    <!-- Define the class path - Defaults to everything in the lib.dir -->
+    <path id="project.class.path">
+      <fileset dir="${lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${cytoscape.dir}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${cytoscape.lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+   
+    <!-- Define the junit class path - It needs to find what we just built --> 
+    <path id="junit.class.path" >
+      <fileset dir="${root.dir}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${cytoscape.dir}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${cytoscape.lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
 
-	<!-- =================================================================== -->
-	<!-- compile target							 -->
-	<!-- =================================================================== -->
-	<target name="compile" description="compile project's class files" depends="prepare">
-	  <mkdir dir="${build.dir}" />
-	  <javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="class.path" debug="yes" source="1.5"
-		 target="1.5" optimize="on" />
-	</target>
+    <!-- Make sure tests is in the right place -->
+    <condition property="tests.ok">
+      <and>
+        <available file="${tests.dir}" />
+      </and>
+    </condition>
 
-	<!-- =================================================================== -->
-	<!-- compile tests target						 -->
-	<!-- =================================================================== -->
-	<target name="compileTests" depends="jar"
-	        description="Compiles all Java test source files">
-	  <javac srcdir="${test.src.dir}"
-		 source="1.5"
-	         destdir="${build.dir}"
-	         debug="${compile.debug}"
-	         deprecation="${compile.deprecation}"
-	         optimize="${compile.optimize}">
-	    <classpath refid="class.path"/>
-	  </javac>
-	</target>
+  </target>
 
-	<!-- =================================================================== -->
-	<!-- creates a jar for the unit tests					 -->
-	<!-- =================================================================== -->
-	<target name="jarTests" depends="compileTests">
-	  <jar jarfile="${test.jar}" basedir="${build.dir}" />
-	</target>
+  <!-- =================================================================== -->
+  <!-- Compiles the project                                                -->
+  <!-- =================================================================== -->
+  <target name="compile" 
+          depends="init" >
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${log.dir}"/>
+    <javac srcdir="${src.dir}"
+           classpathref="project.class.path"
+           destdir="${build.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}">
+<!--
+       <compilerarg line="-Xlint:all -Xlint:-path"/>
+-->
+     </javac>
+     <echo message="Successfully ran compile task!"/>
+  </target>
 
-	<!-- =================================================================== -->
-	<!-- JUnit target							 -->
-	<!-- =================================================================== -->
-	<target name="test" description="Runs all JUnit tests." depends="jarTests">
-	  <mkdir dir="${junit.report.dir}" />
-	  
-	  <junit printsummary="yes" fork="yes" haltonfailure="no">
-	    <classpath refid="test.class.path"/>
-	    <formatter type="plain" usefile="true"/>
-	    <formatter type="xml" usefile="true" />
-	    <batchtest fork="yes" 
-		       todir="${junit.report.dir}" 
-		       failureProperty="junit.test.failure">
-	      <fileset dir="${build.dir}" 
-		       includes="**/*Test.class" 
-		       excludes="**/AllTests.class" />
-	    </batchtest>	        	
-	  </junit>
-	  
-	  <junitreport todir="${junit.report.dir}">
-	    <fileset dir="${junit.report.dir}">
-	      <include name="TEST-*.xml" />
-	    </fileset>
-	    <report format="frames" todir="${junit.report.dir}" />
-	  </junitreport>
 
-	  <fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." 
-		if="junit.test.failure" />	    	
-	  
-	</target>
+  <!-- =================================================================== -->
+  <!-- Creates the project jar file                                        -->
+  <!-- =================================================================== -->
+  <target name="jar" 
+          depends="compile" >
+    <mkdir dir="${lib.dir}"/>
+    <unzip dest="${build.dir}">
+      <fileset dir="${lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </unzip>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/DenovoPGNetworkAlignmentPlugin"/>
+    <jar destfile="${project.jar}" >
+      <fileset dir="${build.dir}"
+               includes="**"/>
+      <manifest>
+        <attribute name="Cytoscape-Plugin"
+	           value="org.cytoscape.DenovoPGNetworkAlignmentPlugin.DenovoPGNetworkAlignmentPlugin"/>
+      </manifest>
+    </jar>
+    <echo message="Successfully ran jar task!"/>
+  </target>
 
-	<!-- =================================================================== -->
-	<!-- jar								 -->
-	<!-- =================================================================== -->
-	<target name="jar" depends="compile" description="package all class files into a jar">
-	  <copy todir="${build.dir}/org/cytoscape/DenovoPGNetworkAlignmentPlugin" 
-		file="${root.dir}/resources/plugin.props"/>
-	  <jar jarfile="${jar}" basedir="${build.dir}">
-	    <manifest>
-	      <attribute name="Cytoscape-Plugin" value="org.cytoscape.DenovoPGNetworkAlignmentPlugin.DenovoPGNetworkAlignmentPlugin" />
-	    </manifest>
-	  </jar>
-	</target>
+  <!-- =================================================================== -->
+  <!-- Compiles the tests                                                  -->
+  <!-- Note that this compilation occurs AFTER the distribution jar has    -->
+  <!-- been created, so that the tests aren't distributed.                 -->
+  <!-- =================================================================== -->
+  <target name="compile-tests"
+          depends="jar" 
+          if="tests.ok">
+    <javac srcdir="${tests.dir}"
+           classpathref="project.class.path"
+           destdir="${build.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}">
+      <compilerarg line="-Xlint:all -Xlint:-path"/>
+    </javac>
+    <echo message="Successfully ran compile-tests task!"/>
+  </target>
 
-	<!-- =================================================================== -->
-	<!-- all				                                 -->
-	<!-- =================================================================== -->
-	<target name="all" depends="test" />
+  <!-- =================================================================== -->
+  <!-- Creates the project-tests.jar file                                  -->
+  <!-- =================================================================== -->
+  <target name="jar-tests"
+          depends="compile-tests"
+          if="tests.ok">
+    <jar jarfile="${test.jar}"
+         basedir="${build.dir}" >
+    </jar>
+    <echo message="Successfully ran jar-tests task!"/>
+  </target>
 
-	<!-- =================================================================== -->
-	<!-- clean 								 -->
-	<!-- =================================================================== -->
-	<target name="clean">
-	  <delete dir="${build.dir}" />
-	  <delete dir="${junit.report.dir}" />
-	  <delete dir="${manifest.dir}" />
-	  <delete file="${jar}" />
-	  <delete file="${test.jar}" />
-	</target>
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the unit tests.                                                --> 
+  <!-- =================================================================== -->
+  <target name="test"
+          depends="jar-tests"
+          if="tests.ok">
+    <junit printsummary="yes"
+           haltonfailure="no"
+           maxmemory="256m" >
+      <classpath refid="junit.class.path"/>
+      <formatter type="plain" 
+                 usefile="true" />
+      <formatter type="xml" 
+                 usefile="true" />
+      <batchtest fork="yes" 
+                 todir="${log.dir}" 
+                 failureProperty="junit.test.failure"
+                 errorProperty="junit.test.failure">
+        <fileset dir="${tests.dir}"
+                 includes="**/*Test.java"
+                 excludes="**/AllTests.java" />
+      </batchtest> 
+    </junit>
+    <mkdir dir="${junit.report.dir}"/>
+    <junitreport todir="${junit.report.dir}">
+      <fileset dir="${log.dir}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${junit.report.dir}"/>
+    </junitreport>
+    <fail message="TEST FAILURE!!! Details: ${junit.report.dir}/index.html"
+          if="junit.test.failure"/>
+    <echo message="Successfully ran test task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" 
+          depends="init" > 
+    <mkdir dir="${javadoc.dir}"/>
+    <javadoc sourcepath="${src.dir}"
+             destdir="${javadoc.dir}"
+             packagenames="*"
+             classpathref="project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${name} API"
+             doctitle="${name}" />
+    <echo message="Successfully ran docs task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Do everything                                                       --> 
+  <!-- =================================================================== -->
+  <target name="all" depends="jar,docs,test" /> 
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" 
+          depends="init">
+    <delete dir="${build.dir}"/>
+    <delete dir="${javadoc.dir}"/>
+    <delete file="${project.jar}"/>
+    <delete file="${test.jar}"/>
+    <echo message="Successfully ran clean task!"/>
+  </target>
+
 </project>
+
