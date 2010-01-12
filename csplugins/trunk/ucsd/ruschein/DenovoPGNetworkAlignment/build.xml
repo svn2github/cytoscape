@@ -19,7 +19,7 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
+    <property name="cytoscape.dir" value="${root.dir}/../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
