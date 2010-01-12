@@ -1,22 +1,22 @@
 package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.SwingConstants;
-
-import cytoscape.Cytoscape;
+import networks.denovoPGNetworkAlignment.BFEdge;
+import networks.denovoPGNetworkAlignment.HCScoringFunction;
+import networks.denovoPGNetworkAlignment.HCSearch2;
+import networks.denovoPGNetworkAlignment.SouravScore;
+import networks.linkedNetworks.TypedLinkNetwork;
+import networks.linkedNetworks.TypedLinkNodeModule;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelState;
 
 public class SearchTask implements Task {
 	private TaskMonitor taskMonitor = null;
 	boolean needsToHalt = false;
 	static int numOfRuns = 1;
-	
+
 	private SearchParameters parameters;
+
+	private HCScoringFunction hcScoringFunction;
 
 	public SearchTask(final SearchParameters parameters) {
 		this.parameters = parameters;
@@ -24,23 +24,22 @@ public class SearchTask implements Task {
 
 	public void run() {
 		setPercentCompleted(0);
-		setStatus("Searching...");
+		setStatus("Searching complexes...");
 
+		final ConvertCyNetworkToSFNetworks converter = new ConvertCyNetworkToSFNetworks(
+				parameters.getNetwork(), parameters.getPhysicalEdgeAttrName(),
+				parameters.getGeneticEdgeAttrName());
+		hcScoringFunction = new SouravScore(converter.getPhysicalNetwork(),
+				converter.getGeneticNetwork(), (float) parameters.getAlpha(),
+				(float) parameters.getAlphaMultiplier());
+		hcScoringFunction.Initialize(converter.getPhysicalNetwork(), converter
+				.getGeneticNetwork());
+		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = HCSearch2
+				.search(converter.getPhysicalNetwork(), converter.getGeneticNetwork(), hcScoringFunction);
 		
+		setStatus("Search finished!");
+		setPercentCompleted(100);
 
-		//
-		// Stage 1.C: Read network file
-		//
-
-		List<Result> results = new ArrayList<Result>();
-		ResultsPanel resultsPanel = new ResultsPanel(null, results);
-		resultsPanel.setVisible(true);
-		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
-				SwingConstants.EAST);
-		cytoPanel.add("DenovoPGNetworkAlignment Results " + (numOfRuns++),
-				resultsPanel);
-		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(resultsPanel));
-		cytoPanel.setState(CytoPanelState.DOCK);
 	}
 
 	public void halt() {

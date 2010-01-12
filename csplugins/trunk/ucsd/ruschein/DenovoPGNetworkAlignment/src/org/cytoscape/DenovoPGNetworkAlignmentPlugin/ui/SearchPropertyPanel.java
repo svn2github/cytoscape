@@ -1,7 +1,6 @@
 package org.cytoscape.DenovoPGNetworkAlignmentPlugin.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -43,6 +42,7 @@ public class SearchPropertyPanel extends JPanel implements
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel() {
 		initComponents();
+		this.setMinimumSize(new Dimension(370, 450));
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition()
@@ -469,12 +469,12 @@ public class SearchPropertyPanel extends JPanel implements
 		// Run search algorithm
 
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.displayCancelButton(true);
-		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.displayCloseButton(true);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.displayTimeElapsed(true);
 		jTaskConfig.displayTimeRemaining(false);
-		jTaskConfig.setAutoDispose(true);
+		jTaskConfig.setAutoDispose(false);
 		jTaskConfig.setModal(true);
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		TaskManager.executeTask(new SearchTask(parameters), jTaskConfig);
