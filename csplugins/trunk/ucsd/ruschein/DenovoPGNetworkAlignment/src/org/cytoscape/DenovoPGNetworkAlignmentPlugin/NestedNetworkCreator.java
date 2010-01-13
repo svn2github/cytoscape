@@ -29,6 +29,7 @@ public class NestedNetworkCreator {
 	static final String GENE_COUNT = "gene count";
 	static final String SCORE = "score";
 	static final String EDGE_SCORE = "edge score";
+	static final String NODE_SIZE = "complex node size";
 
 	private CyNetwork overviewNetwork = null;
 	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
@@ -111,7 +112,7 @@ public class NestedNetworkCreator {
 				.valueOf(genes.size()));
 		nodeAttribs.setAttribute(newNode.getIdentifier(), SCORE, Double
 				.valueOf(module.score()));
-		nodeAttribs.setAttribute(newNode.getIdentifier(), SCORE, Math
+		nodeAttribs.setAttribute(newNode.getIdentifier(), NODE_SIZE, Math
 				.sqrt(genes.size() / Math.PI));
 		newNode.setNestedNetwork(generateNestedNetwork(nodeName, genes,
 				originalNetwork));
