@@ -2,6 +2,7 @@ package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
 
 import java.util.ArrayList;
 
+import networks.SFNetwork;
 import networks.denovoPGNetworkAlignment.BFEdge;
 import networks.denovoPGNetworkAlignment.HCScoringFunction;
 import networks.denovoPGNetworkAlignment.HCSearch2;
@@ -9,10 +10,14 @@ import networks.denovoPGNetworkAlignment.SouravScore;
 import networks.linkedNetworks.TypedLinkEdge;
 import networks.linkedNetworks.TypedLinkNetwork;
 import networks.linkedNetworks.TypedLinkNodeModule;
+import cytoscape.CyNetwork;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import data.StringTable;
 
+
+/**
+ * @uthor kono, ruschein
+ */
 public class SearchTask implements Task {
 	private TaskMonitor taskMonitor = null;
 	boolean needsToHalt = false;
@@ -28,28 +33,36 @@ public class SearchTask implements Task {
 
 	public void run() {
 		setPercentCompleted(0);
-		setStatus("Searching complexes...");
+		setStatus("Searching for complexes...");
+
+		final CyNetwork inputNetwork = parameters.getNetwork();
 
 		final ConvertCyNetworkToSFNetworks converter = new ConvertCyNetworkToSFNetworks(
-				parameters.getNetwork(), parameters.getPhysicalEdgeAttrName(),
+				inputNetwork, parameters.getPhysicalEdgeAttrName(),
 				parameters.getGeneticEdgeAttrName());
-		hcScoringFunction = new SouravScore(converter.getPhysicalNetwork(),
-				converter.getGeneticNetwork(), (float) parameters.getAlpha(),
-				(float) parameters.getAlphaMultiplier());
-		hcScoringFunction.Initialize(converter.getPhysicalNetwork(), converter
-				.getGeneticNetwork());
-		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = HCSearch2
-				.search(converter.getPhysicalNetwork(), converter
-						.getGeneticNetwork(), hcScoringFunction);
+		final SFNetwork physicalNetwork = converter.getPhysicalNetwork();
+		final SFNetwork geneticNetwork  = converter.getGeneticNetwork();
+		
+		final HCScoringFunction hcScoringFunction =
+			new SouravScore(physicalNetwork, geneticNetwork,
+		                       (float)parameters.getAlpha(),
+		                       (float)parameters.getAlphaMultiplier());
+		hcScoringFunction.Initialize(physicalNetwork, geneticNetwork);
 
-		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, parameters.getNetwork());
+		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results =
+			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction);
 
-		setStatus("Search finished!\n\n" + "Number of Complexes = "
-				+ nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
-				+ HCSearch2.report(results));
+		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
+		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
+
+		final NestedNetworkCreator nnCreator =
+			new NestedNetworkCreator(results, inputNetwork, pNet, gNet);
+
+		setStatus("Search finished!\n\n" + "Number of complexes = "
+		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
+		          + HCSearch2.report(results));
 
 		setPercentCompleted(100);
-
 	}
 
 	public void halt() {
