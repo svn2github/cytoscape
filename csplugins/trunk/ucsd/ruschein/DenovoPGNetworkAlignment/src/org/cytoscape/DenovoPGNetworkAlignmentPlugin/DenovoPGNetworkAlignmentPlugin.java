@@ -17,7 +17,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
  * 
- * @author kono, johaness
+ * @author kono, ruschein
  *
  */
 public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin {
@@ -51,6 +51,4 @@ public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin {
 			cytoPanel.setState(CytoPanelState.DOCK);
 		}
 	}
-
-	
 }
