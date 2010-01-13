@@ -114,7 +114,7 @@ class NestedNetworkCreator {
 			return null;
 
 		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName,
-		                                                        /* create_view = */true);
+		                                                        /* create_view = */ false);
 
 		// Add the nodes to our new nested network.
 		final List<CyNode> nodes = new ArrayList<CyNode>();
