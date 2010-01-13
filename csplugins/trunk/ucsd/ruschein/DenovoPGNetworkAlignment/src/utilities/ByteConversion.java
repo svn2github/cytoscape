@@ -262,14 +262,10 @@ public class ByteConversion
 	      /* ========================= */
 	       
 	      public static int toInt(byte[] data) {
-	      if (data == null || data.length != 4) return 0x0;
-	      // ----------
-	      return (int)( // NOTE: type cast not necessary for int
-	      (0xff & data[0]) << 24 |
-	      (0xff & data[1]) << 16 |
-	      (0xff & data[2]) << 8 |
-	      (0xff & data[3]) << 0
-	      );
+		      if (data == null || data.length != 4)
+			      return 0x0;
+
+		      return (0xff & data[0]) << 24 | (0xff & data[1]) << 16 | (0xff & data[2]) << 8 | (0xff & data[3]) << 0;
 	      }
 	       
 	      public static int[] toIntA(byte[] data) {
@@ -291,7 +287,7 @@ public class ByteConversion
 	      public static long toLong(byte[] data) {
 	      if (data == null || data.length != 8) return 0x0;
 	      // ----------
-	      return (long)(
+	      return (
 	      // (Below) convert to longs before shift because digits
 	      // are lost with ints beyond the 32-bit limit
 	      (long)(0xff & data[0]) << 56 |

@@ -20,10 +20,11 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.view.CyNetworkView;
 
 /**
+ * @author ruschein
  * Creates an overview network for the detected complexes and nested networks
  * for each complex.
  */
-public class NestedNetworkCreator {
+@SuppressWarnings("unchecked") public class NestedNetworkCreator {
 
 	// Package private constants.
 	static final String GENE_COUNT = "gene count";
@@ -44,8 +45,11 @@ public class NestedNetworkCreator {
 	 *            the network that the overview network was generated from
 	 */
 	NestedNetworkCreator(
-			final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules,
-			final CyNetwork originalNetwork) {
+		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules,
+		final CyNetwork originalNetwork,
+		final TypedLinkNetwork<String, Float> physicalNetwork,
+		final TypedLinkNetwork<String, Float> geneticNetwork)
+	{
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
 		overviewNetwork = Cytoscape.createNetwork(
@@ -84,11 +88,29 @@ public class NestedNetworkCreator {
 			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
 					Semantics.INTERACTION, "complex-complex",
 					/* create = */true);
-
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_SCORE,
-					Double.valueOf(edge.value().link()));
 			overviewNetwork.addEdge(newEdge);
 
+			// Add various edge attributes.
+			final double edgeScore = edge.value().link();
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score",
+			                         Double.valueOf(edgeScore));
+			final int gConnectedness =
+				geneticNetwork.getConnectedness(sourceModule.asStringSet(),
+				                                targetModule.asStringSet());
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "genetic link count",
+			                         Integer.valueOf(gConnectedness));
+			final int pConnectedness =
+				physicalNetwork.getConnectedness(sourceModule.asStringSet(),
+				                                 targetModule.asStringSet());
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "physical link count",
+			                         Integer.valueOf(pConnectedness));
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "source size",
+                                                 Integer.valueOf(sourceModule.size()));
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "target size",
+                                                 Integer.valueOf(targetModule.size()));
+			final double density = edgeScore / (sourceModule.size() * targetModule.size());
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "density",
+						 Double.valueOf(density));
 		}
 		applyNetworkLayout(overviewNetwork, VisualStyleBuilder.getVisualStyle()
 				.getName());

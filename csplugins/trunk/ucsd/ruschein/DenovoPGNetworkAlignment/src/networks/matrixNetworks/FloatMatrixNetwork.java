@@ -129,12 +129,12 @@ public class FloatMatrixNetwork extends SFNetwork
 		
 		for (int i=0;i<this.connectivity.length;i++)
 			for (int j=0;j<this.connectivity[i].length;j++)
-				out[i][j] = (float)this.connectivity[i][j];
+				out[i][j] = this.connectivity[i][j];
 		
 		if (!this.directed)
 			for (int i=0;i<this.connectivity.length;i++)
 				for (int j=0;j<this.connectivity[i].length;j++)
-					out[j][i] = (float)this.connectivity[i][j];
+					out[j][i] = this.connectivity[i][j];
 		
 		if (!this.selfOk)
 			for (int i=0;i<this.connectivity.length;i++)

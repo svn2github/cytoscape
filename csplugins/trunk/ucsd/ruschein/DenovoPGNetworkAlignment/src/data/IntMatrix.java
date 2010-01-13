@@ -164,7 +164,7 @@ public class IntMatrix extends DataMatrix{
 		
 		for (int i=0;i<dim(0);i++)
 			for (int j=0;j<dim(1);j++)
-				da[i][j] = (int)get(i,j);
+				da[i][j] = get(i,j);
 		
 		return da;
 	}
@@ -1091,7 +1091,7 @@ public class IntMatrix extends DataMatrix{
 	
 	public int getAsInteger(int i, int j)
 	{
-		return((int)data[i][j]);
+		return data[i][j];
 	}
 	
 	public IntMatrix xxT()

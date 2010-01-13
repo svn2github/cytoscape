@@ -72,22 +72,23 @@ class ConvertCyNetworkToSFNetworks {
 		geneticNetwork = new FloatHashNetwork(/* selfOk = */false, /* directed = */
 				false, /* startsize = */1);
 
-		for (final CyEdge edge : (List<CyEdge>) inputNetwork.edgesList()) {
+		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
+		for (final CyEdge edge : edges) {
 			final String edgeID = edge.getIdentifier();
 
-			final Double physicalAttrValue = edgeAttributes.getDoubleAttribute(
-					edgeID, physicalNetworkAttrName);
+			final Double physicalAttrValue =
+				edgeAttributes.getDoubleAttribute(edgeID, physicalNetworkAttrName);
 			if (physicalAttrValue != null)
-				physicalNetwork.add(edge.getSource().getIdentifier(), edge
-						.getTarget().getIdentifier(), physicalAttrValue
-						.floatValue());
+				physicalNetwork.add(edge.getSource().getIdentifier(),
+						    edge.getTarget().getIdentifier(),
+						    physicalAttrValue.floatValue());
 
-			final Double geneticAttrValue = edgeAttributes.getDoubleAttribute(
-					edgeID, geneticNetworkAttrName);
+			final Double geneticAttrValue =
+				edgeAttributes.getDoubleAttribute(edgeID, geneticNetworkAttrName);
 			if (geneticAttrValue != null)
-				geneticNetwork.add(edge.getSource().getIdentifier(), edge
-						.getTarget().getIdentifier(), geneticAttrValue
-						.floatValue());
+				geneticNetwork.add(edge.getSource().getIdentifier(),
+						   edge.getTarget().getIdentifier(),
+						   geneticAttrValue.floatValue());
 		}
 	}
 

@@ -250,7 +250,7 @@ public class FloatVector extends DataVector {
 	}
 
 	public float getAsFloat(int i) {
-		return (float) get(i);
+		return get(i);
 	}
 
 	public float get(int i) {

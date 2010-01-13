@@ -163,12 +163,12 @@ public class ListOps {
 		return hs.toArray(new String[hs.size()]);
 	}
 	
-	public static List<String> intersect(List<String> s1, List<String> s2)
+	@SuppressWarnings("unchecked") public static List<String> intersect(List<String> s1, List<String> s2)
 	{
 		return new ArrayList<String>(ListUtils.intersection(s1, s2));
 	}
 	
-	public static List<String> union(List<String> s1, List<String> s2)
+	@SuppressWarnings("unchecked") public static List<String> union(List<String> s1, List<String> s2)
 	{
 		return new ArrayList<String>(ListUtils.union(s1, s2));
 	}
