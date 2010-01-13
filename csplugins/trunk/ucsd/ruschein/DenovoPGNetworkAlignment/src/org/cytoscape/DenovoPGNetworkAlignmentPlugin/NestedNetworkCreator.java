@@ -75,13 +75,8 @@ class NestedNetworkCreator {
 			overviewNetwork.addEdge(newEdge);
 			
 		}
-		
-		// Visualize
-		final CyNetworkView targetView = Cytoscape.getNetworkView(overviewNetwork.getIdentifier());
-		targetView.setVisualStyle("default");
-		Cytoscape.getVisualMappingManager().setVisualStyle("default");
-		targetView.applyLayout(CyLayouts.getDefaultLayout());
-		targetView.redrawGraph(false, true);
+
+		applyNetworkLayout(overviewNetwork, "default");
 	}
 
 	CyNetwork getOverviewNetwork() {
@@ -114,6 +109,7 @@ class NestedNetworkCreator {
 			final CyNode node = Cytoscape.getCyNode(nodeName, /* create = */true);
 			nestedNetwork.addNode(node);
 		}
+		applyNetworkLayout(nesteNetwork, "default");
 
 		return nestedNetwork;
 	}
@@ -176,5 +172,13 @@ class NestedNetworkCreator {
 		}
 
 		return null;
+	}
+
+	private void applyNetworkLayout(final CyNetwork network, final String style) {
+		final CyNetworkView targetView = Cytoscape.getNetworkView(network.getIdentifier());
+		targetView.setVisualStyle(style);
+		Cytoscape.getVisualMappingManager().setVisualStyle(style);
+		targetView.applyLayout(CyLayouts.getDefaultLayout());
+		targetView.redrawGraph(false, true);
 	}
 }
