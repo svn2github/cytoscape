@@ -29,8 +29,8 @@ class NestedNetworkCreator {
 	 * Instantiates an overview network of complexes (modules) and one nested
 	 * network for each node in the overview network.
 	 */
-	NestedNetworkCreator(
-			final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules) {
+	NestedNetworkCreator(final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules)
+	{
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
 		overviewNetwork = Cytoscape.createNetwork(
@@ -42,50 +42,36 @@ class NestedNetworkCreator {
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
 		int nodeIndex = 1;
-		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules
-				.edges()) {
+		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge :
+		     networkOfModules.edges())
+		{
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge
 					.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
 				final String nodeName = findNextAvailableNodeName("Complex"
 						+ nodeIndex);
-				sourceNode = Cytoscape.getCyNode(nodeName, /* create = */true);
-				moduleToCyNodeMap.put(sourceModule, sourceNode);
-				overviewNetwork.addNode(sourceNode);
-				final Set<String> genes = sourceModule.getMemberValues();
-				nodeAttribs.setAttribute(sourceNode.getIdentifier(),
-						"gene count", Integer.valueOf(genes.size()));
-				nodeAttribs.setAttribute(sourceNode.getIdentifier(), "score",
-						Double.valueOf(sourceModule.score()));
-
+				sourceNode = makeOverviewNode(nodeName, sourceModule, nodeAttribs);
 				++nodeIndex;
 			}
 
-			final TypedLinkNodeModule<String, BFEdge> targetModule = edge
-					.target().value();
+			final TypedLinkNodeModule<String, BFEdge> targetModule =
+				edge.target().value();
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
 				final String nodeName = findNextAvailableNodeName("Complex"
 						+ nodeIndex);
-				targetNode = Cytoscape.getCyNode(nodeName, /* create = */true);
-				moduleToCyNodeMap.put(targetModule, targetNode);
-				overviewNetwork.addNode(targetNode);
-				final Set<String> genes = targetModule.getMemberValues();
-				nodeAttribs.setAttribute(targetNode.getIdentifier(),
-						"gene count", Integer.valueOf(genes.size()));
-				nodeAttribs.setAttribute(targetNode.getIdentifier(), "score",
-						Double.valueOf(targetModule.score()));
-
+				targetNode = makeOverviewNode(nodeName, targetModule, nodeAttribs);
 				++nodeIndex;
 			}
 
 			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
-					Semantics.INTERACTION, "complex-complex",
-					/* create = */true);
+			                                           Semantics.INTERACTION,
+			                                           "complex-complex",
+			                                           /* create = */true);
 
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score",
-					Double.valueOf(edge.value().link()));
+			                         Double.valueOf(edge.value().link()));
 			overviewNetwork.addEdge(newEdge);
 			
 		}
@@ -96,11 +82,40 @@ class NestedNetworkCreator {
 		Cytoscape.getVisualMappingManager().setVisualStyle("default");
 		targetView.applyLayout(CyLayouts.getDefaultLayout());
 		targetView.redrawGraph(false, true);
-		
 	}
 
 	CyNetwork getOverviewNetwork() {
 		return overviewNetwork;
+	}
+
+	/**
+	 * @returns a new node in the overview (module/complex) network.
+	 */
+	private CyNode makeOverviewNode(final String nodeName, final TypedLinkNodeModule<String, BFEdge> module, final CyAttributes nodeAttribs) {
+		final CyNode newNode = Cytoscape.getCyNode(nodeName, /* create = */true);
+		moduleToCyNodeMap.put(module, newNode);
+		overviewNetwork.addNode(newNode);
+		final Set<String> genes = module.getMemberValues();
+		nodeAttribs.setAttribute(newNode.getIdentifier(), "gene count", Integer.valueOf(genes.size()));
+		nodeAttribs.setAttribute(newNode.getIdentifier(), "score", Double.valueOf(module.score()));
+		newNode.setNestedNetwork(generateNestedNetwork(nodeName, genes));
+
+		return newNode;
+	}
+
+	private CyNetwork generateNestedNetwork(final String networkName, final Set<String> nodeNames) 
+	{
+		if (nodeNames.isEmpty())
+			return null;
+
+		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName,
+		                                                        /* create_view = */true);
+		for (final String nodeName : nodeNames) {
+			final CyNode node = Cytoscape.getCyNode(nodeName, /* create = */true);
+			nestedNetwork.addNode(node);
+		}
+
+		return nestedNetwork;
 	}
 
 	/**
