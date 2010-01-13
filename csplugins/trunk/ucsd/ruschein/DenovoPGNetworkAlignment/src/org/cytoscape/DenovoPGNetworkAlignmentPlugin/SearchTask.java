@@ -42,7 +42,7 @@ public class SearchTask implements Task {
 				.search(converter.getPhysicalNetwork(), converter
 						.getGeneticNetwork(), hcScoringFunction);
 
-		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results);
+		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, parameters.getNetwork());
 
 		setStatus("Search finished!\n\n" + "Number of Complexes = "
 				+ nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
