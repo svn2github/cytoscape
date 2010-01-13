@@ -24,61 +24,60 @@ import cytoscape.data.Semantics;
  */
 class NestedNetworkCreator {
 	private CyNetwork overviewNetwork = null;
-	private Map<TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge>, CyNode> moduleToCyNodeMap;
+	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
 
 	/**
 	 * Instantiates an overview network of complexes (modules) and one nested
 	 * network for each node in the overview network.
 	 */
 	NestedNetworkCreator(final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules) {
-		moduleToCyNodeMap = new HashMap<TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge>, CyNode>();
-		createOverviewNetworkNodes(networkOfModules.nodes());
-		createOverviewNetworkEdges(networkOfModules.edges());
-	}
+		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
-	CyNetwork getOverviewNetwork() {
-		return overviewNetwork;
-	}
-
-	private void createOverviewNetworkNodes(final Set<TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge>> overviewNodes) {
 		overviewNetwork = Cytoscape.createNetwork(findNextAvailableNetworkName("Complex Search Results: " + new java.util.Date()),
 							  /* create_view = */true);
 
 		final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
-
-		int nodeIndex = 1;
-		for (final TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge> module : overviewNodes) {
-			final String nodeName = findNextAvailableNodeName("Complex" + nodeIndex);
-			final CyNode newNode = Cytoscape.getCyNode(nodeName, /* create = */ true);
-			moduleToCyNodeMap.put(module, newNode);
-			overviewNetwork.addNode(newNode);
-			final Set<String> genes = module.value().getMemberValues();
-			nodeAttribs.setAttribute(newNode.getIdentifier(), "gene count", Integer.valueOf(genes.size()));
-			nodeAttribs.setAttribute(newNode.getIdentifier(), "score", Double.valueOf(module.value().score()));
-
-			++nodeIndex;
-		}
-	}
-
-	private void createOverviewNetworkEdges(final Set<TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge>> overviewEdges) {
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
-		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : overviewEdges) {
+		int nodeIndex = 1;
+		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules.edges()) {
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge.source().value();
-			final CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
-			if (sourceNode == null)
-				throw new IllegalStateException("this should be impossible: can't find source node!");
+			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
+			if (sourceNode == null) {
+				final String nodeName = findNextAvailableNodeName("Complex" + nodeIndex);
+				sourceNode = Cytoscape.getCyNode(nodeName, /* create = */ true);
+				moduleToCyNodeMap.put(sourceModule, sourceNode);
+				overviewNetwork.addNode(sourceNode);
+				final Set<String> genes = sourceModule.getMemberValues();
+				nodeAttribs.setAttribute(sourceNode.getIdentifier(), "gene count", Integer.valueOf(genes.size()));
+				nodeAttribs.setAttribute(sourceNode.getIdentifier(), "score", Double.valueOf(sourceModule.score()));
+
+				++nodeIndex;
+			}
 
 			final TypedLinkNodeModule<String, BFEdge> targetModule = edge.target().value();
-			final CyNode targetNode = moduleToCyNodeMap.get(targetModule);
-			if (targetNode == null)
-				throw new IllegalStateException("this should be impossible: can't find target node name!");
+			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
+			if (targetNode == null) {
+				final String nodeName = findNextAvailableNodeName("Complex" + nodeIndex);
+				targetNode = Cytoscape.getCyNode(nodeName, /* create = */ true);
+				moduleToCyNodeMap.put(targetModule, targetNode);
+				overviewNetwork.addNode(targetNode);
+				final Set<String> genes = targetModule.getMemberValues();
+				nodeAttribs.setAttribute(targetNode.getIdentifier(), "gene count", Integer.valueOf(genes.size()));
+				nodeAttribs.setAttribute(targetNode.getIdentifier(), "score", Double.valueOf(targetModule.score()));
+
+				++nodeIndex;
+			}
 
 			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION, "complex-complex",
 								   /* create = */true);
 
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score", Double.valueOf(edge.value().link()));
 		}
+	}
+
+	CyNetwork getOverviewNetwork() {
+		return overviewNetwork;
 	}
 
 	/**
