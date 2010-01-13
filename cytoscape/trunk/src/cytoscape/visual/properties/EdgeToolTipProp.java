@@ -41,6 +41,8 @@ import cytoscape.visual.*;
 
 import javax.swing.Icon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.EdgeView;
 import java.util.Properties;
 
@@ -65,7 +67,7 @@ public class EdgeToolTipProp extends AbstractVisualProperty {
 		return null;
 	}
 	
-    public void applyToEdgeView(EdgeView ev, Object o) {
+    public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 	

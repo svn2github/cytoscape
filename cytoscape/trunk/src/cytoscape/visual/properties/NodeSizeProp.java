@@ -40,6 +40,8 @@ import cytoscape.visual.parsers.DoubleParser;
 
 import cytoscape.visual.ui.icon.NodeIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -94,9 +96,12 @@ public class NodeSizeProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
+
+		if ( dep != null && !dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) ) 
+			return;	
 
 		double size = ((Number) o).doubleValue();
 		double difference = size - nv.getHeight();
@@ -117,5 +122,12 @@ public class NodeSizeProp extends AbstractVisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return new Double(35.0);
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		if ( dep == null )
+			return false;
+
+		return !(dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED));
 	}
 }

@@ -42,6 +42,8 @@ import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.EdgeView;
 
 import java.awt.BasicStroke;
@@ -86,7 +88,7 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 

@@ -103,7 +103,7 @@ public class NodeAppearanceTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testNodeSizeLocked() {
-		NodeAppearance na = new NodeAppearance();
+		NodeAppearance na = new NodeAppearance(new VisualPropertyDependencyImpl());
 
 		// by default size is locked
 		assertEquals("node uniform size", 35.0, ((Double)na.get(NODE_SIZE)).doubleValue(), SLACK);

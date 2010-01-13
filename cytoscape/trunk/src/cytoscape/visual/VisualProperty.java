@@ -88,8 +88,26 @@ public interface VisualProperty {
 	public Icon getDefaultIcon();
 	public Icon getIcon(final Object value);
 
+	/**
+	 * @deprecated Use other the applyToNodeView method with the 
+	 * VisualPropertyDependency arg as null. Will be removed Jan 2011.
+	 */
+	@Deprecated
 	public void applyToNodeView(NodeView nv, Object o);
+
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep);
+
+	/**
+	 * @deprecated Use other the applyToNodeView method with the 
+	 * VisualPropertyDependency arg as null. Will be removed Jan 2011.
+	 */
+	@Deprecated
 	public void applyToEdgeView(EdgeView nv, Object o);
+
+	public void applyToEdgeView(EdgeView nv, Object o, VisualPropertyDependency dep);
+
 	public Object parseProperty(Properties props, String baseKey);
 	public Object getDefaultAppearanceObject();
+
+	public boolean constrained(VisualPropertyDependency dep);
 }

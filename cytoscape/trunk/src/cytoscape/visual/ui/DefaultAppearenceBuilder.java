@@ -46,6 +46,8 @@ import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
+import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_SIZE_LOCKED;
+
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 import org.jdesktop.swingx.JXList;
@@ -146,7 +148,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		
 		dab.lockNodeSizeCheckBox.setSelected(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                              .getNodeAppearanceCalculator()
-		                                              .getNodeSizeLocked());
+		                                              .getDependency().check(NODE_SIZE_LOCKED));
 		dab.lockSize();
 		dab.mainView.updateView();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
@@ -267,7 +269,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setSelected(Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                          .getNodeAppearanceCalculator().getNodeSizeLocked());
+		                                          .getNodeAppearanceCalculator().getDependency().check(NODE_SIZE_LOCKED));
 		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					Cytoscape.getDesktop().getVizMapperUI().switchNodeSizeLock(lockNodeSizeCheckBox.isSelected());
@@ -493,13 +495,13 @@ public class DefaultAppearenceBuilder extends JDialog {
 			NODE_PROPS.remove(NODE_HEIGHT);
 			NODE_PROPS.add(NODE_SIZE);
 			Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator()
-			         .setNodeSizeLocked(true);
+			         .getDependency().set(NODE_SIZE_LOCKED,true);
 		} else {
 			NODE_PROPS.add(NODE_WIDTH);
 			NODE_PROPS.add(NODE_HEIGHT);
 			NODE_PROPS.remove(NODE_SIZE);
 			Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator()
-			         .setNodeSizeLocked(false);
+			         .getDependency().set(NODE_SIZE_LOCKED,false);
 		}
 
 		buildList();

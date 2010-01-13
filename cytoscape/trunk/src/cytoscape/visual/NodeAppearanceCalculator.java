@@ -87,7 +87,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * CyNetwork. A new NodeApperance object will be created.
      */
     public NodeAppearance calculateNodeAppearance(Node node, CyNetwork network) {
-        NodeAppearance appr = new NodeAppearance();
+        NodeAppearance appr = new NodeAppearance(deps);
         calculateNodeAppearance(appr,node,network,VisualPropertyType.getNodeVisualPropertyList());
 
         return appr;
@@ -104,8 +104,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     	for(VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList()) {
     		defAppr.set(type, defaultAppearance.get(type));
     	}
-    	defAppr.setNodeSizeLocked(defaultAppearance.getNodeSizeLocked());
     	copy.setDefaultAppearance(defAppr);
+		copy.getDependency().copy( deps );
     	
     	//Copy mappings
     	for(Calculator cal  : this.calcs) {
@@ -192,24 +192,19 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
         defaultAppearance = (NodeAppearance) (((NodeAppearanceCalculator) toCopy).getDefaultAppearance().clone());
     }
 
-    // probably shouldn't be here now
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * @deprecated Use getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead.
+	 * Will be removed Jan 2011.
      */
     public boolean getNodeSizeLocked() {
-        return defaultAppearance.getNodeSizeLocked();
+        return deps.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
     }
 
-    // probably shouldn't be here now
     /**
-     * DOCUMENT ME!
-     *
-     * @param b DOCUMENT ME!
+     * @deprecated Use getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead.
+	 * Will be removed Jan 2011.
      */
     public void setNodeSizeLocked(boolean b) {
-        defaultAppearance.setNodeSizeLocked(b);
+       	deps.set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b);
     }
-
 }

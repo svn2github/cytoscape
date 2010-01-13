@@ -38,6 +38,8 @@ import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.NodeIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -92,8 +94,11 @@ public class NodeWidthProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
+			return;
+
+		if ( dep != null && dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) )
 			return;
 
 		double width = ((Number) o).doubleValue();
@@ -110,5 +115,12 @@ public class NodeWidthProp extends AbstractVisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return new Double(70.0);
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		if ( dep == null )
+			return false;
+	
+		return dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
 	}
 }

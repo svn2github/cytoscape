@@ -41,6 +41,8 @@ import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.ArrowIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.EdgeView;
 
 import java.awt.Color;
@@ -87,7 +89,7 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 

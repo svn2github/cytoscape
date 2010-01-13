@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.visual.VisualProperty;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -110,8 +111,13 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 *
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
+	 * @param dep DOCUMENT ME!
 	 */
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
+	}
+
 	public void applyToNodeView(NodeView nv, Object o) {
+		applyToNodeView(nv,o,null);
 	}
 
 	/**
@@ -119,8 +125,13 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 *
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
+	 * @param dep DOCUMENT ME!
 	 */
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
+	}
+
 	public void applyToEdgeView(EdgeView ev, Object o) {
+		applyToEdgeView(ev,o,null);
 	}
 
 	/**
@@ -147,5 +158,9 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return null;
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		return false;
 	}
 }

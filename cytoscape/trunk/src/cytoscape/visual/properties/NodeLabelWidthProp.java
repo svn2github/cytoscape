@@ -41,6 +41,8 @@ import static cytoscape.visual.VisualPropertyType.NODE_LABEL_WIDTH;
 
 import cytoscape.visual.ui.icon.NodeIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.NodeView;
 
 import java.awt.BasicStroke;
@@ -98,7 +100,7 @@ public class NodeLabelWidthProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
 

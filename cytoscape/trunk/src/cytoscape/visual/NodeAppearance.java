@@ -35,32 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual;
-
-import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_FACE;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
-import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
-import static cytoscape.visual.VisualPropertyType.NODE_OPACITY;
-import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
-import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
-import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
-import giny.view.NodeView;
-
-import java.awt.Color;
-import java.awt.Font;
-
 
 /**
  * Objects of this class hold data describing the appearance of a Node.
@@ -74,12 +49,44 @@ public class NodeAppearance extends Appearance {
 		super();
 	}
 
+	private VisualPropertyDependency dep;
+
 	/**
-	 * Clone.
+	 * @deprecated This exists only for backwards compatibility.  Do not use it!
+     * Will be removed Jan 2011.
 	 */
-    public Object clone() {
+	@Deprecated
+	NodeAppearance(VisualPropertyDependency dep) {
+		super();
+		this.dep = dep;
+	}
+
+
+	public Object clone() {
 		NodeAppearance ga = new NodeAppearance();
 		ga.copy(this);
 		return ga;
 	}
+
+    private boolean nodeSizeLocked = true;
+    /**
+     * Returns whether or not the node height and width are locked.
+     * @return Whether or not the node height and width are locked.     
+     * @deprecated Use Node/EdgeAppearanceCalculator.getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead. 
+     * Will be removed Jan 2011.
+     */
+    @Deprecated
+    public boolean getNodeSizeLocked() {
+        return dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
+    }
+
+    /**
+     * Sets whether or not the node height and width are locked.     
+     * @deprecated Use Node/EdgeAppearanceCalculator.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead. 
+     * Will be removed Jan 2011.
+     */
+    @Deprecated
+    public void setNodeSizeLocked(boolean b) {
+       	dep.set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b); 
+    }
 }

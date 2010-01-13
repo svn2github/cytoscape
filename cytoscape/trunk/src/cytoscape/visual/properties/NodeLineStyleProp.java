@@ -40,6 +40,8 @@ import cytoscape.visual.*;
 
 import cytoscape.visual.ui.icon.*;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.NodeView;
 
 import java.awt.Stroke;
@@ -111,7 +113,7 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
 

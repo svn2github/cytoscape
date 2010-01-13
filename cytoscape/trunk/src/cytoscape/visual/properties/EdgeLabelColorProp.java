@@ -41,6 +41,8 @@ import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.EdgeView;
 import giny.view.Label;
 
@@ -91,7 +93,7 @@ public class EdgeLabelColorProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 

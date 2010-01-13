@@ -246,7 +246,7 @@ public class VisualMappingManager extends SubjectBase {
 			Node node = nodeView.getNode();
 
 			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network,bypassedVPs);
-			myNodeApp.applyAppearance(nodeView);
+			myNodeApp.applyAppearance(nodeView,nodeAppearanceCalculator.getDependency());
 		}
 	}
 
@@ -281,7 +281,7 @@ public class VisualMappingManager extends SubjectBase {
 				continue;
 
 			edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edgeView.getEdge(), network, bypassedVPs);
-			myEdgeApp.applyAppearance(edgeView);
+			myEdgeApp.applyAppearance(edgeView,edgeAppearanceCalculator.getDependency());
 		}
 	}
 
@@ -370,7 +370,7 @@ public class VisualMappingManager extends SubjectBase {
 		List<VisualPropertyType> bypassedVPs = getBypassedVPs("NODE", Cytoscape.getNodeAttributes()); 
 		NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
 		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getNetwork(),bypassedVPs);
-		myNodeApp.applyAppearance(nodeView);
+		myNodeApp.applyAppearance(nodeView,nodeAppearanceCalculator.getDependency());
 	}
 
 	/**
@@ -384,6 +384,6 @@ public class VisualMappingManager extends SubjectBase {
 		List<VisualPropertyType> bypassedVPs = getBypassedVPs("EDGE", Cytoscape.getEdgeAttributes()); 
 		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
 		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getNetwork(),bypassedVPs);
-		myEdgeApp.applyAppearance(edgeView);
+		myEdgeApp.applyAppearance(edgeView,edgeAppearanceCalculator.getDependency());
 	}
 }

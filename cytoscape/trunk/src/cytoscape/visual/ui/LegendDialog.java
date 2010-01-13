@@ -7,6 +7,7 @@ import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.VisualProperty;
 
 import cytoscape.visual.calculators.Calculator;
 
@@ -102,16 +103,10 @@ public class LegendDialog extends JDialog {
 		                                  new Font("SansSerif", Font.BOLD, 16), Color.DARK_GRAY));
 
 		for (Calculator calc : nodeCalcs) {
-			// AAARGH
-			if (nac.getNodeSizeLocked()) {
-				if (calc.getVisualPropertyType() == VisualPropertyType.NODE_WIDTH)
-					continue;
-				else if (calc.getVisualPropertyType() == VisualPropertyType.NODE_HEIGHT)
-					continue;
-			} else {
-				if (calc.getVisualPropertyType() == VisualPropertyType.NODE_SIZE)
-					continue;
-			}
+			// check to see if the Calculator has a constraint on it (like node size lock)
+			VisualProperty vp = calc.getVisualPropertyType().getVisualProperty();
+			if ( vp.constrained( nac.getDependency() ) )
+				continue;
 
 			om = calc.getMapping(0);
 

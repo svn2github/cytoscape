@@ -51,6 +51,44 @@ import java.util.Properties;
 abstract class AppearanceCalculator implements Cloneable {
 	protected List<Calculator> calcs = new ArrayList<Calculator>();
 	protected Appearance tmpDefaultAppearance;
+	protected VisualPropertyDependency deps;
+
+	/**
+	 * Creates a new AppearanceCalculator object.
+	 */
+	public AppearanceCalculator() {
+		deps = new VisualPropertyDependencyImpl();
+	}
+
+	/**
+	 * Creates a new AppearanceCalculator and immediately customizes it by
+	 * calling applyProperties with the supplied arguments.
+	 */
+	public AppearanceCalculator(String name, Properties nacProps, String baseKey,
+	                            CalculatorCatalog catalog, Appearance appr) {
+		this();	
+		tmpDefaultAppearance = appr;
+		applyProperties(appr, name, nacProps, baseKey, catalog);
+	}
+
+	/**
+	 * Creates a new AppearanceCalculator object.
+	 *
+	 * @param toCopy DOCUMENT ME!
+	 */
+	public AppearanceCalculator(AppearanceCalculator toCopy) {
+		if (toCopy == null)
+			return;
+
+		for (Calculator c : toCopy.getCalculators()) {
+			CyLogger.getLogger().info("New calc = " + c.toString());
+			setCalculator(c);
+		}
+
+		deps.copy( toCopy.getDependency() );
+
+		copyDefaultAppearance(toCopy);
+	}
 
 	/**
 	 * Make shallow copy of this object
@@ -84,38 +122,6 @@ abstract class AppearanceCalculator implements Cloneable {
 		return copy;
 	}
 
-	/**
-	 * Creates a new AppearanceCalculator object.
-	 */
-	public AppearanceCalculator() {
-	}
-
-	/**
-	 * Creates a new AppearanceCalculator and immediately customizes it by
-	 * calling applyProperties with the supplied arguments.
-	 */
-	public AppearanceCalculator(String name, Properties nacProps, String baseKey,
-	                            CalculatorCatalog catalog, Appearance appr) {
-		tmpDefaultAppearance = appr;
-		applyProperties(appr, name, nacProps, baseKey, catalog);
-	}
-
-	/**
-	 * Creates a new AppearanceCalculator object.
-	 *
-	 * @param toCopy DOCUMENT ME!
-	 */
-	public AppearanceCalculator(AppearanceCalculator toCopy) {
-		if (toCopy == null)
-			return;
-
-		for (Calculator c : toCopy.getCalculators()) {
-			CyLogger.getLogger().info("New calc = " + c.toString());
-			setCalculator(c);
-		}
-
-		copyDefaultAppearance(toCopy);
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -203,6 +209,7 @@ abstract class AppearanceCalculator implements Cloneable {
 		String value = null;
 
 		appr.applyDefaultProperties(nacProps, baseKey);
+		deps.applyDefaultProperties(nacProps, baseKey);
 
 		Calculator newCalc;
 
@@ -220,6 +227,8 @@ abstract class AppearanceCalculator implements Cloneable {
 		String key = null;
 		String value = null;
 		Properties newProps = appr.getDefaultProperties(baseKey);
+		Properties depProps = deps.getDefaultProperties(baseKey);
+		newProps.putAll(depProps);
 
 		for (Calculator c : calcs) {
 			// do actual
@@ -232,4 +241,8 @@ abstract class AppearanceCalculator implements Cloneable {
 	}
 
 	protected abstract void copyDefaultAppearance(AppearanceCalculator toCopy);
+
+	public VisualPropertyDependency getDependency() {
+		return deps;
+	}
 }

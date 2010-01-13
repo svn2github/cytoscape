@@ -41,6 +41,8 @@ import static cytoscape.visual.VisualPropertyType.EDGE_LABEL_WIDTH;
 
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.EdgeView;
 
 import java.awt.BasicStroke;
@@ -99,7 +101,7 @@ public class EdgeLabelWidthProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 

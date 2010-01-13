@@ -67,9 +67,7 @@ import java.awt.Color;
  */
 public class Appearance {
 
-	private static final String NODE_SIZE_LOCKED = ".nodeSizeLocked";
 	protected Map<VisualPropertyType,Object> vizProps;
-	protected boolean nodeSizeLocked = true;
 
 	/**
 	 * Creates a new Appearance object.
@@ -111,20 +109,10 @@ public class Appearance {
 	 *
 	 * @param nodeView The NodeView that this appearance will be applied to. 
 	 */
-	public void applyAppearance(final NodeView nodeView) {
-        for ( VisualPropertyType type : VisualPropertyType.values() )
-            if ( type == VisualPropertyType.NODE_SIZE ) {
-                if ( nodeSizeLocked )
-                    type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type));
-                else
-                    continue;
-            } else if ( type == VisualPropertyType.NODE_WIDTH || type == VisualPropertyType.NODE_HEIGHT ) {
-                if ( nodeSizeLocked )
-                    continue;
-                else
-                    type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type));
-            } else
-                type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type));	
+	public void applyAppearance(final NodeView nodeView, final VisualPropertyDependency fdeps) {
+		for ( VisualPropertyType type : VisualPropertyType.values() )
+			if ( type.isNodeProp() )
+				type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type),fdeps);
 	}
 
 	/**
@@ -132,9 +120,10 @@ public class Appearance {
 	 *
 	 * @param edgeView The EdgeView that this appearance will be applied to. 
 	 */
-	public void applyAppearance(final EdgeView edgeView) {
+	public void applyAppearance(final EdgeView edgeView, final VisualPropertyDependency fdeps) {
 		for (VisualPropertyType type : VisualPropertyType.values())
-			type.getVisualProperty().applyToEdgeView(edgeView, vizProps.get(type));
+			if ( !type.isNodeProp() )
+				type.getVisualProperty().applyToEdgeView(edgeView, vizProps.get(type),fdeps);
 	}
 
 	/**
@@ -150,15 +139,6 @@ public class Appearance {
 
 			if (o != null)
 				vizProps.put(type,o);
-		}
-		
-		// Apply nodeSizeLock
-		final String lockKey = baseKey + NODE_SIZE_LOCKED;
-		final String lockVal = nacProps.getProperty(lockKey);
-		if(lockVal == null || lockVal.equalsIgnoreCase("true")) {
-			setNodeSizeLocked(true);
-		} else {
-			setNodeSizeLocked(false);
 		}
 	}
 
@@ -176,15 +156,9 @@ public class Appearance {
 			String key = type.getDefaultPropertyKey(baseKey);
 			String value = ObjectToString.getStringValue(vizProps.get(type));
 			if ( key != null && value != null ) {
-//				CyLogger.getLogger().info("(Key,val) = " + key + ", " + value + ", basekey = " + baseKey);
 				props.setProperty(key,value);
 			}
 		}
-
-		// Add node size lock as an extra prop.
-		final String lockKey = baseKey + NODE_SIZE_LOCKED;
-		final String lockVal = new Boolean(getNodeSizeLocked()).toString();
-		props.setProperty(lockKey, lockVal);
 
 		return props;
 	}
@@ -231,19 +205,8 @@ public class Appearance {
 	 * @param na The Appearance object that will be copied into <i>this</i> Appearance object. 
 	 */
 	public void copy(final Appearance na) {
-
-		final boolean actualLockState = na.getNodeSizeLocked();
-
-        // set everything to false so that it copies correctly
-        setNodeSizeLocked(false);
-        na.setNodeSizeLocked(false);
-
 		for (VisualPropertyType type : VisualPropertyType.values())
 			this.vizProps.put(type, na.get(type));
-
-        // now set the lock state correctly
-        setNodeSizeLocked(actualLockState);
-        na.setNodeSizeLocked(actualLockState);
 	}
 
 	/**
@@ -330,20 +293,4 @@ public class Appearance {
         else
             return null;
     }
-
-	/**
-	 * Returns whether or not the node height and width are locked.
-	 * @return Whether or not the node height and width are locked.
-	 */
-    public boolean getNodeSizeLocked() {
-        return nodeSizeLocked;
-    }
-
-	/**
-	 * Sets whether or not the node height and width are locked.
-	 */
-    public void setNodeSizeLocked(boolean b) {
-        nodeSizeLocked = b;
-    }
-
 }

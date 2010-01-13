@@ -54,6 +54,9 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualProperty;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualStyle;
 import cytoscape.visual.parsers.ObjectToString;
 
 
@@ -125,18 +128,9 @@ abstract class VizMapBypass {
 			});
 
 		menu.add(jmi);
-		
-		// Check node size lock state 
-		if(type.equals(VisualPropertyType.NODE_SIZE)) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
-				jmi.setEnabled(false);
-			}
-		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
-				jmi.setEnabled(false);
-			}
-		}
 
+		jmi.setEnabled(allow(type));
+		
 		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
 		                                             type.getBypassAttrName());
 
@@ -146,5 +140,16 @@ abstract class VizMapBypass {
 			jmi.setSelected(true);
 			addResetMenuItem(menu, type);
 		}
+	}
+
+	private boolean allow(VisualPropertyType type) {
+		VisualPropertyDependency dep; 
+		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+		if ( type.isNodeProp() ) {
+			dep = vs.getNodeAppearanceCalculator().getDependency();
+		} else {
+			dep = vs.getEdgeAppearanceCalculator().getDependency();
+		}
+		return !type.getVisualProperty().constrained(dep);
 	}
 }
