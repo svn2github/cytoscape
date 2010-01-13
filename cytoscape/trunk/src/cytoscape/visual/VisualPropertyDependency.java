@@ -89,13 +89,6 @@ public interface VisualPropertyDependency {
 	 */
 	void copy(VisualPropertyDependency v);
 
-	/**
-	 * DO NOT USE THIS METHOD. Will return the object bound to the specified Definition, or null
-	 * if nothing has been set. This method is used by the copy method and should otherwise
-	 * not be used.
-	 */
-	Boolean get(final Definition s);
-
 	/** 
 	 * Will search the specified Properties using the specified basedKey for
 	 * each dependency definition and will update this object according

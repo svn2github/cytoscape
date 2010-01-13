@@ -71,7 +71,7 @@ public class VisualPropertyDependencyTest extends TestCase {
 
 		deps.applyDefaultProperties(props,baseKey);
 
-		assertTrue( !deps.get(NODE_SIZE_LOCKED) );
+		assertTrue( !deps.check(NODE_SIZE_LOCKED) );
 	}
 
 	public void testGetOnlySetProps() {

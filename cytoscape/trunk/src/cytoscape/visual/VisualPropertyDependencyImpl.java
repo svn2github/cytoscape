@@ -59,10 +59,6 @@ class VisualPropertyDependencyImpl implements VisualPropertyDependency {
 			state.put(s,b);
 	}
 
-	public Boolean get(final Definition s) {
-		return state.get(s);
-	}
-
 	public void applyDefaultProperties(final Properties props, final String baseKey) {
 		for ( Definition d : Definition.values() ) {
 			final String lockKey = baseKey + "." + d.getDefaultPropertyKey();
@@ -96,8 +92,8 @@ class VisualPropertyDependencyImpl implements VisualPropertyDependency {
 			return;
 		state.clear();
 		for ( Definition def : Definition.values() ) {
-			Boolean b = d.get(def);
-			if ( b != null ) 
+			final boolean b = d.check(def);
+			if ( b != def.getDefault() )
 				state.put( def, b );
 		}
 	}
