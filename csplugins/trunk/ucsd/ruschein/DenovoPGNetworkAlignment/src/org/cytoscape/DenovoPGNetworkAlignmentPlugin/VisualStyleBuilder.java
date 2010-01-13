@@ -70,10 +70,16 @@ public class VisualStyleBuilder {
 
 		gac.setDefaultBackgroundColor(Color.white);
 
-		PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
+		PassThroughMapping labelMapping = new PassThroughMapping("", AbstractCalculator.ID);
+		PassThroughMapping sizeMapping = new PassThroughMapping(65, NestedNetworkCreator.NODE_SIZE);
 
 		final Calculator calc = new BasicCalculator(OVERVIEW_VS_NAME + "-"
-				+ "NodeLabelMapping", m, NODE_LABEL);
+				+ "NodeLabelMapping", labelMapping, NODE_LABEL);
+		
+		final Calculator sizeCalc = new BasicCalculator(OVERVIEW_VS_NAME + "-"
+				+ "NodeSizeMapping", sizeMapping, VisualPropertyType.NODE_SIZE);
+		nac.setCalculator(sizeCalc);
+		
 		PassThroughMapping me = new PassThroughMapping("", "interaction");
 
 		final Calculator calce = new BasicCalculator(OVERVIEW_VS_NAME + "-"
