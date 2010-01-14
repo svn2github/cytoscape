@@ -31,6 +31,11 @@ public class VisualStyleBuilder {
 	private VisualStyle overviewVS = null;
 	
 	private Double edgeCutoff;
+	
+	private static ContinuousMapping edgeOpacityMapping;
+	private static ContinuousMapping edgeWidthMapping;
+	private static ContinuousMapping edgeColorMapping;
+	private static ContinuousMapping nodeSizeMapping;
 
 	private static final String OVERVIEW_VS_NAME = "Complex Overview Style";
 	private static final String MODULE_VS_NAME = "Denovo Module Style";
@@ -78,14 +83,9 @@ public class VisualStyleBuilder {
 		gac.setDefaultBackgroundColor(Color.white);
 
 		PassThroughMapping labelMapping = new PassThroughMapping("", AbstractCalculator.ID);
-		PassThroughMapping sizeMapping = new PassThroughMapping(65, NestedNetworkCreator.NODE_SIZE);
 
 		final Calculator calc = new BasicCalculator(OVERVIEW_VS_NAME + "-"
 				+ "NodeLabelMapping", labelMapping, NODE_LABEL);
-		
-		final Calculator sizeCalc = new BasicCalculator(OVERVIEW_VS_NAME + "-"
-				+ "NodeSizeMapping", sizeMapping, VisualPropertyType.NODE_SIZE);
-		nac.setCalculator(sizeCalc);
 		
 		PassThroughMapping me = new PassThroughMapping("", "interaction");
 
@@ -144,10 +144,10 @@ public class VisualStyleBuilder {
 		// Edge continuous mappings
 		
 		// 1. Edge opacity
-		final ContinuousMapping edgeOpacityMapping = new ContinuousMapping(edgeCutoff, ObjectMapping.EDGE_MAPPING);
+		edgeOpacityMapping = new ContinuousMapping(edgeCutoff, ObjectMapping.EDGE_MAPPING);
 		final BoundaryRangeValues range1 = new BoundaryRangeValues(20.0, 20.0, 255.0);
 		edgeOpacityMapping.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, null, false);
-		edgeOpacityMapping.addPoint(DEF_EDGE_CUTOFF, range1);
+		edgeOpacityMapping.addPoint(edgeCutoff, range1);
 		Calculator edgeOpacityCalc = new BasicCalculator(OVERVIEW_VS_NAME
 				+ "-" + "EdgeOpacityMapping", edgeOpacityMapping,
 				VisualPropertyType.EDGE_OPACITY);
@@ -155,18 +155,50 @@ public class VisualStyleBuilder {
 		eac.setCalculator(edgeOpacityCalc);
 		
 		// 2. Edge width
-		final ContinuousMapping edgeWidthMapping = new ContinuousMapping(edgeCutoff, ObjectMapping.EDGE_MAPPING);
+		edgeWidthMapping = new ContinuousMapping(edgeCutoff, ObjectMapping.EDGE_MAPPING);
 		final BoundaryRangeValues edgeWidthRange1 = new BoundaryRangeValues(2.0, 2.0, 4.0);
 		final BoundaryRangeValues edgeWidthRange2 = new BoundaryRangeValues(20.0, 20.0, 20.0);
 		edgeWidthMapping.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, null, false);
-		edgeWidthMapping.addPoint(DEF_EDGE_CUTOFF, edgeWidthRange1);
-		edgeWidthMapping.addPoint(DEF_EDGE_CUTOFF+100, edgeWidthRange2);
+		edgeWidthMapping.addPoint(edgeCutoff, edgeWidthRange1);
+		edgeWidthMapping.addPoint(edgeCutoff+100, edgeWidthRange2);
 		Calculator edgeWidthCalc = new BasicCalculator(OVERVIEW_VS_NAME
 				+ "-" + "EdgeWidthMapping", edgeWidthMapping,
 				VisualPropertyType.EDGE_LINE_WIDTH);
 
 		eac.setCalculator(edgeWidthCalc);
+		
+		// 3. Edge color
+		edgeColorMapping = new ContinuousMapping(Color.BLACK, ObjectMapping.EDGE_MAPPING);
+		final BoundaryRangeValues edgeColorRange = new BoundaryRangeValues(Color.BLACK, Color.BLUE, Color.BLUE);
+		edgeColorMapping.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, null, false);
+		edgeColorMapping.addPoint(edgeCutoff, edgeColorRange);
+		Calculator edgeColorCalc = new BasicCalculator(OVERVIEW_VS_NAME
+				+ "-" + "EdgeWidthMapping", edgeColorMapping,
+				VisualPropertyType.EDGE_COLOR);
 
+		eac.setCalculator(edgeColorCalc);
+		
+		nodeSizeMapping = new ContinuousMapping(30.0, ObjectMapping.NODE_MAPPING);
+		final BoundaryRangeValues nodeSizeRange1 = new BoundaryRangeValues(30.0, 30.0, 30.0);
+		final BoundaryRangeValues nodeSizeRange2 = new BoundaryRangeValues(200.0, 200.0, 200.0);
+		nodeSizeMapping.setControllingAttributeName(NestedNetworkCreator.GENE_COUNT, null, false);
+		nodeSizeMapping.addPoint(1, nodeSizeRange1);
+		nodeSizeMapping.addPoint(100, nodeSizeRange2);
+		Calculator nodeSizeCalc = new BasicCalculator(OVERVIEW_VS_NAME
+				+ "-" + "NodeSizeMapping", nodeSizeMapping,
+				VisualPropertyType.NODE_SIZE);
+		nac.setCalculator(nodeSizeCalc);
+		
 		return defStyle;
+	}
+	
+	public static void updateStyle(final double cutoff, final double scoreMax, final int sizeMax) {
+		// Update continuous mappings
+		edgeOpacityMapping.getPoint(0).setValue(cutoff);
+		edgeColorMapping.getPoint(0).setValue(cutoff);
+		edgeWidthMapping.getPoint(0).setValue(cutoff);
+		edgeWidthMapping.getPoint(1).setValue(scoreMax);
+		nodeSizeMapping.getPoint(0).setValue(1);
+		nodeSizeMapping.getPoint(1).setValue(sizeMax);
 	}
 }

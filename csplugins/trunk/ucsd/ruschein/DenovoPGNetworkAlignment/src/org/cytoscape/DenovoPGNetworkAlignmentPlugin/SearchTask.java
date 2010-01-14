@@ -56,7 +56,7 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		final NestedNetworkCreator nnCreator =
-			new NestedNetworkCreator(results, inputNetwork, pNet, gNet);
+			new NestedNetworkCreator(results, inputNetwork, pNet, gNet, parameters.getEdgeCutoff());
 
 		setStatus("Search finished!\n\n" + "Number of complexes = "
 		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"

@@ -12,6 +12,8 @@ public final class SearchParameters {
 	private double alphaMultiplier;
 	private double physicalNetworkFilterDegree;
 	
+	private double edgeCutoff;
+	
 	public SearchParameters() {
 	}
 
@@ -61,5 +63,13 @@ public final class SearchParameters {
 
 	public double getPhysicalNetworkFilterDegree() {
 		return physicalNetworkFilterDegree;
+	}
+
+	public void setEdgeCutoff(double edgeCutoff) {
+		this.edgeCutoff = edgeCutoff;
+	}
+
+	public double getEdgeCutoff() {
+		return edgeCutoff;
 	}
 }

@@ -18,6 +18,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.layout.CyLayouts;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 /**
  * @author ruschein
@@ -34,6 +35,9 @@ import cytoscape.view.CyNetworkView;
 
 	private CyNetwork overviewNetwork = null;
 	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
+	
+	
+	private int maxSize = 0;
 
 	/**
 	 * Instantiates an overview network of complexes (modules) and one nested
@@ -48,7 +52,7 @@ import cytoscape.view.CyNetworkView;
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules,
 		final CyNetwork originalNetwork,
 		final TypedLinkNetwork<String, Float> physicalNetwork,
-		final TypedLinkNetwork<String, Float> geneticNetwork)
+		final TypedLinkNetwork<String, Float> geneticNetwork, final double cutoff)
 	{
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
@@ -61,6 +65,8 @@ import cytoscape.view.CyNetworkView;
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
 		int nodeIndex = 1;
+		double maxScore = Double.NEGATIVE_INFINITY;
+		maxSize = 0;
 		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules
 				.edges()) {
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge
@@ -90,10 +96,13 @@ import cytoscape.view.CyNetworkView;
 					/* create = */true);
 			overviewNetwork.addEdge(newEdge);
 
+
 			// Add various edge attributes.
 			final double edgeScore = edge.value().link();
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score",
 			                         Double.valueOf(edgeScore));
+			if (edgeScore>maxScore)
+				maxScore = edgeScore;
 			final int gConnectedness =
 				geneticNetwork.getConnectedness(sourceModule.asStringSet(),
 				                                targetModule.asStringSet());
@@ -112,8 +121,8 @@ import cytoscape.view.CyNetworkView;
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "density",
 						 Double.valueOf(density));
 		}
-		applyNetworkLayout(overviewNetwork, VisualStyleBuilder.getVisualStyle()
-				.getName());
+		
+		applyNetworkLayout(overviewNetwork, VisualStyleBuilder.getVisualStyle(), cutoff, maxScore);
 	}
 
 	CyNetwork getOverviewNetwork() {
@@ -132,6 +141,9 @@ import cytoscape.view.CyNetworkView;
 		final Set<String> genes = module.getMemberValues();
 		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT, Integer
 				.valueOf(genes.size()));
+		if (genes.size()>maxSize)
+			maxSize = genes.size();
+		
 		nodeAttribs.setAttribute(newNode.getIdentifier(), SCORE, Double
 				.valueOf(module.score()));
 		nodeAttribs.setAttribute(newNode.getIdentifier(), NODE_SIZE, Math
@@ -164,7 +176,7 @@ import cytoscape.view.CyNetworkView;
 		for (final CyEdge edge : edges)
 			nestedNetwork.addEdge(edge);
 
-		applyNetworkLayout(nestedNetwork, "default");
+		applyNetworkLayout(nestedNetwork, Cytoscape.getVisualMappingManager().getVisualStyle(), null, null);
 
 		return nestedNetwork;
 	}
@@ -229,12 +241,19 @@ import cytoscape.view.CyNetworkView;
 		return null;
 	}
 
-	private void applyNetworkLayout(final CyNetwork network, final String style) {
+	private void applyNetworkLayout(final CyNetwork network, final VisualStyle style, Double cutoff, Double maxScore) {
 		final CyNetworkView targetView = Cytoscape.getNetworkView(network
 				.getIdentifier());
-		targetView.setVisualStyle(style);
+		if (cutoff != null)
+			VisualStyleBuilder.updateStyle(cutoff, maxScore, maxSize);
+		targetView.setVisualStyle(style.getName());
 		Cytoscape.getVisualMappingManager().setVisualStyle(style);
 		targetView.applyLayout(CyLayouts.getLayout("circular"));
 		targetView.redrawGraph(false, true);
 	}
+	
+	private void selectHighScoreInteractions() {
+		
+	}
+	
 }
