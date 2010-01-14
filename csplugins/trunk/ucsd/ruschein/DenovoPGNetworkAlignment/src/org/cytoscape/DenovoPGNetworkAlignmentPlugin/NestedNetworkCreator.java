@@ -234,7 +234,7 @@ import cytoscape.view.CyNetworkView;
 				.getIdentifier());
 		targetView.setVisualStyle(style);
 		Cytoscape.getVisualMappingManager().setVisualStyle(style);
-		targetView.applyLayout(CyLayouts.getDefaultLayout());
+		targetView.applyLayout(CyLayouts.getLayout("circular"));
 		targetView.redrawGraph(false, true);
 	}
 }

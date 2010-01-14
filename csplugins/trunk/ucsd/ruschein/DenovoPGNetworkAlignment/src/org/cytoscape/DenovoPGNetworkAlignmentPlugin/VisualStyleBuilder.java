@@ -18,13 +18,19 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
 public class VisualStyleBuilder {
 
+	private static final double DEF_EDGE_CUTOFF = 20;
+	
 	private VisualStyle overviewVS = null;
+	
+	private Double edgeCutoff;
 
 	private static final String OVERVIEW_VS_NAME = "Complex Overview Style";
 	private static final String MODULE_VS_NAME = "Denovo Module Style";
@@ -37,6 +43,7 @@ public class VisualStyleBuilder {
 	}
 
 	private VisualStyleBuilder() {
+		edgeCutoff = DEF_EDGE_CUTOFF;
 		overviewVS = buidlOverviewStyle();
 		Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 				.addVisualStyle(overviewVS);
@@ -132,6 +139,33 @@ public class VisualStyleBuilder {
 				VisualPropertyType.EDGE_LINE_STYLE);
 
 		eac.setCalculator(edgeLineStyleCalc);
+		
+		
+		// Edge continuous mappings
+		
+		// 1. Edge opacity
+		final ContinuousMapping edgeOpacityMapping = new ContinuousMapping(edgeCutoff, ObjectMapping.EDGE_MAPPING);
+		final BoundaryRangeValues range1 = new BoundaryRangeValues(20.0, 20.0, 255.0);
+		edgeOpacityMapping.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, null, false);
+		edgeOpacityMapping.addPoint(DEF_EDGE_CUTOFF, range1);
+		Calculator edgeOpacityCalc = new BasicCalculator(OVERVIEW_VS_NAME
+				+ "-" + "EdgeOpacityMapping", edgeOpacityMapping,
+				VisualPropertyType.EDGE_OPACITY);
+
+		eac.setCalculator(edgeOpacityCalc);
+		
+		// 2. Edge width
+		final ContinuousMapping edgeWidthMapping = new ContinuousMapping(edgeCutoff, ObjectMapping.EDGE_MAPPING);
+		final BoundaryRangeValues edgeWidthRange1 = new BoundaryRangeValues(2.0, 2.0, 4.0);
+		final BoundaryRangeValues edgeWidthRange2 = new BoundaryRangeValues(20.0, 20.0, 20.0);
+		edgeWidthMapping.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, null, false);
+		edgeWidthMapping.addPoint(DEF_EDGE_CUTOFF, edgeWidthRange1);
+		edgeWidthMapping.addPoint(DEF_EDGE_CUTOFF+100, edgeWidthRange2);
+		Calculator edgeWidthCalc = new BasicCalculator(OVERVIEW_VS_NAME
+				+ "-" + "EdgeWidthMapping", edgeWidthMapping,
+				VisualPropertyType.EDGE_LINE_WIDTH);
+
+		eac.setCalculator(edgeWidthCalc);
 
 		return defStyle;
 	}
