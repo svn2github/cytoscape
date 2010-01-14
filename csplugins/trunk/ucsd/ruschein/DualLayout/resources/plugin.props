@@ -1,0 +1,7 @@
+pluginName=DenovoPGNetworkAlignment
+pluginDescription=test
+pluginVersion=1.0
+cytoscapeVersion=2.6,2.7
+pluginCategory=Analysis
+pluginAuthorsInstitutions=Kei Ono:UCSD
+releaseDate=January 8, 2010
