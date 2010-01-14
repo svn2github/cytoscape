@@ -114,7 +114,7 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 
 		for (Compound compound: compoundList) {
 			// Get the image
-			Image img = compound.getImage(width/nCols, width/nCols);
+			Image img = compound.getImage(width/nCols, width/nCols, Color.WHITE);
 			JLabel label = new JLabel(new ImageIcon(img));
 			label.addComponentListener(this);
 			imageMap.put(label, compound);

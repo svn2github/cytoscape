@@ -36,6 +36,7 @@
 package chemViz.model;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
@@ -81,9 +82,13 @@ import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.modeling.builder3d.TemplateHandler3D;
-import org.openscience.cdk.renderer.ISimpleRenderer2D;
-import org.openscience.cdk.renderer.Java2DRenderer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.font.AWTFontManager;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.qsar.*;
@@ -635,15 +640,26 @@ public class Compound {
  	 * Return the 2D image for this compound.  Note that this might sleep if we're in the process
  	 * of fetching the image already.
  	 *
+ 	 * @param width the width of the rendered image
+ 	 * @param height the height of the rendered image
  	 * @return the fetched image
  	 */
-	public Image getImage() {
-		return getImage(360,360);
+	public Image getImage(int width, int height) {
+		return getImage(width, height, new Color(255,255,255,0));
 	}
 
-	public Image getImage(int width, int height) {
+	/**
+ 	 * Return the 2D image for this compound.  Note that this might sleep if we're in the process
+ 	 * of fetching the image already.
+ 	 *
+ 	 * @param width the width of the rendered image
+ 	 * @param height the height of the rendered image
+ 	 * @param background the background color to use for the image
+ 	 * @return the fetched image
+ 	 */
+	public Image getImage(int width, int height, Color background) {
 		if (lastImageWidth != width || lastImageHeight != height || (renderedImage == null && lastImageFailed == false)) {
-			renderedImage = depictWithCDK(width, height);
+			renderedImage = depictWithCDK(width, height, background);
 			lastImageWidth = width;
 			lastImageHeight = height;
 		}
@@ -726,46 +742,54 @@ public class Compound {
 		return image;
 	}	
 
-	public Image depictWithCDK() {
-		return depictWithCDK(180, 180);
-	}
-
-	public Image depictWithCDK(int width, int height) {
+	public Image depictWithCDK(int width, int height, Color background) {
 		BufferedImage bufferedImage = null;
 
 		try {
 			if (!laidOut) {
 				StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+				sdg.setUseTemplates(false);
 				sdg.setMolecule(iMolecule);
 				sdg.generateCoordinates();
 				this.iMolecule = sdg.getMolecule();
 				laidOut = true;
 			}
 
-			Renderer2DModel model = new Renderer2DModel();
+			// generators make the image elements
+			List<IGenerator> generators = new ArrayList<IGenerator>();
+			generators.add(new BasicBondGenerator());
+			generators.add(new BasicAtomGenerator());
+       
+			// the renderer needs to have a toolkit-specific font manager 
+			Renderer renderer = new Renderer(generators, new AWTFontManager());
+			RendererModel model = renderer.getRenderer2DModel();
+			
 			model.setDrawNumbers(false);
 			model.setUseAntiAliasing(true);
-			model.setColorAtomsByType(true); 
+			// model.setColorAtomsByType(true); 
 			model.setShowExplicitHydrogens(true);
 			model.setShowImplicitHydrogens(true);
 			model.setShowAromaticity(true); 
 			model.setShowReactionBoxes(false);
 			model.setKekuleStructure(false);
-			model.setBackColor(Color.WHITE);
+			// model.setBackColor(new Color(0,0,0,0));
+			model.setBondWidth(model.getBondWidth()*2);
 
 			int renderWidth = width;
 			// if (renderWidth < 150) renderWidth = 150;
 			int renderHeight = height;
 			// if (renderHeight < 150) renderHeight = 150;
-
-			ISimpleRenderer2D renderer = new Java2DRenderer(model);
-			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D graphics = bufferedImage.createGraphics();
-			graphics.setColor(new Color(255, 255, 255, 0));
-			graphics.fillRect(0,0,renderWidth,renderHeight);
 			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
 
-			renderer.paintMolecule(iMolecule, graphics, bbox);
+			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D graphics = bufferedImage.createGraphics();
+			if (background == null)
+				graphics.setColor(new Color(255, 255, 255, 0));
+			else
+				graphics.setColor(background);
+			graphics.fillRect(0,0,renderWidth,renderHeight);
+
+			renderer.paintMolecule(iMolecule, new AWTDrawVisitor(graphics), bbox, true);
 
 			/*
 			if (renderWidth != width || renderHeight != height) {
@@ -807,7 +831,7 @@ public class Compound {
 
 		try {
 			// Get the factory	
-			InChIGeneratorFactory factory = new InChIGeneratorFactory();
+			InChIGeneratorFactory factory = InChIGeneratorFactory.getInstance();
 			InChIToStructure intostruct = factory.getInChIToStructure(inchi, DefaultChemObjectBuilder.getInstance());
 
 		// Get the structure
