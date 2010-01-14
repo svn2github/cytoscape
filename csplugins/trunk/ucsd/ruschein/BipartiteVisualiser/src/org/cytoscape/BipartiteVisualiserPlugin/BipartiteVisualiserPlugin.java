@@ -1,19 +1,19 @@
-package cytoscape.org.BipartiteVisualiserPlugin;
+package org.cytoscape.BipartiteVisualiserPlugin;
 
+
+import giny.view.EdgeView;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
-import giny.view.EdgeView;
 import ding.view.EdgeContextMenuListener;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenuItem;
-import java.awt.event.ActionListener;
 
 
 /**

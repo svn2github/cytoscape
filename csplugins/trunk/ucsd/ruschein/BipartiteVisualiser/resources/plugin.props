@@ -2,6 +2,6 @@ pluginName=BipartiteVisualiser
 pluginDescription=Visualise a graph with two classes of nodes.
 pluginVersion=1.0
 cytoscapeVersion=2.6,2.7
-pluginCategory=Visualization
+pluginCategory=Analysis
 pluginAuthorsInstitutions=Johannes Ruscheinski:UCSD
 releaseDate=January 22, 2010

@@ -19,7 +19,7 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
+    <property name="cytoscape.dir" value="${root.dir}/../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
@@ -103,7 +103,7 @@
         <include name="*.jar"/>
       </fileset>
     </unzip>
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/BipartiteVisualiserPlugin"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/BipartiteVisualiserPlugin/"/>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
