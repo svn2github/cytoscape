@@ -809,11 +809,16 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             return false;
         }
 
-        for (String ds : datasets) {
-            if (!datasetFilter.contains(ds)) {
-                String display = biomartStub.datasetDisplayName(ds);//+"("+ds+")";
-                mapDatasetDisplayName.put(display, ds);
+        try {
+            for (String ds : datasets) {
+                if (!datasetFilter.contains(ds)) {
+                    String display = biomartStub.datasetDisplayName(db, ds);
+                    mapDatasetDisplayName.put(display, ds);
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
 
         return true;
@@ -973,8 +978,14 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         if (idMapper==null) {
             setDatasetsCombo();
         } else if(idMapper instanceof IDMapperBiomart) {
-            String dataset = ((IDMapperBiomart)idMapper).getDataset();
-            String display = biomartStub.datasetDisplayName(dataset);
+            IDMapperBiomart biomart = (IDMapperBiomart)idMapper;
+            String dataset = biomart.getDataset();
+            String display = dataset;
+            try {
+                display = biomartStub.datasetDisplayName(biomart.getMart(), dataset);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             mapDatasetDisplayName = new HashMap(1);
             mapDatasetDisplayName.put(display, dataset);
             chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new String[] {display}));
