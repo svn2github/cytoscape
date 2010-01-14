@@ -100,6 +100,7 @@ public class HCSearch2 {
 			// Merge the best pair
 			TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge> mergedNode = mergeNodes(
 					results, best.source(), best.target(), sfunc);
+			mergedNode.value().setScore(best.value().complexMerge());
 
 			// Check to see if the search should continue
 			if (max > 0) {
