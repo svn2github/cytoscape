@@ -2,6 +2,7 @@ package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,9 @@ import cytoscape.visual.VisualStyle;
 	{
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
+		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
+		final Set<CyNode> selectedNodes = new HashSet<CyNode>();
+
 		overviewNetwork = Cytoscape.createNetwork(
 				findNextAvailableNetworkName("Complex Search Results: "
 						+ new java.util.Date()),
@@ -103,6 +107,13 @@ import cytoscape.visual.VisualStyle;
 			                         Double.valueOf(edgeScore));
 			if (edgeScore>maxScore)
 				maxScore = edgeScore;
+			// Selected if above cutoff
+			if (edgeScore >= cutoff) {
+				selectedEdges.add(newEdge);
+				selectedNodes.add((CyNode) newEdge.getSource());
+				selectedNodes.add((CyNode) newEdge.getTarget());
+			}
+			
 			final int gConnectedness =
 				geneticNetwork.getConnectedness(sourceModule.asStringSet(),
 				                                targetModule.asStringSet());
@@ -123,6 +134,10 @@ import cytoscape.visual.VisualStyle;
 		}
 		
 		applyNetworkLayout(overviewNetwork, VisualStyleBuilder.getVisualStyle(), cutoff, maxScore);
+		
+		// Sete selected
+		overviewNetwork.setSelectedEdgeState(selectedEdges, true);
+		overviewNetwork.setSelectedNodeState(selectedNodes, true);
 	}
 
 	CyNetwork getOverviewNetwork() {
