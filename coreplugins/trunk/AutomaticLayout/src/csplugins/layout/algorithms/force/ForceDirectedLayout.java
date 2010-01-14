@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -78,11 +78,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	 * Value to set for doing unweighted layouts
 	 */
 	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
-
-	/**
-	 * Integrators
-	 */
-	String[] integratorArray = {"Runge-Kutta", "Euler"};
 
 	private boolean supportWeights = true;
 	private LayoutProperties layoutProperties;
@@ -285,10 +280,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
 
-		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
-		                                 Tunable.LIST, new Integer(0), 
-		                                 (Object) integratorArray, (Object) null, 0));
-
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
@@ -347,18 +338,8 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
-		t = layoutProperties.get("integrator");
-		if ((t != null) && (t.valueChanged() || force)) {
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-			if (((Integer) t.getValue()).intValue() == 0)
-				integrator = new RungeKuttaIntegrator();
-			else if (((Integer) t.getValue()).intValue() == 1)
-				integrator = new EulerIntegrator();
-			else
-				return;
-			m_fsim.setIntegrator(integrator);
-		}
+		integrator = new RungeKuttaIntegrator();
+		m_fsim.setIntegrator(integrator);
 
 		edgeWeighter.updateSettings(layoutProperties, force);
 	}
