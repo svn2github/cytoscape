@@ -43,16 +43,18 @@ public interface VisualPropertyDependency {
 	 * An enum that lists the possible dependencies.
 	 */
 	public enum Definition {
-		NODE_SIZE_LOCKED("nodeSizeLocked",true),
-		ARROW_COLOR_MATCHES_EDGE("arrowColorMatchesEdge",false),
+		NODE_SIZE_LOCKED("nodeSizeLocked",true, "Lock Node Width/Height"),
+		ARROW_COLOR_MATCHES_EDGE("arrowColorMatchesEdge",false,"Make Arrow Color Match Edge Color"),
 		;
 
 		private String propKey;
 		private boolean defaultValue;
+		private String title;
 
-		private Definition(String propKey, boolean defaultValue) {
+		private Definition(String propKey, boolean defaultValue, String title) {
 			this.propKey = propKey;
 			this.defaultValue = defaultValue;
+			this.title = title;
 		}
 
 		/**
@@ -67,6 +69,13 @@ public interface VisualPropertyDependency {
 		 */
 		public boolean getDefault() {
 			return defaultValue;
+		}
+
+		/**
+		 * Will return a human readable title suitable for use in a user interface.
+		 */
+		public String getTitle() {
+			return title;
 		}
 	}
 
