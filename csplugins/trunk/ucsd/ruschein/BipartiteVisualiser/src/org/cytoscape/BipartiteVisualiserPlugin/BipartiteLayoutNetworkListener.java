@@ -10,12 +10,11 @@ public class BipartiteLayoutNetworkListener implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(event
-				.getPropertyName())) {
+		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(event.getPropertyName())) {
 
-			final BipartiteLayoutContextMenuListener edge_menu_listener = new BipartiteLayoutContextMenuListener();
+			final BipartiteLayoutContextMenuListener edgeMenuListener = new BipartiteLayoutContextMenuListener();
 			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(
-					edge_menu_listener);
+					edgeMenuListener);
 		}
 
 	}
