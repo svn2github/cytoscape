@@ -11,9 +11,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 import ding.view.EdgeContextMenuListener;
+import giny.model.Edge;
+import giny.model.Node;
 
 
 /**
@@ -32,16 +35,18 @@ public class BipartiteVisualiserPlugin extends CytoscapePlugin {
 
 	public class MyPluginAction extends CytoscapeAction {
 		private static final long serialVersionUID = 8529971296045L;
+		private CyNetwork network1 = null;
+		private CyNetwork network2 = null;
 
 
-		public MyPluginAction(BipartiteVisualiserPlugin myPlugin) {
+		public MyPluginAction(final BipartiteVisualiserPlugin myPlugin) {
 			// Add the menu item under menu pulldown "Plugins"
 			super("BipartiteVisualiser");
 			setPreferredMenu("Plugins");
 		}
 
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			if (Cytoscape.getCurrentNetworkView().getTitle() == null || Cytoscape.getCurrentNetworkView().getTitle().equalsIgnoreCase("null")) {
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No network view!");
 				return;
@@ -53,15 +58,24 @@ public class BipartiteVisualiserPlugin extends CytoscapePlugin {
 
 		
 		class MyEdgeContextMenuListener implements EdgeContextMenuListener {
-			public void addEdgeContextMenuItems(EdgeView nodeView, JPopupMenu menu) 
-			{ 
-				JMenuItem myMenuItem = new JMenuItem("MyEdgeMenuItem");
-				
-				myMenuItem.addActionListener(new MyEdgeAction(nodeView));					
+			public void addEdgeContextMenuItems(final EdgeView edgeView, final JPopupMenu menu) {
+				if (menu == null)
+					return;
 
-				if (menu == null) {
-					menu = new JPopupMenu();
-				}
+				final Edge edge = edgeView.getEdge();
+
+				final Node source = edge.getSource();
+				network1 = (CyNetwork)source.getNestedNetwork();
+				if (network1 == null)
+					return;
+
+				final Node target = edge.getTarget();
+				network2 = (CyNetwork)source.getNestedNetwork();
+				if (network2 == null)
+					return;
+
+				JMenuItem myMenuItem = new JMenuItem("MyEdgeMenuItem");
+				myMenuItem.addActionListener(new MyEdgeAction(edgeView));					
 				menu.add(myMenuItem); 
 			} 
 		}
