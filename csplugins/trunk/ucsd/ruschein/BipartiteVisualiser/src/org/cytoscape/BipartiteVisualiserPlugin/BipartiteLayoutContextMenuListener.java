@@ -51,6 +51,10 @@ public class BipartiteLayoutContextMenuListener implements
 		final JMenu createBipartiteViewMenuItem = new JMenu(
 				"Create Nested Network Side-by-Side View");
 		menu.add(createBipartiteViewMenuItem);
+		final JMenuItem titleMenu = new JMenuItem("Select Refrrence Network");
+		titleMenu.setEnabled(false);
+		createBipartiteViewMenuItem.add(titleMenu);
+		createBipartiteViewMenuItem.addSeparator();
 		
 
 		// Parent network is ALWAYS current network view
