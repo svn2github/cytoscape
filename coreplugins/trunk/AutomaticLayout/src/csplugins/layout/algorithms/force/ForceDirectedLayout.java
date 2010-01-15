@@ -285,9 +285,9 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
 
-		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
-		                                 Tunable.LIST, new Integer(0), 
-		                                 (Object) integratorArray, (Object) null, 0));
+//		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
+//		                                 Tunable.LIST, new Integer(0), 
+//		                                 (Object) integratorArray, (Object) null, 0));
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
@@ -347,6 +347,10 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
+
+
+		integrator = new RungeKuttaIntegrator();
+		/*
 		t = layoutProperties.get("integrator");
 		if ((t != null) && (t.valueChanged() || force)) {
 			if (t.valueChanged())
@@ -361,6 +365,9 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 				return;
 			m_fsim.setIntegrator(integrator);
 		}
+		*/
+
+
 
 		edgeWeighter.updateSettings(layoutProperties, force);
 	}

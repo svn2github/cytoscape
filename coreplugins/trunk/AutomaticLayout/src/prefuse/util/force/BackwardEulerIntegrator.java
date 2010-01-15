@@ -5,6 +5,10 @@ package prefuse.util.force;
 
 import java.util.Iterator;
 
+//
+// ****************************************************   WARNING:  B R O K E N !!!
+//
+
 /**
  * Updates velocity and position data using the Backward Euler Method. This is the
  * simple and fast method, but is somewhat inaccurate and less smooth
@@ -22,7 +26,7 @@ public class BackwardEulerIntegrator implements Integrator {
 	public void integrate(final ForceSimulator sim, final long timestep) {
 		float speedLimit = sim.getSpeedLimit();
 		Iterator iter = sim.getItems();
-		while (iter.hasNext()) {
+		while ( iter.hasNext() ) {
 			ForceItem item = (ForceItem)iter.next();
 			float coeff = timestep / item.mass;
 			item.velocity[0] += coeff * item.force[0];
@@ -31,7 +35,7 @@ public class BackwardEulerIntegrator implements Integrator {
 			item.location[1] += timestep * item.velocity[1];
 			float vx = item.velocity[0];
 			float vy = item.velocity[1];
-			float v = (float)Math.sqrt(vx *vx + vy * vy);
+			float v = (float)Math.sqrt(vx*vx + vy*vy);
 			if ( v > speedLimit ) {
 				item.velocity[0] = speedLimit * vx / v;
 				item.velocity[1] = speedLimit * vy / v;
@@ -39,4 +43,4 @@ public class BackwardEulerIntegrator implements Integrator {
 		}
 	}
 
-} // end of class EulerIntegrator
+} // end of class BackwardEulerIntegrator
