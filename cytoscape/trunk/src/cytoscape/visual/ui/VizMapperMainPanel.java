@@ -280,8 +280,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getNodeAttributes(), nodeAttrEditor, nodeNumericalAttrEditor));
 		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getEdgeAttributes(), edgeAttrEditor, edgeNumericalAttrEditor));
 		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getNetworkAttributes(), null, null));
-
-		updateDependencyStates(vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency());
 	}
 
 	/*
@@ -339,6 +337,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		setDefaultPanel(defaultImageManager.get(targetName));
 	}
 
+	
 	private void updateDependencyStates(VisualPropertyDependency deps) {
 		System.out.println("update: props");
 		for (Property tmpprop : visualPropertySheetPanel.getProperties()) {
@@ -362,9 +361,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				return;
 
 		VisualPropertyType type = (VisualPropertyType)hidden; 
-		System.out.print("syncing type: " + type);
+		System.out.print("!!!!!!!! syncing type: " + type);
 		if ( type.getVisualProperty().constrained(deps) ) {
-			System.out.println("      HIDE");
+			System.out.println("      HIDE: " + prop.getDisplayName());
 			hiddenProperties.add( prop );
 			visualPropertySheetPanel.removeProperty(prop);
 		} else {
@@ -1969,6 +1968,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.setVisualStyle(vmName);
 			setPropertyTable();
 			visualPropertySheetPanel.setSorting(true);
+			
+			// Update dependency states
+			updateDependencyStates(vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency());
+			updateDependencyStates(vmm.getVisualStyle().getEdgeAppearanceCalculator().getDependency());
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
