@@ -59,7 +59,7 @@ public class BipartiteLayoutContextMenuListener implements
 	 * @returns a set of all the networks that are not "parentNetwork" or a nested network of a
 	 *          node in "parentNetwork."
 	 */
-	private SortedSet<CyNetwork> getReferenceNetworkCandidates(final CyNetwork parentNetwork) { 
+	private SortedSet<String> getReferenceNetworkCandidates(final CyNetwork parentNetwork) { 
 		// Determine the set of networks that can't possible be candidates for the reference network:
 		final Set<CyNetwork> verboten = new HashSet<CyNetwork>();
 		verboten.add(parentNetwork);
@@ -70,10 +70,10 @@ public class BipartiteLayoutContextMenuListener implements
 				verboten.add((CyNetwork)nestedNetwork);
 		}
 
-		final SortedSet<CyNetwork> candidates = new TreeSet<CyNetwork>();
+		final SortedSet<String> candidates = new TreeSet<String>();
 		for (final CyNetwork candidate : Cytoscape.getNetworkSet()) {
 			if (!verboten.contains(candidate))
-				candidates.add(candidate);
+				candidates.add(candidate.getTitle());
 		}
 
 		return candidates;
