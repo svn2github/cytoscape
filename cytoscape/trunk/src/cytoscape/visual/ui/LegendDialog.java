@@ -105,7 +105,7 @@ public class LegendDialog extends JDialog {
 		for (Calculator calc : nodeCalcs) {
 			// check to see if the Calculator has a constraint on it (like node size lock)
 			VisualProperty vp = calc.getVisualPropertyType().getVisualProperty();
-			if ( vp.constrained( nac.getDependency() ) )
+			if ( vp.constrained( visualStyle.getDependency() ) )
 				continue;
 
 			om = calc.getMapping(0);

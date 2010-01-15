@@ -314,7 +314,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param def The VisualPropertyDependency.Definition in question.
 	 */
 	protected void syncDependencyStates(VisualPropertyDependency deps, Definition def) {
-		System.out.println("sync dependency states");
 		dependencyMenuItems.get(def).setSelected(deps.check(def));
 
 		updateDependencyStates(deps);
@@ -328,14 +327,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	
 	private void updateDependencyStates(VisualPropertyDependency deps) {
-		System.out.println("update: props");
 		for (Property tmpprop : visualPropertySheetPanel.getProperties()) {
 			if ( !(tmpprop instanceof VizMapperProperty) )
 				continue;
 			updateDependentProperty( (VizMapperProperty)tmpprop, deps );
 		}
 
-		System.out.println("update: hidden props");
 		// to avoid concurrent modification exception
 		ArrayList<VizMapperProperty> propl = new ArrayList<VizMapperProperty>( hiddenProperties );	
 
@@ -350,13 +347,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				return;
 
 		VisualPropertyType type = (VisualPropertyType)hidden; 
-		System.out.print("!!!!!!!! syncing type: " + type);
 		if ( type.getVisualProperty().constrained(deps) ) {
-			System.out.println("      HIDE: " + prop.getDisplayName());
 			hiddenProperties.add( prop );
 			visualPropertySheetPanel.removeProperty(prop);
 		} else {
-			System.out.println("      show");
 			if ( hiddenProperties.remove( prop ) )
 				visualPropertySheetPanel.addProperty(prop);
 		}
@@ -488,7 +482,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			item.setSelected(def.getDefault());
 			item.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					final VisualPropertyDependency deps = vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency();
+					final VisualPropertyDependency deps = vmm.getVisualStyle().getDependency();
 					deps.set(def,item.isSelected());
 					syncDependencyStates(deps,def);
 
@@ -848,16 +842,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		if(defImg == null) {
 			// Default image is not available in the buffer.  Create a new one.
-			updateDefaultImage(vsName,
-									(DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(vsName)).getView(),
-									defaultAppearencePanel.getSize());
+			updateDefaultImage(vsName, (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(vsName)).getView(), defaultAppearencePanel.getSize());
 			defImg = defaultImageManager.get(vsName);
 		}
 		// Set the default view to the panel.
 		setDefaultPanel(defImg);
 
 		// Sync. locks
-		VisualPropertyDependency dep = vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency();
+		VisualPropertyDependency dep = vmm.getVisualStyle().getDependency();
 		for ( Definition d : Definition.values() ) {
 			JCheckBoxMenuItem jcbmi = dependencyMenuItems.get( d );
 			jcbmi.setSelected( dep.check(d) );
@@ -920,8 +912,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		switchVS(style.getName(), false);
 		
 		// Sync check box and actual lock state
-		System.out.println("--------------------HOMER");
-		updateDependencyStates(vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency());
+		updateDependencyStates(vmm.getVisualStyle().getDependency());
 
 		// Restore listeners
 		for (int i = 0; i < li.length; i++)
@@ -943,8 +934,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			image = null;
 		}
 
-		defaultImageManager.put(vsName,
-		                        view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9));
+		defaultImageManager.put(vsName, view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9));
 	}
 
 	private void setPropertySheetAppearence() {
@@ -1813,9 +1803,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final String targetName = vmm.getVisualStyle().getName();
 				final String focus = vmm.getNetwork().getIdentifier();
 
-				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .showDialog(Cytoscape
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .getDesktop());
+				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder .showDialog(Cytoscape .getDesktop());
 				updateDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName));
@@ -1958,8 +1946,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			visualPropertySheetPanel.setSorting(true);
 			
 			// Update dependency states
-			updateDependencyStates(vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency());
-			updateDependencyStates(vmm.getVisualStyle().getEdgeAppearanceCalculator().getDependency());
+			updateDependencyStates(vmm.getVisualStyle().getDependency());
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {

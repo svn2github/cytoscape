@@ -129,7 +129,10 @@ abstract class VizMapBypass {
 
 		menu.add(jmi);
 
-		jmi.setEnabled(allow(type));
+		final VisualPropertyDependency dep = 
+		             Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
+
+		jmi.setEnabled( !(type.getVisualProperty().constrained(dep)) ); 
 		
 		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
 		                                             type.getBypassAttrName());
@@ -140,16 +143,5 @@ abstract class VizMapBypass {
 			jmi.setSelected(true);
 			addResetMenuItem(menu, type);
 		}
-	}
-
-	private boolean allow(VisualPropertyType type) {
-		VisualPropertyDependency dep; 
-		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
-		if ( type.isNodeProp() ) {
-			dep = vs.getNodeAppearanceCalculator().getDependency();
-		} else {
-			dep = vs.getEdgeAppearanceCalculator().getDependency();
-		}
-		return !type.getVisualProperty().constrained(dep);
 	}
 }

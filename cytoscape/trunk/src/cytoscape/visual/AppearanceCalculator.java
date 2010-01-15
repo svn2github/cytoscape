@@ -56,8 +56,8 @@ abstract class AppearanceCalculator implements Cloneable {
 	/**
 	 * Creates a new AppearanceCalculator object.
 	 */
-	public AppearanceCalculator() {
-		deps = new VisualPropertyDependencyImpl();
+	public AppearanceCalculator(VisualPropertyDependency deps) {
+		this.deps = deps; 
 	}
 
 	/**
@@ -65,8 +65,8 @@ abstract class AppearanceCalculator implements Cloneable {
 	 * calling applyProperties with the supplied arguments.
 	 */
 	public AppearanceCalculator(String name, Properties nacProps, String baseKey,
-	                            CalculatorCatalog catalog, Appearance appr) {
-		this();	
+	                            CalculatorCatalog catalog, Appearance appr, VisualPropertyDependency deps) {
+		this(deps);	
 		tmpDefaultAppearance = appr;
 		applyProperties(appr, name, nacProps, baseKey, catalog);
 	}
@@ -85,7 +85,7 @@ abstract class AppearanceCalculator implements Cloneable {
 			setCalculator(c);
 		}
 
-		deps.copy( toCopy.getDependency() );
+		deps.copy( toCopy.deps );
 
 		copyDefaultAppearance(toCopy);
 	}
@@ -241,8 +241,4 @@ abstract class AppearanceCalculator implements Cloneable {
 	}
 
 	protected abstract void copyDefaultAppearance(AppearanceCalculator toCopy);
-
-	public VisualPropertyDependency getDependency() {
-		return deps;
-	}
 }

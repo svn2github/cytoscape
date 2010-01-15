@@ -66,6 +66,8 @@ public class VisualStyle implements Cloneable {
 	private EdgeAppearanceCalculator edgeAC;
 	private GlobalAppearanceCalculator globalAC;
 
+	private VisualPropertyDependency deps;
+
 	/**
 	 * Keep track of number of times this style has been cloned.
 	 */
@@ -132,9 +134,10 @@ public class VisualStyle implements Cloneable {
 	 * Simple constructor, creates default node/edge/global appearance calculators.
 	 */
 	public VisualStyle(String name) {
+		deps = new VisualPropertyDependencyImpl();
 		setName(name);
-		setNodeAppearanceCalculator(new NodeAppearanceCalculator());
-		setEdgeAppearanceCalculator(new EdgeAppearanceCalculator());
+		setNodeAppearanceCalculator(new NodeAppearanceCalculator(deps));
+		setEdgeAppearanceCalculator(new EdgeAppearanceCalculator(deps));
 		setGlobalAppearanceCalculator(new GlobalAppearanceCalculator());
 	}
 
@@ -143,6 +146,7 @@ public class VisualStyle implements Cloneable {
 	 */
 	public VisualStyle(String name, NodeAppearanceCalculator nac, EdgeAppearanceCalculator eac,
 	                   GlobalAppearanceCalculator gac) {
+		deps = new VisualPropertyDependencyImpl();
 		setName(name);
 		setNodeAppearanceCalculator(nac);
 		setEdgeAppearanceCalculator(eac);
@@ -231,7 +235,7 @@ public class VisualStyle implements Cloneable {
 	 */
 	public NodeAppearanceCalculator setNodeAppearanceCalculator(NodeAppearanceCalculator nac) {
 		NodeAppearanceCalculator tmp = nodeAC;
-		nodeAC = (nac == null) ? new NodeAppearanceCalculator() : nac;
+		nodeAC = (nac == null) ? new NodeAppearanceCalculator(deps) : nac;
 		return tmp;
 	}
 
@@ -252,7 +256,7 @@ public class VisualStyle implements Cloneable {
 	 */
 	public EdgeAppearanceCalculator setEdgeAppearanceCalculator(EdgeAppearanceCalculator eac) {
 		EdgeAppearanceCalculator tmp = edgeAC;
-		edgeAC = (eac == null) ? new EdgeAppearanceCalculator() : eac;
+		edgeAC = (eac == null) ? new EdgeAppearanceCalculator(deps) : eac;
 
 		return tmp;
 	}
@@ -277,5 +281,9 @@ public class VisualStyle implements Cloneable {
 		globalAC = (gac == null) ? new GlobalAppearanceCalculator() : gac;
 
 		return tmp;
+	}
+
+	public VisualPropertyDependency getDependency() {
+		return deps;
 	}
 }

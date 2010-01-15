@@ -468,8 +468,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	private void syncPropertiesWithDependencies() {
-		System.out.println("sync withd deps");
-		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDependency();
+		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
 
 		for ( VisualPropertyType type : VisualPropertyType.values() ) {
 			if ( !type.isAllowed() ) 
@@ -491,7 +490,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 	private void applyDependenciesToCheckboxes() {
 		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                              .getNodeAppearanceCalculator()
 		                                              .getDependency();
 		for ( Definition def : dependencyCheckBoxMap.keySet() ) 
 			dependencyCheckBoxMap.get(def).setSelected( dep.check( def ) ); 
@@ -502,7 +500,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		dependencyPanel = new JPanel();
 		dependencyCheckBoxMap = new HashMap<Definition,JCheckBox>();
 		dependencyPanel.setLayout(new BoxLayout(dependencyPanel, BoxLayout.Y_AXIS));
-		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDependency();
+		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
 
 		for (final Definition def : Definition.values()) {
 			final JCheckBox dCheck = new JCheckBox();
@@ -515,8 +513,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			dependencyCheckBoxMap.put(def,dCheck);
 			dCheck.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						System.out.println("check box: " + def );
-						final VisualPropertyDependency deps = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDependency();
+						final VisualPropertyDependency deps = Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
 						deps.set(def,dCheck.isSelected());
 						Cytoscape.getDesktop().getVizMapperUI().syncDependencyStates(deps,def);
 						buildList();

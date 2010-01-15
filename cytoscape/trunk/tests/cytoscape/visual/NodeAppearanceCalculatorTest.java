@@ -117,7 +117,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	public void testDefaultAppearance() {
 		System.out.println("begin NodeAppearanceCalculatorTest.testDefaultAppearance()");
 
-		NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(new VisualPropertyDependencyImpl());
 
 		NodeAppearance na = nac.calculateNodeAppearance(a, cyNet);
 
@@ -219,7 +219,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		System.out
 				.println("begin NodeAppearanceCalculatorTest.testApplyProperties()");
 
-		NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(new VisualPropertyDependencyImpl());
 		nac.applyProperties("homer", props, "nodeAppearanceCalculator.homer",
 				catalog);
 		System.out.println(nac.getDescription());
@@ -315,7 +315,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		System.out
 				.println("begin NodeAppearanceCalculatorTest.testNodeSizeLock()");
 
-		NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(new VisualPropertyDependencyImpl());
 		System.out.println(nac.getDescription());
 
 		NodeView view = new TestNodeView();
@@ -324,14 +324,14 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		// using default props
 		nac.setNodeSizeLocked(false);
 		na = nac.calculateNodeAppearance(a, cyNet);
-		na.applyAppearance(view,nac.getDependency());
+		na.applyAppearance(view,nac.deps);
 
 		assertEquals("height", 30.0, view.getHeight());
 		assertEquals("width", 70.0, view.getWidth());
 
 		nac.setNodeSizeLocked(true);
 		na = nac.calculateNodeAppearance(a, cyNet);
-		na.applyAppearance(view,nac.getDependency());
+		na.applyAppearance(view,nac.deps);
 
 		assertEquals("height", 35.0, view.getHeight());
 		assertEquals("width", 35.0, view.getWidth());
@@ -341,13 +341,13 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 
 		// still locked
 		na = nac.calculateNodeAppearance(a, cyNet);
-		na.applyAppearance(view,nac.getDependency());
+		na.applyAppearance(view,nac.deps);
 		assertEquals("height", 35.0, view.getHeight());
 		assertEquals("width", 35.0, view.getWidth());
 
 		nac.setNodeSizeLocked(false);
 		na = nac.calculateNodeAppearance(a, cyNet);
-		na.applyAppearance(view,nac.getDependency());
+		na.applyAppearance(view,nac.deps);
 		assertEquals("height", 10.0, view.getHeight());
 		assertEquals("width", 70.0, view.getWidth());
 
@@ -401,7 +401,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		secondNodeAttr.setAttribute(secondName, "node.font",
 				"SansSerif,italic,10");
 
-		NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(new VisualPropertyDependencyImpl());
 		nac.setNodeSizeLocked(false);
 
 		NodeAppearance secondApp = nac

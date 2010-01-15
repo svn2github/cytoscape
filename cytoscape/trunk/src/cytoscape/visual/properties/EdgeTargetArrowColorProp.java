@@ -52,6 +52,8 @@ import java.util.Properties;
 
 import javax.swing.Icon;
 
+import cytoscape.visual.VisualPropertyDependency;
+import static cytoscape.visual.VisualPropertyDependency.Definition.*;
 
 /**
  *
@@ -93,10 +95,15 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 		if ((o == null) || (ev == null))
 			return;
 
-		final Paint newTargetArrowColor = ((Color) o);
+		if ( dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE) ) {
+			if (ev.getUnselectedPaint() != ev.getTargetEdgeEndPaint())
+				ev.setTargetEdgeEndPaint(ev.getUnselectedPaint());
+		} else {
+			final Paint newTargetArrowColor = ((Color) o);
 
-		if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
-			ev.setTargetEdgeEndPaint(newTargetArrowColor);
+			if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
+				ev.setTargetEdgeEndPaint(newTargetArrowColor);
+		}
 	}
 
 	/**
@@ -106,5 +113,9 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return Color.black;
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		return (dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE)); 
 	}
 }

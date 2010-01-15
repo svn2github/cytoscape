@@ -69,8 +69,8 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	/**
 	 * Creates a new EdgeAppearanceCalculator object.
 	 */
-	public EdgeAppearanceCalculator() {
-		super();
+	public EdgeAppearanceCalculator(VisualPropertyDependency deps) {
+		super(deps);
 	}
 
 	/**
@@ -85,8 +85,8 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * calling applyProperties with the supplied arguments.
 	 */
 	public EdgeAppearanceCalculator(String name, Properties eacProps, String baseKey,
-	                                CalculatorCatalog catalog) {
-		super(name, eacProps, baseKey, catalog, new EdgeAppearance());
+	                                CalculatorCatalog catalog, VisualPropertyDependency deps) {
+		super(name, eacProps, baseKey, catalog, new EdgeAppearance(), deps);
 		defaultAppearance = (EdgeAppearance) tmpDefaultAppearance;
 	}
 
@@ -94,7 +94,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * Create deep copy of the object.
 	 */
 	public Object clone() {
-		final EdgeAppearanceCalculator copy = new EdgeAppearanceCalculator();
+		final EdgeAppearanceCalculator copy = new EdgeAppearanceCalculator(deps);
 
 		// Copy defaults
 		final EdgeAppearance defAppr = new EdgeAppearance();

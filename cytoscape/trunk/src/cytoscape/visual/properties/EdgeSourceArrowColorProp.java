@@ -42,6 +42,7 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.icon.ArrowIcon;
 
 import cytoscape.visual.VisualPropertyDependency;
+import static cytoscape.visual.VisualPropertyDependency.Definition.*;
 
 import giny.view.EdgeView;
 
@@ -93,10 +94,16 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 		if ((o == null) || (ev == null))
 			return;
 
-		final Paint newSourceArrowColor = ((Color) o);
+		if ( dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE) ) {
+			if (ev.getUnselectedPaint() != ev.getSourceEdgeEndPaint())
+				ev.setSourceEdgeEndPaint(ev.getUnselectedPaint());
 
-		if (newSourceArrowColor != ev.getSourceEdgeEndPaint())
-			ev.setSourceEdgeEndPaint(newSourceArrowColor);
+		} else {
+			final Paint newSourceArrowColor = ((Color) o);
+
+			if (newSourceArrowColor != ev.getSourceEdgeEndPaint())
+				ev.setSourceEdgeEndPaint(newSourceArrowColor);
+		}
 	}
 
 	/**
@@ -106,5 +113,9 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return Color.black;
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		return ( dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE) );
 	}
 }

@@ -117,7 +117,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void testDefaultAppearance() {
-		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(new VisualPropertyDependencyImpl());
 
 		EdgeAppearance ea = eac.calculateEdgeAppearance(ab, cyNet);
 
@@ -136,7 +136,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void testApplyProperties() {
-		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(new VisualPropertyDependencyImpl());
 		eac.applyProperties("homer", props, "edgeAppearanceCalculator.homer", catalog);
 
 		EdgeAppearance ea = eac.calculateEdgeAppearance(ab, cyNet);

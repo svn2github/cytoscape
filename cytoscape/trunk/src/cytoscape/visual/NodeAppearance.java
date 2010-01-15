@@ -72,7 +72,7 @@ public class NodeAppearance extends Appearance {
     /**
      * Returns whether or not the node height and width are locked.
      * @return Whether or not the node height and width are locked.     
-     * @deprecated Use Node/EdgeAppearanceCalculator.getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead. 
+     * @deprecated Use VisualStyle.getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead. 
      * Will be removed Jan 2011.
      */
     @Deprecated
@@ -82,7 +82,7 @@ public class NodeAppearance extends Appearance {
 
     /**
      * Sets whether or not the node height and width are locked.     
-     * @deprecated Use Node/EdgeAppearanceCalculator.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead. 
+     * @deprecated Use VisualStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead. 
      * Will be removed Jan 2011.
      */
     @Deprecated

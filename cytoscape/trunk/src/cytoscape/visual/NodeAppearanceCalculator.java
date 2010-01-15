@@ -60,8 +60,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     /**
      * Creates a new NodeAppearanceCalculator object.
      */
-    public NodeAppearanceCalculator() {
-        super();
+    public NodeAppearanceCalculator(VisualPropertyDependency deps) {
+        super(deps);
     }
 
     /**
@@ -69,8 +69,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * calling applyProperties with the supplied arguments.
      */
     public NodeAppearanceCalculator(String name, Properties nacProps,
-        String baseKey, CalculatorCatalog catalog) {
-        super(name, nacProps, baseKey, catalog, new NodeAppearance());
+        String baseKey, CalculatorCatalog catalog, VisualPropertyDependency deps) {
+        super(name, nacProps, baseKey, catalog, new NodeAppearance(), deps);
         defaultAppearance = (NodeAppearance) tmpDefaultAppearance;
     }
 
@@ -97,7 +97,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * Create deep copy of the object.
      */
     public Object clone() {
-    	final NodeAppearanceCalculator copy = new NodeAppearanceCalculator();
+    	final NodeAppearanceCalculator copy = new NodeAppearanceCalculator(deps);
     	
     	// Copy defaults
     	final NodeAppearance defAppr = new NodeAppearance();
@@ -105,7 +105,6 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     		defAppr.set(type, defaultAppearance.get(type));
     	}
     	copy.setDefaultAppearance(defAppr);
-		copy.getDependency().copy( deps );
     	
     	//Copy mappings
     	for(Calculator cal  : this.calcs) {
@@ -193,7 +192,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     }
 
     /**
-     * @deprecated Use getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead.
+     * @deprecated Use VisualStyle.getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead.
 	 * Will be removed Jan 2011.
      */
     public boolean getNodeSizeLocked() {
@@ -201,7 +200,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     }
 
     /**
-     * @deprecated Use getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead.
+     * @deprecated Use VisualStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead.
 	 * Will be removed Jan 2011.
      */
     public void setNodeSizeLocked(boolean b) {

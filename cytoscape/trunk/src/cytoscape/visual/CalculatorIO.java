@@ -520,9 +520,10 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
-			vs.setNodeAppearanceCalculator(new NodeAppearanceCalculator(name, nacNames.get(name),
-			                                                            nodeAppearanceBaseKey + "."
-			                                                            + name, catalog));
+			vs.getNodeAppearanceCalculator().applyProperties(name, nacNames.get(name),
+			                                                 nodeAppearanceBaseKey + "."
+			                                                 + name, catalog);
+			             
 		}
 
 		Map<String, Properties> eacNames = calcNames.get(edgeAppearanceBaseKey);
@@ -536,9 +537,9 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
-			vs.setEdgeAppearanceCalculator(new EdgeAppearanceCalculator(name, eacNames.get(name),
-			                                                            edgeAppearanceBaseKey + "."
-			                                                            + name, catalog));
+			vs.getEdgeAppearanceCalculator().applyProperties(name, eacNames.get(name),
+			                                                 edgeAppearanceBaseKey + "."
+			                                                 + name, catalog);
 		}
 
 		Map<String, Properties> gacNames = calcNames.get(globalAppearanceBaseKey);
@@ -552,10 +553,9 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
-			vs.setGlobalAppearanceCalculator(new GlobalAppearanceCalculator(name,
-			                                                                gacNames.get(name),
-			                                                                globalAppearanceBaseKey
-			                                                                + "." + name, catalog));
+			vs.getGlobalAppearanceCalculator().applyProperties(name, gacNames.get(name),
+			                                                   globalAppearanceBaseKey
+			                                                   + "." + name, catalog);
 		}
 
 		// now store the visual styles in the catalog
