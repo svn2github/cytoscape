@@ -1,0 +1,458 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>Cytoscape BioPAX Import PlugIn: READ ME</title> 
+</head>
+<body style="font-family:Arial, Helvetica, sans-serif;
+        font-size: 11pt;">
+<h2>Cytoscape BioPAX Import PlugIn</h2> <h3>1. Introduction</h3> The BioPAX plugin enables Cytoscape to import BioPAX formatted documents. BioPAX is a collaborative effort to create a data exchange format for biological pathway data. Information is available at: <a href="http://biopax.org">http://biopax.org</a>. 
+<p>
+	Updates regarding this plugin will be posted to the Cytoscape-announce mailing list. You can easily <a href="http://groups-beta.google.com/group/cytoscape-announce/subscribe">subscribe</a> to the mailing list or <a href="http://groups-beta.google.com/group/cytoscape-announce">browse the archives</a>. 
+</p>
+<h3>2. PlugIn Installation Instructions</h3> This release contains the following directory structure: <pre>
++
+|---biopax_XXX.jar          JAR Files containing the BioPAX PlugIn
+|
++---docs/README.html        This README File.
+|
++---test-resources              A directory of sample BioPAX documents,
+|                           including sample files from <a href="http://www.reactome.org">Reactome</a>,
+|                           and <a href="http://ecocyc.org/">Ecocyc</a>.
+|
++---src                     Complete Source Code
+</pre> 
+<p>
+	To use the BioPAX Plugin, you must first obtain a copy of <a href="http://www.cytoscape.org">Cytoscape</a>. 
+</p>
+<p>
+	Once you have downloaded Cytoscape and verified that it works, install the BioPAX PlugIn as follows: 
+</p>
+<ul>
+	<li>
+		Delete any previous biopax_XXX_YYY.jar files from your [Cytoscape_Home]/plugins directory. 
+	</li>
+	<li>
+		Copy all the biopax_XXX_YYY.jar files to your [Cytoscape_Home]/plugins directory. 
+	</li>
+</ul>
+<h3>3. Using the BioPAX PlugIn</h3> 
+<ul>
+	<li>
+		Start Cytoscape. For example, run: ./cytoscape.sh or cytoscape.bat. 
+	</li>
+	<li>
+		Select "PlugIns" from the Main Menu. Then, select "Import BioPAX Document from file..." 
+	</li>
+	<li>
+		Choose one of the sample BioPAX files in the test-resources directory. For example, load the Reactome Apoptosis.owl file. The PlugIn will load and render the specified file. 
+	</li>
+	<li>
+		Click on any individual node to view BioPAX details. 
+	</li>
+</ul>
+Below is a sample screenshot of the apoptosis pathway: 
+<p>
+	<a href="images/apoptosis.png"><img alt="Sample Screenshot of the BioPAX PlugIn" src="images/apoptosis_thumb.png" border="0"></a> 
+	<br>
+	<font size="-1">[<a href="images/apoptosis.png">Click to enlarge</a>]</font> 
+</p>
+
+<h3>4.  Configuring the BioPAX PlugIn</h3>
+If you are behind a firewall, and need to set an
+HTTP proxy, you can do so by adding the following lines to
+cytoscape.props:
+<PRE>
+dataservice.proxy_host=XXXX
+dataservice.proxy_port=YYYY
+</PRE>
+
+<h3>3. Understanding Visual Rendering Clues</h3>By default, the Expression Viewer PlugIn renders nodes and edges as follows: 
+<p>
+</p>
+<table cellpadding="3" cellspacing="3">
+	<tbody><tr bgcolor="#dddddd">
+		<td>
+			Entity 
+		</td>
+		<td>
+			Visual Shape 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Proteins, small molecules, complexes and other physical entities (as defined in the <a href="http://biopax.org">BioPAX pathway format</a>).
+		</td>
+		<td>
+			<img alt="Ellipse Shape" src="images/ellipse.jpg"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Conversions, biochemical reactions, modulations and other interaction entities (as defined in the <a href="http://biopax.org">BioPAX pathway format</a>).
+		</td>
+		<td>
+			<img alt="Square Shape" src="images/square.jpg"> 
+		</td>
+	</tr>
+	<tr bgcolor="#dddddd">
+		<td>
+			Interaction Type 
+		</td>
+		<td>
+			Arrow Shape 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Inhibition 
+		</td>
+		<td>
+			<img alt="Black inhibition arrow type" src="images/BLACK_T.jpg"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Containment, e.g. a complex can contain one or more proteins. 
+		</td>
+		<td>
+			<img alt="Black circle arrow type" src="images/BLACK_CIRCLE.jpg"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			All other interaction types, e.g. activation, left, right, etc. 
+		</td>
+		<td>
+			<img alt="Black arrow type" src="images/BLACK_DELTA.jpg"> 
+		</td>
+	</tr>
+	<tr bgcolor="#DDDDDD">
+		<td colspan=2 VALIGN=TOP COLSPAN="2">
+			<FONT FACE="ARIAL">Labels for Physical Entities</FONT>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 VALIGN=TOP>
+			<FONT FACE="ARIAL">All physical entities will be labeled as follows:</FONT>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 VALIGN=TOP NOWRAP>
+			<FONT FACE="ARIAL" SIZE="2">[NAME] [-CHEMICAL_MODIFICATION_ABBR] [(CELULAR_LOCATION_ABBR)]</FONT>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 VALIGN=TOP>
+			<FONT FACE="ARIAL">where [NAME] is determined by the following order of precedence: NAME, SHORT NAME, or Shortest Synonym,</FONT>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 VALIGN=TOP>
+			<FONT FACE="ARIAL">and [CHEMICAL_MODIFICATION_ABBR] and [CELLULAR_LOCATION_ABBR] are one of the abbreviations described below.</FONT>
+		</td>
+	</tr>
+	<tr bgcolor="#DDDDDD">
+		<td colspan=2 VALIGN=TOP COLSPAN="2">
+			<FONT FACE="ARIAL">Example:</FONT>
+		</td>
+	</tr>
+	<tr>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">MITF:</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">MITF</FONT>
+		</td>
+	</tr>
+	<tr>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">MITF Phosphorylated:</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">MITF-P</FONT>
+		</td>
+	</tr>
+	<tr>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">MITF Phosphorylated, in the cytoplasm:</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">MITF-P (CP)</FONT>
+		</td>
+	</tr>
+	<tr bgcolor="#DDDDDD">
+   	 <td VALIGN=TOP colspan=2>
+   	     <FONT FACE="ARIAL"><b>Abbreviations for Chemical Modifications</b></FONT>
+    </td>
+	</tr>
+	<tr>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">acetylated</FONT>
+    </td>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">A</FONT>
+    </td>
+	</tr>
+	<tr>
+   	 <td VALIGN=TOP>
+        <FONT FACE="ARIAL">glycosylated</FONT>
+    </td>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">G</FONT>
+    </td>
+	</tr>
+	<tr>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">phosphorylated</FONT>
+    </td>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">P</FONT>
+    </td>
+	</tr>
+	<tr>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">proteolytic cleavage</FONT>
+    </td>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">PCS</FONT>
+    </td>
+	</tr>
+	<tr>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">sumoylated</FONT>
+    </td>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">S</FONT>
+    </td>
+	</tr>
+	<tr>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">ubiquitinated</FONT>
+    </td>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">U</FONT>
+    </td>
+	</tr>
+	<tr>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">[All others]</FONT>
+    </td>
+    <td VALIGN=TOP>
+        <FONT FACE="ARIAL">No Abbreviation provided</FONT>
+    </td>
+	</tr>
+	<tr bgcolor="#DDDDDD">
+		<td VALIGN=TOP COLSPAN="2">
+			<FONT FACE="ARIAL">Abbreviations for Cellular Locations</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">cellular component unknown</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">No Abbreviation will be provided.</FONT>
+	</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">centrosome</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">CE</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">cytoplasm</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">CY</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">endoplasmic reticulum</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">ER</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">endosome</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">EN</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">extracellular</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">EM</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">golgi apparatus</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">GA</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">mitochondrion</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">MI</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">nucleus</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">NU</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">plasma membrane</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">PM</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">ribosome</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">RI</FONT>
+		</td>
+	</tr>
+	<tr>
+	    <td VALIGN=TOP>
+		    <FONT FACE="ARIAL">[All others]</FONT>
+		</td>
+		<td VALIGN=TOP>
+			<FONT FACE="ARIAL">No Abbreviation will be provided.</FONT>
+		</td>
+	</tr>
+</tbody></table>
+
+<h3>6. Bugs / Feature Requests</h3> If you encounter a bug with this plugin,
+email Ethan Cerami or Benjamin Gross at the address(es) below, or log a bug directly to
+the <a href="http://www.cbio.mskcc.org/cytoscape/bugs/">Cytoscape Bug Tracker</a>.
+
+<h3>7. Contacts</h3>
+<p>
+	Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a> 
+	<br>
+	<a href="http://www.mskcc.org">Memorial Sloan-Kettering Cancer Center</a>, New York City 
+	<br>
+</p>
+<p>
+	For any questions concerning this plugin, please contact: 
+</p>
+<p>
+	Ethan Cerami: cerami AT cbio.mskcc.org 
+	<br>
+	Benjamin Gross: grossb AT cbio.mskcc.org 
+</p>
+<p>
+	This software is made available under the <a href="http://www.gnu.org/licenses/lgpl.html">LGPL (Lesser General Public License)</a>. 
+</p>
+<h3>8. Release Notes / Current Limitations</h3> 
+<p>
+	Version: 0.1 
+</p>
+<ul>
+	<li>
+		Date: June 24, 2005 
+	</li>
+	<li>
+		Features: 
+		<ul>
+			<li>
+				Enables Cytoscape users to load and visually render BioPAX Files from the Web or a local file system. 
+			</li>
+			<li>
+				Supports BioPAX Levels 1 and 2. 
+			</li>
+			<li>
+				Includes a sample visual style file for visually rendering different BioPAX entities. For example, proteins are rendered as square green nodes, and biochemical reactions are rendered as red, round rectangle nodes, etc. The style can be further modified by the end user. 
+			</li>
+			<li>
+				Works with Cytoscape 2.1. 
+			</li>
+			<li>
+				Distribution includes sample BioPAX files for quick demos, and complete source code. 
+			</li>
+			<li>
+				Verified to work with moderate size BioPAX files. For example, the PlugIn will parse a 504KB BioPAX document with 340 nodes and 470 edges in 700 ms. The PlugIn has not yet been tested with larger files. 
+			</li>
+			<li>
+				Small download (~100KB). Easy to install. 
+			</li>
+		</ul>
+	</li>
+</ul>
+<p>
+	Version: 0.2 (requires Cytoscape v2.2)
+</p>
+<ul>
+	<li>
+		Date: August 10, 2005
+	</li>
+	<li>
+		Features: 
+		<ul>
+			<li>
+				User can now click on any node and view BioPAX details in a separate pop-up window.
+			</li>
+			<li>
+				Easy 1-step installation. (No need to install the BioPAX visual style file separately). 
+			</li>
+			<li>
+				External Links are now viewable in an external web browser. 
+			</li>
+			<li>
+				Simplified visual rendering clues for nodes and edges. 
+			</li>
+			<li>
+				Numerous bug fixes. 
+			</li>
+			<li>
+				Now supports BioPAX Complexes. 
+			</li>
+		</ul>
+	</li>
+</ul>
+<p>
+	Version: 0.3 (requires Cytoscape v2.3 or greater)
+</p>
+<ul>
+	<li>
+		Date: June 16, 2006
+	</li>
+	<li>
+		Features: 
+		<ul>
+			<li>
+				Includes Simplified Visual Language to describe Biological Pathways.
+			</li>
+		</ul>
+	</li>
+</ul>
+Known Limitations / Known Bugs: 
+<ul>
+	<li>
+		Single COFACTORs are supported, but multiple COFACTORS are not supported. In the case of multiple COFACTORS, an explicit warning will be generated.
+	</li>
+</ul>
+</body>
+</html>
