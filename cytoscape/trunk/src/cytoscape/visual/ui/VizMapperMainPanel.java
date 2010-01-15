@@ -68,6 +68,8 @@ import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyDependency.Definition;
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
@@ -208,7 +210,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static JMenu modifyValues;
 	private static JMenuItem brighter;
 	private static JMenuItem darker;
-	private static JCheckBoxMenuItem lockSize;
+	private static JMenu dependencies;
+	private static Map<Definition,JCheckBoxMenuItem> dependencyMenuItems; 
 
 	/*
 	 * Icons used in this panel.
@@ -255,10 +258,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private CyLogger logger = CyLogger.getLogger(VizMapperMainPanel.class);
 
 
-	// For node size lock
-	VizMapperProperty nodeSize;
-	VizMapperProperty nodeWidth;
-	VizMapperProperty nodeHeight;
+	private Set<VizMapperProperty> hiddenProperties = new HashSet<VizMapperProperty>();
 
 	/** Creates new form AttributeOrientedPanel */
 	private VizMapperMainPanel() {
@@ -277,15 +277,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// By default, force to sort property by prop name.
 		visualPropertySheetPanel.setSorting(true);
 		
-		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
-																										Cytoscape.getNodeAttributes(),
-																										nodeAttrEditor, nodeNumericalAttrEditor));
-		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
-																										Cytoscape.getEdgeAttributes(),
-																										edgeAttrEditor, edgeNumericalAttrEditor));
-		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
-																										   Cytoscape.getNetworkAttributes(),
-																										   null, null));
+		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getNodeAttributes(), nodeAttrEditor, nodeNumericalAttrEditor));
+		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getEdgeAttributes(), edgeAttrEditor, edgeNumericalAttrEditor));
+		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getNetworkAttributes(), null, null));
+
+		updateDependencyStates(vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency());
 	}
 
 	/*
@@ -324,71 +320,58 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	/**
-	 * Will be used to show/hide node size props.
+	 * will be used to show/hide props based on a visualpropertydependency and
+	 * a specified VisualPropertyDependency.Definition.
 	 *
-	 * @param isLock
+	 * @param deps The VisualPropertyDependencies that will be queried.
+	 * @param def The VisualPropertyDependency.Definition in question.
 	 */
-	protected void switchNodeSizeLock(boolean isLock) {
-		final Property[] props = visualPropertySheetPanel.getProperties();
-		
-		lockSize.setSelected(isLock);
-		
-		if (isLock && (nodeSize != null)) {
-			// Case 1: Locked. Need to remove width/height props.
-			boolean isNodeSizeExist = false;
+	protected void syncDependencyStates(VisualPropertyDependency deps, Definition def) {
+		System.out.println("sync dependency states");
+		dependencyMenuItems.get(def).setSelected(deps.check(def));
 
-			for (Property prop : props) {
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_SIZE.getName()))
-					isNodeSizeExist = true;
-
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_HEIGHT.getName())) {
-					nodeHeight = (VizMapperProperty) prop;
-					visualPropertySheetPanel.removeProperty(prop);
-				} else if (prop.getDisplayName().equals(VisualPropertyType.NODE_WIDTH.getName())) {
-					nodeWidth = (VizMapperProperty) prop;
-					visualPropertySheetPanel.removeProperty(prop);
-				}
-			}
-
-			if (isNodeSizeExist == false)
-				visualPropertySheetPanel.addProperty(nodeSize);
-		} else {
-			// Case 2: Unlocked. Need to add W/H.
-			boolean isNodeWExist = false;
-			boolean isNodeHExist = false;
-
-			for (Property prop : props) {
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_SIZE.getName())) {
-					nodeSize = (VizMapperProperty) prop;
-					visualPropertySheetPanel.removeProperty(prop);
-				}
-
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_WIDTH.getName()))
-					isNodeWExist = true;
-
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_HEIGHT.getName()))
-					isNodeHExist = true;
-			}
-
-			if (isNodeHExist == false) {
-				if(nodeHeight != null)
-					visualPropertySheetPanel.addProperty(nodeHeight);
-			}
-			
-			if (isNodeWExist == false) {
-				if(nodeHeight != null)
-					visualPropertySheetPanel.addProperty(nodeWidth);
-			}
-		}
+		updateDependencyStates(deps);
 
 		visualPropertySheetPanel.repaint();
 
 		final String targetName = vmm.getVisualStyle().getName();
-
-		updateDefaultImage(targetName,
-		                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName))
-		                   .getView(), defaultAppearencePanel.getSize());
+		updateDefaultImage(targetName, (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName)).getView(), defaultAppearencePanel.getSize());
 		setDefaultPanel(defaultImageManager.get(targetName));
+	}
+
+	private void updateDependencyStates(VisualPropertyDependency deps) {
+		System.out.println("update: props");
+		for (Property tmpprop : visualPropertySheetPanel.getProperties()) {
+			if ( !(tmpprop instanceof VizMapperProperty) )
+				continue;
+			updateDependentProperty( (VizMapperProperty)tmpprop, deps );
+		}
+
+		System.out.println("update: hidden props");
+		// to avoid concurrent modification exception
+		ArrayList<VizMapperProperty> propl = new ArrayList<VizMapperProperty>( hiddenProperties );	
+
+		for ( VizMapperProperty prop : propl )
+			updateDependentProperty( prop, deps );
+			
+	}
+
+	private void updateDependentProperty(VizMapperProperty prop, VisualPropertyDependency deps) {
+		Object hidden = prop.getHiddenObject();
+		if ( !(hidden instanceof VisualPropertyType) )
+				return;
+
+		VisualPropertyType type = (VisualPropertyType)hidden; 
+		System.out.print("syncing type: " + type);
+		if ( type.getVisualProperty().constrained(deps) ) {
+			System.out.println("      HIDE");
+			hiddenProperties.add( prop );
+			visualPropertySheetPanel.removeProperty(prop);
+		} else {
+			System.out.println("      show");
+			if ( hiddenProperties.remove( prop ) )
+				visualPropertySheetPanel.addProperty(prop);
+		}
 	}
 
 	/**
@@ -434,21 +417,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		generateValues.setIcon(rndIcon);
 		modifyValues = new JMenu("Modify Discrete Values");
 
-		lockSize = new JCheckBoxMenuItem("Lock Node Width/Height");
-		lockSize.setSelected(true);
-		lockSize.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (lockSize.isSelected()) {
-						vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
-						switchNodeSizeLock(true);
-					} else {
-						vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
-						switchNodeSizeLock(false);
-					}
-
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-				}
-			});
+		dependencies = new JMenu("Visual Property Dependencies");
+		dependencyMenuItems = new HashMap<Definition,JCheckBoxMenuItem>();
+		setupDependencyMenus( dependencies );
 
 		delete = new JMenuItem("Delete mapping");
 
@@ -517,10 +488,29 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		menu.add(modifyValues);
 		menu.add(editAll);
 		menu.add(new JSeparator());
-		menu.add(lockSize);
+		menu.add(dependencies);
 
 		delete.setEnabled(false);
 		menu.addPopupMenuListener(this);
+	}
+
+	private void setupDependencyMenus(JMenu parentMenu) {
+		for ( final Definition def : Definition.values() ) {
+			final JCheckBoxMenuItem item = new JCheckBoxMenuItem(def.getTitle());
+			item.setSelected(def.getDefault());
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					final VisualPropertyDependency deps = vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency();
+					deps.set(def,item.isSelected());
+					syncDependencyStates(deps,def);
+
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				}
+			});
+
+			parentMenu.add(item);
+			dependencyMenuItems.put( def, item );
+		}
 	}
 
 	public static void apply(Object newValue, VisualPropertyType type) {
@@ -878,11 +868,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// Set the default view to the panel.
 		setDefaultPanel(defImg);
 
-		// Sync. lock state
-		final boolean lockState = vmm.getVisualStyle().getNodeAppearanceCalculator()
-		                             .getNodeSizeLocked();
-		lockSize.setSelected(lockState);
-		switchNodeSizeLock(lockState);
+		// Sync. locks
+		VisualPropertyDependency dep = vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency();
+		for ( Definition d : Definition.values() ) {
+			JCheckBoxMenuItem jcbmi = dependencyMenuItems.get( d );
+			jcbmi.setSelected( dep.check(d) );
+			syncDependencyStates(dep,d);
+		}
 		
 		visualPropertySheetPanel.setSorting(true);
 		
@@ -930,7 +922,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (view != null) {
 				CyLogger.getLogger().debug("Creating Default Image for " + name);
-				updateDefaultImage(name, view, panelSize);
+			updateDefaultImage(name, view, panelSize);
 			}
 		}
 
@@ -940,7 +932,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		switchVS(style.getName(), false);
 		
 		// Sync check box and actual lock state
-		switchNodeSizeLock(lockSize.isSelected());
+		System.out.println("--------------------HOMER");
+		updateDependencyStates(vmm.getVisualStyle().getNodeAppearanceCalculator().getDependency());
 
 		// Restore listeners
 		for (int i = 0; i < li.length; i++)
@@ -1298,8 +1291,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			    && category.equalsIgnoreCase("Unused Properties")) {
 				((VizMapperProperty) curProp).setEditable(true);
 
-				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getHiddenObject();
+				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp) .getHiddenObject();
 				visualPropertySheetPanel.removeProperty(curProp);
 
 				final VizMapperProperty newProp = new VizMapperProperty();
