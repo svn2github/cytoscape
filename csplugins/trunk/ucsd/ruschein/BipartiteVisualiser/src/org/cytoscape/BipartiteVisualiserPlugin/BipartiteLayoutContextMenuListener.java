@@ -19,21 +19,30 @@ public class BipartiteLayoutContextMenuListener implements
 		if (menu == null)
 			return;
 
+		final JMenuItem createBipartiteViewMenuItem = new JMenuItem("Create Nested Network Side-by-Side View");
+		menu.add(createBipartiteViewMenuItem);
+		
 		final Edge edge = edgeView.getEdge();
 
 		final Node source = edge.getSource();
 		final CyNetwork network1 = (CyNetwork) source.getNestedNetwork();
-		if (network1 == null)
+		System.out.println("====== Net1: " + network1); 
+		if (network1 == null) {
+			createBipartiteViewMenuItem.setEnabled(false);
 			return;
+		}
 
 		final Node target = edge.getTarget();
-		final CyNetwork network2 = (CyNetwork) source.getNestedNetwork();
-		if (network2 == null)
+		final CyNetwork network2 = (CyNetwork) target.getNestedNetwork();
+		System.out.println("====== Net2: " + network2);
+		if (network2 == null) {
+			createBipartiteViewMenuItem.setEnabled(false);
 			return;
+		}
 
-		final JMenuItem createBipartiteViewMenuItem = new JMenuItem("Create Side-by-Side View");
-		//createBipartiteViewMenuItem.addActionListener(new MyEdgeAction(edgeView));
-		menu.add(createBipartiteViewMenuItem);
+		
+		createBipartiteViewMenuItem.addActionListener(new CreateBipartiteViewAction(edgeView));
+		
 	}
 
 }
