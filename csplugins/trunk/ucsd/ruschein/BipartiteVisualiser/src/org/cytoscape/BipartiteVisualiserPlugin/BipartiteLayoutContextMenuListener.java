@@ -1,9 +1,14 @@
 package org.cytoscape.BipartiteVisualiserPlugin;
 
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.TreeSet;
 
 import giny.model.Edge;
 import giny.model.Node;
+import giny.model.GraphPerspective;
 import giny.view.EdgeView;
 
 import javax.swing.JMenuItem;
@@ -49,9 +54,29 @@ public class BipartiteLayoutContextMenuListener implements
 						edgeView,parentNetwork, network1, network2));
 
 	}
-	
+
+	/**
+	 * @returns a set of all the networks that are not "parentNetwork" or a nested network of a
+	 *          node in "parentNetwork."
+	 */
 	private SortedSet<CyNetwork> getReferenceNetworkCandidates(final CyNetwork parentNetwork) { 
-		return null;
+		// Determine the set of networks that can't possible be candidates for the reference network:
+		final Set<CyNetwork> verboten = new HashSet<CyNetwork>();
+		verboten.add(parentNetwork);
+		@SuppressWarnings("unchecked") final List<Node> nodes = parentNetwork.nodesList();
+		for (final Node node : nodes) {
+			final GraphPerspective nestedNetwork = node.getNestedNetwork();
+			if (nestedNetwork != null)
+				verboten.add((CyNetwork)nestedNetwork);
+		}
+
+		final SortedSet<CyNetwork> candidates = new TreeSet<CyNetwork>();
+		for (final CyNetwork candidate : Cytoscape.getNetworkSet()) {
+			if (!verboten.contains(candidate))
+				candidates.add(candidate);
+		}
+
+		return candidates;
 	}
 
 }
