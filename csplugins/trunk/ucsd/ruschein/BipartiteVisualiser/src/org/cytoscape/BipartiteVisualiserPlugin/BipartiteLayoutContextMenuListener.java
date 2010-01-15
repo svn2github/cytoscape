@@ -1,5 +1,7 @@
 package org.cytoscape.BipartiteVisualiserPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.HashSet;
@@ -11,6 +13,7 @@ import giny.model.Node;
 import giny.model.GraphPerspective;
 import giny.view.EdgeView;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -20,6 +23,12 @@ import ding.view.EdgeContextMenuListener;
 
 public class BipartiteLayoutContextMenuListener implements
 		EdgeContextMenuListener {
+	
+	private final Map<String, CyNetwork> titleToNetworkMap;
+	
+	public BipartiteLayoutContextMenuListener() {
+		this.titleToNetworkMap = new HashMap<String, CyNetwork>();
+	}
 
 	@Override
 	public void addEdgeContextMenuItems(final EdgeView edgeView,
@@ -31,35 +40,38 @@ public class BipartiteLayoutContextMenuListener implements
 
 		final Node source = edge.getSource();
 		final CyNetwork network1 = (CyNetwork) source.getNestedNetwork();
-		System.out.println("====== Net1: " + network1);
 		if (network1 == null)
 			return;
 
 		final Node target = edge.getTarget();
 		final CyNetwork network2 = (CyNetwork) target.getNestedNetwork();
-		System.out.println("====== Net2: " + network2);
 		if (network2 == null)
 			return;
 
-		final JMenuItem createBipartiteViewMenuItem = new JMenuItem(
+		final JMenu createBipartiteViewMenuItem = new JMenu(
 				"Create Nested Network Side-by-Side View");
 		menu.add(createBipartiteViewMenuItem);
+		
 
 		// Parent network is ALWAYS current network view
 		final CyNetwork parentNetwork = Cytoscape.getCurrentNetworkView()
 				.getNetwork();
-
-		createBipartiteViewMenuItem
-				.addActionListener(new CreateBipartiteViewAction(
-						edgeView,parentNetwork, network1, network2));
-
+		getReferenceNetworkCandidates(parentNetwork);
+		final SortedSet<String> sortedTitles = new TreeSet<String>(titleToNetworkMap.keySet());
+		for (String networkTitle: sortedTitles) {
+			final JMenuItem referenceNetworkCandidate = new JMenuItem(networkTitle);
+			referenceNetworkCandidate.addActionListener(new CreateBipartiteViewAction(
+					edgeView, titleToNetworkMap.get(networkTitle), network1, network2));
+			createBipartiteViewMenuItem.add(referenceNetworkCandidate);
+		}
 	}
 
+	
 	/**
-	 * @returns a set of all the networks that are not "parentNetwork" or a nested network of a
+	 * Computes a set of all the networks that are not "parentNetwork" or a nested network of a
 	 *          node in "parentNetwork."
 	 */
-	private SortedSet<String> getReferenceNetworkCandidates(final CyNetwork parentNetwork) { 
+	private void getReferenceNetworkCandidates(final CyNetwork parentNetwork) { 
 		// Determine the set of networks that can't possible be candidates for the reference network:
 		final Set<CyNetwork> verboten = new HashSet<CyNetwork>();
 		verboten.add(parentNetwork);
@@ -70,13 +82,9 @@ public class BipartiteLayoutContextMenuListener implements
 				verboten.add((CyNetwork)nestedNetwork);
 		}
 
-		final SortedSet<String> candidates = new TreeSet<String>();
 		for (final CyNetwork candidate : Cytoscape.getNetworkSet()) {
 			if (!verboten.contains(candidate))
-				candidates.add(candidate.getTitle());
+				titleToNetworkMap.put(candidate.getTitle(), candidate);
 		}
-
-		return candidates;
 	}
-
 }

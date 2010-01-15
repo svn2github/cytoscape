@@ -6,43 +6,57 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
 public class LayoutTask implements Task {
-	
-	private final EdgeView edgeView;
 
-	private final CyNetwork parentNetwork;
-	private final CyNetwork network1;
-	private final CyNetwork network2;
-	
-	public LayoutTask(final EdgeView edgeView, final CyNetwork parentNetwork, final CyNetwork network1, final CyNetwork network2) {
-		this.edgeView = edgeView;
-		this.parentNetwork = parentNetwork;
-		this.network1 = network1;
-		this.network2 = network2;
+	private final LayoutEngine engine;
+	private TaskMonitor taskMonitor;
+
+	public LayoutTask(final EdgeView edgeView, final CyNetwork parentNetwork,
+			final CyNetwork network1, final CyNetwork network2) {
+		this.engine = new LayoutEngine(edgeView, parentNetwork, network1, network2);
 	}
 
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Bipartite Layout";
 	}
 
 	@Override
 	public void halt() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		setPercentCompleted(-1);
+		setStatus("Running Bipartite Layout...");
+
+		// Run the engine
+		engine.doLayout(taskMonitor);
 		
+		setStatus("Layout Finished!");
+		setPercentCompleted(100);
 	}
 
 	@Override
 	public void setTaskMonitor(TaskMonitor arg0)
 			throws IllegalThreadStateException {
-		// TODO Auto-generated method stub
-		
+		this.taskMonitor = taskMonitor;
+	}
+
+	private void setPercentCompleted(int percent) {
+		if (taskMonitor != null)
+			taskMonitor.setPercentCompleted(percent);
+	}
+
+	private void setStatus(String message) {
+		if (taskMonitor != null)
+			taskMonitor.setStatus(message);
+	}
+
+	private void setException(Throwable t, String message) {
+		if (taskMonitor != null)
+			taskMonitor.setException(t, message);
 	}
 
 }
