@@ -110,6 +110,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.KeyboardFocusManager;
 import java.util.EventObject;
+import javax.swing.table.TableColumn;
+import java.util.Set;
+import java.util.Iterator;
 
 /**
  * Based on JSortTable and completely rewrote by kono
@@ -168,6 +171,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private CyLogger logger = null;
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
 	
+	private HashMap<String, Integer> columnWidthMap = new HashMap<String, Integer>();
+
 	// For turning off listener during session loading
 	private boolean ignore = false;
 
@@ -239,6 +244,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		this.setDefaultRenderer(Object.class, new BrowserTableCellRenderer(false, objectType));
 		this.getColumnModel().addColumnModelListener(this);
 		this.setDefaultEditor(Object.class, new MultiLineTableCellEditor() );
+		
+		this.getTableHeader().addMouseMotionListener(this);
 	}
 
 	private void setKeyStroke() {
@@ -1036,6 +1043,36 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		return sbf.toString();
 	}
 
+	
+	private void adjustColWidth(){
+		
+		HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
+		
+		// Save the width if it does not exist
+		Iterator<String> it = widthMap.keySet().iterator();
+		while (it.hasNext()){
+			String key = it.next();
+			
+			// make exception for the first column (ID), save it only when the table is not empty
+			if (this.getModel().getRowCount() == 0 && key.equalsIgnoreCase("ID")){
+				continue;
+			}
+			
+			if (!this.columnWidthMap.containsKey(key)){
+				this.columnWidthMap.put(key, widthMap.get(key));
+			}
+		}
+		
+		// adjust column width
+		for (int i=0; i< this.getColumnCount(); i++){
+			TableColumn col = this.getColumnModel().getColumn(i);
+			if (this.columnWidthMap.containsKey(this.getColumnName(i))){
+				col.setPreferredWidth(this.columnWidthMap.get(this.getColumnName(i)).intValue());				
+			}
+		}
+	}
+	
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -1054,7 +1091,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		
 		
 		if(e.getPropertyName().equals(AttributeBrowser.RESTORE_COLUMN) && e.getNewValue() != null && e.getNewValue().equals(objectType)) {
-			ColumnResizer.adjustColumnPreferredWidths(this);
+			//ColumnResizer.adjustColumnPreferredWidths(this);
+			this.adjustColWidth();
 			return;
 		}
 		
@@ -1168,6 +1206,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		if ((objectType == NODES)
 		    && ((event.getTargetType() == SelectEvent.SINGLE_NODE)
 		       || (event.getTargetType() == SelectEvent.NODE_SET))) {
+						
 			// node selection
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_NODE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_NODE);
@@ -1184,8 +1223,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			                                                            .getSelectedEdges()), null);
 		}
 
-		ColumnResizer.adjustColumnPreferredWidths(this);
-
+		this.adjustColWidth();
+		//ColumnResizer.adjustColumnPreferredWidths(this);
+		
 		setSelectedColor(SELECTED_NODE);
 		setSelectedColor(REV_SELECTED_NODE);
 		setSelectedColor(SELECTED_EDGE);
@@ -1203,8 +1243,12 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		// save the column width, if user adjust column width manually
+		if (e.getSource() instanceof JTableHeader){
+			final int index = getColumnModel().getColumnIndexAtX(e.getX());
+			int colWidth = getColumnModel().getColumn(index).getWidth();
+			this.columnWidthMap.put(this.getColumnName(index), new Integer(colWidth));
+		}
 	}
 
 	public void mouseMoved(MouseEvent e) {
