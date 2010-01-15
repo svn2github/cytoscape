@@ -34,74 +34,10 @@
  */
 package cytoscape.visual.ui;
 
-import com.l2fprod.common.beans.editor.BooleanPropertyEditor;
-import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import com.l2fprod.common.propertysheet.PropertySheetTable;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
-
-import cytoscape.Cytoscape;
-import cytoscape.logger.CyLogger;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.data.attr.MultiHashMapListener;
-
-import cytoscape.util.SwingWorker;
-
-import cytoscape.util.swing.DropDownMenuButton;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.NetworkPanel;
-
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualPropertyDependency;
-import cytoscape.visual.VisualPropertyDependency.Definition;
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
-
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.calculators.Calculator;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
-import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
-import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
-import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-import cytoscape.visual.ui.icon.ArrowIcon;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import ding.view.DGraphView;
-
 import giny.model.GraphObject;
 import giny.model.Node;
 
@@ -120,13 +56,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
-
 import java.lang.reflect.Constructor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -167,6 +100,58 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import com.l2fprod.common.propertysheet.DefaultProperty;
+import com.l2fprod.common.propertysheet.Property;
+import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
+import com.l2fprod.common.propertysheet.PropertySheetPanel;
+import com.l2fprod.common.propertysheet.PropertySheetTable;
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.attr.MultiHashMapDefinitionListener;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.NetworkPanel;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.VisualPropertyDependency.Definition;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
+import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
+import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
+import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
+import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
+import cytoscape.visual.ui.icon.ArrowIcon;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import ding.view.DGraphView;
+
 
 /**
  * New VizMapper UI main panel.
@@ -184,8 +169,13 @@ import javax.swing.table.TableCellRenderer;
  * @author Keiichiro Ono
  * @param <syncronized>
  */
-public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, PopupMenuListener, ChangeListener {
+public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, PopupMenuListener, ChangeListener, 
+															MultiHashMapDefinitionListener {
+	
+	private static final long serialVersionUID = 2010449914223315524L;
+	
 	private static final Color UNUSED_COLOR = new Color(100, 100, 100, 50);
+	
 	public enum DefaultEditor {
 		NODE,
 		EDGE,
@@ -276,10 +266,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		// By default, force to sort property by prop name.
 		visualPropertySheetPanel.setSorting(true);
-		
-		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getNodeAttributes(), nodeAttrEditor, nodeNumericalAttrEditor));
-		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getEdgeAttributes(), edgeAttrEditor, edgeNumericalAttrEditor));
-		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this, Cytoscape.getNetworkAttributes(), null, null));
+
+		Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(this);
+		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(this);
 	}
 
 	/*
@@ -1067,7 +1056,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		filledBoxRenderer.setBackground(Color.white);
 		filledBoxRenderer.setForeground(Color.blue);
 
-		setAttrComboBox();
+		//setAttrComboBox();
 
 		final Set mappingTypes = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 		                                  .getMappingNames();
@@ -1960,7 +1949,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Got global event
 		 */
 
-		//CyLogger.getLogger().info("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
 			setDefaultPanel(defaultImageManager.get(vmName));
@@ -2002,9 +1990,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			return;
-		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
-		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
-			setAttrComboBox();
 		}
 
 		/***********************************************************************
@@ -3705,24 +3690,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return ids;
 	}
 
-	// /**
+	
 	/**
-	 * DOCUMENT ME!
+	 * Listening to Visual Style states.
+	 * Will be called when Visual Style added/removed
 	 *
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
 	public void stateChanged(ChangeEvent e) {
+		if (ignore)
+			return;
+		
+		// Save currently selected Visual Style name
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
+		
+		// Get current Visual Style
 		final String currentName = vmm.getVisualStyle().getName();
 		
 		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
-
-		if (ignore)
-			return;
-
-		CyLogger.getLogger().debug("Got VMM Change event.  Cur VS in VMM: "
-		                   + vmm.getVisualStyle().getName());
 
 		if ((selectedName == null) || (currentName == null) || (curView == null)
 		    || curView.equals(Cytoscape.getNullNetworkView()))
@@ -3732,7 +3718,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (!findVSName(currentName)) {
 			syncStyleBox();
 		} else {
-			// Bug fix: 0001802: if VS already existed in combobox, select it
 			for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
 				if (vsNameComboBox.getItemAt(i).equals(currentName)) {
 					vsNameComboBox.setSelectedIndex(i);
@@ -3741,11 +3726,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 		
-		// kono: should be placed here.
-		// MLC 03/31/08 BEGIN:
-		// Make fure we update the lastVSName based on anything that changes the visual style:
 		lastVSName = currentName;
-		// MLC 03/31/08 END.
 	}
 
 	private void syncStyleBox() {
@@ -3775,9 +3756,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		for (String name : namesInBox)
 			vsNameComboBox.addItem(name);
 
-		// Bug fix: 0001721: 
-		//Note: Because vsNameComboBox.removeAllItems() will fire unwanted event, 
-		// vmm.getVisualStyle().getName() will not be the same as curStyleName
 		if ((curStyleName == null) || curStyleName.trim().equals(""))
 			switchVS(vmm.getVisualStyle().getName());
 		else
@@ -3807,164 +3785,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return table.getModel().getValueAt(table.getSelectedRow(), 0);
 	}
 
-	//**************************************************************************
-	// MultiHashMapListenerAdaptor
+	
+	@Override
+	public void attributeDefined(String attributeName) {
+		setAttrComboBox();
+	}
 
-	private class MultiHashMapListenerAdapter implements MultiHashMapListener {
-
-		// ref to members
-		private final JPanel container;
-		private final CyAttributes attr;
-		private final CyComboBoxPropertyEditor attrEditor;
-		private final CyComboBoxPropertyEditor numericalAttrEditor;
-		private final List<String> attrEditorNames;
-		private final List<String> numericalAttrEditorNames;
-
-		/**
-		 * Constructor.
-		 *
-		 * @param cyAttributes CyAttributes
-		 */
-		MultiHashMapListenerAdapter(JPanel container, CyAttributes cyAttributes, CyComboBoxPropertyEditor attrEditor, CyComboBoxPropertyEditor numericalAttrEditor) {
-			
-			// init some members
-			this.attr = cyAttributes;
-			this.container = container;
-			this.attrEditor = attrEditor;
-			this.numericalAttrEditor = numericalAttrEditor;
-			this.attrEditorNames = new ArrayList<String>();
-			this.numericalAttrEditorNames = new ArrayList<String>();
-
-			// populate our lists
-			populateLists();
-		}
-
-		/**
-		 *  Our implementation of MultiHashMapListener.attributeValueAssigned().
-		 *
-		 * @param objectKey String
-		 * @param attributeName String
-		 * @param keyIntoValue Object[]
-		 * @param oldAttributeValue Object
-		 * @param newAttributeValue Object
-		 */
-		public void attributeValueAssigned(String objectKey, String attributeName,
-										   Object[] keyIntoValue, Object oldAttributeValue,
-										   Object newAttributeValue) {
-
-			// we do not process network attributes
-			if (attr == Cytoscape.getNetworkAttributes()) return;
-
-			// conditional repaint container
-			boolean repaint = false;
-
-			// this code gets called a lot
-			// so i've decided to keep the next two if statements as is, 
-			// rather than create a shared general routine to call
-
-			// if attribute is not in attrEditorNames, add it if we support its type
-			if (!attrEditorNames.contains(attributeName)) {
-				byte type = attr.getType(attributeName);
-				if (attr.getUserVisible(attributeName) && 
-				    (type != CyAttributes.TYPE_UNDEFINED) && 
-				    (type != CyAttributes.TYPE_COMPLEX)) {
-					attrEditorNames.add(attributeName);
-					Collections.sort(attrEditorNames);
-					attrEditor.setAvailableValues(attrEditorNames.toArray());
-					repaint = true;
-				}
-			}
-
-			// if attribute is not contained in numericalAttrEditorNames, add it if we support its class
-			if (!numericalAttrEditorNames.contains(attributeName)) {
-				Class dataClass = CyAttributesUtils.getClass(attributeName, attr);
-				if ((dataClass == Integer.class) || (dataClass == Double.class) || (dataClass == Float.class)) {
-					numericalAttrEditorNames.add(attributeName);
-					Collections.sort(numericalAttrEditorNames);
-					numericalAttrEditor.setAvailableValues(numericalAttrEditorNames.toArray());
-					repaint = true;
-				}
-			}
-			
-			if (repaint) container.repaint();
-		}
-
-		/**
-		 *  Our implementation of MultiHashMapListener.attributeValueRemoved().
-		 *
-		 * @param objectKey String
-		 * @param attributeName String
-		 * @param keyIntoValue Object[]
-		 * @param attributeValue Object
-		 */
-		public void attributeValueRemoved(String objectKey, String attributeName,
-										  Object[] keyIntoValue, Object attributeValue) {
-			allAttributeValuesRemoved(objectKey, attributeName);
-		}
-
-		/**
-		 *  Our implementation of MultiHashMapListener.allAttributeValuesRemoved()
-		 *
-		 * @param objectKey String
-		 * @param attributeName String
-		 */
-		public void allAttributeValuesRemoved(String objectKey, String attributeName) {
-
-			// we do not process network attributes
-			if (attr == Cytoscape.getNetworkAttributes()) return;
-
-			// conditional repaint container
-			boolean repaint = false;
-
-			// this code gets called a lot
-			// so i've decided to keep the next two if statements as is, 
-			// rather than create a shared general routine to call
-
-			// if attribute is in attrEditorNames, remove it
-			if (attrEditorNames.contains(attributeName)) {
-				attrEditorNames.remove(attributeName);
-				Collections.sort(attrEditorNames);
-				attrEditor.setAvailableValues(attrEditorNames.toArray());
-				repaint = true;
-			}
-
-			// if attribute is in numericalAttrEditorNames, remove it
-			if (numericalAttrEditorNames.contains(attributeName)) {
-				numericalAttrEditorNames.remove(attributeName);
-				Collections.sort(numericalAttrEditorNames);
-				numericalAttrEditor.setAvailableValues(numericalAttrEditorNames.toArray());
-				repaint = true;
-			}
-
-			if (repaint) container.repaint();
-		}
-
-		/**
-		 * Method to populate attrEditorNames & numericalAttrEditorNames on object instantiation.
-		 */
-		private void populateLists() {
-
-			// get attribute names & sort
-			String[] nameArray = attr.getAttributeNames();
-			Arrays.sort(nameArray);
-
-			// populate attrEditorNames & numericalAttrEditorNames
-			attrEditorNames.add("ID");
-			byte type;
-			Class dataClass;
-			for (String name : nameArray) {
-				type = attr.getType(name);
-				if (attr.getUserVisible(name) && 
-				    (type != CyAttributes.TYPE_UNDEFINED) && 
-					(type != CyAttributes.TYPE_COMPLEX)) {
-					attrEditorNames.add(name);
-				}
-				dataClass = CyAttributesUtils.getClass(name, attr);
-				if ((dataClass == Integer.class) || (dataClass == Double.class) || (dataClass == Float.class)) {
-					numericalAttrEditorNames.add(name);
-				}
-			}
-		}
+	
+	@Override
+	public void attributeUndefined(String attributeName) {
+		setAttrComboBox();
 	}
 }
 
