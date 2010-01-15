@@ -130,6 +130,7 @@ import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualPropertyDependency.Definition;
+import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_SIZE_LOCKED;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.ContinuousMapping;
@@ -3247,7 +3248,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				// final Set<Object> attrSet =
 				// loadKeys(oMap.getControllingAttributeName(), attr, oMap);
-				if (vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked()) {
+				if (vmm.getVisualStyle().getDependency().check(NODE_SIZE_LOCKED)) {
 					return;
 				}
 

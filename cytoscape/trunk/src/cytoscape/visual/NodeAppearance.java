@@ -68,7 +68,6 @@ public class NodeAppearance extends Appearance {
 		return ga;
 	}
 
-    private boolean nodeSizeLocked = true;
     /**
      * Returns whether or not the node height and width are locked.
      * @return Whether or not the node height and width are locked.     
