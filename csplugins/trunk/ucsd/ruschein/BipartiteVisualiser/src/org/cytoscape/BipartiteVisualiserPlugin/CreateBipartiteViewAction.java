@@ -43,7 +43,7 @@ public class CreateBipartiteViewAction implements ActionListener {
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.displayTimeElapsed(true);
 		jTaskConfig.displayTimeRemaining(false);
-		jTaskConfig.setAutoDispose(false);
+		jTaskConfig.setAutoDispose(true);
 		jTaskConfig.setModal(true);
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		TaskManager.executeTask(new LayoutTask(edgeView, parentNetwork,

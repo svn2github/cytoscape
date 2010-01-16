@@ -16,10 +16,15 @@ import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 public class LayoutEngine {
 
+	static String MM_EDGE_ATTR_PREFIX = "MM-";
+
 	private final EdgeView edgeView;
+
+	private String visualStyleName;
 
 	private final CyNetwork parentNetwork;
 	private final CyNetwork network1;
@@ -36,18 +41,17 @@ public class LayoutEngine {
 		this.parentNetwork = parentNetwork;
 		this.network1 = network1;
 		this.network2 = network2;
-
 	}
 
 	public void doLayout(TaskMonitor taskMonitor) {
 		if (taskMonitor != null)
 			taskMonitor.setPercentCompleted(0);
 
-		final String edgeAttrName = network1.getTitle() + " <--> " + network2.getTitle();
+		visualStyleName = network1.getTitle() + " <--> " + network2.getTitle();
+		final String edgeAttrName = visualStyleName;
 		// Create network
 		CyNetwork result = Cytoscape.createNetwork(network1
-				.getNodeIndicesArray(), network1.getEdgeIndicesArray(),
-				network1.getTitle() + " <--> " + network2.getTitle(), parentNetwork, false);
+				.getNodeIndicesArray(), network1.getEdgeIndicesArray(), visualStyleName, parentNetwork, false);
 		int[] nodes = network2.getNodeIndicesArray();
 		int[] edges = network2.getEdgeIndicesArray();
 
@@ -55,43 +59,48 @@ public class LayoutEngine {
 			result.addNode(nodes[i]);
 		for (int i = 0; i < edges.length; i++)
 			result.addEdge(edges[i]);
-		
+
 		addEdges(result, edgeAttrName);
 		performLayout(result);
 
 	}
 
-	
 	private void addEdges(final CyNetwork result, final String edgeAttrName) {
 		@SuppressWarnings("unchecked")
-		final Set<CyNode> nodesInResult = new HashSet<CyNode>((List<CyNode>)result.nodesList());
+		final Set<CyNode> nodesInResult = new HashSet<CyNode>(
+				(List<CyNode>) result.nodesList());
 		@SuppressWarnings("unchecked")
-		final Set<CyEdge> edgesInResult = new HashSet<CyEdge>((List<CyEdge>)result.edgesList());
+		final Set<CyEdge> edgesInResult = new HashSet<CyEdge>(
+				(List<CyEdge>) result.edgesList());
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		
-		for (CyNode node: nodesInResult) {
+
+		for (CyNode node : nodesInResult) {
 			// Get the list of edges connected to this node
-			int[] edgeIndices = parentNetwork.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), true, true, true);
+			int[] edgeIndices = parentNetwork.getAdjacentEdgeIndicesArray(node
+					.getRootGraphIndex(), true, true, true);
 			// For each node, select the appropriate edges
 			if (edgeIndices == null)
 				continue;
 
-			for (int i = 0; i < edgeIndices.length; i++)  {
+			for (int i = 0; i < edgeIndices.length; i++) {
 				final Edge edge = parentNetwork.getEdge(edgeIndices[i]);
-				if (nodesInResult.contains(edge.getSource()) && nodesInResult.contains(edge.getTarget())) {
+				if (nodesInResult.contains(edge.getSource())
+						&& nodesInResult.contains(edge.getTarget())) {
 					result.addEdge(edge);
 					if (!edgesInResult.contains(edge))
-						edgeAttr.setAttribute(edge.getIdentifier(), edgeAttrName, "module-module");
+						edgeAttr.setAttribute(edge.getIdentifier(),
+								edgeAttrName, "module-module");
 				}
 			}
 		}
 	}
 
+
 	private void performLayout(final CyNetwork result) {
 		final Set<CyNode> leftSet   = new HashSet<CyNode>();
 		final Set<CyNode> rightSet  = new HashSet<CyNode>();
 		categoriseNodes(result, leftSet, rightSet);
-		
+
 		final CyNetworkView networkView = Cytoscape.createNetworkView(result);
 		CyLayouts.getDefaultLayout().doLayout(networkView);
 
@@ -100,6 +109,11 @@ public class LayoutEngine {
 		final double[] yMin = new double[3];
 		final double[] yMax = new double[3];
 		findExtents(networkView, leftSet, rightSet, xMin, xMax, yMin, yMax);
+		
+		final VisualStyle style = VisualStyleBuilder.getVisualStyle(visualStyleName);
+		networkView.setVisualStyle(style.getName());
+		Cytoscape.getVisualMappingManager().setVisualStyle(style);
+		networkView.redrawGraph(false, true);
 	}
 
 	/**
@@ -132,7 +146,6 @@ public class LayoutEngine {
 				throw new IllegalStateException("Do not know how to categorise a node!");
 		}
 	}
-
 	private void findExtents(final CyNetworkView networkView, final Set<CyNode> leftSet,
 				 final Set<CyNode> rightSet, final double xMin[],
 				 final double xMax[], final double yMin[], final double yMax[])
