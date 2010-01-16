@@ -129,12 +129,8 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		                                  Tunable.DOUBLE, new Double(.001),
 		                                  (Object)null, (Object)null, 0));
 
-		clusterProperties.add(new Tunable("options_panel1",
-		                                  "Data value options",
-		                                  Tunable.GROUP, new Integer(3)));
-
 		// Use the standard edge attribute handling stuff....
-		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties);
+		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
 
 		clusterProperties.add(new Tunable("options_panel2",
 		                                  "Results options",

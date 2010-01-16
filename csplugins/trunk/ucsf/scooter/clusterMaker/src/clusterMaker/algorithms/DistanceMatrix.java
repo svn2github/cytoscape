@@ -1,7 +1,9 @@
 package clusterMaker.algorithms;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // Cytoscape imports
 import cytoscape.CyEdge;
@@ -23,6 +25,8 @@ public class DistanceMatrix {
 	private double maxAttribute = Double.MIN_VALUE;
 	private double edgeCutOff = 0.0;
 	private boolean unDirectedEdges = false;
+	private boolean distanceValues = false;
+	private boolean logValues = false;
 	private List<CyNode> nodes = null;
 	private List<CyEdge> edges = null;
 	private DoubleMatrix2D matrix = null;
@@ -32,6 +36,8 @@ public class DistanceMatrix {
 	public DistanceMatrix(String edgeAttributeName, boolean selectedOnly, boolean distanceValues,
 	                      boolean takeNegLOG) {
 		this.edgeAttributeName = edgeAttributeName;
+		this.distanceValues = distanceValues;
+		this.logValues = takeNegLOG;
 
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
@@ -79,24 +85,10 @@ public class DistanceMatrix {
 			double edgeWeight = edgeWeights[edgeIndex];
 			if (edgeWeight == Double.MIN_VALUE) continue;
 
-			if (distanceValues) {
-				if (edgeWeight != 0.0)
-					edgeWeight = 1/edgeWeight;
-				else {
-					edgeWeight = Double.MIN_VALUE;
+			edgeWeight = scaleValue(edgeWeight);
+			
+			if (edgeWeight == Double.MIN_VALUE)
 					edgeCase.add(edgeIndex);
-				}
-			}
-
-			if (takeNegLOG) {
-				if (minAttribute < 0.0) 
-					edgeWeight += Math.abs(minAttribute);
-
-				if(edgeWeight != 0.0 && edgeWeight != Double.MAX_VALUE)
-					edgeWeight = -Math.log10(edgeWeight);
-				else
-					edgeWeight = 500; // Assume 1e-500 as a reasonble upper bound
-			}
 
 			edgeWeights[edgeIndex] = edgeWeight;
 			if (edgeWeight != Double.MIN_VALUE) {
@@ -115,6 +107,57 @@ public class DistanceMatrix {
 		return edgeWeights;
 	}
 
+	public double getEdgeValueFromMatrix(int row, int column) {
+		if (matrix == null)
+			getDistanceMatrix();
+
+		return matrix.get(row, column);
+	}
+
+	public double scaleValue(double value) {
+			if (distanceValues) {
+				if (value != 0.0)
+					value = 1/value;
+				else {
+					value = Double.MIN_VALUE;
+				}
+			}
+
+			if (logValues) {
+				if (minAttribute < 0.0) 
+					value += Math.abs(minAttribute);
+
+				if(value != 0.0 && value != Double.MAX_VALUE)
+					value = -Math.log10(value);
+				else
+					value = 500; // Assume 1e-500 as a reasonble upper bound
+			}
+			return value;
+	}
+
+	public boolean hasDistanceValues() { return this.distanceValues; }
+	public boolean hasLogValues() { return this.logValues; }
+
+	public double getNormalizedValue(double value) {
+		double span = maxWeight - minWeight;
+		return ((value-minWeight)/span);
+	}
+
+	public void normalizeMatrix(double factor) {
+		if (matrix == null)
+			getDistanceMatrix();
+
+		matrix.forEachNonZero(new Normalize(minWeight, maxWeight, factor));
+	}
+
+	public Map<Integer, List<CyNode>> findConnectedComponents() {
+		if (matrix == null)
+			getDistanceMatrix();
+
+		Map<Integer, List<CyNode>> cmap = new HashMap();
+		matrix.forEachNonZero(new FindComponents(cmap));
+		return cmap;
+	}
 
 	public DoubleMatrix2D getDistanceMatrix(Double edgeCutOff, boolean undirectedEdges) {
 		setEdgeCutOff(edgeCutOff);
@@ -211,4 +254,80 @@ public class DistanceMatrix {
 			return value;
 		}
 	}
+
+	/**
+ 	 * Normalize normalizes a cell in the matrix
+ 	 */
+	private class Normalize implements IntIntDoubleFunction {
+		private double maxValue;
+		private double minValue;
+		private double span;
+		private double factor;
+
+		public Normalize(double minValue, double maxValue, double factor) {
+			this.maxValue = maxValue;
+			this.minValue = minValue;
+			this.factor = factor;
+			span = maxValue - minValue;
+		}
+
+		public double apply(int row, int column, double value) {
+			return ((value-minWeight)/span)*factor;
+		}
+	}
+
+	/**
+ 	 * Find the connected components in a matrix
+ 	 */
+  private class FindComponents implements IntIntDoubleFunction {
+    Map<CyNode,Integer> nodeToCluster;
+    Map<Integer, List<CyNode>> clusterMap;
+
+    public FindComponents(Map<Integer, List<CyNode>> cMap) {
+      clusterMap = cMap;
+      nodeToCluster = new HashMap();
+    }
+
+    public double apply(int row, int column, double value) {
+      CyNode node1 = nodes.get(row);
+      CyNode node2 = nodes.get(column);
+      if (nodeToCluster.containsKey(node1)) {
+        if(!nodeToCluster.containsKey(node2))
+          addNodeToCluster(nodeToCluster.get(node1), node2);
+        else
+          combineClusters(nodeToCluster.get(node1), nodeToCluster.get(node2));
+      } else {
+        if (nodeToCluster.containsKey(node2))
+          addNodeToCluster(nodeToCluster.get(node2), node1);
+        else
+          createCluster(node1, node2);
+      }
+      return value;
+    }
+
+    private void addNodeToCluster(Integer cluster, CyNode node) {
+      List<CyNode> nodeList = clusterMap.get(cluster);
+      nodeList.add(node);
+      nodeToCluster.put(node, cluster);
+    }
+
+    private void createCluster(CyNode node1, CyNode node2) {
+      List<CyNode> nodeList = new ArrayList();
+      int clusterNumber = clusterMap.keySet().size();
+      clusterMap.put(clusterNumber, nodeList);
+      addNodeToCluster(clusterNumber, node1);
+      addNodeToCluster(clusterNumber, node2);
+    }
+
+    private void combineClusters(Integer cluster1, Integer cluster2) {
+      List<CyNode> list1 = clusterMap.get(cluster1);
+      List<CyNode> list2 = clusterMap.get(cluster2);
+      clusterMap.remove(cluster2);
+      for (CyNode node: list2) {
+        nodeToCluster.put(node, cluster1);
+      }
+      list1.addAll(list2);
+    }
+  }
+
 }

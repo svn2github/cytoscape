@@ -74,7 +74,7 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	}
 
 	protected void advancedProperties() {
-		clusterProperties.add(new Tunable("advancedGroup", "Advanced",
+		clusterProperties.add(new Tunable("advancedGroup", "Advanced Settings",
 		                                  Tunable.GROUP, new Integer(2),
 		                                  new Boolean(true), null, Tunable.COLLAPSABLE));
 		clusterProperties.add(new Tunable("clusterAttrName", "Cluster Attribute", 

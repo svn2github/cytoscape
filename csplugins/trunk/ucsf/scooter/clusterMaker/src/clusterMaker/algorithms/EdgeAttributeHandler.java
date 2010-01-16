@@ -63,6 +63,7 @@ public class EdgeAttributeHandler
 	private boolean takeNegLOG = false;
 	private boolean selectedOnly = false;
 	private boolean distanceValues = false;
+	private boolean supportAdjustments = false;
 	private Double edgeCutOff = null;
 	private String[] attributeArray = new String[1];
 
@@ -70,29 +71,17 @@ public class EdgeAttributeHandler
 
 	private HistogramDialog histo = null;
 
-	public EdgeAttributeHandler(ClusterProperties clusterProperties) {
+	public EdgeAttributeHandler(ClusterProperties clusterProperties, boolean supportAdjustments) {
 		this.clusterProperties = clusterProperties;
+		this.supportAdjustments = supportAdjustments;
 		initializeTunables(clusterProperties);
 	}
 
 	public void initializeTunables(ClusterProperties clusterProperties) {
 
-		// Whether or not to create a new network from the results
-		Tunable selTune = new Tunable("selectedOnly","Cluster only selected nodes",
-		                              Tunable.BOOLEAN, new Boolean(false));
-		clusterProperties.add(selTune);
-
-		//Whether or not to assume the edges are undirected
-		clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
-
-		// Whether or not to adjust loops before clustering
-		clusterProperties.add(new Tunable("adjustLoops","Adjust loops before clustering",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
-
 		clusterProperties.add(new Tunable("attributeListGroup",
 		                                  "Source for array data",
-		                                  Tunable.GROUP, new Integer(5)));
+		                                  Tunable.GROUP, new Integer(6)));
 
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();
@@ -102,6 +91,11 @@ public class EdgeAttributeHandler
 		                                  (Object)attributeArray, new Integer(0), 0);
 
 		clusterProperties.add(attrTunable);
+
+		// Whether or not to create a new network from the results
+		Tunable selTune = new Tunable("selectedOnly","Cluster only selected nodes",
+		                              Tunable.BOOLEAN, new Boolean(false));
+		clusterProperties.add(selTune);
 
 		//Whether the attribute values are weights or distances
 		Tunable dValue = new Tunable("distanceValues","Attributes represent distance (use 1/value)",
@@ -131,6 +125,20 @@ public class EdgeAttributeHandler
 		clusterProperties.add(new Tunable("edgeHistogram",
 		                                  "Set Edge Cutoff Using Histogram",
 		                                  Tunable.BUTTON, "Edge Histogram", this, null, Tunable.IMMUTABLE));
+
+		if (supportAdjustments) {
+			clusterProperties.add(new Tunable("options_panel1",
+			                                  "Array data adjustments",
+			                                  Tunable.GROUP, new Integer(2)));
+
+			//Whether or not to assume the edges are undirected
+			clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
+			                                  Tunable.BOOLEAN, new Boolean(true)));
+
+			// Whether or not to adjust loops before clustering
+			clusterProperties.add(new Tunable("adjustLoops","Adjust loops before clustering",
+			                                  Tunable.BOOLEAN, new Boolean(true)));
+		}
 	}
 
 	public void updateSettings(boolean force) {
