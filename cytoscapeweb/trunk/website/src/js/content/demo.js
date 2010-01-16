@@ -327,7 +327,8 @@ $(function(){
     var default_options = {
         panZoomControlVisible: true,
 		edgesMerged: false,
-		labelsVisible: true,
+		nodeLabelsVisible: true,
+		edgeLabelsVisible: true,
 		nodeTooltipsEnabled: true,
 		edgeTooltipsEnabled: true,
 		swfPath: path("swf/CytoscapeWeb"),

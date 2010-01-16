@@ -40,9 +40,22 @@
 
     <h1>Source Code</h1>
     <div class="description">
-        <p>In order to download the latest Cytoscape Web source code from our 
-           <a href="http://subversion.tigris.org">Subversion</a> server, use the following command:</p>
-        <pre class="ln- collapsed">svn checkout http://chianti.ucsd.edu/svn/cytoscapeweb/trunk cytoscapeweb-read-only</pre> 
+        <p>
+            You can browse the Cytoscape Web source code <a href="http://chianti.ucsd.edu/svn/cytoscapeweb/">here</a>.
+        </p>
+        <p>
+            If you want to download the latest source from our 
+            <a href="http://subversion.tigris.org">Subversion</a> server, use one of the following commands.
+        </p>
+        <p>
+            Download only the Cytoscape Web project:
+            <pre class="ln- collapsed">svn checkout http://chianti.ucsd.edu/svn/cytoscapeweb/trunk/cytoscapeweb cytoscapeweb-read-only</pre>
+        </p>
+        <p> </p>
+        <p>
+            Download Cytoscape Web and the website, including the demo application:
+            <pre class="ln- collapsed">svn checkout http://chianti.ucsd.edu/svn/cytoscapeweb/trunk cytoscapeweb-all-read-only</pre>
+        </p>
     </div>
 
 </div>

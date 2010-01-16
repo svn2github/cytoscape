@@ -85,7 +85,7 @@
     <?php print_code("file/example_code/style.html"); ?>
     
     <p>The style is set at initialisation.  Additionally, clicking the link changes the visual
-    style programattically by changing the background colour to a randomly selected colour for
+    style programattically by changing the background color to a randomly selected color for
     each click.</p>
     
     <?php embed_code("file/example_code/style.html"); ?>

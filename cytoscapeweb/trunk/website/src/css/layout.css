@@ -36,7 +36,7 @@ ul ul { margin-left: 2em; }
 li { margin: 0.5em 0 0.5em 0; }
 li:first-child { margin: 0; }
 em { font-weight: bold;	font-style: normal; }
-code { line-height: 1.5; color: #000000; font-size: 0.85em; font-weight: normal; font-family: "Monaco", "Courier New", monospace; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+code { line-height: 1.5; color: #000000; font-size: 0.85em; font-family: "Monaco", "Courier New", monospace; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 pre, .pre_plain { line-height: 1;  color: #000000; font-size: 0.85em; font-weight: normal; font-family: "Monaco", "Courier New", monospace;  background-color: #ffffff; border: #cfcfcf 1px solid; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; padding: 1em; overflow: auto; display: block; }
 pre code { font-size: 1em; line-height: 1; }
 pre.collapsed { background-image: url("../img/layout/grey_arrow_more.png"); background-repeat: repeat-y; background-position: center right; }

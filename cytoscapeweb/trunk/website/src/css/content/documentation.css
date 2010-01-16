@@ -9,6 +9,7 @@ h1.unselected { background: url("../../img/layout/open_arrow/blue/right.png") ce
 .api h1 { }
 .api .arguments, .api .field_type { color: #707070; font-size: 0.75em; }
 .parameter + .parameter, .return_value + .return_value, .field + .field { border-top: 1px dashed #cfcfcf; }
+.options code:first-child { color: #0B94B1; }
 .examples { padding-top: 0.5em; }
 .examples .example, .examples .pre_plain { margin-bottom: 1em; }
 .api h1 { }

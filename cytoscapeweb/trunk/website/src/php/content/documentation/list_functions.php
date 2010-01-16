@@ -146,7 +146,7 @@
                                 $descr .= ($param->optional ? "[ " : "");
                                 $descr .= "<em>$param->name</em>";
                                 $descr .= ($param->optional ? " ]" : "");
-                                $descr .= ($param->type ? " <span class=\"type\">(" . parse_clsrefs($param->type) . ")</span>" : "");
+                                $descr .= ($param->type ? " <span class=\"type\">{" . parse_clsrefs($param->type) . "}</span>" : "");
                                 if ($param->description){
                                     $descr .= " : ";
                                 }
@@ -161,7 +161,7 @@
                         $return_value = $fn->return_value;
                         echo "<label>Return value</label>";
                         if( $return_value ) {
-                            $descr = ($return_value->type ? "(" . parse_clsrefs($return_value->type) . ") " : "");
+                            $descr = ($return_value->type ? "{" . parse_clsrefs($return_value->type) . "} " : "");
                             
                             echo "<div class=\"return_value\">";
                             echo parse_para( parse_links($return_value->description), $descr ); 
@@ -182,7 +182,7 @@
                                 echo "<div class=\"field\">";
                                     $descr = "";
                                     $descr .= "<em>$field->name</em>";
-                                    $descr .= ($field->type ? " <span class=\"type\">(" . parse_clsrefs($field->type) . ")</span>" : "");
+                                    $descr .= ($field->type ? " <span class=\"type\">{" . parse_clsrefs($field->type) . "}</span>" : "");
                                     $descr .= ($field->description ? " : " : "");
                                     
                                     echo parse_para( parse_links($field->description), $descr );

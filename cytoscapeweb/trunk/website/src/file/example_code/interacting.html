@@ -4,22 +4,17 @@
     <head>
         <title>Cytoscape Web example</title>
         
-        <!-- Flash embedding utility (needed to embed Cytoscape Web) -->
         <script type="text/javascript" src="/js/cytoscape_web/AC_OETags.min.js"></script>
-        
-        <!-- JSON support for IE (needed to use JS API) -->
         <script type="text/javascript" src="/js/cytoscape_web/json2.min.js"></script>
-        
-        <!-- Cytoscape Web JS API (needed to reference org.cytoscapeweb.Visualization) -->
         <script type="text/javascript" src="/js/cytoscape_web/cytoscapeweb.min.js"></script>
         
         <script type="text/javascript">
-            window.onload=function(){
+            window.onload = function() {
                 // id of Cytoscape Web container div
                 var div_id = "cytoscapeweb";
                 
                 // NOTE the attributes on nodes and edges
-                var network = '\
+                var xml = '\
                 <graphml>\
                   <key id="label" for="all" attr.name="label" attr.type="string"/>\
                   <key id="foo" for="node" attr.name="foo" attr.type="string"/>\
@@ -41,62 +36,55 @@
                 </graphml>\
                 ';
                 
-                // options used for Cytoscape Web
+                // initialization options
                 var options = {
-                    // where you have the Cytoscape Web SWF
                     swfPath: "/swf/CytoscapeWeb",
-                    
-                    // where you have the Flash installer SWF
-                    flashInstallerPath: "/swf/playerProductInstall",
-                    
-                    // your data goes here
-                    network: network,
-                    
-                    // show labels
-                    labelsVisible: true,
-                    
-                    // hide pan zoom
-                    panZoomControlVisible: false 
+                    flashInstallerPath: "/swf/playerProductInstall"
                 };
                 
                 var vis = new org.cytoscapeweb.Visualization(div_id, options);
                 
                 // callback when Cytoscape Web has finished drawing
-                vis.ready(function(){
+                vis.ready(function() {
                 
                     // add a listener for when nodes and edges are clicked
-                    vis.addListener("click", "nodes", function(event){
+                    vis.addListener("click", "nodes", function(event) {
                         handle_click(event);
-                    });
-                    vis.addListener("click", "edges", function(event){
+                    })
+                    .addListener("click", "edges", function(event) {
                         handle_click(event);
                     });
                     
-                    function handle_click(event){
+                    function handle_click(event) {
                          var target = event.target;
                          
                          clear();
                          print("event.group = " + event.group);
-                         for(var i in target.data){
+                         for (var i in target.data) {
                             var variable_name = i;
                             var variable_value = target.data[i];
-                            
                             print( "event.target.data." + variable_name + " = " + variable_value );
                          }
                     }
                     
-                    function clear(){
+                    function clear() {
                         document.getElementById("note").innerHTML = "";
                     }
                 
-                    function print(msg){
+                    function print(msg) {
                         document.getElementById("note").innerHTML += "<p>" + msg + "</p>";
                     }
                 });
+
+                // draw options
+                var draw_options = {
+                    // your data goes here
+                    network: xml,
+                    // hide pan zoom
+                    panZoomControlVisible: false 
+                };
                 
-                vis.draw(options);
-                
-                
+                vis.draw(draw_options);
             };
         </script>
         

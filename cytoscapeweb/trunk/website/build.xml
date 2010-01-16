@@ -18,7 +18,6 @@
     <property name="cw.dir" value="${CYTOSCAPEWEB_HOME}"/>
     <property name="cw.bin.dir" value="${cw.dir}/bin"/>
     <property name="cw.build.dir" value="${cw.dir}/build"/>
-    <property name="cw.build.version" value="${cw.dir}/build"/>
     
     <!-- From the File sub-project -->
     <property name="cwfile.dir" value="${CW_FILE_HOME}"/>
@@ -31,19 +30,19 @@
     <property name="swf.dir" value="${src.dir}/swf"/>
     <property name="download.dir" value="${src.dir}/file/lib"/>
     <property name="php.dir" value="${src.dir}/php"/>
-    <property name="api.dir" value="${php.dir}/content/documentation/api/${build.version}"/>
+    <property name="api.dir" value="${php.dir}/content/documentation/api/${cw.build.version}"/>
     
     <tstamp>
         <format property="date.today" pattern="yyyy-MM-dd"/>
     </tstamp>
     <tstamp>
-        <format property="date.now" pattern="yyyyMMdd-HHmm"/>
+        <format property="date.now" pattern="yyyyMMddHHmm"/>
     </tstamp>
     
     <target name="build" depends="files, api">
     	<delete dir="${build.dir}" />
     	<mkdir dir="${build.dir}"/>
-    	<zip destfile="${build.dir}/cytoscapeweb_site_${date.now}.zip"
+    	<zip destfile="${build.dir}/cwsite_v${build.version}_${date.now}.zip"
              basedir="${src.dir}"
              update="true"
     		 excludes="cache/**"
@@ -126,7 +125,7 @@
         </copy>
         <!-- Copy the downloadable zip file -->
         <copy todir="${download.dir}" overwrite="true">
-            <fileset dir="${cw.dir}/build" includes="*.zip"/>
+            <fileset dir="${cw.dir}/build" includes="cytoscapeweb_v${cw.build.version}.zip"/>
         </copy>
     </target>
     
