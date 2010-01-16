@@ -137,8 +137,8 @@ public class LayoutEngine {
 				 final Set<CyNode> rightSet, final double xMin[],
 				 final double xMax[], final double yMin[], final double yMax[])
 	{
-		xMin[LEFT] = xMin[RIGHT] = xMin[CENTRE] = Double.MAX_VALUE;
-		xMax[LEFT] = xMax[RIGHT] = xMax[CENTRE] = Double.MIN_VALUE;
+		xMin[LEFT] = xMin[RIGHT] = xMin[CENTRE] = Double.POSITIVE_INFINITY;
+		xMax[LEFT] = xMax[RIGHT] = xMax[CENTRE] = Double.NEGATIVE_INFINITY;
 
 		final java.util.Iterator nodeViewsIterator = networkView.getNodeViewsIterator();
 		while (nodeViewsIterator.hasNext()) {
