@@ -6,7 +6,6 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.net.URL;
-import java.io.IOException;
 
 import cytoscape.Cytoscape;
 import cytoscape.coreplugins.biopax.util.net.WebFileConnect;
@@ -18,7 +17,9 @@ import cytoscape.coreplugins.biopax.util.net.WebFileConnect;
  */
 public class LegendPanel extends JPanel {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * BioPAX Legend.
      */
     public static int BIOPAX_LEGEND = 0;
@@ -59,17 +60,20 @@ public class LegendPanel extends JPanel {
 		temp.append("</BODY></HTML>");
 		textPane.setText(temp.toString());
 
-        textPane.addHyperlinkListener(new HyperlinkListener() {
-
+        /*
+		textPane.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
                 if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     String name = hyperlinkEvent.getDescription();
                     if (name.equalsIgnoreCase("filter")) {
                         EdgeFilterUi ui = new EdgeFilterUi(Cytoscape.getCurrentNetwork());
+                        //TODO No action or logic was here; is something missing?..
                     }
                 }
             }
         });
+        */
+        
         BioPaxDetailsPanel.modifyStyleSheetForSingleDocument(textPane);
 
         JScrollPane scrollPane = new JScrollPane(textPane);

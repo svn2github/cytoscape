@@ -81,6 +81,7 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 	 *
 	 * @param event Select Event.
 	 */
+	@SuppressWarnings("unchecked")
 	public void onSelectEvent(SelectEvent event) {
 		int targetType = event.getTargetType();
 
@@ -105,8 +106,15 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 				CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 				String id = node.getIdentifier();
 
-				if (id != null) {
-					displayDetails(id);
+				if (id != null && !CySessionUtil.isSessionReadingInProgress()) {
+					//  Conditionally, set up BP UI
+			        //  If we are reading a session file, ignore the node selection event.
+		            CytoscapeWrapper.initBioPaxPlugInUI();
+		            //  Show the details
+		            bpPanel.showDetails(id);
+		            //  If legend is showing, show details
+		            BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+		            bpContainer.showDetails();
 				}
 			}
 		}
@@ -114,21 +122,6 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 		// update custom nodes
 		MapBioPaxToCytoscape.customNodes(Cytoscape.getCurrentNetworkView());
 	}
-
-	private void displayDetails(String id) {
-		//  Conditionally, set up BP UI
-        //  If we are reading a session file, ignore the node selection event.
-        if (!CySessionUtil.isSessionReadingInProgress()) {
-            CytoscapeWrapper.initBioPaxPlugInUI();
-
-            //  Show the details
-            bpPanel.showDetails(id);
-
-            //  If legend is showing, show details
-            BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-            bpContainer.showDetails();
-        }
-    }
 
 	/**
 	 * Recursive Method for Walking up a Containment Tree, looking for

@@ -39,6 +39,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
+import cytoscape.coreplugins.biopax.action.BiopaxNodeCtxMenuListener;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
@@ -81,14 +82,7 @@ public class BioPaxGraphReader implements GraphReader {
 	private boolean validNetworkName;
 	private CyLayoutAlgorithm layout;
 	private String networkId;
-
-	private static boolean createNodesForControls;
-	private static CyLayoutAlgorithm defaultLayout;
-	
-	static {
-		defaultLayout = new LayoutUtil();
-		createNodesForControls = false;
-	}
+	private static CyLayoutAlgorithm defaultLayout = new LayoutUtil();
 	
 	
 	/**
@@ -116,19 +110,6 @@ public class BioPaxGraphReader implements GraphReader {
 	public String getNetworkId() {
 		return networkId;
 	}
-	
-	public static void setCreateNodesForControls(Boolean b) {
-		createNodesForControls = b;
-		if(log.isDebugging()) {
-			log.debug("createNodesForControls = " + createNodesForControls);  
-		}
-	}
-	
-	
-	public static boolean getCreateNodesForControls() {
-		return createNodesForControls;
-	}
-	
 	
 	public static void setDefaultLayoutAlgorithm(CyLayoutAlgorithm algo) { 
 		defaultLayout = algo; 
@@ -304,7 +285,7 @@ public class BioPaxGraphReader implements GraphReader {
 		}
 
 		// associate the new network with its model
-		BioPaxUtil.setNetworkModel(cyNetwork, model);
+		BioPaxUtil.addNetworkModel(cyNetwork, model);
 		String modelString = (fileName!=null) ? fileName : "";
 		Cytoscape.getNetworkAttributes().setAttribute(
 				networkId, BioPaxUtil.BIOPAX_MODEL_STRING,	modelString);
@@ -323,6 +304,10 @@ public class BioPaxGraphReader implements GraphReader {
         bpContainer.showLegend();
         NetworkListener networkListener = bpContainer.getNetworkListener();
 		networkListener.registerNetwork(cyNetwork);
+		
+		// add node's context menu
+		BiopaxNodeCtxMenuListener nodeCtxMenuListener = new BiopaxNodeCtxMenuListener();
+		view.addNodeContextMenuListener(nodeCtxMenuListener);
 	}
 
 	/**

@@ -59,6 +59,7 @@ import cytoscape.data.CyAttributes;
  * @author Ethan Cerami
  */
 public class BioPaxContainer extends JPanel {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * CytoPanel Location of this Panel
 	 */
@@ -94,17 +95,16 @@ public class BioPaxContainer extends JPanel {
         label.setOpaque(false);
         label.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         label.addHyperlinkListener(new HyperlinkListener() {
-
-            public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
-                if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    String name = hyperlinkEvent.getDescription();
-                    if (name.equalsIgnoreCase("LEGEND")) {
-                        showLegend();
-                    } else {
-                        showDetails();
-                    }
-                }
-            }
+			public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
+				if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+					String name = hyperlinkEvent.getDescription();
+					if (name.equalsIgnoreCase("LEGEND")) {
+						showLegend();
+					} else {
+						showDetails();
+					}
+				}
+			}
         });
 
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -151,7 +151,6 @@ public class BioPaxContainer extends JPanel {
 		if (bioPaxContainer == null) {
 			bioPaxContainer = new BioPaxContainer();
 		}
-
 		return bioPaxContainer;
 	}
 

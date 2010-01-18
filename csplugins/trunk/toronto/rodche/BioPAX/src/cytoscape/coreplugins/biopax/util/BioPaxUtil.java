@@ -35,6 +35,7 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.links.ExternalLink;
+import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 
 import org.biopax.paxtools.controller.EditorMap;
@@ -928,7 +929,7 @@ public class BioPaxUtil {
 	    networkModelMap.remove(cyNetwork);
 	}
 
-	public static boolean setNetworkModel(CyNetwork cyNetwork, Model bpModel) {
+	public static boolean addNetworkModel(CyNetwork cyNetwork, Model bpModel) {
 		networkModelMap.put(cyNetwork, bpModel);
 		return true;
 	}
@@ -937,11 +938,15 @@ public class BioPaxUtil {
 		Model bpModel = networkModelMap.get(cyNetwork);
 		return bpModel;
 	}
-
+	
 	public static boolean isBioPAXNetwork(CyNetwork cyNetwork) {
-		Object answer = Cytoscape.getNetworkAttributes().getAttribute(
-				cyNetwork.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_NETWORK);
+		// get the network attributes
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		String networkID = cyNetwork.getIdentifier();
+		Boolean b1 = networkAttributes.getBooleanAttribute(networkID,
+		                                                  MapBioPaxToCytoscape.BIOPAX_NETWORK);
+        Boolean b2 = networkAttributes.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BINARY_NETWORK);
 
-		return (answer != null) && answer.equals(Boolean.TRUE);
+        return (b1 != null && b1) || (b2 != null && b2);
 	}
 }

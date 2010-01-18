@@ -35,7 +35,6 @@ package cytoscape.coreplugins.biopax;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.coreplugins.biopax.action.ExportAsBioPAXAction;
-import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.data.ImportHandler;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -95,7 +94,6 @@ public class BiopaxPlugin extends CytoscapePlugin {
 	 * This method is called by the main Cytoscape Application upon startup.
 	 */
 	public BiopaxPlugin() {
-		
 		ImportHandler importHandler = new ImportHandler();
 		importHandler.addFilter(new BioPaxFilter());
 
@@ -112,7 +110,6 @@ public class BiopaxPlugin extends CytoscapePlugin {
 		
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
 		cyMenus.addAction(new ExportAsBioPAXAction());
-		cyMenus.addAction(new CreateNodesForControlsAction());
 		CyLayoutAlgorithm allLayouts[] = CyLayouts.getAllLayouts()
 			.toArray(new CyLayoutAlgorithm[1]);
 		
@@ -128,39 +125,11 @@ public class BiopaxPlugin extends CytoscapePlugin {
 			cyMenus.addAction(new SelectDefaultLayoutAction(algo));
 		}
 
-		
-		// we are now interested in receiving all network events
-		// like a load of a network from a session
-		// to start listening to network events, we grab an instance of
-		// a BioPaxContainerClass - this contains the network listener
+		// to start listening to network events, like a load of a network from a session,
+		// we create an instance of a BioPaxContainerClass this contains the network listener
 		BioPaxContainer.getInstance();
 	}
 	
-	/**
-	 * For "Plugins->BioPaX Import->Create Nodes for Controls" menu item.
-	 * If checked, the reader creates cytoscape nodes for Controls (Catalysis, etc.) 
-	 * in the BioPaX file.  If not checked, the reader represent Controls by edges.	 *
-	 * 
-	 * TODO does not work
-	 * 
-	 */
-	public class CreateNodesForControlsAction extends CytoscapeAction {
-		private static final long serialVersionUID = 1L;
-		
-		public CreateNodesForControlsAction() {
-			super("Create Nodes for Controls");
-			this.setPreferredMenu("Plugins.BioPaX Import");
-			useCheckBoxMenuItem = true;
-		}
-
-		public void actionPerformed(ActionEvent ae) {
-			BioPaxGraphReader.setCreateNodesForControls(!BioPaxGraphReader.getCreateNodesForControls());
-			if(log.isDebugging()) {
-				log.debug("createNodesForControls = " + BioPaxGraphReader.getCreateNodesForControls());
-			}
-		}
-	}
-
 	/**
 	 * For "Plugins->BioPaX Import->Default Layout" menu.
 	 * One of these actions exists for each known layout.

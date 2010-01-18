@@ -35,10 +35,8 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.coreplugins.biopax.action.DisplayBioPaxDetails;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxDetailsPanel;
-import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectFilter;
 
 import cytoscape.view.CyNetworkView;
@@ -52,10 +50,9 @@ import java.beans.PropertyChangeListener;
  * Listens for Network Events, and takes appropriate Actions.
  * May be subclassed.
  *
- * @author Ethan Cerami / Benjamin Gross.
+ * @author Ethan Cerami / Benjamin Gross / Igor Rodchenkov.
  */
 public class NetworkListener implements PropertyChangeListener {
-	//private ArrayList cyNetworkList = new ArrayList();
 	private BioPaxDetailsPanel bpPanel;
 
 	/**
@@ -64,7 +61,6 @@ public class NetworkListener implements PropertyChangeListener {
 	 * @param bpPanel BioPaxDetails Panel Object.
 	 */
 	public NetworkListener(BioPaxDetailsPanel bpPanel) {
-		//this.cyNetworkList = new ArrayList();
 		this.bpPanel = bpPanel;
 
 		// to catch network creation / destruction events
@@ -81,7 +77,6 @@ public class NetworkListener implements PropertyChangeListener {
 	 * @param cyNetwork Object.
 	 */
 	public void registerNetwork(CyNetwork cyNetwork) {
-		//cyNetworkList.add(cyNetwork.getIdentifier());
 		registerNodeSelectionEvents(cyNetwork);
 	}
 
@@ -146,7 +141,7 @@ public class NetworkListener implements PropertyChangeListener {
 			cyNetwork = Cytoscape.getNetwork(networkID);
 		}
 		
-		if(isBioPaxNetwork(cyNetwork)) {
+		if(BioPaxUtil.isBioPAXNetwork(cyNetwork)) {
 			bpPanel.resetText();
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		}
@@ -176,7 +171,6 @@ public class NetworkListener implements PropertyChangeListener {
 		if (networkId != null) {
 			// update bpPanel accordingly
             if (!sessionLoaded) {
-                //if (cyNetworkList.contains(networkId)) {
             	if (BioPaxUtil.getNetworkModelMap().containsKey(cyNetwork)) {
                     bpPanel.resetText();
                 } else {
@@ -185,14 +179,12 @@ public class NetworkListener implements PropertyChangeListener {
                 }
             }
             
-            /*
             // due to quirky-ness in event model, we could get here without registering network
             // check if this is a biopax network
-            if (isBioPaxNetwork(cyNetwork) 
-            		&& !cyNetworkList.contains(networkId)) {
+            if (BioPaxUtil.isBioPAXNetwork(cyNetwork) 
+            		&& !BioPaxUtil.getNetworkModelMap().containsKey(cyNetwork)) {
             	registerNetwork(cyNetwork);
             }
-            */
         }
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
@@ -203,14 +195,6 @@ public class NetworkListener implements PropertyChangeListener {
 	* @param networkID the ID of the CyNetwork just destroyed.
 	*/
 	private void networkDestroyed(String networkID) {
-		// get the index (if it exists) of this network in our list
-		/*
-		int networkIndex = cyNetworkList.indexOf(networkID);
-		// if it exists, remove it
-		if (networkIndex >= 0) {
-			cyNetworkList.remove(networkIndex);
-		}
-		*/
 		// destroy the corresponding model
 		BioPaxUtil.removeNetworkModel(Cytoscape.getNetwork(networkID));
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
@@ -223,20 +207,6 @@ public class NetworkListener implements PropertyChangeListener {
 	*/
 	private boolean networkViewsRemain() {
 		// interate through our network list checking if their views exists
-		/*
-		for (int lc = 0; lc < cyNetworkList.size(); lc++) {
-			// get the network id
-			String id = (String) cyNetworkList.get(lc);
-
-			// get the network view via id
-			CyNetworkView cyNetworkView = Cytoscape.getNetworkView(id);
-
-			if (cyNetworkView != null) {
-				return true;
-			}
-		}
-		*/
-
 		for (CyNetwork cn : BioPaxUtil.getNetworkModelMap().keySet()) {
 			// get the network id
 			String id = cn.getIdentifier();
@@ -258,29 +228,4 @@ public class NetworkListener implements PropertyChangeListener {
 		                  + " a BioPAX file to proceed.");
 	}
 
-	/*
-	* Determines if any network views we have created remains.
-	*
-	 * @return boolean if any network views that we have created remain.
-	*/
-	private boolean isBioPaxNetwork(CyNetwork cyNetwork) {
-		// get the network attributes
-		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-
-		// get cyNetwork id
-		String networkID = cyNetwork.getIdentifier();
-
-		// is the biopax network attribute true ?
-		Boolean b1 = networkAttributes.getBooleanAttribute(networkID,
-		                                                  MapBioPaxToCytoscape.BIOPAX_NETWORK);
-
-        Boolean b2 = networkAttributes.getBooleanAttribute(networkID, "BINARY_NETWORK");
-
-        // outta here
-		if (b1 == null && b2 == null) {
-			return false;
-		} else {
-            return true;
-        }
-	}
 }

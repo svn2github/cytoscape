@@ -34,7 +34,6 @@ package cytoscape.coreplugins.biopax.action;
 import cytoscape.coreplugins.biopax.util.cytoscape.CytoscapeWrapper;
 import cytoscape.util.OpenBrowser;
 
-
 import java.net.URL;
 
 import javax.swing.event.HyperlinkEvent;

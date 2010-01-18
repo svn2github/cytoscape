@@ -38,11 +38,16 @@ import cytoscape.coreplugins.biopax.action.LaunchExternalBrowser;
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 
+import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.StringWriter;
 
 import java.util.List;
 
@@ -61,6 +66,8 @@ import javax.swing.text.html.*;
  * @author Ethan Cerami.
  */
 public class BioPaxDetailsPanel extends JPanel {
+	private static final CyLogger log = CyLogger.getLogger(BioPaxDetailsPanel.class);
+	
 	/**
 	 * Foreground Color.
 	 */

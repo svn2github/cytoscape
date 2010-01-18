@@ -97,6 +97,9 @@ public class MapBioPaxToCytoscape {
 	 */
 	public static final String BIOPAX_NETWORK = "BIOPAX_NETWORK";
 
+	
+    public final static String BINARY_NETWORK = "BINARY_NETWORK";
+	
 	/**
 	 * Cytoscape Attribute:  BioPAX Edge Type.
 	 */
