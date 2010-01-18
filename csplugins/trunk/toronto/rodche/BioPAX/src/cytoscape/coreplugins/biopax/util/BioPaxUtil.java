@@ -77,8 +77,6 @@ public class BioPaxUtil {
     public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
     
     public static final String DEFAULT_CHARSET = "UTF-8";
-    
-    public static final String BIOPAX_MERGE_SRC = "biopax.merge.src";
 	
     public static final int MAX_DISPLAY_STRING_LEN = 25;
 

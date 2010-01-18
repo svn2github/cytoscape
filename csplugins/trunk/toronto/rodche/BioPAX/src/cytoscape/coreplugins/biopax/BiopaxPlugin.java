@@ -35,8 +35,6 @@ package cytoscape.coreplugins.biopax;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.coreplugins.biopax.action.ExportAsBioPAXAction;
-import cytoscape.coreplugins.biopax.action.IntegrateBioPAXAction;
-import cytoscape.coreplugins.biopax.action.MergeBioPAXAction;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.data.ImportHandler;
@@ -114,8 +112,6 @@ public class BiopaxPlugin extends CytoscapePlugin {
 		
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
 		cyMenus.addAction(new ExportAsBioPAXAction());
-		cyMenus.addAction(new MergeBioPAXAction());
-		cyMenus.addAction(new IntegrateBioPAXAction());
 		cyMenus.addAction(new CreateNodesForControlsAction());
 		CyLayoutAlgorithm allLayouts[] = CyLayouts.getAllLayouts()
 			.toArray(new CyLayoutAlgorithm[1]);

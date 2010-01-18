@@ -32,7 +32,6 @@
 package cytoscape.coreplugins.biopax.action;
 
 import cytoscape.coreplugins.biopax.util.cytoscape.CytoscapeWrapper;
-import cytoscape.coreplugins.biopax.view.BioPaxDetailsPanel;
 import cytoscape.util.OpenBrowser;
 
 

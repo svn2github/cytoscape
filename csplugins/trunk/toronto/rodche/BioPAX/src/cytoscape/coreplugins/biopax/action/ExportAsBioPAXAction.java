@@ -106,10 +106,11 @@ class ExportAsBioPAXTask implements Task {
 
     public void run() {
 		taskMonitor.setStatus("Saving BioPAX...");
-        Model bpModel = BioPaxUtil.getNetworkModel(Cytoscape.getCurrentNetwork());
+		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+        Model bpModel = BioPaxUtil.getNetworkModel(currentNetwork);
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         String bpModelStr = (String) networkAttributes
-        	.getAttribute(Cytoscape.getCurrentNetwork().getIdentifier(),
+        	.getAttribute(currentNetwork.getIdentifier(),
         		BioPaxUtil.BIOPAX_MODEL_STRING);
         try {
             FileOutputStream fOutput = new FileOutputStream(fileName);
@@ -123,7 +124,7 @@ class ExportAsBioPAXTask implements Task {
             fOutput.close();
 
 			Object[] ret_val = new Object[3];
-			ret_val[0] = Cytoscape.getCurrentNetwork();
+			ret_val[0] = currentNetwork;
 			ret_val[1] = new File(fileName).toURI();
 			ret_val[2] = Cytoscape.FILE_BIOPAX;
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);

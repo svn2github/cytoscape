@@ -34,7 +34,6 @@ package cytoscape.coreplugins.biopax.action;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
 
 import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.cytoscape.CySessionUtil;
