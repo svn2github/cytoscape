@@ -76,7 +76,7 @@ import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.swing.CheckBoxJList;
-
+import java.util.HashMap;
 
 /**
  * Define toolbar for Attribute Browser.
@@ -788,12 +788,68 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	
 	public List<String> getUpdatedSelectedList() {
 		final Object[] selected = attributeList.getSelectedValues();
-		orderedCol.clear();
+				
+		orderedCol.remove("ID");
 		
-		for (Object colName : selected)
-			orderedCol.add(colName.toString());
+		// determine if orderedCol is ordered (drag and drop column may change the order)
+		boolean isColOrdered = true;
+		for (int i=0; i< orderedCol.size()-1; i++){
+			if (orderedCol.get(i).compareToIgnoreCase(orderedCol.get(i+1)) > 0){
+				isColOrdered = false;
+			}
+		}
+		
+		if (isColOrdered){
+			// The original columns are in order, leave as is 
+			orderedCol.clear();
+			for (Object colName : selected)
+				orderedCol.add(colName.toString());
+			return orderedCol;
+		}
+
+		// The original columns are out of order 		
+
+		// Determine the cols to be added
+		ArrayList<String> colsToBeAdded = new ArrayList<String>();
+		HashMap<String, String> hashMap_orig = new HashMap<String, String>();
+		
+		for (int i=0; i< orderedCol.size(); i++){
+			hashMap_orig.put(orderedCol.get(i), null);
+		}
+
+		for (Object colName : selected) {
+			if (!hashMap_orig.containsKey(colName.toString())){
+				colsToBeAdded.add(colName.toString());
+			}
+		}
+		
+		// Determine the cols to be deleted
+		HashMap<String, String> hashMap_new = new HashMap<String, String>();
+		ArrayList<String> colsToBeDeleted = new ArrayList<String>();
+
+		for (Object colName : selected) {
+			hashMap_new.put(colName.toString(), null);
+		}
+		
+		for (int i=0; i< orderedCol.size(); i++){
+			if (!hashMap_new.containsKey(orderedCol.get(i))){
+				colsToBeDeleted.add(orderedCol.get(i));
+			}			
+		}
+
+		// delete the cols to be deleted from orderedCol
+		for (int i=0; i< colsToBeDeleted.size(); i++){
+			orderedCol.remove(colsToBeDeleted.get(i));
+		}
+		
+		// Append the new columns to the end
+		for (int i=0; i< colsToBeAdded.size(); i++){
+			orderedCol.add(colsToBeAdded.get(i));
+		}
+		
 		return orderedCol;
 	}
+	
 	
 	public void updateList(List<String> newSelection) {
 		orderedCol = newSelection;
