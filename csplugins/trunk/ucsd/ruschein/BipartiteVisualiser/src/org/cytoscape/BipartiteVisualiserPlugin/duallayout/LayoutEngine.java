@@ -146,7 +146,7 @@ public class LayoutEngine {
 				nodeAttr.setAttribute(node.getIdentifier(), visualStyleName, network1.getTitle());
 			} else if (!inNetwork1 && inNetwork2) {
 				rightSet.add(node);
-				nodeAttr.setAttribute(node.getIdentifier(), visualStyleName, network1.getTitle());
+				nodeAttr.setAttribute(node.getIdentifier(), visualStyleName, network2.getTitle());
 			} else // This should never happen!
 				throw new IllegalStateException("Do not know how to categorise a node!");
 		}
