@@ -328,7 +328,7 @@ $(function(){
         panZoomControlVisible: true,
 		edgesMerged: false,
 		nodeLabelsVisible: true,
-		edgeLabelsVisible: true,
+		edgeLabelsVisible: false,
 		nodeTooltipsEnabled: true,
 		edgeTooltipsEnabled: true,
 		swfPath: path("swf/CytoscapeWeb"),
@@ -465,7 +465,8 @@ $(function(){
                                     <li><label>Style</label>\
                                         <ul>\
                                             <li id="merge_edges" class="ui-menu-checkable"><label>Merge edges</label></li>\
-                                            <li id="show_labels" class="ui-menu-checkable"><label>Show labels</label></li>\
+                                            <li id="show_node_labels" class="ui-menu-checkable"><label>Show node labels</label></li>\
+                                            <li id="show_edge_labels" class="ui-menu-checkable"><label>Show edge labels</label></li>\
                                             <li>\
                                                 <label>Visualisation</label>\
                                                 <ul id="visual_style" class="ui-menu-one-checkable">\
@@ -523,6 +524,7 @@ $(function(){
              
         // create the menu and add handlers for when items are selected
         $("#menu").menu({
+        	menuItemMaxWidth: 180,
             onMenuItemClick: function(li){
                 switch( li.attr("id") || li.parent().attr("id") ) {
                 case "layout_style":
@@ -565,9 +567,12 @@ $(function(){
                        
             onMenuItemCheck: function(li){
                 switch( li.attr("id") ) {
-                case "show_labels":
+                case "show_node_labels":
                     $("#cytoweb_container").cw().nodeLabelsVisible(true);
                     break;
+                case "show_edge_labels":
+                	$("#cytoweb_container").cw().edgeLabelsVisible(true);
+                	break;
                 case "merge_edges":
                     $("#cytoweb_container").cw().edgesMerged(true);
                     break;
@@ -576,9 +581,12 @@ $(function(){
             
             onMenuItemUncheck: function(li){
                 switch( li.attr("id") ) {
-                case "show_labels":
+                case "show_node_labels":
                     $("#cytoweb_container").cw().nodeLabelsVisible(false);
                     break;
+                case "show_edge_labels":
+                	$("#cytoweb_container").cw().edgeLabelsVisible(false);
+                	break;
                 case "merge_edges":
                     $("#cytoweb_container").cw().edgesMerged(false);
                     break;
@@ -755,7 +763,8 @@ $(function(){
         // add initial state of check marks
         var check = {};
         check["merge_edges"] = $("#cytoweb_container").cw().edgesMerged();
-        check["show_labels"] = $("#cytoweb_container").cw().nodeLabelsVisible();
+        check["show_node_labels"] = $("#cytoweb_container").cw().nodeLabelsVisible();
+        check["show_edge_labels"] = $("#cytoweb_container").cw().edgeLabelsVisible();
         
         for( var i in check ){
             var id = i;

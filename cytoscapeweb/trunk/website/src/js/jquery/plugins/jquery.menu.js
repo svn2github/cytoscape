@@ -124,10 +124,10 @@
                 show(  li.children("ul") );
                 li.children("ul").each(function(){
                     
-                    var maxWidth = 0;
+                    var maxWidth = options.menuItemMaxWidth;
                     var height = 0;
                     
-                    $(this).css("width", options.menuItemMaxWidth);
+                    $(this).css("width", maxWidth);
                     
                     $(this).children("li").each(function(){
                         $(this).css("display", "block").css("width", "auto");
