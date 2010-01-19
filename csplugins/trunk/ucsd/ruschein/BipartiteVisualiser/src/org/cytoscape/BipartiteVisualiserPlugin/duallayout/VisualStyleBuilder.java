@@ -27,15 +27,15 @@ public class VisualStyleBuilder {
 	// This is a Singleton.
 	private static VisualStyleBuilder builder = new VisualStyleBuilder();
 
-	public static VisualStyle getVisualStyle(final String vsName) {
-		return builder.getStyle(vsName);
+	public static VisualStyle getVisualStyle(final String vsName, final String network1, final String network2) {
+		return builder.getStyle(vsName, network1, network2);
 	}
 
 	private VisualStyleBuilder() {
 	}
 
-	public VisualStyle getStyle(final String vsName) {
-		final VisualStyle newStyle = buildStyle(vsName);
+	public VisualStyle getStyle(final String vsName, final String network1, final String network2) {
+		final VisualStyle newStyle = buildStyle(vsName, network1, network2);
 		Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 				.addVisualStyle(newStyle);
 		return newStyle;
@@ -46,9 +46,12 @@ public class VisualStyleBuilder {
 	 * 
 	 * @return default visual style.
 	 */
-	private VisualStyle buildStyle(final String vsName) {
+	private VisualStyle buildStyle(final String vsName, final String network1, final String network2) {
 		final Color NODE_COLOR = new Color(25, 25, 200);
-		final Color NODE_BORDER_COLOR = new Color(25, 25, 25);
+		
+		final Color NODE_BORDER_COLOR_1 = new Color(25, 25, 25);
+		final Color NODE_BORDER_COLOR_2 = new Color(0, 50, 185);
+		
 		final Color NODE_LABEL_COLOR = new Color(10, 10, 10);
 
 		final Color EDGE_COLOR = new Color(10, 10, 10);
@@ -89,10 +92,26 @@ public class VisualStyleBuilder {
 
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 4);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR,
-				NODE_BORDER_COLOR);
+				NODE_BORDER_COLOR_1);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SIZE, 65);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR,
 				NODE_LABEL_COLOR);
+		
+		// Node Mapping
+		// 1. Node border color
+		final DiscreteMapping nodeBorderColor = new DiscreteMapping(Color.black,
+				vsName, ObjectMapping.NODE_MAPPING);
+		nodeBorderColor.setControllingAttributeName(vsName, null, false);
+
+		nodeBorderColor.putMapValue(network1, NODE_BORDER_COLOR_1);
+		nodeBorderColor.putMapValue(network2, NODE_BORDER_COLOR_2);
+
+		Calculator nodeBorderColorCalc = new BasicCalculator(vsName + "-"
+				+ "NodeBorderColorMapping", nodeBorderColor,
+				VisualPropertyType.NODE_BORDER_COLOR);
+
+		nac.setCalculator(nodeBorderColorCalc);
+		
 
 		eac.setCalculator(calce);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_COLOR,
@@ -133,7 +152,6 @@ public class VisualStyleBuilder {
 
 		eac.setCalculator(edgeColorCalc);
 
-		// Edge continuous mappings
 
 		return defStyle;
 	}

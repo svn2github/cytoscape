@@ -110,7 +110,7 @@ public class LayoutEngine {
 		final double[] yMax = new double[3];
 		findExtents(networkView, leftSet, rightSet, xMin, xMax, yMin, yMax);
 		
-		final VisualStyle style = VisualStyleBuilder.getVisualStyle(visualStyleName);
+		final VisualStyle style = VisualStyleBuilder.getVisualStyle(visualStyleName, network1.getTitle(), network2.getTitle());
 		networkView.setVisualStyle(style.getName());
 		Cytoscape.getVisualMappingManager().setVisualStyle(style);
 		networkView.redrawGraph(false, true);
@@ -126,23 +126,28 @@ public class LayoutEngine {
 				     final Set<CyNode> rightSet)
 	{
 		@SuppressWarnings("unchecked")
-		final Set<CyNode> orig1 = new HashSet<CyNode>((List<CyNode>)network1);
+		final Set<CyNode> orig1 = new HashSet<CyNode>(network1.nodesList());
 		@SuppressWarnings("unchecked")
-		final Set<CyNode> orig2 = new HashSet<CyNode>((List<CyNode>)network2);
+		final Set<CyNode> orig2 = new HashSet<CyNode>(network2.nodesList());
 
 		@SuppressWarnings("unchecked")
 		final List<CyNode> resultNodes = (List<CyNode>)result.nodesList();
+		
+		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		
 		for (final CyNode node : resultNodes) {
 			final boolean inNetwork1 = orig1.contains(node);
 			final boolean inNetwork2 = orig2.contains(node);
 
 			if (inNetwork1 && inNetwork2)
 				/* Do Nothing. */;
-			else if (inNetwork1 && !inNetwork2)
+			else if (inNetwork1 && !inNetwork2) {
 				leftSet.add(node);
-			else if (!inNetwork1 && inNetwork2)
+				nodeAttr.setAttribute(node.getIdentifier(), visualStyleName, network1.getTitle());
+			} else if (!inNetwork1 && inNetwork2) {
 				rightSet.add(node);
-			else // This should never happen!
+				nodeAttr.setAttribute(node.getIdentifier(), visualStyleName, network1.getTitle());
+			} else // This should never happen!
 				throw new IllegalStateException("Do not know how to categorise a node!");
 		}
 	}
