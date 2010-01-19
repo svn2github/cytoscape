@@ -26,7 +26,7 @@
             </div>
             
             <?php
-                echo $release_info;
+                echo $info;
             ?>
             
             <div class="description <?php echo ($first ? "latest" : ""); ?>"><?php echo $description; ?></div>
