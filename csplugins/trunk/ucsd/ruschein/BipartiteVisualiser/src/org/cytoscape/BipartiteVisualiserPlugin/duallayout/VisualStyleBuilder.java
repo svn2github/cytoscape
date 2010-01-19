@@ -49,7 +49,7 @@ public class VisualStyleBuilder {
 	private VisualStyle buildStyle(final String vsName, final String network1, final String network2) {
 		final Color NODE_COLOR = new Color(25, 25, 200);
 		
-		final Color NODE_BORDER_COLOR_1 = new Color(25, 25, 25);
+		final Color NODE_BORDER_COLOR_1 = new Color(185, 50, 0);
 		final Color NODE_BORDER_COLOR_2 = new Color(0, 50, 185);
 		
 		final Color NODE_LABEL_COLOR = new Color(10, 10, 10);
@@ -83,17 +83,16 @@ public class VisualStyleBuilder {
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
 				NODE_COLOR);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_OPACITY, 0);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE,
-				NodeShape.ROUND_RECT);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE, NodeShape.RECT);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_OPACITY,
 				225);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_POSITION,
 				POSITION);
 
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 4);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 5);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR,
 				NODE_BORDER_COLOR_1);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SIZE, 65);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SIZE, 45);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR,
 				NODE_LABEL_COLOR);
 		
@@ -119,14 +118,14 @@ public class VisualStyleBuilder {
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL_COLOR,
 				EDGE_LABEL_COLOR);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_FONT_SIZE, 5);
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, 90);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, 190);
 		eac.getDefaultAppearance().set(
 				VisualPropertyType.EDGE_SRCARROW_OPACITY, 120);
 		eac.getDefaultAppearance().set(
 				VisualPropertyType.EDGE_TGTARROW_OPACITY, 120);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL_OPACITY,
 				70);
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LINE_WIDTH, 3);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LINE_WIDTH, 2);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL, "");
 
 

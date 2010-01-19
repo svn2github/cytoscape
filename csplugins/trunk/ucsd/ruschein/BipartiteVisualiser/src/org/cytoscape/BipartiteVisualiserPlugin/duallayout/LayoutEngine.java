@@ -174,7 +174,7 @@ public class LayoutEngine {
 		for (final CyNode node : resultNodes) {
 			final boolean inNetwork1 = orig1.contains(node);
 			final boolean inNetwork2 = orig2.contains(node);
-
+			
 			if (inNetwork1 && inNetwork2)
 				/* Do Nothing. */;
 			else if (inNetwork1 && !inNetwork2) {
