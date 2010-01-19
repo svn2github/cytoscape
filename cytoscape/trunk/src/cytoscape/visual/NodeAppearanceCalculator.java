@@ -57,6 +57,15 @@ import java.util.List;
 public class NodeAppearanceCalculator extends AppearanceCalculator {
     private NodeAppearance defaultAppearance = new NodeAppearance();
 
+	/**
+	 * @deprecated Use VisualStyle.getNodeAppearanceCalculator() instead. Will be removed
+	 * January 2011.
+	 */
+	@Deprecated
+    public NodeAppearanceCalculator() {
+		super(null);
+	}
+
     /**
      * Creates a new NodeAppearanceCalculator object.
      */
