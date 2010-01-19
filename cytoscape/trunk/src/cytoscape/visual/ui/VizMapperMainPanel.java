@@ -321,9 +321,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		visualPropertySheetPanel.repaint();
 
-		final String targetName = vmm.getVisualStyle().getName();
-		updateDefaultImage(targetName, (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName)).getView(), defaultAppearencePanel.getSize());
-		setDefaultPanel(defaultImageManager.get(targetName));
+		final String vsName = vmm.getVisualStyle().getName();
+		updateDefaultImage(vsName, (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(vsName)).getView(), defaultAppearencePanel.getSize());
+		setDefaultPanel(defaultImageManager.get(vsName),true);
 	}
 
 	
@@ -847,7 +847,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			defImg = defaultImageManager.get(vsName);
 		}
 		// Set the default view to the panel.
-		setDefaultPanel(defImg);
+		setDefaultPanel(defImg,false);
 
 		// Sync. locks
 		VisualPropertyDependency dep = vmm.getVisualStyle().getDependency();
@@ -1783,7 +1783,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return mappedKeys;
 	}
 
-	private void setDefaultPanel(final Image defImage) {
+	private void setDefaultPanel(final Image defImage, boolean repaint) {
 		if (defImage == null)
 			return;
 
@@ -1796,6 +1796,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		defaultImageButton.setIcon(new ImageIcon(defImage));
 		defaultAppearencePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(new DefaultMouseListener());
+		if ( repaint )
+			Cytoscape.getDesktop().repaint();
 	}
 
 	class DefaultMouseListener extends MouseAdapter {
@@ -1807,7 +1809,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder .showDialog(Cytoscape .getDesktop());
 				updateDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
-				setDefaultPanel(defaultImageManager.get(targetName));
+				setDefaultPanel(defaultImageManager.get(targetName), false);
 
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 				vmm.setVisualStyle(targetName);
@@ -1940,7 +1942,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
-			setDefaultPanel(defaultImageManager.get(vmName));
+			setDefaultPanel(defaultImageManager.get(vmName),false);
 			vsNameComboBox.setSelectedItem(vmName);
 			vmm.setVisualStyle(vmName);
 			setPropertyTable();
@@ -1973,7 +1975,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				} else {
 					switchVS(vs.getName(), false);
 					vsNameComboBox.setSelectedItem(vs.getName());
-					setDefaultPanel(this.defaultImageManager.get(vs.getName()));
+					setDefaultPanel(this.defaultImageManager.get(vs.getName()),false);
 				}
 			}
 
@@ -2537,7 +2539,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (view != null) {
 				CyLogger.getLogger().debug("Creating Default Image for new visual style " + name);
 				updateDefaultImage(name, view, panelSize);
-				setDefaultPanel(defaultImageManager.get(name));
+				setDefaultPanel(defaultImageManager.get(name),false);
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
@@ -2706,7 +2708,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (view != null) {
 				CyLogger.getLogger().debug("Creating Default Image for new visual style " + newName);
 				updateDefaultImage(newName, view, panelSize);
-				setDefaultPanel(defaultImageManager.get(newName));
+				setDefaultPanel(defaultImageManager.get(newName),false);
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());

@@ -139,7 +139,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
-		dab.applyDependenciesToCheckboxes();
+
+		dab.buildList();
 
 		dab.mainView.updateView();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
@@ -161,7 +162,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
 		                                            .getDefaultBackgroundColor());
-		dab.mainView.updateView();
+		dab.buildList();
 
 		return dab.getPanel();
 	}
@@ -350,8 +351,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			buildList();
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-			mainView.updateView();
-			mainView.repaint();
 		}
 	}
 
@@ -412,7 +411,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 */
 	private void buildList() {
 
-		syncPropertiesWithDependencies();
+		syncDependencies();
 
 		List<Icon> nodeIcons = new ArrayList<Icon>();
 		List<Icon> edgeIcons = new ArrayList<Icon>();
@@ -467,9 +466,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 		mainView.repaint();
 	}
 
-	private void syncPropertiesWithDependencies() {
+	private void syncDependencies() {
 		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
 
+		// sync properties with dependencies
 		for ( VisualPropertyType type : VisualPropertyType.values() ) {
 			if ( !type.isAllowed() ) 
 				continue;
@@ -486,14 +486,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 					EDGE_PROPS.add(type);
 			}
 		}
-	}
 
-	private void applyDependenciesToCheckboxes() {
-		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                              .getDependency();
+		// apply dependencies to checkboxes
 		for ( Definition def : dependencyCheckBoxMap.keySet() ) 
 			dependencyCheckBoxMap.get(def).setSelected( dep.check( def ) ); 
-
 	}
 
 	private void initDependencyPanel() {
