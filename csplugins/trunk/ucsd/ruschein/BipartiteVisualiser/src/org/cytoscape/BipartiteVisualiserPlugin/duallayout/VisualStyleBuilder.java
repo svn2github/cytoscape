@@ -89,10 +89,10 @@ public class VisualStyleBuilder {
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_POSITION,
 				POSITION);
 
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 5);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 3);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR,
 				NODE_BORDER_COLOR_1);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SIZE, 45);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SIZE, 35);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR,
 				NODE_LABEL_COLOR);
 		
@@ -118,7 +118,7 @@ public class VisualStyleBuilder {
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL_COLOR,
 				EDGE_LABEL_COLOR);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_FONT_SIZE, 5);
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, 190);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, 100);
 		eac.getDefaultAppearance().set(
 				VisualPropertyType.EDGE_SRCARROW_OPACITY, 120);
 		eac.getDefaultAppearance().set(

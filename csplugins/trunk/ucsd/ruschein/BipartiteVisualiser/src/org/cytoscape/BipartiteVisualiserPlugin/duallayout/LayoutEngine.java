@@ -14,16 +14,19 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
+import cytoscape.layout.Tunable;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
 import cytoscape.visual.VisualStyle;
 
 
 public class LayoutEngine {
 
 	static String MM_EDGE_ATTR_PREFIX = "MM-";
+	
+	private static final String LAYOUT_ALGORITHM = "force-directed";
 
 	private final EdgeView edgeView;
 
@@ -106,9 +109,12 @@ public class LayoutEngine {
 		final Set<CyNode> rightSet  = new HashSet<CyNode>();
 		categoriseNodes(result, leftSet, rightSet);
 
+		// First, apply global layout
 		final CyNetworkView networkView = Cytoscape.createNetworkView(result);
-		CyLayouts.getDefaultLayout().doLayout(networkView);
-
+		final CyLayoutAlgorithm layoutAlgorithm = CyLayouts.getLayout(LAYOUT_ALGORITHM);		
+		layoutAlgorithm.getSettings().get("defaultSpringLength").setValue((Double)200.0);
+		layoutAlgorithm.doLayout(networkView);
+		
 		final double[] xMin = new double[3];
 		final double[] xMax = new double[3];
 		final double[] yMin = new double[3];
@@ -152,7 +158,10 @@ public class LayoutEngine {
 		while (nodeViewsIterator.hasNext())
 			((NodeView)nodeViewsIterator.next()).setNodePosition(true);
 		
-		final VisualStyle style = VisualStyleBuilder.getVisualStyle(visualStyleName, network1.getTitle(), network2.getTitle());
+		VisualStyle style = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(visualStyleName);
+		if(style == null || style.getName().equals("default")) {
+			style = VisualStyleBuilder.getVisualStyle(visualStyleName, network1.getTitle(), network2.getTitle());
+		}
 		networkView.setVisualStyle(style.getName());
 		Cytoscape.getVisualMappingManager().setVisualStyle(style);
 		networkView.redrawGraph(false, true);
