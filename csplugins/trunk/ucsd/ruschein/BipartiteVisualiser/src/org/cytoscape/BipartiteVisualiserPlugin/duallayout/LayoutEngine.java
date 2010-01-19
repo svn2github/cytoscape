@@ -5,6 +5,7 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +17,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.VisualStyle;
+import cytoscape.view.CyNodeView;
+
 
 public class LayoutEngine {
 
@@ -34,16 +36,18 @@ public class LayoutEngine {
 	private static final int RIGHT  = 1;
 	private static final int CENTRE = 2;
 
-	public LayoutEngine(final EdgeView edgeView, final CyNetwork parentNetwork,
-			final CyNetwork network1, final CyNetwork network2) {
 
+	public LayoutEngine(final EdgeView edgeView, final CyNetwork parentNetwork,
+	                    final CyNetwork network1, final CyNetwork network2)
+	{
 		this.edgeView = edgeView;
 		this.parentNetwork = parentNetwork;
 		this.network1 = network1;
 		this.network2 = network2;
 	}
 
-	public void doLayout(TaskMonitor taskMonitor) {
+
+	public void doLayout(final TaskMonitor taskMonitor) {
 		if (taskMonitor != null)
 			taskMonitor.setPercentCompleted(0);
 
@@ -73,8 +77,8 @@ public class LayoutEngine {
 		final Set<CyEdge> edgesInResult = new HashSet<CyEdge>(
 				(List<CyEdge>) result.edgesList());
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-
-		for (CyNode node : nodesInResult) {
+		
+		for (final CyNode node: nodesInResult) {
 			// Get the list of edges connected to this node
 			int[] edgeIndices = parentNetwork.getAdjacentEdgeIndicesArray(node
 					.getRootGraphIndex(), true, true, true);
@@ -109,11 +113,43 @@ public class LayoutEngine {
 		final double[] yMin = new double[3];
 		final double[] yMax = new double[3];
 		findExtents(networkView, leftSet, rightSet, xMin, xMax, yMin, yMax);
-		
-		final VisualStyle style = VisualStyleBuilder.getVisualStyle(visualStyleName, network1.getTitle(), network2.getTitle());
-		networkView.setVisualStyle(style.getName());
-		Cytoscape.getVisualMappingManager().setVisualStyle(style);
-		networkView.redrawGraph(false, true);
+
+		// Calculate left/right shifts...
+		double maxWidth = Math.max(xMax[LEFT] - xMin[LEFT], xMax[RIGHT] - xMin[RIGHT]);
+		final boolean centreIsEmpty = xMin[CENTRE] == Double.POSITIVE_INFINITY;
+		if (!centreIsEmpty)
+			maxWidth = Math.max(maxWidth, xMax[CENTRE] - xMin[CENTRE]);
+		final double baseShift = (maxWidth == 0) ? 100 : maxWidth / 3.0;
+		double leftShift, rightShift;
+		if (centreIsEmpty) {
+			double delta = xMin[RIGHT] - xMax[LEFT];
+			double totalShift = -delta + baseShift;
+			leftShift  = - (totalShift / 2.0);
+			rightShift = + (totalShift / 2.0);
+		} else { // We have at least one "shared" node in the centre.
+			double delta = xMin[CENTRE] - xMax[LEFT];
+			double totalShift = -delta + baseShift;
+			leftShift = -totalShift;
+
+			delta = xMin[RIGHT] - xMax[CENTRE];
+			totalShift = -delta + baseShift;
+			rightShift = +totalShift;
+		}
+
+		// ...and now apply them.
+		for (final CyNode node : leftSet) {
+			final CyNodeView view = (CyNodeView)networkView.getNodeView(node);
+			view.setXPosition(view.getXPosition() + leftShift);
+		}
+		for (final CyNode node : rightSet) {
+			final CyNodeView view = (CyNodeView)networkView.getNodeView(node);
+			view.setXPosition(view.getXPosition() + rightShift);
+		}
+
+		// Make sure all the nodes have their position updated.
+		Iterator nodeViewsIterator = networkView.getNodeViewsIterator();
+		while (nodeViewsIterator.hasNext())
+			((NodeView)nodeViewsIterator.next()).setNodePosition(true);
 	}
 
 	/**
