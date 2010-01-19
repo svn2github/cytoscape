@@ -27,9 +27,9 @@
     <p>It is important to note that Cytoscape Web does not load remote files for you.  So if you
     have a graph file you want to load from a server, you must load the file into a
     <code>string</code>, either by hardcoding the graph into your code or loading the graph file via
-    AJAX first.  We recommend you take a look at <a href="http://jquery.com">jQuery</a>.
+    AJAX first.  We recommend you take a look at <a href="http://jquery.com" rel="external">jQuery</a>.
     It makes Javascript <em>really</em> easy, especially
-    <a href="http://docs.jquery.com/Ajax">AJAX</a>.</p>
+    <a href="http://docs.jquery.com/Ajax" rel="external">AJAX</a>.</p>
     
     <p>Now, take a look at this example.  It has everything needed to get Cytoscape Web up and
     running.</p>

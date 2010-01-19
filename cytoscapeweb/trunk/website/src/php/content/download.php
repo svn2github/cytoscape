@@ -41,11 +41,11 @@
     <h1>Source Code</h1>
     <div class="description">
         <p>
-            You can browse the Cytoscape Web source code <a href="http://chianti.ucsd.edu/svn/cytoscapeweb/">here</a>.
+            You can browse the Cytoscape Web source code <a href="http://chianti.ucsd.edu/svn/cytoscapeweb/" rel="external">here</a>.
         </p>
         <p>
             If you want to download the latest source from our 
-            <a href="http://subversion.tigris.org">Subversion</a> server, use one of the following commands.
+            <a href="http://subversion.tigris.org" rel="external">Subversion</a> server, use one of the following commands.
         </p>
         <p>
             Download only the Cytoscape Web project:

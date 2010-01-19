@@ -2,7 +2,11 @@ var animation_speed = "fast";
 
 $(function(){
 
-    
+	// Make these links open in another page
+	$("a[rel=external]").click(function() {
+        this.target = "_blank";
+	});
+
 
     var search_default_text = $("#search_input").find("input").val();
     

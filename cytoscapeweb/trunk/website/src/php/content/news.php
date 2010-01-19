@@ -2,7 +2,7 @@
     
     <h1>Subscription</h1>
     
-    <p>The news feed contains updates related to Cytoscape Web as posted on <a href="<?php echo $rss_home_link; ?>">the Cytoscape Web Google group</a>.  The latest entries are posted here.</p>
+    <p>The news feed contains updates related to Cytoscape Web as posted on <a href="<?php echo $rss_home_link; ?>" rel="external">the Cytoscape Web Google group</a>.  The latest entries are posted here.</p>
     
     <p>Subscribing to the news feed allows you to receive automatic email updates whenever a new entry is posted.</p>
     

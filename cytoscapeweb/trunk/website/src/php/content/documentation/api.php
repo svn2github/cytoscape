@@ -33,7 +33,10 @@
                 
                 $release_info_file = fopen("$dir/$version_dir/.release_info", "r");
                 if( $release_info_file ){
-                    $release_info = fgets($release_info_file);
+                	$release_info = "";
+                	while ( ! feof($release_info_file) ) {
+                    	$release_info = $release_info . "\n" . fgets($release_info_file);
+                	}
                     fclose($release_info_file);
                     $api->release_info = $release_info;
                 }

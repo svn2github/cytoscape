@@ -80,6 +80,9 @@
         include_js("/js/content/$navigation_link/$page_link.ie.js");
     }
 	
+	// Google Analytics
+	include_js("/js/util/ga.js");
+	
 	// remove duplicates from css, js, rss includes
 	$js_includes = array_unique($js_includes);
 	$css_includes = array_unique($css_includes);
