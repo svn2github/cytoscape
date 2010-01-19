@@ -18,6 +18,7 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
+import cytoscape.visual.VisualStyle;
 
 
 public class LayoutEngine {
@@ -138,11 +139,11 @@ public class LayoutEngine {
 
 		// ...and now apply them.
 		for (final CyNode node : leftSet) {
-			final CyNodeView view = (CyNodeView)networkView.getNodeView(node);
+			final NodeView view = networkView.getNodeView(node);
 			view.setXPosition(view.getXPosition() + leftShift);
 		}
 		for (final CyNode node : rightSet) {
-			final CyNodeView view = (CyNodeView)networkView.getNodeView(node);
+			final NodeView view = networkView.getNodeView(node);
 			view.setXPosition(view.getXPosition() + rightShift);
 		}
 
@@ -150,6 +151,11 @@ public class LayoutEngine {
 		Iterator nodeViewsIterator = networkView.getNodeViewsIterator();
 		while (nodeViewsIterator.hasNext())
 			((NodeView)nodeViewsIterator.next()).setNodePosition(true);
+		
+		final VisualStyle style = VisualStyleBuilder.getVisualStyle(visualStyleName, network1.getTitle(), network2.getTitle());
+		networkView.setVisualStyle(style.getName());
+		Cytoscape.getVisualMappingManager().setVisualStyle(style);
+		networkView.redrawGraph(false, true);
 	}
 
 	/**
