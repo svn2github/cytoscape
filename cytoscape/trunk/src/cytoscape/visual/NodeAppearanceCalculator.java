@@ -63,7 +63,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
 	 */
 	@Deprecated
     public NodeAppearanceCalculator() {
-		super(null);
+		super(new VisualPropertyDependencyImpl());
 	}
 
     /**
