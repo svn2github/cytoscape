@@ -632,7 +632,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		}
 	}
 
-	@Override
 	public void stateChanged(ChangeEvent e) {		
 		// Reset the children
 		applyVisualStyleMenu.removeAll();

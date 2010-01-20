@@ -3776,13 +3776,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	
-	@Override
 	public void attributeDefined(String attributeName) {
 		setAttrComboBox();
 	}
 
 	
-	@Override
 	public void attributeUndefined(String attributeName) {
 		setAttrComboBox();
 	}
