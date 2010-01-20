@@ -23,7 +23,7 @@ pluginCategory=Network and Attribute I/O
 # each additional author institution pair must be separated from other pairs by a ; (semicolon)
 pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross, Chris Sander:Memorial Sloan-Kettering Cancer Center;B. Arman Aksoy; Rex Dwyer:Singenta;Gary Bader, Igor Rodchenkov:Uniersity of Toronto
 # Date this plugin/plugin version was released
-releaseDate=November 1, 2009
+releaseDate=January 29, 2010
 
 # -- The following properties should be set ONLY BY CORE PLUGINS -- #
 downloadURL=http://cytoscape.org/plugins/plugins.xml

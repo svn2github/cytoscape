@@ -29,7 +29,7 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package cytoscape.coreplugins.biopax.util.cytoscape;
+package cytoscape.coreplugins.biopax.util;
 
 import cytoscape.CyNetwork;
 import cytoscape.CytoscapeInit;
@@ -37,7 +37,6 @@ import cytoscape.CytoscapeInit;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import java.util.ArrayList;
 
 
 /**
@@ -50,10 +49,9 @@ public class CyNetworkUtil {
 	 * Gets Network Stats, for presentation to end-user.
 	 *
 	 * @param network     CyNetwork Object.
-	 * @param warningList ArrayList of Warning Messages.
 	 * @return Human Readable String.
 	 */
-	public static String getNetworkStats(CyNetwork network, ArrayList warningList) {
+	public static String getNetworkStats(CyNetwork network) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 
@@ -70,18 +68,9 @@ public class CyNetworkUtil {
 			          + "\"Create View\" from the \"Edit\" menu.");
 		}
 
-		if (warningList.size() > 0) {
-			sb.append("\n\nWhile importing data to Cytoscape, a total " + "of "
-			          + warningList.size() + " warning messages were "
-			          + "generated.  First few warning messages are " + "shown below:\n\n");
-
-			int min = Math.min(3, warningList.size());
-
-			for (int i = 0; i < min; i++) {
-				sb.append(i + ". " + warningList.get(i) + "\n");
-			}
-		}
-
+		sb.append("\n\nWhile importing data, warning messages might have been "
+			          + "generated (check Cytoscape logs)\n\n");
+		
 		return sb.toString();
 	}
 }

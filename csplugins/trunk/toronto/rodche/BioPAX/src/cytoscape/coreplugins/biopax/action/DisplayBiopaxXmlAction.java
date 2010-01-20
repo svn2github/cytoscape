@@ -2,6 +2,7 @@ package cytoscape.coreplugins.biopax.action;
 
 import giny.view.NodeView;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.StringWriter;
 
@@ -12,13 +13,14 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 
 import cytoscape.Cytoscape;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CytoscapeAction;
 
 public final class DisplayBiopaxXmlAction extends CytoscapeAction {
-	private static final CyLogger log = CyLogger.getLogger(DisplayBiopaxXmlAction.class);
+	public static final CyLogger log = CyLogger.getLogger(DisplayBiopaxXmlAction.class);
 
 	private NodeView nodeView;
 	
@@ -47,7 +49,14 @@ public final class DisplayBiopaxXmlAction extends CytoscapeAction {
 			log.info("Node : " + nodeId 
 					+ ", BP element not found : " + biopaxId);
 		}
-		JOptionPane.showMessageDialog( Cytoscape.getDesktop(), writer.toString());	
+		
+		String owlxml = writer.toString();
+		String label = Cytoscape.getNodeAttributes().getStringAttribute(nodeId, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+			
+		Component component = Cytoscape.getDesktop()
+			.findComponentAt((int)nodeView.getXPosition(), (int)nodeView.getYPosition());
+		JOptionPane.showMessageDialog(component, owlxml,
+				label, JOptionPane.PLAIN_MESSAGE);
 	}
 	
 }

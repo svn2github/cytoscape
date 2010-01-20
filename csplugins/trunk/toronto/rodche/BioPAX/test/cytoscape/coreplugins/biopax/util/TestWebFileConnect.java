@@ -33,7 +33,6 @@ package cytoscape.coreplugins.biopax.util;
 
 import junit.framework.TestCase;
 
-import cytoscape.coreplugins.biopax.util.net.WebFileConnect;
 
 import java.io.File;
 

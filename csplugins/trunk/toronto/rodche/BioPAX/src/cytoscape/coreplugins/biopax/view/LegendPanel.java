@@ -8,7 +8,7 @@ import java.awt.*;
 import java.net.URL;
 
 import cytoscape.Cytoscape;
-import cytoscape.coreplugins.biopax.util.net.WebFileConnect;
+import cytoscape.coreplugins.biopax.util.WebFileConnect;
 
 /**
  * Displays the Default Visual Style Legend for the BioPAX Mapper.

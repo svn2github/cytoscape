@@ -34,9 +34,9 @@ package cytoscape.coreplugins.biopax.mapper;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 
 import giny.model.Edge;
 import giny.model.Node;

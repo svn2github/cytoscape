@@ -1,4 +1,4 @@
-// $Id: BioPaxWindow.java,v 1.4 2006/06/15 22:06:02 grossb Exp $
+// $Id: WebFileConnect.java,v 1.2 2006/06/15 22:06:02 grossb Exp $
 //------------------------------------------------------------------------------
 /** Copyright (c) 2006 Memorial Sloan-Kettering Cancer Center.
  **
@@ -29,61 +29,62 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package cytoscape.coreplugins.biopax.view;
+package cytoscape.coreplugins.biopax.util;
 
-import java.awt.*;
+import java.io.*;
 
-import javax.swing.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 /**
- * BioPAX Window.
- * <p/>
- * Currently only used for local developer testing.
+ * Web/File Connect Utility Class.
  *
  * @author Ethan Cerami.
  */
-public class BioPaxWindow extends JFrame {
-	private static BioPaxContainer bpContainer = null;
-	private Color bgColor = new Color(236, 233, 216);
-
-	//  Window Width/Height
-	private int width = 350;
-	private int height = 400;
-
+public class WebFileConnect {
 	/**
-	 * Private Constructor, to enforce singleton pattern.
+	 * Retrieves the Document from the Specified URL.
+	 *
+	 * @param urlStr URL String.
+	 * @return String Object containing the full Document Content.
+	 * @throws MalformedURLException URL is Malformed.
+	 * @throws IOException           Network Error.
 	 */
-	public BioPaxWindow() {
-		this.setResizable(false);
-		this.setBackground(bgColor);
-		this.setTitle("BioPAX Plugin");
+	public static String retrieveDocument(String urlStr) throws MalformedURLException, IOException {
+		URL url = new URL(urlStr);
+		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 
-		Container container = this.getContentPane();
-		bpContainer = BioPaxContainer.getInstance();
-		container.add(bpContainer);
-		setSize(width, height);
+		return readFile(in);
 	}
 
 	/**
-	 * Used to local testing purposes only.
+	 * Retrieves the Document from the Specified File.
 	 *
-	 * @param args Command Line Arguments
-	 * @throws Exception All Exceptions.
+	 * @param file File Object.
+	 * @return String Object containing the full Document Content.
+	 * @throws FileNotFoundException File Not Found.
+	 * @throws IOException           Read Error.
 	 */
-	public static void main(String[] args) throws Exception {
-		final BioPaxWindow bioPaxWindow = new BioPaxWindow();
-		SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					try {
-						BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-						BioPaxDetailsPanel bpPanel = bpContainer.getBioPaxDetailsPanel();
-						bpPanel.showDetails("CPATH-124");
-						bioPaxWindow.add(bpPanel);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
+	public static String retrieveDocument(File file) throws FileNotFoundException, IOException {
+		BufferedReader in = new BufferedReader(new FileReader(file));
+
+		return readFile(in);
+	}
+
+	/**
+	 * Reads a Document from a Buffered Reader.
+	 */
+	private static String readFile(BufferedReader in) throws IOException {
+		StringBuffer buf = new StringBuffer();
+		String str;
+
+		while ((str = in.readLine()) != null) {
+			buf.append(str + "\n");
+		}
+
+		in.close();
+
+		return buf.toString();
 	}
 }

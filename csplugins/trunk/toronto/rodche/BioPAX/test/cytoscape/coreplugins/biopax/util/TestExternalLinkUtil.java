@@ -35,8 +35,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import cytoscape.coreplugins.biopax.util.links.ExternalLink;
-import cytoscape.coreplugins.biopax.util.links.ExternalLinkUtil;
+import cytoscape.coreplugins.biopax.ExternalLink;
 
 import java.util.ArrayList;
 

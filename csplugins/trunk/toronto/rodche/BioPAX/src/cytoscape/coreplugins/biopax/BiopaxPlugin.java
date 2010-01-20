@@ -34,8 +34,12 @@ package cytoscape.coreplugins.biopax;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.coreplugins.biopax.action.DisplayBiopaxXmlAction;
 import cytoscape.coreplugins.biopax.action.ExportAsBioPAXAction;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
+import cytoscape.coreplugins.biopax.view.BioPaxDetailsPanel;
 import cytoscape.data.ImportHandler;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
@@ -58,6 +62,18 @@ public class BiopaxPlugin extends CytoscapePlugin {
 	
 	protected static final CyLogger log = CyLogger.getLogger(BiopaxPlugin.class);
 	
+	// Set True to see debug messages
+	private static final boolean DEBUG = true;
+	
+	static {
+		BiopaxPlugin.log.setDebug(DEBUG);
+		BioPaxGraphReader.log.setDebug(DEBUG);
+		MapBioPaxToCytoscape.log.setDebug(DEBUG);
+		BioPaxDetailsPanel.log.setDebug(DEBUG);
+		BioPaxVisualStyleUtil.log.setDebug(DEBUG);
+		BioPaxUtil.log.setDebug(DEBUG);
+		DisplayBiopaxXmlAction.log.setDebug(DEBUG);
+	}
 	
 	/**
 	 * Version Major Number.
@@ -149,5 +165,5 @@ public class BiopaxPlugin extends CytoscapePlugin {
 			BioPaxGraphReader.setDefaultLayoutAlgorithm(algo);
 		}
 	}
-	
+
 }

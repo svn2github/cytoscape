@@ -29,13 +29,15 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package cytoscape.coreplugins.biopax.style;
+package cytoscape.coreplugins.biopax.util;
 
 import cytoscape.Cytoscape;
 
 import cytoscape.coreplugins.biopax.BiopaxPlugin;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.util.BioPaxUtil;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.*;
 
 import cytoscape.visual.calculators.*;
@@ -55,7 +57,10 @@ import org.biopax.paxtools.model.level3.Control;
 import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 
+import giny.view.NodeView;
+
 import java.awt.*;
+import java.util.Iterator;
 
 
 /**
@@ -66,6 +71,7 @@ import java.awt.*;
  * @author Igor Rodchenkov (re-factoring using PaxTools API)
  */
 public class BioPaxVisualStyleUtil {
+	public static final CyLogger log = CyLogger.getLogger(BioPaxVisualStyleUtil.class);
 	/**
 	 * Verion Number String.
 	 */
@@ -342,5 +348,39 @@ public class BioPaxVisualStyleUtil {
 		                                                           discreteMapping,
 		                                                           VisualPropertyType.EDGE_TGTARROW_SHAPE);
 		eac.setCalculator(edgeTargetArrowCalculator);
+	}
+	
+
+	@SuppressWarnings("unchecked")
+	public static void setNodeToolTips(CyNetworkView networkView) {
+		// grab node attributes
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+		// iterate through the nodes
+		Iterator<NodeView> nodesIt = networkView.getNodeViewsIterator();
+		while (nodesIt.hasNext()) {
+			NodeView nodeView = nodesIt.next();
+			String id = nodeView.getNode().getIdentifier();
+			String tip = "He-he-he!";
+			
+			/*
+				+ nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE)
+				+ "\n" +
+				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_AVAILABILITY) 
+				+ "\n" +
+				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_CELLULAR_LOCATIONS)
+				+ "\n" +
+				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_DATA_SOURCES)
+				+ "\n" +
+				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_PATHWAY_NAME)
+				+ "\n" + 
+				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_RDF_ID);
+			*/
+			nodeView.setToolTip(tip);
+			
+			if(log.isDebugging())
+				log.debug("tooltip set "+ tip + " for node " + id);
+		}
+		networkView.updateView();
 	}
 }

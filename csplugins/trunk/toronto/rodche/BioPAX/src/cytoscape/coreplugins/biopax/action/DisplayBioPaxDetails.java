@@ -35,9 +35,9 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.util.cytoscape.CySessionUtil;
-import cytoscape.coreplugins.biopax.util.cytoscape.CytoscapeWrapper;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
+import cytoscape.coreplugins.biopax.util.CySessionUtil;
+import cytoscape.coreplugins.biopax.util.CytoscapeWrapper;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.coreplugins.biopax.view.BioPaxDetailsPanel;
 import cytoscape.data.SelectEvent;

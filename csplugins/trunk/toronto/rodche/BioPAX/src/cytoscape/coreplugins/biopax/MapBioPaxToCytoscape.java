@@ -29,17 +29,16 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package cytoscape.coreplugins.biopax.mapping;
+package cytoscape.coreplugins.biopax;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
-import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
-import cytoscape.coreplugins.biopax.util.links.ExternalLink;
-import cytoscape.coreplugins.biopax.util.links.ExternalLinkUtil;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.util.ExternalLinkUtil;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
@@ -84,11 +83,13 @@ import java.util.*;
  * @author Igor Rodchenkov (re-factoring using PaxTools API)
  * 
  * 
- * TODO This probably must be re-written from scratch - using PaxTools 'Traverser' class, so that all the properties will be mapped...
+ * TODO This probably must be re-written from scratch - 
+ * - using PaxTools 'AbstractTraverser' class, so that 
+ * all the properties will be mapped...
  */
 public class MapBioPaxToCytoscape {
 	
-	private static final CyLogger log = CyLogger.getLogger(MapBioPaxToCytoscape.class);
+	public static final CyLogger log = CyLogger.getLogger(MapBioPaxToCytoscape.class);
 	
 	/**
 	 * Cytoscape Attribute:  BioPAX Network.
@@ -350,7 +351,6 @@ public class MapBioPaxToCytoscape {
 	 * @throws JDOMException Error Parsing XML via JDOM.
 	 */
 	public void doMapping(Model model)  {
-		log.setDebug(true);
 		// map interactions
 		// note: this will now map complex nodes that participate in interactions.
 		mapInteractionNodes(model);
@@ -361,9 +361,7 @@ public class MapBioPaxToCytoscape {
 		mapComplexes(model);
 
 		// map attributes
-		mapTheRest(model, nodeList);
-				
-		log.setDebug(false);
+		mapTheRest(model, nodeList);				
 	}
 
 	/**

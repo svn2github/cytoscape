@@ -31,7 +31,7 @@
  **/
 package cytoscape.coreplugins.biopax.action;
 
-import cytoscape.coreplugins.biopax.util.cytoscape.CytoscapeWrapper;
+import cytoscape.coreplugins.biopax.util.CytoscapeWrapper;
 import cytoscape.util.OpenBrowser;
 
 import java.net.URL;

@@ -40,12 +40,11 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.coreplugins.biopax.action.BiopaxNodeCtxMenuListener;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.style.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.action.NetworkListener;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
-import cytoscape.coreplugins.biopax.util.cytoscape.CytoscapeWrapper;
-import cytoscape.coreplugins.biopax.util.cytoscape.LayoutUtil;
-import cytoscape.coreplugins.biopax.util.cytoscape.NetworkListener;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.util.CytoscapeWrapper;
+import cytoscape.coreplugins.biopax.util.LayoutUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -72,7 +71,7 @@ import javax.swing.SwingUtilities;
  * @author Igor Rodchenkov (re-factoring, using PaxTools API)
  */
 public class BioPaxGraphReader implements GraphReader {
-	private static final CyLogger log = CyLogger.getLogger(BioPaxGraphReader.class);
+	public static final CyLogger log = CyLogger.getLogger(BioPaxGraphReader.class);
 	
 	private int[] nodeIndices;
 	private int[] edgeIndices;
@@ -241,16 +240,12 @@ public class BioPaxGraphReader implements GraphReader {
 	 * @param cyNetwork CyNetwork object.
 	 */
 	public void doPostProcessing(CyNetwork cyNetwork) {
-		/**
-		 * Sets a network attribute which indicates this network
-		 * is a biopax network
-		 */
-		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-
 		// get cyNetwork id
 		this.networkId = cyNetwork.getIdentifier();
-
-		// set biopax network attribute
+		
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		
+		// Sets a network attribute which indicates this network is a biopax network
 		networkAttributes.setAttribute(networkId, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
 		//  Repair Canonical Name 
@@ -291,9 +286,9 @@ public class BioPaxGraphReader implements GraphReader {
 				networkId, BioPaxUtil.BIOPAX_MODEL_STRING,	modelString);
 		
 		//  Set-up the BioPax Visual Style
-		final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
-		final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-		final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+		VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
+		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
 		view.setVisualStyle(bioPaxVisualStyle.getName());
 		manager.setVisualStyle(bioPaxVisualStyle);
 		view.applyVizmapper(bioPaxVisualStyle);
@@ -302,12 +297,18 @@ public class BioPaxGraphReader implements GraphReader {
 		CytoscapeWrapper.initBioPaxPlugInUI();
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
         bpContainer.showLegend();
+        
+        // add network listener
         NetworkListener networkListener = bpContainer.getNetworkListener();
 		networkListener.registerNetwork(cyNetwork);
 		
 		// add node's context menu
 		BiopaxNodeCtxMenuListener nodeCtxMenuListener = new BiopaxNodeCtxMenuListener();
 		view.addNodeContextMenuListener(nodeCtxMenuListener);
+		
+		
+		BioPaxVisualStyleUtil.setNodeToolTips(view);
+		
 	}
 
 	/**

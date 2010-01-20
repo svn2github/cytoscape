@@ -33,8 +33,8 @@ package cytoscape.coreplugins.biopax.util;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.util.links.ExternalLink;
+import cytoscape.coreplugins.biopax.ExternalLink;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 
@@ -68,7 +68,8 @@ public class BioPaxUtil {
 	private static final Map<String,String> chemModificationsMap;
 	private static final EditorMap editorMapLevel3;
 	private static final EditorMap editorMapLevel2;
-	private static final CyLogger log = CyLogger.getLogger(BioPaxUtil.class);
+	
+	public static final CyLogger log = CyLogger.getLogger(BioPaxUtil.class);
 	
 	protected BioPaxUtil() {}
 	
@@ -307,7 +308,7 @@ public class BioPaxUtil {
 			} catch (Exception e) {
 				if(log.isDebugging()) {
 					// this is often OK, as we guess L2 or L3 properties...
-					log.debug("Cannot get value of " + property + " for " 
+					log.debug("Ignore property " + property + " for " 
 						+ BioPaxUtil.getLocalPartRdfId(bpe) + ": " + e);
 				}
 			}
@@ -927,6 +928,9 @@ public class BioPaxUtil {
 
 	public static void removeNetworkModel(CyNetwork cyNetwork) {
 	    networkModelMap.remove(cyNetwork);
+	    if(log.isDebugging())
+	    	log.debug("in-memory biopax networks: " 
+	    			+ networkModelMap.toString());
 	}
 
 	public static boolean addNetworkModel(CyNetwork cyNetwork, Model bpModel) {
@@ -943,8 +947,11 @@ public class BioPaxUtil {
 		// get the network attributes
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		String networkID = cyNetwork.getIdentifier();
-		Boolean b1 = networkAttributes.getBooleanAttribute(networkID,
-		                                                  MapBioPaxToCytoscape.BIOPAX_NETWORK);
+		
+		// BioPAX network (having interaction nodes)
+		Boolean b1 = networkAttributes
+			.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK);
+		// BioPAX network that was converted to SIF (TODO mapping to the simplified SIF network currently is not done)
         Boolean b2 = networkAttributes.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BINARY_NETWORK);
 
         return (b1 != null && b1) || (b2 != null && b2);

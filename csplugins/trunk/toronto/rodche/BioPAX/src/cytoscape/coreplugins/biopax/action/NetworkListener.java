@@ -29,13 +29,13 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package cytoscape.coreplugins.biopax.util.cytoscape;
+package cytoscape.coreplugins.biopax.action;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-import cytoscape.coreplugins.biopax.action.DisplayBioPaxDetails;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
+import cytoscape.coreplugins.biopax.util.CySessionUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxDetailsPanel;
 import cytoscape.data.SelectFilter;
 
@@ -143,7 +143,7 @@ public class NetworkListener implements PropertyChangeListener {
 		
 		if(BioPaxUtil.isBioPAXNetwork(cyNetwork)) {
 			bpPanel.resetText();
-			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_CREATED, null, cyNetwork);
 		}
 		
 	}
@@ -196,8 +196,9 @@ public class NetworkListener implements PropertyChangeListener {
 	*/
 	private void networkDestroyed(String networkID) {
 		// destroy the corresponding model
-		BioPaxUtil.removeNetworkModel(Cytoscape.getNetwork(networkID));
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		CyNetwork net = Cytoscape.getNetwork(networkID); 
+		BioPaxUtil.removeNetworkModel(net);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_DESTROYED, net, null);
 	}
 
 	/*

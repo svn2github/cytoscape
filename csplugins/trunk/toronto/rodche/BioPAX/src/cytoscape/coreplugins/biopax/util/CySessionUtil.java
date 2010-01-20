@@ -1,4 +1,4 @@
-package cytoscape.coreplugins.biopax.util.cytoscape;
+package cytoscape.coreplugins.biopax.util;
 
 /**
  * Indicates if Cytoscape Session is in Progress.

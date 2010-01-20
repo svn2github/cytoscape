@@ -43,7 +43,7 @@
     <!-- temp dir -->
     <property name="temp.dir" value="temp"/>
     <!-- LayoutUtil.java file -->
-    <property name="layout.util.file" value="${src.dir}/cytoscape/coreplugins/biopax/util/cytoscape/LayoutUtil.java"/>
+    <property name="layout.util.file" value="${src.dir}/cytoscape/coreplugins/biopax/util/LayoutUtil.java"/>
 	<!-- jar file -->
     <property name="jar_file" value="${project_name}.jar"/>
 	<!-- obfuscation file -->
@@ -244,16 +244,10 @@
            <expose>
               <class classes="protected" methods="protected" fields="protected">
                     <patternset>
-                        <include name="cytoscape.coreplugins.biopax.action.*"/>
-                        <include name="cytoscape.coreplugins.biopax.mapping.*"/>
                         <include name="cytoscape.coreplugins.biopax.*"/>
-                        <include name="cytoscape.coreplugins.biopax.style.*"/>
+                        <include name="cytoscape.coreplugins.biopax.action.*"/>
                         <include name="cytoscape.coreplugins.biopax.util.*"/>
-                        <include name="cytoscape.coreplugins.biopax.util.cytoscape.*"/>
-                        <include name="cytoscape.coreplugins.biopax.util.links.*"/>
-                        <include name="cytoscape.coreplugins.biopax.util.net.*"/>
                         <include name="cytoscape.coreplugins.biopax.view.*"/>
-                    	<include name="cytoscape.coreplugins.biopax.ui.*"/>
                     </patternset>
                 </class>
             </expose>

@@ -41,8 +41,8 @@ import javax.swing.event.HyperlinkEvent;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
-import cytoscape.coreplugins.biopax.util.cytoscape.NetworkListener;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
+import cytoscape.coreplugins.biopax.action.NetworkListener;
 import cytoscape.data.CyAttributes;
 
 

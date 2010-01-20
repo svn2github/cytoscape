@@ -34,20 +34,16 @@ package cytoscape.coreplugins.biopax.view;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.action.LaunchExternalBrowser;
-import cytoscape.coreplugins.biopax.mapping.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
-import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 
 import java.awt.*;
-import java.io.IOException;
-import java.io.StringWriter;
 
 import java.util.List;
 
@@ -66,7 +62,7 @@ import javax.swing.text.html.*;
  * @author Ethan Cerami.
  */
 public class BioPaxDetailsPanel extends JPanel {
-	private static final CyLogger log = CyLogger.getLogger(BioPaxDetailsPanel.class);
+	public static final CyLogger log = CyLogger.getLogger(BioPaxDetailsPanel.class);
 	
 	/**
 	 * Foreground Color.
@@ -203,11 +199,6 @@ public class BioPaxDetailsPanel extends JPanel {
 		//  If the containing parent is a BioPaxDetailsWindow, show it.
 		//  This only applies in Cytoscape 2.1 and local testing
 		Container parent = this.getTopLevelAncestor();
-
-		if (parent instanceof BioPaxWindow) {
-			JFrame parentFrame = (BioPaxWindow) parent;
-			parentFrame.setVisible(true);
-		}
     }
 
     private void addCPathLink(String nodeID, StringBuffer buf) {
