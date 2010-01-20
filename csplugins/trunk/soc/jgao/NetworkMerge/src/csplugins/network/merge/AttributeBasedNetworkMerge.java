@@ -356,7 +356,12 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
                     }
             }
 
-            attributeMerger.mergeAttribute(mapGOAttr, id, attr_merged, cyAttributes);
+            try {
+                attributeMerger.mergeAttribute(mapGOAttr, id, attr_merged, cyAttributes);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
         }
     }
         
