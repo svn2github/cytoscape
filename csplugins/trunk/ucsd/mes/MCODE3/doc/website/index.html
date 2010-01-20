@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>MCODE Plugin for Cytoscape</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body marginwidth="0" marginheight="0" leftmargin="0" topmargin="0" bgcolor="#FFFFFF" link="#0000FF" vlink="#0000FF" alink="#0000FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="4">
+  <tr> 
+    <td rowspan="2" bgcolor="#666666"> <img src="Cluster.gif" name="image" width="100" height="95"></td>
+    <td width="100%" bgcolor="#666666"><font color="#FFFFFF">MCODE PlugIn for Cytoscape </font></td>
+  </tr>
+  <tr> 
+    <td> <table width="100%" border="0" cellspacing="1" cellpadding="2">
+        <tr> 
+          <td width="20%" align="center" bordercolor="#0000FF" bgcolor="#CCCCCC"><a href="index.html"><strong>Home</strong></a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="screenshots.html">Screenshots 
+            </a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="doc.html">Documentation</a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="code.html">Source 
+            code </a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="developer.html">Developer</a></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<br>
+<table width="80%" border="0" cellspacing="4" cellpadding="2" align="center">
+  <tr valign="top"> 
+    <td width="1%" align="left" rowspan="3"> <a href="#"><img src="matrix.gif" name="image" width="150" height="300" border="0"></a></td>
+    <td bgcolor="#CCCCCC"> <p>MCODE Cytoscape PlugIn</p></td>
+  </tr>
+  <tr> 
+    <td height="155"> <p>The MCODE <a href="http://www.cytoscape.org">Cytoscape</a> PlugIn finds clusters (highly interconnected
+         regions) in any network loaded into Cytoscape. Depending on the type
+        of 
+        network, clusters may mean different things. For instance, clusters in
+         a protein-protein interaction network have been shown to be protein
+        complexes 
+        and parts of pathways. Clusters in a protein similarity network represent
+         protein families.</p>
+      <p>MCODE is a relatively fast method of clustering, although it does not 
+        currently provide any statistical score on the resulting clusters. It 
+        can be used as discovery tool when analyzing a network.  See the 
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12525261&dopt=Abstract">paper</a> for more information.</p></td>
+  </tr>
+  <tr> 
+    <td valign="top"><p><a href="mcode_v1.zip">Download MCODE v1.0 here!</a> (Requires Cytoscape v2.0)</p>
+<p><a href="mcode_v1_1.zip">Download MCODE v1.1 here! (recommended bugfix)</a> (Requires Cytoscape v2.1)</p>
+<p>
+<SCRIPT LANGUAGE="JavaScript"> var javawsInstalled = 0; var javaws12Installed = 0; 
+var javaws142Installed=0; isIE = "false"; if (navigator.mimeTypes && navigator.mimeTypes.length) {    x = navigator.mimeTypes['application/x-java-jnlp-file'];    if (x) { 
+      javawsInstalled = 1; 
+      javaws12Installed=1;       javaws142Installed=1;    } } else {    isIE = "true"; } </SCRIPT>
+<SCRIPT LANGUAGE="VBScript">
+on error resume next
+If isIE = "true" Then
+  If Not(IsObject(CreateObject("JavaWebStart.isInstalled"))) Then
+     javawsInstalled = 0
+  Else
+     javawsInstalled = 1
+  End If
+  If Not(IsObject(CreateObject("JavaWebStart.isInstalled.2"))) Then
+     javaws12Installed = 0
+  Else
+     javaws12Installed = 1
+  End If
+  If Not(IsObject(CreateObject("JavaWebStart.isInstalled.1.4.2.0"))) Then
+     javaws142Installed = 0
+  Else
+     javaws142Installed = 1
+  End If  
+End If
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+/* Note that the logic below always launches the JNLP application *if the browser is Gecko based. This is because it is not possible *to detect MIME type application/x-java-jnlp-file on Gecko-based browsers.  */
+if (javawsInstalled || (navigator.userAgent.indexOf("Gecko") !=-1)) {
+    document.write("<a href=http://www.cbio.mskcc.org/~bader/software/mcode/javaws/mcode.jnlp>Run MCODE using Java Web Start</a>");
+} else {
+    document.write("Click ");
+    document.write("<a href=http://java.sun.com/PluginBrowserCheck?pass=http://www.cbio.mskcc.org/~bader/software/mcode/javaws/downloadws4ie.html&fail=http://java.sun.com/j2se/1.4.2/download.html>here</a> ");
+    document.write("to download and install JRE 1.4.2 and the application.");
+}
+</SCRIPT>
+</P>
+</td>
+  </tr>
+  <tr> 
+    <td width="100%" colspan="2"> <hr noshade size="1"> </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#CCCCCC">
+  <tr> 
+    <td> ©2004 Memorial Sloan-Kettering Cancer Center</td>
+    <td align="right"><a href="http://cbio.mskcc.org">cBio</a> &#149; <a href="http://www.mskcc.org">MSKCC</a> 
+      &#149; <a href="http://cytoscape.org">Cytoscape</a> &#149; <a href="http://biopax.org">BioPAX</a> 
+      &#149; <a href="http://cbio.mskcc.org/%7Ebader">Bader</a></td>
+  </tr>
+</table>
+</body>
+</html>
+
