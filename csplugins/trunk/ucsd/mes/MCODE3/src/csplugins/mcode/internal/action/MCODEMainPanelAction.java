@@ -9,7 +9,6 @@ import cytoscape.visual.VisualMappingManager;
 import javax.swing.*;
 
 import csplugins.mcode.MCODEPlugin;
-import csplugins.mcode.internal.MCODEVisualStyle;
 import csplugins.mcode.internal.ui.MCODEMainPanel;
 
 import java.awt.event.ActionEvent;
@@ -59,12 +58,8 @@ import java.net.URL;
 public class MCODEMainPanelAction implements ActionListener {
     boolean opened = false;
     MCODEMainPanel mainPanel;
-    VisualMappingManager vmm;
-    MCODEVisualStyle MCODEVS;
 
     public MCODEMainPanelAction() {
-        MCODEVS = new MCODEVisualStyle("MCODE");
-        vmm = Cytoscape.getVisualMappingManager();
     }
 
     /**
@@ -79,13 +74,7 @@ public class MCODEMainPanelAction implements ActionListener {
 
         //First we must make sure that the plugin is not already open
         if (!opened) {
-            //if the MCODE visual style has not already been loaded, we load it
-            if (!vmm.getCalculatorCatalog().getVisualStyleNames().contains("MCODE")) {
-                vmm.getCalculatorCatalog().addVisualStyle(MCODEVS);
-            }
-            //The style is not actually applied until a result is produced (in MCODEScoreAndFindAction)
-
-            mainPanel = new MCODEMainPanel(this, MCODEVS);
+            mainPanel = new MCODEMainPanel(this);
             URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
             if (iconURL != null) {
                 ImageIcon icon = new ImageIcon(iconURL);
@@ -110,11 +99,6 @@ public class MCODEMainPanelAction implements ActionListener {
      */
     public void setOpened(boolean opened) {
         this.opened = opened;
-        if (!isOpened() && vmm.getVisualStyle() == MCODEVS) {
-            vmm.setVisualStyle("default");
-            //TODO: non functonal code for removing a visual style...vmm.getCalculatorCatalog().removeVisualStyle("MCODE");
-            vmm.applyAppearances();
-        }
     }
 
     public boolean isOpened() {

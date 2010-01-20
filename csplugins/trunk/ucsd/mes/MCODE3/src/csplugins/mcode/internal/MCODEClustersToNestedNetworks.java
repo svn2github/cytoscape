@@ -13,7 +13,12 @@ import cytoscape.layout.CyLayouts;
 
 public class MCODEClustersToNestedNetworks {
 
-	private static MCODEVisualStyle vs = new MCODEVisualStyle("MCode Visual Style");
+	private static MCODEVisualStyle vs; 
+
+	static {
+		vs = new MCODEVisualStyle("MCODE");
+		Cytoscape.getVisualMappingManager().getCalculatorCatalog().addVisualStyle(vs);
+	}
 
 	public static void convert(MCODECluster[] clusters) {
 
@@ -46,15 +51,16 @@ public class MCODEClustersToNestedNetworks {
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
 
 		for ( CyNetworkView view : views ) 
-			updateView(view,vs,layout);
+			updateView(view, vs, layout);
 
-		updateView( Cytoscape.getNetworkView( overview.getIdentifier() ),vs,layout );	
+		updateView( Cytoscape.getNetworkView( overview.getIdentifier() ), vs, layout );	
 	}
 
 	private static void updateView(CyNetworkView view, MCODEVisualStyle vs, 
 	                               CyLayoutAlgorithm layout) {
-		view.setVisualStyle(vs.getName());
 		layout.doLayout(view);
+		view.setVisualStyle(vs.getName());
+		Cytoscape.getVisualMappingManager().setVisualStyle(vs.getName());
 		view.redrawGraph(true,true);
 	}
 

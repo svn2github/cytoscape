@@ -81,12 +81,9 @@ public class MCODEScoreAndFindAction implements ActionListener {
 	int resultCounter = 0;
 
 	MCODEParameterSet currentParamsCopy;
-	MCODEVisualStyle MCODEVS;
 
-	public MCODEScoreAndFindAction(MCODEParameterSet currentParamsCopy,
-			MCODEVisualStyle MCODEVS) {
+	public MCODEScoreAndFindAction(MCODEParameterSet currentParamsCopy) {
 		this.currentParamsCopy = currentParamsCopy;
-		this.MCODEVS = MCODEVS;
 		networkManager = new HashMap<String, MCODEAlgorithm>();
 	}
 

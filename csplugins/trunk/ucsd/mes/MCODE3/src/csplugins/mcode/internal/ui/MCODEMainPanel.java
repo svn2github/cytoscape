@@ -9,7 +9,6 @@ import javax.swing.*;
 
 import csplugins.mcode.internal.MCODECurrentParameters;
 import csplugins.mcode.internal.MCODEParameterSet;
-import csplugins.mcode.internal.MCODEVisualStyle;
 import csplugins.mcode.internal.action.MCODEMainPanelAction;
 import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
 
@@ -63,7 +62,6 @@ public class MCODEMainPanel extends JPanel {
     MCODEParameterSet currentParamsCopy; // stores current parameters - populates panel fields
 
     MCODEMainPanelAction trigger;
-    MCODEVisualStyle MCODEVS;
 
     DecimalFormat decFormat; // used in the formatted text fields
 
@@ -96,11 +94,9 @@ public class MCODEMainPanel extends JPanel {
      * The actual parameter change panel that builds the UI
      *
      * @param trigger A reference to the action that triggered the initiation of this class
-     * @param MCODEVS Reference to MCODE's visual style
      */
-    public MCODEMainPanel(MCODEMainPanelAction trigger, MCODEVisualStyle MCODEVS) {
+    public MCODEMainPanel(MCODEMainPanelAction trigger ) {
         this.trigger = trigger;
-        this.MCODEVS = MCODEVS;
         setLayout(new BorderLayout());
 
         //get the current parameters
@@ -506,7 +502,7 @@ public class MCODEMainPanel extends JPanel {
         panel.setLayout(new FlowLayout());
 
         JButton analyzeButton = new JButton("Analyze");
-        analyzeButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy, MCODEVS));
+        analyzeButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy));
 
         JButton closeButton = new JButton("Close MCODE");
         closeButton.addActionListener(new MCODEMainPanel.CloseAction(this));
