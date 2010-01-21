@@ -29,15 +29,19 @@ import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import csplugins.jActiveModules.dialogs.ConditionsVsPathwaysTable2;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectFilter;
-import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
+//import cytoscape.groups.CyGroup;
+//import cytoscape.groups.CyGroupManager;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+import java.util.HashSet;
+import cytoscape.data.Semantics;
 
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
@@ -64,9 +68,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected static int resultsCount = 1;
 	protected ActiveModulesUI parentUI;
 	
-	private static int groupCount = 0;
+	//private static int groupCount = 0;
+	private static int pathCount = 0;	
+	private static int runCount = 0;	
 	
-	public static String groupViewerName = "moduleFinderViewer";
+	//public static String groupViewerName = "moduleFinderViewer";
 	
 	// ----------------------------------------------------------------
 	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
@@ -97,7 +103,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	public void run() {
 	    System.gc();
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
 		// run the path finding algorithm
 		ActivePathsFinder apf = null;
@@ -110,17 +116,105 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		activePaths = apf.findActivePaths();
 
-		Vector groupData = createGroupData();
+		// create nested networks
+		//1 . create subnetwork for each path
+		CyNetwork[] subnetworks = createSubnetworks();
+		
+		//2. create an overview network for all nested network
+		
+		Set<CyNode>  path_nodes = new HashSet<CyNode>();
+		for (int i=0; i< subnetworks.length; i++){
+			CyNode newNode =Cytoscape.getCyNode(subnetworks[i].getTitle(), true); 
+			path_nodes.add(newNode);
+			newNode.setNestedNetwork(subnetworks[i]);
+			// create an attribute for this new node
+			Cytoscape.getNodeAttributes().setAttribute(newNode.getIdentifier(), "activepath_score", new Double(activePaths[i].getScore()));
+		}
+		
+		//Edges indicate that nodes in nested networks exist in both nested networks
+		Set<CyEdge>  path_edges = getPathEdges(path_nodes); //new HashSet<CyEdge>();
+		
+		Cytoscape.createNetwork(path_nodes, path_edges, "Overview"+ "_"+ runCount++, cyNetwork);;
 	}
 
+	private Set<CyEdge> getPathEdges(Set path_nodes) {
+		HashSet<CyEdge> edgeSet = new HashSet<CyEdge>();
+		
+		Object[] nodes = path_nodes.toArray();
+		
+		HashSet[] hashSet = new HashSet[nodes.length];
+		for (int i=0; i< nodes.length; i++){
+			hashSet[i] = new HashSet<CyNode>(((CyNode)nodes[i]).getNestedNetwork().nodesList());
+		}
+		
+		for (int i=0; i< nodes.length-1; i++){
+			for (int j=i+1; j<nodes.length; j++){
+				// determine if there are overlap between nested networks
+				if (hasTwoSetOverlap(hashSet[i], hashSet[j])){
+					CyEdge edge = Cytoscape.getCyEdge((CyNode)nodes[i], (CyNode)nodes[j], Semantics.INTERACTION, "overlap", true);
+					edgeSet.add(edge);
+				}
+			}
+		}
+		
+		return edgeSet;
+	}
 	
+	
+	private boolean hasTwoSetOverlap(HashSet<CyNode> set1, HashSet<CyNode> set2) {
+		Iterator<CyNode> it = set1.iterator();
+		while (it.hasNext()){
+			if (set2.contains(it.next())){
+				return true;
+			}
+		}		
+		return false;
+	}
+	
+	
+	private CyNetwork[] createSubnetworks(){
+		CyNetwork[] subnetworks = new CyNetwork[activePaths.length];
+
+		pathCount = 0;
+		for (int i=0; i< activePaths.length; i++ ){
+			Component thePath = activePaths[i];
+			String pathName = "Path_" + runCount + "_" + pathCount++;
+			
+			// get nodes for this path
+			Vector nodeVect = (Vector) thePath.getDisplayNodes();
+			Set<CyNode> nodeSet = new HashSet<CyNode>();
+			for (int j=0; j< nodeVect.size(); j++){
+				CyNode oneNode = (CyNode) nodeVect.elementAt(j);
+				if (oneNode != null)
+					nodeSet.add(oneNode);
+				else {
+					//System.out.println("");
+				}
+			}
+			
+			// get edges for this path
+			Set edgeSet = new HashSet();
+			Iterator iterator = cyNetwork.edgesIterator();
+			while (iterator.hasNext())
+			{
+				CyEdge edge = (CyEdge) iterator.next();
+				if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget()))
+					edgeSet.add(edge);
+			}
+			
+			subnetworks[i] = Cytoscape.createNetwork(nodeSet, edgeSet, pathName, cyNetwork);
+		}
+		
+		return subnetworks;
+	}
 	//
+	/*
 	private Vector<Object> createGroupData() {
 		
 		// This is for event
-		final Set<CyGroup> groups = new HashSet<CyGroup>();
+		//final Set<CyGroup> groups = new HashSet<CyGroup>();
 		
-		Vector<CyGroup> groupVect = new Vector<CyGroup>(); 
+		//Vector<CyGroup> groupVect = new Vector<CyGroup>(); 
 		Double[] scores = new Double[activePaths.length]; 
 		Boolean[][] data = new Boolean[activePaths.length][activePaths[0].getConditions().length];
 		
@@ -183,7 +277,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		Cytoscape.getSwingPropertyChangeSupport().firePropertyChange("MODULE_SEARCH_FINISHED", null, groups);
 		return retVect;
 	}
-
+*/
 	
 	/**
 	 * Returns the best scoring path from the last run. This is mostly used by
