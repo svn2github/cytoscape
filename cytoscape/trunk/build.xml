@@ -174,15 +174,10 @@
 		<copy todir="${build.classes}/cytoscape/generated">
 			<fileset dir="${src.dir}/cytoscape/generated" includes="*.properties" />
 		</copy>
-		<!--
-		<copy todir="${build.classes}/cytoscape/generated2">
-			<fileset dir="${src.dir}/cytoscape/generated2" includes="*.properties" />
-		</copy>
-		-->
+
 		<copy todir="${build.classes}/cytoscape/bookmarks">
 			<fileset dir="${src.dir}/cytoscape/bookmarks" includes="*.properties" />
 		</copy>
-
 	</target>
 
 
@@ -730,11 +725,20 @@
 		<chmod perm="+x" file="${release.dir}/cytoscape.bat" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.sh" />
 
+
 		<echo>
-            ---------------------------------------
+            ------------------------------------------------------------------
+            Copying default JVM memory settings to the temp release directory.
+            ------------------------------------------------------------------
+    		</echo>
+		<copy todir="${release.dir}" file="${resources.dir}/cytoscape.vmconfig" />
+
+
+		<echo>
+            ------------------------------------------------------
             Copying over user documentation and Cytoscape License.
-            ---------------------------------------
-    </echo>
+            ------------------------------------------------------
+    		</echo>
 
 		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
 		<copy file="docs/LICENSE.html" todir="${release.dir}" />

@@ -1,0 +1,2 @@
+threadStackSize=8M
+memoryAllocationPoolMaximumSize=1536M
