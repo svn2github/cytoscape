@@ -126,7 +126,7 @@ public class MCODEScoreAndFindTask implements Task {
 			MCODEClustersToNestedNetworks.convert(clusters);
 
 			completedSuccessfully = true;
-			Cytoscape.getSwingPropertyChangeSupport().firePropertyChange("MODULE_SEARCH_FINISHED", null, null );
+//			Cytoscape.getSwingPropertyChangeSupport().firePropertyChange("MODULE_SEARCH_FINISHED", null, null );
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO: ask Ethan if interrupt exception should be thrown from

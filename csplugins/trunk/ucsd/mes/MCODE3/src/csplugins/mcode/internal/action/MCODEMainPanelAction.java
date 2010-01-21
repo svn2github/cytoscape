@@ -56,10 +56,10 @@ import java.net.URL;
  * finding parameters are modified
  */
 public class MCODEMainPanelAction implements ActionListener {
-    boolean opened = false;
     MCODEMainPanel mainPanel;
 
     public MCODEMainPanelAction() {
+		mainPanel = new MCODEMainPanel();
     }
 
     /**
@@ -71,37 +71,16 @@ public class MCODEMainPanelAction implements ActionListener {
         //display MCODEMainPanel in left cytopanel
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
-
-        //First we must make sure that the plugin is not already open
-        if (!opened) {
-            mainPanel = new MCODEMainPanel(this);
-            URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
-            if (iconURL != null) {
-                ImageIcon icon = new ImageIcon(iconURL);
-                String tip = "MCODE Network Scoring/Cluster Finding Parameters";
-                cytoPanel.add("", icon, mainPanel, tip);
-            } else {
-                cytoPanel.add("MCODE PlugIn", mainPanel);
-            }
-        } else {
-            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The MCODE PlugIn is already running.");
-        }
    
         int index = cytoPanel.indexOfComponent(mainPanel);
+
+		while ( index <= 0 ) {
+			cytoPanel.add("MCODE PlugIn", mainPanel);
+        	index = cytoPanel.indexOfComponent(mainPanel);
+			System.out.println("trying to add MCODE");
+		}
+			
         cytoPanel.setSelectedIndex(index);
         cytoPanel.setState(CytoPanelState.DOCK);
-        setOpened(true);
-    }
-
-    /**
-     * Allows the MCODE plugin to limit the number of open instances of the MCODEMainPanel to 1. If the plugin is being
-     * closed, then it sets the visual style to default if the MCODE visual style was last used.
-     */
-    public void setOpened(boolean opened) {
-        this.opened = opened;
-    }
-
-    public boolean isOpened() {
-        return opened;
     }
 }

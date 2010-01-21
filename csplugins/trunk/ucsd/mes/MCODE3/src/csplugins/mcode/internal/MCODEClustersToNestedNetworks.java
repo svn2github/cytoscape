@@ -22,24 +22,27 @@ public class MCODEClustersToNestedNetworks {
 
 	public static void convert(MCODECluster[] clusters) {
 
+		if ( clusters.length <= 0 )
+			return;
+
 		// create overview network and nested networks
 		final CyNetwork overview = Cytoscape.createNetwork(
-		         CyNetworkNaming.getSuggestedNetworkTitle("MCode Result Overview"), true);
+		         CyNetworkNaming.getSuggestedNetworkTitle("MCode Result Overview"), false);
 
 		double maxScore = Double.MIN_VALUE;
 
-		List<CyNetworkView> views = new ArrayList<CyNetworkView>();
+		List<CyNetwork> nets = new ArrayList<CyNetwork>();
 
 		// create networks
 		for ( MCODECluster clust : clusters ) {
 			final CyNode oNode = Cytoscape.getCyNode(clust.getClusterName(), true);
 			overview.addNode(oNode);
 
-			final CyNetwork nested = createNetwork(clust);
+			final CyNetwork nested = createClusterNetwork(clust);
 
 			oNode.setNestedNetwork( nested );
 
-			views.add( Cytoscape.getNetworkView( nested.getIdentifier() ) );
+			nets.add( nested );
 			maxScore = Math.max(maxScore,clust.getClusterScore());
 		}
 
@@ -50,23 +53,19 @@ public class MCODEClustersToNestedNetworks {
 		// update the network views
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
 
-		for ( CyNetworkView view : views ) 
-			updateView(view, vs, layout);
+		// create network views
+		Cytoscape.createNetworkView(overview,overview.getIdentifier(),layout,vs);
 
-		updateView( Cytoscape.getNetworkView( overview.getIdentifier() ), vs, layout );	
+		for ( CyNetwork net : nets ) 
+			Cytoscape.createNetworkView(net,net.getIdentifier(),layout,vs);
+
+		Cytoscape.getDesktop().setFocus(overview.getIdentifier());
 	}
 
-	private static void updateView(CyNetworkView view, MCODEVisualStyle vs, 
-	                               CyLayoutAlgorithm layout) {
-		layout.doLayout(view);
-		view.setVisualStyle(vs.getName());
-		Cytoscape.getVisualMappingManager().setVisualStyle(vs.getName());
-		view.redrawGraph(true,true);
-	}
 
-	private static CyNetwork createNetwork(MCODECluster clust) {
+	private static CyNetwork createClusterNetwork(MCODECluster clust) {
 		final CyNetwork nested = Cytoscape.createNetwork(
-		        CyNetworkNaming.getSuggestedNetworkTitle(clust.getClusterName()), true);
+		        CyNetworkNaming.getSuggestedNetworkTitle(clust.getClusterName()), false);
 
 		// add nodes to cluster network
 		for ( Integer nodeId : clust.getALCluster() ) {

@@ -9,7 +9,6 @@ import javax.swing.*;
 
 import csplugins.mcode.internal.MCODECurrentParameters;
 import csplugins.mcode.internal.MCODEParameterSet;
-import csplugins.mcode.internal.action.MCODEMainPanelAction;
 import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
 
 import java.awt.*;
@@ -61,8 +60,6 @@ public class MCODEMainPanel extends JPanel {
     //Parameters for MCODE
     MCODEParameterSet currentParamsCopy; // stores current parameters - populates panel fields
 
-    MCODEMainPanelAction trigger;
-
     DecimalFormat decFormat; // used in the formatted text fields
 
     //These are used to dynamically toggle the way cluster finding content is organized based
@@ -93,10 +90,8 @@ public class MCODEMainPanel extends JPanel {
     /**
      * The actual parameter change panel that builds the UI
      *
-     * @param trigger A reference to the action that triggered the initiation of this class
      */
-    public MCODEMainPanel(MCODEMainPanelAction trigger ) {
-        this.trigger = trigger;
+    public MCODEMainPanel() {
         setLayout(new BorderLayout());
 
         //get the current parameters
@@ -574,7 +569,7 @@ public class MCODEMainPanel extends JPanel {
     private class CloseAction extends AbstractAction {
         MCODEMainPanel mainPanel;
 
-        CloseAction (MCODEMainPanel mainPanel) {
+        CloseAction(MCODEMainPanel mainPanel) {
             this.mainPanel = mainPanel;
         }
 
