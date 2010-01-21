@@ -463,7 +463,7 @@
 			</chainedmapper>
 		</pathconvert>
 		<manifest file="${manifest.file}">
-			<attribute name="Main-Class" value="cytoscape.CyMain" />
+			<attribute name="Main-Class" value="cytoscape.launcher.CytoscapeLauncher" />
 			<attribute name="Class-Path" value="${manifest.classpath.string}" />
 			<attribute name="Java-Version" value="${java.target_version}" />
 		</manifest>

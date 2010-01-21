@@ -97,7 +97,7 @@ public class CytoscapeLauncher {
 		execArgs.add("-Xmx" + memSettings.getMemoryAllocationPoolMaximumSize());
 		execArgs.add("-cp");
 		execArgs.add(System.getProperty("user.dir"));
-		execArgs.add("-jar");
+		execArgs.add("-cp");
 		execArgs.add("cytoscape.jar");
 		execArgs.add("cytoscape.CyMain");
 		execArgs.add("-p plugins");
@@ -112,7 +112,7 @@ public class CytoscapeLauncher {
 			execArgs.add("-Xmx1024M");
 			execArgs.add("-cp");
 			execArgs.add(System.getProperty("user.dir"));
-			execArgs.add("-jar");
+			execArgs.add("-cp");
 			execArgs.add("cytoscape.jar");
 			execArgs.add("cytoscape.CyMain");
 			execArgs.add("-p plugins");
