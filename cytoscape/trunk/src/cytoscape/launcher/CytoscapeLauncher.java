@@ -1,8 +1,15 @@
 package cytoscape.launcher;
 
 
-import java.util.Properties;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Properties;
 
 
 public class CytoscapeLauncher {
@@ -17,6 +24,29 @@ public class CytoscapeLauncher {
 
 		String getThreadStackSize() { return threadStackSize; }
 		String getMemoryAllocationPoolMaximumSize() { return memoryAllocationPoolMaximumSize; }
+	}
+
+
+	static class StreamMapper extends Thread {
+		final BufferedReader in;
+		final PrintStream out;
+
+		StreamMapper(final InputStreamReader in, final PrintStream out) {
+			this.in  = new BufferedReader(in);
+			this.out = out;
+		}
+
+		public void run() {
+			String line;
+			try {
+				while ((line = in.readLine()) != null) {
+					out.println(line);
+					out.flush();
+				}
+			} catch (final java.io.IOException e) {
+				System.err.println("StreamMapper.run(): I/O error!");
+			}
+		}
 	}
 
 
@@ -53,45 +83,47 @@ public class CytoscapeLauncher {
 
 		final MemSettings memSettings = getMemSettings();
 
-		final String[] execArgs = new String[6];
-		execArgs[0] = "java";
-		execArgs[1] = "-Xss" + memSettings.getThreadStackSize();
-		execArgs[2] = "-Xmx" + memSettings.getMemoryAllocationPoolMaximumSize();
-		execArgs[3] = "-cp";
-		execArgs[4] = System.getProperty("user.dir");;
-		execArgs[5] = "Cytoscape";
+		final ArrayList<String> execArgs = new ArrayList<String>();
+		execArgs.add("java");
+		execArgs.add("-Dswing.aatext=true");
+		execArgs.add("-Dawt.useSystemAAFontSettings=lcd");
+		execArgs.add("-Xss" + memSettings.getThreadStackSize());
+		execArgs.add("-Xmx" + memSettings.getMemoryAllocationPoolMaximumSize());
+		execArgs.add("-cp");
+		execArgs.add(System.getProperty("user.dir"));
+		execArgs.add("-jar");
+		execArgs.add("cytoscape.jar");
+		execArgs.add("cytoscape.CyMain");
+		execArgs.add("-p plugins");
 
 		if (verbose) {
-			System.out.print("Attempting to run: ");
+			System.err.print("Attempting to run: ");
 			for (final String arg : execArgs)
-				System.out.print(arg + " ");
-			System.out.println();
+				System.err.print(arg + " ");
+			System.err.println();
 		}
 
 		try {
-			final Process child = Runtime.getRuntime().exec(execArgs);
-			/*
-			  int exitCode = 0;
-			  try {
-			  exitCode = child.waitFor();
-			  } catch (final java.lang.InterruptedException e) {
-			  System.out.println("waitFor() was interrupted: ");
-			  System.out.println(e.toString());
-			  System.exit(-1);
-			  }
+			final Process child = Runtime.getRuntime().exec(execArgs.toArray(new String[execArgs.size()]));
+			final InputStreamReader childStdout = new InputStreamReader(child.getInputStream());
+			final InputStreamReader childStderr = new InputStreamReader(child.getErrorStream());
 
-			  if (exitCode != 0) {
-			  System.out.println("Child failed w/ exit code " + exitCode);
-			  System.exit(-1);
-			  }
-			*/
-			java.io.InputStream err = child.getInputStream();
-			int c;
-			while ((c = err.read()) != -1)
-				System.out.print((char)c);
-			err.close();
+			final Thread mapStdout = new StreamMapper(childStdout, System.out);
+			final Thread mapStderr = new StreamMapper(childStdout, System.err);
+			mapStdout.start();
+			mapStderr.start();
 
-			System.exit(0);
+			try {
+				child.waitFor();
+				mapStdout.join();
+				mapStderr.join();
+
+				// Return the exit code from Cytoscape to the O/S.
+				final int exitCode = child.exitValue();
+				System.exit(exitCode);
+			} catch (final Exception e) {
+				System.exit(-1);
+			}
 		} catch (final java.io.IOException e) {
 			System.out.println("Failed to execute subprocess:");
 			System.out.println(e.toString());
