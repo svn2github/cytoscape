@@ -1672,9 +1672,19 @@ $(function(){
         }
         
         function hide_with_input(picker, input, fn){
-            $(input).bind("blur", function(){
-                fn();
-            });
+        	if ($(picker).find(".header").is(":visible")) {
+        		// IE set focus to picker, forcing a blur on input, so blur cannot be used here.
+        		// Let's just create a close button instead:
+        		$("#colour_picker .ui-icon-close").bind("click", function(evt){
+        			fn();
+        			evt.preventDefault();
+        		});
+        	} else {
+        		// Regular GOOD browsers!
+	        	$(input).bind("blur", function(){
+	            	fn();
+	            });
+        	}
             
             $(parent).parent().bind("scroll", function(){
                 fn();
@@ -1731,22 +1741,23 @@ $(function(){
             $(input).bind("click", function(){
                 remove_picker();
             
-                picker = $('<div id="colour_picker" class="floating_widget"></div>');
+                picker = $('<div id="colour_picker" class="floating_widget">' +
+                		   '<div class="header ui-state-default"><div class="ui-icon ui-icon-close"/></div><div class="content"/></div>');
                 $("body").append(picker);
                 
-                picker_internals = $.farbtastic(picker, function(colour){
+                if (!$.browser.msie) { $("#colour_picker .header").hide(); }
+                
+                picker_internals = $.farbtastic($("#colour_picker .content"), function(colour){
                     $(input).val(colour).trigger("validate");
                 });
-                
-                
+
                 position_at_input($(picker), $(input));
                 
                 $(input).trigger("validate");
                 
-            });
-            
-            hide_with_input($(picker), $(input), function(){
-                remove_picker();
+                hide_with_input($(picker), $(input), function(){
+                    remove_picker();
+                });
             });
         });
         
@@ -1792,10 +1803,10 @@ $(function(){
                 position_at_input($(node_shape_picker), $(input));
                 
                 $(input).trigger("validate");
-            });
-            
-            hide_with_input($(node_shape_picker), $(input), function(){
-                remove_node_shape_picker();
+                
+                hide_with_input($(node_shape_picker), $(input), function(){
+                    remove_node_shape_picker();
+                });
             });
         });
         
@@ -1840,10 +1851,10 @@ $(function(){
                 position_at_input($(edge_shape_picker), $(input));
                 
                 $(input).trigger("validate");
-            });
-            
-            hide_with_input($(edge_shape_picker), $(input), function(){
-                remove_edge_shape_picker();
+                
+                hide_with_input($(edge_shape_picker), $(input), function(){
+                    remove_edge_shape_picker();
+                });
             });
         });
     

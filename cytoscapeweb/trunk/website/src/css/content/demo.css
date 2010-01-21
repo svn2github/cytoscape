@@ -99,6 +99,7 @@ body.demo h1 + h2, body.demo h2 + h3 { padding-top: 0.5em; }
 
 /* colour picker */
 #colour_picker { clear: both; width: 200px; height: 200px; }
+#colour_picker .header { position: absolute; top: 0; left: 0; z-index: 1; }
 .farbtastic {  position: relative; }
 .farbtastic * {  position: absolute;  cursor: crosshair; }
 .farbtastic, .farbtastic .wheel {  width: 195px;  height: 195px; }
