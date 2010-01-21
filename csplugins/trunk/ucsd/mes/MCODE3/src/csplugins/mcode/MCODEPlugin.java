@@ -65,7 +65,6 @@ public class MCODEPlugin extends CytoscapePlugin {
 	 * Constructor for the MCODE plugin.
 	 */
 	public MCODEPlugin() {
-		System.out.println("asdf");
 		//set-up menu options in plugins menu
 		JMenu menu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
 		JMenuItem item;
