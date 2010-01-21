@@ -66,6 +66,13 @@ import java.util.List;
 public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	private EdgeAppearance defaultAppearance = new EdgeAppearance();
 
+	/** 
+	 * @deprecated Use VisualStyle.getEdgeAppearanceCalculator() or new EdgeAppearanceCalculator( VisualStyle.getDependency() );  Will be removed Jan 2010.
+	 */
+	@Deprecated
+	public EdgeAppearanceCalculator() {
+		super(new VisualPropertyDependencyImpl());
+	}
 	/**
 	 * Creates a new EdgeAppearanceCalculator object.
 	 */

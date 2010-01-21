@@ -58,7 +58,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     private NodeAppearance defaultAppearance = new NodeAppearance();
 
 	/**
-	 * @deprecated Use VisualStyle.getNodeAppearanceCalculator() instead. Will be removed
+	 * @deprecated Use VisualStyle.getNodeAppearanceCalculator() or new NodeAppearancCalculator( VisualStyle.getDependency() ) instead. Will be removed
 	 * January 2011.
 	 */
 	@Deprecated
