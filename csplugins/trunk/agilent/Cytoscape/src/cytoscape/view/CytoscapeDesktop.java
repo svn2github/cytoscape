@@ -494,7 +494,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			if (!CyMain.isAGMode()) {
 			    getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
 			    // MLC 12/08/09:
-			    // For GWMode, the vizmapper receives
+			    // For AGMode, the vizmapper receives
 			    // various events that can cause a
 			    // DGraphView to be created that is zero
 			    // width and height (error).
