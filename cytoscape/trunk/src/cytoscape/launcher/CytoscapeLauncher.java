@@ -30,18 +30,22 @@ public class CytoscapeLauncher {
 	static class StreamMapper extends Thread {
 		final BufferedReader in;
 		final PrintStream out;
+		final Object mutex;
 
-		StreamMapper(final InputStreamReader in, final PrintStream out) {
-			this.in  = new BufferedReader(in);
-			this.out = out;
+		StreamMapper(final InputStreamReader in, final PrintStream out, final Object mutex) {
+			this.in    = new BufferedReader(in);
+			this.out   = out;
+			this.mutex = mutex;
 		}
 
 		public void run() {
 			String line;
 			try {
 				while ((line = in.readLine()) != null) {
-					out.println(line);
-					out.flush();
+					synchronized(mutex) {
+						out.println(line);
+						out.flush();
+					}
 				}
 			} catch (final java.io.IOException e) {
 				System.err.println("StreamMapper.run(): I/O error!");
@@ -108,8 +112,9 @@ public class CytoscapeLauncher {
 			final InputStreamReader childStdout = new InputStreamReader(child.getInputStream());
 			final InputStreamReader childStderr = new InputStreamReader(child.getErrorStream());
 
-			final Thread mapStdout = new StreamMapper(childStdout, System.out);
-			final Thread mapStderr = new StreamMapper(childStdout, System.err);
+			final Object mutex = new Object();
+			final Thread mapStdout = new StreamMapper(childStdout, System.out, mutex);
+			final Thread mapStderr = new StreamMapper(childStdout, System.err, mutex);
 			mapStdout.start();
 			mapStderr.start();
 
