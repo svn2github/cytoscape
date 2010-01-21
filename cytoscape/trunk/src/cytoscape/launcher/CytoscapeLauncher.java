@@ -2,11 +2,9 @@ package cytoscape.launcher;
 
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -14,47 +12,6 @@ import javax.swing.JOptionPane;
 
 
 public class CytoscapeLauncher {
-	static class MemSettings {
-		private final String threadStackSize;
-		private final String memoryAllocationPoolMaximumSize;
-
-		MemSettings(final String threadStackSize, final String memoryAllocationPoolMaximumSize) {
-			this.threadStackSize = threadStackSize;
-			this.memoryAllocationPoolMaximumSize = memoryAllocationPoolMaximumSize;
-		}
-
-		String getThreadStackSize() { return threadStackSize; }
-		String getMemoryAllocationPoolMaximumSize() { return memoryAllocationPoolMaximumSize; }
-	}
-
-
-	static class StreamMapper extends Thread {
-		final BufferedReader in;
-		final PrintStream out;
-		final Object mutex;
-
-		StreamMapper(final InputStreamReader in, final PrintStream out, final Object mutex) {
-			this.in    = new BufferedReader(in);
-			this.out   = out;
-			this.mutex = mutex;
-		}
-
-		public void run() {
-			String line;
-			try {
-				while ((line = in.readLine()) != null) {
-					synchronized(mutex) {
-						out.println(line);
-						out.flush();
-					}
-				}
-			} catch (final java.io.IOException e) {
-				System.err.println("StreamMapper.run(): I/O error!");
-			}
-		}
-	}
-
-
 	final static String VMCONFIG_FILENAME = "cytoscape.vmconfig";
 
 
@@ -84,7 +41,7 @@ public class CytoscapeLauncher {
 
 
 	static public void main(final String args[]) {
-		final boolean verbose = args.length > 0 && args[0].equals("-verbose");
+		final boolean verbose = false;
 
 		final MemSettings memSettings = getMemSettings();
 
@@ -95,8 +52,6 @@ public class CytoscapeLauncher {
 		execArgs.add("-Dawt.useSystemAAFontSettings=lcd");
 		execArgs.add("-Xss" + memSettings.getThreadStackSize());
 		execArgs.add("-Xmx" + memSettings.getMemoryAllocationPoolMaximumSize());
-		execArgs.add("-cp");
-		execArgs.add(System.getProperty("user.dir"));
 		execArgs.add("-cp");
 		execArgs.add("cytoscape.jar");
 		execArgs.add("cytoscape.CyMain");
@@ -110,8 +65,6 @@ public class CytoscapeLauncher {
 			execArgs.add("-Dawt.useSystemAAFontSettings=lcd");
 			execArgs.add("-Xss10M");
 			execArgs.add("-Xmx1024M");
-			execArgs.add("-cp");
-			execArgs.add(System.getProperty("user.dir"));
 			execArgs.add("-cp");
 			execArgs.add("cytoscape.jar");
 			execArgs.add("cytoscape.CyMain");
