@@ -120,7 +120,7 @@ public class CytoscapeLauncher {
 
 			final Object mutex = new Object();
 			final Thread mapStdout = new StreamMapper(childStdout, System.out, mutex);
-			final Thread mapStderr = new StreamMapper(childStdout, System.err, mutex);
+			final Thread mapStderr = new StreamMapper(childStderr, System.err, mutex);
 			mapStdout.start();
 			mapStderr.start();
 
