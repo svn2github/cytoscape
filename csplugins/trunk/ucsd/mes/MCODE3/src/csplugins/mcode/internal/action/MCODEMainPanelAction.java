@@ -73,13 +73,20 @@ public class MCODEMainPanelAction implements ActionListener {
         CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
    
         int index = cytoPanel.indexOfComponent(mainPanel);
-
-		while ( index <= 0 ) {
+		
+		if ( index <= 0 ) {
 			cytoPanel.add("MCODE PlugIn", mainPanel);
-        	index = cytoPanel.indexOfComponent(mainPanel);
-			System.out.println("trying to add MCODE");
+	       	index = cytoPanel.indexOfComponent(mainPanel);
 		}
-			
+
+		// if adding the cytopanel somehow fails...
+		if ( index <= 0 ) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+			 "Problem creating CytoPanel!  MCODE is broken.", 
+			 "MCODE Error", JOptionPane.ERROR_MESSAGE); 	
+			return;
+		} 
+
         cytoPanel.setSelectedIndex(index);
         cytoPanel.setState(CytoPanelState.DOCK);
     }

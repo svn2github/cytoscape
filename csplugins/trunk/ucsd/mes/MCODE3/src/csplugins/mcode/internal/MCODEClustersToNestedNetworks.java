@@ -10,6 +10,9 @@ import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
+import cytoscape.data.CyAttributes;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 public class MCODEClustersToNestedNetworks {
 
@@ -38,12 +41,15 @@ public class MCODEClustersToNestedNetworks {
 			final CyNode oNode = Cytoscape.getCyNode(clust.getClusterName(), true);
 			overview.addNode(oNode);
 
-			final CyNetwork nested = createClusterNetwork(clust);
+			final CyNetwork nested = createClusterNetwork(clust,overview);
 
 			oNode.setNestedNetwork( nested );
 
 			nets.add( nested );
-			maxScore = Math.max(maxScore,clust.getClusterScore());
+			final double score = clust.getClusterScore();
+
+			maxScore = Math.max(maxScore,score);
+			Cytoscape.getNodeAttributes().setAttribute(oNode.getIdentifier(), "MCODE_Score", score);
 		}
 
 		// prepare the visual style
@@ -54,18 +60,31 @@ public class MCODEClustersToNestedNetworks {
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
 
 		// create network views
-		Cytoscape.createNetworkView(overview,overview.getIdentifier(),layout,vs);
+		// NOTE:  We have to apply the visual style after creation because otherwise
+		// an event gets fired and the visual style gets applied to the current network
+		// (i.e. the one we're analyzing) incorrectly. Grrrrr.
+		Cytoscape.createNetworkView(overview,overview.getIdentifier(),layout,null);
+		applyVisualStyle(overview,vs);
 
-		for ( CyNetwork net : nets ) 
-			Cytoscape.createNetworkView(net,net.getIdentifier(),layout,vs);
+		for ( CyNetwork net : nets ) { 
+			Cytoscape.createNetworkView(net,net.getIdentifier(),layout,null);
+			applyVisualStyle(net,vs);
+		}
 
 		Cytoscape.getDesktop().setFocus(overview.getIdentifier());
 	}
 
+	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
+		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		view.setVisualStyle(vs.getName());
+		vmm.setNetworkView(view);
+		vmm.setVisualStyle(vs);
+	}
 
-	private static CyNetwork createClusterNetwork(MCODECluster clust) {
+	private static CyNetwork createClusterNetwork(MCODECluster clust, CyNetwork overview) {
 		final CyNetwork nested = Cytoscape.createNetwork(
-		        CyNetworkNaming.getSuggestedNetworkTitle(clust.getClusterName()), false);
+		        CyNetworkNaming.getSuggestedNetworkTitle(clust.getClusterName()), overview, false);
 
 		// add nodes to cluster network
 		for ( Integer nodeId : clust.getALCluster() ) {
