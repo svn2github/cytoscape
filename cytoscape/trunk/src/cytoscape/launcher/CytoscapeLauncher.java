@@ -55,7 +55,8 @@ public class CytoscapeLauncher {
 		execArgs.add("-cp");
 		execArgs.add("cytoscape.jar");
 		execArgs.add("cytoscape.CyMain");
-		execArgs.add("-p plugins");
+		execArgs.add("-p");
+		execArgs.add("plugins");
 
 		// If Cytoscape won't run and the user agrees to run it with default settings, we try again.
 		if (!runCytoscape(execArgs, verbose) && continueWithDefaults(memSettings)) {
@@ -68,7 +69,8 @@ public class CytoscapeLauncher {
 			execArgs.add("-cp");
 			execArgs.add("cytoscape.jar");
 			execArgs.add("cytoscape.CyMain");
-			execArgs.add("-p plugins");
+			execArgs.add("-p");
+			execArgs.add("plugins");
 
 			System.exit(runCytoscape(execArgs, verbose) ? 0 : -1);
 		}
