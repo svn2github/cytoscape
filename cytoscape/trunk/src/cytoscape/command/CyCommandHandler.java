@@ -114,7 +114,7 @@ import cytoscape.layout.Tunable;
  *     Map<String,Object> args = new HashMap();
  *     args.put("iterations", new Integer(100));
  *     try {
- *       CyCommandHandler handler = CyCommandManager.execute("view layout", "force-directed", args);
+ *       CyCommandResult layoutResult = CyCommandManager.execute("view layout", "force-directed", args);
  *     } catch (CyCommandException e) {
  *     }
  * </code></pre>
