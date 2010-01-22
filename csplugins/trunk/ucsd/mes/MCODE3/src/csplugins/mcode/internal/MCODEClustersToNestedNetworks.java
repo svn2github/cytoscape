@@ -2,6 +2,9 @@ package csplugins.mcode.internal;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.CyNetwork;
@@ -11,6 +14,7 @@ import cytoscape.Cytoscape;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
@@ -25,7 +29,7 @@ public class MCODEClustersToNestedNetworks {
 
 	public static void convert(MCODECluster[] clusters) {
 
-		if ( clusters.length <= 0 )
+		if ( clusters == null || clusters.length <= 0 )
 			return;
 
 		// create overview network and nested networks
@@ -51,6 +55,9 @@ public class MCODEClustersToNestedNetworks {
 			maxScore = Math.max(maxScore,score);
 			Cytoscape.getNodeAttributes().setAttribute(oNode.getIdentifier(), "MCODE_Score", score);
 		}
+	
+		addOverlapEdges(overview);
+
 
 		// prepare the visual style
 		vs.setMaxValue(maxScore);
@@ -106,5 +113,35 @@ public class MCODEClustersToNestedNetworks {
 		}
 
 		return nested;
+	}
+
+	/**
+	 * Will add edges to the specified network if any of the nested networks
+	 * of the nodes of the specified network share nodes.
+	 */
+	private static void addOverlapEdges(CyNetwork net) {
+		Object[] nodes = net.nodesList().toArray();
+		HashSet[] hashSet = new HashSet[nodes.length];
+		for (int i=0; i< nodes.length; i++)
+			hashSet[i] = new HashSet<CyNode>(((CyNode)nodes[i]).getNestedNetwork().nodesList());
+
+		for (int i=0; i< nodes.length-1; i++) {
+			for (int j=i+1; j<nodes.length; j++) {
+				// determine if there are overlap between nested networks
+				if ( hasTwoSetOverlap(hashSet[i], hashSet[j]) ) {
+					CyEdge edge = Cytoscape.getCyEdge((CyNode)nodes[i], (CyNode)nodes[j], Semantics.INTERACTION, "overlap", true);
+					net.addEdge(edge);
+				}
+			}
+		}
+    }
+
+    private static boolean hasTwoSetOverlap(HashSet<CyNode> set1, HashSet<CyNode> set2) {
+		Iterator<CyNode> it = set1.iterator();
+		while (it.hasNext()) {
+			if (set2.contains(it.next())) 
+				return true;
+		}
+		return false;
 	}
 }
