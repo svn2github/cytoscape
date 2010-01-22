@@ -35,30 +35,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual;
-
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.calculators.Calculator;
-
-import cytoscape.visual.mappings.ObjectMapping;
 
 import giny.model.Edge;
 
-import java.awt.Color;
-import java.awt.Font;
-
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
+
+import cytoscape.CyNetwork;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ObjectMapping;
 
 
-//----------------------------------------------------------------------------
 /**
  * This class calculates the appearance of an Edge. It holds a default value and
  * a (possibly null) calculator for each visual attribute.
