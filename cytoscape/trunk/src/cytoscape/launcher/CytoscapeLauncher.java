@@ -57,6 +57,8 @@ public class CytoscapeLauncher {
 		execArgs.add("cytoscape.CyMain");
 		execArgs.add("-p");
 		execArgs.add("plugins");
+		for (final String arg : args)
+			execArgs.add(arg);
 
 		// If Cytoscape won't run and the user agrees to run it with default settings, we try again.
 		if (!runCytoscape(execArgs, verbose) && continueWithDefaults(memSettings)) {
@@ -71,6 +73,8 @@ public class CytoscapeLauncher {
 			execArgs.add("cytoscape.CyMain");
 			execArgs.add("-p");
 			execArgs.add("plugins");
+			for (final String arg : args)
+				execArgs.add(arg);
 
 			System.exit(runCytoscape(execArgs, verbose) ? 0 : -1);
 		}
