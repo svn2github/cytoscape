@@ -1117,7 +1117,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 				}
 			}
 
-			if (((dx % (startInd - endInd)) == 0) && (dx != 0))
+			if ((startInd == endInd) || (((dx % (startInd - endInd)) == 0) && (dx != 0)))
 				if (!dirFirst) {
 					direct *= -1;
 					dirFirst = true;
