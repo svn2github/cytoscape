@@ -5,6 +5,8 @@
 <html>
 
 	<head>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="feedReader.js"></script>
 		<title>Cytoscape: Analyzing and Visualizing Network Data</title>
 		<link href="css/cytoscape.css" type="text/css" rel="stylesheet" media="screen">
 		<link href="images/cyto.ico" rel="shortcut icon">
