@@ -207,11 +207,15 @@ public class CommandToolDialog extends JDialog
 
 	private CyCommandResult handleCommand(String inputLine, String ns) throws CyCommandException {
 		String sub = null;
+		// Check for help
+		if (ns.equals("help")) {
+			return handleHelpCommand(inputLine);
+		}
 		// Parse the input, breaking up the tokens into appropriate
 		// commands, subcommands, and maps
 		Map<String,Object> settings = new HashMap();
 		String comm = parseInput(inputLine.substring(ns.length()).trim(), settings);
-		
+
 		for (String command: CyCommandManager.getCommandList(ns)) {
 			if (command.toLowerCase().equals(comm.toLowerCase())) {
 				sub = command;
@@ -223,6 +227,38 @@ public class CommandToolDialog extends JDialog
 			throw new CyCommandException("Unknown argument: "+comm);
 		
 		return CyCommandManager.execute(ns, sub, settings);
+	}
+
+	private CyCommandResult handleHelpCommand(String inputLine) throws CyCommandException {
+		String sub = null;
+		Map<String,Object> settings = new HashMap();
+
+		inputLine = inputLine.substring(4).trim();
+		if (inputLine.length() < 1)
+			return CyCommandManager.execute("help", "", settings);
+
+		// Help can have an entire command after it -- check for input
+		String hns = isNamespace(inputLine);
+		if (hns == null || hns.length() == 0) {
+			throw new CyCommandException("Unknown command: "+inputLine);
+		}
+
+		inputLine = inputLine.substring(hns.length()).trim();
+		if (inputLine.length() < 1)
+			return CyCommandManager.execute("help", hns, settings);
+
+		for (String command: CyCommandManager.getCommandList(hns)) {
+			if (command.toLowerCase().equals(inputLine.toLowerCase())) {
+				sub = command;
+				break;
+			}
+		}
+		if (sub == null && inputLine.length() > 1)
+			throw new CyCommandException("Unknown command: "+hns+" "+inputLine);
+
+		settings.put(sub, "");
+		return CyCommandManager.execute("help", hns, settings);
+		
 	}
 
 	private String parseInput(String input, Map<String,Object> settings) {
