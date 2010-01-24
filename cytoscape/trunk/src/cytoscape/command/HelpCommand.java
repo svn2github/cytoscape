@@ -54,8 +54,6 @@ import java.util.Map;
 class HelpCommand implements CyCommandHandler {
   public final static String HELP = "help";
 
-	public String getHandlerName() { return HELP; }
-
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
@@ -67,9 +65,23 @@ class HelpCommand implements CyCommandHandler {
 			result.addMessage("For detailed information type: ");
 			result.addMessage(" help command");
 		} else {
-			result.addMessage("Available " + command + " commands: ");
-			for ( String c : CyCommandManager.getCommandList(command) )
-				result.addMessage("  "+ command + " " + c);
+			// See if we have a command arg...
+			if (args != null && args.size() > 0) {
+				// We do, get the command we want details on
+				for (String subc: args.keySet()) {
+					CyCommandHandler ch = CyCommandManager.getCommand(command, subc);
+					String desc = ch.getDescription(subc);
+					if (desc == null)
+						result.addMessage("Detailed information on '" + command + " " + subc+"' is not available  ");
+					else
+						result.addMessage(desc);
+					break;
+				}
+			} else {
+				result.addMessage("Available " + command + " commands: ");
+				for ( String c : CyCommandManager.getCommandList(command) )
+					result.addMessage("  "+ command + " " + c);
+			}
 		}
 
 		return result;

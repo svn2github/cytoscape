@@ -73,6 +73,9 @@ public class CyCommandManager {
 	}
 
 	public static CyCommandNamespace reserveNamespace(String namespace) throws RuntimeException {
+		if (namespace == null || namespace.length() == 0) return null;
+
+		namespace = namespace.toLowerCase();
 		if (nsMap.containsKey(namespace))
 			throw new RuntimeException("Command namespace: "+namespace+" is already reserved");
 
@@ -119,13 +122,16 @@ public class CyCommandManager {
 		if ((namespace == null) || (namespace.length() == 0)) 
 			throw new RuntimeException("null or zero length namespace");
 
+		namespace = namespace.toLowerCase();
+
 		if ((name == null) || (name.length() == 0)) 
 			throw new RuntimeException("null or zero length command name");
 
-		Map<String,CyCommandHandler> subComMap = comMap.get(namespace);
-		if ( subComMap == null )
-			throw new RuntimeException("namespace " + namespace + " does not exist!");
+		CyCommandNamespace ns = nsMap.get(namespace);
+		if ( ns == null )
+			throw new RuntimeException("namespace '" + namespace + "' does not exist!");
 
+		Map<String,CyCommandHandler> subComMap = comMap.get(ns);
 		return subComMap.get(name);
 	}
 
@@ -174,7 +180,7 @@ public class CyCommandManager {
 		if (!nsMap.containsKey(namespace))
 			return null;
 
-		CyCommandNamespace ns = nsMap.get(namespace);
+		CyCommandNamespace ns = nsMap.get(namespace.toLowerCase());
 
 		if ( comMap.containsKey( ns ) )
 			list.addAll( comMap.get(ns).keySet() ); 

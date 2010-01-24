@@ -53,8 +53,9 @@ import cytoscape.layout.Tunable;
  * This abstract class provides a convenient (but not necessary) base class
  * for writing CyCommandHandlers.  It may be used whether your handler handles
  * a single command or multiple commands.  The general use of this base class
- * is to add a set of known arguments using the {@link AbstractCommandHandler#addArgument}() method within
- * the constructor for your command handler:
+ * is to add a set of known arguments using the {@link AbstractCommandHandler#addArgument}() method
+ * and {@link AbstractCommandHandler#addDescription}() methods within the constructor of your
+ * command handler:
  * <pre><code>
  * public class MyCommandHandler extends AbstractCommandHandler {
  *   // Define our command name
@@ -67,6 +68,7 @@ import cytoscape.layout.Tunable;
  *
  *   public MyCommandHandler({@link CyCommandNamespace} ns) {
  *     super(ns);
+ *     {@link AbstractCommandHandler#addDescription}(COMMAND, "This command does something really cool");
  *     {@link AbstractCommandHandler#addArgument}(COMMAND, ARGKEY1);
  *     {@link AbstractCommandHandler#addArgument}(COMMAND, ARGKEY2);
  *     {@link AbstractCommandHandler#addArgument}(COMMAND, ARGKEY3, "defaultValue");
@@ -99,11 +101,18 @@ import cytoscape.layout.Tunable;
  * </pre></code>
  * where the createKVMap method will take a Collection of Tunables and create the corresponding Map to call your execute method.
  *
+ * The {@link AbstractCommandHandler#addDescription}() method is used by the AbstractCommandHandler's {@link AbstractCommandHandler#getDescription}()
+ * method to produce a formatted description of the command, including the namespace, command name, description, and options 
+ * (with default values).  To avoid the formatting and provide your own full description, just override the getDescription() method
+ * and return your own description.
+ *
  * Also note that the {@link CyCommandNamespace} must be reserved before the command handler is initialized.
+ *
  *
  */
 public abstract class AbstractCommandHandler implements CyCommandHandler {
 	protected Map<String, List<Tunable>> argumentMap = new HashMap();
+	protected Map<String, String> descriptionMap = new HashMap();
 	protected CyCommandNamespace namespace = null;
 
 	/**
@@ -175,14 +184,19 @@ public abstract class AbstractCommandHandler implements CyCommandHandler {
 	}
 
 	/**
- 	 * Override this to provide the description/documentation of the command.  
- 	 * This could be used to describe the command's function or usage and is 
- 	 * meant to be used by UI's that act as clients for the command.  
+ 	 * This method returns a formatted description of the command, including
+ 	 * the namespace, command name, plugin-provided description, and arguments.
+ 	 * Override this to provide your own description.
  	 *
  	 * @param command the command we're inquiring about
  	 * @return the description/documentation for this command
  	 */
-	public String getDescription(String command) { return null; }
+	public String getDescription(String command) { 
+		if (descriptionMap.containsKey(command)) {
+			return formatDescription(command, descriptionMap.get(command), argumentMap.get(command));
+		}
+		return null;
+	}
 
 	/**
  	 * Execute a given command with a particular set of arguments.  As with the
@@ -234,6 +248,23 @@ public abstract class AbstractCommandHandler implements CyCommandHandler {
 			if (t != null) tCol.add(t);
 		}
 		return tCol;
+	}
+
+	/**
+ 	 * This method adds a new description for a command supported by this command
+ 	 * handler.  addDescription, in conjunction with the getDescription method
+ 	 * provided by this class provide an easy way to get a formatted description,
+ 	 * including available options.  On the other hand, if a plugin want's to provide
+ 	 * its own description, without any additional formatting, it should override
+ 	 * getDescription and return the description directly
+ 	 * 
+ 	 * @param command the name of the command to add the description to
+ 	 * @param description the description to add
+ 	 */
+	protected void addDescription(String command, String description) {
+		if (descriptionMap == null)
+			descriptionMap = new HashMap();
+		descriptionMap.put(command, description);
 	}
 
 	/**
@@ -325,6 +356,62 @@ public abstract class AbstractCommandHandler implements CyCommandHandler {
 		return args.get(key).toString();
 	}
 
+	/**
+ 	 * This method can be used to create a formatted description that includes
+ 	 * the namespace, command, and options.
+ 	 *
+ 	 * @param command the command 
+ 	 * @param description the textual description
+ 	 * @return the formatted text
+ 	 */
+	protected String formatDescription(String command, String description) {
+		if (!argumentMap.containsKey(command)) {
+			List<Tunable> args = argumentMap.get(command);
+			return formatDescription(command, description, args);
+		}
+		return formatDescription(command, description, new ArrayList());
+	}
+
+	/**
+ 	 * This method can be used to create a formatted description that includes
+ 	 * the namespace, command, and options.
+ 	 *
+ 	 * @param command the command 
+ 	 * @param description the textual description
+ 	 * @param args the list of arguments for this command
+ 	 * @return the formatted text
+ 	 */
+	protected String formatDescription(String command, String description, Collection<Tunable>args) {
+		String descr = namespace.getNamespaceName()+" "+command+": "+description;
+		if (args == null || args.size() == 0) return descr;
+		descr += "\n  Arguments:\n";
+		for (Tunable arg: args) {
+		  descr += "    [";
+			if (arg.getName() != null)
+				descr += arg.getName();
+			if (arg.getDescription() != null && !arg.getDescription().equals(arg.getName()))
+				descr += "("+arg.getDescription()+")";
+			if (arg.getValue() != null)
+				descr += "="+arg.getValue();
+			else
+				descr += "=value";
+		  descr += "]\n";
+		}
+		return descr;
+	}
+
+	/**
+ 	 * This method can be used to create a formatted description that includes
+ 	 * the namespace, command, and options.
+ 	 *
+ 	 * @param command the command 
+ 	 * @param description the textual description
+ 	 * @param args the list of arguments for this command
+ 	 * @return the formatted text
+ 	 */
+	protected String formatDescription(String command, String description, Map<String, Object>args) {
+		return formatDescription(command, description, createTunableCollection(args));
+	}
 
 	/**
 	 * This method is useful for converting from Tunable lists to key-value settings
