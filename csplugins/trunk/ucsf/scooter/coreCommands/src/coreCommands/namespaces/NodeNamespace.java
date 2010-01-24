@@ -80,33 +80,37 @@ public class NodeNamespace extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(DESELECT, "Deselect nodes.  If no node(s) are provided, all nodes are deselected");
 		addArgument(DESELECT, NODE);
 		addArgument(DESELECT, NODELIST);
+
 		// addArgument("export attributes", "file");
 		// addArgument("export attributes", "attribute");
+		//
 		// addArgument("find", "expression");
+
+		addDescription(GETATTR, "Returns node attributes");
 		addArgument(GETATTR, NODE);
 		addArgument(GETATTR, NODELIST);
 		addArgument(GETATTR, NAME);
+
+		addDescription(GETSEL, "Lists the currently selected nodes");
 		addArgument(GETSEL, NETWORK, "current");
+
+		addDescription(IMPORTATTR, "Import node attributes from a file");
 		addArgument(IMPORTATTR, FILE);
+
+		addDescription(SELECT, "Select nodes.  If no node(s) are provided, all nodes are selected");
 		addArgument(SELECT, NODE);
 		addArgument(SELECT, NODELIST);
+
+		addDescription(SETATTR, "Set node attributes to a new value");
 		addArgument(SETATTR, NODE);
 		addArgument(SETATTR, NODELIST);
 		addArgument(SETATTR, NAME);
 		addArgument(SETATTR, VALUE);
 		addArgument(SETATTR, TYPE);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return NODE; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

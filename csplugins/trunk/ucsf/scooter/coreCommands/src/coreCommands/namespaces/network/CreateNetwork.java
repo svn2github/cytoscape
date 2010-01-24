@@ -68,19 +68,11 @@ public class CreateNetwork extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(CREATE, "Create a new network");
 		addArgument(CREATE, NAME, "NewNetwork");
 		addArgument(CREATE, CREATEVIEW, "true");
 		addArgument(CREATE, PARENT);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return CREATE; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

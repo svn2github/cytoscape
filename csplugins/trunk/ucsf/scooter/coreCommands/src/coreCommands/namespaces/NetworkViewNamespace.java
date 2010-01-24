@@ -65,11 +65,13 @@ public class NetworkViewNamespace extends AbstractCommandHandler {
 	static String NETWORKVIEW = "networkview";
 
 	static String CREATE = "create";
-	static String GETCURRENT = "get current";
 	static String FIT = "fit";
 	static String FOCUS = "focus";
+	static String GETCURRENT = "get current";
+	static String GETSIZE = "get size";
 	static String LIST = "list";
 	static String MAKECURRENT = "make current";
+	static String SETWINDOW = "set window";
 	static String UPDATE = "update";
 	static String ZOOM = "zoom";
 
@@ -83,33 +85,43 @@ public class NetworkViewNamespace extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(CREATE,"Create a network view for the named network");
 		addArgument(CREATE, NETWORK, CURRENT);
+
+		addDescription(GETCURRENT,"Return the name of the current network view");
 		addArgument(GETCURRENT);
-		// addArgument("get size", "network", "current");
+
+		// addDescription(GETSIZE,"Return the size of the named network view");
+		// addArgument(GETSIZE, "network", "current");
+
+		addDescription(FIT,"Fit the named network view to the window");
 		addArgument(FIT, NETWORK, CURRENT);
+
+		addDescription(FOCUS,"Focus the network view (zoom+pan) to the list of nodes");
 		addArgument(FOCUS, NODELIST);
 		addArgument(FOCUS, NETWORK, CURRENT);
+
+		addDescription(LIST,"Return a list of all network views");
 		addArgument(LIST);
+
+		addDescription(MAKECURRENT,"Make the named network view the 'current' network view");
 		addArgument(MAKECURRENT, NETWORK);
-		// addArgument("set window", "network", "current");
-		// addArgument("set window", "x");
-		// addArgument("set window", "y");
-		// addArgument("set window", "height");
-		// addArgument("set window", "width");
+
+		// addDescription(SETWINDOW,"Sets the window size parameters");
+		// addArgument(SETWINDOW, "network", "current");
+		// addArgument(SETWINDOW, "x");
+		// addArgument(SETWINDOW, "y");
+		// addArgument(SETWINDOW, "height");
+		// addArgument(SETWINDOW, "width");
+
+		addDescription(UPDATE,"Update (redraw) the named network view");
 		addArgument(UPDATE, NETWORK, CURRENT);
+
+		addDescription(ZOOM,"Zoom the named network view");
 		addArgument(ZOOM, FACTOR, "2.0");
 		addArgument(ZOOM, SCALE);
 		addArgument(ZOOM, NETWORK, CURRENT);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return NETWORKVIEW; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

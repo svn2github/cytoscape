@@ -85,19 +85,11 @@ public class ImportNetwork extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(IMPORT, "Import a network from a file");
 		addArgument(IMPORT, FILE);
 		addArgument(IMPORT, CREATEVIEW, "true");
 		addArgument(IMPORT, PARENT);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return IMPORT; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

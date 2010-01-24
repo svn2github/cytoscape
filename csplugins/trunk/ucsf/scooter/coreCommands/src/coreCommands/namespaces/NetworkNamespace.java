@@ -84,20 +84,18 @@ public class NetworkNamespace extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(DESTROY, "Destroy (delete) a network");
 		addArgument(DESTROY, NAME);
+
+		addDescription(GETCURRENT, "Return the name of the current network");
 		addArgument(GETCURRENT);
+
+		addDescription(LIST, "Return a list of all of the networks currently loaded");
 		addArgument(LIST);
+
+		addDescription(MAKECURRENT, "Make the network with the provided name the 'current' network");
 		addArgument(MAKECURRENT, NAME);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return NETWORK; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

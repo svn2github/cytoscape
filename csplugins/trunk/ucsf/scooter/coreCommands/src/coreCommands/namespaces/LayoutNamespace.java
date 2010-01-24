@@ -66,13 +66,19 @@ public class LayoutNamespace extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(GETCURRENT, "Return the name of the last layout performed on this network");
 		addArgument(GETCURRENT);
+
+		addDescription(GETCURRENT, "Return the name of the default layout");
 		addArgument(GETDEFAULT);
+
+		addDescription(DEFAULT, "Layout the current network with the default layout");
 		addArgument(DEFAULT);
 
 		// Get the list of layouts from the layout manager
 		for (CyLayoutAlgorithm alg: CyLayouts.getAllLayouts()) {
 			String layout = alg.getName();
+			addDescription(layout, alg.toString());
 			LayoutProperties props = alg.getSettings();
 			if (props == null) {
 				addArgument(layout);
@@ -82,15 +88,6 @@ public class LayoutNamespace extends AbstractCommandHandler {
 				addArgument(layout, t);
 		}
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return LAYOUT; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

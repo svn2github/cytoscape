@@ -67,24 +67,20 @@ public class VizMapNamespace extends AbstractCommandHandler {
 
 	static String STYLE = "style";
 	static String FILE = "file";
+	static String NETWORK = "network";
+	static String CURRENT = "current";
 
 	public VizMapNamespace(CyCommandNamespace ns) {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(APPLY, "Apply the named visual style to the current (or named) network");
 		addArgument(APPLY, STYLE, "default");
+		addArgument(APPLY, NETWORK, CURRENT);
 
+		addDescription(IMPORT, "Import a visual style from a file");
 		addArgument(IMPORT, FILE, null);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return VIZMAP; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));
@@ -97,8 +93,16 @@ public class VizMapNamespace extends AbstractCommandHandler {
 			if (args.containsKey(STYLE))
 				styleName = args.get(STYLE).toString();
 
+			CyNetworkView networkView;
+
+			if (args.containsKey(NETWORK) && !args.get(NETWORK).equals(CURRENT)) {
+				networkView = Cytoscape.getNetworkView(args.get(NETWORK).toString());
+				if (networkView == null)
+					throw new CyCommandException("Can't find view for network "+args.get(NETWORK).toString());
+			} else
+				networkView = Cytoscape.getCurrentNetworkView();
+
 			// Make sure the style exists
-			CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 			VisualMappingManager vizMapper = 
 				new VisualMappingManager(networkView);
 

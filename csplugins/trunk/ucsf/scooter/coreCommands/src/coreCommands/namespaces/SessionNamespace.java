@@ -69,19 +69,15 @@ public class SessionNamespace extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(OPEN, "Open an existing Cytoscape session");
 		addArgument(OPEN, FILE);
+
+		addDescription(NEW, "Create a new (empty) Cytoscape session");
 		addArgument(NEW);
+
+		addDescription(SAVE, "Save the current Cytoscape session into a file");
 		addArgument(SAVE, FILE);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return SESSION; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

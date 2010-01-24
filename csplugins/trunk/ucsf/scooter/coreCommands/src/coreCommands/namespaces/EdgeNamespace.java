@@ -80,18 +80,31 @@ public class EdgeNamespace extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(DESELECT, "Deselect edges.  If no edge(s) are provided, all edges are deselected");
 		addArgument(DESELECT, EDGE);
 		addArgument(DESELECT, EDGELIST);
+
 		// addArgument("export attributes", "file");
 		// addArgument("export attributes", "attribute");
+		//
 		// addArgument("find", "expression");
+		
+		addDescription(GETATTR, "Returns edge attributes");
 		addArgument(GETATTR, EDGE);
 		addArgument(GETATTR, EDGELIST);
 		addArgument(GETATTR, NAME);
+
+		addDescription(GETSEL, "Lists the currently selected edges");
 		addArgument(GETSEL, NETWORK, "current");
+
+		addDescription(IMPORTATTR, "Import edge attributes from a file");
 		addArgument(IMPORTATTR, FILE);
+
+		addDescription(SELECT, "Select edges.  If no edge(s) are provided, all edges are selected");
 		addArgument(SELECT, EDGE);
 		addArgument(SELECT, EDGELIST);
+
+		addDescription(SETATTR, "Set edge attributes to a new value");
 		addArgument(SETATTR, EDGE);
 		addArgument(SETATTR, EDGELIST);
 		addArgument(SETATTR, NAME);
@@ -99,15 +112,6 @@ public class EdgeNamespace extends AbstractCommandHandler {
 
 		// Handle table import????
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return EDGE; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

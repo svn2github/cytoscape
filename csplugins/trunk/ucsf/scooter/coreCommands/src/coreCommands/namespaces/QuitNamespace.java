@@ -58,17 +58,9 @@ public class QuitNamespace extends AbstractCommandHandler {
 
 	public QuitNamespace(CyCommandNamespace ns) {
 		super(ns);
+		addDescription("", "Exits Cytoscape");
 		addArgument("");
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return namespace.getNamespaceName(); }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		System.exit(0);

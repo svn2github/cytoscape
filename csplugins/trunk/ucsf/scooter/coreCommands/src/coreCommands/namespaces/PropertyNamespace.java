@@ -68,20 +68,16 @@ public class PropertyNamespace extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(SET, "Sets a Cytoscape property");
 		addArgument(SET, NAME);
 		addArgument(SET, VALUE);
+
+		addDescription(GET, "Gets the value of a Cytoscape property");
 		addArgument(GET, NAME);
+
+		addDescription(CLEAR, "Clears the value of a Cytoscape property");
 		addArgument(CLEAR, NAME);
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return PROPERTY; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));

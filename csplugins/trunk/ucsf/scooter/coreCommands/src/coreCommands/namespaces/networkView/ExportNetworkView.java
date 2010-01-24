@@ -94,20 +94,12 @@ public class ExportNetworkView extends AbstractCommandHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(EXPORT, "Export a network view as a graphic file");
 		addArgument(EXPORT, FILE);
 		addArgument(EXPORT, NETWORK, CURRENT);
 		addArgument(EXPORT, TYPE, PNG);
 		addArgument(EXPORT, ZOOM, "1.0");
 	}
-
-
-	/**
-	 * commandName returns the command name.  This is used to build the
-	 * hash table of commands to hand to the command parser
-	 *
-	 * @return name of the command
-	 */
-	public String getHandlerName() { return EXPORT; }
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
 		return execute(command, createKVMap(args));
