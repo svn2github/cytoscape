@@ -113,11 +113,11 @@ public class QuickFindPanel extends JPanel {
 			rangeSlider.setVisible(false);
 			label.setText(SEARCH_STRING);
 			comboBox.setTextIndex((TextIndex) index);
-		} else {
+		} else if (index instanceof NumberIndex) {
 			NumberIndex numberIndex = (NumberIndex) index;
             //  by creating a new NumberRangeModel, the model retains the
             //  number setting, e.g. double or integer;  otherwise, you get
-            //  the bug described in #1315.
+            //  the bug described in #1315.			
             rangeModel = new NumberRangeModel(numberIndex.getMinimumValue(),
                     numberIndex.getMinimumValue(), numberIndex.getMinimumValue(),
                     numberIndex.getMaximumValue());
@@ -125,6 +125,11 @@ public class QuickFindPanel extends JPanel {
             comboBox.setVisible(false);
 			rangeSlider.setVisible(true);
 			label.setText(SELECT_STRING);
+		}
+		else {
+			// index = null, because there is no enough time to create the index, before switch to other network
+			// just ignore it.
+			return;
 		}
 
 		enableAllQuickFindButtons();
