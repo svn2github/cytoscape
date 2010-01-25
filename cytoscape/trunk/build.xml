@@ -944,6 +944,12 @@
 		      tofile="build/Cytoscape.install4j" 
 		      filtering="true"
 		      overwrite="true"/>
+		<copy file="tools/gen_vmoptions.sh"
+		      tofile="build/gen_vmoptions.sh" 
+		      overwrite="true"/>
+		<copy file="tools/gen_vmoptions.bat"
+		      tofile="build/gen_vmoptions.bat" 
+		      overwrite="true"/>
 		<install4j projectfile="build/Cytoscape.install4j"/>
 	</target>
 
