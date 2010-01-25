@@ -258,19 +258,59 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 	}
 
 	private CustomGraphic drawImage(NodeView nv, Compound cmpd) {
+		// Get our scale factor
+		int scale = settingsDialog.getNodeStructureSize();
+		// Get our anchor
+		byte anchor = settingsDialog.getStructurePosition();
+
 		// Get our width and height
-		double width = nv.getWidth();
-		double height = nv.getHeight();
+		double width = (nv.getWidth()*scale)/100.;
+		double height = (nv.getHeight()*scale)/100.;
+
+		// Adjust our x and y starting points according to our anchor
+		double x = 0.0;
+		double y = 0.0;
+		switch (anchor) {
+		case NodeDetails.ANCHOR_CENTER:
+			x = -width/2; y = -height/2;
+			break;
+		case NodeDetails.ANCHOR_NORTH:
+			x = -width/2; y = -height;
+			break;
+		case NodeDetails.ANCHOR_SOUTH:
+			x = -width/2; y = 0;
+			break;
+		case NodeDetails.ANCHOR_EAST:
+			x = 0; y = -height/2;
+			break;
+		case NodeDetails.ANCHOR_WEST:
+			x = -width; y = -height/2;
+			break;
+		case NodeDetails.ANCHOR_SOUTHWEST:
+			x = -width; y = 0;
+			break;
+		case NodeDetails.ANCHOR_SOUTHEAST:
+			x = 0; y = 0;
+			break;
+		case NodeDetails.ANCHOR_NORTHEAST:
+			x = 0; y = -height;
+			break;
+		case NodeDetails.ANCHOR_NORTHWEST:
+			x = -width; y = -height;
+			break;
+		default:
+			x = 0.0; y = 0.0;
+		}
 
 		BufferedImage image = (BufferedImage) cmpd.getImage((int)(width*zoom), (int)(height*zoom));
 		if (image == null) return null;
 
 		// Create the image
-		TexturePaint tp = new TexturePaint(image, new Rectangle2D.Double(0,0,width,height));
+		TexturePaint tp = new TexturePaint(image, new Rectangle2D.Double(x,y,width,height));
 
 		// Add it to the view
-		return ((DNodeView)nv).addCustomGraphic(new Rectangle2D.Double(0,0,width,height), tp, 
-		                                        NodeDetails.ANCHOR_NORTHWEST);
+		return ((DNodeView)nv).addCustomGraphic(new Rectangle2D.Double(x,y,width,height), tp, 
+		                                        anchor);
 	}
 
 	private boolean inViewport(NodeView nv, int width, int height, 

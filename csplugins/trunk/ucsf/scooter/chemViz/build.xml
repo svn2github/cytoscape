@@ -109,6 +109,7 @@
     </unzip>
     <copy todir="${build.dir}/classes/chemViz">
       <fileset file="${src.dir}/chemViz/*.props" />
+   	  <fileset file="resources/plugin.props"/>
     </copy>
     <jar jarfile="${build.dir}/chemViz.jar">
       <manifest>

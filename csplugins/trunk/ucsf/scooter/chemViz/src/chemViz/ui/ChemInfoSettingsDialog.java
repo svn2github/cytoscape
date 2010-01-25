@@ -44,6 +44,7 @@ import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.render.stateful.NodeDetails;
 
 import giny.model.GraphObject;
 
@@ -69,11 +70,33 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+enum DepictionPositions {
+  CENTER("Centered", NodeDetails.ANCHOR_CENTER),
+  TOPCENTER("Top-center", NodeDetails.ANCHOR_NORTH),
+  TOPLEFT("Top-left", NodeDetails.ANCHOR_NORTHWEST),
+  TOPRIGHT("Top-right", NodeDetails.ANCHOR_NORTHEAST),
+  BOTTOMCENTER("Bottom-center", NodeDetails.ANCHOR_SOUTH),
+  BOTTOMLEFT("Bottom-left", NodeDetails.ANCHOR_SOUTHWEST),
+  BOTTOMRIGHT("Bottom-right", NodeDetails.ANCHOR_SOUTHEAST),
+	MIDDLERIGHT("Middle-right", NodeDetails.ANCHOR_EAST),
+	MIDDLELEFT("Middle-left", NodeDetails.ANCHOR_WEST);
+
+  private String name;
+  private byte position;
+  private DepictionPositions(String str, byte pos) { name=str; position=pos;}
+  public String toString() { return name; }
+  public byte labelPosition() { return position; }
+}
 
 public class ChemInfoSettingsDialog extends JDialog implements ActionListener, PropertyChangeListener {
 
 	private static final String defaultSmilesAttributes[] = {"SMILES","Compounds","Compound","Smiles","smiles"};
 	private static final String defaultInCHIAttributes[] = {"InCHI","inchi","InChi","InChI"};
+	private static final DepictionPositions positionList[] = {DepictionPositions.CENTER, DepictionPositions.TOPCENTER, 
+	                                                          DepictionPositions.TOPLEFT, DepictionPositions.TOPRIGHT, 
+	                                                          DepictionPositions.BOTTOMCENTER, DepictionPositions.BOTTOMLEFT,
+	                                                          DepictionPositions.BOTTOMRIGHT,DepictionPositions.MIDDLERIGHT,
+	                                                          DepictionPositions.MIDDLELEFT};
 	private static List<String> smilesAttributes = null;
 	private static List<String> inCHIAttributes = null;
 	private ChemInfoProperties properties;
@@ -81,6 +104,8 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private int maxCompounds = 0;
 	private double tcCutoff = 0.25;
 	private boolean showHyd = false;
+	private int labelPositionIndex = 0;
+	private int nodeStructureSize = 100;
 
 	public ChemInfoSettingsDialog() {
 		super(Cytoscape.getDesktop(), "ChemViz Plugin Settings Dialog", false);
@@ -180,6 +205,16 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 			tcCutoff = ((Double) t.getValue()).doubleValue();
 		}
 
+		t = properties.get("nodeStructureSize");
+		if ((t != null) && (t.valueChanged() || force)) {
+			nodeStructureSize = ((Integer)t.getValue()).intValue();
+		}
+
+		t = properties.get("labelPosition");
+		if ((t != null) && (t.valueChanged() || force)) {
+			labelPositionIndex = ((Integer)t.getValue()).intValue();
+		}
+
 /*
 		t = properties.get("showHyd");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -259,6 +294,14 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		return showHyd;
 	}
 
+	public int getNodeStructureSize() {
+		return nodeStructureSize;
+	}
+
+	public byte getStructurePosition() {
+		return positionList[labelPositionIndex].labelPosition();
+	}
+
 	private List<String> getMatchingAttributes(CyAttributes attributes, List<String> compoundAttributes) {
 		// Get the names of all of the object attributes
 		String[] attrNames = attributes.getAttributeNames();
@@ -280,27 +323,25 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		Tunable t = properties.get("smilesAttributes");
 		t.setLowerBound((Object[])possibleAttributes.toArray());
 		String smilesDefaults = getDefaults(possibleAttributes, defaultSmilesAttributes);
-		t.setUpperBound(smilesDefaults);
+		t.setValue(smilesDefaults);
 		// Repeat for the inCHI tunable
 		t = properties.get("inChiAttributes");
 		t.setLowerBound((Object[])possibleAttributes.toArray());
 		String inCHIDefaults = getDefaults(possibleAttributes, defaultInCHIAttributes);
-		t.setUpperBound(inCHIDefaults);
+		t.setValue(inCHIDefaults);
 	}
 
 	private void initializeProperties() {
 		Tunable t = new Tunable("group1","", Tunable.GROUP, new Integer(2));
 		properties.add(t);
 
-		t = new Tunable("maxCompunds",
+		properties.add(new Tunable("maxCompunds",
 		                "Maximum number of compounds to show in 2D structure popup",
-		                Tunable.INTEGER, new Integer(0));
-		properties.add(t);
+		                Tunable.INTEGER, new Integer(0)));
 
-		t = new Tunable("tcCutoff",
+		properties.add(new Tunable("tcCutoff",
 		                "Minimum tanimoto value to consider for edge creation",
-		                Tunable.DOUBLE, new Double(0.25));
-		properties.add(t);
+		                Tunable.DOUBLE, new Double(0.25)));
 
 /*
 		t = new Tunable("showHyd",
@@ -312,32 +353,40 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		List<String>possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
 		                                                  Cytoscape.getEdgeAttributes());
 
-		t = new Tunable("attributeGroup",
+		properties.add(new Tunable("attributeGroup",
 		                "Attribute Settings",
-		                Tunable.GROUP, new Integer(4));
-		properties.add(t);
+		                Tunable.GROUP, new Integer(4)));
 
-		t = new Tunable("attributeGroup1",
+		properties.add( new Tunable("attributeGroup1",
 		                "SMILES Attributes",
-		                Tunable.GROUP, new Integer(2));
-		properties.add(t);
+		                Tunable.GROUP, new Integer(2)));
+
 		String smilesDefaults = getDefaults(possibleAttributes, defaultSmilesAttributes);
-		t = new Tunable("smilesAttributes",
+		properties.add( new Tunable("smilesAttributes",
 		                "Attributes that contain SMILES strings",
 		                Tunable.LIST, smilesDefaults,
-		                (Object)possibleAttributes.toArray(), null, Tunable.MULTISELECT);
-		properties.add(t);
+		                (Object)possibleAttributes.toArray(), smilesDefaults, Tunable.MULTISELECT));
 
-		t = new Tunable("attributeGroup2",
+		properties.add( new Tunable("attributeGroup2",
 		                "InCHI Attributes",
-		                Tunable.GROUP, new Integer(2));
-		properties.add(t);
+		                Tunable.GROUP, new Integer(2)));
+
 		String inCHIDefaults = getDefaults(possibleAttributes, defaultInCHIAttributes);
-		t = new Tunable("inChiAttributes",
+		properties.add( new Tunable("inChiAttributes",
 		                "Attributes that contain InCHI fingerprints",
 		                Tunable.LIST, inCHIDefaults,
-		                (Object)possibleAttributes.toArray(), null, Tunable.MULTISELECT);
-		properties.add(t);
+		                (Object)possibleAttributes.toArray(), inCHIDefaults, Tunable.MULTISELECT));
+
+		properties.add(new Tunable("presentationGroup2", "Depiction options", Tunable.GROUP, new Integer(2)));
+
+		properties.add(new Tunable("nodeStructureSize",
+                   "Size of 2D node depiction as a % of node size",
+		               Tunable.INTEGER, new Integer(100)));
+
+		properties.add( new Tunable("labelPosition",
+		                "Position of the 2D depiction on the node",
+		                Tunable.LIST, new Integer(labelPositionIndex),
+		                (Object)positionList, null, 0));
 
 		properties.initializeProperties();
 	}

@@ -86,7 +86,7 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.AWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator;
+import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -757,7 +757,7 @@ public class Compound {
 
 			// generators make the image elements
 			List<IGenerator> generators = new ArrayList<IGenerator>();
-			generators.add(new BasicBondGenerator());
+			generators.add(new RingGenerator());
 			generators.add(new BasicAtomGenerator());
        
 			// the renderer needs to have a toolkit-specific font manager 
@@ -772,7 +772,7 @@ public class Compound {
 			model.setShowAromaticity(true); 
 			model.setShowReactionBoxes(false);
 			model.setKekuleStructure(false);
-			// model.setBackColor(new Color(0,0,0,0));
+			// model.setShowAromaticityCDKStyle(true);
 			model.setBondWidth(model.getBondWidth()*2);
 
 			int renderWidth = width;
