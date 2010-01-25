@@ -463,7 +463,7 @@
 			</chainedmapper>
 		</pathconvert>
 		<manifest file="${manifest.file}">
-			<attribute name="Main-Class" value="cytoscape.launcher.CytoscapeLauncher" />
+			<attribute name="Main-Class" value="cytoscape.CyMain" />
 			<attribute name="Class-Path" value="${manifest.classpath.string}" />
 			<attribute name="Java-Version" value="${java.target_version}" />
 		</manifest>
@@ -714,7 +714,7 @@
 			<fileset dir="${lib.dir}" includes="*.jar" />
 		</copy>
 
-		<!-- Copy over start scripts -->
+
 		<echo>
             ---------------------------------------
             Copying over all OS-specific scripts.
@@ -722,16 +722,10 @@
 		</echo>
 		<copy file="resources/bin/cytoscape.bat" todir="${release.dir}" />
 		<copy file="resources/bin/cytoscape.sh" todir="${release.dir}" />
-		<chmod perm="+x" file="${release.dir}/cytoscape.bat" />
+		<copy file="resources/bin/gen_vmoptions.sh" todir="${release.dir}" />
+		<copy file="resources/bin/gen_vmoptions.bat" todir="${release.dir}" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.sh" />
-
-
-		<echo>
-            ------------------------------------------------------------------
-            Copying default JVM memory settings to the temp release directory.
-            ------------------------------------------------------------------
-    		</echo>
-		<copy todir="${release.dir}" file="${resources.dir}/cytoscape.vmconfig" />
+		<chmod perm="+x" file="${release.dir}/gen_vmoptions.sh" />
 
 
 		<echo>
@@ -739,11 +733,8 @@
             Copying over user documentation and Cytoscape License.
             ------------------------------------------------------
     		</echo>
-
 		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
 		<copy file="docs/LICENSE.html" todir="${release.dir}" />
-
-
 		<mkdir dir="${release.dir}/docs"/>
 	        <filter token="version" value="${version}"/>
 		<copy file="docs/INSTALL.txt" todir="${release.dir}/docs" filtering="true"/>
@@ -760,13 +751,12 @@
 			<fileset dir="docs/images"/>
 		</copy>
 
-		<!-- Copy over Sample Data Files -->
+
 		<echo>
             ---------------------------------------
             Copying over sample data files.
             ---------------------------------------
 		</echo>
-
 		<copy file="testData/README_SAMPLE_DATA.txt" todir="${release.dir}/sampleData" />
 		<copy file="testData/BINDyeast.sif" todir="${release.dir}/sampleData" />
 		<copy file="testData/BINDhuman.sif" todir="${release.dir}/sampleData" />
@@ -943,12 +933,6 @@
 		<copy file="tools/Cytoscape.install4j"
 		      tofile="build/Cytoscape.install4j" 
 		      filtering="true"
-		      overwrite="true"/>
-		<copy file="tools/gen_vmoptions.sh"
-		      tofile="build/gen_vmoptions.sh" 
-		      overwrite="true"/>
-		<copy file="tools/gen_vmoptions.bat"
-		      tofile="build/gen_vmoptions.bat" 
 		      overwrite="true"/>
 		<install4j projectfile="build/Cytoscape.install4j"/>
 	</target>

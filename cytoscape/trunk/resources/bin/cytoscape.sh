@@ -1,10 +1,17 @@
 #!/bin/sh
 #
 # Run cytoscape from a jar file
-# this is a linux-only version
+# this is a UNIX-only version
 #-------------------------------------------------------------------------------
 
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./plugins
+# Attempt to generate cytoscape.vmoptions if it doesn't exist!
+if [ ! -e cytoscape.vmoptions  -a  -x ./gen_vmoptions.sh ]; then
+    ./gen_vmoptions.sh
+fi
 
-java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss5M -Xmx512M -cp cytoscape.jar cytoscape.launcher.CytoscapeLauncher "$@"
+if [ -r cytoscape.vmoptions ]; then
+    java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd `cat cytoscape.vmoptions` -cp cytoscape.jar cytoscape.CyMain "$@"
+else # Just use sensible defaults.
+    java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss100M -Xmx1550M -cp cytoscape.jar cytoscape.CyMain "$@"
+fi
 
