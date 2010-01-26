@@ -403,7 +403,6 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new PreferenceAction());
 		addAction(new BookmarkAction());
 		addAction(new ProxyServerAction());
-		addAction(new JVMMemorySettingsAction());
 
 		//
 		// Select menu
