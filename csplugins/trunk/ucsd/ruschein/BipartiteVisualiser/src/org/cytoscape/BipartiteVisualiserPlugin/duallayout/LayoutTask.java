@@ -15,18 +15,15 @@ public class LayoutTask implements Task {
 		this.engine = new LayoutEngine(edgeView, parentNetwork, network1, network2);
 	}
 
-	@Override
 	public String getTitle() {
 		return "Bipartite Layout";
 	}
 
-	@Override
 	public void halt() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void run() {
 		setPercentCompleted(-1);
 		setStatus("Running Bipartite Layout...");
@@ -38,7 +35,6 @@ public class LayoutTask implements Task {
 		setPercentCompleted(100);
 	}
 
-	@Override
 	public void setTaskMonitor(TaskMonitor arg0)
 			throws IllegalThreadStateException {
 		this.taskMonitor = taskMonitor;

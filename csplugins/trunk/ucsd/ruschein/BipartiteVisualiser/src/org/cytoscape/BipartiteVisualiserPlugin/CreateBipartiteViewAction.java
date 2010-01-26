@@ -30,7 +30,6 @@ public class CreateBipartiteViewAction implements ActionListener {
 		this.network2 = network2;
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("====== Do dual Layout for "
 				+ edgeView.getEdge().getIdentifier());

@@ -8,7 +8,6 @@ import cytoscape.view.CytoscapeDesktop;
 
 public class BipartiteLayoutNetworkListener implements PropertyChangeListener {
 
-	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(event.getPropertyName())) {
 

@@ -30,7 +30,6 @@ public class BipartiteLayoutContextMenuListener implements
 		this.titleToNetworkMap = new HashMap<String, CyNetwork>();
 	}
 
-	@Override
 	public void addEdgeContextMenuItems(final EdgeView edgeView,
 			final JPopupMenu menu) {
 		if (menu == null)
