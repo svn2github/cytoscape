@@ -103,13 +103,13 @@
         <include name="*.jar"/>
       </fileset>
     </unzip>
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/DenovoPGNetworkAlignmentPlugin"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/denovoplugin"/>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
       <manifest>
         <attribute name="Cytoscape-Plugin"
-	           value="org.cytoscape.DenovoPGNetworkAlignmentPlugin.DenovoPGNetworkAlignmentPlugin"/>
+	           value="org.idekerlab.denovoplugin.DenovoPGNetworkAlignmentPlugin"/>
       </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>
