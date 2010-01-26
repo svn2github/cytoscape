@@ -1,4 +1,4 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
+package org.idekerlab.denovoplugin;
 
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;

@@ -1,7 +1,7 @@
-package data.matrixMath;
+package org.idekerlab.denovoplugin.data.matrixMath;
 
-import data.DoubleMatrix;
-import data.DoubleVector;
+import org.idekerlab.denovoplugin.data.DoubleMatrix;
+import org.idekerlab.denovoplugin.data.DoubleVector;
 
 public class CholeskyDecomposition {
 	private double[][] L;

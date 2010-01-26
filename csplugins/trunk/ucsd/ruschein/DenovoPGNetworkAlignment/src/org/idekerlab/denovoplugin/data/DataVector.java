@@ -1,8 +1,8 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.io.*;
 import java.util.*;
-import utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.files.*;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
 

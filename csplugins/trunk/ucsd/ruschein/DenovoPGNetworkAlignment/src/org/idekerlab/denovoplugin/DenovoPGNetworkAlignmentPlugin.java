@@ -1,4 +1,4 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
+package org.idekerlab.denovoplugin;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
-import org.cytoscape.DenovoPGNetworkAlignmentPlugin.ui.SearchPropertyPanel;
+import org.idekerlab.denovoplugin.ui.SearchPropertyPanel;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;

@@ -1,4 +1,4 @@
-package utilities;
+package org.idekerlab.denovoplugin.utilities;
 
 import oiler.util.IntIterator;
 

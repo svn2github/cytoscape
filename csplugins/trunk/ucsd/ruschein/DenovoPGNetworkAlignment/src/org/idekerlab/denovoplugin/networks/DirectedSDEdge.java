@@ -1,4 +1,4 @@
-package networks;
+package org.idekerlab.denovoplugin.networks;
 
 public final class DirectedSDEdge extends SDEdge{
 

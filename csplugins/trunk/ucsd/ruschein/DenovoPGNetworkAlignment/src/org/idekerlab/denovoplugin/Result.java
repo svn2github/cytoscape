@@ -1,4 +1,4 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
+package org.idekerlab.denovoplugin;
 
 import java.util.List;
 

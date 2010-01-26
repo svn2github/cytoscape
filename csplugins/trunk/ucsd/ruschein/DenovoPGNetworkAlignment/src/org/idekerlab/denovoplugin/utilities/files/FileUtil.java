@@ -1,10 +1,12 @@
-package utilities.files;
+package org.idekerlab.denovoplugin.utilities.files;
 
 import java.io.*;
 import java.util.zip.*;
 import java.util.*;
 
-import data.StringVector;
+import org.idekerlab.denovoplugin.data.StringVector;
+import org.idekerlab.denovoplugin.utilities.files.FileUtil;
+
 
 public class FileUtil
 {
@@ -118,7 +120,7 @@ public class FileUtil
 	
 	public static void sortFile(String srFile, String dtFile)
 	{
-		StringVector sv = new StringVector(utilities.files.FileUtil.countLines(srFile));
+		StringVector sv = new StringVector(FileUtil.countLines(srFile));
 		
 		
 		FileReader fr = null;

@@ -1,4 +1,4 @@
-package networks.denovoPGNetworkAlignment;
+package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import networks.SFNetwork;
-import networks.SNodeModule;
-import networks.hashNetworks.FloatHashNetwork;
-import networks.linkedNetworks.TypedLinkEdge;
-import networks.linkedNetworks.TypedLinkNetwork;
-import networks.linkedNetworks.TypedLinkNode;
-import networks.linkedNetworks.TypedLinkNodeModule;
-import data.StringTable;
+import org.idekerlab.denovoplugin.networks.SFNetwork;
+import org.idekerlab.denovoplugin.networks.SNodeModule;
+import org.idekerlab.denovoplugin.networks.hashNetworks.FloatHashNetwork;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNode;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.denovoplugin.data.StringTable;
 
 
 public class HCSearch_Runner {

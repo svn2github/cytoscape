@@ -1,11 +1,11 @@
-package networks.denovoPGNetworkAlignment;
+package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import networks.SFNetwork;
-import networks.hashNetworks.*;
-import networks.linkedNetworks.*;
+import org.idekerlab.denovoplugin.networks.SFNetwork;
+import org.idekerlab.denovoplugin.networks.hashNetworks.*;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.*;
 
 public class SouravScore extends HCScoringFunction{
 

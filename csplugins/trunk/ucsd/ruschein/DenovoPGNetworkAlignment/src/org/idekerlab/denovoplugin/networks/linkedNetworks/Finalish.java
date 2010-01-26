@@ -1,4 +1,4 @@
-package networks.linkedNetworks;
+package org.idekerlab.denovoplugin.networks.linkedNetworks;
 
 /**
  * Any class implementing this interface, promises to be "finalish".

@@ -1,12 +1,12 @@
-package networks;
+package org.idekerlab.denovoplugin.networks;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 
-import utilities.*;
-import utilities.files.*;
-import networks.linkedNetworks.*;
+import org.idekerlab.denovoplugin.utilities.*;
+import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.*;
 
 public abstract class SNetwork extends AbstractNetwork
 {

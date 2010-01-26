@@ -1,17 +1,17 @@
-package networks.hashNetworks;
+package org.idekerlab.denovoplugin.networks.hashNetworks;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 
-import data.DoubleVector;
-import data.StringVector;
+import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.denovoplugin.data.StringVector;
 
-import networks.*;
-import networks.linkedNetworks.TypedLinkNetwork;
-import networks.util.Mergers;
-import utilities.files.*;
-import utilities.*;
+import org.idekerlab.denovoplugin.networks.*;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.networks.util.Mergers;
+import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.*;
 
 public class DoubleHashNetwork extends SDNetwork implements Iterable<SDEdge>
 {

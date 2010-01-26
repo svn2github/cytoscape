@@ -1,4 +1,4 @@
-package networks.matrixNetworks;
+package org.idekerlab.denovoplugin.networks.matrixNetworks;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,25 +17,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import utilities.ByteConversion;
-import utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.ByteConversion;
+import org.idekerlab.denovoplugin.utilities.IIterator;
 
-import networks.AbstractNetwork;
-import networks.DirectedSDEdge;
-import networks.SDEdge;
-import networks.SDNetwork;
-import networks.SEdge;
-import networks.SNetwork;
-import networks.UndirectedSDEdge;
-import networks.hashNetworks.DoubleHashNetwork;
-import networks.linkedNetworks.TypedLinkNetwork;
-import networks.util.Mergers;
-import data.DoubleVector;
-import data.FloatMatrix;
-import data.IntVector;
-import data.StringTable;
+import org.idekerlab.denovoplugin.networks.AbstractNetwork;
+import org.idekerlab.denovoplugin.networks.DirectedSDEdge;
+import org.idekerlab.denovoplugin.networks.SDEdge;
+import org.idekerlab.denovoplugin.networks.SDNetwork;
+import org.idekerlab.denovoplugin.networks.SEdge;
+import org.idekerlab.denovoplugin.networks.SNetwork;
+import org.idekerlab.denovoplugin.networks.UndirectedSDEdge;
+import org.idekerlab.denovoplugin.networks.hashNetworks.DoubleHashNetwork;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.networks.util.Mergers;
+import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.denovoplugin.data.FloatMatrix;
+import org.idekerlab.denovoplugin.data.IntVector;
+import org.idekerlab.denovoplugin.data.StringTable;
 
-import utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.collections.SetUtil;
+
 
 public class DoubleMatrixNetwork extends SDNetwork implements Iterable<SDEdge>
 {
@@ -761,7 +763,7 @@ public class DoubleMatrixNetwork extends SDNetwork implements Iterable<SDEdge>
 	
 	public DoubleMatrixNetwork subNetworkExclusive(Set<String> nodes)
 	{
-		Set<String> newNodes = utilities.collections.SetUtil.intersect(nodes, this.nodeValues);
+		Set<String> newNodes = SetUtil.intersect(nodes, this.nodeValues);
 		
 		DoubleMatrixNetwork out = new DoubleMatrixNetwork(this.selfOk,this.directed,newNodes);
 		

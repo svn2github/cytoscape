@@ -1,4 +1,4 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -7,10 +7,11 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import utilities.ByteConverter;
-import data.matrixMath.*;
+import org.idekerlab.denovoplugin.utilities.ByteConverter;
+import org.idekerlab.denovoplugin.data.matrixMath.*;
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
+
 
 public class IntMatrix extends DataMatrix{
 
@@ -1025,7 +1026,7 @@ public class IntMatrix extends DataMatrix{
 					length = b-242;
 				}else
 				{
-					for (int s : utilities.ByteConverter.convertDataByteToInt(b,3,length))
+					for (int s : ByteConverter.convertDataByteToInt(b,3,length))
 					{
 						out.set(i, j, s);
 						j++;
@@ -1062,8 +1063,8 @@ public class IntMatrix extends DataMatrix{
 			
 			if (!append)
 			{
-				bos.write(utilities.ByteConverter.convertToByte(totalRows,4));
-				bos.write(utilities.ByteConverter.convertToByte(totalCols,4));
+				bos.write(ByteConverter.convertToByte(totalRows,4));
+				bos.write(ByteConverter.convertToByte(totalCols,4));
 			}
 						
 			for (int i=0;i<this.numRows();i++)
@@ -1074,9 +1075,9 @@ public class IntMatrix extends DataMatrix{
 					{
 						int newLen = this.numCols()-j;
 						bos.write(242+newLen);
-						bos.write(utilities.ByteConverter.convertDataTextToByte(this,i,j,3,newLen)+128);
+						bos.write(ByteConverter.convertDataTextToByte(this,i,j,3,newLen)+128);
 						
-					}else bos.write(utilities.ByteConverter.convertDataTextToByte(this,i,j,3,5)+128);
+					}else bos.write(ByteConverter.convertDataTextToByte(this, i, j, 3, 5) + 128);
 				}
 				
 				bos.write(255);

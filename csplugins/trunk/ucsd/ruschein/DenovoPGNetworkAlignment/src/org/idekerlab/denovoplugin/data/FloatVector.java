@@ -1,4 +1,4 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
+import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+
 
 public class FloatVector extends DataVector {
 
@@ -1351,7 +1353,7 @@ public class FloatVector extends DataVector {
 
 	public static FloatVector loadRow(String file, int row) {
 		int l = 0;
-		for (String line : new utilities.files.FileIterator(file)) {
+		for (String line : new FileIterator(file)) {
 			if (l == row) {
 				String[] cols = line.split("\t");
 				return (new FloatVector(cols));

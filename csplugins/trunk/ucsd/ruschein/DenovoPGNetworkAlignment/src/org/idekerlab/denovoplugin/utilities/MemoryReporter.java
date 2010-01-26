@@ -1,4 +1,4 @@
-package utilities;
+package org.idekerlab.denovoplugin.utilities;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;

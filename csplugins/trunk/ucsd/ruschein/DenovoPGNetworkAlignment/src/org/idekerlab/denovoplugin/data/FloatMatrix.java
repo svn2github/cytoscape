@@ -1,4 +1,4 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -9,9 +9,10 @@ import Jama.SingularValueDecomposition;
 
 import java.util.concurrent.*;
 
-import utilities.ByteConversion;
-import utilities.files.FileUtil;
-import data.matrixMath.*;
+import org.idekerlab.denovoplugin.utilities.ByteConversion;
+import org.idekerlab.denovoplugin.utilities.ThreadPriorityFactory;
+import org.idekerlab.denovoplugin.utilities.files.FileUtil;
+import org.idekerlab.denovoplugin.data.matrixMath.*;
 
 public class FloatMatrix extends DataMatrix{
 
@@ -1390,7 +1391,7 @@ public class FloatMatrix extends DataMatrix{
 	{
 		FloatMatrix out = new FloatMatrix(this.numRows(),this.numRows());
 		
-		ExecutorService exec = Executors.newCachedThreadPool(new utilities.ThreadPriorityFactory(Thread.MIN_PRIORITY));
+		ExecutorService exec = Executors.newCachedThreadPool(new ThreadPriorityFactory(Thread.MIN_PRIORITY));
 		
 		for (int i=0;i<this.numRows();i++)
 			exec.execute(new XXTRunner(data,out.data,i));

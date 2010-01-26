@@ -1,4 +1,4 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.files.*;
 
 public abstract class DataMatrix {
 

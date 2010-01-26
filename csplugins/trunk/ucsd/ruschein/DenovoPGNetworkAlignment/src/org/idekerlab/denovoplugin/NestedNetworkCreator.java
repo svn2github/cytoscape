@@ -1,4 +1,4 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
+package org.idekerlab.denovoplugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import networks.denovoPGNetworkAlignment.BFEdge;
-import networks.linkedNetworks.TypedLinkEdge;
-import networks.linkedNetworks.TypedLinkNetwork;
-import networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.BFEdge;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;

@@ -1,9 +1,9 @@
-package utilities;
+package org.idekerlab.denovoplugin.utilities;
 
-import utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.files.*;
 import java.io.*;
 import java.util.*;
-import data.*;
+import org.idekerlab.denovoplugin.data.*;
 
 public class ByteConverter
 {
@@ -17,7 +17,7 @@ public class ByteConverter
 		//127 -> \n
 		
 		
-		utilities.files.FileUtil.delete("/cellar/data/ghannum/MQTL/GWAS/wtccc/BD/BD.byte");
+		FileUtil.delete("/cellar/data/ghannum/MQTL/GWAS/wtccc/BD/BD.byte");
 		for (int i=1;i<=23;i++)
 			textToByte("/cellar/data/ghannum/MQTL/GWAS/wtccc/BD/BD_"+i+".txt","/cellar/data/ghannum/MQTL/GWAS/wtccc/BD/BD.byte",true);
 		//byteToText("/cellar/data/ghannum/MQTL/GWAS/wtccc/BD/BD_1.byte","/cellar/data/ghannum/MQTL/GWAS/wtccc/BD/BD_1.unbyte");

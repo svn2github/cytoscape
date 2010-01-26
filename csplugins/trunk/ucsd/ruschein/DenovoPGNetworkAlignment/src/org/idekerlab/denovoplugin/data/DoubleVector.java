@@ -1,10 +1,13 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+
+import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+
 
 public class DoubleVector extends DataVector {
 
@@ -1433,7 +1436,7 @@ public class DoubleVector extends DataVector {
 
 	public static DoubleVector loadRow(String file, int row) {
 		int l = 0;
-		for (String line : new utilities.files.FileIterator(file)) {
+		for (String line : new FileIterator(file)) {
 			if (l == row) {
 				String[] cols = line.split("\t");
 				return (new DoubleVector(cols));

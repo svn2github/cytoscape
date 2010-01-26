@@ -1,4 +1,4 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import data.matrixMath.*;
+import org.idekerlab.denovoplugin.data.matrixMath.*;
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
 

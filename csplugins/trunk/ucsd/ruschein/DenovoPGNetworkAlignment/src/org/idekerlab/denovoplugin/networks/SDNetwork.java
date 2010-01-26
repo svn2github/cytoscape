@@ -1,7 +1,7 @@
-package networks;
+package org.idekerlab.denovoplugin.networks;
 
-import networks.linkedNetworks.TypedLinkNetwork;
-import utilities.IIterator;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.utilities.IIterator;
 
 public abstract class SDNetwork extends SNetwork {
 	public abstract double edgeValue(String n1, String n2);

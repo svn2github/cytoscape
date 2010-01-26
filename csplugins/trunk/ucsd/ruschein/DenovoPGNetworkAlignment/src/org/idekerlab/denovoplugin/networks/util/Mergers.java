@@ -1,4 +1,4 @@
-package networks.util;
+package org.idekerlab.denovoplugin.networks.util;
 
 public interface Mergers
 {

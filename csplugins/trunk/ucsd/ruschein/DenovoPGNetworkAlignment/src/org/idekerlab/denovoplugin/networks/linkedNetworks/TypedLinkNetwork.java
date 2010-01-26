@@ -1,10 +1,10 @@
-package networks.linkedNetworks;
+package org.idekerlab.denovoplugin.networks.linkedNetworks;
 
 import java.util.*;
+import org.idekerlab.denovoplugin.utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.BFEdge;
 
-import utilities.IIterator;
-
-import networks.denovoPGNetworkAlignment.BFEdge;
 
 /**
  * Note: only use node/edge types which are final or finalish
@@ -226,8 +226,7 @@ public class TypedLinkNetwork<NT,ET>
 		TypedLinkNetwork<String,Double> out = new TypedLinkNetwork<String,Double>(false,false);
 		
 		int row = 1;
-		for (String line : new utilities.files.FileIterator(file))
-		{
+		for (String line : new FileIterator(file)) {
 			if (row%1000000==0) System.out.println("Row: "+row); 
 			String[] cols = line.split("\t");
 			

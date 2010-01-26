@@ -1,8 +1,8 @@
-package networks.linkedNetworks;
+package org.idekerlab.denovoplugin.networks.linkedNetworks;
 
 import java.util.*;
 
-import utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.IIterator;
 
 public class TypedLinkNode<NT,ET> implements Finalish
 {

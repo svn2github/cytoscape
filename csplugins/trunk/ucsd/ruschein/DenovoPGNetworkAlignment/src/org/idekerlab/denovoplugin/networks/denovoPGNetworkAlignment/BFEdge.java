@@ -1,8 +1,8 @@
-package networks.denovoPGNetworkAlignment;
+package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
 
 import java.util.*;
 
-import networks.linkedNetworks.*;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.*;
 
 /***
  * An edge object for use with ONetworks to track statistics for the HCNetsearch algorithm.

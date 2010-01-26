@@ -1,16 +1,18 @@
-package translation;
+package org.idekerlab.denovoplugin.translation;
 
 import java.util.*;
 
-import networks.matrixNetworks.BooleanMatrixNetwork;
-import networks.*;
-import networks.hashNetworks.*;
-import data.BooleanVector;
-import data.DoubleVector;
-import data.StringTable;
-import data.StringVector;
+import org.idekerlab.denovoplugin.networks.matrixNetworks.BooleanMatrixNetwork;
+import org.idekerlab.denovoplugin.networks.*;
+import org.idekerlab.denovoplugin.networks.hashNetworks.*;
+import org.idekerlab.denovoplugin.data.BooleanVector;
+import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.denovoplugin.data.StringTable;
+import org.idekerlab.denovoplugin.data.StringVector;
 
-import utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.denovoplugin.utilities.collections.HashMapUtil;
+
 
 /**
  * A class for the general translation of strings.
@@ -273,7 +275,7 @@ public class Many2ManyTranslator {
 	
 	public DoubleVector getMapDistribution()
 	{
-		return utilities.collections.HashMapUtil.getMapDistributionSS(maps.get(0));
+		return HashMapUtil.getMapDistributionSS(maps.get(0));
 	}
 	
 	/**

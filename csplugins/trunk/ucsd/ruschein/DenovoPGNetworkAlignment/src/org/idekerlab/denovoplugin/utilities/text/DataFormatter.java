@@ -1,4 +1,4 @@
-package utilities.text;
+package org.idekerlab.denovoplugin.utilities.text;
 
 import java.text.NumberFormat;
 

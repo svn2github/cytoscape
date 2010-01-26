@@ -1,13 +1,13 @@
-package networks.hashNetworks;
+package org.idekerlab.denovoplugin.networks.hashNetworks;
 
 import java.util.*;
 
-import data.StringVector;
+import org.idekerlab.denovoplugin.data.StringVector;
 
-import networks.*;
-import networks.linkedNetworks.TypedLinkNetwork;
-import utilities.IIterator;
-import utilities.files.*;
+import org.idekerlab.denovoplugin.networks.*;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.files.*;
 
 import java.io.*;
 

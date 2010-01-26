@@ -1,12 +1,12 @@
-package structures;
+package org.idekerlab.denovoplugin.structures;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import utilities.files.FileIterator;
-import utilities.files.FileUtil;
+import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+import org.idekerlab.denovoplugin.utilities.files.FileUtil;
 
 public class IntPair {
 

@@ -1,4 +1,4 @@
-package networks.matrixNetworks;
+package org.idekerlab.denovoplugin.networks.matrixNetworks;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,12 +8,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-import networks.*;
-import networks.hashNetworks.*;
-import data.IntVector;
-import data.StringVector;
-import utilities.IIterator;
-import utilities.files.*;
+import org.idekerlab.denovoplugin.networks.*;
+import org.idekerlab.denovoplugin.networks.hashNetworks.*;
+import org.idekerlab.denovoplugin.data.IntVector;
+import org.idekerlab.denovoplugin.data.StringVector;
+import org.idekerlab.denovoplugin.utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+import org.idekerlab.denovoplugin.utilities.collections.SetUtil;
+
 
 public class BooleanMatrixNetwork extends SBNetwork
 {
@@ -647,7 +649,7 @@ public class BooleanMatrixNetwork extends SBNetwork
 	
 	public BooleanMatrixNetwork subNetworkExclusive(Set<String> nodes)
 	{
-		BooleanMatrixNetwork out = new BooleanMatrixNetwork(this.selfOk,this.directed,utilities.collections.SetUtil.intersect(nodes, this.nodeValues()));
+		BooleanMatrixNetwork out = new BooleanMatrixNetwork(this.selfOk, this.directed, SetUtil.intersect(nodes, this.nodeValues()));
 		
 		for (int i=0;i<connectivity.length;i++)
 			if (out.containsNode(this.nodeValues.get(i)))

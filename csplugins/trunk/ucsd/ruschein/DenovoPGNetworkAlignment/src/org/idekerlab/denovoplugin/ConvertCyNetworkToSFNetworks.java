@@ -1,11 +1,11 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
+package org.idekerlab.denovoplugin;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import networks.SFNetwork;
-import networks.hashNetworks.FloatHashNetwork;
+import org.idekerlab.denovoplugin.networks.SFNetwork;
+import org.idekerlab.denovoplugin.networks.hashNetworks.FloatHashNetwork;
 import java.util.List;
 
 /**

@@ -1,4 +1,4 @@
-package data.matrixMath;
+package org.idekerlab.denovoplugin.data.matrixMath;
 
 
 public class XXTRunner implements Runnable {

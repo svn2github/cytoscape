@@ -1,4 +1,4 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin.ui;
+package org.idekerlab.denovoplugin.ui;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -12,8 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.cytoscape.DenovoPGNetworkAlignmentPlugin.SearchParameters;
-import org.cytoscape.DenovoPGNetworkAlignmentPlugin.SearchTask;
+import org.idekerlab.denovoplugin.SearchParameters;
+import org.idekerlab.denovoplugin.SearchTask;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;

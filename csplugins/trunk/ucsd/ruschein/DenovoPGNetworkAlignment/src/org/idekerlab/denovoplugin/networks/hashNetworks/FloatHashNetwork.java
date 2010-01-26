@@ -1,4 +1,4 @@
-package networks.hashNetworks;
+package org.idekerlab.denovoplugin.networks.hashNetworks;
 
 import giny.model.Edge;
 
@@ -10,21 +10,21 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import networks.DirectedSFEdge;
-import networks.SEdge;
-import networks.SFEdge;
-import networks.SFNetwork;
-import networks.UndirectedSEdge;
-import networks.UndirectedSFEdge;
-import networks.linkedNetworks.TypedLinkEdge;
-import networks.linkedNetworks.TypedLinkNetwork;
-import utilities.IIterator;
-import utilities.files.FileIterator;
-import utilities.files.FileUtil;
+import org.idekerlab.denovoplugin.networks.DirectedSFEdge;
+import org.idekerlab.denovoplugin.networks.SEdge;
+import org.idekerlab.denovoplugin.networks.SFEdge;
+import org.idekerlab.denovoplugin.networks.SFNetwork;
+import org.idekerlab.denovoplugin.networks.UndirectedSEdge;
+import org.idekerlab.denovoplugin.networks.UndirectedSFEdge;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+import org.idekerlab.denovoplugin.utilities.files.FileUtil;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import data.StringVector;
+import org.idekerlab.denovoplugin.data.StringVector;
 
 public class FloatHashNetwork extends SFNetwork implements Iterable<SFEdge> {
 	private Map<String, Set<SEdge>> nodeMap;

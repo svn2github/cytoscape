@@ -1,14 +1,15 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
+package org.idekerlab.denovoplugin;
 
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import networks.SFNetwork;
+import org.idekerlab.denovoplugin.networks.SFNetwork;
 
 import junit.framework.TestCase;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.readers.CytoscapeSessionReader;
+
 
 public class ConvertCyNetworkToSFNetworksTest extends TestCase {
 

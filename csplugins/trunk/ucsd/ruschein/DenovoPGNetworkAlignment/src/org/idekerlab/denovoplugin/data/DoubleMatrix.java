@@ -1,4 +1,4 @@
-package data;
+package org.idekerlab.denovoplugin.data;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -10,9 +10,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import utilities.ByteConversion;
-import data.matrixMath.CholeskyDecomposition;
-import data.matrixMath.XXTRunner;
+import org.idekerlab.denovoplugin.utilities.ByteConversion;
+import org.idekerlab.denovoplugin.utilities.ThreadPriorityFactory;
+import org.idekerlab.denovoplugin.utilities.text.DataFormatter;
+import org.idekerlab.denovoplugin.data.matrixMath.CholeskyDecomposition;
+import org.idekerlab.denovoplugin.data.matrixMath.XXTRunner;
 
 public class DoubleMatrix extends DataMatrix {
 
@@ -1115,7 +1117,7 @@ public class DoubleMatrix extends DataMatrix {
 		double[][] out = new double[data.length][data.length];
 
 		ExecutorService exec = Executors
-				.newCachedThreadPool(new utilities.ThreadPriorityFactory(
+				.newCachedThreadPool(new ThreadPriorityFactory(
 						Thread.MIN_PRIORITY));
 
 		for (int i = 0; i < data.length; i++)
@@ -1525,7 +1527,7 @@ public class DoubleMatrix extends DataMatrix {
 		for (int i = 0; i < mmm1; i++)
 			for (int j = i + 1; j < m.length; j++) {
 				if (count % 1000000 == 0)
-					System.out.println(utilities.text.DataFormatter.printRatio(
+					System.out.println(DataFormatter.printRatio(
 							count, total));
 
 				double cor = covByCol_IgnoreNaN(m2, i, j) / (sd[i] * sd[j]);

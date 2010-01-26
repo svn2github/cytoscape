@@ -1,4 +1,4 @@
-package networks.matrixNetworks;
+package org.idekerlab.denovoplugin.networks.matrixNetworks;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -10,17 +10,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-import utilities.ByteConversion;
-import utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.ByteConversion;
+import org.idekerlab.denovoplugin.utilities.IIterator;
+import org.idekerlab.denovoplugin.utilities.collections.SetUtil;
 
-import networks.*;
-import networks.hashNetworks.*;
-import networks.linkedNetworks.TypedLinkNetwork;
-import networks.util.Mergers;
-import data.DoubleVector;
-import data.IntVector;
-import data.StringTable;
-import data.StringVector;
+import org.idekerlab.denovoplugin.networks.*;
+import org.idekerlab.denovoplugin.networks.hashNetworks.*;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.networks.util.Mergers;
+import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.denovoplugin.data.IntVector;
+import org.idekerlab.denovoplugin.data.StringTable;
+import org.idekerlab.denovoplugin.data.StringVector;
+
 
 public class FloatMatrixNetwork extends SFNetwork
 {
@@ -654,7 +656,7 @@ public class FloatMatrixNetwork extends SFNetwork
 	
 	public FloatMatrixNetwork subNetworkExclusive(Set<String> nodes)
 	{
-		Set<String> newNodes = utilities.collections.SetUtil.intersect(nodes, this.nodeValues);
+		Set<String> newNodes = SetUtil.intersect(nodes, this.nodeValues);
 		
 		FloatMatrixNetwork out = new FloatMatrixNetwork(this.selfOk,this.directed,newNodes);
 		

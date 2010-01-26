@@ -1,10 +1,10 @@
-package networks;
+package org.idekerlab.denovoplugin.networks;
 
 import java.util.*;
 
-import utilities.IIterator;
-import networks.linkedNetworks.*;
-import networks.hashNetworks.*;
+import org.idekerlab.denovoplugin.utilities.IIterator;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.*;
+import org.idekerlab.denovoplugin.networks.hashNetworks.*;
 
 public abstract class SFNetwork extends SNetwork
 {

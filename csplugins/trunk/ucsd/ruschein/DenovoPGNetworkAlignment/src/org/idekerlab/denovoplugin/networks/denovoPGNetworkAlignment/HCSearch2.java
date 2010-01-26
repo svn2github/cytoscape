@@ -1,4 +1,4 @@
-package networks.denovoPGNetworkAlignment;
+package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,13 +10,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import networks.SFEdge;
-import networks.SFNetwork;
-import networks.linkedNetworks.TypedLinkEdge;
-import networks.linkedNetworks.TypedLinkNetwork;
-import networks.linkedNetworks.TypedLinkNode;
-import networks.linkedNetworks.TypedLinkNodeModule;
-import data.DoubleVector;
+import org.idekerlab.denovoplugin.networks.SFEdge;
+import org.idekerlab.denovoplugin.networks.SFNetwork;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNode;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.denovoplugin.utilities.MemoryReporter;
+import org.idekerlab.denovoplugin.utilities.ThreadPriorityFactory;
+
 
 public class HCSearch2 {
 
@@ -25,7 +28,7 @@ public class HCSearch2 {
 		// The scoring function needs to load several lookup matricies for the
 		// network data.
 		System.gc();
-		utilities.MemoryReporter.reportMemoryUsage();
+		MemoryReporter.reportMemoryUsage();
 
 		// Need to construct the ONetwork<HyperModule<String>,BFEdge> object.
 		System.out.println("1. Building merged network.");
@@ -34,19 +37,19 @@ public class HCSearch2 {
 				pnet, gnet);
 
 		System.gc();
-		utilities.MemoryReporter.reportMemoryUsage();
+		MemoryReporter.reportMemoryUsage();
 
 		// Get the first-pass scores
 		System.out.println("2. Obtaining primary scores.");
 		computePrimaryScores(results, sfunc);
 
 		System.gc();
-		utilities.MemoryReporter.reportMemoryUsage();
+		MemoryReporter.reportMemoryUsage();
 
 		// Merge best tree-pairs together
 		System.out.println("3. Forming clusters...");
 
-		// utilities.MemoryReporter.reportMemoryUsage();
+		// MemoryReporter.reportMemoryUsage();
 
 		DoubleVector global_scores = new DoubleVector(3000);
 		global_scores.add(0);
@@ -59,7 +62,7 @@ public class HCSearch2 {
 		while (results.numEdges() > 0 && max > 0) {
 			if (iter % 1000 == 0) {
 				System.gc();
-				utilities.MemoryReporter.reportMemoryUsage();
+				MemoryReporter.reportMemoryUsage();
 			}
 
 			// Identify the best physical edge to merge
@@ -106,8 +109,7 @@ public class HCSearch2 {
 			if (max > 0) {
 				// Recalculate linkMerge scores
 
-				ExecutorService exec = Executors
-						.newCachedThreadPool(new utilities.ThreadPriorityFactory(
+				ExecutorService exec = Executors.newCachedThreadPool(new ThreadPriorityFactory(
 								Thread.MIN_PRIORITY));
 
 				// for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge>
@@ -242,15 +244,14 @@ public class HCSearch2 {
 
 		// Assign merge scores
 		ExecutorService exec = Executors
-				.newCachedThreadPool(new utilities.ThreadPriorityFactory(
-						Thread.MIN_PRIORITY));
+				.newCachedThreadPool(new ThreadPriorityFactory(Thread.MIN_PRIORITY));
 		int count = 0;
 		for (TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> ed : results
 				.edgeIterator())
 			if (ed.value().isType(BFEdge.InteractionType.Physical)) {
 				if (count % 100000 == 0) {
 					System.gc();
-					utilities.MemoryReporter.reportMemoryUsage();
+					MemoryReporter.reportMemoryUsage();
 				}
 
 				setComplexMerge(sfunc, ed.source(), ed.target(), ed.value());

@@ -1,4 +1,4 @@
-package utilities.collections;
+package org.idekerlab.denovoplugin.utilities.collections;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import structures.IntPair;
-import utilities.files.FileIterator;
-import data.DoubleVector;
+import org.idekerlab.denovoplugin.structures.IntPair;
+import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+import org.idekerlab.denovoplugin.data.DoubleVector;
 
 public class HashMapUtil {
 
@@ -547,7 +547,7 @@ public class HashMapUtil {
 
 		Map<String, Set<Integer>> map = new HashMap<String, Set<Integer>>();
 
-		for (String line : new utilities.files.FileIterator(filename)) {
+		for (String line : new FileIterator(filename)) {
 			String[] cols = line.split("\t");
 
 			if (cols.length < 2)
@@ -589,7 +589,7 @@ public class HashMapUtil {
 
 		Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
 
-		for (String line : new utilities.files.FileIterator(filename)) {
+		for (String line : new FileIterator(filename)) {
 			String[] cols = line.split("\t");
 
 			if (cols.length < 2)
@@ -632,7 +632,7 @@ public class HashMapUtil {
 
 		Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
 
-		for (String line : new utilities.files.FileIterator(filename)) {
+		for (String line : new FileIterator(filename)) {
 			String[] cols = line.split("\t");
 
 			if (cols.length < 2)

@@ -1,22 +1,22 @@
-package org.cytoscape.DenovoPGNetworkAlignmentPlugin;
+package org.idekerlab.denovoplugin;
 
 import java.util.ArrayList;
 
-import networks.SFNetwork;
-import networks.denovoPGNetworkAlignment.BFEdge;
-import networks.denovoPGNetworkAlignment.HCScoringFunction;
-import networks.denovoPGNetworkAlignment.HCSearch2;
-import networks.denovoPGNetworkAlignment.SouravScore;
-import networks.linkedNetworks.TypedLinkEdge;
-import networks.linkedNetworks.TypedLinkNetwork;
-import networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.denovoplugin.networks.SFNetwork;
+import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.BFEdge;
+import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.HCScoringFunction;
+import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.HCSearch2;
+import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.SouravScore;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
 import cytoscape.CyNetwork;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
 
 /**
- * @uthor kono, ruschein
+ * @author kono, ruschein
  */
 public class SearchTask implements Task {
 	private TaskMonitor taskMonitor = null;

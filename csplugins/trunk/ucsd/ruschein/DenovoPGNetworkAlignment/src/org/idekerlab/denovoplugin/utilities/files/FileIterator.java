@@ -1,4 +1,4 @@
-package utilities.files;
+package org.idekerlab.denovoplugin.utilities.files;
 
 import java.util.*;
 import java.io.*;
