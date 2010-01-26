@@ -63,7 +63,7 @@ import cytoscape.visual.VisualStyle;
 		overviewNetwork = Cytoscape.createNetwork(
 				findNextAvailableNetworkName("Complex Search Results: "
 						+ new java.util.Date()),
-				/* create_view = */true);
+				/* create_view = */ false);
 
 		final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
@@ -133,9 +133,10 @@ import cytoscape.visual.VisualStyle;
 						 Double.valueOf(density));
 		}
 		
+		Cytoscape.createNetworkView(overviewNetwork);
 		applyNetworkLayout(overviewNetwork, VisualStyleBuilder.getVisualStyle(), cutoff, maxScore);
 		
-		// Sete selected
+		// Visually mark selected edges and nodes:
 		overviewNetwork.setSelectedEdgeState(selectedEdges, true);
 		overviewNetwork.setSelectedNodeState(selectedNodes, true);
 	}
