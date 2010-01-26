@@ -28,7 +28,8 @@ import cytoscape.visual.VisualStyle;
  */
 @SuppressWarnings("unchecked") public class NestedNetworkCreator {
 	// Package private constants.
-	static final String REFERENCE_NETWORK_NAME_ATTRIB = "*reference_network_name*";
+	static final String REFERENCE_NETWORK_NAME_ATTRIB =
+		"BipartiteVisualiserReferenceNetworkName"; // Also exists in BipartiteVisualiserPlugin!
 	static final String GENE_COUNT = "gene count";
 	static final String SCORE = "score";
 	static final String EDGE_SCORE = "edge score";
