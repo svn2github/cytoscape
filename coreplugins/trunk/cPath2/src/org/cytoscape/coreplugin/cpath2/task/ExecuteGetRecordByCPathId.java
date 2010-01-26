@@ -14,30 +14,32 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualMappingManager;
+
+import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.model.BioPAXElement;
+import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level2.physicalEntity;
+import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.coreplugin.cpath2.web_service.*;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Attribute;
-import org.jdom.Namespace;
-import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
-import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
-import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
-import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
-import org.mskcc.biopax_plugin.view.BioPaxContainer;
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+//import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
+import cytoscape.coreplugins.biopax.util.CytoscapeWrapper;
+import cytoscape.coreplugins.biopax.util.LayoutUtil;
+import cytoscape.coreplugins.biopax.action.NetworkListener;
+import cytoscape.coreplugins.biopax.view.BioPaxContainer;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
+
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import ding.view.DGraphView;
 
 /**
  * Controller for Executing a Get Record(s) by CPath ID(s) command.
@@ -237,7 +239,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
         //  Init the node attribute meta data, e.g. description, visibility, etc.
-        MapNodeAttributes.initAttributes(nodeAttributes);
+        MapBioPaxToCytoscape.initAttributes(nodeAttributes);
 
         //  Set the Quick Find Default Index
         Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
@@ -428,26 +430,26 @@ public class ExecuteGetRecordByCPathId implements Task {
             try {
                 String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX,
                         new NullTaskMonitor());
-                StringReader reader = new StringReader(xml);
-                BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
-                ArrayList peList = bpUtil.getPhysicalEntityList();
-                Namespace ns = Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-                for (int j=0; j<peList.size(); j++) {
-                    Element element = (Element) peList.get(j);
-                    String id = element.getAttributeValue("ID", ns);
+                //StringReader reader = new StringReader(xml);
+                //BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
+                Model model = (new SimpleReader())
+                	.convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
+                //ArrayList peList = bpUtil.getPhysicalEntityList();
+                //Namespace ns = Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+                //for (int j=0; j<peList.size(); j++) {
+                for(BioPAXElement pe: BioPaxUtil.getObjects(model, physicalEntity.class, PhysicalEntity.class)) {
+                    //Element element = (Element) peList.get(j);
+                    //String id = element.getAttributeValue("ID", ns);
+                	String id = BioPaxUtil.getLocalPartRdfId(pe);
                     if (id != null) {
                         id = id.replaceAll("CPATH-", "");
-                        MapNodeAttributes.mapNodeAttribute(element, id, nodeAttributes, bpUtil);
+                        MapBioPaxToCytoscape.mapNodeAttribute(pe, id);
                     }
                 }
                 int percentComplete = (int) (100.0 * (i / (double) batchList.size()));
                 if (taskMonitor != null) {
                     taskMonitor.setPercentCompleted(percentComplete);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JDOMException e) {
-                e.printStackTrace();
             } catch (EmptySetException e) {
                 e.printStackTrace();
             } catch (CPathException e) {

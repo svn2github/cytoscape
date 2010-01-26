@@ -40,9 +40,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import ding.view.NodeContextMenuListener;
 import giny.view.NodeView;
-import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
-import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,7 +112,7 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
         // generate menu url
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         CyNode cyNode = (CyNode) nodeView.getNode();
-        String biopaxID = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), MapNodeAttributes.BIOPAX_RDF_ID);
+        String biopaxID = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_RDF_ID);
         biopaxID = biopaxID.replace("CPATH-", "");
         String neighborhoodParam = "Neighborhood: " + nodeAttributes.getStringAttribute(cyNode.getIdentifier(), BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 

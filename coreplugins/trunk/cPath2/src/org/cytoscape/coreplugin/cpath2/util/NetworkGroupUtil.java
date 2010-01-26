@@ -7,7 +7,7 @@ import cytoscape.data.CyAttributes;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
 

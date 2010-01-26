@@ -41,7 +41,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.NodeContextMenuListener;
-import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
+import cytoscape.coreplugins.biopax.util.LayoutUtil;
 import org.cytoscape.coreplugin.cpath2.task.MergeNetworkTask;
 import org.cytoscape.coreplugin.cpath2.task.LoadNetworkFromUrlTask;
 

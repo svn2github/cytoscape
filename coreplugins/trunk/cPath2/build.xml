@@ -14,7 +14,7 @@
 	<!-- The Cytoscape jar directory -->
 	<property name="cytoscape_jar_dir" value="../../cytoscape"/>
 	<!-- The Cytoscape plugin directory (core) -->
-	<property name="cytoscape_plugin_dir" value="../../cytoscape/plugins/core"/>
+	<property name="cytoscape_plugin_dir" value="../../cytoscape/plugins"/>
     <!-- The directory containing the configuration files -->
     <property name="config.dir" value="config"/>
     <!-- Temporary build directories -->
@@ -45,10 +45,10 @@
     <!-- Classpath with all lib JAR Files -->
     <path id="classpath">
         <pathelement path="${build.classes}"/>
-        <fileset dir="${cytoscape_lib_dir}">
+        <fileset dir="${cytoscape_lib_dir}/build-libs">
              <include name="*.jar"/>
         </fileset>
-        <fileset dir="${cytoscape_lib_dir}/build-libs">
+    	<fileset dir="${cytoscape_lib_dir}">
              <include name="*.jar"/>
         </fileset>
          <fileset dir="${cytoscape_jar_dir}">

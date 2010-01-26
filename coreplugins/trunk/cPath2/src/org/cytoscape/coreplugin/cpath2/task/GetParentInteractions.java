@@ -13,7 +13,7 @@ import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseT
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
 import org.cytoscape.coreplugin.cpath2.view.InteractionBundlePanel;
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
 

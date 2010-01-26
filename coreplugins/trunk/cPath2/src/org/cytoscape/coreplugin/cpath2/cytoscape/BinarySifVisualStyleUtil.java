@@ -10,9 +10,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import java.awt.*;
 
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
-import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
+import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
+import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 
 /**
  * Binary SIF Visual Style.
@@ -86,7 +85,7 @@ public class BinarySifVisualStyleUtil {
 
         //  Complexes are Hexagons.
         DiscreteMapping discreteMapping = new DiscreteMapping(NodeShape.ELLIPSE,
-            MapNodeAttributes.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
+            MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
         discreteMapping.putMapValue(COMPLEX, NodeShape.HEXAGON);
         Calculator nodeShapeCalculator = new BasicCalculator("Node Shape",
             discreteMapping, VisualPropertyType.NODE_SHAPE);
@@ -100,7 +99,7 @@ public class BinarySifVisualStyleUtil {
         //  Complexes are a Different Color.
         Color lightBlue = new Color (153, 153, 255);
         DiscreteMapping discreteMapping = new DiscreteMapping(color,
-            MapNodeAttributes.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
+        		MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
         discreteMapping.putMapValue(COMPLEX, lightBlue);
 
         Calculator nodeShapeCalculator = new BasicCalculator("Node Color",
