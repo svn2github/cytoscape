@@ -16,7 +16,7 @@ if [ -r cytoscape.vmoptions ]; then
 	`cat cytoscape.vmoptions` -cp $script_path/cytoscape.jar cytoscape.CyMain \
 	-p $script_path/plugins "$@"
 else # Just use sensible defaults.
-    java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss100M -Xmx1550M \
+    java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss10M -Xmx1550M \
 	-cp $script_path/cytoscape.jar cytoscape.CyMain -p $script_path/plugins "$@"
 fi
 
