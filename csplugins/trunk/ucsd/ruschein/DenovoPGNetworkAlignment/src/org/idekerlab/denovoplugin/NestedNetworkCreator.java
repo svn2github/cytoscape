@@ -27,8 +27,8 @@ import cytoscape.visual.VisualStyle;
  * for each complex.
  */
 @SuppressWarnings("unchecked") public class NestedNetworkCreator {
-
 	// Package private constants.
+	static final String REFERENCE_NETWORK_NAME_ATTRIB = "*reference_network_name*";
 	static final String GENE_COUNT = "gene count";
 	static final String SCORE = "score";
 	static final String EDGE_SCORE = "edge score";
@@ -98,8 +98,10 @@ import cytoscape.visual.VisualStyle;
 			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
 					Semantics.INTERACTION, "complex-complex",
 					/* create = */true);
+			edgeAttribs.setAttribute(newEdge.getIdentifier(),
+						 REFERENCE_NETWORK_NAME_ATTRIB,
+						 originalNetwork.getTitle());
 			overviewNetwork.addEdge(newEdge);
-
 
 			// Add various edge attributes.
 			final double edgeScore = edge.value().link();
@@ -132,6 +134,8 @@ import cytoscape.visual.VisualStyle;
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "density",
 						 Double.valueOf(density));
 		}
+
+		edgeAttribs.setUserVisible(REFERENCE_NETWORK_NAME_ATTRIB, false);
 		
 		Cytoscape.createNetworkView(overviewNetwork);
 		applyNetworkLayout(overviewNetwork, VisualStyleBuilder.getVisualStyle(), cutoff, maxScore);
@@ -267,9 +271,4 @@ import cytoscape.visual.VisualStyle;
 		targetView.applyLayout(CyLayouts.getLayout("circular"));
 		targetView.redrawGraph(false, true);
 	}
-	
-	private void selectHighScoreInteractions() {
-		
-	}
-	
 }
