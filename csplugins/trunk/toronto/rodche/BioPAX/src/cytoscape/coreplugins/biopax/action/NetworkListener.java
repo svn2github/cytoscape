@@ -196,9 +196,7 @@ public class NetworkListener implements PropertyChangeListener {
 	*/
 	private void networkDestroyed(String networkID) {
 		// destroy the corresponding model
-		CyNetwork net = Cytoscape.getNetwork(networkID); 
-		BioPaxUtil.removeNetworkModel(net);
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_DESTROYED, net, null);
+		BioPaxUtil.removeNetworkModel(networkID);
 	}
 
 	/*
@@ -208,9 +206,7 @@ public class NetworkListener implements PropertyChangeListener {
 	*/
 	private boolean networkViewsRemain() {
 		// interate through our network list checking if their views exists
-		for (CyNetwork cn : BioPaxUtil.getNetworkModelMap().keySet()) {
-			// get the network id
-			String id = cn.getIdentifier();
+		for (String id : BioPaxUtil.getNetworkModelMap().keySet()) {
 			// get the network view via id
 			CyNetworkView cyNetworkView = Cytoscape.getNetworkView(id);
 			if (cyNetworkView != null) {

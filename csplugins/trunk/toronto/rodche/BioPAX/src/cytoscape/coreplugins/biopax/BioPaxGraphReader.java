@@ -280,7 +280,7 @@ public class BioPaxGraphReader implements GraphReader {
 		}
 
 		// associate the new network with its model
-		BioPaxUtil.addNetworkModel(cyNetwork, model);
+		BioPaxUtil.addNetworkModel(cyNetwork.getIdentifier(), model);
 		String modelString = (fileName!=null) ? fileName : "";
 		Cytoscape.getNetworkAttributes().setAttribute(
 				networkId, BioPaxUtil.BIOPAX_MODEL_STRING,	modelString);

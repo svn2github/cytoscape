@@ -107,7 +107,7 @@ class ExportAsBioPAXTask implements Task {
     public void run() {
 		taskMonitor.setStatus("Saving BioPAX...");
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-        Model bpModel = BioPaxUtil.getNetworkModel(currentNetwork);
+        Model bpModel = BioPaxUtil.getNetworkModel(currentNetwork.getIdentifier());
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         String bpModelStr = (String) networkAttributes
         	.getAttribute(currentNetwork.getIdentifier(),

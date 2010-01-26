@@ -74,7 +74,7 @@ public class BioPaxUtil {
 	protected BioPaxUtil() {}
 	
 	
-    private static Map<CyNetwork, Model> networkModelMap = new HashMap<CyNetwork, Model>();
+    private static Map<String, Model> networkModelMap = new HashMap<String, Model>();
 
     public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
     
@@ -922,24 +922,24 @@ public class BioPaxUtil {
 		return str;
 	}
 
-	public static Map<CyNetwork, Model> getNetworkModelMap() {
+	public static Map<String, Model> getNetworkModelMap() {
 		return networkModelMap;
 	}
 
-	public static void removeNetworkModel(CyNetwork cyNetwork) {
-	    networkModelMap.remove(cyNetwork);
+	public static void removeNetworkModel(String cyNetworkId) {
+	    networkModelMap.remove(cyNetworkId);
 	    if(log.isDebugging())
 	    	log.debug("in-memory biopax networks: " 
 	    			+ networkModelMap.toString());
 	}
 
-	public static boolean addNetworkModel(CyNetwork cyNetwork, Model bpModel) {
-		networkModelMap.put(cyNetwork, bpModel);
+	public static boolean addNetworkModel(String cyNetworkId, Model bpModel) {
+		networkModelMap.put(cyNetworkId, bpModel);
 		return true;
 	}
 
-	public static Model getNetworkModel(CyNetwork cyNetwork) {
-		Model bpModel = networkModelMap.get(cyNetwork);
+	public static Model getNetworkModel(String cyNetworkId) {
+		Model bpModel = networkModelMap.get(cyNetworkId);
 		return bpModel;
 	}
 	
