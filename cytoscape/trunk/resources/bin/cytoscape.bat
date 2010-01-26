@@ -3,6 +3,6 @@
 ::
 :: Runs Cytoscape from its jar file with GO data loaded
 
-java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss100M -Xmx1550M -cp cytoscape.jar cytoscape.CyMain %*
+java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss100M -Xmx1550M -cp cytoscape.jar cytoscape.CyMain -p plugins %*
 
 
