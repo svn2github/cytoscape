@@ -21,17 +21,24 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import ding.view.EdgeContextMenuListener;
 
-public class BipartiteLayoutContextMenuListener implements
-		EdgeContextMenuListener {
-	
+
+public class BipartiteLayoutContextMenuListener
+	implements EdgeContextMenuListener
+{
+	static final String REFERENCE_NETWORK_NAME_ATTRIB =
+		"BipartiteVisualiserReferenceNetworkName"; // Also exists in DenovoPGNetworkAlignment!
 	private final Map<String, CyNetwork> titleToNetworkMap;
+
 	
 	public BipartiteLayoutContextMenuListener() {
 		this.titleToNetworkMap = new HashMap<String, CyNetwork>();
 	}
 
+
+	@Override
 	public void addEdgeContextMenuItems(final EdgeView edgeView,
-			final JPopupMenu menu) {
+			final JPopupMenu menu)
+	{
 		if (menu == null)
 			return;
 
@@ -50,7 +57,12 @@ public class BipartiteLayoutContextMenuListener implements
 		final JMenu createBipartiteViewMenuItem = new JMenu(
 				"Create Nested Network Side-by-Side View");
 		menu.add(createBipartiteViewMenuItem);
-		final JMenuItem titleMenu = new JMenuItem("Select Refrrence Network");
+
+		final CyNetwork referenceNetwork = getReferenceNetwork(edge);
+		if (referenceNetwork != null)
+			return;
+
+		final JMenuItem titleMenu = new JMenuItem("Select Reference Network");
 		titleMenu.setEnabled(false);
 		createBipartiteViewMenuItem.add(titleMenu);
 		createBipartiteViewMenuItem.addSeparator();
@@ -89,5 +101,27 @@ public class BipartiteLayoutContextMenuListener implements
 			if (!verboten.contains(candidate))
 				titleToNetworkMap.put(candidate.getTitle(), candidate);
 		}
+	}
+
+
+	private CyNetwork getReferenceNetwork(final Edge edge) {
+		final String referenceNetworkTitle =
+			Cytoscape.getEdgeAttributes().getStringAttribute(
+			        edge.getIdentifier(), REFERENCE_NETWORK_NAME_ATTRIB);
+		return getNetworkByTitle(referenceNetworkTitle);
+	}
+
+
+	/**
+	 * Returns the first network with title "networkTitle" or null, if there is
+	 * no network w/ this title.
+	 */
+	private CyNetwork getNetworkByTitle(final String networkTitle) {
+		for (final CyNetwork network : Cytoscape.getNetworkSet()) {
+			if (network.getTitle().equals(networkTitle))
+				return network;
+		}
+
+		return null;
 	}
 }
