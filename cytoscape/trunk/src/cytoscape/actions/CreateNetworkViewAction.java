@@ -36,36 +36,30 @@
  */
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyNetworkView;
-
 import java.awt.event.ActionEvent;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
-
 import javax.swing.event.MenuEvent;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyNetworkView;
 
 /**
  *
  */
 public class CreateNetworkViewAction extends CytoscapeAction {
+
+	private static final long serialVersionUID = 5033320941306310434L;
+
 	/**
 	 * Creates a new CreateNetworkViewAction object.
 	 */
@@ -75,19 +69,23 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
 	}
 
+	
 	/**
 	 * Creates a new CreateNetworkViewAction object.
-	 *
-	 * @param label  DOCUMENT ME!
+	 * 
+	 * @param label
+	 *            DOCUMENT ME!
 	 */
 	public CreateNetworkViewAction(boolean label) {
 		super();
 	}
 
+	
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
@@ -95,30 +93,35 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param cyNetwork DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param cyNetwork
+	 *            DOCUMENT ME!
 	 */
-	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork) {
+	public static void createViewFromCurrentNetwork(final CyNetwork cyNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
-		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
-                                                        .getProperty("secondaryViewThreshold"))) {
-			int n = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
-			                                      "Network contains "
-			                                      + formatter.format(cyNetwork.getNodeCount())
-			                                      + " nodes and "
-			                                      + formatter.format(cyNetwork.getEdgeCount())
-			                                      + " edges.  "
-			                                      + "\nRendering a network this size may take several "
-			                                      + "minutes.\n" + "Do you wish to proceed?",
-			                                      "Rendering Large Network",
-			                                      JOptionPane.YES_NO_OPTION);
+		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit
+				.getProperties().getProperty("secondaryViewThreshold"))) {
+			int n = JOptionPane
+					.showConfirmDialog(
+							Cytoscape.getDesktop(),
+							"Network contains "
+									+ formatter
+											.format(cyNetwork.getNodeCount())
+									+ " nodes and "
+									+ formatter
+											.format(cyNetwork.getEdgeCount())
+									+ " edges.  "
+									+ "\nRendering a network this size may take several "
+									+ "minutes.\n" + "Do you wish to proceed?",
+							"Rendering Large Network",
+							JOptionPane.YES_NO_OPTION);
 
-			if (n == JOptionPane.NO_OPTION) 
+			if (n == JOptionPane.NO_OPTION)
 				return;
-		} 
-		
+		}
+
 		// Create Task
 		CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork);
 
@@ -136,23 +139,23 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	}
 
 	/**
-	 * Sets the state of the action before rendering the menu. 
+	 * Sets the state of the action before rendering the menu.
 	 */
 	public void menuSelected(MenuEvent e) {
 		CyNetwork currNet = Cytoscape.getCurrentNetwork();
-		if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
+		if (currNet == null || currNet == Cytoscape.getNullNetwork()) {
 			setEnabled(false);
 			return;
 		}
-		CyNetworkView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
-		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+		CyNetworkView currView = Cytoscape.getNetworkView(currNet
+				.getIdentifier());
+		if (currView == null || currView == Cytoscape.getNullNetworkView())
 			setEnabled(true);
 		else
 			setEnabled(false);
 	}
 
-} //End of SaveSessionAction
-
+}
 
 class CreateNetworkViewTask implements Task {
 	private CyNetwork network;
@@ -169,22 +172,25 @@ class CreateNetworkViewTask implements Task {
 		try {
 			Cytoscape.createNetworkView(network);
 		} catch (Exception e) {
-			taskMonitor.setException(e, "Could not create network view for network: " + network.getTitle());
+			taskMonitor.setException(e,
+					"Could not create network view for network: "
+							+ network.getTitle());
 		}
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Network view successfully create for:  " + network.getTitle());
+		taskMonitor.setStatus("Network view successfully create for:  "
+				+ network.getTitle());
 	}
 
-	public void halt() { }
+	public void halt() {
+	}
 
-	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+	public void setTaskMonitor(TaskMonitor taskMonitor)
+			throws IllegalThreadStateException {
 		this.taskMonitor = taskMonitor;
 	}
 
 	public String getTitle() {
 		return "Creating Network View";
 	}
-} 
-
-
+}

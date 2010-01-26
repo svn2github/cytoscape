@@ -12,16 +12,31 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
+/**
+ * Apply Visual Style for a set of selected networks.
+ * One action represents a 
+ * 
+ * @author kono
+ * @since Cytoscape 2.7.0
+ *
+ */
 public class ApplyVisualStyleAction extends CytoscapeAction {
 
 	private static final long serialVersionUID = 2435881456685787138L;
 	
-	private String styleName;
+	private final String styleName;
 	
-	public ApplyVisualStyleAction(String styleName) {
+	
+	/**
+	 * Create an action for the specified Visual Style.
+	 * 
+	 * @param styleName - Name of the Visual Style
+	 */
+	public ApplyVisualStyleAction(final String styleName) {
 		super(styleName);
 		this.styleName = styleName;
 	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -39,19 +54,18 @@ public class ApplyVisualStyleAction extends CytoscapeAction {
 	}
 	
 	private void applyStyle(final Set<CyNetworkView> targetViews) {
+		// Switch current Visual Style
 		Cytoscape.getVisualMappingManager().setVisualStyle(styleName);
+		
+		// Apply it for selected views.
 		for (CyNetworkView view: targetViews) {
-			System.out.println("Apply Visual Style: " + view.getNetwork().getTitle());
 			view.setVisualStyle(styleName);
 			view.redrawGraph(false, true);
 			Cytoscape.getVisualMappingManager().setNetworkView(view);
 		}
-		
-		
 	}
 	
 	public void menuSelected(MenuEvent e) {
 		this.enableForNetworkAndView();
 	}
-
 }

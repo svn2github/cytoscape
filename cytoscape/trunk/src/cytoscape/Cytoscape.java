@@ -844,14 +844,13 @@ public abstract class Cytoscape {
 		    || !(getNetworkViewMap().containsKey(currentNetworkViewID)))
 			return nullNetworkView;
 
-		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(currentNetworkViewID);
-
-		return nview;
+		return getNetworkViewMap().get(currentNetworkViewID);
 	}
 
 	/**
 	 * Returns the list of currently selected networks.
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<CyNetworkView> getSelectedNetworkViews() {
 		CyNetworkView view = getCurrentNetworkView();
 
@@ -888,6 +887,7 @@ public abstract class Cytoscape {
 	/**
 	 * Returns the list of selected networks.
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<CyNetwork> getSelectedNetworks() {
 		CyNetwork curr = getCurrentNetwork();
 

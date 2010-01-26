@@ -696,7 +696,12 @@ class PopupActionListener implements ActionListener  {
 				}
 			}
 		} else if (CREATE_VIEW.equals(label)) {
+			final CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
 			final List<CyNetwork> selected = Cytoscape.getSelectedNetworks();	
+			
+			// Exclude current network view 
+			selected.remove(currentView.getNetwork());
+			
 			for(CyNetwork network: selected) {
 				if (!Cytoscape.viewExists(network.getIdentifier()))
 					CreateNetworkViewAction.createViewFromCurrentNetwork(network);
