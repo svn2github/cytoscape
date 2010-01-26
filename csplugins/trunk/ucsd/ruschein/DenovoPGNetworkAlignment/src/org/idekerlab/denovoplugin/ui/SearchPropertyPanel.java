@@ -466,7 +466,6 @@ public class SearchPropertyPanel extends JPanel implements
 	 * For updating network combobox.
 	 * 
 	 */
-	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		final String propName = evt.getPropertyName();
 
@@ -477,7 +476,6 @@ public class SearchPropertyPanel extends JPanel implements
 		}
 	}
 
-	@Override
 	public void attributeDefined(String attrName) {
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		if (edgeAttr.getMultiHashMapDefinition()
@@ -488,7 +486,6 @@ public class SearchPropertyPanel extends JPanel implements
 
 	}
 
-	@Override
 	public void attributeUndefined(String attrName) {
 		geneticEdgeComboBox.removeItem(attrName);
 		physicalEdgeComboBox.removeItem(attrName);
