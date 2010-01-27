@@ -54,19 +54,23 @@ public class BipartiteLayoutContextMenuListener
 		if (network2 == null)
 			return;
 
+		final CyNetwork referenceNetwork = getReferenceNetwork(edge);
+		if (referenceNetwork != null) {
+			final JMenuItem createNestedNetworkSideBySideViewMenuItem =
+				new JMenuItem("Create Nested Network Side-by-Side View");
+			menu.add(createNestedNetworkSideBySideViewMenuItem);
+			return;
+		}
+
 		final JMenu createBipartiteViewMenuItem = new JMenu(
 				"Create Nested Network Side-by-Side View");
 		menu.add(createBipartiteViewMenuItem);
 
-		final CyNetwork referenceNetwork = getReferenceNetwork(edge);
-		if (referenceNetwork != null)
-			return;
-
-		final JMenuItem titleMenu = new JMenuItem("Select Reference Network");
-		titleMenu.setEnabled(false);
-		createBipartiteViewMenuItem.add(titleMenu);
+		final JMenuItem selectReferenceNetworkMenuItem =
+			new JMenuItem("Select Reference Network");
+		selectReferenceNetworkMenuItem.setEnabled(false);
+		createBipartiteViewMenuItem.add(selectReferenceNetworkMenuItem);
 		createBipartiteViewMenuItem.addSeparator();
-		
 
 		// Parent network is ALWAYS current network view
 		final CyNetwork parentNetwork = Cytoscape.getCurrentNetworkView()
