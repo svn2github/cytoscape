@@ -3,6 +3,20 @@
 ::
 :: Runs Cytoscape from its jar file with GO data loaded
 
-java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss100M -Xmx1550M -cp cytoscape.jar cytoscape.CyMain -p plugins %*
+@echo off
+
+:: Create the cytoscape.vmoptions file, if it doesn't exist.
+IF EXIST "cytoscape.vmoptions" GOTO vmoptionsFileExists
+CALL gen_vmoptions.bat
+:vmoptionsFileExists
+
+:: Read vmoptions, one per line.
+setLocal EnableDelayedExpansion
+for /f "tokens=* delims= " %%a in (cytoscape.vmoptions) do (
+set /a N+=1
+set opt!N!=%%a
+)
+
+echo java -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd !opt1! !opt2! !opt3! !opt4! !opt5! -cp cytoscape.jar cytoscape.CyMain -p plugins %*
 
 
