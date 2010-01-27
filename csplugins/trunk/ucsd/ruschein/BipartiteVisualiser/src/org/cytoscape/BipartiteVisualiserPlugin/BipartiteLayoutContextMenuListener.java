@@ -57,6 +57,8 @@ public class BipartiteLayoutContextMenuListener
 		if (referenceNetwork != null) {
 			final JMenuItem createNestedNetworkSideBySideViewMenuItem =
 				new JMenuItem("Create Nested Network Side-by-Side View");
+			createNestedNetworkSideBySideViewMenuItem.addActionListener(
+				new CreateBipartiteViewAction(edgeView, referenceNetwork, network1, network2));
 			menu.add(createNestedNetworkSideBySideViewMenuItem);
 			return;
 		}
