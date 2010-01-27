@@ -1126,7 +1126,7 @@ public class DoubleMatrix extends DataMatrix {
 		exec.shutdown();
 
 		try {
-			exec.awaitTermination(30, TimeUnit.DAYS);
+			exec.awaitTermination(3000000, TimeUnit.SECONDS);
 			if (!exec.isTerminated())
 				System.out.println("Did not fully terminate!");
 		} catch (InterruptedException e) {

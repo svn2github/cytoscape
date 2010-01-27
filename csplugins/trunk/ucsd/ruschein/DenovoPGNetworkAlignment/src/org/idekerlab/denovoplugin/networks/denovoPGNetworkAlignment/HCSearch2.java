@@ -123,7 +123,7 @@ public class HCSearch2 {
 
 				try {
 					exec.shutdown();
-					exec.awaitTermination(30, TimeUnit.DAYS);
+					exec.awaitTermination(3000000, TimeUnit.SECONDS);
 					if (!exec.isTerminated())
 						System.out.println("Did not fully terminate!");
 				} catch (InterruptedException e) {
@@ -261,7 +261,7 @@ public class HCSearch2 {
 
 		try {
 			exec.shutdown();
-			exec.awaitTermination(30, TimeUnit.DAYS);
+			exec.awaitTermination(3000000, TimeUnit.SECONDS);
 			if (!exec.isTerminated())
 				System.out.println("Did not fully terminate!");
 		} catch (InterruptedException e) {

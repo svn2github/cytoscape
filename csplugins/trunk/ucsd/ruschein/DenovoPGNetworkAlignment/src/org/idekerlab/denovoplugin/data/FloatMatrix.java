@@ -1400,7 +1400,7 @@ public class FloatMatrix extends DataMatrix{
 		
 		try
 		{
-			exec.awaitTermination(30, TimeUnit.DAYS);
+			exec.awaitTermination(3000000, TimeUnit.SECONDS);
 			if (!exec.isTerminated()) System.out.println("Did not fully terminate!");
 		}catch (InterruptedException e) {System.out.println(e);exec.shutdownNow();}
 		

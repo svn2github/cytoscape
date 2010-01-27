@@ -14,6 +14,8 @@ import javax.swing.SwingConstants;
 
 import org.idekerlab.denovoplugin.SearchParameters;
 import org.idekerlab.denovoplugin.SearchTask;
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -118,32 +120,32 @@ public class SearchPropertyPanel extends JPanel implements
             }
         });
 
-        javax.swing.GroupLayout edgeAttributePanelLayout = new javax.swing.GroupLayout(edgeAttributePanel);
+        GroupLayout edgeAttributePanelLayout = new GroupLayout(edgeAttributePanel);
         edgeAttributePanel.setLayout(edgeAttributePanelLayout);
         edgeAttributePanelLayout.setHorizontalGroup(
-            edgeAttributePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(edgeAttributePanelLayout.createSequentialGroup()
+            edgeAttributePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(edgeAttributePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(edgeAttributePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(geneticEdgeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(physicalEdgeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(edgeAttributePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(geneticEdgeComboBox, 0, 248, Short.MAX_VALUE)
-                    .addComponent(physicalEdgeComboBox, 0, 248, Short.MAX_VALUE))
+                .add(edgeAttributePanelLayout.createParallelGroup(GroupLayout.TRAILING, false)
+                    .add(geneticEdgeLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(physicalEdgeLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(18, 18, 18)
+                .add(edgeAttributePanelLayout.createParallelGroup(GroupLayout.LEADING)
+                    .add(geneticEdgeComboBox, 0, 248, Short.MAX_VALUE)
+                    .add(physicalEdgeComboBox, 0, 248, Short.MAX_VALUE))
                 .addContainerGap())
         );
         edgeAttributePanelLayout.setVerticalGroup(
-            edgeAttributePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(edgeAttributePanelLayout.createSequentialGroup()
-                .addGroup(edgeAttributePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(physicalEdgeLabel)
-                    .addComponent(physicalEdgeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(edgeAttributePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(geneticEdgeLabel)
-                    .addComponent(geneticEdgeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            edgeAttributePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(edgeAttributePanelLayout.createSequentialGroup()
+                .add(edgeAttributePanelLayout.createParallelGroup(GroupLayout.BASELINE)
+                    .add(physicalEdgeLabel)
+                    .add(physicalEdgeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(edgeAttributePanelLayout.createParallelGroup(GroupLayout.LEADING)
+                    .add(geneticEdgeLabel)
+                    .add(geneticEdgeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         scorePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Score Parameters"));
@@ -166,42 +168,42 @@ public class SearchPropertyPanel extends JPanel implements
 
         degreeLabel.setText("Physical network filter degree (optional):");
 
-        javax.swing.GroupLayout scorePanelLayout = new javax.swing.GroupLayout(scorePanel);
+        GroupLayout scorePanelLayout = new GroupLayout(scorePanel);
         scorePanel.setLayout(scorePanelLayout);
         scorePanelLayout.setHorizontalGroup(
-            scorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(scorePanelLayout.createSequentialGroup()
+            scorePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(scorePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(scorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(scorePanelLayout.createSequentialGroup()
-                        .addComponent(alphaLabel)
-                        .addGap(70, 70, 70)
-                        .addComponent(alphaTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
-                    .addGroup(scorePanelLayout.createSequentialGroup()
-                        .addComponent(alphaMultiplierLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(alphaMultiplierTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
-                    .addGroup(scorePanelLayout.createSequentialGroup()
-                        .addComponent(degreeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(degreeTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)))
+                .add(scorePanelLayout.createParallelGroup(GroupLayout.LEADING)
+                    .add(scorePanelLayout.createSequentialGroup()
+                        .add(alphaLabel)
+                        .add(70, 70, 70)
+                        .add(alphaTextField, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+                    .add(scorePanelLayout.createSequentialGroup()
+                        .add(alphaMultiplierLabel)
+                        .addPreferredGap(LayoutStyle.RELATED)
+                        .add(alphaMultiplierTextField, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+                    .add(scorePanelLayout.createSequentialGroup()
+                        .add(degreeLabel)
+                        .addPreferredGap(LayoutStyle.RELATED)
+                        .add(degreeTextField, GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         scorePanelLayout.setVerticalGroup(
-            scorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(scorePanelLayout.createSequentialGroup()
-                .addGroup(scorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(alphaLabel)
-                    .addComponent(alphaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(scorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(alphaMultiplierLabel)
-                    .addComponent(alphaMultiplierTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(scorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(degreeLabel)
-                    .addComponent(degreeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            scorePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(scorePanelLayout.createSequentialGroup()
+                .add(scorePanelLayout.createParallelGroup(GroupLayout.BASELINE)
+                    .add(alphaLabel)
+                    .add(alphaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(scorePanelLayout.createParallelGroup(GroupLayout.BASELINE)
+                    .add(alphaMultiplierLabel)
+                    .add(alphaMultiplierTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(scorePanelLayout.createParallelGroup(GroupLayout.BASELINE)
+                    .add(degreeLabel)
+                    .add(degreeTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         searchButton.setText("Search");
@@ -230,69 +232,69 @@ public class SearchPropertyPanel extends JPanel implements
         edgeScoreLabel.setText("Edge Score Cutoff:");
 
 
-        javax.swing.GroupLayout visualizationPanelLayout = new javax.swing.GroupLayout(visualizationPanel);
+        GroupLayout visualizationPanelLayout = new GroupLayout(visualizationPanel);
         visualizationPanel.setLayout(visualizationPanelLayout);
         visualizationPanelLayout.setHorizontalGroup(
-            visualizationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(visualizationPanelLayout.createSequentialGroup()
+            visualizationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(visualizationPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(edgeScoreLabel)
-                .addGap(18, 18, 18)
-                .addComponent(edgeScoreTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .add(edgeScoreLabel)
+                .add(18, 18, 18)
+                .add(edgeScoreTextField, GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                 .addContainerGap())
         );
         visualizationPanelLayout.setVerticalGroup(
-            visualizationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(visualizationPanelLayout.createSequentialGroup()
-                .addGroup(visualizationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(edgeScoreLabel)
-                    .addComponent(edgeScoreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            visualizationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(visualizationPanelLayout.createSequentialGroup()
+                .add(visualizationPanelLayout.createParallelGroup(GroupLayout.BASELINE)
+                    .add(edgeScoreLabel)
+                    .add(edgeScoreTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            layout.createParallelGroup(GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(networkComboBox, 0, 333, Short.MAX_VALUE)
-                        .addGap(12, 12, 12))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(visualizationPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(edgeAttributePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(scorePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(helpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 134, Short.MAX_VALUE)
-                                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(searchButton))
-                            .addComponent(networkLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .add(layout.createParallelGroup(GroupLayout.LEADING)
+                    .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(6, 6, 6)
+                        .add(networkComboBox, 0, 333, Short.MAX_VALUE)
+                        .add(12, 12, 12))
+                    .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(GroupLayout.TRAILING)
+                            .add(visualizationPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(edgeAttributePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(scorePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(layout.createSequentialGroup()
+                                .add(helpButton, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.RELATED, 134, Short.MAX_VALUE)
+                                .add(closeButton, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(searchButton))
+                            .add(networkLabel, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            layout.createParallelGroup(GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(networkLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(networkComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(edgeAttributePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scorePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(visualizationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchButton)
-                    .addComponent(closeButton)
-                    .addComponent(helpButton))
+                .add(networkLabel)
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(networkComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .add(2, 2, 2)
+                .add(edgeAttributePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(scorePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(visualizationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(GroupLayout.BASELINE)
+                    .add(searchButton)
+                    .add(closeButton)
+                    .add(helpButton))
                 .addContainerGap())
         );
 	}// </editor-fold>
