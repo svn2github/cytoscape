@@ -35,7 +35,6 @@ public class BipartiteLayoutContextMenuListener
 	}
 
 
-	@Override
 	public void addEdgeContextMenuItems(final EdgeView edgeView,
 			final JPopupMenu menu)
 	{
