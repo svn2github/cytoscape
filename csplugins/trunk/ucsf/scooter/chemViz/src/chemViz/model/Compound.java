@@ -67,6 +67,7 @@ import cytoscape.util.URLUtil;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
+import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
@@ -77,6 +78,7 @@ import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IIsotope;;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
@@ -422,9 +424,12 @@ public class Compound {
 
 				CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
 
+				// Make sure we update our implicit hydrogens
+				CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(iMolecule.getBuilder());
+				adder.addImplicitHydrogens(iMolecule);
+
 				// Get our fingerprint
 				Fingerprinter fp = new Fingerprinter();
-
 				// Do we need to do the addh here?
 				fingerPrint = fp.getFingerprint(addh(iMolecule));
 			}
@@ -533,10 +538,10 @@ public class Compound {
 				return getAttribute();
 			case IDENTIFIER:
 				return getMoleculeString();
-			case WEIGHT:
-				return getMolecularWeight();
 			case MASS:
 				return getExactMass();
+			case WEIGHT:
+				return getMolecularWeight();
 			case WEINERPATH:
 			case WEINERPOL:
 				{
@@ -674,9 +679,25 @@ public class Compound {
 	public double getMolecularWeight() {
 		if (iMolecule == null) return 0.0f;
 
-
 		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(addh(iMolecule));
-		return MolecularFormulaManipulator.getTotalMassNumber(mfa);
+		// System.out.println("Formula: "+MolecularFormulaManipulator.getString(mfa));
+
+		// This method returns the total atomic number, *not* the total mass number.  Do this
+		// by ourselves until this is fixed.
+		// return MolecularFormulaManipulator.getTotalMassNumber(mfa);
+		
+		double mass = 0.0;
+		for (IIsotope isotope : mfa.isotopes()) {
+			try {
+				IIsotope isotope2 = IsotopeFactory.getInstance(mfa.getBuilder()).getMajorIsotope(isotope.getSymbol());
+				// System.out.println("Isotope: "+isotope.getSymbol()+" has atomic number "+isotope2.getAtomicNumber());
+				// System.out.println("Isotope: "+isotope.getSymbol()+" has mass number "+isotope2.getMassNumber());
+				mass += isotope2.getMassNumber() * mfa.getIsotopeCount(isotope);
+			} catch (IOException e) {
+				return 0.0f;
+			}
+		}
+		return mass;
 	}
 
 	/**
@@ -690,57 +711,6 @@ public class Compound {
 		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(addh(iMolecule));
 		return MolecularFormulaManipulator.getTotalExactMass(mfa);
 	}
-
-	/**
- 	 * Use the chimeraservices smi2gif service to get a 2D image of this compound.
- 	 *
- 	 * @return the fetched image
- 	 */
-	public Image depictWithUCSFSmi2Gif() {
-		if (this.moleculeString == null || "".equals(moleculeString)) {
-			return null;
-		}
-		String url = getDepictURL();
-		Image image = null;
-		try {
-			InputStream in = URLUtil.getInputStream(new URL(url));
-			image = ImageIO.read(in);
-		} catch (MalformedURLException muex) {
-			logger.error("Unable to connect to UCSF SMILES depiction services: "+muex.getMessage(), muex);
-			return null;
-		} catch (IOException ioex) {
-			logger.error("Unable to connect to UCSF SMILES depiction services: "+ioex.getMessage(), ioex);
-			return null;
-		}
-		return image;
-	}
-	
-	/**
- 	 * Use the chimeraservices smi2gif service to get a 2D image of a specific size for this compound.
- 	 *
- 	 * @param width the width of the rendered image
- 	 * @param height the height of the rendered image
- 	 * @param bgcolor the background color of the rendered image
- 	 * @return the fetched image
- 	 */
-	public Image depictWithUCSFSmi2Gif(int width, int height, String bgcolor) {
-		if (this.moleculeString == null || "".equals(moleculeString)) {
-			return null;
-		}
-		String url = getDepictURL(width, height, bgcolor);
-		Image image = null;
-		try {
-			InputStream in = URLUtil.getInputStream(new URL(url));
-			image = ImageIO.read(in);
-		} catch (MalformedURLException muex) {
-			logger.error("Unable to connect to UCSF SMILES depiction services: "+muex.getMessage(), muex);
-			return null;
-		} catch (IOException ioex) {
-			logger.error("Unable to connect to UCSF SMILES depiction services: "+ioex.getMessage(), ioex);
-			return null;
-		}
-		return image;
-	}	
 
 	public Image depictWithCDK(int width, int height, Color background) {
 		BufferedImage bufferedImage = null;
@@ -834,66 +804,25 @@ public class Compound {
 			InChIGeneratorFactory factory = InChIGeneratorFactory.getInstance();
 			InChIToStructure intostruct = factory.getInChIToStructure(inchi, DefaultChemObjectBuilder.getInstance());
 
-		// Get the structure
-		INCHI_RET ret = intostruct.getReturnStatus();
-		if (ret == INCHI_RET.WARNING) {
-			logger.warning("InChI warning: " + intostruct.getMessage());
-		} else if (ret != INCHI_RET.OKAY) {
-			logger.error("Structure generation failed failed: " + ret.toString()
-                    + " [" + intostruct.getMessage() + "]");
-			return null;
-		}
+			// Get the structure
+			INCHI_RET ret = intostruct.getReturnStatus();
+			if (ret == INCHI_RET.WARNING) {
+				logger.warning("InChI warning: " + intostruct.getMessage());
+			} else if (ret != INCHI_RET.OKAY) {
+				logger.error("Structure generation failed failed: " + ret.toString()
+     	               + " [" + intostruct.getMessage() + "]");
+				return null;
+			}
 
-		iMolecule = new Molecule(intostruct.getAtomContainer());
-		// Use the molecule to create a SMILES string
-		SmilesGenerator sg = new SmilesGenerator();
-		return sg.createSMILES(iMolecule);
+			iMolecule = new Molecule(intostruct.getAtomContainer());
+			// Use the molecule to create a SMILES string
+			SmilesGenerator sg = new SmilesGenerator();
+			return sg.createSMILES(iMolecule);
 		} catch (Exception e) {
 			logger.error("Structure generation failed failed: " + e.getMessage());
 			return null;
 		}
 
-		/*
-		String url = "http://www.chemspider.com/inchi.asmx/InChIToSMILES?inchi="
-				+ inchi.trim();
-		String smiles = null;
-		try {
-			String result = URLUtil.download(new URL(url));
-			Pattern pattern = Pattern.compile(".*<[^>]*>([^<]*)</string>");
-			Matcher matcher = pattern.matcher(result);
-			if (matcher.find()) {
-				smiles = matcher.group(1);
-			}
-		} catch (MalformedURLException muex) {
-			logger.error("Unable to connect to chemspider conversion services: "+muex.getMessage(), muex);
-			return null;
-		} catch (IOException ioex) {
-			logger.error("Unable to connect to chemspider conversion services: "+ioex.getMessage(), ioex);
-			return null;
-		}
-		return smiles;
-		*/
 	}
 
-	/**
- 	 * Returns the URL to use for getting the rendered image
- 	 */
-	private String getDepictURL() {
-		String url = "http://chimeraservices.compbio.ucsf.edu/cgi-bin/smi2gif.cgi?"
-			+ "smiles=" + this.smilesStr + "&format=png&width=640&height=640&bgcolor=white&linewidth=2&symbolfontsize=24";	
-		return url;
-	}	
-	
-	/**
- 	 * Returns the URL to use for getting the rendered image
- 	 *
- 	 * @param width the width parameter to put into the URL
- 	 * @param height the height parameter to put into the URL
- 	 * @param bgcolor the bgcolor parameter to put into the URL
- 	 */
-	private String getDepictURL(int width, int height, String bgcolor) {
-		String url = "http://chimeraservices.compbio.ucsf.edu/cgi-bin/smi2gif.cgi?"
-			+ "smiles=" + this.smilesStr + "&width=" + width + "&height=" + height + "&bgcolor=" + bgcolor;
-		return url;
-	}
 }

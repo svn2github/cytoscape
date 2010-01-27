@@ -13,7 +13,7 @@ pluginName=chemViz
 pluginDescription=This plugin provides a variety of cheminformatics descriptors and visualizations
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.9
+pluginVersion=1.0
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6.3
@@ -28,7 +28,7 @@ projectURL=http://www.rbvi.ucsf.edu/cytoscape/chemViz/index.html
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=John "Scooter" Morris:UCSF
+pluginAuthorsIntsitutions=John "Scooter" Morris:UCSF;Dazhi Jiao:Indiana University School of Informatics
 
 # Date this plugin/plugin version was released
 releaseDate=January 22, 2010
