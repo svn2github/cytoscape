@@ -8,7 +8,7 @@
          This file should be created by each user when he/she needs to override particular values. 
          Do NOT place it under version control.
     -->
-    <property file="build.properties"/>
+    <property file="local.properties"/>
     
     <property file="default.properties"/>
     
@@ -39,7 +39,8 @@
         <format property="date.now" pattern="yyyyMMddHHmm"/>
     </tstamp>
     
-    <target name="build" depends="files, api">
+    <!-- Build the website so it can be deployed -->
+	<target name="build" depends="files, api">
     	<delete dir="${build.dir}" />
     	<mkdir dir="${build.dir}"/>
     	<zip destfile="${build.dir}/cwsite_v${build.version}_${date.now}.zip"
@@ -49,6 +50,7 @@
         />
     </target>
     
+	<!-- Generate the API Documentation for the latest version of Cytoscape Web -->
     <target name="api">
         <!-- Recreate the temporary folder -->
         <delete dir="${temp.dir}" />
@@ -100,18 +102,16 @@
             <fileset dir="${temp.dir}/symbols" includes="**.Visualization.php"/>
         </copy>
         
-        <!-- Create release info and date files --> 
+        <!-- Create the release date file --> 
         <copy todir="${api.dir}" file="${jsdoc.dir}/metadata/date.txt" />
         <move file="${api.dir}/date.txt" tofile="${api.dir}/.date"/>
         <replace file="${api.dir}/.date" token="${date}" value="${date.today}"/>
-        
-        <copy todir="${api.dir}" file="${jsdoc.dir}/metadata/release.txt" />
-        <move file="${api.dir}/release.txt" tofile="${api.dir}/.release_info"/>
         
         <!-- Delete the temp folder -->
         <delete dir="${temp.dir}" />
     </target>
 
+	<!-- Grab required files from the other sub-projects -->
     <target name="files">
         <!-- Copy Flash files -->
         <copy todir="${swf.dir}" overwrite="true">

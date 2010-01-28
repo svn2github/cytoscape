@@ -31,8 +31,9 @@ body.demo h1 + h2, body.demo h2 + h3 { padding-top: 0.5em; }
     .ui-menu-title > label { padding: 0.25em 0.5em 0.25em 0.5em; }
     .ui-menu-item > label { padding: 0.1em; }
     .ui-menu-item label { color: #000000; z-index: 2; }
-    .ui-menu-item { cursor: pointer !important; width: 100%; float: left; clear: both; border-top: 1px solid #eaeaea !important; border-bottom: 1px solid transparent !important; }
+    .ui-menu-item { cursor: pointer !important; width: 100%; float: left; clear: both; border-top: 1px solid #eaeaea !important; border-bottom: 1px solid #fafafa !important; }
     .ui-top-menu > .ui-menu-item-first { border-top-right-radius: 0; border-top-left-radius: 0; -moz-border-radius-topleft: 0; -moz-border-radius-topright: 0; -webkit-border-top-right-radius: 0; -webkit-border-top-left-radius: 0; }
+    .ui-top-menu li label { white-space: nowrap; }
     .ui-menu-item-last {  }
     .ui-state-active.ui-menu-item { background: #0b94b1 !important; border-color: #0b94b1 !important; border-left-color: #097d95 !important; }
     .ui-state-active.ui-menu-item > label { color: #ffffff; }

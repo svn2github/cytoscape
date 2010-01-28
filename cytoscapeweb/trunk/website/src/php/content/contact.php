@@ -82,13 +82,11 @@
 
 <div class="right">
 
-    <h1>Guidelines</h1>
-
-    <h2>Discussion Group</h2>
+    <h1>Discussion Group</h1>
     
     <p>The Cytoscape Web <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a> is the main forum for users to share questions, solutions and new ideas.</p>
     
-    <h2>Reporting software bugs</h2>
+    <h1>Reporting software bugs</h1>
     
     <p>The best way to report a bug to us is to <a href="http://cbio.mskcc.org/cytoscape/bugs" rel="external">use our bug tracker</a>.  However, if you find it difficult to use the bug tracker, feel free to use the contact form on this page to contact us about the bug.</p>
     
@@ -100,7 +98,7 @@
         <li>a description of the bug as compared to the behaviour you expected.</li>
     </ul>
     
-    <h2>Other feedback</h2>
+    <h1>Other feedback</h1>
     
     <p>Any other feedback that you provide is greatly appreciated.  To make sure that we get the most out of your feedback, please make sure to provide your name and email address so we can get back to you if need be.</p>
     

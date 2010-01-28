@@ -31,7 +31,7 @@
                     $api->date = $date;
                 }
                 
-                $release_info_file = fopen("$dir/$version_dir/.release_info", "r");
+                $release_info_file = fopen("file/release_notes/release_notes_" . $api->version . ".txt", "r");
                 if( $release_info_file ){
                 	$release_info = "";
                 	while ( ! feof($release_info_file) ) {

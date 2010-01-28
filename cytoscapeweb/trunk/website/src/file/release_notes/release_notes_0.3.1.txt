@@ -1,0 +1,9 @@
+<p>
+    This release contains only a few changes:
+    <ul>
+        <li>Added a default Passthrough Mapper for edge labels, making it easier to display them 
+            (you just need to have an edge attribute called <code>"label"</code> in the network data and 
+            set <code>edgeLabelsVisible</code> to <code>true</code>).</li>
+        <li>The minimum zoom value was decreased from 10% to 1%.</li>
+    </ul>
+</p>
