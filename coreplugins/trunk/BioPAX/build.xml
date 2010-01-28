@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Cytoscape BioPAX Plug In -->
-<project  default="all" name="Cytoscape BioPAX PlugIn">
+<project  default="all" name="Cytoscape Core BioPAX PlugIn">
 
 	<!-- project name -->
   <property name="project_name" value="biopax"/>
@@ -9,22 +9,22 @@
 	<!-- tools dir -->
 	<property name="pathway.tools.root" value="${env.PATHWAY_TOOLS_ROOT}"/>
     <!-- version numbers -->
-    <property name="biopax_version" value="0_5"/>
+    <property name="biopax_version" value="0_7"/>
     <!--  define check style task -->
     <taskdef resource="checkstyletask.properties"/>
     <!-- source code dir -->
     <property name="src.dir" value="src"/>
-    <!-- scripts/bin dir -->
+    <property name="test.src.dir" value="test"/>
+	<!-- scripts/bin dir -->
     <property name="bin.dir" value="bin"/>
     <!-- config dir -->
     <property name="config.dir" value="config"/>
     <!-- build dir -->
     <property name="build.dir" value="build"/>
     <property name="build.classes" value="${build.dir}/classes"/>
+    <property name="build.test.classes" value="${build.dir}/test-classes"/>
     <!-- jars dir -->
     <property name="jars.dir" value="${build.dir}/jars"/>
-    <!-- plugins dir -->
-    <property name="plugins.dir" value="plugins"/>
     <!-- resources dir -->
     <property name="resources.dir" value="resources"/>
     <!-- styles dir -->
@@ -43,25 +43,39 @@
     <!-- temp dir -->
     <property name="temp.dir" value="temp"/>
     <!-- LayoutUtil.java file -->
-    <property name="layout.util.file"
-			  value="${src.dir}/org/mskcc/biopax_plugin/util/cytoscape/LayoutUtil.java"/>
+    <property name="layout.util.file" value="${src.dir}/cytoscape/coreplugins/biopax/util/LayoutUtil.java"/>
 	<!-- jar file -->
     <property name="jar_file" value="${project_name}.jar"/>
 	<!-- obfuscation file -->
     <property name="obfuscationlog" value="${project_name}_obflog.xml.gz"/>
 
-		<!-- cytoscape dir -->
-		<property name="cytoscape.dir" value="../../cytoscape"/>
+    <!-- cytoscape dir -->
+    <property name="cytoscape.dir" value="../../cytoscape"/>
+		
+	<!-- runtime classpath -->
+	<path id="runtime.classpath">
+	    <fileset dir="${cytoscape.dir}/lib">
+	        <include name="*.jar"/>
+	    </fileset>
+	    <fileset dir="${cytoscape.dir}">
+	        <include name="cytoscape.jar"/>
+	    </fileset>
+	</path>
 	
     <!-- classpath without reference to yfiles -->
     <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
-        <fileset dir="${cytoscape.dir}/lib">
+    	<!-- not required, because these jars are unpacked to ${build.classes} (see target:prepare)
+        <fileset dir="${basedir}/lib">
                 <include name="*.jar"/>
         </fileset>
-        <fileset dir="${cytoscape.dir}">
-                <include name="cytoscape.jar"/>
-        </fileset>
+        -->
+		<path refid="runtime.classpath"/>
+    </path>
+	
+    <path id="test.classpath">
+        <pathelement path="${build.test.classes}"/>
+		<path refid="classpath.without.yfiles"/>
     </path>
 
 	<!-- classpath with reference to yfiles -->
@@ -118,7 +132,14 @@
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build.dir}/docs"/>
         <mkdir dir="${build.classes}"/>
+    	<mkdir dir="${build.test.classes}"/>
         <mkdir dir="${jars.dir}"/>
+    	
+    	<!-- Explicitly Include Classes from These JARs: -->
+		<unjar dest="${build.classes}">
+			<fileset dir="${basedir}/lib" includes="*.jar"/>
+		</unjar>
+    	
 	<echo>"basedir ${basedir}"</echo>
     </target>
 
@@ -126,7 +147,6 @@
     <target description="Removes all generated files." name="clean">
         <delete dir="${build.dir}"/>
         <delete dir="${jars.dir}"/>
-        <delete dir="${plugins.dir}"/>
         <delete dir="${junit.dir}"/>
         <delete dir="${temp.dir}"/>
         <delete>
@@ -146,14 +166,17 @@
 			description="Compiles all source code." name="compile">
         <javac debug="true" debuglevel="source,lines,var"
             destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true"
-		   source="1.5"
-		   target="1.5"
-			classpathref="${classpath}">
+			classpathref="${classpath}" target="1.5">
         </javac>
 
+        <javac debug="true" debuglevel="source,lines,var"
+            destdir="${build.test.classes}" nowarn="on" srcdir="${test.src.dir}" deprecation="true"
+			classpathref="${classpath}" target="1.5">
+        </javac>    	
+    	
         <!-- copy all resources -->
         <copy todir="${build.classes}">
-            <fileset dir="${src.dir}">
+            <fileset dir="${resources.dir}">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -162,12 +185,10 @@
     <!--  target to run cytoscape with biopax plugin -->
     <target depends="check.yfiles,set.classpath,jar" description="Runs Cytoscape with BioPAX Data."
         name="run">
-        <copy todir="${plugins.dir}">
-            <fileset dir="${jars.dir}"/>
-        </copy>
-        <java classname="cytoscape.CyMain" classpathref="${classpath}"
+    	<copy file="${jars.dir}/${jar_file}" todir="${cytoscape.dir}/plugins" overwrite="true" />
+        <java classname="cytoscape.CyMain" classpathref="runtime.classpath"
             fork="true" maxmemory="1000M">
-            <arg line="-p plugins"/>
+            <arg line="-p ${cytoscape.dir}/plugins"/>
         </java>
     </target>
 
@@ -179,12 +200,12 @@
         <mkdir dir="${jars.dir}"/>
 
         <!--  create jar -->
-	<copy todir="${build.classes}/org/mskcc/biopax_plugin/plugin" file="${resources.dir}/plugin.props"/>
+		<copy todir="${build.classes}/cytoscape/coreplugins/biopax" file="${resources.dir}/plugin.props"/>
         <jar destfile="${jars.dir}/${jar_file}">
             <fileset dir="${build.classes}"/>
-	    <manifest>
-	    	<attribute name="Cytoscape-Plugin" value="org.mskcc.biopax_plugin.plugin.BioPaxPlugIn"/>
-	    </manifest>
+	    	<manifest>
+	    		<attribute name="Cytoscape-Plugin" value="cytoscape.coreplugins.biopax.BiopaxPlugin"/>
+	    	</manifest>
         </jar>
     </target>
 
@@ -205,8 +226,8 @@
         <mkdir dir="${junit.dir}/reports"/>
         <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
             <formatter type="plain" usefile="false"/>
-            <test name="org.mskcc.test.AllTest"/>
-            <classpath refid="${classpath}"/>
+            <test name="cytoscape.coreplugins.biopax.AllTest"/>
+            <classpath refid="test.classpath"/>
         </junit>
     </target>
 
@@ -226,17 +247,10 @@
            <expose>
               <class classes="protected" methods="protected" fields="protected">
                     <patternset>
-                        <include name="org.mskcc.biopax_plugin.action.*"/>
-                        <include name="org.mskcc.biopax_plugin.mapping.*"/>
-                        <include name="org.mskcc.biopax_plugin.plugin.*"/>
-                        <include name="org.mskcc.biopax_plugin.style.*"/>
-                        <include name="org.mskcc.biopax_plugin.task.*"/>
-                        <include name="org.mskcc.biopax_plugin.util.biopax.*"/>
-                        <include name="org.mskcc.biopax_plugin.util.cytoscape.*"/>
-                        <include name="org.mskcc.biopax_plugin.util.links.*"/>
-                        <include name="org.mskcc.biopax_plugin.util.net.*"/>
-                        <include name="org.mskcc.biopax_plugin.util.rdf.*"/>
-                        <include name="org.mskcc.biopax_plugin.view.*"/>
+                        <include name="cytoscape.coreplugins.biopax.*"/>
+                        <include name="cytoscape.coreplugins.biopax.action.*"/>
+                        <include name="cytoscape.coreplugins.biopax.util.*"/>
+                        <include name="cytoscape.coreplugins.biopax.view.*"/>
                     </patternset>
                 </class>
             </expose>
@@ -244,6 +258,10 @@
     </target>
 
     <!--  builds and tests everything -->
+    <!-- 
     <target depends="jar,obfuscate,test" description="Builds and tests everything" name="all"/>
-
+     -->
+	<target depends="jar,obfuscate" description="Builds and tests everything" name="all">
+	</target>
+	
 </project>
