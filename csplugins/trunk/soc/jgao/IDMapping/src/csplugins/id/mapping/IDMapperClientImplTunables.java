@@ -72,32 +72,28 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     protected static final String CONNECTION_STRING = "connection-string";
     protected static final String SELECTED = "selected";
 
-    public IDMapperClientImplTunables(String connectionString, String classString)
-            throws ClassNotFoundException, IDMapperException{
+    public IDMapperClientImplTunables(String connectionString, String classString) {
         this(connectionString, classString, null);
     }
 
     public IDMapperClientImplTunables(String connectionString, String classString,
-            String displayName)
-            throws ClassNotFoundException, IDMapperException {
+            String displayName) {
         this(connectionString, classString, displayName, null);
     }
 
     public IDMapperClientImplTunables(String connectionString, String classString,
-            String displayName, String id)
-            throws ClassNotFoundException, IDMapperException {
+            String displayName, String id) {
         this(connectionString, classString, displayName, id, true);
     }
 
     public IDMapperClientImplTunables(String connectionString, String classString,
-            String displayName, String id, boolean selected)
-            throws ClassNotFoundException, IDMapperException {
+            String displayName, String id, boolean selected) {
         if (connectionString==null || classString==null) {
             throw new IllegalArgumentException();
         }
 
-        Class.forName(classString);
-        mapper = BridgeDb.connect(connectionString);
+        //Class.forName(classString);
+        //mapper = BridgeDb.connect(connectionString);
 
         String defId = id==null?""+clientNo+"-"+System.currentTimeMillis():id;
         props = new IDMapperClientProperties(defId);
@@ -113,8 +109,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         clientNo++;
     }
 
-    public IDMapperClientImplTunables(IDMapperClientProperties props, String newPropsId)
-            throws ClassNotFoundException, IDMapperException {
+    public IDMapperClientImplTunables(IDMapperClientProperties props, String newPropsId) {
         this.props = props;
 
         String defId = ""+clientNo+"-"+System.currentTimeMillis();
@@ -126,10 +121,10 @@ public class IDMapperClientImplTunables implements IDMapperClient {
             props.release(); // release the old
         }
 
-        Class.forName(getClassString());
-        mapper = BridgeDb.connect(getConnectionString());
+        //Class.forName(getClassString());
+        //mapper = BridgeDb.connect(getConnectionString());
 
-        this.props.saveProperties();
+        props.saveProperties();
 
         clientNo++;
     }
@@ -169,6 +164,15 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     }
 
     public IDMapper getIDMapper() {
+        if (mapper==null) {
+            try {
+                Class.forName(getClassString());
+                mapper = BridgeDb.connect(getConnectionString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
         return mapper;
     }
     
@@ -179,7 +183,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     public void setConnectionString(String connectionString)
             throws IDMapperException {
         this.connectionString.setValue(connectionString);
-        mapper = BridgeDb.connect(connectionString);
+        mapper = null;
         props.saveProperties(this.connectionString);
     }
     
@@ -188,11 +192,16 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     }
 
     public String getDescription() {
+        IDMapper idMapper = getIDMapper();
+        if (idMapper==null) {
+            return "This ID mapping client cannot be connected.";
+        }
+
         StringBuilder desc = new StringBuilder(this.getDisplayName());
         desc.append("\nCapacities:\n");
 
         desc.append(">> Supported source ID types:\n");
-        IDMapperCapabilities capabilities = mapper.getCapabilities();
+        IDMapperCapabilities capabilities = idMapper.getCapabilities();
 
         Set<DataSource> dss = null;
         try {
@@ -239,11 +248,11 @@ public class IDMapperClientImplTunables implements IDMapperClient {
 //        desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
 //        desc.append("\n");
 
-        if (mapper instanceof AttributeMapper) {
+        if (idMapper instanceof AttributeMapper) {
             desc.append(">>Supported Attributes\n");
             Set<String> attrs = null;
             try {
-                attrs = ((AttributeMapper)mapper).getAttributeSet();
+                attrs = ((AttributeMapper)idMapper).getAttributeSet();
             } catch (IDMapperException ex) {
                 ex.printStackTrace();
             }

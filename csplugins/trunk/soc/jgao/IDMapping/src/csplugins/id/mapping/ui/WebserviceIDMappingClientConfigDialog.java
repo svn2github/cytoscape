@@ -95,30 +95,38 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     // add a new client
     public WebserviceIDMappingClientConfigDialog(javax.swing.JDialog parent, boolean modal) {
-        this(parent, modal, null);
-    }
-
-    // configure a existing client
-    public  WebserviceIDMappingClientConfigDialog(javax.swing.JDialog parent,
-            boolean modal, IDMapperClient client) {
         super(parent, modal);
-        this.client = client;
-        if (client!=null) {
-            idMapper = (IDMapperWebservice) client.getIDMapper();
-            if (idMapper instanceof IDMapperBiomart) {
-                connectBiomart();
-            } else if (idMapper instanceof IDMapperSynergizer) {
-                connectSynergizer();
-            }
-        }        
-
-        //loadBiomartFilterFile(); //turn off filtering
-        
         initComponents();
-
         postInit();
-        
     }
+
+//    // configure a existing client
+//    public  WebserviceIDMappingClientConfigDialog(javax.swing.JDialog parent,
+//            boolean modal, IDMapperClient client) {
+//        super(parent, modal);
+//        this.client = client;
+//        if (client!=null) {
+//            IDMapperWebservice idMapper = (IDMapperWebservice) client.getIDMapper();
+//            if (idMapper==null) {
+//
+//            } else {
+//                if (idMapper instanceof IDMapperBiomart) {
+//                    connectBiomart();
+//                } else if (idMapper instanceof IDMapperSynergizer) {
+//                    connectSynergizer();
+//                } else if (idMapper instanceof IDMapperPicrRest) {
+//
+//                }
+//            }
+//        }
+//
+//        //loadBiomartFilterFile(); //turn off filtering
+//
+//        initComponents();
+//
+//        postInit();
+//
+//    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -172,18 +180,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         ClientType[] types = ClientType.values();
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));
-        if (idMapper==null) {
-
-        } else if (idMapper instanceof IDMapperBiomart) {
-            typeComboBox.setSelectedItem(ClientType.BIOMART);
-            typeComboBox.setEnabled(false);
-        } else if (idMapper instanceof IDMapperPicrRest) {
-            typeComboBox.setSelectedItem(ClientType.PICR);
-            typeComboBox.setEnabled(false);
-        } else if (idMapper instanceof IDMapperSynergizer) {
-            typeComboBox.setSelectedItem(ClientType.SYNERGIZER);
-            typeComboBox.setEnabled(false);
-        }
         typeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeComboBoxActionPerformed(evt);
@@ -216,16 +212,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         chooseDBPanel.setPreferredSize(new java.awt.Dimension(400, 50));
         chooseDBPanel.setLayout(new javax.swing.BoxLayout(chooseDBPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        if (idMapper==null) {
-            setChooseDBComboBox();
-        } else if (idMapper instanceof IDMapperBiomart) {
-            String mart = ((IDMapperBiomart)idMapper).getMart();
-            String martDisplay = biomartStub.martDisplayName(mart);
-            mapMartDisplayName = new HashMap(1);
-            mapMartDisplayName.put(martDisplay, mart);
-            chooseDBComboBox.setModel(new DefaultComboBoxModel(new String[] {martDisplay}));
-            chooseDBComboBox.setEnabled(false);
-        }
+        setChooseDBComboBox();
         chooseDBComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseDBComboBoxActionPerformed(evt);
@@ -256,7 +243,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         biomartOpPanel.setLayout(new java.awt.GridBagLayout());
 
-        biomartOptionCheckBox.setSelected(idMapper!=null);
         biomartOptionCheckBox.setText("Show advanced option");
         biomartOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -300,8 +286,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         theModel.addElement(new BioMartWrapper("Phytozome","http://www.phytozome.net/biomart/martservice"));
 
         bioMartBaseUrlComboBox.setModel(theModel);
-        bioMartComboBoxEditor = new BioMartComboBoxEditor(idMapper==null || !(idMapper instanceof IDMapperBiomart)?
-            biomartStub.defaultBaseURL:((IDMapperBiomart)idMapper).getBaseURL());
+        bioMartComboBoxEditor = new BioMartComboBoxEditor(biomartStub.defaultBaseURL);
         bioMartComboBoxEditor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bioMartBaseUrlComboBoxActionPerformed(evt);
@@ -356,7 +341,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         picrOpPanel.setLayout(new java.awt.GridBagLayout());
 
-        picrOptionCheckBox.setSelected(idMapper!=null);
         picrOptionCheckBox.setText("Show advanced option");
         picrOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -375,9 +359,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         picrAdvancedPanel.setLayout(new java.awt.GridBagLayout());
         picrAdvancedPanel.setVisible(picrOptionCheckBox.isSelected());
 
-        picrOnlyActiveCheckBox.setSelected(idMapper==null ||
-            !(idMapper instanceof IDMapperPicrRest) ||
-            ((IDMapperPicrRest)idMapper).getOnlyActive());
+        picrOnlyActiveCheckBox.setSelected(true);
         picrOnlyActiveCheckBox.setText("Use only active mappings (remove deleted mappings)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -420,13 +402,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         chooseAuthorityPanel.setPreferredSize(new java.awt.Dimension(400, 50));
         chooseAuthorityPanel.setLayout(new javax.swing.BoxLayout(chooseAuthorityPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        if (idMapper==null) {
-            chooseAuthorityComboBox.setModel(new DefaultComboBoxModel(getSynergizerAuthorities()));
-        } else if (idMapper instanceof IDMapperSynergizer) {
-            String auth = ((IDMapperSynergizer)idMapper).getAuthority();
-            chooseAuthorityComboBox.setModel(new DefaultComboBoxModel(new String[]{auth}));
-            chooseAuthorityComboBox.setEnabled(false);
-        }
+        chooseAuthorityComboBox.setModel(new DefaultComboBoxModel(getSynergizerAuthorities()));
         chooseAuthorityComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseAuthorityComboBoxActionPerformed(evt);
@@ -445,13 +421,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         chooseSpeciesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a species"));
         chooseSpeciesPanel.setLayout(new javax.swing.BoxLayout(chooseSpeciesPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        if (idMapper==null) {
-            setSynergizerSpecies();
-        } else if(idMapper instanceof IDMapperSynergizer) {
-            String species = ((IDMapperSynergizer)idMapper).getSpecies();
-            chooseSpeciesComboBox.setModel(new DefaultComboBoxModel(new String[] {species}));
-            chooseSpeciesComboBox.setEnabled(false);
-        }
+        setSynergizerSpecies();
         chooseSpeciesPanel.add(chooseSpeciesComboBox);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -464,7 +434,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         synergizerOpPanel.setLayout(new java.awt.GridBagLayout());
 
-        synergizerOptionCheckBox.setSelected(idMapper!=null);
         synergizerOptionCheckBox.setText("Show advanced option");
         synergizerOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -486,8 +455,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         synergizerBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("URL of Synergizer Server"));
         synergizerBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
 
-        synergizerBaseUrlTextField.setText(idMapper==null || !(idMapper instanceof IDMapperSynergizer)?
-            SynergizerStub.defaultBaseURL:((IDMapperSynergizer)idMapper).getBaseUrl());
+        synergizerBaseUrlTextField.setText(SynergizerStub.defaultBaseURL);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -577,18 +545,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (verifyInput()) {
-            if (idMapper!=null) { // config
-                String[] strs = this.getSettings();
-                String connStr = strs[0];
-                try {
-                    client.setConnectionString(connStr);
-                } catch(Exception e) {
-                    e.printStackTrace();
-                    System.err.println(connStr);
-                    JOptionPane.showMessageDialog(this, "Error: failed to configure");
-                }
-
-            }
             cancelled = false;
             setVisible(false);
             this.dispose();
@@ -859,11 +815,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         }
 
         try {
-            if (idMapper==null) {
-                synergizerStub = SynergizerStub.getInstance();
-            } else {
-                synergizerStub = SynergizerStub.getInstance(((IDMapperSynergizer)idMapper).getBaseUrl());
-            }
+            synergizerStub = SynergizerStub.getInstance();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -878,11 +830,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         }
         
         try {
-            if (idMapper==null) {
-                biomartStub = BiomartStub.getInstance();
-            } else if (idMapper instanceof IDMapperBiomart) {
-                biomartStub = BiomartStub.getInstance(((IDMapperBiomart)idMapper).getBaseURL());
-            }
+            biomartStub = BiomartStub.getInstance();
         } catch(IOException e) {
             e.printStackTrace();
             return false;
@@ -893,10 +841,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     public IDMapperClient getIDMappingClient()
             throws ClassNotFoundException, IDMapperException {
-        if (client!=null) {
-            return client;
-        }
-
         String[] strs = getSettings();
         String connStr = strs[0];
         String className = strs[1];
@@ -975,59 +919,44 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         mapTypePanel.put(ClientType.PICR, picrPanel);
         mapTypePanel.put(ClientType.SYNERGIZER, synergizerPanel);
 
-        if (idMapper==null) {
-            setDatasetsCombo();
-        } else if(idMapper instanceof IDMapperBiomart) {
-            IDMapperBiomart biomart = (IDMapperBiomart)idMapper;
-            String dataset = biomart.getDataset();
-            String display = dataset;
-            try {
-                display = biomartStub.datasetDisplayName(biomart.getMart(), dataset);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mapDatasetDisplayName = new HashMap(1);
-            mapDatasetDisplayName.put(display, dataset);
-            chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new String[] {display}));
-            chooseDatasetComboBox.setEnabled(false);
-        }
+        setDatasetsCombo();
     }
 
-    private static final String FILTER_TXT = "/resources/biomart_dataset_filter.txt";
-    private void loadBiomartFilterFile() {
-        try {
-            InputStreamReader inFile = new InputStreamReader(this.getClass().getResource(FILTER_TXT).openStream());
-            BufferedReader inBuffer = new BufferedReader(inFile);
-
-            String line;
-
-            while ((line = inBuffer.readLine()) != null) {
-                    String[] parts = line.split("\\t", 2);
-
-                    if (parts.length!=2) continue;
-
-                    if (parts[0].compareTo("db")==0) {
-                        databaseFilter.add(parts[1]);
-                    } else if (parts[0].compareTo("ds")==0) {
-                        datasetFilter.add(parts[1]);
-                    }
-
-            }
-
-            inFile.close();
-            inBuffer.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private static final String FILTER_TXT = "/resources/biomart_dataset_filter.txt";
+//    private void loadBiomartFilterFile() {
+//        try {
+//            InputStreamReader inFile = new InputStreamReader(this.getClass().getResource(FILTER_TXT).openStream());
+//            BufferedReader inBuffer = new BufferedReader(inFile);
+//
+//            String line;
+//
+//            while ((line = inBuffer.readLine()) != null) {
+//                    String[] parts = line.split("\\t", 2);
+//
+//                    if (parts.length!=2) continue;
+//
+//                    if (parts[0].compareTo("db")==0) {
+//                        databaseFilter.add(parts[1]);
+//                    } else if (parts[0].compareTo("ds")==0) {
+//                        datasetFilter.add(parts[1]);
+//                    }
+//
+//            }
+//
+//            inFile.close();
+//            inBuffer.close();
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private Set<String> datasetFilter = new HashSet();
     private Set<String> databaseFilter = new HashSet();
 
     private BiomartStub biomartStub;
     private SynergizerStub synergizerStub;
-    private IDMapperClient client = null;
-    private IDMapperWebservice idMapper = null;
+    //private IDMapperClient client = null;
+    //private IDMapperWebservice idMapper = null;
     private boolean cancelled = true;
     private Map<ClientType, JPanel> mapTypePanel;
 

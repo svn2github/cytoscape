@@ -68,38 +68,40 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     // add a new client
     public FileIDMappingClientConfigDialog(java.awt.Dialog parent, boolean modal) {
-        this(parent, modal, null);
-    }
-
-    // configure an existing client
-    public FileIDMappingClientConfigDialog(java.awt.Dialog parent,
-            boolean modal, IDMapperClient client) {
         super(parent, modal);
         initComponents();
-
-        this.client = client;
-        if (client!=null) {
-            IDMapperText idMapper = (IDMapperText)client.getIDMapper();
-            textFileTextField.setText(idMapper.getURL().toString());
-            textFileTextField.setEnabled(false);
-            sourcePanel.setVisible(false);
-            textFileButton.setVisible(false);
-            textFileTextField.setToolTipText("URL of existing IDMapping client cannot " +
-                    "be changed. Remove this client and add a new one if you want " +
-                    "to connect to a different URL.");
-
-            this.setTypeDelimiters(idMapper.getDataSourceDelimiters());
-            this.setIDDelimiters(idMapper.getIDDelimiters());
-            transitivityCheckBox.setSelected(idMapper.getTransitivity());
-
-            // show the advance option
-            optionCheckBox.setSelected(true);
-            advancedPanel.setVisible(optionCheckBox.isSelected());
-            this.pack();
-        }
-
         setPreviewTableData();
     }
+
+//    // configure an existing client
+//    public FileIDMappingClientConfigDialog(java.awt.Dialog parent,
+//            boolean modal, IDMapperClient client) {
+//        super(parent, modal);
+//        initComponents();
+//
+//        this.client = client;
+//        if (client!=null) {
+//            IDMapperText idMapper = (IDMapperText)client.getIDMapper();
+//            textFileTextField.setText(idMapper.getURL().toString());
+//            textFileTextField.setEnabled(false);
+//            sourcePanel.setVisible(false);
+//            textFileButton.setVisible(false);
+//            textFileTextField.setToolTipText("URL of existing IDMapping client cannot " +
+//                    "be changed. Remove this client and add a new one if you want " +
+//                    "to connect to a different URL.");
+//
+//            this.setTypeDelimiters(idMapper.getDataSourceDelimiters());
+//            this.setIDDelimiters(idMapper.getIDDelimiters());
+//            transitivityCheckBox.setSelected(idMapper.getTransitivity());
+//
+//            // show the advance option
+//            optionCheckBox.setSelected(true);
+//            advancedPanel.setVisible(optionCheckBox.isSelected());
+//            this.pack();
+//        }
+//
+//        setPreviewTableData();
+//    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -532,17 +534,6 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (verifyInput()) {
-            if (client!=null) { // config
-//                client.setDataSourceDelimiters(getTypeDelimiters());
-//                client.setIDDelimiters(getIDDelimiters());
-//                client.setTransitivity(transitivityCheckBox.isSelected());
-                String connString = getConnectionString();
-                try {
-                    client.setConnectionString(connString);
-                } catch (IDMapperException e) {
-                    e.printStackTrace();
-                }
-            }
             cancelled = false;
             setVisible(false);
             this.dispose();
@@ -841,12 +832,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         return sb.toString();
     }
 
-    public IDMapperClient getIDMappingClient() 
-            throws IDMapperException, ClassNotFoundException {
-        if (client!=null) {
-            return client; // configure
-        }
-
+    public IDMapperClient getIDMappingClient() {
         String url = textFileTextField.getText();
 
         return new IDMapperClientImplTunables(getConnectionString(),
@@ -895,7 +881,6 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private boolean isLocal = true;
     private boolean cancelled = true;
-    private final IDMapperClient client;
     private int previewLimit = 100;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

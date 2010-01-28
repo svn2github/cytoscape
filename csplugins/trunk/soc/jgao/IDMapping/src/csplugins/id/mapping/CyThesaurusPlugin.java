@@ -63,7 +63,14 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
         BioDataSource.init();
         IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
         listenToSessionEvent();
+
         IDMappingServiceSuppport.addService();
+        
+//        try {
+//            csplugins.id.mapping.command.CyThesaurusNamespace.register("idmapping");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
                         .add(new IDMappingAction());
@@ -114,7 +121,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
     class IDMappingAction extends CytoscapeAction {
 
         public IDMappingAction() {
-            super(FinalStaticValues.PLUGIN_NAME); //TODO rename
+            super(FinalStaticValues.PLUGIN_NAME);
         }
 
         /**

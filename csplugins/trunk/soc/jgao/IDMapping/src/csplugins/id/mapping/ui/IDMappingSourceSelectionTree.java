@@ -223,6 +223,9 @@ class IDMappingSourceSelectionTree extends JTree {
 
     private ClientType getClientType(IDMapperClient client) {
         IDMapper mapper = client.getIDMapper();
+        if (mapper==null)
+            return null;
+
         if (mapper instanceof IDMapperWebservice) {
             return ClientType.WEBSERVICE;
         } else if (mapper instanceof IDMapperFile) {
@@ -290,12 +293,12 @@ class IDMappingSourceSelectionTree extends JTree {
         });
         wsClientPopup.add(mi);
 
-        mi = new JMenuItem("Configure");
-        mi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                configWsClient(wsClientPopup.getTreeNode());
-            }
-        });
+//        mi = new JMenuItem("Configure");
+//        mi.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                configWsClient(wsClientPopup.getTreeNode());
+//            }
+//        });
 //        wsClientPopup.add(mi);
 
         final TreeNodePopupMenu fileClientPopup = new TreeNodePopupMenu();
@@ -307,12 +310,12 @@ class IDMappingSourceSelectionTree extends JTree {
         });
         fileClientPopup.add(mi);
         
-        mi = new JMenuItem("Configure");
-        mi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                configTextClient(fileClientPopup.getTreeNode());
-            }
-        });
+//        mi = new JMenuItem("Configure");
+//        mi.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                configTextClient(fileClientPopup.getTreeNode());
+//            }
+//        });
 //        fileClientPopup.add(mi);
 
         // hook the menus on the tree
@@ -532,34 +535,45 @@ class IDMappingSourceSelectionTree extends JTree {
         modified = true;
     }
 
-    private void configTextClient(final DefaultMutableTreeNode node) {
-        if (node==null) return;
-        IDMapperClient client = (IDMapperClient)node.getUserObject();
-
-        FileIDMappingClientConfigDialog dialog =
-                new FileIDMappingClientConfigDialog(parent, true, client);
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
-        if (!dialog.isCancelled()) {
-            TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
-            setSelectionPath(path);
-            modified = true;
-        }
-    }
-
-    private void configWsClient(final DefaultMutableTreeNode node) {
-        if (node==null) return;
-        IDMapperClient client = (IDMapperClient)node.getUserObject();
-        WebserviceIDMappingClientConfigDialog dialog =
-                new WebserviceIDMappingClientConfigDialog(parent, true, client);
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
-        if (!dialog.isCancelled()) {
-            TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
-            setSelectionPath(path);
-            modified = true;
-        }
-    }
+//    private void configTextClient(final DefaultMutableTreeNode node) {
+//        if (node==null) return;
+//        IDMapperClient client = (IDMapperClient)node.getUserObject();
+//
+//        if (client.getIDMapper()==null) {
+//            JOptionPane.showMessageDialog(this, "Failed to connect to this ID mapping client.");
+//            return;
+//        }
+//
+//        FileIDMappingClientConfigDialog dialog =
+//                new FileIDMappingClientConfigDialog(parent, true, client);
+//        dialog.setLocationRelativeTo(this);
+//        dialog.setVisible(true);
+//        if (!dialog.isCancelled()) {
+//            TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
+//            setSelectionPath(path);
+//            modified = true;
+//        }
+//    }
+//
+//    private void configWsClient(final DefaultMutableTreeNode node) {
+//        if (node==null) return;
+//        IDMapperClient client = (IDMapperClient)node.getUserObject();
+//
+//        if (client.getIDMapper()==null) {
+//            JOptionPane.showMessageDialog(this, "Failed to connect to this ID mapping client.");
+//            return;
+//        }
+//
+//        WebserviceIDMappingClientConfigDialog dialog =
+//                new WebserviceIDMappingClientConfigDialog(parent, true, client);
+//        dialog.setLocationRelativeTo(this);
+//        dialog.setVisible(true);
+//        if (!dialog.isCancelled()) {
+//            TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
+//            setSelectionPath(path);
+//            modified = true;
+//        }
+//    }
 
     private void insertAlphabetically(DefaultMutableTreeNode parent,
             DefaultMutableTreeNode insertionNode) {

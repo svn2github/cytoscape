@@ -616,6 +616,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
                 // attr type
                 for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
                     IDMapper mapper = client.getIDMapper();
+                    if (mapper==null) {
+                        continue;
+                    }
+
                     if (!(mapper instanceof AttributeMapper))
                         continue;
 
@@ -668,6 +672,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             IDMapperStack stack = new IDMapperStack();
             for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
                 IDMapper mapper = client.getIDMapper();
+                if (mapper==null) {
+                    continue;
+                }
+
                 if (!(mapper instanceof IDMapperBiomart)) {
                     // TODO: this is temperory solution
                     // there should be a AttributeMapperCapacities or something like that
@@ -693,7 +701,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
             for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
                 IDMapper mapper = client.getIDMapper();
-                if (!(mapper instanceof AttributeMapper))
+                if (mapper==null || !(mapper instanceof AttributeMapper))
                     continue;
 
                 Set<String> attrs;

@@ -71,21 +71,22 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     /** Creates new form RDBIDMappingClientConfig */
     public RDBIDMappingClientConfigDialog(javax.swing.JDialog parent, boolean modal) {
-        this(parent, modal, null);
-    }
-
-    public RDBIDMappingClientConfigDialog(javax.swing.JDialog parent, boolean modal,
-            IDMapperClient client) {
         super(parent, modal);
         initComponents();
-        this.client = client;
-        if (client!=null) {
-            IDMapperRdb idMapper = (IDMapperRdb)client.getIDMapper();
-            if (idMapper instanceof SimpleGdb) {
-                //TODO: initialize
-            }
-        }
     }
+
+//    public RDBIDMappingClientConfigDialog(javax.swing.JDialog parent, boolean modal,
+//            IDMapperClient client) {
+//        super(parent, modal);
+//        initComponents();
+//        this.client = client;
+//        if (client!=null) {
+//            IDMapperRdb idMapper = (IDMapperRdb)client.getIDMapper();
+//            if (idMapper instanceof SimpleGdb) {
+//                //TODO: initialize
+//            }
+//        }
+//    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -205,19 +206,13 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (verifyInput()) {
-            if (client!=null) { // config
-            }
             cancelled = false;
             setVisible(false);
         }
 }//GEN-LAST:event_okButtonActionPerformed
 
     public IDMapperClient getIDMappingClient()
-            throws ClassNotFoundException, IDMapperException {
-        if (client!=null) {
-            return client;
-        }
-        
+            throws ClassNotFoundException, IDMapperException {        
         String[] strs = getSettings();
         String connStr = strs[0];
         String className = strs[1];
@@ -264,7 +259,7 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
     }
 
     private boolean cancelled = true;
-    private IDMapperClient client;
+//    private IDMapperClient client;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

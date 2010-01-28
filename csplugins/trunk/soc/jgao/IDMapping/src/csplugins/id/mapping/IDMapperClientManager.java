@@ -100,20 +100,8 @@ public class IDMapperClientManager {
             String newPId = ""+(i++)+"-"+System.currentTimeMillis();
             IDMapperClientProperties imcp = new IDMapperClientProperties(pid);
 
-            IDMapperClient client = null;
-            try {
-                client = new IDMapperClientImplTunables(imcp, newPId);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IDMapperException e) {
-                e.printStackTrace();
-            }
-
-            if (client == null) {
-                //imcp.release();
-            } else {
-                registerClient(client);
-            }
+            IDMapperClient client  = new IDMapperClientImplTunables(imcp, newPId);
+            registerClient(client);
         }
     }
 
@@ -156,17 +144,8 @@ public class IDMapperClientManager {
                     selected = true;
                 } else if (line.compareTo(CLIENT_END)==0) {
                     if (classStr!=null && connStr!=null) {
-                        IDMapperClient client;
-                        try {
-                            client = new IDMapperClientImplTunables(connStr,
+                        IDMapperClient client = new IDMapperClientImplTunables(connStr,
                                     classStr, display, clientId, selected);
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                            continue;
-                        } catch (IDMapperException e) {
-                            e.printStackTrace();
-                            continue;
-                        }
 
                         clients.add(client);
                     } else {
@@ -258,7 +237,9 @@ public class IDMapperClientManager {
     public static IDMapperStack selectedIDMapperStack() {
         IDMapperStack idMapperStack = new IDMapperStack();
         for (IDMapperClient client : selectedClients()) {
-                idMapperStack.addIDMapper(client.getIDMapper());
+            IDMapper idMapper = client.getIDMapper();
+            if (idMapper!=null)
+                idMapperStack.addIDMapper(idMapper);
         }
 
         return idMapperStack;
@@ -338,6 +319,9 @@ public class IDMapperClientManager {
 
     private static void preprocess(final IDMapperClient client) {
         IDMapper mapper = client.getIDMapper();
+
+        if (mapper==null)
+            return;
 
         // set fullname of datasource as syscode if it is null
         // in this plugin, fullname represents the datasource
