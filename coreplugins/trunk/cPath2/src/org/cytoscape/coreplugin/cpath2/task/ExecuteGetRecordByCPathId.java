@@ -443,7 +443,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 	String id = BioPaxUtil.getLocalPartRdfId(pe);
                     if (id != null) {
                         id = id.replaceAll("CPATH-", "");
-                        MapBioPaxToCytoscape.mapNodeAttribute(pe, id);
+                        MapBioPaxToCytoscape.mapNodeAttribute(pe, model, id);
                     }
                 }
                 int percentComplete = (int) (100.0 * (i / (double) batchList.size()));

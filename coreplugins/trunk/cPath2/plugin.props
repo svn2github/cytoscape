@@ -12,7 +12,7 @@ pluginDescription=Provides connectivity to the Pathway Commons repository (http:
 pluginVersion=2.1
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
-cytoscapeVersion=2.6
+cytoscapeVersion=2.7
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
 pluginCategory=Network and Attribute I/O
@@ -22,10 +22,10 @@ projectURL=http://www.pathwaycommons.org
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs by a ; (semicolon)
-pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross, Chris Sander:Memorial Sloan-Kettering Cancer Center;Gary Bader:Uniersity of Toronto 
+pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross, Chris Sander:Memorial Sloan-Kettering Cancer Center;Igor Rodchenkov, Gary Bader:Uniersity of Toronto 
 
 # Date this plugin/plugin version was released
-releaseDate=March 15, 2008
+releaseDate=January 29, 2010
 
 cpath2.organism0=Human:9606
 cpath2.organism1=Fruit Fly:7227
