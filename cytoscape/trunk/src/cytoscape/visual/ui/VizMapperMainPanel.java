@@ -789,9 +789,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		CyLogger.getLogger().debug("VS Switched --> " + vsName + ", Last = " + lastVSName);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-		
-		// MLC 03/31/08:
-		// NOTE: Will cause stateChanged() to be called:
 		vmm.setVisualStyle(vsName);
 
 		if (propertyMap.containsKey(vsName)) {
@@ -827,9 +824,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		} else
 			setPropertyTable();
-
-		// MLC 03/31/08:
-		//lastVSName = vsName;
 
 		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
 
@@ -903,7 +897,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (view != null) {
 				CyLogger.getLogger().debug("Creating Default Image for " + name);
-			updateDefaultImage(name, view, panelSize);
+				updateDefaultImage(name, view, panelSize);
 			}
 		}
 

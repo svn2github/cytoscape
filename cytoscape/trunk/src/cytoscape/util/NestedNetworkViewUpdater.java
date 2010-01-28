@@ -13,6 +13,8 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.DNodeView;
 
@@ -28,6 +30,8 @@ import ding.view.DNodeView;
 public class NestedNetworkViewUpdater implements PropertyChangeListener {
 	
 	private static final String NESTED_NETWORK_VS_NAME = "Nested Network Style";
+	
+	private final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 	
 	private boolean ignoreNextEvent = false;
 
@@ -100,8 +104,17 @@ public class NestedNetworkViewUpdater implements PropertyChangeListener {
 			}
 			
 			// Apply visual style if necessary
-			if (applyStyle)
-				networkView.redrawGraph(/* do layout = */ false, /* apply visual style = */ true);
+			if (applyStyle) {
+				final VisualStyle currentStyle = vmm.getVisualStyle();
+				if(!currentStyle.equals(networkView.getVisualStyle())) {
+					vmm.setVisualStyle(networkView.getVisualStyle());
+					networkView.redrawGraph(/* do layout = */ false, /* apply visual style = */ true);
+					vmm.setVisualStyle(currentStyle);
+				} else {
+					networkView.redrawGraph(/* do layout = */ false, /* apply visual style = */ true);
+				}
+				
+			}
 		}
 	}
 	

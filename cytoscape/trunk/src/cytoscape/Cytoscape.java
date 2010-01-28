@@ -852,7 +852,7 @@ public abstract class Cytoscape {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<CyNetworkView> getSelectedNetworkViews() {
-		CyNetworkView view = getCurrentNetworkView();
+		final CyNetworkView view = getCurrentNetworkView();
 
 		if (!selectedNetworkViews.contains(view))
 			selectedNetworkViews.add(view);
@@ -1113,16 +1113,16 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * destroys the networkview, including any layout information
+	 * Destroys the network view.
 	 */
 	public static void destroyNetworkView(CyNetworkView view) {
 		if ((view == null) || (view == nullNetworkView))
 			return;
 
 		getSelectedNetworkViews().remove(view);
+		
 		final String viewID = view.getIdentifier();
 		
-
 		if (viewID.equals(currentNetworkViewID)) {
 			if (getNetworkViewMap().size() <= 0)
 				currentNetworkViewID = null;
@@ -1153,15 +1153,15 @@ public abstract class Cytoscape {
 	/**
 	 * destroys the networkview, including any layout information
 	 */
-	public static void destroyNetworkView(String network_view_id) {
-		destroyNetworkView((CyNetworkView) getNetworkViewMap().get(network_view_id));
+	public static void destroyNetworkView(final String networkViewID) {
+		destroyNetworkView(getNetworkViewMap().get(networkViewID));
 	}
 
 
 	/**
 	 * destroys the networkview, including any layout information
 	 */
-	public static void destroyNetworkView(CyNetwork network) {
+	public static void destroyNetworkView(final CyNetwork network) {
 		destroyNetworkView(getNetworkViewMap().get(network.getIdentifier()));
 	}
 
