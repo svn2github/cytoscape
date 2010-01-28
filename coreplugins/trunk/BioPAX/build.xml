@@ -65,25 +65,20 @@
     <!-- classpath without reference to yfiles -->
     <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
-    	<!-- not required, because these jars are unpacked to ${build.classes} (see target:prepare)
-        <fileset dir="${basedir}/lib">
-                <include name="*.jar"/>
-        </fileset>
-        -->
-		<path refid="runtime.classpath"/>
+	<path refid="runtime.classpath"/>
     </path>
 	
     <path id="test.classpath">
-        <pathelement path="${build.test.classes}"/>
-		<path refid="classpath.without.yfiles"/>
+	<pathelement path="${build.test.classes}"/>
+	<path refid="classpath.without.yfiles"/>
     </path>
 
 	<!-- classpath with reference to yfiles -->
     <path id="classpath.with.yfiles">
         <path refid="classpath.without.yfiles"/>
-		<fileset dir="${pathway.tools.root}/lib/">
-			<include name="*.jar"/>
-		</fileset>
+	<fileset dir="${pathway.tools.root}/lib/">
+		<include name="*.jar"/>
+	</fileset>
     </path>
 
 	<!-- target that sets has.yfiles property -->
@@ -136,10 +131,12 @@
         <mkdir dir="${jars.dir}"/>
     	
     	<!-- Explicitly Include Classes from These JARs: -->
-		<unjar dest="${build.classes}">
-			<fileset dir="${basedir}/lib" includes="*.jar"/>
-		</unjar>
+	<unjar dest="${build.classes}">
+		<fileset dir="${basedir}/lib" includes="*.jar"/>
+	</unjar>
     	
+        <!-- delete META-INF from those unpacked libs-->
+        <delete dir="${build.classes}/META-INF"/>
 	<echo>"basedir ${basedir}"</echo>
     </target>
 
@@ -156,10 +153,10 @@
 		<delete file="${obfuscationlog}"/>
     </target>
 
-	<!-- target to unzip yFiles library into build - required for obfuscation -->
-	<target depends="check.yfiles" if="has.yfiles" name="unzip.yfiles">
-	  <unzip src="${pathway.tools.root}/lib/y.jar" dest="${build.classes}"/>
-	</target>
+    <!-- target to unzip yFiles library into build - required for obfuscation -->
+    <target depends="check.yfiles" if="has.yfiles" name="unzip.yfiles">
+        <unzip src="${pathway.tools.root}/lib/y.jar" dest="${build.classes}"/>
+    </target>
 
     <!--  target to compile all code -->
     <target depends="check.yfiles,prepare,gen.layout.file,set.classpath,unzip.yfiles"
