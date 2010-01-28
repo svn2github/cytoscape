@@ -39,14 +39,11 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 
 import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.controller.Fetcher;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.util.ClassFilterSet;
@@ -779,7 +776,7 @@ public class BioPaxUtil {
 
 	/**
 	 * For a BioPAX element, 
-	 * find parent pathway or interaction name.
+	 * find parent pathways names.
 	 * 
 	 * @param bpe
 	 * @param model 
@@ -791,13 +788,12 @@ public class BioPaxUtil {
 		Set<? extends BioPAXElement> procs = BioPaxUtil.getObjects(model, pathway.class, Pathway.class);
 		Set<BioPAXElement> pathways = fetchParentNodeNames(bpe, procs);
 		
-		/*
-		if(pathways.isEmpty()) {
-			procs = BioPaxUtil.getObjects(model, interaction.class, Interaction.class);
-			pathways = fetchParentNodeNames(bpe, procs);
-		}
-		*/
-		
+		//if(pathways.isEmpty()) {
+		//  // then find interactions
+		//	procs = BioPaxUtil.getObjects(model, interaction.class, Interaction.class);
+		//	pathways = fetchParentNodeNames(bpe, procs);
+		//}
+				
 		if(!pathways.isEmpty()) {
 			for(BioPAXElement pw : pathways) {
 				pathwayNames.add(getNodeName(pw));
@@ -820,42 +816,12 @@ public class BioPaxUtil {
 	 */
 	public static Set<BioPAXElement> fetchParentNodeNames(BioPAXElement bpe, Set<? extends BioPAXElement> procs) {
 		Set<BioPAXElement> parents = new HashSet<BioPAXElement>();
-		Fetcher fetcher;
-		BioPAXFactory factory;
-		/*
-		 * Customized Fetcher is to fix the issue with Level2 - when NEXT-STEP
-		 * leads out of the pathway... (do not worry - those pathway steps that
-		 * are part of the pathway must be in the PATHWAY-COMPONENTS set)
-		 * Also, skipping sub-pathways
-		 */
-		if((bpe instanceof Level2Element)) {
-			fetcher = new Fetcher(editorMapLevel2) 
-			{
-				public void visit(BioPAXElement bpe, Model model,
-					PropertyEditor editor) {
-					if (!editor.getProperty().equals("NEXT-STEP")) 
-					{
-						super.visit(bpe, model, editor);
-					}
-				}
-		   };
-		   factory = BioPAXLevel.L2.getDefaultFactory();
-		} else if(bpe instanceof Level3Element) {
-			fetcher = new Fetcher(editorMapLevel3);
-			factory = BioPAXLevel.L3.getDefaultFactory(); 
-		} else {
-			return parents;
-		}
-
+		EditorMap editorMap = (bpe instanceof Level2Element) ? editorMapLevel2 : editorMapLevel3;
+		ParentFinder parentFinder = new ParentFinder(editorMap);
 		for (BioPAXElement proc : procs) {
-			Model m = factory.createModel();
-			fetcher.fetch(proc, m);
-			//System.out.println(bpe + " " + bpe.getRDFId() + "; proc: " + proc + " " + proc.getModelInterface().getSimpleName() );
-			if (m.containsID(bpe.getRDFId())) {
+			if(!parents.contains(proc) && parentFinder.isParentChild(proc, bpe))
 				parents.add(proc);
-			}
 		}
-		
 		return parents;
 	}
 	
@@ -974,4 +940,5 @@ public class BioPaxUtil {
 
         return (b1 != null && b1) || (b2 != null && b2);
 	}
+	
 }
