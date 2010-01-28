@@ -5,11 +5,12 @@
 </head>
 <body style="font-family:Arial, Helvetica, sans-serif;
         font-size: 11pt;">
-<h2>Cytoscape BioPAX Import PlugIn</h2> <h3>1. Introduction</h3> The BioPAX plugin enables Cytoscape to import BioPAX formatted documents. BioPAX is a collaborative effort to create a data exchange format for biological pathway data. Information is available at: <a href="http://biopax.org">http://biopax.org</a>. 
+<h2>Cytoscape BioPAX Import PlugIn</h2> 
+<h3>1. Introduction</h3> The BioPAX plugin enables Cytoscape to import BioPAX formatted documents. BioPAX is a collaborative effort to create a data exchange format for biological pathway data. Information is available at: <a href="http://biopax.org">http://biopax.org</a>. 
 <p>
-	Updates regarding this plugin will be posted to the Cytoscape-announce mailing list. You can easily <a href="http://groups-beta.google.com/group/cytoscape-announce/subscribe">subscribe</a> to the mailing list or <a href="http://groups-beta.google.com/group/cytoscape-announce">browse the archives</a>. 
+	Updates regarding this plugin will be posted to the Cytoscape-announce mailing list. You can easily <a href="http://groups.google.com/group/cytoscape-announce/subscribe">subscribe</a> to the mailing list or <a href="http://groups.google.com/group/cytoscape-announce">browse the archives</a>. 
 </p>
-<h3>2. PlugIn Installation Instructions</h3> This release contains the following directory structure: <pre>
+<h3>2. PlugIn Installation Instructions [See The Latest Release Notes!]</h3> This release contains the following directory structure: <pre>
 +
 |---biopax_XXX.jar          JAR Files containing the BioPAX PlugIn
 |
@@ -57,16 +58,7 @@ Below is a sample screenshot of the apoptosis pathway:
 	<font size="-1">[<a href="images/apoptosis.png">Click to enlarge</a>]</font> 
 </p>
 
-<h3>4.  Configuring the BioPAX PlugIn</h3>
-If you are behind a firewall, and need to set an
-HTTP proxy, you can do so by adding the following lines to
-cytoscape.props:
-<PRE>
-dataservice.proxy_host=XXXX
-dataservice.proxy_port=YYYY
-</PRE>
-
-<h3>3. Understanding Visual Rendering Clues</h3>By default, the Expression Viewer PlugIn renders nodes and edges as follows: 
+<h3>4. Understanding Visual Rendering Clues</h3>By default, the Expression Viewer PlugIn renders nodes and edges as follows: 
 <p>
 </p>
 <table cellpadding="3" cellspacing="3">
@@ -344,11 +336,11 @@ dataservice.proxy_port=YYYY
 	</tr>
 </tbody></table>
 
-<h3>6. Bugs / Feature Requests</h3> If you encounter a bug with this plugin,
+<h3>5. Bugs / Feature Requests</h3> If you encounter a bug with this plugin,
 email Ethan Cerami or Benjamin Gross at the address(es) below, or log a bug directly to
 the <a href="http://www.cbio.mskcc.org/cytoscape/bugs/">Cytoscape Bug Tracker</a>.
 
-<h3>7. Contacts</h3>
+<h3>6. Contacts</h3>
 <p>
 	Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a> 
 	<br>
@@ -366,7 +358,7 @@ the <a href="http://www.cbio.mskcc.org/cytoscape/bugs/">Cytoscape Bug Tracker</a
 <p>
 	This software is made available under the <a href="http://www.gnu.org/licenses/lgpl.html">LGPL (Lesser General Public License)</a>. 
 </p>
-<h3>8. Release Notes / Current Limitations</h3> 
+<h3>7. Release Notes / Current Limitations</h3> 
 <p>
 	Version: 0.1 
 </p>
@@ -444,6 +436,22 @@ the <a href="http://www.cbio.mskcc.org/cytoscape/bugs/">Cytoscape Bug Tracker</a
 		<ul>
 			<li>
 				Includes Simplified Visual Language to describe Biological Pathways.
+			</li>
+		</ul>
+	</li>
+</ul>
+<p>
+	Version: 0.7 (requires Cytoscape v2.7 or greater)
+</p>
+<ul>
+	<li>
+		Date: January 29, 2010
+	</li>
+	<li>
+		Features: 
+		<ul>
+			<li>
+				Since version 0.5, it is core plugin (included in Cytoscape distributions). Supports BioPAX Level 3, uses PaxTools v2.0 library.
 			</li>
 		</ul>
 	</li>

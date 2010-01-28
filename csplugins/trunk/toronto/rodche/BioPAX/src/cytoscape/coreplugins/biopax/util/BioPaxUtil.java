@@ -39,13 +39,15 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 
 import org.biopax.paxtools.controller.EditorMap;
+import org.biopax.paxtools.controller.Fetcher;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
+import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.level3.*;
-import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.util.ClassFilterSet;
 
@@ -734,27 +736,26 @@ public class BioPaxUtil {
 		if(model.getLevel() == BioPAXLevel.L3) {
 			Collection<Pathway> pws = model.getObjects(Pathway.class);
 			for(Pathway pw: pws) {
-				if(!pw.getPathwayComponentsOf().isEmpty()
-						|| !pw.getParticipantsOf().isEmpty()) {
-					continue; // skipping sub-pathways
+				if(pw.getPathwayComponentsOf().isEmpty()
+						&& pw.getParticipantsOf().isEmpty()) {
+					modelName.append(" ").append(getNodeName(pw)); 
 				}
-				modelName.append(" ").append(getNodeName(pw)); 
 			}
 		} else { // Level 1 and 2
 			Collection<pathway> pws = model.getObjects(pathway.class);
 			for(pathway pw: pws) {
-				if(!pw.isPATHWAY_COMPONENTSof().isEmpty()
-						|| !pw.isPARTICIPANTSof().isEmpty()) {
-					continue; // skipping sub-pathways
+				if(pw.isPATHWAY_COMPONENTSof().isEmpty()
+						&& pw.isPARTICIPANTSof().isEmpty()) {
+					modelName.append(" ").append(getNodeName(pw));
 				}
-				modelName.append(" ").append(getNodeName(pw));
 			}
 		}
-
+		
 		if ((modelName.length() > 0)) {
 			return modelName.toString();
 		}
 
+		
 		return null;
 	}
 	
@@ -767,78 +768,95 @@ public class BioPaxUtil {
 	 */
 	public static Set<? extends BioPAXElement> getObjects(Model model, Class<? extends BioPAXElement>... classes) {
 		Set<BioPAXElement> coll = new HashSet<BioPAXElement>();
-		for(Class<? extends BioPAXElement> c : classes) {
-			coll.addAll(model.getObjects(c));
+		if (model != null) {
+			for (Class<? extends BioPAXElement> c : classes) {
+				coll.addAll(model.getObjects(c));
+			}
 		}
 		return coll;
 	}
 
 
 	/**
-	 * For the BioPAX element, looks up parent pathway names.
+	 * For a BioPAX element, 
+	 * find parent pathway or interaction name.
 	 * 
 	 * @param bpe
+	 * @param model 
 	 * @return
 	 */
-	public static Set<String> getParentPathwayName(BioPAXElement bpe) {
-		Set<String> pathways = new HashSet<String>();
+	public static Set<String> getParentPathwayName(BioPAXElement bpe, Model model) {
+		Set<String> pathwayNames = new HashSet<String>();
 		
-		if(bpe instanceof process) { // interaction or pathway
-			process pr = (process) bpe;
-			pathways.add(getNodeName(pr));
-			for(pathway pw:  pr.isPATHWAY_COMPONENTSof()) {
-				pathways.addAll(getParentPathwayName(pw));
+		Set<? extends BioPAXElement> procs = BioPaxUtil.getObjects(model, pathway.class, Pathway.class);
+		Set<BioPAXElement> pathways = fetchParentNodeNames(bpe, procs);
+		
+		/*
+		if(pathways.isEmpty()) {
+			procs = BioPaxUtil.getObjects(model, interaction.class, Interaction.class);
+			pathways = fetchParentNodeNames(bpe, procs);
+		}
+		*/
+		
+		if(!pathways.isEmpty()) {
+			for(BioPAXElement pw : pathways) {
+				pathwayNames.add(getNodeName(pw));
 			}
-			for(pathwayStep st : pr.isSTEP_INTERACTIONSOf()) {
-				pathways.addAll(getParentPathwayName(st));
-			}	
-		} else if(bpe instanceof Process) { // Interaction or Pathway
-			Process pr = (Process) bpe;
-			pathways.add(getNodeName(pr));
-			for(Pathway pw:  pr.getPathwayComponentsOf()) {
-				pathways.addAll(getParentPathwayName(pw));
-			}
-			for(PathwayStep st : pr.getStepInteractionsOf()) {
-				pathways.addAll(getParentPathwayName(st));
-			}
+		} else if(bpe instanceof pathway || bpe instanceof Pathway) {
+			pathwayNames.add(getNodeName(bpe));
+		}
 			
-		} else if(bpe instanceof pathwayStep) {
-			for(pathway pw : ((pathwayStep)bpe).isPATHWAY_COMPONENTSof()) {
-				pathways.addAll(getParentPathwayName(pw));
+		return pathwayNames;
+	}
+	
+	/**
+	 * Finds element's parents (CyNode names) in the collection.
+	 * 
+	 * Use with caution: this method can get computationally expensive or loop!
+	 * 
+	 * @param bpe
+	 * @param procs - candidates
+	 * @return
+	 */
+	public static Set<BioPAXElement> fetchParentNodeNames(BioPAXElement bpe, Set<? extends BioPAXElement> procs) {
+		Set<BioPAXElement> parents = new HashSet<BioPAXElement>();
+		Fetcher fetcher;
+		BioPAXFactory factory;
+		/*
+		 * Customized Fetcher is to fix the issue with Level2 - when NEXT-STEP
+		 * leads out of the pathway... (do not worry - those pathway steps that
+		 * are part of the pathway must be in the PATHWAY-COMPONENTS set)
+		 * Also, skipping sub-pathways
+		 */
+		if((bpe instanceof Level2Element)) {
+			fetcher = new Fetcher(editorMapLevel2) 
+			{
+				public void visit(BioPAXElement bpe, Model model,
+					PropertyEditor editor) {
+					if (!editor.getProperty().equals("NEXT-STEP")) 
+					{
+						super.visit(bpe, model, editor);
+					}
+				}
+		   };
+		   factory = BioPAXLevel.L2.getDefaultFactory();
+		} else if(bpe instanceof Level3Element) {
+			fetcher = new Fetcher(editorMapLevel3);
+			factory = BioPAXLevel.L3.getDefaultFactory(); 
+		} else {
+			return parents;
+		}
+
+		for (BioPAXElement proc : procs) {
+			Model m = factory.createModel();
+			fetcher.fetch(proc, m);
+			//System.out.println(bpe + " " + bpe.getRDFId() + "; proc: " + proc + " " + proc.getModelInterface().getSimpleName() );
+			if (m.containsID(bpe.getRDFId())) {
+				parents.add(proc);
 			}
-		} else if (bpe instanceof PathwayStep) {
-			for(Pathway pw : ((PathwayStep)bpe).getPathwayOrdersOf()) {
-				pathways.addAll(getParentPathwayName(pw));
-			}
-		} else if(bpe instanceof physicalEntity) {
-			for(physicalEntityParticipant p : ((physicalEntity)bpe).isPHYSICAL_ENTITYof()) { 
-				pathways.addAll(getParentPathwayName(p));
-			}
-		} else if(bpe instanceof PhysicalEntity) {
-			for(Complex c : ((PhysicalEntity)bpe).getComponentOf()) { 
-				pathways.addAll(getParentPathwayName(c));
-			}
-		} else if(bpe instanceof physicalEntityParticipant) {
-			for(interaction p : ((physicalEntityParticipant)bpe).isPARTICIPANTSof()) { 
-				pathways.addAll(getParentPathwayName(p));
-			}
-			complex c = ((physicalEntityParticipant)bpe).isCOMPONENTof();
-			pathways.addAll(getParentPathwayName(c));
 		}
 		
-		
-		// anyway
-		if(bpe instanceof entity) {
-			for(interaction p : ((entity)bpe).isPARTICIPANTSof()) {
-				pathways.addAll(getParentPathwayName(p));
-			}
-		} else if(bpe instanceof Entity) {
-			for(Interaction p : ((Entity)bpe).getParticipantsOf()) {
-				pathways.addAll(getParentPathwayName(p));
-			}
-		} 
-		
-		return pathways;
+		return parents;
 	}
 	
 	// convenience proc.

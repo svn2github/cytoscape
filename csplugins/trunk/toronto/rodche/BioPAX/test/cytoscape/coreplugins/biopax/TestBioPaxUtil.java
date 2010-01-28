@@ -31,8 +31,11 @@
  **/
 package cytoscape.coreplugins.biopax;
 
+import java.util.Set;
+
 import junit.framework.TestCase;
 
+import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.interaction;
 import org.biopax.paxtools.model.level2.pathway;
@@ -59,9 +62,17 @@ public class TestBioPaxUtil extends TestCase {
 		assertEquals(8, model.getObjects(physicalEntity.class).size());
 		assertEquals(4, model.getObjects(interaction.class).size());
 		assertEquals(1, model.getObjects(pathway.class).size());
-
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("catalysis43")).toString();
-		assertTrue(pathways.contains("pathway50"));
+		String pathways = BioPaxUtil.getParentPathwayName(
+				model.getByID("http://www.biopax.org/examples/simple-demo-pathway#catalysis43"), model)
+				.toString();
+		System.out.println("PARENT PROCESSes NAMES: " + pathways);
+		
+		assertTrue(pathways.contains("glycolysis"));
+		
+		pathways = BioPaxUtil.getParentPathwayName(
+				model.getByID("http://www.biopax.org/examples/simple-demo-pathway#protein45"), model)
+				.toString();
+		assertTrue(pathways.contains("glycolysis"));
 	}
 
 	/**
@@ -71,8 +82,10 @@ public class TestBioPaxUtil extends TestCase {
 	 */
 	public void testUtil2() throws Exception {
 		Model model = BioPaxUtil.readFile("test-resources/biopax_complex.owl");
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("CPATH-124")).toString();
-		assertTrue(pathways.length() == 0);
+		Set pathways = BioPaxUtil.getParentPathwayName(
+				model.getByID("http://cbio.mskcc.org/cpath#CPATH-124"), model);
+		System.out.println("PARENT PROCESSes NAMES: " + pathways);
+		assertTrue(pathways.size()==0);
 	}
 
 	/**
@@ -87,26 +100,12 @@ public class TestBioPaxUtil extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testUtil3() throws Exception {
-		Model model = BioPaxUtil.readFile("test-resources/Apoptosis_modified.owl");
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("Pubmed_7530336")).toString();
-		assertTrue(pathways.length() > 0);
-
-		assertTrue(pathways.contains("Apoptosis"));
-		assertTrue(pathways.contains("Apoptosis2"));
-		
-		pathways = BioPaxUtil.getParentPathwayName(model.getByID("cell")).toString();
-		assertTrue(pathways.contains("Apoptosis"));
-		assertTrue(pathways.contains("Apoptosis2"));
+		Model model = BioPaxUtil.readFile("test-resources/Apoptosis.owl");
+		String pathways = BioPaxUtil.getParentPathwayName(
+				model.getByID("http://www.biopax.org/examples/apoptosis#Pubmed_7530336"), model)
+				.toString();
+		System.out.println("PARENT PW NAMES: " + pathways);
+		assertTrue(pathways.contains("FasL/ CD95L signaling"));
 	}
 
-	/**
-	 * Tests the BioPAX Utility Class on a fourth sample data file.
-	 *
-	 * @throws Exception All Exceptions.
-	 */
-	public void testUtil4() throws Exception {
-		Model model = BioPaxUtil.readFile("test-resources/biopax_sample1.owl");
-		String pathways = BioPaxUtil.getParentPathwayName(model.getByID("protein45")).toString();
-		assertTrue(pathways.length() > 0);
-	}
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <rdf:RDF 
-    xml:base="http://www.biopax.org/examples/simple-demo-pathway"
+    xml:base="http://www.biopax.org/examples/simple-demo-pathway#"
     xmlns="http://www.biopax.org/examples/simple-demo-pathway#"
     xmlns:bp="http://www.biopax.org/release/biopax-level2.owl#"
     xmlns:owl="http://www.w3.org/2002/07/owl#"

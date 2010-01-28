@@ -51,10 +51,7 @@
 
     <!-- cytoscape dir -->
     <property name="cytoscape.dir" value="../../cytoscape"/>
-	
-    <!-- plugins dir -->
-    <property name="plugins.dir" value="${cytoscape.dir}/plugins"/>
-	
+		
 	<!-- runtime classpath -->
 	<path id="runtime.classpath">
 	    <fileset dir="${cytoscape.dir}/lib">
@@ -68,10 +65,17 @@
     <!-- classpath without reference to yfiles -->
     <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
+    	<!-- not required, because these jars are unpacked to ${build.classes} (see target:prepare)
         <fileset dir="${basedir}/lib">
                 <include name="*.jar"/>
         </fileset>
+        -->
 		<path refid="runtime.classpath"/>
+    </path>
+	
+    <path id="test.classpath">
+        <pathelement path="${build.test.classes}"/>
+		<path refid="classpath.without.yfiles"/>
     </path>
 
 	<!-- classpath with reference to yfiles -->
@@ -131,6 +135,7 @@
     	<mkdir dir="${build.test.classes}"/>
         <mkdir dir="${jars.dir}"/>
     	
+    	<!-- Explicitly Include Classes from These JARs: -->
 		<unjar dest="${build.classes}">
 			<fileset dir="${basedir}/lib" includes="*.jar"/>
 		</unjar>
@@ -141,8 +146,6 @@
     <!--  target to clean out all directories -->
     <target description="Removes all generated files." name="clean">
         <delete dir="${build.dir}"/>
-    	<delete dir="${build.classes}"/>
-    	<delete dir="${build.test.classes}"/>
         <delete dir="${jars.dir}"/>
         <delete dir="${junit.dir}"/>
         <delete dir="${temp.dir}"/>
@@ -182,10 +185,10 @@
     <!--  target to run cytoscape with biopax plugin -->
     <target depends="check.yfiles,set.classpath,jar" description="Runs Cytoscape with BioPAX Data."
         name="run">
-    	<copy file="${jars.dir}/${jar_file}" todir="${plugins.dir}" overwrite="true" />
+    	<copy file="${jars.dir}/${jar_file}" todir="${cytoscape.dir}/plugins" overwrite="true" />
         <java classname="cytoscape.CyMain" classpathref="runtime.classpath"
             fork="true" maxmemory="1000M">
-            <arg line="-p ${plugins.dir}"/>
+            <arg line="-p ${cytoscape.dir}/plugins"/>
         </java>
     </target>
 
@@ -224,7 +227,7 @@
         <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
             <formatter type="plain" usefile="false"/>
             <test name="cytoscape.coreplugins.biopax.AllTest"/>
-            <classpath refid="${classpath}"/>
+            <classpath refid="test.classpath"/>
         </junit>
     </target>
 

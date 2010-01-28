@@ -1180,7 +1180,7 @@ public class MapBioPaxToCytoscape {
 			String biopaxID = nodeAttributes.getStringAttribute(nodeID, BIOPAX_RDF_ID);
 			BioPAXElement resource = model.getByID(biopaxID);
 			
-            mapNodeAttribute(resource, nodeID);
+            mapNodeAttribute(resource, model, nodeID);
         }
 		
 		log.setDebug(false);
@@ -1189,10 +1189,11 @@ public class MapBioPaxToCytoscape {
     /**
      * Maps Attributes for a Single Node.
      * @param resource          BioPAX Object.
+     * @param model TODO
      * @param nodeId TODO
      * @param nodeAttributes    Node Attributes.
      */
-    public static void mapNodeAttribute(BioPAXElement resource, String nodeID) {
+    public static void mapNodeAttribute(BioPAXElement resource, Model model, String nodeID) {
         if (resource != null) {
             String stringRef;
             
@@ -1279,10 +1280,8 @@ public class MapBioPaxToCytoscape {
             }
 
             // pathway name
-            stringRef = BioPaxUtil.getParentPathwayName(resource).toString();
-            if (stringRef != null) {
-                nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
-            }
+            stringRef = BioPaxUtil.getParentPathwayName(resource, model).toString();
+            nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
 
             //  add all xref ids for global lookup
             List<ExternalLink> xList = BioPaxUtil.getAllXRefs(resource);
