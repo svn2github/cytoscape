@@ -48,7 +48,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="typeComboBoxActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="ClientType[] types = ClientType.values();&#xa;typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="Vector option = new Vector();&#xa;option.add(&quot;Please select&quot;);&#xa;for (ClientType type : ClientType.values()) {&#xa;    option.add(type);&#xa;}&#xa;typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(option));"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="infoButton">
@@ -58,16 +58,12 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="infoButtonActionPerformed"/>
           </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="biomartPanel">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="biomartPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.BIOMART);"/>
+        <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="biomartPanel.setVisible(false);"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -112,9 +108,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseDBComboBoxActionPerformed"/>
               </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="setChooseDBComboBox();"/>
-              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
@@ -235,7 +228,7 @@
     </Container>
     <Container class="javax.swing.JPanel" name="picrPanel">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="picrPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.PICR);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="picrPanel.setVisible(false);"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -302,7 +295,7 @@
     </Container>
     <Container class="javax.swing.JPanel" name="synergizerPanel">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="synergizerPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.SYNERGIZER);"/>
+        <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="synergizerPanel.setVisible(false);"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -347,9 +340,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseAuthorityComboBoxActionPerformed"/>
               </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="chooseAuthorityComboBox.setModel(new DefaultComboBoxModel(getSynergizerAuthorities()));"/>
-              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
@@ -379,9 +369,6 @@
                   <StringArray count="0"/>
                 </Property>
               </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="setSynergizerSpecies();"/>
-              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

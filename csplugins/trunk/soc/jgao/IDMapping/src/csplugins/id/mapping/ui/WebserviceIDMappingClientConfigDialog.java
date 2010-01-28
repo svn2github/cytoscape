@@ -97,7 +97,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     public WebserviceIDMappingClientConfigDialog(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        postInit();
+//        postInit();
     }
 
 //    // configure a existing client
@@ -140,7 +140,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         javax.swing.JPanel typePanel = new javax.swing.JPanel();
         typeComboBox = new javax.swing.JComboBox();
-        javax.swing.JButton infoButton = new javax.swing.JButton();
+        infoButton = new javax.swing.JButton();
         biomartPanel = new javax.swing.JPanel();
         javax.swing.JPanel chooseDBPanel = new javax.swing.JPanel();
         chooseDBComboBox = new javax.swing.JComboBox();
@@ -178,8 +178,12 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         typePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Web Service Type"));
         typePanel.setLayout(new javax.swing.BoxLayout(typePanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        ClientType[] types = ClientType.values();
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));
+        Vector option = new Vector();
+        option.add("Please select");
+        for (ClientType type : ClientType.values()) {
+            option.add(type);
+        }
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(option));
         typeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeComboBoxActionPerformed(evt);
@@ -205,14 +209,13 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         getContentPane().add(typePanel, gridBagConstraints);
 
         biomartPanel.setLayout(new java.awt.GridBagLayout());
-        biomartPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.BIOMART);
+        biomartPanel.setVisible(false);
 
         chooseDBPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Mart/Database"));
         chooseDBPanel.setMinimumSize(new java.awt.Dimension(400, 48));
         chooseDBPanel.setPreferredSize(new java.awt.Dimension(400, 50));
         chooseDBPanel.setLayout(new javax.swing.BoxLayout(chooseDBPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        setChooseDBComboBox();
         chooseDBComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseDBComboBoxActionPerformed(evt);
@@ -336,7 +339,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(biomartPanel, gridBagConstraints);
 
-        picrPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.PICR);
+        picrPanel.setVisible(false);
         picrPanel.setLayout(new java.awt.GridBagLayout());
 
         picrOpPanel.setLayout(new java.awt.GridBagLayout());
@@ -395,14 +398,13 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         getContentPane().add(picrPanel, gridBagConstraints);
 
         synergizerPanel.setLayout(new java.awt.GridBagLayout());
-        synergizerPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.SYNERGIZER);
+        synergizerPanel.setVisible(false);
 
         chooseAuthorityPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Authority"));
         chooseAuthorityPanel.setMinimumSize(new java.awt.Dimension(400, 48));
         chooseAuthorityPanel.setPreferredSize(new java.awt.Dimension(400, 50));
         chooseAuthorityPanel.setLayout(new javax.swing.BoxLayout(chooseAuthorityPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        chooseAuthorityComboBox.setModel(new DefaultComboBoxModel(getSynergizerAuthorities()));
         chooseAuthorityComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseAuthorityComboBoxActionPerformed(evt);
@@ -421,7 +423,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         chooseSpeciesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a species"));
         chooseSpeciesPanel.setLayout(new javax.swing.BoxLayout(chooseSpeciesPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        setSynergizerSpecies();
         chooseSpeciesPanel.add(chooseSpeciesComboBox);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -561,10 +562,30 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_picrOptionCheckBoxActionPerformed
 
     private void typeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboBoxActionPerformed
-        ClientType type = (ClientType)typeComboBox.getSelectedItem();
-        for (Map.Entry<ClientType,JPanel> entry : mapTypePanel.entrySet()) {
-            JPanel panel = entry.getValue();
-            panel.setVisible(type==entry.getKey());
+        Object obj = typeComboBox.getSelectedItem();
+        if (!(obj instanceof ClientType)) {
+            biomartPanel.setVisible(false);
+            synergizerPanel.setVisible(false);
+            picrPanel.setVisible(false);
+            infoButton.setEnabled(false);
+        } else {
+            ClientType type = (ClientType)obj;
+            if (type == ClientType.BIOMART) {
+                biomartPanel.setVisible(true);
+                synergizerPanel.setVisible(false);
+                picrPanel.setVisible(false);
+                initBiomart();
+            } else if (type == ClientType.SYNERGIZER) {
+                biomartPanel.setVisible(false);
+                synergizerPanel.setVisible(true);
+                picrPanel.setVisible(false);
+                initSynergizer();
+            } else if (type == ClientType.PICR) {
+                biomartPanel.setVisible(false);
+                synergizerPanel.setVisible(false);
+                picrPanel.setVisible(true);
+            }
+            infoButton.setEnabled(true);
         }
 
         this.pack();
@@ -676,10 +697,26 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_bioMartBaseUrlComboBoxActionPerformed
 
     private boolean verifyInput() {
-        if (typeComboBox.getSelectedItem()==ClientType.BIOMART &&
-                biomartStub==null) {
-            JOptionPane.showMessageDialog(this, "Error: failed to connect to a Biomart.");
+        Object obj = typeComboBox.getSelectedItem();
+        if (!(obj instanceof ClientType)) {
+            JOptionPane.showMessageDialog(this, "Error: please select a web service.");
+            return false;
         }
+
+        // TODO: check more
+        if (obj==ClientType.BIOMART) {
+            if (biomartStub==null) {
+                JOptionPane.showMessageDialog(this, "Error: failed to connect to a Biomart.");
+                return false;
+            }
+        } else if (obj==ClientType.SYNERGIZER) {
+            if (biomartStub==null) {
+                JOptionPane.showMessageDialog(this, "Error: failed to connect to Synergizer.");
+                return false;
+            }
+        }
+
+
 
         return true;
     }
@@ -687,6 +724,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     public Vector<String> getSynergizerAuthorities() {
         if (!connectSynergizer()) {
             JOptionPane.showMessageDialog(this, "Failed to connect to Synergizer.");
+            return null;
         }
 
         if (synergizerStub==null) {
@@ -710,6 +748,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         if (!connectBiomart()) {
             JOptionPane.showMessageDialog(this, "Failed to connect to BioMart.");
+            return;
         }
 
         Set<String> martSet = new HashSet();
@@ -913,14 +952,14 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         return cancelled;
     }
 
-    private void postInit() {
-        mapTypePanel = new HashMap();
-        mapTypePanel.put(ClientType.BIOMART, biomartPanel);
-        mapTypePanel.put(ClientType.PICR, picrPanel);
-        mapTypePanel.put(ClientType.SYNERGIZER, synergizerPanel);
-
-        setDatasetsCombo();
-    }
+//    private void postInit() {
+//        mapTypePanel = new HashMap();
+//        mapTypePanel.put(ClientType.BIOMART, biomartPanel);
+//        mapTypePanel.put(ClientType.PICR, picrPanel);
+//        mapTypePanel.put(ClientType.SYNERGIZER, synergizerPanel);
+//
+//        setDatasetsCombo();
+//    }
 
 //    private static final String FILTER_TXT = "/resources/biomart_dataset_filter.txt";
 //    private void loadBiomartFilterFile() {
@@ -950,6 +989,22 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 //        }
 //    }
 
+    private void initBiomart() {
+        if (!biomartInitialized) {
+            setChooseDBComboBox();
+            setDatasetsCombo();
+            biomartInitialized = true;
+        }
+    }
+
+    private void initSynergizer() {
+        if (!synergizerInitialized) {
+            chooseAuthorityComboBox.setModel(new DefaultComboBoxModel(getSynergizerAuthorities()));
+            setSynergizerSpecies();
+            synergizerInitialized = true;
+        }
+    }
+
     private Set<String> datasetFilter = new HashSet();
     private Set<String> databaseFilter = new HashSet();
 
@@ -958,10 +1013,12 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     //private IDMapperClient client = null;
     //private IDMapperWebservice idMapper = null;
     private boolean cancelled = true;
-    private Map<ClientType, JPanel> mapTypePanel;
+    //private Map<ClientType, JPanel> mapTypePanel;
 
     private Map<String, String> mapMartDisplayName;
     private Map<String, String> mapDatasetDisplayName;
+
+    private boolean biomartInitialized = false, synergizerInitialized = false;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox bioMartBaseUrlComboBox;
@@ -974,6 +1031,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox chooseDBComboBox;
     private javax.swing.JComboBox chooseDatasetComboBox;
     private javax.swing.JComboBox chooseSpeciesComboBox;
+    private javax.swing.JButton infoButton;
     private javax.swing.JButton okButton;
     private javax.swing.JPanel picrAdvancedPanel;
     private javax.swing.JCheckBox picrOnlyActiveCheckBox;
