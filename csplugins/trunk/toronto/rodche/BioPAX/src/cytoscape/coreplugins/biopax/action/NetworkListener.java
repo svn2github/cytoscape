@@ -171,7 +171,7 @@ public class NetworkListener implements PropertyChangeListener {
 		if (networkId != null) {
 			// update bpPanel accordingly
             if (!sessionLoaded) {
-            	if (BioPaxUtil.getNetworkModelMap().containsKey(cyNetwork)) {
+            	if (BioPaxUtil.getNetworkModelMap().containsKey(networkId)) {
                     bpPanel.resetText();
                 } else {
                     bpPanel.resetText("Node details are not provided for"
@@ -182,7 +182,7 @@ public class NetworkListener implements PropertyChangeListener {
             // due to quirky-ness in event model, we could get here without registering network
             // check if this is a biopax network
             if (BioPaxUtil.isBioPAXNetwork(cyNetwork) 
-            		&& !BioPaxUtil.getNetworkModelMap().containsKey(cyNetwork)) {
+            		&& !BioPaxUtil.getNetworkModelMap().containsKey(networkId)) {
             	registerNetwork(cyNetwork);
             }
         }

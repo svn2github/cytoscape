@@ -33,7 +33,7 @@ public final class DisplayBiopaxXmlAction extends CytoscapeAction {
 		String nodeId = nodeView.getNode().getIdentifier();
 		String biopaxId = Cytoscape.getNodeAttributes()
 			.getStringAttribute(nodeId, MapBioPaxToCytoscape.BIOPAX_RDF_ID);
-		Model m = BioPaxUtil.getNetworkModel(Cytoscape.getCurrentNetwork());
+		Model m = BioPaxUtil.getNetworkModel(Cytoscape.getCurrentNetwork().getIdentifier());
 		BioPAXElement bpe =  m.getByID(biopaxId);
 		StringWriter writer = new StringWriter();
 		if (bpe != null) {
