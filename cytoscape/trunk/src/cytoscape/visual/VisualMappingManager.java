@@ -194,6 +194,8 @@ public class VisualMappingManager extends SubjectBase {
 	 * If the argument is null, the previous visual style is simply returned.
 	 */
 	public VisualStyle setVisualStyle(final VisualStyle vs) {
+//		System.out.println("\n\n######### Set VS Called! ======: " + vs);
+//		Thread.dumpStack();
 		
 		if ((vs != null) && (vs != activeVS)) {
 			VisualStyle tmp = activeVS;

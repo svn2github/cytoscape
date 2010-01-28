@@ -777,7 +777,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		switchVS(vsName, true);
 	}
 
-	private void switchVS(String vsName, boolean redraw) {
+	private void switchVS(String vsName, boolean redraw) {		
 		if (ignore)
 			return;
 
@@ -1800,20 +1800,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			Cytoscape.getDesktop().repaint();
 	}
 
+	/**
+	 * Action listener for the default image button.
+	 * 
+	 * @author kono
+	 *
+	 */
 	class DefaultMouseListener extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
-			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
+			if (SwingUtilities.isLeftMouseButton(e)) {
 				final String targetName = vmm.getVisualStyle().getName();
-				final String focus = vmm.getNetwork().getIdentifier();
-
-				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder .showDialog(Cytoscape .getDesktop());
+				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape .getDesktop());
 				updateDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName), false);
 
-				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-				vmm.setVisualStyle(targetName);
-				Cytoscape.getDesktop().setFocus(focus);
 				Cytoscape.getDesktop().repaint();
 			}
 		}
@@ -1939,19 +1940,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Got global event
 		 */
-
-		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			String vmName = vmm.getVisualStyle().getName();
-			setDefaultPanel(defaultImageManager.get(vmName),false);
-			vsNameComboBox.setSelectedItem(vmName);
-			vmm.setVisualStyle(vmName);
-			setPropertyTable();
-			visualPropertySheetPanel.setSorting(true);
-			
-			// Update dependency states
-			updateDependencyStates(vmm.getVisualStyle().getDependency());
-			return;
-		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
+		if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
 			final String vsName = vmm.getVisualStyle().getName();
 

@@ -158,7 +158,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		if (dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
 
-		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+		//Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
 		                                            .getDefaultBackgroundColor());

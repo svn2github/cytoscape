@@ -869,34 +869,35 @@ public abstract class Cytoscape {
 		if (viewIDs == null)
 			return;
 
+		CyNetworkView nview;
 		for (String id : viewIDs) {
-			CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(id);
+			nview = getNetworkViewMap().get(id);
 
-			if (nview != null) {
+			if (nview != null && nview != nullNetworkView)
 				selectedNetworkViews.add(nview);
-			}
 		}
 
-		CyNetworkView cv = getCurrentNetworkView();
+		final CyNetworkView cv = getCurrentNetworkView();
 
-		if (!selectedNetworkViews.contains(cv)) {
+		if ((cv != nullNetworkView) && !selectedNetworkViews.contains(cv))
 			selectedNetworkViews.add(cv);
-		}
 	}
 
+	
 	/**
 	 * Returns the list of selected networks.
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<CyNetwork> getSelectedNetworks() {
-		CyNetwork curr = getCurrentNetwork();
+		final CyNetwork curNet = getCurrentNetwork();
 
-		if (!selectedNetworks.contains(curr))
-			selectedNetworks.add(curr);
+		if (!selectedNetworks.contains(curNet))
+			selectedNetworks.add(curNet);
 
 		return (List<CyNetwork>) selectedNetworks.clone();
 	}
 
+	
 	/**
 	 * Sets the list of selected networks.
 	 */
@@ -907,14 +908,14 @@ public abstract class Cytoscape {
 			return;
 
 		for (String id : ids) {
-			CyNetwork n = (CyNetwork) getNetworkMap().get(id);
+			final CyNetwork n = getNetworkMap().get(id);
 
 			if ((n != null) && (n != nullNetwork)) {
 				selectedNetworks.add(n);
 			}
 		}
 
-		CyNetwork cn = getCurrentNetwork();
+		final CyNetwork cn = getCurrentNetwork();
 
 		if (!selectedNetworks.contains(cn)) {
 			selectedNetworks.add(cn);
