@@ -31,6 +31,8 @@
  **/
 package cytoscape.coreplugins.biopax.mapper;
 
+import java.util.*;
+
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -47,13 +49,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.biopax.paxtools.model.Model;
-
-import java.io.FileReader;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-
 
 /**
  * Tests the MapBioPaxToCytoscape Mapper Class.
@@ -87,7 +82,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testMapper1() throws Exception {
-		Model model =BioPaxUtil.readFile("biopax_sample1.owl");
+		Model model = BioPaxUtil.readFile("test-resources/biopax_sample1.owl");
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
 
@@ -137,9 +132,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 			Node target = edge.getTarget();
 
 			if (i == 0) {
-				assertEquals("CPATH-125(PM)-CPATH-126", target.getIdentifier());
+				assertEquals("CPATH-125-CPATH-126", target.getIdentifier());
 			} else if (i == 1) {
-				assertEquals("CPATH-124(PM)-CPATH-126", target.getIdentifier());
+				assertEquals("CPATH-124-CPATH-126", target.getIdentifier());
 			}
 		}
 	}
@@ -199,9 +194,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 			Node target = edge.getTarget();
 
 			if (i == 0) {
-				assertEquals("protein2", target.getIdentifier());
-			} else if (i == 1) {
 				assertEquals("protein1", target.getIdentifier());
+			} else if (i == 1) {
+				assertEquals("protein2", target.getIdentifier());
 			}
 		}
 	}
@@ -220,8 +215,8 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		nodeMap.put("protein45", new Integer(0));
 		nodeMap.put("protein32", new Integer(0));
 		nodeMap.put("smallMolecule10", new Integer(0));
-		nodeMap.put("smallMolecule18(CY)", new Integer(0));
-		nodeMap.put("smallMolecule23(CY)", new Integer(0));
+		nodeMap.put("smallMolecule18", new Integer(0));
+		nodeMap.put("smallMolecule23", new Integer(0));
 		nodeMap.put("smallMolecule27", new Integer(0));
 		nodeMap.put("smallMolecule39", new Integer(0));
 		nodeMap.put("smallMolecule99", new Integer(0));
@@ -250,7 +245,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 			if (nodeMap.containsKey(id)) {
 				nodeMap.put(id, new Integer(1));
 			} else {
-				fail("Network contains an Node that we were not expecting:  " + "\"" + id + "\"");
+				fail("Network contains a Node that we were not expecting:  " + "\"" + id + "\"");
 			}
 		}
 
@@ -316,7 +311,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 				String edgeType = Cytoscape.getEdgeAttributes()
 				                           .getStringAttribute(edge.getIdentifier(),
 				                                               MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE);
-				assertEquals("ACTIVATION-NONALLOSTERIC", edgeType);
+				assertEquals("ACTIVATION_NONALLOSTERIC", edgeType);
 			} else if (i == 2) {
 				//  Validate the Left Side of the Reaction
 				//  smallMolecule27 --> (LEFT) --> biochemicalReaction37
