@@ -80,12 +80,11 @@ abstract class AppearanceCalculator implements Cloneable {
 		if (toCopy == null)
 			return;
 
-		for (Calculator c : toCopy.getCalculators()) {
-			CyLogger.getLogger().info("New calc = " + c.toString());
+		for (Calculator c : toCopy.getCalculators())
 			setCalculator(c);
-		}
 
-		deps.copy( toCopy.deps );
+		if (deps != null)
+			deps.copy( toCopy.deps );
 
 		copyDefaultAppearance(toCopy);
 	}

@@ -40,16 +40,15 @@ import giny.view.GraphView;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
-import cytoscape.Cytoscape;
-import java.util.Set;
 
 
 /**

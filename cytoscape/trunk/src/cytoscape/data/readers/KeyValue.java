@@ -33,31 +33,27 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.data.readers;
 
-
 /**
- *
+ * Key and Value pair in GML file.
  */
 public class KeyValue {
-	/**
-	 *
-	 */
-	public String key;
 
-	/**
-	 *
-	 */
+	// These are immutable.
+	public final String key;
 	public Object value;
 
 	/**
 	 * Creates a new KeyValue object.
-	 *
-	 * @param key  DOCUMENT ME!
-	 * @param value  DOCUMENT ME!
+	 * 
+	 * @param key
+	 *            DOCUMENT ME!
+	 * @param value
+	 *            DOCUMENT ME!
 	 */
-	public KeyValue(String key, Object value) {
+	public KeyValue(final String key, final Object value) {
 		this.key = key;
 		this.value = value;
 	}

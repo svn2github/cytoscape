@@ -36,57 +36,42 @@
  */
 package cytoscape.data.readers;
 
-import cern.colt.list.IntArrayList;
-
-import cern.colt.map.OpenIntIntHashMap;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
-
-import cytoscape.init.CyInitParams;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.LayoutAdapter;
-
-import cytoscape.logger.CyLogger;
-
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.util.FileUtil;
-import cytoscape.util.PercentUtil;
-
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-
 import giny.model.Edge;
 import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
-
 import java.io.InputStream;
 import java.io.StringWriter;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+
+import cern.colt.list.IntArrayList;
+import cern.colt.map.OpenIntIntHashMap;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
+import cytoscape.init.CyInitParams;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.LayoutAdapter;
+import cytoscape.logger.CyLogger;
+import cytoscape.task.TaskMonitor;
+import cytoscape.util.FileUtil;
+import cytoscape.util.PercentUtil;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
 
 
 /**
@@ -108,74 +93,75 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 
 	// Graph Tags
-	protected static String GRAPH = "graph";
-	protected static String NODE = "node";
-	protected static String EDGE = "edge";
-	protected static String GRAPHICS = "graphics";
-	protected static String LABEL = "label";
-	protected static String SOURCE = "source";
-	protected static String TARGET = "target";
+	protected static final String GRAPH = "graph";
+	protected static final String NODE = "node";
+	protected static final String EDGE = "edge";
+	protected static final String GRAPHICS = "graphics";
+	protected static final String LABEL = "label";
+	protected static final String SOURCE = "source";
+	protected static final String TARGET = "target";
 
 	// The following elements are in "graphics" section of GML
-	protected static String X = "x";
-	protected static String Y = "y";
-	protected static String H = "h";
-	protected static String W = "w";
-	protected static String TYPE = "type";
-	protected static String ID = "id";
-	protected static String ROOT_INDEX = "root_index";
+	protected static final String X = "x";
+	protected static final String Y = "y";
+	protected static final String H = "h";
+	protected static final String W = "w";
+	protected static final String TYPE = "type";
+	protected static final String ID = "id";
+	protected static final String ROOT_INDEX = "root_index";
 
 	// Shapes used in Cytoscape (not GML standard)
 	// In GML, they are called "type"
-	protected static String RECTANGLE = "rectangle";
-	protected static String ELLIPSE = "ellipse";
-	protected static String LINE = "Line"; // This is the Polyline object.
+	protected static final String RECTANGLE = "rectangle";
+	protected static final String ELLIPSE = "ellipse";
+	protected static final String LINE = "Line"; // This is the Polyline object.
 	                                       // no support for now...
-	protected static String POINT = "point";
-	protected static String DIAMOND = "diamond";
-	protected static String HEXAGON = "hexagon";
-	protected static String OCTAGON = "octagon";
-	protected static String PARALELLOGRAM = "parallelogram";
-	protected static String TRIANGLE = "triangle";
+	protected static final String POINT = "point";
+	protected static final String DIAMOND = "diamond";
+	protected static final String HEXAGON = "hexagon";
+	protected static final String OCTAGON = "octagon";
+	protected static final String PARALELLOGRAM = "parallelogram";
+	protected static final String TRIANGLE = "triangle";
 
 	// Other GML "graphics" attributes
-	protected static String FILL = "fill";
-	protected static String WIDTH = "width";
-	protected static String STRAIGHT_LINES = "line";
-	protected static String CURVED_LINES = "curved";
-	protected static String SOURCE_ARROW = "source_arrow";
-	protected static String TARGET_ARROW = "target_arrow";
+	protected static final String FILL = "fill";
+	protected static final String WIDTH = "width";
+	protected static final String STRAIGHT_LINES = "line";
+	protected static final String CURVED_LINES = "curved";
+	protected static final String SOURCE_ARROW = "source_arrow";
+	protected static final String TARGET_ARROW = "target_arrow";
 
 	// Support for yEd GML dialect
-	protected static String YED_SOURCE_ARROW = "sourceArrow";
-	protected static String YED_TARGET_ARROW = "targetArrow";
-	protected static String YED_DELTA = "delta";
-	protected static String YED_STANDARD = "standard";
-	protected static String YED_DIAMOND = "diamond";
-	protected static String YED_SHORT = "short";
-	protected static String YED_WHITE_DELTA = "white_delta";
-	protected static String YED_WHITE_DIAMOND = "white_diamond";
+	protected static final String YED_SOURCE_ARROW = "sourceArrow";
+	protected static final String YED_TARGET_ARROW = "targetArrow";
+	protected static final String YED_DELTA = "delta";
+	protected static final String YED_STANDARD = "standard";
+	protected static final String YED_DIAMOND = "diamond";
+	protected static final String YED_SHORT = "short";
+	protected static final String YED_WHITE_DELTA = "white_delta";
+	protected static final String YED_WHITE_DIAMOND = "white_diamond";
 
 	// States of the ends of arrows
-	protected static String ARROW = "arrow";
-	protected static String ARROW_NONE = "none";
-	protected static String ARROW_FIRST = "first";
-	protected static String ARROW_LAST = "last";
-	protected static String ARROW_BOTH = "both";
-	protected static String OUTLINE = "outline";
-	protected static String OUTLINE_WIDTH = "outline_width";
-	protected static String DEFAULT_EDGE_INTERACTION = "pp";
-	protected static String VERSION = "Version";
-	protected static String CREATOR = "Creator";
-	private String mapSuffix;
-	private Color DEF_COLOR = new Color(153, 153, 255);
+	protected static final String ARROW = "arrow";
+	protected static final String ARROW_NONE = "none";
+	protected static final String ARROW_FIRST = "first";
+	protected static final String ARROW_LAST = "last";
+	protected static final String ARROW_BOTH = "both";
+	protected static final String OUTLINE = "outline";
+	protected static final String OUTLINE_WIDTH = "outline_width";
+	protected static final String DEFAULT_EDGE_INTERACTION = "pp";
+	protected static final String VERSION = "Version";
+	protected static final String CREATOR = "Creator";
+	
+	private static final Color DEF_COLOR = new Color(153, 153, 255);
+	
 	private String vsbSwitch = CytoscapeInit.getProperties().getProperty("visualStyleBuilder");
 	private VisualStyleBuilder graphStyle = null;
 
-	protected static CyLogger logger = CyLogger.getLogger(GMLReader.class);
+	private static CyLogger logger = CyLogger.getLogger(GMLReader.class);
 
 	// Entries in the file
-	List keyVals;
+	private List<KeyValue> keyVals;
 
 	// Node ID's
 	OpenIntIntHashMap nodeIDMap;
@@ -227,7 +213,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *
 	 * @param filename File name.
 	 */
-	public GMLReader(String filename) {
+	public GMLReader(final String filename) {
 		this(filename, null);
 	}
 
@@ -239,7 +225,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *            Input stream of GML file,
 	 *
 	 */
-	public GMLReader(InputStream is, String name) {
+	public GMLReader(final InputStream is, final String name) {
 		super(name);
 
 		// Set new style name
@@ -256,7 +242,7 @@ public class GMLReader extends AbstractGraphReader {
 	 * @param filename File name.
 	 * @param taskMonitor TaskMonitor Object.
 	 */
-	public GMLReader(String filename, TaskMonitor taskMonitor) {
+	public GMLReader(final String filename, final TaskMonitor taskMonitor) {
 		super(filename);
 		inputStream = FileUtil.getInputStream(filename);
 
@@ -282,111 +268,30 @@ public class GMLReader extends AbstractGraphReader {
 	}
 
 	private String createVSName() {
-		// Create new style name
-		// String target = null;
-
-		// File fileTest = new File(fileName);
-		// target = fileTest.getName();
-		// logger.info("Target GML file is " + fileName);
-		mapSuffix = " for " + fileName;
-
-		return getNetworkName(); //fileName.concat("_GML_style");
+		return getNetworkName() + " Style";
 	}
 
 	private void initializeHash() {
-		// Initialize HashMap for new visual style
-		//nodeW = new HashMap();
-		//nodeH = new HashMap();
-		//nodeShape = new HashMap<String,NodeShape>();
-		//nodeCol = new HashMap();
-		//nodeBWidth = new HashMap<String,Double>();
-		//nodeBCol = new HashMap();
-		//edgeCol = new HashMap();
-		//edgeWidth = new HashMap<String,Float>();
-		//edgeArrow = new HashMap<String,String>();
-		//edgeShape = new HashMap();
 		edge_names = new Vector();
 		node_names = new Vector();
 	}
 
+	
 	// Initialize variables for the new style created from GML
-	//
 	private void initStyle() {
 		graphStyle = new VisualStyleBuilder(styleName, false);
 		graphStyle.setNodeSizeLocked(false);
 	}
 
-	// Create maps for the node attribute and set it as a Visual Style.
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vizmapper DOCUMENT ME!
-	 * @deprecated Don't use this. Gone 2/2009.
-	 */
-	@Deprecated
-	public void setNodeMaps(VisualMappingManager vizmapper) {
-	}
-
-	//
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vizmapper DOCUMENT ME!
-	 * @deprecated Don't use this. Gone 2/2009.
-	 */
-	@Deprecated
-	public void setEdgeMaps(VisualMappingManager vizmapper) {
-	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param mapSuffix DOCUMENT ME!
-	 * @param VSName DOCUMENT ME!
-	 * @deprecated Don't use this. Gone 2/2009.
-	 */
-	@Deprecated
-	public void applyMaps(String mapSuffix, String VSName) {
-		// CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-		// VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
-		/*
-		if (VSName != null) {
-		    styleName = VSName;
-		}
-
-		if (mapSuffix != null) {
-		    this.mapSuffix = mapSuffix;
-		}
-
-		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		catalog = vizmapper.getCalculatorCatalog();
-
-		setNodeMaps(vizmapper);
-		setEdgeMaps(vizmapper);
-
-		//
-		// Create new VS and apply it
-		//
-		gac.setDefaultBackgroundColor(DEF_COLOR);
-		gmlstyle = new VisualStyle(styleName, nac, eac, gac);
-
-		catalog.addVisualStyle(gmlstyle);
-		vizmapper.setVisualStyle(gmlstyle);
-
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-		*/
-	}
-
-	//
-	/**
-	 *  DOCUMENT ME!
+	 *  Read GML file contents
 	 */
 	public void read() {
 		try {
             try {
                 keyVals = (new GMLParser(inputStream)).parseList();
-            }
-            finally {
+            } finally {
                 if (inputStream != null) {
                     inputStream.close();
                 }
@@ -570,10 +475,8 @@ public class GMLReader extends AbstractGraphReader {
 	 * This function takes in a list which was given as the value to a "graph"
 	 * key underneath the main gml list
 	 */
-	protected void readGraph(List list) {
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			KeyValue keyVal = (KeyValue) it.next();
-
+	protected void readGraph(final List<KeyValue> list) {
+		for (KeyValue keyVal: list) {
 			if (keyVal.key.equals(NODE)) {
 				readNode((List) keyVal.value);
 			}
@@ -1219,8 +1122,8 @@ public class GMLReader extends AbstractGraphReader {
 	 *
 	 * @param net DOCUMENT ME!
 	 */
-	public void doPostProcessing(CyNetwork net) {
-		// 
+	public void doPostProcessing(final CyNetwork net) {
+
 		CyInitParams init = CytoscapeInit.getCyInitParams();
 
 		if (init == null)
