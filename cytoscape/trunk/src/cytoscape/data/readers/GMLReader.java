@@ -168,6 +168,7 @@ public class GMLReader extends AbstractGraphReader {
 	IntArrayList nodes;
 	IntArrayList sources;
 	IntArrayList targets;
+	
 	Vector node_labels;
 	Vector edge_labels;
 	Vector edge_root_index_pairs;
@@ -180,10 +181,7 @@ public class GMLReader extends AbstractGraphReader {
 	private PercentUtil percentUtil;
 
 	// Name for the new visual style
-	String styleName;
-
-	// New Visual Style comverted from GML file.
-	//VisualStyle gmlstyle;
+	private String styleName;
 
 	// Hashes for node & edge attributes
 	HashMap nodeW;
@@ -268,7 +266,7 @@ public class GMLReader extends AbstractGraphReader {
 	}
 
 	private String createVSName() {
-		return getNetworkName() + " Style";
+		return getNetworkName();
 	}
 
 	private void initializeHash() {
@@ -324,7 +322,7 @@ public class GMLReader extends AbstractGraphReader {
 	/**
 	 * Returns a list containing the gml object tree
 	 */
-	public List getList() {
+	public List<KeyValue> getList() {
 		return keyVals;
 	}
 
@@ -452,22 +450,21 @@ public class GMLReader extends AbstractGraphReader {
 	/**
 	 * This function takes the root level list which defines a gml objec tree
 	 */
-	protected void readGML(List list) {
+	@SuppressWarnings("unchecked")
+	protected void readGML(final List<KeyValue> list) {
 		// Report Progress Message
 		int counter = 0;
-
-		for (Iterator it = list.iterator(); it.hasNext();) {
+		final int size = list.size();
+		
+		for (KeyValue keyVal: list) {
 			// Report Progress Value
 			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(1, counter, list.size()));
+				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(1, counter, size));
 				counter++;
 			}
 
-			KeyValue keyVal = (KeyValue) it.next();
-
-			if (keyVal.key.equals(GRAPH)) {
-				readGraph((List) keyVal.value);
-			}
+			if (keyVal.key.equals(GRAPH))
+				readGraph((List<KeyValue>) keyVal.value);
 		}
 	}
 
@@ -475,15 +472,14 @@ public class GMLReader extends AbstractGraphReader {
 	 * This function takes in a list which was given as the value to a "graph"
 	 * key underneath the main gml list
 	 */
+	@SuppressWarnings("unchecked")
 	protected void readGraph(final List<KeyValue> list) {
 		for (KeyValue keyVal: list) {
-			if (keyVal.key.equals(NODE)) {
-				readNode((List) keyVal.value);
-			}
+			if (keyVal.key.equals(NODE))
+				readNode((List<KeyValue>) keyVal.value);
 
-			if (keyVal.key.equals(EDGE)) {
-				readEdge((List) keyVal.value);
-			}
+			if (keyVal.key.equals(EDGE))
+				readEdge((List<KeyValue>) keyVal.value);
 		}
 	}
 
