@@ -45,6 +45,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +65,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.CytoscapeVersion;
 import cytoscape.data.webservice.ui.WebServiceContextMenuListener;
 import cytoscape.util.undo.CyUndo;
@@ -76,7 +78,10 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.ui.NestedNetworkListener;
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
 import cytoscape.visual.ui.VizMapperMainPanel;
-
+import java.util.Properties;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
@@ -341,14 +346,33 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				}
 			});
 
-		// show the Desktop
 		setContentPane(main_panel);
 		pack();
 		setSize(DEF_DESKTOP_SIZE);
+		
+		// restore desktop location
+		restoreDesktop();
+
+		// show the Desktop
 		setVisible(true);
 		toFront();
 	}
 
+	private void restoreDesktop(){
+		//restore desktop to previous location
+		try {	
+			Properties props = new Properties();
+			File desktop_prop_file = new File(CytoscapeInit.getConfigVersionDirectory(), "desktop.props");
+			props.load(new FileInputStream(desktop_prop_file));
+			this.setLocation(new Integer(props.get("x").toString()).intValue(), 
+					new Integer(props.get("y").toString()).intValue());
+			this.setSize(new Integer(props.get("w").toString()).intValue(), 
+					new Integer(props.get("h").toString()).intValue());
+		}
+		catch (Exception e){
+		}		
+	}
+	
 	private void initStatusBar(JPanel panel) {
 		statusBar = new JLabel();
 		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
@@ -603,6 +627,20 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			getGraphViewController().removeGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
+		}
+		else if (e.getPropertyName().equalsIgnoreCase(Cytoscape.CYTOSCAPE_EXIT)){
+			// save Desktop location into property file "desktop.prop"
+			File desktop_prop_file = new File(CytoscapeInit.getConfigVersionDirectory(), "desktop.props");
+			Properties props = new Properties();
+			props.setProperty("x", new Integer(this.getX()).toString());
+			props.setProperty("y", new Integer(this.getY()).toString());
+			props.setProperty("w", new Integer(this.getWidth()).toString());
+			props.setProperty("h", new Integer(this.getHeight()).toString());
+			try {
+				props.store(new FileOutputStream(desktop_prop_file), "Remember desktop frame location");
+			}
+			catch (IOException ioe){
+			}
 		}
 	}
 
