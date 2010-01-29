@@ -92,7 +92,7 @@ public class GMLParser {
 	/**
 	 * Constructor has to initialize the relevenat regular expression patterns
 	 */
-	public GMLParser(StreamTokenizer tokenizer) {
+	public GMLParser(final StreamTokenizer tokenizer) {
 		this.tokenizer = tokenizer;
 	}
 
@@ -175,16 +175,17 @@ public class GMLParser {
 	public List<KeyValue> parseList() throws IOException, ParseException {
 		final List<KeyValue> result = new ArrayList<KeyValue>();
 
+		String key;
+		Object value;
 		while (isKey()) {
-			String key = parseKey();
+			key = parseKey();
 
-			if (key == null) {
+			if (key == null)
 				throw new ParseException("Bad key", tokenizer.lineno());
-			}
 
 			tokenizer.nextToken();
 
-			Object value = parseValue();
+			value = parseValue();
 
 			if (value == null) {
 				throw new ParseException(
@@ -204,7 +205,7 @@ public class GMLParser {
 	 */
 	private boolean isKey() {
 		/*
-		 * A key must be some kind of wrod
+		 * A key must be some kind of word
 		 */
 		if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
 			return false;
@@ -237,7 +238,7 @@ public class GMLParser {
 	 * not supposed ot have a couple things in it, but I don't really have a
 	 * check for that.
 	 */
-	private boolean isString() {
+	private boolean isQuatedString() {
 		return tokenizer.ttype == QUOTE_CHAR;
 	}
 
@@ -267,38 +268,33 @@ public class GMLParser {
 	 * has already been found to not be the end of file
 	 */
 	private Object parseValue() throws IOException, ParseException {
-		Object result = null;
 
-		if (tokenizer.ttype == StreamTokenizer.TT_EOL) {
-			return result;
-		}
+		if (tokenizer.ttype == StreamTokenizer.TT_EOL)
+			return null;
 
-		if (isString()) {
+		if (isQuatedString())
 			return tokenizer.sval;
-		}
 
-		if (isInteger()) {
-			return new Integer(tokenizer.sval);
-		}
+		if (isInteger())
+			return Integer.parseInt(tokenizer.sval);
 
-		if (isReal()) {
-			return new Double(tokenizer.sval);
-		}
+		if (isReal())
+			return Double.parseDouble(tokenizer.sval);
 
 		if (isList()) {
 			tokenizer.nextToken();
 
-			List list = parseList();
+			final List<KeyValue> list = parseList();
 
 			if (!tokenizer.sval.equals(LIST_CLOSE)) {
 				throw new ParseException("Unterminated list", tokenizer
 						.lineno());
 			}
-
 			return list;
 		}
-
-		return result;
+		
+		// Treat as a regular string value.
+		return tokenizer.sval;
 	}
 
 	/**
