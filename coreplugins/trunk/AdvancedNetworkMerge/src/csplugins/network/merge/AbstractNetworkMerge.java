@@ -175,7 +175,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         // get node matching list
         List<Map<CyNetwork,Set<GraphObject>>> matchedNodeList = getMatchedList(networks,true);
         
-        matchedNodeList = selectMatchedNodeList(matchedNodeList, op, networks);
+        matchedNodeList = selectMatchedGOList(matchedNodeList, op, networks);
 
         final Map<Node,Node> mapNN = new HashMap<Node,Node>(); // save information on mapping from original nodes to merged nodes
                                                          // to use when merge edges
@@ -205,6 +205,8 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         
         // match edges
         List<Map<CyNetwork,Set<GraphObject>>> matchedEdgeList = getMatchedList(networks,false);
+
+        matchedEdgeList = selectMatchedGOList(matchedEdgeList, op, networks);
         
         // merge edges
         final int nEdge = matchedEdgeList.size();
@@ -357,39 +359,41 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return list of matched nodes
      */    
-    protected List<Map<CyNetwork,Set<GraphObject>>> selectMatchedNodeList(final List<Map<CyNetwork,Set<GraphObject>>> matchedNodeList, 
+    protected List<Map<CyNetwork,Set<GraphObject>>> selectMatchedGOList(final List<Map<CyNetwork,Set<GraphObject>>> matchedGOList,
                                                                           final Operation op, 
                                                                           final List<CyNetwork> networks) {
-        if (matchedNodeList==null || op==null) {
+        if (matchedGOList==null || op==null) {
             throw new java.lang.NullPointerException();
-        }
-        
-        List<Map<CyNetwork,Set<GraphObject>>> list = new Vector<Map<CyNetwork,Set<GraphObject>>>();
+        }        
         
         int nnet = networks.size();
         
         if (op==Operation.UNION) {
-            list.addAll(matchedNodeList);
+            return matchedGOList;
         } else if (op==Operation.INTERSECTION) {
-            for (Map<CyNetwork,Set<GraphObject>> map:matchedNodeList) {
+            List<Map<CyNetwork,Set<GraphObject>>> list = new Vector<Map<CyNetwork,Set<GraphObject>>>();
+            for (Map<CyNetwork,Set<GraphObject>> map:matchedGOList) {
                 if (map.size()==nnet) {// if contained in all the networks
                     list.add(map);
                 }
             }
+
+            return list;
         } else { //if (op==Operation.DIFFERENCE)
+            List<Map<CyNetwork,Set<GraphObject>>> list = new Vector<Map<CyNetwork,Set<GraphObject>>>();
             if (nnet<2) return list;
             
             CyNetwork net1 = networks.get(0);
             CyNetwork net2 = networks.get(1);
             
-            for (Map<CyNetwork,Set<GraphObject>> map:matchedNodeList) {
+            for (Map<CyNetwork,Set<GraphObject>> map:matchedGOList) {
                 if (map.containsKey(net1)&&!map.containsKey(net2)) {
                     list.add(map);
                 }
             }
-        }
-        
-        return list;
+
+            return list;
+        }        
     }
     
     private void updateTaskMonitor(String status, int percentage) {
