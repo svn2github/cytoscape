@@ -193,7 +193,7 @@ public abstract class AbstractCommandHandler implements CyCommandHandler {
  	 */
 	public String getDescription(String command) { 
 		if (descriptionMap.containsKey(command)) {
-			return formatDescription(command, descriptionMap.get(command), argumentMap.get(command));
+			return descriptionMap.get(command);
 		}
 		return null;
 	}
@@ -357,63 +357,6 @@ public abstract class AbstractCommandHandler implements CyCommandHandler {
 	}
 
 	/**
- 	 * This method can be used to create a formatted description that includes
- 	 * the namespace, command, and options.
- 	 *
- 	 * @param command the command 
- 	 * @param description the textual description
- 	 * @return the formatted text
- 	 */
-	protected String formatDescription(String command, String description) {
-		if (!argumentMap.containsKey(command)) {
-			List<Tunable> args = argumentMap.get(command);
-			return formatDescription(command, description, args);
-		}
-		return formatDescription(command, description, new ArrayList());
-	}
-
-	/**
- 	 * This method can be used to create a formatted description that includes
- 	 * the namespace, command, and options.
- 	 *
- 	 * @param command the command 
- 	 * @param description the textual description
- 	 * @param args the list of arguments for this command
- 	 * @return the formatted text
- 	 */
-	protected String formatDescription(String command, String description, Collection<Tunable>args) {
-		String descr = namespace.getNamespaceName()+" "+command+": "+description;
-		if (args == null || args.size() == 0) return descr;
-		descr += "\n  Arguments:\n";
-		for (Tunable arg: args) {
-		  descr += "    [";
-			if (arg.getName() != null)
-				descr += arg.getName();
-			if (arg.getDescription() != null && !arg.getDescription().equals(arg.getName()))
-				descr += "("+arg.getDescription()+")";
-			if (arg.getValue() != null)
-				descr += "="+arg.getValue();
-			else
-				descr += "=value";
-		  descr += "]\n";
-		}
-		return descr;
-	}
-
-	/**
- 	 * This method can be used to create a formatted description that includes
- 	 * the namespace, command, and options.
- 	 *
- 	 * @param command the command 
- 	 * @param description the textual description
- 	 * @param args the list of arguments for this command
- 	 * @return the formatted text
- 	 */
-	protected String formatDescription(String command, String description, Map<String, Object>args) {
-		return formatDescription(command, description, createTunableCollection(args));
-	}
-
-	/**
 	 * This method is useful for converting from Tunable lists to key-value settings
 	 */
 	private	Map<String, Object> createKVSettings(String command) {
@@ -421,7 +364,7 @@ public abstract class AbstractCommandHandler implements CyCommandHandler {
 		return createKVMap(argumentMap.get(command));
 	}
 
-	private Tunable makeTunable(String name, Object value) {
+	static public Tunable makeTunable(String name, Object value) {
 		Class vClass = value.getClass();
 		if (vClass == Double.class || vClass == Float.class) {
 			return new Tunable(name, name, Tunable.DOUBLE, value);

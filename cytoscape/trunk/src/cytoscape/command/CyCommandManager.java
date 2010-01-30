@@ -58,18 +58,10 @@ import cytoscape.layout.Tunable;
 public class CyCommandManager {
 	private static Map<CyCommandNamespace, Map<String,CyCommandHandler>> comMap;
 	private static Map<String, CyCommandNamespace> nsMap;
-	private static CyCommandHandler helpHandler = null;
-	private static CyCommandNamespace helpNS = null;
 
   static {
     comMap = new HashMap<CyCommandNamespace, Map<String,CyCommandHandler>>();
 		nsMap = new HashMap<String, CyCommandNamespace>();
-
-    // special case for help
-    helpNS = reserveNamespace(HelpCommand.HELP);
-		helpHandler = new HelpCommand();
-		// Register the empty help string
-		register(helpNS, "", helpHandler);
 	}
 
 	public static CyCommandNamespace reserveNamespace(String namespace) throws RuntimeException {
@@ -83,8 +75,6 @@ public class CyCommandManager {
 		nsMap.put(namespace, ns);
 		comMap.put(ns, new HashMap());
 
-		// Add this namespace to help
-		register(helpNS, namespace, helpHandler);
 		return ns;
 	}
 
