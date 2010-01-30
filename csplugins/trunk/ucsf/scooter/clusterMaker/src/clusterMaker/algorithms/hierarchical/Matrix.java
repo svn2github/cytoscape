@@ -89,9 +89,9 @@ public class Matrix {
 
 		// Create our local copy of the weightAtributes array
 		String[] attributeArray = new String[weightAttributes.length];
-		
+
 		// If our weightAttribute is on edges, we're looking at a symmetrical matrix
-		if (weightAttributes.length > 1 && weightAttributes[0].startsWith("node.")) {
+		if (weightAttributes.length >= 1 && weightAttributes[0].startsWith("node.")) {
 			// Get rid of the leading type information
 			for (int i = 0; i < weightAttributes.length; i++) {
 				attributeArray[i] = weightAttributes[i].substring(5);

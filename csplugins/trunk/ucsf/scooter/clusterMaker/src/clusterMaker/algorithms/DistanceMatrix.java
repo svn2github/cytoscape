@@ -90,6 +90,16 @@ public class DistanceMatrix {
 			if (edgeWeight == Double.MIN_VALUE)
 					edgeCase.add(edgeIndex);
 
+			if (takeNegLOG) {
+				if (minAttribute < 0.0) 
+					edgeWeight += Math.abs(minAttribute);
+
+				if(edgeWeight != 0.0 && edgeWeight != Double.MAX_VALUE)
+					edgeWeight = -Math.log10(edgeWeight);
+				else
+					edgeWeight = 500; // Assume 1e-500 as a reasonble upper bound
+			}
+
 			edgeWeights[edgeIndex] = edgeWeight;
 			if (edgeWeight != Double.MIN_VALUE) {
 				minWeight = Math.min(minWeight, edgeWeight);

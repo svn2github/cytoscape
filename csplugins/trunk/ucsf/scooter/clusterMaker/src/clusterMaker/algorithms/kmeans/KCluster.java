@@ -179,6 +179,7 @@ public class KCluster {
 
 		int nelements = matrix.nRows();
 		int ifound = 1;
+
 		int[] tclusterid = new int[nelements];
 
 		int[] saved = new int[nelements];
@@ -194,7 +195,7 @@ public class KCluster {
 		// Outer initialization
 		if (nIterations <= 1) {
 			for (int i=0; i < clusterID.length; i++) {
-				tclusterid = clusterID;
+				tclusterid[i] = clusterID[i];
 			}
 			nIterations = 1;
 		} else {
