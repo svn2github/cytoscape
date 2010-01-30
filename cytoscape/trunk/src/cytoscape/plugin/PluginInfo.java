@@ -149,29 +149,6 @@ public class PluginInfo extends DownloadableInfo {
 		pluginClassName = className;
 	}
 
-	/**
-	 * @deprecated See {@link DownloadableInfo#setObjectVersion(double)}} will be removed June 2008
-	 * 
-	 * Sets the version of the plugin. Defaults to 0.1
-	 * 
-	 * @param version
-	 * 				String version with format \d+.\d+	
-	 * @throws NumberFormatException
-	 * 				If the string version is of a format other than \d+.\d+
-	 */
-	public void setPluginVersion(double Version) throws NumberFormatException {
-		this.setObjectVersion(Version);
-	}
-
-	/**
-	 * @deprecated See {@link DownloadableInfo#setDownloadableURL(String)}} will be removed June 2008
-	 * pluginUrl this plugin was downloaded from. It is presumed this can be
-	 * used for update later.
-	 * @param url
-	 */
-	protected void setUrl(String url) {
-		this.setObjectUrl(url);
-	}
 
 	/**
 	 * Sets the url of a site describing this plugin project
@@ -181,17 +158,6 @@ public class PluginInfo extends DownloadableInfo {
 		projectUrl = url;
 	}
 
-	/**
-	 * @deprecated See {@link DownloadableInfo#setObjectUrl(String)}} will be removed June 2008
-	 * URL for the xml file describing all plugins from any given project
-	 * (ex. http://cytoscape.org/plugins/plugin.xml)
-	 * 
-	 * @param url
-	 */
-	protected void setDownloadUrl(String url) {
-		this.setDownloadableURL(url);
-	}
-	
 	/**
 	 * Jar or Zip are currently supported. Use PluginInfo.JAR or PluginInfo.ZIP.
 	 * This will only be set by the PluginManager generally and can only be set once 
@@ -239,32 +205,6 @@ public class PluginInfo extends DownloadableInfo {
 		authors.clear();
 	}
 	
-	/**
-	 * @deprecated See {@link DownloadableInfo#setLicense(String)} will be removed June 2008
-	 * Sets the license information for the plugin. Not required.
-	 * 
-	 * @param java.net.URL
-	 *            object where license can be downloaded from.
-	 */
-	public void setLicense(URL url) {
-		super.setLicense(url);
-	}
-
-	/**
-	 * @deprecated See {@link DownloadableInfo#setLicense(String, boolean)} will be removed June 2008
-	 * Sets the license information for the plugin. Not required.
-	 * 
-	 * @param Text
-	 *            string of license.
-	 * @param alwaysRequired
-	 *            If the user expects the license to be required for both
-	 *            install and update at all times (true) or only at install
-	 *            (false)
-	 */
-	public void setLicense(String licenseText, boolean alwaysRequired) {
-		super.setLicense(licenseText, alwaysRequired);
-	}
-
 
 	/**
 	 * This is meant to only get set by the PluginManager.  It can only
@@ -320,22 +260,6 @@ public class PluginInfo extends DownloadableInfo {
 	}
 
 	/**
-	 * @deprecated See {@link DownloadableInfo#getObjectVersion()} will be removed June 2008
-	 * @return Plugin version.
-	 */
-	public String getPluginVersion() {
-		return super.getObjectVersion();
-	}
-
-	/**
-	 * @deprecated See {@link DownloadableInfo#getObjectUrl()}} will be removed June 2008
-	 * @return Url to download plugin from
-	 */
-	public String getUrl() {
-		return super.getObjectUrl();
-	}
-
-	/**
 	 * 
 	 * @return Url that points to a site describing this plugin project
 	 */
@@ -343,15 +267,6 @@ public class PluginInfo extends DownloadableInfo {
 		return projectUrl;
 	}
 
-	/**
-	 * @deprecated See {@link DownloadableInfo#getDownloadableURL()}} will be removed June 2008
-	 * @return Url that returns the document of available plugins this plugin
-	 *         came from.  Example http://cytoscape.org/plugins/all_plugins.xml
-	 */
-	public String getDownloadUrl()  {
-		return super.getDownloadableURL();
-	}
-	
 	public Installable getInstallable() {
 		return new InstallablePlugin(this);
 	}
@@ -369,18 +284,6 @@ public class PluginInfo extends DownloadableInfo {
 	 */
 	public List<String> getFileList() {
 		return pluginFiles;
-	}
-
-	/**
-	 * @deprecated See {@link DownloadableInfo#isNewerObjectVersion(DownloadableInfo)}} will be removed June 2008
-	 * Compare the version of the object to the given object.
-	 * 
-	 * @param New
-	 *            Potentially newer PluginInfo object
-	 * @return true if given version is newer
-	 */
-	public boolean isNewerPluginVersion(PluginInfo New) {
-		return super.isNewerObjectVersion(New);
 	}
 
 	public String htmlOutput() {
