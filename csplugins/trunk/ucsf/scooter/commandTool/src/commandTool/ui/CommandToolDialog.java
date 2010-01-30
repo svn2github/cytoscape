@@ -1,6 +1,6 @@
 /* vim: set ts=2: */
 /**
- * Copyright (c) 2006 The Regents of the University of California.
+ * Copyright (c) 2010 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -177,12 +177,19 @@ public class CommandToolDialog extends JDialog
 
 	private void handleCommand(String input) {
 		CyCommandResult results = null;
+
 		try {
-			String ns = null;
-			if ((ns = isNamespace(input)) != null) {
-				results = handleCommand(input, ns);
+			// Handle our built-ins
+			if (input.startsWith("help")) {
+				results = HelpHandler.getHelpReturn(input);
 			} else {
-				throw new RuntimeException("Unknown command: "+input);
+				String ns = null;
+	
+				if ((ns = isNamespace(input)) != null) {
+					results = handleCommand(input, ns);
+				} else {
+					throw new RuntimeException("Unknown command: "+input);
+				}
 			}
 			// Get all of the messages from our results
 			for (String s: results.getMessages()) {
@@ -207,10 +214,7 @@ public class CommandToolDialog extends JDialog
 
 	private CyCommandResult handleCommand(String inputLine, String ns) throws CyCommandException {
 		String sub = null;
-		// Check for help
-		if (ns.equals("help")) {
-			return handleHelpCommand(inputLine);
-		}
+
 		// Parse the input, breaking up the tokens into appropriate
 		// commands, subcommands, and maps
 		Map<String,Object> settings = new HashMap();
@@ -227,38 +231,6 @@ public class CommandToolDialog extends JDialog
 			throw new CyCommandException("Unknown argument: "+comm);
 		
 		return CyCommandManager.execute(ns, sub, settings);
-	}
-
-	private CyCommandResult handleHelpCommand(String inputLine) throws CyCommandException {
-		String sub = null;
-		Map<String,Object> settings = new HashMap();
-
-		inputLine = inputLine.substring(4).trim();
-		if (inputLine.length() < 1)
-			return CyCommandManager.execute("help", "", settings);
-
-		// Help can have an entire command after it -- check for input
-		String hns = isNamespace(inputLine);
-		if (hns == null || hns.length() == 0) {
-			throw new CyCommandException("Unknown command: "+inputLine);
-		}
-
-		inputLine = inputLine.substring(hns.length()).trim();
-		if (inputLine.length() < 1)
-			return CyCommandManager.execute("help", hns, settings);
-
-		for (String command: CyCommandManager.getCommandList(hns)) {
-			if (command.toLowerCase().equals(inputLine.toLowerCase())) {
-				sub = command;
-				break;
-			}
-		}
-		if (sub == null && inputLine.length() > 1)
-			throw new CyCommandException("Unknown command: "+hns+" "+inputLine);
-
-		settings.put(sub, "");
-		return CyCommandManager.execute("help", hns, settings);
-		
 	}
 
 	private String parseInput(String input, Map<String,Object> settings) {
