@@ -1,34 +1,3 @@
-// $Id: MapBioPaxToCytoscape.java,v 1.38 2006/10/09 20:48:20 cerami Exp $
-//------------------------------------------------------------------------------
-/** Copyright (c) 2006 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- **
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- **
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
 package cytoscape.coreplugins.biopax;
 
 import cytoscape.CyEdge;
@@ -69,7 +38,6 @@ import org.biopax.paxtools.model.level3.PhysicalEntity;
 
 import ding.view.DNodeView;
 
-
 import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -79,13 +47,9 @@ import java.util.*;
 /**
  * Maps a BioPAX Model to Cytoscape Nodes/Edges.
  *
- * @author Ethan Cerami.
- * @author Igor Rodchenkov (re-factoring using PaxTools API)
+ * @author Ethan Cerami, Igor Rodchenkov (re-factoring using PaxTools API)
  * 
- * 
- * TODO This probably must be re-written from scratch - 
- * - using PaxTools 'AbstractTraverser' class, so that 
- * all the properties will be mapped...
+ * TODO later, re-write from scratch using 'AbstractTraverser'
  */
 public class MapBioPaxToCytoscape {
 	
@@ -661,7 +625,7 @@ public class MapBioPaxToCytoscape {
 		if (controlledList.size() > 1) 
 		{
 			log.warn("Warning!  Control Interaction: " + interactionId
-					+ "has more than one CONTROLLED Element.");
+					+ " has more than one CONTROLLED Element.");
 		} 
 		else if (controlledList != null && !controlledList.isEmpty()) 
 		{
@@ -693,7 +657,7 @@ public class MapBioPaxToCytoscape {
 		} 
 		else 
 		{
-			log.warn(interactionId + "has no CONTROLLED Elements");
+			log.warn(interactionId + " has no CONTROLLED Elements");
 		}
 
 		// Create Edges from the Controller(s) to the
@@ -707,7 +671,7 @@ public class MapBioPaxToCytoscape {
 						(BioPAXElement) controllerElement, CONTROLLER);
 			}
 		} else {
-			log.warn(interactionId + "has no CONTROLLER Elements");
+			log.warn(interactionId + " has no CONTROLLER Elements");
 		}
 
 		mapCoFactors(interactionElement);

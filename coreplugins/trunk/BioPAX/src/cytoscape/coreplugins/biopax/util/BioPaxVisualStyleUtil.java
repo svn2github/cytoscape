@@ -156,10 +156,10 @@ public class BioPaxVisualStyleUtil {
 		if (bioPaxVisualStyle == null) {
 			bioPaxVisualStyle = new VisualStyle(BIO_PAX_VISUAL_STYLE);
 
-			NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
-			nac.setNodeSizeLocked(false);
+			NodeAppearanceCalculator nac = bioPaxVisualStyle.getNodeAppearanceCalculator();
+			bioPaxVisualStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,false);
 
-			EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+			EdgeAppearanceCalculator eac = bioPaxVisualStyle.getEdgeAppearanceCalculator();
 
 			createNodeShape(nac);
 			createNodeSize(nac);
@@ -361,10 +361,8 @@ public class BioPaxVisualStyleUtil {
 		while (nodesIt.hasNext()) {
 			NodeView nodeView = nodesIt.next();
 			String id = nodeView.getNode().getIdentifier();
-			String tip = "He-he-he!";
-			
-			/*
-				+ nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE)
+			String tip = 
+				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE)
 				+ "\n" +
 				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_AVAILABILITY) 
 				+ "\n" +
@@ -375,7 +373,7 @@ public class BioPaxVisualStyleUtil {
 				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_PATHWAY_NAME)
 				+ "\n" + 
 				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_RDF_ID);
-			*/
+
 			nodeView.setToolTip(tip);
 			
 			if(log.isDebugging())

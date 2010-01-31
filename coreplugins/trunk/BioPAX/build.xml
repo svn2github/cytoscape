@@ -70,6 +70,9 @@
 	
     <path id="test.classpath">
 	<pathelement path="${build.test.classes}"/>
+         <fileset dir="${cytoscape.dir}/lib/build-libs">
+             <include name="*.jar"/>
+         </fileset>
 	<path refid="classpath.without.yfiles"/>
     </path>
 
@@ -180,7 +183,7 @@
     </target>
 
     <!--  target to run cytoscape with biopax plugin -->
-    <target depends="check.yfiles,set.classpath,jar" description="Runs Cytoscape with BioPAX Data."
+    <target depends="all" description="Runs Cytoscape with BioPAX Data."
         name="run">
     	<copy file="${jars.dir}/${jar_file}" todir="${cytoscape.dir}/plugins" overwrite="true" />
         <java classname="cytoscape.CyMain" classpathref="runtime.classpath"

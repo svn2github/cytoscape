@@ -1,11 +1,7 @@
-// $Id: BioPaxUtil.java,v 1.6 2006/06/20 19:40:01 cerami Exp $
-//------------------------------------------------------------------------------
-/** Copyright (c) 2006 Memorial Sloan-Kettering Cancer Center.
+/** Copyright (c) 2010 University of Toronto (UofT)
+ ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
  **
- ** Code written by: Ethan Cerami
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
+ ** This is free software; you can redistribute it and/or modify it
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
@@ -14,20 +10,18 @@
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
+ ** both UofT and MSKCC have no obligations to provide maintenance, 
+ ** support, updates, enhancements or modifications.  In no event shall
+ ** UofT or MSKCC be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
+ ** UofT or MSKCC have been advised of the possibility of such damage.  
+ ** See the GNU Lesser General Public License for more details.
  **
  ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ ** along with this software; if not, write to the Free Software Foundation,
+ ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA;
+ ** or find it at http://www.fsf.org/ or http://www.gnu.org.
  **/
 package cytoscape.coreplugins.biopax.util;
 
@@ -58,8 +52,7 @@ import java.util.*;
  * BioPax Utility Class - is a BioPAX Model Adapter 
  * that also defines additional constants. 
  *
- * @author Ethan Cerami, 
- * @author Igor Rodchenkov (re-factoring using PaxTools API), Arman, Rex
+ * @author Ethan Cerami, Rex, Arman and Igor Rodchenkov
  */
 public class BioPaxUtil {
 	private static final Map<String,String> plainEnglishMap;
@@ -786,13 +779,25 @@ public class BioPaxUtil {
 		Set<String> pathwayNames = new HashSet<String>();
 		
 		Set<? extends BioPAXElement> procs = BioPaxUtil.getObjects(model, pathway.class, Pathway.class);
-		Set<BioPAXElement> pathways = fetchParentNodeNames(bpe, procs);
 		
-		//if(pathways.isEmpty()) {
-		//  // then find interactions
-		//	procs = BioPaxUtil.getObjects(model, interaction.class, Interaction.class);
-		//	pathways = fetchParentNodeNames(bpe, procs);
-		//}
+		// remove sub-pathways (finding all parents is sacrificed to performance...)
+		Set<BioPAXElement> topPathways = new HashSet<BioPAXElement>();
+		for(BioPAXElement p : procs ) {
+			if( (p instanceof pathway 
+				&& ((pathway)p).isPATHWAY_COMPONENTSof().isEmpty()
+				&& ((pathway)p).isPARTICIPANTSof().isEmpty()
+				&& ((pathway)p).isCONTROLLEDOf().isEmpty()) 
+				||
+				(p instanceof Pathway 
+				&& ((Pathway)p).getPathwayComponentsOf().isEmpty()
+				&& ((Pathway)p).getParticipantsOf().isEmpty()
+				&& ((Pathway)p).getControlledOf().isEmpty()))
+			{
+				topPathways.add(p);
+			}
+		}
+		
+		Set<BioPAXElement> pathways = fetchParentNodeNames(bpe, topPathways);
 				
 		if(!pathways.isEmpty()) {
 			for(BioPAXElement pw : pathways) {

@@ -1,36 +1,4 @@
-// $Id: TestExternalLinkUtil.java,v 1.11 2006/06/15 22:07:49 grossb Exp $
-//------------------------------------------------------------------------------
-/** Copyright (c) 2006 Memorial Sloan-Kettering Cancer Center.
- **
- ** Code written by: Ethan Cerami, Benjamin Gross.
- ** Authors: Ethan Cerami, Gary Bader, Chris Sander
- **
- ** This library is free software; you can redistribute it and/or modify it
- ** under the terms of the GNU Lesser General Public License as published
- ** by the Free Software Foundation; either version 2.1 of the License, or
- ** any later version.
- **
- ** This library is distributed in the hope that it will be useful, but
- ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- ** documentation provided hereunder is on an "as is" basis, and
- ** Memorial Sloan-Kettering Cancer Center
- ** has no obligations to provide maintenance, support,
- ** updates, enhancements or modifications.  In no event shall
- ** Memorial Sloan-Kettering Cancer Center
- ** be liable to any party for direct, indirect, special,
- ** incidental or consequential damages, including lost profits, arising
- ** out of the use of this software and its documentation, even if
- ** Memorial Sloan-Kettering Cancer Center
- ** has been advised of the possibility of such damage.  See
- ** the GNU Lesser General Public License for more details.
- **
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this library; if not, write to the Free Software Foundation,
- ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **/
 package cytoscape.coreplugins.biopax;
-
 
 import giny.model.RootGraph;
 import giny.view.GraphView;
@@ -250,6 +218,7 @@ public class BioPaxGraphReader implements GraphReader {
 
 		//  Repair Canonical Name 
 		repairCanonicalName(cyNetwork);
+		
 		// repair network name
 		if (!validNetworkName) {
 			repairNetworkName(cyNetwork);
@@ -298,6 +267,8 @@ public class BioPaxGraphReader implements GraphReader {
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
         bpContainer.showLegend();
         
+        BioPaxVisualStyleUtil.setNodeToolTips(view);
+        
         // add network listener
         NetworkListener networkListener = bpContainer.getNetworkListener();
 		networkListener.registerNetwork(cyNetwork);
@@ -305,9 +276,6 @@ public class BioPaxGraphReader implements GraphReader {
 		// add node's context menu
 		BiopaxNodeCtxMenuListener nodeCtxMenuListener = new BiopaxNodeCtxMenuListener();
 		view.addNodeContextMenuListener(nodeCtxMenuListener);
-		
-		
-		BioPaxVisualStyleUtil.setNodeToolTips(view);
 		
 	}
 
@@ -349,6 +317,7 @@ public class BioPaxGraphReader implements GraphReader {
 		
 	
 	/**
+	 * 
 	 * Repairs Network Name.  Temporary fix to automatically set network
 	 * name to match BioPAX Pathway name.
 	 *

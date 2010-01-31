@@ -17,11 +17,11 @@ pluginVersion=0.7
 cytoscapeVersion=2.7
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Network and Attribute I/O
+pluginCategory=Core
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs by a ; (semicolon)
-pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross, Chris Sander:Memorial Sloan-Kettering Cancer Center;B. Arman Aksoy; Rex Dwyer:Singenta;Gary Bader, Igor Rodchenkov:Uniersity of Toronto
+pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross and Chris Sander:Memorial Sloan-Kettering Cancer Center;B. Arman Aksoy:Gerstner Sloan-Kettering Graduate School;Rex Dwyer:Singenta;Gary Bader and Igor Rodchenkov:University of Toronto
 # Date this plugin/plugin version was released
 releaseDate=January 29, 2010
 

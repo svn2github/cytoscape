@@ -35,7 +35,6 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.interaction;
 import org.biopax.paxtools.model.level2.pathway;
@@ -82,7 +81,7 @@ public class TestBioPaxUtil extends TestCase {
 	 */
 	public void testUtil2() throws Exception {
 		Model model = BioPaxUtil.readFile("test-resources/biopax_complex.owl");
-		Set pathways = BioPaxUtil.getParentPathwayName(
+		Set<String> pathways = BioPaxUtil.getParentPathwayName(
 				model.getByID("http://cbio.mskcc.org/cpath#CPATH-124"), model);
 		System.out.println("PARENT PROCESSes NAMES: " + pathways);
 		assertTrue(pathways.size()==0);
