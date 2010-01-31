@@ -153,7 +153,6 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			logger.error(e.getMessage());
 		}
 
-
 		// Create our main plugin menu
 		JMenu menu = new JMenu("MetaNode Operations");
 		menu.addMenuListener(new MetanodeMenuListener(null));
@@ -232,8 +231,12 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				// We are, we need to "fix up" the network
 				newNode.recollapse(recursive, multipleEdges, myview);
 			} else {
-				CyNetwork network = myview.getNetwork();
-				network.hideNode(group.getGroupNode());
+				if (settingsDialog.getSizeToBoundingBox()) {
+					newNode.expand(true, null, true);
+				} else {
+					CyNetwork network = myview.getNetwork();
+					network.hideNode(group.getGroupNode());
+				}
 			}
 		}
 		// logger.debug("registering");
@@ -695,7 +698,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		  menu.add(item);
 		}
 	}
-	
+
   /**
    * This class gets attached to the menu item.
    */

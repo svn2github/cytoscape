@@ -52,6 +52,8 @@ import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.TunableListener;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualStyle;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,6 +63,7 @@ import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -351,7 +354,6 @@ public class MetanodeSettingsDialog extends JDialog
 			AttributeHandler.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
-
 	}
 
 	public void revertSettings() {
@@ -369,6 +371,13 @@ public class MetanodeSettingsDialog extends JDialog
 
 	public void updateAttributes() {
 		attrList.setLowerBound(getAttributes());
+	}
+
+	public boolean getSizeToBoundingBox() {
+		updateSettings(false);
+		String bv = (String)metanodeProperties.getProperties().get("sizeToBoundingBox");
+		sizeToBoundingBox = Boolean.parseBoolean(bv);
+		return sizeToBoundingBox;
 	}
 
 	private String[] getAttributes() {
@@ -459,9 +468,10 @@ public class MetanodeSettingsDialog extends JDialog
 			MetaNode.setHideMetaNodeDefault(hideMetanode);
 		} else if (t.getName().equals("sizeToBoundingBox")) {
       boolean sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
-			if (sizeToBoundingBox) 
+			if (sizeToBoundingBox) {
 				opacityTunable.setImmutable(false);
-			else
+				modifyVizMap();
+			} else
 				opacityTunable.setImmutable(true);
 			MetaNode.setSizeToBoundingBoxDefault(sizeToBoundingBox);
 		} else if (t.getName().equals("metanodeOpacity")) {
@@ -571,5 +581,13 @@ public class MetanodeSettingsDialog extends JDialog
 		}
 		doLayout();
 		pack();
+	}
+
+	private void modifyVizMap() {
+		// Get the current Visual Style
+		VisualStyle currentStyle = Cytoscape.getCurrentNetworkView().getVisualStyle();
+
+		// Now set the dependency
+		currentStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED, false);
 	}
 }

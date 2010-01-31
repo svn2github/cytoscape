@@ -979,7 +979,7 @@ public class MetaNode {
 		if (!isNodeHidden(partner)) {
 			if (DEBUG) logger.debug("Restoring edge "+edge.getIdentifier()+" partner = "+partner.getIdentifier());
 			network.restoreEdge(edge);
-			if (networkView != null)
+			if (networkView != null && networkView != Cytoscape.getNullNetworkView());
 				networkView.applyVizMap(edge);
 		} else {
 			if (DEBUG) logger.debug("Not restoring edge "+edge.getIdentifier()+". "+
