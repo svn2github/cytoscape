@@ -49,20 +49,19 @@ public class BinarySifVisualStyleUtil {
         if (visualStyle == null) {
             visualStyle = new VisualStyle(BINARY_SIF_VISUAL_STYLE);
 
-            NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+            NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
 
             //  set node opacity
             nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_OPACITY, 125);
             //  unlock node size
-            nac.setNodeSizeLocked(false);
+            visualStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,false);
 
             createNodeShapes(nac);
             createNodeColors(nac);
             createNodeLabel(nac);
 
-            EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
-            eac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH,
-                    4.0);
+            EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
+            eac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH,4.0);
             createEdgeColor (eac);
             createDirectedEdges (eac);
 

@@ -15,14 +15,14 @@ pluginVersion=2.1
 cytoscapeVersion=2.7
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
-pluginCategory=Network and Attribute I/O
+pluginCategory=Core
 
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
 projectURL=http://www.pathwaycommons.org
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs by a ; (semicolon)
-pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross, Chris Sander:Memorial Sloan-Kettering Cancer Center;Igor Rodchenkov, Gary Bader:Uniersity of Toronto 
+pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross and Chris Sander:Memorial Sloan-Kettering Cancer Center;Igor Rodchenkov and Gary Bader:University of Toronto 
 
 # Date this plugin/plugin version was released
 releaseDate=January 29, 2010
