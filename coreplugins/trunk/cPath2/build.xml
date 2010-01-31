@@ -54,9 +54,6 @@
 		<fileset dir="${cytoscape_jar_dir}">
 			<include name="cytoscape.jar" />
 		</fileset>
-		<fileset dir="${cytoscape_plugin_dir}">
-			<include name="biopax.jar" />
-		</fileset>
 		<fileset dir="lib">
 			<include name="*.jar" />
 		</fileset>
