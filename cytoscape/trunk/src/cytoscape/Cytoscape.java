@@ -79,6 +79,8 @@ import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 import cytoscape.init.CyInitParams;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
@@ -716,14 +718,19 @@ public abstract class Cytoscape {
 
 		if (create && attribute instanceof String && attribute.equals(Semantics.INTERACTION)) {
 			// create the edge
-			CyEdge edge = (CyEdge) Cytoscape.getRootGraph()
-			                                .getEdge(Cytoscape.getRootGraph()
-			                                                  .createEdge(source, target));
+			int rootEdge = Cytoscape.getRootGraph().createEdge(source, target);
+			// System.out.println("Created edge: "+rootEdge+"from "+source.getRootGraphIndex()+" to "+target.getRootGraphIndex());
+
+			//CyEdge edge = (CyEdge) Cytoscape.getRootGraph()
+			//                                .getEdge(Cytoscape.getRootGraph()
+			//                                                  .createEdge(source, target));
+			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(rootEdge);
 
 			// create the edge id
 			String edge_name = CyEdge.createIdentifier(source.getIdentifier(),
 			                                           (String) attribute_value,
 			                                           target.getIdentifier());
+			// System.out.println("Setting ID for edge: "+edge_name);
 			edge.setIdentifier(edge_name);
 
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, (String) attribute_value);
@@ -1865,6 +1872,12 @@ public abstract class Cytoscape {
 	 * Clear all networks and attributes and start a new session.
 	 */
 	public static void createNewSession() {
+		// Clear groups
+		List<CyGroup>groups = CyGroupManager.getGroupList();
+		for (CyGroup group: groups) {
+			CyGroupManager.removeGroup(group);
+		}
+
 		// Destroy all networks
 		Set<CyNetwork> netSet = getNetworkSet();
 

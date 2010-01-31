@@ -305,7 +305,7 @@ public class CyMain implements CyInitParams {
 				 * For Mac: move menue bar to OS X default bar (next to Apple
 				 * icon)
 				 */
-				System.setProperty("apple.laf.useScreenMenuBar", "true");				
+				System.setProperty("apple.laf.useScreenMenuBar", "true");
 				
 			} else {
 				/*

@@ -688,6 +688,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 			CyGroup newGroup = null;
 			String viewer = null;
+
 			for (CyNode groupNode : groupMap.keySet()) {
 				List<CyNode> childList = groupMap.get(groupNode);
 				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(), CyGroup.GROUP_VIEWER_ATTR);
@@ -718,7 +719,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 		}
 
-		if (view == Cytoscape.getNullNetworkView())
+		if (view == null || view == Cytoscape.getNullNetworkView())
 			return;
 		
 		// Apply visual style before updateView().
