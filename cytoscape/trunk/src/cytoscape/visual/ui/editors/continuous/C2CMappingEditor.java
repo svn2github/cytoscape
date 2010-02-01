@@ -65,6 +65,9 @@ import javax.swing.ImageIcon;
  *
   */
 public class C2CMappingEditor extends ContinuousMappingEditorPanel {
+	
+	private static final long serialVersionUID = -3555354576428996187L;
+	
 	// Default value for below and above.
 	private static final Float DEF_BELOW_AND_ABOVE = 1f;
 
@@ -96,9 +99,12 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @param type DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type) {
+	                                final VisualPropertyType type) {
 		editor = new C2CMappingEditor(type);
-		editor.setSize(new Dimension(width, height));
+		final Dimension size = new Dimension(width, height);
+		editor.setPreferredSize(size);
+		editor.setSize(size);
+		
 		editor.setTitle(title);
 		editor.setAlwaysOnTop(true);
 		editor.setLocationRelativeTo(Cytoscape.getDesktop());
@@ -219,10 +225,6 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	}
 
 	private void setSlider() {
-		Dimension dim = new Dimension(600, 100);
-		setPreferredSize(dim);
-		setSize(dim);
-		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
 		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);

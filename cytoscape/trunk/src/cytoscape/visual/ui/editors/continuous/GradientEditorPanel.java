@@ -69,6 +69,9 @@ import javax.swing.SwingUtilities;
  */
 public class GradientEditorPanel extends ContinuousMappingEditorPanel
     implements PropertyChangeListener {
+	
+	private static final long serialVersionUID = -7645303507318540305L;
+	
 	// For presets
 	private static final Color DEF_LOWER_COLOR = Color.BLACK;
 	private static final Color DEF_UPPER_COLOR = Color.WHITE;
@@ -101,13 +104,18 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	public static Object showDialog(final int width, final int height, final String title,
 	                                VisualPropertyType type) {
 		editor = new GradientEditorPanel(type);
-		editor.setSize(new Dimension(width, height));
+		
+		final Dimension size = new Dimension(width, height);
+		editor.slider.setPreferredSize(size);
+		editor.setPreferredSize(size);
+		
 		editor.setTitle(title);
 		editor.setAlwaysOnTop(true);
 		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
 		editor.setVisible(true);
-		editor.repaint();
-
+		
 		return editor;
 	}
 
@@ -253,14 +261,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	/**
 	 * DOCUMENT ME!
 	 */
-	public void initSlider() {
-		Dimension dim = new Dimension(600, 100);
-		setPreferredSize(dim);
-		setSize(dim);
-		setMinimumSize(new Dimension(300, 80));
+	private void initSlider() {
 		slider.updateUI();
-
-		//		slider.setComponentPopupMenu(menu);
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if (SwingUtilities.isRightMouseButton(e)) {

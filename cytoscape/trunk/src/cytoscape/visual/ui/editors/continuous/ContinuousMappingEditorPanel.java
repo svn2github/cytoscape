@@ -86,6 +86,9 @@ import javax.swing.event.ChangeListener;
  * @author kono
   */
 public abstract class ContinuousMappingEditorPanel extends JDialog implements PropertyChangeListener {
+	
+	private static final long serialVersionUID = -2558647616344119220L;
+
 	// Tell vizMapper main whic editor is disabled/enabled.
 	/**
 	 * DOCUMENT ME!
@@ -109,7 +112,9 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	private SpinnerNumberModel spinnerModel;
 	protected Object below;
 	protected Object above;
+	
 	protected static ContinuousMappingEditorPanel editor;
+	
 	protected double lastSpinnerNumber = 0;
 
 	/** Creates new form ContinuousMapperEditorPanel */
@@ -231,6 +236,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		pivotLabel.setText("Pivot:");
 
 		addButton.setText("Add");
+		addButton.setPreferredSize(new Dimension(100, 10));
 		addButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		addButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -239,6 +245,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			});
 
 		deleteButton.setText("Delete");
+		deleteButton.setPreferredSize(new Dimension(100, 10));
 		deleteButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -248,6 +255,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 		// New in 2.6
 		minMaxButton.setText("Min/Max");
+		minMaxButton.setPreferredSize(new Dimension(100, 10));
 		minMaxButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		minMaxButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -305,12 +313,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                                                                                               Short.MAX_VALUE)
 		                                                                                              .add(minMaxButton,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   62,
+		                                                                                                   100,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                              .add(addButton,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   55,
+		                                                                                                   100,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                              .add(deleteButton)
@@ -325,10 +333,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                            .add(minMaxButton)
 		                                                                                            .add(deleteButton)
-		                                                                                            .add(addButton,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		                                                                                            .add(addButton)));
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(mainPanel);
 		mainPanel.setLayout(layout);
@@ -494,8 +499,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected BelowAndAbovePanel belowPanel;
 
 	protected int getSelectedPoint(int selectedIndex) {
-		final List<Thumb> thumbs = slider.getModel().getSortedThumbs();
-		Thumb selected = slider.getModel().getThumbAt(selectedIndex);
+		final List<Thumb<?>> thumbs = slider.getModel().getSortedThumbs();
+		Thumb<?> selected = slider.getModel().getThumbAt(selectedIndex);
 		int i;
 
 		for (i = 0; i < thumbs.size(); i++) {

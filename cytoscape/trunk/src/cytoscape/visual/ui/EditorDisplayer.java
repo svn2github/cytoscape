@@ -101,14 +101,14 @@ public enum EditorDisplayer {
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
 	CONTINUOUS_COLOR(GradientEditorPanel.class, "showDialog",
 	                 new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
-	                 new Object[] { 450, 180, "Gradient Editor", null }, Color.class), 
+	                 new Object[] { 420, 250, "Gradient Editor", null }, Color.class), 
 	CONTINUOUS_CONTINUOUS(C2CMappingEditor.class, "showDialog",
 	                      new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
-	                      new Object[] { 450, 250, "Continuous-Continuous Editor", null },
+	                      new Object[] { 420, 250, "Continuous-Continuous Editor", null },
 	                      Number.class), 
 	CONTINUOUS_DISCRETE(C2DMappingEditor.class, "showDialog",
 	                    new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
-	                    new Object[] { 450, 200, "Continuous-Discrete Editor", null }, Object.class);
+	                    new Object[] { 420, 250, "Continuous-Discrete Editor", null }, Object.class);
 	private Class chooserClass;
 	private String command;
 	private Class[] paramTypes;
