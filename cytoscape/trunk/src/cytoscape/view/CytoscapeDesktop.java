@@ -46,8 +46,11 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.HashMap;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
@@ -78,24 +81,21 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.ui.NestedNetworkListener;
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
 import cytoscape.visual.ui.VizMapperMainPanel;
-import java.util.Properties;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
 public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
+	
+	private static final long serialVersionUID = 2986320083629749014L;
+	
 	protected long lastPluginRegistryUpdate;
 	protected int returnVal;
 
-	/*
-	 * Default Desktop Size (slitly wider than 2.4 and before for new UI)
-	 */
+	// Default sizes of components
 	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(980, 720);
-	
 	private static final int DEF_DEVIDER_LOCATION = 310;
+	private static final int DEF_DATAPANEL_DEVIDER_LOCATION = 450;
 
 	/**
 	 *
@@ -133,29 +133,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
 
-	/**
-	 * Displays all network views in TabbedPanes ( like Mozilla )
-	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
-	 */
-	public static final int TABBED_VIEW = 0;
-
-	/**
-	 * Displays all network views in JInternalFrames, using the mock desktop
-	 * interface. ( like MS Office )
-	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
-	 */
-	public static final int INTERNAL_VIEW = 1;
-
-	/**
-	 * Displays all network views in JFrames, so each Network has its own
-	 * window. ( like the GIMP )
-	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
-	 */
-	public static final int EXTERNAL_VIEW = 2;
 	private static final String SMALL_ICON = "images/c16.png";
 
-	// --------------------//
-	// Member varaibles
 	protected VisualStyle defaultVisualStyle;
 
 	/**
@@ -176,13 +155,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	protected NetworkViewManager networkViewManager;
 
-	// --------------------//
-	// Event Support
 
 	/**
 	 * provides support for property change events
 	 */
-	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
+	protected final SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 
 	/**
 	 * The GraphViewController for all NetworkViews that we know about
@@ -205,10 +182,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	protected String currentNetworkID;
 	protected String currentNetworkViewID;
-
-	//
-	// CytoPanel Variables
-	//
+	
+	// CytoPanels
 	protected CytoPanelImp cytoPanelWest;
 	protected CytoPanelImp cytoPanelEast;
 	protected CytoPanelImp cytoPanelSouth;
@@ -221,28 +196,16 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// Status Bar
 	protected JLabel statusBar;
 
-	// kono@ucsd.edu
-	// Association between network and VS.
-	protected HashMap vsAssociationMap;
-	protected JPanel main_panel;
+	protected final JPanel main_panel;
 
 	// This is used to keep track of the visual style combo box. 
 	// This is the index of the box in the toolbar. We use this so that we can
 	// add and remove the stylebox from the same place.
 	protected int styleBoxIndex = -1;
 
-	//
 	// Overview Window;
-	//
 	private BirdsEyeViewHandler bevh;
 
-	/**
-	 * @deprecated view_type is no longer used.  Use the other CytoscapeDesktop() instead.
-	 * Will be gone August 1008.
-	 */
-	public CytoscapeDesktop(int view_type) {
-		this();
-	}
 
 	/**
 	 * Creates a new CytoscapeDesktop object.
@@ -746,9 +709,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		                                  CytoPanelState.HIDE);
 
 		// create the split pane - hidden by default
-		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
+		final BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
 		                                                    BiModalJSplitPane.MODE_HIDE_SPLIT,
 		                                                    topRightPane, cytoPanelSouth);
+		splitPane.setDividerLocation(DEF_DATAPANEL_DEVIDER_LOCATION);
 
 		// set the cytopanel container
 		cytoPanelSouth.setCytoPanelContainer(splitPane);
