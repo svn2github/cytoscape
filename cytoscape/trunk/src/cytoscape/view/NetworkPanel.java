@@ -98,6 +98,9 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	
 	private static final long serialVersionUID = -7102083850894612840L;
 	
+	private static final int DEF_DEVIDER_LOCATION = 280;
+	private static final int PANEL_PREFFERED_WIDTH = 250;
+	
 	// Make this panel as a source of events.
 	private final SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 		
@@ -154,7 +157,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 
 	protected void initialize() {
 		setLayout(new BorderLayout());
-		setPreferredSize(new Dimension(180, 700));
+		setPreferredSize(new Dimension(PANEL_PREFFERED_WIDTH, 700));
 
 		treeTable.getTree().addTreeSelectionListener(this);
 		treeTable.getTree().setRootVisible(false);
@@ -177,7 +180,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		split = new BiModalJSplitPane(cytoscapeDesktop, JSplitPane.VERTICAL_SPLIT,
 		                              BiModalJSplitPane.MODE_SHOW_SPLIT, scroll, navigatorPanel);
 		split.setResizeWeight(1);
-
+		split.setDividerLocation(DEF_DEVIDER_LOCATION);
 		add(split);
 
 		// this mouse listener listens for the right-click event and will show

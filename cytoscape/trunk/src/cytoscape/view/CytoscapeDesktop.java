@@ -93,7 +93,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	/*
 	 * Default Desktop Size (slitly wider than 2.4 and before for new UI)
 	 */
-	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(950, 700);
+	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(980, 720);
+	
+	private static final int DEF_DEVIDER_LOCATION = 310;
 
 	/**
 	 *
@@ -321,12 +323,16 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		cyMenus.initializeMenus();
 
 		// create the CytoscapeDesktop
-		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
+		final BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
 
 		// note - proper networkViewManager has been properly selected in
 		// setupCytoPanels()
 		main_panel.add(masterPane, BorderLayout.CENTER);
 		main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
+		
+		// Set the width of Cytopanel West
+		masterPane.setDividerLocation(DEF_DEVIDER_LOCATION);
+		
 		// Remove status bar.
 		initStatusBar(main_panel);
 		setJMenuBar(cyMenus.getMenuBar());
@@ -350,15 +356,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		pack();
 		setSize(DEF_DESKTOP_SIZE);
 		
-		// restore desktop location
-		restoreDesktop();
-
+		// Set desktop location
+		setDesktopLocation();
+		
 		// show the Desktop
 		setVisible(true);
 		toFront();
 	}
 
-	private void restoreDesktop(){
+	private void setDesktopLocation(){
 		//restore desktop to previous location
 		try {	
 			Properties props = new Properties();
@@ -370,6 +376,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 					new Integer(props.get("h").toString()).intValue());
 		}
 		catch (Exception e){
+			setLocationRelativeTo(null);
 		}		
 	}
 	
@@ -688,9 +695,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected BiModalJSplitPane setupCytoPanels(NetworkPanel networkPanel,
 	                                            NetworkViewManager networkViewManager) {
 		// bimodals that our Cytopanels Live within
-		BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
-		BiModalJSplitPane rightPane = createRightPane(topRightPane);
-		BiModalJSplitPane masterPane = createMasterPane(networkPanel, rightPane);
+		final BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
+		final BiModalJSplitPane rightPane = createRightPane(topRightPane);
+		final BiModalJSplitPane masterPane = createMasterPane(networkPanel, rightPane);
 
 		return masterPane;
 	}
