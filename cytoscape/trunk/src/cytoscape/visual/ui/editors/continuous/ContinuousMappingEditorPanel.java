@@ -113,6 +113,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected Object below;
 	protected Object above;
 	
+	private CyAttributes attr;
+	
 	protected static ContinuousMappingEditorPanel editor;
 	
 	protected double lastSpinnerNumber = 0;
@@ -394,7 +396,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	protected void minMaxButtonActionPerformed(ActionEvent evt) {
 		final Double[] newVal = MinMaxDialog.getMinMax(EditorValueRangeTracer.getTracer().getMin(type),
-		                                         EditorValueRangeTracer.getTracer().getMax(type));
+		                                         EditorValueRangeTracer.getTracer().getMax(type), attr, mapping.getControllingAttributeName());
 
 		if (newVal == null)
 			return;
@@ -411,7 +413,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	abstract protected void addButtonActionPerformed(java.awt.event.ActionEvent evt);
 
 	private void initRangeValues() {
-		final CyAttributes attr;
 
 		if (type.isNodeProp()) {
 			attr = Cytoscape.getNodeAttributes();

@@ -34,7 +34,16 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.util.MultiHashMapHelpers;
 
 
 /**
@@ -42,13 +51,18 @@ import cytoscape.Cytoscape;
  * @author  kono
  */
 public class MinMaxDialog extends javax.swing.JDialog {
+	
+	private static final long serialVersionUID = 7350824820761046009L;
+	
 	private static MinMaxDialog dialog;
 
 	/** Creates new form MinMaxDialog */
-	private MinMaxDialog(java.awt.Frame parent, boolean modal, Double min, Double max) {
+	private MinMaxDialog(Frame parent, boolean modal, Double min, Double max, final CyAttributes attr, final String attrName) {
 		super(parent, modal);
 		this.min = min;
 		this.max = max;
+		this.attr = attr;
+		this.attrName = attrName;
 		initComponents();
 		
 		this.minTextField.setText(min.toString());
@@ -57,6 +71,9 @@ public class MinMaxDialog extends javax.swing.JDialog {
 
 	private Double min;
 	private Double max;
+	
+	private CyAttributes attr;
+	private String attrName;
 
 	/**
 	 *  DOCUMENT ME!
@@ -66,10 +83,12 @@ public class MinMaxDialog extends javax.swing.JDialog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static Double[] getMinMax(double min, double max) {
-		Double[] minMax = new Double[2];
-		dialog = new MinMaxDialog(Cytoscape.getDesktop(), true, min, max);
+	public static Double[] getMinMax(double min, double max, final CyAttributes attr, final String attrName) {
+		final Double[] minMax = new Double[2];
+		
+		dialog = new MinMaxDialog(Cytoscape.getDesktop(), true, min, max, attr, attrName);
 		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
 
 		if ((dialog.min == null) || (dialog.max == null))
@@ -97,6 +116,8 @@ public class MinMaxDialog extends javax.swing.JDialog {
 		cancelButton = new javax.swing.JButton();
 		titlePanel = new javax.swing.JPanel();
 		titleLabel = new javax.swing.JLabel();
+		
+		restoreButton = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Set Range");
@@ -122,6 +143,15 @@ public class MinMaxDialog extends javax.swing.JDialog {
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					cancelButtonActionPerformed(evt);
+				}
+			});
+		
+		restoreButton.setText("Restore");
+		restoreButton.setToolTipText("Set range by current attribute's min and max.");
+		restoreButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+		restoreButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					restoreButtonActionPerformed(evt);
 				}
 			});
 
@@ -174,7 +204,7 @@ public class MinMaxDialog extends javax.swing.JDialog {
 		                                     layout.createSequentialGroup()
 		                                           .addContainerGap(163, Short.MAX_VALUE)
 		                                           .add(cancelButton)
-		                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                           .add(restoreButton)
 		                                           .add(okButton).addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                              .add(layout.createSequentialGroup()
@@ -198,16 +228,13 @@ public class MinMaxDialog extends javax.swing.JDialog {
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                    .add(okButton).add(cancelButton))
+		                                                    .add(okButton).add(restoreButton).add(cancelButton))
 		                                         .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                          Short.MAX_VALUE)));
 
 		pack();
 	} // </editor-fold>
 
-	private void minTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
-	}
 
 	private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		try {
@@ -226,6 +253,36 @@ public class MinMaxDialog extends javax.swing.JDialog {
 		max = null;
 		dispose();
 	}
+	
+	private void restoreButtonActionPerformed(ActionEvent evt) {
+		final MultiHashMap mhm = attr.getMultiHashMap();
+		final CountedIterator it = mhm.getObjectKeys(attrName);
+		Object key;
+		Double val = null;
+
+		Double maxValue = Double.NEGATIVE_INFINITY;
+		Double minValue = Double.POSITIVE_INFINITY;
+
+		while (it.hasNext()) {
+			key = it.next();
+			try {
+				val = Double.parseDouble(
+					mhm.getAttributeValue(key.toString(),attrName, null).toString());
+			} catch (NumberFormatException nfe) {
+				continue;
+			}
+			
+			if (val > maxValue)
+				maxValue = val;
+			if (val < minValue)
+				minValue = val;
+		}
+		
+		minTextField.setText(minValue.toString());
+		maxTextField.setText(maxValue.toString());
+	}
+	
+	
 
 	// Variables declaration - do not modify
 	private javax.swing.JButton cancelButton;
@@ -236,6 +293,8 @@ public class MinMaxDialog extends javax.swing.JDialog {
 	private javax.swing.JButton okButton;
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JPanel titlePanel;
+	
+	private JButton restoreButton;
 
 	// End of variables declaration
 }
