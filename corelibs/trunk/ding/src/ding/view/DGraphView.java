@@ -99,10 +99,6 @@ public class DGraphView implements GraphView, Printable {
 
 	// Size of snapshot image
 	private static final int DEF_SNAPSHOT_SIZE = 400;
-	private static double minComprFactorSoFar = Double.MAX_VALUE;
-	private static double maxComprFactorSoFar = Double.MIN_VALUE;
-	private static double compressionFactors[] = new double[10000];
-	private static int compressionFactorCount = 0;
 	
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
@@ -2633,31 +2629,13 @@ public class DGraphView implements GraphView, Printable {
 	 * Converts a BufferedImage to a lossless PNG.
 	 */
 	private byte[] convertToCompressedImage(final BufferedImage bufferedImage) {
-		System.err.println("Entering convertToCompressedImage()");
 		try {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream(100000);
-			ImageIO.write(bufferedImage, "jpeg", baos);
+			ImageIO.write(bufferedImage, "png", baos);
 			final byte[] retval = baos.toByteArray();
-			final double compressionFactor = (DEF_SNAPSHOT_SIZE * DEF_SNAPSHOT_SIZE * 4.0) / retval.length;
-			if (compressionFactor < minComprFactorSoFar)
-				minComprFactorSoFar = compressionFactor;
-			if (compressionFactor > maxComprFactorSoFar)
-				maxComprFactorSoFar = compressionFactor;
-			System.err.println("About to exit convertToCompressedImage(), compr. factor = " + compressionFactor);
-			System.err.println("Min. compr. factor so far = " + minComprFactorSoFar);
-			System.err.println("Max. compr. factor so far = " + maxComprFactorSoFar);
-
-			compressionFactors[compressionFactorCount++] = compressionFactor;
-			// Calc avg.
-			double sum = 0.0;
-			for (int i = 0; i < compressionFactorCount; ++i)
-				sum += compressionFactors[i];
-			final double comprFactorAvg = sum / compressionFactorCount;
-			System.err.println("Avg. compr. factor so far = " + comprFactorAvg);
 			return retval;
 		} catch (final IOException e) {
 			System.err.println("Failed to convert a BufferedImage to a PNG! (" + e + ")");
-			System.exit(-1);
 			return null;
 		}
 	}
@@ -2667,15 +2645,12 @@ public class DGraphView implements GraphView, Printable {
 	 * Converts a PNG to a BufferedImage.
 	 */
 	private BufferedImage convertToBufferedImage(final byte[] compressedImage) {
-		System.err.println("Entering convertToBufferedImage()");
 		try {
 			final ByteArrayInputStream is = new ByteArrayInputStream(compressedImage);
 			final BufferedImage retval = (BufferedImage)ImageIO.read(is);
-			System.err.println("About to exit convertToBufferedImage()");
 			return retval;
 		} catch (final IOException e) {
 			System.err.println("Failed to convert a PNG to a BufferedImage! (" + e + ")");
-			System.exit(-1);
 			return null;
 		}
 	}
