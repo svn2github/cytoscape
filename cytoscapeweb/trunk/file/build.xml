@@ -6,7 +6,7 @@
          This file should be created by each user when he/she needs to override particular values. 
          Do NOT place it under version control.
     -->
-    <property file="build.properties"/>
+    <property file="local.properties"/>
     
     <property file="default.properties"/>
     
