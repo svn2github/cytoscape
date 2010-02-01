@@ -58,11 +58,15 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
@@ -94,7 +98,7 @@ public class DGraphView implements GraphView, Printable {
 	boolean calledFromGetSnapshot = false;
 
 	// Size of snapshot image
-	private static final int DEF_SNAPSHOT_SIZE = 400;
+	private static final int DEF_SNAPSHOT_SIZE = 4000;
 	
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
@@ -303,7 +307,7 @@ public class DGraphView implements GraphView, Printable {
 	 * 
 	 * This is used by a new nested network feature from 2.7.
 	 */
-	private BufferedImage snapshotImage;
+	private byte[] snapshotImage;
 	
 	/**
 	 * Represents current snapshot is latest version or not.
@@ -2601,18 +2605,56 @@ public class DGraphView implements GraphView, Printable {
 	 * @return Image of this view.  It is always up-to-date.
 	 */
 	TexturePaint getSnapshot(final double width, final double height) {
+		BufferedImage bufferedImage = null;
+
 		if (!latest) {
 			// Need to update snapshot.
-			snapshotImage = (BufferedImage)createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1, /* skipBackground = */ true);
+			bufferedImage =
+				(BufferedImage)createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1,
+				                           /* skipBackground = */ true);
+			snapshotImage = convertToPNG(bufferedImage);
 			latest = true;
-		} 
+		}
+
+		if (bufferedImage == null)
+			bufferedImage = convertToBufferedImage(snapshotImage);
 
 		final Rectangle2D rect = new Rectangle2D.Double(-width / 2, -height / 2, width, height);
-		final TexturePaint texturePaint = new TexturePaint(snapshotImage, rect);
+		final TexturePaint texturePaint = new TexturePaint(bufferedImage, rect);
 		return texturePaint;
 	}
+
+
+	/**
+	 * Converts a BufferedImage to a lossless PNG.
+	 */
+	private byte[] convertToPNG(final BufferedImage bufferedImage) {
+		try {
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, "PNG", baos);
+
+			return baos.toByteArray();
+		} catch (final IOException e) {
+			System.err.println("Failed to convert a BufferedImage to a PNG!");
+			return null;
+		}
+	}
+
 	
-	
+	/**
+	 * Converts a PNG to a BufferedImage.
+	 */
+	private BufferedImage convertToBufferedImage(final byte[] png) {
+		try {
+			final ByteArrayInputStream is = new ByteArrayInputStream(png);
+			return (BufferedImage)ImageIO.read(is);
+		} catch (final IOException e) {
+			System.err.println("Failed to convert a PNG to a BufferedImage!");
+			return null;
+		}
+	}
+
+
 	/**
 	 * Listener for update flag of snapshot image.
 	 * 
