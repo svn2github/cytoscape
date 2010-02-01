@@ -78,6 +78,8 @@ import cytoscape.data.readers.NNFReader;
  * Task to load a new network.
  */
 public class LoadNetworkTask implements Task {
+	private static long taskLoadStart = 0; // "0" means that it has not bene initialised!
+
 	/**
 	 *  Load a network from a url.  The reader code will attempt to determine
 	 *  the format of the network (GML, XGMML, SIF) from the HTTP content-type
@@ -121,6 +123,7 @@ public class LoadNetworkTask implements Task {
 	 *                        after it has been read in (provided that a view was created).
 	 */
 	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		taskLoadStart = System.nanoTime();
 		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm);
 		setupTask(task, skipMessage, true);
 	}
@@ -137,6 +140,7 @@ public class LoadNetworkTask implements Task {
 	 *                        after it has been read in (provided that a view was created).
 	 */
 	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		taskLoadStart = System.nanoTime();
 		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm);
 		setupTask(task, skipMessage, true);
 	}
@@ -282,20 +286,20 @@ public class LoadNetworkTask implements Task {
 	/**
 	 * Inform User of Network Stats.
 	 */
-
-	// Mod. by Kei 08/26/2005
-	//
-	// For the new GML format import function, added some messages
-	// for the users.
-	//
 	private void informUserOfGraphStats(CyNetwork newNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 		
 		String msg = "";
 		if (reader instanceof NNFReader){
-			NNFReader theReader = (NNFReader) reader;
-			msg += "Successfully loaded "+ theReader.getNetworks().size() +" nested networks from " + name;
+			final NNFReader theReader = (NNFReader) reader;
+			msg += "Successfully loaded "+ theReader.getNetworks().size() + " nested networks from " + name;
+
+			if (taskLoadStart != 0) // Display how long it took to load the NNs.
+				msg += " in " + (System.nanoTime() - taskLoadStart + 500000L) / 1000000L + "ms.";
+			else
+				msg += ".";
+
 			taskMonitor.setStatus(msg);
 			return;
 		}
