@@ -26,7 +26,7 @@
 		<property name="ncbiClient.root.dir" value="." />
 
 		<!-- You need to modify this line to point to Cytoscape directory.  -->
-		<property name="cytoscape.dir" value="${ncbiClient.root.dir}/../cytoscape" />
+		<property name="cytoscape.dir" value="${ncbiClient.root.dir}/../../cytoscape" />
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />

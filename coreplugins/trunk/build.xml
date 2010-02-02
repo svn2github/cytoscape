@@ -23,6 +23,7 @@
 		<ant dir="linkout" />
 		<ant dir="filters" />
 		<ant dir="AdvancedNetworkMerge" />
+		<ant dir="NCBIClient" />
 
 		<mkdir dir="${build.dir}" />
 		<copy todir="${build.dir}" file="browser/browser.jar" />
@@ -40,6 +41,7 @@
 		<copy todir="${build.dir}" file="linkout/linkout.jar" />
 		<copy todir="${build.dir}" file="filters/plugins/filters.jar" />
 		<copy todir="${build.dir}" file="AdvancedNetworkMerge/AdvancedNetworkMerge.jar" />
+		<copy todir="${build.dir}" file="NCBIClient/ncbiClient.jar" />
 	</target>
 
 	<!-- clean all coreplugin projects  -->
@@ -59,6 +61,7 @@
 		<ant dir="linkout" target="clean" />
 		<ant dir="filters" target="clean" />
 		<ant dir="AdvancedNetworkMerge" target="clean" />
+		<ant dir="NCBIClient" target="clean" />
 		<delete dir="${build.dir}" />
 	</target>
 
