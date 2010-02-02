@@ -102,7 +102,12 @@ import cytoscape.util.ModulePropertiesImpl;
 import cytoscape.visual.VisualStyle;
 
 /**
- *
+ * NCBI Web Service Client Plugin main class.
+ * <p>This is part of the core since 2.7.</p>
+ * 
+ * 
+ * @author kono
+ * @since Cytoscape 2.7
  */
 public class NCBIClient extends
 		WebServiceClientImplWithGUI<EUtilsServiceSoap, JPanel> implements
@@ -164,8 +169,6 @@ public class NCBIClient extends
 	private Boolean canceled = null;
 	private ExecutorService executer;
 
-	// private Map<String[], Object> nodeAttrMap = new
-	// ConcurrentHashMap<String[], Object>();
 	private Map<String[], Object> attrMap = new ConcurrentHashMap<String[], Object>();
 	private List<AnnotationCategory> selectedAnn = new ArrayList<AnnotationCategory>();
 	private int threadNum;
@@ -181,7 +184,6 @@ public class NCBIClient extends
 		try {
 			client = new NCBIClient();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -594,9 +596,11 @@ public class NCBIClient extends
 			}
 
 			if (net == null) {
-				// Create network without view
+				
 				net = Cytoscape.createNetwork(nodeList, edgeList, "NCBI-Net",
-						null, false);
+						null, true);
+				Cytoscape.getVisualMappingManager().setVisualStyle(getDefaultVisualStyle());
+				
 				Cytoscape.firePropertyChange(
 						WSResponseType.DATA_IMPORT_FINISHED.toString(), null,
 						net);
@@ -616,8 +620,6 @@ public class NCBIClient extends
 				Cytoscape.getPropertyChangeSupport().firePropertyChange(pce);
 			}
 
-			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null,
-					null);
 		} catch (InterruptedException e1) {
 			System.out.println("TIMEOUT");
 			throw new CyWebServiceException(

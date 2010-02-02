@@ -5,6 +5,7 @@ import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 
 import java.awt.Color;
 
+import cytoscape.Cytoscape;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.LineStyle;
@@ -45,6 +46,13 @@ public class VisualStyleBuilder {
 	private VisualStyleBuilder() {
 		defaultVS = buidlDefaultStyle();
 		newVS = buildNewStyle();
+		
+		if (Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+				.getVisualStyle(newVS.getName()) == null) {
+			Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+					.addVisualStyle(newVS);
+		}
+			
 	}
 
 	public VisualStyle getDefStyle() {
