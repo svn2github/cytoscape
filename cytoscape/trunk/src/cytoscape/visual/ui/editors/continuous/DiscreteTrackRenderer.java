@@ -646,7 +646,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			case NODE_TOOLTIP:
 			case EDGE_LABEL:
 			case EDGE_TOOLTIP:
-			case NODE_NESTED_NETWORK_VISIBLE:
+			case NODE_SHOW_NESTED_NETWORK:
 				if(key != null) {
 					g.drawString(key.toString(), 0, g.getFont().getSize()*2);
 				}

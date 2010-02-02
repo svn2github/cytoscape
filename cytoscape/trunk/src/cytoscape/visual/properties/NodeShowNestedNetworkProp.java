@@ -55,14 +55,14 @@ import javax.swing.Icon;
 /**
  *
  */
-public class NodeNestedNetworkVisibleProp extends AbstractVisualProperty {
+public class NodeShowNestedNetworkProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualPropertyType getType() {
-		return VisualPropertyType.NODE_NESTED_NETWORK_VISIBLE;
+		return VisualPropertyType.NODE_SHOW_NESTED_NETWORK;
 	}
 
 

@@ -78,7 +78,7 @@ import cytoscape.visual.properties.NodeShapeProp;
 import cytoscape.visual.properties.NodeSizeProp;
 import cytoscape.visual.properties.NodeToolTipProp;
 import cytoscape.visual.properties.NodeWidthProp;
-import cytoscape.visual.properties.NodeNestedNetworkVisibleProp;
+import cytoscape.visual.properties.NodeShowNestedNetworkProp;
 import cytoscape.visual.parsers.*;
 import cytoscape.visual.ui.EditorDisplayer;
 import cytoscape.visual.ui.EditorDisplayer.EditorType;
@@ -233,10 +233,10 @@ public enum VisualPropertyType {
 	                 "defaultEdgeLabelWidth", Number.class, new EdgeLabelWidthProp(),
 	                 new FloatParser(), false, true),
 	
-	NODE_NESTED_NETWORK_VISIBLE("Node Nested Network Visible", "nodeNestedNetworkVisible", 
-	                            "node.nestedNetworkVisible", "defaultNodeNestedNetworkVisible", 
-	                            Boolean.class, new NodeNestedNetworkVisibleProp(),
-	                            new BooleanParser(), true, true),
+	NODE_SHOW_NESTED_NETWORK("Node Show Nested Network", "nodeShowNestedNetwork", 
+	                         "node.showNestedNetwork", "defaultNodeShowNestedNetwork", 
+	                         Boolean.class, new NodeShowNestedNetworkProp(),
+	                         new BooleanParser(), true, true),
 
 	;
 	/*

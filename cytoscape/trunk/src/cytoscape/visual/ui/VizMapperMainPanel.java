@@ -1619,7 +1619,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 						break;
 					
-					case NODE_NESTED_NETWORK_VISIBLE:
+					case NODE_SHOW_NESTED_NETWORK:
 						setDiscreteProps(type, discMapping, attrSet, booleanCellEditor,
 				                 defCellRenderer, calculatorTypeProp);
 						break;
