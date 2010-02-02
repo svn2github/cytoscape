@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,23 +31,48 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package edu.ucsd.bioeng.idekerlab.ncbiclient;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JDialog;
+import javax.swing.JMenuItem;
+
+import cytoscape.Cytoscape;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.plugin.CytoscapePlugin;
-
+import edu.ucsd.bioeng.idekerlab.ncbiclient.ui.NCBIGeneDialog;
 
 /**
  * NCBI Entrez Web Service Client
  */
 public class NCBIClientPlugin extends CytoscapePlugin {
+	private JDialog annotationDialog;
+
 	/**
 	 * Register NCBIClientPlugin to the Web Service Client Manager.
 	 */
 	public NCBIClientPlugin() throws Exception {
 		// Register this client to the manager.
 		WebServiceClientManager.registerClient(NCBIClient.getClient());
+
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import")
+				.add(
+						new JMenuItem(new AbstractAction(
+								"Import Attributes from NCBI Entrez Gene...") {
+
+							private static final long serialVersionUID = 3263699405477145319L;
+
+							public void actionPerformed(ActionEvent e) {
+								if (annotationDialog == null)
+									annotationDialog = new NCBIGeneDialog();
+								
+								annotationDialog.setVisible(true);
+							}
+						}));
+		
 	}
 }
