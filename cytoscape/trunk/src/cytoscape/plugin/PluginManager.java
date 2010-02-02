@@ -405,14 +405,12 @@ public class PluginManager {
 
 	// TODO would be better to fix how initializedPlugins are tracked...
 	private void cleanCurrentList() {
-		List<DownloadableInfo> CurrentList = this
-				.getDownloadables(PluginStatus.CURRENT);
+		List<DownloadableInfo> CurrentList = getDownloadables(PluginStatus.CURRENT);
 		for (DownloadableInfo info : CurrentList) {
 			if (info.getType().equals(DownloadableType.PLUGIN)) {
 				PluginInfo pInfo = (PluginInfo) info;
 				if (!initializedPlugins.containsKey(pInfo.getPluginClassName())) {
-					pluginTracker
-							.removeDownloadable(info, PluginStatus.CURRENT);
+					pluginTracker.removeDownloadable(info, PluginStatus.CURRENT);
 				}
 			}
 		}
@@ -422,8 +420,7 @@ public class PluginManager {
 	 * Sets all plugins on the "install" list to "current"
 	 */
 	public void install() {
-		for (DownloadableInfo info : this
-				.getDownloadables(PluginStatus.INSTALL)) {
+		for (DownloadableInfo info : getDownloadables(PluginStatus.INSTALL)) {
 			install(info);
 		}
 	}
@@ -779,9 +776,10 @@ public class PluginManager {
 						}
 					}
 				}
-			} catch (MalformedURLException mue) {
-				// mue.printStackTrace();
-				loadingErrors.add(mue);
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("problem loading plugin: "+currentPlugin,t));
 			}
 		}
 		// now load the plugins in the appropriate manner
@@ -816,8 +814,10 @@ public class PluginManager {
 		for (URL url : urls) {
 			try {
 				addClassPath(url);
-			} catch (Exception e) {
-				loadingErrors.add(new IOException("Classloader Error: " + url));
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("Classloader Error: " + url, t));
 			}
 		}
 
@@ -897,15 +897,10 @@ public class PluginManager {
 				if (totalPlugins == 0) {
 					logger.info("No plugin found in specified jar - assuming it's a library.");
 				}
-			} catch (IOException ioe) {
-				// ioe.printStackTrace();
-				loadingErrors.add(ioe);
-			} catch (ClassNotFoundException cne) {
-				// cne.printStackTrace();
-				loadingErrors.add(cne);
-			} catch (PluginException pe) {
-				// pe.printStackTrace();
-				loadingErrors.add(pe);
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("problem loading plugin URL: " + urls[i], t));
 			}
 		}
 	}
@@ -921,12 +916,10 @@ public class PluginManager {
 			try {
 				Class rclass = Class.forName(resource);
 				loadPlugin(rclass, null, true);
-			} catch (ClassNotFoundException cne) {
-				// cne.printStackTrace();
-				loadingErrors.add(cne);
-			} catch (PluginException pe) {
-				// pe.printStackTrace();
-				loadingErrors.add(pe);
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("problem loading plugin resource: " + resource, t));
 			}
 		}
 	}

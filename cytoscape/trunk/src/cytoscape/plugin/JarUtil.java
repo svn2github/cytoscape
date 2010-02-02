@@ -85,11 +85,10 @@ class JarUtil {
 			break;
 
 		case ZIP:
-			List<ZipEntry> Entries = ZipUtil
-					.getAllFiles(fileName, MATCH_JAR_REGEXP);
+			List<ZipEntry> Entries = ZipUtil.getAllFiles(fileName, MATCH_JAR_REGEXP);
 			if (Entries.size() <= 0) {
-				String[] FilePath = fileName.split("/");
-				fileName = FilePath[FilePath.length - 1];
+				String[] filePath = fileName.split("/");
+				fileName = filePath[filePath.length - 1];
 				throw new IOException( fileName + 
 				                       " does not contain any jar files or is not a zip file.");
 			}
@@ -125,8 +124,8 @@ class JarUtil {
 			}
 		}
 
-		} catch (Throwable t) {
-			throw new IOException(t);
+		} catch (Exception e) {
+			throw new IOException(e);
 		}
 
 		return pluginClassName;

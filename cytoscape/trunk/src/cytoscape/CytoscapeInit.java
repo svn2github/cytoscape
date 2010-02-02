@@ -57,6 +57,12 @@ import cytoscape.logger.ConsoleLogger;
 import cytoscape.logger.CyLogger;
 import cytoscape.logger.LogLevel;
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.ThemeInfo;
+import cytoscape.plugin.ManagerException;
+import cytoscape.plugin.Category;
+import cytoscape.plugin.PluginStatus;
 import cytoscape.util.FileUtil;
 import cytoscape.util.NestedNetworkViewUpdater;
 import cytoscape.util.shadegrown.WindowUtilities;
@@ -117,6 +123,8 @@ public class CytoscapeInit {
 	// Error message
 	private static String ErrorMsg = "";
 
+	private PluginManager mgr;
+
 	/**
 	 * Creates a new CytoscapeInit object.
 	 */
@@ -153,16 +161,12 @@ public class CytoscapeInit {
 			// Instantiate a NestedNetworkViewUpdater
 			nestedNetworkViewUpdater = new NestedNetworkViewUpdater();
 
-			// get the manager so it can test for webstart before menus are
-			// created (little hacky)
-			PluginManager.getPluginManager();
+			initPluginManager();
 
 			// see if we are in headless mode
 			// show splash screen, if appropriate
 
-			/*
-			 * Initialize as GUI mode
-			 */
+			// Initialize as GUI mode
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				final ImageIcon image = new ImageIcon(this.getClass()
@@ -180,9 +184,7 @@ public class CytoscapeInit {
 				// Register the logger dialog as a log handler
 				logger.addLogHandler(LoggerDialog.getLoggerDialog(), LogLevel.LOG_DEBUG);
 
-				/*
-				 * Create Desktop. This includes Vizmapper GUI initialization.
-				 */
+				// Create Desktop. This includes Vizmapper GUI initialization.
 				Cytoscape.getDesktop();
 
 				// set the wait cursor
@@ -196,71 +198,10 @@ public class CytoscapeInit {
 
 			logger.info("init mode: " + initParams.getMode());
 
-			PluginManager mgr = PluginManager.getPluginManager();
-
-			try {
-				logger.info("Updating plugins...");
-				mgr.delete();
-			} catch (cytoscape.plugin.ManagerException me) {
-				logger.warn("Error updating plugins: "+me.getMessage(), me);
-			}
-
-			mgr.install();
-
 			logger.info("loading plugins....");
-
-			/*
-			 * TODO smart plugin loading. If there are multiple of the same
-			 * plugin (this will only work in the .cytoscape directory) load the
-			 * newest version first. Should be able to examine the directories
-			 * for this information. All installed plugins are named like
-			 * 'MyPlugin-1.0' currently this isn't necessary as old version are
-			 * not kept around
-			 */
-			List<String> InstalledPlugins = new ArrayList<String>();
-			// load from those listed on the command line
-			InstalledPlugins.addAll(initParams.getPlugins());
-
-			// Get all directories where plugins have been installed
-			// going to have to be a little smart...themes contain their plugins
-			// in subdirectories
-			List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
-
-			for (cytoscape.plugin.DownloadableInfo dInfo : MgrInstalledPlugins) {
-				if (dInfo.getCategory().equals(cytoscape.plugin.Category.CORE.getCategoryText()))
-					continue;
-
-				switch (dInfo.getType()) { // TODO get rid of switches
-					case PLUGIN:
-						InstalledPlugins.add(((cytoscape.plugin.PluginInfo) dInfo)
-						                                                                                                                                                                                                    .getInstallLocation());
-
-						break;
-
-					case THEME:
-
-						cytoscape.plugin.ThemeInfo tInfo = (cytoscape.plugin.ThemeInfo) dInfo;
-
-						for (cytoscape.plugin.PluginInfo plugin : tInfo.getPlugins()) {
-							InstalledPlugins.add(plugin.getInstallLocation());
-						}
-
-						break;
-				}
-			}
-
-			mgr.loadPlugins(InstalledPlugins);
-
-			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
-
-			for (Throwable t : pluginLoadingErrors) {
-				logger.warn("Plugin loading error: "+t.toString(),t);
-			}
-
-			mgr.clearErrorList();
+			loadPlugins();
 
 			logger.info("loading session...");
-
 			boolean sessionLoaded = false;
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
@@ -612,12 +553,84 @@ public class CytoscapeInit {
 			                                              .toArray(new String[] {  }),
 			                         (String[]) initParams.getEdgeAttributeFiles()
 			                                              .toArray(new String[] {  }));
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			logger.error("failure loading specified attributes: "+ex.getMessage(), ex);
 		}
 	}
 
 	private void initVizmapper() {
 		Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
+	}
+	
+	/** 
+	 * This is separated from the rest of the plugin manager because by getting 
+	 * the manager early, it can test for webstart before menus are created. 
+	 * This is a little hacky.
+	 */
+	private void initPluginManager() {
+		try {
+			mgr = PluginManager.getPluginManager();
+		} catch (Throwable tp) {
+			logger.warn("Failed to start plugin manager.", tp);
+		}
+	}
+
+	private void loadPlugins() {
+		try {
+			try {
+				logger.info("Updating plugins...");
+				mgr.delete();
+			} catch (ManagerException me) {
+				logger.warn("Error updating plugins: "+me.getMessage(), me);
+			}
+
+			mgr.install();
+
+			//
+			// TODO smart plugin loading. If there are multiple of the same
+			// plugin (this will only work in the .cytoscape directory) load the
+			// newest version first. Should be able to examine the directories
+			// for this information. All installed plugins are named like
+			// 'MyPlugin-1.0' currently this isn't necessary as old version are
+			// not kept around
+			//
+			List<String> installedPlugins = new ArrayList<String>();
+
+			// load from those listed on the command line
+			installedPlugins.addAll(initParams.getPlugins());
+
+			// Get all directories where plugins have been installed
+			// going to have to be a little smart...themes contain their plugins
+			// in subdirectories
+			for (DownloadableInfo dInfo : mgr.getDownloadables(PluginStatus.CURRENT)) {
+				if (dInfo.getCategory().equals(Category.CORE.getCategoryText()))
+					continue;
+
+				// TODO get rid of switches
+				switch (dInfo.getType()) { 
+					case PLUGIN:
+						installedPlugins.add(((PluginInfo) dInfo).getInstallLocation());
+
+						break;
+
+					case THEME:
+						ThemeInfo tInfo = (ThemeInfo) dInfo;
+						for (PluginInfo plugin : tInfo.getPlugins()) 
+							installedPlugins.add(plugin.getInstallLocation());
+
+						break;
+				}
+			}
+
+			mgr.loadPlugins(installedPlugins);
+
+			for (Throwable t : mgr.getLoadingErrors()) 
+				logger.warn("Plugin loading error: "+t.toString(),t);
+
+			mgr.clearErrorList();
+
+		} catch (Exception e) {
+			logger.error("Plugin system initialization error: "+e.toString(),e);
+		}
 	}
 }
