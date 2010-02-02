@@ -176,6 +176,10 @@ public class VisualStyle implements Cloneable {
 		
 		if (newName == null)
 			throw new NullPointerException("Unexpected null name in VisualStyle constructor");
+
+		deps = toCopy.getDependency();
+		if (deps == null)
+			deps = new VisualPropertyDependencyImpl();
 		
 		setName(newName);
 		setNodeAppearanceCalculator((NodeAppearanceCalculator)toCopy.getNodeAppearanceCalculator().clone());
