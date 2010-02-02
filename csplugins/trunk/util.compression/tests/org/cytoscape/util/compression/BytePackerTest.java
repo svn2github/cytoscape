@@ -9,22 +9,22 @@ public class BytePackerTest extends TestCase {
 		final byte[] bytes = { 4, 3, 2, 1, 0xA, 0xB, 0xC, 0xD };
 		final int[] ints = BytePacker.pack(bytes);
 		assertEquals(ints.length, 2);
-		assertEquals(ints[0], 0x04030201);
-		assertEquals(ints[1], 0x0A0B0C0D);
+		assertEquals(0x04030201, ints[0]);
+		assertEquals(0x0A0B0C0D, ints[1]);
 	}
 
 
 	public void testUnpack() {
 		final int ints[] = { 0x04030201, 0x0A0B0C0D };
 		final byte[] bytes = BytePacker.unpack(ints);
-		assertEquals(bytes.length, 8);
-		assertEquals(bytes[0], 4);
-		assertEquals(bytes[1], 3);
-		assertEquals(bytes[2], 2);
-		assertEquals(bytes[3], 1);
-		assertEquals(bytes[4], 0xA);
-		assertEquals(bytes[5], 0xB);
-		assertEquals(bytes[6], 0xC);
-		assertEquals(bytes[7], 0xD);
+		assertEquals(8, bytes.length);
+		assertEquals(4, bytes[0]);
+		assertEquals(3, bytes[1]);
+		assertEquals(2, bytes[2]);
+		assertEquals(1, bytes[3]);
+		assertEquals(0xA, bytes[4]);
+		assertEquals(0xB, bytes[5]);
+		assertEquals(0xC, bytes[6]);
+		assertEquals(0xD, bytes[7]);
 	}
 }
