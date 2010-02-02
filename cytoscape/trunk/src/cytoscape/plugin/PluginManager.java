@@ -853,7 +853,7 @@ public class PluginManager {
 				}
 
 				// try to get class name from the manifest file
-				String className = getPluginClass(jar.getName(),
+				String className = JarUtil.getPluginClass(jar.getName(),
 						PluginInfo.FileType.JAR);
 
 				if (className != null) {
@@ -984,87 +984,6 @@ public class PluginManager {
 			uString = "jar:file:" + urlString + "!/";
 		}
 		return new URL(uString);
-	}
-
-	/*
-	 * Iterate through all class files, return the subclass of CytoscapePlugin.
-	 * Only plugins with manifest files that describe the class of the
-	 * CytoscapePlugin are valid.
-	 */
-	private String getPluginClass(String FileName, PluginInfo.FileType Type)
-			throws IOException {
-		String PluginClassName = null;
-
-		switch (Type) {
-		case JAR:
-			JarFile Jar = new JarFile(FileName);
-            try {
-                PluginClassName = getManifestAttribute(Jar.getManifest());
-            }
-            finally {
-                if (Jar != null) {
-                    Jar.close();
-                }
-            }
-			break;
-
-		case ZIP:
-			List<ZipEntry> Entries = ZipUtil
-					.getAllFiles(FileName, InstallablePlugin.MATCH_JAR_REGEXP);
-			if (Entries.size() <= 0) {
-				String[] FilePath = FileName.split("/");
-				FileName = FilePath[FilePath.length - 1];
-				throw new IOException(
-						FileName
-								+ " does not contain any jar files or is not a zip file.");
-			}
-
-            ZipFile zf = null;
-            try {
-				zf = new ZipFile(FileName);
-                for (ZipEntry Entry : Entries) {
-                    String EntryName = Entry.getName();
-
-                    InputStream is = null;
-                    try {
-                        JarInputStream jis = null;
-
-						is = ZipUtil.readFile(zf, EntryName);
-                        try {
-							jis = new JarInputStream(is);
-                            PluginClassName = getManifestAttribute(jis.getManifest());
-                        }
-                        finally {
-                            if (jis != null) {
-                                jis.close();
-                            }
-                        }
-                    }
-                    finally {
-                        if (is != null) {
-                            is.close();
-                        }
-                    }
-                }
-			}
-            finally {
-                if (zf != null) {
-                    zf.close();
-                }
-            }
-		}
-		return PluginClassName;
-	}
-
-	/*
-	 * Gets the manifest file value for the Cytoscape-Plugin attribute
-	 */
-	private String getManifestAttribute(Manifest m) {
-		String Value = null;
-		if (m != null) {
-			Value = m.getMainAttributes().getValue("Cytoscape-Plugin");
-		}
-		return Value;
 	}
 
 	/**
