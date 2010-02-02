@@ -10,34 +10,34 @@ public class BytePacker {
 	 * is a multiple of 4!  The byte order in the ints will be the first original byte being the
 	 * most-significant byte in the first int and so on...
 	 */
-	static public int[] pack(final byte[] data) throws IllegalStateException {
-		if ((data.length % 4) != 0)
-			throw new IllegalStateException("data size must be a multiple of 4!");
+	static public int[] pack(final byte[] bytes) throws IllegalStateException {
+		if ((bytes.length % 4) != 0)
+			throw new IllegalStateException("input array size must be a multiple of 4!");
 
-		final int[] retval = new int[data.length >> 2];
+		final int[] ints = new int[bytes.length >> 2];
 
-		for (int i = 0; i < retval.length; ++i) {
-			retval[i] = (int)data[i << 4] | (int) data[(i << 4) + 1]
-			            | (int) data[(i << 4) + 2] |(int) data[(i << 4) + 3];
+		for (int i = 0; i < ints.length; ++i) {
+			ints[i] = ((int)(bytes[i << 2]) << 24) | ((int)(bytes[(i << 2) + 1]) << 16)
+			          | ((int)(bytes[(i << 2) + 2]) << 8) | (int)bytes[(i << 2) + 3];
 		}
 
-		return retval;
+		return ints;
 	}
 
 	/**
 	 * Converts an int array to a byte array.  The bytes will be in most-significant to least significant order.
 	 */
-	static public byte[] unpack(final int[] data) {
-		final byte[] retval = new byte[data.length << 2];
+	static public byte[] unpack(final int[] ints) {
+		final byte[] bytes = new byte[ints.length << 2];
 
-		for (int i = 0; i < data.length; ++i) {
-			int value = data[i];
-			retval[i << 2] = (byte)(value >> 24);
-			retval[(i << 2) + 1] = (byte)((value >> 16) & 0xFF);
-			retval[(i << 2) + 2] = (byte)((value >> 8) & 0xFF);
-			retval[(i << 2) + 3] = (byte)(value & 0xFF);
+		for (int i = 0; i < ints.length; ++i) {
+			int value = ints[i];
+			bytes[i << 2] = (byte)(value >> 24);
+			bytes[(i << 2) + 1] = (byte)((value >> 16) & 0xFF);
+			bytes[(i << 2) + 2] = (byte)((value >> 8) & 0xFF);
+			bytes[(i << 2) + 3] = (byte)(value & 0xFF);
 		}
 
-		return retval;
+		return bytes;
 	}
 }
