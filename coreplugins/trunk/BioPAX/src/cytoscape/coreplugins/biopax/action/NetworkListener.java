@@ -186,7 +186,6 @@ public class NetworkListener implements PropertyChangeListener {
             	registerNetwork(cyNetwork);
             }
         }
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 
 	/*
