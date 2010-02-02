@@ -827,7 +827,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
 
-		if (redraw)
+		if (redraw && Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView())
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 		/*
@@ -3675,45 +3675,35 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (ignore)
 			return;
 		
-		// Save currently selected Visual Style name
-		final String selectedName = (String) vsNameComboBox.getSelectedItem();
-		
 		// Get current Visual Style
 		final String currentName = vmm.getVisualStyle().getName();
+		final Object selected = vsNameComboBox.getSelectedItem();
 		
-		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
-
-		if ((selectedName == null) || (currentName == null) || (curView == null)
-		    || curView.equals(Cytoscape.getNullNetworkView()))
+		if (selected != null && selected.toString().equals(currentName)) {
 			return;
-
+		}
+		
 		// Update GUI based on CalcCatalog's state.
 		if (!findVSName(currentName)) {
 			syncStyleBox();
-		} else {
-			for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
-				if (vsNameComboBox.getItemAt(i).equals(currentName)) {
-					vsNameComboBox.setSelectedIndex(i);
-					break;
-				}
-			}
-		}
+		} else
+			vsNameComboBox.setSelectedItem(currentName);
 		
 		lastVSName = currentName;
 	}
 
 	private void syncStyleBox() {
 
-		String curStyleName = vmm.getVisualStyle().getName();
-
+		final String curStyleName = vmm.getVisualStyle().getName();
+		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
+		
 		String styleName;
-		List<String> namesInBox = new ArrayList<String>();
-		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
-
+		final List<String> namesInBox = new ArrayList<String>();
+		namesInBox.addAll(catalog.getVisualStyleNames());
 		for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
 			styleName = vsNameComboBox.getItemAt(i).toString();
 
-			if (vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
+			if (catalog.getVisualStyle(styleName) == null) {
 				// No longer exists in the VMM.  Remove.
 				vsNameComboBox.removeItem(styleName);
 				defaultImageManager.remove(styleName);
@@ -3726,13 +3716,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// Reset combobox items.
 		vsNameComboBox.removeAllItems();
 
-		for (String name : namesInBox)
+		for (final String name : namesInBox)
 			vsNameComboBox.addItem(name);
 
-		if ((curStyleName == null) || curStyleName.trim().equals(""))
-			switchVS(vmm.getVisualStyle().getName());
-		else
-			switchVS(curStyleName);
+		switchVS(curStyleName);
 	}
 
 	// return true iff 'match' is found as a name within the

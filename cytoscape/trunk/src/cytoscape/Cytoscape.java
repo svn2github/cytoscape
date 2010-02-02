@@ -1730,6 +1730,7 @@ public abstract class Cytoscape {
 		}
 
 		final DingNetworkView view = new DingNetworkView(network, title);
+		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 		
 		view.setIdentifier(network.getIdentifier());
 		view.setTitle(network.getTitle());
@@ -1738,22 +1739,20 @@ public abstract class Cytoscape {
 
 		if (vs != null) {
 			view.setVisualStyle(vs.getName());
-			getVisualMappingManager().setVisualStyle(vs);
-			getVisualMappingManager().setNetworkView(view);
+			vmm.setVisualStyle(vs);
+		} else {
+			view.setVisualStyle(vmm.getVisualStyle().getName());
 		}
 
 		if (layout == null) {
 			layout = CyLayouts.getDefaultLayout();
 		}
-		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		
 		vmm.setNetworkView(view);
 		vmm.applyAppearances();
 		layout.doLayout(view);
 		view.setGraphLOD(new CyGraphLOD());
 		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
-		
-		//view.fitContent();
-		//view.redrawGraph(false, true);
 		
 		return view;
 	}

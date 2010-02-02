@@ -747,18 +747,18 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 			if (evt.getNewValue() == null)
 				return;
 
-			VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
-					.getClient(selectedClientID)).getDefaultVisualStyle();
-			if (style == null) {
-				style = Cytoscape.getVisualMappingManager().getVisualStyle();
-			}
-
-			if (Cytoscape.getVisualMappingManager().getCalculatorCatalog()
-					.getVisualStyle(style.getName()) == null)
-				Cytoscape.getVisualMappingManager().getCalculatorCatalog()
-						.addVisualStyle(style);
-
-			Cytoscape.getVisualMappingManager().setVisualStyle(style);
+//			VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
+//					.getClient(selectedClientID)).getDefaultVisualStyle();
+//			if (style == null) {
+//				style = Cytoscape.getVisualMappingManager().getVisualStyle();
+//			}
+//
+//			if (Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+//					.getVisualStyle(style.getName()) == null)
+//				Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+//						.addVisualStyle(style);
+//
+//			Cytoscape.getVisualMappingManager().setVisualStyle(style);
 			
 			// Name the network
 			final String[] message = { "Network Loaded from " + selectedClientID,
