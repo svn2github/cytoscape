@@ -92,6 +92,9 @@ public class RLEIntCompressor {
 			int i = 0;
 			while (i < compressedData.length) {
 				final int runLength = compressedData[i++];
+				if (runLength <= 0)
+					throw new IllegalStateException("invalid run length <= 0!");
+
 				final int value =  compressedData[i++];
 
 				for (int k = 0; k < runLength; ++k)
