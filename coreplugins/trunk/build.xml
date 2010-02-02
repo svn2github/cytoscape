@@ -24,6 +24,7 @@
 		<ant dir="filters" />
 		<ant dir="AdvancedNetworkMerge" />
 		<ant dir="NCBIClient" />
+		<ant dir="BioMartClient" />
 
 		<mkdir dir="${build.dir}" />
 		<copy todir="${build.dir}" file="browser/browser.jar" />
@@ -42,6 +43,7 @@
 		<copy todir="${build.dir}" file="filters/plugins/filters.jar" />
 		<copy todir="${build.dir}" file="AdvancedNetworkMerge/AdvancedNetworkMerge.jar" />
 		<copy todir="${build.dir}" file="NCBIClient/ncbiClient.jar" />
+		<copy todir="${build.dir}" file="BioMartClient/biomartClient.jar" />
 	</target>
 
 	<!-- clean all coreplugin projects  -->
@@ -62,6 +64,7 @@
 		<ant dir="filters" target="clean" />
 		<ant dir="AdvancedNetworkMerge" target="clean" />
 		<ant dir="NCBIClient" target="clean" />
+		<ant dir="BioMartClient" target="clean" />
 		<delete dir="${build.dir}" />
 	</target>
 
