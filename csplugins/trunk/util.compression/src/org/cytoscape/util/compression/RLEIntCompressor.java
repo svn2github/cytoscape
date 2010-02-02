@@ -52,7 +52,7 @@ class DynamicIntArray {
 /**
  * Class that implements run-length encoding of int arrays.
  */
-public class RLEIntCompressor {
+public class RLEIntCompressor implements IntCompressor {
 	public int[] compress(final int[] uncompressedData) {
 		int runLength = 0;
 		int currentValue = uncompressedData[0];
