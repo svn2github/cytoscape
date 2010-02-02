@@ -8,15 +8,15 @@ pluginName=BiomartClient
 pluginDescription=<p>Web Service client module for Biomart (<a href="http://www.biomart.org/">http://www.biomart.org/</a>).</p><p><strong><font color="red">Now GUI is integrated and you do not have to install UI plugin for this version.</font></strong>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.80
+pluginVersion=0.81
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.6
+cytoscapeVersion=2.6,2.7
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Network and Attribute I/O
+pluginCategory=Core
 
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Keiichiro Ono:UCSD Bioengineering
+pluginAuthorsIntsitutions=Keiichiro Ono:UCSD Dept. of Medicine
