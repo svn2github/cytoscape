@@ -463,30 +463,21 @@ public class PluginManager {
 	 *             If this method is called from a webstart instance
 	 */
 	public void delete() throws ManagerException {
-		String ErrorMsg = "Failed to completely delete the following installed components:\n";
-		boolean deleteError = false;
-		List<DownloadableInfo> ToDelete = pluginTracker
-				.getDownloadableListByStatus(PluginStatus.DELETE);
+		List<DownloadableInfo> toDelete = pluginTracker.getDownloadableListByStatus(
+		                                                             PluginStatus.DELETE);
 
-		for (DownloadableInfo infoObj : ToDelete) {
+		for (DownloadableInfo infoObj : toDelete) {
 			Installable ins = infoObj.getInstallable();
 
 			try {
 				if (ins.uninstall()) {
-					pluginTracker.removeDownloadable(infoObj,
-							PluginStatus.DELETE);
-					pluginTracker.removeDownloadable(infoObj,
-							PluginStatus.CURRENT);
+					pluginTracker.removeDownloadable(infoObj, PluginStatus.DELETE);
+					pluginTracker.removeDownloadable(infoObj, PluginStatus.CURRENT);
 				} // TODO um.....XXXX
-			} catch (ManagerException me) {
-				deleteError = true;
-				ErrorMsg += infoObj.getName() + " v"
-						+ infoObj.getObjectVersion() + "\n";
-				// me.printStackTrace();
-			}
-
-			if (deleteError) {
-				throw new ManagerException(ErrorMsg);
+			} catch (Exception me) {
+				throw new ManagerException( 
+				          "Failed to completely delete the following installed components:\n" + 
+						  infoObj.getName() + " v" + infoObj.getObjectVersion() + "\n", me);
 			}
 		}
 	}
