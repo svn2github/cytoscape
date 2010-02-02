@@ -1244,7 +1244,8 @@ public class MapBioPaxToCytoscape {
             }
 
             // pathway name
-            stringRef = BioPaxUtil.getParentPathwayName(resource, model).toString();
+            stringRef = BioPaxUtil.getParentPathwayName(resource, model)
+            	.toString().replaceAll("\\]|\\[", "").trim();
             nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
 
             //  add all xref ids for global lookup

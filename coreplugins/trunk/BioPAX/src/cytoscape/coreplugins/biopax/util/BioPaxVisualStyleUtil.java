@@ -364,15 +364,7 @@ public class BioPaxVisualStyleUtil {
 			String tip = 
 				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE)
 				+ "\n" +
-				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_AVAILABILITY) 
-				+ "\n" +
-				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_CELLULAR_LOCATIONS)
-				+ "\n" +
-				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_DATA_SOURCES)
-				+ "\n" +
-				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_PATHWAY_NAME)
-				+ "\n" + 
-				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_RDF_ID);
+				nodeAttributes.getListAttribute(id, MapBioPaxToCytoscape.BIOPAX_CELLULAR_LOCATIONS);
 
 			nodeView.setToolTip(tip);
 			

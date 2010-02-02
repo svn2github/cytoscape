@@ -30,23 +30,13 @@ package cytoscape.coreplugins.biopax;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.coreplugins.biopax.action.DisplayBiopaxXmlAction;
 import cytoscape.coreplugins.biopax.action.ExportAsBioPAXAction;
-import cytoscape.coreplugins.biopax.util.BioPaxUtil;
-import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
-import cytoscape.coreplugins.biopax.view.BioPaxDetailsPanel;
 import cytoscape.data.ImportHandler;
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.CyLayouts;
 import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyMenus;
 
-import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Properties;
 
 /**
@@ -57,19 +47,6 @@ import java.util.Properties;
 public class BiopaxPlugin extends CytoscapePlugin {
 	
 	protected static final CyLogger log = CyLogger.getLogger(BiopaxPlugin.class);
-	
-	// Set True to see debug messages
-	private static final boolean DEBUG = false;
-	
-	static {
-		BiopaxPlugin.log.setDebug(DEBUG);
-		BioPaxGraphReader.log.setDebug(DEBUG);
-		MapBioPaxToCytoscape.log.setDebug(DEBUG);
-		BioPaxDetailsPanel.log.setDebug(DEBUG);
-		BioPaxVisualStyleUtil.log.setDebug(DEBUG);
-		BioPaxUtil.log.setDebug(DEBUG);
-		DisplayBiopaxXmlAction.log.setDebug(DEBUG);
-	}
 	
 	/**
 	 * Version Major Number.
@@ -120,46 +97,13 @@ public class BiopaxPlugin extends CytoscapePlugin {
 			System.getProperties().put("proxyPort", proxyPort);
 		}
 		
+		// add export to BioPAX menu
 		CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
 		cyMenus.addAction(new ExportAsBioPAXAction());
-		CyLayoutAlgorithm allLayouts[] = CyLayouts.getAllLayouts()
-			.toArray(new CyLayoutAlgorithm[1]);
 		
-		// Put layout names in alphabetical order.
-		Arrays.sort(allLayouts, new Comparator<CyLayoutAlgorithm>() {
-			public int compare(CyLayoutAlgorithm o1, CyLayoutAlgorithm o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-		
-		// For each layout algorithm, create a menu item to select it as default when reading.
-		for (CyLayoutAlgorithm algo : allLayouts) {
-			cyMenus.addAction(new SelectDefaultLayoutAction(algo));
-		}
-
 		// to start listening to network events, like a load of a network from a session,
 		// we create an instance of a BioPaxContainerClass this contains the network listener
 		BioPaxContainer.getInstance();
 	}
 	
-	/**
-	 * For "Plugins->BioPaX Import->Default Layout" menu.
-	 * One of these actions exists for each known layout.
-	 * When the layout name is clicked, it becomes the default initial layout for future biopax reads.
-	 */
-	public class SelectDefaultLayoutAction extends CytoscapeAction {
-		private static final long serialVersionUID = 1L;
-		private CyLayoutAlgorithm algo = BioPaxGraphReader.getDefaultLayoutAlgorithm();
-		
-		public SelectDefaultLayoutAction(CyLayoutAlgorithm algo) {
-			super(algo.getName());
-			this.algo = algo;
-			this.setPreferredMenu("Plugins.BioPaX Import.Default Layout");
-		}
-
-		public void actionPerformed(ActionEvent ae) {
-			BioPaxGraphReader.setDefaultLayoutAlgorithm(algo);
-		}
-	}
-
 }

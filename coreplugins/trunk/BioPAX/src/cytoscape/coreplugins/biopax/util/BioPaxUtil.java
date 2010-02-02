@@ -727,26 +727,43 @@ public class BioPaxUtil {
 			Collection<Pathway> pws = model.getObjects(Pathway.class);
 			for(Pathway pw: pws) {
 				if(pw.getPathwayComponentsOf().isEmpty()
-						&& pw.getParticipantsOf().isEmpty()) {
+						&& pw.getParticipantsOf().isEmpty()
+						&& pw.getControlledOf().isEmpty()) {
 					modelName.append(" ").append(getNodeName(pw)); 
 				}
+			}
+			if(modelName.length()==0) {
+				Collection<Interaction> itrs = model.getObjects(Interaction.class);
+				for(Interaction it: itrs) {
+					if(it.getPathwayComponentsOf().isEmpty()
+							&& it.getControlledOf().isEmpty()
+							&& it.getParticipantsOf().isEmpty()) {
+						modelName.append(" ").append(getNodeName(it));
+					}
+				}	
 			}
 		} else { // Level 1 and 2
 			Collection<pathway> pws = model.getObjects(pathway.class);
 			for(pathway pw: pws) {
 				if(pw.isPATHWAY_COMPONENTSof().isEmpty()
-						&& pw.isPARTICIPANTSof().isEmpty()) {
+						&& pw.isPARTICIPANTSof().isEmpty()
+						&& pw.isCONTROLLEDOf().isEmpty()) {
 					modelName.append(" ").append(getNodeName(pw));
 				}
 			}
+			if(modelName.length()==0) {
+				Collection<interaction> itrs = model.getObjects(interaction.class);
+				for(interaction it: itrs) {
+					if(it.isPATHWAY_COMPONENTSof().isEmpty()
+							&& it.isPARTICIPANTSof().isEmpty()
+							&& it.isCONTROLLEDOf().isEmpty()) {
+						modelName.append(" ").append(getNodeName(it));
+					}
+				}	
+			}
 		}
 		
-		if ((modelName.length() > 0)) {
-			return modelName.toString();
-		}
-
-		
-		return null;
+		return modelName.toString().trim();
 	}
 	
 	/**
@@ -807,6 +824,36 @@ public class BioPaxUtil {
 			pathwayNames.add(getNodeName(bpe));
 		}
 			
+		
+		if(!pathwayNames.isEmpty()) {
+			return pathwayNames;
+		}
+		
+		// otherwise, find top-level interactions
+		procs = BioPaxUtil.getObjects(model, interaction.class, Interaction.class);
+		for(BioPAXElement itr : procs ) {
+			if( (itr instanceof interaction 
+				&& ((interaction)itr).isPATHWAY_COMPONENTSof().isEmpty()
+				&& ((interaction)itr).isPARTICIPANTSof().isEmpty()
+				&& ((interaction)itr).isCONTROLLEDOf().isEmpty()) 
+				||
+				(itr instanceof Interaction 
+				&& ((Interaction)itr).getPathwayComponentsOf().isEmpty()
+				&& ((Interaction)itr).getParticipantsOf().isEmpty()
+				&& ((Interaction)itr).getControlledOf().isEmpty()))
+			{
+				topPathways.add(itr);
+			}
+		}
+		pathways = fetchParentNodeNames(bpe, topPathways);
+		if(!pathways.isEmpty()) {
+			for(BioPAXElement pw : pathways) {
+				pathwayNames.add(getNodeName(pw));
+			}
+		} else if(bpe instanceof interaction || bpe instanceof Interaction) {
+			pathwayNames.add(getNodeName(bpe));
+		}
+		
 		return pathwayNames;
 	}
 	

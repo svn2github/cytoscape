@@ -106,15 +106,8 @@ public class BioPaxGraphReader implements GraphReader {
 		log.info("Model contains " + model.getObjects().size()
 				+ " BioPAX elements");
 		
-		
-		// Set network name (also checks if it exists)
 		networkName = getNetworkName(model);
 		
-		if(networkName==null 
-				|| networkName.trim().equals("")) {
-			networkName = fileName;
-		}
-
 		// Map BioPAX Data to Cytoscape Nodes/Edges (run as task)
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
@@ -134,7 +127,6 @@ public class BioPaxGraphReader implements GraphReader {
 		String candidateName;
 		String networkViewTitle = System.getProperty("biopax.network_view_title");
 		if (networkViewTitle != null && networkViewTitle.length() > 0) {
-			validNetworkName = true;
 			System.setProperty("biopax.network_view_title", "");
 			try {
 				networkViewTitle = URLDecoder.decode(networkViewTitle, "UTF-8");
@@ -148,13 +140,18 @@ public class BioPaxGraphReader implements GraphReader {
 		}
 		
 		if(candidateName == null || "".equalsIgnoreCase(candidateName)) {
-			int idx = fileName.lastIndexOf('/');
-			if(idx==-1) idx = fileName.lastIndexOf('\\');
-			candidateName = fileName.substring(idx+1);
+			candidateName = fileName;
 		}
 		
 		// Take appropriate adjustments, if name already exists
-		return CyNetworkNaming.getSuggestedNetworkTitle(candidateName);
+		String name = CyNetworkNaming.getSuggestedNetworkTitle(candidateName);
+		
+		if(log.isDebugging()) {
+			log.debug("Network name (adjusted) : " + candidateName
+					+ " (" + name + ")");
+		}
+		
+		return name;
 	}
 
 	/**
@@ -207,7 +204,7 @@ public class BioPaxGraphReader implements GraphReader {
 	 *
 	 * @param cyNetwork CyNetwork object.
 	 */
-	public void doPostProcessing(CyNetwork cyNetwork) {
+	public void doPostProcessing(final CyNetwork cyNetwork) {
 		// get cyNetwork id
 		this.networkId = cyNetwork.getIdentifier();
 		
@@ -217,12 +214,16 @@ public class BioPaxGraphReader implements GraphReader {
 		networkAttributes.setAttribute(networkId, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
 		//  Repair Canonical Name 
-		repairCanonicalName(cyNetwork);
+		repairNodesCanonicalName(cyNetwork);
 		
 		// repair network name
-		if (!validNetworkName) {
-			repairNetworkName(cyNetwork);
-		}
+		//repairNetworkName(cyNetwork);
+		//  Update UI.  Must be done via SwingUtilities...
+		SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
+				}
+			});
 
 		//  Set default Quick Find Index
 		networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
@@ -258,6 +259,9 @@ public class BioPaxGraphReader implements GraphReader {
 		VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
 		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+        // set tooltips
+		BioPaxVisualStyleUtil.setNodeToolTips(view);
+		// set style
 		view.setVisualStyle(bioPaxVisualStyle.getName());
 		manager.setVisualStyle(bioPaxVisualStyle);
 		view.applyVizmapper(bioPaxVisualStyle);
@@ -266,8 +270,6 @@ public class BioPaxGraphReader implements GraphReader {
 		CytoscapeWrapper.initBioPaxPlugInUI();
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
         bpContainer.showLegend();
-        
-        BioPaxVisualStyleUtil.setNodeToolTips(view);
         
         // add network listener
         NetworkListener networkListener = bpContainer.getNetworkListener();
@@ -323,7 +325,8 @@ public class BioPaxGraphReader implements GraphReader {
 	 *
 	 * @param cyNetwork CyNetwork Object.
 	 */
-	private static void repairNetworkName(final CyNetwork cyNetwork) {
+	/*
+	public static void repairNetworkName(final CyNetwork cyNetwork) {
 		try {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 			Iterator<CyNode> iter = cyNetwork.nodesIterator();
@@ -349,7 +352,7 @@ public class BioPaxGraphReader implements GraphReader {
 			// network is empty, do nothing
 		}
 	}
-	
+	*/
 
 	/**
 	 * Repairs Canonical Name;  temporary fix for bug:  1001.
@@ -358,7 +361,7 @@ public class BioPaxGraphReader implements GraphReader {
 	 *
 	 * @param cyNetwork CyNetwork Object.
 	 */
-	private static void repairCanonicalName(CyNetwork cyNetwork) {
+	private static void repairNodesCanonicalName(CyNetwork cyNetwork) {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		Iterator<CyNode> iter = cyNetwork.nodesIterator();
 		while (iter.hasNext()) {
