@@ -460,48 +460,14 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 			area
 					.setText("There are no network import web service clients installed.");
 		} else {
-			area
-					.setText("To install additional web service clients, click the install button below.");
+			area.setText("To install additional web service clients, click the install button below.");
 		}
 		area.setEditable(false);
 		area.setOpaque(false);
 		area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		internalPanel.add(area);
-		JButton installButton = new JButton("Install Web Services Pack");
-		installButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-		internalPanel.add(Box.createVerticalStrut(15));
-		internalPanel.add(installButton);
-		installPanel.add(internalPanel, BorderLayout.CENTER);
-		createInstallButtonListener(installButton);
 	}
-
-	private void createInstallButtonListener(JButton installButton) {
-		installButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				cytoscape.data.webservice.util.WebServiceThemeInstall wst = new cytoscape.data.webservice.util.WebServiceThemeInstall(
-						UnifiedNetworkImportDialog.this);
-				boolean displayError = false;
-				try {
-					cytoscape.plugin.DownloadableInfo InstalledTheme = wst
-							.installTheme();
-					if (InstalledTheme == null)
-						displayError = true;
-				} catch (java.io.IOException ioe) {
-					displayError = true;
-					logger.warn("I/O error reading theme: ", ioe);
-				} catch (org.jdom.JDOMException jde) {
-					displayError = true;
-					logger.warn("JDOM error parsing theme: ", jde);
-				} finally {
-					if (displayError)
-						JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-								"Failed to install the WebServiceThemePack",
-								"Install Error", JOptionPane.ERROR_MESSAGE);
-				}
-				setDatasource();
-			}
-		});
-	}
+	
 
 	private void searchButtonActionPerformed(final ActionEvent evt) {
 		selectedClientID = clientNames
