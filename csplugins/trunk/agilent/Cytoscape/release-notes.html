@@ -1,10 +1,35 @@
 <HTML>
 <HEAD>
-<TITLE>Cytoscape-AG Release Notes (version 0.01)</TITLE>
+<TITLE>Cytoscape-AG Release Notes (version 0.03)</TITLE>
 </HEAD>
 <BODY>
 
-<H1>Cytoscape-AG Release Notes (version 0.01)</H1>
+<H1>Cytoscape-AG Release Notes (version 0.03)</H1>
+Following is a list of the modifications (see comments with "MLC 01/31/10"):
+<OL>
+<LI>Added temporary ability to remove popup context menu for "WikiPathways Web Service Client", controlled by the runstring parameter ("W").
+<P>This is a temporary patch to stop the menu items for "WikiPathways Web Service Client" from showing up on node and edge popup menus. This must be changed here, versus in the code for the web service client because setting the menu item to empty still causes the menu item to appear, although blank.</P>
+<P>The reason for removing the menu is that the node interactions menu item hasn't worked
+   at times and when it has, the nodes returned caused the visual style to change.
+   So, we remove the menu items to avoid testing and debugging these issues and wait for fixes and will remove this Cytoscape patch in the future.</P> 
+<P>Changes were made in cytoscape.data.webservice.ui.WebServiceContextMenu.java.</P>
+</LI>
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>Cytoscape-AG Release Notes (version 0.02)</H2>
+Following is a list of the modifications (see comments with "MLC 01/21/10"):
+<OL>
+<LI>Changed the "Lobotomized" plugin manager, described in version 0.01, to have its functionality set based on the runstring parameter ("L"). This change included:
+<OL type=a>
+<LI>Adding an LMode instance variable that is set by the runstring parameter ("L") to CyMain.java.</LI>
+<LI>Adding the static method CyMain.isLobomizedPluginManagerMode().</LI>
+<LI>Changing the code in CytoscapeInit.init(), and PluginManager.registerPlugin() to use CyMain.isLobomizedPluginManagerMode().</LI>
+</OL>
+</OL>
+
+<H2>Cytoscape-AG Release Notes (version 0.01)</H2>
 
 This is a modified version of Cytoscape 2.6.3 for use where Cytoscape is not
 the top-level application and a parent application wishes to only use
@@ -21,7 +46,7 @@ regular Cytoscape and the use of this version of Cytoscape within the
 parent application. The problem is that the pluginManager will
 remember what plugins were loaded in passed runs of Cytoscape.
 <P>This change is performed in CytoscapeInit.init().</P></LI>
-<LI>Added a AGMode that is set by the runstring parameter ("A").
+<LI>Added an AGMode that is set by the runstring parameter ("A").
 <P>This is done in CyMain.java and includes the additional static
   method CyMain.isAGMode(). When in this mode, Cytoscape's GUI will
   not be presented, and Agilent-specific behavior will be executed. This
@@ -47,8 +72,8 @@ remember what plugins were loaded in passed runs of Cytoscape.
    look-and-feel. This change is in CyMain.parseCommandLine().</P.</LI>
 
 </OL>
-<HR>
-<SMALL><EM>This page was last updated: 12/08/09</EM></SMALL>
+
+<SMALL><EM>This page was last updated: 01/31/10</EM></SMALL>
 
 </BODY>
 </HTML>

@@ -96,9 +96,18 @@ public class CyMain implements CyInitParams {
 
 	protected CyLogger logger = null;
 
-    // MLC 12/08/09:
+    // MLC 12/08/09 BEGIN:
+    // Are we running in "Agilent" mode?:
     static private boolean AGMode;
-
+    // MLC 12/08/09 END.
+    // MLC 01/21/10 BEGIN
+    // Are we running in "Lobomized" mode?:
+    static private boolean LMode;
+    // MLC 01/21/10 END.
+    // MLC 01/31/10 BEGIN
+    // Temporary mode to be removed after certain bug fixes:
+    static private boolean WMode;
+    // MLC 01/31/10 END.
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -173,6 +182,12 @@ public class CyMain implements CyInitParams {
 		options.addOption("A", "Agilent", false, "Run with only minimal Cytoscape available for Agilent-based applications");
 		options.addOption("E", "Embedded", false, "Run in embedded window mode (a parent app controls Cytoscape)");
 		// MLC 12/08/09 END.
+		// MLC 01/21/10 BEGIN
+		options.addOption("L", "Lobotomized", false, "Run with a lobotomized plugin manager that has no memory of prior runs and only loads plugins from a given location");
+		// MLC 01/21/10 END.
+		// MLC 01/31/10 BEGIN
+		options.addOption("W", "NoWikiContextMenus", false, "Run removing Wikipathways Web Service Client context menus");
+		// MLC 01/31/10 END.
 		options.addOption(OptionBuilder.withLongOpt("session").withDescription(
 				"Load a cytoscape session (.cys) file.").withValueSeparator(
 				'\0').withArgName("file").hasArg() // only allow one session!!!
@@ -300,15 +315,47 @@ public class CyMain implements CyInitParams {
 		    AGMode = true;
 		}
 		// MLC 12/08/09 END.
+		// MLC 01/21/10 BEGIN
+		if (line.hasOption("L")) {
+		    LMode = true;
+		}		
+		// MLC 01/21/10 END.
+		// MLC 01/31/10 BEGIN
+		if (line.hasOption("W")) {
+		    WMode = true;
+		}		
+		// MLC 01/31/10 END.
 	}
 
     // MLC 12/08/09 BEGIN:
-    // Are we running in Agilent mode, where we just want the
-    // birds eye viewer and network windows?
+    /**
+     * Are we running in Agilent mode, where we just want the
+     * birds eye viewer and network windows?
+     */
     static public boolean isAGMode () {
 	return AGMode;
     }
     // MLC 12/08/09 END.
+    // MLC 01/21/10 BEGIN
+    /**
+     * Are we running in Lobotomize mode, where we just want the
+     * plugin manager to not remember previous plugins and also
+     * want it to load from only one given location?
+     */
+    static public boolean isLobomizedPluginManagerMode () {
+	return LMode;
+    }
+    // MLC 01/21/10 END.
+    // MLC 01/31/10 BEGIN
+    /**
+     * Are we running in temporary remove "WikiPathways" Menu items
+     * mode, where we stop the popup menu items for WikiPathways Web
+     * Service Client from being presented?
+     */
+    static public boolean isWikiPathwaysNoContextMenusMode () {
+	return WMode;
+    }
+    // MLC 01/31/10 END.
 
 	/**
 	 * Provides access to the session file parsed from arguments intercepted by

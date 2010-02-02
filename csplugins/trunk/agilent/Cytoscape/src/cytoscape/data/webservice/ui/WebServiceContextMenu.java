@@ -34,6 +34,8 @@
 */
 package cytoscape.data.webservice.ui;
 
+// MLC 01/31/10:
+import cytoscape.CyMain;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
 
@@ -103,7 +105,31 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 		}
 
 		List<JMenuItem> context = null;
-		final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+		// MLC 01/31/10 BEGIN:
+		// final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+		List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+
+		if (CyMain.isWikiPathwaysNoContextMenusMode ()) {
+		    // We remove the popup menus from "WikiPathways
+		    // Web Service Client" because node interactions
+		    // menu item hasn't worked at times and when it
+		    // has, the nodes returned caused the visual style
+		    // to change.  So, we remove the menu items to
+		    // avoid testing and debugging such issues:
+		    WebServiceClient clientToRemove = null;
+		    for (WebServiceClient client : clients) {
+			// NOTE: VERY Implementation dependent!:
+			if ("wikipathways".equals (client.getClientID())) {
+			    clientToRemove = client;
+			    break;
+			}
+		    }
+		    if (clientToRemove != null) {
+			clients.remove (clientToRemove);
+		    }
+		}
+		// MLC 01/31/10 END.
+
 
 		for (WebServiceClient client : clients) {
 			if (client instanceof WebServiceClientGUI) {
@@ -126,13 +152,25 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 		}
 
 		if(view instanceof NodeView) {
+		    // MLC 01/31/10 BEGIN:
+		    if ((!CyMain.isWikiPathwaysNoContextMenusMode ()) ||
+			(nodeRootMenu.getItemCount() > 0)) {
+			// MLC 01/31/10 END.
 			menu.add(this.nodeRootMenu);
 			if(nodeRootMenu.getItemCount() == 0)
-				nodeRootMenu.setEnabled(false);
+			    nodeRootMenu.setEnabled(false);
+			// MLC 01/31/10:
+		    }
 		} else {
+		    // MLC 01/31/10 BEGIN:
+		    if ((!CyMain.isWikiPathwaysNoContextMenusMode ()) ||
+			(edgeRootMenu.getItemCount() > 0)) {
+			// MLC 01/31/10 END.
 			menu.add(this.edgeRootMenu);
 			if(edgeRootMenu.getItemCount() == 0)
-				edgeRootMenu.setEnabled(false);
+			    edgeRootMenu.setEnabled(false);
+			// MLC 01/31/10:
+		    }
 		}
 	}
 }

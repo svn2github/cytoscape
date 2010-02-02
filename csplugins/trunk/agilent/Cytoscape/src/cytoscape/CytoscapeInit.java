@@ -228,17 +228,25 @@ public class CytoscapeInit {
 			// load from those listed on the command line
 			InstalledPlugins.addAll(initParams.getPlugins());
 
-			// MLC 12/08/09 BEGIN:
-			//    We lobotomize the plugin manager to only
-			//    load what is on the command line--no
-			//    previously remembered plugins:
-			//			// Get all directories where plugins have been installed
-			//			// going to have to be a little smart...themes contain their plugins
-			//			// in subdirectories
-			//			List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
-			// MLC: We just make an empty list:
-			List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = new ArrayList<cytoscape.plugin.DownloadableInfo>(0);
-			// MLC 12/08/09 END.
+			// MLC 01/21/10 BEGIN:
+			// // Get all directories where plugins have been installed
+			// // going to have to be a little smart...themes contain their plugins
+			// // in subdirectories
+			//    List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
+			List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins  = null;
+			if (CyMain.isLobomizedPluginManagerMode ()) {
+			    //    We lobotomize the plugin manager to only
+			    //    load what is on the command line--no
+			    //    previously remembered plugins:
+			    // MLC: We just make an empty list:
+			    MgrInstalledPlugins = new ArrayList<cytoscape.plugin.DownloadableInfo>(0);
+			} else {
+			    // Get all directories where plugins have been installed
+			    // going to have to be a little smart...themes contain their plugins
+			    // in subdirectories
+			    MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
+			}
+			// MLC 01/21/10 END.
 			for (cytoscape.plugin.DownloadableInfo dInfo : MgrInstalledPlugins) {
 				if (dInfo.getCategory().equals(cytoscape.plugin.Category.CORE.getCategoryText()))
 					continue;

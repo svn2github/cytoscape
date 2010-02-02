@@ -382,13 +382,15 @@ public class PluginManager {
 			// to the current list twice
 			logger.info("Track plugin: " + addToTracker);
 			if (addToTracker) {
-			    // MLC 12/08/09 BEGIN:
+			    // MLC 01/21/10 BEGIN:
 			    // Stop the tracker from remembering our plugins--we
 			    // don't want to affect a regular Cytoscape session
 			    // and load unexpected plugins because our Agilent
 			    // version of Cytoscape loaded some plugins:
-			    // pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
-			    // MLC 12/08/09 END.
+			    if (!CyMain.isLobomizedPluginManagerMode ()) {
+				pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
+			    }
+			    // MLC 01/21/10 END.
 			}
 		}
 		return PluginObj;
