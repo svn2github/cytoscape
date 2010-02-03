@@ -40,14 +40,7 @@ import java.io.ByteArrayOutputStream;
 
 public class BufferedImageCompressor {
 	static public int[] compress(final BufferedImage image) throws IllegalStateException {
-		final int[] imageAsIntArray;
-		if (image.getRaster().getDataBuffer() instanceof DataBufferInt) {
-			final DataBufferInt dataBuffer = (DataBufferInt)image.getRaster().getDataBuffer();
-			imageAsIntArray = dataBuffer.getData();
-		}
-		else
-			throw new IllegalStateException("image has an unknown internal representation!");
-
+		final int[] imageAsIntArray = getPixelArray(image);
 		return (new RLEIntCompressor()).compress(imageAsIntArray);
 	}
 
@@ -55,14 +48,17 @@ public class BufferedImageCompressor {
 		final int[] imageAsIntArray = (new RLEIntCompressor()).expand(compressedImage);
 
 		final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+		final int[] imageBuffer = getPixelArray(image);
+		System.arraycopy(imageAsIntArray, 0, imageBuffer, 0, imageAsIntArray.length);
+		return image;
+	}
+
+	static private int[] getPixelArray(final BufferedImage image) throws IllegalStateException {
 		if (image.getRaster().getDataBuffer() instanceof DataBufferInt) {
 			final DataBufferInt dataBuffer = (DataBufferInt)image.getRaster().getDataBuffer();
-			for (int i = 0; i < imageAsIntArray.length; ++i)
-				dataBuffer.setElem(i, imageAsIntArray[i]);
+			return dataBuffer.getData();
 		}
 		else
 			throw new IllegalStateException("image has an unknown internal representation!");
-
-		return image;
 	}
 }
