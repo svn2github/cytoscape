@@ -104,7 +104,7 @@ public abstract class FileUtil {
 	  * Returns a File object, this method should be used instead
 	  * of rolling your own JFileChooser.
 	  *
-	  * @return the location of the selcted file
+	  * @return the location of the selected file
 	  * @param title the title of the dialog box
 	  * @param load_save_custom a flag for the type of file dialog
 	  * @param filters an array of CyFileFilters that let you filter
@@ -114,6 +114,30 @@ public abstract class FileUtil {
 		return getFile(title, load_save_custom, filters, null, null);
 	}
 
+	/**
+	  * Returns a File object, this method should be used instead
+	  * of rolling your own JFileChooser.
+	  *
+	  * @return the location of the selected file
+	  * @param title the title of the dialog box
+	  * @param load_save_custom a flag for the type of file dialog
+	  * @param filters an array of CyFileFilters that let you filter
+	  *                based on extension
+	  * @param selectedFile selectedFile
+	  */	
+	public static File getFile(String title, int load_save_custom, CyFileFilter filter, File selectedFile) {
+		CyFileFilter[] filters = new CyFileFilter[1];
+		filters[0] = filter;
+		File[] selectedFiles = new File[1];
+		selectedFiles[0] = selectedFile;
+		
+		File[] result = getFiles(null, title, load_save_custom, filters, null, null, false, selectedFiles);
+
+		return ((result == null) || (result.length <= 0)) ? null : result[0];
+
+	}
+
+	
 	/**
 	 * Returns a File object, this method should be used instead
 	 * of rolling your own JFileChooser.
@@ -230,7 +254,33 @@ public abstract class FileUtil {
 	  *                    FileDialog there -- is this fixed in Java 1.5?)
 	  */
 	public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
-	                              String start_dir, String custom_approve_text, boolean multiselect) {
+            String start_dir, String custom_approve_text, boolean multiselect) {
+		return getFiles(parent, title, load_save_custom, filters, start_dir, custom_approve_text, multiselect, null);
+	}
+	
+	
+	/**
+	  * Returns a list of File objects, this method should be used instead
+	  * of rolling your own JFileChooser.
+	  *
+	  * @return and array of selected files, or null if none are selected
+	  * @param parent the parent of the JFileChooser dialog
+	  * @param title the title of the dialog box
+	  * @param load_save_custom a flag for the type of file dialog
+	  * @param filters an array of CyFileFilters that let you filter
+	  *                based on extension
+	  * @param start_dir an alternate start dir, if null the default
+	  *                  cytoscape MUD will be used
+	  * @param custom_approve_text if this is a custom dialog, then
+	  *                            custom text should be on the approve
+	  *                            button.
+	  * @param multiselect Enable selection of multiple files (Macs are
+	  *                    still limited to a single file because we use
+	  *                    FileDialog there -- is this fixed in Java 1.5?)
+	  * @param selectedFiles The list of selected files                
+	  */
+	public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
+	                              String start_dir, String custom_approve_text, boolean multiselect, File[] selectedFiles) {
 
 		if (parent == null) {
 			parent = Cytoscape.getDesktop();
@@ -251,6 +301,10 @@ public abstract class FileUtil {
 			// this is a Macintosh, use the AWT style file dialog
 			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(),title, load_save_custom);
 
+			if (!multiselect && selectedFiles != null){
+				chooser.setFile(selectedFiles[0].toString());					
+			}
+		
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions
 			CyFileFilter fileFilter = new CyFileFilter();
@@ -284,6 +338,13 @@ public abstract class FileUtil {
 			// this is not a mac, use the Swing based file dialog
 			JFileChooser chooser = new JFileChooser(start);
 
+			if (multiselect && selectedFiles != null){
+				chooser.setSelectedFiles(selectedFiles);					
+			}
+			if (!multiselect && selectedFiles != null){
+				chooser.setSelectedFile(selectedFiles[0]);					
+			}
+			
 			// set multiple selection, if applicable
 			chooser.setMultiSelectionEnabled(multiselect);
 
@@ -345,7 +406,7 @@ public abstract class FileUtil {
 			return result;
 		}
 	}
-
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
