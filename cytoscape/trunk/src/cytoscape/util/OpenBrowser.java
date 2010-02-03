@@ -46,7 +46,6 @@ import cytoscape.CytoscapeInit;
 import cytoscape.logger.CyLogger;
 
 import java.io.IOException;
-
 import java.util.Properties;
 
 
@@ -55,7 +54,8 @@ import java.util.Properties;
  */
 public abstract class OpenBrowser {
 
-	static String UNIX_PATH = "htmlview";
+	static String LINUX_PATH1 = "xdg-open";
+	static String LINUX_PATH2 = "htmlview";
 
 	static String MAC_PATH = "open";
 
@@ -67,44 +67,66 @@ public abstract class OpenBrowser {
 	 *
 	 * @param url DOCUMENT ME!
 	 */
-	public static void openURL(String url) {
-		Properties prop = CytoscapeInit.getProperties();
-		String defBrowser = prop.getProperty("defaultWebBrowser");
+	public static void openURL(final String url) {
+		final Properties prop = CytoscapeInit.getProperties();
+		final String defBrowser = prop.getProperty("defaultWebBrowser");
+		final String osName = System.getProperty("os.name");
 
-		String osName = System.getProperty("os.name");
+		boolean succeeded;
+		if (osName.startsWith("Windows"))
+			succeeded = openURLOnWindows(url, defBrowser);
+		else if (osName.startsWith("Mac"))
+			succeeded = openURLOnMac(url, defBrowser);
+		else // Assume Linux
+			succeeded = openURLOnLinux(url, defBrowser);
 
-		try {
-			String cmd;
+		if (!succeeded)
+			CyLogger.getLogger().warn("failed to launch browser!");
+	}
 
-			if (osName.startsWith("Windows")) {
-				cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
-			} else if (osName.startsWith("Mac")) {
-				cmd = MAC_PATH + " " + url;
-			} else {
-				if (defBrowser != null && !defBrowser.equals("") ) {
-					cmd = defBrowser + " " + url;
-				} else {
-					cmd = UNIX_PATH + " " + url;
-				}
-			}
+	private static boolean openURLOnWindows(final String url, final String defBrowser) {
+		final String cmd = (defBrowser != null) ? defBrowser + " " + url
+		                                        : WIN_PATH + " " + WIN_FLAG + " " + url;
+		CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
+		return tryExecute(cmd) == 0;
+	}
 
+	private static boolean openURLOnMac(final String url, final String defBrowser) {
+		final String cmd = (defBrowser != null) ? defBrowser + " " + url
+		                                        : MAC_PATH + " " + " " + url;
+		CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
+		return tryExecute(cmd) == 0;
+	}
+
+	private static boolean openURLOnLinux(final String url, final String defBrowser) {
+		String cmd;
+		if (defBrowser != null) {
+			cmd = defBrowser + " " + url;
 			CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
+			if (tryExecute(cmd) == 0)
+				return true;
+		}
 
-			Process p = Runtime.getRuntime().exec(cmd);
+		cmd = LINUX_PATH1 + " " + url;
+		CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
+		if (tryExecute(cmd) == 0)
 
-			try {
-				int exitCode = p.waitFor();
-
-				if (exitCode != 0) {
-					CyLogger.getLogger().warn("cmd failed, start new browser");
-					cmd = UNIX_PATH + " " + url;
-					p = Runtime.getRuntime().exec(cmd);
-				}
-			} catch (InterruptedException ex) {
-				CyLogger.getLogger().warn("failed to launch browser", ex);
-			}
-		} catch (IOException ioe) {
-			CyLogger.getLogger().warn("failed to launch browser", ioe);
+		cmd = LINUX_PATH2 + " " + url;
+		CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
+		return tryExecute(cmd) == 0;
+	}
+	
+	/**
+	 * @return the command's exit code
+	 */
+	private static int tryExecute(final String cmd) {
+		try {
+			final Process p = Runtime.getRuntime().exec(cmd);
+			return p.waitFor();
+		} catch (final InterruptedException e) {
+			return -1;
+		} catch (final IOException e) {
+			return -1;
 		}
 	}
 }
