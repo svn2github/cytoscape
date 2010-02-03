@@ -107,9 +107,18 @@ public class ExportAsInteractionsAction extends CytoscapeAction {
 
 	// MLC 09/19/05 END.
 	public void actionPerformed(ActionEvent e) {
+		
+		CyFileFilter cyFileFilter = new CyFileFilter("sif");
+		
+		String suggestedFileName = Cytoscape.getCurrentNetwork().getIdentifier();
+		if (!suggestedFileName.endsWith(".sif")){
+			suggestedFileName = suggestedFileName+ ".sif";
+		}
+
+		File suggestedFile = new File(suggestedFileName);
+				
 		// get the file name
-		File file = FileUtil.getFile("Save Network as Interactions", FileUtil.SAVE,
-		                             new CyFileFilter[] {  });
+		File file = FileUtil.getFile("Save Network as Interactions", FileUtil.SAVE, cyFileFilter, suggestedFile);
 
 		if (file != null) {
 			String fileName = file.getAbsolutePath();
