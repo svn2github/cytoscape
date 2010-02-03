@@ -46,10 +46,11 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
-import java.util.zip.ZipFile;
+import cytoscape.logger.CyLogger;
 
 /**
  * A utility class designed to capture methods used by multiple classes.
@@ -125,6 +126,8 @@ class JarUtil {
 		}
 
 		} catch (Exception e) {
+			CyLogger.getLogger().debug("Problem getting plugin class name for " +
+			                           fileName + " " + type, e);
 			throw new IOException(e.toString());
 		}
 
