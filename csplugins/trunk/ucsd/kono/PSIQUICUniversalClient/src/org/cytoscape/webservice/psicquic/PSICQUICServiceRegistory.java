@@ -356,15 +356,12 @@ public class PSICQUICServiceRegistory {
 				e.printStackTrace();
 				return null;
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			}
