@@ -1,7 +1,7 @@
 /*
   File: OpenBrowser.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2006-2010, The Cytoscape Consortium (www.cytoscape.org)
 
   The Cytoscape Consortium is:
   - Institute for Systems Biology
@@ -49,13 +49,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 
-/**
- *
- */
 public abstract class OpenBrowser {
-
-	static String LINUX_PATH1 = "xdg-open";
-	static String LINUX_PATH2 = "htmlview";
+	static String[] LINUX_BROWSERS =
+	        { "xdg-open", "htmlview", "firefox", "mozilla", "konqueror", "chrome", "chromium" };
 
 	static String MAC_PATH = "open";
 
@@ -98,7 +94,8 @@ public abstract class OpenBrowser {
 		return tryExecute(cmd) == 0;
 	}
 
-	private static boolean openURLOnLinux(final String url, final String defBrowser) {
+	private static boolean openURLOnLinux(final String url, final String defBrowser)
+	{
 		String cmd;
 		if (defBrowser != null) {
 			cmd = defBrowser + " " + url;
@@ -107,13 +104,14 @@ public abstract class OpenBrowser {
 				return true;
 		}
 
-		cmd = LINUX_PATH1 + " " + url;
-		CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
-		if (tryExecute(cmd) == 0)
+		for (final String browser : LINUX_BROWSERS) {
+			cmd = browser + " " + url;
+			CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
+			if (tryExecute(cmd) == 0)
+				return true;
+		}
 
-		cmd = LINUX_PATH2 + " " + url;
-		CyLogger.getLogger().info("Opening URL by command \"" + cmd + "\"");
-		return tryExecute(cmd) == 0;
+		return false;
 	}
 	
 	/**
