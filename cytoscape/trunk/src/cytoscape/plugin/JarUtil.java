@@ -125,7 +125,7 @@ class JarUtil {
 		}
 
 		} catch (Exception e) {
-			throw new IOException(e);
+			throw new IOException(e.toString());
 		}
 
 		return pluginClassName;
