@@ -115,7 +115,17 @@ public class ExportAsGMLAction extends CytoscapeAction {
 		String name;
 
 		try {
-			name = FileUtil.getFile("Export Network as GML", FileUtil.SAVE, new CyFileFilter[] {  })
+			
+			CyFileFilter cyFileFilter = new CyFileFilter("gml");
+			
+			String suggestedFileName = Cytoscape.getCurrentNetwork().getIdentifier();
+			if (!suggestedFileName.endsWith(".gml")){
+				suggestedFileName = suggestedFileName+ ".gml";
+			}
+
+			File suggestedFile = new File(suggestedFileName);
+			
+			name = FileUtil.getFile("Export Network as GML", FileUtil.SAVE, cyFileFilter, suggestedFile)
 			               .toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
