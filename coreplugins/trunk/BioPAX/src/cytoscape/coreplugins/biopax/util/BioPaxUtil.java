@@ -549,9 +549,16 @@ public class BioPaxUtil {
 					((org.biopax.paxtools.model.level2.XReferrable)bpe).getXREF(),
 						unificationXref.class) );
 		} else if(bpe instanceof org.biopax.paxtools.model.level3.XReferrable) {
-			return extractXrefs(new ClassFilterSet<UnificationXref>(
+			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
+			erefs.addAll(extractXrefs(new ClassFilterSet<UnificationXref>(
 					((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref(),
-						UnificationXref.class) );
+					UnificationXref.class) ));
+			if(bpe instanceof SimplePhysicalEntity && ((SimplePhysicalEntity)bpe).getEntityReference() != null) {
+				erefs.addAll(extractXrefs(new ClassFilterSet<UnificationXref>(
+						((SimplePhysicalEntity)bpe).getEntityReference().getXref(),
+						UnificationXref.class) ));
+			}
+			return erefs;
 		}
 		return new ArrayList<ExternalLink>();
 	}
@@ -571,9 +578,16 @@ public class BioPaxUtil {
 					((org.biopax.paxtools.model.level2.XReferrable)bpe).getXREF(),
 						relationshipXref.class) );
 		} else if(bpe instanceof org.biopax.paxtools.model.level3.XReferrable) {
-			return extractXrefs(new ClassFilterSet<RelationshipXref>(
+			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
+			erefs.addAll(extractXrefs(new ClassFilterSet<RelationshipXref>(
 					((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref(),
-						RelationshipXref.class) );
+					RelationshipXref.class) ));
+			if(bpe instanceof SimplePhysicalEntity && ((SimplePhysicalEntity)bpe).getEntityReference() != null) {
+				erefs.addAll(extractXrefs(new ClassFilterSet<RelationshipXref>(
+						((SimplePhysicalEntity)bpe).getEntityReference().getXref(),
+						RelationshipXref.class) ));
+			}
+			return erefs;
 		}
 		return new ArrayList<ExternalLink>();
 	}
@@ -594,9 +608,16 @@ public class BioPaxUtil {
 					((org.biopax.paxtools.model.level2.XReferrable)bpe).getXREF(),
 					publicationXref.class) );
 		} else if(bpe instanceof org.biopax.paxtools.model.level3.XReferrable) {
-			return extractXrefs(new ClassFilterSet<PublicationXref>(
+			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
+			erefs.addAll(extractXrefs(new ClassFilterSet<PublicationXref>(
 					((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref(),
-						PublicationXref.class) );
+					PublicationXref.class) ));
+			if(bpe instanceof SimplePhysicalEntity && ((SimplePhysicalEntity)bpe).getEntityReference() != null) {
+				erefs.addAll(extractXrefs(new ClassFilterSet<PublicationXref>(
+						((SimplePhysicalEntity)bpe).getEntityReference().getXref(),
+						PublicationXref.class) ));
+			}
+			return erefs;
 		}
 		
 		return new ArrayList<ExternalLink>();
@@ -614,7 +635,12 @@ public class BioPaxUtil {
 		} else if(bpe instanceof org.biopax.paxtools.model.level2.XReferrable) {
 			return extractXrefs(((org.biopax.paxtools.model.level2.XReferrable)bpe).getXREF());
 		} else if(bpe instanceof org.biopax.paxtools.model.level3.XReferrable) {
-			return extractXrefs(((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref());
+			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
+			erefs.addAll(extractXrefs(((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref()));
+			if(bpe instanceof SimplePhysicalEntity && ((SimplePhysicalEntity)bpe).getEntityReference() != null) {
+				erefs.addAll(extractXrefs(((SimplePhysicalEntity)bpe).getEntityReference().getXref()));
+			}
+			return erefs;
 		}
 		return new ArrayList<ExternalLink>();
 	}
@@ -688,8 +714,8 @@ public class BioPaxUtil {
 	 * @param bioPAXLevel
 	 * @return
 	 */
-	private static EditorMap getEditorMap(BioPAXLevel bioPAXLevel) {
-		return (bioPAXLevel == BioPAXLevel.L3) ? editorMapLevel3 : editorMapLevel2;
+	public static EditorMap getEditorMap(BioPAXLevel bioPAXLevel) {
+		return (bioPAXLevel == BioPAXLevel.L2) ? editorMapLevel2 : editorMapLevel3;
 	}
 	
 	/**

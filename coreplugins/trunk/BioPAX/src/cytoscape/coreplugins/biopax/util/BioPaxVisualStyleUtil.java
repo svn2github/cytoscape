@@ -224,9 +224,9 @@ public class BioPaxVisualStyleUtil {
 		for (Class c : BioPaxUtil.getSubclassNames(Interaction.class, interaction.class)) {
 			String entityName = c.getSimpleName();
 			discreteMappingWidth.putMapValue(BioPaxUtil.getTypeInPlainEnglish(entityName),
-			                                 new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH * BIO_PAX_VISUAL_STYLE_INTERACTION_NODE_SIZE_SCALE));
+			    new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH * BIO_PAX_VISUAL_STYLE_INTERACTION_NODE_SIZE_SCALE));
 			discreteMappingHeight.putMapValue(BioPaxUtil.getTypeInPlainEnglish(entityName),
-			                                  new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT * BIO_PAX_VISUAL_STYLE_INTERACTION_NODE_SIZE_SCALE));
+			    new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT * BIO_PAX_VISUAL_STYLE_INTERACTION_NODE_SIZE_SCALE));
 		}
 		
 		
@@ -234,19 +234,21 @@ public class BioPaxVisualStyleUtil {
 		for (Class c: BioPaxUtil.getSubclassNames(complex.class, Complex.class)) {
 			String entityName = c.getSimpleName();
 			discreteMappingWidth.putMapValue(BioPaxUtil.getTypeInPlainEnglish(entityName),
-				                                 new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH * BIO_PAX_VISUAL_STYLE_COMPLEX_NODE_SIZE_SCALE));
+				new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH * BIO_PAX_VISUAL_STYLE_COMPLEX_NODE_SIZE_SCALE));
 			discreteMappingHeight.putMapValue(BioPaxUtil.getTypeInPlainEnglish(entityName),
-				                                  new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT * BIO_PAX_VISUAL_STYLE_COMPLEX_NODE_SIZE_SCALE));
+				new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT * BIO_PAX_VISUAL_STYLE_COMPLEX_NODE_SIZE_SCALE));
 		}
 
+		/*
 		// hack for phosphorylated proteins - make them large so label fits within node
 		// commented out by Ethan Cerami, November 15, 2006
-		//        discreteMappingWidth.putMapValue(BioPaxConstants.PROTEIN_PHOSPHORYLATED,
-		//                new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH
-		//                        * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
-		//        discreteMappingHeight.putMapValue(BioPaxConstants.PROTEIN_PHOSPHORYLATED,
-		//                new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT
-		//                        * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
+		discreteMappingWidth.putMapValue(BioPaxUtil.PROTEIN_PHOSPHORYLATED,
+		     new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH
+		                 * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
+		discreteMappingHeight.putMapValue(BioPaxUtil.PROTEIN_PHOSPHORYLATED,
+		     new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT
+		                 * BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_SIZE_SCALE));
+		*/
 
 		// create and set node height calculator in node appearance calculator
 		Calculator nodeWidthCalculator = new BasicCalculator("BioPAX Node Width" + VERSION_POST_FIX,
@@ -362,7 +364,7 @@ public class BioPaxVisualStyleUtil {
 			NodeView nodeView = nodesIt.next();
 			String id = nodeView.getNode().getIdentifier();
 			String tip = 
-				nodeAttributes.getAttribute(id, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE)
+				nodeAttributes.getStringAttribute(id, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE)
 				+ "\n" +
 				nodeAttributes.getListAttribute(id, MapBioPaxToCytoscape.BIOPAX_CELLULAR_LOCATIONS);
 

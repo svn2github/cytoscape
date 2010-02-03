@@ -22,19 +22,29 @@ import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
 import giny.view.NodeView;
 
+import org.biopax.paxtools.controller.AbstractTraverser;
+import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.complex;
 import org.biopax.paxtools.model.level2.control;
 import org.biopax.paxtools.model.level2.conversion;
+import org.biopax.paxtools.model.level2.entity;
 import org.biopax.paxtools.model.level2.interaction;
+import org.biopax.paxtools.model.level2.openControlledVocabulary;
 import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level2.physicalEntityParticipant;
+import org.biopax.paxtools.model.level2.xref;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.Control;
+import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.Conversion;
+import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
+import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.biopax.paxtools.model.level3.Stoichiometry;
+import org.biopax.paxtools.model.level3.Xref;
 
 import ding.view.DNodeView;
 
@@ -48,8 +58,6 @@ import java.util.*;
  * Maps a BioPAX Model to Cytoscape Nodes/Edges.
  *
  * @author Ethan Cerami, Igor Rodchenkov (re-factoring using PaxTools API)
- * 
- * TODO later, re-write from scratch using 'AbstractTraverser'
  */
 public class MapBioPaxToCytoscape {
 	
@@ -1157,18 +1165,92 @@ public class MapBioPaxToCytoscape {
      * @param nodeId TODO
      * @param nodeAttributes    Node Attributes.
      */
-    public static void mapNodeAttribute(BioPAXElement resource, Model model, String nodeID) {
+    public static void mapNodeAttribute(BioPAXElement resource, Model model, final String nodeID) {
         if (resource != null) {
-            String stringRef;
+        	
+            String stringRef = "";
+            final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
             
-            CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-
+        	AbstractTraverser bpeAutoMapper = 
+        		new AbstractTraverser(BioPaxUtil.getEditorMap(model.getLevel())) {
+        		final CyLogger log = CyLogger.getLogger(AbstractTraverser.class);
+        		
+				@Override
+				protected void visitValue(Object obj, BioPAXElement bpe, Model m,
+						PropertyEditor editor) 
+				{
+					// make the most general property name
+					Class<? extends BioPAXElement> clazz = editor.getDomain();
+					String attrName = clazz.getSimpleName() + "." + editor.getProperty();
+					if(SimplePhysicalEntity.class.isAssignableFrom(clazz)) {
+						attrName = SimplePhysicalEntity.class.getSimpleName() + "." + editor.getProperty();
+					}
+					attrName = "biopax." + attrName;
+					
+					//skip node/edge elements
+		            if(obj instanceof BioPAXElement && 
+		            	BioPaxUtil.isOneOfBiopaxClasses((BioPAXElement)obj, 
+		            		entity.class, Entity.class, 
+		            		physicalEntityParticipant.class,
+		            		xref.class, Xref.class, 
+		            		openControlledVocabulary.class,
+		            		ControlledVocabulary.class,
+		            		Stoichiometry.class))
+		            {
+		            	// skip those are either nodes/edges themselves or mapped separately
+		            } else if (obj != null) {
+		            	String value = obj.toString();
+		            	if(log.isDebugging()) {
+		            		log.debug("set attribute '" + attrName 
+		            				+ "' for " + bpe + " = " 
+		            				+ value);
+		            	}
+		            	
+		                if(editor.isMultipleCardinality()) {
+		                	List<String> vals =  new ArrayList<String>();
+		                	if(nodeAttributes.getAttributeNames().toString().contains(attrName)) {
+		                		List oldVals = nodeAttributes.getListAttribute(nodeID, attrName);
+		                		if(oldVals != null) {
+		                			for(Object o : oldVals) {
+		                				vals.add(o.toString());
+		                			}
+		                		}
+		                	}
+		                	
+		                	if(value!= null && !"".equalsIgnoreCase(value.toString().replaceAll("\\]|\\[", ""))) 
+		                	{
+		                		vals.add(value);
+		                	}
+		                	
+		                	if(!vals.isEmpty()) {
+		                		nodeAttributes.setListAttribute(nodeID, attrName, vals);
+		                	}
+		                	
+		                } else {
+		                	//this strange thing may never happen...
+		                	if(nodeAttributes.getAttributeNames().toString().contains(attrName)) {
+		                		value += ", " + nodeAttributes.getStringAttribute(nodeID, attrName); 
+		                	}
+		                	nodeAttributes.setAttribute(nodeID, attrName, value);
+		                }
+		                
+		                if(obj instanceof BioPAXElement) {
+			            	traverse((BioPAXElement)obj, null);
+		                }
+		            }
+				}
+				
+			};
+        	
+			bpeAutoMapper.run(resource, null);
+			
             // type
             stringRef = addType(resource, nodeAttributes);
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_ENTITY_TYPE, stringRef);
             }
 
+/* NOT required anymore (see above)
             // short name
             stringRef = BioPaxUtil.getShortName(resource);
             if (stringRef != null) {
@@ -1198,7 +1280,7 @@ public class MapBioPaxToCytoscape {
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_COMMENT, stringRef);
             }
-
+*/
             // unification references
             stringRef = addXRefs(BioPaxUtil.getUnificationXRefs(resource));
             if (stringRef != null) {
@@ -1224,7 +1306,7 @@ public class MapBioPaxToCytoscape {
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_PUBLICATION_REFERENCES, stringRef);
             }
-
+/*
             // availability
             stringRef = BioPaxUtil.getAvailability(resource);
             if (stringRef != null) {
@@ -1236,7 +1318,7 @@ public class MapBioPaxToCytoscape {
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_DATA_SOURCES, stringRef);
             }
-
+*/
             // ihop links
             stringRef = addIHOPLinks(resource);
             if (stringRef != null) {
@@ -1387,6 +1469,13 @@ public class MapBioPaxToCytoscape {
 		nodeAttributes.setUserVisible(BIOPAX_UNIFICATION_REFERENCES, false);
 		nodeAttributes.setUserVisible(BIOPAX_CHEMICAL_MODIFICATIONS_MAP, false);
 
+		// tmp quick fix to hide those that are different in L2 and L3
+		nodeAttributes.setUserVisible(BIOPAX_NAME, false);
+		nodeAttributes.setUserVisible(BIOPAX_SHORT_NAME, false);
+		nodeAttributes.setUserVisible(BIOPAX_SYNONYMS, false);
+		nodeAttributes.setUserVisible(BIOPAX_AVAILABILITY, false);
+		nodeAttributes.setUserVisible(BIOPAX_COMMENT, false);
+		
 		//  Make these attributes non-editable
 		nodeAttributes.setUserEditable(BIOPAX_RDF_ID, false);
 	}

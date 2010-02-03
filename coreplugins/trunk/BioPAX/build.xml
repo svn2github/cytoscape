@@ -51,7 +51,10 @@
 
     <!-- cytoscape dir -->
     <property name="cytoscape.dir" value="../../cytoscape"/>
-		
+	
+	<!-- cytoscape plugins dir (developer's environment)-->
+	<property name="cytoscape.plugins.dir" value="${cytoscape.dir}/plugins/core"/>
+	
 	<!-- runtime classpath -->
 	<path id="runtime.classpath">
 	    <fileset dir="${cytoscape.dir}/lib">
@@ -185,10 +188,10 @@
     <!--  target to run cytoscape with biopax plugin -->
     <target depends="all" description="Runs Cytoscape with BioPAX Data."
         name="run">
-    	<copy file="${jars.dir}/${jar_file}" todir="${cytoscape.dir}/plugins" overwrite="true" />
+    	<copy file="${jars.dir}/${jar_file}" todir="${cytoscape.plugins.dir}" overwrite="true" />
         <java classname="cytoscape.CyMain" classpathref="runtime.classpath"
             fork="true" maxmemory="1000M">
-            <arg line="-p ${cytoscape.dir}/plugins"/>
+            <arg line="-p ${cytoscape.plugins.dir}"/>
         </java>
     </target>
 
