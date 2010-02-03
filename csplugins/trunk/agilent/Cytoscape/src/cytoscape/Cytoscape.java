@@ -448,10 +448,35 @@ public abstract class Cytoscape {
 				if ((mode == CyInitParams.EMBEDDED_WINDOW) ||
 				    CyMain.isAGMode()) {
 				// MLC 12/08/09 END.
-					// don't system exit since we are running as part
-					// of a bigger application. Instead, dispose of the
-					// desktop.
-					getDesktop().dispose();
+				    // MLC 02/02/10 BEGIN:
+				    // We would like to just dispose
+				    // of the desktop, but Cytoscape
+				    // is not designed to create a new
+				    // Cytoscape while another is
+				    // still alive.  In other words,
+				    // we can't just call 'CyMain.main
+				    // (args)' and have a new
+				    // Cytoscape that we can use. Many
+				    // operations, like
+				    // Cytoscape.getDesktop() just
+				    // return a singleton instance
+				    // that is now bound to the old
+				    // desktop. To make matters worse,
+				    // all the data content (mapping
+				    // structures, nodes, networks)
+				    // from previous usage is
+				    // there. So our approach is to
+				    // just make the existing desktop
+				    // not visible and reset Cytoscape
+				    // to a new session:
+				    // // don't system exit since we are running as part
+				    // // of a bigger application. Instead, dispose of the
+				    // // desktop.
+				    // getDesktop().dispose();
+				    getDesktop().setVisible (false);
+				    // get rid of existing data:
+				    Cytoscape.createNewSession ();
+				    // MLC 02/02/10 END.
 				} else {
 					System.exit(returnVal);
 				}
