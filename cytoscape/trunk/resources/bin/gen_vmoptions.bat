@@ -8,15 +8,18 @@ IF NOT %errorlevel% == 0 GOTO 32bit
 
 
 :64bit
-	echo -Xms20m > cytoscape.vmoptions 
+	echo -Xms20m      >  cytoscape.vmoptions 
 	echo -Xmx2000000m >> cytoscape.vmoptions 
 	GOTO end:
 
 
 :32bit
-	echo -Xms10m > cytoscape.vmoptions 
+	echo -Xms10m   >  cytoscape.vmoptions 
 	echo -Xmx1550m >> cytoscape.vmoptions 
 
+:: Shared JVM options.
+echo -Dswing.aatext=true               >> cytoscape.vmoptions
+echo -Dawt.useSystemAAFontSettings=lcd >> cytoscape.vmoptions
 
 :end
 set errorlevel=0

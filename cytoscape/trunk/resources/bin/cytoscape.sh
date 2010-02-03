@@ -12,11 +12,9 @@ if [ ! -e cytoscape.vmoptions  -a  -x $script_path/gen_vmoptions.sh ]; then
 fi
 
 if [ -r cytoscape.vmoptions ]; then
-    java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd \
-	`cat cytoscape.vmoptions` -cp $script_path/cytoscape.jar cytoscape.CyMain \
-	-p $script_path/plugins "$@"
+    java `cat cytoscape.vmoptions` -jar $script_path/cytoscape.jar -p $script_path/plugins "$@"
 else # Just use sensible defaults.
     java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss10M -Xmx1550M \
-	-cp $script_path/cytoscape.jar cytoscape.CyMain -p $script_path/plugins "$@"
+	-jar $script_path/cytoscape.jar -p $script_path/plugins "$@"
 fi
 

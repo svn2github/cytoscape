@@ -17,6 +17,6 @@ set /a N+=1
 set opt!N!=%%a
 )
 
-java -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd !opt1! !opt2! !opt3! !opt4! !opt5! -cp cytoscape.jar cytoscape.CyMain -p plugins %*
+java !opt1! !opt2! !opt3! !opt4! !opt5! !opt6! !opt7! !opt8! !opt9! -jar cytoscape.jar -p plugins %*
 
 
