@@ -120,12 +120,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	
 	private JPanel navigatorPanel;
 	
-	// New for Cytoscape 2.7: Command buttons will be placed here.
-	private JPanel commandPanel;
 	private JPanel networkTreePanel;
-	
-	private JToggleButton showNetworkIconButton;
-	
+		
 	private JPopupMenu popup;
 	private PopupActionListener popupActionListener;
 
@@ -182,23 +178,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(PANEL_PREFFERED_WIDTH, 700));
 		
-		// Setup command Panel
-		commandPanel = new JPanel(new SpringLayout());
-		commandPanel.setPreferredSize(new Dimension(PANEL_PREFFERED_WIDTH, 20));
-		commandPanel.setMaximumSize(new Dimension(10000, 20));
-		commandPanel.setMinimumSize(new Dimension(PANEL_PREFFERED_WIDTH, 20));
-		
-		showNetworkIconButton = new JToggleButton("+");
-		showNetworkIconButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Expand");
-				processIconColumn();
-			}
-		});
-		showNetworkIconButton.setPreferredSize(COMMAND_BUTTON_SIZE);
-		
-		commandPanel.add(showNetworkIconButton);
-		
 		networkTreePanel = new JPanel();
 		networkTreePanel.setLayout(new BoxLayout(networkTreePanel, BoxLayout.Y_AXIS));
 
@@ -218,8 +197,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 
 		final JScrollPane scroll = new JScrollPane(treeTable);
 
-		// Icon feature is turned off for now.
-		//networkTreePanel.add(commandPanel);
 		networkTreePanel.add(scroll);
 		split = new BiModalJSplitPane(cytoscapeDesktop, JSplitPane.VERTICAL_SPLIT,
 		                              BiModalJSplitPane.MODE_SHOW_SPLIT, networkTreePanel, navigatorPanel);
@@ -262,52 +239,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		treeTable.getColumn(ColumnTypes.NODES.getDisplayName()).setPreferredWidth(45);
 		treeTable.getColumn(ColumnTypes.EDGES.getDisplayName()).setPreferredWidth(45);
 		treeTable.setRowHeight(DEF_ROW_HEIGHT);
-	}
-	
-	private void processIconColumn() {
-		if (showNetworkIconButton.isSelected()) {
-			showIcons();
-		} else {
-			hideIcons();
-		}	
-	}
-	
-	private TableColumn iconColumn;
-	
-	private void showIcons() {
-		
-		
-		treeTableModel.addColumn(ColumnTypes.NETWORK_ICONS, 3);
-		if(iconColumn == null) {
-			iconColumn = new TableColumn(3);
-			iconColumn.setIdentifier(ColumnTypes.NETWORK_ICONS.getDisplayName());
-			iconColumn.setHeaderValue(ColumnTypes.NETWORK_ICONS.getDisplayName());
-			iconColumn.setCellRenderer(new IconTableCellRenderer());
-		}
-		treeTable.setRowHeight(NETWORK_ICON_SIZE + 2);
-		
-		
-		treeTable.addColumn(iconColumn);
-		updateIcons();
-	}
-	
-	private void hideIcons() {
-		treeTableModel.removeColumn(3);
-		treeTable.getColumnModel().removeColumn(iconColumn);
-		resetTable();
-	}
-	
-	private void updateIcons() {
-		final Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
-		
-		for(CyNetwork net: networkSet) {
-			final CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
-			if(view != null && view != Cytoscape.getNullNetworkView() && treeTableModel.getValueAt( getNetworkNode(net.getIdentifier()), 3) == null) {
-				final Icon networkIcon = new ImageIcon(((DGraphView)view).createImage(NETWORK_ICON_SIZE, NETWORK_ICON_SIZE, 1.0));
-				
-				treeTableModel.setValueAt(networkIcon, getNetworkNode(net.getIdentifier()), 3);
-			}
-		}
 	}
 	
 	
@@ -540,25 +471,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		}
 	}
 	
-
-	private class IconTableCellRenderer implements TableCellRenderer {
-
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			final JLabel label;
-			if(value != null && value instanceof Icon) { 
-				label = new JLabel();
-				label.setIcon((Icon) value);
-			} else
-				label = new JLabel("?");
-			
-			return label;
-		}
-		
-	}
-
+	
 	/**
 	 * This class listens to mouse events from the TreeTable, if the mouse event
 	 * is one that is canonically associated with a popup menu (ie, a right
