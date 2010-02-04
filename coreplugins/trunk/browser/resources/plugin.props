@@ -11,10 +11,10 @@ pluginName=Browser
 pluginDescription=Attribute browser
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.7
+pluginVersion=0.8
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.5,2.6
+cytoscapeVersion=2.5,2.6,2.7
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Core
