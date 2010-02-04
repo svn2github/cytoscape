@@ -281,6 +281,10 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 			
 			CyNetwork selectedNetwork = dlg.getSelectedNetwork();
 
+			if (selectedNetwork == null){
+				return;
+			}
+			
 			// Create a new Node
 			String nodeID = getSuggestedNodeID(selectedNetwork);//selectedNetwork.getIdentifier();//"node" + counter;
 			
@@ -312,6 +316,10 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 
 	private String getSuggestedNodeID(CyNetwork pSelectedNetwork){
 	
+		if (pSelectedNetwork == null){
+			return null;
+		}
+		
 		String suggestedNodeID = pSelectedNetwork.getIdentifier();
 		
 		while (true){
