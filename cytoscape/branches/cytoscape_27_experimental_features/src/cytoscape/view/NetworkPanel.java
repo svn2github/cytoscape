@@ -541,23 +541,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 	
 
-	private class IconTableCellRenderer implements TableCellRenderer {
-
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			final JLabel label;
-			if(value != null && value instanceof Icon) { 
-				label = new JLabel();
-				label.setIcon((Icon) value);
-			} else
-				label = new JLabel("?");
-			
-			return label;
-		}
-		
-	}
+	
 
 	/**
 	 * This class listens to mouse events from the TreeTable, if the mouse event
