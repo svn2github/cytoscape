@@ -43,6 +43,7 @@ import javax.swing.tree.TreePath;
  * @author Philip Milne
  */
 public abstract class AbstractTreeTableModel implements TreeTableModel {
+	
 	protected Object root;
 	protected EventListenerList listenerList = new EventListenerList();
 
