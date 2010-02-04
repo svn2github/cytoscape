@@ -93,7 +93,7 @@ import chemViz.tasks.TanimotoScorerTask;;
 /**
  * This plugin adds cheminformatics tools to Cytoscape.
  */
-public class ChemVizPlugin extends CytoscapePlugin implements
+public class ChemViz extends CytoscapePlugin implements
 		NodeContextMenuListener, EdgeContextMenuListener, PropertyChangeListener, 
 		MenuListener,ActionListener {
 	
@@ -116,7 +116,7 @@ public class ChemVizPlugin extends CytoscapePlugin implements
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public ChemVizPlugin() {
+	public ChemViz() {
 		try {
 			// Set ourselves up to listen for new networks
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
