@@ -96,6 +96,7 @@ public class CyAttributesReader {
 		throws IOException {
 
 		badDecode = false;
+		boolean guessedAttrType = false; // We later set this to true if we have to guess the attribute type.
 
 		try {
 			final BufferedReader reader;
@@ -198,6 +199,7 @@ public class CyAttributesReader {
 
 					if (firstLine) {
 						if (type < 0) {
+							guessedAttrType = true;
 							while (true) {
 								try {
 									new Integer((String) elmsBuff.get(0));
@@ -248,6 +250,7 @@ public class CyAttributesReader {
 
 					if (firstLine) {
 						if (type < 0) {
+							guessedAttrType = true;
 							while (true) {
 								try {
 									new Integer(val);
@@ -291,8 +294,19 @@ public class CyAttributesReader {
 				}
 			}
 		} catch (Exception e) {
-			String message = "failed parsing attributes file at line: " + lineNum
-			                 + " with exception: " + e.getMessage();
+			String message;
+			if (guessedAttrType) {
+				message = "failed parsing attributes file at line: " + lineNum
+					+ " with exception: " + e.getMessage()
+					+ " This is most likely due to a missing attribute type on the first line.\n"
+					+ "Attribute type should be one of the following: "
+					+ "(class=String), (class=Boolean), (class=Integer), or (class=Double). "
+					+ "(\"Double\" stands for a floating point a.k.a. \"decimal\" number.)"
+					+ " This should be added to end of the first line.";
+			}
+			else
+				message = "failed parsing attributes file at line: " + lineNum
+			                  + " with exception: " + e.getMessage();
 			CyLogger.getLogger(CyAttributesReader.class).warn(message, e);
 			throw new IOException(message);
 		}
