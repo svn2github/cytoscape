@@ -66,7 +66,7 @@ public abstract class OpenBrowser {
 	public static void openURL(final String url) {
 		final Properties prop = CytoscapeInit.getProperties();
 		String defBrowser = prop.getProperty("defaultWebBrowser");
-		if (defBrowser.equals(""))
+		if (defBrowser != null && defBrowser.equals(""))
 			defBrowser = null;
 		final String osName = System.getProperty("os.name");
 
