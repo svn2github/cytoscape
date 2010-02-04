@@ -1072,6 +1072,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		}
 	}
 	
+	public HashMap<String, Integer> getColumnWidthMap(){
+		return this.columnWidthMap;
+	}
 	
 	/**
 	 *  DOCUMENT ME!
