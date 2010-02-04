@@ -1,11 +1,11 @@
 /* main */
-#content.full { padding: 50px; }
+#content.full { padding: 30px 50px; }
 
 /* side links to right */
 #side_links { float: right; width: 230px; }
 #side_links a { text-decoration: underline; }
 .link a { text-decoration: none !important; }
-.button { text-align: center; cursor: pointer; background: #097288 url("../../img/layout/button_blue.png") repeat-x top center; border: 1px solid #adadad; height: 36px; font-size: 1.4em; line-height: 36px; padding: 0 0.5em 0 0.5em; border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; color: #ffffff; }
+.button { text-align: center; cursor: pointer; background: #097288 url("../../img/layout/button_blue.png") repeat-x top center; border: 1px solid #adadad; height: 36px; font-size: 1.25em; line-height: 36px; padding: 0 0.5em 0 0.5em; border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; color: #ffffff; }
 #download_latest { background: #9a0b0b url("../../img/layout/big_red_button.png") top center repeat-x; }
 #download a { color: #ffffff; text-decoration: none; }
 #download { margin-bottom: 3em; }

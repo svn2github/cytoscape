@@ -1,6 +1,6 @@
 <div id="about">
     <div id="use_line">
-        <span>Use Cytoscape Web to embed graphs in your site, like this:</span>
+        <span>Easily embed graphs in your website, like this:</span>
     </div>
     
     <div id="example">

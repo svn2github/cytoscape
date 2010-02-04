@@ -6,3 +6,6 @@ a.dl { margin-left: 1em; }
 
 /* emphasise the download of the latest--most supported--version */
 .subtitle.latest .dl { border: 1px solid #c1c1c1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; padding: 0.25em; background: #62977c url("../../img/layout/big_red_button.png") repeat-x center center; color: #ffffff; text-decoration: none; }
+.relase_details { margin-top: 0.5em; }
+.relase_details h3 { margin-top: 0; }
+.relase_details .notes { display: none; padding: 0em 0.25em 0.25em 0.25em; border: 1px solid #c1c1c1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }

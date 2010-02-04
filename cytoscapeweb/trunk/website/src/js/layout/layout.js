@@ -7,7 +7,6 @@ $(function(){
         this.target = "_blank";
 	});
 
-
     var search_default_text = $("#search_input").find("input").val();
     
     $("#search_input").find("input").blur(function(){
@@ -21,15 +20,6 @@ $(function(){
         }
         $("#search").addClass("focus");
     });
-    
-    var footer_default_opacity = $("#footer_content").find("a").css("opacity");
-    var footer_over_opacity = 1;
-    
-    $("#footer_content").find("a").mouseover(function(){
-        $(this).fadeTo(animation_speed, footer_over_opacity);
-    }).mouseout(function(){
-        $(this).fadeTo(animation_speed, footer_default_opacity);
-    }).mouseout();
     
     $("pre").each(function(){
         if( $(this).find("code").length > 0 ){
@@ -63,7 +53,6 @@ $(function(){
             
         }
     });
-    
     
     function make_pre_expandable(){
         var delay_before_closing_pre = 0;

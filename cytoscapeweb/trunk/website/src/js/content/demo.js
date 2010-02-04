@@ -151,9 +151,7 @@ $(function(){
     
     $("body").html('\
                         <div id="header" class="slice">\
-                            <a href="/">\
-                                <div id="logo"></div>\
-                            </a>\
+                            <a href="/"><div id="logo"></div></a>\
                             <div class="text">Try out the features of Cytoscape Web to see how you would use it in your site!</div>\
                         </div>\
                         <div id="cytoweb">\
@@ -750,8 +748,14 @@ $(function(){
         make_selection(
             "pdf",
             "PDF",
-            "Portable Document Format",
+            "Vector Image",
             true
+        );
+        make_selection(
+    		"png",
+    		"PNG",
+    		"Bitmap Image",
+    		true
         );
         
         hide_save_menu();

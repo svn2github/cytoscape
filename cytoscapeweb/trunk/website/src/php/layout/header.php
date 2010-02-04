@@ -57,7 +57,7 @@
     <body>
 	
         <div id="header" class="slice">
-            <a href="/"><div id="logo"><span>Cytoscape Web</span></div></a>
+            <a href="/"><div id="logo"></div></a>
             
             <div id="navigation_links">
                 <ul>

@@ -6,8 +6,10 @@
     $date = "";
     
     foreach($apis as $ver_name => $api){
-        $version = $api->version;
-        $date = $api->date;
+        if($api->version > $version){
+        	$version = $api->version;
+        	$date = $api->date;
+        }
     }
 
     include_js("/js/cytoscape_web/json2.min.js");
