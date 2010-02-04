@@ -47,11 +47,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -81,7 +79,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -94,9 +91,7 @@ import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CyNetworkNaming;
-import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
-import cytoscape.util.swing.TreeTableModel;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import ding.view.DGraphView;
 
@@ -263,9 +258,9 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	
 	
 	private void resetTable() {
-		treeTable.getColumn(ColumnModel.NETWORK.getDisplayName()).setPreferredWidth(170);
-		treeTable.getColumn(ColumnModel.NODES.getDisplayName()).setPreferredWidth(45);
-		treeTable.getColumn(ColumnModel.EDGES.getDisplayName()).setPreferredWidth(45);
+		treeTable.getColumn(ColumnTypes.NETWORK.getDisplayName()).setPreferredWidth(170);
+		treeTable.getColumn(ColumnTypes.NODES.getDisplayName()).setPreferredWidth(45);
+		treeTable.getColumn(ColumnTypes.EDGES.getDisplayName()).setPreferredWidth(45);
 		treeTable.setRowHeight(DEF_ROW_HEIGHT);
 	}
 	
@@ -283,11 +278,11 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	private void showIcons() {
 		
 		
-		treeTableModel.addColumn(ColumnModel.NETWORK_ICONS, 3);
+		treeTableModel.addColumn(ColumnTypes.NETWORK_ICONS, 3);
 		if(iconColumn == null) {
 			iconColumn = new TableColumn(3);
-			iconColumn.setIdentifier(ColumnModel.NETWORK_ICONS.getDisplayName());
-			iconColumn.setHeaderValue(ColumnModel.NETWORK_ICONS.getDisplayName());
+			iconColumn.setIdentifier(ColumnTypes.NETWORK_ICONS.getDisplayName());
+			iconColumn.setHeaderValue(ColumnTypes.NETWORK_ICONS.getDisplayName());
 			iconColumn.setCellRenderer(new IconTableCellRenderer());
 		}
 		treeTable.setRowHeight(NETWORK_ICON_SIZE + 2);
@@ -484,14 +479,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 
 	/**
-	 * @deprecated No longer used.  If you need to fire focus, call CytoscapeDesktop.setFocus().
-	 * will be removed 11/2008.
-	 */
-	@Deprecated
-	public void fireFocus(String network_id) {
-	}
-
-	/**
 	 * This method highlights a network in the NetworkPanel. 
 	 *
 	 * @param e DOCUMENT ME!
@@ -553,175 +540,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			updateVSMenu();
 		}
 	}
-
 	
-	private enum ColumnModel {
-		NETWORK("Network", TreeTableModel.class), NETWORK_ICONS("Overview", Icon.class),
-		NODES("Nodes", String.class), EDGES("Edges", String.class);
-		
-		private final String displayName;
-		private final Class<?> type;
-		
-		private ColumnModel(final String displayName, final Class<?> type) {
-			this.displayName = displayName;
-			this.type = type;
-		}
-		
-		public Class<?> getType() {
-			return type;
-		}
-		
-		public String getDisplayName() {
-			return displayName;
-		}
-	}
-	
-	
-	/**
-	 * Inner class that extends the AbstractTreeTableModel
-	 */
-	private final class NetworkTreeTableModel extends AbstractTreeTableModel {
-		
-		private List<ColumnModel> columnNames;
-		private final Map<String, Icon> networkIcons;
 
-		public NetworkTreeTableModel(Object root) {
-			super(root);
-			columnNames = new ArrayList<ColumnModel>();
-			columnNames.add(ColumnModel.NETWORK);
-			columnNames.add(ColumnModel.EDGES);
-			columnNames.add(ColumnModel.NODES);
-			
-			networkIcons = new HashMap<String, Icon>();
-		}
-		
-		public void addColumn(final ColumnModel model, final int idx) {
-			columnNames.add(idx, model);
-		}
-		
-		public void removeColumn(final int idx) {
-			columnNames.remove(idx);
-		}
-
-		public Object getChild(Object parent, int index) {
-			final Enumeration<?> tree_node_enum = ((DefaultMutableTreeNode) getRoot())
-			                                                                                                                                                                                                                                                                                                                                                                                                   .breadthFirstEnumeration();
-
-			while (tree_node_enum.hasMoreElements()) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_node_enum.nextElement();
-
-				if (node == parent) {
-					return node.getChildAt(index);
-				}
-			}
-
-			return null;
-		}
-
-		public int getChildCount(Object parent) {
-			Enumeration<?> tree_node_enum = ((DefaultMutableTreeNode) getRoot())
-			                                                                                                                                                                                                                                                                                                                                                                                                                  .breadthFirstEnumeration();
-
-			while (tree_node_enum.hasMoreElements()) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_node_enum.nextElement();
-
-				if (node == parent) {
-					return node.getChildCount();
-				}
-			}
-
-			return 0;
-		}
-
-		public int getColumnCount() {
-			return columnNames.size();
-		}
-
-		public String getColumnName(int column) {
-			return columnNames.get(column).getDisplayName();
-		}
-
-		public Class<?> getColumnClass(int column) {
-			return columnNames.get(column).getType();
-		}
-
-		public Object getValueAt(Object node, int column) {
-			if (columnNames.get(column).equals(ColumnModel.NETWORK))
-				return ((DefaultMutableTreeNode) node).getUserObject();
-			else if (columnNames.get(column).equals(ColumnModel.NODES)) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
-
-				return "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size()
-				       + ")";
-			} else if (columnNames.get(column).equals(ColumnModel.EDGES)) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
-
-				return "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()
-				       + ")";
-			} else if (columnNames.get(column).equals(ColumnModel.NETWORK_ICONS)) {
-				
-				return networkIcons.get(((NetworkTreeNode) node).getNetworkID());
-			}
-
-			return "";
-		}
-
-
-		public void setValueAt(Object aValue, Object node, int column) {			
-			if (columnNames.get(column).equals(ColumnModel.NETWORK)) {
-				((DefaultMutableTreeNode) node).setUserObject(aValue);
-			} else if(columnNames.get(column).equals(ColumnModel.NETWORK_ICONS) && aValue instanceof Icon) {
-				networkIcons.put(((NetworkTreeNode) node).getNetworkID(), (Icon) aValue);
-			}
-		}
-	}
-
-	public class NetworkTreeNode extends DefaultMutableTreeNode {
-		protected String network_uid;
-
-		public NetworkTreeNode(Object userobj, String id) {
-			super(userobj.toString());
-			network_uid = id;
-		}
-
-		protected void setNetworkID(String id) {
-			network_uid = id;
-		}
-
-		protected String getNetworkID() {
-			return network_uid;
-		}
-	}
-
-	private class TreeCellRenderer extends DefaultTreeCellRenderer {
-		
-		private static final long serialVersionUID = -678559990857492912L;
-
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
-		                                              boolean expanded, boolean leaf, int row,
-		                                              boolean hasFocus) {
-			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-
-			if (hasView(value)) {
-				setBackgroundNonSelectionColor(java.awt.Color.green.brighter());
-				setBackgroundSelectionColor(java.awt.Color.green.darker());
-			} else {
-				setBackgroundNonSelectionColor(java.awt.Color.red.brighter());
-				setBackgroundSelectionColor(java.awt.Color.red.darker());
-			}
-
-			return this;
-		}
-
-		private boolean hasView(Object value) {
-			NetworkTreeNode node = (NetworkTreeNode) value;
-			setToolTipText(Cytoscape.getNetwork(node.getNetworkID()).getTitle());
-
-			return Cytoscape.viewExists(node.getNetworkID());
-		}
-	}
-	
-	
 	private class IconTableCellRenderer implements TableCellRenderer {
 
 		public Component getTableCellRendererComponent(JTable table,
