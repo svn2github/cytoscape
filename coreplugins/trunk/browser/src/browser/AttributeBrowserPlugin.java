@@ -51,7 +51,9 @@ import java.util.Map.Entry;
 
 import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
-
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import java.util.HashMap;
 
 /**
  * Attribute browser's main class.<br>
@@ -151,6 +153,10 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			final List<String> edgeAttrSelected = new ArrayList<String>();
 			final List<String> networkAttrSelected = new ArrayList<String>();
 
+			List<String> nodeAttrColumnWidth = new ArrayList<String>();;
+			List<String> edgeAttrColumnWidth = new ArrayList<String>();;
+			List<String> networkAttrColumnWidth = new ArrayList<String>();;
+			
 			final List<String> nodeKeys = new ArrayList<String>();
 			final List<String> edgeKeys = new ArrayList<String>();
 			final List<String> networkKeys = new ArrayList<String>();
@@ -166,31 +172,85 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 					nodeKeys.add(key);
 				else if (key.contains("edge"))
 					edgeKeys.add(key);
-				else
+				else if (key.contains("network"))
 					networkKeys.add(key);
+				else {
+					System.out.println("Something wrong in the attribute browser property file");
+				}
 			}
 
 			Collections.sort(nodeKeys);
 			Collections.sort(edgeKeys);
 			Collections.sort(networkKeys);
 
-			for (String targetKey : nodeKeys)
-				nodeAttrSelected.add(prop.getProperty(targetKey));
+			for (String targetKey : nodeKeys) {
+				String value = prop.getProperty(targetKey);
+				String [] items = value.split("\t");
+				nodeAttrSelected.add(items[0]);
+				
+				if (items.length>1){
+					nodeAttrColumnWidth.add(items[1]);
+				}
+			}
 
-			for (String targetKey : edgeKeys)
-				edgeAttrSelected.add(prop.getProperty(targetKey));
+			for (String targetKey : edgeKeys) {
+				String value = prop.getProperty(targetKey);
+				String [] items = value.split("\t");
+				edgeAttrSelected.add(items[0]);
+				
+				if (items.length>1){
+					edgeAttrColumnWidth.add(items[1]);
+				}
+			}
 
-			for (String targetKey : networkKeys)
-				networkAttrSelected.add(prop.getProperty(targetKey));
+			for (String targetKey : networkKeys) {
+				String value = prop.getProperty(targetKey);
+				String [] items = value.split("\t");
+				networkAttrSelected.add(items[0]);
+				
+				if (items.length>1){
+					networkAttrColumnWidth.add(items[1]);
+				}				
+			}
 
 			nodeAttributeBrowser.setSelectedAttributes(nodeAttrSelected);
 			edgeAttributeBrowser.setSelectedAttributes(edgeAttrSelected);
 			networkAttributeBrowser.setSelectedAttributes(networkAttrSelected);
+			
+			// recover the column width
+			restoreTableColumnWidth(NODES, nodeAttrColumnWidth);
+			restoreTableColumnWidth(EDGES, edgeAttrColumnWidth);
+			restoreTableColumnWidth(NETWORK, networkAttrColumnWidth);
+						
 		} catch (IOException e) {
 			logger.error("Could not restore browser state.  Use defaults...", e);
 		}
 	}
 
+	private void restoreTableColumnWidth(DataObjectType pObjectType, List<String> attrColumnWidth){
+		
+		AttributeBrowser attBrowser = null;
+		if (pObjectType == NODES){
+			attBrowser = nodeAttributeBrowser;
+		} else if (pObjectType == EDGES){
+			attBrowser = edgeAttributeBrowser;			
+		} else if (pObjectType == NETWORK){
+			attBrowser = networkAttributeBrowser;			
+		}
+		
+		if (attrColumnWidth != null && attrColumnWidth.size() > 0){
+			
+			HashMap<String, Integer> attributeColumnWidthMap = attBrowser.getattributeTable().getColumnWidthMap();
+			TableColumnModel colModel = attBrowser.getattributeTable().getColumnModel();
+			for (int i=0; i< colModel.getColumnCount(); i++){
+				colModel.getColumn(i).setPreferredWidth(new Integer(attrColumnWidth.get(i)).intValue());
+				// It's important to save this value to the map to prevent it to be overwritten by other event
+				attributeColumnWidthMap.put(colModel.getColumn(i).getIdentifier().toString(), new Integer(attrColumnWidth.get(i)).intValue());
+			}							
+		}
+	}
+	
+		
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -206,7 +266,11 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			List<String> nodeAttr = nodeAttributeBrowser.getSelectedAttributes();
 
 			for (String name : nodeAttr) {
-				prop.setProperty("attributeBrowser.node.selectedAttr" + idx, name);
+				TableColumnModel colModel = nodeAttributeBrowser.getattributeTable().getColumnModel();
+				int colIndex = colModel.getColumnIndex(name);
+				Integer widthObj = new Integer(colModel.getColumn(colIndex).getWidth());
+				
+				prop.setProperty("attributeBrowser.node.selectedAttr" + idx, name + "\t" + widthObj.toString());				
 				idx++;
 			}
 
@@ -215,14 +279,25 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			List<String> edgeAttr = edgeAttributeBrowser.getSelectedAttributes();
 
 			for (String name : edgeAttr) {
-				prop.setProperty("attributeBrowser.edge.selectedAttr" + idx, name);
+				TableColumnModel colModel = edgeAttributeBrowser.getattributeTable().getColumnModel();
+				int colIndex = colModel.getColumnIndex(name);
+				Integer widthObj = new Integer(colModel.getColumn(colIndex).getWidth());
+				
+				prop.setProperty("attributeBrowser.edge.selectedAttr" + idx, name + "\t" + widthObj.toString());				
+				//prop.setProperty("attributeBrowser.edge.selectedAttr" + idx, name);
 				idx++;
 			}
 
 			idx = 0;
 
 			for (String name : networkAttributeBrowser.getSelectedAttributes()) {
-				prop.setProperty("attributeBrowser.network.selectedAttr" + idx, name);
+				
+				TableColumnModel colModel = networkAttributeBrowser.getattributeTable().getColumnModel();
+				int colIndex = colModel.getColumnIndex(name);
+				Integer widthObj = new Integer(colModel.getColumn(colIndex).getWidth());
+				
+				prop.setProperty("attributeBrowser.network.selectedAttr" + idx, name + "\t" + widthObj.toString());				
+				//prop.setProperty("attributeBrowser.network.selectedAttr" + idx, name);
 				idx++;
 			}
 
