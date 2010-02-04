@@ -54,7 +54,6 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.swing.DropDownMenuButton;
-import cytoscape.view.NetworkPanel.NetworkTreeNode;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.data.SelectEventListener;
@@ -168,6 +167,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		this.btnSelectAll.setEnabled(false);
 		this.btnDeSelect.setEnabled(false);
 
+		// reduce the text font to fit three buttons within visible window
+		this.btnSelectAll.setFont(new java.awt.Font("Tahoma", 0, 9));
+		this.btnDeSelect.setFont(new java.awt.Font("Tahoma", 0, 9));
+		this.btnApplyFilter.setFont(new java.awt.Font("Tahoma", 0, 9));
 		//
 		String[][] data = {{"","",""}};
 		String[] col = {"Network","Nodes","Edges"};
@@ -261,7 +264,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (((event.getTargetType() == SelectEvent.SINGLE_EDGE)
 			       || (event.getTargetType() == SelectEvent.EDGE_SET))) {
 				updateFeedbackTableModel();
-			} 		
+		} 		
 	}
 
 	private void updateFeedbackTableModel(){		
@@ -295,31 +298,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	
 	// Target network to watch selection
 	private CyNetwork currentNetwork;
-
-	
-	
-	
-	/*
-	????
-	public Object getValueAt(Object node, int column) {
-		if (column == 0)
-			return ((DefaultMutableTreeNode) node).getUserObject();
-		else if (column == 1) {
-			CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
-
-			return "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size()
-			       + ")";
-		} else if (column == 2) {
-			CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
-
-			return "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()
-			       + ")";
-		}
-
-		return "";
-	}
-*/
-	
 	
 	
 	public void refreshFilterSelectCMB() {
@@ -730,6 +708,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		add(pnlFilterDefinition, gridBagConstraints);
 
 		///
+		pnlButton.setLayout(new java.awt.FlowLayout());
+		
 		btnApplyFilter.setText("Apply Filter");
 		pnlButton.add(btnApplyFilter);
 
@@ -737,7 +717,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         pnlButton.add(btnSelectAll);
 
         btnDeSelect.setText("Deselect All");
-
         pnlButton.add(btnDeSelect);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -760,7 +739,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		// feedback panel
         pnlFeedBack.setLayout(new java.awt.GridBagLayout());
         pnlFeedBack.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        pnlFeedBack.setMinimumSize(new java.awt.Dimension(200,52));
+        pnlFeedBack.setMinimumSize(new java.awt.Dimension(pnlFeedBack.getWidth(),52));
+        //pnlFeedBack.setMinimumSize(new java.awt.Dimension(300,52));
         
         pnlScroll.setViewportView(tblFeedBack);
 
@@ -902,7 +882,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			JButton _btn = (JButton) _actionObject;
 
 			if (_btn == btnApplyFilter) {
-				//ApplyButton is clicked!
 				//System.out.println("\nApplyButton is clicked!");
 				//System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 				CompositeFilter theFilterToApply = (CompositeFilter) cmbSelectFilter.getSelectedItem();
@@ -923,20 +902,17 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
 			}
 			if (_btn == btnSelectAll){
-				//System.out.println("btnSelectAll is clicked");
 				Cytoscape.getCurrentNetwork().selectAllNodes();
+				
+				//System.out.println("Cytoscape.getCurrentNetwork().getClass() = "+Cytoscape.getCurrentNetwork().getClass());
+				
 				Cytoscape.getCurrentNetwork().selectAllEdges();
 
 				if (Cytoscape.getCurrentNetworkView() != null) {
 					Cytoscape.getCurrentNetworkView().updateView();
 				}
-				
-				//System.out.println("BBB id =" + Cytoscape.getCurrentNetwork().getIdentifier());
-				//System.out.println("BBB nodeCount =" + Cytoscape.getCurrentNetwork().getNodeCount());
-
 			}
 			if (_btn == btnDeSelect){
-				//System.out.println("btnDeSelect is clicked");
 				Cytoscape.getCurrentNetwork().unselectAllNodes();
 				Cytoscape.getCurrentNetwork().unselectAllEdges();
 				Cytoscape.getCurrentNetworkView().updateView();
