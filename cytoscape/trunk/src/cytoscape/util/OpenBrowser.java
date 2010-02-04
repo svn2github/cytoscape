@@ -79,7 +79,7 @@ public abstract class OpenBrowser {
 			succeeded = openURLOnLinux(url, defBrowser);
 
 		if (!succeeded)
-			CyLogger.getLogger().warn("failed to launch browser!");
+			CyLogger.getLogger().error("failed to launch browser!");
 	}
 
 	private static boolean openURLOnWindows(final String url, final String defBrowser) {
