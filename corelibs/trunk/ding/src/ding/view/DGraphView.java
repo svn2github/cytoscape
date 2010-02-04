@@ -307,8 +307,8 @@ public class DGraphView implements GraphView, Printable {
 	 * 
 	 * This is used by a new nested network feature from 2.7.
 	 */
-	private byte[] snapshotImage;
-	
+	private BufferedImage snapshotImage;
+
 	/**
 	 * Represents current snapshot is latest version or not.
 	 */
@@ -2605,22 +2605,16 @@ public class DGraphView implements GraphView, Printable {
 	 * @return Image of this view.  It is always up-to-date.
 	 */
 	TexturePaint getSnapshot(final double width, final double height) {
-		BufferedImage bufferedImage = null;
-
 		if (!latest) {
 			// Need to update snapshot.
-			bufferedImage =
+			snapshotImage =
 				(BufferedImage)createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1,
 				                           /* skipBackground = */ true);
-			snapshotImage = convertToCompressedImage(bufferedImage);
 			latest = true;
 		}
 
-		if (bufferedImage == null)
-			bufferedImage = convertToBufferedImage(snapshotImage);
-
 		final Rectangle2D rect = new Rectangle2D.Double(-width / 2, -height / 2, width, height);
-		final TexturePaint texturePaint = new TexturePaint(bufferedImage, rect);
+		final TexturePaint texturePaint = new TexturePaint(snapshotImage, rect);
 		return texturePaint;
 	}
 
