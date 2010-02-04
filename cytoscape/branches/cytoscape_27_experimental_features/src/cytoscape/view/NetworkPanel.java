@@ -279,7 +279,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			iconColumn.setHeaderValue(ColumnTypes.NETWORK_ICONS.getDisplayName());
 			iconColumn.setCellRenderer(new IconTableCellRenderer());
 		}
-		treeTable.setRowHeight(NETWORK_ICON_SIZE + 2);
+		treeTable.setRowHeight(NETWORK_ICON_SIZE + 6);
 		
 		
 		treeTable.addColumn(iconColumn);
