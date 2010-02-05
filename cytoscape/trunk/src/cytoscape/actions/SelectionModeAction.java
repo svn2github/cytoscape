@@ -75,9 +75,9 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 						});
 				}
 			});
-		nodes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
-		                                                        ActionEvent.META_MASK
-		                                                        | ActionEvent.SHIFT_MASK));
+		nodes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K,
+		                                                        ActionEvent.CTRL_MASK
+																| ActionEvent.SHIFT_MASK));
 
 		edges = new JCheckBoxMenuItem(new AbstractAction("Edges Only") {
 				public void actionPerformed(ActionEvent e) {
@@ -89,9 +89,9 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 						});
 				}
 			});
-		edges.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
-		                                                        ActionEvent.META_MASK
-		                                                        | ActionEvent.SHIFT_MASK));
+		edges.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K,
+		                                                        ActionEvent.CTRL_MASK
+		                                                        | ActionEvent.ALT_MASK));
 
 		nodesAndEdges = new JCheckBoxMenuItem(new AbstractAction("Nodes and Edges") {
 				public void actionPerformed(ActionEvent e) {
@@ -103,10 +103,8 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 						});
 				}
 			});
-		nodesAndEdges.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
-		                                                                ActionEvent.META_MASK
-		                                                                | ActionEvent.SHIFT_MASK
-		                                                                | ActionEvent.ALT_MASK));
+		nodesAndEdges.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K,
+		                                                                ActionEvent.CTRL_MASK));
 
 		modeGroup.add(nodes);
 		modeGroup.add(edges);
