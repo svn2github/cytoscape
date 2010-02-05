@@ -36,6 +36,7 @@ package org.cytoscape.coreplugin.cpath2.http;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import cytoscape.logger.CyLogger;
 
 /**
  * HTTPServer class provides a bare-bones
@@ -94,9 +95,8 @@ public class HTTPServer extends Thread {
         try {
             if (debug) System.out.println("HTTPServer, creating server socket...");
             ssocket = new ServerSocket(port);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+			CyLogger.getLogger(HTTPServer.class).warn("HTTPServer couldn't create socket.",e);
             return;
         }
 
@@ -114,9 +114,8 @@ public class HTTPServer extends Thread {
                     System.out.println("HTTPServer, instantiating new HTTPConnectionHandler");
                 new HTTPConnectionHandler(sock, listener, debug).start();
 
-            }
-            catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException e) {
+				CyLogger.getLogger(HTTPServer.class).warn("HTTPServer couldn't create connection handler.",e);
                 break;
 			}
 		}
