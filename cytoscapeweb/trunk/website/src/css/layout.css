@@ -7,7 +7,7 @@ a, .like_link { color: #0b94b1; text-decoration: underline; cursor: pointer; }
 a[rel=external] { background:transparent url(../img/layout/external_link.png) no-repeat scroll right center; padding-right:12px; }
 .pre_plain_link { font-size: 0.85em; }
 .slice { width: 100%; float: left; }
-h1, h2, h3 { font-family: Gill Sans, Gill Sans MT, Futura, Sans Serif; font-weight: normal; color: #0b94b1; clear: both; }
+h1, h2, h3 { font-family: Gill Sans, Gill Sans MT, Futura, Arial, sans-serif; font-weight: normal; color: #0b94b1; clear: both; }
 * + h1, * + h2, * + h3 { margin-top: 1.5em; }
 h1 + h2, h2 + h3 { margin-top: 0.5em; }
 h1 a, h2 a, h3 a { text-decoration: none; }
@@ -70,15 +70,16 @@ iframe { display: block; }
 #search_input { float: left; }
 #search_button { cursor: pointer; float: left; width: 22px; height: 100%; background: #aeaeae url("../img/layout/go.png") no-repeat center center; border-radius: 0; -moz-border-radius: 0; -webkit-border-radius: 0; }
 
+
 /* copyright */
 #copyright { text-align: right; font-size: 80%; color: #c6c6c6; float: right; width: 100%; margin-top: -2em; }
 
 /* footer */
-#footer { color: #777777; text-align: center; font-size: 0.85em; padding-top: 24px; }
+#footer { color: #777777; background-color: #000000; border: 1px #000000 solid; text-align: center; font-size: 0.85em; }
 #footer a { text-decoration: none; background: none; padding-right: 0; }
 
 /* page */
-#page { background-color: #ffffff; border: 1px #cfcfcf solid; margin: 0 auto 0 auto; width: 950px; -moz-box-shadow: 0 0 26px #bbbbbb; -webkit-box-shadow: 0 0 26px #bbbbbb; box-shadow: 0 0 26px #bbbbbb; }
+#page { background-color: #ffffff; border: 1px #bfbfbf solid; margin: 0 auto 0 auto; width: 950px; -moz-box-shadow: 0 0 26px #bbbbbb; -webkit-box-shadow: 0 0 26px #bbbbbb; box-shadow: 0 0 26px #bbbbbb; }
 #page_navigation { background-color: #abcfd6; float: left; width: 100%; }
 #page_navigation ul { margin: 0; list-style: none; display: block; }
 #page_navigation li { margin: 0; display: block; list-style: none; float: left; border-right: #bfdae0 solid 1px; padding: 4px 8px 4px 8px; }

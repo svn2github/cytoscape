@@ -22,7 +22,7 @@
 /* about */
 #about { width: 570px; float: left; margin: 0 50px 0 0; font-size: 1.25em; }
 #use_line { height: 23px; line-height: 23px; width: 100%; text-align: center; }
-#example { position: relative; width: 570px; height: 475px; background: red; margin-top: 25px; background: url("../../img/bg/browser_screen_with_peterson.png"); }
+#example { position: relative; width: 570px; height: 475px; background: red; background: url("../../img/bg/browser_screen_with_peterson.png"); }
 #viz, #loader { width: 543px; height: 410px; margin: 0; position: absolute; top: 51px; left: 13px; }
 #loader { display: none; background-color: #ffffff; background-image: url("../../img/layout/loader.gif"); z-index: 1; background-repeat: no-repeat; background-position: center center;}
 #location { position: absolute; height: 10px; width: 325px; left: 63px; top: 26px; line-height: 10px; padding-left: 2px; font-size: 8px; cursor: default; }

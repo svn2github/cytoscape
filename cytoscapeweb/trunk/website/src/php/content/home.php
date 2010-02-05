@@ -39,7 +39,7 @@
         <ul>
             <li>... a <em>reusable</em> component that allows you to <em>embed graphs</em> within HTML documents.</li>
             <li>... easily integrated in HTML via its <em>Javascript API</em>.</li>
-            <li>... <em>customisable</em> in what <em>data</em> it loads&mdash;<em>XGMML</em> and <em>GraphML</em> are supported&mdash;and how it <em> visually displays</em> that data.</li>
+            <li>... <em>customisable</em> in what <em>data</em> it loads and how it <em> visually displays</em> that data.</li>
             <li>... an <em>open source</em> project to which anyone can contribute.</li>
         </ul>
     </div>

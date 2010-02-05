@@ -11,10 +11,14 @@ by <a href="http://genomecanada.ca" rel="external">Genome Canada</a>, through th
 <a href="http://ontariogenomics.ca/" rel="external">Ontario Genomics Institute</a> (2007-OGI-TD-05).</p>
 
 <p>Cytoscape Web was created as a result of the need for a visualisation interface for the
-<a href="http://genemania.org" rel="external">GeneMANIA</a> project at the University of Toronto. Cytoscape Web
-was developed as an independent component so that it could be reused by others in the
-<a href="/about/license">spirit of open source software</a>.</p>
+<a href="http://genemania.org" rel="external">GeneMANIA</a> project at the University of Toronto.</p>
 
+<p>The idea was to create a simple version of <a href="http://www.cytoscape.org">Cytoscape</a> for the Web,
+not as a final user application, but as an independent component that could be reused by other developers.
+Despite using different technologies (<a href="http://www.adobe.com/products/flex/" rel="external"">Flex</a> and JavaScript), 
+Cytoscape Web follows most of the Cytoscape concepts (e.g. node shapes, visual mappings, XGMML support), but to a limited extent.</p>
+
+<p>Cytoscape Web is <strong>open-source</strong> software released under <a href="http://www.gnu.org/licenses/lgpl-2.1.html" rel="external">LGPL 2.1</a> license.</p>
 
 
 <h1>Client applications</h1>

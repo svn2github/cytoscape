@@ -15,7 +15,7 @@ $(window).load(function(){
     
     $(".relase_details").each(function() {
     	var html = $(this).html();
-    	html = '<span class="like_link pre_plain_link">Details</span>' +
+    	html = '<span class="like_link pre_plain_link">Release Notes</span>' +
     	       '<div class="notes">' + html + '</div>';
     	$(this).html(html);
     	
