@@ -21,7 +21,20 @@
 				<a href="http://www.utoronto.ca"> Toronto </a> |
 				<a href="http://portal.ncibi.org/gateway/index.html"> NCIBI </a>
 		  	</p>
-		  	<p>&copy; 2001-2010 Cytoscape Consortium </p>
+
+			<p>
+				&copy; 
+	            <?php
+	                $year = date("Y");
+	                
+	                if( $year == $first_year_of_project_release ){
+	                    echo $year;
+	                } else {
+	                    echo $first_year_of_project_release . '&ndash;' . $year;
+	                }
+	            ?>
+            	Cytoscape Consortium
+        	</p>
         </div>
 
     </body>

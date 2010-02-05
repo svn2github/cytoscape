@@ -80,18 +80,6 @@
                 </div>
             </form>
             
-            <div id="copyright"> &copy;
-                <?php
-                    $year = date("Y");
-                    
-                    if( $year == $first_year_of_project_release ){
-                        echo $year;
-                    } else {
-                        echo $first_year_of_project_release . '&ndash;' . $year;
-                    }
-                ?>
-            </div>
-            
         </div>
 		  
         <div id="page" class="slice">
