@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.BFEdge;
@@ -22,6 +23,49 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
+
+
+/**
+ * The sole purpose of this class is to sort networks according to decreasing score.
+ */
+class NetworkAndScore implements Comparable<NetworkAndScore> {
+	private final String nodeName;
+	private final Set<String> genes;
+	private final double score;
+	private final int index;
+	private static int nextIndex;
+
+	NetworkAndScore(final String nodeName, final Set<String> genes, final double score) {
+		this.nodeName = nodeName;
+		this.genes    = genes;
+		this.score    = score;
+		this.index    = nextIndex++;
+	}
+
+	String getNodeName() { return nodeName; }
+	Set<String> getGenes() { return genes; }
+	double getScore() { return score; }
+
+	public boolean equals(final Object o) {
+		if (!(o instanceof NetworkAndScore))
+			return false;
+
+		final NetworkAndScore other = (NetworkAndScore)o;
+		return other.score == score && other.index == index;
+	}
+
+	public int compareTo(final NetworkAndScore other) {
+		if (other == null)
+			throw new NullPointerException("can't compare this against null!");
+
+		if (other.score < score)
+			return -1;
+		else if (other.score > score)
+			return +1;
+		return other.index - index;
+	}
+}
+
 
 /**
  * @author ruschein
@@ -41,6 +85,7 @@ import cytoscape.visual.VisualStyle;
 	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
 	private int maxSize = 0;
 	private final int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 0);
+	private final PriorityQueue<NetworkAndScore> networksOrderedByScores = new PriorityQueue(100);
 
 	/**
 	 * Instantiates an overview network of complexes (modules) and one nested
@@ -73,7 +118,6 @@ import cytoscape.visual.VisualStyle;
 		int nodeIndex = 1;
 		double maxScore = Double.NEGATIVE_INFINITY;
 		maxSize = 0;
-		int moduleViewCount = 0;
 		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge :
 			     networkOfModules.edges())
 		{
@@ -84,23 +128,19 @@ import cytoscape.visual.VisualStyle;
 				final String nodeName = findNextAvailableNodeName("Complex"
 				                                                  + nodeIndex);
 
-				boolean createNetworkView = moduleViewCount++ < MAX_NETWORK_VIEWS;
 				sourceNode = makeOverviewNode(
-					nodeName, sourceModule, nodeAttribs, originalNetwork,
-					createNetworkView);
+					nodeName, sourceModule, nodeAttribs, originalNetwork);
 				++nodeIndex;
 			}
 
-			final TypedLinkNodeModule<String, BFEdge> targetModule = edge
-					.target().value();
+			final TypedLinkNodeModule<String, BFEdge> targetModule =
+				edge.target().value();
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
 				final String nodeName =
 					findNextAvailableNodeName("Complex" + nodeIndex);
-				boolean createNetworkView = moduleViewCount++ < MAX_NETWORK_VIEWS;
 				targetNode = makeOverviewNode(
-							      nodeName, targetModule, nodeAttribs, originalNetwork,
-							      createNetworkView);
+					nodeName, targetModule, nodeAttribs, originalNetwork);
 				++nodeIndex;
 			}
 
@@ -116,7 +156,7 @@ import cytoscape.visual.VisualStyle;
 			final double edgeScore = edge.value().link();
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score",
 			                         Double.valueOf(edgeScore));
-			if (edgeScore>maxScore)
+			if (edgeScore > maxScore)
 				maxScore = edgeScore;
 			// Selected if above cutoff
 			if (edgeScore >= cutoff) {
@@ -148,10 +188,22 @@ import cytoscape.visual.VisualStyle;
 		
 		Cytoscape.createNetworkView(overviewNetwork);
 		applyNetworkLayout(overviewNetwork, VisualStyleBuilder.getVisualStyle(), cutoff, maxScore);
-		
+
 		// Visually mark selected edges and nodes:
 		overviewNetwork.setSelectedEdgeState(selectedEdges, true);
 		overviewNetwork.setSelectedNodeState(selectedNodes, true);
+
+		int networkViewCount = 0;
+		NetworkAndScore network;
+		while ((network = networksOrderedByScores.poll()) != null) {
+			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
+			final CyNetwork nestedNetwork =
+				generateNestedNetwork(network.getNodeName(), network.getGenes(),
+				                      originalNetwork, createView);
+			final CyNode node =
+				Cytoscape.getCyNode(network.getNodeName(), /* create = */false);
+			node.setNestedNetwork(nestedNetwork);
+		}
 	}
 
 	CyNetwork getOverviewNetwork() {
@@ -163,24 +215,22 @@ import cytoscape.visual.VisualStyle;
 	 */
 	private CyNode makeOverviewNode(
 			final String nodeName, final TypedLinkNodeModule<String, BFEdge> module,
-			final CyAttributes nodeAttribs, final CyNetwork originalNetwork,
-			final boolean createNetworkView)
+			final CyAttributes nodeAttribs, final CyNetwork originalNetwork)
 	{
 		final CyNode newNode = Cytoscape.getCyNode(nodeName, /* create = */true);
 		moduleToCyNodeMap.put(module, newNode);
 		overviewNetwork.addNode(newNode);
 		final Set<String> genes = module.getMemberValues();
-		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT, Integer
-				.valueOf(genes.size()));
-		if (genes.size()>maxSize)
+		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT,
+		                         Integer.valueOf(genes.size()));
+		if (genes.size() > maxSize)
 			maxSize = genes.size();
 		
-		nodeAttribs.setAttribute(newNode.getIdentifier(), SCORE, Double
-				.valueOf(module.score()));
-		nodeAttribs.setAttribute(newNode.getIdentifier(), NODE_SIZE, Math
-				.sqrt(genes.size() / Math.PI));
-		newNode.setNestedNetwork(
-			generateNestedNetwork(nodeName, genes, originalNetwork, createNetworkView));
+		final double score = Double.valueOf(module.score());
+		nodeAttribs.setAttribute(newNode.getIdentifier(), SCORE, score);
+		nodeAttribs.setAttribute(newNode.getIdentifier(), NODE_SIZE,
+		                         Math.sqrt(genes.size() / Math.PI));
+		networksOrderedByScores.add(new NetworkAndScore(nodeName, genes, score));
 
 		return newNode;
 	}
@@ -209,10 +259,12 @@ import cytoscape.visual.VisualStyle;
 		for (final CyEdge edge : edges)
 			nestedNetwork.addEdge(edge);
 
-		if (createNetworkView)
+		if (createNetworkView) {
+			Cytoscape.createNetworkView(nestedNetwork);
 			applyNetworkLayout(nestedNetwork,
 			                   Cytoscape.getVisualMappingManager().getVisualStyle(),
 			                   null, null);
+		}
 
 		return nestedNetwork;
 	}
