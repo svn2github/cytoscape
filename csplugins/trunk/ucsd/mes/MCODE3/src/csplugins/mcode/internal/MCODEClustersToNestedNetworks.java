@@ -11,16 +11,19 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.util.PropUtil;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
 public class MCODEClustersToNestedNetworks {
 
-	private static MCODEVisualStyle vs; 
+	private static MCODEVisualStyle vs;
+	private static int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 0);
 
 	static {
 		vs = new MCODEVisualStyle("MCODE");
@@ -70,11 +73,14 @@ public class MCODEClustersToNestedNetworks {
 		// NOTE:  We have to apply the visual style after creation because otherwise
 		// an event gets fired and the visual style gets applied to the current network
 		// (i.e. the one we're analyzing) incorrectly. Grrrrr.
-		Cytoscape.createNetworkView(overview,overview.getIdentifier(),layout,null);
+		Cytoscape.createNetworkView(overview, overview.getIdentifier(), layout, null);
 		applyVisualStyle(overview,vs);
 
-		for ( CyNetwork net : nets ) { 
-			Cytoscape.createNetworkView(net,net.getIdentifier(),layout,null);
+		int viewCount = 0;
+		for ( CyNetwork net : nets ) {
+			if (viewCount++ > MAX_NETWORK_VIEWS)
+				break;
+			Cytoscape.createNetworkView(net, net.getIdentifier(), layout, null);
 			applyVisualStyle(net,vs);
 		}
 

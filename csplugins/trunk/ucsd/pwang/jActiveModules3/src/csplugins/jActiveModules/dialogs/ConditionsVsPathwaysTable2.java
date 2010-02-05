@@ -1,11 +1,6 @@
-// ConditionsVsPathwaysTable
-//------------------------------------------------------------------------------------------
-// $Revision: 14177 $
-// $Date: 2008-06-10 15:16:57 -0700 (Tue, 10 Jun 2008) $
-// $Author: rmkelley $
-//---------------------------------------------------------------------------------------
 package csplugins.jActiveModules.dialogs;
-//---------------------------------------------------------------------------------------
+
+
 import giny.model.Node;
 
 import java.awt.BorderLayout;
@@ -43,10 +38,12 @@ import csplugins.jActiveModules.ActivePathViewer;
 import csplugins.jActiveModules.ActivePaths;
 import csplugins.jActiveModules.Component;
 import csplugins.jActiveModules.ActiveModulesUI;
+import cytoscape.CytoscapeInit;
 import cytoscape.CyNetwork;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.Cytoscape;
 import cytoscape.CyEdge;
+import cytoscape.util.PropUtil;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.groups.CyGroup;
 
@@ -61,6 +58,7 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 	CyNetwork cyNetwork;
 	ActiveModulesUI parentUI;
 	Vector tableData;
+	private int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 0);
 
 	// -----------------------------------------------------------------------------------------
 	public ConditionsVsPathwaysTable2(CyNetwork cyNetwork,
@@ -125,9 +123,8 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 
 		final JButton createNetworkButton = new JButton(new AbstractAction("Create Network")
 		{
-			public void actionPerformed(ActionEvent e)
-			{
-				for (int i=0; i< table.getSelectedRowCount(); i++) {
+			public void actionPerformed(final ActionEvent e) {
+				for (int i = 0; i < table.getSelectedRowCount(); i++) {
 					int[] rows = table.getSelectedRows();
 
 					parentNetwork.unselectAllNodes();
@@ -138,8 +135,7 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 					Set nodes = parentNetwork.getSelectedNodes();
 					Set edges = new HashSet();
 					Iterator iterator = parentNetwork.edgesIterator();
-					while (iterator.hasNext())
-					{
+					while (iterator.hasNext()) {
 						CyEdge edge = (CyEdge) iterator.next();
 						if (nodes.contains(edge.getSource()) && nodes.contains(edge.getTarget()))
 							edges.add(edge);
@@ -147,9 +143,15 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 					CyNetwork newNetwork = Cytoscape.createNetwork(nodes, edges,
 						CyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork),
 						parentNetwork);
-					Cytoscape.createNetworkView(newNetwork, " results");
-					Cytoscape.getNetworkView(newNetwork.getIdentifier())
-						.setVisualStyle(Cytoscape.getNetworkView(parentNetwork.getIdentifier()).getVisualStyle().getName());					
+
+					final boolean createView = i < MAX_NETWORK_VIEWS;
+					if (createView) {
+						Cytoscape.createNetworkView(newNetwork, " results");
+						Cytoscape.getNetworkView(
+							newNetwork.getIdentifier()).setVisualStyle(
+								Cytoscape.getNetworkView(
+									parentNetwork.getIdentifier()).getVisualStyle().getName());
+					}
 				}
 			}			
 		});
