@@ -98,7 +98,7 @@ public class DGraphView implements GraphView, Printable {
 	boolean calledFromGetSnapshot = false;
 
 	// Size of snapshot image
-	private static final int DEF_SNAPSHOT_SIZE = 400;
+	protected static int DEF_SNAPSHOT_SIZE = 400;
 	
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
