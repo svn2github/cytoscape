@@ -33,21 +33,34 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.ding;
+package cytoscape.util;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.logger.CyLogger;
 import java.util.regex.Pattern;
+import java.util.Properties;
 
-class PropUtil {
+/**
+ * A stateless utility class that makes it easy to parse int and boolean values 
+ * from a Properties object.
+ */
+public class PropUtil {
 
 	private PropUtil() {}
 
 	private static CyLogger logger = CyLogger.getLogger(PropUtil.class);
 
-	static int getInt(String key, int defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
+	private static Pattern truePattern = Pattern.compile("^\\s*true\\s*$", Pattern.CASE_INSENSITIVE);
+	private static Pattern falsePattern = Pattern.compile("^\\s*false\\s*$", Pattern.CASE_INSENSITIVE);
+	private static Pattern yesPattern = Pattern.compile("^\\s*yes\\s*$", Pattern.CASE_INSENSITIVE);
+	private static Pattern noPattern = Pattern.compile("^\\s*no\\s*$", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * Will return an integer for the specified property key only if the
+	 * value exists and is properly formatted as an integer.  Otherwise
+	 * it will return the defaultValue.
+	 */
+	public static int getInt(Properties props, String key, int defaultValue) {
+		String val = props.getProperty(key);
 
 		if (val == null)
 			return defaultValue;
@@ -63,8 +76,13 @@ class PropUtil {
 		return ret;
 	}
 
-	static boolean getBoolean(String key, boolean defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
+	/**
+	 * Will return a boolean for the specified property key only if the
+	 * value exists and if the string matches "true", "false", "yes", or "no"
+	 * in a case insensitive manner.  Otherwise it will return the defaultValue.
+	 */
+	public static boolean getBoolean(Properties props, String key, boolean defaultValue) {
+		String val = props.getProperty(key);
 
 		if (val == null)
 			return defaultValue;
@@ -72,10 +90,12 @@ class PropUtil {
 		boolean ret = defaultValue;
 
 		try {
-			if (Pattern.compile("true", Pattern.CASE_INSENSITIVE).matcher(val).matches())
+			if (truePattern.matcher(val).matches() || yesPattern.matcher(val).matches())
 				ret = true;
-			else
+			else if (falsePattern.matcher(val).matches() || noPattern.matcher(val).matches())
 				ret = false;
+			else
+				ret = defaultValue;
 		} catch (Exception e) {
 			logger.warn("Property value for "+key+" must be a boolean");
 		}

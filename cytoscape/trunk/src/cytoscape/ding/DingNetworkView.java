@@ -56,6 +56,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.FlagAndSelectionHandler;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.util.PropUtil;
 import ding.view.DGraphView;
 import ding.view.EdgeContextMenuListener;
 import ding.view.NodeContextMenuListener;
@@ -576,7 +577,9 @@ public class DingNetworkView extends DGraphView implements CyNetworkView, Proper
 	}
 
 	private void checkSnapshotSize() {
-		final int newSize = PropUtil.getInt(NESTED_NETWORK_SNAPSHOT_SIZE_PROP,DEF_SNAPSHOT_SIZE);
+		final int newSize = PropUtil.getInt(CytoscapeInit.getProperties(),
+		                                    NESTED_NETWORK_SNAPSHOT_SIZE_PROP,
+		                                    DEF_SNAPSHOT_SIZE);
 		if ( newSize > 0 )
 			DEF_SNAPSHOT_SIZE = newSize;
 	}
