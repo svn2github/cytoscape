@@ -76,7 +76,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 				}
 			});
 		nodes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
-		                                                        ActionEvent.CTRL_MASK
+		                                                        ActionEvent.META_MASK
 		                                                        | ActionEvent.SHIFT_MASK));
 
 		edges = new JCheckBoxMenuItem(new AbstractAction("Edges Only") {
@@ -90,7 +90,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 				}
 			});
 		edges.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
-		                                                        ActionEvent.CTRL_MASK
+		                                                        ActionEvent.META_MASK
 		                                                        | ActionEvent.SHIFT_MASK));
 
 		nodesAndEdges = new JCheckBoxMenuItem(new AbstractAction("Nodes and Edges") {
@@ -104,7 +104,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 				}
 			});
 		nodesAndEdges.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
-		                                                                ActionEvent.CTRL_MASK
+		                                                                ActionEvent.META_MASK
 		                                                                | ActionEvent.SHIFT_MASK
 		                                                                | ActionEvent.ALT_MASK));
 
