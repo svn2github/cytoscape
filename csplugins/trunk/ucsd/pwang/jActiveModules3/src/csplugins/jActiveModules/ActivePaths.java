@@ -28,15 +28,12 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import csplugins.jActiveModules.dialogs.ConditionsVsPathwaysTable2;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectFilter;
-//import cytoscape.groups.CyGroup;
-//import cytoscape.groups.CyGroupManager;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
@@ -52,7 +49,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	protected JMenuBar menubar;
 	protected JMenu expressionConditionsMenu;
-	protected ConditionsVsPathwaysTable2 tableDialog;
 	protected String currentCondition = "none";
 	protected csplugins.jActiveModules.Component[] activePaths;
 	protected String[] attrNames;
@@ -357,23 +353,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		System.err.println("Done processing into Hash");
 		return tempHash;
-	}
-
-
-	protected void showConditionsVsPathwaysTable() {
-		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
-		//tableDialog = new ConditionsVsPathwaysTable2(mainFrame, cyNetwork,
-		//		attrNames, activePaths, this, parentUI);
-
-		cytoPanel.add("jActiveModules Results " + (resultsCount++), tableDialog);
-		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(tableDialog));
-		cytoPanel.setState(CytoPanelState.DOCK);
-		tableDialog.setVisible(true);
-		addActivePathToolbarButton();
-	}
-
-	protected ConditionsVsPathwaysTable2 getConditionsVsPathwaysTable() {
-		return tableDialog;
 	}
 
 	/**
