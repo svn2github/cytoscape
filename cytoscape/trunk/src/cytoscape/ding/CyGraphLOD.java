@@ -36,7 +36,6 @@ package cytoscape.ding;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.logger.CyLogger;
 
 import cytoscape.render.stateful.GraphLOD;
 
@@ -61,8 +60,6 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	protected int nodeLabelThreshold;
 	protected int edgeArrowThreshold;
 	protected int edgeLabelThreshold;
-
-	protected static CyLogger logger = CyLogger.getLogger(CyGraphLOD.class);
 
 	/**
 	 * Creates a new CyGraphLOD object.
@@ -91,59 +88,27 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	}
 
 	protected void init() {
-		coarseDetailThreshold = getInt("render.coarseDetailThreshold", 2000);
-		nodeBorderThreshold = getInt("render.nodeBorderThreshold", 200);
-		nodeLabelThreshold = getInt("render.nodeLabelThreshold", 100);
-		edgeArrowThreshold = getInt("render.edgeArrowThreshold", 300);
-		edgeLabelThreshold = getInt("render.edgeLabelThreshold", 120);
-
-		/*
-		        CyLogger.getLogger().info("(re)initializing level of detail (LOD)");
-		        CyLogger.getLogger().info("  coarseDetailThreshold: " + coarseDetailThreshold);
-		        CyLogger.getLogger().info("  nodeBorderThreshold: " + nodeBorderThreshold);
-		        CyLogger.getLogger().info("  nodeLabelThreshold: " + nodeLabelThreshold);
-		        CyLogger.getLogger().info("  edgeArrowThreshold: " + edgeArrowThreshold);
-		        CyLogger.getLogger().info("  edgeLabelThreshold: " + edgeLabelThreshold);
-		*/
-
-		//Cytoscape.getCurrentNetworkView().updateView();
+		coarseDetailThreshold = PropUtil.getInt("render.coarseDetailThreshold", 2000);
+		nodeBorderThreshold = PropUtil.getInt("render.nodeBorderThreshold", 200);
+		nodeLabelThreshold = PropUtil.getInt("render.nodeLabelThreshold", 100);
+		edgeArrowThreshold = PropUtil.getInt("render.edgeArrowThreshold", 300);
+		edgeLabelThreshold = PropUtil.getInt("render.edgeLabelThreshold", 120);
 	}
 
+	/**
+	 * @deprecated Use PropUtil.getInt(..) instead.  Leaving Feb 2011.
+	 */
+	@Deprecated
 	protected int getInt(String key, int defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
-
-		if (val == null)
-			return defaultValue;
-
-		int ret = defaultValue;
-
-		try {
-			ret = Integer.parseInt(val);
-		} catch (Exception e) {
-			logger.warn("Property value for "+key+" must be an integer");
-		}
-
-		return ret;
+		return PropUtil.getInt(key,defaultValue);
 	}
 
+	/**
+	 * @deprecated Use PropUtil.getBoolean(..) instead.  Leaving Feb 2011.
+	 */
+	@Deprecated
 	protected boolean getBoolean(String key, boolean defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
-
-		if (val == null)
-			return defaultValue;
-
-		boolean ret = defaultValue;
-
-		try {
-			if (Pattern.compile("true", Pattern.CASE_INSENSITIVE).matcher(val).matches())
-				ret = true;
-			else
-				ret = false;
-		} catch (Exception e) {
-			logger.warn("Property value for "+key+" must be a boolean");
-		}
-
-		return ret;
+		return PropUtil.getBoolean(key,defaultValue);
 	}
 
 	/**
