@@ -1,5 +1,4 @@
 #Cytoscape Property File
-#Wed Apr 06 15:28:22 PDT 2005
 secondaryViewThreshold=30000
 defaultSpeciesName=Saccharomyces cerevisiae
 defaultWebBrowser=
@@ -23,3 +22,5 @@ defaultPluginDownloadUrl=http://cytoscape.org/plugins/plugins.xml
 logger.console=false
 cytoscape.debug=false
 nestedNetworkSnapshotSize=400
+moduleNetworkViewCreationThreshold=15
+
