@@ -27,14 +27,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
+import csplugins.jActiveModules.Component;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectFilter;
 import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.PropUtil;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import java.util.HashSet;
@@ -50,7 +53,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected JMenuBar menubar;
 	protected JMenu expressionConditionsMenu;
 	protected String currentCondition = "none";
-	protected csplugins.jActiveModules.Component[] activePaths;
+	protected Component[] activePaths;
 	protected String[] attrNames;
 	protected static boolean activePathsFindingIsAvailable;
 	protected JButton activePathToolbarButton;
@@ -64,7 +67,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected static int resultsCount = 1;
 	protected ActiveModulesUI parentUI;
 	
-	//private static int groupCount = 0;
+	private static int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 0);
 	private static int pathCount = 0;	
 	private static int runCount = 0;	
 	
@@ -168,118 +171,43 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	}
 	
 	
-	private CyNetwork[] createSubnetworks(){
+	private CyNetwork[] createSubnetworks() {
 		CyNetwork[] subnetworks = new CyNetwork[activePaths.length];
 
-		pathCount = 0;
-		for (int i=0; i< activePaths.length; i++ ){
+		for (int i = 0; i < activePaths.length; i++) {
 			Component thePath = activePaths[i];
-			String pathName = "Path_" + runCount + "_" + pathCount++;
+			String pathName = "Path_" + runCount + "_" + (i + 1);
 			
 			// get nodes for this path
 			Vector nodeVect = (Vector) thePath.getDisplayNodes();
 			Set<CyNode> nodeSet = new HashSet<CyNode>();
-			for (int j=0; j< nodeVect.size(); j++){
+			for (int j = 0; j < nodeVect.size(); j++) {
 				CyNode oneNode = (CyNode) nodeVect.elementAt(j);
 				if (oneNode != null)
 					nodeSet.add(oneNode);
-				else {
-					//System.out.println("");
-				}
 			}
 			
 			// get edges for this path
 			Set edgeSet = new HashSet();
 			Iterator iterator = cyNetwork.edgesIterator();
-			while (iterator.hasNext())
-			{
+			while (iterator.hasNext()) {
 				CyEdge edge = (CyEdge) iterator.next();
 				if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget()))
 					edgeSet.add(edge);
 			}
 			
-			subnetworks[i] = Cytoscape.createNetwork(nodeSet, edgeSet, pathName, cyNetwork);
+			final boolean createView = i < MAX_NETWORK_VIEWS;
+			subnetworks[i] = Cytoscape.createNetwork(nodeSet, edgeSet, pathName, cyNetwork, createView);
 		}
 		
 		return subnetworks;
 	}
-	//
-	/*
-	private Vector<Object> createGroupData() {
-		
-		// This is for event
-		//final Set<CyGroup> groups = new HashSet<CyGroup>();
-		
-		//Vector<CyGroup> groupVect = new Vector<CyGroup>(); 
-		Double[] scores = new Double[activePaths.length]; 
-		Boolean[][] data = new Boolean[activePaths.length][activePaths[0].getConditions().length];
-		
-		for (int i=0; i<activePaths.length; i++){
-			Component thePath = activePaths[i];
-
-			// Create group for this pathway
-			// 1. Define the group name
-			String groupName = "Group_" + groupCount++;
-			
-			// 2. add nodes to the group
-			Vector nodeVect = (Vector) thePath.getDisplayNodes();
-			
-			List<CyNode> nodeList = new ArrayList<CyNode>();
-			for (int j=0; j< nodeVect.size(); j++){
-				CyNode oneNode = (CyNode) nodeVect.elementAt(j);
-				if (oneNode != null)
-					nodeList.add(oneNode);
-				else {
-					//System.out.println("ActivePaths: createTableData(): oneNode = null");
-				}
-			}
-			
-			// 3. Create Group
-			final CyGroup theGroup = CyGroupManager.createGroup(groupName, nodeList, ActivePaths.this.groupViewerName);
-
-			
-			//
-			groupVect.add(theGroup);
-			groups.add(theGroup);
-			
-			// get score for this pathway
-			scores[i] = new Double(thePath.getScore());
-			
-			//populate data items
-			String[] conditions = thePath.getConditions();
-			for (int j=0; j<thePath.getConditions().length; j++ ){
-				boolean matchedCondition = false;
-				
-				for (int cond = 0; cond < conditions.length; cond++) {
-					//String condition = conditionsForThisPath[cond];
-					if (attrNames[cond].equalsIgnoreCase(conditions[cond])) {
-						matchedCondition = true;
-						break;
-					}
-				}
-
-				if (matchedCondition)
-					data[i][j] = new Boolean(true);
-				else
-					data[i][j] = new Boolean(false);
-			}
-		}
-		
-		Vector<Object> retVect = new Vector<Object>();
-		retVect.add(groupVect);
-		retVect.add(scores);
-		retVect.add(data);
-		
-		Cytoscape.getSwingPropertyChangeSupport().firePropertyChange("MODULE_SEARCH_FINISHED", null, groups);
-		return retVect;
-	}
-*/
 	
 	/**
 	 * Returns the best scoring path from the last run. This is mostly used by
 	 * the score distribution when calculating the distribution
 	 */
-	protected csplugins.jActiveModules.Component getHighScoringPath() {
+	protected Component getHighScoringPath() {
 		System.err.println("High Scoring Path:");
 		System.err.println(activePaths);
 		System.err.println("Score: " + activePaths[0].getScore());
@@ -288,9 +216,9 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		System.err.println("Raw score: "
 				+ activePaths[0].calculateSimpleScore());
 		System.err.println("Mean: "
-				+ csplugins.jActiveModules.Component.pStats.getMean(size));
+				+ Component.pStats.getMean(size));
 		System.err.println("Std: "
-				+ csplugins.jActiveModules.Component.pStats.getStd(size));
+				+ Component.pStats.getStd(size));
 		return activePaths[0];
 	}
 
@@ -394,8 +322,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	 * find all of the unique node names in the full set of active paths. there
 	 * may be duplicates since some nodes may appear in several paths
 	 */
-	protected Vector combinePaths(
-			csplugins.jActiveModules.Component[] activePaths) {
+	protected Vector combinePaths(Component[] activePaths) {
 		HashSet set = new HashSet();
 		for (int i = 0; i < activePaths.length; i++) {
 			set.addAll(activePaths[i].getNodes());
@@ -415,8 +342,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	} // addActivePathToolbarButton
 	// ------------------------------------------------------------------------------
-	public void displayPath(csplugins.jActiveModules.Component activePath,
-			boolean clearOthersFirst, String pathTitle) {
+	public void displayPath(Component activePath, boolean clearOthersFirst, String pathTitle) {
 		titleForCurrentSelection = pathTitle;
 		SelectFilter filter = cyNetwork.getSelectFilter();
 		// cytoscapeWindow.selectNodesByName (activePath.getNodes (),
@@ -430,7 +356,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		  Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 	// ------------------------------------------------------------------------------
-	public void displayPath(csplugins.jActiveModules.Component activePath,
+	public void displayPath(Component activePath,
 			String pathTitle) {
 		displayPath(activePath, true, pathTitle);
 	}
