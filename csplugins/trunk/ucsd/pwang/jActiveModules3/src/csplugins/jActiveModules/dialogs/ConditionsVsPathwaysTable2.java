@@ -38,14 +38,15 @@ import csplugins.jActiveModules.ActivePathViewer;
 import csplugins.jActiveModules.ActivePaths;
 import csplugins.jActiveModules.Component;
 import csplugins.jActiveModules.ActiveModulesUI;
+import cytoscape.CyEdge;
+import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.CyNetwork;
-import cytoscape.util.CyNetworkNaming;
-import cytoscape.Cytoscape;
-import cytoscape.CyEdge;
-import cytoscape.util.PropUtil;
-import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.groups.CyGroup;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.PropUtil;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.cytopanels.CytoPanel;
 
 
 //---------------------------------------------------------------------------------------
@@ -84,8 +85,8 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 		columnNames[1] = "Size";
 		columnNames[2] = "Score";
 		
-		for (int i=0; i<conditionNames.length; i++ ){
-			columnNames[3+i] = conditionNames[i];
+		for (int i = 0; i < conditionNames.length; i++) {
+			columnNames[3 + i] = conditionNames[i];
 		}
 		return columnNames;
 	}
@@ -94,23 +95,13 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 
 		String[] columnNames= getTableColuimnNames();
 		
-		table = new JTable(new ActivePathsTableModel2(tableData,
-				columnNames));
+		table = new JTable(new ActivePathsTableModel2(tableData, columnNames));
 		table.setDefaultRenderer(Boolean.class, new ColorRenderer2());
 		JScrollPane scrollpane = new JScrollPane(table);
 
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-//		JPanel tablePanel = new JPanel();
-//		tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
-//
-//		topTable = new ConditionsVsPathwaysTopTable(activePaths);
-//		tablePanel.add(topTable);
-//		bottomTable = new ConditionsVsPathwaysBottomTable(conditionNames,
-//				activePaths, pathViewer);
-//		tablePanel.add(bottomTable);
-//		JScrollPane scrollPane = new JScrollPane(tablePanel);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;		c.gridy = 0;
 		c.weightx = 1.0;	c.weighty = 1.0;
@@ -124,6 +115,8 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 		final JButton createNetworkButton = new JButton(new AbstractAction("Create Network")
 		{
 			public void actionPerformed(final ActionEvent e) {
+				final String parentVisualStyle =
+					Cytoscape.getNetworkView(parentNetwork.getIdentifier()).getVisualStyle().getName();
 				for (int i = 0; i < table.getSelectedRowCount(); i++) {
 					int[] rows = table.getSelectedRows();
 
@@ -144,13 +137,10 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 						CyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork),
 						parentNetwork);
 
-					final boolean createView = i < MAX_NETWORK_VIEWS;
 					if (createView) {
-						Cytoscape.createNetworkView(newNetwork, " results");
-						Cytoscape.getNetworkView(
-							newNetwork.getIdentifier()).setVisualStyle(
-								Cytoscape.getNetworkView(
-									parentNetwork.getIdentifier()).getVisualStyle().getName());
+						final CyNetworkView newView =
+							Cytoscape.createNetworkView(newNetwork, " results");
+						newView.setVisualStyle(parentVisualStyle);
 					}
 				}
 			}			
@@ -200,9 +190,6 @@ public class ConditionsVsPathwaysTable2 extends JPanel {
 		c.gridx = 0;		c.gridy = 1;
 		c.weightx = 1.0;	c.weighty = 0.0;
 		add(buttonPanel, c);
-		//mainPanel.setPreferredSize(new Dimension(500, 500));
-		//setSize(800, 600);
-
 	}
 
 	public csplugins.jActiveModules.Component[] getActivePaths() {
