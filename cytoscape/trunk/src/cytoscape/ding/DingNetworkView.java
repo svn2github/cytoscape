@@ -59,18 +59,26 @@ import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.EdgeContextMenuListener;
 import ding.view.NodeContextMenuListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 /**
  * Extended version of DGraphView defined in Ding.
  * 
  */
-public class DingNetworkView extends DGraphView implements CyNetworkView {
+public class DingNetworkView extends DGraphView implements CyNetworkView, PropertyChangeListener {
 	private String title;
 	private boolean vizmapEnabled = true;
 	private HashMap clientData = new HashMap();
 	private VisualStyle vs;
 	private final FlagAndSelectionHandler flagHandler;
+
+	/**
+	 * A string used to specify the number of pixels wide and high the nested 
+	 * network image should be.
+	 */
+	public static final String NESTED_NETWORK_SNAPSHOT_SIZE_PROP = "nestedNetworkSnapshotSize";
 
 	/**
 	 * Creates a new DingNetworkView object.
@@ -95,6 +103,11 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 			addEdgeView(edges[i]);
 
 		flagHandler = new FlagAndSelectionHandler(getNetwork().getSelectFilter(), this);
+
+		// Allows us to update the nested network snapshot size based on
+		// a property.
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		checkSnapshotSize();
 	}
 
 	/**
@@ -556,42 +569,15 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 		layout.doLayout(this);
 	}
 
-	// AJK: 05/19/06 BEGIN
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void addNodeContextMenuListener(NodeContextMenuListener l) {
-		super.addNodeContextMenuListener(l);
+	public void propertyChange(PropertyChangeEvent e) {
+		if (Cytoscape.PREFERENCES_UPDATED.equals(e.getPropertyName())) {
+			checkSnapshotSize();
+		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void removeNodeContextMenuListener(NodeContextMenuListener l) {
-		super.removeNodeContextMenuListener(l);
+	private void checkSnapshotSize() {
+		final int newSize = PropUtil.getInt(NESTED_NETWORK_SNAPSHOT_SIZE_PROP,DEF_SNAPSHOT_SIZE);
+		if ( newSize > 0 )
+			DEF_SNAPSHOT_SIZE = newSize;
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void addEdgeContextMenuListener(EdgeContextMenuListener l) {
-		super.addEdgeContextMenuListener(l);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void removeEdgeContextMenuListener(EdgeContextMenuListener l) {
-		super.removeEdgeContextMenuListener(l);
-	}
-
-	// AJK: 05/19/06 END
 }
