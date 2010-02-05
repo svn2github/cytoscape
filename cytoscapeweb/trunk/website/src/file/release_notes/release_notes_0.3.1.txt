@@ -1,9 +1,20 @@
 <p>
-    This release contains only a few changes:
-    <ul>
+    This minor release fixes an issue that could crash IE and Firefox on Windows.
+    It also has a few other changes, including a default <code>Passthrough Mapper</code> for edge labels,
+    and a better <code>png()</code> function that does not crop the image anymore.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2130</span>: Circle layout doesn't "zoom to fit".</li>
+        <li><span class="bug_id">2142</span>: The pan control shortcut keys pan to the opposite direction.</li>
+        <li><span class="bug_id">2144</span>: The export to PNG feature should not crop the image.</li>
+        <li><span class="bug_id">2150</span>: Browser crashes with multiple node/edge selection.</li>
+    </ul>
+    <ul class="other_changes">
         <li>Added a default Passthrough Mapper for edge labels, making it easier to display them 
             (you just need to have an edge attribute called <code>"label"</code> in the network data and 
             set <code>edgeLabelsVisible</code> to <code>true</code>).</li>
-        <li>The minimum zoom value was decreased from 10% to 1%.</li>
+        <li>Removed the mouse-over tool tip from the Pan-Zoom Control and kept only the one that appears
+            when dragging the zoom slider.</li>
     </ul>
-</p>
+</div>
