@@ -57,7 +57,7 @@
     <body>
 	
         <div id="header" class="slice">
-            <a href="/"><div id="logo"></div></a>
+            <a href="/" title="Home"><div id="logo"></div></a>
             
             <div id="navigation_links">
                 <ul>
