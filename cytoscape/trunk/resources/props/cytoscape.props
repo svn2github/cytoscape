@@ -22,5 +22,5 @@ defaultPluginDownloadUrl=http://cytoscape.org/plugins/plugins.xml
 logger.console=false
 cytoscape.debug=false
 nestedNetworkSnapshotSize=400
-moduleNetworkViewCreationThreshold=15
+moduleNetworkViewCreationThreshold=0
 
