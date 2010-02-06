@@ -108,7 +108,7 @@ public class MCODEClustersToNestedNetworks {
 
 		int viewCount = 0;
 		for ( CyNetwork net : nets ) {
-			if (viewCount++ > MAX_NETWORK_VIEWS)
+			if (++viewCount > MAX_NETWORK_VIEWS)
 				break;
 			Cytoscape.createNetworkView(net, net.getIdentifier(), layout, null);
 			applyVisualStyle(net,vs);
