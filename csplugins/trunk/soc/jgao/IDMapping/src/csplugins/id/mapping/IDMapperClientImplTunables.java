@@ -62,6 +62,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     protected Tunable id;
     protected Tunable displayName;
     protected Tunable selected;
+    protected Tunable clientType;
 
     protected IDMapperClientProperties props;
 
@@ -72,38 +73,78 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     protected static final String CLASS_STRING = "class-name";
     protected static final String CONNECTION_STRING = "connection-string";
     protected static final String SELECTED = "selected";
+    protected static final String CLIENT_TYPE = "client-type";
 
-    public IDMapperClientImplTunables(String connectionString, String classString) {
-        this(connectionString, classString, null);
-    }
+    public static class Builder {
+        private String connectionString;
+        private String classString;
 
-    public IDMapperClientImplTunables(String connectionString, String classString,
-            String displayName) {
-        this(connectionString, classString, displayName, null);
-    }
+        // optional parameters
+        private String displayName = null;
+        private String id = null;
+        private boolean selected = true;
+        private ClientType clientType = null;
 
-    public IDMapperClientImplTunables(String connectionString, String classString,
-            String displayName, String id) {
-        this(connectionString, classString, displayName, id, true);
-    }
-
-    public IDMapperClientImplTunables(String connectionString, String classString,
-            String displayName, String id, boolean selected) {
-        if (connectionString==null || classString==null) {
-            throw new IllegalArgumentException();
+        public Builder(String connectionString, String classString) {
+            if (connectionString==null || classString==null) {
+                throw new IllegalArgumentException();
+            }
+            this.connectionString = connectionString;
+            this.classString = classString;
         }
+
+        public Builder displayName(String displayName) {
+            this.displayName = displayName;
+            return this;
+        }
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder selected(boolean selected) {
+            this.selected = selected;
+            return this;
+        }
+
+        public Builder clientType(ClientType clientType) {
+            this.clientType = clientType;
+            return this;
+        }
+
+        public IDMapperClientImplTunables build() {
+            return new IDMapperClientImplTunables(this);
+        }
+    }
+
+    private IDMapperClientImplTunables(Builder builder) {
 
         //Class.forName(classString);
         //mapper = BridgeDb.connect(connectionString);
 
-        String defId = id==null?""+clientNo+"-"+System.currentTimeMillis():id;
+        String defId = builder.id==null?""+clientNo+"-"
+                +System.currentTimeMillis():builder.id;
+
+        ClientType defClientType = builder.clientType;
+        if (defClientType==null) {
+            try {
+                Class.forName(builder.classString);
+                mapper = BridgeDb.connect(builder.connectionString);
+                defClientType = ClientType.getClientType(mapper);
+            } catch (Exception e) {
+                defClientType = ClientType.OTHER;
+            }
+        }
+
         props = new IDMapperClientProperties(defId);
 
-        initilizeTunables(connectionString,
-                classString,
-                displayName==null?connectionString:displayName,
+        initilizeTunables(builder.connectionString,
+                builder.classString,
+                builder.displayName==null?builder.connectionString:builder.displayName,
                 defId,
-                selected);
+                builder.selected,
+                defClientType);
 
         props.saveProperties();
         
@@ -114,7 +155,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         this.props = props;
 
         String defId = ""+clientNo+"-"+System.currentTimeMillis();
-        this.initilizeTunables("", "", defId, defId, true);
+        this.initilizeTunables("", "", defId, defId, true, ClientType.OTHER);
 
         if (newPropsId!=null) {
             this.props = new IDMapperClientProperties(newPropsId, props);
@@ -131,7 +172,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     }
 
     private void initilizeTunables(String connectionString, String classString,
-            String displayName, String id, boolean selected) {
+            String displayName, String id, boolean selected, ClientType clientType) {
         this.id = new Tunable(CLIENT_ID, "ID for client", Tunable.STRING, id);
         props.add(this.id);
 
@@ -153,6 +194,10 @@ public class IDMapperClientImplTunables implements IDMapperClient {
                     selected);
         props.add(this.selected);
 
+        this.clientType = new Tunable(CLIENT_TYPE,
+                    "Client type", Tunable.NOINPUT, clientType.name());
+        props.add(this.clientType);
+
         props.initializeProperties(); // save to props or set to tunables
     }
 
@@ -162,6 +207,10 @@ public class IDMapperClientImplTunables implements IDMapperClient {
 
     public String getDisplayName() {
         return (String)displayName.getValue();
+    }
+
+    public ClientType getClientType() {
+        return ClientType.valueOf((String)clientType.getValue());
     }
 
     public IDMapper getIDMapper() {

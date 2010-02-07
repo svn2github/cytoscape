@@ -37,12 +37,34 @@ package csplugins.id.mapping;
 
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.file.IDMapperFile;
+import org.bridgedb.rdb.IDMapperRdb;
+import org.bridgedb.webservice.IDMapperWebservice;
 
 /**
  *
  * @author gjj
  */
 public interface IDMapperClient {
+    public enum ClientType {
+        FILE,
+        RDB,
+        WEBSERVICE,
+        OTHER;
+
+        public static ClientType getClientType(IDMapper mapper) {
+            if (mapper==null)
+                return null;
+            if (mapper instanceof IDMapperFile) {
+                return FILE;
+            } else if (mapper instanceof IDMapperRdb) {
+                return RDB;
+            } else if (mapper instanceof IDMapperWebservice) {
+                return WEBSERVICE;
+            }
+            return OTHER;
+        }
+    }
 
     public String getId(); // client id
 
@@ -58,6 +80,8 @@ public interface IDMapperClient {
     public String getClassString();
 
     public String getDescription();
+
+    public ClientType getClientType();
 
     public boolean isSelected();
 

@@ -260,8 +260,10 @@ public class IDMappingServiceSuppport {
         } else {
             IDMapperClient client = null;
             try {
-                 client = new IDMapperClientImplTunables(connStr,
-                        classPath, display);
+                client = new IDMapperClientImplTunables
+                                .Builder(connStr, classPath)
+                                .displayName(display)
+                                .build();
             } catch (Exception e) {
                 e.printStackTrace();
                 content.put(SUCCESS, true);

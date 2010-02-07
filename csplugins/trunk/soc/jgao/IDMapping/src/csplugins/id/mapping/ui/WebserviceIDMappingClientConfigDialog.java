@@ -949,8 +949,10 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         String className = strs[1];
         String displayName = strs[2];
 
-        return new IDMapperClientImplTunables(connStr, className, displayName);
-
+        return new IDMapperClientImplTunables
+                        .Builder(connStr, className)
+                        .displayName(displayName)
+                        .build();
     }
 
     private String[] getSettings() {        

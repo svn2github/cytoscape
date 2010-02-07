@@ -835,8 +835,10 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
     public IDMapperClient getIDMappingClient() {
         String url = textFileTextField.getText();
 
-        return new IDMapperClientImplTunables(getConnectionString(),
-                "org.bridgedb.file.IDMapperText", url);
+        return new IDMapperClientImplTunables
+                        .Builder(getConnectionString(), "org.bridgedb.file.IDMapperText")
+                        .displayName(url)
+                        .build();
     }
 
     private String getConnectionString() {

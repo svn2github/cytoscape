@@ -112,6 +112,7 @@ public class IDMapperClientManager {
     private static final String CLIENT_CLASS_PATH = "Class Path:\t";
     private static final String CLIENT_DISPLAY_NAME = "Display Name:\t";
     private static final String CLIENT_SELECTED = "Selected:\t";
+    private static final String CLIENT_TYPE = "Client Type:\t";
 
     public static boolean reloadFromCytoscapeGlobalProperties() {
         removeAllClients(true); // remove all of the current clients
@@ -133,6 +134,7 @@ public class IDMapperClientManager {
             String connStr = null;
             String display = null;
             boolean selected = true;
+            IDMapperClient.ClientType clientType = null;
 
             String line;
             while ((line=in.readLine())!=null) {
@@ -144,8 +146,13 @@ public class IDMapperClientManager {
                     selected = true;
                 } else if (line.compareTo(CLIENT_END)==0) {
                     if (classStr!=null && connStr!=null) {
-                        IDMapperClient client = new IDMapperClientImplTunables(connStr,
-                                    classStr, display, clientId, selected);
+                        IDMapperClient client = new IDMapperClientImplTunables
+                                .Builder(connStr, classStr)
+                                .displayName(display)
+                                .id(clientId)
+                                .selected(selected)
+                                .clientType(clientType)
+                                .build();
 
                         clients.add(client);
                     } else {
@@ -162,6 +169,9 @@ public class IDMapperClientManager {
                 } else if (line.startsWith(CLIENT_SELECTED)) {
                     selected = Boolean.parseBoolean(line.substring(
                             CLIENT_SELECTED.length()));
+                } else if (line.startsWith(CLIENT_TYPE)) {
+                    clientType = IDMapperClient.ClientType.valueOf(
+                            line.substring(CLIENT_TYPE.length()));
                 }
 
             }
@@ -206,6 +216,10 @@ public class IDMapperClientManager {
 
             boolean selected = client.isSelected();
             out.write(CLIENT_SELECTED+Boolean.toString(selected));
+            out.newLine();
+
+            IDMapperClient.ClientType clientType = client.getClientType();
+            out.write(CLIENT_TYPE+clientType.name());
             out.newLine();
 
             out.write(CLIENT_END);

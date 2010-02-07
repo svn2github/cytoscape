@@ -58,22 +58,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import org.bridgedb.IDMapper;
-import org.bridgedb.file.IDMapperFile;
-import org.bridgedb.rdb.IDMapperRdb;
-import org.bridgedb.webservice.IDMapperWebservice;
-
 /**
  *
  * @author gjj
  */
 class IDMappingSourceSelectionTree extends JTree {
-    public enum ClientType {
-        FILE,
-        RDB,
-        WEBSERVICE,
-        OTHER;
-    }
 
     private final CheckTreeManager checkTreeManager;
     private DefaultTreeModel tree_Model;
@@ -132,6 +121,7 @@ class IDMappingSourceSelectionTree extends JTree {
     public void reload() {
         setupTree();
         setupMouse();
+        modified = true;
     }
 
     public boolean isModified() {
@@ -163,8 +153,8 @@ class IDMappingSourceSelectionTree extends JTree {
 
         for (IDMapperClient client : IDMapperClientManager.allClients()) {
             DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
-            ClientType clientType = getClientType(client);
-            if (clientType==ClientType.FILE) {
+            IDMapperClient.ClientType clientType = client.getClientType();
+            if (clientType==IDMapperClient.ClientType.FILE) {
                 //fileTreeNode.add(clientNode);
                 insertAlphabetically(fileTreeNode, clientNode);
                 if (client.isSelected()) {
@@ -176,7 +166,7 @@ class IDMappingSourceSelectionTree extends JTree {
                         selection_Model.addSelectionPaths(new TreePath[] {treePath});
                     //}
                 }
-            } else if (clientType==ClientType.RDB) {
+            } else if (clientType==IDMapperClient.ClientType.RDB) {
                 //dbTreeNode.add(clientNode);
                 insertAlphabetically(dbTreeNode, clientNode);
                 if (client.isSelected()) {
@@ -188,7 +178,7 @@ class IDMappingSourceSelectionTree extends JTree {
                         selection_Model.addSelectionPaths(new TreePath[] {treePath});
                     //}
                 }
-            } else if (clientType==ClientType.WEBSERVICE) {
+            } else if (clientType==IDMapperClient.ClientType.WEBSERVICE) {
                 //wsTreeNode.add(clientNode);
                 insertAlphabetically(wsTreeNode, clientNode);
                 if (client.isSelected()) {
@@ -199,6 +189,8 @@ class IDMappingSourceSelectionTree extends JTree {
                     //if (!selection_Model.isPathSelected(treePath, true)) {
                         selection_Model.addSelectionPaths(new TreePath[] {treePath});
                     //}
+                } else {
+                    //TODO: OTHER 
                 }
             }
         }
@@ -219,22 +211,6 @@ class IDMappingSourceSelectionTree extends JTree {
             expandPath(treePath);
         }
 
-    }
-
-    private ClientType getClientType(IDMapperClient client) {
-        IDMapper mapper = client.getIDMapper();
-        if (mapper==null)
-            return null;
-
-        if (mapper instanceof IDMapperWebservice) {
-            return ClientType.WEBSERVICE;
-        } else if (mapper instanceof IDMapperFile) {
-            return ClientType.FILE;
-        } else if(mapper instanceof IDMapperRdb) {
-            return ClientType.RDB;
-        } else {
-            return ClientType.OTHER;
-        }
     }
 
     private void setupMouse() {
