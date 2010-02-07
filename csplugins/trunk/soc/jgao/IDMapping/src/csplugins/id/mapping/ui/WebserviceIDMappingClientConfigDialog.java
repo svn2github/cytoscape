@@ -46,11 +46,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.OpenBrowser;
 
 import org.bridgedb.IDMapperException;
-import org.bridgedb.webservice.IDMapperWebservice;
-import org.bridgedb.webservice.biomart.IDMapperBiomart;
 import org.bridgedb.webservice.biomart.BiomartStub;
-import org.bridgedb.webservice.picr.IDMapperPicrRest;
-import org.bridgedb.webservice.synergizer.IDMapperSynergizer;
 import org.bridgedb.webservice.synergizer.SynergizerStub;
 
 import java.util.Set;
@@ -59,15 +55,11 @@ import java.util.Vector;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
-import java.util.Comparator;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 // TODO: seperate different web service into different panels
 /**
@@ -77,6 +69,7 @@ import javax.swing.JPanel;
 public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     public enum ClientType {
+        BRIDGEDB("BridgeDb web service"),
         BIOMART("BioMart web service"),
         PICR("PICR (Protein Identifier Cross-Reference) web service"),
         SYNERGIZER("The Synergizer web service")
@@ -141,6 +134,9 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         javax.swing.JPanel typePanel = new javax.swing.JPanel();
         typeComboBox = new javax.swing.JComboBox();
         infoButton = new javax.swing.JButton();
+        bridgedbPanel = new javax.swing.JPanel();
+        javax.swing.JPanel bridgedbBaseUrlPanel = new javax.swing.JPanel();
+        bridgedbBaseUrlComboBox = new javax.swing.JComboBox();
         biomartPanel = new javax.swing.JPanel();
         javax.swing.JPanel chooseDBPanel = new javax.swing.JPanel();
         chooseDBComboBox = new javax.swing.JComboBox();
@@ -208,6 +204,62 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(typePanel, gridBagConstraints);
 
+        bridgedbPanel.setLayout(new java.awt.GridBagLayout());
+        bridgedbPanel.setVisible(false);
+
+        bridgedbBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BridgeDb web service"));
+        bridgedbBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
+
+        DefaultComboBoxModel bridgeComboBoxModel = new DefaultComboBoxModel();
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Arabidopsis thaliana");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Bacillus subtilis");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Caenorhabditis elegans");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Chicken");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Cow");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Danio rerio");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Dog");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Escherichia coli");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Fruit fly");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Horse");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Mouse");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Human");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Mosquito");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Populus trichocarpa");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Rat");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Rice");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Saccharomyces cerevisiae");
+        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Xenopus tropicalis");
+        bridgedbBaseUrlComboBox.setModel(bridgeComboBoxModel);
+        bridgedbComboBoxEditor = new TextComboBoxEditor("http://webservice.bridgedb.org/Human");
+        bridgedbBaseUrlComboBox.setEditor(bridgedbComboBoxEditor);
+        bridgedbBaseUrlComboBox.setSelectedItem("http://webservice.bridgedb.org/Human");
+        bridgedbBaseUrlComboBox.setEditable(true);
+        bridgedbBaseUrlComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bridgedbBaseUrlComboBoxActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        bridgedbBaseUrlPanel.add(bridgedbBaseUrlComboBox, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        bridgedbPanel.add(bridgedbBaseUrlPanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(bridgedbPanel, gridBagConstraints);
+
         biomartPanel.setLayout(new java.awt.GridBagLayout());
         biomartPanel.setVisible(false);
 
@@ -267,29 +319,29 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         biomartBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BioMart"));
         biomartBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
 
-        DefaultComboBoxModel theModel = new DefaultComboBoxModel();
-        theModel.addElement(new BioMartWrapper("BioMart (EBI UK)","http://www.biomart.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("Ensembl (EBI UK)","http://www.ensembl.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("HIGH THROUGHPUT GENE TARGETING AND TRAPPING (SANGER UK)","http://www.sanger.ac.uk/htgt/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("WORMBASE (CSHL US)","http://www.wormbase.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("REACTOME (CSHL US)","http://banon.cshl.edu:5555/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("DICTYBASE (NORTHWESTERN US)","http://www.dictybase.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("MCWMart (US)","http://rote.hmgc.mcw.edu:9999/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("HGNC (EBI UK)","http://www.genenames.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("PRIDE (EBI UK)","http://www.ebi.ac.uk/pride/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("INTERPRO (EBI UK)","http://www.ebi.ac.uk/interpro/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("UNIPROT (EBI UK)","http://www.ebi.ac.uk/uniprot/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("EURATMART (EBI UK)","http://www.ebi.ac.uk/euratools/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("PARAMECIUM GENOME (CNRS FRANCE)","http://paramecium.cgm.cnrs-gif.fr/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("EUREXPRESS (MRC EDINBURGH UK)","http://biomart.eurexpress.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("PEPSEEKER (UNIVERSITY OF MANCHESTER UK)","http://www.ispider.manchester.ac.uk/pepseeker/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("PANCREATIC EXPRESSION DATABAS (INSTITUTE OF CANCER UK","http://www.pancreasexpression.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("Human genome sequence","http://www.pancreasexpression.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("VectorBase","http://biomart.vectorbase.org/biomart/martservice"));
-        theModel.addElement(new BioMartWrapper("Phytozome","http://www.phytozome.net/biomart/martservice"));
+        DefaultComboBoxModel biomartComboBoxModel = new DefaultComboBoxModel();
+        biomartComboBoxModel.addElement(new BioMartWrapper("BioMart (EBI UK)","http://www.biomart.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("Ensembl (EBI UK)","http://www.ensembl.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("HIGH THROUGHPUT GENE TARGETING AND TRAPPING (SANGER UK)","http://www.sanger.ac.uk/htgt/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("WORMBASE (CSHL US)","http://www.wormbase.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("REACTOME (CSHL US)","http://banon.cshl.edu:5555/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("DICTYBASE (NORTHWESTERN US)","http://www.dictybase.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("MCWMart (US)","http://rote.hmgc.mcw.edu:9999/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("HGNC (EBI UK)","http://www.genenames.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("PRIDE (EBI UK)","http://www.ebi.ac.uk/pride/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("INTERPRO (EBI UK)","http://www.ebi.ac.uk/interpro/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("UNIPROT (EBI UK)","http://www.ebi.ac.uk/uniprot/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("EURATMART (EBI UK)","http://www.ebi.ac.uk/euratools/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("PARAMECIUM GENOME (CNRS FRANCE)","http://paramecium.cgm.cnrs-gif.fr/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("EUREXPRESS (MRC EDINBURGH UK)","http://biomart.eurexpress.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("PEPSEEKER (UNIVERSITY OF MANCHESTER UK)","http://www.ispider.manchester.ac.uk/pepseeker/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("PANCREATIC EXPRESSION DATABAS (INSTITUTE OF CANCER UK","http://www.pancreasexpression.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("Human genome sequence","http://www.pancreasexpression.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("VectorBase","http://biomart.vectorbase.org/biomart/martservice"));
+        biomartComboBoxModel.addElement(new BioMartWrapper("Phytozome","http://www.phytozome.net/biomart/martservice"));
 
-        bioMartBaseUrlComboBox.setModel(theModel);
-        bioMartComboBoxEditor = new BioMartComboBoxEditor(biomartStub.defaultBaseURL);
+        bioMartBaseUrlComboBox.setModel(biomartComboBoxModel);
+        bioMartComboBoxEditor = new TextComboBoxEditor(biomartStub.defaultBaseURL);
         bioMartComboBoxEditor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bioMartBaseUrlComboBoxActionPerformed(evt);
@@ -564,23 +616,32 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private void typeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboBoxActionPerformed
         Object obj = typeComboBox.getSelectedItem();
         if (!(obj instanceof ClientType)) {
+            bridgedbPanel.setVisible(false);
             biomartPanel.setVisible(false);
             synergizerPanel.setVisible(false);
             picrPanel.setVisible(false);
             infoButton.setEnabled(false);
         } else {
             ClientType type = (ClientType)obj;
-            if (type == ClientType.BIOMART) {
+            if (type == ClientType.BRIDGEDB) {
+                bridgedbPanel.setVisible(true);
+                biomartPanel.setVisible(false);
+                synergizerPanel.setVisible(false);
+                picrPanel.setVisible(false);
+            } else if (type == ClientType.BIOMART) {
+                bridgedbPanel.setVisible(false);
                 biomartPanel.setVisible(true);
                 synergizerPanel.setVisible(false);
                 picrPanel.setVisible(false);
                 initBiomart();
             } else if (type == ClientType.SYNERGIZER) {
+                bridgedbPanel.setVisible(false);
                 biomartPanel.setVisible(false);
                 synergizerPanel.setVisible(true);
                 picrPanel.setVisible(false);
                 initSynergizer();
             } else if (type == ClientType.PICR) {
+                bridgedbPanel.setVisible(false);
                 biomartPanel.setVisible(false);
                 synergizerPanel.setVisible(false);
                 picrPanel.setVisible(true);
@@ -645,7 +706,9 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
         ClientType type = (ClientType)typeComboBox.getSelectedItem();
-        if (type==ClientType.BIOMART) {
+        if (type==ClientType.BRIDGEDB) {
+            OpenBrowser.openURL("http://webservice.bridgedb.org/ ");
+        } else if (type==ClientType.BIOMART) {
             OpenBrowser.openURL("http://www.biomart.org/");
         } else if (type==ClientType.PICR) {
             OpenBrowser.openURL("http://www.ebi.ac.uk/Tools/picr/");
@@ -696,6 +759,10 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         setDatasetsCombo();
     }//GEN-LAST:event_bioMartBaseUrlComboBoxActionPerformed
 
+    private void bridgedbBaseUrlComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bridgedbBaseUrlComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bridgedbBaseUrlComboBoxActionPerformed
+
     private boolean verifyInput() {
         Object obj = typeComboBox.getSelectedItem();
         if (!(obj instanceof ClientType)) {
@@ -715,8 +782,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                 return false;
             }
         }
-
-
 
         return true;
     }
@@ -878,8 +943,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         return true;
     }
 
-    public IDMapperClient getIDMappingClient()
-            throws ClassNotFoundException, IDMapperException {
+    public IDMapperClient getIDMappingClient() {
         String[] strs = getSettings();
         String connStr = strs[0];
         String className = strs[1];
@@ -891,7 +955,17 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private String[] getSettings() {        
         ClientType type = (ClientType) typeComboBox.getSelectedItem();
-        if (type==ClientType.BIOMART) {
+        if (type==ClientType.BRIDGEDB) {
+            String className = "org.bridgedb.webservice.bridgerest.BridgeRest";
+
+            StringBuilder connString = new StringBuilder("idmapper-bridgerest:") ;
+            StringBuilder displayName = new StringBuilder("BridgeDb");
+
+            String baseurl = this.bridgedbComboBoxEditor.getURLstr();
+            connString.append(baseurl);
+            displayName.append(" ("+baseurl+")");
+            return new String[]{connString.toString(), className, displayName.toString()};
+        } else if (type==ClientType.BIOMART) {
             String className = "org.bridgedb.webservice.biomart.IDMapperBiomart";
 
             StringBuilder connString = new StringBuilder("idmapper-biomart:") ;
@@ -1022,10 +1096,13 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox bioMartBaseUrlComboBox;
-    private BioMartComboBoxEditor bioMartComboBoxEditor;
+    private TextComboBoxEditor bioMartComboBoxEditor;
     private javax.swing.JPanel biomartAdvancedPanel;
     private javax.swing.JCheckBox biomartOptionCheckBox;
     private javax.swing.JPanel biomartPanel;
+    private javax.swing.JComboBox bridgedbBaseUrlComboBox;
+    private TextComboBoxEditor bridgedbComboBoxEditor;
+    private javax.swing.JPanel bridgedbPanel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JComboBox chooseAuthorityComboBox;
     private javax.swing.JComboBox chooseDBComboBox;
@@ -1079,12 +1156,11 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 	}
     }
 
-    private class BioMartComboBoxEditor implements javax.swing.ComboBoxEditor {
-            BioMartWrapper bmw;
-            javax.swing.JTextField tfInput;
+    private class TextComboBoxEditor implements javax.swing.ComboBoxEditor {
+            private Object item;
+            private javax.swing.JTextField tfInput;
 
-            public BioMartComboBoxEditor(String defaultURL) {
-                this.bmw = new BioMartWrapper(null, null);
+            public TextComboBoxEditor(String defaultURL) {
                 tfInput = new javax.swing.JTextField(defaultURL);
             }
 
@@ -1109,7 +1185,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             }
 
             public Object getItem() {
-                    return bmw;
+                    return item;
             }
 
             public void removeActionListener(java.awt.event.ActionListener l) {
@@ -1123,9 +1199,12 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                             return;
                     }
 
-                    if (anObject instanceof BioMartWrapper) {
-                            bmw = (BioMartWrapper) anObject;
-                            tfInput.setText(bmw.getUrl());
+                    if (anObject instanceof String) {
+                        item = anObject;
+                        tfInput.setText((String)anObject);
+                    } else  if (anObject instanceof BioMartWrapper) {
+                        item = anObject;
+                        tfInput.setText(((BioMartWrapper)item).getUrl());
                     }
             }
     } // BioMartComboBoxEditor

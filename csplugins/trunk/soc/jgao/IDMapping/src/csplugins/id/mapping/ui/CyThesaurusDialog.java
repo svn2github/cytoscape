@@ -63,6 +63,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 import java.util.Set;
@@ -103,6 +104,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         setSupportedTgtTypesInTable();
         targetAttributeSelectionTable.addRow();
 
+        setSelectedNetworkInSrcTable();
     }
 
     /** This method is called from within the constructor to
@@ -335,6 +337,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
                 updateOKButtonEnable();
 
+                setSelectedNetworkInSrcTable();
             }
         });
         lrButtonPanel.add(rightButton);
@@ -367,6 +370,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
                 selectedNetworkList.repaint();
                 unselectedNetworkList.repaint();
                 updateOKButtonEnable();
+
+                setSelectedNetworkInSrcTable();
             }
         });
         lrButtonPanel.add(leftButton);
@@ -449,13 +454,14 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             srcAttrs = null;
             setSupportedSrcTypesInTable();
             setSupportedTgtTypesInTable();
+            setSelectedNetworkInSrcTable();
         }
     }//GEN-LAST:event_srcConfBtnActionPerformed
 
     private void OKBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKBtnActionPerformed
         if (!verifyUserInput()) return;
 
-        Set<CyNetwork> networks = new HashSet(selectedNetworkData.getNetworkList());
+        Set<CyNetwork> networks = new HashSet(selectedNetworkData.getNetworks());
         Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
         Map<String, DataSourceWrapper> mapTgtAttrNameIDType = targetAttributeSelectionTable.getMapAttrNameIDType();
         Map<String,Byte> mapTgtAttrNameAttrType = targetAttributeSelectionTable.getMapAttrNameAttrType();
@@ -493,7 +499,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_OKBtnActionPerformed
 
     private boolean verifyUserInput() {
-        if (selectedNetworkData.getNetworkList().isEmpty()) {
+        if (selectedNetworkData.getNetworks().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please select at least one network.");
             return false;
         }
@@ -807,6 +813,11 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
                 getSupportedTgtAttr(sourceDss));
     }
 
+    private void setSelectedNetworkInSrcTable() {
+        Collection networks = selectedNetworkData.getNetworks();
+        sourceAttributeSelectionTable.setSelectedNetworks(networks);
+    }
+
 //    private Set<DataSource>[] getSupportedType() {
 //        Set<DataSource>[] ret = new Set[2];
 //        ret[0] = new HashSet();
@@ -906,8 +917,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             return removed;
         }
 
-        public List<CyNetwork> getNetworkList() {
-            return new Vector<CyNetwork>(model.values());
+        public Collection<CyNetwork> getNetworks() {
+            return model.values();
         }
     }
 }

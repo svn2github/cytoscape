@@ -243,7 +243,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
     private static final String msg = "Click on a 2nd level tree node to " +
             "add an ID mapping sources.\n\nClick on a tree node of a ID " +
             "mapping source for information about it. \n\nRight click on a ID " +
-            "mapping source to edit/delete it.\n\nClick the checkboxes to " +
+            "mapping source to delete it.\n\nClick the checkboxes to " +
             "select/unselect ID mapping sources to use.";
     private IDMappingSourceSelectionTree srcTree;
     // Variables declaration - do not modify//GEN-BEGIN:variables

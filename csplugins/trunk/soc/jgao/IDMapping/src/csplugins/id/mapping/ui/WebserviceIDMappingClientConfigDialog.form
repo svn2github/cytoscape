@@ -61,6 +61,62 @@
         </Component>
       </SubComponents>
     </Container>
+    <Container class="javax.swing.JPanel" name="bridgedbPanel">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="bridgedbPanel.setVisible(false);"/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="1.0"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="bridgedbBaseUrlPanel">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder title="Base URL of BridgeDb web service"/>
+              </Border>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+              <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="1.0" weightY="0.0"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JComboBox" name="bridgedbBaseUrlComboBox">
+              <Properties>
+                <Property name="editable" type="boolean" value="true"/>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="0"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bridgedbBaseUrlComboBoxActionPerformed"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private TextComboBoxEditor bridgedbComboBoxEditor;"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="DefaultComboBoxModel bridgeComboBoxModel = new DefaultComboBoxModel();&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Arabidopsis thaliana&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Bacillus subtilis&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Caenorhabditis elegans&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Chicken&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Cow&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Danio rerio&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Dog&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Escherichia coli&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Fruit fly&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Horse&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Mouse&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Human&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Mosquito&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Populus trichocarpa&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Rat&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Rice&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Saccharomyces cerevisiae&quot;);&#xa;bridgeComboBoxModel.addElement(&quot;http://webservice.bridgedb.org/Xenopus tropicalis&quot;);&#xa;bridgedbBaseUrlComboBox.setModel(bridgeComboBoxModel);&#xa;bridgedbComboBoxEditor = new TextComboBoxEditor(&quot;http://webservice.bridgedb.org/Human&quot;);&#xa;bridgedbBaseUrlComboBox.setEditor(bridgedbComboBoxEditor);&#xa;bridgedbBaseUrlComboBox.setSelectedItem(&quot;http://webservice.bridgedb.org/Human&quot;);"/>
+              </AuxValues>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                  <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="0.0"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
     <Container class="javax.swing.JPanel" name="biomartPanel">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="biomartPanel.setVisible(false);"/>
@@ -209,8 +265,8 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bioMartBaseUrlComboBoxActionPerformed"/>
                       </Events>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private BioMartComboBoxEditor bioMartComboBoxEditor;"/>
-                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="DefaultComboBoxModel theModel = new DefaultComboBoxModel();&#xa;theModel.addElement(new BioMartWrapper(&quot;BioMart (EBI UK)&quot;,&quot;http://www.biomart.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;Ensembl (EBI UK)&quot;,&quot;http://www.ensembl.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;HIGH THROUGHPUT GENE TARGETING AND TRAPPING (SANGER UK)&quot;,&quot;http://www.sanger.ac.uk/htgt/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;WORMBASE (CSHL US)&quot;,&quot;http://www.wormbase.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;REACTOME (CSHL US)&quot;,&quot;http://banon.cshl.edu:5555/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;DICTYBASE (NORTHWESTERN US)&quot;,&quot;http://www.dictybase.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;MCWMart (US)&quot;,&quot;http://rote.hmgc.mcw.edu:9999/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;HGNC (EBI UK)&quot;,&quot;http://www.genenames.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PRIDE (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/pride/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;INTERPRO (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/interpro/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;UNIPROT (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/uniprot/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;EURATMART (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/euratools/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PARAMECIUM GENOME (CNRS FRANCE)&quot;,&quot;http://paramecium.cgm.cnrs-gif.fr/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;EUREXPRESS (MRC EDINBURGH UK)&quot;,&quot;http://biomart.eurexpress.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PEPSEEKER (UNIVERSITY OF MANCHESTER UK)&quot;,&quot;http://www.ispider.manchester.ac.uk/pepseeker/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;PANCREATIC EXPRESSION DATABAS (INSTITUTE OF CANCER UK&quot;,&quot;http://www.pancreasexpression.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;Human genome sequence&quot;,&quot;http://www.pancreasexpression.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;VectorBase&quot;,&quot;http://biomart.vectorbase.org/biomart/martservice&quot;));&#xa;theModel.addElement(new BioMartWrapper(&quot;Phytozome&quot;,&quot;http://www.phytozome.net/biomart/martservice&quot;));&#xa;&#xa;bioMartBaseUrlComboBox.setModel(theModel);&#xa;bioMartComboBoxEditor = new BioMartComboBoxEditor(biomartStub.defaultBaseURL);&#xa;bioMartComboBoxEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        bioMartBaseUrlComboBoxActionPerformed(evt);&#xa;    }&#xa;});&#xa;&#xa;bioMartBaseUrlComboBox.setEditor(bioMartComboBoxEditor);"/>
+                        <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private TextComboBoxEditor bioMartComboBoxEditor;"/>
+                        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="DefaultComboBoxModel biomartComboBoxModel = new DefaultComboBoxModel();&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;BioMart (EBI UK)&quot;,&quot;http://www.biomart.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;Ensembl (EBI UK)&quot;,&quot;http://www.ensembl.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;HIGH THROUGHPUT GENE TARGETING AND TRAPPING (SANGER UK)&quot;,&quot;http://www.sanger.ac.uk/htgt/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;WORMBASE (CSHL US)&quot;,&quot;http://www.wormbase.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;REACTOME (CSHL US)&quot;,&quot;http://banon.cshl.edu:5555/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;DICTYBASE (NORTHWESTERN US)&quot;,&quot;http://www.dictybase.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;MCWMart (US)&quot;,&quot;http://rote.hmgc.mcw.edu:9999/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;HGNC (EBI UK)&quot;,&quot;http://www.genenames.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;PRIDE (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/pride/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;INTERPRO (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/interpro/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;UNIPROT (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/uniprot/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;EURATMART (EBI UK)&quot;,&quot;http://www.ebi.ac.uk/euratools/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;PARAMECIUM GENOME (CNRS FRANCE)&quot;,&quot;http://paramecium.cgm.cnrs-gif.fr/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;EUREXPRESS (MRC EDINBURGH UK)&quot;,&quot;http://biomart.eurexpress.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;PEPSEEKER (UNIVERSITY OF MANCHESTER UK)&quot;,&quot;http://www.ispider.manchester.ac.uk/pepseeker/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;PANCREATIC EXPRESSION DATABAS (INSTITUTE OF CANCER UK&quot;,&quot;http://www.pancreasexpression.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;Human genome sequence&quot;,&quot;http://www.pancreasexpression.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;VectorBase&quot;,&quot;http://biomart.vectorbase.org/biomart/martservice&quot;));&#xa;biomartComboBoxModel.addElement(new BioMartWrapper(&quot;Phytozome&quot;,&quot;http://www.phytozome.net/biomart/martservice&quot;));&#xa;&#xa;bioMartBaseUrlComboBox.setModel(biomartComboBoxModel);&#xa;bioMartComboBoxEditor = new TextComboBoxEditor(biomartStub.defaultBaseURL);&#xa;bioMartComboBoxEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        bioMartBaseUrlComboBoxActionPerformed(evt);&#xa;    }&#xa;});&#xa;&#xa;bioMartBaseUrlComboBox.setEditor(bioMartComboBoxEditor);"/>
                       </AuxValues>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

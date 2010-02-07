@@ -35,18 +35,27 @@
 
 package csplugins.id.mapping.ui;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import cytoscape.data.CyAttributes;
+
 import csplugins.id.mapping.util.DataSourceWrapper;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.Map;
-import java.util.Set;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.TreeSet;
+import giny.model.Node;
+
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -57,18 +66,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.table.TableColumn;
 import javax.swing.DefaultCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
-
+import org.bridgedb.DataSource;
+import org.bridgedb.DataSourcePatterns;
 
 // support different editors for each row in a column
 /**
@@ -100,6 +110,8 @@ public class SourceAttributeSelectionTable extends JTable{
 
     private Vector<String> attributes;
 
+    private Set<Node> nodesForTypeGuessing;
+
     public SourceAttributeSelectionTable() {
         super();
         initializeAttibutes();
@@ -109,6 +121,9 @@ public class SourceAttributeSelectionTable extends JTable{
         selectedAttribute = new Vector();
         typeComboBoxes = new Vector();
         rmvBtns = new Vector();
+
+        nodesForTypeGuessing = new HashSet();
+
         addBtn = new JButton("Insert");
         addBtn.setBackground(defBgColor);
         
@@ -171,6 +186,91 @@ public class SourceAttributeSelectionTable extends JTable{
         this.idTypeSelectionChangedListener = idTypeSelectionChangedListener;
     }
 
+    public void setSelectedNetworks(final Collection<CyNetwork> selectedNetworks) {
+        nodesForTypeGuessing.clear();
+        if (selectedNetworks!=null) {
+            for (CyNetwork net : selectedNetworks) {
+                Iterator<Node> it = net.nodesIterator();
+                int count = 0;
+                // only using 100 or less for guessing
+                while (it.hasNext() && count++<100) {
+                    nodesForTypeGuessing.add(it.next());
+                }
+            }
+        }
+
+        if (setGuessedDataSources()) {
+            repaint();
+        }
+    }
+
+    private boolean setGuessedDataSources() {
+        if (nodesForTypeGuessing.isEmpty())
+            return false;
+
+        boolean changed = false;
+        for (int row=0; row<rowCount; row++) {
+            if (setGuessedDataSources(row)) {
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    private boolean setGuessedDataSources(int row) {
+        if (typeComboBoxes.get(row).getSelectedItems()==null) {
+            // only for those without any selections
+            Set<DataSourceWrapper> dsws = guessDataSources(row);
+            if (!dsws.isEmpty()) {
+                CheckComboBox cc = typeComboBoxes.get(row);
+                cc.addSelectedItems(dsws);
+                idTypeSelectionChangedListener.selectionChanged(row);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<DataSourceWrapper> guessDataSources(int row) {
+        Set<DataSourceWrapper> result = new HashSet();
+        Set<String> srcIds = getSrcIDsForTypeGuessing(row);
+        for (String id : srcIds) {
+            Set<DataSource> dss = DataSourcePatterns.getDataSourceMatches(id);
+            for (DataSource ds : dss) {
+                DataSourceWrapper dsw = DataSourceWrapper.getInstance(ds.getFullName(),
+                        DataSourceWrapper.DsAttr.DATASOURCE, false);
+                if (dsw!=null && supportedIDType.contains(dsw)) {
+                    result.add(dsw);
+                }
+            }
+        }
+        return result;
+    }
+
+    private Set<String> getSrcIDsForTypeGuessing(int row) {
+        Set<String> result = new HashSet();
+        String attr = selectedAttribute.get(row);
+        CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
+        for (Node node : nodesForTypeGuessing) {
+            String nodeId = node.getIdentifier();
+            if (attr.equals("ID")) {
+                result.add(nodeId);
+            } else {
+                byte type = cyAttributes.getType(attr);
+                if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+                    List list = cyAttributes.getListAttribute(nodeId, attr);
+                    for (Object obj : list) {
+                        result.add(obj.toString());
+                    }
+                } else {
+                    result.add(cyAttributes.getAttribute(nodeId, attr).toString());
+                }
+            }
+        }
+        return result;
+    }
+
     public void setSupportedIDType(final Set<String> types, final Set<String> attrs) {
         if (types==null && attrs==null) {
             throw new NullPointerException();
@@ -203,6 +303,8 @@ public class SourceAttributeSelectionTable extends JTable{
         
         model.fireTableStructureChanged();
         setColumnEditorAndCellRenderer();
+
+        setGuessedDataSources();
     }
 
     public void setSourceAttrType(Map<String,Set<DataSourceWrapper>> srcAttrType) {
@@ -361,6 +463,11 @@ public class SourceAttributeSelectionTable extends JTable{
                     cb.setSelectedItem(selectedAttribute.get(i));
                 } else {
                     selectedAttribute.set(i, selected);
+
+                    // guess id types
+                    if (setGuessedDataSources(i)) {
+                        repaint();
+                    }
                 }
             }
         });
@@ -380,11 +487,11 @@ public class SourceAttributeSelectionTable extends JTable{
 
         Set<DataSourceWrapper> selectedDsws = new HashSet();
         if (dss!=null) {
-                for (DataSourceWrapper ds : dss) {
-                    if (supportedIDType.contains(ds))
-                        selectedDsws.add(ds);
-                }
-        }
+            for (DataSourceWrapper ds : dss) {
+                if (supportedIDType.contains(ds))
+                    selectedDsws.add(ds);
+            }
+        } 
         CheckComboBox cc = new CheckComboBox(supportedIDType, selectedDsws);
         cc.addSelectionChangedListener(idTypeSelectionChangedListener);
         typeComboBoxes.add(cc);

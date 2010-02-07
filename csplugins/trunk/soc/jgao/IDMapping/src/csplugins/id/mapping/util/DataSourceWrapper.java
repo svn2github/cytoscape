@@ -68,6 +68,11 @@ public class DataSourceWrapper implements Comparable {
 //        }
 
         public static DataSourceWrapper getInstance(String value, DsAttr da) {
+            return getInstance(value, da, true);
+        }
+
+        public static DataSourceWrapper getInstance(String value, DsAttr da,
+                boolean createIfNull) {
             if (value==null || da==null) {
                 return null;
             }
@@ -79,7 +84,7 @@ public class DataSourceWrapper implements Comparable {
                 wrapper = attributeWrappers.get(value);
             }
 
-            if (wrapper==null) {
+            if (wrapper==null && createIfNull) {
                 wrapper = new DataSourceWrapper(value, da);
                 if (da==DsAttr.DATASOURCE) {
                     dataSourceWrappers.put(value, wrapper);

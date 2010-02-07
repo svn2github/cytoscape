@@ -33,8 +33,14 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package csplugins.id.mapping;
+package csplugins.id.mapping.service;
 
+import csplugins.id.mapping.AttributeBasedIDMappingImpl;
+import csplugins.id.mapping.CyThesaurusPlugin;
+import csplugins.id.mapping.FinalStaticValues;
+import csplugins.id.mapping.IDMapperClient;
+import csplugins.id.mapping.IDMapperClientImplTunables;
+import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import csplugins.id.mapping.ui.CyThesaurusDialog;
@@ -99,7 +105,7 @@ public class IDMappingServiceSuppport {
     private static final String pluginName = FinalStaticValues.PLUGIN_NAME;
     private static double version = 1.01;
 
-    static void addService() {
+    public static void addService() {
         MessageListener ml = new MessageListener() {
             public void messagedReceived(Message msg) {
                 String msgType = msg.getType();

@@ -35,21 +35,23 @@
 
 package csplugins.id.mapping.ui;
 
-import java.awt.Component;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.DefaultListCellRenderer;
-
-import java.util.List;
-import java.util.Vector;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Map;
-import java.util.LinkedHashMap;
 
 /**
  * ComboBox containing checkbox
@@ -124,7 +126,20 @@ class CheckComboBox extends JComboBox {
        return ret.toArray(new Object[ret.size()]);
    }
 
-   public void setSelectedItems(Object[] objs) {
+   public void addSelectedItems(Collection c) {
+       if (c==null) return;
+
+       for (Object obj : c) {
+           if (mapObjSelected.containsKey(obj)) {
+               mapObjSelected.put(obj, true);
+           }
+       }
+
+       reset();
+       repaint();
+   }
+
+   public void addSelectedItems(Object[] objs) {
        if (objs==null) return;
 
        for (Object obj : objs) {
@@ -134,9 +149,12 @@ class CheckComboBox extends JComboBox {
        }
 
        reset();
+       repaint();
    }
 
    private void reset() {
+       this.removeAllItems();
+       
        initCBs();
 
        this.addItem(new String());
@@ -270,8 +288,8 @@ class CheckComboBox extends JComboBox {
                                 Object value,
                                 int index,
                                 boolean isSelected,
-                                boolean cellHasFocus) {            
-            if (index > 0) {
+                                boolean cellHasFocus) {          
+            if (index > 0 && index <= cbs.size()) {
                     ObjCheckBox cb = cbs.get(index-1);
                     if (cb.getObj()==nullObject) {
                         return separator;

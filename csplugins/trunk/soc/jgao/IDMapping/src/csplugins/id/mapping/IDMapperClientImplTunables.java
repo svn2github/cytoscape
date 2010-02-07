@@ -38,6 +38,7 @@ package csplugins.id.mapping;
 import cytoscape.layout.Tunable;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
@@ -168,12 +169,40 @@ public class IDMapperClientImplTunables implements IDMapperClient {
             try {
                 Class.forName(getClassString());
                 mapper = BridgeDb.connect(getConnectionString());
+                preprocess(mapper);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
         }
         return mapper;
+    }
+
+    /**
+     * set fullname of datasource as syscode if it is null
+     * in this plugin, fullname represents the datasource
+     * @param mapper
+     */
+    private static void preprocess(final IDMapper mapper) {
+        if (mapper==null)
+            return;
+
+        IDMapperCapabilities caps = mapper.getCapabilities();
+        Set<DataSource> dss = new HashSet();
+        try {
+            dss.addAll(caps.getSupportedSrcDataSources());
+            dss.addAll(caps.getSupportedTgtDataSources());
+        } catch (IDMapperException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        for (DataSource ds : dss) {
+            if (ds.getFullName()==null) {
+                String sysCode = ds.getSystemCode();
+                DataSource.register(sysCode, sysCode);
+            }
+        }
     }
     
     public String getConnectionString() {

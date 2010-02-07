@@ -238,8 +238,9 @@ public class IDMapperClientManager {
         IDMapperStack idMapperStack = new IDMapperStack();
         for (IDMapperClient client : selectedClients()) {
             IDMapper idMapper = client.getIDMapper();
-            if (idMapper!=null)
+            if (idMapper!=null) {
                 idMapperStack.addIDMapper(idMapper);
+            }
         }
 
         return idMapperStack;
@@ -312,35 +313,9 @@ public class IDMapperClientManager {
             removeClient(oldClient);
         }
 
-        preprocess(client); // set fullname if null
+        //preprocess(client); // set fullname if null
 
         clientConnectionStringMap.put(client.getConnectionString(), client);
-    }
-
-    private static void preprocess(final IDMapperClient client) {
-        IDMapper mapper = client.getIDMapper();
-
-        if (mapper==null)
-            return;
-
-        // set fullname of datasource as syscode if it is null
-        // in this plugin, fullname represents the datasource
-        IDMapperCapabilities caps = mapper.getCapabilities();
-        Set<DataSource> dss = new HashSet();
-        try {
-            dss.addAll(caps.getSupportedSrcDataSources());
-            dss.addAll(caps.getSupportedTgtDataSources());
-        } catch (IDMapperException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        for (DataSource ds : dss) {
-            if (ds.getFullName()==null) {
-                String sysCode = ds.getSystemCode();
-                DataSource.register(sysCode, sysCode);
-            }
-        }
     }
 
 }
