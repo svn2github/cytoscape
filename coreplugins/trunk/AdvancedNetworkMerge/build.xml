@@ -59,6 +59,7 @@
 			includeAntRuntime="false" 
 			deprecation="yes">
 			<classpath refid="classpath" />
+			<compilerarg value="-Xlint:unchecked"/>
 		</javac>
 	</target>
 
