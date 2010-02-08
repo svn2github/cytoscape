@@ -165,8 +165,8 @@ public class DefaultAttributeMerger implements AttributeMerger {
                                     o1 = AttributeValueCastUtils.attributeValueCast(type2,o1);
                                 }
 
-                                List l2 = attrs.getListAttribute(toID, toAttrName);
-                                if (l2==null) {
+                                List<Object> l2 = attrs.getListAttribute(toID, toAttrName);
+                                if (l2 == null) {
                                     //l2 = new Vector();
                                     throw new java.lang.IllegalStateException("Define '"+toAttrName+"' first");
                                 }
@@ -181,9 +181,9 @@ public class DefaultAttributeMerger implements AttributeMerger {
                             } else if (type1==CyAttributes.TYPE_SIMPLE_LIST) {
                                 type1 = attrs.getMultiHashMapDefinition().getAttributeValueType(fromAttrName);
 
-                                List l1 = attrs.getListAttribute(fromID, fromAttrName);
-                                List l2 = attrs.getListAttribute(toID, toAttrName);
-                                if (l2==null) {
+                                List<Object> l1 = attrs.getListAttribute(fromID, fromAttrName);
+                                List<Object> l2 = attrs.getListAttribute(toID, toAttrName);
+                                if (l2 == null) {
                                     //l2 = new Vector();
                                     throw new java.lang.IllegalStateException("Define '"+toAttrName+"' first");
                                 }

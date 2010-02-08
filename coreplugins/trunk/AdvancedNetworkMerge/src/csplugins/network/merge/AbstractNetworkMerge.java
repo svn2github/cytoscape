@@ -283,9 +283,9 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
             final CyNetwork net1 = networks.get(i);
             final Iterator<GraphObject> it;
             if (isNode) {
-                it = net1.nodesIterator();
+		    it = (Iterator<GraphObject>)net1.nodesIterator();
             } else { //edge
-                it = net1.edgesIterator();
+		    it = net1.edgesIterator();
             }
             
             while (it.hasNext()) {

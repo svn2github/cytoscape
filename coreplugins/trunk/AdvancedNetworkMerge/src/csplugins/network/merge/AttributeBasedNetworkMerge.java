@@ -196,7 +196,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
         
         if (nodes.size()>1) { // if more than 1 nodes to be merged, assign the id 
                               // as the combination of all identifiers
-            List<String> nodeIds = new ArrayList(nodes.size());
+            List<String> nodeIds = new ArrayList<String>(nodes.size());
             nodeIds.add(id);
             while (itNode.hasNext()) {
                 final Node node = (Node) itNode.next();
@@ -279,7 +279,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
             }
             
             // define the attribute first
-            final Set<String> attrNames = new HashSet(attributeMapping.getOriginalAttributeMap(i).values());
+            final Set<String> attrNames = new HashSet<String>(attributeMapping.getOriginalAttributeMap(i).values());
             final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
             
             if (attr_mc!=null) { // if compatible type 

@@ -55,7 +55,7 @@ import javax.swing.event.CellEditorListener;
  */
 // support different editors for each row in a column
 class RowTableCellEditor implements TableCellEditor {
-  protected HashMap editors;
+  protected HashMap<Integer, TableCellEditor> editors;
 
   protected TableCellEditor editor, defaultEditor;
 
@@ -69,7 +69,7 @@ class RowTableCellEditor implements TableCellEditor {
    */
   public RowTableCellEditor(JTable table) {
     this.table = table;
-    editors = new HashMap();
+    editors = new HashMap<Integer, TableCellEditor>();
     defaultEditor = new DefaultCellEditor(new JTextField());
   }
 

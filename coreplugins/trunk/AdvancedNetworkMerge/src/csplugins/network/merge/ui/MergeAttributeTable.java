@@ -118,7 +118,7 @@ class MergeAttributeTable extends JTable{
     }
 
     protected void setColumnEditorAndRenderer() {
-        final TreeSet<String> attrset = new TreeSet();
+        final TreeSet<String> attrset = new TreeSet<String>();
         attrset.addAll(Arrays.asList(attributeMapping.getCyAttributes().getAttributeNames()));
 
         final Vector<String> attrs = new Vector<String>(attrset);
@@ -227,11 +227,11 @@ class MergeAttributeTable extends JTable{
                 RowTableCellEditor rowEditor = new RowTableCellEditor(this);
                 int nr = this.getRowCount();
                 //List<JComboBox> combos = new Vector<JComboBox>(nr); // save for render
-                final Vector<String>[] cbvalues = new Vector[nr];
+                @SuppressWarnings("unchecked") final Vector<String>[] cbvalues = new Vector[nr];
                 for (int ir=2; ir<nr-1; ir++) {
                         int iAttr = ir-2;
 
-                        final Set<String> attrNames = new HashSet(attributeMapping.getOriginalAttributeMap(iAttr).values());
+                        final Set<String> attrNames = new HashSet<String>(attributeMapping.getOriginalAttributeMap(iAttr).values());
                         final CyAttributes cyAttributes = attributeMapping.getCyAttributes();
                         final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
                         final byte type_mc = attr_mc==null?CyAttributes.TYPE_STRING:cyAttributes.getType(attr_mc);
@@ -360,8 +360,8 @@ class MergeAttributeTable extends JTable{
             String attr_merged = "Matching.Attribute";
             
             //TODO: remove in Cytoscape3
-            Map netAttrMap = new HashMap(matchingAttribute.getNetAttrMap());
-            Iterator<Map.Entry<String,String>> it = netAttrMap.entrySet().iterator();
+            Map<String, String> netAttrMap = new HashMap<String, String>(matchingAttribute.getNetAttrMap());
+            Iterator<Map.Entry<String, String>> it = netAttrMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String,String> entry = it.next();
                 String network = entry.getKey();

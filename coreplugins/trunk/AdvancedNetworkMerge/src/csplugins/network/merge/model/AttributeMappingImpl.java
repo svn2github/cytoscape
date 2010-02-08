@@ -114,7 +114,7 @@ public class AttributeMappingImpl implements AttributeMapping {
         String attr = attributeName;
         
         if (attributeExistsInOriginalNetwork(attributeName)) {
-            final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
+            final Set<String> attrNames = new HashSet<String>(getOriginalAttributeMap(index).values());
             final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
             if (attr_mc==null) { // incompatible
                 if (cyAttributes.getType(attributeName)!=CyAttributes.TYPE_STRING) {
@@ -170,7 +170,7 @@ public class AttributeMappingImpl implements AttributeMapping {
                 throw new java.lang.IndexOutOfBoundsException();
         }
 
-        final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
+        final Set<String> attrNames = new HashSet<String>(getOriginalAttributeMap(index).values());
         final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
         final byte fromType = attr_mc==null?CyAttributes.TYPE_STRING:cyAttributes.getType(attr_mc);
 
@@ -663,7 +663,7 @@ public class AttributeMappingImpl implements AttributeMapping {
                 throw new java.lang.IndexOutOfBoundsException();
         }
 
-        final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
+        final Set<String> attrNames = new HashSet<String>(getOriginalAttributeMap(index).values());
         final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
         final byte type = attr_mc==null?CyAttributes.TYPE_STRING:cyAttributes.getType(attr_mc);
 
