@@ -139,7 +139,7 @@ public class GraphSetUtils {
 	 * @return A cyNetwork which is the difference of the input graphs
 	 */
 	public static CyNetwork createDifferenceGraph2(List networkList, boolean copyView, String title) {
-		return performNetworkOperation(networkList, DIFFERENCE, copyView, title);
+		return performNetworkOperation(networkList, DIFFERENCE2, copyView, title);
 	}
 
 	/**
