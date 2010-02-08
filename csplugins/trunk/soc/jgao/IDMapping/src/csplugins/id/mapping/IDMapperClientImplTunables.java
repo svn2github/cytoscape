@@ -37,18 +37,14 @@ package csplugins.id.mapping;
 
 import cytoscape.layout.Tunable;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
-import org.bridgedb.AttributeMapper;
 import org.bridgedb.BridgeDb;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.Xref;
 
 /**
  *
@@ -195,7 +191,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         props.add(this.selected);
 
         this.clientType = new Tunable(CLIENT_TYPE,
-                    "Client type", Tunable.NOINPUT, clientType.name());
+                    "Client type", Tunable.STRING|Tunable.NOINPUT, clientType.name());
         props.add(this.clientType);
 
         props.initializeProperties(); // save to props or set to tunables
@@ -267,118 +263,6 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     
     public String getClassString() {
         return (String)classString.getValue();
-    }
-
-    public String getDescription() {
-        IDMapper idMapper = getIDMapper();
-        if (idMapper==null) {
-            return "This ID mapping client cannot be connected.";
-        }
-
-        StringBuilder desc = new StringBuilder(this.getDisplayName());
-        desc.append("\nCapacities:\n");
-
-        desc.append(">> Supported source ID types:\n");
-        IDMapperCapabilities capabilities = idMapper.getCapabilities();
-
-        Set<DataSource> dss = null;
-        try {
-            dss = capabilities.getSupportedSrcDataSources();
-        } catch (IDMapperException ex) {
-            ex.printStackTrace();
-        }
-
-        if (dss!=null) {
-            Vector<String> vec = new Vector(dss.size());
-            for (DataSource ds : dss) {
-                vec.add(getDescription(ds));
-            }
-
-            Collections.sort(vec);
-            for (String str : vec) {
-                desc.append("\t"+str+"\n");
-            }
-        }
-
-        desc.append(">> Supported target ID types:\n");
-        dss = null;
-        try {
-            dss = capabilities.getSupportedTgtDataSources();
-        } catch (IDMapperException ex) {
-            ex.printStackTrace();
-        }
-
-        if (dss!=null) {
-            Vector<String> vec = new Vector(dss.size());
-            int i=0;
-            for (DataSource ds : dss) {
-                i++;
-                vec.add(getDescription(ds));
-            }
-
-            Collections.sort(vec);
-            for (String str : vec) {
-                desc.append("\t"+str+"\n");
-            }
-        }
-
-//        desc.append(">> Is free-text search supported?\n");
-//        desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
-//        desc.append("\n");
-
-        if (idMapper instanceof AttributeMapper) {
-            desc.append(">>Supported Attributes\n");
-            Set<String> attrs = null;
-            try {
-                attrs = ((AttributeMapper)idMapper).getAttributeSet();
-            } catch (IDMapperException ex) {
-                ex.printStackTrace();
-            }
-
-            if (attrs!=null) {
-                Vector<String> vec = new Vector(attrs.size());
-                int i=0;
-                for (String attr : attrs) {
-                    i++;
-                    vec.add(attr);
-                }
-
-                Collections.sort(vec);
-                for (String str : vec) {
-                    desc.append("\t"+str+"\n");
-                }
-            }
-        }
-
-        return desc.toString();
-    }
-
-    private String getDescription(DataSource dataSource) {
-        StringBuilder desc = new StringBuilder();
-        if (dataSource==null) {
-            System.err.print("wrong");
-        }
-        String sysName = dataSource.getSystemCode();
-        if (sysName!=null) {
-            desc.append(sysName);
-        }
-        desc.append("\t");
-
-        String fullName = dataSource.getFullName();
-        if (fullName!=null) {
-            desc.append(fullName);
-        }
-        desc.append("\t");
-
-        Xref example = dataSource.getExample();
-        if (example!=null) {
-            String id = example.getId();
-            if (id!=null) {
-                desc.append(id);
-            }
-        }
-
-        return desc.toString();
     }
 
     @Override

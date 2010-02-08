@@ -38,12 +38,27 @@ package csplugins.id.mapping.ui;
 import csplugins.id.mapping.IDMapperClient;
 import csplugins.id.mapping.IDMapperClientManager;
 
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
+
 import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.bridgedb.AttributeMapper;
+import org.bridgedb.DataSource;
+import org.bridgedb.IDMapper;
+import org.bridgedb.IDMapperCapabilities;
+import org.bridgedb.IDMapperException;
+import org.bridgedb.Xref;
 /**
  *
  * @author gjj
@@ -76,7 +91,26 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
                         Object clientObj = node.getUserObject();
                         if (clientObj instanceof IDMapperClient) {
                             IDMapperClient client = (IDMapperClient)clientObj;
-                            descTextArea.setText(client.getDescription());
+
+                            final JTaskConfig jTaskConfig = new JTaskConfig();
+                            jTaskConfig.setOwner(cytoscape.Cytoscape.getDesktop());
+                            jTaskConfig.displayCloseButton(true);
+                            jTaskConfig.displayCancelButton(false);
+                            jTaskConfig.displayStatus(true);
+                            jTaskConfig.setAutoDispose(true);
+                            jTaskConfig.setMillisToPopup(100);
+
+                            LoadClientDescTask task = new LoadClientDescTask(client);
+                            TaskManager.executeTask(task, jTaskConfig);
+
+                            String desc;
+                            if (task.success()) {
+                                desc = task.description();
+                            } else {
+                                desc = "Failed to retrieve the information about this ID mapping client.";
+                            }
+
+                            descTextArea.setText(desc);
                         } else {
                             descTextArea.setText(msg);
                         }
@@ -251,4 +285,163 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
     private javax.swing.JTextArea descTextArea;
     // End of variables declaration//GEN-END:variables
 
+    private class LoadClientDescTask implements Task {
+        private TaskMonitor taskMonitor;
+        private boolean success = false;
+
+        private final IDMapperClient client;
+        private String description;
+
+        public LoadClientDescTask(final IDMapperClient client) {
+            this.client = client;
+            description = null;
+        }
+
+        public void run() {
+                try {
+                        taskMonitor.setStatus("Connecting to "+client.getDisplayName()+"...");
+                        taskMonitor.setPercentCompleted(-1);
+                        description = getDescription();
+                        taskMonitor.setStatus("Done");
+                        taskMonitor.setPercentCompleted(100);
+                        success = true;
+                } catch (Exception e) {
+                        taskMonitor.setPercentCompleted(100);
+                        taskMonitor.setStatus("failed.\n");
+                        e.printStackTrace();
+                }
+
+	}
+
+        public boolean success() {
+            return success;
+        }
+
+        public void halt() {
+	}
+
+        public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
+
+        public String getTitle() {
+		return new String("Connecting to client");
+	}
+
+        public String description() {
+            return description;
+        }
+
+        private String getDescription() {
+            IDMapper idMapper = client.getIDMapper();
+            if (idMapper==null) {
+                return "This ID mapping client cannot be connected.";
+            }
+
+            StringBuilder desc = new StringBuilder(client.getDisplayName());
+            desc.append("\nCapacities:\n");
+
+            desc.append(">> Supported source ID types:\n");
+            IDMapperCapabilities capabilities = idMapper.getCapabilities();
+
+            Set<DataSource> dss = null;
+            try {
+                dss = capabilities.getSupportedSrcDataSources();
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
+            }
+
+            if (dss!=null) {
+                ArrayList<String> vec = new ArrayList(dss.size());
+                for (DataSource ds : dss) {
+                    vec.add(getDescription(ds));
+                }
+
+                Collections.sort(vec);
+                for (String str : vec) {
+                    desc.append("\t"+str+"\n");
+                }
+            }
+
+            desc.append(">> Supported target ID types:\n");
+            dss = null;
+            try {
+                dss = capabilities.getSupportedTgtDataSources();
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
+            }
+
+            if (dss!=null) {
+                ArrayList<String> vec = new ArrayList(dss.size());
+                int i=0;
+                for (DataSource ds : dss) {
+                    i++;
+                    vec.add(getDescription(ds));
+                }
+
+                Collections.sort(vec);
+                for (String str : vec) {
+                    desc.append("\t"+str+"\n");
+                }
+            }
+
+    //        desc.append(">> Is free-text search supported?\n");
+    //        desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
+    //        desc.append("\n");
+
+            if (idMapper instanceof AttributeMapper) {
+                desc.append(">>Supported Attributes\n");
+                Set<String> attrs = null;
+                try {
+                    attrs = ((AttributeMapper)idMapper).getAttributeSet();
+                } catch (IDMapperException ex) {
+                    ex.printStackTrace();
+                }
+
+                if (attrs!=null) {
+                    ArrayList<String> vec = new ArrayList(attrs.size());
+                    int i=0;
+                    for (String attr : attrs) {
+                        i++;
+                        vec.add(attr);
+                    }
+
+                    Collections.sort(vec);
+                    for (String str : vec) {
+                        desc.append("\t"+str+"\n");
+                    }
+                }
+            }
+
+            return desc.toString();
+        }
+
+        private String getDescription(DataSource dataSource) {
+            StringBuilder desc = new StringBuilder();
+            if (dataSource==null) {
+                System.err.print("wrong");
+            }
+            String sysName = dataSource.getSystemCode();
+            if (sysName!=null) {
+                desc.append(sysName);
+            }
+            desc.append("\t");
+
+            String fullName = dataSource.getFullName();
+            if (fullName!=null) {
+                desc.append(fullName);
+            }
+            desc.append("\t");
+
+            Xref example = dataSource.getExample();
+            if (example!=null) {
+                String id = example.getId();
+                if (id!=null) {
+                    desc.append(id);
+                }
+            }
+
+            return desc.toString();
+        }
+    }
 }

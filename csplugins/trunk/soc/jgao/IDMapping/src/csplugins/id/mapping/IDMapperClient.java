@@ -79,8 +79,6 @@ public interface IDMapperClient {
     
     public String getClassString();
 
-    public String getDescription();
-
     public ClientType getClientType();
 
     public boolean isSelected();
