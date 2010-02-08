@@ -332,7 +332,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
             return description;
         }
 
-        private String getDescription() {
+        private String getDescription() throws IDMapperException {
             IDMapper idMapper = client.getIDMapper();
             if (idMapper==null) {
                 return "This ID mapping client cannot be connected.";
@@ -344,12 +344,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
             desc.append(">> Supported source ID types:\n");
             IDMapperCapabilities capabilities = idMapper.getCapabilities();
 
-            Set<DataSource> dss = null;
-            try {
-                dss = capabilities.getSupportedSrcDataSources();
-            } catch (IDMapperException ex) {
-                ex.printStackTrace();
-            }
+            Set<DataSource> dss = capabilities.getSupportedSrcDataSources();
 
             if (dss!=null) {
                 ArrayList<String> vec = new ArrayList(dss.size());
@@ -364,12 +359,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
             }
 
             desc.append(">> Supported target ID types:\n");
-            dss = null;
-            try {
-                dss = capabilities.getSupportedTgtDataSources();
-            } catch (IDMapperException ex) {
-                ex.printStackTrace();
-            }
+            dss = capabilities.getSupportedTgtDataSources();
 
             if (dss!=null) {
                 ArrayList<String> vec = new ArrayList(dss.size());
@@ -391,12 +381,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
             if (idMapper instanceof AttributeMapper) {
                 desc.append(">>Supported Attributes\n");
-                Set<String> attrs = null;
-                try {
-                    attrs = ((AttributeMapper)idMapper).getAttributeSet();
-                } catch (IDMapperException ex) {
-                    ex.printStackTrace();
-                }
+                Set<String> attrs = ((AttributeMapper)idMapper).getAttributeSet();
 
                 if (attrs!=null) {
                     ArrayList<String> vec = new ArrayList(attrs.size());

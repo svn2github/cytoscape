@@ -45,7 +45,6 @@ import cytoscape.task.util.TaskManager;
 
 import cytoscape.util.OpenBrowser;
 
-import org.bridgedb.IDMapperException;
 import org.bridgedb.webservice.biomart.BiomartStub;
 import org.bridgedb.webservice.synergizer.SynergizerStub;
 
@@ -55,8 +54,6 @@ import java.util.Vector;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
-
-import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -799,7 +796,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         Vector<String> auths;
         try {
             auths = new Vector(synergizerStub.availableAuthorities());
-        } catch (IDMapperException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Failed to connect to Synergizer.");
             return new Vector();
         }
@@ -821,7 +818,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         if (biomartStub!=null) {
             try {
                 martSet = biomartStub.availableMarts();
-            } catch (IDMapperException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -849,7 +846,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         Vector<String> species = new Vector();
         try {
             species = new Vector(synergizerStub.availableSpecies(auth));
-        } catch (IDMapperException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -864,7 +861,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         Set<String> datasets = new HashSet();
         try {
             datasets = biomartStub.availableDatasets(db);
-        } catch(IDMapperException e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -876,7 +873,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                     mapDatasetDisplayName.put(display, ds);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -920,7 +917,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         try {
             synergizerStub = SynergizerStub.getInstance();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -935,7 +932,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         
         try {
             biomartStub = BiomartStub.getInstance();
-        } catch(IOException e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -1027,15 +1024,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     public boolean isCancelled() {
         return cancelled;
     }
-
-//    private void postInit() {
-//        mapTypePanel = new HashMap();
-//        mapTypePanel.put(ClientType.BIOMART, biomartPanel);
-//        mapTypePanel.put(ClientType.PICR, picrPanel);
-//        mapTypePanel.put(ClientType.SYNERGIZER, synergizerPanel);
-//
-//        setDatasetsCombo();
-//    }
 
 //    private static final String FILTER_TXT = "/resources/biomart_dataset_filter.txt";
 //    private void loadBiomartFilterFile() {

@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bridgedb.DataSource;
-import org.bridgedb.IDMapperException;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.Xref;
 
@@ -86,7 +85,7 @@ public class IDMapperWrapper {
             Map<Xref,Set<Xref>> mappingId2Id = null;
             try {
                  mappingId2Id = idMapperStack.mapID(idXrefs, idTypes.toArray(new DataSource[0]));
-            } catch (IDMapperException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
@@ -124,7 +123,7 @@ public class IDMapperWrapper {
                     Set<String> tgtAttrValues;
                     try {
                         tgtAttrValues = idMapperStack.getAttributes(srcXref, attrType);
-                    } catch (IDMapperException ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                         continue;
                     }
@@ -144,7 +143,7 @@ public class IDMapperWrapper {
                 Map<Xref,String> mapTgtXrefs;
                 try {
                     mapTgtXrefs = idMapperStack.freeAttributeSearch(srcAttrValue, srcAttrType, -1);
-                } catch (IDMapperException ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     continue;
                 }

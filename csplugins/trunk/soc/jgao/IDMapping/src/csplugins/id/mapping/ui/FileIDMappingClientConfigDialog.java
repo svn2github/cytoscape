@@ -519,7 +519,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
                 return;
             }
 
-        } catch(IOException e) {
+        } catch(Exception e) {
             JOptionPane.showMessageDialog(this, "Error: unable to open the file.");
             e.printStackTrace();
         }
@@ -627,7 +627,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Error: failed to connect to the file.");
                 return false;
             }
-        } catch(IOException ex) {
+        } catch(Exception ex) {
             JOptionPane.showMessageDialog(this, "Error: unable to open the file.");
             ex.printStackTrace();
             return false;

@@ -130,6 +130,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
                 defClientType = ClientType.getClientType(mapper);
             } catch (Exception e) {
                 defClientType = ClientType.OTHER;
+                e.printStackTrace();
             }
         }
 
@@ -237,7 +238,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         try {
             dss.addAll(caps.getSupportedSrcDataSources());
             dss.addAll(caps.getSupportedTgtDataSources());
-        } catch (IDMapperException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }

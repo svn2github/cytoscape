@@ -48,7 +48,6 @@ import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperStack;
-import org.bridgedb.IDMapperException;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.Xref;
 
@@ -370,7 +369,7 @@ public class IDMappingServiceSuppport {
             boolean succ = false;
             try {
                 succ = stack.getCapabilities().isMappingSupported(srcDs, tgtDs);
-            } catch (IDMapperException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             content.put(SUCCESS, succ);
@@ -388,7 +387,7 @@ public class IDMappingServiceSuppport {
         try {
             srcDataSources = stack.getCapabilities().getSupportedSrcDataSources();
             tgtDataSources = stack.getCapabilities().getSupportedTgtDataSources();
-        } catch (IDMapperException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             content.put(SUCCESS, false);
             content.put(REPORT, "\nIDMapperException:\n"+ex.getMessage());
@@ -445,7 +444,7 @@ public class IDMappingServiceSuppport {
                 try {
                     exist = stack.xrefExists(new Xref(id, ds));
                     content.put(SUCCESS, true);
-                } catch (IDMapperException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     content.put(SUCCESS, false);
                     content.put(REPORT, "Error: "+e.getMessage());
@@ -784,7 +783,7 @@ public class IDMappingServiceSuppport {
                 boolean supported = false;
                 try {
                     supported = caps.isMappingSupported(srcDs, tgtDs);
-                } catch (IDMapperException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     content.put(SUCCESS, false);
                     content.put(REPORT, "Error: "+e.getMessage());
@@ -804,7 +803,7 @@ public class IDMappingServiceSuppport {
                     Map<Xref,Set<Xref>> mapping = null;
                     try {
                         mapping = stack.mapID(srcXrefs, tgtDataSources);
-                    } catch (IDMapperException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         content.put(SUCCESS, false);
                         content.put(REPORT, "Error: "+e.getMessage());

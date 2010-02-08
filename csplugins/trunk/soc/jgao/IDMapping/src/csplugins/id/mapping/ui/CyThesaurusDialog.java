@@ -50,7 +50,6 @@ import org.bridgedb.AttributeMapper;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapper;
-import org.bridgedb.IDMapperException;
 import org.bridgedb.webservice.biomart.IDMapperBiomart;
 
 import javax.swing.AbstractListModel;
@@ -65,7 +64,6 @@ import java.awt.Component;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -580,7 +578,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             Set<DataSource> dss = null;
             try {
                 dss = stack.getCapabilities().getSupportedSrcDataSources();
-            } catch (IDMapperException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
             
@@ -602,62 +600,70 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         if (mapSrcTypeTgtIDTypes==null) {
             mapSrcTypeTgtIDTypes = new HashMap();
 
+            // id type
             IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+            Set<DataSource> tgtDss = null;
             try {
-                // id type
-                Set<DataSource> tgtDss = stack.getCapabilities().getSupportedTgtDataSources();
+                tgtDss = stack.getCapabilities().getSupportedTgtDataSources();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
+            if (tgtDss!=null) {
                 for (String src : getSupportedSrcTypes()) {
                     DataSource srcDs = DataSource.getByFullName(src);
                     Set<String> dss = new HashSet();
                     for (DataSource tgt : tgtDss) {
-                        if (stack.getCapabilities().isMappingSupported(srcDs, tgt)) {
+                        boolean mappingSupported = false;
+                        try {
+                            mappingSupported = stack.getCapabilities().isMappingSupported(srcDs, tgt);
+                        }catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        if (mappingSupported) {
                             dss.add(tgt.getFullName());
                         }
                     }
                     mapSrcTypeTgtIDTypes.put(DataSourceWrapper.getInstance(src,
                             DataSourceWrapper.DsAttr.DATASOURCE), dss);
                 }
+            }
 
-                // attr type
-                for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
-                    IDMapper mapper = client.getIDMapper();
-                    if (mapper==null) {
-                        continue;
+            // attr type
+            for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
+                IDMapper mapper = client.getIDMapper();
+                if (mapper==null) {
+                    continue;
+                }
+
+                if (!(mapper instanceof AttributeMapper))
+                    continue;
+
+                Set<String> attrs = null;
+                Set<DataSource> tgtTypes = null;
+                try {
+                    attrs = ((AttributeMapper)mapper).getAttributeSet();
+                    tgtTypes = mapper.getCapabilities().getSupportedTgtDataSources();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                if (attrs==null || tgtTypes==null)
+                    continue;
+
+                for (String attr : attrs) {
+                    DataSourceWrapper dsw = DataSourceWrapper.getInstance(attr,
+                            DataSourceWrapper.DsAttr.ATTRIBUTE);
+                    Set<String> dss = mapSrcTypeTgtIDTypes.get(dsw);
+                    if (dss==null) {
+                        dss = new HashSet();
+                        mapSrcTypeTgtIDTypes.put(dsw, dss);
                     }
 
-                    if (!(mapper instanceof AttributeMapper))
-                        continue;
-
-                    Set<String> attrs;
-                    Set<DataSource> tgtTypes;
-                    try {
-                        attrs = ((AttributeMapper)mapper).getAttributeSet();
-                        tgtTypes = mapper.getCapabilities().getSupportedTgtDataSources();
-                    } catch (IDMapperException ex) {
-                        ex.printStackTrace();
-                        continue;
-                    }
-
-                    if (attrs==null || tgtTypes==null)
-                        continue;
-
-                    for (String attr : attrs) {
-                        DataSourceWrapper dsw = DataSourceWrapper.getInstance(attr,
-                                DataSourceWrapper.DsAttr.ATTRIBUTE);
-                        Set<String> dss = mapSrcTypeTgtIDTypes.get(dsw);
-                        if (dss==null) {
-                            dss = new HashSet();
-                            mapSrcTypeTgtIDTypes.put(dsw, dss);
-                        }
-
-                        for (DataSource ds : tgtTypes) {
-                            dss.add(ds.getFullName());
-                        }
+                    for (DataSource ds : tgtTypes) {
+                        dss.add(ds.getFullName());
                     }
                 }
-            } catch (IDMapperException ex) {
-                ex.printStackTrace();
             }
         }
 
@@ -690,7 +696,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             }
             try {
                 srcAttrs = stack.getAttributeSet();
-            } catch (IDMapperException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -710,14 +716,13 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
                 if (mapper==null || !(mapper instanceof AttributeMapper))
                     continue;
 
-                Set<String> attrs;
-                Set<DataSource> srcTypes;
+                Set<String> attrs = null;
+                Set<DataSource> srcTypes = null;
                 try {
                     attrs = ((AttributeMapper)mapper).getAttributeSet();
                     srcTypes = mapper.getCapabilities().getSupportedSrcDataSources();
-                } catch (IDMapperException ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
-                    continue;
                 }
 
                 if (attrs==null || srcTypes==null)
@@ -749,57 +754,6 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         return ret;
     }
-
-//    private Set<String> getSupportedTgtAttrs(Set<DataSourceWrapper> srcDss) {
-//        Set<DataSourceWrapper> types = sourceAttributeSelectionTable.getSelectedIDTypes();
-//        if (types==null) {
-//            return null;
-//        }
-//
-//        Set<DataSource> srcTypes = new HashSet();
-//        for (DataSourceWrapper type : types) {
-//            if (type.getDsAttr() == DataSourceWrapper.DsAttr.DATASOURCE) {
-//                srcTypes.add(DataSource.getByFullName(type.value()));
-//            }
-//        }
-//
-//        if (srcTypes.isEmpty()) {
-//            return null;
-//        }
-//
-//        if (tgtAttrs==null) {
-//            //IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
-//            tgtAttrs = new HashSet();
-//            for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
-//                IDMapper mapper = client.getIDMapper();
-//                if (!(mapper instanceof AttributeMapper))
-//                    continue;
-//
-//                Set<DataSource> dss;
-//                try {
-//                    dss = mapper.getCapabilities().getSupportedSrcDataSources();
-//                } catch (IDMapperException ex) {
-//                    ex.printStackTrace();
-//                    continue;
-//                }
-//                if (!Collections.disjoint(srcTypes, dss)) {
-//                    Set<String> attrs;
-//                    try {
-//                        attrs = ((AttributeMapper)mapper).getAttributeSet();
-//                    } catch (IDMapperException ex) {
-//                        ex.printStackTrace();
-//                        continue;
-//                    }
-//                    tgtAttrs.addAll(attrs);
-//                }
-//            }
-//
-//            if (tgtAttrs.isEmpty())
-//                tgtAttrs = null;
-//        }
-//
-//        return tgtAttrs;
-//    }
 
     private void setSupportedSrcTypesInTable() {
         sourceAttributeSelectionTable.setSupportedIDType(getSupportedSrcTypes(),
