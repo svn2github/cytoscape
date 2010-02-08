@@ -37,65 +37,48 @@ public class PluginUpdateAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		PluginUpdateDialog Dialog = new PluginUpdateDialog(Cytoscape
-				.getDesktop());
-		ArrayList<String> XmlIncorrect = new ArrayList<String>();
-		ArrayList<String> BadXml = new ArrayList<String>();
+		PluginUpdateDialog dialog = new PluginUpdateDialog(Cytoscape.getDesktop());
+		dialog.setVisible(false);
+		ArrayList<String> xmlIncorrect = new ArrayList<String>();
 		
 		if (!PluginManager.usingWebstartManager()) {
 			boolean updateFound = false;
-			PluginManager Mgr = PluginManager.getPluginManager();
+			PluginManager mgr = PluginManager.getPluginManager();
 			// Find updates
-			for (DownloadableInfo Current : Mgr.getDownloadables(PluginStatus.CURRENT)) {
+			for (DownloadableInfo current : mgr.getDownloadables(PluginStatus.CURRENT)) {
 
-			// Configure JTask Dialog Pop-Up Box
-//			JTaskConfig jTaskConfig = new JTaskConfig();
-//			jTaskConfig.setOwner(Cytoscape.getDesktop());
-//			jTaskConfig.displayCloseButton(false);
-//			jTaskConfig.displayStatus(true);
-//			jTaskConfig.setAutoDispose(true);
-//			jTaskConfig.displayCancelButton(false);
-
-				
 				try {
-					List<DownloadableInfo> Updates = Mgr.findUpdates(Current);
-					if (Updates.size() > 0) {
-						Dialog.addCategory(Current.getCategory(), Current,
-								Updates);
+					List<DownloadableInfo> updates = mgr.findUpdates(current);
+					if (updates.size() > 0) {
+						dialog.addCategory(current.getCategory(), current, updates);
 						updateFound = true;
 					}
 				} catch (org.jdom.JDOMException jde) {
-//					logger.warn("Failed to retrieve updates for "
-//							+ Current.getName() + ", XML incorrect at "
-//							+ Current.getDownloadableURL());
 					logger.warn(jde.getMessage());
-					XmlIncorrect.add(Current.toString());
-					// jde.printStackTrace();
+					xmlIncorrect.add(current.toString());
 				} catch (java.io.IOException ioe) {
 					logger.warn("Failed to read XML file for "
-							+ Current.getName() + " at "
-							+ Current.getDownloadableURL(), ioe);
-					BadXml.add(Current.toString());
+							+ current.getName() + " at "
+							+ current.getDownloadableURL(), ioe);
+					xmlIncorrect.add(current.toString());
 				}
 
 			}
-			if (XmlIncorrect.size() > 0) {
+			if (xmlIncorrect.size() > 0) {
 				// show option pane warning message?
 			}
 			
 			if (updateFound) {
-				Dialog.setVisible(true);
+				dialog.setVisible(true);
 			} else {
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 						"No updates available for currently installed plugins.",
 						"Plugin Updates", JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else {
-			JOptionPane
-					.showMessageDialog(
-							Cytoscape.getDesktop(),
-							"Plugin updates are not available when using Cytoscape through webstart",
-							"Plugin Update", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog( Cytoscape.getDesktop(),
+					"Plugin updates are not available when using Cytoscape through webstart",
+					"Plugin Update", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
