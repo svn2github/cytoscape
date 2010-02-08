@@ -66,9 +66,10 @@ public class GraphSetUtils {
 	/**
 	 * The different types of network graph operations
 	 */
-	protected static final int UNION = 0;
+	protected static final int UNION        = 0;
 	protected static final int INTERSECTION = 1;
-	protected static final int DIFFERENCE = 2;
+	protected static final int DIFFERENCE   = 2;
+	protected static final int DIFFERENCE2  = 3;
 
 	/**
 	 * Create a new graph which is the union of multiple graphs. The union graph
@@ -125,6 +126,23 @@ public class GraphSetUtils {
 	}
 
 	/**
+	 * The way this works is that the 2nd and optional additional networks will be subtracted
+	 * from the 1st network.  The way this works is that all the nodes and edges in the 2nd and
+	 * consecutive networks will be removed from the 1st network.
+	 *
+	 * @param networkList
+	 *            A list containing all of the networks.
+	 * @param copyView
+	 *            This argument is ignored.
+	 * @param title
+	 *            The title of the resulting, new network
+	 * @return A cyNetwork which is the difference of the input graphs
+	 */
+	public static CyNetwork createDifferenceGraph2(List networkList, boolean copyView, String title) {
+		return performNetworkOperation(networkList, DIFFERENCE, copyView, title);
+	}
+
+	/**
 	 * Protected helper function that actually does the heavy lifting to perform
 	 * the set operations. For explantion of the input parameters, see any of
 	 * the public methods.
@@ -153,22 +171,20 @@ public class GraphSetUtils {
 			case UNION:
 				new_nodes = GraphSetUtils.unionizeNodes(networkList);
 				new_edges = GraphSetUtils.unionizeEdges(networkList);
-
 				break;
-
 			case INTERSECTION:
 				new_nodes = GraphSetUtils.intersectNodes(networkList);
 				new_edges = GraphSetUtils.intersectEdges(networkList);
 				CyLogger.getLogger().warn("number of intersecting nodes is " + new_nodes.length);
-
 				break;
-
 			case DIFFERENCE:
 				new_edges = GraphSetUtils.differenceEdges(networkList);
 				new_nodes = GraphSetUtils.differenceNodes(networkList, new_edges);
-
 				break;
-
+			case DIFFERENCE2:
+				new_nodes = GraphSetUtils.differenceNodes2(networkList);
+				new_edges = GraphSetUtils.differenceEdges2(networkList, new_nodes);
+				break;
 			default:
 				throw new IllegalArgumentException("Specified invalid graph set operation");
 		}
@@ -201,7 +217,7 @@ public class GraphSetUtils {
 	 * @return an integer array containing the set of edges in the difference
 	 */
 	protected static int[] differenceEdges(List networkList) {
-		List edges = new Vector();
+		final List<Edge> edges = new Vector<Edge>();
 
 		/*
 		 * For each node in the first network, chech to make sure that it is not
@@ -236,6 +252,39 @@ EDGE_LOOP:
 	}
 
 	/**
+	 * Returns the nodes of the 1st network that are not contained in any of the other networks.
+	 * @param networkList A lists containing cyNetworks
+	 * @return an integer array containing the set of nodes in the difference
+	 */
+	protected static int[] differenceNodes2(List networkList) {
+		final List<Node> nodes = new Vector<Node>();
+		final CyNetwork firstNetwork = (CyNetwork)networkList.get(0);
+NODE_LOOP:
+		for (Iterator nodeIt = firstNetwork.nodesIterator(); nodeIt.hasNext(); /* Empty! */)
+		{
+			Node currentNode = (Node) nodeIt.next();
+
+			for (int idx = 1; idx < networkList.size(); idx++) {
+				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
+
+				if (currentNetwork.containsNode(currentNode))
+					continue NODE_LOOP;
+			}
+
+			nodes.add(currentNode);
+		}
+
+		final int[] result = new int[nodes.size()];
+		int idx = 0;
+		for (Iterator nodeIt = nodes.iterator(); nodeIt.hasNext(); idx++) {
+			Node currentNode = (Node) nodeIt.next();
+			result[idx] = currentNode.getRootGraphIndex();
+		}
+
+		return result;
+	}
+
+	/**
 	 * Determine the set of difference nodes. In order to perform this operation
 	 * we also have to know the set of edges in the edge difference, so that we
 	 * can make sure that any nodes are present that are required by those
@@ -245,7 +294,7 @@ EDGE_LOOP:
 	 * @return an integer array containing the set of edges in the difference
 	 */
 	protected static int[] differenceNodes(List networkList, int[] edges) {
-		HashSet nodes = new HashSet();
+		final HashSet<Node> nodes = new HashSet<Node>();
 
 		/*
 		 * For each node in the first network, check to see if it is not present
@@ -288,12 +337,66 @@ NODE_LOOP:
 	}
 
 	/**
+	 * Determine the set of difference edges. In order to perform this operation
+	 * we also have to know the set of nodes in the node difference, so that we
+	 * can make sure that any edges are present that are required by those
+	 * nodes
+	 * @param networkList A lists containing cyNetworks
+	 * @param nodes The difference set of nodes
+	 * @return an integer array containing the set of nodes in the difference
+	 */
+	protected static int[] differenceEdges2(List networkList, int[] nodes) {
+		final HashSet<Edge> edges = new HashSet<Edge>();
+
+		/*
+		 * For each edge in the first network, check to see if it is not present
+		 * in any of the other networks, add it to the list if this is the case
+		 */
+		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
+EDGE_LOOP: 
+		for (Iterator edgeIt = firstNetwork.edgesIterator(); edgeIt.hasNext(); /* Empty! */)
+		{
+			Edge currentEdge = (Edge) edgeIt.next();
+
+			for (int idx = 1; idx < networkList.size(); idx++) {
+				final CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
+				if (currentNetwork.containsEdge(currentEdge))
+					continue EDGE_LOOP;
+			}
+
+			edges.add(currentEdge);
+		}
+
+		/*
+		 * Now we need to make sure that we do not keep edges if either source or target
+		 * nodes are not in "nodes."
+		 */
+
+		final Set<Integer> knownNodes = new HashSet<Integer>(nodes.length);
+		for (final int nodeIndex : nodes)
+			knownNodes.add(nodeIndex);
+
+		final ArrayList<Integer> acceptableEdges = new ArrayList<Integer>(edges.size());
+		for (final Edge edgeCandidate : edges) {
+			if (knownNodes.contains(edgeCandidate.getSource())
+			    && knownNodes.contains(edgeCandidate.getTarget()))
+				acceptableEdges.add(edgeCandidate.getRootGraphIndex());
+		}
+
+		final int[] result = new int[acceptableEdges.size()];
+		int index = 0;
+		for (final int edgeIndex : acceptableEdges)
+			result[index++] = edgeIndex;
+		return result;
+	}
+
+	/**
 	 * Apply a simple intersection operation to the node sets
 	 * @param networkList A list of cyNetworks
 	 * @return an integer array which contains the indices of nodes in the intersection
 	 */
 	protected static int[] intersectNodes(List networkList) {
-		List nodes = new Vector();
+		final List<Node> nodes = new Vector<Node>();
 
 		/*
 		 * For each node in the first network, check to see if it is present in
@@ -332,7 +435,7 @@ NODE_LOOP:
 	 * @return an integer array which contains the indices of edges in the intersection
 	 */
 	protected static int[] intersectEdges(List networkList) {
-		List edges = new Vector();
+		final List<Edge> edges = new Vector<Edge>();
 
 		/*
 		 * For each node in the first network, check to see if it is present in
@@ -374,7 +477,7 @@ EDGE_LOOP:
 		/*
 		 * This is the set of nodes that will be in the final merged network
 		 */
-		Set nodes = new HashSet();
+		Set<Integer> nodes = new HashSet<Integer>();
 
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
 			CyNetwork currentNetwork = (CyNetwork) it.next();
@@ -403,7 +506,7 @@ EDGE_LOOP:
 		/*
 		 * This is the set of edges that will be in the final network
 		 */
-		Set edges = new HashSet();
+		Set<Integer> edges = new HashSet<Integer>();
 
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
 			CyNetwork currentNetwork = (CyNetwork) it.next();
