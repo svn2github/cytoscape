@@ -177,6 +177,22 @@ public class GraphSetUtilsTest extends TestCase {
 		assertNull(x.getEdge(bd));
 	} // testDifference
 
+	public void testDifference2() {
+		CyNetwork x = GraphSetUtils.createDifferenceGraph2(networklist, true, "difference2");
+
+		assertTrue(x.containsNode(x.getNode(a)));
+		assertTrue(x.containsNode(x.getNode(b)));
+		assertTrue(x.containsNode(x.getNode(c)));
+		assertNull(x.getNode(d));
+		assertNull(x.getNode(e));
+
+		assertTrue(x.containsEdge(x.getEdge(ab)));
+		assertNull(x.getEdge(bc));
+		assertTrue(x.containsEdge(x.getEdge(ac)));
+		assertNull(x.getEdge(be));
+		assertNull(x.getEdge(bd));
+	} // testDifference2
+
 	/**
 	 *  DOCUMENT ME!
 	 */
