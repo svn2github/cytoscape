@@ -4,11 +4,11 @@
   PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 <toc version="1.0">
    <tocitem target="d0e1" text="Cytoscape User Manual">
-      <tocitem target="Cytoscape 2.6 User Manual" text="Cytoscape 2.6 User Manual"/>
+      <tocitem target="Cytoscape 2.7 User Manual" text="Cytoscape 2.7 User Manual"/>
       <tocitem target="Introduction" text="Introduction">
          <tocitem target="Development" text="Development"/>
          <tocitem target="License" text="License"/>
-         <tocitem target="What&#8217;s New in 2.6" text="What&#8217;s New in 2.6"/>
+         <tocitem target="What&#8217;s New in 2.7" text="What&#8217;s New in 2.7"/>
       </tocitem>
       <tocitem target="Launching Cytoscape" text="Launching Cytoscape">
          <tocitem target="System requirements" text="System requirements"/>
@@ -66,6 +66,15 @@
       <tocitem target="Supported Network File Formats" text="Supported Network File Formats">
          <tocitem target="SIF Format" text="SIF Format">
             <tocitem target="Delimiters" text="Delimiters"/>
+         </tocitem>
+         <tocitem target="NNF" text="NNF">
+            <tocitem target="Examples" text="Examples">
+               <tocitem target="Example 1" text="Example 1"/>
+               <tocitem target="Example 2" text="Example 2"/>
+               <tocitem target="Example 3" text="Example 3"/>
+               <tocitem target="Example 4" text="Example 4"/>
+               <tocitem target="Example 5" text="Example 5"/>
+            </tocitem>
          </tocitem>
          <tocitem target="GML Format" text="GML Format"/>
          <tocitem target="XGMML Format" text="XGMML Format"/>
@@ -126,6 +135,9 @@
          <tocitem target="Other Mouse Behaviors" text="Other Mouse Behaviors">
             <tocitem target="Select" text="Select"/>
             <tocitem target="Context" text="Context"/>
+            <tocitem target="Node Context Menu" text="Node Context Menu">
+               <tocitem target="Nested Network Node Context Submenu" text="Nested Network Node Context Submenu"/>
+            </tocitem>
          </tocitem>
          <tocitem target="Automatic Layout Algorithms" text="Automatic Layout Algorithms">
             <tocitem target="yFiles Layouts" text="yFiles Layouts">
@@ -139,6 +151,7 @@
                <tocitem target="Spring-Embedded Layout" text="Spring-Embedded Layout"/>
                <tocitem target="Attribute Circle Layout" text="Attribute Circle Layout"/>
                <tocitem target="Group Attributes Layout" text="Group Attributes Layout"/>
+               <tocitem target="Label Force-Directed Layout" text="Label Force-Directed Layout"/>
             </tocitem>
             <tocitem target="JGraph Layouts" text="JGraph Layouts"/>
             <tocitem target="Layout Parameters" text="Layout Parameters"/>
@@ -202,6 +215,12 @@
       </tocitem>
       <tocitem target="Editing Networks" text="Editing Networks">
          <tocitem target="Add Interactions  (SIF Style)" text="Add Interactions  (SIF Style)"/>
+      </tocitem>
+      <tocitem target="Nested Networks" text="Nested Networks">
+         <tocitem target="Introducing Nested Networks" text="Introducing Nested Networks"/>
+         <tocitem target="Creating Nested Networks" text="Creating Nested Networks"/>
+         <tocitem target="Visualisation of Nested Networks" text="Visualisation of Nested Networks"/>
+         <tocitem target="Programmatically Manipulating Nested Networks" text="Programmatically Manipulating Nested Networks"/>
       </tocitem>
       <tocitem target="Plugins and the Plugin Manager" text="Plugins and the Plugin Manager">
          <tocitem target="The Plugin Manager" text="The Plugin Manager"/>

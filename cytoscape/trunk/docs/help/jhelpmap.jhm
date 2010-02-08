@@ -4,11 +4,11 @@
   PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN" "http://java.sun.com/products/javahelp/map_1_0.dtd">
 <map version="1.0">
    <mapID target="d0e1" url="index.html"/>
-   <mapID target="Cytoscape 2.6 User Manual" url="index.html#Cytoscape 2.6 User Manual"/>
+   <mapID target="Cytoscape 2.7 User Manual" url="index.html#Cytoscape 2.7 User Manual"/>
    <mapID target="Introduction" url="ar01s02.html"/>
    <mapID target="Development" url="ar01s02.html#Development"/>
    <mapID target="License" url="ar01s02.html#License"/>
-   <mapID target="What&#8217;s New in 2.6" url="ar01s02.html#What&#8217;s New in 2.6"/>
+   <mapID target="What&#8217;s New in 2.7" url="ar01s02.html#What&#8217;s New in 2.7"/>
    <mapID target="Launching Cytoscape" url="ar01s03.html"/>
    <mapID target="System requirements" url="ar01s03.html#System requirements"/>
    <mapID target="Getting Started" url="ar01s03.html#Getting Started"/>
@@ -32,9 +32,9 @@
    <mapID target="Network Management" url="ar01s04.html#Network Management"/>
    <mapID target="Arrange Network Windows" url="ar01s04.html#Arrange Network Windows"/>
    <mapID target="The Network Overview Window" url="ar01s04.html#The Network Overview Window"/>
-   <mapID target="command_line_args" url="index.html#command_line_args"/>
+   <mapID target="command_line_args" url="ar01s04.html#command_line_args"/>
    <mapID target="Command Line Arguments" url="ar01s05.html"/>
-   <mapID target="properties" url="index.html#properties"/>
+   <mapID target="properties" url="ar01s05.html#properties"/>
    <mapID target="Cytoscape Preferences" url="ar01s06.html"/>
    <mapID target="Managing Properties" url="ar01s06.html#Managing Properties"/>
    <mapID target="Setting Default Properties" url="ar01s06.html#Setting Default Properties"/>
@@ -56,6 +56,13 @@
    <mapID target="Supported Network File Formats" url="ar01s08.html"/>
    <mapID target="SIF Format" url="ar01s08.html#SIF Format"/>
    <mapID target="Delimiters" url="ar01s08.html#Delimiters"/>
+   <mapID target="NNF" url="ar01s08.html#NNF"/>
+   <mapID target="Examples" url="ar01s08.html#Examples"/>
+   <mapID target="Example 1" url="ar01s08.html#Example 1"/>
+   <mapID target="Example 2" url="ar01s08.html#Example 2"/>
+   <mapID target="Example 3" url="ar01s08.html#Example 3"/>
+   <mapID target="Example 4" url="ar01s08.html#Example 4"/>
+   <mapID target="Example 5" url="ar01s08.html#Example 5"/>
    <mapID target="GML Format" url="ar01s08.html#GML Format"/>
    <mapID target="XGMML Format" url="ar01s08.html#XGMML Format"/>
    <mapID target="SBML (Systems Biology Markup Language) Format" url="ar01s08.html#SBML (Systems Biology Markup Language) Format"/>
@@ -103,6 +110,8 @@
    <mapID target="Other Mouse Behaviors" url="ar01s12.html#Other Mouse Behaviors"/>
    <mapID target="Select" url="ar01s12.html#Select"/>
    <mapID target="Context" url="ar01s12.html#Context"/>
+   <mapID target="Node Context Menu" url="ar01s12.html#Node Context Menu"/>
+   <mapID target="Nested Network Node Context Submenu" url="ar01s12.html#Nested Network Node Context Submenu"/>
    <mapID target="Automatic Layout Algorithms" url="ar01s12.html#Automatic Layout Algorithms"/>
    <mapID target="yFiles Layouts" url="ar01s12.html#yFiles Layouts"/>
    <mapID target="yFiles Circular Layout" url="ar01s12.html#yFiles Circular Layout"/>
@@ -114,6 +123,7 @@
    <mapID target="Spring-Embedded Layout" url="ar01s12.html#Spring-Embedded Layout"/>
    <mapID target="Attribute Circle Layout" url="ar01s12.html#Attribute Circle Layout"/>
    <mapID target="Group Attributes Layout" url="ar01s12.html#Group Attributes Layout"/>
+   <mapID target="Label Force-Directed Layout" url="ar01s12.html#Label Force-Directed Layout"/>
    <mapID target="JGraph Layouts" url="ar01s12.html#JGraph Layouts"/>
    <mapID target="Layout Parameters" url="ar01s12.html#Layout Parameters"/>
    <mapID target="Manual Layout" url="ar01s12.html#Manual Layout"/>
@@ -164,56 +174,61 @@
    <mapID target="The Select Menu" url="ar01s14.html#The Select Menu"/>
    <mapID target="Editing Networks" url="ar01s15.html"/>
    <mapID target="Add Interactions  (SIF Style)" url="ar01s15.html#Add Interactions  (SIF Style)"/>
-   <mapID target="Plugins and the Plugin Manager" url="ar01s16.html"/>
-   <mapID target="The Plugin Manager" url="ar01s16.html#The Plugin Manager"/>
-   <mapID target="Get New Plugins" url="ar01s16.html#Get New Plugins"/>
-   <mapID target="Themes" url="ar01s16.html#Themes"/>
-   <mapID target="Delete Existing Plugins" url="ar01s16.html#Delete Existing Plugins"/>
-   <mapID target="Update Existing Plugins" url="ar01s16.html#Update Existing Plugins"/>
-   <mapID target="Download Plugins from a Custom Site" url="ar01s16.html#Download Plugins from a Custom Site"/>
-   <mapID target="CytoPanels" url="ar01s17.html"/>
-   <mapID target="What are CytoPanels?" url="ar01s17.html#What are CytoPanels?"/>
-   <mapID target="Basic Usage" url="ar01s17.html#Basic Usage"/>
-   <mapID target="renderer" url="index.html#renderer"/>
-   <mapID target="Rendering Engine" url="ar01s18.html"/>
-   <mapID target="What is Level of Detail (LOD)?" url="ar01s18.html#What is Level of Detail (LOD)?"/>
-   <mapID target="Parameters for Controlling LOD" url="ar01s18.html#Parameters for Controlling LOD"/>
-   <mapID target="Force to Display Detail" url="ar01s18.html#Force to Display Detail"/>
-   <mapID target="Annotation" url="ar01s19.html"/>
-   <mapID target="Ontology and Annotation File Format" url="ar01s19.html#Ontology and Annotation File Format"/>
-   <mapID target="OBO File" url="ar01s19.html#OBO File"/>
-   <mapID target="Default List of Ontologies" url="ar01s19.html#Default List of Ontologies"/>
-   <mapID target="Visualize and Browse Ontology DAG (for Advanced Users)" url="ar01s19.html#Visualize and Browse Ontology DAG (for Advanced Users)"/>
-   <mapID target="Gene Association File" url="ar01s19.html#Gene Association File"/>
-   <mapID target="Node Name Mapping" url="ar01s19.html#Node Name Mapping"/>
-   <mapID target="Import New ID Sets from BioMart" url="ar01s19.html#Import New ID Sets from BioMart"/>
-   <mapID target="Import Network and Name Mapping Files" url="ar01s19.html#Import Network and Name Mapping Files"/>
-   <mapID target="Import Ontology and Annotation" url="ar01s19.html#Import Ontology and Annotation"/>
-   <mapID target="Import Gene Ontology and Gene Association Files" url="ar01s19.html#Import Gene Ontology and Gene Association Files"/>
-   <mapID target="Step 1. Select an Annotation File" url="ar01s19.html#Step 1. Select an Annotation File"/>
-   <mapID target="Step 2. Select an Ontology File" url="ar01s19.html#Step 2. Select an Ontology File"/>
-   <mapID target="Step 3. Import the files" url="ar01s19.html#Step 3. Import the files"/>
-   <mapID target="Step 4." url="ar01s19.html#Step 4."/>
-   <mapID target="Note: Switching Primary Key for Go Annotation Import" url="ar01s19.html#Note: Switching Primary Key for Go Annotation Import"/>
-   <mapID target="Custom Annotation Files for Ontologies Other than GO (for Advanced Users)" url="ar01s19.html#Custom Annotation Files for Ontologies Other than GO (for Advanced Users)"/>
-   <mapID target="Linkout" url="ar01s20.html"/>
-   <mapID target="Adding or Removing Links" url="ar01s20.html#Adding or Removing Links"/>
-   <mapID target="Use LinkOut from Attribute Browser" url="ar01s20.html#Use LinkOut from Attribute Browser"/>
-   <mapID target="acknowledgements" url="index.html#acknowledgements"/>
-   <mapID target="Acknowledgements" url="ar01s21.html"/>
-   <mapID target="Appendix A: Old Annotation Server Format" url="ar01s22.html"/>
-   <mapID target="Building your own annotation files" url="ar01s22.html#Building your own annotation files"/>
-   <mapID target="The Ontology Format" url="ar01s22.html#The Ontology Format"/>
-   <mapID target="The Annotation Format" url="ar01s22.html#The Annotation Format"/>
-   <mapID target="Load Data into Cytoscape" url="ar01s22.html#Load Data into Cytoscape"/>
-   <mapID target="The Annotation Manifest" url="ar01s22.html#The Annotation Manifest"/>
-   <mapID target="Getting and Reformatting GO Data" url="ar01s22.html#Getting and Reformatting GO Data"/>
-   <mapID target="Obtain the GO ontology file" url="ar01s22.html#Obtain the GO ontology file"/>
-   <mapID target="Reformat GO XML ontology file into a flat file" url="ar01s22.html#Reformat GO XML ontology file into a flat file"/>
-   <mapID target="Obtain the association file for your organism" url="ar01s22.html#Obtain the association file for your organism"/>
-   <mapID target="Python script examples" url="ar01s22.html#Python script examples"/>
-   <mapID target="Appendix B: GNU Lesser General Public License" url="ar01s23.html"/>
-   <mapID target="Appendix C: Increasing memory for Cytoscape" url="ar01s24.html"/>
-   <mapID target="How to increase memory for Cytoscape" url="ar01s24.html#How to increase memory for Cytoscape"/>
-   <mapID target="Changing memory allocations on Windows, Mac, and Linux machines" url="ar01s24.html#Changing memory allocations on Windows, Mac, and Linux machines"/>
+   <mapID target="Nested Networks" url="ar01s16.html"/>
+   <mapID target="Introducing Nested Networks" url="ar01s16.html#Introducing Nested Networks"/>
+   <mapID target="Creating Nested Networks" url="ar01s16.html#Creating Nested Networks"/>
+   <mapID target="Visualisation of Nested Networks" url="ar01s16.html#Visualisation of Nested Networks"/>
+   <mapID target="Programmatically Manipulating Nested Networks" url="ar01s16.html#Programmatically Manipulating Nested Networks"/>
+   <mapID target="Plugins and the Plugin Manager" url="ar01s17.html"/>
+   <mapID target="The Plugin Manager" url="ar01s17.html#The Plugin Manager"/>
+   <mapID target="Get New Plugins" url="ar01s17.html#Get New Plugins"/>
+   <mapID target="Themes" url="ar01s17.html#Themes"/>
+   <mapID target="Delete Existing Plugins" url="ar01s17.html#Delete Existing Plugins"/>
+   <mapID target="Update Existing Plugins" url="ar01s17.html#Update Existing Plugins"/>
+   <mapID target="Download Plugins from a Custom Site" url="ar01s17.html#Download Plugins from a Custom Site"/>
+   <mapID target="CytoPanels" url="ar01s18.html"/>
+   <mapID target="What are CytoPanels?" url="ar01s18.html#What are CytoPanels?"/>
+   <mapID target="Basic Usage" url="ar01s18.html#Basic Usage"/>
+   <mapID target="renderer" url="ar01s18.html#renderer"/>
+   <mapID target="Rendering Engine" url="ar01s19.html"/>
+   <mapID target="What is Level of Detail (LOD)?" url="ar01s19.html#What is Level of Detail (LOD)?"/>
+   <mapID target="Parameters for Controlling LOD" url="ar01s19.html#Parameters for Controlling LOD"/>
+   <mapID target="Force to Display Detail" url="ar01s19.html#Force to Display Detail"/>
+   <mapID target="Annotation" url="ar01s20.html"/>
+   <mapID target="Ontology and Annotation File Format" url="ar01s20.html#Ontology and Annotation File Format"/>
+   <mapID target="OBO File" url="ar01s20.html#OBO File"/>
+   <mapID target="Default List of Ontologies" url="ar01s20.html#Default List of Ontologies"/>
+   <mapID target="Visualize and Browse Ontology DAG (for Advanced Users)" url="ar01s20.html#Visualize and Browse Ontology DAG (for Advanced Users)"/>
+   <mapID target="Gene Association File" url="ar01s20.html#Gene Association File"/>
+   <mapID target="Node Name Mapping" url="ar01s20.html#Node Name Mapping"/>
+   <mapID target="Import New ID Sets from BioMart" url="ar01s20.html#Import New ID Sets from BioMart"/>
+   <mapID target="Import Network and Name Mapping Files" url="ar01s20.html#Import Network and Name Mapping Files"/>
+   <mapID target="Import Ontology and Annotation" url="ar01s20.html#Import Ontology and Annotation"/>
+   <mapID target="Import Gene Ontology and Gene Association Files" url="ar01s20.html#Import Gene Ontology and Gene Association Files"/>
+   <mapID target="Step 1. Select an Annotation File" url="ar01s20.html#Step 1. Select an Annotation File"/>
+   <mapID target="Step 2. Select an Ontology File" url="ar01s20.html#Step 2. Select an Ontology File"/>
+   <mapID target="Step 3. Import the files" url="ar01s20.html#Step 3. Import the files"/>
+   <mapID target="Step 4." url="ar01s20.html#Step 4."/>
+   <mapID target="Note: Switching Primary Key for Go Annotation Import" url="ar01s20.html#Note: Switching Primary Key for Go Annotation Import"/>
+   <mapID target="Custom Annotation Files for Ontologies Other than GO (for Advanced Users)" url="ar01s20.html#Custom Annotation Files for Ontologies Other than GO (for Advanced Users)"/>
+   <mapID target="Linkout" url="ar01s21.html"/>
+   <mapID target="Adding or Removing Links" url="ar01s21.html#Adding or Removing Links"/>
+   <mapID target="Use LinkOut from Attribute Browser" url="ar01s21.html#Use LinkOut from Attribute Browser"/>
+   <mapID target="acknowledgements" url="ar01s21.html#acknowledgements"/>
+   <mapID target="Acknowledgements" url="ar01s22.html"/>
+   <mapID target="Appendix A: Old Annotation Server Format" url="ar01s23.html"/>
+   <mapID target="Building your own annotation files" url="ar01s23.html#Building your own annotation files"/>
+   <mapID target="The Ontology Format" url="ar01s23.html#The Ontology Format"/>
+   <mapID target="The Annotation Format" url="ar01s23.html#The Annotation Format"/>
+   <mapID target="Load Data into Cytoscape" url="ar01s23.html#Load Data into Cytoscape"/>
+   <mapID target="The Annotation Manifest" url="ar01s23.html#The Annotation Manifest"/>
+   <mapID target="Getting and Reformatting GO Data" url="ar01s23.html#Getting and Reformatting GO Data"/>
+   <mapID target="Obtain the GO ontology file" url="ar01s23.html#Obtain the GO ontology file"/>
+   <mapID target="Reformat GO XML ontology file into a flat file" url="ar01s23.html#Reformat GO XML ontology file into a flat file"/>
+   <mapID target="Obtain the association file for your organism" url="ar01s23.html#Obtain the association file for your organism"/>
+   <mapID target="Python script examples" url="ar01s23.html#Python script examples"/>
+   <mapID target="Appendix B: GNU Lesser General Public License" url="ar01s24.html"/>
+   <mapID target="Appendix C: Increasing memory for Cytoscape" url="ar01s25.html"/>
+   <mapID target="How to increase memory for Cytoscape" url="ar01s25.html#How to increase memory for Cytoscape"/>
+   <mapID target="Changing memory allocations on Windows, Mac, and Linux machines" url="ar01s25.html#Changing memory allocations on Windows, Mac, and Linux machines"/>
 </map>
