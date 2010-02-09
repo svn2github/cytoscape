@@ -166,7 +166,7 @@
 		     includes="**/*" />
 		<jar destfile="TableImportTests.jar" >
 			<fileset dir="${tableImport.testclasses.dir}" includes="**" />
-			<fileset dir="${tableImport.root.dir}/testData" includes="resources/**" />
+			<fileset dir="${tableImport.root.dir}/testData" includes="**" />
 		</jar>
 	</target>
 

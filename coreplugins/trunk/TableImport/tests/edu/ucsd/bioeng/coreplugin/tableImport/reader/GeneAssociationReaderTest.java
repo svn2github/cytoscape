@@ -68,9 +68,9 @@ import java.util.Iterator;
  *
  */
 public class GeneAssociationReaderTest extends TestCase {
-	private static final String GO_SLIM = "testData/annotation/goslim_generic.obo";
-	private static final String GAL_NETWORK = "testData/galFiltered.sif";
-	private static final String GENE_ASSOCIATION = "testData/annotation/gene_association.sgd";
+	private static final String GO_SLIM = "/annotation/goslim_generic.obo";
+	private static final String GAL_NETWORK = "/galFiltered.sif";
+	private static final String GENE_ASSOCIATION = "/annotation/gene_association.sgd";
 
 	private static final String TAXON_FILE = "/resources/tax_report.txt";
 	private CyNetwork gal;
@@ -78,7 +78,7 @@ public class GeneAssociationReaderTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		gal = Cytoscape.createNetworkFromFile(GAL_NETWORK);
+		gal = Cytoscape.createNetworkFromURL(getClass().getResource(GAL_NETWORK),true);
 		Cytoscape.buildOntologyServer();
 	}
 
@@ -104,18 +104,15 @@ public class GeneAssociationReaderTest extends TestCase {
 			System.out.println("Ontology Name used for GA reader = " + ontologyName);
 		}
 
-		File sampleSourceFile = new File(GENE_ASSOCIATION);
-		assertTrue(sampleSourceFile.canRead());
-
 		GeneOntology go = new GeneOntology("go1", "testCur", "testDesc", null);
 		Cytoscape.getOntologyServer().addOntology(go);
 
-		File goSlim = new File(GO_SLIM);
-		Cytoscape.getOntologyServer()
-		         .addOntology(goSlim.toURI().toURL(), OntologyType.GO, "GO Slim Test", "Test");
+		Cytoscape.getOntologyServer().addOntology(
+		       getClass().getResource(GO_SLIM), OntologyType.GO, "GO Slim Test", "Test");
 
 		GeneAssociationReader gar = new GeneAssociationReader("GO Slim Test",
-                                         URLUtil.getInputStream(sampleSourceFile.toURI().toURL()), 
+                                         URLUtil.getInputStream( 
+										       getClass().getResource(GENE_ASSOCIATION)), 
 										   "ID", false, 2, true, TAXON_FILE);
 
 		gar.readTable();
@@ -126,8 +123,6 @@ public class GeneAssociationReaderTest extends TestCase {
 			nodeAttr.deleteAttribute(attrName);
 		}
 
-		/*
-		 * Delete all attributes
-		 */
+		// TODO add some actual tests!!
 	}
 }

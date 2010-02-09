@@ -70,7 +70,7 @@ import java.util.List;
  *
  */
 public class ExcelNetworkSheetReaderTest extends TestCase {
-	private static final String NETWORK_FILE = "testData/galFiltered.xls";
+	private static final String NETWORK_FILE = "/galFiltered.xls";
 	private NetworkTableReader reader;
 
 	protected void setUp() throws Exception {
@@ -88,13 +88,12 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testReadTable() throws Exception {
-		File network = new File(NETWORK_FILE);
 
 		InputStream is =null;
 		POIFSFileSystem excelIn;
 
 		try {
-			is = new FileInputStream(network);
+			is = getClass().getResource(NETWORK_FILE).openStream();
 			excelIn = new POIFSFileSystem(is);
 		}
 		finally {
@@ -151,13 +150,13 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 	}
 
 	public void testReadTableWithEmptyRows() throws Exception {
-		File network = new File("testData/empty_attr_row.xls");
+		String network = "/empty_attr_row.xls";
 
 		InputStream is = null;
 		POIFSFileSystem excelIn;
 
 		try {
-			is = new FileInputStream(network);
+			is = getClass().getResource(network).openStream();
 			excelIn = new POIFSFileSystem(is);
 		}
 		finally {

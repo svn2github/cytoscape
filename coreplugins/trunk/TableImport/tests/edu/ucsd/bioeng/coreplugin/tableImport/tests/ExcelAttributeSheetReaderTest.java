@@ -64,8 +64,8 @@ import java.util.List;
  *
  */
 public class ExcelAttributeSheetReaderTest extends TestCase {
-	private static final String WORKBOOK1 = "testData/annotation/galSubnetworkAnnotation3.xls";
-	private static final String NETWORK_FILE = "testData/galSubnetwork.sif";
+	private static final String WORKBOOK1 = "/annotation/galSubnetworkAnnotation3.xls";
+	private static final String NETWORK_FILE = "/galSubnetwork.sif";
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -85,8 +85,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 		/*
 		 * Load test network
 		 */
-		File network = new File(NETWORK_FILE);
-		CyNetwork net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
+		CyNetwork net = Cytoscape.createNetworkFromURL(getClass().getResource(NETWORK_FILE),true);
 
 		/*
 		 * Single Sheet Test
@@ -94,7 +93,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 		InputStream is = null;
 		POIFSFileSystem excelIn;
 		try {
-			is = new FileInputStream(WORKBOOK1);
+			is = getClass().getResource(WORKBOOK1).openStream();
 			excelIn = new POIFSFileSystem(is);
 		}
 		finally {

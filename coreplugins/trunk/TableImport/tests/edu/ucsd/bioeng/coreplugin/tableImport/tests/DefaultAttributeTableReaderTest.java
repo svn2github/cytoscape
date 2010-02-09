@@ -63,10 +63,10 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 	/*
 	 * Toy example created from galFiltered.sif and its attribute files.
 	 */
-	private static final String DATA_FILE = "testData/annotation/galSubnetworkAnnotation2.txt";
-	private static final String NETWORK_FILE = "testData/galSubnetwork.sif";
-	private static final String DATA_FILE2 = "testData/annotation/annotationSampleForYeast.txt";
-	private static final String NETWORK_FILE2 = "testData/galFiltered.sif";
+	private static final String DATA_FILE = "/annotation/galSubnetworkAnnotation2.txt";
+	private static final String NETWORK_FILE = "/galSubnetwork.sif";
+	private static final String DATA_FILE2 = "/annotation/annotationSampleForYeast.txt";
+	private static final String NETWORK_FILE2 = "/galFiltered.sif";
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -83,16 +83,9 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testReadTable() throws Exception {
-		File network = new File(NETWORK_FILE);
-		File galNetwork = new File(NETWORK_FILE2);
-
 		//
-		CyNetwork net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
-		File source = new File(DATA_FILE);
-
-		CyNetwork galNet = Cytoscape.createNetworkFromFile(galNetwork.getAbsolutePath());
-
-		File galSource = new File(DATA_FILE2);
+		CyNetwork net = Cytoscape.createNetworkFromURL(getClass().getResource(NETWORK_FILE),true);
+		CyNetwork galNet = Cytoscape.createNetworkFromURL(getClass().getResource(NETWORK_FILE2),true);
 
 		/*
 		 * Test1
@@ -124,7 +117,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 		                                                                    0, "ID", aliasList,
 		                                                                    galAttrName,
 		                                                                    galAttrTypes, null, null);
-		tableReader = new DefaultAttributeTableReader(source.toURI().toURL(), mapping, 0, null);
+		tableReader = new DefaultAttributeTableReader(getClass().getResource(DATA_FILE), mapping, 0, null);
 		tableReader.readTable();
 
 		assertEquals("ribosomal protein S28A (S33A) (YS27)",
@@ -147,7 +140,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 
 		String[] cols = { "Object Name in SGD", "key", "alias", "Taxon ID" };
 
-		tableReader = new DefaultAttributeTableReader(galSource.toURI().toURL(),
+		tableReader = new DefaultAttributeTableReader(getClass().getResource(DATA_FILE2),
 		                                              TextTableReader.ObjectType.NODE, delimiters,
 		                                              PIPE.toString(), 1, "ID", aliases, cols,
 		                                              null, null, 0);

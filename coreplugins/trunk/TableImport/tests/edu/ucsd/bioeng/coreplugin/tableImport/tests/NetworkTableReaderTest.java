@@ -68,7 +68,7 @@ public class NetworkTableReaderTest extends TestCase {
 	/*
 	 * Test file: galFiltered.sif + some edge attributes.
 	 */
-	private static final String TEST_TABLE = "testData/galFiltered.txt";
+	private static final String TEST_TABLE = "/galFiltered.txt";
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -85,7 +85,6 @@ public class NetworkTableReaderTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testReadTable() throws Exception {
-		File network = new File(TEST_TABLE);
 
 		List<String> delimiters = new ArrayList<String>();
 		delimiters.add(TextFileDelimiters.TAB.toString());
@@ -107,7 +106,7 @@ public class NetworkTableReaderTest extends TestCase {
 		                                                                          null, null, 0, 1,
 		                                                                          2, null);
 
-		reader = new NetworkTableReader(network.getName(), network.toURI().toURL(), mapping, 0, null);
+		reader = new NetworkTableReader("test name", getClass().getResource(TEST_TABLE), mapping, 0, null);
 
 		CyNetwork net = Cytoscape.createNetwork(reader, false, null);
 
