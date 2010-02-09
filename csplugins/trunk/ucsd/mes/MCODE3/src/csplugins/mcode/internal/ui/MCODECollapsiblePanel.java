@@ -153,15 +153,18 @@ public class MCODECollapsiblePanel extends JPanel {
      * @param collapse When set to true, the panel is collapsed, else it is expanded
      */
     public void setCollapsed(boolean collapse) {
+	    final String arrowText = arrow.getText().substring(1);
         if (collapse) {
             //collapse the panel, remove content and set border to empty border
             remove(panel);
             arrow.setIcon(iconArrow[COLLAPSED]);
+	    arrow.setText("+" + arrowText);
             border = new CollapsableTitledBorder(collapsedBorderLine, titleComponent);
         } else {
             //expand the panel, add content and set border to titled border
             add(panel, BorderLayout.NORTH);
             arrow.setIcon(iconArrow[EXPANDED]);
+	    arrow.setText("-" + arrowText);
             border = new CollapsableTitledBorder(expandedBorderLine, titleComponent);
         }
         setBorder(border);
