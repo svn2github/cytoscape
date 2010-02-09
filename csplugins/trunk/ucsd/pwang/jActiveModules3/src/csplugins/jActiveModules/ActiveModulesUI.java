@@ -83,8 +83,11 @@ public class ActiveModulesUI extends CytoscapePlugin {
 				JOptionPane
 						.showMessageDialog(
 								Cytoscape.getDesktop(),
-								"Cannot start jActiveModules:\n"
-										+ "There are no node attributes of type float.",
+								"JActiveModules cannot start because it cannot find\n" +
+								"any p-value attributes! JActiveModules requires at\n" + 
+								"least one node attribute with values ranging between\n" +
+								"0 and 1 of type 'float' (i.e. decimal or real number).\n" +
+								"Please load an appropriate attribute and try again.",
 								"jActiveModules", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
