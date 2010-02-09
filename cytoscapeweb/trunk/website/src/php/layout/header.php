@@ -17,6 +17,8 @@
         <title><?php echo $title_text; ?></title>
         
         <link rel="shortcut icon" href="/img/layout/favicon.png" />
+        <meta name="keywords" content="Cytoscape, Cytoscape Web, visualization, interaction network, graph, bioinformatics, computational biology, pathways">
+        
         
         <?php 
             foreach ( $css_includes as $inc ) {
