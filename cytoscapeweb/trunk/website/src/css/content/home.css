@@ -1,5 +1,6 @@
 /* main */
-#content.full { padding: 30px 50px; }
+#content.full { padding: 0; }
+#main { padding: 30px 50px; }
 
 /* side links to right */
 #side_links { float: right; width: 230px; }
@@ -26,3 +27,7 @@
 #viz, #loader { width: 543px; height: 410px; margin: 0; position: absolute; top: 51px; left: 13px; }
 #loader { display: none; background-color: #ffffff; background-image: url("../../img/layout/loader.gif"); z-index: 1; background-repeat: no-repeat; background-position: center center;}
 #location { position: absolute; height: 10px; width: 325px; left: 63px; top: 26px; line-height: 10px; padding-left: 2px; font-size: 8px; cursor: default; }
+
+/* note */
+#note { margin: 15px 0 10px 0; padding: 0.25em 0; text-align: center; background: #d9ecee url("../../img/bg/network_bg.png") left center no-repeat; }
+#note p { padding: 0; }
