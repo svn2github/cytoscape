@@ -9,6 +9,8 @@ import javax.swing.*;
 
 import csplugins.mcode.internal.MCODECurrentParameters;
 import csplugins.mcode.internal.MCODEParameterSet;
+import csplugins.mcode.internal.action.MCODEAboutAction;
+import csplugins.mcode.internal.action.MCODEHelpAction;
 import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
 
 import java.awt.*;
@@ -490,19 +492,27 @@ public class MCODEMainPanel extends JPanel {
     /**
      * Utility method that creates a panel for buttons at the bottom of the <code>MCODEMainPanel</code>
      *
-     * @return a flow layout panel containing the analyze and quite buttons
+     * @return a flow layout panel containing the "search" and "cancel" buttons
      */
     private JPanel createBottomPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
 
-        JButton analyzeButton = new JButton("Analyze");
-        analyzeButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy));
+        JButton helpButton = new JButton("?");
+        helpButton.addActionListener(new MCODEHelpAction());
 
-        JButton closeButton = new JButton("Close MCODE");
+        JButton aboutButton = new JButton("About");
+        aboutButton.addActionListener(new MCODEAboutAction());
+
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy));
+
+        JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new MCODEMainPanel.CloseAction(this));
 
-        panel.add(analyzeButton);
+        panel.add(helpButton);
+        panel.add(aboutButton);
+        panel.add(searchButton);
         panel.add(closeButton);
 
         return panel;

@@ -43,8 +43,6 @@ import cytoscape.plugin.CytoscapePlugin;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import csplugins.mcode.internal.action.MCODEAboutAction;
-import csplugins.mcode.internal.action.MCODEHelpAction;
 import csplugins.mcode.internal.action.MCODEMainPanelAction;
 
 /**
@@ -68,15 +66,5 @@ public class MCODEPlugin extends CytoscapePlugin {
                 final JMenuItem menuItem = new JMenuItem("MCODE...");
                 menuItem.addActionListener(new MCODEMainPanelAction());
                 Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...").add(menuItem);
-
-		//Help box
-		//item = new JMenuItem("Help");
-		//item.addActionListener(new MCODEHelpAction());
-		//submenu.add(item);
-
-		//About box
-		//item = new JMenuItem("About");
-		//item.addActionListener(new MCODEAboutAction());
-		//submenu.add(item);
 	}
 }
