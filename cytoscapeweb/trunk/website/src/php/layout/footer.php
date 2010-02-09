@@ -4,6 +4,9 @@
         </div> 
 	
         <div id="footer" class="slice">
+            <p>
+                Cytoscape Web development is funded by <a href="http://www.genomecanada.ca">Genome Canada</a>, through the
+                <a href="http://www.ontariogenomics.ca/">Ontario Genomics Institute</a> (2007-OGI-TD-05).</p>
 			<p>
 				Funding for <a href="http://www.cytoscape.org">Cytoscape</a> is provided by a federal grant from the U.S. 
 				<a href="http://www.nigms.nih.gov">National Institute of General Medical Sciences (NIGMS)</a> 
