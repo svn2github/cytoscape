@@ -86,7 +86,8 @@ public abstract class FileUtil {
 	 * A string that defines a simplified java regular expression for a URL.
 	 * This may need to be updated to be more precise.
 	 */
-	public static final String urlPattern = "^(jar\\:)?(\\w+\\:\\/+\\S+)(\\!\\/\\S*)?$";
+	public static final String urlPattern = 
+		"^(jar\\:)?((http|https|ftp|file)+\\:\\/+\\S+)(\\!\\/\\S*)?$";
 
 	/**
 	 * Returns a File object, this method should be used instead
