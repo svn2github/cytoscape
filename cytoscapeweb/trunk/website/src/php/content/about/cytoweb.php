@@ -7,8 +7,8 @@
 the <a href="http://tdccbr.med.utoronto.ca" rel="external">Donnelly Centre for Cellular and Biomolecular Research</a>,
 in the labs of <a href="http://baderlab.org" rel="external">Gary Bader</a> and
 <a href="http://morrislab.med.utoronto.ca" rel="external">Quaid Morris</a>.
-Cytoscape Web development is funded by <a href="http://genomecanada.ca" rel="external">Genome Canada</a>, through the
-<a href="http://ontariogenomics.ca/" rel="external">Ontario Genomics Institute</a> (2007-OGI-TD-05).
+Cytoscape Web development is funded by <a href="http://www.genomecanada.ca" rel="external">Genome Canada</a>, through the
+<a href="http://www.ontariogenomics.ca/" rel="external">Ontario Genomics Institute</a> (2007-OGI-TD-05).
 It is now actively developed as part of the <a href="http://www.cytoscape.org">Cytoscape</a> project.</p>
 
 <p>Cytoscape Web was created as a result of the need for a visualization interface for the
