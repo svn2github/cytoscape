@@ -61,13 +61,6 @@ public class CytoPanelAction extends CytoscapeAction {
 	protected String title;
 	protected int position;
 
-	/**
-	 * @deprecated Use other constructor instead. Will be removed 4/2008.
-	 */
-	public CytoPanelAction(JCheckBoxMenuItem menuItem, CytoPanel cytoPanel) {
-		this(cytoPanel.getTitle(), cytoPanel.getCompassDirection(), menuItem.isSelected());
-	}
-
 	public CytoPanelAction(CytoPanelName cp, boolean show) {
 		this(cp.getTitle(), cp.getCompassDirection(), show);
 	}
@@ -98,11 +91,9 @@ public class CytoPanelAction extends CytoscapeAction {
 
 		if (curState == CytoPanelState.HIDE) {
 			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.DOCK);
-			//putValue(Action.NAME, HIDE + " " + title);
 
 		} else {
 			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.HIDE);
-			//putValue(Action.NAME, SHOW + " " + title);
 		}
 	} 
 
