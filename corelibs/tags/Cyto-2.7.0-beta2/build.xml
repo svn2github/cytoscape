@@ -1,0 +1,88 @@
+<!-- A simple project to recursively build all corelib projects. -->
+<project name="corelibs" default="all" basedir=".">
+
+  <!-- Basic initialization.  -->
+  <target name="init">
+    <property name="build.dir" value="build"/>
+  </target>
+
+  <!-- Build all corelib projects  -->
+  <target name="all" depends="init">
+    <mkdir dir="${build.dir}"/>
+
+    <ant dir="commons-cli-1.x-cytocape-custom"/>
+    <copy todir="${build.dir}" file="commons-cli-1.x-cytocape-custom/target/commons-cli-1.x-cytoscape-custom.jar"/>
+
+    <ant dir="giny"/>
+    <copy todir="${build.dir}" file="giny/giny.jar"/>
+
+    <ant dir="ding"/>
+    <copy todir="${build.dir}" file="ding/ding.jar"/>
+
+    <ant dir="fing"/>
+    <copy todir="${build.dir}" file="fing/fing.jar"/>
+
+    <ant dir="geom.rtree"/>
+    <copy todir="${build.dir}" file="geom.rtree/cytoscape-geom-rtree.jar"/>
+
+    <ant dir="geom.spacial"/>
+    <copy todir="${build.dir}" file="geom.spacial/cytoscape-geom-spacial.jar"/>
+
+    <ant dir="graph.dynamic"/>
+    <copy todir="${build.dir}" file="graph.dynamic/cytoscape-graph-dynamic.jar"/>
+
+    <ant dir="graph.fixed"/>
+    <copy todir="${build.dir}" file="graph.fixed/cytoscape-graph-fixed.jar"/>
+
+    <ant dir="nerius.math.xform"/>
+    <copy todir="${build.dir}" file="nerius.math.xform/com-nerius-math-xform.jar"/>
+
+    <ant dir="obo"/>
+    <copy todir="${build.dir}" file="obo/cytoscape-cruft-obo.jar"/>
+
+    <ant dir="render.export"/>
+    <copy todir="${build.dir}" file="render.export/cytoscape-render-export.jar"/>
+
+    <ant dir="render.immed"/>
+    <copy todir="${build.dir}" file="render.immed/cytoscape-render-immed.jar"/>
+
+    <ant dir="render.stateful"/>
+    <copy todir="${build.dir}" file="render.stateful/cytoscape-render-stateful.jar"/>
+
+    <ant dir="task"/>
+    <copy todir="${build.dir}" file="task/cytoscape-task.jar"/>
+
+    <ant dir="util.intr"/>
+    <copy todir="${build.dir}" file="util.intr/cytoscape-util-intr.jar"/>
+
+    <ant dir="undo.support"/>
+    <copy todir="${build.dir}" file="undo.support/undo.support.jar"/>
+
+    <ant dir="phoebe.dnd"/>
+    <copy todir="${build.dir}" file="phoebe.dnd/phoebe.dnd.jar"/>
+
+  </target>
+
+  <!-- clean all corelib projects  -->
+  <target name="clean" depends="init">
+    <ant dir="commons-cli-1.x-cytocape-custom" target="clean"/>
+    <ant dir="giny" target="clean"/>
+    <ant dir="ding" target="clean"/>
+    <ant dir="fing" target="clean"/>
+    <ant dir="geom.rtree" target="clean"/>
+    <ant dir="geom.spacial" target="clean"/>
+    <ant dir="graph.dynamic" target="clean"/>
+    <ant dir="graph.fixed" target="clean"/>
+    <ant dir="nerius.math.xform" target="clean"/>
+    <ant dir="obo" target="clean"/>
+    <ant dir="render.export" target="clean"/>
+    <ant dir="render.immed" target="clean"/>
+    <ant dir="render.stateful" target="clean"/>
+    <ant dir="task" target="clean"/>
+    <ant dir="util.intr" target="clean"/>
+    <ant dir="undo.support" target="clean"/>
+    <ant dir="phoebe.dnd" target="clean"/>
+    <delete dir="${build.dir}"/>
+  </target>
+
+</project> 
