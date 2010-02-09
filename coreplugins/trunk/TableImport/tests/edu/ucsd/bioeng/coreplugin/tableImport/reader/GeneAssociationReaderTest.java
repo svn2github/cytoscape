@@ -34,11 +34,12 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package edu.ucsd.bioeng.coreplugin.tableImport.tests;
+package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
+import cytoscape.util.URLUtil;
 import cytoscape.data.CyAttributes;
 
 import cytoscape.data.ontology.GeneOntology;
@@ -70,6 +71,8 @@ public class GeneAssociationReaderTest extends TestCase {
 	private static final String GO_SLIM = "testData/annotation/goslim_generic.obo";
 	private static final String GAL_NETWORK = "testData/galFiltered.sif";
 	private static final String GENE_ASSOCIATION = "testData/annotation/gene_association.sgd";
+
+	private static final String TAXON_FILE = "/resources/tax_report.txt";
 	private CyNetwork gal;
 	private CyAttributes nodeAttr;
 
@@ -109,10 +112,11 @@ public class GeneAssociationReaderTest extends TestCase {
 
 		File goSlim = new File(GO_SLIM);
 		Cytoscape.getOntologyServer()
-		         .addOntology(goSlim.toURL(), OntologyType.GO, "GO Slim Test", "Test");
+		         .addOntology(goSlim.toURI().toURL(), OntologyType.GO, "GO Slim Test", "Test");
 
 		GeneAssociationReader gar = new GeneAssociationReader("GO Slim Test",
-		                                                      sampleSourceFile.toURL(), "ID");
+                                         URLUtil.getInputStream(sampleSourceFile.toURI().toURL()), 
+										   "ID", false, 2, true, TAXON_FILE);
 
 		gar.readTable();
 		nodeAttr = Cytoscape.getNodeAttributes();

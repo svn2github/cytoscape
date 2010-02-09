@@ -3,7 +3,7 @@
 			11/16/2006 Written by Keiichiro Ono (kono@ucsd.edu)       -->
 <!-- =================================================================== -->
 
-<project name="tableImport" default="tableImport" basedir=".">
+<project name="tableImport" default="all" basedir=".">
 
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
@@ -94,7 +94,9 @@
 		<delete dir="${tableImport.classes.dir}" />
 		<delete dir="${tableImport.testclasses.dir}" />
 		<delete dir="${tableImport.tests.reports.dir}"/>
+		<delete dir="${junit.report.dir}"/>
 		<delete file="TableImport.jar" />
+		<delete file="TableImportTests.jar" />
 		<delete file="${tableImport.lib.dir}/TableImport.jar" />
 	</target>
 
@@ -131,7 +133,8 @@
 				<exclude name="TableImportTest.jar" />
 			</fileset>
 		</unjar>
-		<jar destfile="TableImport.jar" manifest="${tableImport.manifest.dir}/tableImport.manifest">
+		<jar destfile="TableImport.jar" 
+		     manifest="${tableImport.manifest.dir}/tableImport.manifest">
 			<fileset dir="${tableImport.classes.dir}" includes="**" />
 			<fileset dir="${tableImport.root.dir}/lib" includes="resources/**" />
 		</jar>
@@ -141,61 +144,54 @@
 	<!-- =================================================================== -->
 	<!-- release                                             -->
 	<!-- =================================================================== -->
-	<target name="release" depends="testAll">
+	<target name="all" depends="testAll">
 		<copy todir="${tableImport.lib.dir}" file="TableImport.jar" />
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Compiles the tableImport tests                                             -->
+	<!-- Compiles the tableImport test and creates jar                       -->
 	<!-- =================================================================== -->
 	<target name="compile-tests" depends="tableImport">
 		<mkdir dir="${tableImport.testclasses.dir}" />
-		<javac srcdir="${tableImport.tests.dir}" includes="**/*" classpathref="tableImport.project.class.path" destdir="${tableImport.testclasses.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+		<javac srcdir="${tableImport.tests.dir}" 
+		       includes="**/*" 
+		       classpathref="tableImport.project.class.path" 
+		       destdir="${tableImport.testclasses.dir}" 
+		       debug="${debug}" 
+		       deprecation="${deprecation}" 
+		       optimize="${optimize}" 
+		       fork="${fork}" />
+		<jar jarfile="TableImportTests.jar" 
+		     basedir="${tableImport.testclasses.dir}" 
+		     includes="**/*" />
+		<jar destfile="TableImportTests.jar" >
+			<fileset dir="${tableImport.testclasses.dir}" includes="**" />
+			<fileset dir="${tableImport.root.dir}/testData" includes="resources/**" />
+		</jar>
 	</target>
-
-	<!-- =================================================================== -->
-	<!-- Creates the TableImportTests.jar file                                     -->
-	<!-- =================================================================== -->
-	<target name="tests" depends="compile-tests">
-		<jar jarfile="TableImportTests.jar" basedir="${tableImport.testclasses.dir}" includes="**/*" />
-	</target>
-
-	<!-- =================================================================== -->
-	<!-- Build all jars                                                      -->
-	<!-- =================================================================== -->
-	<target name="all" depends="release" />
 
 	<!-- =================================================================== -->
 	<!-- Run the Plugin                                                      -->
 	<!-- =================================================================== -->
 	<target name="run" depends="tableImport">
-		<java classname="cytoscape.cytoscape" classpathref="tableImport.project.class.path" fork="true" />
+		<java classname="cytoscape.cytoscape" 
+		      classpathref="tableImport.project.class.path" 
+		      fork="true" />
 		<arg line="-p ${tableImport.lib.dir}/TableImport.jar" />
 	</target>
 
-
-	<!-- =================================================================== -->
-	<!-- Runs the tests in TableImportTests.jar                                    -->
-	<!-- =================================================================== -->
-	<target name="runtests" depends="tests">
-		<mkdir dir="${tableImport.tests.reports.dir}" />
-		<junit printsummary="yes" haltonfailure="yes" dir="${tableImport.classes.dir}" maxmemory="1G">
-			<formatter type="plain" usefile="true" />
-			<classpath refid="tableImport.project.class.path" />
-			<!-- The junit task doesn't support 'if' so we test for JUnit here -->
-			<batchtest fork="yes" todir="${tableImport.tests.reports.dir}" if="junit.present">
-				<fileset dir="${tableImport.classes.dir}" includes="**/test/*" excludes="${tableImport.tests.excludes}" />
-			</batchtest>
-		</junit>
-	</target>
 
 	<!-- ======================================================= -->
 	<!-- Run all of the Swing Unit Tests                       -->
 	<!-- ======================================================= -->
 	<target name="test-swing" depends="tableImport" >
 		<mkdir dir="${tableImport.tests.reports.dir}" />
-		<junit printsummary="yes" haltonfailure="yes" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
-			
+		<junit printsummary="yes" 
+		       haltonfailure="yes" 
+		       maxmemory="1G" 
+		       filtertrace="off" 
+		       includeantruntime="true" 
+		       showoutput="on">
 			<classpath>
 				<fileset dir="${tableImport.root.dir}">
 					<include name="**/*.jar" />
@@ -221,8 +217,8 @@
 			<batchtest fork="yes" todir="${tableImport.tests.reports.dir}"  >
 				<fileset dir="${tableImport.tests.dir}" includes="**/*TestSwing.java" />
 			</batchtest>
-
 		</junit>
+
 		<junitreport todir="${tableImport.tests.reports.dir}">
 			<fileset dir="${tableImport.tests.reports.dir}">
 				<include name="TEST-*.xml" />
@@ -231,7 +227,8 @@
 		</junitreport>
 
 
-		<fail message="JUnit Tests failed! Check ${tableImport.tests.reports.dir}/index.html for details." if="junit.test.failure" />
+		<fail message="TEST FAILURE! Details: ${tableImport.tests.reports.dir}/index.html" 
+		      if="junit.test.failure" />
 
 	</target>
 
@@ -239,19 +236,23 @@
 	<!-- =================================================================== -->
 	<!-- Runs all test cases.                                    -->
 	<!-- =================================================================== -->
-	<target name="testAll" depends="tests">
-		<echo>
-	            ***********************************************
-	            Running all unit tests individually. 
-	            ***********************************************
-		</echo>
+	<target name="testAll" depends="compile-tests">
 		<mkdir dir="${junit.report.dir}" />
-		<junit printsummary="yes" haltonfailure="yes" maxmemory="512m">
+		<junit printsummary="yes" 
+		       haltonfailure="no" 
+		       maxmemory="512m">
 			<classpath refid="tableImport.project.class.path" />
-			<formatter type="plain" usefile="true" />
-			<formatter type="xml" usefile="true" />
-			<batchtest fork="yes" todir="${junit.report.dir}" filtertrace="no">
-				<fileset dir="${tableImport.tests.dir}" includes="**/*Test.java" excludes="**/AllTests.java" />
+			<formatter type="plain" 
+			           usefile="true" />
+			<formatter type="xml" 
+			           usefile="true" />
+			<batchtest fork="no" 
+			           todir="${junit.report.dir}" 
+			           failureProperty="junit.test.failure"
+			           errorProperty="junit.test.failure">
+				<fileset dir="${tableImport.tests.dir}" 
+				         includes="**/*Test.java" 
+				         excludes="**/AllTests.java" />
 			</batchtest>
 		</junit>
 
@@ -259,9 +260,12 @@
 			<fileset dir="${junit.report.dir}">
 				<include name="TEST-*.xml" />
 			</fileset>
-			<report format="frames" todir="${junit.report.dir}" />
+			<report format="frames" 
+			        todir="${junit.report.dir}" />
 		</junitreport>
-		<delete file="TableImportTests.jar" />
+
+		<fail message="TEST FAILURE! Details: ${junit.report.dir}/index.html" 
+		      if="junit.test.failure" />
 	</target>
 
 
@@ -270,7 +274,18 @@
 	<!-- =================================================================== -->
 	<target name="docs" depends="init-tableImport">
 		<mkdir dir="${tableImport.javadoc.dir}" />
-		<javadoc packagenames="${tableImport.packages}" excludepackagenames="${tableImport.packages.excludes}" sourcepath="${tableImport.src.dir}" destdir="${tableImport.javadoc.dir}" classpathref="tableImport.project.class.path" author="true" version="true" use="true" splitindex="true" noindex="false" windowtitle="${tableImport.Name} API" doctitle="${tableImport.Name}" />
+		<javadoc packagenames="${tableImport.packages}" 
+		         excludepackagenames="${tableImport.packages.excludes}" 
+		         sourcepath="${tableImport.src.dir}" 
+		         destdir="${tableImport.javadoc.dir}" 
+		         classpathref="tableImport.project.class.path" 
+		         author="true" 
+		         version="true" 
+		         use="true" 
+		         splitindex="true" 
+		         noindex="false" 
+		         windowtitle="${tableImport.Name} API" 
+		         doctitle="${tableImport.Name}" />
 	</target>
 
 </project>

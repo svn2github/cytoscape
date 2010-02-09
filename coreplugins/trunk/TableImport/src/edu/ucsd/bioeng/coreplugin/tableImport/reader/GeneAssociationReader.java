@@ -124,69 +124,22 @@ public class GeneAssociationReader implements TextTableReader {
 	private HashMap speciesMap;
 	private boolean importAll = false;
 
-	/**
-	 * Constructor.
-	 *
-	 *
-	 * @param ontologyName
-	 *            Name of Ontology which is associated with this annotation
-	 *            file.
-	 * @param url
-	 *            URL of the source file. This can be local or remote. Supports
-	 *            compressed and flat text files.
-	 * @param isColumnName
-	 * @param type
-	 * @throws IOException
-	 * @throws NoOntologyException
-	 * @throws
-	 */
-	public GeneAssociationReader(final String ontologyName, final URL url,
-	                             final String keyAttributeName) throws IOException {
-		this(ontologyName, URLUtil.getInputStream(url), keyAttributeName, false, key);
-	}
-
-	/**
-	 * Creates a new GeneAssociationReader object.
-	 *
-	 * @param ontologyName  DOCUMENT ME!
-	 * @param url  DOCUMENT ME!
-	 * @param keyAttributeName  DOCUMENT ME!
-	 * @param importAll  DOCUMENT ME!
-	 *
-	 * @throws IOException  DOCUMENT ME!
-	 */
-	public GeneAssociationReader(final String ontologyName, final URL url,
-	                             final String keyAttributeName, final boolean importAll)
-	    throws IOException {
-		this(ontologyName, URLUtil.getInputStream(url), keyAttributeName, importAll, key);
-	}
-	
-	
-	
-	public GeneAssociationReader(final String ontologyName, final InputStream is,
-            final String keyAttributeName, final boolean importAll) throws IOException {
-		this(ontologyName, is, keyAttributeName, importAll, key);
-	}
-
-	/**
-	 * Creates a new GeneAssociationReader object.
-	 *
-	 * @param ontologyName  DOCUMENT ME!
-	 * @param is  DOCUMENT ME!
-	 * @param keyAttributeName  DOCUMENT ME!
-	 * @param importAll  DOCUMENT ME!
-	 *
-	 * @throws IOException  DOCUMENT ME!
-	 */
-	public GeneAssociationReader(final String ontologyName, final InputStream is,
-	                             final String keyAttributeName, final boolean importAll, final int mappingKey)
-	    throws IOException {
-		this(ontologyName, is, keyAttributeName, importAll, mappingKey, true);
-	}
-
 	public GeneAssociationReader(final String ontologyName, final InputStream is,
 	                             final String keyAttributeName, final boolean importAll,
-								 final int mappingKey, final boolean caseSensitive)
+								 final int mappingKey, final boolean caseSensitive) 
+		throws IOException {
+		this(ontologyName, is, keyAttributeName, importAll, mappingKey, 
+		     caseSensitive, TAXON_RESOURCE_FILE);
+	}
+
+	/** 
+	 * Package protected because only in unit testing do we need to specify the taxon
+	 * resource file. Normal operation should use one of the other constructors.
+	 */
+	GeneAssociationReader(final String ontologyName, final InputStream is,
+	                             final String keyAttributeName, final boolean importAll,
+								 final int mappingKey, final boolean caseSensitive,
+								 final String taxonResourceFile)
 		throws IOException {
 		this.importAll = importAll;
 		this.is = is;
@@ -212,7 +165,7 @@ public class GeneAssociationReader implements TextTableReader {
 			throw new IOException("Given ontology is not GO.");
 		}
 
-		URL taxUrl = getClass().getResource(TAXON_RESOURCE_FILE);
+		URL taxUrl = getClass().getResource(taxonResourceFile);
 
 		BufferedReader taxonFileReader = null;
 

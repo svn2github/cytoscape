@@ -124,7 +124,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 		                                                                    0, "ID", aliasList,
 		                                                                    galAttrName,
 		                                                                    galAttrTypes, null, null);
-		tableReader = new DefaultAttributeTableReader(source.toURL(), mapping, 0, null);
+		tableReader = new DefaultAttributeTableReader(source.toURI().toURL(), mapping, 0, null);
 		tableReader.readTable();
 
 		assertEquals("ribosomal protein S28A (S33A) (YS27)",
@@ -147,7 +147,7 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 
 		String[] cols = { "Object Name in SGD", "key", "alias", "Taxon ID" };
 
-		tableReader = new DefaultAttributeTableReader(galSource.toURL(),
+		tableReader = new DefaultAttributeTableReader(galSource.toURI().toURL(),
 		                                              TextTableReader.ObjectType.NODE, delimiters,
 		                                              PIPE.toString(), 1, "ID", aliases, cols,
 		                                              null, null, 0);

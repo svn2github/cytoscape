@@ -697,7 +697,7 @@ public class PreviewTablePanel extends JPanel {
 				return;
 			}
 
-			guessDataTypes(newModel, wb.getSheetName(0));
+			DataTypeUtil.guessTypes(newModel, wb.getSheetName(0), dataTypeMap);
 			listDataTypeMap.put(wb.getSheetName(0), initListDataTypes(newModel));
 			addTableTab(newModel, wb.getSheetName(0), curRenderer);
 		} else {
@@ -713,7 +713,7 @@ public class PreviewTablePanel extends JPanel {
 
 			String[] urlParts = sourceURL.toString().split("/");
 			final String tabName = urlParts[urlParts.length - 1];
-			guessDataTypes(newModel, tabName);
+			DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
 			listDataTypeMap.put(tabName, initListDataTypes(newModel));
 			addTableTab(newModel, tabName, curRenderer);
 		}
@@ -1044,90 +1044,6 @@ public class PreviewTablePanel extends JPanel {
 		return new DefaultTableModel(data, this.getDefaultColumnNames(maxCol, sourceURL));
 	}
 
-	private void guessDataTypes(final TableModel model, final String tableName) {
-		/*
-		 * Assume: Row1 = Boolean Row2 = Integer Row3 = Double Row4 = String
-		 */
-		final Integer[][] typeChecker = new Integer[4][model.getColumnCount()];
-
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < model.getColumnCount(); j++) {
-				typeChecker[i][j] = 0;
-			}
-		}
-
-		String cell = null;
-
-		for (int i = 0; i < model.getRowCount(); i++) {
-			for (int j = 0; j < model.getColumnCount(); j++) {
-				cell = (String) model.getValueAt(i, j);
-
-				boolean found = false;
-
-				if ((cell != null) && Boolean.valueOf(cell)) {
-					try {
-						Integer.valueOf(cell);
-						typeChecker[1][j]++;
-						found = true;
-					} catch (NumberFormatException e) {
-					}
-
-					if (found == false) {
-						typeChecker[0][j]++;
-						found = true;
-					}
-				} else if (cell != null) {
-					try {
-						Integer.valueOf(cell);
-						typeChecker[1][j]++;
-						found = true;
-					} catch (NumberFormatException e) {
-					}
-
-					try {
-						Double.valueOf(cell);
-						typeChecker[2][j]++;
-						found = true;
-					} catch (NumberFormatException e) {
-					}
-				}
-
-				if (found == false) {
-					typeChecker[3][j]++;
-				}
-			}
-		}
-
-		Byte[] dataType = dataTypeMap.get(tableName);
-
-		if ((dataType == null) || (dataType.length != model.getColumnCount())) {
-			dataType = new Byte[model.getColumnCount()];
-		}
-
-		for (int i = 0; i < dataType.length; i++) {
-			int maxVal = 0;
-			int maxIndex = 0;
-
-			for (int j = 0; j < 4; j++) {
-				if (maxVal < typeChecker[j][i]) {
-					maxVal = typeChecker[j][i];
-					maxIndex = j;
-				}
-			}
-
-			if (maxIndex == 0)
-				dataType[i] = CyAttributes.TYPE_BOOLEAN;
-			else if (maxIndex == 1)
-				dataType[i] = CyAttributes.TYPE_INTEGER;
-			else if (maxIndex == 2)
-				dataType[i] = CyAttributes.TYPE_FLOATING;
-			else
-				dataType[i] = CyAttributes.TYPE_STRING;
-		}
-
-		dataTypeMap.put(tableName, dataType);
-	}
-
 	/**
 	 * Not yet implemented.
 	 * <p>
@@ -1137,8 +1053,7 @@ public class PreviewTablePanel extends JPanel {
 	 * @return
 	 */
 	public int checkKeyMatch(int targetColumn) {
-		final List fileKeyList = Arrays.asList(((DefaultListModel) keyPreviewList.getModel())
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .toArray());
+		final List fileKeyList = Arrays.asList(((DefaultListModel) keyPreviewList.getModel()).toArray());
 		int matched = 0;
 
 		TableModel curModel = getPreviewTable().getModel();

@@ -278,7 +278,7 @@ public class DataSourceSelectDialog extends JDialog {
 		}
 
 		try {
-			dataSourceTextField.setText(file.toURL().toString());
+			dataSourceTextField.setText(file.toURI().toURL().toString());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

@@ -1,0 +1,138 @@
+
+/*
+ Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+package edu.ucsd.bioeng.coreplugin.tableImport.ui;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+
+import java.util.Map; 
+import java.util.regex.Pattern; 
+import javax.swing.table.TableModel;
+
+/**
+ *
+ */
+class DataTypeUtil {
+
+	private static Pattern truePattern = Pattern.compile("^true$", Pattern.CASE_INSENSITIVE);
+	private static Pattern falsePattern = Pattern.compile("^false$", Pattern.CASE_INSENSITIVE);
+	
+	private DataTypeUtil() {}
+
+	static void guessTypes(final TableModel model, final String tableName, 
+	                       Map<String,Byte[]> dataTypeMap) {
+
+		// 0 = Boolean,  1 = Integer,  2 = Double,  3 = String
+		final Integer[][] typeChecker = new Integer[4][model.getColumnCount()];
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < model.getColumnCount(); j++) {
+				typeChecker[i][j] = 0;
+			}
+		}
+
+		String cell = null;
+
+		for (int i = 0; i < model.getRowCount(); i++) {
+			for (int j = 0; j < model.getColumnCount(); j++) {
+				cell = (String) model.getValueAt(i, j);
+
+				boolean found = false;
+
+				if (cell != null) { 
+					// boolean
+					if ( truePattern.matcher(cell).matches() ||
+					     falsePattern.matcher(cell).matches() ) {
+						typeChecker[0][j]++;
+						found = true;
+					} else {
+
+						// integers
+						try {
+							Integer.valueOf(cell);
+							typeChecker[1][j]++;
+							found = true;
+						} catch (NumberFormatException e) {
+						}
+			
+
+						// floats
+						try {
+							Double.valueOf(cell);
+							typeChecker[2][j]++;
+							found = true;
+						} catch (NumberFormatException e) {
+						}
+					}
+				}
+				
+				// default to string
+				if (found == false) {
+					typeChecker[3][j]++;
+				}
+			}
+		}
+
+		Byte[] dataType = dataTypeMap.get(tableName);
+
+		if ((dataType == null) || (dataType.length != model.getColumnCount())) {
+			dataType = new Byte[model.getColumnCount()];
+		}
+
+		for (int i = 0; i < dataType.length; i++) {
+			int maxVal = 0;
+			int maxIndex = 0;
+
+			for (int j = 0; j < 4; j++) {
+				if (maxVal < typeChecker[j][i]) {
+					maxVal = typeChecker[j][i];
+					maxIndex = j;
+				}
+			}
+
+			if (maxIndex == 0)
+				dataType[i] = CyAttributes.TYPE_BOOLEAN;
+			else if (maxIndex == 1)
+				dataType[i] = CyAttributes.TYPE_INTEGER;
+			else if (maxIndex == 2)
+				dataType[i] = CyAttributes.TYPE_FLOATING;
+			else
+				dataType[i] = CyAttributes.TYPE_STRING;
+		}
+
+		dataTypeMap.put(tableName, dataType);
+	}
+}

@@ -1982,7 +1982,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				URL[] sources = new URL[inputFiles.length];
 
 				for (int i = 0; i < sources.length; i++) {
-					sources[i] = inputFiles[i].toURL();
+					sources[i] = inputFiles[i].toURI().toURL();
 				}
 
 				//final URL networkSource = new URL(targetDataSourceTextField.getText());
@@ -2155,7 +2155,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		final File sourceFile = multiSource[0];
 
-		targetDataSourceTextField.setText(sourceFile.toURL().toString());
+		targetDataSourceTextField.setText(sourceFile.toURI().toURL().toString());
 
 		// Set tooltip as HTML
 		StringBuilder builder = new StringBuilder();
