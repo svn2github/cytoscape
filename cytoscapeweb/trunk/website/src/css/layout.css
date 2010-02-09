@@ -12,7 +12,7 @@ h1, h2, h3 { font-family: Gill Sans, Gill Sans MT, Futura, Arial, sans-serif; fo
 h1 + h2, h2 + h3 { margin-top: 0.5em; }
 h1 a, h2 a, h3 a { text-decoration: none; }
 h1 a:hover, h2 a:hover, h3 a:hover { text-decoration: underline; }
-h1 { font-size: 2em; line-height: 1em; }
+h1 { font-size: 2em; line-height: 1em; margin-bottom: 0.25em; }
 h2 { font-size: 1.5em; line-height: 1.5em; }
 h3 { font-size: 1em; line-height: 2em; }
 label { color: #0b94b1; }
@@ -76,6 +76,7 @@ iframe { display: block; }
 
 /* footer */
 #footer { color: #777777; background-color: #000000; border: 1px #000000 solid; text-align: center; font-size: 0.85em; }
+#footer p { padding: 0.5em 0.25em; }
 #footer a { text-decoration: none; background: none; padding-right: 0; }
 
 /* page */
