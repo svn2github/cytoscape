@@ -65,30 +65,18 @@ public class MCODEPlugin extends CytoscapePlugin {
 	 * Constructor for the MCODE plugin.
 	 */
 	public MCODEPlugin() {
-		//set-up menu options in plugins menu
-		JMenu menu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
-		JMenuItem item;
-
-		//MCODE submenu
-		JMenu submenu = new JMenu("MCODE");
-
-		//MCODE panel
-		item = new JMenuItem("Start MCODE");
-		item.addActionListener(new MCODEMainPanelAction());
-		submenu.add(item);
-
-		//submenu.addSeparator();
+                final JMenuItem menuItem = new JMenuItem("MCODE...");
+                menuItem.addActionListener(new MCODEMainPanelAction());
+                Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...").add(menuItem);
 
 		//Help box
-		item = new JMenuItem("Help");
-		item.addActionListener(new MCODEHelpAction());
-		submenu.add(item);
+		//item = new JMenuItem("Help");
+		//item.addActionListener(new MCODEHelpAction());
+		//submenu.add(item);
 
 		//About box
-		item = new JMenuItem("About");
-		item.addActionListener(new MCODEAboutAction());
-		submenu.add(item);
-
-		menu.add(submenu);
+		//item = new JMenuItem("About");
+		//item.addActionListener(new MCODEAboutAction());
+		//submenu.add(item);
 	}
 }
