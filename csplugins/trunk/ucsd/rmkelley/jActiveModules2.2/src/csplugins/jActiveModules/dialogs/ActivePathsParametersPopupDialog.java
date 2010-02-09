@@ -192,7 +192,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		// /////////////////////////////////////////
 		JPanel buttonPanel = new JPanel();
 
-		JButton helpButton = new JButton(new AbstractAction("Help")
+		JButton helpButton = new JButton(new AbstractAction("?")
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -201,10 +201,10 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		});
 		buttonPanel.add(helpButton, BorderLayout.EAST);
 		JButton dismissButton = new JButton("Close");
-		dismissButton.addActionListener(new DismissAction());
-		buttonPanel.add(dismissButton, BorderLayout.EAST);
 		findModulesButton = new JButton(new FindModulesAction());
-		buttonPanel.add(findModulesButton, BorderLayout.WEST);
+		buttonPanel.add(findModulesButton, BorderLayout.EAST);
+		dismissButton.addActionListener(new DismissAction());
+		buttonPanel.add(dismissButton, BorderLayout.WEST);
 
 		c.gridx = 0;		c.gridy = 2;
 		childPanel.add(buttonPanel,c);
@@ -1283,7 +1283,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 	public class FindModulesAction extends AbstractAction {
 
 		public FindModulesAction() {
-			super("Find Modules");
+			super("Search");
 		}
 
 		public void actionPerformed(ActionEvent e) {
