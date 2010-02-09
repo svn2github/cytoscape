@@ -38,13 +38,32 @@ package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
 import junit.framework.*;
 import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
+import java.util.Map;
+import java.util.HashMap;
+import cytoscape.data.CyAttributes;
 
 public class DataTypeUtilTest extends TestCase {
 
-	TableModel tm;
+	TableModel tableModel;
+	Map<String,Byte[]> dataTypeMap;
 
 	protected void setUp() throws Exception {
 		super.setUp();
+
+		Object[] columnNames = 
+		        {"allFalse","mostlyFalse","mostlyTrue","integer","double","string"}; 
+		Object[][] data = {
+		       { "false",  "false",      "false",      "1",     "1.0",   "homer"    },
+		       { "false",  "true",       "true",       "5",     "4.4",   "marge"    },
+		       { "false",  "false",      "true",       "18",    "3.14",  "bart"     },
+		       { "false",  "false",      "true",       "123",   "123",   "lisa"     },
+		       { "false",  "true",       "true",       "7",     "5",     "maggie"   },
+		       { "false",  "false",      "false",      "9",     "0.007", "smithers" } 
+			};
+
+		tableModel = new DefaultTableModel(data, columnNames);
+		dataTypeMap = new HashMap<String,Byte[]>();
 	}
 
 	protected void tearDown() throws Exception {
@@ -52,6 +71,18 @@ public class DataTypeUtilTest extends TestCase {
 	}
 
 	public void testGuessTypes() throws Exception {
+		DataTypeUtil.guessTypes(tableModel,"test1",dataTypeMap);
+		Byte[] res = dataTypeMap.get("test1");
 
+		// CyAttributes.TYPE_BOOLEAN = 1
+		// CyAttributes.TYPE_FLOATING = 2
+		// CyAttributes.TYPE_INTEGER = 3
+		// CyAttributes.TYPE_STRING = 4
+		assertEquals( CyAttributes.TYPE_BOOLEAN,  res[0].byteValue() ); // allFalse
+		assertEquals( CyAttributes.TYPE_BOOLEAN,  res[1].byteValue() ); // mostlyFalse
+		assertEquals( CyAttributes.TYPE_BOOLEAN,  res[2].byteValue() ); // mostlyTrue
+		assertEquals( CyAttributes.TYPE_INTEGER,  res[3].byteValue() ); // integer
+		assertEquals( CyAttributes.TYPE_FLOATING, res[4].byteValue() ); // double
+		assertEquals( CyAttributes.TYPE_STRING,   res[5].byteValue() ); // string
 	}
 }

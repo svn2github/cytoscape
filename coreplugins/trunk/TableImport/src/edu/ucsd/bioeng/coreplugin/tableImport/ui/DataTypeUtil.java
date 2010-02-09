@@ -55,6 +55,9 @@ class DataTypeUtil {
 	static void guessTypes(final TableModel model, final String tableName, 
 	                       Map<String,Byte[]> dataTypeMap) {
 
+		System.out.println("model row count: " + model.getRowCount() );
+		System.out.println("model column count: " + model.getColumnCount() );
+
 		// 0 = Boolean,  1 = Integer,  2 = Double,  3 = String
 		final Integer[][] typeChecker = new Integer[4][model.getColumnCount()];
 
@@ -69,6 +72,7 @@ class DataTypeUtil {
 		for (int i = 0; i < model.getRowCount(); i++) {
 			for (int j = 0; j < model.getColumnCount(); j++) {
 				cell = (String) model.getValueAt(i, j);
+				System.out.print( i + " " + j + " " + cell + " ");
 
 				boolean found = false;
 
@@ -78,6 +82,7 @@ class DataTypeUtil {
 					     falsePattern.matcher(cell).matches() ) {
 						typeChecker[0][j]++;
 						found = true;
+						System.out.println("boolean");
 					} else {
 
 						// integers
@@ -85,6 +90,7 @@ class DataTypeUtil {
 							Integer.valueOf(cell);
 							typeChecker[1][j]++;
 							found = true;
+						System.out.println("integer");
 						} catch (NumberFormatException e) {
 						}
 			
@@ -94,6 +100,7 @@ class DataTypeUtil {
 							Double.valueOf(cell);
 							typeChecker[2][j]++;
 							found = true;
+						System.out.println("float");
 						} catch (NumberFormatException e) {
 						}
 					}
@@ -102,6 +109,7 @@ class DataTypeUtil {
 				// default to string
 				if (found == false) {
 					typeChecker[3][j]++;
+						System.out.println("string");
 				}
 			}
 		}
@@ -117,11 +125,14 @@ class DataTypeUtil {
 			int maxIndex = 0;
 
 			for (int j = 0; j < 4; j++) {
+				System.out.println("col: " + i + " byte: " + j  + " count: " + typeChecker[j][i]);
 				if (maxVal < typeChecker[j][i]) {
 					maxVal = typeChecker[j][i];
 					maxIndex = j;
 				}
 			}
+	
+			System.out.println("  max index: " + maxIndex);
 
 			if (maxIndex == 0)
 				dataType[i] = CyAttributes.TYPE_BOOLEAN;
@@ -131,6 +142,8 @@ class DataTypeUtil {
 				dataType[i] = CyAttributes.TYPE_FLOATING;
 			else
 				dataType[i] = CyAttributes.TYPE_STRING;
+
+			System.out.println("  resulting data type: " + dataType[i]);
 		}
 
 		dataTypeMap.put(tableName, dataType);
