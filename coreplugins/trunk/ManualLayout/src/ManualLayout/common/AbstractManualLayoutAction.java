@@ -43,8 +43,7 @@ import cytoscape.data.SelectEventListener;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
 import java.awt.Dimension;
@@ -64,26 +63,16 @@ import javax.swing.event.MenuEvent;
 
 
 /**
- * Base class for displaying cytopanel menu items. 
+ * Base class for displaying cytopanel menu items. This class primarily
+ * manages the Layout Menu logic and tab selection of the tools cytopanel. 
  */
-public abstract class AbstractManualLayoutAction extends CytoscapeAction implements CytoPanelListener {
+public abstract class AbstractManualLayoutAction 
+	extends CytoscapeAction 
+	implements CytoPanelListener {
 
-	// set up the cytopanel
-    static protected CytoPanelImp cytoPanel1;
-    static protected CytoPanelImp manualLayoutPanel;
-    static protected BiModalJSplitPane split;
-	static {
-        cytoPanel1 = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-        manualLayoutPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST);
-        split = new BiModalJSplitPane(Cytoscape.getDesktop(), JSplitPane.VERTICAL_SPLIT,
-                                                      BiModalJSplitPane.MODE_HIDE_SPLIT, new JPanel(),
-                                                    manualLayoutPanel);
-        split.setResizeWeight(0);
-        manualLayoutPanel.setCytoPanelContainer(split);
-        manualLayoutPanel.setMinimumSize(new Dimension(180, 230));
-        manualLayoutPanel.setMaximumSize(new Dimension(180, 230));
-        manualLayoutPanel.setPreferredSize(new Dimension(180, 230));
-	}
+    static protected CytoPanel manualLayoutPanel = 
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST);
+
 	private static int selectedIndex = -1;
 
 	int menuIndex; 
@@ -118,8 +107,6 @@ public abstract class AbstractManualLayoutAction extends CytoscapeAction impleme
 			manualLayoutPanel.setSelectedIndex(menuIndex);
 			selectedIndex = menuIndex;
 
-			cytoPanel1.addComponentToSouth(split);
-
 		// Case 2: Panel is in the DOCK/FLOAT and a different panel is selected
 		} else if ( manualLayoutPanel.getSelectedIndex() != menuIndex ) {
 			manualLayoutPanel.setSelectedIndex(menuIndex);
@@ -129,13 +116,7 @@ public abstract class AbstractManualLayoutAction extends CytoscapeAction impleme
 		} else { 
 			manualLayoutPanel.setState(CytoPanelState.HIDE);
 			selectedIndex = -1;
-			
-			//Remove the manuallayoutPanel
-			//removeComponentAtSouth(split) does not work, overwrite it is a workaround
-			cytoPanel1.addComponentToSouth(new javax.swing.JLabel());
 		}
-
-		cytoPanel1.validate();
 	} 
 
 	/**
@@ -146,7 +127,8 @@ public abstract class AbstractManualLayoutAction extends CytoscapeAction impleme
 	public void menuSelected(MenuEvent e) {
 		enableForNetworkAndView();
 		JCheckBoxMenuItem item = (JCheckBoxMenuItem)Cytoscape.getDesktop().getCyMenus().getLayoutMenu().getItem(menuIndex);
-		if ( selectedIndex != menuIndex )
+		if ( manualLayoutPanel.getSelectedIndex() != menuIndex || 
+		     manualLayoutPanel.getState() == CytoPanelState.HIDE )
 			item.setState(false);
 		else 
 			item.setState(true);
