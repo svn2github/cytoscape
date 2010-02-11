@@ -49,7 +49,6 @@ import java.util.regex.Pattern;
 
 import cytoscape.layout.Tunable;
 
-
 /**
  * CyCommandManager is a singleton Cytoscape class that provides a global registry
  * of {@link CyCommand}s and {@link CyCommandNamespace}s.  Each CyCommand is added to the registry through the register
@@ -86,7 +85,8 @@ public class CyCommandManager {
 	 * @param com the command handler for the command we want to register
 	 * @throws RuntimeException if the command is already registered
 	 */
-	public static void register(CyCommandNamespace ns, String command, CyCommandHandler com) throws RuntimeException {
+	public static void register(CyCommandNamespace ns, String command, CyCommandHandler com) 
+	                            throws RuntimeException {
 		if (com == null) 
 			return;
 
@@ -179,22 +179,6 @@ public class CyCommandManager {
 	}
 
 	/**
-	 * Unregister a command
-	 *
-	 * @param ns the namespace of the command to unregister
-	 * @param command the command name to unregister
-	 */
-	public static void unRegister(CyCommandNamespace ns, String command) {
-
-		if (!comMap.containsKey(ns))
-			return;
-
-		Map<String,CyCommandHandler> subComMap = comMap.get(ns);
-
-		subComMap.remove( command );
-	}
-
-	/**
 	 * Execute a command.
 	 *
 	 * @param namespace the namespace for this command
@@ -204,7 +188,8 @@ public class CyCommandManager {
 	 * @throws RuntimeException is the namespace or command is not yet registered
 	 * @throws CyCommandException if there is an error with the execution
 	 */
-	public static CyCommandResult execute(String namespace, String command, Map<String,Object>arguments) throws CyCommandException, RuntimeException {
+	public static CyCommandResult execute(String namespace, String command, Map<String,Object>arguments) 
+	                                      throws CyCommandException, RuntimeException {
 		CyCommandHandler handler = getHandler(namespace, command);
 
 		return handler.execute(command, arguments);
@@ -220,7 +205,8 @@ public class CyCommandManager {
 	 * @throws RuntimeException is the namespace or command is not yet registered
 	 * @throws CyCommandException if there is an error with the execution
 	 */
-	public static CyCommandResult execute(String namespace, String command, List<Tunable>arguments) throws CyCommandException, RuntimeException {
+	public static CyCommandResult execute(String namespace, String command, List<Tunable>arguments) 
+	                                      throws CyCommandException, RuntimeException {
 		CyCommandHandler handler = getHandler(namespace, command);
 
 		return handler.execute(command, arguments);
