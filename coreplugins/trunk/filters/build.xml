@@ -1,4 +1,3 @@
-
 	<project name="filters" default="jar" basedir=".">
 
 		<!-- Cytoscape directory -->
@@ -92,8 +91,9 @@
 	    <target name="jar" depends="compile"
 	            description="Creates Plugin Jar:  filters.jar">
 	    	<copy todir="${build.dir}/classes/cytoscape/filters" file="${resources.dir}/plugin.props"/>
+	    	<copy todir="${build.dir}/classes/cytoscape/filters" file="${resources.dir}/default_filters.props"/>
 	    	<copy todir="${build.dir}">
-	            <fileset dir="${images.dir}"/> 
+	            <fileset dir="${images.dir}"/>
 	    	</copy>
 	    	<jar destfile="${dist.dir}/filters.jar">
 	        <manifest>

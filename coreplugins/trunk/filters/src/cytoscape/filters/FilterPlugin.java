@@ -42,6 +42,8 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.*;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ImageIcon;
@@ -119,11 +121,24 @@ public class FilterPlugin extends CytoscapePlugin {
 	}
 
 	public void restoreInitState() {
-		File global_filter_file = CytoscapeInit.getConfigFile("filters.props");
+		final File globalFilterFile = CytoscapeInit.getConfigFile("filters.props");
+		int[] loadCount = filterIO.getFilterVectFromPropFile(globalFilterFile);
+		logger.debug("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0] + " filters from filters.prop");
 
-		int[] loadCount = filterIO.getFilterVectFromPropFile(global_filter_file);
-		
-		logger.debug("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0] + " filters from filters.prop");		
+		if (loadCount[1] == 0) {
+			final String DEFAULT_FILTERS_FILENAME = "default_filters.props";
+			final InputStream inputStream = FilterPlugin.class.getResourceAsStream(DEFAULT_FILTERS_FILENAME);
+			if (inputStream == null) {
+				System.err.println("FilterPlugin: Failed to read default filters from \""
+				                   + DEFAULT_FILTERS_FILENAME + "\" in the plugin's jar file!");
+				return;
+			}
+
+			final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+			loadCount = filterIO.getFilterVectFromPropFile(inputStreamReader);
+			logger.debug("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0]
+			             + " filters from " + DEFAULT_FILTERS_FILENAME);
+		}
 	}
 
 	// override the following two methods to save state.

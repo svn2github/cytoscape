@@ -38,8 +38,10 @@ package cytoscape.filters;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Vector;
 import java.util.ArrayList;
@@ -59,11 +61,10 @@ public class FilterIO {
 		logger = CyLogger.getLogger(FilterIO.class);
 	}
 
-	// Read the filter property file and construct the filter objects
-	// based on the string representation of each filter
-	public int[] getFilterVectFromPropFile(File pPropFile) {
-		//Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
-
+	/**
+	 *  Construct the filter objects based on the string representation of each filter.
+	 */
+	public int[] getFilterVectFromPropFile(final InputStreamReader reader) {
 		int addCount = 0;
 		int totalCount = 0;
 		int retValue[] = new int[2];
@@ -71,70 +72,83 @@ public class FilterIO {
 		retValue[1] = addCount;
 
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(pPropFile));
+			BufferedReader in = new BufferedReader(reader);
 
-            try {
-                String oneLine = in.readLine();
+			try {
+				String oneLine = in.readLine();
 
-                if (oneLine == null) {
-                    return retValue;
-                }
-                double filterVersion = 0.0;
-                if (oneLine.trim().startsWith("FilterVersion")) {
-                    String versionStr = oneLine.trim().substring(14);
-                    filterVersion = Double.valueOf(versionStr);
-                }
+				if (oneLine == null) {
+					return retValue;
+				}
+				double filterVersion = 0.0;
+				if (oneLine.trim().startsWith("FilterVersion")) {
+					String versionStr = oneLine.trim().substring(14);
+					filterVersion = Double.valueOf(versionStr);
+				}
 
-                // Ignore filters from the old version
-                if (filterVersion <0.2) {
-                    return retValue;
-                }
+				// Ignore filters from the old version
+				if (filterVersion <0.2) {
+					return retValue;
+				}
 
-                while (oneLine != null) {
-                    // ignore comment, empty line or the version line
-                    if (oneLine.startsWith("#") || oneLine.trim().equals("")||oneLine.startsWith("FilterVersion")) {
-                        oneLine = in.readLine();
-                        continue;
-                    }
+				while (oneLine != null) {
+					// ignore comment, empty line or the version line
+					if (oneLine.startsWith("#") || oneLine.trim().equals("")||oneLine.startsWith("FilterVersion")) {
+						oneLine = in.readLine();
+						continue;
+					}
 
-                    if (oneLine.trim().startsWith("<Composite>")||oneLine.trim().startsWith("<TopologyFilter>")
-                            ||oneLine.trim().startsWith("<InteractionFilter>")) {
-                        Vector<String> filterStrVect = new Vector<String>();
-                        filterStrVect.add(oneLine);
-                        while ((oneLine = in.readLine()) != null) {
-                            if (oneLine.trim().startsWith("</Composite>")||oneLine.trim().startsWith("</TopologyFilter>")
-                                    ||oneLine.trim().startsWith("</InteractionFilter>")) {
-                                filterStrVect.add(oneLine);
-                                break;
-                            }
-                            filterStrVect.add(oneLine);
-                        } // inner while loop
+					if (oneLine.trim().startsWith("<Composite>")||oneLine.trim().startsWith("<TopologyFilter>")
+					    ||oneLine.trim().startsWith("<InteractionFilter>")) {
+						Vector<String> filterStrVect = new Vector<String>();
+						filterStrVect.add(oneLine);
+						while ((oneLine = in.readLine()) != null) {
+							if (oneLine.trim().startsWith("</Composite>")||oneLine.trim().startsWith("</TopologyFilter>")
+							    ||oneLine.trim().startsWith("</InteractionFilter>")) {
+								filterStrVect.add(oneLine);
+								break;
+							}
+							filterStrVect.add(oneLine);
+						} // inner while loop
 
-                        totalCount++;
+						totalCount++;
 
-                        CompositeFilter aFilter = getFilterFromStrVect(filterStrVect);
-                        if (aFilter != null && !FilterUtil.isFilterNameDuplicated(aFilter.getName())) {
-                            FilterPlugin.getAllFilterVect().add(aFilter);
-                            addCount++;
-                        }
-                    }
+						CompositeFilter aFilter = getFilterFromStrVect(filterStrVect);
+						if (aFilter != null && !FilterUtil.isFilterNameDuplicated(aFilter.getName())) {
+							FilterPlugin.getAllFilterVect().add(aFilter);
+							addCount++;
+						}
+					}
 
-                    oneLine = in.readLine();
-                } // while loop
-            }
-            finally {
-                if (in != null) {
-                    in.close();
-                }
-            }
+					oneLine = in.readLine();
+				} // while loop
+			}
+			finally {
+				if (in != null) {
+					in.close();
+				}
+			}
 		} catch (Exception ex) {
-			
 			logger.error("Filter Read error", ex);
 		}
 		
 		retValue[0] = totalCount;
 		retValue[1] = addCount;
 		return retValue;
+	}
+
+	/**
+	 *  Construct the filter objects based on the string representation of each filter.
+	 */
+	public int[] getFilterVectFromPropFile(final File input) {
+		try {
+			return getFilterVectFromPropFile(new FileReader(input));
+		}
+		catch (final FileNotFoundException e) {
+			logger.error("Filter Read error", e);
+			final int[] retval = { 0, 0 };
+			return retval;
+		}
 	}
 
 	private AdvancedSetting getAdvancedSettingFromStrVect(Vector<String> pAdvSettingStrVect) {
