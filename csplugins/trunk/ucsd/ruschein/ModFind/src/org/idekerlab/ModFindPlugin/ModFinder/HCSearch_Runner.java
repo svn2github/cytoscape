@@ -1,4 +1,4 @@
-package org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment;
+package org.idekerlab.ModFindPlugin.networks.ModFinder;
 
 import java.io.File;
 import java.util.ArrayList;

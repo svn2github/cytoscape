@@ -3,7 +3,7 @@ package org.idekerlab.ModFindPlugin.networks.linkedNetworks;
 import java.util.*;
 import org.idekerlab.ModFindPlugin.utilities.IIterator;
 import org.idekerlab.ModFindPlugin.utilities.files.FileIterator;
-import org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment.BFEdge;
+import org.idekerlab.ModFindPlugin.networks.ModFinder.BFEdge;
 
 
 /**
