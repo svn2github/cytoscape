@@ -89,6 +89,7 @@ public class KGMLReader extends AbstractGraphReader {
 		mapper = new PathwayMapper(pathway);
 		mapper.doMapping();
 		nodeIdx = mapper.getNodeIdx();
+		edgeIdx = mapper.getEdgeIdx();
 
 	}
 
