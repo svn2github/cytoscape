@@ -130,7 +130,7 @@ public class CompoundColumn {
 			columnType = ColumnType.ATTRIBUTE;
 			attributeName = words[1];
 			objectType = words[2];
-			attributeType = CyAttributesUtils.toByte(words[3]);
+			attributeType = attributeStringToByte(words[3]);
 			columnWidth = Integer.parseInt(words[4]);
 		} else {
 			throw new RuntimeException("Illegal column specification: "+attributeString);
@@ -255,5 +255,33 @@ public class CompoundColumn {
 				writer.write(obj.toString());
 		}
 		return;
+	}
+
+	private byte attributeStringToByte(String attributeType) {
+    if (attributeType.equals("COMPLEX"))
+      return CyAttributes.TYPE_COMPLEX;
+
+    if (attributeType.equals("SIMPLE_MAP"))
+      return CyAttributes.TYPE_SIMPLE_MAP;
+
+    if (attributeType.equals("SIMPLE_LIST"))
+      return CyAttributes.TYPE_SIMPLE_LIST;
+
+    if (attributeType.equals("UNDEFINED"))
+      return CyAttributes.TYPE_UNDEFINED;
+
+    if (attributeType.equals("BOOLEAN"))
+      return CyAttributes.TYPE_BOOLEAN;
+
+    if (attributeType.equals("INTEGER"))
+      return CyAttributes.TYPE_INTEGER;
+
+    if (attributeType.equals("FLOATING"))
+      return CyAttributes.TYPE_FLOATING;
+
+    if (attributeType.equals("STRING"))
+      return CyAttributes.TYPE_STRING;
+
+    return CyAttributes.TYPE_UNDEFINED;
 	}
 }
