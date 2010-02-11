@@ -177,7 +177,11 @@ public class NetworkMergeFrame extends JFrame {
 		javax.swing.JLabel operationLabel = new javax.swing.JLabel();
 		operationComboBox = new javax.swing.JComboBox();
 		operationIcon = new javax.swing.JLabel();
-		differenceTypeToggle = new javax.swing.JCheckBox("Use alt. version of difference.");
+		differenceButton = new javax.swing.JRadioButton("Only remove nodes if all their edges are being subtracted, too.");
+		difference2Button = new javax.swing.JRadioButton("Remove all nodes that are in the 2nd network.");
+		differenceGroup = new javax.swing.ButtonGroup();
+		differenceGroup.add(differenceButton);
+		differenceGroup.add(difference2Button);
 		javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
 		javax.swing.JPanel selectNetworkPanel = new javax.swing.JPanel();
 		javax.swing.JScrollPane unselectedNetworkScrollPane = new javax.swing.JScrollPane();
@@ -254,10 +258,14 @@ public class NetworkMergeFrame extends JFrame {
 					selectedOperation = selectOp;
 					operationIcon.setIcon(OPERATION_ICONS[operationComboBox.getSelectedIndex()]);
 
-					if (selectOp == Operation.DIFFERENCE)
-						differenceTypeToggle.setVisible(true);
-					else
-						differenceTypeToggle.setVisible(false);
+					if (selectOp == Operation.DIFFERENCE) {
+						differenceButton.setVisible(true);
+						difference2Button.setVisible(true);
+						differenceButton.setSelected(true);
+					} else {
+						differenceButton.setVisible(false);
+						difference2Button.setVisible(false);
+					}
 
 					updateUpDownButtonEnable();
 					updateSize();
@@ -267,9 +275,10 @@ public class NetworkMergeFrame extends JFrame {
 			});
 		operationPanel.add(operationComboBox);
 
+		int contentPaneGridY = 0;
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
 		getContentPane().add(operationPanel, gridBagConstraints);
@@ -277,28 +286,41 @@ public class NetworkMergeFrame extends JFrame {
 		operationIcon.setIcon(UNION_ICON);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
 		getContentPane().add(operationIcon, gridBagConstraints);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 2;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-		getContentPane().add(differenceTypeToggle, gridBagConstraints);
-		differenceTypeToggle.setVisible(false);
-		differenceTypeToggle.addItemListener(new java.awt.event.ItemListener() {
+		getContentPane().add(differenceButton, gridBagConstraints);
+		differenceButton.setVisible(false);
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = contentPaneGridY++;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+		getContentPane().add(difference2Button, gridBagConstraints);
+		difference2Button.setVisible(false);
+		difference2Button.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent evt) {
 					altDifferenceIsChecked = evt.getStateChange() == ItemEvent.SELECTED;
+					if (altDifferenceIsChecked)
+						operationIcon.setIcon(DIFFERENCE2_ICON);
+					else
+						operationIcon.setIcon(DIFFERENCE_ICON);
 				}
 			});
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 3;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -551,7 +573,7 @@ public class NetworkMergeFrame extends JFrame {
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 4;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.weighty = 0.5;
@@ -691,7 +713,7 @@ public class NetworkMergeFrame extends JFrame {
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 5;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.weighty = 1.0;
@@ -699,7 +721,7 @@ public class NetworkMergeFrame extends JFrame {
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 6;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -728,7 +750,7 @@ public class NetworkMergeFrame extends JFrame {
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 7;
+		gridBagConstraints.gridy = contentPaneGridY++;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -949,6 +971,7 @@ public class NetworkMergeFrame extends JFrame {
 	private final ImageIcon UNION_ICON = new ImageIcon(getClass().getResource("/images/union.png"));
 	private final ImageIcon INTERSECTION_ICON = new ImageIcon(getClass().getResource("/images/intersection.png"));
 	private final ImageIcon DIFFERENCE_ICON = new ImageIcon(getClass().getResource("/images/difference.png"));
+	private final ImageIcon DIFFERENCE2_ICON = new ImageIcon(getClass().getResource("/images/difference2.png"));
 	private final ImageIcon[] OPERATION_ICONS =  { UNION_ICON, INTERSECTION_ICON, DIFFERENCE_ICON };
 
 	private CollapsiblePanel advancedNetworkMergeCollapsiblePanel;
@@ -973,7 +996,9 @@ public class NetworkMergeFrame extends JFrame {
 	private javax.swing.JComboBox operationComboBox;
 	private Operation selectedOperation;
 	private javax.swing.JLabel operationIcon;
-	private javax.swing.JCheckBox differenceTypeToggle;
+	private javax.swing.JRadioButton differenceButton;
+	private javax.swing.JRadioButton difference2Button;
+	private javax.swing.ButtonGroup differenceGroup;
 	private javax.swing.JPanel optionPanel;
 	private javax.swing.JButton rightButton;
 	private javax.swing.JList selectedNetworkList;
