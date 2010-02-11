@@ -20,14 +20,14 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * @author kono, ruschein
  *
  */
-public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin {
+public class ModFindPlugin extends CytoscapePlugin {
 
 	// Main GUI Panel for this plugin.  Should be a singleton.
 	private SearchPropertyPanel searchPanel;
 
 
-	public DenovoPGNetworkAlignmentPlugin() {
-		final JMenuItem menuItem = new JMenuItem("DenovoPGNetworkAlignment...");
+	public ModFindPlugin() {
+		final JMenuItem menuItem = new JMenuItem("ModFind...");
 		menuItem.addActionListener(new PluginAction());
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
 				"Plugins.Module Finders...").add(menuItem);
@@ -44,7 +44,7 @@ public class DenovoPGNetworkAlignmentPlugin extends CytoscapePlugin {
 			if (index < 0) {
 				searchPanel.updateState();
 				searchPanel.setVisible(true);
-				cytoPanel.add("DenovoPGNetworkAlignment", searchPanel);
+				cytoPanel.add("ModFind", searchPanel);
 				index = cytoPanel.indexOfComponent(searchPanel);
 			}
 			cytoPanel.setSelectedIndex(index);
