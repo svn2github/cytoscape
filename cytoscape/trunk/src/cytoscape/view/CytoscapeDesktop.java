@@ -187,11 +187,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected CytoPanelImp cytoPanelWest;
 	protected CytoPanelImp cytoPanelEast;
 	protected CytoPanelImp cytoPanelSouth;
-
-	// create cytopanel with tabs along the top for manual layout
-	protected CytoPanelImp cytoPanelSouthWest = new CytoPanelImp(SwingConstants.SOUTH_WEST,
-	                                                             JTabbedPane.TOP,
-	                                                             CytoPanelState.HIDE);
+	protected CytoPanelImp cytoPanelSouthWest;
 
 	// Status Bar
 	protected JLabel statusBar;
@@ -661,8 +657,25 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		final BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
 		final BiModalJSplitPane rightPane = createRightPane(topRightPane);
 		final BiModalJSplitPane masterPane = createMasterPane(networkPanel, rightPane);
+		createBottomLeft();
 
 		return masterPane;
+	}
+
+	protected void createBottomLeft() {
+		cytoPanelSouthWest = new CytoPanelImp(SwingConstants.SOUTH_WEST, JTabbedPane.TOP,
+	                                                             CytoPanelState.HIDE);
+
+		BiModalJSplitPane split = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
+		                              BiModalJSplitPane.MODE_HIDE_SPLIT, new JPanel(),
+		                              cytoPanelSouthWest);
+		split.setResizeWeight(0);
+		cytoPanelSouthWest.setCytoPanelContainer(split);
+		cytoPanelSouthWest.setMinimumSize(new Dimension(180, 230));
+		cytoPanelSouthWest.setMaximumSize(new Dimension(180, 230));
+		cytoPanelSouthWest.setPreferredSize(new Dimension(180, 230));
+
+		new ToolCytoPanelListener( split, (CytoPanelImp)cytoPanelWest, cytoPanelSouthWest );
 	}
 
 	/**
