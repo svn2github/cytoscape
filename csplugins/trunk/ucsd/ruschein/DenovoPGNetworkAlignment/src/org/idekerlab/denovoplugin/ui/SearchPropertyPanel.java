@@ -165,7 +165,7 @@ public class SearchPropertyPanel extends JPanel implements
 				}
 			});
 
-		degreeLabel.setText("Physical network filter degree (optional):");
+		degreeLabel.setText("Physical network filter degree (opt.):");
 
 		GroupLayout scorePanelLayout = new GroupLayout(scorePanel);
 		scorePanel.setLayout(scorePanelLayout);
