@@ -1,4 +1,4 @@
-package org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment;
+package org.idekerlab.ModFindPlugin.networks.ModFinder;
 
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
