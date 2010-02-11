@@ -12,17 +12,24 @@ import javax.xml.bind.Unmarshaller;
 import org.cytoscape.data.reader.kgml.generated.Pathway;
 
 import cytoscape.CyNetwork;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.util.URLUtil;
 
-public class KGMLReader implements GraphReader {
+public class KGMLReader extends AbstractGraphReader {
 
 	private static final String PACKAGE_NAME = "org.cytoscape.data.reader.kgml.generated";
 
 	private URL targetURL;
+	
+	private int[] nodeIdx;
+	private int[] edgeIdx;
+	
+	private String networkName;
+	
+	private PathwayMapper mapper;
 
 	public KGMLReader(final String fileName) {
+		super(fileName);
 		System.out.println("File name = " + fileName);
 		try {
 			this.targetURL = (new File(fileName)).toURI().toURL();
@@ -33,33 +40,23 @@ public class KGMLReader implements GraphReader {
 	}
 
 	@Override
-	public void doPostProcessing(CyNetwork arg0) {
-		// TODO Auto-generated method stub
-
+	public void doPostProcessing(CyNetwork network) {
+		mapper.updateView(network);
 	}
 
 	@Override
 	public int[] getEdgeIndicesArray() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CyLayoutAlgorithm getLayoutAlgorithm() {
-		// TODO Auto-generated method stub
-		return null;
+		return edgeIdx;
 	}
 
 	@Override
 	public String getNetworkName() {
-		// TODO Auto-generated method stub
-		return null;
+		return networkName;
 	}
 
 	@Override
 	public int[] getNodeIndicesArray() {
-		// TODO Auto-generated method stub
-		return null;
+		return nodeIdx;
 	}
 
 	@Override
@@ -77,6 +74,8 @@ public class KGMLReader implements GraphReader {
 
 			is = URLUtil.getBasicInputStream(targetURL);
 			pathway = (Pathway) unmarshaller.unmarshal(is);
+			networkName = pathway.getTitle();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -86,12 +85,10 @@ public class KGMLReader implements GraphReader {
 				is.close();
 			}
 		}
-		
-		System.out.println("Got Pathway: " + pathway.getName());
-		
-		final PathwayMapper mapper = new PathwayMapper(pathway);
+			
+		mapper = new PathwayMapper(pathway);
 		mapper.doMapping();
-		                                                  
+		nodeIdx = mapper.getNodeIdx();
 
 	}
 
