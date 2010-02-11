@@ -650,6 +650,42 @@ public class CyAttributesUtils {
 	}
 
 	/**
+	 * Return a byte representation of the various CyAttributes
+	 * types returned by methods like CyAttributes.getType() and
+	 * MultiHashMapDefinition.getAttributeKeysapceDimensionTypes().
+	 * This is useful to return the byte when you have an Attribute String.
+	 * @see cytoscape.data.CyAttributes#getType
+	 * @see cytoscape.data.attr.MultiHashMapDefinition#getAttributeKeyspaceDimensionTypes
+	 */
+	static public byte toByte(String attributeType) {
+		if (attributeType.equals("COMPLEX"))
+			return CyAttributes.TYPE_COMPLEX;
+
+		if (attributeType.equals("SIMPLE_MAP"))
+			return CyAttributes.TYPE_SIMPLE_MAP;
+
+		if (attributeType.equals("SIMPLE_LIST"))
+			return CyAttributes.TYPE_SIMPLE_LIST;
+
+		if (attributeType.equals("UNDEFINED"))
+			return CyAttributes.TYPE_UNDEFINED;
+
+		if (attributeType.equals("BOOLEAN"))
+			return CyAttributes.TYPE_BOOLEAN;
+
+		if (attributeType.equals("INTEGER"))
+			return CyAttributes.TYPE_INTEGER;
+
+		if (attributeType.equals("FLOATING"))
+			return CyAttributes.TYPE_FLOATING;
+
+		if (attributeType.equals("STRING"))
+			return CyAttributes.TYPE_STRING;
+
+		return CyAttributes.TYPE_UNDEFINED;
+	}
+
+	/**
 	 * Convenience method for throwing an IllegalArgumentException given
 	 * a message.
 	 */
