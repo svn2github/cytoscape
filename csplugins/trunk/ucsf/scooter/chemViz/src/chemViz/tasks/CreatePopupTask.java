@@ -35,12 +35,14 @@
 
 package chemViz.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import giny.model.GraphObject;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
@@ -57,17 +59,38 @@ import chemViz.ui.CompoundPopup;
  * a 2D image of all of the compuonds defined.
  */
 public class CreatePopupTask extends AbstractCompoundTask {
-	Object view;
+	List<GraphObject> objectList;
 	ChemInfoSettingsDialog dialog;
 
 	/**
  	 * Creates the task.
  	 *
- 	 * @param object the graph object that we're creating the popup for
+ 	 * @param view the view object that we're creating the popup for
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
-  public CreatePopupTask(Object object, ChemInfoSettingsDialog dialog, int maxCompounds) {
-		this.view = object;
+  public CreatePopupTask(Object view, ChemInfoSettingsDialog dialog, int maxCompounds) {
+		GraphObject object;
+		if (view instanceof NodeView) {
+			object = ((NodeView)view).getNode();
+		} else {
+			object = ((EdgeView)view).getEdge();
+		}
+		this.objectList = new ArrayList();
+		objectList.add(object);
+		this.dialog = dialog;
+		this.canceled = false;
+		this.maxCompounds = maxCompounds;
+		this.compoundCount = 0;
+	}
+
+	/**
+ 	 * Creates the task.
+ 	 *
+ 	 * @param objects the graph objects that we're creating the popup for
+ 	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
+ 	 */
+  public CreatePopupTask(List<GraphObject>selection, ChemInfoSettingsDialog dialog, int maxCompounds) {
+		this.objectList = selection;
 		this.dialog = dialog;
 		this.canceled = false;
 		this.maxCompounds = maxCompounds;
@@ -84,22 +107,22 @@ public class CreatePopupTask extends AbstractCompoundTask {
 	public void run() {
 		CyAttributes attributes = null;
 		String type = null;
-		GraphObject go = null;
-		if (view instanceof NodeView) {
+
+		// Get the first object so we can do the typing
+		GraphObject go = objectList.get(0);
+		if (go instanceof CyNode) {
 			attributes = Cytoscape.getNodeAttributes();
 			type = "node";
-			go = ((NodeView)view).getNode();
 		} else {
 			attributes = Cytoscape.getEdgeAttributes();
 			type = "edge";
-			go = ((EdgeView)view).getEdge();
 		}
 
-		List<Compound> cList = getCompounds(go, attributes,
+		List<Compound> cList = getCompounds(objectList, attributes,
                                         dialog.getCompoundAttributes(type,AttriType.smiles),
-                                        dialog.getCompoundAttributes(type,AttriType.inchi), false);
+                                        dialog.getCompoundAttributes(type,AttriType.inchi));
 		if (cList.size() > 0 && !canceled) {
-    	CompoundPopup popup = new CompoundPopup(cList, go);
+    	CompoundPopup popup = new CompoundPopup(cList, objectList);
 		}
 	}
 }

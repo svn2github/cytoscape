@@ -355,11 +355,11 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 
 		properties.add(new Tunable("attributeGroup",
 		                "Attribute Settings",
-		                Tunable.GROUP, new Integer(4)));
+		                Tunable.GROUP, new Integer(3)));
 
 		properties.add( new Tunable("attributeGroup1",
 		                "SMILES Attributes",
-		                Tunable.GROUP, new Integer(2)));
+		                Tunable.GROUP, new Integer(1)));
 
 		String smilesDefaults = getDefaults(possibleAttributes, defaultSmilesAttributes);
 		properties.add( new Tunable("smilesAttributes",
@@ -369,7 +369,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 
 		properties.add( new Tunable("attributeGroup2",
 		                "InCHI Attributes",
-		                Tunable.GROUP, new Integer(2)));
+		                Tunable.GROUP, new Integer(1)));
 
 		String inCHIDefaults = getDefaults(possibleAttributes, defaultInCHIAttributes);
 		properties.add( new Tunable("inChiAttributes",

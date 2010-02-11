@@ -76,11 +76,13 @@ import chemViz.ui.ChemInfoSettingsDialog;
  */
 public class CreateNodeGraphicsTask extends AbstractCompoundTask 
                                     implements ActionListener, ViewportChangeListener {
+
+	private static HashMap<CyNetworkView, CreateNodeGraphicsTask> customGraphicsMap = new HashMap();
+	private static final String CustomGraphicsAttribute = "__has2DGraphics";
 	Collection<GraphObject> nodeSelection;
 	ChemInfoSettingsDialog settingsDialog;
 	HashMap<NodeView, Compound> viewMap = null;
 	HashMap<NodeView, CustomGraphic> graphMap = null;
-	private static final String CustomGraphicsAttribute = "__has2DGraphics";
 	private boolean removeCustomGraphics = false;
 	double zoom = 0.0;
 	double lastX = 0.0;
@@ -118,6 +120,12 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		return nList;
 	}
 
+	public static CreateNodeGraphicsTask getCustomGraphicsTask(CyNetworkView view) {
+		if (customGraphicsMap.containsKey(view))
+			return customGraphicsMap.get(view);
+		return null;
+	}
+
 	/**
  	 * Creates the task.
  	 *
@@ -131,6 +139,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		this.compoundCount = 0;
 		this.settingsDialog = settingsDialog;
 		this.removeCustomGraphics = remove;
+		customGraphicsMap.put(Cytoscape.getCurrentNetworkView(), this);
 	}
 
 	public String getTitle() {

@@ -72,14 +72,23 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 	private List<Compound> compoundList;
 	private Map<Component, Compound> imageMap;
 
-	public CompoundPopup(List<Compound> compoundList, GraphObject go) {
+	public CompoundPopup(List<Compound> compoundList, List<GraphObject> objectList) {
 		super(Cytoscape.getDesktop());
+		GraphObject go = objectList.get(0);
 		this.compoundList = compoundList;
 		this.imageMap = new HashMap();
 		if (go instanceof CyNode) {
-			setTitle("2D Structures for Node "+((CyNode)go).getIdentifier());
+			if (objectList.size() == 1) {
+				setTitle("2D Structures for Node "+((CyNode)go).getIdentifier());
+			} else {
+				setTitle("2D Structures for Selected Nodes");
+			}
 		} else  {
-			setTitle("2D Structures for Edge "+((CyEdge)go).getIdentifier());
+			if (objectList.size() == 1) {
+				setTitle("2D Structures for Edge "+((CyEdge)go).getIdentifier());
+			} else {
+				setTitle("2D Structures for Selected Edges");
+			}
 		}
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBackground(Color.WHITE);
@@ -105,6 +114,8 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 		}
 	}
 
+
+	// TODO: Add labels on image squares
 	private void addImages(int width) {
 		// How many images do we have?
 		int structureCount = compoundList.size();

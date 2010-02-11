@@ -58,6 +58,7 @@ import java.io.FileWriter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,6 +80,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -102,15 +104,20 @@ import cytoscape.data.SelectEventListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
+import chemViz.model.ChemInfoTableModel;
 import chemViz.model.Compound;
 import chemViz.model.Compound.DescriptorType;
+import chemViz.model.CompoundColumn;
+import chemViz.model.CompoundColumn.ColumnType;
 import chemViz.model.TableSorter;
+
+import chemViz.ui.renderers.CompoundRenderer;
+import chemViz.ui.renderers.StringRenderer;
 
 public class CompoundTable extends JDialog implements ListSelectionListener,
                                                       SelectEventListener,
                                                       ActionListener {
 	
-	private List<Compound> compoundList;
 	private Map<GraphObject,List<Integer>> rowMap;
 	private ChemInfoTableModel tableModel;
 	private	TableColumnModel columnModel;
@@ -122,10 +129,12 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 	private CyNetworkView networkView;
 	private	boolean modifyingSelection = false;
 	private CompoundTable thisDialog;
-	private static int DEFAULT_IMAGE_SIZE=80;
 	private boolean hasNodes = false;
 	private boolean hasEdges = false;
 	private	CyLogger logger = CyLogger.getLogger(CompoundTable.class);
+
+	private	List<CompoundColumn> columns;
+	private	List<Compound> compoundList;
 
 	public CompoundTable (List<Compound> compoundList) {
 		super(Cytoscape.getDesktop());
@@ -136,6 +145,9 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.rowMap = new HashMap();
 
+		// See if we have any table attributes stored
+		columns = TableAttributeHandler.getAttributes(Cytoscape.getCurrentNetwork());
+
 		// Create the table
 		initTable();
 
@@ -143,47 +155,62 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		network.addSelectEventListener(this);
 
 		pack();
+
+		// Now, see if we need to adjust the width and height
+		int height = TableAttributeHandler.getHeightAttribute(Cytoscape.getCurrentNetwork());
+		int width = TableAttributeHandler.getWidthAttribute(Cytoscape.getCurrentNetwork());
+		if (height != -1 && width != -1) {
+			this.setSize(width, height);
+		}
+
 		thisDialog = this;
 		setVisible(true);
 	}
 
 	public void setCompounds(List<Compound> newList) {
-		this.compoundList = newList;
 		this.rowMap = new HashMap();
+		tableModel.setCompoundList(newList);
 		tableModel.fireTableDataChanged();
 	}
 
 	private void initTable() {
 		JPanel mainPanel = new JPanel(new BorderLayout());
-		MouseAdapter mouseAdapter = new MyMouseAdapter();
 
-		tableModel = new ChemInfoTableModel();
+		// create our table model
+		tableModel = new ChemInfoTableModel(compoundList);
+		sorter = new TableSorter(tableModel);
 
 		// Create our default columns
-		tableModel.addColumn(0, new Column("ID", "", CyAttributes.TYPE_STRING));
-		tableModel.addColumn(1, new Column(DescriptorType.ATTRIBUTE));
-		tableModel.addColumn(2, new Column(DescriptorType.IDENTIFIER));
-		tableModel.addColumn(3, new Column(DescriptorType.WEIGHT));
-		tableModel.addColumn(4, new Column(DescriptorType.IMAGE));
+		int column = 0;
+		for (CompoundColumn c: columns) {
+			tableModel.addColumn(column++, c);
+		}
 
-		sorter = new TableSorter(tableModel);
 		table = new JTable(sorter);
+
+		MouseAdapter mouseAdapter = new TableMouseAdapter(table, tableModel, sorter);
 		tableHeader = table.getTableHeader();
 		tableHeader.addMouseListener(mouseAdapter);
 		sorter.setTableHeader(tableHeader);
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		table.setDefaultRenderer(Compound.class, new CompoundRenderer());
+		table.setDefaultRenderer(Compound.class, new CompoundRenderer(sorter, rowMap));
 		table.setDefaultRenderer(String.class, new StringRenderer());
-		table.setRowHeight(DEFAULT_IMAGE_SIZE);
 
 		// Figure out all of our default column widths
 		columnModel = table.getColumnModel();
-		columnModel.getColumn(0).setPreferredWidth(100);
-		columnModel.getColumn(1).setPreferredWidth(100);
-		columnModel.getColumn(2).setPreferredWidth(200);
-		columnModel.getColumn(3).setPreferredWidth(100);
-		columnModel.getColumn(4).setPreferredWidth(DEFAULT_IMAGE_SIZE);
+		int rowHeight = TableAttributeHandler.DEFAULT_IMAGE_SIZE;
+		column = 0;
+
+		for (CompoundColumn c: columns) {
+			columnModel.getColumn(column++).setPreferredWidth(c.getWidth());
+			// See if we've got an image -- if so, use it to set the default row height
+			if (c.getColumnType() == ColumnType.DESCRIPTOR && c.getDescriptor() == DescriptorType.IMAGE) {
+				rowHeight = c.getWidth();
+			}
+		}
+
+		table.setRowHeight(rowHeight);
 
 		// Add our mouse listener (specific for 2D image popup)
 		table.addMouseListener(mouseAdapter);
@@ -193,7 +220,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		selectionModel.addListSelectionListener(this);
 
 		JScrollPane pane = new JScrollPane(table);
-		pane.setPreferredSize(new Dimension(500+DEFAULT_IMAGE_SIZE+20,520));
+		pane.setPreferredSize(new Dimension(500+TableAttributeHandler.DEFAULT_IMAGE_SIZE+20,520));
 		mainPanel.add(pane, BorderLayout.CENTER);
 
 		// Now add our button-box
@@ -279,6 +306,8 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("close")) {
+			TableAttributeHandler.setTableAttributes(table, tableModel, Cytoscape.getCurrentNetwork());
+			TableAttributeHandler.setSizeAttributes(this, Cytoscape.getCurrentNetwork());
 			dispose();
 		} else if (e.getActionCommand().equals("export")) {
 			// Get the file name
@@ -290,7 +319,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 				File exportFile = chooser.getSelectedFile();
 				try {
 					// Output the table
-					tableModel.output(exportFile);
+					outputTable(exportFile);
 				} catch (IOException ioe) {
 					logger.error("Unable to export file: "+ioe.getMessage());
 				}
@@ -301,341 +330,22 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			} catch (Exception ePrint) {
 				logger.error("Unable to print table: "+ePrint.getMessage(), ePrint);
 			}
-		} else if (e.getActionCommand().equals("export")) {
-		} else if (e.getActionCommand().startsWith("removeColumn:")) {
-			String columnNumber = e.getActionCommand().substring(13);
-			int column = Integer.parseInt(columnNumber);
-			tableModel.removeColumn(column);
-		} else if (e.getActionCommand().startsWith("addColumn:")) {
-			String columnNumber = e.getActionCommand().substring(10);
-			int column = Integer.parseInt(columnNumber);
 		}
 	}
 
-	class ChemInfoTableModel extends AbstractTableModel {
-		List<Column> columns;
-
-		ChemInfoTableModel() {
-			super();
-			columns = new ArrayList();
-		}
-
-		public void addColumn(int columnNumber, Column column) {
-			columns.add(columnNumber, column);
-			fireTableStructureChanged();
-		}
-
-		public void removeColumn(int columnNumber) {
-			columns.remove(columnNumber);
-			fireTableStructureChanged();
-		}
-
-		public void removeColumn(Column column) {
-			columns.remove(column);
-			fireTableStructureChanged();
-		}
-
-		public int getColumnCount() { return columns.size(); }
-		public int getRowCount() { return compoundList.size(); }
-
-		public String getColumnName(int columnIndex) {
-			Column column = columns.get(columnIndex);
-			return column.getColumnName();
-		}
-
-		public Class getColumnClass(int columnIndex) {
-			Column column = columns.get(columnIndex);
-			return column.getColumnClass();
-		}
-		
-		public Object getValueAt(int row, int col) {
-			Compound cmpd = compoundList.get(row);
-			Column column = columns.get(col);
-			return column.getValue(cmpd);
-		}
-
-		public void output (File file) throws IOException {
-			FileWriter writer = new FileWriter(file);
-			for (int viewRow = 0; viewRow < compoundList.size(); viewRow++ ) {
-				int row = sorter.modelIndex(viewRow);
-				Compound cmpd = compoundList.get(row);
-				for (int viewCol = 0; viewCol < columns.size(); viewCol++) {
-					if (viewCol > 0)
-						writer.write("\t");
-					int col = table.convertColumnIndexToModel(viewCol);
-					columns.get(col).output(writer, cmpd);
-				}
-				writer.write("\n");
-			}
-			writer.close();
-		}
-	}
-
-	enum ColumnType { ATTRIBUTE, DESCRIPTOR };
-
-	class Column {
-		private ColumnType columnType;
-		private String attributeName;
-		private String objectType;
-		private byte attributeType;
-		private DescriptorType descriptor;
-
-		Column(DescriptorType descriptor) {
-			this.columnType = ColumnType.DESCRIPTOR;
-			this.descriptor = descriptor;
-		}
-
-		Column(String attributeName, String objectType, byte type) {
-			this.columnType = ColumnType.ATTRIBUTE;
-			this.attributeName = attributeName;
-			this.attributeType = type;
-			this.objectType = objectType;
-		}
-
-		public Object getValue(Compound cmpd) {
-			// Get the GraphObject so we can note whether we have nodes
-			GraphObject obj = cmpd.getSource();
-			if (obj instanceof CyNode) {
-				thisDialog.hasNodes = true;
-			} else {
-				thisDialog.hasEdges = true;
-			}
-
-			if (columnType == ColumnType.ATTRIBUTE) {
-				CyAttributes attributes;
-
-				// Special case for "ID"
-				if (attributeName.equals("ID"))
-					return obj.getIdentifier();
-
-				// Get the appropriate attribute
-				if (obj instanceof CyNode) {
-					if (objectType.equals("edge."))
-						return null;
-					attributes = Cytoscape.getNodeAttributes();
-				} else {
-					if (objectType.equals("node."))
-						return null;
-					attributes = Cytoscape.getEdgeAttributes();
-				}
-				// Return the value
-				switch (attributeType) {
-					case CyAttributes.TYPE_BOOLEAN:
-						return attributes.getBooleanAttribute(obj.getIdentifier(), attributeName);
-					case CyAttributes.TYPE_FLOATING:
-						return attributes.getDoubleAttribute(obj.getIdentifier(), attributeName);
-					case CyAttributes.TYPE_INTEGER:
-						return attributes.getIntegerAttribute(obj.getIdentifier(), attributeName);
-					case CyAttributes.TYPE_SIMPLE_LIST:
-						List result = attributes.getListAttribute(obj.getIdentifier(), attributeName);
-						String retValue = "[";
-						for (int index = 0; index < result.size(); index++) {
-							if (index > 0) retValue += ", ";
-							retValue += result.get(index).toString();
-						}
-						retValue += "]";
-						return retValue;
-					case CyAttributes.TYPE_STRING:
-						return attributes.getStringAttribute(obj.getIdentifier(), attributeName);
-					default:
-						return null;
-				}
-			} else if (columnType == ColumnType.DESCRIPTOR) {
-				// Hand it off
-				return cmpd.getDescriptor(descriptor);
-			}
-			return null;
-		}
-
-		public Class getColumnClass() {
-			if (columnType == ColumnType.DESCRIPTOR)
-				return descriptor.getClassType();
-
-			switch (attributeType) {
-				case CyAttributes.TYPE_BOOLEAN:
-					return Boolean.class;
-				case CyAttributes.TYPE_FLOATING:
-					return Double.class;
-				case CyAttributes.TYPE_INTEGER:
-					return Integer.class;
-				case CyAttributes.TYPE_SIMPLE_LIST:
-				case CyAttributes.TYPE_STRING:
-				default:
-					return String.class;
-			}
-		}
-
-		public String getColumnName() {
-			if (columnType == ColumnType.DESCRIPTOR)
-				return descriptor.toString();
-			return attributeName;
-		}
-
-		public void output(FileWriter writer, Compound compound) throws IOException {
-			Object obj = getValue(compound);
-			if (obj != null) {
-				// We don't handle the images, yet
-				if (obj instanceof Compound) 
-					writer.write("[2D Image]");
-				else
-					writer.write(obj.toString());
-			}
-			return;
-		}
-	}
-
-	class CompoundRenderer implements TableCellRenderer {
-		private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-		                                        boolean hasFocus, int viewRow, int viewColumn) {
-
+	private void outputTable(File file) throws IOException {
+		FileWriter writer = new FileWriter(file);
+		for (int viewRow = 0; viewRow < compoundList.size(); viewRow++ ) {
 			int row = sorter.modelIndex(viewRow);
-			int column = table.convertColumnIndexToModel(viewColumn);
-
-			adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, viewRow, viewColumn);
-			Compound c = compoundList.get(row);
-			TableColumn clm = table.getColumnModel().getColumn(viewColumn);
-			int width = clm.getPreferredWidth();
-			if (width != table.getRowHeight())
-				table.setRowHeight(width); // Note, this will trigger a repaint!
-			Image resizedImage = c.getImage(width,width);
-			if (resizedImage == null) return null;
-			JLabel l = new JLabel(new ImageIcon(resizedImage));
-			if (!rowMap.containsKey(c.getSource())) {
-				rowMap.put(c.getSource(), new ArrayList());
+			Compound cmpd = compoundList.get(row);
+			for (int viewCol = 0; viewCol < columns.size(); viewCol++) {
+				if (viewCol > 0)
+					writer.write("\t");
+				int col = table.convertColumnIndexToModel(viewCol);
+				columns.get(col).output(writer, cmpd);
 			}
-
-			rowMap.get(c.getSource()).add(Integer.valueOf(row));
-			l.setBackground(adaptee.getBackground());
-			l.setForeground(adaptee.getForeground());
-			return l;
+			writer.write("\n");
 		}
+		writer.close();
 	}
-
-	class StringRenderer extends JTextArea implements TableCellRenderer {
-		private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-
-		public StringRenderer () {
-			setLineWrap(true);
-		}
-
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-		                                        boolean hasFocus, int row, int column) {
-			adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-			setBackground(adaptee.getBackground());
-			setBorder(adaptee.getBorder());
-			setFont(adaptee.getFont());
-			setText(adaptee.getText());
-			setForeground(adaptee.getForeground());
-			return this;
-		}
-	}
-
-	class MyMouseAdapter extends MouseAdapter {
-		public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2 && e.getComponent() == table)
-			{
-				Point p = e.getPoint();
-				// int row = table.convertRowIndexToModel(table.rowAtPoint(p));
-				int row = sorter.modelIndex(table.rowAtPoint(p));
-				int column = table.convertColumnIndexToModel(table.columnAtPoint(p));
-				final Compound c = compoundList.get(row);
-				if (tableModel.getColumnClass(column) == Compound.class) {
-					final List<Compound> cList = new ArrayList();
-					cList.add(c);
-					Runnable t = new Runnable() {
-  						public void run() {
-   	 					CompoundPopup popup = new CompoundPopup(cList, c.getSource());
-							popup.toFront();
-						}
-					};
-					new Thread(t).start();
-				}
-			} else if (e.getComponent() == tableHeader && 
-			           ((e.getButton() == MouseEvent.BUTTON3) ||
-			            (e.getButton() == MouseEvent.BUTTON1 && e.isMetaDown()) ||
-			            (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()))) {
-				// Popup header context menu
-				JPopupMenu headerMenu = new JPopupMenu();
-				// Get our column title
-				Point p = e.getPoint();
-				int column = table.convertColumnIndexToModel(table.columnAtPoint(p));
-				String name = tableModel.getColumnName(column);
-				// Add removeMenu if we have more than 1 column
-				if (tableModel.getColumnCount() > 1) {
-					JMenuItem removeMenu = new JMenuItem("Remove Column "+name);
-					removeMenu.setActionCommand("removeColumn:"+column);
-					removeMenu.addActionListener(thisDialog);
-					headerMenu.add(removeMenu);
-				}
-				JMenu addMenu = new JMenu("Add New Column");
-				JMenu attrMenu = new JMenu("Cytoscape attributes");
-				if (thisDialog.hasNodes) {
-					addAttributeMenus(attrMenu, Cytoscape.getNodeAttributes(), "node.", column);
-				}
-				if (thisDialog.hasEdges) {
-					addAttributeMenus(attrMenu, Cytoscape.getEdgeAttributes(), "edge.", column);
-				}
-				if (attrMenu.getItemCount() > 0) 
-					addMenu.add(attrMenu);
-
-				JMenu descMenu = new JMenu("Molecular descriptors");
-				addDescriptorMenus(descMenu, column);
-				if (descMenu.getItemCount() > 0) 
-					addMenu.add(descMenu);
-
-				headerMenu.add(addMenu);
-				headerMenu.show(e.getComponent(), e.getX(), e.getY());
-			}
-		}
-
-		void addAttributeMenus(JMenu addMenu, CyAttributes attributes, String type, int column) {
-			String[] attNames = attributes.getAttributeNames();
-			for (int i = 0; i < attNames.length; i++) {
-				String att = attNames[i];
-				if (tableModel.findColumn(att) < 0) {
-					addMenu.add(new AddMenu(att, type, column, attributes.getType(att)));
-				}
-			}
-		}
-
-		void addDescriptorMenus(JMenu addMenu, int column) {
-			List<DescriptorType> descList = Compound.getDescriptorList();
-			for (DescriptorType type: descList) {
-				if (tableModel.findColumn(type.toString()) < 0) {
-					addMenu.add(new AddMenu(type, column));
-				}
-			}
-		}
-	}
-
-	class AddMenu extends JMenuItem implements ActionListener {
-		int column;
-		Column newColumn;
-		
-		AddMenu(String name, int column) {
-			this(name, "", column, CyAttributes.TYPE_STRING);
-		}
-
-		AddMenu(String name, String prefix, int column, byte type) {
-			super(prefix+name);
-			this.newColumn = new Column(name, prefix, type);
-			this.column = column;
-			addActionListener(this);
-		}
-
-		AddMenu(DescriptorType descriptor, int column) {
-			super(descriptor.toString());
-			this.newColumn = new Column(descriptor);
-			this.column = column;
-			addActionListener(this);
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			tableModel.addColumn(column, newColumn);
-		}
-	}
-
 }
