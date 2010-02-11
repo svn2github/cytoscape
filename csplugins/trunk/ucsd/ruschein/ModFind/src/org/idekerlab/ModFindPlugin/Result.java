@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin;
+package org.idekerlab.ModFindPlugin;
 
 import java.util.List;
 

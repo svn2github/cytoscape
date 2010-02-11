@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
+package org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.networks.SFNetwork;
-import org.idekerlab.denovoplugin.networks.SNodeModule;
-import org.idekerlab.denovoplugin.networks.hashNetworks.FloatHashNetwork;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNode;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
-import org.idekerlab.denovoplugin.data.StringTable;
+import org.idekerlab.ModFindPlugin.networks.SFNetwork;
+import org.idekerlab.ModFindPlugin.networks.SNodeModule;
+import org.idekerlab.ModFindPlugin.networks.hashNetworks.FloatHashNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.ModFindPlugin.data.StringTable;
 
 
 public class HCSearch_Runner {

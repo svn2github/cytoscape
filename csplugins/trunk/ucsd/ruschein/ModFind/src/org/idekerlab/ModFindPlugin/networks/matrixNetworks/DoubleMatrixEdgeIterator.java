@@ -1,10 +1,10 @@
-package org.idekerlab.denovoplugin.networks.matrixNetworks;
+package org.idekerlab.ModFindPlugin.networks.matrixNetworks;
 
 import java.util.*;
 
-import org.idekerlab.denovoplugin.networks.DirectedSDEdge;
-import org.idekerlab.denovoplugin.networks.SDEdge;
-import org.idekerlab.denovoplugin.networks.UndirectedSDEdge;
+import org.idekerlab.ModFindPlugin.networks.DirectedSDEdge;
+import org.idekerlab.ModFindPlugin.networks.SDEdge;
+import org.idekerlab.ModFindPlugin.networks.UndirectedSDEdge;
 
 public class DoubleMatrixEdgeIterator implements Iterator<SDEdge>
 {

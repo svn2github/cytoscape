@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.utilities.collections;
+package org.idekerlab.ModFindPlugin.utilities.collections;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.structures.IntPair;
-import org.idekerlab.denovoplugin.utilities.files.FileIterator;
-import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.ModFindPlugin.structures.IntPair;
+import org.idekerlab.ModFindPlugin.utilities.files.FileIterator;
+import org.idekerlab.ModFindPlugin.data.DoubleVector;
 
 public class HashMapUtil {
 

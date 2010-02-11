@@ -1,10 +1,10 @@
-package org.idekerlab.denovoplugin.networks;
+package org.idekerlab.ModFindPlugin.networks;
 
 import java.util.*;
 
-import org.idekerlab.denovoplugin.utilities.IIterator;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.*;
-import org.idekerlab.denovoplugin.networks.hashNetworks.*;
+import org.idekerlab.ModFindPlugin.utilities.IIterator;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
+import org.idekerlab.ModFindPlugin.networks.hashNetworks.*;
 
 public abstract class SFNetwork extends SNetwork
 {

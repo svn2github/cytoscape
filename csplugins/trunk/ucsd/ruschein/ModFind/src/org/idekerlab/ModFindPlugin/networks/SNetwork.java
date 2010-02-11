@@ -1,12 +1,12 @@
-package org.idekerlab.denovoplugin.networks;
+package org.idekerlab.ModFindPlugin.networks;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 
-import org.idekerlab.denovoplugin.utilities.*;
-import org.idekerlab.denovoplugin.utilities.files.*;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.*;
+import org.idekerlab.ModFindPlugin.utilities.*;
+import org.idekerlab.ModFindPlugin.utilities.files.*;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
 
 public abstract class SNetwork extends AbstractNetwork
 {

@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+import org.idekerlab.ModFindPlugin.utilities.files.FileIterator;
 
 
 public class DoubleVector extends DataVector {

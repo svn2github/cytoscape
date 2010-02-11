@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.ui;
+package org.idekerlab.ModFindPlugin.ui;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -12,8 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.idekerlab.denovoplugin.SearchParameters;
-import org.idekerlab.denovoplugin.SearchTask;
+import org.idekerlab.ModFindPlugin.SearchParameters;
+import org.idekerlab.ModFindPlugin.SearchTask;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 

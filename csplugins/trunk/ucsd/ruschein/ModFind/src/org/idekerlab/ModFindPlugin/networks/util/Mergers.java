@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks.util;
+package org.idekerlab.ModFindPlugin.networks.util;
 
 public interface Mergers
 {

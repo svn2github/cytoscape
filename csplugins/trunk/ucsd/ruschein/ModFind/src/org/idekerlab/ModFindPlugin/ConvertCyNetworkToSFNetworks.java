@@ -1,11 +1,11 @@
-package org.idekerlab.denovoplugin;
+package org.idekerlab.ModFindPlugin;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import org.idekerlab.denovoplugin.networks.SFNetwork;
-import org.idekerlab.denovoplugin.networks.hashNetworks.FloatHashNetwork;
+import org.idekerlab.ModFindPlugin.networks.SFNetwork;
+import org.idekerlab.ModFindPlugin.networks.hashNetworks.FloatHashNetwork;
 import java.util.List;
 
 /**

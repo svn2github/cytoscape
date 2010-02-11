@@ -1,9 +1,9 @@
-package org.idekerlab.denovoplugin.utilities;
+package org.idekerlab.ModFindPlugin.utilities;
 
-import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.ModFindPlugin.utilities.files.*;
 import java.io.*;
 import java.util.*;
-import org.idekerlab.denovoplugin.data.*;
+import org.idekerlab.ModFindPlugin.data.*;
 
 public class ByteConverter
 {

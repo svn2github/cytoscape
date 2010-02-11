@@ -1,13 +1,13 @@
-package org.idekerlab.denovoplugin.networks.hashNetworks;
+package org.idekerlab.ModFindPlugin.networks.hashNetworks;
 
 import java.util.*;
 
-import org.idekerlab.denovoplugin.data.StringVector;
+import org.idekerlab.ModFindPlugin.data.StringVector;
 
-import org.idekerlab.denovoplugin.networks.*;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.denovoplugin.utilities.IIterator;
-import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.ModFindPlugin.networks.*;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.ModFindPlugin.utilities.IIterator;
+import org.idekerlab.ModFindPlugin.utilities.files.*;
 
 import java.io.*;
 

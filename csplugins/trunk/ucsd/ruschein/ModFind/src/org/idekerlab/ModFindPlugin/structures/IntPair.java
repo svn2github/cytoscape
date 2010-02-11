@@ -1,12 +1,12 @@
-package org.idekerlab.denovoplugin.structures;
+package org.idekerlab.ModFindPlugin.structures;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.idekerlab.denovoplugin.utilities.files.FileIterator;
-import org.idekerlab.denovoplugin.utilities.files.FileUtil;
+import org.idekerlab.ModFindPlugin.utilities.files.FileIterator;
+import org.idekerlab.ModFindPlugin.utilities.files.FileUtil;
 
 public class IntPair {
 

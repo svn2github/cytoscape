@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.ModFindPlugin.utilities.files.*;
 
 public abstract class DataMatrix {
 

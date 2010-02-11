@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -9,10 +9,10 @@ import Jama.SingularValueDecomposition;
 
 import java.util.concurrent.*;
 
-import org.idekerlab.denovoplugin.utilities.ByteConversion;
-import org.idekerlab.denovoplugin.utilities.ThreadPriorityFactory;
-import org.idekerlab.denovoplugin.utilities.files.FileUtil;
-import org.idekerlab.denovoplugin.data.matrixMath.*;
+import org.idekerlab.ModFindPlugin.utilities.ByteConversion;
+import org.idekerlab.ModFindPlugin.utilities.ThreadPriorityFactory;
+import org.idekerlab.ModFindPlugin.utilities.files.FileUtil;
+import org.idekerlab.ModFindPlugin.data.matrixMath.*;
 
 public class FloatMatrix extends DataMatrix{
 

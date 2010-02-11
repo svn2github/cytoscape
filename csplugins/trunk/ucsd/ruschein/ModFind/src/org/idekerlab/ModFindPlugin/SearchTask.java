@@ -1,15 +1,15 @@
-package org.idekerlab.denovoplugin;
+package org.idekerlab.ModFindPlugin;
 
 import java.util.ArrayList;
 
-import org.idekerlab.denovoplugin.networks.SFNetwork;
-import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.BFEdge;
-import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.HCScoringFunction;
-import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.HCSearch2;
-import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.SouravScore;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.ModFindPlugin.networks.SFNetwork;
+import org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment.BFEdge;
+import org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment.HCScoringFunction;
+import org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment.HCSearch2;
+import org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment.SouravScore;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 import cytoscape.CyNetwork;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;

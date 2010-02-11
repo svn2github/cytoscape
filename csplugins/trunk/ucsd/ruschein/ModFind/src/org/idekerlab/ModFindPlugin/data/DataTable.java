@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 public class Histogram {
 

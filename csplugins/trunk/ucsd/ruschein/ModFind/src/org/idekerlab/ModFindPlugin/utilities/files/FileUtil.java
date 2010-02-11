@@ -1,11 +1,11 @@
-package org.idekerlab.denovoplugin.utilities.files;
+package org.idekerlab.ModFindPlugin.utilities.files;
 
 import java.io.*;
 import java.util.zip.*;
 import java.util.*;
 
-import org.idekerlab.denovoplugin.data.StringVector;
-import org.idekerlab.denovoplugin.utilities.files.FileUtil;
+import org.idekerlab.ModFindPlugin.data.StringVector;
+import org.idekerlab.ModFindPlugin.utilities.files.FileUtil;
 
 
 public class FileUtil

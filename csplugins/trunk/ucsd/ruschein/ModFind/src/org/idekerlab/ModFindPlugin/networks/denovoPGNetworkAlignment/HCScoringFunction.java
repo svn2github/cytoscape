@@ -1,11 +1,11 @@
-package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
+package org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment;
 
 import java.util.*;
 
-import org.idekerlab.denovoplugin.networks.linkedNetworks.*;
-import org.idekerlab.denovoplugin.networks.matrixNetworks.FloatMatrixNetwork;
-import org.idekerlab.denovoplugin.networks.*;
-import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
+import org.idekerlab.ModFindPlugin.networks.matrixNetworks.FloatMatrixNetwork;
+import org.idekerlab.ModFindPlugin.networks.*;
+import org.idekerlab.ModFindPlugin.data.DoubleVector;
 
 public abstract class HCScoringFunction {
 

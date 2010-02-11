@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.utilities.text;
+package org.idekerlab.ModFindPlugin.utilities.text;
 
 import java.text.NumberFormat;
 

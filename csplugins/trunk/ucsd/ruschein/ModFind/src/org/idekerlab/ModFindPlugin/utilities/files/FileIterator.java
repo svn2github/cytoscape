@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.utilities.files;
+package org.idekerlab.ModFindPlugin.utilities.files;
 
 import java.util.*;
 import java.io.*;

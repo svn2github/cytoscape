@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks.linkedNetworks;
+package org.idekerlab.ModFindPlugin.networks.linkedNetworks;
 
 import java.util.HashSet;
 import java.util.Iterator;

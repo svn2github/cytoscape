@@ -1,8 +1,8 @@
-package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
+package org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment;
 
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNode;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 
 public class MergeLinkRunner implements Runnable
 {

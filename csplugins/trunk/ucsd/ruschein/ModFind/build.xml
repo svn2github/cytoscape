@@ -1,12 +1,12 @@
 
-<project name="DenovoPGNetworkAlignment" default="all" basedir=".">
+<project name="ModFind" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <tstamp/>
-    <property name="name" value="DenovoPGNetworkAlignment"/>
+    <property name="name" value="ModFind"/>
     <property name="version" value="1.0.0"/>
 
     <echo message="Building ${name} version ${version} ..."/>
@@ -110,8 +110,7 @@
       <fileset dir="${build.dir}"
                includes="**"/>
       <manifest>
-        <attribute name="Cytoscape-Plugin"
-	           value="org.idekerlab.denovoplugin.DenovoPGNetworkAlignmentPlugin"/>
+        <attribute name="Cytoscape-Plugin" value="org.idekerlab.denovoplugin.ModFindPlugin"/>
       </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>

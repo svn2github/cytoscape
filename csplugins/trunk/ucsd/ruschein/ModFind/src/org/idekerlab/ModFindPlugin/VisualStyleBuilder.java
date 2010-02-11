@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin;
+package org.idekerlab.ModFindPlugin;
 
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;

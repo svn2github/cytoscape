@@ -1,8 +1,8 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 import java.io.*;
 import java.util.*;
-import org.idekerlab.denovoplugin.utilities.files.*;
+import org.idekerlab.ModFindPlugin.utilities.files.*;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
 

@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin;
+package org.idekerlab.ModFindPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment.BFEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment.BFEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;

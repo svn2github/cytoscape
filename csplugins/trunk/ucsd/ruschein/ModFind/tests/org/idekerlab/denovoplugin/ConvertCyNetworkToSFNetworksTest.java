@@ -1,9 +1,9 @@
-package org.idekerlab.denovoplugin;
+package org.idekerlab.ModFindPlugin;
 
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.networks.SFNetwork;
+import org.idekerlab.ModFindPlugin.networks.SFNetwork;
 
 import junit.framework.TestCase;
 import cytoscape.CyNetwork;

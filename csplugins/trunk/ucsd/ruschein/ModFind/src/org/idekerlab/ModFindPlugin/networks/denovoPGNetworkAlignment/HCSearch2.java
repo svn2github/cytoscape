@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks.denovoPGNetworkAlignment;
+package org.idekerlab.ModFindPlugin.networks.denovoPGNetworkAlignment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,15 +10,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.idekerlab.denovoplugin.networks.SFEdge;
-import org.idekerlab.denovoplugin.networks.SFNetwork;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNode;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNodeModule;
-import org.idekerlab.denovoplugin.data.DoubleVector;
-import org.idekerlab.denovoplugin.utilities.MemoryReporter;
-import org.idekerlab.denovoplugin.utilities.ThreadPriorityFactory;
+import org.idekerlab.ModFindPlugin.networks.SFEdge;
+import org.idekerlab.ModFindPlugin.networks.SFNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.ModFindPlugin.data.DoubleVector;
+import org.idekerlab.ModFindPlugin.utilities.MemoryReporter;
+import org.idekerlab.ModFindPlugin.utilities.ThreadPriorityFactory;
 
 
 public class HCSearch2 {

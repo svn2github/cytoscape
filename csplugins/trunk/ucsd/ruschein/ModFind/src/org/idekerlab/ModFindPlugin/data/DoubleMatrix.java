@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -10,11 +10,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.idekerlab.denovoplugin.utilities.ByteConversion;
-import org.idekerlab.denovoplugin.utilities.ThreadPriorityFactory;
-import org.idekerlab.denovoplugin.utilities.text.DataFormatter;
-import org.idekerlab.denovoplugin.data.matrixMath.CholeskyDecomposition;
-import org.idekerlab.denovoplugin.data.matrixMath.XXTRunner;
+import org.idekerlab.ModFindPlugin.utilities.ByteConversion;
+import org.idekerlab.ModFindPlugin.utilities.ThreadPriorityFactory;
+import org.idekerlab.ModFindPlugin.utilities.text.DataFormatter;
+import org.idekerlab.ModFindPlugin.data.matrixMath.CholeskyDecomposition;
+import org.idekerlab.ModFindPlugin.data.matrixMath.XXTRunner;
 
 public class DoubleMatrix extends DataMatrix {
 

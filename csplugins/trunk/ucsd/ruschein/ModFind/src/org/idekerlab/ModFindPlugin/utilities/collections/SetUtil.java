@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.utilities.collections;
+package org.idekerlab.ModFindPlugin.utilities.collections;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.utilities.files.FileIterator;
+import org.idekerlab.ModFindPlugin.utilities.files.FileIterator;
 
 public class SetUtil {
 	public static <X> void saveToFile(Set<X> toOutput, String fout) {

@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks.hashNetworks;
+package org.idekerlab.ModFindPlugin.networks.hashNetworks;
 
 import giny.model.Edge;
 
@@ -10,21 +10,21 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.networks.DirectedSFEdge;
-import org.idekerlab.denovoplugin.networks.SEdge;
-import org.idekerlab.denovoplugin.networks.SFEdge;
-import org.idekerlab.denovoplugin.networks.SFNetwork;
-import org.idekerlab.denovoplugin.networks.UndirectedSEdge;
-import org.idekerlab.denovoplugin.networks.UndirectedSFEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkEdge;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.denovoplugin.utilities.IIterator;
-import org.idekerlab.denovoplugin.utilities.files.FileIterator;
-import org.idekerlab.denovoplugin.utilities.files.FileUtil;
+import org.idekerlab.ModFindPlugin.networks.DirectedSFEdge;
+import org.idekerlab.ModFindPlugin.networks.SEdge;
+import org.idekerlab.ModFindPlugin.networks.SFEdge;
+import org.idekerlab.ModFindPlugin.networks.SFNetwork;
+import org.idekerlab.ModFindPlugin.networks.UndirectedSEdge;
+import org.idekerlab.ModFindPlugin.networks.UndirectedSFEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.ModFindPlugin.utilities.IIterator;
+import org.idekerlab.ModFindPlugin.utilities.files.FileIterator;
+import org.idekerlab.ModFindPlugin.utilities.files.FileUtil;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import org.idekerlab.denovoplugin.data.StringVector;
+import org.idekerlab.ModFindPlugin.data.StringVector;
 
 public class FloatHashNetwork extends SFNetwork implements Iterable<SFEdge> {
 	private Map<String, Set<SEdge>> nodeMap;

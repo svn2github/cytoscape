@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.utilities.collections;
+package org.idekerlab.ModFindPlugin.utilities.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.ListUtils;
 
-import org.idekerlab.denovoplugin.data.IntVector;
+import org.idekerlab.ModFindPlugin.data.IntVector;
 
 /**
  * A utility class providing commonly-used operations on lists (vectors).

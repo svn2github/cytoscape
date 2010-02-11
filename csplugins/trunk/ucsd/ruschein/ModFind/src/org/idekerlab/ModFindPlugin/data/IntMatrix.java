@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.data;
+package org.idekerlab.ModFindPlugin.data;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -7,8 +7,8 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.idekerlab.denovoplugin.utilities.ByteConverter;
-import org.idekerlab.denovoplugin.data.matrixMath.*;
+import org.idekerlab.ModFindPlugin.utilities.ByteConverter;
+import org.idekerlab.ModFindPlugin.data.matrixMath.*;
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
 

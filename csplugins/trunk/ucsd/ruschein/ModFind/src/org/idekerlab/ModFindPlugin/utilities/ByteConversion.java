@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.utilities;
+package org.idekerlab.ModFindPlugin.utilities;
 
 public class ByteConversion
 {

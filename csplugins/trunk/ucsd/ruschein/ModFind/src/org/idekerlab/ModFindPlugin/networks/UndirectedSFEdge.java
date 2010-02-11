@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks;
+package org.idekerlab.ModFindPlugin.networks;
 
 public final class UndirectedSFEdge extends SFEdge {
 

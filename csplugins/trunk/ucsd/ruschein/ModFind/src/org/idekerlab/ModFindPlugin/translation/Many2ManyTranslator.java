@@ -1,17 +1,17 @@
-package org.idekerlab.denovoplugin.translation;
+package org.idekerlab.ModFindPlugin.translation;
 
 import java.util.*;
 
-import org.idekerlab.denovoplugin.networks.matrixNetworks.BooleanMatrixNetwork;
-import org.idekerlab.denovoplugin.networks.*;
-import org.idekerlab.denovoplugin.networks.hashNetworks.*;
-import org.idekerlab.denovoplugin.data.BooleanVector;
-import org.idekerlab.denovoplugin.data.DoubleVector;
-import org.idekerlab.denovoplugin.data.StringTable;
-import org.idekerlab.denovoplugin.data.StringVector;
+import org.idekerlab.ModFindPlugin.networks.matrixNetworks.BooleanMatrixNetwork;
+import org.idekerlab.ModFindPlugin.networks.*;
+import org.idekerlab.ModFindPlugin.networks.hashNetworks.*;
+import org.idekerlab.ModFindPlugin.data.BooleanVector;
+import org.idekerlab.ModFindPlugin.data.DoubleVector;
+import org.idekerlab.ModFindPlugin.data.StringTable;
+import org.idekerlab.ModFindPlugin.data.StringVector;
 
-import org.idekerlab.denovoplugin.utilities.files.*;
-import org.idekerlab.denovoplugin.utilities.collections.HashMapUtil;
+import org.idekerlab.ModFindPlugin.utilities.files.*;
+import org.idekerlab.ModFindPlugin.utilities.collections.HashMapUtil;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks;
+package org.idekerlab.ModFindPlugin.networks;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.networks.hashNetworks.BooleanHashNetwork;
-import org.idekerlab.denovoplugin.networks.matrixNetworks.BooleanMatrixNetwork;
-import org.idekerlab.denovoplugin.data.DoubleVector;
+import org.idekerlab.ModFindPlugin.networks.hashNetworks.BooleanHashNetwork;
+import org.idekerlab.ModFindPlugin.networks.matrixNetworks.BooleanMatrixNetwork;
+import org.idekerlab.ModFindPlugin.data.DoubleVector;
 
 public class SNodeModule implements java.lang.Iterable<String> {
 

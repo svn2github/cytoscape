@@ -1,4 +1,4 @@
-package org.idekerlab.denovoplugin.networks.matrixNetworks;
+package org.idekerlab.ModFindPlugin.networks.matrixNetworks;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,26 +17,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.idekerlab.denovoplugin.utilities.ByteConversion;
-import org.idekerlab.denovoplugin.utilities.IIterator;
+import org.idekerlab.ModFindPlugin.utilities.ByteConversion;
+import org.idekerlab.ModFindPlugin.utilities.IIterator;
 
-import org.idekerlab.denovoplugin.networks.AbstractNetwork;
-import org.idekerlab.denovoplugin.networks.DirectedSDEdge;
-import org.idekerlab.denovoplugin.networks.SDEdge;
-import org.idekerlab.denovoplugin.networks.SDNetwork;
-import org.idekerlab.denovoplugin.networks.SEdge;
-import org.idekerlab.denovoplugin.networks.SNetwork;
-import org.idekerlab.denovoplugin.networks.UndirectedSDEdge;
-import org.idekerlab.denovoplugin.networks.hashNetworks.DoubleHashNetwork;
-import org.idekerlab.denovoplugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.denovoplugin.networks.util.Mergers;
-import org.idekerlab.denovoplugin.data.DoubleVector;
-import org.idekerlab.denovoplugin.data.FloatMatrix;
-import org.idekerlab.denovoplugin.data.IntVector;
-import org.idekerlab.denovoplugin.data.StringTable;
+import org.idekerlab.ModFindPlugin.networks.AbstractNetwork;
+import org.idekerlab.ModFindPlugin.networks.DirectedSDEdge;
+import org.idekerlab.ModFindPlugin.networks.SDEdge;
+import org.idekerlab.ModFindPlugin.networks.SDNetwork;
+import org.idekerlab.ModFindPlugin.networks.SEdge;
+import org.idekerlab.ModFindPlugin.networks.SNetwork;
+import org.idekerlab.ModFindPlugin.networks.UndirectedSDEdge;
+import org.idekerlab.ModFindPlugin.networks.hashNetworks.DoubleHashNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.ModFindPlugin.networks.util.Mergers;
+import org.idekerlab.ModFindPlugin.data.DoubleVector;
+import org.idekerlab.ModFindPlugin.data.FloatMatrix;
+import org.idekerlab.ModFindPlugin.data.IntVector;
+import org.idekerlab.ModFindPlugin.data.StringTable;
 
-import org.idekerlab.denovoplugin.utilities.files.*;
-import org.idekerlab.denovoplugin.utilities.collections.SetUtil;
+import org.idekerlab.ModFindPlugin.utilities.files.*;
+import org.idekerlab.ModFindPlugin.utilities.collections.SetUtil;
 
 
 public class DoubleMatrixNetwork extends SDNetwork implements Iterable<SDEdge>
