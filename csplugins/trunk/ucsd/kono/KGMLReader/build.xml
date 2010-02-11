@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin -->
+<project name="KGMLReader" default="all" basedir=".">
+
+	<!-- Name of Plug In -->
+	<!-- Change this to the name of your Plug In -->
+	<!-- The name is used to create the plugin JAR file -->
+	<!-- adding this line to test cvs commit -->
+	<property name="plugin.name" value="KGMLReader" />
+
+	<!-- The directory containing source code -->
+	<property name="src.dir" value="src" />
+
+	<!--  The directory containing library jar files -->
+	<property name="cyto.dir" value="../cytoscape" />
+	<property name="cyto.lib.dir" value="${cyto.dir}/lib" />
+	<property name="lib.dir" value="lib" />
+	<property name="resources.dir" value="resources" />
+
+	<!-- Temporary build directories -->
+	<property name="build.dir" value="build" />
+	<property name="build.classes" value="${build.dir}/classes" />
+	<property name="doc.dir" value="doc" />
+
+	<property name="package.generated" value="org.cytoscape.data.reader.kgml.generated" />
+	<property name="package.generated.dir" value="org/cytoscape/data/reader/kgml/generated" />
+
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern" />
+
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">
+		<pathelement path="${build.classes}" />
+		<pathelement path="${cyto.dir}/build/classes" />
+		<fileset dir="${cyto.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- ======================================================= -->
+	<!-- For XJC compiler task -->
+	<!-- ======================================================= -->
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		<classpath refid="classpath" />
+	</taskdef>
+
+	<!-- ======================================================= -->
+	<!-- Clean generated packages -->
+	<!-- ======================================================= -->
+	<target name="clean-generated" description="Delete XJC generated packages.">
+		<!-- Clean up generated packages -->
+		<delete dir="${src.dir}/${package.generated.dir}" />
+		<delete dir="${build.classes}/${package.generated.dir}" />
+		
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Generate package using XJC compiler            -->
+	<!-- ======================================================= -->
+	<target name="bind" depends="clean-generated" description="Run XJC to generate new packages.">
+		<mkdir dir="${src.dir}/${package.generated.dir}" />
+		<mkdir dir="${build.classes}/${package.generated.dir}" />
+		
+		<xjc schema="${resources.dir}/KGML_v0.7.0_.dtd" destdir="${src.dir}" package="${package.generated}">
+			<produces dir="${src.dir}" includes="* impl/*" />
+			<arg value="-dtd" />
+		</xjc>
+
+		<!-- copy prop file into build dir -->
+		<echo>Copying jaxb.properties from ${src.dir}/cytoscape/generated to build dir...</echo>
+		<copy todir="${build.classes}/${package.generated.dir}">
+			<fileset dir="${src.dir}/${package.generated.dir}" includes="*.properties" />
+		</copy>
+	</target>
+
+
+	<!-- Target to create the build directories prior to compilation -->
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes}" />
+		<mkdir dir="${doc.dir}" />
+	</target>
+
+	<!--  Target to clean out all directories -->
+	<target name="clean" description="Removes all generated files.">
+		<delete dir="${build.dir}" />
+		<delete dir="${doc.dir}" />
+	</target>
+
+	<!-- Target to create Cytoscape Jar File  -->
+	<target name="build_cytoscape">
+		<ant antfile="../cytoscape/build.xml" inheritAll="false" target="jar" />
+	</target>
+
+	<!-- Target to create the javadoc information -->
+	<target name="doc" depends="prepare">
+		<javadoc destdir="${doc.dir}" Private="yes" classpathref="classpath">
+			<fileset dir="${src.dir}" defaultexcludes="no" />
+		</javadoc>
+	</target>
+
+
+	<!--  Target to compile all Plug In Code -->
+	<target name="compile" depends="prepare, bind" description="Compiles all PlugIn source code.">
+		<javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" excludes="**/bak/**">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!--  Create PlugIn Jar File (Unobfuscated) -->
+	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+		<unzip dest="${build.classes}">
+			<fileset dir="${lib.dir}" includes="*" />
+		</unzip>
+		<copy todir="${build.classes}/csplugins/KGMLReader" file="${resources.dir}/plugin.props" />
+		<jar destfile="${build.dir}/${plugin.name}.jar">
+			<manifest>
+				<attribute name="Cytoscape-Plugin" value="org.cytoscape.data.reader.kgml.KGMLReaderPlugin" />
+			</manifest>
+			<fileset dir="${build.classes}" />
+		</jar>
+		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory" />
+	</target>
+
+	<target name="all" depends="jar,doc" description="Creates plugin jar and API documentation" />
+
+</project>

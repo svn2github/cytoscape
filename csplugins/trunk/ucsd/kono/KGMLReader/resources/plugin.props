@@ -1,0 +1,7 @@
+pluginName=KGMLReader
+pluginDescription=Import data in KGML format.
+pluginVersion=2.0
+cytoscapeVersion=2.7
+pluginCategory=Analysis
+pluginAuthorsInstitutions=Keiichiro Ono:UCSD
+releaseDate=January 21, 2010
