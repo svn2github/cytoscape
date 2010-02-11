@@ -105,12 +105,12 @@
         <include name="*.jar"/>
       </fileset>
     </unzip>
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/denovoplugin"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/ModFindPlugin"/>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
       <manifest>
-        <attribute name="Cytoscape-Plugin" value="org.idekerlab.denovoplugin.ModFindPlugin"/>
+        <attribute name="Cytoscape-Plugin" value="org.idekerlab.ModFindPlugin.ModFindPlugin"/>
       </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>
