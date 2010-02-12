@@ -60,7 +60,7 @@ public class DeSelectAllEdgesAction extends CytoscapeAction {
 	 * Creates a new DeSelectAllEdgesAction object.
 	 */
 	public DeSelectAllEdgesAction() {
-		super("Deselect all edges");
+		super("Deselect All Edges");
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_A,
 		                    ActionEvent.ALT_MASK | ActionEvent.SHIFT_MASK);

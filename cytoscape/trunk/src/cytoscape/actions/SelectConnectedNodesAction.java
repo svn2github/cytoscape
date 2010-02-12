@@ -61,7 +61,7 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 	 * Creates a new SelectConnectedNodesAction object.
 	 */
 	public SelectConnectedNodesAction() {
-		super("Nodes connected by selected edges");
+		super("Nodes Connected by Selected Edges");
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(KeyEvent.VK_7, ActionEvent.CTRL_MASK);
 	}

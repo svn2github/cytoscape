@@ -70,7 +70,7 @@ public class ExportAction extends CytoscapeAction {
 	/**
 	 *
 	 */
-	public final static String MENU_LABEL = "Export As...";
+	public final static String MENU_LABEL = "Export as...";
 
 	/**
 	 * Creates a new ExportAction object.

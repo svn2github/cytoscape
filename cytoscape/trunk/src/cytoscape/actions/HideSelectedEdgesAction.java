@@ -62,7 +62,7 @@ public class HideSelectedEdgesAction extends CytoscapeAction {
 	 * Creates a new HideSelectedEdgesAction object.
 	 */
 	public HideSelectedEdgesAction() {
-		super("Hide edge selection");
+		super("Hide Edge Selection");
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H, ActionEvent.ALT_MASK);
 	}

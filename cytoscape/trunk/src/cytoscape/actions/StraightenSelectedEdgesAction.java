@@ -66,7 +66,7 @@ public class StraightenSelectedEdgesAction extends CytoscapeAction {
 	 * Creates a new StraightenSelectedEdgesAction object.
 	 */
 	public StraightenSelectedEdgesAction() {
-		super("Straighten selected edges");
+		super("Straighten Selected Edges");
 		setPreferredMenu("Select.Edges");
 	}
 

@@ -62,7 +62,7 @@ public class UnHideSelectedEdgesAction extends CytoscapeAction {
 	 * Creates a new UnHideSelectedEdgesAction object.
 	 */
 	public UnHideSelectedEdgesAction() {
-		super("Show all edges");
+		super("Show All Edges");
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H,
 		                    ActionEvent.ALT_MASK | ActionEvent.SHIFT_MASK);

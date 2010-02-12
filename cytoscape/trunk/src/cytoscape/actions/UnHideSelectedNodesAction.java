@@ -62,7 +62,7 @@ public class UnHideSelectedNodesAction extends CytoscapeAction {
 	 * Creates a new UnHideSelectedNodesAction object.
 	 */
 	public UnHideSelectedNodesAction() {
-		super("Show all nodes");
+		super("Show All Nodes");
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H,
 		                    ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);

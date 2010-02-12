@@ -65,7 +65,7 @@ public class HideSelectedNodesAction extends CytoscapeAction {
 	 * Creates a new HideSelectedNodesAction object.
 	 */
 	public HideSelectedNodesAction() {
-		super("Hide node selection");
+		super("Hide Node Selection");
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK);
 	}

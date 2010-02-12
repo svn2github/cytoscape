@@ -94,7 +94,7 @@ public class SaveSessionAsAction extends CytoscapeAction {
 
 		// Open Dialog to ask user the file name.
 		try {
-			name = FileUtil.getFile("Save Current Session as CYS File", FileUtil.SAVE,
+			name = FileUtil.getFile("Save Current Session As CYS File", FileUtil.SAVE,
 			                        new CyFileFilter[] {  }).toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled

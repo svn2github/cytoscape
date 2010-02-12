@@ -66,7 +66,7 @@ public class BendSelectedEdgesAction extends CytoscapeAction {
 	 * Creates a new BendSelectedEdgesAction object.
 	 */
 	public BendSelectedEdgesAction() {
-		super("Smooth selected edges");
+		super("Smooth Selected Edges");
 		setPreferredMenu("Select.Edges");
 	}
 

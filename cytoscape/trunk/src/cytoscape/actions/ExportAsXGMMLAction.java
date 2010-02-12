@@ -87,7 +87,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 	 * Creates a new ExportAsXGMMLAction object.
 	 */
 	public ExportAsXGMMLAction() {
-		super("Network and attributes as XGMML...");
+		super("Network and Attributes as XGMML...");
 		setPreferredMenu("File.Export");
 	}
 

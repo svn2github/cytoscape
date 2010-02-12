@@ -74,7 +74,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 * Creates a new CloneGraphInNewWindowAction object.
 	 */
 	public CloneGraphInNewWindowAction() {
-		super("Clone current network");
+		super("Clone Current Network");
 		setPreferredMenu("File.New.Network");
 	}
 

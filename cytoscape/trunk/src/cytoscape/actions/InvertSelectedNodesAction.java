@@ -67,7 +67,7 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	 * Creates a new InvertSelectedNodesAction object.
 	 */
 	public InvertSelectedNodesAction() {
-		super("Invert node selection");
+		super("Invert Node Selection");
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK);
 	}

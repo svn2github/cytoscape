@@ -62,7 +62,7 @@ public class SelectAllAction extends CytoscapeAction {
 	 * Creates a new SelectAllAction object.
 	 */
 	public SelectAllAction() {
-		super("Select all nodes and edges");
+		super("Select All Nodes and Edges");
 		setPreferredMenu("Select");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_A,
 		                    ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK);
