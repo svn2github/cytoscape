@@ -365,78 +365,23 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_labelPaints.put(new Long(key), paint);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Switch to using the CustomGraphics way of manipulating custom graphics.
-	 *             For details, see deprecation note under 
-	 *  	       {@link ding.view.DNodeView#addCustomGraphic(Shape,Paint,int) DNodeView.addCustomGraphic(Shape,Paint,int)}.
-	 *             Once switched, then
-	 *             use {@link ding.view.DNodeView#getNumCustomGraphics() DNodeView.getNumCustomGraphics()}.
-	 */
-	@Deprecated public int graphicCount(int node) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
 
-		return nv.getCustomGraphicCount();
+	// overrides NodeDetails.customGraphicCount():
+	public int customGraphicCount(final int node) {
+		final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);	
+		return dnv.getNumCustomGraphics();
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param inx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Switch to using the CustomGraphics way of manipulating custom graphics.
-	 *             For details, see deprecation note under 
-	 *  	       {@link ding.view.DNodeView#addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}.
-	 *             Once switched, then
-	 *             use {@link cytoscape.render.stateful.CustomGraphic#getShape() cytoscape.render.stateful.CustomGraphic.getShape()}.
-	 */
-	@Deprecated public Shape graphicShape(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
-
-		return nv.getCustomGraphicShape(inx);
+	// overrides NodeDetails.customGraphics():
+	public Iterator<CustomGraphic> customGraphics (final int node) {
+		final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
+		return dnv.customGraphicIterator();
+    }
+	// overrides NodeDetails.customGraphicLock():
+	public Object customGraphicLock (final int node) {
+		final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
+		return dnv.customGraphicLock();	
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param inx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Switch to using the CustomGraphics way of manipulating custom graphics.
-	 *             For details, see deprecation note under 
-	 *  	       {@link ding.view.DNodeView#addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}.
-	 *             Once switched, then
-	 *             use {@link cytoscape.render.stateful.CustomGraphic#getPaint() cytoscape.render.stateful.CustomGraphic.getPaint()}.
-	 */
-	@Deprecated public Paint graphicPaint(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
-
-		return nv.getCustomGraphicPaint(inx);
-	}
-
-    // overrides NodeDetails.customGraphicCount():
-    public int customGraphicCount(final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);	
-	return dnv.getNumCustomGraphics();
-    }
-
-    // overrides NodeDetails.customGraphics():
-    public Iterator<CustomGraphic> customGraphics (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
-	return dnv.customGraphicIterator();
-    }
-    // overrides NodeDetails.customGraphicLock():
-    public Object customGraphicLock (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
-	return dnv.customGraphicLock();	
-    }
 
 	// label positioning
 	/**

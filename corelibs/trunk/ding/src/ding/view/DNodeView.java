@@ -976,358 +976,179 @@ public class DNodeView implements NodeView, Label {
 	// Custom graphic stuff.
 
 	/**
-	 * Returns the number of custom graphic objects currently set on this
-	 * node view.
-	 * @deprecated use {@link #getNumCustomGraphics() getNumCustomGraphics()}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
+	 * Adds a custom graphic, <EM>in draw order</EM>, to this
+	 * DNodeView in a thread-safe way.  This is a convenience method
+	 * that is equivalent to calling:
+	 * <CODE>
+	 *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
+	 * </CODE>
+	 * except the the new CustomGraphic created is returned.
+	 * @param shape
+	 * @param paint
+	 * @param anchor The byte value from NodeDetails, that defines where the graphic anchor point lies on this DNodeView's extents rectangle. A common anchor is NodeDetails.ANCHOR_CENTER.
+	 * @since Cytoscape 2.6
+	 * @throws IllegalArgumentException if shape or paint are null or anchor is not in the range 0 <= anchor <= NodeDetails.MAX_ANCHOR_VAL.
+	 * @return The CustomGraphic added to this DNodeView.
+	 * @see #addCustomGraphic(CustomGraphic)
+	 * @see cytoscape.render.stateful.CustomGraphic
 	 */
-	@Deprecated public int getCustomGraphicCount() {
-		synchronized (m_view.m_lock) {
-			if (m_graphicShapes == null)
-				return 0;
-
-			return m_graphicShapes.size();
-		}
-	}
-
-	/**
-	 * Returns the shape of the custom graphic object at specified index on
-	 * this node view.  The index parameter must be in the range
-	 * [0, getCustomGraphicCount()-1].
-	 * @deprecated use {@link cytoscape.render.stateful.CustomGraphic#getShape() cytoscape.render.stateful.CustomGraphic.getShape()}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
-	 */
-	@Deprecated public Shape getCustomGraphicShape(int index) {
-		synchronized (m_view.m_lock) {
-			return (Shape) m_graphicShapes.get(index);
-		}
-	}
-
-	/**
-	 * Returns the paint on the custom graphic object at specified index on
-	 * this node view.  The index parameter must be in the range
-	 * [0, getCustomGraphicCount()-1].
-	 * @deprecated use {@link cytoscape.render.stateful.CustomGraphic#getPaint() cytoscape.render.stateful.CustomGraphic.getPaint()}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
-	 */
-	@Deprecated public Paint getCustomGraphicPaint(int index) {
-		synchronized (m_view.m_lock) {
-			return (Paint) m_graphicPaints.get(index);
-		}
-	}
-
-	/**
-	 * Removes the custom graphic object at specified index.  The index parameter
-	 * must be in the range [0, getCustomGraphicCount()-1].  Once the object
-	 * at specified index is removed, all object remaining and at a higher index
-	 * will be shifted such that their index is decreased by one.
-	 * @deprecated use {@link #removeCustomGraphic(CustomGraphic) removeCustomGraphic(CustomGraphic)}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
-	 */
-	@Deprecated public void removeCustomGraphic(int index) {
-		synchronized (m_view.m_lock) {
-			m_graphicShapes.remove(index);
-			m_graphicPaints.remove(index);
-			if (m_graphicShapes.size() == 0) {
-				m_graphicShapes = null;
-				m_graphicPaints = null;
-			}
-
-			m_view.m_contentChanged = true;
-		}
-	}
-
-
-
-    /**
-     * Adds a custom graphic, <EM>in draw order</EM>, to this
-     * DNodeView in a thread-safe way.  This is a convenience method
-     * that is equivalent to calling:
-     * <CODE>
-     *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
-     * </CODE>
-     * except the the new CustomGraphic created is returned.
-     * @param shape
-     * @param paint
-     * @param anchor The byte value from NodeDetails, that defines where the graphic anchor point lies on this DNodeView's extents rectangle. A common anchor is NodeDetails.ANCHOR_CENTER.
-     * @since Cytoscape 2.6
-     * @throws IllegalArgumentException if shape or paint are null or anchor is not in the range 0 <= anchor <= NodeDetails.MAX_ANCHOR_VAL.
-     * @return The CustomGraphic added to this DNodeView.
-     * @see #addCustomGraphic(CustomGraphic)
-     * @see cytoscape.render.stateful.CustomGraphic
-     */
 	public CustomGraphic addCustomGraphic(Shape shape, Paint paint, byte anchor) {
-    	  	CustomGraphic cg = new CustomGraphic (shape, paint, anchor);
-    	  	addCustomGraphic (cg);
-    	  	return cg;
+		CustomGraphic cg = new CustomGraphic (shape, paint, anchor);
+		addCustomGraphic (cg);
+		return cg;
 	}
-
-    /**
-     * Adds a given CustomGraphic, <EM>in draw order</EM>, to this
-     * DNodeView in a thread-safe way.  Each CustomGraphic will be
-     * drawn in the order is was added. So, if you care about draw
-     * order (as for overlapping graphics), make sure you add them in
-     * the order you desire.  Note that since CustomGraphics may be
-     * added by multiple plugins, your additions may be interleaved
-     * with others.
-     *
-     * <P>A CustomGraphic can only be associated with a DNodeView
-     * once.  If you wish to have a custom graphic, with the same
-     * paint and shape information, occur in multiple places in the
-     * draw order, simply create a new CustomGraphic and add it.
-     *
-     * @since Cytoscape 2.6
-     * @throws IllegalArgumentException if shape or paint are null.
-     * @return true if the CustomGraphic was added to this DNodeView.
-     *         false if this DNodeView already contained this CustomGraphic.
-     * @see cytoscape.render.stateful.CustomGraphic
-     */
-    public boolean addCustomGraphic(CustomGraphic cg) {
-	boolean retVal = false;
-	//	CG_RW_LOCK.writeLock().lock();
-	//	if (_customGraphics == null) {
-	//	    _customGraphics = new LinkedHashSet<CustomGraphic>();
-	//	}
-	//	retVal = _customGraphics.add (cg);
-	//	CG_RW_LOCK.writeLock().unlock();
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		_customGraphics = new LinkedHashSet<CustomGraphic>();
-	    }
-	    retVal = _customGraphics.add (cg);
-	}
-	ensureContentChanged ();
-	return retVal;
-    }
-
-    /**
-     * A thread-safe way to determine if this DNodeView contains a given custom graphic.
-     * @param cg the CustomGraphic for which we are checking containment.
-     * @since Cytoscape 2.6
-     */
-    public boolean containsCustomGraphic (CustomGraphic cg) {
-	//	CG_RW_LOCK.readLock().lock();
-	//	boolean retVal = false;
-	//	if (_customGraphics != null) {
-	//	    retVal = _customGraphics.contains (cg);
-	//	}
-	//	CG_RW_LOCK.readLock().unlock();
-	//	return retVal;
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		return false;
-	    }
-	    return _customGraphics.contains (cg);
-	}
-    }
-
-    /**
-     * Return a non-null, read-only Iterator over all CustomGraphics contained in this DNodeView.
-     * The Iterator will return each CustomGraphic in draw order.
-     * The Iterator cannot be used to modify the underlying set of CustomGraphics.
-     * @return The CustomGraphics Iterator. If no CustomGraphics are
-     * associated with this DNOdeView, an empty Iterator is returned.
-     * @throws UnsupportedOperationException if an attempt is made to use the Iterator's remove() method.
-     * @since Cytoscape 2.6
-     */
-    public Iterator<CustomGraphic> customGraphicIterator() {
-	Iterator<CustomGraphic> retVal = null;
-	final Iterable<CustomGraphic> toIterate;
-	//	CG_RW_LOCK.readLock().lock();
-	//	if (_customGraphics == null) {
-	//	    toIterate = EMPTY_CUSTOM_GRAPHICS;
-	//	} else {
-	//	    toIterate = _customGraphics;
-	//	}
-	//	retVal = new LockingIterator<CustomGraphic>(toIterate);
-	//	retVal = new Iterator<CustomGraphic>() {
-	//	    Iterator<? extends CustomGraphic> i = toIterate.iterator();
-	//	    public boolean hasNext() {return i.hasNext();}
-	//	    public CustomGraphic next() 	 {return i.next();}
-	//	    public void remove() {
-	//		throw new UnsupportedOperationException();
-	//	    }
-	//	};
-	//	CG_RW_LOCK.readLock().unlock();
-	//	return retVal;
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		toIterate = EMPTY_CUSTOM_GRAPHICS;
-	    } else {
-		toIterate = _customGraphics;
-	    }
-	    return new ReadOnlyIterator<CustomGraphic>(toIterate);
-	}
-    }
-
-    /**
-     * A thread-safe method for removing a given custom graphic from this DNodeView.
-     * @return true if the custom graphic was found an removed. Returns false if
-     *         cg is null or is not a custom graphic associated with this DNodeView.
-     * @since Cytoscape 2.6
-     */
-    public boolean removeCustomGraphic(CustomGraphic cg) {
-	boolean retVal = false;
-	//	CG_RW_LOCK.writeLock().lock();
-	//	if (_customGraphics != null) {
-	//	    retVal = _customGraphics.remove (cg);
-	//	}
-	//	CG_RW_LOCK.writeLock().unlock();
-	synchronized (CG_LOCK) {
-	    if (_customGraphics != null) {
-		retVal = _customGraphics.remove (cg);
-	    }
-	}
-	ensureContentChanged ();
-	return retVal;
-    }
-
-    /**
-     * A thread-safe method returning the number of custom graphics
-     * associated with this DNodeView. If none are associated, zero is
-     * returned.
-     * @since Cytoscape 2.6
-     */
-    public int getNumCustomGraphics () {
-	//	CG_RW_LOCK.readLock().lock();
-	//	int retVal = 0;
-	//	if (_customGraphics != null) {
-	//	    retVal = _customGraphics.size();
-	//	}
-	//	CG_RW_LOCK.readLock().unlock();
-	//	return retVal;
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		return 0;
-	    }
-	    return _customGraphics.size();
-	}
-    }
-
-
-    private void ensureContentChanged () {
-	synchronized (m_view.m_lock) {
-	    m_view.m_contentChanged = true;
-	}
-    }
-    /**
-     * Obtain the lock used for reading information about custom
-     * graphics.  This is <EM>not</EM> needed for thread-safe custom graphic
-     * operations, but only needed for use with
-     * thread-compatible methods, such as customGraphicIterator().
-     * For example, to iterate over all custom graphics without fear of
-     * the underlying custom graphics being mutated, you could perform:
-     * <PRE>
-     *    DNodeView dnv = ...;
-     *    CustomGraphic cg = null;
-     *    synchronized (dnv.customGraphicLock()) {
-     *       Iterator<CustomGraphic> cgIt = dnv.customGraphicIterator();
-     *       while (cgIt.hasNext()) {
-     *          cg = cgIt.next();
-     *          // PERFORM your operations here.
-     *       }
-     *   }
-     * </PRE>
-     * NOTE: A better concurrency approach would be to return the read
-     *       lock from a
-     *       java.util.concurrent.locks.ReentrantReadWriteLock.
-     *       However, this requires users to manually lock and unlock
-     *       blocks of code where many times try{} finally{} blocks
-     *       are needed and if any mistake are made, a DNodeView may be
-     *       permanently locked. Since concurrency will most
-     *       likely be very low, we opt for the simpler approach of
-     *       having users use synchronized {} blocks on a standard
-     *       lock object.
-     * @return the lock object used for custom graphics of this DNodeView.
-     */
-    public Object customGraphicLock () {
-	return CG_LOCK;
-    }
-
-    private class ReadOnlyIterator<T> implements Iterator {
-	private Iterator<? extends T> _iterator;
-	public ReadOnlyIterator (Iterable<T> toIterate) {
-	    _iterator = toIterate.iterator();
-	}
-	public boolean hasNext() {return _iterator.hasNext();}
-	public T next() 	 {return _iterator.next();}
-	public void remove() {
-	    throw new UnsupportedOperationException();
-	}
-    };
-
 
 	/**
-	 * Adds a custom graphic object at specified index.  The index of an object
-	 * is only important in that objects with lower index are rendered before
-	 * objects with higher index; if objects overlap, this order may be important
-	 * to consider.  A custom graphic object consists of the specified shape
-	 * that is filled with the specified paint; the shape is placed relative to
-	 * this node's location.
-	 * @deprecated use {@link #addCustomGraphic(Shape,Paint,byte) addCustomGraphic(Shape,Paint,byte)}.
-	 * <P>The entire index-based custom graphic API has been deprecated.
-	 * This includes all the methods that refer to custom graphics using indices:
-	 * <PRE>
-	 *   public int addCustomGraphic(Shape s, Paint p, int index);
-	 *   public void removeCustomGraphic(int index);
-	 *   public Paint getCustomGraphicPaint(int index);
-	 *   public Shape getCustomGraphicShape(int index);
-	 *   public int getCustomGraphicCount();
-	 * </PRE>
-	 * <B>To keep things completetly backwards compatible
-	 * and to avoid introducing bugs, the new API methods are
-	 * completely independent from the the old API methods.  Thus,
-	 * a custom graphic added using the new API will not be
-	 * accessible from the old API and visa versa.</B>
-	 * <P>The reason for the deprecation is:
-	 * <OL>
-	 * <LI>Complexity in managing the indices.
-	 * <P>In order for multiple plugins to use the old API, each
-	 * must monitor deletions to custom graphics and update their
-	 * saved indices, since the indices will shift down as graphics
-	 * are deleted. This management isn't even possible with the old
-	 * API because there's no event mechanism to inform plugins when
-	 * the indices change. Also, each plugin must keep a list of all
-	 * indices for all graphics added, since the indices may not be
-	 * contiguous.
-	 * <LI>There is no way to ensure that an index you want to use
-	 * will not be used by another plugin by the time you attempt
-	 * to assign it (thread safety).
-	 * <P>Using indices forces the need for a locking mechanism to
-	 * ensure you are guaranteed a unique and correct index
-	 * independent of any other plugins.
-	 * </OL>
-	 * For more information, see <A HREF="http://cbio.mskcc.org/cytoscape/bugs/view.php?id=1500">Mantis Bug 1500</A>.
+	 * Adds a given CustomGraphic, <EM>in draw order</EM>, to this
+	 * DNodeView in a thread-safe way.  Each CustomGraphic will be
+	 * drawn in the order is was added. So, if you care about draw
+	 * order (as for overlapping graphics), make sure you add them in
+	 * the order you desire.  Note that since CustomGraphics may be
+	 * added by multiple plugins, your additions may be interleaved
+	 * with others.
+	 *
+	 * <P>A CustomGraphic can only be associated with a DNodeView
+	 * once.  If you wish to have a custom graphic, with the same
+	 * paint and shape information, occur in multiple places in the
+	 * draw order, simply create a new CustomGraphic and add it.
+	 *
+	 * @since Cytoscape 2.6
+	 * @throws IllegalArgumentException if shape or paint are null.
+	 * @return true if the CustomGraphic was added to this DNodeView.
+	 *         false if this DNodeView already contained this CustomGraphic.
+	 * @see cytoscape.render.stateful.CustomGraphic
 	 */
-
-    @Deprecated public void addCustomGraphic(Shape s, Paint p, int index) {
-		if ((s == null) || (p == null))
-			throw new NullPointerException("shape and paint must be non-null");
-
-		synchronized (m_view.m_lock) {
-			if (index < 0)
-				index = 0;
-			else if (index > getCustomGraphicCount())
-				index = getCustomGraphicCount();
-
-			if (m_graphicShapes == null) {
-				m_graphicShapes = new ArrayList();
-				m_graphicPaints = new ArrayList();
+	public boolean addCustomGraphic(CustomGraphic cg) {
+		boolean retVal = false;
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) {
+			_customGraphics = new LinkedHashSet<CustomGraphic>();
 			}
+			retVal = _customGraphics.add (cg);
+		}
+		ensureContentChanged ();
+		return retVal;
+	}
 
-			m_graphicShapes.add(index, s);
-			m_graphicPaints.add(index, p);
+	/**
+	 * A thread-safe way to determine if this DNodeView contains a given custom graphic.
+	 * @param cg the CustomGraphic for which we are checking containment.
+	 * @since Cytoscape 2.6
+	 */
+	public boolean containsCustomGraphic (CustomGraphic cg) {
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) {
+				return false;
+			}
+			return _customGraphics.contains (cg);
+		}
+	}
+
+	/**
+	 * Return a non-null, read-only Iterator over all CustomGraphics contained in this DNodeView.
+	 * The Iterator will return each CustomGraphic in draw order.
+	 * The Iterator cannot be used to modify the underlying set of CustomGraphics.
+	 * @return The CustomGraphics Iterator. If no CustomGraphics are
+	 * associated with this DNOdeView, an empty Iterator is returned.
+	 * @throws UnsupportedOperationException if an attempt is made to use the Iterator's remove() method.
+	 * @since Cytoscape 2.6
+	 */
+	public Iterator<CustomGraphic> customGraphicIterator() {
+		Iterator<CustomGraphic> retVal = null;
+		final Iterable<CustomGraphic> toIterate;
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) {
+				toIterate = EMPTY_CUSTOM_GRAPHICS;
+			} else {
+				toIterate = _customGraphics;
+			}
+			return new ReadOnlyIterator<CustomGraphic>(toIterate);
+		}
+	}
+
+	/**
+	 * A thread-safe method for removing a given custom graphic from this DNodeView.
+	 * @return true if the custom graphic was found an removed. Returns false if
+	 *         cg is null or is not a custom graphic associated with this DNodeView.
+	 * @since Cytoscape 2.6
+	 */
+	public boolean removeCustomGraphic(CustomGraphic cg) {
+		boolean retVal = false;
+		synchronized (CG_LOCK) {
+			if (_customGraphics != null) {
+				retVal = _customGraphics.remove (cg);
+			}
+		}
+		ensureContentChanged ();
+		return retVal;
+	}
+
+	/**
+	 * A thread-safe method returning the number of custom graphics
+	 * associated with this DNodeView. If none are associated, zero is
+	 * returned.
+	 * @since Cytoscape 2.6
+	 */
+	public int getNumCustomGraphics () {
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) 
+				return 0;
+			return _customGraphics.size();
+		}
+	}
+
+
+	private void ensureContentChanged () {
+		synchronized (m_view.m_lock) {
 			m_view.m_contentChanged = true;
 		}
 	}
+
+	/**
+	 * Obtain the lock used for reading information about custom
+	 * graphics.  This is <EM>not</EM> needed for thread-safe custom graphic
+	 * operations, but only needed for use with
+	 * thread-compatible methods, such as customGraphicIterator().
+	 * For example, to iterate over all custom graphics without fear of
+	 * the underlying custom graphics being mutated, you could perform:
+	 * <PRE>
+	 *    DNodeView dnv = ...;
+	 *    CustomGraphic cg = null;
+	 *    synchronized (dnv.customGraphicLock()) {
+	 *       Iterator<CustomGraphic> cgIt = dnv.customGraphicIterator();
+	 *       while (cgIt.hasNext()) {
+	 *          cg = cgIt.next();
+	 *          // PERFORM your operations here.
+	 *       }
+	 *   }
+	 * </PRE>
+	 * NOTE: A better concurrency approach would be to return the read
+	 *       lock from a
+	 *       java.util.concurrent.locks.ReentrantReadWriteLock.
+	 *       However, this requires users to manually lock and unlock
+	 *       blocks of code where many times try{} finally{} blocks
+	 *       are needed and if any mistake are made, a DNodeView may be
+	 *       permanently locked. Since concurrency will most
+	 *       likely be very low, we opt for the simpler approach of
+	 *       having users use synchronized {} blocks on a standard
+	 *       lock object.
+	 * @return the lock object used for custom graphics of this DNodeView.
+	 */
+	public Object customGraphicLock () {
+		return CG_LOCK;
+	}
+
+	private class ReadOnlyIterator<T> implements Iterator {
+		private Iterator<? extends T> _iterator;
+		public ReadOnlyIterator (Iterable<T> toIterate) {
+			_iterator = toIterate.iterator();
+		}
+		public boolean hasNext() {return _iterator.hasNext();}
+		public T next() {return _iterator.next();}
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	};
 
 	/**
 	 *  DOCUMENT ME!
