@@ -51,7 +51,7 @@ import java.util.ArrayList;
  * algorithm.
  * <p>
  * The basic layout algorithm follows from the paper:
- * <em>"Graph Drawing by Force-directed Placement"</em>
+ * <em>"Graph Drawing by Force-Directed Placement"</em>
  * by Thomas M.J. Fruchterman and Edward M. Reingold.
  * <p>
  * The algorithm has been modified to take into account edge weights, which
@@ -176,7 +176,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @return the algorithm name
 	 */
 	public String getName() {
-		return "fruchterman-rheingold";
+		return "Fruchterman-Rheingold";
 	}
 
 	/**
@@ -188,10 +188,10 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public String toString() {
 		if (supportWeights)
-			return "Edge-weighted Force-directed (BioLayout)";
+			return "Edge-weighted Force-Directed (BioLayout)";
 		else
 
-			return "Force-directed (BioLayout)";
+			return "Force-Directed (BioLayout)";
 	}
 
 	/**

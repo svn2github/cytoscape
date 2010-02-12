@@ -166,10 +166,10 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public String getName() {
 		if (supportWeights)
-			return "kamada-kawai-noweight";
+			return "Kamada-Kawai-Noweight";
 		else
 
-			return "kamada-kawai";
+			return "Kamada-Kawai";
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public String toString() {
 		if (supportWeights)
-			return "Edge-weighted Spring Embedded";
+			return "Edge-Weighted Spring Embedded";
 		else
 
 			return "Spring Embedded";
