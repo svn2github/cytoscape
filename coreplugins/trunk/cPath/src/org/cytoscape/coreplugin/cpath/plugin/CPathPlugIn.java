@@ -65,7 +65,7 @@ public class CPathPlugIn extends CytoscapePlugin implements ActionListener {
 		CytoscapeDesktop desktop = Cytoscape.getDesktop();
 		CyMenus cyMenus = desktop.getCyMenus();
 		JMenu plugInMenu = cyMenus.getNewNetworkMenu();
-		JMenuItem menuItem = new JMenuItem("Construct network using cPath...");
+		JMenuItem menuItem = new JMenuItem("Construct Network Using cPath...");
 		plugInMenu.add(menuItem);
 		menuItem.addActionListener(this);
 	}
