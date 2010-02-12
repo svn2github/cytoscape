@@ -48,7 +48,7 @@ import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 
 public class ExportAsBioPAXAction extends CytoscapeAction {
     public ExportAsBioPAXAction() {
-		super("Network As BioPAX...");
+		super("Network as BioPAX...");
 		setPreferredMenu("File.Export");
 	}
 
@@ -66,7 +66,7 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
 	 * @param e ActionEvent Object.
 	 */
     public void actionPerformed(ActionEvent e) {
-		File file = FileUtil.getFile("Save Network As BioPAX", FileUtil.SAVE,
+		File file = FileUtil.getFile("Save Network as BioPAX", FileUtil.SAVE,
 		                             new CyFileFilter[] {  });
 		if (file != null) {
 			String fileName = file.getAbsolutePath();
@@ -147,6 +147,6 @@ class ExportAsBioPAXTask implements Task {
 	}
 
 	public String getTitle() {
-		return "Saving Network As BioPAX";
+		return "Saving Network as BioPAX";
 	}
 }
