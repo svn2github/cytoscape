@@ -32,8 +32,10 @@ public class SearchTask implements Task {
 	}
 
 	public void run() {
-		setPercentCompleted(0);
-		setStatus("Searching for complexes...");
+		final float SEARCH_PERCENTAGE = 70.0f; // Progress bar should go up to here for the search part.
+
+		taskMonitor.setPercentCompleted(1);
+		taskMonitor.setStatus("Searching for complexes...");
 
 		final CyNetwork inputNetwork = parameters.getNetwork();
 
@@ -50,13 +52,16 @@ public class SearchTask implements Task {
 		hcScoringFunction.Initialize(physicalNetwork, geneticNetwork);
 
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results =
-			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction);
+			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction,
+			                 taskMonitor, SEARCH_PERCENTAGE);
 
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		final NestedNetworkCreator nnCreator =
-			new NestedNetworkCreator(results, inputNetwork, pNet, gNet, parameters.getEdgeCutoff());
+			new NestedNetworkCreator(results, inputNetwork, pNet, gNet,
+			                         parameters.getEdgeCutoff(), taskMonitor,
+			                         100.0f - SEARCH_PERCENTAGE);
 
 		setStatus("Search finished!\n\n" + "Number of complexes = "
 		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
@@ -74,7 +79,7 @@ public class SearchTask implements Task {
 	}
 
 	public String getTitle() {
-		return "Denovo PG Network Alignment";
+		return "ModFind";
 	}
 
 	private void setPercentCompleted(int percent) {

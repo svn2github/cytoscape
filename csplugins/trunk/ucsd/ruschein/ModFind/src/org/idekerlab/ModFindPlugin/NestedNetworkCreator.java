@@ -20,6 +20,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.layout.CyLayouts;
+import cytoscape.task.TaskMonitor;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
@@ -95,12 +96,15 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 	 *            a representation of the "overview" network
 	 * @param originalNetwork
 	 *            the network that the overview network was generated from
+	 * @param taskMonitor progress indicator floating dialog
+	 * @param remainingPercentage 100 - this is where to start with the percent-completed progress bar
 	 */
 	NestedNetworkCreator(
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules,
 		final CyNetwork originalNetwork,
 		final TypedLinkNetwork<String, Float> physicalNetwork,
-		final TypedLinkNetwork<String, Float> geneticNetwork, final double cutoff)
+		final TypedLinkNetwork<String, Float> geneticNetwork, final double cutoff,
+		final TaskMonitor taskMonitor, final float remainingPercentage)
 	{
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
@@ -115,6 +119,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 		final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
+		taskMonitor.setStatus("4. Generating networks");
 		int nodeIndex = 1;
 		double maxScore = Double.NEGATIVE_INFINITY;
 		maxSize = 0;
@@ -193,8 +198,12 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 		overviewNetwork.setSelectedEdgeState(selectedEdges, true);
 		overviewNetwork.setSelectedNodeState(selectedNodes, true);
 
+		taskMonitor.setStatus("5. Generating network views");
 		int networkViewCount = 0;
 		NetworkAndScore network;
+		final float percentIncrement =
+			remainingPercentage / networksOrderedByScores.size();
+		float percentCompleted = 100.0f - remainingPercentage;
 		while ((network = networksOrderedByScores.poll()) != null) {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
 			final CyNetwork nestedNetwork =
@@ -203,6 +212,9 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 			final CyNode node =
 				Cytoscape.getCyNode(network.getNodeName(), /* create = */false);
 			node.setNestedNetwork(nestedNetwork);
+
+			percentCompleted += percentIncrement;
+			taskMonitor.setPercentCompleted(Math.round(percentCompleted));
 		}
 	}
 

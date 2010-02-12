@@ -38,7 +38,7 @@ public class VisualStyleBuilder {
 	private static ContinuousMapping nodeSizeMapping;
 
 	private static final String OVERVIEW_VS_NAME = "Complex Overview Style";
-	private static final String MODULE_VS_NAME = "Denovo Module Style";
+	private static final String MODULE_VS_NAME = "ModFind Module Style";
 
 	// This is a Singleton.
 	private static VisualStyleBuilder builder = new VisualStyleBuilder();

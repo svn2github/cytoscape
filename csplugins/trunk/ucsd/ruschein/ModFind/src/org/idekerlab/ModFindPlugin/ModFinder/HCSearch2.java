@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import cytoscape.task.TaskMonitor;
+
 import org.idekerlab.ModFindPlugin.networks.SFEdge;
 import org.idekerlab.ModFindPlugin.networks.SFNetwork;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
@@ -23,15 +25,20 @@ import org.idekerlab.ModFindPlugin.utilities.ThreadPriorityFactory;
 
 public class HCSearch2 {
 
+	/**
+	 *  @param percentAllocated up to what point to advance the task monitor progress bar
+	 */
 	public static TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> search(
-			SFNetwork pnet, SFNetwork gnet, HCScoringFunction sfunc) {
+		SFNetwork pnet, SFNetwork gnet, HCScoringFunction sfunc, final TaskMonitor taskMonitor,
+		final float percentAllocated)
+	{
 		// The scoring function needs to load several lookup matricies for the
 		// network data.
 		System.gc();
 		MemoryReporter.reportMemoryUsage();
 
 		// Need to construct the ONetwork<HyperModule<String>,BFEdge> object.
-		System.out.println("1. Building merged network.");
+		taskMonitor.setStatus("1. Building merged network.");
 
 		TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = constructBaseNetwork(
 				pnet, gnet);
@@ -40,14 +47,14 @@ public class HCSearch2 {
 		MemoryReporter.reportMemoryUsage();
 
 		// Get the first-pass scores
-		System.out.println("2. Obtaining primary scores.");
+		taskMonitor.setStatus("2. Obtaining primary scores.");
 		computePrimaryScores(results, sfunc);
 
 		System.gc();
 		MemoryReporter.reportMemoryUsage();
 
 		// Merge best tree-pairs together
-		System.out.println("3. Forming clusters...");
+		taskMonitor.setStatus("3. Forming clusters...");
 
 		// MemoryReporter.reportMemoryUsage();
 
@@ -59,6 +66,8 @@ public class HCSearch2 {
 		System.gc();
 
 		int iter = 0;
+		final float INITIAL_NODE_COUNT = results.numNodes();
+		final float MAX_PERCENTAGE = 70.0f;
 		while (results.numEdges() > 0 && max > 0) {
 			if (iter % 1000 == 0) {
 				System.gc();
@@ -97,8 +106,6 @@ public class HCSearch2 {
 
 			if (max <= 0)
 				break;
-
-			// System.out.println(best+", c:"+best.value().complexMerge()+" + l:"+best.value().linkMerge()+" = "+best.value().global());
 
 			// Merge the best pair
 			TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge> mergedNode = mergeNodes(
@@ -141,20 +148,23 @@ public class HCSearch2 {
 
 				DoubleVector csizes = new DoubleVector(results.numNodes());
 
-				Set<TypedLinkNodeModule<String, BFEdge>> allc = results
-						.getNodeValues();
+				Set<TypedLinkNodeModule<String, BFEdge>> allc = results.getNodeValues();
 
 				for (TypedLinkNodeModule<String, BFEdge> m : allc)
 					csizes.add(m.size());
-
-				System.out.println("Number of clusters: " + results.numNodes()
-						+ ",  Largest cluster size: " + csizes.max(false));
+				final int percentCompleted =
+					Math.round((INITIAL_NODE_COUNT - results.numNodes())
+					           * percentAllocated / INITIAL_NODE_COUNT);
+				taskMonitor.setPercentCompleted(percentCompleted);
+				taskMonitor.setStatus("3. Forming clusters (# of clusters: "
+				                      + results.numNodes() + ", largest cluster size: "
+						      + csizes.max(false) + ")");
 			}
 
 			iter++;
 		}
 
-		// global_scores.plot();
+		taskMonitor.setPercentCompleted(Math.round(percentAllocated));
 		System.out.println("Best score: " + global_scores.max(true));
 		System.out.println("Best score index: " + global_scores.maxI());
 
