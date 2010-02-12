@@ -188,10 +188,10 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public String toString() {
 		if (supportWeights)
-			return "Edge-weighted Force directed (BioLayout)";
+			return "Edge-weighted Force-directed (BioLayout)";
 		else
 
-			return "Force directed (BioLayout)";
+			return "Force-directed (BioLayout)";
 	}
 
 	/**
