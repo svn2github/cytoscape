@@ -56,7 +56,7 @@ public class BiomartClientPlugin extends CytoscapePlugin {
 		// Register this client to the manager.
 		WebServiceClientManager.registerClient(BiomartClient.getClient());
 
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import").add(new AbstractAction("Import attributes from Biomart...") {
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import").add(new AbstractAction("Import Attributes from Biomart...") {
 				public void actionPerformed(ActionEvent e) {
 					BiomartMainDialog.showUI();
 				}
