@@ -860,9 +860,9 @@ public final class GraphRenderer {
 		final float srcOffset;
 
 		if (srcArrow == GraphGraphics.ARROW_DISC)
-			srcOffset = (float) (0.5d * srcArrowSize);
+			srcOffset = 0.5f * srcArrowSize;
 		else if (srcArrow == GraphGraphics.ARROW_TEE)
-			srcOffset = (float) srcArrowSize;
+			srcOffset = srcArrowSize;
 		else
 			srcOffset = 0.0f;
 
@@ -921,9 +921,9 @@ public final class GraphRenderer {
 		final float trgOffset;
 
 		if (trgArrow == GraphGraphics.ARROW_DISC)
-			trgOffset = (float) (0.5d * trgArrowSize);
+			trgOffset = 0.5f * trgArrowSize;
 		else if (trgArrow == GraphGraphics.ARROW_TEE)
-			trgOffset = (float) trgArrowSize;
+			trgOffset = trgArrowSize;
 		else
 			trgOffset = 0.0f;
 
@@ -1158,6 +1158,8 @@ public final class GraphRenderer {
 
 		// Take care of custom graphic rendering.
 		if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
+
+			// draw any nested networks first
 			final TexturePaint nestedNetworkPaint = nodeDetails.getNestedNetworkTexturePaint(node);
 			if (nestedNetworkPaint != null) {
 				doubleBuff1[0] = floatBuff1[0];
@@ -1168,18 +1170,19 @@ public final class GraphRenderer {
 				grafx.drawCustomGraphicFull(nestedNetworkPaint.getAnchorRect(),  (float)doubleBuff2[0],  (float)doubleBuff2[1], nestedNetworkPaint); 
 			}
 
+			// draw custom graphics on top of nested networks 
 			// don't allow our custom graphics to mutate while we iterate over them:
 			synchronized (nodeDetails.customGraphicsLock(node)) {
 				// This iterator will return CustomGraphics in rendering order:
-				Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
+				Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics(node);
 				CustomGraphic cg = null;
 				// The graphic index used to retrieve non custom graphic info corresponds to the zero-based
 				// index of the CustomGraphic returned by the iterator:
 				int graphicInx = 0;
 				while (dNodeIt.hasNext()) {
 					cg = dNodeIt.next();
-					final float offsetVectorX = nodeDetails.labelOffsetVectorX(node, graphicInx);
-					final float offsetVectorY = nodeDetails.labelOffsetVectorY(node, graphicInx);
+					final float offsetVectorX = nodeDetails.graphicOffsetVectorX(node, graphicInx);
+					final float offsetVectorY = nodeDetails.graphicOffsetVectorY(node, graphicInx);
 					doubleBuff1[0] = floatBuff1[0];
 					doubleBuff1[1] = floatBuff1[1];
 					doubleBuff1[2] = floatBuff1[2];
