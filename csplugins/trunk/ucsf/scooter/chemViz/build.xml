@@ -113,7 +113,7 @@
     </copy>
     <jar jarfile="${build.dir}/chemViz.jar">
       <manifest>
-        <attribute name="Cytoscape-Plugin" value="chemViz.ChemVizPlugin" />
+        <attribute name="Cytoscape-Plugin" value="chemViz.ChemViz" />
       </manifest>
       <fileset dir="${build.dir}/classes" />
       <fileset dir="${build.dir}/classes/lib"/>

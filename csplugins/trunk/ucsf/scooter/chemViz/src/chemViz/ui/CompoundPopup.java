@@ -71,12 +71,15 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 	
 	private List<Compound> compoundList;
 	private Map<Component, Compound> imageMap;
+	private String labelAttribute;
+	private static final int LABEL_HEIGHT = 20;
 
-	public CompoundPopup(List<Compound> compoundList, List<GraphObject> objectList) {
+	public CompoundPopup(List<Compound> compoundList, List<GraphObject> objectList, String labelAttribute) {
 		super(Cytoscape.getDesktop());
 		GraphObject go = objectList.get(0);
 		this.compoundList = compoundList;
 		this.imageMap = new HashMap();
+		this.labelAttribute = labelAttribute;
 		if (go instanceof CyNode) {
 			if (objectList.size() == 1) {
 				setTitle("2D Structures for Node "+((CyNode)go).getIdentifier());
@@ -102,31 +105,51 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 	public void componentMoved(ComponentEvent e) {}
 	public void componentShown(ComponentEvent e) {}
 	public void componentResized(ComponentEvent e) {
-		Component labelComponent = e.getComponent();
+		JLabel labelComponent = (JLabel)e.getComponent();
 		// Get our new width
 		int width = labelComponent.getWidth();
 		int height = labelComponent.getHeight();
+		String label = labelComponent.getText();
+		if (label != null && label.length() > 0)
+			height = height - LABEL_HEIGHT;
 		// Is it in our map?
 		if (imageMap.containsKey(labelComponent)) {
-			JLabel label = (JLabel)(labelComponent);
 			Image img = imageMap.get(labelComponent).getImage(width,height);
-			label.setIcon(new ImageIcon(img));
+			labelComponent.setIcon(new ImageIcon(img));
 		}
 	}
 
 
 	// TODO: Add labels on image squares
 	private void addImages(int width) {
+		CyAttributes attributes = null;
+
 		// How many images do we have?
 		int structureCount = compoundList.size();
 		int nCols = (int)Math.sqrt((double)structureCount);
 		GridLayout layout = new GridLayout(nCols, structureCount/nCols, 1, 1);
 		setLayout(layout);
 
+		// Get the right attributes
+		if (labelAttribute.startsWith("node."))
+			attributes = Cytoscape.getNodeAttributes();
+		else if (labelAttribute.startsWith("edge."))
+			attributes = Cytoscape.getEdgeAttributes();
+		else
+			labelAttribute = null;
+
 		for (Compound compound: compoundList) {
 			// Get the image
-			Image img = compound.getImage(width/nCols, width/nCols, Color.WHITE);
-			JLabel label = new JLabel(new ImageIcon(img));
+			Image img = compound.getImage(width/nCols, width/nCols-LABEL_HEIGHT, Color.WHITE);
+			JLabel label;
+			if (labelAttribute == null) {
+				label = new JLabel(new ImageIcon(img));
+			} else {
+				String textLabel = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute.substring(5)).toString();
+				label = new JLabel(textLabel, new ImageIcon(img), JLabel.CENTER);
+				label.setVerticalTextPosition(JLabel.BOTTOM);
+				label.setHorizontalTextPosition(JLabel.CENTER);
+			}
 			label.addComponentListener(this);
 			imageMap.put(label, compound);
 			add (label);

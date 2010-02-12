@@ -61,6 +61,7 @@ import chemViz.ui.CompoundPopup;
 public class CreatePopupTask extends AbstractCompoundTask {
 	List<GraphObject> objectList;
 	ChemInfoSettingsDialog dialog;
+	String labelAttribute;
 
 	/**
  	 * Creates the task.
@@ -81,6 +82,7 @@ public class CreatePopupTask extends AbstractCompoundTask {
 		this.canceled = false;
 		this.maxCompounds = maxCompounds;
 		this.compoundCount = 0;
+		this.labelAttribute = dialog.getLabelAttribute();
 	}
 
 	/**
@@ -95,6 +97,7 @@ public class CreatePopupTask extends AbstractCompoundTask {
 		this.canceled = false;
 		this.maxCompounds = maxCompounds;
 		this.compoundCount = 0;
+		this.labelAttribute = dialog.getLabelAttribute();
 	}
 
 	public String getTitle() {
@@ -122,7 +125,11 @@ public class CreatePopupTask extends AbstractCompoundTask {
                                         dialog.getCompoundAttributes(type,AttriType.smiles),
                                         dialog.getCompoundAttributes(type,AttriType.inchi));
 		if (cList.size() > 0 && !canceled) {
-    	CompoundPopup popup = new CompoundPopup(cList, objectList);
+			if (objectList.size() == 1) {
+				CompoundPopup popup = new CompoundPopup(cList, objectList, null);
+			} else {
+				CompoundPopup popup = new CompoundPopup(cList, objectList, labelAttribute);
+			}
 		}
 	}
 }

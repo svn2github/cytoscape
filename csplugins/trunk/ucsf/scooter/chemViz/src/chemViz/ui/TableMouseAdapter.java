@@ -113,7 +113,7 @@ class TableMouseAdapter extends MouseAdapter implements ActionListener {
   					public void run() {
 						List<GraphObject>goList = new ArrayList();
 						goList.add(c.getSource());
-   	 				CompoundPopup popup = new CompoundPopup(cList, goList);
+   	 				CompoundPopup popup = new CompoundPopup(cList, goList, null);
 						popup.toFront();
 					}
 				};

@@ -99,6 +99,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	                                                          DepictionPositions.MIDDLELEFT};
 	private static List<String> smilesAttributes = null;
 	private static List<String> inCHIAttributes = null;
+	private static List<String> possibleAttributes = null;
 	private ChemInfoProperties properties;
 	private JPanel tunablePanel;
 	private int maxCompounds = 0;
@@ -106,6 +107,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private boolean showHyd = false;
 	private int labelPositionIndex = 0;
 	private int nodeStructureSize = 100;
+	private String labelAttribute = "ID";
 
 	public ChemInfoSettingsDialog() {
 		super(Cytoscape.getDesktop(), "ChemViz Plugin Settings Dialog", false);
@@ -215,6 +217,12 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 			labelPositionIndex = ((Integer)t.getValue()).intValue();
 		}
 
+		t = properties.get("labelAttribute");
+		if ((t != null) && (t.valueChanged() || force)) {
+			int index = ((Integer)t.getValue()).intValue();
+			labelAttribute = possibleAttributes.get(index);
+		}
+
 /*
 		t = properties.get("showHyd");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -244,7 +252,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		if (nodeSet == null)
 			return true;
 
-		// We we know all of the attributes we're interested in -- see if these objects have any of them
+		// We know all of the attributes we're interested in -- see if these objects have any of them
 		for (CyNode node: nodeSet) {
 			for (String attribute: attrsFound) {
 				if (attributes.hasAttribute(node.getIdentifier(),attribute)) {
@@ -266,7 +274,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		if (edgeSet == null)
 			return true;
 
-		// We we know all of the attributes we're interested in -- see if these objects have any of them
+		// We know all of the attributes we're interested in -- see if these objects have any of them
 		ArrayList<String>hasAttrs = new ArrayList();
 		for (CyEdge edge: edgeSet) {
 			for (String attribute: attrsFound) {
@@ -302,6 +310,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		return positionList[labelPositionIndex].labelPosition();
 	}
 
+	public String getLabelAttribute() {
+		return labelAttribute;
+	}
+
 	private List<String> getMatchingAttributes(CyAttributes attributes, List<String> compoundAttributes) {
 		// Get the names of all of the object attributes
 		String[] attrNames = attributes.getAttributeNames();
@@ -317,18 +329,25 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	}
 
 	private void updateAttributeTunables() {
-		List<String>possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
-	 	                                                 Cytoscape.getEdgeAttributes());
+		possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
+	 	                                      Cytoscape.getEdgeAttributes(), true);
 		// Get the smiles tunable
 		Tunable t = properties.get("smilesAttributes");
 		t.setLowerBound((Object[])possibleAttributes.toArray());
 		String smilesDefaults = getDefaults(possibleAttributes, defaultSmilesAttributes);
 		t.setValue(smilesDefaults);
 		// Repeat for the inCHI tunable
-		t = properties.get("inChiAttributes");
-		t.setLowerBound((Object[])possibleAttributes.toArray());
+		Tunable t2 = properties.get("inChiAttributes");
+		t2.setLowerBound((Object[])possibleAttributes.toArray());
 		String inCHIDefaults = getDefaults(possibleAttributes, defaultInCHIAttributes);
-		t.setValue(inCHIDefaults);
+		t2.setValue(inCHIDefaults);
+
+		// And the label attribute tunable
+		possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
+	 	                                      Cytoscape.getEdgeAttributes(), false);
+		Tunable t3 = properties.get("labelAttribute");
+		t3.setLowerBound((Object[])possibleAttributes.toArray());
+		t3.setValue(new Integer(0));
 	}
 
 	private void initializeProperties() {
@@ -350,8 +369,8 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		properties.add(t);
 */
 
-		List<String>possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
-		                                                  Cytoscape.getEdgeAttributes());
+		possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
+		                                      Cytoscape.getEdgeAttributes(), true);
 
 		properties.add(new Tunable("attributeGroup",
 		                "Attribute Settings",
@@ -377,7 +396,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                Tunable.LIST, inCHIDefaults,
 		                (Object)possibleAttributes.toArray(), inCHIDefaults, Tunable.MULTISELECT));
 
-		properties.add(new Tunable("presentationGroup2", "Depiction options", Tunable.GROUP, new Integer(2)));
+		properties.add(new Tunable("presentationGroup2", "Depiction options", Tunable.GROUP, new Integer(3)));
 
 		properties.add(new Tunable("nodeStructureSize",
                    "Size of 2D node depiction as a % of node size",
@@ -388,22 +407,32 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                Tunable.LIST, new Integer(labelPositionIndex),
 		                (Object)positionList, null, 0));
 
+		possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
+		                                      Cytoscape.getEdgeAttributes(), false);
+		properties.add( new Tunable("labelAttribute",
+		                "Attribute to use for image label",
+		                Tunable.LIST, new Integer(0), (Object)possibleAttributes.toArray(),
+		                null, 0));
+
 		properties.initializeProperties();
 	}
 
-	private List<String> getAllAttributes(CyAttributes nodeAttributes, CyAttributes edgeAttributes) {
+	private List<String> getAllAttributes(CyAttributes nodeAttributes, CyAttributes edgeAttributes, boolean restrict) {
 		List<String>attributes = new ArrayList();
-		getAttributes(attributes,nodeAttributes,"node.");
-		getAttributes(attributes,edgeAttributes,"edge.");
+		attributes.add("none");
+		getAttributes(attributes,nodeAttributes,"node.", restrict);
+		getAttributes(attributes,edgeAttributes,"edge.", restrict);
 		return attributes;
 	}
 
-	private void getAttributes(List<String>attributes, CyAttributes attrs, String prefix) {
+	private void getAttributes(List<String>attributes, CyAttributes attrs, String prefix, boolean restrict) {
 		String[] names = attrs.getAttributeNames();
 		for (int i = 0; i < names.length; i++) {
 			byte type = attrs.getType(names[i]);
-			if ((type == CyAttributes.TYPE_STRING || type == CyAttributes.TYPE_SIMPLE_LIST)
-			    && attrs.getUserVisible(names[i])) {
+			if (!restrict && attrs.getUserVisible(names[i])) {
+				attributes.add(prefix+names[i]);
+			} else if ((type == CyAttributes.TYPE_STRING || type == CyAttributes.TYPE_SIMPLE_LIST)
+			                                             && attrs.getUserVisible(names[i])) {
 				attributes.add(prefix+names[i]);
 			}
 		}

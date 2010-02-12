@@ -105,15 +105,6 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 			menu.addMenuListener(new ChemVizMenu(systemProps, settingsDialog));
 			pluginMenu.add(menu);
 		
-
-			// See if we've already got a network that has custom graphics
-			if (CreateNodeGraphicsTask.hasCustomGraphics(Cytoscape.getCurrentNetwork())) {
-				List<Node> selection = 
-				  CreateNodeGraphicsTask.getCustomGraphicsNodes(Cytoscape.getCurrentNetworkView());
-
-				CreateNodeGraphicsTask loader = new CreateNodeGraphicsTask(selection, settingsDialog, false);
-				TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
-			}
 		} catch (Exception e) {
 			logger.error("Unable to initialize menus: "+e.getMessage(), e);
 		}
