@@ -21,6 +21,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
@@ -40,6 +41,14 @@ public class PathwayMapper {
 
 	private int[] nodeIdx;
 	private int[] edgeIdx;
+	
+	private static final String KEGG_NAME = "KEGG.name";
+	private static final String KEGG_ENTRY_TYPE = "KEGG.entry";
+	private static final String KEGG_LABEL = "KEGG.label";
+	private static final String KEGG_RELATION_TYPE = "KEGG.relation";
+	
+	
+	private static final String KEGG_LINK = "KEGG.link";
 
 	public PathwayMapper(final Pathway pathway) {
 		this.pathway = pathway;
@@ -66,8 +75,15 @@ public class PathwayMapper {
 			if (!comp.getGraphics().getType().equals(KEGGShape.LINE.getTag())) {
 				CyNode node = Cytoscape.getCyNode(pathwayID + "-"
 						+ comp.getId(), true);
-				nodeAttr.setAttribute(node.getIdentifier(), "KEGG.name", comp
+				nodeAttr.setAttribute(node.getIdentifier(), KEGG_NAME, comp
 						.getName());
+				nodeAttr.setAttribute(node.getIdentifier(), KEGG_LINK, comp.getLink());
+				nodeAttr.setAttribute(node.getIdentifier(), KEGG_ENTRY_TYPE, comp.getType());
+				
+				final Graphics graphics = comp.getGraphics();
+				if(graphics != null && graphics.getName() != null) {
+					nodeAttr.setAttribute(node.getIdentifier(), KEGG_LABEL, graphics.getName());
+				}
 				nodeMap.put(comp.getId(), node);
 				entryMap.put(comp.getId(), comp);
 			}
@@ -85,6 +101,8 @@ public class PathwayMapper {
 		final List<Relation> relations = pathway.getRelation();
 		final List<CyEdge> edges = new ArrayList<CyEdge>();
 		
+		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		
 		for(Relation rel: relations) {
 			final String ent1 = rel.getEntry1();
 			final String ent2 = rel.getEntry2();
@@ -93,14 +111,19 @@ public class PathwayMapper {
 			final String type = rel.getType();
 			CyNode source = nodeMap.get(ent1);
 			CyNode target = nodeMap.get(ent2);
-			CyNode compound = nodeMap.get(subs.get(0).getValue());
-			System.out.println(source.getIdentifier());
-			System.out.println(target.getIdentifier());
-			System.out.println(compound.getIdentifier() + "\n\n");
-			CyEdge edge1 = Cytoscape.getCyEdge(source, compound, "interaction", type, true);
-			CyEdge edge2 = Cytoscape.getCyEdge(compound, target, "interaction", type, true);
-			edges.add(edge1);
-			edges.add(edge2);
+			
+			for(Subtype sub: subs) {
+				CyNode hub = nodeMap.get(sub.getValue());
+				System.out.println(source.getIdentifier());
+				System.out.println(target.getIdentifier());
+				System.out.println(hub.getIdentifier() + "\n\n");
+				CyEdge edge1 = Cytoscape.getCyEdge(source, hub, "interaction", type, true);
+				CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type, true);
+				edges.add(edge1);
+				edges.add(edge2);
+				
+				edgeAttr.setAttribute(edge1.getIdentifier(), this.KEGG_RELATION_TYPE, type);
+			}	
 		}
 		
 		edgeIdx = new int[edges.size()];
@@ -143,17 +166,20 @@ public class PathwayMapper {
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
 				nodeColor);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE,
-				NodeShape.ELLIPSE);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_OPACITY,
-				220);
+				NodeShape.ROUND_RECT);
 
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR,
 				nodeLineColor);
-
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH,
+				2);
+		
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR,
 				nodeLabelColor);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_FACE,
 				nodeLabelFont);
+		
+		//Default Edge appr
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_SHAPE, ArrowShape.DELTA);
 		
 		final DiscreteMapping nodeWidth = new DiscreteMapping(30,
 				"ID", ObjectMapping.NODE_MAPPING);
