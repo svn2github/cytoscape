@@ -59,7 +59,7 @@ public class ExportNetworkAsPsiMiTwoFive extends CytoscapeAction {
 	 * Constructor.
 	 */
 	public ExportNetworkAsPsiMiTwoFive() {
-		super("Network as PSI-MI Level 2.5 File...");
+		super("Network As PSI-MI Level 2.5 File...");
 		setPreferredMenu("File.Export");
 	}
 
@@ -79,7 +79,7 @@ public class ExportNetworkAsPsiMiTwoFive extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// get the file name
-		File file = FileUtil.getFile("Save Network as PSI-MI Level 2.5", FileUtil.SAVE,
+		File file = FileUtil.getFile("Save Network As PSI-MI Level 2.5", FileUtil.SAVE,
 		                             new CyFileFilter[] {  });
 
 		if (file != null) {
