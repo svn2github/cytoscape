@@ -19,6 +19,9 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 
+import cytoscape.render.stateful.NodeDetails;
+import cytoscape.render.stateful.CustomGraphic;
+
 import giny.model.Edge;
 import giny.view.NodeView;
 
@@ -1491,9 +1494,9 @@ public class MapBioPaxToCytoscape {
 		DNodeView dingNodeView = (DNodeView) nodeView;
 
 		// remove existing custom nodes
-		int numExistingCustomShapes = dingNodeView.getCustomGraphicCount();
-		for (int lc = 0; lc < numExistingCustomShapes; lc++) {
-			dingNodeView.removeCustomGraphic(0);
+		Iterator<CustomGraphic> it = dingNodeView.customGraphicIterator();
+		while ( it.hasNext() ) {
+			dingNodeView.removeCustomGraphic( it.next() );
 		}
 
 		for (int lc = 0; lc < modificationCount; lc++) {
@@ -1517,7 +1520,7 @@ public class MapBioPaxToCytoscape {
 			}
 
 			// add the graphic
-			dingNodeView.addCustomGraphic(rect, paint, lc);
+			dingNodeView.addCustomGraphic(rect, paint, NodeDetails.ANCHOR_CENTER);
 		}
 	}
 
