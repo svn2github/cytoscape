@@ -251,7 +251,8 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 
 		final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
 
-		if (graph.edgeSource(edge) == graph.edgeTarget(edge)) { // Self-edge.
+		// Calculate anchors necessary for self edges.
+		if (graph.edgeSource(edge) == graph.edgeTarget(edge)) { 
 
 			final int node = graph.edgeSource(edge);
 			m_view.m_spacial.exists(node, m_extentsBuff, 0);
@@ -293,25 +294,32 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 				};
 		}
 
+		// Now add "invisible" anchors to edges for the case where multiple edges
+		// exist between two nodes. This has no effect if user specified anchors
+		// exist on the edge.
 		while (true) {
-			{
-				final IntIterator otherEdges = graph.edgesConnecting(graph.edgeSource(edge),
-				                                                     graph.edgeTarget(edge), true,
-				                                                     true, true);
-				m_heap.empty();
+			// sort the connecting edges
+			final IntIterator conEdges = graph.edgesConnecting(graph.edgeSource(edge),
+			                                                     graph.edgeTarget(edge), true,
+			                                                     true, true);
+			m_heap.empty();
 
-				while (otherEdges.hasNext())
-					m_heap.toss(otherEdges.nextInt());
-			}
+			while (conEdges.hasNext())
+				m_heap.toss(conEdges.nextInt());
 
 			final IntEnumerator otherEdges = m_heap.orderedElements(false);
+
 			int otherEdge = otherEdges.nextInt();
 
+			// if the first other edge is the same as this edge, 
+			// (i.e. we're at the end of the list?), break
 			if (otherEdge == edge)
 				break;
 
+			// so we don't count the other edge twice ?
 			int i = (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0) ? 1 : 0;
 
+			// count the number of other edges
 			while (true) {
 				if (edge == (otherEdge = otherEdges.nextInt()))
 					break;
@@ -321,19 +329,24 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			}
 
 			final int inx = i;
-			m_view.m_spacial.exists(graph.edgeSource(edge), m_extentsBuff, 0);
 
+			// get source node size and position
+			m_view.m_spacial.exists(graph.edgeSource(edge), m_extentsBuff, 0);
 			final double srcW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
 			final double srcH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
 			final double srcX = (((double) m_extentsBuff[0]) + m_extentsBuff[2]) / 2.0d;
 			final double srcY = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
-			m_view.m_spacial.exists(graph.edgeTarget(edge), m_extentsBuff, 0);
 
+			// get target node size and position
+			m_view.m_spacial.exists(graph.edgeTarget(edge), m_extentsBuff, 0);
 			final double trgW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
 			final double trgH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
 			final double trgX = (((double) m_extentsBuff[0]) + m_extentsBuff[2]) / 2.0d;
 			final double trgY = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
+
+			// used for determining the space between the edges 
 			final double nodeSize = Math.max(Math.max(Math.max(srcW, srcH), trgW), trgH);
+
 			final double midX = (srcX + trgX) / 2;
 			final double midY = (srcY + trgY) / 2;
 			final double dx = trgX - srcX;
@@ -343,11 +356,31 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			if (((float) len) == 0.0f)
 				break;
 
+			// this determines which side of the first edge and how far from the first
+			// edge the other edge should be placed
+			final double factor = ((inx + 1) / 2) * (((inx % 2) == 0) ? 1 : (-1)) * nodeSize;
+
 			final double normX = Math.abs(dx / len);
 			final double normY = Math.abs(dy / len);
-			final double factor = ((inx + 1) / 2) * (((inx % 2) == 0) ? 1 : (-1)) * nodeSize;
-			final double anchorX = midX + (factor * normY);
-			final double anchorY = midY - (factor * normX);
+
+			// calculate the anchor points
+			// jump through hoops so that other edge stays properly oriented as nodes
+			// move relative to one another
+			final double anchorX; 
+			final double anchorY; 
+			if (srcX <= trgX && srcY <= trgY){
+				anchorX = midX + (factor * normY);
+				anchorY = midY - (factor * normX);
+			} else if (srcX >= trgX && srcY >= trgY) {
+				anchorX = midX - (factor * normY);
+				anchorY = midY + (factor * normX);
+			} else if (srcX <= trgX && srcY >= trgY) {
+				anchorX = midX - (factor * normY);
+				anchorY = midY - (factor * normX);
+			} else { // (srcX >= trgX && srcY <= trgY) 
+				anchorX = midX + (factor * normY);
+				anchorY = midY + (factor * normX);
+			} 
 
 			return new EdgeAnchors() {
 					public int numAnchors() {
