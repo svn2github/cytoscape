@@ -1163,13 +1163,13 @@ public class MapBioPaxToCytoscape {
 
     /**
      * Maps Attributes for a Single Node.
-     * @param resource          BioPAX Object.
+     * @param element          BioPAX Object.
      * @param model TODO
      * @param nodeId TODO
      * @param nodeAttributes    Node Attributes.
      */
-    public static void mapNodeAttribute(BioPAXElement resource, Model model, final String nodeID) {
-        if (resource != null) {
+    public static void mapNodeAttribute(BioPAXElement element, Model model, final String nodeID) {
+        if (element != null) {
         	
             String stringRef = "";
             final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -1179,9 +1179,8 @@ public class MapBioPaxToCytoscape {
         		final CyLogger log = CyLogger.getLogger(AbstractTraverser.class);
         		
 				@Override
-				protected void visitValue(Object obj, BioPAXElement bpe, Model m,
-						PropertyEditor editor) 
-				{
+				protected void visit(Object obj, BioPAXElement bpe,
+						Model model, PropertyEditor editor) {
 					// make the most general property name
 					Class<? extends BioPAXElement> clazz = editor.getDomain();
 					String attrName = clazz.getSimpleName() + "." + editor.getProperty();
@@ -1245,96 +1244,53 @@ public class MapBioPaxToCytoscape {
 				
 			};
         	
-			bpeAutoMapper.run(resource, null);
+			bpeAutoMapper.traverse(element, null);
 			
             // type
-            stringRef = addType(resource, nodeAttributes);
+            stringRef = addType(element, nodeAttributes);
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_ENTITY_TYPE, stringRef);
             }
 
-/* NOT required anymore (see above)
-            // short name
-            stringRef = BioPaxUtil.getShortName(resource);
-            if (stringRef != null) {
-                nodeAttributes.setAttribute(nodeID, BIOPAX_SHORT_NAME, stringRef);
-            }
-
-            // name
-            stringRef = BioPaxUtil.getStandardName(resource);
-            if (stringRef != null) {
-                nodeAttributes.setAttribute(nodeID, BIOPAX_NAME, stringRef);
-            }
-
-            // synonyms
-            List<String> synList = new ArrayList<String>(BioPaxUtil.getSynonymList(resource));
-            if (synList != null && !synList.isEmpty()) {
-                nodeAttributes.setListAttribute(nodeID, BIOPAX_SYNONYMS, synList);
-            }
-
-            // organism
-            stringRef = BioPaxUtil.getOrganismName(resource);
-            if (stringRef != null) {
-                nodeAttributes.setAttribute(nodeID, BIOPAX_ORGANISM_NAME, stringRef);
-            }
-
-            // comment
-            stringRef = BioPaxUtil.getComment(resource);
-            if (stringRef != null) {
-                nodeAttributes.setAttribute(nodeID, BIOPAX_COMMENT, stringRef);
-            }
-*/
             // unification references
-            stringRef = addXRefs(BioPaxUtil.getUnificationXRefs(resource));
+            stringRef = addXRefs(BioPaxUtil.getUnificationXRefs(element));
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_UNIFICATION_REFERENCES, stringRef);
             }
 
             // the following code should replace the old way to set
             // relationship references
-            List<String> xrefList = getXRefList(resource, BIOPAX_AFFYMETRIX_REFERENCES_LIST);
+            List<String> xrefList = getXRefList(element, BIOPAX_AFFYMETRIX_REFERENCES_LIST);
             if ((xrefList != null) && !xrefList.isEmpty()) {
                 nodeAttributes.setListAttribute(nodeID, BIOPAX_AFFYMETRIX_REFERENCES_LIST,
                                                 xrefList);
             }
 
             // relationship references - old way
-            stringRef = addXRefs(BioPaxUtil.getRelationshipXRefs(resource));
+            stringRef = addXRefs(BioPaxUtil.getRelationshipXRefs(element));
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_RELATIONSHIP_REFERENCES, stringRef);
             }
 
             // publication references
-            stringRef = addPublicationXRefs(resource);
+            stringRef = addPublicationXRefs(element);
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_PUBLICATION_REFERENCES, stringRef);
             }
-/*
-            // availability
-            stringRef = BioPaxUtil.getAvailability(resource);
-            if (stringRef != null) {
-                nodeAttributes.setAttribute(nodeID, BIOPAX_AVAILABILITY, stringRef);
-            }
 
-            // data sources
-            stringRef = addDataSource(resource);
-            if (stringRef != null) {
-                nodeAttributes.setAttribute(nodeID, BIOPAX_DATA_SOURCES, stringRef);
-            }
-*/
             // ihop links
-            stringRef = addIHOPLinks(resource);
+            stringRef = addIHOPLinks(element);
             if (stringRef != null) {
                 nodeAttributes.setAttribute(nodeID, BIOPAX_IHOP_LINKS, stringRef);
             }
 
             // pathway name
-            stringRef = BioPaxUtil.getParentPathwayName(resource, model)
+            stringRef = BioPaxUtil.getParentPathwayName(element, model)
             	.toString().replaceAll("\\]|\\[", "").trim();
             nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
 
             //  add all xref ids for global lookup
-            List<ExternalLink> xList = BioPaxUtil.getAllXRefs(resource);
+            List<ExternalLink> xList = BioPaxUtil.getAllXRefs(element);
             List<String> idList = addXRefIds(xList);
             if (idList != null && !idList.isEmpty()) {
                 nodeAttributes.setListAttribute(nodeID, BIOPAX_XREF_IDS, idList);
@@ -1352,7 +1308,7 @@ public class MapBioPaxToCytoscape {
             String label = nodeAttributes.getStringAttribute
                     (nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
             if (label == null) {
-                label = BioPaxUtil.getNodeName(resource);
+                label = BioPaxUtil.getNodeName(element);
                 if (label != null) {
                     nodeAttributes.setAttribute(nodeID, 
                     		BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,

@@ -129,6 +129,7 @@ public class NetworkListener implements PropertyChangeListener {
 	 */
 	private void networkCreatedEvent(PropertyChangeEvent event) {
 		// get the network
+		/* (why was that?)
 		CyNetwork cyNetwork = null;
 		Object newValue = event.getNewValue();
 
@@ -141,10 +142,12 @@ public class NetworkListener implements PropertyChangeListener {
 			cyNetwork = Cytoscape.getNetwork(networkID);
 		}
 		
-		if(BioPaxUtil.isBioPAXNetwork(cyNetwork)) {
-			bpPanel.resetText();
+		if(cyNetwork != null && BioPaxUtil.isBioPAXNetwork(cyNetwork)) {
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_CREATED, null, cyNetwork);
 		}
+		*/
+		
+		bpPanel.resetText();
 		
 	}
 
