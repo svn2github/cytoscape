@@ -107,13 +107,7 @@ public class CyMain implements CyInitParams {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (System.getProperty("os.name").startsWith("Mac")) {
-			/*
-			 * By kono 4/2/2007 Fix Application name for Mac.
-			 */
-			final CytoscapeVersion ver = new CytoscapeVersion();
-			final String version = ver.getVersion();
-			System.setProperty(
-					"com.apple.mrj.application.apple.menu.about.name", version);
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Cytoscape");
 		}
 
 		CyMain app = new CyMain(args);
