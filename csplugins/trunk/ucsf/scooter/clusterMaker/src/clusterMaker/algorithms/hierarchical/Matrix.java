@@ -433,6 +433,13 @@ public class Matrix {
 			if ((!ignoreMissing || found) && (!selectedOnly || hasSelectedEdge))
 				index++;
 		}
+
+		// At this point, if we're ignoring missing values, we only have part of the matrix
+		// in use.  Update nRows and nColumns to reflect the new size.
+		if (ignoreMissing) {
+			this.nRows = index;
+			this.nColumns = index;
+		}
 	}
 
 	private void buildGeneArrayMatrix(CyNetwork network, String[] weightAttributes, 

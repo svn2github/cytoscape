@@ -114,6 +114,7 @@ public class EisenCluster {
 				columnList.add(columnArray[col]);
 			}
 		}
+		// System.out.println("Order: "+orderList);
 
 		if (matrix.isTransposed()) {
 			// We did an Array cluster -- output the calculated array order
