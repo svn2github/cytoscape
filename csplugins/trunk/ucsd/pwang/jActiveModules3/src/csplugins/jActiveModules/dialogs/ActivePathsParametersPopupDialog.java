@@ -290,6 +290,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 
 	private void createSearchContentPanel() {
 		searchContentPanel = new JPanel();
+		searchContentPanel.setMinimumSize(new Dimension(300, 400));
 		GridBagLayout gridbag = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
 		searchContentPanel.setLayout(gridbag);
