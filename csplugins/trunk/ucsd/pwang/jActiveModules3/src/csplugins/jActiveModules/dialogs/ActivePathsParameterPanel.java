@@ -7,15 +7,15 @@
 package csplugins.jActiveModules.dialogs;
 //-----------------------------------------------------------------------------
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.CardLayout;
-import java.awt.Frame;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Dimension;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -23,14 +23,15 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
 
-import javax.swing.SwingConstants;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -41,33 +42,24 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import cytoscape.view.cytopanels.CytoPanel;
-
-import java.util.List;
-import java.util.Collections;
-import java.util.Vector;
-import java.io.IOException;
 
 import org.jdesktop.layout.GroupLayout;
 
-import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import csplugins.jActiveModules.ActiveModulesUI;
-import csplugins.jActiveModules.ActivePaths;
-
+import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import cytoscape.view.cytopanels.CytoPanel;
 
 
-public class ActivePathsParametersPopupDialog extends JPanel {
+public class ActivePathsParameterPanel extends JPanel {
+	
+	private static final long serialVersionUID = -6759180275710507653L;
+
 	JTextField readout;
 
 	ActivePathFinderParameters apfParams;
@@ -140,7 +132,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 	JDialog helpDialog;
 
 	// -----------------------------------------------------------------------------
-	public ActivePathsParametersPopupDialog(// ActivePathsParametersPopupDialogListener
+	public ActivePathsParameterPanel(// ActivePathsParametersPopupDialogListener
 			// listener,
 			Frame parentFrame, String title,
 			ActivePathFinderParameters incomingApfParams,
@@ -1276,7 +1268,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// listener.cancelActivePathsFinding ();
 			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-			cytoPanel.remove(ActivePathsParametersPopupDialog.this);
+			cytoPanel.remove(ActivePathsParameterPanel.this);
 		}
 
 	} // DismissAction

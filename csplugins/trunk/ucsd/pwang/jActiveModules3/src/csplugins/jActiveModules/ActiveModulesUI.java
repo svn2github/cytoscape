@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import csplugins.jActiveModules.dialogs.ActivePathsParametersPopupDialog;
+import csplugins.jActiveModules.dialogs.ActivePathsParameterPanel;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -72,7 +72,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	 * jActiveModules, wiht a gui interface
 	 */
 	protected class SetParametersAction extends AbstractAction {
-		private ActivePathsParametersPopupDialog paramsDialog = null;
+		private ActivePathsParameterPanel paramsDialog = null;
 
 		public SetParametersAction() {
 			super("jActiveModules");
@@ -91,10 +91,10 @@ public class ActiveModulesUI extends CytoscapePlugin {
 								"jActiveModules", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
+			final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
 					SwingConstants.WEST);
 			if (paramsDialog == null) {
-				paramsDialog = new ActivePathsParametersPopupDialog(Cytoscape
+				paramsDialog = new ActivePathsParameterPanel(Cytoscape
 						.getDesktop(), "Find Active Modules Parameters",
 						apfParams, ActiveModulesUI.this);
 				paramsDialog.setVisible(true);
