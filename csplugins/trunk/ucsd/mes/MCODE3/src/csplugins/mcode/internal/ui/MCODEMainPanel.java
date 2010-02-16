@@ -1,25 +1,36 @@
 package csplugins.mcode.internal.ui;
 
-import cytoscape.Cytoscape;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import javax.swing.*;
-
-import csplugins.mcode.internal.MCODECurrentParameters;
-import csplugins.mcode.internal.MCODEParameterSet;
-import csplugins.mcode.internal.action.MCODEAboutAction;
-import csplugins.mcode.internal.action.MCODEHelpAction;
-import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JToolTip;
+import javax.swing.SwingConstants;
+
+import csplugins.mcode.internal.MCODECurrentParameters;
+import csplugins.mcode.internal.MCODEParameterSet;
+import csplugins.mcode.internal.action.MCODEAboutAction;
+import csplugins.mcode.internal.action.MCODEHelpAction;
+import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
+import cytoscape.Cytoscape;
+import cytoscape.view.cytopanels.CytoPanel;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center

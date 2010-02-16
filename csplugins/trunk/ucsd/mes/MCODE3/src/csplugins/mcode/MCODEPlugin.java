@@ -36,35 +36,32 @@
  **/
 package csplugins.mcode;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.plugin.CytoscapePlugin;
-
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import csplugins.mcode.internal.action.MCODEMainPanelAction;
+import cytoscape.Cytoscape;
+import cytoscape.plugin.CytoscapePlugin;
 
 /**
- * MCODE Network Clustering Plug In.
- * Clusters a graph.
+ * MCODE Network Clustering Plug In. Clusters a graph.
  * 
  * Refactored by Kei Ono for Group compatibility.
- *
+ * 
  * @author Gary Bader
  * @author Vuk Pavlovic
  */
 public class MCODEPlugin extends CytoscapePlugin {
-	
+
 	// Name of the viewer
 	public static final String DEFAULT_VIEWER_NAME = "moduleFinderViewer";
-	
+
 	/**
 	 * Constructor for the MCODE plugin.
 	 */
 	public MCODEPlugin() {
-                final JMenuItem menuItem = new JMenuItem("MCODE...");
-                menuItem.addActionListener(new MCODEMainPanelAction());
-                Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...").add(menuItem);
+		final JMenuItem menuItem = new JMenuItem("MCODE...");
+		menuItem.addActionListener(new MCODEMainPanelAction());
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().
+			getMenu("Plugins.Module Finders...").add(menuItem);
 	}
 }

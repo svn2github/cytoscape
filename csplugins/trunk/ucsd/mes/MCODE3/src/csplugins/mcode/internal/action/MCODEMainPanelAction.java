@@ -1,19 +1,16 @@
 package csplugins.mcode.internal.action;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+
+import csplugins.mcode.internal.ui.MCODEMainPanel;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.visual.VisualMappingManager;
-
-import javax.swing.*;
-
-import csplugins.mcode.MCODEPlugin;
-import csplugins.mcode.internal.ui.MCODEMainPanel;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URL;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -68,10 +65,9 @@ public class MCODEMainPanelAction implements ActionListener {
      * @param event Menu Item Selected.
      */
     public void actionPerformed(ActionEvent event) {
-        //display MCODEMainPanel in left cytopanel
-        CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
-   
+    		//display MCODEMainPanel in left cytopanel
+    		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+    		
         int index = cytoPanel.indexOfComponent(mainPanel);
 		
 		if ( index <= 0 ) {
