@@ -63,6 +63,7 @@ public class ActivePathsParameterPanel extends JPanel {
 	JTextField readout;
 
 	ActivePathFinderParameters apfParams;
+	
 	static String NONRANDOM = "Non-Random Starting Graph";
 	static String ANNEAL = "Anneal";
 	static String SEARCH = "Search";
@@ -132,14 +133,11 @@ public class ActivePathsParameterPanel extends JPanel {
 	JDialog helpDialog;
 
 	// -----------------------------------------------------------------------------
-	public ActivePathsParameterPanel(// ActivePathsParametersPopupDialogListener
-			// listener,
-			Frame parentFrame, String title,
+	public ActivePathsParameterPanel(
 			ActivePathFinderParameters incomingApfParams,
 			ActiveModulesUI parentUI) {
 		// uses copy constructor so that changes aren't committed if you
 		// dismiss.
-		// apfParams = new ActivePathFinderParameters(incomingApfParams);
 		apfParams = incomingApfParams;
 		this.parentUI = parentUI;
 

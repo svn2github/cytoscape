@@ -94,8 +94,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 			final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
 					SwingConstants.WEST);
 			if (paramsDialog == null) {
-				paramsDialog = new ActivePathsParameterPanel(Cytoscape
-						.getDesktop(), "Find Active Modules Parameters",
+				paramsDialog = new ActivePathsParameterPanel(
 						apfParams, ActiveModulesUI.this);
 				paramsDialog.setVisible(true);
 			}
