@@ -1,5 +1,6 @@
 package org.idekerlab.ModFindPlugin.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -8,6 +9,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -24,6 +26,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
 
 /**
@@ -31,7 +34,7 @@ import cytoscape.view.cytopanels.CytoPanel;
  * @author kono
  */
 public class SearchPropertyPanel extends JPanel implements
-		PropertyChangeListener, MultiHashMapDefinitionListener {
+		MultiHashMapDefinitionListener {
 
 	private static final long serialVersionUID = -3352470909434196700L;
 
@@ -45,14 +48,12 @@ public class SearchPropertyPanel extends JPanel implements
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel() {
 		initComponents();
-		this.setMinimumSize(new Dimension(370, 450));
+		this.setMinimumSize(new Dimension(310, 430));
 
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition()
 				.addDataDefinitionListener(this);
 
 		updateAttributeLists();
-		updateNetworkList();
 
 		// Set defaults
 		this.alphaTextField.setText(Double.toString(DEF_ALPHA));
@@ -72,8 +73,14 @@ public class SearchPropertyPanel extends JPanel implements
 	 */
 	@SuppressWarnings("unchecked")
 	private void initComponents() {
-		networkLabel = new javax.swing.JLabel();
-		networkComboBox = new javax.swing.JComboBox();
+		this.setLayout(new BorderLayout());
+		topPanel = new JPanel();
+		
+		networkPanel = new NetworkSelectorPanel();
+		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
+		
+		this.add(networkPanel, BorderLayout.PAGE_START);
+		
 		edgeAttributePanel = new javax.swing.JPanel();
 		physicalEdgeLabel = new javax.swing.JLabel();
 		physicalEdgeComboBox = new javax.swing.JComboBox();
@@ -93,13 +100,6 @@ public class SearchPropertyPanel extends JPanel implements
 		edgeScoreLabel = new javax.swing.JLabel();
 		edgeScoreTextField = new javax.swing.JTextField();
 
-		networkLabel.setText("Target Network:");
-
-		networkComboBox.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					networkComboBoxActionPerformed(evt);
-				}
-			});
 
 		edgeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Attributes"));
 
@@ -251,16 +251,14 @@ public class SearchPropertyPanel extends JPanel implements
 							       .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 							  );
 
-		GroupLayout layout = new GroupLayout(this);
-		this.setLayout(layout);
+		GroupLayout layout = new GroupLayout(topPanel);
+		topPanel.setLayout(layout);
 		layout.setHorizontalGroup(
 					  layout.createParallelGroup(GroupLayout.LEADING)
 					  .add(layout.createSequentialGroup()
 					       .addContainerGap()
 					       .add(layout.createParallelGroup(GroupLayout.LEADING)
 						    .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-							 .add(networkLabel, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
-							 .add(networkComboBox, 0, 300, Short.MAX_VALUE)
 							 .add(12, 12, 12))
 						    .add(GroupLayout.TRAILING, layout.createSequentialGroup()
 							 .add(layout.createParallelGroup(GroupLayout.TRAILING)
@@ -279,9 +277,7 @@ public class SearchPropertyPanel extends JPanel implements
 		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
 					.add(layout.createSequentialGroup()
 					     .addContainerGap()
-					     .add(layout.createParallelGroup(GroupLayout.BASELINE)
-						  .add(networkLabel)
-						  .add(networkComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					     .add(layout.createParallelGroup(GroupLayout.BASELINE))
 					     .addPreferredGap(LayoutStyle.RELATED)
 					     .add(edgeAttributePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					     .addPreferredGap(LayoutStyle.RELATED)
@@ -295,6 +291,8 @@ public class SearchPropertyPanel extends JPanel implements
 						  .add(helpButton))
 					     .addContainerGap())
 					);
+		
+		this.add(topPanel, BorderLayout.CENTER);
 	}// </editor-fold>
 
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -332,9 +330,6 @@ public class SearchPropertyPanel extends JPanel implements
 		cytoPanel.remove(this);
 	}
 
-	private void networkComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
-	}
 
 	private void physicalEdgeComboBoxActionPerformed(
 			java.awt.event.ActionEvent evt) {
@@ -364,13 +359,14 @@ public class SearchPropertyPanel extends JPanel implements
 	private javax.swing.JComboBox geneticEdgeComboBox;
 	private javax.swing.JLabel geneticEdgeLabel;
 	private javax.swing.JButton helpButton;
-	private javax.swing.JComboBox networkComboBox;
-	private javax.swing.JLabel networkLabel;
 	private javax.swing.JComboBox physicalEdgeComboBox;
 	private javax.swing.JLabel physicalEdgeLabel;
 	private javax.swing.JPanel scorePanel;
 	private javax.swing.JButton searchButton;
 	private javax.swing.JPanel visualizationPanel;
+	
+	private NetworkSelectorPanel networkPanel;
+	private JPanel topPanel;
 	 
 
 	// End of variables declaration
@@ -410,36 +406,16 @@ public class SearchPropertyPanel extends JPanel implements
 			physicalEdgeComboBox.setSelectedItem(physicalSelected);
 	}
 
-	private void updateNetworkList() {
-		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
-		final SortedSet<String> networkNames = new TreeSet<String>();
-
-		for (CyNetwork net : networks)
-			networkNames.add(net.getTitle());
-
-		networkComboBox.removeAllItems();
-		for (String name : networkNames)
-			networkComboBox.addItem(name);
-
-		networkComboBox.setSelectedItem(Cytoscape.getCurrentNetwork()
-				.getTitle());
-	}
 
 	public void updateState() {
-		updateNetworkList();
 		updateAttributeLists();
 	}
 
 	private boolean buildSearchParameter() {
 		parameters = new SearchParameters();
-
+		
 		// Set network
-		for (CyNetwork net : Cytoscape.getNetworkSet()) {
-			if (net.getIdentifier().equals(networkComboBox.getSelectedItem())) {
-				parameters.setNetwork(net);
-				break;
-			}
-		}
+		parameters.setNetwork(networkPanel.getSelectedNetwork());
 
 		// Set edge attributes.
 		final Object geneticEdgeItem  = geneticEdgeComboBox.getSelectedItem();
@@ -476,20 +452,6 @@ public class SearchPropertyPanel extends JPanel implements
 		}
 
 		return true;
-	}
-
-	/**
-	 * For updating network combobox.
-	 * 
-	 */
-	public void propertyChange(PropertyChangeEvent evt) {
-		final String propName = evt.getPropertyName();
-
-		if (propName.equals(Cytoscape.NETWORK_CREATED)) {
-			updateNetworkList();
-		} else if (propName.equals(Cytoscape.NETWORK_DESTROYED)) {
-			networkComboBox.removeItem(Cytoscape.getNetwork((String)evt.getNewValue()).getTitle());
-		}
 	}
 
 	public void attributeDefined(String attrName) {

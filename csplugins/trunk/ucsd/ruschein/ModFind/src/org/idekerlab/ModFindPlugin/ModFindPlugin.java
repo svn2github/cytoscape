@@ -10,8 +10,6 @@ import org.idekerlab.ModFindPlugin.ui.SearchPropertyPanel;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
