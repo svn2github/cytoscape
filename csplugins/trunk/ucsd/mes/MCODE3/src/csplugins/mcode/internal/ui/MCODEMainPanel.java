@@ -1,6 +1,7 @@
 package csplugins.mcode.internal.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -30,6 +31,7 @@ import csplugins.mcode.internal.action.MCODEAboutAction;
 import csplugins.mcode.internal.action.MCODEHelpAction;
 import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
 import cytoscape.Cytoscape;
+import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
 
 /**
@@ -70,7 +72,10 @@ import cytoscape.view.cytopanels.CytoPanel;
  * The parameter change cytpanel which the user can use to select scope and change the scoring and finding parameters
  */
 public class MCODEMainPanel extends JPanel {
-    //Parameters for MCODE
+    
+	private static final long serialVersionUID = -1193166321778330446L;
+
+	//Parameters for MCODE
     MCODEParameterSet currentParamsCopy; // stores current parameters - populates panel fields
 
     DecimalFormat decFormat; // used in the formatted text fields
@@ -99,13 +104,20 @@ public class MCODEMainPanel extends JPanel {
     JCheckBox fluffCheckBox;
     JFormattedTextField fluffNodeDensityCutOffFormattedTextField;
     JFormattedTextField maxDepthFormattedTextField;
-
+    
+    private final NetworkSelectorPanel networkPanel;
     /**
      * The actual parameter change panel that builds the UI
      *
      */
     public MCODEMainPanel() {
-        setLayout(new BorderLayout());
+    		// Overall panel settings
+        this.setMinimumSize(new Dimension(310, 420));
+        this.setPreferredSize(new Dimension(310, 420));
+    		this.setLayout(new BorderLayout());
+    		
+    		networkPanel = new NetworkSelectorPanel();
+    		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
 
         //get the current parameters
         currentParamsCopy = MCODECurrentParameters.getParamsCopy(null);
@@ -115,9 +127,9 @@ public class MCODEMainPanel extends JPanel {
         decFormat.setParseIntegerOnly(true);
 
         //create the three main panels: scope, advanced options, and bottom
-        JPanel scopePanel = createScopePanel();
-        MCODECollapsiblePanel advancedOptionsPanel = createAdvancedOptionsPanel();
-        JPanel bottomPanel = createBottomPanel();
+        final JPanel scopePanel = createScopePanel();
+        final MCODECollapsiblePanel advancedOptionsPanel = createAdvancedOptionsPanel();
+        final JPanel bottomPanel = createBottomPanel();
 
         //Since the advanced options panel is being added to the center of this border layout
         //it will stretch it's height to fit the main panel.  To prevent this we create an
@@ -145,12 +157,16 @@ public class MCODEMainPanel extends JPanel {
      * @return panel containing the scope option buttons
      */
     private JPanel createScopePanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    		
+    		
+        final JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0,1));
         panel.setBorder(BorderFactory.createTitledBorder("Find Cluster(s)"));
+        
+        panel.add(networkPanel);
 
-        JRadioButton scopeNetwork = new JRadioButton("in Whole Network", currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK));
-        JRadioButton scopeSelection = new JRadioButton("from Selection", currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION));
+        final JRadioButton scopeNetwork = new JRadioButton("in Whole Network", currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK));
+        final JRadioButton scopeSelection = new JRadioButton("from Selection", currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION));
 
         scopeNetwork.setActionCommand(MCODEParameterSet.NETWORK);
         scopeSelection.setActionCommand(MCODEParameterSet.SELECTION);
@@ -516,7 +532,7 @@ public class MCODEMainPanel extends JPanel {
         aboutButton.addActionListener(new MCODEAboutAction());
 
         JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy));
+        searchButton.addActionListener(new MCODEScoreAndFindAction(currentParamsCopy,  networkPanel));
 
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new MCODEMainPanel.CloseAction(this));

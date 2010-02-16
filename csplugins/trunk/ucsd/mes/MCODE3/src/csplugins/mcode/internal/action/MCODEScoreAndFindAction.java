@@ -2,28 +2,22 @@ package csplugins.mcode.internal.action;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 
-import csplugins.mcode.MCODEPlugin;
 import csplugins.mcode.internal.MCODEAlgorithm;
 import csplugins.mcode.internal.MCODECurrentParameters;
 import csplugins.mcode.internal.MCODEParameterSet;
-import csplugins.mcode.internal.MCODEVisualStyle;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.VisualMappingManager;
+import cytoscape.util.swing.NetworkSelectorPanel;
+import cytoscape.view.NetworkPanel;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -80,11 +74,13 @@ public class MCODEScoreAndFindAction implements ActionListener {
 
 	int resultCounter = 0;
 
-	MCODEParameterSet currentParamsCopy;
+	private MCODEParameterSet currentParamsCopy;
+	private NetworkSelectorPanel networkPanel;
 
-	public MCODEScoreAndFindAction(MCODEParameterSet currentParamsCopy) {
+	public MCODEScoreAndFindAction(MCODEParameterSet currentParamsCopy, NetworkSelectorPanel networkPanel) {
 		this.currentParamsCopy = currentParamsCopy;
 		networkManager = new HashMap<String, MCODEAlgorithm>();
+		this.networkPanel = networkPanel;
 	}
 
 	/**
@@ -99,7 +95,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
 		String callerID = "MCODEScoreAndFindAction.actionPerformed";
 		String interruptedMessage = "";
 		// get the network object, this contains the graph
-		final CyNetwork network = Cytoscape.getCurrentNetwork();
+		final CyNetwork network = networkPanel.getSelectedNetwork();
 		if (network == null) {
 			System.err.println("In " + callerID + ":");
 			System.err.println("Can't get current network.");

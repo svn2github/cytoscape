@@ -1,5 +1,7 @@
 package csplugins.mcode.internal;
 
+import cytoscape.CyNetwork;
+
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
@@ -63,6 +65,7 @@ public class MCODEParameterSet {
 
 	// result viewing parameters (only used for dialog box of results)
 	private int defaultRowHeight;
+	
 
 	/**
 	 * Constructor for the parameter set object. Default parameters are: scope =
