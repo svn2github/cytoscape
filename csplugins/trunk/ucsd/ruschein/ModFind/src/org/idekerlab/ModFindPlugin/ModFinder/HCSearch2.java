@@ -1,4 +1,4 @@
-package org.idekerlab.ModFindPlugin.networks.ModFinder;
+package org.idekerlab.ModFindPlugin.ModFinder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,17 +10,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import cytoscape.task.TaskMonitor;
-
+import org.idekerlab.ModFindPlugin.data.DoubleVector;
 import org.idekerlab.ModFindPlugin.networks.SFEdge;
 import org.idekerlab.ModFindPlugin.networks.SFNetwork;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
-import org.idekerlab.ModFindPlugin.data.DoubleVector;
 import org.idekerlab.ModFindPlugin.utilities.MemoryReporter;
 import org.idekerlab.ModFindPlugin.utilities.ThreadPriorityFactory;
+
+import cytoscape.task.TaskMonitor;
 
 
 public class HCSearch2 {

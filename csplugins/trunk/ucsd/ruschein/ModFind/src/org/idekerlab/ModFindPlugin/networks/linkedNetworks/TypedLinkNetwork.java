@@ -1,9 +1,15 @@
 package org.idekerlab.ModFindPlugin.networks.linkedNetworks;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.idekerlab.ModFindPlugin.utilities.IIterator;
 import org.idekerlab.ModFindPlugin.utilities.files.FileIterator;
-import org.idekerlab.ModFindPlugin.networks.ModFinder.BFEdge;
 
 
 /**

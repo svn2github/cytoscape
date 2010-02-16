@@ -8,10 +8,11 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import org.idekerlab.ModFindPlugin.networks.ModFinder.BFEdge;
+import org.idekerlab.ModFindPlugin.ModFinder.BFEdge;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
+
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;

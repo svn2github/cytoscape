@@ -1,11 +1,15 @@
-package org.idekerlab.ModFindPlugin.networks.ModFinder;
+package org.idekerlab.ModFindPlugin.ModFinder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
-import org.idekerlab.ModFindPlugin.networks.matrixNetworks.FloatMatrixNetwork;
-import org.idekerlab.ModFindPlugin.networks.*;
 import org.idekerlab.ModFindPlugin.data.DoubleVector;
+import org.idekerlab.ModFindPlugin.networks.SFNetwork;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.ModFindPlugin.networks.matrixNetworks.FloatMatrixNetwork;
 
 public abstract class HCScoringFunction {
 

@@ -1,11 +1,11 @@
-package org.idekerlab.ModFindPlugin.networks.ModFinder;
+package org.idekerlab.ModFindPlugin.ModFinder;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.idekerlab.ModFindPlugin.networks.SFNetwork;
-import org.idekerlab.ModFindPlugin.networks.hashNetworks.*;
-import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 
 public class SouravScore extends HCScoringFunction{
 

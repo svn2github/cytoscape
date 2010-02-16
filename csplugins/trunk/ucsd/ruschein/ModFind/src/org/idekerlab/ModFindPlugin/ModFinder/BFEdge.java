@@ -1,8 +1,10 @@
-package org.idekerlab.ModFindPlugin.networks.ModFinder;
+package org.idekerlab.ModFindPlugin.ModFinder;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
+import org.idekerlab.ModFindPlugin.networks.linkedNetworks.Finalish;
 
 /***
  * An edge object for use with ONetworks to track statistics for the HCNetsearch algorithm.

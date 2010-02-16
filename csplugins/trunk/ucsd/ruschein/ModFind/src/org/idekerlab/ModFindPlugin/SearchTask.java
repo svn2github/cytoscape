@@ -1,15 +1,13 @@
 package org.idekerlab.ModFindPlugin;
 
-import java.util.ArrayList;
-
+import org.idekerlab.ModFindPlugin.ModFinder.BFEdge;
+import org.idekerlab.ModFindPlugin.ModFinder.HCScoringFunction;
+import org.idekerlab.ModFindPlugin.ModFinder.HCSearch2;
+import org.idekerlab.ModFindPlugin.ModFinder.SouravScore;
 import org.idekerlab.ModFindPlugin.networks.SFNetwork;
-import org.idekerlab.ModFindPlugin.networks.ModFinder.BFEdge;
-import org.idekerlab.ModFindPlugin.networks.ModFinder.HCScoringFunction;
-import org.idekerlab.ModFindPlugin.networks.ModFinder.HCSearch2;
-import org.idekerlab.ModFindPlugin.networks.ModFinder.SouravScore;
-import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkEdge;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNetwork;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
+
 import cytoscape.CyNetwork;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
