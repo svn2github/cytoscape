@@ -1,9 +1,11 @@
 package csplugins.mcode.internal.action;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import csplugins.mcode.internal.ui.MCODEMainPanel;
@@ -53,26 +55,27 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * finding parameters are modified
  */
 public class MCODEMainPanelAction implements ActionListener {
-    MCODEMainPanel mainPanel;
+	JScrollPane scrollPane;
 
-    public MCODEMainPanelAction() {
-		mainPanel = new MCODEMainPanel();
-    }
+	public MCODEMainPanelAction() {
+	}
 
-    /**
-     * This method is called when the user wants to start MCODE.
-     *
-     * @param event Menu Item Selected.
-     */
-    public void actionPerformed(ActionEvent event) {
+	/**
+	 * This method is called when the user wants to start MCODE.
+	 *
+	 * @param event Menu Item Selected.
+	 */
+	public void actionPerformed(ActionEvent event) {
     		//display MCODEMainPanel in left cytopanel
     		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
     		
-        int index = cytoPanel.indexOfComponent(mainPanel);
+		int index = cytoPanel.indexOfComponent(scrollPane);
 		
 		if ( index <= 0 ) {
-			cytoPanel.add("MCODE PlugIn", mainPanel);
-	       	index = cytoPanel.indexOfComponent(mainPanel);
+			final MCODEMainPanel mainPanel = new MCODEMainPanel();
+			scrollPane = new JScrollPane(mainPanel);
+			cytoPanel.add("MCODE PlugIn", scrollPane);
+			index = cytoPanel.indexOfComponent(scrollPane);
 		}
 
 		// if adding the cytopanel somehow fails...
