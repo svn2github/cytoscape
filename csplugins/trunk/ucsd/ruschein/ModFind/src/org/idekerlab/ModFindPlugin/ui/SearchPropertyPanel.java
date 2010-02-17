@@ -48,7 +48,6 @@ public class SearchPropertyPanel extends JPanel implements
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel() {
 		initComponents();
-		this.setMinimumSize(new Dimension(310, 430));
 
 		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition()
 				.addDataDefinitionListener(this);
