@@ -69,6 +69,7 @@ public class CyHelpBroker {
 		try {
 			hs = new HelpSet(null, hsURL);
 			hb = hs.createHelpBroker();
+			hb.setCurrentID("d0e1");
 		} catch (Exception e) {
 			CyLogger.getLogger().info("HelpSet " + e.getMessage());
 			CyLogger.getLogger().info("HelpSet " + hs + " not found.");
