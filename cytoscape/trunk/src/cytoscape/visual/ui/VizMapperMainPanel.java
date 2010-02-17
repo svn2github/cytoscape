@@ -781,6 +781,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (ignore)
 			return;
 
+		System.out.println("-----------------> Stitching to : " + vsName);
+		System.out.println("-----------------> Last = " + lastVSName);
 		// If new VS name is the same, ignore.
 		if (lastVSName == vsName)
 			return;
@@ -856,6 +858,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// Cleanup desktop.
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);
+		
+		// Update last visual style
+		lastVSName = vsName;
 	}
 
 	private static final String CATEGORY_UNUSED = "Unused Properties";
@@ -3680,6 +3685,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public void stateChanged(ChangeEvent e) {
 		if (ignore)
 			return;
+		
+		System.out.println(e.getSource() + " ---> Got State change Event!==================:\n\n");
+		for(VisualStyle style: vmm.getCalculatorCatalog().getVisualStyles()) {
+			System.out.println("\tStyle =" + style.getName());
+		}
+		
 		
 		// Get current Visual Style
 		final String currentName = vmm.getVisualStyle().getName();
