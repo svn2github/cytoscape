@@ -305,8 +305,13 @@ public class ModPanel extends JPanel implements ActionListener {
 			field2Label.setVisible(false);
 			field1.setVisible(true);
 			field2.setVisible(false);
+		} else if (action.equals(ActionName.MUL) || action.equals(ActionName.DIV)) {
+			between.setText("by ");
+			field1.setVisible(true);
+			field2Label.setVisible(false);
+			field2.setVisible(false);
 		} else {
-			between.setText("to: ");
+			between.setText("to ");
 			field1.setVisible(true);
 			field2Label.setVisible(false);
 			field2.setVisible(false);
