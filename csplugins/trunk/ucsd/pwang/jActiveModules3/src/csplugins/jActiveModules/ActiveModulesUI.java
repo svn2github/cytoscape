@@ -11,6 +11,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
@@ -33,12 +34,16 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	protected ActivePathFinderParameters apfParams;
 	protected ThreadExceptionHandler xHandler;
 
+	private ActivePathsParameterPanel mainPanel;
+
 	public ActiveModulesUI() {
 		System.out.println("Starting jActiveModules plugin!\n");
 
 		final JMenuItem menuItem = new JMenuItem("jActiveModules...");
-                menuItem.addActionListener(new SetParametersAction());
-                Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...").add(menuItem);
+		menuItem.addActionListener(new SetParametersAction());
+		
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().
+			getMenu("Plugins.Module Finders...").add(menuItem);
 
 		/* initialize variables */
 		apfParams = new ActivePathFinderParameters(CytoscapeInit
@@ -57,9 +62,9 @@ public class ActiveModulesUI extends CytoscapePlugin {
 		if (evt.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED
 				&& apfParams.getRun()) {
 			if (apfParams.getRandomizeExpression()) {
-				startRandomizeAndRun(Cytoscape.getCurrentNetwork());
+				startRandomizeAndRun(mainPanel.getTargetNetwork());
 			} else {
-				activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),
+				activePaths = new ActivePaths(mainPanel.getTargetNetwork(),
 						apfParams, this);
 				Thread t = new Thread(activePaths);
 				t.start();
@@ -72,7 +77,8 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	 * jActiveModules, wiht a gui interface
 	 */
 	protected class SetParametersAction extends AbstractAction {
-		private ActivePathsParameterPanel paramsDialog = null;
+		
+		private static final long serialVersionUID = -7836213413255212288L;
 
 		public SetParametersAction() {
 			super("jActiveModules");
@@ -83,25 +89,24 @@ public class ActiveModulesUI extends CytoscapePlugin {
 				JOptionPane
 						.showMessageDialog(
 								Cytoscape.getDesktop(),
-								"JActiveModules cannot start because it cannot find\n" +
-								"any p-value attributes! JActiveModules requires at\n" + 
-								"least one node attribute with values ranging between\n" +
-								"0 and 1 of type 'float' (i.e. decimal or real number).\n" +
-								"Please load an appropriate attribute and try again.",
+								"JActiveModules cannot start because it cannot find\n"
+										+ "any p-value attributes! JActiveModules requires at\n"
+										+ "least one node attribute with values ranging between\n"
+										+ "0 and 1 of type 'float' (i.e. decimal or real number).\n"
+										+ "Please load an appropriate attribute and try again.",
 								"jActiveModules", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
 					SwingConstants.WEST);
-			if (paramsDialog == null) {
-				paramsDialog = new ActivePathsParameterPanel(
-						apfParams, ActiveModulesUI.this);
-				paramsDialog.setVisible(true);
+			if (mainPanel == null) {
+				mainPanel = new ActivePathsParameterPanel(apfParams,
+						ActiveModulesUI.this);
 			}
-			int index = cytoPanel.indexOfComponent(paramsDialog);
+			int index = cytoPanel.indexOfComponent(mainPanel);
 			if (index < 0) {
-				cytoPanel.add("jActiveModules", paramsDialog);
-				index = cytoPanel.indexOfComponent(paramsDialog);
+				cytoPanel.add("jActiveModules", mainPanel);
+				index = cytoPanel.indexOfComponent(mainPanel);
 			}
 			cytoPanel.setSelectedIndex(index);
 			cytoPanel.setState(CytoPanelState.DOCK);
@@ -132,7 +137,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 		}
 
 		public void actionPerformed(ActionEvent ae) {
-			startFindActivePaths(Cytoscape.getCurrentNetwork());
+			startFindActivePaths(mainPanel.getTargetNetwork());
 		}
 	}
 
@@ -161,7 +166,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),
+			activePaths = new ActivePaths(mainPanel.getTargetNetwork(),
 					apfParams, ActiveModulesUI.this);
 			activePaths.scoreActivePath();
 		}
@@ -181,7 +186,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			startRandomizeAndRun(Cytoscape.getCurrentNetwork());
+			startRandomizeAndRun(mainPanel.getTargetNetwork());
 		}
 	}
 

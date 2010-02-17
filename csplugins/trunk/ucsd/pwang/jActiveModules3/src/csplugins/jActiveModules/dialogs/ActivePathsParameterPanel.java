@@ -5,14 +5,14 @@
 // $Author: rmkelley $
 //-----------------------------------------------------------------------------
 package csplugins.jActiveModules.dialogs;
+
 //-----------------------------------------------------------------------------
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -26,8 +26,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -52,18 +52,19 @@ import org.jdesktop.layout.GroupLayout;
 
 import csplugins.jActiveModules.ActiveModulesUI;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
 
-
 public class ActivePathsParameterPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = -6759180275710507653L;
 
 	JTextField readout;
 
 	ActivePathFinderParameters apfParams;
-	
+
 	static String NONRANDOM = "Non-Random Starting Graph";
 	static String ANNEAL = "Anneal";
 	static String SEARCH = "Search";
@@ -79,9 +80,9 @@ public class ActivePathsParameterPanel extends JPanel {
 	JTextField intervalNum;
 	JLabel intervalLabel;
 
-    JPanel overlapPanel;
-    JTextField overlapNum;
-    JLabel overlapLabel;
+	JPanel overlapPanel;
+	JTextField overlapNum;
+	JLabel overlapLabel;
 
 	JPanel pathPanel;
 	JTextField pathNum;
@@ -92,7 +93,6 @@ public class ActivePathsParameterPanel extends JPanel {
 	JLabel iterLabel;
 
 	JPanel annealExtPanel;
-	JPanel generalExtPanel;
 	JPanel hfcPanel;
 	JCheckBox quenchCheck;
 	JCheckBox edgesCheck;
@@ -125,130 +125,160 @@ public class ActivePathsParameterPanel extends JPanel {
 	JPanel searchContentPanel;
 	JPanel currentContentPanel;
 
-	JPanel attrSelectPanel;
 	JPanel optionsPanel;
-	JList exprAttrsList;
-	JButton findModulesButton;
-	ActiveModulesUI parentUI;
+	private JList exprAttrsList;
+
+	// Button Panel for command buttons.
+	private JButton findModulesButton;
+
+	private ActiveModulesUI pluginMainClass;
 	JDialog helpDialog;
+	
+	private NetworkSelectorPanel networkPanel;
+	
 
 	// -----------------------------------------------------------------------------
 	public ActivePathsParameterPanel(
 			ActivePathFinderParameters incomingApfParams,
 			ActiveModulesUI parentUI) {
+
+		// Set global parameters
+		this.setLayout(new BorderLayout());
+		this.setMinimumSize(new Dimension(320, 420));
+		this.setPreferredSize(new Dimension(320, 420));
+
 		// uses copy constructor so that changes aren't committed if you
 		// dismiss.
 		apfParams = incomingApfParams;
-		this.parentUI = parentUI;
+		this.pluginMainClass = parentUI;
 
-		if ( apfParams == null )
-			System.out.println("WTF");
-
-		JPanel childPanel = new JPanel(new GridBagLayout());
+		if (apfParams == null)
+			throw new IllegalStateException(
+					"Parametr object is null.  Could not initialize jActiveModules plugin.");
 		
+		final JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setPreferredSize(new Dimension(200, 600));
+
 		readout = new JTextField(new String("seed: "
 				+ apfParams.getRandomSeed()));
 		RandomSeedTextListener readoutListener = new RandomSeedTextListener();
 		readout.addFocusListener(readoutListener);
 
-		createExtsController();
-		createAnnealContentPanel();
+		final Container extController = createExtsControllerPanel();
 		createSearchContentPanel();
-		createAnnealSearchController();
+		createAnnealContentPanel();
+		
+		createAnnealSearchControlPanel();
 		createHelpDialog();
+		
+		this.add(createTopPanel(), BorderLayout.PAGE_START);
 
-		GridBagConstraints c = new GridBagConstraints();
-
-		createAttrSelectionPanel();
-		c.fill = GridBagConstraints.BOTH;
-		c.gridx = 0;		c.gridy = 0;
-		c.weightx = 1.0;	c.weighty = 1.0;
-		childPanel.add(attrSelectPanel,c);
-
-		JPanel subOptionsPanel = new JPanel(new GridBagLayout());
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;		c.gridy = 0;
-		c.weightx = 1.0;	c.weighty = 0.0;
-		subOptionsPanel.add(generalExtPanel,c);
-
-		c.gridx = 0;		c.gridy = 1;
-		subOptionsPanel.add(annealSearchControlPanel,c);
-
+		final JPanel subOptionsPanel = new JPanel(new BorderLayout());
+		subOptionsPanel.add(extController, BorderLayout.PAGE_START);
+		subOptionsPanel.add(annealSearchControlPanel, BorderLayout.CENTER);
+		
 		optionsPanel = new JPanel(new CardLayout());
 		optionsPanel.add(new JPanel(), "INACTIVE");
 		optionsPanel.add(subOptionsPanel, "ACTIVE");
-		childPanel.add(optionsPanel,c);
+		mainPanel.add(optionsPanel, BorderLayout.CENTER);
 
-		// /////////////////////////////////////////
-		JPanel buttonPanel = new JPanel();
-
-		JButton helpButton = new JButton(new AbstractAction("?")
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				helpDialog.setVisible(true);
-			}
-		});
-		buttonPanel.add(helpButton, BorderLayout.EAST);
-		findModulesButton = new JButton(new FindModulesAction());
-		buttonPanel.add(findModulesButton, BorderLayout.EAST);
-		JButton dismissButton = new JButton("Close");
-		dismissButton.addActionListener(new DismissAction());
-		buttonPanel.add(dismissButton, BorderLayout.WEST);
-
-		c.gridx = 0;		c.gridy = 2;
-		childPanel.add(buttonPanel,c);
+		this.add(createButtonPanel(), BorderLayout.PAGE_END);
 
 		updateOptionsPanel();
 
-		JScrollPane scrollPane = new JScrollPane(childPanel);
-		setLayout(new GridLayout(1,1));
-		add(scrollPane);
+		final JScrollPane scrollPane = new JScrollPane(mainPanel);
+		this.add(scrollPane, BorderLayout.CENTER);
 
-	} // PopupDialog ctor
+	}
+	
+	private Container createTopPanel() {
+		final JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BorderLayout());
+		
+		// target network selector
+		networkPanel = new NetworkSelectorPanel();
+		networkPanel.setBorder(BorderFactory.createTitledBorder("Analysis Target"));
+		topPanel.add(networkPanel, BorderLayout.PAGE_START);
+		topPanel.add(createAttrSelectionPanel(), BorderLayout.CENTER);
+		return topPanel;
+	}
+	
+	public CyNetwork getTargetNetwork() {
+		return this.networkPanel.getSelectedNetwork();
+	}
 
-	private void createAttrSelectionPanel() {
-		attrSelectPanel = new JPanel();
-		attrSelectPanel.setLayout(new GridLayout(1,1));
-		attrSelectPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	/**
+	 * Setup button panel components.
+	 * 
+	 */
+	private Container createButtonPanel() {
+		final JPanel buttonPanel = new JPanel();
+		buttonPanel.setBorder(BorderFactory.createEtchedBorder());
+		final JButton helpButton = new JButton(new AbstractAction("?") {
 
-		Border border = BorderFactory.createLineBorder(Color.black);
-		Border titledBorder = BorderFactory.createTitledBorder(border,
+			private static final long serialVersionUID = -5964319275031340146L;
+
+			public void actionPerformed(ActionEvent e) {
+				helpDialog.setVisible(true);
+			}
+		});
+
+		buttonPanel.add(helpButton, BorderLayout.EAST);
+		findModulesButton = new JButton(new FindModulesAction());
+		buttonPanel.add(findModulesButton, BorderLayout.EAST);
+
+		final JButton dismissButton = new JButton("Close");
+		dismissButton.addActionListener(new DismissAction());
+		buttonPanel.add(dismissButton, BorderLayout.WEST);
+
+		return buttonPanel;
+	}
+
+	
+	private Container createAttrSelectionPanel() {
+		final JPanel attrSelectPanel = new JPanel();
+		attrSelectPanel.setPreferredSize(new Dimension(200, 150));
+		attrSelectPanel.setLayout(new BorderLayout());
+
+		final Border border = BorderFactory.createLineBorder(Color.black);
+		final Border titledBorder = BorderFactory.createTitledBorder(border,
 				"Expression Attributes For Analysis", TitledBorder.CENTER,
 				TitledBorder.DEFAULT_POSITION);
 		attrSelectPanel.setBorder(titledBorder);
-	
-		List<String> selectedNames = apfParams.getExpressionAttributes();
-		Vector<String> allNames = new Vector<String>(apfParams.getPossibleExpressionAttributes());
-		exprAttrsList = new JList(allNames);
-		exprAttrsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+		final List<String> selectedNames = apfParams.getExpressionAttributes();
+		final List<String> allNames = new ArrayList<String>(apfParams
+				.getPossibleExpressionAttributes());
+		exprAttrsList = new JList(allNames.toArray());
+		exprAttrsList
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		exprAttrsList.setLayoutOrientation(JList.VERTICAL);
-		exprAttrsList.setVisibleRowCount(3);
-		exprAttrsList.addMouseListener(new ExprAttrsListListener(exprAttrsList, apfParams));
-		for ( String name : selectedNames ) { 
+		//exprAttrsList.setVisibleRowCount(3);
+		exprAttrsList.addMouseListener(new ExprAttrsListListener(exprAttrsList,
+				apfParams));
+		for (String name : selectedNames) {
 			int index = allNames.indexOf(name);
-			if ( index != -1 )
+			if (index != -1)
 				exprAttrsList.addSelectionInterval(index, index);
 		}
 
-
-		JScrollPane scrollPane = new JScrollPane(exprAttrsList);
-		attrSelectPanel.add(scrollPane);
+		final JScrollPane scrollPane = new JScrollPane(exprAttrsList);
+		scrollPane.setViewportView(exprAttrsList);
+		attrSelectPanel.add(scrollPane, BorderLayout.CENTER);
+		
+		return attrSelectPanel;
 	}
 
-	protected void updateOptionsPanel()
-	{
-		if (exprAttrsList == null || optionsPanel == null || findModulesButton == null)
+	protected void updateOptionsPanel() {
+		if (exprAttrsList == null || optionsPanel == null
+				|| findModulesButton == null)
 			return;
 		boolean showOptions = exprAttrsList.getSelectedIndices().length != 0;
 		CardLayout cl = (CardLayout) optionsPanel.getLayout();
-		if (showOptions)
-		{
+		if (showOptions) {
 			cl.show(optionsPanel, "ACTIVE");
 			findModulesButton.setEnabled(true);
-		}
-		else
-		{
+		} else {
 			cl.show(optionsPanel, "INACTIVE");
 			findModulesButton.setEnabled(false);
 		}
@@ -256,7 +286,8 @@ public class ActivePathsParameterPanel extends JPanel {
 
 	private void createAnnealContentPanel() {
 		annealContentPanel = new JPanel();
-		annealContentPanel.setLayout(new BoxLayout(annealContentPanel, BoxLayout.PAGE_AXIS));
+		annealContentPanel.setLayout(new BoxLayout(annealContentPanel,
+				BoxLayout.PAGE_AXIS));
 		GridBagConstraints c = new GridBagConstraints();
 
 		createIterationsController();
@@ -280,7 +311,7 @@ public class ActivePathsParameterPanel extends JPanel {
 
 	private void createSearchContentPanel() {
 		searchContentPanel = new JPanel();
-		searchContentPanel.setMinimumSize(new Dimension(300, 400));
+		searchContentPanel.setMinimumSize(new Dimension(200, 200));
 		GridBagLayout gridbag = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
 		searchContentPanel.setLayout(gridbag);
@@ -299,15 +330,15 @@ public class ActivePathsParameterPanel extends JPanel {
 		gridbag.setConstraints(searchPanel, c);
 		searchContentPanel.add(searchPanel);
 
-		Border border = BorderFactory.createLineBorder(Color.black);
-		Border titledBorder = BorderFactory.createTitledBorder(border,
+		final Border border = BorderFactory.createLineBorder(Color.black);
+		final Border titledBorder = BorderFactory.createTitledBorder(border,
 				"Searching Parameters", TitledBorder.CENTER,
 				TitledBorder.DEFAULT_POSITION);
 		searchContentPanel.setBorder(titledBorder);
 	}
 
 	// -----------------------------------------------------------------------------
-	private void createExtsController() {
+	private Container createExtsControllerPanel() {
 		annealExtPanel = new JPanel();
 
 		createHubfindingController();
@@ -319,32 +350,25 @@ public class ActivePathsParameterPanel extends JPanel {
 		quenchCheck.addItemListener(qcListener);
 		JPanel quenchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		quenchPanel.add(quenchCheck);
-		
+
 		JLabel annealingExtLabel = new JLabel("Annealing Extensions:");
 
 		GroupLayout layout = new GroupLayout(annealExtPanel);
 		annealExtPanel.setLayout(layout);
-		layout.setHorizontalGroup(
-			layout.createParallelGroup()
-				.add(annealingExtLabel)
-				.add(quenchPanel)
-				.add(hfcPanel)
-		);
-		layout.setVerticalGroup(
-			layout.createSequentialGroup()
-				.add(annealingExtLabel)
-				.add(quenchPanel)
-				.add(hfcPanel)
-		);
+		layout.setHorizontalGroup(layout.createParallelGroup().add(
+				annealingExtLabel).add(quenchPanel).add(hfcPanel));
+		layout.setVerticalGroup(layout.createSequentialGroup().add(
+				annealingExtLabel).add(quenchPanel).add(hfcPanel));
 
 		// -------------------------------------------------------------
 
-		generalExtPanel = new JPanel();
+		final JPanel generalExtPanel = new JPanel();
+		generalExtPanel.setPreferredSize(new Dimension(300, 150));
 		layout = new GroupLayout(generalExtPanel);
 		generalExtPanel.setLayout(layout);
 
-		Border generalBorder = BorderFactory.createLineBorder(Color.black);
-		Border generalTitledBorder = BorderFactory.createTitledBorder(
+		final Border generalBorder = BorderFactory.createLineBorder(Color.black);
+		final Border generalTitledBorder = BorderFactory.createTitledBorder(
 				generalBorder, "General Parameters", TitledBorder.CENTER,
 				TitledBorder.DEFAULT_POSITION);
 		generalExtPanel.setBorder(generalTitledBorder);
@@ -353,28 +377,19 @@ public class ActivePathsParameterPanel extends JPanel {
 		createPathsController();
 		createOverlapController();
 
-		layout.setHorizontalGroup(
-			layout.createParallelGroup()
-				.add(pathPanel)
-			.add(overlapPanel)
-				.add(mcBox)
-				.add(regionalBox)
-		);
+		layout.setHorizontalGroup(layout.createParallelGroup().add(pathPanel)
+				.add(overlapPanel).add(mcBox).add(regionalBox));
 
-		layout.setVerticalGroup(
-			layout.createSequentialGroup()
-				.add(pathPanel)
-			.add(overlapPanel)
-				.add(mcBox)
-				.add(regionalBox)
-		);
+		layout.setVerticalGroup(layout.createSequentialGroup().add(pathPanel)
+				.add(overlapPanel).add(mcBox).add(regionalBox));
 
-		return;
-
+		return generalExtPanel;
 	}
 
-	private void createAnnealSearchController() {
+	private void createAnnealSearchControlPanel() {
 		annealSearchControlPanel = new JPanel();
+		annealSearchControlPanel.setMinimumSize(new Dimension(300, 400));
+		annealSearchControlPanel.setPreferredSize(new Dimension(300, 400));
 		annealSearchContentPanel = new JPanel(new CardLayout());
 		GroupLayout layout = new GroupLayout(annealSearchControlPanel);
 		annealSearchControlPanel.setLayout(layout);
@@ -388,18 +403,12 @@ public class ActivePathsParameterPanel extends JPanel {
 		annealSearchGroup.add(searchButton);
 		buttonsPanel.add(annealButton);
 		buttonsPanel.add(searchButton);
-		
-		layout.setHorizontalGroup(
-			layout.createParallelGroup()
-				.add(buttonsPanel)
-				.add(annealSearchContentPanel)
-		);
 
-		layout.setVerticalGroup(
-			layout.createSequentialGroup()
-				.add(buttonsPanel)
-				.add(annealSearchContentPanel)
-		);
+		layout.setHorizontalGroup(layout.createParallelGroup()
+				.add(buttonsPanel).add(annealSearchContentPanel));
+
+		layout.setVerticalGroup(layout.createSequentialGroup()
+				.add(buttonsPanel).add(annealSearchContentPanel));
 		Border ascBorder = BorderFactory.createLineBorder(Color.black);
 		Border ascTitledBorder = BorderFactory.createTitledBorder(ascBorder,
 				"Strategy", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
@@ -409,7 +418,6 @@ public class ActivePathsParameterPanel extends JPanel {
 		annealButton.addActionListener(switchListener);
 		searchButton.addActionListener(switchListener);
 
-		CardLayout cl = (CardLayout) annealSearchContentPanel.getLayout();
 		annealSearchContentPanel.add(searchContentPanel, SEARCH);
 		annealSearchContentPanel.add(annealContentPanel, ANNEAL);
 		if (apfParams.getGreedySearch()) {
@@ -424,8 +432,7 @@ public class ActivePathsParameterPanel extends JPanel {
 		annealSearchControlPanel.add(annealSearchContentPanel);
 	}
 
-	private void switchAnnealSearchContentPanel(String name)
-	{
+	private void switchAnnealSearchContentPanel(String name) {
 		CardLayout cl = (CardLayout) annealSearchContentPanel.getLayout();
 		cl.show(annealSearchContentPanel, name);
 	}
@@ -519,13 +526,13 @@ public class ActivePathsParameterPanel extends JPanel {
 				.getSearchDepth()), 2);
 		searchFromNodesBox = new JCheckBox("Search from selected nodes?",
 				apfParams.getSearchFromNodes());
-		JPanel searchFromNodesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		searchFromNodesPanel.add(searchFromNodesBox);
+		final JPanel searchFromNodesPanel = new JPanel(new BorderLayout());
+		searchFromNodesPanel.add(searchFromNodesBox, BorderLayout.LINE_START);
 
-		JPanel searchDepthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		searchDepthPanel.add(new JLabel("Search depth: "));
-		searchDepthPanel.add(searchDepth);
-		
+		final JPanel searchDepthPanel = new JPanel(new BorderLayout());
+		searchDepthPanel.add(new JLabel("Search depth: "), BorderLayout.LINE_START);
+		searchDepthPanel.add(searchDepth, BorderLayout.CENTER);
+
 		maxBox = new JCheckBox("Max depth from start nodes:", apfParams
 				.getEnableMaxDepth());
 		maxDepth = new JTextField(Integer.toString(apfParams.getMaxDepth()), 2);
@@ -534,28 +541,17 @@ public class ActivePathsParameterPanel extends JPanel {
 		maxBox.addItemListener(mListener);
 		maxDepth.addFocusListener(mListener);
 
-		JPanel maxDepthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		maxDepthPanel.add(maxBox);
-		maxDepthPanel.add(maxDepth);
+		final JPanel maxDepthPanel = new JPanel(new BorderLayout());
+		maxDepthPanel.add(maxBox, BorderLayout.LINE_START);
+		maxDepthPanel.add(maxDepth, BorderLayout.CENTER);
 		searchDepth.addFocusListener(listener);
 		searchFromNodesBox.addItemListener(new SFNListener());
 
-		layout.setHorizontalGroup(
-			layout.createParallelGroup()
-				.add(searchDepthPanel)
-				.add(searchFromNodesPanel)
-				.add(maxDepthPanel)
-		);
+		layout.setHorizontalGroup(layout.createParallelGroup().add(
+				searchDepthPanel).add(searchFromNodesPanel).add(maxDepthPanel));
 
-		layout.setVerticalGroup(
-			layout.createSequentialGroup()
-				.add(searchDepthPanel)
-				.add(searchFromNodesPanel)
-				.add(maxDepthPanel)
-		);
-
-		return;
-
+		layout.setVerticalGroup(layout.createSequentialGroup().add(
+				searchDepthPanel).add(searchFromNodesPanel).add(maxDepthPanel));
 	} // createSearchController
 
 	// -----------------------------------------------------------------------------
@@ -584,21 +580,17 @@ public class ActivePathsParameterPanel extends JPanel {
 
 		pathLabel = new JLabel("Number of Modules (1-1000): ");
 		pathNum = new JTextField(Integer.toString(apfParams.getNumberOfPaths()));
-		java.awt.FontMetrics fontMetrics = pathNum.getFontMetrics(pathNum.getFont());
-		pathNum.setMaximumSize(new Dimension( fontMetrics.charWidth('m') * 7, fontMetrics.getHeight() ));
+		java.awt.FontMetrics fontMetrics = pathNum.getFontMetrics(pathNum
+				.getFont());
+		pathNum.setMaximumSize(new Dimension(fontMetrics.charWidth('m') * 7,
+				fontMetrics.getHeight()));
 		pathNum.addFocusListener(new PathListener());
 
-		layout.setHorizontalGroup(
-			layout.createSequentialGroup()
-				.add(pathLabel)
-				.add(pathNum)
-		);
+		layout.setHorizontalGroup(layout.createSequentialGroup().add(pathLabel)
+				.add(pathNum));
 
-		layout.setVerticalGroup(
-			layout.createParallelGroup()
-				.add(pathLabel)
-				.add(pathNum)
-		);
+		layout.setVerticalGroup(layout.createParallelGroup().add(pathLabel)
+				.add(pathNum));
 	} // createPathsController
 
 	private void createOverlapController() {
@@ -607,24 +599,21 @@ public class ActivePathsParameterPanel extends JPanel {
 		overlapPanel.setLayout(layout);
 
 		overlapLabel = new JLabel("Overlap Threshold: ");
-		overlapNum = new JTextField(Double.toString(apfParams.getOverlapThreshold()));
-		java.awt.FontMetrics fontMetrics = overlapNum.getFontMetrics(pathNum.getFont());
-		overlapNum.setMaximumSize(new Dimension( fontMetrics.charWidth('m') * 7, fontMetrics.getHeight() ));
+		overlapNum = new JTextField(Double.toString(apfParams
+				.getOverlapThreshold()));
+		java.awt.FontMetrics fontMetrics = overlapNum.getFontMetrics(pathNum
+				.getFont());
+		overlapNum.setMaximumSize(new Dimension(fontMetrics.charWidth('m') * 7,
+				fontMetrics.getHeight()));
 		overlapNum.addFocusListener(new OverlapListener());
 
-		layout.setHorizontalGroup(
-			layout.createSequentialGroup()
-				.add(overlapLabel)
-				.add(overlapNum)
-		);
+		layout.setHorizontalGroup(layout.createSequentialGroup().add(
+				overlapLabel).add(overlapNum));
 
-		layout.setVerticalGroup(
-			layout.createParallelGroup()
-				.add(overlapLabel)
-				.add(overlapNum)
-		);
+		layout.setVerticalGroup(layout.createParallelGroup().add(overlapLabel)
+				.add(overlapNum));
 	} // createPathsController
-    
+
 	// -----------------------------------------------------------------------------
 
 	class TempController {
@@ -642,13 +631,15 @@ public class ActivePathsParameterPanel extends JPanel {
 			tempLabelStart = new JLabel("Start Temp (0.0001 - 100)");
 			tempLabelEnd = new JLabel("End Temp (0.0001 - Start)");
 
-			//tStartPanel.setLayout(new GridLayout(0, 1));
-			tStartPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+			// tStartPanel.setLayout(new GridLayout(0, 1));
+			tStartPanel.setLayout(new java.awt.FlowLayout(
+					java.awt.FlowLayout.LEFT));
 			tStartPanel.add(tempLabelStart);
 			tStartPanel.add(startNum);
 
-			//tEndPanel.setLayout(new GridLayout(0, 1));
-			tEndPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+			// tEndPanel.setLayout(new GridLayout(0, 1));
+			tEndPanel.setLayout(new java.awt.FlowLayout(
+					java.awt.FlowLayout.LEFT));
 			tEndPanel.add(tempLabelEnd);
 			tEndPanel.add(endNum);
 
@@ -691,21 +682,17 @@ public class ActivePathsParameterPanel extends JPanel {
 		regionalBox.addItemListener(new RSListener());
 	} // createRegionalScoringController
 
-
-	private void createHelpDialog()
-	{
+	private void createHelpDialog() {
 		helpDialog = new JDialog(Cytoscape.getDesktop(), "jActiveModules Help");
 		helpDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-		try
-		{
-			JEditorPane helpPane = new JEditorPane(parentUI.getClass().getResource("/help.html"));
+		try {
+			JEditorPane helpPane = new JEditorPane(pluginMainClass.getClass()
+					.getResource("/help.html"));
 			helpPane.setEditable(false);
 			JScrollPane scrollPane = new JScrollPane(helpPane);
 			helpDialog.setContentPane(scrollPane);
 			helpDialog.setPreferredSize(new Dimension(750, 400));
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			JLabel label = new JLabel("Could not find help.html.");
 			helpDialog.setContentPane(label);
 		}
@@ -731,9 +718,11 @@ public class ActivePathsParameterPanel extends JPanel {
 		public void focusGained(FocusEvent e) {
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			validate();
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			String setting = e.getActionCommand();
 			if (setting.equals(ANNEAL)) {
@@ -744,6 +733,7 @@ public class ActivePathsParameterPanel extends JPanel {
 				switchToSearch();
 			}
 		}
+
 		private void switchToAnneal() {
 			if (currentContentPanel != annealContentPanel) {
 				currentContentPanel = annealContentPanel;
@@ -751,6 +741,7 @@ public class ActivePathsParameterPanel extends JPanel {
 				apfParams.setGreedySearch(false);
 			}
 		}
+
 		private void switchToSearch() {
 			if (currentContentPanel != searchContentPanel) {
 				currentContentPanel = searchContentPanel;
@@ -758,10 +749,11 @@ public class ActivePathsParameterPanel extends JPanel {
 				apfParams.setGreedySearch(true);
 			}
 		}
+
 		private void validate() {
 			if (searchButton.isSelected()) {
 				String st = searchDepth.getText();
-				//String st2 = st.replaceAll("[^0-9]", ""); // ditch all
+				// String st2 = st.replaceAll("[^0-9]", ""); // ditch all
 				// non-numeric
 				if (st.length() > 0) {
 					try {
@@ -797,6 +789,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
@@ -830,16 +823,19 @@ public class ActivePathsParameterPanel extends JPanel {
 			apfParams.setMCboolean(mcBox.isSelected());
 		}
 	}
+
 	class RSListener implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			apfParams.setRegionalBoolean(regionalBox.isSelected());
 		}
 	}
+
 	class SFNListener implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			apfParams.setSearchFromNodes(searchFromNodesBox.isSelected());
 		}
 	}
+
 	class QuenchCheckListener implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			JCheckBox jcb = (JCheckBox) e.getItem();
@@ -852,10 +848,12 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
 		}
+
 		public void itemStateChanged(ItemEvent e) {
 			hubNum.setEnabled(hubBox.isSelected());
 			validate();
@@ -907,10 +905,12 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
 		}
+
 		public void itemStateChanged(ItemEvent e) {
 			hubAdjustmentNum.setEnabled(hubAdjustmentBox.isSelected());
 			validate();
@@ -958,19 +958,22 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
 		}
+
 		public void itemStateChanged(ItemEvent e) {
 			maxDepth.setEnabled(maxBox.isSelected());
 			apfParams.setEnableMaxDepth(maxBox.isSelected());
 			validate();
 		}
+
 		private void validate() {
 			if (maxBox.isSelected()) {
 				String st = maxDepth.getText();
-				//String st2 = st.replaceAll("[^0-9]", ""); // ditch all
+				// String st2 = st.replaceAll("[^0-9]", ""); // ditch all
 				// non-numeric
 				if (st.length() > 0) {
 					try {
@@ -1010,6 +1013,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
@@ -1058,6 +1062,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
@@ -1065,28 +1070,30 @@ public class ActivePathsParameterPanel extends JPanel {
 
 		private void validate() {
 			String pt = overlapNum.getText();
-			try{
-			    double overlap = Double.parseDouble(pt);
-			    if(overlap < 0.0){
-				overlap = 0.0;
-			    }
-			    if(overlap > 1.0){
-				overlap = 1.0;
-			    }
-			    overlapNum.setText((new Double(overlap)).toString());
-			    apfParams.setOverlapThreshold(overlap);
+			try {
+				double overlap = Double.parseDouble(pt);
+				if (overlap < 0.0) {
+					overlap = 0.0;
+				}
+				if (overlap > 1.0) {
+					overlap = 1.0;
+				}
+				overlapNum.setText((new Double(overlap)).toString());
+				apfParams.setOverlapThreshold(overlap);
 			} catch (NumberFormatException nfe) {
-			    overlapNum.setText("0.8");
-			    apfParams.setOverlapThreshold(0.8);
+				overlapNum.setText("0.8");
+				apfParams.setOverlapThreshold(0.8);
 			}
 		}
 
 	} // PathListener
+
 	class PathListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
@@ -1135,6 +1142,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
@@ -1213,6 +1221,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			// System.out.println("gained");
 			validate();
 		}
+
 		public void focusLost(FocusEvent e) {
 			// System.out.println("lost");
 			validate();
@@ -1265,7 +1274,8 @@ public class ActivePathsParameterPanel extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			// listener.cancelActivePathsFinding ();
-			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
+					SwingConstants.WEST);
 			cytoPanel.remove(ActivePathsParameterPanel.this);
 		}
 
@@ -1278,34 +1288,33 @@ public class ActivePathsParameterPanel extends JPanel {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			parentUI.startFindActivePaths(Cytoscape.getCurrentNetwork());
+			pluginMainClass.startFindActivePaths(networkPanel.getSelectedNetwork());
 		}
 
 	}
-	
-	class GenericListener extends FocusAdapter implements ActionListener{
-		public void focusLost(FocusEvent fe){
-			this.actionPerformed(new ActionEvent(this,0,""));
+
+	class GenericListener extends FocusAdapter implements ActionListener {
+		public void focusLost(FocusEvent fe) {
+			this.actionPerformed(new ActionEvent(this, 0, ""));
 		}
-		public void actionPerformed(ActionEvent ae){
-			//do nothing
+
+		public void actionPerformed(ActionEvent ae) {
+			// do nothing
 		}
-		
+
 	}
 
-	class ExprAttrsListListener extends MouseAdapter
-	{
+	class ExprAttrsListListener extends MouseAdapter {
 		private JList parentList;
 		private ActivePathFinderParameters apfParams;
 
-		public ExprAttrsListListener(JList parentList, ActivePathFinderParameters apfParams)
-		{
+		public ExprAttrsListListener(JList parentList,
+				ActivePathFinderParameters apfParams) {
 			this.parentList = parentList;
 			this.apfParams = apfParams;
 		}
 
-		public void mouseClicked(MouseEvent e)
-		{
+		public void mouseClicked(MouseEvent e) {
 			String selectedString = parentList.getSelectedValue().toString();
 			if (apfParams.getExpressionAttributes().contains(selectedString))
 				apfParams.removeExpressionAttribute(selectedString);
@@ -1313,10 +1322,10 @@ public class ActivePathsParameterPanel extends JPanel {
 				apfParams.addExpressionAttribute(selectedString);
 
 			int[] indices = new int[apfParams.getExpressionAttributes().size()];
-			int   count = 0;
-			for (String exprAttr : apfParams.getExpressionAttributes())
-			{
-				int i = apfParams.getPossibleExpressionAttributes().indexOf(exprAttr);
+			int count = 0;
+			for (String exprAttr : apfParams.getExpressionAttributes()) {
+				int i = apfParams.getPossibleExpressionAttributes().indexOf(
+						exprAttr);
 				if (i != -1)
 					indices[count++] = i;
 			}
@@ -1328,7 +1337,7 @@ public class ActivePathsParameterPanel extends JPanel {
 	}
 
 	private boolean isSignificanceValue(String name) {
-		return true;		
+		return true;
 	}
 
 	// -----------------------------------------------------------------------------
