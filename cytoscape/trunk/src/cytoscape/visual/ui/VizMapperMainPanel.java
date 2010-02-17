@@ -781,8 +781,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (ignore)
 			return;
 
-		System.out.println("-----------------> Stitching to : " + vsName);
-		System.out.println("-----------------> Last = " + lastVSName);
 		// If new VS name is the same, ignore.
 		if (lastVSName == vsName)
 			return;
@@ -3685,13 +3683,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public void stateChanged(ChangeEvent e) {
 		if (ignore)
 			return;
-		
-		System.out.println(e.getSource() + " ---> Got State change Event!==================:\n\n");
-		for(VisualStyle style: vmm.getCalculatorCatalog().getVisualStyles()) {
-			System.out.println("\tStyle =" + style.getName());
-		}
-		
-		
+
 		// Get current Visual Style
 		final String currentName = vmm.getVisualStyle().getName();
 		final Object selected = vsNameComboBox.getSelectedItem();

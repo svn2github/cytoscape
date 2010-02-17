@@ -95,7 +95,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// Default sizes of components
 	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(980, 720);
 	private static final int DEF_DEVIDER_LOCATION = 325;
-	private static final int DEF_DATAPANEL_DEVIDER_LOCATION = 450;
+	private static final int DEF_DATAPANEL_DEVIDER_LOCATION = 410;
 
 	/**
 	 *
