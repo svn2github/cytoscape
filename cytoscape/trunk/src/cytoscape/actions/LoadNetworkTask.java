@@ -358,7 +358,7 @@ public class LoadNetworkTask implements Task {
 	 */
 	public String getTitle() {
 		if (reader instanceof NNFReader){
-			return new String("Loaded Networks");
+			return new String("Loading Network(s)");
 		}
 		
 		return new String("Loaded Network");
