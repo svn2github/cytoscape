@@ -334,6 +334,13 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * values.
 	 */
 	private void doubleAction(double input) {
+		// Sanity check:
+		if (action == DIV && input == 0.0) {
+			JOptionPane.showMessageDialog(null, "Division by zero is invalid!",
+						      "Arithmetic Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
 
@@ -367,6 +374,13 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * values.
 	 */
 	private void integerAction(int input) {
+		// Sanity check:
+		if (action == DIV && input == 0.0) {
+			JOptionPane.showMessageDialog(null, "Division by zero is invalid!",
+						      "Arithmetic Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
 
