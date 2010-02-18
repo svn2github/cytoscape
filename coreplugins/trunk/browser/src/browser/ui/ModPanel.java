@@ -38,6 +38,10 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -63,6 +67,10 @@ public class ModPanel extends JPanel implements ActionListener {
 	private DataTableModel tableModel;
 	private DataObjectType objectType;
 
+	private CyAttributes attrData;
+	private byte currentAttributeCopyToType = CyAttributes.TYPE_UNDEFINED;
+	private final AttributeModel defaultAttrModel;
+
 	// Set/Modify
 	JComboBox attributeModifyBox;
 	JTextField field1;
@@ -74,7 +82,7 @@ public class ModPanel extends JPanel implements ActionListener {
 
 	// Copy
 	JComboBox attributeCopyFromBox;
-	JComboBox attributeCopytoBox;
+	JComboBox attributeCopyToBox;
 	JButton copyGo;
 
 	// Delete
@@ -89,9 +97,14 @@ public class ModPanel extends JPanel implements ActionListener {
 	 * @param graphObjectType  DOCUMENT ME!
 	 */
 	public ModPanel(final DataTableModel tableModel, final DataObjectType graphObjectType) {
+		// get proper Global CytoscapeData object
+		this.attrData = graphObjectType.getAssociatedAttribute();
+
 		this.data = graphObjectType.getAssociatedAttribute();
 		this.tableModel = tableModel;
 		this.objectType = graphObjectType;
+
+		this.defaultAttrModel = new AttributeModel(this.data);
 
 		setLayout(new GridBagLayout());
 
@@ -208,8 +221,9 @@ public class ModPanel extends JPanel implements ActionListener {
 		JPanel copy = new JPanel(new java.awt.GridBagLayout());
 		tabs.add("Copy", copy);
 		attributeCopyFromBox = createAttributeBox();
-		attributeCopytoBox = createAttributeBox();
-		attributeCopytoBox.setEditable(true);
+		attributeCopyFromBox.addActionListener(this);
+		attributeCopyToBox = createAttributeBox();
+		attributeCopyToBox.setEditable(true);
 		copyGo = new JButton("GO");
 
 		copyGo.addActionListener(this);
@@ -243,7 +257,7 @@ public class ModPanel extends JPanel implements ActionListener {
 		gridBagConstraints.weightx = 0.5;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
 
-		copy.add(attributeCopytoBox, gridBagConstraints);
+		copy.add(attributeCopyToBox, gridBagConstraints);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 4;
@@ -319,7 +333,7 @@ public class ModPanel extends JPanel implements ActionListener {
 	}
 
 	private JComboBox createAttributeBox() {
-		JComboBox box = new JComboBox(new AttributeModel(data));
+		JComboBox box = new JComboBox(defaultAttrModel);
 		Dimension newSize = new Dimension(100, (int) box.getPreferredSize().getHeight());
 		box.setMaximumSize(newSize);
 		box.setPreferredSize(newSize);
@@ -358,11 +372,24 @@ public class ModPanel extends JPanel implements ActionListener {
 		// 2. Copy operation
 		else if (e.getSource() == copyGo) {
 			edit = new MultiDataEditAction(null, ActionName.COPY, tableModel.getObjects(),
-			                               (String) attributeCopytoBox.getSelectedItem(),
+			                               (String) attributeCopyToBox.getSelectedItem(),
 			                               (String) attributeCopyFromBox.getSelectedItem(), null,
 			                               objectType, tableModel);
 		}
-		// 3. Delete (Clear?) operation
+		// 3. The copy source combobox fired an event
+		else if (e.getSource() == attributeCopyFromBox) {
+			final String selectedItem = (String)attributeCopyFromBox.getSelectedItem();
+			if (selectedItem != null) {
+				final byte fromType = attrData.getType(selectedItem);
+				if (fromType != currentAttributeCopyToType) {
+					final Set<Byte> attrTypes = new TreeSet<Byte>();
+					attrTypes.add(fromType);
+					attributeCopyToBox.setModel(new AttributeModel(data, attrTypes));
+				}
+			}
+			return;
+		}	
+		// 4. Delete (Clear?) operation
 		else {
 			edit = new MultiDataEditAction(null, ActionName.CLEAR, tableModel.getObjects(),
 			                               (String) attributeClearBox.getSelectedItem(), null,
@@ -376,3 +403,4 @@ public class ModPanel extends JPanel implements ActionListener {
 
 	}
 }
+

@@ -41,9 +41,12 @@ import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.ComboBoxModel;
@@ -61,18 +64,33 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	private final CyAttributes attributes;
 	private List<String> attributeNames;
 	private Object selection = null;
+	private Set<Byte> validAttrTypes;
 
 	/**
 	 * Creates a new AttributeModel object.
 	 *
 	 * @param data  DOCUMENT ME!
 	 */
-	public AttributeModel(final CyAttributes data) {
+	public AttributeModel(final CyAttributes data, final Set<Byte> validAttrTypes) {
 		this.attributes = data;
+		this.validAttrTypes = validAttrTypes;
 		data.getMultiHashMapDefinition().addDataDefinitionListener(this);
 		sortAtttributes();
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
+	}
+
+	@SuppressWarnings("unchecked") public AttributeModel(final CyAttributes data) {
+		this(data,
+		     new TreeSet<Byte>((List<Byte>)(Arrays.asList(new Byte[] {
+			CyAttributes.TYPE_BOOLEAN,
+			CyAttributes.TYPE_COMPLEX,
+			CyAttributes.TYPE_FLOATING,
+			CyAttributes.TYPE_INTEGER,
+			CyAttributes.TYPE_SIMPLE_LIST,
+			CyAttributes.TYPE_SIMPLE_MAP,
+			CyAttributes.TYPE_STRING
+			}))));
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
@@ -87,10 +105,10 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	 */
 	public void sortAtttributes() {
 		attributeNames = new ArrayList<String>();
-		for(String attrName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
-			if(attributes.getUserVisible(attrName)) {
+		for (String attrName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
+			if (attributes.getUserVisible(attrName)
+			    && validAttrTypes.contains(attributes.getType(attrName)))
 				attributeNames.add(attrName);
-			}
 		}
 		Collections.sort(attributeNames);
 		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0,
