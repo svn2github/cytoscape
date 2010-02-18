@@ -37,11 +37,13 @@ package cytoscape.util.swing;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinitionListener;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -59,7 +61,10 @@ import javax.swing.JPanel;
  *  @version 0.5
  *
  */
-public abstract class AttributeImportPanel extends JPanel implements PropertyChangeListener {
+public abstract class AttributeImportPanel extends JPanel implements MultiHashMapDefinitionListener {
+	
+	private static final long serialVersionUID = 876173290119736978L;
+
 	/**
 	 * Will be caught by parent object (usually a dialog.)
 	 */
@@ -92,9 +97,10 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 		this.attributePanelTitle = attrPanelTitle;
 
 		initComponents();
-		setAttributes();
+		setAttributes(null);
 		
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
+		// Listening to the changes in Node Attributes.
+		Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(this);
 	}
 
 	protected void initComponents() {
@@ -330,9 +336,15 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 	/**
 	 * Set list of attributes currently available for Cytoscape.
 	 */
-	protected void setAttributes() {
+	protected void setAttributes(final String attributeName) {
+		if (attributeName != null) {
+			attributeComboBox.removeItem(attributeName);
+			return;
+		}
+		
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		final String[] names = nodeAttr.getAttributeNames();
+		Arrays.sort(names);
 
 		attributeComboBox.removeAllItems();
 		attributeComboBox.addItem("ID");
@@ -344,10 +356,13 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 		}
 	}
 	
-	public void propertyChange(PropertyChangeEvent e) {
-		if(e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
-			setAttributes();
-		}
+	public void attributeDefined(String attributeName) {
+		setAttributes(null);
+	}
+
+	
+	public void attributeUndefined(String attributeName) {
+		setAttributes(attributeName);
 	}
 	
 	// Swing components.  Maybe accessed from child classes.
