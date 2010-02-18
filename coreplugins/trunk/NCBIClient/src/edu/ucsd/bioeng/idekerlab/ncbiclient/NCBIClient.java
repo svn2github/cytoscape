@@ -579,10 +579,10 @@ public class NCBIClient extends
 
 			Object attrVal;
 			for (String key : nodeAltName.keySet()) {
-				nodeAttr.setAttribute(key, "Alt Name", nodeAltName
-						.get(key));
-				nodeAttr.setAttribute(key, "Interactor Type", nodeTypes
-						.get(key));
+				if (nodeAltName.get(key) != null)
+					nodeAttr.setAttribute(key, "Alt Name", nodeAltName.get(key));
+				if (nodeTypes.get(key) != null)
+					nodeAttr.setAttribute(key, "Interactor Type", nodeTypes.get(key));
 			}
 
 			for (String[] key : attrMap.keySet()) {
@@ -755,6 +755,12 @@ public class NCBIClient extends
 									.getEntrezgeneSet().getEntrezgene().get(i)
 									.getEntrezgeneTrackInfo().getGeneTrack()
 									.getGeneTrackGeneid().toString(), true);
+							// Add attributes
+							final String centerNodeAltName = res.getEntrezgeneSet().getEntrezgene().get(i).getEntrezgeneGene().getGeneRef().getGeneRefLocus();
+							if(centerNodeAltName != null)
+								nodeAltName.put(centerNode.getIdentifier(), centerNodeAltName);
+							// Center node is always a gene in Entrez Gene Database.
+							nodeTypes.put(centerNode.getIdentifier(), "GeneID");							
 							System.out.println("Got Interactions for: "
 									+ centerNode.getIdentifier());
 						} catch (Exception e) {
@@ -931,8 +937,6 @@ public class NCBIClient extends
 			this.ids = ids;
 		}
 
-		private void parseAnnotation(EFetchResult res) {
-		}
 
 		public Object call() {
 			StringBuilder builder = new StringBuilder();
