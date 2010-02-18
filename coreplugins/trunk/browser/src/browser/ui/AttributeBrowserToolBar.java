@@ -140,6 +140,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		logger = CyLogger.getLogger(AttributeBrowserToolBar.class);
 
 		initialize();
+		attrModButton.setVisible(objectType != NETWORK);
 	}
 
 	/**
