@@ -273,6 +273,12 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * attributeTo the values that were copied will be saved to "new_values"
 	 */
 	private void copyAtt() {
+		// Sanity check:
+		if (attributeFrom == null || attributeTo == null || attributeTo.equals("")) {
+			showErrorWindow("\"From\" attribute or \"To\" attribute has not been specified!");
+			return;
+		}
+
 		byte fromType = attrData.getType(attributeFrom);
 		byte toType= attrData.getType(attributeTo);
 		if (toType != CyAttributes.TYPE_UNDEFINED && fromType != toType) {
@@ -323,7 +329,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 	// Pop-up window for error message
 	private void showErrorWindow(String errMessage) {
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Error!",
+		JOptionPane.showMessageDialog(null/*Cytoscape.getDesktop()*/, errMessage, "Error!",
 		                              JOptionPane.ERROR_MESSAGE);
 
 		return;
@@ -336,8 +342,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	private void doubleAction(double input) {
 		// Sanity check:
 		if (action == DIV && input == 0.0) {
-			JOptionPane.showMessageDialog(null, "Division by zero is invalid!",
-						      "Arithmetic Error", JOptionPane.ERROR_MESSAGE);
+			showErrorWindow("Division by zero is invalid!");
 			return;
 		}
 
@@ -376,8 +381,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	private void integerAction(int input) {
 		// Sanity check:
 		if (action == DIV && input == 0.0) {
-			JOptionPane.showMessageDialog(null, "Division by zero is invalid!",
-						      "Arithmetic Error", JOptionPane.ERROR_MESSAGE);
+			showErrorWindow("Division by zero is invalid!");
 			return;
 		}
 
