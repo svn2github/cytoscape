@@ -329,7 +329,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 	// Pop-up window for error message
 	private void showErrorWindow(String errMessage) {
-		JOptionPane.showMessageDialog(null/*Cytoscape.getDesktop()*/, errMessage, "Error!",
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Error!",
 		                              JOptionPane.ERROR_MESSAGE);
 
 		return;
