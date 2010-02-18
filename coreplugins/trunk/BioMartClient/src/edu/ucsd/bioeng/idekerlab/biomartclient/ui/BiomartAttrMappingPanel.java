@@ -61,6 +61,7 @@ import cytoscape.data.webservice.AttributeImportQuery;
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.layout.Tunable;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -342,9 +343,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		// This is not the best way, but cannot provide universal solution.
 		if (dbName.contains("REACTOME")) {
 			attrs[0] = new Attribute(stub.toAttributeName("REACTOME", filterName));
-		} else if (dbName.contains("UNIPROT")) {
-			//System.out.println("UNIPROT found");
-			attrs[0] = new Attribute(stub.toAttributeName("UNIPROT", filterName));
 		} else if (dbName.contains("VARIATION")) {
 //			String newName = filterName.replace("_id", "_stable_id");
 //			newName = newName.replace("_ensembl", "");
@@ -386,11 +384,24 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 
-		firePropertyChange(CLOSE_EVENT, null, null);
+		//firePropertyChange(CLOSE_EVENT, null, null);
 	}
 
 	private static String getIDFilterString(String keyAttrName) {
-		final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
+		
+		final Tunable tunable = WebServiceClientManager.getClient("biomart").getProps().get("selected_only");	
+		tunable.updateValue();
+		final Object value = tunable.getValue();
+		
+		final List<Node> nodes;
+		if (value != null && Boolean.parseBoolean(value.toString())) {
+			// Selected nodes only
+			nodes = new ArrayList<Node>(Cytoscape.getCurrentNetwork().getSelectedNodes());
+		} else {
+			// Send all nodes in current network
+			nodes = Cytoscape.getCurrentNetwork().nodesList();
+		}
+		
 		final StringBuilder builder = new StringBuilder();
 
 		// If attribute name is ID, then use node id as the key.

@@ -112,7 +112,7 @@ public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 		//		props.add(new Tunable("max_interactions", "Maximum number of records", Tunable.INTEGER,
 		//		                      new Integer(1000)));
 
-		//props.add(new Tunable("search_depth", "Search depth", Tunable.INTEGER, new Integer(0)));
+		props.add(new Tunable("selected_only", "Map selected nodes only", Tunable.BOOLEAN, new Boolean(false)));
 		props.add(new Tunable("import_all", "Import all available entries", Tunable.BOOLEAN,
 		                      new Boolean(false)));
 
@@ -181,7 +181,7 @@ public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 	
 	private List<String> mapping(BufferedReader reader, String key, String keyAttrName) throws IOException, CyWebServiceException {
 		String line = reader.readLine();
-		//System.out.println("Table Header: " + line);
+		System.out.println("Table Header: " + line);
 		final String[] columnNames = line.split("\\t");
 		
 		if (columnNames[0].contains("Query ERROR"))

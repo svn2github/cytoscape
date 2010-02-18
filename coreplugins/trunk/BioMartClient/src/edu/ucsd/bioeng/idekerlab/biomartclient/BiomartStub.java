@@ -204,12 +204,12 @@ public class BiomartStub {
 		String dbID;
 
 		for (int i = 0; i < locSize; i++) {
+			
 			attrList = locations.item(i).getAttributes();
 			attrLen = attrList.getLength();
 
 			// First, get the key value
 			dbID = attrList.getNamedItem("name").getNodeValue();
-
 			Map<String, String> entry = new HashMap<String, String>();
 
 			for (int j = 0; j < attrLen; j++) {
@@ -239,10 +239,8 @@ public class BiomartStub {
 		try {
 			getRegistry();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -401,7 +399,7 @@ public class BiomartStub {
 	 */
 	public BufferedReader sendQuery(String xmlQuery) throws IOException {
 		
-		System.out.println("=======Query = " + xmlQuery);
+		System.out.println("Generated Query:\n\n" + xmlQuery);
 		
 		URL url = new URL(baseURL);
 		URLConnection uc = URLUtil.getURLConnection(url);
