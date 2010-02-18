@@ -279,9 +279,9 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			return;
 		}
 
-		byte fromType = attrData.getType(attributeFrom);
-		byte toType= attrData.getType(attributeTo);
-		if (toType != CyAttributes.TYPE_UNDEFINED && fromType != toType) {
+		final byte fromType = attrData.getType(attributeFrom);
+		final byte toType = attrData.getType(attributeTo);
+		if (toType == CyAttributes.TYPE_UNDEFINED || !copyAttrsAreCompatible(fromType, toType)) {
 			showErrorWindow("Copy Failed: Incompatible data types.");
 
 			return;
@@ -303,9 +303,20 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			else
 				value = attrData.getAttribute(go.getIdentifier(), attributeFrom);
 			new_values.add(value);
+
+			if ((fromType == CyAttributes.TYPE_INTEGER) && (toType == CyAttributes.TYPE_FLOATING))
+				value = new Double((Integer)value);
 			setAttributeValue(go.getIdentifier(), attributeTo, value);
+
 			old_values.add(null);
 		}
+	}
+
+	private boolean copyAttrsAreCompatible(final byte fromType, final byte toType) {
+		if (fromType == toType)
+			return true;
+
+		return (fromType == CyAttributes.TYPE_INTEGER) && (toType == CyAttributes.TYPE_FLOATING);
 	}
 
 	/**

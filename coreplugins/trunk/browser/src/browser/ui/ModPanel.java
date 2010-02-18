@@ -384,6 +384,8 @@ public class ModPanel extends JPanel implements ActionListener {
 				if (fromType != currentAttributeCopyToType) {
 					final Set<Byte> attrTypes = new TreeSet<Byte>();
 					attrTypes.add(fromType);
+					if (fromType == CyAttributes.TYPE_INTEGER) // Allow copying from int to float.
+						attrTypes.add(CyAttributes.TYPE_FLOATING);
 					attributeCopyToBox.setModel(new AttributeModel(data, attrTypes));
 				}
 			}
