@@ -34,20 +34,17 @@
 */
 package cytoscape.util.swing;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMapDefinitionListener;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JPanel;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinitionListener;
 
 
 /**
