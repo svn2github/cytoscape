@@ -34,45 +34,36 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.webservice.WebServiceClientManager;
-
-import cytoscape.layout.Tunable;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.ModuleProperties;
-import cytoscape.util.SwingWorker;
-
 import java.awt.Color;
-import java.awt.GridLayout;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.SpringLayout;
 import javax.swing.event.SwingPropertyChangeSupport;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.layout.Tunable;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.SwingWorker;
 
 
 /**
- *
+ * BioMart client main GUI.
  */
 public class BiomartMainDialog extends JDialog implements PropertyChangeListener {
+	
+	private static final long serialVersionUID = 8693726765795163080L;
+	
+	// Actual dialog.  This is a singleton.
 	private static BiomartMainDialog mainDialog = null;
 	protected static Object pcsO = new Object();
 	protected static PropertyChangeSupport pcs = new SwingPropertyChangeSupport(pcsO);
@@ -91,7 +82,7 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 	private static BiomartAttrMappingPanel panel;
 
 	/**
-	 *  DOCUMENT ME!
+	 * Build and display Dialog 
 	 */
 	public static void showUI() {
 		if ((mainDialog == null) || (initialized == false)) {
@@ -108,18 +99,17 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 
 			// Execute Task in New Thread; pop open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
-		} else {
+		} else
 			mainDialog.setVisible(true);
-		}
 	}
 
-	private BiomartMainDialog() throws Exception {
+	private BiomartMainDialog(final TaskMonitor monitor) throws Exception {
 		super(Cytoscape.getDesktop(), false);
-		setTitle("Biomart Web Service Client");
+		setTitle("BioMart Web Service Client");
 
 		// Create a tabbed pane
-		JTabbedPane tabs = new JTabbedPane();
-		List<Tunable> tunables = WebServiceClientManager.getClient("biomart").getProps()
+		final JTabbedPane tabs = new JTabbedPane();
+		final List<Tunable> tunables = WebServiceClientManager.getClient("biomart").getProps()
 		                                                .getTunables();
 		final JPanel tPanel = new JPanel();
 		
@@ -163,9 +153,9 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         tPanel.add(jLabel4, gridBagConstraints);
-		//
+
         
-		panel = new BiomartAttrMappingPanel();
+		panel = new BiomartAttrMappingPanel(monitor);
 		panel.addPropertyChangeListener(this);
 		tabs.addTab("Query", panel);
 		tabs.addTab("Property", tPanel);
@@ -177,9 +167,9 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 
 	static class SetupUITask implements Task {
 		private TaskMonitor taskMonitor;
-		SwingWorker worker;
 
 		public SetupUITask() {
+			super();
 		}
 
 		/**
@@ -188,8 +178,7 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		 * @return  DOCUMENT ME!
 		 */
 		public String getTitle() {
-			// TODO Auto-generated method stub
-			return "Accessing Biomart Web Service...";
+			return "Checking accessible BioMart Services...";
 		}
 
 		/**
@@ -204,11 +193,11 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		 *  DOCUMENT ME!
 		 */
 		public void run() {
-			taskMonitor.setStatus("Initializing Biomart Web Service Client.\n\nIt may take a while.\nPlease wait...");
+			taskMonitor.setStatus("Checking available Mart services.\n\nThis process may take a while.\nPlease wait...");
 			taskMonitor.setPercentCompleted(-1);
 
 			try {
-				mainDialog = new BiomartMainDialog();
+				mainDialog = new BiomartMainDialog(taskMonitor);
 			} catch (InterruptedException ie) {
 				//System.out.println("============== GOT interaption");
 			} catch (Exception e) {

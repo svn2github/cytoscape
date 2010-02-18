@@ -194,7 +194,6 @@ public class BiomartStub {
 		
 		InputStream is = URLUtil.getBasicInputStream(targetURL);
 		
-		
 		final Document registry = builder.parse(is);
 
 		// Extract each datasource

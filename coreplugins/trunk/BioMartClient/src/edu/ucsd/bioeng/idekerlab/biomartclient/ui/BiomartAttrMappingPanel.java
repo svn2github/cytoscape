@@ -34,41 +34,10 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.data.webservice.AttributeImportQuery;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.WebServiceClientManager;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.swing.AttributeImportPanel;
-
-import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartClient;
-import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Dataset;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Filter;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.XMLQueryBuilder;
-
-import giny.model.Node;
-
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,19 +50,48 @@ import java.util.TreeSet;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.webservice.AttributeImportQuery;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.swing.AttributeImportPanel;
+import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartClient;
+import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Dataset;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Filter;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.XMLQueryBuilder;
+import giny.model.Node;
 
 
 /**
  *
  */
 public class BiomartAttrMappingPanel extends AttributeImportPanel implements PropertyChangeListener {
+
+	private static final long serialVersionUID = 3574198525811249639L;
+
 	private static final Icon LOGO = new ImageIcon(BiomartAttrMappingPanel.class.getResource("/images/logo_biomart2.png"));
+	
 	private Map<String, String> datasourceMap;
 	private Map<String, Map<String, String[]>> attributeMap;
 	private Map<String, List<String>> attributeListOrder;
 	private Map<String, Map<String, String>> attrNameMap;
 	private Map<String, Map<String, String>> filterMap;
+	
+	private final TaskMonitor monitor;
+	
 	private enum SourceType {
 		DATABASE,
 		ATTRIBUTE,
@@ -102,9 +100,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 	private boolean cancelFlag = false;
 	private boolean initialized = false;
-	
-	private String statusMessage;
-	
+		
 	private final BiomartStub stub = (BiomartStub) WebServiceClientManager.getClient("biomart")
 	                                                                      .getClientStub();
 
@@ -119,8 +115,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		databaseFilter.add("Pancreatic_Expression");
 	}
 
-	public BiomartAttrMappingPanel() throws Exception {
-		this(LOGO, "", "Available attributes");
+	public BiomartAttrMappingPanel(final TaskMonitor monitor) throws Exception {
+		this(LOGO, "", "Available attributes", monitor);
 	}
 
 	/**
@@ -130,14 +126,22 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 	 * @param title  DOCUMENT ME!
 	 * @throws Exception
 	 */
-	public BiomartAttrMappingPanel(Icon logo, String title, String attrPanelLabel)
+	public BiomartAttrMappingPanel(Icon logo, String title, String attrPanelLabel, final TaskMonitor monitor)
 	    throws Exception {
 		super(logo, title, attrPanelLabel);
+		this.monitor = monitor;
+		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		BiomartMainDialog.getPropertyChangeSupport().addPropertyChangeListener(this);
 		initDataSources();
 	}
 
+	
+	/**
+	 * Access data sources and build GUI.
+	 * 
+	 * @throws Exception
+	 */
 	private void initDataSources() throws Exception {
 		datasourceMap = new HashMap<String, String>();
 		attributeMap = new HashMap<String, Map<String, String[]>>();
@@ -145,7 +149,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		filterMap = new HashMap<String, Map<String, String>>();
 		attrNameMap = new HashMap<String, Map<String, String>>();
 
-		loadDBList();
+		monitor.setPercentCompleted(0);
+		loadMartServiceList();
 		loadFilter();
 	}
 
@@ -153,20 +158,35 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		return initialized;
 	}
 
-	private void loadDBList() throws Exception {
-		final Map<String, Map<String, String>> reg = stub.getRegistry();
+	private void loadMartServiceList() {
+		Map<String, Map<String, String>> reg = null;
+		monitor.setStatus("Accessing Mart service registry...");
+		try {
+			reg = stub.getRegistry();
+		} catch (IOException e1) {
+			monitor.setException(e1, "Could not retreve list of Mart Services from registry.");
+		} catch (ParserConfigurationException e1) {
+			monitor.setException(e1, "Could not parse list of Mart Services.");
+		} catch (SAXException e1) {
+			monitor.setException(e1, "Could not parse list of Mart Services.");
+		}
+		monitor.setPercentCompleted(10);
+		
+		final int registryCount = reg.size();
+		int increment = 90/registryCount;
+		int percentCompleted = 10;
 
 		Map<String, String> datasources;
 		List<String> dsList = new ArrayList<String>();
-
 		for (String databaseName : reg.keySet()) {
+			
 			Map<String, String> detail = reg.get(databaseName);
 
 			// Add the datasource if its visible
 			if (detail.get("visible").equals("1")
 			    && (databaseFilter.contains(databaseName) == false) && (cancelFlag == false)) {
 				String dispName = detail.get("displayName");
-
+				monitor.setStatus("Connecting to " + dispName);
 				try {
 					datasources = stub.getAvailableDatasets(databaseName);
 				} catch (IOException e) {
@@ -182,6 +202,9 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 				return;
 			}
+			
+			percentCompleted += increment;
+			monitor.setPercentCompleted(percentCompleted);
 		}
 
 		Collections.sort(dsList);

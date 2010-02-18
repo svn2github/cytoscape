@@ -31,35 +31,46 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.JMenu;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.plugin.CytoscapePlugin;
 import edu.ucsd.bioeng.idekerlab.biomartclient.ui.BiomartMainDialog;
 
-
 /**
- * Biomart web service client plugin.
+ * Biomart web service client plugin main class.
  */
 public class BiomartClientPlugin extends CytoscapePlugin {
 	/**
 	 * Creates a new BiomartClientPlugin object.
+	 * 
 	 * @throws Exception
 	 */
 	public BiomartClientPlugin() throws Exception {
 		// Register this client to the manager.
 		WebServiceClientManager.registerClient(BiomartClient.getClient());
 
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import").add(new AbstractAction("Import attributes from Biomart...") {
+		final JMenu menu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
+				.getMenu("File.Import");
+
+		if (menu != null) {
+			menu.add(new AbstractAction("Import attributes from Biomart...") {
+				private static final long serialVersionUID = -1303677510967797368L;
+
 				public void actionPerformed(ActionEvent e) {
 					BiomartMainDialog.showUI();
 				}
 			});
+		} else {
+			throw new IllegalStateException(
+					"Could not register BioMart Client to Cytoscape menu.");
+		}
 	}
 }
