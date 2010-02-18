@@ -320,10 +320,12 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
-			old_values.add(attrData.getAttribute(go.getIdentifier(), attributeTo));
-			attrData.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(), attributeTo);
-
-			new_values.add(null);
+			final Object attr = attrData.getAttribute(go.getIdentifier(), attributeTo);
+			if (attr != null) {
+				old_values.add(attr);
+				attrData.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(), attributeTo);
+				new_values.add(null);
+			}
 		}
 	}
 
