@@ -266,7 +266,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         
         IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
 
-        srcTree.reload();
+        srcTree.reset();
         JOptionPane.showMessageDialog(this, "The default resources has been loaded.");
     }//GEN-LAST:event_loadDefaultButtonActionPerformed
 
@@ -379,6 +379,8 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
     //        desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
     //        desc.append("\n");
 
+            // TODO: remove next line after the problem of AttributeMapper in BridgeRest is solved.
+            if (!(idMapper instanceof org.bridgedb.webservice.bridgerest.BridgeRest))
             if (idMapper instanceof AttributeMapper) {
                 desc.append(">>Supported Attributes\n");
                 Set<String> attrs = ((AttributeMapper)idMapper).getAttributeSet();

@@ -115,13 +115,17 @@ class IDMappingSourceSelectionTree extends JTree {
 
         selection_Model = checkTreeManager.getSelectionModel();
 
-        reload();
+        initTree();
     }
 
-    public void reload() {
+    public void reset() {
+        initTree();
+        modified = true;
+    }
+
+    private void initTree() {
         setupTree();
         setupMouse();
-        modified = true;
     }
 
     public boolean isModified() {

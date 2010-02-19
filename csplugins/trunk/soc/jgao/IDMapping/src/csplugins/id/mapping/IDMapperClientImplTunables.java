@@ -216,6 +216,13 @@ public class IDMapperClientImplTunables implements IDMapperClient {
                 Class.forName(getClassString());
                 mapper = BridgeDb.connect(getConnectionString());
                 preprocess(mapper);
+
+                // in case the current type is wrong, update it.
+                ClientType type = ClientType.getClientType(mapper);
+                if (type!=getClientType()) {
+                    clientType.setValue(type.name());
+                    props.saveProperties(clientType);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

@@ -636,6 +636,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
                     continue;
                 }
 
+                // TODO: remove next two lines after the problem of AttributeMapper in BridgeRest is solved.
+                if (mapper instanceof org.bridgedb.webservice.bridgerest.BridgeRest)
+                    continue;
+
                 if (!(mapper instanceof AttributeMapper))
                     continue;
 
@@ -684,15 +688,20 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             IDMapperStack stack = new IDMapperStack();
             for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
                 IDMapper mapper = client.getIDMapper();
-                if (mapper==null) {
+                if (mapper==null)
                     continue;
-                }
 
-                if (!(mapper instanceof IDMapperBiomart)) {
-                    // TODO: this is temperory solution
-                    // there should be a AttributeMapperCapacities or something like that
-                    stack.addIDMapper(mapper);
-                }
+                // TODO: IDMapperBiomart does not support mapping from attribute
+                // this is temperory solution
+                // there should be a AttributeMapperCapacities or something like that
+                if (mapper instanceof IDMapperBiomart)
+                    continue;
+
+                // TODO: remove next line after the problem of AttributeMapper in BridgeRest is solved.
+                if (mapper instanceof org.bridgedb.webservice.bridgerest.BridgeRest)
+                    continue;
+
+                stack.addIDMapper(mapper);
             }
             try {
                 srcAttrs = stack.getAttributeSet();
@@ -714,6 +723,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
                 IDMapper mapper = client.getIDMapper();
                 if (mapper==null || !(mapper instanceof AttributeMapper))
+                    continue;
+
+                // TODO: remove next two lines after the problem of AttributeMapper in BridgeRest is solved.
+                if (mapper instanceof org.bridgedb.webservice.bridgerest.BridgeRest)
                     continue;
 
                 Set<String> attrs = null;
