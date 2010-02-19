@@ -74,7 +74,7 @@ public class MCODEMainPanelAction implements ActionListener {
 		if ( index <= 0 ) {
 			final MCODEMainPanel mainPanel = new MCODEMainPanel();
 			scrollPane = new JScrollPane(mainPanel);
-			cytoPanel.add("MCODE PlugIn", scrollPane);
+			cytoPanel.add("MCODE", scrollPane);
 			index = cytoPanel.indexOfComponent(scrollPane);
 		}
 
