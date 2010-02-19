@@ -543,15 +543,12 @@ public class Component implements Comparable{
    */
   public String [] getConditions(){
     String [] result = new String [attrNames.length-min_i+1];
-    //System.out.println(""+calculateSimpleScore());
-    //System.out.println(""+calculateSimpleScore());
     //after we call simple score, min_i lets us know how many
     //conditions were signficant in the sorted array. We have to
     //map these sorted scores back to their location in the unsorted
     //array. Then we can figure out the condition name which
     //corresponds to this score.
     scored = false;
-    //System.out.println("Calling getConditions with min_i="+min_i);
     Integer [] integerArray = new Integer[zSums.length];
     for(int i=0;i < integerArray.length;i++){
       integerArray[i] = new Integer(i);
@@ -560,17 +557,8 @@ public class Component implements Comparable{
     Arrays.sort(integerArray,new MyComparator());
 	
     for(int i=0;i <= attrNames.length-min_i;i++){
-      //double temp_score = zSumsSort[zSumsSort.length-i-1];
-      //int j = 0;
-      //while(temp_score != zSums[j] /*&& !Double.isNaN(temp_score)*/){
-      //System.out.println(""+temp_score+" "+zSums[j]);
-      //j++;
-      //}
-      //zSums[j] = Double.NaN;
-      //result[i]=conditionNames[j];
       result[i]=attrNames[integerArray[zSums.length-i-1].intValue()];
     }
-    //System.out.println(""+Arrays.asList(result));
     return result;
 	    
   }

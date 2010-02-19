@@ -5,6 +5,8 @@ package csplugins.jActiveModules;
 //imported packages
 import java.io.Serializable;
 
+import cytoscape.logger.CyLogger;
+
 /**
  * This code was mostly appropriated from the activeModules C++
  * plugin (ZTable.h and statistics.c), so I can't comment on it too much.
@@ -113,7 +115,7 @@ public class ZStatistics implements Serializable{
 	    throw new RuntimeException("z-score ("+zScore+") produced an f_index (" + f_index + 
 	                               ") less than zero.");
 	if(f_index > onesMaxInd) {
-	    System.err.println("The extremely large z-score (" + zScore + ") generated an f_index ("+
+	    CyLogger.getLogger(ZStatistics.class).warn("The extremely large z-score (" + zScore + ") generated an f_index ("+
 	                       f_index+") that is too large, so using onesMaxInd instead: " + onesMaxInd );
 	    f_index = onesMaxInd;
 	}

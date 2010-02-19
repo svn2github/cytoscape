@@ -72,7 +72,6 @@ public class ComponentFinder{
       //where we will update the status of that node
       if(!valid.contains(nodes.get(start))){
 	throw new RuntimeException("Starting node for a component search was not present in the graph, this is an ActiveModules bug."+((Node)nodes.get(start)).getIdentifier());
- 				//System.err.println("Starting node for a component search was not present in the grpah, this is an ActiveModules bug."+((Node)nodes.get(start)).getIdentifier());
 	}
 						
       search((Node)nodes.get(start));

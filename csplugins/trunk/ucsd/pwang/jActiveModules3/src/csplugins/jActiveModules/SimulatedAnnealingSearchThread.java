@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
+import cytoscape.logger.CyLogger;
 
 public class SimulatedAnnealingSearchThread extends SearchThread{
     MyProgressMonitor progress;
@@ -38,7 +39,7 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
        
 	boolean hubFinding = apfParams.getMinHubSize() > 0;
 	if(hubFinding){
-	    System.out.println("Using hub finding: "+apfParams.getMinHubSize());
+	    CyLogger.getLogger( SimulatedAnnealingSearchThread.class).info("Using hub finding: "+apfParams.getMinHubSize());
 	}
 
 	

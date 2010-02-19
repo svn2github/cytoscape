@@ -42,9 +42,12 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import java.util.HashSet;
 import cytoscape.data.Semantics;
+import cytoscape.logger.CyLogger;
 
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
+
+	private static CyLogger logger = CyLogger.getLogger(ActivePaths.class);
 
 	protected boolean showTable = true;
 	protected boolean hideOthers = true;
@@ -208,17 +211,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	 * the score distribution when calculating the distribution
 	 */
 	protected Component getHighScoringPath() {
-		System.err.println("High Scoring Path:");
-		System.err.println(activePaths);
-		System.err.println("Score: " + activePaths[0].getScore());
+		logger.info("High Scoring Path: " + activePaths[0].toString());
+		logger.info("Score: " + activePaths[0].getScore());
 		int size = activePaths[0].getNodes().size();
-		System.err.println("Size: " + size);
-		System.err.println("Raw score: "
-				+ activePaths[0].calculateSimpleScore());
-		System.err.println("Mean: "
-				+ Component.pStats.getMean(size));
-		System.err.println("Std: "
-				+ Component.pStats.getStd(size));
+		logger.info("Size: " + size);
+		logger.info("Raw score: " + activePaths[0].calculateSimpleScore());
+		logger.info("Mean: " + Component.pStats.getMean(size));
+		logger.info("Std: " + Component.pStats.getStd(size));
 		return activePaths[0];
 	}
 
@@ -226,9 +225,9 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		// set up the HashMap which is used to map from nodes
 		// to z values. At this point, we are mapping from the
 		// p values for expression to z values
-		System.err.println("Processing Expression Data into Hash");
+		logger.info("Processing Expression Data into Hash");
 		HashMap tempHash = new HashMap();
-		System.err.println("Do some testing of the ExpressionData object");
+		logger.info("Do some testing of the ExpressionData object");
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		// Create two identical lists of genes
@@ -263,12 +262,12 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 					double sigValue = d.doubleValue();
 					if (sigValue < MIN_SIG) {
 						sigValue = MIN_SIG;
-						System.err.println("Warning: value for " + current.getIdentifier() + 
+						logger.warn("Warning: value for " + current.getIdentifier() + 
 						                   " (" + canonicalName + ") adjusted to " + MIN_SIG);
 					} 
 					if (sigValue > MAX_SIG) {
 						sigValue = MAX_SIG;
-						System.err.println("Warning: value for " + current.getIdentifier() + 
+						logger.warn("Warning: value for " + current.getIdentifier() + 
 						                   " (" + canonicalName + ") adjusted to " + MAX_SIG);
 					} 
 
@@ -279,7 +278,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			}
 			tempHash.put(current, tempArray);
 		}
-		System.err.println("Done processing into Hash");
+		logger.info("Done processing into Hash");
 		return tempHash;
 	}
 
@@ -301,9 +300,9 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		double score = apf.scoreList(result);
 		long duration = System.currentTimeMillis() - start;
-		System.err.println("-------------- back from score: " + duration
+		logger.info("-------------- back from score: " + duration
 				+ " msecs");
-		System.err.println("-------------- score: " + score + " \n");
+		logger.info("-------------- score: " + score + " \n");
 		JOptionPane.showMessageDialog(mainFrame, "Score: " + score);
 	} // scoreActivePath
 

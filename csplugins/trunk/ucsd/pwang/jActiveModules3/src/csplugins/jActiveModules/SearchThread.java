@@ -152,7 +152,6 @@ public abstract class SearchThread extends Thread{
     while(it.hasNext()){
       Component comp = (Component)it.next();
       newPaths.remove(comp);
-      //if ( comp == null) System.err.println("comp is null");
       oldNodes.addAll(comp.getNodes());
     }
 	

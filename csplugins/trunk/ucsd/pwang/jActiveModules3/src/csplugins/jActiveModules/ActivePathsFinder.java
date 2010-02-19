@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import cytoscape.CyNetwork;
+import cytoscape.logger.CyLogger;
 
 /**
  * This class contains the main logic for finding Active Paths The important
@@ -28,6 +29,9 @@ import cytoscape.CyNetwork;
  * to find the active paths
  */
 public class ActivePathsFinder {
+
+	private static CyLogger logger = CyLogger.getLogger( ActivePathsFinder.class );
+
 	/**
 	 * See constructor
 	 */
@@ -129,9 +133,9 @@ public class ActivePathsFinder {
 		// Here we initialize the z table. We use this data structure when we
 		// want to get an adjusted z score
 		// based on how many conditions we are looking at.
-		System.err.println("Initializing Z Table");
+		logger.info("Initializing Z Table");
 		Component.zStats = new ZStatistics(attrNames.length);
-		System.err.println("Done initializing Z Table");
+		logger.info("Done initializing Z Table");
 
 		nodes = new Node[1];
 		nodes = (Node[]) (perspective.nodesList().toArray(nodes));
@@ -168,7 +172,7 @@ public class ActivePathsFinder {
 			if (apfParams.getToUseMCFile()) {
 				// read in the monte carlo file, it is stored as a serialized
 				// ParamStatistics object
-				System.err.println("Trying to read monte carlo file");
+				logger.info("Trying to read monte carlo file");
 				try {
 					FileInputStream fis = new FileInputStream(apfParams
 							.getMcFileName());
@@ -180,19 +184,18 @@ public class ActivePathsFinder {
 						// contains the correct information for the set
 						// of nodes we are dealing with, user specified a bad
 						// file, I hope he feels shame
-						System.err
-								.println("Monte Carlo file calculated for incorrect number of nodes. Using correct file?");
+						logger.info("Monte Carlo file calculated for incorrect number of nodes. Using correct file?");
 						failed = true;
 						throw new Exception("wrong number of nodes");
 					}
 				} catch (Exception e) {
-					System.err.println("Loading monte carlo file failed" + e);
+					logger.warn("Loading monte carlo file failed", e);
 					failed = true;
 				}
 			}
 
 			if (failed || !apfParams.getToUseMCFile()) {
-				System.err.println("Initializing monte carlo state");
+				logger.info("Initializing monte carlo state");
 				MyProgressMonitor progressMonitor = null;
 				if (parentFrame != null) {
 					progressMonitor = new MyProgressMonitor(parentFrame,
@@ -207,17 +210,17 @@ public class ActivePathsFinder {
 				Component.pStats.calculateMeanAndStd(nodes,
 						ParamStatistics.DEFAULT_ITERATIONS, apfParams
 								.getMaxThreads(), progressMonitor);
-				System.err.println("Finished initializing monte carlo state");
+				logger.info("Finished initializing monte carlo state");
 
-				System.err.println("Trying to save monte carlo state");
+				logger.info("Trying to save monte carlo state");
 				try {
 					FileOutputStream fos = new FileOutputStream("last.mc");
 					ObjectOutputStream oos = new ObjectOutputStream(fos);
 					oos.writeObject(Component.pStats);
 					oos.close();
-					System.err.println("Saved monte carlo state to last.mc");
+					logger.info("Saved monte carlo state to last.mc");
 				} catch (Exception e) {
-					System.err.println("Failed to save monte carlo state" + e);
+					logger.error("Failed to save monte carlo state", e);
 				}
 			}
 		}
@@ -236,9 +239,9 @@ public class ActivePathsFinder {
 		//if (apfParams.getSearchDepth() > 0) {
 			// this will read the parameters out of apfParams and
 			// store the result into bestComponnet
-			System.err.println("Starting greedy search");
+			logger.info("Starting greedy search");
 			runGreedySearch();
-			System.err.println("Greedy search finished");
+			logger.info("Greedy search finished");
 
 			// after the call to run greedy search, each node is associated
 			// with the best scoring component to which it belongs. Need to
@@ -247,7 +250,7 @@ public class ActivePathsFinder {
 			comps = new Vector(new HashSet(node2BestComponent.values()));
 
 		} else {
-			System.err.println("Starting simulated annealing");
+			logger.info("Starting simulated annealing");
 			Vector resultPaths = new Vector();
 			MyProgressMonitor progress = null;
 			if (parentFrame != null) {
@@ -263,16 +266,15 @@ public class ActivePathsFinder {
 			try {
 				thread.join();
 			} catch (Exception e) {
-				System.err
-						.println("Failed to rejoin simulated annealing search thread");
-				System.exit(-1);
+				logger.error("Failed to rejoin simulated annealing search thread",e);
+				return new Component[0];	
 			}
 			if (progress != null) {
 				progress.close();
 			} // end of if ()
-			System.err.println("Finished simulated annealing run");
+			logger.info("Finished simulated annealing run");
 			if (apfParams.getToQuench()) {
-				System.err.println("Starting quenching run");
+				logger.info("Starting quenching run");
 				SortedVector oldPaths = new SortedVector(resultPaths);
 				resultPaths = new Vector();
 				thread = new QuenchingSearchThread(cyNetwork,
@@ -282,11 +284,10 @@ public class ActivePathsFinder {
 				try {
 					thread.join();
 				} catch (Exception e) {
-					System.err
-							.println("Failed to rejoin Quenching Search Thread");
-					System.exit(-1);
+					logger.error("Failed to rejoin Quenching Search Thread",e);
+					return new Component[0];	
 				}
-				System.err.println("Quenching run finished");
+				logger.info("Quenching run finished");
 
 			}
 			comps = new Vector(resultPaths);
@@ -390,8 +391,8 @@ public class ActivePathsFinder {
 			try {
 				((Thread) it.next()).join();
 			} catch (Exception e) {
-				System.err.println("Failed to join thread");
-				System.exit(-1);
+				logger.error("Failed to join thread",e);
+				return;	
 			}
 		}
 		if (progressMonitor != null) {

@@ -11,8 +11,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
+import cytoscape.logger.CyLogger;
 
 public class GreedySearchThread extends Thread {
+
+	private static CyLogger logger = CyLogger.getLogger(GreedySearchThread.class);
+	
 	int max_depth, search_depth;
 	ActivePathFinderParameters apfParams;
 	Iterator nodeIterator;
@@ -58,8 +62,8 @@ public class GreedySearchThread extends Thread {
 		node2BestComponent = temp_hash;
 		nodes = node_array;
 		this.graph = graph;
-		System.err.println("Max Depth: " + max_depth);
-		System.err.println("Search Depth: " + search_depth);
+		logger.info("Max Depth: " + max_depth);
+		logger.info("Search Depth: " + search_depth);
 	}
 	/**
 	 * Recursively find the nodes within a max depth

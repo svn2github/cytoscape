@@ -13,9 +13,11 @@ import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.ExpressionData;
+import cytoscape.logger.CyLogger;
 
 public class ScoreDistributionThread extends Thread{
-  
+
+  private static CyLogger logger = CyLogger.getLogger( ScoreDistributionThread.class );
   CyNetwork cyNetwork;
   ActivePaths activePaths;
   ActivePathFinderParameters apfParams;
@@ -64,9 +66,8 @@ public class ScoreDistributionThread extends Thread{
 	    }
 	}
     }catch(Exception e){
-	e.printStackTrace();
-	System.out.println("Problem opening file for output");
-	System.exit(-1);
+	logger.error("Problem opening file for output",e);
+	return;	
     }
     
     activePaths.showTable = false;
@@ -78,9 +79,8 @@ public class ScoreDistributionThread extends Thread{
       t.join();
       p.println(""+activePaths.getHighScoringPath().getScore());
     }catch(Exception e){
-      e.printStackTrace();
-      System.err.println("Failed to join thread");
-      System.exit(-1);
+      logger.error("Failed to join thread",e);
+   	  return; 
     }
     if(!(apfParams.getToUseMCFile())) {
       apfParams.setToUseMCFile(true);
@@ -94,9 +94,8 @@ public class ScoreDistributionThread extends Thread{
 	t.join();
 	p.println(""+activePaths.getHighScoringPath().getScore());
       }catch(Exception e){
-	e.printStackTrace();
-	System.err.println("Failed to join thread");
-	System.exit(-1);
+	logger.error("Failed to join thread",e);
+	return;	
       }
       monitor.update();
     }
@@ -104,15 +103,13 @@ public class ScoreDistributionThread extends Thread{
     try{
 	p.close();
     }catch(Exception e){
-	e.printStackTrace();
-	System.err.println("Failed to close output file");
-	System.exit(-1);
+	logger.error("Failed to close output file",e);
+	return;	
     }
     activePaths.randomize = false;
     activePaths.showTable = true;
     if(apfParams.getExit()){
-	System.err.println("Exiting from Score Distribution Thread");
-	System.exit(0);
+	logger.info("Exiting from Score Distribution Thread");
     }
   }
 }

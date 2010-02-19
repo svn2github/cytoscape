@@ -56,10 +56,13 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.logger.CyLogger;
 
 public class ActivePathsParameterPanel extends JPanel {
 
 	private static final long serialVersionUID = -6759180275710507653L;
+
+	private static final CyLogger logger = CyLogger.getLogger(ActivePathsParameterPanel.class);
 
 	JTextField readout;
 
@@ -769,7 +772,7 @@ public class ActivePathsParameterPanel extends JPanel {
 							apfParams.setSearchDepth(si);
 						}
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not an int: " + st);
+						logger.info("Not an int: " + st);
 						searchDepth.setText("1");
 						apfParams.setSearchDepth(1);
 					}
@@ -786,12 +789,10 @@ public class ActivePathsParameterPanel extends JPanel {
 	// -----------------------------------------------------------------------------
 	class RandomSeedTextListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -799,13 +800,13 @@ public class ActivePathsParameterPanel extends JPanel {
 			String rt = readout.getText();
 			String rt2 = rt.replaceAll("[^0-9]", ""); // ditch all non-numeric
 			if (rt2.length() > 0) {
-				// System.out.println(" length " + rt2.length());
+				logger.debug(" length " + rt2.length());
 				try {
 					int seed = Integer.parseInt(rt2);
 					apfParams.setRandomSeed(seed);
 					readout.setText("seed: " + apfParams.getRandomSeed());
 				} catch (NumberFormatException nfe) {
-					System.out.println("Not an integer: " + rt2);
+					logger.info("Not an integer: " + rt2);
 					apfParams.setRandomSeed(0);
 					readout.setText("seed: " + apfParams.getRandomSeed());
 				}
@@ -845,12 +846,10 @@ public class ActivePathsParameterPanel extends JPanel {
 
 	class HFListener implements ItemListener, FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -865,7 +864,7 @@ public class ActivePathsParameterPanel extends JPanel {
 				String ht2 = ht.replaceAll("[^0-9]", ""); // ditch all
 				// non-numeric
 				if (ht.length() > 0) {
-					// System.out.println(" length " + ht.length());
+					logger.debug(" length " + ht.length());
 					try {
 						int hf = Integer.parseInt(ht2);
 						if (hf <= 0) {
@@ -882,15 +881,15 @@ public class ActivePathsParameterPanel extends JPanel {
 						}
 
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not an integer: " + ht2);
+						logger.info("Not an integer: " + ht2);
 						hubNum.setText("10");
 						apfParams.setMinHubSize(10);
 						// JOptionPane.showMessageDialog (mainPanel, "Not an
 						// integer: " + ht2);
 					}
 				} else {
-					// System.out.println(" length " + ht.length());
-					// System.out.println(" going for 10.");
+					logger.debug(" length " + ht.length());
+					logger.debug(" going for 10.");
 					hubNum.setText("10");
 					apfParams.setMinHubSize(10);
 				}
@@ -902,12 +901,10 @@ public class ActivePathsParameterPanel extends JPanel {
 
 	class HAListener implements ItemListener, FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -922,7 +919,7 @@ public class ActivePathsParameterPanel extends JPanel {
 				String ht2 = ht.replaceAll("[^0-9.]", ""); // ditch all
 				// non-numeric
 				if (ht.length() > 0) {
-					// System.out.println(" length " + ht.length());
+					logger.debug(" length " + ht.length());
 					try {
 						double hf = Double.parseDouble(ht2);
 						if (hf <= 0) {
@@ -939,7 +936,7 @@ public class ActivePathsParameterPanel extends JPanel {
 						}
 
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not a double: " + ht2);
+						logger.info("Not a double: " + ht2);
 						hubAdjustmentNum.setText("0.406");
 						apfParams.setHubAdjustment(0.406);
 					}
@@ -955,12 +952,10 @@ public class ActivePathsParameterPanel extends JPanel {
 
 	class MListener implements ItemListener, FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -991,7 +986,7 @@ public class ActivePathsParameterPanel extends JPanel {
 							apfParams.setMaxDepth(si);
 						}
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not an int: " + st);
+						logger.info("Not an int: " + st);
 						maxDepth.setText("1");
 						apfParams.setMaxDepth(1);
 					}
@@ -1010,12 +1005,10 @@ public class ActivePathsParameterPanel extends JPanel {
 	// -----------------------------------------------------------------------------
 	class IterListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -1028,7 +1021,7 @@ public class ActivePathsParameterPanel extends JPanel {
 					iterNum.setText("100000000");
 					apfParams.setTotalIterations(100000000);
 				} else {
-					// System.out.println(" length " + it.length());
+					logger.debug(" length " + it.length());
 					try {
 						int iters = Integer.parseInt(it2);
 						if (iters <= 0) {
@@ -1042,7 +1035,7 @@ public class ActivePathsParameterPanel extends JPanel {
 							apfParams.setTotalIterations(iters);
 						}
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not an integer: " + it2);
+						logger.info("Not an integer: " + it2);
 						iterNum.setText("0");
 						apfParams.setTotalIterations(0);
 					}
@@ -1059,12 +1052,10 @@ public class ActivePathsParameterPanel extends JPanel {
 	// -----------------------------------------------------------------------------
 	class OverlapListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -1090,12 +1081,10 @@ public class ActivePathsParameterPanel extends JPanel {
 
 	class PathListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -1108,7 +1097,7 @@ public class ActivePathsParameterPanel extends JPanel {
 					pathNum.setText("1000");
 					apfParams.setNumberOfPaths(1000);
 				} else {
-					// System.out.println(" length " + pt.length());
+					logger.debug(" length " + pt.length());
 					try {
 						int paths = Integer.parseInt(pt2);
 						if (paths <= 0) {
@@ -1122,7 +1111,7 @@ public class ActivePathsParameterPanel extends JPanel {
 							apfParams.setNumberOfPaths(paths);
 						}
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not an integer: " + pt2);
+						logger.info("Not an integer: " + pt2);
 						pathNum.setText("0");
 						apfParams.setNumberOfPaths(0);
 					}
@@ -1139,12 +1128,10 @@ public class ActivePathsParameterPanel extends JPanel {
 	// -----------------------------------------------------------------------------
 	class TempListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -1159,7 +1146,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			// //////////////////////////////////////////////
 			// first handle start temp
 			if (st2.length() > 0) {
-				// System.out.println(" length " + st2.length());
+				logger.debug(" length " + st2.length());
 				try {
 					double startTemp = Double.parseDouble(st2);
 					if (startTemp <= 0) {
@@ -1173,7 +1160,7 @@ public class ActivePathsParameterPanel extends JPanel {
 						apfParams.setInitialTemperature(startTemp);
 					}
 				} catch (NumberFormatException nfe) {
-					System.out.println("Not a number: " + st2);
+					logger.info("Not a number: " + st2);
 					startNum.setText("1.000");
 					apfParams.setInitialTemperature(1.000);
 				}
@@ -1186,7 +1173,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			// //////////////////////////////////////////////
 			// then handle end temp
 			if (et2.length() > 0) {
-				// System.out.println(" length " + et2.length());
+				logger.debug(" length " + et2.length());
 				try {
 					double endTemp = Double.parseDouble(et2);
 					if (endTemp <= 0) {
@@ -1201,7 +1188,7 @@ public class ActivePathsParameterPanel extends JPanel {
 						apfParams.setFinalTemperature(endTemp);
 					}
 				} catch (NumberFormatException nfe) {
-					System.out.println("Not a number: " + et2);
+					logger.info("Not a number: " + et2);
 					endNum.setText("0.0001");
 					apfParams.setFinalTemperature(0.0001);
 				}
@@ -1218,12 +1205,10 @@ public class ActivePathsParameterPanel extends JPanel {
 	// -------------------------------------------------------------
 	class IntervalListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
-			// System.out.println("gained");
 			validate();
 		}
 
 		public void focusLost(FocusEvent e) {
-			// System.out.println("lost");
 			validate();
 		}
 
@@ -1236,7 +1221,7 @@ public class ActivePathsParameterPanel extends JPanel {
 					intervalNum.setText("100000");
 					apfParams.setDisplayInterval(100000);
 				} else {
-					// System.out.println(" length " + it2.length());
+					logger.debug(" length " + it2.length());
 					try {
 						int intervals = Integer.parseInt(it2);
 						if (intervals <= 0) {
@@ -1250,7 +1235,7 @@ public class ActivePathsParameterPanel extends JPanel {
 							apfParams.setDisplayInterval(intervals);
 						}
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not an integer: " + it2);
+						logger.info("Not an integer: " + it2);
 						intervalNum.setText("0");
 						apfParams.setDisplayInterval(0);
 					}

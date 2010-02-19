@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
+import cytoscape.logger.CyLogger;
+
 
 /**
  * This class keeps track of all parameter style
@@ -109,8 +111,8 @@ public class ParamStatistics implements Serializable{
       try{
 	((Thread)it.next()).join();
       }catch(Exception e){
-	System.out.println("Unable to join worker thread");
-	System.exit(-1);
+	CyLogger.getLogger(ParamStatistics.class).error("Unable to join worker thread",e);
+	return;	
       }
     }
     Component.regionScoring = oldRegion;

@@ -23,6 +23,7 @@ import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.logger.CyLogger;
 
 //------------------------------------------------------------------------------
 /**
@@ -37,8 +38,6 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	private ActivePathsParameterPanel mainPanel;
 
 	public ActiveModulesUI() {
-		System.out.println("Starting jActiveModules plugin!\n");
-
 		final JMenuItem menuItem = new JMenuItem("jActiveModules...");
 		menuItem.addActionListener(new SetParametersAction());
 		
@@ -144,11 +143,9 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	protected class ThreadExceptionHandler implements
 			Thread.UncaughtExceptionHandler {
 		public void uncaughtException(Thread t, Throwable e) {
-			System.out.println("Non-fatal exception in Thread " + t.getName()
-					+ ":");
-			e.printStackTrace();
-			System.out
-					.println("The previous exception was non-fatal - Don't panic!");
+			CyLogger logger = CyLogger.getLogger(ActiveModulesUI.class);
+			logger.warn("Non-fatal exception in Thread " + t.getName(), e);
+			logger.warn("The previous exception was non-fatal - Don't panic!");
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 					"Error running jActiveModules!  " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);

@@ -20,6 +20,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
+import cytoscape.logger.CyLogger;
 
 //---------------------------------------------------------------------------------------
 public class ActivePathFinderParameters {
@@ -136,7 +137,7 @@ public class ActivePathFinderParameters {
 		    overlapThreshold = Double.valueOf(property);
 		}
 		else{
-		    System.err.println("Unrecognized option "+name);
+		    CyLogger.getLogger(ActivePathFinderParameters.class).warn("Unrecognized option "+name);
 		}
 	    }
 
