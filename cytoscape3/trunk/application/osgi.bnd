@@ -2,6 +2,7 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Export-Package: cytoscape.*
+Export-Package: cytoscape, cytoscape.util, cytoscape.view, cytoscape.dialogs, cytoscape.events
+Private-Package: cytoscape.internal.*
 Import-Package: *;resolution:=optional
 DynamicImport-Package: *
