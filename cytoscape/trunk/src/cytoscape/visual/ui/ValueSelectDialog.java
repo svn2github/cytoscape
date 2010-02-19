@@ -34,13 +34,14 @@
 */
 package cytoscape.visual.ui;
 
-import static cytoscape.visual.VisualPropertyType.*;
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
+import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -95,7 +95,10 @@ public enum EditorDisplayer {
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
 	                   new Class[] { VisualPropertyType.class, JDialog.class },
-	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class), 
+	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class),
+	DISCRETE_NODE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
+	    	               new Class[] { VisualPropertyType.class, JDialog.class },
+	    	               new Object[] { VisualPropertyType.NODE_LINE_STYLE, null }, LineStyle.class),
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
@@ -109,11 +112,12 @@ public enum EditorDisplayer {
 	CONTINUOUS_DISCRETE(C2DMappingEditor.class, "showDialog",
 	                    new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
 	                    new Object[] { 420, 250, "Continuous-Discrete Editor", null }, Object.class);
-	private Class chooserClass;
+	
+	private Class<?> chooserClass;
 	private String command;
-	private Class[] paramTypes;
+	private Class<?>[] paramTypes;
 	private Object[] parameters;
-	private Class compatibleClass;
+	private Class<?> compatibleClass;
 
 	/**
 	 * Defines editor type.
@@ -123,8 +127,11 @@ public enum EditorDisplayer {
 		DISCRETE,
 		PASSTHROUGH;
 	}
-	private EditorDisplayer(Class chooserClass, String command, Class[] paramTypes,
-	                        Object[] parameters, Class compatibleClass) {
+	
+	
+	private EditorDisplayer(final Class<?> chooserClass, String command, Class<?>[] paramTypes,
+	                        Object[] parameters, Class<?> compatibleClass) {
+		
 		this.chooserClass = chooserClass;
 		this.command = command;
 		this.paramTypes = paramTypes;
@@ -155,7 +162,7 @@ public enum EditorDisplayer {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class[] getParamTypes() {
+	public Class<?>[] getParamTypes() {
 		return this.paramTypes;
 	}
 
@@ -173,7 +180,7 @@ public enum EditorDisplayer {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class getCompatibleClass() {
+	public Class<?> getCompatibleClass() {
 		return this.compatibleClass;
 	}
 
@@ -189,14 +196,27 @@ public enum EditorDisplayer {
 	 * @return DOCUMENT ME!
 	 */
 	public static EditorDisplayer getEditor(final VisualPropertyType type, final EditorType editor) {
-		final Class dataType = type.getDataType();
+		final Class<?> dataType = type.getDataType();
+		
 		for (EditorDisplayer command : values()) {
-			if ((dataType == command.getCompatibleClass())
-			    && (((editor == EditorType.CONTINUOUS)
-			        && command.toString().startsWith(EditorType.CONTINUOUS.name()))
-			       || ((editor == EditorType.DISCRETE)
-			          && command.toString().startsWith(EditorType.DISCRETE.name()))))
+			
+			
+			if ( (dataType == command.getCompatibleClass())
+			    && ((editor == EditorType.CONTINUOUS)
+			        && command.toString().startsWith(EditorType.CONTINUOUS.name()) )) {
 				return command;
+			} else if ( (dataType == command.getCompatibleClass()) && (editor == EditorType.DISCRETE)
+			          && command.toString().startsWith(EditorType.DISCRETE.name())) {
+				
+				// Check special case
+				if (command.equals(DISCRETE_LINE_STYLE) || command.equals(DISCRETE_NODE_LINE_STYLE)) {
+					if (type.equals(VisualPropertyType.EDGE_LINE_STYLE))
+						return DISCRETE_LINE_STYLE;
+					else
+						return DISCRETE_NODE_LINE_STYLE;
+				} else
+					return command;
+			}
 		}
 
 		
