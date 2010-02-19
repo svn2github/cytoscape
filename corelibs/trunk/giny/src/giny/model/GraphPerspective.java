@@ -394,8 +394,15 @@ public interface GraphPerspective {
    public GraphPerspective createGraphPerspective ( Filter filter ) ;
  
   /**
-   * @deprecated Use neighborsArray(int) instead;
-   * @see #neighborsArray(int)
+   *   Please note that the definition
+   *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
+   *   if there exists an edge [directed or undirected] E such that A is E's target and
+   *   B is E's source, or
+   *   A is E's source and B is E's target; this method then returns a non-repeating list
+   *   of indices of all nodes N in this
+   *   GraphPerspective such that N is a "node neighbor" of the node at specified index,
+   *   or null if no node at specified index exists in this GraphPerspective.
+   *   @param node The node whose neighbors you're looking for.
    */
    public List neighborsList ( Node node ) ;
 
