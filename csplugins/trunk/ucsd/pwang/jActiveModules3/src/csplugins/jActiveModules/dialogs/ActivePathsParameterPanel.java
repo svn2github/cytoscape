@@ -197,7 +197,7 @@ public class ActivePathsParameterPanel extends JPanel {
 		
 		// target network selector
 		networkPanel = new NetworkSelectorPanel();
-		networkPanel.setBorder(BorderFactory.createTitledBorder("Analysis Target"));
+		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
 		topPanel.add(networkPanel, BorderLayout.PAGE_START);
 		topPanel.add(createAttrSelectionPanel(), BorderLayout.CENTER);
 		return topPanel;
