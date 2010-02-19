@@ -1131,6 +1131,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			} catch (IndexOutOfBoundsException ex) {
 				logger.debug("failed to access visual property row " + i, ex);
 				shownProp = null;
+			} catch (NullPointerException ex) {
+				logger.debug("failed to access visual property row " + i, ex);
+				shownProp = null;
 			}
 
 
