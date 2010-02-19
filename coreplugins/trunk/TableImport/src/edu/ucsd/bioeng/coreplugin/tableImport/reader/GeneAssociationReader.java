@@ -36,28 +36,14 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.ontology.GeneOntology;
-import cytoscape.data.ontology.Ontology;
-
-import cytoscape.data.synonyms.Aliases;
-
-import cytoscape.util.BioDataServerUtil;
-import cytoscape.util.URLUtil;
-import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*;
-
-import giny.model.Node;
+import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.PIPE;
+import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.TAB;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,6 +52,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.ontology.GeneOntology;
+import cytoscape.data.ontology.Ontology;
+import cytoscape.data.synonyms.Aliases;
+import cytoscape.util.BioDataServerUtil;
+import edu.ucsd.bioeng.coreplugin.tableImport.TableImportPlugin;
+import giny.model.Node;
 
 /**
  * <p>
@@ -114,7 +109,7 @@ public class GeneAssociationReader implements TextTableReader {
 	private static final int OBJ_NAME = 9;
 	private static final int SYNONYM = 10;
 	private static final int GOID = 4;
-	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
+	private static final String TAXON_RESOURCE_FILE = "resources/tax_report.txt";
 	private InputStream is;
 	private final String keyAttributeName;
 	private Aliases nodeAliases;
@@ -165,7 +160,7 @@ public class GeneAssociationReader implements TextTableReader {
 			throw new IOException("Given ontology is not GO.");
 		}
 
-		URL taxUrl = getClass().getResource(taxonResourceFile);
+		URL taxUrl = TableImportPlugin.class.getClassLoader().getResource(taxonResourceFile);
 
 		BufferedReader taxonFileReader = null;
 

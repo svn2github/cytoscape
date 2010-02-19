@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package edu.ucsd.bioeng.coreplugin.tableImport.actions;
 
@@ -48,16 +47,20 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
-
 /**
  * Display Ontology and Annotation import dialog.<br>
- *
+ * 
  * @since Cytoscape 2.4
  * @version 1.0
  * @author kono
- *
+ * 
  */
 public class ImportAnnotationAndOntologyAction extends CytoscapeAction {
+
+	private static final long serialVersionUID = -7250841983164927184L;
+
+	private ImportTextTableDialog iad;
+
 	/**
 	 * Creates a new ImportAnnotationAndOntologyAction object.
 	 */
@@ -67,26 +70,30 @@ public class ImportAnnotationAndOntologyAction extends CytoscapeAction {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		ImportTextTableDialog iad;
 
-		try {
-			iad = new ImportTextTableDialog(Cytoscape.getDesktop(), true,
-			                                ImportTextTableDialog.ONTOLOGY_AND_ANNOTATION_IMPORT);
+		if (iad == null) {
+			try {
+				iad = new ImportTextTableDialog(Cytoscape.getDesktop(), true,
+						ImportTextTableDialog.ONTOLOGY_AND_ANNOTATION_IMPORT);
+			} catch (JAXBException e1) {
+				e1.printStackTrace();
+				throw new IllegalStateException("");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			iad.pack();
-			iad.setLocationRelativeTo(Cytoscape.getDesktop());
-			iad.setVisible(true);
-		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
+		
+		iad.setLocationRelativeTo(Cytoscape.getDesktop());
+		iad.setVisible(true);
+
 	}
 }

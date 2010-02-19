@@ -167,6 +167,9 @@ import javax.xml.bind.JAXBException;
  */
 public class ImportTextTableDialog extends JDialog implements PropertyChangeListener,
                                                               TableModelListener {
+	
+	private static final long serialVersionUID = 7356378931577386260L;
+
 	/**
 	 * This dialog GUI will be switched based on the following parameters:
 	 *

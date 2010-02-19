@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package edu.ucsd.bioeng.coreplugin.tableImport;
 
@@ -43,27 +42,30 @@ import edu.ucsd.bioeng.coreplugin.tableImport.actions.ImportAnnotationAndOntolog
 import edu.ucsd.bioeng.coreplugin.tableImport.actions.ImportAttributeTableAction;
 import edu.ucsd.bioeng.coreplugin.tableImport.actions.ImportNetworkTableAction;
 
-
 /**
  * Main class for Table Import plugin.
- *
- * @version 0.6
+ * 
+ * @version 0.7
  * @since Cytoscape 2.4
  * @author Keiichiro Ono
- *
+ * 
  */
 public class TableImportPlugin extends CytoscapePlugin {
 	/**
-	 * Constructor for this plugin.
-	 *
+	 * Constructor for Table Import plugin.
+	 * 
 	 */
 	public TableImportPlugin() {
-		
+
 		final CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
-		
+
 		// Register each menu item
-		cyMenus.addAction(new ImportNetworkTableAction(), 1);
-		cyMenus.addAction(new ImportAttributeTableAction(), 5);
-		cyMenus.addAction(new ImportAnnotationAndOntologyAction(), 7);
+		if (cyMenus != null) {
+			cyMenus.addAction(new ImportNetworkTableAction(), 1);
+			cyMenus.addAction(new ImportAttributeTableAction(), 5);
+			cyMenus.addAction(new ImportAnnotationAndOntologyAction(), 7);
+		} else
+			throw new IllegalStateException(
+					"Could not register Table Import Plugin to the menu bar.");
 	}
 }
