@@ -111,13 +111,13 @@ public class MCODEMainPanel extends JPanel {
      *
      */
     public MCODEMainPanel() {
-    		// Overall panel settings
+        // Overall panel settings
         this.setMinimumSize(new Dimension(310, 420));
         this.setPreferredSize(new Dimension(310, 420));
-    		this.setLayout(new BorderLayout());
-    		
-    		networkPanel = new NetworkSelectorPanel();
-    		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
+        this.setLayout(new BorderLayout());
+
+        networkPanel = new NetworkSelectorPanel();
+        networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
 
         //get the current parameters
         currentParamsCopy = MCODECurrentParameters.getParamsCopy(null);
@@ -158,12 +158,10 @@ public class MCODEMainPanel extends JPanel {
      */
     private JPanel createScopePanel() {
     		
-    		
         final JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0,1));
         panel.setBorder(BorderFactory.createTitledBorder("Find Cluster(s)"));
         
-        panel.add(networkPanel);
 
         final JRadioButton scopeNetwork = new JRadioButton("in Whole Network", currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK));
         final JRadioButton scopeSelection = new JRadioButton("from Selection", currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION));
@@ -181,7 +179,12 @@ public class MCODEMainPanel extends JPanel {
         panel.add(scopeNetwork);
         panel.add(scopeSelection);
         
-        return panel;
+        final JPanel topPanel = new JPanel();
+        topPanel.setLayout(new GridLayout(0,1));
+        topPanel.add(networkPanel);
+        topPanel.add(panel);
+    		
+        return topPanel;
     }
 
     /**
