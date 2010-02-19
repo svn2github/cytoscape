@@ -67,7 +67,7 @@ public class MCODEAboutDialog extends JDialog {
         editorPane.setEditorKit(new HTMLEditorKit());
         editorPane.addHyperlinkListener(new HyperlinkAction(editorPane));
 
-        URL logoURL = MCODEPlugin.class.getResource("resources/logo1.png");
+        URL logoURL = MCODEPlugin.class.getResource("/csplugins/mcode/images/logo1.png");
         String logoCode = "";
         if (logoURL != null) {
             logoCode = "<center><img src='"+logoURL+"'></center>";

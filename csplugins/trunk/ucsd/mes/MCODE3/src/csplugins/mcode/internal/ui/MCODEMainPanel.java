@@ -193,7 +193,7 @@ public class MCODEMainPanel extends JPanel {
      * @return collapsablePanel
      */
     private MCODECollapsiblePanel createAdvancedOptionsPanel() {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("+Advanced Options");
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Advanced Options");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -217,7 +217,7 @@ public class MCODEMainPanel extends JPanel {
      * @return panel containing the network scoring parameter inputs
      */
     private MCODECollapsiblePanel createNetworkScoringPanel() {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("+Network Scoring");
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Network Scoring");
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
@@ -285,7 +285,7 @@ public class MCODEMainPanel extends JPanel {
      * @return collapsablePanel
      */
     private MCODECollapsiblePanel createClusterFindingPanel() {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("+Cluster Finding");
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Cluster Finding");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

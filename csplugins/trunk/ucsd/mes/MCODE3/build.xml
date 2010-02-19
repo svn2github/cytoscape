@@ -59,6 +59,9 @@
 	<!--  Create PlugIn Jar File -->
 	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
 		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/csplugins/mcode" />
+		<copy todir="${build.classes}/csplugins/mcode/images">
+			<fileset dir="${resources.dir}/images" />
+		</copy>
 		<jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}" />
 			<manifest>

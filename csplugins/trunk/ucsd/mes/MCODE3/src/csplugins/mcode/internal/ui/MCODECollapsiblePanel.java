@@ -153,18 +153,15 @@ public class MCODECollapsiblePanel extends JPanel {
      * @param collapse When set to true, the panel is collapsed, else it is expanded
      */
     public void setCollapsed(boolean collapse) {
-	    final String arrowText = arrow.getText().substring(1);
         if (collapse) {
             //collapse the panel, remove content and set border to empty border
             remove(panel);
             arrow.setIcon(iconArrow[COLLAPSED]);
-	    arrow.setText("+" + arrowText);
             border = new CollapsableTitledBorder(collapsedBorderLine, titleComponent);
         } else {
             //expand the panel, add content and set border to titled border
             add(panel, BorderLayout.NORTH);
             arrow.setIcon(iconArrow[EXPANDED]);
-	    arrow.setText("-" + arrowText);
             border = new CollapsableTitledBorder(expandedBorderLine, titleComponent);
         }
         setBorder(border);
@@ -190,11 +187,11 @@ public class MCODECollapsiblePanel extends JPanel {
         ImageIcon[] iconArrow = new ImageIcon[2];
         URL iconURL;
 
-        iconURL = MCODEPlugin.class.getResource("resources/arrow_collapsed.gif");
+        iconURL = MCODEPlugin.class.getResource("/csplugins/mcode/images/arrow_collapsed.gif");
         if (iconURL != null) {
             iconArrow[COLLAPSED] = new ImageIcon(iconURL);
         }
-        iconURL = MCODEPlugin.class.getResource("resources/arrow_expanded.gif");
+        iconURL = MCODEPlugin.class.getResource("/csplugins/mcode/images/arrow_expanded.gif");
         if (iconURL != null) {
             iconArrow[EXPANDED] = new ImageIcon(iconURL);
         }
