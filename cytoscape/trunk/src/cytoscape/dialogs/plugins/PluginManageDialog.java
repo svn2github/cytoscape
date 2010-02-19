@@ -42,6 +42,8 @@ import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.ThemeInfo;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginException;
+import cytoscape.plugin.ManagerException;
 
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -761,38 +763,49 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			try {
 				infoObj = Mgr.download(infoObj, taskMonitor);
 				taskMonitor.setStatus(infoObj.getName() + " v"
-						+ infoObj.getObjectVersion() + " complete.");
+						+ infoObj.getObjectVersion() + " download complete.");
 
 				PluginManageDialog.this.setMessage(infoObj.toString()
-						+ " install complete.");
+						+ " download complete.");
 
-				taskMonitor.setStatus(infoObj.toString() + " loading...");
+				taskMonitor.setStatus(infoObj.toString() + " installing...");
 
 				Mgr.install(infoObj);
 				Mgr.loadPlugin(infoObj);
+
+				if ( Mgr.getLoadingErrors().size() > 0 ) { 
+					// since we're only loading one plugin, presumably there will only
+					// be one throwable...
+					Throwable t = Mgr.getLoadingErrors().get(0);
+					Mgr.clearErrorList();
+					throw new PluginException("Failed to load plugin: " + infoObj.toString(),t); 
+				}
+
+				taskMonitor.setStatus(infoObj.toString() + " install complete.");
+					
 			} catch (java.io.IOException ioe) {
 				taskMonitor.setException(ioe, "Failed to download "
 								+ infoObj.getName() + " from "
 								+ infoObj.getObjectUrl());
-				infoObj = null;
 				logger.warn("Failed to download "
 								+ infoObj.getName() + " from "
 								+ infoObj.getObjectUrl(), ioe);
-			} catch (cytoscape.plugin.ManagerException me) {
+				infoObj = null;
+			} catch (ManagerException me) {
 				PluginManageDialog.this.setError("Failed to install " + infoObj.toString());
+				logger.warn("Failed to install " + infoObj.toString(), me);
 				taskMonitor.setException(me, me.getMessage());
 				infoObj = null;
-				logger.warn("Failed to install " + infoObj.toString(), me);
-			} catch (cytoscape.plugin.PluginException pe) {
+			} catch (PluginException pe) {
 				PluginManageDialog.this.setError("Failed to install " + infoObj.toString());
-				infoObj = null;
-				taskMonitor.setException(pe, pe.getMessage());
 				logger.warn("Failed to install " + infoObj.toString(), pe);
-			} catch (ClassNotFoundException cne) {
-				taskMonitor.setException(cne, cne.getMessage());
-				PluginManageDialog.this.setError("Failed to install " + infoObj.toString());
+				taskMonitor.setException(pe, pe.getMessage());
 				infoObj = null;
+			} catch (ClassNotFoundException cne) {
+				PluginManageDialog.this.setError("Failed to install " + infoObj.toString());
 				logger.warn("Failed to install " + infoObj.toString(), cne);
+				taskMonitor.setException(cne, cne.getMessage());
+				infoObj = null;
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
@@ -800,7 +813,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			try {
 			if (infoObj == null)
 				ins.uninstall();
-			} catch (cytoscape.plugin.ManagerException me) {
+			} catch (ManagerException me) {
 				logger.warn("Failed to cleanup after installation failure", me);
 			}
 			
