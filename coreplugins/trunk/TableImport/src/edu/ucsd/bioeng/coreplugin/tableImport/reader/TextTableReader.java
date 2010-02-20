@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
@@ -40,27 +39,27 @@ import java.io.IOException;
 
 import java.util.List;
 
-
 /**
  * Interface of all text table readers.<br>
- *
+ * 
  * @since Cytoscape 2.4
  * @version 1.0
  * @author kono
- *
+ * 
  */
 public interface TextTableReader {
+	
 	public enum ObjectType {
-		NODE,
-		EDGE,
-		NETWORK;
+		NODE, EDGE, NETWORK;
 	}
+
 	public void readTable() throws IOException;
 
-	public List getColumnNames();
+	public List<String> getColumnNames();
 
 	/**
 	 * Report the result of import as a string.
+	 * 
 	 * @return Description of
 	 */
 	public String getReport();

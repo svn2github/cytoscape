@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
@@ -47,12 +46,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.ontology.GeneOntology;
@@ -67,7 +68,7 @@ import giny.model.Node;
  * Gene Association (GA) file reader.<br>
  * This is a special reader only for valid GA files.<br>
  * </p>
- *
+ * 
  * <p>
  * Gene Association file is an annotation file for Gene Ontology. A valid GA
  * file is:<br>
@@ -81,20 +82,21 @@ import giny.model.Node;
  * For more detail, please visit the following web site: <href
  * a="http://www.geneontology.org/GO.current.annotations.shtml"/>
  * </p>
- *
+ * 
  * <p>
  * Since Cytoscape do not use Annotation class any more, CyAtteibutes imported
  * by this reader will be tagged with a special hidden attribute called
  * "isAnnotation." This is a boolean value to distinguish these values from
  * other regular attributes.
  * </p>
- *
+ * 
  * @version 0.8
  * @since Cytoscape 2.4
  * @author Keiichiro Ono
- *
+ * 
  */
 public class GeneAssociationReader implements TextTableReader {
+
 	private static final String GO_PREFIX = "GO";
 	private static final String ANNOTATION_PREFIX = "annotation";
 	private static final String GA_DELIMITER = TAB.toString();
@@ -116,74 +118,99 @@ public class GeneAssociationReader implements TextTableReader {
 	private Map<String, List<String>> attr2id;
 	private CyAttributes nodeAttributes;
 	private GeneOntology geneOntology;
-	private HashMap speciesMap;
+	private Map<String, String> speciesMap;
 	private boolean importAll = false;
 
-	public GeneAssociationReader(final String ontologyName, final InputStream is,
-	                             final String keyAttributeName, final boolean importAll,
-								 final int mappingKey, final boolean caseSensitive) 
-		throws IOException {
-		this(ontologyName, is, keyAttributeName, importAll, mappingKey, 
-		     caseSensitive, TAXON_RESOURCE_FILE);
+	private final boolean caseSensitive;
+	private Map<String, String> uppercaseIDMap;
+
+	public GeneAssociationReader(final String ontologyName,
+			final InputStream is, final String keyAttributeName,
+			final boolean importAll, final int mappingKey,
+			final boolean caseSensitive) throws IOException {
+		this(ontologyName, is, keyAttributeName, importAll, mappingKey,
+				caseSensitive, TAXON_RESOURCE_FILE);
 	}
 
-	/** 
-	 * Package protected because only in unit testing do we need to specify the taxon
-	 * resource file. Normal operation should use one of the other constructors.
+	/**
+	 * Package protected because only in unit testing do we need to specify the
+	 * taxon resource file. Normal operation should use one of the other
+	 * constructors.
 	 */
-	GeneAssociationReader(final String ontologyName, final InputStream is,
-	                             final String keyAttributeName, final boolean importAll,
-								 final int mappingKey, final boolean caseSensitive,
-								 final String taxonResourceFile)
-		throws IOException {
+	public GeneAssociationReader(final String ontologyName,
+			final InputStream is, final String keyAttributeName,
+			final boolean importAll, final int mappingKey,
+			final boolean caseSensitive, final String taxonResourceFile)
+			throws IOException {
 		this.importAll = importAll;
 		this.is = is;
 		this.keyAttributeName = keyAttributeName;
+		this.caseSensitive = caseSensitive;
+
 		key = mappingKey;
 
-		// System.out.println("Primary Key column is " + key);
+		System.out.println("!!!! Case sensitivity is " + this.caseSensitive);
 
 		// GA file is only for nodes!
 		this.nodeAliases = Cytoscape.getOntologyServer().getNodeAliases();
 		this.nodeAttributes = Cytoscape.getNodeAttributes();
 
-		final Ontology testOntology = Cytoscape.getOntologyServer().getOntologies().get(ontologyName);
+		final Ontology testOntology = Cytoscape.getOntologyServer()
+				.getOntologies().get(ontologyName);
 		/*
 		 * Ontology type should be GO.
 		 */
-		if(testOntology == null) {
-			throw new IOException("Could not find ontology data for "  + ontologyName + " in memory.");
-		}
-		if(testOntology.getClass() == GeneOntology.class) {
+		if (testOntology == null)
+			throw new IOException("Could not find ontology data for "
+					+ ontologyName + " in memory.");
+
+		if (testOntology.getClass() == GeneOntology.class)
 			this.geneOntology = (GeneOntology) testOntology;
-		} else {
-			throw new IOException("Given ontology is not GO.");
-		}
+		else
+			throw new IllegalArgumentException(
+					"Given ontology is not Gene Ontology.  Gene Assiciation File can be used with GO only.");
 
-		URL taxUrl = TableImportPlugin.class.getClassLoader().getResource(taxonResourceFile);
-
+		final URL taxUrl = TableImportPlugin.class.getClassLoader()
+				.getResource(taxonResourceFile);
 		BufferedReader taxonFileReader = null;
 
 		try {
-			taxonFileReader = new BufferedReader(new InputStreamReader(taxUrl.openStream()));
+			taxonFileReader = new BufferedReader(new InputStreamReader(taxUrl
+					.openStream()));
 			final BioDataServerUtil bdsu = new BioDataServerUtil();
 			this.speciesMap = bdsu.getTaxonMap(taxonFileReader);
-		}
-		finally {
+		} finally {
 			if (taxonFileReader != null) {
 				taxonFileReader.close();
 			}
 		}
 
-		if ((this.keyAttributeName != null) && !this.keyAttributeName.equals(ID)) {
+		// If key is NOT ID, create mapping.
+		if ((this.keyAttributeName != null)
+				&& !this.keyAttributeName.equals(ID))
 			buildMap();
-			}
+
+		if (!caseSensitive) {
+			// Create all upperÅ@case ID map
+			uppercaseIDMap = new HashMap<String, String>();
+			List<CyNode> nodes = Cytoscape.getRootGraph().nodesList();
+			for (CyNode node : nodes)
+				uppercaseIDMap.put(node.getIdentifier().toUpperCase(), node
+						.getIdentifier());
+
+			nodes.clear();
+			nodes = null;
 		}
 
+	}
+
+	/**
+	 * Create mapping from key attribute value to IDs
+	 */
 	private void buildMap() {
 		attr2id = new HashMap<String, List<String>>();
 
-		Iterator it = Cytoscape.getRootGraph().nodesIterator();
+		final Iterator<CyNode> it = Cytoscape.getRootGraph().nodesIterator();
 
 		String nodeID = null;
 		Node node = null;
@@ -191,16 +218,16 @@ public class GeneAssociationReader implements TextTableReader {
 		List<String> nodeIdList = null;
 
 		while (it.hasNext()) {
-			node = (Node) it.next();
+			node = it.next();
 			nodeID = node.getIdentifier();
-			attributeValue = nodeAttributes.getStringAttribute(nodeID, keyAttributeName);
+			attributeValue = nodeAttributes.getStringAttribute(nodeID,
+					keyAttributeName);
 
 			if (attributeValue != null) {
-				if (attr2id.containsKey(attributeValue)) {
+				if (attr2id.containsKey(attributeValue))
 					nodeIdList = attr2id.get(attributeValue);
-				} else {
+				else
 					nodeIdList = new ArrayList<String>();
-				}
 
 				nodeIdList.add(nodeID);
 				attr2id.put(attributeValue, nodeIdList);
@@ -209,15 +236,16 @@ public class GeneAssociationReader implements TextTableReader {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @throws IOException DOCUMENT ME!
+	 * Read Gene Association file
+	 * 
+	 * @throws IOException
+	 *             DOCUMENT ME!
 	 */
 	public void readTable() throws IOException {
 		try {
 			try {
 				BufferedReader bufRd = null;
-				
+
 				try {
 					String line = null;
 					String[] parts;
@@ -229,36 +257,37 @@ public class GeneAssociationReader implements TextTableReader {
 						global++;
 						parts = line.split(GA_DELIMITER);
 
-						if (parts.length == EXPECTED_COL_COUNT) {
+						if (parts.length == EXPECTED_COL_COUNT)
 							parseGA(parts);
-						}
 					}
-				}
-				finally {
+				} finally {
 					if (bufRd != null) {
 						bufRd.close();
 					}
 				}
-			}
-			finally {
+			} finally {
 				if (is != null) {
 					is.close();
 				}
 			}
-		}
-		finally {
+		} finally {
 			is = null;
+			if (uppercaseIDMap != null) {
+				uppercaseIDMap.clear();
+				uppercaseIDMap = null;
+			}
 		}
 	}
 
 	/**
-	 *
+	 * 
 	 * @param key
 	 * @param synoString
 	 * @return
 	 */
-	private String setAlias(final String key, final String objName, final String synoString,
-	                        final String dbSpecificId) {
+	private String setAlias(final String key, final String objName,
+			final String synoString, final String dbSpecificId) {
+
 		final String[] synos = synoString.split(PIPE.toString());
 		final String[] objNames;
 		final Set<String> idSet = new TreeSet<String>();
@@ -269,9 +298,8 @@ public class GeneAssociationReader implements TextTableReader {
 			if (tempObj.length != 0) {
 				objNames = tempObj[0].split(",");
 
-				for (String name : objNames) {
+				for (String name : objNames)
 					idSet.add(name);
-				}
 			}
 		}
 
@@ -284,19 +312,30 @@ public class GeneAssociationReader implements TextTableReader {
 		/*
 		 * Build a Set of node names which includes all aliases and id.
 		 */
-		for (String synonym : synos) {
+		for (String synonym : synos)
 			idSet.add(synonym);
-		}
 
 		for (String id : idSet) {
+			
 			if (Cytoscape.getCyNode(id) != null) {
-				if (idSet.size() != 1) {
+				// Match found
+				if (idSet.size() != 1)
 					idSet.remove(id);
-				}
 
 				nodeAliases.add(id, new ArrayList<String>(idSet));
 
 				return id;
+			} else if (!caseSensitive) {
+				final String originalID = uppercaseIDMap.get(id.toUpperCase());
+				if (originalID == null)
+					continue;
+				
+				if (idSet.size() != 1)
+					idSet.remove(originalID);
+
+				nodeAliases.add(originalID, new ArrayList<String>(idSet));
+				return originalID;
+				
 			}
 		}
 
@@ -312,9 +351,17 @@ public class GeneAssociationReader implements TextTableReader {
 			idSet.add(synonym);
 		}
 
+		String targetID = null;
 		for (String id : idSet) {
-			if (attr2id.containsKey(id)) {
-				List<String> nodeIDs = attr2id.get(id);
+			if (!caseSensitive) {
+				targetID = uppercaseIDMap.get(id.toUpperCase());
+				if (targetID == null)
+					continue;
+			} else
+				targetID = id;
+			
+			if (attr2id.containsKey(targetID)) {
+				List<String> nodeIDs = attr2id.get(targetID);
 
 				for (String nodeID : nodeIDs) {
 					nodeAliases.add(nodeID, new ArrayList<String>(idSet));
@@ -329,18 +376,17 @@ public class GeneAssociationReader implements TextTableReader {
 
 	/**
 	 * All fields are saved as Strings.
-	 *
+	 * 
 	 */
 	private void parseGA(String[] entries) {
-		if (geneOntology.getAspect(entries[GOID]) == null) {
+		if (geneOntology.getAspect(entries[GOID]) == null)
 			return;
-		}
 
 		/*
 		 * Create attribute name based on GO Aspect (a.k.a. Name Space)
 		 */
 		final String attributeName = ANNOTATION_PREFIX + "." + GO_PREFIX + " "
-		                             + geneOntology.getAspect(entries[GOID]).name();
+				+ geneOntology.getAspect(entries[GOID]).name();
 
 		/*
 		 * If importAll option is selected, just import everything even if the
@@ -359,105 +405,105 @@ public class GeneAssociationReader implements TextTableReader {
 			 * Case 1: use node ID as the key
 			 */
 			if (keyAttributeName.equals(ID)) {
-				String newKey = setAlias(entries[key], entries[OBJ_NAME], entries[SYNONYM],
-				                         entries[DB_OBJ_ID]);
+				final String newKey = setAlias(entries[key], entries[OBJ_NAME],
+						entries[SYNONYM], entries[DB_OBJ_ID]);
 
-				if (newKey != null) {
+				if (newKey != null)
 					mapEntry(entries, newKey, attributeName);
-				}
 			} else {
 				/*
 				 * Case 2: use an attribute as the key.
 				 */
-				List<String> keys = setMultipleAliases(entries[key], entries[SYNONYM]);
+				List<String> keys = setMultipleAliases(entries[key],
+						entries[SYNONYM]);
 
 				if (keys != null) {
-					for (String key : keys) {
+					for (String key : keys)
 						mapEntry(entries, key, attributeName);
-					}
 				}
 			}
 		}
 	}
 
-	private void mapEntry(final String[] entries, final String key, final String attributeName) {
+	private void mapEntry(final String[] entries, final String key,
+			final String attributeName) {
 		String fullName = null;
 
 		for (int i = 0; i < GeneAssociationTags.values().length; i++) {
-			GeneAssociationTags tag = GeneAssociationTags.values()[i];
+			final GeneAssociationTags tag = GeneAssociationTags.values()[i];
 
 			switch (tag) {
-				case GO_ID:
+			case GO_ID:
 
-					Set<String> goTermSet = new TreeSet<String>();
+				Set<String> goTermSet = new TreeSet<String>();
 
-					if (nodeAttributes.getListAttribute(key, attributeName) != null) {
-						goTermSet.addAll(nodeAttributes.getListAttribute(key, attributeName));
-					}
+				if (nodeAttributes.getListAttribute(key, attributeName) != null) {
+					goTermSet.addAll(nodeAttributes.getListAttribute(key,
+							attributeName));
+				}
 
-					if ((fullName = geneOntology.getGOTerm(entries[i]).getFullName()) != null) {
-						goTermSet.add(fullName);
-					}
+				if ((fullName = geneOntology.getGOTerm(entries[i])
+						.getFullName()) != null) {
+					goTermSet.add(fullName);
+				}
 
-					nodeAttributes.setListAttribute(key, attributeName, new ArrayList(goTermSet));
+				nodeAttributes.setListAttribute(key, attributeName,
+						new ArrayList(goTermSet));
 
-					break;
+				break;
 
-				case TAXON:
-					if(speciesMap.get(entries[i].split(":")[1]) != null) {
-						nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
-	                            (String) speciesMap.get(entries[i].split(":")[1]));
-					}
-					
+			case TAXON:
+				if (speciesMap.get(entries[i].split(":")[1]) != null) {
+					nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "."
+							+ tag.toString(), (String) speciesMap
+							.get(entries[i].split(":")[1]));
+				}
 
-					break;
+				break;
 
-				case EVIDENCE:
+			case EVIDENCE:
 
-					Map<String, String> evidences = nodeAttributes.getMapAttribute(key,
-					                                                               ANNOTATION_PREFIX
-					                                                               + "."
-					                                                               + tag.toString());
+				Map<String, String> evidences = nodeAttributes.getMapAttribute(
+						key, ANNOTATION_PREFIX + "." + tag.toString());
 
-					if (evidences == null) {
-						evidences = new HashMap<String, String>();
-					}
+				if (evidences == null) {
+					evidences = new HashMap<String, String>();
+				}
 
-					evidences.put(entries[GOID], entries[i]);
-					nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
-					                               evidences);
+				evidences.put(entries[GOID], entries[i]);
+				nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "."
+						+ tag.toString(), evidences);
 
-					break;
+				break;
 
-				case DB_REFERENCE:
+			case DB_REFERENCE:
 
-					Map<String, String> references = nodeAttributes.getMapAttribute(key,
-					                                                                ANNOTATION_PREFIX
-					                                                                + "."
-					                                                                + tag.toString());
+				Map<String, String> references = nodeAttributes
+						.getMapAttribute(key, ANNOTATION_PREFIX + "."
+								+ tag.toString());
 
-					if (references == null) {
-						references = new HashMap<String, String>();
-					}
+				if (references == null) {
+					references = new HashMap<String, String>();
+				}
 
-					references.put(entries[GOID], entries[i]);
-					nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
-					                               references);
+				references.put(entries[GOID], entries[i]);
+				nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "."
+						+ tag.toString(), references);
 
-					break;
+				break;
 
-				case DB_OBJECT_SYMBOL:
-				case ASPECT:
-				case DB_OBJECT_SYNONYM:
+			case DB_OBJECT_SYMBOL:
+			case ASPECT:
+			case DB_OBJECT_SYNONYM:
 
-					// Ignore these lines
-					break;
+				// Ignore these lines
+				break;
 
-				default:
-					nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
-					                            entries[i]);
+			default:
+				nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "."
+						+ tag.toString(), entries[i]);
 
-					break;
+				break;
 			}
 		}
 	}
@@ -465,7 +511,7 @@ public class GeneAssociationReader implements TextTableReader {
 	/**
 	 * Return column names as List onject.
 	 */
-	public List getColumnNames() {
+	public List<String> getColumnNames() {
 		final List<String> colNames = new ArrayList<String>();
 
 		for (GeneAssociationTags tag : GeneAssociationTags.values()) {
@@ -476,9 +522,9 @@ public class GeneAssociationReader implements TextTableReader {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String getReport() {
 		// TODO Auto-generated method stub

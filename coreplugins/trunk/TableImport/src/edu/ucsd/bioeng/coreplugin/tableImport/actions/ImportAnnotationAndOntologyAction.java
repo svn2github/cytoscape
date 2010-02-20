@@ -59,8 +59,6 @@ public class ImportAnnotationAndOntologyAction extends CytoscapeAction {
 
 	private static final long serialVersionUID = -7250841983164927184L;
 
-	private ImportTextTableDialog iad;
-
 	/**
 	 * Creates a new ImportAnnotationAndOntologyAction object.
 	 */
@@ -78,22 +76,20 @@ public class ImportAnnotationAndOntologyAction extends CytoscapeAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		if (iad == null) {
-			try {
-				iad = new ImportTextTableDialog(Cytoscape.getDesktop(), true,
-						ImportTextTableDialog.ONTOLOGY_AND_ANNOTATION_IMPORT);
-			} catch (JAXBException e1) {
-				e1.printStackTrace();
-				throw new IllegalStateException("");
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		try {
+			ImportTextTableDialog iad = new ImportTextTableDialog(Cytoscape
+					.getDesktop(), true,
+					ImportTextTableDialog.ONTOLOGY_AND_ANNOTATION_IMPORT);
 			iad.pack();
+			iad.setLocationRelativeTo(Cytoscape.getDesktop());
+			iad.setVisible(true);
+		} catch (JAXBException e1) {
+			e1.printStackTrace();
+			throw new IllegalStateException("");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		
-		iad.setLocationRelativeTo(Cytoscape.getDesktop());
-		iad.setVisible(true);
 
 	}
 }

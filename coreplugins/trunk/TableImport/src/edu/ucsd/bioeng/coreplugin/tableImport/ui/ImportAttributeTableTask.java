@@ -39,10 +39,7 @@ package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
-
-import java.io.IOException;
 
 
 /**
