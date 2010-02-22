@@ -64,6 +64,7 @@ import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.SupportedFileType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.GO_ID;
@@ -233,7 +234,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private static final String DEF_ANNOTATION_ITEM = "Please select an annotation data source...";
 	private static final String[] keyTable = { "Alias?", "Column (Attribute Name)", "Data Type" };
 	private static final String ID = "ID";
-	private static final String EXCEL_EXT = ".xls";
 	private static final String GENE_ASSOCIATION = "gene_association";
 
 	// Key column index
@@ -1863,7 +1863,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 														 listDataTypes, importFlag,
 														 caseSensitive);
 
-				if (source.toString().endsWith(EXCEL_EXT)) {
+				if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension())) {
 					/*
 					 * Read one sheet at a time
 					 */
@@ -2015,7 +2015,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					multi = false;
 
 				for (int i = 0; i < sources.length; i++) {
-					if (sources[i].toString().endsWith(EXCEL_EXT)) {
+					if (sources[i].toString().endsWith(SupportedFileType.EXCEL.getExtension()) || sources[i].toString().endsWith(SupportedFileType.OOXML.getExtension())) {
 						// Extract name from the sheet name.
 						InputStream is = null;
 						POIFSFileSystem excelIn;
@@ -2593,7 +2593,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 			networkImportPanel.setComboBoxes(columnNames);
 
-			if (sourceURL.toString().endsWith(EXCEL_EXT)) {
+			if (sourceURL.toString().endsWith(SupportedFileType.EXCEL.getExtension()) || sourceURL.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
 				switchDelimiterCheckBoxes(false);
 			} else {
 				switchDelimiterCheckBoxes(true);
@@ -2643,7 +2643,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				primaryKeyComboBox.setSelectedIndex(DB_OBJECT_SYMBOL.getPosition());
 				ontologyInAnnotationComboBox.setSelectedIndex(GO_ID.getPosition());
 				disableComponentsForGA();
-			} else if (sourceURL.toString().endsWith(EXCEL_EXT) == false) {
+			} else if (sourceURL.toString().endsWith(SupportedFileType.EXCEL.getExtension()) == false || sourceURL.toString().endsWith(SupportedFileType.OOXML.getExtension()) == false) {
 				switchDelimiterCheckBoxes(true);
 				nodeRadioButton.setEnabled(true);
 				edgeRadioButton.setEnabled(true);
