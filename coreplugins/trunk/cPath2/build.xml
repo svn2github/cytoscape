@@ -55,6 +55,7 @@
 		<fileset dir="lib">
 			<include name="*.jar" />
 		</fileset>
+		<pathelement location="${cytoscape_plugin_dir}/biopax.jar"/>
 	</path>
 
 	<!-- For XJC compiler task -->
