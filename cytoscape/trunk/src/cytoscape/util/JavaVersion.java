@@ -30,11 +30,16 @@
 package cytoscape.util;
 
 
+import cytoscape.logger.CyLogger;
+
+
 /**
  *  A class that determines various components of the JVM version.
  *  Please <a href="http://java.sun.com/j2se/versioning_naming.html">see</a> for details.
  */
 public class JavaVersion {
+	private final static CyLogger logger = CyLogger.getLogger(JavaVersion.class);
+
 	private int major;
 	private int minor;
 	private int maintenanceLevel;
@@ -49,7 +54,8 @@ public class JavaVersion {
 		try {
 			major = Integer.parseInt(javaVersion.substring(0, nonDigitPos));
 		} catch (final NumberFormatException e) {
-			System.err.println("Can't determine Java major version number from \"" + javaVersion + "\"!");
+			logger.error("Can't determine Java major version number from \"" + javaVersion + "\"!");
+			major = 0;
 		}
 
 		++nonDigitPos;
@@ -59,7 +65,8 @@ public class JavaVersion {
 		try {
 			minor = Integer.parseInt(javaVersion.substring(intStart, nonDigitPos));
 		} catch (final NumberFormatException e) {
-			System.err.println("Can't determine Java major version number from \"" + javaVersion + "\"!");
+			logger.error("Can't determine Java major version number from \"" + javaVersion + "\"!");
+			minor = 0;
 		}
 
 		++nonDigitPos;
@@ -69,7 +76,8 @@ public class JavaVersion {
 		try {
 			maintenanceLevel = Integer.parseInt(javaVersion.substring(intStart, nonDigitPos));
 		} catch (final NumberFormatException e) {
-			System.err.println("Can't determine Java maintenance level from \"" + javaVersion + "\"!");
+			logger.error("Can't determine Java maintenance level from \"" + javaVersion + "\"!");
+			maintenanceLevel = 0;
 		}
 
 		++nonDigitPos;
@@ -82,6 +90,7 @@ public class JavaVersion {
 			try {
 				update = Integer.parseInt(javaVersion.substring(intStart, nonDigitPos));
 			} catch (final NumberFormatException e) {
+				logger.error("Can't determine Java update version number from \"" + javaVersion + "\"!");
 				update = 0;
 			}
 		}
