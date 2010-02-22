@@ -46,14 +46,25 @@ import java.io.*;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 
+
+/**
+ * This is currently an experimental feature.
+ * Networks that were previously imported
+ * from a BioPAX file or web services may be saved.
+ * All the modifications to this network made
+ * within Cytoscape will be lost.
+ * 
+ * @author rodche
+ *
+ */
 public class ExportAsBioPAXAction extends CytoscapeAction {
     public ExportAsBioPAXAction() {
-		super("Network as BioPAX...");
+		super("BioPAX Network to File...");
 		setPreferredMenu("File.Export");
 	}
 
     /**
-	 * User-initiated action to save the current network in SIF format
+	 * User-initiated action to save the current BioPAX network 
 	 * to a user-specified file.  If successfully saved, fires a
 	 * PropertyChange event with property=Cytoscape.NETWORK_SAVED,
 	 * old_value=null, and new_value=a three element Object array containing:
@@ -66,8 +77,10 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
 	 * @param e ActionEvent Object.
 	 */
     public void actionPerformed(ActionEvent e) {
-		File file = FileUtil.getFile("Save Network as BioPAX", FileUtil.SAVE,
-		                             new CyFileFilter[] {  });
+		File file = FileUtil.getFile(
+				"Save BioPAX Network (experimental feature)", 
+				FileUtil.SAVE,
+		        new CyFileFilter[] {  });
 		if (file != null) {
 			String fileName = file.getAbsolutePath();
 
@@ -105,7 +118,7 @@ class ExportAsBioPAXTask implements Task {
 	}
 
     public void run() {
-		taskMonitor.setStatus("Saving BioPAX...");
+		taskMonitor.setStatus("Exporting BioPAX...");
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
         Model bpModel = BioPaxUtil.getNetworkModel(currentNetwork.getIdentifier());
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
@@ -147,6 +160,6 @@ class ExportAsBioPAXTask implements Task {
 	}
 
 	public String getTitle() {
-		return "Saving Network as BioPAX";
+		return "Saving BioPAX Network";
 	}
 }

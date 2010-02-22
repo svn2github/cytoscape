@@ -1014,7 +1014,8 @@ public class BioPaxUtil {
 		Boolean b1 = networkAttributes
 			.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK);
 		// BioPAX network that was converted to SIF (TODO mapping to the simplified SIF network currently is not done)
-        Boolean b2 = networkAttributes.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BINARY_NETWORK);
+        // Bgg fix: disable exporting SIF networks (read from PC web service) for now
+		Boolean b2 = false; //networkAttributes.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BINARY_NETWORK);
 
         return (b1 != null && b1) || (b2 != null && b2);
 	}
