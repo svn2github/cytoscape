@@ -170,7 +170,7 @@ public class GeneAssociationReader implements TextTableReader {
 			throw new IllegalArgumentException(
 					"Given ontology is not Gene Ontology.  Gene Assiciation File can be used with GO only.");
 
-		final URL taxUrl = TableImportPlugin.class.getClassLoader()
+		final URL taxUrl = TableImportPlugin.class
 				.getResource(taxonResourceFile);
 		BufferedReader taxonFileReader = null;
 
