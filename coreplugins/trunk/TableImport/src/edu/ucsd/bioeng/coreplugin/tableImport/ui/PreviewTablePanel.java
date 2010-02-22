@@ -34,19 +34,6 @@
  */
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.logger.CyLogger;
-import cytoscape.util.URLUtil;
-
-import cytoscape.util.swing.ColumnResizer;
-
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.SupportedFileType;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
-import edu.ucsd.bioeng.coreplugin.tableImport.ui.ImportTextTableDialog.FileTypes;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.ALIAS_COLOR;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogColorTheme.PRIMARY_KEY_COLOR;
@@ -55,16 +42,6 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogFontTh
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.RIGHT_ARROW_ICON;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.TEXT_FILE_ICON;
-
-
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.jdesktop.layout.GroupLayout;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -76,17 +53,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -96,7 +69,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -110,11 +82,28 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.jdesktop.layout.GroupLayout;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.URLUtil;
+import cytoscape.util.swing.ColumnResizer;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.SupportedFileType;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
+import edu.ucsd.bioeng.coreplugin.tableImport.ui.ImportTextTableDialog.FileTypes;
 
 /**
  * General purpose preview table panel.
@@ -123,9 +112,8 @@ import javax.swing.table.TableModel;
  * 
  */
 public class PreviewTablePanel extends JPanel {
-	/*
-	 * Define type of preview.
-	 */
+	
+	private static final long serialVersionUID = -7779176856705540150L;
 
 	/**
 	 *
@@ -173,7 +161,6 @@ public class PreviewTablePanel extends JPanel {
 	private JTable previewTable;
 
 	// Tables for each worksheet.
-	private Map<String, FileTypes> fileTypes;
 	private Map<String, JTable> previewTables;
 	private JTabbedPane tableTabbedPane;
 	private JScrollPane keyPreviewScrollPane;
@@ -221,9 +208,6 @@ public class PreviewTablePanel extends JPanel {
 
 		dataTypeMap = new HashMap<String, Byte[]>();
 		listDataTypeMap = new HashMap<String, Byte[]>();
-
-		// This object will track the file types of each table.
-		fileTypes = new HashMap<String, FileTypes>();
 
 		initComponents();
 

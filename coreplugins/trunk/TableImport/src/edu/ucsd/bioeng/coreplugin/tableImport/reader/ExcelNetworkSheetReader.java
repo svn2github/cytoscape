@@ -36,14 +36,14 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
+import java.io.IOException;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-
-import java.io.IOException;
 
 
 /**
@@ -58,7 +58,7 @@ import java.io.IOException;
  * @author Keiichiro Ono
  */
 public class ExcelNetworkSheetReader extends NetworkTableReader {
-	private final HSSFSheet sheet;
+	private final Sheet sheet;
 	private CyLogger logger = CyLogger.getLogger(ExcelNetworkSheetReader.class);
 
 	/*
@@ -71,8 +71,8 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 	 * @param sheet  DOCUMENT ME!
 	 * @param nmp  DOCUMENT ME!
 	 */
-	public ExcelNetworkSheetReader(String networkName, HSSFSheet sheet,
-	                               NetworkTableMappingParameters nmp) {
+	public ExcelNetworkSheetReader(final String networkName, final Sheet sheet,
+	                               final NetworkTableMappingParameters nmp) {
 		this(networkName, sheet, nmp, 0);
 	}
 
@@ -84,8 +84,8 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 	 * @param nmp  DOCUMENT ME!
 	 * @param startLineNumber  DOCUMENT ME!
 	 */
-	public ExcelNetworkSheetReader(String networkName, HSSFSheet sheet,
-	                               NetworkTableMappingParameters nmp, final int startLineNumber) {
+	public ExcelNetworkSheetReader(final String networkName, final Sheet sheet,
+	                               final NetworkTableMappingParameters nmp, final int startLineNumber) {
 		super(networkName, null, nmp, startLineNumber, null);
 		this.sheet = sheet;
 	}
@@ -97,7 +97,7 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 	 */
 	@Override
 	public void readTable() throws IOException {
-		HSSFRow row;
+		Row row;
 		int rowCount = startLineNumber;
 		String[] cellsInOneRow;
 
@@ -118,18 +118,18 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 	 * @param row
 	 * @return
 	 */
-	private String[] createElementStringArray(HSSFRow row) {
+	private String[] createElementStringArray(final Row row) {
 		String[] cells = new String[nmp.getColumnCount()];
-		HSSFCell cell = null;
+		Cell cell = null;
 
 		for (short i = 0; i < nmp.getColumnCount(); i++) {
 			cell = row.getCell(i);
 
 			if (cell == null) {
 				cells[i] = null;
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 				cells[i] = cell.getRichStringCellValue().getString();
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				if (nmp.getAttributeTypes()[i] == CyAttributes.TYPE_INTEGER) {
 					Double dblValue = cell.getNumericCellValue();
 					Integer intValue = dblValue.intValue();
@@ -137,11 +137,11 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 				} else {
 					cells[i] = Double.toString(cell.getNumericCellValue());
 				}
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
 				cells[i] = Boolean.toString(cell.getBooleanCellValue());
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
 				cells[i] = null;
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_ERROR) {
 				cells[i] = null;
 				logger.warn("Error found when reading a cell!");
 			}

@@ -34,48 +34,11 @@
 */
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.bookmarks.Attribute;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.DataSource;
-import cytoscape.logger.CyLogger;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.readers.GraphReader;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.BookmarksUtil;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-import cytoscape.util.URLUtil;
-
-import cytoscape.util.swing.ColumnResizer;
-import cytoscape.util.swing.JStatusBar;
-
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeAndOntologyMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.SupportedFileType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.GO_ID;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.TAXON;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.OntologyAnnotationReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.PIPE;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.EDGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.NETWORK;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.NODE;
@@ -96,15 +59,6 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSe
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.STRING_ICON;
 
-import giny.model.Edge;
-import giny.model.Node;
-
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
-import org.jdesktop.layout.GroupLayout;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
@@ -114,19 +68,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -157,8 +107,44 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-
 import javax.xml.bind.JAXBException;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.jdesktop.layout.GroupLayout;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.bookmarks.Attribute;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.bookmarks.DataSource;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.logger.CyLogger;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
+import cytoscape.util.swing.ColumnResizer;
+import cytoscape.util.swing.JStatusBar;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeAndOntologyMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.OntologyAnnotationReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.SupportedFileType;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
+import giny.model.Edge;
+import giny.model.Node;
 
 
 /**
@@ -1868,11 +1854,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					 * Read one sheet at a time
 					 */
 					InputStream is = null;
-					POIFSFileSystem excelIn;
-
+					Workbook wb = null;
+					
 					try {
 						is = source.openStream();
-						excelIn = new POIFSFileSystem(is);
+						wb = WorkbookFactory.create(is);
 					}
 					finally {
 						if (is != null) {
@@ -1880,11 +1866,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						}
 					}
 
-					HSSFWorkbook wb = new HSSFWorkbook(excelIn);
-
 					// Load all sheets in the table
 					for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-						HSSFSheet sheet = wb.getSheetAt(i);
+						final Sheet sheet = wb.getSheetAt(i);
 
 						loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
 						                                             startLineNumber,
@@ -2018,11 +2002,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					if (sources[i].toString().endsWith(SupportedFileType.EXCEL.getExtension()) || sources[i].toString().endsWith(SupportedFileType.OOXML.getExtension())) {
 						// Extract name from the sheet name.
 						InputStream is = null;
-						POIFSFileSystem excelIn;
-
+						Workbook wb = null;
 						try {
 							is = sources[i].openStream();
-							excelIn = new POIFSFileSystem(is);
+							wb = WorkbookFactory.create(is);
 						}
 						finally {
 							if (is != null) {
@@ -2030,8 +2013,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 							}
 						}
 						
-						HSSFWorkbook wb = new HSSFWorkbook(excelIn);
-						HSSFSheet sheet = wb.getSheetAt(0);
+						
+						Sheet sheet = wb.getSheetAt(0);
 						networkName = wb.getSheetName(0);
 
 						reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,

@@ -34,17 +34,16 @@
 */
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.logger.CyLogger;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -61,7 +60,7 @@ import java.util.Map;
  *
  */
 public class ExcelAttributeSheetReader implements TextTableReader {
-	private final HSSFSheet sheet;
+	private final Sheet sheet;
 	private final AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
 	private final int startLineNumber;
@@ -77,7 +76,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	 * @param sheet
 	 * @param mapping
 	 */
-	public ExcelAttributeSheetReader(final HSSFSheet sheet,
+	public ExcelAttributeSheetReader(final Sheet sheet,
 	                                 final AttributeMappingParameters mapping,
 	                                 final int startLineNumber) {
 		this(sheet, mapping, startLineNumber, false);
@@ -91,7 +90,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	 * @param startLineNumber  DOCUMENT ME!
 	 * @param importAll  DOCUMENT ME!
 	 */
-	public ExcelAttributeSheetReader(final HSSFSheet sheet,
+	public ExcelAttributeSheetReader(final Sheet sheet,
 	                                 final AttributeMappingParameters mapping,
 	                                 final int startLineNumber, boolean importAll) {
 		this.sheet = sheet;
@@ -116,7 +115,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void readTable() throws IOException {
-		HSSFRow row;
+		Row row;
 		int rowCount = startLineNumber;
 		String[] cellsInOneRow;
 
@@ -142,18 +141,18 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	 * @param row
 	 * @return
 	 */
-	private String[] createElementStringArray(HSSFRow row) {
+	private String[] createElementStringArray(Row row) {
 		String[] cells = new String[mapping.getColumnCount()];
-		HSSFCell cell = null;
+		Cell cell = null;
 
 		for (short i = 0; i < mapping.getColumnCount(); i++) {
 			cell = row.getCell(i);
 
 			if (cell == null) {
 				cells[i] = null;
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 				cells[i] = cell.getRichStringCellValue().getString();
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				if (mapping.getAttributeTypes()[i] == CyAttributes.TYPE_INTEGER) {
 					Double dblValue = cell.getNumericCellValue();
 					Integer intValue = dblValue.intValue();
@@ -161,11 +160,11 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 				} else {
 					cells[i] = Double.toString(cell.getNumericCellValue());
 				}
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
 				cells[i] = Boolean.toString(cell.getBooleanCellValue());
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
 				cells[i] = null;
-			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
+			} else if (cell.getCellType() == Cell.CELL_TYPE_ERROR) {
 				cells[i] = null;
 				logger.warn("Error found when reading a cell!");
 			}
