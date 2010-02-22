@@ -1,14 +1,7 @@
 /*
  File: CyMain.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -62,87 +55,6 @@ import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
-
-
-/**
- *  A class that determines various components of the JVM version.
- *  Please <a href="http://java.sun.com/j2se/versioning_naming.html">see</a> for details.
- */
-class JavaVersion {
-	private static JavaVersion theJavaVersion;
-
-	private final static CyLogger logger = CyLogger.getLogger(JavaVersion.class);
-
-	private int major;
-	private int minor;
-	private int maintenanceLevel;
-	private int update;
-
-	private JavaVersion() {
-		final String javaVersion = System.getProperty("java.version");
-
-		int nonDigitPos = 0;
-		while (Character.isDigit(javaVersion.charAt(nonDigitPos)))
-			++nonDigitPos;
-		try {
-			major = Integer.parseInt(javaVersion.substring(0, nonDigitPos));
-		} catch (final NumberFormatException e) {
-			logger.error("Can't determine Java major version number from \"" + javaVersion + "\"!");
-			major = 0;
-		}
-
-		++nonDigitPos;
-		int intStart = nonDigitPos;
-		while (Character.isDigit(javaVersion.charAt(nonDigitPos)))
-			++nonDigitPos;
-		try {
-			minor = Integer.parseInt(javaVersion.substring(intStart, nonDigitPos));
-		} catch (final NumberFormatException e) {
-			logger.error("Can't determine Java major version number from \"" + javaVersion + "\"!");
-			minor = 0;
-		}
-
-		++nonDigitPos;
-		intStart = nonDigitPos;
-		while (nonDigitPos < javaVersion.length() && Character.isDigit(javaVersion.charAt(nonDigitPos)))
-			++nonDigitPos;
-		try {
-			maintenanceLevel = Integer.parseInt(javaVersion.substring(intStart, nonDigitPos));
-		} catch (final NumberFormatException e) {
-			logger.error("Can't determine Java maintenance level from \"" + javaVersion + "\"!");
-			maintenanceLevel = 0;
-		}
-
-		++nonDigitPos;
-		intStart = nonDigitPos;
-		while (nonDigitPos < javaVersion.length() && Character.isDigit(javaVersion.charAt(nonDigitPos)))
-			++nonDigitPos;
-		if (nonDigitPos > javaVersion.length())
-			update = 0;
-		else {
-			try {
-				update = Integer.parseInt(javaVersion.substring(intStart, nonDigitPos));
-			} catch (final NumberFormatException e) {
-				logger.error("Can't determine Java update version number from \"" + javaVersion + "\"!");
-				update = 0;
-			}
-		}
-	}
-
-	/**
-	 *  Factory method returning the singleton.
-	 */
-	public static synchronized JavaVersion getJavaVersion() {
-		if (theJavaVersion == null)
-			theJavaVersion = new JavaVersion();
-		return theJavaVersion;
-	}
-
-	public int getMajor() { return major; }
-	public int getMinor() { return minor; }
-	public int getMaintenanceLevel() { return maintenanceLevel; }
-	public int getUpdate() { return update; }
-}
 
 
 /**
