@@ -250,12 +250,13 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			return returnThis;
 
 		final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+		final int srcNode = graph.edgeSource(edge);
+		final int trgNode = graph.edgeTarget(edge);
 
 		// Calculate anchors necessary for self edges.
-		if (graph.edgeSource(edge) == graph.edgeTarget(edge)) { 
+		if (srcNode == trgNode) { 
 
-			final int node = graph.edgeSource(edge);
-			m_view.m_spacial.exists(node, m_extentsBuff, 0);
+			m_view.m_spacial.exists(srcNode, m_extentsBuff, 0);
 
 			final double w = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
 			final double h = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
@@ -263,7 +264,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			final double y = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
 			final double nodeSize = Math.max(w, h);
 			int i = 0;
-			final IntIterator selfEdges = graph.edgesConnecting(node, node, true, true, true);
+			final IntIterator selfEdges = graph.edgesConnecting(srcNode, srcNode, true, true, true);
 
 			while (selfEdges.hasNext()) {
 				final int e2 = selfEdges.nextInt();
@@ -298,10 +299,16 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		// exist between two nodes. This has no effect if user specified anchors
 		// exist on the edge.
 		while (true) {
-			// sort the connecting edges
-			final IntIterator conEdges = graph.edgesConnecting(graph.edgeSource(edge),
-			                                                     graph.edgeTarget(edge), true,
-			                                                     true, true);
+
+			// By consistently ording the source and target nodes, dx and dy will always
+			// be calculated according to the same orientation. This allows the offset
+			// calculation to toggle the edges from side to side without any overlap.
+			final int tmpSrc = Math.min( srcNode, trgNode ); 
+			final int tmpTrg = Math.max( srcNode, trgNode ); 
+
+			// Sort the connecting edges.
+			final IntIterator conEdges = graph.edgesConnecting(tmpSrc, tmpTrg,
+			                                                   true, true, true);
 		
 			m_heap.empty();
 
@@ -312,15 +319,15 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 
 			int otherEdge = otherEdges.nextInt();
 
-			// if the first other edge is the same as this edge, 
-			// (i.e. we're at the end of the list?)
+			// If the first other edge is the same as this edge, 
+			// (i.e. we're at the end of the list?).
 			if (otherEdge == edge)
 				break;
 
-			// so we don't count the other edge twice ?
+			// So we don't count the other edge twice?
 			int i = (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0) ? 1 : 0;
 
-			// count the number of other edges
+			// Count the number of other edges.
 			while (true) {
 				if (edge == (otherEdge = otherEdges.nextInt()))
 					break;
@@ -331,58 +338,54 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 
 			final int inx = i;
 
-			// get source node size and position
-			m_view.m_spacial.exists(graph.edgeSource(edge), m_extentsBuff, 0);
+			// Get source node size and position.
+			m_view.m_spacial.exists(tmpSrc, m_extentsBuff, 0);
 			final double srcW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
 			final double srcH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
 			final double srcX = (((double) m_extentsBuff[0]) + m_extentsBuff[2]) / 2.0d;
 			final double srcY = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
 
-			// get target node size and position
-			m_view.m_spacial.exists(graph.edgeTarget(edge), m_extentsBuff, 0);
+			// Get target node size and position.
+			m_view.m_spacial.exists(tmpTrg, m_extentsBuff, 0);
 			final double trgW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
 			final double trgH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
 			final double trgX = (((double) m_extentsBuff[0]) + m_extentsBuff[2]) / 2.0d;
 			final double trgY = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
 
-			// used for determining the space between the edges 
+			// Used for determining the space between the edges.
 			final double nodeSize = Math.max(Math.max(Math.max(srcW, srcH), trgW), trgH);
 
+			// Midpoint between nodes.
 			final double midX = (srcX + trgX) / 2;
 			final double midY = (srcY + trgY) / 2;
+
+			// Distance in X and Y dimensions.
+			// Note that dx and dy may be negative.  This is OK, because this will ensure
+			// that the handle is always correctly placed offset from the midpoint of, 
+			// and perpendicular to, the original edge.
 			final double dx = trgX - srcX;
 			final double dy = trgY - srcY;
+
+			// Distance or length between nodes.
 			final double len = Math.sqrt((dx * dx) + (dy * dy));
 
 			if (((float) len) == 0.0f) 
 				break;
 
-			// this determines which side of the first edge and how far from the first
-			// edge the other edge should be placed
-			//
-			// divide by 2 puts two edges at the same distance from the center
-			// modulo should put those edges on the opposite side
-			
-			// causes overlap of consecutive, opposing edges 
-			//final double offset = ((inx + 1) / 2) * (inx % 2 == 0 ? 1 : -1) * nodeSize;
+			// This determines which side of the first edge and how far from the first
+			// edge the other edge should be placed.
+			// -  Divide by 2 puts consecutive edges at the same distance from the center
+			//    because of integer math.
+			// -  Modulo puts consecutive edges on opposite sides.
+			// -  Node size is for consistent scaling.
+			final double offset = ((inx + 1) / 2) * (inx % 2 == 0 ? 1 : -1) * nodeSize;
 
-			// causes overlap of consecutive, coinciding edges 
-			//final double offset = ((inx + 1) / 2) * nodeSize; 
-
-			// no overlap, but causes weird spacing when there are multiple consecutive 
-			// edges with the same directionality
-			final double offset = inx * nodeSize; 
-
-			// Note that dx and dy may be negative.  This is OK, because this will ensure
-			// that the handle is always correctly placed offset from the midpoint of, 
-			// and perpendicular to, the original edge.
+			// Depending on orientation sine or cosine. This adjusts the length
+			// of the offset according the appropriate X and Y dimensions.
 			final double normX = dx / len;
 			final double normY = dy / len;
 
-			// offset can't just alternate based on ind because dx,dy can be either positive
-			// or negative.  
-
-			// calculate the anchor points
+			// Calculate the anchor points.
 			final double anchorX = midX + (offset * normY);
 			final double anchorY = midY - (offset * normX);
 
