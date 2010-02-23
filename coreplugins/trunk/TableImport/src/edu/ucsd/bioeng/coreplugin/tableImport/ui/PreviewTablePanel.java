@@ -257,6 +257,8 @@ public class PreviewTablePanel extends JPanel {
 	 *            DOCUMENT ME!
 	 */
 	public void addPropertyChangeListener(PropertyChangeListener l) {
+		if (changes == null) return;
+		
 		changes.addPropertyChangeListener(l);
 	}
 

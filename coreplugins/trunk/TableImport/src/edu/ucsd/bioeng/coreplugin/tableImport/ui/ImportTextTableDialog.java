@@ -302,6 +302,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener l) {
+		if(changes == null) return;
 		changes.addPropertyChangeListener(l);
 	}
 
