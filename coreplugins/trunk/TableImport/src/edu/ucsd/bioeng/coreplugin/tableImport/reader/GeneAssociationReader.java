@@ -46,7 +46,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -170,8 +169,14 @@ public class GeneAssociationReader implements TextTableReader {
 			throw new IllegalArgumentException(
 					"Given ontology is not Gene Ontology.  Gene Assiciation File can be used with GO only.");
 
-		final URL taxUrl = TableImportPlugin.class
+		// get URL for resource file.
+		URL taxUrl = TableImportPlugin.class
 				.getResource(taxonResourceFile);
+		if (taxUrl == null)
+			taxUrl = TableImportPlugin.class.getClassLoader().getResource(taxonResourceFile);
+		if (taxUrl == null)
+			throw new IllegalStateException("Could not find taxonomy ID conversion table.");
+		
 		BufferedReader taxonFileReader = null;
 
 		try {
