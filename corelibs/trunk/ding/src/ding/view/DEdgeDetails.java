@@ -374,10 +374,13 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			final double offset = inx * nodeSize; 
 
 			// Note that dx and dy may be negative.  This is OK, because this will ensure
-			// that the handle is always placed offset from the midpoint of, and perpendicular 
-			// to, the original edge.
+			// that the handle is always correctly placed offset from the midpoint of, 
+			// and perpendicular to, the original edge.
 			final double normX = dx / len;
 			final double normY = dy / len;
+
+			// offset can't just alternate based on ind because dx,dy can be either positive
+			// or negative.  
 
 			// calculate the anchor points
 			final double anchorX = midX + (offset * normY);
