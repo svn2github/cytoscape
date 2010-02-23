@@ -672,77 +672,37 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 					break;
 
 				case WHITE_DELTA:
-				case WHITE_ARROW:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setTargetEdgeEndPaint(Color.white);
-
-					break;
-
 				case BLACK_DELTA:
-				case BLACK_ARROW:
+				case EDGE_COLOR_DELTA:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setTargetEdgeEndPaint(Color.black);
 
 					break;
 
-				case EDGE_COLOR_DELTA:
+				case WHITE_ARROW:
+				case BLACK_ARROW:
 				case EDGE_COLOR_ARROW:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
+					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
 
 					break;
 
 				case WHITE_DIAMOND:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setTargetEdgeEndPaint(Color.white);
-
-					break;
-
 				case BLACK_DIAMOND:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setTargetEdgeEndPaint(Color.black);
-
-					break;
-
 				case EDGE_COLOR_DIAMOND:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_CIRCLE:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setTargetEdgeEndPaint(Color.white);
-
-					break;
-
 				case BLACK_CIRCLE:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setTargetEdgeEndPaint(Color.black);
-
-					break;
-
 				case EDGE_COLOR_CIRCLE:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_T:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setTargetEdgeEndPaint(Color.white);
-
-					break;
-
 				case BLACK_T:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setTargetEdgeEndPaint(Color.black);
-
-					break;
-
 				case EDGE_COLOR_T:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
 
 					break;
 				case EDGE_HALF_ARROW_BOTTOM:
