@@ -1255,6 +1255,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						reloadButtonActionPerformed(evt);
 					} catch (IOException e) {
 						e.printStackTrace();
+						throw new IllegalStateException("Could not reload target file.");
 					}
 				}
 			});
@@ -2189,6 +2190,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		pack();
 	}
 
+	
 	private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt)
 	    throws IOException {
 		displayPreview();
@@ -2255,6 +2257,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		return aliasList;
 	}
 
+	
 	private void displayPreview() throws IOException {
 		final String selectedSourceName;
 		final URL sourceURL;
@@ -2536,12 +2539,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		 */
 		final int previewSize;
 
-		if (showAllRadioButton.isSelected()) {
+		if (showAllRadioButton.isSelected())
 			previewSize = -1;
-		} else {
+		else
 			previewSize = Integer.parseInt(counterSpinner.getValue().toString());
-		}
-
+		
 		/*
 		 * Load data from the given URL.
 		 */
@@ -2550,9 +2552,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize, commentChar,
 		                             startLine - 1);
 
-		if (previewPanel.getPreviewTable() == null) {
+		if (previewPanel.getPreviewTable() == null)
 			return;
-		}
 
 		// Initialize import flags.
 		final int colSize = previewPanel.getPreviewTable().getColumnCount();

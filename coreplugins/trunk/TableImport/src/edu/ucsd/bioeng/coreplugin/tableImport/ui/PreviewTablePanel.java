@@ -677,11 +677,10 @@ public class PreviewTablePanel extends JPanel {
 			final int startLine) throws IOException {
 		TableCellRenderer curRenderer = renderer;
 
-		if ((commentLineChar != null) && (commentLineChar.trim().length() != 0)) {
+		if ((commentLineChar != null) && (commentLineChar.trim().length() != 0))
 			this.commentChar = commentLineChar;
-		} else {
+		else
 			this.commentChar = null;
-		}
 		/*
 		 * If rendrer is null, create default one.
 		 */
@@ -696,9 +695,8 @@ public class PreviewTablePanel extends JPanel {
 		/*
 		 * Reset current state
 		 */
-		for (int i = 0; i < tableTabbedPane.getTabCount(); i++) {
+		for (int i = 0; i < tableTabbedPane.getTabCount(); i++)
 			tableTabbedPane.removeTabAt(i);
-		}
 
 		previewTables = new HashMap<String, JTable>();
 
@@ -710,6 +708,7 @@ public class PreviewTablePanel extends JPanel {
 				SupportedFileType.EXCEL.getExtension())
 				|| sourceURL.toString().endsWith(
 						SupportedFileType.OOXML.getExtension())) {
+			
 			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
 			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
 
@@ -727,9 +726,8 @@ public class PreviewTablePanel extends JPanel {
 					is.close();
 			}
 
-			if (wb.getNumberOfSheets() == 0) {
-				return;
-			}
+			if (wb.getNumberOfSheets() == 0)
+				throw new IllegalStateException("No sheet found in the workbook.");
 
 			/*
 			 * Load each sheet in the workbook.
@@ -741,13 +739,11 @@ public class PreviewTablePanel extends JPanel {
 					+ sheet.rowIterator().hasNext());
 
 			logger.debug("TS = " + sheet.toString());
-
 			newModel = parseExcel(sourceURL, size, curRenderer, sheet,
 					startLine);
 
-			if (newModel.getRowCount() == 0) {
-				return;
-			}
+			if (newModel.getRowCount() == 0)
+				throw new IllegalStateException("No data found in the Excel sheet.");
 
 			DataTypeUtil.guessTypes(newModel, wb.getSheetName(0), dataTypeMap);
 			listDataTypeMap
@@ -1053,11 +1049,16 @@ public class PreviewTablePanel extends JPanel {
 					sourceURL));
 	}
 
-	private TableModel parseExcel(URL sourceURL, int size,
+	private TableModel parseExcel(final URL sourceURL, int size,
 			TableCellRenderer renderer, final Sheet sheet, int startLine)
 			throws IOException {
+		
+		if(size == -1)
+			size = Integer.MAX_VALUE;
+			
+		
 		int maxCol = 0;
-		Vector data = new Vector();
+		final Vector<Object> data = new Vector<Object>();
 
 		int rowCount = 0;
 		Row row;
