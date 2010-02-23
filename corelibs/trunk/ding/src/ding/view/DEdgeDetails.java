@@ -246,7 +246,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	public EdgeAnchors anchors(int edge) {
 		final EdgeAnchors returnThis = (EdgeAnchors) (m_view.getEdgeView(~edge));
 
-		if (returnThis.numAnchors() > 0)
+		if (returnThis.numAnchors() > 0) 
 			return returnThis;
 
 		final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
@@ -302,6 +302,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			final IntIterator conEdges = graph.edgesConnecting(graph.edgeSource(edge),
 			                                                     graph.edgeTarget(edge), true,
 			                                                     true, true);
+		
 			m_heap.empty();
 
 			while (conEdges.hasNext())
@@ -312,7 +313,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			int otherEdge = otherEdges.nextInt();
 
 			// if the first other edge is the same as this edge, 
-			// (i.e. we're at the end of the list?), break
+			// (i.e. we're at the end of the list?)
 			if (otherEdge == edge)
 				break;
 
@@ -353,34 +354,34 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			final double dy = trgY - srcY;
 			final double len = Math.sqrt((dx * dx) + (dy * dy));
 
-			if (((float) len) == 0.0f)
+			if (((float) len) == 0.0f) 
 				break;
 
 			// this determines which side of the first edge and how far from the first
 			// edge the other edge should be placed
-			final double factor = ((inx + 1) / 2) * (((inx % 2) == 0) ? 1 : (-1)) * nodeSize;
+			//
+			// divide by 2 puts two edges at the same distance from the center
+			// modulo should put those edges on the opposite side
+			
+			// causes overlap of consecutive, opposing edges 
+			//final double offset = ((inx + 1) / 2) * (inx % 2 == 0 ? 1 : -1) * nodeSize;
 
-			final double normX = Math.abs(dx / len);
-			final double normY = Math.abs(dy / len);
+			// causes overlap of consecutive, coinciding edges 
+			//final double offset = ((inx + 1) / 2) * nodeSize; 
+
+			// no overlap, but causes weird spacing when there are multiple consecutive 
+			// edges with the same directionality
+			final double offset = inx * nodeSize; 
+
+			// Note that dx and dy may be negative.  This is OK, because this will ensure
+			// that the handle is always placed offset from the midpoint of, and perpendicular 
+			// to, the original edge.
+			final double normX = dx / len;
+			final double normY = dy / len;
 
 			// calculate the anchor points
-			// jump through hoops so that other edge stays properly oriented as nodes
-			// move relative to one another
-			final double anchorX; 
-			final double anchorY; 
-			if (srcX <= trgX && srcY <= trgY){
-				anchorX = midX + (factor * normY);
-				anchorY = midY - (factor * normX);
-			} else if (srcX >= trgX && srcY >= trgY) {
-				anchorX = midX - (factor * normY);
-				anchorY = midY + (factor * normX);
-			} else if (srcX <= trgX && srcY >= trgY) {
-				anchorX = midX - (factor * normY);
-				anchorY = midY - (factor * normX);
-			} else { // (srcX >= trgX && srcY <= trgY) 
-				anchorX = midX + (factor * normY);
-				anchorY = midY + (factor * normX);
-			} 
+			final double anchorX = midX + (offset * normY);
+			final double anchorY = midY - (offset * normX);
 
 			return new EdgeAnchors() {
 					public int numAnchors() {
