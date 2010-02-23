@@ -12,6 +12,7 @@
         }
     }
 
+    include_js("/js/cytoscape_web/flash_detect_min.js");
     include_js("/js/cytoscape_web/json2.min.js");
     include_js("/js/cytoscape_web/AC_OETags.min.js");
     include_js("/js/cytoscape_web/cytoscapeweb.min.js");

@@ -30,34 +30,37 @@
 $(function(){
     
     var DELAY_BEFORE_HIDING_LOADER = 200; // otherwise, you see the cytoweb fade in from grey
-    
-    $("#loader").show();
-    
-    var options = {
-        panZoomControlVisible: false,
-		edgesMerged: false,
-		nodeLabelsVisible: false,
-		edgeLabelsVisible: false,
-		nodeTooltipsEnabled: false,
-		edgeTooltipsEnabled: false,
-		swfPath: "/swf/CytoscapeWeb",
-		flashInstallerPath: "/swf/playerProductInstall",
-        layout: "Preset"
-    };
-    
-    var vis = new org.cytoscapeweb.Visualization("viz", options);
-    
-    vis.ready(function(){
-        setTimeout(function(){
-            $("#loader").hide();
-        }, DELAY_BEFORE_HIDING_LOADER);
-    });
-    
-    $.get("/file/example_graphs/petersen.xgmml", function(data){
-	    options.network = data;
-	    vis.draw(options);
-	});
+    var MIN_FLASH_VERSION = 10;
     
     $("#location").text( window.location.href );
+    
+    if( FlashDetect.versionAtLeast(MIN_FLASH_VERSION) ) {
+    	$("#loader").show();
+    
+	    var options = {
+	        panZoomControlVisible: false,
+			edgesMerged: false,
+			nodeLabelsVisible: false,
+			edgeLabelsVisible: false,
+			nodeTooltipsEnabled: false,
+			edgeTooltipsEnabled: false,
+			swfPath: "/swf/CytoscapeWeb",
+			flashInstallerPath: "/swf/playerProductInstall",
+	        layout: "Preset"
+	    };
+	    
+	    var vis = new org.cytoscapeweb.Visualization("viz", options);
+	    
+	    vis.ready(function(){
+	        setTimeout(function(){
+	            $("#loader").hide();
+	        }, DELAY_BEFORE_HIDING_LOADER);
+	    });
+	    
+	    $.get("/file/example_graphs/petersen.xgmml", function(data){
+		    options.network = data;
+		    vis.draw(options);
+		});
+    }
 
 });
