@@ -1825,7 +1825,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				/*
 				 * Case 1: Attribute table import.
 				 */
-
 				// Extract URL from the text table.
 				final URL source = new URL(targetDataSourceTextField.getText());
 				// Make sure primary key index is up-to-date.
@@ -1849,7 +1848,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 														 listDataTypes, importFlag,
 														 caseSensitive);
 
-				if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension())) {
+				if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension()) || 
+						source.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
 					/*
 					 * Read one sheet at a time
 					 */

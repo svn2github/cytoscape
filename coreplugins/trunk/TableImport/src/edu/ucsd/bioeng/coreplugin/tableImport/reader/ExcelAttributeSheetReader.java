@@ -35,6 +35,7 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -105,8 +106,8 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getColumnNames() {
-		return null;
+	public List<String> getColumnNames() {
+		return Arrays.asList(mapping.getAttributeNames());
 	}
 
 	/**
