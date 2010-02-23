@@ -1,7 +1,7 @@
 pluginName=KGMLReader
-pluginDescription=Import data in KGML format.
-pluginVersion=2.0
+pluginDescription=Cytoscape can read KEGG pathways in KGML format by this plugin.
+pluginVersion=0.1
 cytoscapeVersion=2.7
-pluginCategory=Analysis
-pluginAuthorsInstitutions=Keiichiro Ono:UCSD
-releaseDate=January 21, 2010
+pluginCategory=Network and Attribute I/O
+pluginAuthorsInstitutions=Keiichiro Ono:UC, San Diego Department of Medicine
+releaseDate=March 1, 2010
