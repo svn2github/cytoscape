@@ -162,14 +162,21 @@ public class PathwayMapper {
 			final List<Substrate> substrates = reaction.getSubstrate();
 			for(Substrate s: substrates) {
 				CyNode source = getNearestCompound(node, s.getName());
-				CyEdge edge1 = Cytoscape.getCyEdge(source, node, "interaction", reaction.getName(), true);
-				edges.add(edge1);
+				
+				if (Cytoscape.getCyEdge(source, node, "interaction", "ECrel", false) == null &&
+						Cytoscape.getCyEdge(source, node, "interaction", "maplink", false) == null) {
+					CyEdge edge1 = Cytoscape.getCyEdge(source, node, "interaction", reaction.getName(), true);
+					edges.add(edge1);
+				}
 			}
 			
 			for(Product p: products) {
 				CyNode target = getNearestCompound(node, p.getName());
-				CyEdge edge1 = Cytoscape.getCyEdge(node, target, "interaction", reaction.getName(), true);
-				edges.add(edge1);
+				if (Cytoscape.getCyEdge(node, target, "interaction", "ECrel", false) == null &&
+						Cytoscape.getCyEdge(node, target, "interaction", "maplink", false) == null) {
+					CyEdge edge1 = Cytoscape.getCyEdge(node, target, "interaction", reaction.getName(), true);
+					edges.add(edge1);
+				}
 			}
 			
 			
@@ -227,15 +234,23 @@ public class PathwayMapper {
 				System.out.println(source.getIdentifier());
 				System.out.println(target.getIdentifier());
 				System.out.println(hub.getIdentifier() + "\n\n");
-				CyEdge edge1 = Cytoscape.getCyEdge(source, hub, "interaction", type, true);
-				edges.add(edge1);
+				if (Cytoscape.getCyEdge(source, hub, "interaction", "ECrel", false) == null &&
+						Cytoscape.getCyEdge(hub, source, "interaction", "ECrel", false) == null &&
+						Cytoscape.getCyEdge(source, hub, "interaction", "maplink", false) == null &&
+						Cytoscape.getCyEdge(hub, source, "interaction", "maplink", false) == null) {
+					CyEdge edge1 = Cytoscape.getCyEdge(source, hub, "interaction", type, true);
+					edges.add(edge1);
+					edgeAttr.setAttribute(edge1.getIdentifier(), KEGG_RELATION_TYPE, type);
+				}
 				
-				CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type, true);
-				
-				edges.add(edge2);
-				
-				edgeAttr.setAttribute(edge1.getIdentifier(), KEGG_RELATION_TYPE, type);
-				edgeAttr.setAttribute(edge2.getIdentifier(), KEGG_RELATION_TYPE, type);
+				if (Cytoscape.getCyEdge(target, hub, "interaction", "ECrel", false) == null &&
+						Cytoscape.getCyEdge(hub, target, "interaction", "ECrel", false) == null &&
+						Cytoscape.getCyEdge(target, hub, "interaction", "maplink", false) == null &&
+						Cytoscape.getCyEdge(hub, target, "interaction", "maplink", false) == null) {
+					CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type, true);
+					edges.add(edge2);
+					edgeAttr.setAttribute(edge2.getIdentifier(), KEGG_RELATION_TYPE, type);
+				}
 			}	
 		}
 		
