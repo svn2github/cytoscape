@@ -12,8 +12,10 @@ import java.util.Map;
 import org.cytoscape.data.reader.kgml.generated.Entry;
 import org.cytoscape.data.reader.kgml.generated.Graphics;
 import org.cytoscape.data.reader.kgml.generated.Pathway;
+import org.cytoscape.data.reader.kgml.generated.Product;
 import org.cytoscape.data.reader.kgml.generated.Reaction;
 import org.cytoscape.data.reader.kgml.generated.Relation;
+import org.cytoscape.data.reader.kgml.generated.Substrate;
 import org.cytoscape.data.reader.kgml.generated.Subtype;
 
 import cytoscape.CyEdge;
@@ -44,7 +46,7 @@ public class PathwayMapper {
 	private int[] nodeIdx;
 	private int[] edgeIdx;
 	
-	private Map<String, String> reaction2Entry;
+	private Map<String, CyNode> reaction2Entry;
 	
 	private static final String KEGG_NAME = "KEGG.name";
 	private static final String KEGG_ENTRY_TYPE = "KEGG.entry";
@@ -57,16 +59,18 @@ public class PathwayMapper {
 	public PathwayMapper(final Pathway pathway) {
 		this.pathway = pathway;
 		this.pathwayName = pathway.getName();
-		reaction2Entry = new HashMap<String, String>();
+		reaction2Entry = new HashMap<String, CyNode>();
 	}
 
 	public void doMapping() {
 		mapNode();
 		mapEdge();
+		//readReaction();
 	}
 
 	private final Map<String, Entry> entryMap = new HashMap<String, Entry>();
 	final Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+	final Map<String, CyNode> cpdMap = new HashMap<String, CyNode>();
 
 	private void mapNode() {
 
@@ -84,7 +88,13 @@ public class PathwayMapper {
 						.getName());
 				nodeAttr.setAttribute(node.getIdentifier(), KEGG_LINK, comp.getLink());
 				nodeAttr.setAttribute(node.getIdentifier(), KEGG_ENTRY_TYPE, comp.getType());
-				reaction2Entry.put(comp.getReaction(), comp.getId());
+				
+				final String reaction = comp.getReaction();
+				if (reaction2Entry.containsKey(reaction))
+					System.out.println("######## Dup: " + comp.getReaction());
+				
+				if (reaction != null)
+					reaction2Entry.put(reaction, node);
 				
 				final Graphics graphics = comp.getGraphics();
 				if(graphics != null && graphics.getName() != null) {
@@ -92,6 +102,7 @@ public class PathwayMapper {
 				}
 				nodeMap.put(comp.getId(), node);
 				entryMap.put(comp.getId(), comp);
+				cpdMap.put(comp.getName(), node);
 			}
 		}
 
@@ -102,6 +113,39 @@ public class PathwayMapper {
 			idx++;
 		}
 	}
+	
+	
+	private void readReaction() {
+		final List<Reaction> reactions = pathway.getReaction();
+		final List<CyEdge> edges = new ArrayList<CyEdge>();
+		
+		for (Reaction r: reactions) {
+			final List<Product> products = r.getProduct();
+			final List<Substrate> substrates = r.getSubstrate();
+			final String name = r.getName();
+			
+			final CyNode node = this.reaction2Entry.get(name);
+			for(Substrate s: substrates) {
+				CyNode source = cpdMap.get(s.getName());
+				CyEdge edge1 = Cytoscape.getCyEdge(source, node, "interaction", name, true);
+				edges.add(edge1);
+			}
+			
+			for(Product p: products) {
+				CyNode target = cpdMap.get(p.getName());
+				CyEdge edge1 = Cytoscape.getCyEdge(node, target, "interaction", name, true);
+				edges.add(edge1);
+			}
+		}
+		
+		edgeIdx = new int[edges.size()];
+		int idx = 0;
+		for (CyEdge edge : edges) {
+			edgeIdx[idx] = edge.getRootGraphIndex();
+			idx++;
+		}
+	}
+	
 	
 	private void mapEdge() {
 		final List<Relation> relations = pathway.getRelation();
@@ -124,11 +168,14 @@ public class PathwayMapper {
 				System.out.println(target.getIdentifier());
 				System.out.println(hub.getIdentifier() + "\n\n");
 				CyEdge edge1 = Cytoscape.getCyEdge(source, hub, "interaction", type, true);
-				CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type, true);
 				edges.add(edge1);
+				
+				CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type, true);
+				
 				edges.add(edge2);
 				
-				edgeAttr.setAttribute(edge1.getIdentifier(), this.KEGG_RELATION_TYPE, type);
+				edgeAttr.setAttribute(edge1.getIdentifier(), KEGG_RELATION_TYPE, type);
+				edgeAttr.setAttribute(edge2.getIdentifier(), KEGG_RELATION_TYPE, type);
 			}	
 		}
 		
