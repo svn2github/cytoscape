@@ -18,8 +18,8 @@ import cytoscape.data.CyAttributes;
 import ding.view.NodeContextMenuListener;
 
 public class KEGGNodeContextMenuListener implements NodeContextMenuListener {
-	
 	private static final String COMPOUND_URL = "http://www.kegg.jp/Fig/compound/";
+	private static final String REACTION_URL = "http://www.kegg.jp/Fig/reaction_small/";
 	private static final String MAP_URL = "http://www.genome.jp/tmp/pathway_thumbnail/";
 	
 	private CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
@@ -62,6 +62,16 @@ public class KEGGNodeContextMenuListener implements NodeContextMenuListener {
 			}
 			item.setIcon(new ImageIcon(image));
 			item.setText("Pathway: " + mapID);
+		} else if (entryType.equals(KEGGEntryType.GENE) || entryType.equals(KEGGEntryType.ORTHOLOG)) {
+			try {
+				String reactionID = nodeAttr.getStringAttribute(nv.getNode().getIdentifier(), "KEGG.reaction");
+				URL image = new URL(REACTION_URL + reactionID.split(":")[1] + ".gif");
+				item.setIcon(new ImageIcon(image));
+				item.setText("Reaction: " + reactionID);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	
 		
