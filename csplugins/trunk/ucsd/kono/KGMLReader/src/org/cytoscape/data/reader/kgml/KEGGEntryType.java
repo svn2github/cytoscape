@@ -13,4 +13,13 @@ public enum KEGGEntryType {
 	public String getTag() {
 		return this.tag;
 	}
+	
+	public static KEGGEntryType getType(final String tag) {
+		for(KEGGEntryType entry: KEGGEntryType.values()) {
+			if(entry.getTag().equals(tag))
+				return entry;
+		}
+		
+		return null;
+	}
 }
