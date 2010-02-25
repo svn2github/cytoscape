@@ -158,7 +158,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		getJPopupMenu1();
 
 		// modPanel will be added to JDialog for attribute modification
-		modDialog = new ModDialog(tableModel, objectType);
+		modDialog = new ModDialog(tableModel, objectType, Cytoscape.getDesktop());
 	}
 
 

@@ -41,6 +41,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Frame;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -72,8 +73,9 @@ public class ModDialog extends JDialog {
 	 * @param tableObjectType  DOCUMENT ME!
 	 */
 	public ModDialog(final DataTableModel tableModel,
-	                          final DataObjectType tableObjectType) {
-		//SelectPanel selectionPanel = new SelectPanel(dataTable, tableObjectType);
+	                 final DataObjectType tableObjectType,
+					 final Frame parent) {
+		super(parent);
 		final ModPanel modPanel = new ModPanel(tableModel, tableObjectType);
 		this.setTitle(tableObjectType.getDislayName() + " Attribute Batch Editor");
 		this.setAlwaysOnTop(true);
