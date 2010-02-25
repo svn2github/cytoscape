@@ -43,7 +43,6 @@ import cytoscape.visual.NodeShape;
 
 
 /**
- *
  * Specialized Icon for Cytoscape editor palette entry.  Renders icon
  * based upon input shape, size, color.
  *
@@ -51,49 +50,28 @@ import cytoscape.visual.NodeShape;
  * @version 2.0
  */
 public class CytoShapeIcon implements Icon {
-	// MLC 12/04/06 BEGIN:
-	/**
-	 * 
-	 */
-	public static final int DEFAULT_WIDTH = 32;
-
-	/**
-	 * 
-	 */
+	public static final int DEFAULT_WIDTH  = 32;
 	public static final int DEFAULT_HEIGHT = 32;
+	public static final int YOFFSET        = 7;
 
-	/**
-	 * @deprecated Use DEFAULT_WIDTH. Will be removed 12/2007.
-	 */
-	public static final int WIDTH = 32;
-
-	/**
-	 * @deprecated Use DEFAULT_HEIGHT. Will be removed 12/2007.
-	 */
-	public static final int HEIGHT = 32;
 	private Dimension _size = new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
-	// MLC 12/04/06 END.
 	private Color _color;
 	private Image _image = null;
-    // MLC 05/09/07:
-    // private byte _shape;
-    // MLC 05/09/07:
 	private NodeShape _shape;
 	private Arrow _arrowType = null;
  
-    public CytoShapeIcon(NodeShape shape, Color color, Dimension size) {
-    	this(shape, color);
-	_size = size;
-    }
+	public CytoShapeIcon(NodeShape shape, Color color, Dimension size) {
+		this(shape, color);
+		_size = size;
+	}
 
-    public CytoShapeIcon(NodeShape shape, Color color) {
-	_color = color;
-	_shape = shape;
-	_image = null;
-	_arrowType = null;
-    }
-    // MLC 05/09/07 END.
+	public CytoShapeIcon(NodeShape shape, Color color) {
+		_color = color;
+		_shape = shape;
+		_image = null;
+		_arrowType = null;
+	}
+
 	/**
 	 * Creates a new CytoShapeIcon object.
 	 *
@@ -122,11 +100,7 @@ public class CytoShapeIcon implements Icon {
 	 * @return  DOCUMENT ME!
 	 */
 	public int getIconHeight() {
-		// MLC 12/04/06:
-		return _size.height;
-
-		// MLC 12/04/06:
-		// return 32;
+		return _size.height + 2 * YOFFSET;
 	}
 
 	/* (non-Javadoc)
@@ -138,66 +112,48 @@ public class CytoShapeIcon implements Icon {
 	 * @return  DOCUMENT ME!
 	 */
 	public int getIconWidth() {
-		// MLC 12/04/06:
 		return _size.width;
-
-		// MLC 12/04/06:
-		// return 32;
 	}
 
 	/**
-
-
-	/**
-	* Implements specialized coordinate line drawing for palette shcapes
-	*
-	* (non-Javadoc)
-	* @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
-	*/
+	 * Implements specialized coordinate line drawing for palette shapes
+	 *
+	 * (non-Javadoc)
+	 * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
+	 */
 	public void paintIcon(Component c, Graphics g, int x, int y) {
-		int width = getIconWidth();
-		int height = getIconHeight();
+		y += YOFFSET;
 
 		if (_image != null) {
 			g.drawImage(_image, x, y, c);
-
 			return;
 		}
+
+		int width = getIconWidth();
+		int height = getIconHeight() - 2 * YOFFSET;
 
 		if (_arrowType != null) {
 			g.setColor(_arrowType.getColor());
 
-			// MLC 05/09/07:
-			// if (_arrowType == Arrow.DELTA) {
-			// MLC 05/09/07:
 			if (_arrowType.getShape() == ArrowShape.DELTA) {
 				g.fillPolygon(new int[] {
-				                  x, x + ((3 * width) / 4), x + ((3 * width) / 4), x + width,
-				                  x + ((3 * width) / 4), x + ((3 * width) / 4), x
-				              },
-				              new int[] {
-				                  y + ((7 * height) / 16), y + ((7 * height) / 16),
-				                  y + ((5 * height) / 16), y + (height / 2),
-				                  y + ((11 * height) / 16), y + ((9 * height) / 16),
-				                  y + ((9 * height) / 16)
-				              }, 7);
-			// MLC 05/09/07:
-			// } else if (_arrowType == Arrow.CIRCLE) {
-			// MLC 05/09/07:
+						x, x + ((3 * width) / 4), x + ((3 * width) / 4), x + width,
+						x + ((3 * width) / 4), x + ((3 * width) / 4), x
+					},
+					new int[] {
+						y + ((7 * height) / 16), y + ((7 * height) / 16),
+						y + ((5 * height) / 16), y + (height / 2),
+						y + ((11 * height) / 16), y + ((9 * height) / 16),
+						y + ((9 * height) / 16)
+					}, 7);
 			} else if (_arrowType.getShape() == ArrowShape.CIRCLE) {
 				g.fillRect(x, y + ((7 * height) / 16), (13 * (width / 16)), height / 8);
 				g.fillOval(x + ((5 * width) / 8), y + ((5 * height) / 16), (6 * width) / 16,
 				           (6 * height) / 16);
-			// MLC 05/09/07:
-			// } else if (_arrowType == Arrow.T) {
-			// MLC 05/09/07:
 			} else if (_arrowType.getShape() == ArrowShape.T) {
 				g.fillRect(x, y + ((7 * height) / 16), (15 * (width / 16)), height / 8);
 				g.fillRect(x + (15 * (width / 16)), y + ((5 * height) / 16), width / 16,
 				           (height * 6) / 16);
-			// MLC 05/09/07:
-			// } else if (_arrowType == Arrow.NONE) {
-			// MLC 05/09/07:
 			} else if (_arrowType.getShape() == ArrowShape.NONE) {
 				g.fillRect(x, y + ((7 * height) / 16), (15 * (width / 16)), height / 8);
 			}
@@ -207,88 +163,70 @@ public class CytoShapeIcon implements Icon {
 
 		g.setColor(_color);
 
-		// MLC 05/09/07:
-		// if (_shape == ShapeNodeRealizer.TRIANGLE) {
-		// MLC 05/09/07:
 		if (_shape == NodeShape.TRIANGLE) {
 			g.fillPolygon(new int[] { x, x + (width / 2), x + width },
 			              new int[] { y + height, y, y + height }, 3);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(new int[] { x, x + (width / 2), x + width },
 			              new int[] { y + height, y, y + height }, 3);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.ROUND_RECT) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.ROUND_RECT) {
 			g.fillRoundRect(x, y, width, height, width / 2, height / 2);
 			g.setColor(Color.BLACK);
 			g.drawRoundRect(x, y, width, height, width / 2, height / 2);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.DIAMOND) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.DIAMOND) {
 			g.fillPolygon(new int[] { x, x + (width / 2), x + width, x + (width / 2) },
 			              new int[] { y + (height / 2), y, y + (height / 2), y + height }, 4);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(new int[] { x, x + (width / 2), x + width, x + (width / 2) },
 			              new int[] { y + (height / 2), y, y + (height / 2), y + height }, 4);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.ELLIPSE) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.ELLIPSE) {
 			g.fillOval(x, y, width, height);
 			g.setColor(Color.BLACK);
 			g.drawOval(x, y, width, height);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.HEXAGON) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.HEXAGON) {
 			g.fillPolygon(new int[] {
-			                  x, x + (width / 4), x + ((3 * width) / 4), x + width,
-			                  x + ((3 * width) / 4), x + (width / 4)
-			              },
-			              new int[] { y + (height / 2), y, y, y + (height / 2), y + height, y
-				          + height }, 6);
+					x, x + (width / 4), x + ((3 * width) / 4), x + width,
+					x + ((3 * width) / 4), x + (width / 4)
+				},
+				new int[] { y + (height / 2), y, y, y + (height / 2), y + height, y
+					    + height }, 6);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(new int[] {
-			                  x, x + (width / 4), x + ((3 * width) / 4), x + width,
-			                  x + ((3 * width) / 4), x + (width / 4)
-			              },
-			              new int[] { y + (height / 2), y, y, y + (height / 2), y + height, y
-				          + height }, 6);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.OCTAGON) {
-		// MLC 05/09/07:
+					x, x + (width / 4), x + ((3 * width) / 4), x + width,
+					x + ((3 * width) / 4), x + (width / 4)
+				},
+				new int[] { y + (height / 2), y, y, y + (height / 2), y + height, y
+					    + height }, 6);
 		} else if (_shape == NodeShape.OCTAGON) {
 			g.fillPolygon(new int[] {
-			                  x, x + (width / 4), x + ((3 * width) / 4), x + width, x + width,
-			                  x + ((3 * width) / 4), x + (width / 4), x
-			              },
-			              new int[] {
-			                  y + (height / 4), y, y, y + (height / 4), y + (3 * (height / 4)),
-			                  y + height, y + height, y + (3 * (height / 4))
-			              }, 8);
+					x, x + (width / 4), x + ((3 * width) / 4), x + width, x + width,
+					x + ((3 * width) / 4), x + (width / 4), x
+				},
+				new int[] {
+					y + (height / 4), y, y, y + (height / 4), y + (3 * (height / 4)),
+					y + height, y + height, y + (3 * (height / 4))
+				}, 8);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(new int[] {
-			                  x, x + (width / 4), x + ((3 * width) / 4), x + width, x + width,
-			                  x + ((3 * width) / 4), x + (width / 4), x
-			              },
-			              new int[] {
-			                  y + (height / 4), y, y, y + (height / 4), y + (3 * (height / 4)),
-			                  y + height, y + height, y + (3 * (height / 4))
-			              }, 8);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.PARALLELOGRAM) {
-		// MLC 05/09/07:
+					x, x + (width / 4), x + ((3 * width) / 4), x + width, x + width,
+					x + ((3 * width) / 4), x + (width / 4), x
+				},
+				new int[] {
+					y + (height / 4), y, y, y + (height / 4), y + (3 * (height / 4)),
+					y + height, y + height, y + (3 * (height / 4))
+				}, 8);
+			// MLC 05/09/07:
+			// } else if (_shape == ShapeNodeRealizer.PARALLELOGRAM) {
+			// MLC 05/09/07:
 		} else if (_shape == NodeShape.PARALLELOGRAM) {
 			g.fillPolygon(new int[] { x, x + ((3 * width) / 4), x + width, x + (width / 4) },
 			              new int[] { y, y, y + height, y + height }, 4);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(new int[] { x, x + ((3 * width) / 4), x + width, x + (width / 4) },
 			              new int[] { y, y, y + height, y + height }, 4);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.RECT) {
-		// MLC 05/09/07:
+			// MLC 05/09/07:
+			// } else if (_shape == ShapeNodeRealizer.RECT) {
+			// MLC 05/09/07:
 		} else if (_shape == NodeShape.RECT) {
 			g.fillRect(x, y, width, height);
 			g.setColor(Color.BLACK);
