@@ -61,11 +61,13 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class HideSelectedNodesAction extends CytoscapeAction {
+	static public String MENU_LABEL = "Hide Node Selection";
+
 	/**
 	 * Creates a new HideSelectedNodesAction object.
 	 */
 	public HideSelectedNodesAction() {
-		super("Hide Node Selection");
+		super(MENU_LABEL);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK);
 	}
@@ -88,7 +90,7 @@ public class HideSelectedNodesAction extends CytoscapeAction {
 		GinyUtils.hideSelectedNodes(Cytoscape.getCurrentNetworkView());
 	}
 
-    public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
-    }
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
+	}
 }

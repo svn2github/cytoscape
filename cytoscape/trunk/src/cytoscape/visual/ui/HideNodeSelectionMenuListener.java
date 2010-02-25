@@ -1,5 +1,5 @@
 /*
- File: VizMapBypassNetworkListener.java
+ File: HideNodeSelectionMenuListener.java
 
  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -26,40 +26,36 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
+import cytoscape.actions.HideSelectedNodesAction;
 
-import cytoscape.view.CytoscapeDesktop;
+import ding.view.NodeContextMenuListener;
+import giny.view.NodeView;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 
 /**
- * Adds NodeView and EdgeView vizmap bypass listeners to network views as
- * the views are created.
+ * HideNodeSelectionMenuListener implements NodeContextMenuListener
  */
-public class VizMapBypassNetworkListener implements PropertyChangeListener {
+class HideNodeSelectionMenuListener implements NodeContextMenuListener {
+	HideNodeSelectionMenuListener() {
+	}
+
 	/**
-	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
-	 * node and edge context menu listeners to the view.
-	 * @param evnt The event we're hearing.
+	 * @param nodeView The clicked NodeView
+	 * @param menu popup menu to add the Bypass menu
 	 */
-	public void propertyChange(final PropertyChangeEvent evnt) {
-		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evnt.getPropertyName())) {
-			final NodeBypassMenuListener nodeBypassMenuListener = new NodeBypassMenuListener();
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(nodeBypassMenuListener);
+	public void addNodeContextMenuItems(final NodeView nodeView, final JPopupMenu menu) {
+		if (menu == null)
+			return;
 
-			final EdgeBypassMenuListener edgeBypassMenuListener = new EdgeBypassMenuListener();
-			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edgeBypassMenuListener);
-
-			final HideNodeSelectionMenuListener hideNodeSelectionMenuListener = new HideNodeSelectionMenuListener();
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(hideNodeSelectionMenuListener);
-
-			final HideEdgeSelectionMenuListener hideEdgeSelectionMenuListener = new HideEdgeSelectionMenuListener();
-			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(hideEdgeSelectionMenuListener);
-		}
+		final HideSelectedNodesAction hideSelectedNodesAction = new HideSelectedNodesAction();
+		final JMenuItem newMenuItem = new JMenuItem(HideSelectedNodesAction.MENU_LABEL);
+		newMenuItem.addActionListener(hideSelectedNodesAction);
+		menu.add(newMenuItem);
 	}
 }
