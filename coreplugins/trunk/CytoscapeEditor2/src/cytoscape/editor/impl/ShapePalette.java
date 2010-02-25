@@ -113,26 +113,26 @@ public class ShapePalette extends JPanel {
 		// 32767 ????
 		pnlSpecifyIdentifier.setMaximumSize(new java.awt.Dimension(32767, 100));
 		JLabel chkSpecifyLabel = new JLabel("Specify Identifier:");
-        chkSpecifyIdentifier = new javax.swing.JCheckBox();
+		chkSpecifyIdentifier = new javax.swing.JCheckBox();
 		chkSpecifyIdentifier.setToolTipText("Checking the box will allow you to choose the identifier for added nodes and edges.");
 		pnlSpecifyIdentifier.setLayout(new java.awt.GridBagLayout());
 		pnlSpecifyIdentifier.setBorder(BorderFactory.createTitledBorder(""));
-        chkSpecifyIdentifier.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-            	CheckBoxSpecifyIdentifierStateChanged(evt);
-            }
-        });
+		chkSpecifyIdentifier.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent evt) {
+					CheckBoxSpecifyIdentifierStateChanged(evt);
+				}
+			});
 		pnlSpecifyIdentifier.add(chkSpecifyLabel);
 		pnlSpecifyIdentifier.add(chkSpecifyIdentifier);
-        chkSpecifyIdentifier.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        chkSpecifyIdentifier.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        chkSpecifyIdentifier.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        chkSpecifyIdentifier.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        pnlSpecifyIdentifier.add(chkSpecifyIdentifier, gridBagConstraints);
+		chkSpecifyIdentifier.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		chkSpecifyIdentifier.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		chkSpecifyIdentifier.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+		chkSpecifyIdentifier.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints.weightx = 1.0;
+		pnlSpecifyIdentifier.add(chkSpecifyIdentifier, gridBagConstraints);
 		
 		listModel = new DefaultListModel();
 		dataList = new JList(listModel);
@@ -152,22 +152,22 @@ public class ShapePalette extends JPanel {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-        this.setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(_controlPane, gridBagConstraints);
+		this.setLayout(new java.awt.GridBagLayout());
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		add(_controlPane, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(pnlSpecifyIdentifier, gridBagConstraints);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		add(pnlSpecifyIdentifier, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        this.add(scrollPane, gridBagConstraints);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		this.add(scrollPane, gridBagConstraints);
 
 		CytoscapeEditorManager.setCurrentShapePalette(this);
 
@@ -178,17 +178,17 @@ public class ShapePalette extends JPanel {
 		this.setVisible(true);
 	}
 
-    private javax.swing.JCheckBox chkSpecifyIdentifier;
-    public void CheckBoxSpecifyIdentifierStateChanged(javax.swing.event.ChangeEvent evt){
-    	if (chkSpecifyIdentifier.isSelected()){
-    		specifyIdentifier = true;
-    	}
-    	else {
-    		specifyIdentifier = false;
-    	}
-    }
+	private javax.swing.JCheckBox chkSpecifyIdentifier;
+	public void CheckBoxSpecifyIdentifierStateChanged(javax.swing.event.ChangeEvent evt){
+		if (chkSpecifyIdentifier.isSelected()){
+			specifyIdentifier = true;
+		}
+		else {
+			specifyIdentifier = false;
+		}
+	}
     
-    public static boolean specifyIdentifier = false;
+	public static boolean specifyIdentifier = false;
     
 	/**
 	 * clear the ShapePalette by removing all its shape components
@@ -199,14 +199,14 @@ public class ShapePalette extends JPanel {
 	}
 
 	/**
-	* add a shape to the palette
-	* @param attributeName attribute name for the shape, should be one of "NodeType" or "EdgeType"
-	* @param attributeValue value for the attribute assigned to the shape, for example a "NodeType" of "protein"
-	* @param img the icon for the shape
-	* @param name the title of the shape
+	 * add a shape to the palette
+	 * @param attributeName attribute name for the shape, should be one of "NodeType" or "EdgeType"
+	 * @param attributeValue value for the attribute assigned to the shape, for example a "NodeType" of "protein"
+	 * @param img the icon for the shape
+	 * @param name the title of the shape
 	 * @param cursorSetter a possibly null DragSourceContextCursorSetter used to specify
 	 *                     the cursor so show when dragging over the current network view.
-	*/
+	 */
 
 	// MLC 12/16/06 BEGIN:
 	public void addShape(String attributeName, String attributeValue, Icon img, String name,
@@ -218,7 +218,7 @@ public class ShapePalette extends JPanel {
 
 		if (attributeName.equals(CytoscapeEditorManager.EDGE_TYPE)) {
 			CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getCurrentNetworkView()
-			                                                          .getVisualStyle(),
+									 .getVisualStyle(),
 			                                                 attributeValue);
 		}
 
@@ -251,11 +251,11 @@ public class ShapePalette extends JPanel {
 	}
 
 	/**
-	     * renders each cell of the ShapePalette
-	     * @author Allan Kuchinsky
-	     * @version 1.0
-	     *
-	     */
+	 * renders each cell of the ShapePalette
+	 * @author Allan Kuchinsky
+	 * @version 1.0
+	 *
+	 */
 	class MyCellRenderer extends JLabel implements ListCellRenderer {
 		// This is the only method defined by ListCellRenderer.
 		// We just reconfigure the JLabel each time we're called.
@@ -266,7 +266,7 @@ public class ShapePalette extends JPanel {
 		                                              int index, // cell index
 		                                              boolean isSelected, // is the cell selected
 		                                              boolean cellHasFocus) // the list and the cell have the focus
-		 {
+		{
 			if (value instanceof BasicCytoShapeEntity) {
 				BasicCytoShapeEntity cytoShape = (BasicCytoShapeEntity) value;
 				setText(cytoShape.getTitle());
