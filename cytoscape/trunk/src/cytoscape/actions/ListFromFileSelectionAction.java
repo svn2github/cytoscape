@@ -81,83 +81,90 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		boolean cancelSelectionAction = !selectFromFile();
+		final boolean cancelSelectionAction = !selectFromFile();
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
 
 	private boolean selectFromFile() {
-		// get the file name
-		final String name;
+		final String fileName;
 
 		try {
-			name = FileUtil.getFile("Load Gene Selection File", FileUtil.LOAD).toString();
+			fileName = FileUtil.getFile("Load Gene Selection File", FileUtil.LOAD).toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
 			return false;
 		}
 
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-        List fileNodes = new ArrayList();
+		final HashSet<String> fileNodes = new HashSet<String>();
 
 		try {
 			BufferedReader bin = null;
 
 			try {
-				bin = new BufferedReader(new FileReader(name));
+				bin = new BufferedReader(new FileReader(fileName));
 
 				String s;
 
 				while ((s = bin.readLine()) != null) {
 					String trimName = s.trim();
 
-					if (trimName.length() > 0) {
+					if (trimName.length() > 0)
 						fileNodes.add(trimName);
-					}
 				}
-            }
-            finally {
-                if (bin != null) {
-                    bin.close();
-                }
-            }
-
-			// loop through all the node of the graph
-			// selecting those in the file
-			List nodeList = network.nodesList();
-			giny.model.Node[] nodes = (giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
-
-			for (int i = 0; i < nodes.length; i++) {
-				giny.model.Node node = nodes[i];
-				boolean select = false;
-				String canonicalName = node.getIdentifier();
-				List synonyms = Semantics.getAllSynonyms(canonicalName, network);
-
-				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
-					if (fileNodes.contains((String) synI.next())) {
-						select = true;
-
-						break;
-					}
-				}
-
-				if (select) {
-					//CyNetworkView view = Cytoscape.getCurrentNetworkView();
-					//NodeView nv = view.getNodeView(node.getRootGraphIndex());
-					//nv.setSelected(true);
-					network.setSelectedNodeState(node, true);
+			}
+			finally {
+				if (bin != null) {
+					bin.close();
 				}
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.toString(), "Error Reading \"" + name + "\"",
+			JOptionPane.showMessageDialog(null, e.toString(), "Error Reading \"" + fileName + "\"",
 			                              JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 
+		if (fileNodes.size() == 0) {
+			JOptionPane.showMessageDialog(null, "No nodes read from \"" + fileName + "\"!", "Warning!",
+						      JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+
+		// loop through all the node of the graph
+		// selecting those in the file
+		List nodeList = network.nodesList();
+		giny.model.Node[] nodes = (giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
+
+		int selectCount = 0;
+		for (int i = 0; i < nodes.length; i++) {
+			giny.model.Node node = nodes[i];
+			boolean selected = false;
+			String canonicalName = node.getIdentifier();
+			List synonyms = Semantics.getAllSynonyms(canonicalName, network);
+
+			for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
+				if (fileNodes.contains((String) synI.next())) {
+					selected = true;
+					++selectCount;
+					break;
+				}
+			}
+
+			if (selected)
+				network.setSelectedNodeState(node, true);
+		}
+
+		if (selectCount == 0) {
+			JOptionPane.showMessageDialog(null, "No nodes listed in \"" + fileName + "\" were found in the current network view!",
+			                              "Information",
+			                              JOptionPane.INFORMATION_MESSAGE);
 			return false;
 		}
 
 		return true;
 	}
 
-    public void menuSelected(MenuEvent e) {
-        enableForNetwork();
-    }
+	public void menuSelected(MenuEvent e) {
+		enableForNetwork();
+	}
 }
