@@ -81,7 +81,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 
 	// private Category theCategory = new Category();;
 	private String[] bookmarkCategories = { "network", "annotation", "plugins" };
-
+	
 	// private URL bookmarkURL;
 
 	/**
@@ -374,6 +374,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	}
 
 	public class EditBookmarkDialog extends JDialog implements ActionListener {
+		private String name_orig = null;
 		private String name;
 		private String URLstr;
 		private JDialog parent;
@@ -392,7 +393,10 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 			this.categoryName = categoryName;
 			this.mode = pMode;
 			this.dataSource = pDataSource;
-
+			if (pDataSource != null){
+				this.name_orig = pDataSource.getName();				
+			}
+			
 			initComponents();
 
 			lbCategoryValue.setText(categoryName);
@@ -404,7 +408,6 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 			if (pMode.equalsIgnoreCase("edit")) {
 				this.setTitle("Edit bookmark");
 				tfName.setText(dataSource.getName());
-				tfName.setEditable(false);
 				tfURL.setText(dataSource.getHref());
 			}
 		}
@@ -447,9 +450,18 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 				}
 
 				if ((_btn == btnOK) && (mode.equalsIgnoreCase("edit"))) {
-					name = tfName.getText();
+					name = tfName.getText().trim();
 					URLstr = tfURL.getText();
 
+					if (name.trim().equals("")) {
+						String msg = "The name field is empty!";
+						// display info dialog
+						JOptionPane.showMessageDialog(parent, msg, "Warning",
+						                              JOptionPane.INFORMATION_MESSAGE);
+
+						return;
+					}
+					
 					if (URLstr.trim().equals("")) {
 						String msg = "URL is empty!";
 						// display info dialog
@@ -460,13 +472,32 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 					}
 
 					DataSource theDataSource = new DataSource();
-					theDataSource.setName(name);
+					theDataSource.setName(this.name_orig);
 					theDataSource.setHref(URLstr);
 
-					// first dellete the old one, then add (note: name is key of
-					// DataSource)
-					BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
-					BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);
+					if (!this.name.equalsIgnoreCase(this.name_orig)){
+						// The bookmark name has been changed
+						DataSource newDataSource = new DataSource();
+						newDataSource.setName(name);
+						newDataSource.setHref(URLstr);
+
+						if (BookmarksUtil.isInBookmarks(theBookmarks, bookmarkCategory, newDataSource)){
+							// The bookmark name must be unique
+							JOptionPane.showMessageDialog(parent, "Bookmark with this name already existed!", "Warning",
+							                              JOptionPane.INFORMATION_MESSAGE);
+							return;
+						}
+						
+						// first delete the old one, then add (note: name is key of DataSource)
+						BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
+						BookmarksUtil.saveBookmark(theBookmarks, categoryName, newDataSource);
+					}
+					else { // The bookmark name has not been changed
+						// first delete the old one, then add (note: name is key of DataSource)
+						BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
+						BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);						
+					}
+
 					this.dispose();
 				} else if (_btn == btnCancel) {
 					this.dispose();
