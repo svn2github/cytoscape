@@ -65,6 +65,7 @@ import cern.colt.list.IntArrayList;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
@@ -227,7 +228,10 @@ public abstract class CytoscapeEditorManager {
 	 * CytoscapeAttribute: EDGE_TYPE
 	 *
 	 */
-	public static final String EDGE_TYPE = "EDGE_TYPE";
+//	public static final String EDGE_TYPE = "EDGE_TYPE";
+	// AJK: 02/20/2010 should be usign Semantics.INTERACTION
+	public static final String EDGE_TYPE = Semantics.INTERACTION;
+
 
 	/**
 	 * 

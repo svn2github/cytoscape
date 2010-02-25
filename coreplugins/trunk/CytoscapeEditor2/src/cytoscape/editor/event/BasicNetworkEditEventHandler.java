@@ -59,6 +59,7 @@ import javax.swing.JOptionPane;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
@@ -110,7 +111,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * CytoscapeAttribute: EDGE_TYPE
 	 *
 	 */
-	public static final String EDGE_TYPE = "EDGE_TYPE";
+//	public static final String EDGE_TYPE = "EDGE_TYPE";
+	public static final String EDGE_TYPE = Semantics.INTERACTION;
+
 
 	public static final String NETWORK_TYPE = "NETWORK_TYPE";
 

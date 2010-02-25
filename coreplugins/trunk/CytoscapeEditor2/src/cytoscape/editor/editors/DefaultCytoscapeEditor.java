@@ -171,7 +171,7 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 					      // MLC 10/24/07:
 			                      // new CytoShapeIcon(Arrow.DELTA), "Directed Edge",
 					      // MLC 10/24/07:
-			                      new CytoShapeIcon(Arrow.NONE), "Directed Edge",
+			                      new CytoShapeIcon(Arrow.NONE), "Add an Edge",
 			_edgeCursorSetter);
 		} else {
 			while (spEntries.hasNext()) {
