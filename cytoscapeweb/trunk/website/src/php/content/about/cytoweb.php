@@ -3,17 +3,17 @@
 <h1>Background</h1>
 
 <p>Cytoscape Web was initially developed at the
-<a href="http://www.utoronto.ca" rel="external">University of Toronto</a>, in
-the <a href="http://tdccbr.med.utoronto.ca" rel="external">Donnelly Centre for Cellular and Biomolecular Research</a>,
-in the labs of <a href="http://baderlab.org" rel="external">Gary Bader</a> and
-<a href="http://morrislab.med.utoronto.ca" rel="external">Quaid Morris</a>.
-Cytoscape Web development is funded by <a href="http://www.genomecanada.ca" rel="external">Genome Canada</a>, through the
+<a href="http://www.utoronto.ca/" rel="external">University of Toronto</a>, in
+the <a href="http://tdccbr.med.utoronto.ca/" rel="external">Donnelly Centre for Cellular and Biomolecular Research</a>,
+in the labs of <a href="http://baderlab.org/" rel="external">Gary Bader</a> and
+<a href="http://morrislab.med.utoronto.ca/" rel="external">Quaid Morris</a>.
+Cytoscape Web development is funded by <a href="http://www.genomecanada.ca/" rel="external">Genome Canada</a>, through the
 <a href="http://www.ontariogenomics.ca/" rel="external">Ontario Genomics Institute</a> (2007-OGI-TD-05).
 It is now actively developed as part of the <a href="http://www.cytoscape.org">Cytoscape</a> project.</p>
 
 <p>Cytoscape Web was created as a result of the need for a visualization interface for the
-<a href="http://www.genemania.org" rel="external">GeneMANIA</a> project at the University of Toronto.
-The idea was to create a simple version of <a href="http://www.cytoscape.org">Cytoscape</a> for the Web, 
+<a href="http://www.genemania.org/" rel="external">GeneMANIA</a> project at the University of Toronto.
+The idea was to create a simple version of <a href="http://www.cytoscape.org/">Cytoscape</a> for the Web, 
 not as a complete user application, but as an independent component that could be reused by other developers.
 Despite using different technologies (<a href="http://www.adobe.com/products/flex/" rel="external"">Flex</a> and JavaScript) 
 compared to Cytoscape, Cytoscape Web follows most of the Cytoscape concepts (e.g. node shapes, visual mappings, XGMML support).
@@ -25,10 +25,14 @@ We chose Flex/Flash because were not able to find any other solutions to the pro
 <h1>Client applications</h1>
 
 <p>Cytoscape Web is currently being used by a gene function prediction server,
-<a href="http://www.genemania.org" rel="external">GeneMANIA</a>.
+<a href="http://www.genemania.org/" rel="external">GeneMANIA</a>.
 The data provided to Cytoscape Web in GeneMANIA is unique to every user query, and easily
 modified with each new query. The rendering speed of Cytoscape Web allows for dynamic user
 interaction.</p>
+
+<p><a href="http://wodaklab.org/iRefWeb/" rel="external">iRefWeb</a> is an interface to a relational database containing the latest build
+of the interaction Reference Index (iRefIndex) which integrates protein interaction data from ten different interaction databases: 
+BioGRID, BIND, CORUM, DIP, HPRD, INTACT, MINT, MPPI, MPACT and OPHID.</p>
 
 <!-- Do not ask about this yet!  Why are you viewing the source? :)
 <p>The database of molecular interaction databases, <a href="http://pathguide.org" rel="external">PathGuide</a>,
