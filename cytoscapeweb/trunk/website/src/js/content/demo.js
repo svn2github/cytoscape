@@ -677,6 +677,10 @@ $(function(){
                 <div class=\"corner\"><span>Back to network</span><div class=\"icon\"></div></div>\
                 <div class=\"selections\">\
                     <div class=\"description\">Select a file type to save your file.</div>\
+                    <h2>Network Data</h2>\
+                    <div class=\"data_formats\"></div>\
+                    <h2>Image</h2>\
+                    <div class=\"image_formats\"></div>\
                 </div>\
             </div>");
         
@@ -703,10 +707,11 @@ $(function(){
             });
         }
 
-        function make_selection(fn, title, description, base64){
+        function make_selection(fn, title, description, isImage){
         	var id = "exporter_" + fn;
+        	var containerClass = isImage ? ".image_formats" : ".data_formats";
         	
-        	parent.find(".save_screen").find(".selections").append("\
+        	parent.find(".save_screen").find(containerClass).append("\
                 <div class=\"selection\" id=\"save_" + fn + "\">\
                     <div class=\"icon\"></div>\
                     <div class=\"description\"><label>" + title + "</label>\
@@ -718,7 +723,7 @@ $(function(){
             var options = {
                     swfPath: path("swf/Exporter"),
                     flashInstallerPath: path("swf/playerProductInstall"),
-                    base64: base64,
+                    base64: isImage,
                 	data: function(){
                 		return $("#cytoweb_container").cw()[fn]();
                     },
@@ -744,6 +749,12 @@ $(function(){
             "GraphML",
             "Graph Markup Language",
             false
+        );
+        make_selection(
+    		"sif",
+    		"SIF",
+    		"Simple Interaction Format",
+    		false
         );
         make_selection(
             "pdf",

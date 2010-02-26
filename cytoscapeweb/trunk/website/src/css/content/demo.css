@@ -136,14 +136,18 @@ body.demo h1 + h2, body.demo h2 + h3 { padding-top: 0.5em; }
 .save_screen .corner * { cursor: pointer; }
 .save_screen .corner span { color: #ffffff; line-height: 1; width: 140px; margin: 20px 0 0 30px; display: block; }
 .save_screen .corner .icon { width: 64px; height: 64px; background-image: url("../../img/icons/oxygen/64x64/actions/back.png"); position: absolute; left: 30px; top: 60px; }
-.save_screen .description { color: #707070; text-align: center; margin-bottom: 1em; width: 100%; }
-.save_screen .selections { height: 250px; width: 626px; top: 50%; margin: -125px auto 0 auto; position: relative; }
+.save_screen .description { text-align: center; width: 100%; }
+.save_screen .selections { height: 250px; width: 600px; margin: -125px auto 0 auto; top: 160px; position: relative; text-align: center; }
+.save_screen .selections .data_formats { margin: 0 auto; text-align: center; width: 468px; }
+.save_screen .selections .image_formats { margin: 0 auto; text-align: center; width: 312px; }
+.save_screen .selections h2 { padding-top: 0; }
 .save_screen .selection { cursor: pointer; float: left; width: 128px; margin: 1em; position: relative; z-index: 9999; }
 .save_screen .selection label { display: block; position: absolute; right: 20px; top: 8px; z-index: 10000; color: #707070; }
 .save_screen .selection span { font-size: 80%; color: #0b94b1; }
 .save_screen .icon { width: 128px; height: 128px; background: url("../../img/icons/oxygen/128x128/mimetypes/empty.png"); position: relative; z-index: 9999; }
 #save_xgmml .icon { background: url("../../img/icons/oxygen/128x128/mimetypes/xml.png"); }
 #save_graphml .icon { background: url("../../img/icons/oxygen/128x128/mimetypes/xml.png"); }
+#save_sif .icon { background: url("../../img/icons/sif.png"); }
 #save_pdf .icon { background: url("../../img/icons/oxygen/128x128/mimetypes/pdf.png"); }
 #save_png .icon { background: url("../../img/icons/png.png"); }
 
