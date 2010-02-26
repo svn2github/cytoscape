@@ -132,6 +132,15 @@ public abstract class AbstractManualLayoutAction
 			item.setState(false);
 		else 
 			item.setState(true);
+		
+		CytoPanelState parentState = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getState();
+		if ( parentState == CytoPanelState.HIDE ) {
+			setEnabled(false);
+		}
+		else { 
+			setEnabled(true);
+		}
+
 	}
 
 	/**
