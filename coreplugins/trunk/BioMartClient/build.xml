@@ -12,7 +12,7 @@
 		<tstamp />
 		<property name="biomartClient.Name" value="Biomart Client Plugin" />
 		<property name="biomartClient.name" value="biomartClient" />
-		<property name="biomartClient.version" value="0.5" />
+		<property name="biomartClient.version" value="0.90" />
 		<property name="biomartClient.year" value="200" />
 
 		<echo message="Building ${biomartClient.name} version ${biomartClient.version}." />
@@ -30,7 +30,7 @@
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
-		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.5.0" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.7.0" />
 
 		<!-- JUnit report directory -->
 		<property name="junit.report.dir" value="${biomartClient.root.dir}/junit-reports" />
@@ -93,7 +93,7 @@
 	<target name="clean" depends="init-biomartClient">
 		<delete dir="${biomartClient.classes.dir}" />
 		<delete dir="${biomartClient.testclasses.dir}" />
-		<delete dir="${biomartClient.tests.reports.dir}"/>
+		<delete dir="${biomartClient.tests.reports.dir}" />
 		<delete file="biomartClient.jar" />
 		<delete file="${biomartClient.lib.dir}/biomartClient.jar" />
 	</target>
@@ -106,7 +106,10 @@
 		<echo message=" COMPILE biomartClient " />
 
 		<mkdir dir="${biomartClient.classes.dir}" />
-		<javac srcdir="${biomartClient.src.dir}" excludes="${biomartClient.excludes}" classpathref="biomartClient.project.class.path" destdir="${biomartClient.classes.dir}" debug="${debug}" nowarn="${nowarn}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+		<javac srcdir="${biomartClient.src.dir}" excludes="${biomartClient.excludes}" 
+			classpathref="biomartClient.project.class.path" 
+			destdir="${biomartClient.classes.dir}" debug="${debug}" nowarn="${nowarn}" 
+			deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" source="1.5" target="1.5" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -118,10 +121,9 @@
 			<fileset dir="${biomartClient.root.dir}/images" />
 		</copy>
 		<copy todir="${biomartClient.classes.dir}/resource">
-							<fileset dir="${biomartClient.root.dir}/resource" />
+			<fileset dir="${biomartClient.root.dir}/resource" />
 		</copy>
-		<copy todir="${biomartClient.classes.dir}/edu/ucsd/bioeng/idekerlab/biomartclient" 
-			file="${biomartClient.manifest.dir}/plugin.props"/>
+		<copy todir="${biomartClient.classes.dir}/edu/ucsd/bioeng/idekerlab/biomartclient" file="${biomartClient.manifest.dir}/plugin.props" />
 
 		<unjar dest="${biomartClient.classes.dir}">
 			<fileset dir="${biomartClient.lib.dir}">
@@ -192,10 +194,10 @@
 	<!-- ======================================================= -->
 	<!-- Run all of the Swing Unit Tests                       -->
 	<!-- ======================================================= -->
-	<target name="test-swing" depends="biomartClient" >
+	<target name="test-swing" depends="biomartClient">
 		<mkdir dir="${biomartClient.tests.reports.dir}" />
 		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
-			
+
 			<classpath>
 				<fileset dir="${biomartClient.root.dir}">
 					<include name="**/*.jar" />
@@ -213,12 +215,12 @@
 					<include name="**/*.jar" />
 				</fileset>
 				<fileset dir="${biomartClient.root.dir}/testClasses">
-									<include name="**/*" />
+					<include name="**/*" />
 				</fileset>
 			</classpath>
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />
-			<batchtest fork="yes" todir="${biomartClient.tests.reports.dir}"  >
+			<batchtest fork="yes" todir="${biomartClient.tests.reports.dir}">
 				<fileset dir="${biomartClient.tests.dir}" includes="**/*TestSwing.java" />
 			</batchtest>
 
