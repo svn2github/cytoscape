@@ -441,10 +441,10 @@ public class CyMenus implements GraphViewChangeListener {
 		//
 		// View menu
 		// 
-		addAction(new CytoPanelAction(CytoPanelName.WEST,true));
-		addAction(new CytoPanelAction(CytoPanelName.SOUTH,true));
-		addAction(new CytoPanelAction(CytoPanelName.EAST,false));
-		addAction(new CytoPanelAction(CytoPanelName.SOUTH_WEST,false));
+		addAction(new CytoPanelAction(CytoPanelName.WEST,true,null));
+		addAction(new CytoPanelAction(CytoPanelName.SOUTH,true,null));
+		addAction(new CytoPanelAction(CytoPanelName.EAST,false,null));
+		addAction(new CytoPanelAction(CytoPanelName.SOUTH_WEST,false, CytoPanelName.WEST));
 		
 		viewMenu.add(new JSeparator());
 		
