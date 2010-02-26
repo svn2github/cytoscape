@@ -1,13 +1,6 @@
 
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -41,6 +34,7 @@ import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -224,19 +218,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		m_fontMetrics = g.getFontMetrics();
 
-		// set color alpha based on opacity setting
-		int alpha = (m_isOpaque) ? 255 : 0;
-		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-		                                  m_backgroundColor.getBlue(), alpha);
-
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
-				                                               m_view.m_spacial, m_lod[0],
-				                                               m_view.m_nodeDetails,
-				                                               m_view.m_edgeDetails, m_hash,
-				                                               m_grafx, backgroundColor, m_xCenter,
-				                                               m_yCenter, m_scaleFactor);
+				renderGraph(/* setLastRenderDetail = */ true);
 				contentChanged = m_view.m_contentChanged;
 				m_view.m_contentChanged = false;
 				viewportChanged = m_view.m_viewportChanged;
@@ -291,18 +275,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void print(Graphics g) {
 		final Image img = new ImageImposter(g, getWidth(), getHeight());
-
-		// set color alpha based on opacity setting
-		int alpha = (m_isOpaque) ? 255 : 0;
-		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-										  m_backgroundColor.getBlue(), alpha);
-
-		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
-			                          m_view.m_printLOD, m_view.m_nodeDetails,
-			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
-			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
-		}
+		renderGraph(/* setLastRenderDetail = */ false);
 	}
 
 	/**
@@ -312,18 +285,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void printNoImposter(Graphics g) {
 		final Image img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-		// set color alpha based on opacity setting
-		int alpha = (m_isOpaque) ? 255 : 0;
-		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-										  m_backgroundColor.getBlue(), alpha);
-
-		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
-			                          m_view.m_printLOD, m_view.m_nodeDetails,
-			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
-			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
-		}
+		renderGraph(/* setLastRenderDetail = */ false);
 		g.drawImage(img, 0, 0, null);
 	}
 
@@ -1474,5 +1436,25 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	
 	public boolean isNodeMovementDisabled(){
 		return !(this.NodeMovement);
+	}
+
+	/**
+	 *  @param setLastRenderDetail if true, "m_lastRenderDetail" will be updated, otherwise it will not be updated.
+	 */
+	private void renderGraph(final boolean setLastRenderDetail) {
+		final int alpha = (m_isOpaque) ? 255 : 0; // Set color alpha based on opacity setting
+		final Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
+							m_backgroundColor.getBlue(), alpha);
+
+		synchronized (m_lock) {
+			final int lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+									       m_view.m_spacial, m_lod[0],
+									       m_view.m_nodeDetails,
+									       m_view.m_edgeDetails, m_hash,
+									       m_grafx, backgroundColor, m_xCenter,
+									       m_yCenter, m_scaleFactor);
+			if (setLastRenderDetail)
+				m_lastRenderDetail = lastRenderDetail;
+		}
 	}
 }
