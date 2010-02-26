@@ -54,12 +54,6 @@ public class VizMapBypassNetworkListener implements PropertyChangeListener {
 
 			final EdgeBypassMenuListener edgeBypassMenuListener = new EdgeBypassMenuListener();
 			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edgeBypassMenuListener);
-
-			final HideNodeSelectionMenuListener hideNodeSelectionMenuListener = new HideNodeSelectionMenuListener();
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(hideNodeSelectionMenuListener);
-
-			final HideEdgeSelectionMenuListener hideEdgeSelectionMenuListener = new HideEdgeSelectionMenuListener();
-			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(hideEdgeSelectionMenuListener);
 		}
 	}
 }

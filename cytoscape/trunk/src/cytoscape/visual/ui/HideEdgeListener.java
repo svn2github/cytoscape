@@ -29,20 +29,43 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.actions.HideSelectedEdgesAction;
-
+import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CyNetworkView;
 import ding.view.EdgeContextMenuListener;
 import giny.view.EdgeView;
 
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 
 /**
- * HideEdgeSelectionMenuListener implements EdgeContextMenuListener
+ * Adds EdgeView and EdgeView vizmap bypass listeners to network views as
+ * the views are created.
  */
-class HideEdgeSelectionMenuListener implements EdgeContextMenuListener {
-	HideEdgeSelectionMenuListener() {
+public class HideEdgeListener implements PropertyChangeListener {
+	/**
+	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
+	 * a HideEdgeContextMenuListener context menu listener to the view.
+	 * @param evnt The event we're being notified of.
+	 */
+	public void propertyChange(final PropertyChangeEvent evnt) {
+		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evnt.getPropertyName())) {
+			final HideEdgeContextMenuListener l = new HideEdgeContextMenuListener();
+			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(l);
+		}
+	}
+}
+
+
+class HideEdgeContextMenuListener extends AbstractAction implements EdgeContextMenuListener {
+	private EdgeView nodeView;
+
+	public HideEdgeContextMenuListener() {
 	}
 
 	/**
@@ -53,9 +76,15 @@ class HideEdgeSelectionMenuListener implements EdgeContextMenuListener {
 		if (menu == null)
 			return;
 
-		final HideSelectedEdgesAction hideSelectedEdgesAction = new HideSelectedEdgesAction();
-		final JMenuItem newMenuItem = new JMenuItem(HideSelectedEdgesAction.MENU_LABEL);
-		newMenuItem.addActionListener(hideSelectedEdgesAction);
+		this.nodeView = nodeView;
+		final JMenuItem newMenuItem = new JMenuItem("Hide Edge");
+		newMenuItem.addActionListener(this);
 		menu.add(newMenuItem);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		final CyNetworkView currentNetworkView = Cytoscape.getCurrentNetworkView();
+		currentNetworkView.hideGraphObject(nodeView);
+		currentNetworkView.updateView();
 	}
 }
