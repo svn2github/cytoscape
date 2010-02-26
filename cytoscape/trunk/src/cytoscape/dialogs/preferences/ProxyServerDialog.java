@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -63,120 +56,119 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 	/** Creates new form URLimportAdvancedDialog */
 	public ProxyServerDialog(javax.swing.JFrame pParent) {
 		super(pParent, true);
-		this.setTitle("Proxy server setting");
+		this.setTitle("Proxy Server Setting");
 		this.setLocationRelativeTo(pParent);
 
 		initComponents();
 		initValues();
 	}
 
-	// Variables declaration - do not modify
-    private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnUpdate;
-    private javax.swing.JCheckBox chbUseProxy;
-    private javax.swing.JComboBox cmbType;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel lbHost;
-    private javax.swing.JLabel lbPort;
-    private javax.swing.JLabel lbType;
-    private javax.swing.JLabel lbUseProxy;
-    private javax.swing.JTextField tfHost;
-    private javax.swing.JTextField tfPort;
-	// End of variables declaration
+	private javax.swing.JButton btnCancel;
+	private javax.swing.JButton btnUpdate;
+	private javax.swing.JCheckBox chbUseProxy;
+	private javax.swing.JComboBox cmbType;
+	private javax.swing.JPanel jPanel1;
+	private javax.swing.JPanel jPanel2;
+	private javax.swing.JPanel jPanel3;
+	private javax.swing.JLabel lbHost;
+	private javax.swing.JLabel lbPort;
+	private javax.swing.JLabel lbType;
+	private javax.swing.JLabel lbUseProxy;
+	private javax.swing.JTextField tfHost;
+	private javax.swing.JTextField tfPort;
     
 	private void initComponents() {
 		
-        java.awt.GridBagConstraints gridBagConstraints;
+		java.awt.GridBagConstraints gridBagConstraints;
 
-        jPanel3 = new javax.swing.JPanel();
-        lbUseProxy = new javax.swing.JLabel();
-        chbUseProxy = new javax.swing.JCheckBox();
-        jPanel1 = new javax.swing.JPanel();
-        btnUpdate = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        lbType = new javax.swing.JLabel();
-        lbHost = new javax.swing.JLabel();
-        lbPort = new javax.swing.JLabel();
-        cmbType = new javax.swing.JComboBox();
-        tfHost = new javax.swing.JTextField();
-        tfPort = new javax.swing.JTextField();
+		jPanel3 = new javax.swing.JPanel();
+		lbUseProxy = new javax.swing.JLabel();
+		chbUseProxy = new javax.swing.JCheckBox();
+		jPanel1 = new javax.swing.JPanel();
+		btnUpdate = new javax.swing.JButton();
+		btnCancel = new javax.swing.JButton();
+		jPanel2 = new javax.swing.JPanel();
+		lbType = new javax.swing.JLabel();
+		lbHost = new javax.swing.JLabel();
+		lbPort = new javax.swing.JLabel();
+		cmbType = new javax.swing.JComboBox();
+		tfHost = new javax.swing.JTextField();
+		tfPort = new javax.swing.JTextField();
 
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+		getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        lbUseProxy.setText("Use Proxy");
-        jPanel3.add(lbUseProxy);
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		lbUseProxy.setText("Use Proxy");
+		jPanel3.add(lbUseProxy);
 
-        chbUseProxy.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        chbUseProxy.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jPanel3.add(chbUseProxy);
+		chbUseProxy.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		chbUseProxy.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		jPanel3.add(chbUseProxy);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(jPanel3, gridBagConstraints);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+		getContentPane().add(jPanel3, gridBagConstraints);
 
-        btnUpdate.setText("Update");
-        jPanel1.add(btnUpdate);
+		btnUpdate.setText("Update");
+		jPanel1.add(btnUpdate);
 
-        btnCancel.setText("Cancel");
-        jPanel1.add(btnCancel);
+		btnCancel.setText("Cancel");
+		jPanel1.add(btnCancel);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
-        getContentPane().add(jPanel1, gridBagConstraints);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 3;
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+		getContentPane().add(jPanel1, gridBagConstraints);
 
-        jPanel2.setLayout(new java.awt.GridBagLayout());
+		jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Proxy Settings"));
-        lbType.setText("Type");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        jPanel2.add(lbType, gridBagConstraints);
+		jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Proxy Settings"));
+		lbType.setText("Type");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 1;
+		jPanel2.add(lbType, gridBagConstraints);
 
-        lbHost.setText("Host name");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        jPanel2.add(lbHost, gridBagConstraints);
+		lbHost.setText("Host name");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 1;
+		jPanel2.add(lbHost, gridBagConstraints);
 
-        lbPort.setText("Port");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        jPanel2.add(lbPort, gridBagConstraints);
+		lbPort.setText("Port");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 1;
+		jPanel2.add(lbPort, gridBagConstraints);
 
-        cmbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "HTTP", "SOCKS" }));
-        cmbType.setMinimumSize(new java.awt.Dimension(61, 18));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(5, 10, 10, 5);
-        jPanel2.add(cmbType, gridBagConstraints);
+		cmbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "HTTP", "SOCKS" }));
+		cmbType.setMinimumSize(new java.awt.Dimension(61, 18));
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.insets = new java.awt.Insets(5, 10, 10, 5);
+		jPanel2.add(cmbType, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 5);
-        jPanel2.add(tfHost, gridBagConstraints);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 5);
+		jPanel2.add(tfHost, gridBagConstraints);
 
-        tfPort.setMinimumSize(new java.awt.Dimension(43, 19));
-        tfPort.setPreferredSize(new java.awt.Dimension(43, 19));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 10);
-        jPanel2.add(tfPort, gridBagConstraints);
+		final int tfPortHeight = (int)tfHost.getMinimumSize().getHeight();
+		tfPort.setMinimumSize(new java.awt.Dimension(43, tfPortHeight));
+		tfPort.setPreferredSize(new java.awt.Dimension(43, tfPortHeight));
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 10);
+		jPanel2.add(tfPort, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        getContentPane().add(jPanel2, gridBagConstraints);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		getContentPane().add(jPanel2, gridBagConstraints);
 
 		// add event listeners
 		btnUpdate.addActionListener(this);
