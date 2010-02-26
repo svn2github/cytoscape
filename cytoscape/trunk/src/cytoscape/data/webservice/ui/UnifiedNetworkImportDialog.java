@@ -155,9 +155,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 	private void initGUI() {
 		clientNames = new HashMap<String, String>();
 
-		List<WebServiceClient> clients = WebServiceClientManager
+		List<WebServiceClient<?>> clients = WebServiceClientManager
 				.getAllClients();
-		for (WebServiceClient client : clients) {
+		for (WebServiceClient<?> client : clients) {
 			if (client instanceof NetworkImportWebServiceClient) {
 				numClients++;
 			}
@@ -575,7 +575,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 	}
 
 	private void setDatasource() {
-		List<WebServiceClient> clients = WebServiceClientManager
+		List<WebServiceClient<?>> clients = WebServiceClientManager
 				.getAllClients();
 		for (WebServiceClient client : clients) {
 			if (client instanceof NetworkImportWebServiceClient) {

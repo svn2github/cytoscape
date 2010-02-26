@@ -103,9 +103,9 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 		}
 
 		List<JMenuItem> context = null;
-		final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+		final List<WebServiceClient<?>> clients = WebServiceClientManager.getAllClients();
 
-		for (WebServiceClient client : clients) {
+		for (WebServiceClient<?> client : clients) {
 			if (client instanceof WebServiceClientGUI) {
 				if (view instanceof NodeView)
 					context = ((WebServiceClientGUI) client).getNodeContextMenuItems((NodeView) view);
