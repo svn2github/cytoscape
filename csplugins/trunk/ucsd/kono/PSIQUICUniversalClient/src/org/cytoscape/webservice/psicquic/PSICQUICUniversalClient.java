@@ -245,16 +245,18 @@ public class PSICQUICUniversalClient extends
 		report.setVisible(true);
 		report.setModal(true);
 
-		newNameMap = report.getNewNames();
-
 		final Mitab25Mapper mapper = new Mitab25Mapper();
 		List<CyNetwork> target = new ArrayList<CyNetwork>();
 
 		// Create parent empty network
-		String parentName = "PSICQUIC Query Results: " + time.toString();
+		String parentName = "PSICQUIC Query Results";
+		String postfix = ": " + time.toString();
 		if (query != null)
-			parentName = "PSICQUIC Query Results: " + time.toString() + " ("
-					+ query + ")";
+			postfix = postfix+" (" + query + ")";
+			
+		parentName = parentName + postfix;
+		
+		newNameMap = report.getNewNames();
 
 		final CyNetwork parentNetwork = Cytoscape.createNetwork(parentName,
 				false);

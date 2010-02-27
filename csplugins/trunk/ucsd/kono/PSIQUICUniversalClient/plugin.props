@@ -11,7 +11,7 @@ pluginName=PSICQUICUniversalClient
 pluginDescription=PSICQUIC Web Service Universal Client.  You can perform meta-search for <a href="http://code.google.com/p/psicquic/">PSICQUIC data service providers</a>.  This plugin works with Cytoscape 2.7.0 (not released yet) or later.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.07
+pluginVersion=0.08
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.7

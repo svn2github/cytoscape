@@ -50,6 +50,7 @@ public class RegistryManager {
 		return regMap;
 	}
 
+	
 	private void invoke() throws IOException {
 		String command = "?action=" + STATE.ACTIVE.name() +"&format=xml";
 

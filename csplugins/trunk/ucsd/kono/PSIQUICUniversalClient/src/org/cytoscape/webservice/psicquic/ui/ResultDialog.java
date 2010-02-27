@@ -6,8 +6,11 @@ import java.util.Map;
 
 import javax.swing.table.DefaultTableModel;
 
+import cytoscape.util.CyNetworkNaming;
+
 /**
  * Display result of the query.
+ * 
  * @author kono
  */
 public class ResultDialog extends javax.swing.JDialog {
@@ -15,7 +18,7 @@ public class ResultDialog extends javax.swing.JDialog {
 	private static final long serialVersionUID = 6996385373168492882L;
 	private Map<URI, String> dbNames;
 	private DefaultTableModel model;
-	
+
 	private boolean mergeNetworks;
 
 	/** Creates new form PSICQUICResultDialog */
@@ -31,22 +34,21 @@ public class ResultDialog extends javax.swing.JDialog {
 		resultTable = new javax.swing.JTable(new DefaultTableModel() {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				if(column == 0)
+				if (column == 0)
 					return false;
 				else
 					return true;
 			}
 		});
-		
+
 		model = (DefaultTableModel) resultTable.getModel();
 		model.addColumn("Source", dbNames.keySet().toArray());
 		model.addColumn("Network Name (Please edit these if necessary)");
 		for (int i = 0; i < model.getRowCount(); i++) {
 			model.setValueAt(dbNames.get(model.getValueAt(i, 0)), i, 1);
 		}
-		
-		resultTable.getTableHeader()
-				.setReorderingAllowed(false);
+
+		resultTable.getTableHeader().setReorderingAllowed(false);
 	}
 
 	/**
@@ -215,15 +217,17 @@ public class ResultDialog extends javax.swing.JDialog {
 		mergeNetworks = true;
 		this.dispose();
 	}
-	
+
 	public boolean isMerge() {
 		return mergeNetworks;
 	}
 
 	public Map<URI, String> getNewNames() {
-		
-		for(int i=0; i<resultTable.getModel().getRowCount(); i++) {
-			dbNames.put((URI)resultTable.getModel().getValueAt(i, 0), resultTable.getModel().getValueAt(i, 1).toString());
+
+		for (int i = 0; i < resultTable.getModel().getRowCount(); i++) {
+			dbNames.put((URI) resultTable.getModel().getValueAt(i, 0),
+					CyNetworkNaming.getSuggestedNetworkTitle(resultTable
+							.getModel().getValueAt(i, 1).toString()));
 		}
 		return dbNames;
 	}
