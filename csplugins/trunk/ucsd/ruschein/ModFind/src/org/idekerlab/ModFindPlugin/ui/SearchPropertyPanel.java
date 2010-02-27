@@ -1,6 +1,7 @@
 package org.idekerlab.ModFindPlugin.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,16 +35,15 @@ import cytoscape.view.cytopanels.CytoPanel;
  * 
  * @author kono
  */
-public class SearchPropertyPanel extends JPanel implements
-		MultiHashMapDefinitionListener {
-
+public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitionListener {
 	private static final long serialVersionUID = -3352470909434196700L;
 
 	private static final double DEF_ALPHA = 1.6;
 	private static final double DEF_ALPHA_MUL = 1.0;
 	private static final int DEF_DEGREE = 1;
 	private static final double DEF_CUTOFF = 20.0;
-
+	
+	private Container container;
 	private SearchParameters parameters;
 
 	/** Creates new form SearchPropertyPanel */
@@ -221,7 +222,10 @@ public class SearchPropertyPanel extends JPanel implements
 		closeButton.setText("Close");
 		closeButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					closeButtonActionPerformed(evt);
+					final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+					final int index = cytoPanel.indexOfComponent(container);
+					if (index >= 0)
+						cytoPanel.remove(index);
 				}
 			});
 
@@ -466,5 +470,9 @@ public class SearchPropertyPanel extends JPanel implements
 	public void attributeUndefined(String attrName) {
 		geneticEdgeComboBox.removeItem(attrName);
 		physicalEdgeComboBox.removeItem(attrName);
+	}
+
+	public void setContainer(final Container container) {
+		this.container = container;
 	}
 }

@@ -35,12 +35,12 @@ public class ModFindPlugin extends CytoscapePlugin {
 
 	class PluginAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
-					SwingConstants.WEST);
+			final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 			int index = cytoPanel.indexOfComponent(scrollPane);
 			if (index < 0) {
 				final SearchPropertyPanel searchPanel = new SearchPropertyPanel();
 				scrollPane = new JScrollPane(searchPanel);
+				searchPanel.setContainer(scrollPane);
 				searchPanel.updateState();
 				searchPanel.setVisible(true);
 				cytoPanel.add("ModFind", scrollPane);
