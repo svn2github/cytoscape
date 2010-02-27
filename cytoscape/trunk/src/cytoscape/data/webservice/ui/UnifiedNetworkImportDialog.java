@@ -577,7 +577,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements
 	private void setDatasource() {
 		List<WebServiceClient<?>> clients = WebServiceClientManager
 				.getAllClients();
-		for (WebServiceClient client : clients) {
+		for (WebServiceClient<?> client : clients) {
 			if (client instanceof NetworkImportWebServiceClient) {
 				this.datasourceComboBox.addItem(client.getDisplayName());
 				this.clientNames.put(client.getDisplayName(), client

@@ -36,15 +36,13 @@
 */
 package cytoscape.util;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
 import java.awt.Component;
-
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 
 
 /**
@@ -85,12 +83,9 @@ public class CyNetworkNaming {
 	}
 
 	private static boolean isNetworkTitleTaken(String titleCandidate) {
-		Set existingNetworks = Cytoscape.getNetworkSet();
-		Iterator iter = existingNetworks.iterator();
+		final Set<CyNetwork> existingNetworks = Cytoscape.getNetworkSet();
 
-		while (iter.hasNext()) {
-			CyNetwork existingNetwork = (CyNetwork) iter.next();
-
+		for (CyNetwork existingNetwork: existingNetworks) {
 			if (existingNetwork.getTitle().equals(titleCandidate))
 				return true;
 		}
