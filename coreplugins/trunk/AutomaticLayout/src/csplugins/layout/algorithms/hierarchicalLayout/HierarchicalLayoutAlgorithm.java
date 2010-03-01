@@ -40,6 +40,7 @@
 package csplugins.layout.algorithms.hierarchicalLayout;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
 import cytoscape.layout.AbstractLayout;
@@ -297,9 +298,22 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		if (canceled)
 			return;
 
-		/* construct node list with selected nodes first */
-		List selectedNodes = networkView.getSelectedNodes();
-		int numSelectedNodes = selectedNodes.size();
+		// Do we have programmatically fixed nodes?
+		List<CyNode> selectedNodes = null;
+		int numSelectedNodes = 0;
+		if (staticNodes != null && staticNodes.size() > 0) {
+			// Yes, construct the "selected" nodes
+			selectedNodes = new ArrayList();
+			for (CyNode node: (List<CyNode>)network.nodesList()) {
+				if (!isLocked(networkView.getNodeView(node))) {
+					selectedNodes.add(node);
+				}
+			}
+		} else {
+			/* construct node list with selected nodes first */
+			selectedNodes = networkView.getSelectedNodes();
+		}
+		numSelectedNodes = selectedNodes.size();
 
 		if (!selectedOnly)
 			numSelectedNodes = 0;
@@ -523,6 +537,12 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		int resize = renumber.length;
 
+		taskMonitor.setStatus("renumbering nodes");
+		Thread.yield();
+
+		if (canceled)
+			return;
+
 		for (int i = 0; i < component.length; i++)
 			resize += (layer[i].length - dummyStartForComp[i]);
 
@@ -538,6 +558,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		for (int i = 0; i < reduced.length; i++) {
 			for (int j = reduced[i].getDummyNodesStart(); j < reduced[i].getNodecount(); j++) {
+				if (canceled)
+					return;
 				newRenumber[t] = j;
 				newcI[t] = i;
 				t++;
@@ -547,12 +569,17 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		renumber = newRenumber;
 		cI = newcI;
 
+		taskMonitor.setStatus("getting edges");
+		Thread.yield();
+
 		edges = new LinkedList<Edge>();
 
 		for (int i = 0; i < reduced.length; i++) {
 			edge = reduced[i].GetEdges();
 
 			for (int j = 0; j < edge.length; j++) { // uzasna budzevina!!!!!!
+				if (canceled)
+					return;
 
 				int from = -1;
 				int to = -1;

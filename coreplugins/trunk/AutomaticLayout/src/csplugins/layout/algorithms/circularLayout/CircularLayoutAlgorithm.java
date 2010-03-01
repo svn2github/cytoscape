@@ -151,7 +151,11 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		Iterator iter = partition.getNodeList().iterator(); /* all nodes */
 
 		while (iter.hasNext() && !canceled) {
-			NodeView nv = ((LayoutNode) (iter.next())).getNodeView();
+			LayoutNode ln = (LayoutNode) iter.next();
+			if (ln.isLocked())
+				continue;
+
+			NodeView nv = ln.getNodeView();
 			Integer nodeIndexKey = new Integer(nv.getNode().getRootGraphIndex());
 
 			if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
