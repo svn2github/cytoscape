@@ -370,7 +370,15 @@ public class CytoscapeInit {
 		return visualProperties;
 	}
 
-	private static void loadStaticProperties(String defaultName, Properties props) {
+    /**
+     * Load the Properties found in a given given file into a given Properties object.
+     * @param defaultName the name of the properties file to use (.e.g., "cytoscape.props").
+     * @param props the Properties object in which to insert the
+     * property information found within defaultName.
+     */
+	public static void loadStaticProperties(String defaultName, Properties props) {
+	    // TODO: This should probably be removed, since if
+	    //       props==null, then the props set here will be lost:
 		if (props == null) {
 			logger.info("input props is null");
 			props = new Properties();
