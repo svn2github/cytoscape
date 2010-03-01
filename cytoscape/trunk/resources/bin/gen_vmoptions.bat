@@ -8,8 +8,8 @@ IF NOT %errorlevel% == 0 GOTO 32bit
 
 
 :64bit
-	echo -Xms20m      >  cytoscape.vmoptions 
-	echo -Xmx2000000m >> cytoscape.vmoptions 
+	echo -Xms20m >  cytoscape.vmoptions 
+	echo -Xmx20g >> cytoscape.vmoptions 
 	GOTO end:
 
 
