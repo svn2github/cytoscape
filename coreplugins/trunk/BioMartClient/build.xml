@@ -152,7 +152,7 @@
 	<!-- =================================================================== -->
 	<target name="compile-tests" depends="biomartClient">
 		<mkdir dir="${biomartClient.testclasses.dir}" />
-		<javac srcdir="${biomartClient.tests.dir}" includes="**/*" classpathref="biomartClient.project.class.path" destdir="${biomartClient.testclasses.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+		<javac srcdir="${biomartClient.tests.dir}" includes="**/*" classpathref="biomartClient.project.class.path" destdir="${biomartClient.testclasses.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" source="1.5" target="1.5"/>
 	</target>
 
 	<!-- =================================================================== -->
