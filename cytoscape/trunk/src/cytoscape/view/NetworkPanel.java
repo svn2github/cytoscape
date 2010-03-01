@@ -487,6 +487,13 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			maybeShowPopup(e);
 		}
 
+		/*
+		 * On windows, popup is triggered by this method, not the above one
+		 */
+		public void mouseReleased(MouseEvent e) {
+			maybeShowPopup(e);
+		}
+
 		/**
 		 * if the mouse press is of the correct type, this function will maybe
 		 * display the popup
