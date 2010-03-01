@@ -107,7 +107,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 		physicalEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					physicalEdgeComboBoxActionPerformed(evt);
+					edgeComboBoxActionPerformed(evt);
 				}
 			});
 
@@ -115,7 +115,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 		geneticEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					geneticEdgeComboBoxActionPerformed(evt);
+					edgeComboBoxActionPerformed(evt);
 				}
 			});
 
@@ -334,14 +334,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
 
-	private void physicalEdgeComboBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
-	}
-
-	private void geneticEdgeComboBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+	/**
+	 *  This message handler will be invoked if either the phyiscal or genetic edge attribute selection has changed.
+	 */
+	private void edgeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
+		updateSearchButtonState();
 	}
 
 	private void alphaTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
@@ -407,6 +404,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			geneticEdgeComboBox.setSelectedItem(geneticSelected);
 		if (isPhysicalSelectedExist)
 			physicalEdgeComboBox.setSelectedItem(physicalSelected);
+
+		updateSearchButtonState();
 	}
 
 
@@ -474,5 +473,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	public void setContainer(final Container container) {
 		this.container = container;
+	}
+
+	private void updateSearchButtonState() {
+		final String geneticAttrName = (String)geneticEdgeComboBox.getSelectedItem();
+		final String physicalAttrName = (String)physicalEdgeComboBox.getSelectedItem();
+		searchButton.setEnabled(geneticAttrName != null && physicalAttrName != null && !geneticAttrName.equals(physicalAttrName));
 	}
 }
