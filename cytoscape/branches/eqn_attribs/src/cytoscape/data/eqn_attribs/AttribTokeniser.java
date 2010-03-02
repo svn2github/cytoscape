@@ -1,5 +1,5 @@
 /*
-  File: AttribTokeniserTest.java
+  File: AttribTokeniser.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
