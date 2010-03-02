@@ -1,0 +1,105 @@
+<project name="AdvancedNetworkMerge" default="all" basedir=".">
+	<description>Builds, tests, and runs the project AdvancedNetworkMerge.</description>
+	
+	<!-- Advanced Network Merge Plugin Build Script by Jianjiong Gao and Keiichiro Ono -->
+
+	<!-- =================================================================== -->
+	<!-- Initialization target                                               -->
+	<!-- =================================================================== -->
+	<target name="init">
+		<tstamp>
+			<format property="timestamp" pattern="MM/dd/yyyy hh:mm:ss"/>
+		</tstamp>
+		<buildnumber/>
+		
+		<property name="src" location="src" />
+		<property name="images" value="images" />
+		<property name="lib" location="lib" />
+		<property name="cyrelease" location="../../cytoscape" />
+		<property name="cylib" location="${cyrelease}/lib" />
+		<property name="build" location="build" />
+		<property name="build.classes" location="${build}/classes" />
+		<property name="build.images" location="${build.classes}/images" />
+		
+		<property name="source.version" value="1.5" />
+		<property name="target.version" value="1.5" />
+		
+		<property name="author" value="Jianjiong Gao" />
+		<property name="jar.file" value="AdvancedNetworkMerge.jar" />
+
+		<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+		<path id="classpath">
+			<fileset dir="${cylib}">
+				<include name="*.jar" />
+			</fileset>
+
+			<!-- include cytoscape.jar, which is it release directory top level -->
+			<fileset dir="${cyrelease}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${lib}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Compiles the project                                                -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="init">
+		<mkdir dir="${build}" />
+		<mkdir dir="${build.classes}" />
+		<javac srcdir="${src}" destdir="${build.classes}" 
+			nowarn="off" 
+			debug="true" 
+			source="${source.version}"
+			target="${target.version}"
+			optimize="on" 
+			includeAntRuntime="false" 
+			deprecation="yes">
+			<classpath refid="classpath" />
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Clean up, get back to original state                                -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init">
+		<echo message="delete ${build}" />
+		<delete dir="${build}" />
+		<delete file="build.number" />
+		<delete file="${jar.file}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the project jar file                                        -->
+	<!-- =================================================================== -->
+	<target name="jar" depends="compile">
+		<copy file="plugin.props" todir="${build.classes}/csplugins/network/merge" />
+		<copy todir="${build.images}">
+			<fileset dir="${images}" />
+		</copy>
+		<jar destfile="${jar.file}">
+			<manifest>
+				<attribute name ="Author" value="${author}"/>
+				<attribute name="Cytoscape-Plugin" value="csplugins.network.merge.NetworkMergePlugin" />
+				<attribute name="Build" value="${build.number}"/>
+				<attribute name="Date" value="${timestamp}"/>
+			</manifest>
+
+			<fileset dir="${build.classes}" />
+			<zipfileset src="${lib}/CyThesaurusService.jar" excludes="META-INF/*" />
+
+		</jar>
+	</target>
+
+	<!-- to be consistent with other plugins -->
+	<target name="all" depends="jar">
+	</target>
+
+</project>
+
+
+
