@@ -1,3 +1,32 @@
+/*
+  File: AttribTokeniserTest.java
+
+  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package cytoscape.data.eqn_attribs;
 
 import java.io.IOException;
@@ -132,6 +161,25 @@ public class AttribTokeniser {
 		previousFloatConstant = currentFloatConstant;
 		previousStringConstant = currentStringConstant;
 		previousIdent = currentIdent;
+	}
+
+	/**
+	 *  Returns a representation of the next token as a string.  Used primarily for testing.
+	 *  You should stop calling this after it returned "EOS"!
+	 */
+	public String getTokenAsString() {
+		final AttribToken token = getToken();
+		if (token == AttribToken.STRING_CONSTANT)
+			return "STRING_CONSTANT: \"" + getStringConstant() + "\"";
+		if (token == AttribToken.INTEGER_CONSTANT)
+			return "INTEGER_CONSTANT: \"" + getIntConstant() + "\"";
+		if (token == AttribToken.FLOAT_CONSTANT)
+			return "FLOAT_CONSTANT: \"" + getFloatConstant() + "\"";
+		if (token == AttribToken.IDENTIFIER)
+			return "IDENTIFIER: \"" + getIdent() + "\"";
+		if (token == AttribToken.ERROR)
+			return "ERROR: \"" + getErrorMsg();
+		return token.toString();
 	}
 
 	public String getStringConstant() {
@@ -315,21 +363,12 @@ public class AttribTokeniser {
 	static public void main(final String[] args) {
 		for (final String arg : args) {
 			final AttribTokeniser tokeniser = new AttribTokeniser(arg);
-			AttribToken token;
-			while ((token = tokeniser.getToken()) != AttribToken.EOS) {
-				if (token == AttribToken.STRING_CONSTANT)
-					System.out.println("STRING_CONSTANT: \"" + tokeniser.getStringConstant() + "\"");
-				else if (token == AttribToken.INTEGER_CONSTANT)
-					System.out.println("INTEGER_CONSTANT: \"" + tokeniser.getIntConstant() + "\"");
-				else if (token == AttribToken.FLOAT_CONSTANT)
-					System.out.println("FLOAT_CONSTANT: \"" + tokeniser.getFloatConstant() + "\"");
-				else if (token == AttribToken.IDENTIFIER)
-					System.out.println("IDENTIFIER: \"" + tokeniser.getIdent() + "\"");
-				else if (token == AttribToken.ERROR)
-					System.out.println("ERROR: \"" + tokeniser.getErrorMsg());
-				else
-					System.out.println(token.toString());
+			String tokenAsString;
+			do {
+				tokenAsString = tokeniser.getTokenAsString();
+				System.out.println(tokenAsString);
 			}
+			while (tokenAsString != "EOS");
 		}
 	}
 }
