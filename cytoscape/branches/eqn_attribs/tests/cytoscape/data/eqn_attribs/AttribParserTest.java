@@ -58,4 +58,12 @@ public class AttribParserTest extends TestCase {
 		final AttribParser parser = new AttribParser("2^3^4 - 0.0002");
 		assertTrue(parser.parse());
 	}
+
+	public void testComparisons() throws Exception {
+		final AttribParser parser1 = new AttribParser("$x <= $y");
+		assertTrue(parser1.parse());
+
+		final AttribParser parser2 = new AttribParser("-15.4^3 > $limit");
+		assertTrue(parser2.parse());
+	}
 }

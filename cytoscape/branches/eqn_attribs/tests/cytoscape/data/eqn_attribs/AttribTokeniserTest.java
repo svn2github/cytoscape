@@ -37,7 +37,7 @@ import junit.framework.*;
  *
  */
 public class AttribTokeniserTest extends TestCase {
-	public void testScanner() throws Exception {
+	public void testScanner1() throws Exception {
 		final AttribTokeniser tokeniser = new AttribTokeniser("AND(1.0 >= $(BOB), OR($(JOE) = $(tiny), $(x) > LOG(1.3e17)))");
 		final ArrayList<String> tokens = new ArrayList<String>();
 		String tokenAsString;
@@ -52,7 +52,7 @@ public class AttribTokeniserTest extends TestCase {
 			"IDENTIFIER: \"AND\"",
 			"OPEN_PAREN",
 			"FLOAT_CONSTANT: \"1.0\"",
-			"LESS_OR_EQUAL",
+			"GREATER_OR_EQUAL",
 			"DOLLAR",
 			"OPEN_PAREN",
 			"IDENTIFIER: \"BOB\"",
@@ -74,13 +74,91 @@ public class AttribTokeniserTest extends TestCase {
 			"OPEN_PAREN",
 			"IDENTIFIER: \"x\"",
 			"CLOSE_PAREN",
-			"LESS_THAN",
+			"GREATER_THAN",
 			"IDENTIFIER: \"LOG\"",
 			"OPEN_PAREN",
 			"FLOAT_CONSTANT: \"1.3E17\"",
 			"CLOSE_PAREN",
 			"CLOSE_PAREN",
 			"CLOSE_PAREN",
+			"EOS"
+		};
+
+		assertEquals(expectedTokens.length, actualTokens.length);
+		for (int i = 0; i < expectedTokens.length; ++i)
+			assertEquals(expectedTokens[i], actualTokens[i]);
+	}
+
+	/**
+	 *  Please note that the scanner input here is the same as for testScanner1() except for the lack of spaces.
+	 */
+	public void testScanner2() throws Exception {
+		final AttribTokeniser tokeniser = new AttribTokeniser("AND(1.0>=$(BOB),OR($(JOE)=$(tiny),$(x)>LOG(1.3e17)))");
+		final ArrayList<String> tokens = new ArrayList<String>();
+		String tokenAsString;
+		do {
+			tokenAsString = tokeniser.getTokenAsString();
+			tokens.add(tokenAsString);
+		} while (tokenAsString != "EOS");
+		final String[] actualTokens = new String[tokens.size()];
+		tokens.toArray(actualTokens);
+
+		final String[] expectedTokens = {
+			"IDENTIFIER: \"AND\"",
+			"OPEN_PAREN",
+			"FLOAT_CONSTANT: \"1.0\"",
+			"GREATER_OR_EQUAL",
+			"DOLLAR",
+			"OPEN_PAREN",
+			"IDENTIFIER: \"BOB\"",
+			"CLOSE_PAREN",
+			"COMMA",
+			"IDENTIFIER: \"OR\"",
+			"OPEN_PAREN",
+			"DOLLAR",
+			"OPEN_PAREN",
+			"IDENTIFIER: \"JOE\"",
+			"CLOSE_PAREN",
+			"EQUAL",
+			"DOLLAR",
+			"OPEN_PAREN",
+			"IDENTIFIER: \"tiny\"",
+			"CLOSE_PAREN",
+			"COMMA",
+			"DOLLAR",
+			"OPEN_PAREN",
+			"IDENTIFIER: \"x\"",
+			"CLOSE_PAREN",
+			"GREATER_THAN",
+			"IDENTIFIER: \"LOG\"",
+			"OPEN_PAREN",
+			"FLOAT_CONSTANT: \"1.3E17\"",
+			"CLOSE_PAREN",
+			"CLOSE_PAREN",
+			"CLOSE_PAREN",
+			"EOS"
+		};
+
+		assertEquals(expectedTokens.length, actualTokens.length);
+		for (int i = 0; i < expectedTokens.length; ++i)
+			assertEquals(expectedTokens[i], actualTokens[i]);
+	}
+
+	public void testScanner3() throws Exception {
+		final AttribTokeniser tokeniser = new AttribTokeniser("1.79^3");
+		final ArrayList<String> tokens = new ArrayList<String>();
+		String tokenAsString;
+		do {
+			tokenAsString = tokeniser.getTokenAsString();
+			tokens.add(tokenAsString);
+		} while (tokenAsString != "EOS");
+		final String[] actualTokens = new String[tokens.size()];
+		tokens.toArray(actualTokens);
+
+		final String[] expectedTokens = {
+			"FLOAT_CONSTANT: \"1.79\"",
+			"CARET",
+			"INTEGER_CONSTANT: \"3\"",
 			"EOS"
 		};
 

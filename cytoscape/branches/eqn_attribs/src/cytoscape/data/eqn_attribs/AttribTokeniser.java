@@ -135,11 +135,11 @@ public class AttribTokeniser {
 		if (ch == '>') {
 			nextCh = getChar();
 			if (nextCh == -1)
-				return AttribToken.LESS_THAN;
+				return AttribToken.GREATER_THAN;
 			if ((char)nextCh == '=')
-				return AttribToken.LESS_OR_EQUAL;
+				return AttribToken.GREATER_OR_EQUAL;
 			ungetChar(nextCh);
-			return AttribToken.LESS_THAN;
+			return AttribToken.GREATER_THAN;
 		}
 
 		if (Character.isLetter(ch)) {
@@ -333,8 +333,9 @@ public class AttribTokeniser {
 
 			while ((ch = getChar()) != -1 && Character.isDigit((char)ch))
 				builder.append((char)ch);
-			ungetChar(ch);
 		}
+
+		ungetChar(ch);
 
 		try {
 			final double d = Double.parseDouble(builder.toString());
