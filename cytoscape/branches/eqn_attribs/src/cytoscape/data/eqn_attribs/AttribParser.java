@@ -35,6 +35,7 @@ public class AttribParser {
 	final AttribTokeniser tokeniser;
 
 	public AttribParser(final String eqn) {
+System.err.println("About to parse \"" + eqn + "\"");
 		if (eqn == null)
 			throw new NullPointerException("equation string must not be null!");
 
@@ -118,7 +119,9 @@ System.err.println("Entering parsePower("+level+")");
 		parseFactor(level);
 
 		final AttribToken token = tokeniser.getToken();
+System.err.println("in parsePower("+level+"), token seen after call to parseFactor() is "+token);
 		if (token == AttribToken.CARET) {
+System.err.println("in parsePower, seen '^'");
 			parsePower(level);
 		}
 		else {
@@ -137,6 +140,7 @@ System.err.println("Entering parseFactor("+level+")");
 
 		// 1. a constant
 		if (token == AttribToken.INTEGER_CONSTANT || token == AttribToken.FLOAT_CONSTANT || token == AttribToken.STRING_CONSTANT) {
+System.err.println("in parseFactor: seen " + token);
 
 			return;
 		}
