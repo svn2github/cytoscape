@@ -123,17 +123,15 @@ CREATE TABLE theme_plugin (
   PRIMARY KEY (theme_plugin_auto_id)
 );
 
-
 CREATE TABLE description_words (
-  word_id int(11) NOT NULL,
+  word_id int(11) NOT NULL auto_increment,
   word varchar(100) NOT NULL,
   plugin_count int,
   PRIMARY KEY  (word_id)
 );
 
-
 CREATE TABLE description_word_link (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL auto_increment,
   word_id int NOT NULL,
   plugin_id int NOT NULL,
   frequency float,
