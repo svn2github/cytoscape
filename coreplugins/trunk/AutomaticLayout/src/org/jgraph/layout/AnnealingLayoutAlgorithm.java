@@ -396,6 +396,7 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
 	 */
 	public void run(JGraph graph, Object[] dynamic_cells, Object[] static_cells) {
 		isRunning = true;
+		canceled = false;
 		setAllowedToRun(true);
 		setProgress(1);
 
@@ -735,9 +736,10 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
 					setPosition(sequence[i], config[sequence[i]].x, config[sequence[i]].y);
 				}
 
-				setProgress((int) (((double) ((round * applyCellList.size() * triesPerCell)
-				                   + (i * triesPerCell) + j) / (double) (maxRounds * applyCellList
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .size() * triesPerCell)) * (100.0)));
+				double stepSize = applyCellList.size() * triesPerCell;
+				setProgress((int) (((double) ((round * stepSize)
+				                   + (i * triesPerCell) + j) / 
+				                   (double) ((maxRounds+1) * stepSize)) * (100.0)));
 
 				if (!isAllowedToRun())
 					break;

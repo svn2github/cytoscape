@@ -286,7 +286,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		Iterator node_iterator = perspective.nodesIterator();
 		Iterator edge_iterator = perspective.edgesIterator();
 
-		taskMonitor.setStatus("Executing Layout");
+		taskMonitor.setStatus("Initializing");
 		taskMonitor.setPercentCompleted((int) currentProgress);
 
 		// Construct Model and Graph
@@ -301,9 +301,9 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		Set cells = new HashSet();
 
 		// update progress bar
-		currentProgress = 20;
+		currentProgress = 1;
 		taskMonitor.setPercentCompleted((int) currentProgress);
-		percentProgressPerIter = 20 / (double) (networkView.getNodeViewCount());
+		percentProgressPerIter = 49 / (double) (networkView.getNodeViewCount());
 
 		// create Vertices
 		while (node_iterator.hasNext() && !canceled) {
@@ -331,7 +331,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		}
 
 		// update progress bar
-		percentProgressPerIter = 20 / (double) (networkView.getEdgeViewCount());
+		percentProgressPerIter = 49 / (double) (networkView.getEdgeViewCount());
 
 		while (edge_iterator.hasNext() && !canceled) {
 			giny.model.Edge giny = (giny.model.Edge) edge_iterator.next();
@@ -368,6 +368,9 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 			taskMonitor.setPercentCompleted((int) currentProgress);
 		}
 
+		taskMonitor.setStatus("Executing Algorithm");
+		taskMonitor.setPercentCompleted((int) 0);
+		layout.setTaskMonitor(taskMonitor);
 		layout.run(graph, cells.toArray());
 
 		GraphLayoutCache cache = graph.getGraphLayoutCache();
@@ -375,13 +378,13 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		CellView[] cellViews = graph.getGraphLayoutCache()
 		                            .getAllDescendants(graph.getGraphLayoutCache().getRoots());
 
-		currentProgress = 80;
-		taskMonitor.setPercentCompleted((int) currentProgress);
-		percentProgressPerIter = 20 / (double) (cellViews.length);
-
 		if (canceled)
 			return;
 
+		taskMonitor.setStatus("Updating View");
+		currentProgress = 1;
+		taskMonitor.setPercentCompleted((int) currentProgress);
+		percentProgressPerIter = 100 / (double) (cellViews.length);
 		for (int i = 0; i < cellViews.length; i++) {
 			CellView cell_view = cellViews[i];
 

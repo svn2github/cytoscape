@@ -163,8 +163,15 @@ public abstract class JGraphLayoutAlgorithm {
 	public void setProgress(int progress) {
 		this.progress = progress;
 
-		if (taskMonitor != null)
+		if (taskMonitor != null) {
+			if (progress > 100) 
+				progress = 100;
+			else if (progress < 1)
+				progress = 1;
+
 			taskMonitor.setPercentCompleted((int) progress);
+			Thread.yield();
+		}
 	}
 
 	/**

@@ -539,8 +539,7 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 		// See if we're already traversed this node -- might have a loop
 		if (nodesSeen.containsKey(node)) {
-			// throw new RuntimeException("Detected loop in graph!");
-			return;
+			throw new RuntimeException("Detected loop in graph!");
 		} else {
 			nodesSeen.put(node, node);
 		}
