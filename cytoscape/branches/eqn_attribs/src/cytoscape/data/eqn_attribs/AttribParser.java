@@ -44,7 +44,7 @@ public class AttribParser {
 
 	public boolean parse() {
 		try {
-			parseE();
+			parseExpr(0);
 			final AttribToken token = tokeniser.getToken();
 			if (token != AttribToken.EOS)
 				throw new IllegalStateException("premature end of expression!");
@@ -57,10 +57,12 @@ public class AttribParser {
 	}
 
 	/**
-	 *   Implements E --> P {op P}.
+	 *   Implements expr --> term | term {+ term } | term {- term} .
 	 */
-	private void parseE() {
-		parseP();
+	private void parseExpr(int level) {
+		level += 1;
+System.err.println("Entering parseExpr("+level+")");
+		parseTerm(level);
 
 		for (;;) {
 			final AttribToken token = tokeniser.getToken();
@@ -69,11 +71,8 @@ public class AttribParser {
 				return;
 			}
 
-			if (token == AttribToken.PLUS || token == AttribToken.MINUS
-			    || token == AttribToken.MUL || token == AttribToken.DIV
-			    || token == AttribToken.CARET)
-			{
-				parseP();
+			if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
+				parseTerm(level);
 			}
 			else if (token == AttribToken.EQUAL || token == AttribToken.NOT_EQUAL
 				 || token == AttribToken.GREATER_THAN
@@ -81,7 +80,7 @@ public class AttribParser {
 				 || token == AttribToken.GREATER_OR_EQUAL
 				 || token == AttribToken.LESS_OR_EQUAL)
 			{
-				parseP();
+				parseTerm(level);
 				return; // Only one trip through the loop for comparison operators!
 			} else {
 				tokeniser.ungetToken(token);
@@ -91,33 +90,82 @@ public class AttribParser {
 	}
 
 	/**
-	 *  Implements P --> const | attrib_ref | "(" E ")" | "-" P | function_call
+	 *  Implements term --> power {* power} | power {/ power}
 	 */
-	private void parseP() {
+	private void parseTerm(int level) {
+		level += 1;
+System.err.println("Entering parseTerm("+level+")");
+		parsePower(level);
+
+		for (;;) {
+			final AttribToken token = tokeniser.getToken();
+			if (token == AttribToken.MUL || token == AttribToken.DIV) {
+				parsePower(level);
+			}
+			else {
+				tokeniser.ungetToken(token);
+				return;
+			}
+		}
+	}
+
+	/**
+	 *  Implements power --> factor | factor ^ power
+	 */
+	private void parsePower(int level) {
+		level += 1;
+System.err.println("Entering parsePower("+level+")");
+		parseFactor(level);
+
+		final AttribToken token = tokeniser.getToken();
+		if (token == AttribToken.CARET) {
+			parsePower(level);
+		}
+		else {
+			tokeniser.ungetToken(token);
+			return;
+		}
+	}
+
+	/**
+	 *  Implements factor --> const | attrib_ref | "(" E ")" | "-" P | function_call
+	 */
+	private void parseFactor(int level) {
+		level += 1;
+System.err.println("Entering parseFactor("+level+")");
 		AttribToken token = tokeniser.getToken();
 
 		// 1. a constant
-		if (token == AttribToken.INTEGER_CONSTANT || token == AttribToken.FLOAT_CONSTANT || token == AttribToken.STRING_CONSTANT)
+		if (token == AttribToken.INTEGER_CONSTANT || token == AttribToken.FLOAT_CONSTANT || token == AttribToken.STRING_CONSTANT) {
+
 			return;
+		}
 
 		// 2. an attribute reference
 		if (token == AttribToken.DOLLAR) {
 			token = tokeniser.getToken();
+System.err.println("in parseFactor: seen DOLLAR followed by " + token);
 			if (token != AttribToken.IDENTIFIER)
 				throw new IllegalStateException("identifier expected!");
+
+			return;
 		}
 
 		// 3. a parenthesised expression
 		if (token == AttribToken.OPEN_PAREN) {
-			parseE();
+			parseExpr(level);
 			token = tokeniser.getToken();
 			if (token != AttribToken.CLOSE_PAREN)
 				throw new IllegalStateException("'(' expected!");
+
+			return;
 		}
 
 		// 4. a unary operator
 		if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
-			parseP();
+			parseFactor(level);
+
+			return;
 		}
 
 		// 5. function call
@@ -134,7 +182,7 @@ public class AttribParser {
 
 			// Parse the comma-separated argument list.
 			for (int arg_no = 0; arg_no < arity; ++arg_no) {
-				parseE();
+				parseExpr(level);
 				if (arg_no < arity - 1) {
 					token = tokeniser.getToken();
 					if (token != AttribToken.COMMA)
@@ -145,6 +193,8 @@ public class AttribParser {
 			token = tokeniser.getToken();
 			if (token != AttribToken.CLOSE_PAREN)
 				throw new IllegalStateException("expected the closing parenthesis of a function call!");
+
+			return;
 		}
 	}
 }

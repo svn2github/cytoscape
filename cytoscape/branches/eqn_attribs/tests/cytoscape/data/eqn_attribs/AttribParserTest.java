@@ -36,9 +36,26 @@ import junit.framework.*;
  *
  */
 public class AttribParserTest extends TestCase {
-	public void testParser1() throws Exception {
-		final AttribParser parser = new AttribParser("1 + 2 - 3 + 17.3 * ($A + 16)");
+	public void testSimpleExpr() throws Exception {
+		final AttribParser parser = new AttribParser("42 - 12 + 3 * (4 - 2) + $BOB");
+		assertTrue(parser.parse());
+	}
 
+	public void testUnaryPlusAndMinus() throws Exception {
+		final AttribParser parser1 = new AttribParser("-17.8E-14");
+		assertTrue(parser1.parse());
+
+		final AttribParser parser2 = new AttribParser("+($attr1 + $attr2)");
+		assertTrue(parser2.parse());
+	}
+
+	public void testFunctionCall() throws Exception {
+		final AttribParser parser = new AttribParser("42 + log(4 - 2)");
+		assertTrue(parser.parse());
+	}
+
+	public void testExponentiation() throws Exception {
+		final AttribParser parser = new AttribParser("2^3^4 - 0.0002");
 		assertTrue(parser.parse());
 	}
 }
