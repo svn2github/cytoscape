@@ -30,37 +30,37 @@
 package cytoscape.data.eqn_attribs;
 
 import junit.framework.*;
+import cytoscape.data.eqn_attribs.builtins.*;
 
 
 public class AttribParserTest extends TestCase {
+	private final AttribParser parser = new AttribParser();
+
+	protected void setUp() throws Exception {
+		parser.registerFunction(new And());
+		parser.registerFunction(new Or());
+		parser.registerFunction(new Log());
+	}
+
 	public void testSimpleExpr() throws Exception {
-		final AttribParser parser = new AttribParser();
-		assertTrue(parser.parse("42 - 12 + 3 * (4 - 2) + $BOB"));
+		assertTrue(parser.parse("=42 - 12 + 3 * (4 - 2) + $BOB"));
 	}
 
 	public void testUnaryPlusAndMinus() throws Exception {
-		final AttribParser parser1 = new AttribParser();
-		assertTrue(parser1.parse("-17.8E-14"));
-
-		final AttribParser parser2 = new AttribParser();
-		assertTrue(parser2.parse("+($attr1 + $attr2)"));
+		assertTrue(parser.parse("=-17.8E-14"));
+		assertTrue(parser.parse("=+($attr1 + $attr2)"));
 	}
 
 	public void testFunctionCall() throws Exception {
-		final AttribParser parser = new AttribParser();
-		assertTrue(parser.parse("42 + log(4 - 2)"));
+		assertTrue(parser.parse("=42 + log(4 - 2)"));
 	}
 
 	public void testExponentiation() throws Exception {
-		final AttribParser parser = new AttribParser();
-		assertTrue(parser.parse("2^3^4 - 0.0002"));
+		assertTrue(parser.parse("=2^3^4 - 0.0002"));
 	}
 
 	public void testComparisons() throws Exception {
-		final AttribParser parser1 = new AttribParser();
-		assertTrue(parser1.parse("$x <= $y"));
-
-		final AttribParser parser2 = new AttribParser();
-		assertTrue(parser2.parse("-15.4^3 > $limit"));
+		assertTrue(parser.parse("=$x <= $y"));
+		assertTrue(parser.parse("=-15.4^3 > $limit"));
 	}
 }

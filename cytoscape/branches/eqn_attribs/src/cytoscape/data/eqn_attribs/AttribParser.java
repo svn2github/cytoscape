@@ -37,6 +37,7 @@ public class AttribParser {
 	private String eqn;
 	private AttribTokeniser tokeniser;
 	private HashMap<String, AttribFunction> nameToFunctionMap;
+	private String lastErrorMessage;
 
 	public AttribParser() {
 		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
@@ -68,12 +69,19 @@ public class AttribParser {
 		nameToFunctionMap.put(funcName, func);
 	}
 
+	/**
+	 *  @param A valid attribute equation which must start with an equal sign
+	 *  @returns true if the parse succeeded otherwise false
+	 */
 	public boolean parse(final String eqn) {
 		if (eqn == null)
 			throw new NullPointerException("equation string must not be null!");
+		if (eqn.length() < 1 || eqn.charAt(0) != '=')
+			throw new NullPointerException("equation string must start with an equal sign!");
 
 		this.eqn = eqn;
-		this.tokeniser = new AttribTokeniser(eqn);
+		this.tokeniser = new AttribTokeniser(eqn.substring(1));
+		this.lastErrorMessage = null;
 
 		try {
 			parseExpr(0);
@@ -81,10 +89,19 @@ public class AttribParser {
 			if (token != AttribToken.EOS)
 				throw new IllegalStateException("premature end of expression!");
 		} catch (final IllegalStateException e) {
+			lastErrorMessage = e.getMessage();
 			return false;
 		}
-		System.out.println("Whoohoo!");
+
 		return true;
+	}
+
+	/**
+	 *  If parse() failed, this will return the last error messages.
+	 *  @returns the last error message of null
+	 */
+	public String getErrorMsg() {
+		return lastErrorMessage;
 	}
 
 	/**
