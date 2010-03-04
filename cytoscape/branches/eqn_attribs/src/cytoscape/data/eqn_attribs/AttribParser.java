@@ -91,6 +91,12 @@ public class AttribParser {
 		} catch (final IllegalStateException e) {
 			lastErrorMessage = e.getMessage();
 			return false;
+		} catch (final ArithmeticException e) {
+			lastErrorMessage = e.getMessage();
+			return false;
+		} catch (final IllegalArgumentException e) {
+			lastErrorMessage = e.getMessage();
+			return false;
 		}
 
 		return true;
@@ -166,14 +172,12 @@ public class AttribParser {
 		if (token == AttribToken.CARET) {
 			parsePower(level);
 		}
-		else {
+		else
 			tokeniser.ungetToken(token);
-			return;
-		}
 	}
 
 	/**
-	 *  Implements factor --> const | attrib_ref | "(" E ")" | "-" P | function_call
+	 *  Implements factor --> const | attrib_ref | "(" E ")" | "-" P | func_call
 	 */
 	private void parseFactor(int level) {
 		level += 1;
@@ -213,32 +217,63 @@ public class AttribParser {
 
 		// 5. function call
 		if (token == AttribToken.IDENTIFIER) {
-			final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
-			final AttribFunction func = nameToFunctionMap.get(functionNameCandidate);
-			if (func == null)
-				throw new IllegalStateException("call to unknown function " + functionNameCandidate+ "()!");
+			tokeniser.ungetToken(token);
+			parseFunctionCall(level);
+		}
+	}
 
-			final int arity = 1;
+	/**
+	 *   Implements func_call --> ident "(" ")" | ident "(" expr {"," expr} ")".
+	 */
+	private void parseFunctionCall(int level) {
+		level += 1;
+		AttribToken token = tokeniser.getToken();
+		if (token != AttribToken.IDENTIFIER)
+			throw new IllegalStateException();
 
+		final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
+		final AttribFunction func = nameToFunctionMap.get(functionNameCandidate);
+		if (func == null)
+			throw new IllegalStateException("call to unknown function " + functionNameCandidate + "()!");
+
+		final Object[] argTypes = func.getParameterTypes();
+		final boolean varargs = func.getMinNumberOfArgsForVariableArity() > -1;
+		final int minArity, maxArity;
+		if (varargs) {
+			minArity = func.getMinNumberOfArgsForVariableArity();
+			maxArity = func.getMaxNumberOfArgsForVariableArity();
+		} else
+			minArity = maxArity = argTypes.length;
+
+		token = tokeniser.getToken();
+		if (token != AttribToken.OPEN_PAREN)
+			throw new IllegalStateException("expected '(' after function name \"" + functionNameCandidate + "\"!");
+
+		// Parse the comma-separated argument list.
+		int argCount = 0;
+		for (;;) {
 			token = tokeniser.getToken();
-			if (token != AttribToken.OPEN_PAREN)
-				throw new IllegalStateException("expected '(' after function name \"" + functionNameCandidate + "\"!");
+			if (token ==  AttribToken.CLOSE_PAREN)
+				break;
 
-			// Parse the comma-separated argument list.
-			for (int arg_no = 0; arg_no < arity; ++arg_no) {
-				parseExpr(level);
-				if (arg_no < arity - 1) {
-					token = tokeniser.getToken();
-					if (token != AttribToken.COMMA)
-						throw new IllegalStateException("expected a comman in a function argument list, found: " + token + "!");
-				}
-			}
-
-			token = tokeniser.getToken();
-			if (token != AttribToken.CLOSE_PAREN)
+			++argCount;
+			if (argCount > maxArity)
 				throw new IllegalStateException("expected the closing parenthesis of a function call!");
 
-			return;
+			tokeniser.ungetToken(token);
+			parseExpr(level);
+
+			token = tokeniser.getToken();
+			if (token != AttribToken.COMMA)
+				break;
 		}
+
+		if (token != AttribToken.CLOSE_PAREN)
+			throw new IllegalStateException("expected the closing parenthesis of a function call!");
+
+		if (argCount < minArity)
+			throw new IllegalStateException("too few arguments in a call to " + functionNameCandidate + "()!");
+
+		return;
 	}
 }

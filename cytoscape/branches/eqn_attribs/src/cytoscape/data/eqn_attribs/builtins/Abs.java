@@ -1,5 +1,5 @@
 /*
-  File: And.java
+  File: Abs.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,52 +32,48 @@ package cytoscape.data.eqn_attribs.builtins;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
-public class And implements AttribFunction {
+public class Abs implements AttribFunction {
 	/**
-	 *  Used to parse the function string.
+	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @returns the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "AND"; }
+	public String getName() { return "ABS"; }
 
 	/**
 	 *  @returns the list of argument types for this function
 	 */
-	public Class[] getParameterTypes() { return new Class[] { Boolean.class }; }
+	public Class[] getParameterTypes() { return new Class[] { Double.class }; }
  
 	/**
-	 *  @returns the return type of the AND() built-in function.
+	 *  Used to define the function's return type. 
+	 *  @returns Double.getCLass()
 	 */
-	public Class getReturnType() { return Boolean.class; }
+	public Class getReturnType() { return Double.class; }
 
 	/**
-	 *  @returns the minimum number of args for this function.
+	 *  @returns -1 indicating that this is not a varargs function
 	 */
-	public int getMinNumberOfArgsForVariableArity() { return 1; /* Like Excel™ */ }
+	public int getMinNumberOfArgsForVariableArity() { return -1; }
 
 	/**
-	 *  @returns the maximum number of args for this function.
+	 *  @returns -1 indicating that this is not a varargs function
 	 */
-	public int getMaxNumberOfArgsForVariableArity() { return Integer.MAX_VALUE; }
+	public int getMaxNumberOfArgsForVariableArity() { return -1; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ AND function.\nCall this with \"AND(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
+	public String getHelpDescription() { return "Attempts to emulate the Excel™ ABS function.\nCall this with \"ABS(number)\""; }
 
 	/**
-	 *  @param args the function arguments which must all be of type Boolean
-	 *  @returns the result of the function evaluation which is either true or false
-	 *  @throws ArithmeticException this can never happen
+	 *  @param args the function arguments which must be either one or two objects of type Double
+	 *  @returns the result of the function evaluation which is the natural logarithm of the first argument
+	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		// Now evaluate the function.
-		for (final Object arg : args) {
-			if (!(Boolean)arg)
-				return false;
-		}
-
-		return true;
+		final double number = (Double)args[0];
+		return Math.abs(number);
 	}
 }

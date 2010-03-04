@@ -40,8 +40,6 @@ public class Log implements AttribFunction {
 	public String getName() { return "LOG"; }
 
 	/**
-	 *  Used to parse the function parameters.  The only entries that are allowed in the returned
-	 *  array are Long.class, Double.getCLass(), String.class, or Boolean.class.
 	 *  @returns the list of argument types for this function
 	 */
 	public Class[] getParameterTypes() { return new Class[] { Double.class }; }

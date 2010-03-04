@@ -40,6 +40,7 @@ public class AttribParserTest extends TestCase {
 		parser.registerFunction(new And());
 		parser.registerFunction(new Or());
 		parser.registerFunction(new Log());
+		parser.registerFunction(new Abs());
 	}
 
 	public void testSimpleExpr() throws Exception {
@@ -62,5 +63,18 @@ public class AttribParserTest extends TestCase {
 	public void testComparisons() throws Exception {
 		assertTrue(parser.parse("=$x <= $y"));
 		assertTrue(parser.parse("=-15.4^3 > $limit"));
+	}
+
+	public void testVarargs() throws Exception {
+		assertFalse(parser.parse("=LOG()"));
+		assertTrue(parser.parse("=LOG(1)"));
+		assertTrue(parser.parse("=LOG(1,2)"));
+		assertFalse(parser.parse("=LOG(1,2,3)"));
+	}
+
+	public void testFixedargs() throws Exception {
+		assertFalse(parser.parse("=ABS()"));
+		assertTrue(parser.parse("=ABS(1)"));
+		assertFalse(parser.parse("=ABS(1,2)"));
 	}
 }
