@@ -46,11 +46,14 @@ public class AttribParser {
 		// Sanity check for functions with varargs.
 		if (func.getMinNumberOfArgsForVariableArity() > -1 && func.getParameterTypes().length != 1)
 			throw new IllegalArgumentException("functions can't have varargs and specify anything but a single argument type!");
+		if (func.getMinNumberOfArgsForVariableArity() > -1
+		    && func.getMinNumberOfArgsForVariableArity() >= func.getMaxNumberOfArgsForVariableArity())
+			throw new IllegalArgumentException("functions can't have varargs and specify a min. number of args >= max. number of args!");
 
 		// Sanity check for the parameter types of a function.
 		for (final Class c : func.getParameterTypes()) {
-			if (c != Integer.class && c != Double.class && c != Boolean.class && c != String.class)
-				throw new IllegalArgumentException("function arguments must be of type Integer, Double, Boolean, or String!");
+			if (c != Long.class && c != Double.class && c != Boolean.class && c != String.class)
+				throw new IllegalArgumentException("function arguments must be of type Long, Double, Boolean, or String!");
 		}
 
 		// Sanity check for the name of the function.

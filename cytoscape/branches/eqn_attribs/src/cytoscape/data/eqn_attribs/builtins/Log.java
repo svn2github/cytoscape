@@ -1,5 +1,5 @@
 /*
-  File: Or.java
+  File: Log.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,53 +32,62 @@ package cytoscape.data.eqn_attribs.builtins;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
-public class Or implements AttribFunction {
+public class Log implements AttribFunction {
 	/**
-	 *  Used to parse the function string.
+	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @returns the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "OR"; }
+	public String getName() { return "LOG"; }
 
 	/**
 	 *  Used to parse the function parameters.  The only entries that are allowed in the returned
-	 *  array are Integer.class, Double.getCLass(), String.class, or Boolean.class.
+	 *  array are Long.class, Double.getCLass(), String.class, or Boolean.class.
 	 *  @returns the list of argument types for this function
 	 */
-	public Class[] getParameterTypes() { return new Class[] { Boolean.class }; }
+	public Class[] getParameterTypes() { return new Class[] { Double.class }; }
  
 	/**
-	 *  @returns the return type of the OR() built-in function.
+	 *  Used to define the function's return type. 
+	 *  @returns Double.getCLass()
 	 */
-	public Class getReturnType() { return Boolean.class; }
+	public Class getReturnType() { return Double.class; }
 
 	/**
-	 *  @returns the minimum number of args for this function.
+	 *  @returns 1
 	 */
-	public int getMinNumberOfArgsForVariableArity() { return 1; /* Like Excel™ */ }
+	public int getMinNumberOfArgsForVariableArity() { return 1; }
 
 	/**
-	 *  @returns the maximum number of args for this function.
+	 *  @returns 2
 	 */
-	public int getMaxNumberOfArgsForVariableArity() { return Integer.MAX_VALUE; }
+	public int getMaxNumberOfArgsForVariableArity() { return 2; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ OR function.\nCall this with \"OR(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
+	public String getHelpDescription() { return "Attempts to emulate the Excel™ LOG function.\nCall this with \"LOG(number [, base])\""; }
 
 	/**
-	 *  @param args the function arguments which must all be of type Boolean
-	 *  @returns the result of the function evaluation which is either true or false
-	 *  @throws ArithmeticException this can never happen
+	 *  @param args the function arguments which must be either one or two objects of type Double
+	 *  @returns the result of the function evaluation which is the natural logarithm of the first argument
+	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		for (final Object arg : args) {
-			if ((Boolean)arg)
-				return true;
-		}
+		final double number = (Double)args[0];
+		final double base = args.length == 2 ? (Double)args[1] : 10.0;
 
-		return false;
+		if (number <= 0.0)
+			throw new IllegalArgumentException("LOG() called with a number <= 0.0!");
+
+		if (base <= 0.0)
+			throw new IllegalArgumentException("LOG() called with a base <= 0.0!");
+
+		double retval = Math.log10(number);
+		if (base != 10.0)
+			retval /= Math.log10(base);
+
+		return retval;
 	}
 }

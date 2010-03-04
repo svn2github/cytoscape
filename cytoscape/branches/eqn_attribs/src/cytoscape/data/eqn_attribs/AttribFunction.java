@@ -39,28 +39,38 @@ public interface AttribFunction {
 
 	/**
 	 *  Used to parse the function parameters.  The only entries that are allowed in the returned
-	 *  array are Integer.class, Double.getCLass(), String.class, or Boolean.class.
+	 *  array are Long.class, Double.getCLass(), String.class, or Boolean.class.
 	 *  @returns the list of argument types for this function
 	 */
 	Class[] getParameterTypes();
  
 	/**
 	 *  Used to define the function's return type. 
-	 *  @returns must be Integer.class, Double.getCLass(), String.class, or Boolean.class.
+	 *  @returns must be Long.class, Double.getCLass(), String.class, or Boolean.class.
 	 */
 	Class getReturnType();
 
 	/**
 	 *  This confunsingly named method should return -1 if the function cannot take a variable
 	 *  number of arguments.  If the function can take a variable number of arguments this method
-	 *  should return the minimum number of arguments.  (N.B., there is no maximum.)  In the case
-	 *  of a variable number of arguments getParameterTypes() must return an array with a single
-	 *  entry which will then be used to validate all parameters.  This implies of course that it
-	 *  is impossible to define a function with a variable number of arguments where the
-	 *  arguments may have differing types.
+	 *  should return the minimum number of arguments.  In the case of a variable number of
+	 *  arguments getParameterTypes() must return an array with a single entry which will then be
+	 *  used to validate all parameters.  This implies of course that it is impossible to define
+	 *  a function with a variable number of arguments where the arguments may have differing types.
 	 *  @returns the minimum number of args for a vararg function or -1 if the function may not have a variable number of args
 	 */
 	int getMinNumberOfArgsForVariableArity();
+
+	/**
+	 *  This confunsingly named method should return -1 if the function cannot take a variable
+	 *  number of arguments.  If the function can take a variable number of arguments this method
+	 *  should return the maximum number of arguments.  In the case of a variable number of
+	 *  arguments getParameterTypes() must return an array with a single entry which will then be
+	 *  used to validate all parameters.  This implies of course that it is impossible to define
+	 *  a function with a variable number of arguments where the arguments may have differing types.
+	 *  @returns the maximum number of args for a vararg function or -1 if the function may not have a variable number of args
+	 */
+	int getMaxNumberOfArgsForVariableArity();
 
 	/**
 	 *  Used to provide help for users.
@@ -76,5 +86,5 @@ public interface AttribFunction {
 	 *  @throws IllegalArgumentException thrown for any error that is not a numeric error, for example if a function only accepts positive
 	 *  numbers and a negative number was passed in.
 	 */
-	Object evaluateFunction(Object... args) throws IllegalArgumentException, ArithmeticException;
+	Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException;
 }

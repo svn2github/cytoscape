@@ -57,6 +57,11 @@ public class And implements AttribFunction {
 	public int getMinNumberOfArgsForVariableArity() { return 1; /* Like Excel™ */ }
 
 	/**
+	 *  @returns the maximum number of args for this function.
+	 */
+	public int getMaxNumberOfArgsForVariableArity() { return Integer.MAX_VALUE; }
+
+	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
@@ -68,15 +73,7 @@ public class And implements AttribFunction {
 	 *  @throws ArithmeticException this can never happen
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
-	public Object evaluateFunction(Object... args) throws IllegalArgumentException, ArithmeticException {
-		// Check argument types first.
-		int argNo = 0;
-		for (final Object arg : args) {
-			++argNo;
-			if (arg.getClass() != Boolean.class)
-				throw new IllegalArgumentException(argNo + ". argument of AND() ist not of type Boolean!");
-		}
-
+	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		// Now evaluate the function.
 		for (final Object arg : args) {
 			if (!(Boolean)arg)
