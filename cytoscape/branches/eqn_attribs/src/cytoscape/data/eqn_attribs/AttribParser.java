@@ -30,27 +30,54 @@
 package cytoscape.data.eqn_attribs;
 
 
-public class AttribParser {
-	final String eqn;
-	final AttribTokeniser tokeniser;
+import java.util.HashMap;
 
-	public AttribParser(final String eqn) {
-System.err.println("About to parse \"" + eqn + "\"");
+
+public class AttribParser {
+	private String eqn;
+	private AttribTokeniser tokeniser;
+	private HashMap<String, AttribFunction> nameToFunctionMap;
+
+	public AttribParser() {
+		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
+	}
+
+	public void registerFunction(final AttribFunction func) throws IllegalArgumentException {
+		// Sanity check for functions with varargs.
+		if (func.getMinNumberOfArgsForVariableArity() > -1 && func.getParameterTypes().length != 1)
+			throw new IllegalArgumentException("functions can't have varargs and specify anything but a single argument type!");
+
+		// Sanity check for the parameter types of a function.
+		for (final Class c : func.getParameterTypes()) {
+			if (c != Integer.class && c != Double.class && c != Boolean.class && c != String.class)
+				throw new IllegalArgumentException("function arguments must be of type Integer, Double, Boolean, or String!");
+		}
+
+		// Sanity check for the name of the function.
+		final String funcName = func.getName().toUpperCase();
+		if (funcName == null || funcName.equals(""))
+			throw new IllegalArgumentException("empty or missing function name!");
+
+		// Sanity check to catch duplicate function registrations.
+		if (nameToFunctionMap.get(funcName) != null)
+			throw new IllegalArgumentException("attempt at registering " + funcName + "() twice!");
+
+		nameToFunctionMap.put(funcName, func);
+	}
+
+	public boolean parse(final String eqn) {
 		if (eqn == null)
 			throw new NullPointerException("equation string must not be null!");
 
 		this.eqn = eqn;
-		tokeniser = new AttribTokeniser(eqn);
-	}
+		this.tokeniser = new AttribTokeniser(eqn);
 
-	public boolean parse() {
 		try {
 			parseExpr(0);
 			final AttribToken token = tokeniser.getToken();
 			if (token != AttribToken.EOS)
 				throw new IllegalStateException("premature end of expression!");
 		} catch (final IllegalStateException e) {
-			System.err.println("D'oh: " + e);
 			return false;
 		}
 		System.out.println("Whoohoo!");
@@ -62,7 +89,6 @@ System.err.println("About to parse \"" + eqn + "\"");
 	 */
 	private void parseExpr(int level) {
 		level += 1;
-System.err.println("Entering parseExpr("+level+")");
 		parseTerm(level);
 
 		for (;;) {
@@ -95,7 +121,6 @@ System.err.println("Entering parseExpr("+level+")");
 	 */
 	private void parseTerm(int level) {
 		level += 1;
-System.err.println("Entering parseTerm("+level+")");
 		parsePower(level);
 
 		for (;;) {
@@ -115,13 +140,10 @@ System.err.println("Entering parseTerm("+level+")");
 	 */
 	private void parsePower(int level) {
 		level += 1;
-System.err.println("Entering parsePower("+level+")");
 		parseFactor(level);
 
 		final AttribToken token = tokeniser.getToken();
-System.err.println("in parsePower("+level+"), token seen after call to parseFactor() is "+token);
 		if (token == AttribToken.CARET) {
-System.err.println("in parsePower, seen '^'");
 			parsePower(level);
 		}
 		else {
@@ -135,12 +157,10 @@ System.err.println("in parsePower, seen '^'");
 	 */
 	private void parseFactor(int level) {
 		level += 1;
-System.err.println("Entering parseFactor("+level+")");
 		AttribToken token = tokeniser.getToken();
 
 		// 1. a constant
 		if (token == AttribToken.INTEGER_CONSTANT || token == AttribToken.FLOAT_CONSTANT || token == AttribToken.STRING_CONSTANT) {
-System.err.println("in parseFactor: seen " + token);
 
 			return;
 		}
@@ -148,7 +168,6 @@ System.err.println("in parseFactor: seen " + token);
 		// 2. an attribute reference
 		if (token == AttribToken.DOLLAR) {
 			token = tokeniser.getToken();
-System.err.println("in parseFactor: seen DOLLAR followed by " + token);
 			if (token != AttribToken.IDENTIFIER)
 				throw new IllegalStateException("identifier expected!");
 
@@ -174,10 +193,11 @@ System.err.println("in parseFactor: seen DOLLAR followed by " + token);
 
 		// 5. function call
 		if (token == AttribToken.IDENTIFIER) {
-			final String functionNameCandidate = tokeniser.getIdent();
+			final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
+			final AttribFunction func = nameToFunctionMap.get(functionNameCandidate);
+			if (func == null)
+				throw new IllegalStateException("call to unknown function " + functionNameCandidate+ "()!");
 
-			// Need to look up the function name and, if it is a known function, determine its arity.
-			// For now, we assume that it has an arity of 1:
 			final int arity = 1;
 
 			token = tokeniser.getToken();
