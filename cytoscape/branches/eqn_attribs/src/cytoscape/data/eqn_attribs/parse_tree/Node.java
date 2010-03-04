@@ -1,5 +1,5 @@
 /*
-  File: BinOpNode.java
+  File: Node.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -29,40 +29,13 @@
 */
 package cytoscape.data.eqn_attribs.parse_tree;
 
-import cytoscape.data.eqn_attribs.AttribToken;
-import cytoscape.data.eqn_attribs.AttribTokeniser;
 
 /**
- *  A node in the parse tree representing a binary operator.
+ *  A node in the parse tree.
  */
-public class BinOpNode implements Node {
-	private final AttribToken operator;
-	private final Node lhs, rhs;
-
-	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs == null)
-			throw new IllegalArgumentException("left operand must nor be null!");
-		if (rhs == null)
-			throw new IllegalArgumentException("right operand must nor be null!");
-
-		this.operator = operator;
-		this.lhs = lhs;
-		this.rhs = rhs;
-	}
-
-	public String toString() { return "BinOpNode: " + operator; }
-
-	public Class getType() { return AttribTokeniser.isComparisonOperator(operator) ? Boolean.class : lhs.getClass(); }
-
-	/**
-	 *  @returns the left operand
-	 */
-	public Node getLeftChild() { return lhs; }
-
-	/**
-	 *  @returns the right operand
-	 */
-	public Node getRightChild() { return rhs; }
-
-	public AttribToken getOperator() { return operator; }
+public interface Node {
+	String toString(); // For debugging.
+	Class getType(); // The type of this node.
+	Node getLeftChild();
+	Node getRightChild();
 }

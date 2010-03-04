@@ -29,15 +29,17 @@
 */
 package cytoscape.data.eqn_attribs.parse_tree;
 
+import cytoscape.data.eqn_attribs.AttribToken;
+
 
 /**
  *  A node in the parse tree representing a unary operator application.
  */
 public class UnaryOpNode implements Node {
-	private final char operator;
+	private final AttribToken operator;
 	private final Node operand;
 
-	public UnaryOpNode(final char operator, final Node operand) {
+	public UnaryOpNode(final AttribToken operator, final Node operand) {
 		if (operand == null)
 			throw new IllegalArgumentException("operand must not be null!");
 
@@ -45,7 +47,7 @@ public class UnaryOpNode implements Node {
 		this.operand = operand;
 	}
 
-	public String toString() { return "UnaryOpNode: '" + operator + "'"; }
+	public String toString() { return "UnaryOpNode: " + operator; }
 
 	public Class getType() { return operand.getType(); }
 
@@ -59,5 +61,5 @@ public class UnaryOpNode implements Node {
 	 */
 	public Node getRightChild() { return null; }
 
-	public char getOperator() { return operator; }
+	public AttribToken getOperator() { return operator; }
 }

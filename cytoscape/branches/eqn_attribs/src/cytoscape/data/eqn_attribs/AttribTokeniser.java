@@ -33,32 +33,6 @@ import java.io.IOException;
 import java.io.StringReader;
 
 
-enum AttribToken {
-	STRING_CONSTANT,
-	FLOAT_CONSTANT,
-	INTEGER_CONSTANT,
-	IDENTIFIER,
-	OPEN_PAREN,
-	CLOSE_PAREN,
-	COLON,
-	CARET,
-	PLUS,
-	MINUS,
-	DIV,
-	MUL,
-	EQUAL,
-	NOT_EQUAL,
-	GREATER_THAN,
-	LESS_THAN,
-	GREATER_OR_EQUAL,
-	LESS_OR_EQUAL,
-	DOLLAR,
-	COMMA,
-	EOS,
-	ERROR
-}
-
-
 public class AttribTokeniser {
 	private AttribToken previousToken;
 	private StringReader reader;
@@ -200,6 +174,20 @@ public class AttribTokeniser {
 
 	public String getErrorMsg() {
 		return errorMsg;
+	}
+
+	public static boolean isComparisonOperator(final AttribToken token) {
+		switch (token) {
+		case EQUAL:
+		case NOT_EQUAL:
+		case GREATER_THAN:
+		case LESS_THAN:
+		case GREATER_OR_EQUAL:
+		case LESS_OR_EQUAL:
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	private int getChar() {

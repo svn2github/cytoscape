@@ -1,5 +1,5 @@
 /*
-  File: BinOpNode.java
+  File: AttribToken.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -27,42 +27,30 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs.parse_tree;
+package cytoscape.data.eqn_attribs;
 
-import cytoscape.data.eqn_attribs.AttribToken;
-import cytoscape.data.eqn_attribs.AttribTokeniser;
 
-/**
- *  A node in the parse tree representing a binary operator.
- */
-public class BinOpNode implements Node {
-	private final AttribToken operator;
-	private final Node lhs, rhs;
-
-	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs == null)
-			throw new IllegalArgumentException("left operand must nor be null!");
-		if (rhs == null)
-			throw new IllegalArgumentException("right operand must nor be null!");
-
-		this.operator = operator;
-		this.lhs = lhs;
-		this.rhs = rhs;
-	}
-
-	public String toString() { return "BinOpNode: " + operator; }
-
-	public Class getType() { return AttribTokeniser.isComparisonOperator(operator) ? Boolean.class : lhs.getClass(); }
-
-	/**
-	 *  @returns the left operand
-	 */
-	public Node getLeftChild() { return lhs; }
-
-	/**
-	 *  @returns the right operand
-	 */
-	public Node getRightChild() { return rhs; }
-
-	public AttribToken getOperator() { return operator; }
+public enum AttribToken {
+	STRING_CONSTANT,
+	FLOAT_CONSTANT,
+	INTEGER_CONSTANT,
+	IDENTIFIER,
+	OPEN_PAREN,
+	CLOSE_PAREN,
+	COLON,
+	CARET,
+	PLUS,
+	MINUS,
+	DIV,
+	MUL,
+	EQUAL,
+	NOT_EQUAL,
+	GREATER_THAN,
+	LESS_THAN,
+	GREATER_OR_EQUAL,
+	LESS_OR_EQUAL,
+	DOLLAR,
+	COMMA,
+	EOS,
+	ERROR
 }
