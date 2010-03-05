@@ -166,4 +166,28 @@ public class AttribTokeniserTest extends TestCase {
 		for (int i = 0; i < expectedTokens.length; ++i)
 			assertEquals(expectedTokens[i], actualTokens[i]);
 	}
+
+	public void testScanner4() throws Exception {
+		final AttribTokeniser tokeniser = new AttribTokeniser("true fred FALSE True");
+		final ArrayList<String> tokens = new ArrayList<String>();
+		String tokenAsString;
+		do {
+			tokenAsString = tokeniser.getTokenAsString();
+			tokens.add(tokenAsString);
+		} while (tokenAsString != "EOS");
+		final String[] actualTokens = new String[tokens.size()];
+		tokens.toArray(actualTokens);
+
+		final String[] expectedTokens = {
+			"BOOLEAN_CONSTANT: \"true\"",
+			"IDENTIFIER: \"fred\"",
+			"BOOLEAN_CONSTANT: \"false\"",
+			"BOOLEAN_CONSTANT: \"true\"",
+			"EOS"
+		};
+
+		assertEquals(expectedTokens.length, actualTokens.length);
+		for (int i = 0; i < expectedTokens.length; ++i)
+			assertEquals(expectedTokens[i], actualTokens[i]);
+	}
 }
