@@ -40,6 +40,7 @@ public class AttribTokeniser {
 	private long previousIntConstant, currentIntConstant;
 	private String previousIdent, currentIdent;
 	private double previousFloatConstant, currentFloatConstant;
+	private boolean previousBooleanConstant, currentBooleanConstant;
 	private String previousStringConstant, currentStringConstant;
 	private String errorMsg;
 	private int previousChar;
@@ -59,6 +60,7 @@ public class AttribTokeniser {
 
 			currentIntConstant = previousIntConstant;
 			currentFloatConstant = previousFloatConstant;
+			currentBooleanConstant = previousBooleanConstant;
 			currentStringConstant = previousStringConstant;
 			currentIdent = previousIdent;
 
@@ -76,6 +78,8 @@ public class AttribTokeniser {
 		switch (ch) {
 		case ':': return AttribToken.COLON;
 		case '^': return AttribToken.CARET;
+		case '{': return AttribToken.OPEN_BRACE;
+		case '}': return AttribToken.CLOSE_BRACE;
 		case '(': return AttribToken.OPEN_PAREN;
 		case ')': return AttribToken.CLOSE_PAREN;
 		case '+': return AttribToken.PLUS;
@@ -133,6 +137,7 @@ public class AttribTokeniser {
 		previousToken = token;
 		previousIntConstant = currentIntConstant;
 		previousFloatConstant = currentFloatConstant;
+		previousBooleanConstant = currentBooleanConstant;
 		previousStringConstant = currentStringConstant;
 		previousIdent = currentIdent;
 	}
@@ -149,6 +154,8 @@ public class AttribTokeniser {
 			return "INTEGER_CONSTANT: \"" + getIntConstant() + "\"";
 		if (token == AttribToken.FLOAT_CONSTANT)
 			return "FLOAT_CONSTANT: \"" + getFloatConstant() + "\"";
+		if (token == AttribToken.BOOLEAN_CONSTANT)
+			return "BOOLEAN_CONSTANT: \"" + getBooleanConstant() + "\"";
 		if (token == AttribToken.IDENTIFIER)
 			return "IDENTIFIER: \"" + getIdent() + "\"";
 		if (token == AttribToken.ERROR)
@@ -162,6 +169,10 @@ public class AttribTokeniser {
 
 	public double getFloatConstant() {
 		return currentFloatConstant;
+	}
+
+	public boolean getBooleanConstant() {
+		return currentBooleanConstant;
 	}
 
 	public long getIntConstant() {
@@ -346,6 +357,16 @@ public class AttribTokeniser {
 		ungetChar(ch);
 
 		currentIdent = builder.toString();
+
+		if (currentIdent.equalsIgnoreCase("TRUE")) {
+			currentBooleanConstant = true;
+			return AttribToken.BOOLEAN_CONSTANT;
+		}
+		if (currentIdent.equalsIgnoreCase("FALSE")) {
+			currentBooleanConstant = false;
+			return AttribToken.BOOLEAN_CONSTANT;
+		}
+
 		return AttribToken.IDENTIFIER;
 	}
 	
