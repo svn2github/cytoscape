@@ -79,9 +79,18 @@
   if (!($categories = @ mysql_query ($query, $connection))) 
      showerror();
   
-  echo "<p>The plugins on this page are categorized into <big><b>", @mysql_num_rows($categories), "</b></big> sections:</p>";
+  echo "<p>The plugins on this page are categorized into <big><b>", (@mysql_num_rows($categories)-1), "</b></big> sections:</p>";
   echo "\n<p>\n<big><b>Current Cytoscape 2.x plugins</b></big>\n</p>";
-		 
+  
+?>		 
+<form action="keywordsearch.php" method="post">
+  <label>
+  <input type="text" name="searchwords" size="30">
+   <input type="submit" name="Submit" value="Search">
+  </label>
+</form>
+<?php
+
   echo  "\n\n<A href=\"#\" onClick=\"expandTree('tree1'); return false;\">Expand All</A>&nbsp;&nbsp;&nbsp;".
 		"\n<A href=\"#\" onClick=\"collapseTree('tree1'); return false;\">Collapse All</A>&nbsp;&nbsp;&nbsp";
             	  
@@ -92,6 +101,9 @@
        while($category_row = @ mysql_fetch_array($categories))
        {
      	  $categoryName = $category_row["name"]; 
+		  if ($categoryName == "Core"){
+		  	continue;
+		  }
      	  $categoryDescription = $category_row["description"];
     	  $categoryID = $category_row["category_id"]; 
      	  echo "\n\t<li>";
