@@ -30,7 +30,9 @@
 package cytoscape.data.eqn_attribs;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import cytoscape.data.eqn_attribs.parse_tree.*;
 
 
 public class AttribParser {
@@ -38,9 +40,11 @@ public class AttribParser {
 	private AttribTokeniser tokeniser;
 	private HashMap<String, AttribFunction> nameToFunctionMap;
 	private String lastErrorMessage;
+	private Node parseTree;
 
 	public AttribParser() {
 		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
+		this.parseTree = null;
 	}
 
 	public void registerFunction(final AttribFunction func) throws IllegalArgumentException {
@@ -84,7 +88,7 @@ public class AttribParser {
 		this.lastErrorMessage = null;
 
 		try {
-			parseExpr(0);
+			parseTree = parseExpr(0);
 			final AttribToken token = tokeniser.getToken();
 			if (token != AttribToken.EOS)
 				throw new IllegalStateException("premature end of expression!");
@@ -111,21 +115,27 @@ public class AttribParser {
 	}
 
 	/**
+	 *  Only used for unit testing.
+	 */
+	Node getParseTree() { return parseTree; }
+
+	/**
 	 *   Implements expr --> term | term {+ term } | term {- term} .
 	 */
-	private void parseExpr(int level) {
+	private Node parseExpr(int level) {
 		level += 1;
-		parseTerm(level);
+		Node exprNode = parseTerm(level);
 
 		for (;;) {
 			final AttribToken token = tokeniser.getToken();
 			if (token == AttribToken.EOS) {
 				tokeniser.ungetToken(token);
-				return;
+				return exprNode;
 			}
 
 			if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
-				parseTerm(level);
+				final Node term = parseTerm(level);
+				exprNode = new BinOpNode(token, exprNode, term);
 			}
 			else if (token == AttribToken.EQUAL || token == AttribToken.NOT_EQUAL
 				 || token == AttribToken.GREATER_THAN
@@ -133,11 +143,11 @@ public class AttribParser {
 				 || token == AttribToken.GREATER_OR_EQUAL
 				 || token == AttribToken.LESS_OR_EQUAL)
 			{
-				parseTerm(level);
-				return; // Only one trip through the loop for comparison operators!
+				final Node term = parseTerm(level);
+				return new BinOpNode(token, exprNode, term); // Only one trip through the loop for comparison operators!
 			} else {
 				tokeniser.ungetToken(token);
-				return;
+				return exprNode;
 			}
 		}
 	}
@@ -145,18 +155,19 @@ public class AttribParser {
 	/**
 	 *  Implements term --> power {* power} | power {/ power}
 	 */
-	private void parseTerm(int level) {
+	private Node parseTerm(int level) {
 		level += 1;
-		parsePower(level);
+		Node termNode = parsePower(level);
 
 		for (;;) {
 			final AttribToken token = tokeniser.getToken();
 			if (token == AttribToken.MUL || token == AttribToken.DIV) {
-				parsePower(level);
+				final Node powerNode = parsePower(level);
+				termNode = new BinOpNode(token, termNode, powerNode);
 			}
 			else {
 				tokeniser.ungetToken(token);
-				return;
+				return termNode;
 			}
 		}
 	}
@@ -164,68 +175,113 @@ public class AttribParser {
 	/**
 	 *  Implements power --> factor | factor ^ power
 	 */
-	private void parsePower(int level) {
+	private Node parsePower(int level) {
 		level += 1;
-		parseFactor(level);
+		Node powerNode = parseFactor(level);
 
 		final AttribToken token = tokeniser.getToken();
 		if (token == AttribToken.CARET) {
-			parsePower(level);
+			final Node node1 = parsePower(level);
+			powerNode = new BinOpNode(token, powerNode, node1);
 		}
 		else
 			tokeniser.ungetToken(token);
+
+		return powerNode;
 	}
 
 	/**
 	 *  Implements factor --> const | attrib_ref | "(" E ")" | "-" P | func_call
 	 */
-	private void parseFactor(int level) {
+	private Node parseFactor(int level) {
 		level += 1;
 		AttribToken token = tokeniser.getToken();
 
 		// 1. a constant
-		if (token == AttribToken.INTEGER_CONSTANT || token == AttribToken.FLOAT_CONSTANT || token == AttribToken.STRING_CONSTANT) {
-
-			return;
+		if (token == AttribToken.INTEGER_CONSTANT || token == AttribToken.FLOAT_CONSTANT
+		    || token == AttribToken.STRING_CONSTANT || token == AttribToken.BOOLEAN_CONSTANT)
+		{
+			switch (token) {
+			case INTEGER_CONSTANT:
+				return new IntConstantNode(tokeniser.getIntConstant());
+			case FLOAT_CONSTANT:
+				return new FloatConstantNode(tokeniser.getFloatConstant());
+			case BOOLEAN_CONSTANT:
+				return new BooleanConstantNode(tokeniser.getBooleanConstant());
+			case STRING_CONSTANT:
+				return new StringConstantNode(tokeniser.getStringConstant());
+			}
 		}
 
 		// 2. an attribute reference
 		if (token == AttribToken.DOLLAR) {
 			token = tokeniser.getToken();
+			if (token != AttribToken.OPEN_BRACE)
+				throw new IllegalStateException("opening brace expected!");
+			token = tokeniser.getToken();
 			if (token != AttribToken.IDENTIFIER)
 				throw new IllegalStateException("identifier expected!");
+			token = tokeniser.getToken();
 
-			return;
+			// Do we have a default value?
+			Object defaultValue = null;
+			if (token == AttribToken.COLON) {
+				token = tokeniser.getToken();
+				if (token != AttribToken.INTEGER_CONSTANT && token != AttribToken.FLOAT_CONSTANT
+				    && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
+					throw new IllegalStateException("expected default value for attribute reference!");
+				switch (token) {
+				case INTEGER_CONSTANT:
+					defaultValue = new Long(tokeniser.getIntConstant());
+					break;
+				case FLOAT_CONSTANT:
+					defaultValue = new Double(tokeniser.getFloatConstant());
+					break;
+				case BOOLEAN_CONSTANT:
+					defaultValue = new Boolean(tokeniser.getBooleanConstant());
+					break;
+				case STRING_CONSTANT:
+					defaultValue = new String(tokeniser.getStringConstant());
+					break;
+				}
+				token = tokeniser.getToken();
+			}
+
+			if (token != AttribToken.CLOSE_BRACE)
+				throw new IllegalStateException("closeing brace expected!");
+
+			return new IdentNode(tokeniser.getIdent(), defaultValue);
 		}
 
 		// 3. a parenthesised expression
 		if (token == AttribToken.OPEN_PAREN) {
-			parseExpr(level);
+			final Node exprNode = parseExpr(level);
 			token = tokeniser.getToken();
 			if (token != AttribToken.CLOSE_PAREN)
 				throw new IllegalStateException("'(' expected!");
 
-			return;
+			return exprNode;
 		}
 
 		// 4. a unary operator
 		if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
-			parseFactor(level);
-
-			return;
+			final Node factor = parseFactor(level);
+			return new UnaryOpNode(token, factor);
 		}
 
 		// 5. function call
 		if (token == AttribToken.IDENTIFIER) {
 			tokeniser.ungetToken(token);
-			parseFunctionCall(level);
+			return parseFunctionCall(level);
 		}
+
+		throw new IllegalStateException("we should never get here!");
 	}
 
 	/**
 	 *   Implements func_call --> ident "(" ")" | ident "(" expr {"," expr} ")".
 	 */
-	private void parseFunctionCall(int level) {
+	private Node parseFunctionCall(int level) {
 		level += 1;
 		AttribToken token = tokeniser.getToken();
 		if (token != AttribToken.IDENTIFIER)
@@ -249,6 +305,7 @@ public class AttribParser {
 		if (token != AttribToken.OPEN_PAREN)
 			throw new IllegalStateException("expected '(' after function name \"" + functionNameCandidate + "\"!");
 
+		ArrayList<Node> args = new ArrayList<Node>();
 		// Parse the comma-separated argument list.
 		int argCount = 0;
 		for (;;) {
@@ -261,7 +318,7 @@ public class AttribParser {
 				throw new IllegalStateException("expected the closing parenthesis of a function call!");
 
 			tokeniser.ungetToken(token);
-			parseExpr(level);
+			args.add(parseExpr(level));
 
 			token = tokeniser.getToken();
 			if (token != AttribToken.COMMA)
@@ -274,6 +331,7 @@ public class AttribParser {
 		if (argCount < minArity)
 			throw new IllegalStateException("too few arguments in a call to " + functionNameCandidate + "()!");
 
-		return;
+		Node[] nodeArray = new Node[args.size()];
+		return new FuncCallNode(func, args.toArray(nodeArray));
 	}
 }
