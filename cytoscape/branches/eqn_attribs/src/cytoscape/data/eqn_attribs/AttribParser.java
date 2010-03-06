@@ -94,12 +94,15 @@ public class AttribParser {
 				throw new IllegalStateException("premature end of expression!");
 		} catch (final IllegalStateException e) {
 			lastErrorMessage = e.getMessage();
+System.err.println("lastErrorMessage="+lastErrorMessage);
 			return false;
 		} catch (final ArithmeticException e) {
 			lastErrorMessage = e.getMessage();
+System.err.println("lastErrorMessage="+lastErrorMessage);
 			return false;
 		} catch (final IllegalArgumentException e) {
 			lastErrorMessage = e.getMessage();
+System.err.println("lastErrorMessage="+lastErrorMessage);
 			return false;
 		}
 
@@ -133,9 +136,12 @@ public class AttribParser {
 				return exprNode;
 			}
 
-			if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
+			if (token == AttribToken.PLUS || token == AttribToken.MINUS || token == AttribToken.AMPERSAND) {
 				final Node term = parseTerm(level);
-				exprNode = new BinOpNode(token, exprNode, term);
+				if (token == AttribToken.PLUS || token == AttribToken.MINUS)
+					exprNode = handleBinaryArithmeticOp(token, exprNode, term);
+				else
+					exprNode = handleStringConcat(exprNode, term);
 			}
 			else if (token == AttribToken.EQUAL || token == AttribToken.NOT_EQUAL
 				 || token == AttribToken.GREATER_THAN
@@ -144,12 +150,104 @@ public class AttribParser {
 				 || token == AttribToken.LESS_OR_EQUAL)
 			{
 				final Node term = parseTerm(level);
-				return new BinOpNode(token, exprNode, term); // Only one trip through the loop for comparison operators!
+				return handleComparisonOp(token, exprNode, term); // Only one trip through the loop for comparison operators!
 			} else {
 				tokeniser.ungetToken(token);
 				return exprNode;
 			}
 		}
+	}
+
+	/**
+	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
+	 */
+	private Node handleBinaryArithmeticOp(final AttribToken token, final Node lhs, final Node rhs) {
+		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
+			return new BinOpNode(token, lhs, rhs);
+		else if (lhs.getType() == Long.class && rhs.getType() == Long.class)
+			return new BinOpNode(token, lhs, rhs);
+		else if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(token, lhs, new ConvertIntegerToFloatNode(rhs));
+		else if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(token, new ConvertIntegerToFloatNode(lhs), rhs);
+		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
+			return new BinOpNode(token, lhs, new DynamicallyConvertToFloatNode(rhs));
+		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
+			return new BinOpNode(token, new DynamicallyConvertToFloatNode(lhs), rhs);
+		else if (lhs.getType() == Long.class && rhs.getType() == Object.class)
+			return new BinOpNode(token, lhs, new DynamicallyConvertToIntegerNode(rhs));
+		else if (lhs.getType() == Object.class && rhs.getType() == Long.class)
+			return new BinOpNode(token, new DynamicallyConvertToIntegerNode(lhs), rhs);
+		else if (lhs.getType() == Double.class && rhs instanceof IdentNode)
+			return new BinOpNode(token, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
+		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
+			return new DynamicBinArithmeticOpNode(token, lhs, rhs);
+		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
+			return new BinOpNode(token, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
+		else if (lhs.getType() == Long.class && rhs instanceof IdentNode)
+			return new BinOpNode(token, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
+		else if (lhs instanceof IdentNode && rhs.getType() == Long.class)
+			return new BinOpNode(token, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
+		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
+			return new BinIdentOpNode(token, (IdentNode)lhs, (IdentNode)rhs);
+		else
+			throw new ArithmeticException("incompatible operands for \""
+			                              + AttribTokeniser.opTokenToString(token) + "\"! (lhs="
+			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                              + rhs.toString() + ":" + rhs.getType() + ")");
+	}
+
+	/**
+	 *  Deals w/ any necessary type conversions for string concatenation.
+	 */
+	private Node handleStringConcat(final Node lhs, final Node rhs) {
+		if (lhs.getType() == String.class && rhs.getType() == String.class)
+			return new BinOpNode(AttribToken.AMPERSAND, lhs, rhs);
+		else if (lhs.getType() == String.class)
+			return new BinOpNode(AttribToken.AMPERSAND, lhs, new ConvertToStringNode(rhs));
+		else if (rhs.getType() == String.class)
+			return new BinOpNode(AttribToken.AMPERSAND, new ConvertToStringNode(lhs), rhs);
+		else
+			return new BinOpNode(AttribToken.AMPERSAND, new ConvertToStringNode(lhs), new ConvertToStringNode(rhs));
+	}
+
+	/**
+	 *  Deals w/ any necessary type conversions for any binary comparison operation.
+	 */
+	private Node handleComparisonOp(final AttribToken token, final Node lhs, final Node rhs) {
+		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
+			return new BinOpNode(token, lhs, rhs);
+		else if (lhs.getType() == Long.class && rhs.getType() == Long.class)
+			return new BinOpNode(token, lhs, rhs);
+		else if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(token, lhs, new ConvertIntegerToFloatNode(rhs));
+		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
+			return new BinOpNode(token, lhs, new DynamicallyConvertToFloatNode(rhs));
+		else if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(token, new ConvertIntegerToFloatNode(lhs), rhs);
+		else if (lhs.getType() == Long.class && rhs.getType() == Object.class)
+			return new BinOpNode(token, lhs, new DynamicallyConvertToIntegerNode(rhs));
+		else if (lhs.getType() == Object.class && rhs.getType() == Long.class)
+			return new BinOpNode(token, new DynamicallyConvertToIntegerNode(lhs), rhs);
+		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
+			return new BinOpNode(token, new DynamicallyConvertToFloatNode(lhs), rhs);
+		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
+			return new DynamicBinCompNode(token, lhs, rhs);
+		else if (lhs.getType() == Double.class && rhs instanceof IdentNode)
+			return new BinOpNode(token, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
+		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
+			return new BinOpNode(token, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
+		else if (lhs.getType() == Long.class && rhs instanceof IdentNode)
+			return new BinOpNode(token, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
+		else if (lhs instanceof IdentNode && rhs.getType() == Long.class)
+			return new BinOpNode(token, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
+		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
+			return new BinIdentOpNode(token, (IdentNode)lhs, (IdentNode)rhs);
+		else
+			throw new ArithmeticException("incompatible operands for \""
+			                              + AttribTokeniser.opTokenToString(token) + "\"! (lhs="
+			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                              + rhs.toString() + ":" + rhs.getType() + ")");
 	}
 
 	/**
@@ -163,7 +261,7 @@ public class AttribParser {
 			final AttribToken token = tokeniser.getToken();
 			if (token == AttribToken.MUL || token == AttribToken.DIV) {
 				final Node powerNode = parsePower(level);
-				termNode = new BinOpNode(token, termNode, powerNode);
+				termNode = handleBinaryArithmeticOp(token, termNode, powerNode);
 			}
 			else {
 				tokeniser.ungetToken(token);
@@ -181,8 +279,8 @@ public class AttribParser {
 
 		final AttribToken token = tokeniser.getToken();
 		if (token == AttribToken.CARET) {
-			final Node node1 = parsePower(level);
-			powerNode = new BinOpNode(token, powerNode, node1);
+			final Node rhs = parsePower(level);
+			powerNode = handleBinaryArithmeticOp(token, powerNode, rhs);
 		}
 		else
 			tokeniser.ungetToken(token);
@@ -315,7 +413,8 @@ public class AttribParser {
 
 			++argCount;
 			if (argCount > maxArity)
-				throw new IllegalStateException("expected the closing parenthesis of a function call!");
+				throw new IllegalStateException("expected the closing parenthesis of a call to "
+				                                + functionNameCandidate + "() (1)!");
 
 			tokeniser.ungetToken(token);
 			args.add(parseExpr(level));
@@ -326,7 +425,8 @@ public class AttribParser {
 		}
 
 		if (token != AttribToken.CLOSE_PAREN)
-			throw new IllegalStateException("expected the closing parenthesis of a function call!");
+			throw new IllegalStateException("expected the closing parenthesis of a call to "
+			                                + functionNameCandidate + "() (2)!");
 
 		if (argCount < minArity)
 			throw new IllegalStateException("too few arguments in a call to " + functionNameCandidate + "()!");

@@ -1,5 +1,5 @@
 /*
-  File: BinOpNode.java
+  File: BinIdentOpNode.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,13 +33,13 @@ import cytoscape.data.eqn_attribs.AttribToken;
 import cytoscape.data.eqn_attribs.AttribTokeniser;
 
 /**
- *  A node in the parse tree representing a binary operator.
+ *  A node in the parse tree representing a binary operator w/ both operands being identifiers.
  */
-public class BinOpNode implements Node {
+public class BinIdentOpNode implements Node {
 	private final AttribToken operator;
-	private final Node lhs, rhs;
+	private final IdentNode lhs, rhs;
 
-	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
+	public BinIdentOpNode(final AttribToken operator, final IdentNode lhs, final IdentNode rhs) {
 		if (lhs == null)
 			throw new IllegalArgumentException("left operand must nor be null!");
 		if (rhs == null)
@@ -50,9 +50,9 @@ public class BinOpNode implements Node {
 		this.rhs = rhs;
 	}
 
-	public String toString() { return "BinOpNode: " + operator; }
+	public String toString() { return "BinIdentOpNode: " + operator + " (" + lhs + ", " + rhs + ")"; }
 
-	public Class getType() { return AttribTokeniser.isComparisonOperator(operator) ? Boolean.class : lhs.getType(); }
+	public Class getType() { return AttribTokeniser.isComparisonOperator(operator) ? Boolean.class : Object.class; }
 
 	/**
 	 *  @returns the left operand

@@ -46,7 +46,7 @@ public class IdentNode implements Node {
 		return "IdentNode: " + attribName + (defaultValue == null ? "" : " def.=" + defaultValue);
 	}
 
-	public Class getType() { return defaultValue.getClass(); }
+	public Class getType() { return Object.class; }
 
 	/**
 	 *  @returns null, This type of node never has any children!

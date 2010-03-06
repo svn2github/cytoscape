@@ -54,6 +54,7 @@ public enum AttribToken {
 	LESS_OR_EQUAL,
 	DOLLAR,
 	COMMA,
+	AMPERSAND,
 	EOS,
 	ERROR
 }

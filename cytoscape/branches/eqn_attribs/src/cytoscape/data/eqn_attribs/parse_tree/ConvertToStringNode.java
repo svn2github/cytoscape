@@ -1,5 +1,5 @@
 /*
-  File: BinOpNode.java
+  File: ConvertToStringNode.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -29,40 +29,28 @@
 */
 package cytoscape.data.eqn_attribs.parse_tree;
 
-import cytoscape.data.eqn_attribs.AttribToken;
-import cytoscape.data.eqn_attribs.AttribTokeniser;
 
 /**
- *  A node in the parse tree representing a binary operator.
+ *  A node in the parse tree representing a conversion from an arbitrary type to a string.
  */
-public class BinOpNode implements Node {
-	private final AttribToken operator;
-	private final Node lhs, rhs;
+public class ConvertToStringNode implements Node {
+	private final Node convertee;
 
-	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs == null)
-			throw new IllegalArgumentException("left operand must nor be null!");
-		if (rhs == null)
-			throw new IllegalArgumentException("right operand must nor be null!");
+	public ConvertToStringNode(final Node convertee) { this.convertee = convertee; }
 
-		this.operator = operator;
-		this.lhs = lhs;
-		this.rhs = rhs;
-	}
+	public String toString() { return "ConvertToStringNode: " + convertee; }
 
-	public String toString() { return "BinOpNode: " + operator; }
-
-	public Class getType() { return AttribTokeniser.isComparisonOperator(operator) ? Boolean.class : lhs.getType(); }
+	public Class getType() { return String.class; }
 
 	/**
-	 *  @returns the left operand
+	 *  @returns null, This type of node never has any children!
 	 */
-	public Node getLeftChild() { return lhs; }
+	public Node getLeftChild() { return null; }
 
 	/**
-	 *  @returns the right operand
+	 *  @returns null, This type of node never has any children!
 	 */
-	public Node getRightChild() { return rhs; }
+	public Node getRightChild() { return null; }
 
-	public AttribToken getOperator() { return operator; }
+	public Node getConvertee() { return convertee; }
 }

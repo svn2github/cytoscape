@@ -1,5 +1,5 @@
 /*
-  File: BinOpNode.java
+  File: DynamicallyConvertToFloatNode.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -29,40 +29,30 @@
 */
 package cytoscape.data.eqn_attribs.parse_tree;
 
-import cytoscape.data.eqn_attribs.AttribToken;
-import cytoscape.data.eqn_attribs.AttribTokeniser;
 
 /**
- *  A node in the parse tree representing a binary operator.
+ *  A node in the parse tree representing a conversion from a identifier to a float.
  */
-public class BinOpNode implements Node {
-	private final AttribToken operator;
-	private final Node lhs, rhs;
+public class DynamicallyConvertToFloatNode implements Node {
+	private final Node convertee;
 
-	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs == null)
-			throw new IllegalArgumentException("left operand must nor be null!");
-		if (rhs == null)
-			throw new IllegalArgumentException("right operand must nor be null!");
-
-		this.operator = operator;
-		this.lhs = lhs;
-		this.rhs = rhs;
+	public DynamicallyConvertToFloatNode(final Node convertee) {
+		this.convertee = convertee;
 	}
 
-	public String toString() { return "BinOpNode: " + operator; }
+	public String toString() { return "DynamicallyConvertToFloatNode: " + convertee; }
 
-	public Class getType() { return AttribTokeniser.isComparisonOperator(operator) ? Boolean.class : lhs.getType(); }
-
-	/**
-	 *  @returns the left operand
-	 */
-	public Node getLeftChild() { return lhs; }
+	public Class getType() { return Double.class; }
 
 	/**
-	 *  @returns the right operand
+	 *  @returns null, This type of node never has any children!
 	 */
-	public Node getRightChild() { return rhs; }
+	public Node getLeftChild() { return null; }
 
-	public AttribToken getOperator() { return operator; }
+	/**
+	 *  @returns null, This type of node never has any children!
+	 */
+	public Node getRightChild() { return null; }
+
+	public Node getConvertee() { return convertee; }
 }

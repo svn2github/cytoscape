@@ -41,10 +41,11 @@ public class AttribParserTest extends TestCase {
 		parser.registerFunction(new Or());
 		parser.registerFunction(new Log());
 		parser.registerFunction(new Abs());
+		parser.registerFunction(new Not());
 	}
 
 	public void testSimpleExpr() throws Exception {
-		assertTrue(parser.parse("=42 - 12 + 3 * (4 - 2) + ${BOB}"));
+		assertTrue(parser.parse("=42 - 12 + 3 * (4 - 2) + ${BOB:12}"));
 	}
 
 	public void testUnaryPlusAndMinus() throws Exception {
@@ -76,5 +77,14 @@ public class AttribParserTest extends TestCase {
 		assertFalse(parser.parse("=ABS()"));
 		assertTrue(parser.parse("=ABS(1)"));
 		assertFalse(parser.parse("=ABS(1,2)"));
+	}
+
+	public void testNOT() throws Exception {
+		assertFalse(parser.parse("=NOT()"));
+		assertTrue(parser.parse("=NOT(true)"));
+		assertTrue(parser.parse("=NOT(false)"));
+		assertTrue(parser.parse("=NOT(3.2 < 12)"));
+		assertTrue(parser.parse("=NOT(${logical})"));
+		assertFalse(parser.parse("=NOT(true, true)"));
 	}
 }
