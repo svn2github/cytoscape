@@ -161,38 +161,38 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 	/**
 	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
 	 */
-	private Node handleBinaryArithmeticOp(final AttribToken token, final Node lhs, final Node rhs) {
+	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
-			return new BinOpNode(token, lhs, rhs);
+			return new BinOpNode(operator, lhs, rhs);
 		else if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(token, lhs, rhs);
+			return new BinOpNode(operator, lhs, rhs);
 		else if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(token, lhs, new ConvertIntegerToFloatNode(rhs));
+			return new BinOpNode(operator, lhs, new ConvertIntegerToFloatNode(rhs));
 		else if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(token, new ConvertIntegerToFloatNode(lhs), rhs);
+			return new BinOpNode(operator, new ConvertIntegerToFloatNode(lhs), rhs);
 		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
-			return new BinOpNode(token, lhs, new DynamicallyConvertToFloatNode(rhs));
+			return new BinOpNode(operator, lhs, new DynamicallyConvertToFloatNode(rhs));
 		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
-			return new BinOpNode(token, new DynamicallyConvertToFloatNode(lhs), rhs);
+			return new BinOpNode(operator, new DynamicallyConvertToFloatNode(lhs), rhs);
 		else if (lhs.getType() == Long.class && rhs.getType() == Object.class)
-			return new BinOpNode(token, lhs, new DynamicallyConvertToIntegerNode(rhs));
+			return new BinOpNode(operator, lhs, new DynamicallyConvertToIntegerNode(rhs));
 		else if (lhs.getType() == Object.class && rhs.getType() == Long.class)
-			return new BinOpNode(token, new DynamicallyConvertToIntegerNode(lhs), rhs);
+			return new BinOpNode(operator, new DynamicallyConvertToIntegerNode(lhs), rhs);
 		else if (lhs.getType() == Double.class && rhs instanceof IdentNode)
-			return new BinOpNode(token, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
+			return new BinOpNode(operator, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
 		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
-			return new DynamicBinArithmeticOpNode(token, lhs, rhs);
+			return new DynamicBinArithmeticOpNode(operator, lhs, rhs);
 		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
-			return new BinOpNode(token, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
+			return new BinOpNode(operator, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
 		else if (lhs.getType() == Long.class && rhs instanceof IdentNode)
-			return new BinOpNode(token, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
+			return new BinOpNode(operator, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
 		else if (lhs instanceof IdentNode && rhs.getType() == Long.class)
-			return new BinOpNode(token, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
+			return new BinOpNode(operator, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
 		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
-			return new BinIdentOpNode(token, (IdentNode)lhs, (IdentNode)rhs);
+			return new BinIdentOpNode(operator, (IdentNode)lhs, (IdentNode)rhs);
 		else
 			throw new ArithmeticException("incompatible operands for \""
-			                              + AttribTokeniser.opTokenToString(token) + "\"! (lhs="
+			                              + AttribTokeniser.opTokenToString(operator) + "\"! (lhs="
 			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                              + rhs.toString() + ":" + rhs.getType() + ")");
 	}
@@ -214,38 +214,38 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 	/**
 	 *  Deals w/ any necessary type conversions for any binary comparison operation.
 	 */
-	private Node handleComparisonOp(final AttribToken token, final Node lhs, final Node rhs) {
+	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
-			return new BinOpNode(token, lhs, rhs);
+			return new BinOpNode(operator, lhs, rhs);
 		else if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(token, lhs, rhs);
+			return new BinOpNode(operator, lhs, rhs);
 		else if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(token, lhs, new ConvertIntegerToFloatNode(rhs));
+			return new BinOpNode(operator, lhs, new ConvertIntegerToFloatNode(rhs));
 		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
-			return new BinOpNode(token, lhs, new DynamicallyConvertToFloatNode(rhs));
+			return new BinOpNode(operator, lhs, new DynamicallyConvertToFloatNode(rhs));
 		else if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(token, new ConvertIntegerToFloatNode(lhs), rhs);
+			return new BinOpNode(operator, new ConvertIntegerToFloatNode(lhs), rhs);
 		else if (lhs.getType() == Long.class && rhs.getType() == Object.class)
-			return new BinOpNode(token, lhs, new DynamicallyConvertToIntegerNode(rhs));
+			return new BinOpNode(operator, lhs, new DynamicallyConvertToIntegerNode(rhs));
 		else if (lhs.getType() == Object.class && rhs.getType() == Long.class)
-			return new BinOpNode(token, new DynamicallyConvertToIntegerNode(lhs), rhs);
+			return new BinOpNode(operator, new DynamicallyConvertToIntegerNode(lhs), rhs);
 		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
-			return new BinOpNode(token, new DynamicallyConvertToFloatNode(lhs), rhs);
+			return new BinOpNode(operator, new DynamicallyConvertToFloatNode(lhs), rhs);
 		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
-			return new DynamicBinCompNode(token, lhs, rhs);
+			return new DynamicBinCompNode(operator, lhs, rhs);
 		else if (lhs.getType() == Double.class && rhs instanceof IdentNode)
-			return new BinOpNode(token, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
+			return new BinOpNode(operator, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
 		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
-			return new BinOpNode(token, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
+			return new BinOpNode(operator, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
 		else if (lhs.getType() == Long.class && rhs instanceof IdentNode)
-			return new BinOpNode(token, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
+			return new BinOpNode(operator, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
 		else if (lhs instanceof IdentNode && rhs.getType() == Long.class)
-			return new BinOpNode(token, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
+			return new BinOpNode(operator, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
 		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
-			return new BinIdentOpNode(token, (IdentNode)lhs, (IdentNode)rhs);
+			return new BinIdentOpNode(operator, (IdentNode)lhs, (IdentNode)rhs);
 		else
 			throw new ArithmeticException("incompatible operands for \""
-			                              + AttribTokeniser.opTokenToString(token) + "\"! (lhs="
+			                              + AttribTokeniser.opTokenToString(operator) + "\"! (lhs="
 			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                              + rhs.toString() + ":" + rhs.getType() + ")");
 	}
@@ -364,7 +364,7 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 		// 4. a unary operator
 		if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
 			final Node factor = parseFactor(level);
-			return new UnaryOpNode(token, factor);
+			return handleUnaryOp(token, factor);
 		}
 
 		// 5. function call
@@ -374,6 +374,13 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 		}
 
 		throw new IllegalStateException("we should never get here!");
+	}
+
+	private Node handleUnaryOp(final AttribToken operator, final Node operand) {
+		if (operand.getType() == Boolean.class || operand.getType() == String.class)
+			throw new ArithmeticException("can't apply a unary " + AttribTokeniser.opTokenToString(operator)
+			                              + " a boolean or string operand!");
+		return new UnaryOpNode(operator, operand);
 	}
 
 	/**
