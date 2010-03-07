@@ -397,7 +397,7 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 		if (func == null)
 			throw new IllegalStateException("call to unknown function " + functionNameCandidate + "()!");
 
-		final Object[] argTypes = func.getParameterTypes();
+		final Class[] argTypes = func.getParameterTypes();
 		final boolean varargs = func.getMinNumberOfArgsForVariableArity() > -1;
 		final int minArity, maxArity;
 		if (varargs) {
@@ -423,7 +423,7 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 				throw new IllegalStateException("expected the closing parenthesis of a call to "
 				                                + functionNameCandidate + "() (1)!");
 
-			final Class expectedType = varargs ? argTypes[0].getClass() : argTypes[argCount - 1].getClass();
+			final Class expectedType = varargs ? argTypes[0] : argTypes[argCount - 1];
 			tokeniser.ungetToken(token);
 			final Node exprNode = parseExpr(level);
 			args.add(convertArgType(functionNameCandidate, expectedType, exprNode));
@@ -461,6 +461,8 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 		if (node.getType() == Object.class)
 			return new TypeConversionNode(expectedType, node);
 
-		throw new IllegalArgumentException("invalid argument type a parameter of " + funcName + "()!");
+		throw new IllegalArgumentException("invalid argument type in a  parameter of "
+		                                   + funcName + "() (expected: " + expectedType
+		                                   + ", found: " + node.getType() + ")!");
 	}
 }
