@@ -423,8 +423,10 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 				throw new IllegalStateException("expected the closing parenthesis of a call to "
 				                                + functionNameCandidate + "() (1)!");
 
+			final Class expectedType = varargs ? argTypes[0].getClass() : argTypes[argCount - 1].getClass();
 			tokeniser.ungetToken(token);
-			args.add(parseExpr(level));
+			final Node exprNode = parseExpr(level);
+			args.add(convertArgType(functionNameCandidate, expectedType, exprNode));
 
 			token = tokeniser.getToken();
 			if (token != AttribToken.COMMA)
@@ -440,5 +442,25 @@ System.err.println("lastErrorMessage="+lastErrorMessage);
 
 		Node[] nodeArray = new Node[args.size()];
 		return new FuncCallNode(func, args.toArray(nodeArray));
+	}
+
+	private Node convertArgType(final String funcName, final Class expectedType, final Node node) {
+		// Trivial case, expected and actual type are the same:
+		if (expectedType == node.getType())
+			return node;
+
+		// If not a string, we can easily covert anything to a string:
+		if (expectedType == String.class)
+			return new ConvertToStringNode(node);
+
+		// We can easily convert an integer to a float:
+		if (expectedType == Double.class && node.getType() == Long.class)
+			return new ConvertIntegerToFloatNode(node);
+
+		// We might be able to convert an Object to whichever type we need at runtime:
+		if (node.getType() == Object.class)
+			return new TypeConversionNode(expectedType, node);
+
+		throw new IllegalArgumentException("invalid argument type a parameter of " + funcName + "()!");
 	}
 }
