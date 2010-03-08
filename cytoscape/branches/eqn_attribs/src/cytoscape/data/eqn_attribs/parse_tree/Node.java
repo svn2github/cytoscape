@@ -30,6 +30,9 @@
 package cytoscape.data.eqn_attribs.parse_tree;
 
 
+import java.util.Stack;
+
+
 /**
  *  A node in the parse tree.
  */
@@ -38,4 +41,5 @@ public interface Node {
 	Class getType(); // The type of this node.
 	Node getLeftChild();
 	Node getRightChild();
+	void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments);
 }

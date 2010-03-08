@@ -30,6 +30,9 @@
 package cytoscape.data.eqn_attribs.parse_tree;
 
 
+import java.util.Stack;
+
+
 /**
  *  A node in the parse tree representing an integer constant.
  */
@@ -53,4 +56,8 @@ public class StringConstantNode implements Node {
 	public Node getRightChild() { return null; }
 
 	public String getValue() { return value; }
+
+	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+		arguments.push(value);
+	}
 }
