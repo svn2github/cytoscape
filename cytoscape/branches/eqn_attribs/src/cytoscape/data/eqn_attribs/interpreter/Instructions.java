@@ -37,10 +37,10 @@ public class Instructions {
 	public static final int FDIV    = 1 << 3;  // divide one float by another
 	public static final int FPOW    = 1 << 4;  // compute one float to the power of another
 	public static final int SCONCAT = 1 << 5;  // concatenate two strings
-	public static final int FFROMI  = 1 << 6;  // convert an integer to a float
-	public static final int BEQLF   = 1 << 7; // compare two floats for equality
-	public static final int BNEQLF  = 1 << 8; // compare two floats for inequality
-	public static final int BGTF    = 1 << 9; // determine if one float is greater than another
+	public static final int SCONV   = 1 << 6;  // convert anything to a string
+	public static final int BEQLF   = 1 << 7;  // compare two floats for equality
+	public static final int BNEQLF  = 1 << 8;  // compare two floats for inequality
+	public static final int BGTF    = 1 << 9;  // determine if one float is greater than another
 	public static final int BLTF    = 1 << 10; // determine if one float is less than another
 	public static final int BGTEF   = 1 << 11; // determine if one float is greater than or equal to another
 	public static final int BLTEF   = 1 << 12; // determine if one float is less than or equal to another

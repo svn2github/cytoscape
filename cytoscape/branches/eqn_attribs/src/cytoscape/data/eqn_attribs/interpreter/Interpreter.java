@@ -75,8 +75,8 @@ public class Interpreter {
 				case Instructions.SCONCAT:
 					unimplemented("SCONCAT");
 					break;
-				case Instructions.FFROMI:
-					unimplemented("FFROMI");
+				case Instructions.SCONV:
+					sconv();
 					break;
 				case Instructions.BEQLF:
 					unimplemented("BEQLF");
@@ -140,6 +140,10 @@ public class Interpreter {
 			return retval;
 
 		throw new IllegalStateException("illegal result type at end of interpretation: " + retval.getClass() + "!");
+	}
+
+	private void sconv() throws EmptyStackException {
+		runtimeStack.push(new StringConstantNode(runtimeStack.pop().toString()));
 	}
 
 	private void fadd() throws EmptyStackException {

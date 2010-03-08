@@ -57,8 +57,8 @@ public class AttribParser {
 
 		// Sanity check for the parameter types of a function.
 		for (final Class c : func.getParameterTypes()) {
-			if (c != Long.class && c != Double.class && c != Boolean.class && c != String.class)
-				throw new IllegalArgumentException("function arguments must be of type Long, Double, Boolean, or String!");
+			if (c != Double.class && c != Boolean.class && c != String.class)
+				throw new IllegalArgumentException("function arguments must be of type Double, Boolean, or String!");
 		}
 
 		// Sanity check for the name of the function.
@@ -161,30 +161,16 @@ public class AttribParser {
 	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
-		else if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, rhs);
-		else if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new ConvertIntegerToFloatNode(rhs));
-		else if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new ConvertIntegerToFloatNode(lhs), rhs);
 		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
 			return new BinOpNode(operator, lhs, new DynamicallyConvertToFloatNode(rhs));
 		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, new DynamicallyConvertToFloatNode(lhs), rhs);
-		else if (lhs.getType() == Long.class && rhs.getType() == Object.class)
-			return new BinOpNode(operator, lhs, new DynamicallyConvertToIntegerNode(rhs));
-		else if (lhs.getType() == Object.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new DynamicallyConvertToIntegerNode(lhs), rhs);
 		else if (lhs.getType() == Double.class && rhs instanceof IdentNode)
 			return new BinOpNode(operator, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
 		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
 			return new DynamicBinArithmeticOpNode(operator, lhs, rhs);
 		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
 			return new BinOpNode(operator, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
-		else if (lhs.getType() == Long.class && rhs instanceof IdentNode)
-			return new BinOpNode(operator, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
-		else if (lhs instanceof IdentNode && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
 		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
 			return new BinIdentOpNode(operator, (IdentNode)lhs, (IdentNode)rhs);
 		else
@@ -214,18 +200,8 @@ public class AttribParser {
 	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
-		else if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, rhs);
-		else if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new ConvertIntegerToFloatNode(rhs));
 		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
 			return new BinOpNode(operator, lhs, new DynamicallyConvertToFloatNode(rhs));
-		else if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new ConvertIntegerToFloatNode(lhs), rhs);
-		else if (lhs.getType() == Long.class && rhs.getType() == Object.class)
-			return new BinOpNode(operator, lhs, new DynamicallyConvertToIntegerNode(rhs));
-		else if (lhs.getType() == Object.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new DynamicallyConvertToIntegerNode(lhs), rhs);
 		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, new DynamicallyConvertToFloatNode(lhs), rhs);
 		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
@@ -234,10 +210,6 @@ public class AttribParser {
 			return new BinOpNode(operator, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
 		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
 			return new BinOpNode(operator, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
-		else if (lhs.getType() == Long.class && rhs instanceof IdentNode)
-			return new BinOpNode(operator, lhs, new ConvertIdentToIntegerNode((IdentNode)rhs));
-		else if (lhs instanceof IdentNode && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new ConvertIdentToIntegerNode((IdentNode)lhs), rhs);
 		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
 			return new BinIdentOpNode(operator, (IdentNode)lhs, (IdentNode)rhs);
 		else
@@ -293,12 +265,8 @@ public class AttribParser {
 		AttribToken token = tokeniser.getToken();
 
 		// 1. a constant
-		if (token == AttribToken.INTEGER_CONSTANT || token == AttribToken.FLOAT_CONSTANT
-		    || token == AttribToken.STRING_CONSTANT || token == AttribToken.BOOLEAN_CONSTANT)
-		{
+		if (token == AttribToken.FLOAT_CONSTANT || token == AttribToken.STRING_CONSTANT || token == AttribToken.BOOLEAN_CONSTANT) {
 			switch (token) {
-			case INTEGER_CONSTANT:
-				return new IntConstantNode(tokeniser.getIntConstant());
 			case FLOAT_CONSTANT:
 				return new FloatConstantNode(tokeniser.getFloatConstant());
 			case BOOLEAN_CONSTANT:
@@ -322,13 +290,9 @@ public class AttribParser {
 			Object defaultValue = null;
 			if (token == AttribToken.COLON) {
 				token = tokeniser.getToken();
-				if (token != AttribToken.INTEGER_CONSTANT && token != AttribToken.FLOAT_CONSTANT
-				    && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
+				if (token != AttribToken.FLOAT_CONSTANT && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
 					throw new IllegalStateException("expected default value for attribute reference!");
 				switch (token) {
-				case INTEGER_CONSTANT:
-					defaultValue = new Long(tokeniser.getIntConstant());
-					break;
 				case FLOAT_CONSTANT:
 					defaultValue = new Double(tokeniser.getFloatConstant());
 					break;
@@ -449,10 +413,6 @@ public class AttribParser {
 		// If not a string, we can easily covert anything to a string:
 		if (expectedType == String.class)
 			return new ConvertToStringNode(node);
-
-		// We can easily convert an integer to a float:
-		if (expectedType == Double.class && node.getType() == Long.class)
-			return new ConvertIntegerToFloatNode(node);
 
 		// We might be able to convert an Object to whichever type we need at runtime:
 		if (node.getType() == Object.class)

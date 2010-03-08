@@ -151,8 +151,6 @@ public class AttribTokeniser {
 		final AttribToken token = getToken();
 		if (token == AttribToken.STRING_CONSTANT)
 			return "STRING_CONSTANT: \"" + getStringConstant() + "\"";
-		if (token == AttribToken.INTEGER_CONSTANT)
-			return "INTEGER_CONSTANT: \"" + getIntConstant() + "\"";
 		if (token == AttribToken.FLOAT_CONSTANT)
 			return "FLOAT_CONSTANT: \"" + getFloatConstant() + "\"";
 		if (token == AttribToken.BOOLEAN_CONSTANT)
@@ -305,20 +303,13 @@ public class AttribTokeniser {
 
 		if (ch == -1 || ((char)ch != 'e' && (char)ch != 'E' && (char)ch != '.')) {
 			try {
-				final long l = Long.parseLong(builder.toString());
-				currentIntConstant = l;
+				final double d = Double.parseDouble(builder.toString());
+				currentFloatConstant = d;
 				ungetChar(ch);
-				return AttribToken.INTEGER_CONSTANT;
-			} catch (final NumberFormatException e1) {
-				try {
-					final double d = Double.parseDouble(builder.toString());
-					currentFloatConstant = d;
-					ungetChar(ch);
-					return AttribToken.FLOAT_CONSTANT;
-				} catch (final NumberFormatException e2) {
-					errorMsg = "invalid numeric constant!";
-					return AttribToken.ERROR;
-				}
+				return AttribToken.FLOAT_CONSTANT;
+			} catch (final NumberFormatException e2) {
+				errorMsg = "invalid numeric constant!";
+				return AttribToken.ERROR;
 			}
 		}
 

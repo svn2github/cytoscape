@@ -39,14 +39,14 @@ public interface AttribFunction {
 
 	/**
 	 *  Used to parse the function parameters.  The only entries that are allowed in the returned
-	 *  array are Long.class, Double.getCLass(), String.class, or Boolean.class.
+	 *  array are Double.getCLass(), String.class, or Boolean.class.
 	 *  @returns the list of argument types for this function
 	 */
 	Class[] getParameterTypes();
  
 	/**
 	 *  Used to define the function's return type. 
-	 *  @returns must be Long.class, Double.getCLass(), String.class, or Boolean.class.
+	 *  @returns must be Double.getCLass(), String.class, or Boolean.class.
 	 */
 	Class getReturnType();
 

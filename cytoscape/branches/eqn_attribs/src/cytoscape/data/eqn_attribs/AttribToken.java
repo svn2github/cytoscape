@@ -33,7 +33,6 @@ package cytoscape.data.eqn_attribs;
 public enum AttribToken {
 	STRING_CONSTANT,
 	FLOAT_CONSTANT,
-	INTEGER_CONSTANT,
 	BOOLEAN_CONSTANT,
 	IDENTIFIER,
 	OPEN_BRACE,

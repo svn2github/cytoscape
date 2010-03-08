@@ -158,7 +158,7 @@ public class AttribTokeniserTest extends TestCase {
 		final String[] expectedTokens = {
 			"FLOAT_CONSTANT: \"1.79\"",
 			"CARET",
-			"INTEGER_CONSTANT: \"3\"",
+			"FLOAT_CONSTANT: \"3.0\"",
 			"EOS"
 		};
 
