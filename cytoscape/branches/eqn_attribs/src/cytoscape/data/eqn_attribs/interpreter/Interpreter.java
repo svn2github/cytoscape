@@ -165,7 +165,7 @@ public class Interpreter {
 		final double float2 = getFloat(runtimeStack.pop());
 		if (float2 == 0.0)
 			throw new ArithmeticException("illegal division by zero!");
-		runtimeStack.push(new FloatConstantNode(float1 + float2));
+		runtimeStack.push(new FloatConstantNode(float1 / float2));
 	}
 
 	private void fpow() throws EmptyStackException {
