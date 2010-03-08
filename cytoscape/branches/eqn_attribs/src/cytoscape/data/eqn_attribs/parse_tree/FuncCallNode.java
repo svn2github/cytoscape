@@ -29,7 +29,10 @@
 */
 package cytoscape.data.eqn_attribs.parse_tree;
 
+
+import java.util.Stack;
 import cytoscape.data.eqn_attribs.AttribFunction;
+import cytoscape.data.eqn_attribs.interpreter.Instructions;
 
 
 /**
@@ -67,4 +70,11 @@ public class FuncCallNode implements Node {
 	 *  @returns null, This return value for this node is only known at runtime!
 	 */
 	public Object getValue() { return null; }
+
+	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+		opCodes.push(Instructions.CALL);
+		arguments.push(args.length);
+		for (final Node arg : args)
+			arg.genCode(opCodes, arguments);
+	}
 }

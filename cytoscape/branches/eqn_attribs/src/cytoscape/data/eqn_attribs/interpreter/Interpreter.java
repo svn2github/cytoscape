@@ -133,6 +133,12 @@ public class Interpreter {
 				case Instructions.FUPLUS:
 					fuplus();
 					break;
+				case Instructions.AREF:
+					aref();
+					break;
+				case Instructions.AREF2:
+					aref2();
+					break;
 				default:
 					throw new IllegalStateException("unknown opcode: " + opCode + "!");
 				}
@@ -332,17 +338,20 @@ public class Interpreter {
 		argumentStack.push(+float1);
 	}
 
+	private void aref() throws EmptyStackException {
+		final String attribName = (String)argumentStack.pop();
+		throw new IllegalStateException("unimplemented opcode: AREF!");
+	}
+
+	private void aref2() throws EmptyStackException {
+		final String attribName = (String)argumentStack.pop();
+		final Object defaultValue = (String)argumentStack.pop();
+		throw new IllegalStateException("unimplemented opcode: AREF2!");
+	}
+
 	private double getFloat(final Object o) throws IllegalStateException {
 		if (o instanceof Double)
 			return (Double)o;
-
-		if (o instanceof IdentNode) {
-			final IdentNode identNode = (IdentNode)o;
-			final Object nodeValue = identNode.getValue();
-			if (nodeValue instanceof Double)
-				return (Double)nodeValue;
-			throw new IllegalStateException("can't convert the value of {" + identNode.getAttribName() + "} to a floating point number!");
-		}
 
 		throw new IllegalStateException("can't convert a " + o.getClass() + " to a floating point number!");
 	}
@@ -351,28 +360,12 @@ public class Interpreter {
 		if (o instanceof String)
 			return (String)o;
 
-		if (o instanceof IdentNode) {
-			final IdentNode identNode = (IdentNode)o;
-			final Object nodeValue = identNode.getValue();
-			if (nodeValue instanceof String)
-				return (String)nodeValue;
-			throw new IllegalStateException("can't convert the value of {" + identNode.getAttribName() + "} to a string!");
-		}
-
 		throw new IllegalStateException("can't convert a " + o.getClass() + " to a string!");
 	}
 
 	private boolean getBoolean(final Object o) throws IllegalStateException {
 		if (o instanceof Boolean)
 			return (Boolean)o;
-
-		if (o instanceof IdentNode) {
-			final IdentNode identNode = (IdentNode)o;
-			final Object nodeValue = identNode.getValue();
-			if (nodeValue instanceof Boolean)
-				return (Boolean)nodeValue;
-			throw new IllegalStateException("can't convert the value of {" + identNode.getAttribName() + "} to a boolean!");
-		}
 
 		throw new IllegalStateException("can't convert a " + o.getClass() + " to a boolean!");
 	}

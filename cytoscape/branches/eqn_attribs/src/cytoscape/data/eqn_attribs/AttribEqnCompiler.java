@@ -30,6 +30,7 @@
 package cytoscape.data.eqn_attribs;
 
 
+import java.util.Map;
 import java.util.Stack;
 import cytoscape.data.eqn_attribs.AttribParser;
 import cytoscape.data.eqn_attribs.parse_tree.Node;
@@ -48,8 +49,8 @@ public class AttribEqnCompiler {
 		this.errorMsg = null;
 	}
 
-	public boolean compile(final String equation) {
-		if (!parser.parse(equation)) {
+	public boolean compile(final String equation, final Map<String, Class> attribNameToTypeMap) {
+		if (!parser.parse(equation, attribNameToTypeMap)) {
 			errorMsg = parser.getErrorMsg();
 			return false;
 		}

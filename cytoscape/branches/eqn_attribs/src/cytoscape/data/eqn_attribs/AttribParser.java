@@ -32,15 +32,17 @@ package cytoscape.data.eqn_attribs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import cytoscape.data.eqn_attribs.parse_tree.*;
 
 
 public class AttribParser {
 	private String eqn;
 	private AttribTokeniser tokeniser;
-	private HashMap<String, AttribFunction> nameToFunctionMap;
+	private Map<String, AttribFunction> nameToFunctionMap;
 	private String lastErrorMessage;
 	private Node parseTree;
+	private Map<String, Class> attribNameToTypeMap;
 
 	public AttribParser() {
 		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
@@ -77,13 +79,14 @@ public class AttribParser {
 	 *  @param A valid attribute equation which must start with an equal sign
 	 *  @returns true if the parse succeeded otherwise false
 	 */
-	public boolean parse(final String eqn) {
+	public boolean parse(final String eqn, final Map<String, Class> attribNameToTypeMap) {
 		if (eqn == null)
 			throw new NullPointerException("equation string must not be null!");
 		if (eqn.length() < 1 || eqn.charAt(0) != '=')
 			throw new NullPointerException("equation string must start with an equal sign!");
 
 		this.eqn = eqn;
+		this.attribNameToTypeMap = attribNameToTypeMap;
 		this.tokeniser = new AttribTokeniser(eqn.substring(1));
 		this.lastErrorMessage = null;
 
@@ -161,18 +164,6 @@ public class AttribParser {
 	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
-		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
-			return new BinOpNode(operator, lhs, new DynamicallyConvertToFloatNode(rhs));
-		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new DynamicallyConvertToFloatNode(lhs), rhs);
-		else if (lhs.getType() == Double.class && rhs instanceof IdentNode)
-			return new BinOpNode(operator, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
-		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
-			return new DynamicBinArithmeticOpNode(operator, lhs, rhs);
-		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
-		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
-			return new BinIdentOpNode(operator, (IdentNode)lhs, (IdentNode)rhs);
 		else
 			throw new ArithmeticException("incompatible operands for \""
 			                              + AttribTokeniser.opTokenToString(operator) + "\"! (lhs="
@@ -200,24 +191,22 @@ public class AttribParser {
 	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
-		else if (lhs.getType() == Double.class && rhs.getType() == Object.class)
-			return new BinOpNode(operator, lhs, new DynamicallyConvertToFloatNode(rhs));
-		else if (lhs.getType() == Object.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new DynamicallyConvertToFloatNode(lhs), rhs);
-		else if (lhs.getType() == Object.class && rhs.getType() == Object.class)
-			return new DynamicBinCompNode(operator, lhs, rhs);
-		else if (lhs.getType() == Double.class && rhs instanceof IdentNode)
-			return new BinOpNode(operator, lhs, new ConvertIdentToFloatNode((IdentNode)rhs));
-		else if (lhs instanceof IdentNode && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new ConvertIdentToFloatNode((IdentNode)lhs), rhs);
-		else if (lhs instanceof IdentNode && rhs instanceof IdentNode)
-			return new BinIdentOpNode(operator, (IdentNode)lhs, (IdentNode)rhs);
+		if (lhs.getType() == String.class && rhs.getType() == String.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Boolean.class && rhs.getType() == Boolean.class) {
+			if (operator == AttribToken.EQUAL || operator == AttribToken.NOT_EQUAL)
+				return new BinOpNode(operator, lhs, rhs);
+			else
+				throw new IllegalArgumentException("unimplemented comparison "
+				                                   + AttribTokeniser.opTokenToString(operator)
+				                                   + " for boolean operands!");
+		}
 		else
-			throw new ArithmeticException("incompatible operands for \""
-			                              + AttribTokeniser.opTokenToString(operator) + "\"! (lhs="
-			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
-			                              + rhs.toString() + ":" + rhs.getType() + ")");
-	}
+			throw new IllegalArgumentException("incompatible operands for \""
+			                                   + AttribTokeniser.opTokenToString(operator) + "\"! (lhs="
+			                                   + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                                   + rhs.toString() + ":" + rhs.getType() + ")");
+	 }
 
 	/**
 	 *  Implements term --> power {* power} | power {/ power}
@@ -284,6 +273,10 @@ public class AttribParser {
 			token = tokeniser.getToken();
 			if (token != AttribToken.IDENTIFIER)
 				throw new IllegalStateException("identifier expected!");
+
+			final Class attribRefType = attribNameToTypeMap.get(tokeniser.getIdent());
+			if (attribRefType == null)
+				throw new IllegalStateException("unknown attribute reference name: \"" + tokeniser.getIdent() + "\"!");
 			token = tokeniser.getToken();
 
 			// Do we have a default value?
@@ -309,7 +302,7 @@ public class AttribParser {
 			if (token != AttribToken.CLOSE_BRACE)
 				throw new IllegalStateException("closeing brace expected!");
 
-			return new IdentNode(tokeniser.getIdent(), defaultValue);
+			return new IdentNode(tokeniser.getIdent(), defaultValue, attribRefType);
 		}
 
 		// 3. a parenthesised expression
@@ -410,13 +403,9 @@ public class AttribParser {
 		if (expectedType == node.getType())
 			return node;
 
-		// If not a string, we can easily covert anything to a string:
+		// If not a string, we can easily convert anything to a string:
 		if (expectedType == String.class)
 			return new ConvertToStringNode(node);
-
-		// We might be able to convert an Object to whichever type we need at runtime:
-		if (node.getType() == Object.class)
-			return new TypeConversionNode(expectedType, node);
 
 		throw new IllegalArgumentException("invalid argument type in a  parameter of "
 		                                   + funcName + "() (expected: " + expectedType

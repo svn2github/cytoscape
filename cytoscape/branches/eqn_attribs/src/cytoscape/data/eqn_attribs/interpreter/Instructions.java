@@ -55,4 +55,6 @@ public class Instructions {
 	public static final int CALL    = 1 << 21; // a function call
 	public static final int FUMINUS = 1 << 22; // unary minus
 	public static final int FUPLUS  = 1 << 23; // unary plus
+	public static final int AREF    = 1 << 24; // attribute reference
+	public static final int AREF2   = 1 << 25; // attribute reference w/ a default value
 }

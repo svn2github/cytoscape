@@ -30,23 +30,29 @@
 package cytoscape.data.eqn_attribs.parse_tree;
 
 
+import java.util.Stack;
+import cytoscape.data.eqn_attribs.interpreter.Instructions;
+
+
 /**
  *  A node in the parse tree representing an attribute reference.
  */
 public class IdentNode implements Node {
 	private final String attribName;
 	private final Object defaultValue;
+	private final Class type;
 
-	public IdentNode(final String attribName, final Object defaultValue) {
+	public IdentNode(final String attribName, final Object defaultValue, final Class type) {
 		this.attribName = attribName;
 		this.defaultValue = defaultValue;
+		this.type = type;
 	}
 
 	public String toString() {
-		return "IdentNode: " + attribName + (defaultValue == null ? "" : " def.=" + defaultValue);
+		return "IdentNode: " + attribName + (defaultValue == null ? "" : " default=" + defaultValue);
 	}
 
-	public Class getType() { return Object.class; }
+	public Class getType() { return type; }
 
 	/**
 	 *  @returns null, This type of node never has any children!
@@ -61,7 +67,10 @@ public class IdentNode implements Node {
 	public String getAttribName() { return attribName; }
 	public Object getDefaultValue() { return defaultValue; }
 
-	public Object getValue() {
-		throw new IllegalStateException("IdentNode.getValue() has not yet been implemented!");
+	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+		opCodes.push(defaultValue == null ? Instructions.AREF : Instructions.AREF2);
+		arguments.push(attribName);
+		if (defaultValue != null)
+			arguments.push(defaultValue);
 	}
 }

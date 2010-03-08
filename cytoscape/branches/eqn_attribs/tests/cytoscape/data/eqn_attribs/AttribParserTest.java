@@ -29,6 +29,8 @@
 */
 package cytoscape.data.eqn_attribs;
 
+import java.util.HashMap;
+import java.util.Map;
 import junit.framework.*;
 import cytoscape.data.eqn_attribs.builtins.*;
 
@@ -45,46 +47,61 @@ public class AttribParserTest extends TestCase {
 	}
 
 	public void testSimpleExpr() throws Exception {
-		assertTrue(parser.parse("=42 - 12 + 3 * (4 - 2) + ${BOB:12}"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("BOB", Double.class);
+		assertTrue(parser.parse("=42 - 12 + 3 * (4 - 2) + ${BOB:12}", attribNameToTypeMap));
 	}
 
 	public void testUnaryPlusAndMinus() throws Exception {
-		assertTrue(parser.parse("=-17.8E-14"));
-		assertTrue(parser.parse("=+(${attr1} + ${attr2})"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("attr1", Double.class);
+		attribNameToTypeMap.put("attr2", Double.class);
+		assertTrue(parser.parse("=-17.8E-14", attribNameToTypeMap));
+		assertTrue(parser.parse("=+(${attr1} + ${attr2})", attribNameToTypeMap));
 	}
 
 	public void testFunctionCall() throws Exception {
-		assertTrue(parser.parse("=42 + log(4 - 2)"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(parser.parse("=42 + log(4 - 2)", attribNameToTypeMap));
 	}
 
 	public void testExponentiation() throws Exception {
-		assertTrue(parser.parse("=2^3^4 - 0.0002"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(parser.parse("=2^3^4 - 0.0002", attribNameToTypeMap));
 	}
 
 	public void testComparisons() throws Exception {
-		assertTrue(parser.parse("=${x} <= ${y}"));
-		assertTrue(parser.parse("=-15.4^3 > ${limit}"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("x", Double.class);
+		attribNameToTypeMap.put("y", Double.class);
+		attribNameToTypeMap.put("limit", Double.class);
+		assertTrue(parser.parse("=${x} <= ${y}", attribNameToTypeMap));
+		assertTrue(parser.parse("=-15.4^3 > ${limit}", attribNameToTypeMap));
 	}
 
 	public void testVarargs() throws Exception {
-		assertFalse(parser.parse("=LOG()"));
-		assertTrue(parser.parse("=LOG(1)"));
-		assertTrue(parser.parse("=LOG(1,2)"));
-		assertFalse(parser.parse("=LOG(1,2,3)"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertFalse(parser.parse("=LOG()", attribNameToTypeMap));
+		assertTrue(parser.parse("=LOG(1)", attribNameToTypeMap));
+		assertTrue(parser.parse("=LOG(1,2)", attribNameToTypeMap));
+		assertFalse(parser.parse("=LOG(1,2,3)", attribNameToTypeMap));
 	}
 
 	public void testFixedargs() throws Exception {
-		assertFalse(parser.parse("=ABS()"));
-		assertTrue(parser.parse("=ABS(1)"));
-		assertFalse(parser.parse("=ABS(1,2)"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertFalse(parser.parse("=ABS()", attribNameToTypeMap));
+		assertTrue(parser.parse("=ABS(1)", attribNameToTypeMap));
+		assertFalse(parser.parse("=ABS(1,2)", attribNameToTypeMap));
 	}
 
 	public void testNOT() throws Exception {
-		assertFalse(parser.parse("=NOT()"));
-		assertTrue(parser.parse("=NOT(true)"));
-		assertTrue(parser.parse("=NOT(false)"));
-		assertTrue(parser.parse("=NOT(3.2 < 12)"));
-		assertTrue(parser.parse("=NOT(${logical})"));
-		assertFalse(parser.parse("=NOT(true, true)"));
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("logical", Boolean.class);
+		assertFalse(parser.parse("=NOT()", attribNameToTypeMap));
+		assertTrue(parser.parse("=NOT(true)", attribNameToTypeMap));
+		assertTrue(parser.parse("=NOT(false)", attribNameToTypeMap));
+		assertTrue(parser.parse("=NOT(3.2 < 12)", attribNameToTypeMap));
+		assertTrue(parser.parse("=NOT(${logical})", attribNameToTypeMap));
+		assertFalse(parser.parse("=NOT(true, true)", attribNameToTypeMap));
 	}
 }

@@ -30,6 +30,10 @@
 package cytoscape.data.eqn_attribs.parse_tree;
 
 
+import java.util.Stack;
+import cytoscape.data.eqn_attribs.interpreter.Instructions;
+
+
 /**
  *  A node in the parse tree representing a conversion from an arbitrary type to a string.
  */
@@ -53,4 +57,9 @@ public class ConvertToStringNode implements Node {
 	public Node getRightChild() { return null; }
 
 	public Node getConvertee() { return convertee; }
+
+	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+		opCodes.push(Instructions.SCONV);
+		convertee.genCode(opCodes, arguments);
+	}
 }
