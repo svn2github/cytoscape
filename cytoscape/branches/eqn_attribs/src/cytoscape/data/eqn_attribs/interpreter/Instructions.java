@@ -50,7 +50,9 @@ public class Instructions {
 	public static final int BLTS    = 1 << 16; // determine if one string is less than another
 	public static final int BGTES   = 1 << 17; // determine if one string is greater than or equal to another
 	public static final int BLTES   = 1 << 18; // determine if one string is less than or equal to another
-	public static final int CALL    = 1 << 19; // a function call
-	public static final int FUMINUS = 1 << 20; // unary minus
-	public static final int FUPLUS  = 1 << 21; // unary plus
+	public static final int BEQLB   = 1 << 19; // compare two booleans for equality
+	public static final int BNEQLB  = 1 << 20; // compare two booleans for inequality
+	public static final int CALL    = 1 << 21; // a function call
+	public static final int FUMINUS = 1 << 22; // unary minus
+	public static final int FUPLUS  = 1 << 23; // unary plus
 }
