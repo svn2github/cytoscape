@@ -29,8 +29,10 @@
 */
 package cytoscape.data.eqn_attribs.parse_tree;
 
+import java.util.Stack;
 import cytoscape.data.eqn_attribs.AttribToken;
 import cytoscape.data.eqn_attribs.AttribTokeniser;
+import cytoscape.data.eqn_attribs.interpreter.Instructions;
 
 /**
  *  A node in the parse tree representing a binary operator.
@@ -38,6 +40,8 @@ import cytoscape.data.eqn_attribs.AttribTokeniser;
 public class BinOpNode implements Node {
 	private final AttribToken operator;
 	private final Node lhs, rhs;
+
+	private final static int NO_SUCH_INSTRUCTION = -1;
 
 	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs == null)
@@ -65,4 +69,66 @@ public class BinOpNode implements Node {
 	public Node getRightChild() { return rhs; }
 
 	public AttribToken getOperator() { return operator; }
+
+	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+		switch (operator) {
+		case CARET:
+			opCodes.push(Instructions.FPOW);
+			break;
+		case PLUS:
+			opCodes.push(Instructions.FADD);
+			break;
+		case MINUS:
+			opCodes.push(Instructions.FSUB);
+			break;
+		case DIV:
+			opCodes.push(Instructions.FDIV);
+			break;
+		case MUL:
+			opCodes.push(Instructions.FMUL);
+			break;
+		case EQUAL:
+			opCodes.push(determineOpCode(Instructions.BEQLF, Instructions.BEQLS, Instructions.BEQLB));
+			break;
+		case NOT_EQUAL:
+			opCodes.push(determineOpCode(Instructions.BNEQLF, Instructions.BNEQLS, Instructions.BNEQLB));
+			break;
+		case GREATER_THAN:
+			opCodes.push(determineOpCode(Instructions.BGTF, Instructions.BGTS, NO_SUCH_INSTRUCTION));
+			break;
+		case LESS_THAN:
+			opCodes.push(determineOpCode(Instructions.BLTF, Instructions.BLTS, NO_SUCH_INSTRUCTION));
+			break;
+		case GREATER_OR_EQUAL:
+			opCodes.push(determineOpCode(Instructions.BGTEF, Instructions.BGTES, NO_SUCH_INSTRUCTION));
+			break;
+		case LESS_OR_EQUAL:
+			opCodes.push(determineOpCode(Instructions.BLTEF, Instructions.BLTES, NO_SUCH_INSTRUCTION));
+			break;
+		case AMPERSAND:
+			opCodes.push(Instructions.SCONCAT);
+			break;
+		default:
+			throw new IllegalStateException("unknown operator: " + operator + "!");
+		}
+
+		lhs.genCode(opCodes, arguments);
+		rhs.genCode(opCodes, arguments);
+	}
+
+	/**
+	 *  Picks one of three opcodes based on operand types.
+	 *  (N.B.: We assume that the LHS and RHS operands are of the same type!)
+	 */
+	private int determineOpCode(final int floatOpCode, final int stringOpCode, final int booleanOpCode) {
+		final Class operandType = lhs.getType();
+		if (operandType == Double.class)
+			return floatOpCode;
+		else if (operandType == String.class)
+			return stringOpCode;
+		else if (booleanOpCode != NO_SUCH_INSTRUCTION && operandType == Boolean.class)
+			return booleanOpCode;
+
+		throw new IllegalStateException("invalid LHS operand type for comparison: " + operandType + "!");
+	}
 }
