@@ -31,24 +31,26 @@ package cytoscape.data.eqn_attribs.interpreter;
 
 
 public class Instructions {
-	public static int FADD    = 1 << 4;  // add one float to another
-	public static int FSUB    = 1 << 5;  // subtract one float from another
-	public static int FMUL    = 1 << 6;  // multiply one float by another
-	public static int FDIV    = 1 << 7;  // divide one float by another
-	public static int FPOW    = 1 << 7;  // compute one float to the power of another
-	public static int SCONCAT = 1 << 8;  // concatenate two strings
-	public static int FFROMI  = 1 << 9;  // convert an integer to a float
-	public static int BEQLF   = 1 << 10; // compare two floats for equality
-	public static int BNEQLF  = 1 << 11; // compare two floats for inequality
-	public static int BGTF    = 1 << 12; // determine if one float is greater than another
-	public static int BLTF    = 1 << 13; // determine if one float is less than another
-	public static int BGTEF   = 1 << 14; // determine if one float is greater than or equal to another
-	public static int BLTEF   = 1 << 15; // determine if one float is less than or equal to another
-	public static int BEQLS   = 1 << 16; // compare two strings for equality
-	public static int BNEQLS  = 1 << 17; // compare two strings for inequality
-	public static int BGTS    = 1 << 18; // determine if one string is greater than another
-	public static int BLTS    = 1 << 19; // determine if one string is less than another
-	public static int BGTES   = 1 << 20; // determine if one string is greater than or equal to another
-	public static int BLTES   = 1 << 21; // determine if one string is less than or equal to another
-	public static int CALL    = 1 << 22; // a function call
+	public static final int FADD    = 1 << 0;  // add one float to another
+	public static final int FSUB    = 1 << 1;  // subtract one float from another
+	public static final int FMUL    = 1 << 2;  // multiply one float by another
+	public static final int FDIV    = 1 << 3;  // divide one float by another
+	public static final int FPOW    = 1 << 4;  // compute one float to the power of another
+	public static final int SCONCAT = 1 << 5;  // concatenate two strings
+	public static final int FFROMI  = 1 << 6;  // convert an integer to a float
+	public static final int BEQLF   = 1 << 7; // compare two floats for equality
+	public static final int BNEQLF  = 1 << 8; // compare two floats for inequality
+	public static final int BGTF    = 1 << 9; // determine if one float is greater than another
+	public static final int BLTF    = 1 << 10; // determine if one float is less than another
+	public static final int BGTEF   = 1 << 11; // determine if one float is greater than or equal to another
+	public static final int BLTEF   = 1 << 12; // determine if one float is less than or equal to another
+	public static final int BEQLS   = 1 << 13; // compare two strings for equality
+	public static final int BNEQLS  = 1 << 14; // compare two strings for inequality
+	public static final int BGTS    = 1 << 15; // determine if one string is greater than another
+	public static final int BLTS    = 1 << 16; // determine if one string is less than another
+	public static final int BGTES   = 1 << 17; // determine if one string is greater than or equal to another
+	public static final int BLTES   = 1 << 18; // determine if one string is less than or equal to another
+	public static final int CALL    = 1 << 19; // a function call
+	public static final int FUMINUS = 1 << 20; // unary minus
+	public static final int FUPLUS  = 1 << 21; // unary plus
 }

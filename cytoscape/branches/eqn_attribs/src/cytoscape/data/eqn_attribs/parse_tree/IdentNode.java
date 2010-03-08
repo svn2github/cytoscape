@@ -60,4 +60,8 @@ public class IdentNode implements Node {
 
 	public String getAttribName() { return attribName; }
 	public Object getDefaultValue() { return defaultValue; }
+
+	public Object getValue() {
+		throw new IllegalStateException("IdentNode.getValue() has not yet been implemented!");
+	}
 }
