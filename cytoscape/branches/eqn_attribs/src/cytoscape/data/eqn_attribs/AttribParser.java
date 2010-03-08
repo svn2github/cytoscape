@@ -94,15 +94,12 @@ public class AttribParser {
 				throw new IllegalStateException("premature end of expression!");
 		} catch (final IllegalStateException e) {
 			lastErrorMessage = e.getMessage();
-System.err.println("lastErrorMessage="+lastErrorMessage);
 			return false;
 		} catch (final ArithmeticException e) {
 			lastErrorMessage = e.getMessage();
-System.err.println("lastErrorMessage="+lastErrorMessage);
 			return false;
 		} catch (final IllegalArgumentException e) {
 			lastErrorMessage = e.getMessage();
-System.err.println("lastErrorMessage="+lastErrorMessage);
 			return false;
 		}
 
