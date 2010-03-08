@@ -37,13 +37,17 @@ import java.util.Stack;
 
 
 public class Interpreter {
-	private final Stack<Object> runtimeStack;
+	private final int[] opCodes;
+	private final Stack<Object> argumentStack;
 
-	public Interpreter(final Stack<Object> runtimeStack) throws IllegalStateException {
-		if (runtimeStack == null || runtimeStack.empty())
-			throw new IllegalStateException("runtime stack must not be null nor empty!");
+	public Interpreter(final int[] opCodes, final Stack<Object> argumentStack) throws IllegalStateException {
+		if (opCodes == null || opCodes.length == 0)
+			throw new IllegalStateException("null or empty opcodes!");
+		if (argumentStack == null || argumentStack.empty())
+			throw new IllegalStateException("argument stack must not be null nor empty!");
 
-		this.runtimeStack = runtimeStack;
+		this.opCodes = opCodes;
+		this.argumentStack = argumentStack;
 	}
 
 	/**
@@ -55,8 +59,7 @@ public class Interpreter {
 	 */
 	public Object run() throws ArithmeticException, IllegalArgumentException, IllegalStateException {
 		try {
-			while (runtimeStack.size() > 1) {
-				final int opCode = (Integer)runtimeStack.pop();
+			for (final int opCode : opCodes) {
 				switch (opCode) {
 				case Instructions.FADD:
 					fadd();
@@ -138,7 +141,7 @@ public class Interpreter {
 			throw new IllegalStateException("inconistent number of stack entries detected!");
 		}
 
-		final Object retval = runtimeStack.pop();
+		final Object retval = argumentStack.pop();
 		if (retval instanceof Double)
 			return retval;
 		if (retval instanceof String)
@@ -150,134 +153,134 @@ public class Interpreter {
 	}
 
 	private void sconv() throws EmptyStackException {
-		runtimeStack.push(new StringConstantNode(runtimeStack.pop().toString()));
+		argumentStack.push(argumentStack.pop().toString());
 	}
 
 	private void fadd() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new FloatConstantNode(float1 + float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 + float2);
 	}
 
 	private void fsub() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new FloatConstantNode(float1 - float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 - float2);
 	}
 
 	private void fmul() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new FloatConstantNode(float1 * float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 * float2);
 	}
 
 	private void fdiv() throws EmptyStackException, ArithmeticException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
 		if (float2 == 0.0)
 			throw new ArithmeticException("illegal division by zero!");
-		runtimeStack.push(new FloatConstantNode(float1 / float2));
+		argumentStack.push(float1 / float2);
 	}
 
 	private void fpow() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new FloatConstantNode(Math.pow(float1, float2)));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(Math.pow(float1, float2));
 	}
 
 	private void sconcat() throws EmptyStackException {
-		final String string1 = getString(runtimeStack.pop());
-		final String string2 = getString(runtimeStack.pop());
-		runtimeStack.push(new StringConstantNode(string1 + string2));
+		final String string1 = getString(argumentStack.pop());
+		final String string2 = getString(argumentStack.pop());
+		argumentStack.push(string1 + string2);
 	}
 
 	private void beqlf() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(float1 == float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 == float2);
 	}
 
 	private void bneqlf() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(float1 != float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 != float2);
 	}
 
 	private void bltf() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(float1 < float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 < float2);
 	}
 
 	private void bgtf() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(float1 > float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 > float2);
 	}
 
 	private void bltef() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(float1 <= float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 <= float2);
 	}
 
 	private void bgtef() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		final double float2 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(float1 >= float2));
+		final double float1 = getFloat(argumentStack.pop());
+		final double float2 = getFloat(argumentStack.pop());
+		argumentStack.push(float1 >= float2);
 	}
 
 	private void beqls() throws EmptyStackException {
-		final String string1 = getString(runtimeStack.pop());
-		final String string2 = getString(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(string1.equals(string2)));
+		final String string1 = getString(argumentStack.pop());
+		final String string2 = getString(argumentStack.pop());
+		argumentStack.push(string1.equals(string2));
 	}
 
 	private void bneqls() throws EmptyStackException {
-		final String string1 = getString(runtimeStack.pop());
-		final String string2 = getString(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(!string1.equals(string2)));
+		final String string1 = getString(argumentStack.pop());
+		final String string2 = getString(argumentStack.pop());
+		argumentStack.push(!string1.equals(string2));
 	}
 
 	private void blts() throws EmptyStackException {
-		final String string1 = getString(runtimeStack.pop());
-		final String string2 = getString(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(string1.compareTo(string2) < 0));
+		final String string1 = getString(argumentStack.pop());
+		final String string2 = getString(argumentStack.pop());
+		argumentStack.push(string1.compareTo(string2) < 0);
 	}
 
 	private void bgts() throws EmptyStackException {
-		final String string1 = getString(runtimeStack.pop());
-		final String string2 = getString(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(string1.compareTo(string2) > 0));
+		final String string1 = getString(argumentStack.pop());
+		final String string2 = getString(argumentStack.pop());
+		argumentStack.push(string1.compareTo(string2) > 0);
 	}
 
 	private void bltes() throws EmptyStackException {
-		final String string1 = getString(runtimeStack.pop());
-		final String string2 = getString(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(string1.compareTo(string2) <= 0));
+		final String string1 = getString(argumentStack.pop());
+		final String string2 = getString(argumentStack.pop());
+		argumentStack.push(string1.compareTo(string2) <= 0);
 	}
 
 	private void bgtes() throws EmptyStackException {
-		final String string1 = getString(runtimeStack.pop());
-		final String string2 = getString(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(string1.compareTo(string2) >= 0));
+		final String string1 = getString(argumentStack.pop());
+		final String string2 = getString(argumentStack.pop());
+		argumentStack.push(string1.compareTo(string2) >= 0);
 	}
 
 	private void beqlb() throws EmptyStackException {
-		final boolean bool1 = getBoolean(runtimeStack.pop());
-		final boolean bool2 = getBoolean(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(bool1 == bool2));
+		final boolean bool1 = getBoolean(argumentStack.pop());
+		final boolean bool2 = getBoolean(argumentStack.pop());
+		argumentStack.push(bool1 == bool2);
 	}
 
 	private void bneqlb() throws EmptyStackException {
-		final boolean bool1 = getBoolean(runtimeStack.pop());
-		final boolean bool2 = getBoolean(runtimeStack.pop());
-		runtimeStack.push(new BooleanConstantNode(bool1 != bool2));
+		final boolean bool1 = getBoolean(argumentStack.pop());
+		final boolean bool2 = getBoolean(argumentStack.pop());
+		argumentStack.push(bool1 != bool2);
 	}
 
 	private void call() throws EmptyStackException, IllegalStateException {
 		// 1. get the function
-		final Object o = runtimeStack.pop();
+		final Object o = argumentStack.pop();
 		if (!(o instanceof AttribFunction))
 			throw new IllegalStateException("expected an attribute function after the CALL opcode but found \"" + o.getClass() + "\" instead!");
 		final AttribFunction func = (AttribFunction)o;
@@ -285,7 +288,7 @@ public class Interpreter {
 		// 2. get and validate the argument count
 		final int argCount;
 		try {
-			argCount = (Integer)runtimeStack.pop();
+			argCount = (Integer)argumentStack.pop();
 		} catch (final Exception e) {
 			throw new IllegalStateException("invalid argument count type following a CALL opcode!");
 		}
@@ -306,32 +309,32 @@ public class Interpreter {
 		for (int argNo = 0; argNo < argCount; ++argNo) {
 			final Class expectedType = argTypes[varargs ? 0 : argNo];
 			if (expectedType == Double.class)
-				args[argNo] = new Double(getFloat(runtimeStack.pop()));
+				args[argNo] = new Double(getFloat(argumentStack.pop()));
 			else if (expectedType == String.class)
-				args[argNo] = getString(runtimeStack.pop());
+				args[argNo] = getString(argumentStack.pop());
 			else if (expectedType == Boolean.class)
-				args[argNo] = new Boolean(getBoolean(runtimeStack.pop()));
+				args[argNo] = new Boolean(getBoolean(argumentStack.pop()));
 			else
 				throw new IllegalStateException("unknown function argument type: " + expectedType.getClass() + "!");
 		}
 
 		// 4. now actually call the function
-		runtimeStack.push(func.evaluateFunction(args));
+		argumentStack.push(func.evaluateFunction(args));
 	}
 
 	private void fuminus() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new FloatConstantNode(-float1));
+		final double float1 = getFloat(argumentStack.pop());
+		argumentStack.push(-float1);
 	}
 
 	private void fuplus() throws EmptyStackException {
-		final double float1 = getFloat(runtimeStack.pop());
-		runtimeStack.push(new FloatConstantNode(+float1));
+		final double float1 = getFloat(argumentStack.pop());
+		argumentStack.push(+float1);
 	}
 
 	private double getFloat(final Object o) throws IllegalStateException {
-		if (o instanceof FloatConstantNode)
-			return ((FloatConstantNode)o).getValue();
+		if (o instanceof Double)
+			return (Double)o;
 
 		if (o instanceof IdentNode) {
 			final IdentNode identNode = (IdentNode)o;
@@ -345,8 +348,8 @@ public class Interpreter {
 	}
 
 	private String getString(final Object o) throws IllegalStateException {
-		if (o instanceof StringConstantNode)
-			return ((StringConstantNode)o).getValue();
+		if (o instanceof String)
+			return (String)o;
 
 		if (o instanceof IdentNode) {
 			final IdentNode identNode = (IdentNode)o;
@@ -356,12 +359,12 @@ public class Interpreter {
 			throw new IllegalStateException("can't convert the value of {" + identNode.getAttribName() + "} to a string!");
 		}
 
-		throw new IllegalStateException("can't convert a " + o.getClass() + " to a floating point number!");
+		throw new IllegalStateException("can't convert a " + o.getClass() + " to a string!");
 	}
 
 	private boolean getBoolean(final Object o) throws IllegalStateException {
-		if (o instanceof BooleanConstantNode)
-			return ((BooleanConstantNode)o).getValue();
+		if (o instanceof Boolean)
+			return (Boolean)o;
 
 		if (o instanceof IdentNode) {
 			final IdentNode identNode = (IdentNode)o;
@@ -371,6 +374,6 @@ public class Interpreter {
 			throw new IllegalStateException("can't convert the value of {" + identNode.getAttribName() + "} to a boolean!");
 		}
 
-		throw new IllegalStateException("can't convert a " + o.getClass() + " to a floating point number!");
+		throw new IllegalStateException("can't convert a " + o.getClass() + " to a boolean!");
 	}
 }
