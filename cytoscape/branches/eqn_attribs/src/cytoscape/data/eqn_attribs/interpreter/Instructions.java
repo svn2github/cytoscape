@@ -30,31 +30,7 @@
 package cytoscape.data.eqn_attribs.interpreter;
 
 
-public class Instructions {
-	public static final int FADD    = 1 << 0;  // add one float to another
-	public static final int FSUB    = 1 << 1;  // subtract one float from another
-	public static final int FMUL    = 1 << 2;  // multiply one float by another
-	public static final int FDIV    = 1 << 3;  // divide one float by another
-	public static final int FPOW    = 1 << 4;  // compute one float to the power of another
-	public static final int SCONCAT = 1 << 5;  // concatenate two strings
-	public static final int SCONV   = 1 << 6;  // convert anything to a string
-	public static final int BEQLF   = 1 << 7;  // compare two floats for equality
-	public static final int BNEQLF  = 1 << 8;  // compare two floats for inequality
-	public static final int BGTF    = 1 << 9;  // determine if one float is greater than another
-	public static final int BLTF    = 1 << 10; // determine if one float is less than another
-	public static final int BGTEF   = 1 << 11; // determine if one float is greater than or equal to another
-	public static final int BLTEF   = 1 << 12; // determine if one float is less than or equal to another
-	public static final int BEQLS   = 1 << 13; // compare two strings for equality
-	public static final int BNEQLS  = 1 << 14; // compare two strings for inequality
-	public static final int BGTS    = 1 << 15; // determine if one string is greater than another
-	public static final int BLTS    = 1 << 16; // determine if one string is less than another
-	public static final int BGTES   = 1 << 17; // determine if one string is greater than or equal to another
-	public static final int BLTES   = 1 << 18; // determine if one string is less than or equal to another
-	public static final int BEQLB   = 1 << 19; // compare two booleans for equality
-	public static final int BNEQLB  = 1 << 20; // compare two booleans for inequality
-	public static final int CALL    = 1 << 21; // a function call
-	public static final int FUMINUS = 1 << 22; // unary minus
-	public static final int FUPLUS  = 1 << 23; // unary plus
-	public static final int AREF    = 1 << 24; // attribute reference
-	public static final int AREF2   = 1 << 25; // attribute reference w/ a default value
+public enum Instructions {
+	FADD, FSUB, FMUL, FDIV, FPOW, SCONCAT, SCONV, BEQLF, BNEQLF, BGTF, BLTF, BGTEF, BLTEF, BEQLS,
+	BNEQLS, BGTS, BLTS, BGTES, BLTES, BEQLB, BNEQLB, CALL, FUMINUS, FUPLUS, AREF, AREF2
 }
