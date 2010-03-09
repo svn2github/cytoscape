@@ -124,8 +124,10 @@ public abstract class OpenBrowser {
 			final Process p = Runtime.getRuntime().exec(cmd);
 			return p.waitFor();
 		} catch (final InterruptedException e) {
+			CyLogger.getLogger().error("failed to execute browser command: '" + cmd + "'", e );
 			return -1;
 		} catch (final IOException e) {
+			CyLogger.getLogger().error("failed to execute browser command: '" + cmd + "'", e );
 			return -1;
 		}
 	}
