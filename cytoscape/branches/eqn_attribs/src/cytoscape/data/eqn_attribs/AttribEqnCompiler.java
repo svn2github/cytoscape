@@ -49,6 +49,10 @@ public class AttribEqnCompiler {
 		this.errorMsg = null;
 	}
 
+	public void registerFunction(final AttribFunction func) throws IllegalArgumentException {
+		parser.registerFunction(func);
+	}
+
 	public boolean compile(final String equation, final Map<String, Class> attribNameToTypeMap) {
 		if (!parser.parse(equation, attribNameToTypeMap)) {
 			errorMsg = parser.getErrorMsg();
@@ -57,6 +61,7 @@ public class AttribEqnCompiler {
 
 		final Node parseTree = parser.getParseTree();
 
+		argumentStack = new Stack<Object>();
 		final Stack<Integer> opCodes;
 		try {
 			opCodes = new Stack<Integer>();
