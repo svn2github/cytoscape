@@ -1,5 +1,5 @@
 /*
-  File: Instructions.java
+  File: Instruction.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,7 +30,7 @@
 package cytoscape.data.eqn_attribs.interpreter;
 
 
-public enum Instructions {
+public enum Instruction {
 	FADD, FSUB, FMUL, FDIV, FPOW, SCONCAT, SCONV, BEQLF, BNEQLF, BGTF, BLTF, BGTEF, BLTEF, BEQLS,
 	BNEQLS, BGTS, BLTS, BGTES, BLTES, BEQLB, BNEQLB, CALL, FUMINUS, FUPLUS, AREF, AREF2
 }
