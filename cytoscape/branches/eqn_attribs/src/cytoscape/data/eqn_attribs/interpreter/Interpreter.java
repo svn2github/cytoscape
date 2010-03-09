@@ -33,14 +33,19 @@ package cytoscape.data.eqn_attribs.interpreter;
 import cytoscape.data.eqn_attribs.AttribFunction;
 import cytoscape.data.eqn_attribs.parse_tree.*;
 import java.util.EmptyStackException;
+import java.util.Map;
 import java.util.Stack;
 
 
 public class Interpreter {
 	private final int[] opCodes;
 	private final Stack<Object> argumentStack;
+	private final Map<String, IdentDescriptor> nameToDescriptorMap;
 
-	public Interpreter(final int[] opCodes, final Stack<Object> argumentStack) throws IllegalStateException {
+		public Interpreter(final int[] opCodes, final Stack<Object> argumentStack,
+		                   final Map<String, IdentDescriptor> nameToDescriptorMap)
+		throws IllegalStateException
+	{
 		if (opCodes == null || opCodes.length == 0)
 			throw new IllegalStateException("null or empty opcodes!");
 		if (argumentStack == null || argumentStack.empty())
@@ -48,6 +53,7 @@ public class Interpreter {
 
 		this.opCodes = opCodes;
 		this.argumentStack = argumentStack;
+		this.nameToDescriptorMap = nameToDescriptorMap;
 	}
 
 	/**
@@ -340,13 +346,22 @@ public class Interpreter {
 
 	private void aref() throws EmptyStackException {
 		final String attribName = (String)argumentStack.pop();
-		throw new IllegalStateException("unimplemented opcode: AREF!");
+		final IdentDescriptor identDescriptor = nameToDescriptorMap.get(attribName);
+		if (identDescriptor == null)
+			throw new IllegalStateException("unknown attribute reference: \"" + attribName + "\" (2)!");
+		final Object value = identDescriptor.getValue();
+		if (value == null)
+			throw new IllegalStateException("undefined attribute reference: \"" + attribName + "\" (2)!");
 	}
 
 	private void aref2() throws EmptyStackException {
 		final String attribName = (String)argumentStack.pop();
 		final Object defaultValue = (String)argumentStack.pop();
-		throw new IllegalStateException("unimplemented opcode: AREF2!");
+		final IdentDescriptor identDescriptor = nameToDescriptorMap.get(attribName);
+		if (identDescriptor == null)
+			throw new IllegalStateException("unknown attribute reference: \"" + attribName + "\" (2)!");
+		final Object value = identDescriptor.getValue();
+		argumentStack.push(value != null ? value : defaultValue);
 	}
 
 	private double getFloat(final Object o) throws IllegalStateException {
