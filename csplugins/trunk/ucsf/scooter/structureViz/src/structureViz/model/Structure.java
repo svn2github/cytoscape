@@ -176,6 +176,9 @@ public class Structure {
 					resRange = resRange.concat(range[res]);
 				} else if (Character.isDigit(residue.charAt(1))) {
 					resRange = resRange.concat(range[res].substring(1));
+				} else if (residue.charAt(0) == '.') {
+					// Do we have a chain spec?
+					resRange = resRange.concat(range[res]);
 				} else {
 					resRange = resRange.concat(range[res].substring(3));
 				}
