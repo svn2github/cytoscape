@@ -33,12 +33,13 @@ package cytoscape.data.eqn_attribs;
 import java.util.Map;
 import java.util.Stack;
 import cytoscape.data.eqn_attribs.AttribParser;
+import cytoscape.data.eqn_attribs.interpreter.Instruction;
 import cytoscape.data.eqn_attribs.parse_tree.Node;
 
 
 public class AttribEqnCompiler {
 	private AttribParser parser;
-	private int[] opCodeStream;
+	private Instruction[] opCodeStream;
 	private Stack<Object> argumentStack;
 	private String errorMsg;
 
@@ -62,9 +63,9 @@ public class AttribEqnCompiler {
 		final Node parseTree = parser.getParseTree();
 
 		argumentStack = new Stack<Object>();
-		final Stack<Integer> opCodes;
+		final Stack<Instruction> opCodes;
 		try {
-			opCodes = new Stack<Integer>();
+			opCodes = new Stack<Instruction>();
 			parseTree.genCode(opCodes, argumentStack);
 		} catch (final IllegalStateException e) {
 			errorMsg = e.getCause().toString();
@@ -72,7 +73,7 @@ public class AttribEqnCompiler {
 		}
 
 		// revert the order of the opcodes
-		opCodeStream = new int[opCodes.size()];
+		opCodeStream = new Instruction[opCodes.size()];
 		for (int i = opCodeStream.length - 1; i >= 0; --i)
 			opCodeStream[i] = opCodes.pop();
 
@@ -82,6 +83,6 @@ public class AttribEqnCompiler {
 
 	public String getLastErrorMsg() { return errorMsg; }
 
-	public int[] getOpCodeStream() { return opCodeStream; }
+	public Instruction[] getOpCodeStream() { return opCodeStream; }
 	public Stack<Object> getArgumentStack() { return argumentStack; }
 }

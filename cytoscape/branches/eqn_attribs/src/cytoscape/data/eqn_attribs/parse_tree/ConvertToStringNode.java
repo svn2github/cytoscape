@@ -31,7 +31,7 @@ package cytoscape.data.eqn_attribs.parse_tree;
 
 
 import java.util.Stack;
-import cytoscape.data.eqn_attribs.interpreter.Instructions;
+import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
 /**
@@ -58,8 +58,8 @@ public class ConvertToStringNode implements Node {
 
 	public Node getConvertee() { return convertee; }
 
-	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
-		opCodes.push(Instructions.SCONV);
+	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
+		opCodes.push(Instruction.SCONV);
 		convertee.genCode(opCodes, arguments);
 	}
 }

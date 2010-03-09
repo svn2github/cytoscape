@@ -38,11 +38,11 @@ import java.util.Stack;
 
 
 public class Interpreter {
-	private final int[] opCodes;
+	private final Instruction[] opCodes;
 	private final Stack<Object> argumentStack;
 	private final Map<String, IdentDescriptor> nameToDescriptorMap;
 
-		public Interpreter(final int[] opCodes, final Stack<Object> argumentStack,
+		public Interpreter(final Instruction[] opCodes, final Stack<Object> argumentStack,
 		                   final Map<String, IdentDescriptor> nameToDescriptorMap)
 		throws IllegalStateException
 	{
@@ -65,84 +65,84 @@ public class Interpreter {
 	 */
 	public Object run() throws ArithmeticException, IllegalArgumentException, IllegalStateException {
 		try {
-			for (final int opCode : opCodes) {
+			for (final Instruction opCode : opCodes) {
 				switch (opCode) {
-				case Instructions.FADD:
+				case FADD:
 					fadd();
 					break;
-				case Instructions.FSUB:
+				case FSUB:
 					fsub();
 					break;
-				case Instructions.FMUL:
+				case FMUL:
 					fmul();
 					break;
-				case Instructions.FDIV:
+				case FDIV:
 					fdiv();
 					break;
-				case Instructions.FPOW:
+				case FPOW:
 					fpow();
 					break;
-				case Instructions.SCONCAT:
+				case SCONCAT:
 					sconcat();
 					break;
-				case Instructions.SCONV:
+				case SCONV:
 					sconv();
 					break;
-				case Instructions.BEQLF:
+				case BEQLF:
 					beqlf();
 					break;
-				case Instructions.BNEQLF:
+				case BNEQLF:
 					bneqlf();
 					break;
-				case Instructions.BGTF:
+				case BGTF:
 					bgtf();
 					break;
-				case Instructions.BLTF:
+				case BLTF:
 					bltf();
 					break;
-				case Instructions.BGTEF:
+				case BGTEF:
 					bgtef();
 					break;
-				case Instructions.BLTEF:
+				case BLTEF:
 					bltef();
 					break;
-				case Instructions.BEQLS:
+				case BEQLS:
 					beqls();
 					break;
-				case Instructions.BNEQLS:
+				case BNEQLS:
 					bneqls();
 					break;
-				case Instructions.BGTS:
+				case BGTS:
 					bgts();
 					break;
-				case Instructions.BLTS:
+				case BLTS:
 					blts();
 					break;
-				case Instructions.BGTES:
+				case BGTES:
 					bgtes();
 					break;
-				case Instructions.BLTES:
+				case BLTES:
 					bltes();
 					break;
-				case Instructions.BEQLB:
+				case BEQLB:
 					beqlb();
 					break;
-				case Instructions.BNEQLB:
+				case BNEQLB:
 					bneqlb();
 					break;
-				case Instructions.CALL:
+				case CALL:
 					call();
 					break;
-				case Instructions.FUMINUS:
+				case FUMINUS:
 					fuminus();
 					break;
-				case Instructions.FUPLUS:
+				case FUPLUS:
 					fuplus();
 					break;
-				case Instructions.AREF:
+				case AREF:
 					aref();
 					break;
-				case Instructions.AREF2:
+				case AREF2:
 					aref2();
 					break;
 				default:
@@ -355,12 +355,14 @@ public class Interpreter {
 	}
 
 	private void aref2() throws EmptyStackException {
+System.err.println("*** Entering AREF2");
 		final String attribName = (String)argumentStack.pop();
 		final Object defaultValue = (String)argumentStack.pop();
 		final IdentDescriptor identDescriptor = nameToDescriptorMap.get(attribName);
 		if (identDescriptor == null)
 			throw new IllegalStateException("unknown attribute reference: \"" + attribName + "\" (2)!");
 		final Object value = identDescriptor.getValue();
+System.err.println("*** About to push: " + (value != null ? value : defaultValue));
 		argumentStack.push(value != null ? value : defaultValue);
 	}
 
@@ -368,7 +370,7 @@ public class Interpreter {
 		if (o instanceof Double)
 			return (Double)o;
 
-		throw new IllegalStateException("can't convert a " + o.getClass() + " to a floating point number!");
+		throw new IllegalStateException("can't convert a " + o.getClass() + " (" + o + ") to a floating point number!");
 	}
 
 	private String getString(final Object o) throws IllegalStateException {

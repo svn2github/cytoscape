@@ -31,7 +31,7 @@ package cytoscape.data.eqn_attribs.parse_tree;
 
 import java.util.Stack;
 import cytoscape.data.eqn_attribs.AttribToken;
-import cytoscape.data.eqn_attribs.interpreter.Instructions;
+import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
 /**
@@ -65,13 +65,13 @@ public class UnaryOpNode implements Node {
 
 	public AttribToken getOperator() { return operator; }
 
-	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
 		switch (operator) {
 		case PLUS:
-			opCodes.push(new Integer(Instructions.FUPLUS));
+			opCodes.push(Instruction.FUPLUS);
 			break;
 		case MINUS:
-			opCodes.push(new Integer(Instructions.FUMINUS));
+			opCodes.push(Instruction.FUMINUS);
 			break;
 		default:
 			throw new IllegalStateException("invalid unary operation: " + operator + "!");

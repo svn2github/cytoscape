@@ -29,10 +29,12 @@
 */
 package cytoscape.data.eqn_attribs.parse_tree;
 
+
 import java.util.Stack;
 import cytoscape.data.eqn_attribs.AttribToken;
 import cytoscape.data.eqn_attribs.AttribTokeniser;
-import cytoscape.data.eqn_attribs.interpreter.Instructions;
+import cytoscape.data.eqn_attribs.interpreter.Instruction;
+
 
 /**
  *  A node in the parse tree representing a binary operator.
@@ -40,8 +42,6 @@ import cytoscape.data.eqn_attribs.interpreter.Instructions;
 public class BinOpNode implements Node {
 	private final AttribToken operator;
 	private final Node lhs, rhs;
-
-	private final static int NO_SUCH_INSTRUCTION = -1;
 
 	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs == null)
@@ -70,43 +70,43 @@ public class BinOpNode implements Node {
 
 	public AttribToken getOperator() { return operator; }
 
-	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
 		switch (operator) {
 		case CARET:
-			opCodes.push(Instructions.FPOW);
+			opCodes.push(Instruction.FPOW);
 			break;
 		case PLUS:
-			opCodes.push(Instructions.FADD);
+			opCodes.push(Instruction.FADD);
 			break;
 		case MINUS:
-			opCodes.push(Instructions.FSUB);
+			opCodes.push(Instruction.FSUB);
 			break;
 		case DIV:
-			opCodes.push(Instructions.FDIV);
+			opCodes.push(Instruction.FDIV);
 			break;
 		case MUL:
-			opCodes.push(Instructions.FMUL);
+			opCodes.push(Instruction.FMUL);
 			break;
 		case EQUAL:
-			opCodes.push(determineOpCode(Instructions.BEQLF, Instructions.BEQLS, Instructions.BEQLB));
+			opCodes.push(determineOpCode(Instruction.BEQLF, Instruction.BEQLS, Instruction.BEQLB));
 			break;
 		case NOT_EQUAL:
-			opCodes.push(determineOpCode(Instructions.BNEQLF, Instructions.BNEQLS, Instructions.BNEQLB));
+			opCodes.push(determineOpCode(Instruction.BNEQLF, Instruction.BNEQLS, Instruction.BNEQLB));
 			break;
 		case GREATER_THAN:
-			opCodes.push(determineOpCode(Instructions.BGTF, Instructions.BGTS, NO_SUCH_INSTRUCTION));
+			opCodes.push(determineOpCode(Instruction.BGTF, Instruction.BGTS, null));
 			break;
 		case LESS_THAN:
-			opCodes.push(determineOpCode(Instructions.BLTF, Instructions.BLTS, NO_SUCH_INSTRUCTION));
+			opCodes.push(determineOpCode(Instruction.BLTF, Instruction.BLTS, null));
 			break;
 		case GREATER_OR_EQUAL:
-			opCodes.push(determineOpCode(Instructions.BGTEF, Instructions.BGTES, NO_SUCH_INSTRUCTION));
+			opCodes.push(determineOpCode(Instruction.BGTEF, Instruction.BGTES, null));
 			break;
 		case LESS_OR_EQUAL:
-			opCodes.push(determineOpCode(Instructions.BLTEF, Instructions.BLTES, NO_SUCH_INSTRUCTION));
+			opCodes.push(determineOpCode(Instruction.BLTEF, Instruction.BLTES, null));
 			break;
 		case AMPERSAND:
-			opCodes.push(Instructions.SCONCAT);
+			opCodes.push(Instruction.SCONCAT);
 			break;
 		default:
 			throw new IllegalStateException("unknown operator: " + operator + "!");
@@ -120,13 +120,13 @@ public class BinOpNode implements Node {
 	 *  Picks one of three opcodes based on operand types.
 	 *  (N.B.: We assume that the LHS and RHS operands are of the same type!)
 	 */
-	private int determineOpCode(final int floatOpCode, final int stringOpCode, final int booleanOpCode) {
+	private Instruction determineOpCode(final Instruction floatOpCode, final Instruction stringOpCode, final Instruction booleanOpCode) {
 		final Class operandType = lhs.getType();
 		if (operandType == Double.class)
 			return floatOpCode;
 		else if (operandType == String.class)
 			return stringOpCode;
-		else if (booleanOpCode != NO_SUCH_INSTRUCTION && operandType == Boolean.class)
+		else if (booleanOpCode != null && operandType == Boolean.class)
 			return booleanOpCode;
 
 		throw new IllegalStateException("invalid LHS operand type for comparison: " + operandType + "!");

@@ -31,6 +31,7 @@ package cytoscape.data.eqn_attribs.parse_tree;
 
 
 import java.util.Stack;
+import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
 /**
@@ -57,7 +58,7 @@ public class StringConstantNode implements Node {
 
 	public String getValue() { return value; }
 
-	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
+	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
 		arguments.push(value);
 	}
 }

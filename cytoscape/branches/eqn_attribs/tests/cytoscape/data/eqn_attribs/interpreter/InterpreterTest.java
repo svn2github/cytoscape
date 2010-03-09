@@ -52,6 +52,11 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		attribNameToTypeMap.put("BOB", Double.class);
 		assertTrue(compiler.compile("=42 - 12 + 3 * (4 - 2) + ${BOB:12}", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("BOB", new IdentDescriptor(Double.class, -10.0));
+		final Interpreter interpreter =
+			new Interpreter(compiler.getOpCodeStream(), compiler.getArgumentStack(), nameToDescriptorMap);
+		final Object result = interpreter.run();
 	}
 
 	public void testUnaryPlusAndMinus() throws Exception {

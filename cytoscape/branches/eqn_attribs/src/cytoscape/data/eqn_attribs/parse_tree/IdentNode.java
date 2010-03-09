@@ -31,7 +31,7 @@ package cytoscape.data.eqn_attribs.parse_tree;
 
 
 import java.util.Stack;
-import cytoscape.data.eqn_attribs.interpreter.Instructions;
+import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
 /**
@@ -43,6 +43,10 @@ public class IdentNode implements Node {
 	private final Class type;
 
 	public IdentNode(final String attribName, final Object defaultValue, final Class type) {
+		if (type == null)
+			throw new IllegalArgumentException("\"type\" must not be null!");
+		if (defaultValue != null && defaultValue.getClass() != type)
+			throw new IllegalArgumentException("default value must match \"type\"!");
 		this.attribName = attribName;
 		this.defaultValue = defaultValue;
 		this.type = type;
@@ -67,8 +71,8 @@ public class IdentNode implements Node {
 	public String getAttribName() { return attribName; }
 	public Object getDefaultValue() { return defaultValue; }
 
-	public void genCode(final Stack<Integer> opCodes, final Stack<Object> arguments) {
-		opCodes.push(defaultValue == null ? Instructions.AREF : Instructions.AREF2);
+	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
+		opCodes.push(defaultValue == null ? Instruction.AREF : Instruction.AREF2);
 		arguments.push(attribName);
 		if (defaultValue != null)
 			arguments.push(defaultValue);
