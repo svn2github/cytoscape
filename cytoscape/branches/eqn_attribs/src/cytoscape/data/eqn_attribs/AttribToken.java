@@ -31,29 +31,41 @@ package cytoscape.data.eqn_attribs;
 
 
 public enum AttribToken {
-	STRING_CONSTANT,
-	FLOAT_CONSTANT,
-	BOOLEAN_CONSTANT,
-	IDENTIFIER,
-	OPEN_BRACE,
-	CLOSE_BRACE,
-	OPEN_PAREN,
-	CLOSE_PAREN,
-	COLON,
-	CARET,
-	PLUS,
-	MINUS,
-	DIV,
-	MUL,
-	EQUAL,
-	NOT_EQUAL,
-	GREATER_THAN,
-	LESS_THAN,
-	GREATER_OR_EQUAL,
-	LESS_OR_EQUAL,
-	DOLLAR,
-	COMMA,
-	AMPERSAND,
-	EOS,
-	ERROR
+	STRING_CONSTANT("?", /* isComparisonOperator = */ false),
+	FLOAT_CONSTANT("?", /* isComparisonOperator = */ false),
+	BOOLEAN_CONSTANT("?", /* isComparisonOperator = */ false),
+	IDENTIFIER("?", /* isComparisonOperator = */ false),
+	OPEN_BRACE("{", /* isComparisonOperator = */ false),
+	CLOSE_BRACE("}", /* isComparisonOperator = */ false),
+	OPEN_PAREN("(", /* isComparisonOperator = */ false),
+	CLOSE_PAREN(")", /* isComparisonOperator = */ false),
+	COLON(":", /* isComparisonOperator = */ false),
+	CARET("^", /* isComparisonOperator = */ false),
+	PLUS("+", /* isComparisonOperator = */ false),
+	MINUS("-", /* isComparisonOperator = */ false),
+	DIV("/", /* isComparisonOperator = */ false),
+	MUL("*", /* isComparisonOperator = */ false),
+	EQUAL("=", /* isComparisonOperator = */ true),
+	NOT_EQUAL("<>", /* isComparisonOperator = */ true),
+	GREATER_THAN(">", /* isComparisonOperator = */ true),
+	LESS_THAN("<", /* isComparisonOperator = */ true),
+	GREATER_OR_EQUAL(">=", /* isComparisonOperator = */ true),
+	LESS_OR_EQUAL("<=", /* isComparisonOperator = */ true),
+	DOLLAR("$", /* isComparisonOperator = */ false),
+	COMMA(",", /* isComparisonOperator = */ false),
+	AMPERSAND("&", /* isComparisonOperator = */ false),
+	EOS("?", /* isComparisonOperator = */ false),
+	ERROR("?", /* isComparisonOperator = */ false);
+	
+
+	private final String asString;
+	private final boolean isComparisonOperator;
+
+	AttribToken(final String asString, final boolean isComparisonOperator) {
+		this.asString = asString;
+		this.isComparisonOperator = isComparisonOperator;
+	}
+
+	public String asString() { return asString; }
+	public boolean isComparisonOperator() { return isComparisonOperator; }
 }

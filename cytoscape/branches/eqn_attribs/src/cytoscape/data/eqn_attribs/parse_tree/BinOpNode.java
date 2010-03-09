@@ -56,7 +56,7 @@ public class BinOpNode implements Node {
 
 	public String toString() { return "BinOpNode: " + operator; }
 
-	public Class getType() { return AttribTokeniser.isComparisonOperator(operator) ? Boolean.class : lhs.getType(); }
+	public Class getType() { return operator.isComparisonOperator() ? Boolean.class : lhs.getType(); }
 
 	/**
 	 *  @returns the left operand

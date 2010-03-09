@@ -166,7 +166,7 @@ class AttribParser {
 			return new BinOpNode(operator, lhs, rhs);
 		else
 			throw new ArithmeticException("incompatible operands for \""
-			                              + AttribTokeniser.opTokenToString(operator) + "\"! (lhs="
+			                              + operator.asString() + "\"! (lhs="
 			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                              + rhs.toString() + ":" + rhs.getType() + ")");
 	}
@@ -198,12 +198,12 @@ class AttribParser {
 				return new BinOpNode(operator, lhs, rhs);
 			else
 				throw new IllegalArgumentException("unimplemented comparison "
-				                                   + AttribTokeniser.opTokenToString(operator)
+				                                   + operator.asString()
 				                                   + " for boolean operands!");
 		}
 		else
 			throw new IllegalArgumentException("incompatible operands for \""
-			                                   + AttribTokeniser.opTokenToString(operator) + "\"! (lhs="
+			                                   + operator.asString() + "\"! (lhs="
 			                                   + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                                   + rhs.toString() + ":" + rhs.getType() + ")");
 	 }
@@ -332,7 +332,7 @@ class AttribParser {
 
 	private Node handleUnaryOp(final AttribToken operator, final Node operand) {
 		if (operand.getType() == Boolean.class || operand.getType() == String.class)
-			throw new ArithmeticException("can't apply a unary " + AttribTokeniser.opTokenToString(operator)
+			throw new ArithmeticException("can't apply a unary " + operator.asString()
 			                              + " a boolean or string operand!");
 		return new UnaryOpNode(operator, operand);
 	}

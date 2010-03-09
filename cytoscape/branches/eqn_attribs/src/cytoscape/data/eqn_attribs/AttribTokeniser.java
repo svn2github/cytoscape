@@ -186,41 +186,6 @@ public class AttribTokeniser {
 		return errorMsg;
 	}
 
-	public static boolean isComparisonOperator(final AttribToken token) {
-		switch (token) {
-		case EQUAL:
-		case NOT_EQUAL:
-		case GREATER_THAN:
-		case LESS_THAN:
-		case GREATER_OR_EQUAL:
-		case LESS_OR_EQUAL:
-			return true;
-		default:
-			return false;
-		}
-	}
-
-	/**
-	 *  Converts tokens representing an operator to a string.  All other tokens return "?".
-	 */
-	public static String opTokenToString(final AttribToken token) {
-		switch (token) {
-		case CARET: return "^";
-		case PLUS: return "+";
-		case MINUS: return "-";
-		case DIV: return "/";
-		case MUL: return "*";
-		case EQUAL: return "=";
-		case NOT_EQUAL: return "<>";
-		case GREATER_THAN: return ">";
-		case LESS_THAN: return "<";
-		case GREATER_OR_EQUAL: return ">=";
-		case LESS_OR_EQUAL: return "<=";
-		case AMPERSAND: return "&";
-		default: return "?";
-		}
-	}
-
 	private int getChar() {
 		final int retval;
 
