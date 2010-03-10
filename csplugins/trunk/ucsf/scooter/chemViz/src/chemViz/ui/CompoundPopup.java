@@ -131,9 +131,9 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 		setLayout(layout);
 
 		// Get the right attributes
-		if (labelAttribute.startsWith("node."))
+		if (labelAttribute != null && labelAttribute.startsWith("node."))
 			attributes = Cytoscape.getNodeAttributes();
-		else if (labelAttribute.startsWith("edge."))
+		else if (labelAttribute != null && labelAttribute.startsWith("edge."))
 			attributes = Cytoscape.getEdgeAttributes();
 		else
 			labelAttribute = null;
