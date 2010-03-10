@@ -55,7 +55,7 @@ public class PerformanceActions implements PropertyChangeListener {
 		galIdentifier = Cytoscape.getCurrentNetwork().getIdentifier();
 
 		// just to test gml
-		Cytoscape.createNetworkFromURL(getClass().getResource("/galFiltered.gml"), true);
+//		Cytoscape.createNetworkFromURL(getClass().getResource("/galFiltered.gml"), true);
 
 		// a big network with separate view creation
 		Cytoscape.createNetworkFromURL(getClass().getResource("/BINDhuman.sif"), true);
@@ -128,7 +128,7 @@ public class PerformanceActions implements PropertyChangeListener {
 	String sessionName;
 
 	private void saveSession() {
-		sessionName = Integer.toString(new Random().nextInt()) + "-session";
+		sessionName = Integer.toString(Math.abs(new Random().nextInt())) + "-session.cys";
 		Cytoscape.getDesktop().setTitle("new session");
 		CytoscapeSessionWriter sw = new CytoscapeSessionWriter(sessionName);
         try {
