@@ -72,8 +72,8 @@ public class FuncCallNode implements Node {
 	public Object getValue() { return null; }
 
 	public void genCode(final Stack<Object> codeStack) {
-		for (final Node arg : args)
-			arg.genCode(codeStack);
+		for (int i = args.length - 1; i >= 0; --i)
+			args[i].genCode(codeStack);
 		codeStack.push(args.length);
 		codeStack.push(func);
 		codeStack.push(Instruction.CALL);

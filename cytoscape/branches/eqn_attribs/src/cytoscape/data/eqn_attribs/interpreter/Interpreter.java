@@ -309,10 +309,16 @@ public class Interpreter {
 		}
 		final Class[] argTypes = func.getParameterTypes();
 		final boolean varargs = func.getMinNumberOfArgsForVariableArity() != -1;
-		if (varargs && (argCount < func.getMinNumberOfArgsForVariableArity() || argCount > func.getMaxNumberOfArgsForVariableArity()))
-			throw new IllegalStateException("invalid number of arguments in call to " + func.getName() + "() (1)!");
+		if (varargs) {
+			if (argCount < func.getMinNumberOfArgsForVariableArity() || argCount > func.getMaxNumberOfArgsForVariableArity())
+				throw new IllegalStateException("invalid number (found " + argCount + ", expected between "
+				                                + func.getMinNumberOfArgsForVariableArity() + " and "
+				                                + func.getMaxNumberOfArgsForVariableArity() + ") of arguments in call to "
+				                                + func.getName() + "()!");
+		}
 		else if (argCount != argTypes.length)
-			throw new IllegalStateException("invalid number of arguments in call to " + func.getName() + "() (2)!");
+			throw new IllegalStateException("invalid number (found " + argCount + ", expected " + argTypes.length
+			                                + ") of arguments in call to " + func.getName() + "()!");
 
 		final int MIN_ARG_COUNT = 0;
 		final int MAX_ARG_COUNT = 50;

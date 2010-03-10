@@ -93,6 +93,9 @@ public class InterpreterTest extends TestCase {
 	public void testExponentiation() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=2^3^4 - 0.0002", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(Math.pow(2.0, Math.pow(3.0, 4.0)) - 0.0002), interpreter.run());
 	}
 
 	public void testComparisons() throws Exception {
@@ -109,13 +112,19 @@ public class InterpreterTest extends TestCase {
 		assertFalse(compiler.compile("=LOG()", attribNameToTypeMap));
 		assertTrue(compiler.compile("=LOG(1)", attribNameToTypeMap));
 		assertTrue(compiler.compile("=LOG(1,2)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(Math.log(1.0)/Math.log(2.0)), interpreter.run());
 		assertFalse(compiler.compile("=LOG(1,2,3)", attribNameToTypeMap));
 	}
 
 	public void testFixedargs() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertFalse(compiler.compile("=ABS()", attribNameToTypeMap));
-		assertTrue(compiler.compile("=ABS(1)", attribNameToTypeMap));
+		assertTrue(compiler.compile("=ABS(-1.5e10)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(1.5e10), interpreter.run());
 		assertFalse(compiler.compile("=ABS(1,2)", attribNameToTypeMap));
 	}
 
@@ -123,9 +132,15 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		attribNameToTypeMap.put("logical", Boolean.class);
 		assertFalse(compiler.compile("=NOT()", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("logical", new IdentDescriptor(Boolean.class, true));
 		assertTrue(compiler.compile("=NOT(true)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Boolean(false), interpreter1.run());
 		assertTrue(compiler.compile("=NOT(false)", attribNameToTypeMap));
 		assertTrue(compiler.compile("=NOT(3.2 < 12)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Boolean(false), interpreter2.run());
 		assertTrue(compiler.compile("=NOT(${logical})", attribNameToTypeMap));
 		assertFalse(compiler.compile("=NOT(true, true)", attribNameToTypeMap));
 	}
