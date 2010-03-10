@@ -60,11 +60,7 @@ import javax.imageio.*;
 /**
  *
  */
-public class HTMLResults {
-
-	public static void main(String[] args) {
-		new HTMLResults(args);	
-	}
+public class TotalResults implements ImageResults {
 
 	List<List<TrackedEvent>> allResults;
 	long maxRunTime = Long.MIN_VALUE;
@@ -75,16 +71,33 @@ public class HTMLResults {
 	String[] args;
 
 
-	public HTMLResults(String[] args) {
+	public TotalResults(String[] args) {
 		allResults = new LinkedList<List<TrackedEvent>>();
 		colorMap = new HashMap<String,Color>();
 		this.args = args;
 
 		for ( String fileName : args )
 			allResults.add( readResults( fileName ) );
-	
-		createImage();
-		writeHTML();
+	}
+
+	public String getExplanation() {
+		return "This image displays the results by absolute time. The taller the column, " +
+		       "the longer the event lasted.";
+	}
+
+	public String getName() {
+		return "Total";
+	}
+
+	public RenderedImage getImage() {
+		BufferedImage bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = bi.createGraphics();
+		paint(g2);
+		return bi;
+	}
+
+	public String getMouseOverText() {
+		return areaBuffer.toString();
 	}
 
 	private List<TrackedEvent> readResults(String fileName) {
@@ -112,19 +125,6 @@ public class HTMLResults {
 			br = null;
 		}
 		return tel;
-	}
-
-
-    
-	private void createImage() {
-        BufferedImage bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = bi.createGraphics();
-        paint(g2);
-		try {
-			ImageIO.write(bi,"png",new File("homer.png"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void paint(Graphics g) {
@@ -192,36 +192,4 @@ public class HTMLResults {
 
 	}
 	
-	private void writeHTML() {
-		StringBuffer html = new StringBuffer();
-
-		html.append("<html>\n");
-		html.append("<head>\n");
-		html.append("<script type=\"text/javascript\">\n");
-		html.append("function writeText(txt)\n");
-		html.append("{\n");
-		html.append("document.getElementById(\"desc\").innerHTML=txt\n");
-		html.append("}\n");
-		html.append("</script>\n");
-		html.append("</head>\n");
-		html.append("<body>\n");
-		//html.append("<p id=\"desc\">---</p>\n");
-		html.append("<img src=\"homer.png\" usemap=\"#green\" border=\"0\">\n");
-		html.append("<map name=\"green\">\n");
-
-		html.append( areaBuffer.toString() );
-
-		html.append("</map>\n");
-		html.append("</body>\n");
-		html.append("</html>\n");
-
-		//System.out.println(html.toString());
-		try {
-			FileWriter fw = new FileWriter("homer.html");
-			fw.write(html.toString(),0,html.length());
-			fw.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

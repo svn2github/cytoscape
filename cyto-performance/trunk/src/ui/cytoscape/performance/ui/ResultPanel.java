@@ -104,7 +104,7 @@ public class ResultPanel extends JPanel {
 		html.append("</head>\n");
 		html.append("<body>\n");
 		//html.append("<p id=\"desc\">---</p>\n");
-		html.append("<img src=\"homer.png\" usemap=\"#green\" border=\"0\">\n");
+		html.append("<img src=\"total-time.png\" usemap=\"#green\" border=\"0\">\n");
 		html.append("<map name=\"green\">\n");
 
 		html.append( areaBuffer.toString() );
@@ -115,7 +115,7 @@ public class ResultPanel extends JPanel {
 
 		//System.out.println(html.toString());
 		try {
-			FileWriter fw = new FileWriter("homer.html");
+			FileWriter fw = new FileWriter("total-time.html");
 			fw.write(html.toString(),0,html.length());
 			fw.flush();
 			fw.close();

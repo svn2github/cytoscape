@@ -60,11 +60,7 @@ import javax.imageio.*;
 /**
  *
  */
-public class AlignedResults {
-
-	public static void main(String[] args) {
-		new AlignedResults(args);	
-	}
+public class AlignedResults implements ImageResults {
 
 	List<List<TrackedEvent>> allResults;
 	List<List<TrackedEvent>> alignedResults;
@@ -87,9 +83,27 @@ public class AlignedResults {
 
 		MultipleAlign<TrackedEvent> nw = new MultipleAlign<TrackedEvent>(allResults);
 		alignedResults = nw.getAlignment();
+	}
 
-		createImage();
-		writeHTML();
+	public String getExplanation() {
+		return "This image presents the results in a normalized fashion where individual " +
+		       "events are aligned with one another to facilitate direct comparisons across " +
+			   "different versions.";
+	}
+
+	public String getMouseOverText() {
+		return areaBuffer.toString();
+	}
+
+	public String getName() {
+		return "Aligned";
+	}
+    
+	public RenderedImage getImage() {
+        BufferedImage bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = bi.createGraphics();
+        paint(g2);
+		return bi;
 	}
 
 
@@ -120,19 +134,6 @@ public class AlignedResults {
 			br = null;
 		}
 		return tel;
-	}
-
-
-    
-	private void createImage() {
-        BufferedImage bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = bi.createGraphics();
-        paint(g2);
-		try {
-			ImageIO.write(bi,"png",new File("marge.png"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void paint(Graphics g) {
@@ -195,38 +196,5 @@ public class AlignedResults {
 						  //onMouseOver=\"writeText('" + sig + 
 						  //"')\" onMouseOut=\"writeText('---')\">");
 
-	}
-	
-	private void writeHTML() {
-		StringBuffer html = new StringBuffer();
-
-		html.append("<html>\n");
-		html.append("<head>\n");
-		html.append("<script type=\"text/javascript\">\n");
-		html.append("function writeText(txt)\n");
-		html.append("{\n");
-		html.append("document.getElementById(\"desc\").innerHTML=txt\n");
-		html.append("}\n");
-		html.append("</script>\n");
-		html.append("</head>\n");
-		html.append("<body>\n");
-		//html.append("<p id=\"desc\">---</p>\n");
-		html.append("<img src=\"marge.png\" usemap=\"#green\" border=\"0\">\n");
-		html.append("<map name=\"green\">\n");
-
-		html.append( areaBuffer.toString() );
-
-		html.append("</map>\n");
-		html.append("</body>\n");
-		html.append("</html>\n");
-
-		//System.out.println(html.toString());
-		try {
-			FileWriter fw = new FileWriter("marge.html");
-			fw.write(html.toString(),0,html.length());
-			fw.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }
