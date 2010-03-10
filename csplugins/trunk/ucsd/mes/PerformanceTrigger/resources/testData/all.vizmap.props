@@ -1,0 +1,837 @@
+#This file specifies visual mappings for Cytoscape and has been automatically generated.
+# WARNING: any changes you make to this file while Cytoscape is running may be overwritten.
+# Any changes may make these visual mappings unreadable.
+# Please make sure you know what you are doing before modifying this file by hand.
+#
+#Wed Mar 10 12:26:26 PST 2010
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeColor=51,51,51
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeFont=SanSerif,plain,10
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeFontSize=10.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabel=
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelColor=0,0,0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelOpacity=255.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelWidth=100.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLineStyle=SOLID
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLineWidth=2.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeOpacity=255.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeSourceArrowColor=0,0,0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeSourceArrowOpacity=255.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeSourceArrowShape=NONE
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeTargetArrowColor=0,0,0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeTargetArrowOpacity=255.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeTargetArrowShape=NONE
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeToolTip=
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeBorderColor=0,0,0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeBorderOpacity=255.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeFillColor=255,255,255
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeFont=Default,plain,12
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeFontSize=12.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeHight=30.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabel=
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelColor=0,0,0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelOpacity=255.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelWidth=100.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLineStyle=SOLID
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLineWidth=1.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeOpacity=255.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeShape=rect
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeShowNestedNetwork=true
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeSize=35.0
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeToolTip=
+edgeAppearanceCalculator.Nested\ Network\ Style.defaultNodeWidth=70.0
+edgeAppearanceCalculator.Nested\ Network\ Style.nodeSizeLocked=true
+edgeAppearanceCalculator.Sample1.defaultEdgeColor=0,0,0
+edgeAppearanceCalculator.Sample1.defaultEdgeFont=Default,plain,10
+edgeAppearanceCalculator.Sample1.defaultEdgeFontSize=10.0
+edgeAppearanceCalculator.Sample1.defaultEdgeLabel=
+edgeAppearanceCalculator.Sample1.defaultEdgeLabelColor=0,0,0
+edgeAppearanceCalculator.Sample1.defaultEdgeLabelOpacity=255.0
+edgeAppearanceCalculator.Sample1.defaultEdgeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Sample1.defaultEdgeLabelWidth=100.0
+edgeAppearanceCalculator.Sample1.defaultEdgeLineStyle=SOLID
+edgeAppearanceCalculator.Sample1.defaultEdgeLineWidth=1.0
+edgeAppearanceCalculator.Sample1.defaultEdgeOpacity=255.0
+edgeAppearanceCalculator.Sample1.defaultEdgeSourceArrowColor=0,0,0
+edgeAppearanceCalculator.Sample1.defaultEdgeSourceArrowOpacity=255.0
+edgeAppearanceCalculator.Sample1.defaultEdgeSourceArrowShape=NONE
+edgeAppearanceCalculator.Sample1.defaultEdgeTargetArrowColor=0,0,0
+edgeAppearanceCalculator.Sample1.defaultEdgeTargetArrowOpacity=255.0
+edgeAppearanceCalculator.Sample1.defaultEdgeTargetArrowShape=NONE
+edgeAppearanceCalculator.Sample1.defaultEdgeToolTip=
+edgeAppearanceCalculator.Sample1.defaultNodeBorderColor=0,0,0
+edgeAppearanceCalculator.Sample1.defaultNodeBorderOpacity=255.0
+edgeAppearanceCalculator.Sample1.defaultNodeFillColor=255,255,255
+edgeAppearanceCalculator.Sample1.defaultNodeFont=Default,plain,12
+edgeAppearanceCalculator.Sample1.defaultNodeFontSize=12.0
+edgeAppearanceCalculator.Sample1.defaultNodeHight=30.0
+edgeAppearanceCalculator.Sample1.defaultNodeLabel=
+edgeAppearanceCalculator.Sample1.defaultNodeLabelColor=0,0,0
+edgeAppearanceCalculator.Sample1.defaultNodeLabelOpacity=255.0
+edgeAppearanceCalculator.Sample1.defaultNodeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Sample1.defaultNodeLabelWidth=100.0
+edgeAppearanceCalculator.Sample1.defaultNodeLineStyle=SOLID
+edgeAppearanceCalculator.Sample1.defaultNodeLineWidth=1.0
+edgeAppearanceCalculator.Sample1.defaultNodeOpacity=255.0
+edgeAppearanceCalculator.Sample1.defaultNodeShape=rect
+edgeAppearanceCalculator.Sample1.defaultNodeShowNestedNetwork=true
+edgeAppearanceCalculator.Sample1.defaultNodeSize=35.0
+edgeAppearanceCalculator.Sample1.defaultNodeToolTip=
+edgeAppearanceCalculator.Sample1.defaultNodeWidth=70.0
+edgeAppearanceCalculator.Sample1.edgeColorCalculator=BasicDiscrete
+edgeAppearanceCalculator.Sample1.edgeLabelCalculator=EdgeLabel
+edgeAppearanceCalculator.Sample1.edgeLineStyleCalculator=Sample1-Edge Line Style-Discrete Mapper
+edgeAppearanceCalculator.Sample1.nodeSizeLocked=true
+edgeAppearanceCalculator.Solid.defaultEdgeColor=204,204,204
+edgeAppearanceCalculator.Solid.defaultEdgeFont=SanSerif,plain,10
+edgeAppearanceCalculator.Solid.defaultEdgeFontSize=10.0
+edgeAppearanceCalculator.Solid.defaultEdgeLabel=
+edgeAppearanceCalculator.Solid.defaultEdgeLabelColor=102,102,102
+edgeAppearanceCalculator.Solid.defaultEdgeLabelOpacity=190.0
+edgeAppearanceCalculator.Solid.defaultEdgeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Solid.defaultEdgeLabelWidth=100.0
+edgeAppearanceCalculator.Solid.defaultEdgeLineStyle=SOLID
+edgeAppearanceCalculator.Solid.defaultEdgeLineWidth=12.0
+edgeAppearanceCalculator.Solid.defaultEdgeOpacity=255.0
+edgeAppearanceCalculator.Solid.defaultEdgeSourceArrowColor=0,0,0
+edgeAppearanceCalculator.Solid.defaultEdgeSourceArrowOpacity=255.0
+edgeAppearanceCalculator.Solid.defaultEdgeSourceArrowShape=NONE
+edgeAppearanceCalculator.Solid.defaultEdgeTargetArrowColor=0,0,0
+edgeAppearanceCalculator.Solid.defaultEdgeTargetArrowOpacity=255.0
+edgeAppearanceCalculator.Solid.defaultEdgeTargetArrowShape=NONE
+edgeAppearanceCalculator.Solid.defaultEdgeToolTip=
+edgeAppearanceCalculator.Solid.defaultNodeBorderColor=0,0,0
+edgeAppearanceCalculator.Solid.defaultNodeBorderOpacity=255.0
+edgeAppearanceCalculator.Solid.defaultNodeFillColor=255,255,255
+edgeAppearanceCalculator.Solid.defaultNodeFont=Default,plain,12
+edgeAppearanceCalculator.Solid.defaultNodeFontSize=12.0
+edgeAppearanceCalculator.Solid.defaultNodeHight=30.0
+edgeAppearanceCalculator.Solid.defaultNodeLabel=
+edgeAppearanceCalculator.Solid.defaultNodeLabelColor=0,0,0
+edgeAppearanceCalculator.Solid.defaultNodeLabelOpacity=255.0
+edgeAppearanceCalculator.Solid.defaultNodeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Solid.defaultNodeLabelWidth=100.0
+edgeAppearanceCalculator.Solid.defaultNodeLineStyle=SOLID
+edgeAppearanceCalculator.Solid.defaultNodeLineWidth=1.0
+edgeAppearanceCalculator.Solid.defaultNodeOpacity=255.0
+edgeAppearanceCalculator.Solid.defaultNodeShape=rect
+edgeAppearanceCalculator.Solid.defaultNodeShowNestedNetwork=true
+edgeAppearanceCalculator.Solid.defaultNodeSize=35.0
+edgeAppearanceCalculator.Solid.defaultNodeToolTip=
+edgeAppearanceCalculator.Solid.defaultNodeWidth=70.0
+edgeAppearanceCalculator.Solid.edgeLabelCalculator=Solid-Edge Label-Passthrough Mapper
+edgeAppearanceCalculator.Solid.nodeSizeLocked=true
+edgeAppearanceCalculator.Universe.defaultEdgeColor=255,255,255
+edgeAppearanceCalculator.Universe.defaultEdgeFont=SanSerif,plain,10
+edgeAppearanceCalculator.Universe.defaultEdgeFontSize=10.0
+edgeAppearanceCalculator.Universe.defaultEdgeLabel=
+edgeAppearanceCalculator.Universe.defaultEdgeLabelColor=0,0,0
+edgeAppearanceCalculator.Universe.defaultEdgeLabelOpacity=255.0
+edgeAppearanceCalculator.Universe.defaultEdgeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Universe.defaultEdgeLabelWidth=100.0
+edgeAppearanceCalculator.Universe.defaultEdgeLineStyle=LONG_DASH
+edgeAppearanceCalculator.Universe.defaultEdgeLineWidth=3.0
+edgeAppearanceCalculator.Universe.defaultEdgeOpacity=100.0
+edgeAppearanceCalculator.Universe.defaultEdgeSourceArrowColor=0,0,0
+edgeAppearanceCalculator.Universe.defaultEdgeSourceArrowOpacity=255.0
+edgeAppearanceCalculator.Universe.defaultEdgeSourceArrowShape=NONE
+edgeAppearanceCalculator.Universe.defaultEdgeTargetArrowColor=0,0,0
+edgeAppearanceCalculator.Universe.defaultEdgeTargetArrowOpacity=255.0
+edgeAppearanceCalculator.Universe.defaultEdgeTargetArrowShape=NONE
+edgeAppearanceCalculator.Universe.defaultEdgeToolTip=
+edgeAppearanceCalculator.Universe.defaultNodeBorderColor=0,0,0
+edgeAppearanceCalculator.Universe.defaultNodeBorderOpacity=255.0
+edgeAppearanceCalculator.Universe.defaultNodeFillColor=255,255,255
+edgeAppearanceCalculator.Universe.defaultNodeFont=Default,plain,12
+edgeAppearanceCalculator.Universe.defaultNodeFontSize=12.0
+edgeAppearanceCalculator.Universe.defaultNodeHight=30.0
+edgeAppearanceCalculator.Universe.defaultNodeLabel=
+edgeAppearanceCalculator.Universe.defaultNodeLabelColor=0,0,0
+edgeAppearanceCalculator.Universe.defaultNodeLabelOpacity=255.0
+edgeAppearanceCalculator.Universe.defaultNodeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.Universe.defaultNodeLabelWidth=100.0
+edgeAppearanceCalculator.Universe.defaultNodeLineStyle=SOLID
+edgeAppearanceCalculator.Universe.defaultNodeLineWidth=1.0
+edgeAppearanceCalculator.Universe.defaultNodeOpacity=255.0
+edgeAppearanceCalculator.Universe.defaultNodeShape=rect
+edgeAppearanceCalculator.Universe.defaultNodeShowNestedNetwork=true
+edgeAppearanceCalculator.Universe.defaultNodeSize=35.0
+edgeAppearanceCalculator.Universe.defaultNodeToolTip=
+edgeAppearanceCalculator.Universe.defaultNodeWidth=70.0
+edgeAppearanceCalculator.Universe.nodeSizeLocked=true
+edgeAppearanceCalculator.default.defaultEdgeColor=0,0,255
+edgeAppearanceCalculator.default.defaultEdgeFont=Default,plain,10
+edgeAppearanceCalculator.default.defaultEdgeFontSize=10.0
+edgeAppearanceCalculator.default.defaultEdgeLabel=
+edgeAppearanceCalculator.default.defaultEdgeLabelColor=0,0,0
+edgeAppearanceCalculator.default.defaultEdgeLabelOpacity=255.0
+edgeAppearanceCalculator.default.defaultEdgeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.default.defaultEdgeLabelWidth=100.0
+edgeAppearanceCalculator.default.defaultEdgeLineStyle=SOLID
+edgeAppearanceCalculator.default.defaultEdgeLineWidth=1.5
+edgeAppearanceCalculator.default.defaultEdgeOpacity=255.0
+edgeAppearanceCalculator.default.defaultEdgeSourceArrowColor=0,0,0
+edgeAppearanceCalculator.default.defaultEdgeSourceArrowOpacity=255.0
+edgeAppearanceCalculator.default.defaultEdgeSourceArrowShape=NONE
+edgeAppearanceCalculator.default.defaultEdgeTargetArrowColor=0,0,0
+edgeAppearanceCalculator.default.defaultEdgeTargetArrowOpacity=255.0
+edgeAppearanceCalculator.default.defaultEdgeTargetArrowShape=NONE
+edgeAppearanceCalculator.default.defaultEdgeToolTip=
+edgeAppearanceCalculator.default.defaultNodeBorderColor=0,0,0
+edgeAppearanceCalculator.default.defaultNodeBorderOpacity=255.0
+edgeAppearanceCalculator.default.defaultNodeFillColor=255,255,255
+edgeAppearanceCalculator.default.defaultNodeFont=Default,plain,12
+edgeAppearanceCalculator.default.defaultNodeFontSize=12.0
+edgeAppearanceCalculator.default.defaultNodeHight=30.0
+edgeAppearanceCalculator.default.defaultNodeLabel=
+edgeAppearanceCalculator.default.defaultNodeLabelColor=0,0,0
+edgeAppearanceCalculator.default.defaultNodeLabelOpacity=255.0
+edgeAppearanceCalculator.default.defaultNodeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.default.defaultNodeLabelWidth=100.0
+edgeAppearanceCalculator.default.defaultNodeLineStyle=SOLID
+edgeAppearanceCalculator.default.defaultNodeLineWidth=1.0
+edgeAppearanceCalculator.default.defaultNodeOpacity=255.0
+edgeAppearanceCalculator.default.defaultNodeShape=rect
+edgeAppearanceCalculator.default.defaultNodeShowNestedNetwork=true
+edgeAppearanceCalculator.default.defaultNodeSize=35.0
+edgeAppearanceCalculator.default.defaultNodeToolTip=
+edgeAppearanceCalculator.default.defaultNodeWidth=70.0
+edgeAppearanceCalculator.default.nodeSizeLocked=true
+edgeAppearanceCalculator.testStyle.defaultEdgeColor=0,0,0
+edgeAppearanceCalculator.testStyle.defaultEdgeFont=SanSerif,plain,10
+edgeAppearanceCalculator.testStyle.defaultEdgeFontSize=10.0
+edgeAppearanceCalculator.testStyle.defaultEdgeLabel=
+edgeAppearanceCalculator.testStyle.defaultEdgeLabelColor=0,0,0
+edgeAppearanceCalculator.testStyle.defaultEdgeLabelOpacity=255
+edgeAppearanceCalculator.testStyle.defaultEdgeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.testStyle.defaultEdgeLabelWidth=100.0
+edgeAppearanceCalculator.testStyle.defaultEdgeLineStyle=SOLID
+edgeAppearanceCalculator.testStyle.defaultEdgeLineWidth=1.0
+edgeAppearanceCalculator.testStyle.defaultEdgeOpacity=255
+edgeAppearanceCalculator.testStyle.defaultEdgeSourceArrowColor=0,0,0
+edgeAppearanceCalculator.testStyle.defaultEdgeSourceArrowOpacity=255
+edgeAppearanceCalculator.testStyle.defaultEdgeSourceArrowShape=NONE
+edgeAppearanceCalculator.testStyle.defaultEdgeTargetArrowColor=0,0,0
+edgeAppearanceCalculator.testStyle.defaultEdgeTargetArrowOpacity=255
+edgeAppearanceCalculator.testStyle.defaultEdgeTargetArrowShape=NONE
+edgeAppearanceCalculator.testStyle.defaultEdgeToolTip=
+edgeAppearanceCalculator.testStyle.defaultNodeBorderColor=0,0,0
+edgeAppearanceCalculator.testStyle.defaultNodeBorderOpacity=255
+edgeAppearanceCalculator.testStyle.defaultNodeFillColor=255,255,255
+edgeAppearanceCalculator.testStyle.defaultNodeFont=Default,plain,12
+edgeAppearanceCalculator.testStyle.defaultNodeFontSize=12.0
+edgeAppearanceCalculator.testStyle.defaultNodeHight=30.0
+edgeAppearanceCalculator.testStyle.defaultNodeLabel=
+edgeAppearanceCalculator.testStyle.defaultNodeLabelColor=0,0,0
+edgeAppearanceCalculator.testStyle.defaultNodeLabelOpacity=255
+edgeAppearanceCalculator.testStyle.defaultNodeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.testStyle.defaultNodeLabelWidth=100.0
+edgeAppearanceCalculator.testStyle.defaultNodeLineStyle=SOLID
+edgeAppearanceCalculator.testStyle.defaultNodeLineWidth=1.0
+edgeAppearanceCalculator.testStyle.defaultNodeOpacity=255
+edgeAppearanceCalculator.testStyle.defaultNodeShape=rect
+edgeAppearanceCalculator.testStyle.defaultNodeShowNestedNetwork=true
+edgeAppearanceCalculator.testStyle.defaultNodeSize=35.0
+edgeAppearanceCalculator.testStyle.defaultNodeToolTip=
+edgeAppearanceCalculator.testStyle.defaultNodeWidth=70.0
+edgeAppearanceCalculator.testStyle.edgeColorCalculator=testStyle-Edge Color-Discrete Mapper
+edgeAppearanceCalculator.testStyle.edgeLineStyleCalculator=testStyle-Edge Line Style-Discrete Mapper
+edgeColorCalculator.BasicDiscrete.mapping.controller=interaction
+edgeColorCalculator.BasicDiscrete.mapping.controllerType=4
+edgeColorCalculator.BasicDiscrete.mapping.map.pd=255,0,51
+edgeColorCalculator.BasicDiscrete.mapping.map.pp=0,204,0
+edgeColorCalculator.BasicDiscrete.mapping.type=DiscreteMapping
+edgeColorCalculator.BasicDiscrete.visualPropertyType=EDGE_COLOR
+edgeColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ EDGE_COLOR.mapping.controller=vizmap\:Yeast Network (galFiltered_gml) EDGE_COLOR
+edgeColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ EDGE_COLOR.mapping.controllerType=4
+edgeColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ EDGE_COLOR.mapping.map.java.awt.Color[r\=0,g\=0,b\=225]=0,0,225
+edgeColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ EDGE_COLOR.mapping.map.java.awt.Color[r\=255,g\=255,b\=0]=255,255,0
+edgeColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ EDGE_COLOR.mapping.type=DiscreteMapping
+edgeColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ EDGE_COLOR.visualPropertyType=EDGE_COLOR
+edgeColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_COLOR.mapping.controller=vizmap\:galFiltered EDGE_COLOR
+edgeColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_COLOR.mapping.controllerType=4
+edgeColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_COLOR.mapping.map.java.awt.Color[r\=0,g\=0,b\=225]=0,0,225
+edgeColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_COLOR.mapping.map.java.awt.Color[r\=255,g\=255,b\=0]=255,255,0
+edgeColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_COLOR.mapping.type=DiscreteMapping
+edgeColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_COLOR.visualPropertyType=EDGE_COLOR
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.controller=interaction
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.controllerType=4
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.Y2H=255,191,0
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.coAP=128,255,0
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.core=0,255,64
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.hyper_core=0,255,255
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.interactsWith=0,64,255
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.non_core=128,0,255
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.pd=255,0,191
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.map.pp=255,0,0
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.mapping.type=DiscreteMapping
+edgeColorCalculator.testStyle-Edge\ Color-Discrete\ Mapper.visualPropertyType=EDGE_COLOR
+edgeLabelCalculator.EdgeLabel.mapping.controller=interaction
+edgeLabelCalculator.EdgeLabel.mapping.type=PassThroughMapping
+edgeLabelCalculator.EdgeLabel.visualPropertyType=EDGE_LABEL
+edgeLabelCalculator.Solid-Edge\ Label-Passthrough\ Mapper.mapping.controller=interaction
+edgeLabelCalculator.Solid-Edge\ Label-Passthrough\ Mapper.mapping.type=PassThroughMapping
+edgeLabelCalculator.Solid-Edge\ Label-Passthrough\ Mapper.visualPropertyType=EDGE_LABEL
+edgeLineStyleCalculator.Sample1-Edge\ Line\ Style-Discrete\ Mapper.mapping.controller=interaction
+edgeLineStyleCalculator.Sample1-Edge\ Line\ Style-Discrete\ Mapper.mapping.controllerType=4
+edgeLineStyleCalculator.Sample1-Edge\ Line\ Style-Discrete\ Mapper.mapping.map.pd=LONG_DASH
+edgeLineStyleCalculator.Sample1-Edge\ Line\ Style-Discrete\ Mapper.mapping.map.pp=SOLID
+edgeLineStyleCalculator.Sample1-Edge\ Line\ Style-Discrete\ Mapper.mapping.type=DiscreteMapping
+edgeLineStyleCalculator.Sample1-Edge\ Line\ Style-Discrete\ Mapper.visualPropertyType=EDGE_LINE_STYLE
+edgeLineStyleCalculator.testStyle-Edge\ Line\ Style-Discrete\ Mapper.mapping.controller=interaction
+edgeLineStyleCalculator.testStyle-Edge\ Line\ Style-Discrete\ Mapper.mapping.controllerType=4
+edgeLineStyleCalculator.testStyle-Edge\ Line\ Style-Discrete\ Mapper.mapping.map.interactsWith=ZIGZAG
+edgeLineStyleCalculator.testStyle-Edge\ Line\ Style-Discrete\ Mapper.mapping.map.pd=LONG_DASH
+edgeLineStyleCalculator.testStyle-Edge\ Line\ Style-Discrete\ Mapper.mapping.map.pp=SOLID
+edgeLineStyleCalculator.testStyle-Edge\ Line\ Style-Discrete\ Mapper.mapping.type=DiscreteMapping
+edgeLineStyleCalculator.testStyle-Edge\ Line\ Style-Discrete\ Mapper.visualPropertyType=EDGE_LINE_STYLE
+edgeTargetArrowColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_COLOR.mapping.controller=vizmap\:galFiltered EDGE_TGTARROW_COLOR
+edgeTargetArrowColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_COLOR.mapping.controllerType=4
+edgeTargetArrowColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_COLOR.mapping.map.java.awt.Color[r\=255,g\=255,b\=0]=255,255,0
+edgeTargetArrowColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_COLOR.mapping.type=DiscreteMapping
+edgeTargetArrowColorCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_COLOR.visualPropertyType=EDGE_TGTARROW_COLOR
+edgeTargetArrowShapeCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_SHAPE.mapping.controller=vizmap\:galFiltered EDGE_TGTARROW_SHAPE
+edgeTargetArrowShapeCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_SHAPE.mapping.controllerType=4
+edgeTargetArrowShapeCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_SHAPE.mapping.map.ARROW=ARROW
+edgeTargetArrowShapeCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_SHAPE.mapping.type=DiscreteMapping
+edgeTargetArrowShapeCalculator.VisualStyleBuilder-vizmap\:galFiltered\ EDGE_TGTARROW_SHAPE.visualPropertyType=EDGE_TGTARROW_SHAPE
+globalAppearanceCalculator.Nested\ Network\ Style.defaultBackgroundColor=255,255,255
+globalAppearanceCalculator.Nested\ Network\ Style.defaultEdgeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Nested\ Network\ Style.defaultEdgeSelectionColor=255,0,0
+globalAppearanceCalculator.Nested\ Network\ Style.defaultNodeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Nested\ Network\ Style.defaultNodeSelectionColor=255,255,0
+globalAppearanceCalculator.Sample1.defaultBackgroundColor=255,255,255
+globalAppearanceCalculator.Sample1.defaultEdgeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Sample1.defaultEdgeSelectionColor=255,0,0
+globalAppearanceCalculator.Sample1.defaultNodeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Sample1.defaultNodeSelectionColor=255,255,0
+globalAppearanceCalculator.Solid.defaultBackgroundColor=255,255,255
+globalAppearanceCalculator.Solid.defaultEdgeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Solid.defaultEdgeSelectionColor=255,0,0
+globalAppearanceCalculator.Solid.defaultNodeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Solid.defaultNodeSelectionColor=255,255,0
+globalAppearanceCalculator.Universe.defaultBackgroundColor=0,0,0
+globalAppearanceCalculator.Universe.defaultEdgeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Universe.defaultEdgeSelectionColor=255,0,0
+globalAppearanceCalculator.Universe.defaultNodeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.Universe.defaultNodeSelectionColor=255,255,0
+globalAppearanceCalculator.default.defaultBackgroundColor=204,204,255
+globalAppearanceCalculator.default.defaultEdgeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.default.defaultEdgeSelectionColor=255,0,0
+globalAppearanceCalculator.default.defaultNodeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.default.defaultNodeSelectionColor=255,255,0
+globalAppearanceCalculator.testStyle.defaultBackgroundColor=255,255,255
+globalAppearanceCalculator.testStyle.defaultEdgeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.testStyle.defaultEdgeSelectionColor=255,0,0
+globalAppearanceCalculator.testStyle.defaultNodeReverseSelectionColor=0,255,0
+globalAppearanceCalculator.testStyle.defaultNodeSelectionColor=255,255,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeColor=0,0,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeFont=SanSerif,plain,10
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeFontSize=10.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabel=
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelColor=0,0,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelOpacity=255.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLabelWidth=100.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLineStyle=SOLID
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeLineWidth=1.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeOpacity=255.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeSourceArrowColor=0,0,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeSourceArrowOpacity=255.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeSourceArrowShape=NONE
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeTargetArrowColor=0,0,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeTargetArrowOpacity=255.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeTargetArrowShape=NONE
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultEdgeToolTip=
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeBorderColor=0,153,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeBorderOpacity=190.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeFillColor=153,255,153
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeFont=SansSerif,plain,12
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeFontSize=13.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeHight=30.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabel=
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelColor=0,0,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelOpacity=255.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLabelWidth=100.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLineStyle=SOLID
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeLineWidth=2.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeOpacity=150.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeShape=ellipse
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeShowNestedNetwork=true
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeSize=40.0
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeToolTip=
+nodeAppearanceCalculator.Nested\ Network\ Style.defaultNodeWidth=70.0
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeBorderColorCalculator=Nested Network Style-Node Border Color-Discrete Mapper
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeFillColorCalculator=Nested Network Style-Node Color-Discrete Mapper
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeLabelCalculator=Nested Network Style-Node Label-Passthrough Mapper
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeLabelColor=Nested Network Style-Node Label Color-Discrete Mapper
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeLabelPositionCalculator=Nested Network Style-Node Label Position-Discrete Mapper
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeLineWidthCalculator=Nested Network Style-Node Line Width-Discrete Mapper
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeShapeCalculator=Nested Network Style-Node Shape-Discrete Mapper
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeSizeLocked=true
+nodeAppearanceCalculator.Nested\ Network\ Style.nodeUniformSizeCalculator=Nested Network Style-Node Size-Discrete Mapper
+nodeAppearanceCalculator.Sample1.defaultEdgeColor=0,0,0
+nodeAppearanceCalculator.Sample1.defaultEdgeFont=SanSerif,plain,10
+nodeAppearanceCalculator.Sample1.defaultEdgeFontSize=10.0
+nodeAppearanceCalculator.Sample1.defaultEdgeLabel=
+nodeAppearanceCalculator.Sample1.defaultEdgeLabelColor=0,0,0
+nodeAppearanceCalculator.Sample1.defaultEdgeLabelOpacity=255.0
+nodeAppearanceCalculator.Sample1.defaultEdgeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.Sample1.defaultEdgeLabelWidth=100.0
+nodeAppearanceCalculator.Sample1.defaultEdgeLineStyle=SOLID
+nodeAppearanceCalculator.Sample1.defaultEdgeLineWidth=1.0
+nodeAppearanceCalculator.Sample1.defaultEdgeOpacity=255.0
+nodeAppearanceCalculator.Sample1.defaultEdgeSourceArrowColor=0,0,0
+nodeAppearanceCalculator.Sample1.defaultEdgeSourceArrowOpacity=255.0
+nodeAppearanceCalculator.Sample1.defaultEdgeSourceArrowShape=NONE
+nodeAppearanceCalculator.Sample1.defaultEdgeTargetArrowColor=0,0,0
+nodeAppearanceCalculator.Sample1.defaultEdgeTargetArrowOpacity=255.0
+nodeAppearanceCalculator.Sample1.defaultEdgeTargetArrowShape=NONE
+nodeAppearanceCalculator.Sample1.defaultEdgeToolTip=
+nodeAppearanceCalculator.Sample1.defaultNodeBorderColor=0,0,0
+nodeAppearanceCalculator.Sample1.defaultNodeBorderOpacity=255.0
+nodeAppearanceCalculator.Sample1.defaultNodeFillColor=204,204,255
+nodeAppearanceCalculator.Sample1.defaultNodeFont=Dialog.bold,plain,12
+nodeAppearanceCalculator.Sample1.defaultNodeFontSize=12.0
+nodeAppearanceCalculator.Sample1.defaultNodeHight=30.0
+nodeAppearanceCalculator.Sample1.defaultNodeLabel=
+nodeAppearanceCalculator.Sample1.defaultNodeLabelColor=0,0,0
+nodeAppearanceCalculator.Sample1.defaultNodeLabelOpacity=255.0
+nodeAppearanceCalculator.Sample1.defaultNodeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.Sample1.defaultNodeLabelWidth=100.0
+nodeAppearanceCalculator.Sample1.defaultNodeLineStyle=SOLID
+nodeAppearanceCalculator.Sample1.defaultNodeLineWidth=0.0
+nodeAppearanceCalculator.Sample1.defaultNodeOpacity=255.0
+nodeAppearanceCalculator.Sample1.defaultNodeShape=ellipse
+nodeAppearanceCalculator.Sample1.defaultNodeShowNestedNetwork=true
+nodeAppearanceCalculator.Sample1.defaultNodeSize=40.0
+nodeAppearanceCalculator.Sample1.defaultNodeToolTip=
+nodeAppearanceCalculator.Sample1.defaultNodeWidth=70.0
+nodeAppearanceCalculator.Sample1.nodeLabelCalculator=NodeLabel
+nodeAppearanceCalculator.Sample1.nodeSizeLocked=true
+nodeAppearanceCalculator.Solid.defaultEdgeColor=0,0,0
+nodeAppearanceCalculator.Solid.defaultEdgeFont=SanSerif,plain,10
+nodeAppearanceCalculator.Solid.defaultEdgeFontSize=10.0
+nodeAppearanceCalculator.Solid.defaultEdgeLabel=
+nodeAppearanceCalculator.Solid.defaultEdgeLabelColor=0,0,0
+nodeAppearanceCalculator.Solid.defaultEdgeLabelOpacity=255.0
+nodeAppearanceCalculator.Solid.defaultEdgeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.Solid.defaultEdgeLabelWidth=100.0
+nodeAppearanceCalculator.Solid.defaultEdgeLineStyle=SOLID
+nodeAppearanceCalculator.Solid.defaultEdgeLineWidth=1.0
+nodeAppearanceCalculator.Solid.defaultEdgeOpacity=255.0
+nodeAppearanceCalculator.Solid.defaultEdgeSourceArrowColor=0,0,0
+nodeAppearanceCalculator.Solid.defaultEdgeSourceArrowOpacity=255.0
+nodeAppearanceCalculator.Solid.defaultEdgeSourceArrowShape=NONE
+nodeAppearanceCalculator.Solid.defaultEdgeTargetArrowColor=0,0,0
+nodeAppearanceCalculator.Solid.defaultEdgeTargetArrowOpacity=255.0
+nodeAppearanceCalculator.Solid.defaultEdgeTargetArrowShape=NONE
+nodeAppearanceCalculator.Solid.defaultEdgeToolTip=
+nodeAppearanceCalculator.Solid.defaultNodeBorderColor=0,0,0
+nodeAppearanceCalculator.Solid.defaultNodeBorderOpacity=255.0
+nodeAppearanceCalculator.Solid.defaultNodeFillColor=102,102,102
+nodeAppearanceCalculator.Solid.defaultNodeFont=Courier 10 Pitch Bold,plain,12
+nodeAppearanceCalculator.Solid.defaultNodeFontSize=18.0
+nodeAppearanceCalculator.Solid.defaultNodeHight=30.0
+nodeAppearanceCalculator.Solid.defaultNodeLabel=
+nodeAppearanceCalculator.Solid.defaultNodeLabelColor=0,0,0
+nodeAppearanceCalculator.Solid.defaultNodeLabelOpacity=160.0
+nodeAppearanceCalculator.Solid.defaultNodeLabelPosition=S,NW,c,0,5
+nodeAppearanceCalculator.Solid.defaultNodeLabelWidth=100.0
+nodeAppearanceCalculator.Solid.defaultNodeLineStyle=SOLID
+nodeAppearanceCalculator.Solid.defaultNodeLineWidth=0.0
+nodeAppearanceCalculator.Solid.defaultNodeOpacity=255.0
+nodeAppearanceCalculator.Solid.defaultNodeShape=ellipse
+nodeAppearanceCalculator.Solid.defaultNodeShowNestedNetwork=true
+nodeAppearanceCalculator.Solid.defaultNodeSize=40.0
+nodeAppearanceCalculator.Solid.defaultNodeToolTip=
+nodeAppearanceCalculator.Solid.defaultNodeWidth=70.0
+nodeAppearanceCalculator.Solid.nodeLabelCalculator=Solid-Node Label-Passthrough Mapper
+nodeAppearanceCalculator.Solid.nodeSizeLocked=true
+nodeAppearanceCalculator.Universe.defaultEdgeColor=0,0,0
+nodeAppearanceCalculator.Universe.defaultEdgeFont=SanSerif,plain,10
+nodeAppearanceCalculator.Universe.defaultEdgeFontSize=10.0
+nodeAppearanceCalculator.Universe.defaultEdgeLabel=
+nodeAppearanceCalculator.Universe.defaultEdgeLabelColor=0,0,0
+nodeAppearanceCalculator.Universe.defaultEdgeLabelOpacity=255.0
+nodeAppearanceCalculator.Universe.defaultEdgeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.Universe.defaultEdgeLabelWidth=100.0
+nodeAppearanceCalculator.Universe.defaultEdgeLineStyle=SOLID
+nodeAppearanceCalculator.Universe.defaultEdgeLineWidth=1.0
+nodeAppearanceCalculator.Universe.defaultEdgeOpacity=255.0
+nodeAppearanceCalculator.Universe.defaultEdgeSourceArrowColor=0,0,0
+nodeAppearanceCalculator.Universe.defaultEdgeSourceArrowOpacity=255.0
+nodeAppearanceCalculator.Universe.defaultEdgeSourceArrowShape=NONE
+nodeAppearanceCalculator.Universe.defaultEdgeTargetArrowColor=0,0,0
+nodeAppearanceCalculator.Universe.defaultEdgeTargetArrowOpacity=255.0
+nodeAppearanceCalculator.Universe.defaultEdgeTargetArrowShape=NONE
+nodeAppearanceCalculator.Universe.defaultEdgeToolTip=
+nodeAppearanceCalculator.Universe.defaultNodeBorderColor=0,0,0
+nodeAppearanceCalculator.Universe.defaultNodeBorderOpacity=255.0
+nodeAppearanceCalculator.Universe.defaultNodeFillColor=0,0,0
+nodeAppearanceCalculator.Universe.defaultNodeFont=Monospaced.bold,plain,12
+nodeAppearanceCalculator.Universe.defaultNodeFontSize=20.0
+nodeAppearanceCalculator.Universe.defaultNodeHight=30.0
+nodeAppearanceCalculator.Universe.defaultNodeLabel=
+nodeAppearanceCalculator.Universe.defaultNodeLabelColor=255,255,204
+nodeAppearanceCalculator.Universe.defaultNodeLabelOpacity=180.0
+nodeAppearanceCalculator.Universe.defaultNodeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.Universe.defaultNodeLabelWidth=100.0
+nodeAppearanceCalculator.Universe.defaultNodeLineStyle=SOLID
+nodeAppearanceCalculator.Universe.defaultNodeLineWidth=0.0
+nodeAppearanceCalculator.Universe.defaultNodeOpacity=0.0
+nodeAppearanceCalculator.Universe.defaultNodeShape=ellipse
+nodeAppearanceCalculator.Universe.defaultNodeShowNestedNetwork=true
+nodeAppearanceCalculator.Universe.defaultNodeSize=40.0
+nodeAppearanceCalculator.Universe.defaultNodeToolTip=
+nodeAppearanceCalculator.Universe.defaultNodeWidth=100.0
+nodeAppearanceCalculator.Universe.nodeLabelCalculator=Universe-Node Label-Passthrough Mapper
+nodeAppearanceCalculator.Universe.nodeSizeLocked=true
+nodeAppearanceCalculator.default.defaultEdgeColor=0,0,0
+nodeAppearanceCalculator.default.defaultEdgeFont=SanSerif,plain,10
+nodeAppearanceCalculator.default.defaultEdgeFontSize=10.0
+nodeAppearanceCalculator.default.defaultEdgeLabel=
+nodeAppearanceCalculator.default.defaultEdgeLabelColor=0,0,0
+nodeAppearanceCalculator.default.defaultEdgeLabelOpacity=255.0
+nodeAppearanceCalculator.default.defaultEdgeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.default.defaultEdgeLabelWidth=100.0
+nodeAppearanceCalculator.default.defaultEdgeLineStyle=SOLID
+nodeAppearanceCalculator.default.defaultEdgeLineWidth=1.0
+nodeAppearanceCalculator.default.defaultEdgeOpacity=255.0
+nodeAppearanceCalculator.default.defaultEdgeSourceArrowColor=0,0,0
+nodeAppearanceCalculator.default.defaultEdgeSourceArrowOpacity=255.0
+nodeAppearanceCalculator.default.defaultEdgeSourceArrowShape=NONE
+nodeAppearanceCalculator.default.defaultEdgeTargetArrowColor=0,0,0
+nodeAppearanceCalculator.default.defaultEdgeTargetArrowOpacity=255.0
+nodeAppearanceCalculator.default.defaultEdgeTargetArrowShape=NONE
+nodeAppearanceCalculator.default.defaultEdgeToolTip=
+nodeAppearanceCalculator.default.defaultNodeBorderColor=102,102,102
+nodeAppearanceCalculator.default.defaultNodeBorderOpacity=255.0
+nodeAppearanceCalculator.default.defaultNodeFillColor=255,153,153
+nodeAppearanceCalculator.default.defaultNodeFont=SansSerif.bold,plain,12
+nodeAppearanceCalculator.default.defaultNodeFontSize=12.0
+nodeAppearanceCalculator.default.defaultNodeHight=30.0
+nodeAppearanceCalculator.default.defaultNodeLabel=
+nodeAppearanceCalculator.default.defaultNodeLabelColor=0,0,0
+nodeAppearanceCalculator.default.defaultNodeLabelOpacity=255.0
+nodeAppearanceCalculator.default.defaultNodeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.default.defaultNodeLabelWidth=100.0
+nodeAppearanceCalculator.default.defaultNodeLineStyle=SOLID
+nodeAppearanceCalculator.default.defaultNodeLineWidth=1.5
+nodeAppearanceCalculator.default.defaultNodeOpacity=255.0
+nodeAppearanceCalculator.default.defaultNodeShape=ellipse
+nodeAppearanceCalculator.default.defaultNodeShowNestedNetwork=true
+nodeAppearanceCalculator.default.defaultNodeSize=40.0
+nodeAppearanceCalculator.default.defaultNodeToolTip=
+nodeAppearanceCalculator.default.defaultNodeWidth=70.0
+nodeAppearanceCalculator.default.nodeLabelCalculator=NodeLabel
+nodeAppearanceCalculator.default.nodeSizeLocked=true
+nodeAppearanceCalculator.testStyle.defaultEdgeColor=0,0,0
+nodeAppearanceCalculator.testStyle.defaultEdgeFont=SanSerif,plain,10
+nodeAppearanceCalculator.testStyle.defaultEdgeFontSize=10.0
+nodeAppearanceCalculator.testStyle.defaultEdgeLabel=
+nodeAppearanceCalculator.testStyle.defaultEdgeLabelColor=0,0,0
+nodeAppearanceCalculator.testStyle.defaultEdgeLabelOpacity=255
+nodeAppearanceCalculator.testStyle.defaultEdgeLabelPosition=C,C,c,0,0
+nodeAppearanceCalculator.testStyle.defaultEdgeLabelWidth=100.0
+nodeAppearanceCalculator.testStyle.defaultEdgeLineStyle=SOLID
+nodeAppearanceCalculator.testStyle.defaultEdgeLineWidth=1.0
+nodeAppearanceCalculator.testStyle.defaultEdgeOpacity=255
+nodeAppearanceCalculator.testStyle.defaultEdgeSourceArrowColor=0,0,0
+nodeAppearanceCalculator.testStyle.defaultEdgeSourceArrowOpacity=255
+nodeAppearanceCalculator.testStyle.defaultEdgeSourceArrowShape=NONE
+nodeAppearanceCalculator.testStyle.defaultEdgeTargetArrowColor=0,0,0
+nodeAppearanceCalculator.testStyle.defaultEdgeTargetArrowOpacity=255
+nodeAppearanceCalculator.testStyle.defaultEdgeTargetArrowShape=NONE
+nodeAppearanceCalculator.testStyle.defaultEdgeToolTip=
+nodeAppearanceCalculator.testStyle.defaultNodeBorderColor=0,0,0
+nodeAppearanceCalculator.testStyle.defaultNodeBorderOpacity=255
+nodeAppearanceCalculator.testStyle.defaultNodeFillColor=255,255,255
+nodeAppearanceCalculator.testStyle.defaultNodeFont=Default,plain,12
+nodeAppearanceCalculator.testStyle.defaultNodeFontSize=12.0
+nodeAppearanceCalculator.testStyle.defaultNodeHight=30.0
+nodeAppearanceCalculator.testStyle.defaultNodeLabel=
+nodeAppearanceCalculator.testStyle.defaultNodeLabelColor=0,0,0
+nodeAppearanceCalculator.testStyle.defaultNodeLabelOpacity=255
+nodeAppearanceCalculator.testStyle.defaultNodeLabelPosition=N,S,c,0,0
+nodeAppearanceCalculator.testStyle.defaultNodeLabelWidth=100.0
+nodeAppearanceCalculator.testStyle.defaultNodeLineStyle=SOLID
+nodeAppearanceCalculator.testStyle.defaultNodeLineWidth=1.0
+nodeAppearanceCalculator.testStyle.defaultNodeOpacity=255
+nodeAppearanceCalculator.testStyle.defaultNodeShape=triangle
+nodeAppearanceCalculator.testStyle.defaultNodeShowNestedNetwork=true
+nodeAppearanceCalculator.testStyle.defaultNodeSize=35.0
+nodeAppearanceCalculator.testStyle.defaultNodeToolTip=
+nodeAppearanceCalculator.testStyle.defaultNodeWidth=70.0
+nodeAppearanceCalculator.testStyle.nodeFillColorCalculator=testStyle-Node Color-Continuous Mapper
+nodeAppearanceCalculator.testStyle.nodeLabelCalculator=testStyle-Node Label-Passthrough Mapper
+nodeAppearanceCalculator.testStyle.nodeShapeCalculator=testStyle-Node Shape-Continuous Mapper
+nodeBorderColorCalculator.Nested\ Network\ Style-Node\ Border\ Color-Discrete\ Mapper.mapping.controller=has_nested_network
+nodeBorderColorCalculator.Nested\ Network\ Style-Node\ Border\ Color-Discrete\ Mapper.mapping.controllerType=-1
+nodeBorderColorCalculator.Nested\ Network\ Style-Node\ Border\ Color-Discrete\ Mapper.mapping.map.yes=0,102,204
+nodeBorderColorCalculator.Nested\ Network\ Style-Node\ Border\ Color-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeBorderColorCalculator.Nested\ Network\ Style-Node\ Border\ Color-Discrete\ Mapper.visualPropertyType=NODE_BORDER_COLOR
+nodeFillColorCalculator.Nested\ Network\ Style-Node\ Color-Discrete\ Mapper.mapping.controller=has_nested_network
+nodeFillColorCalculator.Nested\ Network\ Style-Node\ Color-Discrete\ Mapper.mapping.controllerType=-1
+nodeFillColorCalculator.Nested\ Network\ Style-Node\ Color-Discrete\ Mapper.mapping.map.yes=255,255,255
+nodeFillColorCalculator.Nested\ Network\ Style-Node\ Color-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeFillColorCalculator.Nested\ Network\ Style-Node\ Color-Discrete\ Mapper.visualPropertyType=NODE_FILL_COLOR
+nodeFillColorCalculator.Node\ Color-Passthrough\ Mapper.mapping.controller=gal1RGexp
+nodeFillColorCalculator.Node\ Color-Passthrough\ Mapper.mapping.type=PassThroughMapping
+nodeFillColorCalculator.Node\ Color-Passthrough\ Mapper.visualPropertyType=NODE_FILL_COLOR
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.controller=vizmap\:Yeast Network (galFiltered_gml) NODE_FILL_COLOR
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.controllerType=4
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=106,g\=255,b\=166]=106,255,166
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=112,g\=255,b\=169]=112,255,169
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=125,g\=255,b\=177]=125,255,177
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=131,g\=255,b\=181]=131,255,181
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=146,g\=255,b\=190]=146,255,190
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=151,g\=255,b\=193]=151,255,193
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=160,g\=255,b\=198]=160,255,198
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=170,g\=255,b\=204]=170,255,204
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=171,g\=255,b\=205]=171,255,205
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=173,g\=255,b\=206]=173,255,206
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=174,g\=255,b\=206]=174,255,206
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=183,g\=255,b\=212]=183,255,212
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=189,g\=255,b\=216]=189,255,216
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=194,g\=255,b\=218]=194,255,218
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=195,g\=255,b\=219]=195,255,219
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=197,g\=255,b\=220]=197,255,220
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=198,g\=255,b\=221]=198,255,221
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=199,g\=255,b\=221]=199,255,221
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=200,g\=255,b\=222]=200,255,222
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=203,g\=255,b\=224]=203,255,224
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=206,g\=255,b\=225]=206,255,225
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=206,g\=255,b\=226]=206,255,226
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=207,g\=255,b\=226]=207,255,226
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=209,g\=255,b\=228]=209,255,228
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=210,g\=255,b\=228]=210,255,228
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=215,g\=255,b\=231]=215,255,231
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=217,g\=255,b\=232]=217,255,232
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=218,g\=255,b\=233]=218,255,233
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=219,g\=255,b\=233]=219,255,233
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=219,g\=255,b\=234]=219,255,234
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=221,g\=255,b\=234]=221,255,234
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=222,g\=255,b\=235]=222,255,235
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=224,g\=255,b\=236]=224,255,236
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=225,g\=255,b\=237]=225,255,237
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=226,g\=255,b\=237]=226,255,237
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=226,g\=255,b\=238]=226,255,238
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=227,g\=255,b\=238]=227,255,238
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=229,g\=255,b\=239]=229,255,239
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=229,g\=255,b\=240]=229,255,240
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=230,g\=255,b\=240]=230,255,240
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=231,g\=255,b\=241]=231,255,241
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=232,g\=255,b\=241]=232,255,241
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=234,g\=255,b\=242]=234,255,242
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=234,g\=255,b\=243]=234,255,243
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=236,g\=255,b\=244]=236,255,244
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=237,g\=255,b\=244]=237,255,244
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=238,g\=255,b\=245]=238,255,245
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=239,g\=255,b\=245]=239,255,245
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=240,g\=255,b\=246]=240,255,246
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=241,g\=255,b\=247]=241,255,247
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=242,g\=255,b\=247]=242,255,247
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=243,g\=255,b\=248]=243,255,248
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=244,g\=255,b\=248]=244,255,248
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=244,g\=255,b\=249]=244,255,249
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=245,g\=255,b\=249]=245,255,249
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=246,g\=255,b\=249]=246,255,249
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=246,g\=255,b\=250]=246,255,250
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=247,g\=255,b\=250]=247,255,250
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=248,g\=255,b\=251]=248,255,251
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=249,g\=255,b\=251]=249,255,251
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=250,g\=255,b\=252]=250,255,252
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=251,g\=255,b\=252]=251,255,252
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=251,g\=255,b\=253]=251,255,253
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=252,g\=255,b\=253]=252,255,253
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=253,g\=255,b\=254]=253,255,254
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=254,g\=255,b\=254]=254,255,254
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=10,b\=10]=255,10,10
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=120,b\=120]=255,120,120
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=123,b\=123]=255,123,123
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=127,b\=127]=255,127,127
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=147,b\=147]=255,147,147
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=150,b\=150]=255,150,150
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=153,b\=153]=255,153,153
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=155,b\=155]=255,155,155
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=158,b\=158]=255,158,158
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=159,b\=159]=255,159,159
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=160,b\=160]=255,160,160
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=163,b\=163]=255,163,163
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=165,b\=165]=255,165,165
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=173,b\=173]=255,173,173
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=175,b\=175]=255,175,175
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=178,b\=178]=255,178,178
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=179,b\=179]=255,179,179
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=183,b\=183]=255,183,183
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=187,b\=187]=255,187,187
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=188,b\=188]=255,188,188
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=190,b\=190]=255,190,190
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=192,b\=192]=255,192,192
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=193,b\=193]=255,193,193
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=194,b\=194]=255,194,194
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=197,b\=197]=255,197,197
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=199,b\=199]=255,199,199
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=200,b\=200]=255,200,200
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=202,b\=202]=255,202,202
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=203,b\=203]=255,203,203
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=204,b\=204]=255,204,204
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=205,b\=205]=255,205,205
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=206,b\=206]=255,206,206
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=207,b\=207]=255,207,207
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=208,b\=208]=255,208,208
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=209,b\=209]=255,209,209
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=210,b\=210]=255,210,210
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=211,b\=211]=255,211,211
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=212,b\=212]=255,212,212
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=213,b\=213]=255,213,213
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=215,b\=215]=255,215,215
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=216,b\=216]=255,216,216
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=217,b\=217]=255,217,217
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=218,b\=218]=255,218,218
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=219,b\=219]=255,219,219
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=220,b\=220]=255,220,220
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=221,b\=221]=255,221,221
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=222,b\=222]=255,222,222
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=223,b\=223]=255,223,223
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=224,b\=224]=255,224,224
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=225,b\=225]=255,225,225
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=226,b\=226]=255,226,226
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=227,b\=227]=255,227,227
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=228,b\=228]=255,228,228
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=229,b\=229]=255,229,229
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=230,b\=230]=255,230,230
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=231,b\=231]=255,231,231
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=232,b\=232]=255,232,232
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=233,b\=233]=255,233,233
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=234,b\=234]=255,234,234
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=235,b\=235]=255,235,235
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=236,b\=236]=255,236,236
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=237,b\=237]=255,237,237
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=238,b\=238]=255,238,238
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=239,b\=239]=255,239,239
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=240,b\=240]=255,240,240
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=241,b\=241]=255,241,241
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=242,b\=242]=255,242,242
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=243,b\=243]=255,243,243
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=244,b\=244]=255,244,244
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=245,b\=245]=255,245,245
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=246,b\=246]=255,246,246
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=247,b\=247]=255,247,247
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=248,b\=248]=255,248,248
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=249,b\=249]=255,249,249
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=250,b\=250]=255,250,250
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=251,b\=251]=255,251,251
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=252,b\=252]=255,252,252
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=253,b\=253]=255,253,253
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=254,b\=254]=255,254,254
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=255,b\=255]=255,255,255
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.map.java.awt.Color[r\=255,g\=52,b\=52]=255,52,52
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.mapping.type=DiscreteMapping
+nodeFillColorCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_FILL_COLOR.visualPropertyType=NODE_FILL_COLOR
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.boundaryvalues=3
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv0.domainvalue=-2.128346927911043
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv0.equal=255,0,51
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv0.greater=255,0,51
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv0.lesser=204,0,153
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv1.domainvalue=0.003233521461486699
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv1.equal=255,255,255
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv1.greater=255,255,255
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv1.lesser=255,255,255
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv2.domainvalue=1.961982912302017
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv2.equal=0,255,0
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv2.greater=0,51,255
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.bv2.lesser=0,255,0
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.controller=gal1RGexp
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.interpolator=LinearNumberToColorInterpolator
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.mapping.type=ContinuousMapping
+nodeFillColorCalculator.testStyle-Node\ Color-Continuous\ Mapper.visualPropertyType=NODE_FILL_COLOR
+nodeFillColorCalculator.testStyle-Node\ Color-Passthrough\ Mapper.mapping.controller=gal1RGexp
+nodeFillColorCalculator.testStyle-Node\ Color-Passthrough\ Mapper.mapping.type=PassThroughMapping
+nodeFillColorCalculator.testStyle-Node\ Color-Passthrough\ Mapper.visualPropertyType=NODE_FILL_COLOR
+nodeHeightCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_HEIGHT.mapping.controller=vizmap\:Yeast Network (galFiltered_gml) NODE_HEIGHT
+nodeHeightCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_HEIGHT.mapping.controllerType=4
+nodeHeightCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_HEIGHT.mapping.map.40.00048828125=40.00048828125
+nodeHeightCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_HEIGHT.mapping.map.40.000732421875=40.000732421875
+nodeHeightCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_HEIGHT.mapping.map.40.0=40.0
+nodeHeightCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_HEIGHT.mapping.type=DiscreteMapping
+nodeHeightCalculator.VisualStyleBuilder-vizmap\:Yeast\ Network\ (galFiltered_gml)\ NODE_HEIGHT.visualPropertyType=NODE_HEIGHT
+nodeLabelCalculator.BasicPassThrough.mapping.controller=label
+nodeLabelCalculator.BasicPassThrough.mapping.type=PassThroughMapping
+nodeLabelCalculator.BasicPassThrough.visualPropertyType=NODE_LABEL
+nodeLabelCalculator.Nested\ Network\ Style-Node\ Label-Passthrough\ Mapper.mapping.controller=ID
+nodeLabelCalculator.Nested\ Network\ Style-Node\ Label-Passthrough\ Mapper.mapping.type=PassThroughMapping
+nodeLabelCalculator.Nested\ Network\ Style-Node\ Label-Passthrough\ Mapper.visualPropertyType=NODE_LABEL
+nodeLabelCalculator.NodeLabel.mapping.controller=ID
+nodeLabelCalculator.NodeLabel.mapping.type=PassThroughMapping
+nodeLabelCalculator.NodeLabel.visualPropertyType=NODE_LABEL
+nodeLabelCalculator.Solid-Node\ Label-Passthrough\ Mapper.mapping.controller=ID
+nodeLabelCalculator.Solid-Node\ Label-Passthrough\ Mapper.mapping.type=PassThroughMapping
+nodeLabelCalculator.Solid-Node\ Label-Passthrough\ Mapper.visualPropertyType=NODE_LABEL
+nodeLabelCalculator.Universe-Node\ Label-Passthrough\ Mapper.mapping.controller=ID
+nodeLabelCalculator.Universe-Node\ Label-Passthrough\ Mapper.mapping.type=PassThroughMapping
+nodeLabelCalculator.Universe-Node\ Label-Passthrough\ Mapper.visualPropertyType=NODE_LABEL
+nodeLabelCalculator.id\ as\ node\ labels.mapping.controller=ID
+nodeLabelCalculator.id\ as\ node\ labels.mapping.type=PassThroughMapping
+nodeLabelCalculator.id\ as\ node\ labels.visualPropertyType=NODE_LABEL
+nodeLabelCalculator.testStyle-Node\ Label-Passthrough\ Mapper.mapping.controller=GO Common Name
+nodeLabelCalculator.testStyle-Node\ Label-Passthrough\ Mapper.mapping.type=PassThroughMapping
+nodeLabelCalculator.testStyle-Node\ Label-Passthrough\ Mapper.visualPropertyType=NODE_LABEL
+nodeLabelColor.Nested\ Network\ Style-Node\ Label\ Color-Discrete\ Mapper.mapping.controller=has_nested_network
+nodeLabelColor.Nested\ Network\ Style-Node\ Label\ Color-Discrete\ Mapper.mapping.controllerType=-1
+nodeLabelColor.Nested\ Network\ Style-Node\ Label\ Color-Discrete\ Mapper.mapping.map.yes=0,102,204
+nodeLabelColor.Nested\ Network\ Style-Node\ Label\ Color-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeLabelColor.Nested\ Network\ Style-Node\ Label\ Color-Discrete\ Mapper.visualPropertyType=NODE_LABEL_COLOR
+nodeLabelPositionCalculator.Nested\ Network\ Style-Node\ Label\ Position-Discrete\ Mapper.mapping.controller=has_nested_network
+nodeLabelPositionCalculator.Nested\ Network\ Style-Node\ Label\ Position-Discrete\ Mapper.mapping.controllerType=-1
+nodeLabelPositionCalculator.Nested\ Network\ Style-Node\ Label\ Position-Discrete\ Mapper.mapping.map.yes=SE,NW,c,0,0
+nodeLabelPositionCalculator.Nested\ Network\ Style-Node\ Label\ Position-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeLabelPositionCalculator.Nested\ Network\ Style-Node\ Label\ Position-Discrete\ Mapper.visualPropertyType=NODE_LABEL_POSITION
+nodeLineWidthCalculator.Nested\ Network\ Style-Node\ Line\ Width-Discrete\ Mapper.mapping.controller=has_nested_network
+nodeLineWidthCalculator.Nested\ Network\ Style-Node\ Line\ Width-Discrete\ Mapper.mapping.controllerType=-1
+nodeLineWidthCalculator.Nested\ Network\ Style-Node\ Line\ Width-Discrete\ Mapper.mapping.map.yes=5.0
+nodeLineWidthCalculator.Nested\ Network\ Style-Node\ Line\ Width-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeLineWidthCalculator.Nested\ Network\ Style-Node\ Line\ Width-Discrete\ Mapper.visualPropertyType=NODE_LINE_WIDTH
+nodeShapeCalculator.Nested\ Network\ Style-Node\ Shape-Discrete\ Mapper.mapping.controller=has_nested_network
+nodeShapeCalculator.Nested\ Network\ Style-Node\ Shape-Discrete\ Mapper.mapping.controllerType=-1
+nodeShapeCalculator.Nested\ Network\ Style-Node\ Shape-Discrete\ Mapper.mapping.map.yes=rect
+nodeShapeCalculator.Nested\ Network\ Style-Node\ Shape-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeShapeCalculator.Nested\ Network\ Style-Node\ Shape-Discrete\ Mapper.visualPropertyType=NODE_SHAPE
+nodeShapeCalculator.Node\ Shape-Discrete\ Mapper.mapping.controller=gal1RGsig
+nodeShapeCalculator.Node\ Shape-Discrete\ Mapper.mapping.controllerType=2
+nodeShapeCalculator.Node\ Shape-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeShapeCalculator.Node\ Shape-Discrete\ Mapper.visualPropertyType=NODE_SHAPE
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.boundaryvalues=1
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.bv0.domainvalue=0.06308700914501368
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.bv0.equal=rect
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.bv0.greater=ellipse
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.bv0.lesser=rect
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.controller=gal1RGsig
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.interpolator=FlatInterpolator
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.mapping.type=ContinuousMapping
+nodeShapeCalculator.testStyle-Node\ Shape-Continuous\ Mapper.visualPropertyType=NODE_SHAPE
+nodeShapeCalculator.testStyle-Node\ Shape-Discrete\ Mapper.mapping.controller=gal1RGsig
+nodeShapeCalculator.testStyle-Node\ Shape-Discrete\ Mapper.mapping.controllerType=2
+nodeShapeCalculator.testStyle-Node\ Shape-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeShapeCalculator.testStyle-Node\ Shape-Discrete\ Mapper.visualPropertyType=NODE_SHAPE
+nodeUniformSizeCalculator.Nested\ Network\ Style-Node\ Size-Discrete\ Mapper.mapping.controller=has_nested_network
+nodeUniformSizeCalculator.Nested\ Network\ Style-Node\ Size-Discrete\ Mapper.mapping.controllerType=-1
+nodeUniformSizeCalculator.Nested\ Network\ Style-Node\ Size-Discrete\ Mapper.mapping.map.yes=60.0
+nodeUniformSizeCalculator.Nested\ Network\ Style-Node\ Size-Discrete\ Mapper.mapping.type=DiscreteMapping
+nodeUniformSizeCalculator.Nested\ Network\ Style-Node\ Size-Discrete\ Mapper.visualPropertyType=NODE_SIZE
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.boundaryvalues=2
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv0.domainvalue=0.0
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv0.equal=10.0
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv0.greater=10.0
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv0.lesser=
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv1.domainvalue=0.0
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv1.equal=30.0
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv1.greater=
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.bv1.lesser=30.0
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.controller=Degree
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.interpolator=LinearNumberToNumberInterpolator
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.mapping.type=ContinuousMapping
+nodeUniformSizeCalculator.Node\ Size-Continuous\ Mapper.visualPropertyType=NODE_SIZE
