@@ -71,10 +71,11 @@ public class FuncCallNode implements Node {
 	 */
 	public Object getValue() { return null; }
 
-	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
-		opCodes.push(Instruction.CALL);
-		arguments.push(args.length);
+	public void genCode(final Stack<Object> codeStack) {
 		for (final Node arg : args)
-			arg.genCode(opCodes, arguments);
+			arg.genCode(codeStack);
+		codeStack.push(args.length);
+		codeStack.push(func);
+		codeStack.push(Instruction.CALL);
 	}
 }

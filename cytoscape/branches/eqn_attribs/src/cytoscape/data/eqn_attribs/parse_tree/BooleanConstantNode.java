@@ -31,7 +31,6 @@ package cytoscape.data.eqn_attribs.parse_tree;
 
 
 import java.util.Stack;
-import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
 /**
@@ -58,7 +57,7 @@ public class BooleanConstantNode implements Node {
 
 	public boolean getValue() { return value; }
 
-	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
-		arguments.push(value);
+	public void genCode(final Stack<Object> codeStack) {
+		codeStack.push(value);
 	}
 }

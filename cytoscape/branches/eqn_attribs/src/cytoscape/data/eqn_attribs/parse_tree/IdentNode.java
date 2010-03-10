@@ -71,10 +71,10 @@ public class IdentNode implements Node {
 	public String getAttribName() { return attribName; }
 	public Object getDefaultValue() { return defaultValue; }
 
-	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
-		opCodes.push(defaultValue == null ? Instruction.AREF : Instruction.AREF2);
-		arguments.push(attribName);
+	public void genCode(final Stack<Object> codeStack) {
 		if (defaultValue != null)
-			arguments.push(defaultValue);
+			codeStack.push(defaultValue);
+		codeStack.push(attribName);
+		codeStack.push(defaultValue == null ? Instruction.AREF : Instruction.AREF2);
 	}
 }

@@ -58,7 +58,7 @@ public class StringConstantNode implements Node {
 
 	public String getValue() { return value; }
 
-	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
-		arguments.push(value);
+	public void genCode(final Stack<Object> codeStack) {
+		codeStack.push(value);
 	}
 }

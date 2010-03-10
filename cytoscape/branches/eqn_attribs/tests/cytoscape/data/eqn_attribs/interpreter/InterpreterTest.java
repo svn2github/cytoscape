@@ -32,6 +32,7 @@ package cytoscape.data.eqn_attribs.interpreter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import junit.framework.*;
 import cytoscape.data.eqn_attribs.AttribEqnCompiler;
 import cytoscape.data.eqn_attribs.builtins.*;
@@ -48,15 +49,24 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Not());
 	}
 
+	public void testSimpleStringConcatExpr() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("s1", String.class);
+		assertTrue(compiler.compile("=\"Fred\"&${s1}", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("s1", new IdentDescriptor(String.class, "Bob"));
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals("FredBob", interpreter.run());
+	}
+
 	public void testSimpleExpr() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		attribNameToTypeMap.put("BOB", Double.class);
 		assertTrue(compiler.compile("=42 - 12 + 3 * (4 - 2) + ${BOB:12}", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
 		nameToDescriptorMap.put("BOB", new IdentDescriptor(Double.class, -10.0));
-		final Interpreter interpreter =
-			new Interpreter(compiler.getOpCodeStream(), compiler.getArgumentStack(), nameToDescriptorMap);
-		final Object result = interpreter.run();
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(26.0), interpreter.run());
 	}
 
 	public void testUnaryPlusAndMinus() throws Exception {
@@ -65,11 +75,19 @@ public class InterpreterTest extends TestCase {
 		attribNameToTypeMap.put("attr2", Double.class);
 		assertTrue(compiler.compile("=-17.8E-14", attribNameToTypeMap));
 		assertTrue(compiler.compile("=+(${attr1} + ${attr2})", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("attr1", new IdentDescriptor(Double.class, 5.5));
+		nameToDescriptorMap.put("attr2", new IdentDescriptor(Double.class, 6.5));
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(12.0), interpreter.run());
 	}
 
 	public void testFunctionCall() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=42 + log(4 - 2)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(42.0 + Math.log10(4.0 - 2.0)), interpreter.run());
 	}
 
 	public void testExponentiation() throws Exception {

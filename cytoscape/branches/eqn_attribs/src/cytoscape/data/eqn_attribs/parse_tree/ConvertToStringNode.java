@@ -58,8 +58,8 @@ public class ConvertToStringNode implements Node {
 
 	public Node getConvertee() { return convertee; }
 
-	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
-		opCodes.push(Instruction.SCONV);
-		convertee.genCode(opCodes, arguments);
+	public void genCode(final Stack<Object> codeStack) {
+		convertee.genCode(codeStack);
+		codeStack.push(Instruction.SCONV);
 	}
 }

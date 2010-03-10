@@ -31,7 +31,6 @@ package cytoscape.data.eqn_attribs.parse_tree;
 
 
 import java.util.Stack;
-import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
 /**
@@ -42,5 +41,5 @@ public interface Node {
 	Class getType(); // The type of this node.
 	Node getLeftChild();
 	Node getRightChild();
-	void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments);
+	void genCode(final Stack<Object> codeStack);
 }

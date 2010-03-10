@@ -70,50 +70,50 @@ public class BinOpNode implements Node {
 
 	public AttribToken getOperator() { return operator; }
 
-	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
+	public void genCode(final Stack<Object> codeStack) {
+		rhs.genCode(codeStack);
+		lhs.genCode(codeStack);
+
 		switch (operator) {
 		case CARET:
-			opCodes.push(Instruction.FPOW);
+			codeStack.push(Instruction.FPOW);
 			break;
 		case PLUS:
-			opCodes.push(Instruction.FADD);
+			codeStack.push(Instruction.FADD);
 			break;
 		case MINUS:
-			opCodes.push(Instruction.FSUB);
+			codeStack.push(Instruction.FSUB);
 			break;
 		case DIV:
-			opCodes.push(Instruction.FDIV);
+			codeStack.push(Instruction.FDIV);
 			break;
 		case MUL:
-			opCodes.push(Instruction.FMUL);
+			codeStack.push(Instruction.FMUL);
 			break;
 		case EQUAL:
-			opCodes.push(determineOpCode(Instruction.BEQLF, Instruction.BEQLS, Instruction.BEQLB));
+			codeStack.push(determineOpCode(Instruction.BEQLF, Instruction.BEQLS, Instruction.BEQLB));
 			break;
 		case NOT_EQUAL:
-			opCodes.push(determineOpCode(Instruction.BNEQLF, Instruction.BNEQLS, Instruction.BNEQLB));
+			codeStack.push(determineOpCode(Instruction.BNEQLF, Instruction.BNEQLS, Instruction.BNEQLB));
 			break;
 		case GREATER_THAN:
-			opCodes.push(determineOpCode(Instruction.BGTF, Instruction.BGTS, null));
+			codeStack.push(determineOpCode(Instruction.BGTF, Instruction.BGTS, null));
 			break;
 		case LESS_THAN:
-			opCodes.push(determineOpCode(Instruction.BLTF, Instruction.BLTS, null));
+			codeStack.push(determineOpCode(Instruction.BLTF, Instruction.BLTS, null));
 			break;
 		case GREATER_OR_EQUAL:
-			opCodes.push(determineOpCode(Instruction.BGTEF, Instruction.BGTES, null));
+			codeStack.push(determineOpCode(Instruction.BGTEF, Instruction.BGTES, null));
 			break;
 		case LESS_OR_EQUAL:
-			opCodes.push(determineOpCode(Instruction.BLTEF, Instruction.BLTES, null));
+			codeStack.push(determineOpCode(Instruction.BLTEF, Instruction.BLTES, null));
 			break;
 		case AMPERSAND:
-			opCodes.push(Instruction.SCONCAT);
+			codeStack.push(Instruction.SCONCAT);
 			break;
 		default:
 			throw new IllegalStateException("unknown operator: " + operator + "!");
 		}
-
-		lhs.genCode(opCodes, arguments);
-		rhs.genCode(opCodes, arguments);
 	}
 
 	/**

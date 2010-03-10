@@ -65,18 +65,18 @@ public class UnaryOpNode implements Node {
 
 	public AttribToken getOperator() { return operator; }
 
-	public void genCode(final Stack<Instruction> opCodes, final Stack<Object> arguments) {
+	public void genCode(final Stack<Object> codeStack) {
+		operand.genCode(codeStack);
+
 		switch (operator) {
 		case PLUS:
-			opCodes.push(Instruction.FUPLUS);
+			codeStack.push(Instruction.FUPLUS);
 			break;
 		case MINUS:
-			opCodes.push(Instruction.FUMINUS);
+			codeStack.push(Instruction.FUMINUS);
 			break;
 		default:
 			throw new IllegalStateException("invalid unary operation: " + operator + "!");
 		}
-
-		operand.genCode(opCodes, arguments);
 	}
 }

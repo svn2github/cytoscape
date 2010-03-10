@@ -38,21 +38,18 @@ import java.util.Stack;
 
 
 public class Interpreter {
-	private final Instruction[] opCodes;
+	private final Object[] code;
 	private final Stack<Object> argumentStack;
 	private final Map<String, IdentDescriptor> nameToDescriptorMap;
 
-		public Interpreter(final Instruction[] opCodes, final Stack<Object> argumentStack,
-		                   final Map<String, IdentDescriptor> nameToDescriptorMap)
+	public Interpreter(final Object[] code, final Map<String, IdentDescriptor> nameToDescriptorMap)
 		throws IllegalStateException
 	{
-		if (opCodes == null || opCodes.length == 0)
-			throw new IllegalStateException("null or empty opcodes!");
-		if (argumentStack == null || argumentStack.empty())
-			throw new IllegalStateException("argument stack must not be null nor empty!");
+		if (code == null || code.length == 0)
+			throw new IllegalStateException("null or empty code!");
 
-		this.opCodes = opCodes;
-		this.argumentStack = argumentStack;
+		this.code = code;
+		this.argumentStack = new Stack<Object>();
 		this.nameToDescriptorMap = nameToDescriptorMap;
 	}
 
@@ -65,95 +62,101 @@ public class Interpreter {
 	 */
 	public Object run() throws ArithmeticException, IllegalArgumentException, IllegalStateException {
 		try {
-			for (final Instruction opCode : opCodes) {
-				switch (opCode) {
-				case FADD:
-					fadd();
-					break;
-				case FSUB:
-					fsub();
-					break;
-				case FMUL:
-					fmul();
-					break;
-				case FDIV:
-					fdiv();
-					break;
-				case FPOW:
-					fpow();
-					break;
-				case SCONCAT:
-					sconcat();
-					break;
-				case SCONV:
-					sconv();
-					break;
-				case BEQLF:
-					beqlf();
-					break;
-				case BNEQLF:
-					bneqlf();
-					break;
-				case BGTF:
-					bgtf();
-					break;
-				case BLTF:
-					bltf();
-					break;
-				case BGTEF:
-					bgtef();
-					break;
-				case BLTEF:
-					bltef();
-					break;
-				case BEQLS:
-					beqls();
-					break;
-				case BNEQLS:
-					bneqls();
-					break;
-				case BGTS:
-					bgts();
-					break;
-				case BLTS:
-					blts();
-					break;
-				case BGTES:
-					bgtes();
-					break;
-				case BLTES:
-					bltes();
-					break;
-				case BEQLB:
-					beqlb();
-					break;
-				case BNEQLB:
-					bneqlb();
-					break;
-				case CALL:
-					call();
-					break;
-				case FUMINUS:
-					fuminus();
-					break;
-				case FUPLUS:
-					fuplus();
-					break;
-				case AREF:
-					aref();
-					break;
-				case AREF2:
-					aref2();
-					break;
-				default:
-					throw new IllegalStateException("unknown opcode: " + opCode + "!");
+			for (final Object instrOrArg : code) {
+				if (instrOrArg instanceof Instruction) {
+					switch ((Instruction)instrOrArg) {
+					case FADD:
+						fadd();
+						break;
+					case FSUB:
+						fsub();
+						break;
+					case FMUL:
+						fmul();
+						break;
+					case FDIV:
+						fdiv();
+						break;
+					case FPOW:
+						fpow();
+						break;
+					case SCONCAT:
+						sconcat();
+						break;
+					case SCONV:
+						sconv();
+						break;
+					case BEQLF:
+						beqlf();
+						break;
+					case BNEQLF:
+						bneqlf();
+						break;
+					case BGTF:
+						bgtf();
+						break;
+					case BLTF:
+						bltf();
+						break;
+					case BGTEF:
+						bgtef();
+						break;
+					case BLTEF:
+						bltef();
+						break;
+					case BEQLS:
+						beqls();
+						break;
+					case BNEQLS:
+						bneqls();
+						break;
+					case BGTS:
+						bgts();
+						break;
+					case BLTS:
+						blts();
+						break;
+					case BGTES:
+						bgtes();
+						break;
+					case BLTES:
+						bltes();
+						break;
+					case BEQLB:
+						beqlb();
+						break;
+					case BNEQLB:
+						bneqlb();
+						break;
+					case CALL:
+						call();
+						break;
+					case FUMINUS:
+						fuminus();
+						break;
+					case FUPLUS:
+						fuplus();
+						break;
+					case AREF:
+						aref();
+						break;
+					case AREF2:
+						aref2();
+						break;
+					default:
+						throw new IllegalStateException("unknown opcode: " + instrOrArg + "!");
+					}
 				}
+				else
+					argumentStack.push(instrOrArg);
 			}
 		} catch (final EmptyStackException e) {
-			throw new IllegalStateException("inconistent number of stack entries detected!");
+			throw new IllegalStateException("inconsistent number of stack entries detected!");
 		}
 
-		final Object retval = argumentStack.pop();
+		if (argumentStack.size() != 1)
+			throw new IllegalStateException("invalid argument stack size " + argumentStack.size() + ", must be 1!");
+		final Object retval = argumentStack.peek();
 		if (retval instanceof Double)
 			return retval;
 		if (retval instanceof String)
@@ -352,17 +355,16 @@ public class Interpreter {
 		final Object value = identDescriptor.getValue();
 		if (value == null)
 			throw new IllegalStateException("undefined attribute reference: \"" + attribName + "\" (2)!");
+		argumentStack.push(value);
 	}
 
 	private void aref2() throws EmptyStackException {
-System.err.println("*** Entering AREF2");
 		final String attribName = (String)argumentStack.pop();
-		final Object defaultValue = (String)argumentStack.pop();
+		final Object defaultValue = argumentStack.pop();
 		final IdentDescriptor identDescriptor = nameToDescriptorMap.get(attribName);
 		if (identDescriptor == null)
 			throw new IllegalStateException("unknown attribute reference: \"" + attribName + "\" (2)!");
 		final Object value = identDescriptor.getValue();
-System.err.println("*** About to push: " + (value != null ? value : defaultValue));
 		argumentStack.push(value != null ? value : defaultValue);
 	}
 
