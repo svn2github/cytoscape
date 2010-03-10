@@ -1,4 +1,5 @@
 <?php
+// This script will populate the two tables 'description_words' and 'description_word_link' for search
 
 // Include the DBMS credentials
 include 'db.inc';
@@ -14,6 +15,18 @@ if (!mysql_select_db($dbName, $connection))
 	showerror();
 
 $plugin_id_array = getPluginIDs($connection);
+
+// Clean the tables to make sure it is empty
+$dbQuery = 'delete from description_words';
+// Run the query
+if (!($result = @ mysql_query($dbQuery, $connection)))
+	showerror();
+
+$dbQuery = 'delete from description_word_link';
+// Run the query
+if (!($result = @ mysql_query($dbQuery, $connection)))
+	showerror();
+
 
 // populate the tables of search words for all pluigns
 foreach ($plugin_id_array as $plugin_id ) {
