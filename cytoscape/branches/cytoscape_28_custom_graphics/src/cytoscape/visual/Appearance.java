@@ -36,27 +36,22 @@
 
 package cytoscape.visual;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.visual.parsers.ValueParser;
-import cytoscape.visual.parsers.ObjectToString;
-
 import giny.model.Edge;
 import giny.model.GraphObject;
 import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
-import java.util.Properties;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.EnumMap;
-
 import java.awt.Color;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.visual.parsers.ObjectToString;
+import cytoscape.visual.parsers.ValueParser;
 
 
 /**
@@ -67,7 +62,7 @@ import java.awt.Color;
  */
 public class Appearance {
 
-	protected Map<VisualPropertyType,Object> vizProps;
+	protected Map<VisualPropertyType, Object> vizProps;
 
 	/**
 	 * Creates a new Appearance object.
@@ -112,7 +107,7 @@ public class Appearance {
 	public void applyAppearance(final NodeView nodeView, final VisualPropertyDependency fdeps) {
 		for ( VisualPropertyType type : VisualPropertyType.values() )
 			if ( type.isNodeProp() )
-				type.getVisualProperty().applyToNodeView(nodeView,vizProps.get(type),fdeps);
+				type.getVisualProperty().applyToNodeView(nodeView, vizProps.get(type), fdeps);
 	}
 
 	/**

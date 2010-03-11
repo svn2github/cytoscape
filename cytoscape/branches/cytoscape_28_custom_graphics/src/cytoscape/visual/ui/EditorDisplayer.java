@@ -52,6 +52,7 @@ import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
@@ -90,6 +91,9 @@ public enum EditorDisplayer {
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
 	               new Class[] { VisualPropertyType.class, JDialog.class },
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
+	DISCRETE_CUSTOM_GRAPHICS(ValueSelectDialog.class, "showDialog",
+	    	               new Class[] { VisualPropertyType.class, JDialog.class },
+	    	               new Object[] { VisualPropertyType.NODE_CUSTOM_GRAPHICS, null }, CyCustomGraphics.class),                
 	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
 	                     new Class[] { VisualPropertyType.class, JDialog.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 

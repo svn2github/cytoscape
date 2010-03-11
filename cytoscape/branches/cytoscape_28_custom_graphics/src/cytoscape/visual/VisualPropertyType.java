@@ -38,10 +38,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.properties.EdgeColorProp;
 import cytoscape.visual.properties.EdgeFontFaceProp;
 import cytoscape.visual.properties.EdgeFontSizeProp;
@@ -62,6 +65,7 @@ import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
 import cytoscape.visual.properties.EdgeToolTipProp;
 import cytoscape.visual.properties.NodeBorderColorProp;
 import cytoscape.visual.properties.NodeBorderOpacityProp;
+import cytoscape.visual.properties.NodeCustomGraphicsProp;
 import cytoscape.visual.properties.NodeFillColorProp;
 import cytoscape.visual.properties.NodeFontFaceProp;
 import cytoscape.visual.properties.NodeFontSizeProp;
@@ -237,6 +241,12 @@ public enum VisualPropertyType {
 	                         "node.showNestedNetwork", "defaultNodeShowNestedNetwork", 
 	                         Boolean.class, new NodeShowNestedNetworkProp(),
 	                         new BooleanParser(), true, true),
+	                         
+	// New in Cytoscape 2.8: Custom Graphic Visual Prop.
+	NODE_CUSTOM_GRAPHICS("Node Custom Graphics", "nodeCustomGraphics", 
+	    	                         "node.customGraphics", "defaultNodeCustomGraphics", 
+	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(),
+	    	                         new CyCustomGraphicsParser(), true, true)                      
 
 	;
 	/*
@@ -256,7 +266,7 @@ public enum VisualPropertyType {
 	private String defaultPropertyLabel;
 
 	// Data type for the actual visual property.
-	private Class dataType;
+	private Class<?> dataType;
 	private VisualProperty vizProp;
 	private ValueParser valueParser;
 
@@ -275,7 +285,7 @@ public enum VisualPropertyType {
 	 */
 	private VisualPropertyType(final String calcName, final String propertyLabel,
 	                           final String bypassAttrName, final String defaultPropertyLabel,
-	                           final Class dataType, final VisualProperty vizProp, 
+	                           final Class<?> dataType, final VisualProperty vizProp, 
 							   final ValueParser valueParser, final boolean isNodeProp,
 							   final boolean isAllowed) {
 		this.calcName = calcName;
@@ -411,7 +421,7 @@ public enum VisualPropertyType {
 
 		if ( ret == null )
 			return null;
-
+		
 		// This is an editor.
 		if ( ret instanceof ContinuousMappingEditorPanel) {
 			return ret;
@@ -421,7 +431,7 @@ public enum VisualPropertyType {
 			} catch (NumberFormatException e){
 				ret = 1f;
 			}
-		} else if ((action.getCompatibleClass() != ret.getClass())) {
+		} else if ((action.getCompatibleClass() != ret.getClass() && !(ret instanceof CyCustomGraphics))) {
 			try {
 				ret = Double.parseDouble(ret.toString());
 			} catch (NumberFormatException e){

@@ -343,6 +343,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			try {
 				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list.getSelectedValue(),
 				                                                    this);
+				
 				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
 			} catch (Exception e1) {
 				logger.warn("Unable to show VizMapper value select dialog!", e1);

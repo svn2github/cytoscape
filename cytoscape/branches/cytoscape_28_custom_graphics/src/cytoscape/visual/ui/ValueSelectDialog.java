@@ -69,6 +69,8 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
  */
 public class ValueSelectDialog extends JDialog {
 	
+	private static final long serialVersionUID = 1201804212862509435L;
+	
 	private final VisualPropertyType type;
 	private Map shapeMap;
 	private List orderedKeyList;
@@ -88,6 +90,8 @@ public class ValueSelectDialog extends JDialog {
 	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, parent, true);
 		dialog.setVisible(true);
+		
+		System.out.println("!!!!!!Dialog returns:     " + dialog.getValue());
 		return dialog.getValue();
 	}
 

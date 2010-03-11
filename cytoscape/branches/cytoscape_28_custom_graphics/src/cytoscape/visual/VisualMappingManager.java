@@ -51,6 +51,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
@@ -93,6 +94,9 @@ public class VisualMappingManager extends SubjectBase {
 
 	private static final String DEF_STYLE_NAME = "default";
 	
+	// New in Cytoscape 2.8: Pool of available custom graphics
+	private final CustomGraphicsPool pool;
+	
 	/**
 	 * Creates a new VisualMappingManager object.
 	 *
@@ -115,6 +119,8 @@ public class VisualMappingManager extends SubjectBase {
 			vs = catalog.getVisualStyle(DEF_STYLE_NAME);
 
 		setVisualStyle(vs);
+		
+		pool = new CustomGraphicsPool();
 	}
 
 	/**
@@ -387,5 +393,9 @@ public class VisualMappingManager extends SubjectBase {
 		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
 		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getNetwork(),bypassedVPs);
 		myEdgeApp.applyAppearance(edgeView,activeVS.getDependency());
+	}
+	
+	public CustomGraphicsPool getCustomGraphicsPool() {
+		return pool;
 	}
 }
