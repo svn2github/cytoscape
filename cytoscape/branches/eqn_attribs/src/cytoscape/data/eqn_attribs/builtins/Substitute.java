@@ -70,10 +70,13 @@ public class Substitute implements AttribFunction {
 			return replaceAll(text, original, replacement);
 		else { // Assume args.length == 4
 			final int nthAppearance = (int)Math.round((Double)args[3] - 0.5);
-			if (nthAppearance == -1)
+			if (nthAppearance <= 0)
+				return text;
+			final int startIndex;
+			if ((startIndex = findNth(nthAppearance, text, original)) == -1)
 				return text;
 
-			return text.substring(0, nthAppearance) + replacement + text.substring(nthAppearance + original.length());
+			return text.substring(0, startIndex) + replacement + text.substring(startIndex + original.length());
 		}
 	}
 
@@ -81,12 +84,13 @@ public class Substitute implements AttribFunction {
 	 *  @returns the 0-based starting position of the nth appearance of "needle" in "hayStack" or -1 if it can't be found
 	 */
 	private static int findNth(final int n, final String hayStack, final String needle) {
+		System.err.println("Entering findNth(), n="+n+", hayStack="+hayStack+", needle="+needle);
 		int startOffset = 0;
 		int offset = 0;
 		for (int i = 0; i < n; ++i) {
 			if ((offset = hayStack.indexOf(needle, startOffset)) == -1)
 				return offset;
-			offset += needle.length();
+			startOffset = offset + needle.length();
 		}
 
 		return offset;
@@ -103,9 +107,9 @@ public class Substitute implements AttribFunction {
 		while ((startMatch = s.indexOf(original, startOffset)) != -1) {
 			builder.append(s.substring(startOffset, startMatch));
 			builder.append(replacement);
-			startOffset += original.length();
+			startOffset = startMatch + original.length();
 		}
-		builder.append(s.substring(startOffset + original.length()));
+		builder.append(s.substring(startOffset));
 
 		return builder.toString();
 	}

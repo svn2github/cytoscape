@@ -49,6 +49,7 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Not());
 		compiler.registerFunction(new LCase());
 		compiler.registerFunction(new UCase());
+		compiler.registerFunction(new Substitute());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -156,5 +157,25 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=\"bozo\"&LCASE(\"UPPER\")", attribNameToTypeMap));
 		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new String("bozoupper"), interpreter2.run());
+	}
+
+	public void testSUBSTITUTE() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=SUBSTITUTE(\"ABABBAABAB\", \"A\", \"X\")", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("XBXBBXXBXB"), interpreter1.run());
+
+		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 2.4)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("FredBobBillJoeJulieHansKarl"), interpreter2.run());
+
+		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 3)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("FredBobBillJoeBobHansKarl"), interpreter3.run());
+
+		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob2\", \"Julie\")", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("FredBobBillJoeBobHansKarl"), interpreter4.run());
 	}
 }
