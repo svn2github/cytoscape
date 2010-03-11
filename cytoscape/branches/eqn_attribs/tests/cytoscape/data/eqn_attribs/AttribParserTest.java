@@ -44,6 +44,8 @@ public class AttribParserTest extends TestCase {
 		parser.registerFunction(new Log());
 		parser.registerFunction(new Abs());
 		parser.registerFunction(new Not());
+		parser.registerFunction(new LCase());
+		parser.registerFunction(new UCase());
 	}
 
 	public void testSimpleExpr() throws Exception {
@@ -103,5 +105,11 @@ public class AttribParserTest extends TestCase {
 		assertTrue(parser.parse("=NOT(3.2 < 12)", attribNameToTypeMap));
 		assertTrue(parser.parse("=NOT(${logical})", attribNameToTypeMap));
 		assertFalse(parser.parse("=NOT(true, true)", attribNameToTypeMap));
+	}
+
+	public void testUCASEandLCASE() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(parser.parse("=UCASE(\"Fred\")", attribNameToTypeMap));
+		assertTrue(parser.parse("=\"bozo\"&LCASE(\"UPPER\")", attribNameToTypeMap));
 	}
 }

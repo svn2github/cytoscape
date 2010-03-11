@@ -47,6 +47,8 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Log());
 		compiler.registerFunction(new Abs());
 		compiler.registerFunction(new Not());
+		compiler.registerFunction(new LCase());
+		compiler.registerFunction(new UCase());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -143,5 +145,16 @@ public class InterpreterTest extends TestCase {
 		assertEquals(new Boolean(false), interpreter2.run());
 		assertTrue(compiler.compile("=NOT(${logical})", attribNameToTypeMap));
 		assertFalse(compiler.compile("=NOT(true, true)", attribNameToTypeMap));
+	}
+
+	public void testUCASEandLCASE() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=UCASE(\"Fred\")", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("FRED"), interpreter1.run());
+		assertTrue(compiler.compile("=\"bozo\"&LCASE(\"UPPER\")", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("bozoupper"), interpreter2.run());
 	}
 }
