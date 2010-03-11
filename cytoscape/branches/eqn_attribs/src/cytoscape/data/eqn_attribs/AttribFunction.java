@@ -38,53 +38,23 @@ public interface AttribFunction {
 	String getName();
 
 	/**
-	 *  Used to parse the function parameters.  The only entries that are allowed in the returned
-	 *  array are Double.getCLass(), String.class, or Boolean.class.
-	 *  @returns the list of argument types for this function
-	 */
-	Class[] getParameterTypes();
- 
-	/**
-	 *  Used to define the function's return type. 
-	 *  @returns must be Double.getCLass(), String.class, or Boolean.class.
-	 */
-	Class getReturnType();
-
-	/**
-	 *  This confunsingly named method should return -1 if the function cannot take a variable
-	 *  number of arguments.  If the function can take a variable number of arguments this method
-	 *  should return the minimum number of arguments.  In the case of a variable number of
-	 *  arguments getParameterTypes() must return an array with a single entry which will then be
-	 *  used to validate all parameters.  This implies of course that it is impossible to define
-	 *  a function with a variable number of arguments where the arguments may have differing types.
-	 *  @returns the minimum number of args for a vararg function or -1 if the function may not have a variable number of args
-	 */
-	int getMinNumberOfArgsForVariableArity();
-
-	/**
-	 *  This confunsingly named method should return -1 if the function cannot take a variable
-	 *  number of arguments.  If the function can take a variable number of arguments this method
-	 *  should return the maximum number of arguments.  In the case of a variable number of
-	 *  arguments getParameterTypes() must return an array with a single entry which will then be
-	 *  used to validate all parameters.  This implies of course that it is impossible to define
-	 *  a function with a variable number of arguments where the arguments may have differing types.
-	 *  @returns the maximum number of args for a vararg function or -1 if the function may not have a variable number of args
-	 */
-	int getMaxNumberOfArgsForVariableArity();
-
-	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
 	String getHelpDescription();
 
 	/**
+	 *  @returns the return type for this function (Double.getCLass(), String.class, or Boolean.class)
+	 *           or null if the args passed in had the wrong arity or a type mismatch
+	 */
+	Class validateArgTypes(final Class[] argTypes);
+
+	/**
 	 *  Used to invoke this function.
 	 *  @param args the function arguments which must correspond in type and number to what getParameterTypes() returns.
 	 *  @returns the result of the function evaluation.  The actual type of the returned object will be what getReturnType() returns.
 	 *  @throws ArithmeticException thrown if a numeric error, e.g. a division by zero occurred.
-	 *  @throws IllegalArgumentException thrown for any error that is not a numeric error, for example if a function only accepts positive
-	 *  numbers and a negative number was passed in.
+	 *  @throws IllegalArgumentException thrown for any error that is not a numeric error, for example if a function only accepts positive numbers and a negative number was passed in.
 	 */
 	Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException;
 }

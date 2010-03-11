@@ -83,9 +83,6 @@ public class Interpreter {
 					case SCONCAT:
 						sconcat();
 						break;
-					case SCONV:
-						sconv();
-						break;
 					case BEQLF:
 						beqlf();
 						break;
@@ -165,10 +162,6 @@ public class Interpreter {
 			return retval;
 
 		throw new IllegalStateException("illegal result type at end of interpretation: " + retval.getClass() + "!");
-	}
-
-	private void sconv() throws EmptyStackException {
-		argumentStack.push(argumentStack.pop().toString());
 	}
 
 	private void fadd() throws EmptyStackException {
@@ -307,37 +300,15 @@ public class Interpreter {
 		} catch (final Exception e) {
 			throw new IllegalStateException("invalid argument count type following a CALL opcode!");
 		}
-		final Class[] argTypes = func.getParameterTypes();
-		final boolean varargs = func.getMinNumberOfArgsForVariableArity() != -1;
-		if (varargs) {
-			if (argCount < func.getMinNumberOfArgsForVariableArity() || argCount > func.getMaxNumberOfArgsForVariableArity())
-				throw new IllegalStateException("invalid number (found " + argCount + ", expected between "
-				                                + func.getMinNumberOfArgsForVariableArity() + " and "
-				                                + func.getMaxNumberOfArgsForVariableArity() + ") of arguments in call to "
-				                                + func.getName() + "()!");
-		}
-		else if (argCount != argTypes.length)
-			throw new IllegalStateException("invalid number (found " + argCount + ", expected " + argTypes.length
-			                                + ") of arguments in call to " + func.getName() + "()!");
-
 		final int MIN_ARG_COUNT = 0;
 		final int MAX_ARG_COUNT = 50;
 		if (argCount < MIN_ARG_COUNT || argCount > MAX_ARG_COUNT)
 			throw new IllegalStateException("invalid argument count type following a CALL opcode (range must be in [" + MIN_ARG_COUNT + ", " + MAX_ARG_COUNT + "])!");
 
-		// 3. collect and validate the actual arguments
+		// 3. collect the actual arguments
 		final Object args[] = new Object[argCount];
-		for (int argNo = 0; argNo < argCount; ++argNo) {
-			final Class expectedType = argTypes[varargs ? 0 : argNo];
-			if (expectedType == Double.class)
-				args[argNo] = new Double(getFloat(argumentStack.pop()));
-			else if (expectedType == String.class)
-				args[argNo] = getString(argumentStack.pop());
-			else if (expectedType == Boolean.class)
-				args[argNo] = new Boolean(getBoolean(argumentStack.pop()));
-			else
-				throw new IllegalStateException("unknown function argument type: " + expectedType.getClass() + "!");
-		}
+		for (int argNo = 0; argNo < argCount; ++argNo)
+			args[argNo] = argumentStack.pop();
 
 		// 4. now actually call the function
 		argumentStack.push(func.evaluateFunction(args));

@@ -40,31 +40,25 @@ public class Log implements AttribFunction {
 	public String getName() { return "LOG"; }
 
 	/**
-	 *  @returns the list of argument types for this function
-	 */
-	public Class[] getParameterTypes() { return new Class[] { Double.class }; }
- 
-	/**
-	 *  Used to define the function's return type. 
-	 *  @returns Double.getCLass()
-	 */
-	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @returns 1
-	 */
-	public int getMinNumberOfArgsForVariableArity() { return 1; }
-
-	/**
-	 *  @returns 2
-	 */
-	public int getMaxNumberOfArgsForVariableArity() { return 2; }
-
-	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
 	public String getHelpDescription() { return "Attempts to emulate the Excel™ LOG function.\nCall this with \"LOG(number [, base])\""; }
+
+	/**
+	 *  @returns Double.class or null if there are not 1 or 2 args or the args are not of type Double
+	 */
+	public Class validateArgTypes(final Class[] argTypes) {
+		if (argTypes.length != 1 && argTypes.length != 2)
+			return null;
+
+		for (final Class argType : argTypes) {
+			if (argType != Double.class)
+				return null;
+		}
+
+		return Double.class;
+	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

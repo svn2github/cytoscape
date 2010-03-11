@@ -40,31 +40,20 @@ public class LCase implements AttribFunction {
 	public String getName() { return "LCASE"; }
 
 	/**
-	 *  @returns the list of argument types for this function
-	 */
-	public Class[] getParameterTypes() { return new Class[] { String.class }; }
- 
-	/**
-	 *  Used to define the function's return type. 
-	 *  @returns String.getCLass()
-	 */
-	public Class getReturnType() { return String.class; }
-
-	/**
-	 *  @returns -1
-	 */
-	public int getMinNumberOfArgsForVariableArity() { return -1; }
-
-	/**
-	 *  @returns -1
-	 */
-	public int getMaxNumberOfArgsForVariableArity() { return -1; }
-
-	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
 	public String getHelpDescription() { return "Attempts to emulate the Excel™ LCASE function.\nCall this with \"LCASE(text)\""; }
+
+	/**
+	 *  @returns String.class or null if the args passed in have the wrong arity or a type mismatch was found
+	 */
+	public Class validateArgTypes(final Class[] argTypes) {
+		if (argTypes.length != 1 || argTypes[0] != String.class)
+			return null;
+
+		return String.class;
+	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
@@ -73,7 +62,7 @@ public class LCase implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final String text = (String)args[0];
+		final String text = args[0].toString();
 
 		return text.toLowerCase();
 	}

@@ -40,21 +40,25 @@ import cytoscape.data.eqn_attribs.interpreter.Instruction;
  */
 public class FuncCallNode implements Node {
 	private final AttribFunction func;
+	final Class returnType;
 	private final Node[] args;
 
-	public FuncCallNode(final AttribFunction func, final Node[] args) {
+	public FuncCallNode(final AttribFunction func, final Class returnType, final Node[] args) {
 		if (func == null)
 			throw new IllegalArgumentException("function must not be null!");
+		if (returnType == null)
+			throw new IllegalArgumentException("return type must not be null!");
 		if (args == null)
 			throw new IllegalArgumentException("args must not be null!");
 
-		this.func = func;
-		this.args = args;
+		this.func       = func;
+		this.returnType = returnType;
+		this.args       = args;
 	}
 
 	public String toString() { return "FuncCallNode: call to " + func.getName().toUpperCase() + " with " + args.length + " args"; }
 
-	public Class getType() { return func.getReturnType(); }
+	public Class getType() { return returnType; }
 
 	/**
 	 *  @returns null, This type of node never has any children!

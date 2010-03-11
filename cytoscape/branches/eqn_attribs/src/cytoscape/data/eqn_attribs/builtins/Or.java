@@ -40,30 +40,25 @@ public class Or implements AttribFunction {
 	public String getName() { return "OR"; }
 
 	/**
-	 *  @returns the list of argument types for this function
-	 */
-	public Class[] getParameterTypes() { return new Class[] { Boolean.class }; }
- 
-	/**
-	 *  @returns the return type of the OR() built-in function.
-	 */
-	public Class getReturnType() { return Boolean.class; }
-
-	/**
-	 *  @returns the minimum number of args for this function.
-	 */
-	public int getMinNumberOfArgsForVariableArity() { return 1; /* Like Excel™ */ }
-
-	/**
-	 *  @returns the maximum number of args for this function.
-	 */
-	public int getMaxNumberOfArgsForVariableArity() { return Integer.MAX_VALUE; }
-
-	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
 	public String getHelpDescription() { return "Attempts to emulate the Excel™ OR function.\nCall this with \"OR(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
+
+	/**
+	 *  @returns Boolean.class or null if there are 0 args or the args are not all of type Boolean
+	 */
+	public Class validateArgTypes(final Class[] argTypes) {
+		if (argTypes.length == 0)
+			return null;
+
+		for (final Class argType : argTypes) {
+			if (argType != Boolean.class)
+				return null;
+		}
+
+		return Boolean.class;
+	}
 
 	/**
 	 *  @param args the function arguments which must all be of type Boolean

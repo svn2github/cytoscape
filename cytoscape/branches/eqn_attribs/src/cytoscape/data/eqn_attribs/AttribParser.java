@@ -50,19 +50,6 @@ class AttribParser {
 	}
 
 	public void registerFunction(final AttribFunction func) throws IllegalArgumentException {
-		// Sanity check for functions with varargs.
-		if (func.getMinNumberOfArgsForVariableArity() > -1 && func.getParameterTypes().length != 1)
-			throw new IllegalArgumentException("functions can't have varargs and specify anything but a single argument type!");
-		if (func.getMinNumberOfArgsForVariableArity() > -1
-		    && func.getMinNumberOfArgsForVariableArity() >= func.getMaxNumberOfArgsForVariableArity())
-			throw new IllegalArgumentException("functions can't have varargs and specify a min. number of args >= max. number of args!");
-
-		// Sanity check for the parameter types of a function.
-		for (final Class c : func.getParameterTypes()) {
-			if (c != Double.class && c != Boolean.class && c != String.class)
-				throw new IllegalArgumentException("function arguments must be of type Double, Boolean, or String!");
-		}
-
 		// Sanity check for the name of the function.
 		final String funcName = func.getName().toUpperCase();
 		if (funcName == null || funcName.equals(""))
@@ -141,7 +128,7 @@ class AttribParser {
 				if (token == AttribToken.PLUS || token == AttribToken.MINUS)
 					exprNode = handleBinaryArithmeticOp(token, exprNode, term);
 				else
-					exprNode = handleStringConcat(exprNode, term);
+					exprNode = new BinOpNode(AttribToken.AMPERSAND, exprNode, term);
 			}
 			else if (token == AttribToken.EQUAL || token == AttribToken.NOT_EQUAL
 				 || token == AttribToken.GREATER_THAN
@@ -169,20 +156,6 @@ class AttribParser {
 			                              + operator.asString() + "\"! (lhs="
 			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                              + rhs.toString() + ":" + rhs.getType() + ")");
-	}
-
-	/**
-	 *  Deals w/ any necessary type conversions for string concatenation.
-	 */
-	private Node handleStringConcat(final Node lhs, final Node rhs) {
-		if (lhs.getType() == String.class && rhs.getType() == String.class)
-			return new BinOpNode(AttribToken.AMPERSAND, lhs, rhs);
-		else if (lhs.getType() == String.class)
-			return new BinOpNode(AttribToken.AMPERSAND, lhs, new ConvertToStringNode(rhs));
-		else if (rhs.getType() == String.class)
-			return new BinOpNode(AttribToken.AMPERSAND, new ConvertToStringNode(lhs), rhs);
-		else
-			return new BinOpNode(AttribToken.AMPERSAND, new ConvertToStringNode(lhs), new ConvertToStringNode(rhs));
 	}
 
 	/**
@@ -351,64 +324,38 @@ class AttribParser {
 		if (func == null)
 			throw new IllegalStateException("call to unknown function " + functionNameCandidate + "()!");
 
-		final Class[] argTypes = func.getParameterTypes();
-		final boolean varargs = func.getMinNumberOfArgsForVariableArity() > -1;
-		final int minArity, maxArity;
-		if (varargs) {
-			minArity = func.getMinNumberOfArgsForVariableArity();
-			maxArity = func.getMaxNumberOfArgsForVariableArity();
-		} else
-			minArity = maxArity = argTypes.length;
-
 		token = tokeniser.getToken();
 		if (token != AttribToken.OPEN_PAREN)
 			throw new IllegalStateException("expected '(' after function name \"" + functionNameCandidate + "\"!");
 
-		ArrayList<Node> args = new ArrayList<Node>();
 		// Parse the comma-separated argument list.
-		int argCount = 0;
+		final ArrayList<Class> argTypes = new ArrayList<Class>();
+		ArrayList<Node> args = new ArrayList<Node>();
 		for (;;) {
 			token = tokeniser.getToken();
 			if (token ==  AttribToken.CLOSE_PAREN)
 				break;
 
-			++argCount;
-			if (argCount > maxArity)
-				throw new IllegalStateException("expected the closing parenthesis of a call to "
-				                                + functionNameCandidate + "() (1)!");
-
-			final Class expectedType = varargs ? argTypes[0] : argTypes[argCount - 1];
 			tokeniser.ungetToken(token);
 			final Node exprNode = parseExpr(level);
-			args.add(convertArgType(functionNameCandidate, expectedType, exprNode));
+			argTypes.add(exprNode.getType());
+			args.add(exprNode);
 
 			token = tokeniser.getToken();
 			if (token != AttribToken.COMMA)
 				break;
 		}
 
+		final Class returnType = func.validateArgTypes(argTypes.toArray(new Class[argTypes.size()]));
+		if (returnType == null)
+			throw new IllegalStateException("invalid number of type of arguments in call to "
+			                                + functionNameCandidate + "()!");
+
 		if (token != AttribToken.CLOSE_PAREN)
 			throw new IllegalStateException("expected the closing parenthesis of a call to "
-			                                + functionNameCandidate + "() (2)!");
-
-		if (argCount < minArity)
-			throw new IllegalStateException("too few arguments in a call to " + functionNameCandidate + "()!");
+			                                + functionNameCandidate + "!");
 
 		Node[] nodeArray = new Node[args.size()];
-		return new FuncCallNode(func, args.toArray(nodeArray));
-	}
-
-	private Node convertArgType(final String funcName, final Class expectedType, final Node node) {
-		// Trivial case, expected and actual type are the same:
-		if (expectedType == node.getType())
-			return node;
-
-		// If not a string, we can easily convert anything to a string:
-		if (expectedType == String.class)
-			return new ConvertToStringNode(node);
-
-		throw new IllegalArgumentException("invalid argument type in a  parameter of "
-		                                   + funcName + "() (expected: " + expectedType
-		                                   + ", found: " + node.getType() + ")!");
+		return new FuncCallNode(func, returnType, args.toArray(nodeArray));
 	}
 }

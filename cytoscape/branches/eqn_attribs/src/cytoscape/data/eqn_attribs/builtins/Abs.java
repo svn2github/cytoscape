@@ -40,31 +40,20 @@ public class Abs implements AttribFunction {
 	public String getName() { return "ABS"; }
 
 	/**
-	 *  @returns the list of argument types for this function
-	 */
-	public Class[] getParameterTypes() { return new Class[] { Double.class }; }
- 
-	/**
-	 *  Used to define the function's return type. 
-	 *  @returns Double.getCLass()
-	 */
-	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @returns -1 indicating that this is not a varargs function
-	 */
-	public int getMinNumberOfArgsForVariableArity() { return -1; }
-
-	/**
-	 *  @returns -1 indicating that this is not a varargs function
-	 */
-	public int getMaxNumberOfArgsForVariableArity() { return -1; }
-
-	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
 	public String getHelpDescription() { return "Attempts to emulate the Excel™ ABS function.\nCall this with \"ABS(number)\""; }
+
+	/**
+	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double
+	 */
+	public Class validateArgTypes(final Class[] argTypes) {
+		if (argTypes.length != 1 || argTypes[0] != Double.class)
+			return null;
+
+		return Double.class;
+	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
