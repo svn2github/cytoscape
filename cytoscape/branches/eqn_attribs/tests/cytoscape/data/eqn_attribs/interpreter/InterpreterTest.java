@@ -51,6 +51,8 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new UCase());
 		compiler.registerFunction(new Substitute());
 		compiler.registerFunction(new If());
+		compiler.registerFunction(new Ln());
+		compiler.registerFunction(new Exp());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -198,5 +200,21 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=IF(TrUe, 12.3, \"-4\")", attribNameToTypeMap));
 		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new String("12.3"), interpreter4.run());
+	}
+
+	public void testLNandEXP() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=LN(2.3)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(Math.log(2.3)), interpreter1.run());
+
+		assertTrue(compiler.compile("=EXP(-4)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(Math.exp(-4.0)), interpreter2.run());
+
+		assertTrue(compiler.compile("=EXP(LN(2.5))", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(2.5), interpreter3.run());
 	}
 }
