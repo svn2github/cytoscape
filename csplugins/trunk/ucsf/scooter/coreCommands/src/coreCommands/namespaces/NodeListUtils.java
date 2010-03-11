@@ -35,6 +35,7 @@ package coreCommands.namespaces;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -48,6 +49,9 @@ import cytoscape.command.CyCommandResult;
  * node is denoted by the key <b>node</b> and a single node identifier.
  */
 public class NodeListUtils {
+	public static final String NODELIST = "nodelist";
+	public static final String NODE = "node";
+	public static final String SELECTED = "selected";
 
 	/**
  	 * This method is used to handle both <b>nodelist</b> and <b>node</b> parameters.
@@ -64,18 +68,34 @@ public class NodeListUtils {
 			return null;
 
 		List<CyNode> retList = new ArrayList();
-		if (args.containsKey("nodelist")) {
-			String[] nodes = args.get("nodelist").toString().split(",");
-			for (int nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
-				addNode(net, nodes[nodeIndex], retList, result);
+		if (args.containsKey(NODELIST)) {
+			String[] nodes = args.get(NODELIST).toString().split(",");
+			// Handle special case for "selected" nodes
+			if (nodes[0].equals(SELECTED)) {
+				Set<CyNode> selectedNodes = net.getSelectedNodes();
+				for (CyNode node: selectedNodes) {
+					addNode(net, node.getIdentifier(), retList, result);
+				}
+			} else {
+				for (int nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
+					addNode(net, nodes[nodeIndex], retList, result);
+				}
 			}
-		} else if (args.containsKey("node")) {
-			String nodeName = args.get("node").toString();
+		} else if (args.containsKey(NODE)) {
+			String nodeName = args.get(NODE).toString();
 			addNode(net, nodeName, retList, result);
 		} else {
 			return null;
 		}
 		return retList;
+	}
+
+	public static String formatNodeList(List<CyNode> nodeList) {
+		String result = "";
+		for (CyNode node: nodeList)
+			result += node.getIdentifier()+", ";
+		result = result.substring(0, result.length()-2);
+		return result;
 	}
 
 	private static void addNode(CyNetwork net, String nodeName, List<CyNode> list, CyCommandResult result) {
