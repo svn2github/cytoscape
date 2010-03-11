@@ -7,6 +7,8 @@ import cytoscape.visual.*;
 import cytoscape.view.*;
 import cytoscape.layout.*;
 import cytoscape.task.*;
+import cytoscape.data.readers.*;
+import cytoscape.data.writers.*;
 
 import cytoscape.performance.track.*;
 
@@ -20,14 +22,18 @@ public aspect CytoscapeProfiler {
 	 */
 	pointcut id() : execution(* Cytoscape.createNetworkView(CyNetwork,String)) ||
 	                execution(* Cytoscape.addNetwork(..)) || 
+	                execution(* Cytoscape.createNetwork(..)) || 
+	                execution(* DingNetworkView.fitContent(..)) || 
+	                execution(* DingNetworkView.fitSelected(..)) || 
+	                execution(* CalculatorIO.loadCalculators(..)) || 
 	                execution(* CytoscapeInit.init(..)) || 
-	                //execution(* VisualMappingManager.applyNodeAppearances(CyNetwork,CyNetworkView)) ||
-	                //execution(* VisualMappingManager.applyEdgeAppearances(CyNetwork,CyNetworkView)) ||
-	                execution(* LayoutAlgorithm.doLayout(CyNetworkView)) || 
-	                execution(* LayoutAlgorithm.doLayout(CyNetworkView, TaskMonitor)) || 
-                    execution(* csplugins.layout.algorithms.springEmbedded.SpringEmbeddedLayoutAction.actionPerformed(..)) ||
-                    execution(* csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutListener.run())  ||
-	                execution(* CytoscapeAction.actionPerformed(..)) //|| 
+	                execution(* VisualMappingManager.applyAppearances(..)) || 
+	                execution(* CyLayoutAlgorithm.doLayout(CyNetworkView)) || 
+	                execution(* CyLayoutAlgorithm.doLayout(CyNetworkView, TaskMonitor)) || 
+	                execution(* CytoscapeAction.actionPerformed(..)) || 
+	                execution(* CyNetworkView.redrawGraph(..)) || 
+	                execution(* CytoscapeSessionWriter.writeSessionToDisk(..)) ||
+	                execution(* CytoscapeSessionReader.read(..))
 			      ;
 	
 	before() : id() {
@@ -38,18 +44,4 @@ public aspect CytoscapeProfiler {
 		Tracker.track(State.END,thisJoinPoint.getSignature().toString());
 	}
 
-	/**
-	 * This pointcut is needed to identify when layouts finish. The advice that uses
-	 * it will popup a dialog that will be used by swingunit to know when a layout
-	 * are finished.
-	 */
-	pointcut layoutSupport() : execution(* LayoutAlgorithm.doLayout(CyNetworkView)) ||
-	                           execution(* csplugins.layout.algorithms.springEmbedded.SpringEmbeddedLayoutAction.actionPerformed(..)) ||
-	                           execution(* csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutListener.run())  
-							   ; 
-
-	after() : layoutSupport() {
-		 JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Layout Finished", 
-		                               "Layout Finished", JOptionPane.INFORMATION_MESSAGE);
-	}
 }

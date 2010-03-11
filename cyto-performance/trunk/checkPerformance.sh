@@ -1,18 +1,23 @@
 #!/bin/bash
 
-base=/cellar/users/mes/Cytoscape-performance
+base=/Users/mes/cellar/Data/cytoscape_performanc_releases
 
-ant clean > run.log
-ant -Dcytoscape.dir=$base/2.3.1/cytoscape -Dplugin.root.dir=$base/2.3.1/coreplugins -Dcytoscape.version=2.3.1 run > run.log
+function runTest {
+	echo Testing version: $1
+	ant clean >> run.log
+	ant -Dcytoscape.dir=$base/Cytoscape_$1 -Dcytoscape.version=$1 run  >> run.log
+}
 
-ant clean > run.log
-ant -Dcytoscape.dir=$base/2.3.2/cytoscape -Dplugin.root.dir=$base/2.3.2/coreplugins -Dcytoscape.version=2.3.2 run > run.log
+> run.log
 
-ant clean > run.log
-ant -Dcytoscape.dir=$base/2.4.0/cytoscape -Dplugin.root.dir=$base/2.4.0/coreplugins -Dcytoscape.version=2.4.0 run > run.log
-
-ant clean > run.log
-ant -Dcytoscape.dir=$base/current/cytoscape -Dplugin.root.dir=$base/current/coreplugins -Dcytoscape.version=current run  > run.log
+runTest 2.5.0
+runTest 2.5.1
+runTest 2.5.2
+runTest 2.6.0
+runTest 2.6.1
+runTest 2.6.2
+runTest 2.6.3
+runTest trunk 
 
 java -cp track.cyperf.jar:ui.cyperf.jar cytoscape.performance.ui.HTMLResults *.perf
-java -cp track.cyperf.jar:ui.cyperf.jar cytoscape.performance.ui.AlignedResults *.perf
+

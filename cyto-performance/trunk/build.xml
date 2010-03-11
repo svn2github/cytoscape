@@ -1,4 +1,4 @@
-<project name="cyto-performance" default="all" basedir=".">
+<project name="cyto-performance" default="run" basedir=".">
 <!-- =================================================================== -->
 <!-- Initialization target                                               -->
 <!-- =================================================================== -->
@@ -39,6 +39,7 @@
     </not>
    </condition>
   </fail>
+  <!--
   <fail message="You must specify the plugin source location:    ant -Dplugin.root.dir=/path/to/plugin [ant target]">
    <condition>
     <not>
@@ -46,6 +47,7 @@
     </not>
    </condition>
   </fail>
+  -->
 
   <fail message="You must specify the cytoscape version:    ant -Dcytoscape.version=2.3.X [ant target]">
    <condition>
@@ -98,9 +100,11 @@
 <!-- =================================================================== -->
  <target name="run_compile_plugins" 
          depends="run_init" >
+		 <!--
   <property name="plugin.name" value="AutomaticLayout"/>
   <property name="plugin.dir" value="${plugin.root.dir}/AutomaticLayout"/>
   <ant target="run_compile_one_plugin" />
+  -->
   <!-- reset plugin.name and plugin.dir -->
   <!-- and run again for a different plugin-->
  </target>
@@ -181,6 +185,11 @@
 <!-- =================================================================== -->
  <target name="run_jar" 
          depends="run_compile" >
+  <copy todir="${run.build.dir}">
+   <fileset dir="${run.src.dir}/testData">
+    <include name="*"/>
+   </fileset>
+  </copy>
   <copy todir="${run.build.dir}/cytoscape/performance">
    <fileset dir="${run.src.dir}/cytoscape/performance">
     <include name="*.xml"/>
@@ -256,7 +265,24 @@
   <delete file="${run.project.jar}"/>
   <delete file="${ui.project.jar}"/>
   <delete file="${track.project.jar}"/>
+  <delete>
+      <fileset dir="." includes="*.cys"/>
+      <fileset dir="." includes="*.png"/>
+      <fileset dir="." includes="*.html"/>
+  </delete>
   <echo message="Successfully ran clean task!"/>
+  <echo message="Consider the 'distclean' task if you want to clean up results as well!"/>
+ </target>
+
+<!-- =================================================================== -->
+<!-- Clean up, get back to original state - including results files      -->
+<!-- =================================================================== -->
+ <target name="distclean" 
+         depends="clean">
+  <delete>
+      <fileset dir="." includes="*.log"/>
+      <fileset dir="." includes="*.perf"/>
+  </delete>
  </target>
 <!-- =================================================================== -->
 <!-- Create a jar containing only the track classes.                     -->
@@ -264,7 +290,8 @@
  <target name="track_jar" 
          depends="init">
     <mkdir dir="${track.build.dir}"/>
-    <javac srcdir="${track.src.dir}"
+    <javac debug="true"
+           srcdir="${track.src.dir}"
            destdir="${track.build.dir}"
            deprecation="true">
      </javac>
