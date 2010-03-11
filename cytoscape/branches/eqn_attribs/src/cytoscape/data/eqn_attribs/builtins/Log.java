@@ -64,7 +64,7 @@ public class Log implements AttribFunction {
 	 *  @param args the function arguments which must be either one or two objects of type Double
 	 *  @returns the result of the function evaluation which is the logarithm of the first argument
 	 *  @throws ArithmeticException 
-	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
+	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final double number = (Double)args[0];
