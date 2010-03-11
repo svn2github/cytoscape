@@ -168,7 +168,7 @@ public class AttribTokeniserTest extends TestCase {
 	}
 
 	public void testScanner4() throws Exception {
-		final AttribTokeniser tokeniser = new AttribTokeniser("true fred FALSE True");
+		final AttribTokeniser tokeniser = new AttribTokeniser("true, fred, FALSE, True");
 		final ArrayList<String> tokens = new ArrayList<String>();
 		String tokenAsString;
 		do {
@@ -180,8 +180,11 @@ public class AttribTokeniserTest extends TestCase {
 
 		final String[] expectedTokens = {
 			"BOOLEAN_CONSTANT: \"true\"",
+			"COMMA",
 			"IDENTIFIER: \"fred\"",
+			"COMMA",
 			"BOOLEAN_CONSTANT: \"false\"",
+			"COMMA",
 			"BOOLEAN_CONSTANT: \"true\"",
 			"EOS"
 		};

@@ -324,14 +324,36 @@ public class AttribTokeniser {
 		}
 	}
 
+	/**
+	 *  Looks for an attribute name.  Attribute names in formulas cannot contain '}', ':', ',' nor
+	 *  '(' or ')'.  In order to allow a '}' or a ':' in an attribute name, it has to be esacped with a
+	 *  backslash.  Any backslash in an identifier a.k.a. attribute name implies that the next
+	 *  input character will be included in the identifier this also allows for embedding
+	 *  backslashes by doubling them.
+	 */
 	private AttribToken parseIdentifier() {
 		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
 
+		boolean escaped = false;
 		int ch;
-		while ((ch = getChar()) != -1 && (Character.isLetter((char)ch) || Character.isDigit((char)ch) || (char)ch == '_'))
-			builder.append((char)ch);
+		while ((ch = getChar()) != -1 &&
+		       (((char)ch != '}' && (char)ch != ':' && (char)ch != ',' && (char)ch != '(' && (char)ch != ')') || escaped))
+		{
+			if (escaped) {
+				escaped = false;
+				builder.append((char)ch);
+			}
+			else if ((char)ch == '\\')
+				escaped = true;
+			else
+				builder.append((char)ch);
+		}
+		if (escaped) {
+			errorMsg = "invalid attribute name at end of formula!";
+			return AttribToken.ERROR;
+		}
 		ungetChar(ch);
 
 		currentIdent = builder.toString();
