@@ -9,6 +9,7 @@ import cytoscape.layout.*;
 import cytoscape.task.*;
 import cytoscape.data.readers.*;
 import cytoscape.data.writers.*;
+import cytoscape.plugin.*;
 
 import cytoscape.performance.track.*;
 
@@ -33,7 +34,9 @@ public aspect CytoscapeProfiler {
 	                execution(* CytoscapeAction.actionPerformed(..)) || 
 	                execution(* CyNetworkView.redrawGraph(..)) || 
 	                execution(* CytoscapeSessionWriter.writeSessionToDisk(..)) ||
-	                execution(* CytoscapeSessionReader.read(..))
+	                execution(* CytoscapeSessionReader.read(..)) ||
+	                execution(* PluginManager.loadPlugins(..)) ||
+	                execution(* PluginManager.loadPlugin(..)) 
 			      ;
 	
 	before() : id() {

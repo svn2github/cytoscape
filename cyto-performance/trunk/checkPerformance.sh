@@ -21,3 +21,4 @@ runTest trunk
 
 java -cp track.cyperf.jar:ui.cyperf.jar cytoscape.performance.ui.HTMLResults *.perf
 
+echo Open the file results.html to see the results!!!
