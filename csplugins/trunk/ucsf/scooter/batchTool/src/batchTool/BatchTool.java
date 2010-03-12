@@ -186,7 +186,7 @@ public class BatchTool extends CytoscapePlugin {
 				break;
 
 			case '=':
-				if (inQuote) continue;
+				if (inQuote || inPair) continue;
 				key = input.substring(tokenStart, i);
 				inPair = true;
 				tokenStart = i+1;

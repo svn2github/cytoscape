@@ -270,10 +270,10 @@ public class ExportCommand extends AbstractCommand {
 	private ExportType getAsClause(List<String> args) throws ParseException {
 		Iterator <String>argIter = args.iterator();
 		while (argIter.hasNext()) {
-			String arg = argIter.next();
+			String arg = argIter.next().toLowerCase();
 			if (arg.equals("as")) {
 				// Figure out what we're exporting
-				String type = argIter.next();
+				String type = argIter.next().toLowerCase();
 				if (type.equals("xgmml"))
 					return ExportType.XGMML;
 				else if (type.equals("gml"))
