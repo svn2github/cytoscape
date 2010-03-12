@@ -30,18 +30,25 @@
 package cytoscape.data.eqn_attribs.interpreter;
 
 
+import java.util.List;
+
+
 public class IdentDescriptor {
 	private final Class type;
 	private final Object value;
 
-	public IdentDescriptor(final Class type, final Object value) {
-		if (type == null)
-			throw new IllegalArgumentException("type must not be null!");
-		if (value != null && value.getClass() != type)
-			throw new IllegalArgumentException("non-null value must match \"type\"!");
+	public IdentDescriptor(final Object o) {
+		if (o == null)
+			throw new IllegalArgumentException("argument must not be null!");
 
-		this.type = type;
-		this.value = value;
+		if (o instanceof List)
+			this.type = List.class;
+		else if (o.getClass() != Double.class && o.getClass() != Boolean.class && o.getClass() != String.class)
+			throw new IllegalArgumentException("argument is of an unsupported type (" + o.getClass() + ")!");
+		else
+			this.type = o.getClass();
+
+		this.value = o;
 	}
 
 	Class getType() { return type; }

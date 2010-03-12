@@ -30,7 +30,9 @@
 package cytoscape.data.eqn_attribs.interpreter;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import junit.framework.*;
@@ -61,6 +63,7 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Trunc());
 		compiler.registerFunction(new Pi());
 		compiler.registerFunction(new Value());
+		compiler.registerFunction(new Average());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -68,7 +71,7 @@ public class InterpreterTest extends TestCase {
 		attribNameToTypeMap.put("s1", String.class);
 		assertTrue(compiler.compile("=\"Fred\"&${s1}", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		nameToDescriptorMap.put("s1", new IdentDescriptor(String.class, "Bob"));
+		nameToDescriptorMap.put("s1", new IdentDescriptor("Bob"));
 		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals("FredBob", interpreter.run());
 	}
@@ -78,7 +81,7 @@ public class InterpreterTest extends TestCase {
 		attribNameToTypeMap.put("BOB", Double.class);
 		assertTrue(compiler.compile("=42 - 12 + 3 * (4 - 2) + ${BOB:12}", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		nameToDescriptorMap.put("BOB", new IdentDescriptor(Double.class, -10.0));
+		nameToDescriptorMap.put("BOB", new IdentDescriptor(-10.0));
 		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Double(26.0), interpreter.run());
 	}
@@ -90,8 +93,8 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=-17.8E-14", attribNameToTypeMap));
 		assertTrue(compiler.compile("=+(${attr1} + ${attr2})", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		nameToDescriptorMap.put("attr1", new IdentDescriptor(Double.class, 5.5));
-		nameToDescriptorMap.put("attr2", new IdentDescriptor(Double.class, 6.5));
+		nameToDescriptorMap.put("attr1", new IdentDescriptor(5.5));
+		nameToDescriptorMap.put("attr2", new IdentDescriptor(6.5));
 		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Double(12.0), interpreter.run());
 	}
@@ -119,9 +122,9 @@ public class InterpreterTest extends TestCase {
 		attribNameToTypeMap.put("limit", Double.class);
 		assertTrue(compiler.compile("=${x} <= ${y}", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		nameToDescriptorMap.put("x", new IdentDescriptor(Double.class, 1.2));
-		nameToDescriptorMap.put("y", new IdentDescriptor(Double.class, -3.8e-12));
-		nameToDescriptorMap.put("limit", new IdentDescriptor(Double.class, -65.23e12));
+		nameToDescriptorMap.put("x", new IdentDescriptor(1.2));
+		nameToDescriptorMap.put("y", new IdentDescriptor(-3.8e-12));
+		nameToDescriptorMap.put("limit", new IdentDescriptor(-65.23e12));
 		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter1.run());
 		
@@ -156,7 +159,7 @@ public class InterpreterTest extends TestCase {
 		attribNameToTypeMap.put("logical", Boolean.class);
 		assertFalse(compiler.compile("=NOT()", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		nameToDescriptorMap.put("logical", new IdentDescriptor(Boolean.class, true));
+		nameToDescriptorMap.put("logical", new IdentDescriptor(true));
 		assertTrue(compiler.compile("=NOT(true)", attribNameToTypeMap));
 		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter1.run());
@@ -291,7 +294,7 @@ public class InterpreterTest extends TestCase {
 		attribNameToTypeMap.put("x", Double.class);
 		assertTrue(compiler.compile("=defined(x)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		nameToDescriptorMap.put("x", new IdentDescriptor(Double.class, 1.2));
+		nameToDescriptorMap.put("x", new IdentDescriptor(1.2));
 		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Boolean(true), interpreter1.run());
 
@@ -346,5 +349,21 @@ public class InterpreterTest extends TestCase {
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
 		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Double(-8.9e99), interpreter.run());
+	}
+
+	public void testAVERAGE() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("list", List.class);
+		assertTrue(compiler.compile("=AVERAGE(${list})", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final List<Double> numbers = new ArrayList<Double>();
+		numbers.add(1.0);
+		numbers.add(2.0);
+		numbers.add(3.0);
+		numbers.add(4.0);
+		numbers.add(5.0);
+		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(3.0), interpreter.run());
 	}
 }
