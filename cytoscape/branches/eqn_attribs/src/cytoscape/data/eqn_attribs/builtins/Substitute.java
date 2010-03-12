@@ -84,7 +84,6 @@ public class Substitute implements AttribFunction {
 	 *  @returns the 0-based starting position of the nth appearance of "needle" in "hayStack" or -1 if it can't be found
 	 */
 	private static int findNth(final int n, final String hayStack, final String needle) {
-		System.err.println("Entering findNth(), n="+n+", hayStack="+hayStack+", needle="+needle);
 		int startOffset = 0;
 		int offset = 0;
 		for (int i = 0; i < n; ++i) {
