@@ -27,17 +27,6 @@ public class FileUI {
 	public FileUI(List<TrackedEvent> results, String inputDir,String vers) {
 		this.results = results;
 		this.inputDir = inputDir; 	
-/*
-		outFile = inputDir.replace('/', '-');
-		outFile = outFile.replace('\\', '-');
-		outFile = outFile.replace(':', '-');
-		outFile = outFile.replace(' ','_'); // space
-		outFile = outFile.replace('	','_'); // tab
-		if ( outFile.charAt(0) == '-' || outFile.charAt(0) == '_' )
-			outFile = outFile.substring(1,outFile.length());
-		outFile = outFile + ".perf";
-		*/
-
 		outFile = vers + ".perf";
 	}
 

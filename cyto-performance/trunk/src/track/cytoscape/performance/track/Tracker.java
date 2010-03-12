@@ -18,30 +18,24 @@ import javax.imageio.ImageIO;
 
 public class Tracker {
 
-	protected static Stack<Trackable> beginStack = new Stack<Trackable>();
-	protected static List<TrackedEvent> results = new ArrayList<TrackedEvent>();
-	protected static int totalDuration = 0;
+	private static final Stack<Trackable> beginStack = new Stack<Trackable>();
+	private static final List<TrackedEvent> results = new ArrayList<TrackedEvent>();
 
-
-	public static void track(State s, String sig) {
+	public synchronized static void track(State s, String sig) {
 		Trackable t = new Trackable(s,sig);
 		if ( t.state == State.BEGIN ) 
 			beginStack.push(t);
 		else 
-			compare(beginStack.pop(),t);	
-
+			createEvent(beginStack.pop(),t);
 	}
 
-	public static void compare( Trackable begin, Trackable end ) {
-		if ( begin == null || end == null ||
-		     ! begin.signature.equals(end.signature) )
-		     	throw new RuntimeException(begin.toString() +  "  " + end.toString());
-		long dur = end.timeStamp - begin.timeStamp;
-		totalDuration += dur;
+	private synchronized static void createEvent( Trackable begin, Trackable end ) {
+		if ( begin == null || end == null || !begin.signature.equals(end.signature) )
+			throw new RuntimeException(begin.toString() +  "  " + end.toString());
 		results.add(new TrackedEvent(begin.signature,begin.timeStamp,end.timeStamp,beginStack.size()));
 	}
 
-	public static List<TrackedEvent> getEvents() {
+	public synchronized static List<TrackedEvent> getEvents() {
 		return results;
 	}
 
@@ -49,7 +43,6 @@ public class Tracker {
 		for (TrackedEvent t : results)
 			System.out.println(t.toString());
 	}
-
 
 	static class Trackable {
 

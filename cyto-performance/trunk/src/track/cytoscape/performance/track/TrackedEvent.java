@@ -6,10 +6,10 @@ import java.util.regex.*;
 
 public class TrackedEvent {
 
-	public long begin;
-	public long end;
-	public String signature;
-	public int level; 
+	public final long begin;
+	public final long end;
+	public final String signature;
+	public final int level; 
 
 	public TrackedEvent(String sig, long b, long e, int l) { 
 		signature = sig;
@@ -19,7 +19,6 @@ public class TrackedEvent {
 	}
 
 	public TrackedEvent(String parsableString) { 
-		try {
 		Pattern p = Pattern.compile("^(.+);(\\d+);(\\d+);(\\d+)$");
 		Matcher m = p.matcher(parsableString);
 
@@ -29,12 +28,10 @@ public class TrackedEvent {
 			end = new Long(m.group(3));
 			level = new Integer(m.group(4));
 		} else {
-			System.out.println("no match");
-		}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(parsableString);
+			signature = "failed to parse: " + parsableString; 
+			begin = -1; 
+			end = -1; 
+			level = -1; 
 		}
 	}
 

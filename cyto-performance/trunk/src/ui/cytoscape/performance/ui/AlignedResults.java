@@ -71,12 +71,14 @@ public class AlignedResults implements ImageResults {
 	public static int height = 800;
 	StringBuffer areaBuffer;
 	String[] args;
+	String name;
 
 
-	public AlignedResults(String[] args) {
+	public AlignedResults(String name, String... args) {
 		allResults = new LinkedList<List<TrackedEvent>>();
 		colorMap = new HashMap<String,Color>();
 		this.args = args;
+		this.name = name;
 
 		for ( String fileName : args )
 			allResults.add( readResults( fileName ) );
@@ -96,7 +98,7 @@ public class AlignedResults implements ImageResults {
 	}
 
 	public String getName() {
-		return "Aligned";
+		return name; 
 	}
     
 	public RenderedImage getImage() {

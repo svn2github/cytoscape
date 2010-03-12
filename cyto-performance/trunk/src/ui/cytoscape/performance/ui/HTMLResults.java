@@ -46,10 +46,14 @@ import java.io.*;
 public class HTMLResults {
 	
 	public static void main(String[] args) {
-		ImageResults aligned = new AlignedResults(args);
-		ImageResults total = new TotalResults(args);
+		ImageResults aligned = new AlignedResults("All Versions Aligned", args);
+		ImageResults alignedRecent = new AlignedResults("Most Recent Versions Aligned", 
+		                                   args[args.length-2], args[args.length-1]);
+		ImageResults total = new TotalResults("All Versions Total Time", args);
+		ImageResults totalRecent = new TotalResults("Most Recent Versions Total Time", 
+		                                   args[args.length-2], args[args.length-1]);
 
-		writeHTML(total,aligned);
+		writeHTML(total, totalRecent, aligned, alignedRecent);
 	}
 
     
@@ -76,6 +80,10 @@ public class HTMLResults {
 		html.append("</script>\n");
 		html.append("</head>\n");
 		html.append("<body>\n");
+		html.append("<h1>Cytoscape Version Performance Results</h1>");	
+		html.append("This document displays images that describe the performance of different versions of Cytoscape.  Each version is instrumented using a time tracking aspect and then executes an indentical set of operations. The time tracking aspect records the duration of specific method calls in Cytoscape.  Each method call is represented by a color block in the image (colors are consistent across the display). The sequence of method calls form a column.  The height of the column indicates the overall time it took to perform the specified set of operations.   Method calls that execute within other method calls are drawn to the right of the parent method call. For instance, the init() method used to start Cytoscape subsumes calls to load plugins, networks, sessions and more, as a consequence the top of the column extends several layers to the right with child method calls.  By hovering your mouse over a colored block, you should be able to see the name of the method call.");	
+		html.append("<p/>");
+		html.append("The results are broken up into four sections. The first section displays all tested versions to provide perspective our Cytoscape's performance over time.  The image displays the absolute duration of the test for easy comparison across versions.  The second section is the same, except it only includes the two most recent versions.  This allows for closer analysis of the most recent changes made to Cytoscape.  The third section again displays results for all sections, but presents the blocks in a normalized and aligned fashion.  This means that all columns are the same height and that an attempt has been made to align the method blocks across versions. The goal of this display is to allow fine grained comparison of specific method execution times. The fourth section displays aligned results for the two most recent versions. ");
 
 		for ( ImageResults ir : res ) {
 			html.append("<h2>");	
@@ -95,7 +103,7 @@ public class HTMLResults {
 		html.append("</html>\n");
 
 		try {
-			FileWriter fw = new FileWriter("results.html");
+			FileWriter fw = new FileWriter("index.html");
 			fw.write(html.toString(),0,html.length());
 			fw.close();
 		} catch (Exception e) {

@@ -69,12 +69,14 @@ public class TotalResults implements ImageResults {
 	public static int height = 800;
 	StringBuffer areaBuffer;
 	String[] args;
+	String name;
 
 
-	public TotalResults(String[] args) {
+	public TotalResults(String name, String... args) {
 		allResults = new LinkedList<List<TrackedEvent>>();
 		colorMap = new HashMap<String,Color>();
 		this.args = args;
+		this.name = name;
 
 		for ( String fileName : args )
 			allResults.add( readResults( fileName ) );
@@ -86,7 +88,7 @@ public class TotalResults implements ImageResults {
 	}
 
 	public String getName() {
-		return "Total";
+		return name;
 	}
 
 	public RenderedImage getImage() {
@@ -159,14 +161,7 @@ public class TotalResults implements ImageResults {
 			}
 
 			g2.setColor(Color.black);
-			//g2.drawString(name,xOffset,2*separation);
-			// draw the rotated string
-			g2.translate(xOffset,2*separation);
-			g2.rotate(-Math.PI/16.0);
-			g2.drawString(name,0,0);
-			g2.rotate(Math.PI/16.0);
-			g2.translate(-xOffset,-(2*separation));
-						
+			g2.drawString(name,xOffset,2*separation);
 
 			for (TrackedEvent t : rl) {
 				g2.setColor(colorMap.get(t.signature));

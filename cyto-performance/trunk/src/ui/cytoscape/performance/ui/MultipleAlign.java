@@ -38,7 +38,10 @@ package cytoscape.performance.ui;
 
 
 
-import java.util.*;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Vector;
+import java.util.Collections;
 
 
 public class MultipleAlign<T> {
