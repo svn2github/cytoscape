@@ -193,7 +193,7 @@ public class CommandToolDialog extends JDialog
 			}
 			// Get all of the error messages from our results
 			for (String s: results.getErrors()) {
-				resultsText.appendErrors("  "+s+"\n");
+				resultsText.appendError("  "+s+"\n");
 			}
 
 			// Get all of the messages from our results
