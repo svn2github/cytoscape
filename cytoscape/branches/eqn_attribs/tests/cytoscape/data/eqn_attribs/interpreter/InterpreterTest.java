@@ -53,6 +53,9 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new If());
 		compiler.registerFunction(new Ln());
 		compiler.registerFunction(new Exp());
+		compiler.registerFunction(new Left());
+		compiler.registerFunction(new Right());
+		compiler.registerFunction(new Mid());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -216,5 +219,44 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=EXP(LN(2.5))", attribNameToTypeMap));
 		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Double(2.5), interpreter3.run());
+
+		boolean succeeded;
+		try {
+			assertTrue(compiler.compile("=EXP(LN(0.0))", attribNameToTypeMap));
+			final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			interpreter4.run();
+			succeeded = true;
+		} catch (final Exception e) {
+			succeeded = false;
+		}
+		assertFalse(succeeded);
+	}
+
+	public void testLEFTandRIGHTandMID() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=LEFT(\"Circus\", 3)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("Cir"), interpreter1.run());
+
+		assertTrue(compiler.compile("=RIGHT(\"Maximus\", 4)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("imus"), interpreter2.run());
+
+		assertTrue(compiler.compile("=MID(\"Gaius Julius Cesar\",7,6)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("Julius"), interpreter3.run());
+
+		assertTrue(compiler.compile("=MID(\"Augustus\",7,6000)", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("us"), interpreter4.run());
+
+		assertTrue(compiler.compile("=LEFT(\"aureus\",6000)", attribNameToTypeMap));
+		final Interpreter interpreter5 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("aureus"), interpreter5.run());
+
+		assertTrue(compiler.compile("=RIGHT(\"toga\",33)", attribNameToTypeMap));
+		final Interpreter interpreter6 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("toga"), interpreter6.run());
 	}
 }
