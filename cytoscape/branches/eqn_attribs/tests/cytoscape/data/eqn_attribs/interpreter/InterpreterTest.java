@@ -68,6 +68,7 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Max());
 		compiler.registerFunction(new Count());
 		compiler.registerFunction(new Median());
+		compiler.registerFunction(new Nth());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -441,5 +442,53 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=MEDIAN(1,2,4,3)", attribNameToTypeMap));
 		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Double(2.5), interpreter2.run());
+	}
+
+	public void testNTH() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("list1", List.class);
+		assertTrue(compiler.compile("=NTH(${list1}, 3)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final List<Object> list1 = new ArrayList<Object>();
+		list1.add(3.0);
+		list1.add(new Integer(2));
+		list1.add(5.0);
+		list1.add(new String("1"));
+		list1.add(4.0);
+		nameToDescriptorMap.put("list1", new IdentDescriptor(list1));
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("5.0"), interpreter1.run());
+
+		attribNameToTypeMap.put("list2", List.class);
+		assertTrue(compiler.compile("=NTH(${list2}, 4)", attribNameToTypeMap));
+		final List<Object> list2 = new ArrayList<Object>();
+		list2.add(1.0);
+		list2.add(new Integer(2));
+		list2.add(4.0);
+		list2.add(new String("3"));
+		nameToDescriptorMap.put("list2", new IdentDescriptor(list2));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("3"), interpreter2.run());
+
+		boolean succeeded;
+		try {
+			assertTrue(compiler.compile("=NTH(${list2}, 5)", attribNameToTypeMap));
+			final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			interpreter3.run();
+			succeeded = true;
+		} catch (final Exception e) {
+			succeeded = false;
+		}
+		assertFalse(succeeded);
+
+		try {
+			assertTrue(compiler.compile("=NTH(${list2}, 0)", attribNameToTypeMap));
+			final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			interpreter4.run();
+			succeeded = true;
+		} catch (final Exception e) {
+			succeeded = false;
+		}
+		assertFalse(succeeded);
 	}
 }
