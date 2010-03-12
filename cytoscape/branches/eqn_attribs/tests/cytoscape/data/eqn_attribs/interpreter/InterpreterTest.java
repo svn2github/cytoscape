@@ -66,6 +66,8 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Average());
 		compiler.registerFunction(new Min());
 		compiler.registerFunction(new Max());
+		compiler.registerFunction(new Count());
+		compiler.registerFunction(new Median());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -407,5 +409,37 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=MAX(-2,-3,-4.35)", attribNameToTypeMap));
 		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Double(-2.0), interpreter2.run());
+	}
+
+	public void testCOUNT() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("list", List.class);
+		assertTrue(compiler.compile("=COUNT(${list})", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final List<Object> numbers = new ArrayList<Object>();
+		numbers.add(1.0);
+		numbers.add(new Integer(2));
+		numbers.add(3.0);
+		numbers.add(new String("4.0"));
+		numbers.add(5.0);
+		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(5.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=COUNT(-2,-3,-4.35)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(3.0), interpreter2.run());
+	}
+
+	public void testMEDIAN() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=MEDIAN(3,2,5,1,4)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(3.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=MEDIAN(1,2,4,3)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(2.5), interpreter2.run());
 	}
 }
