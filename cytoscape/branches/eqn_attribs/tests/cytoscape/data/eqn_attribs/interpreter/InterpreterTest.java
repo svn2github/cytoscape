@@ -57,6 +57,7 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Right());
 		compiler.registerFunction(new Mid());
 		compiler.registerFunction(new Len());
+		compiler.registerFunction(new Round());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -294,5 +295,25 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=DEFINED(${limit})", attribNameToTypeMap));
 		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter2.run());
+	}
+
+	public void testROUND() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=ROUND(2.15, 1)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(2.2), interpreter1.run());
+
+		assertTrue(compiler.compile("=ROUND(2.149,1)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(2.1), interpreter2.run());
+
+		assertTrue(compiler.compile("=ROUND(-1.475,2)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(-1.48), interpreter3.run());
+
+		assertTrue(compiler.compile("=ROUND(21.5, -1)", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(20.0), interpreter4.run());
 	}
 }
