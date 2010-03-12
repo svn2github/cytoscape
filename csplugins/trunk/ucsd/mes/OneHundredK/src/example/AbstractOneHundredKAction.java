@@ -77,6 +77,8 @@ public class AbstractOneHundredKAction extends CytoscapeAction {
 			buf.append( test.getDescription() );
 			buf.append( Long.toString( duration )); 
 			buf.append(" milliseconds.\n");
+
+			System.out.println("100K TEST: " + test.getDescription() + duration + " milliseconds.");
 		}
 
 

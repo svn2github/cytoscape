@@ -49,10 +49,10 @@ public class OneHundredKAbbreviatedAction extends AbstractOneHundredKAction {
 	public OneHundredKAbbreviatedAction() {
 		super("Abbreviated Demo Test");
 
+		testScenarios.add( new TestScenario( "1 network with 100,000 nodes and edges: ", "/100K_1_net_of_100K.nnf"));
 		testScenarios.add( new TestScenario( "50 networks, each with 10 total nodes and edges with one overview: ", "/abbrev_50nets_of_10.nnf"));
 
 		testScenarios.add( new TestScenario( "500 networks, each with 1 node: ","/abbrev_500nets_of_1.nnf"));
 
-		testScenarios.add( new TestScenario( "1 network with 100,000 nodes and edges: ", "/100K_1_net_of_100K.nnf"));
 	}
 }

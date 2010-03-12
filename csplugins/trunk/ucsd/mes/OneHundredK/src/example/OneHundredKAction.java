@@ -49,10 +49,10 @@ public class OneHundredKAction extends AbstractOneHundredKAction {
 	public OneHundredKAction() {
 		super("Actual LONG Test");
 
+		testScenarios.add( new TestScenario( "1 network with 100,000 nodes and edges: ", "/100K_1_net_of_100K.nnf"));
 		testScenarios.add( new TestScenario( "10,000 networks, each with 10 total nodes and edges with one overview: ", "/100K_10Knets_of_10.nnf"));
 
 		testScenarios.add( new TestScenario( "100,000 networks, each with 1 node: ","/100K_100Knets_of_1.nnf"));
 
-		testScenarios.add( new TestScenario( "1 network with 100,000 nodes and edges: ", "/100K_1_net_of_100K.nnf"));
 	}
 }
