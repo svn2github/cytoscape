@@ -167,7 +167,7 @@ public class AttributeBasedIDMappingImpl
                         }
                     }
                 } else {
-                    Object obj = nodeAttributes.getAttribute(nodeID, attrName).toString();
+                    Object obj = nodeAttributes.getAttribute(nodeID, attrName);
                     if (obj!=null) {
                         String str = obj.toString();
                         if (str.length()>0) {
@@ -279,7 +279,12 @@ public class AttributeBasedIDMappingImpl
             String nodeID = node.getIdentifier();
             for (Map.Entry<DataSourceWrapper, Set<String>> entryDsIds : mapDsIds.entrySet()) {
                 DataSourceWrapper ds = entryDsIds.getKey();
-                for (String attrName : mapIDTypeAttrName.get(ds)) {
+                Set<String> attrNames = mapIDTypeAttrName.get(ds);
+                if (attrNames==null) {
+                    // TODO: what happened?
+                    continue;
+                }
+                for (String attrName : attrNames) {
                     byte attrType = mapAttrNameType.get(attrName);
                     Set<String> ids = entryDsIds.getValue();
                     if (attrType==CyAttributes.TYPE_SIMPLE_LIST) {

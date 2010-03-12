@@ -832,7 +832,8 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         return sb.toString();
     }
 
-    public IDMapperClient getIDMappingClient() {
+    public IDMapperClient getIDMappingClient()
+            throws IDMapperException, ClassNotFoundException {
         String url = textFileTextField.getText();
 
         return new IDMapperClientImplTunables

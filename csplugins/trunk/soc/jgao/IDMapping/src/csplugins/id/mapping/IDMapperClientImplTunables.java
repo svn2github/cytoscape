@@ -109,12 +109,14 @@ public class IDMapperClientImplTunables implements IDMapperClient {
             return this;
         }
 
-        public IDMapperClientImplTunables build() {
+        public IDMapperClientImplTunables build()
+            throws IDMapperException, ClassNotFoundException {
             return new IDMapperClientImplTunables(this);
         }
     }
 
-    private IDMapperClientImplTunables(Builder builder) {
+    private IDMapperClientImplTunables(Builder builder) 
+            throws IDMapperException, ClassNotFoundException {
 
         //Class.forName(classString);
         //mapper = BridgeDb.connect(connectionString);
@@ -124,14 +126,9 @@ public class IDMapperClientImplTunables implements IDMapperClient {
 
         ClientType defClientType = builder.clientType;
         if (defClientType==null) {
-            try {
-                Class.forName(builder.classString);
-                mapper = BridgeDb.connect(builder.connectionString);
-                defClientType = ClientType.getClientType(mapper);
-            } catch (Exception e) {
-                defClientType = ClientType.OTHER;
-                e.printStackTrace();
-            }
+            Class.forName(builder.classString);
+            mapper = BridgeDb.connect(builder.connectionString);
+            defClientType = ClientType.getClientType(mapper);
         }
 
         props = new IDMapperClientProperties(defId);

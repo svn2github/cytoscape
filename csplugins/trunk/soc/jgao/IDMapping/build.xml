@@ -50,7 +50,7 @@
 	</fail>	
 	<fail message="Can't find ${bridgedb.dir}/bridgedb.jar, please specify the path to bridgedb.jar with -Dbridgedb.dir=....">
 		<condition>
-			<not><available file="${bridgedb.dir}/bridgedb.jar"/></not>
+			<not><available file="${bridgedb.dir}/org.bridgedb.jar"/></not>
 		</condition>
 	</fail>	
     <mkdir dir="${build}"/>
@@ -84,13 +84,29 @@
       </manifest>
 
       <fileset dir= "${build.classes}" />
-      <zipfileset src="lib/bridgedb.jar" excludes="META-INF/*"/>
-      <zipfileset src="lib/bridgedb-picr.jar" excludes="META-INF/*"/>
-      <zipfileset src="lib/bridgedb-bio.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/org.bridgedb.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/org.bridgedb.bio.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/org.bridgedb.rdb.construct.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/org.bridgedb.rdb.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/org.bridgedb.webservice.biomart.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/org.bridgedb.webservice.bridgerest.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/org.bridgedb.webservice.picr.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/derby.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/cytoscape-plugins-comm.jar" excludes="META-INF/*"/>
-      <zipfileset src="lib/bridgedb-synergizer.jar" excludes="META-INF/*"/>
+      <!--support for synergizer-->
+      <zipfileset src="lib/org.bridgedb.webservice.synergizer.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/synergizer-client.jar" excludes="META-INF/*"/>
+      <!--end support of synergizer-->
+      <!--support for cronos-->
+      <zipfileset src="lib/org.bridgedb.webservice.cronos.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/axis.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/axis-ant.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/commons-discovery-0.2.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/commons-logging-1.0.4.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/log4j-1.2.8.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/jaxrpc.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/wsdl4j-1.5.1.jar" excludes="META-INF/*"/>
+      <!--end support for cronos-->
     </jar>
   </target>
   

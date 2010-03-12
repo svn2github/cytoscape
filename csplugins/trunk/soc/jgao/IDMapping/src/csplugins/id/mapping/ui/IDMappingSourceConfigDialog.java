@@ -78,7 +78,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
     public void init() {
         initComponents();
-        
+
         srcTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 TreePath path = e.getPath();
@@ -154,9 +154,8 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         sourceConfPanel.setPreferredSize(new java.awt.Dimension(833, 542));
         sourceConfPanel.setLayout(new java.awt.GridBagLayout());
 
-        sourceDescSplitPane.setPreferredSize(new java.awt.Dimension(600, 150));
+        sourceDescSplitPane.setPreferredSize(new java.awt.Dimension(800, 150));
 
-        srcTreeScrollPane.setMinimumSize(new java.awt.Dimension(300, 500));
         srcTreeScrollPane.setPreferredSize(new java.awt.Dimension(300, 500));
 
         srcTree = new IDMappingSourceSelectionTree(this);
@@ -164,7 +163,6 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
         sourceDescSplitPane.setLeftComponent(srcTreeScrollPane);
 
-        descScrollPane.setMinimumSize(new java.awt.Dimension(500, 500));
         descScrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
 
         descTextArea.setEditable(false);

@@ -49,7 +49,7 @@
         <Container class="javax.swing.JSplitPane" name="sourceDescSplitPane">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[600, 150]"/>
+              <Dimension value="[800, 150]"/>
             </Property>
           </Properties>
           <AuxValues>
@@ -66,9 +66,6 @@
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="srcTreeScrollPane">
               <Properties>
-                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[300, 500]"/>
-                </Property>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[300, 500]"/>
                 </Property>
@@ -88,9 +85,6 @@
             </Container>
             <Container class="javax.swing.JScrollPane" name="descScrollPane">
               <Properties>
-                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[500, 500]"/>
-                </Property>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[500, 500]"/>
                 </Property>

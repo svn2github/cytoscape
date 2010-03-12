@@ -264,7 +264,9 @@ public class SourceAttributeSelectionTable extends JTable{
                         result.add(obj.toString());
                     }
                 } else {
-                    result.add(cyAttributes.getAttribute(nodeId, attr).toString());
+                    Object obj = cyAttributes.getAttribute(nodeId, attr);
+                    if (obj!=null)
+                        result.add(obj.toString());
                 }
             }
         }

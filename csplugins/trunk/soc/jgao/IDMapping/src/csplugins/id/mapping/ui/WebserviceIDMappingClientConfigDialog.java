@@ -45,6 +45,7 @@ import cytoscape.task.util.TaskManager;
 
 import cytoscape.util.OpenBrowser;
 
+import org.bridgedb.IDMapperException;
 import org.bridgedb.webservice.biomart.BiomartStub;
 import org.bridgedb.webservice.synergizer.SynergizerStub;
 
@@ -69,7 +70,8 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         BRIDGEDB("BridgeDb web service"),
         BIOMART("BioMart web service"),
         PICR("PICR (Protein Identifier Cross-Reference) web service"),
-        SYNERGIZER("The Synergizer web service")
+        SYNERGIZER("Synergizer web service"),
+        CRONOS("CRONOS web service")
                 ;
 
         private ClientType(String desc) {
@@ -81,6 +83,32 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         }
 
         private String desc;
+    }
+
+    private enum CronosOrganism {
+        HSA("hsa","Homo sapiens"),
+        MMU("mmu","Mus musculus"),
+        RNO("rno","Rattus norvegicus"),
+        BTA("bta","Bos taurus"),
+        CFA("cfa","Canis familiaris"),
+        DME("dme","Drosophila melanogaster")
+        ;
+
+        CronosOrganism(String threeLetter, String fullName) {
+            this.threeLetter = threeLetter;
+            this.fullName = fullName;
+        }
+
+        private String threeLetter;
+        private String fullName;
+
+        public String threeLetter() {
+            return threeLetter;
+        }
+
+        public String toString() {
+            return fullName;
+        }
     }
 
     // add a new client
@@ -160,6 +188,9 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         javax.swing.JPanel synergizerBaseUrlPanel = new javax.swing.JPanel();
         synergizerBaseUrlTextField = new javax.swing.JTextField();
         javax.swing.JButton synergizerBaseUrlButton = new javax.swing.JButton();
+        cronosPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        cronosSpeciesComboBox = new javax.swing.JComboBox();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -194,7 +225,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 1.0;
@@ -231,11 +261,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         bridgedbBaseUrlComboBox.setEditor(bridgedbComboBoxEditor);
         bridgedbBaseUrlComboBox.setSelectedItem("http://webservice.bridgedb.org/Human");
         bridgedbBaseUrlComboBox.setEditable(true);
-        bridgedbBaseUrlComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bridgedbBaseUrlComboBoxActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -251,7 +276,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -382,7 +406,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -440,7 +463,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -469,7 +491,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         synergizerPanel.add(chooseAuthorityPanel, gridBagConstraints);
 
-        chooseSpeciesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a species"));
+        chooseSpeciesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Species"));
         chooseSpeciesPanel.setLayout(new javax.swing.BoxLayout(chooseSpeciesPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         chooseSpeciesPanel.add(chooseSpeciesComboBox);
@@ -547,11 +569,33 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(synergizerPanel, gridBagConstraints);
+
+        cronosPanel.setVisible(false);
+        cronosPanel.setLayout(new java.awt.GridBagLayout());
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Organism"));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        cronosSpeciesComboBox.setModel(new javax.swing.DefaultComboBoxModel(CronosOrganism.values()));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        jPanel1.add(cronosSpeciesComboBox, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        cronosPanel.add(jPanel1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        getContentPane().add(cronosPanel, gridBagConstraints);
 
         okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -574,7 +618,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -617,6 +660,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             biomartPanel.setVisible(false);
             synergizerPanel.setVisible(false);
             picrPanel.setVisible(false);
+            cronosPanel.setVisible(false);
             infoButton.setEnabled(false);
         } else {
             ClientType type = (ClientType)obj;
@@ -625,23 +669,33 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                 biomartPanel.setVisible(false);
                 synergizerPanel.setVisible(false);
                 picrPanel.setVisible(false);
+                cronosPanel.setVisible(false);
             } else if (type == ClientType.BIOMART) {
                 bridgedbPanel.setVisible(false);
                 biomartPanel.setVisible(true);
                 synergizerPanel.setVisible(false);
                 picrPanel.setVisible(false);
+                cronosPanel.setVisible(false);
                 initBiomart();
             } else if (type == ClientType.SYNERGIZER) {
                 bridgedbPanel.setVisible(false);
                 biomartPanel.setVisible(false);
                 synergizerPanel.setVisible(true);
                 picrPanel.setVisible(false);
+                cronosPanel.setVisible(false);
                 initSynergizer();
             } else if (type == ClientType.PICR) {
                 bridgedbPanel.setVisible(false);
                 biomartPanel.setVisible(false);
                 synergizerPanel.setVisible(false);
                 picrPanel.setVisible(true);
+                cronosPanel.setVisible(false);
+            } else if (type == ClientType.CRONOS) {
+                bridgedbPanel.setVisible(false);
+                biomartPanel.setVisible(false);
+                synergizerPanel.setVisible(false);
+                picrPanel.setVisible(false);
+                cronosPanel.setVisible(true);
             }
             infoButton.setEnabled(true);
         }
@@ -711,6 +765,8 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             OpenBrowser.openURL("http://www.ebi.ac.uk/Tools/picr/");
         } else if (type==ClientType.SYNERGIZER) {
             OpenBrowser.openURL("http://llama.med.harvard.edu/synergizer/translate/");
+        } else if (type==ClientType.CRONOS) {
+            OpenBrowser.openURL("http://mips.helmholtz-muenchen.de/genre/proj/cronos/index.html");
         }
     }//GEN-LAST:event_infoButtonActionPerformed
 
@@ -756,10 +812,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         setDatasetsCombo();
     }//GEN-LAST:event_bioMartBaseUrlComboBoxActionPerformed
 
-    private void bridgedbBaseUrlComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bridgedbBaseUrlComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bridgedbBaseUrlComboBoxActionPerformed
-
     private boolean verifyInput() {
         Object obj = typeComboBox.getSelectedItem();
         if (!(obj instanceof ClientType)) {
@@ -774,7 +826,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                 return false;
             }
         } else if (obj==ClientType.SYNERGIZER) {
-            if (biomartStub==null) {
+            if (synergizerStub==null) {
                 JOptionPane.showMessageDialog(this, "Error: failed to connect to Synergizer.");
                 return false;
             }
@@ -940,7 +992,8 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         return true;
     }
 
-    public IDMapperClient getIDMappingClient() {
+    public IDMapperClient getIDMappingClient()
+            throws IDMapperException, ClassNotFoundException {
         String[] strs = getSettings();
         String connStr = strs[0];
         String className = strs[1];
@@ -1014,7 +1067,13 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             String connString = "idmapper-picr-rest:only-active="+(onlyActive?"true":"false");
             String displayName = "PICR: Protein Identifier Cross-Reference Service";
             return new String[]{connString, className, displayName};
-        }else {
+        } else if (typeComboBox.getSelectedItem()==ClientType.CRONOS) {
+            String className = "org.bridgedb.webservice.cronos.IDMapperCronos";
+            CronosOrganism organism = ((CronosOrganism)cronosSpeciesComboBox.getSelectedItem());
+            String connString = "idmapper-cronos:"+organism.threeLetter();
+            String displayName = "CRONOS ("+organism.fullName+")";
+            return new String[]{connString, className, displayName};
+        } else {
             throw new java.lang.IllegalStateException();
         }
     }
@@ -1098,7 +1157,10 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox chooseDBComboBox;
     private javax.swing.JComboBox chooseDatasetComboBox;
     private javax.swing.JComboBox chooseSpeciesComboBox;
+    private javax.swing.JPanel cronosPanel;
+    private javax.swing.JComboBox cronosSpeciesComboBox;
     private javax.swing.JButton infoButton;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton okButton;
     private javax.swing.JPanel picrAdvancedPanel;
     private javax.swing.JCheckBox picrOnlyActiveCheckBox;

@@ -213,13 +213,14 @@ class CheckComboBox extends JComboBox {
                     mapObjSelected.put(cb.getObj(), false);
 
                     cbs.get(n-2).setSelected(false); //Select all
-                    cbs.get(n-1).setSelected(getSelectedItems()==null);
+                    cbs.get(n-1).setSelected(getSelectedItems()==null); // select none
                 } else {
                     cb.setSelected(true);
                     mapObjSelected.put(cb.getObj(), true);
 
-                    cbs.get(n-2).setSelected(getSelectedItems()==null); // Select all
-                    cbs.get(n-1).setSelected(false);
+                    Object[] sobjs = getSelectedItems();
+                    cbs.get(n-2).setSelected(sobjs!=null && sobjs.length==n-2); // Select all
+                    cbs.get(n-1).setSelected(false); // select none
                 }
             } else if (index==n-2) {
                 for (Object obj : mapObjSelected.keySet()) {
