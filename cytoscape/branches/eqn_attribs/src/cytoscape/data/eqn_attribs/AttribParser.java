@@ -320,6 +320,9 @@ class AttribParser {
 			throw new IllegalStateException();
 
 		final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
+		if (functionNameCandidate.equals("DEFINED"))
+			return parseDefined();
+
 		final AttribFunction func = nameToFunctionMap.get(functionNameCandidate);
 		if (func == null)
 			throw new IllegalStateException("call to unknown function " + functionNameCandidate + "()!");
@@ -357,5 +360,39 @@ class AttribParser {
 
 		Node[] nodeArray = new Node[args.size()];
 		return new FuncCallNode(func, returnType, args.toArray(nodeArray));
+	}
+
+
+	/**
+	 *  Implements --> "(" ["{"] ident ["}"] ")".  If the opening brace is found a closing brace is also required.
+	 */
+	private Node parseDefined() {
+		AttribToken token = tokeniser.getToken();
+		if (token != AttribToken.OPEN_PAREN)
+			throw new IllegalStateException("\"(\" expected after \"DEFINED\"!");
+		token = tokeniser.getToken();
+		Class attribRefType;
+		if (token != AttribToken.DOLLAR) {
+			if (token != AttribToken.IDENTIFIER)
+				throw new IllegalStateException("attribute reference expected after \"DEFINED(\"!");
+			attribRefType = attribNameToTypeMap.get(tokeniser.getIdent());
+		}
+		else {
+			token = tokeniser.getToken();
+			if (token != AttribToken.OPEN_BRACE)
+				throw new IllegalStateException("\"{\" expected after \"DEFINED($\"!");
+			token = tokeniser.getToken();
+			if (token != AttribToken.IDENTIFIER)
+				throw new IllegalStateException("attribute reference expected after \"DEFINED(${\"!");
+			attribRefType = attribNameToTypeMap.get(tokeniser.getIdent());
+			token = tokeniser.getToken();
+			if (token != AttribToken.CLOSE_BRACE)
+				throw new IllegalStateException("\"}\" expected after after \"DEFINED(${" + tokeniser.getIdent() + "\"!");
+		}
+		token = tokeniser.getToken();
+		if (token != AttribToken.CLOSE_PAREN)
+			throw new IllegalStateException("missing \")\" in call to DEFINED()!");
+
+		return new BooleanConstantNode(attribRefType != null);
 	}
 }

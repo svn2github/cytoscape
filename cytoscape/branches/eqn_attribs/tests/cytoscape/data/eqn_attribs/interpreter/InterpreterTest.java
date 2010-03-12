@@ -56,6 +56,7 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Left());
 		compiler.registerFunction(new Right());
 		compiler.registerFunction(new Mid());
+		compiler.registerFunction(new Len());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -113,7 +114,16 @@ public class InterpreterTest extends TestCase {
 		attribNameToTypeMap.put("y", Double.class);
 		attribNameToTypeMap.put("limit", Double.class);
 		assertTrue(compiler.compile("=${x} <= ${y}", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("x", new IdentDescriptor(Double.class, 1.2));
+		nameToDescriptorMap.put("y", new IdentDescriptor(Double.class, -3.8e-12));
+		nameToDescriptorMap.put("limit", new IdentDescriptor(Double.class, -65.23e12));
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Boolean(false), interpreter1.run());
+		
 		assertTrue(compiler.compile("=-15.4^3 > ${limit}", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Boolean(true), interpreter2.run());
 	}
 
 	public void testVarargs() throws Exception {
@@ -258,5 +268,31 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=RIGHT(\"toga\",33)", attribNameToTypeMap));
 		final Interpreter interpreter6 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new String("toga"), interpreter6.run());
+	}
+
+	public void testLEN() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=LEN(\"baboon\")", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(6.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=LEN(\"\")", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter2.run());
+	}
+
+	public void testDEFINED() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("x", Double.class);
+		assertTrue(compiler.compile("=defined(x)", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("x", new IdentDescriptor(Double.class, 1.2));
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Boolean(true), interpreter1.run());
+
+		assertTrue(compiler.compile("=DEFINED(${limit})", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Boolean(false), interpreter2.run());
 	}
 }
