@@ -203,6 +203,16 @@ public class NamedSelection extends CytoscapePlugin
 		if (change == CyGroupViewer.ChangeType.NODE_ADDED ||
 		    change == CyGroupViewer.ChangeType.NODE_REMOVED)
 			groupPanel.groupChanged(group);
+		else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
+			boolean selected = true;
+			if (group.getState() == UNSELECTED)
+				selected = false;
+				
+			List<CyNode> nodeList = group.getNodes();
+			Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, selected);
+			Cytoscape.getCurrentNetworkView().updateView();
+			groupPanel.groupChanged(group);
+		}
 	}
 
 	// PropertyChange support
@@ -459,7 +469,6 @@ public class NamedSelection extends CytoscapePlugin
 			if (groupName == null) return;
 			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, viewerName);
 			group.setState(SELECTED);
-			groupPanel.groupCreated(group);
 		}
 
 		/**
@@ -490,22 +499,14 @@ public class NamedSelection extends CytoscapePlugin
 		 * Perform the action associated with a select menu selection
 		 */
 		private void select() {
-			List<CyNode> nodeList = group.getNodes();
-			Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, true);
-			Cytoscape.getCurrentNetworkView().updateView();
 			group.setState(SELECTED);
-			groupPanel.groupChanged(group);
 		}
 
 		/**
 		 * Perform the action associated with an unselect menu selection
 		 */
 		private void unselect() {
-			List<CyNode> nodeList = group.getNodes();
-			Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, false);
-			Cytoscape.getCurrentNetworkView().updateView();
 			group.setState(UNSELECTED);
-			groupPanel.groupChanged(group);
 		}
 	}
 }
