@@ -39,6 +39,7 @@ package cytoscape.performance.ui;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
+import java.util.Random;
 
 /**
  *
@@ -87,6 +88,8 @@ public class HTMLResults {
 		html.append("<p/>");
 		html.append("Actual time values are not displayed as the precise values are highly specific to the given computer and execution environment and are not necessary for comparison across versions.");
 
+		int mapID;
+		Random rand = new Random();
 		for ( ImageResults ir : res ) {
 			html.append("<h2>");	
 			html.append(ir.getName());	
@@ -96,8 +99,13 @@ public class HTMLResults {
 			html.append("<br>");	
 			html.append("<img src=\"");
 			html.append(createImage(ir.getImage(),ir.getName()));
-			html.append("\" usemap=\"#green\" border=\"0\">\n");
-			html.append("<map name=\"green\">\n");
+			html.append("\" usemap=\"#");
+			mapID = Math.abs(rand.nextInt());
+			html.append(mapID);
+			html.append("\" border=\"0\">\n");
+			html.append("<map name=\"");
+			html.append(mapID);
+			html.append("\">\n");
 			html.append( ir.getMouseOverText());
 			html.append("</map>\n");
 		}
