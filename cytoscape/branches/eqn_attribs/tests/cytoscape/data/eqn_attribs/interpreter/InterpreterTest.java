@@ -60,6 +60,7 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Round());
 		compiler.registerFunction(new Trunc());
 		compiler.registerFunction(new Pi());
+		compiler.registerFunction(new Value());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -337,5 +338,13 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=TRUNC(-1.475,2)", attribNameToTypeMap));
 		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 		assertEquals(new Double(-1.47), interpreter4.run());
+	}
+
+	public void testVALUE() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=VALUE(\"-8.9e99\")", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new Double(-8.9e99), interpreter.run());
 	}
 }
