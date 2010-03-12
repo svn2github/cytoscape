@@ -1,6 +1,8 @@
 package cytoscape.visual.customgraphic;
 
+import java.awt.Color;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -18,6 +20,10 @@ import cytoscape.render.stateful.NodeDetails;
 
 public class URLImageCustomGraphics implements CyCustomGraphics<CustomGraphic> {
 
+	// Defining padding
+	private static final double PAD = 10;
+	private static final double R = 28;
+	
 	private final String imageURL;
 	private CustomGraphic cg;
 	private List<CustomGraphic> cgList;
@@ -42,11 +48,16 @@ public class URLImageCustomGraphics implements CyCustomGraphics<CustomGraphic> {
 		final int imageW = image.getWidth();
 		final int imageH = image.getHeight();
 		
+		final Shape background = new java.awt.geom.RoundRectangle2D.Double(-imageW/2d-PAD, -imageH/2d-PAD, imageW+PAD*2d, imageH+PAD*2d, R, R);
+		final Paint backgroundPaint = Color.white;
+		
 		bound = new Rectangle2D.Double(-imageW/2, -imageH/2, imageW, imageH);
 		paint = new TexturePaint(image, bound);
 
 		cg = new CustomGraphic(bound, paint, NodeDetails.ANCHOR_CENTER);
+		cgList.add(new CustomGraphic(background, backgroundPaint, NodeDetails.ANCHOR_CENTER));
 		cgList.add(cg);
+		
 	}
 
 	

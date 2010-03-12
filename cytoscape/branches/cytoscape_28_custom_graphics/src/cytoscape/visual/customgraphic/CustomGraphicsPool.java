@@ -16,6 +16,7 @@ public class CustomGraphicsPool {
 		pool.addGraphics("degree Mapper", new DegreeCircleCustomGraphics("Degree"));
 		pool.addGraphics("Image 1", new URLImageCustomGraphics("http://icons2.iconarchive.com/icons/conor-egan-wylie/iphone/128/Finder-icon.png"));
 		pool.addGraphics("Image 2", new URLImageCustomGraphics("http://www.kegg.jp/Fig/compound/C00221.gif"));
+		pool.addGraphics("Image 3", new URLImageCustomGraphics("https://s3.amazonaws.com/twitter_production/profile_images/419770006/cat1.jpg"));
 	}
 	
 	public static CustomGraphicsPool getPool() {
