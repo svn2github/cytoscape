@@ -1,5 +1,5 @@
 /*
-  File: Nth.java
+  File: First.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,42 +33,40 @@ import java.util.List;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
-public class Nth implements AttribFunction {
+public class First implements AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @returns the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "NTH"; }
+	public String getName() { return "FIRST"; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Call this with \"NTH(list, index)\""; }
+	public String getHelpDescription() { return "Call this with \"FIRST(list)\""; }
 
 	/**
-	 *  @returns String.class or null if the arguments are not a string followed by a number
+	 *  @returns String.class or null if there is not exactly a single list argument
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || argTypes[0] != List.class || argTypes[1] != Double.class)
+		if (argTypes.length != 1 || argTypes[0] != List.class)
 			return null;
 
 		return String.class;
 	}
 
 	/**
-	 *  @param args the function arguments which must be a list followed by a number
-	 *  @returns the n-th entry (1-based) in the list
+	 *  @param args the function arguments which must be a single list
+	 *  @returns the first entry in the list
 	 *  @throws ArithmeticException 
-	 *  @throws IllegalArgumentException thrown if the index is out of range
+	 *  @throws IllegalArgumentException thrown if the list is empty
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final List list = (List)args[0];
-		final int index = (int)Math.round((Double)args[1] - 0.5);
+		if (list.isEmpty())
+			throw new IllegalArgumentException("cab't get the first argument of an empty list in a call to FIRST()!");
 
-		if (index <= 0 || index > list.size())
-			throw new IllegalArgumentException("illegal list index in call to NTH()!");
-
-		return list.get(index - 1).toString();
+		return list.get(0).toString();
 	}
 }

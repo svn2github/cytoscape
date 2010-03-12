@@ -69,6 +69,7 @@ public class InterpreterTest extends TestCase {
 		compiler.registerFunction(new Count());
 		compiler.registerFunction(new Median());
 		compiler.registerFunction(new Nth());
+		compiler.registerFunction(new First());
 	}
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -485,6 +486,36 @@ public class InterpreterTest extends TestCase {
 			assertTrue(compiler.compile("=NTH(${list2}, 0)", attribNameToTypeMap));
 			final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
 			interpreter4.run();
+			succeeded = true;
+		} catch (final Exception e) {
+			succeeded = false;
+		}
+		assertFalse(succeeded);
+	}
+
+	public void testFIRST() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("list1", List.class);
+		assertTrue(compiler.compile("=FIRST(${list1})", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final List<Object> list1 = new ArrayList<Object>();
+		list1.add(3.0);
+		list1.add(new Integer(2));
+		list1.add(5.0);
+		list1.add(new String("1"));
+		list1.add(4.0);
+		nameToDescriptorMap.put("list1", new IdentDescriptor(list1));
+		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		assertEquals(new String("3.0"), interpreter1.run());
+
+		attribNameToTypeMap.put("list2", List.class);
+		assertTrue(compiler.compile("=FIRST(${list2})", attribNameToTypeMap));
+		final List<Object> list2 = new ArrayList<Object>();
+		boolean succeeded;
+		try {
+			assertTrue(compiler.compile("=FIRST(${list2})", attribNameToTypeMap));
+			final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			interpreter2.run();
 			succeeded = true;
 		} catch (final Exception e) {
 			succeeded = false;
