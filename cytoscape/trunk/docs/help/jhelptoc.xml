@@ -179,7 +179,7 @@
             <tocitem target="Editing Discrete Mappings" text="Editing Discrete Mappings">
                <tocitem target="Automatic Value Generators" text="Automatic Value Generators"/>
                <tocitem target="Edit Selected Values at Once" text="Edit Selected Values at Once"/>
-               <tocitem target="Lock Node Width/Height" text="Lock Node Width/Height"/>
+               <tocitem target="Visual Property Dependencies" text="Visual Property Dependencies"/>
             </tocitem>
             <tocitem target="Working with Continuous Mapping Editors" text="Working with Continuous Mapping Editors">
                <tocitem target="Range Setting Panel" text="Range Setting Panel"/>
