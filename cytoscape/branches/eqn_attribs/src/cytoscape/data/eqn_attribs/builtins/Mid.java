@@ -43,7 +43,7 @@ public class Mid implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ MID function.\nCall this with \"MID(text, start, count)\""; }
+	public String getHelpDescription() { return "Call this with \"MID(text, start, count)\""; }
 
 	/**
 	 *  @returns String.class or null if the args passed in have the wrong arity or a type mismatch was found

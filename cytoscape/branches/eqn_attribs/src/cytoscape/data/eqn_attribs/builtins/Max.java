@@ -1,5 +1,5 @@
 /*
-  File: Log.java
+  File: Max.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -29,57 +29,89 @@
 */
 package cytoscape.data.eqn_attribs.builtins;
 
+import java.util.List;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
-public class Log implements AttribFunction {
+public class Max implements AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @returns the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "LOG"; }
+	public String getName() { return "MAX"; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Call this with \"LOG(number [, base])\""; }
+	public String getHelpDescription() { return "Call this with \"MAX(list)\" or \"MAX(arg1,arg2,...,argN)\""; }
 
 	/**
-	 *  @returns Double.class or null if there are not 1 or 2 args or the args are not of type Double
+	 *  @returns Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 && argTypes.length != 2)
+		if (argTypes.length == 0) // No empty argument list!
 			return null;
-
-		for (final Class argType : argTypes) {
-			if (argType != Double.class)
-				return null;
-		}
+		if (argTypes[0] == List.class && argTypes.length != 1) // If we have a list argument it must be the only one!
+			return null;
 
 		return Double.class;
 	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @returns the result of the function evaluation which is the logarithm of the first argument
+	 *  @returns the result of the function evaluation which is the maximum of the elements in the single list argument or the maximum of the one or more double arguments
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = (Double)args[0];
-		final double base = args.length == 2 ? (Double)args[1] : 10.0;
+		double max = Double.NEGATIVE_INFINITY;
 
-		if (number <= 0.0)
-			throw new IllegalArgumentException("LOG() called with a number <= 0.0!");
+		if (args[0] instanceof List) {
+			final List list = (List)args[0];
 
-		if (base <= 0.0)
-			throw new IllegalArgumentException("LOG() called with a base <= 0.0!");
+			for (final Object listEntry : list) {
+				final Class listEntryType = listEntry.getClass();
+				final double value;
+				if (listEntryType == Double.class)
+					value = (Double)listEntry;
+				else if (listEntryType == Integer.class)
+					value = (Integer)listEntry;
+				else if (listEntryType == String.class) {
+					try {
+						value = Double.parseDouble((String)listEntry);
+					} catch (final NumberFormatException e) {
+						throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to MAX()!");
+					}
+				}
+				else
+					throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to MAX()!");
 
-		double retval = Math.log10(number);
-		if (base != 10.0)
-			retval /= Math.log10(base);
+				if (value > max)
+					max = value;
+			}
+		} else { // One or more individual numbers.
+			for (final Object arg : args) {
+				final double value;
+				if (arg.getClass() == Double.class)
+					value = (Double)arg;
+				else if (arg.getClass() == Integer.class)
+					value = (Integer)arg;
+				else if (arg.getClass() == String.class) {
+					try {
+						value = Double.parseDouble((String)arg);
+					} catch (final NumberFormatException e) {
+						throw new IllegalArgumentException("can't convert an argument of MAX() to a number!");
+					}
+				}
+				else
+					throw new IllegalArgumentException("can't convert an argument of MAX() to a number!");
 
-		return retval;
+				if (value > max)
+					max = value;
+			}
+		}
+
+		return max;
 	}
 }

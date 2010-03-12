@@ -43,7 +43,7 @@ public class Round implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ ROUND function.\nCall this with \"ROUND(number, num_digits)\""; }
+	public String getHelpDescription() { return "Call this with \"ROUND(number, num_digits)\""; }
 
 	/**
 	 *  @returns Double.class or null if there are not 2 args or the args are not of type Double
@@ -57,8 +57,8 @@ public class Round implements AttribFunction {
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @returns the result of the function evaluation which is the logarithm of the first argument
-	 *  @throws ArithmeticException 
+	 *  @returns the result of the function evaluation which is the rounded first argument
+	 *  @throws ArithmeticException
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {

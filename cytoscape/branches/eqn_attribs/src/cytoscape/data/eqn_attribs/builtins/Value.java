@@ -43,7 +43,7 @@ public class Value implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ VALUE function.\nCall this with \"VALUE(text)\""; }
+	public String getHelpDescription() { return "Call this with \"VALUE(text)\""; }
 
 	/**
 	 *  @returns Double.class or null if there is not exactly a single argument of type String.class

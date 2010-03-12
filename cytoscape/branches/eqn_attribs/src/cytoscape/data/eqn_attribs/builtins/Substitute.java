@@ -43,7 +43,7 @@ public class Substitute implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ SUBSTITUTE function.\nCall this with \"SUBSTITUTE(text, original, replacement [, nth_appearance])\""; }
+	public String getHelpDescription() { return "Call this with \"SUBSTITUTE(text, original, replacement [, nth_appearance])\""; }
 
 	/**
 	 *  @returns String.class or null if the args passed in had the wrong arity or a type mismatch

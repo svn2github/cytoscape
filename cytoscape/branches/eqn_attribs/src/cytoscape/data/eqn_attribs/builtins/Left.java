@@ -43,7 +43,7 @@ public class Left implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ LEFT function.\nCall this with \"LEFT(text, count)\""; }
+	public String getHelpDescription() { return "Call this with \"LEFT(text, count)\""; }
 
 	/**
 	 *  @returns String.class or null if the args passed in have the wrong arity or a type mismatch was found

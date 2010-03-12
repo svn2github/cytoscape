@@ -43,7 +43,7 @@ public class Exp implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ EXP function.\nCall this with \"EXP(number)\""; }
+	public String getHelpDescription() { return "Call this with \"EXP(number)\""; }
 
 	/**
 	 *  @returns Double.class or null if there are not 1 or 2 args or the args are not of type Double

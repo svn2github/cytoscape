@@ -43,7 +43,7 @@ public class Trunc implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ TRUNC function.\nCall this with \"TRUNC(number[, num_digits])\""; }
+	public String getHelpDescription() { return "Call this with \"TRUNC(number[, num_digits])\""; }
 
 	/**
 	 *  @returns Double.class or null if there are not 1 or 2 args or the args are not of type Double
@@ -62,7 +62,7 @@ public class Trunc implements AttribFunction {
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @returns the result of the function evaluation which is the logarithm of the first argument
+	 *  @returns the result of the function evaluation which is the truncated first argument
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */

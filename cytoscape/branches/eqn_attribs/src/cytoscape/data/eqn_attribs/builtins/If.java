@@ -43,7 +43,7 @@ public class If implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ IF function.\nCall this with \"IF(condition, value_if_true, value_if_false)\""; }
+	public String getHelpDescription() { return "Call this with \"IF(condition, value_if_true, value_if_false)\""; }
 
 	/**
 	 *  @returns whatever is compatible type of the if-value and else-value or null if the two types are incompatible

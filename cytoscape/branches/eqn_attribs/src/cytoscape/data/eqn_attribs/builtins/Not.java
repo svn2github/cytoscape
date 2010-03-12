@@ -43,7 +43,7 @@ public class Not implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ NOT function.\nCall this with \"NOT(logical_expr)\"."; }
+	public String getHelpDescription() { return "Call this with \"NOT(logical_expr)\"."; }
 
 	/**
 	 *  @returns Boolean.class or null if there is not exactly 1 arg or the arg is not of type Boolean

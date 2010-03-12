@@ -43,7 +43,7 @@ public class And implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ AND function.\nCall this with \"AND(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
+	public String getHelpDescription() { return "Call this with \"AND(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
 
 	/**
 	 *  @returns Boolean.class or null if there are 0 args or the args are not all of type Boolean

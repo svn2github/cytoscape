@@ -44,7 +44,7 @@ public class Average implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ AVERAGE function.\nCall this with \"AVERAGE(list)\""; }
+	public String getHelpDescription() { return "Call this with \"AVERAGE(list)\" or \"AVERAGE(arg1,arg2,...,argN)\""; }
 
 	/**
 	 *  @returns Double.class or null if there is not exactly a single list argument
@@ -58,7 +58,7 @@ public class Average implements AttribFunction {
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @returns the result of the function evaluation which is the logarithm of the first argument
+	 *  @returns the result of the function evaluation which is the average of the elements in the single list argument or the average of the one or more double arguments
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
@@ -72,6 +72,8 @@ public class Average implements AttribFunction {
 			final double value;
 			if (listEntryType == Double.class)
 				value = (Double)listEntry;
+			else if (listEntryType == Integer.class)
+				value = (Integer)listEntry;
 			else if (listEntryType == String.class) {
 				try {
 					value = Double.parseDouble((String)listEntry);

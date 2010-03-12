@@ -43,7 +43,7 @@ public class Pi implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Attempts to emulate the Excel™ PI function.\nCall this with \"PI(number)\""; }
+	public String getHelpDescription() { return "Call this with \"PI(number)\""; }
 
 	/**
 	 *  @returns Double.class or null if there are any args
