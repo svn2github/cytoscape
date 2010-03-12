@@ -191,6 +191,11 @@ public class CommandToolDialog extends JDialog
 					throw new RuntimeException("Unknown command: "+input);
 				}
 			}
+			// Get all of the error messages from our results
+			for (String s: results.getErrors()) {
+				resultsText.appendErrors("  "+s+"\n");
+			}
+
 			// Get all of the messages from our results
 			for (String s: results.getMessages()) {
 				resultsText.appendMessage("  "+s+"\n");

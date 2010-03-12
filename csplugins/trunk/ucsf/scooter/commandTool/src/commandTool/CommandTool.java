@@ -62,6 +62,8 @@ public class CommandTool extends CytoscapePlugin implements ActionListener {
 		                            .getMenu("Plugins");
 		pluginMenu.add(menu);
 
+		// Register the "command" namespace
+
 	}
 
 	public void actionPerformed(ActionEvent e) {
