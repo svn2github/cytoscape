@@ -55,6 +55,7 @@ public class CoreCommands extends CytoscapePlugin {
 			EdgeNamespace.register("edge");
 			QuitNamespace.register("exit");
 			LayoutNamespace.register("layout");
+			GroupNamespace.register("group");
 			NetworkNamespace.register("network");
 			NetworkViewNamespace.register("network view");
 			NodeNamespace.register("node");

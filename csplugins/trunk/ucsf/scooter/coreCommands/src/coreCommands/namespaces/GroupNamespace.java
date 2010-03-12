@@ -146,7 +146,11 @@ public class GroupNamespace extends AbstractCommandHandler {
 			result.addResult("groups",groupList);
 			result.addMessage("group: group list:");
 			for (CyGroup group: groupList) {
-				result.addMessage("   "+group.toString());
+				List<CyNode> nodeList = group.getNodes();
+				List<CyEdge> innerEdges = group.getInnerEdges();
+				List<CyEdge> outerEdges = group.getOuterEdges();
+				result.addMessage("   "+group.toString()+": "+nodeList.size()+" nodes, "+
+				                  innerEdges.size()+" inner edges, and "+outerEdges.size()+" outer edges");
 			}
 			return result;
 		}
@@ -166,13 +170,16 @@ public class GroupNamespace extends AbstractCommandHandler {
 		if (command.equals(CREATE)) {
 			CyGroup group = null;
 			List<CyNode> nodeList = NodeListUtils.getNodeList(Cytoscape.getCurrentNetwork(),result, args);
+			if (result.getErrors() != null && result.getErrors().size() > 0)
+				return result;
+
 			if (args.containsKey(VIEWER)) {
 				String viewer = (String)args.get(VIEWER);
 				group = CyGroupManager.createGroup(groupName, nodeList, viewer);
 			} else {
 				group = CyGroupManager.createGroup(groupName, nodeList, null);
 			}
-			result.addMessage("group: created group '"+groupName+"': "+group);
+			result.addMessage("group: created group '"+groupName+"' with "+nodeList.size()+" nodes");
 			result.addResult("group",group);
 			return result;
 		}
@@ -180,7 +187,7 @@ public class GroupNamespace extends AbstractCommandHandler {
 		// All of the other commands require a group -- get it now
 		CyGroup group = CyGroupManager.findGroup(groupName);
 		if (group == null) {
-			result.addMessage("group: cannot find a group named '"+groupName);
+			result.addError("group: cannot find a group named '"+groupName);
 			return result;
 		}
 
@@ -276,6 +283,8 @@ public class GroupNamespace extends AbstractCommandHandler {
 	}
 
 	private String formatEdgeList(List<CyEdge> edgeList) {
+		if (edgeList == null || edgeList.size() == 0)
+			return "(none)";
 		String result = "";
 		for (CyEdge edge: edgeList) 
 			result += edge.getIdentifier()+", ";

@@ -91,6 +91,8 @@ public class NodeListUtils {
 	}
 
 	public static String formatNodeList(List<CyNode> nodeList) {
+		if (nodeList == null || nodeList.size() == 0)
+			return "(none)";
 		String result = "";
 		for (CyNode node: nodeList)
 			result += node.getIdentifier()+", ";
