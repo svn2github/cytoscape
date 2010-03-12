@@ -1,12 +1,21 @@
 package cytoscape.visual.customgraphic;
 
-import giny.view.NodeView;
+import java.util.Collection;
 
-public class NullCustomGraphics implements CyCustomGraphics {
+import cytoscape.render.stateful.CustomGraphic;
+
+public class NullCustomGraphics implements CyCustomGraphics<CustomGraphic> {
+
+	private static final String NAME = "Empty Custom Graphics";
+	
+	@Override
+	public Collection<CustomGraphic> getCustomGraphics() {
+		return null;
+	}
 
 	@Override
-	public void applyGraphics(NodeView nv) {
-		// Do nothing
+	public String getDisplayName() {
+		return NAME;
 	}
 
 }

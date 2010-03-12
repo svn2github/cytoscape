@@ -1,8 +1,9 @@
 package cytoscape.visual.customgraphic;
 
-import giny.view.NodeView;
+import java.util.Collection;
 
-public interface CyCustomGraphics {
-
-	public void applyGraphics(final NodeView nv );
+public interface CyCustomGraphics <T> {
+	public String getDisplayName();
+	
+	public Collection<T> getCustomGraphics();
 }

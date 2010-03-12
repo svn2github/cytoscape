@@ -54,6 +54,9 @@ import javax.swing.SwingConstants;
  *
  */
 public class LabelPositionCellRenderer extends DefaultCellRenderer {
+	
+	private static final long serialVersionUID = -7898871787941450155L;
+
 	/**
 	 *  DOCUMENT ME!
 	 *

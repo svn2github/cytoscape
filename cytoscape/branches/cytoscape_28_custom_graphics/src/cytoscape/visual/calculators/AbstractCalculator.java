@@ -35,29 +35,8 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.dialogs.GridBagGroup;
-import cytoscape.dialogs.MiscGB;
-
-import cytoscape.visual.Appearance;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.visual.mappings.ObjectMapping;
-
-//------------------------------------------------------------------------------
 import giny.model.Edge;
 import giny.model.GraphObject;
 import giny.model.Node;
@@ -65,7 +44,6 @@ import giny.model.Node;
 import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +58,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.dialogs.GridBagGroup;
+import cytoscape.dialogs.MiscGB;
+import cytoscape.visual.Appearance;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.MappingFactory;
+import cytoscape.visual.mappings.ObjectMapping;
 
 
 /**
@@ -556,11 +545,11 @@ public abstract class AbstractCalculator implements Calculator {
 	 *            The attribute name returned from the CyNode or CyEdge.
 	 * @return Map of the attribute names to values.
 	 */
-	protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
+	protected Map<String, Object> getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
 		return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
 	}
 
-	protected Map getAttrBundle(String canonicalName) {
+	protected Map<String, Object> getAttrBundle(final String canonicalName) {
 		return getAttrBundle(canonicalName,
 		                     type.isNodeProp() ? Cytoscape.getNodeAttributes()
 		                                       : Cytoscape.getEdgeAttributes());
@@ -607,7 +596,7 @@ public abstract class AbstractCalculator implements Calculator {
 			return null;
 
 		final String nodeID = obj.getIdentifier();
-		final Map attrBundle = getAttrBundle(nodeID);
+		final Map<String, Object> attrBundle = getAttrBundle(nodeID);
 		attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());
 
 		return getMapping(0).calculateRangeValue(attrBundle);

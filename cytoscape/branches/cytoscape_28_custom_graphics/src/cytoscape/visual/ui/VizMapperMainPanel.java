@@ -141,11 +141,13 @@ import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
 import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyCustomGraphicsEditor;
 import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
+import cytoscape.visual.ui.editors.discrete.CustomGraphicsCellRenderer;
 import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 import cytoscape.visual.ui.icon.ArrowIcon;
@@ -293,6 +295,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		booleanCellEditor.addPropertyChangeListener(this);
 		booleanCellEditor.setAvailableValues(new Boolean[] {true, false});
+		
+		// Custom Graphics
+		cyCustomGraphicsEditor.addPropertyChangeListener(this);
 	}
 
 	/**
@@ -735,6 +740,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	
 	// For boolean attributes
 	private CyComboBoxPropertyEditor booleanCellEditor = new CyComboBoxPropertyEditor();
+	
+	// For Custom Graphics
+	private CustomGraphicsCellRenderer customGraphicsCellRenderer = new CustomGraphicsCellRenderer();
+	private CyCustomGraphicsEditor cyCustomGraphicsEditor = new CyCustomGraphicsEditor();
 
 	// Others
 	private DefaultTableCellRenderer emptyBoxRenderer = new DefaultTableCellRenderer();
@@ -1115,6 +1124,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		lineCellEditor.setAvailableValues(lineTypes.toArray());
 		lineCellEditor.setAvailableIcons(iconArray);
+		
+		
 	}
 
 	private void updateTableView() {
@@ -1631,6 +1642,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 						break;
 					
+					case NODE_CUSTOM_GRAPHICS:
+						setDiscreteProps(type, discMapping, attrSet, cyCustomGraphicsEditor,
+								customGraphicsCellRenderer, calculatorTypeProp);
+
+						break;
 					case NODE_SHOW_NESTED_NETWORK:
 						setDiscreteProps(type, discMapping, attrSet, booleanCellEditor,
 				                 defCellRenderer, calculatorTypeProp);
@@ -1983,7 +1999,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (e.getPropertyName().equalsIgnoreCase("value") == false)
 			return;
 
-		if (e.getNewValue().equals(e.getOldValue()))
+		if (e.getNewValue() != null && e.getNewValue().equals(e.getOldValue()))
 			return;
 
 		final PropertySheetTable table = visualPropertySheetPanel.getTable();
@@ -2240,7 +2256,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		Object newValue = e.getNewValue();
-
+		if(newValue == null) {
+			((DiscreteMapping) mapping).putMapValue(key, newValue);
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			return;
+		}
 		if (type.getDataType() == Number.class) {
 			if ((((Number) newValue).doubleValue() == 0)
 			    || (newValue instanceof Number && type.toString().endsWith("OPACITY")

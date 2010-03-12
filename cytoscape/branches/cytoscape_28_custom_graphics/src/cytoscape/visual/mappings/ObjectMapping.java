@@ -35,20 +35,8 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.parsers.ValueParser;
-import cytoscape.visual.VisualPropertyType;
-
-
-//----------------------------------------------------------------------------
 import java.util.Map;
 import java.util.Properties;
 
@@ -56,8 +44,11 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
+import cytoscape.CyNetwork;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.ValueParser;
 
-//----------------------------------------------------------------------------
+
 /**
  * Mappings should implement this interface. Mappings are classes that map from
  * a value stored in the edge attributes or node attributes HashMap in
@@ -71,7 +62,7 @@ import javax.swing.event.ChangeListener;
  * displayed in Cytoscape, and the byte is one of {@link #EDGE_MAPPING} or
  * {@link #NODE_MAPPING}.
  */
-public interface ObjectMapping extends Cloneable {
+public interface ObjectMapping<T> extends Cloneable {
     /**
      *
      */
@@ -82,7 +73,8 @@ public interface ObjectMapping extends Cloneable {
      */
     public static final byte NODE_MAPPING = 1;
 
-    Class getRangeClass();
+    
+    public Class<T> getRangeClass();
 
     /**
      * Return the classes that the ObjectMapping can map from, eg. the contents
@@ -97,7 +89,7 @@ public interface ObjectMapping extends Cloneable {
      *
      * @return Array of accepted attribute data class types
      */
-    Class[] getAcceptedDataClasses();
+    public Class<?>[] getAcceptedDataClasses();
 
     /**
      * Set the controlling attribute name. The current mappings will be unchanged
@@ -105,13 +97,13 @@ public interface ObjectMapping extends Cloneable {
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
      */
-    void setControllingAttributeName(String attrName, CyNetwork network,
+    public void setControllingAttributeName(String attrName, CyNetwork network,
         boolean preserveMapping);
 
     /**
      * Get the controlling attribute name
      */
-    String getControllingAttributeName();
+    public String getControllingAttributeName();
 
     /**
      * Add a ChangeListener to the mapping. When the state underlying the
@@ -135,15 +127,15 @@ public interface ObjectMapping extends Cloneable {
      */
     public void removeChangeListener(ChangeListener l);
 
-    Object calculateRangeValue(Map attrBundle);
+    public T calculateRangeValue(Map<String, Object> attrBundle);
 
-    JPanel getUI(JDialog parent, CyNetwork network);
+    public JPanel getUI(JDialog parent, CyNetwork network);
 
-    JPanel getLegend(VisualPropertyType type);
+    public JPanel getLegend(VisualPropertyType type);
 
-    Object clone();
+    public Object clone();
 
-    void applyProperties(Properties props, String baseKey, ValueParser parser);
+    public void applyProperties(Properties props, String baseKey, ValueParser parser);
 
-    Properties getProperties(String baseKey);
+    public Properties getProperties(String baseKey);
 }
