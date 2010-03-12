@@ -146,11 +146,7 @@ public class GroupNamespace extends AbstractCommandHandler {
 			result.addResult("groups",groupList);
 			result.addMessage("group: group list:");
 			for (CyGroup group: groupList) {
-				List<CyNode> nodeList = group.getNodes();
-				List<CyEdge> innerEdges = group.getInnerEdges();
-				List<CyEdge> outerEdges = group.getOuterEdges();
-				result.addMessage("   "+group.toString()+": "+nodeList.size()+" nodes, "+
-				                  innerEdges.size()+" inner edges, and "+outerEdges.size()+" outer edges");
+				result.addMessage("   "+formatGroup(group));
 			}
 			return result;
 		}
@@ -198,7 +194,7 @@ public class GroupNamespace extends AbstractCommandHandler {
 		// Get a group
 		} else if (command.equals(GETGROUP)) {
 			result.addResult("group", group);
-			result.addMessage(group.toString());
+			result.addMessage("Group: "+formatGroup(group));
 
 		// Add a node (or nodes) to a group
 		} else if (command.equals(ADD)) {
@@ -290,5 +286,15 @@ public class GroupNamespace extends AbstractCommandHandler {
 			result += edge.getIdentifier()+", ";
 		result = result.substring(0, result.length()-2);
 		return result;
+	}
+
+	private String formatGroup(CyGroup group) {
+		if (group == null) return "(none)";
+
+		List<CyNode> nodeList = group.getNodes();
+		List<CyEdge> innerEdges = group.getInnerEdges();
+		List<CyEdge> outerEdges = group.getOuterEdges();
+		return group.toString()+": "+nodeList.size()+" nodes, "+
+				   innerEdges.size()+" inner edges, and "+outerEdges.size()+" outer edges";
 	}
 }
