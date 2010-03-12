@@ -1,0 +1,1808 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entrySet xmlns="net:sf:psidev:mi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" level="2" minorVersion="3" version="5" xsi:schemaLocation="net:sf:psidev:mi http://psidev.sourceforge.net/mi/rel25/src/MIF253.xsd">
+    <entry>
+        <source releaseDate="2006-10-06">
+            <names>
+                <shortLabel>European Bioinformatics Institute</shortLabel>
+            </names>
+            <bibref>
+                <xref>
+                    <primaryRef db="pubmed" dbAc="MI:0446" id="14681455" refType="primary-reference" refTypeAc="MI:0358"/>
+                </xref>
+            </bibref>
+            <xref>
+                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0469" refType="primary-reference" refTypeAc="MI:0358"/>
+            </xref>
+            <attributeList>
+                <attribute name="postalAddress">Wellcome Trust Genome Campus, Hinxton, Cambridge, CB10 1SD, United
+                    Kingdom
+                </attribute>
+                <attribute name="url">http://www.ebi.ac.uk</attribute>
+            </attributeList>
+        </source>
+        <availabilityList/>
+        <experimentList>
+            <experimentDescription id="2">
+                <names>
+                    <shortLabel>hobson-2001-1</shortLabel>
+                    <fullName>Oligomeric structures of poliovirus polymerase are important for function.</fullName>
+                </names>
+                <bibref>
+                    <xref>
+                        <primaryRef db="pubmed" dbAc="MI:0446" id="11230138" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </bibref>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914159" secondary="hobson-2001-1"/>
+                </xref>
+                <hostOrganismList>
+                    <hostOrganism ncbiTaxId="-1">
+                        <names>
+                            <shortLabel>in vitro</shortLabel>
+                        </names>
+                    </hostOrganism>
+                </hostOrganismList>
+                <interactionDetectionMethod>
+                    <names>
+                        <shortLabel>filter binding</shortLabel>
+                        <fullName>filter binding</fullName>
+                        <alias>Filter overlay assay</alias>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0049" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="7708014" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactionDetectionMethod>
+                <participantIdentificationMethod>
+                    <names>
+                        <shortLabel>predetermined</shortLabel>
+                        <fullName>predetermined participant</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0396" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="7940758" refType="go-definition-ref" refTypeAc="MI:0242"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </participantIdentificationMethod>
+                <attributeList>
+                    <attribute name="author-list">Hobson SD., Rosenblum ES., Richards OC., Richmond K., Kirkegaard K.,
+                        Schultz SC.
+                    </attribute>
+                    <attribute name="contact-email">scott.hobson@cellzome.de</attribute>
+                    <attribute name="publication-year">2001</attribute>
+                    <attribute name="exp-modification">RNA binding was evaluated using a nitrocellulose filter binding
+                        assay. The amount of radiolabelled RNA bound to each membrane was quantified using a
+                        PhosphorImager
+                    </attribute>
+                    <attribute name="journal">EMBO J. (0261-4189)</attribute>
+                    <attribute name="data-processing">Residues renumbered to match full-length polyprotein for this
+                        virus.
+                    </attribute>
+                </attributeList>
+            </experimentDescription>
+            <experimentDescription id="25">
+                <names>
+                    <shortLabel>hobson-2001-2</shortLabel>
+                    <fullName>Oligomeric structures of poliovirus polymerase are important for function.</fullName>
+                </names>
+                <bibref>
+                    <xref>
+                        <primaryRef db="pubmed" dbAc="MI:0446" id="11230138" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </bibref>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914232" secondary="hobson-2001-2"/>
+                </xref>
+                <hostOrganismList>
+                    <hostOrganism ncbiTaxId="-1">
+                        <names>
+                            <shortLabel>in vitro</shortLabel>
+                        </names>
+                    </hostOrganism>
+                </hostOrganismList>
+                <interactionDetectionMethod>
+                    <names>
+                        <shortLabel>rna rna pol assay</shortLabel>
+                        <fullName>rna directed rna polymerase assay</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0700" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactionDetectionMethod>
+                <participantIdentificationMethod>
+                    <names>
+                        <shortLabel>predetermined</shortLabel>
+                        <fullName>predetermined participant</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0396" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="7940758" refType="go-definition-ref" refTypeAc="MI:0242"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </participantIdentificationMethod>
+                <attributeList>
+                    <attribute name="author-list">Hobson SD., Rosenblum ES., Richards OC., Richmond K., Kirkegaard K.,
+                        Schultz SC.
+                    </attribute>
+                    <attribute name="contact-email">scott.hobson@cellzome.de</attribute>
+                    <attribute name="publication-year">2001</attribute>
+                    <attribute name="exp-modification">Elongation assays evaluated using radiolabelled RNA as a
+                        substrate. Elongated products were separated by PAGE and visualised using a PhosphoImager
+                    </attribute>
+                    <attribute name="journal">EMBO J. (0261-4189)</attribute>
+                    <attribute name="data-processing">Residues renumbered to match full-length polyprotein for this
+                        virus.
+                    </attribute>
+                </attributeList>
+            </experimentDescription>
+            <experimentDescription id="41">
+                <names>
+                    <shortLabel>hobson-2001-3</shortLabel>
+                    <fullName>Oligomeric structures of poliovirus polymerase are important for function.</fullName>
+                </names>
+                <bibref>
+                    <xref>
+                        <primaryRef db="pubmed" dbAc="MI:0446" id="11230138" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </bibref>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914360" secondary="hobson-2001-3"/>
+                </xref>
+                <hostOrganismList>
+                    <hostOrganism ncbiTaxId="-1">
+                        <names>
+                            <shortLabel>in vitro</shortLabel>
+                        </names>
+                    </hostOrganism>
+                </hostOrganismList>
+
+
+                <interactionDetectionMethod>
+                    <names>
+                        <shortLabel>crosslink</shortLabel>
+                        <fullName>cross-linking study</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0030" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactionDetectionMethod>
+
+
+                <participantIdentificationMethod>
+                    <names>
+                        <shortLabel>predetermined</shortLabel>
+                        <fullName>predetermined participant</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0396" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="7940758" refType="go-definition-ref" refTypeAc="MI:0242"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </participantIdentificationMethod>
+
+
+                <attributeList>
+                    <attribute name="author-list">Hobson SD., Rosenblum ES., Richards OC., Richmond K., Kirkegaard K.,
+                        Schultz SC.
+                    </attribute>
+                    <attribute name="contact-email">scott.hobson@cellzome.de</attribute>
+                    <attribute name="publication-year">2001</attribute>
+                    <attribute name="journal">EMBO J. (0261-4189)</attribute>
+                    <attribute name="exp-modification">2mM dithiothreotol added to reaction mixture, this was increased
+                        to 50mM for reducing conditions. Proteins seperated by SDS-PAGE and visualised by Coomassie
+                        staining
+                    </attribute>
+                    <attribute name="data-processing">Residues renumbered to match full-length polyprotein for this
+                        virus.
+                    </attribute>
+                </attributeList>
+            </experimentDescription>
+        </experimentList>
+        <interactorList>
+            <interactor id="12">
+                <names>
+                    <shortLabel>ggcagcugcaugcagcugcc</shortLabel>
+                    <fullName>5' -3' RNA synthesized for use in PMID: 11230138</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914168" secondary="ggcagcugcaugcagcugcc"/>
+                </xref>
+                <interactorType>
+                    <names>
+                        <shortLabel>rna</shortLabel>
+                        <fullName>ribonucleic acid</fullName>
+                        <alias>RNA</alias>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0320" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                        <secondaryRef db="so" dbAc="MI:0601" id="SO:0000356" refType="identity" refTypeAc="MI:0356"/>
+                    </xref>
+                </interactorType>
+                <organism ncbiTaxId="-1">
+                    <names>
+                        <shortLabel>in vitro</shortLabel>
+                    </names>
+                </organism>
+                <sequence>GGCAGCUGCAUGCAGCUGCC</sequence>
+            </interactor>
+            <interactor id="15">
+                <names>
+                    <shortLabel>ccgucgacguacgucgac-2</shortLabel>
+                    <fullName>3'-5' RNA strand synthesised for use in PMID: 11230138</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-944576" secondary="ccgucgacguacgucgac-2"/>
+                </xref>
+                <interactorType>
+                    <names>
+                        <shortLabel>rna</shortLabel>
+                        <fullName>ribonucleic acid</fullName>
+                        <alias>RNA</alias>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0320" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                        <secondaryRef db="so" dbAc="MI:0601" id="SO:0000356" refType="identity" refTypeAc="MI:0356"/>
+                    </xref>
+                </interactorType>
+                <organism ncbiTaxId="-1">
+                    <names>
+                        <shortLabel>in vitro</shortLabel>
+                    </names>
+                </organism>
+                <sequence>CGUCGACGUACGUCGACGGCGCGG</sequence>
+            </interactor>
+            <interactor id="23">
+                <names>
+                    <shortLabel>ggcgcggcagcugcaugcag</shortLabel>
+                    <fullName>5'-3' RNA synthesized for use in PMID: 11230138</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914181" secondary="ggcgcggcagcugcaugcag"/>
+                </xref>
+                <interactorType>
+                    <names>
+                        <shortLabel>rna</shortLabel>
+                        <fullName>ribonucleic acid</fullName>
+                        <alias>RNA</alias>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0320" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                        <secondaryRef db="so" dbAc="MI:0601" id="SO:0000356" refType="identity" refTypeAc="MI:0356"/>
+                    </xref>
+                </interactorType>
+                <organism ncbiTaxId="-1">
+                    <names>
+                        <shortLabel>in vitro</shortLabel>
+                    </names>
+                </organism>
+                <sequence>GGCGCGGCAGCUGCAUGCAGCUGCC</sequence>
+            </interactor>
+            <interactor id="27">
+                <names>
+                    <shortLabel>zinc 2plus</shortLabel>
+                    <fullName>zinc(2+)</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="chebi" dbAc="MI:0474" id="CHEBI:29105" refType="identity" refTypeAc="MI:0356"/>
+                    <secondaryRef db="intact" dbAc="MI:0469" id="EBI-968340" secondary="zinc 2plus"/>
+                </xref>
+                <interactorType>
+                    <names>
+                        <shortLabel>small molecule</shortLabel>
+                        <fullName>small molecule</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0328" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactorType>
+            </interactor>
+            <interactor id="4">
+                <names>
+                    <shortLabel>ccgucgacguacgucgacgg</shortLabel>
+                    <fullName>3' - 5' RNA strand synthesised for use in PMID: 11230138</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-944574" secondary="ccgucgacguacgucgacgg"/>
+                </xref>
+                <interactorType>
+                    <names>
+                        <shortLabel>rna</shortLabel>
+                        <fullName>ribonucleic acid</fullName>
+                        <alias>RNA</alias>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0320" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                        <secondaryRef db="so" dbAc="MI:0601" id="SO:0000356" refType="identity" refTypeAc="MI:0356"/>
+                    </xref>
+                </interactorType>
+                <organism ncbiTaxId="-1">
+                    <names>
+                        <shortLabel>in vitro</shortLabel>
+                    </names>
+                </organism>
+                <sequence>CCGUCGACGUACGUCGACGG</sequence>
+            </interactor>
+            <interactor id="6">
+                <names>
+                    <shortLabel>p03300-pro_000004009</shortLabel>
+                    <fullName>Poliovirus type 1 (strain Mahoney) RNA-directed RNA polymerase</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="uniprotkb" dbAc="MI:0486" id="P03300-PRO_0000040090" refType="identity" refTypeAc="MI:0356"/>
+                    <primaryRef db="refseq" dbAc="MI:0481" id="NP_740478.2" refType="identity" refTypeAc="MI:0356"/>
+                    <secondaryRef db="intact" dbAc="MI:0469" id="EBI-914162" secondary="p03300-pro_000004009"/>
+                </xref>
+                <interactorType>
+                    <names>
+                        <shortLabel>peptide</shortLabel>
+                        <fullName>peptide</fullName>
+                        <alias>oligopeptide</alias>
+                        <alias>polypeptide</alias>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0327" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactorType>
+                <organism ncbiTaxId="12081">
+                    <names>
+                        <shortLabel>pol1m</shortLabel>
+                        <fullName>Poliovirus type 1 (strain Mahoney)</fullName>
+                    </names>
+                </organism>
+                <attributeList>
+                    <attribute name="no-uniprot-update">An amino acid sequence which is not represented in UniProt
+                    </attribute>
+                </attributeList>
+            </interactor>
+        </interactorList>
+        <interactionList>
+            <interaction id="1">
+                <names>
+                    <shortLabel>polg-rna-1</shortLabel>
+                    <fullName>Poliovirus type 1 (strain Mahoney) binds double stranded RNA</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914164" secondary="polg-rna-1"/>
+                    <secondaryRef db="go" dbAc="MI:0448" id="GO:0003725" refType="function" refTypeAc="MI:0355" secondary="double-stranded RNA binding"/>
+                </xref>
+                <experimentList>
+                    <experimentRef>2</experimentRef>
+                </experimentList>
+                <participantList>
+                    <participant id="3">
+                        <interactorRef>4</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>prey</shortLabel>
+                                    <fullName>prey</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0498" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                    </participant>
+                    <participant id="5">
+                        <interactorRef>6</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>bait</shortLabel>
+                                    <fullName>bait</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0496" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                        <featureList>
+                            <feature id="7">
+                                <names>
+                                    <shortLabel>leu2089ala</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2089"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2089"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="8">
+                                <names>
+                                    <shortLabel>asp2096arg</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2096"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2096"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="9">
+                                <names>
+                                    <shortLabel>arg2202asp</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2202"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2202"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="10">
+                                <names>
+                                    <shortLabel>arg2203asp</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2203"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2203"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                        </featureList>
+                        <hostOrganismList>
+                            <hostOrganism ncbiTaxId="12081">
+                                <names>
+                                    <shortLabel>pol1m</shortLabel>
+                                    <fullName>Poliovirus type 1 (strain Mahoney)</fullName>
+                                </names>
+                            </hostOrganism>
+                        </hostOrganismList>
+                    </participant>
+                    <participant id="11">
+                        <interactorRef>12</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>prey</shortLabel>
+                                    <fullName>prey</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0498" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                    </participant>
+                </participantList>
+                <interactionType>
+                    <names>
+                        <shortLabel>direct interaction</shortLabel>
+                        <fullName>direct interaction</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0407" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactionType>
+                <attributeList>
+                    <attribute name="kinetics">ED50 (wild-type)=3x10exp-6M</attribute>
+                    <attribute name="comment">RNA strands bind to form a blunt ended double strand, authors name 0.20
+                        RNA
+                    </attribute>
+                    <attribute name="figure legend">2A, 2C</attribute>
+                    <attribute name="comment">Protein bound single stranded RNA's with approximately 10 fold lower
+                        affinity.
+                    </attribute>
+                    <attribute name="kd">0.0</attribute>
+                </attributeList>
+            </interaction>
+            <interaction id="13">
+                <names>
+                    <shortLabel>polg-rna-2</shortLabel>
+                    <fullName>Poliovirus type 1 (strain Mahoney) binds double stranded RNA</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914187" secondary="polg-rna-2"/>
+                    <secondaryRef db="go" dbAc="MI:0448" id="GO:0003725" refType="function" refTypeAc="MI:0355" secondary="double-stranded RNA binding"/>
+                </xref>
+                <experimentList>
+                    <experimentRef>2</experimentRef>
+                </experimentList>
+                <participantList>
+                    <participant id="14">
+                        <interactorRef>15</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>prey</shortLabel>
+                                    <fullName>prey</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0498" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                    </participant>
+                    <participant id="16">
+                        <interactorRef>6</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>bait</shortLabel>
+                                    <fullName>bait</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0496" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                        <featureList>
+                            <feature id="17">
+                                <names>
+                                    <shortLabel>region</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>sufficient to bind</shortLabel>
+                                        <fullName>sufficient binding site</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0442" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="1812"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2208"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="18">
+                                <names>
+                                    <shortLabel>asp2096arg</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2096"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2096"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="19">
+                                <names>
+                                    <shortLabel>arg2202asp</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2202"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2202"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="20">
+                                <names>
+                                    <shortLabel>arg2203asp</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2203"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2203"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="21">
+                                <names>
+                                    <shortLabel>leu2089ala</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2089"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2089"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                        </featureList>
+                        <hostOrganismList>
+                            <hostOrganism ncbiTaxId="12081">
+                                <names>
+                                    <shortLabel>pol1m</shortLabel>
+                                    <fullName>Poliovirus type 1 (strain Mahoney)</fullName>
+                                </names>
+                            </hostOrganism>
+                        </hostOrganismList>
+                    </participant>
+                    <participant id="22">
+                        <interactorRef>23</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>prey</shortLabel>
+                                    <fullName>prey</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0498" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                    </participant>
+                </participantList>
+                <interactionType>
+                    <names>
+                        <shortLabel>direct interaction</shortLabel>
+                        <fullName>direct interaction</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0407" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactionType>
+                <attributeList>
+                    <attribute name="kinetics">ED50 (wild-type)=6x10exp-6M</attribute>
+                    <attribute name="comment">RNA strands bind to form a blunt ended double strand, authors name 5.20
+                        RNA
+                    </attribute>
+                    <attribute name="figure legend">2A, 2D</attribute>
+                    <attribute name="comment">Protein bound single stranded RNA's with approximately 10 fold lower
+                        affinity.
+                    </attribute>
+                    <attribute name="kd">0.0</attribute>
+                </attributeList>
+            </interaction>
+            <interaction id="24">
+                <names>
+                    <shortLabel>polg-rna-3</shortLabel>
+                    <fullName>Poliovirus type 1 (strain Mahoney) binds double stranded RNA</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-914242" secondary="polg-rna-3"/>
+                    <secondaryRef db="go" dbAc="MI:0448" id="GO:0003725" refType="function" refTypeAc="MI:0355" secondary="double-stranded RNA binding"/>
+                    <secondaryRef db="go" dbAc="MI:0448" id="GO:0003968" refType="function" refTypeAc="MI:0355" secondary="RNA-directed RNA polymerase ac"/>
+                    <secondaryRef db="go" dbAc="MI:0448" id="GO:0006354" refType="process" refTypeAc="MI:0359" secondary="RNA elongation"/>
+                    <secondaryRef db="go" dbAc="MI:0448" id="GO:0008270" refType="function" refTypeAc="MI:0355" secondary="zinc ion binding"/>
+                </xref>
+                <experimentList>
+                    <experimentRef>25</experimentRef>
+                </experimentList>
+                <participantList>
+                    <participant id="26">
+                        <interactorRef>27</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>cofactor</shortLabel>
+                                <fullName>cofactor</fullName>
+                                <alias>coenzyme</alias>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0682" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>cofactor</shortLabel>
+                                    <fullName>cofactor</fullName>
+                                    <alias>coenzyme</alias>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0682" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                    </participant>
+                    <participant id="28">
+                        <interactorRef>15</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>enzyme target</shortLabel>
+                                <fullName>enzyme target</fullName>
+                                <alias>substrate</alias>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0502" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>neutral component</shortLabel>
+                                    <fullName>neutral component</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0497" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                    </participant>
+                    <participant id="29">
+                        <interactorRef>6</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>enzyme</shortLabel>
+                                <fullName>enzyme</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0501" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>neutral component</shortLabel>
+                                    <fullName>neutral component</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0497" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                        <featureList>
+                            <feature id="30">
+                                <names>
+                                    <shortLabel>region</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>required to bind</shortLabel>
+                                        <fullName>necessary binding site</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0429" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>deletion analysis</shortLabel>
+                                        <fullName>deletion analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0033" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="1747"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="1812"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="31">
+                                <names>
+                                    <shortLabel>ala1776cys</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="1776"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="1776"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="32">
+                                <names>
+                                    <shortLabel>region</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="1777"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="1777"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="33">
+                                <names>
+                                    <shortLabel>iso2188cys</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2188"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2188"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="34">
+                                <names>
+                                    <shortLabel>gly2189leu</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2189"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2189"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="35">
+                                <names>
+                                    <shortLabel>asp2096arg</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2096"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2096"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="36">
+                                <names>
+                                    <shortLabel>arg2202asp</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2202"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2202"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="37">
+                                <names>
+                                    <shortLabel>arg2203asp</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2203"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2203"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                            <feature id="38">
+                                <names>
+                                    <shortLabel>leu2089ala</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation decreasing</shortLabel>
+                                        <fullName>mutation decreasing interaction</fullName>
+                                        <alias>hotspot</alias>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0119" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2089"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2089"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                        </featureList>
+                        <hostOrganismList>
+                            <hostOrganism ncbiTaxId="12081">
+                                <names>
+                                    <shortLabel>pol1m</shortLabel>
+                                    <fullName>Poliovirus type 1 (strain Mahoney)</fullName>
+                                </names>
+                            </hostOrganism>
+                        </hostOrganismList>
+                    </participant>
+                    <participant id="39">
+                        <interactorRef>23</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>enzyme target</shortLabel>
+                                <fullName>enzyme target</fullName>
+                                <alias>substrate</alias>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0502" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>neutral component</shortLabel>
+                                    <fullName>neutral component</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0497" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                    </participant>
+                </participantList>
+                <interactionType>
+                    <names>
+                        <shortLabel>elongation</shortLabel>
+                        <fullName>dna strand elongation</fullName>
+                        <alias>DNA replication elongation</alias>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0701" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                        <secondaryRef db="go" dbAc="MI:0448" id="GO:0006271" refType="identity" refTypeAc="MI:0356"/>
+                    </xref>
+                </interactionType>
+                <attributeList>
+                    <attribute name="figure legend">Figure 2F and Figure 3</attribute>
+                    <attribute name="comment">RNA strands bind to form a blunt ended double stranded RNA, authors name
+                        5.20 RNA
+                    </attribute>
+                    <attribute name="kd">0.0</attribute>
+                </attributeList>
+            </interaction>
+            <interaction id="40">
+                <names>
+                    <shortLabel>polg-polg-1</shortLabel>
+                    <fullName>Dimerization of Poliovirus type 1 (strain Mahoney)</fullName>
+                </names>
+                <xref>
+                    <primaryRef db="intact" dbAc="MI:0469" id="EBI-944619" secondary="polg-polg-1"/>
+                    <secondaryRef db="go" dbAc="MI:0448" id="GO:0042803" refType="function" refTypeAc="MI:0355" secondary="protein homodimerization activ"/>
+                </xref>
+                <experimentList>
+                    <experimentRef>41</experimentRef>
+                </experimentList>
+                <participantList>
+                    <participant id="42">
+                        <interactorRef>6</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>neutral component</shortLabel>
+                                    <fullName>neutral component</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0497" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                        <featureList>
+                            <feature id="43">
+                                <names>
+                                    <shortLabel>ala1776cys</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation increasing</shortLabel>
+                                        <fullName>mutation increasing interaction</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0382" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14577292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="1776"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="1776"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                        </featureList>
+                        <hostOrganismList>
+                            <hostOrganism ncbiTaxId="12081">
+                                <names>
+                                    <shortLabel>pol1m</shortLabel>
+                                    <fullName>Poliovirus type 1 (strain Mahoney)</fullName>
+                                </names>
+                            </hostOrganism>
+                        </hostOrganismList>
+                    </participant>
+                    <participant id="44">
+                        <interactorRef>6</interactorRef>
+                        <biologicalRole>
+                            <names>
+                                <shortLabel>unspecified role</shortLabel>
+                                <fullName>unspecified role</fullName>
+                            </names>
+                            <xref>
+                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0499" refType="identity" refTypeAc="MI:0356"/>
+                                <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                            </xref>
+                        </biologicalRole>
+                        <experimentalRoleList>
+                            <experimentalRole>
+                                <names>
+                                    <shortLabel>neutral component</shortLabel>
+                                    <fullName>neutral component</fullName>
+                                </names>
+                                <xref>
+                                    <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0497" refType="identity" refTypeAc="MI:0356"/>
+                                    <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                </xref>
+                            </experimentalRole>
+                        </experimentalRoleList>
+                        <featureList>
+                            <feature id="45">
+                                <names>
+                                    <shortLabel>iso2188cys</shortLabel>
+                                </names>
+                                <featureType>
+                                    <names>
+                                        <shortLabel>mutation increasing</shortLabel>
+                                        <fullName>mutation increasing interaction</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0382" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14577292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureType>
+                                <featureDetectionMethod>
+                                    <names>
+                                        <shortLabel>mutation analysis</shortLabel>
+                                        <fullName>mutation analysis</fullName>
+                                    </names>
+                                    <xref>
+                                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0074" refType="identity" refTypeAc="MI:0356"/>
+                                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                                    </xref>
+                                </featureDetectionMethod>
+                                <featureRangeList>
+                                    <featureRange>
+                                        <startStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </startStatus>
+                                        <begin position="2188"/>
+                                        <endStatus>
+                                            <names>
+                                                <shortLabel>certain</shortLabel>
+                                            </names>
+                                            <xref>
+                                                <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0335" refType="identity" refTypeAc="MI:0356"/>
+                                            </xref>
+                                        </endStatus>
+                                        <end position="2188"/>
+                                    </featureRange>
+                                </featureRangeList>
+                            </feature>
+                        </featureList>
+                        <hostOrganismList>
+                            <hostOrganism ncbiTaxId="12081">
+                                <names>
+                                    <shortLabel>pol1m</shortLabel>
+                                    <fullName>Poliovirus type 1 (strain Mahoney)</fullName>
+                                </names>
+                            </hostOrganism>
+                        </hostOrganismList>
+                    </participant>
+                </participantList>
+                <interactionType>
+                    <names>
+                        <shortLabel>direct interaction</shortLabel>
+                        <fullName>direct interaction</fullName>
+                    </names>
+                    <xref>
+                        <primaryRef db="psi-mi" dbAc="MI:0488" id="MI:0407" refType="identity" refTypeAc="MI:0356"/>
+                        <secondaryRef db="pubmed" dbAc="MI:0446" id="14755292" refType="primary-reference" refTypeAc="MI:0358"/>
+                    </xref>
+                </interactionType>
+                <attributeList>
+                    <attribute name="figure legend">6E</attribute>
+                    <attribute name="comment">Under reducing conditions, only protein monomers are observed.</attribute>
+                    <attribute name="kd">0.0</attribute>
+                </attributeList>
+            </interaction>
+        </interactionList>
+    </entry>
+</entrySet>
