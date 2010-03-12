@@ -34,13 +34,14 @@ $chianti_base = "http://chianti.ucsd.edu/";
 # to update all refereces to the "latest" version,
 # including release notes and download links
 #################################################
-$latest_version = "2.6.3";
-$latest_release_notes_link = "cyto_2_6_features.php";
-$latest_download_link = "download.php?file=cyto2_6_3";
+$latest_version = "2.7.0";
+$latest_release_notes_link = "cyto_2_7_features.php";
+$latest_download_link = "download.php?file=cyto2_7_0";
 $latest_manual_pdf = "manual/Cytoscape2_6Manual.pdf";
 $latest_manual_html = "manual/Cytoscape2_6Manual.html";
-$latest_javadoc = $chianti_base."Cyto-2_6_3/javadoc/";
+$latest_javadoc = $chianti_base."Cyto-2_7_0/javadoc/";
 $release_array = array( 
+					  'cyto2_7_0'   => '2.7.0',
 					  'cyto2_6_3'   => '2.6.3',
 					  'cyto2_6_2'   => '2.6.2',
 					  'cyto2_6_1'   => '2.6.1',
@@ -216,6 +217,18 @@ $cyto2_6_3_source_east = $chianti_base."Cyto-2_6_3/cytoscapeSource-v2.6.3.tar.gz
 $cyto2_6_3_mac = $chianti_base."Cyto-2_6_3/Cytoscape_2_6_3_macos.dmg";
 $cyto2_6_3_windows = $chianti_base."Cyto-2_6_3/Cytoscape_2_6_3_windows.exe";
 $cyto2_6_3_linux = $chianti_base."Cyto-2_6_3/Cytoscape_2_6_3_unix.sh";
+
+#################################################
+# Cytoscape 2.7.0 Release File Names
+#################################################
+$cyto2_7_0_gz_east = $chianti_base."Cyto-2_7_0/cytoscape-v2.7.0.tar.gz";
+$cyto2_7_0_zip_east = $chianti_base."Cyto-2_7_0/cytoscape-v2.7.0.zip";
+$cyto2_7_0_source_east = $chianti_base."Cyto-2_7_0/cytoscapeSource-v2.7.0.tar.gz";
+
+$cyto2_7_0_mac = $chianti_base."Cyto-2_7_0/Cytoscape_2_7_0_macos.dmg";
+$cyto2_7_0_windows_32 = $chianti_base."Cyto-2_7_0/Cytoscape_2_7_0_windows_32bit.exe";
+$cyto2_7_0_windows_64 = $chianti_base."Cyto-2_7_0/Cytoscape_2_7_0_windows_64bit.exe";
+$cyto2_7_0_linux = $chianti_base."Cyto-2_7_0/Cytoscape_2_7_0_unix.sh";
 
 #################################################
 # URL for Cytoscape Install Anywhere
