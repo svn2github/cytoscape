@@ -1,6 +1,7 @@
 package cytoscape.visual.customgraphic;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.TexturePaint;
@@ -27,6 +28,8 @@ public class URLImageCustomGraphics implements CyCustomGraphics<CustomGraphic> {
 	private final String imageURL;
 	private CustomGraphic cg;
 	private List<CustomGraphic> cgList;
+	
+	private BufferedImage originalImage;
 
 	public URLImageCustomGraphics(String url) {
 		this.imageURL = url;
@@ -34,30 +37,35 @@ public class URLImageCustomGraphics implements CyCustomGraphics<CustomGraphic> {
 	}
 	
 	private void buildCustomGraphics() {
-		BufferedImage image = null;
-		try {
-			URL imageLocation = new URL(imageURL);
-			image = ImageIO.read(imageLocation);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		if(originalImage == null)
+			createImage();
+		
 		Rectangle2D bound = null;
 		Paint paint = null;
-		final int imageW = image.getWidth();
-		final int imageH = image.getHeight();
+		final int imageW = originalImage.getWidth();
+		final int imageH = originalImage.getHeight();
 		
 		final Shape background = new java.awt.geom.RoundRectangle2D.Double(-imageW/2d-PAD, -imageH/2d-PAD, imageW+PAD*2d, imageH+PAD*2d, R, R);
 		final Paint backgroundPaint = Color.white;
 		
 		bound = new Rectangle2D.Double(-imageW/2, -imageH/2, imageW, imageH);
-		paint = new TexturePaint(image, bound);
+		paint = new TexturePaint(originalImage, bound);
 
 		cg = new CustomGraphic(bound, paint, NodeDetails.ANCHOR_CENTER);
 		cgList.add(new CustomGraphic(background, backgroundPaint, NodeDetails.ANCHOR_CENTER));
 		cgList.add(cg);
 		
+	}
+	
+	private void createImage() {
+		try {
+			URL imageLocation = new URL(imageURL);
+			originalImage = ImageIO.read(imageLocation);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	
@@ -72,6 +80,14 @@ public class URLImageCustomGraphics implements CyCustomGraphics<CustomGraphic> {
 	@Override
 	public String getDisplayName() {
 		return this.imageURL;
+	}
+
+	@Override
+	public Image getImage() {
+		if(originalImage == null)
+			createImage();
+		
+		return originalImage;
 	}
 
 }

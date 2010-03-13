@@ -36,12 +36,13 @@ package cytoscape.visual.ui;
 
 import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
 import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
-import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
+import static cytoscape.visual.VisualPropertyType.*;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
+import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import cytoscape.Cytoscape;
@@ -86,22 +88,27 @@ public class ValueSelectDialog extends JDialog {
 	 * @param parent
 	 * @return
 	 */
-	public static Object showDialog(VisualPropertyType type, JDialog parent) {
+	public static Object showDialog(VisualPropertyType type, Window parent) {
 	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, parent, true);
+		dialog.setLocationRelativeTo(parent);
 		dialog.setVisible(true);
 		
 		System.out.println("!!!!!!Dialog returns:     " + dialog.getValue());
 		return dialog.getValue();
 	}
 
-	private ValueSelectDialog(VisualPropertyType type, JDialog parent, boolean modal) {
+	private ValueSelectDialog(VisualPropertyType type, Window parent, boolean modal) {
 		super(Cytoscape.getDesktop(), modal);
 		this.type = type;
 		shapeMap = this.type.getVisualProperty().getIconSet();
 		initComponents();
 
 		setList();
+		
+		// Large cell is necessary for images
+		if(type.equals(NODE_CUSTOM_GRAPHICS))
+			this.iconList.setFixedCellHeight(150);
 		
 		// get original value and set the selected item.
 		if ( type.isNodeProp() )
@@ -122,7 +129,8 @@ public class ValueSelectDialog extends JDialog {
 	private void initComponents() {
 		mainPanel = new org.jdesktop.swingx.JXTitledPanel();
 		iconListScrollPane = new javax.swing.JScrollPane();
-		iconList = new javax.swing.JList();
+		iconList = new JXList(true);
+		
 		applyButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 
@@ -210,7 +218,7 @@ public class ValueSelectDialog extends JDialog {
 	// Variables declaration - do not modify
 	private javax.swing.JButton applyButton;
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JList iconList;
+	private JXList iconList;
 	private javax.swing.JScrollPane iconListScrollPane;
 	private org.jdesktop.swingx.JXTitledPanel mainPanel;
 	private DefaultListModel model;
@@ -267,6 +275,9 @@ public class ValueSelectDialog extends JDialog {
 	}
 
 	public class IconCellRenderer extends JLabel implements ListCellRenderer {
+		
+		private static final long serialVersionUID = -7235212695832080213L;
+		
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 18);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 14);
 		private final Color SELECTED_COLOR = new Color(30, 30, 80, 25);
@@ -282,18 +293,22 @@ public class ValueSelectDialog extends JDialog {
 		                                              boolean isSelected, boolean cellHasFocus) {
 			final VisualPropertyIcon icon = (VisualPropertyIcon) icons.get(index);
 
-			setText(value.toString());
+			if(value != null)
+				setText(value.toString());
+			
 			icon.setLeftPadding(15);
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(35);
+			this.setIconTextGap(120);
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
-			setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 20));
+			
+			System.out.println("Size type ===== " + icon.getIconHeight() + ", " + value);
+			setPreferredSize(new Dimension(icon.getIconWidth()+200, icon.getIconHeight() + 20));
 			this.setBorder(new DropShadowBorder());
 
 			return this;

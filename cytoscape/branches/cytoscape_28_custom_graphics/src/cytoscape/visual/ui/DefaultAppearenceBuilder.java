@@ -549,7 +549,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(55);
+			this.setIconTextGap(120);
 
 			if (value instanceof VisualPropertyType
 			    && (((VisualPropertyType) value).getDataType() == String.class)) {
@@ -565,7 +565,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
 
 			if (icon != null) {
-				setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
+				setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 12));
 			}
 
 			this.setBorder(new DropShadowBorder());

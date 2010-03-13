@@ -3,6 +3,7 @@ package cytoscape.visual.customgraphic;
 import giny.view.NodeView;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.util.Collection;
@@ -67,6 +68,12 @@ public class DegreeCircleCustomGraphics implements CyCustomGraphics<CustomGraphi
 
 	@Override
 	public String getDisplayName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Image getImage() {
 		// TODO Auto-generated method stub
 		return null;
 	}

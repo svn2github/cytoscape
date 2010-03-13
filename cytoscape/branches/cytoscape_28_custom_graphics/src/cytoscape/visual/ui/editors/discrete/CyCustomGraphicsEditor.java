@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 
+import cytoscape.Cytoscape;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.ui.ValueSelectDialog;
@@ -71,7 +72,7 @@ public class CyCustomGraphicsEditor extends
 	}
 
 	protected void editLabelPosition() {
-		final CyCustomGraphics<?> newVal = (CyCustomGraphics<?>) ValueSelectDialog.showDialog(VisualPropertyType.NODE_CUSTOM_GRAPHICS, null);
+		final CyCustomGraphics<?> newVal = (CyCustomGraphics<?>) ValueSelectDialog.showDialog(VisualPropertyType.NODE_CUSTOM_GRAPHICS, Cytoscape.getDesktop());
 
 		if (newVal != null) {
 			final CyCustomGraphics<?> old = graphics;

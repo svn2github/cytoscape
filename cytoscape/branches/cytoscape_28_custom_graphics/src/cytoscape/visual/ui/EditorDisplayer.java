@@ -40,6 +40,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Window;
 
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -89,19 +90,19 @@ public enum EditorDisplayer {
 	                new Object[] { Cytoscape.getDesktop(), "Please enter new text value:" },
 	                String.class), 
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
-	               new Class[] { VisualPropertyType.class, JDialog.class },
+	               new Class[] { VisualPropertyType.class, Window.class },
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
 	DISCRETE_CUSTOM_GRAPHICS(ValueSelectDialog.class, "showDialog",
-	    	               new Class[] { VisualPropertyType.class, JDialog.class },
+	    	               new Class[] { VisualPropertyType.class, Window.class },
 	    	               new Object[] { VisualPropertyType.NODE_CUSTOM_GRAPHICS, null }, CyCustomGraphics.class),                
 	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
-	                     new Class[] { VisualPropertyType.class, JDialog.class },
+	                     new Class[] { VisualPropertyType.class, Window.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
-	                   new Class[] { VisualPropertyType.class, JDialog.class },
+	                   new Class[] { VisualPropertyType.class, Window.class },
 	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class),
 	DISCRETE_NODE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
-	    	               new Class[] { VisualPropertyType.class, JDialog.class },
+	    	               new Class[] { VisualPropertyType.class, Window.class },
 	    	               new Object[] { VisualPropertyType.NODE_LINE_STYLE, null }, LineStyle.class),
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },

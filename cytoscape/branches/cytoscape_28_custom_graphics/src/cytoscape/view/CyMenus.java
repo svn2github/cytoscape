@@ -352,7 +352,7 @@ public class CyMenus implements GraphViewChangeListener {
 		fileMenu.add(new JSeparator(), 5);
 		
 		
-		// Import submenu
+		// Import sub menu
 		addAction(new ImportGraphFileAction(this));
 		addAction(new WebServiceNetworkImportAction());
 		
@@ -361,7 +361,9 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ImportNodeAttributesAction());
 		addAction(new ImportEdgeAttributesAction());
 		addAction(new ImportExpressionMatrixAction());
-
+		
+		loadSubMenu.add(new JSeparator());
+		addAction(new ImportCustomGraphicsLocationListAction());
 		loadSubMenu.add(new JSeparator());
 
 		addAction(new ImportVizmapAction());
