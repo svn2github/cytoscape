@@ -1199,9 +1199,13 @@ public class MapBioPaxToCytoscape {
 		            		ControlledVocabulary.class,
 		            		Stoichiometry.class))
 		            {
-		            	// skip those are either nodes/edges themselves or mapped separately
+		            	// skip those are either nodes/edges themselves or mapped separately -
+		            	// - nothing to do
 		            } else if (obj != null) {
-		            	String value = obj.toString();
+		            	
+		            	// bug fix: biopax.SequenceSite.SequencePosition = -2147483648 ('unknown value') if the site is empty; 2010.03.14
+		            	String value = (editor.isUnknown(obj))? "" : obj.toString();
+		            	
 		            	if(log.isDebugging()) {
 		            		log.debug("set attribute '" + attrName 
 		            				+ "' for " + bpe + " = " 
