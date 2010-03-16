@@ -39,6 +39,7 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 
 import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.PluginStatus;
 import cytoscape.plugin.ThemeInfo;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
@@ -55,11 +56,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 
 import java.util.List;
-
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
+import java.util.ArrayList;
 
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
@@ -116,6 +118,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		initComponents();
 		initTree();
 		this.setSize(600, 500);
+		this.btnSearch.setEnabled(false);
 	}
 
 	// trying to listen to events in the Url dialog
@@ -147,8 +150,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 							}
 						});
-
-			if (Node.isNodeAncestor(installedNode)) {
+			if (Node.getParent().getParent().getTitle().equalsIgnoreCase("Currently Installed")) {
 				installDeleteButton.setText("Delete");
 				if (PluginManager.usingWebstartManager()) {
 					installDeleteButton.setEnabled(false);
@@ -156,7 +158,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				} else {
 					installDeleteButton.setEnabled(true);
 				}
-			} else if (Node.isNodeAncestor(availableNode)) {
+			}	else if (Node.getParent().getParent().getTitle().equalsIgnoreCase("Available for Install")) {
+
 				installDeleteButton.setText("Install");
 				installDeleteButton.setEnabled(true);
 			}
@@ -450,7 +453,129 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		
 		hiddenNodes = new java.util.HashMap<TreeNode, java.util.List<TreeNode>>();
 	}
+
+	
+	public Vector getAllPluginVector(){
+		
+		Vector<Vector> allPluginVect = new Vector<Vector>();
+
+		TreeNode root = (TreeNode) this.treeModel.getRoot();
+		for (int i=0; i< root.getChildCount(); i++){
+			TreeNode n = root.getChildAt(i);
+			
+			Vector<TreeNode> categories = n.getChildren();
+			for (int j=0; j<categories.size(); j++){
+				TreeNode category = categories.elementAt(j);
+				//System.out.println("\t"+ category.getTitle());
+				for (int k=0; k<category.getChildCount(); k++){
+					TreeNode leaf = category.getChildAt(k);
+					Vector aPluginVect = new Vector();
+					aPluginVect.add(n.getTitle());					
+					aPluginVect.add(category.getTitle());
+					aPluginVect.add(leaf.getObject());
+					allPluginVect.add(aPluginVect);	
+				}			
+			}			
+		}
+		
+		for (int i=0; i< allPluginVect.size(); i++){
+			Vector aPluginVect = allPluginVect.elementAt(i);
+			String installStatus = (String )aPluginVect.elementAt(0);			
+			String category = (String )aPluginVect.elementAt(1);
+			DownloadableInfo aPlugin =  (DownloadableInfo) aPluginVect.elementAt(2);
+			//System.out.println(installStatus+ "-- "+category + "---" + aPlugin.getName());
+		}
+
+		return allPluginVect;
+	}
+	
+	
+    // Update tree model based on the search result 
+    private void updateTreeModel(Vector filteredPluginVector) {
+
+    	TreeNode newRootTreeNode = new TreeNode("Plugins", true);
+    	ManagerModel newTreeModel = new ManagerModel(newRootTreeNode);
+
+    	TreeNode newInstalledNode = new TreeNode(PluginInstallStatus.INSTALLED.toString());
+    	TreeNode newAvailableNode = new TreeNode(PluginInstallStatus.AVAILABLE.toString());
+		//
+    	newTreeModel.addNodeToParent(newRootTreeNode, newInstalledNode);
+    	newTreeModel.addNodeToParent(newRootTreeNode, newAvailableNode);
+		
+    	if (filteredPluginVector != null){
+    		// Add the filtered plugins to the new Tree Model
+    		for (int i=0; i < filteredPluginVector.size(); i++ ){
+    			
+    			Vector aPlugin = (Vector) filteredPluginVector.elementAt(i);
+
+    			if (aPlugin.elementAt(0).toString().equalsIgnoreCase("Currently Installed")){
+    				//add to branch of newInstalledNode
+    				String category = aPlugin.elementAt(1).toString();
+    				TreeNode leafNode = new TreeNode((DownloadableInfo) aPlugin.elementAt(2));
+    				// get the category TreeNode
+    				TreeNode categoryNode = null;
+    				for (int j=0; j<newInstalledNode.getChildCount();j++ ){
+    					TreeNode node = newInstalledNode.getChildAt(j);
+    					if (node.getTitle().equalsIgnoreCase(category)){
+    						categoryNode = node;						
+    						newTreeModel.addNodeToParent(categoryNode, leafNode);
+    						break;
+    					}
+    				}
+    				if (categoryNode == null){
+    					categoryNode = new TreeNode(category, true);
+    					newTreeModel.addNodeToParent(categoryNode, leafNode);
+    					newTreeModel.addNodeToParent(newInstalledNode,categoryNode);
+    				}
+    			}
+    			else if (aPlugin.elementAt(0).toString().equalsIgnoreCase("Available for Install")){
+    				//add to the branch of newAvailableNode
+    				String category = aPlugin.elementAt(1).toString();
+    				TreeNode leafNode = new TreeNode((DownloadableInfo) aPlugin.elementAt(2));
+    				// get the category TreeNode
+    				TreeNode categoryNode = null;
+    				for (int j=0; j<newAvailableNode.getChildCount();j++ ){
+    					TreeNode node = newAvailableNode.getChildAt(j);
+    					if (node.getTitle().equalsIgnoreCase(category)){
+    						categoryNode = node;						
+    						newTreeModel.addNodeToParent(categoryNode, leafNode);
+    						break;
+    					}
+    				}
+    				if (categoryNode == null){
+    					categoryNode = new TreeNode(category, true);
+    					newTreeModel.addNodeToParent(categoryNode, leafNode);
+    					newTreeModel.addNodeToParent(newAvailableNode,categoryNode);
+    				}
+    			}
+    		}
+    	}
+	
+		pluginTree.setModel(newTreeModel);
+		
+		pluginTree.expandPath( new TreePath(newAvailableNode.getPath()) );
+		pluginTree.expandPath( new TreePath(newInstalledNode.getPath()) );
+    }
+
     
+    private void switchToMainDialog() {
+    	// switch to the main treeModel
+		pluginTree.setModel(treeModel);
+		TreeNode root = (TreeNode) treeModel.getRoot();
+
+		// Expand the tree to level 1
+		Vector<TreeNode> treeNodeVect = root.getChildren();
+		for (int i=0; i< treeNodeVect.size(); i++){
+			TreeNode n = treeNodeVect.elementAt(i);
+			pluginTree.expandPath(new TreePath(treeModel.getPathToRoot(n)));
+		}
+		
+		// switch the sitePanel
+    	this.sitePanel.setVisible(true);
+    	this.sitePanel2.setVisible(false);    	
+    }
+
+	
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -466,6 +591,10 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         sitePanel = new javax.swing.JPanel();
         changeSiteButton = new javax.swing.JButton();
         versionCheck = new javax.swing.JCheckBox();
+        tfSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
+        sitePanel2 = new javax.swing.JPanel();
+        btnBackMain = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         treeScrollPane = new javax.swing.JScrollPane();
         pluginTree = new javax.swing.JTree();
@@ -540,10 +669,58 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         sitePanel.add(versionCheck, gridBagConstraints);
 
+        tfSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfSearchActionPerformed(evt);
+            }
+        });
+        tfSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfSearchKeyTyped(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        sitePanel.add(tfSearch, gridBagConstraints);
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
+        sitePanel.add(btnSearch, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.2;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         topPane.add(sitePanel, gridBagConstraints);
+
+        btnBackMain.setText("Back to Main Dialog");
+        btnBackMain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackMainActionPerformed(evt);
+            }
+        });
+
+        sitePanel2.add(btnBackMain);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.2;
+        topPane.add(sitePanel2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -635,8 +812,54 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
         pack();
     }// </editor-fold>                        
+
+    private void btnBackMainActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    	switchToMainDialog();
+    }                                           
+
+    
+    // Disable btnSearch if there is no text in the Search textfield
+    private void tfSearchKeyTyped(java.awt.event.KeyEvent evt) {
+    	if (this.tfSearch.getText().trim().equals("")){
+    		this.btnSearch.setEnabled(false);
+    	}
+    	else {
+    		this.btnSearch.setEnabled(true);
+    	}
+    }
+
+    private void tfSearchActionPerformed(java.awt.event.ActionEvent evt) {
+    	// Perform the same effect as the click of btnSearch 
+    	//System.out.println("Entered is pressed in search textField");
+    	btnSearchActionPerformed(null);
+    }
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {
+    
+    	try {
+     		Vector  filteredPluginVector = PluginIndex.getSearchResult(this.tfSearch.getText().trim(),this.versionCheck.isSelected(), downloadLocText.getText());
+    		
+     		if (filteredPluginVector == null){
+    			// The index does not exist, build it now
+    			
+    			//This will create new index for the AllPluginVector
+    	    	PluginIndex.setAllPluginVector(this.getAllPluginVector(), this.versionCheck.isSelected(), downloadLocText.getText());
+    	    	// After the index is created, we can do searching against the index
+    			filteredPluginVector = PluginIndex.getSearchResult(this.tfSearch.getText().trim(),this.versionCheck.isSelected(), downloadLocText.getText());
+    		}
+       	
+        	updateTreeModel(filteredPluginVector);
+        	
+        	this.sitePanel.setVisible(false);
+        	this.sitePanel2.setVisible(true);    		
+    	}
+    	catch (Exception e){
+    		e.printStackTrace();
+    		JOptionPane.showMessageDialog(this, "Error in build index for PluginManager!");
+    	}
+    }
 	
-	
+    
 	/*
 	 * --- create the tasks and task monitors to show the user what's going on
 	 * during download/install ---
@@ -841,6 +1064,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
   private javax.swing.JLabel availablePluginsLabel;
   private javax.swing.JPanel bottomPane;
   private javax.swing.JPanel buttonPanel;
+  private javax.swing.JButton btnBackMain;
   private javax.swing.JButton changeSiteButton;
   private javax.swing.JButton closeButton;
   private javax.swing.JScrollPane infoScrollPane;
@@ -852,13 +1076,17 @@ public class PluginManageDialog extends javax.swing.JDialog implements
   private javax.swing.JTextArea msgPanel;
   private javax.swing.JTree pluginTree;
   private javax.swing.JPanel sitePanel;
+  private javax.swing.JPanel sitePanel2;
   private javax.swing.JPanel topPane;
   private javax.swing.JScrollPane treeScrollPane;
   private javax.swing.JCheckBox versionCheck;
+  private javax.swing.JButton btnSearch;
+  private javax.swing.JTextField tfSearch;
   private TreeNode rootTreeNode;
 	private TreeNode installedNode;
 	private TreeNode availableNode;
 	private ManagerModel treeModel;
 	private TreeCellRenderer treeRenderer;
 	private java.util.HashMap<TreeNode, java.util.List<TreeNode>> hiddenNodes;
+	
 }
