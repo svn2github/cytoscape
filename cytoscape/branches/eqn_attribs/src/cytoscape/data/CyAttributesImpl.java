@@ -40,6 +40,7 @@ import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.util.MultiHashMapFactory;
+import cytoscape.data.eqn_attribs.Equation;
 
 import java.util.*;
 
@@ -210,7 +211,7 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @param attributeName DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	public void setAttribute(String id, String attributeName, Boolean value) {
+	public void setAttribute(final String id, final String attributeName, final Boolean value) {
 		if (id == null)
 			throw new IllegalArgumentException("id is null");
 
@@ -341,6 +342,56 @@ public class CyAttributesImpl implements CyAttributes {
 		}
 
 		mmap.setAttributeValue(id, attributeName, value, null);
+	}
+
+	/**
+	 *  @param id            unique identifier.
+	 *  @param attributeName attribute name.
+	 *  @param equation      an attribute equation
+	 */
+	public void setAttribute(final String id, final String attributeName, final Equation equation) {
+		if (id == null)
+			throw new IllegalArgumentException("id is null");
+
+		if (attributeName == null)
+			throw new IllegalArgumentException("attributeName is null");
+
+		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+		if (dimTypes.length != 0)
+			throw new IllegalArgumentException("definition for \"" + attributeName 
+			                                   + "\" already exists and it is not of a scalar type!");
+
+		final byte type = mmapDef.getAttributeValueType(attributeName);
+		final Class returnType = equation.getType();
+		if (type < 0) {
+			final byte mappedType;
+			if (returnType == Double.class)
+				mappedType = MultiHashMapDefinition.TYPE_FLOATING_POINT;
+			else if (returnType == String.class)
+				mappedType = MultiHashMapDefinition.TYPE_STRING;
+			else if (returnType == Boolean.class)
+				mappedType = MultiHashMapDefinition.TYPE_BOOLEAN;
+			else
+				throw new IllegalStateException("unknown equation return type: " + returnType + "!");
+			mmapDef.defineAttribute(attributeName, mappedType, null);
+		} else {
+			if (type == MultiHashMapDefinition.TYPE_STRING)
+				/* Everything is compatible w/ this! */;
+			else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
+				if (returnType != Double.class && returnType != Boolean.class)
+					throw new IllegalArgumentException("an equation of type " + returnType
+					                                   + " is not compatible with TYPE_INTEGER for attribute \""
+					                                   + attributeName + "\"!");
+			}
+			else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+				if (returnType != Double.class && returnType != Boolean.class)
+					throw new IllegalArgumentException("an equation of type " + returnType
+					                                   + " is not compatible with TYPE_FLOATING_POINT for attribute \""
+					                                   + attributeName + "\"!");
+			}
+		}
+
+		mmap.setAttributeValue(id, attributeName, equation, null);
 	}
 
 	/**

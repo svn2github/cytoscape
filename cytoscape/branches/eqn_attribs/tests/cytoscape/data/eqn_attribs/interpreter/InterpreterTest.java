@@ -79,7 +79,7 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=\"Fred\"&${s1}", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
 		nameToDescriptorMap.put("s1", new IdentDescriptor("Bob"));
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals("FredBob", interpreter.run());
 	}
 
@@ -89,7 +89,7 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=42 - 12 + 3 * (4 - 2) + ${BOB:12}", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
 		nameToDescriptorMap.put("BOB", new IdentDescriptor(-10.0));
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(26.0), interpreter.run());
 	}
 
@@ -102,7 +102,7 @@ public class InterpreterTest extends TestCase {
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
 		nameToDescriptorMap.put("attr1", new IdentDescriptor(5.5));
 		nameToDescriptorMap.put("attr2", new IdentDescriptor(6.5));
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(12.0), interpreter.run());
 	}
 
@@ -110,7 +110,7 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=42 + log(4 - 2)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(42.0 + Math.log10(4.0 - 2.0)), interpreter.run());
 	}
 
@@ -118,7 +118,7 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=2^3^4 - 0.0002", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(Math.pow(2.0, Math.pow(3.0, 4.0)) - 0.0002), interpreter.run());
 	}
 
@@ -132,11 +132,11 @@ public class InterpreterTest extends TestCase {
 		nameToDescriptorMap.put("x", new IdentDescriptor(1.2));
 		nameToDescriptorMap.put("y", new IdentDescriptor(-3.8e-12));
 		nameToDescriptorMap.put("limit", new IdentDescriptor(-65.23e12));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter1.run());
 		
 		assertTrue(compiler.compile("=-15.4^3 > ${limit}", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(true), interpreter2.run());
 	}
 
@@ -146,7 +146,7 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=LOG(1)", attribNameToTypeMap));
 		assertTrue(compiler.compile("=LOG(1,2)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(Math.log(1.0)/Math.log(2.0)), interpreter.run());
 		assertFalse(compiler.compile("=LOG(1,2,3)", attribNameToTypeMap));
 	}
@@ -156,7 +156,7 @@ public class InterpreterTest extends TestCase {
 		assertFalse(compiler.compile("=ABS()", attribNameToTypeMap));
 		assertTrue(compiler.compile("=ABS(-1.5e10)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(1.5e10), interpreter.run());
 		assertFalse(compiler.compile("=ABS(1,2)", attribNameToTypeMap));
 	}
@@ -168,11 +168,11 @@ public class InterpreterTest extends TestCase {
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
 		nameToDescriptorMap.put("logical", new IdentDescriptor(true));
 		assertTrue(compiler.compile("=NOT(true)", attribNameToTypeMap));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter1.run());
 		assertTrue(compiler.compile("=NOT(false)", attribNameToTypeMap));
 		assertTrue(compiler.compile("=NOT(3.2 < 12)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter2.run());
 		assertTrue(compiler.compile("=NOT(${logical})", attribNameToTypeMap));
 		assertFalse(compiler.compile("=NOT(true, true)", attribNameToTypeMap));
@@ -182,10 +182,10 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=UCASE(\"Fred\")", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("FRED"), interpreter1.run());
 		assertTrue(compiler.compile("=\"bozo\"&LCASE(\"UPPER\")", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("bozoupper"), interpreter2.run());
 	}
 
@@ -193,19 +193,19 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=SUBSTITUTE(\"ABABBAABAB\", \"A\", \"X\")", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("XBXBBXXBXB"), interpreter1.run());
 
 		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 2.4)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("FredBobBillJoeJulieHansKarl"), interpreter2.run());
 
 		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 3)", attribNameToTypeMap));
-		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("FredBobBillJoeBobHansKarl"), interpreter3.run());
 
 		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob2\", \"Julie\")", attribNameToTypeMap));
-		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("FredBobBillJoeBobHansKarl"), interpreter4.run());
 	}
 
@@ -213,19 +213,19 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=IF(2.3 >= 1, \"Xx\", \"Yz\")", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("Xx"), interpreter1.run());
 
 		assertTrue(compiler.compile("=IF(FALSE, 12.3, -4)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(-4), interpreter2.run());
 
 		assertTrue(compiler.compile("=IF(true, false, true)", attribNameToTypeMap));
-		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter3.run());
 
 		assertTrue(compiler.compile("=IF(TrUe, 12.3, \"-4\")", attribNameToTypeMap));
-		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("12.3"), interpreter4.run());
 	}
 
@@ -233,21 +233,21 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=LN(2.3)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(Math.log(2.3)), interpreter1.run());
 
 		assertTrue(compiler.compile("=EXP(-4)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(Math.exp(-4.0)), interpreter2.run());
 
 		assertTrue(compiler.compile("=EXP(LN(2.5))", attribNameToTypeMap));
-		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(2.5), interpreter3.run());
 
 		boolean succeeded;
 		try {
 			assertTrue(compiler.compile("=EXP(LN(0.0))", attribNameToTypeMap));
-			final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 			interpreter4.run();
 			succeeded = true;
 		} catch (final Exception e) {
@@ -260,27 +260,27 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=LEFT(\"Circus\", 3)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("Cir"), interpreter1.run());
 
 		assertTrue(compiler.compile("=RIGHT(\"Maximus\", 4)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("imus"), interpreter2.run());
 
 		assertTrue(compiler.compile("=MID(\"Gaius Julius Cesar\",7,6)", attribNameToTypeMap));
-		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("Julius"), interpreter3.run());
 
 		assertTrue(compiler.compile("=MID(\"Augustus\",7,6000)", attribNameToTypeMap));
-		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("us"), interpreter4.run());
 
 		assertTrue(compiler.compile("=LEFT(\"aureus\",6000)", attribNameToTypeMap));
-		final Interpreter interpreter5 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter5 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("aureus"), interpreter5.run());
 
 		assertTrue(compiler.compile("=RIGHT(\"toga\",33)", attribNameToTypeMap));
-		final Interpreter interpreter6 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter6 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("toga"), interpreter6.run());
 	}
 
@@ -288,11 +288,11 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=LEN(\"baboon\")", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(6.0), interpreter1.run());
 
 		assertTrue(compiler.compile("=LEN(\"\")", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(0.0), interpreter2.run());
 	}
 
@@ -302,11 +302,11 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=defined(x)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
 		nameToDescriptorMap.put("x", new IdentDescriptor(1.2));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(true), interpreter1.run());
 
 		assertTrue(compiler.compile("=DEFINED(${limit})", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(false), interpreter2.run());
 	}
 
@@ -314,19 +314,19 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=ROUND(2.15, 1)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(2.2), interpreter1.run());
 
 		assertTrue(compiler.compile("=ROUND(2.149,1)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(2.1), interpreter2.run());
 
 		assertTrue(compiler.compile("=ROUND(-1.475,2)", attribNameToTypeMap));
-		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(-1.48), interpreter3.run());
 
 		assertTrue(compiler.compile("=ROUND(21.5, -1)", attribNameToTypeMap));
-		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(20.0), interpreter4.run());
 	}
 
@@ -334,19 +334,19 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=TRUNC(8.9)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(8.0), interpreter1.run());
 
 		assertTrue(compiler.compile("=TRUNC(-8.9)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(-8.0), interpreter2.run());
 
 		assertTrue(compiler.compile("=TRUNC(PI())", attribNameToTypeMap));
-		final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(3.0), interpreter3.run());
 
 		assertTrue(compiler.compile("=TRUNC(-1.475,2)", attribNameToTypeMap));
-		final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(-1.47), interpreter4.run());
 	}
 
@@ -354,7 +354,7 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=VALUE(\"-8.9e99\")", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(-8.9e99), interpreter.run());
 	}
 
@@ -370,7 +370,7 @@ public class InterpreterTest extends TestCase {
 		numbers.add(4.0);
 		numbers.add(5.0);
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
-		final Interpreter interpreter = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(3.0), interpreter.run());
 	}
 
@@ -386,11 +386,11 @@ public class InterpreterTest extends TestCase {
 		numbers.add(new String("4.0"));
 		numbers.add(5.0);
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(1.0), interpreter1.run());
 
 		assertTrue(compiler.compile("=MIN(-2,-3,-4.35)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(-4.35), interpreter2.run());
 	}
 
@@ -406,11 +406,11 @@ public class InterpreterTest extends TestCase {
 		numbers.add(new String("4.0"));
 		numbers.add(5.0);
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(5.0), interpreter1.run());
 
 		assertTrue(compiler.compile("=MAX(-2,-3,-4.35)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(-2.0), interpreter2.run());
 	}
 
@@ -426,11 +426,11 @@ public class InterpreterTest extends TestCase {
 		numbers.add(new String("4.0"));
 		numbers.add(5.0);
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(5.0), interpreter1.run());
 
 		assertTrue(compiler.compile("=COUNT(-2,-3,-4.35)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(3.0), interpreter2.run());
 	}
 
@@ -438,11 +438,11 @@ public class InterpreterTest extends TestCase {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=MEDIAN(3,2,5,1,4)", attribNameToTypeMap));
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(3.0), interpreter1.run());
 
 		assertTrue(compiler.compile("=MEDIAN(1,2,4,3)", attribNameToTypeMap));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(2.5), interpreter2.run());
 	}
 
@@ -458,7 +458,7 @@ public class InterpreterTest extends TestCase {
 		list1.add(new String("1"));
 		list1.add(4.0);
 		nameToDescriptorMap.put("list1", new IdentDescriptor(list1));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("5.0"), interpreter1.run());
 
 		attribNameToTypeMap.put("list2", List.class);
@@ -469,13 +469,13 @@ public class InterpreterTest extends TestCase {
 		list2.add(4.0);
 		list2.add(new String("3"));
 		nameToDescriptorMap.put("list2", new IdentDescriptor(list2));
-		final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("3"), interpreter2.run());
 
 		boolean succeeded;
 		try {
 			assertTrue(compiler.compile("=NTH(${list2}, 5)", attribNameToTypeMap));
-			final Interpreter interpreter3 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 			interpreter3.run();
 			succeeded = true;
 		} catch (final Exception e) {
@@ -485,7 +485,7 @@ public class InterpreterTest extends TestCase {
 
 		try {
 			assertTrue(compiler.compile("=NTH(${list2}, 0)", attribNameToTypeMap));
-			final Interpreter interpreter4 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 			interpreter4.run();
 			succeeded = true;
 		} catch (final Exception e) {
@@ -506,7 +506,7 @@ public class InterpreterTest extends TestCase {
 		list1.add(new String("1"));
 		list1.add(4.0);
 		nameToDescriptorMap.put("list1", new IdentDescriptor(list1));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("3.0"), interpreter1.run());
 
 		attribNameToTypeMap.put("list2", List.class);
@@ -515,7 +515,7 @@ public class InterpreterTest extends TestCase {
 		boolean succeeded;
 		try {
 			assertTrue(compiler.compile("=FIRST(${list2})", attribNameToTypeMap));
-			final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 			interpreter2.run();
 			succeeded = true;
 		} catch (final Exception e) {
@@ -536,7 +536,7 @@ public class InterpreterTest extends TestCase {
 		list1.add(new String("1"));
 		list1.add(4.0);
 		nameToDescriptorMap.put("list1", new IdentDescriptor(list1));
-		final Interpreter interpreter1 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("4.0"), interpreter1.run());
 
 		attribNameToTypeMap.put("list2", List.class);
@@ -545,7 +545,7 @@ public class InterpreterTest extends TestCase {
 		boolean succeeded;
 		try {
 			assertTrue(compiler.compile("=LAST(${list2})", attribNameToTypeMap));
-			final Interpreter interpreter2 = new Interpreter(compiler.getCode(), nameToDescriptorMap);
+			final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 			interpreter2.run();
 			succeeded = true;
 		} catch (final Exception e) {

@@ -31,6 +31,7 @@ package cytoscape.data.eqn_attribs.interpreter;
 
 
 import cytoscape.data.eqn_attribs.AttribFunction;
+import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.data.eqn_attribs.parse_tree.*;
 import java.util.EmptyStackException;
 import java.util.Map;
@@ -42,13 +43,13 @@ public class Interpreter {
 	private final Stack<Object> argumentStack;
 	private final Map<String, IdentDescriptor> nameToDescriptorMap;
 
-	public Interpreter(final Object[] code, final Map<String, IdentDescriptor> nameToDescriptorMap)
+	public Interpreter(final Equation equation, final Map<String, IdentDescriptor> nameToDescriptorMap)
 		throws IllegalStateException
 	{
-		if (code == null || code.length == 0)
+		if (equation == null || equation.getCode().length == 0)
 			throw new IllegalStateException("null or empty code!");
 
-		this.code = code;
+		this.code = equation.getCode();
 		this.argumentStack = new Stack<Object>();
 		this.nameToDescriptorMap = nameToDescriptorMap;
 	}

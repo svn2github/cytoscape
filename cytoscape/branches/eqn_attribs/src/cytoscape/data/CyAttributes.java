@@ -38,6 +38,7 @@ package cytoscape.data;
 
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.eqn_attribs.Equation;
 
 import java.util.List;
 import java.util.Map;
@@ -471,6 +472,13 @@ public interface CyAttributes {
 	 */
 	public void setAttribute(String id, String attributeName, String value)
 	    throws IllegalArgumentException;
+
+	/**
+	 *  @param id            unique identifier.
+	 *  @param attributeName attribute name.
+	 *  @param equation      an attribute equation
+	 */
+	public void setAttribute(final String id, final String attributeName, final Equation equation);
 
 	/**
 	 * Gets a Boolean value at the specified id/attributeName.

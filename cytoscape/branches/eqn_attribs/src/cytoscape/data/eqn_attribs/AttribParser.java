@@ -33,6 +33,8 @@ package cytoscape.data.eqn_attribs;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.parse_tree.*;
 
 
@@ -43,6 +45,7 @@ class AttribParser {
 	private String lastErrorMessage;
 	private Node parseTree;
 	private Map<String, Class> attribNameToTypeMap;
+	private Set<String> attribReferences;
 
 	public AttribParser() {
 		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
@@ -74,6 +77,7 @@ class AttribParser {
 
 		this.eqn = eqn;
 		this.attribNameToTypeMap = attribNameToTypeMap;
+		this.attribReferences = new TreeSet<String>();
 		this.tokeniser = new AttribTokeniser(eqn.substring(1));
 		this.lastErrorMessage = null;
 
@@ -97,15 +101,20 @@ class AttribParser {
 	}
 
 	/**
+	 *  @returns the result type of the parsed equstion if the parse succeded, otherwise null
+	 */
+	public Class getType() { return parseTree == null ? null : parseTree.getType(); }
+
+	/**
 	 *  If parse() failed, this will return the last error messages.
 	 *  @returns the last error message of null
 	 */
-	public String getErrorMsg() {
-		return lastErrorMessage;
-	}
+	public String getErrorMsg() { return lastErrorMessage; }
+
+	public Set<String> getAttribReferences() { return attribReferences; }
 
 	/**
-	 *  Only used for unit testing.
+	 *  @returns the parse tree.  Must only be called if parse() returns true!
 	 */
 	Node getParseTree() { return parseTree; }
 
@@ -250,6 +259,7 @@ class AttribParser {
 			final Class attribRefType = attribNameToTypeMap.get(tokeniser.getIdent());
 			if (attribRefType == null)
 				throw new IllegalStateException("unknown attribute reference name: \"" + tokeniser.getIdent() + "\"!");
+			attribReferences.add(tokeniser.getIdent());
 			token = tokeniser.getToken();
 
 			// Do we have a default value?

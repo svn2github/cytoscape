@@ -39,12 +39,12 @@ import cytoscape.data.eqn_attribs.parse_tree.Node;
 
 public class AttribEqnCompiler {
 	private AttribParser parser;
-	private Object[] code;
+	private Equation equation;
 	private String errorMsg;
 
 	public AttribEqnCompiler() {
 		this.parser = new AttribParser();
-		this.code = null;
+		this.equation = null;
 		this.errorMsg = null;
 	}
 
@@ -68,9 +68,10 @@ public class AttribEqnCompiler {
 			return false;
 		}
 
-		code = new Object[codeStack.size()];
+		final Object[] code = new Object[codeStack.size()];
 		for (int i = code.length - 1; i >= 0; --i)
 			code[i] = codeStack.pop();
+		this.equation = new Equation(equation, parser.getAttribReferences(), code, parser.getType());
 
 		errorMsg = null;
 		return true;
@@ -78,5 +79,5 @@ public class AttribEqnCompiler {
 
 	public String getLastErrorMsg() { return errorMsg; }
 
-	public Object[] getCode() { return code; }
+	public Equation getEquation() { return equation; }
 }
