@@ -67,8 +67,11 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
 	private static CyLogger logger = CyLogger.getLogger(PluginManageDialog.class);
 
+	public static String CURRENTLY_INSTALLED = "Currently Installed";
+	public static String AVAILABLE_FOR_INSTALL = "Available for Install";
+	
 	public enum PluginInstallStatus {
-		INSTALLED("Currently Installed"), AVAILABLE("Available for Install");
+		INSTALLED(CURRENTLY_INSTALLED), AVAILABLE(AVAILABLE_FOR_INSTALL);
 		private String typeText;
 
 		private PluginInstallStatus(String type) {
@@ -150,7 +153,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 							}
 						});
-			if (Node.getParent().getParent().getTitle().equalsIgnoreCase("Currently Installed")) {
+			if (Node.getParent().getParent().getTitle().equalsIgnoreCase(CURRENTLY_INSTALLED)) {
 				installDeleteButton.setText("Delete");
 				if (PluginManager.usingWebstartManager()) {
 					installDeleteButton.setEnabled(false);
@@ -158,7 +161,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				} else {
 					installDeleteButton.setEnabled(true);
 				}
-			}	else if (Node.getParent().getParent().getTitle().equalsIgnoreCase("Available for Install")) {
+			}	else if (Node.getParent().getParent().getTitle().equalsIgnoreCase(AVAILABLE_FOR_INSTALL)) {
 
 				installDeleteButton.setText("Install");
 				installDeleteButton.setEnabled(true);
@@ -455,18 +458,16 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 	
-	public Vector getAllPluginVector(){
+	private Vector getAllPluginVector(){
 		
 		Vector<Vector> allPluginVect = new Vector<Vector>();
 
 		TreeNode root = (TreeNode) this.treeModel.getRoot();
 		for (int i=0; i< root.getChildCount(); i++){
 			TreeNode n = root.getChildAt(i);
-			
 			Vector<TreeNode> categories = n.getChildren();
 			for (int j=0; j<categories.size(); j++){
 				TreeNode category = categories.elementAt(j);
-				//System.out.println("\t"+ category.getTitle());
 				for (int k=0; k<category.getChildCount(); k++){
 					TreeNode leaf = category.getChildAt(k);
 					Vector aPluginVect = new Vector();
@@ -478,14 +479,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			}			
 		}
 		
-		for (int i=0; i< allPluginVect.size(); i++){
-			Vector aPluginVect = allPluginVect.elementAt(i);
-			String installStatus = (String )aPluginVect.elementAt(0);			
-			String category = (String )aPluginVect.elementAt(1);
-			DownloadableInfo aPlugin =  (DownloadableInfo) aPluginVect.elementAt(2);
-			//System.out.println(installStatus+ "-- "+category + "---" + aPlugin.getName());
-		}
-
 		return allPluginVect;
 	}
 	
@@ -508,7 +501,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     			
     			Vector aPlugin = (Vector) filteredPluginVector.elementAt(i);
 
-    			if (aPlugin.elementAt(0).toString().equalsIgnoreCase("Currently Installed")){
+    			if (aPlugin.elementAt(0).toString().equalsIgnoreCase(CURRENTLY_INSTALLED)){
     				//add to branch of newInstalledNode
     				String category = aPlugin.elementAt(1).toString();
     				TreeNode leafNode = new TreeNode((DownloadableInfo) aPlugin.elementAt(2));
@@ -528,7 +521,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     					newTreeModel.addNodeToParent(newInstalledNode,categoryNode);
     				}
     			}
-    			else if (aPlugin.elementAt(0).toString().equalsIgnoreCase("Available for Install")){
+    			else if (aPlugin.elementAt(0).toString().equalsIgnoreCase(AVAILABLE_FOR_INSTALL)){
     				//add to the branch of newAvailableNode
     				String category = aPlugin.elementAt(1).toString();
     				TreeNode leafNode = new TreeNode((DownloadableInfo) aPlugin.elementAt(2));
