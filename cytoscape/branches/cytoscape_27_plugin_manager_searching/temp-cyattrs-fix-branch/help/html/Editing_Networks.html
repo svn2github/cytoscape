@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Building and Storing Interaction Networks</title>
+</head>
+<body>
+<p>
+Using a Cytoscape editor, you can build a network interactively 
+by adding nodes and edges to a drawing canvas.  In addition to building a new network, you can also edit existing networks 
+by adding and deleting nodes and edges.
+<p>
+To bring up an editor, use the <b>File->Set Editor</b> menu item.  You will be given a choice of three editors, 
+the <em>DefaultCytoscapeEditor</em>, the <em>SimpleBioMoleculeEditor</em>, and the <em>SimpleBioPAX_Editor</em>.
+If there is no current view at the time you make the <b>File->Set Editor</b>, then a new network 
+and view will be created automatically for you.
+<p>
+To start editing a new network, use the <b>File->New->Network</b> menu item.
+<p>
+The figure shows shows the display for the <em>DefaultCytoscapeEditor</em>.
+<p>
+<img src="images/DefaultCytoscapeEditor.png" align="bottom" border="0"><br>
+
+<p>
+Adding nodes and edges is done from a palette (left panel of figure) whose elements are defined by the current Visual Style.
+The palette contains a set of shapes (for nodes) and arrows (for edges).  
+<p>
+To add a node to a network, click on a shape on the palette, then drag and drop the shape onto the canvas.
+<p>
+To connect two nodes with an edge, click on an arrow on the palette, then drag and drop the arrow onto a node on the canvas.  This node becomes
+the source node of the edge.  
+Move the cursor and a 
+rubber-banded line follows the cursor.  As the cursor passes over another node, that node is
+highlighted and the rubber-banded line will snap to a connection point on that second node.  
+Control-click the mouse again and the connection is established.  
+<p>
+You can abort the drawing of the edge by clicking on an empty spot on the palette.
+<p>
+The shapes and colors of the
+of the node elements on the palette map to the shapes and colors for different node types defined 
+by the visual style.  The line type and target arrow map to the line type and
+target arrow defined by the visual style.  Note that if you change the Visual Style, the palette used 
+by the current network view will also change to be consistent with the mappings in the new Visual Style.
+<p>
+There is also an <b>Edit => Connect Selected Nodes</b> menu item that, when chosen, 
+creates a clique amongst the selected nodes.  
+<p>
+The editor also provides accelerators for adding nodes and edges.  
+Control-clicking at a position on the canvas creates a node at that position.  
+Control-clicking on a node on the canvas starts an edge with source at that node.  Move the cursor and a 
+rubber-banded line follows the cursor.  As the cursor passes over another node, that node is
+highlighted and the rubber-banded line will snap to a connection point on that second node.  
+Control-click the mouse again and the connection is established.  
+You can abort the drawing of the edge by control-clicking on an empty spot on the palette.
+<p>
+You can  delete nodes and edges by selecting a number of nodes and edges, then selecting the 
+<b>Edit => Delete Selected Nodes and Edges</b> menu item.
+You can recover any nodes and edges deleted from a network by selecting the
+<b>Edit => Restore Deleted Nodes and Edges</b> menu item.  Note that this will restore <b>all</b> nodes and edges 
+that were previously deleted from the network, not just those deleted by the most recent delete operation.
+<p>
+The figure below shows the display for the SimpleBioMoleculeEditor.
+<p>
+<img src="images/SimpleBioMoleculeEditor.png" align="bottom" border="0"><br>
+<p>
+<!---
+The next figure shows a hand-drawn BioPAX network, copied from Ethan Cerami's "biopax-sample1" example.
+<p>
+<img src="images/CyEditor4.gif" align="bottom" border="0"><br>
+<p>
+The next figure shows the "biopax-sample1" example, loaded into Cytoscape, then modified with the addition of two new nodes and interactions.
+<p>
+<img src="images/CyEditor5.gif" align="bottom" border="0"><br>
+--->
+</body>
+</html>
