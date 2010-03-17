@@ -7,7 +7,11 @@ import java.util.Map;
 public class CustomGraphicsPool {
 	
 	private static final Map<String, CyCustomGraphics<?>> graphicsMap = new HashMap<String, CyCustomGraphics<?>>();
+	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
 	
+	static {
+		graphicsMap.put(NULL.getDisplayName(), NULL);
+	}
 	
 	public static void addGraphics(String id, CyCustomGraphics<?> graphics) {
 		graphicsMap.put(id, graphics);

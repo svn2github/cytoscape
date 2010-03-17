@@ -1,6 +1,8 @@
 package cytoscape.visual.customgraphic.ui;
 
 import java.awt.Image;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -9,6 +11,7 @@ import org.jdesktop.swingx.JXImageView;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.Taggable;
 import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
 /**
@@ -19,6 +22,7 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 		ListSelectionListener {
 
 	private CyCustomGraphics<?> cg;
+	
 
 	/** Creates new form CustomGraphicsDetailPanel */
 	public CustomGraphicsDetailPanel() {
@@ -33,241 +37,174 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 	@SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
-		imageViewPanel = new JXImageView();
 		infoPanel = new javax.swing.JPanel();
-		nameLabel = new javax.swing.JLabel();
-		tagLabel = new javax.swing.JLabel();
-		nameTextField = new javax.swing.JTextField();
-		tagTextField = new javax.swing.JTextField();
-		modifyPanel = new javax.swing.JPanel();
-		widthLabel = new javax.swing.JLabel();
-		widthTextField = new javax.swing.JTextField();
-		heightLabel = new javax.swing.JLabel();
-		lockCheckBox = new javax.swing.JCheckBox();
-		heightTextField = new javax.swing.JTextField();
-		resetButton = new javax.swing.JButton();
+        nameLabel = new javax.swing.JLabel();
+        tagLabel = new javax.swing.JLabel();
+        nameTextField = new javax.swing.JTextField();
+        tagTextField = new javax.swing.JTextField();
+        imageViewPanel = new JXImageView();
+        modifyPanel = new javax.swing.JPanel();
+        widthLabel = new javax.swing.JLabel();
+        widthTextField = new javax.swing.JTextField();
+        heightLabel = new javax.swing.JLabel();
+        lockCheckBox = new javax.swing.JCheckBox();
+        heightTextField = new javax.swing.JTextField();
+        resetButton = new javax.swing.JButton();
+        optionButton = new javax.swing.JButton();
 
-		infoPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        infoPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-		nameLabel.setText("Name:");
+        nameLabel.setText("Name:");
 
-		tagLabel.setText("Tags:");
+        tagLabel.setText("Tags:");
 
-		nameTextField.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				nameTextFieldActionPerformed(evt);
-			}
-		});
+        nameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameTextFieldActionPerformed(evt);
+            }
+        });
 
-		tagTextField.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				// tagTextFieldActionPerformed(evt);
-			}
-		});
+        tagTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tagsTextFieldActionPerformed(evt);
+            }
+        });
 
-		org.jdesktop.layout.GroupLayout infoPanelLayout = new org.jdesktop.layout.GroupLayout(
-				infoPanel);
-		infoPanel.setLayout(infoPanelLayout);
-		infoPanelLayout.setHorizontalGroup(infoPanelLayout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(
-				infoPanelLayout.createSequentialGroup().addContainerGap().add(
-						infoPanelLayout.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING).add(
-								tagLabel).add(nameLabel)).addPreferredGap(
-						org.jdesktop.layout.LayoutStyle.RELATED).add(
-						infoPanelLayout.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING).add(
-								nameTextField,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								383, Short.MAX_VALUE).add(tagTextField,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								383, Short.MAX_VALUE)).addContainerGap()));
-		infoPanelLayout
-				.setVerticalGroup(infoPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								infoPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												infoPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(nameLabel)
-														.add(
-																nameTextField,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												infoPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(tagLabel)
-														.add(
-																tagTextField,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+        org.jdesktop.layout.GroupLayout infoPanelLayout = new org.jdesktop.layout.GroupLayout(infoPanel);
+        infoPanel.setLayout(infoPanelLayout);
+        infoPanelLayout.setHorizontalGroup(
+            infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(infoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(tagLabel)
+                    .add(nameLabel))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(nameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                    .add(tagTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        infoPanelLayout.setVerticalGroup(
+            infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(infoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(nameLabel)
+                    .add(nameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(tagLabel)
+                    .add(tagTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
-		imageViewPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("Actual Size View"));
+        imageViewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Actual Size View"));
 
-		org.jdesktop.layout.GroupLayout imageViewPanelLayout = new org.jdesktop.layout.GroupLayout(
-				imageViewPanel);
-		imageViewPanel.setLayout(imageViewPanelLayout);
-		imageViewPanelLayout.setHorizontalGroup(imageViewPanelLayout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(0, 465, Short.MAX_VALUE));
-		imageViewPanelLayout.setVerticalGroup(imageViewPanelLayout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(0, 228, Short.MAX_VALUE));
+        org.jdesktop.layout.GroupLayout imageViewPanelLayout = new org.jdesktop.layout.GroupLayout(imageViewPanel);
+        imageViewPanel.setLayout(imageViewPanelLayout);
+        imageViewPanelLayout.setHorizontalGroup(
+            imageViewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 573, Short.MAX_VALUE)
+        );
+        imageViewPanelLayout.setVerticalGroup(
+            imageViewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 228, Short.MAX_VALUE)
+        );
 
-		modifyPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        modifyPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-		widthLabel.setText("Width:");
+        widthLabel.setText("Width:");
 
-		widthTextField.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				widthTextFieldActionPerformed(evt);
-			}
-		});
+        widthTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                widthTextFieldActionPerformed(evt);
+            }
+        });
 
-		heightLabel.setText("Height:");
+        heightLabel.setText("Height:");
 
-		lockCheckBox.setSelected(true);
-		lockCheckBox.setText("Aspect Ratio");
-		lockCheckBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-			}
-		});
+        lockCheckBox.setSelected(true);
+        lockCheckBox.setText("Aspect Ratio");
+        lockCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //lockCheckBoxActionPerformed(evt);
+            }
+        });
 
-		heightTextField.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				heightTextFieldActionPerformed(evt);
-			}
-		});
+        heightTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                heightTextFieldActionPerformed(evt);
+            }
+        });
 
-		resetButton.setText("Original");
-		resetButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				resetButtonActionPerformed(evt);
-			}
-		});
+        resetButton.setText("Original");
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
 
-		org.jdesktop.layout.GroupLayout modifyPanelLayout = new org.jdesktop.layout.GroupLayout(
-				modifyPanel);
-		modifyPanel.setLayout(modifyPanelLayout);
-		modifyPanelLayout
-				.setHorizontalGroup(modifyPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								modifyPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(widthLabel)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												widthTextField,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												60,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(heightLabel)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												heightTextField,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												60,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(lockCheckBox)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE).add(
-												resetButton)));
-		modifyPanelLayout
-				.setVerticalGroup(modifyPanelLayout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								modifyPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												modifyPanelLayout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(widthLabel)
-														.add(
-																widthTextField,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(heightLabel)
-														.add(
-																heightTextField,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(lockCheckBox).add(
-																resetButton))
-										.addContainerGap(
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+        optionButton.setText("Options");
+        optionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optionButtonActionPerformed(evt);
+            }
+        });
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
-				this);
-		this.setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(infoPanel,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				.add(org.jdesktop.layout.GroupLayout.TRAILING, modifyPanel,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						Short.MAX_VALUE).add(imageViewPanel,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						Short.MAX_VALUE));
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.add(
-												infoPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												imageViewPanel,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												modifyPanel,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+        org.jdesktop.layout.GroupLayout modifyPanelLayout = new org.jdesktop.layout.GroupLayout(modifyPanel);
+        modifyPanel.setLayout(modifyPanelLayout);
+        modifyPanelLayout.setHorizontalGroup(
+            modifyPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(modifyPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(widthLabel)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(widthTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(heightLabel)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(heightTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(lockCheckBox)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(resetButton)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(optionButton)
+                .add(8, 8, 8))
+        );
+        modifyPanelLayout.setVerticalGroup(
+            modifyPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(modifyPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(modifyPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(widthLabel)
+                    .add(widthTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(heightLabel)
+                    .add(heightTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(lockCheckBox)
+                    .add(resetButton)
+                    .add(optionButton))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(infoPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, modifyPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(imageViewPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .add(infoPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(imageViewPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(modifyPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+        );
 	}// </editor-fold>
 
 	private void nameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
@@ -344,8 +281,14 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 	}
 
 	private void tagsTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		
 	}
+	
+	private void optionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+	
+	
 
 	// Variables declaration - do not modify
 	private javax.swing.JLabel heightLabel;
@@ -361,6 +304,8 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 	private javax.swing.JTextField tagTextField;
 	private javax.swing.JLabel widthLabel;
 	private javax.swing.JTextField widthTextField;
+    private javax.swing.JButton optionButton;
+
 
 	// End of variables declaration
 	@Override
@@ -384,7 +329,21 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 		heightTextField.setText(Integer.toString(img.getHeight(null)));
 		widthTextField.setText(Integer.toString(img.getWidth(null)));
 		nameTextField.setText(cg.getDisplayName());
-
+		nameTextField.setToolTipText(cg.getDisplayName());
+		if(cg instanceof Taggable) {
+			final Collection<String> tags = ((Taggable) cg).getTags();
+			final int tagCount = tags.size();
+			int counter = 0;
+			final StringBuilder tagBuilder = new StringBuilder();
+			for(String tag: tags) {
+				tagBuilder.append(tag);
+				counter++;
+				if(tagCount != counter)
+					tagBuilder.append(", ");
+			}
+			tagTextField.setText(tagBuilder.toString());
+			tagTextField.setToolTipText(tagBuilder.toString());
+		}
 	}
 
 }

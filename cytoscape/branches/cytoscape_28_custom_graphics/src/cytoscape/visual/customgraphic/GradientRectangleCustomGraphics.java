@@ -1,18 +1,10 @@
 package cytoscape.visual.customgraphic;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import cytoscape.Cytoscape;
@@ -44,6 +36,7 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 
 		this.h = 60;
 		this.w = 150;
+		this.tags.add("vector image");
 		
 		buildCustomGraphics();
 	}

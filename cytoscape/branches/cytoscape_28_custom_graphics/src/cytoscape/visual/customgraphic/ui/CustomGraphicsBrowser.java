@@ -10,6 +10,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import org.jdesktop.swingx.JXImagePanel;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 
+import cytoscape.CytoscapeInit;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
@@ -37,26 +39,38 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
 /**
  * Display available
+ * 
  * @author kono
  */
 public class CustomGraphicsBrowser extends JXList {
 
 	private DefaultListModel model;
 
-	/** Creates new form CustomGraphicsBrowserPanel 
-	 * @throws IOException */
+	/**
+	 * Creates new form CustomGraphicsBrowserPanel
+	 * 
+	 * @throws IOException
+	 */
 	public CustomGraphicsBrowser() throws IOException {
 		initComponents();
-
-		CustomGraphicsPool.addGraphics("Image 1", new URLImageCustomGraphics("http://icons2.iconarchive.com/icons/conor-egan-wylie/iphone/128/Finder-icon.png"));
-		CustomGraphicsPool.addGraphics("Image 2", new URLImageCustomGraphics("http://www.kegg.jp/Fig/compound/C00221.gif"));
-		CustomGraphicsPool.addGraphics("Image 3", new URLImageCustomGraphics("https://s3.amazonaws.com/twitter_production/profile_images/419770006/cat1.jpg"));
+		File dir = CytoscapeInit.getMRUD();
+		CustomGraphicsPool
+				.addGraphics(
+						"Image 1",
+						new URLImageCustomGraphics(
+								"http://icons2.iconarchive.com/icons/conor-egan-wylie/iphone/128/Finder-icon.png"));
+		CustomGraphicsPool.addGraphics("Image 2", new URLImageCustomGraphics(
+				"http://www.kegg.jp/Fig/compound/C00221.gif"));
+		CustomGraphicsPool
+				.addGraphics(
+						"Image 3",
+						new URLImageCustomGraphics(
+								"https://s3.amazonaws.com/twitter_production/profile_images/419770006/cat1.jpg"));
 		GradientRectangleCustomGraphics grad = new GradientRectangleCustomGraphics();
 		CustomGraphicsPool.addGraphics(grad.getDisplayName(), grad);
-		
+
 		addImages();
 	}
-
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -70,7 +84,7 @@ public class CustomGraphicsBrowser extends JXList {
 		this.setBackground(new java.awt.Color(255, 255, 255));
 		model = new DefaultListModel();
 		this.setModel(model);
-		this.setCellRenderer(new ButtonCellRenderer());
+		this.setCellRenderer(new CustomGraphicsCellRenderer());
 		this.setDropTarget(new URLDropTarget());
 
 	}// </editor-fold>
@@ -82,6 +96,20 @@ public class CustomGraphicsBrowser extends JXList {
 		for (CyCustomGraphics<?> cg : graphics) {
 			model.addElement(cg);
 
+		}
+	}
+
+	protected void addCustomGraphics(final String urlStr) {
+		CyCustomGraphics<CustomGraphic> cg = null;
+		try {
+			cg = new URLImageCustomGraphics(urlStr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (cg != null) {
+			CustomGraphicsPool.addGraphics(cg.getDisplayName(), cg);
+			model.addElement(cg);
 		}
 	}
 
@@ -98,6 +126,25 @@ public class CustomGraphicsBrowser extends JXList {
 	class URLDropTarget extends DropTarget {
 
 		public void drop(DropTargetDropEvent dtde) {
+
+			try {
+				Transferable trans = dtde.getTransferable();
+				if (trans.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+					dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+					Object obj = trans
+							.getTransferData(DataFlavor.javaFileListFlavor);
+					java.util.List<File> fileList = (java.util.List<File>) obj;
+
+					for (File file : fileList) {
+						System.out.println("GOT file list@@@@@@@@@@@@@@@ "
+								+ file.toString());
+
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			System.out.println("drop");
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 			Transferable trans = dtde.getTransferable();
@@ -132,83 +179,8 @@ public class CustomGraphicsBrowser extends JXList {
 				System.out.println("*** " + i + ": " + flavors[i]);
 			}
 		}
-		
-		private void addCustomGraphics(final String urlStr) {
-			CyCustomGraphics<CustomGraphic> cg = null;
-			try {
-				cg =  new URLImageCustomGraphics(urlStr);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			CustomGraphicsPool.addGraphics(cg.getDisplayName(), cg);
-			model.addElement(cg);
-		}
+
 	}
 
-	class ButtonCellRenderer extends JPanel implements ListCellRenderer {
-		
-		private static final int ICON_SIZE = 130;
-		
-		
-		private Map<CyCustomGraphics<?>, Component> panelMap;
-
-		public ButtonCellRenderer() {
-			panelMap = new HashMap<CyCustomGraphics<?>, Component>();
-
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
-
-			JPanel target = null;
-			if (value != null && value instanceof CyCustomGraphics<?>) {
-				CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
-				target = (JPanel) panelMap.get(cg);
-				if (target == null) {
-					target = createImage(cg);
-					panelMap.put(cg, target);
-				}
-
-			}
-
-			if (isSelected) {
-				target.setBorder(BorderFactory.createEtchedBorder());
-			} else
-				target.setBorder(null);
-
-			return target;
-		}
-
-		private JPanel createImage(final CyCustomGraphics<?> cg) {
-			final Image image = cg.getImage();
-			if(image == null) return this;
-
-			JXImagePanel imagePanel = new JXImagePanel();
-			imagePanel.setPreferredSize(new Dimension(ICON_SIZE, ICON_SIZE));
-			
-			final int imageH = image.getHeight(null);
-			if(imageH >= ICON_SIZE)
-				imagePanel.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
-			else
-				imagePanel.setStyle(JXImagePanel.Style.CENTERED);
-			
-			imagePanel.setImage(image);
-			imagePanel.setBackground(Color.white);
-			final JXPanel buttonPanel = new JXPanel();
-			buttonPanel.setLayout(new BorderLayout());
-			final JLabel label = new JLabel(cg.getDisplayName());
-			label.setHorizontalTextPosition(SwingConstants.CENTER);
-			label.setVerticalTextPosition(SwingConstants.CENTER);
-			label.setHorizontalAlignment(SwingConstants.CENTER);
-			label.setPreferredSize(new Dimension(100, 20));
-			buttonPanel.add(label, BorderLayout.SOUTH);
-			buttonPanel.add(imagePanel, BorderLayout.CENTER);
-			buttonPanel.setBackground(Color.WHITE);
-			buttonPanel.setPreferredSize(new Dimension(200, 150));
-			return buttonPanel;
-		}
-	}
-
+	
 }

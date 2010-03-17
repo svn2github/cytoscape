@@ -17,6 +17,7 @@ import cytoscape.render.stateful.NodeDetails;
 
 public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
+	private static final String DEF_TAG = "bitmap image";
 	// Defining padding
 	private static final double PAD = 10;
 	private static final double R = 28;
@@ -28,7 +29,15 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
 	public URLImageCustomGraphics(String url) throws IOException {
 		super(url);
+		this.tags.add(DEF_TAG);
 		createImage(url);
+		buildCustomGraphics(originalImage);
+	}
+	
+	public URLImageCustomGraphics(String name, BufferedImage img) {
+		super(name);
+		this.tags.add(DEF_TAG);
+		this.originalImage = img;
 		buildCustomGraphics(originalImage);
 	}
 
@@ -55,8 +64,15 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 	}
 
 	private void createImage(String url) throws IOException {
-		URL imageLocation = new URL(url);
+		if(url == null)
+			throw new IllegalStateException("URL string cannot be null.");
+		
+		final URL imageLocation = new URL(url);
 		originalImage = ImageIO.read(imageLocation);
+		
+		if(originalImage == null)
+			throw new IllegalStateException("This is not an image location: " + imageLocation.toString());
+		
 		System.out.println("######## Image Created: " + originalImage);
 	}
 
