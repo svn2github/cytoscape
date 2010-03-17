@@ -217,27 +217,46 @@ public class ActivePathsParameterPanel extends JPanel {
 	private Container createButtonPanel() {
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setBorder(BorderFactory.createEtchedBorder());
-		final JButton helpButton = new JButton(new AbstractAction("?") {
+		
+        helpButton = new javax.swing.JButton();
+        aboutButton = new javax.swing.JButton();
+        dismissButton = new javax.swing.JButton();
+        findModulesButton = new javax.swing.JButton(new FindModulesAction());
 
-			private static final long serialVersionUID = -5964319275031340146L;
+        helpButton.setText("Help");
+        helpButton.setPreferredSize(new java.awt.Dimension(67, 23));
+        helpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpDialog.setVisible(true);
+            }
+        });
 
-			public void actionPerformed(ActionEvent e) {
-				helpDialog.setVisible(true);
-			}
-		});
+        buttonPanel.add(helpButton);
 
-		buttonPanel.add(helpButton, BorderLayout.EAST);
-		findModulesButton = new JButton(new FindModulesAction());
-		buttonPanel.add(findModulesButton, BorderLayout.EAST);
+        aboutButton.setText("About");
+        aboutButton.setPreferredSize(new java.awt.Dimension(67, 23));
+        aboutButton.setVisible(false); // just place holder now
+        buttonPanel.add(aboutButton);
 
-		final JButton dismissButton = new JButton("Close");
-		dismissButton.addActionListener(new DismissAction());
-		buttonPanel.add(dismissButton, BorderLayout.WEST);
+        dismissButton.setText("Close");
+        dismissButton.setPreferredSize(new java.awt.Dimension(67, 23));
+        dismissButton.addActionListener(new DismissAction());
+        buttonPanel.add(dismissButton);
 
+        findModulesButton.setText("Search");
+        buttonPanel.add(findModulesButton);
+
+		
 		return buttonPanel;
 	}
 
-	
+    // Variables declaration - do not modify
+    private javax.swing.JButton aboutButton;
+    private javax.swing.JButton dismissButton;
+    //private javax.swing.JButton findModulesButton;
+    private javax.swing.JButton helpButton;
+    // End of variables declaration
+  
 	private Container createAttrSelectionPanel() {
 		final JPanel attrSelectPanel = new JPanel();
 		attrSelectPanel.setPreferredSize(new Dimension(200, 150));
