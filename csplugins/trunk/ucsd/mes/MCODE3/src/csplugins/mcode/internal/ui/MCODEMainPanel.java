@@ -528,7 +528,7 @@ public class MCODEMainPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
 
-        JButton helpButton = new JButton("?");
+        JButton helpButton = new JButton("Help");
         helpButton.addActionListener(new MCODEHelpAction());
 
         JButton aboutButton = new JButton("About");
@@ -540,10 +540,15 @@ public class MCODEMainPanel extends JPanel {
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new MCODEMainPanel.CloseAction(this));
 
+        helpButton.setPreferredSize(new java.awt.Dimension(67, 23));
+        aboutButton.setPreferredSize(new java.awt.Dimension(67, 23));
+        closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
+        searchButton.setPreferredSize(new java.awt.Dimension(67, 23));
+        
         panel.add(helpButton);
         panel.add(aboutButton);
-        panel.add(searchButton);
         panel.add(closeButton);
+        panel.add(searchButton);
 
         return panel;
     }
