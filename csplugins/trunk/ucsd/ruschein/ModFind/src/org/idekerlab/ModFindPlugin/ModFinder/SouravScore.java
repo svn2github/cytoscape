@@ -88,7 +88,9 @@ public class SouravScore extends HCScoringFunction{
 			for (TypedLinkNode<String,BFEdge> other : members)
 			{
 				if (other.equals(member)) continue;
-				score+= scores.edgeValue(member.value(), other.value());
+				final float val = scores.edgeValue(member.value(), other.value());
+				if (!Float.isNaN(val))
+					score += val;
 			}
 		}
 				
@@ -105,7 +107,7 @@ public class SouravScore extends HCScoringFunction{
 		if (!Float.isNaN(s1)) score+=s1;
 		if (!Float.isNaN(s2)) score+=s2;
 		
-		return score;
+		return Math.max(score, 0.0f);
 	}
 	
 	/***
@@ -122,7 +124,7 @@ public class SouravScore extends HCScoringFunction{
 		if (!Float.isNaN(s1)) score+=s1;
 		if (!Float.isNaN(s2)) score+=s2;
 		
-		return score;
+		return Math.max(score, 0.0f);
 	}
 	
 	/***
@@ -133,8 +135,11 @@ public class SouravScore extends HCScoringFunction{
 		float score = 0;
 		
 		for (TypedLinkNode<String,BFEdge> m1 : mod1.members())
-			for (TypedLinkNode<String,BFEdge> m2 : mod2.members())
-				score+= scores.edgeValue(m1.value(), m2.value());
+			for (TypedLinkNode<String,BFEdge> m2 : mod2.members()) {
+				final float val = scores.edgeValue(m1.value(), m2.value());
+				if (!Float.isNaN(val))
+					score += val;
+			}
 					
 		return score;
 	}
