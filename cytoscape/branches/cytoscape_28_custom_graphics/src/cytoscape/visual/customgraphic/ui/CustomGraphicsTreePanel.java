@@ -87,7 +87,7 @@ public class CustomGraphicsTreePanel extends javax.swing.JPanel {
     		root.add(staticImages);
     		root.add(dynamicImages);
     		
-    		Collection<CyCustomGraphics> graphics = CustomGraphicsPool.getPool().getAll();
+    		Collection<CyCustomGraphics<?>> graphics = CustomGraphicsPool.getAll();
     		
     		for(CyCustomGraphics g: graphics) {
     			List<Object> data = new ArrayList<Object>();

@@ -78,6 +78,7 @@ import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerDialog;
 import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerPanel;
 import cytoscape.visual.ui.HideEdgeListener;
 import cytoscape.visual.ui.HideNodeListener;
@@ -441,9 +442,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
 			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
 			
-			// Add custom graphics manager
-			final CustomGraphicsManagerPanel manager = new CustomGraphicsManagerPanel();
-			getCytoPanel(SwingConstants.EAST).add("Custom Graphics Manager", manager);
 		}
 
 		return vizmapperUI;

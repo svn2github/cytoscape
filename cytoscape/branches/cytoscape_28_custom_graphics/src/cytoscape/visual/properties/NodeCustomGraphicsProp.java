@@ -155,7 +155,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 	public Map<Object, Icon> getIconSet() {
 		final Map<Object, Icon> customGraphicsIcons = new HashMap<Object, Icon>();
 
-		for (CyCustomGraphics<?> graphics : CustomGraphicsPool.getPool().getAll()) {
+		for (CyCustomGraphics<?> graphics : CustomGraphicsPool.getAll()) {
 			VisualPropertyIcon icon = (VisualPropertyIcon) getIcon(graphics);
 			icon.setName(graphics.getDisplayName());
 			customGraphicsIcons

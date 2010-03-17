@@ -54,6 +54,8 @@ import javax.swing.JMenu;
 import javax.swing.JSeparator;
 import javax.swing.JOptionPane;
 
+import org.jdesktop.swingx.JXTitledSeparator;
+
 import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
 import cytoscape.layout.ui.SettingsAction;
@@ -451,11 +453,12 @@ public class CyMenus implements GraphViewChangeListener {
 		viewMenu.add(new JSeparator());
 		
 		addAction(new ShowGraphicsDetailsAction());
-
+		
 		viewMenu.add(new JSeparator());
-
 		addAction(new SetVisualPropertiesAction());
+		addAction(new ShowCustomGraphicsManagerAction());
 		viewMenu.add(new JSeparator());
+		
 		
 		viewMenu.add(new ArrangeAction());
 		

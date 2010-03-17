@@ -13,8 +13,12 @@ public interface CyCustomGraphics <T> {
 	 * @return display name as String.
 	 */
 	public String getDisplayName();
+	public void setDisplayName(final String displayName);
 	
 	public Collection<T> getCustomGraphics();
 	
 	public Image getImage();
+	
+	public Image resizeImage(int width, int height);
+	
 }
