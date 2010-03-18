@@ -220,7 +220,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				renderGraph(/* setLastRenderDetail = */ true);
+				renderGraph(m_grafx,/* setLastRenderDetail = */ true);
 				contentChanged = m_view.m_contentChanged;
 				m_view.m_contentChanged = false;
 				viewportChanged = m_view.m_viewportChanged;
@@ -275,7 +275,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void print(Graphics g) {
 		final Image img = new ImageImposter(g, getWidth(), getHeight());
-		renderGraph(/* setLastRenderDetail = */ false);
+		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false);
+		// g.drawImage(img, 0, 0, null);
 	}
 
 	/**
@@ -285,8 +286,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void printNoImposter(Graphics g) {
 		final Image img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-		renderGraph(/* setLastRenderDetail = */ false);
-		g.drawImage(img, 0, 0, null);
+		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false);
+		// g.drawImage(img, 0, 0, null);
 	}
 
 	private int m_currMouseButton = 0;
@@ -1441,7 +1442,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	/**
 	 *  @param setLastRenderDetail if true, "m_lastRenderDetail" will be updated, otherwise it will not be updated.
 	 */
-	private void renderGraph(final boolean setLastRenderDetail) {
+	private void renderGraph(GraphGraphics graphics, final boolean setLastRenderDetail) {
 		final int alpha = (m_isOpaque) ? 255 : 0; // Set color alpha based on opacity setting
 		final Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
 							m_backgroundColor.getBlue(), alpha);
@@ -1451,7 +1452,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 									       m_view.m_spacial, m_lod[0],
 									       m_view.m_nodeDetails,
 									       m_view.m_edgeDetails, m_hash,
-									       m_grafx, backgroundColor, m_xCenter,
+									       graphics, backgroundColor, m_xCenter,
 									       m_yCenter, m_scaleFactor);
 			if (setLastRenderDetail)
 				m_lastRenderDetail = lastRenderDetail;
