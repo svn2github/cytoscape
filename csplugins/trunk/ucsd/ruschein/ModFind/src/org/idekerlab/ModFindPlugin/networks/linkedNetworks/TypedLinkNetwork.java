@@ -275,14 +275,14 @@ public class TypedLinkNetwork<NT,ET>
 		return this.subNetwork(allNodes);
 	}
 	
-	/*
-	public void addEdge(TypedLinkNode<NT,ET> n1, TypedLinkNode<NT,ET> n2, ET value, boolean directed)
-	{
-		edges.put(value, new TypedLinkEdge<NT,ET>(n1,n2,value,directed));
+	public Set<TypedLinkEdge<NT,ET>> getAllEdgeValues(Set<NT> m1, Set<NT> m2) {
+		Set<TypedLinkEdge<NT,ET>> allEdgeValues = new HashSet<TypedLinkEdge<NT,ET>>();
+		for (NT n1 : m1) {
+			for (NT n2 : m2)
+				if (this.containsEdge(n1, n2))
+					allEdgeValues.add(this.getEdge(n1, n2));
+		}
+
+		return allEdgeValues;
 	}
-	
-	public void addEdge(NT n1, NT n2, ET value, boolean directed)
-	{
-		edges.put(value, new TypedLinkEdge<NT,ET>(nodes.get(n1),nodes.get(n2),value,directed));
-	}*/
 }
