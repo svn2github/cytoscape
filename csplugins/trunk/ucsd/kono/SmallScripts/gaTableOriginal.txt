@@ -1,0 +1,240 @@
+<tr><td><span class="spp">Anaplasma phagocytophilum</span> HZ<br>JCVI</td> 
+<td>1289</td> 
+<td>3473<br>(3473 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Aphagocytophilum.gz?rev=HEAD">annotations</a> [39.7 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Agrobacterium tumefaciens</span>str. C58<br>PAMGO</td> 
+<td>83</td> 
+<td>250<br>(250 non-IEA)</td> 
+<td>9/12/2008</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.PAMGO_Atumefaciens.gz?rev=HEAD">annotations</a> [3.4 kb]</li><li><a href="gene-associations/readme/PAMGO_Atumefaciens.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Arabidopsis thaliana</span><br>TAIR/JCVI</td> 
+<td>52785</td> 
+<td>151819<br>(112554 non-IEA)</td> 
+<td>3/16/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.tair.gz?rev=HEAD">annotations</a> [3.7 mb]</li><li><a href="gene-associations/readme/tair.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Aspergillus nidulans</span><br>AspGD</td> 
+<td>3453</td> 
+<td>15893<br>(5544 non-IEA)</td> 
+<td>3/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.aspgd.gz?rev=HEAD">annotations</a> [172.7 kb]</li><li><a href="gene-associations/readme/aspgd.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Bacillus anthracis</span> Ames<br>JCVI</td> 
+<td>5280</td> 
+<td>13088<br>(13088 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Banthracis.gz?rev=HEAD">annotations</a> [152.9 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Bos taurus</span><br>GO Annotations @ EBI</td> 
+<td>23879</td> 
+<td>106808<br>(5223 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.goa_cow.gz?rev=HEAD">annotations</a> [1.3 mb]</li><li><a href="gene-associations/readme/goa.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Carboxydothermus hydrogenoformans</span> Z-2901<br>JCVI</td> 
+<td>2611</td> 
+<td>6391<br>(6391 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Chydrogenoformans.gz?rev=HEAD">annotations</a> [82.0 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Caenorhabditis elegans</span><br>WormBase</td> 
+<td>17530</td> 
+<td>119679<br>(65039 non-IEA)</td> 
+<td>2/26/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.wb.gz?rev=HEAD">annotations</a> [1.1 mb]</li><li><a href="gene-associations/readme/WormBase.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Campylobacter jejuni</span> RM1221<br>JCVI</td> 
+<td>1829</td> 
+<td>4625<br>(4625 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Cjejuni.gz?rev=HEAD">annotations</a> [61.2 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Candida albicans</span><br>CGD</td> 
+<td>4068</td> 
+<td>20580<br>(7398 non-IEA)</td> 
+<td>3/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.cgd.gz?rev=HEAD">annotations</a> [370.5 kb]</li><li><a href="gene-associations/readme/cgd.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Clostridium perfringens</span> ATCC13124<br>JCVI</td> 
+<td>2892</td> 
+<td>7446<br>(7446 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Cperfringens.gz?rev=HEAD">annotations</a> [94.7 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Colwellia psychrerythraea</span> 34H<br>JCVI</td> 
+<td>4752</td> 
+<td>12088<br>(12088 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Cpsychrerythraea.gz?rev=HEAD">annotations</a> [144.6 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Coxiella burnetii</span> RSA 493<br>JCVI</td> 
+<td>2033</td> 
+<td>5162<br>(5162 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Cburnetii.gz?rev=HEAD">annotations</a> [59.6 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Danio rerio</span><br>ZFIN</td> 
+<td>15371</td> 
+<td>132808<br>(23045 non-IEA)</td> 
+<td>2/22/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.zfin.gz?rev=HEAD">annotations</a> [2.2 mb]</li><li><a href="gene-associations/readme/zfin.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Dehalococcoides ethenogenes</span> 195<br>JCVI</td> 
+<td>1584</td> 
+<td>3945<br>(3945 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Dethenogenes.gz?rev=HEAD">annotations</a> [48.6 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Dickeya dadantii</span><br>PAMGO</td> 
+<td>126</td> 
+<td>313<br>(313 non-IEA)</td> 
+<td>3/3/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.PAMGO_Ddadantii.gz?rev=HEAD">annotations</a> [6.5 kb]</li><li><a href="gene-associations/readme/PAMGO_Ddadantii.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Dictyostelium discoideum</span><br>dictyBase</td> 
+<td>7524</td> 
+<td>31428<br>(20728 non-IEA)</td> 
+<td>3/14/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.dictyBase.gz?rev=HEAD">annotations</a> [418.8 kb]</li><li><a href="gene-associations/readme/dictyBase.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Drosophila melanogaster</span><br>FlyBase</td> 
+<td>12612</td> 
+<td>73436<br>(58290 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.fb.gz?rev=HEAD">annotations</a> [1.1 mb]</li><li><a href="gene-associations/readme/fb.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Escherichia coli</span><br>EcoCyc & EcoliHub</td> 
+<td>3799</td> 
+<td>42706<br>(8903 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.ecocyc.gz?rev=HEAD">annotations</a> [480.6 kb]</li><li><a href="gene-associations/readme/EcoCyc.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Ehrlichia chaffeensis</span> Arkansas<br>JCVI</td> 
+<td>1091</td> 
+<td>2845<br>(2845 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Echaffeensis.gz?rev=HEAD">annotations</a> [35.7 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Gallus gallus</span><br>GO Annotations @ EBI</td> 
+<td>16343</td> 
+<td>70824<br>(2956 non-IEA)</td> 
+<td>3/4/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.goa_chicken.gz?rev=HEAD">annotations</a> [827.7 kb]</li><li><a href="gene-associations/readme/goa.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Geobacter sulfurreducens</span> PCA<br>JCVI</td> 
+<td>3410</td> 
+<td>8185<br>(8185 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Gsulfurreducens.gz?rev=HEAD">annotations</a> [102.6 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Homo sapiens</span><br>GO Annotations @ EBI</td> 
+<td>18596</td> 
+<td>186079<br>(88372 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.goa_human.gz?rev=HEAD">annotations</a> [8.1 mb]</li><li><a href="gene-associations/readme/goa.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Hyphomonas neptunium</span> ATCC 15444<br>JCVI</td> 
+<td>3116</td> 
+<td>8036<br>(7976 non-IEA)</td> 
+<td>12/19/2009</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Hneptunium.gz?rev=HEAD">annotations</a> [111.9 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Leishmania major</span><br>Sanger&nbsp;GeneDB</td> 
+<td>10</td> 
+<td>28<br>(28 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.GeneDB_Lmajor.gz?rev=HEAD">annotations</a> [1.3 kb]</li><li><a href="gene-associations/readme/GeneDB_Lmajor.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Listeria monocytogenes</span> 4b F2365<br>JCVI</td> 
+<td>2822</td> 
+<td>7215<br>(7215 non-IEA)</td> 
+<td>1/30/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Lmonocytogenes.gz?rev=HEAD">annotations</a> [91.3 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Magnaporthe grisea</span><br>PAMGO</td> 
+<td>11274</td> 
+<td>27649<br>(27649 non-IEA)</td> 
+<td>11/7/2009</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.PAMGO_Mgrisea.gz?rev=HEAD">annotations</a> [338.2 kb]</li><li><a href="gene-associations/readme/PAMGO_Mgrisea.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Methylococcus capsulatus</span> Bath<br>JCVI</td> 
+<td>2928</td> 
+<td>7322<br>(7305 non-IEA)</td> 
+<td>12/19/2009</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Mcapsulatus.gz?rev=HEAD">annotations</a> [97.4 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Mus musculus</span><br>MGI</td> 
+<td>35158</td> 
+<td>245933<br>(151077 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD">annotations</a> [2.6 mb]</li><li><a href="gene-associations/readme/mgi.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Neorickettsia sennetsu</span> Miyayama<br>JCVI</td> 
+<td>929</td> 
+<td>2421<br>(2421 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Nsennetsu.gz?rev=HEAD">annotations</a> [31.0 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td>Oomycetes<br>PAMGO</td> 
+<td>30</td> 
+<td>126<br>(126 non-IEA)</td> 
+<td>2/13/2008</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.PAMGO_Oomycetes.gz?rev=HEAD">annotations</a> [2.3 kb]</li><li><a href="gene-associations/readme/PAMGO_Oomycetes.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Oryza sativa</span><br>Gramene</td> 
+<td>41146</td> 
+<td>50047<br>(50042 non-IEA)</td> 
+<td>2/13/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.gramene_oryza.gz?rev=HEAD">annotations</a> [822.9 kb]</li><li><a href="gene-associations/readme/gramene_oryza.README">README</a></li></ul></td></tr> 
+<tr><td>Protein Data Bank [multispecies]<br>GO Annotations @ EBI</td> 
+<td>21836</td> 
+<td>191654<br>(0 non-IEA)</td> 
+<td>3/4/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.goa_pdb.gz?rev=HEAD">annotations</a> [1.1 mb]</li><li><a href="gene-associations/readme/goa_pdb.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Plasmodium falciparum</span><br>Sanger&nbsp;GeneDB</td> 
+<td>2205</td> 
+<td>4630<br>(4630 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.GeneDB_Pfalciparum.gz?rev=HEAD">annotations</a> [78.8 kb]</li><li><a href="gene-associations/readme/GeneDB_Pfalciparum.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Pseudomonas aeruginosa</span> PAO1<br>PseudoCAP</td> 
+<td>1519</td> 
+<td>7085<br>(7085 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.pseudocap.gz?rev=HEAD">annotations</a> [130.6 kb]</li><li><a href="gene-associations/readme/PseudoCAP.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Pseudomonas fluorescens</span> Pf-5<br>JCVI</td> 
+<td>4822</td> 
+<td>12582<br>(12241 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Pfluorescens.gz?rev=HEAD">annotations</a> [162.5 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Pseudomonas syringae</span> DC3000<br>JCVI</td> 
+<td>4012</td> 
+<td>10332<br>(10332 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Psyringae.gz?rev=HEAD">annotations</a> [119.8 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Pseudomonas syringae</span> pv. phaseolicola 1448A<br>JCVI</td> 
+<td>3571</td> 
+<td>9290<br>(9272 non-IEA)</td> 
+<td>12/19/2009</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Psyringae_phaseolicola.gz?rev=HEAD">annotations</a> [121.7 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Rattus norvegicus</span><br>RGD</td> 
+<td>20088</td> 
+<td>204103<br>(120423 non-IEA)</td> 
+<td>3/13/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD">annotations</a> [4.4 mb]</li><li><a href="gene-associations/readme/rgd.README">README</a></li></ul></td></tr> 
+<tr><td>Reactome [multispecies]<br>CSHL & EBI</td> 
+<td>277</td> 
+<td>7945<br>(7945 non-IEA)</td> 
+<td>3/16/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.reactome.gz?rev=HEAD">annotations</a> [43.9 kb]</li><li><a href="gene-associations/readme/reactome.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Saccharomyces cerevisiae</span><br>SGD</td> 
+<td>6356</td> 
+<td>90077<br>(47879 non-IEA)</td> 
+<td>3/13/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.sgd.gz?rev=HEAD">annotations</a> [1.2 mb]</li><li><a href="gene-associations/readme/sgd.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Schizosaccharomyces pombe</span><br>Sanger&nbsp;GeneDB</td> 
+<td>5230</td> 
+<td>36080<br>(32229 non-IEA)</td> 
+<td>3/12/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.GeneDB_Spombe.gz?rev=HEAD">annotations</a> [630.8 kb]</li><li><a href="gene-associations/readme/GeneDB_Spombe.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Shewanella oneidensis</span> MR-1<br>JCVI</td> 
+<td>4843</td> 
+<td>12178<br>(12178 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Soneidensis.gz?rev=HEAD">annotations</a> [141.2 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Silicibacter pomeroyi</span> DSS-3<br>JCVI</td> 
+<td>4252</td> 
+<td>10785<br>(10785 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Spomeroyi.gz?rev=HEAD">annotations</a> [139.1 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Solanaceae</span><br>SGN</td> 
+<td>155</td> 
+<td>305<br>(305 non-IEA)</td> 
+<td>10/30/2009</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.sgn.gz?rev=HEAD">annotations</a> [7.5 kb]</li><li><a href="gene-associations/readme/sgn.README">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Trypanosoma brucei</span><br>Sanger&nbsp;GeneDB</td> 
+<td>2977</td> 
+<td>10459<br>(10459 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.GeneDB_Tbrucei.gz?rev=HEAD">annotations</a> [176.1 kb]</li><li><a href="gene-associations/readme/GeneDB_Tbrucei.README">README</a></li></ul></td></tr> 
+<tr><td>UniProt [multispecies] IEA annotations removed<br>GO Annotations @ EBI</td> 
+<td>8837</td> 
+<td>36030<br>(36030 non-IEA)</td> 
+<td>3/4/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.goa_uniprot_noiea.gz?rev=HEAD">annotations</a> [573.5 kb]</li><li><a href="gene-associations/readme/">README</a></li></ul></td></tr> 
+<tr><td><span class="spp">Vibrio cholerae</span><br>JCVI</td> 
+<td>3858</td> 
+<td>9421<br>(9421 non-IEA)</td> 
+<td>2/8/2010</td> 
+<td><ul><li><a href="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.jcvi_Vcholerae.gz?rev=HEAD">annotations</a> [98.9 kb]</li><li><a href="gene-associations/readme/jcvi_prokaryotic.README">README</a></li></ul></td></tr>
