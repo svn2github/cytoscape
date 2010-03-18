@@ -35,10 +35,9 @@ class ConvertCyNetworkToSFNetworks {
 	 * @throws ClassCastException
 	 *             This should never be thrown and indicated an internal error!
 	 */
-	public ConvertCyNetworkToSFNetworks(final CyNetwork inputNetwork,
-			final String physicalNetworkAttrName,
-			final String geneticNetworkAttrName)
-			throws IllegalArgumentException, ClassCastException {
+	public ConvertCyNetworkToSFNetworks(final CyNetwork inputNetwork, final String physicalNetworkAttrName,
+		                           final String geneticNetworkAttrName) throws IllegalArgumentException, ClassCastException
+	{
 		if (inputNetwork == null)
 			throw new IllegalArgumentException(
 					"input parameter inputNetwork must not be null!");
@@ -50,27 +49,17 @@ class ConvertCyNetworkToSFNetworks {
 					"input parameter geneticNetworkAttrName must not be null!");
 
 		final CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		if (edgeAttributes.getType(physicalNetworkAttrName) != CyAttributes.TYPE_FLOATING)
-			throw new IllegalArgumentException(
-					"\""
-							+ physicalNetworkAttrName
-							+ "\" is not the name of a known floating point edge attribute!");
-		if (edgeAttributes.getType(geneticNetworkAttrName) != CyAttributes.TYPE_FLOATING)
-			throw new IllegalArgumentException(
-					"\""
-							+ geneticNetworkAttrName
-							+ "\" is not the name of a known floating point edge attribute!");
+		final byte physEdgeAttribType = edgeAttributes.getType(physicalNetworkAttrName);
+		if (physEdgeAttribType != CyAttributes.TYPE_FLOATING && physEdgeAttribType != CyAttributes.TYPE_INTEGER)
+			throw new IllegalArgumentException("\"" + physicalNetworkAttrName
+							   + "\" is not the name of a known floating point edge attribute!");
+		final byte geneticEdgeAttribType = edgeAttributes.getType(geneticNetworkAttrName);
+		if (geneticEdgeAttribType != CyAttributes.TYPE_FLOATING && geneticEdgeAttribType != CyAttributes.TYPE_INTEGER)
+			throw new IllegalArgumentException("\"" + geneticNetworkAttrName
+							  + "\" is not the name of a known floating point edge attribute!");
 
-		physicalNetwork = new FloatHashNetwork(/* selfOk = */false, /*
-																	 * directed
-																	 * =
-																	 */false, /*
-																			 * startsize
-																			 * =
-																			 */
-				1);
-		geneticNetwork = new FloatHashNetwork(/* selfOk = */false, /* directed = */
-				false, /* startsize = */1);
+		physicalNetwork = new FloatHashNetwork(/* selfOk = */false, /* directed = */false, /* startsize = */1);
+		geneticNetwork = new FloatHashNetwork(/* selfOk = */false, /* directed = */false, /* startsize = */1);
 
 		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
 		for (final CyEdge edge : edges) {
@@ -78,17 +67,23 @@ class ConvertCyNetworkToSFNetworks {
 
 			final Double physicalAttrValue =
 				edgeAttributes.getDoubleAttribute(edgeID, physicalNetworkAttrName);
-			if (physicalAttrValue != null)
+			if (physicalAttrValue != null) {
+				final float value = (physEdgeAttribType == CyAttributes.TYPE_FLOATING) ? physicalAttrValue.floatValue()
+				                                                                       : physicalAttrValue.intValue();
 				physicalNetwork.add(edge.getSource().getIdentifier(),
 						    edge.getTarget().getIdentifier(),
-						    physicalAttrValue.floatValue());
+						    value);
+			}
 
 			final Double geneticAttrValue =
 				edgeAttributes.getDoubleAttribute(edgeID, geneticNetworkAttrName);
-			if (geneticAttrValue != null)
+			if (geneticAttrValue != null) {
+				final float value = (geneticEdgeAttribType == CyAttributes.TYPE_FLOATING) ? geneticAttrValue.floatValue()
+				                                                                          : geneticAttrValue.intValue();
 				geneticNetwork.add(edge.getSource().getIdentifier(),
 						   edge.getTarget().getIdentifier(),
-						   geneticAttrValue.floatValue());
+						   value);
+			}
 		}
 	}
 

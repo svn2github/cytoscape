@@ -387,10 +387,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		boolean isGeneticSelectedExist = false;
 		boolean isPhysicalSelectedExist = false;
 		for (String name : edgeAttrNames) {
-			// Use only double attributes
-			if (edgeAttr.getMultiHashMapDefinition()
-					.getAttributeValueType(name) == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
-
+			// Use only double or int attributes
+			final byte attribType = edgeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
+			if (attribType == MultiHashMapDefinition.TYPE_FLOATING_POINT || attribType == MultiHashMapDefinition.TYPE_INTEGER) {
 				geneticEdgeComboBox.addItem(name);
 				physicalEdgeComboBox.addItem(name);
 				if (name.equals(geneticSelected))
