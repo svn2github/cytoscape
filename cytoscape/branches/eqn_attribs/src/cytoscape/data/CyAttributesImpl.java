@@ -41,6 +41,8 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.util.MultiHashMapFactory;
 import cytoscape.data.eqn_attribs.Equation;
+import cytoscape.util.TopoGraphNode;
+import cytoscape.util.TopologicalSort;
 
 import java.util.*;
 
@@ -872,5 +874,61 @@ public class CyAttributesImpl implements CyAttributes {
 	 */
 	public MultiHashMapDefinition getMultiHashMapDefinition() {
 		return mmapDef;
+	}
+
+	/**
+	 *  @returns an in-order list of attribute names that will have to be evaluated before "attribName" can be evaluated
+	 */
+	private List<String> topoSortAttribReferences(final String id, final String attribName) {
+		final Object equationCandidate = mmap.getAttributeValue(id, attribName, null);
+		if (!(equationCandidate instanceof Equation))
+			return new ArrayList<String>();
+
+		final Equation equation = (Equation)equationCandidate;
+		final Set<String> attribReferences = equation.getAttribReferences();
+		if (attribReferences.size() == 0)
+			return new ArrayList<String>();
+
+		final Set<String> alreadyProcessed = new TreeSet<String>();
+		alreadyProcessed.add(attribName);
+		final List<TopoGraphNode> dependencies = new ArrayList<TopoGraphNode>();
+		for (final String attribReference : attribReferences)
+                        followReferences(id, attribReference, alreadyProcessed, dependencies);
+
+
+		final List<TopoGraphNode> topoOrder = TopologicalSort.sort(dependencies);
+		final List<String> retVal = new ArrayList<String>();
+		for (final TopoGraphNode node : topoOrder) {
+			final AttribTopoGraphNode attribTopoGraphNode = (AttribTopoGraphNode)node;
+			final String nodeName = attribTopoGraphNode.getNodeName();
+			if (nodeName.equals(attribName))
+				return retVal;
+			else
+				retVal.add(nodeName);
+		}
+
+		throw new IllegalStateException("\"" + attribName
+		                                + "\" was not found in the toplogical order, which should be impossible!");
+	}
+
+	/**
+	 *  Helper function for topoSortAttribReferences() performing a depth-first search of equation evaluation dependencies.
+	 */
+	private void followReferences(final String id, final String attribName, final Collection<String> alreadyProcessed,
+	                              final Collection<TopoGraphNode> dependencies)
+	{
+		// Already visited this attribute?
+		if (alreadyProcessed.contains(attribName))
+			return;
+
+		alreadyProcessed.add(attribName);
+		final Object equationCandidate = mmap.getAttributeValue(id, attribName, null);
+		if (!(equationCandidate instanceof Equation))
+			return;
+
+		final Equation equation = (Equation)equationCandidate;
+		final Set<String> attribReferences = equation.getAttribReferences();
+		for (final String attribReference : attribReferences)
+			followReferences(id, attribReference, alreadyProcessed, dependencies);
 	}
 }
