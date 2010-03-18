@@ -136,7 +136,7 @@
 		<jar destfile="TableImport.jar" 
 		     manifest="${tableImport.manifest.dir}/tableImport.manifest">
 			<fileset dir="${tableImport.classes.dir}" includes="**" />
-			<fileset dir="${tableImport.root.dir}/lib" includes="resources/**" />
+			<fileset dir="${tableImport.root.dir}" includes="resources/**" />
 		</jar>
 
 	</target>
