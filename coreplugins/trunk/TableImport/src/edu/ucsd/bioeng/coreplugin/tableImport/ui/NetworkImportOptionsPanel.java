@@ -57,7 +57,8 @@ import javax.swing.SwingConstants;
  * @author Keiichiro Ono
  */
 public class NetworkImportOptionsPanel extends JPanel {
-	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
+	//private PropertyChangeSupport changes = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport changes;
 
 	/**
 	 * Creates a new NetworkImportOptionsPanel object.
@@ -66,6 +67,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 		initComponents();
 
 		initializeUIStates();
+		changes = new PropertyChangeSupport(this);
 	}
 
 	/**
@@ -74,7 +76,8 @@ public class NetworkImportOptionsPanel extends JPanel {
 	 * @param l DOCUMENT ME!
 	 */
 	public void addPropertyChangeListener(PropertyChangeListener l) {
-		changes.addPropertyChangeListener(l);
+		if(changes != null)
+			changes.addPropertyChangeListener(l);
 	}
 
 	/**
