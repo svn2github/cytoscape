@@ -164,8 +164,11 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 			                         Double.valueOf(edgeScore));
 			if (edgeScore > maxScore)
 				maxScore = edgeScore;
-			// Selected if above cutoff
-			if (edgeScore >= cutoff) {
+
+			final double pValue = edge.value().linkMerge();
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "p-value",
+			                         Double.valueOf(pValue));
+			if (pValue < cutoff) {
 				selectedEdges.add(newEdge);
 				selectedNodes.add((CyNode) newEdge.getSource());
 				selectedNodes.add((CyNode) newEdge.getTarget());
