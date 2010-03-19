@@ -409,6 +409,8 @@ public class CyAttributesImpl implements CyAttributes {
 			                             + "' is not of TYPE_BOOLEAN");
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue == null)
+			return null;
 		if (attribValue instanceof Boolean)
 			return (Boolean)attribValue;
 
@@ -451,12 +453,13 @@ public class CyAttributesImpl implements CyAttributes {
 		if (type < 0)
 			return null;
 
-		if (type != MultiHashMapDefinition.TYPE_INTEGER) {
+		if (type != MultiHashMapDefinition.TYPE_INTEGER)
 			throw new ClassCastException("definition for attributeName '" + attributeName
 			                             + "' is not of TYPE_INTEGER");
-		}
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue == null)
+			return null;
 		if (attribValue instanceof Integer)
 			return (Integer)attribValue;
 
@@ -507,6 +510,8 @@ public class CyAttributesImpl implements CyAttributes {
 			                             + "' is not of TYPE_FLOATING");
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue == null)
+			return null;
 		if (attribValue instanceof Double)
 			return (Double)attribValue;
 
@@ -554,6 +559,8 @@ public class CyAttributesImpl implements CyAttributes {
 			                             + "' is not of TYPE_STRING");
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue == null)
+			return null;
 		if (attribValue instanceof String)
 			return (String)attribValue;
 
@@ -949,6 +956,17 @@ public class CyAttributesImpl implements CyAttributes {
 	 */
 	public MultiHashMapDefinition getMultiHashMapDefinition() {
 		return mmapDef;
+	}
+
+	/**
+	 *  @returns the text representing the equation associated with an attribute or null if there is no equation associated with it
+	 */
+	public String getEquationFormula(final String id, final String attributeName) {
+		final Object attribValue = getAttribute(id, attributeName);
+		if (attribValue == null || !(attribValue instanceof Equation))
+			return null;
+
+		return ((Equation)(attribValue)).getEquation();
 	}
 
 	private Object evalEquation(final String id, final Equation equation) {
