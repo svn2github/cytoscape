@@ -43,7 +43,7 @@ public class AttribEqnCompiler {
 	private String errorMsg;
 
 	public AttribEqnCompiler() {
-		this.parser = new AttribParser();
+		this.parser = Parser.getParser();
 		this.equation = null;
 		this.errorMsg = null;
 	}

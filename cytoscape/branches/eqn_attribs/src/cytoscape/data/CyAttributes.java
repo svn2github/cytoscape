@@ -749,4 +749,9 @@ public interface CyAttributes {
 	 * @return MultiHashMapDefinition Object.
 	 */
 	public MultiHashMapDefinition getMultiHashMapDefinition();
+
+	/**
+	 *  @returns the text representing the equation associated with an attribute or null if there is no equation associated with it
+	 */
+	public String getEquationFormula(final String id, final String attributeName);
 }

@@ -36,17 +36,7 @@ import cytoscape.data.eqn_attribs.builtins.*;
 
 
 public class AttribParserTest extends TestCase {
-	private final AttribParser parser = new AttribParser();
-
-	protected void setUp() throws Exception {
-		parser.registerFunction(new And());
-		parser.registerFunction(new Or());
-		parser.registerFunction(new Log());
-		parser.registerFunction(new Abs());
-		parser.registerFunction(new Not());
-		parser.registerFunction(new LCase());
-		parser.registerFunction(new UCase());
-	}
+	private final AttribParser parser = Parser.getParser();
 
 	public void testSimpleExpr() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();

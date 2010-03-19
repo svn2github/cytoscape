@@ -43,36 +43,6 @@ import cytoscape.data.eqn_attribs.builtins.*;
 public class InterpreterTest extends TestCase {
 	private final AttribEqnCompiler compiler = new AttribEqnCompiler();
 
-	protected void setUp() throws Exception {
-		compiler.registerFunction(new And());
-		compiler.registerFunction(new Or());
-		compiler.registerFunction(new Log());
-		compiler.registerFunction(new Abs());
-		compiler.registerFunction(new Not());
-		compiler.registerFunction(new LCase());
-		compiler.registerFunction(new UCase());
-		compiler.registerFunction(new Substitute());
-		compiler.registerFunction(new If());
-		compiler.registerFunction(new Ln());
-		compiler.registerFunction(new Exp());
-		compiler.registerFunction(new Left());
-		compiler.registerFunction(new Right());
-		compiler.registerFunction(new Mid());
-		compiler.registerFunction(new Len());
-		compiler.registerFunction(new Round());
-		compiler.registerFunction(new Trunc());
-		compiler.registerFunction(new Pi());
-		compiler.registerFunction(new Value());
-		compiler.registerFunction(new Average());
-		compiler.registerFunction(new Min());
-		compiler.registerFunction(new Max());
-		compiler.registerFunction(new Count());
-		compiler.registerFunction(new Median());
-		compiler.registerFunction(new Nth());
-		compiler.registerFunction(new First());
-		compiler.registerFunction(new Last());
-	}
-
 	public void testSimpleStringConcatExpr() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		attribNameToTypeMap.put("s1", String.class);
