@@ -31,7 +31,8 @@ public class SearchTask implements Task {
 	}
 
 	public void run() {
-		final float SEARCH_PERCENTAGE = 70.0f; // Progress bar should go up to here for the search part.
+		final float SEARCH_PERCENTAGE      = 40.0f; // Progress bar should go up to here for the search part.
+		final float COMPUTE_SIG_PERCENTAGE = 70.0f;
 
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for complexes...");
@@ -54,15 +55,15 @@ public class SearchTask implements Task {
 			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction,
 			                 taskMonitor, SEARCH_PERCENTAGE);
 		final double cutoff = 0.05;
-		computeSig(results, geneticNetwork, cutoff);
+		computeSig(results, geneticNetwork, cutoff, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
 
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		final NestedNetworkCreator nnCreator =
 			new NestedNetworkCreator(results, inputNetwork, pNet, gNet,
-			                         parameters.getEdgeCutoff(), taskMonitor,
-			                         100.0f - SEARCH_PERCENTAGE);
+			                         cutoff/*parameters.getEdgeCutoff()*/, taskMonitor,
+			                         100.0f - COMPUTE_SIG_PERCENTAGE);
 
 		setStatus("Search finished!\n\n" + "Number of complexes = "
 		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
@@ -99,9 +100,11 @@ public class SearchTask implements Task {
 	}
 
 	//This function compute a p-value for each edge in the complex-complex network
-	//Johannes: Change display properties of network such that all hyper-edges below the user specified cut-off are not displayed
-	private static void computeSig(final TypedLinkNetwork<TypedLinkNodeModule<String,BFEdge>,BFEdge> results, SFNetwork gnet, double cutoff)
+	private static void computeSig(final TypedLinkNetwork<TypedLinkNodeModule<String,BFEdge>,BFEdge> results, SFNetwork gnet,
+	                               double cutoff, final TaskMonitor taskMonitor, final float startProgressPercentage,
+	                               final float endProgressPercentage)
 	{
+		taskMonitor.setStatus("4. Computing permutations...");
 		final int NUM_PERMS = 100000;
 
 		Map<Integer,DoubleVector> numLinks2empiricalDist = new HashMap<Integer,DoubleVector>(30);
@@ -115,8 +118,12 @@ public class SearchTask implements Task {
 		//Iterate through each complex-complex interaction in the network:
 		//(1) Check if that number of edges has been previously samples, if so, output p-value
 		//(2) If not, sample and produce empirical distribution. Cache distribution!
+		final int TOTAL_NUM_EDGES = results.numEdges();
+		int currentEdgeNum = 0;
 		final Set<TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge>> deleteSet = new HashSet<TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge>>();
 		for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> edge : results.edgeIterator()) {
+			++currentEdgeNum;
+
 			//Find number of edges and sum of edge values in the hyperedge
 			int numGeneticLinks = 0;
 			double sumOfGeneticValues=0.0;
@@ -151,6 +158,9 @@ public class SearchTask implements Task {
 				else
 					deleteSet.add(edge);
 			}
+
+			final float percentCompleted = startProgressPercentage + (endProgressPercentage - startProgressPercentage) * TOTAL_NUM_EDGES / (float)currentEdgeNum;
+			taskMonitor.setPercentCompleted(Math.round(percentCompleted));
 		}
 		results.removeAllEdges(deleteSet);
 	}

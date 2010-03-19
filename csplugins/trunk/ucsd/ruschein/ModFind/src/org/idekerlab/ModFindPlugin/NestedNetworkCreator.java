@@ -120,7 +120,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 		final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
-		taskMonitor.setStatus("4. Generating networks");
+		taskMonitor.setStatus("5. Generating networks");
 		int nodeIndex = 1;
 		double maxScore = Double.NEGATIVE_INFINITY;
 		maxSize = 0;
