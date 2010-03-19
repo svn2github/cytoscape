@@ -55,7 +55,7 @@ public class Interpreter {
 	}
 
 	/**
-	 *  Excutes the code that was passed into the constructor.
+	 *  Executes the code that was passed into the constructor.
 	 *  @returns a Double, Boolean or String object that is the result of a successful execution.
 	 *  @throws ArithmeticException thrown if an arithmetic error was detected like a division by zero etc.
 	 *  @throws IllegalArgumentException thrown if a function invocation resulted in a function detecting an invalid argument
