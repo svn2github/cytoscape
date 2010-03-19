@@ -37,9 +37,14 @@ package browser;
 import static browser.DataObjectType.NETWORK;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.eqn_attribs.AttribEqnCompiler;
+import cytoscape.data.eqn_attribs.Equation;
+import cytoscape.data.CyAttributesUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.List;
+import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import javax.swing.undo.AbstractUndoableEdit;
 
@@ -55,7 +60,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	private final Object new_value;
 	private final DataObjectType objectType;
 	private final DataTableModel tableModel;
-	
+
 	private boolean valid = false;
 
 	/**
@@ -70,7 +75,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @param graphObjectType  DOCUMENT ME!
 	 */
 	public DataEditAction(DataTableModel table, String attrKey, String attrName,
-	                      Object old_value, Object new_value, DataObjectType graphObjectType) {
+	                      Object old_value, Object new_value, DataObjectType graphObjectType)
+	{
 		this.tableModel = table;
 		this.attrKey = attrKey;
 		this.attrName = attrName;
@@ -116,22 +122,30 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @param newValue
 	 */
 	private void setAttributeValue(String id, String att, Object newValue) {
-
-		final CyAttributes attr = objectType.getAssociatedAttribute();
+		final CyAttributes attrs = objectType.getAssociatedAttribute();
 
 		// Error message for the popup dialog.
 		String errMessage = null;
 
 		// Change object to String
 		final String newValueStr = newValue.toString();
-		final byte targetType = attr.getType(att);
+		final byte targetType = attrs.getType(att);
 
 		if (targetType == CyAttributes.TYPE_INTEGER) {
+			// Deal with equations first:
+			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				final Equation equation = parseEquation(newValueStr, attrs, id, att);
+				if (equation == null)
+					return;
+
+				return;
+			}
+
 			Integer newIntVal;
 
 			try {
 				newIntVal = Integer.valueOf(newValueStr);
-				attr.setAttribute(id, att, newIntVal);
+				attrs.setAttribute(id, att, newIntVal);
 			} catch (Exception nfe) {
 				errMessage = "Attribute " + att
 				             + " should be an integer (or the number is too big/small).";
@@ -144,7 +158,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 			try {
 				newDblVal = Double.valueOf(newValueStr);
-				attr.setAttribute(id, att, newDblVal);
+				attrs.setAttribute(id, att, newDblVal);
 			} catch (Exception e) {
 				errMessage = "Attribute " + att
 				             + " should be a floating point number (or the number is too big/small).";
@@ -157,7 +171,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 			try {
 				newBoolVal = Boolean.valueOf(newValueStr);
-				attr.setAttribute(id, att, newBoolVal);
+				attrs.setAttribute(id, att, newBoolVal);
 			} catch (Exception e) {
 				errMessage = "Attribute " + att + " should be a boolean value (true/false).";
 				showErrorWindow(errMessage);
@@ -165,10 +179,10 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
-			attr.setAttribute(id, att, replaceNewlines( newValueStr ));
+			attrs.setAttribute(id, att, replaceNewlines( newValueStr ));
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
 			final String escapedString = replaceNewlines(newValueStr);
-			final List origList = attr.getListAttribute(id, att);
+			final List origList = attrs.getListAttribute(id, att);
 
 			List newList = null;
 			if (origList.isEmpty() || origList.get(0).getClass() == String.class)
@@ -187,7 +201,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 			else
-				attr.setListAttribute(id, att, newList);
+				attrs.setListAttribute(id, att, newList);
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_MAP) {
 			errMessage = "Map editing is not supported in this version.";
 			showErrorWindow(errMessage);
@@ -372,5 +386,32 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 */
 	public boolean isValid() {
 		return valid;
+	}
+
+	/**
+	 *  @returns the successfully compiled equation or null if an error occurred
+	 */
+	private Equation parseEquation(final String equation, final CyAttributes attrs, final String id, final String currentAttrName) {
+		final List<String> attrNames = CyAttributesUtils.getAttributeNamesForObj(id, attrs);
+		final Map<String, Class> attribNameToTypeMap = new TreeMap<String, Class>();
+		for (final String attrName : attrNames) {
+			final byte type = attrs.getType(attrName);
+			if (type == CyAttributes.TYPE_BOOLEAN)
+				attribNameToTypeMap.put(attrName, Boolean.class);
+			if (type == CyAttributes.TYPE_FLOATING)
+				attribNameToTypeMap.put(attrName, Double.class);
+			if (type == CyAttributes.TYPE_SIMPLE_LIST)
+				attribNameToTypeMap.put(attrName, List.class);
+			if (type == CyAttributes.TYPE_STRING)
+				attribNameToTypeMap.put(attrName, String.class);
+		}
+
+		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		if (!compiler.compile(equation, attribNameToTypeMap)) {
+			showErrorWindow("Error in attribute \"" + currentAttrName + "\": " + compiler.getLastErrorMsg());
+			return null;
+		}
+
+		return compiler.getEquation();
 	}
 }
