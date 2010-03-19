@@ -121,7 +121,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @param att
 	 * @param newValue
 	 */
-	private void setAttributeValue(String id, String att, Object newValue) {
+	private void setAttributeValue(final String id, final String attrName, final Object newValue) {
 		final CyAttributes attrs = objectType.getAssociatedAttribute();
 
 		// Error message for the popup dialog.
@@ -129,60 +129,111 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 		// Change object to String
 		final String newValueStr = newValue.toString();
-		final byte targetType = attrs.getType(att);
+		final byte targetType = attrs.getType(attrName);
 
 		if (targetType == CyAttributes.TYPE_INTEGER) {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				final Equation equation = parseEquation(newValueStr, attrs, id, att);
+				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
 				if (equation == null)
 					return;
-
+				if (equation.getType() == String.class) {
+					showErrorWindow("Error in attribute \"" + attrName
+					                + "\": equation is of type String but should be of type Integer!");
+					return;
+				}
+ 				attrs.setAttribute(id, attrName, equation);
 				return;
 			}
 
 			Integer newIntVal;
-
 			try {
 				newIntVal = Integer.valueOf(newValueStr);
-				attrs.setAttribute(id, att, newIntVal);
+				attrs.setAttribute(id, attrName, newIntVal);
 			} catch (Exception nfe) {
-				errMessage = "Attribute " + att
+				errMessage = "Attribute " + attrName
 				             + " should be an integer (or the number is too big/small).";
 				showErrorWindow(errMessage);
 
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_FLOATING) {
-			Double newDblVal;
+			// Deal with equations first:
+			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+				if (equation == null)
+					return;
+				if (equation.getType() == String.class) {
+					showErrorWindow("Error in attribute \"" + attrName
+					                + "\": equation is of type String but should be of type Floating Point!");
+					return;
+				}
+ 				attrs.setAttribute(id, attrName, equation);
+				return;
+			}
 
+			Double newDblVal;
 			try {
 				newDblVal = Double.valueOf(newValueStr);
-				attrs.setAttribute(id, att, newDblVal);
+				attrs.setAttribute(id, attrName, newDblVal);
 			} catch (Exception e) {
-				errMessage = "Attribute " + att
+				errMessage = "Attribute " + attrName
 				             + " should be a floating point number (or the number is too big/small).";
 				showErrorWindow(errMessage);
 
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_BOOLEAN) {
-			Boolean newBoolVal = false;
+			// Deal with equations first:
+			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+				if (equation == null)
+					return;
+				if (equation.getType() == String.class) {
+					showErrorWindow("Error in attribute \"" + attrName
+					                + "\": equation is of type String but should be of type Boolean!");
+					return;
+				}
+ 				attrs.setAttribute(id, attrName, equation);
+				return;
+			}
 
+			Boolean newBoolVal = false;
 			try {
 				newBoolVal = Boolean.valueOf(newValueStr);
-				attrs.setAttribute(id, att, newBoolVal);
+				attrs.setAttribute(id, attrName, newBoolVal);
 			} catch (Exception e) {
-				errMessage = "Attribute " + att + " should be a boolean value (true/false).";
+				errMessage = "Attribute " + attrName + " should be a boolean value (true/false).";
 				showErrorWindow(errMessage);
 
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
-			attrs.setAttribute(id, att, replaceNewlines( newValueStr ));
+			// Deal with equations first:
+			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+				if (equation == null)
+					return;
+				if (equation.getType() == String.class) {
+					showErrorWindow("Error in attribute \"" + attrName
+					                + "\": equation is of type String but should be of type Boolean!");
+					return;
+				}
+ 				attrs.setAttribute(id, attrName, equation);
+				return;
+			}
+
+			attrs.setAttribute(id, attrName, replaceNewlines(newValueStr));
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
+			// Deal with equations first:
+			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				showErrorWindow("Error in attribute \"" + attrName
+						+ "\": no equations are supported for lists!");
+				return;
+			}
+
 			final String escapedString = replaceNewlines(newValueStr);
-			final List origList = attrs.getListAttribute(id, att);
+			final List origList = attrs.getListAttribute(id, attrName);
 
 			List newList = null;
 			if (origList.isEmpty() || origList.get(0).getClass() == String.class)
@@ -201,8 +252,15 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 			else
-				attrs.setListAttribute(id, att, newList);
+				attrs.setListAttribute(id, attrName, newList);
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_MAP) {
+			// Deal with equations first:
+			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				showErrorWindow("Error in attribute \"" + attrName
+						+ "\": no equations are supported for maps!");
+				return;
+			}
+
 			errMessage = "Map editing is not supported in this version.";
 			showErrorWindow(errMessage);
 
