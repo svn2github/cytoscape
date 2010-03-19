@@ -38,7 +38,7 @@ import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.parse_tree.*;
 
 
-class AttribParser {
+public class AttribParser {
 	private String eqn;
 	private AttribTokeniser tokeniser;
 	private Map<String, AttribFunction> nameToFunctionMap;
