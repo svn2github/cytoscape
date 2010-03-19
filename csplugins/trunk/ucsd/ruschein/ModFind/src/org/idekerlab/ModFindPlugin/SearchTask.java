@@ -54,15 +54,15 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results =
 			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction,
 			                 taskMonitor, SEARCH_PERCENTAGE);
-		final double cutoff = 0.05;
-		computeSig(results, geneticNetwork, cutoff, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
+		final double pValueThreshold = parameters.getPValueThreshold();
+		computeSig(results, geneticNetwork, pValueThreshold, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
 
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		final NestedNetworkCreator nnCreator =
 			new NestedNetworkCreator(results, inputNetwork, pNet, gNet,
-			                         cutoff/*parameters.getEdgeCutoff()*/, taskMonitor,
+			                         pValueThreshold, taskMonitor,
 			                         100.0f - COMPUTE_SIG_PERCENTAGE);
 
 		setStatus("Search finished!\n\n" + "Number of complexes = "
@@ -101,7 +101,7 @@ public class SearchTask implements Task {
 
 	//This function compute a p-value for each edge in the complex-complex network
 	private static void computeSig(final TypedLinkNetwork<TypedLinkNodeModule<String,BFEdge>,BFEdge> results, SFNetwork gnet,
-	                               double cutoff, final TaskMonitor taskMonitor, final float startProgressPercentage,
+	                               double pValueThreshold, final TaskMonitor taskMonitor, final float startProgressPercentage,
 	                               final float endProgressPercentage)
 	{
 		taskMonitor.setStatus("4. Computing permutations...");
@@ -137,7 +137,7 @@ public class SearchTask implements Task {
 			if (numLinks2empiricalDist.containsKey(numGeneticLinks)) {
 				//How to save p-value?
 				double pVal = numLinks2empiricalDist.get(numGeneticLinks).getEmpiricalPvalue(sumOfGeneticValues, true);
-				if (pVal < cutoff)
+				if (pVal < pValueThreshold)
 					edge.value().setLinkMerge((float)pVal);
 				else
 					deleteSet.add(edge);
@@ -153,7 +153,7 @@ public class SearchTask implements Task {
 				
 				//Where to save pval
 				double pVal = numGreaterThan/NUM_PERMS;
-				if (pVal < cutoff)
+				if (pVal < pValueThreshold)
 					edge.value().setLinkMerge((float)pVal);
 				else
 					deleteSet.add(edge);

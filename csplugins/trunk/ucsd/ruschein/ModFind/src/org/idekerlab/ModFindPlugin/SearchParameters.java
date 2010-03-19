@@ -12,7 +12,7 @@ public final class SearchParameters {
 	private double alphaMultiplier;
 	private double physicalNetworkFilterDegree;
 	
-	private double edgeCutoff;
+	private double pValueThreshold;
 	
 	public SearchParameters() {
 	}
@@ -65,11 +65,11 @@ public final class SearchParameters {
 		return physicalNetworkFilterDegree;
 	}
 
-	public void setEdgeCutoff(double edgeCutoff) {
-		this.edgeCutoff = edgeCutoff;
+	public void setPValueThreshold(double pValueThreshold) {
+		this.pValueThreshold = pValueThreshold;
 	}
 
-	public double getEdgeCutoff() {
-		return edgeCutoff;
+	public double getPValueThreshold() {
+		return pValueThreshold;
 	}
 }
