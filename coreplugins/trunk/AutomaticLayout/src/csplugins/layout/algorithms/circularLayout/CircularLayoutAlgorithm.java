@@ -149,6 +149,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		HashMap<Integer, Integer> ginyIndex2Index = new HashMap<Integer, Integer>(numNodes * 2);
 
 		Iterator iter = partition.getNodeList().iterator(); /* all nodes */
+		double centerX = 0;
+		double centerY = 0;
 
 		while (iter.hasNext() && !canceled) {
 			LayoutNode ln = (LayoutNode) iter.next();
@@ -160,10 +162,15 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 			if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
 				nodeView[nextNode] = nv;
+				centerX = centerX + nv.getXPosition();
+				centerY = centerY + nv.getYPosition();
 				ginyIndex2Index.put(nodeIndexKey, new Integer(nextNode));
 				nextNode++;
 			}
 		}
+
+		centerX = centerX / nextNode;
+		centerY = centerY / nextNode;
 
 		if (canceled)
 			return;
@@ -206,7 +213,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		posSet = new boolean[nodeView.length]; // all false
 		depthPosSet = new boolean[nodeView.length]; // all false
 
-		//logger.debug("plain component:\n" + graph.getNodecount());
+		// logger.debug("plain component:" + graph.getNodecount());
 
 		Thread.yield();
 
@@ -221,8 +228,11 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 				maxIndex = i;
 			}
 
-		if (maxIndex == -1)
+		if (maxIndex == -1) {
+			taskMonitor.setStatus("Can't perform circular layout: no biconnected components");
+			logger.warning("Can't perform circular layout: no biconnected components");
 			return;
+		}
 
 		if (canceled)
 			return;
@@ -250,8 +260,10 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		double deltaAngle = (2 * Math.PI) / maxSize;
 		double angle = 0;
 
-		int startX = (int) radius;
-		int startY = (int) radius;
+		int startX = (int) (radius + centerX);
+		int startY = (int) (radius + centerY);
+
+		// We need to translate this back to our starting point
 
 		edgesFrom = graph.GetEdgesFrom();
 
