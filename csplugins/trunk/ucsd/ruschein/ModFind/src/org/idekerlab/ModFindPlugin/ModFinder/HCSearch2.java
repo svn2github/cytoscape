@@ -67,7 +67,6 @@ public class HCSearch2 {
 
 		int iter = 0;
 		final float INITIAL_NODE_COUNT = results.numNodes();
-		final float MAX_PERCENTAGE = 70.0f;
 		while (results.numEdges() > 0 && max > 0) {
 			if (iter % 1000 == 0) {
 				System.gc();
