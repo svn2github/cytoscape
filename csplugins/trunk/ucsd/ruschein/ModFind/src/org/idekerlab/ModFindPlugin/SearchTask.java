@@ -159,8 +159,9 @@ public class SearchTask implements Task {
 					deleteSet.add(edge);
 			}
 
-			final float percentCompleted = startProgressPercentage + (endProgressPercentage - startProgressPercentage) * TOTAL_NUM_EDGES / (float)currentEdgeNum;
-			taskMonitor.setPercentCompleted(Math.round(percentCompleted));
+			final int percentCompleted = Math.round(startProgressPercentage + (endProgressPercentage - startProgressPercentage) * (float)currentEdgeNum / TOTAL_NUM_EDGES);
+			taskMonitor.setPercentCompleted(percentCompleted);
+			taskMonitor.setStatus("4. Computing permutations: " + percentCompleted + "% completed.");
 		}
 		results.removeAllEdges(deleteSet);
 	}
