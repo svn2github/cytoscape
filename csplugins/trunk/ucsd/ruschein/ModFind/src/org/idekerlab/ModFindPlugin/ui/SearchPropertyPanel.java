@@ -78,7 +78,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		this.alphaMultiplierTextField.setText(Double.toString(DEF_ALPHA_MUL));
 		this.degreeTextField.setText(Integer.toString(DEF_DEGREE));
 		this.pValueThresholdTextField.setText(Double.toString(DEF_PERCENTILE));
-
 	}
 
 	public SearchParameters getParameters() {
@@ -480,11 +479,21 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			parameters.setAlphaMultiplier(Double
 						      .parseDouble(alphaMultiplierTextField.getText()));
 			parameters.setAlphaMultiplier(Integer.parseInt(degreeTextField.getText()));
-			parameters.setPValueThreshold(Double.parseDouble(pValueThresholdTextField.getText()));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
+
+			final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
+			final double P_VALUE_THRESHOLD_MIN = 0.001;
+			final double P_VALUE_THRESHOLD_MAX = 1.0;
+			if (pValueThreshold < P_VALUE_THRESHOLD_MIN || pValueThreshold > P_VALUE_THRESHOLD_MAX) {
+				JOptionPane.showMessageDialog(this,
+				                              "p-value threshold out of range, must be in ["
+				                              + P_VALUE_THRESHOLD_MIN + "," + P_VALUE_THRESHOLD_MAX + "].",
+				                              "Invalid data entry!", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			parameters.setPValueThreshold(pValueThreshold);
+		} catch (final NumberFormatException e) {
 			JOptionPane.showMessageDialog(this,
-						      "Invalid numbers.  Please re-enter values.",
+						      "Invalid number(s).  Please re-enter value(s).",
 						      "Invalid Number", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
