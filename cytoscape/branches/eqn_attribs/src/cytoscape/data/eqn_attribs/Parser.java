@@ -39,7 +39,7 @@ import cytoscape.data.eqn_attribs.builtins.*;
 public class Parser {
 	static private AttribParser attribParser;
 
-	synchronized static AttribParser getParser() {
+	synchronized static public AttribParser getParser() {
 		if (attribParser == null) {
 			attribParser = new AttribParserImpl();
 
