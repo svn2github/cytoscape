@@ -32,7 +32,7 @@ public class SearchTask implements Task {
 
 	public void run() {
 		final float SEARCH_PERCENTAGE      = 40.0f; // Progress bar should go up to here for the search part.
-		final float COMPUTE_SIG_PERCENTAGE = 70.0f;
+		final float COMPUTE_SIG_PERCENTAGE = 95.0f; // Progress bar should go up to here for the permutations part.
 
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for complexes...");
@@ -134,34 +134,34 @@ public class SearchTask implements Task {
 			}
             
 			//No need to sample
+			double pVal;
 			if (numLinks2empiricalDist.containsKey(numGeneticLinks)) {
 				//How to save p-value?
-				double pVal = numLinks2empiricalDist.get(numGeneticLinks).getEmpiricalPvalue(sumOfGeneticValues, true);
-				if (pVal < pValueThreshold)
-					edge.value().setLinkMerge((float)pVal);
-				else
-					deleteSet.add(edge);
+				pVal = numLinks2empiricalDist.get(numGeneticLinks).getEmpiricalValueFromSortedDist(sumOfGeneticValues);
 			} else {
-				double numGreaterThan = 0.0;
-				numLinks2empiricalDist.put(numGeneticLinks, new DoubleVector(NUM_PERMS));
+				DoubleVector temp = new DoubleVector(NUM_PERMS);
 				
-				for(int i = 1; i <= NUM_PERMS; i++) {
+				for (int i = 1; i <= NUM_PERMS; i++) {
 					double permVal = allEdgeValues.sample(numGeneticLinks, false).sum();
-					numLinks2empiricalDist.get(numGeneticLinks).add(permVal);
-					if(permVal>sumOfGeneticValues) numGreaterThan+=1.0;
+					temp.add(permVal);
 				}
 				
+				temp = temp.sort();
+				numLinks2empiricalDist.put(numGeneticLinks, temp);
+
 				//Where to save pval
-				double pVal = numGreaterThan/NUM_PERMS;
-				if (pVal < pValueThreshold)
-					edge.value().setLinkMerge((float)pVal);
-				else
-					deleteSet.add(edge);
+				pVal = temp.getEmpiricalValueFromSortedDist(sumOfGeneticValues);
 			}
 
-			final int percentCompleted = Math.round(startProgressPercentage + (endProgressPercentage - startProgressPercentage) * (float)currentEdgeNum / TOTAL_NUM_EDGES);
-			taskMonitor.setPercentCompleted(percentCompleted);
-			taskMonitor.setStatus("4. Computing permutations: " + percentCompleted + "% completed.");
+			if (pVal < pValueThreshold)
+				edge.value().setLinkMerge((float)pVal);
+			else
+				deleteSet.add(edge);
+
+			final float permutationsFraction = (float)currentEdgeNum / TOTAL_NUM_EDGES;
+			final float percentCompleted = startProgressPercentage + (endProgressPercentage - startProgressPercentage) * permutationsFraction;
+			taskMonitor.setPercentCompleted(Math.round(percentCompleted));
+			taskMonitor.setStatus("4. Computing permutations: " + Math.round(permutationsFraction * 100.0f) + "% completed.");
 		}
 		results.removeAllEdges(deleteSet);
 	}
