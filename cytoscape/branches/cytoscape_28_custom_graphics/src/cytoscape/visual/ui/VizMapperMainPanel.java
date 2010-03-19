@@ -38,6 +38,7 @@ import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
+import static cytoscape.visual.VisualPropertyType.NODE_CUSTOM_GRAPHICS;
 import giny.model.GraphObject;
 import giny.model.Node;
 
@@ -1148,11 +1149,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 
-			if ((shownProp != null) && (shownProp.getParentProperty() != null)
-			    && shownProp.getParentProperty().getDisplayName()
-			                .equals(NODE_LABEL_POSITION.getName())) {
-				// This is label position cell. Need laeger cell.
-				table.setRowHeight(i, 50);
+			if ((shownProp != null) && (shownProp.getParentProperty() != null)) {
+				// This is graphics cell. Need larger cell.
+				if(shownProp.getParentProperty().getDisplayName()
+		                .equals(NODE_LABEL_POSITION.getName()))
+					table.setRowHeight(i, 50);
+				else if(shownProp.getParentProperty().getDisplayName()
+		                .equals(NODE_CUSTOM_GRAPHICS.getName()))
+					table.setRowHeight(i, 100);
+					
 			} else if ((shownProp != null) && shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
 				// This is a Continuous Icon cell.
 				final Property parent = shownProp.getParentProperty();
