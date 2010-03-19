@@ -1,14 +1,7 @@
 /*
   File: CyAttributesImpl.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -41,6 +34,8 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.util.MultiHashMapFactory;
 import cytoscape.data.eqn_attribs.Equation;
+import cytoscape.data.eqn_attribs.interpreter.IdentDescriptor;
+import cytoscape.data.eqn_attribs.interpreter.Interpreter;
 import cytoscape.util.TopoGraphNode;
 import cytoscape.util.TopologicalSort;
 
@@ -404,19 +399,43 @@ public class CyAttributesImpl implements CyAttributes {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Boolean getBooleanAttribute(String id, String attributeName) {
+	public Boolean getBooleanAttribute(final String id, final String attributeName) {
 		final byte type = mmapDef.getAttributeValueType(attributeName);
-
-		if (type < 0) {
+		if (type < 0)
 			return null;
-		}
 
-		if (type != MultiHashMapDefinition.TYPE_BOOLEAN) {
+		if (type != MultiHashMapDefinition.TYPE_BOOLEAN)
 			throw new ClassCastException("definition for attributeName '" + attributeName
 			                             + "' is not of TYPE_BOOLEAN");
+
+		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue instanceof Boolean)
+			return (Boolean)attribValue;
+
+		// Now we assume that we are dealing with an equation:
+		final Object equationValue = evalEquation(id, (Equation)attribValue);
+		if (equationValue instanceof Boolean)
+			return (Boolean)equationValue;
+		if (equationValue instanceof Long) {
+			final long valueAsLong = (Long)equationValue;
+			return valueAsLong == 0 ? false : true;
+		}
+		if (equationValue instanceof String) {
+			final String valueAsString = (String)equationValue;
+			if (valueAsString.equalsIgnoreCase("true"))
+				return true;
+			if (valueAsString.equalsIgnoreCase("false"))
+				return false;
+			throw new IllegalStateException("\"" + valueAsString
+			                                + "\" cannot be interpreted as a boolean value!");
+		}
+		if (equationValue instanceof Double) {
+			final double valueAsDouble = (Double)equationValue;
+			return valueAsDouble == 0.0 ? false : true;
 		}
 
-		return (Boolean) mmap.getAttributeValue(id, attributeName, null);
+		throw new IllegalStateException("an equation returned an unknown class type: "
+		                                + equationValue.getClass() + "!");
 	}
 
 	/**
@@ -427,19 +446,47 @@ public class CyAttributesImpl implements CyAttributes {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Integer getIntegerAttribute(String id, String attributeName) {
+	public Integer getIntegerAttribute(final String id, final String attributeName) {
 		final byte type = mmapDef.getAttributeValueType(attributeName);
-
-		if (type < 0) {
+		if (type < 0)
 			return null;
-		}
 
 		if (type != MultiHashMapDefinition.TYPE_INTEGER) {
 			throw new ClassCastException("definition for attributeName '" + attributeName
 			                             + "' is not of TYPE_INTEGER");
 		}
 
-		return (Integer) mmap.getAttributeValue(id, attributeName, null);
+		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue instanceof Integer)
+			return (Integer)attribValue;
+
+		// Now we assume that we are dealing with an equation:
+		final Object equationValue = evalEquation(id, (Equation)attribValue);
+		if (equationValue instanceof Long) {
+			final long valueAsLong = (Long)equationValue;
+			return (int)valueAsLong;
+		}
+		if (equationValue instanceof Boolean) {
+			final Boolean valueAsBoolean = (Boolean)equationValue;
+			return valueAsBoolean ? 1 : 0;
+		}
+		if (equationValue instanceof String) {
+			final String valueAsString = (String)equationValue;
+			try {
+				final double valueAsDouble = Double.parseDouble(valueAsString);
+				return (int)excelTrunc(valueAsDouble);
+			} catch (final NumberFormatException e) {
+				throw new IllegalStateException("\"" + valueAsString
+				                                + "\" cannot be interpreted as an integer value!");
+			}
+		}
+		if (equationValue instanceof Double) {
+			final double valueAsDouble = (Double)equationValue;
+			return (int)excelTrunc(valueAsDouble);
+		}
+
+		throw new IllegalStateException("an equation returned an unknown class type: "
+		                                + equationValue.getClass() + "!");
 	}
 
 	/**
@@ -452,17 +499,41 @@ public class CyAttributesImpl implements CyAttributes {
 	 */
 	public Double getDoubleAttribute(String id, String attributeName) {
 		final byte type = mmapDef.getAttributeValueType(attributeName);
-
-		if (type < 0) {
+		if (type < 0)
 			return null;
-		}
 
-		if (type != MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+		if (type != MultiHashMapDefinition.TYPE_FLOATING_POINT)
 			throw new ClassCastException("definition for attributeName '" + attributeName
 			                             + "' is not of TYPE_FLOATING");
+
+		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue instanceof Double)
+			return (Double)attribValue;
+
+		// Now we assume that we are dealing with an equation:
+		final Object equationValue = evalEquation(id, (Equation)attribValue);
+		if (equationValue instanceof Double)
+			return (Double)equationValue;
+		if (equationValue instanceof Long) {
+			final long valueAsLong = (Long)equationValue;
+			return (double)valueAsLong;
+		}
+		if (equationValue instanceof Boolean) {
+			final Boolean valueAsBoolean = (Boolean)equationValue;
+			return valueAsBoolean ? 1.0 : 0.0;
+		}
+		if (equationValue instanceof String) {
+			final String valueAsString = (String)equationValue;
+			try {
+				return Double.parseDouble(valueAsString);
+			} catch (final NumberFormatException e) {
+				throw new IllegalStateException("\"" + valueAsString
+				                                + "\" cannot be interpreted as a floating point value!");
+			}
 		}
 
-		return (Double) mmap.getAttributeValue(id, attributeName, null);
+		throw new IllegalStateException("an equation returned an unknown class type: "
+		                                + equationValue.getClass() + "!");
 	}
 
 	/**
@@ -475,17 +546,20 @@ public class CyAttributesImpl implements CyAttributes {
 	 */
 	public String getStringAttribute(String id, String attributeName) {
 		final byte type = mmapDef.getAttributeValueType(attributeName);
-
-		if (type < 0) {
+		if (type < 0)
 			return null;
-		}
 
-		if (type != MultiHashMapDefinition.TYPE_STRING) {
+		if (type != MultiHashMapDefinition.TYPE_STRING)
 			throw new ClassCastException("definition for attributeName '" + attributeName
 			                             + "' is not of TYPE_STRING");
-		}
 
-		return (String) mmap.getAttributeValue(id, attributeName, null);
+		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue instanceof String)
+			return (String)attribValue;
+
+		// Now we assume that we are dealing with an equation:
+		final Object equationValue = evalEquation(id, (Equation)attribValue);
+		return equationValue.toString();
 	}
 
 	/**
@@ -498,16 +572,17 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @param attributeName attribute name.
 	 * @return Object, or null if no id/attributeName pair is found.
 	 */
-	public Object getAttribute(String id, String attributeName) {
+	public Object getAttribute(final String id, final String attributeName) {
 		final byte type = mmapDef.getAttributeValueType(attributeName);
-
-		if (type < 0) {
+		if (type < 0)
 			return null;
-		}
 
-		return mmap.getAttributeValue(id, attributeName, null);
+		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if (attribValue instanceof Equation)
+			return evalEquation(id, (Equation)attribValue);
+		else
+			return attribValue;
 	}
-	
 
 	/**
 	 *  DOCUMENT ME!
@@ -876,6 +951,22 @@ public class CyAttributesImpl implements CyAttributes {
 		return mmapDef;
 	}
 
+	private Object evalEquation(final String id, final Equation equation) {
+		final Collection<String> attribReferences = equation.getAttribReferences();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
+		for (final String attribRef : attribReferences) {
+			final Object attribValue = getAttribute(id, attribRef);
+			nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
+		}
+
+		final Interpreter interpreter = new Interpreter(equation, nameToDescriptorMap);
+		try {
+			return interpreter.run();
+		} catch (final Exception e) {
+			return new String("#ERROR(" + e.getCause() + ")");
+		}
+	}
+
 	/**
 	 *  @returns an in-order list of attribute names that will have to be evaluated before "attribName" can be evaluated
 	 */
@@ -907,6 +998,7 @@ public class CyAttributesImpl implements CyAttributes {
 				retVal.add(nodeName);
 		}
 
+		// We should never get here because "attribName" should have been found in the for-loop above!
 		throw new IllegalStateException("\"" + attribName
 		                                + "\" was not found in the toplogical order, which should be impossible!");
 	}
@@ -930,5 +1022,13 @@ public class CyAttributesImpl implements CyAttributes {
 		final Set<String> attribReferences = equation.getAttribReferences();
 		for (final String attribReference : attribReferences)
 			followReferences(id, attribReference, alreadyProcessed, dependencies);
+	}
+
+	/**
+	 *  @returns "x" truncated using Excel's notion of truncation.
+	 */
+	private static double excelTrunc(final double x) {
+		final boolean isNegative = x < 0.0;
+		return Math.round(x + (isNegative ? +0.5 : -0.5));
 	}
 }
