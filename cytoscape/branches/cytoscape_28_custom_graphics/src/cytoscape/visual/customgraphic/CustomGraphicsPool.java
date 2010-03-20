@@ -33,4 +33,8 @@ public class CustomGraphicsPool {
 		return graphicsMap.keySet();
 	}
 	
+	public static CyCustomGraphics<?> getNullGraphics() {
+		return NULL;
+	}
+	
 }

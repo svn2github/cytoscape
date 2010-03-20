@@ -52,7 +52,7 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		final Shape background = new java.awt.geom.RoundRectangle2D.Double(
 				-imageW / 2d - PAD, -imageH / 2d - PAD, imageW + PAD * 2d,
 				imageH + PAD * 2d, R, R);
-		final Paint backgroundPaint = Color.white;
+		final Paint backgroundPaint = Color.DARK_GRAY;
 
 		bound = new Rectangle2D.Double(-imageW / 2, -imageH / 2, imageW, imageH);
 		paint = new TexturePaint(targetImg, bound);
@@ -106,5 +106,9 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		}
 		buildCustomGraphics(originalImage);
 		return originalImage;
+	}
+	
+	public String toString() {
+		return this.hashCode() + "," + this.displayName + "," + this.getClass().getCanonicalName();
 	}
 }

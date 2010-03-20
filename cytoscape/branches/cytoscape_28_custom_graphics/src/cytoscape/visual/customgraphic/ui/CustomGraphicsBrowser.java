@@ -145,7 +145,6 @@ public class CustomGraphicsBrowser extends JXList {
 				e.printStackTrace();
 			}
 
-			System.out.println("drop");
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 			Transferable trans = dtde.getTransferable();
 			dumpDataFlavors(trans);
@@ -162,6 +161,9 @@ public class CustomGraphicsBrowser extends JXList {
 					String s = (String) trans
 							.getTransferData(DataFlavor.stringFlavor);
 					System.out.println("!!!!!!got text " + s);
+					URL url = new URL(s);
+					System.out.println("!!This is URL text " + url.toString());
+					addCustomGraphics(url.toString());
 					gotData = true;
 				}
 			} catch (Exception e) {

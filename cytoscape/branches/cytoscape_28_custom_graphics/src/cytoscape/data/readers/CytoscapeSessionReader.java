@@ -128,6 +128,9 @@ public class CytoscapeSessionReader {
 	 *
 	 */
 	public static final String CY_PROPS = "cytoscape.props";
+	
+	
+	private static final String IMAGE_DIR = "images";
 
 	/**
 	 *
@@ -265,6 +268,8 @@ public class CytoscapeSessionReader {
             while ((zen = zis.getNextEntry()) != null) {
                 entryName = zen.getName();
 
+                System.out.println("Entry Name ========>>>>> " + entryName);
+                
                 if (entryName.contains("/plugins/")) {
                     extractPluginEntry(entryName);
                 } else if (entryName.endsWith(CYSESSION)) {
@@ -296,9 +301,11 @@ public class CytoscapeSessionReader {
                     networkCounter++;
                 } else if (entryName.endsWith(BOOKMARKS_FILE)) {
                     bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                } else {
+                } else if(entryName.endsWith(".png")) {
+                		//image
+                		restoreCustomGraphics(entryName);
+                } else
                     logger.warn("Unknown entry found in session zip file: " + entryName);
-                }
             } // while loop
         }
         finally {
@@ -327,6 +334,10 @@ public class CytoscapeSessionReader {
 			theURLstrList.add(URLstr);
 			theURLstrMap.put(pluginName, theURLstrList);
 		}
+	}
+	
+	private void restoreCustomGraphics(String entryName) {
+		
 	}
 
 	/**
@@ -609,6 +620,7 @@ public class CytoscapeSessionReader {
 
 		return theBookmark;
 	}
+	
 
 	private void loadCySession() throws JAXBException, IOException, Exception {
 		// InputStream is = cysessionFileURL.openStream();

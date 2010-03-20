@@ -2,12 +2,9 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.SwingConstants;
-
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerDialog;
-import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerPanel;
 
 public class ShowCustomGraphicsManagerAction extends CytoscapeAction {
 	

@@ -10,7 +10,7 @@ public class CyCustomGraphicsParser implements ValueParser {
 		return parse(value);
 	}
 	
-	private CyCustomGraphics parse(String value) {
+	private CyCustomGraphics<?> parse(String value) {
 		return new NullCustomGraphics();
 	}
 
