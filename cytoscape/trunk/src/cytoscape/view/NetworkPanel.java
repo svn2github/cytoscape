@@ -54,30 +54,22 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JToggleButton;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpringLayout;
 import javax.swing.ToolTipManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -93,7 +85,6 @@ import cytoscape.logger.CyLogger;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
-import ding.view.DGraphView;
 
 
 /**
@@ -106,14 +97,11 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	
 	private static final int DEF_DEVIDER_LOCATION = 280;
 	private static final int PANEL_PREFFERED_WIDTH = 250;
-	
-	private static final Dimension COMMAND_BUTTON_SIZE = new Dimension(16, 16);
-	
-	private static final int NETWORK_ICON_SIZE = 64;
+
 	private static final int DEF_ROW_HEIGHT = 20;
 	
 	// Make this panel as a source of events.
-	private final SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
+	private final SwingPropertyChangeSupport pcs;
 		
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
@@ -163,6 +151,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 				treeTable.setInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, map);
 			}
 		}
+		
+		pcs = new SwingPropertyChangeSupport(this);
 		
 		// Make this a prop change listener for Cytoscape global events.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -333,7 +323,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param event DOCUMENT ME!
 	 */
 	public void onSelectEvent(SelectEvent event) {
-		// TODO: is this method necessary?  Why this class is selecteventlistener?
+		// TODO is this the right method to call?
+		treeTable.getTree().updateUI();
 	}
 
 	
