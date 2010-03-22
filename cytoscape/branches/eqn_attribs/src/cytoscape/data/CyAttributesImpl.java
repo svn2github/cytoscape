@@ -966,7 +966,7 @@ public class CyAttributesImpl implements CyAttributes {
 		if (attribValue == null || !(attribValue instanceof Equation))
 			return null;
 
-		return ((Equation)(attribValue)).getEquation();
+		return ((Equation)(attribValue)).toString();
 	}
 
 	private Object evalEquation(final String id, final Equation equation) {
