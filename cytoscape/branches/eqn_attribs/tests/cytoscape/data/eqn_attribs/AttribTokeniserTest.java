@@ -193,4 +193,25 @@ public class AttribTokeniserTest extends TestCase {
 		for (int i = 0; i < expectedTokens.length; ++i)
 			assertEquals(expectedTokens[i], actualTokens[i]);
 	}
+
+	public void testScanner5() throws Exception {
+		final AttribTokeniser tokeniser = new AttribTokeniser(".79e2");
+		final ArrayList<String> tokens = new ArrayList<String>();
+		String tokenAsString;
+		do {
+			tokenAsString = tokeniser.getTokenAsString();
+			tokens.add(tokenAsString);
+		} while (tokenAsString != "EOS");
+		final String[] actualTokens = new String[tokens.size()];
+		tokens.toArray(actualTokens);
+
+		final String[] expectedTokens = {
+			"FLOAT_CONSTANT: \"79.0\"",
+			"EOS"
+		};
+
+		assertEquals(expectedTokens.length, actualTokens.length);
+		for (int i = 0; i < expectedTokens.length; ++i)
+			assertEquals(expectedTokens[i], actualTokens[i]);
+	}
 }
