@@ -58,19 +58,16 @@ import java.util.*;
  */
 public class MCODEUtil {
 	/**
-	 * Converts a list of MCODE generated clusters to a list of networks that is
-	 * sorted by the score of the cluster
+	 * Sorts an array of MCODE generated clusters by the score of the cluster.
 	 * 
-	 * @param clusters
-	 *            List of MCODE generated clusters
-	 * @return A sorted array of cluster objects based on cluster score.
+	 * @param clusters Array of MCODE generated clusters
 	 */
-	public static MCODECluster[] sortClusters(MCODECluster[] clusters) {
-		Arrays.sort(clusters, new Comparator() {
+	public static void sortClusters(MCODECluster[] clusters) {
+		Arrays.sort(clusters, new Comparator<MCODECluster>() {
 			// sorting clusters by decreasing score
-			public int compare(Object o1, Object o2) {
-				double d1 = ((MCODECluster) o1).getClusterScore();
-				double d2 = ((MCODECluster) o2).getClusterScore();
+			public int compare(MCODECluster o1, MCODECluster o2) {
+				double d1 = o1.getClusterScore();
+				double d2 = o2.getClusterScore();
 				if (d1 == d2) {
 					return 0;
 				} else if (d1 < d2) {
@@ -80,6 +77,5 @@ public class MCODEUtil {
 				}
 			}
 		});
-		return clusters;
 	}
 }
