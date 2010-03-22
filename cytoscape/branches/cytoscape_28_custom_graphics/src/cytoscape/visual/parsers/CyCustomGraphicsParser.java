@@ -11,6 +11,13 @@ public class CyCustomGraphicsParser implements ValueParser {
 	}
 	
 	private CyCustomGraphics<?> parse(String value) {
+		if(value == null) return null;
+		
+		final String[] parts = value.split(",");
+		
+		// Extract class
+		String className = parts[0];
+		
 		return new NullCustomGraphics();
 	}
 
