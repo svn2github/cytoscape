@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -62,6 +55,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	private final DataTableModel tableModel;
 
 	private boolean valid = false;
+	private ValueAndEquation valAndEqn = null;
 
 	/**
 	 * Creates a new DataEditAction object.
@@ -114,6 +108,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 		return "Undo: " + attrKey + ":" + attrName + " back to:" + old_value + " from " + new_value;
 	}
 
+	public ValueAndEquation getValueAndEquation() { return valAndEqn; }
+
 	/**
 	 * Set attribute value.  Input validater is added.
 	 *
@@ -122,6 +118,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @param newValue
 	 */
 	private void setAttributeValue(final String id, final String attrName, final Object newValue) {
+		valid = false;
 		final CyAttributes attrs = objectType.getAssociatedAttribute();
 
 		// Error message for the popup dialog.
@@ -143,6 +140,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
+				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				valid = true;
 				return;
 			}
 
@@ -150,6 +149,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 			try {
 				newIntVal = Integer.valueOf(newValueStr);
 				attrs.setAttribute(id, attrName, newIntVal);
+				valAndEqn = new ValueAndEquation(newIntVal);
+				valid = true;
 			} catch (Exception nfe) {
 				errMessage = "Attribute " + attrName
 				             + " should be an integer (or the number is too big/small).";
@@ -169,6 +170,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
+				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				valid = true;
 				return;
 			}
 
@@ -176,6 +179,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 			try {
 				newDblVal = Double.valueOf(newValueStr);
 				attrs.setAttribute(id, attrName, newDblVal);
+				valAndEqn = new ValueAndEquation(newDblVal);
+				valid = true;
 			} catch (Exception e) {
 				errMessage = "Attribute " + attrName
 				             + " should be a floating point number (or the number is too big/small).";
@@ -195,6 +200,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
+				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				valid = true;
 				return;
 			}
 
@@ -202,6 +209,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 			try {
 				newBoolVal = Boolean.valueOf(newValueStr);
 				attrs.setAttribute(id, attrName, newBoolVal);
+				valAndEqn = new ValueAndEquation(newBoolVal);
+				valid = true;
 			} catch (Exception e) {
 				errMessage = "Attribute " + attrName + " should be a boolean value (true/false).";
 				showErrorWindow(errMessage);
@@ -220,10 +229,15 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
+				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				valid = true;
 				return;
 			}
 
-			attrs.setAttribute(id, attrName, replaceNewlines(newValueStr));
+			final String newStrVal = replaceNewlines(newValueStr);
+			attrs.setAttribute(id, attrName, newStrVal);
+			valAndEqn = new ValueAndEquation(newStrVal);
+			valid = true;
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
@@ -251,8 +265,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 				showErrorWindow("Invalid list!");
 				return;
 			}
-			else
+			else {
 				attrs.setListAttribute(id, attrName, newList);
+				valAndEqn = new ValueAndEquation(escapedString);
+				valid = true;
+			}
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_MAP) {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
@@ -266,8 +283,6 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 			return;
 		}
-
-		valid = true;
 	}
 
 	/** Does some rudimentary list syntax checking and returns the number of items in "listCandidate."
@@ -466,7 +481,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 		final AttribEqnCompiler compiler = new AttribEqnCompiler();
 		if (!compiler.compile(equation, attribNameToTypeMap)) {
-			showErrorWindow("Error in attribute \"" + currentAttrName + "\": " + compiler.getLastErrorMsg());
+			showErrorWindow("Error in equation for attribute\"" + currentAttrName + "\": " + compiler.getLastErrorMsg());
 			return null;
 		}
 

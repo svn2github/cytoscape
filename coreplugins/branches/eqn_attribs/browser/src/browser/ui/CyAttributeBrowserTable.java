@@ -83,6 +83,7 @@ import browser.AttributeBrowserPlugin;
 import browser.DataObjectType;
 import browser.DataTableModel;
 import browser.SortTableModel;
+import browser.ValueAndEquation;
 import browser.util.HyperLinkOut;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -344,7 +345,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
 
 		for (int idx = 0; idx < selectedRowLength; idx++) {
-			selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
+			selectedName = (String)((ValueAndEquation)getValueAt(rowsSelected[idx], idLocation)).getValue();
 
 			if (objectType == NODES) {
 				// Change node color
@@ -384,37 +385,32 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final int rowCount = dataModel.getRowCount();
 
 		Node selectedNode;
-		Object val;
+		ValueAndEquation val;
 		NodeView nv;
 		EdgeView ev;
 		Edge selectedEdge;
 
 		for (int idx = 0; idx < rowCount; idx++) {
-			val = dataModel.getValueAt(idx, idLocation);
+			val = (ValueAndEquation)dataModel.getValueAt(idx, idLocation);
 
 			if (val == null)
 				continue;
 
 			if (objectType == NODES) {
-				selectedNode = Cytoscape.getCyNode(val.toString());
+				selectedNode = Cytoscape.getCyNode(val.getValue().toString());
 
 				// Set to the original color
 				if (selectedNode != null) {
 					nv = view.getNodeView(selectedNode);
-
-					if (nv != null) {
+					if (nv != null)
 						nv.setSelectedPaint(selectedNodeColor);
-					}
 				}
 			} else if (objectType == EDGES) {
-				selectedEdge = this.getEdge(val.toString());
-
+				selectedEdge = this.getEdge(val.getValue().toString());
 				if (selectedEdge != null) {
 					ev = view.getEdgeView(selectedEdge);
-
-					if (ev != null) {
+					if (ev != null)
 						ev.setSelectedPaint(selectedEdgeColor);
-					}
 				}
 			}
 		}
@@ -656,26 +652,21 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					final int column = getColumnModel().getColumnIndexAtX(e.getX());
 					final int row = e.getY() / getRowHeight();
 
-					// Make sure the column and row we're clicking on
-					// actually exists!
-					if ( column >= tableModel.getColumnCount() || 
-					     row >= tableModel.getRowCount() ) {
+					// Make sure the column and row we're clicking on actually exists!
+					if (column >= tableModel.getColumnCount() || row >= tableModel.getRowCount())
 						return;
-					}
 
-					final Object value = getValueAt(row, column);
+					final ValueAndEquation value = (ValueAndEquation)getValueAt(row, column);
 					getSelected();
 
 					// If action is right click, then show edit pop-up menu
-					if ((SwingUtilities.isRightMouseButton(e)) ||
-							(isMacPlatform() && e.isControlDown())){
+					if ((SwingUtilities.isRightMouseButton(e)) || (isMacPlatform() && e.isControlDown())){
 						if (value != null) {
 							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
-							rightClickPopupMenu.add(new HyperLinkOut(value.toString(), linkoutProps));
+							rightClickPopupMenu.add(new HyperLinkOut(value.getValue().toString(), linkoutProps));
 							rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 						}
-					} else if (SwingUtilities.isLeftMouseButton(e)
-					           && (getSelectedRows().length != 0)) {
+					} else if (SwingUtilities.isLeftMouseButton(e) && (getSelectedRows().length != 0)) {
 						
 						showListContents(e);
 
@@ -683,12 +674,10 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						    || (column < 0))
 							return;
 
-						// Object cellValue = getValueAt(row, column);
-						if ((value != null) && (value.getClass() == String.class)) {
+						if ((value != null) && (value.getValue().getClass() == String.class)) {
 							URL url = null;
-
 							try {
-								url = new URL((String) value);
+								url = new URL((String)value.getValue());
 							} catch (MalformedURLException e1) {
 								// If invalid, just ignore.
 							}
@@ -866,8 +855,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 			String idField = (String) this.getValueAt(row, idCol);
 
-			List contents = (List) model.getAttributeValue(CyAttributes.TYPE_SIMPLE_LIST, idField,
-			                                               this.getColumnName(column));
+			List contents = (List) model.getAttributeValueAndEquation(CyAttributes.TYPE_SIMPLE_LIST, idField,
+										  this.getColumnName(column)).getValue();
 			cellMenu = new JPopupMenu();
 
 			Object[] listItems = contents.toArray();
@@ -894,9 +883,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 			String idField = (String) this.getValueAt(row, idCol);
 
-			Map<String, Object> contents = (Map) model.getAttributeValue(CyAttributes.TYPE_SIMPLE_MAP,
-			                                                             idField,
-			                                                             this.getColumnName(column));
+			Map<String, Object> contents = (Map) model.getAttributeValueAndEquation(CyAttributes.TYPE_SIMPLE_MAP,
+			                                                                        idField,
+			                                                                        this.getColumnName(column)).getValue();
 
 			if ((contents != null) && (contents.size() != 0)) {
 				Object[] listItems = new Object[contents.size()];

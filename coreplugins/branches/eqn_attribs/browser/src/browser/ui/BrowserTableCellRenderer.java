@@ -22,6 +22,7 @@ import javax.swing.table.TableCellRenderer;
 
 import browser.AttributeBrowser;
 import browser.DataObjectType;
+import browser.ValueAndEquation;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
@@ -51,7 +52,6 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	private static final Color SELECTED_LABEL_COLOR = Color.black.brighter();
 	private DataObjectType type = DataObjectType.NODES;
 	private boolean coloring;
-	private Object vl;
 
 	/**
 	 * Creates a new BrowserTableCellRenderer object.
@@ -80,21 +80,23 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	 * @return  DOCUMENT ME!
 	 */
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-	                                               boolean hasFocus, int row, int column) {
-		vl = value;
-
+	                                               boolean hasFocus, int row, int column)
+	{
+		final ValueAndEquation valAndEqn = (ValueAndEquation)value;
 		final String colName = table.getColumnName(column);
 
 		// First, set values
 		setHorizontalAlignment(JLabel.LEFT);
-		setText((value == null) ? "" : value.toString());
+		if (valAndEqn == null)
+			setText("");
+		else
+			setText(valAndEqn.getValue().toString());
 
-		if (value != null) {
-			// Set HTML style tooltip
-			setToolTipText(getFormattedToolTipText(colName, value));
-		} else {
+		// Set HTML style tooltip?
+		if (valAndEqn != null)
+			setToolTipText(getFormattedToolTipText(colName, valAndEqn.getValue()));
+		else
 			setToolTipText(null);
-		}
 
 		// If selected, return
 		if (isSelected) {

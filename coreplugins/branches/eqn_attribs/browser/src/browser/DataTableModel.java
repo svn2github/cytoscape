@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010 The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -210,25 +203,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		}
 	}
 
-	//	// Accept CyAttributes and create table
-	//	/**
-	//	 *  DOCUMENT ME!
-	//	 *
-	//	 * @param data DOCUMENT ME!
-	//	 * @param graph_objects DOCUMENT ME!
-	//	 * @param attributeNames DOCUMENT ME!
-	//	 * @param objectType DOCUMENT ME!
-	//	 */
-	//	public void setTableData(List<String> attributeNames) {
-	//		this.attributeNames = attributeNames;
-	//
-	//		if (objectType == NETWORK) {
-	//			setNetworkTable();
-	//		} else {
-	//			setTableData();
-	//		}
-	//	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -292,15 +266,15 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		Object[][] data_vector = new Object[att_length][2];
 		Object[] column_names = new Object[2];
 
-		column_names[0] = "Network Attribute Name";
-		column_names[1] = "Value";
+		column_names[0] = new ValueAndEquation("Network Attribute Name");
+		column_names[1] = new ValueAndEquation("Value");
 
 		for (int i = 0; i < att_length; i++) {
 			final String attributeName = (String) attributeNames.get(i);
-			data_vector[i][0] = attributeName;
-			data_vector[i][1] = getAttributeValue(data.getType(attributeName),
-			                                      Cytoscape.getCurrentNetwork().getIdentifier(),
-			                                      attributeName);
+			data_vector[i][0] = new ValueAndEquation(attributeName);
+			data_vector[i][1] = getAttributeValueAndEquation(data.getType(attributeName),
+									 Cytoscape.getCurrentNetwork().getIdentifier(),
+									 attributeName);
 		}
 
 		setDataVector(data_vector, column_names);
@@ -323,7 +297,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			CyNetwork network = (CyNetwork) it.next();
 			String id = network.getIdentifier();
 
-			data_vector[k][0] = id;
+			data_vector[k][0] = new ValueAndEquation(id);
 			k++;
 		}
 
@@ -341,7 +315,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 			while (it.hasNext()) {
 				CyNetwork network = (CyNetwork) it.next();
-				Object value = getAttributeValue(type, network.getIdentifier(), attributeName);
+				Object value = getAttributeValueAndEquation(type, network.getIdentifier(), attributeName);
 
 				data_vector[j][i] = value;
 				j++;
@@ -352,7 +326,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	}
 
 	/**
-	 *  Method to frill out table cells.
+	 *  Method to fill in table cells.
 	 */
 	public void setTableData() {
 		if (graphObjects == null)
@@ -389,7 +363,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = AttributeBrowser.ID;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = graphObjects.get(j).getIdentifier();
+				data_vector[j][0] = new ValueAndEquation(graphObjects.get(j).getIdentifier());
 
 			setDataVector(data_vector, column_names);
 			//			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -406,7 +380,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = AttributeBrowser.ID;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = graphObjects.get(j).getIdentifier();
+				data_vector[j][0] = new ValueAndEquation(graphObjects.get(j).getIdentifier());
 
 			for (int i1 = 0; i1 < att_length; ++i1) {
 				column_names[i1 + 1] = attributeNames.get(i1);
@@ -414,9 +388,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				type = data.getType(attributeName);
 
 				for (int j = 0; j < go_length; ++j) {
-					data_vector[j][i1 + 1] = getAttributeValue(type,
-					                                           graphObjects.get(j).getIdentifier(),
-					                                           attributeName);
+					data_vector[j][i1 + 1] = getAttributeValueAndEquation(type,
+					                                                      graphObjects.get(j).getIdentifier(),
+					                                                      attributeName);
 				}
 			}
 		} else {
@@ -430,11 +404,11 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 				for (int j = 0; j < go_length; ++j) {
 					if (attributeName.equals(AttributeBrowser.ID)) {
-						data_vector[j][i1] = graphObjects.get(j).getIdentifier();
+						data_vector[j][i1] = new ValueAndEquation(graphObjects.get(j).getIdentifier());
 					} else
-						data_vector[j][i1] = getAttributeValue(type,
-						                                       graphObjects.get(j).getIdentifier(),
-						                                       attributeName);
+						data_vector[j][i1] = getAttributeValueAndEquation(type,
+						                                                  graphObjects.get(j).getIdentifier(),
+						                                                  attributeName);
 				}
 			}
 		}
@@ -454,19 +428,19 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object getAttributeValue(byte type, String id, String att) {
+	public ValueAndEquation getAttributeValueAndEquation(final byte type, final String id, final String attrName) {
 		if (type == CyAttributes.TYPE_INTEGER)
-			return data.getIntegerAttribute(id, att);
+			return new ValueAndEquation(data.getIntegerAttribute(id, attrName), data.getEquationFormula(id, attrName));
 		else if (type == CyAttributes.TYPE_FLOATING)
-			return data.getDoubleAttribute(id, att);
+			return new ValueAndEquation(data.getDoubleAttribute(id, attrName), data.getEquationFormula(id, attrName));
 		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return data.getBooleanAttribute(id, att);
+			return new ValueAndEquation(data.getBooleanAttribute(id, attrName), data.getEquationFormula(id, attrName));
 		else if (type == CyAttributes.TYPE_STRING)
-			return data.getStringAttribute(id, att);
+			return new ValueAndEquation(data.getStringAttribute(id, attrName), data.getEquationFormula(id, attrName));
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return data.getListAttribute(id, att);
+			return new ValueAndEquation(data.getListAttribute(id, attrName));
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return data.getMapAttribute(id, att);
+			return new ValueAndEquation(data.getMapAttribute(id, attrName));
 
 		return null;
 	}
@@ -598,7 +572,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		if (edit.isValid()) {
 			Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
-			rowVector.setElementAt(newValue, colIdx);
+			rowVector.setElementAt(edit.getValueAndEquation(), colIdx);
 			fireTableCellUpdated(rowIdx, colIdx);
 		}
 
