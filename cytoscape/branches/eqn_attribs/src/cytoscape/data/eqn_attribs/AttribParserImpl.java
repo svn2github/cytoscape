@@ -310,6 +310,9 @@ class AttribParserImpl implements AttribParser {
 			return parseFunctionCall(level);
 		}
 
+		if (token == AttribToken.ERROR)
+			throw new IllegalStateException(tokeniser.getErrorMsg());
+
 		throw new IllegalStateException("we should never get here!");
 	}
 
