@@ -443,46 +443,29 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 			                               + "use removeAttributeValue() instead");
 
 		final Class actualType;
-		if (attributeValue instanceof Equation)
+		final boolean isEquation = attributeValue instanceof Equation;
+		if (isEquation)
 			actualType = ((Equation)attributeValue).getType();
 		else
 			actualType = attributeValue.getClass();
 
-		boolean passed = false;
 		switch (def.valueType) { // I'm wondering what the most efficient way of doing this is.
 			case MultiHashMapDefinition.TYPE_BOOLEAN:
-				passed = actualType == Boolean.class;
-				break;
+				if ((actualType == Boolean.class) || (isEquation && (actualType == Long.class || actualType == Double.class)))
+					break;
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Boolean!");
 			case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-				passed = actualType == Double.class;
-				break;
+				if ((actualType == Double.class) || (isEquation && (actualType == Long.class || actualType == Boolean.class)))
+					break;
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Double!");
 			case MultiHashMapDefinition.TYPE_INTEGER:
-				passed = actualType == Integer.class;
-				break;
+				if ((actualType == Integer.class) || (isEquation && (actualType == Double.class || actualType == Boolean.class || actualType == Long.class)))
+					break;
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Integer!");
 			case MultiHashMapDefinition.TYPE_STRING:
-				passed = actualType == String.class;
-				break;
-		}
-
-		if (!passed) { // Go the extra effort to return an informational error.
-			String className = null;
-			switch (def.valueType) { // Repeat same switch logic here for efficiency in non-error case.
-				case MultiHashMapDefinition.TYPE_BOOLEAN:
-					className = "java.lang.Boolean";
+				if ((actualType == String.class) || isEquation)
 					break;
-				case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-					className = "java.lang.Double";
-					break;
-				case MultiHashMapDefinition.TYPE_INTEGER:
-					className = "java.lang.Integer";
-					break;
-				case MultiHashMapDefinition.TYPE_STRING:
-					className = "java.lang.String";
-					break;
-			}
-
-			throw new ClassCastException("found " + attributeValue.getClass() + " for "
-			                             + attributeName + ", expected " + className + "!");
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
 		}
 
 		// Error-check keyIntoValue.  Leave the type checks to the recursion.
@@ -503,7 +486,6 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 		final MultiHashMapListener listener = m_dataListener;
 
 		if (def.keyTypes.length == 0) { // Don't even recurse.
-
 			final Object returnThis = def.objMap.put(objectKey, attributeValue);
 
 			if (listener != null)
