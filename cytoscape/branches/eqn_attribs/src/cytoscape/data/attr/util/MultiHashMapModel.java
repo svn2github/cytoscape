@@ -41,6 +41,7 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.data.attr.MultiHashMapListener;
+import cytoscape.data.eqn_attribs.Equation;
 
 import java.util.HashMap;
 
@@ -418,13 +419,13 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 	 * @return  DOCUMENT ME!
 	 */
 	public final Object setAttributeValue(final String objectKey, final String attributeName,
-	                                      final Object attributeValue, final Object[] keyIntoValue) {
+	                                      final Object attributeValue, final Object[] keyIntoValue)
+	{
 		// Pull out the definition, error-checking attributeName in the process.
 		if (attributeName == null)
 			throw new NullPointerException("attributeName is null");
 
 		final AttrDefData def = (AttrDefData) m_attrMap.get(attributeName);
-
 		if (def == null)
 			throw new IllegalStateException("no attributeName '" + attributeName + "' exists");
 
@@ -441,58 +442,47 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 			throw new NullPointerException("cannot set null attributeValue - "
 			                               + "use removeAttributeValue() instead");
 
-		boolean passed = false;
+		final Class actualType;
+		if (attributeValue instanceof Equation)
+			actualType = ((Equation)attributeValue).getType();
+		else
+			actualType = attributeValue.getClass();
 
+		boolean passed = false;
 		switch (def.valueType) { // I'm wondering what the most efficient way of doing this is.
 			case MultiHashMapDefinition.TYPE_BOOLEAN:
-				passed = (attributeValue instanceof java.lang.Boolean);
-
+				passed = actualType == Boolean.class;
 				break;
-
 			case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-				passed = (attributeValue instanceof java.lang.Double);
-
+				passed = actualType == Double.class;
 				break;
-
 			case MultiHashMapDefinition.TYPE_INTEGER:
-				passed = (attributeValue instanceof java.lang.Integer);
-
+				passed = actualType == Integer.class;
 				break;
-
 			case MultiHashMapDefinition.TYPE_STRING:
-				passed = (attributeValue instanceof java.lang.String);
-
+				passed = actualType == String.class;
 				break;
 		}
 
 		if (!passed) { // Go the extra effort to return an informational error.
-
 			String className = null;
-
 			switch (def.valueType) { // Repeat same switch logic here for efficiency in non-error case.
 				case MultiHashMapDefinition.TYPE_BOOLEAN:
 					className = "java.lang.Boolean";
-
 					break;
-
 				case MultiHashMapDefinition.TYPE_FLOATING_POINT:
 					className = "java.lang.Double";
-
 					break;
-
 				case MultiHashMapDefinition.TYPE_INTEGER:
 					className = "java.lang.Integer";
-
 					break;
-
 				case MultiHashMapDefinition.TYPE_STRING:
 					className = "java.lang.String";
-
 					break;
 			}
 
-			throw new ClassCastException("attributeValue must be of type " + className
-			                             + " in attributeName '" + attributeName + "' definition");
+			throw new ClassCastException("found " + attributeValue.getClass() + " for "
+			                             + attributeName + ", expected " + className + "!");
 		}
 
 		// Error-check keyIntoValue.  Leave the type checks to the recursion.
@@ -503,7 +493,6 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 				                                   + " defined, yet keyIntoValue is not empty");
 			}
 		} else { // Keyspace is not empty.
-
 			final int keyIntoValueLength = ((keyIntoValue == null) ? 0 : keyIntoValue.length);
 
 			if (def.keyTypes.length != keyIntoValueLength) {
