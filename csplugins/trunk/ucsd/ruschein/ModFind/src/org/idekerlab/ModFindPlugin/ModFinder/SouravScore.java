@@ -7,7 +7,7 @@ import org.idekerlab.ModFindPlugin.networks.SFNetwork;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNode;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 
-public class SouravScore extends HCScoringFunction{
+public class SouravScore extends HCScoringFunction {
 
 	private float alpha = 1.6f;
 	private float alpham = 1.0f; //Multiplier coefficient for the alpha term
@@ -107,7 +107,7 @@ public class SouravScore extends HCScoringFunction{
 		if (!Float.isNaN(s1)) score+=s1;
 		if (!Float.isNaN(s2)) score+=s2;
 		
-		return Math.max(score, 0.0f);
+		return score;
 	}
 	
 	/***
@@ -124,7 +124,7 @@ public class SouravScore extends HCScoringFunction{
 		if (!Float.isNaN(s1)) score+=s1;
 		if (!Float.isNaN(s2)) score+=s2;
 		
-		return Math.max(score, 0.0f);
+		return score;
 	}
 	
 	/***
