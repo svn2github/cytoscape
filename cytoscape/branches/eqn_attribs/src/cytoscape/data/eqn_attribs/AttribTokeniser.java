@@ -94,7 +94,7 @@ public class AttribTokeniser {
 
 		if (ch == '"')
 			return parseStringConstant();
-		if (Character.isDigit(ch)) {
+		if (Character.isDigit(ch) || ch == '.') {
 			ungetChar(nextCh);
 			return parseNumericConstant();
 		}
