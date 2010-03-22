@@ -2,7 +2,6 @@ package csplugins.mcode.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -23,32 +22,6 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
 
-class MCODEClusterComparator implements Comparator {
-	/**
-	 * Supposed to compare 2 objects of type MCODECluster, s.t. the one with the larger cluster
-	 * score comes first!
-	 */
-	public int compare(final Object o1, final Object o2) {
-		if (!(o1 instanceof MCODECluster))
-			throw new ClassCastException("can't cast 1st arg of compare() to an MCODECluster!");
-		if (!(o2 instanceof MCODECluster))
-			throw new ClassCastException("can't cast 2nd arg of compare() to an MCODECluster!");
-
-		final MCODECluster clust1 = (MCODECluster)o1;
-		final MCODECluster clust2 = (MCODECluster)o2;
-
-		final double score1 = clust1.getClusterScore();
-		final double score2 = clust2.getClusterScore();
-
-		if (score1 > score2)
-			return -1;
-		if (score1 < score2)
-			return +1;
-		return 0;
-	}
-}
-
-
 public class MCODEClustersToNestedNetworks {
 
 	private static MCODEVisualStyle vs;
@@ -60,7 +33,7 @@ public class MCODEClustersToNestedNetworks {
 	}
 
 	public static void convert(MCODECluster[] clusters) {
-		Arrays.sort(clusters, new MCODEClusterComparator());
+		MCODEUtil.sortClusters(clusters);
 
 		if ( clusters == null || clusters.length <= 0 )
 			return;
