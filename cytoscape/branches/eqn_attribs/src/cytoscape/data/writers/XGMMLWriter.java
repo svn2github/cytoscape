@@ -1,14 +1,7 @@
 /*
  File: XGMMLWriter.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -166,7 +159,7 @@ public class XGMMLWriter {
 
 	// File format version. For compatibility.
 	private static final String FORMAT_VERSION = "documentVersion";
-	private static final float VERSION = (float) 1.1;
+	private static final float VERSION = (float) 1.2;
 	private static final String METADATA_NAME = "networkMetadata";
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
@@ -203,7 +196,7 @@ public class XGMMLWriter {
 	/**
 	 *
 	 */
-    public static final String ENCODE_PROPERTY = "cytoscape.encode.xgmml.attributes";
+	public static final String ENCODE_PROPERTY = "cytoscape.encode.xgmml.attributes";
 
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
@@ -221,9 +214,9 @@ public class XGMMLWriter {
 	private String indentString = "";
 	private Writer writer = null;
 
-    private boolean doFullEncoding;
+	private boolean doFullEncoding;
 
-    /**
+	/**
 	 * Constructor.<br>
 	 * Initialize data objects to be saved in XGMML file.<br>
 	 *
@@ -250,9 +243,9 @@ public class XGMMLWriter {
 		edgeAttNames = edgeAttributes.getAttributeNames();
 		networkAttNames = networkAttributes.getAttributeNames();
 
-        Arrays.sort(nodeAttNames);
-        Arrays.sort(edgeAttNames);
-        Arrays.sort(networkAttNames);
+		Arrays.sort(nodeAttNames);
+		Arrays.sort(edgeAttNames);
+		Arrays.sort(networkAttNames);
 
 		// Create our indent string (480 blanks);
 		for (int i = 0; i < 20; i++) 
@@ -745,42 +738,60 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeAttribute(final String id, final CyAttributes attributes,
-	                            final String attributeName) throws IOException {
+	                            final String attributeName) throws IOException
+	{
 		// create an attribute and its type
 		final byte attType = attributes.getType(attributeName);
 		String value = null;
 		String type = null;
-		boolean editable = attributes.getUserEditable(attributeName);
-		boolean hidden = !attributes.getUserVisible(attributeName);
+		final boolean editable = attributes.getUserEditable(attributeName);
+		final boolean hidden = !attributes.getUserVisible(attributeName);
+		final String eqnFormula = attributes.getEquationFormula(id, attributeName);
 
 		// process float
 		if (attType == CyAttributes.TYPE_FLOATING) {
-			Double dAttr = attributes.getDoubleAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true, hidden, editable);
+			if (eqnFormula != null)
+				writeEquationAttributeXML(attributeName, ObjectType.REAL, eqnFormula, true, hidden, editable);
+			else {
+				final Double dAttr = attributes.getDoubleAttribute(id, attributeName);
+				writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true, hidden, editable);
+			}
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
-			Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true, hidden, editable);
+			if (eqnFormula != null)
+				writeEquationAttributeXML(attributeName, ObjectType.INTEGER, eqnFormula, true, hidden, editable);
+			else {
+				final Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
+				writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true, hidden, editable);
+			}
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
-			String sAttr = attributes.getStringAttribute(id, attributeName);
-			// Protect tabs and returns
-			if (sAttr != null) {
-				sAttr = sAttr.replace("\n", "\\n");
-				sAttr = sAttr.replace("\t", "\\t");
+			if (eqnFormula != null)
+				writeEquationAttributeXML(attributeName, ObjectType.STRING, eqnFormula, true, hidden, editable);
+			else {
+				String sAttr = attributes.getStringAttribute(id, attributeName);
+				// Protect tabs and returns
+				if (sAttr != null) {
+					sAttr = sAttr.replace("\n", "\\n");
+					sAttr = sAttr.replace("\t", "\\t");
+				}
+				if(attributeName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
+					// This is a special attribute for nested network.
+					sAttr = Cytoscape.getNetwork(sAttr).getTitle();
+				}
+				writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true, hidden, editable);
 			}
-			if(attributeName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
-				// This is a special attribute for nested network.
-				sAttr = Cytoscape.getNetwork(sAttr).getTitle();
-			}
-			writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true, hidden, editable);
 		}
 		// process boolean
 		else if (attType == CyAttributes.TYPE_BOOLEAN) {
-			Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true, hidden, editable);
+			if (eqnFormula != null)
+				writeEquationAttributeXML(attributeName, ObjectType.BOOLEAN, eqnFormula, true, hidden, editable);
+			else {
+				final Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
+				writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true, hidden, editable);
+			}
 		}
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
@@ -965,16 +976,17 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttributeXML(String name, ObjectType type, 
-	                               Object value, boolean end) throws IOException {
+	private void writeAttributeXML(final String name, final ObjectType type, final Object value,
+	                               final boolean end) throws IOException
+	{
 		if (name == null && type == null)
 			writeElement("</att>\n");
 		else {
-			writeElement("<att type="+quote(type.toString()));
+			writeElement("<att type=" + quote(type.toString()));
 			if (name != null)
-				writer.write(" name="+quote(name));
+				writer.write(" name=" + quote(name));
 			if (value != null)
-				writer.write(" value="+quote(value.toString()));
+				writer.write(" value=" + quote(value.toString()));
 			if (end)
 				writer.write("/>\n");
 			else
@@ -994,17 +1006,56 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttributeXML(String name, ObjectType type, 
-	                               Object value, boolean end,
-	                               boolean hidden, boolean editable) throws IOException {
+	private void writeAttributeXML(final String name, final ObjectType type, 
+	                               final Object value, final boolean end,
+	                               final boolean hidden, final boolean editable) throws IOException
+	{
 		if (name == null && type == null)
 			writeElement("</att>\n");
 		else {
-			writeElement("<att type="+quote(type.toString()));
+			writeElement("<att type=" + quote(type.toString()));
 			if (name != null)
-				writer.write(" name="+quote(name));
+				writer.write(" name=" + quote(name));
 			if (value != null)
-				writer.write(" value="+quote(value.toString()));
+				writer.write(" value=" + quote(value.toString()));
+
+			// Only output hidden and editable if they differ from the default.
+			if (hidden)
+				writer.write(" cy:hidden=\"true\"");
+			if (!editable)
+				writer.write(" cy:editable=\"false\"");
+
+			if (end)
+				writer.write("/>\n");
+			else
+				writer.write(">\n");
+		}
+	}
+
+	/**
+	 * writeEquationAttributeXML outputs an XGMML attribute
+	 *
+	 * @param name is the name of the attribute we are outputting
+	 * @param type is the XGMML type of the attribute
+	 * @param equation is the textual representation of the formula we're outputting
+	 * @param end is a flag to tell us if the attribute should include a tag end
+	 * @param hidden is a flag to tell us if the attribute should be hidden
+	 * @param editable is a flag to tell us if the attribute should be user editable
+	 *
+	 * @throws IOException
+	 */
+	private void writeEquationAttributeXML(final String name, final ObjectType type,
+	                                       final String equation, final boolean end,
+	                                       final boolean hidden, final boolean editable) throws IOException
+	{
+		if (name == null && type == null)
+			writeElement("</att>\n");
+		else {
+			writeElement("<att type=" + quote(type.toString()));
+			if (name != null)
+				writer.write(" name=" + quote(name));
+			writer.write(" value=" + quote(equation));
+			writer.write(" cy:equation=\"true\"");
 
 			// Only output hidden and editable if they differ from the default.
 			if (hidden)
