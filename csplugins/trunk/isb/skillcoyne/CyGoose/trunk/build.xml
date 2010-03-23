@@ -67,6 +67,7 @@
         nowarn="off"
         debug="on"
         source="1.5"
+        target="1.5"
         optimize="on"
         failonerror="true">
       <classpath refid="project.classpath"/>
