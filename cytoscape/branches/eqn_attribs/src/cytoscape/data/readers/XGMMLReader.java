@@ -301,6 +301,7 @@ public class XGMMLReader extends AbstractGraphReader {
 					pa.setErrorHandler(parser);
 					pa.parse(new InputSource(networkStream));
 					networkName = parser.getNetworkName();
+					parser.compileAndAddEquationAttribs();
 				} catch (OutOfMemoryError oe) {
 					/*
 					 * It's not generally a good idea to catch OutOfMemoryErrors, but in
@@ -311,7 +312,7 @@ public class XGMMLReader extends AbstractGraphReader {
 					throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
 				} catch (ParserConfigurationException e) {
 				} catch (SAXParseException e) {
-					logger.error("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'", e);
+					logger.error("XGMMLParser: fatal parsing error on line " + e.getLineNumber() + " -- '" + e.getMessage() + "'", e);
 					throw e;
 				}
 			} finally {

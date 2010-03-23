@@ -44,11 +44,12 @@ public class AttribEqnCompiler {
 
 	public AttribEqnCompiler() {
 		this.parser = Parser.getParser();
-		this.equation = null;
-		this.errorMsg = null;
 	}
 
 	public boolean compile(final String equation, final Map<String, Class> attribNameToTypeMap) {
+		this.equation = null;
+		this.errorMsg = null;
+
 		if (!parser.parse(equation, attribNameToTypeMap)) {
 			errorMsg = parser.getErrorMsg();
 			return false;
