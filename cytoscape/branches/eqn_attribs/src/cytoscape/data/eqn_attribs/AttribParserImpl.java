@@ -66,7 +66,8 @@ class AttribParserImpl implements AttribParser {
 	}
 
 	/**
-	 *  @param A valid attribute equation which must start with an equal sign
+	 *  @param eqn                  a valid attribute equation which must start with an equal sign
+	 *  @param attribNameToTypeMap  a list of existing attribute names and their types
 	 *  @returns true if the parse succeeded otherwise false
 	 */
 	public boolean parse(final String eqn, final Map<String, Class> attribNameToTypeMap) {
