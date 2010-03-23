@@ -481,6 +481,15 @@ public interface CyAttributes {
 	public void setAttribute(final String id, final String attributeName, final Equation equation);
 
 	/**
+	 *  @param id            unique identifier.
+	 *  @param attributeName attribute name.
+	 *  @param equation      an attribute equation
+	 *  @param dataType      must be one of MultiHashMapDefinition.TYPE_{BOOLEAN,STRING,INTEGER, or FLOATING_POINT}
+	 */
+	public void setAttribute(final String id, final String attributeName, final Equation equation,
+	                         final byte dataType);
+
+	/**
 	 * Gets a Boolean value at the specified id/attributeName.
 	 *
 	 * @param id            unique identifier.
@@ -569,12 +578,6 @@ public interface CyAttributes {
 	public boolean deleteAttribute(String attributeName);
 
 	/**
-	 * @deprecated Use {@link CyAttributes#setListAttribute setListAttribute()} instead. Will be removed 11/2007.
-	 */
-	public void setAttributeList(String id, String attributeName, List list)
-	    throws IllegalArgumentException;
-
-	/**
 	 * Sets a simple list of attributes.
 	 * <p/>
 	 * <P>A simple list is defined as follows:
@@ -643,12 +646,6 @@ public interface CyAttributes {
 	 *                            is not of type:  TYPE_SIMPLE_LIST.
 	 */
 	public List getListAttribute(String id, String attributeName) throws ClassCastException;
-
-	/**
-	 * @deprecated Use {@link CyAttributes#setMapAttribute setMapAttribute()} instead. Will be removed 11/2007.
-	 */
-	public void setAttributeMap(String id, String attributeName, Map map)
-	    throws IllegalArgumentException;
 
 	/**
 	 * Sets a 'simple' map of attribute values.

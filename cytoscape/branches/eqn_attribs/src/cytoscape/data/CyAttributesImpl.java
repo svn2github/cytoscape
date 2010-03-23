@@ -392,6 +392,67 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
+	 *  @param id            unique identifier.
+	 *  @param attributeName attribute name.
+	 *  @param equation      an attribute equation
+	 *  @param dataType      must be one of MultiHashMapDefinition.TYPE_{BOOLEAN,STRING,INTEGER, or FLOATING_POINT}
+	 */
+	public void setAttribute(final String id, final String attributeName, final Equation equation,
+	                         final byte dataType)
+	{
+		if (id == null)
+			throw new IllegalArgumentException("id is null");
+
+		if (attributeName == null)
+			throw new IllegalArgumentException("attributeName is null");
+
+		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+		if (dimTypes.length != 0)
+			throw new IllegalArgumentException("definition for \"" + attributeName 
+			                                   + "\" already exists and it is not of a scalar type!");
+
+		final byte type = mmapDef.getAttributeValueType(attributeName);
+		final Class returnType = equation.getType();
+		if (type < 0) {
+			if (dataType == MultiHashMapDefinition.TYPE_STRING)
+				/* Everything is compatible w/ this! */;
+			else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
+				if (returnType != Double.class && returnType != Boolean.class)
+					throw new IllegalArgumentException("an equation of type " + returnType
+					                                   + " is not compatible with TYPE_INTEGER for attribute \""
+					                                   + attributeName + "\"!");
+			}
+			else if (dataType == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+				if (returnType != Double.class && returnType != Boolean.class)
+					throw new IllegalArgumentException("an equation of type " + returnType
+					                                   + " is not compatible with TYPE_FLOATING_POINT for attribute \""
+					                                   + attributeName + "\"!");
+			}
+			mmapDef.defineAttribute(attributeName, dataType, null);
+		} else {
+			if (type != dataType)
+				throw new IllegalArgumentException("incompatible data type!");
+
+			if (type == MultiHashMapDefinition.TYPE_STRING)
+				/* Everything is compatible w/ this! */;
+			else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
+				if (returnType != Double.class && returnType != Boolean.class)
+					throw new IllegalArgumentException("an equation of type " + returnType
+					                                   + " is not compatible with TYPE_INTEGER for attribute \""
+					                                   + attributeName + "\"!");
+			}
+			else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+				if (returnType != Double.class && returnType != Boolean.class)
+					throw new IllegalArgumentException("an equation of type " + returnType
+					                                   + " is not compatible with TYPE_FLOATING_POINT for attribute \""
+					                                   + attributeName + "\"!");
+			}
+		}
+
+		mmap.setAttributeValue(id, attributeName, equation, null);
+	}
+
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param id DOCUMENT ME!
@@ -653,18 +714,6 @@ public class CyAttributesImpl implements CyAttributes {
 		return b;
 	}
 
-	// deprecated
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param list DOCUMENT ME!
-	 */
-	public void setAttributeList(String id, String attributeName, List list) {
-		setListAttribute(id, attributeName, list);
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -792,18 +841,6 @@ public class CyAttributesImpl implements CyAttributes {
 		}
 
 		return returnThis;
-	}
-
-	// deprecated
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param map DOCUMENT ME!
-	 */
-	public void setAttributeMap(String id, String attributeName, Map map) {
-		setMapAttribute(id, attributeName, map);
 	}
 
 	/**
