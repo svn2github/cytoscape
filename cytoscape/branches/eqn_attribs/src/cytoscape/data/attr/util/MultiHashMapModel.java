@@ -597,7 +597,8 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 	 * @return  DOCUMENT ME!
 	 */
 	public final Object getAttributeValue(final String objectKey, final String attributeName,
-	                                      final Object[] keyIntoValue) {
+	                                      final Object[] keyIntoValue)
+	{
 		// Pull out the definition, error-checking attributeName in the process.
 		if (attributeName == null)
 			throw new NullPointerException("attributeName is null");
@@ -619,18 +620,15 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 				                                   + " defined, yet keyIntoValue is not empty");
 			}
 		} else { // Keyspace is not empty.
-
 			final int keyIntoValueLength = ((keyIntoValue == null) ? 0 : keyIntoValue.length);
-
-			if (def.keyTypes.length != keyIntoValueLength) {
-				throw new IllegalArgumentException("keyIntoValue has incorrect dimensionality");
-			}
+			if (def.keyTypes.length != keyIntoValueLength)
+				throw new IllegalArgumentException("keyIntoValue has incorrect dimensionality (expected: "
+				                                   + keyIntoValueLength + ", found: " + def.keyTypes.length + ")!");
 		}
 
-		if (def.keyTypes.length == 0) { // Don't even recurse.
-
+		if (def.keyTypes.length == 0) // Don't even recurse.
 			return def.objMap.get(objectKey);
-		} else { // Recurse.
+		else { // Recurse.
 
 			final Object o = def.objMap.get(objectKey);
 
