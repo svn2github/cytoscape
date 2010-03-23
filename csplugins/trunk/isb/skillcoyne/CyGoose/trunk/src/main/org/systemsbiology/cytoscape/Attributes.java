@@ -48,13 +48,23 @@ public class Attributes {
 	private static void setAttribute(CyAttributes cyAtts, String networkObjId,
 			String attributeName, Object attributeValue)
 		{
-		if (attributeValue.getClass().equals(java.lang.String.class)) cyAtts
-				.setAttribute(networkObjId, attributeName, (String) attributeValue);
-		else if (attributeValue.getClass().equals(Integer.class)) cyAtts
-				.setAttribute(networkObjId, attributeName, (Integer) attributeValue);
-		else if (attributeValue.getClass().equals(Double.class)) cyAtts
-				.setAttribute(networkObjId, attributeName, (Double) attributeValue);
+		    //System.out.println("networkObjId: " + networkObjId + ", attributeName: " + attributeName + 
+		    //", attributeValue: " + attributeValue + ", class: " + attributeValue.getClass().getName());
+		if (attributeValue.getClass().equals(java.lang.String.class)) {
+    		cyAtts.setAttribute(networkObjId, attributeName, (String) attributeValue);
+		} else if (attributeValue.getClass().equals(Integer.class)) {
+		    try {
+    		    cyAtts.setAttribute(networkObjId, attributeName, (Integer) attributeValue); 
+		    } catch (IllegalArgumentException ex) {
+		        double d = new Double(attributeValue.toString());
+		        cyAtts.setAttribute(networkObjId, attributeName, d); 
+		    }
+		}  else if (attributeValue.getClass().equals(Double.class)) {
+		    cyAtts.setAttribute(networkObjId, attributeName, (Double) attributeValue);
 		}
+		
+		}
+		
 
 	
 }
