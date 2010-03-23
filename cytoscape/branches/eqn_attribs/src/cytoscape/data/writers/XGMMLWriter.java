@@ -159,7 +159,7 @@ public class XGMMLWriter {
 
 	// File format version. For compatibility.
 	private static final String FORMAT_VERSION = "documentVersion";
-	private static final float VERSION = (float) 1.2;
+	private static final float VERSION = (float) 1.1;
 	private static final String METADATA_NAME = "networkMetadata";
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
