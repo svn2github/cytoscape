@@ -397,7 +397,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param event DOCUMENT ME!
 	 */
 	public void onSelectEvent(SelectEvent event) {
-		// TODO: is this method necessary?  Why this class is selecteventlistener?
+		this.getTreeTable().getTree().updateUI();
 	}
 
 	

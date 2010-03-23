@@ -3,7 +3,6 @@ package cytoscape.visual.customgraphic;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -13,6 +12,7 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 
 	protected Collection<CustomGraphic> cgList;
 	protected String displayName;
+	protected CyCustomGraphicsParser parser;
 	
 	// For tags
 	protected final SortedSet<String> tags;
@@ -53,6 +53,5 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 	public Collection<String> getTags() {
 		return tags;
 	}
-
 
 }

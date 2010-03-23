@@ -25,8 +25,8 @@ public final class NetworkTreeTableModel extends AbstractTreeTableModel {
 		super(root);
 		columnNames = new ArrayList<ColumnTypes>();
 		columnNames.add(ColumnTypes.NETWORK);
-		columnNames.add(ColumnTypes.EDGES);
 		columnNames.add(ColumnTypes.NODES);
+		columnNames.add(ColumnTypes.EDGES);
 
 		networkIcons = new HashMap<String, Icon>();
 	}

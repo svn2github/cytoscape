@@ -42,7 +42,7 @@ public class CustomGraphicsCellRenderer extends DefaultCellRenderer {
 		if ((value != null) && value instanceof CyCustomGraphics<?>) {
 			final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
 			final Icon icon = iconMap.get(cg);
-			if(icon == null)
+			if(icon == null && cg.getImage() != null)
 				label.setIcon(new ImageIcon(CustomGraphicsUtil.getResizedImage(cg.getImage(), 96, null, true)));
 			else
 				label.setIcon(icon);

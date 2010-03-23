@@ -86,6 +86,9 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 import cytoscape.logger.CyLogger;
 import java.net.URLEncoder;
 
@@ -267,8 +270,6 @@ public class CytoscapeSessionReader {
 
             while ((zen = zis.getNextEntry()) != null) {
                 entryName = zen.getName();
-
-                System.out.println("Entry Name ========>>>>> " + entryName);
                 
                 if (entryName.contains("/plugins/")) {
                     extractPluginEntry(entryName);
@@ -303,7 +304,8 @@ public class CytoscapeSessionReader {
                     bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
                 } else if(entryName.endsWith(".png")) {
                 		//image
-                		restoreCustomGraphics(entryName);
+                		final URL imageURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
+                		restoreCustomGraphics(entryName, imageURL);
                 } else
                     logger.warn("Unknown entry found in session zip file: " + entryName);
             } // while loop
@@ -336,8 +338,14 @@ public class CytoscapeSessionReader {
 		}
 	}
 	
-	private void restoreCustomGraphics(String entryName) {
-		
+	private void restoreCustomGraphics(final String entryName, final URL imageURL) throws IOException {
+		final String[] ent = entryName.split(System.getProperty("file.separator"));
+		final String fileName = ent[ent.length-1];
+		String name = fileName.split("\\.")[0];
+		System.out.println("Entry File Name ========>>>>> " + name);
+		CyCustomGraphics<?> graphics = new URLImageCustomGraphics(imageURL.toString());
+		graphics.setDisplayName(name);
+		CustomGraphicsPool.addGraphics(name, graphics);
 	}
 
 	/**

@@ -65,4 +65,10 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 		return DEF_ICON.getImage();
 	}
 
+	@Override
+	public CyCustomGraphicsParser getParser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

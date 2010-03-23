@@ -108,7 +108,18 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		return originalImage;
 	}
 	
+	
+	/**
+	 * This will be used to save this Visual Property.
+	 */
 	public String toString() {
-		return this.hashCode() + "," + this.displayName + "," + this.getClass().getCanonicalName();
+		return this.getClass().getName() + "," + this.hashCode() + "," + this.displayName;
 	}
+	
+	
+	@Override
+	public CyCustomGraphicsParser getParser() {
+		return URLImageCustomGraphicsParser.getInstance();
+	}
+	
 }

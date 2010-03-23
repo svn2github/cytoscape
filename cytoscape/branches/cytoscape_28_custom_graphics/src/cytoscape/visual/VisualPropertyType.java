@@ -246,7 +246,7 @@ public enum VisualPropertyType {
 	NODE_CUSTOM_GRAPHICS("Node Custom Graphics", "nodeCustomGraphics", 
 	    	                         "node.customGraphics", "defaultNodeCustomGraphics", 
 	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(),
-	    	                         new CyCustomGraphicsParser(), true, true)                      
+	    	                         new GraphicsParser(), true, true)                      
 
 	;
 	/*
