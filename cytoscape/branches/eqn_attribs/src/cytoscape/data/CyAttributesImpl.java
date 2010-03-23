@@ -386,6 +386,16 @@ public class CyAttributesImpl implements CyAttributes {
 					                                   + " is not compatible with TYPE_FLOATING_POINT for attribute \""
 					                                   + attributeName + "\"!");
 			}
+			else if (type == MultiHashMapDefinition.TYPE_BOOLEAN) {
+				if (returnType != Boolean.class && returnType != Long.class && returnType != Double.class)
+					throw new IllegalArgumentException("an equation of type " + returnType
+					                                   + " is not compatible with TYPE_BOOLEAN for attribute \""
+					                                   + attributeName + "\"!");
+			}
+			else
+				throw new IllegalArgumentException("an equation of type " + returnType
+					                           + " is not compatible with attribute \""
+					                           + attributeName + "\"!");
 		}
 
 		mmap.setAttributeValue(id, attributeName, equation, null);
@@ -999,6 +1009,10 @@ public class CyAttributesImpl implements CyAttributes {
 	 *  @returns the text representing the equation associated with an attribute or null if there is no equation associated with it
 	 */
 	public String getEquationFormula(final String id, final String attributeName) {
+		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+		if (dimTypes.length != 0)
+			return null;
+
 		final Object attribValue = getAttribute(id, attributeName);
 		if (attribValue == null || !(attribValue instanceof Equation))
 			return null;
