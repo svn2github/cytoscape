@@ -10,6 +10,7 @@ package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
 import giny.model.Node;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,10 +39,16 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectFilter;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.PropUtil;
+import cytoscape.view.CyNetworkView;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+
 import java.util.HashSet;
 import cytoscape.data.Semantics;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 import cytoscape.logger.CyLogger;
 
 //-----------------------------------------------------------------------------------
@@ -74,7 +81,24 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	private static int pathCount = 0;	
 	private static int runCount = 0;	
 	
-	//public static String groupViewerName = "moduleFinderViewer";
+	public static URL url1 = ActiveModulesUI.class.getResource("/JACTIVEMODULE_OVERVIEW_VS.props");
+	public static URL url2 = ActiveModulesUI.class.getResource("/JACTIVEMODULE_MODULE_VS.props");
+	private static String VS_OVERVIEW_NAME = "jActiveModules";
+	private static String VS_MODULE_NAME = "jActiveModules_module";
+	private static VisualStyle vs_overview = null;
+	private static VisualStyle vs_module = null;
+
+	static {
+		
+		// Create visualStyles based on the definition in property files
+		Set<String> names = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames();
+		if (!names.contains(VS_OVERVIEW_NAME)){
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url1);
+		}
+		if (!names.contains(VS_MODULE_NAME)){
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url2);
+		}
+	}
 	
 	// ----------------------------------------------------------------
 	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
@@ -104,6 +128,20 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	}
 
 	public void run() {
+
+		// Find the visualStyles for overview and module 
+		Object[] styles = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyles().toArray();
+		for (int i=0; i< styles.length; i++){
+			VisualStyle vs = (VisualStyle) styles[i];
+			if (vs.getName().equalsIgnoreCase(VS_OVERVIEW_NAME)){
+				vs_overview = vs;
+			}
+			else if (vs.getName().equalsIgnoreCase(VS_MODULE_NAME)){
+				vs_module = vs;
+			}
+		}
+
+		
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
@@ -136,7 +174,21 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		//Edges indicate that nodes in nested networks exist in both nested networks
 		Set<CyEdge>  path_edges = getPathEdges(path_nodes); //new HashSet<CyEdge>();
 		
-		Cytoscape.createNetwork(path_nodes, path_edges, "Overview"+ "_"+ runCount++, cyNetwork);;
+		CyNetwork overview = Cytoscape.createNetwork(path_nodes, path_edges, "Overview"+ "_"+ runCount++, cyNetwork);
+		
+		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+
+		Cytoscape.createNetworkView(overview, overview.getIdentifier(), layout, null);
+		applyVisualStyle(overview,vs_overview);
+
+	}
+
+	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
+		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		view.setVisualStyle(vs.getName());
+		vmm.setNetworkView(view);
+		vmm.setVisualStyle(vs);
 	}
 
 	private Set<CyEdge> getPathEdges(Set path_nodes) {
