@@ -62,6 +62,8 @@
 		<copy todir="${build.classes}/csplugins/mcode/images">
 			<fileset dir="${resources.dir}/images" />
 		</copy>
+		<copy todir="${build.classes}/csplugins/mcode/resources" file="${resources.dir}/MCODE_OVERVIEW_VS.props" />
+		<copy todir="${build.classes}/csplugins/mcode/resources" file="${resources.dir}/MCODE_MODULE_VS.props" />
 		<jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}" />
 			<manifest>
