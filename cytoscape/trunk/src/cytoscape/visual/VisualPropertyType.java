@@ -83,6 +83,7 @@ import cytoscape.visual.parsers.*;
 import cytoscape.visual.ui.EditorDisplayer;
 import cytoscape.visual.ui.EditorDisplayer.EditorType;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
+import cytoscape.logger.CyLogger;
 
 /**
  * Enum for calculator types.<br>
@@ -270,6 +271,8 @@ public enum VisualPropertyType {
 	// display to users.
 	private boolean isAllowed;
 
+	private static final CyLogger logger = CyLogger.getLogger(VisualPropertyType.class);
+
 	/*
 	 * private constructor to put name into this enum.
 	 */
@@ -412,39 +415,20 @@ public enum VisualPropertyType {
 		if ( ret == null )
 			return null;
 
-		// This is an editor.
-		if ( ret instanceof ContinuousMappingEditorPanel) {
+		// special handling for continuous editors
+		if ( ret instanceof ContinuousMappingEditorPanel) 
 			return ret;
-		} else if (this == EDGE_LINE_WIDTH) {
-			try {
-				ret = Float.valueOf(((String)ret));
-			} catch (NumberFormatException e){
-				ret = 1f;
-			}
-		} else if ((action.getCompatibleClass() != ret.getClass())) {
-			try {
-				ret = Double.parseDouble(ret.toString());
-			} catch (NumberFormatException e){
-				ret = 1d;
-			}
-		}
-		
-		// If size, it should be greater than 0.  Otherwise, 1 will be set.
-		if((this.name()).toUpperCase().endsWith("WIDTH") || (this.name()).toUpperCase().endsWith("SIZE")) {
-			if(((Number)ret).doubleValue() < 0) {
-				ret = 1f;
-			}
-		}
-		
-		if((this.name()).toUpperCase().endsWith("OPACITY")) {
-			if (((Number)ret).doubleValue() > 255) {
-				ret = 255d;
-			} else if(((Number)ret).doubleValue() < 0) {
-				ret = 0d;
-			}
-		}
 
-		return ret;
+		// convert strings to objects of expected types
+		else if ( ret instanceof String )
+			ret = valueParser.parseStringValue((String)ret);
+
+		if ( vizProp.isValidValue(ret) )
+			return ret;
+		else {
+			logger.warn("Invalid value specified for " + toString() + " : " + ret);
+			return null;
+		}
 	}
 
 	/**
@@ -519,6 +503,11 @@ public enum VisualPropertyType {
 	public void setDefault(VisualStyle style, Object c) {
 		if ((style == null) || (c == null))
 			return;
+
+		if ( !vizProp.isValidValue( c ) ) {
+			logger.warn("Invalid default value specified for " + toString() + " : " + c);
+			return;
+		}
 
 		if (isNodeProp()) {
 			NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();

@@ -58,6 +58,11 @@ import javax.swing.Icon;
  *
  */
 public class NodeOpacityProp extends AbstractVisualProperty {
+
+	public NodeOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

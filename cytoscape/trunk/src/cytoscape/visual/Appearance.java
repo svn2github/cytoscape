@@ -137,7 +137,7 @@ public class Appearance {
 		for (VisualPropertyType type : VisualPropertyType.values()) {
 			Object o = type.getVisualProperty().parseProperty(nacProps, baseKey);
 
-			if (o != null)
+			if (o != null && type.getVisualProperty().isValidValue(o))
 				vizProps.put(type,o);
 		}
 	}

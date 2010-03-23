@@ -19,6 +19,11 @@ import cytoscape.visual.ui.icon.LineTypeIcon;
 import cytoscape.visual.ui.icon.NodeIcon;
 
 public class NodeLabelOpacityProp extends AbstractVisualProperty {
+
+	public NodeLabelOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

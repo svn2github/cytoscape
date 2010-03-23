@@ -58,6 +58,11 @@ import javax.swing.Icon;
  *
  */
 public class NodeSizeProp extends AbstractVisualProperty {
+	
+	public NodeSizeProp() {
+		validator = new GTZeroValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

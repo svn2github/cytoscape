@@ -62,6 +62,11 @@ import javax.swing.Icon;
  *
  */
 public class EdgeTargetArrowOpacityProp extends AbstractVisualProperty {
+
+	public EdgeTargetArrowOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

@@ -59,6 +59,11 @@ import javax.swing.Icon;
  *
  */
 public class EdgeLineWidthProp extends AbstractVisualProperty {
+
+	public EdgeLineWidthProp() {
+		validator = new GTZeroValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

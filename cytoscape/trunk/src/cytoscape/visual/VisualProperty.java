@@ -110,4 +110,6 @@ public interface VisualProperty {
 	public Object getDefaultAppearanceObject();
 
 	public boolean constrained(VisualPropertyDependency dep);
+
+	boolean isValidValue(Object value);
 }
