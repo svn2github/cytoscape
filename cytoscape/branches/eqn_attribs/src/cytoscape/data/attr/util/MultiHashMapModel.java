@@ -622,7 +622,8 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 		} else { // Keyspace is not empty.
 			final int keyIntoValueLength = ((keyIntoValue == null) ? 0 : keyIntoValue.length);
 			if (def.keyTypes.length != keyIntoValueLength)
-				throw new IllegalArgumentException("keyIntoValue has incorrect dimensionality (expected: "
+				throw new IllegalArgumentException("keyIntoValue has incorrect dimensionality for attribute \""
+				                                   + attributeName + "\"(expected: "
 				                                   + keyIntoValueLength + ", found: " + def.keyTypes.length + ")!");
 		}
 
