@@ -82,6 +82,8 @@
 	   </unzip>
 	   <copy todir="${build.classes}/csplugins/jActiveModules" file="${resources.dir}/plugin.props"/>
 	   <copy todir="${build.classes}" file="${resources.dir}/help.html"/>
+	   <copy todir="${build.classes}" file="${resources.dir}/JACTIVEMODULE_OVERVIEW_VS.props" />
+	   <copy todir="${build.classes}" file="${resources.dir}/JACTIVEMODULE_MODULE_VS.props" />
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<manifest>
 			<attribute name="Cytoscape-Plugin" value="csplugins.jActiveModules.ActiveModulesUI"/>
