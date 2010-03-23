@@ -122,26 +122,26 @@ public class HCSearch2 {
 				// e : mergedNode.edgeIterator())
 				// if (e.value().isType(BFEdge.InteractionType.Physical))
 				// assignMergeLinkScore(e);
-				for (TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> e : mergedNode
-						.edgeIterator())
+				for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> e : mergedNode.edgeIterator())
 					if (e.value().isType(BFEdge.InteractionType.Physical))
-						exec.execute(new MergeLinkRunner(e));
-
+						for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> e2 : e.opposite(mergedNode).edgeIterator())
+							exec.execute(new MergeLinkRunner(e2));
+				
 				try {
 					exec.shutdown();
-					exec.awaitTermination(3000000, TimeUnit.SECONDS);
+					exec.awaitTermination(30, TimeUnit.DAYS);
 					if (!exec.isTerminated())
 						System.out.println("Did not fully terminate!");
 				} catch (InterruptedException e) {
 					System.out.println(e);
 					exec.shutdownNow();
 				}
-
-				// Re-calculate global scores for all newly created edges
-				for (TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> e : mergedNode
-						.edgeIterator())
-					computeGlobalScore(results, e, sfunc);
-
+                
+				//Re-calculate global scores
+				for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> e : mergedNode.edgeIterator())
+					for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> e2 : e.opposite(mergedNode).edgeIterator())
+						computeGlobalScore(results,e2,sfunc);
+		
 				globalscore += max;
 				global_scores.add(globalscore);
 
