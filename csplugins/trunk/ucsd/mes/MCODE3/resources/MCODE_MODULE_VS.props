@@ -1,0 +1,43 @@
+#This file specifies visual mappings for Cytoscape and has been automatically generated.
+# WARNING: any changes you make to this file while Cytoscape is running may be overwritten.
+# Any changes may make these visual mappings unreadable.
+# Please make sure you know what you are doing before modifying this file by hand.
+#
+#Tue Mar 23 15:32:38 PDT 2010
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeColor=0,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeFont=SanSerif,plain,10
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeFontSize=10.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeLabel=
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeLabelColor=0,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeLabelOpacity=255
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeLabelWidth=100.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeLineStyle=SOLID
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeLineWidth=1.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeOpacity=255
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeSourceArrowColor=0,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeSourceArrowOpacity=255
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeSourceArrowShape=NONE
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeTargetArrowColor=0,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeTargetArrowOpacity=255
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeTargetArrowShape=NONE
+edgeAppearanceCalculator.MCODE_MODULE.defaultEdgeToolTip=
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeBorderColor=0,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeBorderOpacity=255
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeFillColor=255,255,255
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeFont=Default,plain,12
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeFontSize=12.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeHight=30.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeLabel=
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeLabelColor=0,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeLabelOpacity=255
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeLabelPosition=C,C,c,0,0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeLabelWidth=100.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeLineStyle=SOLID
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeLineWidth=1.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeOpacity=255
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeShape=rect
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeShowNestedNetwork=true
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeSize=35.0
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeToolTip=
+edgeAppearanceCalculator.MCODE_MODULE.defaultNodeWidth=70.0
