@@ -87,7 +87,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 
 		// First, set values
 		setHorizontalAlignment(JLabel.LEFT);
-		if (valAndEqn == null)
+		if (valAndEqn == null || valAndEqn.getValue() == null)
 			setText("");
 		else
 			setText(valAndEqn.getValue().toString());
@@ -176,14 +176,16 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	 * @return
 	 */
 	private String getFormattedToolTipText(final String colName, final Object value) {
-		StringBuilder html = new StringBuilder();
+		if (value == null)
+			return "";
 
+		final StringBuilder html = new StringBuilder();
 		html.append(HTML_BEG + "<strong text=\"#4169E1\" >" + colName + "</strong><br><hr>"
 		            + HTML_STYLE);
 
-		if ((value instanceof List == false) && (value instanceof Map == false)) {
+		if ((value instanceof List == false) && (value instanceof Map == false))
 			html.append(value.toString());
-		} else if (value instanceof List) {
+		else if (value instanceof List) {
 			html.append("<ul leftmargin=\"0\">");
 
 			for (Object item : (List<Object>) value) {

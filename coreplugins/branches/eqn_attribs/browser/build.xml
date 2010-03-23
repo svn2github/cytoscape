@@ -25,7 +25,7 @@
     <property name="browser.root.dir" value="."/>
     <property name="browser.lib.dir" value="${browser.root.dir}/lib"/>
   	
-    <property name="cytoscape.dir" value="../../cytoscape"/>
+    <property name="cytoscape.dir" value="../../eqn_attribs"/>
   	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 

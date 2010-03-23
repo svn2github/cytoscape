@@ -674,7 +674,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						    || (column < 0))
 							return;
 
-						if ((value != null) && (value.getValue().getClass() == String.class)) {
+						if (value != null && value.getValue() != null && value.getValue().getClass() == String.class) {
 							URL url = null;
 							try {
 								url = new URL((String)value.getValue());

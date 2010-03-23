@@ -143,8 +143,10 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 			final String equation = valAndEq.getEquation();
 			if (isSelected && equation != null)
 				text = equation;
-			else
+			else if (valAndEq.getValue() != null)
 				text = valAndEq.getValue().toString();
+			else
+				text = "";
 		}
 		textArea.setText(text);
 
