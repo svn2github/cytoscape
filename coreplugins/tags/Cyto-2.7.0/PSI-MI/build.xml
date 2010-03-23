@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Cytoscape PSI-MI Plug In -->
+<project  default="all" name="Cytoscape PSI-MI PlugIn">
+    <!-- Version Numbers -->
+    <property name="psi_mi_version" value="0_3"/>
+    <!--  Define Check Style Task -->
+    <taskdef resource="checkstyletask.properties"/>
+    <!-- The directory containing source code -->
+    <property name="src.dir" value="src"/>
+    <!-- The directory containing resources -->
+    <property name="resources.dir" value="resources"/>
+    <!-- The directory containing the configuration files -->
+    <property name="config.dir" value="config"/>
+    <!-- Temporary build directories -->
+    <property name="build.dir" value="build"/>
+    <property name="build.classes" value="${build.dir}/classes"/>
+    <!-- Jars directory -->
+    <property name="jars.dir" value="${build.dir}/jars"/>
+    <!-- PlugIns directory -->
+    <property name="plugins.dir" value="plugins"/>
+    <!-- Global "magic" property for <javac> -->
+    <property name="build.compiler" value="modern"/>
+    <!-- Junit Directory -->
+    <property name="junit.dir" value="${build.dir}/junit"/>
+	
+	<!-- Location of Cytoscape Source -->
+	<property name="cytoscape.dir" value="../../cytoscape"/>
+
+
+    <!-- For XJC compiler task -->
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+            <classpath refid="classpath" />
+    </taskdef>
+
+    <!-- Classpath with all lib JAR Files -->
+    <path id="classpath">
+        <pathelement path="${build.classes}"/>
+        <fileset dir="${cytoscape.dir}/lib">
+                <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${cytoscape.dir}/">
+                <include name="cytoscape.jar"/>
+        </fileset>
+        <fileset dir="${cytoscape.dir}/lib/build-libs/">
+                <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <!-- Target to create the build directories prior to compilation -->
+    <target name="prepare">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.classes}"/>
+        <mkdir dir="${jars.dir}"/>
+    </target>
+
+    <!--  Target to clean out all directories -->
+    <target description="Removes all generated files." name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${jars.dir}"/>
+        <delete dir="${plugins.dir}"/>
+        <delete dir="${junit.dir}"/>
+        <delete dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
+        <delete dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
+    </target>
+
+    <!--  Target to compile all code -->
+    <target depends="prepare, bind" description="Compiles all source code."
+        name="compile">
+        <javac debug="true" debuglevel="source,lines,var"
+		   source="1.5"
+		   target="1.5"
+		destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+    <!-- Generate package using XJC compiler            -->
+    <target name="bind" description="Run XJC to generate new packages.">
+        <mkdir dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
+        <mkdir dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
+        <xjc schema="schemas/MIF1.xsd"
+             destdir="${src.dir}"
+             package="org.cytoscape.coreplugin.psi_mi.schema.mi1">
+            <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
+            <arg value="-nv"/>
+        </xjc>
+        <xjc schema="schemas/MIF25.xsd"
+             destdir="${src.dir}"
+             package="org.cytoscape.coreplugin.psi_mi.schema.mi25">
+            <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
+            <arg value="-nv"/>
+        </xjc>
+    </target>
+
+    <!--  Target to Run Cytoscape -->
+    <target depends="jar" description="Runs Cytoscape." name="run">
+        <copy todir="${plugins.dir}">
+            <fileset dir="${jars.dir}"/>
+        </copy>
+        <copy todir="${plugins.dir}">
+            <fileset dir="${cytoscape.dir}/plugins/core"/>
+        </copy>
+    	<java jar="${cytoscape.dir}/cytoscape.jar" fork="true">
+            <arg line="-p plugins"/>
+        </java>
+    </target>
+
+    <!--  Target to Run CheckStyle on all Source Code -->
+    <!--  Uses the Sun Coding Conventions Configuration -->
+    <target description="Checks Sun Coding Conventions" name="check">
+        <checkstyle config="${config.dir}/sun_checks.xml">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+                <exclude name="org/cytoscape/coreplugin/psi_mi/schema/**/*.java"/>
+            </fileset>
+        </checkstyle>
+    </target>
+
+    <!--  Target to Run All JUnit Tests -->
+    <target depends="compile" description="Runs all JUnit Tests" name="test">
+        <delete dir="${junit.dir}"/>
+        <mkdir dir="${junit.dir}"/>
+        <mkdir dir="${junit.dir}/reports"/>
+        <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
+            <formatter type="plain" usefile="false"/>
+            <test name="org.cytoscape.coreplugin.psi_mi.test.AllTest"/>
+            <classpath refid="classpath"/>
+        </junit>
+    </target>
+
+    <!--  Target to Create PlugIn JAR -->
+    <target depends="compile" description="Creates PlugIn JAR" name="jar">
+
+        <!-- Start clean -->
+        <delete dir="${jars.dir}"/>
+        <mkdir dir="${jars.dir}"/>
+
+        <!--  Create PSI-MI Jar -->
+	<copy todir="${build.classes}/org/cytoscape/coreplugin/psi_mi/plugin" file="${resources.dir}/plugin.props"/>
+        <jar destfile="${jars.dir}/psi_mi.jar">
+            <fileset dir="${build.classes}"/>
+	    <manifest>
+	    	<attribute name="Cytoscape-Plugin" 
+		           value="org.cytoscape.coreplugin.psi_mi.plugin.PsiMiPlugIn"/>
+	    </manifest>
+        </jar>
+    </target>
+
+    <!--  Builds and tests everything -->
+    <target depends="jar" description="Builds and tests everything" name="all"/>
+</project>

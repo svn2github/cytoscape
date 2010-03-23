@@ -1,0 +1,1 @@
+Cytoscape-Plugin: cytoscape.coreplugins.biopax.BiopaxPlugin
