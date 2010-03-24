@@ -138,6 +138,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         edgeAttributePanel.add(physicalEdgeLabel, gridBagConstraints);
 
         geneticEdgeLabel.setText("Genetic:");
@@ -154,6 +155,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
         edgeAttributePanel.add(physicalEdgeComboBox, gridBagConstraints);
 
         geneticEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -166,6 +168,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         edgeAttributePanel.add(geneticEdgeComboBox, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -180,18 +183,21 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         alphaLabel.setText("Alpha:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
         scorePanel.add(alphaLabel, gridBagConstraints);
 
         alphaMultiplierLabel.setText("Alpha Multiplier:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         scorePanel.add(alphaMultiplierLabel, gridBagConstraints);
 
         degreeLabel.setText("Physical network filter degree (optional):");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         scorePanel.add(degreeLabel, gridBagConstraints);
 
         alphaTextField.setPreferredSize(new java.awt.Dimension(50, 20));
@@ -203,6 +209,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         scorePanel.add(alphaTextField, gridBagConstraints);
 
         alphaMultiplierTextField.setPreferredSize(new java.awt.Dimension(50, 20));
@@ -215,12 +222,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         scorePanel.add(alphaMultiplierTextField, gridBagConstraints);
 
         degreeTextField.setPreferredSize(new java.awt.Dimension(50, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         scorePanel.add(degreeTextField, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -237,12 +246,18 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.setLayout(new java.awt.GridBagLayout());
 
         edgeFilteringPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Filtering"));
-        pValueThresholdLabel.setText("p-Value Threshold:");
-        edgeFilteringPanel.add(pValueThresholdLabel, new java.awt.GridBagConstraints());
+        pValueThresholdLabel.setText("Percentile Threshold:");
+        pValueThresholdLabel.setPreferredSize(new java.awt.Dimension(101, 14));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 93, 0, 0);
+        edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
 
         pValueThresholdTextField.setText("0.05");
         pValueThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 20));
-        edgeFilteringPanel.add(pValueThresholdTextField, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        edgeFilteringPanel.add(pValueThresholdTextField, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -252,12 +267,15 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         lbNumberOfSamples.setText("Number of samples:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         edgeFilteringPanel.add(lbNumberOfSamples, gridBagConstraints);
 
         numberOfSamplesTextField.setText("100000");
-        numberOfSamplesTextField.setPreferredSize(new java.awt.Dimension(65, 20));
+        numberOfSamplesTextField.setPreferredSize(new java.awt.Dimension(50, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         edgeFilteringPanel.add(numberOfSamplesTextField, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -317,7 +335,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         add(buttonPanel, gridBagConstraints);
 
     }// </editor-fold>                        
-
 
 	
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -412,15 +429,15 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JLabel lbPlaceHolder1;
     private javax.swing.JLabel lbPlaceHolder2;
     private javax.swing.JLabel lbPlaceHolder3;
+    private javax.swing.JTextField numberOfSamplesTextField;
     private javax.swing.JLabel pValueThresholdLabel;
     private javax.swing.JTextField pValueThresholdTextField;
     private javax.swing.JComboBox physicalEdgeComboBox;
     private javax.swing.JLabel physicalEdgeLabel;
     private javax.swing.JPanel scorePanel;
     private javax.swing.JButton searchButton;
-    private javax.swing.JTextField numberOfSamplesTextField;
     private javax.swing.JPanel topPane;
-    // End of variables declaration                   
+    // End of variables declaration                     
                
   
 	private NetworkSelectorPanel networkPanel;
