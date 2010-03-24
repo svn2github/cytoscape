@@ -853,7 +853,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				}
 			}
 
-			String idField = (String) this.getValueAt(row, idCol);
+			String idField = (String) ((ValueAndEquation)this.getValueAt(row, idCol)).getValue();
 
 			List contents = (List) model.getAttributeValueAndEquation(CyAttributes.TYPE_SIMPLE_LIST, idField,
 										  this.getColumnName(column)).getValue();

@@ -561,12 +561,14 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		if (this.objectType != NETWORK) {
 			// This edit is for node or edge.
-			edit = new DataEditAction(this, getValueAt(rowIdx, keyIndex).toString(),
+			final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIdx, keyIndex);
+			edit = new DataEditAction(this, valAndEq.getValue().toString(),
 			                          getColumnName(colIdx), getValueAt(rowIdx, colIdx), newValue,
 			                          objectType);
 		} else {
+			final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIdx, 0);
 			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
-			                          (String) this.getValueAt(rowIdx, 0),
+			                          valAndEq.getValue().toString(),
 			                          getValueAt(rowIdx, colIdx), newValue, objectType);
 		}
 
