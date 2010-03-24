@@ -43,7 +43,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final String DEF_DEGREE = "";
 	private static final double DEF_CUTOFF = 20.0;
 	private static final double DEF_PVALUE_THRESHOLD = 0.05;
-	private static final int DEF_NUMBER_OF_SAMPLES = 1000000;
+	private static final int DEF_NUMBER_OF_SAMPLES = 100000;
 	
 	private Container container;
 	private SearchParameters parameters;
@@ -492,12 +492,20 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		parameters.setGeneticEdgeAttrName(geneticEdgeAttrName);
 		parameters.setPhysicalEdgeAttrName(physicalEdgeAttrName);
 
+		String currentField = "number";
 		try {
+			currentField = "alpha";
 			parameters.setAlpha(Double.parseDouble(alphaTextField.getText()));
-			parameters.setAlphaMultiplier(Double
-						      .parseDouble(alphaMultiplierTextField.getText()));
-			parameters.setAlphaMultiplier(Integer.parseInt(degreeTextField.getText()));
 
+			currentField = "alpha multiplier";
+			parameters.setAlphaMultiplier(Double.parseDouble(alphaMultiplierTextField.getText()));
+
+			currentField = "phys. network filter degree";
+			final String degree = degreeTextField.getText();
+			if (degree.length() > 0)
+			parameters.setPhysicalNetworkFilterDegree(Integer.parseInt(degree));
+
+			currentField = "p-value threshold";
 			final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
 			final double PVALUE_THRESHOLD_MIN = 0.001;
 			final double PVALUE_THRESHOLD_MAX = 1.0;
@@ -510,6 +518,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			}
 			parameters.setPValueThreshold(pValueThreshold);
 
+			currentField = "number of samples";
 			final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
 			if (numberOfSamples <= 0) {
 				JOptionPane.showMessageDialog(this,
@@ -520,7 +529,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			parameters.setNumberOfSamples(numberOfSamples);
 		} catch (final NumberFormatException e) {
 			JOptionPane.showMessageDialog(this,
-						      "Invalid number(s).  Please re-enter value(s).",
+						      "Invalid " + currentField + ".  Please re-enter value(s).",
 						      "Invalid Number", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
