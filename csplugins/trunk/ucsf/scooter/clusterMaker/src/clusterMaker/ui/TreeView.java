@@ -144,6 +144,8 @@ public class TreeView extends TreeViewApp implements Observer,
 
 	public void updateSettings() {}
 
+	public void updateSettings(boolean force) {}
+
 	public ClusterProperties getSettings() { return null; }
 
 	public void startViz() {

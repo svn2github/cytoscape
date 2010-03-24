@@ -66,7 +66,7 @@ import clusterMaker.algorithms.glay.GLayCluster;
 // import clusterMaker.algorithms.QT.QTCluster;
 // import clusterMaker.algorithms.Spectral.SpectralCluster;
 // import clusterMaker.algorithms.CP.CPCluster;
-// import clusterMaker.algorithms.AP.APCluster;
+import clusterMaker.algorithms.AP.APCluster;
 
 /**
  * The ClusterMaker class provides the primary interface to the
@@ -76,6 +76,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 	static final double VERSION = 0.1;
 	HashMap<JMenuItem,ClusterViz> vizMenus;
 	HashMap<String, ClusterViz> vizMap;
+	HashMap<String, ClusterAlgorithm> algMap;
 
 	public final static String GROUP_ATTRIBUTE = "__clusterGroups";
 	public final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
@@ -95,6 +96,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 
 		vizMenus = new HashMap();
 		vizMap = new HashMap();
+		algMap = new HashMap();
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
@@ -102,7 +104,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new MCLCluster());
 		// addClusterAlgorithm(menu, new SpectralCluster());
 		// addClusterAlgorithm(menu, new CPCluster());
-		// addClusterAlgorithm(menu, new APCluster());
+		addClusterAlgorithm(menu, new APCluster());
 		addClusterAlgorithm(menu, new GLayCluster());
 		addClusterAlgorithm(menu, new FORCECluster());
 		addClusterAlgorithm(menu, new TransClustCluster());
@@ -134,6 +136,11 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
+
+		// Register our commands
+		new clusterMaker.commands.ClusterCommandHandler(algMap);
+		new clusterMaker.commands.VizCommandHandler(vizMap);
+
 		CyLogger.getLogger(ClusterMaker.class).info("clusterMaker "+VERSION+" initialized");
 
   }
@@ -157,6 +164,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
  	 * @param algorithm the cluster algorithm itself
  	 */  
 	private void addClusterAlgorithm(JMenu menu, ClusterAlgorithm algorithm) {
+		algMap.put(algorithm.getShortName(), algorithm);
 		ClusterViz visualizer = algorithm.getVisualizer();
 
 		if (visualizer != null && !vizMap.containsKey(visualizer.getShortName())) {

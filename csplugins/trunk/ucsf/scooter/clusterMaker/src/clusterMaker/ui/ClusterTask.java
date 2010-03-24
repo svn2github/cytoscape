@@ -56,6 +56,7 @@ public class ClusterTask implements Task {
 	ClusterAlgorithm cluster;
 	ClusterSettingsDialog dialog;
 	TaskMonitor monitor;
+	boolean done = false;
 
 	/**
 	 * Creates the task.
@@ -65,6 +66,7 @@ public class ClusterTask implements Task {
 	public ClusterTask(ClusterAlgorithm cluster, ClusterSettingsDialog dialog) {
 		this.cluster = cluster; 
 		this.dialog = dialog;
+		this.done = false;
 	}
 
 	/**
@@ -78,8 +80,11 @@ public class ClusterTask implements Task {
 	 * Run the algorithm.  
 	 */
 	public void run() {
+		done = false;
 		cluster.doCluster(monitor);
-		dialog.updateVizButton();
+		if (dialog != null)
+			dialog.updateVizButton();
+		done = true;
 	}
 
 	/**
@@ -88,6 +93,11 @@ public class ClusterTask implements Task {
 	public void halt() {
 		cluster.halt();
 	}
+
+	/**
+ 	 * For callers that want to know when we're done...
+ 	 */
+	public boolean done() { return done; }
 
 	/**
 	 * Get the "nice" title of this algorithm

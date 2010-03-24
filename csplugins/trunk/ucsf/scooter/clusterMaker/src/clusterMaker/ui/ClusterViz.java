@@ -78,6 +78,7 @@ public interface ClusterViz {
 	 *
 	 */
 	public void updateSettings();
+	public void updateSettings(boolean force);
 
   /**
 	 * This method is used to ask the visualizer to get all of its tunables

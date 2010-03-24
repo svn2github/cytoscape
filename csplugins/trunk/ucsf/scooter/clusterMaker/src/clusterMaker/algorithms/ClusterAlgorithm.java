@@ -88,6 +88,7 @@ public interface ClusterAlgorithm {
 	 * by using Java Preferences.
 	 */
 	public void updateSettings();
+	public void updateSettings(boolean force);
 
   /**
 	 * This method is used to ask the algorithm to get all of its tunables
