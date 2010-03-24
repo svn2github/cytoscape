@@ -365,7 +365,7 @@ class AttribParserImpl implements AttribParser {
 
 		final Class returnType = func.validateArgTypes(argTypes.toArray(new Class[argTypes.size()]));
 		if (returnType == null)
-			throw new IllegalStateException("invalid number of type of arguments in call to "
+			throw new IllegalStateException("invalid number or type of arguments in call to "
 			                                + functionNameCandidate + "()!");
 
 		if (token != AttribToken.CLOSE_PAREN)
