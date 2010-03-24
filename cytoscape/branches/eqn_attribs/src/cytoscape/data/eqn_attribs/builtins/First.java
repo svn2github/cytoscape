@@ -65,7 +65,7 @@ public class First implements AttribFunction {
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final List list = (List)args[0];
 		if (list.isEmpty())
-			throw new IllegalArgumentException("cab't get the first argument of an empty list in a call to FIRST()!");
+			throw new IllegalArgumentException("can't get the first argument of an empty list in a call to FIRST()!");
 
 		return list.get(0).toString();
 	}
