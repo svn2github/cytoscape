@@ -340,8 +340,12 @@ public class InterpreterTest extends TestCase {
 		numbers.add(4.0);
 		numbers.add(5.0);
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
-		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
-		assertEquals(new Double(3.0), interpreter.run());
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(3.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=AVERAGE(1,2.0,3)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(2.0), interpreter2.run());
 	}
 
 	public void testMIN() throws Exception {

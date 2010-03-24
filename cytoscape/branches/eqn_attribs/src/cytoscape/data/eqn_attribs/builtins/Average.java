@@ -47,11 +47,22 @@ public class Average implements AttribFunction {
 	public String getHelpDescription() { return "Call this with \"AVERAGE(list)\" or \"AVERAGE(arg1,arg2,...,argN)\""; }
 
 	/**
-	 *  @returns Double.class or null if there is not exactly a single list argument
+	 *  @returns Double.class or null if there is not either exactly a single list argument nor a list of numeric arguments
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || argTypes[0] != List.class)
+		// An empty argument list is invalid.
+		if (argTypes.length == 0)
 			return null;
+
+		// A single List argument is valid.
+		if (argTypes.length == 1 && argTypes[0] == List.class)
+			return Double.class;
+
+		// Any number of numeric arguments are valid.
+		for (final Class argType : argTypes) {
+			if (argType != Double.class && argType != Long.class)
+				return null;
+		}
 
 		return Double.class;
 	}
@@ -63,33 +74,44 @@ public class Average implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final List list = (List)args[0];
 		double sum = 0.0;
 		double count = 0.0;
 
-		for (final Object listEntry : list) {
-			final Class listEntryType = listEntry.getClass();
-			final double value;
-			if (listEntryType == Double.class)
-				value = (Double)listEntry;
-			else if (listEntryType == Integer.class)
-				value = (Integer)listEntry;
-			else if (listEntryType == String.class) {
-				try {
-					value = Double.parseDouble((String)listEntry);
-				} catch (final NumberFormatException e) {
-					throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to AVERAGE()!");
+		if (args.length == 1 && args[0] instanceof List) {
+			final List list = (List)args[0];
+
+			for (final Object listEntry : list) {
+				final Class listEntryType = listEntry.getClass();
+				final double value;
+				if (listEntryType == Double.class)
+					value = (Double)listEntry;
+				else if (listEntryType == Integer.class)
+					value = (Integer)listEntry;
+				else if (listEntryType == String.class) {
+					try {
+						value = Double.parseDouble((String)listEntry);
+					} catch (final NumberFormatException e) {
+						throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to AVERAGE()!");
+					}
 				}
+				else
+					throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to AVERAGE()!");
+
+				sum += value;
+				++count;
 			}
-			else
-				throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to AVERAGE()!");
-
-			sum += value;
-			++count;
+		} else { // We expect any number of numeric args.
+			for (final Object arg : args) {
+				if (arg instanceof Double)
+					sum += (Double)arg;
+				else // Must be a Long.
+					sum += (Long)arg;
+				++count;
+			}
 		}
-
+			
 		if (count == 0.0)
-			throw new IllegalArgumentException("can't take the average of numbers in an empty list!");
+			throw new IllegalArgumentException("can't take the average of an empty list!");
 
 		return sum / count;
 	}
