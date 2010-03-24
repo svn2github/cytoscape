@@ -419,11 +419,32 @@ class XGMMLParser extends DefaultHandler {
 	 *
 	 * @param type the ObjectType of the value
 	 * @param atts the attributes
+	 * @return the value of the attribute in the appropriate type or a string if the value starts with an equal sign
+	 */
+	Object getTypedAttributeValueOrEquation(final ObjectType type, final Attributes atts) throws SAXParseException {
+		final String value = atts.getValue("value");
+		if (value != null && value.length() >= 2 && value.charAt(0) == '=') // Must be an equation!
+			return value;
+		try {
+			return getTypedValue(type, value);
+		} catch (final Exception e) {
+			throw new SAXParseException("Unable to convert '" + value + "' to type " + type.toString(), locator);
+		}
+	}
+
+
+	/**
+	 * Return the typed attribute value for the passed attribute.  In this case,
+	 * the caller has already determined that this is the correct attribute and
+	 * we just lookup the value.  This routine is responsible for type conversion
+	 * consistent with the passed argument.
+	 *
+	 * @param type the ObjectType of the value
+	 * @param atts the attributes
 	 * @return the value of the attribute in the appropriate type
 	 */
 	Object getTypedAttributeValue(final ObjectType type, final Attributes atts) throws SAXParseException {
 		final String value = atts.getValue("value");
-		Object obj = null;
 		try {
 			return getTypedValue(type, value);
 		} catch (final Exception e) {
@@ -1503,7 +1524,7 @@ class XGMMLParser extends DefaultHandler {
 	private ParseState handleAttribute(Attributes atts, CyAttributes cyAtts, String id) throws SAXException {
 		String name = atts.getValue("name");
 		ObjectType objType = getType(atts.getValue("type"));
-		Object obj = getTypedAttributeValue(objType, atts);
+		Object obj = getTypedAttributeValueOrEquation(objType, atts);
 
 		// Set up defaults
 		boolean hidden = false;
@@ -1520,7 +1541,7 @@ class XGMMLParser extends DefaultHandler {
 
 		String eqString = atts.getValue("cy:equation");
 		if (eqString != null)
-			equation = Boolean.parseBoolean(hString);
+			equation = Boolean.parseBoolean(eqString);
 
 
 		switch (objType) {

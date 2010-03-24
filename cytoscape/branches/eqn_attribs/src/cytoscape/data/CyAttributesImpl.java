@@ -1013,7 +1013,7 @@ public class CyAttributesImpl implements CyAttributes {
 		if (dimTypes.length != 0)
 			return null;
 
-		final Object attribValue = getAttribute(id, attributeName);
+		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
 		if (attribValue == null || !(attribValue instanceof Equation))
 			return null;
 
