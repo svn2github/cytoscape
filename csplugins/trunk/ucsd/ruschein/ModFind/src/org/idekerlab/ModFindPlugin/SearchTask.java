@@ -1,6 +1,8 @@
 package org.idekerlab.ModFindPlugin;
 
+import java.net.URL;
 import java.util.*;
+
 import org.idekerlab.ModFindPlugin.data.*;
 import org.idekerlab.ModFindPlugin.ModFinder.BFEdge;
 import org.idekerlab.ModFindPlugin.ModFinder.HCScoringFunction;
@@ -10,14 +12,37 @@ import org.idekerlab.ModFindPlugin.networks.*;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 
 /**
  * @author kono, ruschein
  */
 public class SearchTask implements Task {
+	
+	public static URL url1 = ModFindPlugin.class.getResource("/resources/ModFind_overview_vs.props");
+	public static URL url2 = ModFindPlugin.class.getResource("/resources/ModFind_module_vs.props");
+	private static String VS_OVERVIEW_NAME = "ModFind";
+	private static String VS_MODULE_NAME = "ModFind_module";
+	private static VisualStyle vs_overview = null;
+	private static VisualStyle vs_module = null;
+
+	static {		
+		// Create visualStyles based on the definition in property files
+		Set<String> names = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames();
+		if (!names.contains(VS_OVERVIEW_NAME)){
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url1);
+		}
+		if (!names.contains(VS_MODULE_NAME)){
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url2);
+		}
+	}
+	
 	private TaskMonitor taskMonitor = null;
 	boolean needsToHalt = false;
 	static int numOfRuns = 1;
@@ -71,8 +96,20 @@ public class SearchTask implements Task {
 		          + HCSearch2.report(results));
 
 		setPercentCompleted(100);
+		
+		// Set the visualSTyle for the overview network
+		applyVisualStyle(nnCreator.getOverviewNetwork(),vs_overview);
 	}
 
+	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
+		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		view.setVisualStyle(vs.getName());
+		vmm.setNetworkView(view);
+		vmm.setVisualStyle(vs);
+	}
+
+	
 	public void halt() {
 		needsToHalt = true;
 	}
