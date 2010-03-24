@@ -106,6 +106,9 @@
       </fileset>
     </unzip>
 	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/ModFindPlugin"/>
+	<copy file="${resources.dir}/ModFind_overview_vs.props" todir="${build.dir}/resources"/>
+	<copy file="${resources.dir}/ModFind_module_vs.props" todir="${build.dir}/resources"/>
+  	
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
