@@ -55,7 +55,8 @@ public class SearchTask implements Task {
 			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction,
 			                 taskMonitor, SEARCH_PERCENTAGE);
 		final double pValueThreshold = parameters.getPValueThreshold();
-		computeSig(results, geneticNetwork, pValueThreshold, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
+		final int numberOfSamples = parameters.getNumberOfSamples();
+		computeSig(results, geneticNetwork, pValueThreshold, numberOfSamples, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
 
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
@@ -101,11 +102,10 @@ public class SearchTask implements Task {
 
 	//This function compute a p-value for each edge in the complex-complex network
 	private static void computeSig(final TypedLinkNetwork<TypedLinkNodeModule<String,BFEdge>,BFEdge> results, SFNetwork gnet,
-	                               double pValueThreshold, final TaskMonitor taskMonitor, final float startProgressPercentage,
+	                               final double pValueThreshold, final int numberOfSamples, final TaskMonitor taskMonitor, final float startProgressPercentage,
 	                               final float endProgressPercentage)
 	{
 		taskMonitor.setStatus("4. Computing permutations...");
-		final int NUM_PERMS = 100000;
 
 		Map<Integer,DoubleVector> numLinks2empiricalDist = new HashMap<Integer,DoubleVector>(30);
 		TypedLinkNetwork<String,Float> gn = gnet.asTypedLinkNetwork();
@@ -139,9 +139,9 @@ public class SearchTask implements Task {
 				//How to save p-value?
 				pVal = numLinks2empiricalDist.get(numGeneticLinks).getEmpiricalValueFromSortedDist(sumOfGeneticValues);
 			} else {
-				DoubleVector temp = new DoubleVector(NUM_PERMS);
+				DoubleVector temp = new DoubleVector(numberOfSamples);
 				
-				for (int i = 1; i <= NUM_PERMS; i++) {
+				for (int i = 1; i <= numberOfSamples; i++) {
 					double permVal = allEdgeValues.sample(numGeneticLinks, false).sum();
 					temp.add(permVal);
 				}

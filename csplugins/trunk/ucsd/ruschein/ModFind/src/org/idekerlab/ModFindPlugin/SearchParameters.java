@@ -13,6 +13,7 @@ public final class SearchParameters {
 	private double physicalNetworkFilterDegree;
 	
 	private double pValueThreshold;
+	private int numberOfSamples;
 	
 	public SearchParameters() {
 	}
@@ -49,7 +50,7 @@ public final class SearchParameters {
 		return alpha;
 	}
 
-	public void setAlphaMultiplier(double alphaMultiplier) {
+	public void setAlphaMultiplier(final double alphaMultiplier) {
 		this.alphaMultiplier = alphaMultiplier;
 	}
 
@@ -57,7 +58,7 @@ public final class SearchParameters {
 		return alphaMultiplier;
 	}
 
-	public void setPhysicalNetworkFilterDegree(double physicalNetworkFilterDegree) {
+	public void setPhysicalNetworkFilterDegree(final double physicalNetworkFilterDegree) {
 		this.physicalNetworkFilterDegree = physicalNetworkFilterDegree;
 	}
 
@@ -65,11 +66,19 @@ public final class SearchParameters {
 		return physicalNetworkFilterDegree;
 	}
 
-	public void setPValueThreshold(double pValueThreshold) {
+	public void setPValueThreshold(final double pValueThreshold) {
 		this.pValueThreshold = pValueThreshold;
 	}
 
 	public double getPValueThreshold() {
 		return pValueThreshold;
+	}
+
+	public void setNumberOfSamples(final int numberOfSamples) {
+		this.numberOfSamples = numberOfSamples;
+	}
+
+	public int getNumberOfSamples() {
+		return numberOfSamples;
 	}
 }

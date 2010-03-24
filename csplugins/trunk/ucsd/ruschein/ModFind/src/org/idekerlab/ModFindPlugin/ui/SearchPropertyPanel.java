@@ -42,7 +42,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final double DEF_ALPHA_MUL = 1.0;
 	private static final String DEF_DEGREE = "";
 	private static final double DEF_CUTOFF = 20.0;
-	private static final double DEF_PERCENTILE = 0.05;
+	private static final double DEF_PVALUE_THRESHOLD = 0.05;
+	private static final int DEF_NUMBER_OF_SAMPLES = 1000000;
 	
 	private Container container;
 	private SearchParameters parameters;
@@ -77,7 +78,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		this.alphaTextField.setText(Double.toString(DEF_ALPHA));
 		this.alphaMultiplierTextField.setText(Double.toString(DEF_ALPHA_MUL));
 		this.degreeTextField.setText(DEF_DEGREE);
-		this.percentileThresholdTextField.setText(Double.toString(DEF_PERCENTILE));
+		this.pValueThresholdTextField.setText(Double.toString(DEF_PVALUE_THRESHOLD));
+		this.numberOfSamplesTextField.setText(Integer.toString(DEF_NUMBER_OF_SAMPLES));
 	}
 
 	public SearchParameters getParameters() {
@@ -108,11 +110,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         degreeTextField = new javax.swing.JTextField();
         lbPlaceHolder1 = new javax.swing.JLabel();
         edgeFilteringPanel = new javax.swing.JPanel();
-        percentileThresholdLabel = new javax.swing.JLabel();
-        percentileThresholdTextField = new javax.swing.JTextField();
+        pValueThresholdLabel = new javax.swing.JLabel();
+        pValueThresholdTextField = new javax.swing.JTextField();
         lbPlaceHolder2 = new javax.swing.JLabel();
         lbNumberOfSamples = new javax.swing.JLabel();
-        tfNumberoFSamples = new javax.swing.JTextField();
+        numberOfSamplesTextField = new javax.swing.JTextField();
         lbPlaceHolder3 = new javax.swing.JLabel();
         buttonPanel = new javax.swing.JPanel();
         helpButton = new javax.swing.JButton();
@@ -235,12 +237,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.setLayout(new java.awt.GridBagLayout());
 
         edgeFilteringPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Filtering"));
-        percentileThresholdLabel.setText("Percentile Threshold:");
-        edgeFilteringPanel.add(percentileThresholdLabel, new java.awt.GridBagConstraints());
+        pValueThresholdLabel.setText("p-Value Threshold:");
+        edgeFilteringPanel.add(pValueThresholdLabel, new java.awt.GridBagConstraints());
 
-        percentileThresholdTextField.setText("0.05");
-        percentileThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 20));
-        edgeFilteringPanel.add(percentileThresholdTextField, new java.awt.GridBagConstraints());
+        pValueThresholdTextField.setText("0.05");
+        pValueThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 20));
+        edgeFilteringPanel.add(pValueThresholdTextField, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -252,11 +254,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.gridy = 1;
         edgeFilteringPanel.add(lbNumberOfSamples, gridBagConstraints);
 
-        tfNumberoFSamples.setText("100000");
-        tfNumberoFSamples.setPreferredSize(new java.awt.Dimension(65, 20));
+        numberOfSamplesTextField.setText("100000");
+        numberOfSamplesTextField.setPreferredSize(new java.awt.Dimension(65, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
-        edgeFilteringPanel.add(tfNumberoFSamples, gridBagConstraints);
+        edgeFilteringPanel.add(numberOfSamplesTextField, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 3;
@@ -339,7 +341,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}
 		
 		// Build parameter object
-		if (buildSearchParameter() == false)
+		if (buildSearchParameters() == false)
 			return;
 
 		// Run search algorithm
@@ -410,13 +412,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JLabel lbPlaceHolder1;
     private javax.swing.JLabel lbPlaceHolder2;
     private javax.swing.JLabel lbPlaceHolder3;
-    private javax.swing.JLabel percentileThresholdLabel;
-    private javax.swing.JTextField percentileThresholdTextField;
+    private javax.swing.JLabel pValueThresholdLabel;
+    private javax.swing.JTextField pValueThresholdTextField;
     private javax.swing.JComboBox physicalEdgeComboBox;
     private javax.swing.JLabel physicalEdgeLabel;
     private javax.swing.JPanel scorePanel;
     private javax.swing.JButton searchButton;
-    private javax.swing.JTextField tfNumberoFSamples;
+    private javax.swing.JTextField numberOfSamplesTextField;
     private javax.swing.JPanel topPane;
     // End of variables declaration                   
                
@@ -464,7 +466,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		updateAttributeLists();
 	}
 
-	private boolean buildSearchParameter() {
+	private boolean buildSearchParameters() {
 		parameters = new SearchParameters();
 		
 		// Set network
@@ -496,17 +498,26 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 						      .parseDouble(alphaMultiplierTextField.getText()));
 			parameters.setAlphaMultiplier(Integer.parseInt(degreeTextField.getText()));
 
-			final double pValueThreshold = Double.parseDouble(percentileThresholdTextField.getText());
-			final double P_VALUE_THRESHOLD_MIN = 0.001;
-			final double P_VALUE_THRESHOLD_MAX = 1.0;
-			if (pValueThreshold < P_VALUE_THRESHOLD_MIN || pValueThreshold > P_VALUE_THRESHOLD_MAX) {
+			final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
+			final double PVALUE_THRESHOLD_MIN = 0.001;
+			final double PVALUE_THRESHOLD_MAX = 1.0;
+			if (pValueThreshold < PVALUE_THRESHOLD_MIN || pValueThreshold > PVALUE_THRESHOLD_MAX) {
 				JOptionPane.showMessageDialog(this,
-				                              "p-value threshold out of range, must be in ["
-				                              + P_VALUE_THRESHOLD_MIN + "," + P_VALUE_THRESHOLD_MAX + "].",
+				                              "pValue threshold out of range, must be in ["
+				                              + PVALUE_THRESHOLD_MIN + "," + PVALUE_THRESHOLD_MAX + "].",
 				                              "Invalid data entry!", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 			parameters.setPValueThreshold(pValueThreshold);
+
+			final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
+			if (numberOfSamples <= 0) {
+				JOptionPane.showMessageDialog(this,
+				                              "number of samples out of range, must > 0",
+				                              "Invalid data entry!", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			parameters.setNumberOfSamples(numberOfSamples);
 		} catch (final NumberFormatException e) {
 			JOptionPane.showMessageDialog(this,
 						      "Invalid number(s).  Please re-enter value(s).",
