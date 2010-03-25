@@ -13,11 +13,6 @@ public class NullCustomGraphics extends AbstractCyCustomGraphics {
 	public NullCustomGraphics() {
 		super(NAME);
 	}
-
-	@Override
-	public CyCustomGraphicsParser getParser() {
-		return null;
-	}
 	
 	
 	@Override

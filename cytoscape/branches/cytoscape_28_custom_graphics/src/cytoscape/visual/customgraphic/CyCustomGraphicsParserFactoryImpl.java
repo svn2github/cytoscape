@@ -8,13 +8,7 @@ public class CyCustomGraphicsParserFactoryImpl implements
 
 	private final Map<Class<? extends CyCustomGraphics<?>>, CyCustomGraphicsParser> parserMap;
 	
-	private static final CyCustomGraphicsParserFactory factory = new CyCustomGraphicsParserFactoryImpl();
-	
-	public static CyCustomGraphicsParserFactory getFactory() {
-		return factory;
-	}
-	
-	private CyCustomGraphicsParserFactoryImpl() {
+	public CyCustomGraphicsParserFactoryImpl() {
 		parserMap = new HashMap<Class<? extends CyCustomGraphics<?>>, CyCustomGraphicsParser>();
 	}
 	

@@ -385,6 +385,7 @@ public class CytoscapeSessionWriter {
 	
 	
 	private void zipCustomGraphics() throws IOException, InterruptedException {
+		// Collect all custom graphics
 		final Collection<CyCustomGraphics<?>> customGraphics = CustomGraphicsPool.getAll();
 		
 		for(CyCustomGraphics<?> cg: customGraphics) {

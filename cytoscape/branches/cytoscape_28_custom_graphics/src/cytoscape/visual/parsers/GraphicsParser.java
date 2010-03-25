@@ -2,15 +2,24 @@ package cytoscape.visual.parsers;
 
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParser;
+import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactory;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactoryImpl;
+import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
 
 public class GraphicsParser implements ValueParser {
 	
+	// Maybe injected from outside if we use DI framework.
+	private final CyCustomGraphicsParserFactory parserFactory;
+	
 	public GraphicsParser() {
 		super();
-		// Add default value parser
-		URLImageCustomGraphicsParser.getInstance();
+		
+		parserFactory = new CyCustomGraphicsParserFactoryImpl();
+		// Register default parser
+		parserFactory.registerParser(URLImageCustomGraphics.class, new URLImageCustomGraphicsParser());
+		
+		// TODO: dynamically add parsers using listener.
 	}
 
 	@Override
@@ -21,14 +30,12 @@ public class GraphicsParser implements ValueParser {
 	private CyCustomGraphics<?> parse(String value) {
 		if(value == null) return null;
 		
-		
-		System.out.println("@@@@@@@@ PARSE: " + value);
 		final String[] parts = value.split(",");
 		// Extract class
 		String className = parts[0];
 		
 		System.out.println("@@@@@@@@ CLASSNAME: " + className);
-		final CyCustomGraphicsParser parser = CyCustomGraphicsParserFactoryImpl.getFactory().getParser(className);
+		final CyCustomGraphicsParser parser = parserFactory.getParser(className);
 		System.out.println("@@@@@@@@ PARSER: " + parser);
 		
 		if(parser == null)		

@@ -116,10 +116,4 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		return this.getClass().getName() + "," + this.hashCode() + "," + this.displayName;
 	}
 	
-	
-	@Override
-	public CyCustomGraphicsParser getParser() {
-		return URLImageCustomGraphicsParser.getInstance();
-	}
-	
 }

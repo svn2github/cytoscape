@@ -20,7 +20,5 @@ public interface CyCustomGraphics <T> {
 	public Image getImage();
 	
 	public Image resizeImage(int width, int height);
-	
-	public CyCustomGraphicsParser getParser();
-	
+		
 }

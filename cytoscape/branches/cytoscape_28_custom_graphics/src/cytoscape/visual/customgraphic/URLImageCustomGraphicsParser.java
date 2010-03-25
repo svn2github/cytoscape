@@ -10,21 +10,12 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 	
 	private String className;
 	
-	private static final Class<?> TARGET_CLASS = URLImageCustomGraphics.class;
+	private static final Class<? extends CyCustomGraphics<?>> TARGET_CLASS = URLImageCustomGraphics.class;
 
-	private static final URLImageCustomGraphicsParser INSTANCE = new URLImageCustomGraphicsParser();
-	
-	public static URLImageCustomGraphicsParser getInstance() {
-		return INSTANCE;
-	}
-	
 	
 	private String entry[];
 	
-	private URLImageCustomGraphicsParser() {
-		//register
-		CyCustomGraphicsParserFactoryImpl.getFactory().registerParser(URLImageCustomGraphics.class, this);
-	}
+	
 
 	@Override
 	public CyCustomGraphics<?> getInstance(String entryStr) {
@@ -58,6 +49,12 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 	public String getVizMapPropsString(CyCustomGraphics<?> customGraphics) {
 		
 		return customGraphics.toString();
+	}
+
+
+	@Override
+	public Class<? extends CyCustomGraphics<?>> getTargetClass() {
+		return TARGET_CLASS;
 	}
 
 }
