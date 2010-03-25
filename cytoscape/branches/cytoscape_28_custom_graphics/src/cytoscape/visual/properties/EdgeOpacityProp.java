@@ -56,6 +56,11 @@ import cytoscape.visual.ui.icon.LineTypeIcon;
  *
  */
 public class EdgeOpacityProp extends AbstractVisualProperty {
+
+	public EdgeOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

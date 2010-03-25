@@ -103,14 +103,13 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	
 	private static final int DEF_DEVIDER_LOCATION = 280;
 	private static final int PANEL_PREFFERED_WIDTH = 250;
-	
 	private static final Dimension COMMAND_BUTTON_SIZE = new Dimension(16, 16);
-	
 	private static final int NETWORK_ICON_SIZE = 64;
+	
 	private static final int DEF_ROW_HEIGHT = 20;
 	
 	// Make this panel as a source of events.
-	private final SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
+	private final SwingPropertyChangeSupport pcs;
 		
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
@@ -164,6 +163,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 				treeTable.setInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, map);
 			}
 		}
+		
+		pcs = new SwingPropertyChangeSupport(this);
 		
 		// Make this a prop change listener for Cytoscape global events.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);

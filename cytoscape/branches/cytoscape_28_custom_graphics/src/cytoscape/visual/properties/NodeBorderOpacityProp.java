@@ -18,6 +18,11 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.icon.NodeIcon;
 
 public class NodeBorderOpacityProp extends AbstractVisualProperty {
+
+	public NodeBorderOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

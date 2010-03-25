@@ -55,6 +55,8 @@ import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.XREF;
 import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
 
+import cytoscape.logger.CyLogger;
+
 import cytoscape.util.URLUtil;
 
 import giny.model.Edge;
@@ -290,6 +292,13 @@ public class OBOFlatFileReader implements OntologyReader {
 				break;
 
 			colonInx = line.indexOf(':');
+			if (colonInx == -1) {
+				// Hmm.... this shouldn't happen, but if it does,
+				// just skip this line and try to recover
+				CyLogger.getLogger(OBOFlatFileReader.class).warn("Illegal format in ontology file for "+name+" ... continuing");
+				continue;
+			}
+
 			key = line.substring(0, colonInx).trim();
 			val = line.substring(colonInx + 1).trim();
 

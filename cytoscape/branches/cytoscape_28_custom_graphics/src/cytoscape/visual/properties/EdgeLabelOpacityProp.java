@@ -16,6 +16,11 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
 public class EdgeLabelOpacityProp extends AbstractVisualProperty {
+	
+	public EdgeLabelOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

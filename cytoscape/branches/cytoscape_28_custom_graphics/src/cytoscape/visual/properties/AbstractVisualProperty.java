@@ -55,6 +55,9 @@ import javax.swing.Icon;
  *
  */
 public abstract class AbstractVisualProperty implements VisualProperty {
+
+	protected ValueValidator validator = null;
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -162,5 +165,12 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 
 	public boolean constrained(VisualPropertyDependency dep) {
 		return false;
+	}
+
+	public boolean isValidValue(Object value) {
+		if ( validator == null )
+			return true;
+		else
+			return validator.isValid(value);
 	}
 }

@@ -63,6 +63,11 @@ import javax.swing.Icon;
  *
  */
 public class EdgeSourceArrowOpacityProp extends AbstractVisualProperty {
+
+	public EdgeSourceArrowOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
