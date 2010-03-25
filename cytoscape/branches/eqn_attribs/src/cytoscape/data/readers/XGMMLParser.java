@@ -1,15 +1,7 @@
 /*
  File: XGMMLParser.java
 
- Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute of Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
- - University of California San Francisco
+ Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,7 +26,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
@@ -135,25 +127,6 @@ class XGMMLParser extends DefaultHandler {
 
 		CyAttributes getAttribs() { return attribs; }
 	};
-
-	private class AttribEquation {
-		private final String id;
-		private final String attrName;
-		private final String equation;
-		private final byte dataType;
-
-		AttribEquation(final String id, final String attrName, final String equation, final byte dataType) {
-			this.id        = id;
-			this.attrName  = attrName;
-			this.equation  = equation;
-			this.dataType  = dataType;
-		}
-
-		String getID() { return id; }
-		String getAttrName() { return attrName; }
-		String getEquation() { return equation; }
-		byte getDataType() { return dataType; }
-	}
 
 	class AttrNameToTypeMaps {
 		private final Map<String, Class> attribNameToTypeMapForNodes;
