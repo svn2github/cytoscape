@@ -11,8 +11,10 @@ import org.idekerlab.ModFindPlugin.ModFinder.SouravScore;
 import org.idekerlab.ModFindPlugin.networks.*;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
 
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
@@ -99,8 +101,51 @@ public class SearchTask implements Task {
 		
 		// Set the visualSTyle for the overview network
 		applyVisualStyle(nnCreator.getOverviewNetwork(),vs_overview);
+		
+		
+		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
+		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
+		int[] edgeIndexArray = nnCreator.getOverviewNetwork().getEdgeIndicesArray();
+		
+		for (int i=0; i<edgeIndexArray.length; i++ ){
+		
+			CyEdge aEdge = (CyEdge) nnCreator.getOverviewNetwork().getEdge(edgeIndexArray[i]);
+			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNestedNetwork(), 
+					(CyNetwork)aEdge.getTarget().getNestedNetwork());
+			
+			int minNodeCount = Math.min(aEdge.getSource().getNestedNetwork().getNodeCount(), 
+								aEdge.getTarget().getNestedNetwork().getNodeCount());
+			
+			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
+			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
+		}
+
+		
 	}
 
+	
+	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
+		
+		int[] nodeIndicesA = networkA.getNodeIndicesArray();
+		int[] nodeIndicesB = networkB.getNodeIndicesArray();
+		
+		
+		HashSet<Integer> hashSet = new HashSet<Integer>();
+		for (int i=0; i< nodeIndicesA.length; i++){
+			hashSet.add( new Integer(nodeIndicesA[i]));
+		}
+
+		int sharedNodeCount =0;
+		for (int i=0; i< nodeIndicesB.length; i++){
+			if (hashSet.contains(new Integer(nodeIndicesB[i]))){
+				sharedNodeCount++;
+			}
+		}
+		
+		return sharedNodeCount;
+	}
+
+	
 	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
 		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
 		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
