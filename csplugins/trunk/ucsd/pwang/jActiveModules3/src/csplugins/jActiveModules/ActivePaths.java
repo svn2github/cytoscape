@@ -26,7 +26,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.Component;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
@@ -37,15 +36,12 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectFilter;
-import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelState;
+
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import java.util.HashSet;
 import cytoscape.data.Semantics;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
@@ -180,9 +176,46 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		Cytoscape.createNetworkView(overview, overview.getIdentifier(), layout, null);
 		applyVisualStyle(overview,vs_overview);
-
+		
+		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
+		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
+		Iterator it = path_edges.iterator();
+		while(it.hasNext()){
+			CyEdge aEdge = (CyEdge) it.next();
+			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNestedNetwork(), 
+					(CyNetwork)aEdge.getTarget().getNestedNetwork());
+			
+			int minNodeCount = Math.min(aEdge.getSource().getNestedNetwork().getNodeCount(), 
+								aEdge.getTarget().getNestedNetwork().getNodeCount());
+			
+			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
+			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
+		}
 	}
 
+
+	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
+		
+		int[] nodeIndicesA = networkA.getNodeIndicesArray();
+		int[] nodeIndicesB = networkB.getNodeIndicesArray();
+		
+		
+		HashSet<Integer> hashSet = new HashSet<Integer>();
+		for (int i=0; i< nodeIndicesA.length; i++){
+			hashSet.add( new Integer(nodeIndicesA[i]));
+		}
+
+		int sharedNodeCount =0;
+		for (int i=0; i< nodeIndicesB.length; i++){
+			if (hashSet.contains(new Integer(nodeIndicesB[i]))){
+				sharedNodeCount++;
+			}
+		}
+		
+		return sharedNodeCount;
+	}
+	
+	
 	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
 		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
 		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
