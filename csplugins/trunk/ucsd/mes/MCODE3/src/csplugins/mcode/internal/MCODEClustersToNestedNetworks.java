@@ -17,6 +17,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.util.PropUtil;
 import cytoscape.visual.VisualMappingManager;
@@ -115,8 +116,49 @@ public class MCODEClustersToNestedNetworks {
 		}
 
 		Cytoscape.getDesktop().setFocus(overview.getIdentifier());
+		
+		
+		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
+		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
+		int[] edgeIndexArray = overview.getEdgeIndicesArray();
+		
+		for (int i=0; i<edgeIndexArray.length; i++ ){
+		
+			CyEdge aEdge = (CyEdge) overview.getEdge(edgeIndexArray[i]);
+			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNestedNetwork(), 
+					(CyNetwork)aEdge.getTarget().getNestedNetwork());
+			
+			int minNodeCount = Math.min(aEdge.getSource().getNestedNetwork().getNodeCount(), 
+								aEdge.getTarget().getNestedNetwork().getNodeCount());
+			
+			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
+			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
+		}
 	}
 
+	
+	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
+		
+		int[] nodeIndicesA = networkA.getNodeIndicesArray();
+		int[] nodeIndicesB = networkB.getNodeIndicesArray();
+		
+		
+		HashSet<Integer> hashSet = new HashSet<Integer>();
+		for (int i=0; i< nodeIndicesA.length; i++){
+			hashSet.add( new Integer(nodeIndicesA[i]));
+		}
+
+		int sharedNodeCount =0;
+		for (int i=0; i< nodeIndicesB.length; i++){
+			if (hashSet.contains(new Integer(nodeIndicesB[i]))){
+				sharedNodeCount++;
+			}
+		}
+		
+		return sharedNodeCount;
+	}
+
+	
 	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
 		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
 		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
