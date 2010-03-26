@@ -27,4 +27,13 @@ public abstract class APMatrix {
 		matrix.set(row, column, previousValue*lambda+value*(1-lambda));
 	}
 
+	public DoubleMatrix2D getMatrix() { return matrix; }
+
+	protected void printVector(String v, DoubleMatrix1D vec) {
+		System.out.print(v+": ");
+		for (int i = 0; i < s_matrix.rows(); i++)
+			System.out.print(" "+vec.get(i));
+		System.out.println("");
+	}
+
 }

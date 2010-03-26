@@ -23,7 +23,9 @@ public class AvailabilityMatrix extends APMatrix {
 
 	public void updateEvidence () { 
 		evidenceVector = DoubleFactory1D.dense.make(s_matrix.rows());
+		evidenceVector.assign(-Double.MAX_VALUE);
 		s_matrix.forEachNonZero(new CalculateEvidence(evidenceVector));
+		// printVector("Availability evidence: ", evidenceVector);
 	}
 
 	public void update(ResponsibilityMatrix r_matrix) {
@@ -41,8 +43,9 @@ public class AvailabilityMatrix extends APMatrix {
 		}
 
 		public double apply(int row, int col, double value) {
-			if (row != col)
-				maxVector.set(row, maxVector.get(row)+get(row,col)+value);
+			if (row != col) {
+				maxVector.set(row, Math.max(maxVector.get(row),get(row,col)+value));
+			}
 
 			return value;
 		}
@@ -58,7 +61,7 @@ public class AvailabilityMatrix extends APMatrix {
 		public double apply(int row, int col, double value) {
 			double newValue;
 			if (row != col)
-				newValue = Math.min(0.0, rMatrix.get(row, col) + rMatrix.getEvidence(col));
+				newValue = Math.min(0.0, rMatrix.get(col, col) + rMatrix.getEvidence(col) - Math.max(0.0, rMatrix.get(row,col)));
 			else
 				newValue = rMatrix.getEvidence(col);
 

@@ -9,11 +9,9 @@ import cern.colt.matrix.impl.SparseDoubleMatrix2D;
 
 public class ResponsibilityMatrix extends APMatrix {
 	private DoubleMatrix1D evidenceVector = null;
-	private DoubleMatrix1D prefVector;
 
-	public ResponsibilityMatrix (DoubleMatrix2D s_matrix, DoubleMatrix1D prefVector, double lambda) {
+	public ResponsibilityMatrix (DoubleMatrix2D s_matrix, double lambda) {
 		super(s_matrix, lambda);
-		this.prefVector = prefVector;
 	}
 
 	public double getEvidence (int col) {
@@ -26,19 +24,18 @@ public class ResponsibilityMatrix extends APMatrix {
 	public void updateEvidence () { 
 		evidenceVector = DoubleFactory1D.dense.make(s_matrix.columns());
 		s_matrix.forEachNonZero(new CalculateEvidence(evidenceVector));
+		// printVector("Responsibility evidence: ", evidenceVector);
 	}
 
 	public void update(AvailabilityMatrix a_matrix) {
-		s_matrix.forEachNonZero(new UpdateResponsibility(a_matrix, prefVector));
+		s_matrix.forEachNonZero(new UpdateResponsibility(a_matrix));
 	}
 	
 	class UpdateResponsibility implements IntIntDoubleFunction {
 		AvailabilityMatrix a_matrix;
-		DoubleMatrix1D prefVector;
 
-		public UpdateResponsibility(AvailabilityMatrix a_matrix, DoubleMatrix1D pref) {
+		public UpdateResponsibility(AvailabilityMatrix a_matrix) {
 			this.a_matrix = a_matrix;
-			this.prefVector = pref;
 		}
 
 		public double apply(int row, int col, double value) {
@@ -46,7 +43,7 @@ public class ResponsibilityMatrix extends APMatrix {
 			if (row != col)
 				newValue = value - a_matrix.getEvidence(row);
 			else
-				newValue = prefVector.get(row) - a_matrix.getEvidence(row);
+				newValue = s_matrix.get(row, col) - a_matrix.getEvidence(row);
 
 			// Damp
 			setDamped(row, col, newValue);

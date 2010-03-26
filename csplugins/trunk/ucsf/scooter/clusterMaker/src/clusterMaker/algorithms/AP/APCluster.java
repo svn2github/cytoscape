@@ -82,7 +82,7 @@ public class APCluster extends AbstractClusterAlgorithm  {
 	}
 
 	public String getShortName() {return "AP";};
-	public String getName() {return "AP cluster";};
+	public String getName() {return "Affinity Propagation cluster";};
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
@@ -134,9 +134,6 @@ public class APCluster extends AbstractClusterAlgorithm  {
 		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
-		// TODO: Add a results panel that sets the number of clusters, average # of nodes/cluster, 
-		//       average # of inter-cluster edges, average # of intra-cluster edges
-
 		super.advancedProperties();
 
 		clusterProperties.initializeProperties();
@@ -155,7 +152,7 @@ public class APCluster extends AbstractClusterAlgorithm  {
 		if ((t != null) && (t.valueChanged() || force))
 			lambda = ((Double) t.getValue()).doubleValue();
 
-		t = clusterProperties.get("preferance");
+		t = clusterProperties.get("preference");
 		if ((t != null) && (t.valueChanged() || force))
 			preference = ((Double) t.getValue()).doubleValue();
 

@@ -139,6 +139,8 @@ public class EdgeAttributeHandler
 			clusterProperties.add(new Tunable("adjustLoops","Adjust loops before clustering",
 			                                  Tunable.BOOLEAN, new Boolean(true)));
 		}
+
+		updateAttributeList();
 	}
 
 	public void updateSettings(boolean force) {
@@ -169,9 +171,7 @@ public class EdgeAttributeHandler
 
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
-			if (attributeArray.length == 1 && attributeArray[0] == null) {
-				updateAttributeList();
-			} else if (attributeArray.length == 1) {
+			if (attributeArray.length == 1) {
 				dataAttribute = attributeArray[0];
 			} else {
 				int index = ((Integer) t.getValue()).intValue();

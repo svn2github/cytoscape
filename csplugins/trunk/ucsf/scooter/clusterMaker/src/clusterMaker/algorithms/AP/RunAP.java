@@ -53,7 +53,7 @@ public class RunAP {
 	private DistanceMatrix distanceMatrix = null;
 	private ResponsibilityMatrix r_matrix = null;
 	private AvailabilityMatrix a_matrix = null;
-	private DoubleMatrix2D matrix = null;
+	private DoubleMatrix2D s_matrix = null;
 	private DoubleMatrix1D pref_vector = null;
 
 	public RunAP(String nodeClusterAttributeName, DistanceMatrix dMat,
@@ -63,7 +63,7 @@ public class RunAP {
 		this.distanceMatrix = dMat;
 		this.nodeClusterAttributeName = nodeClusterAttributeName;
 	       
-		this.lambda = lambda;
+		this.lambda = lambdaParameter;
 		this.pref = preferenceParameter;
 
 		if(lambda < 0)
@@ -78,13 +78,16 @@ public class RunAP {
 		this.createMetaNodes = false;
 		nodes = distanceMatrix.getNodes();
 		edges = distanceMatrix.getEdges();
-		this.matrix = distanceMatrix.getDistanceMatrix();
+		this.s_matrix = distanceMatrix.getDistanceMatrix();
 
-		pref_vector = DoubleFactory1D.dense.make(matrix.rows());
-		pref_vector.assign(pref);
+		// Assign the preference vector to the diagonal
+		for (int row = 0; row < s_matrix.rows(); row++) {
+			s_matrix.set(row, row, pref);
+		}
 
-		r_matrix = new ResponsibilityMatrix(matrix, pref_vector, lambda);
-		a_matrix = new AvailabilityMatrix(matrix, lambda);
+		// System.out.println("lambda = "+lambda);
+		r_matrix = new ResponsibilityMatrix(s_matrix, lambda);
+		a_matrix = new AvailabilityMatrix(s_matrix, lambda);
 
 		// logger.info("Iterations = "+num_iterations);
 	}
@@ -93,41 +96,6 @@ public class RunAP {
 
 	public void createMetaNodes() { createMetaNodes = true; }
 	
-
-	//return exemplar k for element i => Maximizer of a(i,k) + r(i,k)
-	private int get_exemplar(int i) {
-	
-		double max_value = -1000;
-		int exemplar = 0;
-		double sum;
-
-		for(int k = 0; k < matrix.rows(); k++) {
-			sum = a_matrix.get(i,k) + r_matrix.get(i,k);
-
-			if(sum > max_value){
-				max_value = sum;
-				exemplar = k;
-			}
-		}
-	  return exemplar;
-	}
-	    
-	//Exchange Messages between Responsibility and Availibility Matrix for Single Iteration of Affinity Propogation
-	public void iterate_message_exchange(TaskMonitor monitor, int iteration){
-
-		// Calculate the availability maxima
-		a_matrix.updateEvidence();
-
-		// OK, now calculate the responsibility matrix
-		r_matrix.update(a_matrix);
-
-		// Get the maximum positive responsibilities
-		r_matrix.updateEvidence();
-
-		// Now, update the availability matrix
-		a_matrix.update(r_matrix);
-	}
-
 	public void run(TaskMonitor monitor)
 	{
 		CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -141,6 +109,9 @@ public class RunAP {
 
 		// logger.info("Calculating clusters");
 		monitor.setPercentCompleted(1);
+
+		debugln("Input matrix: ");
+		printMatrix(s_matrix);
 		
 		for (int i=0; i<number_iterations; i++)
 		{
@@ -153,6 +124,9 @@ public class RunAP {
 			}
 		}
 
+		for (int i = 0; i < s_matrix.rows(); i++) {
+			System.out.println("Node "+nodes.get(i).getIdentifier()+" has exemplar "+get_exemplar(i));
+		}
 
 		monitor.setStatus("Assigning nodes to clusters");
 
@@ -172,11 +146,12 @@ public class RunAP {
 			if (cMap.containsKey(cluster))
 				continue;
 
-			// for (Integer i: cluster) {
-			// 	CyNode node = nodes.get(i.intValue());
-			// 	debug(node.getIdentifier()+"\t");
-			// }
-			// debugln();
+			debugln("Cluster "+clusterNumber);
+			for (Integer i: cluster) {
+			 	CyNode node = nodes.get(i.intValue());
+			 	debug(node.getIdentifier()+"\t");
+			}
+			debugln("\n\n");
 			cMap.put(cluster,cluster);
 
 			cluster.setClusterNumber(clusterNumber);
@@ -200,7 +175,50 @@ public class RunAP {
 		monitor.setStatus("Done.  AP results:\n"+stats);
 	}	
 
+	//Exchange Messages between Responsibility and Availibility Matrix for Single Iteration of Affinity Propogation
+	public void iterate_message_exchange(TaskMonitor monitor, int iteration){
+
+		debugln("Iteration "+iteration);
+
+		// Calculate the availability maxima
+		a_matrix.updateEvidence();
+
+		// OK, now calculate the responsibility matrix
+		r_matrix.update(a_matrix);
+
+		debugln("Responsibility matrix: ");
+		printMatrix(r_matrix.getMatrix());
+
+		// Get the maximum positive responsibilities
+		r_matrix.updateEvidence();
+
+		// Now, update the availability matrix
+		a_matrix.update(r_matrix);
+
+		debugln("Availability matrix: ");
+		printMatrix(a_matrix.getMatrix());
+	}
+
 	
+	//return exemplar k for element i => Maximizer of a(i,k) + r(i,k)
+	private int get_exemplar(int i) {
+	
+		double max_value = -1000;
+		int exemplar = 0;
+		double sum;
+
+		for(int k = 0; k < s_matrix.rows(); k++) {
+			sum = a_matrix.get(i,k) + r_matrix.get(i,k);
+
+			if(sum > max_value){
+				max_value = sum;
+				exemplar = k;
+			}
+		}
+		debugln("Exemplar for "+i+" is "+exemplar);
+	  return exemplar;
+	}
+	    
 
 	/**
 	 * Debugging routine to print out information about a matrix
@@ -324,50 +342,23 @@ public class RunAP {
 	    
 		HashMap<Integer, Cluster> clusterMap = new HashMap();
 
-		for(int i = 0; i < matrix.rows(); i++){
+		for(int i = 0; i < s_matrix.rows(); i++){
 		
 			int exemplar = get_exemplar(i);
-		
 		    
-			if(clusterMap.containsKey(exemplar)){
-				if(i == exemplar)
-					continue;
-				//already seen exemplar
+			if (clusterMap.containsKey(exemplar)) {
 				Cluster exemplarCluster = clusterMap.get(exemplar);
-                	
-				if(clusterMap.containsKey(i)){
-					//We've allready seen i also -- join them
-					Cluster iCluster = clusterMap.get(i);
-					exemplarCluster.addAll(iCluster);
-					clusterCount--;
-				} else
-					exemplarCluster.add(i);
-			 
-				//update Clusters
-				for (Integer x: exemplarCluster){
-					clusterMap.put(x, exemplarCluster);
-				}
-			} else {
-				Cluster iCluster;
-		       
-				//First time we've seen "exemplar" -- have we already seen "i"?
-				if(clusterMap.containsKey(i)){
-					if(i == exemplar)
-						continue;
-					//Yes, just add exemplar to i's cluster
-					iCluster = clusterMap.get(i);
-					iCluster.add(exemplar);
-				} else {
-					//No, create new cluster from scratch
-					iCluster = new Cluster();
-					iCluster.add(i);
-					iCluster.add(exemplar);
-				}
 
-				//update Clusters
-				for (Integer x: iCluster){
-					clusterMap.put(x, iCluster);
-				}
+				if (clusterMap.containsKey(i)) {
+					// We've already seen i also -- join them
+					Cluster iCluster = clusterMap.get(i);
+					examplarCluster.addAll(iCluster);
+					clusterCount--;
+					clusterMap.remove(i);
+			} else {
+				Cluster cl = new Cluster();
+				cl.add(i);
+				clusterMap.put(exemplar, cl);
 			}
 		}
 		return clusterMap;

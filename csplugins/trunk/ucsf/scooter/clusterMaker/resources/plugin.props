@@ -16,7 +16,7 @@ pluginDescription=Cluster Nodes and/or Edges
 pluginVersion=1.7
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.6.1,2.6.2
+cytoscapeVersion=2.7
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Analysis
@@ -28,7 +28,7 @@ projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=John "Scooter" Morris:UCSF:Leonard Apeltsin:UCSF;Jan Baumbach:Technical University of Bielefeld;Tobian Wittkop:Technical University of Bielefeld
+pluginAuthorsIntsitutions=John "Scooter" Morris, Leonard Apeltsin:UCSF;Jan Baumbach:Technical University of Bielefeld;Tobian Wittkop:Technical University of Bielefeld
 
 # Date this plugin/plugin version was released
 releaseDate=June 16, 2009

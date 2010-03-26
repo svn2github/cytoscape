@@ -35,6 +35,7 @@ public class DistanceMatrix {
 
 	public DistanceMatrix(String edgeAttributeName, boolean selectedOnly, boolean distanceValues,
 	                      boolean takeNegLOG) {
+
 		this.edgeAttributeName = edgeAttributeName;
 		this.distanceValues = distanceValues;
 		this.logValues = takeNegLOG;
