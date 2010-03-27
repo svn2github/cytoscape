@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.2
+Created-By: 1.4.2-54 ("Apple Computer, Inc.")
+Main-Class: org.cytoscape.db.NetworkLibraryPlugin
+Class-Path: .
+Cytoscape-Plugin: org.cytoscape.db.NetworkLibraryPlugin

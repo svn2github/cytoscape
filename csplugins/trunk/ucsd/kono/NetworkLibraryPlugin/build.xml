@@ -1,0 +1,287 @@
+<!-- =================================================================== -->
+<!-- NCBI Web Service Client plugin (NCBIClient.jar) build file     
+			08/29/2007 Written by Keiichiro Ono (kono@ucsd.edu)       -->
+<!-- =================================================================== -->
+
+<project name="networkLibrary" default="networkLibrary" basedir="." >
+
+	<!-- =================================================================== -->
+	<!-- Initialization target                                               -->
+	<!-- =================================================================== -->
+	<target name="init-networkLibrary">
+		<tstamp />
+		<property name="networkLibrary.Name" value="Network Library Plugin" />
+		<property name="networkLibrary.name" value="networkLibrary" />
+		<property name="networkLibrary.version" value="0.01" />
+		<property name="networkLibrary.year" value="200" />
+
+		<echo message="Building ${networkLibrary.name} version ${networkLibrary.version}." />
+
+		<!-- Inheritable properties -->
+		<property name="debug" value="on" />
+		<property name="optimize" value="off" />
+		<property name="deprecation" value="on" />
+		<property name="nowarn" value="true" />
+		<property name="fork" value="false" />
+		<property name="networkLibrary.root.dir" value="." />
+
+		<!-- You need to modify this line to point to Cytoscape directory.  -->
+		<property name="cytoscape.dir" value="${networkLibrary.root.dir}/../cytoscape" />
+
+		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
+		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.7.0" />
+
+		<!-- JUnit report directory -->
+		<property name="junit.report.dir" value="${networkLibrary.root.dir}/junit-reports" />
+
+		<path id="project.class.path">
+			<pathelement path="${java.class.path}/" />
+		</path>
+
+		<!-- Define the directories -->
+		<property name="networkLibrary.root.dir" value="./" />
+		<property name="networkLibrary.src.dir" value="${networkLibrary.root.dir}/src" />
+		<property name="networkLibrary.lib.dir" value="${networkLibrary.root.dir}/lib" />
+		<property name="networkLibrary.tests.dir" value="${networkLibrary.root.dir}/tests" />
+		<property name="networkLibrary.classes.dir" value="${networkLibrary.root.dir}/classes" />
+		<property name="networkLibrary.testclasses.dir" value="${networkLibrary.root.dir}/testClasses" />
+		<property name="networkLibrary.javadoc.dir" value="${javadoc.dir}/networkLibrary" />
+		<property name="networkLibrary.resources.dir" value="${networkLibrary.root.dir}/resources" />
+		<property name="networkLibrary.manifest.dir" value="${networkLibrary.root.dir}/manifest" />
+		<property name="networkLibrary.packages" value="networkLibrary.*" />
+		<!-- Subdirectory for test reports -->
+		<property name="networkLibrary.tests.reports.dir" value="${networkLibrary.root.dir}/reports/tests" />
+
+		<!-- Define the condition for compilation -->
+		<property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar" />
+
+		<condition property="cytoscape.present">
+			<and>
+				<available file="${cytoscape.jar}" />
+			</and>
+		</condition>
+
+		<!-- Define excludes for networkLibrary compile and javadoc -->
+		<property name="networkLibrary.excludes" value="**/notyet/*" />
+		<property name="networkLibrary.tests.excludes" value="**/notyet/*" />
+		<property name="networkLibrary.packages.excludes" value="**.test.*,**.notyet.*" />
+
+		<path id="networkLibrary.project.class.path">
+			<pathelement location="${networkLibrary.classes.dir}" />
+			<pathelement path="${networkLibrary.root.dir}/ncbiClientTests.jar/" />
+			<fileset dir="${networkLibrary.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+
+			<fileset dir="${cytoscape.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.lib.dir}/build-libs">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Clean up, get back to original state                                -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init-networkLibrary">
+		<delete dir="${networkLibrary.classes.dir}" />
+		<delete dir="${networkLibrary.testclasses.dir}" />
+		<delete dir="${networkLibrary.tests.reports.dir}" />
+		<delete file="networkLibrary.jar" />
+		<delete file="${networkLibrary.lib.dir}/networkLibrary.jar" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the networkLibrary project                                           -->
+	<!-- =================================================================== -->
+	<target name="compile-networkLibrary" depends="init-networkLibrary">
+
+		<echo message=" COMPILE networkLibrary " />
+
+		<mkdir dir="${networkLibrary.classes.dir}" />
+		<javac srcdir="${networkLibrary.src.dir}" 
+			excludes="${networkLibrary.excludes}" 
+			classpathref="networkLibrary.project.class.path" 
+			destdir="${networkLibrary.classes.dir}" 
+			source="1.5" 
+			target="1.5"
+			debug="${debug}" 
+			nowarn="${nowarn}" 
+			deprecation="${deprecation}" 
+			optimize="${optimize}" 
+			fork="${fork}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the networkLibrary.jar file                                           -->
+	<!-- =================================================================== -->
+	<target name="networkLibrary" depends="compile-networkLibrary">
+		<!-- copy over images -->
+		<copy todir="${networkLibrary.classes.dir}/images">
+			<fileset dir="${networkLibrary.root.dir}/images" />
+		</copy>
+
+		<copy todir="${networkLibrary.classes.dir}/org/cytoscape/db/" file="${networkLibrary.manifest.dir}/plugin.props" />
+
+		<unjar dest="${networkLibrary.classes.dir}">
+			<fileset dir="${networkLibrary.lib.dir}">
+				<include name="*.jar" />
+
+				<exclude name="networkLibrary.jar" />
+				<exclude name="ncbiClientTest.jar" />
+			</fileset>
+
+		</unjar>
+		<jar destfile="networkLibrary.jar" manifest="${networkLibrary.manifest.dir}/networkLibrary.manifest">
+			<fileset dir="${networkLibrary.classes.dir}" includes="**" />
+			<fileset dir="${networkLibrary.root.dir}/lib" includes="resources/**" />
+		</jar>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- release                                             -->
+	<!-- =================================================================== -->
+	<target name="release" depends="testAll">
+		<copy todir="${networkLibrary.lib.dir}" file="networkLibrary.jar" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the networkLibrary tests                                             -->
+	<!-- =================================================================== -->
+	<target name="compile-tests" depends="networkLibrary">
+		<mkdir dir="${networkLibrary.testclasses.dir}" />
+		<javac srcdir="${networkLibrary.tests.dir}" includes="**/*" classpathref="networkLibrary.project.class.path" destdir="${networkLibrary.testclasses.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the ncbiClientTests.jar file                                     -->
+	<!-- =================================================================== -->
+	<target name="tests" depends="compile-tests">
+		<jar jarfile="ncbiClientTests.jar" basedir="${networkLibrary.testclasses.dir}" includes="**/*" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Build all jars                                                      -->
+	<!-- =================================================================== -->
+	<target name="all" depends="networkLibrary" />
+
+	<!-- =================================================================== -->
+	<!-- Run the Plugin                                                      -->
+	<!-- =================================================================== -->
+	<target name="run" depends="networkLibrary">
+		<java classname="cytoscape.cytoscape" classpathref="networkLibrary.project.class.path" fork="true" />
+		<arg line="-p ${networkLibrary.lib.dir}/networkLibrary.jar" />
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Runs the tests in ncbiClientTests.jar                                    -->
+	<!-- =================================================================== -->
+	<target name="runtests" depends="tests">
+		<mkdir dir="${networkLibrary.tests.reports.dir}" />
+		<junit printsummary="yes" haltonfailure="no" dir="${networkLibrary.classes.dir}" maxmemory="1G">
+			<formatter type="plain" usefile="true" />
+			<classpath refid="networkLibrary.project.class.path" />
+			<!-- The junit task doesn't support 'if' so we test for JUnit here -->
+			<batchtest fork="yes" todir="${networkLibrary.tests.reports.dir}" if="junit.present">
+				<fileset dir="${networkLibrary.classes.dir}" includes="**/test/*" excludes="${networkLibrary.tests.excludes}" />
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Run all of the Swing Unit Tests                       -->
+	<!-- ======================================================= -->
+	<target name="test-swing" depends="networkLibrary">
+		<mkdir dir="${networkLibrary.tests.reports.dir}" />
+		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
+
+			<classpath>
+				<fileset dir="${networkLibrary.root.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${networkLibrary.root.dir}/lib">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}/build-libs">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${networkLibrary.root.dir}/testClasses">
+					<include name="**/*" />
+				</fileset>
+			</classpath>
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${networkLibrary.tests.reports.dir}">
+				<fileset dir="${networkLibrary.tests.dir}" includes="**/*TestSwing.java" />
+			</batchtest>
+
+		</junit>
+		<junitreport todir="${networkLibrary.tests.reports.dir}">
+			<fileset dir="${networkLibrary.tests.reports.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${networkLibrary.tests.reports.dir}" />
+		</junitreport>
+
+
+		<fail message="JUnit Tests failed! Check ${networkLibrary.tests.reports.dir}/index.html for details." if="junit.test.failure" />
+
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Runs all test cases.                                    -->
+	<!-- =================================================================== -->
+	<target name="testAll" depends="tests">
+		<echo>
+	            ***********************************************
+	            Running all unit tests individually. 
+	            ***********************************************
+		</echo>
+		<mkdir dir="${junit.report.dir}" />
+		<junit printsummary="withOutAndErr" showoutput="yes" haltonfailure="no" maxmemory="1g">
+			<classpath refid="networkLibrary.project.class.path" />
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${junit.report.dir}" filtertrace="no">
+				<fileset dir="${networkLibrary.tests.dir}" includes="**/*Test.java" excludes="**/AllTests.java" />
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+		<delete file="ncbiClientTests.jar" />
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Creates the API documentation                                       -->
+	<!-- =================================================================== -->
+	<target name="docs" depends="init-networkLibrary">
+		<mkdir dir="${networkLibrary.javadoc.dir}" />
+		<javadoc packagenames="${networkLibrary.packages}" excludepackagenames="${networkLibrary.packages.excludes}" sourcepath="${networkLibrary.src.dir}" destdir="${networkLibrary.javadoc.dir}" classpathref="networkLibrary.project.class.path" author="true" version="true" use="true" splitindex="true" noindex="false" windowtitle="${networkLibrary.Name} API" doctitle="${networkLibrary.Name}" />
+	</target>
+
+</project>
+
+<!-- End of file -->
