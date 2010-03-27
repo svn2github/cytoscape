@@ -24,6 +24,7 @@ public class CyNetworkWriter {
 
 		
 		final Transaction tx = graphDb.beginTx();
+		final Node ref = graphDb.getReferenceNode();
 		Relationship rel = graphDb.getReferenceNode().getSingleRelationship(
 				CyRelation.GRAPHS, Direction.OUTGOING);
 
