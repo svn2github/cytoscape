@@ -137,7 +137,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			}
 		}
 
-		
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
@@ -157,7 +156,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		CyNetwork[] subnetworks = createSubnetworks();
 		
 		//2. create an overview network for all nested network
-		
 		Set<CyNode>  path_nodes = new HashSet<CyNode>();
 		for (int i=0; i< subnetworks.length; i++){
 			CyNode newNode =Cytoscape.getCyNode(subnetworks[i].getTitle(), true); 
@@ -169,15 +167,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		
 		//Edges indicate that nodes in nested networks exist in both nested networks
 		Set<CyEdge>  path_edges = getPathEdges(path_nodes); //new HashSet<CyEdge>();
-		
 		CyNetwork overview = Cytoscape.createNetwork(path_nodes, path_edges, "Overview"+ "_"+ runCount++, cyNetwork);
-		
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
 
-		Cytoscape.createNetworkView(overview, overview.getIdentifier(), layout, null);
-		applyVisualStyle(overview,vs_overview);
 		
-		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
+		//3. Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
 		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
 		Iterator it = path_edges.iterator();
 		while(it.hasNext()){
@@ -187,18 +181,23 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			
 			int minNodeCount = Math.min(aEdge.getSource().getNestedNetwork().getNodeCount(), 
 								aEdge.getTarget().getNestedNetwork().getNodeCount());
-			
-			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
-			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
-		}
-	}
 
+			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModules_nodeCount_min_two", minNodeCount);
+			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModules_nodeOverlapCount", NumberOfSharedNodes);
+			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
+			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModule_overlapScore", overlapScore);			
+		}
+				
+		//4. Create an view for overview network and apply visual style
+		Cytoscape.createNetworkView(overview, overview.getIdentifier(), layout, null);
+		applyVisualStyle(overview,vs_overview);
+	}
+	
 
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
 		
 		int[] nodeIndicesA = networkA.getNodeIndicesArray();
 		int[] nodeIndicesB = networkB.getNodeIndicesArray();
-		
 		
 		HashSet<Integer> hashSet = new HashSet<Integer>();
 		for (int i=0; i< nodeIndicesA.length; i++){
@@ -222,6 +221,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		view.setVisualStyle(vs.getName());
 		vmm.setNetworkView(view);
 		vmm.setVisualStyle(vs);
+		view.redrawGraph(false, true);
 	}
 
 	private Set<CyEdge> getPathEdges(Set path_nodes) {
