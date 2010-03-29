@@ -223,11 +223,6 @@ public class DataEditAction extends AbstractUndoableEdit {
 				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
 				if (equation == null)
 					return;
-				if (equation.getType() == String.class) {
-					showErrorWindow("Error in attribute \"" + attrName
-					                + "\": equation is of type String but should be of type Boolean!");
-					return;
-				}
  				attrs.setAttribute(id, attrName, equation);
 				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
 				valid = true;
@@ -469,6 +464,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 		final Map<String, Class> attribNameToTypeMap = new TreeMap<String, Class>();
 		for (final String attrName : attrNames) {
 			final byte type = attrs.getType(attrName);
+			if (type == CyAttributes.TYPE_INTEGER)
+				attribNameToTypeMap.put(attrName, Long.class);
 			if (type == CyAttributes.TYPE_BOOLEAN)
 				attribNameToTypeMap.put(attrName, Boolean.class);
 			if (type == CyAttributes.TYPE_FLOATING)
