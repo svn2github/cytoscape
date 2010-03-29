@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -206,13 +206,13 @@ public class AttributeBrowser implements TableColumnModelListener {
 				getPropertyChangeSupport().firePropertyChange(AttributeBrowser.CLEAR_INTERNAL_SELECTION, null, panelType);
 			}
 		});
-		mainPanel.setName(panelType.getDislayName() + "AttributeBrowser");
+		mainPanel.setName(panelType.getDisplayName() + "AttributeBrowser");
 		mainPanel.add(tp, BorderLayout.CENTER);
 		mainPanel.add(attributeBrowserToolBar, BorderLayout.NORTH);
 
 		// Add main browser panel to CytoPanel 2 (SOUTH)
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-		         .add(panelType.getDislayName() + " Attribute Browser", mainPanel);
+		         .add(panelType.getDisplayName() + " Attribute Browser", mainPanel);
 
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(CytoPanelState.DOCK);
 	}

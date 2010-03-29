@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -50,19 +42,8 @@ import browser.DataObjectType;
 import browser.DataTableModel;
 
 
-/*
- *  This panel will be added to JDialog for attribute modification
- *  Author: Peng-Liang wang
- *  Date: 9/29/2006
- */
-/**
- *
- */
 public class ModDialog extends JDialog {
-	/**
-	 * 
-	 */
-	public JButton OKButton;
+	public JButton okButton;
 
 	/**
 	 * Creates a new AttrSelectModPanel object.
@@ -74,16 +55,17 @@ public class ModDialog extends JDialog {
 	 */
 	public ModDialog(final DataTableModel tableModel,
 	                 final DataObjectType tableObjectType,
-					 final Frame parent) {
+			 final Frame parent)
+	{
 		super(parent);
 		final ModPanel modPanel = new ModPanel(tableModel, tableObjectType);
-		this.setTitle(tableObjectType.getDislayName() + " Attribute Batch Editor");
+		this.setTitle(tableObjectType.getDisplayName() + " Attribute Batch Editor");
 		this.setAlwaysOnTop(true);
 		
 		setLayout(new GridBagLayout());
 		
-		OKButton = new JButton("OK");
-		OKButton.setPreferredSize(new Dimension(70, 20));
+		okButton = new JButton("OK");
+		okButton.setPreferredSize(new Dimension(70, 20));
 
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
@@ -100,7 +82,7 @@ public class ModDialog extends JDialog {
 		pack();
 		this.setModal(false);
 		
-		OKButton.addActionListener(new ActionListener() {
+		okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
 				}
