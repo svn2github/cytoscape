@@ -17,7 +17,7 @@ import de.layclust.taskmanaging.TaskConfig;
 import de.layclust.taskmanaging.gui.ConfigurationsGUI;
 import de.layclust.taskmanaging.io.ArgsParseException;
 import de.layclust.taskmanaging.io.ArgsUtility;
-import de.layclust.taskmanaging.io.Console;
+// import de.layclust.taskmanaging.io.Console;
 import de.layclust.taskmanaging.io.InfoFile;
 import de.layclust.taskmanaging.io.Outfile;
 

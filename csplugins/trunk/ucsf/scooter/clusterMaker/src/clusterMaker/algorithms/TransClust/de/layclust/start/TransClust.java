@@ -86,7 +86,7 @@ public class TransClust {
 				log.severe("ERROR: An invalid file/path name was given.");
 				e.printStackTrace();
 				System.exit(-1);
-			} catch (ArgsParseException e) {
+			} catch (Exception e) {
 				log.severe(e.getMessage());
 				log.severe("ERROR: please see usage details!");
 				System.out.println(ArgsUtility.createUsage().toString());

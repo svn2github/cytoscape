@@ -11,6 +11,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 
 import cern.colt.function.IntIntDoubleFunction;
 import cern.colt.matrix.DoubleFactory2D;
@@ -237,6 +238,36 @@ public class DistanceMatrix {
 				matrix.set(col,col,1.0);
 		}
 		
+	}
+
+	/**
+	 * Debugging routine to print out information about a matrix
+	 *
+	 * @param matrix the matrix we're going to print out information about
+	 */
+	public void printMatrixInfo(CyLogger logger, DoubleMatrix2D m) {
+		logger.debug("Matrix("+m.rows()+", "+m.columns()+")");
+		if (m instanceof SparseDoubleMatrix2D)
+			logger.debug(" matrix is sparse");
+		else
+			logger.debug(" matrix is dense");
+		logger.debug(" cardinality is "+m.cardinality());
+	}
+
+	/**
+	 * Debugging routine to print out information about a matrix
+	 *
+	 * @param matrix the matrix we're going to print out information about
+	 */
+	public void printMatrix(CyLogger logger, DoubleMatrix2D m) {
+		String s = "";
+		for (int row = 0; row < m.rows(); row++) {
+			s += nodes.get(row).getIdentifier()+":\t";
+			for (int col = 0; col < m.columns(); col++) {
+				s += ""+m.get(row,col)+"\t";
+			}
+			logger.debug(s);
+		}
 	}
 
 	/**

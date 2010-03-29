@@ -22,7 +22,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 
-import clusterMaker.algorithms.ClusterStatistics;
+import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.DistanceMatrix;
 
 import cern.colt.function.IntIntDoubleFunction;
@@ -75,7 +75,7 @@ public class RunMCL {
 
 	public void setDebug(boolean debug) { this.debug = debug; }
 	
-	public void run(TaskMonitor monitor)
+	public ClusterResults run(TaskMonitor monitor)
 	{
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
@@ -136,7 +136,7 @@ public class RunMCL {
 
 			if (canceled) {
 				monitor.setStatus("canceled");
-				return;
+				return null;
 			}
 		}
 
@@ -155,7 +155,7 @@ public class RunMCL {
 		//
 		if (clusterCount == 0) {
 			logger.error("Created 0 clusters!!!!");
-			return;
+			return null;
 		}
 
 		int clusterNumber = 1;
@@ -189,8 +189,9 @@ public class RunMCL {
 		List<List<CyNode>> nodeClusters = 
 		     createGroups(netAttributes, networkID, nodeAttributes, clusters, createMetaNodes);
 
-		ClusterStatistics stats = new ClusterStatistics(network, nodeClusters);
-		monitor.setStatus("Done.  MCL results:\n"+stats);
+		ClusterResults results = new ClusterResults(network, nodeClusters);
+		monitor.setStatus("Done.  MCL results:\n"+results);
+		return results;
 	}	
 
 	/**

@@ -22,8 +22,11 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 
-import clusterMaker.algorithms.ClusterStatistics;
+import clusterMaker.algorithms.Cluster;
+import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.DistanceMatrix;
+import clusterMaker.algorithms.IntCluster;
+import clusterMaker.algorithms.NodeCluster;
 
 import cern.colt.function.IntIntDoubleFunction;
 import cern.colt.matrix.DoubleFactory2D;
@@ -43,28 +46,26 @@ public class RunAP {
 
 	private List<CyNode> nodes;
 	private List<CyEdge> edges;
-	private String nodeClusterAttributeName;
 	private boolean canceled = false;
 	private CyLogger logger;
 	public final static String GROUP_ATTRIBUTE = "__APGroups";
 	protected int clusterCount = 0;
-	private boolean debug = false;
-	private boolean createMetaNodes = false;
 	private DistanceMatrix distanceMatrix = null;
 	private ResponsibilityMatrix r_matrix = null;
 	private AvailabilityMatrix a_matrix = null;
 	private DoubleMatrix2D s_matrix = null;
 	private DoubleMatrix1D pref_vector = null;
+	private boolean debug;
 
-	public RunAP(String nodeClusterAttributeName, DistanceMatrix dMat,
-	              double lambdaParameter,double preferenceParameter, int num_iterations, 
-	              CyLogger logger )
+	public RunAP( DistanceMatrix dMat,
+	              double lambdaParameter, double preferenceParameter, int num_iterations, 
+	              CyLogger logger, boolean debug)
 	{
 		this.distanceMatrix = dMat;
-		this.nodeClusterAttributeName = nodeClusterAttributeName;
 	       
 		this.lambda = lambdaParameter;
 		this.pref = preferenceParameter;
+		this.debug = debug;
 
 		if(lambda < 0)
 			lambda = 0;
@@ -75,7 +76,6 @@ public class RunAP {
 		this.number_iterations = num_iterations;
 		
 		this.logger = logger;
-		this.createMetaNodes = false;
 		nodes = distanceMatrix.getNodes();
 		edges = distanceMatrix.getEdges();
 		this.s_matrix = distanceMatrix.getDistanceMatrix();
@@ -94,15 +94,10 @@ public class RunAP {
 
 	public void halt () { canceled = true; }
 
-	public void createMetaNodes() { createMetaNodes = true; }
-	
-	public void run(TaskMonitor monitor)
+	public List<NodeCluster> run(TaskMonitor monitor)
 	{
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-		String networkID = network.getIdentifier();
-
-		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		// initialize the Cluster class
+		Cluster.init();
 
 		// Matrix matrix;
 		double numClusters;
@@ -110,8 +105,10 @@ public class RunAP {
 		// logger.info("Calculating clusters");
 		monitor.setPercentCompleted(1);
 
-		debugln("Input matrix: ");
-		printMatrix(s_matrix);
+		if (debug) {
+			logger.debug("Input matrix: ");
+			distanceMatrix.printMatrix(logger, s_matrix);
+		}
 		
 		for (int i=0; i<number_iterations; i++)
 		{
@@ -120,65 +117,59 @@ public class RunAP {
 
 			if (canceled) {
 				monitor.setStatus("canceled");
-				return;
+				return null;
 			}
+			monitor.setPercentCompleted((i*100)/number_iterations);
 		}
 
-		for (int i = 0; i < s_matrix.rows(); i++) {
-			System.out.println("Node "+nodes.get(i).getIdentifier()+" has exemplar "+get_exemplar(i));
+		if (debug) {
+			for (int i = 0; i < s_matrix.rows(); i++) {
+				logger.debug("Node "+nodes.get(i).getIdentifier()+" has exemplar "+get_exemplar(i));
+			}
 		}
 
 		monitor.setStatus("Assigning nodes to clusters");
 
-		HashMap<Integer, Cluster> clusterMap = get_clusterMap();
+		Map<Integer, IntCluster> clusterMap = getClusterMap();
 
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
-		logger.info("Created "+clusterCount+" clusters");
+		logger.info("Created "+clusterMap.size()+" clusters");
 	       
 		if (clusterCount == 0) {
 			logger.error("Created 0 clusters!!!!");
-			return;
+			return null;
 		}
 
 		int clusterNumber = 1;
-		HashMap<Cluster,Cluster> cMap = new HashMap();
-		for (Cluster cluster: sortMap(clusterMap)) {
+		Map<IntCluster,IntCluster> cMap = new HashMap();
+		for (IntCluster cluster: IntCluster.sortMap(clusterMap)) {
 			if (cMap.containsKey(cluster))
 				continue;
 
-			debugln("Cluster "+clusterNumber);
-			for (Integer i: cluster) {
-			 	CyNode node = nodes.get(i.intValue());
-			 	debug(node.getIdentifier()+"\t");
+			if (debug) {
+				logger.debug("Cluster "+clusterNumber);
+				String s = "";
+				for (Integer i: cluster) {
+			 		CyNode node = nodes.get(i.intValue());
+			 		s += node.getIdentifier()+"\t";
+				}
+				logger.debug(s);
 			}
-			debugln("\n\n");
+
 			cMap.put(cluster,cluster);
 
 			cluster.setClusterNumber(clusterNumber);
 			clusterNumber++;
 		}
 
-		Set<Cluster>clusters = cMap.keySet();
-
-		logger.info("Removing groups");
-
-		// Remove any leftover groups from previous runs
-		removeGroups(netAttributes, networkID);
-
-		logger.info("Creating groups");
-		monitor.setStatus("Creating groups");
-
-		List<List<CyNode>> nodeClusters = 
-		     createGroups(netAttributes, networkID, nodeAttributes, clusters, createMetaNodes);
-
-		ClusterStatistics stats = new ClusterStatistics(network, nodeClusters);
-		monitor.setStatus("Done.  AP results:\n"+stats);
+		Set<IntCluster>clusters = cMap.keySet();
+		return NodeCluster.getNodeClusters(nodes, clusters);
 	}	
 
 	//Exchange Messages between Responsibility and Availibility Matrix for Single Iteration of Affinity Propogation
 	public void iterate_message_exchange(TaskMonitor monitor, int iteration){
 
-		debugln("Iteration "+iteration);
+		logger.debug("Iteration "+iteration);
 
 		// Calculate the availability maxima
 		a_matrix.updateEvidence();
@@ -186,8 +177,10 @@ public class RunAP {
 		// OK, now calculate the responsibility matrix
 		r_matrix.update(a_matrix);
 
-		debugln("Responsibility matrix: ");
-		printMatrix(r_matrix.getMatrix());
+		if (debug) {
+			logger.debug("Responsibility matrix: ");
+			distanceMatrix.printMatrix(logger, r_matrix.getMatrix());
+		}
 
 		// Get the maximum positive responsibilities
 		r_matrix.updateEvidence();
@@ -195,8 +188,10 @@ public class RunAP {
 		// Now, update the availability matrix
 		a_matrix.update(r_matrix);
 
-		debugln("Availability matrix: ");
-		printMatrix(a_matrix.getMatrix());
+		if (debug) {
+			logger.debug("Availability matrix: ");
+			distanceMatrix.printMatrix(logger, a_matrix.getMatrix());
+		}
 	}
 
 	
@@ -215,190 +210,70 @@ public class RunAP {
 				exemplar = k;
 			}
 		}
-		debugln("Exemplar for "+i+" is "+exemplar);
+		logger.debug("Exemplar for "+i+" is "+exemplar);
 	  return exemplar;
 	}
+
+	private Map<Integer, IntCluster> getClusterMap(){
 	    
-
-	/**
-	 * Debugging routine to print out information about a matrix
-	 *
-	 * @param matrix the matrix we're going to print out information about
-	 */
-	private void printMatrixInfo(DoubleMatrix2D matrix) {
-		debugln("Matrix("+matrix.rows()+", "+matrix.columns()+")");
-		if (matrix instanceof SparseDoubleMatrix2D)
-			debugln(" matrix is sparse");
-		else
-			debugln(" matrix is dense");
-		debugln(" cardinality is "+matrix.cardinality());
-	}
-
-	/**
-	 * Debugging routine to print out information about a matrix
-	 *
-	 * @param matrix the matrix we're going to print out information about
-	 */
-	private void printMatrix(DoubleMatrix2D matrix) {
-		for (int row = 0; row < matrix.rows(); row++) {
-			debug(nodes.get(row).getIdentifier()+":\t");
-			for (int col = 0; col < matrix.columns(); col++) {
-				debug(""+matrix.get(row,col)+"\t");
-			}
-			debugln();
-		}
-		debugln("Matrix("+matrix.rows()+", "+matrix.columns()+")");
-		if (matrix instanceof SparseDoubleMatrix2D)
-			debugln(" matrix is sparse");
-		else
-			debugln(" matrix is dense");
-		debugln(" cardinality is "+matrix.cardinality());
-	}
-
-	private void removeGroups(CyAttributes netAttributes, String networkID) {
-		// See if we already have groups defined (from a previous run?)
-		if (netAttributes.hasAttribute(networkID, GROUP_ATTRIBUTE)) {
-			List<String> groupList = (List<String>)netAttributes.getListAttribute(networkID, GROUP_ATTRIBUTE);
-			for (String groupName: groupList) {
-				CyGroup group = CyGroupManager.findGroup(groupName);
-				if (group != null)
-					CyGroupManager.removeGroup(group);
-			}
-		}
-	}
-
-	private List<List<CyNode>> createGroups(CyAttributes netAttributes, 
-	                                        String networkID,
-	                                        CyAttributes nodeAttributes, 
-	                                        Set<Cluster> cMap, 
-	                                        boolean createMetaNodes) {
-
-		List<List<CyNode>> clusterList = new ArrayList(); // List of node lists
-		List<String>groupList = new ArrayList(); // keep track of the groups we create
-		CyGroup first = null;
-		for (Cluster cluster: cMap) {
-			int clusterNumber = cluster.getClusterNumber();
-			String groupName = nodeClusterAttributeName+"_"+clusterNumber;
-			List<CyNode>nodeList = new ArrayList();
-
-			for (Integer nodeIndex: cluster) {
-				CyNode node = this.nodes.get(nodeIndex);
-				nodeList.add(node);
-				nodeAttributes.setAttribute(node.getIdentifier(),
-				                            nodeClusterAttributeName, clusterNumber);
-			}
-			
-			if (createMetaNodes) {
-				// Create the group
-				CyGroup newgroup = CyGroupManager.createGroup(groupName, nodeList, null);
-				if (newgroup != null) {
-					first = newgroup;
-					// Now tell the metanode viewer about it
-					CyGroupManager.setGroupViewer(newgroup, "metaNode", 
-					                              Cytoscape.getCurrentNetworkView(), false);
-				}
-			}
-			clusterList.add(nodeList);
-			groupList.add(groupName);
-		}
-		if (first != null)
-			CyGroupManager.setGroupViewer(first, "metaNode", 
-			                              Cytoscape.getCurrentNetworkView(), true);
-		
-		// Save the network attribute so we remember which groups are ours
-		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
-		return clusterList;
-	}
-
-	private void debugln(String message) {
-		if (debug) System.out.println(message);
-	}
-
-	private void debugln() {
-		if (debug) System.out.println();
-	}
-
-	private void debug(String message) {
-		if (debug) System.out.print(message);
-	}
-
-	private List<CyNode> clusterToNodes(Cluster cluster) {
-		List<CyNode> nodeList = new ArrayList();
-		for (Integer nodeIndex: cluster) {
-			CyNode node = nodes.get(nodeIndex);
-			nodeList.add(node);
-		}
-		return nodeList;
-	}
-
-	private List<Cluster> sortMap(HashMap<Integer, Cluster> map) {
-		Cluster[] clusterArray = map.values().toArray(new Cluster[1]);
-		Arrays.sort(clusterArray, new LengthComparator());
-		return Arrays.asList(clusterArray);
-	}
-
-	//create clusterMap by calculating exemplars for all nodes
-	private HashMap<Integer,Cluster> get_clusterMap(){
-	    
-		HashMap<Integer, Cluster> clusterMap = new HashMap();
+		HashMap<Integer, IntCluster> clusterMap = new HashMap();
 
 		for(int i = 0; i < s_matrix.rows(); i++){
 		
 			int exemplar = get_exemplar(i);
+			// System.out.println("Examplar for node "+i+" is "+exemplar);
 		    
 			if (clusterMap.containsKey(exemplar)) {
-				Cluster exemplarCluster = clusterMap.get(exemplar);
+				if (i == exemplar)
+					continue;
+
+				// Already seen exemplar
+				IntCluster exemplarCluster = clusterMap.get(exemplar);
 
 				if (clusterMap.containsKey(i)) {
 					// We've already seen i also -- join them
-					Cluster iCluster = clusterMap.get(i);
-					examplarCluster.addAll(iCluster);
-					clusterCount--;
-					clusterMap.remove(i);
+					IntCluster iCluster = clusterMap.get(i);
+					if (iCluster != exemplarCluster) {
+						exemplarCluster.addAll(iCluster);
+						// System.out.println("Combining "+i+"["+iCluster+"] and "+exemplar+" ["+exemplarCluster+"]");
+						clusterCount--;
+						clusterMap.remove(i);
+					}
+				} else {
+					exemplarCluster.add(i);
+					// System.out.println("Adding "+i+" to ["+exemplarCluster+"]");
+				}
+
+				// Update Clusters
+				for (Integer x: exemplarCluster) {
+					clusterMap.put(x, exemplarCluster);
+				}
 			} else {
-				Cluster cl = new Cluster();
-				cl.add(i);
-				clusterMap.put(exemplar, cl);
+				IntCluster iCluster;
+
+				// First time we've seen this "exemplar" -- have we already seen "i"?
+				if (clusterMap.containsKey(i)) {
+					if (i == exemplar)
+						continue;
+					// Yes, just add exemplar to i's cluster
+					iCluster = clusterMap.get(i);
+					iCluster.add(exemplar);
+					// System.out.println("Adding "+exemplar+" to ["+iCluster+"]");
+				} else {
+					// No create new cluster from scratch
+					iCluster = new IntCluster();
+					iCluster.add(i);
+					if (exemplar != i)
+						iCluster.add(exemplar);
+					// System.out.println("New cluster ["+iCluster+"]");
+				}
+				// Update Clusters
+				for (Integer x: iCluster) {
+					clusterMap.put(x, iCluster);
+				}
 			}
 		}
 		return clusterMap;
-	}
-
-	private class Cluster extends ArrayList<Integer> {
-		int clusterNumber = 0;
-
-		public Cluster() {
-			super();
-			clusterCount++;
-			clusterNumber = clusterCount;
-		}
-
-		public int getClusterNumber() { return clusterNumber; }
-
-		public void setClusterNumber(int clusterNumber) { 
-			this.clusterNumber = clusterNumber; 
-		}
-
-		public void print() {
-			debug(clusterNumber+": ");
-			for (Integer i: this) {
-				debug(i+" ");
-			}
-			debugln();
-		}
-	}
-
-	private class LengthComparator implements Comparator {
-
-		public int compare (Object o1, Object o2) {
-			Cluster c1 = (Cluster)o1;
-			Cluster c2 = (Cluster)o2;
-			if (c1.size() > c2.size()) return -1;
-			if (c1.size() < c2.size()) return 1;
-			return 0;
-		}
-
-		public boolean equals(Object obj) { return false; }
 	}
 }
 

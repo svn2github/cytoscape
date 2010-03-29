@@ -53,7 +53,7 @@ import giny.model.Node;
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.ClusterStatistics;
+import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.NewNetworkView;
 
@@ -66,7 +66,6 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 	FastGreedyAlgorithm fa = null;
 	boolean selectedOnly = false;
 	boolean createNewNetwork = false;
-	boolean createMetaNodes = false;
 	boolean undirectedEdges = true;
 
 	public GLayCluster() {
@@ -95,7 +94,7 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 		 */
 		clusterProperties.add(new Tunable("tunables_panel",
 		                                  "GLay Options",
-		                                  Tunable.GROUP, new Integer(4)));
+		                                  Tunable.GROUP, new Integer(2)));
 
 		// Whether or not to create a new network from the results
 		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
@@ -104,10 +103,6 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 		//Whether or not to assume the edges are undirected
 		clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
 		                                  Tunable.BOOLEAN, new Boolean(true)));
-
-		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		clusterProperties.add(new Tunable("results_panel",
 		                                  "Results",
@@ -132,11 +127,7 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 		clusterProperties.updateValues();
 		super.updateSettings(force);
 
-		Tunable t = clusterProperties.get("createMetaNodes");
-		if ((t != null) && (t.valueChanged() || force))
-			createMetaNodes = ((Boolean) t.getValue()).booleanValue();
-
-		t = clusterProperties.get("selectedOnly");
+		Tunable t = clusterProperties.get("selectedOnly");
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 
@@ -189,7 +180,7 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 		netAttr.setAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttrName);
 			
 		// Create groups (if desired)
-		if (createMetaNodes) {
+		if (createGroups) {
 			CyGroup first = null;
 			for (int cluster = 0; cluster < fa.getClusterNumber(); cluster++) {
 				List<CyNode> nodeList = clusterList.get(cluster);
@@ -207,8 +198,8 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 				                              Cytoscape.getCurrentNetworkView(), true);
 		}
 
-		ClusterStatistics stats = new ClusterStatistics(network, clusterList);
-		monitor.setStatus("Done.  GLay results:\n"+stats+"\n  Modularity: "+modularityString);
+		results = new ClusterResults(network, clusterList, "Modularity: "+modularityString);
+		monitor.setStatus("Done.  GLay results:\n"+results+"\n  Modularity: "+modularityString);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

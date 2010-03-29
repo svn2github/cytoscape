@@ -67,7 +67,6 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 	double inflation_parameter = 2.0;
 	int rNumber = 8;
 	double clusteringThresh = 1e-15;
-	boolean createMetaNodes = false;
 	double maxResidual = 0.001;
 	EdgeAttributeHandler edgeAttributeHandler = null;
 
@@ -136,10 +135,6 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		                                  "Results options",
 		                                  Tunable.GROUP, new Integer(1)));
 
-		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
-
 		// TODO: Add a results panel that sets the number of clusters, average # of nodes/cluster, 
 		//       average # of inter-cluster edges, average # of intra-cluster edges
 
@@ -173,10 +168,6 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
-		t = clusterProperties.get("createMetaNodes");
-		if ((t != null) && (t.valueChanged() || force))
-			createMetaNodes = ((Boolean) t.getValue()).booleanValue();
-
 		edgeAttributeHandler.updateSettings(force);
 	}
 
@@ -189,12 +180,12 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		runMCL = new RunMCL(clusterAttributeName, matrix, inflation_parameter, 
 		                    rNumber, clusteringThresh, maxResidual, logger);
 
-		if (createMetaNodes)
+		if (createGroups)
 			runMCL.createMetaNodes();
 
 		runMCL.setDebug(debug);
 
-		runMCL.run(monitor);
+		results = runMCL.run(monitor);
 
 		// Set up the appropriate attributes
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();

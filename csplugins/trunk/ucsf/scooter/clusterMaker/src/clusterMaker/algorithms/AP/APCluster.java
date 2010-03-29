@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 // Cytoscape imports
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
@@ -54,7 +55,9 @@ import cytoscape.task.TaskMonitor;
 
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.DistanceMatrix;
 import clusterMaker.algorithms.EdgeAttributeHandler;
 import clusterMaker.ui.ClusterViz;
@@ -67,7 +70,6 @@ public class APCluster extends AbstractClusterAlgorithm  {
 	double lambda = .5;
 	int rNumber = 8;
 	double preference = -1;
-	boolean createMetaNodes = false;
 	EdgeAttributeHandler edgeAttributeHandler = null;
 
 	TaskMonitor monitor = null;
@@ -130,10 +132,6 @@ public class APCluster extends AbstractClusterAlgorithm  {
 		                                  "Results options",
 		                                  Tunable.GROUP, new Integer(1)));
 
-		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
-
 		super.advancedProperties();
 
 		clusterProperties.initializeProperties();
@@ -164,28 +162,37 @@ public class APCluster extends AbstractClusterAlgorithm  {
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
-		t = clusterProperties.get("createMetaNodes");
-		if ((t != null) && (t.valueChanged() || force))
-			createMetaNodes = ((Boolean) t.getValue()).booleanValue();
-
 		edgeAttributeHandler.updateSettings(force);
 	}
 
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		String networkID = network.getIdentifier();
+
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		DistanceMatrix matrix = edgeAttributeHandler.getMatrix();
 
 		//Cluster the nodes
-		runAP = new RunAP(clusterAttributeName, matrix, lambda, preference, 
-		                    rNumber,logger);
+		runAP = new RunAP(matrix, lambda, preference, rNumber, logger, debug);
 
-		if (createMetaNodes)
-			runAP.createMetaNodes();
+		List<NodeCluster> clusters = runAP.run(monitor);
 
-		//runAP.setDebug(debug);
+		logger.info("Removing groups");
 
-		runAP.run(monitor);
+		// Remove any leftover groups from previous runs
+		removeGroups(netAttributes, networkID);
+
+		logger.info("Creating groups");
+		monitor.setStatus("Creating groups");
+
+		List<List<CyNode>> nodeClusters = 
+		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
+
+		ClusterResults results = new ClusterResults(network, nodeClusters);
+		monitor.setStatus("Done.  AP results:\n"+results);
 
 		// Set up the appropriate attributes
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();

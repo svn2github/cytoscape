@@ -1,6 +1,6 @@
 /* vim: set ts=2: */
 /**
- * Copyright (c) 2009 The Regents of the University of California.
+ * Copyright (c) 2010 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ import giny.model.Edge;
  *	Cluster coefficient (intra-cluster edges / total edges)
  */
 
-public class ClusterStatistics {
+public class ClusterResults {
 	private List<List<CyNode>> clusters;
 	private CyNetwork network;
 	private int clusterCount;
@@ -64,11 +64,17 @@ public class ClusterStatistics {
 	private int maxSize;
 	private int minSize;
 	private double clusterCoefficient;
+	private String extraText = null;
 
-	public ClusterStatistics(CyNetwork network, List<List<CyNode>> cl) { 
+	public ClusterResults(CyNetwork network, List<List<CyNode>> cl, String extraInformation) { 
 		this.network = network;
 		clusters = cl; 
+		extraText = extraInformation;
 		calculate();
+	}
+
+	public ClusterResults(CyNetwork network, List<List<CyNode>> cl) { 
+		this(network,cl,null);
 	}
 
 	public String toString() {
@@ -78,7 +84,13 @@ public class ClusterStatistics {
 		result += "  Maximum size: "+maxSize+"\n";
 		result += "  Minimum size: "+minSize+"\n";
 		result += "  Average cluster coefficient: "+nf.format(clusterCoefficient);
+		if (extraText != null)
+			result += "  "+extraText;
 		return result;
+	}
+
+	public List<List<CyNode>> getClusters() {
+		return clusters;
 	}
 
 	private void calculate() {

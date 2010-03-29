@@ -1,6 +1,6 @@
 /* vim: set ts=2: */
 /**
- * Copyright (c) 2008 The Regents of the University of California.
+ * Copyright (c) 2010 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,12 +72,12 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) 
-                                                      throws CyCommandException {
+                                                      throws CyCommandException, RuntimeException {
 		return execute(command, createTunableCollection(args));
 	}
 
 	public CyCommandResult execute(String command, Collection<Tunable>args)
-                                                      throws CyCommandException {
+                                                      throws CyCommandException, RuntimeException {
 		CyCommandResult result = new CyCommandResult();
 		if (algMap.containsKey(command)) {
 			// Get the algorithm
@@ -107,6 +107,7 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 			result.addMessage("Clustering complete");
 		} else {
 			// Throw
+			throw new RuntimeException("clusterMaker has no "+command+" command");
 		}
 		return result;
 	}
