@@ -28,11 +28,11 @@
 package browser;
 
 import static browser.DataObjectType.NETWORK;
+import browser.util.AttrUtil;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.eqn_attribs.AttribEqnCompiler;
 import cytoscape.data.eqn_attribs.Equation;
-import cytoscape.data.CyAttributesUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -420,11 +420,9 @@ public class DataEditAction extends AbstractUndoableEdit {
 	}
 
 	// Pop-up window for error message
-	private void showErrorWindow(String errMessage) {
+	private static void showErrorWindow(String errMessage) {
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Invalid Value!",
 		                              JOptionPane.ERROR_MESSAGE);
-
-		return;
 	}
 
 	/**
@@ -460,21 +458,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 *  @returns the successfully compiled equation or null if an error occurred
 	 */
 	private Equation parseEquation(final String equation, final CyAttributes attrs, final String id, final String currentAttrName) {
-		final List<String> attrNames = CyAttributesUtils.getAttributeNamesForObj(id, attrs);
-		final Map<String, Class> attribNameToTypeMap = new TreeMap<String, Class>();
-		for (final String attrName : attrNames) {
-			final byte type = attrs.getType(attrName);
-			if (type == CyAttributes.TYPE_INTEGER)
-				attribNameToTypeMap.put(attrName, Long.class);
-			if (type == CyAttributes.TYPE_BOOLEAN)
-				attribNameToTypeMap.put(attrName, Boolean.class);
-			if (type == CyAttributes.TYPE_FLOATING)
-				attribNameToTypeMap.put(attrName, Double.class);
-			if (type == CyAttributes.TYPE_SIMPLE_LIST)
-				attribNameToTypeMap.put(attrName, List.class);
-			if (type == CyAttributes.TYPE_STRING)
-				attribNameToTypeMap.put(attrName, String.class);
-		}
+		final Map<String, Class> attribNameToTypeMap = AttrUtil.getAttrNamesAndTypes(attrs);
 
 		final AttribEqnCompiler compiler = new AttribEqnCompiler();
 		if (!compiler.compile(equation, attribNameToTypeMap)) {

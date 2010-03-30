@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -29,9 +29,12 @@
 package browser;
 
 import browser.ui.ActionName;
+import browser.util.AttrUtil;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.data.eqn_attribs.AttribEqnCompiler;
+import cytoscape.data.eqn_attribs.Equation;
 
 import giny.model.GraphObject;
 
@@ -153,6 +156,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		table.setTableData();
 	}
 
+
 	// put back the old_values
 	/**
 	 *  DOCUMENT ME!
@@ -171,9 +175,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		table.setTableData();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+
 	public void initEdit() {
 		// get proper Global CytoscapeData object
 		attrData = graphObjectType.getAssociatedAttribute();
@@ -183,28 +185,45 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		} else if (action == CLEAR) {
 			deleteAtt();
 		} else {
-			try {
-				attType = attrData.getType(attributeTo);
-			} catch (Exception ex) {
-				// define the new attribute
-				// attType = ( ( CytoscapeDataImpl )data
-				// ).wildGuessAndDefineObjectType( input, attributeTo );
+			attType = attrData.getType(attributeTo);
+			if (attType == CyAttributes.TYPE_UNDEFINED)
 				attType = CyAttributes.TYPE_STRING;
 
-				// TODO Type guessing!!!!
-			}
+			if (input.length() >= 2 && input.charAt(0) == '=') {
+				if (action != SET) {
+					showErrorWindow("Equations are only compatible with the SET operation!");
+					return;
+				}
 
-			if (attType == -1) {
-				// attType = ( ( CytoscapeDataImpl )data
-				// ).wildGuessAndDefineObjectType( input, attributeTo );
-			}
+				final Map<String, Class> attribNameToTypeMap = AttrUtil.getAttrNamesAndTypes(attrData);
 
-			if (attType == CyAttributes.TYPE_FLOATING) {
+				final AttribEqnCompiler compiler = new AttribEqnCompiler();
+				if (!compiler.compile(input, attribNameToTypeMap)) {
+					showErrorWindow("Error in equation in SET operation: "
+					                + compiler.getLastErrorMsg());
+					return;
+				}
+
+				final Equation equation = compiler.getEquation();
+				final Class eqnType = equation.getType();
+				if (!eqnTypeIsCompatibleWithAttrType(eqnType, attType)) {
+					showErrorWindow("Equation of type \"" + eqnType
+					                + "\" is incompatible with the target of the SET operation!");
+					return;
+				}
+
+				equationAction(equation);
+			}
+			else if (attType == CyAttributes.TYPE_FLOATING) {
 				Double d = new Double(input);
 				doubleAction(d.doubleValue());
 			} else if (attType == CyAttributes.TYPE_INTEGER) {
-				Integer d = new Integer(input);
-				integerAction(d.intValue());
+				try {
+					Integer d = new Integer(input);
+					integerAction(d.intValue());
+				} catch (final Exception e) {
+					showErrorWindow("\"" + input + "\" is not a valid integer!");
+				}
 			} else if (attType == CyAttributes.TYPE_STRING) {
 				stringAction(input);
 			} else if (attType == CyAttributes.TYPE_BOOLEAN) {
@@ -223,6 +242,31 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		}
 	} // initEdit
 
+	private static boolean eqnTypeIsCompatibleWithAttrType(final Class eqnType, final byte attType) {
+		if (eqnType == Integer.class) {
+			if (attType != CyAttributes.TYPE_INTEGER && attType != CyAttributes.TYPE_FLOATING
+			    && attType != CyAttributes.TYPE_BOOLEAN && attType != CyAttributes.TYPE_STRING)
+				return false;
+		}
+		else if (eqnType == Double.class) {
+			if (attType != CyAttributes.TYPE_FLOATING && attType != CyAttributes.TYPE_BOOLEAN
+			    && attType != CyAttributes.TYPE_STRING)
+				return false;
+		}
+		else if (eqnType == Boolean.class) {
+			if (attType != CyAttributes.TYPE_INTEGER && attType != CyAttributes.TYPE_FLOATING
+			    && attType != CyAttributes.TYPE_BOOLEAN)
+				return false;
+		}
+		else if (eqnType == String.class) {
+			/* Everything can be turned into a String! */
+		}
+		else
+			throw new IllegalStateException("unhandled equation return type: " + eqnType + "!");
+
+		return true;
+	}
+
 	private void listAction() {
 		if ((action == DIV) || (action == MUL))
 			return;
@@ -230,16 +274,14 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
 
-		GraphObject go;
-		String s;
-		String new_v;
-		for (Object obj : objects) {
-			 go = (GraphObject) obj;
+		for (final Object obj : objects) {
+			 final GraphObject go = (GraphObject)obj;
 
 			// get the current value and set the old_value to it
-			s = (String) attrData.getAttribute(go.getIdentifier(), attributeTo);
+			final String s = (String)attrData.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(s);
 
+			final String new_v;
 			if (action == SET)
 				new_v = input;
 			else if(action == ActionName.ADD_PREFIX) {
@@ -318,8 +360,8 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		old_values = new ArrayList(objects.size());
 
 		// Check data compatibility
-		for (Iterator i = objects.iterator(); i.hasNext();) {
-			GraphObject go = (GraphObject) i.next();
+		for (final Object o : objects) {
+			final GraphObject go = (GraphObject)o;
 
 			final Object attr = attrData.getAttribute(go.getIdentifier(), attributeTo);
 			if (attr != null) {
@@ -331,11 +373,8 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	}
 
 	// Pop-up window for error message
-	private void showErrorWindow(String errMessage) {
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Error!",
-		                              JOptionPane.ERROR_MESSAGE);
-
-		return;
+	private static void showErrorWindow(final String errMessage) {
+		JOptionPane.showMessageDialog(null, errMessage, "Error!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**
@@ -352,28 +391,37 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
 
-		for (Iterator i = objects.iterator(); i.hasNext();) {
-			GraphObject go = (GraphObject) i.next();
+		for (final Object o : objects) {
+			final GraphObject go = (GraphObject)o;
 
-			// get the current value and set the old_value to it
-			Double d = (Double) attrData.getAttribute(go.getIdentifier(), attributeTo);
-			old_values.add(d);
+			if (action == SET) {
+				// Get the current value and set the old_value to it
+				final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+				if (oldEquation != null)
+					old_values.add(oldEquation);
+				else
+					old_values.add(attrData.getAttribute(go.getIdentifier(), attributeTo));
+				setAttributeValue(go.getIdentifier(), attributeTo, input);
+				new_values.add(input);
+			} else {
+				// get the current value and set the old_value to it
+				final Double d = (Double) attrData.getAttribute(go.getIdentifier(), attributeTo);
+				old_values.add(d);
 
-			double new_v;
+				double new_v;
 
-			if (action == SET)
-				new_v = input;
-			else if (action == ADD)
-				new_v = input + d.doubleValue();
-			else if (action == MUL)
-				new_v = input * d.doubleValue();
-			else if (action == DIV)
-				new_v = d.doubleValue() / input;
-			else
-				new_v = input;
+				if (action == ADD)
+					new_v = input + d;
+				else if (action == MUL)
+					new_v = input * d;
+				else if (action == DIV)
+					new_v = d / input;
+				else
+					new_v = input;
 
-			new_values.add(new Double(new_v));
-			setAttributeValue(go.getIdentifier(), attributeTo, new Double(new_v));
+				new_values.add(new Double(new_v));
+				setAttributeValue(go.getIdentifier(), attributeTo, new Double(new_v));
+			}
 		} // iterator
 	} // doubleAction
 
@@ -381,9 +429,9 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * save the old and new values, subsequent redo/undo will only use these
 	 * values.
 	 */
-	private void integerAction(int input) {
+	private void integerAction(final int input) {
 		// Sanity check:
-		if (action == DIV && input == 0.0) {
+		if (action == DIV && input == 0) {
 			showErrorWindow("Division by zero is invalid!");
 			return;
 		}
@@ -391,28 +439,36 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
 
-		for (Iterator i = objects.iterator(); i.hasNext();) {
-			GraphObject go = (GraphObject) i.next();
+		for (final Object o : objects) {
+			final GraphObject go = (GraphObject)o;
 
-			// get the current value and set the old_value to it
-			Integer d = (Integer) attrData.getAttribute(go.getIdentifier(), attributeTo);
-			old_values.add(d);
+			if (action == SET) {
+				// Get the current value and set the old_value to it
+				final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+				if (oldEquation != null)
+					old_values.add(oldEquation);
+				else
+					old_values.add(attrData.getAttribute(go.getIdentifier(), attributeTo));
+				setAttributeValue(go.getIdentifier(), attributeTo, input);
+				new_values.add(input);
+			} else {
+				// get the current value and set the old_value to it
+				final Integer i = (Integer)attrData.getAttribute(go.getIdentifier(), attributeTo);
+				old_values.add(i);
 
-			int new_v;
+				int new_v;
+				if (action == ADD)
+					new_v = input + i;
+				else if (action == MUL)
+					new_v = input * i;
+				else if (action == DIV)
+					new_v = i / input;
+				else
+					new_v = input;
 
-			if (action == SET)
-				new_v = input;
-			else if (action == ADD)
-				new_v = input + d.intValue();
-			else if (action == MUL)
-				new_v = input * d.intValue();
-			else if (action == DIV)
-				new_v = d.intValue() / input;
-			else
-				new_v = input;
-
-			new_values.add(new Integer(new_v));
-			setAttributeValue(go.getIdentifier(), attributeTo, new Integer(new_v));
+				new_values.add(new Integer(new_v));
+				setAttributeValue(go.getIdentifier(), attributeTo, new Integer(new_v));
+			}
 		} // iterator
 	} // integerAction
 
@@ -420,7 +476,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * save the old and new values, subsequent redo/undo will only use these
 	 * values.
 	 */
-	private void stringAction(String input) {
+	private void stringAction(final String input) {
 		// return if number only action
 		if ((action == DIV) || (action == MUL))
 			return;
@@ -428,62 +484,89 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
 
-		GraphObject go;
-		String s;
-		String new_v;
-		for (Object obj : objects) {
-			 go = (GraphObject) obj;
+		for (final Object obj : objects) {
+			 final GraphObject go = (GraphObject) obj;
 
 			// get the current value and set the old_value to it
-			s = (String) attrData.getAttribute(go.getIdentifier(), attributeTo);
+			final String s = (String) attrData.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(s);
 			
-			if(s == null && action != SET) {
+			if (s == null && action != SET)
 				continue;
-			}
 
-			if (action == SET)
-				new_v = input;
-			else if(action == ActionName.ADD_PREFIX) {
-				new_v = input+s;
-			} else if(action == ActionName.ADD_SUFFIX) {
-				new_v = s+input;
-			} else if(action == ActionName.REMOVE) {
-				new_v = s.replaceAll(input, "");
-			} else if(action == ActionName.REPLACE) {
-				String[] vals = input.split("\t");
-				if(vals.length == 2) {
-					new_v = s.replaceAll(vals[0], vals[1]);
+			if (action == SET) {
+				// Get the current value and set the old_value to it
+				final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+				if (oldEquation != null)
+					old_values.add(oldEquation);
+				else
+					old_values.add(attrData.getAttribute(go.getIdentifier(), attributeTo));
+				setAttributeValue(go.getIdentifier(), attributeTo, input);
+				new_values.add(input);
+			} else {
+				String new_v;
+				if (action == ActionName.ADD_PREFIX) {
+					new_v = input + s;
+				} else if (action == ActionName.ADD_SUFFIX) {
+					new_v = s + input;
+				} else if (action == ActionName.REMOVE) {
+					new_v = s.replaceAll(input, "");
+				} else if (action == ActionName.REPLACE) {
+					final String[] vals = input.split("\t");
+					if (vals.length == 2)
+						new_v = s.replaceAll(vals[0], vals[1]);
+					else
+						new_v = s.concat(input);
+				
+				} else if (action == ActionName.TO_LOWER) {
+					new_v = s.toLowerCase();
+				} else if (action == ActionName.TO_UPPER) {
+					new_v = s.toUpperCase();
 				} else
 					new_v = s.concat(input);
-				
-			} else if(action == ActionName.TO_LOWER) {
-				new_v = s.toLowerCase();
-			} else if(action == ActionName.TO_UPPER) {
-				new_v = s.toUpperCase();
-			} else
-				new_v = s.concat(input);
 
-			new_values.add(new_v);
-			setAttributeValue(go.getIdentifier(), attributeTo, new_v);
+				new_values.add(new_v);
+				setAttributeValue(go.getIdentifier(), attributeTo, new_v);
+			}
 		} // iterator
 	} // stringAction
 
-	private void booleanAction(Boolean input) {
+	private void booleanAction(final Boolean input) {
 		if ((action == DIV) || (action == MUL) || (action == ADD))
 			return;
 
 		old_values = new ArrayList(objects.size());
 		new_values = new ArrayList(objects.size());
 
-		for (Iterator i = objects.iterator(); i.hasNext();) {
-			GraphObject go = (GraphObject) i.next();
+		for (final Object o : objects) {
+			GraphObject go = (GraphObject)o;
 
-			// get the current value and set the old_value to it
-			Boolean b = (Boolean) attrData.getAttribute(go.getIdentifier(), attributeTo);
-			old_values.add(b);
+			// Get the current value and set the old_value to it
+			final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+                        if (oldEquation != null)
+                                old_values.add(oldEquation);
+                        else
+				old_values.add(attrData.getAttribute(go.getIdentifier(), attributeTo));
 			setAttributeValue(go.getIdentifier(), attributeTo, input);
 			new_values.add(input);
 		} // iterator
 	} // booleanAction
+
+	private void equationAction(final Equation input) {
+		old_values = new ArrayList(objects.size());
+		new_values = new ArrayList(objects.size());
+
+		for (final Object o : objects) {
+			final GraphObject go = (GraphObject)o;
+
+			// Get the current value and set the old_value to it
+			final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+			if (oldEquation != null)
+				old_values.add(oldEquation);
+			else
+				old_values.add(attrData.getAttribute(go.getIdentifier(), attributeTo));
+			attrData.setAttribute(go.getIdentifier(), attributeTo, input);
+			new_values.add(input);
+		} // iterator
+	} // equationAction
 }
