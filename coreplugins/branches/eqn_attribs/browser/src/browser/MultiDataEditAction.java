@@ -324,16 +324,25 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 		// System.out.println("####FROM: " + attributeFrom);
 		// System.out.println("####TO: " + attributeTo);
-		for (Iterator i = objects.iterator(); i.hasNext();) {
-			GraphObject go = (GraphObject) i.next();
+		for (final Object o : objects) {
+			final GraphObject go = (GraphObject)o;
 
 			Object value = null;
 			if (fromType == CyAttributes.TYPE_SIMPLE_LIST)
 				value = attrData.getListAttribute(go.getIdentifier(), attributeFrom);
 			else if (fromType == CyAttributes.TYPE_SIMPLE_MAP)
 				value = attrData.getMapAttribute(go.getIdentifier(), attributeFrom);
-			else
+			else {
+				final Equation equation = attrData.getEquation(go.getIdentifier(), attributeFrom);
+				if (equation != null) {
+					attrData.setAttribute(go.getIdentifier(), attributeTo, equation);
+					new_values.add(equation);
+					old_values.add(null);
+					continue;
+				}
+
 				value = attrData.getAttribute(go.getIdentifier(), attributeFrom);
+			}
 			new_values.add(value);
 
 			if ((fromType == CyAttributes.TYPE_INTEGER) && (toType == CyAttributes.TYPE_FLOATING))
@@ -363,7 +372,13 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		for (final Object o : objects) {
 			final GraphObject go = (GraphObject)o;
 
-			final Object attr = attrData.getAttribute(go.getIdentifier(), attributeTo);
+			final Object attr;
+			final Equation equation = attrData.getEquation(go.getIdentifier(), attributeTo);
+			if (equation != null)
+				attr = equation;
+			else
+				attr = attrData.getAttribute(go.getIdentifier(), attributeTo);
+
 			if (attr != null) {
 				old_values.add(attr);
 				attrData.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(), attributeTo);
