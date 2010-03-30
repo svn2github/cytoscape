@@ -57,6 +57,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.view.CyNetworkView;
@@ -746,12 +747,13 @@ public class XGMMLWriter {
 		String type = null;
 		final boolean editable = attributes.getUserEditable(attributeName);
 		final boolean hidden = !attributes.getUserVisible(attributeName);
-		final String eqnFormula = attributes.getEquationFormula(id, attributeName);
+		final Equation equation = attributes.getEquation(id, attributeName);
 
 		// process float
 		if (attType == CyAttributes.TYPE_FLOATING) {
-			if (eqnFormula != null)
-				writeEquationAttributeXML(attributeName, ObjectType.REAL, eqnFormula, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.REAL, equation.toString(),
+				                          true, hidden, editable);
 			else {
 				final Double dAttr = attributes.getDoubleAttribute(id, attributeName);
 				writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true, hidden, editable);
@@ -759,8 +761,9 @@ public class XGMMLWriter {
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
-			if (eqnFormula != null)
-				writeEquationAttributeXML(attributeName, ObjectType.INTEGER, eqnFormula, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.INTEGER, equation.toString(),
+				                          true, hidden, editable);
 			else {
 				final Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
 				writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true, hidden, editable);
@@ -768,8 +771,9 @@ public class XGMMLWriter {
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
-			if (eqnFormula != null)
-				writeEquationAttributeXML(attributeName, ObjectType.STRING, eqnFormula, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.STRING, equation.toString(),
+				                          true, hidden, editable);
 			else {
 				String sAttr = attributes.getStringAttribute(id, attributeName);
 				// Protect tabs and returns
@@ -777,7 +781,7 @@ public class XGMMLWriter {
 					sAttr = sAttr.replace("\n", "\\n");
 					sAttr = sAttr.replace("\t", "\\t");
 				}
-				if(attributeName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
+				if (attributeName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
 					// This is a special attribute for nested network.
 					sAttr = Cytoscape.getNetwork(sAttr).getTitle();
 				}
@@ -786,8 +790,9 @@ public class XGMMLWriter {
 		}
 		// process boolean
 		else if (attType == CyAttributes.TYPE_BOOLEAN) {
-			if (eqnFormula != null)
-				writeEquationAttributeXML(attributeName, ObjectType.BOOLEAN, eqnFormula, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.BOOLEAN, equation.toString(),
+				                          true, hidden, editable);
 			else {
 				final Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
 				writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true, hidden, editable);

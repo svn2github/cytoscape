@@ -1006,9 +1006,9 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns the text representing the equation associated with an attribute or null if there is no equation associated with it
+	 *  @returns the equation associated with an attribute or null if there is no equation associated with it
 	 */
-	public String getEquationFormula(final String id, final String attributeName) {
+	public Equation getEquation(final String id, final String attributeName) {
 		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
 		if (dimTypes.length != 0)
 			return null;
@@ -1017,7 +1017,7 @@ public class CyAttributesImpl implements CyAttributes {
 		if (attribValue == null || !(attribValue instanceof Equation))
 			return null;
 
-		return ((Equation)(attribValue)).toString();
+		return (Equation)attribValue;
 	}
 
 	private Object evalEquation(final String id, final Equation equation) {
