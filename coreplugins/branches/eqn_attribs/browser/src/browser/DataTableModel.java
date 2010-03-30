@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.eqn_attribs.Equation;
 
 import cytoscape.view.CyNetworkView;
 
@@ -429,14 +430,17 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public ValueAndEquation getAttributeValueAndEquation(final byte type, final String id, final String attrName) {
+		final Equation equation = data.getEquation(id, attrName);
+		final String equationFormula = equation == null ? null : equation.toString();
+
 		if (type == CyAttributes.TYPE_INTEGER)
-			return new ValueAndEquation(data.getIntegerAttribute(id, attrName), data.getEquationFormula(id, attrName));
+			return new ValueAndEquation(data.getIntegerAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_FLOATING)
-			return new ValueAndEquation(data.getDoubleAttribute(id, attrName), data.getEquationFormula(id, attrName));
+			return new ValueAndEquation(data.getDoubleAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return new ValueAndEquation(data.getBooleanAttribute(id, attrName), data.getEquationFormula(id, attrName));
+			return new ValueAndEquation(data.getBooleanAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_STRING)
-			return new ValueAndEquation(data.getStringAttribute(id, attrName), data.getEquationFormula(id, attrName));
+			return new ValueAndEquation(data.getStringAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
 			return new ValueAndEquation(data.getListAttribute(id, attrName));
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)

@@ -396,7 +396,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 			if (action == SET) {
 				// Get the current value and set the old_value to it
-				final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+				final Equation oldEquation = attrData.getEquation(go.getIdentifier(), attributeTo);
 				if (oldEquation != null)
 					old_values.add(oldEquation);
 				else
@@ -444,7 +444,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 			if (action == SET) {
 				// Get the current value and set the old_value to it
-				final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+				final Equation oldEquation = attrData.getEquation(go.getIdentifier(), attributeTo);
 				if (oldEquation != null)
 					old_values.add(oldEquation);
 				else
@@ -496,7 +496,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 			if (action == SET) {
 				// Get the current value and set the old_value to it
-				final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+				final Equation oldEquation = attrData.getEquation(go.getIdentifier(), attributeTo);
 				if (oldEquation != null)
 					old_values.add(oldEquation);
 				else
@@ -542,7 +542,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			GraphObject go = (GraphObject)o;
 
 			// Get the current value and set the old_value to it
-			final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+			final Equation oldEquation = attrData.getEquation(go.getIdentifier(), attributeTo);
                         if (oldEquation != null)
                                 old_values.add(oldEquation);
                         else
@@ -560,7 +560,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			final GraphObject go = (GraphObject)o;
 
 			// Get the current value and set the old_value to it
-			final String oldEquation = attrData.getEquationFormula(go.getIdentifier(), attributeTo);
+			final Equation oldEquation = attrData.getEquation(go.getIdentifier(), attributeTo);
 			if (oldEquation != null)
 				old_values.add(oldEquation);
 			else
