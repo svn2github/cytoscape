@@ -25,7 +25,7 @@ import cytoscape.view.CyNetworkView;
 import clusterMaker.algorithms.Cluster;
 import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.DistanceMatrix;
-import clusterMaker.algorithms.IntCluster;
+import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.algorithms.NodeCluster;
 
 import cern.colt.function.IntIntDoubleFunction;
@@ -130,7 +130,7 @@ public class RunAP {
 
 		monitor.setStatus("Assigning nodes to clusters");
 
-		Map<Integer, IntCluster> clusterMap = getClusterMap();
+		Map<Integer, NodeCluster> clusterMap = getClusterMap();
 
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
 		logger.info("Created "+clusterMap.size()+" clusters");
@@ -141,16 +141,15 @@ public class RunAP {
 		}
 
 		int clusterNumber = 1;
-		Map<IntCluster,IntCluster> cMap = new HashMap();
-		for (IntCluster cluster: IntCluster.sortMap(clusterMap)) {
+		Map<NodeCluster,NodeCluster> cMap = new HashMap();
+		for (NodeCluster cluster: NodeCluster.sortMap(clusterMap)) {
 			if (cMap.containsKey(cluster))
 				continue;
 
 			if (debug) {
 				logger.debug("Cluster "+clusterNumber);
 				String s = "";
-				for (Integer i: cluster) {
-			 		CyNode node = nodes.get(i.intValue());
+				for (CyNode node: cluster) {
 			 		s += node.getIdentifier()+"\t";
 				}
 				logger.debug(s);
@@ -162,8 +161,8 @@ public class RunAP {
 			clusterNumber++;
 		}
 
-		Set<IntCluster>clusters = cMap.keySet();
-		return NodeCluster.getNodeClusters(nodes, clusters);
+		Set<NodeCluster>clusters = cMap.keySet();
+		return new ArrayList(clusters);
 	}	
 
 	//Exchange Messages between Responsibility and Availibility Matrix for Single Iteration of Affinity Propogation
@@ -214,9 +213,9 @@ public class RunAP {
 	  return exemplar;
 	}
 
-	private Map<Integer, IntCluster> getClusterMap(){
+	private Map<Integer, NodeCluster> getClusterMap(){
 	    
-		HashMap<Integer, IntCluster> clusterMap = new HashMap();
+		HashMap<Integer, NodeCluster> clusterMap = new HashMap();
 
 		for(int i = 0; i < s_matrix.rows(); i++){
 		
@@ -228,11 +227,11 @@ public class RunAP {
 					continue;
 
 				// Already seen exemplar
-				IntCluster exemplarCluster = clusterMap.get(exemplar);
+				NodeCluster exemplarCluster = clusterMap.get(exemplar);
 
 				if (clusterMap.containsKey(i)) {
 					// We've already seen i also -- join them
-					IntCluster iCluster = clusterMap.get(i);
+					NodeCluster iCluster = clusterMap.get(i);
 					if (iCluster != exemplarCluster) {
 						exemplarCluster.addAll(iCluster);
 						// System.out.println("Combining "+i+"["+iCluster+"] and "+exemplar+" ["+exemplarCluster+"]");
@@ -240,16 +239,16 @@ public class RunAP {
 						clusterMap.remove(i);
 					}
 				} else {
-					exemplarCluster.add(i);
+					exemplarCluster.add(nodes, i);
 					// System.out.println("Adding "+i+" to ["+exemplarCluster+"]");
 				}
 
 				// Update Clusters
-				for (Integer x: exemplarCluster) {
-					clusterMap.put(x, exemplarCluster);
+				for (CyNode node: exemplarCluster) {
+					clusterMap.put(nodes.indexOf(node), exemplarCluster);
 				}
 			} else {
-				IntCluster iCluster;
+				NodeCluster iCluster;
 
 				// First time we've seen this "exemplar" -- have we already seen "i"?
 				if (clusterMap.containsKey(i)) {
@@ -257,19 +256,19 @@ public class RunAP {
 						continue;
 					// Yes, just add exemplar to i's cluster
 					iCluster = clusterMap.get(i);
-					iCluster.add(exemplar);
+					iCluster.add(nodes, exemplar);
 					// System.out.println("Adding "+exemplar+" to ["+iCluster+"]");
 				} else {
 					// No create new cluster from scratch
-					iCluster = new IntCluster();
-					iCluster.add(i);
+					iCluster = new NodeCluster();
+					iCluster.add(nodes, i);
 					if (exemplar != i)
-						iCluster.add(exemplar);
+						iCluster.add(nodes, exemplar);
 					// System.out.println("New cluster ["+iCluster+"]");
 				}
 				// Update Clusters
-				for (Integer x: iCluster) {
-					clusterMap.put(x, iCluster);
+				for (CyNode node: iCluster) {
+					clusterMap.put(nodes.indexOf(node), iCluster);
 				}
 			}
 		}

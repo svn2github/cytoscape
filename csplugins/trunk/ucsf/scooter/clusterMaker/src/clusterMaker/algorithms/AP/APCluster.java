@@ -54,7 +54,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
 import clusterMaker.ClusterMaker;
-import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterResults;
@@ -65,7 +65,7 @@ import clusterMaker.ui.NewNetworkView;
 
 // clusterMaker imports
 
-public class APCluster extends AbstractClusterAlgorithm  {
+public class APCluster extends AbstractNetworkClusterer  {
 	
 	double lambda = .5;
 	int rNumber = 8;

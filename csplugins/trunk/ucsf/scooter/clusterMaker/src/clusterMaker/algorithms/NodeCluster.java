@@ -34,6 +34,7 @@ package clusterMaker.algorithms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,32 +47,33 @@ import cytoscape.CyNode;
  * of some sort.  A more complicated form of a cluster could include clusters
  * as part of the list, which complicates this class a little....
  */
-public class NodeCluster extends Cluster<CyNode> {
-	List<CyNode> nodeList = null;
+public class NodeCluster extends ArrayList<CyNode> {
+	int clusterNumber = 0;
+	static int clusterCount = 0;
 
-	public NodeCluster(List<CyNode> nodeList) {
+	public NodeCluster() {
 		super();
-		this.nodeList = nodeList;
+		clusterCount++;
+		clusterNumber = clusterCount;
 	}
 
-	public NodeCluster(List<CyNode> nodeList, IntCluster iCluster) {
-		this(nodeList);
-		for (Integer i: iCluster) {
-			add(i);
-		}
+	public boolean add(List<CyNode>nodeList, int index) {
+		return add(nodeList.get(index));
 	}
 
-	public void add (Integer nodeIndex) {
-		CyNode node = nodeList.get(nodeIndex);
-		super.add (node);
+	public static void init() { clusterCount = 0; }
+
+	public int getClusterNumber() { return clusterNumber; }
+
+	public void setClusterNumber(int clusterNumber) { 
+		this.clusterNumber = clusterNumber; 
 	}
 
-	public static List<NodeCluster> getNodeClusters(List<CyNode> nodeList, Set<IntCluster>clusters) {
-		List<NodeCluster> nC = new ArrayList();
-		for (IntCluster iC: clusters) {
-			nC.add(new NodeCluster(nodeList, iC));
-		}
-		return nC;
+	public String toString() {
+		String str = "("+clusterNumber+": ";
+		for (Object i: this) 
+			str += i.toString();
+		return str+")";
 	}
 
 	public static List<NodeCluster> sortMap(Map<Integer, NodeCluster> map) {
@@ -80,6 +82,13 @@ public class NodeCluster extends Cluster<CyNode> {
 		return Arrays.asList(clusterArray);
 	}
 
+	static class LengthComparator implements Comparator {
+		public int compare (Object o1, Object o2) {
+			List c1 = (List)o1;
+			List c2 = (List)o2;
+			if (c1.size() > c2.size()) return -1;
+			if (c1.size() < c2.size()) return 1;
+			return 0;
+		}
+	}
 }
-
-
