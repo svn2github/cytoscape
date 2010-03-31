@@ -3,5 +3,7 @@ package cytoscape.visual.customgraphic;
 import java.awt.Component;
 
 public interface Customizable<T> {
-	Component getCustomizer();
+	public Component getCustomizer();
+	
+	public void customize(final Object context);
 }

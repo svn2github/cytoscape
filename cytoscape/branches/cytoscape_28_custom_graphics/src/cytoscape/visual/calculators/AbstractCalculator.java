@@ -317,7 +317,10 @@ public abstract class AbstractCalculator implements Calculator {
 	 *            Parent JDialog for the UI
 	 * @param network
 	 *            CyNetwork object containing underlying graph data
+	 *            
+	 * @deprecated Will be removed next release (2.8 or 3.0)
 	 */
+	@Deprecated 
 	public JPanel getUI(JDialog parent, CyNetwork network) {
 		return getUI(type.isNodeProp() ? Cytoscape.getNodeAttributes() : Cytoscape.getEdgeAttributes(),
 		             parent, network);
@@ -332,14 +335,20 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param attr
 	 *            CyAttributes to look up attributes from
 	 * @return UI with controlling attribute selection facilities
+	 * 
+	 * @deprecated will be removed in the next release (2.8 or 3.0)
 	 */
+	@Deprecated
 	protected JPanel getUI(CyAttributes attr, JDialog parent, CyNetwork network) {
 		return new CalculatorUI(attr, parent, network);
 	}
 
 	/**
 	 * UI class for the calculator.
+	 * 
+	 * @deprecated Do not use.  This UI was replaced by new VizMap GUI.
 	 */
+	@Deprecated
 	protected class CalculatorUI extends JPanel {
 		/**
 		 * Remember the grid bag group in case the mapper UI needs to be

@@ -137,7 +137,7 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL, "");
 
 		// Set edge color based on datasource name
-		DiscreteMapping nodeGraphics = new DiscreteMapping(CustomGraphicsPool
+		DiscreteMapping nodeGraphics = new DiscreteMapping(Cytoscape.getVisualMappingManager().getCustomGraphicsPool()
 				.getNullGraphics(), "ID", ObjectMapping.NODE_MAPPING);
 
 		generateCharts(controllingAttrName, nodeGraphics);
@@ -159,7 +159,7 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 
 	private void generateCharts(String ctr, final DiscreteMapping nodeGraphics) {
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		for (Integer idx : Cytoscape.getRootGraph().getNodeIndicesArray()) {
 			final Node node = Cytoscape.getRootGraph().getNode(idx);
 			Double targetAttrVal = nodeAttr.getDoubleAttribute(node
@@ -171,7 +171,7 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 					final String url = "http://chart.apis.google.com/chart?cht=ls&chs=300x300&chds=0,1,0,1&chxr=0,0,1&chma=5,5,5,5&" +
 							"chd=t:" + dataString + "&chdl=wt|mutant&chco=FF0000,00FF00&chxt=y&chtt=" + node.getIdentifier();
 					CyCustomGraphics<?> cg = new URLImageCustomGraphics(url);
-					CustomGraphicsPool.addGraphics(node.getIdentifier(), cg);
+					pool.addGraphics(node.getIdentifier(), cg);
 					nodeGraphics.putMapValue(node.getIdentifier(), cg);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

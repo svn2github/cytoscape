@@ -35,11 +35,6 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
@@ -74,7 +69,10 @@ public interface Calculator extends Cloneable {
      *            Parent JDialog for the UI
      * @param network
      *            CyNetwork object containing underlying graph data
+     *            
+     * @deprecated replaced by new VizMap GUI components.  Will be removed in 2.8 or 3.0
      */
+	@Deprecated
     JPanel getUI(JDialog parent, CyNetwork network);
 
     /**

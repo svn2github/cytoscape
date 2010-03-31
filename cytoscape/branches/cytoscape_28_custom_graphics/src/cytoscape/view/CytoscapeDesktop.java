@@ -78,8 +78,6 @@ import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerDialog;
-import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerPanel;
 import cytoscape.visual.ui.HideEdgeListener;
 import cytoscape.visual.ui.HideNodeListener;
 import cytoscape.visual.ui.NestedNetworkListener;

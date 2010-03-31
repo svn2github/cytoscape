@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.io.IOException;
 import java.util.Collection;
 
+import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 
 public class CustomGraphicsUtil {
@@ -17,7 +18,7 @@ public class CustomGraphicsUtil {
 				continue;
 			}
 			if(graphics != null)
-				CustomGraphicsPool.addGraphics(graphics.getDisplayName(), graphics);
+				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics.getDisplayName(), graphics);
 		}
 	}
 

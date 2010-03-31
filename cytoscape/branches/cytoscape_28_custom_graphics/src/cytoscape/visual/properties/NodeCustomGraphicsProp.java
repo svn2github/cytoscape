@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.swing.Icon;
 
+import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
@@ -26,6 +27,8 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
 import ding.view.DNodeView;
 
 public class NodeCustomGraphicsProp extends AbstractVisualProperty {
+	
+	private final CyCustomGraphics<CustomGraphic> def = new NullCustomGraphics();
 
 	@Override
 	public Icon getIcon(final Object value) {
@@ -153,8 +156,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	public Map<Object, Icon> getIconSet() {
 		final Map<Object, Icon> customGraphicsIcons = new HashMap<Object, Icon>();
-
-		for (CyCustomGraphics<?> graphics : CustomGraphicsPool.getAll()) {
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		for (CyCustomGraphics<?> graphics : pool.getAll()) {
 			VisualPropertyIcon icon = (VisualPropertyIcon) getIcon(graphics);
 			icon.setName(graphics.getDisplayName());
 			customGraphicsIcons
@@ -163,7 +166,4 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 		return customGraphicsIcons;
 	}
-
-	private final CyCustomGraphics<CustomGraphic> def = new NullCustomGraphics();
-
 }

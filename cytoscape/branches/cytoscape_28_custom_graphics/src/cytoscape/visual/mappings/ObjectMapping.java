@@ -62,19 +62,13 @@ import cytoscape.visual.parsers.ValueParser;
  * displayed in Cytoscape, and the byte is one of {@link #EDGE_MAPPING} or
  * {@link #NODE_MAPPING}.
  */
-public interface ObjectMapping<T> extends Cloneable {
-    /**
-     *
-     */
+public interface ObjectMapping extends Cloneable {
+    
     public static final byte EDGE_MAPPING = 0;
-
-    /**
-     *
-     */
     public static final byte NODE_MAPPING = 1;
 
-    
-    public Class<T> getRangeClass();
+
+    public Class<?> getRangeClass();
 
     /**
      * Return the classes that the ObjectMapping can map from, eg. the contents
@@ -127,8 +121,9 @@ public interface ObjectMapping<T> extends Cloneable {
      */
     public void removeChangeListener(ChangeListener l);
 
-    public T calculateRangeValue(Map<String, Object> attrBundle);
+    public Object calculateRangeValue(final Map<String, Object> attrBundle);
 
+    @Deprecated
     public JPanel getUI(JDialog parent, CyNetwork network);
 
     public JPanel getLegend(VisualPropertyType type);

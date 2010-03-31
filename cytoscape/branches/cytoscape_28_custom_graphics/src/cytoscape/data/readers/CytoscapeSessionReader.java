@@ -345,7 +345,7 @@ public class CytoscapeSessionReader {
 		System.out.println("Entry File Name ========>>>>> " + name);
 		CyCustomGraphics<?> graphics = new URLImageCustomGraphics(imageURL.toString());
 		graphics.setDisplayName(name);
-		CustomGraphicsPool.addGraphics(name, graphics);
+		Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(name, graphics);
 	}
 
 	/**

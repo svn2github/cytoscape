@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
+import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
@@ -33,10 +34,13 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 
 	private CustomGraphicsBrowser browser;
 	private final CustomGraphicsDetailPanel detail;
+	
+	private final CustomGraphicsPool pool;
 
 	/** Creates new form CustomGraphicsManagerDialog */
 	public CustomGraphicsManagerDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
+		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		initComponents();
 		try {
 			browser = new CustomGraphicsBrowser();
@@ -185,7 +189,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 			if (img != null) {
 				final CyCustomGraphics<CustomGraphic> cg = new URLImageCustomGraphics(
 						file.toString(), img);
-				CustomGraphicsPool.addGraphics(cg.getDisplayName(), cg);
+				pool.addGraphics(cg.getDisplayName(), cg);
 				((DefaultListModel) browser.getModel()).addElement(cg);
 			}
 		}

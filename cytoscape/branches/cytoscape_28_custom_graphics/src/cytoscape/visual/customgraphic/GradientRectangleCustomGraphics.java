@@ -29,7 +29,7 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 	private float w;
 	private float h;
 	
-	private ImageIcon DEF_ICON = new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_dialog-warning-32.png"));
+	private static ImageIcon DEF_ICON = new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_dialog-warning-32.png"));
 
 	public GradientRectangleCustomGraphics() {
 		super(NAME);

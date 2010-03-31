@@ -1,5 +1,7 @@
 package cytoscape.visual.customgraphic;
 
+import cytoscape.Cytoscape;
+
 /**
  * Create instance of URLImageCustomGraphics object from String.
  * 
@@ -24,7 +26,7 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 		
 		System.out.println("VALID Class ======= " + entryStr);
 		final String imageName = entry[1];
-		CyCustomGraphics<?> cg = CustomGraphicsPool.get(imageName);
+		CyCustomGraphics<?> cg = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().get(imageName);
 		cg.setDisplayName(entry[2]);
 		return cg;
 	}

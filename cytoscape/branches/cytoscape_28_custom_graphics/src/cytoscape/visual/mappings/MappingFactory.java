@@ -35,23 +35,14 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.visual.parsers.ValueParser;
-import cytoscape.logger.CyLogger;
-
-import java.lang.reflect.Constructor;
-
-//----------------------------------------------------------------------------
 import java.util.Properties;
 
+import cytoscape.logger.CyLogger;
+import cytoscape.visual.parsers.ValueParser;
 
-//----------------------------------------------------------------------------
+
 /**
  * This class provides a static factory method for constructing an instance
  * of ObjectMapping as specified by a Properties object and other arguments.
@@ -100,6 +91,7 @@ public class MappingFactory {
             return null;
         }
     }
+
 
     /**
      * Gets a description of the supplied ObjectMapping as properties.

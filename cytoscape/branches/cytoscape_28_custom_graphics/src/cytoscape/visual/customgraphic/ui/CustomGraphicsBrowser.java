@@ -1,10 +1,6 @@
 package cytoscape.visual.customgraphic.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -14,27 +10,18 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import org.jdesktop.swingx.JXImagePanel;
 import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.JXPanel;
 
-import cytoscape.CytoscapeInit;
+import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
-import cytoscape.visual.customgraphic.GradientRectangleCustomGraphics;
+import cytoscape.visual.customgraphic.NullCustomGraphics;
 import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
 /**
@@ -42,9 +29,13 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphics;
  * 
  * @author kono
  */
-public class CustomGraphicsBrowser extends JXList {
+public class CustomGraphicsBrowser extends JXList implements ChangeListener {
+
+	private static final long serialVersionUID = -8342056297304400824L;
 
 	private DefaultListModel model;
+	
+	private final CustomGraphicsPool pool;
 
 	/**
 	 * Creates new form CustomGraphicsBrowserPanel
@@ -52,24 +43,14 @@ public class CustomGraphicsBrowser extends JXList {
 	 * @throws IOException
 	 */
 	public CustomGraphicsBrowser() throws IOException {
+		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		
 		initComponents();
-		File dir = CytoscapeInit.getMRUD();
-		CustomGraphicsPool
-				.addGraphics(
-						"Image 1",
-						new URLImageCustomGraphics(
-								"http://icons2.iconarchive.com/icons/conor-egan-wylie/iphone/128/Finder-icon.png"));
-		CustomGraphicsPool.addGraphics("Image 2", new URLImageCustomGraphics(
-				"http://www.kegg.jp/Fig/compound/C00221.gif"));
-		CustomGraphicsPool
-				.addGraphics(
-						"Image 3",
-						new URLImageCustomGraphics(
-								"https://s3.amazonaws.com/twitter_production/profile_images/419770006/cat1.jpg"));
-		GradientRectangleCustomGraphics grad = new GradientRectangleCustomGraphics();
-		CustomGraphicsPool.addGraphics(grad.getDisplayName(), grad);
+		//GradientRectangleCustomGraphics grad = new GradientRectangleCustomGraphics();
+		//Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(grad.getDisplayName(), grad);
 
-		addImages();
+		addAllImages();
+		pool.addChangeListener(this);
 	}
 
 	/**
@@ -89,13 +70,12 @@ public class CustomGraphicsBrowser extends JXList {
 
 	}// </editor-fold>
 
-	private void addImages() {
-		final Collection<CyCustomGraphics<?>> graphics = CustomGraphicsPool
-				.getAll();
-
+	private void addAllImages() {
+		final Collection<CyCustomGraphics<?>> graphics = pool.getAll();
+		
 		for (CyCustomGraphics<?> cg : graphics) {
-			model.addElement(cg);
-
+			if(cg instanceof NullCustomGraphics == false)
+				model.addElement(cg);
 		}
 	}
 
@@ -108,7 +88,7 @@ public class CustomGraphicsBrowser extends JXList {
 		}
 		
 		if (cg != null) {
-			CustomGraphicsPool.addGraphics(cg.getDisplayName(), cg);
+			pool.addGraphics(cg.getDisplayName(), cg);
 			model.addElement(cg);
 		}
 	}
@@ -182,6 +162,11 @@ public class CustomGraphicsBrowser extends JXList {
 			}
 		}
 
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		System.out.println("###### Change Event: " + e);
 	}
 
 	
