@@ -45,12 +45,14 @@ public class AttribTokeniser {
 	private String errorMsg;
 	private int previousChar;
 	private boolean putBackChar;
+	private boolean openingBraceSeen;
 
 	public AttribTokeniser(final String equationAsString) {
 		previousToken = null;
 		reader = new StringReader(equationAsString);
 		stringPos = 0;
 		putBackChar = false;
+		openingBraceSeen = false;
 	}
 
 	public AttribToken getToken() {
@@ -78,8 +80,12 @@ public class AttribTokeniser {
 		switch (ch) {
 		case ':': return AttribToken.COLON;
 		case '^': return AttribToken.CARET;
-		case '{': return AttribToken.OPEN_BRACE;
-		case '}': return AttribToken.CLOSE_BRACE;
+		case '{':
+			openingBraceSeen = true;
+			return AttribToken.OPEN_BRACE;
+		case '}':
+			openingBraceSeen = false;
+			return AttribToken.CLOSE_BRACE;
 		case '(': return AttribToken.OPEN_PAREN;
 		case ')': return AttribToken.CLOSE_PAREN;
 		case '+': return AttribToken.PLUS;
@@ -123,7 +129,7 @@ public class AttribTokeniser {
 
 		if (Character.isLetter(ch)) {
 			ungetChar(nextCh);
-			return parseIdentifier();
+			return openingBraceSeen ? parseIdentifier() : parseSimpleIdentifier();
 		}
 
 		errorMsg = "unexpected input character '" + Character.toString(ch) + "'";
@@ -354,6 +360,30 @@ public class AttribTokeniser {
 			errorMsg = "invalid attribute name at end of formula!";
 			return AttribToken.ERROR;
 		}
+		ungetChar(ch);
+
+		currentIdent = builder.toString();
+
+		if (currentIdent.equalsIgnoreCase("TRUE")) {
+			currentBooleanConstant = true;
+			return AttribToken.BOOLEAN_CONSTANT;
+		}
+		if (currentIdent.equalsIgnoreCase("FALSE")) {
+			currentBooleanConstant = false;
+			return AttribToken.BOOLEAN_CONSTANT;
+		}
+
+		return AttribToken.IDENTIFIER;
+	}
+
+	private AttribToken parseSimpleIdentifier() {
+		final int startPos = stringPos;
+		final int INITIAL_CAPACITY = 20;
+		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
+
+		int ch;
+		while ((ch = getChar()) != -1 && (Character.isLetter((char)ch) || Character.isDigit((char)ch)))
+			builder.append((char)ch);
 		ungetChar(ch);
 
 		currentIdent = builder.toString();

@@ -102,4 +102,11 @@ public class AttribParserTest extends TestCase {
 		assertTrue(parser.parse("=UCASE(\"Fred\")", attribNameToTypeMap));
 		assertTrue(parser.parse("=\"bozo\"&LCASE(\"UPPER\")", attribNameToTypeMap));
 	}
+
+	public void testBracelessAttribReferences() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("BOB", Double.class);
+		attribNameToTypeMap.put("FRED", Double.class);
+		assertTrue(parser.parse("=$BOB+$FRED", attribNameToTypeMap));
+	}
 }

@@ -86,7 +86,7 @@ class AttribParserImpl implements AttribParser {
 			parseTree = parseExpr(0);
 			final AttribToken token = tokeniser.getToken();
 			if (token != AttribToken.EOS)
-				throw new IllegalStateException("premature end of expression!");
+				throw new IllegalStateException("premature end of expression: expected EOS, but found " + token + "!");
 		} catch (final IllegalStateException e) {
 			lastErrorMessage = e.getMessage();
 			return false;
@@ -251,9 +251,9 @@ class AttribParserImpl implements AttribParser {
 		// 2. an attribute reference
 		if (token == AttribToken.DOLLAR) {
 			token = tokeniser.getToken();
-			if (token != AttribToken.OPEN_BRACE)
-				throw new IllegalStateException("opening brace expected!");
-			token = tokeniser.getToken();
+			final boolean usingOptionalBraces = token == AttribToken.OPEN_BRACE;
+			if (usingOptionalBraces)
+				token = tokeniser.getToken();
 			if (token != AttribToken.IDENTIFIER)
 				throw new IllegalStateException("identifier expected!");
 
@@ -261,30 +261,33 @@ class AttribParserImpl implements AttribParser {
 			if (attribRefType == null)
 				throw new IllegalStateException("unknown attribute reference name: \"" + tokeniser.getIdent() + "\"!");
 			attribReferences.add(tokeniser.getIdent());
-			token = tokeniser.getToken();
 
-			// Do we have a default value?
 			Object defaultValue = null;
-			if (token == AttribToken.COLON) {
+			if (usingOptionalBraces) {
 				token = tokeniser.getToken();
-				if (token != AttribToken.FLOAT_CONSTANT && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
-					throw new IllegalStateException("expected default value for attribute reference!");
-				switch (token) {
-				case FLOAT_CONSTANT:
-					defaultValue = new Double(tokeniser.getFloatConstant());
-					break;
-				case BOOLEAN_CONSTANT:
-					defaultValue = new Boolean(tokeniser.getBooleanConstant());
-					break;
-				case STRING_CONSTANT:
-					defaultValue = new String(tokeniser.getStringConstant());
-					break;
-				}
-				token = tokeniser.getToken();
-			}
 
-			if (token != AttribToken.CLOSE_BRACE)
-				throw new IllegalStateException("closeing brace expected!");
+				// Do we have a default value?
+				if (token == AttribToken.COLON) {
+					token = tokeniser.getToken();
+					if (token != AttribToken.FLOAT_CONSTANT && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
+						throw new IllegalStateException("expected default value for attribute reference!");
+					switch (token) {
+					case FLOAT_CONSTANT:
+						defaultValue = new Double(tokeniser.getFloatConstant());
+						break;
+					case BOOLEAN_CONSTANT:
+						defaultValue = new Boolean(tokeniser.getBooleanConstant());
+						break;
+					case STRING_CONSTANT:
+						defaultValue = new String(tokeniser.getStringConstant());
+						break;
+					}
+					token = tokeniser.getToken();
+				}
+
+				if (token != AttribToken.CLOSE_BRACE)
+					throw new IllegalStateException("closing brace expected!");
+			}
 
 			return new IdentNode(tokeniser.getIdent(), defaultValue, attribRefType);
 		}
