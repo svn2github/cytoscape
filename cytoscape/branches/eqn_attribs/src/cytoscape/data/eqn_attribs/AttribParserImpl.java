@@ -317,7 +317,7 @@ class AttribParserImpl implements AttribParser {
 		if (token == AttribToken.ERROR)
 			throw new IllegalStateException(tokeniser.getErrorMsg());
 
-		throw new IllegalStateException("we should never get here!");
+		throw new IllegalStateException("unexpected input token: " + token + "!");
 	}
 
 	private Node handleUnaryOp(final AttribToken operator, final Node operand) {
