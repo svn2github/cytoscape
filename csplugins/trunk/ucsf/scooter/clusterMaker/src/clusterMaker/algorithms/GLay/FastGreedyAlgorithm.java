@@ -10,7 +10,8 @@ package clusterMaker.algorithms.glay;
 /**
  *
  * @author sugang
- * Focus on the algorithm
+ * This is an implementation of the Fast Greedy Girvan-Newman algorithm 
+ * (see www.pnas.org/cgi/doi/10.1073/pnas.122653799, PNAS (99) 12. 2002)
  */
 
 import java.util.*;

@@ -128,10 +128,6 @@ public class APCluster extends AbstractNetworkClusterer  {
 		// Use the standard edge attribute handling stuff....
 		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
 
-		clusterProperties.add(new Tunable("options_panel2",
-		                                  "Results options",
-		                                  Tunable.GROUP, new Integer(1)));
-
 		super.advancedProperties();
 
 		clusterProperties.initializeProperties();

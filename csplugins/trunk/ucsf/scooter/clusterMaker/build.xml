@@ -23,7 +23,7 @@
 
    <target name="compile" depends = "prepare" description="Compile with Cytoscape under development">
    <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.5" debug="true" deprecation="true" srcdir = "${src}" destdir="${build}">
+   <javac source = "1.5" debug="true" deprecation="true" srcdir = "${src}" destdir="${build}" encoding="ISO-8859-1">
       <classpath refid = "classpath"/>
    </javac>
    </target>

@@ -20,9 +20,8 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
-import cytoscape.view.CyNetworkView;
 
-import clusterMaker.algorithms.ClusterResults;
+import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.algorithms.DistanceMatrix;
 
 import cern.colt.function.IntIntDoubleFunction;
@@ -38,7 +37,6 @@ public class RunMCL {
 	private double maxResidual; //The maximum residual to look for
 	private List<CyNode> nodes;
 	private List<CyEdge> edges;
-	private String nodeClusterAttributeName;
 	private boolean canceled = false;
 	private CyLogger logger;
 	public final static String GROUP_ATTRIBUTE = "__MCLGroups";
@@ -48,19 +46,15 @@ public class RunMCL {
 	private DoubleMatrix2D matrix = null;
 	private boolean debug = false;
 	
-	public RunMCL(String nodeClusterAttributeName, DistanceMatrix dMat,
-	              double inflationParameter, int num_iterations, 
-	              double clusteringThresh, double maxResidual,
-	              CyLogger logger )
+	public RunMCL(DistanceMatrix dMat, double inflationParameter, int num_iterations, 
+	              double clusteringThresh, double maxResidual, CyLogger logger )
 	{
 		this.distanceMatrix = dMat;
-		this.nodeClusterAttributeName = nodeClusterAttributeName;
 		this.inflationParameter = inflationParameter;
 		this.number_iterations = num_iterations;
 		this.clusteringThresh = clusteringThresh;
 		this.maxResidual = maxResidual;
 		this.logger = logger;
-		this.createMetaNodes = false;
 		nodes = distanceMatrix.getNodes();
 		edges = distanceMatrix.getEdges();
 		this.matrix = distanceMatrix.getDistanceMatrix();
@@ -71,11 +65,9 @@ public class RunMCL {
 
 	public void halt () { canceled = true; }
 
-	public void createMetaNodes() { createMetaNodes = true; }
-
 	public void setDebug(boolean debug) { this.debug = debug; }
 	
-	public ClusterResults run(TaskMonitor monitor)
+	public List<NodeCluster> run(TaskMonitor monitor)
 	{
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
@@ -146,7 +138,7 @@ public class RunMCL {
 
 		monitor.setStatus("Assigning nodes to clusters");
 
-		HashMap<Integer, Cluster> clusterMap = new HashMap();
+		HashMap<Integer, NodeCluster> clusterMap = new HashMap();
 		matrix.forEachNonZero(new ClusterMatrix(clusterMap));
 
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
@@ -159,8 +151,8 @@ public class RunMCL {
 		}
 
 		int clusterNumber = 1;
-		HashMap<Cluster,Cluster> cMap = new HashMap();
-		for (Cluster cluster: sortMap(clusterMap)) {
+		HashMap<NodeCluster,NodeCluster> cMap = new HashMap();
+		for (NodeCluster cluster: NodeCluster.sortMap(clusterMap)) {
 
 			if (cMap.containsKey(cluster))
 				continue;
@@ -176,22 +168,8 @@ public class RunMCL {
 			clusterNumber++;
 		}
 
-		Set<Cluster>clusters = cMap.keySet();
-
-		logger.info("Removing groups");
-
-		// Remove any leftover groups from previous runs
-		removeGroups(netAttributes, networkID);
-
-		logger.info("Creating groups");
-		monitor.setStatus("Creating groups");
-
-		List<List<CyNode>> nodeClusters = 
-		     createGroups(netAttributes, networkID, nodeAttributes, clusters, createMetaNodes);
-
-		ClusterResults results = new ClusterResults(network, nodeClusters);
-		monitor.setStatus("Done.  MCL results:\n"+results);
-		return results;
+		Set<NodeCluster>clusters = cMap.keySet();
+		return new ArrayList(clusters);
 	}	
 
 	/**
@@ -288,61 +266,6 @@ public class RunMCL {
 		debugln(" cardinality is "+matrix.cardinality());
 	}
 
-	private void removeGroups(CyAttributes netAttributes, String networkID) {
-		// See if we already have groups defined (from a previous run?)
-		if (netAttributes.hasAttribute(networkID, GROUP_ATTRIBUTE)) {
-			List<String> groupList = (List<String>)netAttributes.getListAttribute(networkID, GROUP_ATTRIBUTE);
-			for (String groupName: groupList) {
-				CyGroup group = CyGroupManager.findGroup(groupName);
-				if (group != null)
-					CyGroupManager.removeGroup(group);
-			}
-		}
-	}
-
-	private List<List<CyNode>> createGroups(CyAttributes netAttributes, 
-	                                        String networkID,
-	                                        CyAttributes nodeAttributes, 
-	                                        Set<Cluster> cMap, 
-	                                        boolean createMetaNodes) {
-
-		List<List<CyNode>> clusterList = new ArrayList(); // List of node lists
-		List<String>groupList = new ArrayList(); // keep track of the groups we create
-		CyGroup first = null;
-		for (Cluster cluster: cMap) {
-			int clusterNumber = cluster.getClusterNumber();
-			String groupName = nodeClusterAttributeName+"_"+clusterNumber;
-			List<CyNode>nodeList = new ArrayList();
-
-			for (Integer nodeIndex: cluster) {
-				CyNode node = this.nodes.get(nodeIndex);
-				nodeList.add(node);
-				nodeAttributes.setAttribute(node.getIdentifier(),
-				                            nodeClusterAttributeName, clusterNumber);
-			}
-			
-			if (createMetaNodes) {
-				// Create the group
-				CyGroup newgroup = CyGroupManager.createGroup(groupName, nodeList, null);
-				if (newgroup != null) {
-					first = newgroup;
-					// Now tell the metanode viewer about it
-					CyGroupManager.setGroupViewer(newgroup, "metaNode", 
-					                              Cytoscape.getCurrentNetworkView(), false);
-				}
-			}
-			clusterList.add(nodeList);
-			groupList.add(groupName);
-		}
-		if (first != null)
-			CyGroupManager.setGroupViewer(first, "metaNode", 
-			                              Cytoscape.getCurrentNetworkView(), true);
-		
-		// Save the network attribute so we remember which groups are ours
-		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
-		return clusterList;
-	}
-
 	private void debugln(String message) {
 		if (debug) System.out.println(message);
 	}
@@ -354,22 +277,6 @@ public class RunMCL {
 	private void debug(String message) {
 		if (debug) System.out.print(message);
 	}
-
-	private List<CyNode> clusterToNodes(Cluster cluster) {
-		List<CyNode> nodeList = new ArrayList();
-		for (Integer nodeIndex: cluster) {
-			CyNode node = nodes.get(nodeIndex);
-			nodeList.add(node);
-		}
-		return nodeList;
-	}
-
-	private List<Cluster> sortMap(HashMap<Integer, Cluster> map) {
-		Cluster[] clusterArray = map.values().toArray(new Cluster[1]);
-		Arrays.sort(clusterArray, new LengthComparator());
-		return Arrays.asList(clusterArray);
-	}
-
 
 	/**
 	 * The MatrixPow class raises the value of each non-zero cell of the matrix
@@ -465,9 +372,9 @@ public class RunMCL {
 	}
 
 	private class ClusterMatrix implements IntIntDoubleFunction {
-		Map<Integer, Cluster> clusterMap;
+		Map<Integer, NodeCluster> clusterMap;
 
-		public ClusterMatrix(Map<Integer,Cluster> clusterMap) {
+		public ClusterMatrix(Map<Integer,NodeCluster> clusterMap) {
 			this.clusterMap = clusterMap;
 		}
 
@@ -479,10 +386,10 @@ public class RunMCL {
 
 			if (clusterMap.containsKey(column)) {
 				// Already seen "column" -- get the cluster and add column
-				Cluster columnCluster = clusterMap.get(column);
+				NodeCluster columnCluster = clusterMap.get(column);
 				if (clusterMap.containsKey(row)) {
 					// We've already seen row also -- join them
-					Cluster rowCluster = clusterMap.get(row);
+					NodeCluster rowCluster = clusterMap.get(row);
 					if (rowCluster == columnCluster) 
 						return value;
 					// debugln("Joining cluster "+columnCluster.getClusterNumber()+" and "+rowCluster.getClusterNumber());
@@ -490,70 +397,33 @@ public class RunMCL {
 					clusterCount--;
 				} else {
 					// debugln("Adding "+row+" to "+columnCluster.getClusterNumber());
-					columnCluster.add(row);
+					columnCluster.add(nodes, row);
 				}
 				updateClusters(columnCluster);
 			} else {
-				Cluster rowCluster;
+				NodeCluster rowCluster;
 				// First time we've seen "column" -- have we already seen "row"
 				if (clusterMap.containsKey(row)) {
 					// Yes, just add column to row's cluster
 					rowCluster = clusterMap.get(row);
 					// debugln("Adding "+column+" to "+rowCluster.getClusterNumber());
-					rowCluster.add(column);
+					rowCluster.add(nodes, column);
 				} else {
-					rowCluster = new Cluster();
+					rowCluster = new NodeCluster();
 					// debugln("Created new cluster "+rowCluster.getClusterNumber()+" with "+row+" and "+column);
-					rowCluster.add(column);
-					rowCluster.add(row);
+					rowCluster.add(nodes, column);
+					rowCluster.add(nodes, row);
 				}
 				updateClusters(rowCluster);
 			}
 			return value;
 		}
 
-		private void updateClusters(Cluster cl) {
-			for (Integer i: cl) {
-				clusterMap.put(i, cl);
+		private void updateClusters(NodeCluster cl) {
+			for (CyNode node: cl) {
+				clusterMap.put(nodes.indexOf(node), cl);
 			}
 		}
-	}
-
-	private class Cluster extends ArrayList<Integer> {
-		int clusterNumber = 0;
-
-		public Cluster() {
-			super();
-			clusterCount++;
-			clusterNumber = clusterCount;
-		}
-
-		public int getClusterNumber() { return clusterNumber; }
-
-		public void setClusterNumber(int clusterNumber) { 
-			this.clusterNumber = clusterNumber; 
-		}
-
-		public void print() {
-			debug(clusterNumber+": ");
-			for (Integer i: this) {
-				debug(i+" ");
-			}
-			debugln();
-		}
-	}
-
-	private class LengthComparator implements Comparator {
-
-		public int compare (Object o1, Object o2) {
-			Cluster c1 = (Cluster)o1;
-			Cluster c2 = (Cluster)o2;
-			if (c1.size() > c2.size()) return -1;
-			if (c1.size() < c2.size()) return 1;
-			return 0;
-		}
-
-		public boolean equals(Object obj) { return false; }
 	}
 }
 

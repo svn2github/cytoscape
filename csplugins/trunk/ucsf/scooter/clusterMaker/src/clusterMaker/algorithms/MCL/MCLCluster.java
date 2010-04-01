@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 // Cytoscape imports
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
@@ -53,16 +54,18 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
 import clusterMaker.ClusterMaker;
-import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.DistanceMatrix;
 import clusterMaker.algorithms.EdgeAttributeHandler;
+import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.NewNetworkView;
 
 // clusterMaker imports
 
-public class MCLCluster extends AbstractClusterAlgorithm  {
+public class MCLCluster extends AbstractNetworkClusterer  {
 	
 	double inflation_parameter = 2.0;
 	int rNumber = 8;
@@ -131,13 +134,6 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 		// Use the standard edge attribute handling stuff....
 		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
 
-		clusterProperties.add(new Tunable("options_panel2",
-		                                  "Results options",
-		                                  Tunable.GROUP, new Integer(1)));
-
-		// TODO: Add a results panel that sets the number of clusters, average # of nodes/cluster, 
-		//       average # of inter-cluster edges, average # of intra-cluster edges
-
 		super.advancedProperties();
 
 		clusterProperties.initializeProperties();
@@ -173,19 +169,36 @@ public class MCLCluster extends AbstractClusterAlgorithm  {
 
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		String networkID = network.getIdentifier();
+
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		DistanceMatrix matrix = edgeAttributeHandler.getMatrix();
 
 		//Cluster the nodes
-		runMCL = new RunMCL(clusterAttributeName, matrix, inflation_parameter, 
+		runMCL = new RunMCL(matrix, inflation_parameter, 
 		                    rNumber, clusteringThresh, maxResidual, logger);
-
-		if (createGroups)
-			runMCL.createMetaNodes();
 
 		runMCL.setDebug(debug);
 
-		results = runMCL.run(monitor);
+		// results = runMCL.run(monitor);
+		List<NodeCluster> clusters = runMCL.run(monitor);
+
+		logger.info("Removing groups");
+
+		// Remove any leftover groups from previous runs
+		removeGroups(netAttributes, networkID);
+
+		logger.info("Creating groups");
+		monitor.setStatus("Creating groups");
+
+		List<List<CyNode>> nodeClusters = 
+		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
+
+		ClusterResults results = new ClusterResults(network, nodeClusters);
+		monitor.setStatus("Done.  MCL results:\n"+results);
 
 		// Set up the appropriate attributes
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();

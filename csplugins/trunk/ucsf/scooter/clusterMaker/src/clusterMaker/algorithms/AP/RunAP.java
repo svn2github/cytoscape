@@ -244,9 +244,7 @@ public class RunAP {
 				}
 
 				// Update Clusters
-				for (CyNode node: exemplarCluster) {
-					clusterMap.put(nodes.indexOf(node), exemplarCluster);
-				}
+				updateClusters(exemplarCluster, clusterMap);
 			} else {
 				NodeCluster iCluster;
 
@@ -266,13 +264,16 @@ public class RunAP {
 						iCluster.add(nodes, exemplar);
 					// System.out.println("New cluster ["+iCluster+"]");
 				}
-				// Update Clusters
-				for (CyNode node: iCluster) {
-					clusterMap.put(nodes.indexOf(node), iCluster);
-				}
+				updateClusters(iCluster, clusterMap);
 			}
 		}
 		return clusterMap;
+	}
+
+	private void updateClusters(NodeCluster cluster, Map<Integer, NodeCluster> clusterMap) {
+		for (CyNode node: cluster) {
+			clusterMap.put(nodes.indexOf(node), cluster);
+		}
 	}
 }
 
