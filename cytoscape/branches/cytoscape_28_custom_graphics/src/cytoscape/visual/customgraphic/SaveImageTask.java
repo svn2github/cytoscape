@@ -3,7 +3,6 @@ package cytoscape.visual.customgraphic;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.Callable;
 
 import javax.imageio.ImageIO;

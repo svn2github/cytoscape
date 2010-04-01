@@ -2,7 +2,6 @@ package cytoscape.visual.customgraphic.ui;
 
 import java.awt.Image;
 import java.util.Collection;
-import java.util.Collections;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -208,7 +207,9 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 	}// </editor-fold>
 
 	private void nameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		final String newName = this.nameTextField.getText();
+		if(newName != null && newName.trim().length() != 0)
+			cg.setDisplayName(this.nameTextField.getText());
 	}
 
 	private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {

@@ -2,6 +2,9 @@ package cytoscape.visual.customgraphic;
 
 import java.awt.Image;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +16,7 @@ import cytoscape.task.TaskMonitor;
 public class PersistImageTask implements Task {
 	private File location;
 	private TaskMonitor taskMonitor;
-	
+
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 4;
 
@@ -32,20 +35,25 @@ public class PersistImageTask implements Task {
 	 * Execute task.<br>
 	 */
 	public void run() {
-		taskMonitor.setStatus("Saving image library to your local disk.\n\nPlease wait...");
+		taskMonitor
+				.setStatus("Saving image library to your local disk.\n\nPlease wait...");
 		taskMonitor.setPercentCompleted(-1);
 		// Remove all existing files
 		final File[] files = location.listFiles();
 		for (File old : files)
 			old.delete();
-		
+
+		// Matadata for images
+		final Properties prop = new Properties();
+
 		System.out.println("Old files deleted");
 
 		final long startTime = System.currentTimeMillis();
 		CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
 
-		final ExecutorService exService = Executors.newFixedThreadPool(NUM_THREADS);
+		final ExecutorService exService = Executors
+				.newFixedThreadPool(NUM_THREADS);
 
 		for (CyCustomGraphics<?> cg : pool.getAll()) {
 			if (cg == pool.getNullGraphics()
@@ -62,14 +70,23 @@ public class PersistImageTask implements Task {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				;
+				prop.setProperty(newFileName, cg.toString());
 			}
+			
 		}
 
 		try {
 			exService.shutdown();
 			exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
+			taskMonitor.setException(e, "Image saving task interrupted.");
+		}
+
+		try {
+			prop.store(new FileOutputStream(new File(location, "img.props")),
+					"Image Metadata");
+		} catch (IOException e) {
+			taskMonitor.setException(e, "Could not save image metadata.");
 			e.printStackTrace();
 		}
 

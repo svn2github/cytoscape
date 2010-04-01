@@ -4,9 +4,12 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -22,8 +25,9 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
 
-public class CustomGraphicsPool extends SubjectBase implements PropertyChangeListener {
-	
+public class CustomGraphicsPool extends SubjectBase implements
+		PropertyChangeListener {
+
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 8;
 
@@ -61,33 +65,50 @@ public class CustomGraphicsPool extends SubjectBase implements PropertyChangeLis
 		imageHomeDirectory.mkdir();
 
 		long startTime = System.currentTimeMillis();
+
+		final Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File(imageHomeDirectory,
+					"img.props")));
+			System.out.println("Image prop loaded!");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		if (this.imageHomeDirectory != null && imageHomeDirectory.isDirectory()) {
 			final File[] imageFiles = imageHomeDirectory.listFiles();
 
 			try {
-				for (File file : imageFiles)
-					cs.submit(new LoadImageTask(file.toURI().toURL()));
-
 				for (File file : imageFiles) {
+					if (file.toString().endsWith("png") == false)
+						continue;
+					cs.submit(new LoadImageTask(file.toURI().toURL()));
+				}
+				for (File file : imageFiles) {
+					if (file.toString().endsWith("png") == false)
+						continue;
 					final Future<BufferedImage> f = cs.take();
 					final BufferedImage image = f.get();
-					if(image == null)
+					if (image == null)
 						continue;
 					graphicsMap.put(file.toURI().toURL().toString(),
-							new URLImageCustomGraphics(file.toURI().toURL().toString(), image));
+							new URLImageCustomGraphics(file.toURI().toURL()
+									.toString(), image));
 				}
 
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 		try {
 			imageLoaderService.shutdown();
 			imageLoaderService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
@@ -130,7 +151,7 @@ public class CustomGraphicsPool extends SubjectBase implements PropertyChangeLis
 	public void propertyChange(PropertyChangeEvent evt) {
 		// Persist images
 		System.out.println("Saving images...");
-		
+
 		// Create Task
 		final PersistImageTask task = new PersistImageTask(imageHomeDirectory);
 
