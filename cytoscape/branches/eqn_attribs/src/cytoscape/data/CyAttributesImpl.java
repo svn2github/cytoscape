@@ -1032,7 +1032,7 @@ public class CyAttributesImpl implements CyAttributes {
 		try {
 			return interpreter.run();
 		} catch (final Exception e) {
-			return new String("#ERROR(" + e.getCause() + ")");
+			return new String("#ERROR(" + e.getMessage() + ")");
 		}
 	}
 
