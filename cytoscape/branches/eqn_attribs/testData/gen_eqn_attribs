@@ -27,7 +27,7 @@ class FuncDesc:
 functions = [
     FuncDesc("LN", 1),
     FuncDesc("EXP", 1),
-    FuncDesc("MOD", 1),
+    FuncDesc("MOD", 2),
     FuncDesc("SQRT", 1),
     FuncDesc("PI", 0)
 ]
@@ -109,7 +109,7 @@ def ProcessArgs(argv):
 #
 
 (attribute_name, number_of_function_calls, number_of_operators, number_of_lines) = ProcessArgs(sys.argv)
-print attribute_name
+print attribute_name + " (class=java.lang.Double)"
 
 for i in range(number_of_lines):
     GenerateLine(i + 1, number_of_function_calls, number_of_operators)
