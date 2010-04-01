@@ -70,6 +70,8 @@ public class Parser {
 			attribParser.registerFunction(new Nth());
 			attribParser.registerFunction(new First());
 			attribParser.registerFunction(new Last());
+			attribParser.registerFunction(new Mod());
+			attribParser.registerFunction(new Sqrt());
 		}
 
 		return attribParser;
