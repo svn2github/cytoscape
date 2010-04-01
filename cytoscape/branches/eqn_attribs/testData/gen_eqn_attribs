@@ -2,7 +2,7 @@
 """
 Program for generating large attribute files with randomly generated equations.
 """
-import sys, random
+import sys, random, urllib
 
 
 #
@@ -79,7 +79,7 @@ def GenerateEquation(number_of_function_calls, number_of_operators):
 
 
 def GenerateLine(line_number, number_of_function_calls, number_of_operators):
-    print "N" + str(line_number) + " = =" + GenerateEquation(number_of_function_calls, number_of_operators)
+    print "N" + str(line_number) + " = =" + urllib.quote_plus(GenerateEquation(number_of_function_calls, number_of_operators))
 
 
 def Usage():
