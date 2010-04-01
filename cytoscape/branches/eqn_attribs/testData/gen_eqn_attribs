@@ -1,0 +1,113 @@
+#! /usr/bin/env python
+"""
+Program for generating large attribute files with randomly generated equations.
+"""
+import sys, random
+
+
+#
+# FuncDesc -- a function descriptor
+#
+class FuncDesc:
+    def __init__(self, func_name, arity):
+        if not isinstance(func_name, str):
+            raise TypeError("func_name must be a string!")
+        if not isinstance(arity, int):
+            raise TypeError("arity must be an int!")
+        self.func_name = func_name
+        self.arity     = arity
+
+    def getFuncName(self):
+        return self.func_name
+
+    def getArity(self):
+        return self.arity
+
+# Table of functions
+functions = [
+    FuncDesc("LN", 1),
+    FuncDesc("EXP", 1),
+    FuncDesc("ROUND", 1),
+    FuncDesc("TRUNC", 1),
+    FuncDesc("PI", 0)
+]
+
+
+# Table of operators
+operators = [
+    "+",
+    "-",
+    "*",
+    "/",
+    "^"
+]
+
+
+def GenerateRandomNonnegativeFloat():
+    return str(random.random() * 1000.0)
+
+
+def GenerateRandomFunctionCall():
+    func_desc = functions[random.randint(0, len(functions) - 1)]
+    func_call = func_desc.getFuncName() + "("
+    arity = func_desc.getArity()
+    for arg_no in range(arity):
+        if arg_no < arity - 1:
+            func_call += ","
+        func_call += GenerateRandomNonnegativeFloat()
+    func_call += ")"
+
+    return func_call
+
+
+def GetRandomOperator():
+    return operators[random.randint(0, len(operators) - 1)]
+
+
+def GenerateEquation(number_of_function_calls, number_of_operators):
+    no_of_terms = max(number_of_function_calls, number_of_operators)
+    equation = ""
+    for term_no in range(no_of_terms):
+        if term_no < number_of_function_calls:
+            equation += GenerateRandomFunctionCall()
+        else:
+            equation += GenerateRandomNonnegativeFloat()
+        if term_no < no_of_terms - 1:
+            equation += GetRandomOperator()
+
+    return equation
+
+
+def GenerateLine(line_number, number_of_function_calls, number_of_operators):
+    print "N" + str(line_number) + " = =" + GenerateEquation(number_of_function_calls, number_of_operators)
+
+
+def Usage():
+    print "usage: " + sys.argv[0] + " number_of_function_calls number_of_operators number_of_lines > output_file"
+    sys.exit(1)
+
+
+def ProcessArgs(argv):
+    if len(argv) != 4:
+        Usage()
+    try:
+        number_of_function_calls = int(argv[1])
+        number_of_operators      = int(argv[2])
+        number_of_lines          = int(argv[3])
+    except ValueError:
+        Usage()
+
+    if number_of_function_calls < 0 or number_of_operators < 0 or number_of_lines < 1:
+        Usage()
+
+    return (number_of_function_calls, number_of_operators, number_of_lines)
+
+
+#
+# Start of main program!
+#
+
+(number_of_function_calls, number_of_operators, number_of_lines) = ProcessArgs(sys.argv)
+
+for i in range(number_of_lines):
+    GenerateLine(i + 1, number_of_function_calls, number_of_operators)
