@@ -230,12 +230,12 @@ public class PassThroughMapping implements ObjectMapping {
 		// extract the data value for our controlling attribute
 		final Object attrValue = attrBundle.get(attrName);
 		
-		System.out.println("Range Class = " + this.rangeClass);
-		System.out.println("Bundle = " + attrBundle.size());
-		for(String key :attrBundle.keySet()) {
-			System.out.println("\t\tKey, val = " + key + ", " + attrBundle.get(key));
-		}
-		System.out.println("Val = " + attrValue);
+//		System.out.println("Range Class = " + this.rangeClass);
+//		System.out.println("Bundle = " + attrBundle.size());
+//		for(String key :attrBundle.keySet()) {
+//			System.out.println("\t\tKey, val = " + key + ", " + attrBundle.get(key));
+//		}
+//		System.out.println("Val = " + attrValue);
 		
 		if (attrValue == null)
 			return null;

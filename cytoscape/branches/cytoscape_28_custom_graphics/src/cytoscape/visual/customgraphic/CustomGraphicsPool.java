@@ -1,6 +1,5 @@
 package cytoscape.visual.customgraphic;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -16,11 +15,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
 
 public class CustomGraphicsPool extends SubjectBase implements PropertyChangeListener {
@@ -71,7 +69,8 @@ public class CustomGraphicsPool extends SubjectBase implements PropertyChangeLis
 				for (File file : imageFiles) {
 					final Future<BufferedImage> f = cs.take();
 					final BufferedImage image = f.get();
-					
+					if(image == null)
+						continue;
 					graphicsMap.put(file.toURI().toURL().toString(),
 							new URLImageCustomGraphics(file.toURI().toURL().toString(), image));
 				}
@@ -119,23 +118,21 @@ public class CustomGraphicsPool extends SubjectBase implements PropertyChangeLis
 		// Persist images
 		System.out.println("Saving images...");
 		
-		for (CyCustomGraphics<?> cg : this.getAll()) {
-			if (cg == NULL || cg instanceof URLImageCustomGraphics == false)
-				continue;
+		// Create Task
+		final PersistImageTask task = new PersistImageTask(imageHomeDirectory);
 
-			final Image img = cg.getImage();
-			if (img != null) {
-				final int hash = cg.hashCode();
-				String newFileName = Integer.toString(hash);
-				try {
-					imageLoaderService.submit(new SaveImageTask(imageHomeDirectory, newFileName, ImageUtil.toBufferedImage(img)));
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				};
-			}
-		}
-		
+		// Configure JTask Dialog Pop-Up Box
+		final JTaskConfig jTaskConfig = new JTaskConfig();
+
+		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
+
 		System.out.println("Saving finihsed");
 	}
 

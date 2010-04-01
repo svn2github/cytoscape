@@ -36,6 +36,9 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 	
 	public URLImageCustomGraphics(String name, BufferedImage img) {
 		super(name);
+		if(img == null)
+			throw new IllegalArgumentException("Image cannot be null.");
+		
 		this.tags.add(DEF_TAG);
 		this.originalImage = img;
 		buildCustomGraphics(originalImage);
@@ -71,7 +74,7 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		originalImage = ImageIO.read(imageLocation);
 		
 		if(originalImage == null)
-			throw new IllegalStateException("This is not an image location: " + imageLocation.toString());
+			throw new IOException("Could not create an image from this location: " + imageLocation.toString());
 		
 		System.out.println("######## Image Created: " + originalImage);
 	}

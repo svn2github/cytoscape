@@ -33,10 +33,7 @@ public class GraphicsParser implements ValueParser {
 		final String[] parts = value.split(",");
 		// Extract class
 		String className = parts[0];
-		
-		System.out.println("@@@@@@@@ CLASSNAME: " + className);
 		final CyCustomGraphicsParser parser = parserFactory.getParser(className);
-		System.out.println("@@@@@@@@ PARSER: " + parser);
 		
 		if(parser == null)		
 			return null;
