@@ -162,9 +162,9 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		for (Integer idx : Cytoscape.getRootGraph().getNodeIndicesArray()) {
 			final Node node = Cytoscape.getRootGraph().getNode(idx);
-			Double targetAttrVal = nodeAttr.getDoubleAttribute(node
-					.getIdentifier(), ctr);
-			if (targetAttrVal != null) {
+//			Double targetAttrVal = nodeAttr.getDoubleAttribute(node
+//					.getIdentifier(), ctr);
+//			if (targetAttrVal != null) {
 				try {
 					final String dataString = createData();
 					
@@ -179,7 +179,7 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 				}
 			}
 
-		}
+//		}
 	}
 	
 	private String createData() {

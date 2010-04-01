@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -22,6 +23,9 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
 
 public class CustomGraphicsPool extends SubjectBase implements PropertyChangeListener {
+	
+	private static final int TIMEOUT = 1000;
+	private static final int NUM_THREADS = 8;
 
 	private final ExecutorService imageLoaderService;
 
@@ -36,7 +40,7 @@ public class CustomGraphicsPool extends SubjectBase implements PropertyChangeLis
 
 	public CustomGraphicsPool() {
 		// For loading images in parallel.
-		this.imageLoaderService = Executors.newCachedThreadPool();
+		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		graphicsMap.put(NULL.getDisplayName(), NULL);
 
@@ -56,15 +60,13 @@ public class CustomGraphicsPool extends SubjectBase implements PropertyChangeLis
 
 		imageHomeDirectory.mkdir();
 
+		long startTime = System.currentTimeMillis();
 		if (this.imageHomeDirectory != null && imageHomeDirectory.isDirectory()) {
 			final File[] imageFiles = imageHomeDirectory.listFiles();
 
 			try {
-				for (File file : imageFiles) {
+				for (File file : imageFiles)
 					cs.submit(new LoadImageTask(file.toURI().toURL()));
-					
-
-				}
 
 				for (File file : imageFiles) {
 					final Future<BufferedImage> f = cs.take();
@@ -85,6 +87,17 @@ public class CustomGraphicsPool extends SubjectBase implements PropertyChangeLis
 				e.printStackTrace();
 			}
 		}
+		
+		try {
+			imageLoaderService.shutdown();
+			imageLoaderService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		long endTime = System.currentTimeMillis();
+		double sec = (endTime - startTime) / (1000.0);
+		System.out.println("Image Loading Finished in " + sec + " sec.");
 
 	}
 

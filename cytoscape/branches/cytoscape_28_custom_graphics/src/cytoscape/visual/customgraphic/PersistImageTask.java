@@ -13,6 +13,9 @@ import cytoscape.task.TaskMonitor;
 public class PersistImageTask implements Task {
 	private File location;
 	private TaskMonitor taskMonitor;
+	
+	private static final int TIMEOUT = 1000;
+	private static final int NUM_THREADS = 4;
 
 	/**
 	 * Constructor.<br>
@@ -42,7 +45,7 @@ public class PersistImageTask implements Task {
 		CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
 
-		final ExecutorService exService = Executors.newCachedThreadPool();
+		final ExecutorService exService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		for (CyCustomGraphics<?> cg : pool.getAll()) {
 			if (cg == pool.getNullGraphics()
@@ -65,7 +68,7 @@ public class PersistImageTask implements Task {
 
 		try {
 			exService.shutdown();
-			exService.awaitTermination(1000, TimeUnit.SECONDS);
+			exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -100,6 +103,6 @@ public class PersistImageTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return "Saving images to disk...";
+		return "Saving Image Library";
 	}
 } // End of SaveSessionTask
