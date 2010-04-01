@@ -91,7 +91,7 @@ def ProcessArgs(argv):
     if len(argv) != 5:
         Usage()
     try:
-        attribute_name           = int(argv[1])
+        attribute_name           = argv[1]
         number_of_function_calls = int(argv[2])
         number_of_operators      = int(argv[3])
         number_of_lines          = int(argv[4])
