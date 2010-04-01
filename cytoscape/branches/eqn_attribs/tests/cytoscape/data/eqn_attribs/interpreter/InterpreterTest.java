@@ -554,4 +554,38 @@ public class InterpreterTest extends TestCase {
 		}
 		assertFalse(succeeded);
 	}
+
+	public void testMOD() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=MOD(3, 2)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=MOD(-3, 2)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.0), interpreter2.run());
+
+		assertTrue(compiler.compile("=MOD(3, -2)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(-1.0), interpreter3.run());
+
+		assertTrue(compiler.compile("=MOD(-3, -2)", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(-1.0), interpreter4.run());
+	}
+
+	public void testSQRT() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=SQRT(0.0)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=SQRT(9.0)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(3.0), interpreter2.run());
+	}
 }
