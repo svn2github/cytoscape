@@ -52,7 +52,7 @@ def GenerateRandomFunctionCall():
     func_call = func_desc.getFuncName() + "("
     arity = func_desc.getArity()
     for arg_no in range(arity):
-        if arg_no < arity - 1:
+        if arg_no > 0 and arg_no < arity:
             func_call += ","
         func_call += GenerateRandomNonnegativeFloat()
     func_call += ")"
