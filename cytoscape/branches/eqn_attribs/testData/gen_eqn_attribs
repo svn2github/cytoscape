@@ -43,8 +43,8 @@ operators = [
 ]
 
 
-def GenerateRandomNonnegativeFloat():
-    return str(random.random() * 1000.0)
+def GenerateNonnegativeFloat():
+    return str(1.1 + random.random() * 10.0)
 
 
 def GenerateRandomFunctionCall():
@@ -54,7 +54,7 @@ def GenerateRandomFunctionCall():
     for arg_no in range(arity):
         if arg_no > 0 and arg_no < arity:
             func_call += ","
-        func_call += GenerateRandomNonnegativeFloat()
+        func_call += GenerateNonnegativeFloat()
     func_call += ")"
 
     return func_call
@@ -71,7 +71,7 @@ def GenerateEquation(number_of_function_calls, number_of_operators):
         if term_no < number_of_function_calls:
             equation += GenerateRandomFunctionCall()
         else:
-            equation += GenerateRandomNonnegativeFloat()
+            equation += GenerateNonnegativeFloat()
         if term_no < no_of_terms - 1:
             equation += GetRandomOperator()
 
