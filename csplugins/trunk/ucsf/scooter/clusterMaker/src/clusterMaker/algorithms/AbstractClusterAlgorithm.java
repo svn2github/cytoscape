@@ -63,7 +63,6 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 
 	public AbstractClusterAlgorithm() {
 		pcs = new PropertyChangeSupport(new Object());
-		clusterProperties = new ClusterProperties(getShortName());
 	}
 
 	/************************************************************************
@@ -80,7 +79,8 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	 * Convenience routines                                                 *
 	 ***********************************************************************/
 
-	protected void initializeProperties() {
+	public void initializeProperties() {
+		clusterProperties = new ClusterProperties(getShortName());
 	}
 
 	protected void advancedProperties() {

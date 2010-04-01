@@ -119,7 +119,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		return new KnnView();
 	}
 
-	protected void initializeProperties() {
+	public void initializeProperties() {
 		super.initializeProperties();
 
 		/**

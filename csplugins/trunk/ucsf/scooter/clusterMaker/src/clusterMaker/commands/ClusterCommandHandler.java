@@ -82,6 +82,7 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 		if (algMap.containsKey(command)) {
 			// Get the algorithm
 			ClusterAlgorithm alg = algMap.get(command);
+			alg.initializeProperties();
 			ClusterProperties props = alg.getSettings();
 
 			alg.updateSettings(true);
@@ -94,6 +95,7 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 			}
 
 			alg.updateSettings();
+
 			ClusterTask clusterTask = new ClusterTask(alg, null);
 			TaskManager.executeTask( clusterTask,
 			                         ClusterTask.getDefaultTaskConfig() );

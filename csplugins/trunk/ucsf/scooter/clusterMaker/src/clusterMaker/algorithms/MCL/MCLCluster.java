@@ -98,7 +98,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		return new NewNetworkView(true);
 	}
 
-	protected void initializeProperties() {
+	public void initializeProperties() {
 		super.initializeProperties();
 
 		/**
@@ -176,6 +176,10 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		DistanceMatrix matrix = edgeAttributeHandler.getMatrix();
+		if (matrix == null) {
+			logger.error("Can't get distance matrix: no attribute value?");
+			return;
+		}
 
 		//Cluster the nodes
 		runMCL = new RunMCL(matrix, inflation_parameter, 

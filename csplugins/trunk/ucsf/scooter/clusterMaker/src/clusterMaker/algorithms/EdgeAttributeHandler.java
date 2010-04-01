@@ -243,6 +243,7 @@ public class EdgeAttributeHandler
 
 	public DistanceMatrix getMatrix() {
 		if (this.matrix == null) {
+			if (dataAttribute == null) return null;
 			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
 		}
 

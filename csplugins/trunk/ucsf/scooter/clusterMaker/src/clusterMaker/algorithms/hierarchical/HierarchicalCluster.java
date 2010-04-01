@@ -110,7 +110,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		return new TreeView();
 	}
 
-	protected void initializeProperties() {
+	public void initializeProperties() {
 		super.initializeProperties();
 
 		/**

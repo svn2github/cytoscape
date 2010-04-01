@@ -269,7 +269,7 @@ public class TransClustCluster extends AbstractClusterAlgorithm implements Actio
 	/**
  	 * Initialize all of our tunables
  	 */
-	protected void initializeProperties() {
+	public void initializeProperties() {
 		super.initializeProperties();
 
 		// Attributes group

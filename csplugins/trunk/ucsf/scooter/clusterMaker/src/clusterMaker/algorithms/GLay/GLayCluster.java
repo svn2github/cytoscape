@@ -88,7 +88,7 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 		return new NewNetworkView(true);
 	}
 
-	protected void initializeProperties() {
+	public void initializeProperties() {
 		super.initializeProperties();
 
 		/**

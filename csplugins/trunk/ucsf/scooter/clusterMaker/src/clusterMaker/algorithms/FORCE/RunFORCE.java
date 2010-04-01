@@ -30,6 +30,7 @@ import de.layclust.taskmanaging.TaskConfig;
 public class RunFORCE {
 	private	TaskMonitor monitor = null;
 	private	CyLogger logger = null;
+	private DistanceMatrix matrix = null;
 
 	private boolean mergeSimilar = false;
 	private double mergeThreshold = 0;
@@ -101,7 +102,7 @@ public class RunFORCE {
 							.getParameterTrainingEnumByClass(TaskConfig.parameterTrainingClass);
 			} catch (InvalidTypeException e) {
 				logger.warning("Illegal parameter training class: "+TaskConfig.parameterTrainingClass);
-				return;
+				return null;
 			}
 		}
 
@@ -132,6 +133,7 @@ public class RunFORCE {
 	                                             List<CyNode> cc, 
 	                                             int ccNr) throws IOException {
 		
+/*
 		double normalizedUpperBound = 0;
 		
 		if (!isDistanceFunction) { // is sim function
@@ -188,6 +190,7 @@ public class RunFORCE {
 			}	
 		}
 		bw.close();
+*/
 	}
 		
 	/**
@@ -201,6 +204,7 @@ public class RunFORCE {
 	private void writeCCtoTempDir(File cmTempDir, 
 	                              List<CyNode> cc, int ccNr) throws IOException {
 
+/*
 		File tmpFile = new File(cmTempDir, "costmatrix_nr_"+ccNr+"_size+"+cc.size()+".cm");
 		BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile));
 		
@@ -237,6 +241,7 @@ public class RunFORCE {
 			}
 		}
 		bw.close();
+*/
 	}
 
 	private double getNormalizedValue(double min, double max, double value) {
@@ -260,6 +265,7 @@ public class RunFORCE {
 
 	private List<NodeCluster> readFORCEresults(File resultsFileName) throws IOException {
 		
+/*
 		Map<String, Integer> clusterForGivenNode = new HashMap<String, Integer>();
 		
 		BufferedReader br = new BufferedReader(new FileReader(resultsFileName));
@@ -287,6 +293,7 @@ public class RunFORCE {
 			v.add(n);
 			nodeListForGivenClusterNumber.put(clusterNr, v);
 		}
+*/
 		
 		return null;
 	}

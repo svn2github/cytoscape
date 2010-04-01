@@ -122,7 +122,7 @@ public class FORCECluster extends AbstractNetworkClusterer {
 	/**
  	 * Initialize all of our tunables
  	 */
-	protected void initializeProperties() {
+	public void initializeProperties() {
 		super.initializeProperties();
 
 		/**
@@ -233,7 +233,10 @@ public class FORCECluster extends AbstractNetworkClusterer {
 		// Now, run FORCE to cluster each connected component
 		RunFORCE runFORCE = new RunFORCE(matrix, evolutionaryTraining, mergeSimilar, mergeThreshold, logger);
 
-		List<NodeCluster> clusters = runFORCE.run(monitor);
+		List<NodeCluster> clusters = null;
+		try {
+			clusters = runFORCE.run(monitor);
+		} catch (IOException e) {}
 
 		logger.info("Removing groups");
 
