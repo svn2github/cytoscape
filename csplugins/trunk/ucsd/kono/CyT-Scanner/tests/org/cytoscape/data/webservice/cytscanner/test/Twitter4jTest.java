@@ -23,15 +23,14 @@ public class Twitter4jTest {
 
 	@Test
 	public void testClient() throws TwitterException {
-		JXLoginPane p = new JXLoginPane();
-		org.jdesktop.swingx.JXLoginPane.Status r = JXLoginPane.showLoginDialog(null, p);
-		Twitter twitter = new TwitterFactory().getInstance(p.getUserName(), p.getPassword().toString());
-		ResponseList<Status> timeline = twitter.getHomeTimeline();
 		
-		System.out.println("hits:" + timeline.size());
-		for (Status status : timeline) {
-			System.out.println(status.getUser().getName() + ":" + status.getText());
-		}
+//		Twitter twitter = new TwitterFactory().getInstance();
+//		ResponseList<Status> timeline = twitter.getHomeTimeline();
+//		
+//		System.out.println("hits:" + timeline.size());
+//		for (Status status : timeline) {
+//			System.out.println(status.getUser().getName() + ":" + status.getText());
+//		}
 
 	}
 }
