@@ -46,23 +46,26 @@ public class Abs implements AttribFunction {
 	public String getHelpDescription() { return "Call this with \"ABS(number)\""; }
 
 	/**
-	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double
+	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double or Integer
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || argTypes[0] != Double.class)
+		if (argTypes.length != 1 || (argTypes[0] != Double.class && argTypes[0] != Integer.class))
 			return null;
 
 		return Double.class;
 	}
 
 	/**
-	 *  @param args the function arguments which must be either one or two objects of type Double
+	 *  @param args the function arguments which must be either one object of type Double or Integer
 	 *  @returns the result of the function evaluation which is the natural logarithm of the first argument
-	 *  @throws ArithmeticException 
-	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
-	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = (Double)args[0];
+	public Object evaluateFunction(final Object[] args) {
+		final double number;
+		if (args[0] instanceof Double)
+			number = (Double)args[0];
+		else // Assume we are dealing with an integer.
+			number = (Integer)args[0];
+
 		return Math.abs(number);
 	}
 }

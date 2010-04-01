@@ -131,6 +131,33 @@ public class InterpreterTest extends TestCase {
 		assertFalse(compiler.compile("=ABS(1,2)", attribNameToTypeMap));
 	}
 
+	public void testABS() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		// First we try doubles...
+		assertTrue(compiler.compile("=ABS(-1.3)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.3), interpreter1.run());
+		assertTrue(compiler.compile("=ABS(0.0)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter2.run());
+		assertTrue(compiler.compile("=ABS(1.3)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.3), interpreter3.run());
+
+		// ...and then we try integers
+		assertTrue(compiler.compile("=ABS(-3)", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(3.0), interpreter4.run());
+		assertTrue(compiler.compile("=ABS(0)", attribNameToTypeMap));
+		final Interpreter interpreter5 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter5.run());
+		assertTrue(compiler.compile("=ABS(3)", attribNameToTypeMap));
+		final Interpreter interpreter6 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(3.0), interpreter6.run());
+	}
+
 	public void testNOT() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		attribNameToTypeMap.put("logical", Boolean.class);
