@@ -113,7 +113,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected Object below;
 	protected Object above;
 	
-	private CyAttributes attr;
+	private CyAttributes attrs;
 	
 	protected static ContinuousMappingEditorPanel editor;
 	
@@ -396,7 +396,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	protected void minMaxButtonActionPerformed(ActionEvent evt) {
 		final Double[] newVal = MinMaxDialog.getMinMax(EditorValueRangeTracer.getTracer().getMin(type),
-		                                         EditorValueRangeTracer.getTracer().getMax(type), attr, mapping.getControllingAttributeName());
+		                                         EditorValueRangeTracer.getTracer().getMax(type), attrs, mapping.getControllingAttributeName());
 
 		if (newVal == null)
 			return;
@@ -415,11 +415,11 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	private void initRangeValues() {
 
 		if (type.isNodeProp()) {
-			attr = Cytoscape.getNodeAttributes();
+			attrs = Cytoscape.getNodeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getNodeAppearanceCalculator().getCalculator(type);
 		} else {
-			attr = Cytoscape.getEdgeAttributes();
+			attrs = Cytoscape.getEdgeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getEdgeAppearanceCalculator().getCalculator(type);
 		}
@@ -433,10 +433,10 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
 
-			final MultiHashMap mhm = attr.getMultiHashMap();
+			final MultiHashMap mhm = attrs.getMultiHashMap();
 
 			List<String> attrNames = new ArrayList<String>();
-			Collections.addAll(attrNames, attr.getAttributeNames());
+			Collections.addAll(attrNames, attrs.getAttributeNames());
 
 			if (attrNames.contains(controllingAttrName) == false)
 				return;
@@ -445,15 +445,20 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			if (EditorValueRangeTracer.getTracer().getRange(type) == 0) {
 				final CountedIterator it = mhm.getObjectKeys(controllingAttrName);
 				Object key;
-				Double maxValue = Double.NEGATIVE_INFINITY;
-				Double minValue = Double.POSITIVE_INFINITY;
+				double maxValue = Double.NEGATIVE_INFINITY;
+				double minValue = Double.POSITIVE_INFINITY;
 
 				while (it.hasNext()) {
-					key = it.next();
+					final String id = (String)it.next();
+					final Object attrValue = attrs.getAttribute(id, controllingAttrName);
 
-					Double val = Double.parseDouble(mhm.getAttributeValue((String) key,
-					                                                      controllingAttrName, null)
-					                                   .toString());
+					final double val;
+					if (attrValue.getClass() == Double.class)
+						val = (Double)attrValue;
+					else if (attrValue.getClass() == Integer.class)
+						val = (Integer)attrValue;
+					else
+						val = Double.parseDouble(attrValue.toString());
 
 					if (val > maxValue)
 						maxValue = val;
