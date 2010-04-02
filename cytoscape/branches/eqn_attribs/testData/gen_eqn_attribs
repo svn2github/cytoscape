@@ -75,7 +75,7 @@ def GenerateEquation(number_of_function_calls, number_of_operators):
         if term_no < no_of_terms - 1:
             equation += GetRandomOperator()
 
-    return equation
+    return "MIN(100.0, MAX(-100.0, " + equation + "))"
 
 
 def GenerateLine(line_number, number_of_function_calls, number_of_operators):
