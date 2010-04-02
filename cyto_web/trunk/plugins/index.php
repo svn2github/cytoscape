@@ -40,26 +40,18 @@
     </style>
 </head>
 <body bgcolor="#ffffff">
+<div id="container">
 <div id="topbar">
 	<div class="title">Cytoscape 2.x Plugins</div>
 </div>
-<div id="container">
+
 <?php include "../nav.php"; ?>
 <div align="left">
-  <p align="right"><a href="pluginadmin.php">Admin only</a>&nbsp;&nbsp;<a href="plugindownloadstatistics.php">View download activities</a>&nbsp;&nbsp;<a href="pluginsubmittype.php">Submit a plugin</span> to Cytoscape</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</p>
+  <p align="right">&nbsp;&nbsp;<a href="plugindownloadstatistics.php">View download activities</a>&nbsp;&nbsp;<a href="pluginsubmittype.php">Submit a plugin</span> to Cytoscape</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</p>
 </div>
-<span class="style2">
-  <div id="indent">
-	<big><b>About Cytoscape Plugins:</b></big>
-	<p>
-		Cytoscape includes a flexible Plugin architecture that enables developers to add extra 
-		functionality beyond that provided in the core. Plugins also provide a convenient place 
-		for testing out new Cytoscape features. As more Plugins become available, they will be 
-		listed on this page, and posted to our 
-		<A HREF="http://groups-beta.google.com/group/cytoscape-announce">cytoscape-announce</A> 
-		mailing list.    </p>
-
-<?php 
+<div id="indent">
+    <p>
+      <?php 
   // Include the DBMS credentials
   include 'db.inc';
   // Include the function to display the info for each plugin
@@ -79,17 +71,17 @@
   if (!($categories = @ mysql_query ($query, $connection))) 
      showerror();
   
-  echo "<p>The plugins on this page are categorized into <big><b>", (@mysql_num_rows($categories)-1), "</b></big> sections:</p>";
-  echo "\n<p>\n<big><b>Current Cytoscape 2.x plugins</b></big>\n</p>";
-  
 ?>		 
+</p>
+
 <form action="keywordsearch.php" method="post">
   <label>
   <input type="text" name="searchwords" size="30">
    <input type="submit" name="Submit" value="Search">
   </label>
 </form>
-<?php
+<p>
+  <?php
 
   echo  "\n\n<A href=\"#\" onClick=\"expandTree('tree1'); return false;\">Expand All</A>&nbsp;&nbsp;&nbsp;".
 		"\n<A href=\"#\" onClick=\"collapseTree('tree1'); return false;\">Collapse All</A>&nbsp;&nbsp;&nbsp";
@@ -151,16 +143,17 @@
 
 	echo 
 	"<p>" .
-	"\n<p><big><b>Writing Your Own Plugins</b></big>" .
-	"\n<p>" . 
-	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://cytoscape.wodaklab.org/wiki/Cytoscape_Plugin_Tutorial\">" .
-	"\nCytoscape Plugin Tutorial</a>" .
-	"\n</p>" . 
-	"\n<p><big><b>Old Plugins</b></big>" .
+		"\n<p><big><b>Old Plugins</b></big>" .
 	"\n<p>" . 
 	"\nWe also maintain a list of older <a href=\"http://cytoscape.org/plugins2.php\">Cytoscape 2.x plugins</a> and <a href=\"http://cytoscape.org/plugins1.php\">" .
 	"\nCytoscape 1.x Plugins</a>. " .
 	"\n</p>" .
+
+	"\n<p><big><b>Writing Your Own Plugins</b></big>" .
+	"\n<p>" . 
+	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://cytoscape.wodaklab.org/wiki/cytoscape_developer_tutorial\">" .
+	"\nCytoscape Plugin Tutorial</a>" .
+	"\n</p>" . 
 	"\n<p><big><b>PlugIn License Policy:</b></big>" .
 	"\n<P>" .
 	"\nAlthough the Cytoscape core application is distributed under a Library GNU Public License (LGPL)," .
@@ -171,10 +164,17 @@
 	"\n</p>" 
 
  ?>
+  </p>
+<p><big><b>About Cytoscape Plugins:</b></big>
+</p>
+<p> Cytoscape includes a flexible Plugin architecture that enables developers to add extra 
+  functionality beyond that provided in the core. Plugins also provide a convenient place 
+  for testing out new Cytoscape features. As more Plugins become available, they will be 
+  listed on this page, and posted to our <a href="http://groups-beta.google.com/group/cytoscape-announce">cytoscape-announce</a> mailing list.</p>
+<p>
+  <?php include "../footer.php"; ?>
+</p>
 </div>
 </div>
-</span>
-<?php include "../footer.php"; ?>
-<br>
 </body>
 </html>
