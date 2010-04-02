@@ -353,14 +353,9 @@ public class CyAttributesImpl implements CyAttributes {
 		if (attributeName == null)
 			throw new IllegalArgumentException("attributeName is null");
 
-		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
-		if (dimTypes.length != 0)
-			throw new IllegalArgumentException("definition for \"" + attributeName 
-			                                   + "\" already exists and it is not of a scalar type!");
-
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		final Class returnType = equation.getType();
-		if (type < 0) {
+		if (type < 0) { // Attribute does not yet exist!
 			final byte mappedType;
 			if (returnType == Double.class)
 				mappedType = MultiHashMapDefinition.TYPE_FLOATING_POINT;
@@ -372,6 +367,11 @@ public class CyAttributesImpl implements CyAttributes {
 				throw new IllegalStateException("unknown equation return type: " + returnType + "!");
 			mmapDef.defineAttribute(attributeName, mappedType, null);
 		} else {
+			final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+			if (dimTypes.length != 0)
+				throw new IllegalArgumentException("definition for \"" + attributeName 
+			                                           + "\" already exists and it is not of a scalar type!");
+
 			if (type == MultiHashMapDefinition.TYPE_STRING)
 				/* Everything is compatible w/ this! */;
 			else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
@@ -416,14 +416,9 @@ public class CyAttributesImpl implements CyAttributes {
 		if (attributeName == null)
 			throw new IllegalArgumentException("attributeName is null");
 
-		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
-		if (dimTypes.length != 0)
-			throw new IllegalArgumentException("definition for \"" + attributeName 
-			                                   + "\" already exists and it is not of a scalar type!");
-
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		final Class returnType = equation.getType();
-		if (type < 0) {
+		if (type < 0) { // Attribute does not yet exist.
 			if (dataType == MultiHashMapDefinition.TYPE_STRING)
 				/* Everything is compatible w/ this! */;
 			else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
@@ -440,6 +435,10 @@ public class CyAttributesImpl implements CyAttributes {
 			}
 			mmapDef.defineAttribute(attributeName, dataType, null);
 		} else {
+			final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+			if (dimTypes.length != 0)
+				throw new IllegalArgumentException("definition for \"" + attributeName 
+			                                           + "\" already exists and it is not of a scalar type!");
 			if (type != dataType)
 				throw new IllegalArgumentException("incompatible data type!");
 
