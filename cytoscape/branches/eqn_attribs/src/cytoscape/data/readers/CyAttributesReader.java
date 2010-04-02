@@ -41,13 +41,16 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.eqn_attribs.AttribEqnCompiler;
+import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.data.writers.CyAttributesWriter;
 import cytoscape.logger.CyLogger;
 import java.net.URLDecoder;
@@ -94,12 +97,33 @@ public class CyAttributesReader {
 
 	private void addEquations(final CyAttributes cyAttrs) {
 		final AttribEqnCompiler compiler = new AttribEqnCompiler();
-		final Map<String, Class> emptyMap = new HashMap<String, Class>();
-		
+		final String[] allAttribNames = cyAttrs.getAttributeNames();
+		final Class[] allTypes = new Class[allAttribNames.length];
+		int index = 0;
+		for (final String attribName : allAttribNames) {
+			final byte type = cyAttrs.getType(attribName);
+			if (type == CyAttributes.TYPE_BOOLEAN)
+				allTypes[index] = Boolean.class;
+			else if (type == CyAttributes.TYPE_INTEGER)
+				allTypes[index] = Long.class;
+			else if (type == CyAttributes.TYPE_FLOATING)
+				allTypes[index] = Double.class;
+			else if (type == CyAttributes.TYPE_STRING)
+				allTypes[index] = String.class;
+			else if (type == CyAttributes.TYPE_SIMPLE_LIST)
+				allTypes[index] = List.class;
+			++index;
+		}
+
 		for (final AttribEquation attribEquation : attribEquations) {
 			Map<String, Class> attribNameToTypeMap = idsToAttribNameToTypeMapMap.get(attribEquation.getID());
 			if (attribNameToTypeMap == null)
-				attribNameToTypeMap = emptyMap;
+				attribNameToTypeMap = new HashMap<String, Class>();
+			for (int i = 0; i < allAttribNames.length; ++i) {
+				if (allTypes[i] != null)
+					attribNameToTypeMap.put(allAttribNames[i], allTypes[i]);
+			}
+
 			if (compiler.compile(attribEquation.getEquation(), attribNameToTypeMap))
 				cyAttrs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(), compiler.getEquation(),
 				                     attribEquation.getDataType());
