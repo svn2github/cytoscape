@@ -3,8 +3,8 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Cytoscape 2.x Plugins</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
-	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
+	<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">
+	<link rel="shortcut icon" href="http://cytoscape.org/images/cyto.ico">
 	<SCRIPT LANGUAGE="JavaScript" SRC="mktree.js"></SCRIPT>
     <style type="text/css">
 <!--
@@ -45,7 +45,7 @@
 	<div class="title">Cytoscape 2.x Plugins</div>
 </div>
 
-<?php include "../nav.php"; ?>
+<?php include "http://cytoscape.org/nav.php"; ?>
 <div align="left">
   <p align="right">&nbsp;&nbsp;<a href="plugindownloadstatistics.php">View download activities</a>&nbsp;&nbsp;<a href="pluginsubmittype.php">Submit a plugin</span> to Cytoscape</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</p>
 </div>
@@ -172,7 +172,7 @@
   for testing out new Cytoscape features. As more Plugins become available, they will be 
   listed on this page, and posted to our <a href="http://groups-beta.google.com/group/cytoscape-announce">cytoscape-announce</a> mailing list.</p>
 <p>
-  <?php include "../footer.php"; ?>
+  <?php include "http://cytoscape.org/footer.php"; ?>
 </p>
 </div>
 </div>
