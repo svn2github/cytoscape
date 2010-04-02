@@ -50,6 +50,27 @@ import clusterMaker.ui.ClusterTask;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterProperties;
 
+enum BuiltIn {
+	HASCLUSTER("hasCluster", "Test to see if this network has a cluster of the requested type", "type"),
+	GETCLUSTER("getCluster", "Get a cluster of the requested type and the requested clustertype (node or attribute)",
+             "type|clustertype=node"),
+	GETHCLUSTER("getHierarchy", "Get a hierarchy of the requested clustertype (node or attribute)", "clustertype=node");
+
+	private String command = null;
+	private String argList = null;
+	private String desc = null;
+
+	BuiltIn(String command, String description, String argList) {
+		this.command = command;
+		this.argList = argList;
+		this.desc = description;
+	}
+
+	public String getCommand() { return command; }
+	public String getArgString() { return argList; }
+	public String getDescription() { return desc; }
+	public boolean equals(String com) { return command.equals(com); }
+}
 
 /**
  * Inner class to handle CyCommands
@@ -69,6 +90,11 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 			addDescription(algName, algName+" cluster algorithm");
 			addArguments(algName, props);
 		}
+
+		// Finally, add our built-in commands
+		for (BuiltIn command: BuiltIn.values()) {
+			addCommand(command.getCommand(), command.getDescription(), command.getArgString());
+		}
 	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) 
@@ -79,7 +105,11 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 	public CyCommandResult execute(String command, Collection<Tunable>args)
                                                       throws CyCommandException, RuntimeException {
 		CyCommandResult result = new CyCommandResult();
-		if (algMap.containsKey(command)) {
+
+		if (BuiltIn.HASCLUSTER.equals(command)) {
+		} else if (BuiltIn.GETCLUSTER.equals(command)) {
+		} else if (BuiltIn.GETHCLUSTER.equals(command)) {
+		} else if (algMap.containsKey(command)) {
 			// Get the algorithm
 			ClusterAlgorithm alg = algMap.get(command);
 			alg.initializeProperties();
@@ -112,5 +142,22 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 			throw new RuntimeException("clusterMaker has no "+command+" command");
 		}
 		return result;
+	}
+
+	private void addCommand(String command, String description, String argString) {
+		if (argString == null) {
+			addArgument(command);
+			return;
+		}
+
+		// Split up the options
+		String[] options = argString.split("|");
+		for (int opt = 0; opt < options.length; opt++) {
+			String[] args = options[opt].split("=");
+			if (args.length == 1)
+				addArgument(command, args[0]);
+			else
+				addArgument(command, args[0], args[1]);
+		}
 	}
 }
