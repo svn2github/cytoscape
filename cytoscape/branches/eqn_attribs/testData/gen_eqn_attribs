@@ -64,31 +64,35 @@ def GetRandomOperator():
     return operators[random.randint(0, len(operators) - 1)]
 
 
-def GenerateEquation(number_of_function_calls, number_of_operators):
+def GenerateEquation(number_of_function_calls, number_of_operators, attrib_refs):
     no_of_terms = max(number_of_function_calls, number_of_operators)
     equation = ""
     for term_no in range(no_of_terms):
         if term_no < number_of_function_calls:
             equation += GenerateRandomFunctionCall()
         else:
-            equation += GenerateNonnegativeFloat()
+            index = random.randint(0, len(attrib_refs))
+            if index < len(attrib_refs):
+                equation += "${" + attrib_refs[index] + "}"
+            else:
+                equation += GenerateNonnegativeFloat()
         if term_no < no_of_terms - 1:
             equation += GetRandomOperator()
 
     return "MIN(100.0, MAX(-100.0, " + equation + "))"
 
 
-def GenerateLine(line_number, number_of_function_calls, number_of_operators):
-    print "N" + str(line_number) + " = =" + urllib.quote_plus(GenerateEquation(number_of_function_calls, number_of_operators))
+def GenerateLine(line_number, number_of_function_calls, number_of_operators, attrib_refs):
+    print "N" + str(line_number) + " = =" + urllib.quote_plus(GenerateEquation(number_of_function_calls, number_of_operators, attrib_refs))
 
 
 def Usage():
-    print >> sys.stderr, "usage: " + sys.argv[0] + " attribute_name number_of_function_calls number_of_operators number_of_lines > output_file"
+    print >> sys.stderr, "usage: " + sys.argv[0] + " attribute_name number_of_function_calls number_of_operators number_of_lines [ref=attrib1 ref=attrib2 ...]> output_file"
     sys.exit(1)
 
 
 def ProcessArgs(argv):
-    if len(argv) != 5:
+    if len(argv) < 5:
         Usage()
     try:
         attribute_name           = argv[1]
@@ -101,15 +105,22 @@ def ProcessArgs(argv):
     if number_of_function_calls < 0 or number_of_operators < 0 or number_of_lines < 1:
         Usage()
 
-    return (attribute_name, number_of_function_calls, number_of_operators, number_of_lines)
+    # Collect references to other attributes:
+    attrib_refs = []
+    for arg_no in range(5, len(argv)):
+        if argv[arg_no][:4] != "ref=":
+            Usage();
+        attrib_refs.append(argv[arg_no][4:])
+
+    return (attribute_name, number_of_function_calls, number_of_operators, number_of_lines, attrib_refs)
 
 
 #
 # Start of main program!
 #
 
-(attribute_name, number_of_function_calls, number_of_operators, number_of_lines) = ProcessArgs(sys.argv)
+(attribute_name, number_of_function_calls, number_of_operators, number_of_lines, attrib_refs) = ProcessArgs(sys.argv)
 print attribute_name + " (class=java.lang.Double)"
 
 for i in range(number_of_lines):
-    GenerateLine(i + 1, number_of_function_calls, number_of_operators)
+    GenerateLine(i + 1, number_of_function_calls, number_of_operators, attrib_refs)
