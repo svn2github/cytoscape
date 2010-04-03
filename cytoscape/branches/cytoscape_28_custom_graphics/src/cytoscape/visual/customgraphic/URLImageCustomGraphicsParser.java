@@ -24,9 +24,9 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 		if(!validate(entryStr))
 			return null;
 		
-		System.out.println("VALID Class ======= " + entryStr);
+		System.out.println("VALID Class ======= " + entry[1] + ", " + entry[2]);
 		final String imageName = entry[1];
-		CyCustomGraphics<?> cg = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().get(imageName);
+		CyCustomGraphics<?> cg = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().get(Integer.parseInt(imageName));
 		cg.setDisplayName(entry[2]);
 		return cg;
 	}

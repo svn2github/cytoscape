@@ -189,7 +189,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 			if (img != null) {
 				final CyCustomGraphics<CustomGraphic> cg = new URLImageCustomGraphics(
 						file.toString(), img);
-				pool.addGraphics(cg.getDisplayName(), cg);
+				pool.addGraphics(cg.hashCode(), cg);
 				((DefaultListModel) browser.getModel()).addElement(cg);
 			}
 		}

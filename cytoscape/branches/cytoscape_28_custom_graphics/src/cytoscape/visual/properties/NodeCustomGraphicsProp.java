@@ -37,6 +37,11 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 			private static final long serialVersionUID = 403672612403499816L;
 			private static final int ICON_SIZE = 128;
 			
+			@Override
+			public String getName() {
+				return Integer.toString(value.hashCode());
+			}
+			
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 
 				super.setColor(new Color(10, 10, 10, 25));
@@ -121,9 +126,9 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		if ((o == null) || !(o instanceof CyCustomGraphics<?>)
 				|| o instanceof NullCustomGraphics)
 			return;
-
-		System.out.println("####### Custom apply: " + o);
-
+		
+		System.out.println("\n\n\n####### Custom apply: " + o);
+		
 		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
 		Collection<?> graphicsList = graphics.getCustomGraphics();
 
@@ -160,6 +165,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		for (CyCustomGraphics<?> graphics : pool.getAll()) {
 			VisualPropertyIcon icon = (VisualPropertyIcon) getIcon(graphics);
 			icon.setName(graphics.getDisplayName());
+			
+			System.out.println("graphics ====> " + graphics.toString());
 			customGraphicsIcons
 					.put(graphics, icon);
 		}

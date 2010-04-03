@@ -171,7 +171,7 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 					final String url = "http://chart.apis.google.com/chart?cht=ls&chs=300x300&chds=0,1,0,1&chxr=0,0,1&chma=5,5,5,5&" +
 							"chd=t:" + dataString + "&chdl=wt|mutant&chco=FF0000,00FF00&chxt=y&chtt=" + node.getIdentifier();
 					CyCustomGraphics<?> cg = new URLImageCustomGraphics(url);
-					pool.addGraphics(node.getIdentifier(), cg);
+					pool.addGraphics(cg.hashCode(), cg);
 					nodeGraphics.putMapValue(node.getIdentifier(), cg);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

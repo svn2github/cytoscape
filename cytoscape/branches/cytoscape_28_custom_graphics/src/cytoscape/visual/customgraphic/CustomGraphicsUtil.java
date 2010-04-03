@@ -18,7 +18,7 @@ public class CustomGraphicsUtil {
 				continue;
 			}
 			if(graphics != null)
-				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics.getDisplayName(), graphics);
+				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics.hashCode(), graphics);
 		}
 	}
 

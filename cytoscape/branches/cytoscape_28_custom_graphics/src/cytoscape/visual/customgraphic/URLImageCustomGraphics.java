@@ -34,6 +34,12 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		buildCustomGraphics(originalImage);
 	}
 	
+	
+	/**
+	 * 
+	 * @param name - display name of this object.  NOT UNIQUE!
+	 * @param img
+	 */
 	public URLImageCustomGraphics(String name, BufferedImage img) {
 		super(name);
 		if(img == null)

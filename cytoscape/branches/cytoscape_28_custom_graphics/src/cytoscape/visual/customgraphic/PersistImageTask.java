@@ -4,7 +4,6 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -43,34 +42,28 @@ public class PersistImageTask implements Task {
 		for (File old : files)
 			old.delete();
 
-		// Matadata for images
-		final Properties prop = new Properties();
-
 		System.out.println("Old files deleted");
 
 		final long startTime = System.currentTimeMillis();
-		CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
 
 		final ExecutorService exService = Executors
 				.newFixedThreadPool(NUM_THREADS);
 
 		for (CyCustomGraphics<?> cg : pool.getAll()) {
-			if (cg == pool.getNullGraphics()
+			if (cg instanceof NullCustomGraphics
 					|| cg instanceof URLImageCustomGraphics == false)
 				continue;
 
 			final Image img = cg.getImage();
 			if (img != null) {
-				final int hash = cg.hashCode();
-				String newFileName = Integer.toString(hash);
 				try {
-					exService.submit(new SaveImageTask(location, newFileName,
+					exService.submit(new SaveImageTask(location, Integer.toString(cg.hashCode()),
 							ImageUtil.toBufferedImage(img)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				prop.setProperty(newFileName, cg.toString());
 			}
 			
 		}
@@ -83,7 +76,7 @@ public class PersistImageTask implements Task {
 		}
 
 		try {
-			prop.store(new FileOutputStream(new File(location, "img.props")),
+			pool.getMetadata().store(new FileOutputStream(new File(location, CustomGraphicsPool.METADATA_FILE)),
 					"Image Metadata");
 		} catch (IOException e) {
 			taskMonitor.setException(e, "Could not save image metadata.");

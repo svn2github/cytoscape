@@ -88,7 +88,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 		}
 		
 		if (cg != null) {
-			pool.addGraphics(cg.getDisplayName(), cg);
+			pool.addGraphics(cg.hashCode(), cg);
 			model.addElement(cg);
 		}
 	}

@@ -88,6 +88,7 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.ImageUtil;
+import cytoscape.visual.customgraphic.NullCustomGraphics;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -385,18 +386,22 @@ public class CytoscapeSessionWriter {
 	
 	
 	private void zipCustomGraphics() throws IOException, InterruptedException {
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		// Collect all custom graphics
-		final Collection<CyCustomGraphics<?>> customGraphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().getAll();
+		final Collection<CyCustomGraphics<?>> customGraphics = pool.getAll();
+		// Add metadata about images
+		
+		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsPool.METADATA_FILE));
+		pool.getMetadata().store(zos, "Image Metadata");
 		
 		for(CyCustomGraphics<?> cg: customGraphics) {
 			final Image img = cg.getImage();
-			if(img != null) {
+			if(img != null && cg instanceof NullCustomGraphics == false) {
 				final int hash = cg.hashCode();
 				zos.putNextEntry(new ZipEntry(sessionDir + "images/" + hash + ".png"));
 				ImageIO.write(ImageUtil.toBufferedImage(img), "PNG", zos);
 			}
 		}
-		
 	}
 
 	/**

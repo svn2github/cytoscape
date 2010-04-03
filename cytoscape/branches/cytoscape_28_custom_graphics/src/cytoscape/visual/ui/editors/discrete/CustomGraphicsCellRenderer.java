@@ -47,6 +47,8 @@ public class CustomGraphicsCellRenderer extends DefaultCellRenderer {
 			else
 				label.setIcon(icon);
 			
+			label.setText(cg.getDisplayName());
+			
 			label.setVerticalAlignment(SwingConstants.CENTER);
 			label.setHorizontalAlignment(SwingConstants.CENTER);
 		}

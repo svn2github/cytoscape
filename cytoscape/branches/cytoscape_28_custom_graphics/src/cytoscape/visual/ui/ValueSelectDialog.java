@@ -266,6 +266,8 @@ public class ValueSelectDialog extends JDialog {
 				continue;
 			}
 			icons.add(icon);
+			
+			System.out.println("KEY ==== " + key);
 			orderedKeyList.add(key);
 			model.addElement(icon.getName());
 		}
