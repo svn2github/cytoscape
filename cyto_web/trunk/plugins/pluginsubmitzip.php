@@ -5,8 +5,8 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Submit a Zip file to Cytoscape</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
-	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
+	<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">
+	<link rel="shortcut icon" href="http://cytoscape.org/images/cyto.ico">
 	<style type="text/css">
 <!--
 .style4 {color: #FF0000}
@@ -14,11 +14,11 @@
     </style>
 </head>
 <body bgcolor="#ffffff">
+<div id="container">
 <div id="topbar">
 	<div class="title">Submit a Zip file to Cytoscape</div>
 </div>
-<div id="container">
-<?php include "../nav.php"; ?>
+<?php include "http://cytoscape.org/nav.php"; ?>
 <?php
 include "getPluginUniqueID.inc";
 
@@ -170,7 +170,7 @@ else {
 }
 ?>
 
-<?php include "../footer.php"; ?>
+<?php include "http://cytoscape.org/footer.php"; ?>
 </body>
 </html>
 

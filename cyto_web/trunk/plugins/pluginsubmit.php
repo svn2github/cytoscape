@@ -42,8 +42,8 @@ if ($mode == 'new') {
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title><?php echo $pageTitle;?></title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
-	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
+	<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">
+	<link rel="shortcut icon" href="http://cytoscape.org/images/cyto.ico">
 	<style type="text/css">
 <!--
 .style4 {color: #FF0000}
@@ -51,11 +51,12 @@ if ($mode == 'new') {
     </style>
 </head>
 <body bgcolor="#ffffff">
+<div id="container">
 <div id="topbar">
 	<div class="title"><?php echo $pageTitle; ?></div>
 </div>
-<div id="container">
-<?php include "../nav.php"; ?>
+
+<?php include "http://cytoscape.org/nav.php"; ?>
 
 <?php
 
@@ -446,7 +447,7 @@ else
 }
 ?>
 
-<?php include "../footer.php"; ?>
+<?php include "http://cytoscape.org/footer.php"; ?>
 <br>
 </body>
 </html>
