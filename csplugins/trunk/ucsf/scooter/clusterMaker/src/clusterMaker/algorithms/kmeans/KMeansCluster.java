@@ -49,6 +49,7 @@ import cytoscape.task.TaskMonitor;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.DistanceMetric;
+import clusterMaker.algorithms.hierarchical.EisenCluster;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.KnnView;
 
@@ -260,6 +261,10 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
+	}
+
+	public boolean isAvailable() {
+		return EisenCluster.isAvailable(getShortName());
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 

@@ -127,6 +127,13 @@ public interface ClusterAlgorithm {
 	public ClusterViz getVisualizer();
 
 	/**
+ 	 * Returns 'true' if this algorithm has already been run on this network
+ 	 *
+ 	 * @return true if the algorithm attributes exist
+ 	 */
+	public boolean isAvailable();
+
+	/**
  	 * This is a hook to notify interested parties that we have finished
  	 * computing a cluster.  The major use is for clusters with visualizers
  	 * to inform UI components that the visualizer can now be launched.

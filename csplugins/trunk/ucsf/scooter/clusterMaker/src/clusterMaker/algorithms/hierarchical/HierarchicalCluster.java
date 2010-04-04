@@ -286,6 +286,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
 	}
 
+	public boolean isAvailable() {
+		return EisenCluster.isAvailable(getShortName());
+	}
+
 	private void setParameters(EisenCluster algorithm) {
 		if (createGroups)
 			algorithm.setCreateGroups();

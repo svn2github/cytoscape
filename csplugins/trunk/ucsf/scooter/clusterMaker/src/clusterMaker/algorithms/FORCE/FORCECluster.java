@@ -252,13 +252,6 @@ public class FORCECluster extends AbstractNetworkClusterer {
 		ClusterResults results = new ClusterResults(network, nodeClusters);
 		monitor.setStatus("Done.  FORCE results:\n"+results);
 
-		// Set up the appropriate attributes
-		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                     ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "force");
-		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                     ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
-
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
 	}

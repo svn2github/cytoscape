@@ -32,11 +32,16 @@
  */
 package clusterMaker.commands;
 
+import java.lang.RuntimeException;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+
 // Cytoscape imports
+import cytoscape.CyNode;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandNamespace;
@@ -47,6 +52,7 @@ import cytoscape.task.util.TaskManager;
 
 // clusterMaker imports
 import clusterMaker.ui.ClusterTask;
+import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterProperties;
 
@@ -107,8 +113,28 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 		CyCommandResult result = new CyCommandResult();
 
 		if (BuiltIn.HASCLUSTER.equals(command)) {
+			ClusterAlgorithm alg = getAlgorithm(args, command);
+			// See if it's available
+			boolean avail = alg.isAvailable();
+			if (avail)
+				result.addMessage("Cluster results for '"+alg+"' are available");
+			else
+				result.addMessage("Cluster results for '"+alg+"' are not available");
+			result.addResult(new Boolean(avail));
 		} else if (BuiltIn.GETCLUSTER.equals(command)) {
+			return getNodeClusters(args,command);
 		} else if (BuiltIn.GETHCLUSTER.equals(command)) {
+			// Get the algorithm
+			ClusterAlgorithm alg = getAlgorithm(args, command);
+
+			// Get the cluster we want
+			Tunable t = getTunable(args, "clustertype");
+			if (t.getValue() == "node") {
+				return getGeneHierarchy();
+			} else if (t.getValue() == "attribute") {
+				return getAttributeHierarchy();
+			}
+
 		} else if (algMap.containsKey(command)) {
 			// Get the algorithm
 			ClusterAlgorithm alg = algMap.get(command);
@@ -159,5 +185,58 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 			else
 				addArgument(command, args[0], args[1]);
 		}
+	}
+
+	private ClusterAlgorithm getAlgorithm(Collection<Tunable> args, String command) {
+		// The the algorithm type
+		Tunable t = getTunable(args, "type");
+		if (t == null)
+			throw new RuntimeException("Must supply a 'type' argument for "+command);
+
+		// Get the name of the algorithm
+		ClusterAlgorithm alg = algMap.get(t.getValue());
+		if (alg == null)
+			throw new RuntimeException("Don't know about algorithm '"+t.getValue()+"'");
+
+		return alg;
+	}
+
+	private CyCommandResult getNodeClusters(Collection<Tunable> args, String command ) {
+		CyCommandResult result = new CyCommandResult();
+		ClusterAlgorithm alg = getAlgorithm(args, command);
+		if (alg instanceof AbstractNetworkClusterer) {
+
+			// Get the clusters from this algorithm
+			if (alg.isAvailable()) {
+				List<List<CyNode>> clusterList = ((AbstractNetworkClusterer)alg).getNodeClusters();
+				if (clusterList == null) {
+					result.addError("Either no clusters exist for this network or cluster algorithm doesn't support node clusters");
+				}
+				result.addResult("nodeClusters", clusterList);
+				result.addMessage("Node clusters: ");
+				for (List<CyNode> nodeList: clusterList) {
+					String out = "   [";
+					for (CyNode node: nodeList) {
+						out += node.getIdentifier()+",";
+					}
+					result.addMessage(out.substring(0, out.length()-1)+"]");
+				}
+			} else {
+				result.addError("Cluster results for '"+alg+"' are not available");
+			}
+		} else {
+			result.addError("Cluster algorithm '"+alg+"' is not a node clusterer");
+		}
+		return result;
+	}
+
+	private CyCommandResult getGeneHierarchy() {
+		CyCommandResult result = new CyCommandResult();
+		return result;
+	}
+
+	private CyCommandResult getAttributeHierarchy() {
+		CyCommandResult result = new CyCommandResult();
+		return result;
 	}
 }

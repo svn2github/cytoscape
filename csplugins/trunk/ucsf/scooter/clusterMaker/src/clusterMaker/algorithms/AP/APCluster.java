@@ -190,12 +190,6 @@ public class APCluster extends AbstractNetworkClusterer  {
 		ClusterResults results = new ClusterResults(network, nodeClusters);
 		monitor.setStatus("Done.  AP results:\n"+results);
 
-		// Set up the appropriate attributes
-		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                     ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "AP");
-		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                     ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
@@ -204,4 +198,5 @@ public class APCluster extends AbstractNetworkClusterer  {
 	public void halt() {
 		runAP.halt();
 	}
+
 }

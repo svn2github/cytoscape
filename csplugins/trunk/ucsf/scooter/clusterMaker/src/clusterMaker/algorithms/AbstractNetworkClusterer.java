@@ -32,6 +32,7 @@
  */
 package clusterMaker.algorithms;
 
+import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -43,10 +44,13 @@ import cytoscape.task.TaskMonitor;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import javax.swing.JPanel;
+
+import clusterMaker.ClusterMaker;
 
 /**
  * This abstract class is the base class for all of the network clusterers provided by
@@ -107,6 +111,58 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 		
 		// Save the network attribute so we remember which groups are ours
 		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
+
+		// Set up the appropriate attributes
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
+		                     ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, getShortName());
+		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
+		                     ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
+	
+		return clusterList;
+	}
+
+	public boolean isAvailable() {
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		String netId = network.getIdentifier();
+		if (!networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE)) {
+			return false;
+		}
+
+		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
+		if (cluster_type != getShortName())
+			return false;
+
+		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {
+			return true;
+		}
+		return false;
+	}
+
+	public List<List<CyNode>> getNodeClusters() {
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String netId = network.getIdentifier();
+
+		List<List<CyNode>> clusterList = new ArrayList(); // List of node lists
+		String clusterAttribute = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE);
+
+		// Create the cluster Map
+		HashMap<Integer, List<CyNode>> clusterMap = new HashMap();
+		for (CyNode node: (List<CyNode>)network.nodesList()) {
+			// For each node -- see if it's in a cluster.  If so, add it to our map
+			if (nodeAttributes.hasAttribute(node.getIdentifier(), clusterAttribute)) {
+				Integer cluster = nodeAttributes.getIntegerAttribute(node.getIdentifier(), clusterAttribute);
+				if (!clusterMap.containsKey(cluster)) {
+					List<CyNode> nodeList = new ArrayList();
+					clusterMap.put(cluster, nodeList);
+					clusterList.add(nodeList);
+				}
+				clusterMap.get(cluster).add(node);
+			}
+		}
 		return clusterList;
 	}
 

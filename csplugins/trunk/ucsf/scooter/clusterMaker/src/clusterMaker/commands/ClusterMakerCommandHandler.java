@@ -71,6 +71,13 @@ abstract class ClusterMakerCommandHandler extends AbstractCommandHandler {
 		}
 	}
 
+	public Tunable getTunable(Collection<Tunable>args, String name) {
+		for (Tunable t: args) {
+			if (t.getName().equals(name)) return t;
+		}
+		return null;
+	}
+
 	public void setTunables(ClusterProperties props, Collection<Tunable>args) throws Exception {
 		// Set the Tunables
 		for (Tunable t: args) {

@@ -69,6 +69,28 @@ public class EisenCluster {
 	boolean adjustDiagonals = false;
 	boolean zeroMissing = false;
 
+	public static boolean isAvailable(String type) {
+		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		if (!netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE))
+			return false;
+
+		if (!netAttr.getStringAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals(type))
+			return false;
+
+		// OK, we need either a node list or an attribute list
+		if (!netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE) && 
+		    !netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
+			return false;
+
+		// Finally, we need to have the cluster attributes themselves
+		if (!netAttr.hasAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE) &&
+		    !netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
+			return false;
+
+		return true;
+	}
+	
 	public static void updateAttributes(Matrix matrix, List<String>attrList, 
 	                                    String[] weightAttributes, Integer[] order,
 	                                    String cluster_type, 
