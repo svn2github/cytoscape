@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE pathway SYSTEM "http://www.genome.jp/kegg/xml/KGML_v0.7.0_.dtd">
-<!-- Creation date: Aug 28, 2009 09:16:01 +0900 (JST) -->
+<!DOCTYPE pathway SYSTEM "http://www.genome.jp/kegg/xml/KGML_v0.7.1_.dtd">
+<!-- Creation date: Apr 2, 2010 17:32:59 +0900 (GMT+09:00) -->
 <pathway name="path:hsa00020" org="hsa" number="00020"
          title="Citrate cycle (TCA cycle)"
          image="http://www.genome.jp/kegg/pathway/hsa/hsa00020.png"
@@ -10,8 +10,8 @@
         <graphics name="K00239..." fgcolor="#000000" bgcolor="#FFFFFF"
              type="rectangle" x="144" y="530" width="46" height="17"/>
     </entry>
-    <entry id="2" name="ko:K00174 ko:K00175 ko:K00176 ko:K00177" type="ortholog" reaction="rn:R01197"
-        link="http://www.kegg.jp/dbget-bin/www_bget?K00174+K00175+K00176+K00177">
+    <entry id="2" name="ko:K00174 ko:K00175 ko:K00177 ko:K00176" type="ortholog" reaction="rn:R01197"
+        link="http://www.kegg.jp/dbget-bin/www_bget?K00174+K00175+K00177+K00176">
         <graphics name="K00174..." fgcolor="#000000" bgcolor="#FFFFFF"
              type="rectangle" x="505" y="649" width="46" height="17"/>
     </entry>
@@ -136,7 +136,7 @@
              type="roundrectangle" x="835" y="639" width="121" height="34"/>
     </entry>
     <entry id="27" name="path:hsa00020" type="map"
-        link="http://www.kegg.jp/dbget-bin/www_bget?pathway+hsa00020">
+        link="http://www.kegg.jp/dbget-bin/www_bget?hsa00020">
         <graphics name="TITLE:Citrate cycle (TCA cycle)" fgcolor="#000000" bgcolor="#FFFFFF"
              type="roundrectangle" x="155" y="58" width="229" height="25"/>
     </entry>
@@ -290,8 +290,8 @@
         <graphics name="DLAT" fgcolor="#000000" bgcolor="#BFFFBF"
              type="rectangle" x="443" y="242" width="46" height="17"/>
     </entry>
-    <entry id="58" name="ko:K00169 ko:K00170 ko:K00171 ko:K00172" type="ortholog" reaction="rn:R01196"
-        link="http://www.kegg.jp/dbget-bin/www_bget?K00169+K00170+K00171+K00172">
+    <entry id="58" name="ko:K00169 ko:K00170 ko:K00172 ko:K00171" type="ortholog" reaction="rn:R01196"
+        link="http://www.kegg.jp/dbget-bin/www_bget?K00169+K00170+K00172+K00171">
         <graphics name="K00169..." fgcolor="#000000" bgcolor="#FFFFFF"
              type="rectangle" x="519" y="179" width="46" height="17"/>
     </entry>
@@ -580,122 +580,102 @@
     <relation entry1="62" entry2="21" type="maplink">
         <subtype name="compound" value="64"/>
     </relation>
-    <reaction name="rn:R00412" type="reversible">
-        <substrate name="cpd:C00042"/>
-        <product name="cpd:C00122"/>
+    <reaction id="3" name="rn:R07618" type="reversible">
+        <substrate id="46" name="cpd:C15973"/>
+        <product id="43" name="cpd:C15972"/>
     </reaction>
-    <reaction name="rn:R01197" type="irreversible">
-        <substrate name="cpd:C00026"/>
-        <product name="cpd:C00091"/>
+    <reaction id="4" name="rn:R00621" type="irreversible">
+        <substrate id="48" name="cpd:C00026"/>
+        <substrate id="44" name="cpd:C00068"/>
+        <product id="49" name="cpd:C05381"/>
     </reaction>
-    <reaction name="rn:R07618" type="reversible">
-        <substrate name="cpd:C15973"/>
-        <product name="cpd:C15972"/>
+    <reaction id="5" name="rn:R03316" type="irreversible">
+        <substrate id="43" name="cpd:C15972"/>
+        <substrate id="49" name="cpd:C05381"/>
+        <product id="45" name="cpd:C16254"/>
+        <product id="44" name="cpd:C00068"/>
     </reaction>
-    <reaction name="rn:R00621" type="irreversible">
-        <substrate name="cpd:C00068"/>
-        <substrate name="cpd:C00026"/>
-        <product name="cpd:C05381"/>
+    <reaction id="6" name="rn:R02570" type="reversible">
+        <substrate id="46" name="cpd:C15973"/>
+        <substrate id="47" name="cpd:C00091"/>
+        <product id="45" name="cpd:C16254"/>
     </reaction>
-    <reaction name="rn:R03316" type="irreversible">
-        <substrate name="cpd:C15972"/>
-        <substrate name="cpd:C05381"/>
-        <product name="cpd:C16254"/>
-        <product name="cpd:C00068"/>
+    <reaction id="7" name="rn:R00405" type="reversible">
+        <substrate id="41" name="cpd:C00042"/>
+        <product id="47" name="cpd:C00091"/>
     </reaction>
-    <reaction name="rn:R02570" type="reversible">
-        <substrate name="cpd:C15973"/>
-        <substrate name="cpd:C00091"/>
-        <product name="cpd:C16254"/>
+    <reaction id="8" name="rn:R00432 rn:R00727" type="reversible">
+        <substrate id="41" name="cpd:C00042"/>
+        <product id="47" name="cpd:C00091"/>
     </reaction>
-    <reaction name="rn:R00405" type="reversible">
-        <substrate name="cpd:C00042"/>
-        <product name="cpd:C00091"/>
+    <reaction id="9" name="rn:R00268" type="reversible">
+        <substrate id="36" name="cpd:C05379"/>
+        <product id="48" name="cpd:C00026"/>
     </reaction>
-    <reaction name="rn:R00432 rn:R00727" type="reversible">
-        <substrate name="cpd:C00042"/>
-        <product name="cpd:C00091"/>
+    <reaction id="10" name="rn:R00709" type="reversible">
+        <substrate id="39" name="cpd:C00311"/>
+        <product id="48" name="cpd:C00026"/>
     </reaction>
-    <reaction name="rn:R00268" type="reversible">
-        <substrate name="cpd:C05379"/>
-        <product name="cpd:C00026"/>
+    <reaction id="11" name="rn:R01899" type="reversible">
+        <substrate id="39" name="cpd:C00311"/>
+        <product id="36" name="cpd:C05379"/>
     </reaction>
-    <reaction name="rn:R00709" type="reversible">
-        <substrate name="cpd:C00311"/>
-        <product name="cpd:C00026"/>
+    <reaction id="12" name="rn:R00352" type="reversible">
+        <substrate id="35" name="cpd:C00036"/>
+        <substrate id="37" name="cpd:C00024"/>
+        <product id="42" name="cpd:C00158"/>
     </reaction>
-    <reaction name="rn:R01899" type="reversible">
-        <substrate name="cpd:C00311"/>
-        <product name="cpd:C05379"/>
+    <reaction id="13" name="rn:R02164" type="reversible">
+        <substrate id="41" name="cpd:C00042"/>
+        <product id="34" name="cpd:C00122"/>
     </reaction>
-    <reaction name="rn:R00352" type="reversible">
-        <substrate name="cpd:C00036"/>
-        <substrate name="cpd:C00024"/>
-        <product name="cpd:C00158"/>
+    <reaction id="14" name="rn:R01082" type="reversible">
+        <substrate id="38" name="cpd:C00149"/>
+        <product id="34" name="cpd:C00122"/>
     </reaction>
-    <reaction name="rn:R02164" type="reversible">
-        <substrate name="cpd:C00042"/>
-        <product name="cpd:C00122"/>
+    <reaction id="15" name="rn:R01900" type="reversible">
+        <substrate id="40" name="cpd:C00417"/>
+        <product id="39" name="cpd:C00311"/>
     </reaction>
-    <reaction name="rn:R01082" type="reversible">
-        <substrate name="cpd:C00149"/>
-        <product name="cpd:C00122"/>
+    <reaction id="16" name="rn:R01325" type="reversible">
+        <substrate id="42" name="cpd:C00158"/>
+        <product id="40" name="cpd:C00417"/>
     </reaction>
-    <reaction name="rn:R01900" type="reversible">
-        <substrate name="cpd:C00417"/>
-        <product name="cpd:C00311"/>
+    <reaction id="17" name="rn:R00351" type="reversible">
+        <substrate id="35" name="cpd:C00036"/>
+        <substrate id="37" name="cpd:C00024"/>
+        <product id="42" name="cpd:C00158"/>
     </reaction>
-    <reaction name="rn:R01325" type="reversible">
-        <substrate name="cpd:C00158"/>
-        <product name="cpd:C00417"/>
+    <reaction id="18" name="rn:R00342" type="reversible">
+        <substrate id="38" name="cpd:C00149"/>
+        <product id="35" name="cpd:C00036"/>
     </reaction>
-    <reaction name="rn:R00351" type="reversible">
-        <substrate name="cpd:C00036"/>
-        <substrate name="cpd:C00024"/>
-        <product name="cpd:C00158"/>
+    <reaction id="19" name="rn:R00344" type="irreversible">
+        <substrate id="33" name="cpd:C00022"/>
+        <product id="35" name="cpd:C00036"/>
     </reaction>
-    <reaction name="rn:R00342" type="reversible">
-        <substrate name="cpd:C00149"/>
-        <product name="cpd:C00036"/>
+    <reaction id="51" name="rn:R00014" type="irreversible">
+        <substrate id="33" name="cpd:C00022"/>
+        <substrate id="52" name="cpd:C00068"/>
+        <product id="50" name="cpd:C05125"/>
     </reaction>
-    <reaction name="rn:R00344" type="irreversible">
-        <substrate name="cpd:C00022"/>
-        <product name="cpd:C00036"/>
+    <reaction id="53" name="rn:R03270" type="irreversible">
+        <substrate id="50" name="cpd:C05125"/>
+        <substrate id="54" name="cpd:C15972"/>
+        <product id="52" name="cpd:C00068"/>
+        <product id="56" name="cpd:C16255"/>
     </reaction>
-    <reaction name="rn:R00014" type="irreversible">
-        <substrate name="cpd:C00068"/>
-        <substrate name="cpd:C00022"/>
-        <product name="cpd:C05125"/>
+    <reaction id="55" name="rn:R07618" type="reversible">
+        <substrate id="63" name="cpd:C15973"/>
+        <product id="54" name="cpd:C15972"/>
     </reaction>
-    <reaction name="rn:R03270" type="irreversible">
-        <substrate name="cpd:C15972"/>
-        <substrate name="cpd:C05125"/>
-        <product name="cpd:C16255"/>
-        <product name="cpd:C00068"/>
+    <reaction id="57" name="rn:R02569" type="reversible">
+        <substrate id="37" name="cpd:C00024"/>
+        <substrate id="63" name="cpd:C15973"/>
+        <product id="56" name="cpd:C16255"/>
     </reaction>
-    <reaction name="rn:R07618" type="reversible">
-        <substrate name="cpd:C15973"/>
-        <product name="cpd:C15972"/>
-    </reaction>
-    <reaction name="rn:R02569" type="reversible">
-        <substrate name="cpd:C15973"/>
-        <substrate name="cpd:C00024"/>
-        <product name="cpd:C16255"/>
-    </reaction>
-    <reaction name="rn:R01196" type="reversible">
-        <substrate name="cpd:C00024"/>
-        <product name="cpd:C00022"/>
-    </reaction>
-    <reaction name="rn:R00362" type="irreversible">
-        <substrate name="cpd:C00158"/>
-        <product name="cpd:C00036"/>
-    </reaction>
-    <reaction name="rn:R00341" type="irreversible">
-        <substrate name="cpd:C00036"/>
-        <product name="cpd:C00074"/>
-    </reaction>
-    <reaction name="rn:R00431 rn:R00726" type="irreversible">
-        <substrate name="cpd:C00036"/>
-        <product name="cpd:C00074"/>
+    <reaction id="62" name="rn:R00431 rn:R00726" type="irreversible">
+        <substrate id="35" name="cpd:C00036"/>
+        <product id="64" name="cpd:C00074"/>
     </reaction>
 </pathway>
