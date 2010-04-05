@@ -105,10 +105,10 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 	public TwoDVisualLexicon() {
 		super();
 		
-		visualPropertySet.add(NODE_COLOR);
-		visualPropertySet.add(NODE_SELECTED_COLOR);
+		visualPropertySet.add(NODE_COLOR); 
+		visualPropertySet.add(NODE_SELECTED_COLOR); // TODO get rid of this?
 		visualPropertySet.add(NODE_LABEL);
-		visualPropertySet.add(NODE_LABEL_COLOR);
+		visualPropertySet.add(NODE_LABEL_COLOR); // TODO get rid of this?
 		visualPropertySet.add(NODE_X_LOCATION);
 		visualPropertySet.add(NODE_Y_LOCATION);
 		visualPropertySet.add(NODE_X_SIZE);
@@ -116,9 +116,9 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		visualPropertySet.add(NODE_VISIBLE);
 		visualPropertySet.add(NODE_SELECTED);
 		visualPropertySet.add(EDGE_COLOR);
-		visualPropertySet.add(EDGE_WIDTH);
+		visualPropertySet.add(EDGE_WIDTH); // TODO get rid of this?
 		visualPropertySet.add(EDGE_LABEL);
-		visualPropertySet.add(EDGE_LABEL_COLOR);
+		visualPropertySet.add(EDGE_LABEL_COLOR); // TODO get rid of this?
 		visualPropertySet.add(EDGE_VISIBLE);
 		visualPropertySet.add(EDGE_SELECTED);
 		visualPropertySet.add(NETWORK_SCALE_FACTOR);
