@@ -10,7 +10,7 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.viewmodel</bundle.symbolicName>
+		<bundle.symbolicName>org.cytoscape.viewmodel-api</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.view.model</bundle.namespace>
 	</properties>
 
