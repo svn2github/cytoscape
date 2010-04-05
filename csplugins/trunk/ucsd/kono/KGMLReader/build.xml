@@ -64,7 +64,7 @@
 		<mkdir dir="${src.dir}/${package.generated.dir}" />
 		<mkdir dir="${build.classes}/${package.generated.dir}" />
 		
-		<xjc schema="${resources.dir}/KGML_v0.7.0_.dtd" destdir="${src.dir}" package="${package.generated}">
+		<xjc schema="${resources.dir}/KGML_v0.7.1_.dtd" destdir="${src.dir}" package="${package.generated}">
 			<produces dir="${src.dir}" includes="* impl/*" />
 			<arg value="-dtd" />
 		</xjc>
