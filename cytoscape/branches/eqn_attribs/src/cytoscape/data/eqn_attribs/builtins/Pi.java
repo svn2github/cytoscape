@@ -46,7 +46,7 @@ public class Pi implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns the value of π."; }
+	public String getFunctionSummary() { return "Returns the value of \u03C0."; }
 
 	/**
 	 *  Used to provide help for users.

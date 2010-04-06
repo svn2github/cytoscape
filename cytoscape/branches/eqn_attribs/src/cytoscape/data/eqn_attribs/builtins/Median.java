@@ -49,7 +49,7 @@ public class Median implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Median of a group of numbers."; }
+	public String getFunctionSummary() { return "Returns the median of a list of numbers."; }
 
 	/**
 	 *  Used to provide help for users.
