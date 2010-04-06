@@ -26,6 +26,8 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
 	private BufferedImage originalImage;
 	private BufferedImage scaledImage;
+	
+	private URL sourceUrl;
 
 	public URLImageCustomGraphics(String url) throws IOException {
 		super(url);
@@ -77,6 +79,7 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 			throw new IllegalStateException("URL string cannot be null.");
 		
 		final URL imageLocation = new URL(url);
+		sourceUrl = imageLocation;
 		originalImage = ImageIO.read(imageLocation);
 		
 		if(originalImage == null)
@@ -123,6 +126,11 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 	 */
 	public String toString() {
 		return this.getClass().getName() + "," + this.hashCode() + "," + this.displayName;
+	}
+	
+	
+	public URL getSourceURL() {
+		return this.sourceUrl;
 	}
 	
 }

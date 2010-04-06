@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +36,8 @@ public class CustomGraphicsPool extends SubjectBase implements
 	private final ExecutorService imageLoaderService;
 
 	private final Map<Integer, CyCustomGraphics<?>> graphicsMap = new ConcurrentHashMap<Integer, CyCustomGraphics<?>>();
+	private final Map<URL, Integer> sourceMap = new ConcurrentHashMap<URL, Integer>();
+	
 
 	// Null Object
 	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
@@ -79,11 +80,13 @@ public class CustomGraphicsPool extends SubjectBase implements
 					METADATA_FILE)));
 			System.out.println("Image prop loaded!");
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			System.out.println("Image metadata not found!");
+			return;
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			System.out.println("Image metadata not found!");
+			return;
 		}
 
 		if (this.imageHomeDirectory != null && imageHomeDirectory.isDirectory()) {
@@ -142,6 +145,12 @@ public class CustomGraphicsPool extends SubjectBase implements
 		graphicsMap.put(hash, graphics);
 		this.fireStateChanged();
 	}
+	
+	
+	public void addGraphics(Integer hash, CyCustomGraphics<?> graphics, URL source) {
+		sourceMap.put(source, hash);
+		addGraphics(hash, graphics);
+	}
 
 	public void removeGraphics(String id) {
 		graphicsMap.remove(id);
@@ -149,6 +158,13 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	public CyCustomGraphics<?> get(Integer hash) {
 		return graphicsMap.get(hash);
+	}
+	
+	public CyCustomGraphics<?> get(URL sourceURL) {
+		if(sourceMap.get(sourceURL) != null)
+			return graphicsMap.get(sourceMap.get(sourceURL));
+		else
+			return null;
 	}
 
 	public Collection<CyCustomGraphics<?>> getAll() {

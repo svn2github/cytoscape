@@ -1,6 +1,8 @@
-package cytoscape.visual.mappings;
+package cytoscape.visual.mappings.rangecalculators;
 
 import java.util.List;
+
+import cytoscape.visual.mappings.RangeValueCalculator;
 
 public class StringRangeValueCalculator implements RangeValueCalculator<String> {
 
@@ -31,8 +33,15 @@ public class StringRangeValueCalculator implements RangeValueCalculator<String> 
 	}
 
 	@Override
-	public Class<String> getRangeClass() {
-		return String.class;
+	public boolean isCompatible(Class<?> type) {
+		
+		System.out.println(type + " is assignable from " + String.class.toString());
+		if(String.class.isAssignableFrom(type))
+			return true;
+		else
+			return false;
 	}
+
+	
 
 }

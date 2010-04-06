@@ -1,5 +1,9 @@
 package cytoscape.visual.parsers;
 
+import java.io.IOException;
+import java.net.URL;
+
+import cytoscape.Cytoscape;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParser;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactory;
@@ -29,6 +33,22 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	
 	private CyCustomGraphics<?> parse(String value) {
 		if(value == null) return null;
+		
+		// Special case:  URL String.
+		try {
+			final URL url = new URL(value);
+			CyCustomGraphics<?> graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().get(url);
+			if(graphics == null) {
+				graphics = new URLImageCustomGraphics(url.toString());
+				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics.hashCode(), graphics, url);
+			}
+			return graphics;
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+		}
+		
+		System.out.println("@@@@@@@@@@@Not Valid URL: " + value);
 		
 		final String[] parts = value.split(",");
 		// Extract class
