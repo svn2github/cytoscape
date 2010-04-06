@@ -45,9 +45,15 @@ public class Nth implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"NTH(list, index)\""; }
+	public String getFunctionSummary() { return "Returns the n-th entry in a list."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"NTH(list, index)\""; }
 
 	/**
 	 *  @returns String.class or null if the arguments are not a string followed by a number

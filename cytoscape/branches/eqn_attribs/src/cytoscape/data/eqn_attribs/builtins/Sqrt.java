@@ -44,9 +44,15 @@ public class Sqrt implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"SQRT(number)\""; }
+	public String getFunctionSummary() { return "Calculates the square root of a number."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"SQRT(number)\""; }
 
 	/**
 	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double nor Integer

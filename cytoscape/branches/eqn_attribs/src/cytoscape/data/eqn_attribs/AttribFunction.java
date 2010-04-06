@@ -42,9 +42,15 @@ public interface AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	String getHelpDescription();
+	String getFunctionSummary();
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	String getUsageDescription();
 
 	/**
 	 *  @returns the return type for this function (Double.getCLass(), String.class, or Boolean.class)

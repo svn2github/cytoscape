@@ -44,9 +44,15 @@ public class Substitute implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"SUBSTITUTE(text, original, replacement [, nth_appearance])\""; }
+	public String getFunctionSummary() { return "Replaces some text with other text."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"SUBSTITUTE(text, original, replacement [, nth_appearance])\""; }
 
 	/**
 	 *  @returns String.class or null if the args passed in had the wrong arity or a type mismatch

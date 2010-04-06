@@ -45,9 +45,15 @@ public class Average implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"AVERAGE(list)\" or \"AVERAGE(arg1,arg2,...,argN)\""; }
+	public String getFunctionSummary() { return "Returns the average of a group of numbers."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"AVERAGE(list)\" or \"AVERAGE(arg1,arg2,...,argN)\""; }
 
 	/**
 	 *  @returns Double.class or null if there is not either exactly a single list argument nor a list of numeric arguments

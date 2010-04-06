@@ -44,9 +44,15 @@ public class Log implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"LOG(number [, base])\""; }
+	public String getFunctionSummary() { return "Returns the logarithm of a number to a specified base."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"LOG(number [, base])\""; }
 
 	/**
 	 *  @returns Double.class or null if there are not 1 or 2 args or the args are not of type Double

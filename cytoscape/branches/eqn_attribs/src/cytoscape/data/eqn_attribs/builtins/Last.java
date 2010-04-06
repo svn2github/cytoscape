@@ -45,9 +45,15 @@ public class Last implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"LAST(list)\""; }
+	public String getFunctionSummary() { return "Returns the last entry in a list."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"LAST(list)\""; }
 
 	/**
 	 *  @returns String.class or null if there is not exactly a single list argument

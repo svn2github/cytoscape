@@ -44,9 +44,15 @@ public class Round implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"ROUND(number, num_digits)\""; }
+	public String getFunctionSummary() { return "Rounds a number to a specified number of decimal places."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"ROUND(number, num_digits)\""; }
 
 	/**
 	 *  @returns Double.class or null if there are not 2 args or the args are not of type Double

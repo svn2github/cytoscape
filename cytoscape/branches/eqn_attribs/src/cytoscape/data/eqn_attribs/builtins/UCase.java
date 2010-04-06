@@ -44,9 +44,15 @@ public class UCase implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"UCASE(text)\""; }
+	public String getFunctionSummary() { return "Converts a string to uppercase."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"UCASE(text)\""; }
 
 	/**
 	 *  @returns String.class or null if the args passed in have the wrong arity or a type mismatch was found

@@ -44,9 +44,15 @@ public class Or implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"OR(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
+	public String getFunctionSummary() { return "Returns the logical disjunction of any number of boolean values."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"OR(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
 
 	/**
 	 *  @returns Boolean.class or null if there are 0 args or the args are not all of type Boolean

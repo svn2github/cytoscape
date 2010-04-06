@@ -44,9 +44,15 @@ public class Value implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"VALUE(text)\""; }
+	public String getFunctionSummary() { return "Converts a string to a number."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"VALUE(text)\""; }
 
 	/**
 	 *  @returns Double.class or null if there is not exactly a single argument of type String.class

@@ -47,9 +47,15 @@ public class Median implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"MEDIAN(list)\" or \"MEDIAN(arg1,arg2,...,argN)\""; }
+	public String getFunctionSummary() { return "Median of a group of numbers."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"MEDIAN(list)\" or \"MEDIAN(arg1,arg2,...,argN)\""; }
 
 	/**
 	 *  @returns Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double

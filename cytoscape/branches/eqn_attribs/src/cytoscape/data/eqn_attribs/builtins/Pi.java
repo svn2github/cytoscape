@@ -44,9 +44,15 @@ public class Pi implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"PI(number)\""; }
+	public String getFunctionSummary() { return "Returns the value of π."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"PI()\""; }
 
 	/**
 	 *  @returns Double.class or null if there are any args

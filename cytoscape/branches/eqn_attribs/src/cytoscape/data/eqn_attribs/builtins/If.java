@@ -44,9 +44,15 @@ public class If implements AttribFunction {
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function for a casual user.
+	 *  @returns a description of what this function does
 	 */
-	public String getHelpDescription() { return "Call this with \"IF(condition, value_if_true, value_if_false)\""; }
+	public String getFunctionSummary() { return "Returns one of two alternatives based on a boolean value."; }
+
+	/**
+	 *  Used to provide help for users.
+	 *  @returns a description of how to use this function
+	 */
+	public String getUsageDescription() { return "Call this with \"IF(condition, value_if_true, value_if_false)\""; }
 
 	/**
 	 *  @returns whatever is compatible type of the if-value and else-value or null if the two types are incompatible
