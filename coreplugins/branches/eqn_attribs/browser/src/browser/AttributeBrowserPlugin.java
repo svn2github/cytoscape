@@ -240,8 +240,8 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 		
 		if (attrColumnWidth != null && attrColumnWidth.size() > 0){
 			
-			HashMap<String, Integer> attributeColumnWidthMap = attBrowser.getattributeTable().getColumnWidthMap();
-			TableColumnModel colModel = attBrowser.getattributeTable().getColumnModel();
+			HashMap<String, Integer> attributeColumnWidthMap = attBrowser.getAttributeTable().getColumnWidthMap();
+			TableColumnModel colModel = attBrowser.getAttributeTable().getColumnModel();
 			for (int i=0; i< colModel.getColumnCount(); i++){
 				colModel.getColumn(i).setPreferredWidth(new Integer(attrColumnWidth.get(i)).intValue());
 				// It's important to save this value to the map to prevent it to be overwritten by other event
@@ -266,7 +266,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			List<String> nodeAttr = nodeAttributeBrowser.getSelectedAttributes();
 
 			for (String name : nodeAttr) {
-				TableColumnModel colModel = nodeAttributeBrowser.getattributeTable().getColumnModel();
+				TableColumnModel colModel = nodeAttributeBrowser.getAttributeTable().getColumnModel();
 				int colIndex = colModel.getColumnIndex(name);
 				Integer widthObj = new Integer(colModel.getColumn(colIndex).getWidth());
 				
@@ -279,7 +279,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			List<String> edgeAttr = edgeAttributeBrowser.getSelectedAttributes();
 
 			for (String name : edgeAttr) {
-				TableColumnModel colModel = edgeAttributeBrowser.getattributeTable().getColumnModel();
+				TableColumnModel colModel = edgeAttributeBrowser.getAttributeTable().getColumnModel();
 				int colIndex = colModel.getColumnIndex(name);
 				Integer widthObj = new Integer(colModel.getColumn(colIndex).getWidth());
 				
@@ -292,7 +292,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 
 			for (String name : networkAttributeBrowser.getSelectedAttributes()) {
 				
-				TableColumnModel colModel = networkAttributeBrowser.getattributeTable().getColumnModel();
+				TableColumnModel colModel = networkAttributeBrowser.getAttributeTable().getColumnModel();
 				int colIndex = colModel.getColumnIndex(name);
 				Integer widthObj = new Integer(colModel.getColumn(colIndex).getWidth());
 				

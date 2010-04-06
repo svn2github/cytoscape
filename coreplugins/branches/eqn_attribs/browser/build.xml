@@ -11,7 +11,7 @@
     <tstamp/>
     <property name="browser.Name" value="browser"/>
     <property name="browser.name" value="browser"/>
-    <property name="browser.version" value="0.7"/>
+    <property name="browser.version" value="0.8"/>
     <property name="browser.year" value="200"/>
   	
     <echo message="Building ${browser.name} version ${browser.version}."/>
