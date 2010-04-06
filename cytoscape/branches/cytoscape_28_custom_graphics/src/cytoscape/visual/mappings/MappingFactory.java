@@ -40,6 +40,7 @@ package cytoscape.visual.mappings;
 import java.util.Properties;
 
 import cytoscape.logger.CyLogger;
+import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.parsers.ValueParser;
 
 
@@ -80,7 +81,7 @@ public class MappingFactory {
 
             return m;
         } else if (typeName.equals("PassThroughMapping")) {
-            PassThroughMapping m = new PassThroughMapping(defObj, mapType);
+            final PassThroughMapping m = new PassThroughMapping(defObj.getClass(), null);
             m.applyProperties(props, baseKey, parser);
 
             return m;

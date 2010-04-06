@@ -287,7 +287,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 *            A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public Object calculateRangeValue(Map attrBundle) {
+	public Object calculateRangeValue(Map<String, Object> attrBundle) {
 		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(
 				treeMap, attrName);
 
@@ -321,5 +321,11 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 */
 	public JPanel getLegend(VisualPropertyType vpt) {
 		return new DiscreteLegend(treeMap, attrName, vpt);
+	}
+
+
+	@Override
+	public void setControllingAttributeName(String controllingAttrName) {
+		this.attrName = controllingAttrName;
 	}
 }

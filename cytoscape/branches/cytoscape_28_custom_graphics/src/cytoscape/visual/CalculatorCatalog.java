@@ -35,15 +35,8 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual;
 
-
-//----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 
 import cytoscape.visual.calculators.*;
@@ -554,7 +547,7 @@ public class CalculatorCatalog {
 		Calculator nlc = getCalculator(NODE_LABEL, label);
 
 		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
+			final PassThroughMapping m = new PassThroughMapping(String.class, AbstractCalculator.ID);
 			nlc = new BasicCalculator(label, m, NODE_LABEL);
 		}
 

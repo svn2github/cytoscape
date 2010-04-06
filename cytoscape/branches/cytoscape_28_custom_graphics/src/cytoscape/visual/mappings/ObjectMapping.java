@@ -91,9 +91,14 @@ public interface ObjectMapping extends Cloneable {
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
      */
+    @Deprecated
     public void setControllingAttributeName(String attrName, CyNetwork network,
         boolean preserveMapping);
 
+    
+    public void setControllingAttributeName(final String controllingAttrName);
+    
+    
     /**
      * Get the controlling attribute name
      */
@@ -121,8 +126,22 @@ public interface ObjectMapping extends Cloneable {
      */
     public void removeChangeListener(ChangeListener l);
 
+    /**
+     * Create a mapped visual representation from the given attribute value.
+     * 
+     * @param attrBundle
+     * @return
+     */
     public Object calculateRangeValue(final Map<String, Object> attrBundle);
 
+    /**
+     * Do not use this method.  Will be removed in next release (2.8)
+     * It was for old VizMape GUI which was removed in 2.5.
+     * 
+     * @param parent
+     * @param network
+     * @return
+     */
     @Deprecated
     public JPanel getUI(JDialog parent, CyNetwork network);
 

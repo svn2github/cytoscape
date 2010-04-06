@@ -2416,7 +2416,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	private Calculator getNewCalculator(final VisualPropertyType type, final String newMappingName,
 	                                    final String newCalcName) {
-		logger.debug("Mapper = " + newMappingName);
+		System.out.println("######## Mapper = " + newMappingName);
 
 		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 
@@ -2449,7 +2449,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
 
-		logger.debug("defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
+		System.out.println("Creating Mapping: !!!!!! defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
 
 		final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
 		ObjectMapping mapper = null;

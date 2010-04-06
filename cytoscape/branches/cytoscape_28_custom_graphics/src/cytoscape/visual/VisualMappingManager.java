@@ -57,6 +57,9 @@ import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.MappingManager;
 import cytoscape.visual.mappings.MappingManagerImpl;
 import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.mappings.RangeValueCalculatorFactory;
+import cytoscape.visual.mappings.RangeValueCalculatorFactoryImpl;
+import cytoscape.visual.mappings.StringRangeValueCalculator;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
@@ -102,7 +105,7 @@ public class VisualMappingManager extends SubjectBase {
 	private final CustomGraphicsPool pool;
 
 	// New in 2.8: Dynamically manage mappings
-	private final MappingManager mappingManager;
+	private final RangeValueCalculatorFactory rvcFactory;
 
 	/**
 	 * Creates a new VisualMappingManager object.
@@ -116,9 +119,9 @@ public class VisualMappingManager extends SubjectBase {
 		pool = new CustomGraphicsPool();
 
 		// New in 2.8: dynamically manages object mappings.
-		mappingManager = new MappingManagerImpl();
-		registerDefaultMappings();
-
+		rvcFactory = new RangeValueCalculatorFactoryImpl();
+		registerDefaultRangeValueCalculators();
+		
 		loadCalculatorCatalog();
 
 		// Try to find default style name from prop.
@@ -136,12 +139,7 @@ public class VisualMappingManager extends SubjectBase {
 		setVisualStyle(vs);
 
 	}
-
-	private void registerDefaultMappings() {
-		mappingManager.register(DiscreteMapping.class);
-		mappingManager.register(PassThroughMapping.class);
-		mappingManager.register(ContinuousMapping.class);
-	}
+	
 
 	/**
 	 * Attempts to load a CalculatorCatalog object, using the information from
@@ -446,9 +444,15 @@ public class VisualMappingManager extends SubjectBase {
 	public CustomGraphicsPool getCustomGraphicsPool() {
 		return pool;
 	}
-
-	public MappingManager getMappingManager() {
-		return this.mappingManager;
+	
+	
+	public RangeValueCalculatorFactory getRangeValueCalculatorFactory() {
+		return rvcFactory;
 	}
+	
+	private void registerDefaultRangeValueCalculators() {
+		this.rvcFactory.registerRVC(new StringRangeValueCalculator());
+	}
+	
 
 }

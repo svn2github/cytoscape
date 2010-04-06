@@ -35,11 +35,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
 import cytoscape.CyNetwork;
@@ -78,7 +73,7 @@ import javax.swing.event.ChangeListener;
  */
 public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	Object defaultObj; //  the default value held by this mapping
-	Class rangeClass; //  the class of values held by this mapping
+	Class<?> rangeClass; //  the class of values held by this mapping
 	String attrName; //  the name of the controlling data attribute
 	Interpolator interpolator; //  used to interpolate between boundaries
 	private byte mapType; //  mapping type value
@@ -290,11 +285,20 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 * @param attrBundle A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public Object calculateRangeValue(Map attrBundle) {
+	@Override
+	public Object calculateRangeValue(final Map<String, Object> attrBundle) {
 		ContinuousRangeCalculator calc = new ContinuousRangeCalculator(points, interpolator,
 		                                                               attrBundle);
 		Object object = calc.calculateRangeValue(attrName);
 
 		return object;
 	}
+	
+
+	@Override
+	public void setControllingAttributeName(String controllingAttrName) {
+		this.attrName = controllingAttrName;
+	}
+	
+	
 }

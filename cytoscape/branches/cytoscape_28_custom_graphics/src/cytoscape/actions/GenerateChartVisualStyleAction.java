@@ -109,11 +109,11 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 
 		gac.setDefaultBackgroundColor(Color.LIGHT_GRAY);
 
-		PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
+		PassThroughMapping m = new PassThroughMapping(String.class, AbstractCalculator.ID);
 
 		final Calculator calc = new BasicCalculator(DEF_VS_NAME + "-"
 				+ "NodeLabelMapping", m, NODE_LABEL);
-		PassThroughMapping me = new PassThroughMapping("", "interaction");
+		PassThroughMapping me = new PassThroughMapping(String.class, "interaction");
 
 		final Calculator calce = new BasicCalculator(DEF_VS_NAME + "-"
 				+ "EdgeLabelMapping", me, EDGE_LABEL);
