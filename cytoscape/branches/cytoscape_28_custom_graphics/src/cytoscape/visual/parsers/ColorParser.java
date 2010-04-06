@@ -53,7 +53,7 @@ import java.awt.Color;
  * Parses a String into a Color object.
  */
 public class ColorParser
-    implements ValueParser {
+    implements ValueParser<Color> {
     /**
      *  DOCUMENT ME!
      *
@@ -61,7 +61,7 @@ public class ColorParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Color parseStringValue(String value) {
         return parseColor(value);
     }
 

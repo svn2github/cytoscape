@@ -52,6 +52,7 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.mappings.ColorRangeValueCalculator;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.MappingManager;
@@ -452,6 +453,7 @@ public class VisualMappingManager extends SubjectBase {
 	
 	private void registerDefaultRangeValueCalculators() {
 		this.rvcFactory.registerRVC(new StringRangeValueCalculator());
+		this.rvcFactory.registerRVC(new ColorRangeValueCalculator());
 	}
 	
 

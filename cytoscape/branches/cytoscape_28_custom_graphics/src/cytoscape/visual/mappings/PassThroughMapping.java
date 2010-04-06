@@ -263,8 +263,9 @@ public class PassThroughMapping implements ObjectMapping {
 		if(rangeValueCalculator == null)
 			rangeValueCalculator = Cytoscape.getVisualMappingManager().
 				getRangeValueCalculatorFactory().getRangeValueCalculator(rangeClass);
-		
-		return rangeValueCalculator.getRange(attrValue);
+		if(rangeValueCalculator != null)
+			return rangeValueCalculator.getRange(attrValue);
+		return null;
 	}
 
 	/**

@@ -7,7 +7,7 @@ import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactoryImpl;
 import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
 
-public class GraphicsParser implements ValueParser {
+public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	
 	// Maybe injected from outside if we use DI framework.
 	private final CyCustomGraphicsParserFactory parserFactory;
@@ -23,7 +23,7 @@ public class GraphicsParser implements ValueParser {
 	}
 
 	@Override
-	public Object parseStringValue(String value) {
+	public CyCustomGraphics<?> parseStringValue(String value) {
 		return parse(value);
 	}
 	
