@@ -32,6 +32,7 @@ package cytoscape.data.eqn_attribs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -46,9 +47,11 @@ class AttribParserImpl implements AttribParser {
 	private Node parseTree;
 	private Map<String, Class> attribNameToTypeMap;
 	private Set<String> attribReferences;
+	private Set<AttribFunction> registeredFunctions;
 
 	public AttribParserImpl() {
 		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
+		this.registeredFunctions = new HashSet<AttribFunction>();
 		this.parseTree = null;
 	}
 
@@ -63,7 +66,10 @@ class AttribParserImpl implements AttribParser {
 			throw new IllegalArgumentException("attempt at registering " + funcName + "() twice!");
 
 		nameToFunctionMap.put(funcName, func);
+		registeredFunctions.add(func);
 	}
+
+	public Set<AttribFunction> getRegisteredFunctions() { return registeredFunctions; }
 
 	/**
 	 *  @param eqn                  a valid attribute equation which must start with an equal sign

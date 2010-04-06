@@ -47,6 +47,11 @@ public interface AttribParser {
 	public void registerFunction(final AttribFunction func) throws IllegalArgumentException;
 
 	/**
+	 *  @returns the set of currently registered functions
+	 */
+	public Set<AttribFunction> getRegisteredFunctions();
+
+	/**
 	 *  @param eqn                  a valid attribute equation which must start with an equal sign
 	 *  @param attribNameToTypeMap  a list of existing attribute names and their types
 	 *  @returns true if the parse succeeded otherwise false
