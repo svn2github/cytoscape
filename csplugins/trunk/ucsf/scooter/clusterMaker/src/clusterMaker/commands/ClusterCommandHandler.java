@@ -42,15 +42,18 @@ import java.util.Map;
 
 // Cytoscape imports
 import cytoscape.CyNode;
+import cytoscape.Cytoscape;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandNamespace;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.task.util.TaskManager;
 
 // clusterMaker imports
+import clusterMaker.ClusterMaker;
 import clusterMaker.ui.ClusterTask;
 import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
@@ -58,9 +61,9 @@ import clusterMaker.algorithms.ClusterProperties;
 
 enum BuiltIn {
 	HASCLUSTER("hasCluster", "Test to see if this network has a cluster of the requested type", "type"),
-	GETCLUSTER("getCluster", "Get a cluster of the requested type and the requested clustertype (node or attribute)",
-             "type|clustertype=node"),
-	GETHCLUSTER("getHierarchy", "Get a hierarchy of the requested clustertype (node or attribute)", "clustertype=node");
+	GETNETCLUSTER("getNetworkCluster", "Get a cluster of the requested type and the requested clustertype (node or attribute)",
+             "type"),
+	GETEISENCLUSTER("getCluster", "Get a cluster of the requested clustertype (node or attribute)", "type=hierarchical|clustertype=node");
 
 	private String command = null;
 	private String argList = null;
@@ -121,19 +124,20 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 			else
 				result.addMessage("Cluster results for '"+alg+"' are not available");
 			result.addResult(new Boolean(avail));
-		} else if (BuiltIn.GETCLUSTER.equals(command)) {
-			return getNodeClusters(args,command);
-		} else if (BuiltIn.GETHCLUSTER.equals(command)) {
+		} else if (BuiltIn.GETNETCLUSTER.equals(command)) {
+			getNetworkClusters(args,command,result);
+		} else if (BuiltIn.GETEISENCLUSTER.equals(command)) {
 			// Get the algorithm
 			ClusterAlgorithm alg = getAlgorithm(args, command);
 
 			// Get the cluster we want
 			Tunable t = getTunable(args, "clustertype");
-			if (t.getValue() == "node") {
-				return getGeneHierarchy();
-			} else if (t.getValue() == "attribute") {
-				return getAttributeHierarchy();
-			}
+			if (t.getValue().equals("node")) {
+				getNodeClusters(alg, result);
+			} else if (t.getValue().equals("attribute")) {
+				getAttributeClusters(alg, result);
+			} else
+				throw new RuntimeException("clustertype must be 'node' or 'attribute'");
 
 		} else if (algMap.containsKey(command)) {
 			// Get the algorithm
@@ -177,7 +181,7 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 		}
 
 		// Split up the options
-		String[] options = argString.split("|");
+		String[] options = argString.split("\\|");
 		for (int opt = 0; opt < options.length; opt++) {
 			String[] args = options[opt].split("=");
 			if (args.length == 1)
@@ -201,8 +205,9 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 		return alg;
 	}
 
-	private CyCommandResult getNodeClusters(Collection<Tunable> args, String command ) {
-		CyCommandResult result = new CyCommandResult();
+	private void getNetworkClusters(Collection<Tunable> args, String command, 
+		                                         CyCommandResult result ) {
+
 		ClusterAlgorithm alg = getAlgorithm(args, command);
 		if (alg instanceof AbstractNetworkClusterer) {
 
@@ -210,10 +215,11 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 			if (alg.isAvailable()) {
 				List<List<CyNode>> clusterList = ((AbstractNetworkClusterer)alg).getNodeClusters();
 				if (clusterList == null) {
-					result.addError("Either no clusters exist for this network or cluster algorithm doesn't support node clusters");
+					result.addError("Either no clusters exist for this network or cluster algorithm doesn't support network clusters");
 				}
-				result.addResult("nodeClusters", clusterList);
-				result.addMessage("Node clusters: ");
+				result.addResult("type", alg.getShortName());
+				result.addResult("networkClusters", clusterList);
+				result.addMessage("Network clusters: ");
 				for (List<CyNode> nodeList: clusterList) {
 					String out = "   [";
 					for (CyNode node: nodeList) {
@@ -222,21 +228,57 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 					result.addMessage(out.substring(0, out.length()-1)+"]");
 				}
 			} else {
-				result.addError("Cluster results for '"+alg+"' are not available");
+				result.addError("Network cluster results for '"+alg+"' are not available");
 			}
 		} else {
-			result.addError("Cluster algorithm '"+alg+"' is not a node clusterer");
+			result.addError("Cluster algorithm '"+alg+"' is not a network clusterer");
 		}
-		return result;
 	}
 
-	private CyCommandResult getGeneHierarchy() {
-		CyCommandResult result = new CyCommandResult();
-		return result;
+	private void getNodeClusters(ClusterAlgorithm alg, CyCommandResult result) {
+		getEisenClusters(result, alg, "Node (gene)", 
+		                        ClusterMaker.NODE_ORDER_ATTRIBUTE, ClusterMaker.CLUSTER_NODE_ATTRIBUTE);
 	}
 
-	private CyCommandResult getAttributeHierarchy() {
-		CyCommandResult result = new CyCommandResult();
-		return result;
+	private void getAttributeClusters(ClusterAlgorithm alg, CyCommandResult result) {
+		getEisenClusters(result, alg, "Attribute (array)", 
+		                        ClusterMaker.ARRAY_ORDER_ATTRIBUTE, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE);
+	}
+
+	private void getEisenClusters(CyCommandResult result, ClusterAlgorithm alg, String type, String order, String clusters) {
+		System.out.println("Eisencluster(result,"+alg+","+type+","+order+","+clusters+")");
+
+		String netId = Cytoscape.getCurrentNetwork().getIdentifier();
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+		if (!alg.isAvailable()) {
+			result.addError("No clusters available for "+alg.getShortName()+" in this network");
+			return;
+		}
+
+		result.addResult("type", alg.getShortName());
+		
+		System.out.println("getting groups");
+		// Get the list of groups
+		List<String>groupList = netAttributes.getListAttribute(netId, ClusterMaker.GROUP_ATTRIBUTE);
+		if (groupList != null && groupList.size() > 0)
+			result.addResult("groups", groupList);
+
+		System.out.println("getting cluster order");
+		// Get the cluster order
+		List<String>clusterOrder = netAttributes.getListAttribute(netId, order);
+		result.addResult("order", clusterOrder);
+		System.out.println("getting clusters");
+		// Get the clusters themselves
+		List<String>clusterList = netAttributes.getListAttribute(netId, clusters);
+		result.addResult("clusters", clusterList);
+
+		result.addMessage(type+" cluster results for "+alg.getName()+": ");
+		for (String cluster: clusterList) {
+			result.addMessage("   "+cluster);
+		}
+		result.addMessage(type+" order "+alg.getName()+": ");
+		for (String node: clusterOrder) {
+			result.addMessage("   "+node);
+		}
 	}
 }
