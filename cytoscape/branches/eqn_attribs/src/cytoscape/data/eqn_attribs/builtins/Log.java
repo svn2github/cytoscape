@@ -29,6 +29,9 @@
 */
 package cytoscape.data.eqn_attribs.builtins;
 
+
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -53,7 +56,7 @@ public class Log implements AttribFunction {
 			return null;
 
 		for (final Class argType : argTypes) {
-			if (argType != Double.class)
+			if (argType != Double.class && argType != Long.class)
 				return null;
 		}
 
@@ -67,8 +70,12 @@ public class Log implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = (Double)args[0];
-		final double base = args.length == 2 ? (Double)args[1] : 10.0;
+		final double number = args[0].getClass() == Double.class ? (Double)args[0] : (Long)args[0];
+		final double base;
+		if (args.length == 1)
+			base = 10.0;
+		else
+			base = args[1].getClass() == Double.class ? (Double)args[1] : (Long)args[1];
 
 		if (number <= 0.0)
 			throw new IllegalArgumentException("LOG() called with a number <= 0.0!");
@@ -81,5 +88,22 @@ public class Log implements AttribFunction {
 			retval /= Math.log10(base);
 
 		return retval;
+	}
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
+	 */
+	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+		if (leadingArgs.length < 2) {
+			final Set<Class> possibleNextArgs = new TreeSet<Class>();
+			possibleNextArgs.add(Double.class);
+			possibleNextArgs.add(Long.class);
+			return possibleNextArgs;
+		}
+
+		return null;
 	}
 }

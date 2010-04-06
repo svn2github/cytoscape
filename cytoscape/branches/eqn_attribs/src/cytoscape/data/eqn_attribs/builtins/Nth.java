@@ -29,7 +29,10 @@
 */
 package cytoscape.data.eqn_attribs.builtins;
 
+
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -70,5 +73,24 @@ public class Nth implements AttribFunction {
 			throw new IllegalArgumentException("illegal list index in call to NTH()!");
 
 		return list.get(index - 1).toString();
+	}
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
+	 */
+	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+		if (leadingArgs.length > 1)
+			return null;
+
+		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		if (leadingArgs.length == 0)
+			possibleNextArgs.add(List.class);
+		else
+			possibleNextArgs.add(Long.class);
+		
+		return possibleNextArgs;
 	}
 }

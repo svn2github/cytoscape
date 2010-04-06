@@ -30,6 +30,8 @@
 package cytoscape.data.eqn_attribs.builtins;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -44,7 +46,7 @@ public class Count implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function for a casual user.
 	 */
-	public String getHelpDescription() { return "Call this with \"COUNT(list)\" or \"COUNT(arg1,arg2,...,argN)\""; }
+	public String getHelpDescription() { return "Call this with \"COUNT(arg1,arg2,...,argN)\""; }
 
 	/**
 	 *  @returns Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
@@ -52,33 +54,46 @@ public class Count implements AttribFunction {
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length == 0) // No empty argument list!
 			return null;
-		if (argTypes[0] == List.class && argTypes.length != 1) // If we have a list argument it must be the only one!
-			return null;
 
 		return Double.class;
 	}
 
 	/**
-	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @returns the result of the function evaluation which is the minimum of the elements in the single list argument or the minimum of the one or more double arguments
-	 *  @throws ArithmeticException 
-	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
+	 *  @param args the function arguments which can be anything
+	 *  @returns the result of the function evaluation which is the count of the arguments that are numbers for scalar arguments plus the count of list entries that are numbers for List arguments
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		int count;
-
-		if (args[0] instanceof List)
-			count = ((List)args[0]).size();
-		else {
-			count = 0;
-			for (final Object arg : args) {
-				if (arg instanceof List)
-					count += ((List)arg).size();
-				else
-					++count;
+		int count = 0;
+		for (final Object arg : args) {
+			if (arg instanceof List) {
+				final List list = (List)arg;
+				for (final Object listEntry : list) {
+					if (listEntry instanceof Number)
+						++count;
+				}
 			}
+			else if (arg instanceof Number)
+				++count;
 		}
 
 		return (double)count;
+	}
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
+	 */
+	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		possibleNextArgs.add(Double.class);
+		possibleNextArgs.add(Long.class);
+		possibleNextArgs.add(Boolean.class);
+		possibleNextArgs.add(List.class);
+		if (leadingArgs.length > 0)
+			possibleNextArgs.add(null);
+
+		return possibleNextArgs;
 	}
 }

@@ -29,6 +29,9 @@
 */
 package cytoscape.data.eqn_attribs.builtins;
 
+
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -52,10 +55,10 @@ public class Trunc implements AttribFunction {
 		if (argTypes.length != 1 && argTypes.length != 2)
 			return null;
 
-		for (final Class argType : argTypes) {
-			if (argType != Double.class)
-				return null;
-		}
+		if (argTypes[0] != Double.class && argTypes[0] != Long.class)
+			return null;
+		if (argTypes.length == 2 && (argTypes[1] != Long.class && argTypes[1] != Double.class))
+			return null;
 
 		return Double.class;
 	}
@@ -67,12 +70,40 @@ public class Trunc implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = (Double)args[0];
+		final double number = args[0].getClass() == Double.class ? (Double)args[0] : (Long)args[0];
 		final double absNumber = Math.abs(number);
-		final double numDigits = Math.round(args.length == 1 ? 0.0 : (Double)args[1] - 0.5);
-		final double shift = Math.pow(10.0, numDigits);
 
+		final double numDigits;
+		if (args.length == 1)
+			numDigits = 0.0;
+		else {
+			if (args[1].getClass() == Long.class)
+				numDigits = (Long)args[1];
+			else
+				numDigits = Math.round((Double)args[1] - 0.5);
+		}
+
+		final double shift = Math.pow(10.0, numDigits);
 		final double truncatedAbsNumber = Math.round(absNumber * shift - 0.5) / shift;
+
 		return number > 0.0 ? truncatedAbsNumber : -truncatedAbsNumber;
+	}
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
+	 */
+	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+		if (leadingArgs.length > 1)
+			return null;
+
+		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		possibleNextArgs.add(Long.class);
+		if (leadingArgs.length == 0)
+			possibleNextArgs.add(Double.class);
+		
+		return possibleNextArgs;
 	}
 }

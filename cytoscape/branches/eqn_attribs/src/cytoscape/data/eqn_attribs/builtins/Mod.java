@@ -29,6 +29,9 @@
 */
 package cytoscape.data.eqn_attribs.builtins;
 
+
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -46,14 +49,14 @@ public class Mod implements AttribFunction {
 	public String getHelpDescription() { return "Call this with \"MOD(number, divisor)\""; }
 
 	/**
-	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double nor Integer
+	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double nor Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length != 2)
 			return null;
 
 		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Integer.class)
+			if (argType != Double.class && argType != Long.class)
 				return null;
 		}
 
@@ -61,7 +64,7 @@ public class Mod implements AttribFunction {
 	}
 
 	/**
-	 *  @param args the function arguments which must be two objects of type Double or Integer
+	 *  @param args the function arguments which must be two objects of type Double or Long
 	 *  @returns the result of the modulo function evaluation
 	 *  @throws ArithmeticException thrown if the 2nd argument is zero
 	 */
@@ -70,13 +73,13 @@ public class Mod implements AttribFunction {
 		if (args[0] instanceof Double)
 			number = (Double)args[0];
 		else // Assume we got an integer.
-			number = (Integer)args[0];
+			number = (Long)args[0];
 
 		final double divisor;
 		if (args[1] instanceof Double)
 			divisor = (Double)args[1];
 		else // Assume we got an integer.
-			divisor = (Integer)args[1];
+			divisor = (Long)args[1];
 		if (divisor == 0.0)
 			throw new ArithmeticException("division by zero in call to MOD()!");
 
@@ -85,5 +88,22 @@ public class Mod implements AttribFunction {
 			return -result;
 		else
 			return result;
+	}
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
+	 */
+	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+		if (leadingArgs.length > 1)
+			return null;
+
+		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		possibleNextArgs.add(Double.class);
+		possibleNextArgs.add(Long.class);
+		
+		return possibleNextArgs;
 	}
 }

@@ -30,6 +30,9 @@
 package cytoscape.data.eqn_attribs;
 
 
+import java.util.Set;
+
+
 public interface AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
@@ -57,4 +60,13 @@ public interface AttribFunction {
 	 *  @throws IllegalArgumentException thrown for any error that is not a numeric error, for example if a function only accepts positive numbers and a negative number was passed in.
 	 */
 	Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException;
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  A null return indicates that no further arguments are valid.
+	 *  Please note that if the returned set contains a null, this indicates an optional additional argument.
+	 */
+	Set<Class> getPossibleArgTypes(final Class[] leadingArgs);
 }

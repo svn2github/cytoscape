@@ -428,7 +428,7 @@ public class InterpreterTest extends TestCase {
 		numbers.add(5.0);
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
 		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
-		assertEquals(new Double(5.0), interpreter1.run());
+		assertEquals(new Double(4.0), interpreter1.run());
 
 		assertTrue(compiler.compile("=COUNT(-2,-3,-4.35)", attribNameToTypeMap));
 		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);

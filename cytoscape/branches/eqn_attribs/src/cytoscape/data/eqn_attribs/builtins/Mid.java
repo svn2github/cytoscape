@@ -29,6 +29,9 @@
 */
 package cytoscape.data.eqn_attribs.builtins;
 
+
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -49,7 +52,9 @@ public class Mid implements AttribFunction {
 	 *  @returns String.class or null if the args passed in have the wrong arity or a type mismatch was found
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 3 || argTypes[1] != Double.class || argTypes[2] != Double.class)
+		if (argTypes.length != 3 || argTypes[0] != String.class
+		    || (argTypes[1] != Long.class && argTypes[1] != Double.class)
+		    || (argTypes[2] != Long.class && argTypes[2] != Double.class))
 			return null;
 
 		return String.class;
@@ -73,5 +78,26 @@ public class Mid implements AttribFunction {
 		if (count >= text.length() - start + 1)
 			return text.substring(start - 1);
 		return text.substring(start - 1, start + count - 1);
+	}
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
+	 */
+	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+		if (leadingArgs.length > 2)
+			return null;
+
+		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		if (leadingArgs.length == 0)
+			possibleNextArgs.add(String.class);
+		else {
+			possibleNextArgs.add(Long.class);
+			possibleNextArgs.add(Double.class);
+		}
+		
+		return possibleNextArgs;
 	}
 }

@@ -29,7 +29,10 @@
 */
 package cytoscape.data.eqn_attribs.builtins;
 
+
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -54,6 +57,14 @@ public class Min implements AttribFunction {
 			return null;
 		if (argTypes[0] == List.class && argTypes.length != 1) // If we have a list argument it must be the only one!
 			return null;
+
+		if (argTypes.length == 1 && argTypes[0] == List.class)
+			return Double.class;
+
+		for (final Class argType : argTypes) {
+			if (argType != Double.class && argType != Long.class)
+				return null;
+		}
 
 		return Double.class;
 	}
@@ -113,5 +124,24 @@ public class Min implements AttribFunction {
 		}
 
 		return min;
+	}
+
+	/**
+	 *  Used with the equation builder.
+	 *
+	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
+	 */
+	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+		if (leadingArgs.length == 1 && leadingArgs[0] == List.class)
+			return null;
+
+		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		possibleNextArgs.add(Double.class);
+		possibleNextArgs.add(Long.class);
+		if (leadingArgs.length == 0)
+			possibleNextArgs.add(List.class);
+
+		return possibleNextArgs;
 	}
 }
