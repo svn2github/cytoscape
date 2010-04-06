@@ -39,21 +39,21 @@ import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
 public class PathwayMapper {
-	
+
 	private final Pathway pathway;
 	private final String pathwayName;
 
 	private int[] nodeIdx;
 	private int[] edgeIdx;
-	
+
 	private Map<String, CyNode> reaction2Entry;
-	
+
 	private static final String KEGG_NAME = "KEGG.name";
 	private static final String KEGG_ENTRY_TYPE = "KEGG.entry";
 	private static final String KEGG_LABEL = "KEGG.label";
 	private static final String KEGG_RELATION_TYPE = "KEGG.relation";
-	
-	
+	private static final String KEGG_REACTION_TYPE = "KEGG.reaction";
+
 	private static final String KEGG_LINK = "KEGG.link";
 
 	public PathwayMapper(final Pathway pathway) {
@@ -65,15 +65,16 @@ public class PathwayMapper {
 	public void doMapping() {
 		mapNode();
 		final List<CyEdge> relationEdges = mapEdge();
-		final List<CyEdge> reactionEdges = readReaction();
-		
+		final List<CyEdge> reactionEdges = mapReactionEdge();
+		// final List<CyEdge> reactionEdges = readReaction();
+
 		edgeIdx = new int[relationEdges.size() + reactionEdges.size()];
 		int idx = 0;
 		for (CyEdge edge : reactionEdges) {
 			edgeIdx[idx] = edge.getRootGraphIndex();
 			idx++;
 		}
-		
+
 		for (CyEdge edge : relationEdges) {
 			edgeIdx[idx] = edge.getRootGraphIndex();
 			idx++;
@@ -82,12 +83,12 @@ public class PathwayMapper {
 
 	private final Map<String, Entry> entryMap = new HashMap<String, Entry>();
 	final Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
-	//final Map<String, CyNode> cpdMap = new HashMap<String, CyNode>();
+	// final Map<String, CyNode> cpdMap = new HashMap<String, CyNode>();
 	final Map<String, CyNode> id2cpdMap = new HashMap<String, CyNode>();
 	final Map<String, List<Entry>> cpdDataMap = new HashMap<String, List<Entry>>();
 	final Map<CyNode, Entry> geneDataMap = new HashMap<CyNode, Entry>();
 	private final Map<CyNode, String> entry2reaction = new HashMap<CyNode, String>();
-	
+
 	private void mapNode() {
 
 		final String pathwayID = pathway.getName();
@@ -97,44 +98,53 @@ public class PathwayMapper {
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 
 		for (final Entry comp : components) {
-			if (!comp.getGraphics().getType().equals(KEGGShape.LINE.getTag())) {
-				CyNode node = Cytoscape.getCyNode(pathwayID + "-"
-						+ comp.getId(), true);
-				nodeAttr.setAttribute(node.getIdentifier(), KEGG_NAME, comp
-						.getName());
-				if(comp.getLink() != null)
-					nodeAttr.setAttribute(node.getIdentifier(), KEGG_LINK, comp.getLink());
-				nodeAttr.setAttribute(node.getIdentifier(), KEGG_ENTRY_TYPE, comp.getType());
-				
-				final String reaction = comp.getReaction();
-				
-				// Save reaction
-				if (reaction != null) {
-					entry2reaction.put(node, reaction);
-					nodeAttr.setAttribute(node.getIdentifier(), "KEGG.reaction", reaction);
-				}
-					
-				final Graphics graphics = comp.getGraphics();
-				if(graphics != null && graphics.getName() != null) {
-					nodeAttr.setAttribute(node.getIdentifier(), KEGG_LABEL, graphics.getName());
-				}
-				nodeMap.put(comp.getId(), node);
-				entryMap.put(comp.getId(), comp);
-				if(comp.getType().equals(KEGGEntryType.COMPOUND.getTag())) {
-					id2cpdMap.put(comp.getId(), node);
-					List<Entry> current = cpdDataMap.get(comp.getName());
-					
-					if(current != null) {
-						current.add(comp);
-					} else {
-						current = new ArrayList<Entry>();
-						current.add(comp);
+			for (Graphics grap : comp.getGraphics()) {
+				if (!grap.getType().equals(KEGGShape.LINE.getTag())) {
+					CyNode node = Cytoscape.getCyNode(pathwayID + "-"
+							+ comp.getId(), true);
+					nodeAttr.setAttribute(node.getIdentifier(), KEGG_NAME, comp
+							.getName());
+					if (comp.getLink() != null)
+						nodeAttr.setAttribute(node.getIdentifier(), KEGG_LINK,
+								comp.getLink());
+					nodeAttr.setAttribute(node.getIdentifier(),
+							KEGG_ENTRY_TYPE, comp.getType());
+
+					final String reaction = comp.getReaction();
+
+					// Save reaction
+					if (reaction != null) {
+						entry2reaction.put(node, reaction);
+						nodeAttr.setAttribute(node.getIdentifier(),
+								"KEGG.reaction", reaction);
 					}
-					cpdDataMap.put(comp.getName(), current);
-				} else if (comp.getType().equals(KEGGEntryType.GENE.getTag()) || 
-						comp.getType().equals(KEGGEntryType.ORTHOLOG.getTag())) {
-					geneDataMap.put(node, comp);
+
+					// final Graphics graphics = comp.getGraphics();
+					if (grap != null && grap.getName() != null) {
+						nodeAttr.setAttribute(node.getIdentifier(), KEGG_LABEL,
+								grap.getName());
+					}
+					nodeMap.put(comp.getId(), node);
+					entryMap.put(comp.getId(), comp);
+					if (comp.getType().equals(KEGGEntryType.COMPOUND.getTag())) {
+						id2cpdMap.put(comp.getId(), node);
+						List<Entry> current = cpdDataMap.get(comp.getName());
+
+						if (current != null) {
+							current.add(comp);
+						} else {
+							current = new ArrayList<Entry>();
+							current.add(comp);
+						}
+						cpdDataMap.put(comp.getName(), current);
+					} else if (comp.getType().equals(
+							KEGGEntryType.GENE.getTag())
+							|| comp.getType().equals(
+									KEGGEntryType.ORTHOLOG.getTag())) {
+						geneDataMap.put(node, comp);
+					}
 				}
+
 			}
 		}
 
@@ -145,161 +155,245 @@ public class PathwayMapper {
 			idx++;
 		}
 	}
-	
-	
-	private List<CyEdge> readReaction() {
-		final List<Reaction> reactions = pathway.getReaction();
-		final List<CyEdge> edges = new ArrayList<CyEdge>();
-		final Map<String, Reaction> reactionMap = new HashMap<String, Reaction>();
-		for (Reaction r: reactions) {
-			reactionMap.put(r.getName(), r);
-		}
-		
-		for(CyNode node: entry2reaction.keySet()) {
-			// Reaction associated with this node.
-			final Reaction reaction = reactionMap.get(entry2reaction.get(node));
-			final List<Product> products = reaction.getProduct();
-			final List<Substrate> substrates = reaction.getSubstrate();
-			for(Substrate s: substrates) {
-				CyNode source = getNearestCompound(node, s.getName());
-				
-				if (Cytoscape.getCyEdge(source, node, "interaction", "ECrel", false) == null &&
-						Cytoscape.getCyEdge(source, node, "interaction", "maplink", false) == null) {
-					CyEdge edge1 = Cytoscape.getCyEdge(source, node, "interaction", reaction.getName(), true);
-					edges.add(edge1);
-				}
-			}
-			
-			for(Product p: products) {
-				CyNode target = getNearestCompound(node, p.getName());
-				if (Cytoscape.getCyEdge(node, target, "interaction", "ECrel", false) == null &&
-						Cytoscape.getCyEdge(node, target, "interaction", "maplink", false) == null) {
-					CyEdge edge1 = Cytoscape.getCyEdge(node, target, "interaction", reaction.getName(), true);
-					edges.add(edge1);
-				}
-			}
-			
-			
-		}
-		
-		return edges;
-		
-	}
-	
-	private CyNode getNearestCompound(CyNode node, String cpdName) {
-		final Entry data = geneDataMap.get(node);
-		int x1 = Integer.parseInt(data.getGraphics().getX());
-		int y1 = Integer.parseInt(data.getGraphics().getY());
-		
-		double nearest = Double.POSITIVE_INFINITY;
-		
-		List<Entry> compounds = cpdDataMap.get(cpdName);
-		Entry targetCompound = null;
-		for(Entry ent: compounds) {
-			int x2 = Integer.parseInt(ent.getGraphics().getX());
-			int y2 = Integer.parseInt(ent.getGraphics().getY());
-			
-			double dist = getDistance(x1, y1, x2, y2);
-			if(nearest > dist) {
-				nearest = dist;
-				targetCompound = ent;
-			}
-		}
-		return id2cpdMap.get(targetCompound.getId());
-	}
-	
-	private double getDistance(int x1, int y1, int x2, int y2) {
-		return Math.sqrt(Math.pow((x2-x1), 2) + Math.pow((y2-y1), 2));
-	}
-	
-	
+
+	// private List<CyEdge> readReaction() {
+	// final List<Reaction> reactions = pathway.getReaction();
+	// final List<CyEdge> edges = new ArrayList<CyEdge>();
+	// final Map<String, Reaction> reactionMap = new HashMap<String,
+	// Reaction>();
+	// for (Reaction r : reactions) {
+	// reactionMap.put(r.getName(), r);
+	// }
+	//
+	// for (CyNode node : entry2reaction.keySet()) {
+	// // Reaction associated with this node.
+	// final Reaction reaction = reactionMap.get(entry2reaction.get(node));
+	// final List<Product> products = reaction.getProduct();
+	// final List<Substrate> substrates = reaction.getSubstrate();
+	// for (Substrate s : substrates) {
+	// CyNode source = getNearestCompound(node, s.getName());
+	//
+	// if (Cytoscape.getCyEdge(source, node, "interaction", "ECrel",
+	// false) == null
+	// && Cytoscape.getCyEdge(source, node, "interaction",
+	// "maplink", false) == null) {
+	// CyEdge edge1 = Cytoscape.getCyEdge(source, node,
+	// "interaction", reaction.getName(), true);
+	// edges.add(edge1);
+	// }
+	// }
+	//
+	// for (Product p : products) {
+	// CyNode target = getNearestCompound(node, p.getName());
+	// if (Cytoscape.getCyEdge(node, target, "interaction", "ECrel",
+	// false) == null
+	// && Cytoscape.getCyEdge(node, target, "interaction",
+	// "maplink", false) == null) {
+	// CyEdge edge1 = Cytoscape.getCyEdge(node, target,
+	// "interaction", reaction.getName(), true);
+	// edges.add(edge1);
+	// }
+	// }
+	//
+	// }
+	//
+	// return edges;
+	//
+	// }
+
+	// private CyNode getNearestCompound(CyNode node, String cpdName) {
+	// final Entry data = geneDataMap.get(node);
+	// for (Graphics grap1 : data.getGraphics()) {
+	//
+	// int x1 = Integer.parseInt(grap1.getX());
+	// int y1 = Integer.parseInt(grap1.getY());
+	//
+	// double nearest = Double.POSITIVE_INFINITY;
+	//
+	// List<Entry> compounds = cpdDataMap.get(cpdName);
+	// Entry targetCompound = null;
+	// for (Entry ent : compounds) {
+	// for (Graphics grap2 : ent.getGraphics()) {
+	//
+	// int x2 = Integer.parseInt(grap2.getX());
+	// int y2 = Integer.parseInt(grap2.getY());
+	//
+	// double dist = getDistance(x1, y1, x2, y2);
+	// if (nearest > dist) {
+	// nearest = dist;
+	// targetCompound = ent;
+	// }
+	// }
+	// }
+	// return id2cpdMap.get(targetCompound.getId());
+	// }
+	// }
+
+	// private double getDistance(int x1, int y1, int x2, int y2) {
+	// return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+	// }
+
 	private List<CyEdge> mapEdge() {
 		final List<Relation> relations = pathway.getRelation();
 		final List<CyEdge> edges = new ArrayList<CyEdge>();
-		
+
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		
-		for(Relation rel: relations) {
+
+		for (Relation rel : relations) {
 			final String ent1 = rel.getEntry1();
 			final String ent2 = rel.getEntry2();
-			
+
 			final List<Subtype> subs = rel.getSubtype();
 			final String type = rel.getType();
 			CyNode source = nodeMap.get(ent1);
 			CyNode target = nodeMap.get(ent2);
-			
-			for(Subtype sub: subs) {
+
+			for (Subtype sub : subs) {
 				CyNode hub = nodeMap.get(sub.getValue());
-				if(hub == null) continue;
+				if (hub == null)
+					continue;
 				System.out.println(source.getIdentifier());
 				System.out.println(target.getIdentifier());
 				System.out.println(hub.getIdentifier() + "\n\n");
-				if (Cytoscape.getCyEdge(source, hub, "interaction", "ECrel", false) == null &&
-						Cytoscape.getCyEdge(hub, source, "interaction", "ECrel", false) == null &&
-						Cytoscape.getCyEdge(source, hub, "interaction", "maplink", false) == null &&
-						Cytoscape.getCyEdge(hub, source, "interaction", "maplink", false) == null) {
-					CyEdge edge1 = Cytoscape.getCyEdge(source, hub, "interaction", type, true);
+				if (Cytoscape.getCyEdge(source, hub, "interaction", "ECrel",
+						false) == null
+						&& Cytoscape.getCyEdge(hub, source, "interaction",
+								"ECrel", false) == null
+						&& Cytoscape.getCyEdge(source, hub, "interaction",
+								"maplink", false) == null
+						&& Cytoscape.getCyEdge(hub, source, "interaction",
+								"maplink", false) == null) {
+					CyEdge edge1 = Cytoscape.getCyEdge(source, hub,
+							"interaction", type, true);
 					edges.add(edge1);
-					edgeAttr.setAttribute(edge1.getIdentifier(), KEGG_RELATION_TYPE, type);
+					edgeAttr.setAttribute(edge1.getIdentifier(),
+							KEGG_RELATION_TYPE, type);
 				}
-				
-				if (Cytoscape.getCyEdge(target, hub, "interaction", "ECrel", false) == null &&
-						Cytoscape.getCyEdge(hub, target, "interaction", "ECrel", false) == null &&
-						Cytoscape.getCyEdge(target, hub, "interaction", "maplink", false) == null &&
-						Cytoscape.getCyEdge(hub, target, "interaction", "maplink", false) == null) {
-					CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type, true);
+
+				if (Cytoscape.getCyEdge(target, hub, "interaction", "ECrel",
+						false) == null
+						&& Cytoscape.getCyEdge(hub, target, "interaction",
+								"ECrel", false) == null
+						&& Cytoscape.getCyEdge(target, hub, "interaction",
+								"maplink", false) == null
+						&& Cytoscape.getCyEdge(hub, target, "interaction",
+								"maplink", false) == null) {
+					CyEdge edge2 = Cytoscape.getCyEdge(hub, target,
+							"interaction", type, true);
 					edges.add(edge2);
-					edgeAttr.setAttribute(edge2.getIdentifier(), KEGG_RELATION_TYPE, type);
+					edgeAttr.setAttribute(edge2.getIdentifier(),
+							KEGG_RELATION_TYPE, type);
 				}
-			}	
+			}
 		}
-		
+
 		return edges;
-		
+
 	}
-	
-	private void mapReaction() {
+
+	private List<CyEdge> mapReactionEdge() {
+
+		final String pathwayID = pathway.getName();
 		final List<Reaction> reactions = pathway.getReaction();
 		final List<CyEdge> edges = new ArrayList<CyEdge>();
-		
+
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		
-//		for(Reaction rel: reactions) {
-//			entry = reaction2Entry.get(rel.getName())
-//			rel.getSubstrate();
-//		
-//			
-//			final List<Subtype> subs = rel.getSubtype();
-//			final String type = rel.getType();
-//			CyNode source = nodeMap.get(ent1);
-//			CyNode target = nodeMap.get(ent2);
-//			
-//			for(Subtype sub: subs) {
-//				CyNode hub = nodeMap.get(sub.getValue());
-//				System.out.println(source.getIdentifier());
-//				System.out.println(target.getIdentifier());
-//				System.out.println(hub.getIdentifier() + "\n\n");
-//				CyEdge edge1 = Cytoscape.getCyEdge(source, hub, "interaction", type, true);
-//				CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type, true);
-//				edges.add(edge1);
-//				edges.add(edge2);
-//				
-//				edgeAttr.setAttribute(edge1.getIdentifier(), this.KEGG_RELATION_TYPE, type);
-//			}	
-//		}
-//		
-//		edgeIdx = new int[edges.size()];
-//		int idx = 0;
-//		for (CyEdge edge : edges) {
-//			edgeIdx[idx] = edge.getRootGraphIndex();
-//			idx++;
-//		}
-		
+
+		for (Reaction rea : reactions) {
+			CyNode reaNode = nodeMap.get(rea.getId());
+			if (rea.getType().equals("irreversible")) {
+				for (Substrate sub : rea.getSubstrate()) {
+					CyNode subNode = nodeMap.get(sub.getId());
+					CyEdge edge = Cytoscape.getCyEdge(subNode, reaNode,
+							"interaction", "substrate", true);
+					edges.add(edge);
+					edgeAttr.setAttribute(edge.getIdentifier(),
+							KEGG_REACTION_TYPE, "substrate");
+				}
+				for (Product pro : rea.getProduct()) {
+					CyNode proNode = nodeMap.get(pro.getId());
+					CyEdge edge = Cytoscape.getCyEdge(reaNode, proNode,
+							"interaction", "product", true);
+					edges.add(edge);
+					edgeAttr.setAttribute(edge.getIdentifier(),
+							KEGG_REACTION_TYPE, "product");
+				}
+			} else if (rea.getType().equals("reversible")) {
+				for (Substrate sub : rea.getSubstrate()) {
+					CyNode subNode = nodeMap.get(sub.getId());
+
+					CyEdge subEdge = Cytoscape.getCyEdge(subNode, reaNode,
+							"interaction", "substrate", true);
+					edges.add(subEdge);
+					edgeAttr.setAttribute(subEdge.getIdentifier(),
+							KEGG_REACTION_TYPE, "substrate");
+
+					CyEdge proEdge = Cytoscape.getCyEdge(reaNode, subNode,
+							"interaction", "product", true);
+					edges.add(proEdge);
+					edgeAttr.setAttribute(proEdge.getIdentifier(),
+							KEGG_REACTION_TYPE, "product");
+				}
+				for (Product pro : rea.getProduct()) {
+					CyNode proNode = nodeMap.get(pro.getId());
+
+					CyEdge proEdge = Cytoscape.getCyEdge(reaNode, proNode,
+							"interaction", "product", true);
+					edges.add(proEdge);
+					edgeAttr.setAttribute(proEdge.getIdentifier(),
+							KEGG_REACTION_TYPE, "product");
+
+					CyEdge subEdge = Cytoscape.getCyEdge(proNode, reaNode,
+							"interaction", "product", true);
+					edges.add(subEdge);
+					edgeAttr.setAttribute(subEdge.getIdentifier(),
+							KEGG_REACTION_TYPE, "substrate");
+				}
+			}
+		}
+
+		return edges;
+
+		// for(Reaction rel: reactions) {
+		// entry = reaction2Entry.get(rel.getName())
+		// rel.getSubstrate();
+		//		
+		//			
+		// final List<Subtype> subs = rel.getSubtype();
+		// final String type = rel.getType();
+		// CyNode source = nodeMap.get(ent1);
+		// CyNode target = nodeMap.get(ent2);
+		//			
+		// for(Subtype sub: subs) {
+		// CyNode hub = nodeMap.get(sub.getValue());
+		// System.out.println(source.getIdentifier());
+		// System.out.println(target.getIdentifier());
+		// System.out.println(hub.getIdentifier() + "\n\n");
+		// CyEdge edge1 = Cytoscape.getCyEdge(source, hub, "interaction", type,
+		// true);
+		// CyEdge edge2 = Cytoscape.getCyEdge(hub, target, "interaction", type,
+		// true);
+		// edges.add(edge1);
+		// edges.add(edge2);
+		//				
+		// edgeAttr.setAttribute(edge1.getIdentifier(), this.KEGG_RELATION_TYPE,
+		// type);
+		// }
+		// }
+		//		
+		// edgeIdx = new int[edges.size()];
+		// int idx = 0;
+		// for (CyEdge edge : edges) {
+		// edgeIdx[idx] = edge.getRootGraphIndex();
+		// idx++;
+		// }
+
 	}
 
 	protected void updateView(final CyNetwork network) {
 
-		final String vsName = "KEGG: " + pathway.getTitle() + "(" + pathwayName + ")";
+		final String vsName = "KEGG: " + pathway.getTitle() + "(" + pathwayName
+				+ ")";
 		final VisualStyle defStyle = new VisualStyle(vsName);
 
 		NodeAppearanceCalculator nac = defStyle.getNodeAppearanceCalculator();
@@ -311,8 +405,8 @@ public class PathwayMapper {
 		final Color nodeColor = Color.WHITE;
 		final Color nodeLineColor = new Color(20, 20, 20);
 		final Color nodeLabelColor = new Color(30, 30, 30);
-		
-		final Color geneNodeColor = new Color(153,255,153);
+
+		final Color geneNodeColor = new Color(153, 255, 153);
 
 		final Font nodeLabelFont = new Font("SansSerif", 7, Font.PLAIN);
 
@@ -320,13 +414,13 @@ public class PathwayMapper {
 
 		final PassThroughMapping m = new PassThroughMapping("", KEGG_LABEL);
 
-		final Calculator nodeLabelMappingCalc = new BasicCalculator(vsName + "-"
-				+ "NodeLabelMapping", m, VisualPropertyType.NODE_LABEL);
+		final Calculator nodeLabelMappingCalc = new BasicCalculator(vsName
+				+ "-" + "NodeLabelMapping", m, VisualPropertyType.NODE_LABEL);
 
 		nac.setCalculator(nodeLabelMappingCalc);
-		
+
 		nac.setNodeSizeLocked(false);
-		
+
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
 				nodeColor);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE,
@@ -334,36 +428,37 @@ public class PathwayMapper {
 
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR,
 				nodeLineColor);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH,
-				1);
-		
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 1);
+
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR,
 				nodeLabelColor);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_FACE,
+				nodeLabelFont);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_SIZE, 6);
-		
-		//Default Edge appr
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_SHAPE, ArrowShape.DELTA);
-		final DiscreteMapping edgeLineStyle = new DiscreteMapping(LineStyle.SOLID,
-				KEGG_RELATION_TYPE, ObjectMapping.EDGE_MAPPING);
+
+		// Default Edge appr
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_SHAPE,
+				ArrowShape.DELTA);
+		final DiscreteMapping edgeLineStyle = new DiscreteMapping(
+				LineStyle.SOLID, KEGG_RELATION_TYPE, ObjectMapping.EDGE_MAPPING);
 		final Calculator edgeLineStyleCalc = new BasicCalculator(vsName + "-"
 				+ "EdgeLineStyleMapping", edgeLineStyle,
 				VisualPropertyType.EDGE_LINE_STYLE);
-		edgeLineStyle.putMapValue(KEGGRelationType.MAPLINK.getTag(), LineStyle.LONG_DASH);
+		edgeLineStyle.putMapValue(KEGGRelationType.MAPLINK.getTag(),
+				LineStyle.LONG_DASH);
 		eac.setCalculator(edgeLineStyleCalc);
-		
-		
+
 		final DiscreteMapping nodeShape = new DiscreteMapping(NodeShape.RECT,
 				KEGG_ENTRY_TYPE, ObjectMapping.NODE_MAPPING);
 		final Calculator nodeShapeCalc = new BasicCalculator(vsName + "-"
-				+ "NodeShapeMapping", nodeShape,
-				VisualPropertyType.NODE_SHAPE);
+				+ "NodeShapeMapping", nodeShape, VisualPropertyType.NODE_SHAPE);
 		nodeShape.putMapValue(KEGGEntryType.MAP.getTag(), NodeShape.ROUND_RECT);
 		nodeShape.putMapValue(KEGGEntryType.GENE.getTag(), NodeShape.RECT);
 		nodeShape.putMapValue(KEGGEntryType.ORTHOLOG.getTag(), NodeShape.RECT);
-		nodeShape.putMapValue(KEGGEntryType.COMPOUND.getTag(), NodeShape.ELLIPSE);
+		nodeShape.putMapValue(KEGGEntryType.COMPOUND.getTag(),
+				NodeShape.ELLIPSE);
 		nac.setCalculator(nodeShapeCalc);
-		
+
 		final DiscreteMapping nodeColorMap = new DiscreteMapping(nodeColor,
 				KEGG_ENTRY_TYPE, ObjectMapping.NODE_MAPPING);
 		final Calculator nodeColorCalc = new BasicCalculator(vsName + "-"
@@ -371,61 +466,61 @@ public class PathwayMapper {
 				VisualPropertyType.NODE_FILL_COLOR);
 		nodeColorMap.putMapValue(KEGGEntryType.GENE.getTag(), geneNodeColor);
 		nac.setCalculator(nodeColorCalc);
-		
-		final DiscreteMapping nodeBorderColorMap = new DiscreteMapping(nodeColor,
-				KEGG_ENTRY_TYPE, ObjectMapping.NODE_MAPPING);
+
+		final DiscreteMapping nodeBorderColorMap = new DiscreteMapping(
+				nodeColor, KEGG_ENTRY_TYPE, ObjectMapping.NODE_MAPPING);
 		final Calculator nodeBorderColorCalc = new BasicCalculator(vsName + "-"
 				+ "NodeBorderColorMapping", nodeBorderColorMap,
 				VisualPropertyType.NODE_BORDER_COLOR);
 		nodeBorderColorMap.putMapValue(KEGGEntryType.MAP.getTag(), Color.BLUE);
 		nac.setCalculator(nodeBorderColorCalc);
-		
-		final DiscreteMapping nodeWidth = new DiscreteMapping(30,
-				"ID", ObjectMapping.NODE_MAPPING);
+
+		final DiscreteMapping nodeWidth = new DiscreteMapping(30, "ID",
+				ObjectMapping.NODE_MAPPING);
 		final Calculator nodeWidthCalc = new BasicCalculator(vsName + "-"
-				+ "NodeWidthMapping", nodeWidth,
-				VisualPropertyType.NODE_WIDTH);
-		final DiscreteMapping nodeHeight = new DiscreteMapping(30,
-				"ID", ObjectMapping.NODE_MAPPING);
+				+ "NodeWidthMapping", nodeWidth, VisualPropertyType.NODE_WIDTH);
+		final DiscreteMapping nodeHeight = new DiscreteMapping(30, "ID",
+				ObjectMapping.NODE_MAPPING);
 		final Calculator nodeHeightCalc = new BasicCalculator(vsName + "-"
 				+ "NodeHeightMapping", nodeHeight,
 				VisualPropertyType.NODE_HEIGHT);
 
 		nac.setCalculator(nodeHeightCalc);
 		nac.setCalculator(nodeWidthCalc);
-		
 
 		final CyNetworkView view = Cytoscape.getNetworkView(network
 				.getIdentifier());
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 
-		
-		nodeWidth.setControllingAttributeName("ID", null,false);
-		nodeHeight.setControllingAttributeName("ID", null,false);
-		
+		nodeWidth.setControllingAttributeName("ID", null, false);
+		nodeHeight.setControllingAttributeName("ID", null, false);
+
 		for (String key : nodeMap.keySet()) {
 
-			Graphics nodeGraphics = entryMap.get(key).getGraphics();
+			for (Graphics nodeGraphics : entryMap.get(key).getGraphics()) {
+				if (KEGGShape.getShape(nodeGraphics.getType()) != -1) {
+					final String nodeID = nodeMap.get(key).getIdentifier();
+					final NodeView nv = view.getNodeView(nodeMap.get(key));
 
-			if (KEGGShape.getShape(nodeGraphics.getType()) != -1) {
-				final String nodeID = nodeMap.get(key).getIdentifier();
-				final NodeView nv = view.getNodeView(nodeMap.get(key));
+					nv.setXPosition(Double.parseDouble(nodeGraphics.getX()));
+					nv.setYPosition(Double.parseDouble(nodeGraphics.getY()));
+					final double w = Double
+							.parseDouble(nodeGraphics.getWidth());
+					nodeAttr.setAttribute(nodeID, "KEGG.nodeWidth", w);
+					nodeWidth.putMapValue(nodeID, w);
 
-				nv.setXPosition(Double.parseDouble(nodeGraphics.getX()));
-				nv.setYPosition(Double.parseDouble(nodeGraphics.getY()));
-				final double w = Double.parseDouble(nodeGraphics.getWidth());
-				nodeAttr.setAttribute(nodeID, "KEGG.nodeWidth", w);
-				nodeWidth.putMapValue(nodeID, w);
-				
-				final double h = Double.parseDouble(nodeGraphics.getHeight());
-				nodeAttr.setAttribute(nodeID, "KEGG.nodeHeight", h);
-				nodeHeight.putMapValue(nodeID, h);
-				
-				nv.setShape(KEGGShape.getShape(nodeGraphics.getType()));
+					final double h = Double.parseDouble(nodeGraphics
+							.getHeight());
+					nodeAttr.setAttribute(nodeID, "KEGG.nodeHeight", h);
+					nodeHeight.putMapValue(nodeID, h);
+
+					nv.setShape(KEGGShape.getShape(nodeGraphics.getType()));
+				}
 			}
 		}
-		
-		Cytoscape.getVisualMappingManager().getCalculatorCatalog().addVisualStyle(defStyle);
+
+		Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+				.addVisualStyle(defStyle);
 		Cytoscape.getVisualMappingManager().setVisualStyle(defStyle);
 		view.setVisualStyle(defStyle.getName());
 		Cytoscape.getVisualMappingManager().setNetworkView(view);
