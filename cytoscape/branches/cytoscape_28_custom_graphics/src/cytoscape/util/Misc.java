@@ -39,11 +39,9 @@
 package cytoscape.util;
 
 import java.awt.Color;
-import java.awt.Polygon;
-
-import java.io.*;
-
-import java.util.*;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 /**
@@ -51,24 +49,24 @@ import java.util.*;
  */
 public class Misc {
 	/**
-	 *  DOCUMENT ME!
+	 *  Convert string to color object.
 	 *
 	 * @param text DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static Color parseRGBText(String text) {
+	public static Color parseRGBText(final String colorAsText) {
 		// Start by seeing if this is a hex representation
-		if (text.startsWith("#")) {
+		if (colorAsText.startsWith("#")) {
 			try {
-				Color c = Color.decode(text);
+				Color c = Color.decode(colorAsText);
 				return c;
 			} catch (NumberFormatException e) {
 				return Color.black;
 			}
 		}
 
-		StringTokenizer strtok = new StringTokenizer(text, ",");
+		StringTokenizer strtok = new StringTokenizer(colorAsText, ",");
 
 		if (strtok.countTokens() != 3) {
 			//CyLogger.getLogger().warn("illegal RGB string in EdgeViz.parseRGBText: " + text);
@@ -88,6 +86,10 @@ public class Misc {
 			return new Color(r, g, b);
 		} catch (NumberFormatException e) {
 			return Color.black;
+		} catch (IllegalArgumentException iae) {
+			// r, g, or b is in invalid range
+			iae.printStackTrace();
+			return null;
 		}
 	} // parseRGBText
 
