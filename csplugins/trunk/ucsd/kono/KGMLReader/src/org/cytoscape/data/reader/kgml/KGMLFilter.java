@@ -9,7 +9,7 @@ import cytoscape.util.CyFileFilter;
 
 public class KGMLFilter extends CyFileFilter {
 	
-	private static final String KEGG_DTD = "http://www.genome.jp/kegg/xml/KGML_v0.7.0_.dtd";
+	private static final String KEGG_DTD = "http://www.genome.jp/kegg/xml/KGML_v0.7.1_.dtd";
 	
 	/**
 	 * KGML Files are Graphs.
