@@ -419,7 +419,7 @@ public class DGraphView implements RenderingEngine, GraphView, Printable,
 			visualPropertySet(vp, cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
-		new AddDeleteHandler(this);
+		//new AddDeleteHandler(this);
 	}
 
 	/**

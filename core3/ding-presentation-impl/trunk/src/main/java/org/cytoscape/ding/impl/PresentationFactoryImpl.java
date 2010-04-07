@@ -4,6 +4,7 @@ package org.cytoscape.ding.impl;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -29,6 +30,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.UndoSupport;
+import org.cytoscape.service.util.CyServiceRegistrar;
 
 public class PresentationFactoryImpl implements PresentationFactory, NetworkViewChangedListener {
 
@@ -38,6 +40,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	private UndoSupport undo;
 	private RootVisualLexicon rootLexicon;
 	private VisualLexicon dingLexicon;
+	private CyServiceRegistrar registrar;
 	
 	private Map<CyNetworkView, DGraphView> viewMap;
 
@@ -52,7 +55,8 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	                            CyRootNetworkFactory rootNetworkFactory,
 								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
 								RootVisualLexicon vpc, VisualLexicon dingLexicon, 
-								TunableInterceptor ti, TaskManager tm) {
+								TunableInterceptor ti, TaskManager tm,
+								CyServiceRegistrar registrar) {
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
@@ -61,6 +65,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		this.dingLexicon = dingLexicon;
 		this.ti = ti;
 		this.tm = tm;
+		this.registrar = registrar;
 
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory,Map>();
@@ -103,6 +108,9 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		} else {
 			throw new IllegalArgumentException("frame object is not of type JInternalFrame, which is invalid for this implementation of PresentationFactory");
 		}
+
+		registrar.registerAllServices(dgv, new Properties());
+		registrar.registerAllServices(new AddDeleteHandler(dgv), new Properties());
 		
 		return dgv;
 	}

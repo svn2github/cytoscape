@@ -31,6 +31,9 @@
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager">
 	</osgi:reference>
 
+	<osgi:reference id="cyServiceRegistrarRef"
+		interface="org.cytoscape.service.util.CyServiceRegistrar">
+	</osgi:reference>
 
 	<!-- Individual Service -->
 	<osgi:service id="dingPresentationFactoryService" ref="dingPresentationFactory">

@@ -77,46 +77,46 @@ public class AddDeleteHandler
 	           AboutToRemoveEdgeListener, 
 	           AboutToRemoveNodeListener {
 
-	private GraphView view;
-	private CyNetwork net;
+	private final GraphView view;
+	private final CyNetwork net;
 
-	public AddDeleteHandler(GraphView view) {
+	public AddDeleteHandler(final GraphView view) {
 		this.view = view;
-		net = view.getNetwork();
+		this.net = view.getNetwork();
 	}
 
-	public void handleEvent(AddedEdgeEvent e) {
+	public void handleEvent(final AddedEdgeEvent e) {
 		if ( net != e.getSource() )
 			return;
 
-		CyEdge edge = e.getEdge();
+		final CyEdge edge = e.getEdge();
 		view.addEdgeView(edge);
 		view.updateView();
 	}
 
-	public void handleEvent(AddedNodeEvent e) {
+	public void handleEvent(final AddedNodeEvent e) {
 		if ( net != e.getSource() )
 			return;
 
-		CyNode node = e.getNode();
+		final CyNode node = e.getNode();
 		view.addNodeView(node);
 		view.updateView();
 	}
 
-	public void handleEvent(AboutToRemoveEdgeEvent e) {
+	public void handleEvent(final AboutToRemoveEdgeEvent e) {
 		if ( net != e.getSource() )
 			return;
 
-		CyEdge edge = e.getEdge();
+		final CyEdge edge = e.getEdge();
 		view.removeEdgeView(edge.getIndex());
 		view.updateView();
 	}
 
-	public void handleEvent(AboutToRemoveNodeEvent e) {
+	public void handleEvent(final AboutToRemoveNodeEvent e) {
 		if ( net != e.getSource() )
 			return;
 
-		CyNode node = e.getNode();
+		final CyNode node = e.getNode();
 		view.removeNodeView(node.getIndex());
 		view.updateView();
 	}
