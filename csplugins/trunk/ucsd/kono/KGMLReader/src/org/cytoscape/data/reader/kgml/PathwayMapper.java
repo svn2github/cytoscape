@@ -64,21 +64,22 @@ public class PathwayMapper {
 
 	public void doMapping() {
 		mapNode();
-		final List<CyEdge> relationEdges = mapEdge();
+		//final List<CyEdge> relationEdges = mapEdge();
 		final List<CyEdge> reactionEdges = mapReactionEdge();
 		// final List<CyEdge> reactionEdges = readReaction();
 
-		edgeIdx = new int[relationEdges.size() + reactionEdges.size()];
+		//edgeIdx = new int[relationEdges.size() + reactionEdges.size()];
+		edgeIdx = new int[reactionEdges.size()];
 		int idx = 0;
 		for (CyEdge edge : reactionEdges) {
 			edgeIdx[idx] = edge.getRootGraphIndex();
 			idx++;
 		}
 
-		for (CyEdge edge : relationEdges) {
-			edgeIdx[idx] = edge.getRootGraphIndex();
-			idx++;
-		}
+//		for (CyEdge edge : relationEdges) {
+//			edgeIdx[idx] = edge.getRootGraphIndex();
+//			idx++;
+//		}
 	}
 
 	private final Map<String, Entry> entryMap = new HashMap<String, Entry>();
@@ -318,7 +319,7 @@ public class PathwayMapper {
 					edgeAttr.setAttribute(edge.getIdentifier(),
 							KEGG_REACTION_TYPE, "product");
 				}
-			} else if (rea.getType().equals("reversible")) {
+			} else {
 				for (Substrate sub : rea.getSubstrate()) {
 					CyNode subNode = nodeMap.get(sub.getId());
 
