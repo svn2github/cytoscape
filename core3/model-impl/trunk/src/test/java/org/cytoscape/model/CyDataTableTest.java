@@ -36,50 +36,20 @@
 package org.cytoscape.model;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.internal.CyEventHelperImpl;
+import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.internal.CyDataTableImpl;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.springframework.osgi.mock.MockBundleContext;
-import org.springframework.osgi.mock.MockServiceReference;
 
 /**
  * DOCUMENT ME!
  */
 public class CyDataTableTest extends AbstractCyDataTableTest {
 
-	private ServiceReference reference;
-	private BundleContext bundleContext;
-	private Object service;
-	
-	 
 	/**
 	 * DOCUMENT ME!
 	 */
 	public void setUp() {
 		
-		reference = new MockServiceReference();
-		
-		bundleContext = new MockBundleContext() {
-
-			public ServiceReference getServiceReference(String clazz) {
-				return reference;
-			}
-
-			public ServiceReference[] getServiceReferences(String clazz, String filter) 
-					throws InvalidSyntaxException {
-				return new ServiceReference[] { reference };
-			}
-			
-			public Object getService(ServiceReference ref) {
-			    if (reference == ref)
-			       return service;
-			    
-			    return null;
-			}
-		};
-		CyEventHelper helper = new CyEventHelperImpl(bundleContext);
+		CyEventHelper helper = new DummyCyEventHelper(); 
 		mgr = new CyDataTableImpl(null, "homer", true, helper);
 		attrs = mgr.getRow(1);
 	}

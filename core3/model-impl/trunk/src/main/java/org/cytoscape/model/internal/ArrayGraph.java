@@ -352,7 +352,7 @@ public class ArrayGraph implements CyRootNetwork {
 			firstNode = n.insert(firstNode,ROOT);
 		}
 
-		eventHelper.fireSynchronousEvent(new AddedNodeEventImpl(n.cyNode, this),
+		eventHelper.fireSynchronousEvent(new AddedNodeEventImpl(n.cyNode, sub),
 			                                 AddedNodeListener.class);
 		return n.cyNode;
 	}
@@ -362,7 +362,8 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public boolean removeNode(final CyNode n) {
 
-		eventHelper.fireSynchronousEvent(new AboutToRemoveNodeEventImpl(n, this),
+		// TODO which network should be firing this event? base? 
+		eventHelper.fireSynchronousEvent(new AboutToRemoveNodeEventImpl(n, base),
 		                                 AboutToRemoveNodeListener.class);
 
 		synchronized (this) {
@@ -390,7 +391,8 @@ public class ArrayGraph implements CyRootNetwork {
 			nodeCount--;
 		}
 
-		eventHelper.fireSynchronousEvent(new RemovedNodeEventImpl(null, this),
+		// TODO which network should be firing this event? base? 
+		eventHelper.fireSynchronousEvent(new RemovedNodeEventImpl(null, base),
                                          RemovedNodeListener.class);
 
 		return true;
@@ -432,7 +434,7 @@ public class ArrayGraph implements CyRootNetwork {
 			edgeCount++;
 		}
 
-        eventHelper.fireSynchronousEvent(new AddedEdgeEventImpl(e.cyEdge, this),
+        eventHelper.fireSynchronousEvent(new AddedEdgeEventImpl(e.cyEdge, net),
                                          AddedEdgeListener.class);
 
 		return e.cyEdge;
@@ -442,7 +444,8 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public boolean removeEdge(final CyEdge edge) {
-        eventHelper.fireSynchronousEvent(new AboutToRemoveEdgeEventImpl(edge, this),
+		// TODO which network should be firing this event? base? 
+        eventHelper.fireSynchronousEvent(new AboutToRemoveEdgeEventImpl(edge, base),
                                          AboutToRemoveEdgeListener.class);
 
 		synchronized (this) {
@@ -463,7 +466,8 @@ public class ArrayGraph implements CyRootNetwork {
 			edgeCount--;
 		}
 
-		eventHelper.fireSynchronousEvent( new RemovedEdgeEventImpl(null, this),
+		// TODO which network should be firing this event? base? 
+		eventHelper.fireSynchronousEvent( new RemovedEdgeEventImpl(null, base),
                                          RemovedEdgeListener.class);
 
 		return true;
