@@ -41,48 +41,31 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 
+import org.cytoscape.service.util.CyServiceRegistrar;
+
+import java.util.Properties;
 
 /**
  *
  */
 public class ColumnOrientedNetworkViewFactoryImpl implements
 		CyNetworkViewFactory {
-	private CyEventHelper eventHelper;
+	private final CyEventHelper eventHelper;
+	private final CyServiceRegistrar registrar;
 
 	/**
 	 * For injection, use this constructor.
 	 * 
 	 * @param eventHelper
 	 */
-	public ColumnOrientedNetworkViewFactoryImpl(CyEventHelper eventHelper) {
+	public ColumnOrientedNetworkViewFactoryImpl(CyEventHelper eventHelper, CyServiceRegistrar registrar) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper is null");
 		this.eventHelper = eventHelper;
-	}
 
-	/**
-	 * For setter injection (hmm. whats that?)
-	 */
-	public ColumnOrientedNetworkViewFactoryImpl() {
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param eventHelper
-	 *            DOCUMENT ME!
-	 */
-	public void setEventHelper(final CyEventHelper eventHelper) {
-		this.eventHelper = eventHelper;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public CyEventHelper getEventHelper() {
-		return this.eventHelper;
+		if (registrar == null)
+			throw new NullPointerException("CyServiceRegistrar is null");
+		this.registrar = registrar;
 	}
 
 
@@ -94,6 +77,9 @@ public class ColumnOrientedNetworkViewFactoryImpl implements
 	 * @return DOCUMENT ME!
 	 */
 	public CyNetworkView getNetworkViewFor(final CyNetwork network) {
-		return new ColumnOrientedNetworkViewImpl(eventHelper, network);
+		CyNetworkView view = new ColumnOrientedNetworkViewImpl(eventHelper, network);
+		registrar.registerAllServices(view,new Properties());
+
+		return view; 
 	}
 }

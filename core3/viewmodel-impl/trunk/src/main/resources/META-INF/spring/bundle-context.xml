@@ -13,6 +13,7 @@
 	<bean id="cyNetworkViewFactory"
 		class="org.cytoscape.view.model.internal.ColumnOrientedNetworkViewFactoryImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="cyServiceRegistrarRef" />
 	</bean>
 
 	<!-- Catalog object of available VP.  This will be exported as service. -->

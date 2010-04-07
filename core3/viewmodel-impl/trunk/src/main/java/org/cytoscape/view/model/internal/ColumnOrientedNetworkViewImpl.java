@@ -175,10 +175,13 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 *            DOCUMENT ME!
 	 */
 	public void handleEvent(final AddedEdgeEvent e) {
-		if (network != e.getSource())
+		if (network != e.getSource()) {
+			System.out.println("wrong network! " + network.toString() + " ~~ " + e.getSource().toString());
 			return;
+		}
 
 		final CyEdge edge = e.getEdge();
+		System.out.println(" adding edge to view! " + edge.toString());
 		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this)); // FIXME:
 																				// View
 																				// creation
@@ -202,10 +205,13 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 *            DOCUMENT ME!
 	 */
 	public void handleEvent(final AddedNodeEvent e) {
-		if (network != e.getSource())
+		if (network != e.getSource()) {
+			System.out.println("wrong network! " + network.toString() + " ~~ " + e.getSource().toString());
 			return;
+		}
 
 		final CyNode node = e.getNode();
+		System.out.println(" adding node to view! " + node.toString());
 		nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node, this));
 	}
 
