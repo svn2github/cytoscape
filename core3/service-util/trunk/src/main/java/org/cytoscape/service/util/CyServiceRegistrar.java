@@ -12,4 +12,7 @@ import java.util.Dictionary;
 public interface CyServiceRegistrar {
 	void registerService(Object o, Class c, Dictionary props);
 	void unregisterService(Object o, Class c);
+
+	void registerAllServices(Object o, Dictionary props);
+	void unregisterAllServices(Object o);
 }

@@ -21,6 +21,11 @@ public class CyServiceRegistrarImpl implements CyServiceRegistrar, BundleContext
 		this.bc = bc;
 	}
 
+	public void registerAllServices(Object o, Dictionary props) {
+		for ( Class c : o.getClass().getInterfaces() ) 
+			registerService(o,c,props);
+	}
+
 	public void registerService(Object o, Class c, Dictionary props) {
 		if ( o == null )
 			throw new NullPointerException( "service object is null" );
@@ -38,6 +43,12 @@ public class CyServiceRegistrarImpl implements CyServiceRegistrar, BundleContext
 			refs.put(c, new HashMap<Object,ServiceRegistration>() );
 
 		refs.get(c).put(o,s);
+	}
+
+
+	public void unregisterAllServices(Object o) {
+		for ( Class c : o.getClass().getInterfaces() ) 
+			unregisterService(o,c);
 	}
 
 
