@@ -50,7 +50,7 @@ public interface CyEventHelper {
 	 * @param listener  DOCUMENT ME!
 	 */
 	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
-	                                                                                final Class<L> listener);
+	                                                                           final Class<L> listener);
 
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
@@ -63,5 +63,8 @@ public interface CyEventHelper {
 	 * @param listener  DOCUMENT ME!
 	 */
 	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
-	                                                                                 final Class<L> listener);
+	                                                                            final Class<L> listener);
+
+
+	public <M extends CyMicroListener> M getMicroListener(Class<M> m, Object source);
 }

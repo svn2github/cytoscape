@@ -39,16 +39,27 @@ package org.cytoscape.event;
 /**
  * DOCUMENT ME!
   */
-public class StubCyListenerImpl implements StubCyListener {
+public class StubCyMicroListenerImpl implements StubCyMicroListener {
 	int called = 0;
+	int eventValue = Integer.MIN_VALUE;
+	Object source;
+
+	public StubCyMicroListenerImpl(Object source) {
+		this.source = source;
+	}
+
+	public Object getEventSource() {
+		return source;
+	}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void handleEvent(StubCyEvent e) {
+	public void handleEvent(int x) {
 		called++;
+		eventValue = x;
 	}
 
 	/**
@@ -60,7 +71,11 @@ public class StubCyListenerImpl implements StubCyListener {
 		return called;
 	}
 
+	public int getEventValue() {
+		return eventValue;
+	}
+
 	public String toString() {
-		return "StubCyListenerImpl: " + Integer.toString(called);
+		return "StubCyMicroListenerImpl: " + Integer.toString(called) + " " + Integer.toString(eventValue);
 	}
 }

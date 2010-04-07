@@ -34,33 +34,15 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.event;
+package org.cytoscape.model.events;
+
+import org.cytoscape.event.CyMicroListener;
+import org.cytoscape.model.CyNode;
+
 
 /**
- * DOCUMENT ME!
-  */
-public class StubCyListenerImpl implements StubCyListener {
-	int called = 0;
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void handleEvent(StubCyEvent e) {
-		called++;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int getNumCalls() {
-		return called;
-	}
-
-	public String toString() {
-		return "StubCyListenerImpl: " + Integer.toString(called);
-	}
+ * Listener for AddedEgeEvents.
+ */
+public interface AddedNodeMicroListener extends CyMicroListener {
+	void handleAddedNode(CyNode n);
 }

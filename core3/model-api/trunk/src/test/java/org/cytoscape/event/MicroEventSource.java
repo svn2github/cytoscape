@@ -36,31 +36,9 @@
 
 package org.cytoscape.event;
 
-/**
- * DOCUMENT ME!
-  */
-public class StubCyListenerImpl implements StubCyListener {
-	int called = 0;
+public class MicroEventSource {
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void handleEvent(StubCyEvent e) {
-		called++;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int getNumCalls() {
-		return called;
-	}
-
-	public String toString() {
-		return "StubCyListenerImpl: " + Integer.toString(called);
+	public void testFire(CyEventHelper eh, int value) {
+		eh.getMicroListener(StubCyMicroListener.class, this).handleEvent(value);
 	}
 }

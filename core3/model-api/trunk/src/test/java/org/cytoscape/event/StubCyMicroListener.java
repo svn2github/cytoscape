@@ -39,28 +39,27 @@ package org.cytoscape.event;
 /**
  * DOCUMENT ME!
   */
-public class StubCyListenerImpl implements StubCyListener {
-	int called = 0;
+public interface StubCyMicroListener extends CyMicroListener {
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void handleEvent(StubCyEvent e) {
-		called++;
-	}
+	public void handleEvent(int x);
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * A special method for testing which returns the number of times
+	 * that the handleEvent() method had been called.  In general,
+	 * extensions of the CyListener interface should NOT define other 
+	 * methods.
 	 */
-	public int getNumCalls() {
-		return called;
-	}
+	public int getNumCalls();
 
-	public String toString() {
-		return "StubCyListenerImpl: " + Integer.toString(called);
-	}
+	/**
+	 * A special method for testing which returns the value set in
+	 * the handleEvent() method.  In general, extensions of the CyListener 
+	 * interface should NOT define other methods.
+	 */
+	public int getEventValue();
 }

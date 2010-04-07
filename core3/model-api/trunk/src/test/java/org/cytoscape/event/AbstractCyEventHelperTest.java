@@ -52,11 +52,14 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 
 	protected CyEventHelper helper;
 	protected StubCyListener service;
+	protected StubCyMicroListener microListener;
+
+	final protected MicroEventSource microEventSource = new MicroEventSource(); 
 
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void testSychronous() {
+	public void testSynchronous() {
 		// TODO figure out why I need to cast the StubCyEventImpl
 		helper.fireSynchronousEvent((StubCyEvent) new StubCyEventImpl("homer"),
 		                            StubCyListener.class);
@@ -66,7 +69,7 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void testASychronous() {
+	public void testAsynchronous() {
 		try {
 			// TODO figure out why I need to cast the StubCyEventImpl
 			helper.fireAsynchronousEvent((StubCyEvent) new StubCyEventImpl("marge"),
@@ -77,5 +80,11 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 			ie.printStackTrace();
 			fail();
 		}
+	}
+
+	public void testGetMicroListener() {
+		microEventSource.testFire( helper, 5 );
+		assertEquals("number of calls", 1,microListener.getNumCalls());
+		assertEquals("value of event", 5,microListener.getEventValue());
 	}
 }
