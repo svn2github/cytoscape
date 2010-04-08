@@ -78,4 +78,58 @@ public class EquationUtil {
 				/* We intentionally ignore everything else! */;
 		}
 	}
+
+	/**
+	 *  @returns "attribName" written as am attribute reference with a leading $-sign
+	 */
+	public static String attribNameAsReference(final String attribName) {
+		if (isSimpleAttribName(attribName))
+			return "$" + attribName;
+		else
+			return "${" + escapeAttribName(attribName) + "}";
+	}
+
+	/**
+	 *  @param attribName the name to test
+	 *  @returns true if "attribName" start with a letter and consists of only letters and digits, else false
+	 */
+	private static boolean isSimpleAttribName(final String attribName) {
+		final int length = attribName.length();
+		if (length == 0)
+			throw new IllegalStateException("empty attribute names should never happen!");
+
+		if (!Character.isLetter(attribName.charAt(0)))
+			return false;
+
+		for (int i = 1; i < length; ++i) {
+			final char ch = attribName.charAt(i);
+			if (!Character.isLetter(ch) && !Character.isDigit(ch))
+				return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 *  @returns "attribName" with characters that need to be backslash-escaped when written as
+	 *           part of an attribute refernce, escaped
+	 */
+	private static String escapeAttribName(final String attribName) {
+		final int length = attribName.length();
+		final StringBuilder escapedAttribName = new StringBuilder(length * 2);
+		for (int i = 0; i < length; ++i) {
+			final char ch = attribName.charAt(i);
+			switch (ch) {
+			case ' ':
+			case '\\':
+			case '{':
+			case '}':
+			case ':':
+				escapedAttribName.append('\\');
+			}
+			escapedAttribName.append(ch);
+		}
+
+		return escapedAttribName.toString();
+	}
 }
