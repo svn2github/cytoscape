@@ -125,6 +125,9 @@ public class EquationUtil {
 			case '{':
 			case '}':
 			case ':':
+			case ',':
+			case '(':
+			case ')':
 				escapedAttribName.append('\\');
 			}
 			escapedAttribName.append(ch);
