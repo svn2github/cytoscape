@@ -24,12 +24,8 @@ public class ColorRangeValueCalculator implements RangeValueCalculator<Paint> {
 		if (attrValue instanceof String) {
 			return parser.parseStringValue((String) attrValue);
 		} else if(attrValue instanceof Number) {
-			Number num = (Number) attrValue;
-			int rgbValue = num.intValue();
-			if(rgbValue <=255 && rgbValue >=0) {
-				return new Color(rgbValue);
-			} else
-				return null;
+			System.out.println("GOT number attr for color: " + attrValue);
+			return parser.parseStringValue(attrValue.toString());
 		} else
 			return null;
 	}

@@ -33,88 +33,92 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 // Misc.java:  miscellaneous static utilities
 package cytoscape.util;
 
 import java.awt.Color;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
-
 
 /**
  *
  */
 public class Misc {
+	
 	/**
-	 *  Convert string to color object.
-	 *
-	 * @param text DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Convert string to color object.
+	 * 
+	 * @param text
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static Color parseRGBText(final String colorAsText) {
+		if (colorAsText == null)
+			return null;
+
+		final String[] parts = colorAsText.split(",");
+
 		// Start by seeing if this is a hex representation
-		if (colorAsText.startsWith("#")) {
+		if (parts.length == 1) {
 			try {
-				Color c = Color.decode(colorAsText);
-				return c;
-			} catch (NumberFormatException e) {
-				return Color.black;
+				return Color.decode(colorAsText);
+			} catch (Exception e) {
+				return null;
 			}
 		}
 
-		StringTokenizer strtok = new StringTokenizer(colorAsText, ",");
+		if (parts.length != 3)
+			return null;
 
-		if (strtok.countTokens() != 3) {
-			//CyLogger.getLogger().warn("illegal RGB string in EdgeViz.parseRGBText: " + text);
-
-			return Color.black;
-		}
-
-		String red = strtok.nextToken().trim();
-		String green = strtok.nextToken().trim();
-		String blue = strtok.nextToken().trim();
+		final String red = parts[0].trim();
+		final String green = parts[1].trim();
+		final String blue = parts[2].trim();
 
 		try {
-			int r = Integer.parseInt(red);
-			int g = Integer.parseInt(green);
-			int b = Integer.parseInt(blue);
-
-			return new Color(r, g, b);
-		} catch (NumberFormatException e) {
-			return Color.black;
-		} catch (IllegalArgumentException iae) {
-			// r, g, or b is in invalid range
-			iae.printStackTrace();
+			if(red.contains(".") || green.contains(".") || blue.contains(".")) {
+				float r = Float.parseFloat(red);
+				float g = Float.parseFloat(green);
+				float b = Float.parseFloat(blue);
+				return new Color(r, g, b);
+			} else {
+				int r = Integer.parseInt(red);
+				int g = Integer.parseInt(green);
+				int b = Integer.parseInt(blue);
+				return new Color(r, g, b);
+			}
+			
+		} catch (Exception e) {
 			return null;
 		}
-	} // parseRGBText
+	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param color DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param color
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static String getRGBText(Color color) {
 		Integer red = new Integer(color.getRed());
 		Integer green = new Integer(color.getGreen());
 		Integer blue = new Integer(color.getBlue());
 
-		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
-	} //getRGBText
+		return new String(red.toString() + "," + green.toString() + ","
+				+ blue.toString());
+	} // getRGBText
 
 	/**
-	 * return the (possibly multiple) value of the specified property as a vector.
-	 * property values (which typically come from cytoscape.prop files)
-	 * are usually scalar strings,  but may be a list of such strings, surrounded by
-	 * parentheses, and delimited by the value of a property
-	 * called 'property.delimiter' (whose value is usually "::")
-	 * get the property value; check to see if it is a list; parse it if necessary
+	 * return the (possibly multiple) value of the specified property as a
+	 * vector. property values (which typically come from cytoscape.prop files)
+	 * are usually scalar strings, but may be a list of such strings, surrounded
+	 * by parentheses, and delimited by the value of a property called
+	 * 'property.delimiter' (whose value is usually "::") get the property
+	 * value; check to see if it is a list; parse it if necessary
 	 */
 	static public Vector getPropertyValues(Properties props, String propName) {
 		String propertyDelimiterName = "property.token.delimiter";
@@ -133,7 +137,8 @@ public class Misc {
 			return result;
 
 		String propStringTrimmed = propString.trim();
-		String[] tokens = Misc.parseList(propStringTrimmed, listStartToken, listEndToken, delimiter);
+		String[] tokens = Misc.parseList(propStringTrimmed, listStartToken,
+				listEndToken, delimiter);
 
 		for (int i = 0; i < tokens.length; i++)
 			result.add(tokens[i]);
@@ -142,17 +147,21 @@ public class Misc {
 	} // getPropertyValues
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param listString DOCUMENT ME!
-	 * @param startToken DOCUMENT ME!
-	 * @param endToken DOCUMENT ME!
-	 * @param delimiter DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param listString
+	 *            DOCUMENT ME!
+	 * @param startToken
+	 *            DOCUMENT ME!
+	 * @param endToken
+	 *            DOCUMENT ME!
+	 * @param delimiter
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	static public boolean isList(String listString, String startToken, String endToken,
-	                             String delimiter) {
+	static public boolean isList(String listString, String startToken,
+			String endToken, String delimiter) {
 		String s = listString.trim();
 		Vector list = new Vector();
 
@@ -164,17 +173,21 @@ public class Misc {
 	} // isList
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param listString DOCUMENT ME!
-	 * @param startToken DOCUMENT ME!
-	 * @param endToken DOCUMENT ME!
-	 * @param delimiter DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param listString
+	 *            DOCUMENT ME!
+	 * @param startToken
+	 *            DOCUMENT ME!
+	 * @param endToken
+	 *            DOCUMENT ME!
+	 * @param delimiter
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	static public String[] parseList(String listString, String startToken, String endToken,
-	                                 String delimiter) {
+	static public String[] parseList(String listString, String startToken,
+			String endToken, String delimiter) {
 		String s = listString.trim();
 
 		if (s.startsWith(startToken) && s.endsWith(endToken)) {
@@ -189,15 +202,12 @@ public class Misc {
 		}
 
 		/*********************
-		  StringTokenizer strtok = new StringTokenizer (deparenthesizedString, delimiter);
-		  int count = strtok.countTokens ();
-		  for (int i=0; i < count; i++)
-		    list.add (strtok.nextToken ());
-		  }
-		else
-		  list.add (listString);
-
-		return (String []) list.toArray (new String [0]);
-		**********************/
+		 * StringTokenizer strtok = new StringTokenizer (deparenthesizedString,
+		 * delimiter); int count = strtok.countTokens (); for (int i=0; i <
+		 * count; i++) list.add (strtok.nextToken ()); } else list.add
+		 * (listString);
+		 * 
+		 * return (String []) list.toArray (new String [0]);
+		 **********************/
 	} // parseList
 } // class Misc

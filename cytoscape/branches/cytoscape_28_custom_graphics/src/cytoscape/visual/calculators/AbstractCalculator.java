@@ -607,8 +607,10 @@ public abstract class AbstractCalculator implements Calculator {
 		final String nodeID = obj.getIdentifier();
 		final Map<String, Object> attrBundle = getAttrBundle(nodeID);
 		attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());
-
-		return getMapping(0).calculateRangeValue(attrBundle);
+		
+		Object value = getMapping(0).calculateRangeValue(attrBundle);
+		System.out.println(this.getVisualPropertyType().getName() + ": Range value = " + value);
+		return value;
 	}
 
 	/**

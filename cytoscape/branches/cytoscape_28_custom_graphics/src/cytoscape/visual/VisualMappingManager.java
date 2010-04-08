@@ -40,31 +40,28 @@ import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.CytoscapeInit;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.MappingManager;
-import cytoscape.visual.mappings.MappingManagerImpl;
-import cytoscape.visual.mappings.PassThroughMapping;
 import cytoscape.visual.mappings.RangeValueCalculatorFactory;
 import cytoscape.visual.mappings.RangeValueCalculatorFactoryImpl;
 import cytoscape.visual.mappings.rangecalculators.ColorRangeValueCalculator;
 import cytoscape.visual.mappings.rangecalculators.CustomGraphicsRangeValueCalculator;
+import cytoscape.visual.mappings.rangecalculators.DoubleRangeValueCalculator;
+import cytoscape.visual.mappings.rangecalculators.FloatRangeValueCalculator;
 import cytoscape.visual.mappings.rangecalculators.NodeShapeRangeValueCalculator;
 import cytoscape.visual.mappings.rangecalculators.StringRangeValueCalculator;
-import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
@@ -455,9 +452,11 @@ public class VisualMappingManager extends SubjectBase {
 	
 	private void registerDefaultRangeValueCalculators() {
 		this.rvcFactory.registerRVC(new StringRangeValueCalculator());
+		this.rvcFactory.registerRVC(new DoubleRangeValueCalculator());
 		this.rvcFactory.registerRVC(new ColorRangeValueCalculator());
 		this.rvcFactory.registerRVC(new NodeShapeRangeValueCalculator());
 		this.rvcFactory.registerRVC(new CustomGraphicsRangeValueCalculator());
+		this.rvcFactory.registerRVC(new FloatRangeValueCalculator());
 	}
 	
 
