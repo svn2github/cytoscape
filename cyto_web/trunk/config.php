@@ -37,8 +37,8 @@ $chianti_base = "http://chianti.ucsd.edu/";
 $latest_version = "2.7.0";
 $latest_release_notes_link = "cyto_2_7_features.php";
 $latest_download_link = "download.php?file=cyto2_7_0";
-$latest_manual_pdf = "manual/Cytoscape2_6Manual.pdf";
-$latest_manual_html = "manual/Cytoscape2_6Manual.html";
+$latest_manual_pdf = "manual/Cytoscape2_7Manual.pdf";
+$latest_manual_html = "manual/Cytoscape2_7Manual.html";
 $latest_javadoc = $chianti_base."Cyto-2_7_0/javadoc/";
 $release_array = array( 
 					  'cyto2_7_0'   => '2.7.0',
