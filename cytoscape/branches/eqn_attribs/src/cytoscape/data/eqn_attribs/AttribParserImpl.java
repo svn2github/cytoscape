@@ -146,14 +146,9 @@ class AttribParserImpl implements AttribParser {
 				else
 					exprNode = new BinOpNode(AttribToken.AMPERSAND, exprNode, term);
 			}
-			else if (token == AttribToken.EQUAL || token == AttribToken.NOT_EQUAL
-				 || token == AttribToken.GREATER_THAN
-				 || token == AttribToken.LESS_THAN
-				 || token == AttribToken.GREATER_OR_EQUAL
-				 || token == AttribToken.LESS_OR_EQUAL)
-			{
+			else if (token.isComparisonOperator()) {
 				final Node term = parseTerm(level);
-				return handleComparisonOp(token, exprNode, term); // Only one trip through the loop for comparison operators!
+				return handleComparisonOp(token, exprNode, term); // No chaining for comparison operators!
 			} else {
 				tokeniser.ungetToken(token);
 				return exprNode;
