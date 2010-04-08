@@ -31,41 +31,49 @@ package cytoscape.data.eqn_attribs;
 
 
 public enum AttribToken {
-	STRING_CONSTANT("?", /* isComparisonOperator = */ false),
-	FLOAT_CONSTANT("?", /* isComparisonOperator = */ false),
-	BOOLEAN_CONSTANT("?", /* isComparisonOperator = */ false),
-	IDENTIFIER("?", /* isComparisonOperator = */ false),
-	OPEN_BRACE("{", /* isComparisonOperator = */ false),
-	CLOSE_BRACE("}", /* isComparisonOperator = */ false),
-	OPEN_PAREN("(", /* isComparisonOperator = */ false),
-	CLOSE_PAREN(")", /* isComparisonOperator = */ false),
-	COLON(":", /* isComparisonOperator = */ false),
-	CARET("^", /* isComparisonOperator = */ false),
-	PLUS("+", /* isComparisonOperator = */ false),
-	MINUS("-", /* isComparisonOperator = */ false),
-	DIV("/", /* isComparisonOperator = */ false),
-	MUL("*", /* isComparisonOperator = */ false),
-	EQUAL("=", /* isComparisonOperator = */ true),
-	NOT_EQUAL("<>", /* isComparisonOperator = */ true),
-	GREATER_THAN(">", /* isComparisonOperator = */ true),
-	LESS_THAN("<", /* isComparisonOperator = */ true),
-	GREATER_OR_EQUAL(">=", /* isComparisonOperator = */ true),
-	LESS_OR_EQUAL("<=", /* isComparisonOperator = */ true),
-	DOLLAR("$", /* isComparisonOperator = */ false),
-	COMMA(",", /* isComparisonOperator = */ false),
-	AMPERSAND("&", /* isComparisonOperator = */ false),
-	EOS("?", /* isComparisonOperator = */ false),
-	ERROR("?", /* isComparisonOperator = */ false);
+	STRING_CONSTANT("?", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	FLOAT_CONSTANT("?", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	BOOLEAN_CONSTANT("?", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	IDENTIFIER("?", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	OPEN_BRACE("{", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	CLOSE_BRACE("}", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	OPEN_PAREN("(", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	CLOSE_PAREN(")", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	COLON(":", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	CARET("^", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ true, /* isStringOperator = */ false),
+	PLUS("+", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ true, /* isStringOperator = */ false),
+	MINUS("-", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ true, /* isStringOperator = */ false),
+	DIV("/", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ true, /* isStringOperator = */ false),
+	MUL("*", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ true, /* isStringOperator = */ false),
+	EQUAL("=", /* isComparisonOperator = */ true, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	NOT_EQUAL("<>", /* isComparisonOperator = */ true, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	GREATER_THAN(">", /* isComparisonOperator = */ true, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	LESS_THAN("<", /* isComparisonOperator = */ true, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	GREATER_OR_EQUAL(">=", /* isComparisonOperator = */ true, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	LESS_OR_EQUAL("<=", /* isComparisonOperator = */ true, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	DOLLAR("$", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	COMMA(",", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	AMPERSAND("&", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ true),
+	EOS("?", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false),
+	ERROR("?", /* isComparisonOperator = */ false, /* isArithmeticOperator = */ false, /* isStringOperator = */ false);
 	
 
 	private final String asString;
 	private final boolean isComparisonOperator;
+	private final boolean isArithmeticOperator;
+	private final boolean isStringOperator;
 
-	AttribToken(final String asString, final boolean isComparisonOperator) {
+	AttribToken(final String asString, final boolean isComparisonOperator,
+		    final boolean isArithmeticOperator, final boolean isStringOperator)
+	{
 		this.asString = asString;
 		this.isComparisonOperator = isComparisonOperator;
+		this.isArithmeticOperator = isArithmeticOperator;
+		this.isStringOperator     = isStringOperator;
 	}
 
 	public String asString() { return asString; }
 	public boolean isComparisonOperator() { return isComparisonOperator; }
+	public boolean isArithmeticOperator() { return isArithmeticOperator; }
+	public boolean isStringOperator() { return isStringOperator; }
 }
