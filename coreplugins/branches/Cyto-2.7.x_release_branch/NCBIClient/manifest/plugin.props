@@ -1,0 +1,22 @@
+# -- The following properties are REQUIRED -- #
+
+# The plugin name that will be displayed to users
+pluginName=NCBIClient
+
+# Description used to give users information about the plugin such as what it does.  
+# Html tags are encouraged for formatting purposes.
+pluginDescription=<p>Web Service client module for <a href="http://www.ncbi.nlm.nih.gov/entrez/query/static/esoap_help.html">NCBI Entrez Utilities Web Service</a>.</p><p>For more information, please visit the following pages:</p><ul><li><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/SampleWebServiceClients">Sample clients</a></li><li><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/WebServiceWorkflow">Sample workflow</a></li></ul><p><strong><font color="red">To use this function from Cytoscape Desktop, <u>NCBI Entrez Gene User Interface</u> plugin is required.  This plugin works with Cytoscape 2.7.0 or later.</font></strong>
+
+# Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
+pluginVersion=0.97
+
+# Compatible Cytoscape version
+cytoscapeVersion=2.7
+
+# Category, use one of the categories listed on the website or create your own
+pluginCategory=Core
+
+
+# List of authors.  Note each author and institution pair are separated by a : (colon)
+# each additional author institution pair must be separated from other pairs bye a ; (semicolon)
+pluginAuthorsIntsitutions=Keiichiro Ono:UCSD Dept. of Medicine

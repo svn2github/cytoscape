@@ -1,0 +1,126 @@
+<project name="ManualLayout" default="ManualLayout" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-ManualLayout">
+    <tstamp/>
+    <property name="ManualLayout.Name" value="ManualLayout"/>
+    <property name="ManualLayout.name" value="ManualLayout"/>
+    <property name="ManualLayout.version" value="0.1"/>
+    <property name="ManualLayout.year" value="2006"/>
+    <property name="ManualLayout.jar" value="ManualLayout.jar"/>
+
+    <echo message="Building ${ManualLayout.name} version ${ManualLayout.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="false"/>
+    <property name="fork" value="false"/>
+    <property name="ManualLayout.root.dir" value="."/>
+    <property name="ManualLayout.lib.dir" value="${ManualLayout.root.dir}/lib"/>
+
+    <!-- Cytoscape directory -->
+    <property name="cytoscape.root.dir" value="../../cytoscape"/>
+    <property name="cytoscape.build.dir" value="${cytoscape.root.dir}/build/cytoscape-v2.3"/>
+    <property name="cytoscape.lib.dir" value="${cytoscape.root.dir}/lib"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.root.dir}/plugins"/>
+    <property name="cytoscape.build.plugin.dir" value="${cytoscape.build.dir}/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="ManualLayout.src.dir" value="${ManualLayout.root.dir}/src"/>
+    <property name="ManualLayout.classes.dir" value="${ManualLayout.root.dir}/classes"/>
+    <property name="ManualLayout.resources.dir" value="${ManualLayout.root.dir}/resources"/>
+    <property name="ManualLayout.manifest.dir" value="${ManualLayout.root.dir}/manifest"/>
+    <property name="ManualLayout.resources.dir" value="${ManualLayout.root.dir}/resources"/>
+    <property name="ManualLayout.packages" value="ManualLayout.*"/>
+
+    <!-- Define excludes for ManualLayout compile and javadoc -->
+    <property name="ManualLayout.excludes" value="**/notyet/*"/>
+    <property name="ManualLayout.tests.excludes" value="**/notyet/*"/>
+    <property name="ManualLayout.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="ManualLayout.project.class.path">
+      <pathelement location="${ManualLayout.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.root.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/ding.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the ManualLayout project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-ManualLayout" depends="init-ManualLayout"  >
+
+   <echo message=" COMPILE ManualLayout "/>
+
+    <mkdir dir="${ManualLayout.classes.dir}"/>
+    <javac srcdir="${ManualLayout.src.dir}"
+           excludes="${ManualLayout.excludes}"
+           classpathref="ManualLayout.project.class.path"
+           destdir="${ManualLayout.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+		   source="1.5"
+		   target="1.5"
+           fork="${fork}">
+      <!--
+      <compilerarg line="-Xlint:all -Xlint:-path -Xlint:-serial"/>
+	  -->
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the ManualLayout.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="ManualLayout" depends="compile-ManualLayout"  >
+    <copy todir="${ManualLayout.classes.dir}/ManualLayout" file="${ManualLayout.resources.dir}/plugin.props"/>
+    <jar destfile="${ManualLayout.jar}" manifest="${ManualLayout.manifest.dir}/ManualLayout.manifest">
+      <fileset
+        dir="${ManualLayout.classes.dir}"
+        includes="**"/>
+      <fileset 
+        dir="${ManualLayout.root.dir}/images"/>
+    </jar>
+  </target>
+
+  <target name="setup" depends="ManualLayout">
+    <copy todir="${cytoscape.build.plugin.dir}" file="${ManualLayout.jar}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="ManualLayout"/>
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-ManualLayout">
+    <delete dir="${ManualLayout.classes.dir}"/>
+    <delete file="ManualLayout.jar"/>
+    <delete file="ManualLayout-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
