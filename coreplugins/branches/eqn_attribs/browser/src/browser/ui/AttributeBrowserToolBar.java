@@ -38,6 +38,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -67,6 +68,7 @@ import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.eqn_attribs.EquationUtil;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.swing.CheckBoxJList;
@@ -137,11 +139,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		getJPopupMenu1();
 
 		modDialog = new ModDialog(tableModel, objectType, Cytoscape.getDesktop());
-		formulaBuilderDialog = new FormulaBuilderDialog(tableModel, objectType, Cytoscape.getDesktop());
-
 		attrModButton.setVisible(objectType != NETWORK);
 	}
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -365,7 +364,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-				                                                                    .add(functionBuilderButton,
+				                                                                    .add(formulaBuilderButton,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
@@ -414,7 +413,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-				                                                                    .add(functionBuilderButton,
+				                                                                    .add(formulaBuilderButton,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
@@ -467,7 +466,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-				                                                                    .add(functionBuilderButton,
+				                                                                    .add(formulaBuilderButton,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -561,21 +560,27 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		return attrModButton;
 	}
 
-	private JButton functionBuilderButton = null;
+	private JButton formulaBuilderButton = null;
 
 	private JButton getFunctionBuilderButton() {
-		if (functionBuilderButton == null) {
-			functionBuilderButton = new JButton();
-			functionBuilderButton.setBorder(null);
-			functionBuilderButton.setText("fx");
-			functionBuilderButton.setToolTipText("Function Builder");
-			functionBuilderButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+		if (formulaBuilderButton == null) {
+			formulaBuilderButton = new JButton();
+			formulaBuilderButton.setBorder(null);
+			formulaBuilderButton.setText("fx");
+			formulaBuilderButton.setToolTipText("Function Builder");
+			formulaBuilderButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
 
-			functionBuilderButton.addMouseListener(new java.awt.event.MouseAdapter() {
+			formulaBuilderButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
 						final int cellRow = table.getSelectedRow();
 						final int cellColum = table.getSelectedColumn();
 						if (cellRow != -1 && cellColum != -1 && tableModel.isCellEditable(cellRow, cellColum)) {
+							final String columnName = tableModel.getColumnName(cellColum);
+							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+							initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+							formulaBuilderDialog =
+								new FormulaBuilderDialog(tableModel, objectType, Cytoscape.getDesktop(),
+								                         attribNameToTypeMap, columnName);
 							formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 							formulaBuilderDialog.setVisible(true);
 						}
@@ -583,7 +588,28 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				});
 		}
 
-		return functionBuilderButton;
+		return formulaBuilderButton;
+	}
+
+	private void initAttribNameToTypeMap(final DataObjectType objectType, final String columnName,
+	                                     final Map<String, Class> attribNameToTypeMap)
+	{
+		final CyAttributes cyAttribs;
+		switch (objectType) {
+		case NODES:
+			cyAttribs = Cytoscape.getNodeAttributes();
+			break;
+		case EDGES:
+			cyAttribs = Cytoscape.getEdgeAttributes();
+			break;
+		case NETWORK:
+			cyAttribs = Cytoscape.getNetworkAttributes();
+			break;
+		default:
+			throw new IllegalStateException("unknown DataObjectType: " + objectType + "!");
+		}
+
+		EquationUtil.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
 	}
 
 	protected void editMetadata() {

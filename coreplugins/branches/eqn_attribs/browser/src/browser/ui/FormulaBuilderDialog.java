@@ -35,15 +35,18 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import browser.DataObjectType;
@@ -57,41 +60,48 @@ import org.jdesktop.layout.GroupLayout;
 
 
 public class FormulaBuilderDialog extends JDialog {
+	private String columnName;
 	private JComboBox functionComboBox = null;
 	private JLabel usageLabel = null;
 	private JTextField formulaTextField = null;
+	private JPanel argumentPanel;
 	private JButton okButton = null;
 	private JButton cancelButton = null;
 	private AttribFunction function = null;
 	private Map<String, AttribFunction> stringToFunctionMap;
+	private Map<String, Class> attribNamesAndTypes;
 
 
 	public FormulaBuilderDialog(final DataTableModel tableModel, final DataObjectType tableObjectType,
-	                            final Frame parent)
+	                            final Frame parent, final Map<String, Class> attribNamesAndTypes,
+	                            final String columnName)
 	{
 		super(parent);
-		this.setTitle("Creating a formula for: " + tableObjectType.getDisplayName());
+		this.setTitle("Creating a formula for: " + columnName);
 
+		this.columnName = columnName;
 		this.stringToFunctionMap = new HashMap<String, AttribFunction>();
-		
-		final Container panel = getContentPane();
-		final GroupLayout groupLayout = new GroupLayout(panel);
-		panel.setLayout(groupLayout);
+		this.attribNamesAndTypes = attribNamesAndTypes;
 
-		initFunctionComboBox(panel);
-		initUsageLabel(panel);
-		initFormulaTextField(panel);
-		initOkButton(panel);
-		initCancelButton(panel);
+		final Container contentPane = getContentPane();
+		final GroupLayout groupLayout = new GroupLayout(contentPane);
+		contentPane.setLayout(groupLayout);
 
-		setSize(600, 150);
+		initFunctionComboBox(contentPane);
+		initUsageLabel(contentPane);
+		initFormulaTextField(contentPane);
+		initArgumentPanel(contentPane);
+		initOkButton(contentPane);
+		initCancelButton(contentPane);
+
+		setSize(600, 250);
 
 		initLayout(groupLayout);
 	}
 
-	private void initFunctionComboBox(final Container panel) {
+	private void initFunctionComboBox(final Container contentPane) {
 		functionComboBox = new JComboBox();
-		panel.add(functionComboBox);
+		contentPane.add(functionComboBox);
 		functionComboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					functionSelected();
@@ -120,24 +130,106 @@ public class FormulaBuilderDialog extends JDialog {
 		}
 	}
 
-	private void initUsageLabel(final Container panel) {
+	private void initUsageLabel(final Container contentPane) {
 		usageLabel = new JLabel();
-		panel.add(usageLabel);
+		contentPane.add(usageLabel);
 		if (function != null)
 			usageLabel.setText(function.getUsageDescription());
 	}
 
-	private void initFormulaTextField(final Container panel) {
+	private void initFormulaTextField(final Container contentPane) {
 		formulaTextField = new JTextField(40);
-		panel.add(formulaTextField);
+		contentPane.add(formulaTextField);
 		formulaTextField.setEditable(false);
 		if (function != null)
 			formulaTextField.setText(function.getName() + "(");
 	}
 
-	private void initOkButton(final Container panel) {
+	private void initArgumentPanel(final Container contentPane) {
+		argumentPanel = new JPanel();
+		contentPane.add(argumentPanel);
+		argumentPanel.setBorder(BorderFactory.createTitledBorder("Next Argument"));
+
+		final JComboBox attribNamesComboBox = new JComboBox();
+		final ArrayList possibleAttribNames = new ArrayList(20);
+		for (final String attribName : attribNamesAndTypes.keySet()) {
+			final Class attribType = attribNamesAndTypes.get(attribName);
+			attribNamesComboBox.addItem(attribName);
+		}
+		argumentPanel.add(attribNamesComboBox);
+
+		final JLabel orLabel = new JLabel();
+		orLabel.setText("or");
+		argumentPanel.add(orLabel);
+
+		final JTextField constantValuesTextField = new JTextField(15);
+		argumentPanel.add(constantValuesTextField);
+
+		final JButton addButton = new JButton("Add");
+		addButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					final String currentFormula = formulaTextField.getText();
+					final String constExpr = constantValuesTextField.getText();
+					if (constExpr != null && !constExpr.isEmpty())
+						formulaTextField.setText(currentFormula + constExpr);
+					else {
+						final String attribName = (String)attribNamesComboBox.getSelectedItem();
+						formulaTextField.setText(currentFormula + attribNameAsReference(attribName));
+					}
+				}
+			});
+	}
+
+	private String attribNameAsReference(final String attribName) {
+		if (isSimpleAttribName(attribName))
+			return "$" + attribName;
+		else
+			return "${" + escapeAttribName(attribName) + "}";
+	}
+
+	/**
+	 *  @param attribName the name to test
+	 *  @returns true if "attribName" start with a letter and consists of only letters and digits, else false
+	 */
+	private static boolean isSimpleAttribName(final String attribName) {
+		final int length = attribName.length();
+		if (length == 0)
+			throw new IllegalStateException("empty attribute names should never happen!");
+
+		if (!Character.isLetter(attribName.charAt(0)))
+			return false;
+
+		for (int i = 1; i < length; ++i) {
+			final char ch = attribName.charAt(i);
+			if (!Character.isLetter(ch) && !Character.isDigit(ch))
+				return false;
+		}
+
+		return true;
+	}
+
+	private static String escapeAttribName(final String attribName) {
+		final int length = attribName.length();
+		final StringBuilder escapedAttribName = new StringBuilder(length * 2);
+		for (int i = 0; i < length; ++i) {
+			final char ch = attribName.charAt(i);
+			switch (ch) {
+			case ' ':
+			case '\\':
+			case '{':
+			case '}':
+			case ':':
+				escapedAttribName.append('\\');
+			}
+			escapedAttribName.append(ch);
+		}
+
+		return escapedAttribName.toString();
+	}
+			
+	private void initOkButton(final Container contentPane) {
 		okButton = new JButton("OK");
-		panel.add(okButton);
+		contentPane.add(okButton);
 		okButton.setEnabled(false);
 		okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -146,9 +238,9 @@ public class FormulaBuilderDialog extends JDialog {
 			});
 	}
 
-	private void initCancelButton(final Container panel) {
+	private void initCancelButton(final Container contentPane) {
 		cancelButton = new JButton("Cancel");
-		panel.add(okButton);
+		contentPane.add(okButton);
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
@@ -172,6 +264,7 @@ public class FormulaBuilderDialog extends JDialog {
 					     .add(functionComboBox)
 					     .add(usageLabel)
 					     .add(formulaTextField)
+					     .add(argumentPanel)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
 						       .add(okButton)
 						       .add(cancelButton)));
@@ -181,6 +274,7 @@ public class FormulaBuilderDialog extends JDialog {
 					       .add(functionComboBox)
 					       .add(usageLabel)
 					       .add(formulaTextField)
+					       .add(argumentPanel)
 					       .add(groupLayout.createSequentialGroup()
 							 .add(okButton)
 							 .add(cancelButton)));
