@@ -49,7 +49,7 @@ New features include:
 <li>CyCommandHandlers</li>
 <li>BioPAX Level 3 support</li>
 </ul>
-For further details on each item check the <a href="cyto_2_7_features.php">release notes"</a>!
+For further details on each item check the <a href="cyto_2_7_features.php">release notes</a>!
 </div>
 </div>
 
