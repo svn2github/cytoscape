@@ -38,6 +38,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import browser.DataTableModel;
 
 import cytoscape.data.eqn_attribs.AttribFunction;
 import cytoscape.data.eqn_attribs.AttribParser;
+import cytoscape.data.eqn_attribs.EquationUtil;
 import cytoscape.data.eqn_attribs.Parser;
 
 import org.jdesktop.layout.GroupLayout;
@@ -65,11 +67,13 @@ public class FormulaBuilderDialog extends JDialog {
 	private JLabel usageLabel = null;
 	private JTextField formulaTextField = null;
 	private JPanel argumentPanel;
+	private JComboBox attribNamesComboBox = null;
 	private JButton okButton = null;
 	private JButton cancelButton = null;
 	private AttribFunction function = null;
 	private Map<String, AttribFunction> stringToFunctionMap;
 	private Map<String, Class> attribNamesAndTypes;
+	private ArrayList<Class> leadingArgs;
 
 
 	public FormulaBuilderDialog(final DataTableModel tableModel, final DataObjectType tableObjectType,
@@ -82,6 +86,7 @@ public class FormulaBuilderDialog extends JDialog {
 		this.columnName = columnName;
 		this.stringToFunctionMap = new HashMap<String, AttribFunction>();
 		this.attribNamesAndTypes = attribNamesAndTypes;
+		this.leadingArgs = new ArrayList<Class>();
 
 		final Container contentPane = getContentPane();
 		final GroupLayout groupLayout = new GroupLayout(contentPane);
@@ -150,12 +155,8 @@ public class FormulaBuilderDialog extends JDialog {
 		contentPane.add(argumentPanel);
 		argumentPanel.setBorder(BorderFactory.createTitledBorder("Next Argument"));
 
-		final JComboBox attribNamesComboBox = new JComboBox();
-		final ArrayList possibleAttribNames = new ArrayList(20);
-		for (final String attribName : attribNamesAndTypes.keySet()) {
-			final Class attribType = attribNamesAndTypes.get(attribName);
-			attribNamesComboBox.addItem(attribName);
-		}
+		attribNamesComboBox = new JComboBox();
+		updateAttribNamesComboBox();
 		argumentPanel.add(attribNamesComboBox);
 
 		final JLabel orLabel = new JLabel();
@@ -170,61 +171,41 @@ public class FormulaBuilderDialog extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					final String currentFormula = formulaTextField.getText();
 					final String constExpr = constantValuesTextField.getText();
-					if (constExpr != null && !constExpr.isEmpty())
+					if (constExpr != null && !constExpr.isEmpty()) {
 						formulaTextField.setText(currentFormula + constExpr);
+						constantValuesTextField.setText("");
+					}
 					else {
 						final String attribName = (String)attribNamesComboBox.getSelectedItem();
-						formulaTextField.setText(currentFormula + attribNameAsReference(attribName));
+						formulaTextField.setText(currentFormula + EquationUtil.attribNameAsReference(attribName));
 					}
 				}
 			});
-	}
-
-	private String attribNameAsReference(final String attribName) {
-		if (isSimpleAttribName(attribName))
-			return "$" + attribName;
-		else
-			return "${" + escapeAttribName(attribName) + "}";
+		argumentPanel.add(addButton);
 	}
 
 	/**
-	 *  @param attribName the name to test
-	 *  @returns true if "attribName" start with a letter and consists of only letters and digits, else false
+	 *  Fills the attribute names combox box with the subset of valid (as in potential current function
+	 *  arguments) attribute names.
 	 */
-	private static boolean isSimpleAttribName(final String attribName) {
-		final int length = attribName.length();
-		if (length == 0)
-			throw new IllegalStateException("empty attribute names should never happen!");
-
-		if (!Character.isLetter(attribName.charAt(0)))
-			return false;
-
-		for (int i = 1; i < length; ++i) {
-			final char ch = attribName.charAt(i);
-			if (!Character.isLetter(ch) && !Character.isDigit(ch))
-				return false;
+	private void updateAttribNamesComboBox() {
+		// Get the set of allowed types for the next argument:
+		final Class[] leadingArgsAsArray = new Class[leadingArgs.size()];
+		leadingArgs.toArray(leadingArgsAsArray);
+		final List<Class> possibleArgTypes = function.getPossibleArgTypes(leadingArgsAsArray);
+		
+		final ArrayList possibleAttribNames = new ArrayList(20);
+		for (final String attribName : attribNamesAndTypes.keySet()) {
+			final Class attribType = attribNamesAndTypes.get(attribName);
+			if (isTypeCompatible(possibleArgTypes, attribType))
+				attribNamesComboBox.addItem(attribName);
 		}
-
-		return true;
 	}
 
-	private static String escapeAttribName(final String attribName) {
-		final int length = attribName.length();
-		final StringBuilder escapedAttribName = new StringBuilder(length * 2);
-		for (int i = 0; i < length; ++i) {
-			final char ch = attribName.charAt(i);
-			switch (ch) {
-			case ' ':
-			case '\\':
-			case '{':
-			case '}':
-			case ':':
-				escapedAttribName.append('\\');
-			}
-			escapedAttribName.append(ch);
-		}
-
-		return escapedAttribName.toString();
+	private boolean isTypeCompatible(final List<Class> allowedArgumentTypes, final Class attribType) {
+		if (allowedArgumentTypes.contains(Object.class))
+			return true;
+		return allowedArgumentTypes.contains(attribType);
 	}
 			
 	private void initOkButton(final Container contentPane) {
@@ -253,6 +234,7 @@ public class FormulaBuilderDialog extends JDialog {
 		if (funcName == null || formulaTextField == null || usageLabel == null)
 			return;
 
+		leadingArgs.clear();
 		function = stringToFunctionMap.get(funcName);
 		formulaTextField.setText(function.getName() + "(");
 		usageLabel.setText(function.getUsageDescription());
