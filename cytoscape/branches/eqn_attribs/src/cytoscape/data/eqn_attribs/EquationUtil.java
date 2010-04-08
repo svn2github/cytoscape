@@ -60,6 +60,8 @@ public class EquationUtil {
 		for (final String attribName : cyAttribs.getAttributeNames()) {
 			if (ignore == null || ignore.equals(attribName))
 				continue;
+			if (!cyAttribs.getUserVisible(attribName))
+				continue;
 
 			final byte type = cyAttribs.getType(attribName);
 			if (type == CyAttributes.TYPE_BOOLEAN)
