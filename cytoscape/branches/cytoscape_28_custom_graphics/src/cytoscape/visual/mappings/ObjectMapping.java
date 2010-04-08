@@ -67,7 +67,6 @@ public interface ObjectMapping extends Cloneable {
     public static final byte EDGE_MAPPING = 0;
     public static final byte NODE_MAPPING = 1;
 
-
     public Class<?> getRangeClass();
 
     /**
@@ -90,12 +89,21 @@ public interface ObjectMapping extends Cloneable {
      * if preserveMapping is true and cleared otherwise. The network argument is
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
+     * 
+     * Do not use this method.  None of the network, preserveMapping parameters are used in Cytoscape.
+     * Will be removed in 2.8.
      */
     @Deprecated
     public void setControllingAttributeName(String attrName, CyNetwork network,
         boolean preserveMapping);
 
     
+    /**
+     * Set controlling attribute of this mapping.
+     * 
+     * @param controllingAttrName - name of the attribute associated with this mapping.
+     * 
+     */
     public void setControllingAttributeName(final String controllingAttrName);
     
     
@@ -136,6 +144,7 @@ public interface ObjectMapping extends Cloneable {
 
     /**
      * Do not use this method.  Will be removed in next release (2.8)
+     * 
      * It was for old VizMape GUI which was removed in 2.5.
      * 
      * @param parent
@@ -149,7 +158,7 @@ public interface ObjectMapping extends Cloneable {
 
     public Object clone();
 
-    public void applyProperties(Properties props, String baseKey, ValueParser parser);
+    public void applyProperties(Properties props, String baseKey, ValueParser<?> parser);
 
     public Properties getProperties(String baseKey);
 }

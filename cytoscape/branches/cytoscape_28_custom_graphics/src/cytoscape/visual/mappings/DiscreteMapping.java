@@ -39,16 +39,13 @@ package cytoscape.visual.mappings;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
-import cytoscape.CyNetwork;
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.discrete.DiscreteLegend;
 import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
@@ -61,18 +58,14 @@ import cytoscape.visual.parsers.ValueParser;
  * data value is extracted from a bundle of attributes by using a specified data
  * attribute name.
  */
-public class DiscreteMapping extends SubjectBase implements ObjectMapping {
+public class DiscreteMapping extends AbstractMapping {
 
 	private static final Class<?>[] ACCEPTED_CLASSES = { String.class,
 			Number.class, Integer.class, Double.class, Float.class, Long.class,
 			Short.class, NodeShape.class, List.class, Boolean.class };
-	
-	Object defaultObj; // the default value held by this mapping
-	Class<?> rangeClass; // the valid range class for this mapping
-	String attrName; // the name of the controlling data attribute
-	protected byte mapType; // node or edge; specifies which attributes
-	// to use.
-	private TreeMap treeMap; // contains the actual map elements (sorted)
+
+	private SortedMap<Object, Object> treeMap; // contains the actual map
+												// elements (sorted)
 	private Object lastKey;
 
 	/**
@@ -84,6 +77,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 *            Map Type, ObjectMapping.EDGE_MAPPING or
 	 *            ObjectMapping.NODE_MAPPING.
 	 */
+	@Deprecated
 	public DiscreteMapping(Object defObj, byte mapType) {
 		this(defObj, null, mapType);
 	}
@@ -99,21 +93,16 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 *            Map Type, ObjectMapping.EDGE_MAPPING or
 	 *            ObjectMapping.NODE_MAPPING.
 	 */
+	@Deprecated
 	public DiscreteMapping(Object defObj, String attrName, byte mapType) {
-		treeMap = new TreeMap();
+		this(defObj.getClass(), attrName);
+	}
 
-		this.defaultObj = defObj;
-		this.rangeClass = defObj.getClass();
-
-		if ((mapType != ObjectMapping.EDGE_MAPPING)
-				&& (mapType != ObjectMapping.NODE_MAPPING))
-			throw new IllegalArgumentException("Unknown mapping type "
-					+ mapType);
-
-		this.mapType = mapType;
-
-		if (attrName != null)
-			setControllingAttributeName(attrName, null, false);
+	public DiscreteMapping(final Class<?> rangeClass,
+			final String controllingAttrName) {
+		super(rangeClass, controllingAttrName);
+		this.treeMap = new TreeMap<Object, Object>();
+		this.acceptedClasses = ACCEPTED_CLASSES;
 	}
 
 	/**
@@ -122,15 +111,16 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * @return DiscreteMapping Object.
 	 */
 	public Object clone() {
-		final DiscreteMapping clone = new DiscreteMapping(defaultObj, attrName,
-				mapType);
+		final DiscreteMapping clone = new DiscreteMapping(rangeClass,
+				controllingAttrName);
 
 		// Copy over all listeners...
-		for (ChangeListener listener : observers) {
+		for (ChangeListener listener : observers)
 			clone.addChangeListener(listener);
-		}
 
-		clone.putAll((TreeMap) treeMap.clone());
+		// Copy key-value pairs
+		for (Object key : this.treeMap.keySet())
+			clone.treeMap.put(key, this.treeMap.get(key));
 
 		return clone;
 	}
@@ -180,65 +170,12 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 		treeMap.putAll(map);
 	}
 
-	// AJK: 05/05/06 BEGIN
 	/**
 	 * gets all map values
 	 * 
 	 */
-	public Map getAll() {
+	public Map<Object, Object> getAll() {
 		return treeMap;
-	}
-
-	// AJK: 05/05/06 END
-
-	/**
-	 * Gets the Range Class. Required by the ObjectMapping interface.
-	 * 
-	 * @return Class object.
-	 */
-	public Class getRangeClass() {
-		return rangeClass;
-	}
-
-	/**
-	 * Gets Accepted Data Classes. Required by the ObjectMapping interface.
-	 * 
-	 * @return ArrayList of Class objects.
-	 */
-	public Class<?>[] getAcceptedDataClasses() {
-		return ACCEPTED_CLASSES;
-	}
-
-	/**
-	 * Gets the Name of the Controlling Attribute. Required by the ObjectMapping
-	 * interface.
-	 * 
-	 * @return Attribue Name.
-	 */
-	public String getControllingAttributeName() {
-		return attrName;
-	}
-
-	/**
-	 * Call whenever the controlling attribute changes. If preserveMapping is
-	 * true, all the currently stored mappings are unchanged; otherwise all the
-	 * mappings are cleared. In either case, this method calls {@link #getUI} to
-	 * rebuild the UI for this mapping, which in turn calls loadKeys to load the
-	 * current data values for the new attribute.
-	 * <p>
-	 * Called by event handler from AbstractCalculator
-	 * {@link cytoscape.visual.calculators.AbstractCalculator}.
-	 * 
-	 * @param attrName
-	 *            The name of the new attribute to map to
-	 */
-	public void setControllingAttributeName(String attrName, CyNetwork n,
-			boolean preserveMapping) {
-		this.attrName = attrName;
-
-		if (preserveMapping == false) {
-			treeMap = new TreeMap();
-		}
 	}
 
 	/**
@@ -253,13 +190,13 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 *            ValueParser Object.
 	 */
 	public void applyProperties(Properties props, String baseKey,
-			ValueParser parser) {
-		DiscreteMappingReader reader = new DiscreteMappingReader(props,
+			ValueParser<?> parser) {
+		final DiscreteMappingReader reader = new DiscreteMappingReader(props,
 				baseKey, parser);
-		String contValue = reader.getControllingAttributeName();
+		final String contValue = reader.getControllingAttributeName();
 
 		if (contValue != null)
-			setControllingAttributeName(contValue, null, false);
+			setControllingAttributeName(contValue);
 
 		this.treeMap = reader.getMap();
 	}
@@ -274,8 +211,8 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * @return Properties Object.
 	 */
 	public Properties getProperties(String baseKey) {
-		DiscreteMappingWriter writer = new DiscreteMappingWriter(attrName,
-				baseKey, treeMap);
+		final DiscreteMappingWriter writer = new DiscreteMappingWriter(
+				controllingAttrName, baseKey, treeMap);
 
 		return writer.getProperties();
 	}
@@ -289,26 +226,9 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 */
 	public Object calculateRangeValue(Map<String, Object> attrBundle) {
 		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(
-				treeMap, attrName);
+				treeMap, controllingAttrName);
 
 		return calculator.calculateRangeValue(attrBundle);
-	}
-
-	/**
-	 * Gets the UI Object Associated with the Mapper. Required by the
-	 * ObjectMapping interface.
-	 * 
-	 * @param parent
-	 *            Parent Dialog.
-	 * @param network
-	 *            CyNetwork.
-	 * @return JPanel Object.
-	 */
-	public JPanel getUI(JDialog parent, CyNetwork network) {
-		JPanel ret = new JPanel();
-		ret.add(new JLabel("this ui is no longer used"));
-
-		return ret;
 	}
 
 	/**
@@ -320,12 +240,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * @return DOCUMENT ME!
 	 */
 	public JPanel getLegend(VisualPropertyType vpt) {
-		return new DiscreteLegend(treeMap, attrName, vpt);
+		return new DiscreteLegend(treeMap, controllingAttrName, vpt);
 	}
 
-
-	@Override
-	public void setControllingAttributeName(String controllingAttrName) {
-		this.attrName = controllingAttrName;
-	}
 }

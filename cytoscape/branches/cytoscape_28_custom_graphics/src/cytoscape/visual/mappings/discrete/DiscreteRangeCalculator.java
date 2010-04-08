@@ -45,14 +45,14 @@ package cytoscape.visual.mappings.discrete;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.SortedMap;
 
 
 /**
  * Range Calculator for the Discrete Mapper.
  */
 public class DiscreteRangeCalculator {
-    private TreeMap map;
+    private SortedMap map;
     private String attrName;
 
     /**
@@ -60,7 +60,7 @@ public class DiscreteRangeCalculator {
      * @param map Discrete Map.
      * @param attrName Controlling Attribute Name.
      */
-    public DiscreteRangeCalculator(TreeMap map, String attrName) {
+    public DiscreteRangeCalculator(SortedMap map, String attrName) {
         this.map = map;
         this.attrName = attrName;
     }

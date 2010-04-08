@@ -48,6 +48,7 @@ import cytoscape.visual.parsers.ObjectToString;
 
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 
@@ -60,14 +61,14 @@ import java.util.TreeMap;
 public class DiscreteMappingWriter {
 	private String attrName;
 	private String baseKey;
-	private TreeMap map;
+	private SortedMap map;
 
 	/**
 	 * Constructor.
 	 * @param attrName Controlling Attribute Name.
 	 * @param map Discrete Map.
 	 */
-	public DiscreteMappingWriter(String attrName, String baseKey, TreeMap map) {
+	public DiscreteMappingWriter(String attrName, String baseKey, SortedMap map) {
 		this.attrName = attrName;
 		this.baseKey = baseKey;
 		this.map = map;

@@ -48,6 +48,7 @@ import cytoscape.visual.parsers.ValueParser;
 
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 
@@ -59,7 +60,7 @@ import java.util.TreeMap;
  */
 public class DiscreteMappingReader {
     private String controllingAttribute;
-    private TreeMap map = new TreeMap();
+    private SortedMap map = new TreeMap();
 
     /**
      * Constructor.
@@ -68,7 +69,7 @@ public class DiscreteMappingReader {
      * @param parser ValueParser Object.
      */
     public DiscreteMappingReader(Properties props, String baseKey,
-        ValueParser parser) {
+        ValueParser<?> parser) {
         readProperties(props, baseKey, parser);
     }
 
@@ -84,7 +85,7 @@ public class DiscreteMappingReader {
      * Gets the Discrete Map.
      * @return TreeMap Object.
      */
-    public TreeMap getMap() {
+    public SortedMap getMap() {
         return map;
     }
 
@@ -92,7 +93,7 @@ public class DiscreteMappingReader {
      * Read in Settings from the Properties Object.
      */
     private void readProperties(Properties props, String baseKey,
-        ValueParser parser) {
+        ValueParser<?> parser) {
         String contKey = baseKey + ".controller";
         controllingAttribute = props.getProperty(contKey);
 

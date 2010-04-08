@@ -305,7 +305,7 @@ public abstract class AbstractCalculator implements Calculator {
 	void updateAttribute(String attrName, CyNetwork network, int mIndex)
 	    throws ArrayIndexOutOfBoundsException {
 		ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
-		m.setControllingAttributeName(attrName, network, false);
+		m.setControllingAttributeName(attrName);
 
 		// fireStateChanged();
 	}

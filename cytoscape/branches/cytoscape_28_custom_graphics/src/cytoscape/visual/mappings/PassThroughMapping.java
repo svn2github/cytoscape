@@ -41,11 +41,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -53,9 +51,7 @@ import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.logger.CyLogger;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ValueParser;
 
@@ -66,18 +62,13 @@ import cytoscape.visual.parsers.ValueParser;
  * expected range class; null is returned instead if the data value is of the
  * wrong type.
  */
-public class PassThroughMapping implements ObjectMapping {
+public class PassThroughMapping extends AbstractMapping {
 
 	// Legend UI theme
 	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
 	private static final Color TITLE_COLOR = new Color(10, 200, 255);
 
-	// the class of values held by this mapping
-	private Class<?> rangeClass;
 	private RangeValueCalculator<?> rangeValueCalculator;
-
-	// Name of the controlling data attribute
-	private String controllingAttrName;
 
 	private final Class<?>[] ACCEPTED_CLASS = { Object.class };
 
@@ -107,14 +98,13 @@ public class PassThroughMapping implements ObjectMapping {
 	 */
 	@Deprecated
 	public PassThroughMapping(final Object defaultObj) {
-		this.rangeClass = defaultObj.getClass();		
+		this(defaultObj, null);	
 	}
 	
 	
 	@Deprecated
 	public PassThroughMapping(Object defaultObj, String attrName) {
-		this.rangeClass = defaultObj.getClass();
-		this.controllingAttrName = attrName;
+		this(defaultObj.getClass(), attrName);
 	}
 
 	/**
@@ -126,9 +116,8 @@ public class PassThroughMapping implements ObjectMapping {
 	 *            DOCUMENT ME!
 	 */
 	public PassThroughMapping(final Class<?> rangeClass, final String attrName) {
-		this.rangeClass = rangeClass;
-		this.controllingAttrName = attrName;
-
+		super(rangeClass, attrName);
+		this.acceptedClasses = ACCEPTED_CLASS;
 		System.out.println("@@@@@ PTh Mapping created: " + attrName);
 	}
 
@@ -138,66 +127,15 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @return DOCUMENT ME!
 	 */
 	public Object clone() {
-		final PassThroughMapping copy;
+		final PassThroughMapping copy = new PassThroughMapping(this.rangeClass, this.controllingAttrName);
 
-		try {
-			copy = (PassThroughMapping) super.clone();
-		} catch (CloneNotSupportedException e) {
-			CyLogger.getLogger().error(
-					"Critical error in PassThroughMapping - was not cloneable",
-					e);
-
-			return null;
-		}
-
-		copy.controllingAttrName = new String(controllingAttrName);
+		copy.controllingAttrName = new String(this.controllingAttrName);
 
 		// don't need to explicitly clone rangeClass since cloned calculator
 		// has same type as original.
 		return copy;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public Class<?> getRangeClass() {
-		return rangeClass;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public Class<?>[] getAcceptedDataClasses() {
-		return ACCEPTED_CLASS;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public String getControllingAttributeName() {
-		return controllingAttrName;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param attrName
-	 *            DOCUMENT ME!
-	 * @param network
-	 *            DOCUMENT ME!
-	 * @param preserveMapping
-	 *            DOCUMENT ME!
-	 */
-	public void setControllingAttributeName(final String attrName,
-			CyNetwork network, boolean preserveMapping) {
-		this.controllingAttrName = attrName;
-	}
 
 	/**
 	 * Empty implementation because PassThroughMapping has no UI.
@@ -210,29 +148,7 @@ public class PassThroughMapping implements ObjectMapping {
 	 */
 	public void removeChangeListener(ChangeListener l) {
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param parent
-	 *            DOCUMENT ME!
-	 * @param network
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@Deprecated
-	public JPanel getUI(JDialog parent, CyNetwork network) {
-		// construct a UI to view/edit this mapping; only needs to view/set
-		// the controlling attribute name
-		JPanel p = new JPanel();
-		JLabel l1 = new JLabel("This is a passthrough mapping;");
-		JLabel l2 = new JLabel("it has no user-editable parameters.");
-		p.setLayout(new GridLayout(2, 1));
-		p.add(l1);
-		p.add(l2);
-		return p;
-	}
+	
 
 	/**
 	 * DOCUMENT ME!
@@ -265,12 +181,12 @@ public class PassThroughMapping implements ObjectMapping {
 	 * supplied Properties argument.
 	 */
 	public void applyProperties(Properties props, String baseKey,
-			ValueParser parser) {
+			ValueParser<?> parser) {
 		String contKey = baseKey + ".controller";
 		String contValue = props.getProperty(contKey);
 
 		if (contValue != null)
-			setControllingAttributeName(contValue, null, false);
+			setControllingAttributeName(contValue);
 	}
 
 	/**
@@ -314,10 +230,5 @@ public class PassThroughMapping implements ObjectMapping {
 		p.add(title, SwingConstants.CENTER);
 
 		return p;
-	}
-
-	@Override
-	public void setControllingAttributeName(String controllingAttrName) {
-		this.controllingAttrName = controllingAttrName;
 	}
 }

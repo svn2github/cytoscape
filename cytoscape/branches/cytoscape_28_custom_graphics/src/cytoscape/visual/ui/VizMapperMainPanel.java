@@ -2166,15 +2166,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				if (saved == null) {
 					discMapBuffer.put(curMappingName, ((DiscreteMapping) mapping).getAll());
-					mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
+					mapping.setControllingAttributeName(ctrAttrName);
 				} else if (saved != null) {
 					// Mapping exists
 					discMapBuffer.put(curMappingName, ((DiscreteMapping) mapping).getAll());
-					mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
+					mapping.setControllingAttributeName(ctrAttrName);
 					((DiscreteMapping) mapping).putAll(saved);
 				}
 			} else {
-				mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
+				mapping.setControllingAttributeName(ctrAttrName);
 			}
 
 			visualPropertySheetPanel.removeProperty(typeRootProp);
@@ -2333,11 +2333,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		if (newCalc == null) {
 			newCalc = getNewCalculator(type, newMapName, newCalcName);
-			newCalc.getMapping(0).setControllingAttributeName((String) attrName, null, true);
+			newCalc.getMapping(0).setControllingAttributeName((String) attrName);
 			vmm.getCalculatorCatalog().addCalculator(newCalc);
 		}
 
-		newCalc.getMapping(0).setControllingAttributeName((String) attrName, null, true);
+		newCalc.getMapping(0).setControllingAttributeName((String) attrName);
 
 		if (type.isNodeProp()) {
 			vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(newCalc);
@@ -2363,7 +2363,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null) {
 				final Calculator newC = getNewCalculator(type, oldMappingTypeName, oldCalcName);
-				newC.getMapping(0).setControllingAttributeName((String) attrName, null, false);
+				newC.getMapping(0).setControllingAttributeName((String) attrName);
 				vmm.getCalculatorCatalog().addCalculator(newC);
 			}
 		}
@@ -3266,7 +3266,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				final String ctrAttrName = nodeLabelCalc.getMapping(0).getControllingAttributeName();
-				dm.setControllingAttributeName(ctrAttrName, Cytoscape.getCurrentNetwork(), false);
+				dm.setControllingAttributeName(ctrAttrName);
 
 				// final Set<Object> attrSet =
 				// loadKeys(oMap.getControllingAttributeName(), attr, oMap);
@@ -3280,7 +3280,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					wm = (DiscreteMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
 					                          .getCalculator(NODE_WIDTH).getMapping(0);
 
-					wm.setControllingAttributeName(ctrAttrName, Cytoscape.getCurrentNetwork(), false);
+					wm.setControllingAttributeName(ctrAttrName);
 
 					Set<Object> attrSet1;
 
@@ -3311,7 +3311,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					int longest = 0;
 
 					if (attr.getType(ctrAttrName) == CyAttributes.TYPE_SIMPLE_LIST) {
-						wm.setControllingAttributeName("ID", Cytoscape.getCurrentNetwork(), false);
+						wm.setControllingAttributeName("ID");
 
 						attrSet1 = new TreeSet<Object>();
 
@@ -3378,7 +3378,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					wm = (DiscreteMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
 					                          .getCalculator(NODE_HEIGHT).getMapping(0);
 
-					wm.setControllingAttributeName(ctrAttrName, Cytoscape.getCurrentNetwork(), false);
+					wm.setControllingAttributeName(ctrAttrName);
 
 					Set<Object> attrSet1;
 
@@ -3402,7 +3402,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					String[] listObj;
 
 					if (attr.getType(ctrAttrName) == CyAttributes.TYPE_SIMPLE_LIST) {
-						wm.setControllingAttributeName("ID", Cytoscape.getCurrentNetwork(), false);
+						wm.setControllingAttributeName("ID");
 
 						attrSet1 = new TreeSet<Object>();
 
