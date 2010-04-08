@@ -37,8 +37,15 @@
 
 <div class="item">
 <h2><b><i>NEW!</i></b> Cytoscape 2.7.0</h2>
+<!--
+-->
 <div id="paragraph">
 <b>A new Cytoscape release with cool new functionality! </b>
+<a href="screenshots/2_7_ss1.png"> <img
+	src="screenshots/2_7_ss1_thumb.png" alt="Cytoscape 2.7.0 Screenshot" />
+</a>
+<br>
+<br>
 New features include:
 <ul>
 <li>Nested Networks</li>
