@@ -54,7 +54,7 @@ public class EquationUtil {
 	 *  @param attribNameToTypeMap  the result of the translation from attribute types to
 	 *                              attribute equation types
 	 */
-	void initAttribNameToTypeMap(final CyAttributes cyAttribs, final String ignore,
+	public static void initAttribNameToTypeMap(final CyAttributes cyAttribs, final String ignore,
 	                             final Map<String, Class> attribNameToTypeMap)
 	{
 		for (final String attribName : cyAttribs.getAttributeNames()) {
