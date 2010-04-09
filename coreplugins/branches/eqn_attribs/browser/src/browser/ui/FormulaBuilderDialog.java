@@ -65,19 +65,35 @@ import cytoscape.data.eqn_attribs.Parser;
 import org.jdesktop.layout.GroupLayout;
 
 
+enum ApplicationDomain {
+	CURRENT_CELL("Current cell only"),      // The currently selected cell in the browser.
+	CURRENT_SELECTION("Current selection"), // All entries in the browser.
+	ENTIRE_ATTRIBUTE("Entire attribute");   // All values of the current attribute.
+
+	private final String asString;
+	ApplicationDomain(final String asString) { this.asString = asString; }
+	@Override public String toString() { return asString; }
+}
+
+
 public class FormulaBuilderDialog extends JDialog {
 	private String columnName;
 	private JComboBox functionComboBox = null;
 	private JLabel usageLabel = null;
 	private JTextField formulaTextField = null;
 	private JPanel argumentPanel;
+	private JButton addButton;
+	private JButton doneButton;
 	private JComboBox attribNamesComboBox = null;
+	private JLabel applyToLabel;
+	private JComboBox applyToComboBox = null;
 	private JButton okButton = null;
 	private JButton cancelButton = null;
 	private AttribFunction function = null;
 	private Map<String, AttribFunction> stringToFunctionMap;
 	private Map<String, Class> attribNamesAndTypes;
 	private ArrayList<Class> leadingArgs;
+	private ApplicationDomain applicationDomain;
 
 
 	public FormulaBuilderDialog(final DataTableModel tableModel, final DataObjectType tableObjectType,
@@ -91,6 +107,7 @@ public class FormulaBuilderDialog extends JDialog {
 		this.stringToFunctionMap = new HashMap<String, AttribFunction>();
 		this.attribNamesAndTypes = attribNamesAndTypes;
 		this.leadingArgs = new ArrayList<Class>();
+		this.applicationDomain = ApplicationDomain.CURRENT_CELL;
 
 		final Container contentPane = getContentPane();
 		final GroupLayout groupLayout = new GroupLayout(contentPane);
@@ -100,6 +117,8 @@ public class FormulaBuilderDialog extends JDialog {
 		initUsageLabel(contentPane);
 		initFormulaTextField(contentPane);
 		initArgumentPanel(contentPane);
+		initApplyToLabel(contentPane);
+		initApplyToComboBox(contentPane);
 		initOkButton(contentPane);
 		initCancelButton(contentPane);
 
@@ -137,6 +156,8 @@ public class FormulaBuilderDialog extends JDialog {
 			functionComboBox.setSelectedIndex(0);
 			function = stringToFunctionMap.get(functionNames[0]);
 		}
+
+		functionSelected();
 	}
 
 	private void initUsageLabel(final Container contentPane) {
@@ -170,7 +191,7 @@ public class FormulaBuilderDialog extends JDialog {
 		final JTextField constantValuesTextField = new JTextField(15);
 		argumentPanel.add(constantValuesTextField);
 
-		final JButton addButton = new JButton("Add");
+		addButton = new JButton("Add");
 		addButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					final String currentFormula = formulaTextField.getText();
@@ -191,6 +212,29 @@ public class FormulaBuilderDialog extends JDialog {
 				}
 			});
 		argumentPanel.add(addButton);
+
+		doneButton = new JButton("Done");
+		argumentPanel.add(doneButton);
+		doneButton.setEnabled(false);
+	}
+
+	private void initApplyToLabel(final Container contentPane) {
+		applyToLabel = new JLabel("Apply to: ");
+		contentPane.add(applyToLabel);
+	}
+
+	private void initApplyToComboBox(final Container contentPane) {
+		applyToComboBox = new JComboBox();
+		applyToComboBox.addItem(ApplicationDomain.CURRENT_CELL);
+		applyToComboBox.addItem(ApplicationDomain.CURRENT_SELECTION);
+		applyToComboBox.addItem(ApplicationDomain.ENTIRE_ATTRIBUTE);
+		contentPane.add(applyToComboBox);
+		applyToComboBox.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					applicationDomain = (ApplicationDomain)applyToComboBox.getSelectedItem();
+				}
+			});
+		applyToComboBox.setEditable(false);
 	}
 
 	private boolean expressionIsValid(final List<Class> validArgTypes, final String expression) {
@@ -213,6 +257,7 @@ public class FormulaBuilderDialog extends JDialog {
 	 *  arguments) attribute names.
 	 */
 	private void updateAttribNamesComboBox() {
+		attribNamesComboBox.removeAllItems();
 		final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
 		final ArrayList possibleAttribNames = new ArrayList(20);
 		for (final String attribName : attribNamesAndTypes.keySet()) {
@@ -267,6 +312,9 @@ public class FormulaBuilderDialog extends JDialog {
 		function = stringToFunctionMap.get(funcName);
 		formulaTextField.setText(function.getName() + "(");
 		usageLabel.setText(function.getUsageDescription());
+		updateAttribNamesComboBox();
+		addButton.setEnabled(true);
+		doneButton.setEnabled(false);
 	}
 
 	private void initLayout(final GroupLayout groupLayout) {
@@ -277,6 +325,9 @@ public class FormulaBuilderDialog extends JDialog {
 					     .add(formulaTextField)
 					     .add(argumentPanel)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
+						       .add(applyToLabel)
+						       .add(applyToComboBox))
+					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
 						       .add(okButton)
 						       .add(cancelButton)));
 
@@ -286,6 +337,9 @@ public class FormulaBuilderDialog extends JDialog {
 					       .add(usageLabel)
 					       .add(formulaTextField)
 					       .add(argumentPanel)
+					       .add(groupLayout.createSequentialGroup()
+							 .add(applyToLabel)
+							 .add(applyToComboBox))
 					       .add(groupLayout.createSequentialGroup()
 							 .add(okButton)
 							 .add(cancelButton)));
@@ -372,6 +426,11 @@ public class FormulaBuilderDialog extends JDialog {
 			final AttribToken operatorToken = token2;
 
 			token2 = scanner.getToken();
+			if (token2 == AttribToken.EOS) {
+				errorMessage.append("Expression is incomplete!");
+				return null;
+			}
+
 			if (token1 != token2) {
 				errorMessage.append("Comparsion operator applied to two incompatible operands!");
 				return null;
