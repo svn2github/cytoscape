@@ -30,9 +30,8 @@
 package cytoscape.data.eqn_attribs.builtins;
 
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -131,11 +130,11 @@ public class Average implements AttribFunction {
 	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
 	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
 	 */
-	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length == 1 && leadingArgs[0] == List.class)
 			return null;
 
-		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		final List<Class> possibleNextArgs = new ArrayList<Class>();
 		possibleNextArgs.add(Double.class);
 		possibleNextArgs.add(Long.class);
 		if (leadingArgs.length == 0)

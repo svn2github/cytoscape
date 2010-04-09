@@ -30,7 +30,7 @@
 package cytoscape.data.eqn_attribs;
 
 
-import java.util.Set;
+import java.util.List;
 
 
 public interface AttribFunction {
@@ -74,5 +74,5 @@ public interface AttribFunction {
 	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  A null return indicates that no further arguments are valid.
 	 *  Please note that if the returned set contains a null, this indicates an optional additional argument.
 	 */
-	Set<Class> getPossibleArgTypes(final Class[] leadingArgs);
+	List<Class> getPossibleArgTypes(final Class[] leadingArgs);
 }

@@ -30,8 +30,8 @@
 package cytoscape.data.eqn_attribs.builtins;
 
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 import cytoscape.data.eqn_attribs.AttribFunction;
 
 
@@ -58,7 +58,9 @@ public class Round implements AttribFunction {
 	 *  @returns Double.class or null if there are not 2 args or the args are not of type Double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || argTypes[0] != Double.class || argTypes[1] != Double.class)
+		if (argTypes.length != 2
+		    || (argTypes[0] != Double.class && argTypes[0] != Long.class)
+		    || (argTypes[1] != Double.class && argTypes[1] != Long.class))
 			return null;
 
 		return Double.class;
@@ -71,9 +73,9 @@ public class Round implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = (Double)args[0];
+		final double number = (args[0].getClass() == Double.class) ? (Double)args[0] : (Long)args[0];
 		final double absNumber = Math.abs(number);
-		final double numDigits = Math.round((Double)args[1] - 0.5);
+		final double numDigits = (args[1].getClass() == Double.class) ? Math.round((Double)args[1] - 0.5) : (Long)args[1];
 		final double shift = Math.pow(10.0, numDigits);
 
 		final double roundedAbsNumber = Math.round(absNumber * shift) / shift;
@@ -86,16 +88,13 @@ public class Round implements AttribFunction {
 	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
 	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  An empty set inicates that no further arguments are valid.
 	 */
-	public Set<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length > 1)
 			return null;
 
-		final Set<Class> possibleNextArgs = new TreeSet<Class>();
+		final List<Class> possibleNextArgs = new ArrayList<Class>();
 		possibleNextArgs.add(Long.class);
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(Double.class);
-		if (leadingArgs.length == 1)
-			possibleNextArgs.add(null);
+		possibleNextArgs.add(Double.class);
 		
 		return possibleNextArgs;
 	}
