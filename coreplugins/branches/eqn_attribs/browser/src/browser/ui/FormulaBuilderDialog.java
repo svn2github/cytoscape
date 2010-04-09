@@ -168,7 +168,7 @@ public class FormulaBuilderDialog extends JDialog {
 	}
 
 	private void initFormulaTextField(final Container contentPane) {
-		formulaTextField = new JTextField(40);
+		formulaTextField = new JTextField(80);
 		contentPane.add(formulaTextField);
 		formulaTextField.setEditable(false);
 		if (function != null)
@@ -194,26 +194,57 @@ public class FormulaBuilderDialog extends JDialog {
 		addButton = new JButton("Add");
 		addButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					final String currentFormula = formulaTextField.getText();
+					final StringBuilder formula = new StringBuilder(formulaTextField.getText());
+					if (!leadingArgs.isEmpty()) // Not the first argument => we need a comma!
+						formula.append(',');
 					final String constExpr = constantValuesTextField.getText();
 					if (constExpr != null && !constExpr.isEmpty()) {
 						final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
-						if (!expressionIsValid(possibleArgTypes, constExpr))
+						final Class exprType;
+						if ((exprType = expressionIsValid(possibleArgTypes, constExpr)) == null)
 							return;
 
-						formulaTextField.setText(currentFormula + constExpr);
+						formula.append(constExpr);
 						constantValuesTextField.setText("");
+						leadingArgs.add(exprType);
 					}
 					else {
 						final String attribName = (String)attribNamesComboBox.getSelectedItem();
-						formulaTextField.setText(currentFormula
-						                         + EquationUtil.attribNameAsReference(attribName));
+						formula.append(EquationUtil.attribNameAsReference(attribName));
+						leadingArgs.add(attribNamesAndTypes.get(attribName));
 					}
+					formulaTextField.setText(formula.toString());
+
+					final List<Class> possibleNextArgTypes = getPossibleNextArgumentTypes();
+					if (possibleNextArgTypes == null) {
+						final String currentFormula = formulaTextField.getText();
+						formulaTextField.setText(currentFormula + ")");
+
+						addButton.setEnabled(false);
+						doneButton.setEnabled(false);
+						okButton.setEnabled(true);
+					}
+					else if (possibleNextArgTypes.contains(null)) {
+						doneButton.setEnabled(true);
+						okButton.setEnabled(true);
+					}
+					updateAttribNamesComboBox();
 				}
 			});
 		argumentPanel.add(addButton);
 
 		doneButton = new JButton("Done");
+		doneButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+					final String currentFormula = formulaTextField.getText();
+					formulaTextField.setText(currentFormula + ")");
+
+					addButton.setEnabled(false);
+					doneButton.setEnabled(false);
+					okButton.setEnabled(true);
+				}
+			});
+
 		argumentPanel.add(doneButton);
 		doneButton.setEnabled(false);
 	}
@@ -228,6 +259,11 @@ public class FormulaBuilderDialog extends JDialog {
 		applyToComboBox.addItem(ApplicationDomain.CURRENT_CELL);
 		applyToComboBox.addItem(ApplicationDomain.CURRENT_SELECTION);
 		applyToComboBox.addItem(ApplicationDomain.ENTIRE_ATTRIBUTE);
+
+		final Dimension widthAndHeight = applyToComboBox.getPreferredSize();
+		final Dimension desiredWidthAndHeight = new Dimension(60, (int)widthAndHeight.getHeight());
+		applyToComboBox.setPreferredSize(desiredWidthAndHeight);
+
 		contentPane.add(applyToComboBox);
 		applyToComboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -237,19 +273,23 @@ public class FormulaBuilderDialog extends JDialog {
 		applyToComboBox.setEditable(false);
 	}
 
-	private boolean expressionIsValid(final List<Class> validArgTypes, final String expression) {
+	/**
+	 *  Tests whether "expression" is valid given the possible argument types are "validArgTypes".
+	 *  @returns null if "expression" is invalid or the type of "expression" if it was valid
+	 */
+	private Class expressionIsValid(final List<Class> validArgTypes, final String expression) {
 		final StringBuilder errorMessage = new StringBuilder(30);
 		final Class expressionType = parseSimpleExpression(expression, errorMessage);
 		if (expression == null) {
 			displayErrorMessage(errorMessage.toString());
-			return false;
+			return null;
 		}
 
 		if (validArgTypes.contains(expressionType))
-			return true;
+			return expressionType;
 
 		displayErrorMessage("Expression is of an incompatible data type!");
-		return false;
+		return null;
 	}
 
 	/**
@@ -277,6 +317,8 @@ public class FormulaBuilderDialog extends JDialog {
 	}
 
 	private boolean isTypeCompatible(final List<Class> allowedArgumentTypes, final Class attribType) {
+		if (allowedArgumentTypes == null)
+			return false;
 		if (allowedArgumentTypes.contains(Object.class))
 			return true;
 		return allowedArgumentTypes.contains(attribType);
@@ -310,11 +352,13 @@ public class FormulaBuilderDialog extends JDialog {
 
 		leadingArgs.clear();
 		function = stringToFunctionMap.get(funcName);
-		formulaTextField.setText(function.getName() + "(");
+		final boolean zeroArgumentFunction = getPossibleNextArgumentTypes() == null;
+		formulaTextField.setText(function.getName() + (zeroArgumentFunction ? "()" : "("));
 		usageLabel.setText(function.getUsageDescription());
 		updateAttribNamesComboBox();
-		addButton.setEnabled(true);
+		addButton.setEnabled(zeroArgumentFunction ? false : true);
 		doneButton.setEnabled(false);
+		okButton.setEnabled(zeroArgumentFunction);
 	}
 
 	private void initLayout(final GroupLayout groupLayout) {
