@@ -50,6 +50,7 @@ import cytoscape.visual.parsers.ObjectToString;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -66,7 +67,7 @@ public class ContinuousMappingWriter {
      * @param attrName Controlling Attribute String.
      * @param interp Interpolator Object.
      */
-    public ContinuousMappingWriter(ArrayList points, String baseKey,
+    public ContinuousMappingWriter(List points, String baseKey,
         String attrName, Interpolator interp) {
         newProps = new Properties();
         loadProperties(points, baseKey, attrName, interp);
@@ -84,7 +85,7 @@ public class ContinuousMappingWriter {
      * Return a Properties object with entries suitable for customizing this
      * object via the applyProperties method.
      */
-    private void loadProperties(ArrayList points, String baseKey,
+    private void loadProperties(List points, String baseKey,
         String contAttrName, Interpolator interp) {
         // save the controlling attribute name
         String contAttrKey = baseKey + ".controller";
@@ -112,7 +113,7 @@ public class ContinuousMappingWriter {
             //  save the domain value
             String bvKey = bvBase + ".domainvalue";
             ContinuousMappingPoint cmp = (ContinuousMappingPoint) si.next();
-            Double dVal = new Double(cmp.getValue());
+            Double dVal = cmp.getValue().doubleValue();
             String dValString = dVal.toString();
             newProps.setProperty(bvKey, dValString);
 

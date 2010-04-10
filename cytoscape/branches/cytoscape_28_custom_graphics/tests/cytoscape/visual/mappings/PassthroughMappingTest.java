@@ -92,7 +92,6 @@ public class PassthroughMappingTest extends TestCase {
 		rangeVal = pm.calculateRangeValue(bundle);
 		
 		assertNull(rangeVal);
-
 	}
 
 }

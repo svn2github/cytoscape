@@ -51,8 +51,8 @@ import java.util.SortedMap;
 /**
  * Range Calculator for the Discrete Mapper.
  */
-public class DiscreteRangeCalculator {
-    private SortedMap map;
+public class DiscreteRangeCalculator<T, V> {
+    private SortedMap<T, V> map;
     private String attrName;
 
     /**
@@ -60,7 +60,7 @@ public class DiscreteRangeCalculator {
      * @param map Discrete Map.
      * @param attrName Controlling Attribute Name.
      */
-    public DiscreteRangeCalculator(SortedMap map, String attrName) {
+    public DiscreteRangeCalculator(SortedMap<T,V> map, String attrName) {
         this.map = map;
         this.attrName = attrName;
     }
@@ -70,7 +70,7 @@ public class DiscreteRangeCalculator {
      * @param attrBundle Attribute Bundle.
      * @return Object.
      */
-    public Object calculateRangeValue(Map attrBundle) {
+    public V calculateRangeValue(Map<String, Object> attrBundle) {
         if ((attrBundle == null) || (attrName == null))
             return null;
 

@@ -12,72 +12,81 @@ import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ValueParser;
 
-public abstract class AbstractMapping extends SubjectBase implements
-		ObjectMapping {
+public abstract class AbstractMapping<K, V> extends SubjectBase implements
+		ObjectMapping<V> {
 	
-	protected final Class<?> rangeClass;
+	private JPanel dummyPanel;
+	
+	// Mapped value class.
+	protected final Class<V> rangeClass;
+	
+	// Attribute name associated with this mapping.
 	protected String controllingAttrName;
-	protected Class<?>[] acceptedClasses;
-
 	
-	public AbstractMapping(final Class<?> rangeClass, final String controllingAttrName) {
+	// Attribute value types compatible withi this mapping.
+	protected Class<?>[] acceptedClasses;
+	
+	public AbstractMapping(final Class<V> rangeClass, final String controllingAttrName) {
 		this.acceptedClasses = new Class<?>[]{ Object.class };
 		this.controllingAttrName = controllingAttrName;
 		this.rangeClass = rangeClass;
 	}
 	
+	
 	@Override
-	public void applyProperties(Properties props, String baseKey,
-			ValueParser<?> parser) {
-		// TODO Auto-generated method stub
-
-	}
-
+	abstract public void applyProperties(Properties props, String baseKey,
+			ValueParser<V> parser);
+	
+	
 	@Override
-	public Object calculateRangeValue(Map<String, Object> attrBundle) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	abstract public Properties getProperties(String baseKey);
 
+	
+	@Override
+	public abstract V calculateRangeValue(Map<String, Object> attrBundle);
+
+	
 	@Override
 	public Class<?>[] getAcceptedDataClasses() {
 		return this.acceptedClasses;
 	}
 
+	
 	@Override
 	public String getControllingAttributeName() {
 		return this.controllingAttrName;
 	}
-
+	
+	
 	@Override
-	public JPanel getLegend(VisualPropertyType type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Properties getProperties(String baseKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Class<?> getRangeClass() {
+	public Class<V> getRangeClass() {
 		return this.rangeClass;
 	}
 
-	@Override
-	public void setControllingAttributeName(String attrName, CyNetwork network,
-			boolean preserveMapping) {
-		this.setControllingAttributeName(attrName);
-	}
 
 	@Override
 	public void setControllingAttributeName(String controllingAttrName) {
 		this.controllingAttrName = controllingAttrName;
 	}
 	
+	
 	abstract public Object clone();
+	
+	
+	@Override
+	public JPanel getLegend(VisualPropertyType type) {
+		return getDummyPanel();
+	}
+	
+	
+	private JPanel getDummyPanel() {
+		if(dummyPanel == null) {
+			dummyPanel = new JPanel();
+			dummyPanel.add(new JLabel("GUI is not configured for this mapping."));
+		}
+		return dummyPanel;
+	}
+	
 	
 	/**
 	 * Gets the UI Object Associated with the Mapper. Required by the
@@ -91,10 +100,13 @@ public abstract class AbstractMapping extends SubjectBase implements
 	 */
 	@Deprecated
 	public JPanel getUI(JDialog parent, CyNetwork network) {
-		JPanel ret = new JPanel();
-		ret.add(new JLabel("this ui is no longer used"));
-
-		return ret;
+		return getDummyPanel();
 	}
-
+	
+	
+	@Deprecated
+	public void setControllingAttributeName(String attrName, CyNetwork network,
+			boolean preserveMapping) {
+		this.setControllingAttributeName(attrName);
+	}
 }

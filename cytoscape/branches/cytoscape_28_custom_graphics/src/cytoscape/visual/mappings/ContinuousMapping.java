@@ -33,70 +33,69 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package cytoscape.visual.mappings;
 
-import cytoscape.CyNetwork;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-import cytoscape.visual.SubjectBase;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeListener;
+
 import cytoscape.visual.VisualPropertyType;
-
 import cytoscape.visual.mappings.continuous.ContinuousLegend;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 import cytoscape.visual.mappings.continuous.ContinuousMappingReader;
 import cytoscape.visual.mappings.continuous.ContinuousMappingWriter;
 import cytoscape.visual.mappings.continuous.ContinuousRangeCalculator;
-
 import cytoscape.visual.parsers.ValueParser;
-
-import java.awt.Color;
-
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.event.ChangeListener;
-
 
 /**
  * Implements an interpolation table mapping data to values of a particular
- * class.  The data value is extracted from a bundle of attributes by using a
+ * class. The data value is extracted from a bundle of attributes by using a
  * specified data attribute name.
- *
+ * 
  * For refactoring changes in this class, please refer to:
  * cytoscape.visual.mappings.continuous.README.txt.
- *
+ * 
  */
-public class ContinuousMapping extends SubjectBase implements ObjectMapping {
-	Object defaultObj; //  the default value held by this mapping
-	Class<?> rangeClass; //  the class of values held by this mapping
-	String attrName; //  the name of the controlling data attribute
-	Interpolator interpolator; //  used to interpolate between boundaries
-	private byte mapType; //  mapping type value
+public class ContinuousMapping<K extends Number, V> extends
+		AbstractMapping<K, V> {
 
-	//  Contains List of Data Points
-	private ArrayList<ContinuousMappingPoint> points = new ArrayList<ContinuousMappingPoint>();
+	final Class<?>[] ACCEPTED_CLASS = { Number.class };
+
+	// used to interpolate between boundaries
+	private Interpolator<K, V> interpolator;
+
+	// Contains List of Data Points
+	private List<ContinuousMappingPoint<K, V>> points;
 
 	/**
-	 *  Constructor.
-	 *    @param    defaultObj default object to map to
-	 *    @param    mapType    Type of mapping, one of
-	 *  {@link ObjectMapping#EDGE_MAPPING} or {@link ObjectMapping#NODE_MAPPING}
+	 * Constructor.
+	 * 
+	 * @param defaultObj
+	 *            default object to map to
+	 * @param mapType
+	 *            Type of mapping, one of {@link ObjectMapping#EDGE_MAPPING} or
+	 *            {@link ObjectMapping#NODE_MAPPING}
 	 */
-	public ContinuousMapping(Object defaultObj, byte mapType) throws IllegalArgumentException {
-		this.rangeClass = defaultObj.getClass();
-		this.defaultObj = defaultObj;
-		this.mapType = mapType;
+	@Deprecated
+	public ContinuousMapping(Object defaultObj, byte mapType)
+			throws IllegalArgumentException {
+		this((Class<V>) defaultObj.getClass(), null);
+	}
 
-		//  Validate Map Type
-		if ((mapType != ObjectMapping.EDGE_MAPPING) && (mapType != ObjectMapping.NODE_MAPPING))
-			throw new IllegalArgumentException("Unknown mapping type " + mapType);
+	public ContinuousMapping(final Class<V> rangeClass,
+			final String controllingAttrName) {
+		super(rangeClass, controllingAttrName);
+		this.acceptedClasses = ACCEPTED_CLASS;
+		points = new ArrayList<ContinuousMappingPoint<K, V>>();
 
-		//  Create Interpolator
+		// Interpolater setting
 		if (Color.class.isAssignableFrom(this.rangeClass))
 			interpolator = new LinearNumberToColorInterpolator();
 		else if (Number.class.isAssignableFrom(this.rangeClass))
@@ -107,23 +106,19 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 
 	/**
 	 * Create deep copy of the object.
+	 * 
 	 * @return Cloned Mapping Object.
 	 */
 	public Object clone() {
-		final ContinuousMapping clone = new ContinuousMapping(defaultObj, mapType);
-		// MLC 03/13/08 BEGIN:
-		// String ctrAttrName = new String(this.attrName);
-		// clone.setControllingAttributeName(ctrAttrName, null, true);
-		// Strings are immutable, so you don't need to copy them:
-		clone.setControllingAttributeName(attrName);
+		final ContinuousMapping<K, V> clone = new ContinuousMapping<K, V>(
+				rangeClass, controllingAttrName);
 
-		// MLC 03/13/08 END.
-		//  Copy over all listeners...
+		// Copy over all listeners...
 		for (ChangeListener listener : observers)
 			clone.addChangeListener(listener);
 
-		for (ContinuousMappingPoint cmp : points) {
-			final ContinuousMappingPoint cmpClone = (ContinuousMappingPoint) cmp.clone();
+		for (ContinuousMappingPoint<K, V> cmp : points) {
+			final ContinuousMappingPoint<K, V> cmpClone = (ContinuousMappingPoint<K, V>) cmp.clone();
 			clone.addPoint(cmpClone.getValue(), cmpClone.getRange());
 		}
 
@@ -132,17 +127,19 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 
 	/**
 	 * Gets all Data Points.
+	 * 
 	 * @return ArrayList of ContinuousMappingPoint objects.
 	 */
-	public ArrayList<ContinuousMappingPoint> getAllPoints() {
+	public List<ContinuousMappingPoint<K, V>> getAllPoints() {
 		return points;
 	}
 
 	/**
-	 *  Adds a New Data Point.
+	 * Adds a New Data Point.
 	 */
-	public void addPoint(double value, BoundaryRangeValues brv) {
-		ContinuousMappingPoint cmp = new ContinuousMappingPoint(value, brv);
+	public void addPoint(K value, BoundaryRangeValues<V> brv) {
+		ContinuousMappingPoint<K, V> cmp = new ContinuousMappingPoint<K, V>(value,
+				brv);
 		points.add(cmp);
 	}
 
@@ -162,87 +159,53 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 
 	/**
 	 * Gets Specified Point.
-	 * @param index Index Value.
+	 * 
+	 * @param index
+	 *            Index Value.
 	 * @return ContinuousMappingPoint.
 	 */
-	public ContinuousMappingPoint getPoint(int index) {
-		return (ContinuousMappingPoint) points.get(index);
+	public ContinuousMappingPoint<K, V> getPoint(int index) {
+		return points.get(index);
 	}
 
 	/**
 	 * Customizes this object by applying mapping defintions described by the
-	 * supplied Properties argument.
-	 * Required by the ObjectMapping interface.
-	 * @param props Properties Object.
-	 * @param baseKey Base Key for finding properties.
-	 * @param parser ValueParser Object.
+	 * supplied Properties argument. Required by the ObjectMapping interface.
+	 * 
+	 * @param props
+	 *            Properties Object.
+	 * @param baseKey
+	 *            Base Key for finding properties.
+	 * @param parser
+	 *            ValueParser Object.
 	 */
-	public void applyProperties(Properties props, String baseKey, ValueParser parser) {
-		ContinuousMappingReader reader = new ContinuousMappingReader(props, baseKey, parser);
+	public void applyProperties(Properties props, String baseKey,
+			ValueParser<V> parser) {
+		final ContinuousMappingReader<K, V> reader = new ContinuousMappingReader<K, V>(props,baseKey, parser);
 		this.points = reader.getPoints();
-		this.attrName = reader.getControllingAttributeName();
+		this.controllingAttrName = reader.getControllingAttributeName();
 		this.interpolator = reader.getInterpolator();
 	}
 
 	/**
 	 * Returns a Properties object with entries suitable for customizing this
-	 * object via the applyProperties method.
-	 * Required by the ObjectMapping interface.
-	 * @param baseKey Base Key for creating properties.
+	 * object via the applyProperties method. Required by the ObjectMapping
+	 * interface.
+	 * 
+	 * @param baseKey
+	 *            Base Key for creating properties.
 	 * @return Properties Object.
 	 */
 	public Properties getProperties(String baseKey) {
-		ContinuousMappingWriter writer = new ContinuousMappingWriter(points, baseKey, attrName,
-		                                                             interpolator);
-		Properties newProps = writer.getProperties();
+		final ContinuousMappingWriter writer = new ContinuousMappingWriter(
+				points, baseKey, controllingAttrName, interpolator);
 
-		return newProps;
+		return writer.getProperties();
 	}
 
 	/**
-	 * Gets the Range Class.
-	 * Required by the ObjectMapping interface.
-	 * @return Class object.
-	 */
-	public Class getRangeClass() {
-		return rangeClass;
-	}
-
-	/**
-	 * Gets Accepted Data Classes.
-	 * Required by the ObjectMapping interface.
-	 * @return ArrayList of Class objects.
-	 */
-	public Class[] getAcceptedDataClasses() {
-		// only numbers supported
-		Class[] ret = { Number.class };
-
-		return ret;
-	}
-
-	/**
-	 * Gets the Name of the Controlling Attribute.
-	 * Required by the ObjectMapping interface.
-	 * @return Attribue Name.
-	 */
-	public String getControllingAttributeName() {
-		return attrName;
-	}
-
-	/**
-	 * Sets the Name of the Controlling Attribte.
-	 * @param attrName Attribute Name.
-	 * @param network CytoscapeNetwork Object.
-	 * @param preserveMapping Flag to preserve mapping.
-	 */
-	public void setControllingAttributeName(String attrName, CyNetwork network,
-	                                        boolean preserveMapping) {
-		this.attrName = attrName;
-	}
-
-	/**
-	 * Gets the Mapping Interpolator.
-	 * Required by the ObjectMapping interface.
+	 * Gets the Mapping Interpolator. Required by the ObjectMapping interface.
+	 * 
 	 * @return Interpolator Object.
 	 */
 	public Interpolator getInterpolator() {
@@ -250,55 +213,34 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	}
 
 	/**
-	 * Sets the Mapping Interpolator.
-	 * Required by the ObjectMapping interface.
-	 * @param interpolator Interpolator Object.
+	 * Sets the Mapping Interpolator. Required by the ObjectMapping interface.
+	 * 
+	 * @param interpolator
+	 *            Interpolator Object.
 	 */
 	public void setInterpolator(Interpolator interpolator) {
 		this.interpolator = interpolator;
 	}
 
 	/**
-	 * Gets the UI Object Associated with the Mapper.
-	 * Required by the ObjectMapping interface.
-	 * @param dialog Parent Dialog.
-	 * @param network CyNetwork.
-	 * @return JPanel Object.
-	 */
-	public JPanel getUI(JDialog dialog, CyNetwork network) {
-		JPanel ret = new JPanel();
-		ret.add( new JLabel("this ui is no longer used"));
-
-		return ret;
-	}
-
-	/**
 	 *
 	 */
 	public JPanel getLegend(VisualPropertyType vpt) {
-		return new ContinuousLegend(attrName, points, defaultObj, vpt);
+		return new ContinuousLegend(points, vpt);
 	}
 
 	/**
-	 * Calculates the Range Value.
-	 * Required by the ObjectMapping interface.
-	 * @param attrBundle A Bundle of Attributes.
+	 * Calculates the Range Value. Required by the ObjectMapping interface.
+	 * 
+	 * @param attrBundle
+	 *            A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
 	@Override
-	public Object calculateRangeValue(final Map<String, Object> attrBundle) {
-		ContinuousRangeCalculator calc = new ContinuousRangeCalculator(points, interpolator,
-		                                                               attrBundle);
-		Object object = calc.calculateRangeValue(attrName);
+	public V calculateRangeValue(final Map<String, Object> attrBundle) {
+		final ContinuousRangeCalculator<K, V> calc = new ContinuousRangeCalculator<K, V>(
+				points, interpolator, attrBundle);
 
-		return object;
+		return calc.calculateRangeValue(controllingAttrName);
 	}
-	
-
-	@Override
-	public void setControllingAttributeName(String controllingAttrName) {
-		this.attrName = controllingAttrName;
-	}
-	
-	
 }

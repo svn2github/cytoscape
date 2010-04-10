@@ -364,7 +364,7 @@ public enum VisualPropertyType {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class getDataType() {
+	public Class<?> getDataType() {
 		return dataType;
 	}
 

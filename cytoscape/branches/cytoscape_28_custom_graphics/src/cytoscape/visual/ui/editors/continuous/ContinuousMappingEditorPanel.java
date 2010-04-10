@@ -108,7 +108,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected VisualPropertyType type;
 	protected Calculator calculator;
 	protected ContinuousMapping mapping;
-	protected ArrayList<ContinuousMappingPoint> allPoints;
+	protected List<ContinuousMappingPoint> allPoints;
 	private SpinnerNumberModel spinnerModel;
 	protected Object below;
 	protected Object above;

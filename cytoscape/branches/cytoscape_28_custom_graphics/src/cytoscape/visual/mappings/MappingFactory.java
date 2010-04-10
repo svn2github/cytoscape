@@ -61,7 +61,7 @@ public class MappingFactory {
      * constructs the Mapping object and then customizes it by calling its
      * applyProperties method.
      */
-    public static ObjectMapping newMapping(Properties props, String baseKey,
+    public static ObjectMapping<?> newMapping(Properties props, String baseKey,
         ValueParser parser, Object defObj, byte mapType) {
         String typeName = props.getProperty(baseKey + ".type");
 
@@ -71,12 +71,12 @@ public class MappingFactory {
 
             return null;
         } else if (typeName.equals("DiscreteMapping")) {
-            DiscreteMapping m = new DiscreteMapping(defObj, mapType);
+            DiscreteMapping m = new DiscreteMapping(defObj.getClass(), null);
             m.applyProperties(props, baseKey, parser);
 
             return m;
         } else if (typeName.equals("ContinuousMapping")) {
-            ContinuousMapping m = new ContinuousMapping(defObj, mapType);
+            ContinuousMapping m = new ContinuousMapping(defObj.getClass(), null);
             m.applyProperties(props, baseKey, parser);
 
             return m;

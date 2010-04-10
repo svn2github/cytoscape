@@ -58,15 +58,15 @@ import cytoscape.visual.parsers.ValueParser;
  * data value is extracted from a bundle of attributes by using a specified data
  * attribute name.
  */
-public class DiscreteMapping extends AbstractMapping {
+public class DiscreteMapping<K, V> extends AbstractMapping<K, V> {
 
 	private static final Class<?>[] ACCEPTED_CLASSES = { String.class,
 			Number.class, Integer.class, Double.class, Float.class, Long.class,
 			Short.class, NodeShape.class, List.class, Boolean.class };
 
-	private SortedMap<Object, Object> treeMap; // contains the actual map
+	private SortedMap<K, V> treeMap; // contains the actual map
 												// elements (sorted)
-	private Object lastKey;
+	private K lastKey;
 
 	/**
 	 * Constructor.
@@ -95,13 +95,13 @@ public class DiscreteMapping extends AbstractMapping {
 	 */
 	@Deprecated
 	public DiscreteMapping(Object defObj, String attrName, byte mapType) {
-		this(defObj.getClass(), attrName);
+		this((Class<V>)defObj.getClass(), attrName);
 	}
 
-	public DiscreteMapping(final Class<?> rangeClass,
+	public DiscreteMapping(final Class<V> rangeClass,
 			final String controllingAttrName) {
 		super(rangeClass, controllingAttrName);
-		this.treeMap = new TreeMap<Object, Object>();
+		this.treeMap = new TreeMap<K, V>();
 		this.acceptedClasses = ACCEPTED_CLASSES;
 	}
 
@@ -111,7 +111,7 @@ public class DiscreteMapping extends AbstractMapping {
 	 * @return DiscreteMapping Object.
 	 */
 	public Object clone() {
-		final DiscreteMapping clone = new DiscreteMapping(rangeClass,
+		final DiscreteMapping<K, V> clone = new DiscreteMapping<K, V>(rangeClass,
 				controllingAttrName);
 
 		// Copy over all listeners...
@@ -119,7 +119,7 @@ public class DiscreteMapping extends AbstractMapping {
 			clone.addChangeListener(listener);
 
 		// Copy key-value pairs
-		for (Object key : this.treeMap.keySet())
+		for (K key : this.treeMap.keySet())
 			clone.treeMap.put(key, this.treeMap.get(key));
 
 		return clone;
@@ -132,7 +132,7 @@ public class DiscreteMapping extends AbstractMapping {
 	 *            String Key.
 	 * @return Object.
 	 */
-	public Object getMapValue(Object key) {
+	public V getMapValue(K key) {
 		return treeMap.get(key);
 	}
 
@@ -144,7 +144,7 @@ public class DiscreteMapping extends AbstractMapping {
 	 * @param value
 	 *            Value Object.
 	 */
-	public void putMapValue(Object key, Object value) {
+	public void putMapValue(K key, V value) {
 		lastKey = key;
 
 		treeMap.put(key, value);
@@ -156,7 +156,7 @@ public class DiscreteMapping extends AbstractMapping {
 	 * 
 	 * @return Key Object.
 	 */
-	public Object getLastKeyModified() {
+	public K getLastKeyModified() {
 		return lastKey;
 	}
 
@@ -166,7 +166,7 @@ public class DiscreteMapping extends AbstractMapping {
 	 * @param map
 	 *            Map.
 	 */
-	public void putAll(Map<Object, Object> map) {
+	public void putAll(Map<K, V> map) {
 		treeMap.putAll(map);
 	}
 
@@ -174,7 +174,7 @@ public class DiscreteMapping extends AbstractMapping {
 	 * gets all map values
 	 * 
 	 */
-	public Map<Object, Object> getAll() {
+	public Map<K, V> getAll() {
 		return treeMap;
 	}
 
@@ -190,7 +190,7 @@ public class DiscreteMapping extends AbstractMapping {
 	 *            ValueParser Object.
 	 */
 	public void applyProperties(Properties props, String baseKey,
-			ValueParser<?> parser) {
+			ValueParser<V> parser) {
 		final DiscreteMappingReader reader = new DiscreteMappingReader(props,
 				baseKey, parser);
 		final String contValue = reader.getControllingAttributeName();
@@ -224,8 +224,8 @@ public class DiscreteMapping extends AbstractMapping {
 	 *            A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public Object calculateRangeValue(Map<String, Object> attrBundle) {
-		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(
+	public V calculateRangeValue(Map<String, Object> attrBundle) {
+		final DiscreteRangeCalculator<K, V> calculator = new DiscreteRangeCalculator<K, V>(
 				treeMap, controllingAttrName);
 
 		return calculator.calculateRangeValue(attrBundle);

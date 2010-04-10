@@ -61,13 +61,26 @@ import cytoscape.visual.parsers.ValueParser;
  * the mapper should map to, CyNetwork is the CyNetwork object representing the network
  * displayed in Cytoscape, and the byte is one of {@link #EDGE_MAPPING} or
  * {@link #NODE_MAPPING}.
+ * 
+ * K - Key attribute value.  Can be any type (for this implementation, number, string, boolean, list, or map).
+ * V - Mapped visual value, such as color, node shape, etc.
+ * 
  */
-public interface ObjectMapping extends Cloneable {
+public interface ObjectMapping<V> extends Cloneable {
     
+	@Deprecated // Use attribute name to determine mapping type.
     public static final byte EDGE_MAPPING = 0;
+	@Deprecated
     public static final byte NODE_MAPPING = 1;
 
-    public Class<?> getRangeClass();
+	
+	/**
+	 * Class of mapped object.  For example, if this is an Node Color mapping,
+	 * this value is Color.class.
+	 * 
+	 * @return
+	 */
+    public Class<V> getRangeClass();
 
     /**
      * Return the classes that the ObjectMapping can map from, eg. the contents
@@ -91,7 +104,9 @@ public interface ObjectMapping extends Cloneable {
      * be loaded for UI purposes. Null values for the network argument are allowed.
      * 
      * Do not use this method.  None of the network, preserveMapping parameters are used in Cytoscape.
-     * Will be removed in 2.8.
+     * 
+     * @deprecated Will be removed in 2.8. Use setControllingAttributeName(final String controllingAttrName) instead.
+     * 
      */
     @Deprecated
     public void setControllingAttributeName(String attrName, CyNetwork network,
@@ -140,7 +155,7 @@ public interface ObjectMapping extends Cloneable {
      * @param attrBundle
      * @return
      */
-    public Object calculateRangeValue(final Map<String, Object> attrBundle);
+    public V calculateRangeValue(final Map<String, Object> attrBundle);
 
     /**
      * Do not use this method.  Will be removed in next release (2.8)
@@ -158,7 +173,7 @@ public interface ObjectMapping extends Cloneable {
 
     public Object clone();
 
-    public void applyProperties(Properties props, String baseKey, ValueParser<?> parser);
+    public void applyProperties(Properties props, String baseKey, ValueParser<V> parser);
 
     public Properties getProperties(String baseKey);
 }
