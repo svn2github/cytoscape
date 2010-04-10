@@ -157,6 +157,14 @@ public interface ObjectMapping<V> extends Cloneable {
      */
     public V calculateRangeValue(final Map<String, Object> attrBundle);
 
+    public JPanel getLegend(VisualPropertyType type);
+
+    public Object clone();
+
+    public void applyProperties(Properties props, String baseKey, ValueParser<V> parser);
+
+    public Properties getProperties(String baseKey);
+    
     /**
      * Do not use this method.  Will be removed in next release (2.8)
      * 
@@ -168,12 +176,4 @@ public interface ObjectMapping<V> extends Cloneable {
      */
     @Deprecated
     public JPanel getUI(JDialog parent, CyNetwork network);
-
-    public JPanel getLegend(VisualPropertyType type);
-
-    public Object clone();
-
-    public void applyProperties(Properties props, String baseKey, ValueParser<V> parser);
-
-    public Properties getProperties(String baseKey);
 }

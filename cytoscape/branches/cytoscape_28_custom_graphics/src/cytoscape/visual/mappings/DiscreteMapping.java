@@ -58,7 +58,7 @@ import cytoscape.visual.parsers.ValueParser;
  * data value is extracted from a bundle of attributes by using a specified data
  * attribute name.
  */
-public class DiscreteMapping<K, V> extends AbstractMapping<K, V> {
+public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 
 	private static final Class<?>[] ACCEPTED_CLASSES = { String.class,
 			Number.class, Integer.class, Double.class, Float.class, Long.class,

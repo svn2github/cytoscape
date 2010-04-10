@@ -64,7 +64,7 @@ import cytoscape.visual.parsers.ValueParser;
  * 
  */
 public class ContinuousMapping<K extends Number, V> extends
-		AbstractMapping<K, V> {
+		AbstractMapping<V> {
 
 	final Class<?>[] ACCEPTED_CLASS = { Number.class };
 

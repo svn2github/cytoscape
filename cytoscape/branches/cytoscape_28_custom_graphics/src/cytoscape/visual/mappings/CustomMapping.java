@@ -4,19 +4,11 @@ import java.awt.Component;
 import java.util.Collection;
 import java.util.Map;
 
-public interface CustomMapping<V> extends ObjectMapping<V> {
+public interface CustomMapping<V> {
 	
 	public Component getEditor();
 	
 	public Collection<String> getControllingAttributeNames();
-	
-	/**
-	 * 
-	 * @param attributeValues - Key-value pair: attribute name to its value
-	 * 
-	 * @return
-	 */
-	public V calculateRangeValue(final Map<String, ?> attributeValues);
-	
-	
+
+	public V calculateRangeValueFromMultipleAttr(final Map<String, ?> attributeValues);	
 }

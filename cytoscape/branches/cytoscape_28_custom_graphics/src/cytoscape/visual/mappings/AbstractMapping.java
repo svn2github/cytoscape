@@ -12,7 +12,7 @@ import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ValueParser;
 
-public abstract class AbstractMapping<K, V> extends SubjectBase implements
+public abstract class AbstractMapping<V> extends SubjectBase implements
 		ObjectMapping<V> {
 	
 	private JPanel dummyPanel;

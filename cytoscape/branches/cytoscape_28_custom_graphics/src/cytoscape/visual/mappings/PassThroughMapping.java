@@ -62,7 +62,7 @@ import cytoscape.visual.parsers.ValueParser;
  * expected range class; null is returned instead if the data value is of the
  * wrong type.
  */
-public class PassThroughMapping<K, V> extends AbstractMapping<K, V> {
+public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 
 	// Legend UI theme
 	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
