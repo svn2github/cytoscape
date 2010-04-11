@@ -52,6 +52,12 @@ import org.cytoscape.model.events.AddedEdgeEvent;
 import org.cytoscape.model.events.AddedEdgeListener;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
+
+import org.cytoscape.view.model.events.AddedNodeViewEvent;
+import org.cytoscape.view.model.events.AddedNodeViewListener;
+import org.cytoscape.view.model.events.AddedEdgeViewEvent;
+import org.cytoscape.view.model.events.AddedEdgeViewListener;
+
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
@@ -64,6 +70,8 @@ import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.model.internal.events.SubsetChangedEventImpl;
 import org.cytoscape.view.model.internal.events.SubsetCreatedEventImpl;
 import org.cytoscape.view.model.internal.events.SubsetDestroyedEventImpl;
+import org.cytoscape.view.model.internal.events.AddedNodeViewEventImpl;
+import org.cytoscape.view.model.internal.events.AddedEdgeViewEventImpl;
 
 /**
  *
@@ -182,20 +190,12 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 
 		final CyEdge edge = e.getEdge();
 		System.out.println(" adding edge to view! " + edge.toString());
-		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this)); // FIXME:
-																				// View
-																				// creation
-																				// here
-																				// and
-																				// in
-																				// initializer:
-																				// should
-																				// be
-																				// in
-																				// one
-																				// place
+		final ColumnOrientedViewImpl<CyEdge> ev =  new ColumnOrientedViewImpl<CyEdge>(edge, this);
+		edgeViews.put(edge, ev); // FIXME: View creation here and in initializer: should
+								// be in one place
 
-		// FIXME: fire events!
+		eventHelper.fireSynchronousEvent( new AddedEdgeViewEventImpl(this,ev), 
+		                                   AddedEdgeViewListener.class );
 	}
 
 	/**
@@ -212,7 +212,10 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 
 		final CyNode node = e.getNode();
 		System.out.println(" adding node to view! " + node.toString());
-		nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node, this));
+		final ColumnOrientedViewImpl<CyNode> nv = new ColumnOrientedViewImpl<CyNode>(node, this);
+		nodeViews.put(node, nv); 
+		eventHelper.fireSynchronousEvent( new AddedNodeViewEventImpl(this,nv), 
+		                                   AddedNodeViewListener.class );
 	}
 
 	/**
