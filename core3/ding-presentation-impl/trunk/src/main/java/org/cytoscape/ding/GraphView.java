@@ -6,6 +6,7 @@ import org.cytoscape.graph.render.stateful.GraphLOD;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
 import phoebe.PhoebeCanvasDropListener;
 
 import javax.swing.*;
@@ -559,5 +560,6 @@ public static int NODE_X_POSITION = 0;
 
     public void addPhoebeCanvasDropListener(PhoebeCanvasDropListener l);
 	public void removePhoebeCanvasDropListener(PhoebeCanvasDropListener l);
+	public CyNetworkView getViewModel();
 }
 
