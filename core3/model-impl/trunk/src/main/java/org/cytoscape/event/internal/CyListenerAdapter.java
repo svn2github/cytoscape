@@ -83,15 +83,16 @@ public class CyListenerAdapter {
 //	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
 	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
                                                                                final Class<L> listenerClass) {
+		System.out.println("ATTEMPTING TO FIRE SYNC: " + event.toString() + " for " + listenerClass.getName());
 //		final Class listenerClass = event.getListenerClass(); 
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
-			//System.out.println("Sync listeners is null");
+			System.out.println("Sync listeners is null");
 			return;
 		} 
 
 		try {
-			//System.out.println("event interface: " + event.getClass().getInterfaces()[0].getName());
+			System.out.println("event interface: " + event.getClass().getInterfaces()[0].getName());
 			//System.out.println("listenerClass: " + listenerClass.getName()); 
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
 
@@ -104,7 +105,7 @@ public class CyListenerAdapter {
 			                   + listenerClass.getName());
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			System.err.println("Listener can't invoke \"handleEvent\" method: "
+			System.err.println("Listener threw exception as part of \"handleEvent\" invocation: "
 			                   + listenerClass.getName());
 			e.printStackTrace();
 			System.err.println("caused by:");
@@ -175,7 +176,7 @@ public class CyListenerAdapter {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				// TODO should rethrow as something
-				System.err.println("Listener can't invoke \"handleEvent\" method: " + clazz.getName());
+				System.err.println("Listener threw exception as part of \"handleEvent\" invocation: " + listener.toString());
 				e.printStackTrace();
 				System.err.println("caused by:");
 				e.getCause().printStackTrace();
@@ -186,7 +187,7 @@ public class CyListenerAdapter {
 
 	private Object[] getListeners(Class listenerClass) {
 		if ( !serviceTrackers.containsKey( listenerClass ) ) {
-			//System.out.println("added new service tracker for " + listenerClass);
+			System.out.println("added new service tracker for " + listenerClass);
 			final ServiceTracker st = new ServiceTracker(bc, listenerClass.getName(), null);
 			st.open();
 			serviceTrackers.put( listenerClass, st );
