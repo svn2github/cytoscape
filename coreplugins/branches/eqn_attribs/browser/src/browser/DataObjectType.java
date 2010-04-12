@@ -28,8 +28,14 @@
 package browser;
 
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import giny.model.GraphObject;
 
 
 public enum DataObjectType {
@@ -64,6 +70,30 @@ public enum DataObjectType {
 			return Cytoscape.getEdgeAttributes();
 		else if (this == NETWORK)
 			return Cytoscape.getNetworkAttributes();
+
+		return null;
+	}
+
+	public Iterable<String> getAssociatedIdentifiers() {
+		final Set<String> ids = new HashSet<String>();
+		if (this == NODES) {
+			final List<GraphObject> nodes = (List<GraphObject>)Cytoscape.getCyNodesList();
+			for (final GraphObject node : nodes)
+				ids.add(node.getIdentifier());
+			return ids;
+		}
+		else if (this == EDGES) {
+			final List<GraphObject> edges = (List<GraphObject>)Cytoscape.getCyEdgesList();
+			for (final GraphObject edge : edges)
+				ids.add(edge.getIdentifier());
+			return ids;
+		}
+		else if (this == NETWORK) {
+			final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
+			for (final CyNetwork network : networks)
+				ids.add(network.getIdentifier());
+			return ids;
+		}
 
 		return null;
 	}

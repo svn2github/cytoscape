@@ -528,14 +528,31 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * Instead of using a listener, just overwrite this method to save time and
 	 * write to the temp object
 	 */
-	public void setValueAt(Object newValue, int rowIdx, int colIdx) {
-//		System.out.println("Edit Cell: new Val = " + newValue + ", row = " + rowIdx + ", col = "
-//		                   + colIdx + ", col name = " + getColumnName(colIdx));
-//		System.out.println("           OLD Val = " + getValueAt(rowIdx, colIdx));
+	public void setValueAt(final Object newValue, int rowIdx, int colIdx) {
+		final int keyIndex = getKeyIndex();
+		if (keyIndex == -1)
+			return;
 
-		DataEditAction edit = null;
+		final DataEditAction edit = updateCell(keyIndex, rowIdx, colIdx, newValue);
+		if (edit != null)
+			cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
+	}
 
-		// Find key
+	public CyAttributes getCyAttributes() { return data; }
+
+	public void updateColumn(final Object newValue, final int colIdx) {
+		final int keyIndex = getKeyIndex();
+		if (keyIndex == -1)
+			return;
+
+		for (int rowIdx = 0; rowIdx < getRowCount(); ++rowIdx) {
+			final DataEditAction edit = updateCell(keyIndex, rowIdx, colIdx, newValue);
+			if (edit != null)
+				cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
+		}
+	}
+
+	private int getKeyIndex() {
 		int keyIndex = -1;
 		int columnOffset = 0;
 
@@ -556,34 +573,31 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			}
 		}
 
-		if (keyIndex == -1)
-			return;
+		return keyIndex;
+	}
 
-//		System.out.println("           Object Val = " + getValueAt(rowIdx, keyIndex)
-//		                   + ", Attr Name = " + getColumnName(colIdx) + "OLD version = "
-//		                   + attributeNames.get(colIdx - columnOffset));
-
+	private DataEditAction updateCell(final int keyIndex, final int rowIdx, final int colIdx, final Object newValue) {
+		final DataEditAction edit;
 		if (this.objectType != NETWORK) {
 			// This edit is for node or edge.
 			final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIdx, keyIndex);
 			edit = new DataEditAction(this, valAndEq.getValue().toString(),
-			                          getColumnName(colIdx), getValueAt(rowIdx, colIdx), newValue,
-			                          objectType);
+						  getColumnName(colIdx), getValueAt(rowIdx, colIdx), newValue,
+						  objectType);
 		} else {
 			final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIdx, 0);
 			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
-			                          valAndEq.getValue().toString(),
-			                          getValueAt(rowIdx, colIdx), newValue, objectType);
+						  valAndEq.getValue().toString(),
+						  getValueAt(rowIdx, colIdx), newValue, objectType);
 		}
 
 		if (edit.isValid()) {
 			Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
 			rowVector.setElementAt(edit.getValueAndEquation(), colIdx);
 			fireTableCellUpdated(rowIdx, colIdx);
+			return edit;
 		}
 
-		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
+		return null;
 	}
-
-	public CyAttributes getCyAttributes() { return data; }
 }

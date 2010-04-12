@@ -101,6 +101,7 @@ public class FormulaBuilderDialog extends JDialog {
 	private ArrayList<Class> leadingArgs;
 	private ApplicationDomain applicationDomain;
 	private DataTableModel tableModel;
+	private DataObjectType tableObjectType;
 	private final JTable table;
 
 
@@ -118,6 +119,7 @@ public class FormulaBuilderDialog extends JDialog {
 		this.leadingArgs = new ArrayList<Class>();
 		this.applicationDomain = ApplicationDomain.CURRENT_CELL;
 		this.tableModel = tableModel;
+		this.tableObjectType = tableObjectType;
 		this.table = table;
 
 		final Container contentPane = getContentPane();
@@ -368,19 +370,24 @@ public class FormulaBuilderDialog extends JDialog {
 		case CURRENT_SELECTION:
 			final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
 			for (final GraphObject graphObject : selectedGraphObjects) {
-				if (!setAttribute(attribs, graphObject, attribName, equation, errorMessage))
+				if (!setAttribute(attribs, graphObject.getIdentifier(), attribName,
+				                  equation, errorMessage))
 					return false;
 			}
+			tableModel.updateColumn(equation, cellColum);
 			break;
 		case ENTIRE_ATTRIBUTE:
+			final Iterable<String> ids = tableObjectType.getAssociatedIdentifiers();
+			for (final String id : ids) {
+				if (!setAttribute(attribs, id, attribName, equation, errorMessage))
+					return false;
+			}
+			tableModel.updateColumn(equation, cellColum);
 			break;
 		default:
 			throw new IllegalStateException("unknown application domain: "
 			                                + applicationDomain + "!");
 		}
-
-		// Update the table view:
-		table.revalidate();
 
 		return true;
 	}
@@ -404,12 +411,12 @@ public class FormulaBuilderDialog extends JDialog {
 	/**
 	 *  @returns true if the attribute value has been successfully updated, else false
 	 */
-	private boolean setAttribute(final CyAttributes attribs, final GraphObject graphObject,
+	private boolean setAttribute(final CyAttributes attribs, final String id,
 	                             final String attribName, final Equation newValue,
 	                             final StringBuilder errorMessage)
 	{
 		try {
-			attribs.setAttribute(graphObject.getIdentifier(), attribName, newValue);
+			attribs.setAttribute(id, attribName, newValue);
 			return true;
 		} catch (final Exception e) {
 			errorMessage.append(e.getMessage());
