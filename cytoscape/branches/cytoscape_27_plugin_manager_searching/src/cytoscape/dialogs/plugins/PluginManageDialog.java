@@ -404,11 +404,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			treeModel.addNodeToParent(node, Category);
 	}
 
-	// change site url
-	private void changeSiteButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		PluginUrlDialog dialog = new PluginUrlDialog(this);
-		dialog.setVisible(true);
-	}
 
 	 
 	
@@ -959,7 +954,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         changeSiteButton.setText("Change Download Site");
         changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeSiteButtonActionPerformed(evt);
+                //changeSiteButtonActionPerformed(evt);
             }
         });
 
