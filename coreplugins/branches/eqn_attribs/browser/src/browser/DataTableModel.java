@@ -584,4 +584,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
 	}
+
+	public CyAttributes getCyAttributes() { return data; }
 }

@@ -579,7 +579,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 							initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
 							formulaBuilderDialog =
-								new FormulaBuilderDialog(tableModel, objectType, Cytoscape.getDesktop(),
+								new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
 								                         attribNameToTypeMap, columnName);
 							formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 							formulaBuilderDialog.setVisible(true);
