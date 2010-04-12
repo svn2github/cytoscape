@@ -50,17 +50,23 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import browser.DataObjectType;
 import browser.DataTableModel;
 
+import cytoscape.data.CyAttributes;
+import cytoscape.data.eqn_attribs.AttribEqnCompiler;
 import cytoscape.data.eqn_attribs.AttribFunction;
 import cytoscape.data.eqn_attribs.AttribParser;
 import cytoscape.data.eqn_attribs.AttribToken;
 import cytoscape.data.eqn_attribs.AttribTokeniser;
+import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.data.eqn_attribs.EquationUtil;
 import cytoscape.data.eqn_attribs.Parser;
+
+import giny.model.GraphObject;
 
 import org.jdesktop.layout.GroupLayout;
 
@@ -94,10 +100,13 @@ public class FormulaBuilderDialog extends JDialog {
 	private Map<String, Class> attribNamesAndTypes;
 	private ArrayList<Class> leadingArgs;
 	private ApplicationDomain applicationDomain;
+	private DataTableModel tableModel;
+	private final JTable table;
 
 
-	public FormulaBuilderDialog(final DataTableModel tableModel, final DataObjectType tableObjectType,
-	                            final Frame parent, final Map<String, Class> attribNamesAndTypes,
+	public FormulaBuilderDialog(final DataTableModel tableModel, final JTable table,
+	                            final DataObjectType tableObjectType, final Frame parent,
+	                            final Map<String, Class> attribNamesAndTypes,
 	                            final String columnName)
 	{
 		super(parent);
@@ -108,6 +117,8 @@ public class FormulaBuilderDialog extends JDialog {
 		this.attribNamesAndTypes = attribNamesAndTypes;
 		this.leadingArgs = new ArrayList<Class>();
 		this.applicationDomain = ApplicationDomain.CURRENT_CELL;
+		this.tableModel = tableModel;
+		this.table = table;
 
 		final Container contentPane = getContentPane();
 		final GroupLayout groupLayout = new GroupLayout(contentPane);
@@ -172,7 +183,7 @@ public class FormulaBuilderDialog extends JDialog {
 		contentPane.add(formulaTextField);
 		formulaTextField.setEditable(false);
 		if (function != null)
-			formulaTextField.setText(function.getName() + "(");
+			formulaTextField.setText("=" + function.getName() + "(");
 	}
 
 	private void initArgumentPanel(final Container contentPane) {
@@ -330,9 +341,80 @@ public class FormulaBuilderDialog extends JDialog {
 		okButton.setEnabled(false);
 		okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					dispose();
+					final StringBuilder errorMessage = new StringBuilder(30);
+					if (updateCells(errorMessage))
+						dispose();
+					else
+						displayErrorMessage(errorMessage.toString());
 				}
 			});
+	}
+
+	private boolean updateCells(final StringBuilder errorMessage) {
+		final String formula = formulaTextField.getText();
+		final int cellColum = table.getSelectedColumn();
+		final String attribName = tableModel.getColumnName(cellColum);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		final Equation equation = compileEquation(attribs, attribName, formula, errorMessage);
+		if (equation == null)
+			return false;
+		
+		switch (applicationDomain) {
+		case CURRENT_CELL:
+			final int cellRow = table.getSelectedRow();
+			tableModel.setValueAt(formula, cellRow, cellColum);
+			break;
+		case CURRENT_SELECTION:
+			final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+			for (final GraphObject graphObject : selectedGraphObjects) {
+				if (!setAttribute(attribs, graphObject, attribName, equation, errorMessage))
+					return false;
+			}
+			break;
+		case ENTIRE_ATTRIBUTE:
+			break;
+		default:
+			throw new IllegalStateException("unknown application domain: "
+			                                + applicationDomain + "!");
+		}
+
+		// Update the table view:
+		table.revalidate();
+
+		return true;
+	}
+
+	/**
+	 *  @returns the compiled equation upon success or null if an error occurred
+	 */
+	private Equation compileEquation(final CyAttributes attribs, final String attribName,
+	                                 final String formula, final StringBuilder errorMessage) 
+	{
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		EquationUtil.initAttribNameToTypeMap(attribs, attribName, attribNameToTypeMap);
+		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		if (compiler.compile(formula, attribNameToTypeMap))
+			return compiler.getEquation();
+
+		errorMessage.append(compiler.getLastErrorMsg());
+		return null;
+	}
+
+	/**
+	 *  @returns true if the attribute value has been successfully updated, else false
+	 */
+	private boolean setAttribute(final CyAttributes attribs, final GraphObject graphObject,
+	                             final String attribName, final Equation newValue,
+	                             final StringBuilder errorMessage)
+	{
+		try {
+			attribs.setAttribute(graphObject.getIdentifier(), attribName, newValue);
+			return true;
+		} catch (final Exception e) {
+			errorMessage.append(e.getMessage());
+			return false;
+		}
 	}
 
 	private void initCancelButton(final Container contentPane) {
@@ -353,7 +435,7 @@ public class FormulaBuilderDialog extends JDialog {
 		leadingArgs.clear();
 		function = stringToFunctionMap.get(funcName);
 		final boolean zeroArgumentFunction = getPossibleNextArgumentTypes() == null;
-		formulaTextField.setText(function.getName() + (zeroArgumentFunction ? "()" : "("));
+		formulaTextField.setText("=" + function.getName() + (zeroArgumentFunction ? "()" : "("));
 		usageLabel.setText(function.getUsageDescription());
 		updateAttribNamesComboBox();
 		addButton.setEnabled(zeroArgumentFunction ? false : true);
@@ -398,7 +480,15 @@ public class FormulaBuilderDialog extends JDialog {
 		final AttribTokeniser scanner = new AttribTokeniser(expression);
 
 		AttribToken token1 = scanner.getToken();
-		if (token1 == AttribToken.ERROR) {
+
+		if (token1 == AttribToken.PLUS || token1 == AttribToken.MINUS) {
+			token1 = scanner.getToken();
+			if (token1 != AttribToken.FLOAT_CONSTANT) {
+				errorMessage.append("unary + or - must be followed by a number!");
+				return null;
+			}
+		}
+		else if (token1 == AttribToken.ERROR) {
 			errorMessage.append(scanner.getErrorMsg());
 			return null;
 		}
