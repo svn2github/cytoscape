@@ -36,9 +36,17 @@
 package cytoscape.dialogs.plugins;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.bookmarks.DataSource;
+import cytoscape.dialogs.preferences.BookmarkDialog;
+import cytoscape.dialogs.preferences.EditBookmarkDialog;
 import cytoscape.logger.CyLogger;
 
 import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.ManagerUtil;
+import cytoscape.plugin.PluginInquireAction;
+import cytoscape.plugin.PluginManagerInquireTask;
 import cytoscape.plugin.PluginStatus;
 import cytoscape.plugin.ThemeInfo;
 import cytoscape.plugin.PluginInfo;
@@ -49,19 +57,26 @@ import cytoscape.plugin.ManagerException;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.util.BookmarksUtil;
 import cytoscape.util.OpenBrowser;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
@@ -69,6 +84,14 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	public static String CURRENTLY_INSTALLED = "Currently Installed";
 	public static String AVAILABLE_FOR_INSTALL = "Available for Install";
+	
+	public static String defaultPluginSiteUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");
+	public static String DefaultPluginSiteTitle = "Cytoscape";
+	
+	//private boolean hasPluginSiteURLChanged = false; 
+	private String currentPluginSiteURL = defaultPluginSiteUrl;
+	
+	private String HOWTOSEARCH = "How to do searching tooltip dgdfhf dg sdfsdrfdgfdf fgsda ";
 	
 	public enum PluginInstallStatus {
 		INSTALLED(CURRENTLY_INSTALLED), AVAILABLE(AVAILABLE_FOR_INSTALL);
@@ -122,8 +145,111 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		initTree();
 		this.setSize(600, 500);
 		this.btnSearch.setEnabled(false);
+		this.availablePluginsLabel.setVisible(false);
+		this.downloadLocText.setVisible(false);
+		this.sitePanel2.setVisible(false);
+		this.changeSiteButton.setVisible(false);
+		this.btnClear.setEnabled(false);
+		
+		bookmarksSetUp();
+		this.cmbDownloadSites.setRenderer(new BookmarkCellRenderer());
+		this.cmbDownloadSites.addItemListener(new MyItemListener());
+		loadBookmarkCMBox(true);
+		this.cmbDownloadSites.addItemListener(new MyItemListener());
+		
+		this.lbSiteURL.setText(((DataSource)this.cmbDownloadSites.getSelectedItem()).getHref());
+		this.jTabbedPane1.setSelectedIndex(1);
+		this.jTabbedPane1.addChangeListener(new MyChangeListener());
+		this.tfSearch.setToolTipText(HOWTOSEARCH);
 	}
 
+	class MyChangeListener implements ChangeListener {
+		public void stateChanged(ChangeEvent e){
+			if (PluginManageDialog.this.jTabbedPane1.getSelectedIndex() == 0){
+				String urlStr = ((DataSource)PluginManageDialog.this.cmbDownloadSites.getSelectedItem()).getHref();
+				if (!PluginManageDialog.this.currentPluginSiteURL.equalsIgnoreCase(urlStr)){
+					PluginManageDialog.this.currentPluginSiteURL = urlStr;
+					PluginManageDialog.this.refreshPluginTree();
+				}
+			}
+		}
+	}
+	
+	// Refresh the plugin-tree after the change of Plugin site URL
+	private void refreshPluginTree(){
+		switchDownloadSites();
+		cytoscape.task.Task task = new PluginManagerInquireTask
+		(this.currentPluginSiteURL, new UrlAction(this, this.currentPluginSiteURL));
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+		jTaskConfig.displayCancelButton(true);
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
+	}
+	
+	
+	private class UrlAction extends PluginInquireAction {
+
+		private PluginManageDialog dialog;
+		private String url;
+
+		public UrlAction(PluginManageDialog Dialog, String Url) {
+			dialog = Dialog;
+			url = Url;
+		}
+
+		public boolean displayProgressBar() {
+			return true;
+		}
+
+		public String getProgressBarMessage() {
+			return "Attempting to connect...";
+		}
+
+		public void inquireAction(List<DownloadableInfo> Results) {
+
+			if (isExceptionThrown()) {
+				if (getIOException() != null) {
+					// failed to read the given url
+					logger.warn(PluginManageDialog.CommonError.NOXML + url, getIOException());
+					dialog.setError(PluginManageDialog.CommonError.NOXML + url);
+				} else if (getJDOMException() != null) {
+					// failed to parse the xml file at the url
+					logger.warn(PluginManageDialog.CommonError.BADXML + url, getJDOMException());
+					dialog.setError(PluginManageDialog.CommonError.BADXML + url);
+				}
+			} else {
+
+				PluginManager Mgr = PluginManager.getPluginManager();
+				List<DownloadableInfo> UniqueAvailable = ManagerUtil.getUnique(Mgr
+						.getDownloadables(PluginStatus.CURRENT), Results);
+
+				Map<String, List<DownloadableInfo>> NewPlugins = ManagerUtil
+						.sortByCategory(UniqueAvailable);
+
+				if (NewPlugins.size() <= 0) {
+					dialog.setError("No plugins compatible with "
+							+ new CytoscapeVersion().getFullVersion()
+							+ " available from this site.");
+				} else {
+					dialog.setMessage("");
+				}
+
+				for (String Category : NewPlugins.keySet()) {
+					dialog.addCategory(Category, NewPlugins.get(Category),
+							PluginManageDialog.PluginInstallStatus.AVAILABLE);
+				}
+			}
+
+		}
+
+	}
+
+	
 	// trying to listen to events in the Url dialog
 	public void actionPerformed(ActionEvent evt) {
 		logger.info("URL DIALOG: " + evt.getSource().toString());
@@ -578,16 +704,18 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        pnlSearch = new javax.swing.JPanel();
         topPane = new javax.swing.JPanel();
         availablePluginsLabel = new javax.swing.JLabel();
         downloadLocText = new javax.swing.JTextArea();
         sitePanel = new javax.swing.JPanel();
-        changeSiteButton = new javax.swing.JButton();
-        versionCheck = new javax.swing.JCheckBox();
         tfSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
         sitePanel2 = new javax.swing.JPanel();
         btnBackMain = new javax.swing.JButton();
+        versionCheck = new javax.swing.JCheckBox();
         jSplitPane1 = new javax.swing.JSplitPane();
         treeScrollPane = new javax.swing.JScrollPane();
         pluginTree = new javax.swing.JTree();
@@ -599,10 +727,23 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         buttonPanel = new javax.swing.JPanel();
         installDeleteButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
+        pnlSettings = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        changeSiteButton = new javax.swing.JButton();
+        cmbDownloadSites = new javax.swing.JComboBox();
+        jPanel1 = new javax.swing.JPanel();
+        lbSiteURL = new javax.swing.JLabel();
+        lbPlaceHolder = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        btnAddSite = new javax.swing.JButton();
+        btnEditSite = new javax.swing.JButton();
+        btnDeleteSite = new javax.swing.JButton();
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        pnlSearch.setLayout(new java.awt.GridBagLayout());
+
         topPane.setLayout(new java.awt.GridBagLayout());
 
         availablePluginsLabel.setText("Plugins available for download from:");
@@ -634,34 +775,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
         sitePanel.setLayout(new java.awt.GridBagLayout());
 
-        changeSiteButton.setText("Change Download Site");
-        changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeSiteButtonActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 10);
-        sitePanel.add(changeSiteButton, gridBagConstraints);
-
-        versionCheck.setText("Show outdated Plugins");
-        versionCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        versionCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        versionCheck.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                versionCheckItemStateChanged(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        sitePanel.add(versionCheck, gridBagConstraints);
-
         tfSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfSearchActionPerformed(evt);
@@ -692,11 +805,24 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
         sitePanel.add(btnSearch, gridBagConstraints);
 
+        btnClear.setText("Clear");
+        btnClear.setPreferredSize(new java.awt.Dimension(67, 23));
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        sitePanel.add(btnClear, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
         topPane.add(sitePanel, gridBagConstraints);
 
         btnBackMain.setText("Back to Main Dialog");
@@ -716,12 +842,29 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         topPane.add(sitePanel2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
-        getContentPane().add(topPane, gridBagConstraints);
+        pnlSearch.add(topPane, gridBagConstraints);
+
+        versionCheck.setText("Show outdated Plugins");
+        versionCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        versionCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        versionCheck.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                versionCheckItemStateChanged(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
+        pnlSearch.add(versionCheck, gridBagConstraints);
 
         jSplitPane1.setDividerLocation(250);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(400, 326));
@@ -740,7 +883,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
-        getContentPane().add(jSplitPane1, gridBagConstraints);
+        pnlSearch.add(jSplitPane1, gridBagConstraints);
 
         bottomPane.setLayout(new java.awt.GridBagLayout());
 
@@ -801,23 +944,195 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        getContentPane().add(bottomPane, gridBagConstraints);
+        pnlSearch.add(bottomPane, gridBagConstraints);
+
+        jTabbedPane1.addTab("Search", pnlSearch);
+
+        pnlSettings.setLayout(new java.awt.GridBagLayout());
+
+        jLabel3.setText("Download sites");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 10, 10, 0);
+        pnlSettings.add(jLabel3, gridBagConstraints);
+
+        changeSiteButton.setText("Change Download Site");
+        changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeSiteButtonActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 10);
+        pnlSettings.add(changeSiteButton, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 20);
+        pnlSettings.add(cmbDownloadSites, gridBagConstraints);
+
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        lbSiteURL.setText("http://chianti.ucsd.edu/asdf.xml");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 20, 0, 0);
+        jPanel1.add(lbSiteURL, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel1.add(lbPlaceHolder, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        pnlSettings.add(jPanel1, gridBagConstraints);
+
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        btnAddSite.setText("Add");
+        btnAddSite.setPreferredSize(new java.awt.Dimension(65, 23));
+        btnAddSite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddSiteActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 20);
+        jPanel2.add(btnAddSite, gridBagConstraints);
+
+        btnEditSite.setText("Edit");
+        btnEditSite.setPreferredSize(new java.awt.Dimension(65, 23));
+        btnEditSite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditSiteActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
+        jPanel2.add(btnEditSite, gridBagConstraints);
+
+        btnDeleteSite.setText("Delete");
+        btnDeleteSite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteSiteActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 20);
+        jPanel2.add(btnDeleteSite, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridheight = 2;
+        pnlSettings.add(jPanel2, gridBagConstraints);
+
+        jTabbedPane1.addTab("Settings", pnlSettings);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(jTabbedPane1, gridBagConstraints);
 
         pack();
     }// </editor-fold>                        
 
-    private void btnBackMainActionPerformed(java.awt.event.ActionEvent evt) {                                            
-    	switchToMainDialog();
+    private void btnDeleteSiteActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    	
+    	DataSource theDataSource = (DataSource)this.cmbDownloadSites.getSelectedItem();
+		
+    	if (theDataSource.getName().equalsIgnoreCase("Cytoscape")){
+    		JOptionPane.showMessageDialog(this, "Your can not delete default Cytoscape site", "Warning", JOptionPane.WARNING_MESSAGE);
+    		return;
+    	}
+    	
+		int confirm = JOptionPane.showConfirmDialog(this,"Are you sure you want to " +
+				"delete this site","Delete Confirm",JOptionPane.OK_CANCEL_OPTION);
+			
+		if (confirm == JOptionPane.OK_OPTION){
+			BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
+			loadBookmarkCMBox(true); // reload is required to update the GUI			
+		}
+    }                                             
+
+    private void btnEditSiteActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    	DataSource theDataSource = (DataSource) this.cmbDownloadSites.getSelectedItem();
+    	EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this, true, theBookmarks,
+    			bookmarkCategory, "edit", theDataSource);
+    	
+    	theEditDialog.setSize(350, 250);
+    	theEditDialog.setLocationRelativeTo(this);
+
+    	theEditDialog.setVisible(true);
+    	loadBookmarkCMBox(true);
     }                                           
 
-    
+    private void btnAddSiteActionPerformed(java.awt.event.ActionEvent evt) {                                           
+
+    	EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this, true, theBookmarks,
+    			bookmarkCategory, "new", null);
+    	
+    	theNewDialog.setSize(350, 250);
+    	theNewDialog.setLocationRelativeTo(this);
+
+    	theNewDialog.setVisible(true);
+    	
+    	theNewDialog.getDataSource();
+    	
+    	loadBookmarkCMBox(true); // reload is required to update the GUI
+    }                                          
+
+
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    	
+    	this.switchToMainDialog();
+    	this.tfSearch.setText("");
+    	this.btnSearch.setEnabled(false);
+    	this.versionCheck.setEnabled(true);
+    }                                        
+
+    private void btnBackMainActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    	// TODO add your handling code here:
+    }                                           
+
+    	    
     // Disable btnSearch if there is no text in the Search textfield
     private void tfSearchKeyTyped(java.awt.event.KeyEvent evt) {
     	if (this.tfSearch.getText().trim().equals("")){
     		this.btnSearch.setEnabled(false);
+    		this.switchToMainDialog();
+    		this.btnClear.setEnabled(false);
+    		this.versionCheck.setEnabled(true);
     	}
     	else {
     		this.btnSearch.setEnabled(true);
+    		this.btnClear.setEnabled(true);
+    		this.versionCheck.setEnabled(false);
     	}
     }
 
@@ -843,8 +1158,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
        	
         	updateTreeModel(filteredPluginVector);
         	
-        	this.sitePanel.setVisible(false);
-        	this.sitePanel2.setVisible(true);    		
+        	//this.sitePanel.setVisible(false);
+        	//this.sitePanel2.setVisible(true);    		
     	}
     	catch (Exception e){
     		e.printStackTrace();
@@ -1054,27 +1369,46 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	}
 
-  private javax.swing.JLabel availablePluginsLabel;
-  private javax.swing.JPanel bottomPane;
-  private javax.swing.JPanel buttonPanel;
-  private javax.swing.JButton btnBackMain;
-  private javax.swing.JButton changeSiteButton;
-  private javax.swing.JButton closeButton;
-  private javax.swing.JScrollPane infoScrollPane;
-  private javax.swing.JEditorPane infoTextPane;
-  private javax.swing.JButton installDeleteButton;
-  private javax.swing.JSplitPane jSplitPane1;
-  private javax.swing.JTextArea downloadLocText;
-  private javax.swing.JLabel msgLabel;
-  private javax.swing.JTextArea msgPanel;
-  private javax.swing.JTree pluginTree;
-  private javax.swing.JPanel sitePanel;
-  private javax.swing.JPanel sitePanel2;
-  private javax.swing.JPanel topPane;
-  private javax.swing.JScrollPane treeScrollPane;
-  private javax.swing.JCheckBox versionCheck;
-  private javax.swing.JButton btnSearch;
-  private javax.swing.JTextField tfSearch;
+    // Variables declaration - do not modify                     
+    private javax.swing.JLabel availablePluginsLabel;
+    private javax.swing.JPanel bottomPane;
+    private javax.swing.JButton btnAddSite;
+    private javax.swing.JButton btnBackMain;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDeleteSite;
+    private javax.swing.JButton btnEditSite;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton changeSiteButton;
+    private javax.swing.JButton closeButton;
+    private javax.swing.JComboBox cmbDownloadSites;
+    private javax.swing.JTextArea downloadLocText;
+    private javax.swing.JScrollPane infoScrollPane;
+    private javax.swing.JEditorPane infoTextPane;
+    private javax.swing.JButton installDeleteButton;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lbPlaceHolder;
+    private javax.swing.JLabel lbSiteURL;
+    private javax.swing.JLabel msgLabel;
+    private javax.swing.JTextArea msgPanel;
+    private javax.swing.JTree pluginTree;
+    private javax.swing.JPanel pnlSearch;
+    private javax.swing.JPanel pnlSettings;
+    private javax.swing.JPanel sitePanel;
+    private javax.swing.JPanel sitePanel2;
+    private javax.swing.JTextField tfSearch;
+    private javax.swing.JPanel topPane;
+    private javax.swing.JScrollPane treeScrollPane;
+    private javax.swing.JCheckBox versionCheck;
+    // End of variables declaration  
+    
+  
+  
+  
   private TreeNode rootTreeNode;
 	private TreeNode installedNode;
 	private TreeNode availableNode;
@@ -1082,4 +1416,83 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	private TreeCellRenderer treeRenderer;
 	private java.util.HashMap<TreeNode, java.util.List<TreeNode>> hiddenNodes;
 	
+
+	
+	
+	// loads the combo box for bookmarks
+	private void loadBookmarkCMBox(boolean selectLast) {
+		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
+
+		// Extract the URL entries
+		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(
+				bookmarkCategory, theBookmarks.getCategory());
+
+		if (theDataSourceList != null) {
+			for (DataSource Current : theDataSourceList) {
+				theModel.addElement(Current);
+				if (selectLast)
+					theModel.setSelectedItem(Current);
+			}
+		}
+
+		this.cmbDownloadSites.setModel(theModel);
+		this.lbSiteURL.setText(((DataSource)this.cmbDownloadSites.getSelectedItem()).getHref());
+	}
+	
+	private String bookmarkCategory = "plugins";
+	private Bookmarks theBookmarks;
+	/*
+	 * Sets up the bookmarks for plugin download sites
+	 */
+	private void bookmarksSetUp() {
+		try {
+			theBookmarks = Cytoscape.getBookmarks();
+		} catch (Exception E) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"Failed to retrieve bookmarks for plugin download sites.",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.warn("Failed to retrieve bookmarks for plugin download sites.", E);
+
+			return;
+		}
+
+		// if theBookmarks does not exist, create an empty one
+		if (theBookmarks == null) {
+			theBookmarks = new Bookmarks();
+			Cytoscape.setBookmarks(theBookmarks);
+		}
+
+	}
+
+	// required to make the text of the data source show up correctly in the
+	// combo box
+	private class BookmarkCellRenderer extends JLabel implements
+			ListCellRenderer {
+		
+		public BookmarkCellRenderer() {
+			setOpaque(true);
+		}
+		
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			DataSource dataSource = (DataSource) value;
+			setText(dataSource.getName());
+
+			if (isSelected) {
+				if (0 < index) {
+					list.setToolTipText(dataSource.getHref());
+				}
+			}
+
+			return this;
+		}
+	}
+
+	private class MyItemListener implements ItemListener {
+		public void itemStateChanged(ItemEvent e){
+			PluginManageDialog.this.lbSiteURL.setText(((DataSource)PluginManageDialog.this.cmbDownloadSites.getSelectedItem()).getHref());
+		}
+	}
+	
+
 }
