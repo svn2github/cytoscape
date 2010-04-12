@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
 import cytoscape.util.BookmarksUtil;
+import java.net.MalformedURLException;
 
 public class EditBookmarkDialog extends JDialog implements ActionListener {
 	//private String name_orig = null;
@@ -52,6 +53,16 @@ public class EditBookmarkDialog extends JDialog implements ActionListener {
 		return dataSource;
 	}
 	
+	private boolean isValidateURL(String urlStr){
+		try {
+			new URL(urlStr);	
+		}
+		catch (MalformedURLException ex){
+			return false;
+		}
+		return true;
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		Object _actionObject = e.getSource();
 
@@ -68,10 +79,15 @@ public class EditBookmarkDialog extends JDialog implements ActionListener {
 					// display info dialog
 					JOptionPane.showMessageDialog(parent, msg, "Warning",
 					                              JOptionPane.INFORMATION_MESSAGE);
-
 					return;
 				}
 
+				if (!this.isValidateURL(URLstr)){
+					JOptionPane.showMessageDialog(parent, "Invalid URL", "Warning",
+                            JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
+				
 				DataSource theDataSource = new DataSource();
 				theDataSource.setName(name);
 				theDataSource.setHref(URLstr);
@@ -99,7 +115,6 @@ public class EditBookmarkDialog extends JDialog implements ActionListener {
 					// display info dialog
 					JOptionPane.showMessageDialog(parent, msg, "Warning",
 					                              JOptionPane.INFORMATION_MESSAGE);
-
 					return;
 				}
 				
@@ -108,13 +123,18 @@ public class EditBookmarkDialog extends JDialog implements ActionListener {
 					// display info dialog
 					JOptionPane.showMessageDialog(parent, msg, "Warning",
 					                              JOptionPane.INFORMATION_MESSAGE);
-
 					return;
 				}
 				
 				// There is no change, do nothing
 				if (this.dataSource.getName().equalsIgnoreCase(name) && this.dataSource.getHref().equalsIgnoreCase(URLstr.trim())){
 					this.dispose();
+					return;
+				}
+				
+				if (!this.isValidateURL(URLstr)){
+					JOptionPane.showMessageDialog(parent, "Invalid URL", "Warning",
+                            JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
 				
