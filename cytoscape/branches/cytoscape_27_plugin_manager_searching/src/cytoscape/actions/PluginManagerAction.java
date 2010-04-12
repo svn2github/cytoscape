@@ -102,8 +102,8 @@ public class PluginManagerAction extends CytoscapeAction {
 					"Plugin Manager Error", javax.swing.JOptionPane.ERROR_MESSAGE);
 		}
 		
-		String DefaultUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");
-		String DefaultTitle = "Cytoscape";
+		String DefaultUrl = PluginManageDialog.defaultPluginSiteUrl;
+		String DefaultTitle = PluginManageDialog.DefaultPluginSiteTitle; //"Cytoscape";
 
 		try {
 			Bookmarks theBookmarks = Cytoscape.getBookmarks();
