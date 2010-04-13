@@ -57,6 +57,7 @@ import browser.DataObjectType;
 import browser.DataTableModel;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.eqn_attribs.AttribEqnCompiler;
 import cytoscape.data.eqn_attribs.AttribFunction;
 import cytoscape.data.eqn_attribs.AttribParser;
@@ -160,8 +161,12 @@ public class FormulaBuilderDialog extends JDialog {
 		}
 
 		Arrays.sort(functionNames);
-		for (final String functionName : functionNames)
-			functionComboBox.addItem(functionName);
+
+		final Class requestedReturnType = getAttributeType(columnName);
+		for (final String functionName : functionNames) {
+			if (returnTypeIsCompatible(requestedReturnType, stringToFunctionMap.get(functionName).getReturnType()))
+				functionComboBox.addItem(functionName);
+		}
 
 		functionComboBox.setEditable(false);
 
@@ -169,8 +174,44 @@ public class FormulaBuilderDialog extends JDialog {
 			functionComboBox.setSelectedIndex(0);
 			function = stringToFunctionMap.get(functionNames[0]);
 		}
+	}
 
-		functionSelected();
+	/**
+	 *  @returns the type of the attribute "attribName" translated into the language of attribute equations or null
+	 */
+	private Class getAttributeType(final String attribName) {
+		final byte type = tableObjectType.getAssociatedAttribute().getType(attribName);
+		switch (type) {
+		case MultiHashMapDefinition.TYPE_BOOLEAN:
+			return Boolean.class;
+		case MultiHashMapDefinition.TYPE_FLOATING_POINT:
+			return Double.class;
+		case MultiHashMapDefinition.TYPE_INTEGER:
+			return Long.class;
+		case MultiHashMapDefinition.TYPE_STRING:
+			return String.class;
+		default:
+			return null;
+		}
+	}
+
+	private boolean returnTypeIsCompatible(final Class requiredType, final Class returnType) {
+		if (returnType == Object.class || requiredType == String.class)
+			return true;
+
+		if (returnType == requiredType)
+			return true;
+
+		if (requiredType == Boolean.class && returnType != String.class)
+			return true;
+
+		if (requiredType == Double.class && returnType == Long.class)
+			return true;
+
+		if (requiredType == Long.class && returnType == Double.class)
+			return true;
+
+		return false;
 	}
 
 	private void initUsageLabel(final Container contentPane) {
@@ -455,11 +496,11 @@ public class FormulaBuilderDialog extends JDialog {
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
 					     .add(functionComboBox)
 					     .add(usageLabel)
-					     .add(formulaTextField)
 					     .add(argumentPanel)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
 						       .add(applyToLabel)
 						       .add(applyToComboBox))
+					     .add(formulaTextField)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
 						       .add(okButton)
 						       .add(cancelButton)));
@@ -468,11 +509,11 @@ public class FormulaBuilderDialog extends JDialog {
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.CENTER)
 					       .add(functionComboBox)
 					       .add(usageLabel)
-					       .add(formulaTextField)
 					       .add(argumentPanel)
 					       .add(groupLayout.createSequentialGroup()
 							 .add(applyToLabel)
 							 .add(applyToComboBox))
+					       .add(formulaTextField)
 					       .add(groupLayout.createSequentialGroup()
 							 .add(okButton)
 							 .add(cancelButton)));
