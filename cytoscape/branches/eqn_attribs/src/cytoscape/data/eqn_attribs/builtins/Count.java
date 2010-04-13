@@ -98,6 +98,7 @@ public class Count implements AttribFunction {
 		possibleNextArgs.add(Double.class);
 		possibleNextArgs.add(Long.class);
 		possibleNextArgs.add(Boolean.class);
+		possibleNextArgs.add(String.class);
 		possibleNextArgs.add(List.class);
 		if (leadingArgs.length > 0)
 			possibleNextArgs.add(null);
