@@ -53,7 +53,14 @@ public interface AttribFunction {
 	String getUsageDescription();
 
 	/**
-	 *  @returns the return type for this function (Double.getCLass(), String.class, or Boolean.class)
+	 *  @returns the static return type of this function, Object.class, Double.cLass, String.class, or Boolean.class.
+	 *           If the static return type is Object.class, the dynamic return type will be one of Double.cLass, String.class, or Boolean.class
+	 *           and will depend on the arguments passed to the function!
+	 */
+	Class getReturnType();
+
+	/**
+	 *  @returns the return type for this function (Double.cLass, String.class, or Boolean.class)
 	 *           or null if the args passed in had the wrong arity or a type mismatch
 	 */
 	Class validateArgTypes(final Class[] argTypes);

@@ -54,6 +54,8 @@ public class Pi implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"PI()\""; }
 
+	public Class getReturnType() { return Double.class; }
+
 	/**
 	 *  @returns Double.class or null if there are any args
 	 */

@@ -54,6 +54,8 @@ public class Mid implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"MID(text, start, count)\""; }
 
+	public Class getReturnType() { return String.class; }
+
 	/**
 	 *  @returns String.class or null if the args passed in have the wrong arity or a type mismatch was found
 	 */

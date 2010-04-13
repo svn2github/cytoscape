@@ -48,6 +48,8 @@ public class Trunc implements AttribFunction {
 	 */
 	public String getFunctionSummary() { return "Truncates a number."; }
 
+	public Class getReturnType() { return Double.class; }
+
 	/**
 	 *  Used to provide help for users.
 	 *  @returns a description of how to use this function

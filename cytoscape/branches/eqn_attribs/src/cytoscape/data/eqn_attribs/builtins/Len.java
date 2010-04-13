@@ -54,6 +54,8 @@ public class Len implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"LEN(text)\""; }
 
+	public Class getReturnType() { return Long.class; }
+
 	/**
 	 *  @returns String.class or null if the args passed in have the wrong arity or a type mismatch was found
 	 */

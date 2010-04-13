@@ -54,6 +54,8 @@ public class Substitute implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"SUBSTITUTE(text, original, replacement [, nth_appearance])\""; }
 
+	public Class getReturnType() { return String.class; }
+
 	/**
 	 *  @returns String.class or null if the args passed in had the wrong arity or a type mismatch
 	 */

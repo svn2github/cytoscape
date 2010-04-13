@@ -54,6 +54,8 @@ public class Max implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"MAX(list)\" or \"MAX(arg1,arg2,...,argN)\""; }
 
+	public Class getReturnType() { return Double.class; }
+
 	/**
 	 *  @returns Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
 	 */

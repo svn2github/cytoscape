@@ -54,6 +54,8 @@ public class Log implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"LOG(number [, base])\""; }
 
+	public Class getReturnType() { return Double.class; }
+
 	/**
 	 *  @returns Double.class or null if there are not 1 or 2 args or the args are not of type Double
 	 */

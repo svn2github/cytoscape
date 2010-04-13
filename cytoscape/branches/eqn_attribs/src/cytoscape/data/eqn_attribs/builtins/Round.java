@@ -54,6 +54,8 @@ public class Round implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"ROUND(number, num_digits)\""; }
 
+	public Class getReturnType() { return Double.class; }
+
 	/**
 	 *  @returns Double.class or null if there are not 2 args or the args are not of type Double
 	 */

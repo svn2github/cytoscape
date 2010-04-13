@@ -54,6 +54,8 @@ public class Nth implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"NTH(list, index)\""; }
 
+	public Class getReturnType() { return Object.class; }
+
 	/**
 	 *  @returns String.class or null if the arguments are not a string followed by a number
 	 */

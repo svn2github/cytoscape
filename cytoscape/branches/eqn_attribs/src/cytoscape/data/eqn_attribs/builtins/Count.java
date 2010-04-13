@@ -54,6 +54,8 @@ public class Count implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"COUNT(arg1,arg2,...,argN)\""; }
 
+	public Class getReturnType() { return Long.class; }
+
 	/**
 	 *  @returns Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
 	 */

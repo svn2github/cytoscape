@@ -54,6 +54,8 @@ public class First implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"FIRST(list)\""; }
 
+	public Class getReturnType() { return Object.class; }
+
 	/**
 	 *  @returns String.class or null if there is not exactly a single list argument
 	 */

@@ -54,6 +54,8 @@ public class If implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"IF(condition, value_if_true, value_if_false)\""; }
 
+	public Class getReturnType() { return Object.class; }
+
 	/**
 	 *  @returns whatever is compatible type of the if-value and else-value or null if the two types are incompatible
 	 */

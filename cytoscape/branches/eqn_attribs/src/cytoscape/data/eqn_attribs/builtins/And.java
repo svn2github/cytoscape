@@ -54,6 +54,8 @@ public class And implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"AND(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
 
+	public Class getReturnType() { return Boolean.class; }
+
 	/**
 	 *  @returns Boolean.class or null if there are 0 args or the args are not all of type Boolean
 	 */

@@ -54,6 +54,8 @@ public class Value implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"VALUE(text)\""; }
 
+	public Class getReturnType() { return Double.class; }
+
 	/**
 	 *  @returns Double.class or null if there is not exactly a single argument of type String.class
 	 */

@@ -54,6 +54,8 @@ public class Not implements AttribFunction {
 	 */
 	public String getUsageDescription() { return "Call this with \"NOT(logical_expr)\"."; }
 
+	public Class getReturnType() { return Boolean.class; }
+
 	/**
 	 *  @returns Boolean.class or null if there is not exactly 1 arg or the arg is not of type Boolean
 	 */
