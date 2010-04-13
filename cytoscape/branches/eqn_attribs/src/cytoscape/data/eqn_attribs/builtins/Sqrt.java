@@ -55,10 +55,10 @@ public class Sqrt implements AttribFunction {
 	public String getUsageDescription() { return "Call this with \"SQRT(number)\""; }
 
 	/**
-	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double nor Integer
+	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double nor Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || (argTypes[0] != Double.class && argTypes[0] != Integer.class))
+		if (argTypes.length != 1 || (argTypes[0] != Double.class && argTypes[0] != Long.class))
 			return null;
 
 		return Double.class;
@@ -74,7 +74,7 @@ public class Sqrt implements AttribFunction {
 		if (args[0] instanceof Double)
 			number = (Double)args[0];
 		else // Assume we got an integer.
-			number = (Integer)args[0];
+			number = (Long)args[0];
 		if (number < 0.0)
 			throw new ArithmeticException("negative argument in call to the SQRT() function!");
 

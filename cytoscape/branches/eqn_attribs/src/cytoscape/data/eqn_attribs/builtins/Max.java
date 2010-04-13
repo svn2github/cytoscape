@@ -91,6 +91,8 @@ public class Max implements AttribFunction {
 				final double value;
 				if (listEntryType == Double.class)
 					value = (Double)listEntry;
+				else if (listEntryType == Long.class)
+					value = (Long)listEntry;
 				else if (listEntryType == Integer.class)
 					value = (Integer)listEntry;
 				else if (listEntryType == String.class) {
@@ -112,7 +114,7 @@ public class Max implements AttribFunction {
 				if (arg.getClass() == Double.class)
 					value = (Double)arg;
 				else if (arg.getClass() == Long.class)
-					value = (Integer)arg;
+					value = (Long)arg;
 				else if (arg.getClass() == String.class) {
 					try {
 						value = Double.parseDouble((String)arg);

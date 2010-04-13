@@ -55,17 +55,17 @@ public class Abs implements AttribFunction {
 	public String getUsageDescription() { return "Call this with \"ABS(number)\""; }
 
 	/**
-	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double or Integer
+	 *  @returns Double.class or null if there is not exactly 1 arg or the arg is not of type Double or Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || (argTypes[0] != Double.class && argTypes[0] != Integer.class))
+		if (argTypes.length != 1 || (argTypes[0] != Double.class && argTypes[0] != Long.class))
 			return null;
 
 		return Double.class;
 	}
 
 	/**
-	 *  @param args the function arguments which must be either one object of type Double or Integer
+	 *  @param args the function arguments which must be either one object of type Double or Long
 	 *  @returns the result of the function evaluation which is the natural logarithm of the first argument
 	 */
 	public Object evaluateFunction(final Object[] args) {
@@ -73,7 +73,7 @@ public class Abs implements AttribFunction {
 		if (args[0] instanceof Double)
 			number = (Double)args[0];
 		else // Assume we are dealing with an integer.
-			number = (Integer)args[0];
+			number = (Long)args[0];
 
 		return Math.abs(number);
 	}

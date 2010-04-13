@@ -93,6 +93,8 @@ public class Average implements AttribFunction {
 				final double value;
 				if (listEntryType == Double.class)
 					value = (Double)listEntry;
+				else if (listEntryType == Long.class)
+					value = (Long)listEntry;
 				else if (listEntryType == Integer.class)
 					value = (Integer)listEntry;
 				else if (listEntryType == String.class) {
