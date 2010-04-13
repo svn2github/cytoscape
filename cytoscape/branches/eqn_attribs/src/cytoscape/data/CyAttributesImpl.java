@@ -29,6 +29,8 @@
 */
 package cytoscape.data;
 
+
+import cytoscape.Cytoscape;
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
@@ -36,6 +38,7 @@ import cytoscape.data.attr.util.MultiHashMapFactory;
 import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.data.eqn_attribs.interpreter.IdentDescriptor;
 import cytoscape.data.eqn_attribs.interpreter.Interpreter;
+import cytoscape.logger.CyLogger;
 import cytoscape.util.TopoGraphNode;
 import cytoscape.util.TopologicalSort;
 
@@ -59,6 +62,8 @@ public class CyAttributesImpl implements CyAttributes {
 	//  used to store only those attributes, which should not be editable
 	//  by the end user.
 	private Set userNonEditableSet;
+
+	protected static final CyLogger logger = CyLogger.getLogger(Cytoscape.class);
 
 	/**
 	 * Creates a new CyAttributesImpl object.
@@ -485,29 +490,8 @@ public class CyAttributesImpl implements CyAttributes {
 			return (Boolean)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, (Equation)attribValue);
-		if (equationValue instanceof Boolean)
-			return (Boolean)equationValue;
-		if (equationValue instanceof Long) {
-			final long valueAsLong = (Long)equationValue;
-			return valueAsLong == 0 ? false : true;
-		}
-		if (equationValue instanceof String) {
-			final String valueAsString = (String)equationValue;
-			if (valueAsString.equalsIgnoreCase("true"))
-				return true;
-			if (valueAsString.equalsIgnoreCase("false"))
-				return false;
-			throw new IllegalStateException("\"" + valueAsString
-			                                + "\" cannot be interpreted as a boolean value!");
-		}
-		if (equationValue instanceof Double) {
-			final double valueAsDouble = (Double)equationValue;
-			return valueAsDouble == 0.0 ? false : true;
-		}
-
-		throw new IllegalStateException("an equation returned an unknown class type: "
-		                                + equationValue.getClass() + "!");
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+		return convertEqnRetValToBoolean(id, attributeName, equationValue);
 	}
 
 	/**
@@ -534,16 +518,16 @@ public class CyAttributesImpl implements CyAttributes {
 			return (Integer)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, (Equation)attribValue);
-		if (equationValue instanceof Long) {
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+		if (equationValue.getClass() == Long.class) {
 			final long valueAsLong = (Long)equationValue;
 			return (int)valueAsLong;
 		}
-		if (equationValue instanceof Boolean) {
+		if (equationValue.getClass() == Boolean.class) {
 			final Boolean valueAsBoolean = (Boolean)equationValue;
 			return valueAsBoolean ? 1 : 0;
 		}
-		if (equationValue instanceof String) {
+		if (equationValue.getClass() == String.class) {
 			final String valueAsString = (String)equationValue;
 			try {
 				final double valueAsDouble = Double.parseDouble(valueAsString);
@@ -553,7 +537,7 @@ public class CyAttributesImpl implements CyAttributes {
 				                                + "\" cannot be interpreted as an integer value!");
 			}
 		}
-		if (equationValue instanceof Double) {
+		if (equationValue.getClass() == Double.class) {
 			final double valueAsDouble = (Double)equationValue;
 			return (int)excelTrunc(valueAsDouble);
 		}
@@ -586,29 +570,8 @@ public class CyAttributesImpl implements CyAttributes {
 			return (Double)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, (Equation)attribValue);
-		if (equationValue instanceof Double)
-			return (Double)equationValue;
-		if (equationValue instanceof Long) {
-			final long valueAsLong = (Long)equationValue;
-			return (double)valueAsLong;
-		}
-		if (equationValue instanceof Boolean) {
-			final Boolean valueAsBoolean = (Boolean)equationValue;
-			return valueAsBoolean ? 1.0 : 0.0;
-		}
-		if (equationValue instanceof String) {
-			final String valueAsString = (String)equationValue;
-			try {
-				return Double.parseDouble(valueAsString);
-			} catch (final NumberFormatException e) {
-				throw new IllegalStateException("\"" + valueAsString
-				                                + "\" cannot be interpreted as a floating point value!");
-			}
-		}
-
-		throw new IllegalStateException("an equation returned an unknown class type: "
-		                                + equationValue.getClass() + "!");
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+		return convertEqnRetValToDouble(id, attributeName, equationValue);
 	}
 
 	/**
@@ -619,7 +582,7 @@ public class CyAttributesImpl implements CyAttributes {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getStringAttribute(String id, String attributeName) {
+	public String getStringAttribute(final String id, final String attributeName) {
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		if (type < 0)
 			return null;
@@ -635,7 +598,7 @@ public class CyAttributesImpl implements CyAttributes {
 			return (String)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, (Equation)attribValue);
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
 		return equationValue.toString();
 	}
 
@@ -655,8 +618,18 @@ public class CyAttributesImpl implements CyAttributes {
 			return null;
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
-		if (attribValue instanceof Equation)
-			return evalEquation(id, (Equation)attribValue);
+		if (attribValue instanceof Equation) {
+			final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+			if (type == MultiHashMapDefinition.TYPE_INTEGER)
+				return convertEqnRetValToInteger(id, attributeName, equationValue);
+			if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT)
+				return convertEqnRetValToDouble(id, attributeName, equationValue);
+			if (type == MultiHashMapDefinition.TYPE_BOOLEAN)
+				return convertEqnRetValToBoolean(id, attributeName, equationValue);
+			if (type == MultiHashMapDefinition.TYPE_STRING)
+				return equationValue.toString();
+			return equationValue;
+		}
 		else
 			return attribValue;
 	}
@@ -668,12 +641,11 @@ public class CyAttributesImpl implements CyAttributes {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte getType(String attributeName) {
+	public byte getType(final String attributeName) {
 		final byte valType = mmapDef.getAttributeValueType(attributeName);
 
-		if (valType < 0) {
+		if (valType < 0)
 			return TYPE_UNDEFINED;
-		}
 
 		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
 
@@ -1019,7 +991,7 @@ public class CyAttributesImpl implements CyAttributes {
 		return (Equation)attribValue;
 	}
 
-	private Object evalEquation(final String id, final Equation equation) {
+	private Object evalEquation(final String id, final String attribName, final Equation equation) {
 		final Collection<String> attribReferences = equation.getAttribReferences();
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
@@ -1031,7 +1003,9 @@ public class CyAttributesImpl implements CyAttributes {
 		try {
 			return interpreter.run();
 		} catch (final Exception e) {
-			return new String("#ERROR(" + e.getMessage() + ")");
+			logger.warn("Error while evaluating an equation: " + e.getMessage() + " (ID:"
+			            + id + ", attribute name:" + attribName + ")");
+			return null;
 		}
 	}
 
@@ -1098,5 +1072,109 @@ public class CyAttributesImpl implements CyAttributes {
 	private static double excelTrunc(final double x) {
 		final boolean isNegative = x < 0.0;
 		return Math.round(x + (isNegative ? +0.5 : -0.5));
+	}
+
+	/**
+	 *  @returns "d" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 */
+	private static Integer doubleToInteger(final double d) {
+		final double x = Math.rint(d - 0.5);
+		if (x >= Integer.MIN_VALUE && x <= Integer.MAX_VALUE)
+			return (Integer)(int)x;
+
+		return null;
+	}
+
+	/**
+	 *  @returns "l" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 */
+	private static Integer longToInteger(final double l) {
+		if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE)
+			return (Integer)(int)l;
+
+		return null;
+	}
+
+	/**
+	 *  @returns "equationValue" interpreted according to Excel rules as an integer or null if that is not possible
+	 */
+	private Integer convertEqnRetValToInteger(final String id, final String attribName, final Object equationValue) {
+		if (equationValue.getClass() == Double.class) {
+			final Integer retVal = doubleToInteger((Double)equationValue);
+			if (retVal == null)
+				logger.warn("Cannot convert a floating point value ("
+					    + equationValue + ") to an integer!  (ID:" + id
+					    + ", attribute name:" + attribName + ")");
+			return retVal;
+		}
+		else if (equationValue.getClass() == Long.class) {
+			final Integer retVal = longToInteger((Long)equationValue);
+			if (retVal == null)
+				logger.warn("Cannot convert a large integer (long) value ("
+					    + equationValue + ") to an integer! (ID:" + id
+					    + ", attribute name:" + attribName + ")");
+			return retVal;
+		}
+		else if (equationValue.getClass() == Boolean.class) {
+			final Boolean boolValue = (Boolean)equationValue;
+			return (Integer)(boolValue ? 1 : 0);
+		}
+		else
+			throw new IllegalStateException("we should never get here!");
+	}
+
+	/**
+	 *  @returns "equationValue" interpreted according to Excel rules as a double or null if that is not possible
+	 */
+	private Double convertEqnRetValToDouble(final String id, final String attribName, final Object equationValue) {
+		if (equationValue.getClass() == Double.class)
+			return (Double)equationValue;
+		else if (equationValue.getClass() == Long.class)
+			return (double)(Long)(equationValue);
+		else if (equationValue.getClass() == Boolean.class) {
+			final Boolean boolValue = (Boolean)equationValue;
+			return boolValue ? 1.0 : 0.0;
+		}
+		else if (equationValue.getClass() == String.class) {
+			final String valueAsString = (String)equationValue;
+			try {
+				return Double.parseDouble(valueAsString);
+			} catch (final NumberFormatException e) {
+				logger.warn("Cannot convert a string (\"" + valueAsString
+				            + "\") to a floating point value! (ID:" + id
+                                            + ", attribute name:" + attribName + ")");
+				return null;
+			}
+		}
+		else
+			throw new IllegalStateException("we should never get here!");
+	}
+
+	/**
+	 *  @returns "equationValue" interpreted according to Excel rules as a boolean
+	 */
+	private Boolean convertEqnRetValToBoolean(final String id, final String attribName, final Object equationValue) {
+		if (equationValue.getClass() == Double.class)
+			return (Double)equationValue != 0.0;
+		else if (equationValue.getClass() == Long.class)
+			return (Long)(equationValue) != 0L;
+		else if (equationValue.getClass() == Boolean.class) {
+			return (Boolean)equationValue;
+		}
+		else if (equationValue.getClass() == String.class) {
+			final String stringValue = (String)equationValue;
+			if (stringValue.compareToIgnoreCase("true") == 0)
+				return true;
+			else if (stringValue.compareToIgnoreCase("false") == 0)
+				return false;
+			else {
+				logger.warn("Cannot convert a string (\"" + stringValue
+				            + "\") to a boolean value! (ID:" + id
+                                            + ", attribute name:" + attribName + ")");
+				return null;
+			}
+		}
+		else
+			throw new IllegalStateException("we should never get here!");
 	}
 }
