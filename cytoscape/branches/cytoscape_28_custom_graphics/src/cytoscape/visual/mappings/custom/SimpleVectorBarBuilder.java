@@ -1,17 +1,22 @@
 package cytoscape.visual.mappings.custom;
 
 import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.GradientRectangleCustomGraphics;
 
-public class SimpleVectorBarBuilder implements CustomGraphicsBuilder<Number> {
+public class SimpleVectorBarBuilder implements CustomGraphicsBuilder {
 	
-	public SimpleVectorBarBuilder() {
-		
+	private final String targetPropName;
+	
+	public SimpleVectorBarBuilder(String targetPropName) {
+		this.targetPropName = targetPropName;
 	}
 
 	@Override
-	public CyCustomGraphics<?> getGraphics(Number data) {
-		// TODO Auto-generated method stub
-		return null;
+	public CyCustomGraphics<?> getGraphics(Object data) {
+		final CyCustomGraphics<?> graphics = new GradientRectangleCustomGraphics();
+		graphics.getProps().get(targetPropName).setValue(data);
+		graphics.update();
+		
+		return graphics;
 	}
-
 }

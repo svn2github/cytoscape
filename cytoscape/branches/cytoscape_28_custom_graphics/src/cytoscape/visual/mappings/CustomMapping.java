@@ -1,14 +1,21 @@
 package cytoscape.visual.mappings;
 
 import java.awt.Component;
-import java.util.Collection;
-import java.util.Map;
 
-public interface CustomMapping<V> {
+/**
+ * User-definable visual mapping.
+ * 
+ * @author kono
+ *
+ * @param <V>
+ */
+public interface CustomMapping {
 	
-	public Component getEditor();
+	/**
+	 * Returns GUI component to edit detail of this mapping.
+	 * 
+	 * @return - Component: GUI for editing this mapping.
+	 */
+	public Component getMappingEditor();
 	
-	public Collection<String> getControllingAttributeNames();
-
-	public V calculateRangeValueFromMultipleAttr(final Map<String, ?> attributeValues);	
 }

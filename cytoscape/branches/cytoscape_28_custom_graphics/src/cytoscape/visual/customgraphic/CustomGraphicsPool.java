@@ -41,6 +41,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	// Null Object
 	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
+	private static final CyCustomGraphics<?> GR = new GradientRectangleCustomGraphics();
 
 	public static final String METADATA_FILE = "image_metadata.props";
 
@@ -51,6 +52,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		graphicsMap.put(NULL.hashCode(), NULL);
+		graphicsMap.put(GR.hashCode(), GR);
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
 				Cytoscape.CYTOSCAPE_EXIT, this);

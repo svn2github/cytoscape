@@ -3,6 +3,8 @@ package cytoscape.visual.customgraphic;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -14,6 +16,8 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 	protected String displayName;
 	protected CyCustomGraphicsParser parser;
 	
+	protected final Map<String, CustomGraphicsProperty<?>> props;
+	
 	// For tags
 	protected final SortedSet<String> tags;
 	
@@ -22,6 +26,7 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 		this.displayName = displayName;
 		
 		this.tags = new TreeSet<String>();
+		this.props = new HashMap<String, CustomGraphicsProperty<?>>();
 	}
 	
 	@Override
@@ -52,6 +57,15 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 	@Override
 	public Collection<String> getTags() {
 		return tags;
+	}
+	
+	@Override
+	public Map<String, CustomGraphicsProperty<?>> getProps() {
+		return this.props;
+	}
+	
+	public void update() {
+		// By default, do nothing.
 	}
 
 }
