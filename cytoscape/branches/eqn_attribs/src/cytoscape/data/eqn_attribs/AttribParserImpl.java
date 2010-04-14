@@ -108,7 +108,7 @@ class AttribParserImpl implements AttribParser {
 	}
 
 	/**
-	 *  @returns the result type of the parsed equstion if the parse succeded, otherwise null
+	 *  @returns the result type of the parsed equation if the parse succeeded, otherwise null
 	 */
 	public Class getType() { return parseTree == null ? null : parseTree.getType(); }
 
