@@ -428,11 +428,11 @@ public class InterpreterTest extends TestCase {
 		numbers.add(5.0);
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
 		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
-		assertEquals(new Double(4.0), interpreter1.run());
+		assertEquals(new Long(4L), interpreter1.run());
 
 		assertTrue(compiler.compile("=COUNT(-2,-3,-4.35)", attribNameToTypeMap));
 		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
-		assertEquals(new Double(3.0), interpreter2.run());
+		assertEquals(new Long(3L), interpreter2.run());
 	}
 
 	public void testMEDIAN() throws Exception {

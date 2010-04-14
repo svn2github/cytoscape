@@ -154,15 +154,12 @@ public class Interpreter {
 
 		if (argumentStack.size() != 1)
 			throw new IllegalStateException("invalid argument stack size " + argumentStack.size() + ", must be 1!");
-		final Object retval = argumentStack.peek();
-		if (retval instanceof Double)
-			return retval;
-		if (retval instanceof String)
-			return retval;
-		if (retval instanceof Boolean)
-			return retval;
+		final Object retVal = argumentStack.peek();
+		final Class retValClass = retVal.getClass();
+		if (retValClass == Double.class || retValClass == String.class || retValClass == Boolean.class || retValClass == Long.class)
+			return retVal;
 
-		throw new IllegalStateException("illegal result type at end of interpretation: " + retval.getClass() + "!");
+		throw new IllegalStateException("illegal result type at end of interpretation: " + retValClass + "!");
 	}
 
 	private void fadd() throws EmptyStackException {

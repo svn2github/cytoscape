@@ -63,7 +63,7 @@ public class Count implements AttribFunction {
 		if (argTypes.length == 0) // No empty argument list!
 			return null;
 
-		return Double.class;
+		return Long.class;
 	}
 
 	/**
@@ -76,15 +76,21 @@ public class Count implements AttribFunction {
 			if (arg instanceof List) {
 				final List list = (List)arg;
 				for (final Object listEntry : list) {
-					if (listEntry instanceof Number)
+					if (listEntry.getClass() == Double.class || listEntry.getClass() == Long.class)
+						++count;
+					else if (listEntry.getClass() == String.class && isValidDouble((String)listEntry))
 						++count;
 				}
 			}
-			else if (arg instanceof Number)
-				++count;
+			else {
+				if (arg.getClass() == Double.class || arg.getClass() == Long.class)
+					++count;
+				else if (arg.getClass() == String.class && isValidDouble((String)arg))
+					++count;
+			}
 		}
 
-		return (double)count;
+		return (long)count;
 	}
 
 	/**
@@ -104,5 +110,17 @@ public class Count implements AttribFunction {
 			possibleNextArgs.add(null);
 
 		return possibleNextArgs;
+	}
+
+	/**
+	 *  @returns true if "s" contains the string representation of a valid, finite, non-NaN double
+	 */
+	private boolean isValidDouble(final String s) {
+		try {
+			final double d = Double.parseDouble(s);
+			return !Double.isNaN(d) && !Double.isInfinite(d);
+		} catch (final NumberFormatException e) {
+			return false;
+		}
 	}
 }
