@@ -32,6 +32,7 @@ import csplugins.mcode.internal.action.MCODEHelpAction;
 import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
 import cytoscape.Cytoscape;
 import cytoscape.util.swing.NetworkSelectorPanel;
+import cytoscape.util.swing.CyCollapsiblePanel;
 import cytoscape.view.cytopanels.CytoPanel;
 
 /**
@@ -84,8 +85,8 @@ public class MCODEMainPanel extends JPanel {
     //on the scope that is selected.  For network scope, the user has the option of using a
     //benchmark or customizing the parameters while for the other scopes, benchmarks are not
     //appropriate.
-    MCODECollapsiblePanel clusterFindingPanel;
-    MCODECollapsiblePanel customizeClusterFindingPanel;
+    CyCollapsiblePanel clusterFindingPanel;
+    CyCollapsiblePanel customizeClusterFindingPanel;
     JPanel clusterFindingContent;
     JPanel customizeClusterFindingContent;
 
@@ -128,7 +129,7 @@ public class MCODEMainPanel extends JPanel {
 
         //create the three main panels: scope, advanced options, and bottom
         final JPanel scopePanel = createScopePanel();
-        final MCODECollapsiblePanel advancedOptionsPanel = createAdvancedOptionsPanel();
+        final CyCollapsiblePanel advancedOptionsPanel = createAdvancedOptionsPanel();
         final JPanel bottomPanel = createBottomPanel();
 
         //Since the advanced options panel is being added to the center of this border layout
@@ -192,14 +193,14 @@ public class MCODEMainPanel extends JPanel {
      *
      * @return collapsablePanel
      */
-    private MCODECollapsiblePanel createAdvancedOptionsPanel() {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Advanced Options");
+    private CyCollapsiblePanel createAdvancedOptionsPanel() {
+        CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced Options");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         //Network scoring collapsable panel
-        MCODECollapsiblePanel networkScoringPanel = createNetworkScoringPanel();
+        CyCollapsiblePanel networkScoringPanel = createNetworkScoringPanel();
 
         //Cluster finding collapsable panel
         clusterFindingPanel = createClusterFindingPanel();
@@ -216,8 +217,8 @@ public class MCODEMainPanel extends JPanel {
      *
      * @return panel containing the network scoring parameter inputs
      */
-    private MCODECollapsiblePanel createNetworkScoringPanel() {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Network Scoring");
+    private CyCollapsiblePanel createNetworkScoringPanel() {
+        CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Network Scoring");
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
@@ -284,8 +285,8 @@ public class MCODEMainPanel extends JPanel {
      *
      * @return collapsablePanel
      */
-    private MCODECollapsiblePanel createClusterFindingPanel() {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Cluster Finding");
+    private CyCollapsiblePanel createClusterFindingPanel() {
+        CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Cluster Finding");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -302,7 +303,7 @@ public class MCODEMainPanel extends JPanel {
         //customize parameters panel
         customizeClusterFindingPanel = createCustomizeClusterFindingPanel(customizeOption);
         //optimize parameters panel
-        MCODECollapsiblePanel optimizeClusterFindingPanel = createOptimizeClusterFindingPanel(optimizeOption);
+        CyCollapsiblePanel optimizeClusterFindingPanel = createOptimizeClusterFindingPanel(optimizeOption);
 
         panel.add(customizeClusterFindingPanel);
         panel.add(optimizeClusterFindingPanel);
@@ -319,8 +320,8 @@ public class MCODEMainPanel extends JPanel {
      * @param component Any JComponent that may appear in the titled border of the panel
      * @return collapsablePanel
      */
-    private MCODECollapsiblePanel createCustomizeClusterFindingPanel(JRadioButton component) {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel(component);
+    private CyCollapsiblePanel createCustomizeClusterFindingPanel(JRadioButton component) {
+        CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel(component);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -492,10 +493,10 @@ public class MCODEMainPanel extends JPanel {
      *
      * @param component the radio button that appears in the titled border of the panel
      * @return A collapsable panel holding a file selection input
-     * @see MCODECollapsiblePanel
+     * @see CyCollapsiblePanel
      */
-    private MCODECollapsiblePanel createOptimizeClusterFindingPanel(JRadioButton component) {
-        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel(component);
+    private CyCollapsiblePanel createOptimizeClusterFindingPanel(JRadioButton component) {
+        CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel(component);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
