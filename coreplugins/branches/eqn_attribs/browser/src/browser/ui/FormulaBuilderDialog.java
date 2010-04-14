@@ -88,11 +88,12 @@ public class FormulaBuilderDialog extends JDialog {
 	private JComboBox functionComboBox = null;
 	private JLabel usageLabel = null;
 	private JTextField formulaTextField = null;
-	private JPanel argumentPanel;
-	private JButton addButton;
-	private JButton doneButton;
+	private JPanel argumentPanel = null;
+	private JButton addButton = null;
+	private JButton doneButton = null;
 	private JComboBox attribNamesComboBox = null;
-	private JLabel applyToLabel;
+	private JTextField constantValuesTextField = null;
+	private JLabel applyToLabel = null;
 	private JComboBox applyToComboBox = null;
 	private JButton okButton = null;
 	private JButton cancelButton = null;
@@ -104,6 +105,7 @@ public class FormulaBuilderDialog extends JDialog {
 	private DataTableModel tableModel;
 	private DataObjectType tableObjectType;
 	private final JTable table;
+	private static final String FUNC_SELECTION_MESSAGE = "Please select a function...";
 
 
 	public FormulaBuilderDialog(final DataTableModel tableModel, final JTable table,
@@ -129,10 +131,10 @@ public class FormulaBuilderDialog extends JDialog {
 
 		initFunctionComboBox(contentPane);
 		initUsageLabel(contentPane);
-		initFormulaTextField(contentPane);
 		initArgumentPanel(contentPane);
 		initApplyToLabel(contentPane);
 		initApplyToComboBox(contentPane);
+		initFormulaTextField(contentPane);
 		initOkButton(contentPane);
 		initCancelButton(contentPane);
 
@@ -163,6 +165,7 @@ public class FormulaBuilderDialog extends JDialog {
 		Arrays.sort(functionNames);
 
 		final Class requestedReturnType = getAttributeType(columnName);
+		functionComboBox.addItem(FUNC_SELECTION_MESSAGE);
 		for (final String functionName : functionNames) {
 			if (returnTypeIsCompatible(requestedReturnType, stringToFunctionMap.get(functionName).getReturnType()))
 				functionComboBox.addItem(functionName);
@@ -237,13 +240,15 @@ public class FormulaBuilderDialog extends JDialog {
 		attribNamesComboBox = new JComboBox();
 		updateAttribNamesComboBox();
 		argumentPanel.add(attribNamesComboBox);
+		attribNamesComboBox.setEnabled(false);
 
 		final JLabel orLabel = new JLabel();
 		orLabel.setText("or");
 		argumentPanel.add(orLabel);
 
-		final JTextField constantValuesTextField = new JTextField(15);
+		constantValuesTextField = new JTextField(15);
 		argumentPanel.add(constantValuesTextField);
+		constantValuesTextField.setEnabled(false);
 
 		addButton = new JButton("Add");
 		addButton.addActionListener(new ActionListener() {
@@ -286,6 +291,7 @@ public class FormulaBuilderDialog extends JDialog {
 				}
 			});
 		argumentPanel.add(addButton);
+		addButton.setEnabled(false);
 
 		doneButton = new JButton("Done");
 		doneButton.addActionListener(new ActionListener() {
@@ -325,6 +331,7 @@ public class FormulaBuilderDialog extends JDialog {
 				}
 			});
 		applyToComboBox.setEditable(false);
+		applyToComboBox.setEnabled(false);
 	}
 
 	/**
@@ -498,8 +505,13 @@ public class FormulaBuilderDialog extends JDialog {
 
 	private void functionSelected() {
 		final String funcName = (String)functionComboBox.getSelectedItem();
-		if (funcName == null || formulaTextField == null || usageLabel == null)
+		if (funcName == null || formulaTextField == null || usageLabel == null
+		    || funcName.equals(FUNC_SELECTION_MESSAGE))
 			return;
+
+		attribNamesComboBox.setEnabled(true);
+		constantValuesTextField.setEnabled(true);
+		applyToComboBox.setEnabled(true);
 
 		leadingArgs.clear();
 		function = stringToFunctionMap.get(funcName);
