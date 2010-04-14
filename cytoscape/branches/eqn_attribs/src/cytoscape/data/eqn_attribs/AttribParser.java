@@ -59,7 +59,7 @@ public interface AttribParser {
 	public boolean parse(final String eqn, final Map<String, Class> attribNameToTypeMap);
 
 	/**
-	 *  @returns the result type of the parsed equstion if the parse succeded, otherwise null
+	 *  @returns the result type of the parsed equation if the parse succeeded, otherwise null
 	 */
 	public Class getType();
 
