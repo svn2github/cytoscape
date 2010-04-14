@@ -332,18 +332,39 @@ public class FormulaBuilderDialog extends JDialog {
 	 *  @returns null if "expression" is invalid or the type of "expression" if it was valid
 	 */
 	private Class expressionIsValid(final List<Class> validArgTypes, final String expression) {
-		final StringBuilder errorMessage = new StringBuilder(30);
-		final Class expressionType = parseSimpleExpression(expression, errorMessage);
-		if (expression == null) {
-			displayErrorMessage(errorMessage.toString());
+		final AttribParser parser = Parser.getParser();
+		if (!parser.parse("=" + expression, attribNamesAndTypes)) {
+			displayErrorMessage(parser.getErrorMsg());
 			return null;
 		}
-
+			
+		final Class expressionType = parser.getType();
 		if (validArgTypes.contains(expressionType))
 			return expressionType;
 
-		displayErrorMessage("Expression is of an incompatible data type!");
+		final StringBuilder errorMessage = new StringBuilder("Expression is of an incompatible data type (");
+		errorMessage.append(getLastDotComponent(expressionType.toString()));
+		errorMessage.append(") valid types are: ");
+		for (int i = 0; i < validArgTypes.size(); ++i) {
+			errorMessage.append(getLastDotComponent(validArgTypes.get(i).toString()));
+			if (i < validArgTypes.size() - 1)
+				errorMessage.append(',');
+		}
+		displayErrorMessage(errorMessage.toString());
+
 		return null;
+	}
+
+	/**
+	 *  Assumes that "s" consists of components separated by dots.
+	 *  @returns the last component of "s"
+	 */
+	private String getLastDotComponent(final String s) {
+		final int lastDotPos = s.lastIndexOf('.');
+		if (lastDotPos == -1)
+			return s;
+
+		return s.substring(lastDotPos + 1);
 	}
 
 	/**
@@ -517,125 +538,6 @@ public class FormulaBuilderDialog extends JDialog {
 					       .add(groupLayout.createSequentialGroup()
 							 .add(okButton)
 							 .add(cancelButton)));
-	}
-
-	/**
-	 *  Parses very simple expressions of the form: "constant" or "constant1 operator constant2".
-	 *  @returns either the type of the expression if there was no error or null if there was an error
-	 *  In case of an error "errorMessage" will contain the error message after the call.
-	 */
-	private Class parseSimpleExpression(final String expression, final StringBuilder errorMessage) {
-		final AttribTokeniser scanner = new AttribTokeniser(expression);
-
-		AttribToken token1 = scanner.getToken();
-
-		if (token1 == AttribToken.PLUS || token1 == AttribToken.MINUS) {
-			token1 = scanner.getToken();
-			if (token1 != AttribToken.FLOAT_CONSTANT) {
-				errorMessage.append("unary + or - must be followed by a number!");
-				return null;
-			}
-		}
-		else if (token1 == AttribToken.ERROR) {
-			errorMessage.append(scanner.getErrorMsg());
-			return null;
-		}
-
-		AttribToken token2 = scanner.getToken();
-		if (token2 == AttribToken.ERROR) {
-			errorMessage.append(scanner.getErrorMsg());
-			return null;
-		}
-
-		if (token2 == AttribToken.EOS) {
-			switch (token1) {
-			case STRING_CONSTANT:
-				return String.class;
-			case FLOAT_CONSTANT:
-				return Double.class;
-			case BOOLEAN_CONSTANT:
-				return Boolean.class;
-			default:
-				errorMessage.append("Invalid argument \"" + expression
-				                    + "\"!\nPlease enter a constant or a constant followed by an operator and another constant.");
-				return null;
-			}
-		}
-
-		if (token2.isStringOperator()) {
-			if (token1 != AttribToken.STRING_CONSTANT) {
-				errorMessage.append("String operator applied to a non-String operand!");
-				return null;
-			}
-
-			token2 = scanner.getToken();
-			if (token2 != AttribToken.STRING_CONSTANT) {
-				errorMessage.append("String operator applied to a non-String operand!");
-				return null;
-			}
-
-			token2 = scanner.getToken();
-			if (token2 != AttribToken.EOS) {
-				errorMessage.append("Invalid string expression!");
-				return null;
-			}
-
-			return String.class;
-		}
-
-		if (token2.isArithmeticOperator()) {
-			if (token1 != AttribToken.FLOAT_CONSTANT) {
-				errorMessage.append("Numeric operator applied to a non-numeric operand!");
-				return null;
-			}
-
-			token2 = scanner.getToken();
-			if (token2 != AttribToken.FLOAT_CONSTANT) {
-				errorMessage.append("Numeric operator applied to a non-numeric operand!");
-				return null;
-			}
-
-			token2 = scanner.getToken();
-			if (token2 != AttribToken.EOS) {
-				errorMessage.append("Invalid arithmetic expression!");
-				return null;
-			}
-
-			return Double.class;
-		}
-
-		if (token2.isComparisonOperator()) {
-			final AttribToken operatorToken = token2;
-
-			token2 = scanner.getToken();
-			if (token2 == AttribToken.EOS) {
-				errorMessage.append("Expression is incomplete!");
-				return null;
-			}
-
-			if (token1 != token2) {
-				errorMessage.append("Comparsion operator applied to two incompatible operands!");
-				return null;
-			}
-
-			if (token1 == AttribToken.BOOLEAN_CONSTANT && token2 == AttribToken.BOOLEAN_CONSTANT) {
-				if (operatorToken != AttribToken.EQUAL && operatorToken != AttribToken.NOT_EQUAL) {
-					errorMessage.append("Only equality or inequality comparisions are valid for booelan operands!");
-					return null;
-				}
-				return Boolean.class;
-			}
-
-			if (token1 != AttribToken.FLOAT_CONSTANT && token1 != AttribToken.STRING_CONSTANT) {
-				errorMessage.append("Comparsion are only allowed between 2 string values or 2 numeric values!");
-				return null;
-			}
-
-			return Boolean.class;
-		}
-
-		errorMessage.append("Invalid expression!");
-		return null;
 	}
 
 	private static void displayErrorMessage(final String errorMessage) {
