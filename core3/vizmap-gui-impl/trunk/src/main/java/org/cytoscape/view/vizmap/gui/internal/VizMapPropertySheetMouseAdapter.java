@@ -50,7 +50,7 @@ import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
 import com.l2fprod.common.propertysheet.Property;
@@ -62,7 +62,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
  * Creates a new Mapping from GUI
  */
 public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
-		implements SelectedVisualStyleSwitchedEventListener {
+		implements SelectedVisualStyleSwitchedListener {
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	private PropertySheetPanel propertySheetPanel;
 	private EditorManager editorManager;

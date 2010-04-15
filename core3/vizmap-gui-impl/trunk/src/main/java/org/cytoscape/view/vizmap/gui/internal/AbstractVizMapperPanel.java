@@ -66,10 +66,9 @@ import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
-import org.cytoscape.view.vizmap.gui.internal.event.SelectedVisualStyleSwitchedEventImpl;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.IconManager;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
@@ -508,10 +507,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			if (vsComboBox.getItemAt(i).equals(vs)) {
 
 				eventHelper.fireAsynchronousEvent(
-						new SelectedVisualStyleSwitchedEventImpl(
-								(VisualStyle) vsComboBox.getItemAt(i), vs,
-								vsComboBox),
-						SelectedVisualStyleSwitchedEventListener.class);
+						new SelectedVisualStyleSwitchedEvent(vsComboBox,
+								(VisualStyle) vsComboBox.getItemAt(i), vs));
 				vsComboBox.setSelectedItem(vs);
 				return;
 			}

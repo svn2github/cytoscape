@@ -53,7 +53,7 @@ import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_TITLE;
 
@@ -64,7 +64,7 @@ import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, SelectedVisualStyleSwitchedEventListener {
+public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, SelectedVisualStyleSwitchedListener {
 	private final static long serialVersionUID = 1202339876691085L;
 
 	// Padding around canvas

@@ -79,7 +79,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
@@ -101,7 +101,7 @@ import org.jdesktop.swingx.border.DropShadowBorder;
  * @author kono
  */
 public class DefaultViewEditorImpl extends JDialog implements
-		DefaultViewEditor, SelectedVisualStyleSwitchedEventListener {
+		DefaultViewEditor, SelectedVisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
 

@@ -23,7 +23,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -46,7 +46,7 @@ import org.cytoscape.session.CyNetworkManager;
  * 
  */
 public class VizMapPropertySheetBuilder implements
-		SelectedVisualStyleSwitchedEventListener {
+		SelectedVisualStyleSwitchedListener {
 
 	private static final String[] CATEGORY = { NODE, EDGE, NETWORK };
 

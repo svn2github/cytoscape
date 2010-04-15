@@ -69,10 +69,9 @@ import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
-import org.cytoscape.view.vizmap.gui.internal.event.SelectedVisualStyleSwitchedEventImpl;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.IconManager;
 
@@ -276,9 +275,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		propertySheetPanel.setSorting(true);
 
-		this.eventHelper.fireSynchronousEvent(
-				new SelectedVisualStyleSwitchedEventImpl(lastVS, style, this),
-				SelectedVisualStyleSwitchedEventListener.class);
+		this.eventHelper.fireSynchronousEvent(new SelectedVisualStyleSwitchedEvent(this,lastVS, style));
 		lastVS = style;
 
 	}
