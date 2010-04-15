@@ -73,8 +73,8 @@ public class If implements AttribFunction {
 	}
 
 	/**
-	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @returns the result of the function evaluation which is the natural logarithm of the first argument
+	 *  @param args the function arguments
+	 *  @returns the result of the function evaluation which is either the 2nd or 3rd argument of the function
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
