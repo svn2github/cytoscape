@@ -316,6 +316,7 @@ public class FormulaBuilderDialog extends JDialog {
 
 	private void initApplyToComboBox(final Container contentPane) {
 		applyToComboBox = new JComboBox();
+		applyToComboBox.setMaximumSize(new Dimension(70, 10));
 		applyToComboBox.addItem(ApplicationDomain.CURRENT_CELL);
 		applyToComboBox.addItem(ApplicationDomain.CURRENT_SELECTION);
 		applyToComboBox.addItem(ApplicationDomain.ENTIRE_ATTRIBUTE);
