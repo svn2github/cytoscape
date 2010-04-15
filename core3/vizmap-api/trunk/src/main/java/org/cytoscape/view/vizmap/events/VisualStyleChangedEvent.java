@@ -34,7 +34,7 @@
 */
 package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 
 import org.cytoscape.view.vizmap.VisualStyle;
 
@@ -42,5 +42,8 @@ import org.cytoscape.view.vizmap.VisualStyle;
 /**
  * DOCUMENT ME!
   */
-public interface VisualStyleChangedEvent extends CyEvent<VisualStyle> {
+public final class VisualStyleChangedEvent extends AbstractCyEvent<VisualStyle> {
+	public VisualStyleChangedEvent(final VisualStyle source) {
+		super(source, VisualStyleChangedListener.class);
+	}
 }

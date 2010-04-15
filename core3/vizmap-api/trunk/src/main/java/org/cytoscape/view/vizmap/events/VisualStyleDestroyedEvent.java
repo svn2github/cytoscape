@@ -34,13 +34,22 @@
  */
 package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.CyEvent;
-
+import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
  * DOCUMENT ME!
  */
-public interface VisualStyleDestroyedEvent extends CyEvent<Object> {
-	public VisualStyle getDestroyedVisualStyle();
+public final class VisualStyleDestroyedEvent extends AbstractCyEvent<Object> {
+
+	private final VisualStyle destroyed;
+
+	public VisualStyleDestroyedEvent(final Object source, final VisualStyle destroyed) {
+		super(source, VisualStyleDestroyedListener.class);
+		this.destroyed = destroyed;
+	}
+
+	public VisualStyle getDestroyedVisualStyle() {
+		return destroyed;
+	}
 }

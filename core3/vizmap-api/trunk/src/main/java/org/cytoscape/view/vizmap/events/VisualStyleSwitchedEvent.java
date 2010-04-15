@@ -34,7 +34,7 @@
 */
 package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 
 import org.cytoscape.view.model.CyNetworkView;
 
@@ -44,10 +44,17 @@ import org.cytoscape.view.vizmap.VisualStyle;
 /**
  * DOCUMENT ME!
   */
-public interface VisualStyleSwitchedEvent extends CyEvent<CyNetworkView> {
+public final class VisualStyleSwitchedEvent extends AbstractCyEvent<CyNetworkView> {
+	private final VisualStyle newVS;
+	public VisualStyleSwitchedEvent(final CyNetworkView source, final VisualStyle newVS) {
+		super(source, VisualStyleSwitchedListener.class);
+		this.newVS = newVS;
+	}
 	/**
 	 * DOCUMENT ME!
 	 * @return the new VisualStyle
 	 */
-	VisualStyle getNewVisualStyle();
+	public VisualStyle getNewVisualStyle() { 
+		return newVS;
+	}
 }

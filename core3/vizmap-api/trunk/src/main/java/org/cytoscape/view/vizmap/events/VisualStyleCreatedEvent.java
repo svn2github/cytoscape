@@ -34,17 +34,25 @@
  */
 package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
  * DOCUMENT ME!
  */
-public interface VisualStyleCreatedEvent extends CyEvent<Object> {
-	
+public final class VisualStyleCreatedEvent extends AbstractCyEvent<Object> {
+
+	private final VisualStyle created;
+
+	public VisualStyleCreatedEvent(final Object source, final VisualStyle created) {
+		super(source, VisualStyleCreatedListener.class);
+		this.created = created;
+	}
 	/**
 	 * Get the newly created Visual Style by the Visual Mapping Manager.
 	 * @return
 	 */
-	public VisualStyle getCreatedVisualStyle();
+	public VisualStyle getCreatedVisualStyle() {
+		return created;
+	}
 }

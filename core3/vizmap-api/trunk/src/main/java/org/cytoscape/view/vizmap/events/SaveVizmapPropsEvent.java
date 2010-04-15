@@ -1,10 +1,13 @@
 
 package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 
 /**
  * 
  */
-public interface SaveVizmapPropsEvent extends CyEvent<Object> {
+public final class SaveVizmapPropsEvent extends AbstractCyEvent<Object> {
+	public SaveVizmapPropsEvent(final Object source) {
+		super(source, SaveVizmapPropsListener.class);
+	}
 }
