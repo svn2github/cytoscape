@@ -43,7 +43,6 @@ import java.awt.Frame;
 import java.awt.Window;
 
 import javax.swing.Icon;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
@@ -52,6 +51,7 @@ import cytoscape.visual.ArrowShape;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
+import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
@@ -104,9 +104,9 @@ public enum EditorDisplayer {
 	DISCRETE_NODE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
 	    	               new Class[] { VisualPropertyType.class, Window.class },
 	    	               new Object[] { VisualPropertyType.NODE_LINE_STYLE, null }, LineStyle.class),
-	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
-	                        new Class[] { Frame.class, LabelPosition.class },
-	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
+	DISCRETE_LABEL_POSITION(PopupObjectPositionChooser.class, "showDialog",
+	                        new Class[] { Window.class, ObjectPosition.class },
+	                        new Object[] { Cytoscape.getDesktop(), null }, ObjectPosition.class), 
 	CONTINUOUS_COLOR(GradientEditorPanel.class, "showDialog",
 	                 new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
 	                 new Object[] { 420, 250, "Gradient Editor", null }, Color.class), 

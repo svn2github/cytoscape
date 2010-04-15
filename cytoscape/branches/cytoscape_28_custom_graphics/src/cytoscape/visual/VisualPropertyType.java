@@ -51,9 +51,9 @@ import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.parsers.FontParser;
 import cytoscape.visual.parsers.GraphicsParser;
-import cytoscape.visual.parsers.LabelPositionParser;
 import cytoscape.visual.parsers.LineStyleParser;
 import cytoscape.visual.parsers.NodeShapeParser;
+import cytoscape.visual.parsers.ObjectPositionParser;
 import cytoscape.visual.parsers.StringParser;
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.properties.EdgeColorProp;
@@ -76,6 +76,7 @@ import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
 import cytoscape.visual.properties.EdgeToolTipProp;
 import cytoscape.visual.properties.NodeBorderColorProp;
 import cytoscape.visual.properties.NodeBorderOpacityProp;
+import cytoscape.visual.properties.NodeCustomGraphicsPositionProp;
 import cytoscape.visual.properties.NodeCustomGraphicsProp;
 import cytoscape.visual.properties.NodeFillColorProp;
 import cytoscape.visual.properties.NodeFontFaceProp;
@@ -150,7 +151,7 @@ public enum VisualPropertyType {
 				 new StringParser(), true, true), 
 	NODE_LABEL_POSITION("Node Label Position", "nodeLabelPositionCalculator", "node.labelPosition",
 	                    "defaultNodeLabelPosition", 
-	                    LabelPosition.class, new NodeLabelPositionProp(), new LabelPositionParser(), true, true), 
+	                    ObjectPosition.class, new NodeLabelPositionProp(), new ObjectPositionParser(), true, true), 
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           Color.class, new EdgeColorProp(),
 			   new ColorParser(), false, true), 
@@ -238,7 +239,7 @@ public enum VisualPropertyType {
 	// Not yet implemented in version 2.5
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
 	                    "defaultEdgeLabelPosition", null, new EdgeLabelPositionProp(),
-						new LabelPositionParser(), false, false),
+						new ObjectPositionParser(), false, false),
 
 	NODE_LABEL_WIDTH("Node Label Width", "nodeLabelWidthCalculator", "node.labelWidth",
 	                 "defaultNodeLabelWidth", Number.class, new NodeLabelWidthProp(),
@@ -256,7 +257,11 @@ public enum VisualPropertyType {
 	NODE_CUSTOM_GRAPHICS("Node Custom Graphics", "nodeCustomGraphics", 
 	    	                         "node.customGraphics", "defaultNodeCustomGraphics", 
 	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(),
-	    	                         new GraphicsParser(), true, true)                      
+	    	                         new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION("Node Custom Graphics Position", "nodeCustomGraphicsPosition", 
+	    	                         "node.customGraphicsPosition", "defaultNodeCustomGraphicsPosition", 
+	    	                         ObjectPosition.class, new NodeCustomGraphicsPositionProp(),
+	    	                         new ObjectPositionParser(), true, true)
 
 	;
 	/*
@@ -278,7 +283,7 @@ public enum VisualPropertyType {
 	// Data type for the actual visual property.
 	private Class<?> dataType;
 	private VisualProperty vizProp;
-	private ValueParser valueParser;
+	private ValueParser<?> valueParser;
 
 	// indicates whether or not property is for a node or edge
 	private boolean isNodeProp;
@@ -523,11 +528,14 @@ public enum VisualPropertyType {
 		if ((style == null) || (c == null))
 			return;
 
+		
+		
 		if ( !vizProp.isValidValue( c ) ) {
 			logger.warn("Invalid default value specified for " + toString() + " : " + c);
 			return;
 		}
-
+		
+		
 		if (isNodeProp()) {
 			NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
 			NodeAppearance na = nodeCalc.getDefaultAppearance();

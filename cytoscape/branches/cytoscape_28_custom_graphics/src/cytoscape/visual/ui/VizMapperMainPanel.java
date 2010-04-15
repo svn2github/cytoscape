@@ -145,11 +145,11 @@ import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyCustomGraphicsEditor;
 import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyObjectPositionPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
 import cytoscape.visual.ui.editors.discrete.CustomGraphicsCellRenderer;
-import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
+import cytoscape.visual.ui.editors.discrete.ObjectPositionCellRenderer;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 import cytoscape.visual.ui.icon.ArrowIcon;
 import cytoscape.visual.ui.icon.NodeIcon;
@@ -736,8 +736,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private FontCellRenderer fontCellRenderer = new FontCellRenderer();
 
 	// For label positions
-	private LabelPositionCellRenderer labelPositionRenderer = new LabelPositionCellRenderer();
-	private CyLabelPositionPropertyEditor labelPositionEditor = new CyLabelPositionPropertyEditor();
+	private ObjectPositionCellRenderer labelPositionRenderer = new ObjectPositionCellRenderer();
+	private CyObjectPositionPropertyEditor labelPositionEditor = new CyObjectPositionPropertyEditor();
 	
 	// For boolean attributes
 	private CyComboBoxPropertyEditor booleanCellEditor = new CyComboBoxPropertyEditor();

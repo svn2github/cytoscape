@@ -39,6 +39,7 @@ package cytoscape.visual.ui.editors.discrete;
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 import cytoscape.visual.LabelPosition;
+import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.properties.NodeLabelPositionProp;
@@ -53,7 +54,7 @@ import javax.swing.SwingConstants;
 /**
  *
  */
-public class LabelPositionCellRenderer extends DefaultCellRenderer {
+public class ObjectPositionCellRenderer extends DefaultCellRenderer {
 	
 	private static final long serialVersionUID = -7898871787941450155L;
 
@@ -81,8 +82,8 @@ public class LabelPositionCellRenderer extends DefaultCellRenderer {
 			label.setForeground(table.getForeground());
 		}
 
-		if ((value != null) && value instanceof LabelPosition) {
-			final LabelPosition lp = (LabelPosition) value;
+		if ((value != null) && value instanceof ObjectPosition) {
+			final ObjectPosition lp = (ObjectPosition) value;
 			final NodeLabelPositionProp prop = (NodeLabelPositionProp) VisualPropertyType.NODE_LABEL_POSITION
 			                                   .getVisualProperty();
 			label.setIcon(prop.getIcon(lp));

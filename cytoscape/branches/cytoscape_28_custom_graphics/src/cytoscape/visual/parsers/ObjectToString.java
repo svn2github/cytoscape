@@ -35,11 +35,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 
 import cytoscape.util.Misc;
@@ -47,6 +42,7 @@ import cytoscape.util.Misc;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.NodeShape;
+import cytoscape.visual.ObjectPosition;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -59,6 +55,7 @@ import java.awt.Font;
  * Most cases either use the corresponding methods in cytoscape.util.Misc or
  * use the default toString() method of the object.
  */
+
 public class ObjectToString {
     /**
      * Constructs and returns a String representation of the given Object.
@@ -79,6 +76,8 @@ public class ObjectToString {
             return o.toString();
         else if (o instanceof LabelPosition)
             return ((LabelPosition) o).shortString();
+        else if (o instanceof ObjectPosition)
+            return ((ObjectPosition) o).shortString();
         else
             //default: use the toString() method
             return o.toString();

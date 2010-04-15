@@ -37,10 +37,10 @@
 package cytoscape.visual.ui;
 
 import giny.model.GraphObject;
-import giny.view.Label;
 
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -52,17 +52,20 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.LabelPosition;
+import cytoscape.visual.ObjectPosition;
+import cytoscape.visual.ObjectPositionImpl;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ObjectToString;
 
 /**
  *
  */
-public class PopupLabelPositionChooser extends JDialog implements
+public class PopupObjectPositionChooser extends JDialog implements
 		PropertyChangeListener {
-	protected LabelPosition lp;
-	protected LabelPosition newlp;
+
+	private static final long serialVersionUID = 7146654020668346430L;
+	protected ObjectPosition lp;
+	protected ObjectPosition newlp;
 
 	/**
 	 * DOCUMENT ME!
@@ -74,64 +77,52 @@ public class PopupLabelPositionChooser extends JDialog implements
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public static LabelPosition showDialog(Dialog f, LabelPosition pos) {
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,
-				true, pos);
-
-		return placer.getLabelPosition();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param f
-	 *            DOCUMENT ME!
-	 * @param pos
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public static LabelPosition showDialog(Frame f, LabelPosition pos) {
-		final LabelPosition position = (LabelPosition) Cytoscape
+	public static ObjectPosition showDialog(final Window f, final ObjectPosition pos) {
+		final ObjectPosition currentPosition;
+		
+		if(pos == null)
+			currentPosition = (ObjectPosition) Cytoscape
 				.getVisualMappingManager().getVisualStyle()
 				.getNodeAppearanceCalculator().getDefaultAppearance().get(
 						VisualPropertyType.NODE_LABEL_POSITION);
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,
-				true, position);
+		else
+			currentPosition = pos;
 
-		return placer.getLabelPosition();
+		final PopupObjectPositionChooser placer = new PopupObjectPositionChooser(
+				f, true, currentPosition);
+		System.out.println("--------- Got New Position: "
+				+ placer.getObjectPosition());
+		return placer.getObjectPosition();
 	}
+	
 
-	private PopupLabelPositionChooser(Frame f, boolean modal, LabelPosition pos) {
-		super(f, modal);
+	private PopupObjectPositionChooser(final Window f, boolean modal,
+			ObjectPosition pos) {
+		super();
+		this.setModal(modal);
+		this.setLocationRelativeTo(f);
 		init(pos);
 	}
 
-	private PopupLabelPositionChooser(Dialog f, boolean modal, LabelPosition pos) {
-		super(f, modal);
-		init(pos);
-	}
-
-	private void init(LabelPosition pos) {
+	private void init(ObjectPosition pos) {
 		if (pos == null)
-			lp = new LabelPosition(Label.NONE, Label.NONE,
-					Label.JUSTIFY_CENTER, 0.0, 0.0);
+			lp = new ObjectPositionImpl();
 		else
 			lp = pos;
 
-		newlp = new LabelPosition(lp);
+		newlp = new ObjectPositionImpl(lp);
 
-		setTitle("Select Label Placement");
+		setTitle("Select Object Placement");
 
 		JPanel placer = new JPanel();
 		placer.setLayout(new BoxLayout(placer, BoxLayout.Y_AXIS));
 		placer.setOpaque(true); // content panes must be opaque
 
 		// Set up and connect the gui components.
-		LabelPlacerGraphic graphic = new LabelPlacerGraphic(new LabelPosition(
-				lp));
-		LabelPlacerControl control = new LabelPlacerControl(new LabelPosition(
-				lp));
+		ObjectPlacerGraphic graphic = new ObjectPlacerGraphic(
+				new ObjectPositionImpl(lp));
+		ObjectPlacerControl control = new ObjectPlacerControl(
+				new ObjectPositionImpl(lp));
 
 		control.addPropertyChangeListener(graphic);
 		control.addPropertyChangeListener(this);
@@ -168,7 +159,7 @@ public class PopupLabelPositionChooser extends JDialog implements
 		setVisible(true);
 	}
 
-	private LabelPosition getLabelPosition() {
+	private ObjectPosition getObjectPosition() {
 		return lp;
 	}
 
@@ -176,10 +167,12 @@ public class PopupLabelPositionChooser extends JDialog implements
 	 * Handles all property changes that the panel listens for.
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		String type = e.getPropertyName();
+		final String type = e.getPropertyName();
 
-		if (type.equals("LABEL_POSITION_CHANGED")) {
-			newlp = (LabelPosition) e.getNewValue();
+		if (type.equals(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED)
+				&& e.getNewValue() instanceof ObjectPosition) {
+
+			newlp = (ObjectPosition) e.getNewValue();
 
 			// horrible, horrible hack
 			GraphObject go = BypassHack.getCurrentObject();

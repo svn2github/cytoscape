@@ -98,14 +98,14 @@ public class LabelPositionTest extends TestCase {
 	public void testEquals() {
 		System.out.println("begin testEquals");
 
-		LabelPosition l1 = new LabelPosition();
-		l1.setTargetAnchor(Label.NORTHWEST);
-		l1.setLabelAnchor(Label.CENTER);
-		l1.setJustify(Label.JUSTIFY_LEFT);
+		ObjectPosition l1 = new ObjectPositionImpl();
+		l1.setTargetAnchor(Position.NORTH_WEST);
+		l1.setAnchor(Position.CENTER);
+		l1.setJustify(Position.JUSTIFY_LEFT);
 		l1.setOffsetX(17.0);
 		l1.setOffsetY(-19.0);
 
-		LabelPosition l2 = new LabelPosition(Label.NORTHWEST, Label.CENTER, Label.JUSTIFY_LEFT,
+		ObjectPosition l2 = new ObjectPositionImpl(Position.NORTH_WEST, Position.CENTER, Position.JUSTIFY_LEFT,
 		                                     17.0, -19.0);
 		System.out.println("label 1\n" + l1.toString());
 		System.out.println("label 2\n" + l2.toString());

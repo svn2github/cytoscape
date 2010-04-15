@@ -44,24 +44,24 @@ import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.ui.PopupLabelPositionChooser;
+import cytoscape.visual.ObjectPosition;
+import cytoscape.visual.ui.PopupObjectPositionChooser;
 
 /**
  *
  */
-public class CyLabelPositionPropertyEditor extends
+public class CyObjectPositionPropertyEditor extends
 		com.l2fprod.common.beans.editor.AbstractPropertyEditor {
-	private LabelPositionCellRenderer label;
+	private ObjectPositionCellRenderer label;
 	private JButton button;
-	private LabelPosition position;
+	private ObjectPosition position;
 
 	/**
 	 * Creates a new CyLabelPositionLabelEditor object.
 	 */
-	public CyLabelPositionPropertyEditor() {
+	public CyObjectPositionPropertyEditor() {
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
-		((JPanel) editor).add("*", label = new LabelPositionCellRenderer());
+		((JPanel) editor).add("*", label = new ObjectPositionCellRenderer());
 		label.setOpaque(false);
 		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory()
 				.createMiniButton());
@@ -75,7 +75,7 @@ public class CyLabelPositionPropertyEditor extends
 		button.setText("X");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				LabelPosition old = position;
+				ObjectPosition old = position;
 				label.setValue(null);
 				position = null;
 				firePropertyChange(old, null);
@@ -100,16 +100,16 @@ public class CyLabelPositionPropertyEditor extends
 	 *            DOCUMENT ME!
 	 */
 	public void setValue(Object value) {
-		position = (LabelPosition) value;
+		position = (ObjectPosition) value;
 		label.setValue(value);
 	}
 
 	protected void editLabelPosition() {
-		final LabelPosition newVal = PopupLabelPositionChooser.showDialog(
+		final ObjectPosition newVal = PopupObjectPositionChooser.showDialog(
 				Cytoscape.getDesktop(), position);
 
 		if (newVal != null) {
-			final LabelPosition old = position;
+			final ObjectPosition old = position;
 
 			setValue(newVal);
 			firePropertyChange(old, newVal);

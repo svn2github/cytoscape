@@ -41,7 +41,9 @@ import cytoscape.visual.LabelPosition;
 
 /**
  * Parses a String into a LabelPosition object.
+ * @deprecated
  */
+@Deprecated
 public class LabelPositionParser
     implements ValueParser<LabelPosition> {
     /**

@@ -59,10 +59,12 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
+import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 import cytoscape.visual.ui.LabelPlacerGraphic;
+import cytoscape.visual.ui.ObjectPlacerGraphic;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
@@ -636,7 +638,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 			case NODE_LABEL_POSITION:
 
-				final LabelPlacerGraphic lp = new LabelPlacerGraphic((LabelPosition) key,
+				final ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) key,
 				                                                     (int) (size * 1.5), false);
 				lp.paint(g);
 

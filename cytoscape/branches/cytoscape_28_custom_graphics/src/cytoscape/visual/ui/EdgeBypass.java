@@ -36,26 +36,17 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-
 import giny.model.Edge;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import java.util.List;
-import java.util.ArrayList;
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
 
 class EdgeBypass extends VizMapBypass {
     JMenuItem addMenu(Edge e) {

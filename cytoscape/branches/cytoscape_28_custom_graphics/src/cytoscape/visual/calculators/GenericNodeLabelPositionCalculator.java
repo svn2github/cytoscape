@@ -35,27 +35,13 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision: 8189 $
-// $Date: 2006-09-13 13:51:38 -0700 (Wed, 13 Sep 2006) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
-
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.Appearance;
 
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
 
-import cytoscape.visual.mappings.ObjectMapping;
-
-import cytoscape.visual.parsers.LabelPositionParser;
-
-import giny.model.Node;
-
 import java.util.Properties;
+
+import cytoscape.visual.mappings.ObjectMapping;
 
 /**
  * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
@@ -71,7 +57,7 @@ class GenericNodeLabelPositionCalculator extends BasicCalculator {
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    GenericNodeLabelPositionCalculator(String name, ObjectMapping m) {
+    GenericNodeLabelPositionCalculator(String name, ObjectMapping<?> m) {
         super(name, m, NODE_LABEL_POSITION);
     }
 

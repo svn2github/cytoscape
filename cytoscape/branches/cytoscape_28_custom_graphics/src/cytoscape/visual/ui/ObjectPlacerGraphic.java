@@ -1,42 +1,9 @@
-/*
- File: LabelPlacerGraphic.java
-
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
- This library is free software; you can redistribute it and/or modify it
- under the terms of the GNU Lesser General Public License as published
- by the Free Software Foundation; either version 2.1 of the License, or
- any later version.
-
- This library is distributed in the hope that it will be useful, but
- WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute
- have no obligations to provide maintenance, support,
- updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute
- be liable to any party for direct, indirect, special,
- incidental or consequential damages, including lost profits, arising
- out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute
- have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this library; if not, write to the Free Software Foundation,
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
 package cytoscape.visual.ui;
 
-import giny.view.Label;
+import static cytoscape.visual.Position.JUSTIFY_CENTER;
+import static cytoscape.visual.Position.JUSTIFY_LEFT;
+import static cytoscape.visual.Position.JUSTIFY_RIGHT;
+import static cytoscape.visual.Position.NONE;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -56,22 +23,20 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
-import cytoscape.visual.LabelPosition;
+import cytoscape.visual.ObjectPosition;
+import cytoscape.visual.ObjectPositionImpl;
+import cytoscape.visual.Position;
 
+public class ObjectPlacerGraphic extends JPanel implements
+		PropertyChangeListener {
 
-/**
- * A drag and drop graphic that allows users to set the placement
- * of node labels.
- * 
- * Deprecated.  Use ObjectPlacerGraphic instead.  Will be removed 03/2011
- * 
- * @deprecated
- */
-@Deprecated
-public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener {
-	private LabelPosition lp;
+	private static final long serialVersionUID = -1091948204116900740L;
+	
+	protected static final String OBJECT_POSITION_CHANGED = "OBJECT_POSITION_CHANGED";
 
-	// dimensions of panel 
+	private ObjectPosition p;
+
+	// dimensions of panel
 	private int default_xy = 500;
 	private int xy;
 	private int center;
@@ -117,7 +82,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	private int yOffset;
 
 	// default text justify rule
-	private int justify;
+	private Position justify;
 
 	// used to label box and node
 	private Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.1f);
@@ -134,7 +99,6 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 	// font metrics for strings
 	private int labelLen = 0;
-	private int nodeLen = 0;
 	private int clickLen = 0;
 	private int ascent = 0;
 	private int detailStrokeWidth = 3;
@@ -145,27 +109,35 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	private double gravityDistance = 10;
 
 	/**
-	 * A gui for placing a label relative to a node. Draws the graphic
-	 * in full detail at a size of 500 pixels.
-	 * @param pos initial label position
+	 * A gui for placing a label relative to a node. Draws the graphic in full
+	 * detail at a size of 500 pixels.
+	 * 
+	 * @param pos
+	 *            initial label position
 	 */
-	public LabelPlacerGraphic(LabelPosition pos) {
+	public ObjectPlacerGraphic(final ObjectPosition pos) {
 		this(pos, 500, true);
 	}
 
 	/**
 	 * A gui for placing a label relative to a node.
-	 * @param pos initial label position
-	 * @param size number of pixels square the that graphic should be
-	 * @param fullDetail whether or not to render at full detail or not
+	 * 
+	 * @param pos
+	 *            initial label position
+	 * @param size
+	 *            number of pixels square the that graphic should be
+	 * @param fullDetail
+	 *            whether or not to render at full detail or not
 	 */
-	public LabelPlacerGraphic(LabelPosition pos, int size, boolean fullDetail) {
+	public ObjectPlacerGraphic(final ObjectPosition pos, int size,
+			boolean fullDetail) {
 		super();
 
 		if (pos == null)
-			lp = new LabelPosition();
+			p = new ObjectPositionImpl(NONE, NONE, JUSTIFY_CENTER, 0.0,
+					0.0);
 		else
-			lp = pos;
+			p = pos;
 
 		renderDetail = fullDetail;
 
@@ -173,7 +145,6 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 		setPreferredSize(new Dimension(xy, xy));
 		setBackground(Color.white);
-
 
 		addMouseListener(new MouseClickHandler());
 		addMouseMotionListener(new MouseDragHandler());
@@ -184,7 +155,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	}
 
 	private void initSize(int size) {
-		// dimensions of panel 
+		// dimensions of panel
 		xy = size;
 		center = xy / 2;
 
@@ -221,13 +192,13 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	public void paint(Graphics gin) {
 		Graphics2D g = (Graphics2D) gin;
 
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		// calculate the font 
+		// calculate the font
 		if (labelLen <= 0) {
 			FontMetrics fm = g.getFontMetrics();
 			labelLen = fm.stringWidth(label);
-			nodeLen = fm.stringWidth(node);
 			clickLen = fm.stringWidth(click);
 			ascent = fm.getMaxAscent();
 		}
@@ -259,17 +230,19 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 			// draw the node box points
 			g.setColor(Color.black);
-			int gd = (int)((gravityDistance * 2)+(dot/2));
+			int gd = (int) ((gravityDistance * 2) + (dot / 2));
 
 			for (int i = 0; i < npoints.length; i++)
 				for (int j = 0; j < npoints.length; j++) {
 					g.setColor(transparentMagenta);
-					g.fillOval(npoints[i] - (gd / 2), npoints[j] - (gd / 2), gd, gd);
+					g.fillOval(npoints[i] - (gd / 2), npoints[j] - (gd / 2),
+							gd, gd);
 					if ((i == bestNodeX) && (j == bestNodeY) && !beenDragged)
 						g.setColor(Color.yellow);
 					else
 						g.setColor(Color.black);
-					g.fillOval(npoints[i] - (dot / 2), npoints[j] - (dot / 2), dot, dot);
+					g.fillOval(npoints[i] - (dot / 2), npoints[j] - (dot / 2),
+							dot, dot);
 				}
 		}
 
@@ -278,45 +251,53 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 		g.fillRect(xOffset + xPos, yOffset + yPos, lx, ly);
 
 		g.setColor(Color.red);
-		g.drawLine(xOffset + xPos, yOffset + yPos, xOffset + xPos + lx, yOffset + yPos);
-		g.drawLine(xOffset + xPos + lx, yOffset + yPos, xOffset + xPos + lx, yOffset + yPos + ly);
-		g.drawLine(xOffset + xPos + lx, yOffset + yPos + ly, xOffset + xPos, yOffset + yPos + ly);
-		g.drawLine(xOffset + xPos, yOffset + yPos + ly, xOffset + xPos, yOffset + yPos);
+		g.drawLine(xOffset + xPos, yOffset + yPos, xOffset + xPos + lx, yOffset
+				+ yPos);
+		g.drawLine(xOffset + xPos + lx, yOffset + yPos, xOffset + xPos + lx,
+				yOffset + yPos + ly);
+		g.drawLine(xOffset + xPos + lx, yOffset + yPos + ly, xOffset + xPos,
+				yOffset + yPos + ly);
+		g.drawLine(xOffset + xPos, yOffset + yPos + ly, xOffset + xPos, yOffset
+				+ yPos);
 
 		// draw the string in the justified location
 		if (renderDetail) {
 			int vspace = (ly - ascent - ascent) / 3;
 
-			if (justify == Label.JUSTIFY_LEFT) {
-				g.drawString(label, xOffset + xPos + detailStrokeWidth,
-				             yOffset + yPos + vspace + ascent);
-				g.drawString(click, xOffset + xPos + detailStrokeWidth,
-				             yOffset + yPos + (2 * (vspace + ascent)));
-			} else if (justify == Label.JUSTIFY_RIGHT) {
-				g.drawString(label, xOffset + xPos + (lx - labelLen),
-				             yOffset + yPos + vspace + ascent);
+			if (justify == JUSTIFY_LEFT) {
+				g.drawString(label, xOffset + xPos + detailStrokeWidth, yOffset
+						+ yPos + vspace + ascent);
+				g.drawString(click, xOffset + xPos + detailStrokeWidth, yOffset
+						+ yPos + (2 * (vspace + ascent)));
+			} else if (justify == JUSTIFY_RIGHT) {
+				g.drawString(label, xOffset + xPos + (lx - labelLen), yOffset
+						+ yPos + vspace + ascent);
 				;
-				g.drawString(click, xOffset + xPos + (lx - clickLen),
-				             yOffset + yPos + (2 * (vspace + ascent)));
+				g.drawString(click, xOffset + xPos + (lx - clickLen), yOffset
+						+ yPos + (2 * (vspace + ascent)));
 			} else { // center
-				g.drawString(label, (xOffset + xPos + ((lx - labelLen) / 2)) - detailStrokeWidth,
-				             yOffset + yPos + vspace + ascent);
-				g.drawString(click, (xOffset + xPos + ((lx - clickLen) / 2)) - detailStrokeWidth,
-				             yOffset + yPos + (2 * (vspace + ascent)));
+				g.drawString(label, (xOffset + xPos + ((lx - labelLen) / 2))
+						- detailStrokeWidth, yOffset + yPos + vspace + ascent);
+				g.drawString(click, (xOffset + xPos + ((lx - clickLen) / 2))
+						- detailStrokeWidth, yOffset + yPos
+						+ (2 * (vspace + ascent)));
 			}
 		} else {
 			g.setColor(Color.gray);
 
-			if (justify == Label.JUSTIFY_LEFT)
-				g.drawLine(xOffset + xPos + lowStrokeWidth, yOffset + yPos + (ly / 2),
-				           xOffset + xPos + (lx / 3), yOffset + yPos + (ly / 2));
-			else if (justify == Label.JUSTIFY_RIGHT)
-				g.drawLine(xOffset + xPos + ((2 * lx) / 3), yOffset + yPos + (ly / 2),
-				           xOffset + xPos + lx, yOffset + yPos + (ly / 2));
+			if (justify == JUSTIFY_LEFT)
+				g.drawLine(xOffset + xPos + lowStrokeWidth, yOffset + yPos
+						+ (ly / 2), xOffset + xPos + (lx / 3), yOffset + yPos
+						+ (ly / 2));
+			else if (justify == JUSTIFY_RIGHT)
+				g.drawLine(xOffset + xPos + ((2 * lx) / 3), yOffset + yPos
+						+ (ly / 2), xOffset + xPos + lx, yOffset + yPos
+						+ (ly / 2));
 			else
-				g.drawLine(xOffset + xPos + (lx / 3), yOffset + yPos + (ly / 2),
-				           (xOffset + xPos + ((2 * lx) / 3)) - lowStrokeWidth,
-				           yOffset + yPos + (ly / 2));
+				g.drawLine(xOffset + xPos + (lx / 3),
+						yOffset + yPos + (ly / 2),
+						(xOffset + xPos + ((2 * lx) / 3)) - lowStrokeWidth,
+						yOffset + yPos + (ly / 2));
 		}
 
 		if (renderDetail) {
@@ -328,9 +309,9 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 					if ((i == bestLabelX) && (j == bestLabelY) && !beenDragged)
 						g.setColor(Color.yellow);
 
-					g.fillOval((xPos + xOffset + lxpoints[i]) - (dot / 2), 
-					           (yPos + yOffset + lypoints[j]) - (dot / 2),
-					           dot, dot);
+					g.fillOval((xPos + xOffset + lxpoints[i]) - (dot / 2),
+							(yPos + yOffset + lypoints[j]) - (dot / 2), dot,
+							dot);
 
 					if ((i == bestLabelX) && (j == bestLabelY))
 						g.setColor(Color.black);
@@ -340,18 +321,17 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 	private class MouseClickHandler extends MouseAdapter {
 		/**
-		* Only allows dragging if we're in the label box.
-		* Also sets the offset from where the click is and where
-		* the box is, so the box doesn't appear to jump around
-		* too much.
-		*/
+		 * Only allows dragging if we're in the label box. Also sets the offset
+		 * from where the click is and where the box is, so the box doesn't
+		 * appear to jump around too much.
+		 */
 		public void mousePressed(MouseEvent e) {
 			int x = e.getX();
 			int y = e.getY();
 
 			// click+drag within box
-			if ((x >= (xPos + xOffset)) && (x <= (xPos + xOffset + lx)) && 
-			    (y >= (yPos + yOffset)) && (y <= (yPos + yOffset + ly))) {
+			if ((x >= (xPos + xOffset)) && (x <= (xPos + xOffset + lx))
+					&& (y >= (yPos + yOffset)) && (y <= (yPos + yOffset + ly))) {
 				canOffsetDrag = true;
 				xClickOffset = x - xPos;
 				yClickOffset = y - yPos;
@@ -378,16 +358,19 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 				// loop over each point in the node box
 				for (int i = 0; i < npoints.length; i++) {
 					for (int j = 0; j < npoints.length; j++) {
-						Point nodePoint = new Point(npoints[i] - (dot / 2), npoints[j] - (dot / 2));
+						Point nodePoint = new Point(npoints[i] - (dot / 2),
+								npoints[j] - (dot / 2));
 
 						// loop over each point in the label box
 						for (int a = 0; a < lxpoints.length; a++) {
 							for (int b = 0; b < lypoints.length; b++) {
-								Point labelPoint = new Point((xPos + lxpoints[a]) - (dot / 2),
-								                             (yPos + lypoints[b]) - (dot / 2));
+								Point labelPoint = new Point(
+										(xPos + lxpoints[a]) - (dot / 2),
+										(yPos + lypoints[b]) - (dot / 2));
 
-								double dist = labelPoint.distance((Point2D) nodePoint);
-		
+								double dist = labelPoint
+										.distance((Point2D) nodePoint);
+
 								if (dist < best) {
 									best = dist;
 									bestLabelX = a;
@@ -405,19 +388,19 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 				xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
 				yPos = npoints[bestNodeY] - lypoints[bestLabelY];
 
-				if ( Math.sqrt(offX*offX + offY*offY) > (gravityDistance+(dot/2)) ) {
-					xOffset = (int)offX;
-					yOffset = (int)offY;
+				if (Math.sqrt(offX * offX + offY * offY) > (gravityDistance + (dot / 2))) {
+					xOffset = (int) offX;
+					yOffset = (int) offY;
 				} else {
-					xOffset = 0; 
-					yOffset = 0; 
+					xOffset = 0;
+					yOffset = 0;
 				}
 
-				lp.setOffsetX(xOffset);
-				lp.setOffsetY(yOffset);
-				lp.setLabelAnchor(bestLabelX + (3 * bestLabelY));
-				lp.setTargetAnchor(bestNodeX + (3 * bestNodeY));
-				firePropertyChange(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED, null, lp);
+				p.setOffsetX(xOffset);
+				p.setOffsetY(yOffset);
+				p.setAnchor(Position.parse(bestLabelX + (3 * bestLabelY)));
+				p.setTargetAnchor(Position.parse(bestNodeX + (3 * bestNodeY)));
+				firePropertyChange(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED, null, p);
 
 				repaint();
 				beenDragged = false;
@@ -428,12 +411,12 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 	private class MouseDragHandler extends MouseMotionAdapter {
 		/**
-		* Handles redrawing for dragging.
-		*/
+		 * Handles redrawing for dragging.
+		 */
 		public void mouseDragged(MouseEvent e) {
 			// dragging within normal box
 			if (canOffsetDrag) {
-				xPos = e.getX() - xClickOffset; 
+				xPos = e.getX() - xClickOffset;
 				yPos = e.getY() - yClickOffset;
 
 				beenDragged = true;
@@ -443,35 +426,28 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	}
 
 	/**
-	 * Finds the points on the Label box and Node box that are closest.
-	 */
-	private void findClosestPoint() {
-
-	}
-
-	/**
-	 * Applies the new LabelPosition to the graphic.
+	 * Applies the new ObjectPosition to the graphic.
 	 */
 	private void applyPosition() {
-		xOffset = (int) (lp.getOffsetX() * offsetRatio);
-		yOffset = (int) (lp.getOffsetY() * offsetRatio);
-		justify = lp.getJustify();
+		xOffset = (int) (p.getOffsetX() * offsetRatio);
+		yOffset = (int) (p.getOffsetY() * offsetRatio);
+		justify = p.getJustify();
 
-		int nodeAnchor = lp.getTargetAnchor();
+		Position nodeAnchor = p.getTargetAnchor();
 
-		if (nodeAnchor != Label.NONE) {
-			bestNodeX = nodeAnchor % 3;
-			bestNodeY = (int) nodeAnchor / 3;
+		if (nodeAnchor != NONE) {
+			bestNodeX = nodeAnchor.getGinyConstant() % 3;
+			bestNodeY = nodeAnchor.getGinyConstant() / 3;
 		}
 
-		int labelAnchor = lp.getLabelAnchor();
+		Position labelAnchor = p.getAnchor();
 
-		if (labelAnchor != Label.NONE) {
-			bestLabelX = labelAnchor % 3;
-			bestLabelY = (int) labelAnchor / 3;
+		if (labelAnchor != NONE) {
+			bestLabelX = labelAnchor.getGinyConstant() % 3;
+			bestLabelY = labelAnchor.getGinyConstant() / 3;
 		}
 
-		if ((nodeAnchor != Label.NONE) || (labelAnchor != Label.NONE)) {
+		if ((nodeAnchor != NONE) || (labelAnchor != NONE)) {
 			xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
 			yPos = npoints[bestNodeY] - lypoints[bestLabelY];
 		}
@@ -481,10 +457,10 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	 * Handles all property changes that the panel listens for.
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		String type = e.getPropertyName();
+		final String type = e.getPropertyName();
 
 		if (type.equals(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED)) {
-			lp = (LabelPosition) e.getNewValue();
+			p = (ObjectPosition) e.getNewValue();
 			applyPosition();
 			repaint();
 		}
