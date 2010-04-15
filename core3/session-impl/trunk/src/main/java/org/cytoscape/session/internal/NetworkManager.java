@@ -118,15 +118,7 @@ public class NetworkManager implements CyNetworkManager {
 			selectedNetworks.add(currentNetwork);
 		}
 
-		eh.fireSynchronousEvent(new SetCurrentNetworkEvent() {
-			public CyNetwork getNetwork() {
-				return currentNetwork;
-			}
-
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, SetCurrentNetworkListener.class);
+		eh.fireSynchronousEvent(new SetCurrentNetworkEvent(NetworkManager.this,currentNetwork)); 
 	}
 
 	public synchronized Set<CyNetwork> getNetworkSet() {
@@ -176,15 +168,7 @@ public class NetworkManager implements CyNetworkManager {
 			selectedNetworkViews.add(currentNetworkView);
 		}
 
-		eh.fireSynchronousEvent(new SetCurrentNetworkViewEvent() {
-			public CyNetworkView getNetworkView() {
-				return currentNetworkView;
-			}
-
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, SetCurrentNetworkViewListener.class);
+		eh.fireSynchronousEvent(new SetCurrentNetworkViewEvent(NetworkManager.this,currentNetworkView));
 	}
 
 	public synchronized List<CyNetworkView> getSelectedNetworkViews() {
@@ -214,15 +198,7 @@ public class NetworkManager implements CyNetworkManager {
 			}
 		}
 
-		eh.fireSynchronousEvent(new SetSelectedNetworkViewsEvent() {
-			public List<CyNetworkView> getNetworkViews() {
-				return new ArrayList<CyNetworkView>(selectedNetworkViews);
-			}
-
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, SetSelectedNetworkViewsListener.class);
+		eh.fireSynchronousEvent(new SetSelectedNetworkViewsEvent(NetworkManager.this, new ArrayList<CyNetworkView>(selectedNetworkViews)));
 	}
 
 	public synchronized List<CyNetwork> getSelectedNetworks() {
@@ -250,15 +226,7 @@ public class NetworkManager implements CyNetworkManager {
 				selectedNetworks.add(cn);
 		}
 
-		eh.fireSynchronousEvent(new SetSelectedNetworksEvent() {
-			public List<CyNetwork> getNetworks() {
-				return new ArrayList<CyNetwork>(selectedNetworks);
-			}
-
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, SetSelectedNetworksListener.class);
+		eh.fireSynchronousEvent(new SetSelectedNetworksEvent(NetworkManager.this, new ArrayList<CyNetwork>(selectedNetworks)));
 	}
 
 	// TODO
@@ -276,16 +244,7 @@ public class NetworkManager implements CyNetworkManager {
 
 			// TODO firing an event from within a lock!!!!
 			final CyNetwork toDestroy = network;
-			eh.fireSynchronousEvent(new NetworkAboutToBeDestroyedEvent() {
-				public CyNetwork getNetwork() {
-					return toDestroy;
-				}
-
-				public CyNetworkManager getSource() {
-					return NetworkManager.this;
-				}
-			}, NetworkAboutToBeDestroyedListener.class);
-
+			eh.fireSynchronousEvent(new NetworkAboutToBeDestroyedEvent(NetworkManager.this, toDestroy));
 			selectedNetworks.remove(network);
 
 			for (CyNode n : network.getNodeList())
@@ -314,11 +273,7 @@ public class NetworkManager implements CyNetworkManager {
 		}
 
 		// lets everyone know that *A* network is gone
-		eh.fireSynchronousEvent(new NetworkDestroyedEvent() {
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, NetworkDestroyedListener.class);
+		eh.fireSynchronousEvent(new NetworkDestroyedEvent( NetworkManager.this ));
 	}
 
 	public void destroyNetworkView(CyNetworkView view) {
@@ -335,15 +290,7 @@ public class NetworkManager implements CyNetworkManager {
 
 			// TODO firing an event from within a lock!!!!
 			final CyNetworkView toDestroy = view;
-			eh.fireSynchronousEvent(new NetworkViewAboutToBeDestroyedEvent() {
-				public CyNetworkView getNetworkView() {
-					return toDestroy;
-				}
-
-				public CyNetworkManager getSource() {
-					return NetworkManager.this;
-				}
-			}, NetworkViewAboutToBeDestroyedListener.class);
+			eh.fireSynchronousEvent(new NetworkViewAboutToBeDestroyedEvent(NetworkManager.this, toDestroy));
 
 			selectedNetworkViews.remove(view);
 
@@ -367,12 +314,7 @@ public class NetworkManager implements CyNetworkManager {
 			view = null;
 		}
 
-		eh.fireSynchronousEvent(new NetworkViewDestroyedEvent() {
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, NetworkViewDestroyedListener.class);
-
+		eh.fireSynchronousEvent(new NetworkViewDestroyedEvent( NetworkManager.this ));
 	}
 
 	public void addNetwork(final CyNetwork network) {
@@ -383,15 +325,7 @@ public class NetworkManager implements CyNetworkManager {
 			networkMap.put(network.getSUID(), network);
 		}
 
-		eh.fireSynchronousEvent(new NetworkAddedEvent() {
-			public CyNetwork getNetwork() {
-				return network;
-			}
-
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, NetworkAddedListener.class);
+		eh.fireSynchronousEvent(new NetworkAddedEvent(NetworkManager.this, network));
 	}
 
 	public void addNetworkView(final CyNetworkView view) {
@@ -408,16 +342,7 @@ public class NetworkManager implements CyNetworkManager {
 			networkViewMap.put(networkId, view);
 		}
 
-		eh.fireSynchronousEvent(new NetworkViewAddedEvent() {
-			public CyNetworkView getNetworkView() {
-				return view;
-			}
-
-			public CyNetworkManager getSource() {
-				return NetworkManager.this;
-			}
-		}, NetworkViewAddedListener.class);
-
+		eh.fireSynchronousEvent(new NetworkViewAddedEvent( NetworkManager.this, view));
 	}
 
 	public RenderingEngine getCurrentPresentation() {
