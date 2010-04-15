@@ -45,10 +45,8 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyRowListener;
 import org.cytoscape.model.SUIDFactory;
-import org.cytoscape.model.events.ColumnCreatedListener;
-import org.cytoscape.model.events.ColumnDeletedListener;
-import org.cytoscape.model.internal.events.ColumnCreatedEventImpl;
-import org.cytoscape.model.internal.events.ColumnDeletedEventImpl;
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnDeletedEvent;
 
 /**
  * 
@@ -164,8 +162,7 @@ public class CyDataTableImpl implements CyDataTable {
 			types.remove(attributeName);
 			
 			// This event should be Synchronous
-			eventHelper.fireSynchronousEvent(new ColumnDeletedEventImpl(this,
-					attributeName), ColumnDeletedListener.class);
+			eventHelper.fireSynchronousEvent(new ColumnDeletedEvent(this, attributeName));
 		}
 	}
 
@@ -198,9 +195,7 @@ public class CyDataTableImpl implements CyDataTable {
 			unique.put(attributeName, u);
 			
 			// Fire event
-			//System.out.println("\n\n\n\n%%%%%%%%%%%%%%%%%%% Created: New Attr = " + attributeName + " %%%%%%%%%%%%%%%%%%%\n\n\n\n");
-			eventHelper.fireAsynchronousEvent(new ColumnCreatedEventImpl(this,
-					attributeName), ColumnCreatedListener.class);
+			eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, attributeName));
 		} else {
 			if (!curr.equals(cls))
 				throw new IllegalArgumentException(

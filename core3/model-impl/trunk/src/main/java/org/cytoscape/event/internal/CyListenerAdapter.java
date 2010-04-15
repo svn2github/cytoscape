@@ -80,11 +80,9 @@ public class CyListenerAdapter {
 	 * @param event  DOCUMENT ME!
 	 * @param listenerClass  DOCUMENT ME!
 	 */
-//	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
-	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
-                                                                               final Class<L> listenerClass) {
+	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
+		final Class listenerClass = event.getListenerClass(); 
 		System.out.println("ATTEMPTING TO FIRE SYNC: " + event.toString() + " for " + listenerClass.getName());
-//		final Class listenerClass = event.getListenerClass(); 
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
 			System.out.println("Sync listeners is null");
@@ -92,9 +90,7 @@ public class CyListenerAdapter {
 		} 
 
 		try {
-			System.out.println("event interface: " + event.getClass().getInterfaces()[0].getName());
-			//System.out.println("listenerClass: " + listenerClass.getName()); 
-			final Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
+			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
 				System.out.println("SYNC firing event: " + event.getClass().toString() + "  for listener: " + listener.toString());
@@ -128,22 +124,20 @@ public class CyListenerAdapter {
 	 * @param event  DOCUMENT ME!
 	 * @param listenerClass  DOCUMENT ME!
 	 */
-//	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
-//		final Class listenerClass = event.getListenerClass(); 
-	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
-                                                                                final Class<L> listenerClass) {
+	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
+		final Class listenerClass = event.getListenerClass(); 
+		System.out.println("ATTEMPTING TO FIRE async: " + event.toString() + " for " + listenerClass.getName());
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
-			//System.out.println("async listeners is null");
+			System.out.println("async listeners is null");
 			return;
 		} 
 
 		try {
-			//System.out.println("interface: " +  event.getClass().getInterfaces()[0].getName());
-			final Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
+			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
-				//System.out.println("async firing event: " + event.getClass().toString() + "  for listener: " + listener.getClass().getName());
+				System.out.println("async firing event: " + event.getClass().toString() + "  for listener: " + listener.getClass().getName());
 				EXEC.execute(new Runner(method, listener, event, listenerClass));
 			}
 		} catch (NoSuchMethodException e) {

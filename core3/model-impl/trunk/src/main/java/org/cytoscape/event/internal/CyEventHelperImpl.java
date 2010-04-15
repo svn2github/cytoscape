@@ -50,15 +50,13 @@ public class CyEventHelperImpl implements CyEventHelper {
 		this.micro = micro;
 	}
 
-	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
-	                                                                           final Class<L> listenerClass) {
-		normal.fireSynchronousEvent(event,listenerClass);
+	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
+		normal.fireSynchronousEvent(event);
 	}
 
 
-	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
-	                                                                            final Class<L> listenerClass) {
-		normal.fireAsynchronousEvent(event,listenerClass);
+	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
+		normal.fireAsynchronousEvent(event);
 	}
 
 	public <M extends CyMicroListener> M getMicroListener(Class<M> c, Object source) {
