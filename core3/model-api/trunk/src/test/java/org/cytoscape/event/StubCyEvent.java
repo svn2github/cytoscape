@@ -39,5 +39,8 @@ package org.cytoscape.event;
 /**
  * DOCUMENT ME!
   */
-public interface StubCyEvent extends CyEvent {
+public class StubCyEvent extends AbstractCyEvent<String> {
+	public StubCyEvent(String source) {
+		super(source, StubCyListener.class);
+	}
 }

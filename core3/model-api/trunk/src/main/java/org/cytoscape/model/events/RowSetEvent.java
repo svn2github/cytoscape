@@ -36,7 +36,7 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 
 import org.cytoscape.model.CyRow;
 
@@ -44,12 +44,20 @@ import org.cytoscape.model.CyRow;
 /**
  * This event signals that an attribute has been set.
  */
-public interface RowSetEvent extends CyEvent<CyRow> {
+public final class RowSetEvent extends AbstractCyEvent<CyRow> {
+	private final String columnName;
+	
+	public RowSetEvent(final CyRow source, final String columnName) {
+		super(source, RowSetListener.class);
+		this.columnName = columnName;
+	}
+
 	/**
-	 * 
-	DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
 	 * @return The name of the attribute that has been set.
 	 */
-	String getColumnName();
+	public String getColumnName() {
+		return columnName;
+	}
 }

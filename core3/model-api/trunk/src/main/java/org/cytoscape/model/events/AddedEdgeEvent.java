@@ -45,6 +45,10 @@ import org.cytoscape.model.CyNetwork;
 /**
  * DOCUMENT ME!
   */
-public interface AddedEdgeEvent extends CyEvent<CyNetwork> {
-	CyEdge getEdge();
+public final class AddedEdgeEvent extends AbstractEdgeEvent {
+
+	public AddedEdgeEvent(final CyNetwork source, final CyEdge edge) {
+		super(source, AddedEdgeListener.class, edge);
+	}
+
 }

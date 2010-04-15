@@ -45,12 +45,10 @@ public interface CyEventHelper {
 	 * and filter with the supplied event.
 	 *
 	 * @param <E>  DOCUMENT ME!
-	 * @param <L>  DOCUMENT ME!
 	 * @param event  DOCUMENT ME!
 	 * @param listener  DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
-	                                                                           final Class<L> listener);
+	public <E extends CyEvent> void fireSynchronousEvent(final E event);
 
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
@@ -58,12 +56,10 @@ public interface CyEventHelper {
 	 * ever be called with a thread safe event object!</p>
 	 *
 	 * @param <E>  DOCUMENT ME!
-	 * @param <L>  DOCUMENT ME!
 	 * @param event  DOCUMENT ME!
 	 * @param listener  DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
-	                                                                            final Class<L> listener);
+	public <E extends CyEvent> void fireAsynchronousEvent(final E event);
 
 
 	public <M extends CyMicroListener> M getMicroListener(Class<M> m, Object source);

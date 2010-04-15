@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,23 +33,29 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.event;
 
+package org.cytoscape.model.events;
+
+import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
+
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
+
+import java.util.List;
 
 /**
- * All Cytoscape events should extend this interface.  The events
- * should add additional methods to provide access to the information
- * relevant to the event.
- */
-public interface CyEvent<T> {
-	/**
-	 * The object that fired the event. 
-	 * @return The object that fired the event.
-	 */
-	T getSource();
+ * DOCUMENT ME!
+  */
+class AbstractNodeListEvent extends AbstractCyEvent<CyNetwork> {
+	private final List<CyNode> nodes;
 
-	/**
-	 * The Class of the listener that is expected to handle this event. 
-	 */
-	Class getListenerClass();
+	AbstractNodeListEvent(final CyNetwork source, final Class listenerClass, final List<CyNode> nodes) {
+		super(source, listenerClass);
+		this.nodes = nodes;
+	}
+
+	public List<CyNode> getNodeList() {
+		return nodes;
+	}
 }

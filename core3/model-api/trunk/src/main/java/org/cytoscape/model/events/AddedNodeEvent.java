@@ -45,6 +45,8 @@ import org.cytoscape.model.CyNode;
 /**
  * DOCUMENT ME!
   */
-public interface AddedNodeEvent extends CyEvent<CyNetwork> {
-	CyNode getNode();
+public final class AddedNodeEvent extends AbstractNodeEvent {
+	public AddedNodeEvent(final CyNetwork source, final CyNode node) {
+		super(source, AddedNodeListener.class, node);
+	}
 }

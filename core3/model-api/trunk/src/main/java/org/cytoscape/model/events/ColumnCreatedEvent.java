@@ -37,6 +37,7 @@
 package org.cytoscape.model.events;
 
 import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 
 import org.cytoscape.model.CyDataTable;
 
@@ -46,12 +47,8 @@ import org.cytoscape.model.CyDataTable;
  *<p>
  * This should probably return the type parameter as well. 
  */
-public interface ColumnCreatedEvent extends CyEvent<CyDataTable> {
-	/**
-	 * 
-	DOCUMENT ME!
-	 *
-	 * @return The name of the attribute that has been deleted.
-	 */
-	String getColumnName();
+public final class ColumnCreatedEvent extends AbstractColumnEvent {
+	public ColumnCreatedEvent(final CyDataTable source, final String columnName) {
+		super(source, ColumnCreatedListener.class, columnName);
+	}
 }

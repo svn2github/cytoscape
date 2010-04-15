@@ -47,12 +47,8 @@ import org.cytoscape.model.CyDataTable;
  * We might want to change the name of this guy to AttributeToBeDeleted so
  * that it is clear when it should be fired.
  */
-public interface ColumnDeletedEvent extends CyEvent<CyDataTable> {
-	/**
-	 * 
-	DOCUMENT ME!
-	 *
-	 * @return The name of the attribute that has been deleted.
-	 */
-	String getColumnName();
+public final class ColumnDeletedEvent extends AbstractColumnEvent {
+	public ColumnDeletedEvent(final CyDataTable source, final String columnName) {
+		super(source, ColumnDeletedListener.class, columnName);
+	}
 }

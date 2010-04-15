@@ -36,19 +36,36 @@ package org.cytoscape.event;
 
 
 /**
- * All Cytoscape events should extend this interface.  The events
- * should add additional methods to provide access to the information
- * relevant to the event.
+ * A base implementation that can be used by events.
  */
-public interface CyEvent<T> {
+public abstract class AbstractCyEvent<T> implements CyEvent<T> {
+
+	private final T source;
+	private final Class listenerClass; 
+	
+	public AbstractCyEvent(final T source, Class listenerClass) {
+		if ( source == null )
+			throw new NullPointerException("event source is null");
+
+		if ( listenerClass == null )
+			throw new NullPointerException("listener class is null");
+
+		this.source = source;
+		this.listenerClass = listenerClass;
+	}
+
 	/**
 	 * The object that fired the event. 
 	 * @return The object that fired the event.
 	 */
-	T getSource();
+	public T getSource() {
+		return source;
+	}
 
 	/**
 	 * The Class of the listener that is expected to handle this event. 
 	 */
-	Class getListenerClass();
+	public Class getListenerClass() {
+		return listenerClass;
+	}
 }

@@ -36,7 +36,7 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 
 import org.cytoscape.model.CyNetwork;
 
@@ -45,5 +45,8 @@ import org.cytoscape.model.CyNetwork;
  * Just a signal in case anyone wants to 
  * resync after an edge has been removed.
  */
-public interface RemovedEdgeEvent extends CyEvent<CyNetwork> {
+public final class RemovedEdgeEvent extends AbstractCyEvent<CyNetwork> {
+	public RemovedEdgeEvent(final CyNetwork source) {
+		super(source,RemovedEdgeListener.class);
+	}
 }

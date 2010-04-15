@@ -52,28 +52,25 @@ public class DummyCyEventHelper implements CyEventHelper {
 	 *  DOCUMENT ME!
 	 *
 	 * @param <E> DOCUMENT ME!
-	 * @param <L> DOCUMENT ME!
 	 * @param event DOCUMENT ME!
 	 * @param listener DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
-	                                                                           final Class<L> listener) {
+	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param <E> DOCUMENT ME!
-	 * @param <L> DOCUMENT ME!
 	 * @param event DOCUMENT ME!
 	 * @param listener DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
-	                                                                            final Class<L> listener) {
+	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
 	}
 
 	public <M extends CyMicroListener> M getMicroListener(Class<M> c, Object o) {
-		return c.cast( Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] { c }, new DummyListenerHandler()));
+		return c.cast( Proxy.newProxyInstance(this.getClass().getClassLoader(), 
+		       new Class[] { c }, new DummyListenerHandler()));
 	}
 
 	private class DummyListenerHandler implements InvocationHandler {

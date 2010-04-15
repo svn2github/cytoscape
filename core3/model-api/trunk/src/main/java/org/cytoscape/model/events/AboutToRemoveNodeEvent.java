@@ -46,6 +46,8 @@ import org.cytoscape.model.CyNode;
  * Fired before a node is actually removed so that listeners
  * have a chance to clean up before the node object disappaears.
  */
-public interface AboutToRemoveNodeEvent extends CyEvent<CyNetwork> {
-	CyNode getNode();
+public final class AboutToRemoveNodeEvent extends AbstractNodeEvent {
+	public AboutToRemoveNodeEvent(final CyNetwork source, final CyNode node) {
+		super( source, AboutToRemoveNodeListener.class, node);
+	}
 }

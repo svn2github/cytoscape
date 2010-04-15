@@ -7,6 +7,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.event.CyEvent;
 import java.util.List;
 
-public interface UnselectedEdgesEvent extends CyEvent<CyNetwork> {
-	public List<CyEdge> getEdgeList();
+public final class UnselectedEdgesEvent extends AbstractEdgeListEvent {
+	public UnselectedEdgesEvent(final CyNetwork source, final List<CyEdge> edges) {
+		super(source, UnselectedEdgesListener.class, edges);
+	}
 }

@@ -34,24 +34,28 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.event;
+package org.cytoscape.model.events;
+
+import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+
+import java.util.List;
 
 /**
  * DOCUMENT ME!
   */
-public class StubCyEventImpl implements StubCyEvent {
-	String source;
+class AbstractEdgeListEvent extends AbstractCyEvent<CyNetwork> {
+	private final List<CyEdge> edges;
 
-	StubCyEventImpl(String source) {
-		this.source = source;
+	AbstractEdgeListEvent(final CyNetwork source, final Class listenerClass, final List<CyEdge> edges) {
+		super(source, listenerClass);
+		this.edges = edges;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getSource() {
-		return source;
+	public List<CyEdge> getEdgeList() {
+		return edges;
 	}
 }

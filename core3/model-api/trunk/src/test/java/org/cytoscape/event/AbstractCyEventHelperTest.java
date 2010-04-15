@@ -60,9 +60,8 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testSynchronous() {
-		// TODO figure out why I need to cast the StubCyEventImpl
-		helper.fireSynchronousEvent((StubCyEvent) new StubCyEventImpl("homer"),
-		                            StubCyListener.class);
+		// TODO figure out why I need to cast the StubCyEvent
+		helper.fireSynchronousEvent((StubCyEvent) new StubCyEvent("homer"));
 		assertEquals(1, service.getNumCalls());
 	}
 
@@ -71,9 +70,8 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 	 */
 	public void testAsynchronous() {
 		try {
-			// TODO figure out why I need to cast the StubCyEventImpl
-			helper.fireAsynchronousEvent((StubCyEvent) new StubCyEventImpl("marge"),
-			                             StubCyListener.class);
+			// TODO figure out why I need to cast the StubCyEvent
+			helper.fireAsynchronousEvent((StubCyEvent) new StubCyEvent("marge"));
 			Thread.sleep(500); // TODO is there a better way to wait?
 			assertEquals(1, service.getNumCalls());
 		} catch (InterruptedException ie) {

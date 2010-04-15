@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,23 +33,34 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.event;
+
+package org.cytoscape.model.events;
+
+import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
+
+import org.cytoscape.model.CyDataTable;
 
 
 /**
- * All Cytoscape events should extend this interface.  The events
- * should add additional methods to provide access to the information
- * relevant to the event.
+ * This event signals that an Attribute has been created.
+ *<p>
+ * This should probably return the type parameter as well. 
  */
-public interface CyEvent<T> {
-	/**
-	 * The object that fired the event. 
-	 * @return The object that fired the event.
-	 */
-	T getSource();
+class AbstractColumnEvent extends AbstractCyEvent<CyDataTable> {
 
+	private final String columnName;
+
+	AbstractColumnEvent(final CyDataTable source, final Class listenerClass, final String columnName) {
+		super(source, listenerClass);
+		this.columnName = columnName;
+	}
 	/**
-	 * The Class of the listener that is expected to handle this event. 
+	 * DOCUMENT ME!
+	 *
+	 * @return The name of the attribute that has been deleted.
 	 */
-	Class getListenerClass();
+	public String getColumnName() {
+		return columnName;
+	}
 }
