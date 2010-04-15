@@ -1,14 +1,7 @@
 /*
   File: CyAttributesUtilsTest.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -387,5 +380,40 @@ public class CyAttributesUtilsTest extends TestCase {
 		                                                                          new Integer(1),
 		                                                                          new Integer(0)
 		                                                                      })));
+	}
+
+	public void testCopyAttribute2() {
+		final CyAttributes attribs = Cytoscape.getNodeAttributes();
+		final String sourceId = "testNode1";
+		final String targetId = "testNode2";
+		final StringBuilder errorMessage = new StringBuilder();
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "BooleanTest", errorMessage));
+		assertEquals(attribs.getBooleanAttribute(sourceId, "BooleanTest"),
+		             attribs.getBooleanAttribute(targetId, "BooleanTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "IntegerTest", errorMessage));
+		assertEquals(attribs.getIntegerAttribute(sourceId, "IntegerTest"),
+		             attribs.getIntegerAttribute(targetId, "IntegerTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "DoubleTest", errorMessage));
+		assertEquals(attribs.getDoubleAttribute(sourceId, "DoubleTest"),
+		             attribs.getDoubleAttribute(targetId, "DoubleTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "DoubleTest", errorMessage));
+		assertEquals(attribs.getDoubleAttribute(sourceId, "DoubleTest"),
+		             attribs.getDoubleAttribute(targetId, "DoubleTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "StringTest", errorMessage));
+		assertEquals(attribs.getStringAttribute(sourceId, "StringTest"),
+		             attribs.getStringAttribute(targetId, "StringTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "ListTest", errorMessage));
+		assertEquals(attribs.getListAttribute(sourceId, "ListTest"),
+		             attribs.getListAttribute(targetId, "ListTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "MapTest", errorMessage));
+		assertEquals(attribs.getMapAttribute(sourceId, "MapTest"),
+		             attribs.getMapAttribute(targetId, "MapTest"));
 	}
 }

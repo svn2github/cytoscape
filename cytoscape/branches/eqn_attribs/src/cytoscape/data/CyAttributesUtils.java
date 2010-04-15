@@ -1,14 +1,7 @@
 /*
   File: CyAttributesUtils.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -266,6 +259,91 @@ public class CyAttributesUtils {
 			}
 
 		return visibleNames;
+	}
+
+	/**
+	 *  @param errorMessage will be set to an explanatory text should the copy operation fail
+	 *  @returns true if the copy operation succeeded, else false
+	 */
+	public static boolean copyAttribute(final CyAttributes attribs, final String sourceId, final String targetId,
+	                                    final String attribName, final StringBuilder errorMessage)
+	{
+		errorMessage.setLength(0);
+
+		switch (attribs.getType(attribName)) {
+		case CyAttributes.TYPE_BOOLEAN:
+			final Boolean b = attribs.getBooleanAttribute(sourceId, attribName);
+			attribs.setAttribute(targetId, attribName, b);
+			return true;
+		case CyAttributes.TYPE_INTEGER:
+			final Integer i = attribs.getIntegerAttribute(sourceId, attribName);
+			attribs.setAttribute(targetId, attribName, i);
+			return true;
+		case CyAttributes.TYPE_FLOATING:
+			final Double d = attribs.getDoubleAttribute(sourceId, attribName);
+			attribs.setAttribute(targetId, attribName, d);
+			return true;
+		case CyAttributes.TYPE_STRING:
+			final String s = attribs.getStringAttribute(sourceId, attribName);
+			attribs.setAttribute(targetId, attribName, s);
+			return true;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return copySimpleList(attribs, sourceId, targetId, attribName, errorMessage);
+		case CyAttributes.TYPE_SIMPLE_MAP:
+			return copySimpleMap(attribs, sourceId, targetId, attribName, errorMessage);
+		default:
+			errorMessage.append("can't copy an attribute of this type ("
+			                    + toString(attribs.getType(attribName)) + ")!  (Source ID: "
+			                    + sourceId + ", Attribute name: " + attribName + ")");
+			return false;
+		}
+	}
+
+	/**
+	 *  Helper method used by copyAttribute().
+	 */
+	private static boolean copySimpleList(final CyAttributes attribs, final String sourceId, final String targetId,
+	                                      final String attribName, final StringBuilder errorMessage)
+        {
+		final List originalList = attribs.getListAttribute(sourceId, attribName);
+		if (originalList.isEmpty()) {
+			attribs.setListAttribute(targetId, attribName, new ArrayList());
+			return true;
+		}
+
+		final Class entryType = originalList.get(0).getClass();
+		if (entryType != Boolean.class && entryType != Integer.class && entryType != Double.class
+		    && entryType != String.class)
+		{
+			errorMessage.append("can't copy a list that has entries of a non-trivial type("
+			                    + toString(attribs.getType(attribName)) + ")! (Source ID: "
+                                            + sourceId + ", Attribute name: " + attribName + ")");
+			return false;
+		}
+
+		final List newList = new ArrayList(originalList.size());
+		for (final Object listEntry : originalList)
+			newList.add(listEntry);
+		attribs.setListAttribute(targetId, attribName, newList);
+		return true;
+	}
+
+	/**
+	 *  Helper method used by copyAttribute().
+	 */
+	private static boolean copySimpleMap(final CyAttributes attribs, final String sourceId, final String targetId,
+	                                     final String attribName, final StringBuilder errorMessage)
+        {
+		final Map originalMap = attribs.getMapAttribute(sourceId, attribName);
+		if (originalMap.isEmpty()) {
+			attribs.setMapAttribute(targetId, attribName, new HashMap());
+			return true;
+		}
+
+		final Map newMap = new HashMap();
+		newMap.putAll(originalMap);
+		attribs.setMapAttribute(targetId, attribName, newMap);
+		return true;
 	}
 
 	/**
