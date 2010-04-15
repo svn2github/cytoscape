@@ -415,11 +415,7 @@ public class PreferencesDialogImpl extends JDialog {
 			final Properties op = props;
 			final Properties np = newProps;
 
-			eh.fireSynchronousEvent( new PreferencesUpdatedEvent() {
-				public Object getSource() { return PreferencesDialogImpl.this; }
-				public Properties getOldProperties() { return op; }
-				public Properties getNewProperties() { return np; }
-				}, PreferencesUpdatedListener.class );
+			eh.fireSynchronousEvent( new PreferencesUpdatedEvent(PreferencesDialogImpl.this, op, np));
 		}
 	}
 
