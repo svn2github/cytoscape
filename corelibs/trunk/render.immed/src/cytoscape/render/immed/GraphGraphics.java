@@ -112,7 +112,9 @@ public final class GraphGraphics {
 	public static final byte SHAPE_ROUNDED_RECTANGLE = 6;
 	public static final byte SHAPE_TRIANGLE = 7;
 	public static final byte SHAPE_VEE = 8;
-	private static final byte s_last_shape = SHAPE_VEE;
+
+	// package scoped for unit testing
+	static final byte s_last_shape = SHAPE_VEE;
 
 	/**
 	 * This value is currently 100.
@@ -184,7 +186,9 @@ public final class GraphGraphics {
 	new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
 	private final HashMap<Byte, double[]> m_customShapes = new HashMap<Byte, double[]>();
 	private final double[] m_ptsBuff = new double[4];
-	private final EdgeAnchors m_noAnchors = new EdgeAnchors() {
+
+	// package scoped for unit testing
+	final EdgeAnchors m_noAnchors = new EdgeAnchors() {
 		public final int numAnchors() {
 			return 0;
 		}

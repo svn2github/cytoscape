@@ -136,7 +136,7 @@
           if="tests.ok">
     <junit printsummary="yes"
            haltonfailure="no"
-           maxmemory="256m" >
+           maxmemory="512M" >
       <classpath refid="junit.class.path"/>
       <formatter type="plain" 
                  usefile="true" />
@@ -186,7 +186,7 @@
   <!-- =================================================================== -->
   <!-- Do everything                                                       --> 
   <!-- =================================================================== -->
-  <target name="all" depends="jar,docs,test" /> 
+  <target name="all" depends="jar,test,docs" /> 
 
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
