@@ -491,6 +491,8 @@ public class CyAttributesImpl implements CyAttributes {
 
 		// Now we assume that we are dealing with an equation:
 		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+		if (equationValue == null)
+			return null;
 		return convertEqnRetValToBoolean(id, attributeName, equationValue);
 	}
 
@@ -519,6 +521,8 @@ public class CyAttributesImpl implements CyAttributes {
 
 		// Now we assume that we are dealing with an equation:
 		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+		if (equationValue == null)
+			return null;
 		if (equationValue.getClass() == Long.class) {
 			final long valueAsLong = (Long)equationValue;
 			return (int)valueAsLong;
@@ -571,6 +575,8 @@ public class CyAttributesImpl implements CyAttributes {
 
 		// Now we assume that we are dealing with an equation:
 		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+		if (equationValue == null)
+			return null;
 		return convertEqnRetValToDouble(id, attributeName, equationValue);
 	}
 
@@ -599,6 +605,8 @@ public class CyAttributesImpl implements CyAttributes {
 
 		// Now we assume that we are dealing with an equation:
 		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+		if (equationValue == null)
+			return null;
 		return equationValue.toString();
 	}
 
@@ -620,6 +628,9 @@ public class CyAttributesImpl implements CyAttributes {
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
 		if (attribValue instanceof Equation) {
 			final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
+			if (equationValue == null)
+				return null;
+
 			if (type == MultiHashMapDefinition.TYPE_INTEGER)
 				return convertEqnRetValToInteger(id, attributeName, equationValue);
 			if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT)
@@ -996,7 +1007,14 @@ public class CyAttributesImpl implements CyAttributes {
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
 			final Object attribValue = getAttribute(id, attribRef);
-			nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
+			try {
+				nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
+			} catch (final Exception e) {
+				logger.warn("Bad attribute reference to \"" + attribRef
+				            + "\" while evaluating an equation (ID:" + id
+				            + ", attribute name:" + attribName + ")");
+				return null;
+			}
 		}
 
 		final Interpreter interpreter = new Interpreter(equation, nameToDescriptorMap);
