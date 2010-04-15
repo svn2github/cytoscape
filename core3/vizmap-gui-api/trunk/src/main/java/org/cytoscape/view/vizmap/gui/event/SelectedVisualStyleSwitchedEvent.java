@@ -2,13 +2,26 @@ package org.cytoscape.view.vizmap.gui.event;
 
 import java.awt.Component;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.view.vizmap.VisualStyle;
 
-public interface SelectedVisualStyleSwitchedEvent extends CyEvent<Component> {
+public final class SelectedVisualStyleSwitchedEvent extends AbstractCyEvent<Component> {
 	
-	public VisualStyle getLastVisualStyle();
+	private final VisualStyle lastVS;
+	private final VisualStyle newVS;
 
-	public VisualStyle getNewVisualStyle();
+	public SelectedVisualStyleSwitchedEvent(final Component source, final VisualStyle lastVS, final VisualStyle newVS) {
+		super(source, SelectedVisualStyleSwitchedListener.class);
+		this.newVS = newVS;
+		this.lastVS = lastVS;
+	}
+	
+	public VisualStyle getLastVisualStyle() {
+		return lastVS;
+	}
+
+	public VisualStyle getNewVisualStyle() {
+		return newVS;
+	}
 
 }
