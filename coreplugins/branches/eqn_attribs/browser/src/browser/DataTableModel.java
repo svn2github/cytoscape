@@ -552,6 +552,15 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		}
 	}
 
+	public String getRowId(final int rowIndex) {
+		final int keyIndex = getKeyIndex();
+		if (keyIndex == -1)
+			return null;
+
+		final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIndex, keyIndex);
+		return (String)valAndEq.getValue();
+	}
+
 	private int getKeyIndex() {
 		int keyIndex = -1;
 		int columnOffset = 0;

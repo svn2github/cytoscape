@@ -75,6 +75,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
@@ -89,6 +90,7 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
@@ -115,36 +117,23 @@ import javax.swing.table.TableColumn;
 import java.util.Set;
 import java.util.Iterator;
 
+
 /**
- * Based on JSortTable and completely rewrote by kono
- *
+ *  Based on JSortTable and completely rewritten by kono
  */
 public class CyAttributeBrowserTable extends JTable implements MouseListener, ActionListener,
                                                                PropertyChangeListener,
-                                                               SelectEventListener, MouseMotionListener {
-	/**
-	 *
-	 */
+                                                               SelectEventListener, MouseMotionListener
+{
 	public static final int SELECTED_NODE = 1;
-
-	/**
-	 *
-	 */
 	public static final int REV_SELECTED_NODE = 2;
-
-	/**
-	 */
 	public static final int SELECTED_EDGE = 3;
-
-	/**
-	 *
-	 */
 	public static final int REV_SELECTED_EDGE = 4;
 
 	// Target network to watch selection
 	CyNetwork currentNetwork;
 
-	// Gloval calcs used for coloring
+	// Global calcs used for coloring
 	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 	private GlobalAppearanceCalculator gac;
 	protected int sortedColumnIndex = -1;
@@ -158,6 +147,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private JPopupMenu rightClickPopupMenu;
 	private JPopupMenu cellMenu;
 	private JMenuItem copyMenuItem = null;
+	private JMenuItem copyToCurrentSelectionMenuItem = null;
+	private JMenuItem copyToEntireAttributeMenuItem = null;
 	private JMenu exportMenu = null;
 	private JMenuItem exportCellsMenuItem = null;
 	private JMenuItem exportTableMenuItem = null;
@@ -247,6 +238,20 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		this.setDefaultEditor(Object.class, new MultiLineTableCellEditor() );
 		
 		this.getTableHeader().addMouseMotionListener(this);
+	}
+
+	public void valueChanged(final ListSelectionEvent event) {
+		super.valueChanged(event);
+
+		final boolean singleCellSelected = getSelectedRowCount() == 1 && getSelectedColumnCount() == 1;
+		if (singleCellSelected) {
+			copyToCurrentSelectionMenuItem.setEnabled(true);
+			copyToEntireAttributeMenuItem.setEnabled(true);
+		}
+		else {
+			copyToCurrentSelectionMenuItem.setEnabled(false);
+			copyToEntireAttributeMenuItem.setEnabled(false);
+		}
 	}
 
 	private void setKeyStroke() {
@@ -426,7 +431,11 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			rightClickPopupMenu = new JPopupMenu();
 
 			copyMenuItem = new JMenuItem("Copy");
-			newSelectionMenuItem = new JMenuItem("Select from table");
+			copyToCurrentSelectionMenuItem = new JMenuItem("Copy to Current Selection");
+			copyToCurrentSelectionMenuItem.setEnabled(false);
+			copyToEntireAttributeMenuItem = new JMenuItem("Copy to Entire Attribute");
+			copyToEntireAttributeMenuItem.setEnabled(false);
+			newSelectionMenuItem = new JMenuItem("Select from Table");
 			exportMenu = new JMenu("Export...");
 			exportCellsMenuItem = new JMenuItem("Selected Cells");
 			exportTableMenuItem = new JMenuItem("Entire Table");
@@ -434,12 +443,21 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 			coloringMenuItem = new JCheckBoxMenuItem("On/Off Coloring");
 
-			// showAdvancedWindow = new JCheckBoxMenuItem("Show Advanced
-			// Window");
 			copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
-						logger.debug("Cells copied to clipboard.");
 						copyToClipBoard();
+					}
+				});
+
+			copyToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						copyToCurrentSelection();
+					}
+				});
+
+			copyToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						copyToEntireAttribute();
 					}
 				});
 
@@ -529,11 +547,12 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			exportMenu.add(exportCellsMenuItem);
 			exportMenu.add(exportTableMenuItem);
 
-			if (objectType != NETWORK) {
+			if (objectType != NETWORK)
 				rightClickPopupMenu.add(newSelectionMenuItem);
-			}
 
 			rightClickPopupMenu.add(copyMenuItem);
+			rightClickPopupMenu.add(copyToCurrentSelectionMenuItem);
+			rightClickPopupMenu.add(copyToEntireAttributeMenuItem);
 			rightClickPopupMenu.add(selectAllMenuItem);
 			rightClickPopupMenu.add(exportMenu);
 
@@ -1032,7 +1051,39 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		return sbf.toString();
 	}
 
-	
+	private void copyToCurrentSelection() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final GraphObject graphObject : selectedGraphObjects)
+			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(), attribName, errorMessage);
+		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn);
+	}
+
+	private void copyToEntireAttribute() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+		final Iterable<String> ids = objectType.getAssociatedIdentifiers();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final String id : ids)
+			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName, errorMessage);
+		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn);
+	}
+
 	private void adjustColWidth(){
 		
 		HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
