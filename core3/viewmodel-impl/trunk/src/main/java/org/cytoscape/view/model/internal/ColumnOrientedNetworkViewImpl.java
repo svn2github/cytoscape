@@ -53,25 +53,13 @@ import org.cytoscape.model.events.AddedEdgeListener;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
 
-import org.cytoscape.view.model.events.AddedNodeViewEvent;
-import org.cytoscape.view.model.events.AddedNodeViewListener;
-import org.cytoscape.view.model.events.AddedEdgeViewEvent;
-import org.cytoscape.view.model.events.AddedEdgeViewListener;
-
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.events.SubsetChangedListener;
-import org.cytoscape.view.model.events.SubsetCreatedListener;
-import org.cytoscape.view.model.events.SubsetDestroyedListener;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
-import org.cytoscape.view.model.events.NetworkViewChangedListener;
-import org.cytoscape.view.model.internal.events.SubsetChangedEventImpl;
-import org.cytoscape.view.model.internal.events.SubsetCreatedEventImpl;
-import org.cytoscape.view.model.internal.events.SubsetDestroyedEventImpl;
-import org.cytoscape.view.model.internal.events.AddedNodeViewEventImpl;
-import org.cytoscape.view.model.internal.events.AddedEdgeViewEventImpl;
+import org.cytoscape.view.model.events.AddedNodeViewEvent;
+import org.cytoscape.view.model.events.AddedEdgeViewEvent;
 
 /**
  *
@@ -84,7 +72,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	private CyNetwork network;
 	private HashMap<CyNode, ColumnOrientedViewImpl<CyNode>> nodeViews;
 	private HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>> edgeViews;
-	private HashMap<String, Set<View<? extends GraphObject>>> subsets;
 	private ColumnOrientedViewImpl<CyNetwork> viewCyNetwork;
 	private HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>> columns;
 
@@ -105,7 +92,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 
 		nodeViews = new HashMap<CyNode, ColumnOrientedViewImpl<CyNode>>();
 		edgeViews = new HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>>();
-		subsets = new HashMap<String, Set<View<? extends GraphObject>>>();
 		columns = new HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>>();
 
 		for (CyNode node : network.getNodeList()) {
@@ -194,8 +180,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		edgeViews.put(edge, ev); // FIXME: View creation here and in initializer: should
 								// be in one place
 
-		eventHelper.fireSynchronousEvent( new AddedEdgeViewEventImpl(this,ev), 
-		                                   AddedEdgeViewListener.class );
+		eventHelper.fireSynchronousEvent( new AddedEdgeViewEvent(this,ev)); 
 	}
 
 	/**
@@ -214,8 +199,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		System.out.println(" adding node to view! " + node.toString());
 		final ColumnOrientedViewImpl<CyNode> nv = new ColumnOrientedViewImpl<CyNode>(node, this);
 		nodeViews.put(node, nv); 
-		eventHelper.fireSynchronousEvent( new AddedNodeViewEventImpl(this,nv), 
-		                                   AddedNodeViewListener.class );
+		eventHelper.fireSynchronousEvent( new AddedNodeViewEvent(this,nv)); 
 	}
 
 	/**
@@ -258,87 +242,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param name
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public Set<View<? extends GraphObject>> getSubset(final String name) {
-		return subsets.get(name);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param name
-	 *            DOCUMENT ME!
-	 * @param subset
-	 *            DOCUMENT ME!
-	 */
-	public void createSubset(final String name,
-			final Set<View<? extends GraphObject>> subset) {
-		subsets.put(name, subset);
-		eventHelper.fireSynchronousEvent(
-				new SubsetCreatedEventImpl(this, name),
-				SubsetCreatedListener.class);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param name
-	 *            DOCUMENT ME!
-	 * @param toAdd
-	 *            DOCUMENT ME!
-	 */
-	public void addToSubset(final String name,
-			final Set<View<? extends GraphObject>> toAdd) {
-		final Set<View<? extends GraphObject>> subset = subsets.get(name);
-
-		if (subset == null)
-			throw new NullPointerException("non-existent subset");
-
-		subset.addAll(toAdd);
-		eventHelper.fireSynchronousEvent(
-				new SubsetChangedEventImpl(this, name),
-				SubsetChangedListener.class);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param name
-	 *            DOCUMENT ME!
-	 * @param toRemove
-	 *            DOCUMENT ME!
-	 */
-	public void removeFromSubset(final String name,
-			final Set<View<? extends GraphObject>> toRemove) {
-		final Set<View<? extends GraphObject>> subset = subsets.get(name);
-
-		if (subset == null)
-			throw new NullPointerException("non-existent subset");
-
-		subset.removeAll(toRemove);
-		eventHelper.fireSynchronousEvent(
-				new SubsetChangedEventImpl(this, name),
-				SubsetChangedListener.class);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param name
-	 *            DOCUMENT ME!
-	 */
-	public void deleteSubset(final String name) {
-		subsets.remove(name);
-		eventHelper.fireSynchronousEvent(new SubsetDestroyedEventImpl(this,
-				name), SubsetDestroyedListener.class);
-	}
 	// The following are the View<CyNetwork> methods, implemented as proxies to viewCyNetwork.methods
 
 	/** {@inheritDoc}
@@ -396,14 +299,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		System.out.println("running dummy fitSelected");
 	}
 	public void updateView() {
-		eventHelper.fireAsynchronousEvent(
-				new NetworkViewChangedEvent() {
-					public Object getSource() {
-						return ColumnOrientedNetworkViewImpl.this; 
-					} 
-					public CyNetworkView getNetworkView() { 
-						return ColumnOrientedNetworkViewImpl.this; 
-					} 
-				},  NetworkViewChangedListener.class);
+		eventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(ColumnOrientedNetworkViewImpl.this));
 	}
 }
