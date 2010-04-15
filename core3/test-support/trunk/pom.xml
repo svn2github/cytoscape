@@ -59,6 +59,11 @@
       <artifactId>viewmodel-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>service-util</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
     <!-- implementations of the APIs - these can change as things evolve -->
     <dependency>
       <groupId>org.cytoscape</groupId>

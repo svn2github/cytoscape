@@ -12,7 +12,7 @@ public class NetworkViewTestSupport extends NetworkTestSupport {
 
 	public NetworkViewTestSupport() {
 		super();
-		viewFactory = new ColumnOrientedNetworkViewFactoryImpl( eventHelper );
+		viewFactory = new ColumnOrientedNetworkViewFactoryImpl( eventHelper, new StubServiceRegistrar() );
 	}
 
 	public CyNetworkView getNetworkView() {
