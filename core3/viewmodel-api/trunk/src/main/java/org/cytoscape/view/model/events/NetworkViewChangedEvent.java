@@ -1,12 +1,14 @@
 
 package org.cytoscape.view.model.events;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.view.model.CyNetworkView;
 
 /**
  * 
  */
-public interface NetworkViewChangedEvent extends CyEvent<Object> {
-	CyNetworkView getNetworkView();
+public final class NetworkViewChangedEvent extends AbstractCyEvent<CyNetworkView> {
+	public NetworkViewChangedEvent(final CyNetworkView source) {
+		super(source,NetworkViewChangedListener.class);
+	}
 }

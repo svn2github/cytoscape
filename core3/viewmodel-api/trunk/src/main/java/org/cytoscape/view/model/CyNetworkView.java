@@ -94,43 +94,4 @@ public interface CyNetworkView extends View<CyNetwork>{
 	void fitContent();
 	void fitSelected();
 	void updateView();
-
-	/**
-	 * Returns the given subset.
-	 *
-	 * @param name name of the subset to return
-	 * @return the subset
-	 */
-	Set<View<? extends GraphObject>> getSubset(String name);
-
-	/**
-	 * If subset already exists, replaces it with given Set.
-	 *
-	 * @param name name of the subset
-	 * @param subset the Views the subset will contain
-	 */
-	void createSubset(String name, Set<View<?extends GraphObject>> subset);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
-	 * @param toAdd DOCUMENT ME!
-	 */
-	void addToSubset(String name, Set<View<?extends GraphObject>> toAdd);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
-	 * @param toRemove DOCUMENT ME!
-	 */
-	void removeFromSubset(String name, Set<View<?extends GraphObject>> toRemove);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
-	 */
-	void deleteSubset(String name);
 }
