@@ -132,7 +132,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 
 	
 	public void handleEvent(NetworkViewChangedEvent nvce) {
-		DGraphView gv = viewMap.get(nvce.getNetworkView());
+		DGraphView gv = viewMap.get(nvce.getSource());
 		if ( gv != null )
 			gv.updateView();
 	}
