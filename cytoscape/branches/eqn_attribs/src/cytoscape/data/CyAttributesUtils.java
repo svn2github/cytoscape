@@ -268,6 +268,10 @@ public class CyAttributesUtils {
 	public static boolean copyAttribute(final CyAttributes attribs, final String sourceId, final String targetId,
 	                                    final String attribName, final StringBuilder errorMessage)
 	{
+		// Self-copy is a supported no-op!
+		if (sourceId.equals(targetId))
+			return true;
+
 		errorMessage.setLength(0);
 
 		switch (attribs.getType(attribName)) {
