@@ -47,10 +47,8 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
-import org.cytoscape.view.vizmap.events.VisualStyleDestroyedListener;
-import org.cytoscape.view.vizmap.internal.events.VisualStyleCreatedEventImpl;
-import org.cytoscape.view.vizmap.internal.events.VisualStyleDestroyedEventImpl;
+import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleDestroyedEvent;
 
 
 /**
@@ -128,8 +126,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 		}
 
 		visualStyles.add(copyVS);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(copyVS, this),
-		                                   VisualStyleCreatedListener.class);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this,copyVS));
 
 		return copyVS;
 	}
@@ -144,8 +141,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	public VisualStyle createVisualStyle(String title) {
 		final VisualStyle newVS = new VisualStyleImpl(rootLexicon, title);
 		visualStyles.add(newVS);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS, this),
-		                                   VisualStyleCreatedListener.class);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this,newVS));
 
 		return newVS;
 	}
@@ -158,8 +154,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 */
 	public void removeVisualStyle(VisualStyle vs) {
 		visualStyles.remove(vs);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs, this),
-		                                   VisualStyleDestroyedListener.class);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEvent(this,vs));
 		vs = null;
 	}
 
