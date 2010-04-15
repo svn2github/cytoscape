@@ -2,11 +2,12 @@
 package org.cytoscape.session.events;
 
 import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.event.CyEvent;
 import org.cytoscape.view.model.CyNetworkView;
 /**
  * 
  */
-public interface NetworkViewAddedEvent extends CyEvent<CyNetworkManager> {
-	CyNetworkView getNetworkView();
+public final class NetworkViewAddedEvent extends AbstractNetworkViewEvent {
+	public NetworkViewAddedEvent(final CyNetworkManager source, final CyNetworkView view) {
+		super(source, NetworkViewAddedListener.class, view);
+	}
 }

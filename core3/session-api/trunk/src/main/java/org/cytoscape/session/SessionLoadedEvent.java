@@ -1,10 +1,13 @@
 
 package org.cytoscape.session;
 
-import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.AbstractCyEvent;
 
 /**
  * 
  */
-public interface SessionLoadedEvent extends CyEvent<CySessionManager> {
+public final class SessionLoadedEvent extends AbstractCyEvent<CySessionManager> {
+	public SessionLoadedEvent(final CySessionManager source) {
+		super(source,SessionLoadedListener.class);
+	}
 }
