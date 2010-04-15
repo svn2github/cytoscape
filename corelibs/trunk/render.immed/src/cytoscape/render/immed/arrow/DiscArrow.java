@@ -49,11 +49,11 @@ public class DiscArrow extends AbstractArrow {
 	private double currentRatio;
 
 	public DiscArrow() {
-		super(GraphGraphics.ARROW_DISC,0.5);
+		super(GraphGraphics.ARROW_DISC,1.0);
 
 		// create the arrow
 		final Ellipse2D.Double arrowE = new Ellipse2D.Double();
-		arrowE.setFrame(-0.5d, -0.5d, 1.0d, 1.0d);
+		arrowE.setFrame(-1.0, -0.5, 1.0d, 1.0d);
 
 		arrow = arrowE;
 

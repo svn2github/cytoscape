@@ -41,14 +41,14 @@ import cytoscape.render.immed.GraphGraphics;
 public class TeeArrow extends AbstractArrow {
 
 	public TeeArrow() {
-		super(GraphGraphics.ARROW_TEE,0.125);
+		super(GraphGraphics.ARROW_TEE,0.5);
 
 		// create the arrow
 		GeneralPath arrowGP = new GeneralPath();
-		arrowGP.moveTo(-0.125f, -1.0f);
-		arrowGP.lineTo(0.125f, -1.0f);
-		arrowGP.lineTo(0.125f, 1.0f);
-		arrowGP.lineTo(-0.125f, 1.0f);
+		arrowGP.moveTo(-0.5f, -1.0f);
+		arrowGP.lineTo(-0.25f, -1.0f);
+		arrowGP.lineTo(-0.25f, 1.0f);
+		arrowGP.lineTo(-0.5f, 1.0f);
 		arrowGP.closePath();
 
 		arrow = arrowGP;
