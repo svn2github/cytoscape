@@ -17,6 +17,8 @@
 	<property name="lib.dir" value="lib"/>
 	<property name="resources.dir" value="resources"/>
 	
+	<property name="images.dir" value="images"/>
+	
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
@@ -84,6 +86,9 @@
 	   <copy todir="${build.classes}" file="${resources.dir}/help.html"/>
 	   <copy todir="${build.classes}" file="${resources.dir}/JACTIVEMODULE_OVERVIEW_VS.props" />
 	   <copy todir="${build.classes}" file="${resources.dir}/JACTIVEMODULE_MODULE_VS.props" />
+   	   <copy todir="${build.classes}/images">
+   	   	         <fileset dir="${images.dir}"/> 
+   	   </copy>
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<manifest>
 			<attribute name="Cytoscape-Plugin" value="csplugins.jActiveModules.ActiveModulesUI"/>
