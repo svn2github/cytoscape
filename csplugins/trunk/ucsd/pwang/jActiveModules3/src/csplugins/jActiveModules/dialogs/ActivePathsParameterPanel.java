@@ -27,12 +27,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -47,16 +50,30 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 import org.jdesktop.layout.GroupLayout;
-
+import javax.swing.JTable;
 import csplugins.jActiveModules.ActiveModulesUI;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.logger.CyLogger;
+import java.awt.Component;
+import javax.swing.table.TableColumn;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.AbstractCellEditor;
+import javax.swing.table.TableCellEditor;
+import javax.swing.DefaultCellEditor;
+import java.util.Collection;
+import javax.swing.JOptionPane;
 
 public class ActivePathsParameterPanel extends JPanel {
 
@@ -191,20 +208,331 @@ public class ActivePathsParameterPanel extends JPanel {
 
 		final JScrollPane scrollPane = new JScrollPane(mainPanel);
 		this.add(scrollPane, BorderLayout.CENTER);
-
 	}
+	
+	private AttrSelectionPanel attrSelectionPanel;
 	
 	private Container createTopPanel() {
 		final JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
 		
+		topPanel.setBorder(BorderFactory.createTitledBorder("Top Panel"));
+		
 		// target network selector
 		networkPanel = new NetworkSelectorPanel();
 		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
 		topPanel.add(networkPanel, BorderLayout.PAGE_START);
-		topPanel.add(createAttrSelectionPanel(), BorderLayout.CENTER);
+
+		attrSelectionPanel = new AttrSelectionPanel();
+				
+		topPanel.add(attrSelectionPanel, BorderLayout.CENTER);
+		
+		AttrSelectionTableModel tableModel = new AttrSelectionTableModel(getDataVect());
+		attrSelectionPanel.getTable().setModel(tableModel);
+		
+		TableColumn nameColumn = attrSelectionPanel.getTable().getColumn("Name");
+		nameColumn.setCellRenderer(new NameColumnCellRenderer());
+		
+		TableColumn normColumn = attrSelectionPanel.getTable().getColumn("Normalization");
+		
+		
+		NormalizationCellRenderer normCellRender= new NormalizationCellRenderer();
+		normColumn.setCellRenderer(normCellRender);
+		
+		TableCellEditor editor = new DefaultCellEditor(normCellRender);
+		normColumn.setCellEditor(editor);
+		
+		attrSelectionPanel.getTable().addMouseListener(new ExprAttrsTableMouseListener());
+
+		Dimension tableSize = attrSelectionPanel.getTable().getPreferredSize();
+		
+		attrSelectionPanel.setPreferredSize(new Dimension(attrSelectionPanel.getWidth(), (tableSize.height + 50)));
+		
 		return topPanel;
 	}
+
+	
+	private class ExprAttrsTableMouseListener extends MouseAdapter {
+		public void mouseClicked(MouseEvent e) {
+			updateOptionsPanel();
+		}
+	}
+	
+	private class NormalizationComboboxEditor extends DefaultCellEditor {
+		//NormalizationCellRenderer renderer = new NormalizationCellRenderer();
+
+		JComboBox cmb;
+		public NormalizationComboboxEditor(JComboBox cmb) {
+			super(cmb);
+			this.cmb = cmb;
+			
+			System.out.println("Editor fcsdfd ");
+			
+			cmb.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+
+					System.out.println("mouse event sadfsdfsd");
+				}
+			});
+		}
+		
+		public Component getTableCellEditorComponent(
+									JTable table, Object value,
+									boolean isSelected,
+									int row, int column) {
+			
+			System.out.println("value = " + value);
+			cmb.setSelectedItem(value);
+			return cmb;
+		}
+		
+		
+		public boolean stopCellEditing() {
+
+			//this.setCellEditorValue(new Integer(slider.getValue()));
+
+			return super.stopCellEditing();
+		}
+		
+		public Object getCellEditorValue(){
+			return cmb.getSelectedItem();
+		}
+	}
+
+	
+	private class NormalizationCellRenderer extends JComboBox implements TableCellRenderer {
+		public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column){
+			
+			DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] { "None", "Quantile"});
+
+			this.setModel(model);
+			
+			if (value.toString().equalsIgnoreCase("")){
+				this.setSelectedItem("None");				
+			}
+			if (!value.toString().equalsIgnoreCase("None")){
+				this.setSelectedItem(value);				
+			}
+			
+			if (isSelected){
+				System.out.println("isSelected now: row ="+ row);
+				this.repaint();
+			}
+			setEnabled(true);
+			return this;
+		}
+	}
+
+	
+	
+	private Vector<Object[]> getDataVect(){
+		
+		//final List<String> selectedNames = apfParams.getExpressionAttributes();
+		//final List<String> allNames = new ArrayList<String>(apfParams.getPossibleExpressionAttributes());
+
+		
+		Vector<Object[]> dataVect = new Vector<Object[]>();
+		
+		// find all of the double type parameters
+		List<String> possibleExpressionAttrs1 = new ArrayList<String>();
+		List<String> possibleExpressionAttrs2 = new ArrayList<String>();
+
+		
+		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+		String[] names = nodeAttrs.getAttributeNames();
+		
+		for ( String name : names ) {
+			if ( nodeAttrs.getType(name) == CyAttributes.TYPE_FLOATING ) {
+				Map attrMap = CyAttributesUtils.getAttribute(name,nodeAttrs);
+
+				if ( attrMap == null ) 
+					continue; // no values have been defined for the attr yet
+
+				Object[] row = new Object[5];
+				row[0] = name;
+				
+				boolean isPValue = true;
+				for ( Object value : attrMap.values() ) {
+					double d = ((Double)value).doubleValue();
+					if ( d < 0 || d > 1 ) {
+						isPValue = false;
+						break;
+					}
+				}
+				
+				if ( isPValue ){
+					possibleExpressionAttrs1.add(name);
+				}
+				else {
+					possibleExpressionAttrs2.add(name);
+				}
+				
+				Collection<Double> values = attrMap.values();
+				row[1] = Collections.min(values);
+				row[2] = Collections.max(values);
+
+				row[3] = false;
+				row[4] = "None";
+				
+				dataVect.add(row);
+			}
+		}
+		
+		return dataVect;
+	}
+	
+	private class AttrSelectionTableModel extends AbstractTableModel {
+		Vector dataVect = null;
+		String[] columnNames = {"Name","Most sig", "Least Sig", "Switch Sig", "Normalization"};
+		public AttrSelectionTableModel(Vector pDataVect){
+			dataVect = pDataVect;
+		}
+		
+		public String getColumnName(int columnIndex){
+			return columnNames[columnIndex];
+		}
+		
+		public int getRowCount() {
+			if (dataVect == null){
+				return 0;
+			}
+			return dataVect.size();
+		}
+
+		public int getColumnCount() {
+			return columnNames.length;
+		}
+		
+		public Object getValueAt(int row, int col){
+			Object[] oneRow = (Object[])dataVect.elementAt(row);
+			return oneRow[col];
+		}
+
+		public void setValueAt(Object value, int row, int col){
+			Object[] oneRow = (Object[])dataVect.elementAt(row);
+			oneRow[col] = value;
+			fireTableCellUpdated(row, col);
+		}
+
+		
+		public Class getColumnClass(int col){
+			Object[] oneRow = (Object[])dataVect.elementAt(0);
+			return oneRow[col].getClass();
+		}
+		
+		public boolean isCellEditable(int row, int col){
+			if (col == 3 || col == 4) {
+				return true;
+			}
+			return false;
+		}
+		
+		public Object[] getRow(int row){
+			return (Object[]) dataVect.elementAt(row);
+		}
+	}
+	
+
+	private class NameColumnCellRenderer extends DefaultTableCellRenderer {
+		private javax.swing.ImageIcon icon = new ImageIcon(getClass().getResource("/images/exclamationpoint.jpg"));
+		private javax.swing.ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/empty.jpg"));
+
+		public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column){
+			this.setText(value.toString());
+			
+			double min = Double.valueOf(table.getModel().getValueAt(row,1).toString());
+			double max = Double.valueOf(table.getModel().getValueAt(row,2).toString());
+
+			if (Math.min(min,max) < 0 || Math.max(min, max) > 1){
+				setIcon(icon);				
+			}
+			else {
+				setIcon(icon1);
+			}
+			
+			return this;
+		}
+	}
+	
+		
+	
+	private class AttrSelectionPanel extends javax.swing.JPanel {
+	    
+	    /** Creates new form JActiveModule_AttrSelectionPanel */
+	    public AttrSelectionPanel() {
+	        initComponents();
+	    }
+	    
+	    /** This method is called from within the constructor to
+	     * initialize the form.
+	     * WARNING: Do NOT modify this code. The content of this method is
+	     * always regenerated by the Form Editor.
+	     */
+	    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">                          
+	    private void initComponents() {
+	        java.awt.GridBagConstraints gridBagConstraints;
+
+	        jScrollPane1 = new javax.swing.JScrollPane();
+	        tblAttrSelection = new javax.swing.JTable();
+
+	        setLayout(new java.awt.GridBagLayout());
+
+	        setBorder(javax.swing.BorderFactory.createTitledBorder("Expression Attributes for Analysis"));
+	       
+	        /*
+	        tblAttrSelection.setModel(new javax.swing.table.DefaultTableModel(
+	            new Object [][] {
+	                {null, null, null, null, null},
+	                {null, null, null, null, null},
+	                {null, null, null, null, null},
+	                {null, null, null, null, null}
+	            },
+	            new String [] {
+	                "Name", "Most Sig", "Least Sig", "Significance", "Normalization"
+	            }
+	        ) {
+	            boolean[] canEdit = new boolean [] {
+	                false, false, false, true, true
+	            };
+
+	            public boolean isCellEditable(int rowIndex, int columnIndex) {
+	                return canEdit [columnIndex];
+	            }
+	        });
+	        */
+	        
+	        
+	        jScrollPane1.setViewportView(tblAttrSelection);
+
+	        gridBagConstraints = new java.awt.GridBagConstraints();
+	        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+	        gridBagConstraints.weightx = 1.0;
+	        gridBagConstraints.weighty = 1.0;
+	        add(jScrollPane1, gridBagConstraints);
+
+	    }// </editor-fold>
+	  	    
+	    
+	    // Variables declaration - do not modify
+	    private javax.swing.JScrollPane jScrollPane1;
+	    private javax.swing.JTable tblAttrSelection;
+	    // End of variables declaration
+	    
+	    public JTable getTable(){
+	    	return tblAttrSelection;
+	    }
+	}
+
 	
 	public CyNetwork getTargetNetwork() {
 		return this.networkPanel.getSelectedNetwork();
@@ -257,45 +585,11 @@ public class ActivePathsParameterPanel extends JPanel {
     private javax.swing.JButton helpButton;
     // End of variables declaration
   
-	private Container createAttrSelectionPanel() {
-		final JPanel attrSelectPanel = new JPanel();
-		attrSelectPanel.setPreferredSize(new Dimension(200, 150));
-		attrSelectPanel.setLayout(new BorderLayout());
-
-		final Border border = BorderFactory.createLineBorder(Color.black);
-		final Border titledBorder = BorderFactory.createTitledBorder(border,
-				"Expression Attributes For Analysis", TitledBorder.CENTER,
-				TitledBorder.DEFAULT_POSITION);
-		attrSelectPanel.setBorder(titledBorder);
-
-		final List<String> selectedNames = apfParams.getExpressionAttributes();
-		final List<String> allNames = new ArrayList<String>(apfParams
-				.getPossibleExpressionAttributes());
-		exprAttrsList = new JList(allNames.toArray());
-		exprAttrsList
-				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		exprAttrsList.setLayoutOrientation(JList.VERTICAL);
-		//exprAttrsList.setVisibleRowCount(3);
-		exprAttrsList.addMouseListener(new ExprAttrsListListener(exprAttrsList,
-				apfParams));
-		for (String name : selectedNames) {
-			int index = allNames.indexOf(name);
-			if (index != -1)
-				exprAttrsList.addSelectionInterval(index, index);
-		}
-
-		final JScrollPane scrollPane = new JScrollPane(exprAttrsList);
-		scrollPane.setViewportView(exprAttrsList);
-		attrSelectPanel.add(scrollPane, BorderLayout.CENTER);
-		
-		return attrSelectPanel;
-	}
 
 	protected void updateOptionsPanel() {
-		if (exprAttrsList == null || optionsPanel == null
-				|| findModulesButton == null)
-			return;
-		boolean showOptions = exprAttrsList.getSelectedIndices().length != 0;
+
+		boolean showOptions = this.attrSelectionPanel.getTable().getSelectedRowCount() != 0;
+		
 		CardLayout cl = (CardLayout) optionsPanel.getLayout();
 		if (showOptions) {
 			cl.show(optionsPanel, "ACTIVE");
@@ -1292,6 +1586,43 @@ public class ActivePathsParameterPanel extends JPanel {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			
+			int[] selectedIndices = ActivePathsParameterPanel.this.attrSelectionPanel.getTable().getSelectedRows();
+	
+			AttrSelectionTableModel model = (AttrSelectionTableModel) ActivePathsParameterPanel.this.attrSelectionPanel.getTable().getModel();
+			
+			boolean warning = false;
+			for (int i=0; i<selectedIndices.length; i++){
+				Object[] oneRow = model.getRow(selectedIndices[i]);
+							
+				double min = Double.valueOf(oneRow[1].toString());
+				double max = Double.valueOf(oneRow[2].toString());
+								
+				if (Math.min(min, max) < 0 || Math.max(min, max) > 1){
+					warning = true;
+				}
+				
+				if (!oneRow[4].toString().equalsIgnoreCase("None")){
+					warning = true;
+				}
+			}
+			
+			if (warning){
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				        "Please note that P value should be in the range 0-1, and normalization method is not implemented yet!",
+				        "Warning",
+				        JOptionPane.WARNING_MESSAGE);
+
+			}
+			
+			ArrayList selectedNames = new ArrayList();
+			for (int i=0; i<selectedIndices.length; i++){
+				selectedNames.add(model.getRow(selectedIndices[i])[0]);
+			}
+			
+			System.out.println("selectedNames = "+selectedNames.toString());
+
+			apfParams.setExpressionAttributes(selectedNames);
 			pluginMainClass.startFindActivePaths(networkPanel.getSelectedNetwork());
 		}
 
@@ -1306,42 +1637,6 @@ public class ActivePathsParameterPanel extends JPanel {
 			// do nothing
 		}
 
-	}
-
-	class ExprAttrsListListener extends MouseAdapter {
-		private JList parentList;
-		private ActivePathFinderParameters apfParams;
-
-		public ExprAttrsListListener(JList parentList,
-				ActivePathFinderParameters apfParams) {
-			this.parentList = parentList;
-			this.apfParams = apfParams;
-		}
-
-		public void mouseClicked(MouseEvent e) {
-			String selectedString = parentList.getSelectedValue().toString();
-			if (apfParams.getExpressionAttributes().contains(selectedString))
-				apfParams.removeExpressionAttribute(selectedString);
-			else
-				apfParams.addExpressionAttribute(selectedString);
-
-			int[] indices = new int[apfParams.getExpressionAttributes().size()];
-			int count = 0;
-			for (String exprAttr : apfParams.getExpressionAttributes()) {
-				int i = apfParams.getPossibleExpressionAttributes().indexOf(
-						exprAttr);
-				if (i != -1)
-					indices[count++] = i;
-			}
-
-			parentList.setSelectedIndices(indices);
-			updateOptionsPanel();
-
-		}
-	}
-
-	private boolean isSignificanceValue(String name) {
-		return true;
 	}
 
 	// -----------------------------------------------------------------------------
