@@ -102,7 +102,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 	 */
 	NestedNetworkCreator(
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> networkOfModules,
-		final CyNetwork originalNetwork,
+		final CyNetwork origPhysNetwork, final CyNetwork origGenNetwork,
 		final TypedLinkNetwork<String, Float> physicalNetwork,
 		final TypedLinkNetwork<String, Float> geneticNetwork, final double cutoff,
 		final TaskMonitor taskMonitor, final float remainingPercentage)
@@ -120,7 +120,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 		final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
-		taskMonitor.setStatus("5. Generating networks");
+		taskMonitor.setStatus("5. Generating Cytoscape networks");
 		int nodeIndex = 1;
 		double maxScore = Double.NEGATIVE_INFINITY;
 		maxSize = 0;
@@ -134,8 +134,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 				final String nodeName = findNextAvailableNodeName("Complex"
 				                                                  + nodeIndex);
 
-				sourceNode = makeOverviewNode(
-					nodeName, sourceModule, nodeAttribs, originalNetwork);
+				sourceNode = makeOverviewNode(nodeName, sourceModule, nodeAttribs);
 				++nodeIndex;
 			}
 
@@ -145,8 +144,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 			if (targetNode == null) {
 				final String nodeName =
 					findNextAvailableNodeName("Complex" + nodeIndex);
-				targetNode = makeOverviewNode(
-					nodeName, targetModule, nodeAttribs, originalNetwork);
+				targetNode = makeOverviewNode(nodeName, targetModule, nodeAttribs);
 				++nodeIndex;
 			}
 
@@ -155,7 +153,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 					/* create = */true);
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
 						 REFERENCE_NETWORK_NAME_ATTRIB,
-						 originalNetwork.getTitle());
+						 origPhysNetwork.getTitle() + "/" + origGenNetwork.getTitle());
 			overviewNetwork.addEdge(newEdge);
 
 			// Add various edge attributes.
@@ -212,7 +210,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
 			final CyNetwork nestedNetwork =
 				generateNestedNetwork(network.getNodeName(), network.getGenes(),
-				                      originalNetwork, createView);
+				                      origPhysNetwork, createView);
 			final CyNode node =
 				Cytoscape.getCyNode(network.getNodeName(), /* create = */false);
 			node.setNestedNetwork(nestedNetwork);
@@ -231,7 +229,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 	 */
 	private CyNode makeOverviewNode(
 			final String nodeName, final TypedLinkNodeModule<String, BFEdge> module,
-			final CyAttributes nodeAttribs, final CyNetwork originalNetwork)
+			final CyAttributes nodeAttribs)
 	{
 		final CyNode newNode = Cytoscape.getCyNode(nodeName, /* create = */true);
 		moduleToCyNodeMap.put(module, newNode);

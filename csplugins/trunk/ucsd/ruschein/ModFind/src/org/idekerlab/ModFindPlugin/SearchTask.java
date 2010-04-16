@@ -9,6 +9,7 @@ import org.idekerlab.ModFindPlugin.ModFinder.HCScoringFunction;
 import org.idekerlab.ModFindPlugin.ModFinder.HCSearch2;
 import org.idekerlab.ModFindPlugin.ModFinder.SouravScore;
 import org.idekerlab.ModFindPlugin.networks.*;
+import org.idekerlab.ModFindPlugin.networks.hashNetworks.FloatHashNetwork;
 import org.idekerlab.ModFindPlugin.networks.linkedNetworks.*;
 
 import cytoscape.CyEdge;
@@ -26,7 +27,6 @@ import cytoscape.visual.VisualStyle;
  * @author kono, ruschein
  */
 public class SearchTask implements Task {
-	
 	public static URL url1 = ModFindPlugin.class.getResource("/resources/ModFind_overview_vs.props");
 	public static URL url2 = ModFindPlugin.class.getResource("/resources/ModFind_module_vs.props");
 	private static String VS_OVERVIEW_NAME = "ModFind";
@@ -64,13 +64,13 @@ public class SearchTask implements Task {
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for complexes...");
 
-		final CyNetwork inputNetwork = parameters.getNetwork();
+		final CyNetwork physicalInputNetwork = parameters.getNetwork();
+		final CyNetwork geneticInputNetwork = parameters.getNetwork();
 
-		final ConvertCyNetworkToSFNetworks converter = new ConvertCyNetworkToSFNetworks(
-				inputNetwork, parameters.getPhysicalEdgeAttrName(),
-				parameters.getGeneticEdgeAttrName());
-		final SFNetwork physicalNetwork = converter.getPhysicalNetwork();
-		final SFNetwork geneticNetwork  = converter.getGeneticNetwork();
+		final SFNetwork physicalNetwork =
+			convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getPhysicalEdgeAttrName());
+		final SFNetwork geneticNetwork =
+			convertCyNetworkToSFNetwork(geneticInputNetwork, parameters.getGeneticEdgeAttrName());
 		
 		final HCScoringFunction hcScoringFunction =
 			new SouravScore(physicalNetwork, geneticNetwork,
@@ -89,8 +89,8 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		final NestedNetworkCreator nnCreator =
-			new NestedNetworkCreator(results, inputNetwork, pNet, gNet,
-			                         pValueThreshold, taskMonitor,
+			new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork,
+			                         pNet, gNet, pValueThreshold, taskMonitor,
 			                         100.0f - COMPUTE_SIG_PERCENTAGE);
 
 		setStatus("Search finished!\n\n" + "Number of complexes = "
@@ -206,16 +206,17 @@ public class SearchTask implements Task {
 		for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> edge : results.edgeIterator()) {
 			++currentEdgeNum;
 
-			//Find number of edges and sum of edge values in the hyperedge
+			// Find number of edges and sum of edge values in the hyperedge
 			int numGeneticLinks = 0;
 			double sumOfGeneticValues=0.0;
-			for (TypedLinkEdge<String,Float> eachEdge : gn.getAllEdgeValues(edge.source().value().asStringSet(), edge.target().value().asStringSet()))
+			for (final TypedLinkEdge<String,Float> eachEdge :
+			     gn.getAllEdgeValues(edge.source().value().asStringSet(), edge.target().value().asStringSet()))
 			{
 				sumOfGeneticValues += eachEdge.value();
 				++numGeneticLinks;
 			}
             
-			//No need to sample
+			// No need to sample
 			double pVal;
 			if (numLinks2empiricalDist.containsKey(numGeneticLinks)) {
 				//How to save p-value?
@@ -231,7 +232,7 @@ public class SearchTask implements Task {
 				temp = temp.sort();
 				numLinks2empiricalDist.put(numGeneticLinks, temp);
 
-				//Where to save pval
+				// Where to save pval
 				pVal = temp.getEmpiricalValueFromSortedDist(sumOfGeneticValues);
 			}
 
@@ -246,5 +247,53 @@ public class SearchTask implements Task {
 			taskMonitor.setStatus("4. Computing permutations: " + Math.round(permutationsFraction * 100.0f) + "% completed.");
 		}
 		results.removeAllEdges(deleteSet);
+	}
+
+	/**
+	 *  Converts a Cytoscape-style network to an SFNetwork.
+	 *
+	 *  @param inputNetwork    name of the network that will be converted
+	 *  @param numericAttrName optional name of a numeric edge attribute.  Should this be missing, 1.0 will be assumed for all edges
+	 */
+	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName)
+		throws IllegalArgumentException, ClassCastException
+	{
+		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
+		final FloatHashNetwork outputNetwork = new FloatHashNetwork(/* selfOk = */false, /* directed = */false, /* startsize = */1);
+
+		if (inputNetwork == null)
+			throw new IllegalArgumentException("input parameter inputNetwork must not be null!");
+
+		if (numericAttrName == null || numericAttrName.length() == 0) {
+			for (final CyEdge edge : edges)
+				outputNetwork.add(edge.getSource().getIdentifier(),
+				                  edge.getTarget().getIdentifier(), 1.0f);
+		} else {
+			// Validate that "numericAttrName" is a known numeric edge attribute.
+			final CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+			final byte edgeAttribType = edgeAttributes.getType(numericAttrName);
+			if (edgeAttribType != CyAttributes.TYPE_FLOATING && edgeAttribType != CyAttributes.TYPE_INTEGER)
+				throw new IllegalArgumentException("\"" + numericAttrName
+				                                   + "\" is not the name of a known numeric edge attribute!");
+
+			for (final CyEdge edge : edges) {
+				final String edgeID = edge.getIdentifier();
+				if (edgeAttribType == CyAttributes.TYPE_FLOATING) {
+					final Double attrValue = edgeAttributes.getDoubleAttribute(edgeID, numericAttrName);
+					if (attrValue != null)
+						outputNetwork.add(edge.getSource().getIdentifier(),
+						                  edge.getTarget().getIdentifier(),
+						                  (float)(double)attrValue);
+				} else { // Assume we have an integer attribute.
+					final Integer attrValue = edgeAttributes.getIntegerAttribute(edgeID, numericAttrName);
+					if (attrValue != null)
+						outputNetwork.add(edge.getSource().getIdentifier(),
+						                  edge.getTarget().getIdentifier(),
+						                  (float)(int)attrValue);
+				}
+			}
+		}
+
+		return outputNetwork;
 	}
 }
