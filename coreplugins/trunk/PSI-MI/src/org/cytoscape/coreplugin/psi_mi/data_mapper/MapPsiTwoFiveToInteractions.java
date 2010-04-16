@@ -471,6 +471,10 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 
 		if (expDesc != null) {
 			CvType detection = expDesc.getInteractionDetectionMethod();
+			// In some files, this field is empty.
+			if(detection == null) 
+				return;
+			
 			NamesType names = detection.getNames();
 			expSystem = names.getShortLabel();
 
