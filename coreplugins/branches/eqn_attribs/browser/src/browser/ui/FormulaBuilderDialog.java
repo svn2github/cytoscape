@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -90,6 +91,7 @@ public class FormulaBuilderDialog extends JDialog {
 	private JTextField formulaTextField = null;
 	private JPanel argumentPanel = null;
 	private JButton addButton = null;
+	private JButton undoButton = null;
 	private JButton doneButton = null;
 	private JComboBox attribNamesComboBox = null;
 	private JTextField constantValuesTextField = null;
@@ -102,6 +104,7 @@ public class FormulaBuilderDialog extends JDialog {
 	private Map<String, Class> attribNamesAndTypes;
 	private ArrayList<Class> leadingArgs;
 	private ApplicationDomain applicationDomain;
+	private Stack<Integer> undoStack;
 	private DataTableModel tableModel;
 	private DataObjectType tableObjectType;
 	private final JTable table;
@@ -124,6 +127,7 @@ public class FormulaBuilderDialog extends JDialog {
 		this.tableModel = tableModel;
 		this.tableObjectType = tableObjectType;
 		this.table = table;
+		this.undoStack = new Stack<Integer>();
 
 		final Container contentPane = getContentPane();
 		final GroupLayout groupLayout = new GroupLayout(contentPane);
@@ -138,7 +142,7 @@ public class FormulaBuilderDialog extends JDialog {
 		initOkButton(contentPane);
 		initCancelButton(contentPane);
 
-		setSize(600, 250);
+		setSize(800, 250);
 
 		initLayout(groupLayout);
 	}
@@ -172,11 +176,7 @@ public class FormulaBuilderDialog extends JDialog {
 		}
 
 		functionComboBox.setEditable(false);
-
-		if (functionComboBox.getItemCount() != 0) {
-			functionComboBox.setSelectedIndex(0);
-			function = stringToFunctionMap.get(functionNames[0]);
-		}
+		functionComboBox.setSelectedIndex(0);
 	}
 
 	/**
@@ -254,6 +254,10 @@ public class FormulaBuilderDialog extends JDialog {
 		addButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					final StringBuilder formula = new StringBuilder(formulaTextField.getText());
+
+					undoStack.push(formula.length());
+					undoButton.setEnabled(true);
+
 					if (!leadingArgs.isEmpty()) // Not the first argument => we need a comma!
 						formula.append(',');
 					final String constExpr = constantValuesTextField.getText();
@@ -293,6 +297,19 @@ public class FormulaBuilderDialog extends JDialog {
 		argumentPanel.add(addButton);
 		addButton.setEnabled(false);
 
+		undoButton = new JButton("Undo");
+		undoButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					final String formula = formulaTextField.getText();
+					final int previousLength = undoStack.pop();
+					formulaTextField.setText(formula.substring(0, previousLength));
+					if (undoStack.empty())
+						undoButton.setEnabled(false);
+				}
+			});
+		argumentPanel.add(undoButton);
+		undoButton.setEnabled(false);
+
 		doneButton = new JButton("Done");
 		doneButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
@@ -300,6 +317,7 @@ public class FormulaBuilderDialog extends JDialog {
 					formulaTextField.setText(currentFormula + ")");
 
 					addButton.setEnabled(false);
+					undoButton.setEnabled(false);
 					doneButton.setEnabled(false);
 					okButton.setEnabled(true);
 				}
@@ -380,6 +398,9 @@ public class FormulaBuilderDialog extends JDialog {
 	 *  arguments) attribute names.
 	 */
 	private void updateAttribNamesComboBox() {
+		if (function == null)
+			return;
+
 		attribNamesComboBox.removeAllItems();
 		final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
 		final ArrayList possibleAttribNames = new ArrayList(20);
