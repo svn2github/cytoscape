@@ -380,13 +380,13 @@ public class CyAttributesImpl implements CyAttributes {
 			if (type == MultiHashMapDefinition.TYPE_STRING)
 				/* Everything is compatible w/ this! */;
 			else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
-				if (returnType != Double.class && returnType != Boolean.class)
+				if (returnType != Long.class && returnType != Double.class && returnType != Boolean.class)
 					throw new IllegalArgumentException("an equation of type " + returnType
 					                                   + " is not compatible with TYPE_INTEGER for attribute \""
 					                                   + attributeName + "\"!");
 			}
 			else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
-				if (returnType != Double.class && returnType != Boolean.class)
+				if (returnType != Double.class && returnType != Long.class && returnType != Boolean.class)
 					throw new IllegalArgumentException("an equation of type " + returnType
 					                                   + " is not compatible with TYPE_FLOATING_POINT for attribute \""
 					                                   + attributeName + "\"!");
