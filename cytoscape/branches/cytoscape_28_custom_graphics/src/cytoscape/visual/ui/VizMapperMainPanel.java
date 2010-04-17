@@ -737,7 +737,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	// For label positions
 	private ObjectPositionCellRenderer labelPositionRenderer = new ObjectPositionCellRenderer();
-	private CyObjectPositionPropertyEditor labelPositionEditor = new CyObjectPositionPropertyEditor();
+	private CyObjectPositionPropertyEditor labelPositionEditor = new CyObjectPositionPropertyEditor(VisualPropertyType.NODE_LABEL_POSITION);
 	
 	// For boolean attributes
 	private CyComboBoxPropertyEditor booleanCellEditor = new CyComboBoxPropertyEditor();

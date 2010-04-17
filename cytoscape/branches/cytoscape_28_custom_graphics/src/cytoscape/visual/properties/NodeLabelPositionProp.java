@@ -80,7 +80,7 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 		final BufferedImage bi = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
 
-		ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) value, size, false);
+		ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) value, size, false, "Label", null, null);
 		lp.paint(g2);
 
 		NodeIcon icon = new NodeIcon() {

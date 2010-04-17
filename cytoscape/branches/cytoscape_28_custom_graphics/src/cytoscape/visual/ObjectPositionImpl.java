@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 *
 */
 public class ObjectPositionImpl implements ObjectPosition {
-
+	
 	private Position objectAnchor;
 	private Position targetAnchor;
 	private Position justify;
@@ -60,6 +60,7 @@ public class ObjectPositionImpl implements ObjectPosition {
 		xOffset = x;
 		yOffset = y;
 	}
+
 
 	/*
 	 * (non-Javadoc)

@@ -41,6 +41,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
@@ -427,9 +428,14 @@ public enum VisualPropertyType {
 		return list;
 	}
 
-	private Object showEditor(EditorDisplayer action)
+	private Object showEditor(final EditorDisplayer action)
 	    throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
 	               SecurityException, NoSuchMethodException {
+		
+		// Special case:
+		if(EditorDisplayer.DISCRETE_OBJECT_POSITION == action) {
+			action.setParameters(new Object[] {Cytoscape.getDesktop(), this.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle()), this});
+		}
 		
 		final Method method = action.getActionClass()
 		                      .getMethod(action.getCommand(), action.getParamTypes());

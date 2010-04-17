@@ -8,7 +8,7 @@ package cytoscape.visual;
  *
  */
 public interface ObjectPosition {
-
+	
 	/**
 	 *  DOCUMENT ME!
 	 *

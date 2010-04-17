@@ -38,8 +38,6 @@ package cytoscape.visual.ui;
 
 import giny.model.GraphObject;
 
-import java.awt.Dialog;
-import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,8 +62,11 @@ public class PopupObjectPositionChooser extends JDialog implements
 		PropertyChangeListener {
 
 	private static final long serialVersionUID = 7146654020668346430L;
-	protected ObjectPosition lp;
-	protected ObjectPosition newlp;
+
+	private ObjectPosition position;
+	private ObjectPosition newPosition;
+	
+	private VisualPropertyType targetType;
 
 	/**
 	 * DOCUMENT ME!
@@ -77,42 +78,32 @@ public class PopupObjectPositionChooser extends JDialog implements
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public static ObjectPosition showDialog(final Window f, final ObjectPosition pos) {
-		final ObjectPosition currentPosition;
-		
-		if(pos == null)
-			currentPosition = (ObjectPosition) Cytoscape
-				.getVisualMappingManager().getVisualStyle()
-				.getNodeAppearanceCalculator().getDefaultAppearance().get(
-						VisualPropertyType.NODE_LABEL_POSITION);
-		else
-			currentPosition = pos;
-
+	public static ObjectPosition showDialog(final Window parent,
+			final ObjectPosition pos, final VisualPropertyType type) {
 		final PopupObjectPositionChooser placer = new PopupObjectPositionChooser(
-				f, true, currentPosition);
-		System.out.println("--------- Got New Position: "
-				+ placer.getObjectPosition());
+				parent, pos, type);
+
 		return placer.getObjectPosition();
 	}
-	
 
-	private PopupObjectPositionChooser(final Window f, boolean modal,
-			ObjectPosition pos) {
+	private PopupObjectPositionChooser(final Window parent,
+			final ObjectPosition pos, VisualPropertyType type) {
 		super();
-		this.setModal(modal);
-		this.setLocationRelativeTo(f);
+		this.targetType = type;
+		this.setModal(true);
+		this.setLocationRelativeTo(parent);
 		init(pos);
 	}
 
 	private void init(ObjectPosition pos) {
 		if (pos == null)
-			lp = new ObjectPositionImpl();
+			position = new ObjectPositionImpl();
 		else
-			lp = pos;
+			position = pos;
 
-		newlp = new ObjectPositionImpl(lp);
+		newPosition = new ObjectPositionImpl(position);
 
-		setTitle("Select Object Placement");
+		setTitle("Select " + targetType.getName());
 
 		JPanel placer = new JPanel();
 		placer.setLayout(new BoxLayout(placer, BoxLayout.Y_AXIS));
@@ -120,9 +111,10 @@ public class PopupObjectPositionChooser extends JDialog implements
 
 		// Set up and connect the gui components.
 		ObjectPlacerGraphic graphic = new ObjectPlacerGraphic(
-				new ObjectPositionImpl(lp));
+				new ObjectPositionImpl(position), null, true, targetType.getName(), null,
+				null);
 		ObjectPlacerControl control = new ObjectPlacerControl(
-				new ObjectPositionImpl(lp));
+				new ObjectPositionImpl(position));
 
 		control.addPropertyChangeListener(graphic);
 		control.addPropertyChangeListener(this);
@@ -137,7 +129,7 @@ public class PopupObjectPositionChooser extends JDialog implements
 		final JButton ok = new JButton("OK");
 		ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				lp = newlp;
+				position = newPosition;
 				dispose();
 			}
 		});
@@ -160,7 +152,7 @@ public class PopupObjectPositionChooser extends JDialog implements
 	}
 
 	private ObjectPosition getObjectPosition() {
-		return lp;
+		return position;
 	}
 
 	/**
@@ -172,12 +164,12 @@ public class PopupObjectPositionChooser extends JDialog implements
 		if (type.equals(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED)
 				&& e.getNewValue() instanceof ObjectPosition) {
 
-			newlp = (ObjectPosition) e.getNewValue();
+			newPosition = (ObjectPosition) e.getNewValue();
 
 			// horrible, horrible hack
 			GraphObject go = BypassHack.getCurrentObject();
 			if (go != null) {
-				String val = ObjectToString.getStringValue(newlp);
+				String val = ObjectToString.getStringValue(newPosition);
 				Cytoscape.getNodeAttributes().setAttribute(
 						go.getIdentifier(),
 						VisualPropertyType.NODE_LABEL_POSITION

@@ -45,6 +45,7 @@ import com.l2fprod.common.swing.PercentLayout;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.ObjectPosition;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.PopupObjectPositionChooser;
 
 /**
@@ -55,11 +56,14 @@ public class CyObjectPositionPropertyEditor extends
 	private ObjectPositionCellRenderer label;
 	private JButton button;
 	private ObjectPosition position;
+	
+	private VisualPropertyType targetType;
 
 	/**
 	 * Creates a new CyLabelPositionLabelEditor object.
 	 */
-	public CyObjectPositionPropertyEditor() {
+	public CyObjectPositionPropertyEditor(final VisualPropertyType targetType) {
+		this.targetType = targetType;
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
 		((JPanel) editor).add("*", label = new ObjectPositionCellRenderer());
 		label.setOpaque(false);
@@ -67,7 +71,7 @@ public class CyObjectPositionPropertyEditor extends
 				.createMiniButton());
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				editLabelPosition();
+				editObjectPosition();
 			}
 		});
 		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory()
@@ -104,9 +108,9 @@ public class CyObjectPositionPropertyEditor extends
 		label.setValue(value);
 	}
 
-	protected void editLabelPosition() {
+	protected void editObjectPosition() {
 		final ObjectPosition newVal = PopupObjectPositionChooser.showDialog(
-				Cytoscape.getDesktop(), position);
+				Cytoscape.getDesktop(), position, targetType);
 
 		if (newVal != null) {
 			final ObjectPosition old = position;

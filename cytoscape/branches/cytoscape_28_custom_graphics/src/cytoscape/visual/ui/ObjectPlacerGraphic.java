@@ -1,6 +1,5 @@
 package cytoscape.visual.ui;
 
-import static cytoscape.visual.Position.JUSTIFY_CENTER;
 import static cytoscape.visual.Position.JUSTIFY_LEFT;
 import static cytoscape.visual.Position.JUSTIFY_RIGHT;
 import static cytoscape.visual.Position.NONE;
@@ -23,6 +22,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
+import cytoscape.Cytoscape;
 import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
 import cytoscape.visual.Position;
@@ -37,7 +37,16 @@ public class ObjectPlacerGraphic extends JPanel implements
 	private ObjectPosition p;
 
 	// dimensions of panel
-	private int default_xy = 500;
+	private static final int DEFAULT_WINDOW_SIZE = 500;
+	
+	// "Snap" distance
+	private static final double GRAVITY_DISTANCE = 10;
+	
+	// Color scheme for GUI
+	private static final Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.1f);
+	private static final Color transparentBlue = new Color(0.0f, 0.0f, 1.0f, 0.1f);
+	private static final Color transparentMagenta = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+	
 	private int xy;
 	private int center;
 	private float offsetRatio;
@@ -84,17 +93,14 @@ public class ObjectPlacerGraphic extends JPanel implements
 	// default text justify rule
 	private Position justify;
 
-	// used to label box and node
-	private Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.1f);
-	private Color transparentBlue = new Color(0.0f, 0.0f, 1.0f, 0.1f);
-	private Color transparentMagenta = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+	
 
 	// used to determine the render level of detail
 	private boolean renderDetail;
 
 	// strings for the graphic
-	private String label = "LABEL";
-	private String node = "NODE";
+	private String objectLabel = "LABEL";
+	private String targetLabel = "NODE";
 	private String click = "CLICK 'N DRAG";
 
 	// font metrics for strings
@@ -105,43 +111,37 @@ public class ObjectPlacerGraphic extends JPanel implements
 	private int lowStrokeWidth = 1;
 	private Stroke detailStroke = new BasicStroke(detailStrokeWidth);
 	private Stroke lowStroke = new BasicStroke(lowStrokeWidth);
+	
+	private final Dimension objectSize;
+	private final Dimension targetSize;
+	
 
-	private double gravityDistance = 10;
-
-	/**
-	 * A gui for placing a label relative to a node. Draws the graphic in full
-	 * detail at a size of 500 pixels.
-	 * 
-	 * @param pos
-	 *            initial label position
-	 */
-	public ObjectPlacerGraphic(final ObjectPosition pos) {
-		this(pos, 500, true);
-	}
 
 	/**
 	 * A gui for placing a label relative to a node.
 	 * 
 	 * @param pos
 	 *            initial label position
-	 * @param size
+	 * @param windowSize
 	 *            number of pixels square the that graphic should be
 	 * @param fullDetail
 	 *            whether or not to render at full detail or not
 	 */
-	public ObjectPlacerGraphic(final ObjectPosition pos, int size,
-			boolean fullDetail) {
+	public ObjectPlacerGraphic(final ObjectPosition pos, final Integer windowSize,
+			boolean fullDetail, final String objectName, final Dimension objectSize, final Dimension targetSize) {
 		super();
-
-		if (pos == null)
-			p = new ObjectPositionImpl(NONE, NONE, JUSTIFY_CENTER, 0.0,
-					0.0);
-		else
-			p = pos;
+		this.objectLabel = objectName;
+		this.objectSize = objectSize;
+		this.targetSize = targetSize;
+		
+		p = pos;
 
 		renderDetail = fullDetail;
 
-		initSize(size);
+		if(windowSize == null)
+			initSize(DEFAULT_WINDOW_SIZE);
+		else
+			initSize(windowSize);
 
 		setPreferredSize(new Dimension(xy, xy));
 		setBackground(Color.white);
@@ -159,7 +159,7 @@ public class ObjectPlacerGraphic extends JPanel implements
 		xy = size;
 		center = xy / 2;
 
-		offsetRatio = (float) xy / (float) default_xy;
+		offsetRatio = (float) xy / DEFAULT_WINDOW_SIZE;
 
 		// dimensions for node box
 		nxy = (int) (0.3 * xy);
@@ -168,7 +168,7 @@ public class ObjectPlacerGraphic extends JPanel implements
 		int[] tnpoints = { center - (nxy / 2), center, center + (nxy / 2) };
 		npoints = tnpoints;
 
-		// dimensions for label box
+		// dimensions for object box
 		lx = (int) (0.4 * xy);
 		ly = (int) (0.1 * xy);
 
@@ -190,7 +190,7 @@ public class ObjectPlacerGraphic extends JPanel implements
 	 * The method that handles the rendering of placement gui.
 	 */
 	public void paint(Graphics gin) {
-		Graphics2D g = (Graphics2D) gin;
+		final Graphics2D g = (Graphics2D) gin;
 
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
@@ -198,7 +198,7 @@ public class ObjectPlacerGraphic extends JPanel implements
 		// calculate the font
 		if (labelLen <= 0) {
 			FontMetrics fm = g.getFontMetrics();
-			labelLen = fm.stringWidth(label);
+			labelLen = fm.stringWidth(objectLabel);
 			clickLen = fm.stringWidth(click);
 			ascent = fm.getMaxAscent();
 		}
@@ -226,11 +226,11 @@ public class ObjectPlacerGraphic extends JPanel implements
 		g.drawLine(x, y + nxy, x, y);
 
 		if (renderDetail) {
-			g.drawString(node, center - (nxy / 12), center - (nxy / 6));
+			g.drawString(targetLabel, center - (nxy / 12), center - (nxy / 6));
 
 			// draw the node box points
 			g.setColor(Color.black);
-			int gd = (int) ((gravityDistance * 2) + (dot / 2));
+			int gd = (int) ((GRAVITY_DISTANCE * 2) + (dot / 2));
 
 			for (int i = 0; i < npoints.length; i++)
 				for (int j = 0; j < npoints.length; j++) {
@@ -265,18 +265,18 @@ public class ObjectPlacerGraphic extends JPanel implements
 			int vspace = (ly - ascent - ascent) / 3;
 
 			if (justify == JUSTIFY_LEFT) {
-				g.drawString(label, xOffset + xPos + detailStrokeWidth, yOffset
+				g.drawString(objectLabel, xOffset + xPos + detailStrokeWidth, yOffset
 						+ yPos + vspace + ascent);
 				g.drawString(click, xOffset + xPos + detailStrokeWidth, yOffset
 						+ yPos + (2 * (vspace + ascent)));
 			} else if (justify == JUSTIFY_RIGHT) {
-				g.drawString(label, xOffset + xPos + (lx - labelLen), yOffset
+				g.drawString(objectLabel, xOffset + xPos + (lx - labelLen), yOffset
 						+ yPos + vspace + ascent);
 				;
 				g.drawString(click, xOffset + xPos + (lx - clickLen), yOffset
 						+ yPos + (2 * (vspace + ascent)));
 			} else { // center
-				g.drawString(label, (xOffset + xPos + ((lx - labelLen) / 2))
+				g.drawString(objectLabel, (xOffset + xPos + ((lx - labelLen) / 2))
 						- detailStrokeWidth, yOffset + yPos + vspace + ascent);
 				g.drawString(click, (xOffset + xPos + ((lx - clickLen) / 2))
 						- detailStrokeWidth, yOffset + yPos
@@ -388,7 +388,7 @@ public class ObjectPlacerGraphic extends JPanel implements
 				xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
 				yPos = npoints[bestNodeY] - lypoints[bestLabelY];
 
-				if (Math.sqrt(offX * offX + offY * offY) > (gravityDistance + (dot / 2))) {
+				if (Math.sqrt(offX * offX + offY * offY) > (GRAVITY_DISTANCE + (dot / 2))) {
 					xOffset = (int) offX;
 					yOffset = (int) offY;
 				} else {

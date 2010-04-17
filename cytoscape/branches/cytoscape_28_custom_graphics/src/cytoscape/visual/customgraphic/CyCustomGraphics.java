@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.util.Collection;
 import java.util.Map;
 
+import cytoscape.visual.ObjectPosition;
+
 public interface CyCustomGraphics <T> {
 	/**
 	 * Display name is a simple description of this image object.
@@ -29,4 +31,6 @@ public interface CyCustomGraphics <T> {
 	public Map<String, CustomGraphicsProperty<?>> getProps();
 	
 	public void update();
+	
+	//public void setPosition(ObjectPosition position);
 }

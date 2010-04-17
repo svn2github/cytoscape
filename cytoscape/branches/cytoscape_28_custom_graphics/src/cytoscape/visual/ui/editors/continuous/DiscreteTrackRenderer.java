@@ -551,22 +551,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		return icons;
 	}
 
-//	private Shape getIcon(Object key) {
-//		final BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_RGB);
-//
-//		final Graphics2D gfx = image.createGraphics();
-//		Map icons = type.getVisualProperty().getIconSet();
-//		JLabel label = new JLabel();
-//		label.setIcon((Icon) icons.get(key));
-//		label.setText("test1");
-//		gfx.setBackground(Color.white);
-//		gfx.setColor(Color.red);
-//		gfx.drawString("Test1", 0, 0);
-//
-//		//		label.paint(gfx);
-//		return ((VisualPropertyIcon) icons.get(key)).getShape();
-//	}
-
 	/*
 	 * Draw icon object based on the given data type.
 	 */
@@ -639,7 +623,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			case NODE_LABEL_POSITION:
 
 				final ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) key,
-				                                                     (int) (size * 1.5), false);
+				                                                     (int) (size * 1.5), false, type.getName(), null, null);
 				lp.paint(g);
 
 				break;
