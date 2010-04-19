@@ -74,6 +74,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.DefaultCellEditor;
 import java.util.Collection;
 import javax.swing.JOptionPane;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 
 public class ActivePathsParameterPanel extends JPanel {
 
@@ -234,18 +236,22 @@ public class ActivePathsParameterPanel extends JPanel {
 		
 		// give user the option to switch sig
 		TableColumn switchSigColumn = attrSelectionPanel.getTable().getColumn("Switch Sig");
-		
-		switchSigColumn.setCellEditor(new CheckBoxCellEditor());
+		//switchSigColumn.setCellEditor(new CheckBoxCellEditor());
+		//switchSigColumn.setCellRenderer(new CheckBoxCellRenderer());
+		switchSigColumn.setCellRenderer(this.attrSelectionPanel.getTable().getDefaultRenderer(Boolean.class));
+		switchSigColumn.setCellEditor(this.attrSelectionPanel.getTable().getDefaultEditor(Boolean.class));
+
+		CheckBoxCellEditorListener checkBoxCellEditorListener = new CheckBoxCellEditorListener();
+		this.attrSelectionPanel.getTable().getDefaultEditor(Boolean.class).addCellEditorListener(checkBoxCellEditorListener);
 		
 		// Let user select normalization method with comboBox
 		TableColumn normColumn = attrSelectionPanel.getTable().getColumn("Normalization");
-		
 		NormalizationCellRenderer normCellRender= new NormalizationCellRenderer();
 		normColumn.setCellRenderer(normCellRender);
-		
 		//TableCellEditor editor = new DefaultCellEditor(normCellRender);
 		normColumn.setCellEditor(new NormalizationComboboxEditor());
 		
+		// Show the panel of attribute parameter only if one or more attributes are selected in the table
 		attrSelectionPanel.getTable().addMouseListener(new ExprAttrsTableMouseListener());
 
 		// Adjust the table size
@@ -256,6 +262,31 @@ public class ActivePathsParameterPanel extends JPanel {
 	}
 
 	
+	private class CheckBoxCellEditorListener implements CellEditorListener {
+		public void editingCanceled(ChangeEvent e) {}
+		
+		public void editingStopped(ChangeEvent e) 
+		{
+			int rowCount = attrSelectionPanel.getTable().getModel().getRowCount();
+			for (int i=0; i< rowCount; i++){
+				boolean switchSig = Boolean.valueOf(attrSelectionPanel.getTable().getModel().getValueAt(i, 3).toString());
+				double min = Double.valueOf(attrSelectionPanel.getTable().getModel().getValueAt(i, 1).toString());
+				double max = Double.valueOf(attrSelectionPanel.getTable().getModel().getValueAt(i, 2).toString());
+				if (switchSig && min<max) 
+				{
+						attrSelectionPanel.getTable().getModel().setValueAt(max, i, 1);
+						attrSelectionPanel.getTable().getModel().setValueAt(min, i, 2);
+				}
+				if (!switchSig && min > max) 
+				{
+						attrSelectionPanel.getTable().getModel().setValueAt(max, i, 1);
+						attrSelectionPanel.getTable().getModel().setValueAt(min, i, 2);
+				}
+			}
+		}
+	}
+	
+	
 	private class ExprAttrsTableMouseListener extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
 			updateOptionsPanel();
@@ -263,15 +294,62 @@ public class ActivePathsParameterPanel extends JPanel {
 	}
 	
 	
-	private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {
+	private class CheckBoxCellRendererX extends JCheckBox implements TableCellRenderer {
+		// This class is not used for now
+		JPanel pnl = new JPanel(new java.awt.GridBagLayout());
+		
+		public CheckBoxCellRendererX(){
+			pnl.add(this);
+		}
+		
+		public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column){
+			
+			if (value == null){
+				this.setSelected(false);
+				System.out.println("\tset to false");
+			}
+			else {
+				this.setSelected(Boolean.getBoolean(value.toString()));
+			}
+						
+			//if (isSelected){
+				this.repaint();
+			//}
+			setEnabled(true);
+			return pnl;//this;
+		}
+	}
 
+	
+	private class CheckBoxCellEditorX extends AbstractCellEditor implements TableCellEditor, ActionListener {
+		// This class is not used for now
+		private int row;
+		private int col;
+		public void actionPerformed(ActionEvent ev){
+			System.out.println("CheckBoxCellEditor action event received..");
+			// switch value for min and max
+		}
+		
+		JPanel pnl = new JPanel(new java.awt.GridBagLayout());
 		// This is the component that will handle the editing of the cell value
 	    JCheckBox component = new JCheckBox();
+	    
+	    public CheckBoxCellEditorX(){
+	    	pnl.add(component);
+	    	component.addActionListener(this);
+	    }
 
 	    // This method is called when a cell value is edited by the user.
 	    public Component getTableCellEditorComponent(JTable table, Object value,
 	            boolean isSelected, int rowIndex, int vColIndex) {
 	    	
+	    	row = rowIndex;
+	    	col = vColIndex;
 	        // 'value' is value contained in the cell located at (rowIndex, vColIndex)
 
 	        if (isSelected) {
@@ -287,8 +365,10 @@ public class ActivePathsParameterPanel extends JPanel {
 	        	component.setSelected(bool);
 	        }
 	        
+	        // update the value in data model
+	        table.getModel().setValueAt(value, rowIndex, vColIndex);
 	        // Return the configured component
-	        return component;
+	        return pnl;//component;
 	    }
 
 	    // This method is called when editing is completed.
@@ -330,39 +410,6 @@ public class ActivePathsParameterPanel extends JPanel {
 	}
 
 	
-	private class CheckBoxCellCellRenderer extends JCheckBox implements TableCellRenderer, ActionListener {
-
-		public void actionPerformed(ActionEvent e){
-		
-			
-		}
-		
-		public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean hasFocus,
-                int row,
-                int column){
-
-			JCheckBox chk = new JCheckBox();
-			
-			boolean boolValue = Boolean.getBoolean(value.toString());
-			chk.setSelected(boolValue);
-			
-			chk.addActionListener(this);
-			
-			
-			if (isSelected){
-				System.out.println("isSelected now: row ="+ row);
-				this.repaint();
-			}
-			setEnabled(true);
-			return this;
-		}
-
-
-	}
-
 	private class NormalizationCellRenderer extends JComboBox implements TableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table,
                 Object value,
@@ -389,7 +436,6 @@ public class ActivePathsParameterPanel extends JPanel {
 			return this;
 		}
 	}
-
 	
 	
 	private Vector<Object[]> getDataVect(){
