@@ -13,10 +13,10 @@ pluginName=CyThesaurus-ID-Mapping
 pluginDescription=Provides utilities for mapping attributes of source ID types to new attributes of destination ID types. <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/CyThesaurus_Plugin">Click for more information</a>.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.10
+pluginVersion=1.11
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
-cytoscapeVersion=2.6
+cytoscapeVersion=2.7
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
 pluginCategory=Network and Attribute I/O
