@@ -216,8 +216,6 @@ public class ActivePathsParameterPanel extends JPanel {
 		final JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
 		
-		topPanel.setBorder(BorderFactory.createTitledBorder("Top Panel"));
-		
 		// target network selector
 		networkPanel = new NetworkSelectorPanel();
 		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
@@ -230,22 +228,28 @@ public class ActivePathsParameterPanel extends JPanel {
 		AttrSelectionTableModel tableModel = new AttrSelectionTableModel(getDataVect());
 		attrSelectionPanel.getTable().setModel(tableModel);
 		
+		// Add a exclamation point if attribute is not p-value 
 		TableColumn nameColumn = attrSelectionPanel.getTable().getColumn("Name");
 		nameColumn.setCellRenderer(new NameColumnCellRenderer());
 		
-		TableColumn normColumn = attrSelectionPanel.getTable().getColumn("Normalization");
+		// give user the option to switch sig
+		TableColumn switchSigColumn = attrSelectionPanel.getTable().getColumn("Switch Sig");
 		
+		switchSigColumn.setCellEditor(new CheckBoxCellEditor());
+		
+		// Let user select normalization method with comboBox
+		TableColumn normColumn = attrSelectionPanel.getTable().getColumn("Normalization");
 		
 		NormalizationCellRenderer normCellRender= new NormalizationCellRenderer();
 		normColumn.setCellRenderer(normCellRender);
 		
-		TableCellEditor editor = new DefaultCellEditor(normCellRender);
-		normColumn.setCellEditor(editor);
+		//TableCellEditor editor = new DefaultCellEditor(normCellRender);
+		normColumn.setCellEditor(new NormalizationComboboxEditor());
 		
 		attrSelectionPanel.getTable().addMouseListener(new ExprAttrsTableMouseListener());
 
+		// Adjust the table size
 		Dimension tableSize = attrSelectionPanel.getTable().getPreferredSize();
-		
 		attrSelectionPanel.setPreferredSize(new Dimension(attrSelectionPanel.getWidth(), (tableSize.height + 50)));
 		
 		return topPanel;
@@ -258,48 +262,107 @@ public class ActivePathsParameterPanel extends JPanel {
 		}
 	}
 	
-	private class NormalizationComboboxEditor extends DefaultCellEditor {
-		//NormalizationCellRenderer renderer = new NormalizationCellRenderer();
+	
+	private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {
 
-		JComboBox cmb;
-		public NormalizationComboboxEditor(JComboBox cmb) {
-			super(cmb);
-			this.cmb = cmb;
-			
-			System.out.println("Editor fcsdfd ");
-			
-			cmb.addMouseListener(new MouseAdapter() {
-				public void mousePressed(MouseEvent e) {
+		// This is the component that will handle the editing of the cell value
+	    JCheckBox component = new JCheckBox();
 
-					System.out.println("mouse event sadfsdfsd");
-				}
-			});
-		}
-		
-		public Component getTableCellEditorComponent(
-									JTable table, Object value,
-									boolean isSelected,
-									int row, int column) {
-			
-			System.out.println("value = " + value);
-			cmb.setSelectedItem(value);
-			return cmb;
-		}
-		
-		
-		public boolean stopCellEditing() {
+	    // This method is called when a cell value is edited by the user.
+	    public Component getTableCellEditorComponent(JTable table, Object value,
+	            boolean isSelected, int rowIndex, int vColIndex) {
+	    	
+	        // 'value' is value contained in the cell located at (rowIndex, vColIndex)
 
-			//this.setCellEditorValue(new Integer(slider.getValue()));
+	        if (isSelected) {
+	            // cell (and perhaps other cells) are selected
+	        }
 
-			return super.stopCellEditing();
-		}
-		
-		public Object getCellEditorValue(){
-			return cmb.getSelectedItem();
-		}
+	        // Configure the component with the specified value
+	        if (value == null){
+	        	component.setSelected(false);
+	        }
+	        else {
+	        	boolean bool = Boolean.getBoolean(value.toString());
+	        	component.setSelected(bool);
+	        }
+	        
+	        // Return the configured component
+	        return component;
+	    }
+
+	    // This method is called when editing is completed.
+	    // It must return the new value to be stored in the cell.
+	    public Object getCellEditorValue() {
+	        return component.isSelected();
+	    }
+    
 	}
 
 	
+	
+	private class NormalizationComboboxEditor extends AbstractCellEditor implements TableCellEditor {
+
+		// This is the component that will handle the editing of the cell value
+	    JComboBox component = new JComboBox(new String[] { "None", "Quantile"});
+
+	    // This method is called when a cell value is edited by the user.
+	    public Component getTableCellEditorComponent(JTable table, Object value,
+	            boolean isSelected, int rowIndex, int vColIndex) {
+	        // 'value' is value contained in the cell located at (rowIndex, vColIndex)
+
+	        if (isSelected) {
+	            // cell (and perhaps other cells) are selected
+	        }
+
+	        // Configure the component with the specified value
+	        component.setSelectedItem((String)value);
+	        
+	        // Return the configured component
+	        return component;
+	    }
+
+	    // This method is called when editing is completed.
+	    // It must return the new value to be stored in the cell.
+	    public Object getCellEditorValue() {
+	        return component.getSelectedItem();//((JTextField)component).getText();
+	    }    
+	}
+
+	
+	private class CheckBoxCellCellRenderer extends JCheckBox implements TableCellRenderer, ActionListener {
+
+		public void actionPerformed(ActionEvent e){
+		
+			
+		}
+		
+		public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column){
+
+			JCheckBox chk = new JCheckBox();
+			
+			boolean boolValue = Boolean.getBoolean(value.toString());
+			chk.setSelected(boolValue);
+			
+			chk.addActionListener(this);
+			
+			
+			if (isSelected){
+				System.out.println("isSelected now: row ="+ row);
+				this.repaint();
+			}
+			setEnabled(true);
+			return this;
+		}
+
+
+	}
+
 	private class NormalizationCellRenderer extends JComboBox implements TableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table,
                 Object value,
@@ -320,7 +383,6 @@ public class ActivePathsParameterPanel extends JPanel {
 			}
 			
 			if (isSelected){
-				System.out.println("isSelected now: row ="+ row);
 				this.repaint();
 			}
 			setEnabled(true);
@@ -331,10 +393,6 @@ public class ActivePathsParameterPanel extends JPanel {
 	
 	
 	private Vector<Object[]> getDataVect(){
-		
-		//final List<String> selectedNames = apfParams.getExpressionAttributes();
-		//final List<String> allNames = new ArrayList<String>(apfParams.getPossibleExpressionAttributes());
-
 		
 		Vector<Object[]> dataVect = new Vector<Object[]>();
 		
