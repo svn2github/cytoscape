@@ -102,9 +102,9 @@ class TextIndexImpl extends GenericIndexImpl implements TextIndex {
 	 * @param o   Any Java Object.
 	 */
 	public void addToIndex(Object key, Object o) {
+			
 		// convert all keys to lowercase
-		String keyString = (String) key;
-		keyString = keyString.toLowerCase();
+		String keyString = key.toString().toLowerCase();
 
 		// truncate key, if necessary
 		if (keyString.length() > maxKeyLength) {

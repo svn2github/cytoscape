@@ -50,7 +50,6 @@ import csplugins.widgets.slider.JRangeSliderExtended;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyToolBar;//cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
-//import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -58,8 +57,6 @@ import org.cytoscape.model.CyNode;
 //import org.cytoscape.view.GraphView;
 //import org.cytoscape.view.NodeView;
 import org.cytoscape.view.model.View;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 import prefuse.data.query.NumberRangeModel;
 
 import javax.swing.*;

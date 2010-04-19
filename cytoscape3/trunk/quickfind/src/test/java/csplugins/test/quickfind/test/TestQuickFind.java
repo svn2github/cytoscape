@@ -128,12 +128,15 @@ public class TestQuickFind extends TestCase {
 
 		//  Verify Embedded Nodes
 		hits = textIndex.getHits("rain", Integer.MAX_VALUE);
+		assertEquals(2, hits.length);
+		for ( Object o : hits[0].getAssociatedObjects() )
+			System.out.println("object: " + o);
 		assertEquals(1, hits[0].getAssociatedObjects().length);
 		assertEquals(node0, hits[0].getAssociatedObjects()[0]);
 
 		//  Verify TaskMonitor data
 		assertEquals("Indexing node attributes", monitor.getStatus());
-		assertEquals(100, monitor.getPercentComplete());
+		assertEquals(1.0, monitor.getPercentComplete());
 
 		//  Now, try reindexing by Node:LOCATION
 		textIndex = (TextIndex) quickFind.reindexNetwork(cyNetwork, QuickFind.INDEX_NODES,
@@ -187,14 +190,8 @@ public class TestQuickFind extends TestCase {
 		nodeAttributes.setAttribute(node3.getIdentifier(), LOCATION, NUCLEUS);*/
 	    node0.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node0.attrs().set(LOCATION, CYTOPLASM);
-		
-		node1.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node1.attrs().set(LOCATION, CYTOPLASM);
-		
-		node2.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node2.attrs().set(LOCATION, NUCLEUS);
-		
-		node3.attrs().getDataTable().createColumn(LOCATION, String.class, false);
 		node3.attrs().set(LOCATION, NUCLEUS);
 		
 
@@ -205,14 +202,8 @@ public class TestQuickFind extends TestCase {
 		nodeAttributes.setAttribute(node3.getIdentifier(), RANK, 2);*/
 		node0.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node0.attrs().set(RANK, 4);
-		
-		node1.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node1.attrs().set(RANK, 3);
-		
-		node2.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node2.attrs().set(RANK, 1);
-		
-		node3.attrs().getDataTable().createColumn(RANK, Integer.class, false);
 		node3.attrs().set(RANK, 2);
 
 		//  Create Sample Double Attributes
@@ -222,14 +213,8 @@ public class TestQuickFind extends TestCase {
 		nodeAttributes.setAttribute(node3.getIdentifier(), SCORE, 2.1);*/
 		node0.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node0.attrs().set(SCORE, 45.2);
-		
-		node1.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node1.attrs().set(SCORE, 3.211);
-		
-		node2.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node2.attrs().set(SCORE, 22.2);
-		
-		node3.attrs().getDataTable().createColumn(SCORE, Double.class, false);
 		node3.attrs().set(SCORE, 2.1);
 	}
 
@@ -242,10 +227,10 @@ public class TestQuickFind extends TestCase {
 	    edge0.attrs().getDataTable().createColumn(PMID, String.class, false);
 		edge0.attrs().set(PMID, "12345");
 		
-		edge1.attrs().getDataTable().createColumn(PMID, String.class, false);
+//		edge1.attrs().getDataTable().createColumn(PMID, String.class, false);
 		edge1.attrs().set(PMID, "12345");
 		
-		edge2.attrs().getDataTable().createColumn(PMID, String.class, false);
+//		edge2.attrs().getDataTable().createColumn(PMID, String.class, false);
 		edge2.attrs().set(PMID, "12666");
 	}
 

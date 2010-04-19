@@ -2,5 +2,4 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Bundle-Activator: csplugins.quickfind.plugin.QuickFindPlugIn
 Export-Package: csplugins.quickfind.*,csplugins.widgets.*,prefuse.*

@@ -325,7 +325,7 @@
 		<module>phoebe.dnd</module>
 		<module>wrappers</module>
 		<module>application</module>
-		<!--   <module>quickfind</module> -->
+		<module>quickfind</module>
 		<!--<module>table.import</module>--> 
 		<!--
 			<module>webservice</module> <module>vizmap-gui</module>

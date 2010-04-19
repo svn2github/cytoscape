@@ -49,6 +49,7 @@ import org.cytoscape.model.CyDataTable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -228,11 +229,11 @@ class QuickFindImpl implements QuickFind {
 			
 			//String[] attributeNames = attributes.getAttributeNames();
 
-			Set<String> keys = attributes.getColumnTypeMap().keySet();
-			for (String key: keys) { // int i = 0; i < keys.size(); i++) {
+			Map<String,Class<?>> typeMap = attributes.getColumnTypeMap();
+			for (String key: typeMap.keySet()) { // int i = 0; i < keys.size(); i++) {
 				//if (attributes.getUserVisible(attributeNames[i])) {
 					
-				indexNetwork(cyNetwork, indexType, attributes, String.class,
+				indexNetwork(cyNetwork, indexType, attributes, typeMap.get(key),
 						key, index, taskMonitor);
 				//}
 			}
@@ -241,10 +242,12 @@ class QuickFindImpl implements QuickFind {
 			//  Create appropriate index type, based on attribute type.
 			//int attributeType = attributes.getType(controllingAttribute);
 			Class<?> attributeType = attributes.getColumnTypeMap().get(controllingAttribute);
+			if ( attributeType != null ) {
 			
-			index = createIndex(indexType, attributeType, controllingAttribute);
-			indexNetwork(cyNetwork, indexType, attributes, attributeType, controllingAttribute,
-			             index, taskMonitor);
+				index = createIndex(indexType, attributeType, controllingAttribute);
+				indexNetwork(cyNetwork, indexType, attributes, attributeType, controllingAttribute,
+				             index, taskMonitor);
+			}
 		}
 
 		networkMap.put(cyNetwork, index);
@@ -257,7 +260,9 @@ class QuickFindImpl implements QuickFind {
 
         Date stop = new Date();
         long duration = stop.getTime() - start.getTime();
-        // System.out.println("Time to re-index:  " + duration + " ms");
+		if (OUTPUT_PERFORMANCE_STATS) {
+        	System.out.println("Time to re-index:  " + duration + " ms");
+		}
         return index;
 	}
 
@@ -351,7 +356,9 @@ class QuickFindImpl implements QuickFind {
 			currentProgress++;
 
 			GraphObject graphObject = (GraphObject)iterator.next();
-			addToIndex(attributeType, attributes, graphObject, controllingAttribute, index);
+			final Object value = graphObject.attrs().getRaw(controllingAttribute);
+			if (value != null) 
+				index.addToIndex(value, graphObject);
 
 			//  Determine percent complete
 			//int percentComplete = 100 * (int) (currentProgress / (double) maxProgress);
@@ -389,49 +396,5 @@ class QuickFindImpl implements QuickFind {
 		index.setControllingAttribute(controllingAttribute);
 
 		return index;
-	}
-
-	/**
-	 * Adds new items to index.
-	 * @param attributeType         CyAttributes type.
-	 * @param graphObject           Graph Object.
-	 * @param controllingAttribute  Controlling attribute.
-	 * @param index                 Index to add to.
-	 */
-	private void addToIndex(Class<?> attributeType, CyDataTable attributes, GraphObject graphObject,
-	                        String controllingAttribute, GenericIndex index) {
-		//  Get attribute values, and index
-		if (attributeType == Integer.class || attributeType == int.class) {
-			Integer value = graphObject.attrs().get(controllingAttribute,Integer.class);
-
-			if (value != null) {
-				index.addToIndex(value, graphObject);
-			}
-		} else if (attributeType == Double.class || attributeType == double.class ) {
-			Double value = graphObject.attrs().get(controllingAttribute, Double.class);
-
-			if (value != null) {
-				index.addToIndex(value, graphObject);
-			}
-		} else {
-			List<String> values = graphObject.attrs().getDataTable().getColumnValues(controllingAttribute,String.class);
-
-			if (values != null) {
-				addStringsToIndex(values, graphObject, index);
-			}
-		}
-	}
-
-	/**
-	 * Adds multiple strings to an index.
-	 * @param value         Array of Strings.
-	 * @param graphObject   Graph Object.
-	 * @param index         Index to add to.
-	 */
-	private void addStringsToIndex(List<String> value, GraphObject graphObject, GenericIndex index) {
-		//  Add to index
-		for (String v : value) {		
-			index.addToIndex(v, graphObject);
-		}
 	}
 }
