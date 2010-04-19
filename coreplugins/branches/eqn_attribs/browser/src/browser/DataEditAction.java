@@ -55,7 +55,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	private final DataTableModel tableModel;
 
 	private boolean valid = false;
-	private ValueAndEquation valAndEqn = null;
+	private ValidatedObjectAndEditString objectAndEditString = null;
 
 	/**
 	 * Creates a new DataEditAction object.
@@ -108,7 +108,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 		return "Undo: " + attrKey + ":" + attrName + " back to:" + old_value + " from " + new_value;
 	}
 
-	public ValueAndEquation getValueAndEquation() { return valAndEqn; }
+	public ValidatedObjectAndEditString getValidatedObjectAndEditString() { return objectAndEditString; }
 
 	/**
 	 * Set attribute value.  Input validater is added.
@@ -132,15 +132,20 @@ public class DataEditAction extends AbstractUndoableEdit {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
 				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null)
+				if (equation == null) {
+					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
+					attrs.deleteAttribute(id, attrName);
 					return;
+				}
 				if (equation.getType() == String.class) {
 					showErrorWindow("Error in attribute \"" + attrName
 					                + "\": equation is of type String but should be of type Integer!");
+					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+					attrs.deleteAttribute(id, attrName);
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
-				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), newValueStr);
 				valid = true;
 				return;
 			}
@@ -149,28 +154,33 @@ public class DataEditAction extends AbstractUndoableEdit {
 			try {
 				newIntVal = Integer.valueOf(newValueStr);
 				attrs.setAttribute(id, attrName, newIntVal);
-				valAndEqn = new ValueAndEquation(newIntVal);
+				objectAndEditString = new ValidatedObjectAndEditString(newIntVal);
 				valid = true;
-			} catch (Exception nfe) {
-				errMessage = "Attribute " + attrName
-				             + " should be an integer (or the number is too big/small).";
-				showErrorWindow(errMessage);
-
+			} catch (final Exception e) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+				attrs.deleteAttribute(id, attrName);
+				showErrorWindow("Attribute " + attrName
+				                + " should be an Integer (or the number is too big/small).");
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_FLOATING) {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
 				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null)
+				if (equation == null) {
+					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
+					attrs.deleteAttribute(id, attrName);
 					return;
+				}
 				if (equation.getType() == String.class) {
 					showErrorWindow("Error in attribute \"" + attrName
 					                + "\": equation is of type String but should be of type Floating Point!");
+					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+					attrs.deleteAttribute(id, attrName);
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
-				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
 				valid = true;
 				return;
 			}
@@ -179,12 +189,13 @@ public class DataEditAction extends AbstractUndoableEdit {
 			try {
 				newDblVal = Double.valueOf(newValueStr);
 				attrs.setAttribute(id, attrName, newDblVal);
-				valAndEqn = new ValueAndEquation(newDblVal);
+				objectAndEditString = new ValidatedObjectAndEditString(newDblVal);
 				valid = true;
-			} catch (Exception e) {
-				errMessage = "Attribute " + attrName
-				             + " should be a floating point number (or the number is too big/small).";
-				showErrorWindow(errMessage);
+			} catch (final Exception e) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+				attrs.deleteAttribute(id, attrName);
+				showErrorWindow("Attribute " + attrName
+				                + " should be a floating point number (or the number is too big/small).");
 
 				return;
 			}
@@ -192,15 +203,20 @@ public class DataEditAction extends AbstractUndoableEdit {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
 				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null)
+				if (equation == null) {
+					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
+					attrs.deleteAttribute(id, attrName);
 					return;
+				}
 				if (equation.getType() == String.class) {
+					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+					attrs.deleteAttribute(id, attrName);
 					showErrorWindow("Error in attribute \"" + attrName
 					                + "\": equation is of type String but should be of type Boolean!");
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
-				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
 				valid = true;
 				return;
 			}
@@ -209,33 +225,39 @@ public class DataEditAction extends AbstractUndoableEdit {
 			try {
 				newBoolVal = Boolean.valueOf(newValueStr);
 				attrs.setAttribute(id, attrName, newBoolVal);
-				valAndEqn = new ValueAndEquation(newBoolVal);
+				objectAndEditString = new ValidatedObjectAndEditString(newBoolVal);
 				valid = true;
-			} catch (Exception e) {
-				errMessage = "Attribute " + attrName + " should be a boolean value (true/false).";
-				showErrorWindow(errMessage);
-
+			} catch (final Exception e) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+				attrs.deleteAttribute(id, attrName);
+				showErrorWindow("Attribute " + attrName + " should be a boolean value (true/false).");
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
+			final String newStrVal = replaceNewlines(newValueStr);
+
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null)
+				final Equation equation = parseEquation(newStrVal, attrs, id, attrName);
+				if (equation == null) {
+					objectAndEditString = new ValidatedObjectAndEditString(null, newStrVal, "#PARSE");
+					attrs.deleteAttribute(id, attrName);
 					return;
+				}
  				attrs.setAttribute(id, attrName, equation);
-				valAndEqn = new ValueAndEquation(attrs.getAttribute(id, attrName), equation.toString());
+				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
 				valid = true;
 				return;
 			}
 
-			final String newStrVal = replaceNewlines(newValueStr);
 			attrs.setAttribute(id, attrName, newStrVal);
-			valAndEqn = new ValueAndEquation(newStrVal);
+			objectAndEditString = new ValidatedObjectAndEditString(newStrVal);
 			valid = true;
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+				attrs.deleteAttribute(id, attrName);
 				showErrorWindow("Error in attribute \"" + attrName
 						+ "\": no equations are supported for lists!");
 				return;
@@ -257,17 +279,21 @@ public class DataEditAction extends AbstractUndoableEdit {
 				throw new ClassCastException("can't determined List type!");
 
 			if (newList == null) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+				attrs.deleteAttribute(id, attrName);
 				showErrorWindow("Invalid list!");
 				return;
 			}
 			else {
 				attrs.setListAttribute(id, attrName, newList);
-				valAndEqn = new ValueAndEquation(escapedString);
+				objectAndEditString = new ValidatedObjectAndEditString(escapedString);
 				valid = true;
 			}
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_MAP) {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+				attrs.deleteAttribute(id, attrName);
 				showErrorWindow("Error in attribute \"" + attrName
 						+ "\": no equations are supported for maps!");
 				return;
@@ -420,7 +446,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	}
 
 	// Pop-up window for error message
-	private static void showErrorWindow(String errMessage) {
+	private static void showErrorWindow(final String errMessage) {
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Invalid Value!",
 		                              JOptionPane.ERROR_MESSAGE);
 	}
@@ -457,12 +483,15 @@ public class DataEditAction extends AbstractUndoableEdit {
 	/**
 	 *  @returns the successfully compiled equation or null if an error occurred
 	 */
-	private Equation parseEquation(final String equation, final CyAttributes attrs, final String id, final String currentAttrName) {
+	private Equation parseEquation(final String equation, final CyAttributes attrs, final String id,
+	                               final String currentAttrName)
+	{
 		final Map<String, Class> attribNameToTypeMap = AttrUtil.getAttrNamesAndTypes(attrs);
 
 		final AttribEqnCompiler compiler = new AttribEqnCompiler();
 		if (!compiler.compile(equation, attribNameToTypeMap)) {
-			showErrorWindow("Error in equation for attribute\"" + currentAttrName + "\": " + compiler.getLastErrorMsg());
+			showErrorWindow("Error in equation for attribute\"" + currentAttrName + "\": "
+			                + compiler.getLastErrorMsg());
 			return null;
 		}
 

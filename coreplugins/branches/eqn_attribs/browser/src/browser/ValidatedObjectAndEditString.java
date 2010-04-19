@@ -28,21 +28,41 @@
 package browser;
 
 
-public class ValueAndEquation {
-	private final Object value;
-	private final String equation;
+public class ValidatedObjectAndEditString {
+	private final Object validatedObject;
+	private final String editString;
+	private String errorText;
 
-	public ValueAndEquation(final Object value, final String equation) {
-		this.value = value;
-		this.equation = equation;
+	public ValidatedObjectAndEditString(final Object validatedObject, final String editString,
+	                                    final String errorText)
+	{
+		this.validatedObject = validatedObject;
+		this.editString = editString;
+		this.errorText = errorText;
 	}
 
-	public ValueAndEquation(final Object value) {
-		this(value, null);
+	public ValidatedObjectAndEditString(final Object validatedObject, final String editString) {
+		this(validatedObject, editString, null);
 	}
 
-	public Object getValue() { return value; }
-	public String getEquation() { return equation; }
+	public ValidatedObjectAndEditString(final Object validatedObject) {
+		this(validatedObject, null);
+	}
 
-	@Override public String toString() { return "ValueAndEquation: value=" + value + ", equation=" + equation; }
+	public Object getValidatedObject() { return validatedObject; }
+	public String getEditString() {
+		if (editString != null)
+			return editString;
+		if (validatedObject != null)
+			return validatedObject.toString();
+		return "";
+	}
+
+	public void setErrorText(final String newErrorText) { errorText = newErrorText; }
+	public String getErrorText() { return errorText; }
+
+	@Override public String toString() {
+		return "ValidatedObjectAndEditString: validatedObject=" + validatedObject
+		       + ", editString=" + editString;
+	}
 }

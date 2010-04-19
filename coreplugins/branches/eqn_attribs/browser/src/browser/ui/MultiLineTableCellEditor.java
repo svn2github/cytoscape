@@ -48,12 +48,9 @@ import javax.swing.table.TableColumn;
 
 import java.util.EventObject;
 
-import browser.ValueAndEquation;
+import browser.ValidatedObjectAndEditString;
 
 
-/**
- *
- */
 public class MultiLineTableCellEditor extends AbstractCellEditor implements TableCellEditor,
                                                                             ActionListener
 {
@@ -130,23 +127,26 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-	                                             int row, int column)
+	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+	                                             final int row, final int column)
 	{
 		textArea.setTable(table);
 
-		final ValueAndEquation valAndEq = (ValueAndEquation)value;
+		final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)value;
 		final String text;
-		if (valAndEq == null)
+		if (objectAndEditString == null)
 			text = "";
 		else {
-			final String equation = valAndEq.getEquation();
-			if (isSelected && equation != null)
-				text = equation;
+			final String editString = objectAndEditString.getEditString();
+			text = (editString != null) ? editString : "";
+			/*
+			if (isSelected && editString != null)
+				text = editString;
 			else if (valAndEq.getValue() != null)
 				text = valAndEq.getValue().toString();
 			else
 				text = "";
+			*/
 		}
 		textArea.setText(text);
 

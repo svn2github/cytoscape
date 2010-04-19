@@ -84,7 +84,7 @@ import browser.AttributeBrowserPlugin;
 import browser.DataObjectType;
 import browser.DataTableModel;
 import browser.SortTableModel;
-import browser.ValueAndEquation;
+import browser.ValidatedObjectAndEditString;
 import browser.util.HyperLinkOut;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -350,7 +350,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
 
 		for (int idx = 0; idx < selectedRowLength; idx++) {
-			selectedName = (String)((ValueAndEquation)getValueAt(rowsSelected[idx], idLocation)).getValue();
+			selectedName = (String)((ValidatedObjectAndEditString)getValueAt(rowsSelected[idx], idLocation)).getValidatedObject();
 
 			if (objectType == NODES) {
 				// Change node color
@@ -390,19 +390,18 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final int rowCount = dataModel.getRowCount();
 
 		Node selectedNode;
-		ValueAndEquation val;
 		NodeView nv;
 		EdgeView ev;
 		Edge selectedEdge;
 
 		for (int idx = 0; idx < rowCount; idx++) {
-			val = (ValueAndEquation)dataModel.getValueAt(idx, idLocation);
-
-			if (val == null)
+			final ValidatedObjectAndEditString val = (ValidatedObjectAndEditString)dataModel.getValueAt(idx, idLocation);
+			final String objectName = val == null ? null : (String)val.getValidatedObject();
+			if (objectName == null)
 				continue;
 
 			if (objectType == NODES) {
-				selectedNode = Cytoscape.getCyNode(val.getValue().toString());
+				selectedNode = Cytoscape.getCyNode(objectName);
 
 				// Set to the original color
 				if (selectedNode != null) {
@@ -411,7 +410,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						nv.setSelectedPaint(selectedNodeColor);
 				}
 			} else if (objectType == EDGES) {
-				selectedEdge = this.getEdge(val.getValue().toString());
+				selectedEdge = this.getEdge(objectName);
 				if (selectedEdge != null) {
 					ev = view.getEdgeView(selectedEdge);
 					if (ev != null)
@@ -675,14 +674,14 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					if (column >= tableModel.getColumnCount() || row >= tableModel.getRowCount())
 						return;
 
-					final ValueAndEquation value = (ValueAndEquation)getValueAt(row, column);
+					final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(row, column);
 					getSelected();
 
 					// If action is right click, then show edit pop-up menu
 					if ((SwingUtilities.isRightMouseButton(e)) || (isMacPlatform() && e.isControlDown())){
-						if (value != null) {
+						if (objectAndEditString != null) {
 							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
-							rightClickPopupMenu.add(new HyperLinkOut(value.getValue().toString(), linkoutProps));
+							rightClickPopupMenu.add(new HyperLinkOut(objectAndEditString.getValidatedObject().toString(), linkoutProps));
 							rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 						}
 					} else if (SwingUtilities.isLeftMouseButton(e) && (getSelectedRows().length != 0)) {
@@ -693,11 +692,13 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						    || (column < 0))
 							return;
 
-						if (value != null && value.getValue() != null && value.getValue().getClass() == String.class) {
+						if (objectAndEditString != null && objectAndEditString.getValidatedObject() != null
+						    && objectAndEditString.getValidatedObject().getClass() == String.class)
+						{
 							URL url = null;
 							try {
-								url = new URL((String)value.getValue());
-							} catch (MalformedURLException e1) {
+								url = new URL((String)objectAndEditString.getValidatedObject());
+							} catch (final MalformedURLException e1) {
 								// If invalid, just ignore.
 							}
 
@@ -872,17 +873,15 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				}
 			}
 
-			String idField = (String) ((ValueAndEquation)this.getValueAt(row, idCol)).getValue();
-
-			List contents = (List) model.getAttributeValueAndEquation(CyAttributes.TYPE_SIMPLE_LIST, idField,
-										  this.getColumnName(column)).getValue();
+			final String idField = (String) ((ValidatedObjectAndEditString)this.getValueAt(row, idCol)).getValidatedObject();
+			List contents = (List) model.getValidatedObjectAndEditString(CyAttributes.TYPE_SIMPLE_LIST, idField,
+										     this.getColumnName(column)).getValidatedObject();
 			cellMenu = new JPopupMenu();
 
 			Object[] listItems = contents.toArray();
 
-			if (listItems.length != 0) {
+			if (listItems.length != 0)
 				getCellContentView(CyAttributes.TYPE_SIMPLE_LIST, listItems, idField, e);
-			}
 		} else if ((value != null) && (value instanceof Map)
 		           && model.getValueAt(row, 0).equals(AttributeBrowser.NETWORK_METADATA)) {
 			NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape.getDesktop(), false,
@@ -902,9 +901,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 			String idField = (String) this.getValueAt(row, idCol);
 
-			Map<String, Object> contents = (Map) model.getAttributeValueAndEquation(CyAttributes.TYPE_SIMPLE_MAP,
-			                                                                        idField,
-			                                                                        this.getColumnName(column)).getValue();
+			Map<String, Object> contents = (Map) model.getValidatedObjectAndEditString(CyAttributes.TYPE_SIMPLE_MAP,
+												   idField,
+												   this.getColumnName(column)).getValidatedObject();
 
 			if ((contents != null) && (contents.size() != 0)) {
 				Object[] listItems = new Object[contents.size()];

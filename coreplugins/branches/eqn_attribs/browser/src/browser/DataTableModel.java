@@ -267,13 +267,13 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		Object[][] data_vector = new Object[att_length][2];
 		Object[] column_names = new Object[2];
 
-		column_names[0] = new ValueAndEquation("Network Attribute Name");
-		column_names[1] = new ValueAndEquation("Value");
+		column_names[0] = new ValidatedObjectAndEditString("Network Attribute Name");
+		column_names[1] = new ValidatedObjectAndEditString("Value");
 
 		for (int i = 0; i < att_length; i++) {
 			final String attributeName = (String) attributeNames.get(i);
-			data_vector[i][0] = new ValueAndEquation(attributeName);
-			data_vector[i][1] = getAttributeValueAndEquation(data.getType(attributeName),
+			data_vector[i][0] = new ValidatedObjectAndEditString(attributeName);
+			data_vector[i][1] = getValidatedObjectAndEditString(data.getType(attributeName),
 									 Cytoscape.getCurrentNetwork().getIdentifier(),
 									 attributeName);
 		}
@@ -298,7 +298,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			CyNetwork network = (CyNetwork) it.next();
 			String id = network.getIdentifier();
 
-			data_vector[k][0] = new ValueAndEquation(id);
+			data_vector[k][0] = new ValidatedObjectAndEditString(id);
 			k++;
 		}
 
@@ -316,7 +316,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 			while (it.hasNext()) {
 				CyNetwork network = (CyNetwork) it.next();
-				Object value = getAttributeValueAndEquation(type, network.getIdentifier(), attributeName);
+				Object value = getValidatedObjectAndEditString(type, network.getIdentifier(), attributeName);
 
 				data_vector[j][i] = value;
 				j++;
@@ -364,7 +364,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = AttributeBrowser.ID;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = new ValueAndEquation(graphObjects.get(j).getIdentifier());
+				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
 
 			setDataVector(data_vector, column_names);
 			//			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -381,7 +381,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = AttributeBrowser.ID;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = new ValueAndEquation(graphObjects.get(j).getIdentifier());
+				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
 
 			for (int i1 = 0; i1 < att_length; ++i1) {
 				column_names[i1 + 1] = attributeNames.get(i1);
@@ -389,9 +389,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				type = data.getType(attributeName);
 
 				for (int j = 0; j < go_length; ++j) {
-					data_vector[j][i1 + 1] = getAttributeValueAndEquation(type,
-					                                                      graphObjects.get(j).getIdentifier(),
-					                                                      attributeName);
+					data_vector[j][i1 + 1] = getValidatedObjectAndEditString(type,
+					                                                         graphObjects.get(j).getIdentifier(),
+					                                                         attributeName);
 				}
 			}
 		} else {
@@ -404,12 +404,12 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				type = data.getType(attributeName);
 
 				for (int j = 0; j < go_length; ++j) {
-					if (attributeName.equals(AttributeBrowser.ID)) {
-						data_vector[j][i1] = new ValueAndEquation(graphObjects.get(j).getIdentifier());
-					} else
-						data_vector[j][i1] = getAttributeValueAndEquation(type,
-						                                                  graphObjects.get(j).getIdentifier(),
-						                                                  attributeName);
+					if (attributeName.equals(AttributeBrowser.ID))
+						data_vector[j][i1] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
+					else
+						data_vector[j][i1] =
+							getValidatedObjectAndEditString(type, graphObjects.get(j).getIdentifier(),
+						                                        attributeName);
 				}
 			}
 		}
@@ -429,22 +429,22 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public ValueAndEquation getAttributeValueAndEquation(final byte type, final String id, final String attrName) {
+	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final byte type, final String id, final String attrName) {
 		final Equation equation = data.getEquation(id, attrName);
 		final String equationFormula = equation == null ? null : equation.toString();
 
 		if (type == CyAttributes.TYPE_INTEGER)
-			return new ValueAndEquation(data.getIntegerAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(data.getIntegerAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_FLOATING)
-			return new ValueAndEquation(data.getDoubleAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(data.getDoubleAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return new ValueAndEquation(data.getBooleanAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(data.getBooleanAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_STRING)
-			return new ValueAndEquation(data.getStringAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(data.getStringAttribute(id, attrName), equationFormula);
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return new ValueAndEquation(data.getListAttribute(id, attrName));
+			return new ValidatedObjectAndEditString(data.getListAttribute(id, attrName));
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return new ValueAndEquation(data.getMapAttribute(id, attrName));
+			return new ValidatedObjectAndEditString(data.getMapAttribute(id, attrName));
 
 		return null;
 	}
@@ -557,8 +557,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		if (keyIndex == -1)
 			return null;
 
-		final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIndex, keyIndex);
-		return (String)valAndEq.getValue();
+		final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIndex, keyIndex);
+		return (String)objectAndEditString.getValidatedObject();
 	}
 
 	private int getKeyIndex() {
@@ -589,24 +589,21 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		final DataEditAction edit;
 		if (this.objectType != NETWORK) {
 			// This edit is for node or edge.
-			final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIdx, keyIndex);
-			edit = new DataEditAction(this, valAndEq.getValue().toString(),
+			final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIdx, keyIndex);
+			edit = new DataEditAction(this, objectAndEditString.getValidatedObject().toString(),
 						  getColumnName(colIdx), getValueAt(rowIdx, colIdx), newValue,
 						  objectType);
 		} else {
-			final ValueAndEquation valAndEq = (ValueAndEquation)getValueAt(rowIdx, 0);
+			final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIdx, 0);
 			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
-						  valAndEq.getValue().toString(),
+						  objectAndEditString.getValidatedObject().toString(),
 						  getValueAt(rowIdx, colIdx), newValue, objectType);
 		}
 
-		if (edit.isValid()) {
-			Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
-			rowVector.setElementAt(edit.getValueAndEquation(), colIdx);
-			fireTableCellUpdated(rowIdx, colIdx);
-			return edit;
-		}
+		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
+		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
+		fireTableCellUpdated(rowIdx, colIdx);
 
-		return null;
+		return edit.isValid() ? edit : null;
 	}
 }

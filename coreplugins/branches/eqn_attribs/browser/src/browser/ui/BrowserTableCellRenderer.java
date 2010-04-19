@@ -22,7 +22,7 @@ import javax.swing.table.TableCellRenderer;
 
 import browser.AttributeBrowser;
 import browser.DataObjectType;
-import browser.ValueAndEquation;
+import browser.ValidatedObjectAndEditString;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
@@ -79,22 +79,28 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-	                                               boolean hasFocus, int row, int column)
+	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+	                                               final boolean hasFocus, final int row, final int column)
 	{
-		final ValueAndEquation valAndEqn = (ValueAndEquation)value;
+		setHorizontalAlignment(JLabel.LEFT);
+
+		final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)value;
 		final String colName = table.getColumnName(column);
 
 		// First, set values
-		setHorizontalAlignment(JLabel.LEFT);
-		if (valAndEqn == null || valAndEqn.getValue() == null)
+		if (objectAndEditString == null
+		    || (objectAndEditString.getValidatedObject() == null && objectAndEditString.getErrorText() == null))
 			setText("");
-		else
-			setText(valAndEqn.getValue().toString());
+		else {
+			final String displayText = (objectAndEditString.getErrorText() != null)
+				? objectAndEditString.getErrorText()
+				: objectAndEditString.getValidatedObject().toString();
+			setText(displayText);
+		}
 
 		// Set HTML style tooltip?
-		if (valAndEqn != null)
-			setToolTipText(getFormattedToolTipText(colName, valAndEqn.getValue()));
+		if (objectAndEditString != null)
+			setToolTipText(getFormattedToolTipText(colName, objectAndEditString.getValidatedObject()));
 		else
 			setToolTipText(null);
 
@@ -112,13 +118,13 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		setFont(normalFont);
 		setBackground(table.getBackground());
 
-		final CyAttributes data = type.getAssociatedAttribute();
+		final CyAttributes attribs = type.getAssociatedAttribute();
 
-		if (data == null)
+		if (attribs == null)
 			return this;
 
 		// check for non-editable columns
-		if (data.getUserEditable(colName) == false) {
+		if (attribs.getUserEditable(colName) == false) {
 			setBackground(NON_EDITABLE_COLOR);
 		}
 
