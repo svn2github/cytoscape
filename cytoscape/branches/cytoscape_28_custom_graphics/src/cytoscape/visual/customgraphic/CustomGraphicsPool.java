@@ -26,6 +26,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
+import cytoscape.visual.customgraphic.experimental.GradientRectangleCustomGraphics;
 
 public class CustomGraphicsPool extends SubjectBase implements
 		PropertyChangeListener {

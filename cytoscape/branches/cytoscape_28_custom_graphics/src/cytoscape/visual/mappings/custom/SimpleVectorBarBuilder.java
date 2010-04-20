@@ -1,7 +1,7 @@
 package cytoscape.visual.mappings.custom;
 
 import cytoscape.visual.customgraphic.CyCustomGraphics;
-import cytoscape.visual.customgraphic.GradientRectangleCustomGraphics;
+import cytoscape.visual.customgraphic.experimental.GradientRectangleCustomGraphics;
 
 public class SimpleVectorBarBuilder implements CustomGraphicsBuilder {
 	

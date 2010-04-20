@@ -1,4 +1,4 @@
-package cytoscape.visual.customgraphic.renderer;
+package cytoscape.visual.customgraphic.experimental;
 
 import java.util.Collection;
 import java.util.HashMap;

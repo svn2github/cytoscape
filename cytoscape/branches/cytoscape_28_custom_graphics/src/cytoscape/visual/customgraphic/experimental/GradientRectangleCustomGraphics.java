@@ -1,4 +1,4 @@
-package cytoscape.visual.customgraphic;
+package cytoscape.visual.customgraphic.experimental;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.NodeDetails;
+import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
+import cytoscape.visual.customgraphic.CustomGraphicsPropertyImpl;
 
 /**
  * Proof of concept code. Generate images dynamically from attributes.

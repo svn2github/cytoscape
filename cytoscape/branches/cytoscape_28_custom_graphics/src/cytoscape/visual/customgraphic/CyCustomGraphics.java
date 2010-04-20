@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import cytoscape.visual.ObjectPosition;
+import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
 
 public interface CyCustomGraphics <T> {
 	/**

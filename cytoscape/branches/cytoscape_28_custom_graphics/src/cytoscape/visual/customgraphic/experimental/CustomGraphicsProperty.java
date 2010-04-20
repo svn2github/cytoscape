@@ -1,4 +1,4 @@
-package cytoscape.visual.customgraphic;
+package cytoscape.visual.customgraphic.experimental;
 
 public interface CustomGraphicsProperty<T> {
 	

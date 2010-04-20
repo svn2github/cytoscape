@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
+import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
 
 public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<CustomGraphic>, Taggable {
 

@@ -1,4 +1,4 @@
-package cytoscape.visual.customgraphic;
+package cytoscape.visual.customgraphic.experimental;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
