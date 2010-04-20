@@ -45,7 +45,7 @@ public interface NodeView  {
   /**
    * @return The list of EdgeViews connecting these two nodes. Possibly null.
    */
-  public java.util.List getEdgeViewsList(NodeView otherNode) ;
+  public List getEdgeViewsList(NodeView otherNode) ;
 
   /**
    * Shape is currently defined via predefined variables in 
