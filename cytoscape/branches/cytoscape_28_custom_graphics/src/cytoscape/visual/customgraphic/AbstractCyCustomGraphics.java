@@ -9,12 +9,16 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import cytoscape.render.stateful.CustomGraphic;
+import cytoscape.visual.ObjectPosition;
+import cytoscape.visual.ObjectPositionImpl;
 
 public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<CustomGraphic>, Taggable {
 
 	protected Collection<CustomGraphic> cgList;
 	protected String displayName;
 	protected CyCustomGraphicsParser parser;
+	
+	protected ObjectPosition position;
 	
 	protected final Map<String, CustomGraphicsProperty<?>> props;
 	
@@ -27,6 +31,8 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 		
 		this.tags = new TreeSet<String>();
 		this.props = new HashMap<String, CustomGraphicsProperty<?>>();
+		
+		this.position = new ObjectPositionImpl();
 	}
 	
 	@Override
@@ -66,6 +72,16 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 	
 	public void update() {
 		// By default, do nothing.
+	}
+
+	@Override
+	public ObjectPosition getPosition() {
+		return position;
+	}
+
+	@Override
+	public void setPosition(final ObjectPosition position) {
+		this.position = position;
 	}
 
 }

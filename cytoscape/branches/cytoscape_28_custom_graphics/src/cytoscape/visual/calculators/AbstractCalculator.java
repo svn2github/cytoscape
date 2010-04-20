@@ -79,7 +79,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * Vector of all mappings contained by this calculator. Usually small.
 	 * Contains ObjectMapping objects.
 	 */
-	protected Vector<ObjectMapping> mappings = new Vector<ObjectMapping>(4, 2);
+	protected Vector<ObjectMapping<?>> mappings = new Vector<ObjectMapping<?>>(4, 2);
 
 	/**
 	 * The domain classes accepted by the mappings underlying this calculator.
@@ -146,7 +146,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 *
 	 * @return Vector of all mappings contained in this calculator
 	 */
-	public Vector<ObjectMapping> getMappings() {
+	public Vector<ObjectMapping<?>> getMappings() {
 		return mappings;
 	}
 

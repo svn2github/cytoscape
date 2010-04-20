@@ -158,7 +158,7 @@ public interface Calculator extends Cloneable {
      *
      * @return DOCUMENT ME!
      */
-    public Vector<ObjectMapping> getMappings();
+    public Vector<ObjectMapping<?>> getMappings();
 
     /**
      * DOCUMENT ME!
@@ -167,5 +167,5 @@ public interface Calculator extends Cloneable {
      *
      * @return DOCUMENT ME!
      */
-    public ObjectMapping getMapping(int i);
+    public ObjectMapping<?> getMapping(int i);
 }

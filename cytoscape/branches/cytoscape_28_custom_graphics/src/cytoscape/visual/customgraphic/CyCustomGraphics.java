@@ -32,5 +32,18 @@ public interface CyCustomGraphics <T> {
 	
 	public void update();
 	
-	//public void setPosition(ObjectPosition position);
+	/**
+	 * Set posiiton of this graphics.
+	 * 
+	 * @param position
+	 */
+	public void setPosition(final ObjectPosition position);
+	
+	
+	/**
+	 * Current position
+	 * 
+	 * @return position of graphics as ObjectPosition.
+	 */
+	public ObjectPosition getPosition();
 }
