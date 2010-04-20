@@ -71,6 +71,15 @@ public class AttributeUtils {
 			return attribute.toString();
 	}
 
+	public static String attributeNamesToList(CyAttributes attrs, List<String>attrList) {
+		String value = "[";
+		for (String attr: attrList) {
+			byte type = attrs.getType(attr);
+			value += attr+"{"+attributeByteToString(type)+"},";
+		}
+		return value.substring(0, value.length()-1)+"]";
+	}
+
 	public static byte attributeStringToByte (String attributeType) {
 		if (attributeType.equalsIgnoreCase("float")) return CyAttributes.TYPE_FLOATING;
 		if (attributeType.equalsIgnoreCase("double")) return CyAttributes.TYPE_FLOATING;

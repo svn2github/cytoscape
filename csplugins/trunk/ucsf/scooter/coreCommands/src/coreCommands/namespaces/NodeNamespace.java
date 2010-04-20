@@ -48,6 +48,7 @@ import cytoscape.view.CyNetworkView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -61,20 +62,25 @@ public class NodeNamespace extends AbstractCommandHandler {
 
 	// Commands
 	private static String DESELECT = "deselect";
+	private static String EXPORT = "export attributes";
+	private static String FIND = "find";
 	private static String GETATTR = "get attribute";
 	private static String GETSEL = "get selected";
 	private static String IMPORTATTR = "import attributes";
 	private static String SELECT = "select";
 	private static String SETATTR = "set attribute";
+	private static String LISTATTR = "list attributes";
 
 	// Settings
-	private static String NODE = "node";
-	private static String NODELIST = "nodelist";
+	private static String ATTRIBUTE = "attribute";
+	private static String EXPRESSION = "expression";
+	private static String FILE = "file";
 	private static String NAME = "name";
 	private static String NETWORK = "network";
-	private static String FILE = "file";
-	private static String VALUE = "value";
+	private static String NODE = "node";
+	private static String NODELIST = "nodelist";
 	private static String TYPE = "type";
+	private static String VALUE = "value";
 
 	public NodeNamespace(CyCommandNamespace ns) {
 		super(ns);
@@ -84,10 +90,10 @@ public class NodeNamespace extends AbstractCommandHandler {
 		addArgument(DESELECT, NODE);
 		addArgument(DESELECT, NODELIST);
 
-		// addArgument("export attributes", "file");
-		// addArgument("export attributes", "attribute");
+		// addArgument(EXPORT, FILE);
+		// addArgument(EXPORT, ATTRIBUTE);
 		//
-		// addArgument("find", "expression");
+		// addArgument(FIND, EXPRESSION);
 
 		addDescription(GETATTR, "Returns node attributes");
 		addArgument(GETATTR, NODE);
@@ -99,6 +105,9 @@ public class NodeNamespace extends AbstractCommandHandler {
 
 		addDescription(IMPORTATTR, "Import node attributes from a file");
 		addArgument(IMPORTATTR, FILE);
+
+		addDescription(LISTATTR, "List node attributes");
+		addArgument(LISTATTR);
 
 		addDescription(SELECT, "Select nodes.  If no node(s) are provided, all nodes are selected");
 		addArgument(SELECT, NODE);
@@ -232,6 +241,15 @@ public class NodeNamespace extends AbstractCommandHandler {
 
 		// find nodes based on an expression
 		} else if ("find".equals(command)) {
+
+		// list node attributes
+		} else if (LISTATTR.equals(command)) {
+			CyNetwork net = getNetwork(command, args);
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			String[] attrNames = nodeAttributes.getAttributeNames();
+			List<String>attrList = Arrays.asList(attrNames);
+			result.addResult(attrList);
+			result.addMessage("Node attributes: "+AttributeUtils.attributeNamesToList(nodeAttributes, attrList));
 		}
 
 		return result;

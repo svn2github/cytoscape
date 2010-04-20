@@ -140,7 +140,7 @@ public class LayoutNamespace extends AbstractCommandHandler {
 			} else {
 				result.addMessage("layout: last layout information is unavailable for '"+networkID+"'");
 			}
-		}else if (command.equalsIgnoreCase("get default")) {
+		} else if (command.equalsIgnoreCase("get default")) {
 			CyLayoutAlgorithm alg = CyLayouts.getDefaultLayout();
 			result.addMessage("layout: default algorithm is "+alg.getName());
 			result.addResult("algorithm", alg);

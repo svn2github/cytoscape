@@ -49,6 +49,7 @@ import cytoscape.view.CyNetworkView;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -62,18 +63,23 @@ public class EdgeNamespace extends AbstractCommandHandler {
 
 	// Commands
 	private static String DESELECT = "deselect";
+	private static String EXPORT = "export attributes";
+	private static String FIND = "find";
 	private static String GETATTR = "get attribute";
 	private static String GETSEL = "get selected";
 	private static String IMPORTATTR = "import attributes";
+	private static String LISTATTR = "list attributes";
 	private static String SELECT = "select";
 	private static String SETATTR = "set attribute";
 
 	// Settings
+	private static String ATTRIBUTE = "attribute";
 	private static String EDGE = "edge";
 	private static String EDGELIST = "edgelist";
+	private static String EXPRESSION = "expression";
+	private static String FILE = "file";
 	private static String NAME = "name";
 	private static String NETWORK = "network";
-	private static String FILE = "file";
 	private static String VALUE = "value";
 
 	protected EdgeNamespace(CyCommandNamespace ns) {
@@ -84,10 +90,10 @@ public class EdgeNamespace extends AbstractCommandHandler {
 		addArgument(DESELECT, EDGE);
 		addArgument(DESELECT, EDGELIST);
 
-		// addArgument("export attributes", "file");
-		// addArgument("export attributes", "attribute");
+		// addArgument(EXPORT, FILE);
+		// addArgument(EXPORT, ATTRIBUTE);
 		//
-		// addArgument("find", "expression");
+		// addArgument(FIND, EXPRESSION);
 		
 		addDescription(GETATTR, "Returns edge attributes");
 		addArgument(GETATTR, EDGE);
@@ -99,6 +105,9 @@ public class EdgeNamespace extends AbstractCommandHandler {
 
 		addDescription(IMPORTATTR, "Import edge attributes from a file");
 		addArgument(IMPORTATTR, FILE);
+
+		addDescription(LISTATTR, "List edge attributes");
+		addArgument(LISTATTR);
 
 		addDescription(SELECT, "Select edges.  If no edge(s) are provided, all edges are selected");
 		addArgument(SELECT, EDGE);
@@ -230,7 +239,17 @@ public class EdgeNamespace extends AbstractCommandHandler {
 
 		// find edges based on an expression
 		} else if ("find".equals(command)) {
+
+		// list edge attributes
+		} else if (LISTATTR.equals(command)) {
+			CyNetwork net = getNetwork(command, args);
+			CyAttributes edgeAttributes = Cytoscape.getNodeAttributes();
+			String[] attrNames = edgeAttributes.getAttributeNames();
+			List<String>attrList = Arrays.asList(attrNames);
+			result.addResult(attrList);
+			result.addMessage("Edge attributes: "+AttributeUtils.attributeNamesToList(edgeAttributes, attrList));
 		}
+
 
 		return result;
 	}
