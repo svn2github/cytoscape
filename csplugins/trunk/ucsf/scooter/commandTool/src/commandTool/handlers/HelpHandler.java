@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package commandTool.ui;
+package commandTool.handlers;
 
 import java.util.ArrayList;
 import java.util.Collection;

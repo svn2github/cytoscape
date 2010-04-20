@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -64,18 +63,15 @@ import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 import cytoscape.logger.CyLogger;
+
+import commandTool.CommandTool;
+import commandTool.handlers.CommandHandler;
+import commandTool.handlers.MessageHandler;
 
 public class CommandToolDialog extends JDialog 
                              implements ActionListener {
@@ -93,6 +89,8 @@ public class CommandToolDialog extends JDialog
 		this.logger = logger;
 		commandList = new ArrayList();
 		initComponents();
+
+		CommandTool.setMessageHandlerContext(resultsText);
 	}
 
 	public void setVisible(boolean tf) {
@@ -162,178 +160,16 @@ public class CommandToolDialog extends JDialog
 		if ("done".equals(e.getActionCommand())) {
 			this.dispose();
 		} else if ("clear".equals(e.getActionCommand())) {
-			resultsText.setStyledDocument(new DefaultStyledDocument());
+			resultsText.clear();
 		} else {
 			String input = inputField.getText();
 			resultsText.appendCommand(input);
 			commandList.add(input);
 			commandIndex = commandList.size();
 
-			handleCommand(input);
+			CommandHandler.handleCommand((MessageHandler)resultsText, input);
 
 			inputField.setText("");
-		}
-	}
-
-	private void handleCommand(String input) {
-		CyCommandResult results = null;
-
-		try {
-			// Handle our built-ins
-			if (input.startsWith("help")) {
-				results = HelpHandler.getHelpReturn(input);
-			} else {
-				String ns = null;
-	
-				if ((ns = isNamespace(input)) != null) {
-					results = handleCommand(input, ns);
-				} else {
-					throw new RuntimeException("Unknown command: "+input);
-				}
-			}
-			// Get all of the error messages from our results
-			for (String s: results.getErrors()) {
-				resultsText.appendError("  "+s+"\n");
-			}
-
-			// Get all of the messages from our results
-			for (String s: results.getMessages()) {
-				resultsText.appendMessage("  "+s+"\n");
-			}
-		} catch (CyCommandException e) {
-			resultsText.appendError("  "+e.getMessage()+"\n");
-		} catch (RuntimeException e) {
-			resultsText.appendError("  "+e.getMessage()+"\n");
-		}
-		resultsText.appendMessage("\n");
-	}
-
-	private String isNamespace(String input) {
-		String namespace = null;
-		for (String ns: CyCommandManager.getNamespaceList()) {
-			if (input.toLowerCase().startsWith(ns.toLowerCase()) && (namespace == null || ns.length() > namespace.length()))
-				namespace = ns;
-		}
-		return namespace;
-	}
-
-	private CyCommandResult handleCommand(String inputLine, String ns) throws CyCommandException {
-		String sub = null;
-
-		// Parse the input, breaking up the tokens into appropriate
-		// commands, subcommands, and maps
-		Map<String,Object> settings = new HashMap();
-		String comm = parseInput(inputLine.substring(ns.length()).trim(), settings);
-
-		for (String command: CyCommandManager.getCommandList(ns)) {
-			if (command.toLowerCase().equals(comm.toLowerCase())) {
-				sub = command;
-				break;
-			}
-		}
-
-		if (sub == null && (comm != null && comm.length() > 0))
-			throw new CyCommandException("Unknown argument: "+comm);
-		
-		return CyCommandManager.execute(ns, sub, settings);
-	}
-
-	private String parseInput(String input, Map<String,Object> settings) {
-
-		// Tokenize
-		StringReader reader = new StringReader(input);
-		StreamTokenizer st = new StreamTokenizer(reader);
-
-		// We don't really want to parse numbers as numbers...
-		st.ordinaryChar('/');
-		st.ordinaryChar('-');
-		st.ordinaryChar('.');
-		st.ordinaryChars('0', '9');
-
-		st.wordChars('/', '/');
-		st.wordChars('-', '-');
-		st.wordChars('.', '.');
-		st.wordChars('0', '9');
-
-		List<String> tokenList = new ArrayList();
-		int tokenIndex = 0;
-		int i;
-		try {
-			while ((i = st.nextToken()) != StreamTokenizer.TT_EOF) {
-				switch(i) {
-					case '=':
-						// Get the next token
-						i = st.nextToken();
-						if (i == StreamTokenizer.TT_WORD || i == '"') {
-							tokenIndex--;
-							String key = tokenList.get(tokenIndex);
-							settings.put(key, st.sval);
-							tokenList.remove(tokenIndex);
-						}
-						break;
-					case '"':
-					case StreamTokenizer.TT_WORD:
-						tokenList.add(st.sval);
-						tokenIndex++;
-						break;
-					default:
-						break;
-				}
-			} 
-		} catch (Exception e) { return ""; }
-
-		// Concatenate the commands together
-		String command = "";
-		for (String word: tokenList) command += word+" ";
-
-		// Now, the last token of the args goes with the first setting
-		return command.trim();
-	}
-
-	class JResultsPane extends JTextPane {
-		private SimpleAttributeSet commandAttributes;
-		private SimpleAttributeSet messageAttributes;
-		private SimpleAttributeSet errorAttributes;
-		public JResultsPane() {
-			super();
-
-			commandAttributes = new SimpleAttributeSet();
-			commandAttributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLUE);
-			commandAttributes.addAttribute(StyleConstants.CharacterConstants.Italic, Boolean.TRUE);
-			commandAttributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.TRUE);
-
-			messageAttributes = new SimpleAttributeSet();
-			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLUE);
-			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Italic, Boolean.FALSE);
-			messageAttributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.FALSE);
-
-			errorAttributes = new SimpleAttributeSet();
-			errorAttributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.RED);
-			errorAttributes.addAttribute(StyleConstants.CharacterConstants.Italic, Boolean.FALSE);
-			errorAttributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.FALSE);
-		}
-
-		public void appendCommand(String s) {
-			updateString(commandAttributes, s+"\n");
-		}
-
-		public void appendError(String s) {
-			updateString(errorAttributes, s);
-		}
-
-		public void appendResult(String s) {
-		}
-
-		public void appendMessage(String s) {
-			updateString(messageAttributes, s);
-		}
-
-		private void updateString(AttributeSet set, String s) {
-			StyledDocument doc = getStyledDocument();
-			try {
-				doc.insertString(doc.getLength(), s, set);
-			} catch (BadLocationException badLocationException) {
-			}
 		}
 	}
 
