@@ -36,6 +36,10 @@
  */
 package cytoscape.visual;
 
+import giny.view.Justification;
+import giny.view.ObjectPosition;
+import giny.view.Position;
+
 import java.awt.Color;
 import java.awt.Font;
 
@@ -114,7 +118,7 @@ public class BypassHelperTest extends TestCase {
 		System.out.println("lab pos " + o.toString());
 
 		ObjectPosition nlp = new ObjectPositionImpl(Position.NORTH_EAST,
-				Position.WEST, Position.JUSTIFY_CENTER, 13, -1);
+				Position.WEST, Justification.JUSTIFY_CENTER, 13, -1);
 		System.out.println("new lab pos " + nlp.toString());
 		assertTrue("label position equals", nlp.equals(o));
 

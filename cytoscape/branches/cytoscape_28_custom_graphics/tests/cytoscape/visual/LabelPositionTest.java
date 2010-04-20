@@ -60,7 +60,10 @@ import giny.model.Edge;
 import giny.model.Node;
 import giny.model.RootGraph;
 
+import giny.view.Justification;
 import giny.view.Label;
+import giny.view.ObjectPosition;
+import giny.view.Position;
 
 import junit.framework.*;
 
@@ -101,11 +104,11 @@ public class LabelPositionTest extends TestCase {
 		ObjectPosition l1 = new ObjectPositionImpl();
 		l1.setTargetAnchor(Position.NORTH_WEST);
 		l1.setAnchor(Position.CENTER);
-		l1.setJustify(Position.JUSTIFY_LEFT);
+		l1.setJustify(Justification.JUSTIFY_LEFT);
 		l1.setOffsetX(17.0);
 		l1.setOffsetY(-19.0);
 
-		ObjectPosition l2 = new ObjectPositionImpl(Position.NORTH_WEST, Position.CENTER, Position.JUSTIFY_LEFT,
+		ObjectPosition l2 = new ObjectPositionImpl(Position.NORTH_WEST, Position.CENTER, Justification.JUSTIFY_LEFT,
 		                                     17.0, -19.0);
 		System.out.println("label 1\n" + l1.toString());
 		System.out.println("label 2\n" + l2.toString());

@@ -34,6 +34,8 @@
  */
 package cytoscape.visual.ui.editors.discrete;
 
+import giny.view.ObjectPosition;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -44,7 +46,6 @@ import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.PopupObjectPositionChooser;
 

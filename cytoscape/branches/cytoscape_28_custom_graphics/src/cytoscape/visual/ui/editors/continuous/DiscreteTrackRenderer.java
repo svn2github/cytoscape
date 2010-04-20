@@ -34,6 +34,8 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
+import giny.view.ObjectPosition;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -59,7 +61,6 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;

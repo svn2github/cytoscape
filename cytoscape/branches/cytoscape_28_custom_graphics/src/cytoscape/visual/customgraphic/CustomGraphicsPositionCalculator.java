@@ -1,5 +1,8 @@
 package cytoscape.visual.customgraphic;
 
+import giny.view.ObjectPosition;
+import giny.view.Position;
+
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -10,8 +13,6 @@ import java.util.Map;
 
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.NodeDetails;
-import cytoscape.visual.ObjectPosition;
-import cytoscape.visual.Position;
 import ding.view.DNodeView;
 
 public class CustomGraphicsPositionCalculator {

@@ -1,10 +1,11 @@
 package cytoscape.visual.customgraphic;
 
+import giny.view.ObjectPosition;
+
 import java.awt.Image;
 import java.util.Collection;
 import java.util.Map;
 
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
 
 public interface CyCustomGraphics <T> {

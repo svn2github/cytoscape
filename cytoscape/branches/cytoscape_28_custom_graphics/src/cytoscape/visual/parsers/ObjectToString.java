@@ -42,7 +42,8 @@ import cytoscape.util.Misc;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.ObjectPosition;
+
+import giny.view.ObjectPosition;
 
 import java.awt.Color;
 import java.awt.Font;

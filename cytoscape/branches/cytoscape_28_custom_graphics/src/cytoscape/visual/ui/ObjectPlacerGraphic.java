@@ -1,8 +1,11 @@
 package cytoscape.visual.ui;
 
-import static cytoscape.visual.Position.JUSTIFY_LEFT;
-import static cytoscape.visual.Position.JUSTIFY_RIGHT;
-import static cytoscape.visual.Position.NONE;
+import static giny.view.Position.NONE;
+import static giny.view.Justification.*;
+
+import giny.view.ObjectPosition;
+import giny.view.Position;
+import giny.view.Justification;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -23,9 +26,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
-import cytoscape.visual.Position;
 
 public class ObjectPlacerGraphic extends JPanel implements
 		PropertyChangeListener {
@@ -91,7 +92,7 @@ public class ObjectPlacerGraphic extends JPanel implements
 	private int yOffset;
 
 	// default text justify rule
-	private Position justify;
+	private Justification justify;
 
 	
 

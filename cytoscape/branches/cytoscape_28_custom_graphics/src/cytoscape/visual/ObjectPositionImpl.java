@@ -1,7 +1,11 @@
 package cytoscape.visual;
 
-import static cytoscape.visual.Position.CENTER;
-import static cytoscape.visual.Position.JUSTIFY_CENTER;
+import static giny.view.Position.CENTER;
+import static giny.view.Justification.JUSTIFY_CENTER;
+
+import giny.view.Justification;
+import giny.view.ObjectPosition;
+import giny.view.Position;
 
 import java.text.DecimalFormat;
 
@@ -12,7 +16,7 @@ public class ObjectPositionImpl implements ObjectPosition {
 	
 	private Position objectAnchor;
 	private Position targetAnchor;
-	private Position justify;
+	private Justification justify;
 
 	private double xOffset;
 	private double yOffset;
@@ -53,7 +57,7 @@ public class ObjectPositionImpl implements ObjectPosition {
 	 *            DOCUMENT ME!
 	 */
 	public ObjectPositionImpl(final Position targ, final Position lab,
-			final Position just, final double x, final double y) {
+			final Justification just, final double x, final double y) {
 		targetAnchor = targ;
 		objectAnchor = lab;
 		justify = just;
@@ -85,7 +89,7 @@ public class ObjectPositionImpl implements ObjectPosition {
 	 * 
 	 * @see cytoscape.visual.ObjectPosition#getJustify()
 	 */
-	public Position getJustify() {
+	public Justification getJustify() {
 		return justify;
 	}
 
@@ -130,8 +134,8 @@ public class ObjectPositionImpl implements ObjectPosition {
 	 * 
 	 * @see cytoscape.visual.ObjectPosition#setJustify(int)
 	 */
-	public void setJustify(Position p) {
-		justify = p;
+	public void setJustify(Justification j) {
+		justify = j;
 	}
 
 	/*

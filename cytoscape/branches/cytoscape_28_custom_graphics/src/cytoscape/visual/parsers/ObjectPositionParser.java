@@ -1,11 +1,13 @@
 package cytoscape.visual.parsers;
 
+import giny.view.ObjectPosition;
+import giny.view.Position;
+import giny.view.Justification;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
-import cytoscape.visual.Position;
 
 public class ObjectPositionParser implements ValueParser<ObjectPosition> {
 
@@ -32,7 +34,7 @@ public class ObjectPositionParser implements ValueParser<ObjectPosition> {
 			final ObjectPosition p = new ObjectPositionImpl();
 			p.setTargetAnchor(Position.parse(m.group(1)));
 			p.setAnchor(Position.parse(m.group(2)));
-			p.setJustify(Position.parse(m.group(3)));
+			p.setJustify(Justification.parse(m.group(3)));
 			p.setOffsetX(Double.parseDouble(m.group(4)));
 			p.setOffsetY(Double.parseDouble(m.group(6)));
 

@@ -34,6 +34,8 @@
  */
 package cytoscape.visual;
 
+import giny.view.ObjectPosition;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;

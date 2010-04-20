@@ -1,6 +1,8 @@
 package cytoscape.visual.properties;
 
 import giny.view.NodeView;
+import giny.view.ObjectPosition;
+import giny.view.Position;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -14,9 +16,7 @@ import javax.swing.Icon;
 
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
-import cytoscape.visual.Position;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;

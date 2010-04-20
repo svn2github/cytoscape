@@ -36,6 +36,10 @@ package cytoscape.visual.properties;
 
 import giny.view.Label;
 import giny.view.NodeView;
+import giny.view.ObjectPosition;
+import giny.view.Position;
+import giny.view.Justification;
+
 
 import java.awt.Color;
 import java.awt.Component;
@@ -45,9 +49,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.Icon;
 
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
-import cytoscape.visual.Position;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.ObjectPlacerGraphic;
@@ -116,7 +118,7 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 		if (nodelabel.getTextAnchor() != newTextAnchor.getGinyConstant())
 			nodelabel.setTextAnchor(newTextAnchor.getGinyConstant());
 
-		Position newJustify = labelPosition.getJustify();
+		Justification newJustify = labelPosition.getJustify();
 
 		if (nodelabel.getJustify() != newJustify.getGinyConstant())
 			nodelabel.setJustify(newJustify.getGinyConstant());

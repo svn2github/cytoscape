@@ -1,5 +1,7 @@
 package cytoscape.visual.customgraphic;
 
+import giny.view.ObjectPosition;
+
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +11,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
 import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
 

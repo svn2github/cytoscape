@@ -39,10 +39,11 @@ package cytoscape.visual.ui.editors.discrete;
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.properties.NodeLabelPositionProp;
+
+import giny.view.ObjectPosition;
 
 import java.awt.Component;
 

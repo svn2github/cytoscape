@@ -1,6 +1,10 @@
 package cytoscape.visual.ui;
 
-import static cytoscape.visual.Position.NONE;
+import static giny.view.Position.NONE;
+
+import giny.view.ObjectPosition;
+import giny.view.Position;
+import giny.view.Justification;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,9 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
-import cytoscape.visual.Position;
 
 public class ObjectPlacerControl extends JPanel implements ActionListener,
 		PropertyChangeListener {
@@ -46,7 +48,7 @@ public class ObjectPlacerControl extends JPanel implements ActionListener,
 		JPanel anchorNames = new JPanel();
 		anchorNames.setLayout(new GridLayout(2, 2));
 
-		final String[] points = Position.getAnchorNames();
+		final String[] points = Position.getNames();
 
 		JLabel nodeAnchorLabel = new JLabel("Node Anchor Points ");
 		nodeAnchors = new JComboBox(points);
@@ -66,7 +68,7 @@ public class ObjectPlacerControl extends JPanel implements ActionListener,
 		justifyPanel.setLayout(new GridLayout(1, 2));
 
 		JLabel justifyLabel = new JLabel("Label Justification");
-		final String[] justifyTypes = Position.getJustifyNames();
+		final String[] justifyTypes = Justification.getNames();
 		justifyCombo = new JComboBox(justifyTypes);
 		justifyCombo.addActionListener(this);
 		justifyPanel.add(justifyLabel);
@@ -148,7 +150,7 @@ public class ObjectPlacerControl extends JPanel implements ActionListener,
 		}
 
 		if (source == justifyCombo) {
-			lp.setJustify(Position.parse(justifyCombo.getSelectedItem()
+			lp.setJustify(Justification.parse(justifyCombo.getSelectedItem()
 					.toString()));
 			changed = true;
 		}

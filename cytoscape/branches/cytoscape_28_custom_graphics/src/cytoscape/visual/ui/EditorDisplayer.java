@@ -36,6 +36,8 @@
 
 package cytoscape.visual.ui;
 
+import giny.view.ObjectPosition;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -50,7 +52,6 @@ import cytoscape.util.CyColorChooser;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;

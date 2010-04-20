@@ -37,6 +37,7 @@
 package cytoscape.visual.ui;
 
 import giny.model.GraphObject;
+import giny.view.ObjectPosition;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -50,7 +51,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ObjectPosition;
 import cytoscape.visual.ObjectPositionImpl;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ObjectToString;
