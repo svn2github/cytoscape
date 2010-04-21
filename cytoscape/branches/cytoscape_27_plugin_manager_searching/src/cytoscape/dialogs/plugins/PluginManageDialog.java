@@ -95,7 +95,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	//private boolean hasPluginSiteURLChanged = false; 
 	private String currentPluginSiteURL = defaultPluginSiteUrl;
 	
-	private String HOWTOSEARCH = "How to do searching tooltip dgdfhf dg sdfsdrfdgfdf fgsda ";
+	private String HOWTOSEARCH = "You can use wildcard * or ? in your search words";
 	
 	public enum PluginInstallStatus {
 		INSTALLED(CURRENTLY_INSTALLED), AVAILABLE(AVAILABLE_FOR_INSTALL);
@@ -163,7 +163,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		loadBookmarkCMBox(true);
 		
 		//this.lbSiteURL.setText(((DataSource)this.cmbDownloadSites.getSelectedItem()).getHref());
-		this.jTabbedPane1.setSelectedIndex(1);
+		//this.jTabbedPane1.setSelectedIndex(1);
 		
 		this.jTabbedPane1.addChangeListener(new MyChangeListener());
 		this.tfSearch.setToolTipText(HOWTOSEARCH);
@@ -171,18 +171,23 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	class MyChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e){
+			int width = PluginManageDialog.this.jTabbedPane1.getSize().width;
+			
 			if (PluginManageDialog.this.jTabbedPane1.getSelectedIndex() == 0){
-				System.out.println("tappedPane search is selected");
-				int width = PluginManageDialog.this.jTabbedPane1.getSize().width;
-				PluginManageDialog.this.jTabbedPane1.setPreferredSize(new Dimension(width, 50));
+				
+				//PluginManageDialog.this.jTabbedPane1.setMinimumSize(new Dimension(width, 50));
+				//PluginManageDialog.this.jTabbedPane1.setPreferredSize(new Dimension(width, 50));
+				//PluginManageDialog.this.pnlSearch.setPreferredSize(new Dimension(width, 50));
+				//PluginManageDialog.this.pnlSettings.setPreferredSize(new Dimension(width, 50));
 			}
 			else {
-				System.out.println("tappedPane setting is selected");
-				int width = PluginManageDialog.this.jTabbedPane1.getSize().width;
-				PluginManageDialog.this.jTabbedPane1.setPreferredSize(new Dimension(width, 100));
+				//PluginManageDialog.this.jTabbedPane1.setMinimumSize(new Dimension(width, 150));
+				//PluginManageDialog.this.jTabbedPane1.setPreferredSize(new Dimension(width, 150));
+				//PluginManageDialog.this.pnlSearch.setPreferredSize(new Dimension(width, 150));
+				//PluginManageDialog.this.pnlSettings.setPreferredSize(new Dimension(width, 150));
 				
 			}
-			PluginManageDialog.this.pack();
+			//PluginManageDialog.this.pack();
 		}
 	}
 	
