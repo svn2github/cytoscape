@@ -50,6 +50,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import ding.view.ObjectPositionImpl;
 
 /**
  * While this used to test a ByPassHelper class, that functionality has now been

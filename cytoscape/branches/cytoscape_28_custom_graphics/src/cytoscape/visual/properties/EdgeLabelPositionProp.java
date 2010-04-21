@@ -35,12 +35,13 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
-import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 import java.util.Properties;
 
 import javax.swing.Icon;
+
+import ding.view.ObjectPositionImpl;
 
 
 /**

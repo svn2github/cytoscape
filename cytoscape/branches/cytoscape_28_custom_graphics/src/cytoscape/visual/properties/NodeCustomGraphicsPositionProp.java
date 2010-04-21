@@ -2,11 +2,9 @@ package cytoscape.visual.properties;
 
 import giny.view.NodeView;
 import giny.view.ObjectPosition;
-import giny.view.Position;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -14,26 +12,16 @@ import java.util.Iterator;
 
 import javax.swing.Icon;
 
-import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.visual.ObjectPositionImpl;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.customgraphic.CustomGraphicsPositionCalculator;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
-import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.ui.ObjectPlacerGraphic;
 import cytoscape.visual.ui.icon.NodeIcon;
 import ding.view.DNodeView;
+import ding.view.ObjectPositionImpl;
 
 public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
-
-	private CustomGraphicsPositionCalculator calc;
-
-	public NodeCustomGraphicsPositionProp() {
-		this.calc = new CustomGraphicsPositionCalculator();
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -95,14 +83,21 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 				|| nv instanceof DNodeView == false)
 			return;
 
-		final ObjectPosition graphicsPosition = (ObjectPosition) o;
+		final ObjectPosition p = (ObjectPosition) o;
 		final DNodeView dv = (DNodeView) nv;
-		// final String nodeID = nv.getNode().getIdentifier();
-		System.out.println(dv.getLabel() + ": Custom Graphics Position = "
-				+ graphicsPosition.toString());
 		
+		final Iterator<CustomGraphic> itr = dv.customGraphicIterator();
+		int i = 0;
+		while(itr.hasNext()) {
+			final CustomGraphic cg = itr.next();
+			dv.setCustomGraphicsPosition(cg, p);
+			System.out.println(i + " = " + dv.getLabel().getText() + ": CG Position = "
+				+ dv.getCustomGraphicsPosition(cg).toString());
+			i++;
+		}
+//		dv.setCustomGraphicsPosition(cg, p);
 		
-		calc.calculate(graphicsPosition, dv);
+		//calc.calculate(graphicsPosition, dv);
 
 		// Label nodelabel = nv.getLabel();
 		//		 

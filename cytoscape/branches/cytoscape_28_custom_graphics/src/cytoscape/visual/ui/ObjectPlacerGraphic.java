@@ -26,7 +26,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ObjectPositionImpl;
+import ding.view.ObjectPositionImpl;
 
 public class ObjectPlacerGraphic extends JPanel implements
 		PropertyChangeListener {

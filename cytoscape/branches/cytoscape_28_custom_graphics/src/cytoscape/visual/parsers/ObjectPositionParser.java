@@ -7,7 +7,7 @@ import giny.view.Justification;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cytoscape.visual.ObjectPositionImpl;
+import ding.view.ObjectPositionImpl;
 
 public class ObjectPositionParser implements ValueParser<ObjectPosition> {
 

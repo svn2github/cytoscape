@@ -35,6 +35,7 @@
 package cytoscape.visual;
 
 import giny.view.Label;
+import giny.view.ObjectPosition;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -174,5 +175,17 @@ public class TestLabel implements Label {
 	 */
 	public int getJustify() {
 		return justify;
+	}
+
+	@Override
+	public ObjectPosition getPosition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setPosition(ObjectPosition arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -34,12 +34,8 @@
  */
 package cytoscape.visual.properties;
 
-import giny.view.Label;
 import giny.view.NodeView;
 import giny.view.ObjectPosition;
-import giny.view.Position;
-import giny.view.Justification;
-
 
 import java.awt.Color;
 import java.awt.Component;
@@ -49,44 +45,47 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.Icon;
 
-import cytoscape.visual.ObjectPositionImpl;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.ObjectPlacerGraphic;
 import cytoscape.visual.ui.icon.NodeIcon;
-
+import ding.view.DNodeView;
+import ding.view.ObjectPositionImpl;
 
 /**
  *
  */
 public class NodeLabelPositionProp extends AbstractVisualProperty {
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public VisualPropertyType getType() {
 		return VisualPropertyType.NODE_LABEL_POSITION;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param labelPos DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param labelPos
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Icon getIcon(Object value) {
 		int size = 55;
 
-		final BufferedImage bi = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+		final BufferedImage bi = new BufferedImage(size, size,
+				BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
 
-		ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) value, size, false, "Label", null, null);
+		ObjectPlacerGraphic lp = new ObjectPlacerGraphic(
+				(ObjectPosition) value, size, false, "Label", null, null);
 		lp.paint(g2);
 
 		NodeIcon icon = new NodeIcon() {
-			
+
 			private static final long serialVersionUID = -3190338664704873605L;
 
 			public void paintIcon(Component c, Graphics g, int x, int y) {
@@ -99,50 +98,32 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 		return icon;
 	}
 
-	
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param nv DOCUMENT ME!
-	 * @param o DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param nv
+	 *            DOCUMENT ME!
+	 * @param o
+	 *            DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {		
-		if ((o == null) || (nv == null))
+	public void applyToNodeView(NodeView nv, Object o,
+			VisualPropertyDependency dep) {
+		if ((o == null) || (nv == null) || nv instanceof DNodeView == false
+				|| o instanceof ObjectPosition == false)
 			return;
 
-		Label nodelabel = nv.getLabel();
-		ObjectPosition labelPosition = (ObjectPosition) o;
+		final DNodeView dv = (DNodeView) nv;
+		dv.setPosition((ObjectPosition) o);
 
-		Position newTextAnchor = labelPosition.getAnchor();
+		System.out.println(dv.getLabel() + ": Node Label Position = "
+				+ dv.getPosition().toString());
 
-		if (nodelabel.getTextAnchor() != newTextAnchor.getGinyConstant())
-			nodelabel.setTextAnchor(newTextAnchor.getGinyConstant());
-
-		Justification newJustify = labelPosition.getJustify();
-
-		if (nodelabel.getJustify() != newJustify.getGinyConstant())
-			nodelabel.setJustify(newJustify.getGinyConstant());
-
-		Position newNodeAnchor = labelPosition.getTargetAnchor();
-
-		if (nv.getNodeLabelAnchor() != newNodeAnchor.getGinyConstant())
-			nv.setNodeLabelAnchor(newNodeAnchor.getGinyConstant());
-
-		double newOffsetX = labelPosition.getOffsetX();
-
-		if (nv.getLabelOffsetX() != newOffsetX)
-			nv.setLabelOffsetX(newOffsetX);
-
-		double newOffsetY = labelPosition.getOffsetY();
-
-		if (nv.getLabelOffsetY() != newOffsetY)
-			nv.setLabelOffsetY(newOffsetY);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {
 		return new ObjectPositionImpl();

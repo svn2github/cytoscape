@@ -75,6 +75,8 @@ import java.io.*;
 import java.util.Map;
 import java.util.Properties;
 
+import ding.view.ObjectPositionImpl;
+
 
 /**
  *

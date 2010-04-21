@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import cytoscape.visual.ObjectPositionImpl;
+import ding.view.ObjectPositionImpl;
 
 public class ObjectPlacerControl extends JPanel implements ActionListener,
 		PropertyChangeListener {

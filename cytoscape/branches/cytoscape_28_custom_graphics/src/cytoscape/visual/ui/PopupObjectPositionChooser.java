@@ -51,9 +51,9 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ObjectPositionImpl;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ObjectToString;
+import ding.view.ObjectPositionImpl;
 
 /**
  *
