@@ -77,6 +77,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.Color;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.Dimension;
 
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
@@ -152,12 +156,15 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		this.btnClear.setEnabled(false);
 		
 		bookmarksSetUp();
-		//this.lstDownloadSites.setRenderer(new BookmarkCellRenderer());
-		//this.lstDownloadSites.addMouseListener(new MyItemListener());
+		
+		this.lstDownloadSites.setCellRenderer(new BookmarkCellRenderer());
+		this.lstDownloadSites.addListSelectionListener(new MyListSelectionListener());
+		this.lstDownloadSites.getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		loadBookmarkCMBox(true);
 		
 		//this.lbSiteURL.setText(((DataSource)this.cmbDownloadSites.getSelectedItem()).getHref());
-		//this.jTabbedPane1.setSelectedIndex(1);
+		this.jTabbedPane1.setSelectedIndex(1);
+		
 		this.jTabbedPane1.addChangeListener(new MyChangeListener());
 		this.tfSearch.setToolTipText(HOWTOSEARCH);
 	}
@@ -165,12 +172,17 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	class MyChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e){
 			if (PluginManageDialog.this.jTabbedPane1.getSelectedIndex() == 0){
-				//String urlStr = ((DataSource)PluginManageDialog.this.lstDownloadSites.getSelectedItem()).getHref();
-				//if (!PluginManageDialog.this.currentPluginSiteURL.equalsIgnoreCase(urlStr)){
-					//PluginManageDialog.this.currentPluginSiteURL = urlStr;
-					//PluginManageDialog.this.refreshPluginTree();
-				//}
+				System.out.println("tappedPane search is selected");
+				int width = PluginManageDialog.this.jTabbedPane1.getSize().width;
+				PluginManageDialog.this.jTabbedPane1.setPreferredSize(new Dimension(width, 50));
 			}
+			else {
+				System.out.println("tappedPane setting is selected");
+				int width = PluginManageDialog.this.jTabbedPane1.getSize().width;
+				PluginManageDialog.this.jTabbedPane1.setPreferredSize(new Dimension(width, 100));
+				
+			}
+			PluginManageDialog.this.pack();
 		}
 	}
 	
@@ -404,8 +416,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 
-	 
-	
 	// allow for outdated versions
 	private void versionCheckItemStateChanged(java.awt.event.ItemEvent evt) {
 		TreePath[] SelectedPaths = pluginTree.getSelectionPaths();
@@ -707,10 +717,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         btnSearch = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         downloadLocText = new javax.swing.JLabel();
+        lbSearchTitle = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        lbPlaceHolder = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         btnAddSite = new javax.swing.JButton();
         btnEditSite = new javax.swing.JButton();
@@ -769,7 +778,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
         sitePanel.add(btnSearch, gridBagConstraints);
 
         btnClear.setText("Clear");
@@ -781,8 +790,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
         sitePanel.add(btnClear, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -794,18 +804,23 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         pnlSearch.add(topPane, gridBagConstraints);
 
-        downloadLocText.setText("downloadLocText");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         pnlSearch.add(downloadLocText, gridBagConstraints);
+
+        lbSearchTitle.setText("Enter key words to search");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        pnlSearch.add(lbSearchTitle, gridBagConstraints);
 
         jTabbedPane1.addTab("Search", pnlSearch);
 
@@ -814,26 +829,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         jLabel3.setText("Download sites");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 10, 10, 0);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 5, 0);
         pnlSettings.add(jLabel3, gridBagConstraints);
-
-        jPanel1.setLayout(new java.awt.GridBagLayout());
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanel1.add(lbPlaceHolder, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridheight = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        pnlSettings.add(jPanel1, gridBagConstraints);
 
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
@@ -846,9 +843,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 20);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 20);
         jPanel2.add(btnAddSite, gridBagConstraints);
 
         btnEditSite.setText("Edit");
@@ -861,8 +858,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 20);
         jPanel2.add(btnEditSite, gridBagConstraints);
 
         btnDeleteSite.setText("Delete");
@@ -873,16 +870,15 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 20);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 20);
         jPanel2.add(btnDeleteSite, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         pnlSettings.add(jPanel2, gridBagConstraints);
 
         lstDownloadSites.setModel(new javax.swing.AbstractListModel() {
@@ -898,7 +894,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 5, 10);
         pnlSettings.add(jScrollPane1, gridBagConstraints);
 
         jTabbedPane1.addTab("Settings", pnlSettings);
@@ -1025,8 +1021,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     
     
     private void btnDeleteSiteActionPerformed(java.awt.event.ActionEvent evt) {                                              
-    	/*
-    	DataSource theDataSource = (DataSource)this.lstDownloadSites.getSelectedItem();
+    	
+    	DataSource theDataSource = (DataSource)this.lstDownloadSites.getSelectedValue();
 		
     	if (theDataSource.getName().equalsIgnoreCase("Cytoscape")){
     		JOptionPane.showMessageDialog(this, "Your can not delete default Cytoscape site", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -1040,12 +1036,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
 			loadBookmarkCMBox(true); // reload is required to update the GUI			
 		}
-		*/
+		
     }                                             
 
     private void btnEditSiteActionPerformed(java.awt.event.ActionEvent evt) {    
-    	/*
-    	DataSource theDataSource = (DataSource) this.lstDownloadSites.getSelectedItem();
+    	
+    	DataSource theDataSource = (DataSource) this.lstDownloadSites.getSelectedValue();
     	EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this, true, theBookmarks,
     			bookmarkCategory, "edit", theDataSource);
     	
@@ -1054,28 +1050,22 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
     	theEditDialog.setVisible(true);
     	loadBookmarkCMBox(true);
-    	*/
+    	
     }                                           
 
     private void btnAddSiteActionPerformed(java.awt.event.ActionEvent evt) {                                           
-
     	EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this, true, theBookmarks,
     			bookmarkCategory, "new", null);
     	
     	theNewDialog.setSize(350, 250);
     	theNewDialog.setLocationRelativeTo(this);
-
     	theNewDialog.setVisible(true);
-    	
     	theNewDialog.getDataSource();
-    	
     	loadBookmarkCMBox(true); // reload is required to update the GUI
     }                                          
 
 
-
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {                                         
-    	
     	this.switchToMainDialog();
     	this.tfSearch.setText("");
     	this.btnSearch.setEnabled(false);
@@ -1180,42 +1170,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	public static void main(String[] args) {
-		PluginManageDialog pd = new PluginManageDialog();
-    //pd.setSiteName("Testing");
-    List<DownloadableInfo> Plugins = new java.util.ArrayList<DownloadableInfo>();
-
-		PluginInfo infoC = new PluginInfo("1", "A Plugin");
-		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
-		Plugins.add(infoC);
-
-		infoC = new PluginInfo("2", "B Plugin");
-		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
-		Plugins.add(infoC);
-
-		infoC = new PluginInfo("3", "C");
-		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
-		Plugins.add(infoC);
-
-		pd.addCategory(cytoscape.plugin.Category.NONE.toString(), Plugins,
-				PluginInstallStatus.AVAILABLE);
-
-		List<DownloadableInfo> Outdated = new java.util.ArrayList<DownloadableInfo>();
-
-		PluginInfo infoOD = new PluginInfo("11", "CyGoose");
-		infoOD.addCytoscapeVersion("2.3");
-		Outdated.add(infoOD);
-
-		infoOD = new PluginInfo("12", "Y");
-		infoOD.addCytoscapeVersion("2.3");
-		Outdated.add(infoOD);
-
-		pd.addCategory("Outdated", Outdated, PluginInstallStatus.AVAILABLE);
-
-		pd.setMessage("Foo bar");
-		
-		pd.setVisible(true);
-	}
 
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	private javax.swing.ImageIcon createImageIcon(String path,
@@ -1350,14 +1304,13 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private javax.swing.JEditorPane infoTextPane;
     private javax.swing.JButton installDeleteButton;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JLabel lbPlaceHolder;
+    private javax.swing.JLabel lbSearchTitle;
     private javax.swing.JList lstDownloadSites;
     private javax.swing.JLabel msgLabel;
     private javax.swing.JTextArea msgPanel;
@@ -1371,17 +1324,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private javax.swing.JCheckBox versionCheck;
     // End of variables declaration  
     
-  
-  
-  
-  private TreeNode rootTreeNode;
+    private TreeNode rootTreeNode;
 	private TreeNode installedNode;
 	private TreeNode availableNode;
 	private ManagerModel treeModel;
 	private TreeCellRenderer treeRenderer;
 	private java.util.HashMap<TreeNode, java.util.List<TreeNode>> hiddenNodes;
-	
-
 	
 	
 	// loads the combo box for bookmarks
@@ -1401,7 +1349,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 
 		this.lstDownloadSites.setModel(theModel);
-		//this.lbSiteURL.setText(((DataSource)this.cmbDownloadSites.getSelectedItem()).getHref());
 	}
 	
 	private String bookmarkCategory = "plugins";
@@ -1429,6 +1376,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	}
 
+	private static final Color HIGHLIGHT_COLOR = new Color(0, 0, 128);
+
 	// required to make the text of the data source show up correctly in the
 	// combo box
 	private class BookmarkCellRenderer extends JLabel implements
@@ -1437,27 +1386,92 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		public BookmarkCellRenderer() {
 			setOpaque(true);
 		}
-		
+
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			DataSource dataSource = (DataSource) value;
 			setText(dataSource.getName());
 
+			setToolTipText(dataSource.getHref());
+			
 			if (isSelected) {
-				if (0 < index) {
-					list.setToolTipText(dataSource.getHref());
-				}
-			}
+			      setBackground(HIGHLIGHT_COLOR);
+			      setForeground(Color.white);
+			    } else {
+			      setBackground(Color.white);
+			      setForeground(Color.black);
+			    }
 
 			return this;
 		}
 	}
 
-	private class MyItemListener implements ItemListener {
-		public void itemStateChanged(ItemEvent e){
-			//PluginManageDialog.this.lbSiteURL.setText(((DataSource)PluginManageDialog.this.cmbDownloadSites.getSelectedItem()).getHref());
+	
+	private class MyListSelectionListener implements ListSelectionListener {
+		
+		private int clickCount =0;
+		
+		public void valueChanged(ListSelectionEvent ev){
+			clickCount++;
+
+			JList list = (JList) ev.getSource();
+			if (list.getSelectedIndices().length == 0){
+				return;
+			}
+
+			if (clickCount % 2 == 0){
+				//This is a work-around to handle two events -- from mouse press and mouse release 
+				// Reset the click counter
+				clickCount = 0;
+				return;
+			}
+			
+			DataSource dataSource = (DataSource) list.getSelectedValue();
+			
+			String urlStr = dataSource.getHref();
+			if (!PluginManageDialog.this.currentPluginSiteURL.equalsIgnoreCase(urlStr)){
+				PluginManageDialog.this.currentPluginSiteURL = urlStr;
+				PluginManageDialog.this.refreshPluginTree();
+			}
 		}
 	}
 	
+	
+	public static void main(String[] args) {
+		PluginManageDialog pd = new PluginManageDialog();
+        //pd.setSiteName("Testing");
+        List<DownloadableInfo> Plugins = new java.util.ArrayList<DownloadableInfo>();
+
+		PluginInfo infoC = new PluginInfo("1", "A Plugin");
+		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		Plugins.add(infoC);
+
+		infoC = new PluginInfo("2", "B Plugin");
+		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		Plugins.add(infoC);
+
+		infoC = new PluginInfo("3", "C");
+		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		Plugins.add(infoC);
+
+		pd.addCategory(cytoscape.plugin.Category.NONE.toString(), Plugins,
+				PluginInstallStatus.AVAILABLE);
+
+		List<DownloadableInfo> Outdated = new java.util.ArrayList<DownloadableInfo>();
+
+		PluginInfo infoOD = new PluginInfo("11", "CyGoose");
+		infoOD.addCytoscapeVersion("2.3");
+		Outdated.add(infoOD);
+
+		infoOD = new PluginInfo("12", "Y");
+		infoOD.addCytoscapeVersion("2.3");
+		Outdated.add(infoOD);
+
+		pd.addCategory("Outdated", Outdated, PluginInstallStatus.AVAILABLE);
+
+		pd.setMessage("Foo bar");
+		
+		pd.setVisible(true);
+	}
 
 }
