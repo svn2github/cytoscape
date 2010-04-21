@@ -5,6 +5,13 @@
 ant config_prod
 
 # Collect user name
+echo ""
+echo ""
+echo "Don't forget to create a shell on SourceForge first!"
+echo ""
+echo "	ssh -t USERNAME,cytoscape@shell.sourceforge.net create"
+echo ""
+echo ""
 echo "Sourceforge username: "
 read name
 
