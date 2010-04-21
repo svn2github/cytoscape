@@ -1,8 +1,11 @@
 package giny.view;
 
-import java.awt.*;
-import giny.model.*;
+import giny.model.Node;
+
+import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 /** 
  * Any and all questions should be directed to me.

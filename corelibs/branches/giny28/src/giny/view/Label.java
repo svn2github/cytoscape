@@ -67,7 +67,12 @@ public interface Label {
 	 */
 	public void setFont(Font aFont);
 	
-	
+	/**
+	 * Set position of label.  ObjectPosition is a consolidated data structure
+	 * designed as the replacement of deprecated parameters below.
+	 * 
+	 * @param p
+	 */
 	public void setPosition(final ObjectPosition p);
 	public ObjectPosition getPosition();
 	
