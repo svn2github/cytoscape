@@ -36,24 +36,19 @@
 
 package ding.view;
 
-import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.render.stateful.NodeDetails;
-
-import cytoscape.util.intr.IntObjHash;
-
-import giny.model.GraphPerspective;
 import giny.view.Label;
-import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Paint;
-import java.awt.Shape;
 import java.awt.TexturePaint;
-
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+
+import cytoscape.render.stateful.CustomGraphic;
+import cytoscape.render.stateful.NodeDetails;
+import cytoscape.util.intr.IntObjHash;
 
 
 /*
@@ -61,51 +56,59 @@ import java.util.Iterator;
  * there is a threat of multiple threads.
  */
 class DNodeDetails extends IntermediateNodeDetails {
+	
 	final DGraphView m_view;
 	final IntObjHash m_colorsLowDetail = new IntObjHash();
 	final Object m_deletedEntry = new Object();
 
 	// The values are Byte objects; the bytes are shapes defined in
 	// cytoscape.render.immed.GraphGraphics.
-	final HashMap m_shapes = new HashMap();
-	final HashMap m_fillPaints = new HashMap();
-	final HashMap m_borderWidths = new HashMap();
-	final HashMap m_borderPaints = new HashMap();
-	final HashMap m_labelCounts = new HashMap();
-	final HashMap m_labelTexts = new HashMap();
-	final HashMap m_labelFonts = new HashMap();
-	final HashMap m_labelPaints = new HashMap();
-	final HashMap m_labelTextAnchors = new HashMap();
-	final HashMap m_labelNodeAnchors = new HashMap();
-	final HashMap m_labelJustifys = new HashMap();
-	final HashMap m_labelOffsetXs = new HashMap();
-	final HashMap m_labelOffsetYs = new HashMap();
-	final HashMap m_labelWidths = new HashMap();
+	final Map<Integer, Byte> m_shapes = new HashMap<Integer, Byte>();
+	final Map<Integer, Paint> m_fillPaints = new HashMap<Integer, Paint>();
+	final Map<Integer, Float> m_borderWidths = new HashMap<Integer, Float>();
+	final Map<Integer, Paint> m_borderPaints = new HashMap<Integer, Paint>();
+	final Map<Integer, Integer> m_labelCounts = new HashMap<Integer, Integer>();
+	final Map<Long, String> m_labelTexts = new HashMap<Long, String>();
+	final Map<Long, Font> m_labelFonts = new HashMap<Long, Font>();
+	final Map<Long, Paint> m_labelPaints = new HashMap<Long, Paint>();
+	final Map<Integer, Double> m_labelWidths = new HashMap<Integer, Double>();
+	
+	final Map<Integer, Integer> m_labelTextAnchors = new HashMap<Integer, Integer>();
+	final Map<Integer, Integer> m_labelNodeAnchors = new HashMap<Integer, Integer>();
+	final Map<Integer, Integer> m_labelJustifys = new HashMap<Integer, Integer>();
+	final Map<Integer, Double> m_labelOffsetXs = new HashMap<Integer, Double>();
+	final Map<Integer, Double> m_labelOffsetYs = new HashMap<Integer, Double>();
 
-	DNodeDetails(DGraphView view) {
+	/**
+	 * This constructor is package-private.
+	 * Will be used only by the DNodeView.
+	 * 
+	 * @param view
+	 */
+	DNodeDetails(final DGraphView view) {
 		m_view = view;
 	}
 
-	void unregisterNode(int node) {
+	
+	void unregisterNode(final int node) {
 		final Object o = m_colorsLowDetail.get(node);
 
 		if ((o != null) && (o != m_deletedEntry))
 			m_colorsLowDetail.put(node, m_deletedEntry);
 
-		final Integer key = new Integer(node);
-		m_shapes.remove(key);
-		m_fillPaints.remove(key);
-		m_borderWidths.remove(key);
-		m_borderPaints.remove(key);
-		m_labelTextAnchors.remove(key);
-		m_labelNodeAnchors.remove(key);
-		m_labelJustifys.remove(key);
-		m_labelOffsetXs.remove(key);
-		m_labelOffsetYs.remove(key);
-		m_labelWidths.remove(key);
+		m_shapes.remove(node);
+		m_fillPaints.remove(node);
+		m_borderWidths.remove(node);
+		m_borderPaints.remove(node);
+		m_labelWidths.remove(node);
+		m_labelTextAnchors.remove(node);
+		m_labelNodeAnchors.remove(node);
+		m_labelJustifys.remove(node);
+		m_labelOffsetXs.remove(node);
+		m_labelOffsetYs.remove(node);
 
-		final Object intr = m_labelCounts.remove(key);
-		final int labelCount = ((intr == null) ? 0 : ((Integer) intr).intValue());
+		final Integer intr = m_labelCounts.remove(node);
+		final int labelCount = ((intr == null) ? 0 : intr);
 
 		for (int i = 0; i < labelCount; i++) {
 			final Long lKey = new Long((((long) node) << 32) | ((long) i));
@@ -131,6 +134,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 		return (Color) o;
 	}
 
+	
 	/*
 	 * A null color has the special meaning to remove overridden color.
 	 */
@@ -144,6 +148,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_colorsLowDetail.put(node, color);
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -244,9 +249,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	void overrideBorderPaint(int node, Paint paint) {
 		if ((paint == null) || paint.equals(super.borderPaint(node)))
-			m_borderPaints.remove(new Integer(node));
+			m_borderPaints.remove(node);
 		else
-			m_borderPaints.put(new Integer(node), paint);
+			m_borderPaints.put(node, paint);
 	}
 
 	/**
@@ -257,12 +262,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public int labelCount(int node) {
-		final Object o = m_labelCounts.get(new Integer(node));
+		final Integer o = m_labelCounts.get(node);
 
 		if (o == null)
 			return super.labelCount(node);
 
-		return ((Integer) o).intValue();
+		return o;
 	}
 
 	/*
@@ -393,17 +398,18 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public byte labelTextAnchor(final int node, final int labelInx) {
-		final Object o = m_labelTextAnchors.get(new Integer(node));
+		final Integer p = m_labelTextAnchors.get(node);
 
-		if (o == null)
+		if (p == null)
 			return super.labelTextAnchor(node, labelInx);
-
-		return convertG2ND(((Integer) o).intValue());
+		else
+			return convertG2ND(p);
 	}
 
+	
 	void overrideLabelTextAnchor(final int node, final int inx, final int anchor) {
 		if (convertG2ND(anchor) == super.labelTextAnchor(node, inx))
-			m_labelTextAnchors.remove(new Integer(node));
+			m_labelTextAnchors.remove(node);
 		else
 			m_labelTextAnchors.put(new Integer(node), new Integer(anchor));
 	}
@@ -417,12 +423,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public byte labelNodeAnchor(final int node, final int labelInx) {
-		final Object o = m_labelNodeAnchors.get(new Integer(node));
+		final Integer o = m_labelNodeAnchors.get(node);
 
 		if (o == null)
 			return super.labelNodeAnchor(node, labelInx);
 
-		return convertG2ND(((Integer) o).intValue());
+		return convertG2ND(o);
 	}
 
 	void overrideLabelNodeAnchor(final int node, final int inx, final int anchor) {
@@ -441,12 +447,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public float labelOffsetVectorX(final int node, final int labelInx) {
-		final Object o = m_labelOffsetXs.get(new Integer(node));
+		final Double o = m_labelOffsetXs.get(node);
 
 		if (o == null)
 			return super.labelOffsetVectorX(node, labelInx);
 
-		return ((Double) o).floatValue();
+		return o.floatValue();
 	}
 
 	void overrideLabelOffsetVectorX(final int node, final int inx, final double x) {
@@ -465,12 +471,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public float labelOffsetVectorY(final int node, final int labelInx) {
-		final Object o = m_labelOffsetYs.get(new Integer(node));
+		final Double o = m_labelOffsetYs.get(node);
 
 		if (o == null)
 			return super.labelOffsetVectorY(node, labelInx);
 
-		return ((Double) o).floatValue();
+		return o.floatValue();
 	}
 
 	void overrideLabelOffsetVectorY(final int node, final int inx, final double y) {
@@ -489,12 +495,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public byte labelJustify(final int node, final int labelInx) {
-		final Object o = m_labelJustifys.get(new Integer(node));
+		Integer o = m_labelJustifys.get(node);
 
 		if (o == null)
 			return super.labelJustify(node, labelInx);
 
-		return convertG2ND(((Integer) o).intValue());
+		return convertG2ND(o);
 	}
 
 	void overrideLabelJustify(final int node, final int inx, final int justify) {
@@ -512,12 +518,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public double labelWidth(int node) {
-		final Object o = m_labelWidths.get(new Integer(node));
+		final Double o = m_labelWidths.get(node);
 
 		if (o == null)
 			return super.labelWidth(node);
 
-		return ((Double) o).doubleValue();
+		return o;
 	}
 	
 	

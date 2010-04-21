@@ -50,6 +50,7 @@ import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.Label;
+import giny.view.ObjectPosition;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -1406,6 +1407,16 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		synchronized (m_view.m_lock) {
 			return m_view.m_edgeDetails.labelWidth(m_inx);
 		}
+	}
+
+	public ObjectPosition getPosition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPosition(ObjectPosition arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
