@@ -4,7 +4,8 @@ import cytoscape.CyNetwork;
 
 public final class SearchParameters {
 	
-	private CyNetwork network;
+	private CyNetwork physicalNetwork;
+	private CyNetwork geneticNetwork;
 	private String physicalEdgeAttrName;
 	private String geneticEdgeAttrName;
 		
@@ -18,12 +19,20 @@ public final class SearchParameters {
 	public SearchParameters() {
 	}
 
-	public void setNetwork(CyNetwork network) {
-		this.network = network;
+	public void setPhysicalNetwork(CyNetwork network) {
+		this.physicalNetwork = network;
 	}
 
-	public CyNetwork getNetwork() {
-		return network;
+	public CyNetwork getPhysicalNetwork() {
+		return physicalNetwork;
+	}
+
+	public void setGeneticNetwork(CyNetwork network) {
+		this.geneticNetwork = network;
+	}
+
+	public CyNetwork getGeneticNetwork() {
+		return geneticNetwork;
 	}
 
 	public void setPhysicalEdgeAttrName(String physicalEdgeAttrName) {
