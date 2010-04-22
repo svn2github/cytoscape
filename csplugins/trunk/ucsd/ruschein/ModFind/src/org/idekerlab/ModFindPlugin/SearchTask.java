@@ -33,7 +33,7 @@ public class SearchTask implements Task {
 	private static String VS_MODULE_NAME = "ModFind_module";
 	private static VisualStyle vs_overview = null;
 	private static VisualStyle vs_module = null;
-
+//
 	static {		
 		// Create visualStyles based on the definition in property files
 		Set<String> names = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames();
@@ -64,8 +64,8 @@ public class SearchTask implements Task {
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for complexes...");
 
-		final CyNetwork physicalInputNetwork = parameters.getNetwork();
-		final CyNetwork geneticInputNetwork = parameters.getNetwork();
+		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
+		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
 
 		final SFNetwork physicalNetwork =
 			convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getPhysicalEdgeAttrName());
