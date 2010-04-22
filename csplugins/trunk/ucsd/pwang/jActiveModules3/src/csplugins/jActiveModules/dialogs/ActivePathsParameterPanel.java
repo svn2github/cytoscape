@@ -76,6 +76,7 @@ import java.util.Collection;
 import javax.swing.JOptionPane;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import java.util.Comparator;
 
 public class ActivePathsParameterPanel extends JPanel {
 
@@ -293,94 +294,7 @@ public class ActivePathsParameterPanel extends JPanel {
 		}
 	}
 	
-	
-	private class CheckBoxCellRendererX extends JCheckBox implements TableCellRenderer {
-		// This class is not used for now
-		JPanel pnl = new JPanel(new java.awt.GridBagLayout());
 		
-		public CheckBoxCellRendererX(){
-			pnl.add(this);
-		}
-		
-		public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean hasFocus,
-                int row,
-                int column){
-			
-			if (value == null){
-				this.setSelected(false);
-				System.out.println("\tset to false");
-			}
-			else {
-				this.setSelected(Boolean.getBoolean(value.toString()));
-			}
-						
-			//if (isSelected){
-				this.repaint();
-			//}
-			setEnabled(true);
-			return pnl;//this;
-		}
-	}
-
-	
-	private class CheckBoxCellEditorX extends AbstractCellEditor implements TableCellEditor, ActionListener {
-		// This class is not used for now
-		private int row;
-		private int col;
-		public void actionPerformed(ActionEvent ev){
-			System.out.println("CheckBoxCellEditor action event received..");
-			// switch value for min and max
-		}
-		
-		JPanel pnl = new JPanel(new java.awt.GridBagLayout());
-		// This is the component that will handle the editing of the cell value
-	    JCheckBox component = new JCheckBox();
-	    
-	    public CheckBoxCellEditorX(){
-	    	pnl.add(component);
-	    	component.addActionListener(this);
-	    }
-
-	    // This method is called when a cell value is edited by the user.
-	    public Component getTableCellEditorComponent(JTable table, Object value,
-	            boolean isSelected, int rowIndex, int vColIndex) {
-	    	
-	    	row = rowIndex;
-	    	col = vColIndex;
-	        // 'value' is value contained in the cell located at (rowIndex, vColIndex)
-
-	        if (isSelected) {
-	            // cell (and perhaps other cells) are selected
-	        }
-
-	        // Configure the component with the specified value
-	        if (value == null){
-	        	component.setSelected(false);
-	        }
-	        else {
-	        	boolean bool = Boolean.getBoolean(value.toString());
-	        	component.setSelected(bool);
-	        }
-	        
-	        // update the value in data model
-	        table.getModel().setValueAt(value, rowIndex, vColIndex);
-	        // Return the configured component
-	        return pnl;//component;
-	    }
-
-	    // This method is called when editing is completed.
-	    // It must return the new value to be stored in the cell.
-	    public Object getCellEditorValue() {
-	        return component.isSelected();
-	    }
-    
-	}
-
-	
-	
 	private class NormalizationComboboxEditor extends AbstractCellEditor implements TableCellEditor {
 
 		// This is the component that will handle the editing of the cell value
@@ -425,14 +339,28 @@ public class ActivePathsParameterPanel extends JPanel {
 			if (value.toString().equalsIgnoreCase("")){
 				this.setSelectedItem("None");				
 			}
-			if (!value.toString().equalsIgnoreCase("None")){
-				this.setSelectedItem(value);				
+			else {
+				this.setSelectedItem(value);								
 			}
 			
 			if (isSelected){
-				this.repaint();
+				this.setBackground(table.getSelectionBackground());
+				this.setForeground(table.getSelectionForeground());
 			}
-			setEnabled(true);
+			else {
+				this.setBackground(table.getBackground());
+				this.setForeground(table.getForeground());				
+			}
+			
+			Double min = (Double)table.getModel().getValueAt(row, 1);
+			Double max = (Double)table.getModel().getValueAt(row, 2);
+			
+			if (Math.min(min, max)>=0.0 && Math.max(min, max)<=1.0){
+				setEnabled(false);
+			}
+			else {
+				setEnabled(true);	
+			}
 			return this;
 		}
 	}
@@ -482,13 +410,35 @@ public class ActivePathsParameterPanel extends JPanel {
 
 				row[3] = false;
 				row[4] = "None";
+				if (!(Math.min((Double)row[1],(Double)row[2])>=0.0 && Math.max((Double)row[1],(Double)row[2]) <= 1.0)){
+					row[4] = "Quantile";
+				}
 				
 				dataVect.add(row);
 			}
 		}
 		
+		// do sorting, put the rows with value range 0-1 ahead to the rest
+		Collections.sort(dataVect,new CompareTableRow());
+		
 		return dataVect;
 	}
+	
+	// do sorting, put the rows with value range 0-1 ahead to the rest
+	class CompareTableRow implements Comparator<Object[]>
+	{
+		public int compare(Object[] row1, Object[] row2){
+			if (!(Math.min((Double)row1[1],(Double)row1[2]) >=0 && Math.max((Double)row1[1],(Double)row1[2]) <=1)){
+				return 1;
+			}
+			return 0;
+		}
+		
+		public boolean equals(Object[] o){
+			return false;
+		}
+	}
+	
 	
 	private class AttrSelectionTableModel extends AbstractTableModel {
 		Vector dataVect = null;
@@ -530,9 +480,19 @@ public class ActivePathsParameterPanel extends JPanel {
 		}
 		
 		public boolean isCellEditable(int row, int col){
-			if (col == 3 || col == 4) {
+			if (col == 3){
 				return true;
 			}
+
+			if (col == 4){
+				Object[] oneRow = (Object[])dataVect.elementAt(row);
+				if (Math.min((Double)oneRow[1], (Double)oneRow[2])>= 0.0 && Math.min((Double)oneRow[1],(Double)oneRow[2])<= 1.0){
+					return false;
+				}
+				else 
+					return true;
+			}
+			
 			return false;
 		}
 		
@@ -563,7 +523,14 @@ public class ActivePathsParameterPanel extends JPanel {
 			else {
 				setIcon(icon1);
 			}
-			
+			if (isSelected){
+				this.setBackground(table.getSelectionBackground());
+				this.setForeground(table.getSelectionForeground());
+			}
+			else {
+				this.setBackground(table.getBackground());
+				this.setForeground(table.getForeground());
+			}
 			return this;
 		}
 	}
