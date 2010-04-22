@@ -43,6 +43,7 @@ package cytoscape.render.stateful;
 
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Represents all the information needed to define a custom graphic for a given
@@ -87,40 +88,70 @@ import java.awt.Shape;
  */
 
 public class CustomGraphic {
-	private final Shape _shape;
-	private final Paint _paint;
-	private final byte _anchor;
+	private final Shape shape;
+	private PaintFactory pf;	
+	private Paint paint;
+	
+	@Deprecated
+	private final byte anchor;
 
-	public CustomGraphic(Shape shape, Paint paint) {
-		this(shape, paint, NodeDetails.ANCHOR_CENTER);
+	
+	/**
+	 * Constructor 
+	 * @param shape
+	 * @param factory
+	 */
+	public CustomGraphic(final Shape shape, final PaintFactory factory) {
+		if (shape == null)
+			throw new IllegalArgumentException("The shape given was null.");
+		this.shape = shape;
+		this.anchor = NodeDetails.ANCHOR_CENTER;
+		this.pf = factory;
 	}
 
-	public CustomGraphic(Shape shape, Paint paint, byte anchor) {
-		if ((shape == null) || (paint == null))
-			throw new IllegalArgumentException(
-					"The shape or paint given was null.");
+	/**
+	 * Will be removed March 2011.
+	 * 
+	 * @param shape
+	 * @param paint
+	 * @param anchor
+	 */
+	@Deprecated
+	public CustomGraphic(final Shape shape, final Paint paint, final byte anchor) {
+		this(shape, null);
 		if ((anchor < 0) || (anchor > NodeDetails.MAX_ANCHOR_VAL)) {
 			throw new IllegalArgumentException("The anchor value " + anchor
 					+ " is not in the range 0 <= anchor <= "
 					+ NodeDetails.MAX_ANCHOR_VAL + ".");
 		}
-		_shape = shape;
-		_paint = paint;
-		_anchor = anchor;
+		this.paint = paint;
+		this.pf = new DefaultPaintFactory(this.paint);
 	}
 
 	/**
 	 * Return the Shape that makes up this CustomGraphic.
 	 */
 	public Shape getShape() {
-		return _shape;
+		return shape;
 	}
 
 	/**
 	 * Return the Paint that makes up this CustomGraphic.
 	 */
 	public Paint getPaint() {
-		return _paint;
+		if (paint != null)
+			return paint;
+		else
+			return getPaint(shape.getBounds2D());
+	}
+
+	public Paint getPaint(Rectangle2D bound) {
+		paint = pf.getPaint(bound);
+		return paint;
+	}
+	
+	public PaintFactory getPaintFactory() {
+		return this.pf;
 	}
 
 	/**
@@ -129,7 +160,36 @@ public class CustomGraphic {
 	 * rendered at a location which is equal to this anchor point plus the
 	 * offset vector.
 	 */
+	@Deprecated
 	public byte getAnchor() {
-		return _anchor;
+		return anchor;
 	}
+	
+	
+	/**
+	 * Very simple paint factory.
+	 * Always return original paint passed to the constructor.
+	 * 
+	 * Will be used in this package only.
+	 * 
+	 * Eventually, this will be removed.
+	 *
+	 */
+	private class DefaultPaintFactory implements PaintFactory {
+		
+		private final Paint p;
+		
+		public DefaultPaintFactory(final Paint p) {	
+			this.p = p;
+		}
+		
+		/**
+		 * Returns white color paint.  This is the default for all custom graphics.
+		 */
+		public Paint getPaint(final Rectangle2D bound) {
+			return p;
+		}
+
+	}
+
 }
