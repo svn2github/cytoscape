@@ -51,16 +51,43 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel() {
 		initComponents();
-		
-		// add the target network to topPanel
-		networkPanel = new NetworkSelectorPanel();
-		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
+
+		topPane.setBorder(BorderFactory.createTitledBorder("Target Networks"));
+
+		physicalNetworkPanel = new NetworkSelectorPanel();
+		geneticNetworkPanel = new NetworkSelectorPanel();
+
+		// add the target networks to topPanel
+		javax.swing.JLabel lbPhysicalNetwork = new javax.swing.JLabel("Physical network");
+		javax.swing.JLabel lbGeneticNetwork = new javax.swing.JLabel("Genetic network");
 		
 		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.weightx = 1.0;
-		topPane.add(networkPanel, gridBagConstraints);
+		
+        lbPhysicalNetwork.setText("Physical network");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        topPane.add(lbPhysicalNetwork, gridBagConstraints);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
+        topPane.add(physicalNetworkPanel, gridBagConstraints);
+
+        lbGeneticNetwork.setText("Genetic Network");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        topPane.add(lbGeneticNetwork, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
+        topPane.add(geneticNetworkPanel, gridBagConstraints);
+
+		/////
+		
 		closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
 		aboutButton.setPreferredSize(new java.awt.Dimension(67, 23));
 		closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
@@ -440,8 +467,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     // End of variables declaration                     
                
   
-	private NetworkSelectorPanel networkPanel;
-
+	private NetworkSelectorPanel physicalNetworkPanel;
+	private NetworkSelectorPanel geneticNetworkPanel;
+	
 	private void updateAttributeLists() {
 		// Save current selection
 		final Object geneticSelected = geneticEdgeComboBox.getSelectedItem();
@@ -486,8 +514,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private boolean buildSearchParameters() {
 		parameters = new SearchParameters();
 		
-		// Set network
-		parameters.setNetwork(networkPanel.getSelectedNetwork());
+		// Set networks
+		parameters.setPhysicalNetwork(physicalNetworkPanel.getSelectedNetwork());
+		parameters.setGeneticNetwork(geneticNetworkPanel.getSelectedNetwork());
 
 		// Set edge attributes.
 		final Object geneticEdgeItem  = geneticEdgeComboBox.getSelectedItem();
