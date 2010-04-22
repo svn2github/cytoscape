@@ -20,6 +20,7 @@ public class VennDiagram {
     public double[] areas;
     public double[] residuals;
     public double[] colors;
+    public double[] counts;
     public String[] circleLabels;
     public String[] residualLabels;
     public double stress;
@@ -27,13 +28,14 @@ public class VennDiagram {
     public double stress05;
 
     public VennDiagram(double[][] centers, double[] diameters, double[] areas, double[] residuals,
-                       String[] circleLabels, String[] residualLabels, double[] colors,
-                       double stress, double stress01, double stress05) {
+                       String[] circleLabels, String[] residualLabels, double[] colors, 
+					   double[] counts, double stress, double stress01, double stress05) {
         this.centers = centers;
         this.diameters = diameters;
         this.areas = areas;
         this.residuals = residuals;
         this.colors = colors;
+        this.counts = counts;
         this.circleLabels = circleLabels;
         this.residualLabels = residualLabels;
         this.stress = stress;

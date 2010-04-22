@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import cytoscape.logger.CyLogger;
+
 public class VennAnalytic {
     private int nRows;
     private int nCircles;
@@ -38,9 +40,12 @@ public class VennAnalytic {
     private double maxArea;
     private int totalCount;
 
+	private CyLogger logger;
+
     public VennAnalytic() {
         stepsize = .01;
         minStress = .000001;
+		logger = CyLogger.getLogger(VennAnalytic.class);
     }
 
     public VennDiagram compute(VennData vd) {
@@ -69,8 +74,48 @@ public class VennAnalytic {
             copyCircles(previousCenters, centers);
         stress = computeStress();
 
-        return collectResults();
+        return collectResults2();
     }
+
+    private VennDiagram collectResults2() {
+        double[] colors = new double[nCircles];
+        for (int j = 0; j < nCircles; j++)
+            colors[j] = (double) (j + 1) / (nCircles + 1);
+        double stress01 = 0;
+        double stress05 = 0;
+        if (nCircles > 2) {
+            stress01 = Math.exp(.909 * (nCircles - 6.105)) / (1 + Math.exp(.909 * (nCircles - 6.105)));
+            stress05 = Math.exp(.900 * (nCircles - 5.129)) / (1 + Math.exp(.900 * (nCircles - 5.129)));
+        }
+        double[] residuals = new double[nPolygons - 1];
+        String[] residualLabels = new String[nPolygons - 1];
+        double area = 0;
+        int nonZero = 0;
+        for (int i = 1; i < nPolygons; i++) {
+            residuals[i - 1] = polyAreas[i] - polyHats[i];
+            char[] c = encode(i);
+            String s = "";
+            for (int j = 0; j < c.length; j++) {
+                if (c[j] == '1')
+                    s += (circleLabels[j] + "&");
+            }
+            area += polyAreas[i];
+            if (residuals[i - 1] != 0) 
+                nonZero++;
+            s = s.substring(0, s.length() - 1);
+            residualLabels[i - 1] = s;
+			logger.info("Set name: " + residualLabels[i - 1] + "  residual: " + residuals[i-1] + " set area: " + polyAreas[i] + "  num members: " + polyData[i]); 
+        }
+        double cut = area / nonZero;
+        for (int i = 0; i < residuals.length; i++) {
+            if (Math.abs(residuals[i]) > cut)
+				logger.warn("OUTLIER!!   Set name: " + residualLabels[i] + "  residual: " + residuals[i]);
+        }
+        logger.info("stress = " + stress + ", stress01 = " + stress01 + ", stress05 = " + stress05);
+
+        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, stress, stress01, stress05);
+}
+
 
     private VennDiagram collectResults() {
         double[] colors = new double[nCircles];
@@ -94,12 +139,11 @@ public class VennAnalytic {
             }
             s = s.substring(0, s.length() - 1);
             residualLabels[i - 1] = s;
-            System.out.println(residualLabels[i - 1] + " " + residuals[i-1]+" "+polyAreas[i] + " " + polyData[i]);
+			logger.info("Set name: " + residualLabels[i - 1] + "  residual: " + residuals[i-1] + " set area: " + polyAreas[i] + "  num members: " + polyData[i]); 
         }
-        System.out.println("stress = " + stress + ", stress01 = " + stress01 + ", stress05 = " + stress05);
+        logger.info("stress = " + stress + ", stress01 = " + stress01 + ", stress05 = " + stress05);
 
-        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors,
-                stress, stress01, stress05);
+        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, stress, stress01, stress05);
     }
 
     private void processAreaData(String[][] data, double[] areas) {
@@ -453,7 +497,7 @@ public class VennAnalytic {
             recenter();
             stress = computeStress();
             moveGlobal();
-            System.out.println("global iteration, loss " + iter + " " + stress);
+            //System.out.println("global iteration, loss " + iter + " " + stress);
             if (stress < minStress || lastStress - stress < minStress)
                 break;
             lastStress = stress;
@@ -468,7 +512,7 @@ public class VennAnalytic {
             recenter();
             stress = computeStress();
             moveLocal();
-            System.out.println("local iteration, loss " + iter + " " + stress);
+            //System.out.println("local iteration, loss " + iter + " " + stress);
             if (stress < minStress || lastStress - stress < minStress)
                 break;
             lastStress = stress;

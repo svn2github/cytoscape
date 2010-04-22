@@ -36,23 +36,30 @@
 
 package edu.uic.ncdm.venn.data;
 
+import cytoscape.Cytoscape; 
 import cytoscape.CyNetwork; 
 import cytoscape.CyNode; 
+import cytoscape.data.CyAttributes; 
 import java.util.*;
 
 public class VennDataCreator {
 
-	public static VennData create( List<CyNetwork> nets ) {
+	public static VennData create( List<CyNetwork> nets, String nodeAttr ) {
 		
 		Map<String,List<String>> netNodeMap = new HashMap<String,List<String>>();
 		int size = 0;
+		CyAttributes attrs = Cytoscape.getNodeAttributes();
 
 		for ( CyNetwork net : nets ) {
 			List<String> nodes = new LinkedList<String>();
 			Iterator it = net.nodesIterator();
 			while (it.hasNext()) {
 				CyNode n = (CyNode)it.next();
-				nodes.add( n.getIdentifier() );
+				Object attr = attrs.getAttribute( n.getIdentifier(), nodeAttr );
+				if ( attr != null )
+					nodes.add( attr.toString() );
+				else
+					nodes.add("null attribute");
 			}
 			size += nodes.size();
 			netNodeMap.put( net.getTitle(), nodes );
@@ -63,8 +70,8 @@ public class VennDataCreator {
 
 		int i = 0;
 		for ( String netName : netNodeMap.keySet() ) {
-			for ( String nodeName : netNodeMap.get(netName) ) { 
-				data[i][0] = nodeName;
+			for ( String nodeValue : netNodeMap.get(netName) ) { 
+				data[i][0] = nodeValue;
 				data[i][1] = netName;
 				areas[i] = 0.0;
 				i++;

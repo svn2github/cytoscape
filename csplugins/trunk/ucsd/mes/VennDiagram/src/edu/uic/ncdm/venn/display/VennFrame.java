@@ -20,17 +20,40 @@ import javax.swing.*;
 import java.awt.*;
 
 public class VennFrame extends JFrame {
-    private int HEIGHT = 700;
+    private int HEIGHT = 800;
     private int WIDTH = 700;
 
     public VennFrame(VennDiagram vd) {
         Container con = this.getContentPane();
         con.setBackground(Color.white);
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(Color.white);
+
         VennCanvas vc = new VennCanvas(vd);
-        con.add(vc);
+		vc.setPreferredSize(new Dimension(700,700));
+        panel.add(vc);
+
+		String[] columnNames = new String[] {"Network Intersection Name","Number of Elements" };
+		Object[][] data = new Object[vd.residualLabels.length][2];
+		int i = 0;
+		for ( String lab : vd.residualLabels ) {
+			data[i][0] = vd.residualLabels[i];
+			data[i][1] = vd.counts[i+1]; // TODO see polyData and residuals in VennAnalytics about this!!!!
+			i++;
+		}
+		JTable resultsTable = new JTable(data,columnNames);
+		resultsTable.setPreferredScrollableViewportSize(new Dimension(700, 100));
+		//resultsTable.setFillsViewportHeight(true);
+		JScrollPane scrollPane = new JScrollPane(resultsTable);
+
+		panel.add(scrollPane);
+
+		con.add(panel);
+
         setTitle("Venn/Euler Diagram");
         setBounds(0, 0, WIDTH, HEIGHT);
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
     }

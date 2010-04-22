@@ -57,8 +57,9 @@ public class VennAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		VennDialog dialog = VennDialog.showDialog();
 
-		VennData data = VennDataCreator.create( VennDialog.getNetworks() ); 
+		VennData data = VennDataCreator.create( dialog.getNetworks(), dialog.getAttributeName() ); 
 
         VennAnalytic va = new VennAnalytic();
         VennDiagram vd = va.compute(data);
