@@ -97,7 +97,7 @@
 		<fileset dir="${resources.dir}/testData" includes="*" />
 	</copy>
 -->
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/example"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/edu/uic/ncdm/venn"/>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>

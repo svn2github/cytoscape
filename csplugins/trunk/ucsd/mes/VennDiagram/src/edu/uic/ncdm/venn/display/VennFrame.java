@@ -24,9 +24,9 @@ import  java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public class VennFrame extends JFrame {
-    private int HEIGHT = 800;
-    private int WIDTH = 700;
-	private NumberFormat formatter = new DecimalFormat("#0.000");
+    private int TOTAL_SIZE = 800;
+    private int SIZE = 700;
+	private NumberFormat floatFormat = new DecimalFormat("#0.000");
 	private NumberFormat intFormat = new DecimalFormat("#0");
 
     public VennFrame(VennDiagram vd) {
@@ -38,24 +38,24 @@ public class VennFrame extends JFrame {
         panel.setBackground(Color.white);
 
         VennCanvas vc = new VennCanvas(vd);
-		vc.setPreferredSize(new Dimension(700,700));
+		vc.setPreferredSize(new Dimension(SIZE,SIZE));
         panel.add(vc);
 
-		String[] columnNames = new String[] {"Network Intersection Name","Residuals","Size","Number of Elements" };
+		String[] columnNames = new String[] {"Network Intersection Name","Residual",
+		                                     "Intersection Area","Number of Elements" };
 		Object[][] data = new Object[vd.residualLabels.length][4];
 		int i = 0;
 		for ( String lab : vd.residualLabels ) {
 			data[i][0] = vd.residualLabels[i];
-			data[i][1] = formatter.format(vd.residuals[i]);
+			data[i][1] = floatFormat.format(vd.residuals[i]);
 			// TODO see polyData and residuals in VennAnalytics to understand the i+1 here!!! 
-			data[i][2] = formatter.format(vd.areas[i+1]);
+			data[i][2] = floatFormat.format(vd.areas[i+1]);
 			data[i][3] = intFormat.format(vd.counts[i+1]); 
 			i++;
 		}
 		JTable resultsTable = new JTable(data,columnNames);
-		resultsTable.setDefaultRenderer( String.class, new WarningCellRenderer(vd) );
-		resultsTable.setPreferredScrollableViewportSize(new Dimension(700, 100));
-		//resultsTable.setFillsViewportHeight(true);
+		resultsTable.setDefaultRenderer( Object.class, new WarningCellRenderer(vd) );
+		resultsTable.setPreferredScrollableViewportSize(new Dimension(SIZE, TOTAL_SIZE-SIZE));
 		JScrollPane scrollPane = new JScrollPane(resultsTable);
 
 		panel.add(scrollPane);
@@ -63,27 +63,35 @@ public class VennFrame extends JFrame {
 		con.add(panel);
 
         setTitle("Venn/Euler Diagram");
-        setBounds(0, 0, WIDTH, HEIGHT);
+        setBounds(0, 0, SIZE, TOTAL_SIZE);
         setResizable(false);
         setVisible(true);
+
+		if ( vd.stress > vd.stress05 )
+			JOptionPane.showMessageDialog(this, "The global stress is greater than the 5% threshold, so the results should be considered suspect!", "WARNING!", JOptionPane.WARNING_MESSAGE);	
     }
 
 	private class WarningCellRenderer extends JLabel
                            implements TableCellRenderer {
 		private VennDiagram vd;
+		private Color warningColor = new Color(1.0f,0f,0f,0.25f);
 		public WarningCellRenderer(VennDiagram vd) {
 			this.vd = vd;
 			setOpaque(true); //MUST do this for background to show up.
 		}
 
 		public Component getTableCellRendererComponent(
-                            JTable table, Object color,
+                            JTable table, Object label,
                             boolean isSelected, boolean hasFocus,
                             int row, int column) {
+			setText((String)label);
 			if (vd.warnings[row]) {
-				setBackground(Color.red);
+				setBackground(warningColor);
+				setToolTipText("!");
+			} else {
+				setBackground(Color.white);
+				setToolTipText("");
 			}
-			setToolTipText("Bad things man!");
 			return this;
     	}
 	}
