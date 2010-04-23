@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.event.ChangeEvent;
@@ -25,7 +26,7 @@ import cytoscape.visual.customgraphic.NullCustomGraphics;
 import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
 /**
- * Display available
+ * Display list of images available as custom graphics
  * 
  * @author kono
  */
@@ -34,7 +35,6 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 	private static final long serialVersionUID = -8342056297304400824L;
 
 	private DefaultListModel model;
-	
 	private final CustomGraphicsPool pool;
 
 	/**
@@ -44,12 +44,10 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 	 */
 	public CustomGraphicsBrowser() throws IOException {
 		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
-		
-		initComponents();
-		//GradientRectangleCustomGraphics grad = new GradientRectangleCustomGraphics();
-		//Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(grad.getDisplayName(), grad);
 
+		initComponents();
 		addAllImages();
+
 		pool.addChangeListener(this);
 	}
 
@@ -70,11 +68,14 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 
 	}// </editor-fold>
 
+	/**
+	 * Add on-memory images to Model.
+	 */
 	private void addAllImages() {
 		final Collection<CyCustomGraphics<?>> graphics = pool.getAll();
-		
+
 		for (CyCustomGraphics<?> cg : graphics) {
-			if(cg instanceof NullCustomGraphics == false)
+			if (cg instanceof NullCustomGraphics == false)
 				model.addElement(cg);
 		}
 	}
@@ -86,52 +87,53 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if (cg != null) {
 			pool.addGraphics(cg.hashCode(), cg);
 			model.addElement(cg);
 		}
 	}
 
-	static DataFlavor urlFlavor;
+	private static DataFlavor urlFlavor;
+	private static DataFlavor imageFlavor;
 	static {
 		try {
 			urlFlavor = new DataFlavor(
 					"application/x-java-url; class=java.net.URL");
+			imageFlavor = new DataFlavor(
+					"image/x-pict;representationclass=java.io.InputStream");
 		} catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
 		}
 	}
 
-	class URLDropTarget extends DropTarget {
+	/**
+	 * Dra
+	 * 
+	 * @author kono
+	 * 
+	 */
+	private class URLDropTarget extends DropTarget {
+
+		private static final long serialVersionUID = -7007999535331084109L;
 
 		public void drop(DropTargetDropEvent dtde) {
 
-			try {
-				Transferable trans = dtde.getTransferable();
-				if (trans.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-					dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-					Object obj = trans
-							.getTransferData(DataFlavor.javaFileListFlavor);
-					java.util.List<File> fileList = (java.util.List<File>) obj;
-
-					for (File file : fileList) {
-						System.out.println("GOT file list@@@@@@@@@@@@@@@ "
-								+ file.toString());
-
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-			Transferable trans = dtde.getTransferable();
+			final Transferable trans = dtde.getTransferable();
 			dumpDataFlavors(trans);
 			boolean gotData = false;
-			// try for application/x-java-url flavor
 			try {
-				if (trans.isDataFlavorSupported(urlFlavor)) {
+				if (trans.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+					final List<File> fileList = (List<File>) trans
+							.getTransferData(DataFlavor.javaFileListFlavor);
+
+					for (File file : fileList) {
+						System.out.println("\tGOT image file: " + file.toString());
+						addCustomGraphics(file.toURI().toURL().toString());
+					}
+					gotData = true;
+				} else if (trans.isDataFlavorSupported(urlFlavor)) {
 					URL url = (URL) trans.getTransferData(urlFlavor);
 					System.out.println("got URL " + url);
 					// Add image
@@ -169,5 +171,4 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 		System.out.println("###### Change Event: " + e);
 	}
 
-	
 }
