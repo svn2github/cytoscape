@@ -30,6 +30,7 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.util.swing.CyCollapsiblePanel;
 
 /**
  * 
@@ -50,8 +51,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel() {
-		initComponents();
+		
+		initComponents(); // the main panel
 
+		initComponents2(); // parameter panel
+		
 		topPane.setBorder(BorderFactory.createTitledBorder("Target Networks"));
 
 		physicalNetworkPanel = new NetworkSelectorPanel();
@@ -86,8 +90,18 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
         topPane.add(geneticNetworkPanel, gridBagConstraints);
 
-		/////
-		
+        // Add parameter panel to collapsibilePanel
+        CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
+        collapsiblePanel.getContentPane().add(pnlParameter);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+
+        this.parameterPanel.add(collapsiblePanel, gridBagConstraints);
+         
+		// Set the button size the same
 		closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
 		aboutButton.setPreferredSize(new java.awt.Dimension(67, 23));
 		closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
@@ -128,21 +142,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         geneticEdgeLabel = new javax.swing.JLabel();
         physicalEdgeComboBox = new javax.swing.JComboBox();
         geneticEdgeComboBox = new javax.swing.JComboBox();
-        scorePanel = new javax.swing.JPanel();
-        alphaLabel = new javax.swing.JLabel();
-        alphaMultiplierLabel = new javax.swing.JLabel();
-        degreeLabel = new javax.swing.JLabel();
-        alphaTextField = new javax.swing.JTextField();
-        alphaMultiplierTextField = new javax.swing.JTextField();
-        degreeTextField = new javax.swing.JTextField();
-        lbPlaceHolder1 = new javax.swing.JLabel();
-        edgeFilteringPanel = new javax.swing.JPanel();
-        pValueThresholdLabel = new javax.swing.JLabel();
-        pValueThresholdTextField = new javax.swing.JTextField();
-        lbPlaceHolder2 = new javax.swing.JLabel();
-        lbNumberOfSamples = new javax.swing.JLabel();
-        numberOfSamplesTextField = new javax.swing.JTextField();
-        lbPlaceHolder3 = new javax.swing.JLabel();
+        parameterPanel = new javax.swing.JPanel();
         buttonPanel = new javax.swing.JPanel();
         helpButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
@@ -153,7 +153,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         topPane.setLayout(new java.awt.GridBagLayout());
 
+        topPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Target Networks"));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         add(topPane, gridBagConstraints);
@@ -199,10 +202,98 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeAttributePanel.add(geneticEdgeComboBox, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         add(edgeAttributePanel, gridBagConstraints);
+
+        parameterPanel.setLayout(new java.awt.GridBagLayout());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(parameterPanel, gridBagConstraints);
+
+        buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        helpButton.setText("Help");
+        helpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpButtonActionPerformed(evt);
+            }
+        });
+
+        buttonPanel.add(helpButton);
+
+        aboutButton.setText("About");
+        aboutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutButtonActionPerformed(evt);
+            }
+        });
+
+        buttonPanel.add(aboutButton);
+
+        closeButton.setText("Close");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
+
+        buttonPanel.add(closeButton);
+
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+
+        buttonPanel.add(searchButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        add(buttonPanel, gridBagConstraints);
+
+    }// </editor-fold>                        
+
+	
+    // The following UI is for parameter panel
+    
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">                          
+    private void initComponents2() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        pnlParameter = new javax.swing.JPanel();
+        scorePanel = new javax.swing.JPanel();
+        alphaLabel = new javax.swing.JLabel();
+        alphaMultiplierLabel = new javax.swing.JLabel();
+        degreeLabel = new javax.swing.JLabel();
+        alphaTextField = new javax.swing.JTextField();
+        alphaMultiplierTextField = new javax.swing.JTextField();
+        degreeTextField = new javax.swing.JTextField();
+        lbPlaceHolder1 = new javax.swing.JLabel();
+        edgeFilteringPanel = new javax.swing.JPanel();
+        pValueThresholdLabel = new javax.swing.JLabel();
+        pValueThresholdTextField = new javax.swing.JTextField();
+        lbPlaceHolder2 = new javax.swing.JLabel();
+        lbNumberOfSamples = new javax.swing.JLabel();
+        numberOfSamplesTextField = new javax.swing.JTextField();
+        lbPlaceHolder3 = new javax.swing.JLabel();
+
+        pnlParameter.setLayout(new java.awt.GridBagLayout());
 
         scorePanel.setLayout(new java.awt.GridBagLayout());
 
@@ -268,13 +359,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        add(scorePanel, gridBagConstraints);
+        pnlParameter.add(scorePanel, gridBagConstraints);
 
         edgeFilteringPanel.setLayout(new java.awt.GridBagLayout());
 
         edgeFilteringPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Filtering"));
         pValueThresholdLabel.setText("Percentile Threshold:");
-        pValueThresholdLabel.setPreferredSize(new java.awt.Dimension(101, 14));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 93, 0, 0);
@@ -309,61 +399,22 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        add(edgeFilteringPanel, gridBagConstraints);
+        pnlParameter.add(edgeFilteringPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        add(lbPlaceHolder3, gridBagConstraints);
-
-        buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        helpButton.setText("Help");
-        helpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                helpButtonActionPerformed(evt);
-            }
-        });
-
-        buttonPanel.add(helpButton);
-
-        aboutButton.setText("About");
-        aboutButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aboutButtonActionPerformed(evt);
-            }
-        });
-
-        buttonPanel.add(aboutButton);
-
-        closeButton.setText("Close");
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
-            }
-        });
-
-        buttonPanel.add(closeButton);
-
-        searchButton.setText("Search");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
-
-        buttonPanel.add(searchButton);
+        pnlParameter.add(lbPlaceHolder3, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        add(buttonPanel, gridBagConstraints);
+        gridBagConstraints.weighty = 1.0;
 
     }// </editor-fold>                        
-
-	
+  
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// Make sure the edge attributes of Physical and Genetic are types of Integer or Float
 		String geneticSelected = geneticEdgeComboBox.getSelectedItem().toString();
@@ -464,6 +515,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JPanel scorePanel;
     private javax.swing.JButton searchButton;
     private javax.swing.JPanel topPane;
+    private javax.swing.JPanel pnlParameter;
+    private javax.swing.JPanel parameterPanel;
     // End of variables declaration                     
                
   
