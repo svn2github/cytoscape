@@ -74,10 +74,10 @@ public class VennAnalytic {
             copyCircles(previousCenters, centers);
         stress = computeStress();
 
-        return collectResults2();
+        return collectResults();
     }
 
-    private VennDiagram collectResults2() {
+    private VennDiagram collectResults() {
         double[] colors = new double[nCircles];
         for (int j = 0; j < nCircles; j++)
             colors[j] = (double) (j + 1) / (nCircles + 1);
@@ -90,16 +90,30 @@ public class VennAnalytic {
         double[] residuals = new double[nPolygons - 1];
         String[] residualLabels = new String[nPolygons - 1];
 		boolean[] warnings = new boolean[nPolygons -1];
+		double[][] luneCenters = new double[nPolygons -1][2];
         double area = 0;
         int nonZero = 0;
         for (int i = 1; i < nPolygons; i++) {
             residuals[i - 1] = polyAreas[i] - polyHats[i];
             char[] c = encode(i);
             String s = "";
+			double numIntersecting = 0.0;
             for (int j = 0; j < c.length; j++) {
-                if (c[j] == '1')
+                if (c[j] == '1') {
                     s += (circleLabels[j] + "&");
+					// record the centers of the circles
+					luneCenters[i-1][0] += centers[j][0];
+					luneCenters[i-1][1] += centers[j][1];
+					numIntersecting += 1.0;
+				}
             }
+
+			// find the lune centers
+			if ( numIntersecting > 0 ) {
+				luneCenters[i-1][0] /= numIntersecting;
+				luneCenters[i-1][1] /= numIntersecting;
+			} 
+
             area += polyAreas[i];
             if (residuals[i - 1] != 0) 
                 nonZero++;
@@ -118,39 +132,8 @@ public class VennAnalytic {
         }
         logger.info("stress = " + stress + ", stress01 = " + stress01 + ", stress05 = " + stress05);
 
-        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, warnings, stress, stress01, stress05);
-}
-/*
-
-    private VennDiagram collectResults() {
-        double[] colors = new double[nCircles];
-        for (int j = 0; j < nCircles; j++)
-            colors[j] = (double) (j + 1) / (nCircles + 1);
-        double stress01 = 0;
-        double stress05 = 0;
-        if (nCircles > 2) {
-            stress01 = Math.exp(.909 * (nCircles - 6.105)) / (1 + Math.exp(.909 * (nCircles - 6.105)));
-            stress05 = Math.exp(.900 * (nCircles - 5.129)) / (1 + Math.exp(.900 * (nCircles - 5.129)));
-        }
-        double[] residuals = new double[nPolygons - 1];
-        String[] residualLabels = new String[nPolygons - 1];
-        for (int i = 1; i < nPolygons; i++) {
-            residuals[i - 1] = polyAreas[i] - polyHats[i];
-            char[] c = encode(i);
-            String s = "";
-            for (int j = 0; j < c.length; j++) {
-                if (c[j] == '1')
-                    s += (circleLabels[j] + "&");
-            }
-            s = s.substring(0, s.length() - 1);
-            residualLabels[i - 1] = s;
-			logger.info("Set name: " + residualLabels[i - 1] + "  residual: " + residuals[i-1] + " set area: " + polyAreas[i] + "  num members: " + polyData[i]); 
-        }
-        logger.info("stress = " + stress + ", stress01 = " + stress01 + ", stress05 = " + stress05);
-
-        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, stress, stress01, stress05);
-    }
-	*/
+        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, warnings, luneCenters, stress, stress01, stress05);
+	}
 
     private void processAreaData(String[][] data, double[] areas) {
         HashMap sets = new HashMap();

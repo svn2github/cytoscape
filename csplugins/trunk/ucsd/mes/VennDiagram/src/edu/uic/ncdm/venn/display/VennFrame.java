@@ -23,13 +23,17 @@ import java.awt.*;
 import  java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class VennFrame extends JFrame {
-    private int TOTAL_SIZE = 800;
+import cytoscape.Cytoscape;
+
+public class VennFrame extends JDialog {
+    private int RESIDUAL_SIZE = 100;
+    private int STRESS_SIZE = 50;
     private int SIZE = 700;
 	private NumberFormat floatFormat = new DecimalFormat("#0.000");
 	private NumberFormat intFormat = new DecimalFormat("#0");
 
-    public VennFrame(VennDiagram vd) {
+    public VennFrame(VennDiagram vd,boolean printIntersection) {
+		super(Cytoscape.getDesktop());
         Container con = this.getContentPane();
         con.setBackground(Color.white);
 
@@ -37,10 +41,22 @@ public class VennFrame extends JFrame {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
 
-        VennCanvas vc = new VennCanvas(vd);
+        VennCanvas vc = new VennCanvas(vd,printIntersection);
 		vc.setPreferredSize(new Dimension(SIZE,SIZE));
         panel.add(vc);
 
+		// stress table
+		String[] columnNames2 = new String[] {"Stress","Stress .01","Stress .05"};
+		Object[][] data2 = new Object[1][3];
+		data2[0][0] = floatFormat.format(vd.stress);
+		data2[0][1] = floatFormat.format(vd.stress01);
+		data2[0][2] = floatFormat.format(vd.stress05);
+		JTable stressTable = new JTable(data2,columnNames2);
+		stressTable.setPreferredScrollableViewportSize(new Dimension(SIZE, STRESS_SIZE));
+		JScrollPane stressScroll = new JScrollPane(stressTable);
+		panel.add(stressScroll);
+
+		// residual table
 		String[] columnNames = new String[] {"Network Intersection Name","Residual",
 		                                     "Intersection Area","Number of Elements" };
 		Object[][] data = new Object[vd.residualLabels.length][4];
@@ -55,19 +71,18 @@ public class VennFrame extends JFrame {
 		}
 		JTable resultsTable = new JTable(data,columnNames);
 		resultsTable.setDefaultRenderer( Object.class, new WarningCellRenderer(vd) );
-		resultsTable.setPreferredScrollableViewportSize(new Dimension(SIZE, TOTAL_SIZE-SIZE));
-		JScrollPane scrollPane = new JScrollPane(resultsTable);
-
-		panel.add(scrollPane);
+		resultsTable.setPreferredScrollableViewportSize(new Dimension(SIZE, RESIDUAL_SIZE));
+		JScrollPane resultsScroll = new JScrollPane(resultsTable);
+		panel.add(resultsScroll);
 
 		con.add(panel);
 
         setTitle("Venn/Euler Diagram");
-        setBounds(0, 0, SIZE, TOTAL_SIZE);
+        setBounds(0, 0, SIZE, SIZE + STRESS_SIZE + RESIDUAL_SIZE);
         setResizable(false);
         setVisible(true);
 
-		if ( vd.stress > vd.stress05 )
+		if ( vd.stress > 0.0 && vd.stress > vd.stress05 )
 			JOptionPane.showMessageDialog(this, "The global stress is greater than the 5% threshold, so the results should be considered suspect!", "WARNING!", JOptionPane.WARNING_MESSAGE);	
     }
 

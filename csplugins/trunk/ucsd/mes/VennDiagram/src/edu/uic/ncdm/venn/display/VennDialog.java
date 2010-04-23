@@ -45,20 +45,26 @@ import java.util.Set;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class VennDialog extends JDialog implements ActionListener {
+public class VennDialog extends JDialog implements ActionListener, ItemListener {
 
 
 	private String attrName;
 	private List<CyNetwork> networks;
+	private boolean printIntersection;
 
     private JList netList;
     private JList attrList;
+	private JCheckBox printIntCheck;
 
 	public String getAttributeName() {
 		return attrName;
 	}
 	public List<CyNetwork> getNetworks() {
 		return networks;
+	}
+
+	public boolean printIntersection() {
+		return printIntersection;
 	}
 
 	public static VennDialog showDialog() {
@@ -93,6 +99,7 @@ public class VennDialog extends JDialog implements ActionListener {
 
 		networks = new ArrayList<CyNetwork>();
 		attrName = "canonicalName";
+		printIntersection = true;
 
         //Create and initialize the buttons.
         JButton cancelButton = new JButton("Cancel");
@@ -139,6 +146,16 @@ public class VennDialog extends JDialog implements ActionListener {
         listPane.add(Box.createRigidArea(new Dimension(0,5)));
         listPane.add(attrListScroller);
 
+		// print intersections checkbox
+		printIntCheck = new JCheckBox("Print the set counts on the intersections?");
+		printIntCheck.setSelected(printIntersection);
+		printIntCheck.addItemListener(this);
+		JPanel checkPanel = new JPanel();
+        checkPanel.setLayout(new BoxLayout(checkPanel, BoxLayout.PAGE_AXIS));
+		checkPanel.add(printIntCheck);
+        checkPanel.setPreferredSize(new Dimension(450, 50));
+		listPane.add(checkPanel); 
+
         listPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         //Lay out the buttons from left to right.
@@ -161,6 +178,13 @@ public class VennDialog extends JDialog implements ActionListener {
         pack();
 		setVisible(true);
     }
+
+    //Handle check box 
+    public void itemStateChanged(ItemEvent e) {
+		if ( e.getSource() == printIntCheck ) {
+			printIntersection = printIntCheck.isSelected();
+		}
+	}
 
     //Handle clicks on the Select and Cancel buttons.
     public void actionPerformed(ActionEvent e) {

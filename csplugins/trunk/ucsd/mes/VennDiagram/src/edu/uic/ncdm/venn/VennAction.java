@@ -63,6 +63,6 @@ public class VennAction extends CytoscapeAction {
 
         VennAnalytic va = new VennAnalytic();
         VennDiagram vd = va.compute(data);
-        new VennFrame(vd);
+        new VennFrame(vd,dialog.printIntersection());
 	}
 }

@@ -21,34 +21,34 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
 
 public class VennCanvas extends JPanel {
     private BufferedImage bi;
-    public double[][] centers;
-    public double[] diameters;
-    public double[] colors;
-    public String[] labels;
     private int size;
     private double mins, maxs;
     private FontRenderContext frc;
+	private NumberFormat intFormat;
+	private VennDiagram venn;
+	private boolean printIntersections;
 
-    public VennCanvas(VennDiagram venn) {
+    public VennCanvas(VennDiagram venn, boolean printIntersections) {
+		this.venn = venn;
+		this.printIntersections = printIntersections;
         size = 700;
         bi = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         frc = bi.createGraphics().getFontRenderContext();
+		intFormat = new DecimalFormat("#0");
         size *= .8;
-        centers = venn.centers;
-        diameters = venn.diameters;
-        colors = venn.colors;
-        labels = venn.circleLabels;
         mins = Double.POSITIVE_INFINITY;
         maxs = Double.NEGATIVE_INFINITY;
-        for (int i = 0; i < centers.length; i++) {
-            double margin = diameters[i] / 2;
-            mins = Math.min(centers[i][0] - margin, mins);
-            mins = Math.min(centers[i][1] - margin, mins);
-            maxs = Math.max(centers[i][0] + margin, maxs);
-            maxs = Math.max(centers[i][1] + margin, maxs);
+        for (int i = 0; i < venn.centers.length; i++) {
+            double margin = venn.diameters[i] / 2;
+            mins = Math.min(venn.centers[i][0] - margin, mins);
+            mins = Math.min(venn.centers[i][1] - margin, mins);
+            maxs = Math.max(venn.centers[i][0] + margin, maxs);
+            maxs = Math.max(venn.centers[i][1] + margin, maxs);
         }
     }
 
@@ -56,20 +56,38 @@ public class VennCanvas extends JPanel {
         Graphics2D g2D = (Graphics2D) bi.getGraphics();
         g2D.setColor(Color.WHITE);
         g2D.fillRect(0, 0, bi.getHeight(), bi.getWidth());
-        for (int i = 0; i < centers.length; i++) {
-            double xi = (centers[i][0] - mins) / (maxs - mins);
-            double yi = (centers[i][1] - mins) / (maxs - mins);
-            double pi = diameters[i] / (maxs - mins);
+        for (int i = 0; i < venn.centers.length; i++) {
+            double xi = (venn.centers[i][0] - mins) / (maxs - mins);
+            double yi = (venn.centers[i][1] - mins) / (maxs - mins);
+            double pi = venn.diameters[i] / (maxs - mins);
             int pointSize = (int) (pi * size);
             int x = 50 + (int) (xi * size);
             int y = 50 + (int) (size - yi * size);
-            Color color = rainbow(colors[i], .4f);
+            Color color = rainbow(venn.colors[i], .4f);
             g2D.setColor(color);
             g2D.fillOval(x - pointSize / 2, y - pointSize / 2, pointSize, pointSize);
-            g2D.setColor(color.BLACK);
-            double[] wh = getWidthAndHeight(labels[i], g2D);
-            g2D.drawString(labels[i], x - (int) wh[0] / 2, y + (int) wh[1] / 2);
+           	g2D.setColor(Color.black);
+            double[] wh = getWidthAndHeight(venn.circleLabels[i], g2D);
+			if (printIntersections) 
+            	g2D.drawString(venn.circleLabels[i], x - (int) wh[0] / 2, y - (int) wh[1]);
+			else
+            	g2D.drawString(venn.circleLabels[i], x - (int) wh[0] / 2, y + (int) wh[1] / 2);
         }
+
+		if ( printIntersections ) {
+	        for (int i = 0; i < venn.luneCenters.length; i++) {
+				if ( venn.counts[i+1] > 0 ) {
+					double xi = (venn.luneCenters[i][0] - mins) / (maxs - mins);
+					double yi = (venn.luneCenters[i][1] - mins) / (maxs - mins);
+					int x = 50 + (int) (xi * size);
+					int y = 50 + (int) (size - yi * size);
+					g2D.setColor(Color.BLACK);
+					String label = intFormat.format( venn.counts[i+1] ); // + " " + venn.residualLabels[i];
+					double[] wh = getWidthAndHeight(label, g2D);
+					g2D.drawString(label, x - (int) wh[0] / 2, y + (int) wh[1]);
+				}
+			}
+		}
 
         Graphics2D gg = (Graphics2D) g;
         gg.drawImage(bi, 2, 2, this);
@@ -93,7 +111,7 @@ public class VennCanvas extends JPanel {
     }
 
     public double[] getWidthAndHeight(String s, Graphics2D g2D) {
-        Font font = g2D.getFont();
+		Font font = g2D.getFont();
         Rectangle2D bounds = font.getStringBounds(s, frc);
         double[] wh = new double[2];
         wh[0] = bounds.getWidth();
