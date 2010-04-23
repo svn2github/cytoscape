@@ -89,6 +89,7 @@ public class VennAnalytic {
         }
         double[] residuals = new double[nPolygons - 1];
         String[] residualLabels = new String[nPolygons - 1];
+		boolean[] warnings = new boolean[nPolygons -1];
         double area = 0;
         int nonZero = 0;
         for (int i = 1; i < nPolygons; i++) {
@@ -108,14 +109,18 @@ public class VennAnalytic {
         }
         double cut = area / nonZero;
         for (int i = 0; i < residuals.length; i++) {
-            if (Math.abs(residuals[i]) > cut)
+            if (Math.abs(residuals[i]) > cut) {
 				logger.warn("OUTLIER!!   Set name: " + residualLabels[i] + "  residual: " + residuals[i]);
+				warnings[i] = true;
+			} else {
+				warnings[i] = false;
+			}
         }
         logger.info("stress = " + stress + ", stress01 = " + stress01 + ", stress05 = " + stress05);
 
-        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, stress, stress01, stress05);
+        return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, warnings, stress, stress01, stress05);
 }
-
+/*
 
     private VennDiagram collectResults() {
         double[] colors = new double[nCircles];
@@ -145,6 +150,7 @@ public class VennAnalytic {
 
         return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, stress, stress01, stress05);
     }
+	*/
 
     private void processAreaData(String[][] data, double[] areas) {
         HashMap sets = new HashMap();

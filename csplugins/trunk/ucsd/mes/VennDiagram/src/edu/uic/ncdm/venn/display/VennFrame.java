@@ -17,11 +17,17 @@ package edu.uic.ncdm.venn.display;
 import edu.uic.ncdm.venn.VennDiagram;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import java.awt.*;
+
+import  java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public class VennFrame extends JFrame {
     private int HEIGHT = 800;
     private int WIDTH = 700;
+	private NumberFormat formatter = new DecimalFormat("#0.000");
+	private NumberFormat intFormat = new DecimalFormat("#0");
 
     public VennFrame(VennDiagram vd) {
         Container con = this.getContentPane();
@@ -35,15 +41,19 @@ public class VennFrame extends JFrame {
 		vc.setPreferredSize(new Dimension(700,700));
         panel.add(vc);
 
-		String[] columnNames = new String[] {"Network Intersection Name","Number of Elements" };
-		Object[][] data = new Object[vd.residualLabels.length][2];
+		String[] columnNames = new String[] {"Network Intersection Name","Residuals","Size","Number of Elements" };
+		Object[][] data = new Object[vd.residualLabels.length][4];
 		int i = 0;
 		for ( String lab : vd.residualLabels ) {
 			data[i][0] = vd.residualLabels[i];
-			data[i][1] = vd.counts[i+1]; // TODO see polyData and residuals in VennAnalytics about this!!!!
+			data[i][1] = formatter.format(vd.residuals[i]);
+			// TODO see polyData and residuals in VennAnalytics to understand the i+1 here!!! 
+			data[i][2] = formatter.format(vd.areas[i+1]);
+			data[i][3] = intFormat.format(vd.counts[i+1]); 
 			i++;
 		}
 		JTable resultsTable = new JTable(data,columnNames);
+		resultsTable.setDefaultRenderer( String.class, new WarningCellRenderer(vd) );
 		resultsTable.setPreferredScrollableViewportSize(new Dimension(700, 100));
 		//resultsTable.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(resultsTable);
@@ -57,4 +67,24 @@ public class VennFrame extends JFrame {
         setResizable(false);
         setVisible(true);
     }
+
+	private class WarningCellRenderer extends JLabel
+                           implements TableCellRenderer {
+		private VennDiagram vd;
+		public WarningCellRenderer(VennDiagram vd) {
+			this.vd = vd;
+			setOpaque(true); //MUST do this for background to show up.
+		}
+
+		public Component getTableCellRendererComponent(
+                            JTable table, Object color,
+                            boolean isSelected, boolean hasFocus,
+                            int row, int column) {
+			if (vd.warnings[row]) {
+				setBackground(Color.red);
+			}
+			setToolTipText("Bad things man!");
+			return this;
+    	}
+	}
 }

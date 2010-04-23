@@ -23,19 +23,21 @@ public class VennDiagram {
     public double[] counts;
     public String[] circleLabels;
     public String[] residualLabels;
+    public boolean[] warnings;
     public double stress;
     public double stress01;
     public double stress05;
 
     public VennDiagram(double[][] centers, double[] diameters, double[] areas, double[] residuals,
                        String[] circleLabels, String[] residualLabels, double[] colors, 
-					   double[] counts, double stress, double stress01, double stress05) {
+					   double[] counts, boolean[] warnings, double stress, double stress01, double stress05) {
         this.centers = centers;
         this.diameters = diameters;
         this.areas = areas;
         this.residuals = residuals;
         this.colors = colors;
         this.counts = counts;
+        this.warnings = warnings;
         this.circleLabels = circleLabels;
         this.residualLabels = residualLabels;
         this.stress = stress;
