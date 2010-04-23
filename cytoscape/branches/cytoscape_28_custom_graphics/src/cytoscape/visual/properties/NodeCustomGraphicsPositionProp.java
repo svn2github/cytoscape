@@ -8,7 +8,9 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.Icon;
 
@@ -67,12 +69,11 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Apply Object Position to DNodeView's Custom Graphics.
 	 * 
-	 * @param nv
-	 *            DOCUMENT ME!
+	 * @param nv - NodeView.  Currently, only supports DNodeView implementation.
 	 * @param o
-	 *            DOCUMENT ME!
+	 *            This should be an ObjectPosition.
 	 */
 	public void applyToNodeView(NodeView nv, Object o,
 			VisualPropertyDependency dep) {
@@ -88,13 +89,27 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 		
 		final Iterator<CustomGraphic> itr = dv.customGraphicIterator();
 		int i = 0;
+		final List<CustomGraphic> cgList = new ArrayList<CustomGraphic>();
+		
 		while(itr.hasNext()) {
 			final CustomGraphic cg = itr.next();
-			dv.setCustomGraphicsPosition(cg, p);
-			System.out.println(i + " = " + dv.getLabel().getText() + ": CG Position = "
-				+ dv.getCustomGraphicsPosition(cg).toString());
+			cgList.add(cg);
+		}
+		if(cgList.size() == 0) return;
+		
+		for(CustomGraphic g: cgList) {
+			dv.setCustomGraphicsPosition(g, p);
+		}
+		
+		final Iterator<CustomGraphic> itr2 = dv.customGraphicIterator();
+		i = 0;
+		while(itr2.hasNext()) {
+			final CustomGraphic cg = itr2.next();
+			System.out.println(i + " = " + dv.getNode().getIdentifier() +  ": CG Position = "
+				+ dv.getCustomGraphicsPosition(cg));
 			i++;
 		}
+		
 //		dv.setCustomGraphicsPosition(cg, p);
 		
 		//calc.calculate(graphicsPosition, dv);

@@ -14,6 +14,9 @@ import javax.imageio.ImageIO;
 
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.NodeDetails;
+import cytoscape.render.stateful.PaintFactory;
+import cytoscape.visual.customgraphic.paint.ColorPaintFactory;
+import cytoscape.visual.customgraphic.paint.TexturePaintFactory;
 
 public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
@@ -63,14 +66,12 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		final Shape background = new java.awt.geom.RoundRectangle2D.Double(
 				-imageW / 2d - PAD, -imageH / 2d - PAD, imageW + PAD * 2d,
 				imageH + PAD * 2d, R, R);
-		final Paint backgroundPaint = Color.WHITE;
 
 		bound = new Rectangle2D.Double(-imageW / 2, -imageH / 2, imageW, imageH);
-		paint = new TexturePaint(targetImg, bound);
+		final PaintFactory paintFactory = new TexturePaintFactory(targetImg);
 
-		cg = new CustomGraphic(bound, paint, NodeDetails.ANCHOR_CENTER);
-		cgList.add(new CustomGraphic(background, backgroundPaint,
-				NodeDetails.ANCHOR_CENTER));
+		cg = new CustomGraphic(bound, paintFactory);
+		//cgList.add(new CustomGraphic(background, new ColorPaintFactory(Color.white)));
 		cgList.add(cg);
 	}
 

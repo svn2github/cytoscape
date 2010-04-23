@@ -10,8 +10,10 @@ import javax.swing.ImageIcon;
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.NodeDetails;
+import cytoscape.render.stateful.PaintFactory;
 import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
 import cytoscape.visual.customgraphic.CustomGraphicsPropertyImpl;
+import cytoscape.visual.customgraphic.paint.GradientPaintFactory;
 
 /**
  * Proof of concept code. Generate images dynamically from attributes.
@@ -55,11 +57,12 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 	@Override
 	public void update() {
 		cgList.clear();
-		final GradientPaint gradient = new GradientPaint(w.getValue()/2, 0, c2.getValue(),
-				w.getValue()/2, h.getValue()/2, c1.getValue());
+//		final GradientPaint gradient = new GradientPaint(w.getValue()/2, 0, c2.getValue(),
+//				w.getValue()/2, h.getValue()/2, c1.getValue());
+		final PaintFactory paintFactory = new GradientPaintFactory(c1.getValue(), c2.getValue());
 		final RoundRectangle2D bound = new RoundRectangle2D.Double(-w.getValue() / 2, -h.getValue() / 2,
 																	w.getValue(), h.getValue(), 20, 20);
-		final CustomGraphic cg = new CustomGraphic(bound, gradient, NodeDetails.ANCHOR_CENTER);
+		final CustomGraphic cg = new CustomGraphic(bound, paintFactory);
 		cgList.add(cg);
 	}
 
