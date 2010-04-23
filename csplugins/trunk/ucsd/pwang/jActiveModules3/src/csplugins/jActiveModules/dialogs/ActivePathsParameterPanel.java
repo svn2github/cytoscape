@@ -77,6 +77,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import java.util.Comparator;
+import cytoscape.util.swing.CyCollapsiblePanel;
 
 public class ActivePathsParameterPanel extends JPanel {
 
@@ -210,10 +211,18 @@ public class ActivePathsParameterPanel extends JPanel {
 		updateOptionsPanel();
 
 		final JScrollPane scrollPane = new JScrollPane(mainPanel);
-		this.add(scrollPane, BorderLayout.CENTER);
+		//this.add(scrollPane, BorderLayout.CENTER);
+		
+		collapsiblePanel = new CyCollapsiblePanel("Advanced");
+		collapsiblePanel.getContentPane().add(scrollPane);
+		collapsiblePanel.setVisible(false);
+		JScrollPane advancedScrollPane = new JScrollPane(collapsiblePanel);
+		this.add(advancedScrollPane, BorderLayout.CENTER);
+		
 	}
 	
 	private AttrSelectionPanel attrSelectionPanel;
+	private CyCollapsiblePanel collapsiblePanel = null;
 	
 	private Container createTopPanel() {
 		final JPanel topPanel = new JPanel();
@@ -665,9 +674,17 @@ public class ActivePathsParameterPanel extends JPanel {
 		if (showOptions) {
 			cl.show(optionsPanel, "ACTIVE");
 			findModulesButton.setEnabled(true);
+			
+			if (this.collapsiblePanel != null) {
+				this.collapsiblePanel.setVisible(true);				
+			}
 		} else {
 			cl.show(optionsPanel, "INACTIVE");
 			findModulesButton.setEnabled(false);
+
+			if (this.collapsiblePanel != null) {
+				this.collapsiblePanel.setVisible(false);
+			}
 		}
 	}
 
