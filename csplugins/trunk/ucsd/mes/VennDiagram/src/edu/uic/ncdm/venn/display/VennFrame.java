@@ -83,7 +83,7 @@ public class VennFrame extends JDialog {
         setVisible(true);
 
 		if ( vd.stress > 0.0 && vd.stress > vd.stress05 )
-			JOptionPane.showMessageDialog(this, "The global stress is greater than the 5% threshold, so the results should be considered suspect!", "WARNING!", JOptionPane.WARNING_MESSAGE);	
+			JOptionPane.showMessageDialog(this, "The global stress is greater than the .05 threshold, so the results should be considered suspect!", "WARNING!", JOptionPane.WARNING_MESSAGE);	
     }
 
 	private class WarningCellRenderer extends JLabel
