@@ -45,11 +45,11 @@ public interface VisualPropertyDependency {
 	public enum Definition {
 		NODE_SIZE_LOCKED("nodeSizeLocked",true, "Lock Node Width/Height"),
 		ARROW_COLOR_MATCHES_EDGE("arrowColorMatchesEdge",false,"Make Arrow Color Match Edge Color"),
-		;
+		NODE_CUSTOM_GRAPHICS_SIZE_SYNC("nodeCustomGraphicsSizeSync", false, "Synchronize Custom Graphics Size to Node Size");
 
-		private String propKey;
-		private boolean defaultValue;
-		private String title;
+		private final String propKey;
+		private final boolean defaultValue;
+		private final String title;
 
 		private Definition(String propKey, boolean defaultValue, String title) {
 			this.propKey = propKey;
