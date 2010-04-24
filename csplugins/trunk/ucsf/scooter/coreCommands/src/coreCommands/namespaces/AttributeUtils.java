@@ -36,6 +36,13 @@ import cytoscape.command.CyCommandResult;
 
 import cytoscape.data.CyAttributes;
 
+import giny.model.GraphObject;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -163,5 +170,59 @@ public class AttributeUtils {
 			map.put(pair[0], pair[1]);
 		}
 		return map;
+	}
+
+	/**
+	 * Output a tab-delimited table of attributes
+	 *
+	 * @param outputFile the file to output our attributes to
+	 * @param attrs the attributes we're going to use
+	 * @param objects the list of CyNodes or CyEdges to output
+	 * @param attrList the list of attributes we want to output
+	 * @param delim the delimiter to use
+	 */
+	public static int exportAttributes(File outputFile, CyAttributes attrs, List<GraphObject> objects, 
+	                                    List<String>attrList, String delim) throws IOException {
+
+		int lineCount = 0;
+		// Create our output file
+		BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
+		// For each object
+		for (GraphObject obj: objects) {
+			String objectName = obj.getIdentifier();
+			// Output a row
+			exportRow(output, objectName, attrs, attrList, delim);
+			lineCount++;
+		}
+		return lineCount;
+	}
+
+	private static void exportRow(BufferedWriter output, String name, CyAttributes attrs, 
+	                              List<String>attrList, String delim) throws IOException {
+		for (String attr: attrList) {
+			if (attrs.hasAttribute(name, attr)) {
+				byte type = attrs.getType(attr);
+				// Special handling for Lists or Maps
+				if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+					List l = attrs.getListAttribute(name, attr);
+					String lStr = "[";
+					for (Object o: l)
+						lStr += o.toString()+",";
+					lStr = lStr.substring(lStr.length()-1)+"]";
+					output.write(lStr);
+				} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+					Map m = attrs.getMapAttribute(name, attr);
+					String mStr = "{";
+					for (Object k: m.keySet())
+						mStr += k.toString()+":"+m.get(k).toString()+",";
+					mStr = mStr.substring(mStr.length()-1)+"}";
+					output.write(mStr);
+				} else {
+					Object o = attrs.getAttribute(name, attr);
+					output.write(o.toString());
+				}
+			}
+			output.write(delim);
+		}
 	}
 }
