@@ -42,6 +42,8 @@ import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandNamespace;
 import cytoscape.command.CyCommandResult;
 
+import cytoscape.data.Semantics;
+
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 
@@ -58,6 +60,8 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
 	public static final String NODELIST = "nodelist";
 	public static final String NODE = "node";
 	public static final String SELECTED = "selected";
+	public static final String EDGELIST = "edgelist";
+	public static final String EDGE = "edge";
 
 	public AbstractGraphObjectHandler(CyCommandNamespace ns) {
 		super(ns);
@@ -154,7 +158,61 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
  	 */
 	protected List<CyEdge> getEdgeList(CyNetwork net, CyCommandResult result, 
 	                                          Map<String, Object> args) {
+		if (args == null || args.size() == 0)
+			return null;
 
-		return null;
+		List<CyEdge> retList = new ArrayList();
+		if (args.containsKey(EDGELIST)) {
+			String[] edges = args.get(EDGELIST).toString().split(",");
+			// Handle special case for "selected" edges
+			if (edges[0].equals(SELECTED)) {
+				Set<CyEdge> selectedEdges = net.getSelectedEdges();
+				for (CyEdge edge: selectedEdges) {
+					addEdge(net, edge.getIdentifier(), retList, result);
+				}
+			} else {
+				for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++) {
+					addEdge(net, edges[edgeIndex], retList, result);
+				}
+			}
+		} else if (args.containsKey(EDGE)) {
+			String edgeName = args.get(EDGE).toString();
+			addEdge(net, edgeName, retList, result);
+		} else {
+			return null;
+		}
+		return retList;
+	}
+
+	protected void addEdge(CyNetwork net, String edgeName, List<CyEdge> list, CyCommandResult result) {
+		CyEdge edge = getCyEdge(edgeName);
+		if (edge == null) 
+			result.addError(namespace.getNamespaceName()+": can't find edge "+edgeName);
+		else
+			list.add(edge);
+		return;
+	}
+
+	protected CyEdge getCyEdge(String edgeName) {
+		// An edge name consists of "source (type) destination"
+		String comp[] = edgeName.split("[()]");
+		// comp[0] = source, comp[2] = destination, and comp[1] = interaction
+		CyNode source = Cytoscape.getCyNode(comp[0].trim(), false);
+		if (source == null) return null;
+		CyNode target = Cytoscape.getCyNode(comp[2].trim(), false);
+		if (target == null) return null;
+		CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, comp[1].trim(), false);
+		return edge;
+	}
+
+	protected String makeEdgeList(Collection<CyEdge>edges) {
+		String edgeList = "";
+		if (edges == null || edges.size() == 0)
+			return edgeList;
+
+		for (CyEdge edge: edges) {
+			edgeList += edge.getIdentifier()+",";
+		}
+		return edgeList.substring(0, edgeList.length()-1);
 	}
 }

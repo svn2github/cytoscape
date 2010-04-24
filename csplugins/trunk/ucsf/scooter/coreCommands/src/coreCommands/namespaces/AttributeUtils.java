@@ -187,6 +187,14 @@ public class AttributeUtils {
 		int lineCount = 0;
 		// Create our output file
 		BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
+
+		// Write out a header
+		for (String attr: attrList) {
+			if (attrs.getUserVisible(attr))
+				output.write(attr+delim);
+		}
+		output.newLine();
+
 		// For each object
 		for (GraphObject obj: objects) {
 			String objectName = obj.getIdentifier();
@@ -194,28 +202,30 @@ public class AttributeUtils {
 			exportRow(output, objectName, attrs, attrList, delim);
 			lineCount++;
 		}
+		output.close();
 		return lineCount;
 	}
 
 	private static void exportRow(BufferedWriter output, String name, CyAttributes attrs, 
 	                              List<String>attrList, String delim) throws IOException {
 		for (String attr: attrList) {
-			if (attrs.hasAttribute(name, attr)) {
+			if (attrs.hasAttribute(name, attr) && attrs.getUserVisible(attr)) {
 				byte type = attrs.getType(attr);
 				// Special handling for Lists or Maps
 				if (type == CyAttributes.TYPE_SIMPLE_LIST) {
 					List l = attrs.getListAttribute(name, attr);
 					String lStr = "[";
-					for (Object o: l)
+					for (Object o: l) {
 						lStr += o.toString()+",";
-					lStr = lStr.substring(lStr.length()-1)+"]";
-					output.write(lStr);
+						System.out.println("lStr = "+lStr);
+					}
+					output.write(lStr.substring(0,lStr.length()-1)+"]");
 				} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
 					Map m = attrs.getMapAttribute(name, attr);
 					String mStr = "{";
 					for (Object k: m.keySet())
 						mStr += k.toString()+":"+m.get(k).toString()+",";
-					mStr = mStr.substring(mStr.length()-1)+"}";
+					mStr = mStr.substring(0,mStr.length()-1)+"}";
 					output.write(mStr);
 				} else {
 					Object o = attrs.getAttribute(name, attr);
@@ -224,5 +234,6 @@ public class AttributeUtils {
 			}
 			output.write(delim);
 		}
+		output.newLine();
 	}
 }

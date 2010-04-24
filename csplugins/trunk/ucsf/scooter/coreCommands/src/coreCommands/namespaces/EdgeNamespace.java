@@ -56,10 +56,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import coreCommands.namespaces.edge.ExportEdgeAttributes;
+
 /**
  * XXX FIXME XXX Description 
  */
-public class EdgeNamespace extends AbstractCommandHandler {
+public class EdgeNamespace extends AbstractGraphObjectHandler {
 
 	// Commands
 	private static String DESELECT = "deselect";
@@ -90,8 +92,6 @@ public class EdgeNamespace extends AbstractCommandHandler {
 		addArgument(DESELECT, EDGE);
 		addArgument(DESELECT, EDGELIST);
 
-		// addArgument(EXPORT, FILE);
-		// addArgument(EXPORT, ATTRIBUTE);
 		//
 		// addArgument(FIND, EXPRESSION);
 		
@@ -144,10 +144,7 @@ public class EdgeNamespace extends AbstractCommandHandler {
 				throw new CyCommandException("edge: unable to import attributes: "+e.getMessage());
 			}
 
-		// Export edge attributes to a file
-		// } else if ("export attributes".equals(command)) {
-
-		// Select some ndoes
+		// Select some edges
 		} else if (SELECT.equals(command)) {
 			CyNetwork net = getNetwork(SELECT, args);
 			List<CyEdge> edgeList = getEdgeList(net, result, args);
@@ -164,6 +161,8 @@ public class EdgeNamespace extends AbstractCommandHandler {
 			CyNetwork net = getNetwork(DESELECT, args);
 			try {
 				List<CyEdge> edgeList = getEdgeList(net, result, args);
+				if (edgeList == null)
+					throw new CyCommandException("edge: nothing to deselect");
 				net.setSelectedNodeState(edgeList, false);
 				result.addMessage("edge: deselected "+edgeList.size()+" edges");
 			} catch (CyCommandException e) {
@@ -249,64 +248,20 @@ public class EdgeNamespace extends AbstractCommandHandler {
 			result.addResult(attrList);
 			result.addMessage("Edge attributes: "+AttributeUtils.attributeNamesToList(edgeAttributes, attrList));
 		}
-
-
 		return result;
 	}
 
 	public static CyCommandHandler register(String namespace) throws RuntimeException {
 		// Get the namespace
-		return new EdgeNamespace(CyCommandManager.reserveNamespace(namespace));
+		CyCommandNamespace ns = CyCommandManager.reserveNamespace(namespace);
+
+		// Handle the simple commands ourselves
+		CyCommandHandler edgeNS = new EdgeNamespace(ns);
+
+		// More elaborate commands are in separate classes
+		new ExportEdgeAttributes(ns);
+
+		return edgeNS;
 	}
 
-	private CyNetwork getNetwork(String command, Map<String, Object> args) throws CyCommandException {
-		String netName = getArg(command, NETWORK, args);
-		if (netName == null || netName.equals("current"))
-			return Cytoscape.getCurrentNetwork();
-
-		CyNetwork net = Cytoscape.getNetwork(netName);
-		if (net == Cytoscape.getNullNetwork())
-			throw new CyCommandException("edge: no such network "+netName);
-		return net;
-	}
-
-	private List<CyEdge> getEdgeList(CyNetwork net, CyCommandResult result, Map<String, Object> args) 
-                                   throws CyCommandException {
-		if (args == null || args.size() == 0)
-			throw new CyCommandException("edge: either 'edge' or 'edgeList' argument is required");
-
-		List<CyEdge> retList = new ArrayList();
-		if (args.containsKey(EDGELIST)) {
-			String[] edges = args.get(EDGELIST).toString().split(",");
-			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++) {
-				addEdge(net, edges[edgeIndex], retList, result);
-			}
-		} else if (args.containsKey(EDGE)) {
-			String edgeName = args.get(EDGE).toString();
-			addEdge(net, edgeName, retList, result);
-		} else {
-			throw new CyCommandException("edge: either 'edge' or 'edgeList' argument is required");
-		}
-		return retList;
-	}
-
-	private String makeEdgeList(Collection<CyEdge>edges) {
-		String edgeList = "";
-		if (edges == null || edges.size() == 0)
-			return edgeList;
-
-		for (CyEdge edge: edges) {
-			edgeList += edge.getIdentifier()+",";
-		}
-		return edgeList.substring(0, edgeList.length()-1);
-	}
-
-	private void addEdge(CyNetwork net, String edgeName, List<CyEdge> list, CyCommandResult result) {
-		CyEdge edge = Cytoscape.getRootGraph().getEdge(edgeName);
-		if (edge == null) 
-			result.addError("edge: can't find edge "+edgeName);
-		else
-			list.add(edge);
-		return;
-	}
 }
