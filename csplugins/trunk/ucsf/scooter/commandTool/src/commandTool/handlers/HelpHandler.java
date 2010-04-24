@@ -32,8 +32,11 @@
  */
 package commandTool.handlers;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +110,7 @@ class HelpHandler {
 	}
 
 	static private void addList(CyCommandResult comRet, String prefix, List<String>list) {
+		Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
 		for (String str: list) {
 			comRet.addMessage("  "+prefix+" "+str);
 		}
@@ -145,7 +149,9 @@ class HelpHandler {
 		ret.addMessage(namespace+" "+command+": "+description);
 		if (args == null || args.size() == 0) return ret;
 		ret.addMessage("  Arguments:");
-		for (Tunable arg: args) {
+		List<Tunable> tunableList = new ArrayList(args);
+		Collections.sort(tunableList, new TunableComparator());
+		for (Tunable arg: tunableList) {
 		  String descr = "    [";
 			if (arg.getName() != null)
 				descr += arg.getName();
@@ -184,5 +190,14 @@ class HelpHandler {
       return new Tunable(name, name, Tunable.STRING, value.toString());
     }
   }
+
+	static class TunableComparator implements Comparator<Tunable> {
+		public int compare(Tunable o1, Tunable o2) {
+			String s1 = o1.getName();
+			String s2 = o2.getName();
+
+			return s1.compareToIgnoreCase(s2);
+		}
+	}
 
 }
