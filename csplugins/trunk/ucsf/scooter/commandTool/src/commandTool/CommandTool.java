@@ -48,7 +48,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
+// import javax.swing.filechooser.FileNameExtensionFilter;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -117,12 +118,18 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 
 		// Get the command arguments (in case we've got script files)
 		String[] args = CytoscapeInit.getCyInitParams().getArgs();
+
 		parseArgs(args);
 	}
 
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (initialized) return;
+
+		initialized = true;
+
+		Cytoscape.getPropertyChangeSupport()
+		         .removePropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED, this);
 
 		// Create the message handler we're going to use
 		StdMessageHandler mHandler = new StdMessageHandler();
@@ -132,9 +139,6 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 		for (File file: scriptList) {
 			CommandHandler.handleCommandFile(file, null);
 		} 
-
-		Cytoscape.getPropertyChangeSupport()
-		         .removePropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED, this);
 	}
 
 	private void parseArgs(String[] args) {
@@ -142,7 +146,7 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 		for (int arg = 0; arg < args.length; arg++) {
 			if (args[arg].equals("-S")) {
 				// Yup, put it in our file list
-				logger.debug("Opening file: "+args[arg+1]);
+				// logger.debug("Opening file: "+args[arg+1]);
 				File file = new File(args[++arg]);
 				if (file == null) {
 					// Display an error
@@ -154,8 +158,8 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 				         .addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED, this);
 				initialized = false;
 			}
-			return;
 		}
+		return;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -183,5 +187,34 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 			}
 		} else if (command.equals(SETTINGS)) {
 		}
+	}
+
+
+	/**
+ 	 * This class is a place-holder until we cut over to JDK 1.6
+ 	 */
+	class FileNameExtensionFilter extends FileFilter {
+		private String desc;
+		private String[] extensions;
+
+		public FileNameExtensionFilter(String description, String... extensions) {
+			this.desc = description;
+			this.extensions = extensions;
+		}
+
+		public boolean accept(File f) {
+			if (f == null) return false;
+
+			String fName = f.getName();
+			for (int eIndex = 0; eIndex < extensions.length; eIndex++) {
+				if (fName.endsWith("."+extensions[eIndex]))
+					return true;
+			}
+			return false;
+		}
+
+		public String getDescription() { return desc; }
+
+		public String[] getExtensions() { return extensions; }
 	}
 }

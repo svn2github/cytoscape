@@ -1,2 +1,2 @@
-session open file=/Users/scooter/Documents/test.cys
+session open file=test.cys
 layout force-directed
