@@ -58,14 +58,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import coreCommands.namespaces.node.ExportNodeAttributes;
+
 /**
  * XXX FIXME XXX Description 
  */
-public class NodeNamespace extends AbstractCommandHandler {
+public class NodeNamespace extends AbstractGraphObjectHandler {
 
 	// Commands
 	private static String DESELECT = "deselect";
-	private static String EXPORT = "export attributes";
 	private static String FIND = "find";
 	private static String GETATTR = "get attribute";
 	private static String GETSEL = "get selected";
@@ -75,9 +76,7 @@ public class NodeNamespace extends AbstractCommandHandler {
 	private static String LISTATTR = "list attributes";
 
 	// Settings
-	private static String ATTRIBUTE = "attributeList";
 	private static String EXPRESSION = "expression";
-	private static String DELIMITER = "delimiter";
 	private static String FILE = "file";
 	private static String NAME = "name";
 	private static String NETWORK = "network";
@@ -94,11 +93,6 @@ public class NodeNamespace extends AbstractCommandHandler {
 		addArgument(DESELECT, NODE);
 		addArgument(DESELECT, NODELIST);
 
-		addArgument(EXPORT, FILE);
-		addArgument(EXPORT, ATTRIBUTE);
-		addArgument(EXPORT, DELIMITER);
-		addArgument(EXPORT, NETWORK, "current");
-		addArgument(EXPORT, NODELIST);
 		//
 		// addArgument(FIND, EXPRESSION);
 
@@ -155,7 +149,7 @@ public class NodeNamespace extends AbstractCommandHandler {
 		// Select some ndoes
 		} else if (SELECT.equals(command)) {
 			CyNetwork net = getNetwork(command, args);
-			List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
+			List<CyNode> nodeList = getNodeList(net, result, args);
 			if (nodeList == null)
 				throw new CyCommandException("node: nothing to select");
 			net.setSelectedNodeState(nodeList, true);
@@ -168,7 +162,7 @@ public class NodeNamespace extends AbstractCommandHandler {
 		} else if (DESELECT.equals(command)) {
 			CyNetwork net = getNetwork(command, args);
 			try {
-				List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
+				List<CyNode> nodeList = getNodeList(net, result, args);
 				if (nodeList == null)
 					throw new CyCommandException("node: nothing to deselect");
 
@@ -201,7 +195,7 @@ public class NodeNamespace extends AbstractCommandHandler {
 			else if (nodeAttributes.getType(attrName) == CyAttributes.TYPE_UNDEFINED)
 				throw new CyCommandException("node: attribute 'name' does not exist");
 
-			List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
+			List<CyNode> nodeList = getNodeList(net, result, args);
 			if (nodeList == null)
 				nodeList = net.nodesList();
 
@@ -225,7 +219,7 @@ public class NodeNamespace extends AbstractCommandHandler {
 			if (attrName == null || value == null)
 				throw new CyCommandException("node: attribute 'name' and 'value' are required");
 
-			List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
+			List<CyNode> nodeList = getNodeList(net, result, args);
 			if (nodeList == null)
 				nodeList = net.nodesList();
 
@@ -257,45 +251,6 @@ public class NodeNamespace extends AbstractCommandHandler {
 			List<String>attrList = Arrays.asList(attrNames);
 			result.addResult(attrList);
 			result.addMessage("Node attributes: "+AttributeUtils.attributeNamesToList(nodeAttributes, attrList));
-
-		// export attributes
-		} else if (EXPORT.equals(command)) {
-			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			// Do we have a filename?
-			String fileName = getArg(command, FILE, args);
-			if (fileName == null)
-				throw new CyCommandException("node: filename is required to export attributes");
-
-			// Get our delimiter
-			String delim = getArg(command, DELIMITER, args);
-			if (delim == null)
-				delim = "\t";
-
-			// Get the attribute list
-			String[] attrArray;
-			String attrStr = getArg(command, ATTRIBUTE, args);
-			if (attrStr == null) {
-				attrArray = nodeAttributes.getAttributeNames();
-			} else {
-				attrArray = attrStr.split(",");
-			}
-
-			List<String> attrList = Arrays.asList(attrArray);
-
-			// Get the node list
-			CyNetwork net = getNetwork(command, args);
-			List nodeList = NodeListUtils.getNodeList(net, result, args);
-			if (nodeList == null) 
-				nodeList = net.nodesList();
-
-			int lineCount = 0;
-			try {
-				File outputFile = new File(fileName);
-				lineCount = AttributeUtils.exportAttributes(outputFile, nodeAttributes, nodeList, attrList, delim);
-			} catch (IOException e) {
-				throw new CyCommandException("node: export failed: "+e.getMessage());
-			}
-			result.addMessage("node: exported "+lineCount+" lines to "+fileName);
 		}
 
 		return result;
@@ -303,28 +258,14 @@ public class NodeNamespace extends AbstractCommandHandler {
 
 	public static CyCommandHandler register(String namespace) throws RuntimeException {
 		// Get the namespace
-		return new NodeNamespace(CyCommandManager.reserveNamespace(namespace));
-	}
+		CyCommandNamespace ns = CyCommandManager.reserveNamespace(namespace);
 
-	private CyNetwork getNetwork(String command, Map<String, Object> args) throws CyCommandException {
-		String netName = getArg(command, "network", args);
-		if (netName == null || netName.equals("current"))
-			return Cytoscape.getCurrentNetwork();
+		// Handle the simple commands ourselves
+		CyCommandHandler nodeNS = new NodeNamespace(ns);
 
-		CyNetwork net = Cytoscape.getNetwork(netName);
-		if (net == Cytoscape.getNullNetwork())
-			throw new CyCommandException("node: no such network "+netName);
-		return net;
-	}
+		// More elaborate commands are in separate classes
+		new ExportNodeAttributes(ns);
 
-	private String makeNodeList(Collection<CyNode>nodes) {
-		String nodeList = "";
-		if (nodes == null || nodes.size() == 0)
-			return nodeList;
-
-		for (CyNode node: nodes) {
-			nodeList += node.getIdentifier()+",";
-		}
-		return nodeList.substring(0, nodeList.length()-1);
+		return nodeNS;
 	}
 }
