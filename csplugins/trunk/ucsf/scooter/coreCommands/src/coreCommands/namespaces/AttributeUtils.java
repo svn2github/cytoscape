@@ -217,7 +217,6 @@ public class AttributeUtils {
 					String lStr = "[";
 					for (Object o: l) {
 						lStr += o.toString()+",";
-						System.out.println("lStr = "+lStr);
 					}
 					output.write(lStr.substring(0,lStr.length()-1)+"]");
 				} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
