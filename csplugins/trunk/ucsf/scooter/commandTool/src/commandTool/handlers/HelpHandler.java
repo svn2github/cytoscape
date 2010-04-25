@@ -117,6 +117,7 @@ class HelpHandler {
 	}
 
 	static private String findKeywords(String[] words, int start, List<String>keywords) {
+		Collections.sort(keywords, new LengthComparator());
 		for (String kw: keywords) {
 			for (int count = words.length; count >= start; count--) {
 				if (kw.equals(combineWords(words, start, count))) {
@@ -200,4 +201,9 @@ class HelpHandler {
 		}
 	}
 
+	static class LengthComparator implements Comparator<String> {
+		public int compare(String o1, String o2) {
+			return (o2.length() - o1.length());
+		}
+	}
 }
