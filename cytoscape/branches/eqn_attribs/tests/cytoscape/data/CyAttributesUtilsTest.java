@@ -398,37 +398,37 @@ public class CyAttributesUtilsTest extends TestCase {
 		final StringBuilder errorMessage = new StringBuilder();
 
 		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "BooleanTest",
-		                                           /* copyEquations = */false, errorMessage));
+		                                           /* copyEquation = */false, errorMessage));
 		assertEquals(attribs.getBooleanAttribute(sourceId, "BooleanTest"),
 		             attribs.getBooleanAttribute(targetId, "BooleanTest"));
 
 		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "IntegerTest",
-		                                           /* copyEquations = */false, errorMessage));
+		                                           /* copyEquation = */false, errorMessage));
 		assertEquals(attribs.getIntegerAttribute(sourceId, "IntegerTest"),
 		             attribs.getIntegerAttribute(targetId, "IntegerTest"));
 
 		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "DoubleTest",
-		                                           /* copyEquations = */false, errorMessage));
+		                                           /* copyEquation = */false, errorMessage));
 		assertEquals(attribs.getDoubleAttribute(sourceId, "DoubleTest"),
 		             attribs.getDoubleAttribute(targetId, "DoubleTest"));
 
 		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "StringTest",
-		                                           /* copyEquations = */false, errorMessage));
+		                                           /* copyEquation = */false, errorMessage));
 		assertEquals(attribs.getStringAttribute(sourceId, "StringTest"),
 		             attribs.getStringAttribute(targetId, "StringTest"));
 
 		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "ListTest",
-		                                           /* copyEquations = */false, errorMessage));
+		                                           /* copyEquation = */false, errorMessage));
 		assertEquals(attribs.getListAttribute(sourceId, "ListTest"),
 		             attribs.getListAttribute(targetId, "ListTest"));
 
 		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "MapTest",
-		                                           /* copyEquations = */false, errorMessage));
+		                                           /* copyEquation = */false, errorMessage));
 		assertEquals(attribs.getMapAttribute(sourceId, "MapTest"),
 		             attribs.getMapAttribute(targetId, "MapTest"));
 
 		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "EquationTest",
-		                                           /* copyEquations = */true, errorMessage));
+		                                           /* copyEquation = */true, errorMessage));
 		assertEquals(attribs.getEquation(sourceId, "EquationTest"),
 		             attribs.getEquation(targetId, "EquationTest"));
 	}

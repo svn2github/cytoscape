@@ -263,12 +263,12 @@ public class CyAttributesUtils {
 	}
 
 	/**
-	 *  @param copyEquations if true, and the source contains an equation, the equation and not the value will be copied
+	 *  @param copyEquation if true, and the source contains an equation, the equation and not the value will be copied
 	 *  @param errorMessage will be set to an explanatory text should the copy operation fail
 	 *  @returns true if the copy operation succeeded, else false
 	 */
 	public static boolean copyAttribute(final CyAttributes attribs, final String sourceId, final String targetId,
-	                                    final String attribName, final boolean copyEquations,
+	                                    final String attribName, final boolean copyEquation,
 	                                    final StringBuilder errorMessage)
 	{
 		// Self-copy is a supported no-op!
