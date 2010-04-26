@@ -277,7 +277,7 @@ public class CyAttributesUtils {
 
 		errorMessage.setLength(0);
 
-		if (copyEquations) {
+		if (copyEquation) {
 			final Equation equation = attribs.getEquation(sourceId, attribName);
 			if (equation != null) {
 				attribs.setAttribute(targetId, attribName, equation);
