@@ -53,6 +53,15 @@ public class Equation {
 	}
 
 	@Override public String toString() { return equation; }
+
+	@Override public boolean equals(final Object other) {
+		if (other.getClass() != Equation.class)
+			return false;
+
+		final Equation otherEquation = (Equation)other;
+		return equation.equals(otherEquation.equation);
+	}
+
 	public Set<String> getAttribReferences() { return attribReferences; }
 	public Object[] getCode() { return code; }
 	public Class getType() { return type; }

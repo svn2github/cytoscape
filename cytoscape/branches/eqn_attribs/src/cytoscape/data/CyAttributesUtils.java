@@ -34,6 +34,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.eqn_attribs.Equation;
 
 import giny.model.Edge;
 import giny.model.Node;
@@ -262,17 +263,27 @@ public class CyAttributesUtils {
 	}
 
 	/**
+	 *  @param copyEquations if true, and the source contains an equation, the equation and not the value will be copied
 	 *  @param errorMessage will be set to an explanatory text should the copy operation fail
 	 *  @returns true if the copy operation succeeded, else false
 	 */
 	public static boolean copyAttribute(final CyAttributes attribs, final String sourceId, final String targetId,
-	                                    final String attribName, final StringBuilder errorMessage)
+	                                    final String attribName, final boolean copyEquations,
+	                                    final StringBuilder errorMessage)
 	{
 		// Self-copy is a supported no-op!
 		if (sourceId.equals(targetId))
 			return true;
 
 		errorMessage.setLength(0);
+
+		if (copyEquations) {
+			final Equation equation = attribs.getEquation(sourceId, attribName);
+			if (equation != null) {
+				attribs.setAttribute(targetId, attribName, equation);
+				return true;
+			}
+		}
 
 		switch (attribs.getType(attribName)) {
 		case CyAttributes.TYPE_BOOLEAN:
