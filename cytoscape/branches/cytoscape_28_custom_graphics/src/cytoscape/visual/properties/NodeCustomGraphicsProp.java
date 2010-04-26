@@ -1,6 +1,6 @@
 package cytoscape.visual.properties;
 
-import static cytoscape.visual.VisualPropertyDependency.Definition.*;
+import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_CUSTOM_GRAPHICS_SIZE_SYNC;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -33,7 +32,7 @@ import ding.view.DNodeView;
 
 public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
-	private final CyCustomGraphics<CustomGraphic> def = new NullCustomGraphics();
+	private static final CyCustomGraphics<CustomGraphic> NULL = new NullCustomGraphics();
 
 	@Override
 	public Icon getIcon(final Object value) {
@@ -108,8 +107,6 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 		};
 
-		// icon.setBottomPadding(-2);
-
 		return icon;
 	}
 
@@ -120,24 +117,26 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	public void applyToNodeView(NodeView nv, Object o,
 			VisualPropertyDependency dep) {
-		if (nv == null)
+		if (nv == null || nv instanceof DNodeView == false)
 			return;
 
-		// Remove all
-		if (nv instanceof DNodeView) {
-			final DNodeView dv = (DNodeView) nv;
-			while (dv.getNumCustomGraphics() != 0) {
-				CustomGraphic custom = dv.customGraphicIterator().next();
-				dv.removeCustomGraphic(custom);
-			}
+		final DNodeView dv = (DNodeView) nv;
+
+		// Remove all custom graphics from current view
+		while (dv.getNumCustomGraphics() != 0) {
+			CustomGraphic custom = dv.customGraphicIterator().next();
+			dv.removeCustomGraphic(custom);
+			custom = null;
 		}
 
+		// If not necessary to update, ignore.
 		if ((o == null) || !(o instanceof CyCustomGraphics<?>)
 				|| o instanceof NullCustomGraphics)
 			return;
 
 		System.out.println("\n\n\n####### Applying Custom Graphics: " + o);
 
+		// Check dependency. Sync size or not.
 		boolean sync = false;
 		if (dep != null) {
 			sync = dep.check(NODE_CUSTOM_GRAPHICS_SIZE_SYNC);
@@ -145,48 +144,43 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		}
 
 		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
-		Collection<?> graphicsList = graphics.getCustomGraphics();
+		final Collection<?> graphicsList = graphics.getCustomGraphics();
 
-		if (nv instanceof DNodeView) {
-			final DNodeView dv = (DNodeView) nv;
-			while (dv.getNumCustomGraphics() != 0) {
-				CustomGraphic custom = dv.customGraphicIterator().next();
-				dv.removeCustomGraphic(custom);
-			}
+		// No need to update
+		if (graphicsList == null || graphicsList.size() == 0)
+			return;
 
-			if (graphicsList == null || graphicsList.size() == 0)
-				return;
-
-			for (Object cg : graphicsList) {
-				if (cg instanceof CustomGraphic) {
-					if (sync) {
-						final CustomGraphic resized = syncSize(
-								(CustomGraphic) cg, dv);
-						dv.addCustomGraphic((CustomGraphic) resized);
-					} else
-						dv.addCustomGraphic((CustomGraphic) cg);
-				}
+		for (Object cg : graphicsList) {
+			if (cg instanceof CustomGraphic) {
+				if (sync) {
+					final CustomGraphic resized = syncSize((CustomGraphic) cg,
+							dv);
+					dv.addCustomGraphic(resized);
+				} else
+					dv.addCustomGraphic((CustomGraphic) cg);
 			}
 		}
 
 	}
 
 	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv) {
-		Shape originalShape = cg.getShape();
+		
 		final double nodeW = dv.getWidth();
 		final double nodeH = dv.getHeight();
-		
 
+		final Shape originalShape = cg.getShape();
 		final Rectangle2D originalBounds = originalShape.getBounds2D();
 		final double cgW = originalBounds.getWidth();
 		final double cgH = originalBounds.getHeight();
 		
-		Rectangle2D newBound = new Rectangle2D.Double(originalBounds.getX(),
-				originalBounds.getY(), originalBounds.getWidth(),
-				originalBounds.getHeight());
-		final AffineTransform scale = AffineTransform.getScaleInstance(nodeW/cgW, nodeH/cgH);
-		Shape newShape = scale.createTransformedShape(originalShape);
-		return new CustomGraphic(newShape, cg.getPaintFactory());
+		// In case size is same, return the original.
+		if(nodeW == cgW && nodeH == cgH)
+			return cg;
+
+		final AffineTransform scale = AffineTransform.getScaleInstance(nodeW
+				/ cgW, nodeH / cgH);
+	
+		return new CustomGraphic(scale.createTransformedShape(originalShape), cg.getPaintFactory());
 	}
 
 	/**
@@ -195,7 +189,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 	 * @return DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {
-		return def;
+		return NULL;
 	}
 
 	public Map<Object, Icon> getIconSet() {
