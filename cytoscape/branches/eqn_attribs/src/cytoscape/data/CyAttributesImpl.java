@@ -1096,11 +1096,14 @@ public class CyAttributesImpl implements CyAttributes {
 	 *  @returns "d" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
 	 */
 	private static Integer doubleToInteger(final double d) {
-		final double x = Math.rint(d - 0.5);
-		if (x >= Integer.MIN_VALUE && x <= Integer.MAX_VALUE)
-			return (Integer)(int)x;
+		if (d > Integer.MAX_VALUE || d < Integer.MIN_VALUE)
+			return null;
 
-		return null;
+		double x = ((Double)d).intValue();
+		if (x != d && x < 0.0)
+			--x;
+
+		return (Integer)(int)x;
 	}
 
 	/**
