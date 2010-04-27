@@ -689,7 +689,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					if ((SwingUtilities.isRightMouseButton(e)) || (isMacPlatform() && e.isControlDown())){
 						if (objectAndEditString != null) {
 							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
-							rightClickPopupMenu.add(new HyperLinkOut(objectAndEditString.getValidatedObject().toString(), linkoutProps));
+							final Object validatedObject = objectAndEditString.getValidatedObject();
+							if (validatedObject != null)
+								rightClickPopupMenu.add(new HyperLinkOut(validatedObject.toString(), linkoutProps));
 							rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 						}
 					} else if (SwingUtilities.isLeftMouseButton(e) && (getSelectedRows().length != 0)) {
