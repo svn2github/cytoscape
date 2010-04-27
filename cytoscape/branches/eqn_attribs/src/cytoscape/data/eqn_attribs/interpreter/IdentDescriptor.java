@@ -41,7 +41,13 @@ public class IdentDescriptor {
 		if (o == null)
 			throw new IllegalArgumentException("argument must not be null!");
 
-		if (o instanceof List)
+		if (o.getClass() == Integer.class) { // Need to map Integer to Long!
+			final Integer i = (Integer)o;
+			this.type = Long.class;
+			this.value = new Long(i);
+			return;
+		}
+		else if (o instanceof List)
 			this.type = List.class;
 		else if (o.getClass() != Double.class && o.getClass() != Boolean.class && o.getClass() != String.class)
 			throw new IllegalArgumentException("argument is of an unsupported type (" + o.getClass() + ")!");
