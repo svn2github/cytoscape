@@ -94,6 +94,7 @@ import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
+import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CyFileFilter;
@@ -148,7 +149,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private JPopupMenu cellMenu;
 	private JMenuItem copyMenuItem = null;
 	private JMenuItem copyToCurrentSelectionMenuItem = null;
+	private JMenuItem copyFormulaToCurrentSelectionMenuItem = null;
 	private JMenuItem copyToEntireAttributeMenuItem = null;
+	private JMenuItem copyFormulaToEntireAttributeMenuItem = null;
 	private JMenu exportMenu = null;
 	private JMenuItem exportCellsMenuItem = null;
 	private JMenuItem exportTableMenuItem = null;
@@ -246,11 +249,15 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final boolean singleCellSelected = getSelectedRowCount() == 1 && getSelectedColumnCount() == 1;
 		if (singleCellSelected) {
 			copyToCurrentSelectionMenuItem.setEnabled(true);
+			copyFormulaToCurrentSelectionMenuItem.setEnabled(true);
 			copyToEntireAttributeMenuItem.setEnabled(true);
+			copyFormulaToEntireAttributeMenuItem.setEnabled(true);
 		}
 		else {
 			copyToCurrentSelectionMenuItem.setEnabled(false);
+			copyFormulaToCurrentSelectionMenuItem.setEnabled(false);
 			copyToEntireAttributeMenuItem.setEnabled(false);
+			copyFormulaToEntireAttributeMenuItem.setEnabled(false);
 		}
 	}
 
@@ -268,24 +275,16 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		switch (type) {
 			case SELECTED_NODE:
 				selectedNodeColor = gac.getDefaultNodeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_NODE:
 				reverseSelectedNodeColor = gac.getDefaultNodeReverseSelectionColor();
-
 				break;
-
 			case SELECTED_EDGE:
 				selectedEdgeColor = gac.getDefaultEdgeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_EDGE:
 				reverseSelectedEdgeColor = gac.getDefaultEdgeReverseSelectionColor();
-
 				break;
-
 			default:
 				break;
 		}
@@ -298,27 +297,18 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		switch (type) {
 			case SELECTED_NODE:
 				newColor = gac.getDefaultNodeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_NODE:
 				newColor = gac.getDefaultNodeReverseSelectionColor();
-
 				break;
-
 			case SELECTED_EDGE:
 				newColor = gac.getDefaultEdgeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_EDGE:
 				newColor = gac.getDefaultEdgeReverseSelectionColor();
-
 				break;
-
 			default:
 				newColor = null;
-
 				break;
 		}
 
@@ -432,8 +422,12 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			copyMenuItem = new JMenuItem("Copy");
 			copyToCurrentSelectionMenuItem = new JMenuItem("Copy to Current Selection");
 			copyToCurrentSelectionMenuItem.setEnabled(false);
+			copyFormulaToCurrentSelectionMenuItem = new JMenuItem("Copy Formula to Current Selection");
+			copyFormulaToCurrentSelectionMenuItem.setEnabled(false);
 			copyToEntireAttributeMenuItem = new JMenuItem("Copy to Entire Attribute");
 			copyToEntireAttributeMenuItem.setEnabled(false);
+			copyFormulaToEntireAttributeMenuItem = new JMenuItem("Copy Formula to Entire Attribute");
+			copyFormulaToEntireAttributeMenuItem.setEnabled(false);
 			newSelectionMenuItem = new JMenuItem("Select from Table");
 			exportMenu = new JMenu("Export...");
 			exportCellsMenuItem = new JMenuItem("Selected Cells");
@@ -454,9 +448,21 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					}
 				});
 
+			copyFormulaToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						copyFormulaToCurrentSelection();
+					}
+				});
+
 			copyToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						copyToEntireAttribute();
+					}
+				});
+
+			copyFormulaToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						copyFormulaToEntireAttribute();
 					}
 				});
 
@@ -551,7 +557,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 			rightClickPopupMenu.add(copyMenuItem);
 			rightClickPopupMenu.add(copyToCurrentSelectionMenuItem);
+			rightClickPopupMenu.add(copyFormulaToCurrentSelectionMenuItem);
 			rightClickPopupMenu.add(copyToEntireAttributeMenuItem);
+			rightClickPopupMenu.add(copyFormulaToEntireAttributeMenuItem);
 			rightClickPopupMenu.add(selectAllMenuItem);
 			rightClickPopupMenu.add(exportMenu);
 
@@ -1063,8 +1071,29 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
 		final StringBuilder errorMessage = new StringBuilder();
 		for (final GraphObject graphObject : selectedGraphObjects)
-			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(), attribName, errorMessage);
-		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn);
+			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
+							attribName, /* copyEquation = */ false, errorMessage);
+		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn, tableRow);
+	}
+
+	private void copyFormulaToCurrentSelection() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final GraphObject graphObject : selectedGraphObjects)
+			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
+							attribName, /* copyEquation = */ true, errorMessage);
+		final Equation equation = attribs.getEquation(rowId, attribName);
+		tableModel.updateColumn(equation != null ? equation : attribs.getAttribute(rowId, attribName),
+		                        tableColumn, tableRow);
 	}
 
 	private void copyToEntireAttribute() {
@@ -1079,8 +1108,28 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final Iterable<String> ids = objectType.getAssociatedIdentifiers();
 		final StringBuilder errorMessage = new StringBuilder();
 		for (final String id : ids)
-			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName, errorMessage);
-		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn);
+			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName,
+			                                /* copyEquations = */false, errorMessage);
+		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn, tableRow);
+	}
+
+	private void copyFormulaToEntireAttribute() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+		final Iterable<String> ids = objectType.getAssociatedIdentifiers();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final String id : ids)
+			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName,
+			                                /* copyEquations = */true, errorMessage);
+		final Equation equation = attribs.getEquation(rowId, attribName);
+		tableModel.updateColumn(equation != null ? equation : attribs.getAttribute(rowId, attribName),
+		                        tableColumn, tableRow);
 	}
 
 	private void adjustColWidth(){

@@ -465,7 +465,7 @@ public class FormulaBuilderDialog extends JDialog {
 				                  equation, errorMessage))
 					return false;
 			}
-			tableModel.updateColumn(equation, cellColum);
+			tableModel.updateColumn(equation, cellColum, /* skipRowIdx = */-1);
 			break;
 		case ENTIRE_ATTRIBUTE:
 			final Iterable<String> ids = tableObjectType.getAssociatedIdentifiers();
@@ -473,7 +473,7 @@ public class FormulaBuilderDialog extends JDialog {
 				if (!setAttribute(attribs, id, attribName, equation, errorMessage))
 					return false;
 			}
-			tableModel.updateColumn(equation, cellColum);
+			tableModel.updateColumn(equation, cellColum, /* skipRowIdx = */-1);
 			break;
 		default:
 			throw new IllegalStateException("unknown application domain: "

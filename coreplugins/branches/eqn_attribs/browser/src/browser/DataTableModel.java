@@ -71,6 +71,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author kono
  * @author xmas
+ * @author ruschein
  */
 public class DataTableModel extends DefaultTableModel implements SortTableModel {
 	/**
@@ -540,12 +541,23 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 	public CyAttributes getCyAttributes() { return data; }
 
-	public void updateColumn(final Object newValue, final int colIdx) {
+	/**
+	 *  Updates an entire column.
+	 *
+	 *  @param newValue    the new value to be set
+	 *  @param colIdx      the index of the column that will be updated
+	 *  @param skipRowIdx  a row with matching this index will not be updated
+	 *  
+	 */
+	public void updateColumn(final Object newValue, final int colIdx, final int skipRowIdx) {
 		final int keyIndex = getKeyIndex();
 		if (keyIndex == -1)
 			return;
 
 		for (int rowIdx = 0; rowIdx < getRowCount(); ++rowIdx) {
+			if (rowIdx == skipRowIdx)
+				continue;
+
 			final DataEditAction edit = updateCell(keyIndex, rowIdx, colIdx, newValue);
 			if (edit != null)
 				cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
