@@ -1007,6 +1007,13 @@ public class CyAttributesImpl implements CyAttributes {
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
 			final Object attribValue = getAttribute(id, attribRef);
+			if (attribValue == null) {
+				logger.warn("Missing value for \"" + attribRef
+				            + "\" while evaluating an equation (ID:" + id
+				            + ", attribute name:" + attribName + ")");
+				return null;
+			}
+
 			try {
 				nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
 			} catch (final Exception e) {
