@@ -246,6 +246,43 @@ $(function(){
 
     });
     
+    // Layout options:
+    var layout_names = {};
+    layout_names["ForceDirected"] = "Force Directed";
+    layout_names["Circle"] = "Circle";
+    layout_names["CircleTree"] = "Circle Tree";
+    layout_names["Radial"] = "Radial";
+    layout_names["Tree"] = "Tree";
+    
+    var layout_options = {};
+    layout_options["ForceDirected"] = [
+        { id: "gravitation", label: "Gravitation",       value: -500,   tip: "The gravitational constant. Negative values produce a repulsive force." },
+        { id: "mass",        label: "Node mass",         value: 3,      tip: "The default mass value for node/particles." },
+        { id: "tension",     label: "Edge tension",      value: 0.4,    tip: "The default spring tension for edge/springs." },
+        { id: "restLength",  label: "Edge rest length",  value: "auto", tip: "The default spring rest length for edge/springs." },
+        { id: "drag",        label: "Drag co-efficient", value: 0.1,    tip: "The co-efficient for frictional drag forces." },
+        { id: "minDistance", label: "Minimum distance",  value: 1,      tip: "The minimum effective distance over which forces are exerted." },
+        { id: "maxDistance", label: "Maximum distance",  value: 10000,  tip: "The maximum distance over which forces are exerted." },
+        { id: "iterations",  label: "Iterations",        value: 80,     tip: "The number of iterations to run the simulation per invocation." },
+        { id: "maxTime",     label: "Maximum time",      value: 60,     tip: "The maximum time to run the simulation, in seconds." },
+        { id: "autoStabilize", label: "Auto stabilize",  value: true,   tip: "If checked, Cytoscape Web automatically tries to stabilize results that look unstable after running the regular iterations." }
+    ];
+    layout_options["Circle"] = [
+        { id: "angleWidth", label: "Angle width", value: -6.28318531, tip: "The angular width of the layout, in radians." }
+    ];
+    layout_options["CircleTree"] = [
+        { id: "angleWidth", label: "Angle width", value: -6.28318531, tip: "The angular width of the layout, in radians." }
+    ];
+    layout_options["Radial"] = [
+        { id: "radius",     label: "Radius",      value: 60,          tip: "The radius increment between depth levels." },
+        { id: "angleWidth", label: "Angle width", value: -6.28318531, tip: "The angular width of the layout, in radians." }
+    ];
+    layout_options["Tree"] = [
+        { id: "orientation",  label: "Orientation",   value: ["leftToRight","rightToLeft","bottomToTop","topToBottom"], tip: "The orientation of the layout." },
+        { id: "depthSpace",   label: "Depth space",   value: 50, tip: "The space between depth levels in the tree." },
+        { id: "breadthSpace", label: "Breadth space", value: 30, tip: "The space between siblings in the tree." },
+        { id: "subtreeSpace", label: "Angle width",   value: 5,  tip: "The space between different sub-trees." }
+    ];
     
     // create tabs
     $("#side").tabs({
@@ -406,8 +443,9 @@ $(function(){
     
     // call back for when the graph is opened and fully loaded
     $("#cytoweb_container").cw().ready(function(){
-        $("#cytoweb_container").cw().addListener("error", function(err){
-            
+    	var vis = $("#cytoweb_container").cw();
+    	
+        vis.addListener("error", function(err){
             hide_msg({ target: $("body") });
             
             show_msg({
@@ -424,7 +462,7 @@ $(function(){
                 message: "This area is unavailable when the graph file can not be loaded."
             });
         });
-    
+        
         $("#cytoweb_container").trigger("available");
     }); // end cl load
     
@@ -449,6 +487,84 @@ $(function(){
     });
 
     open_graph(options);
+    
+    // [settings] Layout settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    function create_settings_panel(layout_id){
+    	var opt = layout_options[layout_id];
+    	var panel = ('<div id="'+layout_id+'" class="content ui-widget-content"><table>');
+
+    	for(var i in opt) {
+    		var o = opt[i];
+    		var v = o.value;
+    		panel += '<tr title="'+o.tip+'">';
+    		
+    		if (typeof v === "object") {
+    			panel += ('<td align="right"><label>'+o.label+' </label></td><td><select id="'+o.id+'" size="1">');
+    			for(var j in v) { panel += ('<option value="'+v[j]+'">'+v[j]+'</option>'); }
+    			panel += '</select></td>'
+    		} else if (typeof v === "boolean") {
+    			panel += ('<td align="right"><label>'+o.label+' </label></td><td align="left"><input type="checkbox" id="'+o.id+'" value="'+v+'"'+(v?' checked="checked"':'')+'/></td>');
+    		} else {
+    			panel += ('<td align="right"><label>'+o.label+' </label></td><td><input type="text" id="'+o.id+'" value="'+v+'"/></td>');
+    		}
+    		
+    		panel += "</tr>";
+    	}
+    	
+    	panel += "</table></div>";
+    	
+    	return $(panel);
+    }
+    
+    function open_settings(){
+	    if ($("#settings").length === 0) {
+			var dialog = '\
+				<div id="settings" title="Layout Settings">\
+					<div class="tabs ui-widget">\
+						<ul></ul>\
+						<div class="ui-layout-content"/>\
+					</div>\
+					<div class="footer"><input type="button" id="execute_layout" class="ui-state-default" value="Execute Layout"/></div>\
+				</div>\
+				';
+
+			$("body").append(dialog);
+				
+			for(var i in layout_names) {
+	            var layout_id = i;
+	            var layout_name = layout_names[layout_id];
+	            var panel = create_settings_panel(layout_id);
+	            $("#settings .tabs ul").append('<li><a href="#'+layout_id+'">' + layout_name + '</a></li>');
+	            $("#settings .tabs > .ui-layout-content").append(panel);
+	        }
+				
+			$("#settings .tabs").tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
+			$("#settings .tabs li").removeClass('ui-corner-top').addClass('ui-corner-left');
+			
+			$("#execute_layout").click(function(){
+				var layout_id = $("#settings .ui-tabs-selected a").attr("href").replace("#", "");
+				var options = {};
+				var def = layout_options[layout_id];
+				
+				for(var i in def) {
+					var o = def[i];
+		    		var v, id = o.id;
+		    		var input = $("#settings #"+layout_id+" #"+id);
+		    		v = input.val();
+		    		if (typeof o.value === "boolean") { v = Boolean(v); }
+		    		else if (typeof o.value === "number") { v = Number(v); }
+		    		options[id] = v;
+		    	}
+				console.log(options);
+				$("#cytoweb_container").cw().layout(layout_id, options);
+			});
+			
+			$("#settings").dialog({ autoOpen: false, resizable: false, width: 430 });
+		}
+	    $("#settings").dialog("open");
+    }
     
     // [menu] Create the menu above Cytoscape Web
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,18 +597,11 @@ $(function(){
                                                 <ul id="layout_style" class="ui-menu-one-checkable">\
                                                 </ul>\
                                             </li>\
+                                            <li id="layout_settings"><label>Settings...</label></li>\
                                         </ul>\
                                     </li>\
                                 </ul>\
                                 ');
-    
-        // add layout styles
-        var layout_names = new Array();
-        layout_names["ForceDirected"] = "Force directed";
-        layout_names["Circle"] = "Circle";
-        layout_names["CircleTree"] = "Circle tree";
-        layout_names["Radial"] = "Radial";
-        layout_names["Tree"] = "Tree";
 
         // add layouts to menu
         for(var i in layout_names) {
@@ -554,6 +663,10 @@ $(function(){
                 	var layout = $("#layout_style .ui-menu-checked").parent().attr("layout_id");
                     $("#cytoweb_container").cw().layout(layout);
                     break;
+                    
+                case "layout_settings":
+                	open_settings();
+                	break;
                 
                 case "open_example":
                     var ex = example[li.attr("example_id")];
@@ -621,7 +734,7 @@ $(function(){
 	                $("#open_file").trigger("available");
 	            },
 	            typeFilter: function(){
-	                return "*.xgmml;*.graphml;*.xml";
+	                return "*.graphml;*.xgmml;*.xml;*.sif";
 	            },
 	            typeDescription: function(){
 	            	return "Network file";
@@ -845,34 +958,43 @@ $(function(){
     function update_info(){
         
         update();
-    
+        updateContextMenu();
+        
         $("#cytoweb_container").cw().addListener("select", "nodes", function(){
             update();
-        });
-        
-        $("#cytoweb_container").cw().addListener("deselect", "nodes", function(){
+            updateContextMenu();
+        })
+        .addListener("deselect", "nodes", function(){
             update();
-        });
-        
-        $("#cytoweb_container").cw().addListener("select", "edges", function(){
+            updateContextMenu();
+        })
+        .addListener("select", "edges", function(){
             update();
-        });
-        
-        $("#cytoweb_container").cw().addListener("deselect", "edges", function(){
+            updateContextMenu();
+        })
+        .addListener("deselect", "edges", function(){
             update();
-        });
-        
-        $("#cytoweb_container").cw().addListener("dblClick", "nodes", function(){
+            updateContextMenu();
+        })
+        .addListener("dblClick", "nodes", function(){
             $("#info_link").click();
-        });
-        
-        $("#cytoweb_container").cw().addListener("dblClick", "edges", function(){
+        })
+        .addListener("dblClick", "edges", function(){
             $("#info_link").click();
         });
         
         $("#info_link").bind("click", function(){
             update();
         });
+        
+        var _srcId;
+        function clickNodeToAddEdge(evt) {
+            if (_srcId != null) {
+            	$("#cytoweb_container").cw().removeListener("click", "nodes", clickNodeToAddEdge);
+            	$("#cytoweb_container").cw().addEdge({ source: _srcId, target: evt.target.data.id }, true);
+            	_srcId = null;
+            }
+        }
         
         function update(){
             var edges = $("#cytoweb_container").cw().selected("edges");
@@ -881,41 +1003,42 @@ $(function(){
             
             container.html(""); // clear info area
             
-            function print_selection(group, name){
+            function print_selection(items, name, id){
                 var headings = [];
                 
-                var half = $("<div class=\"half\"></div>");
+                var half = $('<div class="half"></div>');
                 container.append(half);
             
-                var section = $("<div class=\"section\"></div>");
+                var section = $('<div class="section"></div>');
                 half.append(section);
             
                 section.append("<h1>" + name + "</h1>");
                 
-                if( group.length > 0 ) {
-                    var table = $("<table class=\"tablesorter\"></table>");
+                if( items.length > 0 ) {
+                    var table = $('<table id="'+id+'"></table>');
                     section.append(table);
                     
-                    var thead = $("<thead></thead>");
+                    var thead = $('<thead></thead>');
                     table.append(thead); 
                     
-                    var thead_row = $("<tr></tr>");
+                    var thead_row = $('<tr></tr>');
                     thead.append(thead_row);
-                    for(var j in group[0].data){
+                    for(var j in items[0].data){
                         headings.push(j);
                     }
+                    
                     headings.sort();
                     for(var j in headings){
                         var heading = headings[j];
-                        thead_row.append("<th><label>" + ("" + heading).replace(/(\s)/g, "&nbsp;") + "</label></th>");
+                        thead_row.append('<th><label>' + ("" + heading).replace(/(\s)/g, "&nbsp;") + '</label></th>');
                     }
                     
-                    var tbody = $("<tbody></tbody>");
+                    var tbody = $('<tbody></tbody>');
                     table.append(tbody);
                     
-                    for(var i in group){
-                        var data = group[i].data;
-                        var row = $("<tr name=\"" + data.id + "\"></tr>");
+                    for(var i in items){
+                        var data = items[i].data;
+                        var row = $('<tr name="' + data.id + '"></tr>');
                         tbody.append(row);
                         
                         for(var j in headings){
@@ -923,25 +1046,57 @@ $(function(){
                             var param_val = data[param_name];
                             
                             var val = ("" + param_val).replace(/(\s)/g, "&nbsp;");
-                            var entry = $("<td><code>" + val + "</code></td>");
+                            var entry = $('<td class="code">' + val + '</td>');
                             row.append(entry);
                         }
                     }
-                    
-                    
-                    
                 } else {
-                    section.append("<p>No " + name.toLowerCase() + " are selected.</p>");
+                    section.append('<p>No ' + name.toLowerCase() + ' are selected.</p>');
                 }
-                
             }
-            
-            print_selection(nodes, "Nodes");
-            print_selection(edges, "Edges");
-            
 
+            print_selection(nodes, "Nodes", "NodesDataTable");
+            print_selection(edges, "Edges", "EdgesDataTable");
+            
             $("#info").find(".tablesorter").tablesorter();
-
+        }
+        
+        function updateContextMenu(){
+        	var cw = $("#cytoweb_container").cw();
+        	
+        	cw.removeContextMenuItem()
+            .addContextMenuItem("Delete node", "nodes", function(evt) {
+            	$("#cytoweb_container").cw().remove([evt.target], true);
+            	updateContextMenu();
+            	update();
+            })
+            .addContextMenuItem("Delete edge", "edges", function(evt) {
+            	$("#cytoweb_container").cw().remove([evt.target], true);
+            	updateContextMenu();
+            	update();
+            })
+        	.addContextMenuItem("Add new node", function(evt) {
+        		$("#cytoweb_container").cw().addNode(evt.mouseX, evt.mouseY, { }, true);
+        		updateContextMenu();
+        		update();
+        	})
+        	.addContextMenuItem("Add new edge (then click the target node...)", "nodes", function(evt) {
+            	_srcId = evt.target.data.id;
+            	$("#cytoweb_container").cw().removeListener("click", "nodes", clickNodeToAddEdge);
+            	$("#cytoweb_container").cw().addListener("click", "nodes", clickNodeToAddEdge);
+            });
+        	
+        	var items = cw.selected();
+        	if (items.length > 0) {
+        		cw.addContextMenuItem("Delete selected", function(evt) {
+                    //var items = cw.selected();
+        			$("#cytoweb_container").cw().remove(items, true);
+                    updateContextMenu();
+                    update();
+                });
+        	} else {
+        		cw.removeContextMenuItem("Delete selected");
+        	}		
         }
         
         $("#info").trigger("available");
@@ -1633,13 +1788,13 @@ $(function(){
                     }
                 });
                 
-                if(initial_property_is_mapped){
+                if (initial_property_is_mapped){
                     open_map_section();
                     
-                    if(initial_property.continuousMapper != undefined){
+                    if (initial_property.continuousMapper != undefined) {
                         set_selector_title(initial_property.continuousMapper.attrName, "continuous");
                         display_continuous(true);
-                    } else if(initial_property.discreteMapper != undefined) {
+                    } else if (initial_property.discreteMapper != undefined) {
                         set_selector_title(initial_property.discreteMapper.attrName, "discrete");
                         display_discrete(true);
                     }
@@ -1980,7 +2135,7 @@ $(function(){
                             return false; // no shown in loop
                     }
                     
-                });
+                }, true);
                 
                 
             });
@@ -2360,11 +2515,11 @@ $(function(){
     // create examples in side tab (static -- does not change on new graph load)
     for(var id in example){
         var ex = example[id];
-        var entry = $(          "<div class=\"entry " + id + "\" example_id=\"" + id + "\">\
-                                    <label class=\"name\">" + ex.name + "</label>\
-                                    <div class=\"icon\"></div>\
-                                    <label class=\"description\">" + ex.description + "</label>\
-                                </div>");
+		var entry = $( '<div class="entry ' + id + '" example_id="' + id + '">\
+		                   <h3 class="name">' + ex.name + '</h3>\
+		                       <div class="icon"></div>\
+		                           <label class="description">' + ex.description + '</label>\
+		                </div>' );
                     
         entry.click(function(){
             open_graph( example[ $(this).attr("example_id") ] );

@@ -17,7 +17,7 @@ h2 { font-size: 1.5em; line-height: 1.5em; }
 h3 { font-size: 1em; line-height: 2em; }
 label { color: #0b94b1; }
 p { padding: 0.5em 0 0.5em 0; }
-input, button, textarea { resize: none; font-size: 100%; font-family: Helvetica, Arial, Verdana, sans-serif; border: 1px solid #c1c1c1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; padding: 0.25em; }
+input, button, textarea, select { resize: none; font-size: 100%; font-family: Helvetica, Arial, Verdana, sans-serif; border: 1px solid #c1c1c1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; padding: 0.25em; }
 input:focus, button:focus, textarea:focus{ -moz-box-shadow: 0 0 5px #0b94b1; -webkit-box-shadow: 0 0 5px #0b94b1; box-shadow: 0 0 5px #0b94b1; }
 input[type=submit], button { color: #ffffff; cursor: pointer; background: #097288 url("../img/layout/button_blue.png") repeat-x top center; }
 input.emphasis, button.emphasis { background: #62977c url("../img/layout/button_green.png") repeat-x top center; }
