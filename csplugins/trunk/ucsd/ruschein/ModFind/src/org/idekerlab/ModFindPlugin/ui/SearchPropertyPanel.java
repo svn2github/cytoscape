@@ -56,45 +56,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 		initComponents2(); // parameter panel
 		
-		topPane.setBorder(BorderFactory.createTitledBorder("Target Networks"));
-
-		physicalNetworkPanel = new NetworkSelectorPanel();
-		geneticNetworkPanel = new NetworkSelectorPanel();
-
-		// add the target networks to topPanel
-		javax.swing.JLabel lbPhysicalNetwork = new javax.swing.JLabel("Physical network");
-		javax.swing.JLabel lbGeneticNetwork = new javax.swing.JLabel("Genetic network");
-		
-		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-		
-        lbPhysicalNetwork.setText("Physical network");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        topPane.add(lbPhysicalNetwork, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
-        topPane.add(physicalNetworkPanel, gridBagConstraints);
-
-        lbGeneticNetwork.setText("Genetic Network");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        topPane.add(lbGeneticNetwork, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
-        topPane.add(geneticNetworkPanel, gridBagConstraints);
-
         // Add parameter panel to collapsibilePanel
         CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
         collapsiblePanel.getContentPane().add(pnlParameter);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
+        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -137,11 +103,15 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         java.awt.GridBagConstraints gridBagConstraints;
 
         topPane = new javax.swing.JPanel();
-        edgeAttributePanel = new javax.swing.JPanel();
         physicalEdgeLabel = new javax.swing.JLabel();
-        geneticEdgeLabel = new javax.swing.JLabel();
         physicalEdgeComboBox = new javax.swing.JComboBox();
+        lbPhysicalNetwork = new javax.swing.JLabel();
+        physicalNetworkPanel = new NetworkSelectorPanel();
+        edgeAttributePanel = new javax.swing.JPanel();
+        geneticEdgeLabel = new javax.swing.JLabel();
         geneticEdgeComboBox = new javax.swing.JComboBox();
+        lbGeneticNetwork = new javax.swing.JLabel();
+        geneticNetworkPanel = new NetworkSelectorPanel();
         parameterPanel = new javax.swing.JPanel();
         buttonPanel = new javax.swing.JPanel();
         helpButton = new javax.swing.JButton();
@@ -153,7 +123,40 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         topPane.setLayout(new java.awt.GridBagLayout());
 
-        topPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Target Networks"));
+        topPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Physical Network"));
+        physicalEdgeLabel.setText("Attribute");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        topPane.add(physicalEdgeLabel, gridBagConstraints);
+
+        physicalEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                physicalEdgeComboBoxActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        topPane.add(physicalEdgeComboBox, gridBagConstraints);
+
+        lbPhysicalNetwork.setText("Network");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
+        topPane.add(lbPhysicalNetwork, gridBagConstraints);
+
+        //physicalNetworkPanel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        topPane.add(physicalNetworkPanel, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -163,30 +166,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         edgeAttributePanel.setLayout(new java.awt.GridBagLayout());
 
-        edgeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Attributes"));
-        physicalEdgeLabel.setText("Physical:");
+        edgeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Genetic Network"));
+        geneticEdgeLabel.setText("Attribute");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        edgeAttributePanel.add(physicalEdgeLabel, gridBagConstraints);
-
-        geneticEdgeLabel.setText("Genetic:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 5);
         edgeAttributePanel.add(geneticEdgeLabel, gridBagConstraints);
-
-        physicalEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                physicalEdgeComboBoxActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
-        edgeAttributePanel.add(physicalEdgeComboBox, gridBagConstraints);
 
         geneticEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -195,11 +181,25 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
         edgeAttributePanel.add(geneticEdgeComboBox, gridBagConstraints);
+
+        lbGeneticNetwork.setText("Network");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        edgeAttributePanel.add(lbGeneticNetwork, gridBagConstraints);
+
+        //geneticNetworkPanel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        edgeAttributePanel.add(geneticNetworkPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -517,6 +517,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JPanel topPane;
     private javax.swing.JPanel pnlParameter;
     private javax.swing.JPanel parameterPanel;
+    private javax.swing.JLabel lbGeneticNetwork;
+    private javax.swing.JLabel lbPhysicalNetwork;
     // End of variables declaration                     
                
   
@@ -532,6 +534,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		geneticEdgeComboBox.removeAllItems();
 		physicalEdgeComboBox.removeAllItems();
 
+		physicalEdgeComboBox.addItem("Default");
+		geneticEdgeComboBox.addItem("Default");
+		
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		final Set<String> edgeAttrNames = new TreeSet<String>(Arrays
 								      .asList(edgeAttr.getAttributeNames()));
@@ -580,8 +585,17 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 						      "Missing Attribute(s)", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		final String geneticEdgeAttrName = geneticEdgeItem.toString();
-		final String physicalEdgeAttrName = physicalEdgeItem.toString();
+		
+		String geneticEdgeAttrName = geneticEdgeItem.toString();
+		String physicalEdgeAttrName = physicalEdgeItem.toString();
+		
+		if (geneticEdgeAttrName.equalsIgnoreCase("Default")){
+			//
+		}
+		if (physicalEdgeAttrName.equalsIgnoreCase("Default")){
+			//
+		}
+		
 		if (geneticEdgeAttrName.equals(physicalEdgeAttrName)) {
 			JOptionPane.showMessageDialog(this,
 						      "Please select different attributes for physical and genetic edges!",
