@@ -37,16 +37,15 @@
 
 package cytoscape.visual.parsers;
 
-import cytoscape.util.Misc;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.NodeShape;
-
 import giny.view.ObjectPosition;
 
 import java.awt.Color;
 import java.awt.Font;
+
+import cytoscape.util.ColorUtil;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.NodeShape;
 
 
 //----------------------------------------------------------------------------
@@ -65,7 +64,7 @@ public class ObjectToString {
 		if (  o == null )
 			return "";
         else if (o instanceof Color)
-            return Misc.getRGBText((Color) o);
+            return ColorUtil.getColorAsText((Color) o);
         else if (o instanceof NodeShape)
             return NodeShape.getNodeShapeText((NodeShape) o);
         else if (o instanceof Arrow)

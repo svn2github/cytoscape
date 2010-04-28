@@ -46,7 +46,7 @@ import java.util.Vector;
  *
  */
 public class Misc {
-	
+
 	/**
 	 * Convert string to color object.
 	 * 
@@ -54,45 +54,13 @@ public class Misc {
 	 *            DOCUMENT ME!
 	 * 
 	 * @return DOCUMENT ME!
+	 * 
+	 * @deprecated will be removed in April, 2011. use ColorUtil.parseColorText
+	 *             instead.
 	 */
+	@Deprecated
 	public static Color parseRGBText(final String colorAsText) {
-		if (colorAsText == null)
-			return null;
-
-		final String[] parts = colorAsText.split(",");
-
-		// Start by seeing if this is a hex representation
-		if (parts.length == 1) {
-			try {
-				return Color.decode(colorAsText);
-			} catch (Exception e) {
-				return null;
-			}
-		}
-
-		if (parts.length != 3)
-			return null;
-
-		final String red = parts[0].trim();
-		final String green = parts[1].trim();
-		final String blue = parts[2].trim();
-
-		try {
-			if(red.contains(".") || green.contains(".") || blue.contains(".")) {
-				float r = Float.parseFloat(red);
-				float g = Float.parseFloat(green);
-				float b = Float.parseFloat(blue);
-				return new Color(r, g, b);
-			} else {
-				int r = Integer.parseInt(red);
-				int g = Integer.parseInt(green);
-				int b = Integer.parseInt(blue);
-				return new Color(r, g, b);
-			}
-			
-		} catch (Exception e) {
-			return null;
-		}
+		return ColorUtil.parseColorText(colorAsText);
 	}
 
 	/**
@@ -102,15 +70,15 @@ public class Misc {
 	 *            DOCUMENT ME!
 	 * 
 	 * @return DOCUMENT ME!
+	 * 
+	 * @deprecated Will be removed April, 2011. Use ColorUtil.getColorAsText
+	 *             instead.
+	 * 
 	 */
+	@Deprecated
 	public static String getRGBText(Color color) {
-		Integer red = new Integer(color.getRed());
-		Integer green = new Integer(color.getGreen());
-		Integer blue = new Integer(color.getBlue());
-
-		return new String(red.toString() + "," + green.toString() + ","
-				+ blue.toString());
-	} // getRGBText
+		return ColorUtil.getColorAsText(color);
+	}
 
 	/**
 	 * return the (possibly multiple) value of the specified property as a

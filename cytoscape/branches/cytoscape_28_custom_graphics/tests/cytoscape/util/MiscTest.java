@@ -90,20 +90,20 @@ public class MiscTest extends TestCase {
 	public void testParseRGBTest() throws Exception {
 		AllTests.standardOut("testRGBParseText");
 
-		Color result = Misc.parseRGBText("0,0,0");
+		Color result = ColorUtil.parseColorText("0,0,0");
 		assertTrue(result.equals(Color.black));
 
-		result = Misc.parseRGBText("27,39,121");
+		result = ColorUtil.parseColorText("27,39,121");
 		assertTrue(result.getRed() == 27);
 		assertTrue(result.getGreen() == 39);
 		assertTrue(result.getBlue() == 121);
 
-		result = Misc.parseRGBText(" 27 , 39 , 121 ");
+		result = ColorUtil.parseColorText(" 27 , 39 , 121 ");
 		assertTrue(result.getRed() == 27);
 		assertTrue(result.getGreen() == 39);
 		assertTrue(result.getBlue() == 121);
 
-		result = Misc.parseRGBText("255,255,255");
+		result = ColorUtil.parseColorText("255,255,255");
 		assertTrue(result.equals(Color.white));
 	} // testParseRGBTest
 
