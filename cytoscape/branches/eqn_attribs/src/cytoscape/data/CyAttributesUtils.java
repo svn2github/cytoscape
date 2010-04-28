@@ -279,34 +279,54 @@ public class CyAttributesUtils {
 
 		if (copyEquation) {
 			final Equation equation = attribs.getEquation(sourceId, attribName);
-			if (equation != null) {
+			if (equation == null)
+				attribs.deleteAttribute(targetId, attribName);
+			else
 				attribs.setAttribute(targetId, attribName, equation);
-				return true;
-			}
+
+			return true;
 		}
 
 		switch (attribs.getType(attribName)) {
 		case CyAttributes.TYPE_BOOLEAN:
 			final Boolean b = attribs.getBooleanAttribute(sourceId, attribName);
-			attribs.setAttribute(targetId, attribName, b);
+			if (b == null)
+				attribs.deleteAttribute(targetId, attribName);
+			else
+				attribs.setAttribute(targetId, attribName, b);
 			return true;
 		case CyAttributes.TYPE_INTEGER:
 			final Integer i = attribs.getIntegerAttribute(sourceId, attribName);
-			attribs.setAttribute(targetId, attribName, i);
+			if (i == null)
+				attribs.deleteAttribute(targetId, attribName);
+			else
+				attribs.setAttribute(targetId, attribName, i);
 			return true;
 		case CyAttributes.TYPE_FLOATING:
 			final Double d = attribs.getDoubleAttribute(sourceId, attribName);
-			attribs.setAttribute(targetId, attribName, d);
+			if (d == null)
+				attribs.deleteAttribute(targetId, attribName);
+			else
+				attribs.setAttribute(targetId, attribName, d);
 			return true;
 		case CyAttributes.TYPE_STRING:
 			final String s = attribs.getStringAttribute(sourceId, attribName);
-			attribs.setAttribute(targetId, attribName, s);
+			if (s == null)
+				attribs.deleteAttribute(targetId, attribName);
+			else
+				attribs.setAttribute(targetId, attribName, s);
 			return true;
 		case CyAttributes.TYPE_SIMPLE_LIST:
 			return copySimpleList(attribs, sourceId, targetId, attribName, errorMessage);
 		case CyAttributes.TYPE_SIMPLE_MAP:
 			return copySimpleMap(attribs, sourceId, targetId, attribName, errorMessage);
 		default:
+			final Object attribValue = attribs.getAttribute(sourceId, attribName);
+			if (attribValue == null) {
+				attribs.deleteAttribute(targetId, attribName);
+				return true;
+			}
+
 			errorMessage.append("can't copy an attribute of this type ("
 			                    + toString(attribs.getType(attribName)) + ")!  (Source ID: "
 			                    + sourceId + ", Attribute name: " + attribName + ")");
@@ -321,6 +341,11 @@ public class CyAttributesUtils {
 	                                      final String attribName, final StringBuilder errorMessage)
         {
 		final List originalList = attribs.getListAttribute(sourceId, attribName);
+		if (originalList == null) {
+			attribs.deleteAttribute(targetId, attribName);
+			return true;
+		}
+
 		if (originalList.isEmpty()) {
 			attribs.setListAttribute(targetId, attribName, new ArrayList());
 			return true;
@@ -350,6 +375,11 @@ public class CyAttributesUtils {
 	                                     final String attribName, final StringBuilder errorMessage)
         {
 		final Map originalMap = attribs.getMapAttribute(sourceId, attribName);
+		if (originalMap == null) {
+			attribs.deleteAttribute(targetId, attribName);
+			return true;
+		}
+
 		if (originalMap.isEmpty()) {
 			attribs.setMapAttribute(targetId, attribName, new HashMap());
 			return true;
