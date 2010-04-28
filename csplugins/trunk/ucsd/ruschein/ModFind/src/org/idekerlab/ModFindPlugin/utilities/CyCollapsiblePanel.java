@@ -185,11 +185,16 @@ public class CyCollapsiblePanel extends JPanel {
         ImageIcon[] iconArrow = new ImageIcon[2];
         URL iconURL;
 
-        iconURL = getClass().getResource("/cytoscape/images/arrow_collapsed.gif");
+        //iconURL = getClass().getResource("/cytoscape/images/arrow_collapsed.gif");
+        iconURL = getClass().getResource("/images/arrow_collapsed.gif");
+        
+
         if (iconURL != null) {
             iconArrow[COLLAPSED] = new ImageIcon(iconURL);
         }
-        iconURL = getClass().getResource("/cytoscape/images/arrow_expanded.gif");
+        //iconURL = getClass().getResource("/cytoscape/images/arrow_expanded.gif");
+        iconURL = getClass().getResource("/images/arrow_expanded.gif");
+
         if (iconURL != null) {
             iconArrow[EXPANDED] = new ImageIcon(iconURL);
         }
