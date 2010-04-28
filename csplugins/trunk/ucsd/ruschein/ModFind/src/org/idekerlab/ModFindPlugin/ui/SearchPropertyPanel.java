@@ -30,7 +30,8 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.util.swing.CyCollapsiblePanel;
+//import cytoscape.util.swing.CyCollapsiblePanel;
+import org.idekerlab.ModFindPlugin.utilities.CyCollapsiblePanel;
 
 /**
  * 
