@@ -19,7 +19,7 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
+    <property name="cytoscape.dir" value="${root.dir}/../cytoscape27"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
@@ -29,7 +29,8 @@
     <property name="javadoc.dir" value="${root.dir}/API"/>
     <property name="log.dir" value="${build.dir}/logs" />
     <property name="junit.report.dir" value="${log.dir}/junit-reports" />
-
+    <property name="images.dir" value="${root.dir}/images" />
+    	
     <!-- Define the relevant files -->
     <property name="project.jar" value="${name}.jar"/>
     <property name="test.jar" value="${name}-tests.jar"/>
@@ -108,7 +109,9 @@
 	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/ModFindPlugin"/>
 	<copy file="${resources.dir}/ModFind_overview_vs.props" todir="${build.dir}/resources"/>
 	<copy file="${resources.dir}/ModFind_module_vs.props" todir="${build.dir}/resources"/>
-  	
+  	<copy todir="${build.dir}/images">
+	    <fileset dir="${images.dir}"/> 
+	</copy>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
@@ -227,5 +230,15 @@
     <echo message="Successfully ran clean task!"/>
   </target>
 
+
+    <target name="install" 
+        description="Install ModFind"
+    	depends="jar">
+    	<echo>Copy ModFind.jar to ${cytoscape.dir}/build/cytoscape-v2.7.0/plugins </echo>
+        <copy todir="${cytoscape.dir}/build/cytoscape-v2.7.0/plugins" file="ModFind.jar"/>
+    	
+    </target>
+	
+	
 </project>
 
