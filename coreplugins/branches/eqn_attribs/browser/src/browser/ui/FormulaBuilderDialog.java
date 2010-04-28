@@ -37,6 +37,7 @@ import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -372,12 +373,17 @@ public class FormulaBuilderDialog extends JDialog {
 
 		attribNamesComboBox.removeAllItems();
 		final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
-		final ArrayList possibleAttribNames = new ArrayList(20);
+		final ArrayList<String> possibleAttribNames = new ArrayList<String>(20);
 		for (final String attribName : attribNamesAndTypes.keySet()) {
 			final Class attribType = attribNamesAndTypes.get(attribName);
 			if (isTypeCompatible(possibleArgTypes, attribType))
-				attribNamesComboBox.addItem(attribName);
+				possibleAttribNames.add(attribName);
 		}
+
+		Collections.sort(possibleAttribNames);
+
+		for (final String attribName : possibleAttribNames)
+			attribNamesComboBox.addItem(attribName);
 	}
 
 	/**

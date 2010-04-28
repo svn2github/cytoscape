@@ -95,6 +95,7 @@ import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
 import cytoscape.data.eqn_attribs.Equation;
+import cytoscape.data.eqn_attribs.EquationUtil;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CyFileFilter;
@@ -147,6 +148,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	// For right-click menu
 	private JPopupMenu rightClickPopupMenu;
 	private JPopupMenu cellMenu;
+	private JMenuItem openFormulaBuilderMenuItem = null;
 	private JMenuItem copyMenuItem = null;
 	private JMenuItem copyToCurrentSelectionMenuItem = null;
 	private JMenuItem copyFormulaToCurrentSelectionMenuItem = null;
@@ -164,8 +166,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private DataObjectType objectType;
 	private Map<String, Map<String, String>> linkoutProps;
 	private CyLogger logger = null;
+	private FormulaBuilderDialog formulaBuilderDialog = null;
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
-	
+
 	private HashMap<String, Integer> columnWidthMap = new HashMap<String, Integer>();
 
 	// For turning off listener during session loading
@@ -419,6 +422,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		if (rightClickPopupMenu == null) {
 			rightClickPopupMenu = new JPopupMenu();
 
+			openFormulaBuilderMenuItem = new JMenuItem("Open Formula Builder");
 			copyMenuItem = new JMenuItem("Copy");
 			copyToCurrentSelectionMenuItem = new JMenuItem("Copy to Current Selection");
 			copyToCurrentSelectionMenuItem.setEnabled(false);
@@ -435,6 +439,24 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			selectAllMenuItem = new JMenuItem("Select All");
 
 			coloringMenuItem = new JCheckBoxMenuItem("On/Off Coloring");
+
+			final JTable table = this;
+			openFormulaBuilderMenuItem.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						final int cellRow = table.getSelectedRow();
+						final int cellColum = table.getSelectedColumn();
+						if (cellRow != -1 && cellColum != -1 && tableModel.isCellEditable(cellRow, cellColum)) {
+							final String columnName = tableModel.getColumnName(cellColum);
+							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+							initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+							formulaBuilderDialog =
+								new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
+								                         attribNameToTypeMap, columnName);
+							formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+							formulaBuilderDialog.setVisible(true);
+						}
+					}
+				});
 
 			copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -1494,8 +1516,26 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			}
 		}
 	}
-	// 
-	// END special cell editing code... 
-	// =========================================================================================
+
+	private static void initAttribNameToTypeMap(final DataObjectType objectType, final String columnName,
+	                                            final Map<String, Class> attribNameToTypeMap)
+	{
+		final CyAttributes cyAttribs;
+		switch (objectType) {
+		case NODES:
+			cyAttribs = Cytoscape.getNodeAttributes();
+			break;
+		case EDGES:
+			cyAttribs = Cytoscape.getEdgeAttributes();
+			break;
+		case NETWORK:
+			cyAttribs = Cytoscape.getNetworkAttributes();
+			break;
+		default:
+			throw new IllegalStateException("unknown DataObjectType: " + objectType + "!");
+		}
+
+		EquationUtil.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
+	}
 }
 

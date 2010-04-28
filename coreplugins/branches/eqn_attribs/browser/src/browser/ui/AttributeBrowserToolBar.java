@@ -591,8 +591,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		return formulaBuilderButton;
 	}
 
-	private void initAttribNameToTypeMap(final DataObjectType objectType, final String columnName,
-	                                     final Map<String, Class> attribNameToTypeMap)
+	private static void initAttribNameToTypeMap(final DataObjectType objectType, final String columnName,
+	                                            final Map<String, Class> attribNameToTypeMap)
 	{
 		final CyAttributes cyAttribs;
 		switch (objectType) {
