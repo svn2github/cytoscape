@@ -37,7 +37,7 @@ import org.idekerlab.ModFindPlugin.utilities.CyCollapsiblePanel;
  * 
  * @author kono
  */
-public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitionListener {
+public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitionListener, PropertyChangeListener {
 	private static final long serialVersionUID = -3352470909434196700L;
 
 	private static final double DEF_ALPHA = 1.6;
@@ -88,8 +88,18 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		this.degreeTextField.setText(DEF_DEGREE);
 		this.pValueThresholdTextField.setText(Double.toString(DEF_PVALUE_THRESHOLD));
 		this.numberOfSamplesTextField.setText(Integer.toString(DEF_NUMBER_OF_SAMPLES));
+	
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
 	}
 
+	public void propertyChange(PropertyChangeEvent e) {
+		
+		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
+		{	
+			this.updateState();
+		}
+	}
+	
 	public SearchParameters getParameters() {
 		return parameters;
 	}
