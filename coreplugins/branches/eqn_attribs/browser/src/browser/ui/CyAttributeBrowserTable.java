@@ -553,6 +553,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			if (objectType != NETWORK)
 				rightClickPopupMenu.add(newSelectionMenuItem);
 
+			rightClickPopupMenu.add(openFormulaBuilderMenuItem);
 			rightClickPopupMenu.add(copyMenuItem);
 			rightClickPopupMenu.add(copyToCurrentSelectionMenuItem);
 			rightClickPopupMenu.add(copyFormulaToCurrentSelectionMenuItem);
