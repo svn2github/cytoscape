@@ -9,7 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cytoscape.Cytoscape;
-
+/**
+ * Color utility class to convert Java color object to string and vice versa.
+ * 
+ * @author kono
+ * @since Cytoscape 2.8.0
+ * 
+ */
 public class ColorUtil {
 
 	private static final Map<String, String> COLOR_MAP = new HashMap<String, String>();
