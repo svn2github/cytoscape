@@ -1,17 +1,4 @@
 /*
- * $Archive: SourceJammer$
- * $FileName: JSortTable.java$
- * $FileID: 3984$
- *
- * Last change:
- * $AuthorName: Timo Haberkern$
- * $Date: 2007-07-11 17:47:31 -0700 (水, 11 7 2007) $
- * $Comment: $
- *
- * $KeyWordsOff: $
- */
-
-/*
  =====================================================================
 
  JSortTable.java
@@ -331,42 +318,38 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 	private Map<String, GraphObject> paintNodesAndEdges(int idLocation) {
 		final int[] rowsSelected = getSelectedRows();
-
 		final Map<String, GraphObject> selectedMap = new HashMap<String, GraphObject>();
 		final int selectedRowLength = rowsSelected.length;
-		String selectedName = null;
-
-		Node selectedNode;
-		Edge selectedEdge;
-		NodeView nv;
-		EdgeView ev;
 		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
 
 		for (int idx = 0; idx < selectedRowLength; idx++) {
-			selectedName = (String)((ValidatedObjectAndEditString)getValueAt(rowsSelected[idx], idLocation)).getValidatedObject();
+			final ValidatedObjectAndEditString objectAndEditString =
+				(ValidatedObjectAndEditString)getValueAt(rowsSelected[idx], idLocation);
+			if (objectAndEditString == null)
+				continue;
+
+			final String selectedName = (String)objectAndEditString.getValidatedObject();
+			if (selectedName == null)
+				continue;
 
 			if (objectType == NODES) {
 				// Change node color
-				selectedNode = Cytoscape.getCyNode(selectedName);
+				final Node selectedNode = Cytoscape.getCyNode(selectedName);
 				selectedMap.put(selectedName, selectedNode);
 
 				if (netView != Cytoscape.getNullNetworkView()) {
-					nv = netView.getNodeView(selectedNode);
-
-					if (nv != null) {
+					final NodeView nv = netView.getNodeView(selectedNode);
+					if (nv != null)
 						nv.setSelectedPaint(reverseSelectedNodeColor);
-					}
 				}
 			} else if (objectType == EDGES) {
-				selectedEdge = getEdge(selectedName);
+				final Edge selectedEdge = getEdge(selectedName);
 				selectedMap.put(selectedName, selectedEdge);
 
 				if (netView != Cytoscape.getNullNetworkView()) {
-					ev = netView.getEdgeView(selectedEdge);
-
-					if (ev != null) {
+					final EdgeView ev = netView.getEdgeView(selectedEdge);
+					if (ev != null)
 						ev.setSelectedPaint(reverseSelectedEdgeColor);
-					}
 				}
 			}
 		}
@@ -375,18 +358,11 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	}
 
 	private void resetObjectColor(int idLocation) {
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-
+		final CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		if ((view == Cytoscape.getNullNetworkView()) || (view == null))
 			return;
 
 		final int rowCount = dataModel.getRowCount();
-
-		Node selectedNode;
-		NodeView nv;
-		EdgeView ev;
-		Edge selectedEdge;
-
 		for (int idx = 0; idx < rowCount; idx++) {
 			final ValidatedObjectAndEditString val = (ValidatedObjectAndEditString)dataModel.getValueAt(idx, idLocation);
 			final String objectName = val == null ? null : (String)val.getValidatedObject();
@@ -394,18 +370,18 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				continue;
 
 			if (objectType == NODES) {
-				selectedNode = Cytoscape.getCyNode(objectName);
+				final Node selectedNode = Cytoscape.getCyNode(objectName);
 
 				// Set to the original color
 				if (selectedNode != null) {
-					nv = view.getNodeView(selectedNode);
+					final NodeView nv = view.getNodeView(selectedNode);
 					if (nv != null)
 						nv.setSelectedPaint(selectedNodeColor);
 				}
 			} else if (objectType == EDGES) {
-				selectedEdge = this.getEdge(objectName);
+				final Edge selectedEdge = this.getEdge(objectName);
 				if (selectedEdge != null) {
-					ev = view.getEdgeView(selectedEdge);
+					final EdgeView ev = view.getEdgeView(selectedEdge);
 					if (ev != null)
 						ev.setSelectedPaint(selectedEdgeColor);
 				}

@@ -431,6 +431,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final byte type, final String id, final String attrName) {
+		if (data.getAttribute(id, attrName) == null)
+			return null;
+
 		final Equation equation = data.getEquation(id, attrName);
 		final String equationFormula = equation == null ? null : equation.toString();
 
@@ -602,20 +605,57 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		if (this.objectType != NETWORK) {
 			// This edit is for node or edge.
 			final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIdx, keyIndex);
-			edit = new DataEditAction(this, objectAndEditString.getValidatedObject().toString(),
-						  getColumnName(colIdx), getValueAt(rowIdx, colIdx), newValue,
-						  objectType);
+			if (objectAndEditString == null)
+				return null;
+
+			final Object validatedObject = objectAndEditString.getValidatedObject();
+			if (validatedObject == null)
+				return null;
+
+			edit = new DataEditAction(this, validatedObject.toString(), getColumnName(colIdx),
+			                          getValueAt(rowIdx, colIdx), newValue, objectType);
 		} else {
 			final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIdx, 0);
+			if (objectAndEditString == null)
+				return null;
+
+			final Object validatedObject = objectAndEditString.getValidatedObject();
+			if (validatedObject == null)
+				return null;
+
 			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
-						  objectAndEditString.getValidatedObject().toString(),
-						  getValueAt(rowIdx, colIdx), newValue, objectType);
+			                          validatedObject.toString(), getValueAt(rowIdx, colIdx),
+			                          newValue, objectType);
 		}
+
+		final boolean editIsValid = edit.isValid();
 
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
 		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
-		fireTableCellUpdated(rowIdx, colIdx);
+		if (editIsValid)
+			setDataTableRow(rowIdx);
+		else
+			fireTableCellUpdated(rowIdx, colIdx);
 
-		return edit.isValid() ? edit : null;
+		return editIsValid ? edit : null;
+	}
+
+	/**
+	 *  Helper method for updateCell().
+	 */
+	void setDataTableRow(final int rowIdx) {
+		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
+		final int noOfColumns = attributeNames.size();
+		final String id = graphObjects.get(rowIdx).getIdentifier();
+		for (int colIdx = 0; colIdx < noOfColumns; ++colIdx) {
+			final String attribName = attributeNames.get(colIdx);
+			if (attribName.equals(AttributeBrowser.ID))
+				continue;
+
+			final byte type = data.getType(attribName);
+			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
+			if (objectAndEditString != null)
+				rowVector.setElementAt(objectAndEditString, colIdx + 1);
+		}
 	}
 }
