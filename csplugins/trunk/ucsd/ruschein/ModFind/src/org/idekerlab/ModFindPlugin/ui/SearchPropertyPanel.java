@@ -436,10 +436,20 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			return;			
 		}
 		
-		if ((Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_INTEGER ||
-		     Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_FLOATING) &&
-		    (Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_INTEGER ||
-		     Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_FLOATING)) {
+		boolean isVaildGenetic = false;
+		if (geneticSelected.trim().equalsIgnoreCase("Default") || (Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_INTEGER ||
+			     Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_FLOATING)){
+			isVaildGenetic = true;
+		}
+
+		boolean isVaildPhysical = false;
+		if (physicalSelected.trim().equalsIgnoreCase("Default") || (Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_INTEGER ||
+			     Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_FLOATING)){
+			isVaildPhysical = true;
+		}
+
+		
+		if ( isVaildGenetic &&isVaildPhysical){
 		}
 		else {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The attribute type of Physical and Genetic must be Integer or Float", "Error", JOptionPane.ERROR_MESSAGE);
@@ -601,13 +611,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		String physicalEdgeAttrName = physicalEdgeItem.toString();
 		
 		if (geneticEdgeAttrName.equalsIgnoreCase("Default")){
-			//
+			geneticEdgeAttrName = "";
 		}
 		if (physicalEdgeAttrName.equalsIgnoreCase("Default")){
-			//
+			physicalEdgeAttrName = "";
 		}
 		
-		if (geneticEdgeAttrName.equals(physicalEdgeAttrName)) {
+		if (!geneticEdgeAttrName.equals("") && geneticEdgeAttrName.equals(physicalEdgeAttrName)) {
 			JOptionPane.showMessageDialog(this,
 						      "Please select different attributes for physical and genetic edges!",
 						      "Invalid Attribute Selections", JOptionPane.ERROR_MESSAGE);
@@ -683,6 +693,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private void updateSearchButtonState() {
 		final String geneticAttrName = (String)geneticEdgeComboBox.getSelectedItem();
 		final String physicalAttrName = (String)physicalEdgeComboBox.getSelectedItem();
-		searchButton.setEnabled(geneticAttrName != null && physicalAttrName != null && !geneticAttrName.equals(physicalAttrName));
+		searchButton.setEnabled(geneticAttrName != null && physicalAttrName != null && (!geneticAttrName.equals(physicalAttrName)));
+		
+		if (physicalAttrName == null || geneticAttrName == null){
+			return;
+		}
+		if (physicalAttrName.equalsIgnoreCase("Default")&& geneticAttrName.equalsIgnoreCase("Default")){
+			searchButton.setEnabled(true);
+		}
 	}
 }
