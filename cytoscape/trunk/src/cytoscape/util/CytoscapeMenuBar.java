@@ -318,11 +318,20 @@ public class CytoscapeMenuBar extends JMenuBar {
 		JMenu parent_menu = null;
 		JMenu menu = null;
 
+		// The menu_key is introduced to find the correct submenu relative 
+		// to the specified top-level menus, this is necessary in order to 
+		// have submenus with equal names in different top-level menus,
+		// e.g. mymenu.export, file.export, xxx.yyy.export, ... .  previously, 
+		// the string in "menu_token" was used and the first occurence of a 
+		// particular menu was used.
+		String menu_key = null;
+
 		while (st.hasMoreTokens()) {
 			menu_token = (String) st.nextToken();
+			menu_key = menu_key == null ? menu_token : menu_key + "." + menu_token;
 
-			if (menuMap.containsKey(menu_token)) {
-				parent_menu = (JMenu) menuMap.get(menu_token);
+			if (menuMap.containsKey(menu_key)) {
+				parent_menu = (JMenu) menuMap.get(menu_key);
 			} else {
 				menu = createJMenu(menu_token);
 
@@ -333,7 +342,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 					parent_menu.add(menu, parentPosition);
 				}
 
-				menuMap.put(menu_token, menu);
+				menuMap.put(menu_key, menu);
 				parent_menu = menu;
 			}
 		}
