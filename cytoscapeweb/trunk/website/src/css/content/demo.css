@@ -21,6 +21,7 @@ input[type=text], textarea { background-color: #FFF; }
 .ui-layout-header .header { padding: 1em 1.4em; border-bottom: 1px solid #808080; }
 .ui-layout-header { min-height: 0.25em; }
 .ui-layout-content { background: #fafafa; }
+input[type=button].ui-state-default { cursor: pointer; }
 
 /* menu styling */
        

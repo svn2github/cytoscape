@@ -246,6 +246,12 @@ $(function(){
 
     });
     
+    $("input[type=button].ui-state-default").live("mouseover", function(){
+        $(this).addClass("ui-state-hover");
+    }).live("mouseout", function(){
+        $(this).removeClass("ui-state-hover");
+    });
+    
     // Layout options:
     var layout_names = {};
     layout_names["ForceDirected"] = "Force Directed";
@@ -257,25 +263,25 @@ $(function(){
     var layout_options = {};
     layout_options["ForceDirected"] = [
         { id: "gravitation", label: "Gravitation",       value: -500,   tip: "The gravitational constant. Negative values produce a repulsive force." },
-        { id: "mass",        label: "Node mass",         value: 3,      tip: "The default mass value for node/particles." },
-        { id: "tension",     label: "Edge tension",      value: 0.4,    tip: "The default spring tension for edge/springs." },
-        { id: "restLength",  label: "Edge rest length",  value: "auto", tip: "The default spring rest length for edge/springs." },
-        { id: "drag",        label: "Drag co-efficient", value: 0.1,    tip: "The co-efficient for frictional drag forces." },
+        { id: "mass",        label: "Node mass",         value: 3,      tip: "The default mass value for nodes." },
+        { id: "tension",     label: "Edge tension",      value: 0.1,    tip: "The default spring tension for edges." },
+        { id: "restLength",  label: "Edge rest length",  value: "auto", tip: "The default spring rest length for edges." },
+        { id: "drag",        label: "Drag co-efficient", value: 0.4,    tip: "The co-efficient for frictional drag forces." },
         { id: "minDistance", label: "Minimum distance",  value: 1,      tip: "The minimum effective distance over which forces are exerted." },
         { id: "maxDistance", label: "Maximum distance",  value: 10000,  tip: "The maximum distance over which forces are exerted." },
-        { id: "iterations",  label: "Iterations",        value: 80,     tip: "The number of iterations to run the simulation per invocation." },
-        { id: "maxTime",     label: "Maximum time",      value: 60,     tip: "The maximum time to run the simulation, in seconds." },
-        { id: "autoStabilize", label: "Auto stabilize",  value: true,   tip: "If checked, Cytoscape Web automatically tries to stabilize results that look unstable after running the regular iterations." }
+        { id: "iterations",  label: "Iterations",        value: 400,     tip: "The number of iterations to run the simulation." },
+        { id: "maxTime",     label: "Maximum time",      value: 30000,     tip: "The maximum time to run the simulation, in milliseconds." },
+        { id: "autoStabilize", label: "Auto stabilize",  value: true,   tip: "If checked, Cytoscape Web automatically tries to stabilize results that seems unstable after running the regular iterations." }
     ];
     layout_options["Circle"] = [
-        { id: "angleWidth", label: "Angle width", value: -6.28318531, tip: "The angular width of the layout, in radians." }
+        { id: "angleWidth", label: "Angle width", value: 360, tip: "The angular width of the layout, in degrees." }
     ];
     layout_options["CircleTree"] = [
-        { id: "angleWidth", label: "Angle width", value: -6.28318531, tip: "The angular width of the layout, in radians." }
+        { id: "angleWidth", label: "Angle width", value: 360, tip: "The angular width of the layout, in degrees." }
     ];
     layout_options["Radial"] = [
-        { id: "radius",     label: "Radius",      value: 60,          tip: "The radius increment between depth levels." },
-        { id: "angleWidth", label: "Angle width", value: -6.28318531, tip: "The angular width of the layout, in radians." }
+        { id: "radius",     label: "Radius",      value: 60,  tip: "The radius increment between depth levels." },
+        { id: "angleWidth", label: "Angle width", value: 360, tip: "The angular width of the layout, in degrees." }
     ];
     layout_options["Tree"] = [
         { id: "orientation",  label: "Orientation",   value: ["leftToRight","rightToLeft","bottomToTop","topToBottom"], tip: "The orientation of the layout." },
@@ -553,12 +559,11 @@ $(function(){
 		    		var v, id = o.id;
 		    		var input = $("#settings #"+layout_id+" #"+id);
 		    		v = input.val();
-		    		if (typeof o.value === "boolean") { v = Boolean(v); }
+		    		if (input.attr("type") === "checkbox") { v = input.is(":checked"); }
 		    		else if (typeof o.value === "number") { v = Number(v); }
 		    		options[id] = v;
 		    	}
-				console.log(options);
-				$("#cytoweb_container").cw().layout(layout_id, options);
+				$("#cytoweb_container").cw().layout({ name: layout_id, options: options });
 			});
 			
 			$("#settings").dialog({ autoOpen: false, resizable: false, width: 430 });
@@ -660,7 +665,7 @@ $(function(){
                     break;
                 
                 case "recalculate_layout":
-                	var layout = $("#layout_style .ui-menu-checked").parent().attr("layout_id");
+                	var layout = $("#cytoweb_container").cw().layout();
                     $("#cytoweb_container").cw().layout(layout);
                     break;
                     
@@ -725,7 +730,6 @@ $(function(){
 					    name: data.metadata.name,
 					    description: "",
 					    visualStyle: GRAPH_STYLES["Default"],
-					    layout: "ForceDirected",
 					    nodeLabelsVisible: true
 					};
 					open_graph(new_graph_options);
@@ -906,9 +910,8 @@ $(function(){
         }
                
         // add initial state of one check marks
-        
         $("#layout_style").find(".ui-menu-check-icon").removeClass("ui-menu-checked");
-        $("#layout_style").find("[layout_id=" + $("#cytoweb_container").cw().layout() + "]").find(".ui-menu-check-icon").addClass("ui-menu-checked");
+        $("#layout_style").find("[layout_id=" + $("#cytoweb_container").cw().layout().name + "]").find(".ui-menu-check-icon").addClass("ui-menu-checked");
         
         $("#visual_style").find(".ui-menu-check-icon").removeClass("ui-menu-checked");
         $("#visual_style").find("li:contains(" + options.visualStyleName + ")").find(".ui-menu-check-icon").addClass("ui-menu-checked");
@@ -981,6 +984,10 @@ $(function(){
         })
         .addListener("dblClick", "edges", function(){
             $("#info_link").click();
+        })
+        .addListener("layout", function(evt){
+        	$("#layout_style .ui-menu-check-icon").removeClass("ui-menu-checked");
+        	$("#layout_style .ui-menu-checkable[layout_id="+evt.value+"] .ui-menu-check-icon").addClass("ui-menu-checked");
         });
         
         $("#info_link").bind("click", function(){
