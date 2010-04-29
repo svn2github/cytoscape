@@ -78,8 +78,12 @@
     	},
     		
         _onReady: function () {
-        	this.swf().fileName(this.options.fileName());
-        	this.swf().base64(this.options.base64);
+    		if (this.swf().fileName) {
+    			this.swf().fileName(this.options.fileName());
+    		}
+    		if (this.swf().base64) {
+    			this.swf().base64(this.options.base64);
+    		}
             this.options.ready();
         },
         
@@ -121,8 +125,12 @@
 		},
     		
     	_onReady: function () {
-        	this.swf().typeFilter(this.options.typeFilter());
-        	this.swf().typeDescription(this.options.typeDescription());
+			if (this.swf().typeFilter) {
+				this.swf().typeFilter(this.options.typeFilter());
+			}
+			if (this.swf().typeDescription) {
+				this.swf().typeDescription(this.options.typeDescription());
+			}
             this.options.ready();
         },
         
