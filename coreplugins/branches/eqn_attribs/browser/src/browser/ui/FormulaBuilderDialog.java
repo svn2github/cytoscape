@@ -143,7 +143,7 @@ public class FormulaBuilderDialog extends JDialog {
 		initOkButton(contentPane);
 		initCancelButton(contentPane);
 
-		setSize(800, 250);
+		setSize(646, 342);
 
 		initLayout(groupLayout);
 	}
@@ -226,7 +226,8 @@ public class FormulaBuilderDialog extends JDialog {
 	}
 
 	private void initFormulaTextField(final Container contentPane) {
-		formulaTextField = new JTextField(80);
+		formulaTextField = new JTextField(50);
+		formulaTextField.setPreferredSize(new Dimension(600, 120));
 		contentPane.add(formulaTextField);
 		formulaTextField.setEditable(false);
 		if (function != null)
@@ -239,7 +240,9 @@ public class FormulaBuilderDialog extends JDialog {
 		argumentPanel.setBorder(BorderFactory.createTitledBorder("Next Argument"));
 
 		attribNamesComboBox = new JComboBox();
-		updateAttribNamesComboBox();
+		Dimension size = new Dimension();
+		size = attribNamesComboBox.getSize(size);
+		attribNamesComboBox.setPreferredSize(new Dimension(160, 40));
 		argumentPanel.add(attribNamesComboBox);
 		attribNamesComboBox.setEnabled(false);
 
@@ -304,7 +307,7 @@ public class FormulaBuilderDialog extends JDialog {
 
 	private void initApplyToComboBox(final Container contentPane) {
 		applyToComboBox = new JComboBox();
-		applyToComboBox.setMaximumSize(new Dimension(70, 10));
+		applyToComboBox.setPreferredSize(new Dimension(80, 40));
 		applyToComboBox.addItem(ApplicationDomain.CURRENT_CELL);
 		applyToComboBox.addItem(ApplicationDomain.CURRENT_SELECTION);
 		applyToComboBox.addItem(ApplicationDomain.ENTIRE_ATTRIBUTE);
@@ -576,29 +579,29 @@ public class FormulaBuilderDialog extends JDialog {
 	private void initLayout(final GroupLayout groupLayout) {
 		// 1. vertical layout
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
-					     .add(functionComboBox)
-					     .add(usageLabel)
-					     .add(argumentPanel)
+					     .add(functionComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					     .add(usageLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					     .add(argumentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
-						       .add(applyToLabel)
-						       .add(applyToComboBox))
-					     .add(formulaTextField)
+						       .add(applyToLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						       .add(applyToComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					     .add(formulaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
-						       .add(okButton)
-						       .add(cancelButton)));
+						       .add(okButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						       .add(cancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
 
 		// 2. horizontal layout
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.CENTER)
-					       .add(functionComboBox)
-					       .add(usageLabel)
-					       .add(argumentPanel)
+					       .add(functionComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					       .add(usageLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					       .add(argumentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					       .add(groupLayout.createSequentialGroup()
-							 .add(applyToLabel)
-							 .add(applyToComboBox))
-					       .add(formulaTextField)
+							 .add(applyToLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							 .add(applyToComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					       .add(formulaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					       .add(groupLayout.createSequentialGroup()
-							 .add(okButton)
-							 .add(cancelButton)));
+							 .add(okButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							 .add(cancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
 	}
 
 	private static void displayErrorMessage(final String errorMessage) {
