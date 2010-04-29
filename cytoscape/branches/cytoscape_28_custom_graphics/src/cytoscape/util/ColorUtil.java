@@ -1,27 +1,48 @@
 package cytoscape.util;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import cytoscape.Cytoscape;
+
 public class ColorUtil {
 
-	private static final Map<String, Color> COLOR_MAP = new HashMap<String, Color>();
+	private static final Map<String, String> COLOR_MAP = new HashMap<String, String>();
+	private static final String COLOR_CODE_RESOURCE = "resources/cross_browser_color_code.txt";
 
 	static {
-		COLOR_MAP.put("black", Color.black);
-		COLOR_MAP.put("blue", Color.blue);
-		COLOR_MAP.put("cyan", Color.cyan);
-		COLOR_MAP.put("darkGray", Color.darkGray);
-		COLOR_MAP.put("gray", Color.gray);
-		COLOR_MAP.put("green", Color.green);
-		COLOR_MAP.put("lightGray", Color.lightGray);
-		COLOR_MAP.put("magenta", Color.magenta);
-		COLOR_MAP.put("orange", Color.orange);
-		COLOR_MAP.put("pink", Color.pink);
-		COLOR_MAP.put("red", Color.red);
-		COLOR_MAP.put("white", Color.white);
-		COLOR_MAP.put("yellow", Color.yellow);
+		buildColorCodeTable(Cytoscape.class.getResource(COLOR_CODE_RESOURCE));
+	}
+
+	private static void buildColorCodeTable(final URL resourceURL) {
+		BufferedReader bufRd = null;
+		String line;
+
+		try {
+			bufRd = new BufferedReader(new InputStreamReader(URLUtil
+					.getBasicInputStream(resourceURL)));
+			while ((line = bufRd.readLine()) != null) {
+				String[] parts = line.split("\\t");
+				COLOR_MAP.put(parts[0].trim().toUpperCase(), parts[1].trim());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (bufRd != null) {
+				try {
+					bufRd.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					bufRd = null;
+				}
+			}
+		}
 	}
 
 	/**
@@ -31,9 +52,10 @@ public class ColorUtil {
 	 * This parser cupports the following test representation of color:
 	 * 
 	 * <ul>
-	 * 	<li>Hex representation of color (e.g. #6677FF)</li>
-	 * 	<li>RGB numbers (float or integer, e.g. (255, 10, 100))</li>
-	 * 	<li>Java standard colors text representations (all lower case.  e.g. "black")</li>
+	 * <li>Hex representation of color (e.g. #6677FF)</li>
+	 * <li>RGB numbers (float or integer, e.g. (255, 10, 100))</li>
+	 * <li>Java standard colors text representations (all lower case. e.g.
+	 * "black")</li>
 	 * </ul>
 	 * 
 	 * @param colorAsText
@@ -43,18 +65,20 @@ public class ColorUtil {
 		if (colorAsText == null)
 			return null;
 
-		final String[] parts = colorAsText.split(",");
+		final String trimed = colorAsText.trim();
+		final String[] parts = trimed.split(",");
 
 		// Start by seeing if this is a hex representation
 		if (parts.length == 1) {
 			try {
-				final String colorStr = colorAsText.trim();
-				if (COLOR_MAP.containsKey(colorStr))
-					return COLOR_MAP.get(colorStr);
-
-				return Color.decode(colorStr);
+				// Chech this is a cross-browser standard color name
+				final String upper = trimed.toUpperCase();				
+				if (COLOR_MAP.containsKey(upper))
+					return Color.decode(COLOR_MAP.get(upper));
+				
+				// Otherwise, treat as a hex notation.
+				return Color.decode(trimed);
 			} catch (Exception e) {
-				e.printStackTrace();
 				return null;
 			}
 		}
@@ -84,7 +108,6 @@ public class ColorUtil {
 		}
 	}
 
-	
 	/**
 	 * Convert Color object into RGB String (e.g., (200,100,120))
 	 * 
