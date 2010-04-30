@@ -160,13 +160,19 @@ class AttribParserImpl implements AttribParser {
 	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
 	 */
 	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
+		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
-		else
-			throw new ArithmeticException("incompatible operands for \""
-			                              + operator.asString() + "\"! (lhs="
-			                              + lhs.toString() + ":" + lhs.getType() + ", rhs="
-			                              + rhs.toString() + ":" + rhs.getType() + ")");
+
+		throw new ArithmeticException("incompatible operands for \""
+			                       + operator.asString() + "\"! (lhs="
+			                       + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                       + rhs.toString() + ":" + rhs.getType() + ")");
 	}
 
 	/**
@@ -191,11 +197,11 @@ class AttribParserImpl implements AttribParser {
 				                                   + operator.asString()
 				                                   + " for boolean operands!");
 		}
-		else
-			throw new IllegalArgumentException("incompatible operands for \""
-			                                   + operator.asString() + "\"! (lhs="
-			                                   + lhs.toString() + ":" + lhs.getType() + ", rhs="
-			                                   + rhs.toString() + ":" + rhs.getType() + ")");
+
+		throw new IllegalArgumentException("incompatible operands for \""
+			                           + operator.asString() + "\"! (lhs="
+			                           + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                           + rhs.toString() + ":" + rhs.getType() + ")");
 	 }
 
 	/**

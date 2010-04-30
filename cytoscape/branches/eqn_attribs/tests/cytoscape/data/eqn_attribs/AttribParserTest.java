@@ -115,4 +115,10 @@ public class AttribParserTest extends TestCase {
 		attribNameToTypeMap.put("BOB", Long.class);
 		assertTrue(parser.parse("=$BOB > 5.3", attribNameToTypeMap));
 	}
+
+	public void testMixedModeArithmetic() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("x", Long.class);
+		assertTrue(parser.parse("=$x + 2.0", attribNameToTypeMap));
+	}
 }

@@ -604,4 +604,16 @@ public class InterpreterTest extends TestCase {
 		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Boolean(true), interpreter2.run());
 	}
+
+	public void testMixedModeArithmetic() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("x", Long.class);
+
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("x", new IdentDescriptor(new Long(3)));
+
+		assertTrue(compiler.compile("=$x + 2.0", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(5.0), interpreter1.run());
+	}
 }
