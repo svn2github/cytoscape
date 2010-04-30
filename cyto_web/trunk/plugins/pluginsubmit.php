@@ -22,7 +22,7 @@ if (isset ($_POST['versionID'])) { // hidden field
 	$versionID = cleanInt($_POST['versionID']);
 }
 
-if ($versionID != NULL) {
+if ($versionID != NULL && $versionID != 0) {
 	$mode = 'edit';
 }
 
