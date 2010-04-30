@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Delete a plugin version</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">
 	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
@@ -19,7 +19,7 @@
 		</tr>
 	</tbody>
 </table>
-<?php include "../nav.php"; ?>
+<?php include "http://cytoscape.org/nav.php"; ?>
 
 <?php
 include 'clean.inc';
@@ -168,7 +168,7 @@ if (!($tried)) {
 }
 ?>
 <p>
-<?php include "../footer.php"; ?>
+<?php include "http://cytoscape.org/footer.php"; ?>
 </p>
 </body>
 </html>
