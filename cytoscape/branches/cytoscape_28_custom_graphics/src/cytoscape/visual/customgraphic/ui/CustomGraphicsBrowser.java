@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -36,6 +37,19 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 
 	private DefaultListModel model;
 	private final CustomGraphicsPool pool;
+	
+	// For drag and drop
+	private static DataFlavor urlFlavor;
+	
+	static {
+		try {
+			urlFlavor = new DataFlavor(
+					"application/x-java-url; class=java.net.URL");
+		} catch (ClassNotFoundException cnfe) {
+			cnfe.printStackTrace();
+		}
+	}
+	
 
 	/**
 	 * Creates new form CustomGraphicsBrowserPanel
@@ -67,6 +81,11 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 		this.setDropTarget(new URLDropTarget());
 
 	}// </editor-fold>
+	
+	
+	public void removeCustomGraphics(final CyCustomGraphics<?> cg) {
+		model.removeElement(cg);
+	}
 
 	/**
 	 * Add on-memory images to Model.
@@ -80,7 +99,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 		}
 	}
 
-	protected void addCustomGraphics(final String urlStr) {
+	private void addCustomGraphics(final String urlStr) {
 		CyCustomGraphics<CustomGraphic> cg = null;
 		try {
 			cg = new URLImageCustomGraphics(urlStr);
@@ -93,19 +112,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 			model.addElement(cg);
 		}
 	}
-
-	private static DataFlavor urlFlavor;
-	private static DataFlavor imageFlavor;
-	static {
-		try {
-			urlFlavor = new DataFlavor(
-					"application/x-java-url; class=java.net.URL");
-			imageFlavor = new DataFlavor(
-					"image/x-pict;representationclass=java.io.InputStream");
-		} catch (ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
-		}
-	}
+	
 
 	/**
 	 * Dra
@@ -121,7 +128,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 			final Transferable trans = dtde.getTransferable();
-			dumpDataFlavors(trans);
+			//dumpDataFlavors(trans);
 			boolean gotData = false;
 			try {
 				if (trans.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -142,7 +149,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 				} else if (trans.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 					String s = (String) trans
 							.getTransferData(DataFlavor.stringFlavor);
-					System.out.println("!!!!!!got text " + s);
+					
 					URL url = new URL(s);
 					System.out.println("!!This is URL text " + url.toString());
 					addCustomGraphics(url.toString());

@@ -21,7 +21,6 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 		ListSelectionListener {
 
 	private CyCustomGraphics<?> cg;
-	
 
 	/** Creates new form CustomGraphicsDetailPanel */
 	public CustomGraphicsDetailPanel() {
@@ -49,7 +48,7 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
         lockCheckBox = new javax.swing.JCheckBox();
         heightTextField = new javax.swing.JTextField();
         resetButton = new javax.swing.JButton();
-        optionButton = new javax.swing.JButton();
+        searchButton = new javax.swing.JButton();
 
         infoPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -144,8 +143,10 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
             }
         });
 
-        optionButton.setText("Options");
-        optionButton.addActionListener(new java.awt.event.ActionListener() {
+        searchButton.setText("Search");
+        searchButton.setToolTipText("This function is not implemented yet.");
+        searchButton.setEnabled(false);
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 optionButtonActionPerformed(evt);
             }
@@ -169,7 +170,7 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(resetButton)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(optionButton)
+                .add(searchButton)
                 .add(8, 8, 8))
         );
         modifyPanelLayout.setVerticalGroup(
@@ -183,7 +184,7 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
                     .add(heightTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(lockCheckBox)
                     .add(resetButton)
-                    .add(optionButton))
+                    .add(searchButton))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -305,7 +306,7 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 	private javax.swing.JTextField tagTextField;
 	private javax.swing.JLabel widthLabel;
 	private javax.swing.JTextField widthTextField;
-    private javax.swing.JButton optionButton;
+    private javax.swing.JButton searchButton;
 
 
 	// End of variables declaration
@@ -320,9 +321,17 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 		final CustomGraphicsBrowser browser = (CustomGraphicsBrowser) e
 				.getSource();
 
-		System.out.println("Selected =====> " + browser.getSelectedValue());
-
 		cg = (CyCustomGraphics<?>) browser.getSelectedValue();
+		if(cg == null) {
+			imageViewPanel.setImage((Image)null);
+			heightTextField.setText(null);
+			widthTextField.setText(null);
+			nameTextField.setText(null);
+			nameTextField.setToolTipText(null);
+			tagTextField.setText(null);
+			return;
+		}
+			
 		final Image img = cg.getImage();
 
 		// Set up detail panel

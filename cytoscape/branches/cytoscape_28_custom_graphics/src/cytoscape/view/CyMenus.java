@@ -453,10 +453,7 @@ public class CyMenus implements GraphViewChangeListener {
 		viewMenu.add(new JSeparator());
 		addAction(new SetVisualPropertiesAction());
 		addAction(new ShowCustomGraphicsManagerAction());
-		loadSubMenu.add(new JSeparator());
-		addAction(new GenerateChartVisualStyleAction());
 		viewMenu.add(new JSeparator());
-		
 		
 		viewMenu.add(new ArrangeAction());
 		

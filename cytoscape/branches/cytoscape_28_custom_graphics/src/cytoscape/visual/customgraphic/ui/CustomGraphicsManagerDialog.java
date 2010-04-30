@@ -32,9 +32,15 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphics;
  */
 public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 
+	private static final long serialVersionUID = 7681270324415099781L;
+	
+	// List of graphics available
 	private CustomGraphicsBrowser browser;
+	
+	// Panel for displaying actual size image
 	private final CustomGraphicsDetailPanel detail;
 	
+	// Manager object for on-memory graphics.
 	private final CustomGraphicsPool pool;
 
 	/** Creates new form CustomGraphicsManagerDialog */
@@ -81,6 +87,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 		buttonPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
 		deleteButton.setText("-");
+		deleteButton.setToolTipText("Remove selected graphics from library.");
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				deleteButtonActionPerformed(evt);
@@ -88,6 +95,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 		});
 
 		addButton.setText("+");
+		addButton.setToolTipText("Add a folder to Custom Graphics Library");
 		addButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				addButtonActionPerformed(evt);
@@ -196,7 +204,13 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 	}
 
 	private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		final Object[] toBeRemoved = browser.getSelectedValues();
+		for(Object g: toBeRemoved) {
+			final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) g;
+			System.out.println("\tRemove: " + cg.toString());
+			browser.removeCustomGraphics(cg);
+			pool.removeGraphics(cg.hashCode());
+		}
 	}
 
 	// Variables declaration - do not modify

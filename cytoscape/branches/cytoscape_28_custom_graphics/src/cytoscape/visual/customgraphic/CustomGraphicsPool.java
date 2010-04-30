@@ -155,7 +155,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		addGraphics(hash, graphics);
 	}
 
-	public void removeGraphics(String id) {
+	public void removeGraphics(Integer id) {
 		graphicsMap.remove(id);
 	}
 

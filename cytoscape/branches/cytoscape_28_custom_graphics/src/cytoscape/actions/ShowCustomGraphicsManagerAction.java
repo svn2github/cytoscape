@@ -2,6 +2,8 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.ImageIcon;
+
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerDialog;
@@ -10,7 +12,7 @@ public class ShowCustomGraphicsManagerAction extends CytoscapeAction {
 
 	private static final long serialVersionUID = 5876533870116518191L;
 
-	private static final String TITLE = "Open Custom Graphics Manager...";
+	private static final String TITLE = "Open Custom Graphics Manager";
 
 	private CustomGraphicsManagerDialog manager;
 
@@ -18,7 +20,8 @@ public class ShowCustomGraphicsManagerAction extends CytoscapeAction {
 	 * Creates a new SetVisualPropertiesAction object.
 	 */
 	public ShowCustomGraphicsManagerAction() {
-		super(TITLE);
+		super(TITLE,
+			      new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_symbol-selection-16.png")));
 		setPreferredMenu("View");
 		setEnabled(true);
 	}
