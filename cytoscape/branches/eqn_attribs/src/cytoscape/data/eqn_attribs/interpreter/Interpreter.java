@@ -141,6 +141,9 @@ public class Interpreter {
 					case AREF2:
 						aref2();
 						break;
+					case FCONV:
+						fconv();
+						break;
 					default:
 						throw new IllegalStateException("unknown opcode: " + instrOrArg + "!");
 					}
@@ -322,6 +325,11 @@ public class Interpreter {
 		argumentStack.push(+float1);
 	}
 
+	private void fconv() throws EmptyStackException {
+		final Long long1 = getLong(argumentStack.pop());
+		argumentStack.push((double)long1);
+	}
+
 	private void aref() throws EmptyStackException {
 		final String attribName = (String)argumentStack.pop();
 		final IdentDescriptor identDescriptor = nameToDescriptorMap.get(attribName);
@@ -346,6 +354,13 @@ public class Interpreter {
 	private double getFloat(final Object o) throws IllegalStateException {
 		if (o instanceof Double)
 			return (Double)o;
+
+		throw new IllegalStateException("can't convert a " + o.getClass() + " (" + o + ") to a floating point number!");
+	}
+
+	private long getLong(final Object o) throws IllegalStateException {
+		if (o instanceof Long)
+			return (Long)o;
 
 		throw new IllegalStateException("can't convert a " + o.getClass() + " (" + o + ") to a floating point number!");
 	}

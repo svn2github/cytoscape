@@ -1,5 +1,5 @@
 /*
-  File: IdentDescriptor.java
+  File: FConvNode.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -27,38 +27,45 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs.interpreter;
+package cytoscape.data.eqn_attribs.parse_tree;
 
 
-import java.util.List;
+import java.util.Stack;
+import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
-public class IdentDescriptor {
-	private final Class type;
-	private final Object value;
+/**
+ *  A node in the parse tree representing an integer to floating point conversion.
+ */
+public class FConvNode implements Node {
+	private final Node convertee;
 
-	public IdentDescriptor(final Object o) {
-		if (o == null)
-			throw new IllegalArgumentException("argument must not be null!");
-
-		if (o.getClass() == Integer.class) { // Need to map Integer to Long!
-			final Integer i = (Integer)o;
-			this.type = Long.class;
-			this.value = new Long(i);
-			return;
-		}
-		else if (o instanceof List)
-			this.type = List.class;
-		else if (o instanceof Long)
-			this.type = Long.class;
-		else if (o.getClass() != Double.class && o.getClass() != Boolean.class && o.getClass() != String.class)
-			throw new IllegalArgumentException("argument is of an unsupported type (" + o.getClass() + ")!");
-		else
-			this.type = o.getClass();
-
-		this.value = o;
+	public FConvNode(final Node convertee) {
+		if (convertee == null)
+			throw new IllegalArgumentException("convertee must not be null!");
+		if (convertee.getType() != Long.class)
+			throw new IllegalArgumentException("convertee must be of type Long!");
+		this.convertee = convertee;
 	}
 
-	Class getType() { return type; }
-	Object getValue() { return value; }
+	public String toString() {
+		return "FConvNode: convertee = " + convertee;
+	}
+
+	public Class getType() { return Double.class; }
+
+	/**
+	 *  @returns the only child of this node
+	 */
+	public Node getLeftChild() { return convertee; }
+
+	/**
+	 *  @returns null, This type of node never has any right children!
+	 */
+	public Node getRightChild() { return null; }
+
+	public void genCode(final Stack<Object> codeStack) {
+		convertee.genCode(codeStack);
+		codeStack.push(Instruction.FCONV);
+	}
 }

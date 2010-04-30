@@ -173,6 +173,12 @@ class AttribParserImpl implements AttribParser {
 	 *  Deals w/ any necessary type conversions for any binary comparison operation.
 	 */
 	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
+		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
 		if (lhs.getType() == String.class && rhs.getType() == String.class)

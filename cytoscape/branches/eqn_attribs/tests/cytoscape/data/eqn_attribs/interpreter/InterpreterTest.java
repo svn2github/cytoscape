@@ -588,4 +588,20 @@ public class InterpreterTest extends TestCase {
 		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(3.0), interpreter2.run());
 	}
+
+	public void testIntegerToFloatingPointConversion() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("BOB", Long.class);
+
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("BOB", new IdentDescriptor(new Long(3)));
+
+		assertTrue(compiler.compile("=$BOB > 5.3", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Boolean(false), interpreter1.run());
+
+		assertTrue(compiler.compile("=$BOB <= 5.3", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Boolean(true), interpreter2.run());
+	}
 }

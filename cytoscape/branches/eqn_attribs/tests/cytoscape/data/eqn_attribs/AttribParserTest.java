@@ -109,4 +109,10 @@ public class AttribParserTest extends TestCase {
 		attribNameToTypeMap.put("FRED", Double.class);
 		assertTrue(parser.parse("=$BOB+$FRED", attribNameToTypeMap));
 	}
+
+	public void testIntegerToFloatingPointConversion() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("BOB", Long.class);
+		assertTrue(parser.parse("=$BOB > 5.3", attribNameToTypeMap));
+	}
 }
