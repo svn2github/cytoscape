@@ -1200,7 +1200,7 @@ public final class OldGraphGraphics {
 
 			final double[] storedPolyCoords = // To optimize don't construct
 			// Byte.
-			(double[]) m_customShapes.get(new Byte(nodeShape));
+			m_customShapes.get(new Byte(nodeShape));
 
 			if (storedPolyCoords == null) {
 				throw new IllegalArgumentException(
