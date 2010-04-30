@@ -42,7 +42,7 @@ public class PluginIndex {
 	    for (int i=0; i<allPluginVect.size(); i++ ){
 	    	Vector aPlugin = (Vector) allPluginVect.elementAt(i);
 	    	DownloadableInfo info = (DownloadableInfo) aPlugin.elementAt(2);
-	    	addDoc(w, info.getDescription());
+	    	addDoc(w, info.getDescription(), "description");
 	    }
 	    
 	    w.close();
@@ -51,9 +51,9 @@ public class PluginIndex {
 		
 	}
 	  
-	private static void addDoc(IndexWriter w, String value) throws IOException {
+	private static void addDoc(IndexWriter w, String value, String title) throws IOException {
 		Document doc = new Document();
-		doc.add(new Field("title", value, Field.Store.YES, Field.Index.ANALYZED));
+		doc.add(new Field(title, value, Field.Store.YES, Field.Index.ANALYZED));
 		w.addDocument(doc);
 	}
 
@@ -71,10 +71,10 @@ public class PluginIndex {
 		// The index does exist, do the search now
 		Directory index = (Directory) indexTracker.get(index_id);
 		
-	    Query q = new QueryParser(Version.LUCENE_30, "title", analyzer).parse(querystr);
+	    Query q = new QueryParser(Version.LUCENE_30, "description", analyzer).parse(querystr);
 
 	    // search
-	    int hitsPerPage = 10;
+	    int hitsPerPage = 100;
 	    IndexSearcher searcher = new IndexSearcher(index, true);
 	    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
 	    searcher.search(q, collector);
@@ -86,14 +86,9 @@ public class PluginIndex {
 	    // This will hold the filered set of plugins 
 	    Vector filteredPluginVector = new Vector();
 	    
-	   // System.out.println("Found " + hits.length + " hits.");
-	    
 	    for(int i=0;i<hits.length;++i) {
 	      int docId = hits[i].doc;
-	      filteredPluginVector.add(pluginVect.elementAt(docId));
-	      
-	      //Document d = searcher.doc(docId);
-	      //System.out.println((i + 1) + ". " + d.get("title"));
+	      filteredPluginVector.add(pluginVect.elementAt(docId));	      
 	    }
 		
 		return filteredPluginVector;
