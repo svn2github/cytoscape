@@ -74,7 +74,7 @@ public class PluginIndex {
 	    Query q = new QueryParser(Version.LUCENE_30, "description", analyzer).parse(querystr);
 
 	    // search
-	    int hitsPerPage = 100;
+	    int hitsPerPage = 1000;
 	    IndexSearcher searcher = new IndexSearcher(index, true);
 	    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
 	    searcher.search(q, collector);
