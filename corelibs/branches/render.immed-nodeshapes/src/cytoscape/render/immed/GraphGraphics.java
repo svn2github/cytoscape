@@ -199,8 +199,6 @@ public final class GraphGraphics {
 	private final GeneralPath m_path2d = new GeneralPath();
 	private final GeneralPath m_path2dPrime = new GeneralPath();
 	private final Line2D.Double m_line2d = new Line2D.Double();
-	private final double[] m_polyCoords = // I need this for extra precision.
-	new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
 	private final HashMap<Byte, double[]> m_customShapes = new HashMap<Byte, double[]>();
 	private final double[] m_ptsBuff = new double[4];
 
@@ -211,7 +209,6 @@ public final class GraphGraphics {
 	};
 
 	private final double[] m_edgePtsBuff = new double[(MAX_EDGE_ANCHORS + 1) * 6];
-	private int m_polyNumPoints; // Used with m_polyCoords.
 	private int m_edgePtsCount; // Number of points stored in m_edgePtsBuff.
 	private Graphics2D m_g2d;
 	private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
@@ -594,7 +591,7 @@ public final class GraphGraphics {
 		}
 
 		final double off = borderWidth/2.0; // border offset
-		final Shape sx = getXShape(nodeShape,xMin+off,yMin+off,xMax-off,yMax-off);
+		final Shape sx = getShape(nodeShape,xMin+off,yMin+off,xMax-off,yMax-off);
 
 		if (borderWidth > 0.0f) {
 			m_g2d.setPaint(borderPaint);
@@ -657,7 +654,7 @@ public final class GraphGraphics {
 		}
 
 		path.reset();
-		path.append(getXShape(nodeShape, xMin, yMin, xMax, yMax), false);
+		path.append(getShape(nodeShape, xMin, yMin, xMax, yMax), false);
 	}
 
 	/**
@@ -934,12 +931,7 @@ public final class GraphGraphics {
 		}
 	}
 
-	/*
-	 * This method has the side effect of setting m_ellp2d or m_path2d; if
-	 * m_path2d is set (every case but the ellipse and rounded rectangle), then
-	 * m_polyCoords and m_polyNumPoints are also set.
-	 */
-	private final Shape getXShape(final byte nodeShape, final double xMin,
+	private final Shape getShape(final byte nodeShape, final double xMin,
 			final double yMin, final double xMax, final double yMax) {
 		NodeShape ns = nodeShapes.get(nodeShape);
 		if ( ns != null )
