@@ -45,9 +45,9 @@ public class BinOpNode implements Node {
 
 	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
 		if (lhs == null)
-			throw new IllegalArgumentException("left operand must nor be null!");
+			throw new IllegalArgumentException("left operand must not be null!");
 		if (rhs == null)
-			throw new IllegalArgumentException("right operand must nor be null!");
+			throw new IllegalArgumentException("right operand must not be null!");
 
 		this.operator = operator;
 		this.lhs = lhs;
