@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.cytoscape.data.reader.kgml.generated.Entry;
 import org.cytoscape.data.reader.kgml.generated.Graphics;
@@ -23,6 +25,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearanceCalculator;
@@ -66,6 +69,7 @@ public class PathwayMapper {
 
 		edgeIdx = new int[relationEdges.size() + reactionEdges.size()];
 		int idx = 0;
+
 		for (CyEdge edge : reactionEdges) {
 			edgeIdx[idx] = edge.getRootGraphIndex();
 			idx++;
@@ -152,57 +156,69 @@ public class PathwayMapper {
 	}
 
 	private List<CyEdge> mapRelationEdge() {
-		
+
 		final List<Relation> relations = pathway.getRelation();
 		final List<CyEdge> edges = new ArrayList<CyEdge>();
 
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 
 		for (Relation rel : relations) {
-			
+
 			final String type = rel.getType();
-			
-			if (rel.getType().equals("maplink")) {
-    			final List<Subtype> subs = rel.getSubtype();
-    			if (entryMap.get(rel.getEntry1()).getType().equals("map")) {
+
+			if (rel.getType().equals(KEGGRelationType.MAPLINK.getTag())) {
+				final List<Subtype> subs = rel.getSubtype();
+				if (entryMap.get(rel.getEntry1()).getType().equals(
+						KEGGEntryType.MAP.getTag())) {
 					CyNode maplinkNode = nodeMap.get(rel.getEntry1());
-					
+
 					for (Subtype sub : subs) {
-				    	CyNode cpdNode = nodeMap.get(sub.getValue());
-				    	
-				        System.out.println(maplinkNode.getIdentifier());
-				        System.out.println(cpdNode.getIdentifier() + "\n\n");
-				        
-				        CyEdge edge1 = Cytoscape.getCyEdge(cpdNode, maplinkNode, "interaction", type, true);
-				        edges.add(edge1);
-				        edgeAttr.setAttribute(edge1.getIdentifier(), KEGG_RELATION_TYPE, type);
-				        
-				        CyEdge edge2 = Cytoscape.getCyEdge(maplinkNode, cpdNode, "interaction", type, true);
-				        edges.add(edge2);
-				        edgeAttr.setAttribute(edge2.getIdentifier(), KEGG_RELATION_TYPE, type);
+						CyNode cpdNode = nodeMap.get(sub.getValue());
+
+						System.out.println(maplinkNode.getIdentifier());
+						System.out.println(cpdNode.getIdentifier() + "\n\n");
+
+						CyEdge edge1 = Cytoscape.getCyEdge(cpdNode,
+								maplinkNode, Semantics.INTERACTION, type, true,
+								true);
+						edges.add(edge1);
+						edgeAttr.setAttribute(edge1.getIdentifier(),
+								KEGG_RELATION_TYPE, type);
+
+						CyEdge edge2 = Cytoscape.getCyEdge(maplinkNode,
+								cpdNode, Semantics.INTERACTION, type, true,
+								true);
+						edges.add(edge2);
+						edgeAttr.setAttribute(edge2.getIdentifier(),
+								KEGG_RELATION_TYPE, type);
 					}
-				}
-    			else {
+				} else {
 					CyNode maplinkNode = nodeMap.get(rel.getEntry2());
-					
+
 					for (Subtype sub : subs) {
-				    	CyNode cpdNode = nodeMap.get(sub.getValue());
-				    	
-				        System.out.println(maplinkNode.getIdentifier());
-				        System.out.println(cpdNode.getIdentifier() + "\n\n");
-				        
-				        CyEdge edge1 = Cytoscape.getCyEdge(cpdNode, maplinkNode, "interaction", type, true);
-				        edges.add(edge1);
-				        edgeAttr.setAttribute(edge1.getIdentifier(), KEGG_RELATION_TYPE, type);
-				        
-				        CyEdge edge2 = Cytoscape.getCyEdge(maplinkNode, cpdNode, "interaction", type, true);
-				        edges.add(edge2);
-				        edgeAttr.setAttribute(edge2.getIdentifier(), KEGG_RELATION_TYPE, type);
+						CyNode cpdNode = nodeMap.get(sub.getValue());
+
+						System.out.println(maplinkNode.getIdentifier());
+						System.out.println(cpdNode.getIdentifier() + "\n\n");
+
+						CyEdge edge1 = Cytoscape.getCyEdge(cpdNode,
+								maplinkNode, Semantics.INTERACTION, type, true,
+								true);
+						edges.add(edge1);
+						edgeAttr.setAttribute(edge1.getIdentifier(),
+								KEGG_RELATION_TYPE, type);
+
+						CyEdge edge2 = Cytoscape.getCyEdge(maplinkNode,
+								cpdNode, Semantics.INTERACTION, type, true,
+								true);
+						edges.add(edge2);
+						edgeAttr.setAttribute(edge2.getIdentifier(),
+								KEGG_RELATION_TYPE, type);
 					}
 				}
 			}
 		}
-		
+
 		return edges;
 
 	}
@@ -213,63 +229,87 @@ public class PathwayMapper {
 		final List<Reaction> reactions = pathway.getReaction();
 		final List<CyEdge> edges = new ArrayList<CyEdge>();
 
-		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 
-		for (Reaction rea : reactions) {
-			CyNode reaNode = nodeMap.get(rea.getId());
-			if (rea.getType().equals("irreversible")) {
+		Pattern pattern = Pattern.compile(".*01100");
+
+		if (pattern.matcher(pathwayID).matches()) {
+			for (Reaction rea : reactions) {
 				for (Substrate sub : rea.getSubstrate()) {
 					CyNode subNode = nodeMap.get(sub.getId());
-					CyEdge edge = Cytoscape.getCyEdge(subNode, reaNode,
-							"interaction", "substrate", true);
-					edges.add(edge);
-					edgeAttr.setAttribute(edge.getIdentifier(),
-							KEGG_REACTION_TYPE, "substrate");
+					for (Product pro : rea.getProduct()) {
+						CyNode proNode = nodeMap.get(pro.getId());
+						CyEdge edge = Cytoscape.getCyEdge(subNode, proNode,
+								Semantics.INTERACTION, "cc", true);
+						edges.add(edge);
+						edgeAttr.setAttribute(edge.getIdentifier(),
+								KEGG_REACTION_TYPE, rea.getName());
+					}
 				}
-				for (Product pro : rea.getProduct()) {
-					CyNode proNode = nodeMap.get(pro.getId());
-					CyEdge edge = Cytoscape.getCyEdge(reaNode, proNode,
-							"interaction", "product", true);
-					edges.add(edge);
-					edgeAttr.setAttribute(edge.getIdentifier(),
-							KEGG_REACTION_TYPE, "product");
-				}
-			} else {
-				for (Substrate sub : rea.getSubstrate()) {
-					CyNode subNode = nodeMap.get(sub.getId());
+			}
 
-					CyEdge subEdge = Cytoscape.getCyEdge(subNode, reaNode,
-							"interaction", "substrate", true);
-					edges.add(subEdge);
-					edgeAttr.setAttribute(subEdge.getIdentifier(),
-							KEGG_REACTION_TYPE, "substrate");
+		} else {
+			for (Reaction rea : reactions) {
+				CyNode reaNode = nodeMap.get(rea.getId());
+				System.out.println(rea.getId());
+				System.out.println(reaNode.getIdentifier());
 
-					CyEdge proEdge = Cytoscape.getCyEdge(reaNode, subNode,
-							"interaction", "product", true);
-					edges.add(proEdge);
-					edgeAttr.setAttribute(proEdge.getIdentifier(),
-							KEGG_REACTION_TYPE, "product");
-				}
-				for (Product pro : rea.getProduct()) {
-					CyNode proNode = nodeMap.get(pro.getId());
+				if (rea.getType().equals("irreversible")) {
+					for (Substrate sub : rea.getSubstrate()) {
+						CyNode subNode = nodeMap.get(sub.getId());
+						CyEdge edge = Cytoscape.getCyEdge(subNode, reaNode,
+								Semantics.INTERACTION, "cr", true, true);
+						edges.add(edge);
+						edgeAttr.setAttribute(edge.getIdentifier(),
+								KEGG_REACTION_TYPE, "substrate");
+					}
+					for (Product pro : rea.getProduct()) {
+						CyNode proNode = nodeMap.get(pro.getId());
+						CyEdge edge = Cytoscape.getCyEdge(reaNode, proNode,
+								Semantics.INTERACTION, "rc", true, true);
+						edges.add(edge);
+						edgeAttr.setAttribute(edge.getIdentifier(),
+								KEGG_REACTION_TYPE, "product");
+					}
 
-					CyEdge proEdge = Cytoscape.getCyEdge(reaNode, proNode,
-							"interaction", "product", true);
-					edges.add(proEdge);
-					edgeAttr.setAttribute(proEdge.getIdentifier(),
-							KEGG_REACTION_TYPE, "product");
+				} else {
+					for (Substrate sub : rea.getSubstrate()) {
+						System.out.println(sub.getId());
+						CyNode subNode = nodeMap.get(sub.getId());
+						System.out.println(subNode.getIdentifier());
 
-					CyEdge subEdge = Cytoscape.getCyEdge(proNode, reaNode,
-							"interaction", "product", true);
-					edges.add(subEdge);
-					edgeAttr.setAttribute(subEdge.getIdentifier(),
-							KEGG_REACTION_TYPE, "substrate");
+						CyEdge subEdge = Cytoscape.getCyEdge(subNode, reaNode,
+								Semantics.INTERACTION, "cr", true, true);
+						edges.add(subEdge);
+						edgeAttr.setAttribute(subEdge.getIdentifier(),
+								KEGG_REACTION_TYPE, "substrate");
+
+						CyEdge proEdge = Cytoscape.getCyEdge(reaNode, subNode,
+								Semantics.INTERACTION, "rc", true, true);
+						edges.add(proEdge);
+						edgeAttr.setAttribute(proEdge.getIdentifier(),
+								KEGG_REACTION_TYPE, "product");
+					}
+					for (Product pro : rea.getProduct()) {
+						CyNode proNode = nodeMap.get(pro.getId());
+
+						CyEdge proEdge = Cytoscape.getCyEdge(reaNode, proNode,
+								Semantics.INTERACTION, "rc", true, true);
+						edges.add(proEdge);
+						edgeAttr.setAttribute(proEdge.getIdentifier(),
+								KEGG_REACTION_TYPE, "product");
+
+						CyEdge subEdge = Cytoscape.getCyEdge(proNode, reaNode,
+								Semantics.INTERACTION, "cr", true, true);
+						edges.add(subEdge);
+						edgeAttr.setAttribute(subEdge.getIdentifier(),
+								KEGG_REACTION_TYPE, "substrate");
+					}
 				}
 			}
 		}
 
 		return edges;
-
 
 	}
 
