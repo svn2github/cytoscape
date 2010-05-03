@@ -43,7 +43,7 @@ import java.awt.geom.QuadCurve2D;
 
 /**
  * An abstract implementation of NodeShape that provides a basic way of computing
- * the edge intersection that not work for complicated shapes.
+ * the edge intersection. 
  */
 abstract class AbstractNodeShape implements NodeShape {
 
@@ -63,10 +63,10 @@ abstract class AbstractNodeShape implements NodeShape {
 	/**
 	 * A basic implementation that works by unwinding the path of the node shape
 	 * into line segments and calculating whether each segment intersects the edge.
-	 * For quadratic and cubic segments of the shape, we first test to see if the 
-	 * edge intersects the line segment defined by the beginning and ending points of 
-	 * the curve.  If the curve line segment does intersect, then we set a curve Shape, 
-	 * flatten it, and then iterate over THOSE segments to determine a closer intersection. 
+	 * For quadratic and cubic segments of the shape we flatten the curve and then 
+	 * iterate over the resulting segments to determine an intersection. For some
+	 * shapes there may be faster methods for calculatring the intersection, in which 
+	 * case we encourage you to provide your own implementation of this method!
 	 */
 	public boolean computeEdgeIntersection(final float xMin, final float yMin, final float xMax,
 	                                       final float yMax, final float ptX, final float ptY, 
@@ -128,13 +128,9 @@ abstract class AbstractNodeShape implements NodeShape {
 						pt2[0] = coords[2];
 						pt2[1] = coords[3];
 
-						// First check to see if the line segment intersects the line segment 
-						// defined by the begin and end points of the curve.  Only if that 
-						// intersects should we proceed and test the curve.
-						if ( segmentIntersection(intersection,centerX,centerY,ptX,ptY,
-						                         pt1[0],pt1[1],pt2[0],pt2[1] ) ) { 
-							quad.setCurve(pt1[0],pt1[1],coords[0],coords[1],coords[2],coords[3]);
-							curveIntersection(intersection,centerX,centerY,ptX,ptY,quad);
+						quad.setCurve(pt1[0],pt1[1],coords[0],coords[1],coords[2],coords[3]);
+
+						if ( curveIntersection(intersection,centerX,centerY,ptX,ptY,quad) ) {
 							returnVal[0] = intersection[0];
 							returnVal[1] = intersection[1];
 							return true;
@@ -149,13 +145,8 @@ abstract class AbstractNodeShape implements NodeShape {
 						pt2[0] = coords[4];
 						pt2[1] = coords[5];
 
-						// First check to see if the line segment intersects the line segment 
-						// defined by the begin and end points of the curve.  Only if that 
-						// intersects should we proceed and test the curve.
-						if ( segmentIntersection(intersection,centerX,centerY,ptX,ptY,
-						                         pt1[0],pt1[1],pt2[0],pt2[1] ) ) { 
-							cubic.setCurve(pt1[0],pt1[1],coords[0],coords[1],coords[2],coords[3],coords[4],coords[5]);
-							curveIntersection(intersection,centerX,centerY,ptX,ptY,cubic);
+						cubic.setCurve(pt1[0],pt1[1],coords[0],coords[1],coords[2],coords[3],coords[4],coords[5]);
+						if ( curveIntersection(intersection,centerX,centerY,ptX,ptY,cubic) ) {
 							returnVal[0] = intersection[0];
 							returnVal[1] = intersection[1];
 							return true;
