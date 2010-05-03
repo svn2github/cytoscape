@@ -1466,9 +1466,7 @@ public class DNodeView implements NodeView, Label {
 		graphicsPositions.remove(cg);
 		
 		System.out.println();
-		CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p, this, cg);
-		System.out.println("Transformed = " + newCg.getShape().toString());
-		
+		CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p, this, cg);		
 		_customGraphics.add(newCg);
 		graphicsPositions.put(newCg, p);
 	}

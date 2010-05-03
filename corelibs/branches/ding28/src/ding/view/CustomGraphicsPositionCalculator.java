@@ -38,9 +38,7 @@ public class CustomGraphicsPositionCalculator {
 	
 	
 	
-	public static CustomGraphic transform(final ObjectPosition p, final DNodeView nv, CustomGraphic cg) {
-		System.out.print("    Got new position: " + p);
-		
+	public static CustomGraphic transform(final ObjectPosition p, final DNodeView nv, CustomGraphic cg) {		
 		final Position anc = p.getAnchor();
 		final Position ancN = p.getTargetAnchor();
 		
@@ -48,9 +46,6 @@ public class CustomGraphicsPositionCalculator {
 		final double nodeH = nv.getHeight();
 		final double cgW = cg.getShape().getBounds().getWidth();
 		final double cgH = cg.getShape().getBounds().getHeight();
-		
-		System.out.print("    View (w, h): " + nodeW + ", " + nodeH);
-		System.out.println("    View (cgw, cgh): " + cgW + ", " + cgH);
 		
 		final Float[] disp1 = DISPLACEMENT_MAP.get(anc);
 		final Float[] disp2 = DISPLACEMENT_MAP.get(ancN);
@@ -65,19 +60,13 @@ public class CustomGraphicsPositionCalculator {
 		// calc total and apply transform
 		double totalDispX = dispX + dispNX + p.getOffsetX();
 		double totalDispY = dispY + dispNY + p.getOffsetY();
-		System.out.println("    Displacement = " + totalDispX + ", " + totalDispY);
 		
 		final AffineTransform tf = AffineTransform.getTranslateInstance(totalDispX, totalDispY);
 		final Shape newShape = tf.createTransformedShape(cg.getShape());
 		
 		final PaintFactory newFactory = cg.getPaintFactory();
 		
-		System.out.println("    NEW = " + newShape.toString());
 		return new CustomGraphic(newShape, newFactory); 
 		
-		
 	}
-	
-	
-
 }
