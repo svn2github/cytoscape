@@ -125,7 +125,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 		String errMessage = null;
 
 		// Change object to String
-		final String newValueStr = newValue.toString();
+		final String newValueStr = newValue.toString().trim();
 		final byte targetType = attrs.getType(attrName);
 
 		if (targetType == CyAttributes.TYPE_INTEGER) {
