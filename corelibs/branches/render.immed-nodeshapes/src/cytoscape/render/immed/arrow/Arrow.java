@@ -38,9 +38,26 @@ package cytoscape.render.immed.arrow;
 import java.awt.Shape;
 
 public interface Arrow {
+	/**
+	 * The Shape of the main Arrow body.
+	 */
 	Shape getArrowShape();
+
+	/**
+	 * The Shape of the cap that joins the Arrow body with the edge.  This needs to
+	 * be a distinct shape from the Arrow body because the cap needs to be the same
+	 * color as the edge.
+	 */
 	Shape getCapShape(final double ratio);
+
+	/**
+	 * A legacy identifier for GraphGraphics.
+	 */
 	byte getType();
+
+	/**
+	 * The distance that the arrow should be offset from the intersection with the node.
+	 */
 	double getTOffset();
 }
 

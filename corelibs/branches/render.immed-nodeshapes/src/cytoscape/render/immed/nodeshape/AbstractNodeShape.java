@@ -41,13 +41,16 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.QuadCurve2D;
 
+/**
+ * An abstract implementation of NodeShape that provides a basic way of computing
+ * the edge intersection that not work for complicated shapes.
+ */
 abstract class AbstractNodeShape implements NodeShape {
 
 	private final AffineTransform at = new AffineTransform();
 	private final CubicCurve2D cubic = new CubicCurve2D.Float(0f,0f,0.3f,0.3f,0.7f,0.7f,1f,1f);
 	private final QuadCurve2D quad = new QuadCurve2D.Float(0f,0f,0.5f,0.5f,1f,1f);
-
-	protected final byte type;
+	private final byte type;
 	
 	AbstractNodeShape(byte type) {
 		this.type = type;	
@@ -182,9 +185,6 @@ abstract class AbstractNodeShape implements NodeShape {
 
 
 	/** 
-	 * A method that determines whether two line segments intersect and if
-	 * they do returns true and sets the point of the intersection in returnVal.
-	 *
 	 * Computes the intersection of the line segment from (x1,y1) to (x2,y2)
 	 * with the line segment from (x3,y3) to (x4,y4). If no intersection exists,
 	 * returns false. Otherwise returns true, and returnVal[0] is set to be the
@@ -214,7 +214,7 @@ abstract class AbstractNodeShape implements NodeShape {
 	 * @param y4 The Y location of ending of the second line segment.
 	 * @return Whether or not the line segments defined by the input points intersect.
 	 */
-	protected final boolean segmentIntersection(final float[] returnVal, 
+	public static boolean segmentIntersection(final float[] returnVal, 
 	                                            float x1, float y1, 
 	                                            float x2, float y2, 
 	                                            float x3, float y3, 
@@ -472,5 +472,4 @@ abstract class AbstractNodeShape implements NodeShape {
 
 		return false;
 	}
-
 }
