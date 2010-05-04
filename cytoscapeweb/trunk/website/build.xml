@@ -87,7 +87,7 @@
         
         <mkdir dir="${api.dir}/visual_style"/>
         <copy todir="${api.dir}/visual_style" overwrite="true">
-            <fileset dir="${temp.dir}/symbols" includes="**.VisualStyle.php"/>
+            <fileset dir="${temp.dir}/symbols" includes="**.VisualStyle.php **.VisualStyleBypass.php"/>
         </copy>
         
         <mkdir dir="${api.dir}/layout"/>
