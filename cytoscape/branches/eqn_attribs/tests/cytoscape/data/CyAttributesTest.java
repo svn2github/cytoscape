@@ -1,14 +1,7 @@
 /*
  File: CyAttributesTest.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -38,6 +31,7 @@ package cytoscape.data;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
+import cytoscape.data.eqn_attribs.AttribEqnCompiler;
 
 import junit.framework.TestCase;
 
@@ -395,6 +389,15 @@ public class CyAttributesTest extends TestCase {
 		cyAttributes.setUserEditable(sampleAttribute, true);
 		editableFlag = cyAttributes.getUserEditable(sampleAttribute);
 		assertEquals(true, editableFlag);
+	}
+
+	public void testGetLastEquationError() {
+		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=1/0", attribNameToTypeMap));
+		cyAttributes.setAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE, compiler.getEquation());
+		assertNull(cyAttributes.getAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE));
+		assertNotNull(cyAttributes.getLastEquationError());
 	}
 
 	/**
