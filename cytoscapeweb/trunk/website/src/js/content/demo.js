@@ -256,7 +256,6 @@ $(function(){
     var layout_names = {};
     layout_names["ForceDirected"] = "Force Directed";
     layout_names["Circle"] = "Circle";
-    layout_names["CircleTree"] = "Circle Tree";
     layout_names["Radial"] = "Radial";
     layout_names["Tree"] = "Tree";
     
@@ -274,14 +273,12 @@ $(function(){
         { id: "autoStabilize", label: "Auto stabilize",  value: true,   tip: "If checked, Cytoscape Web automatically tries to stabilize results that seems unstable after running the regular iterations." }
     ];
     layout_options["Circle"] = [
-        { id: "angleWidth", label: "Angle width", value: 360, tip: "The angular width of the layout, in degrees." }
-    ];
-    layout_options["CircleTree"] = [
-        { id: "angleWidth", label: "Angle width", value: 360, tip: "The angular width of the layout, in degrees." }
+        { id: "angleWidth", label: "Angle width",    value: 360,   tip: "The angular width of the layout, in degrees." },
+        { id: "tree",       label: "Tree structure", value: false, tip: "Flag indicating if any tree-structure in the data should be used to inform the layout." }
     ];
     layout_options["Radial"] = [
-        { id: "radius",     label: "Radius",      value: 60,  tip: "The radius increment between depth levels." },
-        { id: "angleWidth", label: "Angle width", value: 360, tip: "The angular width of the layout, in degrees." }
+        { id: "radius",     label: "Radius",      value: "auto", tip: "The radius increment between depth levels." },
+        { id: "angleWidth", label: "Angle width", value: 360,    tip: "The angular width of the layout, in degrees." }
     ];
     layout_options["Tree"] = [
         { id: "orientation",  label: "Orientation",   value: ["leftToRight","rightToLeft","bottomToTop","topToBottom"], tip: "The orientation of the layout." },
@@ -1053,7 +1050,7 @@ $(function(){
                             var param_val = data[param_name];
                             
                             var val = ("" + param_val).replace(/(\s)/g, "&nbsp;");
-                            var entry = $('<td name="' + param_name + '" class="code">' + val + '</td>');
+                            var entry = $('<td class="code" name="'+param_name+'">' + val + '</td>');
                             row.append(entry);
                         }
                     }
@@ -1088,7 +1085,7 @@ $(function(){
                     var ele = $("#cytoweb_container").cw()[group.substring(0, 4)](id);
                     var param_name = td.attr("name");
                     
-                    switch( td.attr("name") ){
+                    switch( param_name ){
                         case "id":
                         case "source":
                         case "target":
@@ -1135,7 +1132,6 @@ $(function(){
                             var data = {};
                             data[param_name] = val;
                             ele.data[param_name] = val;
-                            
                             $("#cytoweb_container").cw().updateData(group, [ id ], data);
                         }
                     })
