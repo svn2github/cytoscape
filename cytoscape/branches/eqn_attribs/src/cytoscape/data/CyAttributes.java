@@ -744,4 +744,13 @@ public interface CyAttributes {
 	 *  @returns the equation associated with an attribute or null if there is no equation associated with it
 	 */
 	public Equation getEquation(final String id, final String attributeName);
+
+	/**
+	 *  Returns any attribute-equation related error message after a call to getAttribute().
+	 *  The last error message will be cached!
+	 *
+	 *  @returns an error message or null if the last call to getAttribute() did not result in an
+	 *           equation related error
+	 */
+	public String getLastEquationError();
 }

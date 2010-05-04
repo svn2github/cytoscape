@@ -63,6 +63,8 @@ public class CyAttributesImpl implements CyAttributes {
 	//  by the end user.
 	private Set userNonEditableSet;
 
+	private String lastEquationError = null;
+
 	protected static final CyLogger logger = CyLogger.getLogger(Cytoscape.class);
 
 	/**
@@ -475,6 +477,8 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return  DOCUMENT ME!
 	 */
 	public Boolean getBooleanAttribute(final String id, final String attributeName) {
+		lastEquationError = null;
+
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		if (type < 0)
 			return null;
@@ -490,9 +494,13 @@ public class CyAttributesImpl implements CyAttributes {
 			return (Boolean)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
-		if (equationValue == null)
+		final StringBuilder errorMessage = new StringBuilder();
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue,
+		                                          errorMessage);
+		if (equationValue == null) {
+			lastEquationError = errorMessage.toString();
 			return null;
+		}
 		return convertEqnRetValToBoolean(id, attributeName, equationValue);
 	}
 
@@ -505,6 +513,8 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return  DOCUMENT ME!
 	 */
 	public Integer getIntegerAttribute(final String id, final String attributeName) {
+		lastEquationError = null;
+
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		if (type < 0)
 			return null;
@@ -520,9 +530,13 @@ public class CyAttributesImpl implements CyAttributes {
 			return (Integer)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
-		if (equationValue == null)
+		final StringBuilder errorMessage = new StringBuilder();
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue,
+		                                          errorMessage);
+		if (equationValue == null) {
+			lastEquationError = errorMessage.toString();
 			return null;
+		}
 		if (equationValue.getClass() == Long.class) {
 			final long valueAsLong = (Long)equationValue;
 			return (int)valueAsLong;
@@ -559,6 +573,8 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return  DOCUMENT ME!
 	 */
 	public Double getDoubleAttribute(String id, String attributeName) {
+		lastEquationError = null;
+
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		if (type < 0)
 			return null;
@@ -574,9 +590,13 @@ public class CyAttributesImpl implements CyAttributes {
 			return (Double)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
-		if (equationValue == null)
+		final StringBuilder errorMessage = new StringBuilder();
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue,
+		                                          errorMessage);
+		if (equationValue == null) {
+			lastEquationError = errorMessage.toString();
 			return null;
+		}
 		return convertEqnRetValToDouble(id, attributeName, equationValue);
 	}
 
@@ -589,6 +609,8 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getStringAttribute(final String id, final String attributeName) {
+		lastEquationError = null;
+
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		if (type < 0)
 			return null;
@@ -604,9 +626,13 @@ public class CyAttributesImpl implements CyAttributes {
 			return (String)attribValue;
 
 		// Now we assume that we are dealing with an equation:
-		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
-		if (equationValue == null)
+		final StringBuilder errorMessage = new StringBuilder();
+		final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue,
+		                                          errorMessage);
+		if (equationValue == null) {
+			lastEquationError = errorMessage.toString();
 			return null;
+		}
 		return equationValue.toString();
 	}
 
@@ -621,15 +647,21 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return Object, or null if no id/attributeName pair is found.
 	 */
 	public Object getAttribute(final String id, final String attributeName) {
+		lastEquationError = null;
+
 		final byte type = mmapDef.getAttributeValueType(attributeName);
 		if (type < 0)
 			return null;
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
 		if (attribValue instanceof Equation) {
-			final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue);
-			if (equationValue == null)
+			final StringBuilder errorMessage = new StringBuilder();
+			final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue,
+			                                          errorMessage);
+			if (equationValue == null) {
+				lastEquationError = errorMessage.toString();
 				return null;
+			}
 
 			if (type == MultiHashMapDefinition.TYPE_INTEGER)
 				return convertEqnRetValToInteger(id, attributeName, equationValue);
@@ -641,8 +673,10 @@ public class CyAttributesImpl implements CyAttributes {
 				return equationValue.toString();
 			return equationValue;
 		}
-		else
+		else {
+			lastEquationError = null;
 			return attribValue;
+		}
 	}
 
 	/**
@@ -807,12 +841,12 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return  DOCUMENT ME!
 	 */
 	public List getListAttribute(String id, String attributeName) {
-		if (mmapDef.getAttributeValueType(attributeName) < 0) {
+		lastEquationError = null;
+
+		if (mmapDef.getAttributeValueType(attributeName) < 0)
 			return null;
-		}
 
 		final byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
-
 		if ((keyTypes.length != 1) || (keyTypes[0] != MultiHashMapDefinition.TYPE_INTEGER)) {
 			throw new ClassCastException("attributeName '" + attributeName
 			                             + "' is not of TYPE_SIMPLE_LIST");
@@ -946,12 +980,12 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return  DOCUMENT ME!
 	 */
 	public Map getMapAttribute(String id, String attributeName) {
-		if (mmapDef.getAttributeValueType(attributeName) < 0) {
+		lastEquationError = null;
+
+		if (mmapDef.getAttributeValueType(attributeName) < 0)
 			return null;
-		}
 
 		final byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
-
 		if ((keyTypes.length != 1) || (keyTypes[0] != MultiHashMapDefinition.TYPE_STRING)) {
 			throw new ClassCastException("attributeName '" + attributeName
 			                             + "' is not of TYPE_SIMPLE_MAP");
@@ -1002,12 +1036,24 @@ public class CyAttributesImpl implements CyAttributes {
 		return (Equation)attribValue;
 	}
 
-	private Object evalEquation(final String id, final String attribName, final Equation equation) {
+	/**
+	 *  Returns any attribute-equation related error message after a call to getAttribute().
+	 *  The last error message will be cached!
+	 *
+	 *  @returns an error message or null if the last call to getAttribute() did not result in an
+	 *           equation related error
+	 */
+	public String getLastEquationError() { return lastEquationError; }
+
+	private Object evalEquation(final String id, final String attribName, final Equation equation,
+	                            final StringBuilder errorMessage)
+	{
 		final Collection<String> attribReferences = equation.getAttribReferences();
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
 			final Object attribValue = getAttribute(id, attribRef);
 			if (attribValue == null) {
+				errorMessage.append("Missing value for referenced attribute \"" + attribRef + "\"!");
 				logger.warn("Missing value for \"" + attribRef
 				            + "\" while evaluating an equation (ID:" + id
 				            + ", attribute name:" + attribName + ")");
@@ -1017,6 +1063,7 @@ public class CyAttributesImpl implements CyAttributes {
 			try {
 				nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
 			} catch (final Exception e) {
+				errorMessage.append("Bad attribute reference to \"" + attribRef + "\"!");
 				logger.warn("Bad attribute reference to \"" + attribRef
 				            + "\" while evaluating an equation (ID:" + id
 				            + ", attribute name:" + attribName + ")");
@@ -1028,6 +1075,7 @@ public class CyAttributesImpl implements CyAttributes {
 		try {
 			return interpreter.run();
 		} catch (final Exception e) {
+			errorMessage.append(e.getMessage());
 			logger.warn("Error while evaluating an equation: " + e.getMessage() + " (ID:"
 			            + id + ", attribute name:" + attribName + ")");
 			return null;
