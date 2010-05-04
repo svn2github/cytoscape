@@ -1073,12 +1073,12 @@ $(function(){
         	
         	cw.removeContextMenuItem()
             .addContextMenuItem("Delete node", "nodes", function(evt) {
-            	$("#cytoweb_container").cw().remove([evt.target], true);
+            	$("#cytoweb_container").cw().removeNode(evt.target, true);
             	updateContextMenu();
             	update();
             })
             .addContextMenuItem("Delete edge", "edges", function(evt) {
-            	$("#cytoweb_container").cw().remove([evt.target], true);
+            	$("#cytoweb_container").cw().removeEdge(evt.target, true);
             	updateContextMenu();
             	update();
             })
@@ -1097,7 +1097,7 @@ $(function(){
         	if (items.length > 0) {
         		cw.addContextMenuItem("Delete selected", function(evt) {
                     //var items = cw.selected();
-        			$("#cytoweb_container").cw().remove(items, true);
+        			$("#cytoweb_container").cw().removeElements(items, true);
                     updateContextMenu();
                     update();
                 });
