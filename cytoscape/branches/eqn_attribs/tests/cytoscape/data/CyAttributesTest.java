@@ -394,10 +394,18 @@ public class CyAttributesTest extends TestCase {
 	public void testGetLastEquationError() {
 		final AttribEqnCompiler compiler = new AttribEqnCompiler();
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+
+		// First a case that should result in an error message...
 		assertTrue(compiler.compile("=1/0", attribNameToTypeMap));
 		cyAttributes.setAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE, compiler.getEquation());
 		assertNull(cyAttributes.getAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE));
 		assertNotNull(cyAttributes.getLastEquationError());
+
+		// ...and now a case that should not result in an error message.
+		assertTrue(compiler.compile("=1/1", attribNameToTypeMap));
+		cyAttributes.setAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE, compiler.getEquation());
+		assertNotNull(cyAttributes.getAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE));
+		assertNull(cyAttributes.getLastEquationError());
 	}
 
 	/**
