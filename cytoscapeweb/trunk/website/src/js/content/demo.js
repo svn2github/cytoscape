@@ -1022,7 +1022,7 @@ $(function(){
                 section.append("<h1>" + name + "</h1>");
                 
                 if( items.length > 0 ) {
-                    var table = $('<table id="'+id+'"></table>');
+                    var table = $('<table class="tablesorter" id="'+id+'"></table>');
                     section.append(table);
                     
                     var thead = $('<thead></thead>');
@@ -1053,7 +1053,7 @@ $(function(){
                             var param_val = data[param_name];
                             
                             var val = ("" + param_val).replace(/(\s)/g, "&nbsp;");
-                            var entry = $('<td class="code">' + val + '</td>');
+                            var entry = $('<td name="' + param_name + '" class="code">' + val + '</td>');
                             row.append(entry);
                         }
                     }
@@ -1062,10 +1062,89 @@ $(function(){
                 }
             }
 
-            print_selection(nodes, "Nodes", "NodesDataTable");
-            print_selection(edges, "Edges", "EdgesDataTable");
+            print_selection(nodes, "Nodes", "nodes_data_table");
+            print_selection(edges, "Edges", "edges_data_table");
             
             $("#info").find(".tablesorter").tablesorter();
+            
+            function convert_td_to_input( table, group ){
+            
+                var width = [];
+                var num_attrs = $(table).find("th").size();
+                
+                var i = 0;
+                $(table).find("td").slice(0, num_attrs).each(function(){
+                    width[i] = $(this).width();
+                    i++;
+                });
+            
+                i = -1;
+                $(table).find("td").each(function(){
+                    i = (i + 1) % num_attrs;
+                
+                    var td = $(this);
+                    var td_width = width[i];
+                    var id = td.parents("tr:first").attr("name");
+                    var ele = $("#cytoweb_container").cw()[group.substring(0, 4)](id);
+                    var param_name = td.attr("name");
+                    
+                    switch( td.attr("name") ){
+                        case "id":
+                        case "source":
+                        case "target":
+                            return;
+                        default:
+                            break;
+                    }
+                    
+                    var input = $(this).html('<input value=' + $(this).text() + ' />').find("input");
+                    
+                    input.css({
+                        width: td_width
+                    });
+                    
+                    var keypress_timeout = undefined;
+                    var orig_val = input.val();
+                    input.bind("keydown", function(event){
+                        if (event.keyCode == '13') {
+                            $(this).blur(); 
+                        }
+                    }).bind("focus", function(){
+                        orig_val = input.val();
+                    }).bind("keyup", function(){
+                        
+                    }).bind("blur", function(){
+                        if( input.val() != orig_val ){
+                            var text_div = $('<div></div>');
+                            text_div.css({
+                                font: input.css("font"),
+                                float: "left",
+                                position: "absolute",
+                                padding: input.css("padding"),
+                                visibility: "hidden"
+                            });
+                            text_div.html( input.val() );
+                            $("body").append(text_div);
+                            
+                            var text_width = text_div.width();
+                            
+                            input.width( Math.max( text_width, td_width ) );
+                            text_div.remove();
+                            
+                            var val = input.val();
+                            var data = {};
+                            data[param_name] = val;
+                            ele.data[param_name] = val;
+                            
+                            $("#cytoweb_container").cw().updateData(group, [ id ], data);
+                        }
+                    })
+                });
+            }
+            
+            convert_td_to_input( $("#nodes_data_table"), "nodes" );
+            convert_td_to_input( $("#edges_data_table"), "edges" );
+            
         }
         
         function updateContextMenu(){

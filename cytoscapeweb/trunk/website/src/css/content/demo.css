@@ -5,6 +5,7 @@ body.demo #logo { margin-left: 1em; margin-right: 5em; }
 body.demo #header .text { margin-top: 2.5em; color: #707070; }
 body.demo #page, body.demo #copyright, body.demo #navigation_links, body.demo #search, body.demo #content, body.demo #footer { display: none; }
 #cytoweb, #side { border: 1px #cfcfcf solid; -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; }
+.ui-dialog { -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; }
 #cytoweb { background: #fff; }
 #side, #cytoweb { border-radius: 0 !important; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; }
 #cytoweb ul { margin-left: 0; } 
@@ -198,6 +199,9 @@ input[type=button].ui-state-default { cursor: pointer; }
 #info .tablesorter th.headerSortUp label { background-image: url("../../img/layout/open_arrow/white/up.png"); background-position: right center; }
 #info .tablesorter th.headerSortDown label { background-image: url("../../img/layout/open_arrow/white/down.png"); background-position: right center; }
 #info .tablesorter tr td { font-family: "Monaco", "Courier New", monospace; font-size: 0.85em; line-height: 1.25; }
+#info .tablesorter input { font-family: "Monaco", "Courier New", monospace; }
+#info .tablesorter input:hover, input:focus { border-color: #cacaca; background: #ffffff; }
+#info .tablesorter input { border-color: transparent; width: auto; background: transparent; }
 
 /* vizmapper tab */
 #vizmapper label.style { display: block; padding-top: 0.5em; clear: both; }
