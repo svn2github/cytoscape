@@ -145,7 +145,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
-				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), newValueStr);
+				final Object attrValue = attrs.getAttribute(id, attrName);
+				String errorMessage = attrs.getLastEquationError();
+				if (errorMessage != null)
+					errorMessage = "#ERROR(" + errorMessage + ")";
+				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
 				valid = true;
 				return;
 			}
