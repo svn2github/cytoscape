@@ -1307,7 +1307,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			                                                            .getSelectedNodes()), null);
 		} else if ((objectType == EDGES)
 		           && ((event.getTargetType() == SelectEvent.SINGLE_EDGE)
-		              || (event.getTargetType() == SelectEvent.EDGE_SET))) {
+		               || (event.getTargetType() == SelectEvent.EDGE_SET)))
+		{
 			// edge selection
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_EDGE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_EDGE);
@@ -1332,6 +1333,39 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	public void editingStopped(ChangeEvent e) {
 		super.editingStopped(e);
 		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+
+		final int currentRow = getEditingRow();
+		final int currentColumn = getEditingColumn();
+
+		int nextRow, nextColumn;
+
+		final int rowCount = getRowCount();
+		if (currentRow < getRowCount() - 1) {
+			nextRow = currentRow + 1;
+			nextColumn = currentColumn;
+		} else {
+			nextRow = 0;
+
+			// First, find the location of the ID column
+			int idColumn = -1;
+			final int columnCount = getColumnCount();
+			for (int idx = 0; idx < columnCount; idx++) {
+				if (getColumnName(idx).equals(AttributeBrowser.ID)) {
+					idColumn = idx;
+					break;
+				}
+			}
+
+			nextColumn = currentColumn + 1;
+			if (nextColumn == idColumn)
+				++nextColumn;
+			if (nextColumn == columnCount)
+				nextColumn = 0;
+			if (nextColumn == idColumn)
+				++nextColumn;
+		}
+
+		changeSelection(nextRow, nextColumn, false, false);
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -1445,8 +1479,6 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			}
 
 			setCellEditor(null);
-			setEditingColumn(-1);
-			setEditingRow(-1);
 			editorComp = null;
 			repaint(cellRect);
 		}
@@ -1515,4 +1547,3 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		EquationUtil.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
 	}
 }
-
