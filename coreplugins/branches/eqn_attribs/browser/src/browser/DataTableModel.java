@@ -636,10 +636,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
 		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
-		if (editIsValid)
-			setDataTableRow(rowIdx);
-		else
-			fireTableCellUpdated(rowIdx, colIdx);
+		setDataTableRow(rowIdx);
 
 		return editIsValid ? edit : null;
 	}
