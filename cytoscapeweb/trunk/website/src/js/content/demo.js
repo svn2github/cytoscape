@@ -281,7 +281,7 @@ $(function(){
         { id: "angleWidth", label: "Angle width", value: 360,    tip: "The angular width of the layout, in degrees." }
     ];
     layout_options["Tree"] = [
-        { id: "orientation",  label: "Orientation",   value: ["leftToRight","rightToLeft","bottomToTop","topToBottom"], tip: "The orientation of the layout." },
+        { id: "orientation",  label: "Orientation",   value: ["topToBottom","bottomToTop","leftToRight","rightToLeft"], tip: "The orientation of the layout." },
         { id: "depthSpace",   label: "Depth space",   value: 50, tip: "The space between depth levels in the tree." },
         { id: "breadthSpace", label: "Breadth space", value: 30, tip: "The space between siblings in the tree." },
         { id: "subtreeSpace", label: "Angle width",   value: 5,  tip: "The space between different sub-trees." }
@@ -333,6 +333,8 @@ $(function(){
             
         }
         
+        $("#cytoweb_container").cw().addListener("error", onDrawError);
+        
         if( options.url != undefined ) {
             $.ajax({
                 url: options.url,
@@ -382,7 +384,6 @@ $(function(){
             url: path("file/example_graphs/sample1.graphml"),
             visualStyleName: "Shapes",
             visualStyle: GRAPH_STYLES["Shapes"],
-            layout: "ForceDirected",
             nodeLabelsVisible: false
         },
         
@@ -401,7 +402,6 @@ $(function(){
             url: path("file/example_graphs/sample2.graphml"),
             visualStyleName: "Dark",
             visualStyle: GRAPH_STYLES["Dark"],
-            layout: "ForceDirected",
             nodeLabelsVisible: false
         },
 
@@ -411,7 +411,6 @@ $(function(){
             url: path("file/example_graphs/sample3.graphml"),
             visualStyleName: "Diamonds",
             visualStyle: GRAPH_STYLES["Diamonds"],
-            layout: "ForceDirected",
             nodeLabelsVisible: false
         },
         
@@ -421,7 +420,6 @@ $(function(){
             url: path("file/example_graphs/sample4.xgmml"),
             visualStyleName: "Cytoscape",
             visualStyle: GRAPH_STYLES["Cytoscape"],
-            layout: "Preset",
             nodeLabelsVisible: true
         }
 
@@ -441,33 +439,32 @@ $(function(){
         $(this).removeData("available");
     });
     
-    // create cytoweb
-    $("#cytoweb_container").cytoscapeweb(options);
-    
-    // call back for when the graph is opened and fully loaded
-    $("#cytoweb_container").cw().ready(function(){
-    	var vis = $("#cytoweb_container").cw();
-    	
-        vis.addListener("error", function(err){
-            hide_msg({ target: $("body") });
-            
-            show_msg({
-                target: $("#cytoweb_container").add("#side"),
-                type: "error",
-                heading: err.value.name,
-                message: err.value.msg + ( err.value.id != undefined ? " (id = " + err.value.id + ")" : "" )
-            });
-            
-            show_msg({
-                target: $("#side"),
-                type: "info",
-                heading: "Area unavailable",
-                message: "This area is unavailable when the graph file can not be loaded."
-            });
+    // Listener for drawing errors:
+    function onDrawError(err) {
+		hide_msg({ target: $("body") });
+        show_msg({
+            target: $("#cytoweb_container").add("#side"),
+            type: "error",
+            heading: err.value.name,
+            message: err.value.msg + ( err.value.id != undefined ? " (id = " + err.value.id + ")" : "" )
         });
-        
+        show_msg({
+            target: $("#side"),
+            type: "info",
+            heading: "Area unavailable",
+            message: "This area is unavailable when the graph file can not be loaded."
+        });
+        cw.removeListener("error", onDrawError);
+	}
+    
+    // create cytoweb
+    var cw = $("#cytoweb_container").cytoscapeweb(options);
+
+    // call back for when the graph is opened and fully loaded
+    cw.ready(function(){
+    	cw.removeListener("error", onDrawError);
         $("#cytoweb_container").trigger("available");
-    }); // end cl load
+    });
     
     create_menu();
     $(window).trigger("resize");
@@ -905,11 +902,13 @@ $(function(){
                 $("#" + id).find(".ui-menu-check-icon").removeClass("ui-menu-checked");
             }
         }
-               
+        
         // add initial state of one check marks
         $("#layout_style").find(".ui-menu-check-icon").removeClass("ui-menu-checked");
-        $("#layout_style").find("[layout_id=" + $("#cytoweb_container").cw().layout().name + "]").find(".ui-menu-check-icon").addClass("ui-menu-checked");
         
+        var layout = $("#cytoweb_container").cw().layout();
+        $("#layout_style").find("[layout_id=" + layout.name + "]").find(".ui-menu-check-icon").addClass("ui-menu-checked");
+     
         $("#visual_style").find(".ui-menu-check-icon").removeClass("ui-menu-checked");
         $("#visual_style").find("li:contains(" + options.visualStyleName + ")").find(".ui-menu-check-icon").addClass("ui-menu-checked");
         
@@ -1327,11 +1326,6 @@ $(function(){
             $("#custom_visual_style").siblings().find(".ui-menu-check-icon").removeClass("ui-menu-checked");
         });
         
-        $("#cytoweb_container").cw().removeListener("visualStyleChange");
-        $("#cytoweb_container").cw().addListener("visualStyleChange", function(){
-            update_background();
-        });
-        
         var attr = get_attributes();
 
         // properties to show in the tab that the user can change
@@ -1513,6 +1507,7 @@ $(function(){
             
             cached_style = $.extend( true, cached_style, style );
             $("#cytoweb_container").cw().visualStyle(cached_style);
+            update_background();
         }
         
         function cast_value(value, type){
