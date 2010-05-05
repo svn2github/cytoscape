@@ -1,16 +1,16 @@
+/*
+ *  A plug-in example demonstrating how to add attribute functions.
+ */
 package cytoscape.tutorial23;
+
 
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
-import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.eqn_attribs.AttribFunction;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
+import cytoscape.data.eqn_attribs.AttribParser;
+import cytoscape.data.eqn_attribs.Parser;
+import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 
 
@@ -29,6 +29,8 @@ public class Tutorial23 extends CytoscapePlugin {
 		}
 		
 		public void actionPerformed(ActionEvent e) {
+			final AttribParser theParser = Parser.getParser();
+			theParser.registerFunction(new IXor());
 			JOptionPane.showMessageDialog(null, "The integer-XOR attribute function IXOR(i1,i2) has been registered!",
 			                              "Plugin Result", JOptionPane.INFORMATION_MESSAGE);
 		}
