@@ -238,7 +238,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
-			final String newStrVal = replaceNewlines(newValueStr);
+			final String newStrVal = replaceCStyleEscapes(newValueStr);
 
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
@@ -267,7 +267,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 
-			final String escapedString = replaceNewlines(newValueStr);
+			final String escapedString = replaceCStyleEscapes(newValueStr);
 			final List origList = attrs.getListAttribute(id, attrName);
 
 			List newList = null;
@@ -417,7 +417,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 		return booleanList;
 	}
 
-	private String replaceNewlines(String s) {
+	private String replaceCStyleEscapes(String s) {
 		StringBuffer sb = new StringBuffer( s );
 		int index = 0;
 		while ( index < sb.length() ) {

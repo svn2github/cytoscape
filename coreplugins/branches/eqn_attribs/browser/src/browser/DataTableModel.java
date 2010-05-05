@@ -431,20 +431,24 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final byte type, final String id, final String attrName) {
-		if (data.getAttribute(id, attrName) == null)
+		final Object attribValue = data.getAttribute(id, attrName);
+		final Equation equation = data.getEquation(id, attrName);
+		if (attribValue == null && equation == null)
 			return null;
 
-		final Equation equation = data.getEquation(id, attrName);
 		final String equationFormula = equation == null ? null : equation.toString();
+		String errorMessage = data.getLastEquationError();
+		if (errorMessage != null)
+			errorMessage = "#ERROR(" + errorMessage + ")";
 
 		if (type == CyAttributes.TYPE_INTEGER)
-			return new ValidatedObjectAndEditString(data.getIntegerAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_FLOATING)
-			return new ValidatedObjectAndEditString(data.getDoubleAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return new ValidatedObjectAndEditString(data.getBooleanAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_STRING)
-			return new ValidatedObjectAndEditString(data.getStringAttribute(id, attrName), equationFormula);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
 			return new ValidatedObjectAndEditString(data.getListAttribute(id, attrName));
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
