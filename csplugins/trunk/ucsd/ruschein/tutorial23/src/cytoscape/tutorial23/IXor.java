@@ -4,6 +4,7 @@ package cytoscape.tutorial23;
 import java.util.ArrayList;
 import java.util.List;
 import cytoscape.data.eqn_attribs.AttribFunction;
+import cytoscape.data.eqn_attribs.EquationUtil;
 
 
 public class IXor implements AttribFunction {
@@ -31,7 +32,8 @@ public class IXor implements AttribFunction {
 	 *  @returns Long.class or null if there are not exactly 2 args or the args are not both of type Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || argTypes[0] != Long.class || argTypes[1] != Long.class)
+		if (argTypes.length != 2 || (argTypes[0] != Long.class && argTypes[0] != Double.class)
+		    || (argTypes[1] != Long.class && argTypes[1] != Double.class))
 			return null;
 
 		return Long.class;
@@ -42,7 +44,19 @@ public class IXor implements AttribFunction {
 	 *  @returns the result of the function evaluation which is the exclusive-or of the bits of the 2 arguments
 	 */
 	public Object evaluateFunction(final Object[] args) {
-		final long result = (Long)args[0] ^ (Long)args[1];
+		long arg1;
+		if (args[0].getClass() == Long.class)
+			arg1 = (Long)args[0];
+		else
+			arg1 = EquationUtil.doubleToLong((Double)args[0]);
+
+		long arg2;
+		if (args[1].getClass() == Long.class)
+			arg2 = (Long)args[1];
+		else
+			arg2 = EquationUtil.doubleToLong((Double)args[1]);
+
+		final long result = arg1 ^ arg2;
 		return (Long)result;
 	}
 
@@ -58,6 +72,7 @@ public class IXor implements AttribFunction {
 		if (leadingArgs.length < 2) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
 			possibleNextArgs.add(Long.class);
+			possibleNextArgs.add(Double.class);
 			return possibleNextArgs;
 		}
 
