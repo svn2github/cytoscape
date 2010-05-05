@@ -1032,6 +1032,25 @@ $(function(){
                     }
                     
                     headings.sort();
+                    
+                    // move id heading to front 
+                    for(var j in headings){
+                        var heading = headings[j];
+                        
+                        if( heading == "id" ){
+                            
+                            for(var i = j; i > 0; i--){
+                                var first = headings[ i - 1 ];
+                                var second = headings[ i ];
+                                
+                                headings[ i - 1 ] = second;
+                                headings[ i ] = first;
+                            }
+                            
+                        }
+                    }
+                    
+                    // make headings
                     for(var j in headings){
                         var heading = headings[j];
                         thead_row.append('<th><label>' + ("" + heading).replace(/(\s)/g, "&nbsp;") + '</label></th>');
@@ -1040,11 +1059,13 @@ $(function(){
                     var tbody = $('<tbody></tbody>');
                     table.append(tbody);
                     
+                    // make data row for each data item
                     for(var i in items){
                         var data = items[i].data;
                         var row = $('<tr name="' + data.id + '"></tr>');
                         tbody.append(row);
                         
+                        // make 
                         for(var j in headings){
                             var param_name = headings[j];
                             var param_val = data[param_name];
@@ -1089,6 +1110,7 @@ $(function(){
                         case "id":
                         case "source":
                         case "target":
+                            td.addClass("not_editable");
                             return;
                         default:
                             break;

@@ -21,7 +21,7 @@ body.demo h1 + h2, body.demo h2 + h3 { padding-top: 0.25em; }
 input[type=text], textarea { background-color: #FFF; }
 .ui-layout-header .header { padding: 1em 1.4em; border-bottom: 1px solid #808080; }
 .ui-layout-header { min-height: 0.25em; }
-.ui-layout-content { background: #fafafa; }
+.ui-layout-content { background: #ffffff; }
 input[type=button].ui-state-default { cursor: pointer; }
 
 /* menu styling */
@@ -200,8 +200,10 @@ input[type=button].ui-state-default { cursor: pointer; }
 #info .tablesorter th.headerSortDown label { background-image: url("../../img/layout/open_arrow/white/down.png"); background-position: right center; }
 #info .tablesorter tr td { font-family: "Monaco", "Courier New", monospace; font-size: 0.85em; line-height: 1.25; }
 #info .tablesorter input { font-family: "Monaco", "Courier New", monospace; }
-#info .tablesorter input:hover, input:focus { border-color: #cacaca; background: #ffffff; }
+#info .tablesorter input:hover, input:focus { border-color: #c1c1c1; background: #ffffff; }
 #info .tablesorter input { border-color: transparent; width: auto; background: transparent; }
+#info .tablesorter td[name=id] { font-weight: bold; border-right: 4px double #cacaca; }
+#info .tablesorter td.not_editable { cursor: default; }
 
 /* vizmapper tab */
 #vizmapper label.style { display: block; padding-top: 0.5em; clear: both; }
