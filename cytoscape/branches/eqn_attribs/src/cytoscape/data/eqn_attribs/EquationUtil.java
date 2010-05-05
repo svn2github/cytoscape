@@ -43,7 +43,6 @@ import cytoscape.data.CyAttributes;
 
 
 public class EquationUtil {
-
 	/**
 	 *  Populates "attribNameToTypeMap" with the names from "cyAttribs" and their types as mapped
 	 *  to the types used by attribute equations.  Types (and associated names) not used by
@@ -55,7 +54,7 @@ public class EquationUtil {
 	 *                              attribute equation types
 	 */
 	public static void initAttribNameToTypeMap(final CyAttributes cyAttribs, final String ignore,
-	                             final Map<String, Class> attribNameToTypeMap)
+	                                           final Map<String, Class> attribNameToTypeMap)
 	{
 		for (final String attribName : cyAttribs.getAttributeNames()) {
 			if (ignore == null || ignore.equals(attribName))
@@ -87,6 +86,21 @@ public class EquationUtil {
 			return "$" + attribName;
 		else
 			return "${" + escapeAttribName(attribName) + "}";
+	}
+
+	/**
+	 *  @returns "d" converted to a Long using Excel™ rules
+	 *  @throws IllegalArgumentException if "d" is outside the range of a long
+	 */
+	public static long doubleToLong(final double d) {
+		if (d > Long.MAX_VALUE || d < Long.MIN_VALUE)
+			throw new IllegalArgumentException("floating point value is too large to be converted to a Long!");
+
+		double x = ((Double)d).longValue();
+		if (x != d && x < 0.0)
+			--x;
+
+		return (long)x;
 	}
 
 	/**
