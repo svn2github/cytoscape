@@ -51,6 +51,7 @@ import java.net.URL;
  * The user-triggered collapsable panel containing the component (trigger) in the titled border
  */
 public class CyCollapsiblePanel extends JPanel {
+	private static final long serialVersionUID = 2010434345567315524L;
     //Border
     CollapsableTitledBorder border; // includes upper left component and line type
     Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2); // no border
@@ -230,6 +231,7 @@ public class CyCollapsiblePanel extends JPanel {
      * Handles expanding and collapsing of extra content on the user's click of the titledBorder component.
      */
     private class ExpandAndCollapseAction extends AbstractAction implements ActionListener, ItemListener {
+		private static final long serialVersionUID = 2010434345567315525L;
         public void actionPerformed(ActionEvent e) {
             setCollapsed(!isCollapsed());
         }
@@ -242,6 +244,7 @@ public class CyCollapsiblePanel extends JPanel {
      * Special titled border that includes a component in the title area
      */
     private class CollapsableTitledBorder extends TitledBorder {
+		private static final long serialVersionUID = 2010434345567315526L;
         JComponent component;
         //Border border;
 

@@ -7,6 +7,7 @@ import giny.view.Label;
 import java.awt.Color;
 
 import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.LabelPosition;
@@ -107,7 +108,10 @@ public class VisualStyleBuilder {
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SIZE, 65);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR,
 				NODE_LABEL_COLOR);
-		nac.setNodeSizeLocked(true);
+
+
+		defStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,true);
+
 
 		eac.setCalculator(calce);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_COLOR,
