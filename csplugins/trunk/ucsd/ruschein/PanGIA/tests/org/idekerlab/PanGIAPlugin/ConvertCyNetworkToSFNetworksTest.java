@@ -1,4 +1,4 @@
-package org.idekerlab.ModFindPlugin;
+package org.idekerlab.PanGIAPlugin;
 
 import java.lang.reflect.Method;
 import java.util.Set;
