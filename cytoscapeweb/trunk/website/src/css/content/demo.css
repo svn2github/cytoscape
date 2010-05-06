@@ -242,4 +242,4 @@ input[type=button].ui-state-default { cursor: pointer; }
 #settings table { margin: 0; }
 #settings td { border: 0px solid #CFCFCF; text-align: left; }
 #settings input[type="text"], #settings select { margin-bottom: 0.5em; width: 8.5em; }
-#settings .footer { height: 2em; padding-top: 0.5em; text-align: center; }
+#settings .footer { height: 2em; padding-top: 0.5em; padding-bottom: 0.25em; text-align: center; }
