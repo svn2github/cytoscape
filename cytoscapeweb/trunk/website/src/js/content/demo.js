@@ -1015,7 +1015,7 @@ $(function(){
                 var section = $('<div class="section"></div>');
                 half.append(section);
             
-                section.append("<h1>" + name + "</h1>");
+                section.append('<h1>' + name + '</h1>');
                 
                 if( items.length > 0 ) {
                     var table = $('<table class="tablesorter" id="'+id+'"></table>');
@@ -1072,6 +1072,12 @@ $(function(){
                             var val = ("" + param_val).replace(/(\s)/g, "&nbsp;");
                             var entry = $('<td class="code" name="'+param_name+'">' + val + '</td>');
                             row.append(entry);
+                            
+                            if( typeof param_val == "boolean" ){
+                                entry.attr("type", "boolean");   
+                            } else {
+                                entry.attr("type", "string");
+                            }
                         }
                     }
                 } else {
@@ -1115,47 +1121,63 @@ $(function(){
                             break;
                     }
                     
-                    var input = $(this).html('<input value=' + $(this).text() + ' />').find("input");
+                    var input;
+                    
+                    if( td.attr("type") == "boolean" ){
+                        input = $(this).html('<input type="checkbox" ' + ($(this).text() == "true" ? " checked='checked' " : "") + ' />').find("input");
+                    } else {
+                        input = $(this).html('<input type="text" value=' + $(this).text() + ' />').find("input");
+                    }
                     
                     input.css({
                         width: td_width
                     });
                     
-                    var keypress_timeout = undefined;
-                    var orig_val = input.val();
-                    input.bind("keydown", function(event){
-                        if (event.keyCode == '13') {
-                            $(this).blur(); 
-                        }
-                    }).bind("focus", function(){
-                        orig_val = input.val();
-                    }).bind("keyup", function(){
-                        
-                    }).bind("blur", function(){
-                        if( input.val() != orig_val ){
-                            var text_div = $('<div></div>');
-                            text_div.css({
-                                font: input.css("font"),
-                                float: "left",
-                                position: "absolute",
-                                padding: input.css("padding"),
-                                visibility: "hidden"
-                            });
-                            text_div.html( input.val() );
-                            $("body").append(text_div);
-                            
-                            var text_width = text_div.width();
-                            
-                            input.width( Math.max( text_width, td_width ) );
-                            text_div.remove();
-                            
-                            var val = input.val();
+                    if( td.attr("type") == "boolean" ){
+                        input.bind("click", function(){
+                            var val = input.is(":checked");
                             var data = {};
                             data[param_name] = val;
                             ele.data[param_name] = val;
                             $("#cytoweb_container").cw().updateData(group, [ id ], data);
-                        }
-                    })
+                        });
+                    } else {
+                        var keypress_timeout = undefined;
+                        var orig_val = input.val();
+                        input.bind("keydown", function(event){
+                            if (event.keyCode == '13') {
+                                $(this).blur(); 
+                            }
+                        }).bind("focus", function(){
+                            orig_val = input.val();
+                        }).bind("keyup", function(){
+                            
+                        }).bind("blur", function(){
+                            if( input.val() != orig_val ){
+                                var text_div = $('<div></div>');
+                                text_div.css({
+                                    font: input.css("font"),
+                                    float: "left",
+                                    position: "absolute",
+                                    padding: input.css("padding"),
+                                    visibility: "hidden"
+                                });
+                                text_div.html( input.val() );
+                                $("body").append(text_div);
+                                
+                                var text_width = text_div.width();
+                                
+                                input.width( Math.max( text_width, td_width ) );
+                                text_div.remove();
+                                
+                                var val = input.val();
+                                var data = {};
+                                data[param_name] = val;
+                                ele.data[param_name] = val;
+                                $("#cytoweb_container").cw().updateData(group, [ id ], data);
+                            }
+                        })
+                    }
                 });
             }
             
