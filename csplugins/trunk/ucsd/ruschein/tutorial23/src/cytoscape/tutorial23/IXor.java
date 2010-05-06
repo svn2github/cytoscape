@@ -29,7 +29,7 @@ public class IXor implements AttribFunction {
 	public Class getReturnType() { return Long.class; }
 
 	/**
-	 *  @returns Long.class or null if there are not exactly 2 args or the args are not both of type Long
+	 *  @returns Long.class or null if there are not exactly 2 args or the args are not both of type Long or Double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length != 2 || (argTypes[0] != Long.class && argTypes[0] != Double.class)
