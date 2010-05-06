@@ -107,6 +107,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
 
+
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -144,7 +145,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         topPane.setLayout(new java.awt.GridBagLayout());
 
         topPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Physical Network"));
-        physicalEdgeLabel.setText("Attribute");
+        physicalEdgeLabel.setText("Attribute:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -165,7 +166,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
         topPane.add(physicalEdgeComboBox, gridBagConstraints);
 
-        lbPhysicalNetwork.setText("Network");
+        lbPhysicalNetwork.setText("Network:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
         topPane.add(lbPhysicalNetwork, gridBagConstraints);
@@ -177,14 +178,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
         topPane.add(physicalNetworkPanel, gridBagConstraints);
 
-        lbPhysicalScale.setText("Scale");
+        lbPhysicalScale.setText("Scale:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         topPane.add(lbPhysicalScale, gridBagConstraints);
 
-       //phyScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        phyScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -202,7 +203,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeAttributePanel.setLayout(new java.awt.GridBagLayout());
 
         edgeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Genetic Network"));
-        geneticEdgeLabel.setText("Attribute");
+        geneticEdgeLabel.setText("Attribute:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -223,7 +224,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
         edgeAttributePanel.add(geneticEdgeComboBox, gridBagConstraints);
 
-        lbGeneticNetwork.setText("Network");
+        lbGeneticNetwork.setText("Network:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         edgeAttributePanel.add(lbGeneticNetwork, gridBagConstraints);
@@ -236,14 +237,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
         edgeAttributePanel.add(geneticNetworkPanel, gridBagConstraints);
 
-        lbGeneticScale.setText("Scale");
+        lbGeneticScale.setText("Scale:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         edgeAttributePanel.add(lbGeneticScale, gridBagConstraints);
 
-        //genScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        genScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
