@@ -58,7 +58,7 @@ public final class SearchParameters {
 	}
 
 	public ScalingMethod getPhysicalScalingMethod() {
-		return ScalingMethod.valueOf(physicalScalingMethod);
+		return ScalingMethod.getEnumValue(physicalScalingMethod);
 	}
 
 	public void setGeneticScalingMethod(final String geneticScalingMethod) {
@@ -66,7 +66,7 @@ public final class SearchParameters {
 	}
 
 	public ScalingMethod getGeneticScalingMethod() {
-		return ScalingMethod.valueOf(geneticScalingMethod);
+		return ScalingMethod.getEnumValue(geneticScalingMethod);
 	}
 
 	public void setAlpha(double alpha) {
