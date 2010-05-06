@@ -1,9 +1,10 @@
 <p>
-    A major alpha release that has some great new features, including: the ability to add and delete
-    nodes/edges; methods for changing data attributes; custom layout options;
+    This is a major alpha release of Cytoscape Web that has some great new features.  New features 
+    include the ability to add and delete nodes and edges, methods for changing data attributes,
+    custom layout options, and
     <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" rel="external">SIF</a>
     format support for loading and exporting networks.
-    We also fixed some bugs and did other improvements.
+    We also fixed some bugs and made some other improvements.
 </p>
 <div class="relase_details">
     <ul class="new_features">
