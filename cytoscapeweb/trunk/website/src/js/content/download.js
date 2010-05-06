@@ -19,6 +19,7 @@ $(window).load(function(){
     	       '<div class="notes">' + html + '</div>';
     	$(this).html(html);
     	
+    	$(this).find(".new_features").before('<h3>New Features:</h3>');
     	$(this).find(".bug_fixes").before('<h3>Fixed Issues:</h3>');
     	$(this).find(".other_changes").before('<h3>Other Changes:</h3>');
     });
