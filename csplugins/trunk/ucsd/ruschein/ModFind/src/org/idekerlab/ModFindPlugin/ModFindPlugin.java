@@ -1,6 +1,5 @@
 package org.idekerlab.ModFindPlugin;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,10 +23,17 @@ public class ModFindPlugin extends CytoscapePlugin {
 
 	// Main GUI Panel for this plugin.  Should be a singleton.
 	private JScrollPane scrollPane;
+	
+	private final VisualStyleObserver vsObserver;
+	
+	private static final String PLUGIN_NAME = "PanGIA";
 
 
 	public ModFindPlugin() {
-		final JMenuItem menuItem = new JMenuItem("ModFind...");
+		this.vsObserver = new VisualStyleObserver();
+		
+		final JMenuItem menuItem = new JMenuItem(PLUGIN_NAME);
+		
 		menuItem.addActionListener(new PluginAction());
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
 				"Plugins.Module Finders...").add(menuItem);
@@ -43,7 +49,7 @@ public class ModFindPlugin extends CytoscapePlugin {
 				searchPanel.setContainer(scrollPane);
 				searchPanel.updateState();
 				searchPanel.setVisible(true);
-				cytoPanel.add("ModFind", scrollPane);
+				cytoPanel.add(PLUGIN_NAME, scrollPane);
 				index = cytoPanel.indexOfComponent(scrollPane);
 			}
 			cytoPanel.setSelectedIndex(index);
