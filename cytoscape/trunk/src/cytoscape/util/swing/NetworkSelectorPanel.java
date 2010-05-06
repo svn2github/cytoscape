@@ -1,6 +1,8 @@
 package cytoscape.util.swing;
 
+
 import java.awt.BorderLayout;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Set;
@@ -13,9 +15,10 @@ import javax.swing.JPanel;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-public class NetworkSelectorPanel extends JPanel implements
-		PropertyChangeListener {
 
+public class NetworkSelectorPanel extends JPanel implements
+		PropertyChangeListener
+{
 	private static final long serialVersionUID = 8694272457769377810L;
 	
 	private final JComboBox networkComboBox;
@@ -71,5 +74,12 @@ public class NetworkSelectorPanel extends JPanel implements
 			networkComboBox.removeItem(Cytoscape.getNetwork(
 					(String) evt.getNewValue()).getTitle());
 
+	}
+
+	/**
+	 *  Installs a new item listener for the embedded combo box.
+	 */
+	public void addItemListener(final ItemListener newListener) {
+		networkComboBox.addItemListener(newListener);
 	}
 }
