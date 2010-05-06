@@ -19,7 +19,7 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../cytoscape27"/>
+    <property name="cytoscape.dir" value="${root.dir}/../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
@@ -34,6 +34,8 @@
     <!-- Define the relevant files -->
     <property name="project.jar" value="${name}.jar"/>
     <property name="test.jar" value="${name}-tests.jar"/>
+  	
+  	<property name="visualstyle.props" value="ModFindVS.props" />
 
     <!-- Define the class path - Defaults to everything in the lib.dir -->
     <path id="project.class.path">
@@ -107,8 +109,7 @@
       </fileset>
     </unzip>
 	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/ModFindPlugin"/>
-	<copy file="${resources.dir}/ModFind_overview_vs.props" todir="${build.dir}/resources"/>
-	<copy file="${resources.dir}/ModFind_module_vs.props" todir="${build.dir}/resources"/>
+	<copy file="${resources.dir}/${visualstyle.props}" todir="${build.dir}/resources"/>
   	<copy todir="${build.dir}/images">
 	    <fileset dir="${images.dir}"/> 
 	</copy>

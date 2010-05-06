@@ -27,22 +27,21 @@ import cytoscape.visual.VisualStyle;
  * @author kono, ruschein
  */
 public class SearchTask implements Task {
-	public static URL url1 = ModFindPlugin.class.getResource("/resources/ModFind_overview_vs.props");
-	public static URL url2 = ModFindPlugin.class.getResource("/resources/ModFind_module_vs.props");
-	private static String VS_OVERVIEW_NAME = "ModFind";
-	private static String VS_MODULE_NAME = "ModFind_module";
-	private static VisualStyle vs_overview = null;
-	private static VisualStyle vs_module = null;
-//
+	public static final URL visualStypePropLocation = ModFindPlugin.class.getResource("/resources/ModFindVS.props");
+	private static final String VS_OVERVIEW_NAME = "Complex Overview Style";
+	private static String VS_MODULE_NAME = "Module Style";
+	private static VisualStyle overviewVS = null;
+	private static VisualStyle moduleVS = null;
+
 	static {		
-		// Create visualStyles based on the definition in property files
-		Set<String> names = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames();
-		if (!names.contains(VS_OVERVIEW_NAME)){
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url1);
-		}
-		if (!names.contains(VS_MODULE_NAME)){
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url2);
-		}
+		// Load new styles.
+		final VisualStyle currentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
+		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, visualStypePropLocation);
+		
+		overviewVS = Cytoscape.getVisualMappingManager().setVisualStyle(VS_OVERVIEW_NAME);
+		moduleVS = Cytoscape.getVisualMappingManager().setVisualStyle(VS_MODULE_NAME);
+		
+		Cytoscape.getVisualMappingManager().setVisualStyle(currentStyle);
 	}
 	
 	private TaskMonitor taskMonitor = null;
@@ -100,7 +99,7 @@ public class SearchTask implements Task {
 		setPercentCompleted(100);
 		
 		// Set the visualSTyle for the overview network
-		applyVisualStyle(nnCreator.getOverviewNetwork(),vs_overview);
+		applyVisualStyle(nnCreator.getOverviewNetwork(),overviewVS);
 		
 		
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
