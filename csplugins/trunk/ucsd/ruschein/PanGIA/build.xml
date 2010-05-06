@@ -1,11 +1,11 @@
-<project name="ModFind" default="all" basedir=".">
+<project name="PanGIA" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <tstamp/>
-    <property name="name" value="ModFind"/>
+    <property name="name" value="PanGIA"/>
     <property name="version" value="1.0.0"/>
 
     <echo message="Building ${name} version ${version} ..."/>
@@ -34,7 +34,7 @@
     <property name="project.jar" value="${name}.jar"/>
     <property name="test.jar" value="${name}-tests.jar"/>
   	
-  	<property name="visualstyle.props" value="ModFindVS.props" />
+  	<property name="visualstyle.props" value="PanGIAVS.props" />
 
     <!-- Define the class path - Defaults to everything in the lib.dir -->
     <path id="project.class.path">
@@ -107,7 +107,7 @@
         <include name="*.jar"/>
       </fileset>
     </unzip>
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/ModFindPlugin"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/PanGIAPlugin"/>
 	<copy file="${resources.dir}/${visualstyle.props}" todir="${build.dir}/resources"/>
   	<copy todir="${build.dir}/images">
 	    <fileset dir="${images.dir}"/> 
@@ -116,7 +116,7 @@
       <fileset dir="${build.dir}"
                includes="**"/>
       <manifest>
-        <attribute name="Cytoscape-Plugin" value="org.idekerlab.ModFindPlugin.ModFindPlugin"/>
+        <attribute name="Cytoscape-Plugin" value="org.idekerlab.PanGIAPlugin.PanGIAPlugin"/>
       </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>
@@ -232,10 +232,10 @@
 
 
     <target name="install" 
-        description="Install ModFind"
+        description="Install PanGIA"
     	depends="jar">
-    	<echo>Copy ModFind.jar to ${cytoscape.dir}/build/cytoscape-v2.7.0/plugins </echo>
-        <copy todir="${cytoscape.dir}/build/cytoscape-v2.7.0/plugins" file="ModFind.jar"/>
+    	<echo>Copy PanGIA.jar to ${cytoscape.dir}/build/cytoscape-v2.7.0/plugins </echo>
+        <copy todir="${cytoscape.dir}/build/cytoscape-v2.7.0/plugins" file="PanGIA.jar"/>
     	
     </target>
 	
