@@ -191,14 +191,11 @@ public class ActivePathsParameterPanel extends JPanel {
 		
 		/////
 		final JPanel mainPanel = new JPanel(new BorderLayout());
-		//mainPanel.setPreferredSize(new Dimension(200, 600));
 
 		readout = new JTextField(new String("seed: "
 				+ apfParams.getRandomSeed()));
 		RandomSeedTextListener readoutListener = new RandomSeedTextListener();
 		readout.addFocusListener(readoutListener);
-		
-		
 		
 		final Container extController = createExtsControllerPanel();
 		createSearchContentPanel();
@@ -210,15 +207,14 @@ public class ActivePathsParameterPanel extends JPanel {
 		subOptionsPanel.add(annealSearchControlPanel, BorderLayout.CENTER);
 		
 		optionsPanel = new JPanel(new CardLayout());
-		//optionsPanel.add(new JPanel(), "INACTIVE");
 		optionsPanel.add(subOptionsPanel, "ACTIVE");
 		mainPanel.add(optionsPanel, BorderLayout.CENTER);
 
-
-		//updateOptionsPanel();
-
 		collapsiblePanel.getContentPane().add(mainPanel);
 
+		// Disable the "search" button at very beginning, enable it only when user make selection	
+		this.findModulesButton.setEnabled(false); 
+		this.tblAttrSelection.addMouseListener(new ExprAttrsTableMouseListener());
 
 	}
 	
@@ -226,7 +222,6 @@ public class ActivePathsParameterPanel extends JPanel {
 	private CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");;
 	
 	
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -363,9 +358,6 @@ public class ActivePathsParameterPanel extends JPanel {
 		//TableCellEditor editor = new DefaultCellEditor(normCellRender);
 		normColumn.setCellEditor(new NormalizationComboboxEditor());
 		
-		// Show the panel of attribute parameter only if one or more attributes are selected in the table
-		this.tblAttrSelection.addMouseListener(new ExprAttrsTableMouseListener());
-
 		// Adjust the table size
 		Dimension tableSize = this.tblAttrSelection.getPreferredSize();
 		attrSelectionPanel.setPreferredSize(new Dimension(attrSelectionPanel.getWidth(), (tableSize.height + 50)));
@@ -399,7 +391,12 @@ public class ActivePathsParameterPanel extends JPanel {
 	
 	private class ExprAttrsTableMouseListener extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
-			//updateOptionsPanel();
+			if (ActivePathsParameterPanel.this.tblAttrSelection.getSelectedRowCount() > 0){
+				ActivePathsParameterPanel.this.findModulesButton.setEnabled(true);
+			}
+			else {
+				ActivePathsParameterPanel.this.findModulesButton.setEnabled(false);				
+			}
 		}
 	}
 	
