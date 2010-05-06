@@ -399,6 +399,7 @@ $(function(){
 				color: { defaultValue: "#999999", discreteMapper: edgeColorMapper },
 				width: { defaultValue: 1, continuousMapper: { attrName: "weight", minValue: 1, maxValue: 4 } },
 				mergeWidth: { defaultValue: 1, continuousMapper: { attrName: "weight", minValue: 2, maxValue: 6 } },
+				labelFontColor: "#ffffff",
 				tooltipFontColor: "#ffffff",
 				tooltipBackgroundColor: "#000000",
 				tooltipBorderColor: "#999999",
