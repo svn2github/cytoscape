@@ -77,7 +77,7 @@ iframe { display: block; }
 /* footer */
 #footer { color: #777777; background-color: #000000; border: 1px #000000 solid; text-align: center; font-size: 0.85em; }
 #footer p { padding: 0.5em 0.25em; }
-#footer a { text-decoration: none; background: none; padding-right: 0; }
+#footer a { text-decoration: none; background: none; padding-right: 0; color: #39646d; }
 
 /* page */
 #page { background-color: #ffffff; border: 1px #bfbfbf solid; margin: 0 auto 0 auto; width: 950px; -moz-box-shadow: 0 0 26px #bbbbbb; -webkit-box-shadow: 0 0 26px #bbbbbb; box-shadow: 0 0 26px #bbbbbb; }
