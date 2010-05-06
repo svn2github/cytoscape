@@ -2,7 +2,7 @@ package org.idekerlab.PanGIAPlugin;
 
 
 public enum ScalingMethod {
-	NONE("none"),
+	NONE("none (e.g. LOD score)"),
 	LINEAR_LOWER("linear/lower"),
 	LINEAR_UPPER("linear/upper"),
 	RANK_LOWER("rank/lower"),
@@ -15,15 +15,15 @@ public enum ScalingMethod {
 	@Override public String toString() { return asString; }
 
 	static ScalingMethod getEnumValue(final String asString) {
-		if (asString.equals("none"))
+		if (asString.equals(NONE.toString()))
 			return NONE;
-		if (asString.equals("linear/lower"))
+		if (asString.equals(LINEAR_LOWER.toString()))
 			return LINEAR_LOWER;
-		if (asString.equals("linear/upper"))
+		if (asString.equals(LINEAR_UPPER.toString()))
 			return LINEAR_UPPER;
-		if (asString.equals("rank/lower"))
+		if (asString.equals(RANK_LOWER.toString()))
 			return RANK_LOWER;
-		if (asString.equals("rank/upper"))
+		if (asString.equals(RANK_UPPER.toString()))
 			return RANK_UPPER;
 
 		throw new IllegalStateException("unknown string representation: \"" + asString + "\"!");
