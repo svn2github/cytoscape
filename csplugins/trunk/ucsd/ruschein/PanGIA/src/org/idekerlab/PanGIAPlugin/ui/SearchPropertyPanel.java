@@ -22,8 +22,6 @@ import javax.swing.SwingConstants;
 import org.idekerlab.PanGIAPlugin.SearchParameters;
 import org.idekerlab.PanGIAPlugin.SearchTask;
 import org.idekerlab.PanGIAPlugin.ScalingMethod;
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -65,10 +63,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 					updateSearchButtonState();
 				}
 			};
-		physicalEdgeComboBox.addItemListener(updateSearchButton);
-		geneticEdgeComboBox.addItemListener(updateSearchButton);
-		physicalNetworkPanel.addItemListener(updateSearchButton);
-		geneticNetworkPanel.addItemListener(updateSearchButton);
+		physicalEdgeAttribComboBox.addItemListener(updateSearchButton);
+		geneticEdgeAttribComboBox.addItemListener(updateSearchButton);
+		//physicalNetworkPanel.addItemListener(updateSearchButton);
+		//geneticNetworkPanel.addItemListener(updateSearchButton);
 
 		// Add parameter panel to collapsibilePanel
 		CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
@@ -116,6 +114,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
     
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -127,20 +126,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         topPane = new javax.swing.JPanel();
         physicalEdgeLabel = new javax.swing.JLabel();
-        physicalEdgeComboBox = new javax.swing.JComboBox();
         lbPhysicalNetwork = new javax.swing.JLabel();
-        //physicalNetworkPanel = new javax.swing.JComboBox();
         lbPhysicalScale = new javax.swing.JLabel();
         phyScalingMethodComboBox = new javax.swing.JComboBox();
         edgeAttributePanel = new javax.swing.JPanel();
         geneticEdgeLabel = new javax.swing.JLabel();
-        geneticEdgeComboBox = new javax.swing.JComboBox();
+        geneticEdgeAttribComboBox = new javax.swing.JComboBox();
         lbGeneticNetwork = new javax.swing.JLabel();
-        //geneticNetworkPanel = new javax.swing.JComboBox();
         lbGeneticScale = new javax.swing.JLabel();
         genScalingMethodComboBox = new javax.swing.JComboBox();
         parameterPanel = new javax.swing.JPanel();
-        //lbPlaceHolder = new javax.swing.JLabel();
         buttonPanel = new javax.swing.JPanel();
         helpButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
@@ -159,19 +154,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         topPane.add(physicalEdgeLabel, gridBagConstraints);
 
-        physicalEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                physicalEdgeComboBoxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
-        topPane.add(physicalEdgeComboBox, gridBagConstraints);
+        topPane.add(physicalEdgeAttribComboBox, gridBagConstraints);
 
         lbPhysicalNetwork.setText("Network:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -191,6 +180,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         topPane.add(lbPhysicalScale, gridBagConstraints);
 
+        phyScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -215,19 +205,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 5);
         edgeAttributePanel.add(geneticEdgeLabel, gridBagConstraints);
 
-        geneticEdgeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                geneticEdgeComboBoxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
-        edgeAttributePanel.add(geneticEdgeComboBox, gridBagConstraints);
+        edgeAttributePanel.add(geneticEdgeAttribComboBox, gridBagConstraints);
 
         lbGeneticNetwork.setText("Network:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -248,6 +232,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         edgeAttributePanel.add(lbGeneticScale, gridBagConstraints);
 
+        genScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -263,12 +248,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         parameterPanel.setLayout(new java.awt.GridBagLayout());
 
-        //lbPlaceHolder.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        //parameterPanel.add(lbPlaceHolder, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -323,6 +306,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         add(buttonPanel, gridBagConstraints);
 
     }// </editor-fold>                        
+    
 
 	
     // The following UI is for parameter panel
@@ -477,8 +461,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
   
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// Make sure the edge attributes of Physical and Genetic are types of Integer or Float
-		String geneticSelected = geneticEdgeComboBox.getSelectedItem().toString();
-		String physicalSelected = physicalEdgeComboBox.getSelectedItem().toString();
+		String geneticSelected = geneticEdgeAttribComboBox.getSelectedItem().toString();
+		String physicalSelected = physicalEdgeAttribComboBox.getSelectedItem().toString();
 		
 		if (geneticSelected.trim().equals("")|| physicalSelected.trim().equals("")){
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Please select Physical and Genetic attributes", "Error", JOptionPane.ERROR_MESSAGE);
@@ -568,7 +552,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JTextField degreeTextField;
     private javax.swing.JPanel edgeAttributePanel;
     private javax.swing.JPanel edgeFilteringPanel;
-    private javax.swing.JComboBox geneticEdgeComboBox;
+    private javax.swing.JComboBox geneticEdgeAttribComboBox;
     private javax.swing.JLabel geneticEdgeLabel;
     private javax.swing.JButton helpButton;
     private javax.swing.JLabel lbNumberOfSamples;
@@ -578,7 +562,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JTextField numberOfSamplesTextField;
     private javax.swing.JLabel pValueThresholdLabel;
     private javax.swing.JTextField pValueThresholdTextField;
-    private javax.swing.JComboBox physicalEdgeComboBox;
+    private javax.swing.JComboBox physicalEdgeAttribComboBox;
     private javax.swing.JLabel physicalEdgeLabel;
     private javax.swing.JPanel scorePanel;
     private javax.swing.JButton searchButton;
@@ -600,15 +584,15 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	
 	public void updateAttributeLists() {
 		// Save current selection
-		final Object geneticSelected = geneticEdgeComboBox.getSelectedItem();
-		final Object physicalSelected = physicalEdgeComboBox.getSelectedItem();
+		final Object geneticSelected = geneticEdgeAttribComboBox.getSelectedItem();
+		final Object physicalSelected = physicalEdgeAttribComboBox.getSelectedItem();
 
 		// Reset the children
-		geneticEdgeComboBox.removeAllItems();
-		physicalEdgeComboBox.removeAllItems();
+		geneticEdgeAttribComboBox.removeAllItems();
+		physicalEdgeAttribComboBox.removeAllItems();
 
-		physicalEdgeComboBox.addItem(DEFAULT_ATTRIBUTE);
-		geneticEdgeComboBox.addItem(DEFAULT_ATTRIBUTE);
+		physicalEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
+		geneticEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
 		
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		final Set<String> edgeAttrNames = new TreeSet<String>(Arrays
@@ -620,8 +604,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			// Use only double or int attributes
 			final byte attribType = edgeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
 			if (attribType == MultiHashMapDefinition.TYPE_FLOATING_POINT || attribType == MultiHashMapDefinition.TYPE_INTEGER) {
-				geneticEdgeComboBox.addItem(name);
-				physicalEdgeComboBox.addItem(name);
+				geneticEdgeAttribComboBox.addItem(name);
+				physicalEdgeAttribComboBox.addItem(name);
 				if (name.equals(geneticSelected))
 					isGeneticSelectedExist = true;
 				if (name.equals(physicalSelected))
@@ -630,9 +614,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}
 
 		if (isGeneticSelectedExist)
-			geneticEdgeComboBox.setSelectedItem(geneticSelected);
+			geneticEdgeAttribComboBox.setSelectedItem(geneticSelected);
 		if (isPhysicalSelectedExist)
-			physicalEdgeComboBox.setSelectedItem(physicalSelected);
+			physicalEdgeAttribComboBox.setSelectedItem(physicalSelected);
 
 		updateSearchButtonState();
 	}
@@ -652,8 +636,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		parameters.setGeneticNetwork(geneticNetworkPanel.getSelectedNetwork());
 
 		// Set edge attributes.
-		final Object geneticEdgeItem  = geneticEdgeComboBox.getSelectedItem();
-		final Object physicalEdgeItem = physicalEdgeComboBox.getSelectedItem();
+		final Object geneticEdgeItem  = geneticEdgeAttribComboBox.getSelectedItem();
+		final Object physicalEdgeItem = physicalEdgeAttribComboBox.getSelectedItem();
 		if (geneticEdgeItem == null || physicalEdgeItem == null) {
 			JOptionPane.showMessageDialog(this,
 						      "Either the genetic or physical edge attribute is missing!",
@@ -732,15 +716,15 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		if (edgeAttr.getMultiHashMapDefinition()
 		    .getAttributeValueType(attrName) == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
-			geneticEdgeComboBox.addItem(attrName);
-			physicalEdgeComboBox.addItem(attrName);
+			geneticEdgeAttribComboBox.addItem(attrName);
+			physicalEdgeAttribComboBox.addItem(attrName);
 		}
 
 	}
 
 	public void attributeUndefined(String attrName) {
-		geneticEdgeComboBox.removeItem(attrName);
-		physicalEdgeComboBox.removeItem(attrName);
+		geneticEdgeAttribComboBox.removeItem(attrName);
+		physicalEdgeAttribComboBox.removeItem(attrName);
 	}
 
 	public void setContainer(final Container container) {
@@ -748,8 +732,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
 	private void updateSearchButtonState() {
-		final String geneticAttrName = (String)geneticEdgeComboBox.getSelectedItem();
-		final String physicalAttrName = (String)physicalEdgeComboBox.getSelectedItem();
+		final String geneticAttrName = (String)geneticEdgeAttribComboBox.getSelectedItem();
+		final String physicalAttrName = (String)physicalEdgeAttribComboBox.getSelectedItem();
 		if (geneticAttrName == null || physicalAttrName == null)
 			return;
 
