@@ -57,6 +57,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	public SearchPropertyPanel() {
 		initComponents(); // the main panel
 		initComponents2(); // parameter panel
+
+//		physicalEdgeComboBox.addItemListener(
+//						     );
 		
 		// Add parameter panel to collapsibilePanel
 		CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
@@ -531,16 +534,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// TODO add your handling code here:	    
 	}                                           
 
-
 	private void geneticEdgeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		updateSearchButtonState();
+		// TODO add your handling code here:	    
 	}
 
 
 	private void physicalEdgeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		updateSearchButtonState();
+		// TODO add your handling code here:	    
 	}
-
 
 	private void alphaTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
@@ -737,14 +738,21 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private void updateSearchButtonState() {
 		final String geneticAttrName = (String)geneticEdgeComboBox.getSelectedItem();
 		final String physicalAttrName = (String)physicalEdgeComboBox.getSelectedItem();
-		searchButton.setEnabled(geneticAttrName != null && physicalAttrName != null && (!geneticAttrName.equals(physicalAttrName)));
-		
-		if (physicalAttrName == null || geneticAttrName == null) {
+		if (geneticAttrName == null || physicalAttrName == null)
+			return;
+
+		if (geneticAttrName.equals(physicalAttrName) && !geneticAttrName.equals(DEFAULT_ATTRIBUTE)) {
 			searchButton.setEnabled(false);
 			return;
 		}
 
-		searchButton.setEnabled(physicalAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)
-		                        && geneticAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE));
+		final String physicalNetworkName = (String)physicalEdgeComboBox.getSelectedItem();
+		final String geneticNetworkName = (String)geneticEdgeComboBox.getSelectedItem();
+		if (geneticNetworkName.equals(physicalNetworkName)) {
+			searchButton.setEnabled(false);
+			return;
+		}
+
+		searchButton.setEnabled(true);
 	}
 }
