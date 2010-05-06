@@ -18,6 +18,15 @@
     <p>All the files you need are in the latest version of the Cytoscape Web distribution archive.
     <a href="/download#now">Get the latest version of the archive</a>, and extract the files.</p>
     
+    <p>When opening the examples as a local files in your browser, you may not be able to see
+    Cytoscape Web.  This is due to Flash security settings.  Make sure to allow Flash to run
+    from the local filesystem (<code>file://*</code>) in the 
+    <a href="http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html">security settings panel</a>.
+      You do not need to change the security settings if you deploy Cytoscape Web on a web server, 
+      such as Apache.</p>
+    
+    <img src="/img/content/tutorial/flash_security.png" />
+    
     <h2>What to do</h2>
     
     <p>The best way to familiarise yourself with setting up Cytoscape Web is to go through an
@@ -42,15 +51,9 @@
     
     <?php embed_code("file/example_code/getting_started.html"); ?>
     
-    <p>When opening the example as a local file in your browser, you may not be able to see
-    Cytoscape Web.  This is due to Flash security settings.  Make sure to allow Flash to run
-    from the local filesystem (<code>file://*</code>) in the 
-    <a href="http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html">security settings panel</a>.
-    </p>
-    
-    <img src="/img/content/tutorial/flash_security.png" />
-    
-    
+
+
+
     
     <h1>Interacting with Cytoscape Web</h1>
     
