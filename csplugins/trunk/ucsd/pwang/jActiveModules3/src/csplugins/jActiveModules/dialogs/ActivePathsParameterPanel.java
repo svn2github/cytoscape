@@ -666,7 +666,8 @@ public class ActivePathsParameterPanel extends JPanel {
         aboutButton.setVisible(false); // just place holder now
         dismissButton.setPreferredSize(new java.awt.Dimension(67, 23));
         dismissButton.addActionListener(new DismissAction());
-		//return buttonPanel;
+        
+        findModulesButton.addActionListener(new FindModulesAction());
 	}
 
     // Variables declaration - do not modify
@@ -1714,14 +1715,20 @@ public class ActivePathsParameterPanel extends JPanel {
 
 			}
 			
-			ArrayList selectedNames = new ArrayList();
-			for (int i=0; i<selectedIndices.length; i++){
-				selectedNames.add(model.getRow(selectedIndices[i])[0]);
-			}
+			ArrayList<String> selectedNames = new ArrayList<String>();
+			ArrayList<Boolean> switchSigs = new ArrayList<Boolean>();
+			ArrayList<String> scalingMethods = new ArrayList<String>();
 			
-			System.out.println("selectedNames = "+selectedNames.toString());
-
+			for (int i=0; i<selectedIndices.length; i++){
+				selectedNames.add((String)model.getRow(selectedIndices[i])[0]);
+				switchSigs.add((Boolean)model.getRow(selectedIndices[i])[3]);
+				scalingMethods.add((String)model.getRow(selectedIndices[i])[4]);
+				
+			}
+		
 			apfParams.setExpressionAttributes(selectedNames);
+			apfParams.setSwitchSigs(switchSigs);
+			apfParams.setScalingMethods(scalingMethods);
 			pluginMainClass.startFindActivePaths(networkPanel.getSelectedNetwork());
 		}
 
