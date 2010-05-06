@@ -1,5 +1,6 @@
 package org.idekerlab.ModFindPlugin.ui;
 
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,6 +19,7 @@ import javax.swing.SwingConstants;
 
 import org.idekerlab.ModFindPlugin.SearchParameters;
 import org.idekerlab.ModFindPlugin.SearchTask;
+import org.idekerlab.ModFindPlugin.ScalingMethod;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
@@ -30,11 +32,10 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
-//import cytoscape.util.swing.CyCollapsiblePanel;
 import org.idekerlab.ModFindPlugin.utilities.CyCollapsiblePanel;
 
+
 /**
- * 
  * @author kono
  */
 public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitionListener, PropertyChangeListener {
@@ -46,7 +47,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final double DEF_CUTOFF = 20.0;
 	private static final double DEF_PVALUE_THRESHOLD = 0.05;
 	private static final int DEF_NUMBER_OF_SAMPLES = 100000;
-	private static final String DEFAULT_ATTRIBUTE = "default: induced from edges";
+	private static final String DEFAULT_ATTRIBUTE = "none";
 	
 	private Container container;
 	private SearchParameters parameters;
@@ -54,21 +55,19 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel() {
-		
 		initComponents(); // the main panel
-
 		initComponents2(); // parameter panel
 		
-        // Add parameter panel to collapsibilePanel
-        CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
-        collapsiblePanel.getContentPane().add(pnlParameter);
+		// Add parameter panel to collapsibilePanel
+		CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
+		collapsiblePanel.getContentPane().add(pnlParameter);
 
-        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
+		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
 
-        this.parameterPanel.add(collapsiblePanel, gridBagConstraints);
+		this.parameterPanel.add(collapsiblePanel, gridBagConstraints);
          
 		// Set the button size the same
 		closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
@@ -83,6 +82,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			.addDataDefinitionListener(this);
 
 		updateAttributeLists();
+		updateScalingMethods();
 
 		// Set defaults
 		this.alphaTextField.setText(Double.toString(DEF_ALPHA));
@@ -95,18 +95,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
-		
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
-		{	
-			this.updateState();
-		}
+			this.updateAttributeLists();
 	}
 	
 	public SearchParameters getParameters() {
 		return parameters;
 	}
-
-
 
     
     /** This method is called from within the constructor to
@@ -597,7 +592,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private NetworkSelectorPanel physicalNetworkPanel = new NetworkSelectorPanel();
 	private NetworkSelectorPanel geneticNetworkPanel = new NetworkSelectorPanel();
 	
-	private void updateAttributeLists() {
+	public void updateAttributeLists() {
 		// Save current selection
 		final Object geneticSelected = geneticEdgeComboBox.getSelectedItem();
 		final Object physicalSelected = physicalEdgeComboBox.getSelectedItem();
@@ -636,9 +631,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		updateSearchButtonState();
 	}
 
-
-	public void updateState() {
-		updateAttributeLists();
+	private void updateScalingMethods() {
+		for (final ScalingMethod method : ScalingMethod.values()) {
+			phyScalingMethodComboBox.addItem(method.toString());
+			genScalingMethodComboBox.addItem(method.toString());
+		}
 	}
 
 	private boolean buildSearchParameters() {
@@ -746,11 +743,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		final String physicalAttrName = (String)physicalEdgeComboBox.getSelectedItem();
 		searchButton.setEnabled(geneticAttrName != null && physicalAttrName != null && (!geneticAttrName.equals(physicalAttrName)));
 		
-		if (physicalAttrName == null || geneticAttrName == null){
+		if (physicalAttrName == null || geneticAttrName == null) {
+			searchButton.setEnabled(false);
 			return;
 		}
-		if (physicalAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)&& geneticAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)){
-			searchButton.setEnabled(true);
-		}
+
+		searchButton.setEnabled(physicalAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)
+		                        && geneticAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE));
 	}
 }

@@ -47,7 +47,7 @@ public class ModFindPlugin extends CytoscapePlugin {
 				final SearchPropertyPanel searchPanel = new SearchPropertyPanel();
 				scrollPane = new JScrollPane(searchPanel);
 				searchPanel.setContainer(scrollPane);
-				searchPanel.updateState();
+				searchPanel.updateAttributeLists();
 				searchPanel.setVisible(true);
 				cytoPanel.add(PLUGIN_NAME, scrollPane);
 				index = cytoPanel.indexOfComponent(scrollPane);

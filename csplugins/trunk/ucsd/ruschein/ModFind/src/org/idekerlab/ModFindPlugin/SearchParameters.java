@@ -8,6 +8,8 @@ public final class SearchParameters {
 	private CyNetwork geneticNetwork;
 	private String physicalEdgeAttrName;
 	private String geneticEdgeAttrName;
+	private String physicalScalingMethod;
+	private String geneticScalingMethod;
 		
 	private double alpha;
 	private double alphaMultiplier;
@@ -49,6 +51,22 @@ public final class SearchParameters {
 
 	public String getGeneticEdgeAttrName() {
 		return geneticEdgeAttrName;
+	}
+
+	public void setPhysicalScalingMethod(final String physicalScalingMethod) {
+		this.physicalScalingMethod = physicalScalingMethod;
+	}
+
+	public ScalingMethod getPhysicalScalingMethod() {
+		return ScalingMethod.valueOf(physicalScalingMethod);
+	}
+
+	public void setGeneticScalingMethod(final String geneticScalingMethod) {
+		this.geneticScalingMethod = geneticScalingMethod;
+	}
+
+	public ScalingMethod getGeneticScalingMethod() {
+		return ScalingMethod.valueOf(geneticScalingMethod);
 	}
 
 	public void setAlpha(double alpha) {

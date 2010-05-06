@@ -64,12 +64,14 @@ public class SearchTask implements Task {
 		taskMonitor.setStatus("Searching for complexes...");
 
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
-		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
+		final SFNetwork physicalNetwork = prepareNetwork(physicalInputNetwork,
+		                                                 parameters.getPhysicalEdgeAttrName(),
+		                                                 parameters.getPhysicalScalingMethod());
 
-		final SFNetwork physicalNetwork =
-			convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getPhysicalEdgeAttrName());
-		final SFNetwork geneticNetwork =
-			convertCyNetworkToSFNetwork(geneticInputNetwork, parameters.getGeneticEdgeAttrName());
+		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
+		final SFNetwork geneticNetwork = prepareNetwork(geneticInputNetwork,
+		                                                parameters.getGeneticEdgeAttrName(),
+		                                                parameters.getGeneticScalingMethod());
 		
 		final HCScoringFunction hcScoringFunction =
 			new SouravScore(physicalNetwork, geneticNetwork,
@@ -106,8 +108,7 @@ public class SearchTask implements Task {
 		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
 		int[] edgeIndexArray = nnCreator.getOverviewNetwork().getEdgeIndicesArray();
 		
-		for (int i=0; i<edgeIndexArray.length; i++ ){
-		
+		for (int i = 0; i < edgeIndexArray.length; i++) {
 			CyEdge aEdge = (CyEdge) nnCreator.getOverviewNetwork().getEdge(edgeIndexArray[i]);
 			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNestedNetwork(), 
 					(CyNetwork)aEdge.getTarget().getNestedNetwork());
@@ -118,11 +119,46 @@ public class SearchTask implements Task {
 			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
 			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
 		}
-
-		
 	}
 
-	
+	private SFNetwork prepareNetwork(final CyNetwork inputNetwork, final String edgeAttrName,
+	                                 final ScalingMethod scalingMethod)
+	{
+		final SFNetwork unscaledNetwork = convertCyNetworkToSFNetwork(inputNetwork, edgeAttrName);
+
+		// Apply scaling function:
+		switch (scalingMethod) {
+		case NONE:
+			return unscaledNetwork;
+		case LINEAR_LOWER:
+			return scaleLinearLower(unscaledNetwork);
+		case LINEAR_UPPER:
+			return scaleLinearUpper(unscaledNetwork);
+		case RANK_LOWER:
+			return scaleRankLower(unscaledNetwork);
+		case RANK_UPPER:
+			return scaleRankUpper(unscaledNetwork);
+		default:
+			throw new IllegalStateException("unknown scaling method: " + scalingMethod + "!");
+		}
+	}
+
+	private SFNetwork scaleLinearLower(SFNetwork network) {
+		return network;
+	}
+
+	private SFNetwork scaleLinearUpper(SFNetwork network) {
+		return network;
+	}
+
+	private SFNetwork scaleRankLower(SFNetwork network) {
+		return network;
+	}
+
+	private SFNetwork scaleRankUpper(SFNetwork network) {
+		return network;
+	}
+
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
 		
 		int[] nodeIndicesA = networkA.getNodeIndicesArray();
