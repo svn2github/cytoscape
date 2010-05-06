@@ -107,7 +107,7 @@ public class ValueSelectDialog extends JDialog {
 		setList();
 		
 		// Large cell is necessary for images
-		if(type.equals(NODE_CUSTOM_GRAPHICS))
+		if(type.equals(NODE_CUSTOM_GRAPHICS_1))
 			this.iconList.setFixedCellHeight(150);
 		
 		// get original value and set the selected item.

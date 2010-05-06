@@ -1,10 +1,8 @@
 package cytoscape.visual.customgraphic;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.TexturePaint;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,9 +11,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.render.stateful.NodeDetails;
 import cytoscape.render.stateful.PaintFactory;
-import cytoscape.visual.customgraphic.paint.ColorPaintFactory;
 import cytoscape.visual.customgraphic.paint.TexturePaintFactory;
 
 public class URLImageCustomGraphics extends AbstractCyCustomGraphics {

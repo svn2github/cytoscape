@@ -114,10 +114,6 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 
 		final DNodeView dv = (DNodeView) nv;
 		dv.setPosition((ObjectPosition) o);
-
-		System.out.println(dv.getLabel() + ": Node Label Position = "
-				+ dv.getPosition().toString());
-
 	}
 
 	/**

@@ -57,7 +57,7 @@ import javax.swing.Icon;
 public abstract class AbstractVisualProperty implements VisualProperty {
 
 	protected ValueValidator validator = null;
-
+		
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -106,6 +106,9 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	abstract public Icon getIcon(final Object value); 
 
 	protected Object getDefault() {
+		if(getType() == null)
+			return null;
+		
 		return getType().getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
 	}
 
@@ -147,6 +150,10 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 */
 	public Object parseProperty(Properties props, String baseKey) {
 		final VisualPropertyType type = getType();
+		if(type == null)
+			return null;
+		
+		
         String s = props.getProperty(type.getDefaultPropertyKey(baseKey));
         if (s != null)
             return type.getValueParser().parseStringValue(s);

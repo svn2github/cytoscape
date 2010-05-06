@@ -143,7 +143,7 @@ public class GenerateChartVisualStyleAction extends CytoscapeAction implements
 		generateCharts(controllingAttrName, nodeGraphics);
 		Calculator nodeGraphicsCalc = new BasicCalculator(DEF_VS_NAME + "-"
 				+ "NodeCustomGraphicsMapping", nodeGraphics,
-				VisualPropertyType.NODE_CUSTOM_GRAPHICS);
+				VisualPropertyType.NODE_CUSTOM_GRAPHICS_1);
 
 		
 		nac.setCalculator(nodeGraphicsCalc);

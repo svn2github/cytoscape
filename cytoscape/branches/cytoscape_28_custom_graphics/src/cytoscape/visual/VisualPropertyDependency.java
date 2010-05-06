@@ -37,6 +37,13 @@ package cytoscape.visual;
 
 import java.util.Properties;
 
+/**
+ * Define dependency of visual properties.
+ * 
+ * 
+ * @author mes
+ *
+ */
 public interface VisualPropertyDependency {
 
 	/**
@@ -45,6 +52,8 @@ public interface VisualPropertyDependency {
 	public enum Definition {
 		NODE_SIZE_LOCKED("nodeSizeLocked",true, "Lock Node Width/Height"),
 		ARROW_COLOR_MATCHES_EDGE("arrowColorMatchesEdge",false,"Make Arrow Color Match Edge Color"),
+		
+		// From Cytoscape 2.8: Synchlonize node size to custom cgraphics size.
 		NODE_CUSTOM_GRAPHICS_SIZE_SYNC("nodeCustomGraphicsSizeSync", false, "Synchronize Custom Graphics Size to Node Size");
 
 		private final String propKey;

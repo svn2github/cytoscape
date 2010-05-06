@@ -1,5 +1,6 @@
 package cytoscape.visual.properties;
 
+import static cytoscape.visual.VisualPropertyType.*;
 import giny.view.NodeView;
 import giny.view.ObjectPosition;
 
@@ -25,13 +26,23 @@ import ding.view.ObjectPositionImpl;
 
 public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 
+	private static final VisualPropertyType[] TYPES = {NODE_CUSTOM_GRAPHICS_POSITION_1, NODE_CUSTOM_GRAPHICS_POSITION_2};
+	
+	private final VisualPropertyType type;
+	
+	public NodeCustomGraphicsPositionProp(final Integer index) {
+		super();
+		this.type = TYPES[index-1];
+	}
+	
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public VisualPropertyType getType() {
-		return VisualPropertyType.NODE_CUSTOM_GRAPHICS_POSITION;
+		return type;
 	}
 
 	/**

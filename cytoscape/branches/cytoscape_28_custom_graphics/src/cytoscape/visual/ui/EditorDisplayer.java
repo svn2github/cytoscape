@@ -94,7 +94,7 @@ public enum EditorDisplayer {
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
 	DISCRETE_CUSTOM_GRAPHICS(ValueSelectDialog.class, "showDialog",
 	    	               new Class[] { VisualPropertyType.class, Window.class },
-	    	               new Object[] { VisualPropertyType.NODE_CUSTOM_GRAPHICS, null }, CyCustomGraphics.class),                
+	    	               new Object[] { VisualPropertyType.NODE_CUSTOM_GRAPHICS_1, null }, CyCustomGraphics.class),                
 	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
 	                     new Class[] { VisualPropertyType.class, Window.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 

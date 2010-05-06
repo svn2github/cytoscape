@@ -72,7 +72,8 @@ public class CyCustomGraphicsEditor extends
 	}
 
 	protected void editLabelPosition() {
-		final CyCustomGraphics<?> newVal = (CyCustomGraphics<?>) ValueSelectDialog.showDialog(VisualPropertyType.NODE_CUSTOM_GRAPHICS, Cytoscape.getDesktop());
+		final CyCustomGraphics<?> newVal = (CyCustomGraphics<?>) ValueSelectDialog
+			.showDialog(VisualPropertyType.NODE_CUSTOM_GRAPHICS_1, Cytoscape.getDesktop());
 
 		if (newVal != null) {
 			final CyCustomGraphics<?> old = graphics;

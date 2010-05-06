@@ -135,7 +135,10 @@ public class ObjectPlacerGraphic extends JPanel implements
 		this.objectSize = objectSize;
 		this.targetSize = targetSize;
 		
-		p = pos;
+		if(pos == null)
+			p = new ObjectPositionImpl();
+		else
+			p = pos;
 
 		renderDetail = fullDetail;
 

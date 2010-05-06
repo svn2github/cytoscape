@@ -257,15 +257,22 @@ public enum VisualPropertyType {
 	                         new BooleanParser(), true, true),
 	                         
 	// New in Cytoscape 2.8: Custom Graphic Visual Prop.
-	NODE_CUSTOM_GRAPHICS("Node Custom Graphics", "nodeCustomGraphics", 
-	    	                         "node.customGraphics", "defaultNodeCustomGraphics", 
-	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(),
+	NODE_CUSTOM_GRAPHICS_1("Node Custom Graphics 1", "nodeCustomGraphics1", 
+	    	                         "node.customGraphics1", "defaultNodeCustomGraphics1", 
+	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(1),
 	    	                         new GraphicsParser(), true, true),
-	NODE_CUSTOM_GRAPHICS_POSITION("Node Custom Graphics Position", "nodeCustomGraphicsPosition", 
-	    	                         "node.customGraphicsPosition", "defaultNodeCustomGraphicsPosition", 
-	    	                         ObjectPosition.class, new NodeCustomGraphicsPositionProp(),
-	    	                         new ObjectPositionParser(), true, true)
-
+	NODE_CUSTOM_GRAPHICS_2("Node Custom Graphics 2", "nodeCustomGraphics2", 
+	    	    	                         "node.customGraphics2", "defaultNodeCustomGraphics2", 
+	    	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(2),
+	    	    	                         new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION_1("Node Custom Graphics Position 1", "nodeCustomGraphicsPosition1", 
+	    	                         "node.customGraphicsPosition1", "defaultNodeCustomGraphicsPosition1", 
+	    	                         ObjectPosition.class, new NodeCustomGraphicsPositionProp(1),
+	    	                         new ObjectPositionParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION_2("Node Custom Graphics Position 2", "nodeCustomGraphicsPosition2", 
+	   	    	                         "node.customGraphicsPosition2", "defaultNodeCustomGraphicsPosition2", 
+	   	    	                         ObjectPosition.class, new NodeCustomGraphicsPositionProp(2),
+	   	    	                         new ObjectPositionParser(), true, true)    	                        
 	;
 	/*
 	 * String returned by toString() method.

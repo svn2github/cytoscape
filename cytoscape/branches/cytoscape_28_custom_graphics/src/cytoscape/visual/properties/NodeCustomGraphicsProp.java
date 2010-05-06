@@ -1,6 +1,6 @@
 package cytoscape.visual.properties;
 
-import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_CUSTOM_GRAPHICS_SIZE_SYNC;
+import static cytoscape.visual.VisualPropertyDependency.Definition.*;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -13,8 +13,10 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.Icon;
@@ -30,9 +32,22 @@ import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 import ding.view.DNodeView;
 
+import static cytoscape.visual.VisualPropertyType.*;
+
+
 public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	private static final CyCustomGraphics<CustomGraphic> NULL = new NullCustomGraphics();
+	
+	private static final VisualPropertyType[] TYPES = {NODE_CUSTOM_GRAPHICS_1, NODE_CUSTOM_GRAPHICS_2};
+	
+	
+	private final VisualPropertyType type;
+	
+	public NodeCustomGraphicsProp(final Integer index) {
+		super();
+		this.type = TYPES[index-1];
+	}
 
 	@Override
 	public Icon getIcon(final Object value) {
@@ -112,7 +127,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	@Override
 	public VisualPropertyType getType() {
-		return VisualPropertyType.NODE_CUSTOM_GRAPHICS;
+		return type;
 	}
 
 	public void applyToNodeView(NodeView nv, Object o,
@@ -134,7 +149,6 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 				|| o instanceof NullCustomGraphics)
 			return;
 
-		System.out.println("\n\n\n####### Applying Custom Graphics: " + o);
 
 		// Check dependency. Sync size or not.
 		boolean sync = false;
@@ -153,8 +167,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		for (Object cg : graphicsList) {
 			if (cg instanceof CustomGraphic) {
 				if (sync) {
-					final CustomGraphic resized = syncSize((CustomGraphic) cg,
-							dv);
+					final CustomGraphic resized = syncSize((CustomGraphic) cg, dv, dep);
 					dv.addCustomGraphic(resized);
 				} else
 					dv.addCustomGraphic((CustomGraphic) cg);
@@ -163,7 +176,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	}
 
-	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv) {
+	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv, final VisualPropertyDependency dep) {
 		
 		final double nodeW = dv.getWidth();
 		final double nodeH = dv.getHeight();
@@ -177,9 +190,23 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		if(nodeW == cgW && nodeH == cgH)
 			return cg;
 
-		final AffineTransform scale = AffineTransform.getScaleInstance(nodeW
-				/ cgW, nodeH / cgH);
-	
+		// Check width/height lock status
+		final boolean whLock = dep.check(NODE_SIZE_LOCKED);
+		
+		final AffineTransform scale;
+		if(whLock) {
+			scale = AffineTransform.getScaleInstance(nodeW/ cgW, nodeH / cgH);
+		} else {
+			// Case 1: node height value is larger than width
+			if(nodeW>=nodeH) {
+				scale = AffineTransform.getScaleInstance((nodeW/ cgW)* (nodeH/nodeW), nodeH / cgH);
+				//scale = AffineTransform.getScaleInstance(nodeH/nodeW, 1);
+			} else {
+				scale = AffineTransform.getScaleInstance(nodeW/cgW, (nodeH/cgH)*(nodeW/nodeH));
+				//scale = AffineTransform.getScaleInstance(1, nodeW/nodeH);
+			}
+			
+		}
 		return new CustomGraphic(scale.createTransformedShape(originalShape), cg.getPaintFactory());
 	}
 

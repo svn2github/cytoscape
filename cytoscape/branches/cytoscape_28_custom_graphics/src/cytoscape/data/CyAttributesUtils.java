@@ -33,7 +33,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.data;
 
 import cytoscape.Cytoscape;
@@ -51,111 +51,113 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  *
  */
 public class CyAttributesUtils {
 	public static enum AttributeType {
-		NODE,
-		EDGE,
-		NETWORK;
+		NODE, EDGE, NETWORK;
 	}
 
 	/**
 	 * An AttributeFilter that produces all attributes--none are filtered out.
 	 */
 	public static final AttributeFilter ALL_ATTRIBUTES_FILTER = new AttributeFilter() {
-		public boolean includeAttribute(CyAttributes attr, String objID, String attrName) {
+		public boolean includeAttribute(CyAttributes attr, String objID,
+				String attrName) {
 			return true;
 		}
 	};
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attributeName DOCUMENT ME!
-	 * @param attrs DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param attributeName
+	 *            DOCUMENT ME!
+	 * @param attrs
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public static Map getAttribute(String attributeName, CyAttributes attrs) {
-		Map<String, Object> attrMap;
+	public static Map<String, Object> getAttribute(final String attributeName, final CyAttributes attrs) {
+		final Map<String, Object> attrMap;
 
-		{
-			final HashMap<String, Object> returnThis = new HashMap<String, Object>();
-			final MultiHashMap mmap = attrs.getMultiHashMap();
-			final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
+		final HashMap<String, Object> returnThis = new HashMap<String, Object>();
+		final MultiHashMap mmap = attrs.getMultiHashMap();
+		final MultiHashMapDefinition mmapDef = attrs
+				.getMultiHashMapDefinition();
 
-			if (mmapDef.getAttributeValueType(attributeName) != -1) {
-				final Iterator objs = mmap.getObjectKeys(attributeName);
+		if (mmapDef.getAttributeValueType(attributeName) != -1) {
+			final Iterator objs = mmap.getObjectKeys(attributeName);
 
-				while (objs.hasNext()) {
-					final String obj = (String) objs.next();
-					Object val;
+			while (objs.hasNext()) {
+				final String obj = (String) objs.next();
+				Object val;
 
-					switch (attrs.getType(attributeName)) {
-						case CyAttributes.TYPE_BOOLEAN:
-							val = attrs.getBooleanAttribute(obj, attributeName);
+				switch (attrs.getType(attributeName)) {
+				case CyAttributes.TYPE_BOOLEAN:
+					val = attrs.getBooleanAttribute(obj, attributeName);
 
-							break;
+					break;
 
-						case CyAttributes.TYPE_INTEGER:
-							val = attrs.getIntegerAttribute(obj, attributeName);
+				case CyAttributes.TYPE_INTEGER:
+					val = attrs.getIntegerAttribute(obj, attributeName);
 
-							break;
+					break;
 
-						case CyAttributes.TYPE_FLOATING:
-							val = attrs.getDoubleAttribute(obj, attributeName);
+				case CyAttributes.TYPE_FLOATING:
+					val = attrs.getDoubleAttribute(obj, attributeName);
 
-							break;
+					break;
 
-						case CyAttributes.TYPE_STRING:
-							val = attrs.getStringAttribute(obj, attributeName);
+				case CyAttributes.TYPE_STRING:
+					val = attrs.getStringAttribute(obj, attributeName);
 
-							break;
+					break;
 
-						case CyAttributes.TYPE_SIMPLE_LIST:
+				case CyAttributes.TYPE_SIMPLE_LIST:
 
-							List l = attrs.getListAttribute(obj, attributeName);
+					List l = attrs.getListAttribute(obj, attributeName);
 
-							if (l.size() > 0) {
-								// val = l.get(0);
-								val = l;
-							} else {
-								val = null;
-							}
-
-							break;
-
-						case CyAttributes.TYPE_SIMPLE_MAP:
-							val = attrs.getMapAttribute(obj, attributeName);
-
-							break;
-
-						default:
-							val = null;
+					if (l.size() > 0) {
+						// val = l.get(0);
+						val = l;
+					} else {
+						val = null;
 					}
 
-					returnThis.put(obj, val);
-				}
-			}
+					break;
 
-			attrMap = (returnThis.size() == 0) ? null : returnThis;
+				case CyAttributes.TYPE_SIMPLE_MAP:
+					val = attrs.getMapAttribute(obj, attributeName);
+
+					break;
+
+				default:
+					val = null;
+				}
+
+				returnThis.put(obj, val);
+			}
 		}
+
+		attrMap = (returnThis.size() == 0) ? null : returnThis;
 
 		return attrMap;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param canonicalName DOCUMENT ME!
-	 * @param attrs DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param canonicalName
+	 *            DOCUMENT ME!
+	 * @param attrs
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public static Map<String, Object> getAttributes(String canonicalName, CyAttributes attrs) {
+	public static Map<String, Object> getAttributes(String canonicalName,
+			CyAttributes attrs) {
 		Map<String, Object> returnThis = new HashMap<String, Object>();
 		final String[] attrNames = attrs.getAttributeNames();
 
@@ -164,7 +166,8 @@ public class CyAttributesUtils {
 
 			if (attrs.hasAttribute(canonicalName, attrNames[i])) {
 				if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-					List l = attrs.getListAttribute(canonicalName, attrNames[i]);
+					List l = attrs
+							.getListAttribute(canonicalName, attrNames[i]);
 
 					if ((l != null) && (l.size() > 0)) {
 						// returnThis.put(attrNames[i], l.get(0));
@@ -177,17 +180,17 @@ public class CyAttributesUtils {
 						returnThis.put(attrNames[i], m);
 					}
 				} else if (type == CyAttributes.TYPE_BOOLEAN) {
-					returnThis.put(attrNames[i],
-					               attrs.getBooleanAttribute(canonicalName, attrNames[i]));
+					returnThis.put(attrNames[i], attrs.getBooleanAttribute(
+							canonicalName, attrNames[i]));
 				} else if (type == CyAttributes.TYPE_INTEGER) {
-					returnThis.put(attrNames[i],
-					               attrs.getIntegerAttribute(canonicalName, attrNames[i]));
+					returnThis.put(attrNames[i], attrs.getIntegerAttribute(
+							canonicalName, attrNames[i]));
 				} else if (type == CyAttributes.TYPE_FLOATING) {
-					returnThis.put(attrNames[i],
-					               attrs.getDoubleAttribute(canonicalName, attrNames[i]));
+					returnThis.put(attrNames[i], attrs.getDoubleAttribute(
+							canonicalName, attrNames[i]));
 				} else if (type == CyAttributes.TYPE_STRING) {
-					returnThis.put(attrNames[i],
-					               attrs.getStringAttribute(canonicalName, attrNames[i]));
+					returnThis.put(attrNames[i], attrs.getStringAttribute(
+							canonicalName, attrNames[i]));
 				}
 			}
 		}
@@ -196,65 +199,68 @@ public class CyAttributesUtils {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attributeName DOCUMENT ME!
-	 * @param attrs DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param attributeName
+	 *            DOCUMENT ME!
+	 * @param attrs
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static Class getClass(String attributeName, CyAttributes attrs) {
 		Class cl = null;
 
 		switch (attrs.getType(attributeName)) {
-			case CyAttributes.TYPE_BOOLEAN:
-				cl = Boolean.class;
+		case CyAttributes.TYPE_BOOLEAN:
+			cl = Boolean.class;
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_INTEGER:
-				cl = Integer.class;
+		case CyAttributes.TYPE_INTEGER:
+			cl = Integer.class;
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_FLOATING:
-				cl = Double.class;
+		case CyAttributes.TYPE_FLOATING:
+			cl = Double.class;
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_STRING:
-				cl = String.class;
+		case CyAttributes.TYPE_STRING:
+			cl = String.class;
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_SIMPLE_LIST:
-				cl = List.class;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			cl = List.class;
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_SIMPLE_MAP:
-				cl = Map.class;
+		case CyAttributes.TYPE_SIMPLE_MAP:
+			cl = Map.class;
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_COMPLEX:
-				cl = Object.class;
+		case CyAttributes.TYPE_COMPLEX:
+			cl = Object.class;
 
-				break;
+			break;
 
-			default:
-				cl = null;
+		default:
+			cl = null;
 		}
 
 		return cl;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attrs DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param attrs
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static List<String> getVisibleAttributeNames(CyAttributes attrs) {
 		String[] allNames = attrs.getAttributeNames();
@@ -269,44 +275,55 @@ public class CyAttributesUtils {
 	}
 
 	/**
-	 * Copy all the attributes of a given object to another object.
-	 * Equivalent to:
+	 * Copy all the attributes of a given object to another object. Equivalent
+	 * to:
+	 * 
 	 * <PRE>
 	 *    copyAttributes (originalID, copyID, attrs, ALL_ATTRIBUTES_FILTER, purge).
 	 * </PRE>
+	 * 
 	 * @see copyAttributes(String,String,CyAttributes,AttributeFilter,boolean)
 	 */
-	static public void copyAttributes(String originalID, String copyID, CyAttributes attrs,
-	                                  boolean purge) {
+	static public void copyAttributes(String originalID, String copyID,
+			CyAttributes attrs, boolean purge) {
 		copyAttributes(originalID, copyID, attrs, ALL_ATTRIBUTES_FILTER, purge);
 	}
 
 	/**
-	 * Copy all the attributes of a given object that pass a given filter to another
-	 * object. This includes complex attributes.
-	 * @param originalID the identifier of the object we are copying
-	 *                   from (e.g, equivalent to CyNode.getIdentifier()).
-	 * @param copyID the identifier of the object we are copying to.
-	 * @param attrs the CyAttributes from which to copy and retrieve the attributes.
-	 * @param filter an AttributeFilter that determines if a given attribute should
-	 *        be copied. The filter is applied to all attributes stored un originalID.
-	 *        An attribute will we copied iff filter.includeAttribute() returns true.
-	 *        To copy all attributes, use {@link
-	 *        CyAttributesUtils#ALL_ATTRIBUTES_FILTER ALL_ATTRIBUTES_FILTER}.
-	 * @param purge true iff existing attribute values associated with
-	 *              the object represented by copyID are to be removed
-	 *              before copying the new attribute values from the
-	 *              object represented by originalID.  This is useful
-	 *              when copying to an existing object that contained
-	 *              previous attribute values. This should be false
-	 *              for newly created, objects that have no previous
-	 *              attribute values.
-	 * @throws IllegalArgumentException if originalID, copyID, attrs,
-	 * or filter are null; or if originalID==copyID.
+	 * Copy all the attributes of a given object that pass a given filter to
+	 * another object. This includes complex attributes.
+	 * 
+	 * @param originalID
+	 *            the identifier of the object we are copying from (e.g,
+	 *            equivalent to CyNode.getIdentifier()).
+	 * @param copyID
+	 *            the identifier of the object we are copying to.
+	 * @param attrs
+	 *            the CyAttributes from which to copy and retrieve the
+	 *            attributes.
+	 * @param filter
+	 *            an AttributeFilter that determines if a given attribute should
+	 *            be copied. The filter is applied to all attributes stored un
+	 *            originalID. An attribute will we copied iff
+	 *            filter.includeAttribute() returns true. To copy all
+	 *            attributes, use
+	 *            {@link CyAttributesUtils#ALL_ATTRIBUTES_FILTER
+	 *            ALL_ATTRIBUTES_FILTER}.
+	 * @param purge
+	 *            true iff existing attribute values associated with the object
+	 *            represented by copyID are to be removed before copying the new
+	 *            attribute values from the object represented by originalID.
+	 *            This is useful when copying to an existing object that
+	 *            contained previous attribute values. This should be false for
+	 *            newly created, objects that have no previous attribute values.
+	 * @throws IllegalArgumentException
+	 *             if originalID, copyID, attrs, or filter are null; or if
+	 *             originalID==copyID.
 	 */
-	static public void copyAttributes(String originalID, String copyID, CyAttributes attrs,
-	                                  AttributeFilter filter, boolean purge) {
-		// test filter separtely so that error message for copyAttributes() that doesn't
+	static public void copyAttributes(String originalID, String copyID,
+			CyAttributes attrs, AttributeFilter filter, boolean purge) {
+		// test filter separtely so that error message for copyAttributes() that
+		// doesn't
 		// have 'filter' argument will not be confusing:
 		if ((originalID == null) || (copyID == null) || (attrs == null)) {
 			throwIllegalArgumentException("copyAttributes(): 'original', 'copy', or 'attrs' was null.");
@@ -327,40 +344,50 @@ public class CyAttributesUtils {
 		Iterator attIt = mmapDef.getDefinedAttributes();
 		String attrName;
 
-		AttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(copyID);
+		AttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(
+				copyID);
 
 		while (attIt.hasNext()) {
 			attrName = (String) attIt.next();
 
 			if (filter.includeAttribute(attrs, originalID, attrName)) {
-				// primCopyAttribute(originalID, copyID, attrName, attrs, purge);
-				traverseAttributeValues(originalID, attrName, attrs, copyVisitor);
+				// primCopyAttribute(originalID, copyID, attrName, attrs,
+				// purge);
+				traverseAttributeValues(originalID, attrName, attrs,
+						copyVisitor);
 			}
 		}
 	}
 
 	/**
-	 * Copy a specific attribute of a given object to another
-	 * object. This includes complex attributes.
-	 * @param originalID the identifier of the object we are copying
-	 *                   from (e.g, equivalent to CyNode.getIdentifier()).
-	 * @param copyID the identifier of the object we are copying to.
-	 * @param attrName the name of the attribute we wish to copy.
-	 * @param attrs the CyAttributes from which to copy and retrieve the attribute.
-	 * @param purge true iff existing attribute values associated with
-	 *              the object represented by copyID are to be removed
-	 *              before copying the new attribute values from the
-	 *              object represented by originalID.  This is useful
-	 *              when copying to an existing object that contained
-	 *              previous attribute values. This should be false
-	 *              for newly created, objects that have no previous
-	 *              attribute values.
-	 * @throws IllegalArgumentException if originalID, copyID,
-	 * attrName, or attrs are null; or if originalID==copyID.
+	 * Copy a specific attribute of a given object to another object. This
+	 * includes complex attributes.
+	 * 
+	 * @param originalID
+	 *            the identifier of the object we are copying from (e.g,
+	 *            equivalent to CyNode.getIdentifier()).
+	 * @param copyID
+	 *            the identifier of the object we are copying to.
+	 * @param attrName
+	 *            the name of the attribute we wish to copy.
+	 * @param attrs
+	 *            the CyAttributes from which to copy and retrieve the
+	 *            attribute.
+	 * @param purge
+	 *            true iff existing attribute values associated with the object
+	 *            represented by copyID are to be removed before copying the new
+	 *            attribute values from the object represented by originalID.
+	 *            This is useful when copying to an existing object that
+	 *            contained previous attribute values. This should be false for
+	 *            newly created, objects that have no previous attribute values.
+	 * @throws IllegalArgumentException
+	 *             if originalID, copyID, attrName, or attrs are null; or if
+	 *             originalID==copyID.
 	 */
-	static public void copyAttribute(String originalID, String copyID, String attrName,
-	                                 CyAttributes attrs, boolean purge) {
-		if ((originalID == null) || (copyID == null) || (attrName == null) || (attrs == null)) {
+	static public void copyAttribute(String originalID, String copyID,
+			String attrName, CyAttributes attrs, boolean purge) {
+		if ((originalID == null) || (copyID == null) || (attrName == null)
+				|| (attrs == null)) {
 			throwIllegalArgumentException("copyAttribute(): 'original', 'copy', 'attrName' or 'attrs' was null.");
 		}
 
@@ -368,7 +395,8 @@ public class CyAttributesUtils {
 			throwIllegalArgumentException("copyAttribute(): 'original' must not be the same object as 'copy'.");
 		}
 
-		AttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(copyID);
+		AttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(
+				copyID);
 
 		// String originalID = original.getIdentifier();
 		// String copyID = copy.getIdentifier();
@@ -379,40 +407,41 @@ public class CyAttributesUtils {
 
 	/**
 	 * Traverse all the values of a given attribute applying an
-	 * AttributeValueVisitor to each value. For simple attributes,
-	 * such as those of type CyAttributes.TYPE_INTEGER or
-	 * CyAttributes.TYPE_STRING, a single value is traversed. For
-	 * Lists, Maps, and complex attribute types, all attribute values
-	 * are traversed--applying the given AttributeValueVisitor to each
-	 * value.
-	 * @param objToTraverseID the identifier of the object containing
-	 * the attribute of interest.
-	 * @param attrName the name of the attribute for which we are to
-	 * traverse values.
-	 * @param attrs the CyAttributes that contains the attribute of interest.
-
-	 * @param visitor an AttributeValueVisitor to be applied to each
-	 *                value of the attribute being traversed. For
-	 *                example, to print out all attribute values, we
-	 *                could perform:
-	 * <PRE>
-	 *     traverseAttributeValues ("testObject",
-	 *                              "testAttributeName",
-	 *                              Cytoscape.getNodeAttributes(),
-	 *                              new AttributeValueVisitor () {
-	 *              public void visitingAttributeValue (String objTraversedID,
-	 *                                                  String attrName,
-	 *                                                  CyAttributes attrs,
-	 *                                                  Object[] keySpace,
-	 *                                                  Object visitedValue) {
-	 *                  CyLogger.getLogger().info ("traversing " + visitedValue);
-	 *              }});
+	 * AttributeValueVisitor to each value. For simple attributes, such as those
+	 * of type CyAttributes.TYPE_INTEGER or CyAttributes.TYPE_STRING, a single
+	 * value is traversed. For Lists, Maps, and complex attribute types, all
+	 * attribute values are traversed--applying the given AttributeValueVisitor
+	 * to each value.
+	 * 
+	 * @param objToTraverseID
+	 *            the identifier of the object containing the attribute of
+	 *            interest.
+	 * @param attrName
+	 *            the name of the attribute for which we are to traverse values.
+	 * @param attrs
+	 *            the CyAttributes that contains the attribute of interest.
+	 * 
+	 * @param visitor
+	 *            an AttributeValueVisitor to be applied to each value of the
+	 *            attribute being traversed. For example, to print out all
+	 *            attribute values, we could perform:
+	 * 
+	 *            <PRE>
+	 * traverseAttributeValues(&quot;testObject&quot;, &quot;testAttributeName&quot;, Cytoscape
+	 * 		.getNodeAttributes(), new AttributeValueVisitor() {
+	 * 	public void visitingAttributeValue(String objTraversedID, String attrName,
+	 * 			CyAttributes attrs, Object[] keySpace, Object visitedValue) {
+	 * 		CyLogger.getLogger().info(&quot;traversing &quot; + visitedValue);
+	 * 	}
+	 * });
 	 * </PRE>
-	 * No traversal is performed if objToTraverseID or attrName are null,
-	 * or if objToTraverseID has no associated attrName attribute.
+	 * 
+	 *            No traversal is performed if objToTraverseID or attrName are
+	 *            null, or if objToTraverseID has no associated attrName
+	 *            attribute.
 	 */
-	static public void traverseAttributeValues(String objToTraverseID, String attrName,
-	                                           CyAttributes attrs, AttributeValueVisitor visitor) {
+	static public void traverseAttributeValues(String objToTraverseID,
+			String attrName, CyAttributes attrs, AttributeValueVisitor visitor) {
 		if ((objToTraverseID == null) || (attrName == null)) {
 			return;
 		}
@@ -428,54 +457,54 @@ public class CyAttributesUtils {
 		byte attrType = attrs.getType(attrName);
 
 		switch (attrType) {
-			case CyAttributes.TYPE_BOOLEAN:
-			case CyAttributes.TYPE_INTEGER:
-			case CyAttributes.TYPE_FLOATING:
-			case CyAttributes.TYPE_STRING:
-				visitor.visitingAttributeValue(objToTraverseID, attrName, attrs, null,
-				                               mmap.getAttributeValue(objToTraverseID, attrName,
-				                                                      null));
+		case CyAttributes.TYPE_BOOLEAN:
+		case CyAttributes.TYPE_INTEGER:
+		case CyAttributes.TYPE_FLOATING:
+		case CyAttributes.TYPE_STRING:
+			visitor.visitingAttributeValue(objToTraverseID, attrName, attrs,
+					null, mmap.getAttributeValue(objToTraverseID, attrName,
+							null));
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_SIMPLE_LIST:
-			case CyAttributes.TYPE_SIMPLE_MAP:
+		case CyAttributes.TYPE_SIMPLE_LIST:
+		case CyAttributes.TYPE_SIMPLE_MAP:
 
-				Object[] key = new Object[1];
-				Iterator keyspan = mmap.getAttributeKeyspan(objToTraverseID, attrName, null);
+			Object[] key = new Object[1];
+			Iterator keyspan = mmap.getAttributeKeyspan(objToTraverseID,
+					attrName, null);
 
-				while (keyspan.hasNext()) {
-					key[0] = keyspan.next();
-					visitor.visitingAttributeValue(objToTraverseID, attrName, attrs, key,
-					                               mmap.getAttributeValue(objToTraverseID,
-					                                                      attrName, key));
-				}
+			while (keyspan.hasNext()) {
+				key[0] = keyspan.next();
+				visitor.visitingAttributeValue(objToTraverseID, attrName,
+						attrs, key, mmap.getAttributeValue(objToTraverseID,
+								attrName, key));
+			}
 
-				break;
+			break;
 
-			case CyAttributes.TYPE_COMPLEX:
+		case CyAttributes.TYPE_COMPLEX:
 
-				byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attrName);
-				walkThruKeySpace(keyTypes.length, 0, new Object[0], objToTraverseID, attrName,
-				                 attrs, visitor);
+			byte[] keyTypes = mmapDef
+					.getAttributeKeyspaceDimensionTypes(attrName);
+			walkThruKeySpace(keyTypes.length, 0, new Object[0],
+					objToTraverseID, attrName, attrs, visitor);
 
-				break;
+			break;
 		}
 	}
 
 	/**
-	 * A recursive method that iterates through each set of keys at a
-	 * particular dimension in the keyspace and then continues down to the
-	 * next dimension. Once the final dimension is reached, the visitor
-	 * is run passing it the stored attribute value and related info.
+	 * A recursive method that iterates through each set of keys at a particular
+	 * dimension in the keyspace and then continues down to the next dimension.
+	 * Once the final dimension is reached, the visitor is run passing it the
+	 * stored attribute value and related info.
 	 */
 	static private void walkThruKeySpace(int maxKeys, int keyTypesIndex,
-	                                     Object[] currentDimensionKeys, String objToTraverseID,
-	                                     String attrName, CyAttributes attrs,
-	                                     AttributeValueVisitor visitor) {
-		CountedIterator dimIt = attrs.getMultiHashMap()
-		                             .getAttributeKeyspan(objToTraverseID, attrName,
-		                                                  currentDimensionKeys);
+			Object[] currentDimensionKeys, String objToTraverseID,
+			String attrName, CyAttributes attrs, AttributeValueVisitor visitor) {
+		CountedIterator dimIt = attrs.getMultiHashMap().getAttributeKeyspan(
+				objToTraverseID, attrName, currentDimensionKeys);
 		Object nextValue;
 		keyTypesIndex++;
 
@@ -494,41 +523,49 @@ public class CyAttributesUtils {
 
 		while (dimIt.hasNext()) {
 			nextValue = dimIt.next();
-			// CyLogger.getLogger().info("dim " + keyTypesIndex + " value = " + nextValue);
+			// CyLogger.getLogger().info("dim " + keyTypesIndex + " value = " +
+			// nextValue);
 			nextDimensionKeys[keyTypesIndex - 1] = nextValue;
 
-			// have we reached the last dimension, or do we need to continue building
+			// have we reached the last dimension, or do we need to continue
+			// building
 			// the keys?
 			if (keyTypesIndex < maxKeys) {
 				// do next dimension:
-				walkThruKeySpace(maxKeys, keyTypesIndex, nextDimensionKeys, objToTraverseID,
-				                 attrName, attrs, visitor);
+				walkThruKeySpace(maxKeys, keyTypesIndex, nextDimensionKeys,
+						objToTraverseID, attrName, attrs, visitor);
 			} else {
-				// we reached the final set of keys, now deal with the real values:
-				Object finalVal = attrs.getMultiHashMap()
-				                       .getAttributeValue(objToTraverseID, attrName,
-				                                          nextDimensionKeys);
-				// CyLogger.getLogger().info("dim " + keyTypesIndex + " final value = " +
-				//           finalVal);
-				visitor.visitingAttributeValue(objToTraverseID, attrName, attrs, nextDimensionKeys,
-				                               finalVal);
+				// we reached the final set of keys, now deal with the real
+				// values:
+				Object finalVal = attrs.getMultiHashMap().getAttributeValue(
+						objToTraverseID, attrName, nextDimensionKeys);
+				// CyLogger.getLogger().info("dim " + keyTypesIndex +
+				// " final value = " +
+				// finalVal);
+				visitor.visitingAttributeValue(objToTraverseID, attrName,
+						attrs, nextDimensionKeys, finalVal);
 			}
 		}
 	}
 
 	/**
-	 * Return a non-null List of all the attribute names associated with
-	 * a given identifier for a given CyAttributes. Will return
-	 * an empty list if objID or attrs is null.
-	 * @param objID the identifier of the object of interest.
-	 * @param attrs the CyAttributes from which to check for attributes.
+	 * Return a non-null List of all the attribute names associated with a given
+	 * identifier for a given CyAttributes. Will return an empty list if objID
+	 * or attrs is null.
+	 * 
+	 * @param objID
+	 *            the identifier of the object of interest.
+	 * @param attrs
+	 *            the CyAttributes from which to check for attributes.
 	 */
-	static public List<String> getAttributeNamesForObj(String objID, CyAttributes attrs) {
+	static public List<String> getAttributeNamesForObj(String objID,
+			CyAttributes attrs) {
 		if ((objID == null) || (attrs == null)) {
 			return null;
 		}
 
-		CountedIterator nameIt = attrs.getMultiHashMapDefinition().getDefinedAttributes();
+		CountedIterator nameIt = attrs.getMultiHashMapDefinition()
+				.getDefinedAttributes();
 		List<String> names = new ArrayList<String>();
 		String attrName;
 
@@ -544,16 +581,19 @@ public class CyAttributesUtils {
 	}
 
 	/**
-	 *  Get list of IDs associated with a specific attribute value.
-	 *
-	 * @param attr DOCUMENT ME!
-	 * @param attrName DOCUMENT ME!
-	 * @param attrValue DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Get list of IDs associated with a specific attribute value.
+	 * 
+	 * @param attr
+	 *            DOCUMENT ME!
+	 * @param attrName
+	 *            DOCUMENT ME!
+	 * @param attrValue
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public static List<String> getIDListFromAttributeValue(AttributeType type, String attrName,
-	                                                       Object attrValue) {
+	public static List<String> getIDListFromAttributeValue(AttributeType type,
+			String attrName, Object attrValue) {
 		final CyAttributes attr;
 		final List<String> ids = new ArrayList<String>();
 		final List<String> result = new ArrayList<String>();
@@ -611,49 +651,51 @@ public class CyAttributesUtils {
 	}
 
 	/**
-	 * Return a String representation of the various CyAttributes
-	 * types returned by methods like CyAttributes.getType() and
-	 * MultiHashMapDefinition.getAttributeKeysapceDimensionTypes().
-	 * This is useful for "toString()" operations.
+	 * Return a String representation of the various CyAttributes types returned
+	 * by methods like CyAttributes.getType() and
+	 * MultiHashMapDefinition.getAttributeKeysapceDimensionTypes(). This is
+	 * useful for "toString()" operations.
+	 * 
 	 * @see cytoscape.data.CyAttributes#getType
 	 * @see cytoscape.data.attr.MultiHashMapDefinition#getAttributeKeyspaceDimensionTypes
 	 */
 	static public String toString(byte atype) {
 		switch (atype) {
-			case CyAttributes.TYPE_COMPLEX:
-				return "COMPLEX";
+		case CyAttributes.TYPE_COMPLEX:
+			return "COMPLEX";
 
-			case CyAttributes.TYPE_SIMPLE_MAP:
-				return "SIMPLE_MAP";
+		case CyAttributes.TYPE_SIMPLE_MAP:
+			return "SIMPLE_MAP";
 
-			case CyAttributes.TYPE_SIMPLE_LIST:
-				return "SIMPLE_LIST";
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return "SIMPLE_LIST";
 
-			case CyAttributes.TYPE_UNDEFINED:
-				return "UNDEFINED";
+		case CyAttributes.TYPE_UNDEFINED:
+			return "UNDEFINED";
 
-			case CyAttributes.TYPE_BOOLEAN:
-				return "BOOLEAN";
+		case CyAttributes.TYPE_BOOLEAN:
+			return "BOOLEAN";
 
-			case CyAttributes.TYPE_INTEGER:
-				return "INTEGER";
+		case CyAttributes.TYPE_INTEGER:
+			return "INTEGER";
 
-			case CyAttributes.TYPE_FLOATING:
-				return "FLOATING";
+		case CyAttributes.TYPE_FLOATING:
+			return "FLOATING";
 
-			case CyAttributes.TYPE_STRING:
-				return "STRING";
+		case CyAttributes.TYPE_STRING:
+			return "STRING";
 
-			default:
-				return "UNKNOWN:" + atype;
+		default:
+			return "UNKNOWN:" + atype;
 		}
 	}
 
 	/**
-	 * Return a byte representation of the various CyAttributes
-	 * types returned by methods like CyAttributes.getType() and
-	 * MultiHashMapDefinition.getAttributeKeysapceDimensionTypes().
-	 * This is useful to return the byte when you have an Attribute String.
+	 * Return a byte representation of the various CyAttributes types returned
+	 * by methods like CyAttributes.getType() and
+	 * MultiHashMapDefinition.getAttributeKeysapceDimensionTypes(). This is
+	 * useful to return the byte when you have an Attribute String.
+	 * 
 	 * @see cytoscape.data.CyAttributes#getType
 	 * @see cytoscape.data.attr.MultiHashMapDefinition#getAttributeKeyspaceDimensionTypes
 	 */
@@ -686,10 +728,11 @@ public class CyAttributesUtils {
 	}
 
 	/**
-	 * Convenience method for throwing an IllegalArgumentException given
-	 * a message.
+	 * Convenience method for throwing an IllegalArgumentException given a
+	 * message.
 	 */
-	static private void throwIllegalArgumentException(String msg) throws IllegalArgumentException {
+	static private void throwIllegalArgumentException(String msg)
+			throws IllegalArgumentException {
 		IllegalArgumentException ex = new IllegalArgumentException(msg);
 		ex.fillInStackTrace();
 
@@ -698,20 +741,22 @@ public class CyAttributesUtils {
 	}
 
 	/**
-	 * copy each attribute value from objTraversedID to an
-	 * attribute value associated with objTraversedCopyID.
+	 * copy each attribute value from objTraversedID to an attribute value
+	 * associated with objTraversedCopyID.
 	 */
-	private static class CopyingAttributeValueVisitor implements AttributeValueVisitor {
+	private static class CopyingAttributeValueVisitor implements
+			AttributeValueVisitor {
 		private String copyID;
 
 		public CopyingAttributeValueVisitor(String objTraversedCopyID) {
 			copyID = objTraversedCopyID;
 		}
 
-		public void visitingAttributeValue(String objTraversedID, String attrName,
-		                                   CyAttributes attrs, Object[] keySpace,
-		                                   Object visitedValue) {
-			attrs.getMultiHashMap().setAttributeValue(copyID, attrName, visitedValue, keySpace);
+		public void visitingAttributeValue(String objTraversedID,
+				String attrName, CyAttributes attrs, Object[] keySpace,
+				Object visitedValue) {
+			attrs.getMultiHashMap().setAttributeValue(copyID, attrName,
+					visitedValue, keySpace);
 		}
 	}
 }
