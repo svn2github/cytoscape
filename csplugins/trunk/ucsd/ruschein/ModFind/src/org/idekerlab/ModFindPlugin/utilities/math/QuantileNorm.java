@@ -1,4 +1,4 @@
-package org.idekerlab.ModFindPlugin,utilities.math;
+package org.idekerlab.ModFindPlugin.utilities.math;
 
 
 /**
