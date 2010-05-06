@@ -49,12 +49,17 @@ public class ActivePathFinderParameters {
 	boolean exit = false;
 	int maxThreads = 1;
 	boolean greedySearch = true;
-        boolean run = false;
-        boolean save = false;
-        boolean randomizeExpression = false;
-        String outputFile = "output.txt";
+    boolean run = false;
+    boolean save = false;
+    boolean randomizeExpression = false;
+    String outputFile = "output.txt";
    	List<String> expressionAttrs = new ArrayList<String>();
-    	List<String> possibleExpressionAttrs = new ArrayList<String>();
+   	
+    List<String> possibleExpressionAttrs = new ArrayList<String>();
+    	
+    List<Boolean> switchSigs = new ArrayList<Boolean>();
+    List<String> scalingMethods = new ArrayList<String>();
+    
 	// ---------------------------------------------------------------------------------------
     public ActivePathFinderParameters(Properties properties){
 	for (Enumeration e = properties.propertyNames() ; e.hasMoreElements() ;) {
@@ -441,12 +446,32 @@ public class ActivePathFinderParameters {
 	public List<String> getExpressionAttributes() {
 		return expressionAttrs;
 	}
-
+	
 	public void setExpressionAttributes(Collection<String> names) {
 		expressionAttrs.clear();
 		expressionAttrs.addAll(names);
 	}
 
+	//
+	public void setSwitchSigs(Collection<Boolean> switchSigs) {
+		this.switchSigs.clear();
+		this.switchSigs.addAll(switchSigs);
+	}
+
+	public void setScalingMethods(Collection<String> scalingMethods) {
+		this.scalingMethods.clear();
+		this.scalingMethods.addAll(scalingMethods);
+	}
+	
+	public List<Boolean> getSwitchSigs() {
+		return switchSigs;
+	}
+
+	public List<String> getScalingMethods() {
+		return scalingMethods;
+	}
+	//
+	
 	public void addExpressionAttribute(String name) {
 		if ( !expressionAttrs.contains(name) )
 			expressionAttrs.add(name);
