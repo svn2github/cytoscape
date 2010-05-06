@@ -31,7 +31,7 @@
 		
 		echo "<h1>$title</h1>\n";
 		echo "<label class=\"date\">$date_formatted</label>";
-		echo "<label class=\"author\">By $author</label>";
+		//echo "<label class=\"author\">By $author</label>";
 		echo "<div class=\"entry\">$summary ...</div>";
 		echo "<div class=\"read_more\"><a href=\"$link\">Read full news posting</a></div>";
 		
