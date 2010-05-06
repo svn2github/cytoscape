@@ -663,7 +663,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		
 		String geneticEdgeAttrName = geneticEdgeItem.toString();
 		String physicalEdgeAttrName = physicalEdgeItem.toString();
-		
+
 		if (geneticEdgeAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)){
 			geneticEdgeAttrName = "";
 		}
@@ -679,6 +679,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}
 		parameters.setGeneticEdgeAttrName(geneticEdgeAttrName);
 		parameters.setPhysicalEdgeAttrName(physicalEdgeAttrName);
+
+		parameters.setPhysicalScalingMethod((String)phyScalingMethodComboBox.getSelectedItem());
+		parameters.setGeneticScalingMethod((String)genScalingMethodComboBox.getSelectedItem());
 
 		String currentField = "number";
 		try {
