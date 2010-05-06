@@ -755,9 +755,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			return;
 		}
 
-		final String physicalNetworkName = (String)physicalEdgeComboBox.getSelectedItem();
-		final String geneticNetworkName = (String)geneticEdgeComboBox.getSelectedItem();
-		if (geneticNetworkName.equals(physicalNetworkName)) {
+		final CyNetwork physicalNetwork = physicalNetworkPanel.getSelectedNetwork();
+		final CyNetwork geneticNetwork = geneticNetworkPanel.getSelectedNetwork();
+		if (physicalNetwork == geneticNetwork) {
 			searchButton.setEnabled(false);
 			return;
 		}
