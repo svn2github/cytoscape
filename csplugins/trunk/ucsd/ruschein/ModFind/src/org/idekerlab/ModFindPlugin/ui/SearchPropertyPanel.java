@@ -46,9 +46,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final double DEF_CUTOFF = 20.0;
 	private static final double DEF_PVALUE_THRESHOLD = 0.05;
 	private static final int DEF_NUMBER_OF_SAMPLES = 100000;
+	private static final String DEFAULT_ATTRIBUTE = "default: induced from edges";
 	
 	private Container container;
 	private SearchParameters parameters;
+
 
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel() {
@@ -104,6 +106,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		return parameters;
 	}
 
+
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -117,13 +121,18 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         physicalEdgeLabel = new javax.swing.JLabel();
         physicalEdgeComboBox = new javax.swing.JComboBox();
         lbPhysicalNetwork = new javax.swing.JLabel();
-        physicalNetworkPanel = new NetworkSelectorPanel();
+        //physicalNetworkPanel = new javax.swing.JComboBox();
+        lbPhysicalScale = new javax.swing.JLabel();
+        phyScalingMethodComboBox = new javax.swing.JComboBox();
         edgeAttributePanel = new javax.swing.JPanel();
         geneticEdgeLabel = new javax.swing.JLabel();
         geneticEdgeComboBox = new javax.swing.JComboBox();
         lbGeneticNetwork = new javax.swing.JLabel();
-        geneticNetworkPanel = new NetworkSelectorPanel();
+        //geneticNetworkPanel = new javax.swing.JComboBox();
+        lbGeneticScale = new javax.swing.JLabel();
+        genScalingMethodComboBox = new javax.swing.JComboBox();
         parameterPanel = new javax.swing.JPanel();
+        //lbPlaceHolder = new javax.swing.JLabel();
         buttonPanel = new javax.swing.JPanel();
         helpButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
@@ -167,6 +176,21 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
         topPane.add(physicalNetworkPanel, gridBagConstraints);
+
+        lbPhysicalScale.setText("Scale");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        topPane.add(lbPhysicalScale, gridBagConstraints);
+
+       //phyScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        topPane.add(phyScalingMethodComboBox, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -212,6 +236,20 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
         edgeAttributePanel.add(geneticNetworkPanel, gridBagConstraints);
 
+        lbGeneticScale.setText("Scale");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        edgeAttributePanel.add(lbGeneticScale, gridBagConstraints);
+
+        //genScalingMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        edgeAttributePanel.add(genScalingMethodComboBox, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -220,6 +258,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         add(edgeAttributePanel, gridBagConstraints);
 
         parameterPanel.setLayout(new java.awt.GridBagLayout());
+
+        //lbPlaceHolder.setText("jLabel1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        //parameterPanel.add(lbPlaceHolder, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -437,13 +482,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}
 		
 		boolean isVaildGenetic = false;
-		if (geneticSelected.trim().equalsIgnoreCase("Default") || (Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_INTEGER ||
+		if (geneticSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) || (Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_INTEGER ||
 			     Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_FLOATING)){
 			isVaildGenetic = true;
 		}
 
 		boolean isVaildPhysical = false;
-		if (physicalSelected.trim().equalsIgnoreCase("Default") || (Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_INTEGER ||
+		if (physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) || (Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_INTEGER ||
 			     Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_FLOATING)){
 			isVaildPhysical = true;
 		}
@@ -540,11 +585,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JPanel parameterPanel;
     private javax.swing.JLabel lbGeneticNetwork;
     private javax.swing.JLabel lbPhysicalNetwork;
+    
+    private javax.swing.JComboBox genScalingMethodComboBox;
+    private javax.swing.JComboBox phyScalingMethodComboBox;
+    private javax.swing.JLabel lbGeneticScale;
+    private javax.swing.JLabel lbPhysicalScale;
     // End of variables declaration                     
                
   
-	private NetworkSelectorPanel physicalNetworkPanel;
-	private NetworkSelectorPanel geneticNetworkPanel;
+	private NetworkSelectorPanel physicalNetworkPanel = new NetworkSelectorPanel();
+	private NetworkSelectorPanel geneticNetworkPanel = new NetworkSelectorPanel();
 	
 	private void updateAttributeLists() {
 		// Save current selection
@@ -555,8 +605,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		geneticEdgeComboBox.removeAllItems();
 		physicalEdgeComboBox.removeAllItems();
 
-		physicalEdgeComboBox.addItem("Default");
-		geneticEdgeComboBox.addItem("Default");
+		physicalEdgeComboBox.addItem(DEFAULT_ATTRIBUTE);
+		geneticEdgeComboBox.addItem(DEFAULT_ATTRIBUTE);
 		
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		final Set<String> edgeAttrNames = new TreeSet<String>(Arrays
@@ -610,10 +660,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		String geneticEdgeAttrName = geneticEdgeItem.toString();
 		String physicalEdgeAttrName = physicalEdgeItem.toString();
 		
-		if (geneticEdgeAttrName.equalsIgnoreCase("Default")){
+		if (geneticEdgeAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)){
 			geneticEdgeAttrName = "";
 		}
-		if (physicalEdgeAttrName.equalsIgnoreCase("Default")){
+		if (physicalEdgeAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)){
 			physicalEdgeAttrName = "";
 		}
 		
@@ -698,7 +748,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if (physicalAttrName == null || geneticAttrName == null){
 			return;
 		}
-		if (physicalAttrName.equalsIgnoreCase("Default")&& geneticAttrName.equalsIgnoreCase("Default")){
+		if (physicalAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)&& geneticAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)){
 			searchButton.setEnabled(true);
 		}
 	}
