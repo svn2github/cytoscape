@@ -24,7 +24,6 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.VisualStyle;
 
 /**
  * The sole purpose of this class is to sort networks according to decreasing
@@ -91,9 +90,6 @@ public class NestedNetworkCreator {
 	static final String SCORE = "score";
 	static final String EDGE_SCORE = "edge score";
 	static final String NODE_SIZE = "complex node size";
-
-	private static final String OVERVIEW_VISUAL_STYLE_NAME = "Complex Overview Style";
-	private static final String MODULE_VISUAL_STYLE_NAME = "Module Style";
 	
 	private CyNetwork overviewNetwork = null;
 	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
@@ -124,6 +120,9 @@ public class NestedNetworkCreator {
 			final TypedLinkNetwork<String, Float> geneticNetwork,
 			final double cutoff, final TaskMonitor taskMonitor,
 			final float remainingPercentage) {
+		
+		final CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
+		
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
 		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
@@ -133,7 +132,10 @@ public class NestedNetworkCreator {
 				findNextAvailableNetworkName("Complex Search Results: "
 						+ new java.util.Date()),
 				/* create_view = */false);
-
+		networkAttr.setAttribute(overviewNetwork.getIdentifier(), VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.OVERVIEW.name());
+		networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
+		networkAttr.setUserEditable(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
+		
 		final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
 		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
 
@@ -211,10 +213,7 @@ public class NestedNetworkCreator {
 		edgeAttribs.setUserVisible(REFERENCE_NETWORK_NAME_ATTRIB, false);
 
 		Cytoscape.createNetworkView(overviewNetwork);
-		final VisualStyle overviewStyle = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(OVERVIEW_VISUAL_STYLE_NAME);
-		Cytoscape.getVisualMappingManager().setVisualStyle(overviewStyle);
-		applyNetworkLayout(overviewNetwork,
-				overviewStyle, cutoff, maxScore);
+		applyNetworkLayout(overviewNetwork, cutoff, maxScore);
 
 		// Visually mark selected edges and nodes:
 		overviewNetwork.setSelectedEdgeState(selectedEdges, true);
@@ -230,7 +229,7 @@ public class NestedNetworkCreator {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
 			final CyNetwork nestedNetwork = generateNestedNetwork(network
 					.getNodeName(), network.getGenes(), origPhysNetwork,
-					createView);
+					createView, networkAttr);
 			final CyNode node = Cytoscape.getCyNode(network.getNodeName(), /*
 																			 * create
 																			 * =
@@ -274,12 +273,14 @@ public class NestedNetworkCreator {
 
 	private CyNetwork generateNestedNetwork(final String networkName,
 			final Set<String> nodeNames, final CyNetwork originalNetwork,
-			final boolean createNetworkView) {
+			final boolean createNetworkView, final CyAttributes networkAttr) {
 		if (nodeNames.isEmpty())
 			return null;
 
 		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName,
 		/* create_view = */false);
+		networkAttr.setAttribute(nestedNetwork.getIdentifier(), 
+				VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
 
 		// Add the nodes to our new nested network.
 		final List<CyNode> nodes = new ArrayList<CyNode>();
@@ -297,8 +298,7 @@ public class NestedNetworkCreator {
 
 		if (createNetworkView) {
 			Cytoscape.createNetworkView(nestedNetwork);
-			applyNetworkLayout(nestedNetwork, Cytoscape
-					.getVisualMappingManager().getVisualStyle(), null, null);
+			applyNetworkLayout(nestedNetwork, null, null);
 		}
 
 		return nestedNetwork;
@@ -364,14 +364,11 @@ public class NestedNetworkCreator {
 		return null;
 	}
 
-	private void applyNetworkLayout(final CyNetwork network,
-			final VisualStyle style, Double cutoff, Double maxScore) {
+	private void applyNetworkLayout(final CyNetwork network, Double cutoff, Double maxScore) {
 		final CyNetworkView targetView = Cytoscape.getNetworkView(network
 				.getIdentifier());
 		
-		targetView.setVisualStyle(style.getName());
-		Cytoscape.getVisualMappingManager().setVisualStyle(style);
-		targetView.applyLayout(CyLayouts.getLayout("circular"));
-		targetView.redrawGraph(false, true);
+		targetView.applyLayout(CyLayouts.getLayout("force-directed"));
+		//targetView.redrawGraph(false, true);
 	}
 }

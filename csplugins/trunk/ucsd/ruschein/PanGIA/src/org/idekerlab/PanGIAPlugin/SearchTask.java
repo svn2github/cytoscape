@@ -1,16 +1,21 @@
 package org.idekerlab.PanGIAPlugin;
 
-import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.idekerlab.PanGIAPlugin.data.*;
 import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge;
 import org.idekerlab.PanGIAPlugin.ModFinder.HCScoringFunction;
 import org.idekerlab.PanGIAPlugin.ModFinder.HCSearch2;
 import org.idekerlab.PanGIAPlugin.ModFinder.SouravScore;
-import org.idekerlab.PanGIAPlugin.networks.*;
+import org.idekerlab.PanGIAPlugin.data.DoubleVector;
+import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
 import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
-import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.*;
+import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkEdge;
+import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNetwork;
+import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -18,31 +23,15 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.view.CyNetworkView;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
 
 
 /**
  * @author kono, ruschein
  */
 public class SearchTask implements Task {
-	public static final URL visualStypePropLocation = PanGIAPlugin.class.getResource("/resources/PanGIAVS.props");
-	private static final String VS_OVERVIEW_NAME = "Complex Overview Style";
-	private static String VS_MODULE_NAME = "Module Style";
-	private static VisualStyle overviewVS = null;
-	private static VisualStyle moduleVS = null;
-
-	static {		
-		// Load new styles.
-		final VisualStyle currentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
-		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, visualStypePropLocation);
-		
-		overviewVS = Cytoscape.getVisualMappingManager().setVisualStyle(VS_OVERVIEW_NAME);
-		moduleVS = Cytoscape.getVisualMappingManager().setVisualStyle(VS_MODULE_NAME);
-		
-		Cytoscape.getVisualMappingManager().setVisualStyle(currentStyle);
-	}
+	
+	private static final float SEARCH_PERCENTAGE      = 40.0f; // Progress bar should go up to here for the search part.
+	private static final float COMPUTE_SIG_PERCENTAGE = 95.0f; // Progress bar should go up to here for the permutations part.
 	
 	private TaskMonitor taskMonitor = null;
 	boolean needsToHalt = false;
@@ -50,28 +39,23 @@ public class SearchTask implements Task {
 
 	private SearchParameters parameters;
 
-	private HCScoringFunction hcScoringFunction;
-
+	
 	public SearchTask(final SearchParameters parameters) {
 		this.parameters = parameters;
 	}
 
 	public void run() {
-		final float SEARCH_PERCENTAGE      = 40.0f; // Progress bar should go up to here for the search part.
-		final float COMPUTE_SIG_PERCENTAGE = 95.0f; // Progress bar should go up to here for the permutations part.
-
+		
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for complexes...");
 
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
-		final SFNetwork physicalNetwork = prepareNetwork(physicalInputNetwork,
-		                                                 parameters.getPhysicalEdgeAttrName(),
-		                                                 parameters.getPhysicalScalingMethod());
-
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
-		final SFNetwork geneticNetwork = prepareNetwork(geneticInputNetwork,
-		                                                parameters.getGeneticEdgeAttrName(),
-		                                                parameters.getGeneticScalingMethod());
+
+		final SFNetwork physicalNetwork =
+			convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getPhysicalEdgeAttrName());
+		final SFNetwork geneticNetwork =
+			convertCyNetworkToSFNetwork(geneticInputNetwork, parameters.getGeneticEdgeAttrName());
 		
 		final HCScoringFunction hcScoringFunction =
 			new SouravScore(physicalNetwork, geneticNetwork,
@@ -100,15 +84,12 @@ public class SearchTask implements Task {
 
 		setPercentCompleted(100);
 		
-		// Set the visualSTyle for the overview network
-		applyVisualStyle(nnCreator.getOverviewNetwork(),overviewVS);
-		
-		
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
 		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
 		int[] edgeIndexArray = nnCreator.getOverviewNetwork().getEdgeIndicesArray();
 		
-		for (int i = 0; i < edgeIndexArray.length; i++) {
+		for (int i=0; i<edgeIndexArray.length; i++ ){
+		
 			CyEdge aEdge = (CyEdge) nnCreator.getOverviewNetwork().getEdge(edgeIndexArray[i]);
 			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNestedNetwork(), 
 					(CyNetwork)aEdge.getTarget().getNestedNetwork());
@@ -119,46 +100,11 @@ public class SearchTask implements Task {
 			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
 			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
 		}
+
+		
 	}
 
-	private SFNetwork prepareNetwork(final CyNetwork inputNetwork, final String edgeAttrName,
-	                                 final ScalingMethod scalingMethod)
-	{
-		final SFNetwork unscaledNetwork = convertCyNetworkToSFNetwork(inputNetwork, edgeAttrName);
-
-		// Apply scaling function:
-		switch (scalingMethod) {
-		case NONE:
-			return unscaledNetwork;
-		case LINEAR_LOWER:
-			return scaleLinearLower(unscaledNetwork);
-		case LINEAR_UPPER:
-			return scaleLinearUpper(unscaledNetwork);
-		case RANK_LOWER:
-			return scaleRankLower(unscaledNetwork);
-		case RANK_UPPER:
-			return scaleRankUpper(unscaledNetwork);
-		default:
-			throw new IllegalStateException("unknown scaling method: " + scalingMethod + "!");
-		}
-	}
-
-	private SFNetwork scaleLinearLower(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleLinearUpper(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleRankLower(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleRankUpper(SFNetwork network) {
-		return network;
-	}
-
+	
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
 		
 		int[] nodeIndicesA = networkA.getNodeIndicesArray();
@@ -181,15 +127,6 @@ public class SearchTask implements Task {
 	}
 
 	
-	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
-		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		view.setVisualStyle(vs.getName());
-		vmm.setNetworkView(view);
-		vmm.setVisualStyle(vs);
-	}
-
-	
 	public void halt() {
 		needsToHalt = true;
 	}
@@ -199,7 +136,7 @@ public class SearchTask implements Task {
 	}
 
 	public String getTitle() {
-		return "PanGIA";
+		return "ModFind";
 	}
 
 	private void setPercentCompleted(int percent) {
