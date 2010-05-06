@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import org.idekerlab.PanGIAPlugin.PanGIAer.BFEdge;
+import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkEdge;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNodeModule;

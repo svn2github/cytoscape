@@ -1,4 +1,4 @@
-package org.idekerlab.PanGIAPlugin.PanGIAer;
+package org.idekerlab.PanGIAPlugin.ModFinder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,5 @@
-package org.idekerlab.PanGIAPlugin.PanGIAer;
+package org.idekerlab.PanGIAPlugin.ModFinder;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,6 +7,7 @@ import java.util.Set;
 import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNode;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNodeModule;
+
 
 public class SouravScore extends HCScoringFunction {
 

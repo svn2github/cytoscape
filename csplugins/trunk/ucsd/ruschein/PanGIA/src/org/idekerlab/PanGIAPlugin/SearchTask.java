@@ -4,10 +4,10 @@ import java.net.URL;
 import java.util.*;
 
 import org.idekerlab.PanGIAPlugin.data.*;
-import org.idekerlab.PanGIAPlugin.PanGIAer.BFEdge;
-import org.idekerlab.PanGIAPlugin.PanGIAer.HCScoringFunction;
-import org.idekerlab.PanGIAPlugin.PanGIAer.HCSearch2;
-import org.idekerlab.PanGIAPlugin.PanGIAer.SouravScore;
+import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge;
+import org.idekerlab.PanGIAPlugin.ModFinder.HCScoringFunction;
+import org.idekerlab.PanGIAPlugin.ModFinder.HCSearch2;
+import org.idekerlab.PanGIAPlugin.ModFinder.SouravScore;
 import org.idekerlab.PanGIAPlugin.networks.*;
 import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.*;

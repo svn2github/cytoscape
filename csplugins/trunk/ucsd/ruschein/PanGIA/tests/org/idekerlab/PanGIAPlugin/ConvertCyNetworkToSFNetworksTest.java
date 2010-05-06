@@ -3,7 +3,7 @@ package org.idekerlab.ModFindPlugin;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.idekerlab.ModFindPlugin.networks.SFNetwork;
+import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
 
 import junit.framework.TestCase;
 import cytoscape.CyNetwork;
