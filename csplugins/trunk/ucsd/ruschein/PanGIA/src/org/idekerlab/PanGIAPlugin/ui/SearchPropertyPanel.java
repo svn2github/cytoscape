@@ -4,6 +4,8 @@ package org.idekerlab.PanGIAPlugin.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -58,9 +60,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		initComponents(); // the main panel
 		initComponents2(); // parameter panel
 
-//		physicalEdgeComboBox.addItemListener(
-//						     );
-		
+		final ItemListener updateSearchButton = new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					updateSearchButtonState();
+				}
+			};
+		physicalEdgeComboBox.addItemListener(updateSearchButton);
+		geneticEdgeComboBox.addItemListener(updateSearchButton);
+		physicalNetworkPanel.addItemListener(updateSearchButton);
+		geneticNetworkPanel.addItemListener(updateSearchButton);
+
 		// Add parameter panel to collapsibilePanel
 		CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
 		collapsiblePanel.getContentPane().add(pnlParameter);
