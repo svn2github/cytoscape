@@ -50,23 +50,22 @@ public class SearchTask implements Task {
 	}
 
 	public void run() {
-		
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for complexes...");
 
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
 		addEdgeType(physicalInputNetwork, InteractionType.Physical);
 		
-		final SFNetwork physicalNetwork = prepareNetwork(physicalInputNetwork,
-		                                                 parameters.getPhysicalEdgeAttrName(),
-		                                                 parameters.getPhysicalScalingMethod());
+		final SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork,
+									      parameters.getPhysicalEdgeAttrName(),
+									      parameters.getPhysicalScalingMethod());
 
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
 		addEdgeType(geneticInputNetwork, InteractionType.Genetic);
 		
-		final SFNetwork geneticNetwork = prepareNetwork(geneticInputNetwork,
-		                                                 parameters.getGeneticEdgeAttrName(),
-		                                                 parameters.getGeneticScalingMethod());
+		final SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork,
+									     parameters.getGeneticEdgeAttrName(),
+									     parameters.getGeneticScalingMethod());
 		
 		final HCScoringFunction hcScoringFunction =
 			new SouravScore(physicalNetwork, geneticNetwork,
@@ -99,8 +98,7 @@ public class SearchTask implements Task {
 		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
 		int[] edgeIndexArray = nnCreator.getOverviewNetwork().getEdgeIndicesArray();
 		
-		for (int i=0; i<edgeIndexArray.length; i++ ){
-		
+		for (int i = 0; i < edgeIndexArray.length; i++) {
 			CyEdge aEdge = (CyEdge) nnCreator.getOverviewNetwork().getEdge(edgeIndexArray[i]);
 			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNestedNetwork(), 
 					(CyNetwork)aEdge.getTarget().getNestedNetwork());
@@ -111,45 +109,6 @@ public class SearchTask implements Task {
 			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
 			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
 		}
-
-		
-	}
-
-
-	private SFNetwork prepareNetwork(final CyNetwork inputNetwork, final String edgeAttribName,
-	                                 final ScalingMethod scalingMethod)
-	{
-		final SFNetwork unscaledNetwork = convertCyNetworkToSFNetwork(inputNetwork, edgeAttribName);
-		switch (scalingMethod) {
-		case NONE:
-			return unscaledNetwork;
-		case LINEAR_LOWER:
-			return scaleUsingLinearLowerMethod(unscaledNetwork);
-		case LINEAR_UPPER:
-			return scaleUsingLinearUpperMethod(unscaledNetwork);
-		case RANK_LOWER:
-			return scaleUsingLinearLowerMethod(unscaledNetwork);
-		case RANK_UPPER:
-			return scaleUsingLinearUpperMethod(unscaledNetwork);
-		default:
-			throw new IllegalStateException("unknown scaling method: " + scalingMethod + "!");
-		}
-	}
-
-	private SFNetwork scaleUsingLinearLowerMethod(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleUsingLinearUpperMethod(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleUsingRankLowerMethod(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleUsingRankUpperMethod(SFNetwork network) {
-		return network;
 	}
 
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
@@ -274,7 +233,8 @@ public class SearchTask implements Task {
 	 *  @param inputNetwork    name of the network that will be converted
 	 *  @param numericAttrName optional name of a numeric edge attribute.  Should this be missing, 1.0 will be assumed for all edges
 	 */
-	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName)
+	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName,
+						      final ScalingMethod scalingMethod)
 		throws IllegalArgumentException, ClassCastException
 	{
 		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
@@ -295,21 +255,36 @@ public class SearchTask implements Task {
 				throw new IllegalArgumentException("\"" + numericAttrName
 				                                   + "\" is not the name of a known numeric edge attribute!");
 
+			// Collect edge attribute values:
+			final float[] edgeAttribValues = new float[edges.size()];
+			int edgeIndex = 0;
 			for (final CyEdge edge : edges) {
 				final String edgeID = edge.getIdentifier();
 				if (edgeAttribType == CyAttributes.TYPE_FLOATING) {
 					final Double attrValue = edgeAttributes.getDoubleAttribute(edgeID, numericAttrName);
 					if (attrValue != null)
-						outputNetwork.add(edge.getSource().getIdentifier(),
-						                  edge.getTarget().getIdentifier(),
-						                  (float)(double)attrValue);
+						edgeAttribValues[edgeIndex] = (float)(double)attrValue;
 				} else { // Assume we have an integer attribute.
 					final Integer attrValue = edgeAttributes.getIntegerAttribute(edgeID, numericAttrName);
 					if (attrValue != null)
-						outputNetwork.add(edge.getSource().getIdentifier(),
-						                  edge.getTarget().getIdentifier(),
-						                  (float)(int)attrValue);
+						edgeAttribValues[edgeIndex] = (float)(int)attrValue;
 				}
+				++edgeIndex;
+			}
+
+			final StringBuilder errorMessage = new StringBuilder();
+			final float[] scaledEdgeAttribValues = scaleEdgeAttribValues(edgeAttribValues, scalingMethod, errorMessage);
+			if (scaledEdgeAttribValues == null)
+				throw new IllegalArgumentException("attribute values scaling failed: " + errorMessage);
+
+			edgeIndex = 0;
+			for (final CyEdge edge : edges) {
+				final String edgeID = edge.getIdentifier();
+				if (edgeAttributes.getAttribute(edgeID, numericAttrName) != null)
+					outputNetwork.add(edge.getSource().getIdentifier(),
+							  edge.getTarget().getIdentifier(),
+							  scaledEdgeAttribValues[edgeIndex]);
+				++edgeIndex;
 			}
 		}
 
@@ -322,5 +297,16 @@ public class SearchTask implements Task {
 		
 		for(CyEdge edge: edgeList)
 			edgeAttr.setAttribute(edge.getIdentifier(), EDGE_TYPE_ATTR_NAME, edgeType.name());
+	}
+
+	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethod scalingMethod,
+					      final StringBuilder errorMessage)
+	{
+		switch (scalingMethod) {
+		case NONE:
+			return edgeAttribValues;
+		default:
+			return edgeAttribValues;
+		}
 	}
 }
