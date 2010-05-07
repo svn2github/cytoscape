@@ -39,7 +39,8 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 	private static int nextIndex;
 
 	NetworkAndScore(final String nodeName, final Set<String> genes,
-			final double score) {
+			final double score)
+	{
 		this.nodeName = nodeName;
 		this.genes = genes;
 		this.score = score;
@@ -237,9 +238,9 @@ public class NestedNetworkCreator {
 		float percentCompleted = 100.0f - remainingPercentage;
 		while ((network = networksOrderedByScores.poll()) != null) {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
-			final CyNetwork nestedNetwork = generateNestedNetwork(network
-					.getNodeName(), network.getGenes(), origPhysNetwork,
-					createView, networkAttr);
+			final CyNetwork nestedNetwork = generateNestedNetwork(
+					network.getNodeName(), network.getGenes(), origPhysNetwork,
+					origGenNetwork, createView, networkAttr);
 			final CyNode node = Cytoscape.getCyNode(network.getNodeName(), false);
 			node.setNestedNetwork(nestedNetwork);
 
@@ -279,8 +280,10 @@ public class NestedNetworkCreator {
 	}
 
 	private CyNetwork generateNestedNetwork(final String networkName,
-			final Set<String> nodeNames, final CyNetwork originalNetwork,
-			final boolean createNetworkView, final CyAttributes networkAttr) {
+			final Set<String> nodeNames, final CyNetwork origPhysNetwork,
+			final CyNetwork origGenNetwork, final boolean createNetworkView,
+			final CyAttributes networkAttr)
+	{
 		if (nodeNames.isEmpty())
 			return null;
 
@@ -298,8 +301,14 @@ public class NestedNetworkCreator {
 			nodes.add(node);
 		}
 
-		// Add the edges induced by "originalNetwork" to our new nested network.
-		final List<CyEdge> edges = (List<CyEdge>) originalNetwork
+		// Add the edges induced by "origPhysNetwork" to our new nested network.
+		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork
+				.getConnectingEdges(nodes);
+		for (final CyEdge edge : edges)
+			nestedNetwork.addEdge(edge);
+
+		// Add the edges induced by "origGenNetwork" to our new nested network.
+		edges = (List<CyEdge>) origGenNetwork
 				.getConnectingEdges(nodes);
 		for (final CyEdge edge : edges)
 			nestedNetwork.addEdge(edge);
