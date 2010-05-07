@@ -21,7 +21,6 @@ import javax.swing.SwingConstants;
 
 import org.idekerlab.PanGIAPlugin.SearchParameters;
 import org.idekerlab.PanGIAPlugin.SearchTask;
-import org.idekerlab.PanGIAPlugin.ScalingMethod;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -30,6 +29,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.util.ScalingMethod;
 import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
 import org.idekerlab.PanGIAPlugin.utilities.CyCollapsiblePanel;

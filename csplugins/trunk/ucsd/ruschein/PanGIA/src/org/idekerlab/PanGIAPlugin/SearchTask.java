@@ -1,5 +1,6 @@
 package org.idekerlab.PanGIAPlugin;
 
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.util.ScalingMethod;
 
 
 /**
