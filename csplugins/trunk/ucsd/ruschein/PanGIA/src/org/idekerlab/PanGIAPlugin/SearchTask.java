@@ -25,6 +25,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.util.ProbabilityScaler;
 import cytoscape.util.ScalingMethod;
 
 
@@ -302,11 +303,17 @@ public class SearchTask implements Task {
 	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethod scalingMethod,
 					      final StringBuilder errorMessage)
 	{
-		switch (scalingMethod) {
-		case NONE:
-			return edgeAttribValues;
-		default:
-			return edgeAttribValues;
+		float[] scaledEdgeAttribValues = ProbabilityScaler.scale(edgeAttribValues, scalingMethod,
+									 errorMessage);
+		if (scaledEdgeAttribValues == null || scalingMethod == ScalingMethod.NONE)
+			return scaledEdgeAttribValues;
+
+		// Generate log-likelihood values:
+		for (int i = 0; i < scaledEdgeAttribValues.length; ++i) {
+			final double p = (double)scaledEdgeAttribValues[i];
+			scaledEdgeAttribValues[i] = (float)Math.log(p / (1.0 - p));
 		}
+
+		return scaledEdgeAttribValues;
 	}
 }
