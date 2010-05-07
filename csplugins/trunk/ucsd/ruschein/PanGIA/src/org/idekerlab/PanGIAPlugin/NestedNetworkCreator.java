@@ -20,7 +20,9 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
+import cytoscape.layout.LayoutProperties;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
@@ -83,10 +85,16 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 @SuppressWarnings("unchecked")
 public class NestedNetworkCreator {
 	
+	private static final String LAYOUT_ALGORITHM = "force-directed";
+	
 	// Also exists in BipartiteVisualiserPlugin!
 	static final String REFERENCE_NETWORK_NAME_ATTRIB = "BipartiteVisualiserReferenceNetworkName"; 
 
+	// Number of nodes in a module
 	static final String GENE_COUNT = "gene count";
+	// And its SQRT value for visual mapping
+	static final String GENE_COUNT_SQRT = "SQRT of gene count";
+	
 	static final String SCORE = "score";
 	static final String EDGE_SCORE = "edge score";
 	static final String NODE_SIZE = "complex node size";
@@ -256,8 +264,9 @@ public class NestedNetworkCreator {
 		moduleToCyNodeMap.put(module, newNode);
 		overviewNetwork.addNode(newNode);
 		final Set<String> genes = module.getMemberValues();
-		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT, Integer
-				.valueOf(genes.size()));
+		final Integer geneCount = Integer.valueOf(genes.size());
+		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT, geneCount);
+		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT_SQRT, Math.sqrt(geneCount));
 		if (genes.size() > maxSize)
 			maxSize = genes.size();
 
@@ -368,7 +377,18 @@ public class NestedNetworkCreator {
 		final CyNetworkView targetView = Cytoscape.getNetworkView(network
 				.getIdentifier());
 		
-		targetView.applyLayout(CyLayouts.getLayout("force-directed"));
+		targetView.applyLayout(tuning());
 		//targetView.redrawGraph(false, true);
+	}
+	
+	private CyLayoutAlgorithm tuning() {
+		final CyLayoutAlgorithm fd = CyLayouts.getLayout(LAYOUT_ALGORITHM);
+	
+		fd.getSettings().get("defaultSpringLength").setValue("90");
+		fd.getSettings().get("defaultNodeMass").setValue("8");
+		fd.getSettings().updateValues();
+		fd.updateSettings();
+		
+		return fd;
 	}
 }

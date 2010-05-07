@@ -42,8 +42,11 @@ public class VisualStyleObserver implements PropertyChangeListener {
 	private void restoreVS() {
 		// Load new styles.
 		final VisualStyle currentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
-		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, visualStypePropLocation);
 		
+		if(Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_MODULE_NAME) == null ||
+				Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_OVERVIEW_NAME) == null) {
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, visualStypePropLocation);
+		}
 		overviewVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_OVERVIEW_NAME);
 		moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_MODULE_NAME);
 		
@@ -67,10 +70,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 			
 			final CyNetworkView view = (CyNetworkView) newVal;
 			
-			System.out.println("!!!!!!!! View Created for: " + view.getNetwork().getTitle());
-			
 			Object type = Cytoscape.getNetworkAttributes().getAttribute(view.getNetwork().getIdentifier(), NETWORK_TYPE_ATTRIBUTE_NAME);
-			System.out.println("Type is : " + type);
 			
 			if(type == null)
 				return;
@@ -78,10 +78,6 @@ public class VisualStyleObserver implements PropertyChangeListener {
 			final VisualStyle style = styleMap.get(type.toString());
 			if(style == null)
 				return;
-			
-			System.out.println("Target Style is : " + style.getName());
-			
-			
 			
 			view.setVisualStyle(style.getName());
 			if(Cytoscape.getVisualMappingManager().getVisualStyle().equals(style) == false)
