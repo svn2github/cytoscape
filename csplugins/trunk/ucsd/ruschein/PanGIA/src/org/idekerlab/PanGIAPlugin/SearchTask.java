@@ -50,14 +50,14 @@ public class SearchTask implements Task {
 		taskMonitor.setStatus("Searching for complexes...");
 
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
-		final SFNetwork physicalNetwork = prepareNetwork(physicalInputNetwork,
-		                                                 parameters.getPhysicalEdgeAttrName(),
-		                                                 parameters.getPhysicalScalingMethod());
+		final SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork,
+		                                                              parameters.getPhysicalEdgeAttrName(),
+		                                                              parameters.getPhysicalScalingMethod());
 
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
-		final SFNetwork geneticNetwork = prepareNetwork(geneticInputNetwork,
-		                                                 parameters.getGeneticEdgeAttrName(),
-		                                                 parameters.getGeneticScalingMethod());
+		final SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork,
+		                                                             parameters.getGeneticEdgeAttrName(),
+		                                                             parameters.getGeneticScalingMethod());
 		
 		final HCScoringFunction hcScoringFunction =
 			new SouravScore(physicalNetwork, geneticNetwork,
@@ -104,43 +104,6 @@ public class SearchTask implements Task {
 		}
 
 		
-	}
-
-
-	private SFNetwork prepareNetwork(final CyNetwork inputNetwork, final String edgeAttribName,
-	                                 final ScalingMethod scalingMethod)
-	{
-		final SFNetwork unscaledNetwork = convertCyNetworkToSFNetwork(inputNetwork, edgeAttribName);
-		switch (scalingMethod) {
-		case NONE:
-			return unscaledNetwork;
-		case LINEAR_LOWER:
-			return scaleUsingLinearLowerMethod(unscaledNetwork);
-		case LINEAR_UPPER:
-			return scaleUsingLinearUpperMethod(unscaledNetwork);
-		case RANK_LOWER:
-			return scaleUsingLinearLowerMethod(unscaledNetwork);
-		case RANK_UPPER:
-			return scaleUsingLinearUpperMethod(unscaledNetwork);
-		default:
-			throw new IllegalStateException("unknown scaling method: " + scalingMethod + "!");
-		}
-	}
-
-	private SFNetwork scaleUsingLinearLowerMethod(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleUsingLinearUpperMethod(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleUsingRankLowerMethod(SFNetwork network) {
-		return network;
-	}
-
-	private SFNetwork scaleUsingRankUpperMethod(SFNetwork network) {
-		return network;
 	}
 
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
@@ -265,7 +228,8 @@ public class SearchTask implements Task {
 	 *  @param inputNetwork    name of the network that will be converted
 	 *  @param numericAttrName optional name of a numeric edge attribute.  Should this be missing, 1.0 will be assumed for all edges
 	 */
-	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName)
+	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName,
+	                                              final ScalingMethod scalingMethod)
 		throws IllegalArgumentException, ClassCastException
 	{
 		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
