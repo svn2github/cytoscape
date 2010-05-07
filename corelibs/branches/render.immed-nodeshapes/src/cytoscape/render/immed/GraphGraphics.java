@@ -199,7 +199,6 @@ public final class GraphGraphics {
 	private final GeneralPath m_path2d = new GeneralPath();
 	private final GeneralPath m_path2dPrime = new GeneralPath();
 	private final Line2D.Double m_line2d = new Line2D.Double();
-	private final HashMap<Byte, double[]> m_customShapes = new HashMap<Byte, double[]>();
 	private final double[] m_ptsBuff = new double[4];
 
 	// package scoped for unit testing
@@ -302,10 +301,7 @@ public final class GraphGraphics {
 	public final void clear(final Paint bgPaint, final double xCenter,
 			final double yCenter, final double scaleFactor) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 
 			if (!(scaleFactor > 0.0d)) {
 				throw new IllegalArgumentException(
@@ -369,15 +365,8 @@ public final class GraphGraphics {
 	 */
 	public final void xformImageToNodeCoords(final double[] coords) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
+			checkDispatchThread();
+			checkCleared();
 		}
 
 		try {
@@ -426,23 +415,10 @@ public final class GraphGraphics {
 	public final void drawNodeLow(final float xMin, final float yMin,
 			final float xMax, final float yMax, final Color fillColor) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
-
-			if (!(xMin < xMax)) {
-				throw new IllegalArgumentException("xMin not less than xMax");
-			}
-
-			if (!(yMin < yMax)) {
-				throw new IllegalArgumentException("yMin not less than yMax");
-			}
+			checkDispatchThread();
+			checkCleared();
+			checkOrder(xMin,xMax,"x");
+			checkOrder(yMin,yMax,"y");
 
 			if (fillColor.getAlpha() != 255) {
 				throw new IllegalArgumentException("fillColor is not opaque");
@@ -548,23 +524,10 @@ public final class GraphGraphics {
 			final Paint fillPaint, final float borderWidth,
 			final Paint borderPaint) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
-
-			if (!(xMin < xMax)) {
-				throw new IllegalArgumentException("xMin not less than xMax");
-			}
-
-			if (!(yMin < yMax)) {
-				throw new IllegalArgumentException("yMin not less than yMax");
-			}
+			checkDispatchThread();
+			checkCleared();
+			checkOrder(xMin,xMax,"x");
+			checkOrder(yMin,yMax,"y");
 
 			if (!(borderWidth >= 0.0f)) {
 				throw new IllegalArgumentException(
@@ -576,17 +539,6 @@ public final class GraphGraphics {
 				throw new IllegalArgumentException(
 						"borderWidth is not less than the minimum of node width and node "
 								+ "height divided by six");
-			}
-
-			if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				final double width = ((double) xMax) - xMin;
-				final double height = ((double) yMax) - yMin;
-
-				if (!(Math.max(width, height) < (2.0d * Math.min(width, height)))) {
-					throw new IllegalArgumentException(
-							"rounded rectangle does not meet constraint "
-									+ "max(width, height) < 2 * min(width, height)");
-				}
 			}
 		}
 
@@ -628,29 +580,9 @@ public final class GraphGraphics {
 			final float yMin, final float xMax, final float yMax,
 			final GeneralPath path) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!(xMin < xMax)) {
-				throw new IllegalArgumentException("xMin not less than xMax");
-			}
-
-			if (!(yMin < yMax)) {
-				throw new IllegalArgumentException("yMin not less than yMax");
-			}
-
-			if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				final double width = ((double) xMax) - xMin;
-				final double height = ((double) yMax) - yMin;
-
-				if (!(Math.max(width, height) < (2.0d * Math.min(width, height)))) {
-					throw new IllegalArgumentException(
-							"rounded rectangle does not meet constraint "
-									+ "max(width, height) < 2 * min(width, height)");
-				}
-			}
+			checkDispatchThread();
+			checkOrder(xMin,xMax,"x");
+			checkOrder(yMin,yMax,"y");
 		}
 
 		path.reset();
@@ -710,127 +642,109 @@ public final class GraphGraphics {
 	 */
 	public final byte defineCustomNodeShape(final float[] coords,
 			final int offset, final int vertexCount) {
+		if (m_debug) {
+			checkDispatchThread();
+		}
+
 		if (vertexCount > CUSTOM_SHAPE_MAX_VERTICES) {
-			throw new IllegalArgumentException(
-					"too many vertices (greater than "
+			throw new IllegalArgumentException( "too many vertices (greater than "
 							+ CUSTOM_SHAPE_MAX_VERTICES + ")");
 		}
 
-		final double[] polyCoords;
+		final double[] polyCoords = new double[vertexCount * 2];
 
-		{
-			polyCoords = new double[vertexCount * 2];
+		for (int i = 0; i < polyCoords.length; i++)
+			polyCoords[i] = coords[offset + i];
 
-			for (int i = 0; i < polyCoords.length; i++)
-				polyCoords[i] = coords[offset + i];
+		// Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
+		double xMin = Double.POSITIVE_INFINITY;
+		double yMin = Double.POSITIVE_INFINITY;
+		double xMax = Double.NEGATIVE_INFINITY;
+		double yMax = Double.NEGATIVE_INFINITY;
 
-			// Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
-			double xMin = Double.POSITIVE_INFINITY;
-			double yMin = Double.POSITIVE_INFINITY;
-			double xMax = Double.NEGATIVE_INFINITY;
-			double yMax = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < polyCoords.length;) {
+			xMin = Math.min(xMin, coords[i]);
+			xMax = Math.max(xMax, coords[i++]);
+			yMin = Math.min(yMin, coords[i]);
+			yMax = Math.max(yMax, coords[i++]);
+		}
 
-			for (int i = 0; i < polyCoords.length;) {
-				xMin = Math.min(xMin, coords[i]);
-				xMax = Math.max(xMax, coords[i++]);
-				yMin = Math.min(yMin, coords[i]);
-				yMax = Math.max(yMax, coords[i++]);
-			}
+		final double xDist = xMax - xMin;
 
-			final double xDist = xMax - xMin;
+		if (xDist == 0.0d) 
+			throw new IllegalArgumentException( "polygon does not move in the X direction");
 
-			if (xDist == 0.0d) {
+		final double yDist = yMax - yMin;
+
+		if (yDist == 0.0d) 
+				throw new IllegalArgumentException( "polygon does not move in the Y direction");
+
+		final double xMid = (xMin + xMax) / 2.0d;
+		final double yMid = (yMin + yMax) / 2.0d;
+
+		for (int i = 0; i < polyCoords.length;) {
+			double foo = (polyCoords[i] - xMid) / xDist;
+			polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
+			foo = (polyCoords[i] - yMid) / yDist;
+			polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
+		}
+
+
+		int yInterceptsCenter = 0;
+
+		for (int i = 0; i < vertexCount; i++) {
+			final double x0 = polyCoords[i * 2];
+			final double y0 = polyCoords[(i * 2) + 1];
+			final double x1 = polyCoords[((i * 2) + 2) % (vertexCount * 2)];
+			final double y1 = polyCoords[((i * 2) + 3) % (vertexCount * 2)];
+			final double x2 = polyCoords[((i * 2) + 4) % (vertexCount * 2)];
+			final double y2 = polyCoords[((i * 2) + 5) % (vertexCount * 2)];
+			final double distP0P1 = Math.sqrt(((x1 - x0) * (x1 - x0)) + ((y1 - y0) * (y1 - y0)));
+
+			// Too close to distance zero.
+			if ((float) distP0P1 == 0.0f) { 
 				throw new IllegalArgumentException(
-						"polygon does not move in the X direction");
+						"a line segment has distance [too close to] zero");
 			}
 
-			final double yDist = yMax - yMin;
+			final double distP2fromP0P1 = ((((y0 - y1) * x2)
+					+ ((x1 - x0) * y2) + (x0 * y1)) - (x1 * y0)) / distP0P1;
 
-			if (yDist == 0.0d) {
+			// Too close to parallel.
+			if ((float) distP2fromP0P1 == 0.0f) { 
 				throw new IllegalArgumentException(
-						"polygon does not move in the Y direction");
+						"either a line segment has distance [too close to] zero or "
+								+ "two consecutive line segments are [too close to] parallel");
 			}
 
-			final double xMid = (xMin + xMax) / 2.0d;
-			final double yMid = (yMin + yMax) / 2.0d;
+			final double distCenterFromP0P1 = ((x0 * y1) - (x1 * y0)) / distP0P1;
 
-			for (int i = 0; i < polyCoords.length;) {
-				double foo = (polyCoords[i] - xMid) / xDist;
-				polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
-				foo = (polyCoords[i] - yMid) / yDist;
-				polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
+			if (!((float) distCenterFromP0P1 > 0.0f)) {
+				throw new IllegalArgumentException(
+						"polygon is going counter-clockwise or is not star-shaped with "
+								+ "respect to center");
+			}
+
+			if ((Math.min(y0, y1) < 0.0d) && (Math.max(y0, y1) >= 0.0d)) {
+				yInterceptsCenter++;
 			}
 		}
 
-		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-		}
-
-		{ // Test all criteria regardless of m_debug.
-
-			int yInterceptsCenter = 0;
-
-			for (int i = 0; i < vertexCount; i++) {
-				final double x0 = polyCoords[i * 2];
-				final double y0 = polyCoords[(i * 2) + 1];
-				final double x1 = polyCoords[((i * 2) + 2) % (vertexCount * 2)];
-				final double y1 = polyCoords[((i * 2) + 3) % (vertexCount * 2)];
-				final double x2 = polyCoords[((i * 2) + 4) % (vertexCount * 2)];
-				final double y2 = polyCoords[((i * 2) + 5) % (vertexCount * 2)];
-				final double distP0P1 = Math.sqrt(((x1 - x0) * (x1 - x0))
-						+ ((y1 - y0) * (y1 - y0)));
-
-				if ((float) distP0P1 == 0.0f) { // Too close to distance zero.
-					throw new IllegalArgumentException(
-							"a line segment has distance [too close to] zero");
-				}
-
-				final double distP2fromP0P1 = ((((y0 - y1) * x2)
-						+ ((x1 - x0) * y2) + (x0 * y1)) - (x1 * y0))
-						/ distP0P1;
-
-				if ((float) distP2fromP0P1 == 0.0f) { // Too close to
-					// parallel.
-					throw new IllegalArgumentException(
-							"either a line segment has distance [too close to] zero or "
-									+ "two consecutive line segments are [too close to] parallel");
-				}
-
-				final double distCenterFromP0P1 = ((x0 * y1) - (x1 * y0))
-						/ distP0P1;
-
-				if (!((float) distCenterFromP0P1 > 0.0f)) {
-					throw new IllegalArgumentException(
-							"polygon is going counter-clockwise or is not star-shaped with "
-									+ "respect to center");
-				}
-
-				if ((Math.min(y0, y1) < 0.0d) && (Math.max(y0, y1) >= 0.0d)) {
-					yInterceptsCenter++;
-				}
-			}
-
-			if (yInterceptsCenter != 2) {
-				throw new IllegalArgumentException(
-						"the polygon self-intersects (we know this because the winding "
-								+ "number of the center is not one)");
-			}
+		if (yInterceptsCenter != 2) {
+			throw new IllegalArgumentException(
+					"the polygon self-intersects (we know this because the winding "
+							+ "number of the center is not one)");
 		}
 
 		// polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
 		// that passes all of the criteria.
 		final byte nextCustomShapeType = (byte) (m_lastCustomShapeType + 1);
 
-		if (nextCustomShapeType < 0) {
-			throw new IllegalStateException(
-					"too many custom node shapes are already defined");
-		}
+		if (nextCustomShapeType < 0) 
+			throw new IllegalStateException( "too many custom node shapes are already defined");
 
 		m_lastCustomShapeType++;
-		m_customShapes.put(new Byte(nextCustomShapeType), polyCoords);
+		nodeShapes.put(nextCustomShapeType, new LegacyCustomNodeShape(polyCoords,nextCustomShapeType));
 
 		return nextCustomShapeType;
 	}
@@ -840,10 +754,7 @@ public final class GraphGraphics {
 	 */
 	public final boolean customNodeShapeExists(final byte shape) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 		}
 
 		return (shape > s_last_shape) && (shape <= m_lastCustomShapeType);
@@ -856,10 +767,7 @@ public final class GraphGraphics {
 	 */
 	public final byte[] getCustomNodeShapes() {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 		}
 
 		final byte[] returnThis = new byte[m_lastCustomShapeType - s_last_shape];
@@ -879,25 +787,14 @@ public final class GraphGraphics {
 	 */
 	public final float[] getCustomNodeShape(final byte customShape) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 		}
 
-		final double[] dCoords = m_customShapes.get(new Byte(customShape));
-
-		if (dCoords == null) {
+		if ( !customNodeShapeExists(customShape) )
 			return null;
-		}
 
-		final float[] returnThis = new float[dCoords.length];
-
-		for (int i = 0; i < returnThis.length; i++) {
-			returnThis[i] = (float) dCoords[i];
-		}
-
-		return returnThis;
+		LegacyCustomNodeShape ns = (LegacyCustomNodeShape)(nodeShapes.get(customShape));
+		return ns.getCoords();
 	}
 
 	/**
@@ -912,10 +809,7 @@ public final class GraphGraphics {
 	 */
 	public final void importCustomNodeShapes(final GraphGraphics grafx) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 		}
 
 		// I define this error check outside the scope of m_debug because
@@ -925,8 +819,8 @@ public final class GraphGraphics {
 					"a custom node shape is already defined in this GraphGraphics");
 		}
 
-		for (Map.Entry<Byte, double[]> entry : grafx.m_customShapes.entrySet()) {
-			m_customShapes.put(entry.getKey(), entry.getValue());
+		for (Map.Entry<Byte, NodeShape> entry : grafx.nodeShapes.entrySet()) {
+			nodeShapes.put(entry.getKey(), entry.getValue());
 			m_lastCustomShapeType++;
 		}
 	}
@@ -939,43 +833,6 @@ public final class GraphGraphics {
 		else
 			return null;
 	}
-
-/*
-		default: // Try a custom node shape or throw an exception.
-
-			final double[] storedPolyCoords = // To optimize don't construct Byte.
-			m_customShapes.get(Byte.valueOf(nodeShape));
-
-			if (storedPolyCoords == null) {
-				throw new IllegalArgumentException("nodeShape is not recognized");
-			}
-
-			m_polyNumPoints = storedPolyCoords.length / 2;
-
-			final double desiredXCenter = (xMin + xMax) / 2.0d;
-			final double desiredYCenter = (yMin + yMax) / 2.0d;
-			final double desiredWidth = xMax - xMin;
-			final double desiredHeight = yMax - yMin;
-			m_xformUtil.setToTranslation(desiredXCenter, desiredYCenter);
-			m_xformUtil.scale(desiredWidth, desiredHeight);
-			m_xformUtil.transform(storedPolyCoords, 0, m_polyCoords, 0,
-					m_polyNumPoints);
-
-			break;
-		}
-
-		m_path2d.reset();
-
-		m_path2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-
-		for (int i = 2; i < (m_polyNumPoints * 2);)
-			m_path2d.lineTo((float) m_polyCoords[i++],
-					(float) m_polyCoords[i++]);
-
-		m_path2d.closePath();
-
-		return m_path2d;
-*/
 
 	/**
 	 * get list of node shapes.
@@ -1035,15 +892,8 @@ public final class GraphGraphics {
 	public final void drawEdgeLow(final float x0, final float y0,
 			final float x1, final float y1, final Color edgeColor) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
+			checkDispatchThread();
+			checkCleared();
 
 			if (edgeColor.getAlpha() != 255) {
 				throw new IllegalArgumentException("edgeColor is not opaque");
@@ -1358,63 +1208,27 @@ public final class GraphGraphics {
 			final Stroke edgeStroke,
 			final float edgeThickness, 
 			final EdgeAnchors anchors) {
-		if (!EventQueue.isDispatchThread()) {
-			throw new IllegalStateException("calling thread is not AWT event dispatcher");
-		}
-
-		if (!m_cleared) {
-			throw new IllegalStateException("clear() has not been called previously");
-		}
-
+		checkDispatchThread();
+		checkCleared();
 		if (!(edgeThickness >= 0.0f)) {
 			throw new IllegalArgumentException("edgeThickness < 0");
 		}
 
-		switch (arrow0Type) {
-		case ARROW_NONE:
-			break;
-
-		case ARROW_DELTA:
-		case ARROW_ARROWHEAD:
-		case ARROW_DIAMOND:
-		case ARROW_DISC:
-		case ARROW_TEE:
-		case ARROW_HALF_TOP:
-		case ARROW_HALF_BOTTOM:
-
-			if (!(arrow0Size >= edgeThickness)) {
-				throw new IllegalArgumentException(
-						"arrow size must be at least as large as edge thickness");
-			}
-
-			break;
-
-		default:
+		if ( !arrows.containsKey( arrow0Type ) )
 			throw new IllegalArgumentException("arrow0Type is not recognized");
-		}
 
-		switch (arrow1Type) {
-		case ARROW_NONE:
-			break;
-
-		case ARROW_DELTA:
-		case ARROW_ARROWHEAD:
-		case ARROW_DIAMOND:
-		case ARROW_DISC:
-		case ARROW_TEE:
-		case ARROW_HALF_TOP:
-		case ARROW_HALF_BOTTOM:
-
-			if (!(arrow1Size >= edgeThickness)) {
+		if ( arrow0Type != ARROW_NONE )
+			if (!(arrow0Size >= edgeThickness)) 
 				throw new IllegalArgumentException(
 						"arrow size must be at least as large as edge thickness");
-			}
 
-			break;
-
-		default:
+		if ( !arrows.containsKey( arrow1Type ) )
 			throw new IllegalArgumentException("arrow1Type is not recognized");
-		}
+
+		if ( arrow1Type != ARROW_NONE )
+			if (!(arrow1Size >= edgeThickness)) 
+				throw new IllegalArgumentException(
+						"arrow size must be at least as large as edge thickness");
 
 		if (anchors.numAnchors() > MAX_EDGE_ANCHORS) {
 			throw new IllegalArgumentException("at most MAX_EDGE_ANCHORS ("
@@ -1598,42 +1412,13 @@ public final class GraphGraphics {
 		}
 
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 
-			switch (arrow0Type) {
-			case ARROW_NONE:
-			case ARROW_DELTA:
-			case ARROW_ARROWHEAD:
-			case ARROW_DIAMOND:
-			case ARROW_DISC:
-			case ARROW_TEE:
-			case ARROW_HALF_TOP:
-			case ARROW_HALF_BOTTOM:
-				break;
+			if ( !arrows.containsKey( arrow0Type ) )
+				throw new IllegalArgumentException("arrow0Type is not recognized");
 
-			default:
-				throw new IllegalArgumentException(
-						"arrow0Type is not recognized");
-			}
-
-			switch (arrow1Type) {
-			case ARROW_NONE:
-			case ARROW_DELTA:
-			case ARROW_ARROWHEAD:
-			case ARROW_DIAMOND:
-			case ARROW_DISC:
-			case ARROW_TEE:
-			case ARROW_HALF_TOP:
-			case ARROW_HALF_BOTTOM:
-				break;
-
-			default:
-				throw new IllegalArgumentException(
-						"arrow1Type is not recognized");
-			}
+			if ( !arrows.containsKey( arrow1Type ) )
+				throw new IllegalArgumentException("arrow1Type is not recognized");
 
 			if (anchors.numAnchors() > MAX_EDGE_ANCHORS) {
 				throw new IllegalArgumentException("at most MAX_EDGE_ANCHORS ("
@@ -1956,32 +1741,11 @@ public final class GraphGraphics {
 			final float yMax, final float offset, final float ptX,
 			final float ptY, final float[] returnVal) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!(xMin < xMax)) {
-				throw new IllegalArgumentException("xMin not less than xMax");
-			}
-
-			if (!(yMin < yMax)) {
-				throw new IllegalArgumentException("yMin not less than yMax");
-			}
-
-			if (!(offset >= 0.0f)) {
+			checkDispatchThread();
+			checkOrder(xMin,xMax,"x");
+			checkOrder(yMin,yMax,"y");
+			if (offset < 0.0f) {
 				throw new IllegalArgumentException("offset < 0");
-			}
-
-			if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				final double width = ((double) xMax) - xMin;
-				final double height = ((double) yMax) - yMin;
-
-				if (!(Math.max(width, height) < (2.0d * Math.min(width, height)))) {
-					throw new IllegalArgumentException(
-							"rounded rectangle does not meet constraint "
-									+ "max(width, height) < 2 * min(width, height)");
-				}
 			}
 		}
 
@@ -2025,16 +1789,8 @@ public final class GraphGraphics {
 	public final void drawTextLow(final Font font, final String text,
 			final float xCenter, final float yCenter, final Color color) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
-
+			checkDispatchThread();
+			checkCleared();
 			if (color.getAlpha() != 255) {
 				throw new IllegalStateException("color is not opaque");
 			}
@@ -2051,8 +1807,7 @@ public final class GraphGraphics {
 
 		final FontMetrics fMetrics = m_gMinimal.getFontMetrics();
 		m_gMinimal.setColor(color);
-		m_gMinimal
-				.drawString(
+		m_gMinimal.drawString(
 						text,
 						(int) ((-0.5d * fMetrics.stringWidth(text)) + m_ptsBuff[0]),
 						(int) ((0.5d * fMetrics.getHeight())
@@ -2068,10 +1823,7 @@ public final class GraphGraphics {
 	 */
 	public final FontRenderContext getFontRenderContextLow() {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 		}
 
 		if (m_gMinimal == null) {
@@ -2139,19 +1891,10 @@ public final class GraphGraphics {
 			final String text, final float xCenter, final float yCenter,
 			final float theta, final Paint paint, final boolean drawTextAsShape) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
-
-			if (!(scaleFactor >= 0.0d)) {
-				throw new IllegalArgumentException(
-						"scaleFactor must be positive");
+			checkDispatchThread();
+			checkCleared();
+			if (scaleFactor < 0.0) {
+				throw new IllegalArgumentException("scaleFactor must be positive");
 			}
 		}
 
@@ -2200,9 +1943,7 @@ public final class GraphGraphics {
 	 */
 	public final FontRenderContext getFontRenderContextFull() {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException("calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 		}
 
 		return m_fontRenderContextFull;
@@ -2228,15 +1969,8 @@ public final class GraphGraphics {
 	public final void drawCustomGraphicFull(final Shape shape,
 			final float xOffset, final float yOffset, final Paint paint) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
+			checkDispatchThread();
+			checkCleared();
 		}
 
 		m_g2d.translate(xOffset, yOffset);
@@ -2252,5 +1986,20 @@ public final class GraphGraphics {
 			borderStrokes.put(borderWidth, s);
 		}
 		return s; 
+	}
+
+	private void checkDispatchThread() {
+		if (!EventQueue.isDispatchThread()) 
+			throw new IllegalStateException( "calling thread is not AWT event dispatcher");
+	}
+
+	private void checkCleared() {
+		if (!m_cleared) 
+			throw new IllegalStateException( "clear() has not been called previously");
+	}
+
+	private void checkOrder(float min, float max, String id) {
+		if (!(min < max)) 
+			throw new IllegalArgumentException( id + "Min not less than " + id + "Max");
 	}
 }
