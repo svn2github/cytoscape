@@ -36,27 +36,59 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEvent;
-import org.cytoscape.event.AbstractCyEvent;
+import junit.framework.Assert;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
+import static org.mockito.Mockito.*;
 
 /**
  * DOCUMENT ME!
   */
-class AbstractNodeEvent extends AbstractCyEvent<CyNetwork> {
-	private final CyNode node;
+public class AddedNodeEventTest extends TestCase {
 
-	AbstractNodeEvent(final CyNetwork source, final Class listenerClass, final CyNode node) {
-		super(source, listenerClass);
-		if ( node == null )
-			throw new NullPointerException("node cannot be null");
-		this.node = node;
+	AddedNodeEvent event;
+	CyNode node;
+	CyNetwork net;
+
+	public void setUp() {
+		node = mock(CyNode.class); 
+		net = mock(CyNetwork.class); 
+		event = new AddedNodeEvent(net,node);
 	}
 
-	public CyNode getNode() {
-		return node;
+	public void testGetNode() {
+		assertEquals( event.getNode(), node );
 	}
+
+	public void testGetSource() {
+		assertEquals( event.getSource(), net );
+	}
+
+	public void testGetListenerClass() {
+		assertEquals( event.getListenerClass(), AddedNodeListener.class );
+	}
+
+	public void testNullNode() {
+		try {
+			AddedNodeEvent ev = new AddedNodeEvent(net, null);
+		} catch (NullPointerException npe) {
+			return;
+		}
+		fail("didn't catch expected npe for node");
+	}
+
+	public void testNullNetwork() {
+		try {
+			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+		} catch (NullPointerException npe) {
+			return;
+		}
+		fail("didn't catch expected npe for network");
+	}
+		
 }
