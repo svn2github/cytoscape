@@ -10,6 +10,7 @@ import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge;
 import org.idekerlab.PanGIAPlugin.ModFinder.HCScoringFunction;
 import org.idekerlab.PanGIAPlugin.ModFinder.HCSearch2;
 import org.idekerlab.PanGIAPlugin.ModFinder.SouravScore;
+import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge.InteractionType;
 import org.idekerlab.PanGIAPlugin.data.DoubleVector;
 import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
 import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
@@ -33,6 +34,8 @@ public class SearchTask implements Task {
 	private static final float SEARCH_PERCENTAGE      = 40.0f; // Progress bar should go up to here for the search part.
 	private static final float COMPUTE_SIG_PERCENTAGE = 95.0f; // Progress bar should go up to here for the permutations part.
 	
+	protected static final String EDGE_TYPE_ATTR_NAME = "Module Finder.Interaction Type";
+	
 	private TaskMonitor taskMonitor = null;
 	boolean needsToHalt = false;
 	static int numOfRuns = 1;
@@ -50,14 +53,18 @@ public class SearchTask implements Task {
 		taskMonitor.setStatus("Searching for complexes...");
 
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
-		final SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork,
-		                                                              parameters.getPhysicalEdgeAttrName(),
-		                                                              parameters.getPhysicalScalingMethod());
+		addEdgeType(physicalInputNetwork, InteractionType.Physical);
+		
+		final SFNetwork physicalNetwork = prepareNetwork(physicalInputNetwork,
+		                                                 parameters.getPhysicalEdgeAttrName(),
+		                                                 parameters.getPhysicalScalingMethod());
 
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
-		final SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork,
-		                                                             parameters.getGeneticEdgeAttrName(),
-		                                                             parameters.getGeneticScalingMethod());
+		addEdgeType(geneticInputNetwork, InteractionType.Genetic);
+		
+		final SFNetwork geneticNetwork = prepareNetwork(geneticInputNetwork,
+		                                                 parameters.getGeneticEdgeAttrName(),
+		                                                 parameters.getGeneticScalingMethod());
 		
 		final HCScoringFunction hcScoringFunction =
 			new SouravScore(physicalNetwork, geneticNetwork,
@@ -104,6 +111,43 @@ public class SearchTask implements Task {
 		}
 
 		
+	}
+
+
+	private SFNetwork prepareNetwork(final CyNetwork inputNetwork, final String edgeAttribName,
+	                                 final ScalingMethod scalingMethod)
+	{
+		final SFNetwork unscaledNetwork = convertCyNetworkToSFNetwork(inputNetwork, edgeAttribName);
+		switch (scalingMethod) {
+		case NONE:
+			return unscaledNetwork;
+		case LINEAR_LOWER:
+			return scaleUsingLinearLowerMethod(unscaledNetwork);
+		case LINEAR_UPPER:
+			return scaleUsingLinearUpperMethod(unscaledNetwork);
+		case RANK_LOWER:
+			return scaleUsingLinearLowerMethod(unscaledNetwork);
+		case RANK_UPPER:
+			return scaleUsingLinearUpperMethod(unscaledNetwork);
+		default:
+			throw new IllegalStateException("unknown scaling method: " + scalingMethod + "!");
+		}
+	}
+
+	private SFNetwork scaleUsingLinearLowerMethod(SFNetwork network) {
+		return network;
+	}
+
+	private SFNetwork scaleUsingLinearUpperMethod(SFNetwork network) {
+		return network;
+	}
+
+	private SFNetwork scaleUsingRankLowerMethod(SFNetwork network) {
+		return network;
+	}
+
+	private SFNetwork scaleUsingRankUpperMethod(SFNetwork network) {
+		return network;
 	}
 
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
@@ -228,8 +272,7 @@ public class SearchTask implements Task {
 	 *  @param inputNetwork    name of the network that will be converted
 	 *  @param numericAttrName optional name of a numeric edge attribute.  Should this be missing, 1.0 will be assumed for all edges
 	 */
-	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName,
-	                                              final ScalingMethod scalingMethod)
+	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName)
 		throws IllegalArgumentException, ClassCastException
 	{
 		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
@@ -269,5 +312,13 @@ public class SearchTask implements Task {
 		}
 
 		return outputNetwork;
+	}
+	
+	private void addEdgeType(final CyNetwork inputNetwork, final InteractionType edgeType) {
+		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		final List<CyEdge> edgeList = inputNetwork.edgesList();
+		
+		for(CyEdge edge: edgeList)
+			edgeAttr.setAttribute(edge.getIdentifier(), EDGE_TYPE_ATTR_NAME, edgeType.name());
 	}
 }

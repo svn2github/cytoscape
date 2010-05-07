@@ -19,6 +19,7 @@ import cytoscape.visual.VisualStyle;
  */
 public class VisualStyleObserver implements PropertyChangeListener {
 	
+	// Name of the network attribute for checking network type.
 	protected static final String NETWORK_TYPE_ATTRIBUTE_NAME = "Network Type";
 	
 	private static final URL visualStypePropLocation = PanGIAPlugin.class.getResource("/resources/PanGIAVS.props");
@@ -85,5 +86,4 @@ public class VisualStyleObserver implements PropertyChangeListener {
 			view.redrawGraph(false, true);
 		}
 	}
-
 }

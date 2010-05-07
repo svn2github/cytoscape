@@ -22,7 +22,6 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
-import cytoscape.layout.LayoutProperties;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
@@ -32,6 +31,7 @@ import cytoscape.view.CyNetworkView;
  * score.
  */
 class NetworkAndScore implements Comparable<NetworkAndScore> {
+	
 	private final String nodeName;
 	private final Set<String> genes;
 	private final double score;
@@ -129,6 +129,7 @@ public class NestedNetworkCreator {
 			final double cutoff, final TaskMonitor taskMonitor,
 			final float remainingPercentage) {
 		
+		// Network attributes created here is required for managing Visual Styles.
 		final CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
 		
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
@@ -140,7 +141,8 @@ public class NestedNetworkCreator {
 				findNextAvailableNetworkName("Complex Search Results: "
 						+ new java.util.Date()),
 				/* create_view = */false);
-		networkAttr.setAttribute(overviewNetwork.getIdentifier(), VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.OVERVIEW.name());
+		networkAttr.setAttribute(overviewNetwork.getIdentifier(), 
+				VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.OVERVIEW.name());
 		networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		networkAttr.setUserEditable(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		
@@ -238,11 +240,7 @@ public class NestedNetworkCreator {
 			final CyNetwork nestedNetwork = generateNestedNetwork(network
 					.getNodeName(), network.getGenes(), origPhysNetwork,
 					createView, networkAttr);
-			final CyNode node = Cytoscape.getCyNode(network.getNodeName(), /*
-																			 * create
-																			 * =
-																			 */
-					false);
+			final CyNode node = Cytoscape.getCyNode(network.getNodeName(), false);
 			node.setNestedNetwork(nestedNetwork);
 
 			percentCompleted += percentIncrement;
@@ -286,8 +284,9 @@ public class NestedNetworkCreator {
 		if (nodeNames.isEmpty())
 			return null;
 
-		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName,
-		/* create_view = */false);
+		// First, create network without view.
+		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName, false);
+		
 		networkAttr.setAttribute(nestedNetwork.getIdentifier(), 
 				VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
 

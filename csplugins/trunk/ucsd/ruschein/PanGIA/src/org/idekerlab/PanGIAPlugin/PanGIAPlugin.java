@@ -15,6 +15,10 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
+ * PanGIA Plugin main class.
+ * 
+ * <p>
+ * 
  * 
  * @author kono, ruschein
  *
@@ -33,11 +37,11 @@ public class PanGIAPlugin extends CytoscapePlugin {
 		this.vsObserver = new VisualStyleObserver();
 		
 		final JMenuItem menuItem = new JMenuItem(PLUGIN_NAME);
-		
 		menuItem.addActionListener(new PluginAction());
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
 				"Plugins.Module Finders...").add(menuItem);
 	}
+	
 
 	class PluginAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
