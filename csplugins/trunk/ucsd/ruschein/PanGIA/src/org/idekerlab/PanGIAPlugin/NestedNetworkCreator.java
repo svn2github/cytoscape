@@ -304,14 +304,18 @@ public class NestedNetworkCreator {
 		// Add the edges induced by "origPhysNetwork" to our new nested network.
 		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork
 				.getConnectingEdges(nodes);
-		for (final CyEdge edge : edges)
-			nestedNetwork.addEdge(edge);
+		if (edges != null) {
+			for (final CyEdge edge : edges)
+				nestedNetwork.addEdge(edge);
+		}
 
 		// Add the edges induced by "origGenNetwork" to our new nested network.
 		edges = (List<CyEdge>) origGenNetwork
 				.getConnectingEdges(nodes);
-		for (final CyEdge edge : edges)
-			nestedNetwork.addEdge(edge);
+		if (edges != null) {
+			for (final CyEdge edge : edges)
+				nestedNetwork.addEdge(edge);
+		}
 
 		if (createNetworkView) {
 			Cytoscape.createNetworkView(nestedNetwork);
