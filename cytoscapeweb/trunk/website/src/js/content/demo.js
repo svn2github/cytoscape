@@ -300,13 +300,29 @@ $(function(){
         }
     });
 
-
-
+    // [dispose]
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    function dispose(){
+	    if(cw != null) {
+	    	cw.removeListener("click", "nodes")
+	    	  .removeListener("select", "nodes")
+	          .removeListener("deselect", "nodes")
+	          .removeListener("select", "edges")
+	          .removeListener("deselect", "edges")
+	          .removeListener("dblClick", "nodes")
+	          .removeListener("dblClick", "edges")
+	          .removeListener("layout");
+	    }
+    }
+    
     // [open] Create examples and utility function to open new graphs
     ////////////////////////////////////////////////////////////////////////////////////////////////
        
     // utility for opening a graph
     function open_graph(opt){
+    	dispose();
+    	
         var description;
         
         options = opt;
@@ -360,7 +376,6 @@ $(function(){
         } else {
             $("#cytoweb_container").cw().draw( opt );
         }
-        
     } 
     
     // example graphs
@@ -484,6 +499,9 @@ $(function(){
         });
         
         $(window).trigger("resize");
+        
+// TODO: remove this workaround! After opening an XGMML net, loading graphml does not apply correct styles
+        cw.visualStyle(cw.visualStyle());
     });
 
     open_graph(options);
@@ -993,8 +1011,10 @@ $(function(){
         var _srcId;
         function clickNodeToAddEdge(evt) {
             if (_srcId != null) {
-            	$("#cytoweb_container").cw().removeListener("click", "nodes", clickNodeToAddEdge);
-            	$("#cytoweb_container").cw().addEdge({ source: _srcId, target: evt.target.data.id }, true);
+            	cw.removeListener("click", "nodes", clickNodeToAddEdge);
+            	if (cw.node(_srcId)) {
+            		cw.addEdge({ source: _srcId, target: evt.target.data.id }, true);
+            	}
             	_srcId = null;
             }
         }
@@ -1188,34 +1208,36 @@ $(function(){
         
         function updateContextMenu(){
         	var cw = $("#cytoweb_container").cw();
+        	cw.removeAllContextMenuItems();
         	
-        	cw.removeContextMenuItem()
-            .addContextMenuItem("Delete node", "nodes", function(evt) {
-            	$("#cytoweb_container").cw().removeNode(evt.target, true);
+            cw.addContextMenuItem("Delete node", "nodes", function(evt) {
+            	cw.removeNode(evt.target, true);
+            	cw.removeListener("click", "nodes", clickNodeToAddEdge);
             	updateContextMenu();
             	update();
             })
             .addContextMenuItem("Delete edge", "edges", function(evt) {
-            	$("#cytoweb_container").cw().removeEdge(evt.target, true);
+            	cw.removeEdge(evt.target, true);
             	updateContextMenu();
             	update();
             })
         	.addContextMenuItem("Add new node", function(evt) {
-        		$("#cytoweb_container").cw().addNode(evt.mouseX, evt.mouseY, { }, true);
+        		cw.addNode(evt.mouseX, evt.mouseY, { }, true);
         		updateContextMenu();
         		update();
         	})
         	.addContextMenuItem("Add new edge (then click the target node...)", "nodes", function(evt) {
             	_srcId = evt.target.data.id;
-            	$("#cytoweb_container").cw().removeListener("click", "nodes", clickNodeToAddEdge);
-            	$("#cytoweb_container").cw().addListener("click", "nodes", clickNodeToAddEdge);
+            	cw.removeListener("click", "nodes", clickNodeToAddEdge);
+            	cw.addListener("click", "nodes", clickNodeToAddEdge);
             });
         	
         	var items = cw.selected();
         	if (items.length > 0) {
         		cw.addContextMenuItem("Delete selected", function(evt) {
                     //var items = cw.selected();
-        			$("#cytoweb_container").cw().removeElements(items, true);
+        			cw.removeElements(items, true);
+        			cw.removeListener("click", "nodes", clickNodeToAddEdge);
                     updateContextMenu();
                     update();
                 });

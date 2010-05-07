@@ -1,0 +1,31 @@
+<p>
+    This is a major alpha release of Cytoscape Web that has some great new features, 
+    such as the ability to add and delete nodes and edges, methods for changing data attributes, custom layout options,
+    and <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" rel="external">SIF</a>
+    format support for loading and exporting networks. We also fixed some bugs and made some other improvements.
+</p>
+<div class="relase_details">
+    <ul class="new_features">
+        <li><span class="bug_id">2154</span>: Import and export the network as SIF.</li>
+        <li><span class="bug_id">2156</span>: Ability to change node and edge attributes.</li>
+        <li><span class="bug_id">2157</span>: Ability to add/delete nodes and edges.</li>
+        <li><span class="bug_id">2158</span>: Custom layout settings.</li>
+        <li><span class="bug_id">2215</span>: Create option to reapply the visual mappers after filtering nodes and edges.</li>
+        <li><span class="bug_id">2220</span>: Ability to change nodes position <i>(use the "Preset" layout)</i>.</li>
+        <li><span class="bug_id">2221</span>: Get node/edge by its ID.</li>
+        <li><span class="bug_id">2231</span>: The layouts should ignore filtered-out elements.</li>
+        <li><span class="bug_id">2232</span>: Implement an easier way to pan the network <i>("grab to pan" button)</i>.</li>
+    </ul>
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2167</span>: Merged edges data object does not have source and target attributes.</li>
+        <li><span class="bug_id">2218</span>: Ant build fails without "build" directory.</li>
+        <li><span class="bug_id">2225</span>: Custom Mappers do not work with colors.</li>
+    </ul>
+    <ul class="other_changes">
+        <li>The function <code>layout()</code> now returns a Layout object, and not just the layout name.</li>
+        <li>New optional <code>firstNeighbors()</code> parameter that specifies whether or not to ignore filtered-out elements.</li>
+        <li>Removed the "CircleTree" layout. You can still achieve the same results by applying the "Circle" layout with the <code>"tree"</code> option set to <code>true</code>.</li>
+        <li>The "ForceDirected" layout should run a little bit faster in most of the cases.</li>
+        <li>Removed the <code>"visualstyle"</code> event, because visual styles are applied synchronously.</li>
+    </ul>
+</div>
