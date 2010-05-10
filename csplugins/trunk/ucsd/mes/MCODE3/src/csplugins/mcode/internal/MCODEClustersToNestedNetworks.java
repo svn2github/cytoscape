@@ -5,21 +5,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import csplugins.mcode.MCODEPlugin;
-import cytoscape.view.CyNetworkView;
-import cytoscape.util.CyNetworkNaming;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.CyLayouts;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.PropUtil;
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
@@ -27,26 +26,20 @@ import cytoscape.visual.VisualStyle;
 
 public class MCODEClustersToNestedNetworks {
 
-	public static URL url1 = MCODEPlugin.class.getResource("/csplugins/mcode/resources/MCODE_OVERVIEW_VS.props");
-	public static URL url2 = MCODEPlugin.class.getResource("/csplugins/mcode/resources/MCODE_MODULE_VS.props");
-	private static String VS_OVERVIEW_NAME = "MCODE";
-	private static String VS_MODULE_NAME = "MCODE_MODULE";
-	private static VisualStyle vs_overview = null;
-	private static VisualStyle vs_module = null;
+	private static final URL vsLocation = MCODEPlugin.class.getResource("/csplugins/mcode/resources/MCODE_VS.props");
+	private static final String VS_OVERVIEW_NAME = "MCODE Overview Style";
+	private static final String VS_MODULE_NAME = "MCODE Module Style";
+	private static final VisualStyle vs_overview;
+	private static final VisualStyle vs_module;
 	
-	//private static MCODEVisualStyle vs1;
-	private static int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 0);
+	private static final CyLayoutAlgorithm forceDirected = CyLayouts.getLayout("force-directed");
+	
+	private static int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 10);
 
 	static {
-		
-		// Create visualStyles based on the definition in property files
-		Set<String> names = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames();
-		if (!names.contains(VS_OVERVIEW_NAME)){
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url1);
-		}
-		if (!names.contains(VS_MODULE_NAME)){
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url2);
-		}
+		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,vsLocation);
+		vs_overview = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_OVERVIEW_NAME);
+		vs_module = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_MODULE_NAME);	
 	}
 
 	public static void convert(MCODECluster[] clusters) {
@@ -57,7 +50,7 @@ public class MCODEClustersToNestedNetworks {
 
 		// create overview network and nested networks
 		final CyNetwork overview = Cytoscape.createNetwork(
-		         CyNetworkNaming.getSuggestedNetworkTitle("MCode Result Overview"), false);
+		         CyNetworkNaming.getSuggestedNetworkTitle("MCODE Result Overview"), false);
 
 		double maxScore = Double.MIN_VALUE;
 
@@ -80,38 +73,26 @@ public class MCODEClustersToNestedNetworks {
 		}
 	
 		addOverlapEdges(overview);
-
-
-		Object[] styles = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyles().toArray();
-		for (int i=0; i< styles.length; i++){
-			VisualStyle vs = (VisualStyle) styles[i];
-			if (vs.getName().equalsIgnoreCase(VS_OVERVIEW_NAME)){
-				vs_overview = vs;
-			}
-			else if (vs.getName().equalsIgnoreCase(VS_MODULE_NAME)){
-				vs_module = vs;
-			}
-		}
 		
 		// prepare the visual style
 		//vs.setMaxValue(maxScore);
 		//vs.initCalculators();
 
 		// update the network views
-		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+		
 
 		// create network views
 		// NOTE:  We have to apply the visual style after creation because otherwise
 		// an event gets fired and the visual style gets applied to the current network
 		// (i.e. the one we're analyzing) incorrectly. Grrrrr.
-		Cytoscape.createNetworkView(overview, overview.getIdentifier(), layout, null);
+		Cytoscape.createNetworkView(overview, overview.getIdentifier(), getTunedAlgorithm(), null);
 		applyVisualStyle(overview,vs_overview);
 
 		int viewCount = 0;
 		for ( CyNetwork net : nets ) {
 			if (++viewCount > MAX_NETWORK_VIEWS)
 				break;
-			Cytoscape.createNetworkView(net, net.getIdentifier(), layout, null);
+			Cytoscape.createNetworkView(net, net.getIdentifier(), getTunedAlgorithm(), null);
 			applyVisualStyle(net,vs_module);
 		}
 
@@ -221,5 +202,16 @@ public class MCODEClustersToNestedNetworks {
 				return true;
 		}
 		return false;
+	}
+    
+	private static CyLayoutAlgorithm getTunedAlgorithm() {
+		final CyLayoutAlgorithm fd = forceDirected;
+	
+		fd.getSettings().get("defaultSpringLength").setValue("90");
+		fd.getSettings().get("defaultNodeMass").setValue("18");
+		fd.getSettings().updateValues();
+		fd.updateSettings();
+		
+		return fd;
 	}
 }

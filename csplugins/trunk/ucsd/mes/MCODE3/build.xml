@@ -11,7 +11,7 @@
 	<!-- The directory containing source code -->
 	<property name="src.dir" value="src" />
 	<property name="resources.dir" value="resources" />
-	<property name="cytoscape.dir" value="../../../../cytoscape" />
+	<property name="cytoscape.dir" value="../cytoscape" />
 
 	<!--  The directory containing library jar files -->
 	<property name="lib.dir" value="${cytoscape.dir}/lib" />
@@ -62,8 +62,7 @@
 		<copy todir="${build.classes}/csplugins/mcode/images">
 			<fileset dir="${resources.dir}/images" />
 		</copy>
-		<copy todir="${build.classes}/csplugins/mcode/resources" file="${resources.dir}/MCODE_OVERVIEW_VS.props" />
-		<copy todir="${build.classes}/csplugins/mcode/resources" file="${resources.dir}/MCODE_MODULE_VS.props" />
+		<copy todir="${build.classes}/csplugins/mcode/resources" file="${resources.dir}/MCODE_VS.props" />
 		<jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}" />
 			<manifest>
