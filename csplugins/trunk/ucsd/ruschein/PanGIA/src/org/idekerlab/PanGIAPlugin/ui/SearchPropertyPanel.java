@@ -517,7 +517,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// Close parent tab
 		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
 										SwingConstants.WEST);
-		cytoPanel.remove(this);
+		cytoPanel.remove(this.getParent().getParent());
 	}
 
 	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
