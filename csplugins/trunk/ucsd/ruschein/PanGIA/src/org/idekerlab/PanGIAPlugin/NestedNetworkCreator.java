@@ -91,14 +91,23 @@ public class NestedNetworkCreator {
 	// Also exists in BipartiteVisualiserPlugin!
 	static final String REFERENCE_NETWORK_NAME_ATTRIB = "BipartiteVisualiserReferenceNetworkName"; 
 
-	// Number of nodes in a module
-	static final String GENE_COUNT = "gene count";
-	// And its SQRT value for visual mapping
-	static final String GENE_COUNT_SQRT = "SQRT of gene count";
 	
-	static final String SCORE = "score";
-	static final String EDGE_SCORE = "edge score";
-	static final String NODE_SIZE = "complex node size";
+	/////////////// Node Attribute Names /////////////
+	// This is common prefix for all finders.
+	private static final String MODULE_FINDER_PREFIX = "Module Finder.";
+	
+	// Number of nodes in a module
+	private static final String GENE_COUNT = MODULE_FINDER_PREFIX + "member count";
+	// And its SQRT value for visual mapping
+	private static final String GENE_COUNT_SQRT = MODULE_FINDER_PREFIX + "SQRT of member count";
+	
+	private static final String SCORE = MODULE_FINDER_PREFIX + "score";
+	
+	/////////////// Edge Attribute Names /////////////
+	private static final String EDGE_SCORE = MODULE_FINDER_PREFIX + "edge score";
+	private static final String EDGE_PVALUE = MODULE_FINDER_PREFIX + "p-value";
+	
+	private static final String COMPLEX_INTERACTION_TYPE = "complex-complex";
 	
 	private CyNetwork overviewNetwork = null;
 	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
@@ -180,7 +189,7 @@ public class NestedNetworkCreator {
 			}
 
 			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
-					Semantics.INTERACTION, "complex-complex",
+					Semantics.INTERACTION, COMPLEX_INTERACTION_TYPE,
 					/* create = */true);
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
 					REFERENCE_NETWORK_NAME_ATTRIB, origPhysNetwork.getTitle()
@@ -189,13 +198,13 @@ public class NestedNetworkCreator {
 
 			// Add various edge attributes.
 			final double edgeScore = edge.value().link();
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "edge score",
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_SCORE,
 					Double.valueOf(edgeScore));
 			if (edgeScore > maxScore)
 				maxScore = edgeScore;
 
 			final double pValue = edge.value().linkMerge();
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "p-value", Double
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_PVALUE, Double
 					.valueOf(pValue));
 			if (pValue < cutoff) {
 				selectedEdges.add(newEdge);
@@ -271,8 +280,7 @@ public class NestedNetworkCreator {
 
 		final double score = Double.valueOf(module.score());
 		nodeAttribs.setAttribute(newNode.getIdentifier(), SCORE, score);
-		nodeAttribs.setAttribute(newNode.getIdentifier(), NODE_SIZE, Math
-				.sqrt(genes.size() / Math.PI));
+
 		networksOrderedByScores
 				.add(new NetworkAndScore(nodeName, genes, score));
 

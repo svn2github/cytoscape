@@ -3,7 +3,7 @@
 # Any changes may make these visual mappings unreadable.
 # Please make sure you know what you are doing before modifying this file by hand.
 #
-#Fri May 07 17:00:32 PDT 2010
+#Mon May 10 13:13:44 PDT 2010
 edgeAppearanceCalculator.Complex\ Overview\ Style.defaultEdgeColor=102,102,102
 edgeAppearanceCalculator.Complex\ Overview\ Style.defaultEdgeFont=SanSerif,plain,10
 edgeAppearanceCalculator.Complex\ Overview\ Style.defaultEdgeFontSize=5.0
@@ -351,7 +351,7 @@ edgeColorCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.type=Conti
 edgeColorCalculator.Complex\ Overview\ Style-EdgeWidthMapping.visualPropertyType=EDGE_COLOR
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.controller=Module Finder.Interaction Type
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.controllerType=4
-edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.Genetic=0,0,255
+edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.Genetic=0,0,204
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.Physical=51,51,51
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.genetic=255,0,51
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.physical=51,255,51
@@ -495,7 +495,7 @@ edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.bv1.do
 edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.bv1.equal=20.0
 edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.bv1.greater=20.0
 edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.bv1.lesser=20.0
-edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.controller=edge score
+edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.controller=Module Finder.edge score
 edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.interpolator=LinearNumberToNumberInterpolator
 edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.mapping.type=ContinuousMapping
 edgeLineWidthCalculator.Complex\ Overview\ Style-EdgeWidthMapping.visualPropertyType=EDGE_LINE_WIDTH
@@ -512,7 +512,7 @@ edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.bv1.do
 edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.bv1.equal=255.0
 edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.bv1.greater=255.0
 edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.bv1.lesser=255.0
-edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.controller=edge score
+edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.controller=Module Finder.edge score
 edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.interpolator=LinearNumberToNumberInterpolator
 edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.mapping.type=ContinuousMapping
 edgeOpacityCalculator.Complex\ Overview\ Style-EdgeOpacityMapping.visualPropertyType=EDGE_OPACITY
@@ -1054,7 +1054,7 @@ nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Map
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.bv1.equal=30.0
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.bv1.greater=1.0
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.bv1.lesser=30.0
-nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.controller=SQRT of gene count
+nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.controller=Module Finder.SQRT of member count
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.interpolator=LinearNumberToNumberInterpolator
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.type=ContinuousMapping
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.visualPropertyType=NODE_FONT_SIZE
@@ -1297,7 +1297,7 @@ nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.bv2.equal=250.0
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.bv2.greater=1.0
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.bv2.lesser=250.0
-nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.controller=SQRT of gene count
+nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.controller=Module Finder.SQRT of member count
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.interpolator=LinearNumberToNumberInterpolator
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.type=ContinuousMapping
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.visualPropertyType=NODE_SIZE
