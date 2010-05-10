@@ -2,30 +2,24 @@ package cytoscape.util;
 
 
 public enum ScalingMethod {
-	NONE("none (e.g. LOD score)"),
+	NONE("none (prescaled)"),
 	LINEAR_LOWER("linear/lower"),
 	LINEAR_UPPER("linear/upper"),
 	RANK_LOWER("rank/lower"),
 	RANK_UPPER("rank/upper");
 
-	private String asString;
+	private String displayString;
 
-	ScalingMethod(final String asString) { this.asString = asString; }
+	ScalingMethod(final String displayString) { this.displayString = displayString; }
 
-	@Override public String toString() { return asString; }
+	public String getDisplayString() { return displayString; }
 
-	static public ScalingMethod getEnumValue(final String asString) {
-		if (asString.equals(NONE.toString()))
-			return NONE;
-		if (asString.equals(LINEAR_LOWER.toString()))
-			return LINEAR_LOWER;
-		if (asString.equals(LINEAR_UPPER.toString()))
-			return LINEAR_UPPER;
-		if (asString.equals(RANK_LOWER.toString()))
-			return RANK_LOWER;
-		if (asString.equals(RANK_UPPER.toString()))
-			return RANK_UPPER;
+	static public ScalingMethod getEnumValue(final String displayString) {
+		for (final ScalingMethod method : ScalingMethod.values()) {
+			if (method.getDisplayString().equals(displayString))
+				return method;
+		}
 
-		throw new IllegalStateException("unknown string representation: \"" + asString + "\"!");
+		throw new IllegalStateException("unknown string representation: \"" + displayString + "\"!");
 	}
 }
