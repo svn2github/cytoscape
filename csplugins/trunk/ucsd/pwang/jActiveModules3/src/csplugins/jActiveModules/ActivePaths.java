@@ -27,7 +27,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 
-import csplugins.jActiveModules.Component;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -36,16 +35,13 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectFilter;
-import cytoscape.util.PropUtil;
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
 import cytoscape.data.Semantics;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.logger.CyLogger;
+import cytoscape.util.PropUtil;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
@@ -73,28 +69,33 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected static int resultsCount = 1;
 	protected ActiveModulesUI parentUI;
 	
-	private static int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 0);
-	private static int pathCount = 0;	
+	private static int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 5);
 	private static int runCount = 0;	
 	
-	public static URL url1 = ActiveModulesUI.class.getResource("/JACTIVEMODULE_OVERVIEW_VS.props");
-	public static URL url2 = ActiveModulesUI.class.getResource("/JACTIVEMODULE_MODULE_VS.props");
-	private static String VS_OVERVIEW_NAME = "jActiveModules";
-	private static String VS_MODULE_NAME = "jActiveModules_module";
-	private static VisualStyle vs_overview = null;
-	private static VisualStyle vs_module = null;
+	private static final URL vizmapPropsLocation = ActiveModulesUI.class.getResource("/jActiveModules_VS.props");
+	
+	private static final String VS_OVERVIEW_NAME = "jActiveModules Overview Style";
+	private static final String VS_MODULE_NAME = "jActiveModules Module Style";
+	private static final VisualStyle overviewVS;
+	private static final VisualStyle moduleVS;
+	
+	// This is common prefix for all finders.
+	private static final String MODULE_FINDER_PREFIX = "jActiveModules.";
+	private static final String EDGE_SCORE = MODULE_FINDER_PREFIX + "overlapScore";
+	
+	private static final String NODE_SCORE = MODULE_FINDER_PREFIX + "activepathScore";
 
 	static {
 		
 		// Create visualStyles based on the definition in property files
-		Set<String> names = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames();
-		if (!names.contains(VS_OVERVIEW_NAME)){
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url1);
-		}
-		if (!names.contains(VS_MODULE_NAME)){
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null,url2);
-		}
+		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, vizmapPropsLocation);
+		overviewVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_OVERVIEW_NAME);
+		moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_MODULE_NAME);
 	}
+	
+	
+	private static final CyLayoutAlgorithm layoutAlgorithm = CyLayouts.getLayout("force-directed");
+	
 	
 	// ----------------------------------------------------------------
 	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
@@ -125,18 +126,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	public void run() {
 
-		// Find the visualStyles for overview and module 
-		Object[] styles = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyles().toArray();
-		for (int i=0; i< styles.length; i++){
-			VisualStyle vs = (VisualStyle) styles[i];
-			if (vs.getName().equalsIgnoreCase(VS_OVERVIEW_NAME)){
-				vs_overview = vs;
-			}
-			else if (vs.getName().equalsIgnoreCase(VS_MODULE_NAME)){
-				vs_module = vs;
-			}
-		}
-
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
@@ -162,13 +151,12 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			path_nodes.add(newNode);
 			newNode.setNestedNetwork(subnetworks[i]);
 			// create an attribute for this new node
-			Cytoscape.getNodeAttributes().setAttribute(newNode.getIdentifier(), "activepath_score", new Double(activePaths[i].getScore()));
+			Cytoscape.getNodeAttributes().setAttribute(newNode.getIdentifier(), NODE_SCORE, new Double(activePaths[i].getScore()));
 		}
 		
 		//Edges indicate that nodes in nested networks exist in both nested networks
 		Set<CyEdge>  path_edges = getPathEdges(path_nodes); //new HashSet<CyEdge>();
-		CyNetwork overview = Cytoscape.createNetwork(path_nodes, path_edges, "Overview"+ "_"+ runCount++, cyNetwork);
-		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+		final CyNetwork overview = Cytoscape.createNetwork(path_nodes, path_edges, "jActiveModules Search Result "+ runCount++, cyNetwork, false);
 
 		
 		//3. Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
@@ -185,12 +173,14 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModules_nodeCount_min_two", minNodeCount);
 			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModules_nodeOverlapCount", NumberOfSharedNodes);
 			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
-			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModule_overlapScore", overlapScore);			
+			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), EDGE_SCORE, overlapScore);			
 		}
 				
 		//4. Create an view for overview network and apply visual style
-		Cytoscape.createNetworkView(overview, overview.getIdentifier(), layout, null);
-		applyVisualStyle(overview,vs_overview);
+		final CyNetworkView newView = Cytoscape.createNetworkView(overview, overview.getIdentifier(), tuning(), null);
+		newView.setVisualStyle(overviewVS.getName());
+		Cytoscape.getVisualMappingManager().setVisualStyle(overviewVS);
+		newView.redrawGraph(false, true);
 	}
 	
 
@@ -214,15 +204,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		return sharedNodeCount;
 	}
 	
-	
-	private static void applyVisualStyle(CyNetwork net, VisualStyle vs) {
-		CyNetworkView view = Cytoscape.getNetworkView( net.getIdentifier() );
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		view.setVisualStyle(vs.getName());
-		vmm.setNetworkView(view);
-		vmm.setVisualStyle(vs);
-		view.redrawGraph(false, true);
-	}
 
 	private Set<CyEdge> getPathEdges(Set path_nodes) {
 		HashSet<CyEdge> edgeSet = new HashSet<CyEdge>();
@@ -284,8 +265,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 					edgeSet.add(edge);
 			}
 			
-			final boolean createView = i < MAX_NETWORK_VIEWS;
-			subnetworks[i] = Cytoscape.createNetwork(nodeSet, edgeSet, pathName, cyNetwork, createView);
+			subnetworks[i] = Cytoscape.createNetwork(nodeSet, edgeSet, pathName, cyNetwork, false);
+			if(i < MAX_NETWORK_VIEWS) {
+				final CyNetworkView moduleView = Cytoscape.createNetworkView(subnetworks[i], subnetworks[i].getTitle(), tuning());
+				moduleView.setVisualStyle(moduleVS.getName());
+				Cytoscape.getVisualMappingManager().setVisualStyle(moduleVS);
+				moduleView.redrawGraph(false, true);
+			} 
 		}
 		
 		return subnetworks;
@@ -445,5 +431,17 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		displayPath(activePath, true, pathTitle);
 	}
 	// ------------------------------------------------------------------------------
+	
+	
+	private CyLayoutAlgorithm tuning() {
+		final CyLayoutAlgorithm fd = layoutAlgorithm;
+	
+		fd.getSettings().get("defaultSpringLength").setValue("140");
+		fd.getSettings().get("defaultNodeMass").setValue("9");
+		fd.getSettings().updateValues();
+		fd.updateSettings();
+		
+		return fd;
+	}
 
 } // class ActivePaths (a CytoscapeWindow plugin)
