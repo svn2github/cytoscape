@@ -19,7 +19,7 @@ body.demo h1 { border-bottom: 1px solid #cfcfcf; clear: both; text-align: center
 body.demo * + h1, body.demo  * + h2, #vizmapper  * + h3 { padding-top: 0.5em; }
 body.demo h1 + h2, body.demo h2 + h3 { padding-top: 0.25em; }
 input[type=text], textarea { background-color: #FFF; }
-.ui-layout-header .header { padding: 1em 1.4em; border-bottom: 1px solid #808080; }
+.ui-layout-header .header {  }
 .ui-layout-header { min-height: 0.25em; }
 .ui-layout-content { background: #ffffff; }
 input[type=button].ui-state-default { cursor: pointer; }
@@ -77,8 +77,22 @@ input[type=button].ui-state-default { cursor: pointer; }
 .swf { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 9999;  } 
 
 /* side tabs */
-#side .header { position: relative; }
+#side .header { position: relative;  }
+#side > ul { z-index: 1; }
+#side .header .padded { padding: 1em 0; }
+#side .header .padded + * { border-top: 1px solid #000000 !important; padding-top: 0.5em !important; }
 #side .content { position: relative; padding: 0.25em; }
+#side_header { }
+#side_header .ui-tabs { z-index: 0; -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; min-height: 2.5em; background: #ffffff !important; border-radius: 4px;!important; -moz-border-radius: 4px !important; -webkit-border-radius: 4px !important; border: 0 !important; border-bottom: 1px solid #363636 !important; width: 100%;  }
+#side_header .ui-tabs ul { background: transparent !important; padding: 0.5em 0 !important; border: 0 !important; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; -border-radius: 0 !important; }
+#side_header .ui-tabs li { background: transparent !important; padding: 0 !important;  margin: 0 !important; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; -border-radius: 0 !important; border: 0 !important; margin-right: 0.5em !important; }
+#side_header .ui-tabs a { padding: 0.25em !important; cursor: pointer; color: #0b94b1; display: block; background: transparent !important; text-decoration: none;  border: 0px solid transparent !important; border-radus: 4px !important; -webkit-border-radius: 4px !important; -moz-border-radius: 4px !important; }
+#side_header .ui-tabs li.ui-tabs-selected a { color: #ffffff !important; border-color: #0b94b1 !important; background-color: #0b94b1 !important; cursor: default !important;  }
+#side_header .ui-tabs li.ui-tabs-selected {  }
+#side_header .ui-tabs a:hover { text-decoration: underline !important; }
+#side_header .ui-tabs li.ui-tabs-selected a:hover { text-decoration: none !important; }
+#side .ui-tabs-panel { padding: 0 !important; }
+#side_content { clear: both; }
 
 /* filters */
 #filter_header ul { margin: 0; display: inline; }
@@ -176,7 +190,8 @@ input[type=button].ui-state-default { cursor: pointer; }
 
 /* examples */
 #examples .entry { margin: 0 0 1em 0; }
-#examples .entry .name { padding: 0; font-size: 1.25em; text-align: center; }
+#examples .entry .name { padding: 0.5em 0; display: block; }
+#examples .entry + .entry { border-top: 1px solid #b0b0b0; }
 #examples .entry .icon { min-width: 230px; max-width: 600px; height: 50px; background-position: center center; background-color: #e0e0e0; border: 1px solid #cfcfcf; }
 #examples .entry.pathguide .icon { background-image: url("../../img/content/demo/examples/pathguide.png"); }
 #examples .entry.genetics .icon { background-image: url("../../img/content/demo/examples/genetics.png"); }
@@ -187,10 +202,10 @@ input[type=button].ui-state-default { cursor: pointer; }
 #examples .entry .description { color: #707070; line-height: 1; }
 
 /* info tab */
-#info { padding: 0 !important; margin: 0 !important; height: 100%; }
+#info { padding: 0 !important; margin: 0 !important; height: 100%; overflow: hidden; }
 #info .half { height: 50%; overflow: auto; }
-#info .half:first-child { border-bottom: 1px solid #808080; margin-top: -1px; }
-#info .half .section { padding: 0.5em;  }
+#info .half:first-child { border-bottom: 1px solid #000000; margin-top: -1px; }
+#info .half .section { padding: 0.25em;  }
 #info .section h1 { }
 #info table { margin: 0; }
 #info .tablesorter th { line-height: 1.5; }
@@ -204,6 +219,10 @@ input[type=button].ui-state-default { cursor: pointer; }
 #info .tablesorter input { border-color: transparent; width: auto; background: transparent; }
 #info .tablesorter td[name=id] { font-weight: bold; border-right: 4px double #cacaca; }
 #info .tablesorter td.not_editable { cursor: default; }
+#info label.title { display: block; color: #ffffff !important; padding: 0.5em 0.25em; background: #0b94b1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; }
+#info div.title_line { margin: -0.25em 0 0 -0.25em; background: #ffffff; padding: 0.25em 0.5em 0.5em 0.25em; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; position: absolute; background: #ffffff; background-color: rgba(255, 255, 255, 0.8); }
+#info div.title_line + * { margin-top: 3em; }
+
 
 /* vizmapper tab */
 #vizmapper label.style { display: block; padding-top: 0.5em; clear: both; }

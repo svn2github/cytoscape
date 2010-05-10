@@ -165,10 +165,9 @@ $(function(){
                                 <li><a id="filter_link" href="#filter"><span>Filter</span></a></li>\
                                 <li><a id="info_link" href="#info"><span>Properties</span></a></li>\
                             </ul>\
-                            <div class="ui-layout-header">\
-                                <div id="filter_header" class="header"></div>\
+                            <div id="side_header" class="ui-layout-header">\
                             </div>\
-                            <div class="ui-layout-content">\
+                            <div id="side_content" class="ui-layout-content">\
                                 <div id="examples" class="content"></div>\
                                 <div id="vizmapper" class="content"></div>\
                                 <div id="filter" class="content"></div>\
@@ -176,6 +175,12 @@ $(function(){
                             </div>\
                         </div>\
     ');
+    
+    $("#side_content > .content").each(function(){
+        var id = $(this).attr("id");
+        
+        $("#side_header").append('<div id="' + id + '_header" class="header"></div>');
+    });
     
     show_msg({
         type: "loading",
@@ -294,18 +299,26 @@ $(function(){
             
             var panel_id = $(ui.panel).attr("id");
             $("#side .header").not("#" + panel_id + "_header").hide();
-            $("#" + panel_id + "_header").show();
+            
+            var header = $("#" + panel_id + "_header");
+            if( header.is(":empty") ){
+                header.hide();
+            } else {
+                header.show();
+            }
             
             layout.resizeContent("east"); 
         }
     });
+    
+
 
     // [dispose]
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
     function dispose(){
-	    if(cw != null) {
-	    	cw.removeListener("click", "nodes")
+	    if($("#cytoweb_container").cw() != null) {
+	    	$("#cytoweb_container").cw().removeListener("click", "nodes")
 	    	  .removeListener("select", "nodes")
 	          .removeListener("deselect", "nodes")
 	          .removeListener("select", "edges")
@@ -321,7 +334,7 @@ $(function(){
        
     // utility for opening a graph
     function open_graph(opt){
-    	dispose();
+    	//dispose();
     	
         var description;
         
@@ -498,6 +511,9 @@ $(function(){
             target: $("body")
         });
         
+        $("#vizmapper_link").click();
+        $("#examples_link").click();
+        
         $(window).trigger("resize");
         
 // TODO: remove this workaround! After opening an XGMML net, loading graphml does not apply correct styles
@@ -664,14 +680,10 @@ $(function(){
                         message: "Please wait while the style is updated."
                     });
                     
-                    $.thread({
-                        worker: function(){
-                            update_vizmapper();
+                    update_vizmapper();
                             
-                            hide_msg_on_tabs({
-                                type: "loading"
-                            });
-                        }
+                    hide_msg_on_tabs({
+                        type: "loading"
                     });
                     
                     break;
@@ -1034,8 +1046,8 @@ $(function(){
             
                 var section = $('<div class="section"></div>');
                 half.append(section);
-            
-                section.append('<h1>' + name + '</h1>');
+  
+                section.append('<div class="title_line"><label class="title">' + name + '</label></div>');
                 
                 if( items.length > 0 ) {
                     var table = $('<table class="tablesorter" id="'+id+'"></table>');
@@ -1365,6 +1377,9 @@ $(function(){
         var parent = $("#vizmapper");
         parent.empty();
         
+        $("#vizmapper_header").empty();
+        $("#vizmapper_header").append('<div id="vizmapper_tabs"><ul></ul></div>');
+        
         $("#vizmapper_link").bind("click", function(){
             $("#custom_visual_style").find(".ui-menu-check-icon").addClass("ui-menu-checked");
             $("#custom_visual_style").siblings().find(".ui-menu-check-icon").removeClass("ui-menu-checked");
@@ -1611,9 +1626,9 @@ $(function(){
             return false;
         }
         
-        function print_property(property){
+        function print_property(property, root_div){
             var div = $('<div class="property" property="' + property.variable + '" type="' + property.type + '"></div>');
-            $(parent).append(div);
+            $(root_div).append(div);
             
             var input_label = $('<label class="style">' + property.name + '</label>');
             div.append(input_label);
@@ -1946,21 +1961,33 @@ $(function(){
             }
         }
         
-        function print_group_set(groups, level){
+        function print_group_set(groups, level, root_node){
             for(var i in groups){
                 var group = groups[i];
                 var name = group.name;
                 var properties = group.properties;
                 var sub_groups = group.groups;
                 
-                parent.append("<h" + level + ">" + name + "</h" + level + ">");
+                var div;
+                
+                if( root_node == undefined ){
+                    div = $('<div id="vizmapper_' + name + '"></div>');
+                    $("#vizmapper_tabs ul").append('<li><a href="#vizmapper_' + name + '">' + capitalise(name) + '</a></li>');
+                    parent.append(div);
+                } else {
+                    div = $(root_node);
+                }
+                
+                if(level != 1){
+                    div.append("<h" + level + ">" + name + "</h" + level + ">");
+                }
                 
                 for(var j in properties){
-                    print_property( properties[j] );
+                    print_property( properties[j], div );
                 }
                 
                 if( sub_groups != undefined ){
-                    print_group_set(sub_groups, level + 1);
+                    print_group_set(sub_groups, level + 1, div);
                 }
             }
         }
@@ -2171,13 +2198,17 @@ $(function(){
             });
         });
     
-    
+        $("#vizmapper_tabs").tabs();
         
         $("#vizmapper").trigger("available");
     }
     
     // [filters] Generation of the filters tab
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    function capitalise(str){
+        return str.substr(0, 1).toUpperCase() + str.substr(1);
+    }
     
     function update_filter(){
         var attr = get_attributes();
@@ -2203,16 +2234,16 @@ $(function(){
         parent.empty();
         header.empty();
         
-        header.append('\
+        header.append('\<div class="padded">\
         Filter such that\
         <ul>\
             <li><a href="#" operation="and">every</a></li>\
             <li><a href="#" operation="or">any</a></li>\
         </ul>\
-        filter is satisfied.');
+        node and edge filter is satisfied.</div>');
         
-        header.find("a").click(function(){
-            header.find("a").not(this).removeClass("selected");
+        header.find(".padded a").click(function(){
+            header.find(".padded a").not(this).removeClass("selected");
             $(this).addClass("selected");
             operation = $(this).attr("operation");
             
@@ -2222,12 +2253,15 @@ $(function(){
         });
         header.find("[operation=and]").click();
         
-        function capitalise(str){
-            return str.substr(0, 1).toUpperCase() + str.substr(1);
-        }
+        var tabs = $('<div id="filter_tabs"><ul></ul></div>');
+        header.append(tabs);
+        
         
         function append_group(group, group_name){
-            parent.append('<h1>' + capitalise(group_name) + '</h1>');
+            tabs.find("ul").append('<li><a href="#filter_' + group_name + '">' + capitalise(group_name) + '</a></li>');
+            
+            var root_div = $('<div id="filter_' + group_name + '"></div>');
+            parent.append(root_div);
             
             var attribute_names = [];
             for(var j in group){
@@ -2285,9 +2319,9 @@ $(function(){
             
             function append_attribute(attribute){
                 var attribute_label = $('<label>' + attribute.name + '</label>');
-                parent.append(attribute_label);
+                root_div.append(attribute_label);
                 var div = $('<div class="attribute" attribute_name="' + attribute.name + '"></div>');
-                parent.append(div);
+                root_div.append(div);
                 
                 var string_search = $('<input type="text" class="inactive string_search" value="Find a value to filter" />');
                 div.append(string_search);
@@ -2646,6 +2680,7 @@ $(function(){
             append_group(group, group_name);
         }
         
+        $("#filter_tabs").tabs();
         
         $("#cytoweb_container").cw().removeFilter();
         
@@ -2654,12 +2689,12 @@ $(function(){
     
     // [examples] Generations of the examples tab
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // create examples in side tab (static -- does not change on new graph load)
     for(var id in example){
         var ex = example[id];
 		var entry = $( '<div class="entry ' + id + '" example_id="' + id + '">\
-		                   <h3 class="name">' + ex.name + '</h3>\
+		                   <label class="name">' + ex.name + '</label>\
 		                       <div class="icon"></div>\
 		                           <label class="description">' + ex.description + '</label>\
 		                </div>' );
