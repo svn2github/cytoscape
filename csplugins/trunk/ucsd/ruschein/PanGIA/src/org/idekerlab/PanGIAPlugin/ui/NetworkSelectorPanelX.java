@@ -37,8 +37,6 @@ public class NetworkSelectorPanelX extends JPanel implements
 	/**
 	 * If selected, return selected network.
 	 * Otherwise, return null.
-	 * 
-	 * @return
 	 */
 	public CyNetwork getSelectedNetwork() {
 		for (CyNetwork net : Cytoscape.getNetworkSet()) {
