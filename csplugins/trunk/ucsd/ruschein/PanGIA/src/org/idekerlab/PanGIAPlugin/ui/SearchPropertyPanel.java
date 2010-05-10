@@ -65,8 +65,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			};
 		physicalEdgeAttribComboBox.addItemListener(updateSearchButton);
 		geneticEdgeAttribComboBox.addItemListener(updateSearchButton);
-		//physicalNetworkPanel.addItemListener(updateSearchButton);
-		//geneticNetworkPanel.addItemListener(updateSearchButton);
+		physicalNetworkPanel.addItemListener(updateSearchButton);
+		geneticNetworkPanel.addItemListener(updateSearchButton);
 
 		// Add parameter panel to collapsibilePanel
 		CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
