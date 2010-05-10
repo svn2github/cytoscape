@@ -471,12 +471,8 @@ public class ActivePathsParameterPanel extends JPanel {
 			Double min = (Double)table.getModel().getValueAt(row, 1);
 			Double max = (Double)table.getModel().getValueAt(row, 2);
 			
-			if (Math.min(min, max)>=0.0 && Math.max(min, max)<=1.0){
-				setEnabled(false);
-			}
-			else {
-				setEnabled(true);	
-			}
+			setEnabled(true);
+			
 			return this;
 		}
 	}
@@ -601,12 +597,7 @@ public class ActivePathsParameterPanel extends JPanel {
 			}
 
 			if (col == 4){
-				Object[] oneRow = (Object[])dataVect.elementAt(row);
-				if (Math.min((Double)oneRow[1], (Double)oneRow[2])>= 0.0 && Math.min((Double)oneRow[1],(Double)oneRow[2])<= 1.0){
-					return false;
-				}
-				else 
-					return true;
+				return true;
 			}
 			
 			return false;
