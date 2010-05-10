@@ -29,8 +29,6 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.ScalingMethod;
-import cytoscape.util.swing.NetworkSelectorPanel;
 import cytoscape.view.cytopanels.CytoPanel;
 import org.idekerlab.PanGIAPlugin.utilities.CyCollapsiblePanel;
 
@@ -578,8 +576,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     // End of variables declaration                     
                
   
-	private NetworkSelectorPanel physicalNetworkPanel = new NetworkSelectorPanel();
-	private NetworkSelectorPanel geneticNetworkPanel = new NetworkSelectorPanel();
+	private NetworkSelectorPanelX physicalNetworkPanel = new NetworkSelectorPanelX();
+	private NetworkSelectorPanelX geneticNetworkPanel = new NetworkSelectorPanelX();
 	
 	public void updateAttributeLists() {
 		// Save current selection
@@ -621,7 +619,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
 	private void updateScalingMethods() {
-		for (final ScalingMethod method : ScalingMethod.values()) {
+		for (final ScalingMethodX method : ScalingMethodX.values()) {
 			phyScalingMethodComboBox.addItem(method.getDisplayString());
 			genScalingMethodComboBox.addItem(method.getDisplayString());
 		}
