@@ -80,11 +80,11 @@ input[type=button].ui-state-default { cursor: pointer; }
 #side .header { position: relative;  }
 #side > ul { z-index: 1; }
 #side .header .padded { padding: 1em 0; }
-#side .header .padded + * { border-top: 1px solid #000000 !important; padding-top: 0.5em !important; }
+#side .header .padded + * { padding-top: 0.5em !important; }
 #side .content { position: relative; padding: 0.25em; }
 #side_header { }
-#side_header .ui-tabs { z-index: 0; -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; min-height: 2.5em; background: #ffffff !important; border-radius: 4px;!important; -moz-border-radius: 4px !important; -webkit-border-radius: 4px !important; border: 0 !important; border-bottom: 1px solid #363636 !important; width: 100%;  }
-#side_header .ui-tabs ul { background: transparent !important; padding: 0.5em 0 !important; border: 0 !important; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; -border-radius: 0 !important; }
+#side_header .ui-tabs { padding: 0.5em 0 !important; z-index: 0; -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; min-height: 2em; background: #ffffff !important; border-radius: 4px;!important; -moz-border-radius: 4px !important; -webkit-border-radius: 4px !important; border: 0 !important; border-bottom: 1px solid #363636 !important; width: 100%;  }
+#side_header .ui-tabs ul { background: transparent !important; border: 0 !important; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; -border-radius: 0 !important; }
 #side_header .ui-tabs li { background: transparent !important; padding: 0 !important;  margin: 0 !important; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; -border-radius: 0 !important; border: 0 !important; margin-right: 0.5em !important; }
 #side_header .ui-tabs a { padding: 0.25em !important; cursor: pointer; color: #0b94b1; display: block; background: transparent !important; text-decoration: none;  border: 0px solid transparent !important; border-radus: 4px !important; -webkit-border-radius: 4px !important; -moz-border-radius: 4px !important; }
 #side_header .ui-tabs li.ui-tabs-selected a { color: #ffffff !important; border-color: #0b94b1 !important; background-color: #0b94b1 !important; cursor: default !important;  }
@@ -93,12 +93,21 @@ input[type=button].ui-state-default { cursor: pointer; }
 #side_header .ui-tabs li.ui-tabs-selected a:hover { text-decoration: none !important; }
 #side .ui-tabs-panel { padding: 0 !important; }
 #side_content { clear: both; }
+#side_header .rebuild { background-color: #f9dd5d; cursor: pointer; line-height: 1.2; padding: 0.5em 0.25em !important; border: 2px solid #000000; }
+#side_header .rebuild .ui-icon { float: left; margin-right: 0.25em; } 
+#side_header .rebuild p  { margin: 0; padding: 0; }
+#side_header .rebuild p + p { margin-top: 0.25em; }
+#side_header .rebuild small { text-decoration: underline; }
+#reset_filter_button { margin: 0.1em 0.25em; padding: 0.1em; cursor: pointer; float: right; }
+#reset_filter { float: right; margin: 0.75em 0px 0px 0.25em; cursor: pointer; position: relative; z-index: 9999; }
+#reset_filter label { float: left; margin-top: 0.25em; color: #000000; cursor: pointer; }
+#reset_filter:hover { text-decoration: underline; }
 
 /* filters */
-#filter_header ul { margin: 0; display: inline; }
-#filter_header li { margin: 0; display: inline; }
-#filter_header li a { text-decoration: none; padding: 0.25em; border: 1px solid #cfcfcf; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
-#filter_header li a.selected { border: 1px solid #0b94b1; background-color: #0b94b1; color: #fff;  }
+#filter_header .select ul { margin: 0; display: inline; }
+#filter_header .select li { margin: 0; display: inline; }
+#filter_header .select li a { text-decoration: none; padding: 0.25em; border: 1px solid #cfcfcf; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+#filter_header .select li a.selected { border: 1px solid #0b94b1; background-color: #0b94b1; color: #fff;  }
 #filter label { display: block; padding-top: 1em; clear: both; }
 #filter .attribute { clear: both; float: left; width: 100%; }
 #filter .range_area { margin-left: 4em; margin-right: 4em; clear: both; }

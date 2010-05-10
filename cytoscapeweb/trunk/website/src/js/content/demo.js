@@ -680,10 +680,14 @@ $(function(){
                         message: "Please wait while the style is updated."
                     });
                     
-                    update_vizmapper();
+                    $.thread({
+                        worker: function(params){
+                            update_vizmapper();
                             
-                    hide_msg_on_tabs({
-                        type: "loading"
+                            hide_msg_on_tabs({
+                                type: "loading"
+                            });
+                        }
                     });
                     
                     break;
@@ -980,7 +984,7 @@ $(function(){
     
     
     
-    // [info] Info for selected objects
+    //  ] Info for selected objects
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
     // Update the info tab with selection information after the graph has loaded
@@ -1207,6 +1211,7 @@ $(function(){
                                 data[param_name] = val;
                                 ele.data[param_name] = val;
                                 $("#cytoweb_container").cw().updateData(group, [ id ], data);
+                                dirty_graph_state();
                             }
                         })
                     }
@@ -1225,16 +1230,19 @@ $(function(){
             cw.addContextMenuItem("Delete node", "nodes", function(evt) {
             	cw.removeNode(evt.target, true);
             	cw.removeListener("click", "nodes", clickNodeToAddEdge);
+            	dirty_graph_state();
             	updateContextMenu();
             	update();
             })
             .addContextMenuItem("Delete edge", "edges", function(evt) {
             	cw.removeEdge(evt.target, true);
             	updateContextMenu();
+            	dirty_graph_state();
             	update();
             })
         	.addContextMenuItem("Add new node", function(evt) {
         		cw.addNode(evt.mouseX, evt.mouseY, { }, true);
+        		dirty_graph_state();
         		updateContextMenu();
         		update();
         	})
@@ -1242,6 +1250,7 @@ $(function(){
             	_srcId = evt.target.data.id;
             	cw.removeListener("click", "nodes", clickNodeToAddEdge);
             	cw.addListener("click", "nodes", clickNodeToAddEdge);
+            	dirty_graph_state();
             });
         	
         	var items = cw.selected();
@@ -1250,6 +1259,7 @@ $(function(){
                     //var items = cw.selected();
         			cw.removeElements(items, true);
         			cw.removeListener("click", "nodes", clickNodeToAddEdge);
+                    dirty_graph_state();
                     updateContextMenu();
                     update();
                 });
@@ -1265,9 +1275,24 @@ $(function(){
     // [attr] Attributes generation
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
+    function dirty_graph_state(){
+        dirty_attributes_cache();
+        dirty_vizmapper();
+        dirty_filter();
+    }
+    
+    function dirty_attributes_cache(){
+        attribute_cache = undefined;
+    }
+    
+    var attribute_cache;
     function get_attributes(){
         var attr = {
         };
+        
+        if( attribute_cache ){
+            return $.extend(true, {}, attribute_cache);
+        }
         
         function attribute_class(value){
             if( value.match(/^(-){0,1}([0-9])+((\.)([0-9])+){0,1}$/) ){
@@ -1366,12 +1391,53 @@ $(function(){
         build_attr("nodes");
         build_attr("edges");
         
-        return attr;
+        attribute_cache = attr;
+        
+        return $.extend(true, {}, attribute_cache);
     }
     
     
     // [vizmapper] Style tab generation
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    var vizmapper_dirty = false;
+    
+    function dirty_vizmapper(){
+        vizmapper_dirty = true;
+        
+        if( ! $("#vizmapper").hasClass("ui-tabs-hide") ){
+            rebuild_dirty_vizmapper();
+        }
+    }
+    
+    $("#vizmapper_link").click(function(){
+        if( vizmapper_dirty ){
+            rebuild_dirty_vizmapper();
+        }
+    });
+    
+    function rebuild_dirty_vizmapper(){
+        show_msg({
+            type: "loading",
+            target: $("#side"),
+            message: "You added, removed, or changed properties of elements in the graph.  Please wait while the visual styles update.",
+            heading: "Updating",
+            showCorner: false
+        });
+        
+        $.thread({
+            worker: function(params){
+                update_vizmapper();
+        
+                hide_msg({
+                    target: $("#side")
+                });
+            }
+        });
+        
+        
+    }
+    
     
     function update_vizmapper(){
         var parent = $("#vizmapper");
@@ -1851,6 +1917,8 @@ $(function(){
                         category.append(discrete_input_label);
                         category.append(discrete_input);
                         
+                        discrete_input.val( input.val() );
+                        
                         discrete_input.validate({
                             label: discrete_input_label,
                             valid: function(str){
@@ -2200,6 +2268,8 @@ $(function(){
     
         $("#vizmapper_tabs").tabs();
         
+        vizmapper_dirty = false;
+        
         $("#vizmapper").trigger("available");
     }
     
@@ -2208,6 +2278,39 @@ $(function(){
     
     function capitalise(str){
         return str.substr(0, 1).toUpperCase() + str.substr(1);
+    }
+    
+    var filter_dirty = false;
+    
+    function dirty_filter(){
+        filter_dirty = true;
+        
+        $("#filter_header .rebuild").show();
+        $(window).trigger("resize");
+    }
+    
+    function rebuild_dirty_filter(){
+        
+        show_msg({
+            type: "loading",
+            target: $("#side"),
+            message: "Please wait while the filters reset.",
+            heading: "Resetting",
+            showCorner: false
+        });
+        
+        $.thread({
+            worker: function(params){
+                update_filter();
+        
+                hide_msg({
+                    target: $("#side")
+                });
+            }
+        });
+        
+        
+        
     }
     
     function update_filter(){
@@ -2234,16 +2337,30 @@ $(function(){
         parent.empty();
         header.empty();
         
-        header.append('\<div class="padded">\
+        header.append('<div id="reset_filter">\
+            <label>Reset filters</label> \
+            <div id="reset_filter_button" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></div>\
+        </div>');
+        
+        $("#reset_filter").bind("mouseover", function(){
+            $("#reset_filter_button").addClass("ui-state-hover");
+        }).bind("mouseout", function(){
+            $("#reset_filter_button").removeClass("ui-state-hover");
+        });
+        
+        var tabs = $('<div id="filter_tabs"><ul></ul></div>');
+        header.append(tabs);
+        
+        header.append('\<div class="select padded">\
         Filter such that\
         <ul>\
             <li><a href="#" operation="and">every</a></li>\
             <li><a href="#" operation="or">any</a></li>\
         </ul>\
-        node and edge filter is satisfied.</div>');
+        filter is satisfied.</div>');
         
-        header.find(".padded a").click(function(){
-            header.find(".padded a").not(this).removeClass("selected");
+        header.find(".select a").click(function(){
+            header.find(".select a").not(this).removeClass("selected");
             $(this).addClass("selected");
             operation = $(this).attr("operation");
             
@@ -2253,9 +2370,15 @@ $(function(){
         });
         header.find("[operation=and]").click();
         
-        var tabs = $('<div id="filter_tabs"><ul></ul></div>');
-        header.append(tabs);
+        header.append('\<div class="rebuild padded">\
+        <span class="ui-icon ui-icon-alert"></span>\
+        <p>Nodes or edges have been added, removed, or had their data modified.</p>  \
+        <p><small>Click here to reset the filters to bring them up to date.</small></p></div>');
         
+        header.find(".rebuild").hide().add("#reset_filter").bind("click", function(){
+            rebuild_dirty_filter();
+            $(window).trigger("resize");
+        });
         
         function append_group(group, group_name){
             tabs.find("ul").append('<li><a href="#filter_' + group_name + '">' + capitalise(group_name) + '</a></li>');
@@ -2683,6 +2806,8 @@ $(function(){
         $("#filter_tabs").tabs();
         
         $("#cytoweb_container").cw().removeFilter();
+        
+        filter_dirty = false;
         
         $("#filter").trigger("available");
     }
