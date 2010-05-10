@@ -2,7 +2,7 @@ package org.idekerlab.PanGIAPlugin;
 
 
 import cytoscape.CyNetwork;
-import cytoscape.util.ScalingMethod;
+//import cytoscape.util.ScalingMethod;
 
 
 public final class SearchParameters {
@@ -59,16 +59,16 @@ public final class SearchParameters {
 		this.physicalScalingMethod = physicalScalingMethod;
 	}
 
-	public ScalingMethod getPhysicalScalingMethod() {
-		return ScalingMethod.getEnumValue(physicalScalingMethod);
+	public ScalingMethodX getPhysicalScalingMethod() {
+		return ScalingMethodX.getEnumValue(physicalScalingMethod);
 	}
 
 	public void setGeneticScalingMethod(final String geneticScalingMethod) {
 		this.geneticScalingMethod = geneticScalingMethod;
 	}
 
-	public ScalingMethod getGeneticScalingMethod() {
-		return ScalingMethod.getEnumValue(geneticScalingMethod);
+	public ScalingMethodX getGeneticScalingMethod() {
+		return ScalingMethodX.getEnumValue(geneticScalingMethod);
 	}
 
 	public void setAlpha(double alpha) {

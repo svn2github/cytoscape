@@ -25,8 +25,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.util.ProbabilityScaler;
-import cytoscape.util.ScalingMethod;
+//import cytoscape.util.ProbabilityScaler;
+//import cytoscape.util.ScalingMethod;
 
 
 /**
@@ -235,7 +235,7 @@ public class SearchTask implements Task {
 	 *  @param numericAttrName optional name of a numeric edge attribute.  Should this be missing, 1.0 will be assumed for all edges
 	 */
 	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName,
-						      final ScalingMethod scalingMethod)
+						      final ScalingMethodX scalingMethod)
 		throws IllegalArgumentException, ClassCastException
 	{
 		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
@@ -300,12 +300,12 @@ public class SearchTask implements Task {
 			edgeAttr.setAttribute(edge.getIdentifier(), EDGE_TYPE_ATTR_NAME, edgeType.name());
 	}
 
-	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethod scalingMethod,
+	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethodX scalingMethod,
 					      final StringBuilder errorMessage)
 	{
 		float[] scaledEdgeAttribValues = ProbabilityScaler.scale(edgeAttribValues, scalingMethod,
 									 errorMessage);
-		if (scaledEdgeAttribValues == null || scalingMethod == ScalingMethod.NONE)
+		if (scaledEdgeAttribValues == null || scalingMethod == ScalingMethodX.NONE)
 			return scaledEdgeAttribValues;
 
 		// Generate log-likelihood values:

@@ -30,6 +30,7 @@ import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.cytopanels.CytoPanel;
+import org.idekerlab.PanGIAPlugin.ScalingMethodX;
 import org.idekerlab.PanGIAPlugin.utilities.CyCollapsiblePanel;
 
 

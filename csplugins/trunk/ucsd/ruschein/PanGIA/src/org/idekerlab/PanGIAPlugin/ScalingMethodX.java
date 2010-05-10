@@ -1,4 +1,4 @@
-package org.idekerlab.PanGIAPlugin.ui;
+package org.idekerlab.PanGIAPlugin;
 
 
 public enum ScalingMethodX {
