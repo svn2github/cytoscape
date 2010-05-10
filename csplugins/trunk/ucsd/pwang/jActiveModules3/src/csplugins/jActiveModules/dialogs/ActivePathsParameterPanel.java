@@ -404,46 +404,56 @@ public class ActivePathsParameterPanel extends JPanel {
 	private class NormalizationComboboxEditor extends AbstractCellEditor implements TableCellEditor {
 
 		// This is the component that will handle the editing of the cell value
-	    JComboBox component = new JComboBox(new String[] { "none", "rank","linear"});
+		JComboBox component = new JComboBox();
 
-	    // This method is called when a cell value is edited by the user.
-	    public Component getTableCellEditorComponent(JTable table, Object value,
-	            boolean isSelected, int rowIndex, int vColIndex) {
-	        // 'value' is value contained in the cell located at (rowIndex, vColIndex)
+		NormalizationComboboxEditor() {
+			super();
 
-	        if (isSelected) {
-	            // cell (and perhaps other cells) are selected
-	        }
+			for (final ScalingMethodX method : ScalingMethodX.values())
+				component.addItem(method.getDisplayString());
+		}
 
-	        // Configure the component with the specified value
-	        component.setSelectedItem((String)value);
+		// This method is called when a cell value is edited by the user.
+		public Component getTableCellEditorComponent(JTable table, Object value,
+							     boolean isSelected, int rowIndex, int vColIndex)
+		{
+			// 'value' is value contained in the cell located at (rowIndex, vColIndex)
+
+			if (isSelected) {
+				// cell (and perhaps other cells) are selected
+			}
+
+			// Configure the component with the specified value
+			component.setSelectedItem((String)value);
 	        
-	        // Return the configured component
-	        return component;
-	    }
+			// Return the configured component
+			return component;
+		}
 
-	    // This method is called when editing is completed.
-	    // It must return the new value to be stored in the cell.
-	    public Object getCellEditorValue() {
-	        return component.getSelectedItem();//((JTextField)component).getText();
-	    }    
+		// This method is called when editing is completed.
+		// It must return the new value to be stored in the cell.
+		public Object getCellEditorValue() {
+			return component.getSelectedItem();//((JTextField)component).getText();
+		}    
 	}
 
 	
 	private class NormalizationCellRenderer extends JComboBox implements TableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table,
-                Object value,
-                boolean isSelected,
-                boolean hasFocus,
-                int row,
-                int column){
-			
-			DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] { "none", "rank", "linear"});
+							       Object value,
+							       boolean isSelected,
+							       boolean hasFocus,
+							       int row,
+							       int column)
+		{
+			DefaultComboBoxModel model = new DefaultComboBoxModel();
+			for (final ScalingMethodX method : ScalingMethodX.values())
+				model.addElement(method.getDisplayString());
 
 			this.setModel(model);
 			
 			if (value.toString().equalsIgnoreCase("")){
-				this.setSelectedItem("none");				
+				this.setSelectedItem(ScalingMethodX.NONE.getDisplayString());	
 			}
 			else {
 				this.setSelectedItem(value);								
@@ -515,9 +525,9 @@ public class ActivePathsParameterPanel extends JPanel {
 				row[2] = Collections.max(values);
 
 				row[3] = false;
-				row[4] = "none";
+				row[4] = ScalingMethodX.NONE.getDisplayString();
 				if (!(Math.min((Double)row[1],(Double)row[2])>=0.0 && Math.max((Double)row[1],(Double)row[2]) <= 1.0)){
-					row[4] = "rank";
+					row[4] = ScalingMethodX.RANK_UPPER.getDisplayString();
 				}
 				
 				dataVect.add(row);
