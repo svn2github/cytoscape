@@ -131,6 +131,8 @@ public class XGMMLReader extends AbstractGraphReader {
 	protected static final String OCTAGON = "octagon";
 	protected static final String PARALELLOGRAM = "parallelogram";
 	protected static final String TRIANGLE = "triangle";
+	protected static final String VEE = "vee";
+	protected static final String ROUNDED_RECTANGLE = "rounded_rectangle";
 
 	// XGMML shapes (these should be mapped to Cytoscape shapes
 	protected static final String BOX = "box"; // Map to rectangle
