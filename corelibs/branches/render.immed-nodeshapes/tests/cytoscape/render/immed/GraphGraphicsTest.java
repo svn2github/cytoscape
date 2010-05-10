@@ -48,15 +48,19 @@ import java.io.IOException;
 import java.util.Random;
 import java.awt.BasicStroke;
 
+import org.apache.commons.math.stat.inference.TestUtils;
+import org.apache.commons.math.MathException;
+
 public class GraphGraphicsTest extends TestCase {
 
 
 	GraphGraphics currentGraphGraphics;
 	OldGraphGraphics oldGraphGraphics;
-	int numNodes = 10000;
-	int numEdges = 10000;
+	int numNodes = 5000;
+	int numEdges = 5000;
 	BufferedImage image;
 	int canvasSize = 1000;
+	int numTests = 20;
 
 	public void setUp() {
 		image = new BufferedImage(canvasSize,canvasSize,BufferedImage.TYPE_INT_ARGB);
@@ -73,30 +77,58 @@ public class GraphGraphicsTest extends TestCase {
 		rand = new Random(10);
 		long currDur = drawCurrentFull(rand);
 
-		// now run each test 10 times and sum the durations
+		// now run each test numTests times and sum the durations
 		long totalOldDur = 0;
 		long totalCurrDur = 0;
-		for ( int i = 0; i < 10; i++ ) {
+		double[] oldDurs = new double[numTests];
+		double[] currDurs = new double[numTests];
+		for ( int i = 0; i < numTests; i++ ) {
 			rand = new Random(i);
 			oldDur = drawOldFull(rand);
-			System.out.println("Old    : " + oldDur);
+			oldDurs[i] = (double)oldDur;
 			totalOldDur += oldDur;
 
 			rand = new Random(i);
 			currDur = drawCurrentFull(rand);
-			System.out.println("Current: " + currDur);
+			currDurs[i] = (double)currDur;
 			totalCurrDur += currDur;
+
+			System.out.println("Old: " + oldDur + "   Current: " + currDur + 
+			                   "    diff: " + (oldDur - currDur) );
 		}
 
 		System.out.println("Total Old    : " + totalOldDur);
 		System.out.println("Total Current: " + totalCurrDur);
-		long diff = (totalOldDur-totalCurrDur)/10;
-		if ( diff >= 0 )
-			System.out.println("Faster on avg by: " + diff);
-		else
-			System.out.println("Slower on avg by: " + diff);
 
-		assertTrue( totalCurrDur < totalOldDur );
+		// Because the variance of the durations is so high, we can't just
+		// just fail whenever we happen to be slower.  Therefore, we perform 
+		// a t-test on the old and current durations and then evaluate the
+		// p-value to determine if we are actually slower.
+		double pValue = 1.0; 
+		try {
+			pValue = TestUtils.tTest(oldDurs, currDurs);
+		} catch (MathException me) {
+			me.printStackTrace();
+		}
+
+		System.out.println("T-test p-value: " + pValue);
+
+		long diff = (totalOldDur-totalCurrDur)/numTests;
+		// If the new code is faster than the old code, then we're good
+		// and just move on.  No sense in evaluating the p-value because
+		// if we're faster AND statistically significantly faster, then
+		// that's a good thing and we don't want to fail.
+		if ( diff >= 0 ) {
+			System.out.println("     Faster on avg by: " + diff);
+
+		// If we're slower than the old code (i.e. a bad thing), then
+		// evaluate the p-value to determine if the difference is
+		// statistically significant and only fail if it is.
+		} else {
+			System.out.println("     Slower on avg by: " + diff);
+
+			assertTrue(pValue > 0.05);
+		}
 	}
 
 	private long drawCurrentFull(Random rand) {
@@ -117,6 +149,7 @@ public class GraphGraphicsTest extends TestCase {
 					    	Color.yellow);
 		}
 		long end = System.nanoTime();
+		long nodeDur = end - begin;
 
 		BasicStroke edgeStroke = new BasicStroke(1f);
 
@@ -139,7 +172,7 @@ public class GraphGraphicsTest extends TestCase {
 				Color.green);
 		}
 		end = System.nanoTime();
-		long duration = end - begin;
+		long duration = (end - begin) + nodeDur;
 
 //		try {
 //			ImageIO.write(image,"PNG",new File("/tmp/homer-current.png"));
@@ -165,6 +198,7 @@ public class GraphGraphicsTest extends TestCase {
 					    	Color.yellow);
 		}
 		long end = System.nanoTime();
+		long nodeDur = end - begin;
 
 		BasicStroke edgeStroke = new BasicStroke(1f);
 
@@ -188,8 +222,7 @@ public class GraphGraphicsTest extends TestCase {
 		}
 		end = System.nanoTime();
 		
-		long duration = end - begin;
-		
+		long duration = (end - begin) + nodeDur;
 
 //		try {
 //			ImageIO.write(image,"PNG",new File("/tmp/homer-old.png"));
