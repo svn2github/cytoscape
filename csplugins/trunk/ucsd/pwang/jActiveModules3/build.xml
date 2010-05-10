@@ -12,7 +12,7 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="cyto.dir" value="../../../../cytoscape"/>
+	<property name="cyto.dir" value="../cytoscape"/>
 	<property name="cyto.lib.dir" value="${cyto.dir}/lib"/>
 	<property name="lib.dir" value="lib"/>
 	<property name="resources.dir" value="resources"/>
@@ -84,8 +84,7 @@
 	   </unzip>
 	   <copy todir="${build.classes}/csplugins/jActiveModules" file="${resources.dir}/plugin.props"/>
 	   <copy todir="${build.classes}" file="${resources.dir}/help.html"/>
-	   <copy todir="${build.classes}" file="${resources.dir}/JACTIVEMODULE_OVERVIEW_VS.props" />
-	   <copy todir="${build.classes}" file="${resources.dir}/JACTIVEMODULE_MODULE_VS.props" />
+	   <copy todir="${build.classes}" file="${resources.dir}/jActiveModules_VS.props" />
    	   <copy todir="${build.classes}/images">
    	   	         <fileset dir="${images.dir}"/> 
    	   </copy>
