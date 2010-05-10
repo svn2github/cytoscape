@@ -622,8 +622,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	private void updateScalingMethods() {
 		for (final ScalingMethod method : ScalingMethod.values()) {
-			phyScalingMethodComboBox.addItem(method.toString());
-			genScalingMethodComboBox.addItem(method.toString());
+			phyScalingMethodComboBox.addItem(method.getDisplayString());
+			genScalingMethodComboBox.addItem(method.getDisplayString());
 		}
 	}
 
