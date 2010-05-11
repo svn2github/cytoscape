@@ -243,7 +243,7 @@ class AttribParserImpl implements AttribParser {
 	}
 
 	/**
-	 *  Implements factor --> const | attrib_ref | "(" E ")" | "-" P | func_call
+	 *  Implements factor --> constant | attrib_ref | "(" expr ")" | ("-"|"+") factor  | func_call
 	 */
 	private Node parseFactor(int level) {
 		level += 1;

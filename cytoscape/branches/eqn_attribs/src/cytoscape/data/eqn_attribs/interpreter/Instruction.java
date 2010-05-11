@@ -31,7 +31,30 @@ package cytoscape.data.eqn_attribs.interpreter;
 
 
 public enum Instruction {
-	FADD, FSUB, FMUL, FDIV, FPOW, SCONCAT, BEQLF, BNEQLF, BGTF, BLTF, BGTEF, BLTEF, BEQLS,
-	BNEQLS, BGTS, BLTS, BGTES, BLTES, BEQLB, BNEQLB, CALL, FUMINUS, FUPLUS, AREF, AREF2,
-	FCONV
+	FADD,    // addition of two floating-point numbers
+	FSUB,    // subtraction of two floating-point numbers
+	FMUL,    // multiplication of two floating-point numbers
+	FDIV,    // division of two floating-point numbers
+	FPOW,    // exponentiation of two floating-point numbers
+	SCONCAT, // string concatentation
+	BEQLF,   // equality test for two floating-point numbers
+	BNEQLF,  // inequality test for two floating-point numbers
+	BGTF,    // greater-than test for two floating-point numbers
+	BLTF,    // less-than test for two floating-point numbers
+	BGTEF,   // greater-than-or-equal test for two floating-point numbers
+	BLTEF,   // less-than-or-equal test for two floating-point numbers
+	BEQLS,   // equality test for strings
+	BNEQLS,  // inequality test for strings
+	BGTS,    // lexicographically greater-than test for strings
+	BLTS,    // lexicographically less-than test for strings
+	BGTES,   // lexicographically greater-than-or-equal test for strings
+	BLTES,   // lexicographically less-than-or-equal test for strings
+	BEQLB,   // equality test for booleans
+	BNEQLB,  // inequality test for booleans
+	CALL,    // function call
+	FUMINUS, // unary minus for a floating-point numbers
+	FUPLUS,  // unary plus for a floating-point numbers
+	AREF,    // attribute reference
+	AREF2,   // attribute reference with a default value
+	FCONV    // conversion of integer to floating point
 }
