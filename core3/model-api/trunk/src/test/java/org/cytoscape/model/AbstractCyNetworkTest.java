@@ -509,12 +509,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 
 		try {
 			List<CyNode> l = net.getNeighborList(n3, CyEdge.Type.ANY);
-			fail("didn't throw expected illegal arg exception");
+			assertNotNull(l);
+			assertEquals(0,l.size());
 		} catch (IllegalArgumentException iae) {
-			return;
+			fail("caught unexpected exception");
 		}
-
-		fail("didn't catch thrown exception");
 	}
 
 	/**
@@ -654,12 +653,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 
 		try {
 			List<CyEdge> l = net.getAdjacentEdgeList(n3, CyEdge.Type.ANY);
-			fail("didn't throw expected illegal arg exception");
-		} catch (IllegalArgumentException iae) {
-			return;
+			assertNotNull(l);
+			assertEquals(0,l.size());
+		} catch (Exception iae) {
+			fail("caught unexpected exception");
 		}
-
-		fail("unexpected exception thrown");
 	}
 
 	/**
@@ -805,12 +803,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 
 		try {
 			List<CyEdge> l = net.getConnectingEdgeList(n2, n3, CyEdge.Type.ANY);
-			fail("didn't throw expected illegal arg exception");
-		} catch (IllegalArgumentException iae) {
-			return;
+			assertNotNull(l);
+			assertEquals(0,l.size());
+		} catch (Exception iae) {
+			fail("caught unexpected exception");
 		}
-
-		fail("didn't catch thrown exception");
 	}
 
 	/**
@@ -825,12 +822,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 
 		try {
 			List<CyEdge> l = net.getConnectingEdgeList(n3, n1, CyEdge.Type.ANY);
-			fail("didn't throw expected illegal arg exception");
-		} catch (IllegalArgumentException iae) {
-			return;
+			assertNotNull(l);
+			assertEquals(0,l.size());
+		} catch (Exception iae) {
+			fail("caught unexpected exception");
 		}
-
-		fail("didn't catch thrown exception");
 	}
 
 	/**
