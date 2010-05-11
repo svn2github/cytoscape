@@ -1,5 +1,6 @@
 package org.idekerlab.PanGIAPlugin;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,12 +27,12 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
 
+
 /**
  * The sole purpose of this class is to sort networks according to decreasing
  * score.
  */
 class NetworkAndScore implements Comparable<NetworkAndScore> {
-	
 	private final String nodeName;
 	private final Set<String> genes;
 	private final double score;
@@ -79,9 +80,12 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 	}
 }
 
+
 /**
- * @author ruschein Creates an overview network for the detected complexes and
- *         nested networks for each complex.
+ * @author ruschein
+ *
+ * Creates an overview network for the detected complexes and
+ * nested networks for each complex.
  */
 @SuppressWarnings("unchecked")
 public class NestedNetworkCreator {
@@ -137,8 +141,8 @@ public class NestedNetworkCreator {
 			final TypedLinkNetwork<String, Float> physicalNetwork,
 			final TypedLinkNetwork<String, Float> geneticNetwork,
 			final double cutoff, final TaskMonitor taskMonitor,
-			final float remainingPercentage) {
-		
+			final float remainingPercentage)
+	{
 		// Network attributes created here is required for managing Visual Styles.
 		final CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
 		
@@ -164,14 +168,14 @@ public class NestedNetworkCreator {
 		double maxScore = Double.NEGATIVE_INFINITY;
 		maxSize = 0;
 		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules
-				.edges()) {
+				.edges())
+		{
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge
 					.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
 				final String nodeName = findNextAvailableNodeName("Complex"
 						+ nodeIndex);
-
 				sourceNode = makeOverviewNode(nodeName, sourceModule,
 						nodeAttribs);
 				++nodeIndex;
@@ -304,26 +308,26 @@ public class NestedNetworkCreator {
 		// Add the nodes to our new nested network.
 		final List<CyNode> nodes = new ArrayList<CyNode>();
 		for (final String nodeName : nodeNames) {
-			final CyNode node = Cytoscape.getCyNode(nodeName, /* create = */true);
+			final CyNode node = Cytoscape.getCyNode(nodeName, /* create = */false);
+			if (node == null) {
+				System.err.println("in NestedNetworkCreator.generateNestedNetwork() (in the PanGIA plug-in): unknown node: \"" + nodeName + "\"!");
+				throw new IllegalStateException("unknown node: \"" + nodeName + "\"!");
+			}
 			nestedNetwork.addNode(node);
 			nodes.add(node);
 		}
 
 		// Add the edges induced by "origPhysNetwork" to our new nested network.
 		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork
-				.getConnectingEdges(nodes);
-		if (edges != null) {
-			for (final CyEdge edge : edges)
-				nestedNetwork.addEdge(edge);
-		}
+			.getConnectingEdges(getIntersectingNodes(origPhysNetwork, nodes));
+		for (final CyEdge edge : edges)
+			nestedNetwork.addEdge(edge);
 
 		// Add the edges induced by "origGenNetwork" to our new nested network.
 		edges = (List<CyEdge>) origGenNetwork
-				.getConnectingEdges(nodes);
-		if (edges != null) {
-			for (final CyEdge edge : edges)
-				nestedNetwork.addEdge(edge);
-		}
+			.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
+		for (final CyEdge edge : edges)
+			nestedNetwork.addEdge(edge);
 
 		if (createNetworkView) {
 			Cytoscape.createNetworkView(nestedNetwork);
@@ -410,5 +414,18 @@ public class NestedNetworkCreator {
 		fd.updateSettings();
 		
 		return fd;
+	}
+
+	/**
+	 *  @returns the list of nodes that are both, in "network", and in "nodes"
+	 */
+	private List<CyNode> getIntersectingNodes(final CyNetwork network, final List<CyNode> nodes) {
+		final List<CyNode> commonNodes = new ArrayList<CyNode>();
+		for (final CyNode node : nodes) {
+			if (network.containsNode(node))
+				commonNodes.add(node);
+		}
+
+		return commonNodes;
 	}
 }
