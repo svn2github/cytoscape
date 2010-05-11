@@ -8,8 +8,8 @@
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
-    <property name="plugin_name" value="LabelPositioning"/>
-    <property name="plugin_class" value="LabelPositioning"/>  	  	
+    <property name="plugin_name" value="LabelForceDirectedLayout"/>
+    <property name="plugin_class" value="LabelForceDirectedLayout.LabelForceDirectedLayout"/>  	  	
     <property name="project.jar" value="${plugin_name}.jar"/>  	
     <property name="version" value="0.01"/>
     <property name="year" value="2010"/>
@@ -24,7 +24,7 @@
     <property name="lib.dir" value="${root.dir}/lib"/>
 
 
-  	<!-- Define the Cytoscape directories -->
+    <!-- Define the Cytoscape directories -->
     <property name="cytoscape.dir" value="/home/gerardo/Cytoscape_v2.7.0"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>

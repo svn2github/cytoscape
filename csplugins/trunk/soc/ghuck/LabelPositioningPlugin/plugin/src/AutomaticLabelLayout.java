@@ -1,3 +1,5 @@
+package LabelForceDirected;
+
 import cytoscape.plugin.CytoscapePlugin;
 
 import java.util.Set;

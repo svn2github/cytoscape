@@ -6,7 +6,7 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users, white space within name is not allowed
-pluginName=GpuLayout
+pluginName=LabelForceDirectedLayout
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
@@ -19,7 +19,7 @@ pluginVersion=0.01
 cytoscapeVersion=2.7
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
-pluginCategory=Analisys
+pluginCategory=Analysis
 
 # -- The following properties are OPTIONAL -- #
 

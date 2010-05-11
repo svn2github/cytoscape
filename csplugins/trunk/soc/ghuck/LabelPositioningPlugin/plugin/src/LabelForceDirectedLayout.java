@@ -1,22 +1,27 @@
-package csplugins.layout.algorithms.force;
+package LabelForceDirectedLayout;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.layout.CyLayouts;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.AbstractLayout;
+import cytoscape.CyNode;
+import cytoscape.visual.LabelPosition;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.LayoutProperties;
+
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.EdgeWeighter;
 import csplugins.layout.algorithms.graphPartition.*;
 
-import cytoscape.visual.LabelPosition;
-
-import cytoscape.data.CyAttributes;
-
 import giny.view.NodeView;
 
-import prefuse.util.force.*;
+//import prefuse.util.force.*;
 
 import java.util.*;
 
