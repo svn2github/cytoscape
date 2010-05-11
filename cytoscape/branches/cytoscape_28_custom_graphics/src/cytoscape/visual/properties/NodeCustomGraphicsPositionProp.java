@@ -120,38 +120,6 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 				+ dv.getCustomGraphicsPosition(cg));
 			i++;
 		}
-		
-//		dv.setCustomGraphicsPosition(cg, p);
-		
-		//calc.calculate(graphicsPosition, dv);
-
-		// Label nodelabel = nv.getLabel();
-		//		 
-		//		
-		// Position newTextAnchor = labelPosition.getAnchor();
-		//		
-		// if (nodelabel.getTextAnchor() != newTextAnchor.getGinyConstant())
-		// nodelabel.setTextAnchor(newTextAnchor.getGinyConstant());
-		//		
-		// Position newJustify = labelPosition.getJustify();
-		//		
-		// if (nodelabel.getJustify() != newJustify.getGinyConstant())
-		// nodelabel.setJustify(newJustify.getGinyConstant());
-		//		
-		// Position newNodeAnchor = labelPosition.getTargetAnchor();
-		//		
-		// if (nv.getNodeLabelAnchor() != newNodeAnchor.getGinyConstant())
-		// nv.setNodeLabelAnchor(newNodeAnchor.getGinyConstant());
-		//		
-		// double newOffsetX = labelPosition.getOffsetX();
-		//		
-		// if (nv.getLabelOffsetX() != newOffsetX)
-		// nv.setLabelOffsetX(newOffsetX);
-		//		
-		// double newOffsetY = labelPosition.getOffsetY();
-		//		
-		// if (nv.getLabelOffsetY() != newOffsetY)
-		// nv.setLabelOffsetY(newOffsetY);
 	}
 
 	/**

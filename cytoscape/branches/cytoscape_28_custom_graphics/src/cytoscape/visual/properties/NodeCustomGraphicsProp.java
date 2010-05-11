@@ -16,8 +16,10 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Icon;
 
@@ -34,19 +36,21 @@ import ding.view.DNodeView;
 
 import static cytoscape.visual.VisualPropertyType.*;
 
-
 public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	private static final CyCustomGraphics<CustomGraphic> NULL = new NullCustomGraphics();
-	
-	private static final VisualPropertyType[] TYPES = {NODE_CUSTOM_GRAPHICS_1, NODE_CUSTOM_GRAPHICS_2};
-	
-	
+
+	private static final VisualPropertyType[] TYPES = { NODE_CUSTOM_GRAPHICS_1,
+			NODE_CUSTOM_GRAPHICS_2 };
+
 	private final VisualPropertyType type;
-	
+
+	private final Set<CustomGraphic> currentCG;
+
 	public NodeCustomGraphicsProp(final Integer index) {
 		super();
-		this.type = TYPES[index-1];
+		this.type = TYPES[index - 1];
+		this.currentCG = new HashSet<CustomGraphic>();
 	}
 
 	@Override
@@ -130,25 +134,34 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		return type;
 	}
 
+	/**
+	 * Apply ALL custom graphics 1 through 9.
+	 */
 	public void applyToNodeView(NodeView nv, Object o,
 			VisualPropertyDependency dep) {
+
+		// Ignore if view does not exist
 		if (nv == null || nv instanceof DNodeView == false)
 			return;
 
-		final DNodeView dv = (DNodeView) nv;
-
-		// Remove all custom graphics from current view
-		while (dv.getNumCustomGraphics() != 0) {
-			CustomGraphic custom = dv.customGraphicIterator().next();
-			dv.removeCustomGraphic(custom);
-			custom = null;
-		}
-
 		// If not necessary to update, ignore.
-		if ((o == null) || !(o instanceof CyCustomGraphics<?>)
+		if (o == null || o instanceof CyCustomGraphics<?> == false
 				|| o instanceof NullCustomGraphics)
 			return;
 
+		final DNodeView dv = (DNodeView) nv;
+		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
+		final Collection<CustomGraphic> layers = (Collection<CustomGraphic>) graphics
+				.getCustomGraphics();
+
+		// Remove layers of custom graphics belongs to this CyCustomGraphics
+		// object
+		for (CustomGraphic cg : currentCG)
+			dv.removeCustomGraphic(cg);
+
+		// No need to update
+		if (layers == null || layers.size() == 0)
+			return;
 
 		// Check dependency. Sync size or not.
 		boolean sync = false;
@@ -157,27 +170,23 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 			System.out.println("** Sync Status: " + sync);
 		}
 
-		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
-		final Collection<?> graphicsList = graphics.getCustomGraphics();
-
-		// No need to update
-		if (graphicsList == null || graphicsList.size() == 0)
-			return;
-
-		for (Object cg : graphicsList) {
-			if (cg instanceof CustomGraphic) {
-				if (sync) {
-					final CustomGraphic resized = syncSize((CustomGraphic) cg, dv, dep);
-					dv.addCustomGraphic(resized);
-				} else
-					dv.addCustomGraphic((CustomGraphic) cg);
+		currentCG.clear();
+		for (CustomGraphic cg : layers) {
+			if (sync) {
+				final CustomGraphic resized = syncSize(cg, dv,
+						dep);
+				dv.addCustomGraphic(resized);
+				currentCG.add(resized);
+			} else {
+				dv.addCustomGraphic(cg);
+				currentCG.add(cg);
 			}
 		}
-
 	}
 
-	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv, final VisualPropertyDependency dep) {
-		
+	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv,
+			final VisualPropertyDependency dep) {
+
 		final double nodeW = dv.getWidth();
 		final double nodeH = dv.getHeight();
 
@@ -185,29 +194,32 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		final Rectangle2D originalBounds = originalShape.getBounds2D();
 		final double cgW = originalBounds.getWidth();
 		final double cgH = originalBounds.getHeight();
-		
+
 		// In case size is same, return the original.
-		if(nodeW == cgW && nodeH == cgH)
+		if (nodeW == cgW && nodeH == cgH)
 			return cg;
 
 		// Check width/height lock status
 		final boolean whLock = dep.check(NODE_SIZE_LOCKED);
-		
+
 		final AffineTransform scale;
-		if(whLock) {
-			scale = AffineTransform.getScaleInstance(nodeW/ cgW, nodeH / cgH);
+		if (whLock) {
+			scale = AffineTransform.getScaleInstance(nodeW / cgW, nodeH / cgH);
 		} else {
 			// Case 1: node height value is larger than width
-			if(nodeW>=nodeH) {
-				scale = AffineTransform.getScaleInstance((nodeW/ cgW)* (nodeH/nodeW), nodeH / cgH);
-				//scale = AffineTransform.getScaleInstance(nodeH/nodeW, 1);
+			if (nodeW >= nodeH) {
+				scale = AffineTransform.getScaleInstance((nodeW / cgW)
+						* (nodeH / nodeW), nodeH / cgH);
+				// scale = AffineTransform.getScaleInstance(nodeH/nodeW, 1);
 			} else {
-				scale = AffineTransform.getScaleInstance(nodeW/cgW, (nodeH/cgH)*(nodeW/nodeH));
-				//scale = AffineTransform.getScaleInstance(1, nodeW/nodeH);
+				scale = AffineTransform.getScaleInstance(nodeW / cgW,
+						(nodeH / cgH) * (nodeW / nodeH));
+				// scale = AffineTransform.getScaleInstance(1, nodeW/nodeH);
 			}
-			
+
 		}
-		return new CustomGraphic(scale.createTransformedShape(originalShape), cg.getPaintFactory());
+		return new CustomGraphic(scale.createTransformedShape(originalShape),
+				cg.getPaintFactory());
 	}
 
 	/**

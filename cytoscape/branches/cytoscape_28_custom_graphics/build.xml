@@ -204,15 +204,6 @@
 		<copy todir="${build.classes}/cytoscape/images">
 			<fileset dir="${basedir}/images" />
 		</copy>
-		<copy todir="${build.classes}/cytoscape/view/images">
-			<fileset dir="${basedir}/images" />
-		</copy>
-		<copy todir="${build.classes}/cytoscape/dialogs/images">
-			<fileset dir="${src.dir}/cytoscape/dialogs/images" />
-		</copy>
-		<copy todir="${build.classes}/cytoscape/visual/ui/images">
-			<fileset dir="${src.dir}/cytoscape/visual/ui/images" />
-		</copy>
 
 
 		<copy todir="${build.classes}">
@@ -276,13 +267,13 @@
 		description="Compiles all source code.">
 		<javac 
 		       destdir="${build.classes}" 
-		       nowarn="off" 
+		       nowarn="on" 
 		       debug="true" 
 		       source="${java.target_version}" 
 		       target="${java.target_version}"
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="yes">
+		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 			<src path="${src.dir}" />

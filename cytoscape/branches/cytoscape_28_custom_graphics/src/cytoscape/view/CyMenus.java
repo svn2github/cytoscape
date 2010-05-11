@@ -56,6 +56,7 @@ import javax.swing.JOptionPane;
 
 import org.jdesktop.swingx.JXTitledSeparator;
 
+import cytoscape.Cytoscape;
 import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
 import cytoscape.layout.ui.SettingsAction;
@@ -491,14 +492,14 @@ public class CyMenus implements GraphViewChangeListener {
 	private void fillToolBar() {
 		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
 		openSessionButton.setToolTipText("Open Session File...");
-		openSessionButton.setIcon(new ImageIcon(getClass()
+		openSessionButton.setIcon(new ImageIcon(Cytoscape.class
 		                                            .getResource("images/ximian/stock_open.png")));
 		openSessionButton.setBorderPainted(false);
 		openSessionButton.setRolloverEnabled(true);
 
 		saveButton = toolBar.add(new SaveSessionAction());
 		saveButton.setToolTipText("Save Current Session as...");
-		saveButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_save.png")));
+		saveButton.setIcon(new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_save.png")));
 
 		saveButton.setBorderPainted(false);
 		saveButton.setRolloverEnabled(true);
@@ -507,7 +508,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		final ZoomAction zoom_in = new ZoomAction(1.1);
 		zoomInButton = new JButton();
-		zoomInButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_zoom-in.png")));
+		zoomInButton.setIcon(new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_zoom-in.png")));
 		zoomInButton.setToolTipText("Zoom In");
 		zoomInButton.setBorderPainted(false);
 		zoomInButton.setRolloverEnabled(true);
@@ -533,7 +534,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		final ZoomAction zoom_out = new ZoomAction(0.9);
 		zoomOutButton = new JButton();
-		zoomOutButton.setIcon(new ImageIcon(getClass()
+		zoomOutButton.setIcon(new ImageIcon(Cytoscape.class
 		                                        .getResource("images/ximian/stock_zoom-out.png")));
 		zoomOutButton.setToolTipText("Zoom Out");
 		zoomOutButton.setBorderPainted(false);
@@ -581,13 +582,13 @@ public class CyMenus implements GraphViewChangeListener {
 		toolBar.add(zoomInButton);
 
 		zoomSelectedButton = toolBar.add(new ZoomSelectedAction());
-		zoomSelectedButton.setIcon(new ImageIcon(getClass()
+		zoomSelectedButton.setIcon(new ImageIcon(Cytoscape.class
 		                                             .getResource("images/ximian/stock_zoom-object.png")));
 		zoomSelectedButton.setToolTipText("Zoom Selected Region");
 		zoomSelectedButton.setBorderPainted(false);
 
 		zoomDisplayAllButton = toolBar.add(new FitContentAction());
-		zoomDisplayAllButton.setIcon(new ImageIcon(getClass()
+		zoomDisplayAllButton.setIcon(new ImageIcon(Cytoscape.class
 		                                               .getResource("images/ximian/stock_zoom-1.png")));
 		zoomDisplayAllButton.setToolTipText("Zoom out to display all of current Network");
 		zoomDisplayAllButton.setBorderPainted(false);
@@ -609,7 +610,7 @@ public class CyMenus implements GraphViewChangeListener {
 				csh.actionPerformed(e);
 			}
 		});
-		helpButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_help.png")));
+		helpButton.setIcon(new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_help.png")));
 		helpButton.setToolTipText("Help");
 		helpButton.setBorderPainted(false);
 
@@ -618,7 +619,7 @@ public class CyMenus implements GraphViewChangeListener {
 		toolBar.addSeparator();
 
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
-		vizButton.setIcon(new ImageIcon(getClass()
+		vizButton.setIcon(new ImageIcon(Cytoscape.class
 		                                    .getResource("images/ximian/stock_file-with-objects.png")));
 		vizButton.setToolTipText("Open VizMapper\u2122");
 		vizButton.setBorderPainted(false);

@@ -36,6 +36,7 @@
 */
 package cytoscape.actions;
 
+import cytoscape.Cytoscape;
 import cytoscape.util.CreditScreen;
 import cytoscape.util.CytoscapeAction;
 
@@ -103,8 +104,8 @@ public class HelpAboutAction extends CytoscapeAction {
 					               + " Benno Shwikowski\n" + " Mike Smoot\n" + " James Taylor\n"
 					               + " Aditya Vailaya\n" + " Jonathan Wang\n" + "Peng-Liang Wang\n" + " Chris Workman\n";
 
-					CreditScreen.showCredits(getClass()
-					                             .getResource("/cytoscape/images/CytoscapeCredits.png"),
+					CreditScreen.showCredits(Cytoscape.class
+					                             .getResource("images/CytoscapeCredits.png"),
 					                         lines);
 				}
 			});

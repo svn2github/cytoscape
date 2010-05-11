@@ -175,7 +175,7 @@ public class CytoscapeInit {
 			// Initialize as GUI mode
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				final ImageIcon image = new ImageIcon(this.getClass()
+				final ImageIcon image = new ImageIcon(Cytoscape.class
 				                                          .getResource(SPLASH_SCREEN_LOCATION));
 				WindowUtilities.showSplash(image, 8000);
 
