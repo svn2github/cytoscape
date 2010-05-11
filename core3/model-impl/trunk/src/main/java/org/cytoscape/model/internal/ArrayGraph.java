@@ -264,8 +264,10 @@ public class ArrayGraph implements CyRootNetwork {
 	}
 
 	synchronized List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e, final int inId) {
-		if (!containsNode(n))
-			throw new IllegalArgumentException("this node is not contained in the network");
+		if (!containsNode(n)) {
+			return new ArrayList<CyNode>();
+			//TODO log.warning("this node is not contained in the network");
+		}
 
 		final NodePointer np = getNodePointer(n);
 		final List<CyNode> ret = new ArrayList<CyNode>(countEdges(np, e, inId));
@@ -287,8 +289,10 @@ public class ArrayGraph implements CyRootNetwork {
 	}
 
 	synchronized List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e, final int inId) {
-		if (!containsNode(n))
-			throw new IllegalArgumentException("this node is not contained in the network");
+		if (!containsNode(n)) {
+			return new ArrayList<CyEdge>();
+			// TODO log.warning("this node is not contained in the network");
+		}
 
 		final NodePointer np = getNodePointer(n);
 		final List<CyEdge> ret = new ArrayList<CyEdge>(countEdges(np, e, inId));
@@ -308,11 +312,15 @@ public class ArrayGraph implements CyRootNetwork {
 	}
 
 	synchronized List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e, final int inId) {
-		if (!containsNode(src))
-			throw new IllegalArgumentException("source node is not contained in the network");
+		if (!containsNode(src)) {
+			return new ArrayList<CyEdge>();
+			// TODO log.warning("source node is not contained in the network");
+		}
 
-		if (!containsNode(trg))
-			throw new IllegalArgumentException("target node is not contained in the network");
+		if (!containsNode(trg)) {
+			return new ArrayList<CyEdge>();
+			// TODO log.warning("target node is not contained in the network");
+		}
 
 		final NodePointer srcP = getNodePointer(src);
 		final NodePointer trgP = getNodePointer(trg);
