@@ -1458,33 +1458,83 @@ $(function(){
         var properties = {
             groups: [
                 {
-                    name: "Background",
-                    properties: [
-                        {
-                            name: "Colour",
-                            variable: "global.backgroundColor",
-                            type: "colour",
-                            mappable: false
-                        }
-                    ]
+                    name: "Global",
+                    groups: [
+                         {
+                             name: "Background",
+                             properties: [
+                                 {
+                                	 name: "Color",
+                                     variable: "global.backgroundColor",
+                                     type: "colour",
+                                     mappable: false
+                                 }
+                             ]
+                         },
+                         {
+                             name: "Selection Rectangle",
+                             properties: [
+								 {
+									  name: "Line Width",
+									  variable: "global.selectionLineWidth",
+									  type: "number",
+									  mappable: false
+								 },
+	                             {
+                                	 name: "Line Color",
+                                	 variable: "global.selectionLineColor",
+                                	 type: "colour",
+                                	 mappable: false
+                                 },
+                                 {
+                                	 name: "Line Opacity",
+                                	 variable: "global.selectionLineOpacity",
+                                	 type: "per cent number",
+                                	 mappable: false
+                                 },
+                                 {
+                                     name: "Fill Color",
+                                     variable: "global.selectionFillColor",
+                                     type: "colour",
+                                     mappable: false
+                                 },
+                                 {
+                                	 name: "Fill Opacity",
+                                	 variable: "global.selectionFillOpacity",
+                                	 type: "per cent number",
+                                	 mappable: false
+                                 }
+                             ]
+                         },
+                         {
+                        	 name: "Tooltip",
+                        	 properties: [
+                	              {
+                	            	  name: "Delay (milliseconds)",
+                	            	  variable: "global.tooltipDelay",
+                	            	  type: "number",
+                	            	  mappable: false
+                	              }
+            	              ]
+                         }
+                     ]
                 },
                 
                 {
                     name: "Nodes",
                     groups: [
                         {
-                            name: "Outer line",
+                            name: "Border",
                             properties: [
                                 {
-                                    name: "Size",
+                                    name: "Width",
                                     variable: "nodes.borderWidth",
                                     type: "number",
                                     mappable: true,
                                     mapgroup: "nodes"
                                 },
-                                
                                 {
-                                    name: "Colour",
+                                    name: "Color",
                                     variable: "nodes.borderColor",
                                     type: "colour",
                                     mappable: true,
@@ -1503,15 +1553,13 @@ $(function(){
                                     mappable: true,
                                     mapgroup: "nodes"
                                 },
-                                
                                 {
-                                    name: "Colour",
+                                    name: "Color",
                                     variable: "nodes.color",
                                     type: "colour",
                                     mappable: true,
                                     mapgroup: "nodes"
                                 },
-                                
                                 {
                                     name: "Opacity",
                                     variable: "nodes.opacity",
@@ -1519,7 +1567,6 @@ $(function(){
                                     mappable: true,
                                     mapgroup: "nodes"
                                 },
-                                
                                 {
                                     name: "Shape",
                                     variable: "nodes.shape",
@@ -1527,11 +1574,59 @@ $(function(){
                                     mappable: true,
                                     mapgroup: "nodes"
                                 }
-                                
-                                
                             ]
                         }
+                        /*
+                        ,
                         
+                        {
+                        	name: "Label",
+                        	properties: [
+                	             {
+                	            	 name: "Text",
+                	            	 variable: "nodes.label",
+                	            	 type: "string",
+                	            	 mappable: true,
+                	            	 mapgroup: "nodes"
+                	             },
+                	             {
+                	            	 name: "Font",
+                	            	 variable: "nodes.labelFontName",
+                	            	 type: "string",
+                	            	 mappable: true,
+                	            	 mapgroup: "nodes"
+                	             },
+                	             {
+                	            	 name: "Size",
+                	            	 variable: "nodes.labelFontSize",
+                	            	 type: "number",
+                	            	 mappable: true,
+                	            	 mapgroup: "nodes"
+                	             },
+                	             {
+                	            	 name: "Color",
+                	            	 variable: "nodes.labelFontColor",
+                	            	 type: "colour",
+                	            	 mappable: true,
+                	            	 mapgroup: "nodes"
+                	             },
+                	             {
+                	            	 name: "Weight",
+                	            	 variable: "nodes.labelFontWeight",
+                	            	 type: "string",
+                	            	 mappable: true,
+                	            	 mapgroup: "nodes"
+                	             },
+                	             {
+                	            	 name: "Style",
+                	            	 variable: "nodes.labelFontStyle",
+                	            	 type: "string",
+                	            	 mappable: true,
+                	            	 mapgroup: "nodes"
+                	             }
+            	             ]
+                        }
+                        */
                     
                     ]
                 },
@@ -1543,29 +1638,33 @@ $(function(){
                             name: "Line",
                             properties: [
                                 {
-                                    name: "Size",
+                                    name: "Width",
                                     variable: "edges.width",
                                     type: "number",
                                     mappable: true,
                                     mapgroup: "edges"
                                 },
-                                
                                 {
-                                    name: "Colour",
+                                    name: "Color",
                                     variable: "edges.color",
                                     type: "colour",
                                     mappable: true,
                                     mapgroup: "edges"
                                 },
-                                
                                 {
                                     name: "Opacity",
                                     variable: "edges.opacity",
                                     type: "per cent number",
                                     mappable: true,
                                     mapgroup: "edges"
+                                },
+                                {
+                                	name: "Curvature",
+                                	variable: "edges.curvature",
+                                	type: "number",
+                                	mappable: false,
+                                	mapgroup: "edges"
                                 }
-                                
                             ]
                         },
                         
@@ -1573,17 +1672,56 @@ $(function(){
                             name: "Arrow",
                             properties: [
                                 {
-                                    name: "Target shape",
+                                    name: "Target Shape",
                                     variable: "edges.targetArrowShape",
                                     type: "edge shape",
                                     mappable: true,
                                     mapgroup: "edges"
                                 },
-                                
                                 {
-                                    name: "Source shape",
+                                	name: "Target Color",
+                                	variable: "edges.targetArrowColor",
+                                	type: "colour",
+                                	mappable: true,
+                                	mapgroup: "edges"
+                                },
+                                {
+                                    name: "Source Shape",
                                     variable: "edges.sourceArrowShape",
                                     type: "edge shape",
+                                    mappable: true,
+                                    mapgroup: "edges"
+                                },
+                                {
+                                	name: "Source Color",
+                                	variable: "edges.sourceArrowColor",
+                                	type: "colour",
+                                	mappable: true,
+                                	mapgroup: "edges"
+                                }
+                            ]
+                        },
+                        {
+                            name: "Merged Line",
+                            properties: [
+                                {
+                                    name: "Width",
+                                    variable: "edges.mergeWidth",
+                                    type: "number",
+                                    mappable: true,
+                                    mapgroup: "edges"
+                                },
+                                {
+                                    name: "Color",
+                                    variable: "edges.mergeColor",
+                                    type: "colour",
+                                    mappable: true,
+                                    mapgroup: "edges"
+                                },
+                                {
+                                    name: "Opacity",
+                                    variable: "edges.mergeOpacity",
+                                    type: "per cent number",
                                     mappable: true,
                                     mapgroup: "edges"
                                 }
