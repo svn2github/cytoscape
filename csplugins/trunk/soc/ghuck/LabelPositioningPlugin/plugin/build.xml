@@ -25,9 +25,9 @@
 
 
     <!-- Define the Cytoscape directories -->
-    <property name="cytoscape.dir" value="/home/gerardo/Cytoscape_v2.7.0"/>
+    <property name="cytoscape.dir" value="../../../../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
-    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/core"/>
 
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>

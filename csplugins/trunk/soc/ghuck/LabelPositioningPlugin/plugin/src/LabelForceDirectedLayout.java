@@ -21,7 +21,7 @@ import csplugins.layout.algorithms.graphPartition.*;
 
 import giny.view.NodeView;
 
-//import prefuse.util.force.*;
+import prefuse.util.force.*;
 
 import java.util.*;
 
