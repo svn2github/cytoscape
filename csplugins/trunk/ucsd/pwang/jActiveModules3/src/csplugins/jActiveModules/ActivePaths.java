@@ -129,15 +129,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
+
 		// run the path finding algorithm
-		ActivePathsFinder apf = null;
-		if(randomize){
-		    apf = new ActivePathsFinder(expressionMap, attrNames,
-						cyNetwork, apfParams, null, parentUI);
-		}else{
-		    apf = new ActivePathsFinder(expressionMap, attrNames,
-						cyNetwork, apfParams, mainFrame, parentUI);
-		}
+		final ActivePathsFinder apf =
+			new ActivePathsFinder(expressionMap, attrNames, cyNetwork, apfParams,
+					      randomize ? null : mainFrame, parentUI);
 		activePaths = apf.findActivePaths();
 
 		// create nested networks
@@ -351,6 +347,46 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		logger.info("Done processing into Hash");
 		return tempHash;
+	}
+
+	private Double[] scaleInputValues(final Double[] inputValues, final ScalingMethodX scalingMethod) {
+		if (scalingMethod == ScalingMethodX.NONE)
+			return inputValues;
+
+		int nullCount = 0;
+		for (final Double inputValue : inputValues) {
+			if (inputValue == null)
+				++nullCount;
+		}
+		if (nullCount == inputValues.length)
+			return null;
+
+		final float[] unscaledValues = new float[inputValues.length - nullCount];
+		int i = 0;
+		for (final Double inputValue : inputValues) {
+			if (inputValue != null)
+				unscaledValues[i++] = (float)(double)inputValue;
+		}
+
+		final StringBuilder errorMessage = new StringBuilder();
+		final float[] scaledValues = ProbabilityScaler.scale(unscaledValues, scalingMethod,
+								     errorMessage);
+		if (scaledValues == null) {
+			logger.warn("Scaling failed: " + errorMessage.toString());
+			return null;
+		}
+
+		final Double[] outputValues = new Double[inputValues.length];
+		int k = 0;
+		i = 0;
+		for (final Double inputValue : inputValues) {
+			if (inputValue == null)
+				outputValues[k++] = null;
+			else
+				outputValues[k++] = (double)scaledValues[i++];
+		}
+
+		return null;
 	}
 
 	/**

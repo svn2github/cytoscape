@@ -479,13 +479,7 @@ public class ActivePathsParameterPanel extends JPanel {
 	
 	
 	private Vector<Object[]> getDataVect(){
-		
 		Vector<Object[]> dataVect = new Vector<Object[]>();
-		
-		// find all of the double type parameters
-		List<String> possibleExpressionAttrs1 = new ArrayList<String>();
-		List<String> possibleExpressionAttrs2 = new ArrayList<String>();
-
 		
 		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
 		String[] names = nodeAttrs.getAttributeNames();
@@ -509,23 +503,13 @@ public class ActivePathsParameterPanel extends JPanel {
 					}
 				}
 				
-				if ( isPValue ){
-					possibleExpressionAttrs1.add(name);
-				}
-				else {
-					possibleExpressionAttrs2.add(name);
-				}
-				
 				Collection<Double> values = attrMap.values();
+
 				row[1] = Collections.min(values);
 				row[2] = Collections.max(values);
-
 				row[3] = false;
-				row[4] = ScalingMethodX.NONE.getDisplayString();
-				if (!(Math.min((Double)row[1],(Double)row[2])>=0.0 && Math.max((Double)row[1],(Double)row[2]) <= 1.0)){
-					row[4] = ScalingMethodX.RANK_UPPER.getDisplayString();
-				}
-				
+				row[4] = isPValue ? ScalingMethodX.NONE.getDisplayString() : ScalingMethodX.RANK_UPPER.getDisplayString();
+
 				dataVect.add(row);
 			}
 		}
