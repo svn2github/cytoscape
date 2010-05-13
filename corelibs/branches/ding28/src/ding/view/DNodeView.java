@@ -138,7 +138,7 @@ public class DNodeView implements NodeView, Label {
 	// keep _customGraphics null when there are no custom
 	// graphics--event though this is a bit more complicated:
 	private LinkedHashSet<CustomGraphic> _customGraphics;
-	
+
 	// CG_LOCK is used for synchronizing custom graphics operations on this
 	// DNodeView.
 	// Arrays are objects like any other and can be used for synchronization. We
@@ -155,7 +155,7 @@ public class DNodeView implements NodeView, Label {
 
 	// New feature from Cytoscape 2.8: Consolidated label position information
 	private ObjectPosition labelPosition = ObjectPositionImpl.DEFAULT_POSITION;
-	
+
 	// New feature from Cytoscape 2.8: Custom Graphics positions
 	private Map<CustomGraphic, ObjectPosition> graphicsPositions;
 
@@ -1098,7 +1098,12 @@ public class DNodeView implements NodeView, Label {
 				_customGraphics = new LinkedHashSet<CustomGraphic>();
 				graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
 			}
-			retVal = _customGraphics.add(cg);
+			if (_customGraphics.contains(cg))
+				retVal = false;
+			else {
+				retVal = _customGraphics.add(cg);
+				System.out.println("\t\t* Add by addGraphics: " + cg);
+			}
 		}
 		ensureContentChanged();
 		return retVal;
@@ -1219,7 +1224,6 @@ public class DNodeView implements NodeView, Label {
 	public Object customGraphicLock() {
 		return CG_LOCK;
 	}
-
 
 	private class ReadOnlyIterator<T> implements Iterator<T> {
 		private Iterator<? extends T> _iterator;
@@ -1455,30 +1459,30 @@ public class DNodeView implements NodeView, Label {
 			graphView.m_contentChanged = true;
 		}
 	}
-	
-	
-	public void setCustomGraphicsPosition(CustomGraphic cg,
+
+	public CustomGraphic setCustomGraphicsPosition(CustomGraphic cg,
 			final ObjectPosition p) {
-		if(cg == null || p == null)
-			return;
-		
-		_customGraphics.remove(cg);
+		if (cg == null || p == null)
+			throw new IllegalArgumentException(
+					"CustomGraphic and Position cannot be null.");
+
+		boolean removeTest = _customGraphics.remove(cg);
 		graphicsPositions.remove(cg);
+
+		CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p,
+				this, cg);
+		System.out.println(removeTest + "\t\t* Add by setPosition: " + cg);
 		
-		System.out.println();
-		CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p, this, cg);		
 		_customGraphics.add(newCg);
 		graphicsPositions.put(newCg, p);
+
+		return newCg;
 	}
 
 	public ObjectPosition getCustomGraphicsPosition(final CustomGraphic cg) {
-		if(cg == null)
+		if (cg == null)
 			return ObjectPositionImpl.DEFAULT_POSITION;
-		
+
 		return graphicsPositions.get(cg);
-	}
-	
-	private void updateCustomGraphicsPosition() {
-		
 	}
 }
