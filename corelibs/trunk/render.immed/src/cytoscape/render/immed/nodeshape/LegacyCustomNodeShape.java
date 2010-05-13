@@ -33,31 +33,57 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.render.immed.arrow;
+package cytoscape.render.immed.nodeshape;
 
+import cytoscape.render.immed.GraphGraphics;
+
+import java.awt.geom.GeneralPath;
+import java.awt.geom.AffineTransform;
 import java.awt.Shape;
 
-public interface Arrow {
-	/**
-	 * The Shape of the main Arrow body.
-	 */
-	Shape getArrowShape();
+public class LegacyCustomNodeShape extends AbstractNodeShape {
 
-	/**
-	 * The Shape of the cap that joins the Arrow body with the edge.  This needs to
-	 * be a distinct shape from the Arrow body because the cap needs to be the same
-	 * color as the edge.
-	 */
-	Shape getCapShape(final double ratio);
+	private final GeneralPath path; 
+	private final AffineTransform xform; 
+	private final double[] coords;
+	private final double[] xformCoords;;
 
-	/**
-	 * A legacy identifier for GraphGraphics.
-	 */
-	byte getType();
+	public LegacyCustomNodeShape(final double[] coords, final byte type) {
+		super(type);
+		this.coords = coords;
+		this.xformCoords = new double[coords.length];
+		path = new GeneralPath(); 
+		xform = new AffineTransform(); 
+	}
 
-	/**
-	 * The distance that the arrow should be offset from the intersection with the node.
-	 */
-	double getTOffset();
+	public float[] getCoords() {
+		final float[] returnThis = new float[coords.length];
+
+		for (int i = 0; i < returnThis.length; i++) 
+			returnThis[i] = (float) coords[i];
+
+		return returnThis;
+	}
+		
+	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+
+		final double desiredXCenter = (xMin + xMax) / 2.0;
+		final double desiredYCenter = (yMin + yMax) / 2.0;
+		final double desiredWidth = xMax - xMin;
+		final double desiredHeight = yMax - yMin;
+		xform.setToTranslation(desiredXCenter, desiredYCenter);
+		xform.scale(desiredWidth, desiredHeight);
+		xform.transform(coords, 0, xformCoords, 0, coords.length/2);
+
+		path.reset();
+
+		path.moveTo((float) xformCoords[0], (float) xformCoords[1]);
+
+		for (int i = 2; i < xformCoords.length;)
+			path.lineTo((float) xformCoords[i++], (float) xformCoords[i++]);
+
+		path.closePath();
+
+		return path;
+	}
 }
-

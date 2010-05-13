@@ -33,31 +33,25 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.render.immed.arrow;
+package cytoscape.render.immed.nodeshape;
+
+import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.Shape;
+import java.awt.geom.RoundRectangle2D;
 
-public interface Arrow {
-	/**
-	 * The Shape of the main Arrow body.
-	 */
-	Shape getArrowShape();
+public class RoundedRectangleNodeShape extends AbstractNodeShape {
 
-	/**
-	 * The Shape of the cap that joins the Arrow body with the edge.  This needs to
-	 * be a distinct shape from the Arrow body because the cap needs to be the same
-	 * color as the edge.
-	 */
-	Shape getCapShape(final double ratio);
+	private final RoundRectangle2D.Double rect;
 
-	/**
-	 * A legacy identifier for GraphGraphics.
-	 */
-	byte getType();
+	public RoundedRectangleNodeShape() {
+		super(GraphGraphics.SHAPE_ROUNDED_RECTANGLE);
+		rect = new RoundRectangle2D.Double(0.0,0.0,1.0,1.0,0.3,0.3);
+	}
 
-	/**
-	 * The distance that the arrow should be offset from the intersection with the node.
-	 */
-	double getTOffset();
+	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+		final double arcSize = Math.min(xMax - xMin, yMax - yMin) / 3.0d;
+		rect.setRoundRect(xMin, yMin, xMax - xMin, yMax - yMin, arcSize, arcSize);
+		return rect;
+	}
 }
-

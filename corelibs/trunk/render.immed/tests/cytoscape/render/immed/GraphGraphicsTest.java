@@ -48,23 +48,90 @@ import java.io.IOException;
 import java.util.Random;
 import java.awt.BasicStroke;
 
+import org.apache.commons.math.stat.inference.TestUtils;
+import org.apache.commons.math.MathException;
+
 public class GraphGraphicsTest extends TestCase {
 
 
-	GraphGraphics gg;
-	int numNodes = 10000;
-	int numEdges = 10000;
+	GraphGraphics currentGraphGraphics;
+	OldGraphGraphics oldGraphGraphics;
+	int numNodes = 5000;
+	int numEdges = 5000;
 	BufferedImage image;
 	int canvasSize = 1000;
+	int numTests = 20;
 
 	public void setUp() {
 		image = new BufferedImage(canvasSize,canvasSize,BufferedImage.TYPE_INT_ARGB);
-		gg = new GraphGraphics(image,false);
-		gg.clear(Color.white,0,0,1.0);
+		currentGraphGraphics = new GraphGraphics(image,false);
+		currentGraphGraphics.clear(Color.white,0,0,1.0);
+		oldGraphGraphics = new OldGraphGraphics(image,false);
+		oldGraphGraphics.clear(Color.white,0,0,1.0);
 	}
 
 	public void testRenderGraphFull() {
+		// run everything once, to prime the system
 		Random rand = new Random(10);
+		long oldDur = drawOldFull(rand);
+		rand = new Random(10);
+		long currDur = drawCurrentFull(rand);
+
+		// now run each test numTests times and sum the durations
+		long totalOldDur = 0;
+		long totalCurrDur = 0;
+		double[] oldDurs = new double[numTests];
+		double[] currDurs = new double[numTests];
+		for ( int i = 0; i < numTests; i++ ) {
+			rand = new Random(i);
+			oldDur = drawOldFull(rand);
+			oldDurs[i] = (double)oldDur;
+			totalOldDur += oldDur;
+
+			rand = new Random(i);
+			currDur = drawCurrentFull(rand);
+			currDurs[i] = (double)currDur;
+			totalCurrDur += currDur;
+
+			System.out.println("Old: " + oldDur + "   Current: " + currDur + 
+			                   "    diff: " + (oldDur - currDur) );
+		}
+
+		System.out.println("Total Old    : " + totalOldDur);
+		System.out.println("Total Current: " + totalCurrDur);
+
+		// Because the variance of the durations is so high, we can't just
+		// just fail whenever we happen to be slower.  Therefore, we perform 
+		// a t-test on the old and current durations and then evaluate the
+		// p-value to determine if we are actually slower.
+		double pValue = 1.0; 
+		try {
+			pValue = TestUtils.tTest(oldDurs, currDurs);
+		} catch (MathException me) {
+			me.printStackTrace();
+		}
+
+		System.out.println("T-test p-value: " + pValue);
+
+		long diff = (totalOldDur-totalCurrDur)/numTests;
+		// If the new code is faster than the old code, then we're good
+		// and just move on.  No sense in evaluating the p-value because
+		// if we're faster AND statistically significantly faster, then
+		// that's a good thing and we don't want to fail.
+		if ( diff >= 0 ) {
+			System.out.println("     Faster on avg by: " + diff);
+
+		// If we're slower than the old code (i.e. a bad thing), then
+		// evaluate the p-value to determine if the difference is
+		// statistically significant and only fail if it is.
+		} else {
+			System.out.println("     Slower on avg by: " + diff);
+
+			assertTrue(pValue > 0.05);
+		}
+	}
+
+	private long drawCurrentFull(Random rand) {
 		final float nodeSizeFactor = 50f;
 		float size = (float) canvasSize;
 
@@ -72,7 +139,7 @@ public class GraphGraphicsTest extends TestCase {
 		for ( int i = 0; i < numNodes; i++ ) {
 			float x = rand.nextFloat() * (rand.nextBoolean() ? size : -size); 
 			float y = rand.nextFloat() * (rand.nextBoolean() ? size : -size); 
-			gg.drawNodeFull( (byte)(i % (int) GraphGraphics.s_last_shape), 
+			currentGraphGraphics.drawNodeFull( (byte)(i % (int) GraphGraphics.s_last_shape), 
 							x,
 							y,
 							(x + (rand.nextFloat() * nodeSizeFactor)),	
@@ -82,13 +149,13 @@ public class GraphGraphicsTest extends TestCase {
 					    	Color.yellow);
 		}
 		long end = System.nanoTime();
-		System.out.println(numNodes + " full nodes: " + (end - begin));
+		long nodeDur = end - begin;
 
 		BasicStroke edgeStroke = new BasicStroke(1f);
 
 		begin = System.nanoTime();
 		for ( int i = 0; i < numEdges; i++ ) {
-			gg.drawEdgeFull(
+			currentGraphGraphics.drawEdgeFull(
 				(byte)((i % 7)-8),
 				rand.nextFloat() * (20f),
 				Color.red, 
@@ -97,7 +164,7 @@ public class GraphGraphicsTest extends TestCase {
 				Color.orange, 
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size),
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size), 
-				gg.m_noAnchors,
+				currentGraphGraphics.m_noAnchors,
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size),
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size), 
 				1f, 
@@ -105,12 +172,62 @@ public class GraphGraphicsTest extends TestCase {
 				Color.green);
 		}
 		end = System.nanoTime();
-		System.out.println(numEdges + " full edges: " + (end - begin));
+		long duration = (end - begin) + nodeDur;
 
+//		try {
+//			ImageIO.write(image,"PNG",new File("/tmp/homer-current.png"));
+//		} catch (IOException ioe) { ioe.printStackTrace(); }
+		return duration;
+	}
 
-		try {
-			ImageIO.write(image,"PNG",new File("/tmp/homer.png"));
-		} catch (IOException ioe) { ioe.printStackTrace(); }
+	private long drawOldFull(Random rand) {
+		final float nodeSizeFactor = 50f;
+		float size = (float) canvasSize;
+
+		long begin = System.nanoTime();
+		for ( int i = 0; i < numNodes; i++ ) {
+			float x = rand.nextFloat() * (rand.nextBoolean() ? size : -size); 
+			float y = rand.nextFloat() * (rand.nextBoolean() ? size : -size); 
+			currentGraphGraphics.drawNodeFull( (byte)(i % (int) GraphGraphics.s_last_shape), 
+							x,
+							y,
+							(x + (rand.nextFloat() * nodeSizeFactor)),	
+							(y + (rand.nextFloat() * nodeSizeFactor)),
+							Color.blue,
+							1.0f + (i % 10),
+					    	Color.yellow);
+		}
+		long end = System.nanoTime();
+		long nodeDur = end - begin;
+
+		BasicStroke edgeStroke = new BasicStroke(1f);
+
+		begin = System.nanoTime();
+		for ( int i = 0; i < numEdges; i++ ) {
+			currentGraphGraphics.drawEdgeFull(
+				(byte)((i % 7)-8),
+				rand.nextFloat() * (20f),
+				Color.red, 
+				(byte)((i % 7)-8),
+				rand.nextFloat() * (20f),
+				Color.orange, 
+				rand.nextFloat() * (rand.nextBoolean() ? size : -size),
+				rand.nextFloat() * (rand.nextBoolean() ? size : -size), 
+				currentGraphGraphics.m_noAnchors,
+				rand.nextFloat() * (rand.nextBoolean() ? size : -size),
+				rand.nextFloat() * (rand.nextBoolean() ? size : -size), 
+				1f, 
+				edgeStroke, 
+				Color.green);
+		}
+		end = System.nanoTime();
+		
+		long duration = (end - begin) + nodeDur;
+
+//		try {
+//			ImageIO.write(image,"PNG",new File("/tmp/homer-old.png"));
+//		} catch (IOException ioe) { ioe.printStackTrace(); }
+		return duration;	
 	}
 
 	// This will run the JUnit gui, which can be useful for debugging. 

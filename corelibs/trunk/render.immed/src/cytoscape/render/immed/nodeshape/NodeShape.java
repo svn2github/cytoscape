@@ -33,31 +33,37 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.render.immed.arrow;
+package cytoscape.render.immed.nodeshape;
 
 import java.awt.Shape;
 
-public interface Arrow {
-	/**
-	 * The Shape of the main Arrow body.
-	 */
-	Shape getArrowShape();
+/**
+ * An interface defining the methods necessary to render a node shape in GraphGraphics.
+ */
+public interface NodeShape {
 
 	/**
-	 * The Shape of the cap that joins the Arrow body with the edge.  This needs to
-	 * be a distinct shape from the Arrow body because the cap needs to be the same
-	 * color as the edge.
-	 */
-	Shape getCapShape(final double ratio);
-
-	/**
-	 * A legacy identifier for GraphGraphics.
+	 * A legacy method to interact cleanly with the current implementation of
+	 * GraphGraphics.  
+	 * @return the byte associated with this node shape.
 	 */
 	byte getType();
 
 	/**
-	 * The distance that the arrow should be offset from the intersection with the node.
+	 * Returns a Shape object scaled to fit within the bounding box defined by the
+	 * input parameters.
 	 */
-	double getTOffset();
+	Shape getShape(final double xMin,final double yMin, final double xMax, final double yMax);
+
+	/**
+	 * Computes the intersection of the node shape with and edge.  The edge is defined
+	 * by the point at the center of the bounding box defined by xMin, yMin, xMax, yMax 
+	 * and the point defined by ptX and ptY.  If the edge intersects with the shape then
+	 * the point at which the edge and shape itersect is stored in returnVal, where the
+	 * X location is in element 0 and the Y location is in element 1.
+	 */
+	boolean computeEdgeIntersection(final float xMin, final float yMin, final float xMax,
+	                                final float yMax, final float ptX, final float ptY, 
+	                                final float[] returnVal);
 }
 

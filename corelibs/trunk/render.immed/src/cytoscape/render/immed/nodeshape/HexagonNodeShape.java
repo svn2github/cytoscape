@@ -33,31 +33,36 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.render.immed.arrow;
+package cytoscape.render.immed.nodeshape;
 
+import cytoscape.render.immed.GraphGraphics;
+
+import java.awt.geom.GeneralPath;
 import java.awt.Shape;
 
-public interface Arrow {
-	/**
-	 * The Shape of the main Arrow body.
-	 */
-	Shape getArrowShape();
+public class HexagonNodeShape extends AbstractNodeShape {
 
-	/**
-	 * The Shape of the cap that joins the Arrow body with the edge.  This needs to
-	 * be a distinct shape from the Arrow body because the cap needs to be the same
-	 * color as the edge.
-	 */
-	Shape getCapShape(final double ratio);
+	private final GeneralPath path; 
 
-	/**
-	 * A legacy identifier for GraphGraphics.
-	 */
-	byte getType();
+	public HexagonNodeShape() {
+		super(GraphGraphics.SHAPE_HEXAGON);
+		path = new GeneralPath(); 
+	}
+		
+	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
 
-	/**
-	 * The distance that the arrow should be offset from the intersection with the node.
-	 */
-	double getTOffset();
+		path.reset();
+
+		path.moveTo(((2.0d * xMin) + xMax) / 3.0d, yMin);
+		path.lineTo(((2.0d * xMax) + xMin) / 3.0d, yMin);
+		path.lineTo(xMax, (yMin + yMax) / 2.0d);
+		path.lineTo(((2.0d * xMax) + xMin) / 3.0d, yMax);
+		path.lineTo(((2.0d * xMin) + xMax) / 3.0d, yMax);
+		path.lineTo(xMin, (yMin + yMax) / 2.0d);
+
+		path.closePath();
+
+		return path;
+	}
 }
 

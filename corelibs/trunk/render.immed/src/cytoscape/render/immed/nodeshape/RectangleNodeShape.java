@@ -33,31 +33,25 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.render.immed.arrow;
+package cytoscape.render.immed.nodeshape;
+
+import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
-public interface Arrow {
-	/**
-	 * The Shape of the main Arrow body.
-	 */
-	Shape getArrowShape();
+public class RectangleNodeShape extends AbstractNodeShape {
 
-	/**
-	 * The Shape of the cap that joins the Arrow body with the edge.  This needs to
-	 * be a distinct shape from the Arrow body because the cap needs to be the same
-	 * color as the edge.
-	 */
-	Shape getCapShape(final double ratio);
+	private final Rectangle2D.Double rect;
 
-	/**
-	 * A legacy identifier for GraphGraphics.
-	 */
-	byte getType();
-
-	/**
-	 * The distance that the arrow should be offset from the intersection with the node.
-	 */
-	double getTOffset();
+	public RectangleNodeShape() {
+		super(GraphGraphics.SHAPE_RECTANGLE);
+		rect = new Rectangle2D.Double(0.0,0.0,1.0,1.0);	
+	}
+		
+	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+		rect.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+		return rect;
+	}
 }
 
