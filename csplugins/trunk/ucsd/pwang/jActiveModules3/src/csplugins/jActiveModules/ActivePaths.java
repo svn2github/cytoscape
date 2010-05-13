@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -310,6 +311,22 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		if ( randomize ) 
 			Collections.shuffle(shuffledList);
 
+		final Double[][] attribValues = new Double[attrNames.length][geneList.size()];
+		final Map<String, Integer> geneNameToIndexMap = new HashMap<String, Integer>();
+		for (int i = 0; i < geneList.size(); i++) {
+			final String geneName = geneList.get(i).getIdentifier();
+			geneNameToIndexMap.put(geneName, new Integer(i));
+			for (int j = 0; j < attrNames.length; j++)
+				attribValues[j][i] = nodeAttributes.getDoubleAttribute(geneName, attrNames[j]);
+		}
+
+		// Perform the scaling:
+		for (int j = 0; j < attrNames.length; j++) {
+			final int index = apfParams.getExpressionAttributes().indexOf(attrNames[j]);
+			final ScalingMethodX scalingMethod = ScalingMethodX.getEnumValue(apfParams.getScalingMethods().get(index));
+			attribValues[j] = scaleInputValues(attribValues[j], scalingMethod);
+		}
+
 		for (int i = 0; i < geneList.size(); i++) {
 		
 			// If not randomizing these will be identical.
@@ -321,11 +338,10 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 			double[] tempArray = new double[attrNames.length];
 			for (int j = 0; j < attrNames.length; j++) {
-				Double d = nodeAttributes.getDoubleAttribute(canonicalName,attrNames[j]);
-
-				if (d == null) {
+				final Double d = attribValues[j][geneNameToIndexMap.get(canonicalName)];
+				if (d == null)
 					tempArray[j] = ZStatistics.oneMinusNormalCDFInverse(.5);
-				} else {
+				else {
 					double sigValue = d.doubleValue();
 					if (sigValue < MIN_SIG) {
 						sigValue = MIN_SIG;
@@ -386,7 +402,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 				outputValues[k++] = (double)scaledValues[i++];
 		}
 
-		return null;
+		return outputValues;
 	}
 
 	/**
