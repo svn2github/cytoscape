@@ -20,40 +20,57 @@ compared to Cytoscape, Cytoscape Web follows most of the Cytoscape concepts (e.g
 We chose Flex/Flash because were not able to find any other solutions to the problem of visualizing interactive networks on the web that fit our requirements.</p>
 
 <p>Cytoscape Web is <strong>open-source</strong> software released under <a href="http://www.gnu.org/licenses/lgpl-2.1.html" rel="external">LGPL 2.1</a> license.</p>
-
+<p>If you use Cytoscape Web, please <a id="link_us" href="#">link us back</a>.</p>
 
 <h1>Client applications</h1>
 
 <p>Cytoscape Web is currently being used by a gene function prediction server,
-<a href="http://www.genemania.org/" rel="external">GeneMANIA</a>.
+<a id="link_genemania" href="http://www.genemania.org/" rel="external">GeneMANIA</a>.
 The data provided to Cytoscape Web in GeneMANIA is unique to every user query, and easily
 modified with each new query. The rendering speed of Cytoscape Web allows for dynamic user
 interaction.</p>
 
-<p><a href="http://wodaklab.org/iRefWeb/" rel="external">iRefWeb</a> is an interface to a relational database containing the latest build
+<p><a id="link_irefweb" href="http://wodaklab.org/iRefWeb/" rel="external">iRefWeb</a> is an interface to a relational database containing the latest build
 of the interaction Reference Index (iRefIndex) which integrates protein interaction data from ten different interaction databases: 
 BioGRID, BIND, CORUM, DIP, HPRD, INTACT, MINT, MPPI, MPACT and OPHID.</p>
 
-<!-- Do not ask about this yet!  Why are you viewing the source? :)
-<p>The database of molecular interaction databases, <a href="http://pathguide.org" rel="external">PathGuide</a>,
-also uses Cytoscape Web to display a network illustrating the interactions among different molecular
-interaction and pathway databases.  The data provided to this network is static, and can only
-currently be modified by Pathguide developers.
--->
-
+<p><a id="link_pathguide" href="http://www.pathguide.org/interactions.php" rel="external">Pathguide</a> is a meta-database that provides an overview of more than 
+300 web-accessible biological pathway and network databases. It uses Cytoscape Web to display networks that illustrate the interactions among different resources.</p>
 
 <h1>Credits</h1>
 
 <p>Cytoscape Web uses a number of libraries, and we would like to thank the creators and
 contributors of those projects for their contributions to open source software.  Cytoscape Web uses:</p>
-
 <ul>
-    <li><a href="http://flare.prefuse.org/" rel="external">Flare</a>,</li>
-    <li><a href="http://alivepdf.bytearray.org/" rel="external">AlivePDF</a>, and</li>
-    <li><a href="http://puremvc.org/" rel="external">PureMVC</a>.</li>
+    <li><a href="http://flare.prefuse.org/" rel="external">Flare</a></li>
+    <li><a href="http://alivepdf.bytearray.org/" rel="external">AlivePDF</a></li>
+    <li><a href="http://puremvc.org/" rel="external">PureMVC</a></li>
 </ul>
+
+<h1>Linking back to Cytoscape Web</h1>
+
+<p>We appreciate people linking back to us, because that helps us keep Cytoscape Web development funded.</p>
+<p>Feel free to link to us however you choose or use one of the examples below:</p>
+<p>
+	<img src="/img/logos/cw_s.png" alt="Cytoscape Web"/>
+<pre>
+&lt;a href="http://cytoscapeweb.cytoscape.org/"&gt;
+    &lt;img src="http://cytoscapeweb.cytoscape.org/img/logos/cw_s.png" alt="Cytoscape Web"/&gt;
+&lt;/a&gt;
+</pre>
+</p>
+<p>
+	<img src="/img/logos/cw.png" alt="Cytoscape Web"/>
+<pre>
+&lt;a href="http://cytoscapeweb.cytoscape.org/"&gt;
+    &lt;img src="http://cytoscapeweb.cytoscape.org/img/logos/cw.png" alt="Cytoscape Web"/&gt;
+&lt;/a&gt;
+</pre>
+</p>
+
    
 <h1>Developers</h1>
+
 <p>Cytoscape Web is developed by <i>Christian Lopes</i> and <i>Max Franz</i>.</p> 
    
 </div>

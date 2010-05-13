@@ -34,6 +34,7 @@
 	
 	// common js
 	include_js("/js/jquery/jquery-1.3.2.min.js");
+	include_js("/js/jquery/plugins/jquery.qtip-1.0.0-rc3.min.js");
 	include_js("/js/layout/layout.js");
 	
 	// common css
