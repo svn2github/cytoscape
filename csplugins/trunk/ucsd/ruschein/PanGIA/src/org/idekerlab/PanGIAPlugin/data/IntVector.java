@@ -290,7 +290,7 @@ public class IntVector extends DataVector {
 	}
 
 	public double getEmpiricalPvalue(double score, boolean upperTail) {
-		return IntVector.getEmpiricalPvalue(data, score, upperTail);
+		return IntVector.getEmpiricalPvalue(getData(), score, upperTail);
 	}
 
 	public double getEmpiricalValueFromSortedDist(double score) {
@@ -492,7 +492,7 @@ public class IntVector extends DataVector {
 	}
 
 	public IntVector minus(int val) {
-		return new IntVector(IntVector.minus(data, val));
+		return new IntVector(IntVector.minus(getData(), val));
 	}
 
 	public static int[] minus(int[] vec, int val) {
@@ -589,7 +589,7 @@ public class IntVector extends DataVector {
 	}
 
 	public double mean() {
-		return IntVector.mean(data);
+		return IntVector.mean(getData());
 	}
 
 	public double std() {

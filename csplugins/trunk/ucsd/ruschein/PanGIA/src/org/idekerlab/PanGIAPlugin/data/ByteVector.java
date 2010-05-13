@@ -320,7 +320,8 @@ public class ByteVector extends DataVector {
 	}
 
 	public byte[] getData() {
-		return data;
+		if (size == data.length) return data;
+		else return ByteVector.resize(data, this.size);
 	}
 
 	public int size() {

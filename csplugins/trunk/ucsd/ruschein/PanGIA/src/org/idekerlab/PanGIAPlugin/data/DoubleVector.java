@@ -169,10 +169,8 @@ public class DoubleVector extends DataVector {
 	 * Often gets the reference to the actual data.
 	 */
 	public double[] getData() {
-		if (size == data.length)
-			return data;
-		else
-			return DoubleVector.resize(data, this.size);
+		if (size == data.length) return data;
+		else return DoubleVector.resize(data, this.size);
 	}
 
 	public static double[] resize(double[] vec, int size) {
@@ -371,7 +369,7 @@ public class DoubleVector extends DataVector {
 	}
 
 	public DoubleVector plus(DoubleVector data2) {
-		return new DoubleVector(DoubleVector.plus(data, data2.data));
+		return new DoubleVector(DoubleVector.plus(getData(), data2.data));
 	}
 
 	public static double[] plus(double[] x, double[] vec) {
@@ -621,7 +619,7 @@ public class DoubleVector extends DataVector {
 	}
 
 	public DoubleVector times(DoubleVector val) {
-		return new DoubleVector(DoubleVector.times(data, val.data));
+		return new DoubleVector(DoubleVector.times(getData(), val.data));
 	}
 
 	public static double[] times(double[] x, double[] vec) {
@@ -733,7 +731,7 @@ public class DoubleVector extends DataVector {
 	}
 
 	public double mean() {
-		return DoubleVector.mean(data);
+		return DoubleVector.mean(getData());
 	}
 
 	public static double mean(double[] data) {
@@ -766,7 +764,7 @@ public class DoubleVector extends DataVector {
 	}
 
 	public double std() {
-		return DoubleVector.std(data);
+		return DoubleVector.std(getData());
 	}
 
 	public static double std(double[] data) {
@@ -811,7 +809,7 @@ public class DoubleVector extends DataVector {
 	}
 
 	public double sum() {
-		return DoubleVector.sum(data);
+		return DoubleVector.sum(getData());
 	}
 
 	public static double sum(double[] x) {
@@ -1796,7 +1794,7 @@ public class DoubleVector extends DataVector {
 	}
 
 	public BooleanVector lessThan(double val) {
-		return new BooleanVector(DoubleVector.lessThan(data, val));
+		return new BooleanVector(DoubleVector.lessThan(getData(), val));
 	}
 
 	public BooleanVector lessThan(int val) {

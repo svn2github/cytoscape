@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+
 public class BooleanVector extends DataVector {
 
 	private boolean[] data;
@@ -95,7 +96,8 @@ public class BooleanVector extends DataVector {
 	
 	public boolean[] getData()
 	{
-		return data;
+		if (size==data.length) return data;
+		else return BooleanVector.resize(data, this.size);
 	}
 	
 	public static boolean[] resize(boolean[] vec, int size)
@@ -291,7 +293,7 @@ public class BooleanVector extends DataVector {
 	
 	public int sum()
 	{
-		return BooleanVector.sum(data);
+		return BooleanVector.sum(getData());
 	}
 	
 	public static int sum(boolean[] data)
@@ -364,7 +366,7 @@ public class BooleanVector extends DataVector {
 	
 	public IntVector asIndexes()
 	{
-		return new IntVector(asIndexes(data));
+		return new IntVector(asIndexes(getData()));
 	}
 	
 	public BooleanVector get(List<?> indexes)
