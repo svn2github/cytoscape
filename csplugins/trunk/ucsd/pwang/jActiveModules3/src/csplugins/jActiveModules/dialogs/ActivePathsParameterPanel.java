@@ -408,7 +408,7 @@ public class ActivePathsParameterPanel extends JPanel {
 
 		NormalizationComboboxEditor() {
 			super();
-
+			
 			for (final ScalingMethodX method : ScalingMethodX.values())
 				component.addItem(method.getDisplayString());
 		}
@@ -417,10 +417,21 @@ public class ActivePathsParameterPanel extends JPanel {
 		public Component getTableCellEditorComponent(JTable table, Object value,
 							     boolean isSelected, int rowIndex, int vColIndex)
 		{
-			// 'value' is value contained in the cell located at (rowIndex, vColIndex)
+			final AttrSelectionTableModel tableModel = (AttrSelectionTableModel)table.getModel();
+			final double val1 = (Double)tableModel.getValueAt(rowIndex, 1);
+			final double val2 = (Double)tableModel.getValueAt(rowIndex, 2);
+			final boolean isPossiblePValue = Math.min(val1, val2) >= 0.0 && Math.max(val1, val2) <= 1.0;
 
-			if (isSelected) {
-				// cell (and perhaps other cells) are selected
+			final String firstItem = (String)component.getItemAt(0);
+			final boolean firstItemIsNONE = firstItem.equals(ScalingMethodX.NONE.getDisplayString());
+
+			if (isPossiblePValue) {
+				if (!firstItemIsNONE)
+					component.insertItemAt(ScalingMethodX.NONE.getDisplayString(), 0);
+			}
+			else {
+				if (firstItemIsNONE)
+					component.removeItemAt(0);
 			}
 
 			// Configure the component with the specified value
@@ -508,7 +519,13 @@ public class ActivePathsParameterPanel extends JPanel {
 				row[1] = Collections.min(values);
 				row[2] = Collections.max(values);
 				row[3] = false;
-				row[4] = isPValue ? ScalingMethodX.NONE.getDisplayString() : ScalingMethodX.RANK_UPPER.getDisplayString();
+
+				if (!isPValue) {
+					
+					row[4] = isPValue ? ScalingMethodX.NONE.getDisplayString() : ScalingMethodX.RANK_UPPER.getDisplayString();
+				}
+				else
+					row[4] = ScalingMethodX.NONE.getDisplayString();
 
 				dataVect.add(row);
 			}
@@ -1671,41 +1688,16 @@ public class ActivePathsParameterPanel extends JPanel {
 			
 			int[] selectedIndices = ActivePathsParameterPanel.this.tblAttrSelection.getSelectedRows();
 	
-			AttrSelectionTableModel model = (AttrSelectionTableModel) ActivePathsParameterPanel.this.tblAttrSelection.getModel();
-			
-			boolean warning = false;
-			for (int i=0; i<selectedIndices.length; i++){
-				Object[] oneRow = model.getRow(selectedIndices[i]);
-							
-				double min = Double.valueOf(oneRow[1].toString());
-				double max = Double.valueOf(oneRow[2].toString());
-								
-				if (Math.min(min, max) < 0 || Math.max(min, max) > 1){
-					warning = true;
-				}
-				
-				if (!oneRow[4].toString().equalsIgnoreCase("none")){
-					warning = true;
-				}
-			}
-			
-			if (warning){
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-				        "Please note that P value should be in the range 0-1, and normalization method is not implemented yet!",
-				        "Warning",
-				        JOptionPane.WARNING_MESSAGE);
-
-			}
+			final AttrSelectionTableModel model = (AttrSelectionTableModel) ActivePathsParameterPanel.this.tblAttrSelection.getModel();
 			
 			ArrayList<String> selectedNames = new ArrayList<String>();
 			ArrayList<Boolean> switchSigs = new ArrayList<Boolean>();
 			ArrayList<String> scalingMethods = new ArrayList<String>();
 			
-			for (int i=0; i<selectedIndices.length; i++){
+			for (int i = 0; i < selectedIndices.length; i++){
 				selectedNames.add((String)model.getRow(selectedIndices[i])[0]);
 				switchSigs.add((Boolean)model.getRow(selectedIndices[i])[3]);
 				scalingMethods.add((String)model.getRow(selectedIndices[i])[4]);
-				
 			}
 		
 			apfParams.setExpressionAttributes(selectedNames);
@@ -1724,9 +1716,6 @@ public class ActivePathsParameterPanel extends JPanel {
 		public void actionPerformed(ActionEvent ae) {
 			// do nothing
 		}
-
 	}
-
-	// -----------------------------------------------------------------------------
 } // class ActivePathsParametersPopupDialog
 
