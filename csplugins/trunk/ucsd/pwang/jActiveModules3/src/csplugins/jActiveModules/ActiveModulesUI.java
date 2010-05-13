@@ -115,9 +115,10 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	public void startFindActivePaths(CyNetwork network) {
 		try {
 			activePaths = new ActivePaths(network, apfParams, this);
-		} catch (Exception e) {
+		} catch (final Exception e) {
+			e.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"Error running jActiveModules!  " + e.getMessage(),
+					"Error running jActiveModules (1)!  " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -143,11 +144,12 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	protected class ThreadExceptionHandler implements
 			Thread.UncaughtExceptionHandler {
 		public void uncaughtException(Thread t, Throwable e) {
+			e.printStackTrace(System.err);
 			CyLogger logger = CyLogger.getLogger(ActiveModulesUI.class);
 			logger.warn("Non-fatal exception in Thread " + t.getName(), e);
 			logger.warn("The previous exception was non-fatal - Don't panic!");
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"Error running jActiveModules!  " + e.getMessage(),
+					"Error running jActiveModules (2)!  " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
