@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 //                   
-// Main Class File:  CountWordsAndPairsPlugin.java
-// Static Classes:   CountWords, WordInfoCompare
+// Main Class File:  ImplementationTaskPlugin.java
+// Embedded Classes:   CountWords, ImplementationTaskPluginAction
 //
 // Author:           Layla Oesper layla.oesper@gmail.com
 //
