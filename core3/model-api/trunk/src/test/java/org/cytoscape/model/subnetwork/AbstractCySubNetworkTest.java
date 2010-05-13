@@ -338,4 +338,50 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertEquals("num nodes in root network",7,root.getNodeCount());
 	}
 
+	/**
+	 * Checks that getNeighbors works as expected for CyNode
+	 */
+	public void testNodeAddedInSubnetworkNodeGetNeighbors() {
+		defaultSetup();
+
+		CyNode nz1 = sub.addNode();
+		CyEdge ez1 = sub.addEdge(nz1,n1,true);
+
+		List<CyNode> nzl = nz1.getNeighborList(CyEdge.Type.ANY);
+		assertEquals(1,nzl.size());
+
+		List<CyNode> nl = n1.getNeighborList(CyEdge.Type.ANY);
+		assertEquals(3,nl.size());
+	}
+
+	/**
+	 * Checks that getNeighbors works as expected for CySubNetwork
+	 */
+	public void testNodeAddedInSubnetworkSubGetNeighbors() {
+		defaultSetup();
+
+		CyNode nz1 = sub.addNode();
+		CyEdge ez1 = sub.addEdge(nz1,n1,true);
+
+		List<CyNode> nl2 = sub.getNeighborList(n1,CyEdge.Type.ANY);
+		assertEquals(2,nl2.size());
+
+		List<CyNode> nl3 = root.getNeighborList(n1,CyEdge.Type.ANY);
+		assertEquals(3,nl3.size());
+
+		List<CyNode> nl4 = root.getNeighborList(nz1,CyEdge.Type.ANY);
+		assertEquals(1,nl4.size());
+
+        CySubNetwork sub2 = root.addMetaNode().getSubNetwork();
+		sub2.addNode(n1);
+		sub2.addNode(n2);
+		// no edges in sub2, so no neighbors!
+
+		List<CyNode> nl = sub2.getNeighborList(n1, CyEdge.Type.ANY);
+		assertEquals(0,nl.size());
+	}
+
+	// TODO 
+	// add tests that are similar to getNeighbors for getAdjacentEdges and getConnectingEdges
+	//
 }
