@@ -258,22 +258,80 @@ public enum VisualPropertyType {
 	                         
 	// New in Cytoscape 2.8: Custom Graphic Visual Prop.
 	NODE_CUSTOM_GRAPHICS_1("Node Custom Graphics 1", "nodeCustomGraphics1", 
-	    	                         "node.customGraphics1", "defaultNodeCustomGraphics1", 
-	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(1),
-	    	                         new GraphicsParser(), true, true),
+             "node.customGraphics1", "defaultNodeCustomGraphics1", 
+             CyCustomGraphics.class, new NodeCustomGraphicsProp(1),
+             new GraphicsParser(), true, true),
 	NODE_CUSTOM_GRAPHICS_2("Node Custom Graphics 2", "nodeCustomGraphics2", 
 	    	    	                         "node.customGraphics2", "defaultNodeCustomGraphics2", 
 	    	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(2),
 	    	    	                         new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_3("Node Custom Graphics 3", "nodeCustomGraphics3", 
+	    	    	    	           "node.customGraphics3", "defaultNodeCustomGraphics3", 
+	    	    	    	           CyCustomGraphics.class, new NodeCustomGraphicsProp(3),
+	    	    	    	           new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_4("Node Custom Graphics 4", "nodeCustomGraphics4", 
+	    	    	    	    	       "node.customGraphics4", "defaultNodeCustomGraphics4", 
+	    	    	    	    	       CyCustomGraphics.class, new NodeCustomGraphicsProp(4),
+	    	    	    	    	       new GraphicsParser(), true, true),    	    	                         
+	NODE_CUSTOM_GRAPHICS_5("Node Custom Graphics 5", "nodeCustomGraphics5", 
+	    	    	    	   	    	   "node.customGraphics5", "defaultNodeCustomGraphics5", 
+	    	    	    	   	    	   CyCustomGraphics.class, new NodeCustomGraphicsProp(5),
+	    	    	    	   	    	   new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_6("Node Custom Graphics 6", "nodeCustomGraphics6", 
+	    	    	    	   	"node.customGraphics6", "defaultNodeCustomGraphics6", 
+	    	    	    	   	CyCustomGraphics.class, new NodeCustomGraphicsProp(6),
+	    	    	    	   	new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_7("Node Custom Graphics 7", "nodeCustomGraphics7", 
+	    	    	    	   	    	   "node.customGraphics7", "defaultNodeCustomGraphics7", 
+	    	    	    	   	    	   CyCustomGraphics.class, new NodeCustomGraphicsProp(7),
+	    	    	    	   	    	   new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_8("Node Custom Graphics 8", "nodeCustomGraphics8", 
+	    	    	    	   	    	   "node.customGraphics8", "defaultNodeCustomGraphics8", 
+	    	    	    	   	    	   CyCustomGraphics.class, new NodeCustomGraphicsProp(8),
+	    	    	    	   	    	   new GraphicsParser(), true, true), 
+	NODE_CUSTOM_GRAPHICS_9("Node Custom Graphics 9", "nodeCustomGraphics9", 
+	 	    	    	    	   	   "node.customGraphics9", "defaultNodeCustomGraphics9", 
+	 	    	    	    	   	   CyCustomGraphics.class, new NodeCustomGraphicsProp(9),
+	 	    	    	    	   	   new GraphicsParser(), true, true),
+	 	    	    	    	   	   
 	NODE_CUSTOM_GRAPHICS_POSITION_1("Node Custom Graphics Position 1", "nodeCustomGraphicsPosition1", 
-	    	                         "node.customGraphicsPosition1", "defaultNodeCustomGraphicsPosition1", 
-	    	                         ObjectPosition.class, new NodeCustomGraphicsPositionProp(1),
-	    	                         new ObjectPositionParser(), true, true),
+             "node.customGraphicsPosition1", "defaultNodeCustomGraphicsPosition1", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(1),
+             new ObjectPositionParser(), true, true),
 	NODE_CUSTOM_GRAPHICS_POSITION_2("Node Custom Graphics Position 2", "nodeCustomGraphicsPosition2", 
-	   	    	                         "node.customGraphicsPosition2", "defaultNodeCustomGraphicsPosition2", 
-	   	    	                         ObjectPosition.class, new NodeCustomGraphicsPositionProp(2),
-	   	    	                         new ObjectPositionParser(), true, true)    	                        
-	;
+             "node.customGraphicsPosition2", "defaultNodeCustomGraphicsPosition2", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(2),
+             new ObjectPositionParser(), true, true),    	                        
+	NODE_CUSTOM_GRAPHICS_POSITION_3("Node Custom Graphics Position 3", "nodeCustomGraphicsPosition3", 
+             "node.customGraphicsPosition3", "defaultNodeCustomGraphicsPosition3", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(3),
+             new ObjectPositionParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION_4("Node Custom Graphics Position 4", "nodeCustomGraphicsPosition4", 
+	         "node.customGraphicsPosition4", "defaultNodeCustomGraphicsPosition4", 
+	         ObjectPosition.class, new NodeCustomGraphicsPositionProp(4),
+	         new ObjectPositionParser(), true, true),	    	                         
+	NODE_CUSTOM_GRAPHICS_POSITION_5("Node Custom Graphics Position 5", "nodeCustomGraphicsPosition5", 
+         "node.customGraphicsPosition5", "defaultNodeCustomGraphicsPosition5", 
+         ObjectPosition.class, new NodeCustomGraphicsPositionProp(5),
+         new ObjectPositionParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION_6("Node Custom Graphics Position 6", "nodeCustomGraphicsPosition6", 
+	         "node.customGraphicsPosition6", "defaultNodeCustomGraphicsPosition6", 
+	         ObjectPosition.class, new NodeCustomGraphicsPositionProp(6),
+	         new ObjectPositionParser(), true, true),
+    NODE_CUSTOM_GRAPHICS_POSITION_7("Node Custom Graphics Position 7", "nodeCustomGraphicsPosition7", 
+             "node.customGraphicsPosition7", "defaultNodeCustomGraphicsPosition7", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(7),
+             new ObjectPositionParser(), true, true),
+    NODE_CUSTOM_GRAPHICS_POSITION_8("Node Custom Graphics Position 8", "nodeCustomGraphicsPosition8", 
+             "node.customGraphicsPosition8", "defaultNodeCustomGraphicsPosition8", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(8),
+             new ObjectPositionParser(), true, true),
+    NODE_CUSTOM_GRAPHICS_POSITION_9("Node Custom Graphics Position 9", "nodeCustomGraphicsPosition9", 
+             "node.customGraphicsPosition9", "defaultNodeCustomGraphicsPosition9", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(9),
+             new ObjectPositionParser(), true, true);
+	
+	
 	/*
 	 * String returned by toString() method.
 	 */
@@ -613,10 +671,16 @@ public enum VisualPropertyType {
 	
 	
 	///////////// For multiple Custom Graphics Properties //////////////////
-	private static final VisualPropertyType[] CUSTOM_GRAPHICS_PROPS = 
-			{NODE_CUSTOM_GRAPHICS_1, NODE_CUSTOM_GRAPHICS_2};
-	private static final VisualPropertyType[] CUSTOM_GRAPHICS_POSITION_PROPS = 
-			{NODE_CUSTOM_GRAPHICS_POSITION_1, NODE_CUSTOM_GRAPHICS_POSITION_2};	
+	private static final VisualPropertyType[] CUSTOM_GRAPHICS_PROPS = {
+		NODE_CUSTOM_GRAPHICS_1, NODE_CUSTOM_GRAPHICS_2, NODE_CUSTOM_GRAPHICS_3, NODE_CUSTOM_GRAPHICS_4,
+		NODE_CUSTOM_GRAPHICS_5, NODE_CUSTOM_GRAPHICS_6, NODE_CUSTOM_GRAPHICS_7, NODE_CUSTOM_GRAPHICS_8,
+		NODE_CUSTOM_GRAPHICS_9 };
+	private static final VisualPropertyType[] CUSTOM_GRAPHICS_POSITION_PROPS = {
+		NODE_CUSTOM_GRAPHICS_POSITION_1, NODE_CUSTOM_GRAPHICS_POSITION_2,
+		NODE_CUSTOM_GRAPHICS_POSITION_3, NODE_CUSTOM_GRAPHICS_POSITION_4,
+		NODE_CUSTOM_GRAPHICS_POSITION_5, NODE_CUSTOM_GRAPHICS_POSITION_6,
+		NODE_CUSTOM_GRAPHICS_POSITION_7, NODE_CUSTOM_GRAPHICS_POSITION_8,
+		NODE_CUSTOM_GRAPHICS_POSITION_9 };	
 	
 	public static VisualPropertyType getCustomGraphicsType(int index) {
 		return CUSTOM_GRAPHICS_PROPS[index];

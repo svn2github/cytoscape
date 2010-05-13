@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.Icon;
 
@@ -22,6 +23,10 @@ import ding.view.DNodeView;
 import ding.view.ObjectPositionImpl;
 
 public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
+	
+	private static final int ICON_SIZE = 55;
+	
+	
 
 	private int index;
 
@@ -48,14 +53,13 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 	 * @return DOCUMENT ME!
 	 */
 	public Icon getIcon(Object value) {
-		int size = 55;
 
-		final BufferedImage bi = new BufferedImage(size, size,
+		final BufferedImage bi = new BufferedImage(ICON_SIZE, ICON_SIZE,
 				BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
 
-		ObjectPlacerGraphic lp = new ObjectPlacerGraphic(
-				(ObjectPosition) value, size, false, "Custom Graphics", null,
+		final ObjectPlacerGraphic lp = new ObjectPlacerGraphic(
+				(ObjectPosition) value, ICON_SIZE, false, "Custom Graphics", null,
 				null);
 		lp.paint(g2);
 
@@ -93,16 +97,16 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 		final DNodeView dv = (DNodeView) nv;
 		final NodeCustomGraphicsProp customGraphicsProp = (NodeCustomGraphicsProp) VisualPropertyType
 				.getCustomGraphicsType(index).getVisualProperty();
-		
-		
-		System.out.println("\n\n============= Process Position Prop ======================= " + nv.getNode().getIdentifier());
-		
-		
-		final List<CustomGraphic> currentCG = customGraphicsProp.getCurrentCustomGraphics();
-		if (dv.getNumCustomGraphics() == 0
-				|| currentCG.size() == 0)
-			return;
 
+		
+		final Set<CustomGraphic> currentCG = customGraphicsProp.getCurrentCustomGraphics(dv);
+		if(currentCG == null || currentCG.size() == 0) {
+			System.out.println(nv.getNode().getIdentifier() + ": CG is empty for this location! " + VisualPropertyType
+					.getCustomGraphicsPositionType(index));
+			return;
+		}
+
+		System.out.println(p.toString() + " = ============= Process Position Prop ======================= " + nv.getNode().getIdentifier());
 		
 		final List<CustomGraphic> newList = new ArrayList<CustomGraphic>();
 		for (CustomGraphic g : currentCG) {
@@ -113,21 +117,12 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 		currentCG.clear();
 		currentCG.addAll(newList);
 
-		int i = 0;
-		for (CustomGraphic cg : currentCG) {
-
-			System.out.println(cg + " = " + dv.getNode().getIdentifier()
-					+ ": CG Position = " + dv.getCustomGraphicsPosition(cg));
-			i++;
-		}
 
 		System.out.println(VisualPropertyType
 				.getCustomGraphicsPositionType(index)
 				+ ": Number of registered Custom Graphics: "
 				+ dv.getNumCustomGraphics());
-		
-		System.out.println("============= Process Position Prop Done ======================= " + nv.getNode().getIdentifier());
-	}
+		}
 
 	/**
 	 * DOCUMENT ME!
