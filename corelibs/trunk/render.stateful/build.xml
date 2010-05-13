@@ -144,7 +144,7 @@
                  usefile="true" />
       <formatter type="xml" 
                  usefile="true" />
-      <batchtest fork="yes" 
+      <batchtest fork="no" 
                  todir="${log.dir}" 
                  failureProperty="junit.test.failure"
                  errorProperty="junit.test.failure">
@@ -217,7 +217,7 @@
   <!-- =================================================================== -->
   <!-- Do everything                                                       --> 
   <!-- =================================================================== -->
-  <target name="all" depends="jar,docs,test" /> 
+  <target name="all" depends="jar,test,docs" /> 
 
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
