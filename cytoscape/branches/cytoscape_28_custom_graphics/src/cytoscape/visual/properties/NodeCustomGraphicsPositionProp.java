@@ -1,6 +1,5 @@
 package cytoscape.visual.properties;
 
-import static cytoscape.visual.VisualPropertyType.*;
 import giny.view.NodeView;
 import giny.view.ObjectPosition;
 
@@ -10,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -18,7 +16,6 @@ import javax.swing.Icon;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.customgraphic.NullCustomGraphics;
 import cytoscape.visual.ui.ObjectPlacerGraphic;
 import cytoscape.visual.ui.icon.NodeIcon;
 import ding.view.DNodeView;
@@ -26,23 +23,20 @@ import ding.view.ObjectPositionImpl;
 
 public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 
-	private static final VisualPropertyType[] TYPES = {NODE_CUSTOM_GRAPHICS_POSITION_1, NODE_CUSTOM_GRAPHICS_POSITION_2};
-	
-	private final VisualPropertyType type;
-	
+	private int index;
+
 	public NodeCustomGraphicsPositionProp(final Integer index) {
 		super();
-		this.type = TYPES[index-1];
+		this.index = index - 1;
 	}
-	
-	
+
 	/**
 	 * DOCUMENT ME!
 	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public VisualPropertyType getType() {
-		return type;
+		return VisualPropertyType.getCustomGraphicsPositionType(index);
 	}
 
 	/**
@@ -82,7 +76,8 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 	/**
 	 * Apply Object Position to DNodeView's Custom Graphics.
 	 * 
-	 * @param nv - NodeView.  Currently, only supports DNodeView implementation.
+	 * @param nv
+	 *            - NodeView. Currently, only supports DNodeView implementation.
 	 * @param o
 	 *            This should be an ObjectPosition.
 	 */
@@ -91,35 +86,47 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 
 		// This implementation is for Ding only.
 		if ((o == null) || (nv == null) || o instanceof ObjectPosition == false
-				|| o instanceof NullCustomGraphics
 				|| nv instanceof DNodeView == false)
 			return;
 
 		final ObjectPosition p = (ObjectPosition) o;
 		final DNodeView dv = (DNodeView) nv;
+		final NodeCustomGraphicsProp customGraphicsProp = (NodeCustomGraphicsProp) VisualPropertyType
+				.getCustomGraphicsType(index).getVisualProperty();
 		
-		final Iterator<CustomGraphic> itr = dv.customGraphicIterator();
+		
+		System.out.println("\n\n============= Process Position Prop ======================= " + nv.getNode().getIdentifier());
+		
+		
+		final List<CustomGraphic> currentCG = customGraphicsProp.getCurrentCustomGraphics();
+		if (dv.getNumCustomGraphics() == 0
+				|| currentCG.size() == 0)
+			return;
+
+		
+		final List<CustomGraphic> newList = new ArrayList<CustomGraphic>();
+		for (CustomGraphic g : currentCG) {
+			newList.add(dv.setCustomGraphicsPosition(g, p));
+			dv.removeCustomGraphic(g);
+		}
+
+		currentCG.clear();
+		currentCG.addAll(newList);
+
 		int i = 0;
-		final List<CustomGraphic> cgList = new ArrayList<CustomGraphic>();
-		
-		while(itr.hasNext()) {
-			final CustomGraphic cg = itr.next();
-			cgList.add(cg);
-		}
-		if(cgList.size() == 0) return;
-		
-		for(CustomGraphic g: cgList) {
-			dv.setCustomGraphicsPosition(g, p);
-		}
-		
-		final Iterator<CustomGraphic> itr2 = dv.customGraphicIterator();
-		i = 0;
-		while(itr2.hasNext()) {
-			final CustomGraphic cg = itr2.next();
-			System.out.println(i + " = " + dv.getNode().getIdentifier() +  ": CG Position = "
-				+ dv.getCustomGraphicsPosition(cg));
+		for (CustomGraphic cg : currentCG) {
+
+			System.out.println(cg + " = " + dv.getNode().getIdentifier()
+					+ ": CG Position = " + dv.getCustomGraphicsPosition(cg));
 			i++;
 		}
+
+		System.out.println(VisualPropertyType
+				.getCustomGraphicsPositionType(index)
+				+ ": Number of registered Custom Graphics: "
+				+ dv.getNumCustomGraphics());
+		
+		System.out.println("============= Process Position Prop Done ======================= " + nv.getNode().getIdentifier());
 	}
 
 	/**

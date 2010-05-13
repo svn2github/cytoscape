@@ -67,7 +67,6 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		final PaintFactory paintFactory = new TexturePaintFactory(targetImg);
 
 		cg = new CustomGraphic(bound, paintFactory);
-		//cgList.add(new CustomGraphic(background, new ColorPaintFactory(Color.white)));
 		cgList.add(cg);
 	}
 

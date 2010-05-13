@@ -1,6 +1,7 @@
 package cytoscape.visual.properties;
 
-import static cytoscape.visual.VisualPropertyDependency.Definition.*;
+import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_CUSTOM_GRAPHICS_SIZE_SYNC;
+import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_SIZE_LOCKED;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -16,10 +17,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.Icon;
 
@@ -34,23 +33,18 @@ import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 import ding.view.DNodeView;
 
-import static cytoscape.visual.VisualPropertyType.*;
-
 public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	private static final CyCustomGraphics<CustomGraphic> NULL = new NullCustomGraphics();
 
-	private static final VisualPropertyType[] TYPES = { NODE_CUSTOM_GRAPHICS_1,
-			NODE_CUSTOM_GRAPHICS_2 };
-
-	private final VisualPropertyType type;
-
-	private final Set<CustomGraphic> currentCG;
+	private final List<CustomGraphic> currentCG;
+	
+	private final int index;
 
 	public NodeCustomGraphicsProp(final Integer index) {
 		super();
-		this.type = TYPES[index - 1];
-		this.currentCG = new HashSet<CustomGraphic>();
+		this.index = index-1;
+		this.currentCG = new ArrayList<CustomGraphic>();
 	}
 
 	@Override
@@ -131,7 +125,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	@Override
 	public VisualPropertyType getType() {
-		return type;
+		return VisualPropertyType.getCustomGraphicsType(index);
 	}
 
 	/**
@@ -140,24 +134,34 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 	public void applyToNodeView(NodeView nv, Object o,
 			VisualPropertyDependency dep) {
 
+		
+		
 		// Ignore if view does not exist
 		if (nv == null || nv instanceof DNodeView == false)
 			return;
 
+		final DNodeView dv = (DNodeView) nv;
+		
+		System.out.println("\n\n============= Process CG Prop ======================= " + nv.getNode().getIdentifier());
+		
 		// If not necessary to update, ignore.
 		if (o == null || o instanceof CyCustomGraphics<?> == false
-				|| o instanceof NullCustomGraphics)
+				|| o instanceof NullCustomGraphics) {
 			return;
+		}
 
-		final DNodeView dv = (DNodeView) nv;
+		
 		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
 		final Collection<CustomGraphic> layers = (Collection<CustomGraphic>) graphics
 				.getCustomGraphics();
 
-		// Remove layers of custom graphics belongs to this CyCustomGraphics
-		// object
-		for (CustomGraphic cg : currentCG)
-			dv.removeCustomGraphic(cg);
+		if(currentCG.size() != 0) {
+			// Remove all of those
+			for(CustomGraphic cg: currentCG)
+				dv.removeCustomGraphic(cg);
+			
+			currentCG.clear();
+		}
 
 		// No need to update
 		if (layers == null || layers.size() == 0)
@@ -167,21 +171,24 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		boolean sync = false;
 		if (dep != null) {
 			sync = dep.check(NODE_CUSTOM_GRAPHICS_SIZE_SYNC);
-			System.out.println("** Sync Status: " + sync);
+			System.out.println(VisualPropertyType.getCustomGraphicsType(index) + ":** Sync Status: " + sync);
 		}
 
-		currentCG.clear();
 		for (CustomGraphic cg : layers) {
 			if (sync) {
 				final CustomGraphic resized = syncSize(cg, dv,
 						dep);
 				dv.addCustomGraphic(resized);
 				currentCG.add(resized);
+				System.out.println("** Adding resized CG: " + resized  +"\n\n");
 			} else {
 				dv.addCustomGraphic(cg);
-				currentCG.add(cg);
+				
+				System.out.println(currentCG.add(cg) + "  ** Adding New CG: " + cg +"\n\n");
 			}
 		}
+		
+		System.out.println(dv.getNumCustomGraphics() + " ============= Process CG Prop Done =======================\n\n");
 	}
 
 	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv,
@@ -244,5 +251,10 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		}
 
 		return customGraphicsIcons;
+	}
+	
+	
+	protected List<CustomGraphic> getCurrentCustomGraphics() {
+		return this.currentCG;
 	}
 }

@@ -610,4 +610,19 @@ public enum VisualPropertyType {
 	public ValueParser getValueParser() {
 		return valueParser;
 	}
+	
+	
+	///////////// For multiple Custom Graphics Properties //////////////////
+	private static final VisualPropertyType[] CUSTOM_GRAPHICS_PROPS = 
+			{NODE_CUSTOM_GRAPHICS_1, NODE_CUSTOM_GRAPHICS_2};
+	private static final VisualPropertyType[] CUSTOM_GRAPHICS_POSITION_PROPS = 
+			{NODE_CUSTOM_GRAPHICS_POSITION_1, NODE_CUSTOM_GRAPHICS_POSITION_2};	
+	
+	public static VisualPropertyType getCustomGraphicsType(int index) {
+		return CUSTOM_GRAPHICS_PROPS[index];
+	}
+	
+	public static VisualPropertyType getCustomGraphicsPositionType(int index) {
+		return CUSTOM_GRAPHICS_POSITION_PROPS[index];
+	}
 }
