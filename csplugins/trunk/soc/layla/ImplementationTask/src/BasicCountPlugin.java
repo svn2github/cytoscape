@@ -17,10 +17,13 @@
 import java.util.*;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 
@@ -105,6 +108,8 @@ public class BasicCountPlugin extends CytoscapePlugin
 			retrievePairCounts(WordPairCounts); 
 			printWords(WordCounts,1); 
 			printWords(WordPairCounts,2);
+			addPanel();
+		
 		}
 	
 		
@@ -253,6 +258,26 @@ public class BasicCountPlugin extends CytoscapePlugin
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),message);
 		}
 	}
+	
+	/**
+	 * This method adds a new tabbed panel to the data display.  
+	 */
+	public void addPanel()
+	{
+		//Retrieve handler
+		CytoPanelImp dataPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
+		
+		//Create JPanel object
+		JPanel myPanel = new JPanel();
+		
+		//Add the panel to SOUTH
+		dataPanel.add("Word Counts", myPanel);
+		
+		//Select panel once plugin is initialized
+		int indexInCytoPanel = dataPanel.indexOfComponent("Word Counts");
+		dataPanel.setSelectedIndex(indexInCytoPanel);
+	}
+	
 }
 
 
