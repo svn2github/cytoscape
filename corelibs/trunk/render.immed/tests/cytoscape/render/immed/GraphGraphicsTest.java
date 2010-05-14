@@ -53,14 +53,24 @@ import org.apache.commons.math.MathException;
 
 public class GraphGraphicsTest extends TestCase {
 
-
 	GraphGraphics currentGraphGraphics;
 	OldGraphGraphics oldGraphGraphics;
-	int numNodes = 5000;
-	int numEdges = 5000;
+	int numNodes; 
+	int numEdges;
 	BufferedImage image;
 	int canvasSize = 1000;
 	int numTests = 20;
+
+	public GraphGraphicsTest() {
+		super();
+		String prop = System.getProperties().getProperty("num.graph.objects");
+		int numGraphObjs = 5000; 
+		if ( prop.matches("^\\d+$") )
+			numGraphObjs = Integer.parseInt(prop);
+
+		numNodes = numGraphObjs; 
+		numEdges = numGraphObjs; 
+	}
 
 	public void setUp() {
 		image = new BufferedImage(canvasSize,canvasSize,BufferedImage.TYPE_INT_ARGB);

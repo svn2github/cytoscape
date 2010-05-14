@@ -134,9 +134,15 @@
   <target name="test"
           depends="jar-tests"
           if="tests.ok">
+    <echo message=""/>
+    <echo message="  If the tests are taking too long you can set the"/>
+	<echo message="  num.graph.objects property to something small (like 100):"/>
+    <echo message="      ant all -Dnum.graph.objects=100"/>
+    <echo message=""/>
     <junit printsummary="yes"
            haltonfailure="no"
            maxmemory="512M" >
+      <sysproperty key="num.graph.objects" value="${num.graph.objects}"/>
       <classpath refid="junit.class.path"/>
       <formatter type="plain" 
                  usefile="true" />
