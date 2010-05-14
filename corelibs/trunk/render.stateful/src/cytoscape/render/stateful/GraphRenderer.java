@@ -921,7 +921,16 @@ public final class GraphRenderer {
 	private final static float[] s_floatBuff2 = new float[1200];
 
 	/**
-	 * DOCUMENT ME!
+	 * A utility method that converts an open GeneralPath into a closed GeneralPath.
+	 * The GraphGraphics.getEdgePath() method returns an open general path that
+	 * is simply a list of segments from the source node to the target node that doesn't
+	 * include a SEG_CLOSE segment.  This method traces such a path, reverses course 
+	 * and traces the same path backwards ending with a SEG_CLOSE to create a closed path. 
+	 *
+	 * This method appears to only be used in one place (in ding) where it is used for
+	 * creating a path suitable for determining whether an edge intersets a selected (or
+	 * clicked) region. It's not clear why this method is even being used in that case
+	 * because GeneralPath.intersect seems to work on open paths as well as closed paths.
 	 *
 	 * @param origPath DOCUMENT ME!
 	 * @param rtnVal DOCUMENT ME!
