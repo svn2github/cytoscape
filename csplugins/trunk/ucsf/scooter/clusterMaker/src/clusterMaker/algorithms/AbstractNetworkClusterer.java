@@ -90,6 +90,10 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 				nodeList.add(node);
 				nodeAttributes.setAttribute(node.getIdentifier(),
 				                            clusterAttributeName, clusterNumber);
+				if (NodeCluster.hasScore()) {
+					nodeAttributes.setAttribute(node.getIdentifier(),
+					                            clusterAttributeName+"_Score", cluster.getClusterScore());
+				}
 			}
 			
 			if (createGroups) {
@@ -100,6 +104,13 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 					// Now tell the metanode viewer about it
 					CyGroupManager.setGroupViewer(newgroup, "metaNode", 
 					                              Cytoscape.getCurrentNetworkView(), false);
+					// And, finally, set the score on the group itself
+					nodeAttributes.setAttribute(newgroup.getGroupNode().getIdentifier(),
+					                            clusterAttributeName, clusterNumber);
+					if (NodeCluster.hasScore()) {
+						nodeAttributes.setAttribute(newgroup.getGroupNode().getIdentifier(),
+						                            clusterAttributeName+"_Score", cluster.getClusterScore());
+					}
 				}
 			}
 			clusterList.add(nodeList);
@@ -113,11 +124,10 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
 
 		// Set up the appropriate attributes
-		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                     ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, getShortName());
-		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                     ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
+		netAttributes.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
+		                           ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, getShortName());
+		netAttributes.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
+		                           ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
 	
 		return clusterList;
 	}

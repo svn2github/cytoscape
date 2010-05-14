@@ -50,6 +50,8 @@ import cytoscape.CyNode;
 public class NodeCluster extends ArrayList<CyNode> {
 	int clusterNumber = 0;
 	static int clusterCount = 0;
+	static boolean hasScore = false;
+	double score = 0.0;
 
 	public NodeCluster() {
 		super();
@@ -61,13 +63,22 @@ public class NodeCluster extends ArrayList<CyNode> {
 		return add(nodeList.get(index));
 	}
 
-	public static void init() { clusterCount = 0; }
+	public static void init() { clusterCount = 0; hasScore = false; }
+	public static boolean hasScore() { return hasScore; }
 
 	public int getClusterNumber() { return clusterNumber; }
 
 	public void setClusterNumber(int clusterNumber) { 
 		this.clusterNumber = clusterNumber; 
 	}
+
+	public void setClusterScore(double score) { 
+		this.score = score; 
+		hasScore = true;
+	}
+
+	public double getClusterScore() { return score; }
+
 
 	public String toString() {
 		String str = "("+clusterNumber+": ";

@@ -2,9 +2,15 @@ package clusterMaker.algorithms.FORCE;
 
 import java.io.IOException;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Hashtable;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -12,8 +18,10 @@ import javax.swing.JPanel;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
+import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
+import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
@@ -27,20 +35,29 @@ import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.NewNetworkView;
 
-import de.layclust.layout.forcend.FORCEnDLayoutConfig;
-import de.layclust.taskmanaging.TaskConfig;
+import clusterMaker.algorithms.FORCE.Parameters;
+import clusterMaker.algorithms.FORCE.RunFORCE;
+
+
 
 
 public class FORCECluster extends AbstractNetworkClusterer {
+
 	private CyLogger logger = null;
 	private	TaskMonitor monitor = null;
+        private EdgeAttributeHandler edgeAttributeHandler = null;
 
 	// Tunable values
-	private boolean mergeSimilar = false;
-	private double mergeThreshold = 0;
-	private boolean evolutionaryTraining = false;
+    int dimension;
+    int iterations;
+    double attractionFactor;
+    double repulsionFactor;
+    double maximalDisplacement;
+    float temperature;
+    double influenceOfGraphSizeToForces;
+    double singleLinkageDistance;
 
-	private EdgeAttributeHandler edgeAttributeHandler = null;
+	
 
 	/**
  	 * Main constructor -- calls constructor of the superclass and initializes
@@ -83,37 +100,41 @@ public class FORCECluster extends AbstractNetworkClusterer {
 		clusterProperties.updateValues();
 		super.updateSettings(force);
 
+		
 		Tunable t = clusterProperties.get("dimension");
 		if ((t != null) && (t.valueChanged() || force))
-			TaskConfig.dimension = ((Integer) t.getValue()).intValue();
+			dimension = ((Integer) t.getValue()).intValue();
 
 		t = clusterProperties.get("iterations");
 		if ((t != null) && (t.valueChanged() || force))
-			FORCEnDLayoutConfig.iterations = ((Integer) t.getValue()).intValue();
+			iterations = ((Integer) t.getValue()).intValue();
 
 		t = clusterProperties.get("attractionFactor");
 		if ((t != null) && (t.valueChanged() || force))
-			FORCEnDLayoutConfig.attractionFactor = ((Double) t.getValue()).doubleValue();
+			attractionFactor = ((Double) t.getValue()).doubleValue();
 
 		t = clusterProperties.get("repulsionFactor");
 		if ((t != null) && (t.valueChanged() || force))
-			FORCEnDLayoutConfig.repulsionFactor = ((Double) t.getValue()).doubleValue();
+			repulsionFactor = ((Double) t.getValue()).doubleValue();
 
-		t = clusterProperties.get("mergeSimilar");
+		t = clusterProperties.get("maximalDisplacement");
 		if ((t != null) && (t.valueChanged() || force))
-			mergeSimilar = ((Boolean) t.getValue()).booleanValue();
+			maximalDisplacement = ((Double) t.getValue()).doubleValue();
 
-		t = clusterProperties.get("mergeThreshold");
+		t = clusterProperties.get("temperature");
 		if ((t != null) && (t.valueChanged() || force))
-			mergeThreshold = ((Integer) t.getValue()).intValue();
+			temperature = ((Double) t.getValue()).floatValue();
+		
+		t = clusterProperties.get("influenceOfGraphSizeToForces");
+		if ((t != null) && (t.valueChanged() || force))
+			influenceOfGraphSizeToForces = ((Double) t.getValue()).doubleValue();
 
-		t = clusterProperties.get("evolutionaryTraining");
+		t = clusterProperties.get("singleLinkageDistance");
 		if ((t != null) && (t.valueChanged() || force))
-			evolutionaryTraining = ((Boolean) t.getValue()).booleanValue();
+			singleLinkageDistance = ((Double) t.getValue()).doubleValue();
 
-		t = clusterProperties.get("generations");
-		if ((t != null) && (t.valueChanged() || force))
-			TaskConfig.noOfGenerations = ((Integer) t.getValue()).intValue();
+		
+
 
 		edgeAttributeHandler.updateSettings(force);
 
@@ -129,17 +150,12 @@ public class FORCECluster extends AbstractNetworkClusterer {
 		 * Tunable values
 		 */
 
-		// Advanced attributes group
-		clusterProperties.add(new Tunable("advancedAttributesGroup", 
-		                                  "Advanced Tuning",
-		                                  Tunable.GROUP, new Integer(4),
-		                                  new Boolean(true), null, Tunable.COLLAPSABLE));
-		{
-			// 	Layouter options group
-			clusterProperties.add(new Tunable("layouterOptionsGroup", 
-			                                  "Layouter Options",
-			                                  Tunable.GROUP, new Integer(4)));
-			{
+		 clusterProperties.add(new Tunable("tunables_panel",
+                                                  "FORCE Tuning",
+                                                  Tunable.GROUP, new Integer(8)) );
+
+		
+			
 				// 		Dimension (slider 2-6)
 		    clusterProperties.add(new Tunable("dimension",
    		 	                                  "Dimension:",
@@ -149,50 +165,40 @@ public class FORCECluster extends AbstractNetworkClusterer {
 				// 		Iterations (slider 50-250)
  		   	clusterProperties.add(new Tunable("iterations",
    		 	                                  "Iterations:",
-   		 	                                  Tunable.INTEGER, new Integer(FORCEnDLayoutConfig.iterations),
+   		 	                                  Tunable.INTEGER, new Integer(150),
 		 			                                 new Integer(50), new Integer(250), Tunable.USESLIDER));
 				// 		Attraction factor (double)
    		 	clusterProperties.add(new Tunable("attractionFactor",
      			                                 "Attraction Factor:",
-       			                               Tunable.DOUBLE, new Double(FORCEnDLayoutConfig.attractionFactor)));
+       			                               Tunable.DOUBLE, new Double(1.2448524402942829)));
+
 				// 		Repulsion factor (double)
    		 	clusterProperties.add(new Tunable("repulsionFactor",
      			                                 "Repulsion Factor:",
-       			                               Tunable.DOUBLE, new Double(FORCEnDLayoutConfig.repulsionFactor)));
-			}
-		
-			//	Merge nodes
-			clusterProperties.add(new Tunable("mergeNodesGroup", 
-			                                  "Merge nodes",
-			                                  Tunable.GROUP, new Integer(2)));
-			{
-				//		Merge very similar nodes to one (boolean)
-				clusterProperties.add(new Tunable("mergeSimilar", 
-				                                  "Merge very similar nodes to one?",
-		 		                                  Tunable.BOOLEAN, new Boolean(false)));
-				//		Threshold (integer)
-				clusterProperties.add(new Tunable("mergeThreshold", 
-				                                  "Threshold:",
-		 		                                  Tunable.INTEGER, new Integer(100)));
-			}
+       			                               Tunable.DOUBLE, new Double(1.6866447301914302)));
+			
+				// 		Maximal Displacement (double)
+   		 	clusterProperties.add(new Tunable("maximalDisplacement",
+     			                                 "Maximal Displacement:",
+       			                               Tunable.DOUBLE, new Double(1000)));
 
-			//	Parameter training
-			clusterProperties.add(new Tunable("parameterGroup", 
-			                                  "Parameter training",
-			                                  Tunable.GROUP, new Integer(2)));
-			{
-				//		Evolutionary parameter training? (boolean)
-				clusterProperties.add(new Tunable("evolutionaryTraining", 
-				                                  "Evolutionary parmeter training?",
-		 		                                  Tunable.BOOLEAN, new Boolean(false)));
-				//		Generations (1-10)
-				clusterProperties.add(new Tunable("generations", 
-				                                  "Generations:",
-		 		                                  Tunable.INTEGER, new Integer(3),
-				                                  new Integer(1), new Integer(10), Tunable.USESLIDER));
-			}
+				// 		Temperature (float)
+   		 	clusterProperties.add(new Tunable("temperature",
+     			                                 "Temperature:",
+       			                               Tunable.DOUBLE, new Double(633)));
 
-		}
+				// 		Influence of Graph Size to Forces (double)
+   		 	clusterProperties.add(new Tunable("influenceOfGraphSizeToForces",
+     			                                 "Influence of Graph Size to Forces:",
+       			                               Tunable.DOUBLE, new Double(1.3198015648987826)));
+
+			      // 		Single Linkage Distance (slider .01-5)
+		        clusterProperties.add(new Tunable("singleLinkageDistance",
+   		 	                                  "Single Linkage Distance:",
+     			                                 Tunable.DOUBLE, new Double(2),
+		   			                               new Double(.01), new Double(5), Tunable.USESLIDER));
+			
+	
 
 		// Use the standard edge attribute handling stuff....
 		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
@@ -206,13 +212,11 @@ public class FORCECluster extends AbstractNetworkClusterer {
 	/**
  	 * Perform the actual clustering.  For FORCE, there are really
  	 * two steps:
- 	 * 	1) Assign all of the connected components
- 	 * 	   -- isn't this just normalizing the distance matrix?
+ 	 * 	1) Normalize the Distance Matrix
+ 	 * 	
  	 * 	2) Do the FORCE clustering.
  	 *
- 	 * There is also an optional approach called evolutionary parameter
- 	 * tuning, which takes a lot longer and is probably less relevant for
- 	 * the Cytoscape integration.
+ 	 * 
  	 *
  	 * @param monitor the TaskMonitor to use
  	 */
@@ -230,13 +234,14 @@ public class FORCECluster extends AbstractNetworkClusterer {
 		// Trim the matrix by setting all cells that don't meet our
 		// cut-off criteria to zero
 
+		Parameters params = new Parameters(iterations,attractionFactor,repulsionFactor,maximalDisplacement,temperature,influenceOfGraphSizeToForces);
 		// Now, run FORCE to cluster each connected component
-		RunFORCE runFORCE = new RunFORCE(matrix, evolutionaryTraining, mergeSimilar, mergeThreshold, logger);
+		RunFORCE runFORCE = new RunFORCE(matrix,dimension,singleLinkageDistance, params, logger);
 
 		List<NodeCluster> clusters = null;
-		try {
+		//try {
 			clusters = runFORCE.run(monitor);
-		} catch (IOException e) {}
+		//} catch (IOException e) {}
 
 		logger.info("Removing groups");
 
