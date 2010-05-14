@@ -798,23 +798,23 @@ public final class GraphRenderer {
 		}
 	}
 
-	private final static float[] s_floatBuff = new float[2];
 
 	/**
-	 * DOCUMENT ME!
+	 * Calculates the edge endpoints given two nodes, any edge anchors, and any arrows. 
 	 *
-	 * @param grafx DOCUMENT ME!
-	 * @param srcNodeExtents DOCUMENT ME!
-	 * @param srcNodeShape DOCUMENT ME!
-	 * @param srcArrow DOCUMENT ME!
-	 * @param srcArrowSize DOCUMENT ME!
-	 * @param anchors DOCUMENT ME!
-	 * @param trgNodeExtents DOCUMENT ME!
-	 * @param trgNodeShape DOCUMENT ME!
-	 * @param trgArrow DOCUMENT ME!
-	 * @param trgArrowSize DOCUMENT ME!
-	 * @param rtnValSrc DOCUMENT ME!
-	 * @param rtnValTrg DOCUMENT ME!
+	 * @param grafx The GraphGraphics being used to render everything. Used only to 
+	 * calculate the edge intersection of the node.
+	 * @param srcNodeExtents The extents of the source node.
+	 * @param srcNodeShape The node shape type.
+	 * @param srcArrow The source arrow type.
+	 * @param srcArrowSize The source arrow size.
+	 * @param anchors an EdgeAnchors object listing any anchors for the edge, possibly null.
+	 * @param trgNodeExtents The extends of the target node.
+	 * @param trgNodeShape The target node type.
+	 * @param trgArrow The target arrow type.
+	 * @param trgArrowSize The target arrow size.
+	 * @param rtnValSrc The array where X,Y positions of the source end of the edge are stored. 
+	 * @param rtnValTrg The array where X,Y positions of the target end of the edge are stored. 
 	 *
 	 * @return DOCUMENT ME!
 	 */
@@ -827,10 +827,6 @@ public final class GraphRenderer {
 	                                                 final float trgArrowSize,
 	                                                 final float[] rtnValSrc,
 	                                                 final float[] rtnValTrg) {
-		final boolean alwaysCompute = true;
-
-		if ((anchors != null) && (anchors.numAnchors() == 0))
-			anchors = null;
 
 		final float srcX = (float) ((((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d);
 		final float srcY = (float) ((((double) srcNodeExtents[1]) + srcNodeExtents[3]) / 2.0d);
@@ -841,132 +837,34 @@ public final class GraphRenderer {
 		final float trgXOut;
 		final float trgYOut;
 
-		synchronized (s_floatBuff) {
-			if (anchors == null) {
-				srcXOut = trgX;
-				srcYOut = trgY;
-				trgXOut = srcX;
-				trgYOut = srcY;
-			} else {
-				anchors.getAnchor(0, s_floatBuff, 0);
-				srcXOut = s_floatBuff[0];
-				srcYOut = s_floatBuff[1];
-				anchors.getAnchor(anchors.numAnchors() - 1, s_floatBuff, 0);
-				trgXOut = s_floatBuff[0];
-				trgYOut = s_floatBuff[1];
-			}
+		final float[] floatBuff = new float[2];
+
+		if ((anchors != null) && (anchors.numAnchors() == 0))
+			anchors = null;
+
+		if (anchors == null) {
+			srcXOut = trgX;
+			srcYOut = trgY;
+			trgXOut = srcX;
+			trgYOut = srcY;
+		} else {
+			anchors.getAnchor(0, floatBuff, 0);
+			srcXOut = floatBuff[0];
+			srcYOut = floatBuff[1];
+			anchors.getAnchor(anchors.numAnchors() - 1, floatBuff, 0);
+			trgXOut = floatBuff[0];
+			trgYOut = floatBuff[1];
 		}
 
-		final float srcXAdj;
-		final float srcYAdj;
+		calcIntersection(grafx, srcNodeShape, srcNodeExtents, srcX, srcY, 
+		                 srcXOut, srcYOut, floatBuff); 
+		final float srcXAdj = floatBuff[0];
+		final float srcYAdj = floatBuff[1];
 
-		synchronized (s_floatBuff) {
-			if ((srcNodeExtents[0] == srcNodeExtents[2])
-			    || (srcNodeExtents[1] == srcNodeExtents[3])) {
-				if (!_computeEdgeIntersection(srcX, srcY, 0.0f, srcXOut, srcYOut,
-				                              alwaysCompute, s_floatBuff))
-					return false;
-			} else {
-				if (!grafx.computeEdgeIntersection(srcNodeShape, srcNodeExtents[0],
-				                                   srcNodeExtents[1], srcNodeExtents[2],
-				                                   srcNodeExtents[3], 0.0f, srcXOut, srcYOut,
-				                                   s_floatBuff)) {
-					if (!alwaysCompute)
-						return false;
-
-					final float newSrcXOut;
-					final float newSrcYOut;
-
-					{ // Compute newSrcXOut and newSrcYOut.
-
-						final double srcXCenter = (((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d;
-						final double srcYCenter = (((double) srcNodeExtents[1]) + srcNodeExtents[3]) / 2.0d;
-						final double desiredDist = Math.max(((double) srcNodeExtents[2])
-						                                    - srcNodeExtents[0],
-						                                    ((double) srcNodeExtents[3])
-						                                    - srcNodeExtents[1]);
-						final double dX = srcXOut - srcXCenter;
-						final double dY = srcYOut - srcYCenter;
-						final double len = Math.sqrt((dX * dX) + (dY * dY));
-
-						if (len == 0.0d) {
-							newSrcXOut = (float) (srcXOut + desiredDist);
-							newSrcYOut = srcYOut;
-						} else {
-							newSrcXOut = (float) (((dX / len) * desiredDist) + srcXOut);
-							newSrcYOut = (float) (((dY / len) * desiredDist) + srcYOut);
-						}
-					}
-
-					grafx.computeEdgeIntersection(srcNodeShape, srcNodeExtents[0],
-					                              srcNodeExtents[1], srcNodeExtents[2],
-					                              srcNodeExtents[3], 0.0f, newSrcXOut,
-					                              newSrcYOut, s_floatBuff);
-				}
-			}
-
-			srcXAdj = s_floatBuff[0];
-			srcYAdj = s_floatBuff[1];
-		}
-
-		final float trgXAdj;
-		final float trgYAdj;
-
-		synchronized (s_floatBuff) {
-			if ((trgNodeExtents[0] == trgNodeExtents[2])
-			    || (trgNodeExtents[1] == trgNodeExtents[3])) {
-				if (!_computeEdgeIntersection(trgX, trgY, 0.0f, trgXOut, trgYOut,
-				                              alwaysCompute, s_floatBuff))
-					return false;
-			} else {
-				if (!grafx.computeEdgeIntersection(trgNodeShape, trgNodeExtents[0],
-				                                   trgNodeExtents[1], trgNodeExtents[2],
-				                                   trgNodeExtents[3], 0.0f, trgXOut, trgYOut,
-				                                   s_floatBuff)) {
-					if (!alwaysCompute)
-						return false;
-
-					final float newTrgXOut;
-					final float newTrgYOut;
-
-					{ // Compute newTrgXOut and newTrgYOut.
-
-						final double trgXCenter = (((double) trgNodeExtents[0]) + trgNodeExtents[2]) / 2.0d;
-						final double trgYCenter = (((double) trgNodeExtents[1]) + trgNodeExtents[3]) / 2.0d;
-						final double desiredDist = Math.max(((double) trgNodeExtents[2])
-						                                    - trgNodeExtents[0],
-						                                    ((double) trgNodeExtents[3])
-						                                    - trgNodeExtents[1]);
-						final double dX = trgXOut - trgXCenter;
-						final double dY = trgYOut - trgYCenter;
-						final double len = Math.sqrt((dX * dX) + (dY * dY));
-
-						if (len == 0.0d) {
-							newTrgXOut = (float) (trgXOut - desiredDist);
-							newTrgYOut = trgYOut;
-						} else {
-							newTrgXOut = (float) (((dX / len) * desiredDist) + trgXOut);
-							newTrgYOut = (float) (((dY / len) * desiredDist) + trgYOut);
-						}
-					}
-
-					grafx.computeEdgeIntersection(trgNodeShape, trgNodeExtents[0],
-					                              trgNodeExtents[1], trgNodeExtents[2],
-					                              trgNodeExtents[3], 0.0f, newTrgXOut,
-					                              newTrgYOut, s_floatBuff);
-				}
-			}
-
-			trgXAdj = s_floatBuff[0];
-			trgYAdj = s_floatBuff[1];
-		}
-
-		if ((anchors == null) && (!alwaysCompute)
-		    && !((((((double) srcX) - trgX) * (((double) srcXAdj) - trgXAdj))
-		         + ((((double) srcY) - trgY) * (((double) srcYAdj) - trgYAdj))) > 0.0d))
-
-			// The direction of the chopped segment has flipped.
-			return false;
+		calcIntersection(grafx, trgNodeShape, trgNodeExtents, trgX, trgY, 
+		                 trgXOut, trgYOut, floatBuff); 
+		final float trgXAdj = floatBuff[0];
+		final float trgYAdj = floatBuff[1];
 
 		rtnValSrc[0] = srcXAdj;
 		rtnValSrc[1] = srcYAdj;
@@ -974,6 +872,48 @@ public final class GraphRenderer {
 		rtnValTrg[1] = trgYAdj;
 
 		return true;
+	}
+
+	private static void calcIntersection(GraphGraphics grafx, byte nodeShape, 
+	                                     float[] nodeExtents, float x, float y,
+	                                     float xOut, float yOut, float[] retVal) {
+		if ((nodeExtents[0] == nodeExtents[2]) || 
+		    (nodeExtents[1] == nodeExtents[3])) {
+			retVal[0] = x;
+			retVal[1] = y;
+		} else {
+			if (!grafx.computeEdgeIntersection(nodeShape, nodeExtents[0],
+			                                   nodeExtents[1], nodeExtents[2],
+			                                   nodeExtents[3], 0.0f, xOut, yOut,
+			                                   retVal)) {
+
+				final float newXOut;
+				final float newYOut;
+
+				final double xCenter = (((double) nodeExtents[0]) + nodeExtents[2]) / 2.0d;
+				final double yCenter = (((double) nodeExtents[1]) + nodeExtents[3]) / 2.0d;
+				final double desiredDist = Math.max(((double) nodeExtents[2])
+						                                    - nodeExtents[0],
+						                                    ((double) nodeExtents[3])
+						                                    - nodeExtents[1]);
+				final double dX = xOut - xCenter;
+				final double dY = yOut - yCenter;
+				final double len = Math.sqrt((dX * dX) + (dY * dY));
+
+				if (len == 0.0d) {
+					newXOut = (float) (xOut + desiredDist);
+					newYOut = yOut;
+				} else {
+					newXOut = (float) (((dX / len) * desiredDist) + xOut);
+					newYOut = (float) (((dY / len) * desiredDist) + yOut);
+				}
+
+				grafx.computeEdgeIntersection(nodeShape, nodeExtents[0],
+				                              nodeExtents[1], nodeExtents[2],
+				                              nodeExtents[3], 0.0f, newXOut,
+				                              newYOut, retVal);
+			}
+		}
 	}
 
 	private final static float[] s_floatTemp = new float[6];
@@ -1075,39 +1015,6 @@ public final class GraphRenderer {
 			}
 
 			rtnVal.closePath();
-		}
-	}
-
-	static final boolean _computeEdgeIntersection(final float nodeX, final float nodeY,
-	                                              final float offset, final float ptX,
-	                                              final float ptY, final boolean alwaysCompute,
-	                                              final float[] returnVal) {
-		if (offset == 0.0f) {
-			returnVal[0] = nodeX;
-			returnVal[1] = nodeY;
-
-			return true;
-		} else {
-			final double dX = ptX - nodeX;
-			final double dY = ptY - nodeY;
-			final double len = Math.sqrt((dX * dX) + (dY * dY));
-
-			if (len < offset) {
-				if (!alwaysCompute)
-					return false;
-
-				if (len == 0.0d) {
-					returnVal[0] = offset + nodeX;
-					returnVal[1] = nodeY;
-
-					return true;
-				}
-			}
-
-			returnVal[0] = (float) (((dX / len) * offset) + nodeX);
-			returnVal[1] = (float) (((dY / len) * offset) + nodeY);
-
-			return true;
 		}
 	}
 	
