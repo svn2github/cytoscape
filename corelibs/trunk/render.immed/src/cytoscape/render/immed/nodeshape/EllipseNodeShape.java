@@ -42,14 +42,14 @@ import java.awt.geom.Ellipse2D;
 
 public class EllipseNodeShape extends AbstractNodeShape {
 
-	private final Ellipse2D.Double ellipse;
+	private final Ellipse2D.Float ellipse;
 
 	public EllipseNodeShape() {
 		super(GraphGraphics.SHAPE_ELLIPSE);
-		ellipse = new Ellipse2D.Double(0.0,0.0,1.0,1.0);	
+		ellipse = new Ellipse2D.Float(0.0f,0.0f,1.0f,1.0f);	
 	}
 		
-	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
 		ellipse.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
 		return ellipse;
 	}

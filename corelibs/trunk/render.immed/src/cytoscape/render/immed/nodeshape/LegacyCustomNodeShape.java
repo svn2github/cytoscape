@@ -65,7 +65,7 @@ public class LegacyCustomNodeShape extends AbstractNodeShape {
 		return returnThis;
 	}
 		
-	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
 
 		final double desiredXCenter = (xMin + xMax) / 2.0;
 		final double desiredYCenter = (yMin + yMax) / 2.0;

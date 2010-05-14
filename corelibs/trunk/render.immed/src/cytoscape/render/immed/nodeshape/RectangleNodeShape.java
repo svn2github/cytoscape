@@ -42,14 +42,14 @@ import java.awt.geom.Rectangle2D;
 
 public class RectangleNodeShape extends AbstractNodeShape {
 
-	private final Rectangle2D.Double rect;
+	private final Rectangle2D.Float rect;
 
 	public RectangleNodeShape() {
 		super(GraphGraphics.SHAPE_RECTANGLE);
-		rect = new Rectangle2D.Double(0.0,0.0,1.0,1.0);	
+		rect = new Rectangle2D.Float(0.0f,0.0f,1.0f,1.0f);	
 	}
 		
-	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
 		rect.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
 		return rect;
 	}

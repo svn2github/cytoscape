@@ -184,7 +184,7 @@ public final class GraphGraphics {
 		arrows.put(ARROW_HALF_BOTTOM, new HalfBottomArrow() );
 	}
 
-	private static final double DEF_SHAPE_SIZE = 32;
+	private static final float DEF_SHAPE_SIZE = 32;
 
 	/**
 	 * The image that was passed into the constructor.
@@ -542,7 +542,7 @@ public final class GraphGraphics {
 			}
 		}
 
-		final double off = borderWidth/2.0; // border offset
+		final float off = borderWidth/2.0f; // border offset
 		final Shape sx = getShape(nodeShape,xMin+off,yMin+off,xMax-off,yMax-off);
 
 		if (borderWidth > 0.0f) {
@@ -825,8 +825,8 @@ public final class GraphGraphics {
 		}
 	}
 
-	private final Shape getShape(final byte nodeShape, final double xMin,
-			final double yMin, final double xMax, final double yMax) {
+	private final Shape getShape(final byte nodeShape, final float xMin,
+			final float yMin, final float xMax, final float yMax) {
 		NodeShape ns = nodeShapes.get(nodeShape);
 		if ( ns != null )
 			return ns.getShape(xMin,yMin,xMax,yMax);
@@ -843,7 +843,7 @@ public final class GraphGraphics {
 		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
 
 		for ( NodeShape ns : nodeShapes.values() ) {
-			final Shape shape = ns.getShape(0, 0, DEF_SHAPE_SIZE, DEF_SHAPE_SIZE);
+			final Shape shape = ns.getShape(0f, 0f, DEF_SHAPE_SIZE, DEF_SHAPE_SIZE);
 			shapeMap.put(ns.getType(), new GeneralPath( shape ));
 		}
 

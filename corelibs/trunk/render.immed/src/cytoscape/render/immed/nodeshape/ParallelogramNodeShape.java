@@ -49,14 +49,14 @@ public class ParallelogramNodeShape extends AbstractNodeShape {
 		path = new GeneralPath(); 
 	}
 		
-	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
 
 		path.reset();
 
 		path.moveTo(xMin, yMin);
-		path.lineTo(((2.0d * xMax) + xMin) / 3.0d, yMin);
+		path.lineTo(((2.0f * xMax) + xMin) / 3.0f, yMin);
 		path.lineTo(xMax, yMax);
-		path.lineTo(((2.0d * xMin) + xMax) / 3.0d, yMax);
+		path.lineTo(((2.0f * xMin) + xMax) / 3.0f, yMax);
 
 		path.closePath();
 

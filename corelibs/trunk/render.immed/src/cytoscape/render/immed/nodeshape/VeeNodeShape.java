@@ -49,14 +49,14 @@ public class VeeNodeShape extends AbstractNodeShape {
 		path = new GeneralPath(); 
 	}
 		
-	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
+	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
 
 		path.reset();
 
 		path.moveTo(xMin, yMin);
-		path.lineTo((xMin + xMax) / 2.0d, ((2.0d * yMin) + yMax) / 3.0d);
+		path.lineTo((xMin + xMax) / 2.0f, ((2.0f * yMin) + yMax) / 3.0f);
 		path.lineTo(xMax, yMin);
-		path.lineTo((xMin + xMax) / 2.0d, yMax);
+		path.lineTo((xMin + xMax) / 2.0f, yMax);
 
 		path.closePath();
 

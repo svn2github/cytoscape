@@ -53,7 +53,7 @@ public interface NodeShape {
 	 * Returns a Shape object scaled to fit within the bounding box defined by the
 	 * input parameters.
 	 */
-	Shape getShape(final double xMin,final double yMin, final double xMax, final double yMax);
+	Shape getShape(final float xMin,final float yMin, final float xMax, final float yMax);
 
 	/**
 	 * Computes the intersection of the node shape with and edge.  The edge is defined

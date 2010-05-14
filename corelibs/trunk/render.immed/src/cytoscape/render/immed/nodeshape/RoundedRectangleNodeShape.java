@@ -42,15 +42,15 @@ import java.awt.geom.RoundRectangle2D;
 
 public class RoundedRectangleNodeShape extends AbstractNodeShape {
 
-	private final RoundRectangle2D.Double rect;
+	private final RoundRectangle2D.Float rect;
 
 	public RoundedRectangleNodeShape() {
 		super(GraphGraphics.SHAPE_ROUNDED_RECTANGLE);
-		rect = new RoundRectangle2D.Double(0.0,0.0,1.0,1.0,0.3,0.3);
+		rect = new RoundRectangle2D.Float(0.0f,0.0f,1.0f,1.0f,0.3f,0.3f);
 	}
 
-	public Shape getShape(double xMin, double yMin, double xMax, double yMax) {
-		final double arcSize = Math.min(xMax - xMin, yMax - yMin) / 3.0d;
+	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
+		final float arcSize = Math.min(xMax - xMin, yMax - yMin) / 3.0f;
 		rect.setRoundRect(xMin, yMin, xMax - xMin, yMax - yMin, arcSize, arcSize);
 		return rect;
 	}
