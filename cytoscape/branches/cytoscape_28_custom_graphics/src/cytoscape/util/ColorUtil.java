@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cytoscape.Cytoscape;
+
 /**
  * Color utility class to convert Java color object to string and vice versa.
  * 
@@ -17,6 +18,8 @@ import cytoscape.Cytoscape;
  * 
  */
 public class ColorUtil {
+
+	private static final int COLOR_RANGE_MAX = 255;
 
 	private static final Map<String, String> COLOR_MAP = new HashMap<String, String>();
 	private static final String COLOR_CODE_RESOURCE = "resources/cross_browser_color_code.txt";
@@ -78,10 +81,10 @@ public class ColorUtil {
 		if (parts.length == 1) {
 			try {
 				// Chech this is a cross-browser standard color name
-				final String upper = trimed.toUpperCase();				
+				final String upper = trimed.toUpperCase();
 				if (COLOR_MAP.containsKey(upper))
 					return Color.decode(COLOR_MAP.get(upper));
-				
+
 				// Otherwise, treat as a hex notation.
 				return Color.decode(trimed);
 			} catch (Exception e) {
@@ -122,6 +125,21 @@ public class ColorUtil {
 	 */
 	public static String getColorAsText(Color color) {
 		return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
+	}
+
+	public static Color getComplementaryColor(final Color color1) {
+		final Color complement = new Color(COLOR_RANGE_MAX - color1.getRed(),
+				COLOR_RANGE_MAX - color1.getGreen(), COLOR_RANGE_MAX
+						- color1.getBlue());
+		final float[] hsb = Color.RGBtoHSB(color1.getRed(), color1.getGreen(),
+				color1.getBlue(), null);
+		final float[] cHSB = Color.RGBtoHSB(complement.getRed(), complement
+				.getGreen(), complement.getBlue(), null);
+
+		if (hsb[2] > 0.7f)
+			return Color.getHSBColor(cHSB[0], 1.0f - hsb[1], 0f);
+		else
+			return Color.getHSBColor(cHSB[0], 1.0f - hsb[1], 1.0f);
 	}
 
 }

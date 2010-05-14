@@ -34,8 +34,10 @@
  */
 package cytoscape.visual.properties;
 
+import static cytoscape.visual.VisualPropertyDependency.Definition.*;
 import cytoscape.Cytoscape;
 
+import cytoscape.util.ColorUtil;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.NodeIcon;
@@ -100,13 +102,22 @@ public class NodeLabelColorProp extends AbstractVisualProperty {
 	 * @param o DOCUMENT ME!
 	 */
 	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
-		if ((o == null) || (nv == null))
+		if ((o == null) || (nv == null) || o instanceof Color == false)
 			return;
+		final Color color = (Color) o;
+		// Check dependency. Sync size or not.
+		boolean sync = false;
+		if (dep != null) {
+			sync = dep.check(NODE_LABLE_COLOR_FROM_NODE_COLOR);
+		}
 
-		Label nodelabel = nv.getLabel();
-
-		if (!((Color) o).equals(nodelabel.getTextPaint()))
-			nodelabel.setTextPaint((Color) o);
+		final Label nodelabel = nv.getLabel();
+		
+		
+		if(sync) {
+			nodelabel.setTextPaint(ColorUtil.getComplementaryColor((Color) nv.getUnselectedPaint()));
+		} else if (!color.equals(nodelabel.getTextPaint()))
+			nodelabel.setTextPaint(color);
 	}
 
 	/**
