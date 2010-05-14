@@ -89,7 +89,7 @@ class AttribParserImpl implements AttribParser {
 		this.lastErrorMessage = null;
 
 		try {
-			parseTree = parseExpr(0);
+			parseTree = parseExpr();
 			final AttribToken token = tokeniser.getToken();
 			if (token != AttribToken.EOS)
 				throw new IllegalStateException("premature end of expression: expected EOS, but found " + token + "!");
@@ -128,9 +128,8 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *   Implements expr --> term | term {+ term } | term {- term} .
 	 */
-	private Node parseExpr(int level) {
-		level += 1;
-		Node exprNode = parseTerm(level);
+	private Node parseExpr() {
+		Node exprNode = parseTerm();
 
 		for (;;) {
 			final AttribToken token = tokeniser.getToken();
@@ -140,14 +139,14 @@ class AttribParserImpl implements AttribParser {
 			}
 
 			if (token == AttribToken.PLUS || token == AttribToken.MINUS || token == AttribToken.AMPERSAND) {
-				final Node term = parseTerm(level);
+				final Node term = parseTerm();
 				if (token == AttribToken.PLUS || token == AttribToken.MINUS)
 					exprNode = handleBinaryArithmeticOp(token, exprNode, term);
 				else
 					exprNode = new BinOpNode(AttribToken.AMPERSAND, exprNode, term);
 			}
 			else if (token.isComparisonOperator()) {
-				final Node term = parseTerm(level);
+				final Node term = parseTerm();
 				return handleComparisonOp(token, exprNode, term); // No chaining for comparison operators!
 			} else {
 				tokeniser.ungetToken(token);
@@ -207,14 +206,13 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *  Implements term --> power {* power} | power {/ power}
 	 */
-	private Node parseTerm(int level) {
-		level += 1;
-		Node termNode = parsePower(level);
+	private Node parseTerm() {
+		Node termNode = parsePower();
 
 		for (;;) {
 			final AttribToken token = tokeniser.getToken();
 			if (token == AttribToken.MUL || token == AttribToken.DIV) {
-				final Node powerNode = parsePower(level);
+				final Node powerNode = parsePower();
 				termNode = handleBinaryArithmeticOp(token, termNode, powerNode);
 			}
 			else {
@@ -227,13 +225,12 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *  Implements power --> factor | factor ^ power
 	 */
-	private Node parsePower(int level) {
-		level += 1;
-		Node powerNode = parseFactor(level);
+	private Node parsePower() {
+		Node powerNode = parseFactor();
 
 		final AttribToken token = tokeniser.getToken();
 		if (token == AttribToken.CARET) {
-			final Node rhs = parsePower(level);
+			final Node rhs = parsePower();
 			powerNode = handleBinaryArithmeticOp(token, powerNode, rhs);
 		}
 		else
@@ -245,8 +242,7 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *  Implements factor --> constant | attrib_ref | "(" expr ")" | ("-"|"+") factor  | func_call
 	 */
-	private Node parseFactor(int level) {
-		level += 1;
+	private Node parseFactor() {
 		AttribToken token = tokeniser.getToken();
 
 		// 1. a constant
@@ -307,7 +303,7 @@ class AttribParserImpl implements AttribParser {
 
 		// 3. a parenthesised expression
 		if (token == AttribToken.OPEN_PAREN) {
-			final Node exprNode = parseExpr(level);
+			final Node exprNode = parseExpr();
 			token = tokeniser.getToken();
 			if (token != AttribToken.CLOSE_PAREN)
 				throw new IllegalStateException("'(' expected!");
@@ -317,14 +313,14 @@ class AttribParserImpl implements AttribParser {
 
 		// 4. a unary operator
 		if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
-			final Node factor = parseFactor(level);
+			final Node factor = parseFactor();
 			return handleUnaryOp(token, factor);
 		}
 
 		// 5. function call
 		if (token == AttribToken.IDENTIFIER) {
 			tokeniser.ungetToken(token);
-			return parseFunctionCall(level);
+			return parseFunctionCall();
 		}
 
 		if (token == AttribToken.ERROR)
@@ -343,8 +339,7 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *   Implements func_call --> ident "(" ")" | ident "(" expr {"," expr} ")".
 	 */
-	private Node parseFunctionCall(int level) {
-		level += 1;
+	private Node parseFunctionCall() {
 		AttribToken token = tokeniser.getToken();
 		if (token != AttribToken.IDENTIFIER)
 			throw new IllegalStateException();
@@ -370,7 +365,7 @@ class AttribParserImpl implements AttribParser {
 				break;
 
 			tokeniser.ungetToken(token);
-			final Node exprNode = parseExpr(level);
+			final Node exprNode = parseExpr();
 			argTypes.add(exprNode.getType());
 			args.add(exprNode);
 
