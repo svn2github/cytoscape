@@ -126,7 +126,7 @@ class AttribParserImpl implements AttribParser {
 	public Node getParseTree() { return parseTree; }
 
 	/**
-	 *   Implements expr --> term | term {+ term } | term {- term} .
+	 *   Implements expr --> term | term {+ term } | term {- term} | term {&amp; term} | term compOp term.
 	 */
 	private Node parseExpr() {
 		Node exprNode = parseTerm();
