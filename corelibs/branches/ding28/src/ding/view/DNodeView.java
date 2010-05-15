@@ -1170,6 +1170,16 @@ public class DNodeView implements NodeView, Label {
 		ensureContentChanged();
 		return retVal;
 	}
+	
+	public void removeAllCustomGraphics() {
+		synchronized (CG_LOCK) {
+			if (_customGraphics != null) {
+				_customGraphics.clear();
+				graphicsPositions.clear();
+			}
+		}
+		ensureContentChanged();
+	}
 
 	/**
 	 * A thread-safe method returning the number of custom graphics associated
