@@ -491,8 +491,11 @@ public class NetworkColorDialog extends JDialog
 			DataModel dataModel = viewFrame.getDataModel();
 			HeaderInfo arrayInfo = dataModel.getArrayHeaderInfo();
 
+			// Get the currently selected array indices
+			int[] selectedAttributes = arraySelection.getSelectedIndexes();
+
 			// Disable the Cytoscape selection
-			arraySelection.notifyObservers(new Boolean(true));
+			arraySelection.notifyObservers(Boolean.TRUE);
 
 			// Wrap everything in a try in case
 			// our dialog goes away before we do
@@ -531,12 +534,20 @@ public class NetworkColorDialog extends JDialog
 				}
 				attributeSelector.setSelectedIndices(selectedIndices);
 				// Enable the Cytoscape selection
-				arraySelection.notifyObservers(new Boolean(false));
 			} catch (Exception e) {
 				// This is almost certainly a class cast because the dialog
 				// went away before we completed.  Just ignore it
 			}
 			listening = true;
+
+			// Now, restore the user's original attribute selection
+			arraySelection.deselectAllIndexes();
+			for (int index: selectedAttributes) {
+				arraySelection.setIndex(index, true);
+			}
+
+			// And re-enable notification
+			arraySelection.notifyObservers(Boolean.FALSE);
 		}
 	}
 

@@ -213,6 +213,7 @@ public class TreeView extends TreeViewApp implements Observer,
 	public void update(Observable o, Object arg) {
 		// See if we're supposed to disable our listeners
 		if ((o == arraySelection) && (arg instanceof Boolean)) {
+			// System.out.println("Changing disable listeners to: "+arg.toString());
 			disableListeners = ((Boolean)arg).booleanValue();
 		}
 
@@ -378,7 +379,6 @@ public class TreeView extends TreeViewApp implements Observer,
 		arraySelection.addObserver(this);
 	}
 
-	// private void setNodeSelection(Node[] nodeArray, boolean select) {
 	private void setNodeSelection(Set<CyNode> nodeArray, boolean select) {
 		HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
 		geneSelection.deleteObserver(this);

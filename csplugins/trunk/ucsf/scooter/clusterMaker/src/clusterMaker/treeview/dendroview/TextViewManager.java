@@ -398,7 +398,7 @@ public class TextViewManager extends ModelView implements PropertyChangeListener
 	HeaderSummary headerSummary = new HeaderSummary();
 	int dividerLocations [];
 	
-	private final String d_face = "Helvetica";
+	private final String d_face = "Lucida Sans Regular";
     private final int d_style = 0;
     private final int d_size = 12;
     

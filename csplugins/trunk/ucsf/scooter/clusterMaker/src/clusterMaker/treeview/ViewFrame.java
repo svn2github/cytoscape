@@ -273,7 +273,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	  arraySelection.deselectAllIndexes();
 	  arraySelection.setIndex(i, true);
 	  arraySelection.notifyObservers();
-	  scrollToGene(i);
+	  scrollToArray(i);
 	}
 	
 	/**

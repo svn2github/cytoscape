@@ -1,4 +1,4 @@
-/* BEGIN_HEADER                                              Java TreeView
+/* BEGIN_HEADER											  Java TreeView
  *
  * $Author: rqluk $
  * $RCSfile: TextView.java,v $
@@ -36,11 +36,11 @@ import clusterMaker.treeview.ModelView;
 import clusterMaker.treeview.TreeSelectionI;
 
 public class TextView extends ModelView implements KeyListener, AdjustmentListener,
-                                                   MouseListener, MouseMotionListener {
+												   MouseListener, MouseMotionListener {
 
 	public String[]  getHints() {
 		String [] hints = {
-	    "Click and drag to scroll",
+		"Click and drag to scroll",
 		};
 		return hints;
 	}
@@ -73,8 +73,8 @@ public class TextView extends ModelView implements KeyListener, AdjustmentListen
 		scrollPane.setBorder(null);
 		panel = scrollPane;
 	}
-    
-    
+	
+	
 	public TextView(HeaderInfo hI, int col) {
 		super();
 		headerInfo = hI;
@@ -115,115 +115,122 @@ public class TextView extends ModelView implements KeyListener, AdjustmentListen
 	
 
 	public void updateBuffer(Graphics g, Rectangle offscreenRect) {
-	// clear the pallette...
-	g.setColor(Color.white);
-	g.fillRect(offscreenRect.x, offscreenRect.y, offscreenRect.width, offscreenRect.height);
-	g.setColor(Color.black);
+		// clear the pallette...
+		g.setColor(Color.white);
+		g.fillRect(offscreenRect.x, offscreenRect.y, offscreenRect.width, offscreenRect.height);
+		g.setColor(Color.black);
+		
+		if ((map.getMinIndex() >= 0) &&
+			(offscreenRect.height > 0)) {
+			
+			int start = map.getIndex(0);
+			int end =   map.getIndex(map.getUsedPixels());
+			g.setFont(new Font(face, style, size));
+			FontMetrics metrics = getFontMetrics(g.getFont());
+			int ascent = metrics.getAscent();
 	
-	if ((map.getMinIndex() >= 0) &&
-	    (offscreenRect.height > 0)) {
-	    
-	    int start = map.getIndex(0);
-	    int end =   map.getIndex(map.getUsedPixels());
-	    g.setFont(new Font(face, style, size));
-	    FontMetrics metrics = getFontMetrics(g.getFont());
-	    int ascent = metrics.getAscent();
-	    
-	    // draw backgrounds first...
-	    int bgColorIndex = headerInfo.getIndex("BGCOLOR");
-	    if (bgColorIndex > 0) {
-		    Color back = g.getColor();
-		    for (int j = start; j < end;j++) {
-			    if ((geneSelection == null) || geneSelection.isIndexSelected(j)) {
-				    String [] strings = headerInfo.getHeader(j);
-				    try {
-				    g.setColor(TreeColorer.getColor(strings[bgColorIndex]));
-				    } catch (Exception e) {
-					    // ignore
-				    }
-				    g.fillRect(offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) - ascent / 2, offscreenRect.width, ascent);
-			    }
-		    }
-		    g.setColor(back);
-	    }
-
-	    // now, foreground text
-	    int fgColorIndex = headerInfo.getIndex("FGCOLOR");
-	    for (int j = start; j < end;j++) {
-	    	String out = null;
-	    	
-	    	if(col == -1) {
-	    		out = headerSummary.getSummary(headerInfo, j);
-	    	} else {
-	    		String [] summaryArray = headerSummary.getSummaryArray(headerInfo, j);
-	    		if ((summaryArray != null) && (col < summaryArray.length))
-	    			out = summaryArray[col];
-	    	}
-
-			if (out != null) {
+			((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); 
+			
+			// draw backgrounds first...
+			int bgColorIndex = headerInfo.getIndex("BGCOLOR");
+			if (bgColorIndex > 0) {
 				Color back = g.getColor();
-				if ((geneSelection == null) || geneSelection.isIndexSelected(j)) {
-					String [] strings = headerInfo.getHeader(j);
-					if (fgColorIndex > 0) {
-						g.setColor(TreeColorer.getColor(strings[fgColorIndex]));
+				for (int j = start; j < end;j++) {
+					if ((geneSelection == null) || geneSelection.isIndexSelected(j)) {
+						String [] strings = headerInfo.getHeader(j);
+						try {
+						g.setColor(TreeColorer.getColor(strings[bgColorIndex]));
+						} catch (Exception e) {
+							// ignore
+						}
+						g.fillRect(offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) - ascent / 2, offscreenRect.width, ascent);
 					}
-					g.drawString(out, offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) + ascent / 2);
-					if (fgColorIndex > 0) g.setColor(back);
+				}
+				g.setColor(back);
+			}
+	
+			// now, foreground text
+			int fgColorIndex = headerInfo.getIndex("FGCOLOR");
+			for (int j = start; j < end;j++) {
+				String out = null;
+			
+				if(col == -1) {
+					out = headerSummary.getSummary(headerInfo, j);
 				} else {
-					g.setColor(Color.gray);
-					g.drawString(out, offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) + ascent / 2);
-					g.setColor(back);
+					String [] summaryArray = headerSummary.getSummaryArray(headerInfo, j);
+					if ((summaryArray != null) && (col < summaryArray.length))
+						out = summaryArray[col];
+				}
+
+				if (out != null) {
+					Color back = g.getColor();
+					if ((geneSelection == null) || geneSelection.isIndexSelected(j)) {
+						String [] strings = headerInfo.getHeader(j);
+						if (fgColorIndex > 0) {
+							g.setColor(TreeColorer.getColor(strings[fgColorIndex]));
+						}
+						g.drawString(out, offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) + ascent / 2);
+						if (fgColorIndex > 0) g.setColor(back);
+					} else {
+						g.setColor(Color.gray);
+						g.drawString(out, offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) + ascent / 2);
+						g.setColor(back);
+					}
 				}
 			}
+			
+		} else {		// some kind of blank default image?
+			// backG.drawString("Select something already!", 0, offscreenSize.height / 2 );
 		}
-	    
-	} else {		// some kind of blank default image?
-	    // backG.drawString("Select something already!", 0, offscreenSize.height / 2 );
 	}
-    }
 
-    /** 
-     * Set geneSelection
-     *
-     * @param geneSelection The TreeSelection which is set by selecting genes in the GlobalView
-     */
-    public void setGeneSelection(TreeSelectionI geneSelection) {
+	/** 
+	 * Set geneSelection
+	 *
+	 * @param geneSelection The TreeSelection which is set by selecting genes in the GlobalView
+	 */
+	public void setGeneSelection(TreeSelectionI geneSelection) {
 	  if (this.geneSelection != null)
-	    this.geneSelection.deleteObserver(this);	
-	  this.geneSelection = geneSelection;
-	  this.geneSelection.addObserver(this);
-    }
-
-    public void setMap(MapContainer im) { 
-	if (map != null) {
-	    map.deleteObserver(this);
+			this.geneSelection.deleteObserver(this);	
+		this.geneSelection = geneSelection;
+		this.geneSelection.addObserver(this);
 	}
-	map = im;
-	if (map != null) map.addObserver(this);
-    }
 
-    /** This method is called when the selection is changed. It causes the component to 
-     * recalculate it's width, and call repaint.
-     */
-	 private void selectionChanged() {
-		 maxlength = 1;
-		 FontMetrics fontMetrics = getFontMetrics(new Font(face, style, size));
-		 int start = map.getIndex(0);
-		 int end =   map.getIndex(map.getUsedPixels());
+	public void setMap(MapContainer im) { 
+		if (map != null) {
+			map.deleteObserver(this);
+		}
+		map = im;
+		if (map != null) map.addObserver(this);
+	}
+
+	/** This method is called when the selection is changed. It causes the component to 
+	 * recalculate it's width, and call repaint.
+	 */
+	private void selectionChanged() {
+		if (map.getScale() <= 20.0) 
+			size = (int)map.getScale();
+		else
+			size = 20;
+
+		maxlength = 1;
+		FontMetrics fontMetrics = getFontMetrics(new Font(face, style, size));
+		int start = map.getIndex(0);
+		int end =   map.getIndex(map.getUsedPixels());
 		 
-		 for (int j = start; j < end;j++) {
+		for (int j = start; j < end;j++) {
 			int actualGene = j;
 			 String out = headerSummary.getSummary(headerInfo, actualGene);
 			 if (out == null) continue;
 			 int length = fontMetrics.stringWidth(out);
 			 if (maxlength < length) {
 				 maxlength = length;
-			 }
-		 }
-		 setPreferredSize(new Dimension(maxlength, map.getUsedPixels()));
-		 revalidate();
-		 repaint();
-	 }
+			}
+		}
+		setPreferredSize(new Dimension(maxlength, map.getUsedPixels()));
+		revalidate();
+		repaint();
+	}
 
 	// Observer
 	public void update(Observable o, Object arg) {	
@@ -237,7 +244,7 @@ public class TextView extends ModelView implements KeyListener, AdjustmentListen
 		System.out.println("Textview got funny update!");
 	  }
 	}
-    // MouseListener 
+	// MouseListener 
 	public void mouseClicked(MouseEvent e) {
 	  // now, want mouse click to signal browser...
 	  int index = map.getIndex(e.getY());
@@ -255,115 +262,115 @@ public class TextView extends ModelView implements KeyListener, AdjustmentListen
 	  }
 	}
 
-    // MouseMotionListener
+	// MouseMotionListener
 
-    public void mousePressed(MouseEvent e) {
-	    dragging = true;
-	    xstart_pos = e.getX();
-	    //	    xoff_pos = scrollbar.getValue();
-	     
-	     
-    }
-
-    public void mouseDragged(MouseEvent e) {
-	if (dragging) {
-	    int xoff = (e.getX() * (maxlength - offscreenSize.width)) / offscreenSize.width;
-	    // adjustScrollbar(xoff);
+	public void mousePressed(MouseEvent e) {
+		dragging = true;
+		xstart_pos = e.getX();
+		//		xoff_pos = scrollbar.getValue();
+		 
+		 
 	}
-    } 
 
-    public void mouseReleased(MouseEvent e) {
-    	dragging = false;
-    }
-    // KeyListener 
-    public void keyPressed(KeyEvent e) {
+	public void mouseDragged(MouseEvent e) {
+	if (dragging) {
+		int xoff = (e.getX() * (maxlength - offscreenSize.width)) / offscreenSize.width;
+		// adjustScrollbar(xoff);
+	}
+	} 
+
+	public void mouseReleased(MouseEvent e) {
+		dragging = false;
+	}
+	// KeyListener 
+	public void keyPressed(KeyEvent e) {
 	int xoff = 0;//scrollbar.getValue();
 
 	int c = e.getKeyCode();
 	switch (c) {
 	case KeyEvent.VK_UP:
-	    break;
+		break;
 	case KeyEvent.VK_DOWN:
-	    break;
+		break;
 	case KeyEvent.VK_LEFT:
-	    xoff -= scrollstep; break;
+		xoff -= scrollstep; break;
 	case KeyEvent.VK_RIGHT:
-	    xoff += scrollstep; break;
+		xoff += scrollstep; break;
 	default:
-	    return;
+		return;
 	}
 	adjustScrollbar(xoff);
-    }
-    // AdjustmentListener
-    public void adjustmentValueChanged(AdjustmentEvent evt) {
+	}
+	// AdjustmentListener
+	public void adjustmentValueChanged(AdjustmentEvent evt) {
 	offscreenValid = false;
 	repaint();
-    }
-    private void adjustScrollbar(int offset) {
+	}
+	private void adjustScrollbar(int offset) {
 	//	scrollbar.setValue(offset);
 	offscreenValid = false;
 	repaint();
-    }
+	}
 
-    
-    //FontSelectable
-    public String getFace() {
-        return face;
-    }
-    public int getPoints() {
-        return size;
-    }
-    public int getStyle() {
-        return style;
-    }
+	
+	//FontSelectable
+	public String getFace() {
+		return face;
+	}
+	public int getPoints() {
+		return size;
+	}
+	public int getStyle() {
+		return style;
+	}
 
-     public void setFace(String string) {
-        if ((face == null) ||(!face.equals(string))) {
-            face = string;
+	 public void setFace(String string) {
+		if ((face == null) ||(!face.equals(string))) {
+			face = string;
 			if (root != null)
-            root.setAttribute("face", face, d_face);
+			root.setAttribute("face", face, d_face);
 						setFont(new Font(face, style, size));
-            repaint();
-        }
-     }
-    
-    public void setPoints(int i) {
-        if (size != i) {
-            size = i;
+			repaint();
+		}
+	 }
+	
+	public void setPoints(int i) {
+		if (size != i) {
+			size = i;
 			if (root != null)
 			  root.setAttribute("size", size, d_size);
 			setFont(new Font(face, style, size));
-            repaint();
-        }
-    }
+			repaint();
+		}
+	}
 
-    public void setStyle(int i) {
-        if (style != i) {
-            style = i;
+	public void setStyle(int i) {
+		if (style != i) {
+			style = i;
 			if (root != null)
-            root.setAttribute("style", style, d_style);
+			root.setAttribute("style", style, d_style);
 			setFont(new Font(face, style, size));
-            repaint();
-        }
-    }
-    
-    
-    
-    public void bindConfig(ConfigNode configNode)
-    {
-        root = configNode;
-        setFace(root.getAttribute("face", d_face));
-        setStyle(root.getAttribute("style", d_style));
-        setPoints(root.getAttribute("size", d_size));
-        getHeaderSummary().bindConfig(root.fetchOrCreate("GeneSummary"));
-    }
+			repaint();
+		}
+	}
+	
+	
+	
+	public void bindConfig(ConfigNode configNode)
+	{
+		root = configNode;
+		setFace(root.getAttribute("face", d_face));
+		setStyle(root.getAttribute("style", d_style));
+		setPoints(root.getAttribute("size", d_size));
+		getHeaderSummary().bindConfig(root.fetchOrCreate("GeneSummary"));
+	}
 
-    private final int scrollstep = 5;
-    private final String d_face = "Helvetica";
-    private final int d_style = 0;
-    private final int d_size = 12;
+	private final int scrollstep = 5;
+	private final String d_face = "Lucida Sans Regular";
+	private final int d_style = 0;
+	private final int d_size = 12;
 
-    protected HeaderInfo  headerInfo   = null;
+	protected HeaderInfo  headerInfo   = null;
 	protected HeaderSummary headerSummary = new HeaderSummary();
 	/** Setter for headerSummary */
 	public void setHeaderSummary(HeaderSummary headerSummary) {
@@ -373,21 +380,21 @@ public class TextView extends ModelView implements KeyListener, AdjustmentListen
 	public HeaderSummary getHeaderSummary() {
 		return headerSummary;
 	}
-    private ConfigNode root  = null;
+	private ConfigNode root  = null;
 
-    private String face;
-    private int style;
-    private int size;
+	private String face;
+	private int style;
+	private int size;
 
 	private TreeSelectionI geneSelection;
-    private MapContainer map;
-    private JScrollBar scrollbar;
-    private int maxlength = 0;
-    private int xstart_pos, xoff_pos;
-    private int col;
-    private boolean dragging = false;
-    
+	private MapContainer map;
+	private JScrollBar scrollbar;
+	private int maxlength = 0;
+	private int xstart_pos, xoff_pos;
+	private int col;
+	private boolean dragging = false;
 	
-    private JScrollPane scrollPane;
+	
+	private JScrollPane scrollPane;
 
 }

@@ -175,6 +175,9 @@ public class CharArrayDrawer extends ArrayDrawer {
 	}
 
 	public void paintChars(Graphics g, MapContainer xmap, MapContainer ymap, Rectangle destRect) {
+		// Make sure we're anti aliased
+		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); 
+
 		// need to draw values on screen!
 		for (int row = ymap.getIndex(destRect.y); row < ymap.getIndex(destRect.height); row++) {
 			for (int col = xmap.getIndex(destRect.x); col < xmap.getIndex(destRect.width); col++) {
@@ -185,6 +188,9 @@ public class CharArrayDrawer extends ArrayDrawer {
 		}
 	}
 	public void paintChars(Graphics g, Rectangle sourceRect, Rectangle destRect) {
+		// Make sure we're anti aliased
+		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); 
+
 		// need to draw values on screen
 		FontMetrics metrics = g.getFontMetrics();
 		int ascent = metrics.getAscent();

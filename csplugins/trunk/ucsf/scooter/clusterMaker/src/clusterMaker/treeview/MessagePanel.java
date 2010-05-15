@@ -40,6 +40,9 @@ public class MessagePanel extends JScrollPane {
 			
 			public void paintComponent(Graphics g) {
 				
+				// Make sure we're anti aliased
+				((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); 
+
 				int xoff = 0;
 				int yoff = 0;
 				FontMetrics metrics = getFontMetrics(g.getFont());

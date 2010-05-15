@@ -47,7 +47,7 @@ import clusterMaker.treeview.TreeSelectionI;
  */
 public class ArrayNameView extends ModelView implements MouseListener, ConfigNodePersistent {
 
-	private final String d_face        = "Helvetica";
+	private final String d_face        = "Lucida Sans Regular";
 	private final int d_style          = 0;
 	private final int d_size           = 12;
 
@@ -157,6 +157,9 @@ public class ArrayNameView extends ModelView implements MouseListener, ConfigNod
 		FontMetrics metrics = getFontMetrics(g.getFont());
 		int ascent = metrics.getAscent();
 
+		// Make sure we're anti aliased
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); 
+
     // draw backgrounds first...
     int bgColorIndex = headerInfo.getIndex("BGCOLOR");
     if (bgColorIndex > 0) {
@@ -244,6 +247,12 @@ public class ArrayNameView extends ModelView implements MouseListener, ConfigNod
 		if (gidRow == -1) {
 			gidRow = 0;
 		}
+
+		if (map.getScale() <= 20.0) 
+			size = (int)map.getScale();
+		else
+			size = 20;
+
 		FontMetrics fontMetrics  = getFontMetrics
 				(new Font(face, style, size));
 		maxlength = 1;

@@ -109,6 +109,7 @@ public class HeatMapView extends TreeViewApp implements Observer,
 	protected CyNetwork myNetwork = null;
 	protected ClusterProperties clusterProperties = null;
 	protected String dataAttributes = null;
+	private boolean disableListeners = false;
 	protected boolean canceled = false;
 	protected boolean selectedOnly = false;
 	protected PropertyChangeSupport pcs;
@@ -270,7 +271,7 @@ public class HeatMapView extends TreeViewApp implements Observer,
 	}
 
 	// ClusterAlgorithm methods
-	protected void initializeProperties() {
+	public void initializeProperties() {
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();
 		clusterProperties.add(new Tunable("attributeList",
@@ -336,6 +337,14 @@ public class HeatMapView extends TreeViewApp implements Observer,
 
 	//
 	public void update(Observable o, Object arg) {
+		// See if we're supposed to disable our listeners
+		if ((o == arraySelection) && (arg instanceof Boolean)) {
+			// System.out.println("Changing disable listeners to: "+arg.toString());
+			disableListeners = ((Boolean)arg).booleanValue();
+		}
+
+		if (disableListeners) return;
+
 		if (o == geneSelection) {
 			selectedNodes.clear();
 			int[] selections = geneSelection.getSelectedIndexes();

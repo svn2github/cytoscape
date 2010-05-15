@@ -219,7 +219,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 	/**
 	* returns the font for gene annotation information
 	*/
-	private Font geneFont = new Font("Helvetica", 0, 12);
+	private Font geneFont = new Font("Lucida Sans Regular", 0, 12);
 	protected Font getGeneFont() {
 		return geneFont;
 	}
@@ -228,7 +228,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 			geneFont =f;
 		}
 	}
-	private Font arrayFont = new Font("Helvetica", 0, 12);
+	private Font arrayFont = new Font("Lucida Sans Regular", 0, 12);
 	protected Font getArrayFont() {
 		return arrayFont;
 	}
@@ -781,7 +781,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 		// Image buf = createImage(width + getBorderPixels(), height + getBorderPixels());
 		anv.setFace(getGeneFont().getName());
 		anv.setStyle(getGeneFont().getStyle());
-		anv.setPoints(getGeneFont().getSize());
+		anv.setPoints((int)spacing);
 		anv.updateBuffer(g, new Rectangle(x+textSpacing, y, 
 		                                  width+getBorderPixels(), height+getBorderPixels()));
 		// g.drawImage(buf,x+textSpacing, y, null);
@@ -817,7 +817,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 		ArrayNameView anv = new ArrayNameView(arrayHeaderInfo);
 		anv.setFace(getArrayFont().getName());
 		anv.setStyle(getArrayFont().getStyle());
-		anv.setPoints(getArrayFont().getSize());
+		anv.setPoints((int)spacing);
 		anv.setHeaderSummary(headerSelectionPanel.getArraySummary());
 		anv.setMapping(tempMap);
 		// Image buf = createImage(width + getBorderPixels(), height + getBorderPixels());

@@ -102,7 +102,7 @@ public class TreeViewModel extends TVModel {
 		
 		// Gene annotations are just the list of node names
 		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), ClusterMaker.NODE_ORDER_ATTRIBUTE);
-		System.out.println("geneList: "+geneList);
+		// System.out.println("geneList: "+geneList);
 		String [][] gHeaders = new String[geneList.size()][4];
 		int headerNumber = 0;
 		for (String nodeName: geneList) {
