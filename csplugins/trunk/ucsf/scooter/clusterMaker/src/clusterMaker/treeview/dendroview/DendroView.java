@@ -837,7 +837,7 @@ public class DendroView extends JPanel
 					}
 
 					// Bring up the dialog
-					NetworkColorDialog ncd = new NetworkColorDialog(null, ce, attributes, 
+					NetworkColorDialog ncd = new NetworkColorDialog(null, ce, attributes, viewFrame,
 					                                                dataModel.getDataMatrix().getMinValue(),
 					                                                dataModel.getDataMatrix().getMaxValue(),
 					                                                dataModel.isSymmetrical());

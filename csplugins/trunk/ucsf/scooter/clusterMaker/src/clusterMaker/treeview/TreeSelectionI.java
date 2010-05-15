@@ -91,6 +91,8 @@ public interface TreeSelectionI {
 
 	public abstract void notifyObservers();
 
+	public abstract void notifyObservers(Object arg);
+
 	public abstract void deleteObserver(Observer view);
 
 }

@@ -60,6 +60,10 @@ import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
 import cytoscape.visual.mappings.ObjectMapping;
 
 import clusterMaker.ClusterMaker;
+import clusterMaker.treeview.DataModel;
+import clusterMaker.treeview.HeaderInfo;
+import clusterMaker.treeview.TreeSelectionI;
+import clusterMaker.treeview.ViewFrame;
 import clusterMaker.treeview.dendroview.ColorExtractor;
 
 import java.awt.Color;
@@ -104,6 +108,7 @@ public class NetworkColorDialog extends JDialog
 	                                         WindowListener {
 
 	private ColorExtractor colorExtractor = null;
+	private ViewFrame viewFrame = null;
 	private String attribute = null;
 	private List<String>attributeList = null;
 	private double maxValue;
@@ -124,14 +129,16 @@ public class NetworkColorDialog extends JDialog
 	/**
 	 * Creates a new NetworkColorDialog object.
 	 */
-	public NetworkColorDialog(JFrame parent, ColorExtractor ce, 
-	                          List<String>attributes, double minValue, double maxValue, 
+	public NetworkColorDialog(JFrame parent, ColorExtractor ce, List<String>attributes, 
+	                          ViewFrame viewFrame,
+	                          double minValue, double maxValue, 
 	                          boolean symmetric) {
 		super(parent, "Map Colors to Network", false);
 		colorExtractor = ce;
 		attributeList = attributes;
 		this.maxValue = maxValue;
 		this.minValue = minValue;
+		this.viewFrame = viewFrame;
 
 		if (symmetric) {
 			CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
@@ -480,6 +487,13 @@ public class NetworkColorDialog extends JDialog
 
 			listening = false;
 
+			TreeSelectionI arraySelection = viewFrame.getArraySelection();
+			DataModel dataModel = viewFrame.getDataModel();
+			HeaderInfo arrayInfo = dataModel.getArrayHeaderInfo();
+
+			// Disable the Cytoscape selection
+			arraySelection.notifyObservers(new Boolean(true));
+
 			// Wrap everything in a try in case
 			// our dialog goes away before we do
 			try {
@@ -499,6 +513,10 @@ public class NetworkColorDialog extends JDialog
 						Cytoscape.getCurrentNetworkView().applyVizmapper(styles[i]);
 						attributeSelector.setSelectedValue(attributes[i], true);
 						currentAttribute = (String)attributes[i];
+						// Now show the selection in the tree view
+						int arrayIndex = arrayInfo.getHeaderIndex(currentAttribute);
+						viewFrame.seekArray(arrayIndex);
+						
 						// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 						int wait = animationSlider.getValue();
 						this.sleep((100-wait)*20);
@@ -512,6 +530,8 @@ public class NetworkColorDialog extends JDialog
 					selectedIndices[selIndex++] = attributeList.indexOf(attributes[index]);
 				}
 				attributeSelector.setSelectedIndices(selectedIndices);
+				// Enable the Cytoscape selection
+				arraySelection.notifyObservers(new Boolean(false));
 			} catch (Exception e) {
 				// This is almost certainly a class cast because the dialog
 				// went away before we completed.  Just ignore it

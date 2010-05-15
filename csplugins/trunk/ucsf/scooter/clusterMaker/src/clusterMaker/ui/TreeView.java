@@ -105,6 +105,7 @@ public class TreeView extends TreeViewApp implements Observer,
 	private	List<CyNode>selectedArrays;
 	private CyLogger myLogger;
 	private CyNetwork dataNetwork = null;
+	private boolean disableListeners = false;
 
 	private static String appName = "ClusterMaker TreeView";
 
@@ -210,7 +211,15 @@ public class TreeView extends TreeViewApp implements Observer,
 	}
 
 	public void update(Observable o, Object arg) {
+		// See if we're supposed to disable our listeners
+		if ((o == arraySelection) && (arg instanceof Boolean)) {
+			disableListeners = ((Boolean)arg).booleanValue();
+		}
+
+		if (disableListeners) return;
+
 		if (o == geneSelection) {
+			// System.out.println("gene selection");
 			selectedNodes.clear();
 			int[] selections = geneSelection.getSelectedIndexes();
 			HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
@@ -238,9 +247,11 @@ public class TreeView extends TreeViewApp implements Observer,
 			}
 			return;
 		} else if (o == arraySelection) {
+			// System.out.println("array selection");
 			// We only care about array selection for symmetrical models
 			if (!dataModel.isSymmetrical())
 				return;
+
 			selectedArrays.clear();
 			int[] selections = arraySelection.getSelectedIndexes();
 			if (selections.length == dataModel.nExpr())
