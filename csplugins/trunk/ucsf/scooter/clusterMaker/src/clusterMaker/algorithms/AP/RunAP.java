@@ -22,10 +22,8 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 
-import clusterMaker.algorithms.Cluster;
 import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.DistanceMatrix;
-import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.algorithms.NodeCluster;
 
 import cern.colt.function.IntIntDoubleFunction;
@@ -97,7 +95,7 @@ public class RunAP {
 	public List<NodeCluster> run(TaskMonitor monitor)
 	{
 		// initialize the Cluster class
-		Cluster.init();
+		// Cluster.init();
 
 		// Matrix matrix;
 		double numClusters;

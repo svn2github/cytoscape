@@ -62,6 +62,7 @@ import clusterMaker.algorithms.kmeans.KMeansCluster;
 import clusterMaker.algorithms.TransClust.TransClustCluster;
 import clusterMaker.algorithms.FORCE.FORCECluster;
 import clusterMaker.algorithms.MCL.MCLCluster;
+import clusterMaker.algorithms.MCODE.MCODECluster;
 import clusterMaker.algorithms.glay.GLayCluster;
 // import clusterMaker.algorithms.QT.QTCluster;
 // import clusterMaker.algorithms.Spectral.SpectralCluster;
@@ -101,6 +102,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
 		// addClusterAlgorithm(menu, new QTCluster());
+		addClusterAlgorithm(menu, new MCODECluster());
 		addClusterAlgorithm(menu, new MCLCluster());
 		// addClusterAlgorithm(menu, new SpectralCluster());
 		// addClusterAlgorithm(menu, new CPCluster());

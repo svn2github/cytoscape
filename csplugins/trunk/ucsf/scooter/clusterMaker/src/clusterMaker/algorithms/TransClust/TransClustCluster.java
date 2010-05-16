@@ -32,7 +32,7 @@ import cytoscape.task.TaskMonitor;
 
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.NewNetworkView;
 
@@ -45,7 +45,7 @@ import de.layclust.start.TransClust;
 import de.layclust.taskmanaging.TaskConfig;
 
 
-public class TransClustCluster extends AbstractClusterAlgorithm implements ActionListener {
+public class TransClustCluster extends AbstractNetworkClusterer implements ActionListener {
 	private CyLogger logger = null;
 	private	TaskMonitor monitor = null;
 
