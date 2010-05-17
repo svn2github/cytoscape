@@ -3,22 +3,35 @@ package browser.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.Rectangle;
-import java.awt.Dimension;
 
+import javax.swing.AbstractCellEditor;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.text.Keymap;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Document;
+import javax.swing.text.Keymap;
+import javax.swing.text.TextAction;
+import javax.swing.text.JTextComponent;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
-import javax.swing.AbstractCellEditor;
-import javax.swing.JTextArea;
 
 import java.util.EventObject;
 
@@ -26,14 +39,15 @@ import java.util.EventObject;
  *
  */
 public class MultiLineTableCellEditor extends AbstractCellEditor implements TableCellEditor,
-                                                                            ActionListener {
-	ResizableTextArea textArea;
+                                                                            ActionListener
+{
+	private ResizableTextArea textArea;
 
 	/**
 	 * Creates a new MultiLineTableCellEditor object.
 	 */
 	public MultiLineTableCellEditor() {
-		textArea = new ResizableTextArea();
+		textArea = new ResizableTextArea(this);
 		textArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
@@ -101,7 +115,8 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 	 * @return  DOCUMENT ME!
 	 */
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-	                                             int row, int column) {
+	                                             int row, int column)
+	{
 		String text = (value != null) ? value.toString() : "";
 		textArea.setTable(table);
 		textArea.setText(text);
@@ -114,8 +129,15 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 	 */
 	public static final String UPDATE_BOUNDS = "UpdateBounds";
 
-	class ResizableTextArea extends JTextArea {
-		JTable table;
+	class ResizableTextArea extends JTextArea implements KeyListener {
+		private JTable table;
+		private MultiLineTableCellEditor parent;
+
+		ResizableTextArea(final MultiLineTableCellEditor parent) {
+			super();
+			this.parent = parent;
+			addKeyListener(this);
+		}
 
 		public void setTable(JTable t) {
 			table = t;
@@ -171,6 +193,57 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 				putClientProperty(UPDATE_BOUNDS, Boolean.FALSE);
 				validate();
 			} 
+		}
+
+/*
+		protected void processKeyEvent(final KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				System.err.print("VK_ENTER: ");
+				final int modifiers = e.getModifiers();
+				System.err.println("modifiers="+modifiers);
+			}
+
+			super.processKeyEvent(e);
+		}
+*/
+
+
+		//
+		// KeyListener Interface
+		//
+
+		public void keyTyped(KeyEvent e) {}
+
+		public void keyReleased(KeyEvent e) {}
+
+		public void keyPressed(final KeyEvent event) {
+			if (event.getKeyCode() != KeyEvent.VK_ENTER)
+				return;
+
+			final int modifiers = event.getModifiers();
+
+			// We want to move to the next cell if Enter and no modifiers have been pressed:
+			if (modifiers == 0) {
+				parent.stopCellEditing();
+				this.transferFocus();
+				return;
+			}
+
+			// We want to move to the previous cell if Shift+Enter have been pressed:
+			if (modifiers == KeyEvent.VK_SHIFT) {
+				parent.stopCellEditing();
+				this.transferFocusBackward();
+				return;
+			}
+
+			// We want to insert a newline of Enter+Alt or Enter+Alt+Meta have been pressed:
+			final int OPTION_AND_COMMAND = 12; // On Mac to emulate Excel.
+			if (modifiers == KeyEvent.VK_ALT || modifiers == OPTION_AND_COMMAND) {
+				final int caretPosition = this.getCaretPosition();
+				final StringBuilder text = new StringBuilder(this.getText());
+				this.setText(text.insert(caretPosition, '\n').toString());
+				this.setCaretPosition(caretPosition + 1);
+			}
 		}
 	}
 }
