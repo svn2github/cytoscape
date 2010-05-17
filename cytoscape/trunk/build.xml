@@ -299,7 +299,6 @@
 		<echo>Copying resources/ directory to build</echo>
 		<copy todir="${build.classes}/cytoscape/resources">
 			<fileset dir="${basedir}/resources" />
-			<fileset file="${basedir}/resources/props/tax_report.txt" />
 		</copy>
 
 
@@ -1041,7 +1040,6 @@
 	        </echo>
 		<copy file="${basedir}/resources/props/cytoscape.props" tofile="${webstart.dir}/cytoscape.props" />
 		<copy file="${basedir}/resources/props/vizmap.props" tofile="${webstart.dir}/vizmap.props" />
-		<copy file="${basedir}/resources/props/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
 
 		<!-- Copy over Webstart PlugIns -->
 		<echo>
