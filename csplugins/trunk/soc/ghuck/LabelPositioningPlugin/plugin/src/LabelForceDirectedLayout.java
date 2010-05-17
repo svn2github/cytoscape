@@ -1,4 +1,4 @@
-package LabelForceDirectedLayout;
+package LabelPositioningPlugin;
 
 import cytoscape.Cytoscape;
 

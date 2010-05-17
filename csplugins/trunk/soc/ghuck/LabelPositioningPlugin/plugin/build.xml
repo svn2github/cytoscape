@@ -9,7 +9,7 @@
   <!-- =================================================================== -->
   <target name="init">
     <property name="plugin_name" value="LabelForceDirectedLayout"/>
-    <property name="plugin_class" value="LabelForceDirectedLayout.LabelForceDirectedLayout"/>  	  	
+    <property name="plugin_class" value="LabelPositioningPlugin.LabelPositioningPlugin"/>  	  	
     <property name="project.jar" value="${plugin_name}.jar"/>  	
     <property name="version" value="0.01"/>
     <property name="year" value="2010"/>
@@ -25,9 +25,9 @@
 
 
     <!-- Define the Cytoscape directories -->
-    <property name="cytoscape.dir" value="../../../../../cytoscape"/>
+    <property name="cytoscape.dir" value="/home/gerardo/Cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
-    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/core"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>

@@ -1,4 +1,4 @@
-package LabelForceDirected;
+package LabelPositioningPlugin;
 
 import cytoscape.plugin.CytoscapePlugin;
 
@@ -40,15 +40,15 @@ import cytoscape.data.Semantics;
  * @author Victoria Mui
  *
  */
-public class AutomaticLabelLayout extends CytoscapePlugin {
+public class LabelPositioningPlugin extends CytoscapePlugin {
 	
     /**
      * Constructor which adds this layout to Cytoscape Layouts.  This in turn
      * adds it to the Cytoscape menus as well.
      */
-	public AutomaticLabelLayout() {
+	public LabelPositioningPlugin() {
 		// Add this layout to the Layout menu under Cytoscape Layouts.
-		CyLayouts.addLayout(new AutomaticLabelAlgorithm(), 
+		CyLayouts.addLayout(new LabelForceDirectedLayout(), 
 				"Cytoscape Layouts");
 	}
 	
