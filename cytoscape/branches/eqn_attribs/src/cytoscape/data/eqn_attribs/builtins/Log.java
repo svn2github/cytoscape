@@ -111,6 +111,8 @@ public class Log implements AttribFunction {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
 			possibleNextArgs.add(Double.class);
 			possibleNextArgs.add(Long.class);
+			if (leadingArgs.length == 1)
+				possibleNextArgs.add(null);
 			return possibleNextArgs;
 		}
 
