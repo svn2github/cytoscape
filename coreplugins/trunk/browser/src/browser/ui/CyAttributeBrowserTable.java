@@ -1,17 +1,4 @@
 /*
- * $Archive: SourceJammer$
- * $FileName: JSortTable.java$
- * $FileID: 3984$
- *
- * Last change:
- * $AuthorName: Timo Haberkern$
- * $Date: 2007-07-11 17:47:31 -0700 (水, 11 7 2007) $
- * $Comment: $
- *
- * $KeyWordsOff: $
- */
-
-/*
  =====================================================================
 
  JSortTable.java
@@ -967,8 +954,6 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				});
 			curItem.add(copy);
 
-			//curItem.add(new JMenuItem("Edit"));
-			//			openURL.setEnabled(false);
 			if (item.toString().startsWith("http://")) {
 				curItem.getMenuComponent(1).setEnabled(true);
 			} else
@@ -1356,8 +1341,6 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			}
 
 			setCellEditor(null);
-			setEditingColumn(-1);
-			setEditingRow(-1);
 			editorComp = null;
 			repaint(cellRect);
 		}
