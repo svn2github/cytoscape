@@ -42,6 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.discrete;
 
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import cytoscape.visual.mappings.MappingUtil;
 
 import cytoscape.visual.parsers.ObjectToString;
@@ -105,7 +106,7 @@ public class DiscreteMappingWriter {
 			value = map.get(key);
 
 			if (value != null) {
-				stringValue = ObjectToString.getStringValue(value);
+				stringValue = ValueToStringConverterManager.manager.toString(value);
 				newProps.setProperty(mapKey + key.toString(), stringValue);
 			}
 		}

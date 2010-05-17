@@ -35,24 +35,15 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.parsers.ColorParser;
-import cytoscape.visual.parsers.ObjectToString;
-
-//----------------------------------------------------------------------------
 import java.awt.Color;
-
 import java.lang.reflect.Method;
-
 import java.util.Properties;
+
+import cytoscape.CyNetwork;
+import cytoscape.visual.converter.ValueToStringConverterManager;
+import cytoscape.visual.parsers.ColorParser;
 
 
 //----------------------------------------------------------------------------
@@ -439,23 +430,23 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 
 		// save default values
 		key = baseKey + ".defaultBackgroundColor";
-		value = ObjectToString.getStringValue(getDefaultBackgroundColor());
+		value = ValueToStringConverterManager.manager.toString(getDefaultBackgroundColor());
 		newProps.setProperty(key, value);
 
 		key = baseKey + ".defaultNodeSelectionColor";
-		value = ObjectToString.getStringValue(getDefaultNodeSelectionColor());
+		value = ValueToStringConverterManager.manager.toString(getDefaultNodeSelectionColor());
 		newProps.setProperty(key, value);
 
 		key = baseKey + ".defaultNodeReverseSelectionColor";
-		value = ObjectToString.getStringValue(getDefaultNodeReverseSelectionColor());
+		value = ValueToStringConverterManager.manager.toString(getDefaultNodeReverseSelectionColor());
 		newProps.setProperty(key, value);
 
 		key = baseKey + ".defaultEdgeSelectionColor";
-		value = ObjectToString.getStringValue(getDefaultEdgeSelectionColor());
+		value = ValueToStringConverterManager.manager.toString(getDefaultEdgeSelectionColor());
 		newProps.setProperty(key, value);
 
 		key = baseKey + ".defaultEdgeReverseSelectionColor";
-		value = ObjectToString.getStringValue(getDefaultEdgeReverseSelectionColor());
+		value = ValueToStringConverterManager.manager.toString(getDefaultEdgeReverseSelectionColor());
 		newProps.setProperty(key, value);
 
 		return newProps;

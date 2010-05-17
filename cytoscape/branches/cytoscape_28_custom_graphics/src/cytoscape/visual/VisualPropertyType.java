@@ -46,6 +46,7 @@ import java.util.List;
 import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.parsers.ArrowShapeParser;
 import cytoscape.visual.parsers.BooleanParser;

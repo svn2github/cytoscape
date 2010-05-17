@@ -52,7 +52,7 @@ import javax.swing.JPanel;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.ObjectToString;
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import ding.view.ObjectPositionImpl;
 
 /**
@@ -169,7 +169,7 @@ public class PopupObjectPositionChooser extends JDialog implements
 			// horrible, horrible hack
 			GraphObject go = BypassHack.getCurrentObject();
 			if (go != null) {
-				String val = ObjectToString.getStringValue(newPosition);
+				String val = ValueToStringConverterManager.manager.toString(newPosition);
 				Cytoscape.getNodeAttributes().setAttribute(
 						go.getIdentifier(),
 						VisualPropertyType.NODE_LABEL_POSITION

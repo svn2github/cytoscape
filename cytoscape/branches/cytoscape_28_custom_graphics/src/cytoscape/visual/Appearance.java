@@ -50,6 +50,7 @@ import java.util.Properties;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import cytoscape.visual.parsers.ObjectToString;
 import cytoscape.visual.parsers.ValueParser;
 
@@ -149,7 +150,7 @@ public class Appearance {
 
 		for (VisualPropertyType type : VisualPropertyType.values()) {
 			String key = type.getDefaultPropertyKey(baseKey);
-			String value = ObjectToString.getStringValue(vizProps.get(type));
+			String value = ValueToStringConverterManager.manager.toString(vizProps.get(type));
 			if ( key != null && value != null ) {
 				props.setProperty(key,value);
 			}
@@ -177,7 +178,7 @@ public class Appearance {
 				sb.append(prefix);
 				sb.append(type.getName());
 				sb.append(" = ");
-				sb.append(ObjectToString.getStringValue(vizProps.get(type)));
+				sb.append(ValueToStringConverterManager.manager.toString(vizProps.get(type)));
 				sb.append(lineSep);
 			}
 		}

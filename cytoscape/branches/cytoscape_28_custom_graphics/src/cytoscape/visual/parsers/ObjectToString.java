@@ -54,12 +54,16 @@ import cytoscape.visual.NodeShape;
  * classes in this package, i.e. turns a Object back into a String representation.
  * Most cases either use the corresponding methods in cytoscape.util.Misc or
  * use the default toString() method of the object.
+ * 
+ * @deprecated will be removed in May 2011.  Use ValueToStringConverterManager.manager.toString(obj) instead.
+ * 
  */
-
+@Deprecated
 public class ObjectToString {
     /**
      * Constructs and returns a String representation of the given Object.
      */
+	@Deprecated
     public static String getStringValue(Object o) {
 		if (  o == null )
 			return "";
