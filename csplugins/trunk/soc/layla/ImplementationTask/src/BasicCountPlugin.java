@@ -16,8 +16,6 @@
 
 import java.util.*;
 import java.awt.event.ActionEvent;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
@@ -88,6 +86,9 @@ public class BasicCountPlugin extends CytoscapePlugin
 	 */
 	public class BasicCountPluginAction extends CytoscapeAction
 	{
+		//Variables
+		CountPanel curPanel;
+		boolean panelAdded;
 		
 		/**
 		 * The constructor sets the text that should appear on the menu item.
@@ -95,6 +96,8 @@ public class BasicCountPlugin extends CytoscapePlugin
 		public BasicCountPluginAction()
 		{
 			super("BasicCount");
+			
+			curPanel = new CountPanel();
 		}
 		
 		/**
@@ -104,11 +107,19 @@ public class BasicCountPlugin extends CytoscapePlugin
 		{
 			TreeMap WordCounts = new TreeMap();
 			TreeMap WordPairCounts = new TreeMap(); 
+			
 			retrieveCounts(WordCounts);
 			retrievePairCounts(WordPairCounts); 
-			printWords(WordCounts,1); 
-			printWords(WordPairCounts,2);
-			addPanel();
+			
+			if(!panelAdded)
+			{
+				addPanel(curPanel);
+				panelAdded = true;
+			}
+			
+			curPanel.clearText();
+			printWords(curPanel, WordCounts,1); 
+			printWords(curPanel, WordPairCounts,2);
 		
 		}
 	
@@ -230,14 +241,15 @@ public class BasicCountPlugin extends CytoscapePlugin
 		}//end of readFile method
 		
 		/**
-		 * This method displays a pop on words and their frequency
-		 * in the specified file.  It prints lower case version of words in
+		 * This method displays in a CountPanel words and their frequency
+		 * in the specified network.  It prints lower case version of words in
 		 * alphabetical order.
+		 * @param the CountPanel to display the words in
 		 * @param words - the TreeMap object that we are printing information from.
 		 * @param num - the number of times that a value must appear in order to 
 		 * be printed.
 		 */
-		public void printWords(TreeMap words, int num)
+		public void printWords(CountPanel aPanel, TreeMap words, int num)
 		{	
 			String message = "";
 			List wordsByAlpha = new ArrayList(words.values());
@@ -253,29 +265,28 @@ public class BasicCountPlugin extends CytoscapePlugin
 				}
 			}
 			
-			//Display with a popup
+			//Display with a new workspace
 			System.out.println(message);
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),message);
+			aPanel.addText(message);
 		}
-	}
 	
-	/**
-	 * This method adds a new tabbed panel to the data display.  
-	 */
-	public void addPanel()
-	{
-		//Retrieve handler
-		CytoPanelImp dataPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
-		
-		//Create JPanel object
-		JPanel myPanel = new JPanel();
-		
-		//Add the panel to SOUTH
-		dataPanel.add("Word Counts", myPanel);
-		
-		//Select panel once plugin is initialized
-		int indexInCytoPanel = dataPanel.indexOfComponent("Word Counts");
-		dataPanel.setSelectedIndex(indexInCytoPanel);
+		/**
+		 * This method adds a new tabbed panel to the data display.  
+		 */
+		public void addPanel(CountPanel myPanel)
+		{
+			//Retrieve handler
+			CytoPanelImp dataPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
+			
+			
+			//Add the panel to SOUTH
+			dataPanel.add("Word Counts", myPanel);
+			
+			//Select panel once plugin is initialized
+			int indexInCytoPanel = dataPanel.indexOfComponent("Word Counts");
+			dataPanel.setSelectedIndex(indexInCytoPanel);
+			
+		}
 	}
 	
 }
