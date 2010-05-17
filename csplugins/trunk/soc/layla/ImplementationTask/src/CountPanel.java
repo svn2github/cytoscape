@@ -75,4 +75,22 @@ public class CountPanel extends JPanel
 		text.setText("");
 	}
 	
+	/**
+	 * Retrieves JLabel title variable.
+	 * @returns Title JLabel component
+	 */
+	public JLabel getTitle()
+	{
+		return title;
+	}
+	
+	/**
+	 * Returns JTextArea variable.
+	 * @return text JTextArea variable
+	 */
+	public JTextArea getText()
+	{
+		return text;
+	}
+	
 }

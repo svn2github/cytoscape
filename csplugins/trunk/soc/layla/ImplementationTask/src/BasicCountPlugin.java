@@ -79,6 +79,8 @@ public class BasicCountPlugin extends CytoscapePlugin
 			word = w;
 			count = 1;
 		}
+		
+		
 	} 
 	
 	/**
