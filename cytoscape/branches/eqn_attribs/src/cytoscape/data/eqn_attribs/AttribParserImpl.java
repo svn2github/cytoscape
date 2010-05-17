@@ -133,11 +133,6 @@ class AttribParserImpl implements AttribParser {
 
 		for (;;) {
 			final AttribToken token = tokeniser.getToken();
-			if (token == AttribToken.EOS) {
-				tokeniser.ungetToken(token);
-				return exprNode;
-			}
-
 			if (token == AttribToken.PLUS || token == AttribToken.MINUS || token == AttribToken.AMPERSAND) {
 				final Node term = parseTerm();
 				if (token == AttribToken.PLUS || token == AttribToken.MINUS)
