@@ -36,6 +36,7 @@ $(function(){
     var MESSAGE_HIDE_SPEED = 0;
     var FILTER_DELAY_ON_SLIDER = 25;
     var FILTER_STEPS_ON_SLIDER = 100;
+    var LISTENER_DELAY = 50;
     
     // sizes
     var SIDE_BAR_MIN_SIZE = 350;
@@ -318,11 +319,10 @@ $(function(){
     
     function dispose(){
 	    if($("#cytoweb_container").cw() != null) {
-	    	$("#cytoweb_container").cw().removeListener("click", "nodes")
-	    	  .removeListener("select", "nodes")
-	          .removeListener("deselect", "nodes")
-	          .removeListener("select", "edges")
-	          .removeListener("deselect", "edges")
+	    	$("#cytoweb_container").cw()
+	    	  .removeListener("select")
+	          .removeListener("deselect")  
+	    	  .removeListener("click", "nodes")
 	          .removeListener("dblClick", "nodes")
 	          .removeListener("dblClick", "edges")
 	          .removeListener("layout");
@@ -334,7 +334,7 @@ $(function(){
        
     // utility for opening a graph
     function open_graph(opt){
-    	//dispose();
+    	dispose();
     	
         var description;
         
@@ -918,7 +918,6 @@ $(function(){
     }
     
     
-    
     function update_menu(){
         // add initial state of check marks
         var check = {};
@@ -981,9 +980,7 @@ $(function(){
         $("#cytoweb").css("background-color", $("#cytoweb_container").cw().visualStyle().global.backgroundColor );
     }
     
-    
-    
-    
+
     //  ] Info for selected objects
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -993,21 +990,17 @@ $(function(){
         update();
         updateContextMenu();
         
-        $("#cytoweb_container").cw().addListener("select", "nodes", function(){
-            update();
-            updateContextMenu();
+        $("#cytoweb_container").cw().addListener("select", function(){
+        	setTimeout(function(){
+        		update_with_loader();
+        		updateContextMenu();
+        	}, LISTENER_DELAY);
         })
-        .addListener("deselect", "nodes", function(){
-            update();
-            updateContextMenu();
-        })
-        .addListener("select", "edges", function(){
-            update();
-            updateContextMenu();
-        })
-        .addListener("deselect", "edges", function(){
-            update();
-            updateContextMenu();
+        .addListener("deselect", function(){
+        	setTimeout(function(){
+        		update_with_loader();
+	            updateContextMenu();
+        	}, LISTENER_DELAY);
         })
         .addListener("dblClick", "nodes", function(){
             $("#info_link").click();
@@ -1018,10 +1011,6 @@ $(function(){
         .addListener("layout", function(evt){
         	$("#layout_style .ui-menu-check-icon").removeClass("ui-menu-checked");
         	$("#layout_style .ui-menu-checkable[layout_id="+evt.value+"] .ui-menu-check-icon").addClass("ui-menu-checked");
-        });
-        
-        $("#info_link").bind("click", function(){
-            update();
         });
         
         var _srcId;
@@ -1036,6 +1025,8 @@ $(function(){
         }
         
         function update(){
+
+        	
             var edges = $("#cytoweb_container").cw().selected("edges");
             var nodes = $("#cytoweb_container").cw().selected("nodes");
             var container = $("#info");
@@ -1119,6 +1110,7 @@ $(function(){
                 } else {
                     section.append('<p>No ' + name.toLowerCase() + ' are selected.</p>');
                 }
+                
             }
 
             print_selection(nodes, "Nodes", "nodes_data_table");
@@ -1223,6 +1215,26 @@ $(function(){
             
         }
         
+        function update_with_loader(){
+        	if (! $("#info").hasClass("ui-tabs-hide")){
+	        	show_msg_on_tabs({
+	                type: "loading",
+	                message: "Please wait while the data is updated."
+	            });
+        	}
+        	$.thread({
+                worker: function(params){
+                    update();
+            
+                    if (! $("#info").hasClass("ui-tabs-hide")){
+	                    hide_msg({
+	                        target: $("#side")
+	                    });
+                    }
+                }
+            });
+        }
+        
         function updateContextMenu(){
         	var cw = $("#cytoweb_container").cw();
         	cw.removeAllContextMenuItems();
@@ -1232,19 +1244,19 @@ $(function(){
             	cw.removeListener("click", "nodes", clickNodeToAddEdge);
             	dirty_graph_state();
             	updateContextMenu();
-            	update();
+            	update_with_loader();
             })
             .addContextMenuItem("Delete edge", "edges", function(evt) {
             	cw.removeEdge(evt.target, true);
             	updateContextMenu();
             	dirty_graph_state();
-            	update();
+            	update_with_loader();
             })
         	.addContextMenuItem("Add new node", function(evt) {
         		cw.addNode(evt.mouseX, evt.mouseY, { }, true);
         		dirty_graph_state();
         		updateContextMenu();
-        		update();
+        		update_with_loader();
         	})
         	.addContextMenuItem("Add new edge (then click the target node...)", "nodes", function(evt) {
             	_srcId = evt.target.data.id;
@@ -1261,7 +1273,7 @@ $(function(){
         			cw.removeListener("click", "nodes", clickNodeToAddEdge);
                     dirty_graph_state();
                     updateContextMenu();
-                    update();
+                    update_with_loader();
                 });
         	} else {
         		cw.removeContextMenuItem("Delete selected");
