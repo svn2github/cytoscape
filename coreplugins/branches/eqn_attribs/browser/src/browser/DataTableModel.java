@@ -400,7 +400,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				column_names[i1] = attributeNames.get(i1);
 				attributeName = (String) attributeNames.get(i1);
 				type = data.getType(attributeName);
-
 				for (int j = 0; j < go_length; ++j) {
 					if (attributeName.equals(AttributeBrowser.ID))
 						data_vector[j][i1] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
@@ -428,7 +427,24 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final byte type, final String id, final String attrName) {
-		final Object attribValue = data.getAttribute(id, attrName);
+		final Object attribValue;
+		switch (type) {
+		case CyAttributes.TYPE_INTEGER:
+		case CyAttributes.TYPE_FLOATING:
+		case CyAttributes.TYPE_BOOLEAN:
+		case CyAttributes.TYPE_STRING:
+			attribValue = data.getAttribute(id, attrName);
+			break;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			attribValue = data.getListAttribute(id, attrName);
+			break;
+		case CyAttributes.TYPE_SIMPLE_MAP:
+			attribValue = data.getMapAttribute(id, attrName);
+			break;
+		default:
+			return null;
+		}
+
 		final Equation equation = data.getEquation(id, attrName);
 		if (attribValue == null && equation == null)
 			return null;
@@ -447,9 +463,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		else if (type == CyAttributes.TYPE_STRING)
 			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return new ValidatedObjectAndEditString(data.getListAttribute(id, attrName));
+			return new ValidatedObjectAndEditString(attribValue);
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return new ValidatedObjectAndEditString(data.getMapAttribute(id, attrName));
+			return new ValidatedObjectAndEditString(attribValue);
 
 		return null;
 	}
