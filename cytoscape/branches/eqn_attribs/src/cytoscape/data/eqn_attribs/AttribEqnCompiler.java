@@ -68,6 +68,7 @@ public class AttribEqnCompiler {
 		final Object[] code = new Object[codeStack.size()];
 		for (int i = code.length - 1; i >= 0; --i)
 			code[i] = codeStack.pop();
+//		this.equation = new Equation(equation, parser.getVariableReferences(), code, parser.getType());
 		this.equation = new Equation(equation, parser.getAttribReferences(), code, parser.getType());
 
 		errorMsg = null;

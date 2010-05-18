@@ -41,13 +41,17 @@ public interface AttribFunction {
 	String getName();
 
 	/**
-	 *  Used to provide help for users.
+	 *  Used to provide help for users.  Unlike getUsageDescription(), this is an informal English description,
+	 *  like "Calculates the sine of its argument."
+	 *
 	 *  @returns a description of what this function does
 	 */
 	String getFunctionSummary();
 
 	/**
-	 *  Used to provide help for users.
+	 *  Used to provide help for users.  Unlike getFunctionSummary(), this describes how to call this function,
+	 *  like "Call with SIN(number)."
+	 *
 	 *  @returns a description of how to use this function
 	 */
 	String getUsageDescription();
@@ -56,12 +60,18 @@ public interface AttribFunction {
 	 *  @returns the static return type of this function, Object.class, Double.cLass, String.class, or Boolean.class.
 	 *           If the static return type is Object.class, the dynamic return type will be one of Double.cLass, String.class, or Boolean.class
 	 *           and will depend on the arguments passed to the function!
+	 *
+	 *  Note, this is used by external tools used to filter a list of functions based on what a valid return type might be.
+	 *  In Cytoscape it is used in the attribute browser's formula builder.
 	 */
 	Class getReturnType();
 
 	/**
 	 *  @returns the return type for this function (Double.cLass, String.class, or Boolean.class)
 	 *           or null if the args passed in had the wrong arity or a type mismatch
+	 *
+	 *  Note that this is different from getReturnType() in that it will never return the wildcard Object.class.
+	 *  It is used by the parser which knows the actual type of the arguments in any given call to this function.
 	 */
 	Class validateArgTypes(final Class[] argTypes);
 
