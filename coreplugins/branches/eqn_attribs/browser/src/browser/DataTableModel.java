@@ -242,19 +242,16 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @param attributes DOCUMENT ME!
 	 */
 	public void setTableData(List cellData, List<String> attributes) {
-		if (attributes != null) {
+		if (attributes != null)
 			this.attributeNames = attributes;
-		}
 
-		if (cellData != null) {
+		if (cellData != null)
 			graphObjects = cellData;
-		}
 
-		if (objectType != NETWORK) {
+		if (objectType != NETWORK)
 			setTableData();
-		} else {
+		else
 			setNetworkTable();
-		}
 	}
 
 	protected void setNetworkTable() {
@@ -268,15 +265,15 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		Object[][] data_vector = new Object[att_length][2];
 		Object[] column_names = new Object[2];
 
-		column_names[0] = new ValidatedObjectAndEditString("Network Attribute Name");
-		column_names[1] = new ValidatedObjectAndEditString("Value");
+		column_names[0] = "Network Attribute Name";
+		column_names[1] = "Value";
 
 		for (int i = 0; i < att_length; i++) {
 			final String attributeName = (String) attributeNames.get(i);
 			data_vector[i][0] = new ValidatedObjectAndEditString(attributeName);
 			data_vector[i][1] = getValidatedObjectAndEditString(data.getType(attributeName),
-									 Cytoscape.getCurrentNetwork().getIdentifier(),
-									 attributeName);
+									    Cytoscape.getCurrentNetwork().getIdentifier(),
+									    attributeName);
 		}
 
 		setDataVector(data_vector, column_names);
@@ -636,7 +633,10 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
 		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
-		setDataTableRow(rowIdx);
+		if (this.objectType != NETWORK)
+			setDataTableRow(rowIdx);
+		else
+			setDataTableColumn();
 
 		return editIsValid ? edit : null;
 	}
@@ -657,6 +657,23 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
 			if (objectAndEditString != null)
 				rowVector.setElementAt(objectAndEditString, colIdx + 1);
+		}
+	}
+
+	/**
+	 *  Helper method for updateCell().
+	 */
+	void setDataTableColumn() {
+		final int noOfRows = attributeNames.size();
+		final String id = Cytoscape.getCurrentNetwork().getIdentifier();
+		for (int rowIdx = 1; rowIdx <= noOfRows; ++rowIdx) {
+			final String attribName = attributeNames.get(rowIdx - 1);
+			final byte type = data.getType(attribName);
+			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
+			if (objectAndEditString != null) {
+				final Vector rowVector = (Vector) dataVector.elementAt(rowIdx - 1);
+				rowVector.setElementAt(objectAndEditString, 1 /* Always the 2nd column! */);
+			}
 		}
 	}
 }
