@@ -1,45 +1,31 @@
-/*
- Copyright (c) 2006, 2007, 2010 The Cytoscape Consortium (www.cytoscape.org)
-
- This library is free software; you can redistribute it and/or modify it
- under the terms of the GNU Lesser General Public License as published
- by the Free Software Foundation; either version 2.1 of the License, or
- any later version.
-
- This library is distributed in the hope that it will be useful, but
- WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute
- have no obligations to provide maintenance, support,
- updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute
- be liable to any party for direct, indirect, special,
- incidental or consequential damages, including lost profits, arising
- out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute
- have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this library; if not, write to the Free Software Foundation,
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
 package browser.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.Rectangle;
-import java.awt.Dimension;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.text.Keymap;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Document;
+import javax.swing.text.Keymap;
+import javax.swing.text.TextAction;
+import javax.swing.text.JTextComponent;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -48,9 +34,10 @@ import javax.swing.table.TableColumn;
 
 import java.util.EventObject;
 
-import browser.ValidatedObjectAndEditString;
 
-
+/**
+ *
+ */
 public class MultiLineTableCellEditor extends AbstractCellEditor implements TableCellEditor,
                                                                             ActionListener
 {
@@ -60,106 +47,56 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 	 * Creates a new MultiLineTableCellEditor object.
 	 */
 	public MultiLineTableCellEditor() {
-		textArea = new ResizableTextArea();
+		textArea = new ResizableTextArea(this);
 		textArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public Object getCellEditorValue() {
 		return textArea.getText();
 	}
 
 	protected int clickCountToStart = 2;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public int getClickCountToStart() {
 		return clickCountToStart;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param clickCountToStart DOCUMENT ME!
-	 */
 	public void setClickCountToStart(int clickCountToStart) {
 		this.clickCountToStart = clickCountToStart;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public boolean isCellEditable(EventObject e) {
 		return !(e instanceof MouseEvent)
 		       || (((MouseEvent) e).getClickCount() >= clickCountToStart);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param ae DOCUMENT ME!
-	 */
 	public void actionPerformed(ActionEvent ae) {
 		stopCellEditing();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param table DOCUMENT ME!
-	 * @param value DOCUMENT ME!
-	 * @param isSelected DOCUMENT ME!
-	 * @param row DOCUMENT ME!
-	 * @param column DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
-	                                             final int row, final int column)
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+	                                             int row, int column)
 	{
+		String text = (value != null) ? value.toString() : "";
 		textArea.setTable(table);
-
-		final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)value;
-		final String text;
-		if (objectAndEditString == null)
-			text = "";
-		else {
-			final String editString = objectAndEditString.getEditString();
-			text = (editString != null) ? editString : "";
-			/*
-			if (isSelected && editString != null)
-				text = editString;
-			else if (valAndEq.getValue() != null)
-				text = valAndEq.getValue().toString();
-			else
-				text = "";
-			*/
-		}
 		textArea.setText(text);
 
 		return textArea;
 	}
 
-	/**
-	 * 
-	 */
 	public static final String UPDATE_BOUNDS = "UpdateBounds";
 
-	class ResizableTextArea extends JTextArea {
-		JTable table;
+	class ResizableTextArea extends JTextArea implements KeyListener {
+		private JTable table;
+		private MultiLineTableCellEditor parent;
+
+		ResizableTextArea(final MultiLineTableCellEditor parent) {
+			super();
+			this.parent = parent;
+			addKeyListener(this);
+		}
 
 		public void setTable(JTable t) {
 			table = t;
@@ -200,8 +137,8 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 		};
 
 		private void updateBounds() {
-			if ( table == null ) {
-				System.out.println("table is null");
+			if (table == null) {
+				System.err.println("table is null");
 				return;
 			}
 				
@@ -215,6 +152,44 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 				putClientProperty(UPDATE_BOUNDS, Boolean.FALSE);
 				validate();
 			} 
+		}
+
+		//
+		// KeyListener Interface
+		//
+
+		public void keyTyped(KeyEvent e) {}
+
+		public void keyReleased(KeyEvent e) {}
+
+		public void keyPressed(final KeyEvent event) {
+			if (event.getKeyCode() != KeyEvent.VK_ENTER)
+				return;
+
+			final int modifiers = event.getModifiers();
+
+			// We want to move to the next cell if Enter and no modifiers have been pressed:
+			if (modifiers == 0) {
+				parent.stopCellEditing();
+				this.transferFocus();
+				return;
+			}
+
+			// We want to move to the previous cell if Shift+Enter have been pressed:
+			if (modifiers == KeyEvent.VK_SHIFT) {
+				parent.stopCellEditing();
+				this.transferFocusBackward();
+				return;
+			}
+
+			// We want to insert a newline of Enter+Alt or Enter+Alt+Meta have been pressed:
+			final int OPTION_AND_COMMAND = 12; // On Mac to emulate Excel.
+			if (modifiers == KeyEvent.VK_ALT || modifiers == OPTION_AND_COMMAND) {
+				final int caretPosition = this.getCaretPosition();
+				final StringBuilder text = new StringBuilder(this.getText());
+				this.setText(text.insert(caretPosition, '\n').toString());
+				this.setCaretPosition(caretPosition + 1);
+			}
 		}
 	}
 }

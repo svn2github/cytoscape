@@ -204,13 +204,15 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			}
 
 			for (String targetKey : networkKeys) {
+/*
 				String value = prop.getProperty(targetKey);
 				String [] items = value.split("\t");
 				networkAttrSelected.add(items[0]);
 				
 				if (items.length>1){
 					networkAttrColumnWidth.add(items[1]);
-				}				
+				}
+*/	
 			}
 
 			nodeAttributeBrowser.setSelectedAttributes(nodeAttrSelected);
