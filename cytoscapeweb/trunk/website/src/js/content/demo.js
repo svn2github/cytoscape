@@ -1834,9 +1834,9 @@ $(function(){
                 case "non-empty string":
                     return value != null && value != "";
                 case "node shape":
-                    return value.match(/^(ellipse)|(diamond)|(rectangle)|(triangle)|(hexagon)|(roundrect)|(parallelogram)|(octagon)$/i);
+                    return value.match(/^(ellipse)|(diamond)|(rectangle)|(triangle)|(hexagon)|(roundrect)|(parallelogram)|(octagon)|(v)$/i);
                 case "edge shape":
-                    return value.match(/^(circle)|(diamond)|(delta)|(T)|(none)$/i);
+                    return value.match(/^(circle)|(diamond)|(delta)|(arrow)|(T)|(none)$/i);
             }
             
             return false;
