@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.idekerlab.PanGIAPlugin.utilities.ByteConversion;
 import org.idekerlab.PanGIAPlugin.utilities.ByteConverter;
-import org.idekerlab.PanGIAPlugin.data.matrixMath.*;
+
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
 
