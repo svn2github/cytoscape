@@ -37,10 +37,22 @@ import java.util.Map;
 import java.util.Stack;
 import junit.framework.*;
 import cytoscape.data.eqn_attribs.AttribEqnCompiler;
+import cytoscape.data.eqn_attribs.AttribFunction;
+import cytoscape.data.eqn_attribs.Parser;
 import cytoscape.data.eqn_attribs.builtins.*;
 
 
 public class InterpreterTest extends TestCase {
+	static private class BadReturnFunction implements AttribFunction {
+		public String getName() { return "BAD"; }
+		public String getFunctionSummary() { return "Returns an invalid type at runtime."; }
+		public String getUsageDescription() { return "Call this with \"BAD()\"."; }
+		public Class getReturnType() { return Double.class; }
+		public Class validateArgTypes(final Class[] argTypes) { return argTypes.length == 0 ? Double.class : null; }
+		public Object evaluateFunction(final Object[] args) { return new Integer(1); }
+		public List<Class> getPossibleArgTypes(final Class[] leadingArgs) { return null; }
+	}
+
 	private final AttribEqnCompiler compiler = new AttribEqnCompiler();
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -615,5 +627,20 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=$x + 2.0", attribNameToTypeMap));
 		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(5.0), interpreter1.run());
+	}
+
+	public void testFunctionWithBadRuntimeReturnType() throws Exception {
+		Parser.getParser().registerFunction(new BadReturnFunction());
+
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		assertTrue(compiler.compile("=BAD()", attribNameToTypeMap));
+
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		try {
+			interpreter.run();
+		} catch (final IllegalStateException e) {
+			// If we get here, everything is as expected and we let the test pass!
+		}
 	}
 }

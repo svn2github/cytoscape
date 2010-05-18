@@ -302,7 +302,8 @@ public class Interpreter {
 			throw new IllegalStateException("invalid argument count type following a CALL opcode!");
 		}
 		final int MIN_ARG_COUNT = 0;
-		final int MAX_ARG_COUNT = 50;
+		final int MAX_ARG_COUNT = 100; // This is an arbitrary limit and exists only to find bugs.
+                                               // Should it prove to be too low we could easily make it much bigger.
 		if (argCount < MIN_ARG_COUNT || argCount > MAX_ARG_COUNT)
 			throw new IllegalStateException("invalid argument count type following a CALL opcode (range must be in [" + MIN_ARG_COUNT + ", " + MAX_ARG_COUNT + "])!");
 
