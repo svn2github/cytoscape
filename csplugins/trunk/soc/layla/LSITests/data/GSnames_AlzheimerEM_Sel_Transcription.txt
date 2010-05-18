@@ -1,0 +1,14 @@
+negative regulation of transcription
+negative regulation of transcription, DNA-dependent
+NCI:Regulation of nuclear SMAD2/3 signaling
+positive regulation of RNA metabolic process
+positive regulation of transcription
+transcription cofactor activity
+transcription repressor activity
+positive regulation of transcription, DNA-dependent
+transcription activator activity
+positive regulation of gene expression
+regulation of transcription from RNA polymerase II promoter
+transcription factor binding
+negative regulation of gene expression
+negative regulation of RNA metabolic process

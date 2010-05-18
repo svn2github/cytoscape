@@ -1,0 +1,37 @@
+positive regulation of ubiquitin-protein ligase activity
+proteasomal protein catabolic process
+protein catabolic process
+BIOC: PROTEASOME Pathway
+anaphase-promoting complex-dependent proteasomal ubiquitin-dependent protein catabolic process
+ubiquitin ligase complex
+regulation of ubiquitin-protein ligase activity during mitotic cell cycle
+negative regulation of ubiquitin-protein ligase activity
+interphase
+cell cycle process
+mitotic cell cycle
+interphase of mitotic cell cycle
+threonine-type peptidase activity
+threonine-type endopeptidase activity
+regulation of cell cycle
+regulation of ubiquitin-protein ligase activity
+cellular biopolymer catabolic process
+ubiquitin thiolesterase activity
+proteasome complex
+small conjugating protein-specific protease activity
+regulation of ligase activity
+ubiquitin-specific protease activity
+proteasomal ubiquitin-dependent protein catabolic process
+positive regulation of ligase activity
+KEGG:Proteasome
+ubiquitin-dependent protein catabolic process
+thiolester hydrolase activity
+KEGG:Cell cycle
+modification-dependent protein catabolic process
+negative regulation of ubiquitin-protein ligase activity during mitotic cell cycle
+negative regulation of catalytic activity
+negative regulation of ligase activity
+modification-dependent macromolecule catabolic process
+cellular protein catabolic process
+proteolysis involved in cellular protein catabolic process
+cell cycle phase
+positive regulation of ubiquitin-protein ligase activity during mitotic cell cycle

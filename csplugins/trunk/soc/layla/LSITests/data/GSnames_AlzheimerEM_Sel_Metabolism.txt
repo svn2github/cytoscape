@@ -1,0 +1,103 @@
+nucleobase, nucleoside and nucleotide metabolic process
+ATP synthesis coupled proton transport
+KEGG:Citrate cycle (TCA cycle)
+hydrolase activity, acting on acid anhydrides, catalyzing transmembrane movement of substances
+respiratory electron transport chain
+ATP metabolic process
+ATPase activity, coupled
+purine nucleotide metabolic process
+KEGG:Valine, leucine and isoleucine degradation
+nucleotide biosynthetic process
+KEGG:Parkinson's disease
+mitochondrial lumen
+oxidoreductase activity, acting on heme group of donors
+NAD or NADH binding
+organelle envelope
+organelle inner membrane
+purine ribonucleoside triphosphate metabolic process
+proton-transporting two-sector ATPase complex, catalytic domain
+oxidative phosphorylation
+NADH dehydrogenase activity
+generation of precursor metabolites and energy
+nitrogen compound catabolic process
+acetyl-CoA metabolic process
+monovalent inorganic cation transmembrane transporter activity
+energy derivation by oxidation of organic compounds
+ATP biosynthetic process
+oxidoreductase activity, acting on NADH or NADPH
+purine nucleotide biosynthetic process
+proton-transporting V-type ATPase complex
+proton transport
+cation-transporting ATPase activity
+amine catabolic process
+primary active transmembrane transporter activity
+ATPase activity, coupled to transmembrane movement of substances
+respiratory chain complex I
+mitochondrial membrane
+transmembrane ion transport
+mitochondrial inner membrane
+ATPase activity
+oxidoreductase activity, acting on heme group of donors, oxygen as acceptor
+KEGG:Oxidative phosphorylation
+proton-transporting ATPase activity, rotational mechanism
+P-P-bond-hydrolysis-driven transmembrane transporter activity
+nucleoside triphosphate metabolic process
+mitochondrial matrix
+mitochondrial respiratory chain
+hydrogen transport
+coenzyme catabolic process
+cellular respiration
+purine ribonucleotide biosynthetic process
+transmembrane transport
+mitochondrial transport
+mitochondrial respiratory chain complex I
+mitochondrial ATP synthesis coupled electron transport
+KEGG:Alzheimer's disease
+monovalent inorganic cation transport
+amino acid catabolic process
+nucleoside phosphate metabolic process
+ATPase activity, coupled to transmembrane movement of ions
+hydrogen ion transmembrane transporter activity
+purine ribonucleoside triphosphate biosynthetic process
+hydrogen ion transporting ATP synthase activity, rotational mechanism
+cytochrome-c oxidase activity
+purine ribonucleotide metabolic process
+mitochondrial envelope
+tricarboxylic acid cycle
+protein transporter activity
+envelope
+oxidation reduction
+acetyl-CoA catabolic process
+electron transport chain
+nucleotide metabolic process
+proton-transporting two-sector ATPase complex
+mitochondrial membrane part
+proton-transporting ATP synthase complex
+cofactor catabolic process
+aerobic respiration
+mitochondrial proton-transporting ATP synthase complex
+mitochondrial part
+mitochondrial electron transport, NADH to ubiquinone
+ATP synthesis coupled electron transport
+ATPase activity, coupled to movement of substances
+KEGG:Vibrio cholerae infection
+energy coupled proton transport, down electrochemical gradient
+purine nucleoside triphosphate metabolic process
+ribonucleotide biosynthetic process
+heme-copper terminal oxidase activity
+NADH dehydrogenase (ubiquinone) activity
+nucleoside triphosphate biosynthetic process
+ribonucleoside triphosphate biosynthetic process
+ribonucleoside triphosphate metabolic process
+purine nucleoside triphosphate biosynthetic process
+ribonucleotide metabolic process
+BIOC: ETC Pathway
+oxidoreductase activity, acting on NADH or NADPH, quinone or similar compound as acceptor
+NADH dehydrogenase complex
+NADH dehydrogenase (quinone) activity
+proton-transporting ATP synthase complex, coupling factor F(o)
+inorganic cation transmembrane transporter activity
+cation transport
+cation transmembrane transporter activity
+KEGG:Epithelial cell signaling in Helicobacter pylori infection
+active transmembrane transporter activity

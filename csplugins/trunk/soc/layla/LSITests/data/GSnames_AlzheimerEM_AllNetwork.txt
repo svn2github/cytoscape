@@ -1,0 +1,279 @@
+synapse
+ATP synthesis coupled proton transport
+NCI:Stabilization and expansion of the E-cadherin adherens junction
+respiratory electron transport chain
+anaphase-promoting complex-dependent proteasomal ubiquitin-dependent protein catabolic process
+transcription repressor activity
+cell cycle process
+ATPase activity, coupled
+vesicle
+purine nucleotide metabolic process
+positive regulation of cell motion
+KEGG:Valine, leucine and isoleucine degradation
+exocytosis
+ubiquitin thiolesterase activity
+regulation of transcription from RNA polymerase II promoter
+mitochondrial lumen
+myeloid cell differentiation
+NAD or NADH binding
+proteasome complex
+organelle envelope
+organelle inner membrane
+dicarboxylic acid metabolic process
+purine ribonucleoside triphosphate metabolic process
+chromosome organization
+KEGG:Colorectal cancer
+BIOC: IL1R Pathway
+generation of precursor metabolites and energy
+oxidative phosphorylation
+acetyl-CoA metabolic process
+monovalent inorganic cation transmembrane transporter activity
+negative regulation of ubiquitin-protein ligase activity during mitotic cell cycle
+ATP biosynthetic process
+oxidoreductase activity, acting on NADH or NADPH
+purine nucleotide biosynthetic process
+regulation of fat cell differentiation
+cellular protein localization
+regulation of protein kinase activity
+cytoplasmic vesicle
+positive regulation of ubiquitin-protein ligase activity
+KEGG:Apoptosis
+proton transport
+cation-transporting ATPase activity
+proteasomal protein catabolic process
+protein catabolic process
+protein import into nucleus, translocation
+ATPase activity, coupled to transmembrane movement of substances
+respiratory chain complex I
+mitochondrial membrane
+NCI:Lissencephaly gene (LIS1) in neuronal migration and development
+interphase of mitotic cell cycle
+cellular structure morphogenesis
+threonine-type endopeptidase activity
+NCI:p53 pathway
+positive regulation of cell communication
+immune system development
+transmission of nerve impulse
+ATPase activity
+negative regulation of transcription
+regulation of kinase activity
+proteasomal ubiquitin-dependent protein catabolic process
+NCI:Regulation of nuclear SMAD2/3 signaling
+KEGG:Oxidative phosphorylation
+P-P-bond-hydrolysis-driven transmembrane transporter activity
+KEGG:Focal adhesion
+cell morphogenesis
+mitochondrial respiratory chain
+KEGG:Renal cell carcinoma
+hydrogen transport
+cellular respiration
+KEGG:Endometrial cancer
+purine ribonucleotide biosynthetic process
+positive regulation of kinase activity
+mitochondrial transport
+negative regulation of cell proliferation
+mitochondrial respiratory chain complex I
+monovalent inorganic cation transport
+chromatin
+KEGG:ErbB signaling pathway
+nucleoside phosphate metabolic process
+interphase
+KEGG:Pancreatic cancer
+transcription activator activity
+protein targeting
+regulation of cell morphogenesis
+threonine-type peptidase activity
+synapse part
+hydrogen ion transporting ATP synthase activity, rotational mechanism
+regulation of ubiquitin-protein ligase activity
+cytochrome-c oxidase activity
+regulation of ligase activity
+small conjugating protein-specific protease activity
+nerve-nerve synaptic transmission
+mitochondrial envelope
+BIOC: CK1 Pathway
+NCI:Presenilin action in Notch and Wnt signaling
+negative regulation of catalytic activity
+axon
+envelope
+calmodulin binding
+extracellular matrix
+acetyl-CoA catabolic process
+electron transport chain
+BIOC: P35ALZHEIMERS Pathway
+proton-transporting two-sector ATPase complex
+BIOC: SALMONELLA Pathway
+mitochondrial membrane part
+aerobic respiration
+coated vesicle
+positive regulation of gene expression
+mitochondrial proton-transporting ATP synthase complex
+positive regulation of cell migration
+secretion by cell
+ATP synthesis coupled electron transport
+protein kinase cascade
+enzyme linked receptor protein signaling pathway
+regulation of cell motion
+energy coupled proton transport, down electrochemical gradient
+NCI:Regulation of cytoplasmic and nuclear SMAD2/3 signaling
+membrane-bounded vesicle
+membrane coat
+purine nucleoside triphosphate metabolic process
+ribonucleotide biosynthetic process
+protein serine/threonine kinase activity
+positive regulation of ligase activity
+unfolded protein binding
+nucleoside triphosphate biosynthetic process
+ribonucleoside triphosphate biosynthetic process
+BIOC: MAPK Pathway
+purine nucleoside triphosphate biosynthetic process
+ubiquitin-dependent protein catabolic process
+ribonucleotide metabolic process
+NCI:LPA receptor mediated events
+BIOC: ETC Pathway
+positive regulation of cell proliferation
+modification-dependent protein catabolic process
+proton-transporting ATP synthase complex, coupling factor F(o)
+inorganic cation transmembrane transporter activity
+hemopoietic or lymphoid organ development
+nucleoplasm part
+KEGG:Epithelial cell signaling in Helicobacter pylori infection
+BIOC: PGC1A Pathway
+active transmembrane transporter activity
+microtubule associated complex
+nucleobase, nucleoside and nucleotide metabolic process
+KEGG:Citrate cycle (TCA cycle)
+positive regulation of RNA metabolic process
+regulation of I-kappaB kinase/NF-kappaB cascade
+NCI:Signaling events mediated by HDAC Class I
+microtubule-based process
+hydrolase activity, acting on acid anhydrides, catalyzing transmembrane movement of substances
+neuron projection
+negative regulation of ubiquitin-protein ligase activity
+ATP metabolic process
+regulation of immune system process
+regulation of sterol transport
+KEGG:Glutamate metabolism
+regulation of cell cycle
+clathrin-coated vesicle
+nucleotide biosynthetic process
+KEGG:Parkinson's disease
+oxidoreductase activity, acting on heme group of donors
+proton-transporting two-sector ATPase complex, catalytic domain
+protein kinase activity
+ribonucleoprotein complex
+NADH dehydrogenase activity
+coated pit
+nitrogen compound catabolic process
+regulation of cholesterol transport
+energy derivation by oxidation of organic compounds
+extracellular matrix part
+protein amino acid autophosphorylation
+cellular protein catabolic process
+proteolysis involved in cellular protein catabolic process
+NCI:Canonical Wnt signaling pathway
+chromosome
+proton-transporting V-type ATPase complex
+amine catabolic process
+regulation of ubiquitin-protein ligase activity during mitotic cell cycle
+ubiquitin ligase complex
+primary active transmembrane transporter activity
+regulation of cell migration
+multi-organism process
+transmembrane ion transport
+mitochondrial inner membrane
+positive regulation of protein kinase cascade
+oxidoreductase activity, acting on heme group of donors, oxygen as acceptor
+hemopoiesis
+cytoplasmic membrane-bounded vesicle
+KEGG:Adherens junction
+proton-transporting ATPase activity, rotational mechanism
+nucleoside triphosphate metabolic process
+dynein complex
+mitochondrial matrix
+regulation of cell proliferation
+positive regulation of transcription, DNA-dependent
+nuclear transport
+KEGG:Proteasome
+coenzyme catabolic process
+BIOC: DEATH Pathway
+regulation of protein kinase cascade
+regulation of neurotransmitter levels
+NCI:HIV-1 Nef: Negative effector of Fas and TNF-alpha
+BIOC: BIOPEPTIDES Pathway
+nucleocytoplasmic transport
+transmembrane transport
+cell cycle phase
+interspecies interaction between organisms
+regulation of cell growth
+negative regulation of RNA metabolic process
+establishment or maintenance of chromatin architecture
+mitochondrial ATP synthesis coupled electron transport
+KEGG:Alzheimer's disease
+regulation of lipid transport
+negative regulation of transcription, DNA-dependent
+amino acid catabolic process
+enzyme binding
+BIOC: PROTEASOME Pathway
+ATPase activity, coupled to transmembrane movement of ions
+cell-substrate adhesion
+hydrogen ion transmembrane transporter activity
+purine ribonucleoside triphosphate biosynthetic process
+KEGG:Prostate cancer
+cellular biopolymer catabolic process
+transcription factor binding
+cell growth
+ubiquitin-specific protease activity
+purine ribonucleotide metabolic process
+positive regulation of signal transduction
+lyase activity
+positive regulation of transcription
+tricarboxylic acid cycle
+thiolester hydrolase activity
+coated membrane
+KEGG:Regulation of actin cytoskeleton
+negative regulation of ligase activity
+modification-dependent macromolecule catabolic process
+protein transporter activity
+KEGG:MAPK signaling pathway
+oxidation reduction
+positive regulation of ubiquitin-protein ligase activity during mitotic cell cycle
+negative regulation of gene expression
+vesicle-mediated transport
+proteinaceous extracellular matrix
+chaperone binding
+nucleotide metabolic process
+transcription cofactor activity
+cofactor catabolic process
+proton-transporting ATP synthase complex
+nuclear import
+basement membrane
+mitotic cell cycle
+mitochondrial part
+mitochondrial electron transport, NADH to ubiquinone
+ATPase activity, coupled to movement of substances
+KEGG:Vibrio cholerae infection
+KEGG:Notch signaling pathway
+synaptic vesicle
+regulation of cell size
+positive regulation of protein kinase activity
+heme-copper terminal oxidase activity
+cell-matrix adhesion
+NADH dehydrogenase (ubiquinone) activity
+BIOC: RAS Pathway
+small GTPase binding
+ribonucleoside triphosphate metabolic process
+intracellular protein transport
+protein folding
+cell projection
+KEGG:Cell cycle
+NADH dehydrogenase (quinone) activity
+oxidoreductase activity, acting on NADH or NADPH, quinone or similar compound as acceptor
+NADH dehydrogenase complex
+KEGG:Melanogenesis
+synaptic transmission
+regulation of transferase activity
+cation transport
+cation transmembrane transporter activity
+KEGG:Wnt signaling pathway
+BIOC: HIVNEF Pathway
