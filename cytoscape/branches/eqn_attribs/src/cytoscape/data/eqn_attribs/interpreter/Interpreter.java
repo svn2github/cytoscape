@@ -141,8 +141,8 @@ public class Interpreter {
 					case AREF2:
 						aref2();
 						break;
-					case FCONV:
-						fconv();
+					case FCONVI:
+						fconvi();
 						break;
 					default:
 						throw new IllegalStateException("unknown opcode: " + instrOrArg + "!");
@@ -326,19 +326,14 @@ public class Interpreter {
 		argumentStack.push(+float1);
 	}
 
-	private void fconv() throws EmptyStackException {
-		final Long long1 = getLong(argumentStack.pop());
-		argumentStack.push((double)long1);
-	}
-
 	private void aref() throws EmptyStackException {
 		final String attribName = (String)argumentStack.pop();
 		final IdentDescriptor identDescriptor = nameToDescriptorMap.get(attribName);
 		if (identDescriptor == null)
-			throw new IllegalStateException("unknown attribute reference: \"" + attribName + "\" (2)!");
+			throw new IllegalStateException("unknown attribute reference: \"" + attribName + "\" (1)!");
 		final Object value = identDescriptor.getValue();
 		if (value == null)
-			throw new IllegalStateException("undefined attribute reference: \"" + attribName + "\" (2)!");
+			throw new IllegalStateException("undefined attribute reference: \"" + attribName + "\"!");
 		argumentStack.push(value);
 	}
 
@@ -352,6 +347,11 @@ public class Interpreter {
 		argumentStack.push(value != null ? value : defaultValue);
 	}
 
+	private void fconvi() throws EmptyStackException {
+		final Long long1 = getLong(argumentStack.pop());
+		argumentStack.push((double)long1);
+	}
+
 	private double getFloat(final Object o) throws IllegalStateException {
 		if (o instanceof Double)
 			return (Double)o;
@@ -363,7 +363,7 @@ public class Interpreter {
 		if (o instanceof Long)
 			return (Long)o;
 
-		throw new IllegalStateException("can't convert a " + o.getClass() + " (" + o + ") to a floating point number!");
+		throw new IllegalStateException("can't convert a " + o.getClass() + " (" + o + ") to an integer number!");
 	}
 
 	private String getString(final Object o) throws IllegalStateException {

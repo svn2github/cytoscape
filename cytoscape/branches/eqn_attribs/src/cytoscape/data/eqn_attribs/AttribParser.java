@@ -70,9 +70,9 @@ public interface AttribParser {
 	public String getErrorMsg();
 
 	/**
-	 *  @returns all the attribute names that have been used in the most recent parsed equation
+	 *  @returns all the variable names that have been detected in the most recently parsed equation
 	 */
-	public Set<String> getAttribReferences();
+	public Set<String> getVariableReferences();
 
 	/**
 	 *  @returns the parse tree.  Must only be called if parse() returns true!

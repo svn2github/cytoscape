@@ -56,5 +56,5 @@ public enum Instruction {
 	FUPLUS,  // unary plus for a floating-point numbers
 	AREF,    // attribute reference
 	AREF2,   // attribute reference with a default value
-	FCONV    // conversion of integer to floating point
+	FCONVI   // conversion of integer to floating point
 }

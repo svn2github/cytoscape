@@ -66,6 +66,6 @@ public class FConvNode implements Node {
 
 	public void genCode(final Stack<Object> codeStack) {
 		convertee.genCode(codeStack);
-		codeStack.push(Instruction.FCONV);
+		codeStack.push(Instruction.FCONVI);
 	}
 }

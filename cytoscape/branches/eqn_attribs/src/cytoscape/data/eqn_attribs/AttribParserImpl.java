@@ -40,13 +40,13 @@ import cytoscape.data.eqn_attribs.parse_tree.*;
 
 
 class AttribParserImpl implements AttribParser {
-	private String eqn;
+	private String formula;
 	private AttribTokeniser tokeniser;
 	private Map<String, AttribFunction> nameToFunctionMap;
 	private String lastErrorMessage;
 	private Node parseTree;
-	private Map<String, Class> attribNameToTypeMap;
-	private Set<String> attribReferences;
+	private Map<String, Class> variableNameToTypeMap;
+	private Set<String> variableReferences;
 	private Set<AttribFunction> registeredFunctions;
 
 	public AttribParserImpl() {
@@ -72,20 +72,20 @@ class AttribParserImpl implements AttribParser {
 	public Set<AttribFunction> getRegisteredFunctions() { return registeredFunctions; }
 
 	/**
-	 *  @param eqn                  a valid attribute equation which must start with an equal sign
-	 *  @param attribNameToTypeMap  a list of existing attribute names and their types
+	 *  @param formula                a valid formula which must start with an equal sign
+	 *  @param variableNameToTypeMap  a list of existing variable names and their types
 	 *  @returns true if the parse succeeded otherwise false
 	 */
-	public boolean parse(final String eqn, final Map<String, Class> attribNameToTypeMap) {
-		if (eqn == null)
-			throw new NullPointerException("equation string must not be null!");
-		if (eqn.length() < 1 || eqn.charAt(0) != '=')
-			throw new NullPointerException("equation string must start with an equal sign!");
+	public boolean parse(final String formula, final Map<String, Class> variableNameToTypeMap) {
+		if (formula == null)
+			throw new NullPointerException("formula string must not be null!");
+		if (formula.length() < 1 || formula.charAt(0) != '=')
+			throw new NullPointerException("formula string must start with an equal sign!");
 
-		this.eqn = eqn;
-		this.attribNameToTypeMap = attribNameToTypeMap;
-		this.attribReferences = new TreeSet<String>();
-		this.tokeniser = new AttribTokeniser(eqn.substring(1));
+		this.formula = formula;
+		this.variableNameToTypeMap = variableNameToTypeMap;
+		this.variableReferences = new TreeSet<String>();
+		this.tokeniser = new AttribTokeniser(formula.substring(1));
 		this.lastErrorMessage = null;
 
 		try {
@@ -108,7 +108,7 @@ class AttribParserImpl implements AttribParser {
 	}
 
 	/**
-	 *  @returns the result type of the parsed equation if the parse succeeded, otherwise null
+	 *  @returns the result type of the parsed formula if the parse succeeded, otherwise null
 	 */
 	public Class getType() { return parseTree == null ? null : parseTree.getType(); }
 
@@ -118,12 +118,16 @@ class AttribParserImpl implements AttribParser {
 	 */
 	public String getErrorMsg() { return lastErrorMessage; }
 
-	public Set<String> getAttribReferences() { return attribReferences; }
+	public Set<String> getVariableReferences() { return variableReferences; }
 
 	/**
 	 *  @returns the parse tree.  Must only be called if parse() returns true!
 	 */
 	public Node getParseTree() { return parseTree; }
+
+	//
+	// The actual parsing takes place here.
+	//
 
 	/**
 	 *   Implements expr --> term | term {+ term } | term {- term} | term {&amp; term} | term compOp term.
@@ -149,54 +153,6 @@ class AttribParserImpl implements AttribParser {
 			}
 		}
 	}
-
-	/**
-	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
-	 */
-	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
-		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
-		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
-		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, lhs, rhs);
-
-		throw new ArithmeticException("incompatible operands for \""
-			                       + operator.asString() + "\"! (lhs="
-			                       + lhs.toString() + ":" + lhs.getType() + ", rhs="
-			                       + rhs.toString() + ":" + rhs.getType() + ")");
-	}
-
-	/**
-	 *  Deals w/ any necessary type conversions for any binary comparison operation.
-	 */
-	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
-		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
-		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
-		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, lhs, rhs);
-		if (lhs.getType() == String.class && rhs.getType() == String.class)
-			return new BinOpNode(operator, lhs, rhs);
-		if (lhs.getType() == Boolean.class && rhs.getType() == Boolean.class) {
-			if (operator == AttribToken.EQUAL || operator == AttribToken.NOT_EQUAL)
-				return new BinOpNode(operator, lhs, rhs);
-			else
-				throw new IllegalArgumentException("unimplemented comparison "
-				                                   + operator.asString()
-				                                   + " for boolean operands!");
-		}
-
-		throw new IllegalArgumentException("incompatible operands for \""
-			                           + operator.asString() + "\"! (lhs="
-			                           + lhs.toString() + ":" + lhs.getType() + ", rhs="
-			                           + rhs.toString() + ":" + rhs.getType() + ")");
-	 }
 
 	/**
 	 *  Implements term --> power {* power} | power {/ power}
@@ -235,24 +191,20 @@ class AttribParserImpl implements AttribParser {
 	}
 
 	/**
-	 *  Implements factor --> constant | attrib_ref | "(" expr ")" | ("-"|"+") factor  | func_call
+	 *  Implements factor --> constant | variable_ref | "(" expr ")" | ("-"|"+") factor  | func_call
 	 */
 	private Node parseFactor() {
 		AttribToken token = tokeniser.getToken();
 
 		// 1. a constant
-		if (token == AttribToken.FLOAT_CONSTANT || token == AttribToken.STRING_CONSTANT || token == AttribToken.BOOLEAN_CONSTANT) {
-			switch (token) {
-			case FLOAT_CONSTANT:
-				return new FloatConstantNode(tokeniser.getFloatConstant());
-			case BOOLEAN_CONSTANT:
-				return new BooleanConstantNode(tokeniser.getBooleanConstant());
-			case STRING_CONSTANT:
-				return new StringConstantNode(tokeniser.getStringConstant());
-			}
-		}
+		if (token == AttribToken.FLOAT_CONSTANT)
+			return new FloatConstantNode(tokeniser.getFloatConstant());
+		else if (token == AttribToken.STRING_CONSTANT)
+			return new StringConstantNode(tokeniser.getStringConstant());
+		else if (token == AttribToken.BOOLEAN_CONSTANT)
+			return new BooleanConstantNode(tokeniser.getBooleanConstant());
 
-		// 2. an attribute reference
+		// 2. a variable reference
 		if (token == AttribToken.DOLLAR) {
 			token = tokeniser.getToken();
 			final boolean usingOptionalBraces = token == AttribToken.OPEN_BRACE;
@@ -261,10 +213,10 @@ class AttribParserImpl implements AttribParser {
 			if (token != AttribToken.IDENTIFIER)
 				throw new IllegalStateException("identifier expected!");
 
-			final Class attribRefType = attribNameToTypeMap.get(tokeniser.getIdent());
-			if (attribRefType == null)
-				throw new IllegalStateException("unknown attribute reference name: \"" + tokeniser.getIdent() + "\"!");
-			attribReferences.add(tokeniser.getIdent());
+			final Class varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
+			if (varRefType == null)
+				throw new IllegalStateException("unknown variable reference name: \"" + tokeniser.getIdent() + "\"!");
+			variableReferences.add(tokeniser.getIdent());
 
 			Object defaultValue = null;
 			if (usingOptionalBraces) {
@@ -274,7 +226,7 @@ class AttribParserImpl implements AttribParser {
 				if (token == AttribToken.COLON) {
 					token = tokeniser.getToken();
 					if (token != AttribToken.FLOAT_CONSTANT && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
-						throw new IllegalStateException("expected default value for attribute reference!");
+						throw new IllegalStateException("expected default value for variable reference!");
 					switch (token) {
 					case FLOAT_CONSTANT:
 						defaultValue = new Double(tokeniser.getFloatConstant());
@@ -293,7 +245,7 @@ class AttribParserImpl implements AttribParser {
 					throw new IllegalStateException("closing brace expected!");
 			}
 
-			return new IdentNode(tokeniser.getIdent(), defaultValue, attribRefType);
+			return new IdentNode(tokeniser.getIdent(), defaultValue, varRefType);
 		}
 
 		// 3. a parenthesised expression
@@ -391,11 +343,11 @@ class AttribParserImpl implements AttribParser {
 		if (token != AttribToken.OPEN_PAREN)
 			throw new IllegalStateException("\"(\" expected after \"DEFINED\"!");
 		token = tokeniser.getToken();
-		Class attribRefType;
+		Class varRefType;
 		if (token != AttribToken.DOLLAR) {
 			if (token != AttribToken.IDENTIFIER)
-				throw new IllegalStateException("attribute reference expected after \"DEFINED(\"!");
-			attribRefType = attribNameToTypeMap.get(tokeniser.getIdent());
+				throw new IllegalStateException("variable reference expected after \"DEFINED(\"!");
+			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 		}
 		else {
 			token = tokeniser.getToken();
@@ -403,8 +355,8 @@ class AttribParserImpl implements AttribParser {
 				throw new IllegalStateException("\"{\" expected after \"DEFINED($\"!");
 			token = tokeniser.getToken();
 			if (token != AttribToken.IDENTIFIER)
-				throw new IllegalStateException("attribute reference expected after \"DEFINED(${\"!");
-			attribRefType = attribNameToTypeMap.get(tokeniser.getIdent());
+				throw new IllegalStateException("variable reference expected after \"DEFINED(${\"!");
+			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 			token = tokeniser.getToken();
 			if (token != AttribToken.CLOSE_BRACE)
 				throw new IllegalStateException("\"}\" expected after after \"DEFINED(${" + tokeniser.getIdent() + "\"!");
@@ -413,6 +365,58 @@ class AttribParserImpl implements AttribParser {
 		if (token != AttribToken.CLOSE_PAREN)
 			throw new IllegalStateException("missing \")\" in call to DEFINED()!");
 
-		return new BooleanConstantNode(attribRefType != null);
+		return new BooleanConstantNode(varRefType != null);
 	}
+
+	//
+	// Helper functions for the parseXXX() methods.
+	//
+
+	/**
+	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
+	 */
+	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
+		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, lhs, rhs);
+
+		throw new ArithmeticException("incompatible operands for \""
+			                       + operator.asString() + "\"! (lhs="
+			                       + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                       + rhs.toString() + ":" + rhs.getType() + ")");
+	}
+
+	/**
+	 *  Deals w/ any necessary type conversions for any binary comparison operation.
+	 */
+	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
+		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == String.class && rhs.getType() == String.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Boolean.class && rhs.getType() == Boolean.class) {
+			if (operator == AttribToken.EQUAL || operator == AttribToken.NOT_EQUAL)
+				return new BinOpNode(operator, lhs, rhs);
+			else
+				throw new IllegalArgumentException("unimplemented comparison "
+				                                   + operator.asString()
+				                                   + " for boolean operands!");
+		}
+
+		throw new IllegalArgumentException("incompatible operands for \""
+			                           + operator.asString() + "\"! (lhs="
+			                           + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                           + rhs.toString() + ":" + rhs.getType() + ")");
+	 }
 }
