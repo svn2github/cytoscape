@@ -34,10 +34,9 @@ import javax.swing.table.TableColumn;
 
 import java.util.EventObject;
 
+import browser.ValidatedObjectAndEditString;
 
-/**
- *
- */
+
 public class MultiLineTableCellEditor extends AbstractCellEditor implements TableCellEditor,
                                                                             ActionListener
 {
@@ -76,10 +75,10 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 		stopCellEditing();
 	}
 
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-	                                             int row, int column)
+	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+	                                             final int row, final int column)
 	{
-		String text = (value != null) ? value.toString() : "";
+		final String text = (value != null) ? ((ValidatedObjectAndEditString)value).getEditString() : "";
 		textArea.setTable(table);
 		textArea.setText(text);
 
