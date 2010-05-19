@@ -307,8 +307,13 @@ public class FormulaBuilderDialog extends JDialog {
 
 	private void initApplyToComboBox(final Container contentPane) {
 		applyToComboBox = new JComboBox();
-		applyToComboBox.addItem(ApplicationDomain.CURRENT_CELL);
-		applyToComboBox.addItem(ApplicationDomain.CURRENT_SELECTION);
+
+		final int selectedCellRow = table.getSelectedRow();
+		if (selectedCellRow >= 0)
+			applyToComboBox.addItem(ApplicationDomain.CURRENT_CELL);
+		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+		if (!selectedGraphObjects.isEmpty())
+			applyToComboBox.addItem(ApplicationDomain.CURRENT_SELECTION);
 		applyToComboBox.addItem(ApplicationDomain.ENTIRE_ATTRIBUTE);
 
 		final Dimension widthAndHeight = applyToComboBox.getPreferredSize();
@@ -330,7 +335,7 @@ public class FormulaBuilderDialog extends JDialog {
 
 	/**
 	 *  Tests whether "expression" is valid given the possible argument types are "validArgTypes".
-	 *  @returns null if "expression" is invalid or the type of "expression" if it was valid
+	 *  @returns null, if "expression" is invalid, or, the type of "expression" if it was valid
 	 */
 	private Class expressionIsValid(final List<Class> validArgTypes, final String expression) {
 		final AttribParser parser = Parser.getParser();

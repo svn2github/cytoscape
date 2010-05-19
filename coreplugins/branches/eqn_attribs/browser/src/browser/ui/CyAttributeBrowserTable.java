@@ -73,6 +73,7 @@ import browser.DataTableModel;
 import browser.SortTableModel;
 import browser.ValidatedObjectAndEditString;
 import browser.util.HyperLinkOut;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -103,6 +104,7 @@ import java.awt.Graphics;
 import java.awt.KeyboardFocusManager;
 import java.util.EventObject;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.util.Set;
 import java.util.Iterator;
 
@@ -134,6 +136,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 	// For right-click menu
 	private JPopupMenu rightClickPopupMenu;
+	private JPopupMenu rightClickHeaderPopupMenu;
 	private JPopupMenu cellMenu;
 	private JMenuItem openFormulaBuilderMenuItem = null;
 	private JMenuItem copyMenuItem = null;
@@ -154,6 +157,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private Map<String, Map<String, String>> linkoutProps;
 	private CyLogger logger = null;
 	private FormulaBuilderDialog formulaBuilderDialog = null;
+	private int mouseX;
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
 
 	private HashMap<String, Integer> columnWidthMap = new HashMap<String, Integer>();
@@ -217,6 +221,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		this.setSize(400, 200);
 		this.setCellSelectionEnabled(true);
 		this.getPopupMenu();
+		this.getHeaderPopupMenu();
 
 		setKeyStroke();
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -390,185 +395,204 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	}
 
 	/**
-	 * This method initializes jPopupMenu1
+	 * This method initializes rightClickPopupMenu
 	 *
 	 * @return javax.swing.JPopupMenu
 	 */
 	private JPopupMenu getPopupMenu() {
-		if (rightClickPopupMenu == null) {
-			rightClickPopupMenu = new JPopupMenu();
+		if (rightClickPopupMenu != null)
+			return rightClickPopupMenu;
 
-			openFormulaBuilderMenuItem = new JMenuItem("Open Formula Builder");
-			copyMenuItem = new JMenuItem("Copy");
-			copyToCurrentSelectionMenuItem = new JMenuItem("Copy to Current Selection");
-			copyToCurrentSelectionMenuItem.setEnabled(false);
-			copyFormulaToCurrentSelectionMenuItem = new JMenuItem("Copy Formula to Current Selection");
-			copyFormulaToCurrentSelectionMenuItem.setEnabled(false);
-			copyToEntireAttributeMenuItem = new JMenuItem("Copy to Entire Attribute");
-			copyToEntireAttributeMenuItem.setEnabled(false);
-			copyFormulaToEntireAttributeMenuItem = new JMenuItem("Copy Formula to Entire Attribute");
-			copyFormulaToEntireAttributeMenuItem.setEnabled(false);
-			newSelectionMenuItem = new JMenuItem("Select from Table");
-			exportMenu = new JMenu("Export...");
-			exportCellsMenuItem = new JMenuItem("Selected Cells");
-			exportTableMenuItem = new JMenuItem("Entire Table");
-			selectAllMenuItem = new JMenuItem("Select All");
+		rightClickPopupMenu = new JPopupMenu();
 
-			coloringMenuItem = new JCheckBoxMenuItem("On/Off Coloring");
+		openFormulaBuilderMenuItem = new JMenuItem("Open Formula Builder");
+		copyMenuItem = new JMenuItem("Copy");
+		copyToCurrentSelectionMenuItem = new JMenuItem("Copy to Current Selection");
+		copyToCurrentSelectionMenuItem.setEnabled(false);
+		copyFormulaToCurrentSelectionMenuItem = new JMenuItem("Copy Formula to Current Selection");
+		copyFormulaToCurrentSelectionMenuItem.setEnabled(false);
+		copyToEntireAttributeMenuItem = new JMenuItem("Copy to Entire Attribute");
+		copyToEntireAttributeMenuItem.setEnabled(false);
+		copyFormulaToEntireAttributeMenuItem = new JMenuItem("Copy Formula to Entire Attribute");
+		copyFormulaToEntireAttributeMenuItem.setEnabled(false);
+		newSelectionMenuItem = new JMenuItem("Select from Table");
+		exportMenu = new JMenu("Export...");
+		exportCellsMenuItem = new JMenuItem("Selected Cells");
+		exportTableMenuItem = new JMenuItem("Entire Table");
+		selectAllMenuItem = new JMenuItem("Select All");
 
-			final JTable table = this;
-			openFormulaBuilderMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						final int cellRow = table.getSelectedRow();
-						final int cellColum = table.getSelectedColumn();
-						if (cellRow != -1 && cellColum != -1 && tableModel.isCellEditable(cellRow, cellColum)) {
-							final String columnName = tableModel.getColumnName(cellColum);
-							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-							initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
-							formulaBuilderDialog =
-								new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
-								                         attribNameToTypeMap, columnName);
-							formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
-							formulaBuilderDialog.setVisible(true);
-						}
+		coloringMenuItem = new JCheckBoxMenuItem("On/Off Coloring");
+
+		final JTable table = this;
+		openFormulaBuilderMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					final int cellRow = table.getSelectedRow();
+					final int cellColumn = table.getSelectedColumn();
+					if (cellRow != -1 && cellColumn != -1 && tableModel.isCellEditable(cellRow, cellColumn)) {
+						final String columnName = tableModel.getColumnName(cellColumn);
+						final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+						initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+						formulaBuilderDialog =
+							new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
+										 attribNameToTypeMap, columnName);
+						formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+						formulaBuilderDialog.setVisible(true);
 					}
-				});
+				}
+			});
 
-			copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						copyToClipBoard();
-					}
-				});
+		copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					copyToClipBoard();
+				}
+			});
 
-			copyToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						copyToCurrentSelection();
-					}
-				});
+		copyToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					copyToCurrentSelection();
+				}
+			});
 
-			copyFormulaToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						copyFormulaToCurrentSelection();
-					}
-				});
+		copyFormulaToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					copyFormulaToCurrentSelection();
+				}
+			});
 
-			copyToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						copyToEntireAttribute();
-					}
-				});
+		copyToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					copyToEntireAttribute();
+				}
+			});
 
-			copyFormulaToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						copyFormulaToEntireAttribute();
-					}
-				});
+		copyFormulaToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					copyFormulaToEntireAttribute();
+				}
+			});
 
-			exportCellsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						export(false);
-					}
-				});
+		exportCellsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					export(false);
+				}
+			});
 
-			exportTableMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						export(true);
-					}
-				});
+		exportTableMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					export(true);
+				}
+			});
 
-			selectAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						selectAll();
-					}
-				});
+		selectAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					selectAll();
+				}
+			});
 
-			newSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						int idLocation = 0;
-						final int columnCount = getColumnCount();
+		newSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					final int idLocation = getIdColumn();
+					final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
+					final CyNetwork curNet = Cytoscape.getCurrentNetwork();
 
-						// First, find the location of the ID column
-						for (int idx = 0; idx < columnCount; idx++) {
-							if (getColumnName(idx).equals(AttributeBrowser.ID)) {
-								idLocation = idx;
+					final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
 
-								break;
+					GraphObject fromMap;
+
+					if (objectType == NODES) {
+						for (Object curNode : curNet.getSelectedNodes()) {
+							fromMap = selectedMap.get(((Node) curNode).getIdentifier());
+
+							if (fromMap == null) {
+								nonSelectedObjects.add((GraphObject) curNode);
 							}
 						}
 
-						final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
-						final CyNetwork curNet = Cytoscape.getCurrentNetwork();
+						resetObjectColor(idLocation);
+						curNet.setSelectedNodeState(nonSelectedObjects, false);
+					} else {
+						for (Object curEdge : curNet.getSelectedEdges()) {
+							fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
 
-						final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
-
-						GraphObject fromMap;
-
-						if (objectType == NODES) {
-							for (Object curNode : curNet.getSelectedNodes()) {
-								fromMap = selectedMap.get(((Node) curNode).getIdentifier());
-
-								if (fromMap == null) {
-									nonSelectedObjects.add((GraphObject) curNode);
-								}
+							if (fromMap == null) {
+								nonSelectedObjects.add((GraphObject) curEdge);
 							}
+						}
 
-							resetObjectColor(idLocation);
-							curNet.setSelectedNodeState(nonSelectedObjects, false);
+						resetObjectColor(idLocation);
+						curNet.setSelectedEdgeState(nonSelectedObjects, false);
+					}
+
+					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+						Cytoscape.getCurrentNetworkView().updateView();
+					}
+				}
+			});
+
+		coloringMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+						if (coloringMenuItem.isSelected() == true) {
+							logger.debug("color ON");
+							setNewRenderer(true);
 						} else {
-							for (Object curEdge : curNet.getSelectedEdges()) {
-								fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
-
-								if (fromMap == null) {
-									nonSelectedObjects.add((GraphObject) curEdge);
-								}
-							}
-
-							resetObjectColor(idLocation);
-							curNet.setSelectedEdgeState(nonSelectedObjects, false);
-						}
-
-						if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-							Cytoscape.getCurrentNetworkView().updateView();
+							logger.debug("color OFF");
+							setNewRenderer(false);
 						}
 					}
-				});
+				}
+			});
 
-			coloringMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-							if (coloringMenuItem.isSelected() == true) {
-								logger.debug("color ON");
-								setNewRenderer(true);
-							} else {
-								logger.debug("color OFF");
-								setNewRenderer(false);
-							}
-						}
-					}
-				});
+		exportMenu.add(exportCellsMenuItem);
+		exportMenu.add(exportTableMenuItem);
 
-			exportMenu.add(exportCellsMenuItem);
-			exportMenu.add(exportTableMenuItem);
+		if (objectType != NETWORK)
+			rightClickPopupMenu.add(newSelectionMenuItem);
 
-			if (objectType != NETWORK)
-				rightClickPopupMenu.add(newSelectionMenuItem);
+		rightClickPopupMenu.add(openFormulaBuilderMenuItem);
+		rightClickPopupMenu.add(copyMenuItem);
+		rightClickPopupMenu.add(copyToCurrentSelectionMenuItem);
+		rightClickPopupMenu.add(copyFormulaToCurrentSelectionMenuItem);
+		rightClickPopupMenu.add(copyToEntireAttributeMenuItem);
+		rightClickPopupMenu.add(copyFormulaToEntireAttributeMenuItem);
+		rightClickPopupMenu.add(selectAllMenuItem);
+		rightClickPopupMenu.add(exportMenu);
 
-			rightClickPopupMenu.add(openFormulaBuilderMenuItem);
-			rightClickPopupMenu.add(copyMenuItem);
-			rightClickPopupMenu.add(copyToCurrentSelectionMenuItem);
-			rightClickPopupMenu.add(copyFormulaToCurrentSelectionMenuItem);
-			rightClickPopupMenu.add(copyToEntireAttributeMenuItem);
-			rightClickPopupMenu.add(copyFormulaToEntireAttributeMenuItem);
-			rightClickPopupMenu.add(selectAllMenuItem);
-			rightClickPopupMenu.add(exportMenu);
-
-			if (objectType != NETWORK) {
-				rightClickPopupMenu.addSeparator();
-				rightClickPopupMenu.add(coloringMenuItem);
-			}
+		if (objectType != NETWORK) {
+			rightClickPopupMenu.addSeparator();
+			rightClickPopupMenu.add(coloringMenuItem);
 		}
 
 		return rightClickPopupMenu;
+	}
+
+	private JPopupMenu getHeaderPopupMenu() {
+		if (objectType == NETWORK)
+			return null;
+
+		if (rightClickHeaderPopupMenu != null)
+			return rightClickHeaderPopupMenu;
+
+		rightClickHeaderPopupMenu = new JPopupMenu();
+		final JMenuItem openFormulaBuilderMenuItem = new JMenuItem("Open Formula Builder");
+		final TableColumnModel columnModel = getColumnModel();
+		final JTable table = this;
+		openFormulaBuilderMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent event) {
+					final int cellColumn = columnModel.getColumnIndexAtX(mouseX);
+					final String columnName = tableModel.getColumnName(cellColumn);
+					final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+					initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+					formulaBuilderDialog =
+						new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
+									 attribNameToTypeMap, columnName);
+					formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+					formulaBuilderDialog.setVisible(true);
+				}
+			});
+		rightClickHeaderPopupMenu.add(openFormulaBuilderMenuItem);
+
+		return rightClickHeaderPopupMenu;
 	}
 
 	private void setNewRenderer(boolean colorSwitch) {
@@ -797,8 +821,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * @param event DOCUMENT ME!
 	 */
 	public void mouseClicked(MouseEvent event) {
-		int cursorType = getTableHeader().getCursor().getType();
-
+		final int cursorType = getTableHeader().getCursor().getType();
 		if ((event.getButton() == MouseEvent.BUTTON1) && (cursorType != Cursor.E_RESIZE_CURSOR)
 		    && (cursorType != Cursor.W_RESIZE_CURSOR)) {
 			final int index = getColumnModel().getColumnIndexAtX(event.getX());
@@ -819,6 +842,24 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					model.sortColumn(modelIndex, sortedColumnAscending);
 				}
 			}
+		}
+		else if (event.getButton() == MouseEvent.BUTTON3) {
+			// Don't do anything if we're displaying network attributes:
+			if (objectType == NETWORK)
+				return;
+
+			final int column = getColumnModel().getColumnIndexAtX(event.getX());
+
+			// Make sure the column we're clicking on actually exists!
+			if (column >= tableModel.getColumnCount() || column < 0)
+				return;
+
+			// Ignore clicks on the ID column:
+			if (column == getIdColumn())
+				return;
+
+			mouseX = event.getX();
+			rightClickHeaderPopupMenu.show(event.getComponent(), event.getX(), event.getY());
 		}
 	}
 
@@ -1545,5 +1586,18 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		}
 
 		EquationUtil.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
+	}
+
+	/**
+	 *  @returns the column index of the ID column or -1 if there is no ID column
+	 */
+	private int getIdColumn() {
+		final int columnCount = getColumnCount();
+		for (int idx = 0; idx < columnCount; idx++) {
+			if (getColumnName(idx).equals(AttributeBrowser.ID))
+				return idx;
+		}
+
+		return -1;
 	}
 }
