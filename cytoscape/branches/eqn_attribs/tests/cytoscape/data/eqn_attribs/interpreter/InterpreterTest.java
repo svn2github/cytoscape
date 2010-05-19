@@ -601,6 +601,70 @@ public class InterpreterTest extends TestCase {
 		assertEquals(new Double(3.0), interpreter2.run());
 	}
 
+	public void testSIGN() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		attribNameToTypeMap.put("POS", Long.class);
+		attribNameToTypeMap.put("NEG", Long.class);
+		attribNameToTypeMap.put("ZERO", Long.class);
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("POS", new IdentDescriptor(+11L));
+		nameToDescriptorMap.put("NEG", new IdentDescriptor(-12L));
+		nameToDescriptorMap.put("ZERO", new IdentDescriptor(0L));
+
+		assertTrue(compiler.compile("=SIGN(0.0)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=SIGN(9.0)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.0), interpreter2.run());
+
+		assertTrue(compiler.compile("=SIGN(-1e22)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(-1.0), interpreter3.run());
+
+		assertTrue(compiler.compile("=SIGN($POS)", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.0), interpreter4.run());
+
+		assertTrue(compiler.compile("=SIGN($NEG)", attribNameToTypeMap));
+		final Interpreter interpreter5 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(-1.0), interpreter5.run());
+
+		assertTrue(compiler.compile("=SIGN($ZERO)", attribNameToTypeMap));
+		final Interpreter interpreter6 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter6.run());
+
+		assertTrue(compiler.compile("=SIGN(true)", attribNameToTypeMap));
+		final Interpreter interpreter7 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.0), interpreter7.run());
+
+		assertTrue(compiler.compile("=SIGN(false)", attribNameToTypeMap));
+		final Interpreter interpreter8 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter8.run());
+
+		assertTrue(compiler.compile("=SIGN(\"1e22\")", attribNameToTypeMap));
+		final Interpreter interpreter9 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(1.0), interpreter9.run());
+
+		assertTrue(compiler.compile("=SIGN(\"-9.0\")", attribNameToTypeMap));
+		final Interpreter interpreter10 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(-1.0), interpreter10.run());
+
+		assertTrue(compiler.compile("=SIGN(\"0.0\")", attribNameToTypeMap));
+		final Interpreter interpreter11 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(0.0), interpreter11.run());
+
+		assertTrue(compiler.compile("=SIGN(\"Fred\")", attribNameToTypeMap));
+		try {
+			final Interpreter interpreter12 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+			interpreter12.run();
+			fail("A bad String argument to SIGN() should have caused an exception!");
+		} catch (final Exception e) {
+			// If we end up here, everything is fine!
+		}
+	}
+
 	public void testIntegerToFloatingPointConversion() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		attribNameToTypeMap.put("BOB", Long.class);

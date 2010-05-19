@@ -43,35 +43,36 @@ public class Parser {
 		if (attribParser == null) {
 			attribParser = new AttribParserImpl();
 
-			attribParser.registerFunction(new And());
-			attribParser.registerFunction(new Or());
-			attribParser.registerFunction(new Log());
 			attribParser.registerFunction(new Abs());
-			attribParser.registerFunction(new Not());
-			attribParser.registerFunction(new LCase());
-			attribParser.registerFunction(new UCase());
-			attribParser.registerFunction(new Substitute());
-			attribParser.registerFunction(new If());
-			attribParser.registerFunction(new Ln());
-			attribParser.registerFunction(new Exp());
-			attribParser.registerFunction(new Left());
-			attribParser.registerFunction(new Right());
-			attribParser.registerFunction(new Mid());
-			attribParser.registerFunction(new Len());
-			attribParser.registerFunction(new Round());
-			attribParser.registerFunction(new Trunc());
-			attribParser.registerFunction(new Pi());
-			attribParser.registerFunction(new Value());
+			attribParser.registerFunction(new And());
 			attribParser.registerFunction(new Average());
-			attribParser.registerFunction(new Min());
-			attribParser.registerFunction(new Max());
 			attribParser.registerFunction(new Count());
-			attribParser.registerFunction(new Median());
-			attribParser.registerFunction(new Nth());
+			attribParser.registerFunction(new Exp());
 			attribParser.registerFunction(new First());
+			attribParser.registerFunction(new If());
+			attribParser.registerFunction(new LCase());
 			attribParser.registerFunction(new Last());
+			attribParser.registerFunction(new Left());
+			attribParser.registerFunction(new Len());
+			attribParser.registerFunction(new Ln());
+			attribParser.registerFunction(new Log());
+			attribParser.registerFunction(new Max());
+			attribParser.registerFunction(new Median());
+			attribParser.registerFunction(new Mid());
+			attribParser.registerFunction(new Min());
 			attribParser.registerFunction(new Mod());
+			attribParser.registerFunction(new Not());
+			attribParser.registerFunction(new Nth());
+			attribParser.registerFunction(new Or());
+			attribParser.registerFunction(new Pi());
+			attribParser.registerFunction(new Right());
+			attribParser.registerFunction(new Round());
+			attribParser.registerFunction(new Sign());
 			attribParser.registerFunction(new Sqrt());
+			attribParser.registerFunction(new Substitute());
+			attribParser.registerFunction(new Trunc());
+			attribParser.registerFunction(new UCase());
+			attribParser.registerFunction(new Value());
 		}
 
 		return attribParser;
