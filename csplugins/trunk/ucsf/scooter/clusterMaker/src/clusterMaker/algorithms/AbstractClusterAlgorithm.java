@@ -57,7 +57,7 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	protected boolean debug = false;
 	protected boolean createGroups = false;
 	protected String clusterAttributeName = null;
-	boolean canceled = false;
+	protected boolean canceled = false;
 	protected ClusterResults results;
 	protected String GROUP_ATTRIBUTE = "_cluster";
 

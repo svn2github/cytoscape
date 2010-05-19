@@ -141,7 +141,8 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 		}
 
 		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
-		if (cluster_type != "MCL" && cluster_type != "GLay" && cluster_type != "AP" && cluster_type != "FORCE")
+		if (cluster_type != "MCL" && cluster_type != "GLay" && cluster_type != "AP" && cluster_type != "FORCE" &&
+		    cluster_type != "MCODE")
 			return false;
 
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {

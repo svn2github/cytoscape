@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JPanel;
 
 // Cytoscape imports
@@ -240,8 +241,26 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		NodeCluster.init();
-		runMCODE = new RunMCODE(logger, FIRST_TIME, clusterAttributeName, network);
+		if(currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION)) {
+			Set<CyNode> selectedNodes = network.getSelectedNodes();
+			Integer[] selectedNodesRGI = new Integer[selectedNodes.size()];
+			int c = 0;
+			for (CyNode node: selectedNodes) 
+				selectedNodesRGI[c++] = new Integer(node.getRootGraphIndex());
+			currentParamsCopy.setSelectedNodes(selectedNodesRGI);
+		}
+
+		MCODECurrentParameters.getInstance().setParams(currentParamsCopy, "MCODE Result", network.getIdentifier());
+
+		runMCODE = new RunMCODE(logger, RESCORE, clusterAttributeName, network);
 		List<NodeCluster> clusters = runMCODE.run(monitor);
+		if (canceled) {
+			logger.info("Canceled by user");
+			return;
+		}
+
+		// Now, sort our list of clusters by score
+		clusters = NodeCluster.rankListByScore(clusters);
 
 		logger.info("Removing groups");
 
@@ -262,6 +281,7 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 	}
 
 	public void halt() {
+		canceled = true;
 		runMCODE.halt();
 	}
 }

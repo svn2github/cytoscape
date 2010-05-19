@@ -70,6 +70,7 @@ public class RunMCODE {
 		this.analyze = analyze;
 		this.resultSet = resultSet;
 		this.network = network;
+		this.alg = new MCODEAlgorithm(network.getIdentifier(), logger);
 	}
 
 	/**
@@ -105,6 +106,7 @@ public class RunMCODE {
 		} catch (Exception e) {
 			//TODO: ask Ethan if interrupt exception should be thrown from within code or should 'return' just be used?
 			monitor.setException(e, "MCODE cancelled");
+			logger.error("MCODE Error: ", e);
 			return null;
 		}
 	}
