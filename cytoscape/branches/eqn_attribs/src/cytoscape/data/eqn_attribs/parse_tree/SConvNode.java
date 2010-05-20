@@ -1,5 +1,5 @@
 /*
-  File: FConvNode.java
+  File: SConvNode.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,27 +35,27 @@ import cytoscape.data.eqn_attribs.interpreter.Instruction;
 
 
 /**
- *  A node in the parse tree representing a conversion to a floating point number
+ *  A node in the parse tree representing an conversion to a string
  */
-public class FConvNode implements Node {
+public class SConvNode implements Node {
 	private final Node convertee;
 
-	public FConvNode(final Node convertee) {
+	public SConvNode(final Node convertee) {
 		if (convertee == null)
 			throw new IllegalArgumentException("convertee must not be null!");
 
 		final Class type = convertee.getType();
-		if (type != Long.class && type != Boolean.class && type != String.class)
-			throw new IllegalArgumentException("convertee must be of type Long, Boolean or String!");
+		if (type != Double.class && type != Long.class && type != Boolean.class)
+			throw new IllegalArgumentException("convertee must be of type Double, Long, or Boolean!");
 
 		this.convertee = convertee;
 	}
 
 	public String toString() {
-		return "FConvNode: convertee = " + convertee;
+		return "SConvNode: convertee = " + convertee;
 	}
 
-	public Class getType() { return Double.class; }
+	public Class getType() { return String.class; }
 
 	/**
 	 *  @returns the only child of this node
@@ -71,12 +71,12 @@ public class FConvNode implements Node {
 		convertee.genCode(codeStack);
 
 		final Class type = convertee.getType();
-		if (type == Long.class)
-			codeStack.push(Instruction.FCONVI);
+		if (type == Double.class)
+			codeStack.push(Instruction.SCONVF);
+		else if (type == Long.class)
+			codeStack.push(Instruction.SCONVI);
 		else if (type == Boolean.class)
-			codeStack.push(Instruction.FCONVB);
-		else if (type == String.class)
-			codeStack.push(Instruction.FCONVS);
+			codeStack.push(Instruction.SCONVB);
 		else
 			throw new IllegalStateException("unknown type: " + type + "!");
 	}

@@ -691,6 +691,10 @@ public class InterpreterTest extends TestCase {
 		assertTrue(compiler.compile("=$x + 2.0", attribNameToTypeMap));
 		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new Double(5.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=TRUE + TRUE", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new Double(2.0), interpreter2.run());
 	}
 
 	public void testFunctionWithBadRuntimeReturnType() throws Exception {
@@ -706,5 +710,50 @@ public class InterpreterTest extends TestCase {
 		} catch (final IllegalStateException e) {
 			// If we get here, everything is as expected and we let the test pass!
 		}
+	}
+
+	public void testComparisonsWithBooleans() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=TRUE < FALSE", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(false), interpreter1.run());
+
+		assertTrue(compiler.compile("=FALSE < TRUE", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(true), interpreter2.run());
+
+		assertTrue(compiler.compile("=\"a\" < TRUE", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(true), interpreter3.run());
+
+		assertTrue(compiler.compile("=\"ZYX\" < FALSE", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(true), interpreter4.run());
+
+		assertTrue(compiler.compile("=\"a\" > TRUE", attribNameToTypeMap));
+		final Interpreter interpreter5 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(false), interpreter5.run());
+
+		assertTrue(compiler.compile("=\"ZYX\" > FALSE", attribNameToTypeMap));
+		final Interpreter interpreter6 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(false), interpreter6.run());
+
+		assertTrue(compiler.compile("=TRUE < \"a\"", attribNameToTypeMap));
+		final Interpreter interpreter7 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(false), interpreter7.run());
+
+		assertTrue(compiler.compile("=FALSE < \"ZYX\"", attribNameToTypeMap));
+		final Interpreter interpreter8 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(false), interpreter8.run());
+
+		assertTrue(compiler.compile("=TRUE < 0", attribNameToTypeMap));
+		final Interpreter interpreter9 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(false), interpreter9.run());
+
+		assertTrue(compiler.compile("=FALSE < -1", attribNameToTypeMap));
+		final Interpreter interpreter10 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Boolean(false), interpreter10.run());
 	}
 }

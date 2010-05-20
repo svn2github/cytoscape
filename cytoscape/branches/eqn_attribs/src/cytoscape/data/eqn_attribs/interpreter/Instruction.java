@@ -49,6 +49,10 @@ public enum Instruction {
 	BLTS,    // lexicographically less-than test for strings
 	BGTES,   // lexicographically greater-than-or-equal test for strings
 	BLTES,   // lexicographically less-than-or-equal test for strings
+	BGTB,    // greater than test for booleans
+	BLTB,    // less than test for booleans
+	BGTEB,   // greater than or equal test for booleans
+	BLTEB,   // less than or equal test for booleans
 	BEQLB,   // equality test for booleans
 	BNEQLB,  // inequality test for booleans
 	CALL,    // function call
@@ -56,5 +60,10 @@ public enum Instruction {
 	FUPLUS,  // unary plus for a floating-point numbers
 	AREF,    // attribute reference
 	AREF2,   // attribute reference with a default value
-	FCONVI   // conversion of integer to floating point
+	FCONVI,  // conversion of an integer to floating point
+	FCONVB,  // conversion of a boolean to floating point
+	FCONVS,   // conversion of a string to floating point
+	SCONVF,   // conversion of a floating point number to a string
+	SCONVI,   // conversion of an integer to a string
+	SCONVB    // conversion of a boolean to a string
 }

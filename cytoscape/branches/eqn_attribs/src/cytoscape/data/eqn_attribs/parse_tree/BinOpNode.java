@@ -97,16 +97,16 @@ public class BinOpNode implements Node {
 			codeStack.push(determineOpCode(Instruction.BNEQLF, Instruction.BNEQLS, Instruction.BNEQLB));
 			break;
 		case GREATER_THAN:
-			codeStack.push(determineOpCode(Instruction.BGTF, Instruction.BGTS, null));
+			codeStack.push(determineOpCode(Instruction.BGTF, Instruction.BGTS, Instruction.BGTB));
 			break;
 		case LESS_THAN:
-			codeStack.push(determineOpCode(Instruction.BLTF, Instruction.BLTS, null));
+			codeStack.push(determineOpCode(Instruction.BLTF, Instruction.BLTS, Instruction.BLTB));
 			break;
 		case GREATER_OR_EQUAL:
-			codeStack.push(determineOpCode(Instruction.BGTEF, Instruction.BGTES, null));
+			codeStack.push(determineOpCode(Instruction.BGTEF, Instruction.BGTES, Instruction.BGTEB));
 			break;
 		case LESS_OR_EQUAL:
-			codeStack.push(determineOpCode(Instruction.BLTEF, Instruction.BLTES, null));
+			codeStack.push(determineOpCode(Instruction.BLTEF, Instruction.BLTES, Instruction.BLTEB));
 			break;
 		case AMPERSAND:
 			codeStack.push(Instruction.SCONCAT);

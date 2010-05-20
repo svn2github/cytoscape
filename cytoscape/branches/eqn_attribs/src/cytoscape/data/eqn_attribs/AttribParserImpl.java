@@ -376,43 +376,77 @@ class AttribParserImpl implements AttribParser {
 	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
 	 */
 	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
-		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
-		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		// First operand is Double:
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Double.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+
+		// First operand is Long:
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Long.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+
+		// First operand is Boolean:
+		if (lhs.getType() == Boolean.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Boolean.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+
+		// First operand is String:
+		if (lhs.getType() == String.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == String.class
+		    && (rhs.getType() == Long.class || lhs.getType() == Boolean.class || lhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
 
 		throw new ArithmeticException("incompatible operands for \""
-			                       + operator.asString() + "\"! (lhs="
-			                       + lhs.toString() + ":" + lhs.getType() + ", rhs="
-			                       + rhs.toString() + ":" + rhs.getType() + ")");
+			                      + operator.asString() + "\"! (lhs="
+			                      + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                      + rhs.toString() + ":" + rhs.getType() + ")");
 	}
 
 	/**
 	 *  Deals w/ any necessary type conversions for any binary comparison operation.
 	 */
 	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
-		if (lhs.getType() == Long.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
-		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
-		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		// First operand is Double:
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		if (lhs.getType() == Double.class && rhs.getType() == Boolean.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+
+		// First operand is Long:
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Long.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+
+		// First operand is Boolean:
+		if (lhs.getType() == Boolean.class && rhs.getType() == Boolean.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Boolean.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Boolean.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+		if (lhs.getType() == Boolean.class && rhs.getType() == String.class)
+			return new BinOpNode(operator, new SConvNode(lhs), rhs);
+
+		// First operand is String:
 		if (lhs.getType() == String.class && rhs.getType() == String.class)
 			return new BinOpNode(operator, lhs, rhs);
-		if (lhs.getType() == Boolean.class && rhs.getType() == Boolean.class) {
-			if (operator == AttribToken.EQUAL || operator == AttribToken.NOT_EQUAL)
-				return new BinOpNode(operator, lhs, rhs);
-			else
-				throw new IllegalArgumentException("unimplemented comparison "
-				                                   + operator.asString()
-				                                   + " for boolean operands!");
-		}
+		if (lhs.getType() == String.class
+		    && (rhs.getType() == Double.class || rhs.getType() == Long.class || rhs.getType() == Boolean.class))
+			return new BinOpNode(operator, lhs, new SConvNode(rhs));
 
 		throw new IllegalArgumentException("incompatible operands for \""
 			                           + operator.asString() + "\"! (lhs="

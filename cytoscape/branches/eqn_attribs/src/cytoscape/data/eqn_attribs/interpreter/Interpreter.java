@@ -120,6 +120,18 @@ public class Interpreter {
 					case BLTES:
 						bltes();
 						break;
+					case BGTB:
+						bgtb();
+						break;
+					case BLTB:
+						bltb();
+						break;
+					case BGTEB:
+						bgteb();
+						break;
+					case BLTEB:
+						blteb();
+						break;
 					case BEQLB:
 						beqlb();
 						break;
@@ -143,6 +155,21 @@ public class Interpreter {
 						break;
 					case FCONVI:
 						fconvi();
+						break;
+					case FCONVB:
+						fconvb();
+						break;
+					case FCONVS:
+						fconvs();
+						break;
+					case SCONVF:
+						sconvf();
+						break;
+					case SCONVI:
+						sconvi();
+						break;
+					case SCONVB:
+						sconvb();
 						break;
 					default:
 						throw new IllegalStateException("unknown opcode: " + instrOrArg + "!");
@@ -275,6 +302,30 @@ public class Interpreter {
 		argumentStack.push(string1.compareTo(string2) >= 0);
 	}
 
+	private void bgtb() throws EmptyStackException {
+		final boolean bool1 = getBoolean(argumentStack.pop());
+		final boolean bool2 = getBoolean(argumentStack.pop());
+		argumentStack.push(bool1 && !bool2);
+	}
+
+	private void bltb() throws EmptyStackException {
+		final boolean bool1 = getBoolean(argumentStack.pop());
+		final boolean bool2 = getBoolean(argumentStack.pop());
+		argumentStack.push(!bool1 && bool2);
+	}
+
+	private void bgteb() throws EmptyStackException {
+		final boolean bool1 = getBoolean(argumentStack.pop());
+		final boolean bool2 = getBoolean(argumentStack.pop());
+		argumentStack.push((bool1 && !bool2) || (bool1 == bool2));
+	}
+
+	private void blteb() throws EmptyStackException {
+		final boolean bool1 = getBoolean(argumentStack.pop());
+		final boolean bool2 = getBoolean(argumentStack.pop());
+		argumentStack.push((!bool1 && bool2) || (bool1 == bool2));
+	}
+
 	private void beqlb() throws EmptyStackException {
 		final boolean bool1 = getBoolean(argumentStack.pop());
 		final boolean bool2 = getBoolean(argumentStack.pop());
@@ -350,6 +401,37 @@ public class Interpreter {
 	private void fconvi() throws EmptyStackException {
 		final Long long1 = getLong(argumentStack.pop());
 		argumentStack.push((double)long1);
+	}
+
+	private void fconvb() throws EmptyStackException {
+		final Boolean b = getBoolean(argumentStack.pop());
+		argumentStack.push(b ? 1.0 : 0.0);
+	}
+
+	private void fconvs() throws EmptyStackException {
+		final String s = getString(argumentStack.pop());
+		try {
+			argumentStack.push(Double.parseDouble(s));
+		} catch(final NumberFormatException e) {
+			throw new IllegalStateException("can't convert \"" + s + "\" to a number!");
+		}
+	}
+
+	private void sconvf() throws EmptyStackException {
+		argumentStack.push(argumentStack.pop().toString());
+	}
+
+	private void sconvi() throws EmptyStackException {
+		argumentStack.push(argumentStack.pop().toString());
+	}
+
+	private void sconvb() throws EmptyStackException {
+		argumentStack.pop();
+
+		// In order to understand this goofy "conversion" of both truth values, you have to know two facts:
+		// 1) This is only ever used when comparing a boolean with a string.
+		// 2) In Excel™, both truth values compare as being greater than any string.
+		argumentStack.push("\uFFFF\uFFFF\uFFFF");
 	}
 
 	private double getFloat(final Object o) throws IllegalStateException {
