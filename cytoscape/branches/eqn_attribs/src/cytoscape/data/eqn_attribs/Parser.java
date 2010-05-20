@@ -50,6 +50,7 @@ public class Parser {
 			attribParser.registerFunction(new Exp());
 			attribParser.registerFunction(new First());
 			attribParser.registerFunction(new If());
+			attribParser.registerFunction(new Largest());
 			attribParser.registerFunction(new LCase());
 			attribParser.registerFunction(new Last());
 			attribParser.registerFunction(new Left());

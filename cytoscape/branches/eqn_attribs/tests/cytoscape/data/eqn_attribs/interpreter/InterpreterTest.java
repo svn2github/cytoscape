@@ -756,4 +756,52 @@ public class InterpreterTest extends TestCase {
 		final Interpreter interpreter10 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
                 assertEquals(new Boolean(false), interpreter10.run());
 	}
+
+	public void testLARGEST() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		// A list w/ an odd number of elements:
+		final List numbers = new ArrayList();
+		numbers.add(new Double(5.5));
+		numbers.add(new Long(-1L));
+		numbers.add(new Double(10.0));
+		numbers.add(new Double(3.1));
+		numbers.add(new Long(4L));
+		attribNameToTypeMap.put("list", List.class);
+		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
+
+		assertTrue(compiler.compile("=LARGEST($list, 3)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(4.0), interpreter1.run());
+
+		assertTrue(compiler.compile("=LARGEST($list, 1)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(10.0), interpreter2.run());
+
+		assertTrue(compiler.compile("=LARGEST($list, 5)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(-1.0), interpreter3.run());
+
+		// A list w/ an even number of elements:
+		final List numbers2 = new ArrayList();
+		numbers2.add(new Double(5.5));
+		numbers2.add(new Long(-1L));
+		numbers2.add(new Double(10.0));
+		numbers2.add(new Double(3.1));
+		attribNameToTypeMap.put("list2", List.class);
+		nameToDescriptorMap.put("list2", new IdentDescriptor(numbers2));
+
+		assertTrue(compiler.compile("=LARGEST($list2, 1)", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(10.0), interpreter4.run());
+
+		assertTrue(compiler.compile("=LARGEST($list2, 4)", attribNameToTypeMap));
+		final Interpreter interpreter5 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(-1.0), interpreter5.run());
+
+		assertTrue(compiler.compile("=LARGEST($list2, 2)", attribNameToTypeMap));
+		final Interpreter interpreter6 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(5.5), interpreter6.run());
+	}
 }
