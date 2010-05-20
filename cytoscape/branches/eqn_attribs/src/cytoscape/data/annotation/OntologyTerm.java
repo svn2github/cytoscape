@@ -212,7 +212,7 @@ public class OntologyTerm implements Serializable {
 	/**
 	 * @param ontology
 	 *            the Ontology that contains the terms
-	 * @returns true if this OntologyTerm has a path to the other ontologyTerm
+	 * @return true if this OntologyTerm has a path to the other ontologyTerm
 	 *          via parent-child or container-contained relationships
 	 */
 	public boolean isAncestorOf(Ontology ontology, OntologyTerm other) {

@@ -36,7 +36,7 @@ import java.util.List;
 public interface AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
-	 *  @returns the name by which you must call the function when used in an attribute equation.
+	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
 	String getName();
 
@@ -44,7 +44,7 @@ public interface AttribFunction {
 	 *  Used to provide help for users.  Unlike getUsageDescription(), this is an informal English description,
 	 *  like "Calculates the sine of its argument."
 	 *
-	 *  @returns a description of what this function does
+	 *  @return a description of what this function does
 	 */
 	String getFunctionSummary();
 
@@ -52,12 +52,12 @@ public interface AttribFunction {
 	 *  Used to provide help for users.  Unlike getFunctionSummary(), this describes how to call this function,
 	 *  like "Call with SIN(number)."
 	 *
-	 *  @returns a description of how to use this function
+	 *  @return a description of how to use this function
 	 */
 	String getUsageDescription();
 
 	/**
-	 *  @returns the static return type of this function, Object.class, Double.cLass, String.class, or Boolean.class.
+	 *  @return the static return type of this function, Object.class, Double.cLass, String.class, or Boolean.class.
 	 *           If the static return type is Object.class, the dynamic return type will be one of Double.cLass, String.class, or Boolean.class
 	 *           and will depend on the arguments passed to the function!
 	 *
@@ -67,7 +67,7 @@ public interface AttribFunction {
 	Class getReturnType();
 
 	/**
-	 *  @returns the return type for this function (Double.cLass, String.class, or Boolean.class)
+	 *  @return the return type for this function (Double.cLass, String.class, or Boolean.class)
 	 *           or null if the args passed in had the wrong arity or a type mismatch
 	 *
 	 *  Note that this is different from getReturnType() in that it will never return the wildcard Object.class.
@@ -78,7 +78,7 @@ public interface AttribFunction {
 	/**
 	 *  Used to invoke this function.
 	 *  @param args the function arguments which must correspond in type and number to what getParameterTypes() returns.
-	 *  @returns the result of the function evaluation.  The actual type of the returned object will be what getReturnType() returns.
+	 *  @return the result of the function evaluation.  The actual type of the returned object will be what getReturnType() returns.
 	 *  @throws ArithmeticException thrown if a numeric error, e.g. a division by zero occurred.
 	 *  @throws IllegalArgumentException thrown for any error that is not a numeric error, for example if a function only accepts positive numbers and a negative number was passed in.
 	 */
@@ -87,8 +87,8 @@ public interface AttribFunction {
 	/**
 	 *  Used with the equation builder.
 	 *
-	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  A null return indicates that no further arguments are valid.
+	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  A null return indicates that no further arguments are valid.
 	 *  Please note that if the returned set contains a null, this indicates an optional additional argument.
 	 */
 	List<Class> getPossibleArgTypes(final Class[] leadingArgs);

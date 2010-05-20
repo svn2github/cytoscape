@@ -46,7 +46,7 @@ public class TopologicalSort {
 	/**
 	 *  @param nodes the list of all nodes
 	 *  @param edges the edges that connect the nodes that need to be sorted.
-	 *  @returns the topological order
+	 *  @return the topological order
 	 *  @throws IllegalStateException if a cycle has been detected
 	 *  N.B. it might be a good idea to make sure that whatever the concrete type of the nodes in
 	 *  "nodes" are has a toString() method that returns the name of a node since this method

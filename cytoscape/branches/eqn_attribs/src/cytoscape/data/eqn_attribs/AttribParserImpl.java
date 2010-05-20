@@ -74,7 +74,7 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *  @param formula                a valid formula which must start with an equal sign
 	 *  @param variableNameToTypeMap  a list of existing variable names and their types
-	 *  @returns true if the parse succeeded otherwise false
+	 *  @return true if the parse succeeded otherwise false
 	 */
 	public boolean parse(final String formula, final Map<String, Class> variableNameToTypeMap) {
 		if (formula == null)
@@ -108,20 +108,20 @@ class AttribParserImpl implements AttribParser {
 	}
 
 	/**
-	 *  @returns the result type of the parsed formula if the parse succeeded, otherwise null
+	 *  @return the result type of the parsed formula if the parse succeeded, otherwise null
 	 */
 	public Class getType() { return parseTree == null ? null : parseTree.getType(); }
 
 	/**
 	 *  If parse() failed, this will return the last error messages.
-	 *  @returns the last error message of null
+	 *  @return the last error message of null
 	 */
 	public String getErrorMsg() { return lastErrorMessage; }
 
 	public Set<String> getVariableReferences() { return variableReferences; }
 
 	/**
-	 *  @returns the parse tree.  Must only be called if parse() returns true!
+	 *  @return the parse tree.  Must only be called if parse() returns true!
 	 */
 	public Node getParseTree() { return parseTree; }
 

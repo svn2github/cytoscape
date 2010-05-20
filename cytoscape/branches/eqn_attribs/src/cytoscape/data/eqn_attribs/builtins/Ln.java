@@ -38,26 +38,26 @@ import cytoscape.data.eqn_attribs.AttribFunction;
 public class Ln implements AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
-	 *  @returns the name by which you must call the function when used in an attribute equation.
+	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
 	public String getName() { return "LN"; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of what this function does
+	 *  @return a description of what this function does
 	 */
 	public String getFunctionSummary() { return "Returns the natural logarithm of a number."; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function
+	 *  @return a description of how to use this function
 	 */
 	public String getUsageDescription() { return "Call this with \"LN(number)\""; }
 
 	public Class getReturnType() { return Double.class; }
 
 	/**
-	 *  @returns Double.class or null if there are not 1 or 2 args or the args are not of type Double
+	 *  @return Double.class or null if there are not 1 or 2 args or the args are not of type Double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length != 1 || argTypes[0] != Double.class)
@@ -68,7 +68,7 @@ public class Ln implements AttribFunction {
 
 	/**
 	 *  @param args the function arguments which must be one object of type Double
-	 *  @returns the result of the function evaluation which is the natural logarithm of the argument
+	 *  @return the result of the function evaluation which is the natural logarithm of the argument
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if the argument is not of type Double
 	 */
@@ -83,8 +83,8 @@ public class Ln implements AttribFunction {
 	/**
 	 *  Used with the equation builder.
 	 *
-	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class,
+	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
 	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
 	 *           set indicates that no further arguments are valid.
 	 */

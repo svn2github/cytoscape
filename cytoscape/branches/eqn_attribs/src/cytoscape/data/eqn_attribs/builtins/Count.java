@@ -38,26 +38,26 @@ import cytoscape.data.eqn_attribs.AttribFunction;
 public class Count implements AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
-	 *  @returns the name by which you must call the function when used in an attribute equation.
+	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
 	public String getName() { return "COUNT"; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of what this function does
+	 *  @return a description of what this function does
 	 */
 	public String getFunctionSummary() { return "Returns the number of numeric values in a list."; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function
+	 *  @return a description of how to use this function
 	 */
 	public String getUsageDescription() { return "Call this with \"COUNT(arg1,arg2,...,argN)\""; }
 
 	public Class getReturnType() { return Long.class; }
 
 	/**
-	 *  @returns Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
+	 *  @return Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length == 0) // No empty argument list!
@@ -68,7 +68,7 @@ public class Count implements AttribFunction {
 
 	/**
 	 *  @param args the function arguments which can be anything
-	 *  @returns the result of the function evaluation which is the count of the arguments that are numbers for scalar arguments plus the count of list entries that are numbers for List arguments
+	 *  @return the result of the function evaluation which is the count of the arguments that are numbers for scalar arguments plus the count of list entries that are numbers for List arguments
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		int count = 0;
@@ -96,8 +96,8 @@ public class Count implements AttribFunction {
 	/**
 	 *  Used with the equation builder.
 	 *
-	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class,
+	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
 	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
 	 *           set indicates that no further arguments are valid.
 	 */
@@ -115,7 +115,7 @@ public class Count implements AttribFunction {
 	}
 
 	/**
-	 *  @returns true if "s" contains the string representation of a valid, finite, non-NaN double
+	 *  @return true if "s" contains the string representation of a valid, finite, non-NaN double
 	 */
 	private boolean isValidDouble(final String s) {
 		try {

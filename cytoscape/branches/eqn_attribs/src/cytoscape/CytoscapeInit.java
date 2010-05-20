@@ -136,8 +136,7 @@ public class CytoscapeInit {
 	/**
 	 * Cytoscape Init must be initialized using the command line arguments.
 	 *
-	 * @param args
-	 *            the arguments from the command line
+	 * @param params  the arguments from the command line
 	 * @return false, if we fail to initialize for some reason
 	 */
 	public boolean init(CyInitParams params) {
@@ -284,16 +283,14 @@ public class CytoscapeInit {
 	}
 
 	/**
-	 * @param mrud
-	 *            the most recently used directory
+	 * @param mrud_new  the most recently used directory
 	 */
 	public static void setMRUD(File mrud_new) {
 		mrud = mrud_new;
 	}
 
 	/**
-	 * @param mruf
-	 *            the most recently used file
+	 * @param mruf_new  the most recently used file
 	 */
 	public static void setMRUF(File mruf_new) {
 		mruf = mruf_new;

@@ -38,26 +38,26 @@ import cytoscape.data.eqn_attribs.AttribFunction;
 public class Average implements AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
-	 *  @returns the name by which you must call the function when used in an attribute equation.
+	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
 	public String getName() { return "AVERAGE"; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of what this function does
+	 *  @return a description of what this function does
 	 */
 	public String getFunctionSummary() { return "Returns the average of a group of numbers."; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function
+	 *  @return a description of how to use this function
 	 */
 	public String getUsageDescription() { return "Call this with \"AVERAGE(list)\" or \"AVERAGE(arg1,arg2,...,argN)\""; }
 
 	public Class getReturnType() { return Double.class; }
 
 	/**
-	 *  @returns Double.class or null if there is not either exactly a single list argument nor a list of numeric arguments
+	 *  @return Double.class or null if there is not either exactly a single list argument nor a list of numeric arguments
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		// An empty argument list is invalid.
@@ -79,7 +79,7 @@ public class Average implements AttribFunction {
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @returns the result of the function evaluation which is the average of the elements in the single list argument or the average of the one or more double arguments
+	 *  @return the result of the function evaluation which is the average of the elements in the single list argument or the average of the one or more double arguments
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
@@ -131,8 +131,8 @@ public class Average implements AttribFunction {
 	/**
 	 *  Used with the equation builder.
 	 *
-	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class,
+	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
 	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
 	 *           set indicates that no further arguments are valid.
 	 */

@@ -59,12 +59,12 @@ public class BinOpNode implements Node {
 	public Class getType() { return operator.isComparisonOperator() ? Boolean.class : lhs.getType(); }
 
 	/**
-	 *  @returns the left operand
+	 *  @return the left operand
 	 */
 	public Node getLeftChild() { return lhs; }
 
 	/**
-	 *  @returns the right operand
+	 *  @return the right operand
 	 */
 	public Node getRightChild() { return rhs; }
 

@@ -59,12 +59,12 @@ public class IdentNode implements Node {
 	public Class getType() { return type; }
 
 	/**
-	 *  @returns null, This type of node never has any children!
+	 *  @return null, This type of node never has any children!
 	 */
 	public Node getLeftChild() { return null; }
 
 	/**
-	 *  @returns null, This type of node never has any children!
+	 *  @return null, This type of node never has any children!
 	 */
 	public Node getRightChild() { return null; }
 

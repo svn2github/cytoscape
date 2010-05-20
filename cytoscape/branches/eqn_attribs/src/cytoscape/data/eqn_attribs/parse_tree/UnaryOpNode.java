@@ -54,12 +54,12 @@ public class UnaryOpNode implements Node {
 	public Class getType() { return operand.getType(); }
 
 	/**
-	 *  @returns the operand
+	 *  @return the operand
 	 */
 	public Node getLeftChild() { return operand; }
 
 	/**
-	 *  @returns null, This type of node never has any left children!
+	 *  @return null, This type of node never has any left children!
 	 */
 	public Node getRightChild() { return null; }
 

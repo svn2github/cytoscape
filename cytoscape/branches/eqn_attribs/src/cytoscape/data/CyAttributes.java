@@ -741,7 +741,7 @@ public interface CyAttributes {
 	public MultiHashMapDefinition getMultiHashMapDefinition();
 
 	/**
-	 *  @returns the equation associated with an attribute or null if there is no equation associated with it
+	 *  @return the equation associated with an attribute or null if there is no equation associated with it
 	 */
 	public Equation getEquation(final String id, final String attributeName);
 
@@ -749,7 +749,7 @@ public interface CyAttributes {
 	 *  Returns any attribute-equation related error message after a call to getAttribute() or
 	 *  getXXXAttribute().  N.B., the last error message will be cached!
 	 *
-	 *  @returns an error message or null if the last call to getAttribute() did not result in an
+	 *  @return an error message or null if the last call to getAttribute() did not result in an
 	 *           equation related error
 	 */
 	public String getLastEquationError();

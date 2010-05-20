@@ -36,7 +36,7 @@ package cytoscape.data.eqn_attribs;
 public class AttribFunctionUtil {
 	/**
 	 *  Assumes that "arg" is a "String", "Boolean", "Long" or a "Double and converts it to "double".
-	 *  @returns the converted argument as a "double"
+	 *  @return the converted argument as a "double"
 	 *  @throws IllegalArgumentException if the argument cannot be converted to a "double"
 	 */
 	static public double getArgAsDouble(final Object arg) throws IllegalArgumentException {

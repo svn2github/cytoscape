@@ -58,12 +58,12 @@ public class SConvNode implements Node {
 	public Class getType() { return String.class; }
 
 	/**
-	 *  @returns the only child of this node
+	 *  @return the only child of this node
 	 */
 	public Node getLeftChild() { return convertee; }
 
 	/**
-	 *  @returns null, This type of node never has any right children!
+	 *  @return null, This type of node never has any right children!
 	 */
 	public Node getRightChild() { return null; }
 

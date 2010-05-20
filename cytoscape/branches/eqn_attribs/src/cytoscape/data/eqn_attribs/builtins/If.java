@@ -38,26 +38,26 @@ import cytoscape.data.eqn_attribs.AttribFunction;
 public class If implements AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
-	 *  @returns the name by which you must call the function when used in an attribute equation.
+	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
 	public String getName() { return "IF"; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of what this function does
+	 *  @return a description of what this function does
 	 */
 	public String getFunctionSummary() { return "Returns one of two alternatives based on a boolean value."; }
 
 	/**
 	 *  Used to provide help for users.
-	 *  @returns a description of how to use this function
+	 *  @return a description of how to use this function
 	 */
 	public String getUsageDescription() { return "Call this with \"IF(condition, value_if_true, value_if_false)\""; }
 
 	public Class getReturnType() { return Object.class; }
 
 	/**
-	 *  @returns whatever is compatible type of the if-value and else-value or null if the two types are incompatible
+	 *  @return whatever is compatible type of the if-value and else-value or null if the two types are incompatible
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length != 3 || argTypes[0] != Boolean.class)
@@ -74,7 +74,7 @@ public class If implements AttribFunction {
 
 	/**
 	 *  @param args the function arguments
-	 *  @returns the result of the function evaluation which is either the 2nd or 3rd argument of the function
+	 *  @return the result of the function evaluation which is either the 2nd or 3rd argument of the function
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
@@ -90,8 +90,8 @@ public class If implements AttribFunction {
 	/**
 	 *  Used with the equation builder.
 	 *
-	 *  @params leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @returns the set of arguments (must be a collection of String.class, Long.class, Double.class,
+	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
+	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
 	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
 	 *           set indicates that no further arguments are valid.
 	 */

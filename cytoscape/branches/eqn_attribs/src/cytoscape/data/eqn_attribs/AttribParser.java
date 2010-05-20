@@ -47,35 +47,35 @@ public interface AttribParser {
 	public void registerFunction(final AttribFunction func) throws IllegalArgumentException;
 
 	/**
-	 *  @returns the set of currently registered functions
+	 *  @return the set of currently registered functions
 	 */
 	public Set<AttribFunction> getRegisteredFunctions();
 
 	/**
 	 *  @param eqn                  a valid attribute equation which must start with an equal sign
 	 *  @param attribNameToTypeMap  a list of existing attribute names and their types
-	 *  @returns true if the parse succeeded otherwise false
+	 *  @return true if the parse succeeded otherwise false
 	 */
 	public boolean parse(final String eqn, final Map<String, Class> attribNameToTypeMap);
 
 	/**
-	 *  @returns the result type of the parsed equation if the parse succeeded, otherwise null
+	 *  @return the result type of the parsed equation if the parse succeeded, otherwise null
 	 */
 	public Class getType();
 
 	/**
 	 *  If parse() failed, this will return the last error messages.
-	 *  @returns the last error message of null
+	 *  @return the last error message of null
 	 */
 	public String getErrorMsg();
 
 	/**
-	 *  @returns all the variable names that have been detected in the most recently parsed equation
+	 *  @return all the variable names that have been detected in the most recently parsed equation
 	 */
 	public Set<String> getVariableReferences();
 
 	/**
-	 *  @returns the parse tree.  Must only be called if parse() returns true!
+	 *  @return the parse tree.  Must only be called if parse() returns true!
 	 */
 	public Node getParseTree();
 }

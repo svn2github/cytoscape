@@ -79,7 +79,7 @@ public class EquationUtil {
 	}
 
 	/**
-	 *  @returns "attribName" written as am attribute reference with a leading $-sign
+	 *  @return "attribName" written as am attribute reference with a leading $-sign
 	 */
 	public static String attribNameAsReference(final String attribName) {
 		if (isSimpleAttribName(attribName))
@@ -89,7 +89,7 @@ public class EquationUtil {
 	}
 
 	/**
-	 *  @returns "d" converted to a Long using Excel™ rules
+	 *  @return "d" converted to a Long using Excel™ rules
 	 *  @throws IllegalArgumentException if "d" is outside the range of a long
 	 */
 	public static long doubleToLong(final double d) {
@@ -105,7 +105,7 @@ public class EquationUtil {
 
 	/**
 	 *  @param attribName the name to test
-	 *  @returns true if "attribName" start with a letter and consists of only letters and digits, else false
+	 *  @return true if "attribName" start with a letter and consists of only letters and digits, else false
 	 */
 	private static boolean isSimpleAttribName(final String attribName) {
 		final int length = attribName.length();
@@ -125,7 +125,7 @@ public class EquationUtil {
 	}
 
 	/**
-	 *  @returns "attribName" with characters that need to be backslash-escaped when written as
+	 *  @return "attribName" with characters that need to be backslash-escaped when written as
 	 *           part of an attribute refernce, escaped
 	 */
 	private static String escapeAttribName(final String attribName) {

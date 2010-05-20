@@ -61,17 +61,17 @@ public class FuncCallNode implements Node {
 	public Class getType() { return returnType; }
 
 	/**
-	 *  @returns null, This type of node never has any children!
+	 *  @return null, This type of node never has any children!
 	 */
 	public Node getLeftChild() { return null; }
 
 	/**
-	 *  @returns null, This type of node never has any children!
+	 *  @return null, This type of node never has any children!
 	 */
 	public Node getRightChild() { return null; }
 
 	/**
-	 *  @returns null, This return value for this node is only known at runtime!
+	 *  @return null, This return value for this node is only known at runtime!
 	 */
 	public Object getValue() { return null; }
 

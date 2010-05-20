@@ -47,12 +47,12 @@ public class StringConstantNode implements Node {
 	public Class getType() { return String.class; }
 
 	/**
-	 *  @returns null, This type of node never has any children!
+	 *  @return null, This type of node never has any children!
 	 */
 	public Node getLeftChild() { return null; }
 
 	/**
-	 *  @returns null, This type of node never has any children!
+	 *  @return null, This type of node never has any children!
 	 */
 	public Node getRightChild() { return null; }
 

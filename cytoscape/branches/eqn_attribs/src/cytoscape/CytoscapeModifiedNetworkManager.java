@@ -89,9 +89,6 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
-	/**
-	 *
-	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		//		CyLogger.getLogger().info ("Property changed: " + e.getPropertyName());
 		//		CyLogger.getLogger().info ("Old value = " + e.getOldValue());
@@ -115,9 +112,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	}
 
 	/**
-	 *
 	 * @param net
-	 * @return
 	 */
 	public static boolean isModified(CyNetwork net) {
 		Object modObj = networkStateMap.get(net);

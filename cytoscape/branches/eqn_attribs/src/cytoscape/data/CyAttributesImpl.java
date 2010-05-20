@@ -1022,7 +1022,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns the equation associated with an attribute or null if there is no equation associated with it
+	 *  @return the equation associated with an attribute or null if there is no equation associated with it
 	 */
 	public Equation getEquation(final String id, final String attributeName) {
 		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
@@ -1040,7 +1040,7 @@ public class CyAttributesImpl implements CyAttributes {
 	 *  Returns any attribute-equation related error message after a call to getAttribute() or
 	 *  getXXXAttribute().  N.B., the last error message will be cached!
 	 *
-	 *  @returns an error message or null if the last call to getAttribute() did not result in an
+	 *  @return an error message or null if the last call to getAttribute() did not result in an
 	 *           equation related error
 	 */
 	public String getLastEquationError() { return lastEquationError; }
@@ -1083,7 +1083,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns an in-order list of attribute names that will have to be evaluated before "attribName" can be evaluated
+	 *  @return an in-order list of attribute names that will have to be evaluated before "attribName" can be evaluated
 	 */
 	private List<String> topoSortAttribReferences(final String id, final String attribName) {
 		final Object equationCandidate = mmap.getAttributeValue(id, attribName, null);
@@ -1140,7 +1140,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns "x" truncated using Excel's notion of truncation.
+	 *  @return "x" truncated using Excel's notion of truncation.
 	 */
 	private static double excelTrunc(final double x) {
 		final boolean isNegative = x < 0.0;
@@ -1148,7 +1148,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns "d" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 *  @return "d" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
 	 */
 	private static Integer doubleToInteger(final double d) {
 		if (d > Integer.MAX_VALUE || d < Integer.MIN_VALUE)
@@ -1162,7 +1162,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns "l" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 *  @return "l" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
 	 */
 	private static Integer longToInteger(final double l) {
 		if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE)
@@ -1172,7 +1172,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns "equationValue" interpreted according to Excel rules as an integer or null if that is not possible
+	 *  @return "equationValue" interpreted according to Excel rules as an integer or null if that is not possible
 	 */
 	private Integer convertEqnRetValToInteger(final String id, final String attribName, final Object equationValue) {
 		if (equationValue.getClass() == Double.class) {
@@ -1200,7 +1200,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns "equationValue" interpreted according to Excel rules as a double or null if that is not possible
+	 *  @return "equationValue" interpreted according to Excel rules as a double or null if that is not possible
 	 */
 	private Double convertEqnRetValToDouble(final String id, final String attribName, final Object equationValue) {
 		if (equationValue.getClass() == Double.class)
@@ -1227,7 +1227,7 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
-	 *  @returns "equationValue" interpreted according to Excel rules as a boolean
+	 *  @return "equationValue" interpreted according to Excel rules as a boolean
 	 */
 	private Boolean convertEqnRetValToBoolean(final String id, final String attribName, final Object equationValue) {
 		if (equationValue.getClass() == Double.class)
