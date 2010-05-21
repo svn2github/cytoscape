@@ -30,11 +30,10 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.giny.CytoscapeRootGraph;
-import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import phoebe.PGraphView;
 import giny.view.NodeView;
 
 import java.util.Iterator;
@@ -73,18 +72,19 @@ public class DualLayout {
 		CyNetwork splitGraph = Cytoscape.createNetwork("splitGraph"); 
 		DualLayoutTask task = new DualLayoutTask(cyNetwork);
 		task.splitNetwork(splitGraph);
-		PhoebeNetworkView view = new PhoebeNetworkView(splitGraph,"Title");
+		DingNetworkView view = new DingNetworkView(splitGraph,"Title");
 		task.layoutNetwork(view);
 	
 		// CHANGE STYLE HERE
-		VisualMappingManager manager = new VisualMappingManager(view, vizmapFileLoc);
+	//	VisualMappingManager manager = new VisualMappingManager(view, vizmapFileLoc);
+		VisualMappingManager manager = new VisualMappingManager(view);
 		VisualStyle chosen = manager.getCalculatorCatalog().getVisualStyle(style);
 		manager.setVisualStyle(chosen);
 		manager.applyNodeAppearances();
 		manager.applyEdgeAppearances();
 
 		try {
-			BufferedImage fullImage = (BufferedImage)view.getCanvas().getLayer().toImage();
+			BufferedImage fullImage = (BufferedImage)(view.getCanvas().getImage());
 			ImageIO.write(fullImage,"png",new File(outFile));  
 
 			double ratio = (double)fullImage.getWidth()/(double)fullImage.getHeight();

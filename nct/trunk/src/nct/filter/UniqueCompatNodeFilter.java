@@ -29,47 +29,51 @@ import java.util.*;
 
 import nct.graph.Graph;
 import nct.filter.Filter;
+import nct.networkblast.CompatibilityNode;
 
 /**
  * This Filter filters graphs based on whether the subnodes that form
  * the compatibility nodes that represent nodes in this graph are all
  * unique.  The goal is to prevent any distance 0 nodes.
  */
-public class UniqueCompatNodeFilter implements Filter<String,Double> {
+public class UniqueCompatNodeFilter implements Filter<CompatibilityNode<String,Double>,Double> {
     
     /**
      * @param solutions The List of solutions to process.
      * @return Either a filtered solution set or null if solutions is null.
      */
-    public List<Graph<String,Double>> filter(List<Graph<String,Double>> solutions) {
+	public List<Graph<CompatibilityNode<String,Double>,Double>> filter(List<Graph<CompatibilityNode<String,Double>,Double>> solutions) {
 
-	if (solutions == null) 
-	    return null;
+		if (solutions == null) 
+		    return null;
 
-	//System.out.println("unfiltered set size: " + solutions.size());
+		System.out.println("unfiltered set size: " + solutions.size());
 
-	List<Graph<String,Double>> newSolns = new Vector<Graph<String,Double>>();
+		List<Graph<CompatibilityNode<String,Double>,Double>> newSolns = 
+			new Vector<Graph<CompatibilityNode<String,Double>,Double>>();
 
-	HashSet<String> nodeSet = new HashSet<String>();
-	for ( Graph<String,Double> graph: solutions ) {
-		nodeSet.clear();
-		for ( String compatNode : graph.getNodes() ) {
-			String[] subNodes = compatNode.split("\\|");
-			for ( int i = 0; i < subNodes.length; i++ ) {
-				//System.out.println("subnode '" + subNodes[i] + "'");
-				nodeSet.add(subNodes[i]);
+		HashSet<String> nodeSet = new HashSet<String>();
+
+		for ( Graph<CompatibilityNode<String,Double>,Double> graph: solutions ) {
+			nodeSet.clear();
+			for ( CompatibilityNode<String,Double> compatNode : graph.getNodes() ) {
+				for ( String nodeString : compatNode.getNodes() ) {
+					nodeSet.add(nodeString);
+				}
+			}
+
+			System.out.println("graph num " + graph.numberOfNodes());
+			System.out.println("set num " + nodeSet.size()); 
+			if ( (graph.numberOfNodes() * 2) == nodeSet.size() ) {
+				System.out.println("adding graph");
+				newSolns.add( graph );
 			}
 		}
-		//System.out.println("graph num " + graph.numberOfNodes());
-		//System.out.println("set num " + nodeSet.size()); 
-		if ( (graph.numberOfNodes() * 2) == nodeSet.size() )
-			newSolns.add( graph );
+
+		System.out.println("filtered set size: " + newSolns.size());
+
+		return newSolns;
 	}
-
-	//System.out.println("filtered set size: " + newSolns.size());
-
-	return newSolns;
-    }
 }
 		 
 		

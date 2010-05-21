@@ -29,9 +29,6 @@
     <echo message="   jar-tests    -> creates junit test jars"/>
     <echo message="   runtests     -> runs junit tests"/>
     <echo message="   runtests-gui -> runs junit tests in the junit gui"/>
-    <echo message="   retro        -> retroweaves Java 1.5 code into "/>
-    <echo message="                   Java 1.4 compatible code."/>
-    <echo message="   jar-retro    -> builds a jar of the retrowoven code"/>
     <echo message="   docs         -> generates the javadoc documentation"/>
     <echo message="   sign         -> signs all jars (requires keystore)"/>
     <echo message="   clean        -> removes all created jars and "/>
@@ -63,7 +60,6 @@
     <!-- Define the directories -->
     <property name="src" value="src"/>
     <property name="build" value="build"/>
-    <property name="retro" value="retro"/>
     <property name="tests" value="tests"/>
     <property name="etc" value="etc"/>
     <property name="logs" value="logs"/>
@@ -74,7 +70,6 @@
     <property name="src.dir" value="${root.dir}/${src}"/>
     <property name="tests.dir" value="${root.dir}/${tests}"/>
     <property name="build.dir" value="${root.dir}/${build}"/>
-    <property name="retro.dir" value="${root.dir}/${retro}"/>
     <property name="doc.dir" value="${root.dir}/docs"/>
     <property name="javadoc.dir" value="${doc.dir}/api"/>
     <property name="manifest.dir" value="${root.dir}/manifest"/>
@@ -92,7 +87,6 @@
     <!-- Define the relevant files -->
     <property name="project.jar" value="${name}.jar"/>
     <property name="test.jar" value="${name}-tests.jar"/>
-    <property name="retro.project.jar" value="${name}-${retro}.jar"/>
     <property name="project.manifest" value="${manifest.dir}/${name}.MF"/>
     <property name="test.manifest" value="${manifest.dir}/test-${name}.MF"/>
 
@@ -208,38 +202,6 @@
       <attribute name="Class-Path" value="${manifest.class.path.string}"/> 
     </manifest>
     <echo message="Successfully ran manifest task!"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Retroweaves the compiled classes.                                   -->
-  <!-- =================================================================== -->
-  <target name="retro" 
-          depends="compile,manifest"
-          if="build.ok">
-    <mkdir dir="${retro.dir}"/>
-    <copy todir="${retro.dir}">
-        <fileset dir="${build.dir}"
-                 includes="**"/>
-    </copy>
-    <java classname="com.rc.retroweaver.Weaver"
-          classpathref="project.class.path">
-      <arg value="-source"/>
-      <arg value="${retro.dir}"/>
-    </java> 
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Creates the retro project jar file                                  -->
-  <!-- =================================================================== -->
-  <target name="jar-retro" 
-          depends="retro" 
-          if="tests.ok" >
-    <jar destfile="${retro.project.jar}" 
-         manifest="${project.manifest}">
-      <fileset dir="${retro.dir}"
-               includes="**"/>
-    </jar>
-    <echo message="Successfully ran retro-jar task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -381,7 +343,7 @@
   <!-- =================================================================== -->
   <!-- Do everything                                                       --> 
   <!-- =================================================================== -->
-  <target name="all" depends="jar,docs,runtests" /> 
+  <target name="all" depends="jar,runtests,docs" /> 
 
   <!-- =================================================================== -->
   <!-- Build jars and run tests, but nothing else                          -->
@@ -481,12 +443,10 @@
   <target name="clean" 
           depends="init">
     <delete dir="${build.dir}"/>
-    <delete dir="${retro.dir}"/>
     <delete dir="${javadoc.dir}"/>
     <delete dir="${log.dir}"/>
     <delete dir="${manifest.dir}"/>
     <delete file="${project.jar}"/>
-    <delete file="${retro.project.jar}"/>
     <delete file="${test.jar}"/>
     <delete file="${dist.all}"/>
     <delete file="${dist.bin}"/>

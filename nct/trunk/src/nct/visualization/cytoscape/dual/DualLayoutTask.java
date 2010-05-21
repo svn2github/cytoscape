@@ -39,7 +39,7 @@ import giny.view.NodeView;
 import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
-import phoebe.PGraphView;
+import ding.view.DGraphView;
 
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
@@ -92,12 +92,12 @@ public class DualLayoutTask extends Thread{
      * {@link SpringEmbeddedLayouter}.
      * @param view The graph view used for creating the layout.
      */
-    public void layoutNetwork(PGraphView view) {
-		view.getCanvas().paintImmediately();
+    public void layoutNetwork(DGraphView view) {
+		//view.getCanvas().paintImmediately();
 		SpringEmbeddedLayouter layouter =
 			new SpringEmbeddedLayouter(view,node2Species,homologyPairSet);
 		layouter.doLayout();
-		view.getCanvas().paintImmediately();
+		//view.getCanvas().paintImmediately();
 		
 		// This array holds the min & max x positions for the species
 		double [] min_x = new double[k];		
@@ -138,7 +138,8 @@ public class DualLayoutTask extends Thread{
 		while(nodeViewIt.hasNext()) {
 			((NodeView)nodeViewIt.next()).setNodePosition(true);
 		}
-		view.getCanvas().paintImmediately();
+		//view.getCanvas().paintImmediately();
+		view.updateView();
     }
 
     /**

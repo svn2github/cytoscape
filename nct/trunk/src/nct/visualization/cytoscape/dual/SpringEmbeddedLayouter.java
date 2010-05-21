@@ -25,7 +25,7 @@
 
 package nct.visualization.cytoscape.dual;
 
-import giny.util.NodeDistances;
+//import giny.util.NodeDistances;
 import giny.model.*;
 import giny.view.*;
 import java.awt.geom.Point2D;
