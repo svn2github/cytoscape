@@ -1,7 +1,7 @@
 /**
  *  @author Johannes Ruscheinski
  */
-package utilities;
+package cytoscape.util;
 
 
 import java.lang.management.ManagementFactory;
@@ -53,7 +53,7 @@ public class MemoryReporter {
 	 *
 	 *  "This amount of memory is guaranteed for the Java virtual machine to use."
 	 */
-	public static long getCommitedMemory() {		
+	public static long getCommittedMemory() {		
 		final List<MemoryPoolMXBean> beans = ManagementFactory.getMemoryPoolMXBeans();
 		long committed = 0;
 		for (final MemoryPoolMXBean bean : beans)
