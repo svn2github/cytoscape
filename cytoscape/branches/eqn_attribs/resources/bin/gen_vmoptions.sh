@@ -1,16 +1,16 @@
 #!/bin/sh
-# Generates the cytoscape.vmoptions file
+# Generates the Cytoscape.vmoptions file
 if `java -version 2>&1 | grep -- 64-Bit > /dev/null`; then # We have a 64 bit JVM.
-    echo -Xms20m >  cytoscape.vmoptions
-    echo -Xmx20g >> cytoscape.vmoptions
-    echo -d64       >> cytoscape.vmoptions
+    echo -Xms20m >  Cytoscape.vmoptions
+    echo -Xmx20g >> Cytoscape.vmoptions
+    echo -d64       >> Cytoscape.vmoptions
 else # Assume a 32 bit JVM.
-    echo -Xms10m   >  cytoscape.vmoptions
-    echo -Xmx1550m >> cytoscape.vmoptions
+    echo -Xms10m   >  Cytoscape.vmoptions
+    echo -Xmx1550m >> Cytoscape.vmoptions
 fi
 
 # Shared JVM options
-echo -Dswing.aatext=true               >> cytoscape.vmoptions
-echo -Dawt.useSystemAAFontSettings=lcd >> cytoscape.vmoptions
+echo -Dswing.aatext=true               >> Cytoscape.vmoptions
+echo -Dawt.useSystemAAFontSettings=lcd >> Cytoscape.vmoptions
 
 exit 0
