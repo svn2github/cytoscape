@@ -47,7 +47,7 @@ public class BlastManager {
 	}
 
 	public void stopBlast(String uid) {
-		PathBlast blast = (PathBlast) m_pathblasts.remove(uid);
+		PathBlast blast = m_pathblasts.remove(uid);
 		blast.stop();
 		blast = null;
 	}
@@ -61,6 +61,6 @@ public class BlastManager {
 	}
 
 	public PathBlast getBlast(String uid) {
-		return (PathBlast) m_pathblasts.get(uid);
+		return m_pathblasts.get(uid);
 	}
 }
