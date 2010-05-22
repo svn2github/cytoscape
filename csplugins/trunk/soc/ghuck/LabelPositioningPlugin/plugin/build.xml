@@ -2,14 +2,15 @@
 <!-- Plugin build file     -->
 <!-- =================================================================== -->
 
-<project name="Label Positioning Plugin" default="jar" basedir=".">
+<project name="Label Layout Plugin" default="jar" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
-    <property name="plugin_name" value="LabelForceDirectedLayout"/>
-    <property name="plugin_class" value="LabelPositioningPlugin.LabelPositioningPlugin"/>  	  	
+    <property name="plugin_name" value="LabelLayoutPlugin"/>
+    <property name="plugin_class" value="cytoscape.layout.label.LabelLayoutPlugin"/>  	  	
+    <property name="package_path" value="cytoscape/layout/label"/>  	  	
     <property name="project.jar" value="${plugin_name}.jar"/>  	
     <property name="version" value="0.01"/>
     <property name="year" value="2010"/>
@@ -88,7 +89,7 @@
   <!-- If plugin.prop exist, copy it to build directory  -->	
   <!-- =================================================================== -->
   <target name="copy_plugin_prop" if="plugin.prop.present">
-    <copy todir="${build.dir}/${plugin_name}" file="${root.dir}/plugin.props"/>	
+    <copy todir="${build.dir}/${package_path}" file="${root.dir}/plugin.props"/>	
   </target>
 
   <!-- =================================================================== -->

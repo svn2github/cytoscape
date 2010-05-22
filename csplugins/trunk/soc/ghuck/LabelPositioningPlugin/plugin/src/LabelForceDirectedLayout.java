@@ -1,4 +1,4 @@
-package LabelPositioningPlugin;
+package cytoscape.layout.label;
 
 import cytoscape.Cytoscape;
 

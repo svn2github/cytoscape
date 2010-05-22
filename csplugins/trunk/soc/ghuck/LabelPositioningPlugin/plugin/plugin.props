@@ -6,11 +6,11 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users, white space within name is not allowed
-pluginName=LabelForceDirectedLayout
+pluginName=LabelPositioningPlugin
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
-pluginDescription=This plugin computes a graph force driven layout.<br>It uses the GPU to accelerate the layout process (you must have a CUDA compatible graphic card, with installed).<p>
+pluginDescription=This plugin repositions labels automatically.<p>
 
 # Plugin version number, this must be two numbers separated by a decimal.  Ex. 0.2, 14.03
 pluginVersion=0.01
