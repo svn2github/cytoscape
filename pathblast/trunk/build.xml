@@ -139,7 +139,9 @@
     <condition property="tests.ok">
 	  <and> 
 		<available file="${tests.dir}" />
+		<!--
 		<available file="${examples.dir}" />
+		-->
 	  </and>
 	</condition>
 
@@ -271,10 +273,12 @@
   <target name="jar-tests" 
   		  depends="compile-tests,test-manifest"
 		  if="tests.ok">
+		  <!--
     <mkdir dir="${build.dir}/examples"/>
 	<copy todir="${build.dir}/examples">
 	    <fileset dir="${root.dir}/examples"/>
     </copy>
+	-->
     <jar jarfile="${test.jar}"
 		 manifest="${test.manifest}"
          basedir="${build.dir}" >
@@ -322,7 +326,7 @@
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="compile,jsp" /> 
+  <target name="all" depends="compile,runtests,jsp" /> 
 
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
