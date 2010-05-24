@@ -4,8 +4,8 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Delete theme version</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
-	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
+	<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">
+	<link rel="shortcut icon" href="http://cytoscape.org/images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
 <div id="topbar">
@@ -13,7 +13,7 @@
 </div>
 
 
-<?php include "../nav.php"; ?>
+<?php include "http://cytoscape.org/nav.php"; ?>
 
 <?php
 include 'clean.inc';
@@ -142,13 +142,16 @@ if (!($tried)) {
 	// delete successful, redirect to admin page	
 	?>
 	The theme is deleted. <a href="themeadmin.php">Back to theme administration page</a>
-	<?php 	  	
+	<?php 	 
+	 	include 'luceneUtil.inc';
+		createLuceneIndex($connection);
+
 		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
 		system("./run_generate_plugin_xml.csh");
 }
 ?>
 <p>
-<?php include "../footer.php"; ?>
+<?php include "http://cytoscape.org/footer.php"; ?>
 </p>
 </body>
 </html>

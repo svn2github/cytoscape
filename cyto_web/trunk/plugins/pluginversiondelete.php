@@ -5,7 +5,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Delete a plugin version</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">
-	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
+	<link rel="shortcut icon" href="http://cytoscape.org/images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
 <table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
@@ -162,9 +162,13 @@ if (!($tried)) {
 	// delete successful, redirect to admin page	
 	?>
 	The plugin is deleted. <a href="pluginadmin.php">Back to plugin administration page</a>
-	<?php 	  	
+	<?php 	
+		include 'luceneUtil.inc';
+		createLuceneIndex($connection);
+  	
 		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
 		system("./run_generate_plugin_xml.csh");
+		
 }
 ?>
 <p>
