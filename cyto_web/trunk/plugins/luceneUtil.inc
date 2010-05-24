@@ -20,6 +20,7 @@ function createLuceneIndex($connection) {
 		$doc->addField(Zend_Search_Lucene_Field::Text('id', $plugin_id));
 		$doc->addField(Zend_Search_Lucene_Field::Text('name', $plugin_info['name'], 'utf-8'));
 		$doc->addField(Zend_Search_Lucene_Field::Text('description', $plugin_info['description'], 'utf-8'));
+		$doc->addField(Zend_Search_Lucene_Field::Text('author', $plugin_info['author'], 'utf-8'));
 		$index->addDocument($doc);
 	}
 
