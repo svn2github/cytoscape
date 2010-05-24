@@ -129,12 +129,19 @@ public class Mode implements AttribFunction {
 	 *           set indicates that no further arguments are valid.
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length == 0) {
-			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(List.class);
-			return possibleNextArgs;
-		}
+		final List<Class> possibleNextArgs = new ArrayList<Class>();
+		if (leadingArgs.length == 1) {
+			if (leadingArgs[0] == List.class)
+				possibleNextArgs.add(null);
+		} else if (leadingArgs.length > 1)
+			possibleNextArgs.add(null);
 
-		return null;
+		possibleNextArgs.add(List.class);
+		possibleNextArgs.add(Double.class);
+		possibleNextArgs.add(Long.class);
+		possibleNextArgs.add(Boolean.class);
+		possibleNextArgs.add(String.class);
+
+		return possibleNextArgs;
 	}
 }
