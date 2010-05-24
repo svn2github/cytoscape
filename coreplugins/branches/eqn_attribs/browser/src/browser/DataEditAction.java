@@ -491,6 +491,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	                               final String currentAttrName)
 	{
 		final Map<String, Class> attribNameToTypeMap = AttrUtil.getAttrNamesAndTypes(attrs);
+		attribNameToTypeMap.put("ID", String.class);
 
 		final AttribEqnCompiler compiler = new AttribEqnCompiler();
 		if (!compiler.compile(equation, attribNameToTypeMap)) {

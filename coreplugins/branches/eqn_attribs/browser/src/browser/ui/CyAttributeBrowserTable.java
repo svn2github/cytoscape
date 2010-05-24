@@ -1115,7 +1115,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		for (final GraphObject graphObject : selectedGraphObjects)
 			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
 							attribName, /* copyEquation = */ false, errorMessage);
-		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn, tableRow);
+		tableModel.updateColumn(getAttribValue(attribs, rowId, attribName), tableColumn, tableRow);
 	}
 
 	private void copyFormulaToCurrentSelection() {
@@ -1134,7 +1134,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
 							attribName, /* copyEquation = */ true, errorMessage);
 		final Equation equation = attribs.getEquation(rowId, attribName);
-		tableModel.updateColumn(equation != null ? equation : attribs.getAttribute(rowId, attribName),
+		tableModel.updateColumn(equation != null ? equation : getAttribValue(attribs, rowId, attribName),
 		                        tableColumn, tableRow);
 	}
 
@@ -1152,7 +1152,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		for (final String id : ids)
 			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName,
 			                                /* copyEquations = */false, errorMessage);
-		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn, tableRow);
+
+
+		tableModel.updateColumn(getAttribValue(attribs, rowId, attribName), tableColumn, tableRow);
 	}
 
 	private void copyFormulaToEntireAttribute() {
@@ -1170,13 +1172,27 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName,
 			                                /* copyEquations = */true, errorMessage);
 		final Equation equation = attribs.getEquation(rowId, attribName);
-		tableModel.updateColumn(equation != null ? equation : attribs.getAttribute(rowId, attribName),
+		tableModel.updateColumn(equation != null ? equation : getAttribValue(attribs, rowId, attribName),
 		                        tableColumn, tableRow);
 	}
 
+	/**
+	 *  @return the value of an attribute irrespective of its type
+	 */
+	private Object getAttribValue(final CyAttributes attribs, final String id, final String attribName) {
+		final byte attribType = attribs.getType(attribName);
+		switch (attribType) {
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return attribs.getListAttribute(id, attribName);
+		case CyAttributes.TYPE_SIMPLE_MAP:
+			return attribs.getMapAttribute(id, attribName);
+		default:
+			return attribs.getAttribute(id, attribName);
+		}
+	}
+
 	private void adjustColWidth(){
-		
-		HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
+		final HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
 		
 		// Save the width if it does not exist
 		Iterator<String> it = widthMap.keySet().iterator();

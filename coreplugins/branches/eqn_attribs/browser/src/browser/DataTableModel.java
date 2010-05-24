@@ -672,7 +672,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			final byte type = data.getType(attribName);
 			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
 			if (objectAndEditString != null)
-				rowVector.setElementAt(objectAndEditString, colIdx + 1);
+				rowVector.setElementAt(objectAndEditString, colIdx);
 		}
 	}
 
