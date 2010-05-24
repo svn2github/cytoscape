@@ -1,0 +1,98 @@
+<project name="giny" default="all" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <tstamp/>
+    <property name="giny.name" value="giny"/>
+    <property name="giny.version" value="0.1"/>
+    <property name="giny.year" value="200"/>
+
+    <echo message="Building ${giny.name} version ${giny.version}."/>
+
+    <!-- compiler properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="on"/>
+    <property name="deprecation" value="on"/>
+    <property name="fork" value="false"/>
+
+    <!-- Define the directories -->
+    <property name="giny.root.dir" value="."/>
+    <property name="giny.src.dir" value="${giny.root.dir}/src"/>
+    <property name="giny.lib.dir" value="${giny.root.dir}/lib"/>
+    <property name="giny.build.dir" value="${giny.root.dir}/build"/>
+    <property name="giny.javadoc.dir" value="${giny.root.dir}/API"/>
+    <property name="giny.packages" value="giny.*"/>
+
+    <!-- classpath -->
+    <path id="giny.project.class.path">
+      <pathelement location="${giny.build.dir}"/>
+	  <pathelement location="${giny.lib.dir}/colt.jar"/>
+    </path>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the giny project                                         -->
+  <!-- =================================================================== -->
+  <target name="compile" depends="init" >
+    <mkdir dir="${giny.build.dir}"/>
+    <javac compiler="modern"
+           srcdir="${giny.src.dir}"
+           classpathref="giny.project.class.path"
+           destdir="${giny.build.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+		   source="1.5"
+           target="1.5"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the giny.jar file                                         -->
+  <!-- =================================================================== -->
+  <target name="jar" depends="compile" >
+    <jar destfile="giny.jar"> 
+      <fileset
+        dir="${giny.build.dir}"
+        includes="**"/>
+    </jar>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars and docs                                             -->
+  <!-- =================================================================== -->
+  <target name="all" depends="jar,docs"/>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init"  >
+    <mkdir dir="${giny.javadoc.dir}"/>
+    <javadoc packagenames="${giny.packages}"
+             sourcepath="${giny.src.dir}"
+             destdir="${giny.javadoc.dir}"
+             classpathref="giny.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${giny.name} API"
+             doctitle="${giny.name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init">
+    <delete dir="${giny.build.dir}"/>
+    <delete dir="${giny.javadoc.dir}"/>
+    <delete file="giny.jar"/>
+  </target>
+
+</project>
+
