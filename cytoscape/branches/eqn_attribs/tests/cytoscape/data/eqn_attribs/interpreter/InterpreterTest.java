@@ -846,4 +846,27 @@ public class InterpreterTest extends TestCase {
 		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
                 assertEquals(new Double(0.816496580927726), interpreter.run());
 	}
+
+	public void testMODE() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		// A list w/ an odd number of elements:
+		final List numbers = new ArrayList();
+		numbers.add(new Double(5.0));
+		numbers.add(new Long(3L));
+		numbers.add(new Double(4.0));
+		numbers.add(new Double(4.0));
+		numbers.add(new Long(3L));
+		numbers.add(new Long(4L));
+		numbers.add(new Long(5L));
+		numbers.add(new Double(3.0));
+		numbers.add(new Long(7L));
+		attribNameToTypeMap.put("list", List.class);
+		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
+
+		assertTrue(compiler.compile("=MODE($list)", attribNameToTypeMap));
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(3.0), interpreter.run());
+	}
 }

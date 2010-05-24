@@ -62,6 +62,7 @@ public class Parser {
 			attribParser.registerFunction(new Mid());
 			attribParser.registerFunction(new Min());
 			attribParser.registerFunction(new Mod());
+			attribParser.registerFunction(new Mode());
 			attribParser.registerFunction(new Not());
 			attribParser.registerFunction(new Nth());
 			attribParser.registerFunction(new Or());
