@@ -1,5 +1,5 @@
 /*
-  File: Largest.java
+  File: Var.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -38,34 +38,34 @@ import cytoscape.data.eqn_attribs.AttribFunctionUtil;
 import cytoscape.data.eqn_attribs.EquationUtil;
 
 
-public class Largest implements AttribFunction {
+public class Var implements AttribFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "LARGEST"; }
+	public String getName() { return "VAR"; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns the kth largest element of a list of numbers."; }
+	public String getFunctionSummary() { return "Returns the sample variance of a list of numbers."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"LARGEST(list, k)\""; }
+	public String getUsageDescription() { return "Call this with \"VAR(list)\""; }
 
 	public Class getReturnType() { return Double.class; }
 
 	/**
-	 *  @return Double.class or null if there are not exactly a single list argument, followed by a numeric argument
+	 *  @return Double.class or null if there are not exactly a single list argument
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2)
+		if (argTypes.length != 1)
 			return null;
-		if (argTypes[0] != List.class || (argTypes[1] != Double.class && argTypes[1] != Long.class))
+		if (argTypes[0] != List.class)
 			return null;
 
 		return Double.class;
@@ -75,90 +75,26 @@ public class Largest implements AttribFunction {
 	 *  @param args the function arguments which must be a list followed by a numeric argument
 	 *  @return the result of the function evaluation which is the maximum of the elements in the single list argument or the maximum of the one or more double arguments
 	 *  @throws ArithmeticException 
-	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
+	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final List list = (List)args[0];
-		if (list.isEmpty())
-			throw new IllegalArgumentException("illegal empty list argument in call to LARGEST()!");
+		if (list.size() < 2)
+			throw new IllegalArgumentException("illegal list argument in call to VAR(): must have at least 2 elements!");
 
-		final double[] array = new double[list.size()];
+		final double[] x = new double[list.size()];
 		int i = 0;
 		for (final Object listElement : list) {
 			try {
-				array[i++] = AttribFunctionUtil.getArgAsDouble(listElement);
+				x[i++] = AttribFunctionUtil.getArgAsDouble(listElement);
 			} catch (final IllegalArgumentException e) {
-				throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i)
-				                                   + " list element in call to LARGEST() is not a number: "
+				throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+				                                   " list element in call to VAR() is not a number: "
 				                                   + e.getMessage());
 			}
 		}
 
-		final double d = AttribFunctionUtil.getArgAsDouble(args[1]);
-		final long k = EquationUtil.doubleToLong(d);
-		if (k <= 0)
-			throw new IllegalArgumentException("invalid index " + d + " in a call to LARGEST()!");
-		if (k > array.length)
-			throw new IllegalArgumentException("index " + d + " is too large for a list w/ " + array.length + " elements in a call to LARGEST()!");
-
-		return (Double)kthSmallest(array, array.length - (int)k);
-	}
-
-	/**
-	 *  @return the kth smallest array element, with the 0th being the smallest, the 1st being the 2nd most smallest etc.
-	 */
-	private double kthSmallest(final double[] array, final int k) {
-		int first = 0;
-		int last = array.length - 1;
-
-		for (;;) {
-			final int middle = partition(array, first, last);
-
-			if (middle == k)
-				return array[k];
-
-			if (middle < k)
-				first = middle + 1;
-			else // middle > k
-				last = middle - 1;
-		}
-
-	}
-
-	private int partition(final double[] array, final int first, final int last) {
-		final int pivotIndex = medianOf3PiviotPosition(array, first, last);
-		final double pivotValue = array[pivotIndex];
-		swap(array, pivotIndex, last);
-		int storeIndex = first;
-		for (int i = first; i < last; ++i) {
-			if (array[i] <= pivotValue) {
-				swap(array, i, storeIndex);
-				++storeIndex;
-			}
-		}
-		swap(array, storeIndex, last);
-		return storeIndex;
-	}
-
-	private int medianOf3PiviotPosition(final double[] array, int first, int last) {
-		final int middle = (first + last) / 2;
-
-		if (array[first] > array[last]) {
-			int temp = first;
-			first = last;
-			last = temp;
-		}
-
-		if (array[middle] > array[last])
-			return last;
-
-		return array[first] > array[middle] ? first : middle;
-	}
-
-	private void swap(final double[] array, final int i, final int j) {
-		final double temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
+		return AttribFunctionUtil.calcSampleVariance(x);
 	}
 
 	/**
@@ -170,24 +106,12 @@ public class Largest implements AttribFunction {
 	 *           set indicates that no further arguments are valid.
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-
 		if (leadingArgs.length == 0) {
+			final List<Class> possibleNextArgs = new ArrayList<Class>();
 			possibleNextArgs.add(List.class);
 			return possibleNextArgs;
 		}
 
-		if (leadingArgs.length == 1) {
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(String.class);
-			return possibleNextArgs;
-		}
-
-		if (leadingArgs.length >= 2)
-			return null;
-
-		return possibleNextArgs;
+		return null;
 	}
 }

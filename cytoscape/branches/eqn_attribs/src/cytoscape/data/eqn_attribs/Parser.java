@@ -69,11 +69,13 @@ public class Parser {
 			attribParser.registerFunction(new Right());
 			attribParser.registerFunction(new Round());
 			attribParser.registerFunction(new Sign());
+			attribParser.registerFunction(new StDev());
 			attribParser.registerFunction(new Sqrt());
 			attribParser.registerFunction(new Substitute());
 			attribParser.registerFunction(new Trunc());
 			attribParser.registerFunction(new UCase());
 			attribParser.registerFunction(new Value());
+			attribParser.registerFunction(new Var());
 		}
 
 		return attribParser;

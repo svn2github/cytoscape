@@ -30,6 +30,9 @@
 package cytoscape.data.eqn_attribs;
 
 
+import java.util.Arrays;
+
+
 /**
  *  A collection of static methods that may be useful for the implementation of built-in functions.
  */
@@ -55,5 +58,85 @@ public class AttribFunctionUtil {
 			return (Boolean)arg ? 1.0 : 0.0;
 
 		throw new IllegalArgumentException("can't convert argument to a number!");
+	}
+
+	/**
+	 *  Carefully adds the numbers in "a" minimising loss of precision.
+	 *
+	 *  @return the sum of the elements of "a"
+	 */
+	static public double numericallySafeSum(final double a[]) {
+		int positiveCount = 0;
+		for (double d : a) {
+			if (d >= 0.0)
+				++positiveCount;
+		}
+
+		// Separate positive and negative values:
+		final double[] positiveValues = new double[positiveCount];
+		final double[] negativeValues = new double[a.length - positiveCount];
+		int positiveIndex = 0;
+		int negativeIndex = 0;
+		for (double d : a) {
+			if (d >= 0.0)
+				positiveValues[positiveIndex++] = d;
+			else
+				negativeValues[negativeIndex++] = d;
+		}
+
+		double positiveSum = 0.0;
+		if (positiveValues.length > 0) {
+			// Add values in increasing order of magnitude:
+			Arrays.sort(positiveValues);
+			for (double d : positiveValues)
+				positiveSum += d;
+		}
+
+		double negativeSum = 0.0;
+		if (negativeValues.length > 0) {
+			// Add values in increasing order of magnitude:
+			Arrays.sort(negativeValues);
+			for (int i = negativeValues.length - 1; i >= 0; --i)
+				negativeSum += negativeValues[i];
+		}
+
+		return positiveSum + negativeSum;
+	}
+
+	/**
+	 *  @return the String representation of the ith ordinal
+	 */
+	static public String getOrdinal(final int i) {
+		if ((i % 100) == 11)
+			return Integer.toString(i) + "th";
+
+		switch (i % 10) {
+		case 1:
+			return Integer.toString(i) + "st";
+		case 2:
+			return Integer.toString(i) + "nd";
+		case 3:
+			return Integer.toString(i) + "rd";
+		default:
+			return Integer.toString(i) + "th";
+		}
+	}
+
+	/**
+	 *  @return the sample variance of the numbers in x[]
+	 */
+	static public double calcSampleVariance(final double[] x) {
+		final int N = x.length;
+		if (N < 2)
+			throw new IllegalArgumentException("can't calculate a variance with fewer than 2 values!");
+
+		final double[] xSquared = new double[N];
+		for (int i = 0; i < N; ++i)
+			xSquared[i] = x[i] * x[i];
+
+		final double sumOfX = numericallySafeSum(x);
+		final double sumOfXSquared = numericallySafeSum(xSquared);
+
+		return (sumOfXSquared - (sumOfX * sumOfX) / (double)N) / (double)(N - 1);
 	}
 }
