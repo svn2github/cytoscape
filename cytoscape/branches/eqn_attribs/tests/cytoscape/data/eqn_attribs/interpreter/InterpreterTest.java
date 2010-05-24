@@ -822,8 +822,12 @@ public class InterpreterTest extends TestCase {
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
 
 		assertTrue(compiler.compile("=VAR($list)", attribNameToTypeMap));
-		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
-                assertEquals(new Double(0.6666666666666666), interpreter.run());
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.6666666666666666), interpreter1.run());
+
+		assertTrue(compiler.compile("=VAR(-3.0,-3,\"-3.0\")", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.0), interpreter2.run());
 	}
 
 	public void testSTDEV() throws Exception {
@@ -843,8 +847,12 @@ public class InterpreterTest extends TestCase {
 		nameToDescriptorMap.put("list", new IdentDescriptor(numbers));
 
 		assertTrue(compiler.compile("=STDEV($list)", attribNameToTypeMap));
-		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
-                assertEquals(new Double(0.816496580927726), interpreter.run());
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.816496580927726), interpreter1.run());
+
+		assertTrue(compiler.compile("=STDEV(-3.0,-3,\"-3.0\")", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.0), interpreter2.run());
 	}
 
 	public void testMODE() throws Exception {

@@ -55,17 +55,15 @@ public class Var implements AttribFunction {
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"VAR(list)\""; }
+	public String getUsageDescription() { return "Call this with \"VAR(numbers)\""; }
 
 	public Class getReturnType() { return Double.class; }
 
 	/**
-	 *  @return Double.class or null if there are not exactly a single list argument
+	 *  @return Double.class if the argument types make it at least conceivable that no less than 2 numbers are being passed in
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1)
-			return null;
-		if (argTypes[0] != List.class)
+		if (argTypes.length == 0 || (argTypes.length == 1 && argTypes[0] != List.class))
 			return null;
 
 		return Double.class;
@@ -78,23 +76,34 @@ public class Var implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final List list = (List)args[0];
-		if (list.size() < 2)
-			throw new IllegalArgumentException("illegal list argument in call to VAR(): must have at least 2 elements!");
-
-		final double[] x = new double[list.size()];
-		int i = 0;
-		for (final Object listElement : list) {
-			try {
-				x[i++] = AttribFunctionUtil.getArgAsDouble(listElement);
-			} catch (final IllegalArgumentException e) {
-				throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
-				                                   " list element in call to VAR() is not a number: "
-				                                   + e.getMessage());
+		final ArrayList<Double> a = new ArrayList();
+		for (int i = 0; i < args.length; ++i) {
+			if (args[i] instanceof List) {
+				final List list = (List)(args[i]);
+				for (final Object listElement : list) {
+					try {
+						a.add(AttribFunctionUtil.getArgAsDouble(listElement));
+					} catch (final IllegalArgumentException e) {
+						throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+										   " element in call to VAR() is not a number: "
+										   + e.getMessage());
+					}
+				}
+			} else {
+				try {
+					a.add(AttribFunctionUtil.getArgAsDouble(args[i]));
+				} catch (final IllegalArgumentException e) {
+					throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+									   " element in call to VAR() is not a number: "
+									   + e.getMessage());
+				}
 			}
 		}
 
-		return AttribFunctionUtil.calcSampleVariance(x);
+		if (a.size() < 2)
+			throw new IllegalArgumentException("illegal list argument in call to VAR(): must have at least 2 elements!");
+
+		return AttribFunctionUtil.calcSampleVariance(AttribFunctionUtil.arrayListToArray(a));
 	}
 
 	/**
