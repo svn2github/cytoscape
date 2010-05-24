@@ -52,6 +52,11 @@ import javax.swing.ImageIcon;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.eqn_attribs.AttribParser;
+import cytoscape.data.eqn_attribs.Parser;
+import cytoscape.data.formulas.Degree;
+import cytoscape.data.formulas.InDegree;
+import cytoscape.data.formulas.OutDegree;
 import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.dialogs.logger.LoggerDialog;
 import cytoscape.init.CyInitParams;
@@ -205,6 +210,12 @@ public class CytoscapeInit {
 
 			logger.info("loading plugins....");
 			loadPlugins();
+
+			logger.info("initialising the formula parser...");
+			final AttribParser attribParser = Parser.getParser();
+			attribParser.registerFunction(new Degree());
+			attribParser.registerFunction(new InDegree());
+			attribParser.registerFunction(new OutDegree());
 
 			logger.info("loading session...");
 			boolean sessionLoaded = false;

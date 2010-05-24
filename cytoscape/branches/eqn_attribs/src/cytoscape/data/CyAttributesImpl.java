@@ -1049,8 +1049,14 @@ public class CyAttributesImpl implements CyAttributes {
 	                            final StringBuilder errorMessage)
 	{
 		final Collection<String> attribReferences = equation.getAttribReferences();
+
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
+			if (attribRef.equals("ID")) {
+				nameToDescriptorMap.put("ID", new IdentDescriptor(id));
+				continue;
+			}
+
 			final Object attribValue = getAttribute(id, attribRef);
 			if (attribValue == null) {
 				errorMessage.append("Missing value for referenced attribute \"" + attribRef + "\"!");
