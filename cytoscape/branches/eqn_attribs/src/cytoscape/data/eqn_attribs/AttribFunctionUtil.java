@@ -31,6 +31,7 @@ package cytoscape.data.eqn_attribs;
 
 
 import java.util.Arrays;
+import java.util.ArrayList;
 
 
 /**
@@ -138,5 +139,17 @@ public class AttribFunctionUtil {
 		final double sumOfXSquared = numericallySafeSum(xSquared);
 
 		return (sumOfXSquared - (sumOfX * sumOfX) / (double)N) / (double)(N - 1);
+	}
+
+	/**
+	 *  Converts an ArrayList<Double> to a regular double[]
+	 */
+	static public double[] arrayListToArray(final ArrayList<Double> a) {
+		final double[] x = new double[a.size()];
+		int i = 0;
+		for (double d : a)
+			x[i++] = d;
+
+		return x;
 	}
 }

@@ -33,6 +33,7 @@ package cytoscape.data.eqn_attribs.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import cytoscape.data.eqn_attribs.AttribFunction;
+import cytoscape.data.eqn_attribs.AttribFunctionUtil;
 
 
 public class Average implements AttribFunction {
@@ -84,9 +85,9 @@ public class Average implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		double sum = 0.0;
 		double count = 0.0;
 
+		final ArrayList<Double> a = new ArrayList<Double>();
 		if (args.length == 1 && args[0] instanceof List) {
 			final List list = (List)args[0];
 
@@ -109,15 +110,15 @@ public class Average implements AttribFunction {
 				else
 					throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to AVERAGE()!");
 
-				sum += value;
+				a.add(value);
 				++count;
 			}
 		} else { // We expect any number of numeric args.
 			for (final Object arg : args) {
 				if (arg instanceof Double)
-					sum += (Double)arg;
+					a.add((Double)arg);
 				else // Must be a Long.
-					sum += (Long)arg;
+					a.add((double)(long)(Long)arg);
 				++count;
 			}
 		}
@@ -125,7 +126,7 @@ public class Average implements AttribFunction {
 		if (count == 0.0)
 			throw new IllegalArgumentException("can't take the average of an empty list!");
 
-		return sum / count;
+		return AttribFunctionUtil.numericallySafeSum(AttribFunctionUtil.arrayListToArray(a)) / count;
 	}
 
 	/**
