@@ -428,20 +428,20 @@ else
 		<p>Go back to <a href="pluginadmin.php">Plugin adminstration page</a></p>
 		<?php
 
+		include 'luceneUtil.inc';
+		createLuceneIndex($connection);
 
 		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
 		system("./run_generate_plugin_xml.csh");
+		
 	}
 	// End of case for 'edit' mode
 
 	if ($mode == 'new') {
-//exit("<br>Exit here line 587");
-
 		//$submitAction == 'Submit', accept data submited from user
 		//process the data and Save the data into DB.
 
 		include "uploadNewPluginData.inc";
-
 	} 
 	// end of form processing
 }
