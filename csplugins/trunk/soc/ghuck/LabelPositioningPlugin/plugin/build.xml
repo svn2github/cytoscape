@@ -26,7 +26,7 @@
 
 
     <!-- Define the Cytoscape directories -->
-    <property name="cytoscape.dir" value="/home/gerardo/Cytoscape"/>
+    <property name="cytoscape.dir" value="/Users/gerardohuck/Cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 
