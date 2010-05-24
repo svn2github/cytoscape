@@ -39,18 +39,17 @@ import giny.view.NodeView;
 import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
-import phoebe.PGraphView;
-
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
-//import cytoscape.plugin.AbstractPlugin;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.GraphViewController;
 import cytoscape.data.readers.GMLTree;
+
+import ding.view.DGraphView;
 
 /**
  * The Thread that does the actual DualLayout calculations.
@@ -77,11 +76,9 @@ public class DualLayoutTask extends Thread{
 	 * Creates the layout of the network using the {@link SpringEmbeddedLayouter}.
 	 * @param view The graph view used for creating the layout.
 	 */
-	public void layoutNetwork(PGraphView view) {
-		((PGraphView)view).getCanvas().paintImmediately();
+	public void layoutNetwork(DGraphView view) {
 		SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(view,node2Species,homologyPairSet);
 		layouter.doLayout();
-		((PGraphView)view).getCanvas().paintImmediately();
 		
 		//this array holds the min x position for each species
 		double [] min_x = new double[k];		
@@ -121,7 +118,7 @@ public class DualLayoutTask extends Thread{
 				((NodeView)nodeViewIt.next()).setNodePosition(true);
 			}
 		}
-		((PGraphView)view).getCanvas().paintImmediately();
+		view.updateView();
 	}
 
 	/**
