@@ -191,7 +191,18 @@ public class LocalBlast implements HomologyModel {
 		else
 			runBlast(db2, db1);
 
-	
+
+		parseBlastOutput();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return evalues;
+	}
+
+	// for unit testing
+	void parseBlastOutput() throws Exception {
 		XMLReader xr = XMLReaderFactory.createXMLReader();
 		HitHandler hh = new HitHandler();
 		xr.setContentHandler(hh);
@@ -199,12 +210,6 @@ public class LocalBlast implements HomologyModel {
 
 		xr.parse(new InputSource( new BlastXMLFileFilterInputStream( new FileInputStream(blastOutputFile), false ) ) ); 
 
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return evalues;
 	}
 
 	/**
