@@ -1,0 +1,7 @@
+
+NETWORK COMPARISON TOOLKIT
+==========================
+
+Example:
+
+% java -Xmx256M -jar nct.jar examples/ch/ch_blast.sif examples/ch/ch0_int.sif examples/ch/ch1_int.sif

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<!--
+  - 
+  -  file:  manual.xml
+  -->
+<book>
+  <bookinfo>
+    <title>Network Comparison ToolKit Manual</title>
+
+    <author>
+      <firstname>Michael</firstname>
+
+      <surname>Smoot</surname>
+
+      <othername role="mi">E</othername>
+    </author>
+
+    <copyright>
+      <year>2006</year>
+
+      <holder>University of California San Diego</holder>
+    </copyright>
+  </bookinfo>
+
+  <chapter>
+    <title>Introduction</title>
+
+    <sect1>
+      <para>The Network Comparison Toolkit, or <emphasis>NCT</emphasis> was
+      designed to be an extensible platform for comparing biological networks.
+      The NCT is written in pure Java 1.5 and it now represents the canonical
+      versions of the various algorithms used for comparisons. The NCT has its
+      roots in the <ulink url="http://www.pathblast.org">PathBLAST</ulink>
+      project and implementations of the underlying algorithims in C, Python,
+      and Java. The motivation for the reimplementation of the algorithms is
+      the development of software that is modular, easily maintained and
+      easily extended for future research.</para>
+
+      <para />
+    </sect1>
+  </chapter>
+
+  <chapter>
+    <title>The Packages</title>
+
+    <sect1>
+      <title>graph</title>
+
+      <para>The common currency of the NCT is the Graph interface. The
+      interface defines how programmers should interact with graph objects.
+      The Graph interface has several extensions that expand on the
+      capabilities of a basic graph such as the KPartiteGraph which defines
+      the methods used for interacting with k-partite graphs.</para>
+
+      <para>Basic implementations of all the Graph interfaces have been
+      provided. You obviously need to use concrete implementations of the
+      graph objects, but whenever possible we strongly recommend that you code
+      to the interface and not the class. For example: <programlisting>
+// recommended usage
+Graph&lt;String,Double&gt; g = new BasicGraph&lt;String,Double&gt;
+
+// NOT recommended
+BasicGraph&lt;String,Double&gt; g = new BasicGraph&lt;String,Double&gt;
+
+
+
+// recommended method definition
+public Graph&lt;String,Double&gt; getGraph();
+
+// NOT recommended
+public BasicGraph&lt;String,Double&gt; getGraph();
+</programlisting> Coding to the interface provides flexibility to other users
+      of your code to change underlying implementations without having to
+      alter your code.</para>
+
+      <sect2>
+        <title>graph.basic</title>
+
+        <para>This package contains all of the implementations of the graph
+        package interfaces. The implementations are not specific to
+        networkblast, so could be used in other applications that require
+        graph data structures.</para>
+      </sect2>
+    </sect1>
+
+    <sect1>
+      <title>services</title>
+
+      <para>The services package is comprised of several sub-packages. The
+      intent of the package is isolate activities that are not core graph
+      comparison duties in a separate package. Examples include the
+      calculation of homology e-values between sequences, the creation of
+      interaction graphs, the creation of synonym databases, access to
+      sequence databases, and the like. In each case an interface is provided
+      that defines how new software should interact with external
+      services.</para>
+    </sect1>
+
+    <sect1>
+      <title>filters</title>
+
+      <para>The filter package provides a simple interface for filtering a
+      collection of Graphs. Examples of the filters provided are the
+      SortFilter and the DuplicateThresholdFilter. The SortFilter merely sorts
+      a collection of Graphs based on the Graph's implementation of the
+      Comparable interface. The DuplicateThresholdFilter filters out Graphs
+      that have a certain percentage (the threshold) of nodes and edges in
+      common.</para>
+    </sect1>
+
+    <sect1>
+      <title>networkblast</title>
+
+      <para>NetworkBlast, as the name suggests, is where the classes specific
+      to the NetworkBlast/PathBlast algorithms reside. This package contains
+      the CompatibilityGraph that represents the network alignment and the
+      HomologyGraph used for calculating that alignment.</para>
+
+      <para>Central to the NetworkBlast package is the NetworkBlast class
+      itself. This class contains the main method that is called upon
+      invocation of the networkblast program. The main method contains the
+      actual code that reads the input, constructs the input graphs, defines
+      the search and scoring classes used for the alignment, and shows how the
+      output is generated. If there is any confusion about how certain classes
+      relate to one another, a look at the main method might help clarify
+      things.</para>
+
+      <sect2>
+        <title>nct.networkblast.graph</title>
+
+        <para>Contains the graphs specific to network blast such as the
+        HomologyGraph and CompatibilityGraph. The HomologyGraph is a
+        KPartiteGraph whose partitions are individual graphs and whose edges
+        are homology relationships between nodes (proteins) between the
+        partitions. The CompatibilityGraph</para>
+      </sect2>
+
+      <sect2>
+        <title>nct.networkblast.search</title>
+
+        <para>Contains the search algorithms.</para>
+      </sect2>
+
+      <sect2>
+        <title>nct.networkblast.score</title>
+
+        <para>Contains the graph scoring algorithms.</para>
+      </sect2>
+
+      <sect2>
+        <title>nct.networkblast.filter</title>
+
+        <para>Contains a filter that is really only meaningful in the context
+        of the NetworkBlast algorithm. However, the filter implements the
+        Filter interface and would therefore be usable by any code needing a
+        Filter. The results however, probably wouldn't have any
+        meaning.</para>
+      </sect2>
+    </sect1>
+  </chapter>
+</book>

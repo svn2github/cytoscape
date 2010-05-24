@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  Format: XIN (Java Interaction Network) ver 3.00   -->
+<!--  Created by: JINGraph class driver                 -->
+
+<project xmlns="http://dip.doe-mbi.ucla.edu/xml/XIN"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://dip.doe-mbi.ucla.edu/xml/XIN xin.xsd"
+
+         title="DIP full set"
+         date="2006-01-16T10:34:32Z"      author="dip2xin ver4.0"
+>
+
+ <attributes>
+  <nodeAtt name="descr" class="prot" type="text">
+  </nodeAtt>
+  <nodeAtt name="shn" class="prot" type="text">
+  </nodeAtt>
+  <nodeAtt name="organism" class="prot" type="text">
+  </nodeAtt>
+  <nodeAtt name="taxon" class="prot" type="text">
+  </nodeAtt>
+  <edgeAtt name="class" class="link" type="text">
+  </edgeAtt>
+  <edgeAtt name="name" class="link" type="text">
+  </edgeAtt>
+ </attributes>
+
+ <node id="G:15958" uid="DIP:5822N" name="BMRB_CHICK" class="protein">
+  <xref db="DIP"  id="5822N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:Q05438</val>
+   <xref db="SWP"  id="Q05438" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A56683</val>
+   <xref db="PIR"  id="A56683" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:1730049</val>
+   <xref db="gi"  id="1730049" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>receptor protein kinase RPK-1 precursor</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:1509" uid="DIP:168N" name="FMN_CHICK" class="protein">
+  <xref db="DIP"  id="168N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:Q05858</val>
+   <xref db="SWP"  id="Q05858" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A41724</val>
+   <xref db="PIR"  id="A41724" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:7512224</val>
+   <xref db="gi"  id="7512224" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>limb deformity (ld) protein</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+<node id="G:980" uid="DIP:27N" name="A1A1_CHICK" class="protein">
+  <xref db="DIP"  id="27N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P09572</val>
+   <xref db="SWP"  id="P09572" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A28199</val>
+   <xref db="PIR"  id="A28199" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:104789</val>
+   <xref db="gi"  id="104789" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>Na+/K+-exchanging ATPase  alpha chain</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+
+ <node id="G:1557" uid="DIP:79N" name="PRGR_CHICK" class="protein">
+  <xref db="DIP"  id="79N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P07812</val>
+   <xref db="SWP"  id="P07812" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A35466</val>
+   <xref db="PIR"  id="A35466" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:625530</val>
+   <xref db="gi"  id="625530" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>progesterone receptor form B</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:222" uid="DIP:235N" name="HSF3_CHICK" class="protein">
+  <xref db="DIP"  id="235N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P38531</val>
+   <xref db="SWP"  id="P38531" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A48092</val>
+   <xref db="PIR"  id="A48092" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:477096</val>
+   <xref db="gi"  id="477096" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>heat shock factor 3</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:1507" uid="DIP:738N" name="PIR:S33568" class="protein">
+  <xref db="DIP"  id="738N" type="src"/>
+
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:S33568</val>
+   <xref db="PIR"  id="S33568" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:479367</val>
+   <xref db="gi"  id="479367" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>protein-tyrosine kinase  fyn</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:981" uid="DIP:29N" name="ATNB_CHICK" class="protein">
+  <xref db="DIP"  id="29N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P08251</val>
+   <xref db="SWP"  id="P08251" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A28491</val>
+   <xref db="PIR"  id="A28491" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:86380</val>
+   <xref db="gi"  id="86380" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>Na+/K+-exchanging ATPase  beta-1 chain</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:1552" uid="DIP:70N" name="HS90_RABIT" class="protein">
+  <xref db="DIP"  id="70N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P11500</val>
+   <xref db="SWP"  id="P11500" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A34461</val>
+   <xref db="PIR"  id="A34461" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:109239</val>
+   <xref db="gi"  id="109239" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>heat shock protein 90 alpha</val>
+  </att>
+  <att name="organism">
+   <val>Oryctolagus cuniculus</val>
+   <xref db="TXID"  id="9986" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:223" uid="DIP:1057N" name="MYB_HUMAN" class="protein">
+  <xref db="DIP"  id="1057N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P10242</val>
+   <xref db="SWP"  id="P10242" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:TVHUMB</val>
+   <xref db="PIR"  id="TVHUMB" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:7428541</val>
+   <xref db="gi"  id="7428541" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>transforming protein myb, splice form containing exon 9A</val>
+  </att>
+  <att name="organism">
+   <val>Homo sapiens</val>
+   <xref db="TXID"  id="9606" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:1504" uid="DIP:449N" name="PIR:I50217" class="protein">
+  <xref db="DIP"  id="449N" type="src"/>
+
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:I50217</val>
+   <xref db="PIR"  id="I50217" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:2134301</val>
+   <xref db="gi"  id="2134301" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>c-src</val>
+  </att>
+  <att name="organism">
+   <val>Gallus gallus</val>
+   <xref db="TXID"  id="9031" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:1505" uid="DIP:646N" name="FMN1_MOUSE" class="protein">
+  <xref db="DIP"  id="646N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:Q05860</val>
+   <xref db="SWP"  id="Q05860" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:S11515</val>
+   <xref db="PIR"  id="S11515" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:478571</val>
+   <xref db="gi"  id="478571" type="src"/>
+  </feature>
+  <feature name="refseq_ref" class="cref">
+   <src>RefSeq</src>
+   <val>RefSeq:NP_034360</val>
+   <xref db="RefSeq"  id="NP_034360" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>formin</val>
+  </att>
+  <att name="organism">
+   <val>Mus musculus</val>
+   <xref db="TXID"  id="10090" type="ont"/>
+  </att>
+ </node>
+
+
+ <edge uid="DIP:523E" id="G:982" from="G:980" to="G:981" class="link">
+  <xref db="DIP"  id="523E" type="src"/>
+
+  <feature uid="DIP:718X"  name="evidence" class="exp:s">
+   <src>PMID:9139681</src>
+   <val>Two hybrid test</val>
+   <xref db="DIP"  id="718X" type="src"/>
+   <xref db="DO"  id="DO:00018" type="ont"/>
+   <xref db="PSI"  id="MI:0018" type="ont"/>
+  </feature>
+  <feature uid="DIP:717X"  name="evidence" class="exp:s">
+   <src>PMID:9139681</src>
+   <val>Alanine Scanning</val>
+   <xref db="DIP"  id="717X" type="src"/>
+   <xref db="DO"  id="DO:00045" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+ <edge uid="DIP:803E" id="G:1508" from="G:1505" to="G:1507" class="link">
+  <xref db="DIP"  id="803E" type="src"/>
+
+  <feature uid="DIP:1061X"  name="evidence" class="exp:s">
+   <src>PMID:8969217</src>
+   <val>Immunoprecipitation</val>
+   <xref db="DIP"  id="1061X" type="src"/>
+   <xref db="DO"  id="DO:00019" type="ont"/>
+   <xref db="PSI"  id="MI:0019" type="ont"/>
+  </feature>
+  <feature uid="DIP:1062X"  name="evidence" class="exp:s">
+   <src>PMID:8969217</src>
+   <val>Interaction adhesion assay</val>
+   <xref db="DIP"  id="1062X" type="src"/>
+   <xref db="DO"  id="DO:00217" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+ <edge uid="DIP:805E" id="G:1511" from="G:1509" to="G:1507" class="link">
+  <xref db="DIP"  id="805E" type="src"/>
+
+  <feature uid="DIP:1065X"  name="evidence" class="exp:s">
+   <src>PMID:8969217</src>
+   <val>Immunoprecipitation</val>
+   <xref db="DIP"  id="1065X" type="src"/>
+   <xref db="DO"  id="DO:00019" type="ont"/>
+   <xref db="PSI"  id="MI:0019" type="ont"/>
+  </feature>
+  <feature uid="DIP:1066X"  name="evidence" class="exp:s">
+   <src>PMID:8969217</src>
+   <val>Interaction adhesion assay</val>
+   <xref db="DIP"  id="1066X" type="src"/>
+   <xref db="DO"  id="DO:00217" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+ <edge uid="DIP:804E" id="G:1510" from="G:1509" to="G:1504" class="link">
+  <xref db="DIP"  id="804E" type="src"/>
+
+  <feature uid="DIP:1063X"  name="evidence" class="exp:s">
+   <src>PMID:8969217</src>
+   <val>Immunoprecipitation</val>
+   <xref db="DIP"  id="1063X" type="src"/>
+   <xref db="DO"  id="DO:00019" type="ont"/>
+   <xref db="PSI"  id="MI:0019" type="ont"/>
+  </feature>
+  <feature uid="DIP:1064X"  name="evidence" class="exp:s">
+   <src>PMID:8969217</src>
+   <val>Interaction adhesion assay</val>
+   <xref db="DIP"  id="1064X" type="src"/>
+   <xref db="DO"  id="DO:00217" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+ <edge uid="DIP:829E" id="G:1558" from="G:1552" to="G:1557" class="link">
+  <xref db="DIP"  id="829E" type="src"/>
+
+  <feature uid="DIP:1099X"  name="evidence" class="exp:s">
+   <src>PMID:1562503</src>
+   <val>Interaction adhesion assay</val>
+   <xref db="DIP"  id="1099X" type="src"/>
+   <xref db="DO"  id="DO:00217" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+ <edge uid="DIP:102E" id="G:224" from="G:222" to="G:223" class="link">
+  <xref db="DIP"  id="102E" type="src"/>
+
+  <feature uid="DIP:113X"  name="evidence" class="exp:s">
+   <src>PMID:9211854</src>
+   <val>Two hybrid test</val>
+   <xref db="DIP"  id="113X" type="src"/>
+   <xref db="DO"  id="DO:00018" type="ont"/>
+   <xref db="PSI"  id="MI:0018" type="ont"/>
+  </feature>
+  <feature uid="DIP:115X"  name="evidence" class="exp:s">
+   <src>PMID:9211854</src>
+   <val>Biophysical</val>
+   <xref db="DIP"  id="115X" type="src"/>
+   <xref db="DO"  id="DO:00013" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+  <feature uid="DIP:114X"  name="evidence" class="exp:s">
+   <src>PMID:9211854</src>
+   <val>Monoclonal antibody blockade</val>
+   <xref db="DIP"  id="114X" type="src"/>
+   <xref db="DO"  id="DO:00214" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+
+</project>
+

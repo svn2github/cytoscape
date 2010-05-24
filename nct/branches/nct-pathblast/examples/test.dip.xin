@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  Format: XIN (Java Interaction Network) ver 3.00   -->
+<!--  Created by: JINGraph class driver                 -->
+
+<project xmlns="http://dip.doe-mbi.ucla.edu/xml/XIN"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://dip.doe-mbi.ucla.edu/xml/XIN xin.xsd"
+
+         title="DIP full set"
+         date="2005-10-23T03:49:14Z"      author="dip2xin ver4.0"
+>
+
+ <attributes>
+  <edgeAtt name="class" class="link" type="text">
+  </edgeAtt>
+  <edgeAtt name="name" class="link" type="text">
+  </edgeAtt>
+  <nodeAtt name="descr" class="prot" type="text">
+  </nodeAtt>
+  <nodeAtt name="shn" class="prot" type="text">
+  </nodeAtt>
+  <nodeAtt name="organism" class="prot" type="text">
+  </nodeAtt>
+  <nodeAtt name="taxon" class="prot" type="text">
+  </nodeAtt>
+ </attributes>
+
+ <node id="G:1" uid="DIP:232N" name="BAXA_HUMAN" class="protein">
+  <xref db="DIP"  id="232N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:Q07812</val>
+   <xref db="SWP"  id="Q07812" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:A47538</val>
+   <xref db="PIR"  id="A47538" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:539664</val>
+   <xref db="gi"  id="539664" type="src"/>
+  </feature>
+  <feature name="refseq_ref" class="cref">
+   <src>RefSeq</src>
+   <val>RefSeq:NP_620116</val>
+   <xref db="RefSeq"  id="NP_620116" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>bcl-2-associated protein x, alpha splice form</val>
+  </att>
+  <att name="organism">
+   <val>Homo sapiens</val>
+   <xref db="TXID"  id="9606" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:2" uid="DIP:328N" name="BCLX_HUMAN" class="protein">
+  <xref db="DIP"  id="328N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:Q07817</val>
+   <xref db="SWP"  id="Q07817" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:B47537</val>
+   <xref db="PIR"  id="B47537" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:2118487</val>
+   <xref db="gi"  id="2118487" type="src"/>
+  </feature>
+  <feature name="refseq_ref" class="cref">
+   <src>RefSeq</src>
+   <val>RefSeq:NP_612815</val>
+   <xref db="RefSeq"  id="NP_612815" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>apoptosis regulator bcl-xL</val>
+  </att>
+  <att name="organism">
+   <val>Homo sapiens</val>
+   <xref db="TXID"  id="9606" type="ont"/>
+  </att>
+ </node>
+
+ <node id="G:4" uid="DIP:1043N" name="BCL2_HUMAN" class="protein">
+  <xref db="DIP"  id="1043N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P10415</val>
+   <xref db="SWP"  id="P10415" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:TVHUA1</val>
+   <xref db="PIR"  id="TVHUA1" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:2144603</val>
+   <xref db="gi"  id="2144603" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>transforming protein bcl-2, splice form alpha</val>
+  </att>
+  <att name="organism">
+   <val>Homo sapiens</val>
+   <xref db="TXID"  id="9606" type="ont"/>
+  </att>
+ </node>
+
+
+ <node id="G:5" uid="DIP:1048N" name="RAF1_HUMAN" class="protein">
+  <xref db="DIP"  id="1048N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:P04049</val>
+   <xref db="SWP"  id="P04049" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:TVHUF6</val>
+   <xref db="PIR"  id="TVHUF6" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:66762</val>
+   <xref db="gi"  id="66762" type="src"/>
+  </feature>
+  <feature name="refseq_ref" class="cref">
+   <src>RefSeq</src>
+   <val>RefSeq:NP_002871</val>
+   <xref db="RefSeq"  id="NP_002871" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>protein kinase raf-1</val>
+  </att>
+  <att name="organism">
+   <val>Homo sapiens</val>
+   <xref db="TXID"  id="9606" type="ont"/>
+  </att>
+ </node>
+
+
+ <edge uid="DIP:65E" id="G:135" from="G:1" to="G:4" class="link">
+  <xref db="DIP"  id="65E" type="src"/>
+
+  <feature uid="DIP:74X"  name="evidence" class="exp:s">
+   <src>PMID:9194558</src>
+   <val>Experimental</val>
+   <xref db="DIP"  id="74X" type="src"/>
+   <xref db="DO"  id="DO:00045" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+ <edge uid="DIP:430E" id="G:810" from="G:2" to="G:4" class="link">
+  <xref db="DIP"  id="430E" type="src"/>
+
+  <feature uid="DIP:617X"  name="evidence" class="exp:s">
+   <src>PMID:7937747</src>
+   <val>Two hybrid test</val>
+   <xref db="DIP"  id="617X" type="src"/>
+   <xref db="DO"  id="DO:00018" type="ont"/>
+   <xref db="PSI"  id="MI:0018" type="ont"/>
+  </feature>
+
+ </edge>
+
+ <edge uid="DIP:1E" id="G:3" from="G:1" to="G:2" class="link">
+  <xref db="DIP"  id="1E" type="src"/>
+
+  <feature uid="DIP:1X"  name="evidence" class="exp:s">
+   <src>PMID:9194558</src>
+   <val>Experimental</val>
+   <xref db="DIP"  id="1X" type="src"/>
+   <xref db="DO"  id="DO:00045" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+
+
+<edge uid="DIP:2E" id="G:6" from="G:4" to="G:5" class="link">
+  <xref db="DIP"  id="2E" type="src"/>
+
+  <feature uid="DIP:2X"  name="evidence" class="exp:s">
+   <src>PMID:9194558</src>
+   <val>Experimental</val>
+   <xref db="DIP"  id="2X" type="src"/>
+   <xref db="DO"  id="DO:00045" type="ont"/>
+   <xref db="PSI"  id="MI:0045" type="ont"/>
+  </feature>
+
+ </edge>
+
+</project>
