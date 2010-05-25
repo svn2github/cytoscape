@@ -1,6 +1,6 @@
-<!-- =================================================================== -->
-<!-- Browser plugin (browser.jar) build file (Eclipse 3.1)     -->
-<!-- =================================================================== -->
+<!-- =============================================================== -->
+<!-- EquationFunctions plugin (EquationFunctions.jar) build file     -->
+<!-- =============================================================== -->
 
 <project name="EquationFunctions" default="EquationFunctions" basedir=".">
 
@@ -17,13 +17,17 @@
     <echo message="Building ${EquationFunctions.name} version ${EquationFunctions.version}."/>
 
     <!-- Inheritable properties -->
-    <property name="debug" value="on"/>
-    <property name="optimize" value="off"/>
+    <property name="debug" value="off"/>
+    <property name="optimize" value="on"/>
     <property name="deprecation" value="on"/>
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
     <property name="EquationFunctions.root.dir" value="."/>
     <property name="EquationFunctions.lib.dir" value="${EquationFunctions.root.dir}/lib"/>
+    
+    <property name="cytoscape.dir" value="../../eqn_attribs"/>
+    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
@@ -39,6 +43,18 @@
     <property name="EquationFunctions.packages" value="EquationFunctions.*"/>
     <!-- Subdirectory for test reports -->
     <property name="EquationFunctions.tests.reports.dir" value="${EquationFunctions.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="${cytoscape.dir}/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar"/>
+    <property name="equations.jar" value="${cytoscape.lib.dir}/equations.jar"/>
+    
+    <condition property="cytoscape.present">
+      <and> 
+	<available file="${cytoscape.jar}"/> 
+	<available file="${equations.jar}"/> 
+      </and>
+    </condition>
 
     <!-- Define excludes for EquationFunctions compile and javadoc -->
     <property name="EquationFunctions.excludes" value="**/notyet/*"/>
@@ -47,6 +63,8 @@
 
     <path id="EquationFunctions.project.class.path">
       <pathelement location="${EquationFunctions.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/equations.jar"/>
+      <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 
@@ -77,10 +95,6 @@
   <!-- Creates the EquationFunctions.jar file                                           -->
   <!-- =================================================================== -->
   <target name="EquationFunctions" depends="compile-EquationFunctions"  >
-    <!-- copy over images -->
-    <copy todir="${EquationFunctions.classes.dir}/EquationFunctions/images">
-      <fileset dir="${EquationFunctions.root.dir}/images"/>
-    </copy>
     <copy todir="${EquationFunctions.classes.dir}/EquationFunctions" file="${EquationFunctions.resources.dir}/plugin.props"/>
     <jar destfile="EquationFunctions.jar" manifest="${EquationFunctions.manifest.dir}/EquationFunctions.manifest">
       <fileset
@@ -90,7 +104,7 @@
          dir="${EquationFunctions.root.dir}/lib"
          includes="resources/**"/>
       <manifest>
-	<attribute name="Cytoscape-Plugin" value="EquationFunctions.EquationFunctionsPlugin"/>
+	<attribute name="Cytoscape-Plugin" value="EquationFunctions.AttributeEquationFunctionsPlugin"/>
       </manifest>
     </jar>
     <copy todir="${EquationFunctions.lib.dir}" file="EquationFunctions.jar"/>
