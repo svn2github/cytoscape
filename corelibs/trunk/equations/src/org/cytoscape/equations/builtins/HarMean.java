@@ -76,7 +76,7 @@ public class HarMean implements AttribFunction {
 	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final ArrayList<Double> a = new ArrayList();
+		final ArrayList<Double> a = new ArrayList<Double>();
 		for (int i = 0; i < args.length; ++i) {
 			if (args[i] instanceof List) {
 				final List list = (List)(args[i]);
