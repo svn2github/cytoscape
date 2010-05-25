@@ -1,5 +1,5 @@
 /*
-  File: AttribToken.java
+  File: Token.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,7 +30,7 @@
 package org.cytoscape.equations;
 
 
-public enum AttribToken {
+public enum Token {
 	//                     COMP. OP.    ARITH. OP.    STRING OP.
 	STRING_CONSTANT("?",     false,       false,        false),
 	FLOAT_CONSTANT("?",      false,       false,        false),
@@ -64,7 +64,7 @@ public enum AttribToken {
 	private final boolean isArithmeticOperator;
 	private final boolean isStringOperator;
 
-	AttribToken(final String asString, final boolean isComparisonOperator,
+	Token(final String asString, final boolean isComparisonOperator,
 		    final boolean isArithmeticOperator, final boolean isStringOperator)
 	{
 		this.asString = asString;

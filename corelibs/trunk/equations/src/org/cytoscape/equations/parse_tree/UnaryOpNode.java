@@ -30,7 +30,7 @@
 package org.cytoscape.equations.parse_tree;
 
 import java.util.Stack;
-import org.cytoscape.equations.AttribToken;
+import org.cytoscape.equations.Token;
 import org.cytoscape.equations.interpreter.Instruction;
 
 
@@ -38,10 +38,10 @@ import org.cytoscape.equations.interpreter.Instruction;
  *  A node in the parse tree representing a unary operator application.
  */
 public class UnaryOpNode implements Node {
-	private final AttribToken operator;
+	private final Token operator;
 	private final Node operand;
 
-	public UnaryOpNode(final AttribToken operator, final Node operand) {
+	public UnaryOpNode(final Token operator, final Node operand) {
 		if (operand == null)
 			throw new IllegalArgumentException("operand must not be null!");
 
@@ -63,7 +63,7 @@ public class UnaryOpNode implements Node {
 	 */
 	public Node getRightChild() { return null; }
 
-	public AttribToken getOperator() { return operator; }
+	public Token getOperator() { return operator; }
 
 	public void genCode(final Stack<Object> codeStack) {
 		operand.genCode(codeStack);

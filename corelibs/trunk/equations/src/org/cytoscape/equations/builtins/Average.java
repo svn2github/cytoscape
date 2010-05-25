@@ -32,11 +32,11 @@ package org.cytoscape.equations.builtins;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cytoscape.equations.AttribFunction;
-import org.cytoscape.equations.AttribFunctionUtil;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
-public class Average implements AttribFunction {
+public class Average implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -126,7 +126,7 @@ public class Average implements AttribFunction {
 		if (count == 0.0)
 			throw new IllegalArgumentException("can't take the average of an empty list!");
 
-		return AttribFunctionUtil.numericallySafeSum(AttribFunctionUtil.arrayListToArray(a)) / count;
+		return FunctionUtil.numericallySafeSum(FunctionUtil.arrayListToArray(a)) / count;
 	}
 
 	/**

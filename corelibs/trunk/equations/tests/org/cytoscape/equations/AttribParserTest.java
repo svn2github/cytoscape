@@ -36,7 +36,7 @@ import org.cytoscape.equations.builtins.*;
 
 
 public class AttribParserTest extends TestCase {
-	private final AttribParser parser = Parser.getParser();
+	private final EqnParser parser = Parser.getParser();
 
 	public void testSimpleExpr() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();

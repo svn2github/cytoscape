@@ -33,12 +33,12 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.cytoscape.equations.AttribFunction;
-import org.cytoscape.equations.AttribFunctionUtil;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.EquationUtil;
 
 
-public class Var implements AttribFunction {
+public class Var implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -82,18 +82,18 @@ public class Var implements AttribFunction {
 				final List list = (List)(args[i]);
 				for (final Object listElement : list) {
 					try {
-						a.add(AttribFunctionUtil.getArgAsDouble(listElement));
+						a.add(FunctionUtil.getArgAsDouble(listElement));
 					} catch (final IllegalArgumentException e) {
-						throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+						throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
 										   " element in call to VAR() is not a number: "
 										   + e.getMessage());
 					}
 				}
 			} else {
 				try {
-					a.add(AttribFunctionUtil.getArgAsDouble(args[i]));
+					a.add(FunctionUtil.getArgAsDouble(args[i]));
 				} catch (final IllegalArgumentException e) {
-					throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+					throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
 									   " element in call to VAR() is not a number: "
 									   + e.getMessage());
 				}
@@ -103,7 +103,7 @@ public class Var implements AttribFunction {
 		if (a.size() < 2)
 			throw new IllegalArgumentException("illegal list argument in call to VAR(): must have at least 2 elements!");
 
-		return AttribFunctionUtil.calcSampleVariance(AttribFunctionUtil.arrayListToArray(a));
+		return FunctionUtil.calcSampleVariance(FunctionUtil.arrayListToArray(a));
 	}
 
 	/**

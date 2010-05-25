@@ -1,5 +1,5 @@
 /*
-  File: AttribFunction.java
+  File: Function.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +33,7 @@ package org.cytoscape.equations;
 import java.util.List;
 
 
-public interface AttribFunction {
+public interface Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.

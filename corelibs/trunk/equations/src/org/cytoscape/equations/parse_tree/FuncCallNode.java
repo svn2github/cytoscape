@@ -31,7 +31,7 @@ package org.cytoscape.equations.parse_tree;
 
 
 import java.util.Stack;
-import org.cytoscape.equations.AttribFunction;
+import org.cytoscape.equations.Function;
 import org.cytoscape.equations.interpreter.Instruction;
 
 
@@ -39,11 +39,11 @@ import org.cytoscape.equations.interpreter.Instruction;
  *  A node in the parse tree representing a function call.
  */
 public class FuncCallNode implements Node {
-	private final AttribFunction func;
+	private final Function func;
 	final Class returnType;
 	private final Node[] args;
 
-	public FuncCallNode(final AttribFunction func, final Class returnType, final Node[] args) {
+	public FuncCallNode(final Function func, final Class returnType, final Node[] args) {
 		if (func == null)
 			throw new IllegalArgumentException("function must not be null!");
 		if (returnType == null)

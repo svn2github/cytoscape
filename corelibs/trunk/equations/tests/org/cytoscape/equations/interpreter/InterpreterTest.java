@@ -36,14 +36,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import junit.framework.*;
-import org.cytoscape.equations.AttribEqnCompiler;
-import org.cytoscape.equations.AttribFunction;
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Parser;
 import org.cytoscape.equations.builtins.*;
 
 
 public class InterpreterTest extends TestCase {
-	static private class BadReturnFunction implements AttribFunction {
+	static private class BadReturnFunction implements Function {
 		public String getName() { return "BAD"; }
 		public String getFunctionSummary() { return "Returns an invalid type at runtime."; }
 		public String getUsageDescription() { return "Call this with \"BAD()\"."; }
@@ -53,7 +53,7 @@ public class InterpreterTest extends TestCase {
 		public List<Class> getPossibleArgTypes(final Class[] leadingArgs) { return null; }
 	}
 
-	private final AttribEqnCompiler compiler = new AttribEqnCompiler();
+	private final EqnCompiler compiler = new EqnCompiler();
 
 	public void testSimpleStringConcatExpr() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();

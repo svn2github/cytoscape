@@ -34,53 +34,53 @@ import org.cytoscape.equations.builtins.*;
 
 
 /**
- *  A singleton AttribParser
+ *  A singleton EqnParser
  */
 public class Parser {
-	static private AttribParser attribParser;
+	static private EqnParser eqnParser;
 
-	synchronized static public AttribParser getParser() {
-		if (attribParser == null) {
-			attribParser = new AttribParserImpl();
+	synchronized static public EqnParser getParser() {
+		if (eqnParser == null) {
+			eqnParser = new EqnParserImpl();
 
-			attribParser.registerFunction(new Abs());
-			attribParser.registerFunction(new And());
-			attribParser.registerFunction(new Average());
-			attribParser.registerFunction(new Count());
-			attribParser.registerFunction(new Exp());
-			attribParser.registerFunction(new First());
-			attribParser.registerFunction(new GeoMean());
-			attribParser.registerFunction(new HarMean());
-			attribParser.registerFunction(new If());
-			attribParser.registerFunction(new Largest());
-			attribParser.registerFunction(new LCase());
-			attribParser.registerFunction(new Last());
-			attribParser.registerFunction(new Left());
-			attribParser.registerFunction(new Len());
-			attribParser.registerFunction(new Ln());
-			attribParser.registerFunction(new Log());
-			attribParser.registerFunction(new Max());
-			attribParser.registerFunction(new Median());
-			attribParser.registerFunction(new Mid());
-			attribParser.registerFunction(new Min());
-			attribParser.registerFunction(new Mod());
-			attribParser.registerFunction(new Mode());
-			attribParser.registerFunction(new Not());
-			attribParser.registerFunction(new Nth());
-			attribParser.registerFunction(new Or());
-			attribParser.registerFunction(new Pi());
-			attribParser.registerFunction(new Right());
-			attribParser.registerFunction(new Round());
-			attribParser.registerFunction(new Sign());
-			attribParser.registerFunction(new StDev());
-			attribParser.registerFunction(new Sqrt());
-			attribParser.registerFunction(new Substitute());
-			attribParser.registerFunction(new Trunc());
-			attribParser.registerFunction(new UCase());
-			attribParser.registerFunction(new Value());
-			attribParser.registerFunction(new Var());
+			eqnParser.registerFunction(new Abs());
+			eqnParser.registerFunction(new And());
+			eqnParser.registerFunction(new Average());
+			eqnParser.registerFunction(new Count());
+			eqnParser.registerFunction(new Exp());
+			eqnParser.registerFunction(new First());
+			eqnParser.registerFunction(new GeoMean());
+			eqnParser.registerFunction(new HarMean());
+			eqnParser.registerFunction(new If());
+			eqnParser.registerFunction(new Largest());
+			eqnParser.registerFunction(new LCase());
+			eqnParser.registerFunction(new Last());
+			eqnParser.registerFunction(new Left());
+			eqnParser.registerFunction(new Len());
+			eqnParser.registerFunction(new Ln());
+			eqnParser.registerFunction(new Log());
+			eqnParser.registerFunction(new Max());
+			eqnParser.registerFunction(new Median());
+			eqnParser.registerFunction(new Mid());
+			eqnParser.registerFunction(new Min());
+			eqnParser.registerFunction(new Mod());
+			eqnParser.registerFunction(new Mode());
+			eqnParser.registerFunction(new Not());
+			eqnParser.registerFunction(new Nth());
+			eqnParser.registerFunction(new Or());
+			eqnParser.registerFunction(new Pi());
+			eqnParser.registerFunction(new Right());
+			eqnParser.registerFunction(new Round());
+			eqnParser.registerFunction(new Sign());
+			eqnParser.registerFunction(new StDev());
+			eqnParser.registerFunction(new Sqrt());
+			eqnParser.registerFunction(new Substitute());
+			eqnParser.registerFunction(new Trunc());
+			eqnParser.registerFunction(new UCase());
+			eqnParser.registerFunction(new Value());
+			eqnParser.registerFunction(new Var());
 		}
 
-		return attribParser;
+		return eqnParser;
 	}
 }

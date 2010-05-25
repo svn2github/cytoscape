@@ -34,12 +34,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import org.cytoscape.equations.AttribFunction;
-import org.cytoscape.equations.AttribFunctionUtil;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.EquationUtil;
 
 
-public class Mode implements AttribFunction {
+public class Mode implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -87,9 +87,9 @@ public class Mode implements AttribFunction {
 		int i = 0;
 		for (final Object listElement : list) {
 			try {
-				x[i++] = AttribFunctionUtil.getArgAsDouble(listElement);
+				x[i++] = FunctionUtil.getArgAsDouble(listElement);
 			} catch (final IllegalArgumentException e) {
-				throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+				throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
 				                                   " list element in call to MODE() is not a number: "
 				                                   + e.getMessage());
 			}

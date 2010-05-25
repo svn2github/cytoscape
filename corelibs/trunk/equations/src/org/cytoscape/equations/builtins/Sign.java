@@ -32,11 +32,11 @@ package org.cytoscape.equations.builtins;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cytoscape.equations.AttribFunction;
-import org.cytoscape.equations.AttribFunctionUtil;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
-public class Sign implements AttribFunction {
+public class Sign implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -76,7 +76,7 @@ public class Sign implements AttribFunction {
 	public Object evaluateFunction(final Object[] args) {
 		double number;
 		try {
-			number = AttribFunctionUtil.getArgAsDouble(args[0]);
+			number = FunctionUtil.getArgAsDouble(args[0]);
 		} catch (final Exception e) {
 			throw new IllegalArgumentException("SIGN: " + e.getMessage());
 		}

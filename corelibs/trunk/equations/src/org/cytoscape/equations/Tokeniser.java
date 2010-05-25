@@ -1,5 +1,5 @@
 /*
-  File: AttribTokeniser.java
+  File: Tokeniser.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,8 +33,8 @@ import java.io.IOException;
 import java.io.StringReader;
 
 
-public class AttribTokeniser {
-	private AttribToken previousToken;
+public class Tokeniser {
+	private Token previousToken;
 	private StringReader reader;
 	private int stringPos, errorPos;
 	private long previousIntConstant, currentIntConstant;
@@ -47,7 +47,7 @@ public class AttribTokeniser {
 	private boolean putBackChar;
 	private boolean openingBraceSeen;
 
-	public AttribTokeniser(final String equationAsString) {
+	public Tokeniser(final String equationAsString) {
 		previousToken = null;
 		reader = new StringReader(equationAsString);
 		stringPos = 0;
@@ -55,9 +55,9 @@ public class AttribTokeniser {
 		openingBraceSeen = false;
 	}
 
-	public AttribToken getToken() {
+	public Token getToken() {
 		if (previousToken != null) {
-			final AttribToken retval = previousToken;
+			final Token retval = previousToken;
 			previousToken = null;
 
 			currentIntConstant = previousIntConstant;
@@ -74,28 +74,28 @@ public class AttribTokeniser {
 			nextCh = getChar();
 
 		if (nextCh == -1)
-			return AttribToken.EOS;
+			return Token.EOS;
 
 		final char ch = (char)nextCh;
 		switch (ch) {
-		case ':': return AttribToken.COLON;
-		case '^': return AttribToken.CARET;
+		case ':': return Token.COLON;
+		case '^': return Token.CARET;
 		case '{':
 			openingBraceSeen = true;
-			return AttribToken.OPEN_BRACE;
+			return Token.OPEN_BRACE;
 		case '}':
 			openingBraceSeen = false;
-			return AttribToken.CLOSE_BRACE;
-		case '(': return AttribToken.OPEN_PAREN;
-		case ')': return AttribToken.CLOSE_PAREN;
-		case '+': return AttribToken.PLUS;
-		case '-': return AttribToken.MINUS;
-		case '/': return AttribToken.DIV;
-		case '*': return AttribToken.MUL;
-		case '=': return AttribToken.EQUAL;
-		case '$': return AttribToken.DOLLAR;
-		case ',': return AttribToken.COMMA;
-		case '&': return AttribToken.AMPERSAND;
+			return Token.CLOSE_BRACE;
+		case '(': return Token.OPEN_PAREN;
+		case ')': return Token.CLOSE_PAREN;
+		case '+': return Token.PLUS;
+		case '-': return Token.MINUS;
+		case '/': return Token.DIV;
+		case '*': return Token.MUL;
+		case '=': return Token.EQUAL;
+		case '$': return Token.DOLLAR;
+		case ',': return Token.COMMA;
+		case '&': return Token.AMPERSAND;
 		}
 
 		if (ch == '"')
@@ -108,23 +108,23 @@ public class AttribTokeniser {
 		if (ch == '<') {
 			nextCh = getChar();
 			if (nextCh == -1)
-				return AttribToken.LESS_THAN;
+				return Token.LESS_THAN;
 			if ((char)nextCh == '>')
-				return AttribToken.NOT_EQUAL;
+				return Token.NOT_EQUAL;
 			if ((char)nextCh == '=')
-				return AttribToken.LESS_OR_EQUAL;
+				return Token.LESS_OR_EQUAL;
 			ungetChar(nextCh);
-			return AttribToken.LESS_THAN;
+			return Token.LESS_THAN;
 		}
 
 		if (ch == '>') {
 			nextCh = getChar();
 			if (nextCh == -1)
-				return AttribToken.GREATER_THAN;
+				return Token.GREATER_THAN;
 			if ((char)nextCh == '=')
-				return AttribToken.GREATER_OR_EQUAL;
+				return Token.GREATER_OR_EQUAL;
 			ungetChar(nextCh);
-			return AttribToken.GREATER_THAN;
+			return Token.GREATER_THAN;
 		}
 
 		if (Character.isLetter(ch)) {
@@ -134,10 +134,10 @@ public class AttribTokeniser {
 
 		errorMsg = "unexpected input character '" + Character.toString(ch) + "'";
 
-		return AttribToken.ERROR;
+		return Token.ERROR;
 	}
 
-	public void ungetToken(final AttribToken token) throws IllegalStateException {
+	public void ungetToken(final Token token) throws IllegalStateException {
 		if (previousToken != null)
 			throw new IllegalStateException("can't unget more than one token!");
 
@@ -154,16 +154,16 @@ public class AttribTokeniser {
 	 *  You should stop calling this after it returned "EOS"!
 	 */
 	public String getTokenAsString() {
-		final AttribToken token = getToken();
-		if (token == AttribToken.STRING_CONSTANT)
+		final Token token = getToken();
+		if (token == Token.STRING_CONSTANT)
 			return "STRING_CONSTANT: \"" + getStringConstant() + "\"";
-		if (token == AttribToken.FLOAT_CONSTANT)
+		if (token == Token.FLOAT_CONSTANT)
 			return "FLOAT_CONSTANT: \"" + getFloatConstant() + "\"";
-		if (token == AttribToken.BOOLEAN_CONSTANT)
+		if (token == Token.BOOLEAN_CONSTANT)
 			return "BOOLEAN_CONSTANT: \"" + getBooleanConstant() + "\"";
-		if (token == AttribToken.IDENTIFIER)
+		if (token == Token.IDENTIFIER)
 			return "IDENTIFIER: \"" + getIdent() + "\"";
-		if (token == AttribToken.ERROR)
+		if (token == Token.ERROR)
 			return "ERROR: \"" + getErrorMsg();
 		return token.toString();
 	}
@@ -220,7 +220,7 @@ public class AttribTokeniser {
 		putBackChar = true;
 	}
 	
-	private AttribToken parseStringConstant() {
+	private Token parseStringConstant() {
 		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
@@ -245,14 +245,14 @@ public class AttribTokeniser {
 						break;
 					default:
 						errorMsg = "unknown escape character '" + Character.toString(ch) + "'!";
-						return AttribToken.ERROR;
+						return Token.ERROR;
 					}
 
 					escaped = false;
 				}
 				else if (ch == '"') {
 					currentStringConstant = builder.toString();
-					return AttribToken.STRING_CONSTANT;
+					return Token.STRING_CONSTANT;
 				}
 				else
 					builder.append(ch);
@@ -260,10 +260,10 @@ public class AttribTokeniser {
 		}
 
 		errorMsg = "unterminated String constant!";
-		return AttribToken.ERROR;
+		return Token.ERROR;
 	}
 
-	private AttribToken parseNumericConstant() {
+	private Token parseNumericConstant() {
 		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
@@ -277,10 +277,10 @@ public class AttribTokeniser {
 				final double d = Double.parseDouble(builder.toString());
 				currentFloatConstant = d;
 				ungetChar(ch);
-				return AttribToken.FLOAT_CONSTANT;
+				return Token.FLOAT_CONSTANT;
 			} catch (final NumberFormatException e2) {
 				errorMsg = "invalid numeric constant!";
-				return AttribToken.ERROR;
+				return Token.ERROR;
 			}
 		}
 
@@ -298,7 +298,7 @@ public class AttribTokeniser {
 			ch = getChar();
 			if (ch == -1) {
 				errorMsg = "invalid numeric constant!";
-				return AttribToken.ERROR;
+				return Token.ERROR;
 			}
 
 			// Optional sign.
@@ -310,7 +310,7 @@ public class AttribTokeniser {
 			// Now we require at least a single digit.
 			if (!Character.isDigit((char)ch)) {
 				errorMsg = "missing digits in exponent!";
-				return AttribToken.ERROR;
+				return Token.ERROR;
 			}
 			ungetChar(ch);
 
@@ -323,21 +323,21 @@ public class AttribTokeniser {
 		try {
 			final double d = Double.parseDouble(builder.toString());
 			currentFloatConstant = d;
-			return AttribToken.FLOAT_CONSTANT;
+			return Token.FLOAT_CONSTANT;
 		} catch (final NumberFormatException e3) {
 			errorMsg = "invalid numeric constant!";
-			return AttribToken.ERROR;
+			return Token.ERROR;
 		}
 	}
 
 	/**
-	 *  Looks for an attribute name.  Attribute names in formulas cannot contain '}', ':', ',' nor
+	 *  Looks for an attribute name.  ute names in formulas cannot contain '}', ':', ',' nor
 	 *  '(' or ')'.  In order to allow a '}' or a ':' in an attribute name, it has to be esacped with a
 	 *  backslash.  Any backslash in an identifier a.k.a. attribute name implies that the next
 	 *  input character will be included in the identifier this also allows for embedding
 	 *  backslashes by doubling them.
 	 */
-	private AttribToken parseIdentifier() {
+	private Token parseIdentifier() {
 		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
@@ -358,7 +358,7 @@ public class AttribTokeniser {
 		}
 		if (escaped) {
 			errorMsg = "invalid attribute name at end of formula!";
-			return AttribToken.ERROR;
+			return Token.ERROR;
 		}
 		ungetChar(ch);
 
@@ -366,17 +366,17 @@ public class AttribTokeniser {
 
 		if (currentIdent.equalsIgnoreCase("TRUE")) {
 			currentBooleanConstant = true;
-			return AttribToken.BOOLEAN_CONSTANT;
+			return Token.BOOLEAN_CONSTANT;
 		}
 		if (currentIdent.equalsIgnoreCase("FALSE")) {
 			currentBooleanConstant = false;
-			return AttribToken.BOOLEAN_CONSTANT;
+			return Token.BOOLEAN_CONSTANT;
 		}
 
-		return AttribToken.IDENTIFIER;
+		return Token.IDENTIFIER;
 	}
 
-	private AttribToken parseSimpleIdentifier() {
+	private Token parseSimpleIdentifier() {
 		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
@@ -390,19 +390,19 @@ public class AttribTokeniser {
 
 		if (currentIdent.equalsIgnoreCase("TRUE")) {
 			currentBooleanConstant = true;
-			return AttribToken.BOOLEAN_CONSTANT;
+			return Token.BOOLEAN_CONSTANT;
 		}
 		if (currentIdent.equalsIgnoreCase("FALSE")) {
 			currentBooleanConstant = false;
-			return AttribToken.BOOLEAN_CONSTANT;
+			return Token.BOOLEAN_CONSTANT;
 		}
 
-		return AttribToken.IDENTIFIER;
+		return Token.IDENTIFIER;
 	}
 	
 	static public void main(final String[] args) {
 		for (final String arg : args) {
-			final AttribTokeniser tokeniser = new AttribTokeniser(arg);
+			final Tokeniser tokeniser = new Tokeniser(arg);
 			String tokenAsString;
 			do {
 				tokenAsString = tokeniser.getTokenAsString();

@@ -33,12 +33,12 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.cytoscape.equations.AttribFunction;
-import org.cytoscape.equations.AttribFunctionUtil;
 import org.cytoscape.equations.EquationUtil;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
-public class Largest implements AttribFunction {
+public class Largest implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -86,15 +86,15 @@ public class Largest implements AttribFunction {
 		int i = 0;
 		for (final Object listElement : list) {
 			try {
-				array[i++] = AttribFunctionUtil.getArgAsDouble(listElement);
+				array[i++] = FunctionUtil.getArgAsDouble(listElement);
 			} catch (final IllegalArgumentException e) {
-				throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i)
+				throw new IllegalArgumentException(FunctionUtil.getOrdinal(i)
 				                                   + " list element in call to LARGEST() is not a number: "
 				                                   + e.getMessage());
 			}
 		}
 
-		final double d = AttribFunctionUtil.getArgAsDouble(args[1]);
+		final double d = FunctionUtil.getArgAsDouble(args[1]);
 		final long k = EquationUtil.doubleToLong(d);
 		if (k <= 0)
 			throw new IllegalArgumentException("invalid index " + d + " in a call to LARGEST()!");

@@ -1,5 +1,5 @@
 /*
-  File: AttribParserImpl.java
+  File: EqnParserImpl.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -39,23 +39,23 @@ import java.util.TreeSet;
 import org.cytoscape.equations.parse_tree.*;
 
 
-class AttribParserImpl implements AttribParser {
+class EqnParserImpl implements EqnParser {
 	private String formula;
-	private AttribTokeniser tokeniser;
-	private Map<String, AttribFunction> nameToFunctionMap;
+	private Tokeniser tokeniser;
+	private Map<String, Function> nameToFunctionMap;
 	private String lastErrorMessage;
 	private Node parseTree;
 	private Map<String, Class> variableNameToTypeMap;
 	private Set<String> variableReferences;
-	private Set<AttribFunction> registeredFunctions;
+	private Set<Function> registeredFunctions;
 
-	public AttribParserImpl() {
-		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
-		this.registeredFunctions = new HashSet<AttribFunction>();
+	public EqnParserImpl() {
+		this.nameToFunctionMap = new HashMap<String, Function>();
+		this.registeredFunctions = new HashSet<Function>();
 		this.parseTree = null;
 	}
 
-	public void registerFunction(final AttribFunction func) throws IllegalArgumentException {
+	public void registerFunction(final Function func) throws IllegalArgumentException {
 		// Sanity check for the name of the function.
 		final String funcName = func.getName().toUpperCase();
 		if (funcName == null || funcName.equals(""))
@@ -69,7 +69,7 @@ class AttribParserImpl implements AttribParser {
 		registeredFunctions.add(func);
 	}
 
-	public Set<AttribFunction> getRegisteredFunctions() { return registeredFunctions; }
+	public Set<Function> getRegisteredFunctions() { return registeredFunctions; }
 
 	/**
 	 *  @param formula                a valid formula which must start with an equal sign
@@ -85,13 +85,13 @@ class AttribParserImpl implements AttribParser {
 		this.formula = formula;
 		this.variableNameToTypeMap = variableNameToTypeMap;
 		this.variableReferences = new TreeSet<String>();
-		this.tokeniser = new AttribTokeniser(formula.substring(1));
+		this.tokeniser = new Tokeniser(formula.substring(1));
 		this.lastErrorMessage = null;
 
 		try {
 			parseTree = parseExpr();
-			final AttribToken token = tokeniser.getToken();
-			if (token != AttribToken.EOS)
+			final Token token = tokeniser.getToken();
+			if (token != Token.EOS)
 				throw new IllegalStateException("premature end of expression: expected EOS, but found " + token + "!");
 		} catch (final IllegalStateException e) {
 			lastErrorMessage = e.getMessage();
@@ -136,13 +136,13 @@ class AttribParserImpl implements AttribParser {
 		Node exprNode = parseTerm();
 
 		for (;;) {
-			final AttribToken token = tokeniser.getToken();
-			if (token == AttribToken.PLUS || token == AttribToken.MINUS || token == AttribToken.AMPERSAND) {
+			final Token token = tokeniser.getToken();
+			if (token == Token.PLUS || token == Token.MINUS || token == Token.AMPERSAND) {
 				final Node term = parseTerm();
-				if (token == AttribToken.PLUS || token == AttribToken.MINUS)
+				if (token == Token.PLUS || token == Token.MINUS)
 					exprNode = handleBinaryArithmeticOp(token, exprNode, term);
 				else
-					exprNode = new BinOpNode(AttribToken.AMPERSAND, exprNode, term);
+					exprNode = new BinOpNode(Token.AMPERSAND, exprNode, term);
 			}
 			else if (token.isComparisonOperator()) {
 				final Node term = parseTerm();
@@ -161,8 +161,8 @@ class AttribParserImpl implements AttribParser {
 		Node termNode = parsePower();
 
 		for (;;) {
-			final AttribToken token = tokeniser.getToken();
-			if (token == AttribToken.MUL || token == AttribToken.DIV) {
+			final Token token = tokeniser.getToken();
+			if (token == Token.MUL || token == Token.DIV) {
 				final Node powerNode = parsePower();
 				termNode = handleBinaryArithmeticOp(token, termNode, powerNode);
 			}
@@ -179,8 +179,8 @@ class AttribParserImpl implements AttribParser {
 	private Node parsePower() {
 		Node powerNode = parseFactor();
 
-		final AttribToken token = tokeniser.getToken();
-		if (token == AttribToken.CARET) {
+		final Token token = tokeniser.getToken();
+		if (token == Token.CARET) {
 			final Node rhs = parsePower();
 			powerNode = handleBinaryArithmeticOp(token, powerNode, rhs);
 		}
@@ -194,23 +194,23 @@ class AttribParserImpl implements AttribParser {
 	 *  Implements factor --> constant | variable_ref | "(" expr ")" | ("-"|"+") factor  | func_call
 	 */
 	private Node parseFactor() {
-		AttribToken token = tokeniser.getToken();
+		Token token = tokeniser.getToken();
 
 		// 1. a constant
-		if (token == AttribToken.FLOAT_CONSTANT)
+		if (token == Token.FLOAT_CONSTANT)
 			return new FloatConstantNode(tokeniser.getFloatConstant());
-		else if (token == AttribToken.STRING_CONSTANT)
+		else if (token == Token.STRING_CONSTANT)
 			return new StringConstantNode(tokeniser.getStringConstant());
-		else if (token == AttribToken.BOOLEAN_CONSTANT)
+		else if (token == Token.BOOLEAN_CONSTANT)
 			return new BooleanConstantNode(tokeniser.getBooleanConstant());
 
 		// 2. a variable reference
-		if (token == AttribToken.DOLLAR) {
+		if (token == Token.DOLLAR) {
 			token = tokeniser.getToken();
-			final boolean usingOptionalBraces = token == AttribToken.OPEN_BRACE;
+			final boolean usingOptionalBraces = token == Token.OPEN_BRACE;
 			if (usingOptionalBraces)
 				token = tokeniser.getToken();
-			if (token != AttribToken.IDENTIFIER)
+			if (token != Token.IDENTIFIER)
 				throw new IllegalStateException("identifier expected!");
 
 			final Class varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
@@ -223,9 +223,9 @@ class AttribParserImpl implements AttribParser {
 				token = tokeniser.getToken();
 
 				// Do we have a default value?
-				if (token == AttribToken.COLON) {
+				if (token == Token.COLON) {
 					token = tokeniser.getToken();
-					if (token != AttribToken.FLOAT_CONSTANT && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
+					if (token != Token.FLOAT_CONSTANT && token != Token.STRING_CONSTANT && token != Token.BOOLEAN_CONSTANT)
 						throw new IllegalStateException("expected default value for variable reference!");
 					switch (token) {
 					case FLOAT_CONSTANT:
@@ -241,7 +241,7 @@ class AttribParserImpl implements AttribParser {
 					token = tokeniser.getToken();
 				}
 
-				if (token != AttribToken.CLOSE_BRACE)
+				if (token != Token.CLOSE_BRACE)
 					throw new IllegalStateException("closing brace expected!");
 			}
 
@@ -249,34 +249,34 @@ class AttribParserImpl implements AttribParser {
 		}
 
 		// 3. a parenthesised expression
-		if (token == AttribToken.OPEN_PAREN) {
+		if (token == Token.OPEN_PAREN) {
 			final Node exprNode = parseExpr();
 			token = tokeniser.getToken();
-			if (token != AttribToken.CLOSE_PAREN)
+			if (token != Token.CLOSE_PAREN)
 				throw new IllegalStateException("'(' expected!");
 
 			return exprNode;
 		}
 
 		// 4. a unary operator
-		if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
+		if (token == Token.PLUS || token == Token.MINUS) {
 			final Node factor = parseFactor();
 			return handleUnaryOp(token, factor);
 		}
 
 		// 5. function call
-		if (token == AttribToken.IDENTIFIER) {
+		if (token == Token.IDENTIFIER) {
 			tokeniser.ungetToken(token);
 			return parseFunctionCall();
 		}
 
-		if (token == AttribToken.ERROR)
+		if (token == Token.ERROR)
 			throw new IllegalStateException(tokeniser.getErrorMsg());
 
 		throw new IllegalStateException("unexpected input token: " + token + "!");
 	}
 
-	private Node handleUnaryOp(final AttribToken operator, final Node operand) {
+	private Node handleUnaryOp(final Token operator, final Node operand) {
 		if (operand.getType() == Boolean.class || operand.getType() == String.class)
 			throw new ArithmeticException("can't apply a unary " + operator.asString()
 			                              + " a boolean or string operand!");
@@ -287,20 +287,20 @@ class AttribParserImpl implements AttribParser {
 	 *   Implements func_call --> ident "(" ")" | ident "(" expr {"," expr} ")".
 	 */
 	private Node parseFunctionCall() {
-		AttribToken token = tokeniser.getToken();
-		if (token != AttribToken.IDENTIFIER)
+		Token token = tokeniser.getToken();
+		if (token != Token.IDENTIFIER)
 			throw new IllegalStateException();
 
 		final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
 		if (functionNameCandidate.equals("DEFINED"))
 			return parseDefined();
 
-		final AttribFunction func = nameToFunctionMap.get(functionNameCandidate);
+		final Function func = nameToFunctionMap.get(functionNameCandidate);
 		if (func == null)
 			throw new IllegalStateException("call to unknown function " + functionNameCandidate + "()!");
 
 		token = tokeniser.getToken();
-		if (token != AttribToken.OPEN_PAREN)
+		if (token != Token.OPEN_PAREN)
 			throw new IllegalStateException("expected '(' after function name \"" + functionNameCandidate + "\"!");
 
 		// Parse the comma-separated argument list.
@@ -308,7 +308,7 @@ class AttribParserImpl implements AttribParser {
 		ArrayList<Node> args = new ArrayList<Node>();
 		for (;;) {
 			token = tokeniser.getToken();
-			if (token ==  AttribToken.CLOSE_PAREN)
+			if (token ==  Token.CLOSE_PAREN)
 				break;
 
 			tokeniser.ungetToken(token);
@@ -317,7 +317,7 @@ class AttribParserImpl implements AttribParser {
 			args.add(exprNode);
 
 			token = tokeniser.getToken();
-			if (token != AttribToken.COMMA)
+			if (token != Token.COMMA)
 				break;
 		}
 
@@ -326,7 +326,7 @@ class AttribParserImpl implements AttribParser {
 			throw new IllegalStateException("invalid number or type of arguments in call to "
 			                                + functionNameCandidate + "()!");
 
-		if (token != AttribToken.CLOSE_PAREN)
+		if (token != Token.CLOSE_PAREN)
 			throw new IllegalStateException("expected the closing parenthesis of a call to "
 			                                + functionNameCandidate + "!");
 
@@ -339,30 +339,30 @@ class AttribParserImpl implements AttribParser {
 	 *  Implements --> "(" ["{"] ident ["}"] ")".  If the opening brace is found a closing brace is also required.
 	 */
 	private Node parseDefined() {
-		AttribToken token = tokeniser.getToken();
-		if (token != AttribToken.OPEN_PAREN)
+		Token token = tokeniser.getToken();
+		if (token != Token.OPEN_PAREN)
 			throw new IllegalStateException("\"(\" expected after \"DEFINED\"!");
 		token = tokeniser.getToken();
 		Class varRefType;
-		if (token != AttribToken.DOLLAR) {
-			if (token != AttribToken.IDENTIFIER)
+		if (token != Token.DOLLAR) {
+			if (token != Token.IDENTIFIER)
 				throw new IllegalStateException("variable reference expected after \"DEFINED(\"!");
 			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 		}
 		else {
 			token = tokeniser.getToken();
-			if (token != AttribToken.OPEN_BRACE)
+			if (token != Token.OPEN_BRACE)
 				throw new IllegalStateException("\"{\" expected after \"DEFINED($\"!");
 			token = tokeniser.getToken();
-			if (token != AttribToken.IDENTIFIER)
+			if (token != Token.IDENTIFIER)
 				throw new IllegalStateException("variable reference expected after \"DEFINED(${\"!");
 			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 			token = tokeniser.getToken();
-			if (token != AttribToken.CLOSE_BRACE)
+			if (token != Token.CLOSE_BRACE)
 				throw new IllegalStateException("\"}\" expected after after \"DEFINED(${" + tokeniser.getIdent() + "\"!");
 		}
 		token = tokeniser.getToken();
-		if (token != AttribToken.CLOSE_PAREN)
+		if (token != Token.CLOSE_PAREN)
 			throw new IllegalStateException("missing \")\" in call to DEFINED()!");
 
 		return new BooleanConstantNode(varRefType != null);
@@ -375,7 +375,7 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
 	 */
-	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
+	private Node handleBinaryArithmeticOp(final Token operator, final Node lhs, final Node rhs) {
 		// First operand is Double:
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);
@@ -413,7 +413,7 @@ class AttribParserImpl implements AttribParser {
 	/**
 	 *  Deals w/ any necessary type conversions for any binary comparison operation.
 	 */
-	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
+	private Node handleComparisonOp(final Token operator, final Node lhs, final Node rhs) {
 		// First operand is Double:
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
 			return new BinOpNode(operator, lhs, rhs);

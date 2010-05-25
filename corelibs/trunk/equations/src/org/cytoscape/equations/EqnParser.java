@@ -1,5 +1,5 @@
 /*
-  File: AttribParser.java
+  File: EqnParser.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -38,18 +38,18 @@ import java.util.TreeSet;
 import org.cytoscape.equations.parse_tree.*;
 
 
-public interface AttribParser {
+public interface EqnParser {
 	/**
 	 *  After registering an attribute function "func" it can be used in attribute equations.
 	 *  @param func  the function that will be registered
 	 *  @throws IllegalArgumentException will be thrown if "func" is null or the function has previously been registered
 	 */
-	public void registerFunction(final AttribFunction func) throws IllegalArgumentException;
+	public void registerFunction(final Function func) throws IllegalArgumentException;
 
 	/**
 	 *  @return the set of currently registered functions
 	 */
-	public Set<AttribFunction> getRegisteredFunctions();
+	public Set<Function> getRegisteredFunctions();
 
 	/**
 	 *  @param eqn                  a valid attribute equation which must start with an equal sign

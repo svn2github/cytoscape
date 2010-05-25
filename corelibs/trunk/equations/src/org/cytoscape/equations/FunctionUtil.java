@@ -1,5 +1,5 @@
 /*
-  File: AttribFunctionUtil.java
+  File: FunctionUtil.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 /**
  *  A collection of static methods that may be useful for the implementation of built-in functions.
  */
-public class AttribFunctionUtil {
+public class FunctionUtil {
 	/**
 	 *  Assumes that "arg" is a "String", "Boolean", "Long" or a "Double and converts it to "double".
 	 *  @return the converted argument as a "double"

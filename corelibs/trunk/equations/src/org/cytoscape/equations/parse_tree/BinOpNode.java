@@ -31,8 +31,8 @@ package org.cytoscape.equations.parse_tree;
 
 
 import java.util.Stack;
-import org.cytoscape.equations.AttribToken;
-import org.cytoscape.equations.AttribTokeniser;
+import org.cytoscape.equations.Token;
+import org.cytoscape.equations.Tokeniser;
 import org.cytoscape.equations.interpreter.Instruction;
 
 
@@ -40,10 +40,10 @@ import org.cytoscape.equations.interpreter.Instruction;
  *  A node in the parse tree representing a binary operator.
  */
 public class BinOpNode implements Node {
-	private final AttribToken operator;
+	private final Token operator;
 	private final Node lhs, rhs;
 
-	public BinOpNode(final AttribToken operator, final Node lhs, final Node rhs) {
+	public BinOpNode(final Token operator, final Node lhs, final Node rhs) {
 		if (lhs == null)
 			throw new IllegalArgumentException("left operand must not be null!");
 		if (rhs == null)
@@ -68,7 +68,7 @@ public class BinOpNode implements Node {
 	 */
 	public Node getRightChild() { return rhs; }
 
-	public AttribToken getOperator() { return operator; }
+	public Token getOperator() { return operator; }
 
 	public void genCode(final Stack<Object> codeStack) {
 		rhs.genCode(codeStack);

@@ -30,8 +30,8 @@
 package org.cytoscape.equations.interpreter;
 
 
-import org.cytoscape.equations.AttribFunction;
 import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.Function;
 import org.cytoscape.equations.parse_tree.*;
 import java.util.EmptyStackException;
 import java.util.Map;
@@ -341,9 +341,9 @@ public class Interpreter {
 	private void call() throws EmptyStackException, IllegalStateException {
 		// 1. get the function
 		final Object o = argumentStack.pop();
-		if (!(o instanceof AttribFunction))
+		if (!(o instanceof Function))
 			throw new IllegalStateException("expected an attribute function after the CALL opcode but found \"" + o.getClass() + "\" instead!");
-		final AttribFunction func = (AttribFunction)o;
+		final Function func = (Function)o;
 
 		// 2. get and validate the argument count
 		final int argCount;

@@ -1,5 +1,5 @@
 /*
-  File: AttribEqnCompiler.java
+  File: EqnCompiler.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,17 +32,17 @@ package org.cytoscape.equations;
 
 import java.util.Map;
 import java.util.Stack;
-import org.cytoscape.equations.AttribParser;
+import org.cytoscape.equations.EqnParser;
 import org.cytoscape.equations.interpreter.Instruction;
 import org.cytoscape.equations.parse_tree.Node;
 
 
-public class AttribEqnCompiler {
-	private AttribParser parser;
+public class EqnCompiler {
+	private EqnParser parser;
 	private Equation equation;
 	private String errorMsg;
 
-	public AttribEqnCompiler() {
+	public EqnCompiler() {
 		this.parser = Parser.getParser();
 	}
 

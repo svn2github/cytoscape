@@ -1,5 +1,5 @@
 /*
-  File: AttribTokeniserTest.java
+  File: TokeniserTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,9 +36,9 @@ import junit.framework.*;
 /**
  *
  */
-public class AttribTokeniserTest extends TestCase {
+public class TokeniserTest extends TestCase {
 	public void testScanner1() throws Exception {
-		final AttribTokeniser tokeniser = new AttribTokeniser("AND(1.0 >= $(BOB), OR($(JOE) = $(tiny), $(x) > LOG(1.3e17)))");
+		final Tokeniser tokeniser = new Tokeniser("AND(1.0 >= $(BOB), OR($(JOE) = $(tiny), $(x) > LOG(1.3e17)))");
 		final ArrayList<String> tokens = new ArrayList<String>();
 		String tokenAsString;
 		do {
@@ -93,7 +93,7 @@ public class AttribTokeniserTest extends TestCase {
 	 *  Please note that the scanner input here is the same as for testScanner1() except for the lack of spaces.
 	 */
 	public void testScanner2() throws Exception {
-		final AttribTokeniser tokeniser = new AttribTokeniser("AND(1.0>=$(BOB),OR($(JOE)=$(tiny),$(x)>LOG(1.3e17)))");
+		final Tokeniser tokeniser = new Tokeniser("AND(1.0>=$(BOB),OR($(JOE)=$(tiny),$(x)>LOG(1.3e17)))");
 		final ArrayList<String> tokens = new ArrayList<String>();
 		String tokenAsString;
 		do {
@@ -145,7 +145,7 @@ public class AttribTokeniserTest extends TestCase {
 	}
 
 	public void testScanner3() throws Exception {
-		final AttribTokeniser tokeniser = new AttribTokeniser("1.79^3");
+		final Tokeniser tokeniser = new Tokeniser("1.79^3");
 		final ArrayList<String> tokens = new ArrayList<String>();
 		String tokenAsString;
 		do {
@@ -168,7 +168,7 @@ public class AttribTokeniserTest extends TestCase {
 	}
 
 	public void testScanner4() throws Exception {
-		final AttribTokeniser tokeniser = new AttribTokeniser("true, fred, FALSE, True");
+		final Tokeniser tokeniser = new Tokeniser("true, fred, FALSE, True");
 		final ArrayList<String> tokens = new ArrayList<String>();
 		String tokenAsString;
 		do {
@@ -195,7 +195,7 @@ public class AttribTokeniserTest extends TestCase {
 	}
 
 	public void testScanner5() throws Exception {
-		final AttribTokeniser tokeniser = new AttribTokeniser(".79e2");
+		final Tokeniser tokeniser = new Tokeniser(".79e2");
 		final ArrayList<String> tokens = new ArrayList<String>();
 		String tokenAsString;
 		do {

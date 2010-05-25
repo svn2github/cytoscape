@@ -32,10 +32,10 @@ package org.cytoscape.equations.builtins;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cytoscape.equations.AttribFunction;
+import org.cytoscape.equations.Function;
 
 
-public class Not implements AttribFunction {
+public class Not implements Function {
 	/**
 	 *  Used to parse the function string.
 	 *  @return the name by which you must call the function when used in an attribute equation.

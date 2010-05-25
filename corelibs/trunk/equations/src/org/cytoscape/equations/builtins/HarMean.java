@@ -33,12 +33,12 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.cytoscape.equations.AttribFunction;
-import org.cytoscape.equations.AttribFunctionUtil;
 import org.cytoscape.equations.EquationUtil;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
-public class HarMean implements AttribFunction {
+public class HarMean implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -82,27 +82,27 @@ public class HarMean implements AttribFunction {
 				final List list = (List)(args[i]);
 				for (final Object listElement : list) {
 					try {
-						final double d = AttribFunctionUtil.getArgAsDouble(listElement);
+						final double d = FunctionUtil.getArgAsDouble(listElement);
 						if (d <= 0.0)
-							throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+							throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
 											   " argument in call to HARMEAN() is not a list of positive numbers!");
 						a.add(d);
 					} catch (final IllegalArgumentException e) {
-						throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+						throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
 										   " element in call to HARMEAN() is not a list of numbers: "
 										   + e.getMessage());
 					}
 				}
 			} else {
 				try {
-					final double d = AttribFunctionUtil.getArgAsDouble(args[i]);
+					final double d = FunctionUtil.getArgAsDouble(args[i]);
 					if (d <= 0.0)
-						throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+						throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
 										   " element in call to HARMEAN() must be positive!");
 					
 					a.add(d);
 				} catch (final IllegalArgumentException e) {
-					throw new IllegalArgumentException(AttribFunctionUtil.getOrdinal(i) +
+					throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
 									   " element in call to HARMEAN() is not a number: "
 									   + e.getMessage());
 				}
