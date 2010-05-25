@@ -308,9 +308,9 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			// hack to add transfer handlers to canvas
 			InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
 
-			if (this.getDesktopPane() != null) {
-				canvas.addTransferComponent(this.getDesktopPane());
-			}
+//			if (this.getDesktopPane() != null) {
+//				canvas.addTransferComponent(this.getDesktopPane());
+//			}
 		}
 		// handle putting a newly created CyNetworkView into a Container
 		else if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(e.getPropertyName())) {
