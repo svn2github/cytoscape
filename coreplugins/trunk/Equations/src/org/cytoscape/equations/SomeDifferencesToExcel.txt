@@ -1,0 +1,6 @@
+Differences to Excel
+====================
+
+1) Most of the functions built into Excel are missing.
+2) Cell references look $A1 in Excel, in Cytoscape attribute references look like ${A1}.
+3) Excel allows for comparsions like "1<2<3" (Which, bizarrely, evaluates to FALSE!), in Cytoscape only comparisons with one operator are legal.

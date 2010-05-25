@@ -1,0 +1,199 @@
+<!-- =================================================================== -->
+<!-- Browser plugin (browser.jar) build file (Eclipse 3.1)     -->
+<!-- =================================================================== -->
+
+<project name="equations" default="equations" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-equations">
+    <tstamp/>
+    <property name="equations.Name" value="equations"/>
+    <property name="equations.name" value="equations"/>
+    <property name="equations.version" value="0.7"/>
+    <property name="equations.year" value="200"/>
+    
+    <echo message="Building ${equations.name} version ${equations.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="equations.root.dir" value="."/>
+    <property name="equations.lib.dir" value="${equations.root.dir}/lib"/>
+
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="equations.root.dir" value="./"/>
+    <property name="equations.src.dir" value="${equations.root.dir}/src"/>
+    <property name="equations.classes.dir" value="${equations.root.dir}/classes"/>
+    <property name="equations.javadoc.dir" value="${javadoc.dir}/equations"/>
+    <property name="equations.resources.dir" value="${equations.root.dir}/resources"/>
+    <property name="equations.manifest.dir" value="${equations.root.dir}/manifest"/>
+    <property name="equations.packages" value="equations.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="equations.tests.reports.dir" value="${equations.root.dir}/reports/tests" />
+
+    <!-- Define excludes for equations compile and javadoc -->
+    <property name="equations.excludes" value="**/notyet/*"/>
+    <property name="equations.tests.excludes" value="**/notyet/*"/>
+    <property name="equations.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="equations.project.class.path">
+      <pathelement location="${equations.classes.dir}"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the equations project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-equations" depends="init-equations"  >
+
+    <echo message=" COMPILE equations "/>
+
+    <mkdir dir="${equations.classes.dir}"/>
+    <javac srcdir="${equations.src.dir}"
+           excludes="${equations.excludes}"
+           classpathref="equations.project.class.path"
+           destdir="${equations.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+	   source="1.5"
+	   target="1.5"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the equations.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="equations" depends="compile-equations"  >
+    <!-- copy over images -->
+    <copy todir="${equations.classes.dir}/equations/images">
+      <fileset dir="${equations.root.dir}/images"/>
+    </copy>
+    <copy todir="${equations.classes.dir}/equations" file="${equations.resources.dir}/plugin.props"/>
+    <jar destfile="equations.jar" manifest="${equations.manifest.dir}/equations.manifest">
+      <fileset
+         dir="${equations.classes.dir}"
+         includes="**"/>
+      <fileset
+         dir="${equations.root.dir}/lib"
+         includes="resources/**"/>
+      <manifest>
+	<attribute name="Cytoscape-Plugin" value="equations.AttributeEquationsPlugin"/>
+      </manifest>
+    </jar>
+    <copy todir="${equations.lib.dir}" file="equations.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the equations tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="equations"  >
+    <mkdir dir="${equations.classes.dir}"/>
+    <javac srcdir="${equations.src.dir}"
+           includes="**/test/*"
+           excludes="${equations.tests.excludes}"
+           classpathref="equations.project.class.path"
+           destdir="${equations.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the equations-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="equations-tests.jar"
+         basedir="${equations.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="equations"/>
+
+  <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="equations" >
+    
+    <java classname="cytoscape.cytoscape" 
+          classpathref="equations.project.class.path"
+          fork="true"/>
+    <arg line = "-p ${equations.lib.dir}/equations.jar"/>
+    
+
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in equations-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${equations.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${equations.classes.dir}"
+       maxmemory="1G"
+       >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="equations.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${equations.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${equations.classes.dir}"
+           includes="**/test/*"
+           excludes="${equations.tests.excludes}"
+           />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-equations" >
+    <mkdir dir="${equations.javadoc.dir}"/>
+    <javadoc packagenames="${equations.packages}"
+             excludepackagenames="${equations.packages.excludes}"
+             sourcepath="${equations.src.dir}"
+             destdir="${equations.javadoc.dir}"
+             classpathref="equations.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${equations.Name} API"
+             doctitle="${equations.Name}"
+	     />
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-equations">
+    <delete dir="${equations.classes.dir}"/>
+    <delete file="equations.jar"/>
+    <delete file="${equations.lib.dir}/equations.jar"/>
+    <delete file="equations-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

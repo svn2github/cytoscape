@@ -1,0 +1,456 @@
+/*
+  File: AttribParserImpl.java
+
+  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+package cytoscape.data.eqn_attribs;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import cytoscape.data.eqn_attribs.parse_tree.*;
+
+
+class AttribParserImpl implements AttribParser {
+	private String formula;
+	private AttribTokeniser tokeniser;
+	private Map<String, AttribFunction> nameToFunctionMap;
+	private String lastErrorMessage;
+	private Node parseTree;
+	private Map<String, Class> variableNameToTypeMap;
+	private Set<String> variableReferences;
+	private Set<AttribFunction> registeredFunctions;
+
+	public AttribParserImpl() {
+		this.nameToFunctionMap = new HashMap<String, AttribFunction>();
+		this.registeredFunctions = new HashSet<AttribFunction>();
+		this.parseTree = null;
+	}
+
+	public void registerFunction(final AttribFunction func) throws IllegalArgumentException {
+		// Sanity check for the name of the function.
+		final String funcName = func.getName().toUpperCase();
+		if (funcName == null || funcName.equals(""))
+			throw new IllegalArgumentException("empty or missing function name!");
+
+		// Sanity check to catch duplicate function registrations.
+		if (nameToFunctionMap.get(funcName) != null)
+			throw new IllegalArgumentException("attempt at registering " + funcName + "() twice!");
+
+		nameToFunctionMap.put(funcName, func);
+		registeredFunctions.add(func);
+	}
+
+	public Set<AttribFunction> getRegisteredFunctions() { return registeredFunctions; }
+
+	/**
+	 *  @param formula                a valid formula which must start with an equal sign
+	 *  @param variableNameToTypeMap  a list of existing variable names and their types
+	 *  @return true if the parse succeeded otherwise false
+	 */
+	public boolean parse(final String formula, final Map<String, Class> variableNameToTypeMap) {
+		if (formula == null)
+			throw new NullPointerException("formula string must not be null!");
+		if (formula.length() < 1 || formula.charAt(0) != '=')
+			throw new NullPointerException("formula string must start with an equal sign!");
+
+		this.formula = formula;
+		this.variableNameToTypeMap = variableNameToTypeMap;
+		this.variableReferences = new TreeSet<String>();
+		this.tokeniser = new AttribTokeniser(formula.substring(1));
+		this.lastErrorMessage = null;
+
+		try {
+			parseTree = parseExpr();
+			final AttribToken token = tokeniser.getToken();
+			if (token != AttribToken.EOS)
+				throw new IllegalStateException("premature end of expression: expected EOS, but found " + token + "!");
+		} catch (final IllegalStateException e) {
+			lastErrorMessage = e.getMessage();
+			return false;
+		} catch (final ArithmeticException e) {
+			lastErrorMessage = e.getMessage();
+			return false;
+		} catch (final IllegalArgumentException e) {
+			lastErrorMessage = e.getMessage();
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 *  @return the result type of the parsed formula if the parse succeeded, otherwise null
+	 */
+	public Class getType() { return parseTree == null ? null : parseTree.getType(); }
+
+	/**
+	 *  If parse() failed, this will return the last error messages.
+	 *  @return the last error message of null
+	 */
+	public String getErrorMsg() { return lastErrorMessage; }
+
+	public Set<String> getVariableReferences() { return variableReferences; }
+
+	/**
+	 *  @return the parse tree.  Must only be called if parse() returns true!
+	 */
+	public Node getParseTree() { return parseTree; }
+
+	//
+	// The actual parsing takes place here.
+	//
+
+	/**
+	 *   Implements expr --> term | term {+ term } | term {- term} | term {&amp; term} | term compOp term.
+	 */
+	private Node parseExpr() {
+		Node exprNode = parseTerm();
+
+		for (;;) {
+			final AttribToken token = tokeniser.getToken();
+			if (token == AttribToken.PLUS || token == AttribToken.MINUS || token == AttribToken.AMPERSAND) {
+				final Node term = parseTerm();
+				if (token == AttribToken.PLUS || token == AttribToken.MINUS)
+					exprNode = handleBinaryArithmeticOp(token, exprNode, term);
+				else
+					exprNode = new BinOpNode(AttribToken.AMPERSAND, exprNode, term);
+			}
+			else if (token.isComparisonOperator()) {
+				final Node term = parseTerm();
+				return handleComparisonOp(token, exprNode, term); // No chaining for comparison operators!
+			} else {
+				tokeniser.ungetToken(token);
+				return exprNode;
+			}
+		}
+	}
+
+	/**
+	 *  Implements term --> power {* power} | power {/ power}
+	 */
+	private Node parseTerm() {
+		Node termNode = parsePower();
+
+		for (;;) {
+			final AttribToken token = tokeniser.getToken();
+			if (token == AttribToken.MUL || token == AttribToken.DIV) {
+				final Node powerNode = parsePower();
+				termNode = handleBinaryArithmeticOp(token, termNode, powerNode);
+			}
+			else {
+				tokeniser.ungetToken(token);
+				return termNode;
+			}
+		}
+	}
+
+	/**
+	 *  Implements power --> factor | factor ^ power
+	 */
+	private Node parsePower() {
+		Node powerNode = parseFactor();
+
+		final AttribToken token = tokeniser.getToken();
+		if (token == AttribToken.CARET) {
+			final Node rhs = parsePower();
+			powerNode = handleBinaryArithmeticOp(token, powerNode, rhs);
+		}
+		else
+			tokeniser.ungetToken(token);
+
+		return powerNode;
+	}
+
+	/**
+	 *  Implements factor --> constant | variable_ref | "(" expr ")" | ("-"|"+") factor  | func_call
+	 */
+	private Node parseFactor() {
+		AttribToken token = tokeniser.getToken();
+
+		// 1. a constant
+		if (token == AttribToken.FLOAT_CONSTANT)
+			return new FloatConstantNode(tokeniser.getFloatConstant());
+		else if (token == AttribToken.STRING_CONSTANT)
+			return new StringConstantNode(tokeniser.getStringConstant());
+		else if (token == AttribToken.BOOLEAN_CONSTANT)
+			return new BooleanConstantNode(tokeniser.getBooleanConstant());
+
+		// 2. a variable reference
+		if (token == AttribToken.DOLLAR) {
+			token = tokeniser.getToken();
+			final boolean usingOptionalBraces = token == AttribToken.OPEN_BRACE;
+			if (usingOptionalBraces)
+				token = tokeniser.getToken();
+			if (token != AttribToken.IDENTIFIER)
+				throw new IllegalStateException("identifier expected!");
+
+			final Class varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
+			if (varRefType == null)
+				throw new IllegalStateException("unknown variable reference name: \"" + tokeniser.getIdent() + "\"!");
+			variableReferences.add(tokeniser.getIdent());
+
+			Object defaultValue = null;
+			if (usingOptionalBraces) {
+				token = tokeniser.getToken();
+
+				// Do we have a default value?
+				if (token == AttribToken.COLON) {
+					token = tokeniser.getToken();
+					if (token != AttribToken.FLOAT_CONSTANT && token != AttribToken.STRING_CONSTANT && token != AttribToken.BOOLEAN_CONSTANT)
+						throw new IllegalStateException("expected default value for variable reference!");
+					switch (token) {
+					case FLOAT_CONSTANT:
+						defaultValue = new Double(tokeniser.getFloatConstant());
+						break;
+					case BOOLEAN_CONSTANT:
+						defaultValue = new Boolean(tokeniser.getBooleanConstant());
+						break;
+					case STRING_CONSTANT:
+						defaultValue = new String(tokeniser.getStringConstant());
+						break;
+					}
+					token = tokeniser.getToken();
+				}
+
+				if (token != AttribToken.CLOSE_BRACE)
+					throw new IllegalStateException("closing brace expected!");
+			}
+
+			return new IdentNode(tokeniser.getIdent(), defaultValue, varRefType);
+		}
+
+		// 3. a parenthesised expression
+		if (token == AttribToken.OPEN_PAREN) {
+			final Node exprNode = parseExpr();
+			token = tokeniser.getToken();
+			if (token != AttribToken.CLOSE_PAREN)
+				throw new IllegalStateException("'(' expected!");
+
+			return exprNode;
+		}
+
+		// 4. a unary operator
+		if (token == AttribToken.PLUS || token == AttribToken.MINUS) {
+			final Node factor = parseFactor();
+			return handleUnaryOp(token, factor);
+		}
+
+		// 5. function call
+		if (token == AttribToken.IDENTIFIER) {
+			tokeniser.ungetToken(token);
+			return parseFunctionCall();
+		}
+
+		if (token == AttribToken.ERROR)
+			throw new IllegalStateException(tokeniser.getErrorMsg());
+
+		throw new IllegalStateException("unexpected input token: " + token + "!");
+	}
+
+	private Node handleUnaryOp(final AttribToken operator, final Node operand) {
+		if (operand.getType() == Boolean.class || operand.getType() == String.class)
+			throw new ArithmeticException("can't apply a unary " + operator.asString()
+			                              + " a boolean or string operand!");
+		return new UnaryOpNode(operator, operand);
+	}
+
+	/**
+	 *   Implements func_call --> ident "(" ")" | ident "(" expr {"," expr} ")".
+	 */
+	private Node parseFunctionCall() {
+		AttribToken token = tokeniser.getToken();
+		if (token != AttribToken.IDENTIFIER)
+			throw new IllegalStateException();
+
+		final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
+		if (functionNameCandidate.equals("DEFINED"))
+			return parseDefined();
+
+		final AttribFunction func = nameToFunctionMap.get(functionNameCandidate);
+		if (func == null)
+			throw new IllegalStateException("call to unknown function " + functionNameCandidate + "()!");
+
+		token = tokeniser.getToken();
+		if (token != AttribToken.OPEN_PAREN)
+			throw new IllegalStateException("expected '(' after function name \"" + functionNameCandidate + "\"!");
+
+		// Parse the comma-separated argument list.
+		final ArrayList<Class> argTypes = new ArrayList<Class>();
+		ArrayList<Node> args = new ArrayList<Node>();
+		for (;;) {
+			token = tokeniser.getToken();
+			if (token ==  AttribToken.CLOSE_PAREN)
+				break;
+
+			tokeniser.ungetToken(token);
+			final Node exprNode = parseExpr();
+			argTypes.add(exprNode.getType());
+			args.add(exprNode);
+
+			token = tokeniser.getToken();
+			if (token != AttribToken.COMMA)
+				break;
+		}
+
+		final Class returnType = func.validateArgTypes(argTypes.toArray(new Class[argTypes.size()]));
+		if (returnType == null)
+			throw new IllegalStateException("invalid number or type of arguments in call to "
+			                                + functionNameCandidate + "()!");
+
+		if (token != AttribToken.CLOSE_PAREN)
+			throw new IllegalStateException("expected the closing parenthesis of a call to "
+			                                + functionNameCandidate + "!");
+
+		Node[] nodeArray = new Node[args.size()];
+		return new FuncCallNode(func, returnType, args.toArray(nodeArray));
+	}
+
+
+	/**
+	 *  Implements --> "(" ["{"] ident ["}"] ")".  If the opening brace is found a closing brace is also required.
+	 */
+	private Node parseDefined() {
+		AttribToken token = tokeniser.getToken();
+		if (token != AttribToken.OPEN_PAREN)
+			throw new IllegalStateException("\"(\" expected after \"DEFINED\"!");
+		token = tokeniser.getToken();
+		Class varRefType;
+		if (token != AttribToken.DOLLAR) {
+			if (token != AttribToken.IDENTIFIER)
+				throw new IllegalStateException("variable reference expected after \"DEFINED(\"!");
+			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
+		}
+		else {
+			token = tokeniser.getToken();
+			if (token != AttribToken.OPEN_BRACE)
+				throw new IllegalStateException("\"{\" expected after \"DEFINED($\"!");
+			token = tokeniser.getToken();
+			if (token != AttribToken.IDENTIFIER)
+				throw new IllegalStateException("variable reference expected after \"DEFINED(${\"!");
+			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
+			token = tokeniser.getToken();
+			if (token != AttribToken.CLOSE_BRACE)
+				throw new IllegalStateException("\"}\" expected after after \"DEFINED(${" + tokeniser.getIdent() + "\"!");
+		}
+		token = tokeniser.getToken();
+		if (token != AttribToken.CLOSE_PAREN)
+			throw new IllegalStateException("missing \")\" in call to DEFINED()!");
+
+		return new BooleanConstantNode(varRefType != null);
+	}
+
+	//
+	// Helper functions for the parseXXX() methods.
+	//
+
+	/**
+	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
+	 */
+	private Node handleBinaryArithmeticOp(final AttribToken operator, final Node lhs, final Node rhs) {
+		// First operand is Double:
+		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Double.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+
+		// First operand is Long:
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Long.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+
+		// First operand is Boolean:
+		if (lhs.getType() == Boolean.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Boolean.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+
+		// First operand is String:
+		if (lhs.getType() == String.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == String.class
+		    && (rhs.getType() == Long.class || lhs.getType() == Boolean.class || lhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+
+		throw new ArithmeticException("incompatible operands for \""
+			                      + operator.asString() + "\"! (lhs="
+			                      + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                      + rhs.toString() + ":" + rhs.getType() + ")");
+	}
+
+	/**
+	 *  Deals w/ any necessary type conversions for any binary comparison operation.
+	 */
+	private Node handleComparisonOp(final AttribToken operator, final Node lhs, final Node rhs) {
+		// First operand is Double:
+		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		if (lhs.getType() == Double.class && rhs.getType() == Boolean.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+
+		// First operand is Long:
+		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Long.class
+		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+
+		// First operand is Boolean:
+		if (lhs.getType() == Boolean.class && rhs.getType() == Boolean.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == Boolean.class && rhs.getType() == Double.class)
+			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+		if (lhs.getType() == Boolean.class && rhs.getType() == Long.class)
+			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+		if (lhs.getType() == Boolean.class && rhs.getType() == String.class)
+			return new BinOpNode(operator, new SConvNode(lhs), rhs);
+
+		// First operand is String:
+		if (lhs.getType() == String.class && rhs.getType() == String.class)
+			return new BinOpNode(operator, lhs, rhs);
+		if (lhs.getType() == String.class
+		    && (rhs.getType() == Double.class || rhs.getType() == Long.class || rhs.getType() == Boolean.class))
+			return new BinOpNode(operator, lhs, new SConvNode(rhs));
+
+		throw new IllegalArgumentException("incompatible operands for \""
+			                           + operator.asString() + "\"! (lhs="
+			                           + lhs.toString() + ":" + lhs.getType() + ", rhs="
+			                           + rhs.toString() + ":" + rhs.getType() + ")");
+	 }
+}
