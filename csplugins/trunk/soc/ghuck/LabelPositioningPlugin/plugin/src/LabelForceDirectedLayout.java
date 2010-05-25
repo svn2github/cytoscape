@@ -33,6 +33,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.LayoutProperties;
 
+import cytoscape.logger.CyLogger;
+
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
@@ -125,6 +127,8 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     
     public LabelForceDirectedLayout() {
 	super();
+
+	logger = CyLogger.getLogger(LabelForceDirectedLayout.class);
 	
 	if (edgeWeighter == null)
 	    edgeWeighter = new EdgeWeighter();
@@ -320,6 +324,9 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 
     public void layoutPartion(LayoutPartition part) {
+	
+	logger.info("Applying Label Force-Directed Layout to " + part.nodeCount() + " nodes and "
+		    + part.edgeCount() + " edges: ");
 	
 	// Reset the label position of all nodes - vmui
 	if (resetPosition) {
