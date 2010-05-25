@@ -57,6 +57,8 @@ import cytoscape.data.eqn_attribs.Parser;
 import cytoscape.data.formulas.Degree;
 import cytoscape.data.formulas.InDegree;
 import cytoscape.data.formulas.OutDegree;
+import cytoscape.data.formulas.SourceID;
+import cytoscape.data.formulas.TargetID;
 import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.dialogs.logger.LoggerDialog;
 import cytoscape.init.CyInitParams;
@@ -216,6 +218,8 @@ public class CytoscapeInit {
 			attribParser.registerFunction(new Degree());
 			attribParser.registerFunction(new InDegree());
 			attribParser.registerFunction(new OutDegree());
+			attribParser.registerFunction(new SourceID());
+			attribParser.registerFunction(new TargetID());
 
 			logger.info("loading session...");
 			boolean sessionLoaded = false;
