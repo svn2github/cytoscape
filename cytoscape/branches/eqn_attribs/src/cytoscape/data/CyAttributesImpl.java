@@ -35,19 +35,17 @@ import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.util.MultiHashMapFactory;
-import cytoscape.data.eqn_attribs.Equation;
-import cytoscape.data.eqn_attribs.interpreter.IdentDescriptor;
-import cytoscape.data.eqn_attribs.interpreter.Interpreter;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.TopoGraphNode;
 import cytoscape.util.TopologicalSort;
 
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.interpreter.IdentDescriptor;
+import org.cytoscape.equations.interpreter.Interpreter;
+
 import java.util.*;
 
 
-/**
- *
- */
 public class CyAttributesImpl implements CyAttributes {
 	private final MultiHashMap mmap;
 	private final MultiHashMapDefinition mmapDef;

@@ -39,10 +39,11 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.eqn_attribs.AttribEqnCompiler;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.logger.CyLogger;
+
+import org.cytoscape.equations.EqnCompiler;
 
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -632,7 +633,7 @@ class XGMMLParser extends DefaultHandler {
 	                                          final Map<String, Class> attribNameToTypeMap,
 	                                          final CyAttributes attribs)
 	{
-		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		final EqnCompiler compiler = new EqnCompiler();
 		for (final AttribEquation attribEquation : attribEquations) {
 			if (!(compiler.compile(attribEquation.getEquation(), attribNameToTypeMap)))
 				throw new IllegalStateException("failed to compile an equation in an XGMML input file ("

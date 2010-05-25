@@ -34,10 +34,11 @@ import cytoscape.Cytoscape;
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.eqn_attribs.Equation;
 
 import giny.model.Edge;
 import giny.model.Node;
+
+import org.cytoscape.equations.Equation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

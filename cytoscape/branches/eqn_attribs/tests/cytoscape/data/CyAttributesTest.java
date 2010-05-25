@@ -31,7 +31,8 @@ package cytoscape.data;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
-import cytoscape.data.eqn_attribs.AttribEqnCompiler;
+
+import org.cytoscape.equations.EqnCompiler;
 
 import junit.framework.TestCase;
 
@@ -392,7 +393,7 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void testGetLastEquationError() {
-		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		final EqnCompiler compiler = new EqnCompiler();
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 
 		// First a case that should result in an error message...

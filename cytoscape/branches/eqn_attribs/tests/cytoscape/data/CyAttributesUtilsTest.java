@@ -42,10 +42,11 @@ import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
-import cytoscape.data.eqn_attribs.AttribEqnCompiler;
-import cytoscape.data.eqn_attribs.Equation;
-
 import giny.model.GraphObject;
+
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Equation;
+
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -223,7 +224,7 @@ public class CyAttributesUtilsTest extends TestCase {
 		attrs.setAttribute(goID, "DoubleTest", new Double(5.0));
 
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		final EqnCompiler compiler = new EqnCompiler();
 		compiler.compile("=ABS(-13) + 12.3", attribNameToTypeMap);
 		final Equation equation = compiler.getEquation();
 		attrs.setAttribute(goID, "EquationTest", equation);

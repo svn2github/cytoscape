@@ -31,7 +31,7 @@ package cytoscape.data;
 
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.eqn_attribs.Equation;
+import org.cytoscape.equations.Equation;
 
 import java.util.List;
 import java.util.Map;

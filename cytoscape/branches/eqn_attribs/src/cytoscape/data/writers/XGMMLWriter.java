@@ -57,13 +57,16 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LineStyle;
+
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
+
+import org.cytoscape.equations.Equation;
+
 
 enum GraphicsType {
 	ARC("arc"),

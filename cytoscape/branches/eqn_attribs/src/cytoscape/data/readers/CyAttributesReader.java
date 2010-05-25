@@ -3,13 +3,6 @@
 
   Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
@@ -49,10 +42,12 @@ import java.util.StringTokenizer;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.eqn_attribs.AttribEqnCompiler;
-import cytoscape.data.eqn_attribs.Equation;
 import cytoscape.data.writers.CyAttributesWriter;
 import cytoscape.logger.CyLogger;
+
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Equation;
+
 import java.net.URLDecoder;
 import java.text.MessageFormat;
 
@@ -96,7 +91,7 @@ public class CyAttributesReader {
 	}
 
 	private void addEquations(final CyAttributes cyAttrs) {
-		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		final EqnCompiler compiler = new EqnCompiler();
 		final String[] allAttribNames = cyAttrs.getAttributeNames();
 		final Class[] allTypes = new Class[allAttribNames.length];
 		int index = 0;

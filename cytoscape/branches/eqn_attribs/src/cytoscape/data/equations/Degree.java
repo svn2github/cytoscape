@@ -1,5 +1,5 @@
 /*
-  File: If.java
+  File: Degree.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -27,64 +27,66 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs.builtins;
+package cytoscape.data.equations;
 
 
 import java.util.ArrayList;
 import java.util.List;
-import cytoscape.data.eqn_attribs.AttribFunction;
+
+import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+
+import org.cytoscape.equations.Function;
 
 
-public class If implements AttribFunction {
+public class Degree implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "IF"; }
+	public String getName() { return "DEGREE"; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns one of two alternatives based on a boolean value."; }
+	public String getFunctionSummary() { return "Returns degree of a node."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"IF(condition, value_if_true, value_if_false)\""; }
+	public String getUsageDescription() { return "Call this with \"DEGREE(node_ID)\""; }
 
-	public Class getReturnType() { return Object.class; }
+	public Class getReturnType() { return Long.class; }
 
 	/**
-	 *  @return whatever is compatible type of the if-value and else-value or null if the two types are incompatible
+	 *  @return String.class or null if there is not exactly 1 arg or the arg is not of type String
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 3 || argTypes[0] != Boolean.class)
+		if (argTypes.length != 1 || (argTypes[0] != String.class))
 			return null;
 
-		// Both if- and else- values must either be the same type or one of them has to be a string:
-		if (argTypes[1] == argTypes[2])
-			return argTypes[1];
-		else if (argTypes[1] == String.class || argTypes[2] == String.class)
-			return String.class;
-		else
-			return null;
+		return Long.class;
 	}
 
 	/**
-	 *  @param args the function arguments
-	 *  @return the result of the function evaluation which is either the 2nd or 3rd argument of the function
-	 *  @throws ArithmeticException 
-	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
+	 *  @param args the function arguments which must be either one object of type Double or Long
+	 *  @return the result of the function evaluation which is the natural logarithm of the first argument
 	 */
-	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final boolean condition = (Boolean)args[0];
+	public Object evaluateFunction(final Object[] args) {
+		final String nodeID = (String)args[0];
 
-		if (args[1].getClass() == args[2].getClass())
-			return args[condition ? 1 : 2];
-		else
-			return args[condition ? 1 : 2].toString();
+		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		if (currentNetwork == null)
+			return (Long)(-1L);
+
+		final CyNode node = Cytoscape.getCyNode(nodeID);
+		if (node == null)
+			throw new IllegalArgumentException("\"" + nodeID + "\" is not a valid node identifier!");
+		
+		return (Long)(long)currentNetwork.getDegree(node);
 	}
 
 	/**
@@ -96,19 +98,12 @@ public class If implements AttribFunction {
 	 *           set indicates that no further arguments are valid.
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length > 2)
-			return null;
-
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(Boolean.class);
-		else if (leadingArgs.length > 0) {
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
+		if (leadingArgs.length == 0) {
+			final List<Class> possibleNextArgs = new ArrayList<Class>();
 			possibleNextArgs.add(String.class);
+			return possibleNextArgs;
 		}
 
-		return possibleNextArgs;
+		return null;
 	}
 }

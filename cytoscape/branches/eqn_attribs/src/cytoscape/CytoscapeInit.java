@@ -1,14 +1,7 @@
 /*
  File: CytoscapeInit.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -52,13 +45,11 @@ import javax.swing.ImageIcon;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.eqn_attribs.AttribParser;
-import cytoscape.data.eqn_attribs.Parser;
-import cytoscape.data.formulas.Degree;
-import cytoscape.data.formulas.InDegree;
-import cytoscape.data.formulas.OutDegree;
-import cytoscape.data.formulas.SourceID;
-import cytoscape.data.formulas.TargetID;
+import cytoscape.data.equations.Degree;
+import cytoscape.data.equations.InDegree;
+import cytoscape.data.equations.OutDegree;
+import cytoscape.data.equations.SourceID;
+import cytoscape.data.equations.TargetID;
 import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.dialogs.logger.LoggerDialog;
 import cytoscape.init.CyInitParams;
@@ -76,6 +67,9 @@ import cytoscape.util.FileUtil;
 import cytoscape.util.NestedNetworkViewUpdater;
 import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.view.CyNetworkView;
+
+import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.Parser;
 
 
 /**
@@ -214,12 +208,12 @@ public class CytoscapeInit {
 			loadPlugins();
 
 			logger.info("initialising the formula parser...");
-			final AttribParser attribParser = Parser.getParser();
-			attribParser.registerFunction(new Degree());
-			attribParser.registerFunction(new InDegree());
-			attribParser.registerFunction(new OutDegree());
-			attribParser.registerFunction(new SourceID());
-			attribParser.registerFunction(new TargetID());
+			final EqnParser eqnParser = Parser.getParser();
+			eqnParser.registerFunction(new Degree());
+			eqnParser.registerFunction(new InDegree());
+			eqnParser.registerFunction(new OutDegree());
+			eqnParser.registerFunction(new SourceID());
+			eqnParser.registerFunction(new TargetID());
 
 			logger.info("loading session...");
 			boolean sessionLoaded = false;
