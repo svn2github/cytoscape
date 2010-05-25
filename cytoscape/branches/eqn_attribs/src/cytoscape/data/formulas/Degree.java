@@ -82,7 +82,7 @@ public class Degree implements AttribFunction {
 
 		final CyNode node = Cytoscape.getCyNode(nodeID);
 		if (node == null)
-			return (Long)(-1L);
+			throw new IllegalArgumentException("\"" + nodeID + "\" is not a valid node identifier!");
 		
 		return (Long)(long)currentNetwork.getDegree(node);
 	}
