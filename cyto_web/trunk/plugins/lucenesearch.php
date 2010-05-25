@@ -89,7 +89,7 @@ $plugin_id_array = array(); // create an empty array
 // Open index and search:
 $index = Zend_Search_Lucene::open('luceneIndex/index');
 Zend_Search_Lucene_Search_QueryParser::setDefaultEncoding('utf-8');
-Zend_Search_Lucene::setDefaultSearchField('description');
+Zend_Search_Lucene::setDefaultSearchField('default');
 
 // Query the index:
 //$queryStr = 'this';

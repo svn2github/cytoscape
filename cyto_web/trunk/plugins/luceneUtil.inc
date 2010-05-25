@@ -16,11 +16,15 @@ function createLuceneIndex($connection) {
 	// index all the plugins
 	foreach ($plugin_id_array as $plugin_id ) {	
 		$plugin_info = getPluginInfo($connection, $plugin_id);
+		$defaultStr = $plugin_info['name']." ".$plugin_info['description']." ".$plugin_info['author']." ".$plugin_info['institution'];
+		
 		$doc = new Zend_Search_Lucene_Document();
 		$doc->addField(Zend_Search_Lucene_Field::Text('id', $plugin_id));
 		$doc->addField(Zend_Search_Lucene_Field::Text('name', $plugin_info['name'], 'utf-8'));
 		$doc->addField(Zend_Search_Lucene_Field::Text('description', $plugin_info['description'], 'utf-8'));
 		$doc->addField(Zend_Search_Lucene_Field::Text('author', $plugin_info['author'], 'utf-8'));
+		$doc->addField(Zend_Search_Lucene_Field::Text('institution', $plugin_info['institution'], 'utf-8'));
+		$doc->addField(Zend_Search_Lucene_Field::Text('default', $defaultStr, 'utf-8'));
 		$index->addDocument($doc);
 	}
 
