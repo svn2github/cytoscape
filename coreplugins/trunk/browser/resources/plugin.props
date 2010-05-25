@@ -22,7 +22,7 @@ pluginCategory=Core
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Kei Ono:UCSD;Rowan Christmas:Institute for Systems Biology
+pluginAuthorsIntstiutions=Kei Ono:UCSD;Rowan Christmas:Institute for Systems Biology;Dr. Johannes Ruscheinski:UCSD
 
 # -- The following properties should be set ONLY BY CORE PLUGINS -- #
 downloadURL=http://cytoscape.org/plugins/plugins.xml
