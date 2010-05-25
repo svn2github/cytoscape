@@ -104,7 +104,7 @@
          dir="${EquationFunctions.root.dir}/lib"
          includes="resources/**"/>
       <manifest>
-	<attribute name="Cytoscape-Plugin" value="EquationFunctions.AttributeEquationFunctionsPlugin"/>
+	<attribute name="Cytoscape-Plugin" value="EquationFunctions.EquationFunctionsPlugin"/>
       </manifest>
     </jar>
     <copy todir="${EquationFunctions.lib.dir}" file="EquationFunctions.jar"/>
