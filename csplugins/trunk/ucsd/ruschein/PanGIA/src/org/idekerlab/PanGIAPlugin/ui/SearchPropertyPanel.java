@@ -339,7 +339,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         scorePanel.setLayout(new java.awt.GridBagLayout());
 
-        scorePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Score Patameters"));
+        scorePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Score Parameters"));
         alphaLabel.setText("Alpha:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
