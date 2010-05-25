@@ -42,8 +42,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
+//import java.awt.dnd.DnDConstants;
+//import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -64,9 +64,9 @@ import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.TransferHandler;
 
-import phoebe.PhoebeCanvasDropEvent;
-import phoebe.PhoebeCanvasDropListener;
-import phoebe.PhoebeCanvasDroppable;
+//import phoebe.PhoebeCanvasDropEvent;
+//import phoebe.PhoebeCanvasDropListener;
+//import phoebe.PhoebeCanvasDroppable;
 import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.EdgeAnchors;
@@ -83,8 +83,8 @@ import cytoscape.util.intr.IntStack;
  * 
  */
 public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotionListener,
-                                                       java.awt.dnd.DropTargetListener,
-                                                       PhoebeCanvasDroppable, KeyListener,
+                                                       /*java.awt.dnd.DropTargetListener,
+                                                       PhoebeCanvasDroppable,*/ KeyListener,
                                                        MouseWheelListener {
 
 	final double[] m_ptBuff = new double[2];
@@ -120,8 +120,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	static final String MAC_OS_ID = "mac";
 
-	private DropTarget dropTarget;
-	private String CANVAS_DROP = "CanvasDrop";
+//	private DropTarget dropTarget;
+//	private String CANVAS_DROP = "CanvasDrop";
 
 	//  for turning selection rectangle on and off
 	private boolean selecting = true;
@@ -171,9 +171,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		addKeyListener(this);
 		setFocusable(true);
 
-		dropTarget = new DropTarget(this, // component
-		                            DnDConstants.ACTION_COPY, // actions
-		                            this); // DropTargetListener
+//		dropTarget = new DropTarget(this, // component
+//		                            DnDConstants.ACTION_COPY, // actions
+//		                            this); // DropTargetListener
 	}
 
 	/**
@@ -1116,41 +1116,40 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * default dragEnter handler.  Accepts the drag.
 	 * @param dte the DropTargetDragEvent
 	 *
-	 */
 	public void dragEnter(java.awt.dnd.DropTargetDragEvent dte) {
 		dte.acceptDrag(DnDConstants.ACTION_COPY);
 	}
+	 */
 
 	/**
 	 * default dragExit handler.  Does nothing, can be overridden.
 	 * @param dte the DropTargetDragEvent
 	 *
-	 */
 	public void dragExit(java.awt.dnd.DropTargetEvent dte) {
 	}
+	 */
 
 	/**
 	 * default dropActionChanged handler.  Does nothing, can be overridden.
 	 * @param dte the DropTargetDragEvent
 	 *
-	 */
 	public void dropActionChanged(java.awt.dnd.DropTargetDragEvent dte) {
 	}
+	 */
 
 	/**
 	 * default dragOver handler.  Does nothing, can be overridden.
 	 * @param dte the DropTargetDragEvent
 	 *
-	 */
 	public void dragOver(java.awt.dnd.DropTargetDragEvent dte) {
 	}
+	 */
 
 	/**
 	 * default drop handler.  Accepts drop, builds a transferable, creates and
 	 * fires a PhoebeCanvasDropEvent, then calls dropComplete().
 	 * @param dte the DropTargetDragEvent
 	 *
-	 */
 	public void drop(java.awt.dnd.DropTargetDropEvent dte) {
 		dte.acceptDrop(DnDConstants.ACTION_COPY);
 
@@ -1166,30 +1165,30 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		dte.dropComplete(true);
 	}
+	 */
 
 	/**
 	 * adds a listener to the store of PhoebeCanvasDropTargetListeners
 	 * @param l the PhoebeCanvasDropTargetListener
 	 *
-	 */
 	public void addPhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
 		listeners.addElement(l);
 	}
+	 */
 
 	/**
 	 * removes a listener from the store of PhoebeCanvasDropTargetListeners
 	 * @param l the PhoebeCanvasDropTargetListener
 	 *
-	 */
 	public void removePhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
 		listeners.removeElement(l);
 	}
+	 */
 
 	/**
 	 * handles a PhoebeCanvasDropEvent.  For each listerner, calls its itemDropped() method
 	 * @param event the PhoebeCanvasDropEvent
 	 *
-	 */
 	protected synchronized void processPhoebeCanvasDropEvent(PhoebeCanvasDropEvent event) {
 		Enumeration e = listeners.elements();
 
@@ -1227,27 +1226,28 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			l.itemDropped(event);
 		}
 	}
+	 */
 
 	// AJK: 04/02/06 END
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param comp DOCUMENT ME!
-	 */
 	public void addTransferComponent(JComponent comp) {
 		if (!transferComponents.contains(comp)) {
 			transferComponents.addElement(comp);
 		}
 	}
+	 */
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param comp DOCUMENT ME!
-	 */
 	public void removeTransferComponent(JComponent comp) {
 		transferComponents.removeElement(comp);
 	}
+	 */
 
 	// AJK: 01/12/07 END
 
