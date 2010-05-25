@@ -4,11 +4,11 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
-pluginName=Equations
+pluginName=EquationFunctions
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Attribute browser
+pluginDescription=Provides various attribute equation functions.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=1.0
