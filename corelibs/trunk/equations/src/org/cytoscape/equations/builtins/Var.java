@@ -27,15 +27,15 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs.builtins;
+package org.cytoscape.equations.builtins;
 
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import cytoscape.data.eqn_attribs.AttribFunction;
-import cytoscape.data.eqn_attribs.AttribFunctionUtil;
-import cytoscape.data.eqn_attribs.EquationUtil;
+import org.cytoscape.equations.AttribFunction;
+import org.cytoscape.equations.AttribFunctionUtil;
+import org.cytoscape.equations.EquationUtil;
 
 
 public class Var implements AttribFunction {

@@ -27,7 +27,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs;
+package org.cytoscape.equations;
 
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import cytoscape.data.eqn_attribs.parse_tree.*;
+import org.cytoscape.equations.parse_tree.*;
 
 
 class AttribParserImpl implements AttribParser {

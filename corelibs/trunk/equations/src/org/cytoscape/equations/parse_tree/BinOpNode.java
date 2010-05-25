@@ -27,13 +27,13 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs.parse_tree;
+package org.cytoscape.equations.parse_tree;
 
 
 import java.util.Stack;
-import cytoscape.data.eqn_attribs.AttribToken;
-import cytoscape.data.eqn_attribs.AttribTokeniser;
-import cytoscape.data.eqn_attribs.interpreter.Instruction;
+import org.cytoscape.equations.AttribToken;
+import org.cytoscape.equations.AttribTokeniser;
+import org.cytoscape.equations.interpreter.Instruction;
 
 
 /**

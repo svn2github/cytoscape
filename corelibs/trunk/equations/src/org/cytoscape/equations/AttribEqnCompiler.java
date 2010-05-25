@@ -27,14 +27,14 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs;
+package org.cytoscape.equations;
 
 
 import java.util.Map;
 import java.util.Stack;
-import cytoscape.data.eqn_attribs.AttribParser;
-import cytoscape.data.eqn_attribs.interpreter.Instruction;
-import cytoscape.data.eqn_attribs.parse_tree.Node;
+import org.cytoscape.equations.AttribParser;
+import org.cytoscape.equations.interpreter.Instruction;
+import org.cytoscape.equations.parse_tree.Node;
 
 
 public class AttribEqnCompiler {

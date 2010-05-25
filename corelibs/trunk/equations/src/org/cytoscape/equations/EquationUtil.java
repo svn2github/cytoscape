@@ -34,50 +34,14 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.eqn_attribs;
+package org.cytoscape.equations;
 
 
 import java.util.List;
 import java.util.Map;
-import cytoscape.data.CyAttributes;
 
 
 public class EquationUtil {
-	/**
-	 *  Populates "attribNameToTypeMap" with the names from "cyAttribs" and their types as mapped
-	 *  to the types used by attribute equations.  Types (and associated names) not used by
-	 *  attribute equations are ommitted.
-	 *
-	 *  @param cyAttribs            the attributes to map
-	 *  @param ignore               if not null, skip the attribute with this name
-	 *  @param attribNameToTypeMap  the result of the translation from attribute types to
-	 *                              attribute equation types
-	 */
-	public static void initAttribNameToTypeMap(final CyAttributes cyAttribs, final String ignore,
-	                                           final Map<String, Class> attribNameToTypeMap)
-	{
-		for (final String attribName : cyAttribs.getAttributeNames()) {
-			if (ignore == null || ignore.equals(attribName))
-				continue;
-			if (!cyAttribs.getUserVisible(attribName))
-				continue;
-
-			final byte type = cyAttribs.getType(attribName);
-			if (type == CyAttributes.TYPE_BOOLEAN)
-				attribNameToTypeMap.put(attribName, Boolean.class);
-			else if (type == CyAttributes.TYPE_INTEGER)
-				attribNameToTypeMap.put(attribName, Long.class);
-			else if (type == CyAttributes.TYPE_FLOATING)
-				attribNameToTypeMap.put(attribName, Double.class);
-			else if (type == CyAttributes.TYPE_STRING)
-				attribNameToTypeMap.put(attribName, String.class);
-			else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-				attribNameToTypeMap.put(attribName, List.class);
-			else
-				/* We intentionally ignore everything else! */;
-		}
-	}
-
 	/**
 	 *  @return "attribName" written as am attribute reference with a leading $-sign
 	 */
