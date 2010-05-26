@@ -20,6 +20,11 @@ public final class SearchParameters {
 	private double pValueThreshold;
 	private int numberOfSamples;
 	
+	private boolean complexTraining;
+	private boolean complexAnnotation;
+	private String complexFile;
+	private double annotationThreshold;
+	
 	public SearchParameters() {
 	}
 
@@ -109,5 +114,45 @@ public final class SearchParameters {
 
 	public int getNumberOfSamples() {
 		return numberOfSamples;
+	}
+	
+	public void setComplexTraining(boolean value)
+	{
+		this.complexTraining = value;
+	}
+	
+	public boolean getComplexTraining()
+	{
+		return complexTraining;
+	}
+	
+	public void setComplexAnnotation(boolean value)
+	{
+		this.complexAnnotation = value;
+	}
+	
+	public boolean getComplexAnnotation()
+	{
+		return complexAnnotation;
+	}
+	
+	public void setComplexFile(String value)
+	{
+		this.complexFile = value;
+	}
+	
+	public String getComplexFile()
+	{
+		return complexFile;
+	}
+	
+	public void setAnnotationThreshold(double value)
+	{
+		this.annotationThreshold = value;
+	}
+	
+	public double getAnnotationThreshold()
+	{
+		return annotationThreshold;
 	}
 }

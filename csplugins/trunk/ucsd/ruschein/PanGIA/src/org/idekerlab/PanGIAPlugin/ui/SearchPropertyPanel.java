@@ -582,35 +582,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     }                        
   
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// Make sure the edge attributes of Physical and Genetic are types of Integer or Float
-		String geneticSelected = geneticEdgeAttribComboBox.getSelectedItem().toString();
-		String physicalSelected = physicalEdgeAttribComboBox.getSelectedItem().toString();
-		
-		if (geneticSelected.trim().equals("")|| physicalSelected.trim().equals("")){
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Please select Physical and Genetic attributes", "Error", JOptionPane.ERROR_MESSAGE);
-			return;			
-		}
-		
-		boolean isVaildGenetic = false;
-		if (geneticSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) || (Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_INTEGER ||
-			     Cytoscape.getEdgeAttributes().getType(geneticSelected) == CyAttributes.TYPE_FLOATING)){
-			isVaildGenetic = true;
-		}
-
-		boolean isVaildPhysical = false;
-		if (physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) || (Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_INTEGER ||
-			     Cytoscape.getEdgeAttributes().getType(physicalSelected) == CyAttributes.TYPE_FLOATING)){
-			isVaildPhysical = true;
-		}
-
-		
-		if ( isVaildGenetic &&isVaildPhysical){
-		}
-		else {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The attribute type of Physical and Genetic must be Integer or Float", "Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		
 		// Build parameter object
 		if (buildSearchParameters() == false)
 			return;
@@ -633,10 +604,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// TODO add your handling code here:
 	}
 
-	private void alphaMultiplierTextFieldActionPerformed(
-							     java.awt.event.ActionEvent evt) {
-		updateSearchButtonState();
-	}
 
 	private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// Close parent tab
@@ -903,6 +870,24 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		{
 			searchButton.setEnabled(false);
 			parameterErrorLabel.setText("<HTML>Error: Physical and genetic networks<BR>cannot be the same.</HTML>");
+			return;
+		}
+		
+		String physicalSelected = physicalEdgeAttribComboBox.getSelectedItem().toString();
+		if (!physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_INTEGER &&
+			     Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_FLOATING))
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("<HTML>Error: Physical edge score must<BR>be of type integer or float.</HTML>");
+			return;
+		}
+		
+		String geneticSelected = geneticEdgeAttribComboBox.getSelectedItem().toString();
+		if (!geneticSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (Cytoscape.getEdgeAttributes().getType(geneticSelected) != CyAttributes.TYPE_INTEGER &&
+			     Cytoscape.getEdgeAttributes().getType(geneticSelected) != CyAttributes.TYPE_FLOATING))
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("<HTML>Error: Genetic edge score must<BR>be of type integer or float.</HTML>");
 			return;
 		}
 		
