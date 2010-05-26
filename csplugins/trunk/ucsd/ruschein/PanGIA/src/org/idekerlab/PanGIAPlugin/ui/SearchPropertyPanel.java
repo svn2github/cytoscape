@@ -322,6 +322,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         lbComplexFile = new javax.swing.JLabel();
         complexFileTextField = new javax.swing.JTextField();
         complexFileButton = new javax.swing.JButton();
+        lbPlaceHolder4 = new javax.swing.JLabel();
 
         trainingPanel = new javax.swing.JPanel();
         
@@ -445,7 +446,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         trainingPanel.add(trainingLabel, gridBagConstraints);
         
@@ -496,12 +497,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(lbComplexFile, gridBagConstraints);
         
         complexFileTextField.setText("");
-        complexFileTextField.setPreferredSize(new java.awt.Dimension(130, 30));
+        complexFileTextField.setPreferredSize(new java.awt.Dimension(120, 30));
         complexFileTextField.setEditable(false);
         complexFileTextField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -517,10 +518,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(complexFileButton, gridBagConstraints);
+        
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        trainingPanel.add(lbPlaceHolder4, gridBagConstraints);
         
         complexFileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -702,6 +709,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JTextField complexFileTextField;
     private javax.swing.JButton complexFileButton;
     private String complexFilePath = "";
+    private JLabel lbPlaceHolder4;
     
     private javax.swing.JComboBox genScalingMethodComboBox;
     private javax.swing.JComboBox phyScalingMethodComboBox;
