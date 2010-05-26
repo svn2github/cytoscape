@@ -370,9 +370,12 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final int rowCount = dataModel.getRowCount();
 		for (int idx = 0; idx < rowCount; idx++) {
 			final ValidatedObjectAndEditString val = (ValidatedObjectAndEditString)dataModel.getValueAt(idx, idLocation);
-			final String objectName = val == null ? null : (String)val.getValidatedObject();
-			if (objectName == null)
+			final String objectName;
+			try {
+				objectName = (String)val.getValidatedObject();
+			} catch (final Exception e) {
 				continue;
+			}
 
 			if (objectType == NODES) {
 				final Node selectedNode = Cytoscape.getCyNode(objectName);

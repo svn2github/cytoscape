@@ -122,6 +122,9 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 */
 	private void setAttributeValue(final String id, final String attrName, final Object newValue) {
 		valid = false;
+		if (newValue == null)
+			return;
+
 		final CyAttributes attrs = objectType.getAssociatedAttribute();
 
 		// Error message for the popup dialog.
