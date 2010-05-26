@@ -1,9 +1,6 @@
 package org.idekerlab.PanGIAPlugin.ui;
 
-
-import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
@@ -11,15 +8,9 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.idekerlab.PanGIAPlugin.SearchParameters;
 import org.idekerlab.PanGIAPlugin.SearchTask;
@@ -324,6 +315,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         lbNumberOfSamples = new javax.swing.JLabel();
         numberOfSamplesTextField = new javax.swing.JTextField();
         lbPlaceHolder3 = new javax.swing.JLabel();
+        trainingCheckBox = new JCheckBox();
+        trainingLabel = new JLabel();
+        annotationCheckBox = new JCheckBox();
+        annotationLabel = new JLabel();
         lbComplexFile = new javax.swing.JLabel();
         complexFileTextField = new javax.swing.JTextField();
         complexFileButton = new javax.swing.JButton();
@@ -406,7 +401,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         pValueThresholdLabel.setText("Percentile Threshold:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
 
         pValueThresholdTextField.setText("0.05");
@@ -444,33 +439,86 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         //TrainingPanel
         trainingPanel.setLayout(new java.awt.GridBagLayout());
-
         trainingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Training"));
         
-        lbComplexFile.setText("Complex file:");
+        trainingLabel.setText("Complex training:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        trainingPanel.add(trainingLabel, gridBagConstraints);
+        
+        
+        trainingCheckBox.setSelected(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        trainingCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	trainingCheckBoxActionPerformed(evt);
+            }
+        });
+        
+        trainingPanel.add(trainingCheckBox, gridBagConstraints);
+        
+        
+        annotationLabel.setText("Complex annotation:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        trainingPanel.add(annotationLabel, gridBagConstraints);
+        
+        annotationCheckBox.setSelected(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        
+        annotationCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	annotationCheckBoxActionPerformed(evt);
+            }
+        });
+        
+        trainingPanel.add(annotationCheckBox, gridBagConstraints);
+        
+        
+        
+        lbComplexFile.setText("Complex file:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(lbComplexFile, gridBagConstraints);
         
         complexFileTextField.setText("");
-        complexFileTextField.setPreferredSize(new java.awt.Dimension(100, 25));
+        complexFileTextField.setPreferredSize(new java.awt.Dimension(130, 30));
         complexFileTextField.setEditable(false);
         complexFileTextField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(complexFileTextField, gridBagConstraints);
         
         complexFileButton.setText("...");
         complexFileButton.setPreferredSize(new java.awt.Dimension(25, 25));
+        complexFileButton.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(complexFileButton, gridBagConstraints);
         
@@ -569,15 +617,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// TODO add your handling code here:	    
 	}                                           
 
-	private void geneticEdgeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:	    
-	}
-
-
-	private void physicalEdgeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:	    
-	}
-
 	private void alphaTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
 	}
@@ -595,6 +634,30 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			this.complexFilePath = f.getAbsolutePath();
 			complexFileTextField.setText(f.getName());
 		}
+		
+		updateSearchButtonState();
+	}
+	
+	private void trainingCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
+	{
+		annotationCheckBoxActionPerformed(evt);
+	}
+	
+	private void annotationCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
+	{
+		if (trainingCheckBox.isSelected() || annotationCheckBox.isSelected())
+		{
+			complexFileTextField.setEnabled(true);
+		    complexFileButton.setEnabled(true);
+			complexFilePath = complexFileTextField.getText();
+		}else
+		{
+			complexFileTextField.setEnabled(false);
+		    complexFileButton.setEnabled(false);
+			complexFilePath = "";
+		}
+		
+		updateSearchButtonState();
 	}
 
     // Variables declaration - do not modify                     
@@ -629,6 +692,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JLabel lbGeneticNetwork;
     private javax.swing.JLabel lbPhysicalNetwork;
     private javax.swing.JPanel trainingPanel;
+    private JCheckBox trainingCheckBox;
+    private JLabel trainingLabel;
+    private JCheckBox annotationCheckBox;
+    private JLabel annotationLabel;
     private javax.swing.JLabel lbComplexFile;
     private javax.swing.JTextField complexFileTextField;
     private javax.swing.JButton complexFileButton;
@@ -797,16 +864,27 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		final String geneticAttrName = (String)geneticEdgeAttribComboBox.getSelectedItem();
 		final String physicalAttrName = (String)physicalEdgeAttribComboBox.getSelectedItem();
 		if (geneticAttrName == null || physicalAttrName == null)
+		{
+			searchButton.setEnabled(false);
 			return;
+		}
 
-		if (geneticAttrName.equals(physicalAttrName) && !geneticAttrName.equals(DEFAULT_ATTRIBUTE)) {
+		if (geneticAttrName.equals(physicalAttrName) && !geneticAttrName.equals(DEFAULT_ATTRIBUTE))
+		{
 			searchButton.setEnabled(false);
 			return;
 		}
 
 		final CyNetwork physicalNetwork = physicalNetworkPanel.getSelectedNetwork();
 		final CyNetwork geneticNetwork = geneticNetworkPanel.getSelectedNetwork();
-		if (physicalNetwork == geneticNetwork) {
+		if (physicalNetwork == geneticNetwork)
+		{
+			searchButton.setEnabled(false);
+			return;
+		}
+		
+		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && complexFilePath.equals(""))
+		{
 			searchButton.setEnabled(false);
 			return;
 		}
