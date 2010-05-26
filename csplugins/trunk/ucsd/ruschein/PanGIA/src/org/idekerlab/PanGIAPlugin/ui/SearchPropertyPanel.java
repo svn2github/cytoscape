@@ -341,6 +341,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         pnlParameter.setLayout(new java.awt.GridBagLayout());
         
+        final java.awt.event.KeyListener textFieldKeyListener = new java.awt.event.KeyListener() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {}
+            public void keyTyped(java.awt.event.KeyEvent evt) {}
+            public void keyReleased(java.awt.event.KeyEvent evt) {alphaTextFieldActionPerformed(evt);}
+        };
 
         //ScorePanel
         scorePanel.setLayout(new java.awt.GridBagLayout());
@@ -367,11 +372,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         scorePanel.add(degreeLabel, gridBagConstraints);
 
         alphaTextField.setPreferredSize(new java.awt.Dimension(50, 25));
-        alphaTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                alphaTextFieldActionPerformed(evt);
-            }
-        });
+        alphaTextField.addKeyListener(textFieldKeyListener);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -379,11 +380,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         scorePanel.add(alphaTextField, gridBagConstraints);
 
         alphaMultiplierTextField.setPreferredSize(new java.awt.Dimension(50, 25));
-        alphaMultiplierTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                alphaMultiplierTextFieldActionPerformed(evt);
-            }
-        });
+        alphaMultiplierTextField.addKeyListener(textFieldKeyListener);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
@@ -392,6 +389,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         scorePanel.add(alphaMultiplierTextField, gridBagConstraints);
 
         degreeTextField.setPreferredSize(new java.awt.Dimension(50, 25));
+        degreeTextField.addKeyListener(textFieldKeyListener);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -420,6 +418,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
 
         pValueThresholdTextField.setText("0.05");
+        pValueThresholdTextField.addKeyListener(textFieldKeyListener);
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         pValueThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -439,6 +438,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.add(lbNumberOfSamples, gridBagConstraints);
 
         numberOfSamplesTextField.setText("10000");
+        numberOfSamplesTextField.addKeyListener(textFieldKeyListener);
         numberOfSamplesTextField.setPreferredSize(new java.awt.Dimension(70, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
@@ -545,7 +545,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
             }
         });
         
-        annotationThresholdLabel.setText("Annotation threshold:");
+        annotationThresholdLabel.setText("Annotation Threshold:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -554,6 +554,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel.add(annotationThresholdLabel, gridBagConstraints);
         
         annotationThresholdTextField.setText("0.8");
+        annotationThresholdTextField.addKeyListener(textFieldKeyListener);
         annotationThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         annotationThresholdTextField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -634,7 +635,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	private void alphaMultiplierTextFieldActionPerformed(
 							     java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		updateSearchButtonState();
 	}
 
 	private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -648,8 +649,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// TODO add your handling code here:	    
 	}                                           
 
-	private void alphaTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+	private void alphaTextFieldActionPerformed(java.awt.event.KeyEvent evt) {
+		updateSearchButtonState();
 	}
 	
 	private void complexFileButtonActionPerformed(java.awt.event.ActionEvent evt)
@@ -796,6 +797,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}
 	}
 
+	/***
+	 * 5/26/10: Error checking moved to updateSearchButtonState. Invalid parameters should never be allowed into this function.(Greg) 
+	 * @return
+	 */
 	private boolean buildSearchParameters() {
 		parameters = new SearchParameters();
 		
@@ -806,12 +811,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// Set edge attributes.
 		final Object geneticEdgeItem  = geneticEdgeAttribComboBox.getSelectedItem();
 		final Object physicalEdgeItem = physicalEdgeAttribComboBox.getSelectedItem();
-		if (geneticEdgeItem == null || physicalEdgeItem == null) {
-			JOptionPane.showMessageDialog(this,
-						      "Either the genetic or physical edge attribute is missing!",
-						      "Missing Attribute(s)", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
 		
 		String geneticEdgeAttrName = geneticEdgeItem.toString();
 		String physicalEdgeAttrName = physicalEdgeItem.toString();
@@ -823,59 +822,25 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			physicalEdgeAttrName = "";
 		}
 		
-		if (!geneticEdgeAttrName.equals("") && geneticEdgeAttrName.equals(physicalEdgeAttrName)) {
-			JOptionPane.showMessageDialog(this,
-						      "Please select different attributes for physical and genetic edges!",
-						      "Invalid Attribute Selections", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
 		parameters.setGeneticEdgeAttrName(geneticEdgeAttrName);
 		parameters.setPhysicalEdgeAttrName(physicalEdgeAttrName);
 
 		parameters.setPhysicalScalingMethod((String)phyScalingMethodComboBox.getSelectedItem());
 		parameters.setGeneticScalingMethod((String)genScalingMethodComboBox.getSelectedItem());
+		
+		parameters.setAlpha(Double.parseDouble(alphaTextField.getText()));
 
-		String currentField = "number";
-		try {
-			currentField = "alpha";
-			parameters.setAlpha(Double.parseDouble(alphaTextField.getText()));
+		parameters.setAlphaMultiplier(Double.parseDouble(alphaMultiplierTextField.getText()));
 
-			currentField = "alpha multiplier";
-			parameters.setAlphaMultiplier(Double.parseDouble(alphaMultiplierTextField.getText()));
+		final String degree = degreeTextField.getText();
+		if (degree.length() > 0)
+		parameters.setPhysicalNetworkFilterDegree(Integer.parseInt(degree));
 
-			currentField = "phys. network filter degree";
-			final String degree = degreeTextField.getText();
-			if (degree.length() > 0)
-			parameters.setPhysicalNetworkFilterDegree(Integer.parseInt(degree));
+		final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
+		parameters.setPValueThreshold(pValueThreshold);
 
-			currentField = "p-value threshold";
-			final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
-			final double PVALUE_THRESHOLD_MIN = 0.001;
-			final double PVALUE_THRESHOLD_MAX = 1.0;
-			if (pValueThreshold < PVALUE_THRESHOLD_MIN || pValueThreshold > PVALUE_THRESHOLD_MAX) {
-				JOptionPane.showMessageDialog(this,
-				                              "pValue threshold out of range, must be in ["
-				                              + PVALUE_THRESHOLD_MIN + "," + PVALUE_THRESHOLD_MAX + "].",
-				                              "Invalid data entry!", JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
-			parameters.setPValueThreshold(pValueThreshold);
-
-			currentField = "number of samples";
-			final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
-			if (numberOfSamples <= 0) {
-				JOptionPane.showMessageDialog(this,
-				                              "number of samples out of range, must > 0",
-				                              "Invalid data entry!", JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
-			parameters.setNumberOfSamples(numberOfSamples);
-		} catch (final NumberFormatException e) {
-			JOptionPane.showMessageDialog(this,
-						      "Invalid " + currentField + ".  Please re-enter value(s).",
-						      "Invalid Number", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
+		final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
+		parameters.setNumberOfSamples(numberOfSamples);
 
 		return true;
 	}
@@ -947,7 +912,106 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			parameterErrorLabel.setText("Error: Training requires a complex file.");
 			return;
 		}
-
+		
+		
+		//TextField validity
+		try{Double.parseDouble(alphaTextField.getText());}
+		catch (NumberFormatException e)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Invalid value for Alpha.");
+			return;
+		}
+		
+		try{Double.parseDouble(alphaMultiplierTextField.getText());}
+		catch (NumberFormatException e)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Invalid value for Alpha Multiplier.");
+			return;
+		}
+		
+		if (degreeTextField.getText().length()>0)
+		{
+			try
+			{
+				int d = Integer.parseInt(degreeTextField.getText());
+				if (d<0)
+				{
+					searchButton.setEnabled(false);
+					parameterErrorLabel.setText("Error: degree filter must be positive.");
+					return;
+				}
+			
+			}
+			catch (NumberFormatException e)
+			{
+				searchButton.setEnabled(false);
+				parameterErrorLabel.setText("Error: Invalid value for degree filter.");
+				return;
+			}
+		}
+			
+		try
+		{
+			double p = Double.parseDouble(pValueThresholdTextField.getText());
+			if (p<0 || p>1)
+			{
+				searchButton.setEnabled(false);
+				parameterErrorLabel.setText("<HTML>Error: Percentile threshold must<BR>fall in the range [0,1].</HTML>");
+				return;
+			}
+		
+		}
+		catch (NumberFormatException e)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Invalid value for Percentile Threshold.");
+			return;
+		}
+		
+		try
+		{
+			int n = Integer.parseInt(numberOfSamplesTextField.getText());
+			if (n<=0)
+			{
+				searchButton.setEnabled(false);
+				parameterErrorLabel.setText("Error: Number of samples must be positive.");
+				return;
+			}
+		
+		}
+		catch (NumberFormatException e)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Invalid value for Number of samples.");
+			return;
+		}
+		
+		
+		if (annotationCheckBox.isSelected())
+		{
+			try
+			{
+				double p = Double.parseDouble(annotationThresholdTextField.getText());
+				if (p<0 || p>1)
+				{
+					searchButton.setEnabled(false);
+					parameterErrorLabel.setText("<HTML>Error: Annotation threshold must<BR>fall in the range [0,1].</HTML>");
+					
+					return;
+				}
+			
+			}
+			catch (NumberFormatException e)
+			{
+				searchButton.setEnabled(false);
+				parameterErrorLabel.setText("Error: Invalid value for Annotation Threshold.");
+				return;
+			}
+		}
+		
+		
 		parameterErrorLabel.setText("");
 		searchButton.setEnabled(true);
 	}
