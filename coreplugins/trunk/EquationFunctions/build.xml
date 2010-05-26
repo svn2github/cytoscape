@@ -95,7 +95,7 @@
   <!-- Creates the EquationFunctions.jar file                                           -->
   <!-- =================================================================== -->
   <target name="EquationFunctions" depends="compile-EquationFunctions"  >
-    <copy todir="${EquationFunctions.classes.dir}/EquationFunctions" file="${EquationFunctions.resources.dir}/plugin.props"/>
+    <copy todir="${EquationFunctions.classes.dir}/org/cytoscape/EquationFunctions" file="${EquationFunctions.resources.dir}/plugin.props"/>
     <jar destfile="EquationFunctions.jar" manifest="${EquationFunctions.manifest.dir}/EquationFunctions.manifest">
       <fileset
          dir="${EquationFunctions.classes.dir}"
@@ -104,7 +104,7 @@
          dir="${EquationFunctions.root.dir}/lib"
          includes="resources/**"/>
       <manifest>
-	<attribute name="Cytoscape-Plugin" value="EquationFunctions.EquationFunctionsPlugin"/>
+	<attribute name="Cytoscape-Plugin" value="org.cytoscape.EquationFunctions.EquationFunctionsPlugin"/>
       </manifest>
     </jar>
     <copy todir="${EquationFunctions.lib.dir}" file="EquationFunctions.jar"/>
