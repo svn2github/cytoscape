@@ -633,6 +633,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			File f = complexFileChooser.getSelectedFile();
 			this.complexFilePath = f.getAbsolutePath();
 			complexFileTextField.setText(f.getName());
+		}else
+		{
+			this.complexFilePath = "";
+			complexFileTextField.setText("");
 		}
 		
 		updateSearchButtonState();
@@ -649,12 +653,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		{
 			complexFileTextField.setEnabled(true);
 		    complexFileButton.setEnabled(true);
-			complexFilePath = complexFileTextField.getText();
 		}else
 		{
 			complexFileTextField.setEnabled(false);
 		    complexFileButton.setEnabled(false);
-			complexFilePath = "";
 		}
 		
 		updateSearchButtonState();
