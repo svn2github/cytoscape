@@ -52,13 +52,36 @@ public class FunctionUtil {
 			try {
 				return Double.parseDouble((String)arg);
 			} catch (final Exception e) {
-				throw new IllegalArgumentException("can't convert \"" + arg + "\" to a number!");
+				throw new IllegalArgumentException("can't convert \"" + arg + "\" to a floating point number!");
 			}
 		}
 		if (arg.getClass() == Boolean.class)
 			return (Boolean)arg ? 1.0 : 0.0;
 
-		throw new IllegalArgumentException("can't convert argument to a number!");
+		throw new IllegalArgumentException("can't convert argument to a floating point number!");
+	}
+
+	/**
+	 *  Assumes that "arg" is a "String", "Boolean", "Long" or a "Double and converts it to "long".
+	 *  @return the converted argument as a "long"
+	 *  @throws IllegalArgumentException if the argument cannot be converted to a "long"
+	 */
+	static public long getArgAsLong(final Object arg) throws IllegalArgumentException {
+		if (arg.getClass() == Double.class)
+			return EquationUtil.doubleToLong((Double)arg);
+		if (arg.getClass() == Long.class)
+			return (Long)arg;
+		if (arg.getClass() == String.class) {
+			try {
+				return Long.parseLong((String)arg);
+			} catch (final Exception e) {
+				throw new IllegalArgumentException("can't convert \"" + arg + "\" to a whole number!");
+			}
+		}
+		if (arg.getClass() == Boolean.class)
+			return (Boolean)arg ? 1L : 0L;
+
+		throw new IllegalArgumentException("can't convert argument to a whole number!");
 	}
 
 	/**

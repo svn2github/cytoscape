@@ -917,4 +917,34 @@ public class InterpreterTest extends TestCase {
 		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
                 assertEquals(new Double(5.028375962061728), interpreter.run());
 	}
+
+	public void testPERMUT() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=PERMUT(6, 3)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Long(120L), interpreter1.run());
+
+		assertTrue(compiler.compile("=PERMUT(100, 3)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Long(970200L), interpreter2.run());
+	}
+
+	public void testCOMBIN() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=COMBIN(3, 6)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Long(0L), interpreter1.run());
+
+		assertTrue(compiler.compile("=COMBIN(100, 0)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Long(1L), interpreter2.run());
+
+		assertTrue(compiler.compile("=COMBIN(8, 2)", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Long(28L), interpreter3.run());
+	}
 }
