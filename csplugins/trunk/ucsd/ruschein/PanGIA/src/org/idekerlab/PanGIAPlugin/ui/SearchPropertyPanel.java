@@ -322,7 +322,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         lbComplexFile = new javax.swing.JLabel();
         complexFileTextField = new javax.swing.JTextField();
         complexFileButton = new javax.swing.JButton();
-        lbPlaceHolder4 = new javax.swing.JLabel();
+        annotationThresholdLabel = new JLabel();
+        annotationThresholdTextField = new JTextField();
 
         trainingPanel = new javax.swing.JPanel();
         
@@ -508,7 +509,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        //gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(complexFileTextField, gridBagConstraints);
         
@@ -518,22 +521,36 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
+        //gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(complexFileButton, gridBagConstraints);
-        
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        trainingPanel.add(lbPlaceHolder4, gridBagConstraints);
         
         complexFileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	complexFileButtonActionPerformed(evt);
             }
         });
+        
+        annotationThresholdLabel.setText("Annotation threshold:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        trainingPanel.add(annotationThresholdLabel, gridBagConstraints);
+        
+        annotationThresholdTextField.setText("0.8");
+        annotationThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 25));
+        annotationThresholdTextField.setEnabled(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        trainingPanel.add(annotationThresholdTextField, gridBagConstraints);
+                    
+        
         
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 4;
@@ -666,6 +683,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		    complexFileButton.setEnabled(false);
 		}
 		
+		annotationThresholdTextField.setEnabled(annotationCheckBox.isSelected());
+		
 		updateSearchButtonState();
 	}
 
@@ -709,7 +728,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JTextField complexFileTextField;
     private javax.swing.JButton complexFileButton;
     private String complexFilePath = "";
-    private JLabel lbPlaceHolder4;
+    private JLabel annotationThresholdLabel;
+    private JTextField annotationThresholdTextField;
     
     private javax.swing.JComboBox genScalingMethodComboBox;
     private javax.swing.JComboBox phyScalingMethodComboBox;
