@@ -450,7 +450,7 @@ public class CyAttributesImpl implements CyAttributes {
 			if (type == MultiHashMapDefinition.TYPE_STRING)
 				/* Everything is compatible w/ this! */;
 			else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
-				if (returnType != Double.class && returnType != Boolean.class)
+				if (returnType != Double.class && returnType != Boolean.class && returnType != Long.class)
 					throw new IllegalArgumentException("an equation of type " + returnType
 					                                   + " is not compatible with TYPE_INTEGER for attribute \""
 					                                   + attributeName + "\"!");

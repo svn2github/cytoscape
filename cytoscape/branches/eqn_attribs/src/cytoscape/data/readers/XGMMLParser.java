@@ -633,6 +633,7 @@ class XGMMLParser extends DefaultHandler {
 	                                          final Map<String, Class> attribNameToTypeMap,
 	                                          final CyAttributes attribs)
 	{
+		attribNameToTypeMap.put("ID", String.class);
 		final EqnCompiler compiler = new EqnCompiler();
 		for (final AttribEquation attribEquation : attribEquations) {
 			if (!(compiler.compile(attribEquation.getEquation(), attribNameToTypeMap)))
