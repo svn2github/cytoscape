@@ -68,7 +68,6 @@ import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.eqn_attribs.EquationUtil;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.swing.CheckBoxJList;
@@ -577,7 +576,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 						if (cellRow != -1 && cellColum != -1 && tableModel.isCellEditable(cellRow, cellColum)) {
 							final String columnName = tableModel.getColumnName(cellColum);
 							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-							initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+							Util.initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
 							formulaBuilderDialog =
 								new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
 								                         attribNameToTypeMap, columnName);
@@ -589,27 +588,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		}
 
 		return formulaBuilderButton;
-	}
-
-	private static void initAttribNameToTypeMap(final DataObjectType objectType, final String columnName,
-	                                            final Map<String, Class> attribNameToTypeMap)
-	{
-		final CyAttributes cyAttribs;
-		switch (objectType) {
-		case NODES:
-			cyAttribs = Cytoscape.getNodeAttributes();
-			break;
-		case EDGES:
-			cyAttribs = Cytoscape.getEdgeAttributes();
-			break;
-		case NETWORK:
-			cyAttribs = Cytoscape.getNetworkAttributes();
-			break;
-		default:
-			throw new IllegalStateException("unknown DataObjectType: " + objectType + "!");
-		}
-
-		EquationUtil.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
 	}
 
 	protected void editMetadata() {

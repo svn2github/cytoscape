@@ -60,14 +60,13 @@ import browser.DataTableModel;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.eqn_attribs.AttribEqnCompiler;
-import cytoscape.data.eqn_attribs.AttribFunction;
-import cytoscape.data.eqn_attribs.AttribParser;
-import cytoscape.data.eqn_attribs.AttribToken;
-import cytoscape.data.eqn_attribs.AttribTokeniser;
-import cytoscape.data.eqn_attribs.Equation;
-import cytoscape.data.eqn_attribs.EquationUtil;
-import cytoscape.data.eqn_attribs.Parser;
+
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.EquationUtil;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.Parser;
 
 import giny.model.GraphObject;
 
@@ -100,8 +99,8 @@ public class FormulaBuilderDialog extends JDialog {
 	private JComboBox applyToComboBox = null;
 	private JButton okButton = null;
 	private JButton cancelButton = null;
-	private AttribFunction function = null;
-	private Map<String, AttribFunction> stringToFunctionMap;
+	private Function function = null;
+	private Map<String, Function> stringToFunctionMap;
 	private Map<String, Class> attribNamesAndTypes;
 	private ArrayList<Class> leadingArgs;
 	private ApplicationDomain applicationDomain;
@@ -121,7 +120,7 @@ public class FormulaBuilderDialog extends JDialog {
 		this.setTitle("Creating a formula for: " + columnName);
 
 		this.columnName = columnName;
-		this.stringToFunctionMap = new HashMap<String, AttribFunction>();
+		this.stringToFunctionMap = new HashMap<String, Function>();
 		this.attribNamesAndTypes = attribNamesAndTypes;
 		this.leadingArgs = new ArrayList<Class>();
 		this.applicationDomain = ApplicationDomain.CURRENT_CELL;
@@ -157,11 +156,11 @@ public class FormulaBuilderDialog extends JDialog {
 				}
 			});
 
-		final AttribParser parser = Parser.getParser();
-		final Set<AttribFunction> functions = parser.getRegisteredFunctions();
+		final EqnParser parser = Parser.getParser();
+		final Set<Function> functions = parser.getRegisteredFunctions();
 		final String[] functionNames = new String[functions.size()];
 		int index = 0;
-		for (final AttribFunction function : functions) {
+		for (final Function function : functions) {
 			functionNames[index] = function.getName() + ": " + function.getFunctionSummary();
 			stringToFunctionMap.put(functionNames[index], function);
 			++index;
@@ -338,7 +337,7 @@ public class FormulaBuilderDialog extends JDialog {
 	 *  @returns null, if "expression" is invalid, or, the type of "expression" if it was valid
 	 */
 	private Class expressionIsValid(final List<Class> validArgTypes, final String expression) {
-		final AttribParser parser = Parser.getParser();
+		final EqnParser parser = Parser.getParser();
 		if (!parser.parse("=" + expression, attribNamesAndTypes)) {
 			displayErrorMessage(parser.getErrorMsg());
 			return null;
@@ -527,8 +526,8 @@ public class FormulaBuilderDialog extends JDialog {
 	                                 final String formula, final StringBuilder errorMessage) 
 	{
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-		EquationUtil.initAttribNameToTypeMap(attribs, attribName, attribNameToTypeMap);
-		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		initAttribNameToTypeMap(attribs, attribName, attribNameToTypeMap);
+		final EqnCompiler compiler = new EqnCompiler();
 		if (compiler.compile(formula, attribNameToTypeMap))
 			return compiler.getEquation();
 
@@ -614,5 +613,40 @@ public class FormulaBuilderDialog extends JDialog {
 	private static void displayErrorMessage(final String errorMessage) {
 		JOptionPane.showMessageDialog(new JFrame(), errorMessage, "Error",
 		                              JOptionPane.ERROR_MESSAGE);
+	}
+
+	/**
+	 *  Populates "attribNameToTypeMap" with the names from "cyAttribs" and their types as mapped
+	 *  to the types used by attribute equations.  Types (and associated names) not used by
+	 *  attribute equations are ommitted.
+	 *
+	 *  @param cyAttribs            the attributes to map
+	 *  @param ignore               if not null, skip the attribute with this name
+	 *  @param attribNameToTypeMap  the result of the translation from attribute types to
+	 *                              attribute equation types
+	 */
+	private static void initAttribNameToTypeMap(final CyAttributes cyAttribs, final String ignore,
+	                                            final Map<String, Class> attribNameToTypeMap)
+	{
+		for (final String attribName : cyAttribs.getAttributeNames()) {
+			if (ignore == null || ignore.equals(attribName))
+				continue;
+			if (!cyAttribs.getUserVisible(attribName))
+				continue;
+
+			final byte type = cyAttribs.getType(attribName);
+			if (type == CyAttributes.TYPE_BOOLEAN)
+				attribNameToTypeMap.put(attribName, Boolean.class);
+			else if (type == CyAttributes.TYPE_INTEGER)
+				attribNameToTypeMap.put(attribName, Long.class);
+			else if (type == CyAttributes.TYPE_FLOATING)
+				attribNameToTypeMap.put(attribName, Double.class);
+			else if (type == CyAttributes.TYPE_STRING)
+				attribNameToTypeMap.put(attribName, String.class);
+			else if (type == CyAttributes.TYPE_SIMPLE_LIST)
+				attribNameToTypeMap.put(attribName, List.class);
+			else
+				/* We intentionally ignore everything else! */;
+		}
 	}
 }

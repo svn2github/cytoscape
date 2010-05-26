@@ -27,6 +27,7 @@
 */
 package browser;
 
+
 import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
@@ -38,7 +39,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.eqn_attribs.Equation;
 
 import cytoscape.view.CyNetworkView;
 
@@ -50,6 +50,8 @@ import giny.model.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
+
+import org.cytoscape.equations.Equation;
 
 import java.awt.Color;
 

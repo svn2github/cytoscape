@@ -27,12 +27,16 @@
 */
 package browser;
 
+
 import static browser.DataObjectType.NETWORK;
 import browser.util.AttrUtil;
+
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.eqn_attribs.AttribEqnCompiler;
-import cytoscape.data.eqn_attribs.Equation;
+
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Equation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -44,7 +48,6 @@ import javax.swing.undo.AbstractUndoableEdit;
 
 /**
  * Validate and set new value to the CyAttributes.
- *
  */
 public class DataEditAction extends AbstractUndoableEdit {
 	private final String attrKey;
@@ -493,7 +496,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 		final Map<String, Class> attribNameToTypeMap = AttrUtil.getAttrNamesAndTypes(attrs);
 		attribNameToTypeMap.put("ID", String.class);
 
-		final AttribEqnCompiler compiler = new AttribEqnCompiler();
+		final EqnCompiler compiler = new EqnCompiler();
 		if (!compiler.compile(equation, attribNameToTypeMap)) {
 			showErrorWindow("Error in equation for attribute\"" + currentAttrName + "\": "
 			                + compiler.getLastErrorMsg());

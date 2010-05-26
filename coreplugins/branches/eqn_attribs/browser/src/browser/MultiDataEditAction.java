@@ -33,10 +33,11 @@ import browser.util.AttrUtil;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
-import cytoscape.data.eqn_attribs.AttribEqnCompiler;
-import cytoscape.data.eqn_attribs.Equation;
 
 import giny.model.GraphObject;
+
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.EqnCompiler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -198,7 +199,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 				final Map<String, Class> attribNameToTypeMap = AttrUtil.getAttrNamesAndTypes(attrData);
 
-				final AttribEqnCompiler compiler = new AttribEqnCompiler();
+				final EqnCompiler compiler = new EqnCompiler();
 				if (!compiler.compile(input, attribNameToTypeMap)) {
 					showErrorWindow("Error in equation in SET operation: "
 					                + compiler.getLastErrorMsg());

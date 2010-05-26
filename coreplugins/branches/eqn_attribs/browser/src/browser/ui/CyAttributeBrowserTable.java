@@ -82,8 +82,6 @@ import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
-import cytoscape.data.eqn_attribs.Equation;
-import cytoscape.data.eqn_attribs.EquationUtil;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CyFileFilter;
@@ -94,6 +92,8 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
+
+import org.cytoscape.equations.Equation;
 
 import javax.swing.JViewport;
 import javax.swing.table.TableCellEditor;
@@ -1601,7 +1601,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			throw new IllegalStateException("unknown DataObjectType: " + objectType + "!");
 		}
 
-		EquationUtil.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
+		Util.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
 	}
 
 	/**

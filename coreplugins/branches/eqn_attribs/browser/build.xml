@@ -2,7 +2,7 @@
 <!-- Browser plugin (browser.jar) build file (Eclipse 3.1)     -->
 <!-- =================================================================== -->
 
-	<project name="browser" default="browser" basedir=".">
+<project name="browser" default="browser" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
@@ -13,7 +13,7 @@
     <property name="browser.name" value="browser"/>
     <property name="browser.version" value="0.8"/>
     <property name="browser.year" value="200"/>
-  	
+    
     <echo message="Building ${browser.name} version ${browser.version}."/>
 
     <!-- Inheritable properties -->
@@ -24,12 +24,12 @@
     <property name="fork" value="false"/>
     <property name="browser.root.dir" value="."/>
     <property name="browser.lib.dir" value="${browser.root.dir}/lib"/>
-  	
+    
     <property name="cytoscape.dir" value="../../eqn_attribs"/>
-  	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 
-  	<path id="project.class.path">
+    <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
 
@@ -51,9 +51,9 @@
     
     <condition property="cytoscape.present">
       <and> 
-	  		<available file="${cytoscape.jar}"/> 
-				<available file="${colt.jar}"/> 
-		  </and>
+	<available file="${cytoscape.jar}"/> 
+	<available file="${colt.jar}"/> 
+      </and>
     </condition>
 
     <!-- Define excludes for browser compile and javadoc -->
@@ -63,29 +63,11 @@
 
     <path id="browser.project.class.path">
       <pathelement location="${browser.classes.dir}"/>
-      <pathelement location="${cytoscape.plugin.dir}/core/filter.jar"/>
-      <pathelement location="${cytoscape.plugin.dir}/core/filters.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/equations.jar"/>
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/glf.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
-      <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
-      <pathelement location="${browser.lib.dir}/exesto.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-legacy.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/fing.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
-    	<pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.1.jar"/> 
+      <pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.1.jar"/> 
       <pathelement path="${project.class.path}/"/>
     </path>
 
@@ -96,7 +78,7 @@
   <!-- =================================================================== -->
   <target name="compile-browser" depends="init-browser"  >
 
-   <echo message=" COMPILE browser "/>
+    <echo message=" COMPILE browser "/>
 
     <mkdir dir="${browser.classes.dir}"/>
     <javac srcdir="${browser.src.dir}"
@@ -107,8 +89,8 @@
            nowarn="${nowarn}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
-		   source="1.5"
-		   target="1.5"
+	   source="1.5"
+	   target="1.5"
            fork="${fork}"/>
   </target>
 
@@ -116,20 +98,20 @@
   <!-- Creates the browser.jar file                                           -->
   <!-- =================================================================== -->
   <target name="browser" depends="compile-browser"  >
-  	<!-- copy over images -->
-		<copy todir="${browser.classes.dir}/browser/images">
-  	            <fileset dir="${browser.root.dir}/images"/>
-  	</copy>
-	<copy todir="${browser.classes.dir}/browser" file="${browser.resources.dir}/plugin.props"/>
+    <!-- copy over images -->
+    <copy todir="${browser.classes.dir}/browser/images">
+      <fileset dir="${browser.root.dir}/images"/>
+    </copy>
+    <copy todir="${browser.classes.dir}/browser" file="${browser.resources.dir}/plugin.props"/>
     <jar destfile="browser.jar" manifest="${browser.manifest.dir}/browser.manifest">
       <fileset
-        dir="${browser.classes.dir}"
-        includes="**"/>
+         dir="${browser.classes.dir}"
+         includes="**"/>
       <fileset
-        dir="${browser.root.dir}/lib"
-        includes="resources/**"/>
+         dir="${browser.root.dir}/lib"
+         includes="resources/**"/>
       <manifest>
-       <attribute name="Cytoscape-Plugin" value="browser.AttributeBrowserPlugin"/>
+	<attribute name="Cytoscape-Plugin" value="browser.AttributeBrowserPlugin"/>
       </manifest>
     </jar>
     <copy todir="${browser.lib.dir}" file="browser.jar"/>
@@ -165,16 +147,16 @@
   <!-- =================================================================== -->
   <target name="all" depends="browser"/>
 
-   <!-- =================================================================== -->
+  <!-- =================================================================== -->
   <!-- Run the Plugin                                                      -->
   <!-- =================================================================== -->
   <target name="run" depends="browser" >
-     
-     <java classname="cytoscape.cytoscape" 
-           classpathref="browser.project.class.path"
-           fork="true"/>
-           <arg line = "-p ${browser.lib.dir}/browser.jar"/>
-           
+    
+    <java classname="cytoscape.cytoscape" 
+          classpathref="browser.project.class.path"
+          fork="true"/>
+    <arg line = "-p ${browser.lib.dir}/browser.jar"/>
+    
 
   </target>
 
@@ -189,7 +171,7 @@
        haltonfailure="no"
        dir="${browser.classes.dir}"
        maxmemory="1G"
-    >
+       >
       <formatter type="plain" usefile="true" />
       <classpath refid="browser.project.class.path"/>
       <!-- The junit task doesn't support 'if' so we test for JUnit here -->
@@ -198,7 +180,7 @@
            dir="${browser.classes.dir}"
            includes="**/test/*"
            excludes="${browser.tests.excludes}"
-        />
+           />
       </batchtest>
     </junit>
   </target>
@@ -220,9 +202,9 @@
              noindex="false"
              windowtitle="${browser.Name} API"
              doctitle="${browser.Name}"
-    />
+	     />
   </target>
- 
+  
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
