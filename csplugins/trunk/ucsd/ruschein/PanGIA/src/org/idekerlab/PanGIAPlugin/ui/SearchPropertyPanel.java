@@ -130,6 +130,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         closeButton = new javax.swing.JButton();
         searchButton = new javax.swing.JButton();
 
+        parameterErrorLabel= new JLabel();
+        
         setLayout(new java.awt.GridBagLayout());
 
         topPane.setLayout(new java.awt.GridBagLayout());
@@ -247,6 +249,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.weighty = 1.0;
         add(parameterPanel, gridBagConstraints);
 
+        //ParamaterErrorLabel
+        parameterErrorLabel.setText("");
+        //parameterErrorLabel.set
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(parameterErrorLabel, gridBagConstraints);
+        
+        //Button panel
         buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         helpButton.setText("Help");
         helpButton.addActionListener(new java.awt.event.ActionListener() {
@@ -328,6 +340,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel = new javax.swing.JPanel();
         
         pnlParameter.setLayout(new java.awt.GridBagLayout());
+        
 
         //ScorePanel
         scorePanel.setLayout(new java.awt.GridBagLayout());
@@ -503,7 +516,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel.add(lbComplexFile, gridBagConstraints);
         
         complexFileTextField.setText("");
-        complexFileTextField.setPreferredSize(new java.awt.Dimension(120, 30));
+        complexFileTextField.setPreferredSize(new java.awt.Dimension(80, 30));
         complexFileTextField.setEditable(false);
         complexFileTextField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -565,12 +578,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         pnlParameter.add(lbPlaceHolder3, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-
     }                        
   
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -735,6 +742,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JComboBox phyScalingMethodComboBox;
     private javax.swing.JLabel lbGeneticScale;
     private javax.swing.JLabel lbPhysicalScale;
+    
+    private JLabel parameterErrorLabel;
     // End of variables declaration                     
                
   
@@ -896,29 +905,50 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if (geneticAttrName == null || physicalAttrName == null)
 		{
 			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Must choose physical and genetic attributes.");
 			return;
 		}
 
 		if (geneticAttrName.equals(physicalAttrName) && !geneticAttrName.equals(DEFAULT_ATTRIBUTE))
 		{
 			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("<HTML>Error: Physical and genetic attributes<BR>cannot be the same.</HTML>");
 			return;
 		}
-
+		
 		final CyNetwork physicalNetwork = physicalNetworkPanel.getSelectedNetwork();
 		final CyNetwork geneticNetwork = geneticNetworkPanel.getSelectedNetwork();
+		
+		if (physicalNetwork == null)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Must choose a physical network.");
+			return;
+		}
+		
+		if (geneticNetwork == null)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Must choose a genetic network.");
+			return;
+		}
+		
+		
 		if (physicalNetwork == geneticNetwork)
 		{
 			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("<HTML>Error: Physical and genetic networks<BR>cannot be the same.</HTML>");
 			return;
 		}
 		
 		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && complexFilePath.equals(""))
 		{
 			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Training requires a complex file.");
 			return;
 		}
 
+		parameterErrorLabel.setText("");
 		searchButton.setEnabled(true);
 	}
 }
