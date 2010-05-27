@@ -60,6 +60,7 @@ public class Parser {
 			eqnParser.registerFunction(new Last());
 			eqnParser.registerFunction(new Left());
 			eqnParser.registerFunction(new Len());
+			eqnParser.registerFunction(new ListToString());
 			eqnParser.registerFunction(new Ln());
 			eqnParser.registerFunction(new Log());
 			eqnParser.registerFunction(new Max());
@@ -82,6 +83,7 @@ public class Parser {
 			eqnParser.registerFunction(new StDev());
 			eqnParser.registerFunction(new Sqrt());
 			eqnParser.registerFunction(new Substitute());
+			eqnParser.registerFunction(new Tan());
 			eqnParser.registerFunction(new Trunc());
 			eqnParser.registerFunction(new UCase());
 			eqnParser.registerFunction(new Value());

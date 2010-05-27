@@ -32,6 +32,14 @@ package org.cytoscape.equations;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.management.AttributeList;
+import javax.management.relation.RoleList;
+import javax.management.relation.RoleUnresolvedList;
 
 
 /**
@@ -208,5 +216,29 @@ public class FunctionUtil {
 	 */
 	static public boolean isScalarArgType(final Class type) {
 		return type == Double.class || type == Long.class || type == String.class || type == Boolean.class;
+	}
+
+	/**
+	 *  @return true if "listClassCandidate" is an implementer of interface List, else false
+	 */
+	static public boolean someKindOfList(final Class listClassCandidate) {
+		if (listClassCandidate == ArrayList.class)
+			return true;
+		if (listClassCandidate == Vector.class)
+			return true;
+		if (listClassCandidate == Stack.class)
+			return true;
+		if (listClassCandidate == AttributeList.class)
+			return true;
+		if (listClassCandidate == CopyOnWriteArrayList.class)
+			return true;
+		if (listClassCandidate == LinkedList.class)
+			return true;
+		if (listClassCandidate == RoleList.class)
+			return true;
+		if (listClassCandidate == RoleUnresolvedList.class)
+			return true;
+
+		return false;
 	}
 }

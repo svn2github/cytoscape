@@ -27,19 +27,18 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.equations.interpreter;
+package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import junit.framework.*;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Parser;
-import org.cytoscape.equations.builtins.*;
+import org.cytoscape.equations.interpreter.IdentDescriptor;
+import org.cytoscape.equations.interpreter.Interpreter;
 
 
 class Framework {
@@ -53,21 +52,51 @@ class Framework {
 		public List<Class> getPossibleArgTypes(final Class[] leadingArgs) { return null; }
 	}
 
-	private final EqnCompiler compiler = new EqnCompiler();
+	private static final EqnCompiler compiler = new EqnCompiler();
 
-	boolean executeTest(final String equation, final Map<String, Object> variablesAndValues, final Object expectedResult)
-	{
+	static {
+		Parser.getParser().registerFunction(new BadReturnFunction());
+	}
+
+	static boolean executeTest(final String equation, final Map<String, Object> variablesAndValues, final Object expectedResult) {
 		final Map<String, Class> varNameToTypeMap = new HashMap<String, Class>();
 		for (final String variableName : variablesAndValues.keySet())
 			varNameToTypeMap.put(variableName, variablesAndValues.get(variableName).getClass());
-
-		if (!compiler.compile(equation, varNameToTypeMap))
+		
+		try {
+			if (!compiler.compile(equation, varNameToTypeMap)) {
+				System.err.println("Error while compiling \"" + equation + "\": " + compiler.getLastErrorMsg());
+				return false;
+			}
+		} catch (final Exception e) {
+			System.err.println("Error while compiling \"" + equation + "\": " + e.getMessage());
 			return false;
+		}
 
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
-		for (final String variableName : variablesAndValues.keySet())
-			nameToDescriptorMap.put(variableName, new IdentDescriptor(variablesAndValues.get(variableName)));
+		try {
+			for (final String variableName : variablesAndValues.keySet())
+				nameToDescriptorMap.put(variableName, new IdentDescriptor(variablesAndValues.get(variableName)));
+		} catch (final Exception e) {
+			System.err.println("Error while processing variables for \"" + equation + "\": " + e.getMessage());
+			return false;
+		}
 
-		return true;
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		try {
+			final Object actualResult = interpreter.run();
+			if (!actualResult.equals(expectedResult)) {
+				System.err.println("[" + equation + "] expected: " + expectedResult + ", found: " + actualResult);
+				return false;
+			} else
+				return true;
+		} catch (final Exception e) {
+			return false;
+		}
+	}
+
+	static boolean executeTest(final String equation, final Object expectedResult) {
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		return executeTest(equation, variablesAndValues, expectedResult);
 	}
 }
