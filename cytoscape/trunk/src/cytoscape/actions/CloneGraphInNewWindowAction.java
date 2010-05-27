@@ -48,6 +48,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.CyNetworkNaming;
 
 import giny.model.Node;
 import giny.view.NodeView;
@@ -87,12 +88,11 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 		CyNetwork origNet = Cytoscape.getCurrentNetwork();
 		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
+		String newName = CyNetworkNaming.getSuggestedNetworkTitle(origNet.getTitle() + " copy");
 
 		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
 		                                                origNet.getEdgeIndicesArray(),
-		                                                origNet.getTitle() + " copy", 
-														null,
-														true);
+		                                                newName, null, true);
 
 		// only clone the view if one actually exists
 		if ( origView == null || origView == Cytoscape.getNullNetworkView() )
