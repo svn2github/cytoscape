@@ -36,5 +36,6 @@ import junit.framework.*;
 public class TanTest extends TestCase {
 	public void testAll() throws Exception {
 		assertTrue(Framework.executeTest("=TAN(1.047197551)", new Double(1.7320508067824862)));
+		assertFalse(Framework.executeTest("=TAN(" + (Math.PI / 2.0) + ")", new Double(0.0)));
 	}
 }
