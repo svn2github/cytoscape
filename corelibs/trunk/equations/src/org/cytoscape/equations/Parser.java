@@ -49,6 +49,7 @@ public class Parser {
 			eqnParser.registerFunction(new Combin());
 			eqnParser.registerFunction(new Cos());
 			eqnParser.registerFunction(new Count());
+			eqnParser.registerFunction(new Degrees());
 			eqnParser.registerFunction(new Exp());
 			eqnParser.registerFunction(new First());
 			eqnParser.registerFunction(new GeoMean());

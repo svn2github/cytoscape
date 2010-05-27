@@ -47,7 +47,7 @@ public class Sin implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns the sine of a number."; }
+	public String getFunctionSummary() { return "Returns the sine of an angle given in radians."; }
 
 	/**
 	 *  Used to provide help for users.

@@ -1,5 +1,5 @@
 /*
-  File: Cos.java
+  File: Tan.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,24 +36,24 @@ import org.cytoscape.equations.Function;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Cos implements Function {
+public class Tan implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "COS"; }
+	public String getName() { return "TAN"; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns the cosine of an angle given in radians."; }
+	public String getFunctionSummary() { return "Returns the tanget of an angle given in radians."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"COS(radians)\""; }
+	public String getUsageDescription() { return "Call this with \"TAN(radians)\""; }
 
 	public Class getReturnType() { return Double.class; }
 
@@ -73,7 +73,12 @@ public class Cos implements Function {
 	 */
 	public Object evaluateFunction(final Object[] args) {
 		final double angleInRadians = FunctionUtil.getArgAsDouble(args[0]);
-		return Math.cos(angleInRadians);
+
+		final double cos = Math.cos(angleInRadians);
+		if (cos == 0.0)
+			throw new IllegalArgumentException("division by zero in call to TAN()!");
+
+		return Math.sin(angleInRadians) / cos;
 	}
 
 	/**
