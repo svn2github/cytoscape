@@ -947,4 +947,63 @@ public class InterpreterTest extends TestCase {
 		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
                 assertEquals(new Long(28L), interpreter3.run());
 	}
+
+	public void testNORMDIST() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=NORMDIST( 50, 40, 20, FALSE)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.017603266338214976), interpreter1.run());
+
+		assertTrue(compiler.compile("=NORMDIST( 0.8, 1, 0.3, TRUE)", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.25249253754692297), interpreter2.run());
+	}
+
+	public void testRADIANS() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		assertTrue(compiler.compile("=RADIANS(180)", attribNameToTypeMap));
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(Math.PI), interpreter.run());
+	}
+
+	public void testSIN() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=SIN("+Math.PI+"/6)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.49999999999999994), interpreter1.run());
+
+		assertTrue(compiler.compile("=SIN(RADIANS(60))", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.8660254037844386), interpreter2.run());
+
+		assertTrue(compiler.compile("=SIN(RADIANS(-30))", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(-0.49999999999999994), interpreter3.run());
+	}
+
+	public void testCOS() throws Exception {
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+
+		assertTrue(compiler.compile("=COS("+Math.PI+"/6)", attribNameToTypeMap));
+		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.8660254037844387), interpreter1.run());
+
+		assertTrue(compiler.compile("=COS(RADIANS(60))", attribNameToTypeMap));
+		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.5000000000000001), interpreter2.run());
+
+		assertTrue(compiler.compile("=COS(RADIANS(-30))", attribNameToTypeMap));
+		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.8660254037844387), interpreter3.run());
+
+		assertTrue(compiler.compile("=COS(0.785398163)", attribNameToTypeMap));
+		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+                assertEquals(new Double(0.7071067814675859), interpreter4.run());
+	}
 }

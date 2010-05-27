@@ -47,6 +47,7 @@ public class Parser {
 			eqnParser.registerFunction(new And());
 			eqnParser.registerFunction(new Average());
 			eqnParser.registerFunction(new Combin());
+			eqnParser.registerFunction(new Cos());
 			eqnParser.registerFunction(new Count());
 			eqnParser.registerFunction(new Exp());
 			eqnParser.registerFunction(new First());
@@ -67,13 +68,16 @@ public class Parser {
 			eqnParser.registerFunction(new Mod());
 			eqnParser.registerFunction(new Mode());
 			eqnParser.registerFunction(new Not());
+			eqnParser.registerFunction(new NormDist());
 			eqnParser.registerFunction(new Nth());
 			eqnParser.registerFunction(new Or());
 			eqnParser.registerFunction(new Permut());
 			eqnParser.registerFunction(new Pi());
+			eqnParser.registerFunction(new Radians());
 			eqnParser.registerFunction(new Right());
 			eqnParser.registerFunction(new Round());
 			eqnParser.registerFunction(new Sign());
+			eqnParser.registerFunction(new Sin());
 			eqnParser.registerFunction(new StDev());
 			eqnParser.registerFunction(new Sqrt());
 			eqnParser.registerFunction(new Substitute());

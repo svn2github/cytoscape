@@ -85,6 +85,33 @@ public class FunctionUtil {
 	}
 
 	/**
+	 *  Assumes that "arg" is a "String", "Boolean", "Long" or a "Double and converts it to "boolean".
+	 *  @return the converted argument as a "boolean"
+	 *  @throws IllegalArgumentException if the argument cannot be converted to a "boolean"
+	 */
+	static public boolean getArgAsBoolean(final Object arg) throws IllegalArgumentException {
+		if (arg.getClass() == Double.class) {
+			final double d = (Double)arg;
+			return d == 0.0 ? false : true;
+		}
+		if (arg.getClass() == Long.class) {
+			final long l = (Long)arg;
+			return l == 0L ? false : true;
+		}
+		if (arg.getClass() == String.class) {
+			try {
+				return Boolean.parseBoolean((String)arg);
+			} catch (final Exception e) {
+				throw new IllegalArgumentException("can't convert \"" + arg + "\" to a boolean!");
+			}
+		}
+		if (arg.getClass() == Boolean.class)
+			return (Boolean)arg;
+
+		throw new IllegalArgumentException("can't convert argument to a boolean!");
+	}
+
+	/**
 	 *  Carefully adds the numbers in "a" minimising loss of precision.
 	 *
 	 *  @return the sum of the elements of "a"
@@ -174,5 +201,12 @@ public class FunctionUtil {
 			x[i++] = d;
 
 		return x;
+	}
+
+	/**
+	 *  @return true, if type is Double.class, Long.class, String.class or Boolean.class, else false
+	 */
+	static public boolean isScalarArgType(final Class type) {
+		return type == Double.class || type == Long.class || type == String.class || type == Boolean.class;
 	}
 }
