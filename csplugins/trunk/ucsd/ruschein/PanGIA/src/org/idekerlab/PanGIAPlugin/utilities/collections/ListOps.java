@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.ListUtils;
-
 import org.idekerlab.PanGIAPlugin.data.IntVector;
 
 /**
@@ -153,15 +151,6 @@ public class ListOps {
 		return hs.toArray(new String[hs.size()]);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static List<String> intersect(List<String> s1, List<String> s2) {
-		return new ArrayList<String>(ListUtils.intersection(s1, s2));
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<String> union(List<String> s1, List<String> s2) {
-		return new ArrayList<String>(ListUtils.union(s1, s2));
-	}
 
 	/*
 	 * public static List<String> subList (List<String> s1, int startIndex, int

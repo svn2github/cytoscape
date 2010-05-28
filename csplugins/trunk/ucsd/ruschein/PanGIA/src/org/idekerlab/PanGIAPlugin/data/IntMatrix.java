@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.idekerlab.PanGIAPlugin.utilities.ByteConverter;
 import org.idekerlab.PanGIAPlugin.data.matrixMath.*;
-import Jama.Matrix;
-import Jama.SingularValueDecomposition;
 
 
 public class IntMatrix extends DataMatrix{
@@ -802,17 +800,7 @@ public class IntMatrix extends DataMatrix{
 		
 		data = mydata;
 	}
-	
-	public static double pearsonCorrelation(IntMatrix dt1, IntMatrix dt2)
-	{
-		org.apache.commons.math.stat.regression.SimpleRegression sr = new org.apache.commons.math.stat.regression.SimpleRegression();
-		
-		for (int i=0;i<dt1.dim(0);i++)
-			for (int j=0;j<dt1.dim(1);j++)
-				sr.addData(dt1.get(i,j), dt2.get(i,j));
-		
-		return sr.getR();
-	}
+
 	
 	public IntMatrix xTx()
 	{
@@ -871,32 +859,6 @@ public class IntMatrix extends DataMatrix{
 		return out;
 	}
 	
-	public IntMatrix pseudoInverse()
-	{
-		Matrix x = new Matrix(this.asdoubleArray());
-		
-		SingularValueDecomposition svd = x.svd();
-		
-		Matrix u = svd.getU();
-		Matrix s = svd.getS();
-		Matrix v = svd.getV();
-		
-		double smax = 0;
-		
-		for (int i=0;i<s.getColumnDimension();i++)
-			if (s.get(i, i)>smax) smax = s.get(i, i);
-		
-		//Based on the machine double precision of 2.220446e-16
-		double tol = 2.220446e-16*Math.max(x.getRowDimension(), x.getColumnDimension())*smax;
-		
-		for (int i=0;i<s.getColumnDimension();i++)
-		{
-			if (s.get(i, i)<=tol) s.set(i, i, 0);
-			else s.set(i, i, 1/s.get(i, i));
-		}
-		
-		return new IntMatrix(v.times(s).times(u.transpose()).getArray());
-	}
 	
 	public DoubleVector times(DoubleVector v)
 	{

@@ -800,8 +800,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		parameters.setAlphaMultiplier(Double.parseDouble(alphaMultiplierTextField.getText()));
 
 		final String degree = degreeTextField.getText();
-		if (degree.length() > 0)
-		parameters.setPhysicalNetworkFilterDegree(Integer.parseInt(degree));
+		if (degree.length() > 0) parameters.setPhysicalNetworkFilterDegree(Integer.parseInt(degree));
+		else parameters.setPhysicalNetworkFilterDegree(-1);
 
 		final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
 		parameters.setPValueThreshold(pValueThreshold);

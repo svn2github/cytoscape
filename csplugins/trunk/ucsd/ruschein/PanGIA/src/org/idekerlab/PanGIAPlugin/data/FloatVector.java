@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.primitives.ArrayIntList;
 import org.idekerlab.PanGIAPlugin.utilities.files.FileIterator;
 
 
@@ -1248,22 +1247,6 @@ public class FloatVector extends DataVector {
 
 		for (int i = 1; i < this.size(); i++)
 			out.add(data[i] + out.get(i - 1));
-
-		return out;
-	}
-
-	public FloatVector cumSum(ArrayIntList order) {
-		if (this.size() == 0)
-			return new FloatVector(0);
-
-		FloatVector out = new FloatVector(this.size(), 0);
-
-		float sum = 0;
-
-		for (int i = 0; i < order.size(); i++) {
-			sum += this.get(order.get(i));
-			out.set(order.get(i), sum);
-		}
 
 		return out;
 	}

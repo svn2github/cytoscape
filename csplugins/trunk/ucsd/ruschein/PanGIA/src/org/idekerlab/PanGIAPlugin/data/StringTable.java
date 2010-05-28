@@ -1,7 +1,9 @@
 package org.idekerlab.PanGIAPlugin.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StringTable extends DataTable{
 
@@ -148,6 +150,17 @@ public class StringTable extends DataTable{
 		return data.get(row).get(col);
 	}
 	
+	public double getAsDouble(int row, int col)
+	{
+		try
+		{
+			return Double.valueOf(data.get(row).get(col));
+		} catch (java.lang.NumberFormatException e)
+		{
+			return Double.NaN;
+		} 
+	}
+	
 	public String get(int i, int j)
 	{
 		return(data.get(i).get(j));
@@ -170,11 +183,11 @@ public class StringTable extends DataTable{
 	
 	public StringVector getCol(int col)
 	{
-		StringVector column = new StringVector(dim(0));
+		StringVector column = new StringVector(this.numRows());
 		
 		LabelCol(column,col);
 		
-		for (int r=0;r<dim(0);r++)
+		for (int r=0;r<this.numRows();r++)
 			column.add(data.get(r).get(col));
 		
 		return column;
@@ -564,8 +577,11 @@ public class StringTable extends DataTable{
 		
 		IntVector index = dv.sort_I();
 		
-		if (this.hasRowNames())	this.setRowNames(dv.getElementNames(index));
-
+		if (this.hasRowNames())
+		{
+			this.setRowNames(dv.getElementNames(index));
+			
+		}
 		List<List<String>> mydata = new ArrayList<List<String>>(dim(0));
 		for (int row=0;row<dim(0);row++)
 		{
@@ -643,5 +659,20 @@ public class StringTable extends DataTable{
 	{
 		if (data!=null && data.size()>0) return data.get(0).size();
 		else return 0;
+	}
+	
+	public Map<String,String> hash2columns (int keyColIndex, int valueColIndex)
+	{
+		Map<String,String> hashedColumns = new HashMap<String,String>(this.dim(0));
+		for(int i=0; i<this.dim(0); i++)
+			hashedColumns.put(this.get(i, keyColIndex),this.get(i, valueColIndex));
+		
+		return hashedColumns;
+	}
+	
+	public void addCol(DoubleVector v)
+	{
+		for (int i=0;i<v.size();i++)
+			data.get(i).add(v.getAsString(i));
 	}
 }

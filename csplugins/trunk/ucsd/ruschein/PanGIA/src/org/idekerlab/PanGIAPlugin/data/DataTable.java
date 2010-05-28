@@ -14,10 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.lang.*;
-
-import org.apache.commons.collections.primitives.ArrayIntList;
-
 public abstract class DataTable {
 
 	protected List<String> rownames;
@@ -37,6 +33,7 @@ public abstract class DataTable {
 	public abstract int numRows();
 	public abstract int numCols();
 	public abstract String getAsString(int row, int col);
+	public abstract double getAsDouble(int row, int col);
 	
 	public abstract DataVector getCol(int col);
 	public abstract DataVector getCol(String colname);
@@ -108,6 +105,7 @@ public abstract class DataTable {
 	/**
 	 * Get the name of the row at the given index.
 	 * @param index
+	 * @return
 	 */
 	public String getRowName(int index)
 	{
@@ -118,6 +116,7 @@ public abstract class DataTable {
 	/**
 	 * Get the name of the column at the given index.
 	 * @param index
+	 * @return
 	 */
 	public String getColName(int index)
 	{
@@ -127,6 +126,7 @@ public abstract class DataTable {
 	
 	/**
 	 * Gets a copy of the rownames list.
+	 * @return
 	 */
 	public ArrayList<String> getRowNames()
 	{
@@ -135,6 +135,7 @@ public abstract class DataTable {
 	
 	/**
 	 * Gets a copy of the colnames list.
+	 * @return
 	 */
 	public ArrayList<String> getColNames()
 	{
@@ -158,6 +159,7 @@ public abstract class DataTable {
 	
 	/**
 	 * Returns whether this DataTable has column names.
+	 * @return
 	 */
 	public boolean hasColNames()
 	{
@@ -166,6 +168,7 @@ public abstract class DataTable {
 	
 	/**
 	 * Returns whether this DataTable has row names.
+	 * @return
 	 */
 	public boolean hasRowNames()
 	{
@@ -197,6 +200,7 @@ public abstract class DataTable {
 	/**
 	 * Gets the row index corresponding to a the first row with the given name.
 	 * @param rname
+	 * @return
 	 */
 	protected int getRowIndex(String rname)
 	{
@@ -212,6 +216,7 @@ public abstract class DataTable {
 	/**
 	 * Gets the row indexes, each corresponding to the first row with the given name.
 	 * @param rnames
+	 * @return
 	 */
 	protected IntVector getRowIs(String[] rnames)
 	{
@@ -236,6 +241,7 @@ public abstract class DataTable {
 	/**
 	 * Gets the row indexes, each corresponding to the first row with the given name.
 	 * @param rnames
+	 * @return
 	 */
 	protected IntVector getRowIs(StringVector rnames)
 	{
@@ -261,6 +267,7 @@ public abstract class DataTable {
 	 * Gets the row indexes corresponding to a list of indexes.
 	 * Accepts lists of types: Double, Integer, String (rownames)
 	 * @param indexes
+	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	protected IntVector getRowIs(List<?> indexes)
@@ -391,18 +398,6 @@ public abstract class DataTable {
 			removeRow(ls.get(i));
 	}
 	
-	public void removeRow(ArrayIntList rows)
-	{
-		List<Integer> ls = new ArrayList<Integer>(rows.size());
-		
-		for (int i=0;i<rows.size();i++)
-			ls.add(rows.get(i));
-		
-		Collections.sort(ls);
-		
-		for (int i=ls.size()-1;i>=0;i--)
-			removeRow(ls.get(i));
-	}
 	
 	public void removeRow(IntVector rows)
 	{
@@ -601,7 +596,7 @@ public abstract class DataTable {
 
 	public void appendFile(String file)
 	{
-		WriteOut(file,true);
+		WriteOut(file,true,"\t");
 	}
 	
 	public void appendFileWithNoLegends(String file)
@@ -611,7 +606,12 @@ public abstract class DataTable {
 	
 	public void save(String file)
 	{
-		WriteOut(file, false);
+		WriteOut(file, false, "\t");
+	}
+	
+	public void save(String file, String delim)
+	{
+		WriteOut(file, false, delim);
 	}
 	
 	public void saveWithNoLegends(String file)
@@ -629,7 +629,7 @@ public abstract class DataTable {
 		new StringVector(this.rownames).save(file);
 	}
 	
-	private void WriteOut(String file, boolean append)
+	private void WriteOut(String file, boolean append, String delim)
 	{
 		//Open/Create file for writing. If no file exists append->false
 		File outfile = new File(file);
@@ -674,11 +674,11 @@ public abstract class DataTable {
 		{
 			try
 			{
-				if (this.hasRowNames()) bw.write("\t");
+				if (this.hasRowNames()) bw.write(delim);
 				
 				bw.write(colnames.get(0));
 				for (int i=1;i<dim(1);i++)
-					bw.write("\t" + colnames.get(i));
+					bw.write(delim + colnames.get(i));
 				
 				bw.write("\n");
 			}
@@ -703,11 +703,11 @@ public abstract class DataTable {
 			
 			try
 			{
-				if (this.hasRowNames()) bw.write(rownames.get(i)+"\t");
+				if (this.hasRowNames()) bw.write(rownames.get(i)+delim);
 				
 				bw.write(getAsString(i,0));
 				for (int j=1;j<dim(1);j++)
-					bw.write("\t" + getAsString(i,j));
+					bw.write(delim + getAsString(i,j));
 							
 				bw.write("\n");
 			}

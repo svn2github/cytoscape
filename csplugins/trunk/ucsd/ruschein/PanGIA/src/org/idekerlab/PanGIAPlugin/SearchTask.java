@@ -14,6 +14,7 @@ import org.idekerlab.PanGIAPlugin.ModFinder.SouravScore;
 import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge.InteractionType;
 import org.idekerlab.PanGIAPlugin.data.DoubleVector;
 import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
+import org.idekerlab.PanGIAPlugin.networks.SNodeModule;
 import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkEdge;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNetwork;
@@ -54,26 +55,56 @@ public class SearchTask implements Task {
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for complexes...");
 
+		/***
+		 * TODO: Annotation
+		 * Use absolute value for training?
+		 */
+		
+		
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
 		addEdgeType(physicalInputNetwork, InteractionType.Physical);
 		
-		final SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork,
+		SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork,
 									      parameters.getPhysicalEdgeAttrName(),
 									      parameters.getPhysicalScalingMethod());
 
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
 		addEdgeType(geneticInputNetwork, InteractionType.Genetic);
 		
-		final SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork,
+		SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork,
 									     parameters.getGeneticEdgeAttrName(),
 									     parameters.getGeneticScalingMethod());
 		
+		//Apply the degree filter
+		int degreeFilter = parameters.getPhysicalNetworkFilterDegree();
+		if (degreeFilter!=-1)
+		{
+			TypedLinkNetwork<String,Float> ptlnet = physicalNetwork.asTypedLinkNetwork();
+			Set<String> pnodes = physicalNetwork.getNodes();
+			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(pnodes, degreeFilter));
+		}
+		
+		//Load trainingComplexes
+		List<SNodeModule> trainingComplexes = null;
+		if (parameters.getComplexTraining() || parameters.getComplexAnnotation())
+			trainingComplexes = SNodeModule.loadComplexes(parameters.getComplexFile());
+		
+		//Perform training
+		if (trainingComplexes != null)
+		{
+			physicalNetwork = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
+			geneticNetwork = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
+		}
+			
+		
+		//Initialize the scoring function
 		final HCScoringFunction hcScoringFunction =
 			new SouravScore(physicalNetwork, geneticNetwork,
 		                       (float)parameters.getAlpha(),
 		                       (float)parameters.getAlphaMultiplier());
 		hcScoringFunction.Initialize(physicalNetwork, geneticNetwork);
 
+		//Run the clustering algorithm
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results =
 			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction,
 			                 taskMonitor, SEARCH_PERCENTAGE);
@@ -143,7 +174,7 @@ public class SearchTask implements Task {
 	}
 
 	public String getTitle() {
-		return "ModFind";
+		return "PanGIA";
 	}
 
 	private void setPercentCompleted(int percent) {
@@ -201,13 +232,14 @@ public class SearchTask implements Task {
 				//How to save p-value?
 				pVal = numLinks2empiricalDist.get(numGeneticLinks).getEmpiricalValueFromSortedDist(sumOfGeneticValues);
 			} else {
-				DoubleVector temp = new DoubleVector(numberOfSamples);
+				double[] dist = new double[numberOfSamples];
 				
-				for (int i = 1; i <= numberOfSamples; i++) {
+				for (int i = 0; i < numberOfSamples; i++) {
 					double permVal = allEdgeValues.sample(numGeneticLinks, false).sum();
-					temp.add(permVal);
+					dist[i] = permVal;
 				}
 				
+				DoubleVector temp = new DoubleVector(dist);
 				temp = temp.sort();
 				numLinks2empiricalDist.put(numGeneticLinks, temp);
 

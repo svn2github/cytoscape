@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.*;
 import org.idekerlab.PanGIAPlugin.utilities.files.*;
 
-import org.apache.commons.collections.primitives.ArrayIntList;
-
 public abstract class DataVector {
 
 	protected List<String> elementnames;
@@ -353,15 +351,7 @@ public abstract class DataVector {
 		
 		return out;
 	}
-	
-	public ArrayIntList asArrayIntList()
-	{
-		ArrayIntList ail = new ArrayIntList(this.size());
-		for (int i=0;i<this.size();i++)
-			ail.add((int)this.getAsDouble(i));
-		
-		return ail;
-	}
+
 
 	public BooleanVector asBooleanVector()
 	{

@@ -2,7 +2,6 @@ package org.idekerlab.PanGIAPlugin.data;
 
 import java.util.*;
 
-import com.google.common.collect.*;
 
 public class StringVector extends DataVector implements java.lang.Iterable<String>{
 
@@ -331,21 +330,6 @@ public class StringVector extends DataVector implements java.lang.Iterable<Strin
 	public Iterator<String> iterator()
 	{
 		return data.iterator();
-	}
-	
-	public Map<String,Integer> tabulate()
-	{
-		Multiset<String> ms = new HashMultiset<String>(this.size());
-		
-		for (String s : this)
-			ms.add(s);
-		
-		Map<String,Integer> out = new HashMap<String,Integer>(ms.size());
-		
-		for (String s : ms.elementSet())
-			out.put(s, ms.count(s));
-		
-		return out;
 	}
 	
 	public StringVector sort()

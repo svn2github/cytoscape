@@ -3,10 +3,6 @@ package org.idekerlab.PanGIAPlugin.data;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import Jama.Matrix;
-import Jama.SingularValueDecomposition;
-
 import java.util.concurrent.*;
 
 import org.idekerlab.PanGIAPlugin.utilities.ByteConversion;
@@ -957,16 +953,6 @@ public class FloatMatrix extends DataMatrix{
 		data = mydata;
 	}
 	
-	public static double pearsonCorrelation(FloatMatrix dt1, FloatMatrix dt2)
-	{
-		org.apache.commons.math.stat.regression.SimpleRegression sr = new org.apache.commons.math.stat.regression.SimpleRegression();
-		
-		for (int i=0;i<dt1.dim(0);i++)
-			for (int j=0;j<dt1.dim(1);j++)
-				if (!Double.isNaN(dt1.get(i, j)) && !Double.isNaN(dt2.get(i, j))) sr.addData(dt1.get(i,j), dt2.get(i,j));
-		
-		return sr.getR();
-	}
 	
 	public FloatMatrix xTx()
 	{
@@ -1044,33 +1030,6 @@ public class FloatMatrix extends DataMatrix{
 		if (this.hasRowNames()) out.setColNames(this.getRowNames());
 		
 		return out;
-	}
-	
-	public FloatMatrix pseudoInverse()
-	{
-		Matrix x = new Matrix(this.asdoubleArray());
-		
-		SingularValueDecomposition svd = x.svd();
-		
-		Matrix u = svd.getU();
-		Matrix s = svd.getS();
-		Matrix v = svd.getV();
-		
-		double smax = 0;
-		
-		for (int i=0;i<s.getColumnDimension();i++)
-			if (s.get(i, i)>smax) smax = s.get(i, i);
-		
-		//Based on the machine double precision of 2.220446e-16
-		double tol = 2.220446e-16*Math.max(x.getRowDimension(), x.getColumnDimension())*smax;
-		
-		for (int i=0;i<s.getColumnDimension();i++)
-		{
-			if (s.get(i, i)<=tol) s.set(i, i, 0);
-			else s.set(i, i, 1/s.get(i, i));
-		}
-		
-		return new FloatMatrix(v.times(s).times(u.transpose()).getArray());
 	}
 	
 	public FloatVector times(FloatVector v)

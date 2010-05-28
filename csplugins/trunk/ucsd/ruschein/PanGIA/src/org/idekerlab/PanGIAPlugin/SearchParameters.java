@@ -15,7 +15,7 @@ public final class SearchParameters {
 		
 	private double alpha;
 	private double alphaMultiplier;
-	private double physicalNetworkFilterDegree;
+	private int physicalNetworkFilterDegree;
 	
 	private double pValueThreshold;
 	private int numberOfSamples;
@@ -92,11 +92,11 @@ public final class SearchParameters {
 		return alphaMultiplier;
 	}
 
-	public void setPhysicalNetworkFilterDegree(final double physicalNetworkFilterDegree) {
+	public void setPhysicalNetworkFilterDegree(final int physicalNetworkFilterDegree) {
 		this.physicalNetworkFilterDegree = physicalNetworkFilterDegree;
 	}
 
-	public double getPhysicalNetworkFilterDegree() {
+	public int getPhysicalNetworkFilterDegree() {
 		return physicalNetworkFilterDegree;
 	}
 

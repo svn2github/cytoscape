@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.primitives.ArrayIntList;
-
 public class IntVector extends DataVector {
 
 	private int[] data;
@@ -557,21 +555,6 @@ public class IntVector extends DataVector {
 		return true;
 	}
 
-	public static final double pearsonCorrelation(IntVector v1, IntVector v2) {
-		if (v1.size() != v2.size()) {
-			System.err
-					.println("Error pearsonCorrelation: Vectors must be the same size.");
-			System.exit(0);
-		}
-
-		org.apache.commons.math.stat.regression.SimpleRegression sr = new org.apache.commons.math.stat.regression.SimpleRegression();
-
-		for (int i = 0; i < v1.size(); i++)
-			sr.addData(v1.get(i), v2.get(i));
-
-		return sr.getR();
-	}
-
 	public static double mean(int[] data) {
 		double sum = 0;
 		int valcount = 0;
@@ -1018,13 +1001,6 @@ public class IntVector extends DataVector {
 				set(i, val);
 	}
 
-	public void set(ArrayIntList indexes, IntVector vals) {
-		vals = vals.clone();
-
-		for (int i = 0; i < indexes.size(); i++)
-			this.set(indexes.get(i), vals.get(i));
-	}
-
 	public void replace(int oldval, int newval) {
 		if (Double.isNaN(oldval)) {
 			for (int i = 0; i < size(); i++)
@@ -1053,20 +1029,6 @@ public class IntVector extends DataVector {
 		return perm;
 	}
 
-	public IntVector tabulate() {
-		com.google.common.collect.Multiset<Integer> ms = new com.google.common.collect.HashMultiset<Integer>(
-				this.asIntegerList());
-
-		IntVector vals = (new IntVector(ms.elementSet())).sort();
-
-		IntVector outbin = new IntVector(vals.size());
-
-		for (int i = 0; i < vals.size(); i++)
-			outbin.add(ms.count(vals.get(i)));
-
-		return outbin;
-	}
-
 	public IntVector cumSum() {
 		if (this.size() == 0)
 			return new IntVector(0);
@@ -1081,21 +1043,6 @@ public class IntVector extends DataVector {
 		return out;
 	}
 
-	public IntVector cumSum(ArrayIntList order) {
-		if (this.size() == 0)
-			return new IntVector(0);
-
-		IntVector out = new IntVector(this.size(), 0);
-
-		int sum = 0;
-
-		for (int i = 0; i < order.size(); i++) {
-			sum += this.get(order.get(i));
-			out.set(order.get(i), sum);
-		}
-
-		return out;
-	}
 
 	public BooleanVector isEqual(int val) {
 		BooleanVector out = new BooleanVector(size());

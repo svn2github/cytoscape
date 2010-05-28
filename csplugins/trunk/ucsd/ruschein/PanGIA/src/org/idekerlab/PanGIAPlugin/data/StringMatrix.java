@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.idekerlab.PanGIAPlugin.data.matrixMath.*;
-import Jama.Matrix;
-import Jama.SingularValueDecomposition;
 
 public class StringMatrix extends DataMatrix{
 

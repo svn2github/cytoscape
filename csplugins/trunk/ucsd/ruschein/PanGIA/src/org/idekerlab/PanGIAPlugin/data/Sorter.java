@@ -52,6 +52,18 @@ public class Sorter {
 		return ail;
 	}
 	
+	
+	public static int[] Sort_I(double[] dv)
+	{
+		int[] index = new int[dv.length];
+    	for (int i=0;i<dv.length;i++)
+    		index[i]=i;
+		
+		sortwI(dv,0,dv.length,index);
+				
+		return index;
+	}
+	
 	public static IntVector Sort_I(DoubleVector dv)
 	{
 		int[] index = new int[dv.size()];

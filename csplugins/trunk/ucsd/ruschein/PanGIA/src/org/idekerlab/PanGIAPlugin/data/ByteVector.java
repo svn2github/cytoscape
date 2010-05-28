@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.primitives.ArrayByteList;
-
 public class ByteVector extends DataVector {
 
 	private byte[] data;
@@ -579,20 +577,6 @@ public class ByteVector extends DataVector {
 		return true;
 	}
 
-	public static final double pearsonCorrelation(ByteVector v1, ByteVector v2) {
-		if (v1.size() != v2.size()) {
-			System.err
-					.println("Error pearsonCorrelation: Vectors must be the same size.");
-			System.exit(0);
-		}
-
-		org.apache.commons.math.stat.regression.SimpleRegression sr = new org.apache.commons.math.stat.regression.SimpleRegression();
-
-		for (int i = 0; i < v1.size(); i++)
-			sr.addData(v1.get(i), v2.get(i));
-
-		return sr.getR();
-	}
 
 	public double mean() {
 		double sum = 0.0;
@@ -811,15 +795,6 @@ public class ByteVector extends DataVector {
 		return sub;
 	}
 
-	public ByteVector get(ArrayByteList indexes) {
-		ByteVector sub = new ByteVector(indexes.size());
-
-		for (int i = 0; i < indexes.size(); i++)
-			sub.add(data[indexes.get(i)]);
-
-		return sub;
-	}
-
 	public ByteVector get(ByteVector indexes) {
 		ByteVector sub = new ByteVector(indexes.size());
 
@@ -957,12 +932,6 @@ public class ByteVector extends DataVector {
 				set(i, val);
 	}
 
-	public void set(ArrayByteList indexes, ByteVector vals) {
-		vals = vals.clone();
-
-		for (int i = 0; i < indexes.size(); i++)
-			this.set(indexes.get(i), vals.get(i));
-	}
 
 	public void replace(int oldval, int newval) {
 		if (Double.isNaN(oldval)) {
@@ -992,19 +961,6 @@ public class ByteVector extends DataVector {
 		return perm;
 	}
 
-	public ByteVector tabulate() {
-		com.google.common.collect.Multiset<Byte> ms = new com.google.common.collect.HashMultiset<Byte>(
-				this.asList());
-
-		ByteVector vals = (new ByteVector(ms.elementSet())).sort();
-
-		ByteVector outbin = new ByteVector(vals.size());
-
-		for (int i = 0; i < vals.size(); i++)
-			outbin.add((byte) ms.count(vals.get(i)));
-
-		return outbin;
-	}
 
 	public ByteVector cumSum() {
 		if (this.size() == 0)
@@ -1020,21 +976,6 @@ public class ByteVector extends DataVector {
 		return out;
 	}
 
-	public ByteVector cumSum(ArrayByteList order) {
-		if (this.size() == 0)
-			return new ByteVector(0);
-
-		ByteVector out = new ByteVector(this.size(), (byte) 0);
-
-		int sum = 0;
-
-		for (int i = 0; i < order.size(); i++) {
-			sum += this.get(order.get(i));
-			out.set(order.get(i), sum);
-		}
-
-		return out;
-	}
 
 	public BooleanVector isEqual(int val) {
 		BooleanVector out = new BooleanVector(size());
