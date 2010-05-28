@@ -61,7 +61,7 @@ public class ListToString implements Function {
 	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double or Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || !FunctionUtil.someKindOfList(argTypes[0]) || argTypes[1] != String.class)
+		if (argTypes.length != 2 || !FunctionUtil.isSomeKindOfList(argTypes[0]) || argTypes[1] != String.class)
 			return null;
 
 		return String.class;

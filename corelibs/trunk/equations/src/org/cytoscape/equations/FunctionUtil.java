@@ -222,7 +222,7 @@ public class FunctionUtil {
 	/**
 	 *  @return true if "listClassCandidate" is an implementer of interface List, else false
 	 */
-	static public boolean someKindOfList(final Class listClassCandidate) {
+	static public boolean isSomeKindOfList(final Class listClassCandidate) {
 		if (listClassCandidate == List.class)
 			return true;
 		if (listClassCandidate == ArrayList.class)
