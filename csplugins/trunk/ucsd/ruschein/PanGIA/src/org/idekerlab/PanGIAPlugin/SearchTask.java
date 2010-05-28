@@ -16,9 +16,8 @@ import org.idekerlab.PanGIAPlugin.data.DoubleVector;
 import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
 import org.idekerlab.PanGIAPlugin.networks.SNodeModule;
 import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
-import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkEdge;
-import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNetwork;
-import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNodeModule;
+import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.*;
+import org.idekerlab.PanGIAPlugin.utilities.collections.SetUtil;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -90,7 +89,7 @@ public class SearchTask implements Task {
 			trainingComplexes = SNodeModule.loadComplexes(parameters.getComplexFile());
 		
 		//Perform training
-		if (trainingComplexes != null)
+		if (parameters.getComplexTraining())
 		{
 			physicalNetwork = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
 			geneticNetwork = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
@@ -110,15 +109,46 @@ public class SearchTask implements Task {
 			                 taskMonitor, SEARCH_PERCENTAGE);
 		final double pValueThreshold = parameters.getPValueThreshold();
 		final int numberOfSamples = parameters.getNumberOfSamples();
+		
+		//Compute significance
 		computeSig(results, geneticNetwork, pValueThreshold, numberOfSamples, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
 
+		//Annotate complexes
+		Map<TypedLinkNodeModule<String, BFEdge>,String> module_name = null;
+		System.out.println("PARAM: "+parameters.getComplexTraining()+", "+parameters.getComplexAnnotation()+", "+parameters.getAnnotationThreshold());
+		
+		if (parameters.getComplexAnnotation())
+		{
+			module_name = new HashMap<TypedLinkNodeModule<String, BFEdge>,String>(results.numNodes(),1);
+			
+			for (SNodeModule complex : trainingComplexes)
+			{
+				double bestScore = 0;
+				TypedLinkNodeModule<String, BFEdge> bestNode = null;
+				
+				for (TypedLinkNode<TypedLinkNodeModule<String, BFEdge>,BFEdge> n : results.nodeIterator())
+				{
+					double jaccard = SetUtil.jaccard(complex.getMemberData(), n.value().getMemberValues());
+					if (jaccard>bestScore)
+					{
+						bestScore = jaccard;
+						bestNode = n.value();
+					}
+				}
+				
+				if (bestNode!=null && bestScore>=parameters.getAnnotationThreshold()) module_name.put(bestNode, complex.getID());
+			}
+			System.out.println("Number of complex annotation matches: "+module_name.size());
+		}
+		
+		
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		final NestedNetworkCreator nnCreator =
 			new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork,
 			                         pNet, gNet, pValueThreshold, taskMonitor,
-			                         100.0f - COMPUTE_SIG_PERCENTAGE);
+			                         100.0f - COMPUTE_SIG_PERCENTAGE, module_name);
 
 		setStatus("Search finished!\n\n" + "Number of complexes = "
 		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"

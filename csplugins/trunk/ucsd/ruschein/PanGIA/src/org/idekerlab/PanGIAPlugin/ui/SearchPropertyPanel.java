@@ -625,6 +625,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		JFileChooser complexFileChooser = new JFileChooser();
 		complexFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		complexFileChooser.setMultiSelectionEnabled(false);
+		complexFileChooser.setCurrentDirectory(new File("."));
 		int returnVal = complexFileChooser.showOpenDialog(complexFileButton);
 		
 		if (returnVal==JFileChooser.APPROVE_OPTION)
@@ -808,7 +809,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 		final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
 		parameters.setNumberOfSamples(numberOfSamples);
-
+		
+		parameters.setAnnotationThreshold(Double.valueOf(annotationThresholdTextField.getText()));
+		parameters.setComplexAnnotation(annotationCheckBox.isSelected());
+		parameters.setComplexTraining(trainingCheckBox.isSelected());
+		parameters.setComplexFile(complexFilePath);
+		
 		return true;
 	}
 
