@@ -1,13 +1,7 @@
 package org.idekerlab.PanGIAPlugin;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkEdge;
@@ -141,7 +135,8 @@ public class NestedNetworkCreator {
 			final TypedLinkNetwork<String, Float> physicalNetwork,
 			final TypedLinkNetwork<String, Float> geneticNetwork,
 			final double cutoff, final TaskMonitor taskMonitor,
-			final float remainingPercentage)
+			final float remainingPercentage,
+			Map<TypedLinkNodeModule<String, BFEdge>,String> module_name)
 	{
 		// Network attributes created here is required for managing Visual Styles.
 		final CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
@@ -170,27 +165,50 @@ public class NestedNetworkCreator {
 		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules
 				.edges())
 		{
-			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge
-					.source().value();
+			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
-				final String nodeName = findNextAvailableNodeName("Complex"
-						+ nodeIndex);
-				sourceNode = makeOverviewNode(nodeName, sourceModule,
-						nodeAttribs);
+				final String nodeName = findNextAvailableNodeName("Complex" + nodeIndex);
+				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs);
 				++nodeIndex;
 			}
 
-			final TypedLinkNodeModule<String, BFEdge> targetModule = edge
-					.target().value();
+			final TypedLinkNodeModule<String, BFEdge> targetModule = edge.target().value();
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
-				final String nodeName = findNextAvailableNodeName("Complex"
-						+ nodeIndex);
-				targetNode = makeOverviewNode(nodeName, targetModule,
-						nodeAttribs);
+				final String nodeName = findNextAvailableNodeName("Complex"	+ nodeIndex);
+				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs);
 				++nodeIndex;
 			}
+			
+			
+			//Auto label small complexes with the gene names
+			if (sourceModule.size()<=2) 
+			{
+				Iterator<String> genes = sourceModule.getMemberValues().iterator();
+				String newName = genes.next();
+				while (genes.hasNext()) newName+=", "+genes.next();
+				sourceNode.setIdentifier(newName);
+			}
+
+			if (targetModule.size()<=2) 
+			{
+				Iterator<String> genes = targetModule.getMemberValues().iterator();
+				String newName = genes.next();
+				while (genes.hasNext()) newName+=", "+genes.next();
+				targetNode.setIdentifier(newName);
+			}
+			
+			//Annotate large complexes
+			if (module_name!=null)
+			{
+				String name1 = module_name.get(sourceModule);
+				if (name1!=null) sourceNode.setIdentifier(name1);
+								
+				String name2 = module_name.get(sourceModule);
+				if (name2!=null) sourceNode.setIdentifier(name1);
+			}
+			
 
 			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
 					Semantics.INTERACTION, COMPLEX_INTERACTION_TYPE,
