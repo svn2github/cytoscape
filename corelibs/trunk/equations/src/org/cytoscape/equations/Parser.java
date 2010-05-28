@@ -44,6 +44,7 @@ public class Parser {
 			eqnParser = new EqnParserImpl();
 
 			eqnParser.registerFunction(new Abs());
+			eqnParser.registerFunction(new ACos());
 			eqnParser.registerFunction(new And());
 			eqnParser.registerFunction(new ATan2());
 			eqnParser.registerFunction(new Average());
