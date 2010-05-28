@@ -263,12 +263,9 @@ Genome Research 2003 Nov; 13(11):2498-504<br>
 </div>
 </div>
 <div class="item">
-<h2><i>Updated!&nbsp;</i>(July 24 2007)</i> Research using Cytoscape</h2>
+<h2>Research using Cytoscape</h2>
 
-<div id="paragraph"><strong>As of July 2007, 281
-publications are citing <a
-	href="http://www.genome.org/cgi/content/full/13/11/2498">Shannon et
-al. (2003)</a>.</strong><br>
+<div id="paragraph">
 <ul id="paragraph">
 	<li><a
 		href="http://scholar.google.com/scholar?hl=en&lr=&cites=3669641697993554798">View
