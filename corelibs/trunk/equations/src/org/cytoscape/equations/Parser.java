@@ -51,6 +51,7 @@ public class Parser {
 			eqnParser.registerFunction(new Average());
 			eqnParser.registerFunction(new Combin());
 			eqnParser.registerFunction(new Cos());
+			eqnParser.registerFunction(new Cosh());
 			eqnParser.registerFunction(new Count());
 			eqnParser.registerFunction(new Degrees());
 			eqnParser.registerFunction(new Exp());
@@ -85,6 +86,7 @@ public class Parser {
 			eqnParser.registerFunction(new Round());
 			eqnParser.registerFunction(new Sign());
 			eqnParser.registerFunction(new Sin());
+			eqnParser.registerFunction(new Sinh());
 			eqnParser.registerFunction(new StDev());
 			eqnParser.registerFunction(new Sqrt());
 			eqnParser.registerFunction(new Substitute());
