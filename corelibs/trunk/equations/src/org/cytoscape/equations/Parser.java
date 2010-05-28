@@ -76,6 +76,7 @@ public class Parser {
 			eqnParser.registerFunction(new Or());
 			eqnParser.registerFunction(new Permut());
 			eqnParser.registerFunction(new Pi());
+			eqnParser.registerFunction(new Product());
 			eqnParser.registerFunction(new Radians());
 			eqnParser.registerFunction(new Right());
 			eqnParser.registerFunction(new Round());
