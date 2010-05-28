@@ -500,14 +500,15 @@ public class XGMMLWriter {
 	 */
 	private void writeNodeGraphics(CyNode node, NodeView nodeView) throws IOException {
 
-		/*
-		 * In case node is hidden, we cannot get the show and extract node
-		 * view.
-		 */
+		
 		if (nodeView == null) return;
 
+		// In case node is hidden, we temporarily show the node view
+		// and then hide it later on.
+		boolean rehideNode = false;
 		if (nodeView.getWidth() == -1) {
 			networkView.showGraphObject(nodeView);
+			rehideNode = true;
 		}
 
 		writeElement("<graphics");
@@ -562,6 +563,9 @@ public class XGMMLWriter {
 		}
 
 		writer.write("/>\n");
+
+		if ( rehideNode )
+			networkView.hideGraphObject(nodeView);
 	}
 
 	private void writeGroups() throws IOException {
