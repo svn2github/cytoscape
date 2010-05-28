@@ -5,9 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import oiler.util.IntHashSet;
-import oiler.util.IntIterator;
-
 public class TypedLinkNodeModule<NT,ET> implements Iterable<TypedLinkNode<NT,ET>>, Finalish{
 
 	private final int hc;
