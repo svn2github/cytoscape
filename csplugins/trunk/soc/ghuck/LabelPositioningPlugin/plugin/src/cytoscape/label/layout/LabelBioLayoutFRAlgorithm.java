@@ -177,7 +177,7 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	 * @return the algorithm name
 	 */
 	public String getName() {
-		return "Fruchterman-Rheingold";
+		return "(Label) Fruchterman-Rheingold";
 	}
 
 	/**
@@ -189,10 +189,10 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	 */
 	public String toString() {
 		if (supportWeights)
-			return "Edge-Weighted Force-Directed (BioLayout)";
+			return "(Label) Edge-Weighted Force-Directed (BioLayout)";
 		else
 
-			return "Force-Directed (BioLayout)";
+			return "(Label) Force-Directed (BioLayout)";
 	}
 
 	/**

@@ -32,7 +32,6 @@ import cytoscape.visual.LabelPosition;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.LayoutProperties;
-
 import cytoscape.logger.CyLogger;
 
 import csplugins.layout.LayoutPartition;
@@ -45,6 +44,7 @@ import giny.view.NodeView;
 
 import prefuse.util.force.*;
 
+import java.awt.Dimension;
 import java.util.*; 
 
 import javax.swing.JPanel;
@@ -60,16 +60,16 @@ import javax.swing.JPanel;
  * 
  * NOTE: This class is based on the Force-Directed Layout class 
  * (csplugins.layout.algorithms.force).  Modifications were made to the
- * Force-Directed Layout class, and indicated by "// vmui".  The beginning of
- * a block of modified code is indicated by "// vmui -->", while the end is
- * marked by "// <-- vmui".
+ * Force-Directed Layout class, and indicated by "// LABEL-LAYOUT".  The beginning of
+ * a block of modified code is indicated by "// LABEL-LAYOUT -->", while the end is
+ * marked by "// <-- LABEL-LAYOUT".
  */
 public class LabelForceDirectedLayout extends AbstractGraphPartition
 {
-    // vmui
+    // LABEL-LAYOUT
     private boolean resetPosition = false;
     
-    // vmui
+    // LABEL-LAYOUT
     private ForceSimulator label_sim;
     private ForceSimulator node_sim;
     
@@ -81,17 +81,17 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     double defaultSpringLength = 50;
     
     // Spring coefficient and length of label edges (those connecting a label
-    // LayoutNode with a network LayoutNode) - vmui
+    // LayoutNode with a network LayoutNode) - LABEL-LAYOUT
     double defaultLabelSpringCoefficient = 0.5;
     double defaultLabelSpringLength = 5.0;
     
     // The percentage of numIterations in which network nodes will also be moved
-    double defaultPercentage = 80.0; // vmui
+    double defaultPercentage = 80.0; // LABEL-LAYOUT
     
-    // Whether network nodes will be moved or not - vmui
+    // Whether network nodes will be moved or not - LABEL-LAYOUT
     boolean moveNodes = false;
     
-    private CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); // vmui
+    private CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); // LABEL-LAYOUT
     
     /**
      * Value to set for doing unweighted layouts
@@ -110,7 +110,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     
     private Integrator integrator = null;
     
-    // vmui --->
+    // LABEL-LAYOUT --->
     
     // Maps a label LayoutNode to its parent node's LayoutNode
     private Map<LayoutNode, LayoutNode> labelToParent = 
@@ -122,24 +122,25 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     // List of all LayoutEdges; including network and label edges
     ArrayList<LayoutEdge> allLayoutEdges = new ArrayList<LayoutEdge>();
     
-    // <--- vmui
+    // <--- LABEL-LAYOUT
 
     
     public LabelForceDirectedLayout() {
 	super();
 
+	// Adds a logger to register events in the central logging facility
 	logger = CyLogger.getLogger(LabelForceDirectedLayout.class);
 	
 	if (edgeWeighter == null)
 	    edgeWeighter = new EdgeWeighter();
 	
-	// vmui
+	// LABEL-LAYOUT
 	node_sim = new ForceSimulator();
 	node_sim.addForce(new NBodyForce());
 	node_sim.addForce(new SpringForce());
 	node_sim.addForce(new DragForce());
 	
-	// vmui
+	// LABEL-LAYOUT
 	label_sim = new ForceSimulator();
 	label_sim.addForce(new NBodyForce());
 	label_sim.addForce(new SpringForce());
@@ -152,11 +153,11 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     
 
     public String getName() {
-	return "label-force-directed"; // vmui
+	return "label-force-directed"; // LABEL-LAYOUT
     }
     
     public String toString() {
-	return "Label Force-Directed Layout"; // vmui
+	return "Label Force-Directed Layout"; // LABEL-LAYOUT
     }
 
     
@@ -168,7 +169,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 	layoutProperties.add(new Tunable("standard", 
 					 "Standard settings",
-					 Tunable.GROUP, new Integer(3))); // vmui
+					 Tunable.GROUP, new Integer(3))); // LABEL-LAYOUT
 
 	layoutProperties.add(new Tunable("partition", 
 					 "Partition graph before layout",
@@ -178,14 +179,14 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 					 "Only layout selected nodes",
 					 Tunable.BOOLEAN, new Boolean(false)));
 		
-	// vmui
+	// LABEL-LAYOUT
 	layoutProperties.add(new Tunable("moveNodes", 
 					 "Allow nodes to move",
 					 Tunable.BOOLEAN, new Boolean(false)));
 
 	layoutProperties.add(new Tunable("force_alg_settings", 
 					 "Algorithm settings",
-					 Tunable.GROUP, new Integer(7))); // vmui
+					 Tunable.GROUP, new Integer(7))); // LABEL-LAYOUT
 
 	layoutProperties.add(new Tunable("defaultSpringCoefficient", 
 					 "Default Spring Coefficient",
@@ -195,17 +196,17 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 					 "Default Spring Length",
 					 Tunable.DOUBLE, new Double(defaultSpringLength)));
 		
-	// vmui
+	// LABEL-LAYOUT
 	layoutProperties.add(new Tunable("defaultPercentage", 
 					 "Default Percentage (%)",
 					 Tunable.DOUBLE, new Double(defaultPercentage)));
 		
-	// vmui
+	// LABEL-LAYOUT
 	layoutProperties.add(new Tunable("defaultLabelSpringCoefficient", 
 					 "Default Label Spring Coefficient",
 					 Tunable.DOUBLE, new Double(defaultLabelSpringCoefficient)));
 		
-	// vmui
+	// LABEL-LAYOUT
 	layoutProperties.add(new Tunable("defaultLabelSpringLength", 
 					 "Default Label Spring Length",
 					 Tunable.DOUBLE, new Double(defaultLabelSpringLength)));
@@ -223,7 +224,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 					 Tunable.LIST, new Integer(0),
 					 (Object) integratorArray, (Object) null, 0));
 		
-	// vmui
+	// LABEL-LAYOUT
 	layoutProperties.add(new Tunable("resetPosition", 
 					 "Reset the label position of all nodes",
 					 Tunable.BOOLEAN, new Boolean(false)));
@@ -250,7 +251,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	if ((t != null) && (t.valueChanged() || force))
 	    selectedOnly = ((Boolean) t.getValue()).booleanValue();
 		
-	// vmui
+	// LABEL-LAYOUT
 	t = layoutProperties.get("moveNodes");
 	if ((t != null) && (t.valueChanged() || force))
 	    moveNodes = ((Boolean) t.getValue()).booleanValue();
@@ -267,17 +268,17 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	if ((t != null) && (t.valueChanged() || force))
 	    defaultSpringLength = ((Double) t.getValue()).doubleValue();
 		
-	// vmui
+	// LABEL-LAYOUT
 	t = layoutProperties.get("defaultLabelSpringCoefficient");
 	if ((t != null) && (t.valueChanged() || force))
 	    defaultLabelSpringCoefficient = ((Double) t.getValue()).doubleValue();
 
-	// vmui
+	// LABEL-LAYOUT
 	t = layoutProperties.get("defaultLabelSpringLength");
 	if ((t != null) && (t.valueChanged() || force))
 	    defaultLabelSpringLength = ((Double) t.getValue()).doubleValue();
 		
-	// vmui
+	// LABEL-LAYOUT
 	t = layoutProperties.get("defaultPercentage");
 	if ((t != null) && (t.valueChanged() || force))
 	    defaultPercentage = ((Double) t.getValue()).doubleValue();
@@ -299,12 +300,12 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	    else
 		return;
 			
-	    // vmui
+	    // LABEL-LAYOUT
 	    label_sim.setIntegrator(integrator);
 	    node_sim.setIntegrator(integrator);
 	}
 		
-	// vmui
+	// LABEL-LAYOUT
 	t = layoutProperties.get("resetPosition");
 	if ((t != null) && (t.valueChanged() || force))
 	    resetPosition = ((Boolean) t.getValue()).booleanValue();
@@ -327,23 +328,35 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	
 	logger.info("Applying Label Force-Directed Layout to " + part.nodeCount() + " nodes and "
 		    + part.edgeCount() + " edges: ");
+
+	// Checks if it was cancelled by the user
+	if (canceled)
+	    return;
+
+	Dimension initialLocation = null;
+
+	// Figure out our starting point
+	if (selectedOnly) {
+	    initialLocation = part.getAverageLocation();
+	}
 	
-	// Reset the label position of all nodes - vmui
+	
+	// Reset the label position of all nodes - LABEL-LAYOUT
 	if (resetPosition) {
 	    resetNodeLabelPosition(nodeAtts, part.getNodeList());
 	    return; // Finishes the execution of this layout algorithm
 	}
 	
-	LabelPosition lp = null; // vmui
+	LabelPosition lp = null; // LABEL-LAYOUT
 	
-	// vmui
+	// LABEL-LAYOUT
 	node_sim.clear();
 	label_sim.clear();
 	
 	part.calculateEdgeWeights();
 	
 
-	// vmui --->
+	// LABEL-LAYOUT --->
 
 	// Ads all network nodes to list
 	allLayoutNodes.addAll(part.getNodeList());
@@ -400,13 +413,17 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			
 	}
 		
+	// Adds all LabelNodes (who are the keys in labelToParent map) to allLayoutNodes array
 	allLayoutNodes.addAll(labelToParent.keySet());
 		
 
-	// --- initialize nodes ---
+	// --- initialize all nodes (both label and network nodes) ---
 	for (LayoutNode ln: allLayoutNodes) {
-	    if ( !forceItems.containsKey(ln) )
-		forceItems.put(ln, new ForceItem());
+
+	    // If it is a label node, add it as a force item
+	    if ( !forceItems.containsKey(ln) ) 
+		forceItems.put(ln, new ForceItem()); 
+
 	    ForceItem fitem = forceItems.get(ln);
 	    fitem.mass = getMassValue(ln);
 	    fitem.location[0] = 0f; 
@@ -414,7 +431,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			
 	    // Depending on whether ln is a label or a node, add them to 
 	    // label_sim or node_sim accordingly.
-	    if (labelToParent.containsKey(ln)) { // vmui
+	    if (labelToParent.containsKey(ln)) { // LABEL-LAYOUT
 		label_sim.addItem(fitem);
 	    } else {
 		node_sim.addItem(fitem);
@@ -445,14 +462,14 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 				   getSpringLength(e));
 	    }
 			
-	} // <--- vmui
+	} // <--- LABEL-LAYOUT
 
 	// setTaskStatus(5); // This is a rough approximation, but probably good enough
 	if (taskMonitor != null) {
 	    taskMonitor.setStatus("Initializing partition "+part.getPartitionNumber());
 	}
 		
-	// --- Prepare for layout execution --- vmui
+	// --- Prepare for layout execution --- LABEL-LAYOUT
 	double multiple = 0;
 		
 	// Handle if defaultPercentage is not a valid percentage
@@ -471,7 +488,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	// --- Perform layout ---
 	long timestep = 1000L;
 		
-	Multiples mult = new Multiples(multiple); // vmui
+	Multiples mult = new Multiples(multiple); // LABEL-LAYOUT
 		
 	for ( int i = 0; i < numIterations && !canceled; i++ ) {
 	    timestep *= (1.0 - i/(double)numIterations);
@@ -485,29 +502,29 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	     * int, so the ceiling of this value will be used instead.  Notice 
 	     * that some rounding errors may occur.
 	     */
-	    if (multiple != 0.0 && i == Math.ceil(mult.getCurrent())) { // vmui
+	    if (multiple != 0.0 && i == Math.ceil(mult.getCurrent())) { // LABEL-LAYOUT
 		node_sim.runSimulator(step);
 		mult.next();
 	    }
 			
-	    label_sim.runSimulator(step); // vmui
+	    label_sim.runSimulator(step); // LABEL-LAYOUT
 			
 	    setTaskStatus((int)(((double)i/(double)numIterations)*90.+5));
 	}
 		
 
 	// --- Update positions ---
-	lp = new LabelPosition(); // vmui
+	lp = new LabelPosition(); // LABEL-LAYOUT
 		
-        for (LayoutNode ln: allLayoutNodes) { // vmui
+        for (LayoutNode ln: allLayoutNodes) { // LABEL-LAYOUT
             
             if (!ln.isLocked()) {
                 
                 ForceItem fitem = forceItems.get(ln);
                 
-                if (labelToParent.containsKey(ln)) {
+                if (labelToParent.containsKey(ln)) { // If it is a Label Node
                 	
-                    // ln is a label LayoutNode
+                    // Get ln and its parent positions
                     NodeView lnNodeView = ln.getNodeView();
                     nodeAtts = Cytoscape.getNodeAttributes();
                     ForceItem fitemParent = forceItems.get(labelToParent.get(ln));
@@ -529,19 +546,38 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
             }
         }
 		
-	// vmui -->
+
+	// Not quite done, yet.  If we're only laying out selected nodes, we need
+	// to migrate the selected nodes back to their starting position
+	if (selectedOnly) {
+	    double xDelta = 0.0;
+	    double yDelta = 0.0;
+	    Dimension finalLocation = part.getAverageLocation();
+	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+	    
+	    for (LayoutNode v: part.getNodeList()) {
+		if (!v.isLocked()) {
+		    v.decrement(xDelta, yDelta);
+		    part.moveNodeToLocation(v);
+		}
+	    }
+	}
+
+	// LABEL-LAYOUT -->
     	networkView.updateView();
     	networkView.redrawGraph(true, true);
    
-	clear();
-		
-	// <-- vmui
+	clear();		
+	// <-- LABEL-LAYOUT
+
+	logger.info("Layout complete after " + numIterations + " iterations");
     }
 	
     /**
      * Clears all LayoutNodes and LayoutEdges
      */
-    private void clear() { // vmui
+    private void clear() { // LABEL-LAYOUT
 	allLayoutNodes.clear();
 	labelToParent.clear();
 	allLayoutEdges.clear();
@@ -573,7 +609,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     /**
      * Gets the spring length of the given label edge.
      */
-    protected float getLabelSpringLength(LayoutEdge e) { // vmui
+    protected float getLabelSpringLength(LayoutEdge e) { // LABEL-LAYOUT
 	double weight = e.getWeight();
 	return (float)(defaultLabelSpringLength/weight);
     }
@@ -593,7 +629,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     /**
      * Gets the spring coefficient for the given label edge.
      */
-    protected float getLabelSpringCoefficient(LayoutEdge e) { // vmui
+    protected float getLabelSpringCoefficient(LayoutEdge e) { // LABEL-LAYOUT
 	return (float)defaultLabelSpringCoefficient;
     }
 

@@ -72,7 +72,7 @@ public class LabelLayoutPlugin extends CytoscapePlugin {
 				"Label Layouts");
 
 		// Adds LabelBioLayoutKKAlgorithm to the Layout menu under "Label Layouts".
-		CyLayouts.addLayout(new LabelBioLayoutKKAlgorithm(true), 
+		CyLayouts.addLayout(new LabelBioLayoutFRAlgorithm(true), 
 				"Label Layouts");
 
 	}
