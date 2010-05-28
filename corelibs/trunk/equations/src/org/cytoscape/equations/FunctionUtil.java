@@ -33,6 +33,7 @@ package org.cytoscape.equations;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -222,6 +223,8 @@ public class FunctionUtil {
 	 *  @return true if "listClassCandidate" is an implementer of interface List, else false
 	 */
 	static public boolean someKindOfList(final Class listClassCandidate) {
+		if (listClassCandidate == List.class)
+			return true;
 		if (listClassCandidate == ArrayList.class)
 			return true;
 		if (listClassCandidate == Vector.class)
@@ -240,5 +243,54 @@ public class FunctionUtil {
 			return true;
 
 		return false;
+	}
+
+	/**
+	 *  Attempts to convert all arguments, including Lists to a uniform array of doubles.
+	 *
+	 *  @throws IllegalArgumentException if any scalar argument cannot be converted to a double or any list
+	 *          argument contains an element that cannot be converted to a number.
+	 */
+	static public double[] getNumbers(final Object[] args) {
+		final List<Double> numbers = new ArrayList<Double>();
+
+		for (final Object arg : args) {
+			if (arg instanceof List) {
+				final List list = (List)arg;
+				for (final Object listElement : list)
+					numbers.add(convertToDouble(listElement));
+			}
+			else
+				numbers.add(convertToDouble(arg));
+		}
+
+		final double[] doubles = new double[numbers.size()];
+		int index = 0;
+		for (final Double d : numbers)
+			doubles[index++] = d;
+
+		return doubles;
+	}
+
+	/**
+	 *  @return "arg" converted to a Double, if possible
+	 *  @throws IllegalArgumentException if the argument cannot be converted to a Double
+	 */
+	static private Double convertToDouble(final Object arg) {
+		if (arg.getClass() == Double.class)
+			return (Double)arg;
+		if (arg.getClass() == Long.class)
+			return (double)(Long)arg;
+		if (arg.getClass() == String.class) {
+			try {
+				return Double.valueOf((String)arg);
+			} catch (final Exception e) {
+				throw new IllegalArgumentException("can't convert \"" + arg + "\" to a floating point number!");
+			}
+		}
+		if (arg.getClass() == Boolean.class)
+			return Double.valueOf((Boolean)arg ? 1.0 : 0.0);
+
+		throw new IllegalArgumentException("can't convert argument to a floating point number!");
 	}
 }
