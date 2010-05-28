@@ -84,6 +84,7 @@ public class Parser {
 			eqnParser.registerFunction(new StDev());
 			eqnParser.registerFunction(new Sqrt());
 			eqnParser.registerFunction(new Substitute());
+			eqnParser.registerFunction(new Sum());
 			eqnParser.registerFunction(new Tan());
 			eqnParser.registerFunction(new Trunc());
 			eqnParser.registerFunction(new UCase());
