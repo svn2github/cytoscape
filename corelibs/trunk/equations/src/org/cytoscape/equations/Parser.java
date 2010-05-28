@@ -72,6 +72,7 @@ public class Parser {
 			eqnParser.registerFunction(new Mode());
 			eqnParser.registerFunction(new Not());
 			eqnParser.registerFunction(new NormDist());
+			eqnParser.registerFunction(new Now());
 			eqnParser.registerFunction(new Nth());
 			eqnParser.registerFunction(new Or());
 			eqnParser.registerFunction(new Permut());
