@@ -31,10 +31,14 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import ding.view.DGraphView;
 
 /**
  * This class defines the Semantic Summary Plugin.
@@ -62,8 +66,33 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		//Add to Plugin Menu
 		action.setPreferredMenu("Plugins");
 		Cytoscape.getDesktop().getCyMenus().addAction(action);
+		
+		
+		//Add to right click menus
+		
+		//Newly created networks
+		SemanticSummaryNetworkListener netListener = 
+			new SemanticSummaryNetworkListener();
+		
+		Cytoscape.getSwingPropertyChangeSupport().
+		addPropertyChangeListener(netListener);
+		
+		//Loaded networks
+		Set networkSet = Cytoscape.getNetworkSet();
+		
+		for (Iterator iter = networkSet.iterator(); iter.hasNext();)
+		{
+			CyNetwork network = (CyNetwork)iter.next();
+			
+			SemanticSummaryNodeContextMenuListener nodeMenuListener = 
+				new SemanticSummaryNodeContextMenuListener();
+			
+			((DGraphView)Cytoscape.getNetworkView(network.getIdentifier()))
+			.addNodeContextMenuListener(nodeMenuListener);
+		}
 	}
 	
+
 	
 	//METHODS
 	
