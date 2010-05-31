@@ -160,7 +160,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	 * Sets reference to the CloudDisplayPanel (SOUTH)
 	 * @param CloudDisplayPanel - reference to panel
 	 */
-	public void setInputWindow(CloudDisplayPanel cloudWindow)
+	public void setCloudDisplayWindow(CloudDisplayPanel cloudWindow)
 	{
 		this.cloudWindow = cloudWindow;
 	}

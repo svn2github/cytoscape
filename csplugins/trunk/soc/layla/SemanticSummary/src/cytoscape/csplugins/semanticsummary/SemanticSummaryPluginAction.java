@@ -32,13 +32,18 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.SwingConstants;
+
+import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanel;
 
 
 /**
  * This class defines the Semantic Summary Plugin Action.
  * This action is associated with what happens when a user selects
- * the Semantic Summary option from the Plugins menu.
+ * the Semantic Summary option from the Plugins menu, or right click menu.
  * 
  * @author Layla Oesper
  * @version 1.0
@@ -48,8 +53,9 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 {
 	//VARIABLES
 	
-	//variable to track initialization of plugin
-	private Boolean initialized = false;
+	//variables to track loading of panels
+	private Boolean inputPanelLoaded = false;
+	private Boolean cloudPanelLoaded = false;
 	
 	//CONSTRUCTORS
 	
@@ -66,17 +72,111 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 	
 	/**
 	 * Method called when Semantic Summary is chosen from Plugins menu. Loads
-	 * SemanticSummaryPanel and initializes Manager object.
+	 * SemanticSummaryPanel, CloudDisplayPanel and initializes Manager object.
 	 * 
 	 * @param ActionEvent - event created when choosing Semantic Summary from
 	 * the Plugins menu.
 	 */
 	public void actionPerformed(ActionEvent ae)
 	{
-		//Check for initialization
-		if(!initialized)
-		{
-			//TODO
-		}
+		this.loadInputPanel();
+		this.loadCloudPanel();
 	}
+	
+	/**
+	 * Loads the InputPanel or brings it into the forefront.
+	 */
+	public void loadInputPanel()
+	{
+		int index = 0;
+		
+		CytoscapeDesktop desktop = Cytoscape.getDesktop();
+		CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
+		
+		if(!inputPanelLoaded)
+		{
+			SemanticSummaryManager.getInstance();
+			inputPanelLoaded = true;
+			
+			SemanticSummaryInputPanel inputWindow = new SemanticSummaryInputPanel();
+			
+			//Set input window in the manager
+			SemanticSummaryManager.getInstance().setInputWindow(inputWindow);
+			
+			//Add panel to display
+			cytoPanel.add("Semantic Summary", inputWindow);
+			
+			//Move to front of display
+			index = cytoPanel.indexOfComponent(inputWindow);
+			cytoPanel.setSelectedIndex(index);
+		}//end if not loaded
+		
+		else
+		{
+			//Check if window has been closed
+			SemanticSummaryInputPanel inputWindow = SemanticSummaryManager.getInstance().getInputWindow();
+			if (inputWindow == null)
+			{
+				inputWindow = new SemanticSummaryInputPanel();
+				SemanticSummaryManager.getInstance().setInputWindow(inputWindow);
+			}//end if inputWindow is null
+			
+			//Add panel to display
+			cytoPanel.add("Semantic Summary",inputWindow);
+			
+			//Move to front of display
+			index = cytoPanel.indexOfComponent(inputWindow);
+			cytoPanel.setSelectedIndex(index);
+		}//end else
+	}//end loadInputPanel() method
+	
+	
+	
+	/**
+	 * Loads the CloudPanel or brings it into the forefront.
+	 */
+	public void loadCloudPanel()
+	{
+		int index = 0;
+		
+		CytoscapeDesktop desktop = Cytoscape.getDesktop();
+		CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.SOUTH);
+		
+		if(!cloudPanelLoaded)
+		{
+			SemanticSummaryManager.getInstance();
+			cloudPanelLoaded = true;
+			
+			CloudDisplayPanel cloudWindow = new CloudDisplayPanel();
+			
+			//Set input window in the manager
+			SemanticSummaryManager.getInstance().setCloudDisplayWindow(cloudWindow);
+			
+			//Add panel to display
+			cytoPanel.add("Semantic Summary Cloud", cloudWindow);
+			
+			//Move to front of display
+			index = cytoPanel.indexOfComponent(cloudWindow);
+			cytoPanel.setSelectedIndex(index);
+		}//end if not loaded
+		
+		else
+		{
+			//Check if window has been closed
+			CloudDisplayPanel cloudWindow = SemanticSummaryManager.getInstance().getCloudWindow();
+			if (cloudWindow == null)
+			{
+				cloudWindow = new CloudDisplayPanel();
+				SemanticSummaryManager.getInstance().setCloudDisplayWindow(cloudWindow);
+			}//end if inputWindow is null
+			
+			//Add panel to display
+			cytoPanel.add("Semantic Summary Cloud",cloudWindow);
+			
+			//Move to front of display
+			index = cytoPanel.indexOfComponent(cloudWindow);
+			cytoPanel.setSelectedIndex(index);
+		}//end else
+	}//end loadCloudPanel() method
+	
 }
