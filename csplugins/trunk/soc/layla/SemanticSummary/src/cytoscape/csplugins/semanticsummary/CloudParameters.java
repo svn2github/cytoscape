@@ -113,9 +113,9 @@ public class CloudParameters
 		//Retrieve needed variables from parent parameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
 		WordFilter filter = networkParams.getFilter();
-		List networkNodes = networkParams.getNetworkNodes();
+		List<CyNode> networkNodes = networkParams.getNetworkNodes();
 		
-		//Iterate to retrieve Cynodes
+		//Iterate to retrieve CyNodes
 		Iterator<CyNode> iter = networkNodes.iterator();
 		while(iter.hasNext())
 		{
@@ -189,7 +189,7 @@ public class CloudParameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
 		WordFilter filter = networkParams.getFilter();
 		
-		Set selectedNodes = this.getSelectedNodes();
+		Set<CyNode> selectedNodes = this.getSelectedNodes();
 		
 		//Iterate to retrieve Cynodes
 		Iterator<CyNode> iter = selectedNodes.iterator();
@@ -413,5 +413,25 @@ public class CloudParameters
 	public void setMaxRatio(Double ratio)
 	{
 		maxRatio = ratio;
+	}
+	
+	public boolean getCountInitialized()
+	{
+		return countInitialized;
+	}
+	
+	public void setCountInitialized(boolean val)
+	{
+		countInitialized = val;
+	}
+	
+	public boolean getSelInitialized()
+	{
+		return selInitialized;
+	}
+	
+	public void setSelInitialized(boolean val)
+	{
+		selInitialized = val;
 	}
 }

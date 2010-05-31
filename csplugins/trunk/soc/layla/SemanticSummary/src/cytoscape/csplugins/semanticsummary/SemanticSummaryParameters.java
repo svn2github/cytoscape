@@ -29,16 +29,13 @@
  */
 
 package cytoscape.csplugins.semanticsummary;
-import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * This SemanticSummaryParameters class defines all of the variables that are
@@ -82,6 +79,45 @@ public class SemanticSummaryParameters
 	//METHODS
 	
 	//DATA MANIPULATIONS
+	/**
+	 * Adds a new cloud to the SemanticSummary HashMap of clouds for this
+	 * network.
+	 * @param String - the name of the new cloud.
+	 * @param CloudParameters - parameters for this cloud.
+	 */
+	public void addCloud(String name, CloudParameters params)
+	{
+		if (!clouds.containsKey(name))
+		{
+			clouds.put(name, params);
+		}
+	}
+	
+	/**
+	 * Removes a cloud from the HashMap of clouds for this network.
+	 * @param String - name of the cloud to remove.
+	 */
+	public void removeCloud(String name)
+	{
+		if (clouds.containsKey(name))
+			clouds.remove(name);
+	}
+	
+	/**
+	 * Tells all the contained clouds that the network has changed and that
+	 * they need to re-initialize.
+	 */
+	public void networkChanged()
+	{
+		Set<String> cloudNames = clouds.keySet();
+		Iterator<String> iter = cloudNames.iterator();
+		while (iter.hasNext())
+		{
+			String curCloud = iter.next();
+			CloudParameters cloudParams = clouds.get(curCloud);
+			cloudParams.setCountInitialized(false);
+		}
+	}
 	
 
 	
