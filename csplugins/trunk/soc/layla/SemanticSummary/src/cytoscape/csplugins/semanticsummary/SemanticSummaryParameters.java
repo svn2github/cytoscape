@@ -120,8 +120,6 @@ public class SemanticSummaryParameters
 	}
 	
 
-	
-
 	//GETTERS and SETTERS
 	
 	public String getNetworkName()

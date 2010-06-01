@@ -342,7 +342,7 @@ public class CloudParameters
 	public void setSelectedNodes(Set<CyNode> nodes)
 	{
 		selectedNodes = nodes;
-		selInitialized = false;
+		selInitialized = false; //So we update when SelectedNodes change
 	}
 	
 	public Integer getSelectedNumNodes()

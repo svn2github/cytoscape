@@ -53,9 +53,6 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 {
 	//VARIABLES
 	
-	//variables to track loading of panels
-	private Boolean inputPanelLoaded = false;
-	private Boolean cloudPanelLoaded = false;
 	
 	//CONSTRUCTORS
 	
@@ -93,12 +90,12 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 		CytoscapeDesktop desktop = Cytoscape.getDesktop();
 		CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
 		
-		if(!inputPanelLoaded)
+		//Check if panel already exists
+		SemanticSummaryInputPanel inputWindow = SemanticSummaryManager.getInstance().getInputWindow();
+		
+		if(inputWindow == null)
 		{
-			SemanticSummaryManager.getInstance();
-			inputPanelLoaded = true;
-			
-			SemanticSummaryInputPanel inputWindow = new SemanticSummaryInputPanel();
+			inputWindow = new SemanticSummaryInputPanel();
 			
 			//Set input window in the manager
 			SemanticSummaryManager.getInstance().setInputWindow(inputWindow);
@@ -113,14 +110,6 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 		
 		else
 		{
-			//Check if window has been closed
-			SemanticSummaryInputPanel inputWindow = SemanticSummaryManager.getInstance().getInputWindow();
-			if (inputWindow == null)
-			{
-				inputWindow = new SemanticSummaryInputPanel();
-				SemanticSummaryManager.getInstance().setInputWindow(inputWindow);
-			}//end if inputWindow is null
-			
 			//Add panel to display
 			cytoPanel.add("Semantic Summary",inputWindow);
 			
@@ -142,12 +131,13 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 		CytoscapeDesktop desktop = Cytoscape.getDesktop();
 		CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.SOUTH);
 		
-		if(!cloudPanelLoaded)
+		//Check if panel already exists
+		CloudDisplayPanel cloudWindow = SemanticSummaryManager.getInstance().getCloudWindow();
+		
+		if(cloudWindow == null)
 		{
-			SemanticSummaryManager.getInstance();
-			cloudPanelLoaded = true;
 			
-			CloudDisplayPanel cloudWindow = new CloudDisplayPanel();
+			cloudWindow = new CloudDisplayPanel();
 			
 			//Set input window in the manager
 			SemanticSummaryManager.getInstance().setCloudDisplayWindow(cloudWindow);
@@ -162,14 +152,6 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 		
 		else
 		{
-			//Check if window has been closed
-			CloudDisplayPanel cloudWindow = SemanticSummaryManager.getInstance().getCloudWindow();
-			if (cloudWindow == null)
-			{
-				cloudWindow = new CloudDisplayPanel();
-				SemanticSummaryManager.getInstance().setCloudDisplayWindow(cloudWindow);
-			}//end if inputWindow is null
-			
 			//Add panel to display
 			cytoPanel.add("Semantic Summary Cloud",cloudWindow);
 			
