@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /**
  * Copyright (c) 2006 The Regents of the University of California.
  * All rights reserved.
@@ -52,6 +51,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+// TODO: Change this Javadoc description 
 
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).
@@ -60,284 +60,287 @@ import javax.swing.JPanel;
  * @version 0.9
  */
 public abstract class LabelBioLayoutAlgorithm extends AbstractGraphPartition {
-	/**
-	 * Properties
-	 */
-	private static final int DEBUGPROP = 0;
-	private static final int RANDOMIZE = 1;
-	private static final int MINWEIGHT = 2;
-	private static final int MAXWEIGHT = 3;
-	private static final int SELECTEDONLY = 4;
-	private static final int LAYOUTATTRIBUTE = 5;
+    /**
+     * Properties
+     */
+    private static final int DEBUGPROP = 0;
+    private static final int RANDOMIZE = 1;
+    private static final int MINWEIGHT = 2;
+    private static final int MAXWEIGHT = 3;
+    private static final int SELECTEDONLY = 4;
+    private static final int LAYOUTATTRIBUTE = 5;
 
-	/**
-	 * A small value used to avoid division by zero
-	 */
-	protected double EPSILON = 0.0000001D;
+    /**
+     * A small value used to avoid division by zero
+     */
+    protected double EPSILON = 0.0000001D;
 
-	/**
-	 * Value to set for doing unweighted layouts
-	 */
-	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
+    /**
+     * Value to set for doing unweighted layouts
+     */
+    public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
-	/**
- 	 * Our list of Tunables
- 	 */
-	protected LayoutProperties layoutProperties;
+    /**
+     * Our list of Tunables
+     */
+    protected LayoutProperties layoutProperties;
 
-	/**
-	 * Enables/disables debugging messages
-	 */
-	private final static boolean DEBUG = false;
-	protected static boolean debug = DEBUG; // so we can overload it with a property
+    /**
+     * Enables/disables debugging messages
+     */
+    private final static boolean DEBUG = false;
+    protected static boolean debug = DEBUG; // so we can overload it with a property
 
-	/**
-	 * Whether or not to initialize by randomizing all points
-	 */
-	protected boolean randomize = true;
+    /**
+     * Whether or not to initialize by randomizing all points
+     */
+    protected boolean randomize = true;
 
-	/**
-	 * Whether or not to use edge weights for layout
-	 */
-	protected boolean supportWeights = true;
+    /**
+     * Whether or not to use edge weights for layout
+     */
+    protected boolean supportWeights = true;
 
-	/**
-	 * This is the constructor for the bioLayout algorithm.
-	 */
-	public LabelBioLayoutAlgorithm() {
-		super();
 
-		if (edgeWeighter == null)
-			edgeWeighter = new EdgeWeighter();
+    /**
+     * This is the constructor for the bioLayout algorithm.
+     */
+    public LabelBioLayoutAlgorithm() {
+	super();
 
-		layoutProperties = new LayoutProperties(getName());
-	}
+	if (edgeWeighter == null)
+	    edgeWeighter = new EdgeWeighter();
 
-	/**
-	 *  Tells Cytoscape whether we support selected nodes only or not
-	 *
-	 * @return true since we do support it 
-	 */
-	public boolean supportsSelectedOnly() { return true; }
+	layoutProperties = new LayoutProperties(getName());
+    }
 
-	// We don't support node attribute-based layouts
-	/**
-	 *  Tells Cytoscape whether we support node attribute based layouts
-	 *
-	 * @return nulls, which indicates that we don't
-	 */
-	public byte[] supportsNodeAttributes() {
-		return null;
-	}
+    /**
+     *  Tells Cytoscape whether we support selected nodes only or not
+     *
+     * @return true since we do support it 
+     */
+    public boolean supportsSelectedOnly() { return true; }
 
-	// We do support edge attribute-based layouts
-	/**
-	 *  Tells Cytoscape whether we support node attribute based layouts
-	 *
-	 * @return null if supportWeights is false, otherwise return the attribute
-	 *         types that can be used for weights.
-	 */
-	public byte[] supportsEdgeAttributes() {
-		if (!supportWeights)
-			return null;
+    // We don't support node attribute-based layouts
+    /**
+     *  Tells Cytoscape whether we support node attribute based layouts
+     *
+     * @return nulls, which indicates that we don't
+     */
+    public byte[] supportsNodeAttributes() {
+	return null;
+    }
 
-		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+    // We do support edge attribute-based layouts
+    /**
+     *  Tells Cytoscape whether we support node attribute based layouts
+     *
+     * @return null if supportWeights is false, otherwise return the attribute
+     *         types that can be used for weights.
+     */
+    public byte[] supportsEdgeAttributes() {
+	if (!supportWeights)
+	    return null;
 
-		return attrs;
-	}
+	byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
 
-	/**
-	 * Returns "(unweighted)", which is the "attribute" we
-	 * use to tell the algorithm not to use weights
-	 *
-	 * @returns List of our "special" weights
-	 */
-	public List<String> getInitialAttributeList() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add(UNWEIGHTEDATTRIBUTE);
+	return attrs;
+    }
 
-		return list;
-	}
+    /**
+     * Returns "(unweighted)", which is the "attribute" we
+     * use to tell the algorithm not to use weights
+     *
+     * @returns List of our "special" weights
+     */
+    public List<String> getInitialAttributeList() {
+	ArrayList<String> list = new ArrayList<String>();
+	list.add(UNWEIGHTEDATTRIBUTE);
 
-	/**
-	 * Sets the flag that determines if we're to layout all nodes
-	 * or only selected nodes.
-	 *
-	 * @param value the name of the attribute
-	 */
-	public void setSelectedOnly(boolean value) {
-		// Inherited by AbstractLayout
-		selectedOnly = value;
-	}
+	return list;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 */
-	public void setSelectedOnly(String value) {
-		Boolean val = new Boolean(value);
-		selectedOnly = val.booleanValue();
-	}
+    /**
+     * Sets the flag that determines if we're to layout all nodes
+     * or only selected nodes.
+     *
+     * @param value the name of the attribute
+     */
+    public void setSelectedOnly(boolean value) {
+	// Inherited by AbstractLayout
+	selectedOnly = value;
+    }
 
-	/**
-	 * Sets the debug flag
-	 *
-	 * @param flag boolean value that turns debugging on or off
-	 */
-	public void setDebug(boolean flag) {
-		debug = flag;
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     */
+    public void setSelectedOnly(String value) {
+	Boolean val = new Boolean(value);
+	selectedOnly = val.booleanValue();
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 */
-	public void setDebug(String value) {
-		Boolean val = new Boolean(value);
-		debug = val.booleanValue();
-	}
+    /**
+     * Sets the debug flag
+     *
+     * @param flag boolean value that turns debugging on or off
+     */
+    public void setDebug(boolean flag) {
+	debug = flag;
+    }
 
-	/**
-	 * Sets the randomize flag
-	 *
-	 * @param flag boolean value that turns initial randomization on or off
-	 */
-	public void setRandomize(boolean flag) {
-		randomize = flag;
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     */
+    public void setDebug(String value) {
+	Boolean val = new Boolean(value);
+	debug = val.booleanValue();
+    }
 
-	/**
-	 * Sets the randomize flag
-	 *
-	 * @param value boolean string that turns initial randomization on or off
-	 */
-	public void setRandomize(String value) {
-		Boolean val = new Boolean(value);
-		randomize = val.booleanValue();
-	}
+    /**
+     * Sets the randomize flag
+     *
+     * @param flag boolean value that turns initial randomization on or off
+     */
+    public void setRandomize(boolean flag) {
+	randomize = flag;
+    }
 
-	/**
-	 * Reads all of our properties from the cytoscape properties map and sets
-	 * the values as appropriates.
-	 */
-	protected void initializeProperties() {
+    /**
+     * Sets the randomize flag
+     *
+     * @param value boolean string that turns initial randomization on or off
+     */
+    public void setRandomize(String value) {
+	Boolean val = new Boolean(value);
+	randomize = val.booleanValue();
+    }
+
+    /**
+     * Reads all of our properties from the cytoscape properties map and sets
+     * the values as appropriates.
+     */
+    protected void initializeProperties() {
 		
-		layoutProperties.add(new Tunable("standard", "Standard settings", Tunable.GROUP,
-		                                 new Integer(3)));
-		/*
-		layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN,
-		                                 new Boolean(false), Tunable.NOINPUT));
-		*/
-		layoutProperties.add(new Tunable("partition", "Partition graph before layout",
-		                                 Tunable.BOOLEAN, new Boolean(true)));
-		layoutProperties.add(new Tunable("randomize", "Randomize graph before layout",
-		                                 Tunable.BOOLEAN, new Boolean(true)));
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
-		                                 Tunable.BOOLEAN, new Boolean(false)));
+	layoutProperties.add(new Tunable("standard", "Standard settings", Tunable.GROUP,
+					 new Integer(3)));
+	/*
+	  layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN,
+	  new Boolean(false), Tunable.NOINPUT));
+	*/
+	layoutProperties.add(new Tunable("partition", "Partition graph before layout",
+					 Tunable.BOOLEAN, new Boolean(true)));
 
-		if (supportWeights) {
-			edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
-		}
+	layoutProperties.add(new Tunable("randomize", "Randomize graph before layout",
+					 Tunable.BOOLEAN, new Boolean(true)));
+	layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+					 Tunable.BOOLEAN, new Boolean(false)));
+
+	if (supportWeights) {
+	    edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
 	}
 
-	/**
-	 * Get the settings panel for this layout
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
+    }
 
-		return panel;
+    /**
+     * Get the settings panel for this layout
+     */
+    public JPanel getSettingsPanel() {
+	JPanel panel = new JPanel(new GridLayout(0, 1));
+	panel.add(layoutProperties.getTunablePanel());
+
+	return panel;
+    }
+
+    public LayoutProperties getSettings() {
+	return layoutProperties;
+    }
+
+    /**
+     *  Update our settings in response to a user setting change
+     */
+    public void updateSettings() {
+	updateSettings(false);
+    }
+
+    /**
+     *  Update the settings the user has requested
+     *
+     * @param force if true, always read the settings
+     */
+    public void updateSettings(boolean force) {
+	layoutProperties.updateValues();
+
+	Tunable t = layoutProperties.get("debug");
+	if ((t != null) && (t.valueChanged() || force)) {
+	    setDebug(t.getValue().toString());
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	public LayoutProperties getSettings() {
-		return layoutProperties;
+
+	t = layoutProperties.get("partition");
+	if ((t != null) && (t.valueChanged() || force)) {
+	    setPartition(t.getValue().toString());
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	/**
-	 *  Update our settings in response to a user setting change
-	 */
-	public void updateSettings() {
-		updateSettings(false);
+	t = layoutProperties.get("randomize");
+	if ((t != null) && (t.valueChanged() || force)) {
+	    setRandomize(t.getValue().toString());
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	/**
-	 *  Update the settings the user has requested
-	 *
-	 * @param force if true, always read the settings
-	 */
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("debug");
-		if ((t != null) && (t.valueChanged() || force)) {
-			setDebug(t.getValue().toString());
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-
-		t = layoutProperties.get("partition");
-		if ((t != null) && (t.valueChanged() || force)) {
-			setPartition(t.getValue().toString());
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-		t = layoutProperties.get("randomize");
-		if ((t != null) && (t.valueChanged() || force)) {
-			setRandomize(t.getValue().toString());
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-		t = layoutProperties.get("selected_only");
-		if ((t != null) && (t.valueChanged() || force)) {
-			setSelectedOnly(t.getValue().toString());
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-		if (supportWeights) 
-			edgeWeighter.updateSettings(layoutProperties, force);
+	t = layoutProperties.get("selected_only");
+	if ((t != null) && (t.valueChanged() || force)) {
+	    setSelectedOnly(t.getValue().toString());
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	/**
-	 *  Revert to the default settings
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
-	}
+	if (supportWeights) 
+	    edgeWeighter.updateSettings(layoutProperties, force);
+    }
 
-	/**
-	 * Main function that must be implemented by the child class.
-	 */
-	public abstract void layoutPartion(LayoutPartition partition);
+    /**
+     *  Revert to the default settings
+     */
+    public void revertSettings() {
+	layoutProperties.revertProperties();
+    }
 
-	protected void initialize_local() {
-	}
+    /**
+     * Main function that must be implemented by the child class.
+     */
+    public abstract void layoutPartion(LayoutPartition partition);
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param message DOCUMENT ME!
-	 */
-	public static void debugln(String message) {
-		if (debug) {
-			System.err.println(message);
-		}
-	}
+    protected void initialize_local() {
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param message DOCUMENT ME!
-	 */
-	public static void debug(String message) {
-		if (debug) {
-			System.err.print(message);
-		}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param message DOCUMENT ME!
+     */
+    public static void debugln(String message) {
+	if (debug) {
+	    System.err.println(message);
 	}
+    }
+
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param message DOCUMENT ME!
+     */
+    public static void debug(String message) {
+	if (debug) {
+	    System.err.print(message);
+	}
+    }
 }

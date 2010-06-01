@@ -151,13 +151,27 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	forceItems = new HashMap<LayoutNode,ForceItem>();
     }
     
-
+    /**
+     * Return the "name" of this algorithm.  This is meant
+     * to be used by programs for deciding which algorithm to
+     * use.  toString() should be used for the human-readable
+     * name.
+     *
+     * @return the algorithm name
+     */
     public String getName() {
-	return "label-force-directed"; // LABEL-LAYOUT
+	return "Force-directed-Label-Layout"; // LABEL-LAYOUT
     }
-    
+
+    /**
+     * Return the "title" of this algorithm.  This is meant
+     * to be used for titles and labels that represent this
+     * algorithm.
+     *
+     * @return the human-readable algorithm name
+     */    
     public String toString() {
-	return "Label Force-Directed Layout"; // LABEL-LAYOUT
+	return "Force-Directed Label Layout"; // LABEL-LAYOUT
     }
 
     
@@ -179,10 +193,9 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 					 "Only layout selected nodes",
 					 Tunable.BOOLEAN, new Boolean(false)));
 		
-	// LABEL-LAYOUT
 	layoutProperties.add(new Tunable("moveNodes", 
 					 "Allow nodes to move",
-					 Tunable.BOOLEAN, new Boolean(false)));
+					 Tunable.BOOLEAN, new Boolean(false)));	// LABEL-LAYOUT
 
 	layoutProperties.add(new Tunable("force_alg_settings", 
 					 "Algorithm settings",
@@ -282,7 +295,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	t = layoutProperties.get("defaultPercentage");
 	if ((t != null) && (t.valueChanged() || force))
 	    defaultPercentage = ((Double) t.getValue()).doubleValue();
-
+	
 	t = layoutProperties.get("defaultNodeMass");
 	if ((t != null) && (t.valueChanged() || force))
 	    defaultNodeMass = ((Double) t.getValue()).doubleValue();
