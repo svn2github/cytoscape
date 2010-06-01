@@ -27,9 +27,9 @@ def GenerateNetwork(node_count, no_of_links):
 
 
 def Usage():
-    print "usage: " + sys.argv[0] + " node_count no_of_links > SIF_file"
-    print "\twhere node_count is the number of nodes of the generated network"
-    print "\twhere no_of_links is the number of edges of the generated network"
+    print >> sys.stderr, "usage: " + sys.argv[0] + " node_count no_of_links > SIF_file"
+    print >> sys.stderr, "\twhere node_count is the number of nodes of the generated network"
+    print >> sys.stderr, "\twhere no_of_links is the number of edges of the generated network"
 
     sys.exit(1)
 

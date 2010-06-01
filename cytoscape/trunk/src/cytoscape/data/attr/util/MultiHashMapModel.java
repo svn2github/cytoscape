@@ -1,14 +1,7 @@
 /*
   File: MultiHashMapModel.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -41,6 +34,8 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.data.attr.MultiHashMapListener;
+
+import org.cytoscape.equations.Equation;
 
 import java.util.HashMap;
 
@@ -418,13 +413,13 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 	 * @return  DOCUMENT ME!
 	 */
 	public final Object setAttributeValue(final String objectKey, final String attributeName,
-	                                      final Object attributeValue, final Object[] keyIntoValue) {
+	                                      final Object attributeValue, final Object[] keyIntoValue)
+	{
 		// Pull out the definition, error-checking attributeName in the process.
 		if (attributeName == null)
 			throw new NullPointerException("attributeName is null");
 
 		final AttrDefData def = (AttrDefData) m_attrMap.get(attributeName);
-
 		if (def == null)
 			throw new IllegalStateException("no attributeName '" + attributeName + "' exists");
 
@@ -441,58 +436,30 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 			throw new NullPointerException("cannot set null attributeValue - "
 			                               + "use removeAttributeValue() instead");
 
-		boolean passed = false;
+		final Class actualType;
+		final boolean isEquation = attributeValue instanceof Equation;
+		if (isEquation)
+			actualType = ((Equation)attributeValue).getType();
+		else
+			actualType = attributeValue.getClass();
 
 		switch (def.valueType) { // I'm wondering what the most efficient way of doing this is.
 			case MultiHashMapDefinition.TYPE_BOOLEAN:
-				passed = (attributeValue instanceof java.lang.Boolean);
-
-				break;
-
+				if ((actualType == Boolean.class) || (isEquation && (actualType == Long.class || actualType == Double.class)))
+					break;
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Boolean!");
 			case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-				passed = (attributeValue instanceof java.lang.Double);
-
-				break;
-
+				if ((actualType == Double.class) || (isEquation && (actualType == Long.class || actualType == Boolean.class)))
+					break;
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Double!");
 			case MultiHashMapDefinition.TYPE_INTEGER:
-				passed = (attributeValue instanceof java.lang.Integer);
-
-				break;
-
+				if ((actualType == Integer.class) || (isEquation && (actualType == Double.class || actualType == Boolean.class || actualType == Long.class)))
+					break;
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Integer!");
 			case MultiHashMapDefinition.TYPE_STRING:
-				passed = (attributeValue instanceof java.lang.String);
-
-				break;
-		}
-
-		if (!passed) { // Go the extra effort to return an informational error.
-
-			String className = null;
-
-			switch (def.valueType) { // Repeat same switch logic here for efficiency in non-error case.
-				case MultiHashMapDefinition.TYPE_BOOLEAN:
-					className = "java.lang.Boolean";
-
+				if ((actualType == String.class) || isEquation)
 					break;
-
-				case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-					className = "java.lang.Double";
-
-					break;
-
-				case MultiHashMapDefinition.TYPE_INTEGER:
-					className = "java.lang.Integer";
-
-					break;
-
-				case MultiHashMapDefinition.TYPE_STRING:
-					className = "java.lang.String";
-
-					break;
-			}
-
-			throw new ClassCastException("attributeValue must be of type " + className
-			                             + " in attributeName '" + attributeName + "' definition");
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
 		}
 
 		// Error-check keyIntoValue.  Leave the type checks to the recursion.
@@ -503,7 +470,6 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 				                                   + " defined, yet keyIntoValue is not empty");
 			}
 		} else { // Keyspace is not empty.
-
 			final int keyIntoValueLength = ((keyIntoValue == null) ? 0 : keyIntoValue.length);
 
 			if (def.keyTypes.length != keyIntoValueLength) {
@@ -514,7 +480,6 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 		final MultiHashMapListener listener = m_dataListener;
 
 		if (def.keyTypes.length == 0) { // Don't even recurse.
-
 			final Object returnThis = def.objMap.put(objectKey, attributeValue);
 
 			if (listener != null)
@@ -626,7 +591,8 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 	 * @return  DOCUMENT ME!
 	 */
 	public final Object getAttributeValue(final String objectKey, final String attributeName,
-	                                      final Object[] keyIntoValue) {
+	                                      final Object[] keyIntoValue)
+	{
 		// Pull out the definition, error-checking attributeName in the process.
 		if (attributeName == null)
 			throw new NullPointerException("attributeName is null");
@@ -648,18 +614,16 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 				                                   + " defined, yet keyIntoValue is not empty");
 			}
 		} else { // Keyspace is not empty.
-
 			final int keyIntoValueLength = ((keyIntoValue == null) ? 0 : keyIntoValue.length);
-
-			if (def.keyTypes.length != keyIntoValueLength) {
-				throw new IllegalArgumentException("keyIntoValue has incorrect dimensionality");
-			}
+			if (def.keyTypes.length != keyIntoValueLength)
+				throw new IllegalArgumentException("keyIntoValue has incorrect dimensionality for attribute \""
+				                                   + attributeName + "\"(expected: "
+				                                   + keyIntoValueLength + ", found: " + def.keyTypes.length + ")!");
 		}
 
-		if (def.keyTypes.length == 0) { // Don't even recurse.
-
+		if (def.keyTypes.length == 0) // Don't even recurse.
 			return def.objMap.get(objectKey);
-		} else { // Recurse.
+		else { // Recurse.
 
 			final Object o = def.objMap.get(objectKey);
 

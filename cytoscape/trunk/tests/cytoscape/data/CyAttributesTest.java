@@ -1,14 +1,7 @@
 /*
  File: CyAttributesTest.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -38,6 +31,8 @@ package cytoscape.data;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
+
+import org.cytoscape.equations.EqnCompiler;
 
 import junit.framework.TestCase;
 
@@ -395,6 +390,23 @@ public class CyAttributesTest extends TestCase {
 		cyAttributes.setUserEditable(sampleAttribute, true);
 		editableFlag = cyAttributes.getUserEditable(sampleAttribute);
 		assertEquals(true, editableFlag);
+	}
+
+	public void testGetLastEquationError() {
+		final EqnCompiler compiler = new EqnCompiler();
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+
+		// First a case that should result in an error message...
+		assertTrue(compiler.compile("=1/0", attribNameToTypeMap));
+		cyAttributes.setAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE, compiler.getEquation());
+		assertNull(cyAttributes.getAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE));
+		assertNotNull(cyAttributes.getLastEquationError());
+
+		// ...and now a case that should not result in an error message.
+		assertTrue(compiler.compile("=1/1", attribNameToTypeMap));
+		cyAttributes.setAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE, compiler.getEquation());
+		assertNotNull(cyAttributes.getAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE));
+		assertNull(cyAttributes.getLastEquationError());
 	}
 
 	/**

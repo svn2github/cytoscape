@@ -56,7 +56,7 @@ import javax.swing.Action;
 /**
  * @deprecated This class is no longer used since the BirdsEyeView is now always part of
  * the NetworkPanel.  BirdsEyeView creation and event handling is done by the 
- * {@link cytoscape.view.BirdsEyeViewHandler} and initialized in {@line cytoscape.view.CytoscapeDesktop}
+ * {@link cytoscape.view.BirdsEyeViewHandler} and initialized in {@link cytoscape.view.CytoscapeDesktop}
  * This class will be removed 5/2008.
  */
 public class BirdsEyeViewAction extends CytoscapeAction implements PropertyChangeListener {

@@ -1,15 +1,7 @@
 /*
  File: XGMMLParser.java
 
- Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute of Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
- - University of California San Francisco
+ Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,7 +26,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
@@ -50,6 +42,8 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.logger.CyLogger;
+
+import org.cytoscape.equations.EqnCompiler;
 
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -123,6 +117,78 @@ enum ObjectType {
 
 
 class XGMMLParser extends DefaultHandler {
+	private enum AttrClass {
+		NODES(Cytoscape.getNodeAttributes()),
+		EDGES(Cytoscape.getEdgeAttributes()),
+		NETWORKS(Cytoscape.getNetworkAttributes());
+
+		private CyAttributes attribs;
+
+		AttrClass(final CyAttributes attribs) { this.attribs = attribs; }
+
+		CyAttributes getAttribs() { return attribs; }
+	};
+
+	class AttrNameToTypeMaps {
+		private final Map<String, Class> attribNameToTypeMapForNodes;
+		private final Map<String, Class> attribNameToTypeMapForEdges;
+		private final Map<String, Class> attribNameToTypeMapForNetworks;
+
+		AttrNameToTypeMaps() {
+			attribNameToTypeMapForNodes    = new HashMap<String, Class>();
+			attribNameToTypeMapForEdges    = new HashMap<String, Class>();
+			attribNameToTypeMapForNetworks = new HashMap<String, Class>();
+		}
+
+		void put(final String attrName, final Class attrType, final AttrClass attrClass) {
+			switch (attrClass) {
+			case NODES:
+				attribNameToTypeMapForNodes.put(attrName, attrType);
+				break;
+			case EDGES:
+				attribNameToTypeMapForEdges.put(attrName, attrType);
+				break;
+			case NETWORKS:
+				attribNameToTypeMapForNetworks.put(attrName, attrType);
+				break;
+			}
+		}
+
+		Map<String, Class> getAttribNameToTypeMapForNodes() { return attribNameToTypeMapForNodes; }
+		Map<String, Class> getAttribNameToTypeMapForEdges() { return attribNameToTypeMapForEdges; }
+		Map<String, Class> getAttribNameToTypeMapForNetworks() { return attribNameToTypeMapForNetworks; }
+	}
+
+	class AttrEqnLists {
+		private final List<AttribEquation> nodeEquations;
+		private final List<AttribEquation> edgeEquations;
+		private final List<AttribEquation> networkEquations;
+
+		AttrEqnLists() {
+			nodeEquations    = new ArrayList<AttribEquation>();
+			edgeEquations    = new ArrayList<AttribEquation>();
+			networkEquations = new ArrayList<AttribEquation>();
+		}
+
+		void add(final AttribEquation equation, final AttrClass attrClass) {
+			switch (attrClass) {
+			case NODES:
+				nodeEquations.add(equation);
+				break;
+			case EDGES:
+				edgeEquations.add(equation);
+				break;
+			case NETWORKS:
+				networkEquations.add(equation);
+				break;
+			}
+		}
+
+		List<AttribEquation> getNodeEquations() { return nodeEquations; }
+		List<AttribEquation> getEdgeEquations() { return edgeEquations; }
+		List<AttribEquation> getNetworkEquations() { return networkEquations; }
+	}
+
 	final static String XLINK = "http://www.w3.org/1999/xlink";
 	final static String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	final static String DUBLINCORE = "http://purl.org/dc/elements/1.1/";
@@ -178,7 +244,10 @@ class XGMMLParser extends DefaultHandler {
 	private ParseState attState = ParseState.NONE;
 	private String currentAttributeID = null;
 	private CyAttributes currentAttributes = null;
+	private AttrClass currentAttrClass = null;
 	private	String objectTarget = null;
+	private AttrNameToTypeMaps attrNameToTypeMaps;
+	private AttrEqnLists attrEqnLists;
 
 	/* Complex attribute data */
 	private int level = 0;
@@ -205,8 +274,8 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	final Object[][] startParseTable = {
 		// Initial state.  It's all noise until we see our <graph> tag
-		{ParseState.NONE, "graph", ParseState.GRAPH, new handleGraph()},
-		{ParseState.GRAPH, "att", ParseState.NETATT, new handleNetworkAttribute()},
+		{ParseState.NONE, "graph", ParseState.GRAPH, new HandleGraph()},
+		{ParseState.GRAPH, "att", ParseState.NETATT, new HandleNetworkAttribute()},
 		{ParseState.NETATT, "rdf", ParseState.RDF, null},
 		// RDF tags -- most of the data for the RDF tags comes from the CData
 		{ParseState.RDF, "description", ParseState.RDFDESC, new handleRDF()},
@@ -261,7 +330,7 @@ class XGMMLParser extends DefaultHandler {
 		{ParseState.EDGEBEND, "att", ParseState.EDGEBEND, new handleEdgeHandleList()},
 		// Special handling for complex attributes
 		{ParseState.COMPLEXATT, "att", ParseState.COMPLEXATT, new handleComplexAttributeDone()},
-		{ParseState.GRAPH, "graph", ParseState.NONE, new handleGraphDone()},
+		{ParseState.GRAPH, "graph", ParseState.NONE, new HandleGraphDone()},
 
 		{ParseState.LISTATT, "att", ParseState.NONE, new handleListAttributeDone()},
 		{ParseState.MAPATT, "att", ParseState.NONE, new handleMapAttributeDone()},
@@ -324,11 +393,32 @@ class XGMMLParser extends DefaultHandler {
 	 *
 	 * @param type the ObjectType of the value
 	 * @param atts the attributes
+	 * @return the value of the attribute in the appropriate type or a string if the value starts with an equal sign
+	 */
+	Object getTypedAttributeValueOrEquation(final ObjectType type, final Attributes atts) throws SAXParseException {
+		final String value = atts.getValue("value");
+		if (value != null && value.length() >= 2 && value.charAt(0) == '=') // Must be an equation!
+			return value;
+		try {
+			return getTypedValue(type, value);
+		} catch (final Exception e) {
+			throw new SAXParseException("Unable to convert '" + value + "' to type " + type.toString(), locator);
+		}
+	}
+
+
+	/**
+	 * Return the typed attribute value for the passed attribute.  In this case,
+	 * the caller has already determined that this is the correct attribute and
+	 * we just lookup the value.  This routine is responsible for type conversion
+	 * consistent with the passed argument.
+	 *
+	 * @param type the ObjectType of the value
+	 * @param atts the attributes
 	 * @return the value of the attribute in the appropriate type
 	 */
 	Object getTypedAttributeValue(final ObjectType type, final Attributes atts) throws SAXParseException {
 		final String value = atts.getValue("value");
-		Object obj = null;
 		try {
 			return getTypedValue(type, value);
 		} catch (final Exception e) {
@@ -495,6 +585,8 @@ class XGMMLParser extends DefaultHandler {
 		nodeGraphicsMap = new HashMap();
 		edgeGraphicsMap = new HashMap();
 		idMap = new HashMap();
+		attrNameToTypeMaps = new AttrNameToTypeMaps();
+		attrEqnLists = new AttrEqnLists();
 	}
 
 
@@ -521,6 +613,35 @@ class XGMMLParser extends DefaultHandler {
 
 	String getNetworkName() {
 		return networkName;
+	}
+
+
+	void compileAndAddEquationAttribs() {
+		compileAndAddEquationAttribs(attrEqnLists.getNodeEquations(),
+		                             attrNameToTypeMaps.getAttribNameToTypeMapForNodes(),
+		                             Cytoscape.getNodeAttributes());
+		compileAndAddEquationAttribs(attrEqnLists.getEdgeEquations(),
+		                             attrNameToTypeMaps.getAttribNameToTypeMapForEdges(),
+		                             Cytoscape.getEdgeAttributes());
+		compileAndAddEquationAttribs(attrEqnLists.getNetworkEquations(),
+		                             attrNameToTypeMaps.getAttribNameToTypeMapForNetworks(),
+		                             Cytoscape.getNetworkAttributes());
+	}
+
+
+	private void compileAndAddEquationAttribs(final List<AttribEquation> attribEquations,
+	                                          final Map<String, Class> attribNameToTypeMap,
+	                                          final CyAttributes attribs)
+	{
+		attribNameToTypeMap.put("ID", String.class);
+		final EqnCompiler compiler = new EqnCompiler();
+		for (final AttribEquation attribEquation : attribEquations) {
+			if (!(compiler.compile(attribEquation.getEquation(), attribNameToTypeMap)))
+				throw new IllegalStateException("failed to compile an equation in an XGMML input file ("
+				                                + compiler.getLastErrorMsg() + ")!");
+			attribs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(),
+			                     compiler.getEquation(), attribEquation.getDataType());
+		}
 	}
 
 
@@ -684,7 +805,7 @@ class XGMMLParser extends DefaultHandler {
 	 *             be passed to the handler
 	 * @return the new state
 	 */
-	private ParseState handleState(Object[][]table, ParseState currentState, String tag, Attributes atts) throws SAXException {
+	private ParseState handleState(Object[][] table, ParseState currentState, String tag, Attributes atts) throws SAXException {
 		// If our element table ever gets long, we may want to make
 		// this more efficient with a hash or something
 		for (int i = 0; i < table.length; i++) {
@@ -704,7 +825,7 @@ class XGMMLParser extends DefaultHandler {
 	 * called by the state mechine.
 	 *******************************************************************/
 
-	class handleGraph implements Handler {
+	class HandleGraph implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			String name = getLabel(atts);
 			if (name != null) 
@@ -715,10 +836,10 @@ class XGMMLParser extends DefaultHandler {
 
 
 	/**
-	 * handleGraphDone is called when we finish parsing the entire XGMML file.  This allows us to do
+	 * HandleGraphDone is called when we finish parsing the entire XGMML file.  This allows us to do
 	 * deal with some cleanup line creating all of our groups, etc.
 	 */
-	class handleGraphDone implements Handler {
+	class HandleGraphDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			// Resolve any unresolve node references
 			if (nodeLinks != null) {
@@ -739,9 +860,10 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 
-	class handleNetworkAttribute implements Handler {
+	class HandleNetworkAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			currentAttributes = Cytoscape.getNetworkAttributes();
+			currentAttrClass = AttrClass.NETWORKS;
 			attState = current;
 			ParseState nextState = current;
 			// Look for "special" network attributes
@@ -814,6 +936,7 @@ class XGMMLParser extends DefaultHandler {
 			}
 
 			currentAttributes = Cytoscape.getNodeAttributes();
+			currentAttrClass = AttrClass.NODES;
 			objectTarget = currentNode.getIdentifier();
 
 			ParseState nextState = handleAttribute(atts, currentAttributes, objectTarget);
@@ -904,6 +1027,7 @@ class XGMMLParser extends DefaultHandler {
 			}
 			*/
 			currentAttributes = Cytoscape.getEdgeAttributes();
+			currentAttrClass = AttrClass.EDGES;
 			if (currentEdge != null)
 				objectTarget = currentEdge.getIdentifier();
 			else
@@ -985,7 +1109,7 @@ class XGMMLParser extends DefaultHandler {
 				List<CyNode>nodeList = groupMap.get(currentGroupNode);
 				nodeList.add(node);
 			} else {
-				// Remember it for later -- we'll fix this up in handleGraphDone
+				// Remember it for later -- we'll fix this up in HandleGraphDone
 				if (!nodeLinks.containsKey(currentGroupNode)) {
 					nodeLinks.put(currentGroupNode, new ArrayList<String>());
 				}
@@ -1027,7 +1151,6 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	class handleEdgeHandle implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-
 			if (documentVersion == 1.0) {
 				// This is the outer "handle" attribute
 				if (!getAttribute(atts, "name").equals("handle")) {
@@ -1376,38 +1499,62 @@ class XGMMLParser extends DefaultHandler {
 	private ParseState handleAttribute(Attributes atts, CyAttributes cyAtts, String id) throws SAXException {
 		String name = atts.getValue("name");
 		ObjectType objType = getType(atts.getValue("type"));
-		Object obj = getTypedAttributeValue(objType, atts);
+		Object obj = getTypedAttributeValueOrEquation(objType, atts);
 
 		// Set up defaults
 		boolean hidden = false;
 		boolean editable = true;
+		boolean equation = false;
+
 		String hString = atts.getValue("cy:hidden");
-		if (hString != null) {
+		if (hString != null)
 			hidden = Boolean.parseBoolean(hString);
-		}
 
 		String eString = atts.getValue("cy:editable");
-		if (hString != null) {
+		if (hString != null)
 			editable = Boolean.parseBoolean(hString);
-		}
+
+		String eqString = atts.getValue("cy:equation");
+		if (eqString != null)
+			equation = Boolean.parseBoolean(eqString);
 
 
 		switch (objType) {
 		case BOOLEAN:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (Boolean)obj);
+			if (obj != null && name != null && id != null) {
+				attrNameToTypeMaps.put(name, Boolean.class, currentAttrClass);
+				if (equation)
+					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_BOOLEAN), currentAttrClass);
+				else
+					cyAtts.setAttribute(id, name, (Boolean)obj);
+			}
 			break;
 		case REAL:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (Double)obj);
+			if (obj != null && name != null && id != null) {
+				attrNameToTypeMaps.put(name, Double.class, currentAttrClass);
+				if (equation)
+					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_FLOATING_POINT), currentAttrClass);
+				else
+					cyAtts.setAttribute(id, name, (Double)obj);
+			}
 			break;
 		case INTEGER:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (Integer)obj);
+			if (obj != null && name != null && id != null) {
+				attrNameToTypeMaps.put(name, Long.class, currentAttrClass);
+				if (equation)
+					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_INTEGER), currentAttrClass);
+				else
+					cyAtts.setAttribute(id, name, (Integer)obj);
+			}
 			break;
 		case STRING:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (String)obj);
+			if (obj != null && name != null && id != null) {
+				attrNameToTypeMaps.put(name, String.class, currentAttrClass);
+				if (equation)
+					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_STRING), currentAttrClass);
+				else
+					cyAtts.setAttribute(id, name, (String)obj);
+			}
 			break;
 
 		// We need to be *very* careful.  Because we duplicate attributes for
@@ -1418,16 +1565,22 @@ class XGMMLParser extends DefaultHandler {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			currentAttributeID = name;
-			if (id != null && cyAtts.hasAttribute(id, name))
+			if (id != null && cyAtts.hasAttribute(id, name)) {
 				cyAtts.deleteAttribute(id,name);
+				if (name != null)
+					attrNameToTypeMaps.put(name, List.class, currentAttrClass);
+			}
 
 			listAttrHolder = new ArrayList();
 
 			return ParseState.LISTATT;
 		case MAP:
 			currentAttributeID = name;
-			if (id != null && cyAtts.hasAttribute(id, name))
+			if (id != null && cyAtts.hasAttribute(id, name)) {
 				cyAtts.deleteAttribute(id,name);
+				if (name != null)
+                                        attrNameToTypeMaps.put(name, Map.class, currentAttrClass);
+			}
 
 			mapAttrHolder = new HashMap();
 
@@ -1451,6 +1604,7 @@ class XGMMLParser extends DefaultHandler {
 			cyAtts.setUserVisible(name,false);
 		if (!editable)
 			cyAtts.setUserEditable(name,false);
+
 		return ParseState.NONE;
 	}
 

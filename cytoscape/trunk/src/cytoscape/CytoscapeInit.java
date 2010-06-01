@@ -1,14 +1,7 @@
 /*
  File: CytoscapeInit.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -69,6 +62,9 @@ import cytoscape.util.FileUtil;
 import cytoscape.util.NestedNetworkViewUpdater;
 import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.view.CyNetworkView;
+
+import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.Parser;
 
 
 /**
@@ -136,8 +132,7 @@ public class CytoscapeInit {
 	/**
 	 * Cytoscape Init must be initialized using the command line arguments.
 	 *
-	 * @param args
-	 *            the arguments from the command line
+	 * @param params  the arguments from the command line
 	 * @return false, if we fail to initialize for some reason
 	 */
 	public boolean init(CyInitParams params) {
@@ -284,16 +279,14 @@ public class CytoscapeInit {
 	}
 
 	/**
-	 * @param mrud
-	 *            the most recently used directory
+	 * @param mrud_new  the most recently used directory
 	 */
 	public static void setMRUD(File mrud_new) {
 		mrud = mrud_new;
 	}
 
 	/**
-	 * @param mruf
-	 *            the most recently used file
+	 * @param mruf_new  the most recently used file
 	 */
 	public static void setMRUF(File mruf_new) {
 		mruf = mruf_new;

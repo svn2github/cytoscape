@@ -282,7 +282,7 @@
 		       target="${java.target_version}"
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="yes">
+		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 			<src path="${src.dir}" />

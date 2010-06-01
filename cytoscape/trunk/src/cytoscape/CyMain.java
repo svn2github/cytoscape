@@ -273,8 +273,6 @@ public class CyMain implements CyInitParams {
 	/**
 	 * Provides access to the session file parsed from arguments intercepted by
 	 * CyStartupListener
-	 * 
-	 * @return sessionFile
 	 */
 	public static void setSessionFile(String sf) {
 		sessionFile = sf;
