@@ -1176,11 +1176,13 @@ public interface GraphPerspective {
 
   /**
    * This will return a List of giny.model.Edge objects that are the Edges between Nodes.
+   * WARNING: This will return null if any of the input nodes are not in this graph perspective!! 
    */
   public List getConnectingEdges ( List nodes );
 
   /**
-   * This will return an array of Edge indices that are the Edges between Nodes.
+   * This will return an array of Edge indices that are the Edges between Nodes or
+   * null if even one node index is not in this graph perspective.
    */
   public int[] getConnectingEdgeIndicesArray ( int[] node_indices );
  

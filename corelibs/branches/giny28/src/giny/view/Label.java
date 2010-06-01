@@ -39,8 +39,7 @@ public interface Label {
 	 * this threshold the text is rendered as 'greek' instead of drawing the
 	 * text glyphs.
 	 * 
-	 * @param threshold
-	 *            minimum screen font size.
+	 * @param threshold minimum screen font size.
 	 */
 	public void setGreekThreshold(double threshold);
 
