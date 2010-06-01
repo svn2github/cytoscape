@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Sqrt implements Function {
@@ -60,7 +61,7 @@ public class Sqrt implements Function {
 	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double nor Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || (argTypes[0] != Double.class && argTypes[0] != Long.class))
+		if (argTypes.length != 1 || !FunctionUtil.isScalarArgType(argTypes[0]))
 			return null;
 
 		return Double.class;
@@ -73,10 +74,11 @@ public class Sqrt implements Function {
 	 */
 	public Object evaluateFunction(final Object[] args) throws ArithmeticException {
 		final double number;
-		if (args[0] instanceof Double)
-			number = (Double)args[0];
-		else // Assume we got an integer.
-			number = (Long)args[0];
+		try {
+			number = FunctionUtil.getArgAsDouble(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[0] + "\" to a number in a call to SQRT()!");
+		}
 		if (number < 0.0)
 			throw new ArithmeticException("negative argument in call to the SQRT() function!");
 
@@ -94,8 +96,7 @@ public class Sqrt implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length == 0) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 

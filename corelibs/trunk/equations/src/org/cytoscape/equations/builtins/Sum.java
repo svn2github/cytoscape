@@ -74,7 +74,12 @@ public class Sum implements Function {
 	 *  @return the result of the function evaluation which is the natural logarithm of the first argument
 	 */
 	public Object evaluateFunction(final Object[] args) {
-		final double[] numbers = FunctionUtil.getNumbers(args);
+		final double[] numbers;
+		try {
+			numbers = FunctionUtil.getNumbers(args);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("in a call to SUM(): could not convert one of the arguments to a number or list of numbers!");
+		}
 
 		double sum = 0.0;
 		for (final double d : numbers)
@@ -93,11 +98,10 @@ public class Sum implements Function {
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(Double.class);
-		possibleNextArgs.add(Long.class);
-		possibleNextArgs.add(String.class);
-		possibleNextArgs.add(Boolean.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 		possibleNextArgs.add(List.class);
+		if (leadingArgs.length > 0)
+			possibleNextArgs.add(null);
 
 		return possibleNextArgs;
 	}

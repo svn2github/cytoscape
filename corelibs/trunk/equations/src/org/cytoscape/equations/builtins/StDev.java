@@ -49,13 +49,13 @@ public class StDev implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns the sample standard deviation of a list of numbers."; }
+	public String getFunctionSummary() { return "Returns the sample standard deviation of a list or lists of numbers."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"STDEV(numbers)\""; }
+	public String getUsageDescription() { return "Call this with \"STDEV(numbers1,[numbers2,...,numbersN])\""; }
 
 	public Class getReturnType() { return Double.class; }
 
@@ -63,7 +63,7 @@ public class StDev implements Function {
 	 *  @return Double.class if the argument types make it at least conceivable that no less than 2 numbers are being passed in
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length == 0 || (argTypes.length == 1 && argTypes[0] != List.class))
+		if (argTypes.length == 0)
 			return null;
 
 		return Double.class;
@@ -76,34 +76,16 @@ public class StDev implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final ArrayList<Double> a = new ArrayList<Double>();
-		for (int i = 0; i < args.length; ++i) {
-			if (args[i] instanceof List) {
-				final List list = (List)(args[i]);
-				for (final Object listElement : list) {
-					try {
-						a.add(FunctionUtil.getArgAsDouble(listElement));
-					} catch (final IllegalArgumentException e) {
-						throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
-										   " element in call to STDEV() is not a number: "
-										   + e.getMessage());
-					}
-				}
-			} else {
-				try {
-					a.add(FunctionUtil.getArgAsDouble(args[i]));
-				} catch (final IllegalArgumentException e) {
-					throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
-									   " element in call to STDEV() is not a number: "
-									   + e.getMessage());
-				}
-			}
+		final double[] numbers;
+		try {
+			numbers = FunctionUtil.getNumbers(args);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("could not convert an argument or list element to a number in a call to STDEV()!");
 		}
+		if (numbers.length < 2)
+			throw new IllegalArgumentException("illegal argument(s) in call to STDEV(): must have at least 2 numbers!");
 
-		if (a.size() < 2)
-			throw new IllegalArgumentException("illegal list argument in call to STDEV(): must have at least 2 elements!");
-
-		return Math.sqrt(FunctionUtil.calcSampleVariance(FunctionUtil.arrayListToArray(a)));
+		return Math.sqrt(FunctionUtil.calcSampleVariance(numbers));
 	}
 
 	/**
@@ -116,17 +98,11 @@ public class StDev implements Function {
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length == 1) {
-			if (leadingArgs[0] == List.class)
-				possibleNextArgs.add(null);
-		} else if (leadingArgs.length > 1)
+		if (leadingArgs.length > 1)
 			possibleNextArgs.add(null);
 
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 		possibleNextArgs.add(List.class);
-		possibleNextArgs.add(Double.class);
-		possibleNextArgs.add(Long.class);
-		possibleNextArgs.add(Boolean.class);
-		possibleNextArgs.add(String.class);
 
 		return possibleNextArgs;
 	}

@@ -205,17 +205,21 @@ public class InterpreterTest extends TestCase {
 		final Interpreter interpreter1 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("XBXBBXXBXB"), interpreter1.run());
 
-		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 2.4)", attribNameToTypeMap));
+		assertTrue(compiler.compile("=SUBSTITUTE(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 2.4)", attribNameToTypeMap));
 		final Interpreter interpreter2 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("FredBobBillJoeJulieHansKarl"), interpreter2.run());
 
-		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 3)", attribNameToTypeMap));
+		assertTrue(compiler.compile("=SUBSTITUTE(\"FredBobBillJoeBobHansKarl\", \"Bob\", \"Julie\", 3)", attribNameToTypeMap));
 		final Interpreter interpreter3 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("FredBobBillJoeBobHansKarl"), interpreter3.run());
 
-		assertTrue(compiler.compile("=Substitute(\"FredBobBillJoeBobHansKarl\", \"Bob2\", \"Julie\")", attribNameToTypeMap));
+		assertTrue(compiler.compile("=SUBSTITUTE(\"FredBobBillJoeBobHansKarl\", \"Bob2\", \"Julie\")", attribNameToTypeMap));
 		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		assertEquals(new String("FredBobBillJoeBobHansKarl"), interpreter4.run());
+
+		assertTrue(compiler.compile("=SUBSTITUTE(\"1toTRUEto1\", TRUE, 5)", attribNameToTypeMap));
+		final Interpreter interpreter5 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		assertEquals(new String("1to5to1"), interpreter5.run());
 	}
 
 	public void testIF() throws Exception {

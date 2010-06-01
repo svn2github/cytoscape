@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Substitute implements Function {
@@ -60,8 +61,13 @@ public class Substitute implements Function {
 	 *  @return String.class or null if the args passed in had the wrong arity or a type mismatch
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length < 3 || argTypes.length > 4 || (argTypes.length == 4 && argTypes[3] != Double.class))
+		if (argTypes.length < 3 || argTypes.length > 4)
 			return null;
+
+		for (final Class argType : argTypes) {
+			if (!FunctionUtil.isScalarArgType(argType))
+				return null;
+		}
 
 		return String.class;
 	}
@@ -73,14 +79,20 @@ public class Substitute implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final String text        = args[0].toString();
-		final String original    = args[1].toString();
-		final String replacement = args[2].toString();
+		final String text        = FunctionUtil.getArgAsString(args[0]);
+		final String original    = FunctionUtil.getArgAsString(args[1]);
+		final String replacement = FunctionUtil.getArgAsString(args[2]);
 
 		if (args.length == 3)
 			return replaceAll(text, original, replacement);
 		else { // Assume args.length == 4
-			final int nthAppearance = (int)Math.round((Double)args[3] - 0.5);
+			final int nthAppearance;
+			try {
+				nthAppearance = (int)FunctionUtil.getArgAsLong(args[3]);
+			} catch (final Exception e) {
+				throw new IllegalArgumentException("can't convert \"" + args[3] + "\" to a number in a call to SUBSTITUTE()!");
+			}
+
 			if (nthAppearance <= 0)
 				return text;
 			final int startIndex;
@@ -104,12 +116,9 @@ public class Substitute implements Function {
 			return null;
 
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length < 3)
-			possibleNextArgs.add(String.class);
-		else { // Assume leadingArgs.length == 3.
-			possibleNextArgs.add(Long.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+		if (leadingArgs.length == 3)
 			possibleNextArgs.add(null);
-		}
 
 		return possibleNextArgs;
 	}

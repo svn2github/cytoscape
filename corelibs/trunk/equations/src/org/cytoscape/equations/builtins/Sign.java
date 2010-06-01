@@ -61,8 +61,7 @@ public class Sign implements Function {
 	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double, Long, Boolean or String
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 ||
-		    (argTypes[0] != Double.class && argTypes[0] != Long.class && argTypes[0] != Boolean.class && argTypes[0] != String.class))
+		if (argTypes.length != 1 || !FunctionUtil.isScalarArgType(argTypes[0]))
 			return null;
 
 		return Double.class;
@@ -95,10 +94,7 @@ public class Sign implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length == 0) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(String.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 

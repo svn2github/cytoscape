@@ -87,10 +87,7 @@ public class Sinh implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length == 0) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(String.class);
-			possibleNextArgs.add(Boolean.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 

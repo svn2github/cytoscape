@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Trunc implements Function {
@@ -57,15 +58,15 @@ public class Trunc implements Function {
 	public String getUsageDescription() { return "Call this with \"TRUNC(number[, num_digits])\""; }
 
 	/**
-	 *  @return Double.class or null if there are not 1 or 2 args or the args are not of type Double
+	 *  @return Double.class or null if there are not 1 or 2 args or the args are not of type Double, Long, String or Boolean
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length != 1 && argTypes.length != 2)
 			return null;
 
-		if (argTypes[0] != Double.class && argTypes[0] != Long.class)
+		if (!FunctionUtil.isScalarArgType(argTypes[0]))
 			return null;
-		if (argTypes.length == 2 && (argTypes[1] != Long.class && argTypes[1] != Double.class))
+		if (argTypes.length == 2 && !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return Double.class;
@@ -75,23 +76,31 @@ public class Trunc implements Function {
 	 *  @param args the function arguments which must be either one or two objects of type Double
 	 *  @return the result of the function evaluation which is the truncated first argument
 	 *  @throws ArithmeticException 
-	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
+	 *  @throws IllegalArgumentException thrown if the first argument cannot be converted to floating point and the
+	 *          optional second argument cannot be converted to integer
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = args[0].getClass() == Double.class ? (Double)args[0] : (Long)args[0];
+		final double number;
+		try {
+			number = FunctionUtil.getArgAsDouble(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("cannot convert \"" + args[0] +"\" to a number in a call to TRUNC()!");
+		}
 		final double absNumber = Math.abs(number);
 
-		final double numDigits;
+		final long numDigits;
 		if (args.length == 1)
-			numDigits = 0.0;
+			numDigits = 0;
 		else {
-			if (args[1].getClass() == Long.class)
-				numDigits = (Long)args[1];
-			else
-				numDigits = Math.round((Double)args[1] - 0.5);
+			try {
+				numDigits = FunctionUtil.getArgAsLong(args[1]);
+			} catch (final Exception e) {
+				throw new IllegalArgumentException("cannot convert \"" + args[1] +"\" to an integer in a call to TRUNC()!");
+				
+			}
 		}
 
-		final double shift = Math.pow(10.0, numDigits);
+		final double shift = Math.pow(10.0, (double)numDigits);
 		final double truncatedAbsNumber = Math.round(absNumber * shift - 0.5) / shift;
 
 		return number > 0.0 ? truncatedAbsNumber : -truncatedAbsNumber;
@@ -110,9 +119,9 @@ public class Trunc implements Function {
 			return null;
 
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(Long.class);
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(Double.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+		if (leadingArgs.length == 1)
+			possibleNextArgs.add(null);
 		
 		return possibleNextArgs;
 	}

@@ -69,6 +69,31 @@ public class FunctionUtil {
 
 		throw new IllegalArgumentException("can't convert argument to a floating point number!");
 	}
+	/**
+	 *  Assumes that "arg" is a "String", "Boolean", "Long" or a "Double and converts it to "double".
+	 *  @return the converted argument as a "double"
+	 *  @throws IllegalArgumentException if the argument cannot be converted to a "double"
+	 */
+	static public String getArgAsString(final Object arg) throws IllegalArgumentException {
+		if (arg.getClass() == Boolean.class)
+			return (Boolean)arg ? "TRUE" : "FALSE";
+		if (arg.getClass() == Double.class) {
+			final String asString = arg.toString();
+			int length = asString.length();
+
+			// Strip trailing zeros:
+			while (length > 1 && asString.charAt(length - 1) == '0')
+				--length;
+
+			// Strip trailing period or comma:
+			if (asString.charAt(length - 1) == '.' || asString.charAt(length - 1) == ',')
+				--length;
+
+			return asString.substring(0, length);
+		}
+
+		return arg.toString();
+	}
 
 	/**
 	 *  Assumes that "arg" is a "String", "Boolean", "Long" or a "Double and converts it to "long".
@@ -243,6 +268,16 @@ public class FunctionUtil {
 			return true;
 
 		return false;
+	}
+
+	/**
+	 *  Adds Double.class, Long.class, String.class and Boolean.class to "argTypes".
+	 */
+	static public void addScalarArgumentTypes(final List<Class> argTypes) {
+		argTypes.add(Double.class);
+		argTypes.add(Long.class);
+		argTypes.add(String.class);
+		argTypes.add(Boolean.class);
 	}
 
 	/**
