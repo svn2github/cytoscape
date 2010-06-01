@@ -36,15 +36,7 @@
 
 package ding.view;
 
-import cytoscape.graph.fixed.FixedGraph;
-
-import cytoscape.render.immed.EdgeAnchors;
-import cytoscape.render.immed.GraphGraphics;
-
-import cytoscape.util.intr.IntBTree;
-
 import giny.model.Edge;
-
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.GraphView;
@@ -57,11 +49,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
-import java.awt.BasicStroke;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.render.immed.GraphGraphics;
 
 
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
