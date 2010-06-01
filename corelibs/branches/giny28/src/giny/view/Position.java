@@ -54,8 +54,6 @@ public enum Position {
 			if (p.getName().equals(value) || p.getShortName().equals(value))
 				return p;
 		}
-		
-		System.out.println("$$$$$$$COULD NOT PARSE: " + value);
 		return null;
 	}
 
@@ -65,9 +63,6 @@ public enum Position {
 				return p;
 		}
 		
-		System.out.println("$$$$$$$COULD NOT PARSE GINY: " + giny);
-		Thread.dumpStack();
-		System.out.println("\n\n\n");
 		return null;
 	}
 
