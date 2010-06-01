@@ -77,7 +77,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import java.util.Comparator;
-import cytoscape.util.swing.CyCollapsiblePanel;
+//import cytoscape.util.swing.CyCollapsiblePanel;
 
 
 public class ActivePathsParameterPanel extends JPanel {
@@ -342,7 +342,7 @@ public class ActivePathsParameterPanel extends JPanel {
 		nameColumn.setCellRenderer(new NameColumnCellRenderer());
 		
 		// give user the option to switch sig
-		TableColumn switchSigColumn = this.tblAttrSelection.getColumn("Switch Sig");
+		TableColumn switchSigColumn = this.tblAttrSelection.getColumn("Reverse Sig");
 		//switchSigColumn.setCellEditor(new CheckBoxCellEditor());
 		//switchSigColumn.setCellRenderer(new CheckBoxCellRenderer());
 		switchSigColumn.setCellRenderer(this.tblAttrSelection.getDefaultRenderer(Boolean.class));
@@ -555,7 +555,7 @@ public class ActivePathsParameterPanel extends JPanel {
 	
 	private class AttrSelectionTableModel extends AbstractTableModel {
 		Vector dataVect = null;
-		String[] columnNames = {"Name","Most sig", "Least Sig", "Switch Sig", "Scaling"};
+		String[] columnNames = {"Name","Most sig", "Least Sig", "Reverse Sig", "Scaling"};
 		public AttrSelectionTableModel(Vector pDataVect){
 			dataVect = pDataVect;
 		}
