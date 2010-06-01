@@ -35,21 +35,17 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 
-import cytoscape.util.Misc;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.NodeShape;
+import giny.view.ObjectPosition;
 
 import java.awt.Color;
 import java.awt.Font;
+
+import cytoscape.util.ColorUtil;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.NodeShape;
 
 
 //----------------------------------------------------------------------------
@@ -58,16 +54,21 @@ import java.awt.Font;
  * classes in this package, i.e. turns a Object back into a String representation.
  * Most cases either use the corresponding methods in cytoscape.util.Misc or
  * use the default toString() method of the object.
+ * 
+ * @deprecated will be removed in May 2011.  Use ValueToStringConverterManager.manager.toString(obj) instead.
+ * 
  */
+@Deprecated
 public class ObjectToString {
     /**
      * Constructs and returns a String representation of the given Object.
      */
+	@Deprecated
     public static String getStringValue(Object o) {
 		if (  o == null )
 			return "";
         else if (o instanceof Color)
-            return Misc.getRGBText((Color) o);
+            return ColorUtil.getColorAsText((Color) o);
         else if (o instanceof NodeShape)
             return NodeShape.getNodeShapeText((NodeShape) o);
         else if (o instanceof Arrow)
@@ -79,6 +80,8 @@ public class ObjectToString {
             return o.toString();
         else if (o instanceof LabelPosition)
             return ((LabelPosition) o).shortString();
+        else if (o instanceof ObjectPosition)
+            return ((ObjectPosition) o).shortString();
         else
             //default: use the toString() method
             return o.toString();

@@ -53,7 +53,7 @@ import cytoscape.visual.Arrow;
  * Parses a String into a yFiles Arrow object.
  */
 public class ArrowParser
-    implements ValueParser {
+    implements ValueParser<Arrow> {
     /**
      * DOCUMENT ME!
      *
@@ -62,7 +62,7 @@ public class ArrowParser
      *
      * @return DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Arrow parseStringValue(String value) {
         return parseArrow(value);
     }
 

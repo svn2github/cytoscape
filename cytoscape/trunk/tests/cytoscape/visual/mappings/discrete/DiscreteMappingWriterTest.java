@@ -57,6 +57,7 @@ import junit.framework.TestCase;
 import java.io.InputStream;
 
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 
@@ -77,7 +78,7 @@ public class DiscreteMappingWriterTest extends TestCase {
 		properties.load(in);
 
 		DiscreteMappingReader reader = new DiscreteMappingReader(properties, baseKey, parser);
-		TreeMap map = reader.getMap();
+		SortedMap map = reader.getMap();
 
 		//  Now write out a set of Propeties.
 		DiscreteMappingWriter writer = new DiscreteMappingWriter(reader.getControllingAttributeName(),
@@ -112,7 +113,7 @@ public class DiscreteMappingWriterTest extends TestCase {
 		properties.load(in);
 
 		DiscreteMappingReader reader = new DiscreteMappingReader(properties, baseKey, parser);
-		TreeMap map = reader.getMap();
+		SortedMap map = reader.getMap();
 
 		//  Now write out a set of Propeties.
 		DiscreteMappingWriter writer = new DiscreteMappingWriter(reader.getControllingAttributeName(),
@@ -157,7 +158,7 @@ public class DiscreteMappingWriterTest extends TestCase {
 		Cytoscape.getNodeAttributes().setAttribute("id", "homer", 15);
 
 		DiscreteMappingReader reader = new DiscreteMappingReader(properties, baseKey, parser);
-		TreeMap map = reader.getMap();
+		SortedMap map = reader.getMap();
 
 		//  Now write out a set of Propeties.
 		DiscreteMappingWriter writer = new DiscreteMappingWriter(reader.getControllingAttributeName(),

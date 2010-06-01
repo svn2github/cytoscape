@@ -36,14 +36,11 @@
  */
 package cytoscape.visual.calculators;
 
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.logger.CyLogger;
-
 import java.lang.reflect.Constructor;
-
 import java.util.Properties;
+
+import cytoscape.logger.CyLogger;
+import cytoscape.visual.VisualPropertyType;
 
 
 /**

@@ -109,9 +109,11 @@ public final class NetworkTreeTableModel extends AbstractTreeTableModel {
 	public void setValueAt(Object aValue, Object node, int column) {
 		if (columnNames.get(column).equals(ColumnTypes.NETWORK)) {
 			((DefaultMutableTreeNode) node).setUserObject(aValue);
-		} else if (columnNames.get(column).equals(ColumnTypes.NETWORK_ICONS)
-				&& aValue instanceof Icon) {
-			networkIcons.put(((NetworkTreeNode) node).getNetworkID(),
+		} else if (columnNames.get(column).equals(ColumnTypes.NETWORK_ICONS)) {
+			if(aValue == null)
+				networkIcons.put(((NetworkTreeNode) node).getNetworkID(), null);
+			else
+				networkIcons.put(((NetworkTreeNode) node).getNetworkID(),
 					(Icon) aValue);
 		}
 	}

@@ -35,17 +35,8 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//Interpolator.java
-
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-
-//----------------------------------------------------------------------------
 /**
  * This interface defines an interpolation function that takes two pairs
  * of (domain,range) values plus a target domain value, and calculates an
@@ -54,7 +45,7 @@ package cytoscape.visual.mappings;
  * The behavior of this function is undefined if the target domain value
  * is not equal to one of the boundaries or between them.
  */
-public interface Interpolator {
+public interface Interpolator<K, V> {
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -66,6 +57,6 @@ public interface Interpolator {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object getRangeValue(Object lowerDomain, Object lowerRange, Object upperDomain,
+	public V getRangeValue(Object lowerDomain, Object lowerRange, Object upperDomain,
 	                            Object upperRange, Object domainValue);
 }

@@ -33,149 +33,107 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
-
-import cytoscape.CyNetwork;
-import cytoscape.logger.CyLogger;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.parsers.ValueParser;
-
-import org.jdesktop.swingx.border.DropShadowBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
-
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 
+import org.jdesktop.swingx.border.DropShadowBorder;
 
-//----------------------------------------------------------------------------
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.ValueParser;
+
 /**
- * Defines a mapping from a bundle of data attributes to a visual attribute.
- * The returned value is simply the value of one of the data attributes,
- * defined by the controlling attribute name. This value is type-checked
- * against the expected range class; null is returned instead if the
- * data value is of the wrong type.
+ * Defines a mapping from a bundle of data attributes to a visual attribute. The
+ * returned value is simply the value of one of the data attributes, defined by
+ * the controlling attribute name. This value is type-checked against the
+ * expected range class; null is returned instead if the data value is of the
+ * wrong type.
  */
-public class PassThroughMapping implements ObjectMapping {
+public class PassThroughMapping<K, V> extends AbstractMapping<V> {
+
+	// Legend UI theme
 	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
 	private static final Color TITLE_COLOR = new Color(10, 200, 255);
-	private Class rangeClass; //the class of values held by this mapping
-	private String attrName; //the name of the controlling data attribute
 
-	/** Standard constructor for compatibility with new calculator creation in
-	 *    the UI.
-	 *
-	 *    @param    defaultObj    Default object - provided only to establish
-	 *                mapping's range class.
-	 *    @param    mapType        unused.
+	private RangeValueCalculator<V> rangeValueCalculator;
+
+	private final Class<?>[] ACCEPTED_CLASS = { Object.class };
+
+	/**
+	 * Standard constructor for compatibility with new calculator creation in
+	 * the UI.
+	 * 
+	 * @param defaultObj
+	 *            Default object - provided only to establish mapping's range
+	 *            class.
+	 * @param mapType
+	 *            unused.
+	 * 
+	 *            Will be removed in the next release (2.8). Map Type is not in
+	 *            use.
 	 */
-	public PassThroughMapping(Object defaultObj, byte mapType) {
-		this(defaultObj);
+	@Deprecated
+	public PassThroughMapping(final V defaultObj, final byte mapType) {
+		this(defaultObj, null);
 	}
 
 	/**
 	 * Creates a new PassThroughMapping object.
-	 *
-	 * @param defaultObj  DOCUMENT ME!
+	 * 
+	 * @param defaultObj
+	 *            DOCUMENT ME!
 	 */
-	public PassThroughMapping(Object defaultObj) {
-		this.rangeClass = defaultObj.getClass();
+	@Deprecated
+	public PassThroughMapping(final V defaultObj) {
+		this(defaultObj, null);	
+	}
+	
+	
+	@Deprecated
+	public PassThroughMapping(V defaultObj, String attrName) {
+		this((Class<V>)defaultObj.getClass(), attrName);
 	}
 
 	/**
 	 * Creates a new PassThroughMapping object.
-	 *
-	 * @param defaultObj  DOCUMENT ME!
-	 * @param attrName  DOCUMENT ME!
+	 * 
+	 * @param defaultObj
+	 *            DOCUMENT ME!
+	 * @param attrName
+	 *            DOCUMENT ME!
 	 */
-	public PassThroughMapping(Object defaultObj, String attrName) {
-		this.rangeClass = defaultObj.getClass();
-		setControllingAttributeName(attrName, null, false);
+	public PassThroughMapping(final Class<V> rangeClass, final String attrName) {
+		super(rangeClass, attrName);
+		this.acceptedClasses = ACCEPTED_CLASS;
+		System.out.println("@@@@@ PTh Mapping created: " + attrName);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Create clone of this instance.
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Object clone() {
-		final PassThroughMapping copy;
-
-		try {
-			copy = (PassThroughMapping) super.clone();
-		} catch (CloneNotSupportedException e) {
-			CyLogger.getLogger().warn("Critical error in PassThroughMapping - was not cloneable", e);
-
-			return null;
-		}
-
-		copy.attrName = new String(attrName);
+		final PassThroughMapping<K, V> copy = new PassThroughMapping<K, V>(this.rangeClass, this.controllingAttrName);
 
 		// don't need to explicitly clone rangeClass since cloned calculator
-		//has same type as original.
+		// has same type as original.
 		return copy;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Class getRangeClass() {
-		return rangeClass;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Class[] getAcceptedDataClasses() {
-		Class[] ret = { Object.class };
-
-		return ret;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getControllingAttributeName() {
-		return attrName;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attrName DOCUMENT ME!
-	 * @param network DOCUMENT ME!
-	 * @param preserveMapping DOCUMENT ME!
-	 */
-	public void setControllingAttributeName(String attrName, CyNetwork network,
-	                                        boolean preserveMapping) {
-		this.attrName = attrName;
-	}
 
 	/**
 	 * Empty implementation because PassThroughMapping has no UI.
@@ -188,80 +146,31 @@ public class PassThroughMapping implements ObjectMapping {
 	 */
 	public void removeChangeListener(ChangeListener l) {
 	}
+	
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param parent DOCUMENT ME!
-	 * @param network DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param attrBundle
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public JPanel getUI(JDialog parent, CyNetwork network) {
-		//construct a UI to view/edit this mapping; only needs to view/set
-		//the controlling attribute name
-		JPanel p = new JPanel();
-		JLabel l1 = new JLabel("This is a passthrough mapping;");
-		JLabel l2 = new JLabel("it has no user-editable parameters.");
-		p.setLayout(new GridLayout(2, 1));
-		p.add(l1);
-		p.add(l2);
-
-		return p;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attrBundle DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object calculateRangeValue(Map attrBundle) {
-		if (attrBundle == null || attrName == null)
+	public V calculateRangeValue(final Map<String, Object> attrBundle) {
+		if (attrBundle == null || controllingAttrName == null)
 			return null;
 
-		//extract the data value for our controlling attribute
-		final Object attrValue = attrBundle.get(attrName);
+		// extract the data value for our controlling attribute
+		final Object attrValue = attrBundle.get(controllingAttrName);
 
 		if (attrValue == null)
 			return null;
-
-		final StringBuilder buf = new StringBuilder();
-
-		if (attrValue instanceof List) {
-			int idx = 1;
-			final int length = ((List) attrValue).size();
-
-			for (Object attrSubValue : ((List) attrValue)) {
-				buf.append(attrSubValue);
-
-				if (idx != length) {
-					buf.append("\n");
-				}
-
-				idx++;
-			}
-
-			return buf.toString();
-		}
-
-		//OK, try returning the attrValue itself
-		if (rangeClass.isInstance(attrValue))
-			return attrValue;
-
-		//if range class is String, try converting value to String
-		if (rangeClass.equals(String.class)) {
-			String stringConvert = attrValue.toString();
-
-			//sanity check to prevent ridiculously long labels
-			if (stringConvert.length() > 20)
-				stringConvert = stringConvert.substring(0, 20) + "...";
-
-			return stringConvert;
-		}
-
-		//attribute value is just no good; return null
+		
+		if(rangeValueCalculator == null)
+			rangeValueCalculator = Cytoscape.getVisualMappingManager().
+				getRangeValueCalculatorFactory().getRangeValueCalculator(rangeClass);
+		if(rangeValueCalculator != null)
+			return rangeValueCalculator.getRange(attrValue);
 		return null;
 	}
 
@@ -269,12 +178,13 @@ public class PassThroughMapping implements ObjectMapping {
 	 * Customize this object by applying mapping defintions described by the
 	 * supplied Properties argument.
 	 */
-	public void applyProperties(Properties props, String baseKey, ValueParser parser) {
+	public void applyProperties(Properties props, String baseKey,
+			ValueParser<V> parser) {
 		String contKey = baseKey + ".controller";
 		String contValue = props.getProperty(contKey);
 
 		if (contValue != null)
-			setControllingAttributeName(contValue, null, false);
+			setControllingAttributeName(contValue);
 	}
 
 	/**
@@ -284,7 +194,7 @@ public class PassThroughMapping implements ObjectMapping {
 	public Properties getProperties(String baseKey) {
 		Properties newProps = new Properties();
 		String contKey = baseKey + ".controller";
-		String contValue = getControllingAttributeName();
+		String contValue = controllingAttrName;
 
 		if ((contKey != null) && (contValue != null))
 			newProps.setProperty(contKey, contValue);
@@ -292,20 +202,20 @@ public class PassThroughMapping implements ObjectMapping {
 		return newProps;
 	}
 
-
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vpt DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param vpt
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public JPanel getLegend(VisualPropertyType vpt) {
 		JPanel p = new JPanel();
-
 		p.setLayout(new BorderLayout());
 
-		JLabel title = new JLabel(vpt.getName() + " is displayed as " + attrName);
+		JLabel title = new JLabel(vpt.getName() + " is displayed as "
+				+ controllingAttrName);
 		title.setFont(TITLE_FONT);
 		title.setForeground(TITLE_COLOR);
 		title.setHorizontalAlignment(SwingConstants.CENTER);

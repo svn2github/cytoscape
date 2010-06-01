@@ -33,86 +33,60 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 // Misc.java:  miscellaneous static utilities
 package cytoscape.util;
 
 import java.awt.Color;
-import java.awt.Polygon;
-
-import java.io.*;
-
-import java.util.*;
-
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  *
  */
 public class Misc {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param text DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Color parseRGBText(String text) {
-		// Start by seeing if this is a hex representation
-		if (text.startsWith("#")) {
-			try {
-				Color c = Color.decode(text);
-				return c;
-			} catch (NumberFormatException e) {
-				return Color.black;
-			}
-		}
-
-		StringTokenizer strtok = new StringTokenizer(text, ",");
-
-		if (strtok.countTokens() != 3) {
-			//CyLogger.getLogger().warn("illegal RGB string in EdgeViz.parseRGBText: " + text);
-
-			return Color.black;
-		}
-
-		String red = strtok.nextToken().trim();
-		String green = strtok.nextToken().trim();
-		String blue = strtok.nextToken().trim();
-
-		try {
-			int r = Integer.parseInt(red);
-			int g = Integer.parseInt(green);
-			int b = Integer.parseInt(blue);
-
-			return new Color(r, g, b);
-		} catch (NumberFormatException e) {
-			return Color.black;
-		}
-	} // parseRGBText
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param color DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Convert string to color object.
+	 * 
+	 * @param text
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @deprecated will be removed in April, 2011. use ColorUtil.parseColorText
+	 *             instead.
 	 */
+	@Deprecated
+	public static Color parseRGBText(final String colorAsText) {
+		return ColorUtil.parseColorText(colorAsText);
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param color
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @deprecated Will be removed April, 2011. Use ColorUtil.getColorAsText
+	 *             instead.
+	 * 
+	 */
+	@Deprecated
 	public static String getRGBText(Color color) {
-		Integer red = new Integer(color.getRed());
-		Integer green = new Integer(color.getGreen());
-		Integer blue = new Integer(color.getBlue());
-
-		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
-	} //getRGBText
+		return ColorUtil.getColorAsText(color);
+	}
 
 	/**
-	 * return the (possibly multiple) value of the specified property as a vector.
-	 * property values (which typically come from cytoscape.prop files)
-	 * are usually scalar strings,  but may be a list of such strings, surrounded by
-	 * parentheses, and delimited by the value of a property
-	 * called 'property.delimiter' (whose value is usually "::")
-	 * get the property value; check to see if it is a list; parse it if necessary
+	 * return the (possibly multiple) value of the specified property as a
+	 * vector. property values (which typically come from cytoscape.prop files)
+	 * are usually scalar strings, but may be a list of such strings, surrounded
+	 * by parentheses, and delimited by the value of a property called
+	 * 'property.delimiter' (whose value is usually "::") get the property
+	 * value; check to see if it is a list; parse it if necessary
 	 */
 	static public Vector getPropertyValues(Properties props, String propName) {
 		String propertyDelimiterName = "property.token.delimiter";
@@ -131,7 +105,8 @@ public class Misc {
 			return result;
 
 		String propStringTrimmed = propString.trim();
-		String[] tokens = Misc.parseList(propStringTrimmed, listStartToken, listEndToken, delimiter);
+		String[] tokens = Misc.parseList(propStringTrimmed, listStartToken,
+				listEndToken, delimiter);
 
 		for (int i = 0; i < tokens.length; i++)
 			result.add(tokens[i]);
@@ -140,17 +115,21 @@ public class Misc {
 	} // getPropertyValues
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param listString DOCUMENT ME!
-	 * @param startToken DOCUMENT ME!
-	 * @param endToken DOCUMENT ME!
-	 * @param delimiter DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param listString
+	 *            DOCUMENT ME!
+	 * @param startToken
+	 *            DOCUMENT ME!
+	 * @param endToken
+	 *            DOCUMENT ME!
+	 * @param delimiter
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	static public boolean isList(String listString, String startToken, String endToken,
-	                             String delimiter) {
+	static public boolean isList(String listString, String startToken,
+			String endToken, String delimiter) {
 		String s = listString.trim();
 		Vector list = new Vector();
 
@@ -162,17 +141,21 @@ public class Misc {
 	} // isList
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param listString DOCUMENT ME!
-	 * @param startToken DOCUMENT ME!
-	 * @param endToken DOCUMENT ME!
-	 * @param delimiter DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param listString
+	 *            DOCUMENT ME!
+	 * @param startToken
+	 *            DOCUMENT ME!
+	 * @param endToken
+	 *            DOCUMENT ME!
+	 * @param delimiter
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	static public String[] parseList(String listString, String startToken, String endToken,
-	                                 String delimiter) {
+	static public String[] parseList(String listString, String startToken,
+			String endToken, String delimiter) {
 		String s = listString.trim();
 
 		if (s.startsWith(startToken) && s.endsWith(endToken)) {
@@ -187,15 +170,12 @@ public class Misc {
 		}
 
 		/*********************
-		  StringTokenizer strtok = new StringTokenizer (deparenthesizedString, delimiter);
-		  int count = strtok.countTokens ();
-		  for (int i=0; i < count; i++)
-		    list.add (strtok.nextToken ());
-		  }
-		else
-		  list.add (listString);
-
-		return (String []) list.toArray (new String [0]);
-		**********************/
+		 * StringTokenizer strtok = new StringTokenizer (deparenthesizedString,
+		 * delimiter); int count = strtok.countTokens (); for (int i=0; i <
+		 * count; i++) list.add (strtok.nextToken ()); } else list.add
+		 * (listString);
+		 * 
+		 * return (String []) list.toArray (new String [0]);
+		 **********************/
 	} // parseList
 } // class Misc

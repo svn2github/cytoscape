@@ -41,7 +41,7 @@ package cytoscape.visual.parsers;
  * Parses a String into a Boolean object.
  */
 public class BooleanParser
-    implements ValueParser {
+    implements ValueParser<Boolean> {
     /**
      *  DOCUMENT ME!
      *
@@ -49,7 +49,7 @@ public class BooleanParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Boolean parseStringValue(String value) {
         return parseBoolean(value);
     }
 

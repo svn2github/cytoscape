@@ -84,7 +84,13 @@ public class ContinuousLegend extends JPanel {
 	 * @param obj  DOCUMENT ME!
 	 * @param vpt  DOCUMENT ME!
 	 */
+	@Deprecated
 	public ContinuousLegend(String dataAttr, List points, Object obj, VisualPropertyType vpt) {
+		this(points, vpt);
+	}
+	
+	
+	public ContinuousLegend(List points, VisualPropertyType vpt) {
 		super();
 		this.points = points;
 		this.type = vpt;
@@ -176,7 +182,7 @@ public class ContinuousLegend extends JPanel {
 		for (int i = 0; i < points.size(); i++) {
 			curr = (ContinuousMappingPoint) points.get(i);
 
-			g2.drawString(Double.toString(curr.getValue()), 0, ((i + 1) * height) + yoff);
+			g2.drawString(curr.getValue().toString(), 0, ((i + 1) * height) + yoff);
 		}
 
 		return new ImageIcon(bi);
@@ -237,15 +243,15 @@ public class ContinuousLegend extends JPanel {
 
 			if (i == 0) {
 				data[i][0] = curr.getRange().lesserValue;
-				data[i][1] = "< " + Double.toString(curr.getValue());
+				data[i][1] = "< " + curr.getValue().toString();
 			}
 
 			data[i + 1][0] = curr.getRange().equalValue;
-			data[i + 1][1] = "= " + Double.toString(curr.getValue());
+			data[i + 1][1] = "= " + curr.getValue().toString();
 
 			if (i == (points.size() - 1)) {
 				data[i + 2][0] = curr.getRange().greaterValue;
-				data[i + 2][1] = "> " + Double.toString(curr.getValue());
+				data[i + 2][1] = "> " + curr.getValue().toString();
 			}
 		}
 

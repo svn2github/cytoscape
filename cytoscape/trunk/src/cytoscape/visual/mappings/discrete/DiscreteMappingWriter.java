@@ -42,12 +42,14 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.discrete;
 
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import cytoscape.visual.mappings.MappingUtil;
 
 import cytoscape.visual.parsers.ObjectToString;
 
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 
@@ -60,14 +62,14 @@ import java.util.TreeMap;
 public class DiscreteMappingWriter {
 	private String attrName;
 	private String baseKey;
-	private TreeMap map;
+	private SortedMap map;
 
 	/**
 	 * Constructor.
 	 * @param attrName Controlling Attribute Name.
 	 * @param map Discrete Map.
 	 */
-	public DiscreteMappingWriter(String attrName, String baseKey, TreeMap map) {
+	public DiscreteMappingWriter(String attrName, String baseKey, SortedMap map) {
 		this.attrName = attrName;
 		this.baseKey = baseKey;
 		this.map = map;
@@ -104,7 +106,7 @@ public class DiscreteMappingWriter {
 			value = map.get(key);
 
 			if (value != null) {
-				stringValue = ObjectToString.getStringValue(value);
+				stringValue = ValueToStringConverterManager.manager.toString(value);
 				newProps.setProperty(mapKey + key.toString(), stringValue);
 			}
 		}

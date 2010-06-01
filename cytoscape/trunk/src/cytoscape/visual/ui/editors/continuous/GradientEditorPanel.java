@@ -296,7 +296,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 				BoundaryRangeValues bound = point.getRange();
 
 				slider.getModel()
-				      .addThumb(((Double) ((point.getValue() - minValue) / actualRange)).floatValue() * 100,
+				      .addThumb(((Double) ((point.getValue().doubleValue() - minValue) / actualRange)).floatValue() * 100,
 				                (Color) bound.equalValue);
 			}
 

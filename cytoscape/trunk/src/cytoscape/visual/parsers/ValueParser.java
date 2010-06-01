@@ -48,10 +48,12 @@ package cytoscape.visual.parsers;
  * Interface to classes that parse a String value into a particular class
  * of object.
  */
-public interface ValueParser {
+public interface ValueParser<T> {
     /**
-     * Parse the argument into an onject. Returns null if the String is
+     * Parse the argument into an object. Returns null if the String is
      * not parsable.
+     * 
+     * T - Object parsed from the given string.
      */
-    Object parseStringValue(String value);
+    T parseStringValue(String value);
 }

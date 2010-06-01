@@ -36,22 +36,24 @@
 
 package cytoscape.visual.ui;
 
+import giny.view.ObjectPosition;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Window;
 
 import javax.swing.Icon;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
@@ -88,20 +90,23 @@ public enum EditorDisplayer {
 	                new Object[] { Cytoscape.getDesktop(), "Please enter new text value:" },
 	                String.class), 
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
-	               new Class[] { VisualPropertyType.class, JDialog.class },
+	               new Class[] { VisualPropertyType.class, Window.class },
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
+	DISCRETE_CUSTOM_GRAPHICS(ValueSelectDialog.class, "showDialog",
+	    	               new Class[] { VisualPropertyType.class, Window.class },
+	    	               new Object[] { VisualPropertyType.NODE_CUSTOM_GRAPHICS_1, null }, CyCustomGraphics.class),                
 	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
-	                     new Class[] { VisualPropertyType.class, JDialog.class },
+	                     new Class[] { VisualPropertyType.class, Window.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
-	                   new Class[] { VisualPropertyType.class, JDialog.class },
+	                   new Class[] { VisualPropertyType.class, Window.class },
 	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class),
 	DISCRETE_NODE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
-	    	               new Class[] { VisualPropertyType.class, JDialog.class },
+	    	               new Class[] { VisualPropertyType.class, Window.class },
 	    	               new Object[] { VisualPropertyType.NODE_LINE_STYLE, null }, LineStyle.class),
-	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
-	                        new Class[] { Frame.class, LabelPosition.class },
-	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
+	DISCRETE_OBJECT_POSITION(PopupObjectPositionChooser.class, "showDialog",
+	                        new Class[] { Window.class, ObjectPosition.class, VisualPropertyType.class },
+	                        new Object[] { Cytoscape.getDesktop(), null, null}, ObjectPosition.class), 
 	CONTINUOUS_COLOR(GradientEditorPanel.class, "showDialog",
 	                 new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
 	                 new Object[] { 420, 250, "Gradient Editor", null }, Color.class), 
@@ -118,7 +123,7 @@ public enum EditorDisplayer {
 	private Class<?>[] paramTypes;
 	private Object[] parameters;
 	private Class<?> compatibleClass;
-
+		
 	/**
 	 * Defines editor type.
 	 */
@@ -187,6 +192,8 @@ public enum EditorDisplayer {
 	public void setParameters(Object[] param) {
 		this.parameters = param;
 	}
+	
+
 
 	/**
 	 * Returns proper editor displayer object based on visual property type.
@@ -199,8 +206,6 @@ public enum EditorDisplayer {
 		final Class<?> dataType = type.getDataType();
 		
 		for (EditorDisplayer command : values()) {
-			
-			
 			if ( (dataType == command.getCompatibleClass())
 			    && ((editor == EditorType.CONTINUOUS)
 			        && command.toString().startsWith(EditorType.CONTINUOUS.name()) )) {
@@ -214,16 +219,15 @@ public enum EditorDisplayer {
 						return DISCRETE_LINE_STYLE;
 					else
 						return DISCRETE_NODE_LINE_STYLE;
-				} else
+				} else {
 					return command;
+				}
 			}
 		}
-
 		
 		/*
 		 * if not found in the loop above, this might be a C2DEditor.
 		 */
-		
-		return EditorDisplayer.CONTINUOUS_DISCRETE;
+		return CONTINUOUS_DISCRETE;
 	}
 }

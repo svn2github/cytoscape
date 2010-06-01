@@ -49,6 +49,7 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -82,12 +84,14 @@ import cytoscape.generated.Node;
 import cytoscape.generated.Ontology;
 import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
-import cytoscape.logger.CyLogger;
-import java.net.URLEncoder;
+import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
 /**
  * Reader to load CYtoscape Session file (.cys).<br>
@@ -128,6 +132,8 @@ public class CytoscapeSessionReader {
 	 *
 	 */
 	public static final String CY_PROPS = "cytoscape.props";
+	
+	
 
 	/**
 	 *
@@ -148,6 +154,9 @@ public class CytoscapeSessionReader {
 	private Bookmarks bookmarks = null;
 	private HashMap<String, List<File>> pluginFileListMap;
 	private HashMap<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
+	
+	private Map<String, URL> imageMap;
+	private URL imagePropsURL;
 
 	// Task monitor
 	private TaskMonitor taskMonitor = null;
@@ -180,6 +189,7 @@ public class CytoscapeSessionReader {
 		networkList = new ArrayList();
 		bookmarks = new Bookmarks();
 		pluginFileListMap = new HashMap<String, List<File>>();
+		imageMap = new HashMap<String, URL>();
 
 		this.taskMonitor = monitor;
 		if (monitor != null) {
@@ -264,7 +274,7 @@ public class CytoscapeSessionReader {
 
             while ((zen = zis.getNextEntry()) != null) {
                 entryName = zen.getName();
-
+                
                 if (entryName.contains("/plugins/")) {
                     extractPluginEntry(entryName);
                 } else if (entryName.endsWith(CYSESSION)) {
@@ -296,9 +306,14 @@ public class CytoscapeSessionReader {
                     networkCounter++;
                 } else if (entryName.endsWith(BOOKMARKS_FILE)) {
                     bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                } else {
+                } else if(entryName.endsWith(".png")) {
+                		//image
+                		final URL imageURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
+                		restoreCustomGraphics(entryName, imageURL);
+                } else if(entryName.endsWith(CustomGraphicsPool.METADATA_FILE)) {
+                		imagePropsURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
+                } else
                     logger.warn("Unknown entry found in session zip file: " + entryName);
-                }
             } // while loop
         }
         finally {
@@ -326,6 +341,40 @@ public class CytoscapeSessionReader {
 			List<String> theURLstrList = new ArrayList<String>();
 			theURLstrList.add(URLstr);
 			theURLstrMap.put(pluginName, theURLstrList);
+		}
+	}
+	
+	private void restoreCustomGraphics(final String entryName, final URL imageURL) throws IOException {
+		final String[] ent = entryName.split(System.getProperty("file.separator"));
+		System.out.println("\n\n" + entryName + "\n\n");
+		final String displayName = ent[ent.length-1];
+		String name = displayName.split("\\.")[0];
+		
+		imageMap.put(name, imageURL);
+	}
+	
+	private void createCustomGraphics() throws IOException {
+		final Properties imageProps = new Properties();
+		imageProps.load(URLUtil.getBasicInputStream(imagePropsURL));
+		Set<Entry<Object, Object>> entry = imageProps.entrySet();
+		for(Entry<Object, Object> e: entry) {
+			System.out.println("================= Prop = " + e.getKey() + ", " + e.getValue());
+		}
+		
+		
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		// Reset the pool
+		pool.removeAll();
+		
+		for(String hash :imageMap.keySet()) {
+			final CyCustomGraphics<?> graphics = new URLImageCustomGraphics(imageMap.get(hash).toString());
+			final String propEntry = imageProps.getProperty(hash);
+			String[] parts = propEntry.split(",");
+			graphics.setDisplayName(parts[parts.length-1]);
+			
+			System.out.println("New Graphics Name ========>>>>> " + hash);
+			System.out.println("New Graphics Display Name ========>>>>> " + graphics.getDisplayName());
+			pool.addGraphics(Integer.parseInt(hash), graphics);
 		}
 	}
 
@@ -461,6 +510,9 @@ public class CytoscapeSessionReader {
 			IOException e = new IOException("Session file is broken or this is not a session file.");
 			throw e;
 		}
+		
+		if(imagePropsURL != null)
+			createCustomGraphics();
 
 		if (loadVizmap) {
 			// restore vizmap.props
@@ -609,6 +661,7 @@ public class CytoscapeSessionReader {
 
 		return theBookmark;
 	}
+	
 
 	private void loadCySession() throws JAXBException, IOException, Exception {
 		// InputStream is = cysessionFileURL.openStream();

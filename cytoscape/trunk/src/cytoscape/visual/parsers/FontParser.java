@@ -42,9 +42,6 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 
-import cytoscape.util.Misc;
-
-//----------------------------------------------------------------------------
 import java.awt.Font;
 
 
@@ -53,7 +50,7 @@ import java.awt.Font;
  * Parses a String into a Font object.
  */
 public class FontParser
-    implements ValueParser {
+    implements ValueParser<Font> {
     /**
      *  DOCUMENT ME!
      *
@@ -61,7 +58,7 @@ public class FontParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Font parseStringValue(String value) {
         return parseFont(value);
     }
 

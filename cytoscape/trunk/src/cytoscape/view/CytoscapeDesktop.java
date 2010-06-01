@@ -211,7 +211,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	public CytoscapeDesktop() {
 		super("Cytoscape Desktop (New Session)");
 
-		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Cytoscape.class.getResource(SMALL_ICON)));
 
 		main_panel = new JPanel();
 		main_panel.setLayout(new BorderLayout());
@@ -439,6 +439,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
 			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
 			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
+			
 		}
 
 		return vizmapperUI;
@@ -757,7 +758,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// add the network panel to our tab
 		String tab1Name = new String("Network");
-		cytoPanelWest.add(tab1Name, new ImageIcon(getClass().getResource("images/class_hi.gif")),
+		cytoPanelWest.add(tab1Name, new ImageIcon(Cytoscape.class.getResource("images/class_hi.gif")),
 		                  networkPanel, "Cytoscape Network List");
 
 		// create the split pane - hidden by default

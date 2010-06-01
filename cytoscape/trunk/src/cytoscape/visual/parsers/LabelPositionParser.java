@@ -41,9 +41,11 @@ import cytoscape.visual.LabelPosition;
 
 /**
  * Parses a String into a LabelPosition object.
+ * @deprecated
  */
+@Deprecated
 public class LabelPositionParser
-    implements ValueParser {
+    implements ValueParser<LabelPosition> {
     /**
      *  DOCUMENT ME!
      *
@@ -51,7 +53,7 @@ public class LabelPositionParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public LabelPosition parseStringValue(String value) {
         return parseLabelPosition(value);
     }
 

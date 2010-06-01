@@ -35,23 +35,15 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.visual.parsers.ValueParser;
-import cytoscape.logger.CyLogger;
-
-import java.lang.reflect.Constructor;
-
-//----------------------------------------------------------------------------
 import java.util.Properties;
 
+import cytoscape.logger.CyLogger;
+import cytoscape.visual.calculators.AbstractCalculator;
+import cytoscape.visual.parsers.ValueParser;
 
-//----------------------------------------------------------------------------
+
 /**
  * This class provides a static factory method for constructing an instance
  * of ObjectMapping as specified by a Properties object and other arguments.
@@ -69,7 +61,7 @@ public class MappingFactory {
      * constructs the Mapping object and then customizes it by calling its
      * applyProperties method.
      */
-    public static ObjectMapping newMapping(Properties props, String baseKey,
+    public static ObjectMapping<?> newMapping(Properties props, String baseKey,
         ValueParser parser, Object defObj, byte mapType) {
         String typeName = props.getProperty(baseKey + ".type");
 
@@ -79,17 +71,17 @@ public class MappingFactory {
 
             return null;
         } else if (typeName.equals("DiscreteMapping")) {
-            DiscreteMapping m = new DiscreteMapping(defObj, mapType);
+            DiscreteMapping m = new DiscreteMapping(defObj.getClass(), null);
             m.applyProperties(props, baseKey, parser);
 
             return m;
         } else if (typeName.equals("ContinuousMapping")) {
-            ContinuousMapping m = new ContinuousMapping(defObj, mapType);
+            ContinuousMapping m = new ContinuousMapping(defObj.getClass(), null);
             m.applyProperties(props, baseKey, parser);
 
             return m;
         } else if (typeName.equals("PassThroughMapping")) {
-            PassThroughMapping m = new PassThroughMapping(defObj, mapType);
+            final PassThroughMapping m = new PassThroughMapping(defObj.getClass(), null);
             m.applyProperties(props, baseKey, parser);
 
             return m;
@@ -100,6 +92,7 @@ public class MappingFactory {
             return null;
         }
     }
+
 
     /**
      * Gets a description of the supplied ObjectMapping as properties.

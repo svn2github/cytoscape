@@ -35,22 +35,16 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings.continuous;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.Interpolator;
 import cytoscape.visual.mappings.InterpolatorFactory;
-
-import cytoscape.visual.parsers.ObjectToString;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Properties;
 
 
 /**
@@ -66,7 +60,7 @@ public class ContinuousMappingWriter {
      * @param attrName Controlling Attribute String.
      * @param interp Interpolator Object.
      */
-    public ContinuousMappingWriter(ArrayList points, String baseKey,
+    public ContinuousMappingWriter(List points, String baseKey,
         String attrName, Interpolator interp) {
         newProps = new Properties();
         loadProperties(points, baseKey, attrName, interp);
@@ -84,7 +78,7 @@ public class ContinuousMappingWriter {
      * Return a Properties object with entries suitable for customizing this
      * object via the applyProperties method.
      */
-    private void loadProperties(ArrayList points, String baseKey,
+    private void loadProperties(List points, String baseKey,
         String contAttrName, Interpolator interp) {
         // save the controlling attribute name
         String contAttrKey = baseKey + ".controller";
@@ -112,22 +106,22 @@ public class ContinuousMappingWriter {
             //  save the domain value
             String bvKey = bvBase + ".domainvalue";
             ContinuousMappingPoint cmp = (ContinuousMappingPoint) si.next();
-            Double dVal = new Double(cmp.getValue());
+            Double dVal = cmp.getValue().doubleValue();
             String dValString = dVal.toString();
             newProps.setProperty(bvKey, dValString);
 
             //  save the fields of the brv object
             BoundaryRangeValues brv = (BoundaryRangeValues) cmp.getRange();
             String lKey = bvBase + ".lesser";
-            String lString = ObjectToString.getStringValue(brv.lesserValue);
+            String lString = ValueToStringConverterManager.manager.toString(brv.lesserValue);
             newProps.setProperty(lKey, lString);
 
             String eKey = bvBase + ".equal";
-            String eString = ObjectToString.getStringValue(brv.equalValue);
+            String eString = ValueToStringConverterManager.manager.toString(brv.equalValue);
             newProps.setProperty(eKey, eString);
 
             String gKey = bvBase + ".greater";
-            String gString = ObjectToString.getStringValue(brv.greaterValue);
+            String gString = ValueToStringConverterManager.manager.toString(brv.greaterValue);
             newProps.setProperty(gKey, gString);
         }
     }

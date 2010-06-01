@@ -85,11 +85,17 @@ import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.ImageUtil;
+import cytoscape.visual.customgraphic.NullCustomGraphics;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Component;
+import java.awt.Image;
+import java.awt.image.RenderedImage;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -107,6 +113,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -118,6 +125,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -255,6 +263,7 @@ public class CytoscapeSessionWriter {
 				zipCytoscapeProps();
 				zipBookmarks();
 				zipFileListMap();
+				zipCustomGraphics();
 			}
 			finally {
 				if (zos != null) {
@@ -374,6 +383,26 @@ public class CytoscapeSessionWriter {
 		bookmarks = Cytoscape.getBookmarks();
 		BookmarksUtil.saveBookmark(bookmarks, zos);
 	}
+	
+	
+	private void zipCustomGraphics() throws IOException, InterruptedException {
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		// Collect all custom graphics
+		final Collection<CyCustomGraphics<?>> customGraphics = pool.getAll();
+		// Add metadata about images
+		
+		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsPool.METADATA_FILE));
+		pool.getMetadata().store(zos, "Image Metadata");
+		
+		for(CyCustomGraphics<?> cg: customGraphics) {
+			final Image img = cg.getImage();
+			if(img != null && cg instanceof NullCustomGraphics == false) {
+				final int hash = cg.hashCode();
+				zos.putNextEntry(new ZipEntry(sessionDir + "images/" + hash + ".png"));
+				ImageIO.write(ImageUtil.toBufferedImage(img), "PNG", zos);
+			}
+		}
+	}
 
 	/**
 	 * Writes a network file to the session zip. 
@@ -390,7 +419,7 @@ public class CytoscapeSessionWriter {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile));
 
-		Writer writer = writer = new OutputStreamWriter(zos, "UTF-8");
+		Writer writer = new OutputStreamWriter(zos, "UTF-8");
 		// Write the XGMML file *without* our graphics attributes
 		// We'll let the Vizmapper handle those
 		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);

@@ -170,7 +170,7 @@ public class CytoscapeInit {
 			// Initialize as GUI mode
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				final ImageIcon image = new ImageIcon(this.getClass()
+				final ImageIcon image = new ImageIcon(Cytoscape.class
 				                                          .getResource(SPLASH_SCREEN_LOCATION));
 				WindowUtilities.showSplash(image, 8000);
 
@@ -298,9 +298,9 @@ public class CytoscapeInit {
 	 * @return the directory ".cytoscape/[cytoscape version]
 	 */
 	public static File getConfigVersionDirectory() {
-		File Parent = getConfigDirectory();
+		final File parent = getConfigDirectory();
 
-		File VersionDir = new File(Parent, (new CytoscapeVersion()).getMajorVersion());
+		File VersionDir = new File(parent, (new CytoscapeVersion()).getMajorVersion());
 		VersionDir.mkdir();
 
 		return VersionDir;
@@ -312,7 +312,6 @@ public class CytoscapeInit {
 	 * @return the directory ".cytoscape" in the users home directory.
 	 */
 	public static File getConfigDirectory() {
-		File dir = null;
 
 		try {
 			String dirName = properties.getProperty("alternative.config.dir",

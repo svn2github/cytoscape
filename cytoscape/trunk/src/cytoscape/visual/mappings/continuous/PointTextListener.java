@@ -139,7 +139,7 @@ public class PointTextListener extends FocusAdapter {
     private void checkNextPoint(double newValue) {
         try {
             ContinuousMappingPoint nextPoint = cm.getPoint(index + 1);
-            double nextValue = nextPoint.getValue();
+            double nextValue = nextPoint.getValue().doubleValue();
 
             if (newValue > nextValue)
                 throw new IllegalArgumentException(newValue +
@@ -159,7 +159,7 @@ public class PointTextListener extends FocusAdapter {
 
         try {
             ContinuousMappingPoint prevPoint = cm.getPoint(index - 1);
-            double previousValue = prevPoint.getValue();
+            double previousValue = prevPoint.getValue().doubleValue();
 
             if (newValue < previousValue)
                 throw new IllegalArgumentException(newValue +

@@ -318,7 +318,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		for (ContinuousMappingPoint point : allPoints) {
 			bound = point.getRange();
 
-			fraction = ((Number) ((point.getValue() - minValue) / actualRange)).floatValue() * 100;
+			fraction = ((Number) ((point.getValue().doubleValue() - minValue) / actualRange)).floatValue() * 100;
 			slider.getModel().addThumb(fraction, bound.equalValue);
 		}
 

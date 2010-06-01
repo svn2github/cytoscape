@@ -54,7 +54,7 @@ import cytoscape.visual.LineStyle;
  * primitive byte identifier.
  */
 public class LineStyleParser
-    implements ValueParser {
+    implements ValueParser<LineStyle> {
     /**
      *  DOCUMENT ME!
      *
@@ -62,7 +62,7 @@ public class LineStyleParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public LineStyle parseStringValue(String value) {
         return parseLineStyle(value); 
     }
 

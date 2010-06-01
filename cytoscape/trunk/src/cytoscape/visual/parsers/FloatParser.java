@@ -6,7 +6,7 @@ package cytoscape.visual.parsers;
  * @author $author$
   */
 public class FloatParser
-    implements ValueParser {
+    implements ValueParser<Float> {
     /**
      *  DOCUMENT ME!
      *
@@ -14,7 +14,7 @@ public class FloatParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Float parseStringValue(String value) {
         return parseFloat(value);
     }
 

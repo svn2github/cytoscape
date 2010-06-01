@@ -57,6 +57,7 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualProperty;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import cytoscape.visual.parsers.ObjectToString;
 
 
@@ -120,7 +121,7 @@ abstract class VizMapBypass {
 					if (obj == null)
 						return;
 
-					String val = ObjectToString.getStringValue(obj);
+					String val = ValueToStringConverterManager.manager.toString(obj);
 					attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
 					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 					BypassHack.finished();

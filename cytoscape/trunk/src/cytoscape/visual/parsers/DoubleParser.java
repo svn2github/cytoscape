@@ -48,7 +48,7 @@ package cytoscape.visual.parsers;
  * Parses a String into a Double object.
  */
 public class DoubleParser
-    implements ValueParser {
+    implements ValueParser<Double> {
     /**
      *  DOCUMENT ME!
      *
@@ -56,7 +56,7 @@ public class DoubleParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Double parseStringValue(String value) {
         return parseDouble(value);
     }
 
