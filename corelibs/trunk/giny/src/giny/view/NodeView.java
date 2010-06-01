@@ -1,8 +1,11 @@
 package giny.view;
 
-import java.awt.*;
-import giny.model.*;
+import giny.model.Node;
+
+import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 /** 
  * Any and all questions should be directed to me.
@@ -45,7 +48,7 @@ public interface NodeView  {
   /**
    * @return The list of EdgeViews connecting these two nodes. Possibly null.
    */
-  public java.util.List getEdgeViewsList(NodeView otherNode) ;
+  public List getEdgeViewsList(NodeView otherNode) ;
 
   /**
    * Shape is currently defined via predefined variables in 

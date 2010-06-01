@@ -6,7 +6,7 @@
   <target name="init">
     <tstamp/>
     <property name="giny.name" value="giny"/>
-    <property name="giny.version" value="0.1"/>
+    <property name="giny.version" value="0.2"/>
     <property name="giny.year" value="200"/>
 
     <echo message="Building ${giny.name} version ${giny.version}."/>
