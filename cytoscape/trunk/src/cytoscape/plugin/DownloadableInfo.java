@@ -428,7 +428,13 @@ public abstract class DownloadableInfo {
  *      it is compatible with all bug fix versions.
  */
   public boolean isPluginCompatibleWithCurrent() {
-    boolean compatible = false;
+
+	  if (this.getCategory() != null && this.getCategory().equalsIgnoreCase("Core")){
+		  // core plugins already compatible with current version
+		  return true;
+	  }
+	  
+	boolean compatible = false;
     CytoscapeVersion cv = new CytoscapeVersion();
     for (String pluginVersion: compatibleCyVersions) {
       String[] cyVersion = cv.getFullVersion().split(versionSplit);
