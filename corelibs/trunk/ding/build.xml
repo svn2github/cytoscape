@@ -7,7 +7,7 @@
 	<target name="init">
 		<tstamp />
 		<property name="name" value="ding" />
-		<property name="version" value="1.1.0" />
+		<property name="version" value="1.2.0" />
 
 		<echo message="Building ${name} version ${version} ..." />
 
@@ -36,7 +36,7 @@
 		<!-- Define the class path - Defaults to everything in the lib.dir -->
 		<path id="project.class.path">
 			<fileset dir="${lib.dir}">
-				<include name="*.jar" />
+				<include name="**/*.jar" />
 			</fileset>
 		</path>
 

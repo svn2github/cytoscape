@@ -846,7 +846,7 @@ public class DGraphView implements GraphView, Printable {
 			m_spacial.delete(~nodeInx);
 
 			// m_selectedNodes.delete(~nodeInx);
-			returnThis.m_view = null;
+			returnThis.graphView = null;
 			m_contentChanged = true;
 		}
 
