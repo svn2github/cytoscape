@@ -53,9 +53,8 @@ public class ModDialog extends JDialog {
 	 * @param tableModel  DOCUMENT ME!
 	 * @param tableObjectType  DOCUMENT ME!
 	 */
-	public ModDialog(final DataTableModel tableModel,
-	                 final DataObjectType tableObjectType,
-			 final Frame parent)
+	public ModDialog(final DataTableModel tableModel, final DataObjectType tableObjectType,
+	                 final Frame parent)
 	{
 		super(parent);
 		final ModPanel modPanel = new ModPanel(tableModel, tableObjectType);

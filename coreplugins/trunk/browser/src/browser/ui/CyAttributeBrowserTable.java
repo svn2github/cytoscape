@@ -62,6 +62,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
@@ -70,11 +71,14 @@ import browser.AttributeBrowserPlugin;
 import browser.DataObjectType;
 import browser.DataTableModel;
 import browser.SortTableModel;
+import browser.ValidatedObjectAndEditString;
 import browser.util.HyperLinkOut;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
@@ -89,6 +93,8 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 
+import org.cytoscape.equations.Equation;
+
 import javax.swing.JViewport;
 import javax.swing.table.TableCellEditor;
 import java.awt.Window;
@@ -98,39 +104,27 @@ import java.awt.Graphics;
 import java.awt.KeyboardFocusManager;
 import java.util.EventObject;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.util.Set;
 import java.util.Iterator;
 
+
 /**
- * Based on JSortTable and completely rewrote by kono
- *
+ *  Based on JSortTable and completely rewritten by kono
  */
 public class CyAttributeBrowserTable extends JTable implements MouseListener, ActionListener,
                                                                PropertyChangeListener,
-                                                               SelectEventListener, MouseMotionListener {
-	/**
-	 *
-	 */
+                                                               SelectEventListener, MouseMotionListener
+{
 	public static final int SELECTED_NODE = 1;
-
-	/**
-	 *
-	 */
 	public static final int REV_SELECTED_NODE = 2;
-
-	/**
-	 */
 	public static final int SELECTED_EDGE = 3;
-
-	/**
-	 *
-	 */
 	public static final int REV_SELECTED_EDGE = 4;
 
 	// Target network to watch selection
 	CyNetwork currentNetwork;
 
-	// Gloval calcs used for coloring
+	// Global calcs used for coloring
 	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 	private GlobalAppearanceCalculator gac;
 	protected int sortedColumnIndex = -1;
@@ -142,8 +136,14 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 	// For right-click menu
 	private JPopupMenu rightClickPopupMenu;
+	private JPopupMenu rightClickHeaderPopupMenu;
 	private JPopupMenu cellMenu;
+	private JMenuItem openFormulaBuilderMenuItem = null;
 	private JMenuItem copyMenuItem = null;
+	private JMenuItem copyToCurrentSelectionMenuItem = null;
+	private JMenuItem copyFormulaToCurrentSelectionMenuItem = null;
+	private JMenuItem copyToEntireAttributeMenuItem = null;
+	private JMenuItem copyFormulaToEntireAttributeMenuItem = null;
 	private JMenu exportMenu = null;
 	private JMenuItem exportCellsMenuItem = null;
 	private JMenuItem exportTableMenuItem = null;
@@ -156,8 +156,10 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private DataObjectType objectType;
 	private Map<String, Map<String, String>> linkoutProps;
 	private CyLogger logger = null;
+	private FormulaBuilderDialog formulaBuilderDialog = null;
+	private int mouseX;
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
-	
+
 	private HashMap<String, Integer> columnWidthMap = new HashMap<String, Integer>();
 
 	// For turning off listener during session loading
@@ -219,6 +221,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		this.setSize(400, 200);
 		this.setCellSelectionEnabled(true);
 		this.getPopupMenu();
+		this.getHeaderPopupMenu();
 
 		setKeyStroke();
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -235,6 +238,24 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		this.getTableHeader().addMouseMotionListener(this);
 	}
 
+	public void valueChanged(final ListSelectionEvent event) {
+		super.valueChanged(event);
+
+		final boolean singleCellSelected = getSelectedRowCount() == 1 && getSelectedColumnCount() == 1;
+		if (singleCellSelected) {
+			copyToCurrentSelectionMenuItem.setEnabled(true);
+			copyFormulaToCurrentSelectionMenuItem.setEnabled(true);
+			copyToEntireAttributeMenuItem.setEnabled(true);
+			copyFormulaToEntireAttributeMenuItem.setEnabled(true);
+		}
+		else {
+			copyToCurrentSelectionMenuItem.setEnabled(false);
+			copyFormulaToCurrentSelectionMenuItem.setEnabled(false);
+			copyToEntireAttributeMenuItem.setEnabled(false);
+			copyFormulaToEntireAttributeMenuItem.setEnabled(false);
+		}
+	}
+
 	private void setKeyStroke() {
 		KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
 		// Identifying the copy KeyStroke user can modify this
@@ -249,24 +270,16 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		switch (type) {
 			case SELECTED_NODE:
 				selectedNodeColor = gac.getDefaultNodeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_NODE:
 				reverseSelectedNodeColor = gac.getDefaultNodeReverseSelectionColor();
-
 				break;
-
 			case SELECTED_EDGE:
 				selectedEdgeColor = gac.getDefaultEdgeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_EDGE:
 				reverseSelectedEdgeColor = gac.getDefaultEdgeReverseSelectionColor();
-
 				break;
-
 			default:
 				break;
 		}
@@ -279,27 +292,18 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		switch (type) {
 			case SELECTED_NODE:
 				newColor = gac.getDefaultNodeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_NODE:
 				newColor = gac.getDefaultNodeReverseSelectionColor();
-
 				break;
-
 			case SELECTED_EDGE:
 				newColor = gac.getDefaultEdgeSelectionColor();
-
 				break;
-
 			case REV_SELECTED_EDGE:
 				newColor = gac.getDefaultEdgeReverseSelectionColor();
-
 				break;
-
 			default:
 				newColor = null;
-
 				break;
 		}
 
@@ -319,42 +323,38 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 	private Map<String, GraphObject> paintNodesAndEdges(int idLocation) {
 		final int[] rowsSelected = getSelectedRows();
-
 		final Map<String, GraphObject> selectedMap = new HashMap<String, GraphObject>();
 		final int selectedRowLength = rowsSelected.length;
-		String selectedName = null;
-
-		Node selectedNode;
-		Edge selectedEdge;
-		NodeView nv;
-		EdgeView ev;
 		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
 
 		for (int idx = 0; idx < selectedRowLength; idx++) {
-			selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
+			final ValidatedObjectAndEditString objectAndEditString =
+				(ValidatedObjectAndEditString)getValueAt(rowsSelected[idx], idLocation);
+			if (objectAndEditString == null)
+				continue;
+
+			final String selectedName = (String)objectAndEditString.getValidatedObject();
+			if (selectedName == null)
+				continue;
 
 			if (objectType == NODES) {
 				// Change node color
-				selectedNode = Cytoscape.getCyNode(selectedName);
+				final Node selectedNode = Cytoscape.getCyNode(selectedName);
 				selectedMap.put(selectedName, selectedNode);
 
 				if (netView != Cytoscape.getNullNetworkView()) {
-					nv = netView.getNodeView(selectedNode);
-
-					if (nv != null) {
+					final NodeView nv = netView.getNodeView(selectedNode);
+					if (nv != null)
 						nv.setSelectedPaint(reverseSelectedNodeColor);
-					}
 				}
 			} else if (objectType == EDGES) {
-				selectedEdge = getEdge(selectedName);
+				final Edge selectedEdge = getEdge(selectedName);
 				selectedMap.put(selectedName, selectedEdge);
 
 				if (netView != Cytoscape.getNullNetworkView()) {
-					ev = netView.getEdgeView(selectedEdge);
-
-					if (ev != null) {
+					final EdgeView ev = netView.getEdgeView(selectedEdge);
+					if (ev != null)
 						ev.setSelectedPaint(reverseSelectedEdgeColor);
-					}
 				}
 			}
 		}
@@ -363,178 +363,239 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	}
 
 	private void resetObjectColor(int idLocation) {
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-
+		final CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		if ((view == Cytoscape.getNullNetworkView()) || (view == null))
 			return;
 
 		final int rowCount = dataModel.getRowCount();
-
-		Node selectedNode;
-		Object val;
-		NodeView nv;
-		EdgeView ev;
-		Edge selectedEdge;
-
 		for (int idx = 0; idx < rowCount; idx++) {
-			val = dataModel.getValueAt(idx, idLocation);
-
-			if (val == null)
+			final ValidatedObjectAndEditString val = (ValidatedObjectAndEditString)dataModel.getValueAt(idx, idLocation);
+			final String objectName;
+			try {
+				objectName = (String)val.getValidatedObject();
+			} catch (final Exception e) {
 				continue;
+			}
 
 			if (objectType == NODES) {
-				selectedNode = Cytoscape.getCyNode(val.toString());
+				final Node selectedNode = Cytoscape.getCyNode(objectName);
 
 				// Set to the original color
 				if (selectedNode != null) {
-					nv = view.getNodeView(selectedNode);
-
-					if (nv != null) {
+					final NodeView nv = view.getNodeView(selectedNode);
+					if (nv != null)
 						nv.setSelectedPaint(selectedNodeColor);
-					}
 				}
 			} else if (objectType == EDGES) {
-				selectedEdge = this.getEdge(val.toString());
-
+				final Edge selectedEdge = this.getEdge(objectName);
 				if (selectedEdge != null) {
-					ev = view.getEdgeView(selectedEdge);
-
-					if (ev != null) {
+					final EdgeView ev = view.getEdgeView(selectedEdge);
+					if (ev != null)
 						ev.setSelectedPaint(selectedEdgeColor);
-					}
 				}
 			}
 		}
 	}
 
 	/**
-	 * This method initializes jPopupMenu1
+	 * This method initializes rightClickPopupMenu
 	 *
 	 * @return javax.swing.JPopupMenu
 	 */
 	private JPopupMenu getPopupMenu() {
-		if (rightClickPopupMenu == null) {
-			rightClickPopupMenu = new JPopupMenu();
+		if (rightClickPopupMenu != null)
+			return rightClickPopupMenu;
 
-			copyMenuItem = new JMenuItem("Copy");
-			newSelectionMenuItem = new JMenuItem("Select from table");
-			exportMenu = new JMenu("Export...");
-			exportCellsMenuItem = new JMenuItem("Selected Cells");
-			exportTableMenuItem = new JMenuItem("Entire Table");
-			selectAllMenuItem = new JMenuItem("Select All");
+		rightClickPopupMenu = new JPopupMenu();
 
-			coloringMenuItem = new JCheckBoxMenuItem("On/Off Coloring");
+		openFormulaBuilderMenuItem = new JMenuItem("Open Formula Builder");
+		copyMenuItem = new JMenuItem("Copy");
+		copyToCurrentSelectionMenuItem = new JMenuItem("Copy to Current Selection");
+		copyToCurrentSelectionMenuItem.setEnabled(false);
+		copyFormulaToCurrentSelectionMenuItem = new JMenuItem("Copy Formula to Current Selection");
+		copyFormulaToCurrentSelectionMenuItem.setEnabled(false);
+		copyToEntireAttributeMenuItem = new JMenuItem("Copy to Entire Attribute");
+		copyToEntireAttributeMenuItem.setEnabled(false);
+		copyFormulaToEntireAttributeMenuItem = new JMenuItem("Copy Formula to Entire Attribute");
+		copyFormulaToEntireAttributeMenuItem.setEnabled(false);
+		newSelectionMenuItem = new JMenuItem("Select from Table");
+		exportMenu = new JMenu("Export...");
+		exportCellsMenuItem = new JMenuItem("Selected Cells");
+		exportTableMenuItem = new JMenuItem("Entire Table");
+		selectAllMenuItem = new JMenuItem("Select All");
 
-			// showAdvancedWindow = new JCheckBoxMenuItem("Show Advanced
-			// Window");
-			copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						logger.debug("Cells copied to clipboard.");
-						copyToClipBoard();
+		coloringMenuItem = new JCheckBoxMenuItem("On/Off Coloring");
+
+		final JTable table = this;
+		openFormulaBuilderMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					final int cellRow = table.getSelectedRow();
+					final int cellColumn = table.getSelectedColumn();
+					if (cellRow != -1 && cellColumn != -1 && tableModel.isCellEditable(cellRow, cellColumn)) {
+						final String columnName = tableModel.getColumnName(cellColumn);
+						final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+						initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+						formulaBuilderDialog =
+							new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
+										 attribNameToTypeMap, columnName);
+						formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+						formulaBuilderDialog.setVisible(true);
 					}
-				});
+				}
+			});
 
-			exportCellsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						export(false);
-					}
-				});
+		copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					copyToClipBoard();
+				}
+			});
 
-			exportTableMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						export(true);
-					}
-				});
+		copyToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					copyToCurrentSelection();
+				}
+			});
 
-			selectAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						selectAll();
-					}
-				});
+		copyFormulaToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					copyFormulaToCurrentSelection();
+				}
+			});
 
-			newSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						int idLocation = 0;
-						final int columnCount = getColumnCount();
+		copyToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					copyToEntireAttribute();
+				}
+			});
 
-						// First, find the location of the ID column
-						for (int idx = 0; idx < columnCount; idx++) {
-							if (getColumnName(idx).equals(AttributeBrowser.ID)) {
-								idLocation = idx;
+		copyFormulaToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					copyFormulaToEntireAttribute();
+				}
+			});
 
-								break;
+		exportCellsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					export(false);
+				}
+			});
+
+		exportTableMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					export(true);
+				}
+			});
+
+		selectAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					selectAll();
+				}
+			});
+
+		newSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					final int idLocation = getIdColumn();
+					final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
+					final CyNetwork curNet = Cytoscape.getCurrentNetwork();
+
+					final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
+
+					GraphObject fromMap;
+
+					if (objectType == NODES) {
+						for (Object curNode : curNet.getSelectedNodes()) {
+							fromMap = selectedMap.get(((Node) curNode).getIdentifier());
+
+							if (fromMap == null) {
+								nonSelectedObjects.add((GraphObject) curNode);
 							}
 						}
 
-						final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
-						final CyNetwork curNet = Cytoscape.getCurrentNetwork();
+						resetObjectColor(idLocation);
+						curNet.setSelectedNodeState(nonSelectedObjects, false);
+					} else {
+						for (Object curEdge : curNet.getSelectedEdges()) {
+							fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
 
-						final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
-
-						GraphObject fromMap;
-
-						if (objectType == NODES) {
-							for (Object curNode : curNet.getSelectedNodes()) {
-								fromMap = selectedMap.get(((Node) curNode).getIdentifier());
-
-								if (fromMap == null) {
-									nonSelectedObjects.add((GraphObject) curNode);
-								}
+							if (fromMap == null) {
+								nonSelectedObjects.add((GraphObject) curEdge);
 							}
+						}
 
-							resetObjectColor(idLocation);
-							curNet.setSelectedNodeState(nonSelectedObjects, false);
+						resetObjectColor(idLocation);
+						curNet.setSelectedEdgeState(nonSelectedObjects, false);
+					}
+
+					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+						Cytoscape.getCurrentNetworkView().updateView();
+					}
+				}
+			});
+
+		coloringMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+						if (coloringMenuItem.isSelected() == true) {
+							logger.debug("color ON");
+							setNewRenderer(true);
 						} else {
-							for (Object curEdge : curNet.getSelectedEdges()) {
-								fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
-
-								if (fromMap == null) {
-									nonSelectedObjects.add((GraphObject) curEdge);
-								}
-							}
-
-							resetObjectColor(idLocation);
-							curNet.setSelectedEdgeState(nonSelectedObjects, false);
-						}
-
-						if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-							Cytoscape.getCurrentNetworkView().updateView();
+							logger.debug("color OFF");
+							setNewRenderer(false);
 						}
 					}
-				});
+				}
+			});
 
-			coloringMenuItem.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-							if (coloringMenuItem.isSelected() == true) {
-								logger.debug("color ON");
-								setNewRenderer(true);
-							} else {
-								logger.debug("color OFF");
-								setNewRenderer(false);
-							}
-						}
-					}
-				});
+		exportMenu.add(exportCellsMenuItem);
+		exportMenu.add(exportTableMenuItem);
 
-			exportMenu.add(exportCellsMenuItem);
-			exportMenu.add(exportTableMenuItem);
+		if (objectType != NETWORK)
+			rightClickPopupMenu.add(newSelectionMenuItem);
 
-			if (objectType != NETWORK) {
-				rightClickPopupMenu.add(newSelectionMenuItem);
-			}
+		rightClickPopupMenu.add(openFormulaBuilderMenuItem);
+		rightClickPopupMenu.add(copyMenuItem);
+		rightClickPopupMenu.add(copyToCurrentSelectionMenuItem);
+		rightClickPopupMenu.add(copyFormulaToCurrentSelectionMenuItem);
+		rightClickPopupMenu.add(copyToEntireAttributeMenuItem);
+		rightClickPopupMenu.add(copyFormulaToEntireAttributeMenuItem);
+		rightClickPopupMenu.add(selectAllMenuItem);
+		rightClickPopupMenu.add(exportMenu);
 
-			rightClickPopupMenu.add(copyMenuItem);
-			rightClickPopupMenu.add(selectAllMenuItem);
-			rightClickPopupMenu.add(exportMenu);
-
-			if (objectType != NETWORK) {
-				rightClickPopupMenu.addSeparator();
-				rightClickPopupMenu.add(coloringMenuItem);
-			}
+		if (objectType != NETWORK) {
+			rightClickPopupMenu.addSeparator();
+			rightClickPopupMenu.add(coloringMenuItem);
 		}
 
 		return rightClickPopupMenu;
+	}
+
+	private JPopupMenu getHeaderPopupMenu() {
+		if (objectType == NETWORK)
+			return null;
+
+		if (rightClickHeaderPopupMenu != null)
+			return rightClickHeaderPopupMenu;
+
+		rightClickHeaderPopupMenu = new JPopupMenu();
+		final JMenuItem openFormulaBuilderMenuItem = new JMenuItem("Open Formula Builder");
+		final TableColumnModel columnModel = getColumnModel();
+		final JTable table = this;
+		openFormulaBuilderMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final ActionEvent event) {
+					final int cellColumn = columnModel.getColumnIndexAtX(mouseX);
+					final String columnName = tableModel.getColumnName(cellColumn);
+					final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+					initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+					formulaBuilderDialog =
+						new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
+									 attribNameToTypeMap, columnName);
+					formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+					formulaBuilderDialog.setVisible(true);
+				}
+			});
+		rightClickHeaderPopupMenu.add(openFormulaBuilderMenuItem);
+
+		return rightClickHeaderPopupMenu;
 	}
 
 	private void setNewRenderer(boolean colorSwitch) {
@@ -643,26 +704,23 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					final int column = getColumnModel().getColumnIndexAtX(e.getX());
 					final int row = e.getY() / getRowHeight();
 
-					// Make sure the column and row we're clicking on
-					// actually exists!
-					if ( column >= tableModel.getColumnCount() || 
-					     row >= tableModel.getRowCount() ) {
+					// Make sure the column and row we're clicking on actually exists!
+					if (column >= tableModel.getColumnCount() || row >= tableModel.getRowCount())
 						return;
-					}
 
-					final Object value = getValueAt(row, column);
+					final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(row, column);
 					getSelected();
 
 					// If action is right click, then show edit pop-up menu
-					if ((SwingUtilities.isRightMouseButton(e)) ||
-							(isMacPlatform() && e.isControlDown())){
-						if (value != null) {
+					if ((SwingUtilities.isRightMouseButton(e)) || (isMacPlatform() && e.isControlDown())){
+						if (objectAndEditString != null) {
 							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
-							rightClickPopupMenu.add(new HyperLinkOut(value.toString(), linkoutProps));
+							final Object validatedObject = objectAndEditString.getValidatedObject();
+							if (validatedObject != null)
+								rightClickPopupMenu.add(new HyperLinkOut(validatedObject.toString(), linkoutProps));
 							rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 						}
-					} else if (SwingUtilities.isLeftMouseButton(e)
-					           && (getSelectedRows().length != 0)) {
+					} else if (SwingUtilities.isLeftMouseButton(e) && (getSelectedRows().length != 0)) {
 						
 						showListContents(e);
 
@@ -670,13 +728,13 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						    || (column < 0))
 							return;
 
-						// Object cellValue = getValueAt(row, column);
-						if ((value != null) && (value.getClass() == String.class)) {
+						if (objectAndEditString != null && objectAndEditString.getValidatedObject() != null
+						    && objectAndEditString.getValidatedObject().getClass() == String.class)
+						{
 							URL url = null;
-
 							try {
-								url = new URL((String) value);
-							} catch (MalformedURLException e1) {
+								url = new URL((String)objectAndEditString.getValidatedObject());
+							} catch (final MalformedURLException e1) {
 								// If invalid, just ignore.
 							}
 
@@ -766,8 +824,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * @param event DOCUMENT ME!
 	 */
 	public void mouseClicked(MouseEvent event) {
-		int cursorType = getTableHeader().getCursor().getType();
-
+		final int cursorType = getTableHeader().getCursor().getType();
 		if ((event.getButton() == MouseEvent.BUTTON1) && (cursorType != Cursor.E_RESIZE_CURSOR)
 		    && (cursorType != Cursor.W_RESIZE_CURSOR)) {
 			final int index = getColumnModel().getColumnIndexAtX(event.getX());
@@ -788,6 +845,24 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					model.sortColumn(modelIndex, sortedColumnAscending);
 				}
 			}
+		}
+		else if (event.getButton() == MouseEvent.BUTTON3) {
+			// Don't do anything if we're displaying network attributes:
+			if (objectType == NETWORK)
+				return;
+
+			final int column = getColumnModel().getColumnIndexAtX(event.getX());
+
+			// Make sure the column we're clicking on actually exists!
+			if (column >= tableModel.getColumnCount() || column < 0)
+				return;
+
+			// Ignore clicks on the ID column:
+			if (column == getIdColumn())
+				return;
+
+			mouseX = event.getX();
+			rightClickHeaderPopupMenu.show(event.getComponent(), event.getX(), event.getY());
 		}
 	}
 
@@ -851,17 +926,15 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				}
 			}
 
-			String idField = (String) this.getValueAt(row, idCol);
-
-			List contents = (List) model.getAttributeValue(CyAttributes.TYPE_SIMPLE_LIST, idField,
-			                                               this.getColumnName(column));
+			final String idField = (String) ((ValidatedObjectAndEditString)this.getValueAt(row, idCol)).getValidatedObject();
+			List contents = (List) model.getValidatedObjectAndEditString(CyAttributes.TYPE_SIMPLE_LIST, idField,
+										     this.getColumnName(column)).getValidatedObject();
 			cellMenu = new JPopupMenu();
 
 			Object[] listItems = contents.toArray();
 
-			if (listItems.length != 0) {
+			if (listItems.length != 0)
 				getCellContentView(CyAttributes.TYPE_SIMPLE_LIST, listItems, idField, e);
-			}
 		} else if ((value != null) && (value instanceof Map)
 		           && model.getValueAt(row, 0).equals(AttributeBrowser.NETWORK_METADATA)) {
 			NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape.getDesktop(), false,
@@ -881,9 +954,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 			String idField = (String) this.getValueAt(row, idCol);
 
-			Map<String, Object> contents = (Map) model.getAttributeValue(CyAttributes.TYPE_SIMPLE_MAP,
-			                                                             idField,
-			                                                             this.getColumnName(column));
+			Map<String, Object> contents = (Map) model.getValidatedObjectAndEditString(CyAttributes.TYPE_SIMPLE_MAP,
+												   idField,
+												   this.getColumnName(column)).getValidatedObject();
 
 			if ((contents != null) && (contents.size() != 0)) {
 				Object[] listItems = new Object[contents.size()];
@@ -1028,10 +1101,99 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		return sbf.toString();
 	}
 
-	
+	private void copyToCurrentSelection() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final GraphObject graphObject : selectedGraphObjects)
+			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
+							attribName, /* copyEquation = */ false, errorMessage);
+		tableModel.updateColumn(getAttribValue(attribs, rowId, attribName), tableColumn, tableRow);
+	}
+
+	private void copyFormulaToCurrentSelection() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final GraphObject graphObject : selectedGraphObjects)
+			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
+							attribName, /* copyEquation = */ true, errorMessage);
+		final Equation equation = attribs.getEquation(rowId, attribName);
+		tableModel.updateColumn(equation != null ? equation : getAttribValue(attribs, rowId, attribName),
+		                        tableColumn, tableRow);
+	}
+
+	private void copyToEntireAttribute() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+		final Iterable<String> ids = objectType.getAssociatedIdentifiers();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final String id : ids)
+			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName,
+			                                /* copyEquations = */false, errorMessage);
+
+
+		tableModel.updateColumn(getAttribValue(attribs, rowId, attribName), tableColumn, tableRow);
+	}
+
+	private void copyFormulaToEntireAttribute() {
+		final int tableRow = this.getSelectedRow();
+		final int tableColumn = this.getSelectedColumn();
+		if (tableRow == -1 || tableColumn == -1)
+			return;
+
+		final String attribName = tableModel.getColumnName(tableColumn);
+		final String rowId = tableModel.getRowId(tableRow);
+		final CyAttributes attribs = tableModel.getCyAttributes();
+		final Iterable<String> ids = objectType.getAssociatedIdentifiers();
+		final StringBuilder errorMessage = new StringBuilder();
+		for (final String id : ids)
+			CyAttributesUtils.copyAttribute(attribs, rowId, id, attribName,
+			                                /* copyEquations = */true, errorMessage);
+		final Equation equation = attribs.getEquation(rowId, attribName);
+		tableModel.updateColumn(equation != null ? equation : getAttribValue(attribs, rowId, attribName),
+		                        tableColumn, tableRow);
+	}
+
+	/**
+	 *  @return the value of an attribute irrespective of its type
+	 */
+	private Object getAttribValue(final CyAttributes attribs, final String id, final String attribName) {
+		final byte attribType = attribs.getType(attribName);
+		switch (attribType) {
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return attribs.getListAttribute(id, attribName);
+		case CyAttributes.TYPE_SIMPLE_MAP:
+			return attribs.getMapAttribute(id, attribName);
+		default:
+			return attribs.getAttribute(id, attribName);
+		}
+	}
+
 	private void adjustColWidth(){
-		
-		HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
+		final HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
 		
 		// Save the width if it does not exist
 		Iterator<String> it = widthMap.keySet().iterator();
@@ -1203,7 +1365,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			                                                            .getSelectedNodes()), null);
 		} else if ((objectType == EDGES)
 		           && ((event.getTargetType() == SelectEvent.SINGLE_EDGE)
-		              || (event.getTargetType() == SelectEvent.EDGE_SET))) {
+		               || (event.getTargetType() == SelectEvent.EDGE_SET)))
+		{
 			// edge selection
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_EDGE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_EDGE);
@@ -1228,6 +1391,39 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	public void editingStopped(ChangeEvent e) {
 		super.editingStopped(e);
 		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+
+		final int currentRow = getEditingRow();
+		final int currentColumn = getEditingColumn();
+
+		int nextRow, nextColumn;
+
+		final int rowCount = getRowCount();
+		if (currentRow < getRowCount() - 1) {
+			nextRow = currentRow + 1;
+			nextColumn = currentColumn;
+		} else {
+			nextRow = 0;
+
+			// First, find the location of the ID column
+			int idColumn = -1;
+			final int columnCount = getColumnCount();
+			for (int idx = 0; idx < columnCount; idx++) {
+				if (getColumnName(idx).equals(AttributeBrowser.ID)) {
+					idColumn = idx;
+					break;
+				}
+			}
+
+			nextColumn = currentColumn + 1;
+			if (nextColumn == idColumn)
+				++nextColumn;
+			if (nextColumn == columnCount)
+				nextColumn = 0;
+			if (nextColumn == idColumn)
+				++nextColumn;
+		}
+
+		changeSelection(nextRow, nextColumn, false, false);
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -1387,8 +1583,38 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			}
 		}
 	}
-	// 
-	// END special cell editing code... 
-	// =========================================================================================
-}
 
+	private static void initAttribNameToTypeMap(final DataObjectType objectType, final String columnName,
+	                                            final Map<String, Class> attribNameToTypeMap)
+	{
+		final CyAttributes cyAttribs;
+		switch (objectType) {
+		case NODES:
+			cyAttribs = Cytoscape.getNodeAttributes();
+			break;
+		case EDGES:
+			cyAttribs = Cytoscape.getEdgeAttributes();
+			break;
+		case NETWORK:
+			cyAttribs = Cytoscape.getNetworkAttributes();
+			break;
+		default:
+			throw new IllegalStateException("unknown DataObjectType: " + objectType + "!");
+		}
+
+		Util.initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
+	}
+
+	/**
+	 *  @returns the column index of the ID column or -1 if there is no ID column
+	 */
+	private int getIdColumn() {
+		final int columnCount = getColumnCount();
+		for (int idx = 0; idx < columnCount; idx++) {
+			if (getColumnName(idx).equals(AttributeBrowser.ID))
+				return idx;
+		}
+
+		return -1;
+	}
+}

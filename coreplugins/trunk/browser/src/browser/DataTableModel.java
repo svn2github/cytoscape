@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010 The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
 */
 package browser;
 
+
 import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
@@ -57,6 +51,8 @@ import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
+import org.cytoscape.equations.Equation;
+
 import java.awt.Color;
 
 import java.util.ArrayList;
@@ -77,6 +73,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author kono
  * @author xmas
+ * @author ruschein
  */
 public class DataTableModel extends DefaultTableModel implements SortTableModel {
 	/**
@@ -210,25 +207,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		}
 	}
 
-	//	// Accept CyAttributes and create table
-	//	/**
-	//	 *  DOCUMENT ME!
-	//	 *
-	//	 * @param data DOCUMENT ME!
-	//	 * @param graph_objects DOCUMENT ME!
-	//	 * @param attributeNames DOCUMENT ME!
-	//	 * @param objectType DOCUMENT ME!
-	//	 */
-	//	public void setTableData(List<String> attributeNames) {
-	//		this.attributeNames = attributeNames;
-	//
-	//		if (objectType == NETWORK) {
-	//			setNetworkTable();
-	//		} else {
-	//			setTableData();
-	//		}
-	//	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -266,19 +244,16 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @param attributes DOCUMENT ME!
 	 */
 	public void setTableData(List cellData, List<String> attributes) {
-		if (attributes != null) {
+		if (attributes != null)
 			this.attributeNames = attributes;
-		}
 
-		if (cellData != null) {
+		if (cellData != null)
 			graphObjects = cellData;
-		}
 
-		if (objectType != NETWORK) {
+		if (objectType != NETWORK)
 			setTableData();
-		} else {
+		else
 			setNetworkTable();
-		}
 	}
 
 	protected void setNetworkTable() {
@@ -297,10 +272,10 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		for (int i = 0; i < att_length; i++) {
 			final String attributeName = (String) attributeNames.get(i);
-			data_vector[i][0] = attributeName;
-			data_vector[i][1] = getAttributeValue(data.getType(attributeName),
-			                                      Cytoscape.getCurrentNetwork().getIdentifier(),
-			                                      attributeName);
+			data_vector[i][0] = new ValidatedObjectAndEditString(attributeName);
+			data_vector[i][1] = getValidatedObjectAndEditString(data.getType(attributeName),
+									    Cytoscape.getCurrentNetwork().getIdentifier(),
+									    attributeName);
 		}
 
 		setDataVector(data_vector, column_names);
@@ -323,7 +298,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			CyNetwork network = (CyNetwork) it.next();
 			String id = network.getIdentifier();
 
-			data_vector[k][0] = id;
+			data_vector[k][0] = new ValidatedObjectAndEditString(id);
 			k++;
 		}
 
@@ -341,7 +316,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 			while (it.hasNext()) {
 				CyNetwork network = (CyNetwork) it.next();
-				Object value = getAttributeValue(type, network.getIdentifier(), attributeName);
+				Object value = getValidatedObjectAndEditString(type, network.getIdentifier(), attributeName);
 
 				data_vector[j][i] = value;
 				j++;
@@ -352,7 +327,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	}
 
 	/**
-	 *  Method to frill out table cells.
+	 *  Method to fill in table cells.
 	 */
 	public void setTableData() {
 		if (graphObjects == null)
@@ -389,7 +364,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = AttributeBrowser.ID;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = graphObjects.get(j).getIdentifier();
+				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
 
 			setDataVector(data_vector, column_names);
 			//			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -406,7 +381,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = AttributeBrowser.ID;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = graphObjects.get(j).getIdentifier();
+				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
 
 			for (int i1 = 0; i1 < att_length; ++i1) {
 				column_names[i1 + 1] = attributeNames.get(i1);
@@ -414,9 +389,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				type = data.getType(attributeName);
 
 				for (int j = 0; j < go_length; ++j) {
-					data_vector[j][i1 + 1] = getAttributeValue(type,
-					                                           graphObjects.get(j).getIdentifier(),
-					                                           attributeName);
+					data_vector[j][i1 + 1] = getValidatedObjectAndEditString(type,
+					                                                         graphObjects.get(j).getIdentifier(),
+					                                                         attributeName);
 				}
 			}
 		} else {
@@ -427,14 +402,13 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				column_names[i1] = attributeNames.get(i1);
 				attributeName = (String) attributeNames.get(i1);
 				type = data.getType(attributeName);
-
 				for (int j = 0; j < go_length; ++j) {
-					if (attributeName.equals(AttributeBrowser.ID)) {
-						data_vector[j][i1] = graphObjects.get(j).getIdentifier();
-					} else
-						data_vector[j][i1] = getAttributeValue(type,
-						                                       graphObjects.get(j).getIdentifier(),
-						                                       attributeName);
+					if (attributeName.equals(AttributeBrowser.ID))
+						data_vector[j][i1] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
+					else
+						data_vector[j][i1] =
+							getValidatedObjectAndEditString(type, graphObjects.get(j).getIdentifier(),
+						                                        attributeName);
 				}
 			}
 		}
@@ -454,19 +428,46 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object getAttributeValue(byte type, String id, String att) {
+	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final byte type, final String id, final String attrName) {
+		final Object attribValue;
+		switch (type) {
+		case CyAttributes.TYPE_INTEGER:
+		case CyAttributes.TYPE_FLOATING:
+		case CyAttributes.TYPE_BOOLEAN:
+		case CyAttributes.TYPE_STRING:
+			attribValue = data.getAttribute(id, attrName);
+			break;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			attribValue = data.getListAttribute(id, attrName);
+			break;
+		case CyAttributes.TYPE_SIMPLE_MAP:
+			attribValue = data.getMapAttribute(id, attrName);
+			break;
+		default:
+			return null;
+		}
+
+		final Equation equation = data.getEquation(id, attrName);
+		if (attribValue == null && equation == null)
+			return null;
+
+		final String equationFormula = equation == null ? null : equation.toString();
+		String errorMessage = data.getLastEquationError();
+		if (errorMessage != null)
+			errorMessage = "#ERROR(" + errorMessage + ")";
+
 		if (type == CyAttributes.TYPE_INTEGER)
-			return data.getIntegerAttribute(id, att);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_FLOATING)
-			return data.getDoubleAttribute(id, att);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return data.getBooleanAttribute(id, att);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_STRING)
-			return data.getStringAttribute(id, att);
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return data.getListAttribute(id, att);
+			return new ValidatedObjectAndEditString(attribValue);
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return data.getMapAttribute(id, att);
+			return new ValidatedObjectAndEditString(attribValue);
 
 		return null;
 	}
@@ -550,14 +551,51 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * Instead of using a listener, just overwrite this method to save time and
 	 * write to the temp object
 	 */
-	public void setValueAt(Object newValue, int rowIdx, int colIdx) {
-//		System.out.println("Edit Cell: new Val = " + newValue + ", row = " + rowIdx + ", col = "
-//		                   + colIdx + ", col name = " + getColumnName(colIdx));
-//		System.out.println("           OLD Val = " + getValueAt(rowIdx, colIdx));
+	public void setValueAt(final Object newValue, int rowIdx, int colIdx) {
+		final int keyIndex = getKeyIndex();
+		if (keyIndex == -1)
+			return;
 
-		DataEditAction edit = null;
+		final DataEditAction edit = updateCell(keyIndex, rowIdx, colIdx, newValue);
+		if (edit != null)
+			cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
+	}
 
-		// Find key
+	public CyAttributes getCyAttributes() { return data; }
+
+	/**
+	 *  Updates an entire column.
+	 *
+	 *  @param newValue    the new value to be set
+	 *  @param colIdx      the index of the column that will be updated
+	 *  @param skipRowIdx  a row with matching this index will not be updated
+	 *  
+	 */
+	public void updateColumn(final Object newValue, final int colIdx, final int skipRowIdx) {
+		final int keyIndex = getKeyIndex();
+		if (keyIndex == -1)
+			return;
+
+		for (int rowIdx = 0; rowIdx < getRowCount(); ++rowIdx) {
+			if (rowIdx == skipRowIdx)
+				continue;
+
+			final DataEditAction edit = updateCell(keyIndex, rowIdx, colIdx, newValue);
+			if (edit != null)
+				cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
+		}
+	}
+
+	public String getRowId(final int rowIndex) {
+		final int keyIndex = getKeyIndex();
+		if (keyIndex == -1)
+			return null;
+
+		final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIndex, keyIndex);
+		return (String)objectAndEditString.getValidatedObject();
+	}
+
+	private int getKeyIndex() {
 		int keyIndex = -1;
 		int columnOffset = 0;
 
@@ -578,30 +616,82 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			}
 		}
 
-		if (keyIndex == -1)
-			return;
+		return keyIndex;
+	}
 
-//		System.out.println("           Object Val = " + getValueAt(rowIdx, keyIndex)
-//		                   + ", Attr Name = " + getColumnName(colIdx) + "OLD version = "
-//		                   + attributeNames.get(colIdx - columnOffset));
-
+	private DataEditAction updateCell(final int keyIndex, final int rowIdx, final int colIdx, final Object newValue) {
+		final DataEditAction edit;
 		if (this.objectType != NETWORK) {
 			// This edit is for node or edge.
-			edit = new DataEditAction(this, getValueAt(rowIdx, keyIndex).toString(),
-			                          getColumnName(colIdx), getValueAt(rowIdx, colIdx), newValue,
-			                          objectType);
-		} else {
-			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
-			                          (String) this.getValueAt(rowIdx, 0),
+			final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIdx, keyIndex);
+			if (objectAndEditString == null)
+				return null;
+
+			final Object validatedObject = objectAndEditString.getValidatedObject();
+			if (validatedObject == null)
+				return null;
+
+			edit = new DataEditAction(this, validatedObject.toString(), getColumnName(colIdx),
 			                          getValueAt(rowIdx, colIdx), newValue, objectType);
+		} else {
+			final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIdx, 0);
+			if (objectAndEditString == null)
+				return null;
+
+			final Object validatedObject = objectAndEditString.getValidatedObject();
+			if (validatedObject == null)
+				return null;
+
+			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
+			                          validatedObject.toString(), getValueAt(rowIdx, colIdx),
+			                          newValue, objectType);
 		}
 
-		if (edit.isValid()) {
-			Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
-			rowVector.setElementAt(newValue, colIdx);
-			fireTableCellUpdated(rowIdx, colIdx);
-		}
+		final boolean editIsValid = edit.isValid();
 
-		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
+		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
+		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
+		if (this.objectType != NETWORK)
+			setDataTableRow(rowIdx);
+		else
+			setDataTableColumn();
+
+		return editIsValid ? edit : null;
+	}
+
+	/**
+	 *  Helper method for updateCell().
+	 */
+	void setDataTableRow(final int rowIdx) {
+		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
+		final int noOfColumns = attributeNames.size();
+		final String id = graphObjects.get(rowIdx).getIdentifier();
+		for (int colIdx = 0; colIdx < noOfColumns; ++colIdx) {
+			final String attribName = attributeNames.get(colIdx);
+			if (attribName.equals(AttributeBrowser.ID))
+				continue;
+
+			final byte type = data.getType(attribName);
+			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
+			if (objectAndEditString != null)
+				rowVector.setElementAt(objectAndEditString, colIdx);
+		}
+	}
+
+	/**
+	 *  Helper method for updateCell().
+	 */
+	void setDataTableColumn() {
+		final int noOfRows = attributeNames.size();
+		final String id = Cytoscape.getCurrentNetwork().getIdentifier();
+		for (int rowIdx = 1; rowIdx <= noOfRows; ++rowIdx) {
+			final String attribName = attributeNames.get(rowIdx - 1);
+			final byte type = data.getType(attribName);
+			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
+			if (objectAndEditString != null) {
+				final Vector rowVector = (Vector) dataVector.elementAt(rowIdx - 1);
+				rowVector.setElementAt(objectAndEditString, 1 /* Always the 2nd column! */);
+			}
+		}
 	}
 }

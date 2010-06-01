@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -45,6 +38,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -54,6 +48,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -78,27 +73,22 @@ import cytoscape.logger.CyLogger;
 import cytoscape.util.swing.CheckBoxJList;
 import java.util.HashMap;
 
+
 /**
- * Define toolbar for Attribute Browser.
- *
- * @version 0.8
- * @since Cytoscape 2.3
- * @author kono
- *
+ *  Define toolbar for Attribute Browser.
  */
 public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener {
 	private final CyAttributes attributes;
 	private DataTableModel tableModel;
+	private final JTable table;
 	private final DataObjectType objectType;
 	private AttributeModel attrModel;
 	private String attributeType = null;
 	private CyLogger logger = null;
-
-	//	private Object[] selectedAttrNames = null;
 	private List<String> orderedCol;
 
-	/*
-	 * GUI components
+	/**
+	 *  GUI components
 	 */
 	private JPopupMenu attributeSelectionPopupMenu = null;
 	private JScrollPane jScrollPane = null;
@@ -116,39 +106,29 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JButton matrixButton = null;
 	private JButton importButton = null;
 	
-	// Panel to be added to JDialog for attribute modification
 	private ModDialog modDialog;
+	private FormulaBuilderDialog formulaBuilderDialog;
 
-	/**
-	 * Creates a new AttributeBrowserPanel object.
-	 *
-	 * @param data  DOCUMENT ME!
-	 * @param a_model  DOCUMENT ME!
-	 * @param l_model  DOCUMENT ME!
-	 * @param graphObjectType  DOCUMENT ME!
-	 */
-	public AttributeBrowserToolBar(final DataTableModel tableModel, final AttributeModel a_model,
-	                               final List<String> orderedCol,
-	                               final DataObjectType graphObjectType) {
+
+	public AttributeBrowserToolBar(final DataTableModel tableModel, final CyAttributeBrowserTable table,
+	                               final AttributeModel a_model, final List<String> orderedCol,
+	                               final DataObjectType graphObjectType)
+	{
 		super();
+
 		this.tableModel = tableModel;
+		this.table      = table;
 		this.attributes = graphObjectType.getAssociatedAttribute();
 		this.objectType = graphObjectType;
-		this.attrModel = a_model;
+		this.attrModel  = a_model;
 		this.orderedCol = orderedCol;
 
 		logger = CyLogger.getLogger(AttributeBrowserToolBar.class);
 
-		initialize();
-		attrModButton.setVisible(objectType != NETWORK);
+		initializeGUI();
 	}
 
-	/**
-	 * This method initializes
-	 *
-	 * @return void
-	 */
-	private void initialize() {
+	private void initializeGUI() {
 		this.setLayout(new BorderLayout());
 
 		this.setPreferredSize(new java.awt.Dimension(210, 29));
@@ -157,10 +137,9 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		getAttributeSelectionPopupMenu();
 		getJPopupMenu1();
 
-		// modPanel will be added to JDialog for attribute modification
 		modDialog = new ModDialog(tableModel, objectType, Cytoscape.getDesktop());
+		attrModButton.setVisible(objectType != NETWORK);
 	}
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -345,6 +324,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                           28,
 				                                                                           GroupLayout.PREFERRED_SIZE)
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getFunctionBuilderButton(),
+				                                                                           GroupLayout.PREFERRED_SIZE,
+				                                                                           28,
+				                                                                           GroupLayout.PREFERRED_SIZE)
+				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getImportButton(),
 				                                                                           GroupLayout.PREFERRED_SIZE,
 				                                                                           28,
@@ -378,6 +362,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                    .add(attrModButton,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
+				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+				                                                                    .add(formulaBuilderButton,
+				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 			} else if (objectType == NETWORK) {
 				buttonBarLayout.setHorizontalGroup(buttonBarLayout.createParallelGroup(GroupLayout.LEADING)
@@ -395,6 +383,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                                       Short.MAX_VALUE)
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getAttrModButton(),
+				                                                                           GroupLayout.PREFERRED_SIZE,
+				                                                                           28,
+				                                                                           GroupLayout.PREFERRED_SIZE)
+				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getFunctionBuilderButton(),
 				                                                                           GroupLayout.PREFERRED_SIZE,
 				                                                                           28,
 				                                                                           GroupLayout.PREFERRED_SIZE)
@@ -418,6 +411,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                    .add(attrModButton,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
+				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+				                                                                    .add(formulaBuilderButton,
+				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 			} else {
 				buttonBarLayout.setHorizontalGroup(buttonBarLayout.createParallelGroup(GroupLayout.LEADING)
@@ -435,6 +432,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                                       150,
 				                                                                                       Short.MAX_VALUE)
 				                                                                      .add(getAttrModButton(),
+				                                                                           GroupLayout.PREFERRED_SIZE,
+				                                                                           28,
+				                                                                           GroupLayout.PREFERRED_SIZE)
+										       		      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getFunctionBuilderButton(),
 				                                                                           GroupLayout.PREFERRED_SIZE,
 				                                                                           28,
 				                                                                           GroupLayout.PREFERRED_SIZE)
@@ -460,6 +462,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                     27, Short.MAX_VALUE)
 				                                                .add(buttonBarLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.CENTER)
 				                                                                    .add(importButton,
+				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+				                                                                         27,
+				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+				                                                                    .add(formulaBuilderButton,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 				                                                                         27,
 				                                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -551,6 +557,37 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		}
 
 		return attrModButton;
+	}
+
+	private JButton formulaBuilderButton = null;
+
+	private JButton getFunctionBuilderButton() {
+		if (formulaBuilderButton == null) {
+			formulaBuilderButton = new JButton();
+			formulaBuilderButton.setBorder(null);
+			formulaBuilderButton.setText("fx");
+			formulaBuilderButton.setToolTipText("Function Builder");
+			formulaBuilderButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+
+			formulaBuilderButton.addMouseListener(new java.awt.event.MouseAdapter() {
+					public void mouseClicked(java.awt.event.MouseEvent e) {
+						final int cellRow = table.getSelectedRow();
+						final int cellColum = table.getSelectedColumn();
+						if (cellRow != -1 && cellColum != -1 && tableModel.isCellEditable(cellRow, cellColum)) {
+							final String columnName = tableModel.getColumnName(cellColum);
+							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+							Util.initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+							formulaBuilderDialog =
+								new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
+								                         attribNameToTypeMap, columnName);
+							formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+							formulaBuilderDialog.setVisible(true);
+						}
+					}
+				});
+		}
+
+		return formulaBuilderButton;
 	}
 
 	protected void editMetadata() {
@@ -676,7 +713,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	}
 
 	/**
-	 * This method initializes jButton1
+	 * This method initializes createNewAttributeButton
 	 *
 	 * @return javax.swing.JButton
 	 */

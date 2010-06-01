@@ -179,8 +179,11 @@ public class AttributeBrowser implements TableColumnModelListener {
 		// Create table model.
 		tableModel = makeModel();
 
+		attributeTable = new CyAttributeBrowserTable(tableModel, panelType);
+		attributeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	
 		// Toolbar for selecting attributes and create new attribute.
-		attributeBrowserToolBar = new AttributeBrowserToolBar(tableModel,
+		attributeBrowserToolBar = new AttributeBrowserToolBar(tableModel, attributeTable,
 		                                                      new AttributeModel(attrData), orderedColumn,
 		                                                      panelType);
 
@@ -190,9 +193,6 @@ public class AttributeBrowser implements TableColumnModelListener {
 		mainPanel.setPreferredSize(new Dimension(400, 200));
 		mainPanel.setBorder(null);
 
-		attributeTable = new CyAttributeBrowserTable(tableModel, panelType);
-		attributeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-	
 		// If this is a network attribute browser, do not allow to swap
 		// column.
 		if (panelType == DataObjectType.NETWORK) {
@@ -222,7 +222,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyAttributeBrowserTable getattributeTable() {
+	public CyAttributeBrowserTable getAttributeTable() {
 		return attributeTable;
 	}
 

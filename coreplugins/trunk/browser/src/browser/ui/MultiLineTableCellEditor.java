@@ -1,4 +1,3 @@
-
 package browser.ui;
 
 import java.awt.Color;
@@ -35,9 +34,9 @@ import javax.swing.table.TableColumn;
 
 import java.util.EventObject;
 
-/**
- *
- */
+import browser.ValidatedObjectAndEditString;
+
+
 public class MultiLineTableCellEditor extends AbstractCellEditor implements TableCellEditor,
                                                                             ActionListener
 {
@@ -53,80 +52,39 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 		textArea.setWrapStyleWord(true);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public Object getCellEditorValue() {
 		return textArea.getText();
 	}
 
 	protected int clickCountToStart = 2;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public int getClickCountToStart() {
 		return clickCountToStart;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param clickCountToStart DOCUMENT ME!
-	 */
 	public void setClickCountToStart(int clickCountToStart) {
 		this.clickCountToStart = clickCountToStart;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public boolean isCellEditable(EventObject e) {
 		return !(e instanceof MouseEvent)
 		       || (((MouseEvent) e).getClickCount() >= clickCountToStart);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param ae DOCUMENT ME!
-	 */
 	public void actionPerformed(ActionEvent ae) {
 		stopCellEditing();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param table DOCUMENT ME!
-	 * @param value DOCUMENT ME!
-	 * @param isSelected DOCUMENT ME!
-	 * @param row DOCUMENT ME!
-	 * @param column DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-	                                             int row, int column)
+	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+	                                             final int row, final int column)
 	{
-		String text = (value != null) ? value.toString() : "";
+		final String text = (value != null) ? ((ValidatedObjectAndEditString)value).getEditString() : "";
 		textArea.setTable(table);
 		textArea.setText(text);
 
 		return textArea;
 	}
 
-	/**
-	 * 
-	 */
 	public static final String UPDATE_BOUNDS = "UpdateBounds";
 
 	class ResizableTextArea extends JTextArea implements KeyListener {
@@ -178,8 +136,8 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 		};
 
 		private void updateBounds() {
-			if ( table == null ) {
-				System.out.println("table is null");
+			if (table == null) {
+				System.err.println("table is null");
 				return;
 			}
 				
@@ -194,19 +152,6 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 				validate();
 			} 
 		}
-
-/*
-		protected void processKeyEvent(final KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				System.err.print("VK_ENTER: ");
-				final int modifiers = e.getModifiers();
-				System.err.println("modifiers="+modifiers);
-			}
-
-			super.processKeyEvent(e);
-		}
-*/
-
 
 		//
 		// KeyListener Interface

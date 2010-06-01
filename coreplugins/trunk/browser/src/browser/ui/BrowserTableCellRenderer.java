@@ -22,6 +22,7 @@ import javax.swing.table.TableCellRenderer;
 
 import browser.AttributeBrowser;
 import browser.DataObjectType;
+import browser.ValidatedObjectAndEditString;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
@@ -51,7 +52,6 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	private static final Color SELECTED_LABEL_COLOR = Color.black.brighter();
 	private DataObjectType type = DataObjectType.NODES;
 	private boolean coloring;
-	private Object vl;
 
 	/**
 	 * Creates a new BrowserTableCellRenderer object.
@@ -79,22 +79,30 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-	                                               boolean hasFocus, int row, int column) {
-		vl = value;
+	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+	                                               final boolean hasFocus, final int row, final int column)
+	{
+		setHorizontalAlignment(JLabel.LEFT);
 
+		final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)value;
 		final String colName = table.getColumnName(column);
 
 		// First, set values
-		setHorizontalAlignment(JLabel.LEFT);
-		setText((value == null) ? "" : value.toString());
-
-		if (value != null) {
-			// Set HTML style tooltip
-			setToolTipText(getFormattedToolTipText(colName, value));
-		} else {
-			setToolTipText(null);
+		if (objectAndEditString == null
+		    || (objectAndEditString.getValidatedObject() == null && objectAndEditString.getErrorText() == null))
+			setText("");
+		else {
+			final String displayText = (objectAndEditString.getErrorText() != null)
+				? objectAndEditString.getErrorText()
+				: objectAndEditString.getValidatedObject().toString();
+			setText(displayText);
 		}
+
+		// Set HTML style tooltip?
+		if (objectAndEditString != null)
+			setToolTipText(getFormattedToolTipText(colName, objectAndEditString.getValidatedObject()));
+		else
+			setToolTipText(null);
 
 		// If selected, return
 		if (isSelected) {
@@ -110,13 +118,13 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		setFont(normalFont);
 		setBackground(table.getBackground());
 
-		final CyAttributes data = type.getAssociatedAttribute();
+		final CyAttributes attribs = type.getAssociatedAttribute();
 
-		if (data == null)
+		if (attribs == null)
 			return this;
 
 		// check for non-editable columns
-		if (data.getUserEditable(colName) == false) {
+		if (attribs.getUserEditable(colName) == false) {
 			setBackground(NON_EDITABLE_COLOR);
 		}
 
@@ -174,14 +182,16 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	 * @return
 	 */
 	private String getFormattedToolTipText(final String colName, final Object value) {
-		StringBuilder html = new StringBuilder();
+		if (value == null)
+			return "";
 
+		final StringBuilder html = new StringBuilder();
 		html.append(HTML_BEG + "<strong text=\"#4169E1\" >" + colName + "</strong><br><hr>"
 		            + HTML_STYLE);
 
-		if ((value instanceof List == false) && (value instanceof Map == false)) {
+		if ((value instanceof List == false) && (value instanceof Map == false))
 			html.append(value.toString());
-		} else if (value instanceof List) {
+		else if (value instanceof List) {
 			html.append("<ul leftmargin=\"0\">");
 
 			for (Object item : (List<Object>) value) {
