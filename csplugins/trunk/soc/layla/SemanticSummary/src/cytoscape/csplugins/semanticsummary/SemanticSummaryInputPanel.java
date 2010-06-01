@@ -35,12 +35,15 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
@@ -94,8 +97,8 @@ public class SemanticSummaryInputPanel extends JPanel
 		//Create the three main panels: CloudList, Options, and Bottom
 		
 		// Put the CloudList in a scroll pane
-		//JPanel cloudList = createCloudListPanel();
-		//JScrollPane cloudListScroll = new JScrollPane(cloudList);
+		JPanel cloudList = createCloudListPanel();
+		JScrollPane cloudListScroll = new JScrollPane(cloudList);
 		
 		//Put the Options in a scroll pane
 		CollapsiblePanel optionsPanel = createOptionsPanel();
@@ -105,7 +108,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		JPanel bottomPanel = createBottomPanel();
 		
 		//Add all the vertically aligned components to the main panel
-		//add(cloudListScroll,BorderLayout.NORTH);
+		add(cloudListScroll,BorderLayout.NORTH);
 		add(optionsScroll,BorderLayout.CENTER);
 		add(bottomPanel,BorderLayout.SOUTH);
 	
@@ -113,6 +116,42 @@ public class SemanticSummaryInputPanel extends JPanel
 	
 	//METHODS
 	//TODO - add any button listener methods necessary
+	
+	/**
+	 * Creates the cloud list panel for the currently selected network.
+	 * @return JPanel - the cloud list panel.
+	 */
+	public JPanel createCloudListPanel()
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		
+		//Name of the network
+		JPanel networkPanel = new JPanel();
+		networkPanel.setLayout(new BorderLayout());
+		JLabel networkLabel = new JLabel("Network 1");
+		networkPanel.add(networkLabel,BorderLayout.WEST);
+		
+		//List of Clouds
+		DefaultListModel listValues = new DefaultListModel();
+		
+		//TODO
+		//ADD VALUES TO CLOUD LIST HERE
+		listValues.addElement("Cloud 1");//TEMP CODE
+		listValues.addElement("Cloud 2");//TEMP CODE
+		JList cloudList = new JList(listValues);
+		cloudList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		cloudList.setSelectedIndex(0);
+		cloudList.setVisibleRowCount(10);
+		JScrollPane listScrollPane = new JScrollPane(cloudList);
+		
+		//Add to panel
+		panel.add(networkPanel,BorderLayout.NORTH);
+		panel.add(listScrollPane,BorderLayout.SOUTH);
+		
+		return panel;
+	}
+	
 	
 	/**
 	 * Creates a collapsable panel that holds all of the user entered
@@ -162,10 +201,19 @@ public class SemanticSummaryInputPanel extends JPanel
 		panel.setLayout(new GridLayout(0,1));
 		
 		JRadioButton name = new JRadioButton("Node Name");
+		
+		JPanel attributePanel = new JPanel();
+		attributePanel.setLayout(new BorderLayout());
+		
 		JRadioButton attribute = new JRadioButton("Attribute");
+		JFormattedTextField attributeVal = new JFormattedTextField();
+		attributeVal.setEditable(false);
+		attributeVal.setColumns(10);
+		attributePanel.add(attribute,BorderLayout.WEST);
+		attributePanel.add(attributeVal,BorderLayout.EAST);
 		
 		panel.add(name);
-		panel.add(attribute);
+		panel.add(attributePanel);
 		
 		//TODO - add listeners and attribute selections
 		
