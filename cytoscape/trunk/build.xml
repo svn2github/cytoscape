@@ -59,7 +59,7 @@
 	     This is primarily to support windows versioning.  Do NOT add 
 	     letters, "beta", etc.  to version.num.  
 	     Extra information can, however, be added to version. -->
-	<property name="version.num" value="2.7.0" />
+	<property name="version.num" value="2.8.0" />
 	<property name="version" value="${version.num}" />
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
 	<property name="java.target_version" value="1.5" />
@@ -411,7 +411,7 @@
 		         source="1.5" 
 		         breakiterator="true" 
 		         Windowtitle="Cytoscape ${version} API" 
-		         header="Cytoscape ${version} (c) 2006,2007 ISB, MSKCC, UCSD" 
+		         header="Cytoscape ${version} (c) 2006-2010 ISB, MSKCC, UCSD" 
 		         footer="www.cytoscape.org" 
 		         classpathref="classpath" 
 		         access="public">

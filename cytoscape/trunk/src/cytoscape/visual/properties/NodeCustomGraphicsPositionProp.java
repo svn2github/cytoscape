@@ -23,10 +23,8 @@ import ding.view.DNodeView;
 import ding.view.ObjectPositionImpl;
 
 public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
-	
+
 	private static final int ICON_SIZE = 55;
-	
-	
 
 	private int index;
 
@@ -59,8 +57,8 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 		Graphics2D g2 = bi.createGraphics();
 
 		final ObjectPlacerGraphic lp = new ObjectPlacerGraphic(
-				(ObjectPosition) value, ICON_SIZE, false, "Custom Graphics", null,
-				null);
+				(ObjectPosition) value, ICON_SIZE, false, "Custom Graphics",
+				null, null);
 		lp.paint(g2);
 
 		NodeIcon icon = new NodeIcon() {
@@ -98,16 +96,13 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 		final NodeCustomGraphicsProp customGraphicsProp = (NodeCustomGraphicsProp) VisualPropertyType
 				.getCustomGraphicsType(index).getVisualProperty();
 
-		
-		final Set<CustomGraphic> currentCG = customGraphicsProp.getCurrentCustomGraphics(dv);
-		if(currentCG == null || currentCG.size() == 0) {
-			System.out.println(nv.getNode().getIdentifier() + ": CG is empty for this location! " + VisualPropertyType
-					.getCustomGraphicsPositionType(index));
+		final Set<CustomGraphic> currentCG = customGraphicsProp
+				.getCurrentCustomGraphics(dv);
+		if (currentCG == null || currentCG.size() == 0) {
+			// Ignore if no CG is available.
 			return;
 		}
 
-		System.out.println(p.toString() + " = ============= Process Position Prop ======================= " + nv.getNode().getIdentifier());
-		
 		final List<CustomGraphic> newList = new ArrayList<CustomGraphic>();
 		for (CustomGraphic g : currentCG) {
 			newList.add(dv.setCustomGraphicsPosition(g, p));
@@ -117,12 +112,11 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 		currentCG.clear();
 		currentCG.addAll(newList);
 
-
-		System.out.println(VisualPropertyType
-				.getCustomGraphicsPositionType(index)
-				+ ": Number of registered Custom Graphics: "
-				+ dv.getNumCustomGraphics());
-		}
+//		System.out.println(VisualPropertyType
+//				.getCustomGraphicsPositionType(index)
+//				+ ": Number of registered Custom Graphics: "
+//				+ dv.getNumCustomGraphics());
+	}
 
 	/**
 	 * DOCUMENT ME!
