@@ -12,17 +12,14 @@ FOR /F %%A in ('DIR %TMP%\MATCH.TXT') DO (
 :64bit
 	echo -Xms20m >  Cytoscape.vmoptions 
 	echo -Xmx20g >> Cytoscape.vmoptions 
-	GOTO end:
+	GOTO shared
 
 
 :32bit
 	echo -Xms10m   >  Cytoscape.vmoptions 
 	echo -Xmx1550m >> Cytoscape.vmoptions 
 
-:: Shared JVM options.
-echo -Dswing.aatext=true               >> Cytoscape.vmoptions
-echo -Dawt.useSystemAAFontSettings=lcd >> Cytoscape.vmoptions
-
-:end
-set errorlevel=0
+:shared
+	echo -Dswing.aatext=true               >> Cytoscape.vmoptions
+	echo -Dawt.useSystemAAFontSettings=lcd >> Cytoscape.vmoptions
 
