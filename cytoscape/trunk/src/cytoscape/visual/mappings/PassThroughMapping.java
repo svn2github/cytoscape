@@ -118,7 +118,6 @@ public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 	public PassThroughMapping(final Class<V> rangeClass, final String attrName) {
 		super(rangeClass, attrName);
 		this.acceptedClasses = ACCEPTED_CLASS;
-		System.out.println("@@@@@ PTh Mapping created: " + attrName);
 	}
 
 	/**

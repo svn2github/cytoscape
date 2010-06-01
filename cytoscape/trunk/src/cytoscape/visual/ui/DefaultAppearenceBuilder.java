@@ -34,23 +34,6 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.logger.CyLogger;
-import cytoscape.util.CyColorChooser;
-
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualPropertyDependency;
-import cytoscape.visual.VisualPropertyDependency.Definition;
-import static cytoscape.visual.VisualPropertyType.*;
-
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.border.DropShadowBorder;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -65,17 +48,41 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Map;
-import java.util.HashMap;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+
+import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.border.DropShadowBorder;
+
+import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.CyColorChooser;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualPropertyDependency.Definition;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -96,8 +103,14 @@ import javax.swing.border.LineBorder;
  * @author kono
  */
 public class DefaultAppearenceBuilder extends JDialog {
+	
+	private static final Dimension PANEL_SIZE = new Dimension(500, 27);
+	
+	private static final long serialVersionUID = 596165395462496156L;
+	
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
+	
 	private static CyLogger logger = CyLogger.getLogger(DefaultAppearenceBuilder.class);
 
 	// This editor should be a singleton.
@@ -138,7 +151,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			dab = new DefaultAppearenceBuilder(parent, true);
 
 		dab.setLocationRelativeTo(parent);
-		dab.setSize(900, 400);
+		dab.setSize(900, 450);
 
 		dab.buildList();
 
@@ -229,8 +242,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
 		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
-		jXTitledPanel1.setMinimumSize(new java.awt.Dimension(300, 27));
-		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
+		jXTitledPanel1.setMinimumSize(PANEL_SIZE);
+		jXTitledPanel1.setPreferredSize(PANEL_SIZE);
 		defaultObjectTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
 		nodeScrollPane.setViewportView(nodeList);
@@ -291,7 +304,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                   .add(jXTitledPanel1,
 		                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                        198, Short.MAX_VALUE)
+		                                                                        350, Short.MAX_VALUE)
 		                                                                   .add(12, 12, 12)));
 		jXPanel1Layout.setVerticalGroup(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                              .add(org.jdesktop.layout.GroupLayout.TRAILING,

@@ -136,11 +136,7 @@ public class ValueSelectDialog extends JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Select New Value");
-//		mainPanel.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-//		                                                   new Color(Color.gray.getRed(),
-//		                                                             Color.gray.getGreen(),
-//		                                                             Color.gray.getBlue(), 100),
-//		                                                   new Point2D.Double(.8d, 0), Color.WHITE));
+
 		mainPanel.setTitle(type.getName());
 		mainPanel.setTitleFont(new java.awt.Font("SansSerif", 1, 14));
 
@@ -178,13 +174,13 @@ public class ValueSelectDialog extends JDialog {
 		                                                                      .addContainerGap())
 		                                                  .add(iconListScrollPane,
 		                                                       org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                       291, Short.MAX_VALUE));
+		                                                       300, Short.MAX_VALUE));
 		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
 		                                                     mainPanelLayout.createSequentialGroup()
 		                                                                    .add(iconListScrollPane,
 		                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                         312,
+		                                                                         550,
 		                                                                         Short.MAX_VALUE)
 		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                    .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
