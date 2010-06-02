@@ -52,7 +52,6 @@ public class SemanticSummaryParameters
 	//VARIABLES
 	private String networkName;
 	private HashMap<String, CloudParameters> clouds; //list of network's clouds
-	private WordFilter filter;
 	private List<CyNode> nodeList; //list of all CyNodes in network
 	private Integer networkNumNodes;
 	
@@ -71,7 +70,6 @@ public class SemanticSummaryParameters
 	public SemanticSummaryParameters()
 	{
 		this.clouds = new HashMap<String,CloudParameters>();
-		this.filter = new WordFilter();
 		this.nodeList = new ArrayList<CyNode>();
 	}
 	
@@ -140,16 +138,6 @@ public class SemanticSummaryParameters
 	public void setClouds(HashMap<String, CloudParameters> cloudMap)
 	{
 		clouds = cloudMap;
-	}
-	
-	public WordFilter getFilter()
-	{
-		return filter;
-	}
-	
-	public void setFilter(WordFilter aFilter)
-	{
-		filter = aFilter;
 	}
 	
 	public List<CyNode> getNetworkNodes()

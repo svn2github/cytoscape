@@ -30,7 +30,17 @@
 
 package cytoscape.csplugins.semanticsummary;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Rectangle;
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.Scrollable;
 
 /**
  * The CloudDisplayPanel class defines the panel that displays a Semantic 
@@ -45,15 +55,106 @@ public class CloudDisplayPanel extends JPanel
 	
 	//VARIABLES
 	//TODO
+	JPanel tagCloudFlowPanel;//add JLabels here for words
 	
 	
 	//CONSTRUCTORS
 	public CloudDisplayPanel()
 	{
-	//TODO	
+		setLayout(new BorderLayout());
+		
+		//Create JPanel containing tag words
+		tagCloudFlowPanel = initializeTagCloud();
+		JScrollPane cloudScroll = new JScrollPane(tagCloudFlowPanel);
+		cloudScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		add(cloudScroll, BorderLayout.CENTER);
+		
+		
+		//TESTING DATA
+		//TODO - Remove this
+		JLabel first = new JLabel("First" + " ");
+		first.setFont(new Font("sansserif",Font.BOLD, 72));
+		tagCloudFlowPanel.add(first);
+		
+		JLabel second = new JLabel("Second" + " ");
+		second.setFont(new Font("sansserif",Font.BOLD, 32));
+		tagCloudFlowPanel.add(second);
+		
+		JLabel third = new JLabel("Third" + " ");
+		third.setFont(new Font("sansserif",Font.BOLD, 12));
+		tagCloudFlowPanel.add(third);
+		
+		JLabel fourth = new JLabel("Fourth" + " ");
+		fourth.setFont(new Font("sansserif",Font.PLAIN, 72));
+		tagCloudFlowPanel.add(fourth);
+		
+		JLabel fifth = new JLabel("Fifth" + " ");
+		fifth.setFont(new Font("sansserif",Font.PLAIN, 32));
+		tagCloudFlowPanel.add(fifth);
+		
+		JLabel sixth = new JLabel("Sixth" + " ");
+		sixth.setFont(new Font("sansserif",Font.PLAIN, 12));
+		tagCloudFlowPanel.add(sixth);
+		
+		JLabel seventh = new JLabel("First" + " ");
+		seventh.setFont(new Font("sansserif",Font.BOLD, 72));
+		tagCloudFlowPanel.add(seventh);
+		
+		JLabel eighth = new JLabel("Second" + " ");
+		eighth.setFont(new Font("sansserif",Font.BOLD, 32));
+		tagCloudFlowPanel.add(eighth);
+		
+		JLabel ninth = new JLabel("Third" + " ");
+		ninth.setFont(new Font("sansserif",Font.BOLD, 12));
+		tagCloudFlowPanel.add(ninth);
+		
+		JLabel tenth = new JLabel("Fourth" + " ");
+		tenth.setFont(new Font("sansserif",Font.PLAIN, 72));
+		tagCloudFlowPanel.add(tenth);
+		
+		JLabel eleventh = new JLabel("Fifth" + " ");
+		eleventh.setFont(new Font("sansserif",Font.PLAIN, 32));
+		tagCloudFlowPanel.add(eleventh);
+		
+		JLabel twelfth = new JLabel("Sixth" + " ");
+		twelfth.setFont(new Font("sansserif",Font.PLAIN, 12));
+		tagCloudFlowPanel.add(twelfth);
+		
 	}
 	
 	//METHODS
 	//TODO
+	
+	/**
+	 * Initialized a blank tag cloud JPanel object.
+	 * @return JPanel
+	 */
+	private JPanel initializeTagCloud()
+	{
+		JPanel panel = new JPanel(new ModifiedFlowLayout());
+		return panel;
+	}
+	
+	/**
+	 * Clears all words from the CloudDisplay.
+	 */
+	public void clearCloud()
+	{
+		tagCloudFlowPanel = initializeTagCloud();
+	}
+	
+	
+
+	//Getters and Setters
+	
+	public JPanel getTagCloudFlowPanel()
+	{
+		return tagCloudFlowPanel;
+	}
+	
+	public void setTagCloudFlowPanel(JPanel aPanel)
+	{
+		tagCloudFlowPanel = aPanel;
+	}
 
 }

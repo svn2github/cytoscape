@@ -89,7 +89,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	//CONSTRUCTORS
 	public SemanticSummaryInputPanel()
 	{
-	//TODO	
+		//TODO	
 		setLayout(new BorderLayout());
 		
 		//INITIALIZE PARAMETERS

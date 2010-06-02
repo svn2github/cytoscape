@@ -66,6 +66,8 @@ public class CloudParameters
 	private HashMap<String, Integer> selectedCounts; // counts for selected nodes
 	private HashMap<String, Double> ratios;
 	
+	private WordFilter filter;
+	
 	private Double minRatio;
 	private Double maxRatio;
 	
@@ -84,6 +86,7 @@ public class CloudParameters
 		this.networkCounts = new HashMap<String, Integer>();
 		this.selectedCounts = new HashMap<String, Integer>();
 		this.ratios = new HashMap<String, Double>();
+		this.filter = new WordFilter();
 	}
 	
 	/**
@@ -112,7 +115,6 @@ public class CloudParameters
 		
 		//Retrieve needed variables from parent parameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
-		WordFilter filter = networkParams.getFilter();
 		List<CyNode> networkNodes = networkParams.getNetworkNodes();
 		
 		//Iterate to retrieve CyNodes
@@ -187,7 +189,6 @@ public class CloudParameters
 		
 		//Retrieve needed variables from parent parameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
-		WordFilter filter = networkParams.getFilter();
 		
 		Set<CyNode> selectedNodes = this.getSelectedNodes();
 		
@@ -394,6 +395,17 @@ public class CloudParameters
 	{
 		ratios = r;
 	}
+	
+	public WordFilter getFilter()
+	{
+		return filter;
+	}
+	
+	public void setFilter(WordFilter aFilter)
+	{
+		filter = aFilter;
+	}
+
 	
 	public Double getMinRatio()
 	{
