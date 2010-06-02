@@ -132,12 +132,15 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 
 			// Get the cluster we want
 			Tunable t = getTunable(args, "clustertype");
-			if (t.getValue().equals("node")) {
+			if (t == null || t.getValue() == null) {
+				throw new RuntimeException("clustertype=(node|attribute) is required");
+			} else if (t.getValue().equals("node")) {
 				getNodeClusters(alg, result);
 			} else if (t.getValue().equals("attribute")) {
 				getAttributeClusters(alg, result);
-			} else
+			} else {
 				throw new RuntimeException("clustertype must be 'node' or 'attribute'");
+			}
 
 		} else if (algMap.containsKey(command)) {
 			// Get the algorithm
