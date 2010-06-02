@@ -92,6 +92,7 @@ public class Parser {
 			eqnParser.registerFunction(new Substitute());
 			eqnParser.registerFunction(new Sum());
 			eqnParser.registerFunction(new Tan());
+			eqnParser.registerFunction(new Tanh());
 			eqnParser.registerFunction(new Today());
 			eqnParser.registerFunction(new Trunc());
 			eqnParser.registerFunction(new UCase());
