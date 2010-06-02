@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Max implements Function {
@@ -52,7 +53,7 @@ public class Max implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"MAX(list)\" or \"MAX(arg1,arg2,...,argN)\""; }
+	public String getUsageDescription() { return "Call this with \"MAX(arg1[,arg2,...,argN])\""; }
 
 	public Class getReturnType() { return Double.class; }
 
@@ -62,16 +63,6 @@ public class Max implements Function {
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length == 0) // No empty argument list!
 			return null;
-		if (argTypes[0] == List.class && argTypes.length != 1) // If we have a list argument it must be the only one!
-			return null;
-
-		if (argTypes.length == 1 && argTypes[0] == List.class)
-			return Double.class;
-
-		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Long.class)
-				return null;
-		}
 
 		return Double.class;
 	}
@@ -83,53 +74,17 @@ public class Max implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
+		final double[] numbers;
+		try {
+			numbers = FunctionUtil.getNumbers(args);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert an argument or a list element to a number in a call to MAX()!");
+		}
+
 		double max = Double.NEGATIVE_INFINITY;
-
-		if (args[0] instanceof List) {
-			final List list = (List)args[0];
-
-			for (final Object listEntry : list) {
-				final Class listEntryType = listEntry.getClass();
-				final double value;
-				if (listEntryType == Double.class)
-					value = (Double)listEntry;
-				else if (listEntryType == Long.class)
-					value = (Long)listEntry;
-				else if (listEntryType == Integer.class)
-					value = (Integer)listEntry;
-				else if (listEntryType == String.class) {
-					try {
-						value = Double.parseDouble((String)listEntry);
-					} catch (final NumberFormatException e) {
-						throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to MAX()!");
-					}
-				}
-				else
-					throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to MAX()!");
-
-				if (value > max)
-					max = value;
-			}
-		} else { // One or more individual numbers.
-			for (final Object arg : args) {
-				final double value;
-				if (arg.getClass() == Double.class)
-					value = (Double)arg;
-				else if (arg.getClass() == Long.class)
-					value = (Long)arg;
-				else if (arg.getClass() == String.class) {
-					try {
-						value = Double.parseDouble((String)arg);
-					} catch (final NumberFormatException e) {
-						throw new IllegalArgumentException("can't convert an argument of MAX() to a number!");
-					}
-				}
-				else
-					throw new IllegalArgumentException("can't convert an argument of MAX() to a number!");
-
-				if (value > max)
-					max = value;
-			}
+		for (final double d : numbers) {
+			if (d > max)
+				max = d;
 		}
 
 		return max;
@@ -144,14 +99,11 @@ public class Max implements Function {
 	 *           set indicates that no further arguments are valid.
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length == 1 && leadingArgs[0] == List.class)
-			return null;
-
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(Double.class);
-		possibleNextArgs.add(Long.class);
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(List.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+		possibleNextArgs.add(List.class);
+		if (leadingArgs.length > 0)
+			possibleNextArgs.add(null);
 
 		return possibleNextArgs;
 	}

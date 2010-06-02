@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Nth implements Function {
@@ -60,7 +61,7 @@ public class Nth implements Function {
 	 *  @return String.class or null if the arguments are not a string followed by a number
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || argTypes[0] != List.class || argTypes[1] != Double.class)
+		if (argTypes.length != 2 || argTypes[0] != List.class || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return String.class;
@@ -74,7 +75,12 @@ public class Nth implements Function {
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final List list = (List)args[0];
-		final int index = (int)Math.round((Double)args[1] - 0.5);
+		final int index;
+		try {
+			index = (int)FunctionUtil.getArgAsLong(args[1]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to an integer in a call to NTH()!");
+		}
 
 		if (index <= 0 || index > list.size())
 			throw new IllegalArgumentException("illegal list index in call to NTH()!");
@@ -98,7 +104,7 @@ public class Nth implements Function {
 		if (leadingArgs.length == 0)
 			possibleNextArgs.add(List.class);
 		else
-			possibleNextArgs.add(Long.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 		
 		return possibleNextArgs;
 	}

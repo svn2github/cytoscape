@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Mod implements Function {
@@ -60,13 +61,9 @@ public class Mod implements Function {
 	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double nor Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2)
+		if (argTypes.length != 2 || !FunctionUtil.isScalarArgType(argTypes[0])
+		    || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
-
-		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Long.class)
-				return null;
-		}
 
 		return Double.class;
 	}
@@ -78,16 +75,18 @@ public class Mod implements Function {
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final double number;
-		if (args[0] instanceof Double)
-			number = (Double)args[0];
-		else // Assume we got an integer.
-			number = (Long)args[0];
+		try {
+			number = FunctionUtil.getArgAsDouble(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[0] + "\" to a number in a call to MOD()!");
+		}
 
 		final double divisor;
-		if (args[1] instanceof Double)
-			divisor = (Double)args[1];
-		else // Assume we got an integer.
-			divisor = (Long)args[1];
+		try {
+			divisor = FunctionUtil.getArgAsDouble(args[1]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to a divisor in a call to MOD()!");
+		}
 		if (divisor == 0.0)
 			throw new ArithmeticException("division by zero in call to MOD()!");
 
@@ -111,9 +110,8 @@ public class Mod implements Function {
 			return null;
 
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(Double.class);
-		possibleNextArgs.add(Long.class);
-		
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+
 		return possibleNextArgs;
 	}
 }

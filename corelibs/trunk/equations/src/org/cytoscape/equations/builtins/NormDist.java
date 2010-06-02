@@ -65,7 +65,7 @@ public class NormDist implements Function {
 			return null;
 
 		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Long.class && argType != String.class && argType != Boolean.class)
+			if (!FunctionUtil.isScalarArgType(argType))
 				return null;
 		}
 
@@ -79,9 +79,27 @@ public class NormDist implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double x = FunctionUtil.getArgAsDouble(args[0]);
-		final double mu = FunctionUtil.getArgAsDouble(args[1]);
-		final double sigma = FunctionUtil.getArgAsDouble(args[2]);
+		final double x;
+		try {
+			x = FunctionUtil.getArgAsDouble(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[0] + "\" to the 1st argument of NORMDIST()!");
+		}
+
+		final double mu;
+		try {
+			mu = FunctionUtil.getArgAsDouble(args[1]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to the 2nd argument of NORMDIST()!");
+		}
+
+		final double sigma;
+		try {
+			sigma = FunctionUtil.getArgAsDouble(args[2]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[2] + "\" to the 3rd argument of NORMDIST()!");
+		}
+
 		if (sigma <= 0)
 			throw new IllegalArgumentException("mean parameter in call to NORMDIST must be nonnegative!");
 		final boolean cumulative = FunctionUtil.getArgAsBoolean(args[3]);
@@ -105,10 +123,7 @@ public class NormDist implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length < 4) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(String.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 

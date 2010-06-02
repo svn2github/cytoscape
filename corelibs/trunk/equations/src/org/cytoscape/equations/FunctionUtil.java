@@ -343,6 +343,8 @@ public class FunctionUtil {
 			return (Double)arg;
 		if (arg.getClass() == Long.class)
 			return (double)(Long)arg;
+		if (arg.getClass() == Integer.class)
+			return (double)(Integer)arg;
 		if (arg.getClass() == String.class) {
 			try {
 				return Double.valueOf((String)arg);
@@ -365,6 +367,8 @@ public class FunctionUtil {
 			return (Double)arg == 0.0 ? false : true;
 		if (arg.getClass() == Long.class)
 			return (double)(Long)arg == 0L ? false : true;
+		if (arg.getClass() == Integer.class)
+			return (double)(Integer)arg == 0 ? false : true;
 		if (arg.getClass() == String.class) {
 			final String s = (String)arg;
 			if (s.equalsIgnoreCase("true"))

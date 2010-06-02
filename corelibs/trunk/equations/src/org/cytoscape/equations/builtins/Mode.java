@@ -56,7 +56,7 @@ public class Mode implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"MODE(list)\""; }
+	public String getUsageDescription() { return "Call this with \"MODE(arg1[,arg2,...,argN])\""; }
 
 	public Class getReturnType() { return Double.class; }
 
@@ -64,9 +64,7 @@ public class Mode implements Function {
 	 *  @return Double.class or null if there are not exactly a single list argument
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1)
-			return null;
-		if (argTypes[0] != List.class)
+		if (argTypes.length == 0)
 			return null;
 
 		return Double.class;
@@ -79,20 +77,11 @@ public class Mode implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final List list = (List)args[0];
-		if (list.size() < 2)
-			throw new IllegalArgumentException("illegal list argument in call to MODE(): must have at least 2 elements!");
-
-		final double[] x = new double[list.size()];
-		int i = 0;
-		for (final Object listElement : list) {
-			try {
-				x[i++] = FunctionUtil.getArgAsDouble(listElement);
-			} catch (final IllegalArgumentException e) {
-				throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
-				                                   " list element in call to MODE() is not a number: "
-				                                   + e.getMessage());
-			}
+		final double[] x;
+		try {
+			x = FunctionUtil.getNumbers(args);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("non-numeric argument or list element in a call to MODE()!");
 		}
 
 		Arrays.sort(x);
@@ -130,17 +119,10 @@ public class Mode implements Function {
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length == 1) {
-			if (leadingArgs[0] == List.class)
-				possibleNextArgs.add(null);
-		} else if (leadingArgs.length > 1)
-			possibleNextArgs.add(null);
-
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 		possibleNextArgs.add(List.class);
-		possibleNextArgs.add(Double.class);
-		possibleNextArgs.add(Long.class);
-		possibleNextArgs.add(Boolean.class);
-		possibleNextArgs.add(String.class);
+		if (leadingArgs.length > 0)
+			possibleNextArgs.add(null);
 
 		return possibleNextArgs;
 	}

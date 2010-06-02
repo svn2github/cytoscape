@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Not implements Function {
@@ -60,7 +61,7 @@ public class Not implements Function {
 	 *  @return Boolean.class or null if there is not exactly 1 arg or the arg is not of type Boolean
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || argTypes[0] != Boolean.class)
+		if (argTypes.length != 1 || !FunctionUtil.isScalarArgType(argTypes[0]))
 			return null;
 
 		return Boolean.class;
@@ -73,7 +74,14 @@ public class Not implements Function {
 	 *  @throws IllegalArgumentException this can never happen
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		return !(Boolean)args[0];
+		final boolean b;
+		try {
+			b = FunctionUtil.getArgAsBoolean(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[0] + "\" to a boolean value in a call to NOT()!");
+		}
+
+		return !b;
 	}
 
 	/**
@@ -87,7 +95,7 @@ public class Not implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length == 0) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Boolean.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 
