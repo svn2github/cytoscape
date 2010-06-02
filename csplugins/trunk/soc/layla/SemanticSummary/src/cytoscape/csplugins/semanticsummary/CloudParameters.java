@@ -31,6 +31,7 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -65,6 +66,7 @@ public class CloudParameters
 	private HashMap<String, Integer> networkCounts; // counts for whole network
 	private HashMap<String, Integer> selectedCounts; // counts for selected nodes
 	private HashMap<String, Double> ratios;
+	private ArrayList<CloudWordInfo> cloudWords;
 	
 	private WordFilter filter;
 	
@@ -73,6 +75,7 @@ public class CloudParameters
 	
 	private boolean countInitialized = false; //true when network counts are initialized
 	private boolean selInitialized = false; //true when selected counts initialized
+	private boolean ratiosInitialized = false; //true when ratios are computed
 	
 	//CONSTRUCTORS
 	
@@ -86,6 +89,7 @@ public class CloudParameters
 		this.networkCounts = new HashMap<String, Integer>();
 		this.selectedCounts = new HashMap<String, Integer>();
 		this.ratios = new HashMap<String, Double>();
+		this.cloudWords = new ArrayList<CloudWordInfo>();
 		this.filter = new WordFilter();
 	}
 	
@@ -246,6 +250,10 @@ public class CloudParameters
 	 */
 	public void updateRatios()
 	{
+		//already up to date
+		if (ratiosInitialized)
+			return;
+		
 		//Check that selected counts are up to date
 		if(!selInitialized)
 			this.updateSelectedCounts();
@@ -291,7 +299,65 @@ public class CloudParameters
 		
 		this.setMaxRatio(curMax);
 		this.setMinRatio(curMin);
+		
+		ratiosInitialized = true;
 	}
+	
+	/**
+	 * Calculates the proper font size for words in the selected nodes.
+	 */
+	public void calculateFontSizes()
+	{
+		if (!ratiosInitialized)
+			this.updateRatios();
+		
+		Set<String> words = ratios.keySet();
+		Iterator<String> iter = words.iterator();
+		while(iter.hasNext())
+		{
+			String curWord = (String)iter.next();
+			Integer fontSize = calculateFontSize(curWord);
+			CloudWordInfo curInfo = new CloudWordInfo(curWord, fontSize);
+			curInfo.setCloudParameters(this);
+			cloudWords.add(curInfo);
+		}//end while loop
+		
+		//Sort cloudWords in reverse order by fontsize
+		Collections.sort(cloudWords);
+		Collections.reverse(cloudWords);
+	}
+	
+	
+	/**
+	 * Calculates the font for a given word by using its ratio, the max and
+	 * min ratios as well as the max and min font size in the parent 
+	 * parameters object.  Assumes ratios are up to date and that word
+	 * is in the selected nodes.
+	 * @return Integer - the calculated font size for the specified word.
+	 */
+	private Integer calculateFontSize(String aWord)
+	{
+		//Sanity check
+		if (!ratios.containsKey(aWord))
+			return 0;
+		
+		Double ratio = ratios.get(aWord);
+		
+		//Map the interval minRatio to maxRatio to the new interval 
+		//minFont to maxFont using a linear transformation
+		Integer maxFont = networkParams.getMaxFont();
+		Integer minFont = networkParams.getMinFont();
+		
+		Double slope = (maxFont - minFont)/(maxRatio - minRatio);
+		Double yIntercept = minFont - (slope*minRatio); //minRatio maps to minFont
+		
+		//Round up to nearest Integer
+		Double temp = Math.ceil((slope*ratio) + yIntercept);
+		Integer fontSize = temp.intValue();
+		
+		return fontSize;
+	}
+	
 	
 	//Getters and Setters
 	public String getCloudName()
@@ -323,6 +389,8 @@ public class CloudParameters
 	{
 		attributeName = name;
 		countInitialized = false; //need to recalculate counts
+		selInitialized = false; // need to recalculate
+		ratiosInitialized = false; // need to recalculate
 	}
 	
 	public SemanticSummaryParameters getNetworkParams()
@@ -344,6 +412,7 @@ public class CloudParameters
 	{
 		selectedNodes = nodes;
 		selInitialized = false; //So we update when SelectedNodes change
+		ratiosInitialized = false; //need to update ratios
 	}
 	
 	public Integer getSelectedNumNodes()
@@ -396,6 +465,16 @@ public class CloudParameters
 		ratios = r;
 	}
 	
+	public ArrayList<CloudWordInfo> getCloudWordInfoList()
+	{
+		return cloudWords;
+	}
+	
+	public void setCloudWordInfoList(ArrayList<CloudWordInfo> words)
+	{
+		cloudWords = words;
+	}
+	
 	public WordFilter getFilter()
 	{
 		return filter;
@@ -445,5 +524,15 @@ public class CloudParameters
 	public void setSelInitialized(boolean val)
 	{
 		selInitialized = val;
+	}
+	
+	public boolean getRatiosInitialized()
+	{
+		return ratiosInitialized;
+	}
+	
+	public void setRatiosInitialized(boolean val)
+	{
+		ratiosInitialized = val;
 	}
 }

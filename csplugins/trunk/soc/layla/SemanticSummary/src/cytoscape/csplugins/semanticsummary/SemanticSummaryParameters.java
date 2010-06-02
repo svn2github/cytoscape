@@ -59,8 +59,8 @@ public class SemanticSummaryParameters
 	
 	//DO THESE GO HERE??
 	private static final Integer NUMBINS = 7; //NEED TO DECIDE ON THIS
-	private static final Integer MINFONTSIZE = 1; //TODO
-	private static final Integer MAXFONTSIZE = 7; //TODO
+	private static final Integer MINFONTSIZE = 12; //TODO
+	private static final Integer MAXFONTSIZE = 72; //TODO
 	
 	//CONSTRUCTORS
 	
@@ -114,6 +114,8 @@ public class SemanticSummaryParameters
 			String curCloud = iter.next();
 			CloudParameters cloudParams = clouds.get(curCloud);
 			cloudParams.setCountInitialized(false);
+			cloudParams.setSelInitialized(false);
+			cloudParams.setRatiosInitialized(false);
 		}
 	}
 	

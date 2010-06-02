@@ -31,16 +31,14 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.Scrollable;
 
 /**
  * The CloudDisplayPanel class defines the panel that displays a Semantic 
@@ -56,6 +54,7 @@ public class CloudDisplayPanel extends JPanel
 	//VARIABLES
 	//TODO
 	JPanel tagCloudFlowPanel;//add JLabels here for words
+	CloudParameters curCloud;
 	
 	
 	//CONSTRUCTORS
@@ -138,9 +137,34 @@ public class CloudDisplayPanel extends JPanel
 	/**
 	 * Clears all words from the CloudDisplay.
 	 */
-	public void clearCloud()
+	private void clearCloud()
 	{
 		tagCloudFlowPanel = initializeTagCloud();
+		curCloud = null;
+	}
+	
+	
+	/**
+	 * Updates the tagCloudFlowPanel to include all of the words at the size they
+	 * are defined for in params.
+	 * @param CloudParameters - parameters of the cloud we want to display.
+	 */
+	public void updateCloudDisplay(CloudParameters params)
+	{
+		//clear old info
+		this.clearCloud();
+		curCloud = params;
+		
+		//Loop through to create labels and add them
+		ArrayList<CloudWordInfo> wordInfo = curCloud.getCloudWordInfoList();
+		Iterator<CloudWordInfo> iter = wordInfo.iterator();
+		while(iter.hasNext())
+		{
+			CloudWordInfo curWordInfo = iter.next();
+			JLabel curLabel = curWordInfo.createCloudLabel();
+			
+			tagCloudFlowPanel.add(curLabel);
+		}
 	}
 	
 	
@@ -155,6 +179,16 @@ public class CloudDisplayPanel extends JPanel
 	public void setTagCloudFlowPanel(JPanel aPanel)
 	{
 		tagCloudFlowPanel = aPanel;
+	}
+	
+	public CloudParameters getCloudParameters()
+	{
+		return curCloud;
+	}
+	
+	public void setCloudParameters(CloudParameters params)
+	{
+		curCloud = params;
 	}
 
 }
