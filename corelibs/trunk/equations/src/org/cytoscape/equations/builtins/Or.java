@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Or implements Function {
@@ -63,11 +64,6 @@ public class Or implements Function {
 		if (argTypes.length == 0)
 			return null;
 
-		for (final Class argType : argTypes) {
-			if (argType != Boolean.class)
-				return null;
-		}
-
 		return Boolean.class;
 	}
 
@@ -78,8 +74,15 @@ public class Or implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		for (final Object arg : args) {
-			if ((Boolean)arg)
+		final boolean[] booleans;
+		try {
+			booleans = FunctionUtil.getBooleans(args);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert an argument or a list element to a boolean in a call to OR()!");
+		}
+
+		for (final boolean b : booleans) {
+			if (b)
 				return true;
 		}
 
@@ -96,7 +99,8 @@ public class Or implements Function {
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(Boolean.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+		possibleNextArgs.add(List.class);
 		if (leadingArgs.length > 0)
 			possibleNextArgs.add(null);
 

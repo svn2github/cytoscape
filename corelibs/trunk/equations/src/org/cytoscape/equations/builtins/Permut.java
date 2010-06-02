@@ -61,13 +61,9 @@ public class Permut implements Function {
 	 *  @return Double.class or null if there are 2 args or the args are not of type Double, Long, Boolean or String
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2)
+		if (argTypes.length != 2 || !FunctionUtil.isScalarArgType(argTypes[0])
+		    || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
-
-		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Long.class && argType != String.class && argType != Boolean.class)
-				return null;
-		}
 
 		return Long.class;
 	}
@@ -113,10 +109,7 @@ public class Permut implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length < 2) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(String.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 

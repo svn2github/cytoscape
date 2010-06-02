@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class And implements Function {
@@ -63,11 +64,6 @@ public class And implements Function {
 		if (argTypes.length == 0)
 			return null;
 
-		for (final Class argType : argTypes) {
-			if (argType != Boolean.class)
-				return null;
-		}
-
 		return Boolean.class;
 	}
 
@@ -79,8 +75,15 @@ public class And implements Function {
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		// Now evaluate the function.
-		for (final Object arg : args) {
-			if (!(Boolean)arg)
+		final boolean[] booleans;
+		try {
+			booleans = FunctionUtil.getBooleans(args);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert an argument or a list element to a boolean in a call to OR()!");
+		}
+
+		for (final boolean b : booleans) {
+			if (!b)
 				return false;
 		}
 

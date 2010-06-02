@@ -308,6 +308,33 @@ public class FunctionUtil {
 	}
 
 	/**
+	 *  Attempts to convert all arguments, including Lists to a uniform array of booleans.
+	 *
+	 *  @throws IllegalArgumentException if any scalar argument cannot be converted to a boolean or any list
+	 *          argument contains an element that cannot be converted to a number.
+	 */
+	static public boolean[] getBooleans(final Object[] args) {
+		final List<Boolean> booleans = new ArrayList<Boolean>();
+
+		for (final Object arg : args) {
+			if (arg instanceof List) {
+				final List list = (List)arg;
+				for (final Object listElement : list)
+					booleans.add(convertToBoolean(listElement));
+			}
+			else
+				booleans.add(convertToBoolean(arg));
+		}
+
+		final boolean[] retval = new boolean[booleans.size()];
+		int index = 0;
+		for (final Boolean b : booleans)
+			retval[index++] = b;
+
+		return retval;
+	}
+
+	/**
 	 *  @return "arg" converted to a Double, if possible
 	 *  @throws IllegalArgumentException if the argument cannot be converted to a Double
 	 */
@@ -327,5 +354,28 @@ public class FunctionUtil {
 			return Double.valueOf((Boolean)arg ? 1.0 : 0.0);
 
 		throw new IllegalArgumentException("can't convert argument to a floating point number!");
+	}
+
+	/**
+	 *  @return "arg" converted to a Boolean, if possible
+	 *  @throws IllegalArgumentException if the argument cannot be converted to a Double
+	 */
+	static private Boolean convertToBoolean(final Object arg) {
+		if (arg.getClass() == Double.class)
+			return (Double)arg == 0.0 ? false : true;
+		if (arg.getClass() == Long.class)
+			return (double)(Long)arg == 0L ? false : true;
+		if (arg.getClass() == String.class) {
+			final String s = (String)arg;
+			if (s.equalsIgnoreCase("true"))
+				return true;
+			if (s.equalsIgnoreCase("false"))
+				return false;
+			throw new IllegalArgumentException("can't convert \"" + arg + "\" to a floating point number!");
+		}
+		if (arg.getClass() == Boolean.class)
+			return (Boolean)arg;
+
+		throw new IllegalArgumentException("can't convert argument to a boolean!");
 	}
 }

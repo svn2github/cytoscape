@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Right implements Function {
@@ -60,7 +61,8 @@ public class Right implements Function {
 	 *  @return String.class or null if the args passed in have the wrong arity or a type mismatch was found
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || argTypes[1] != Double.class)
+		if (argTypes.length != 2 || !FunctionUtil.isScalarArgType(argTypes[0])
+		    || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return String.class;
@@ -73,11 +75,16 @@ public class Right implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final String text = args[0].toString();
-		final int count = (int)Math.round((Double)args[1] - 0.5);
+		final String text = FunctionUtil.getArgAsString(args[0]);
+		final int count;
+		try {
+			count = (int)FunctionUtil.getArgAsLong(args[1]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to an integer in a call to RIGHT()!");
+		}
 
 		if (count < 0)
-			throw new IllegalArgumentException("illegal character count in call to RIGHT()!");
+			throw new IllegalArgumentException("illegal character count in a call to RIGHT()!");
 		if (count >= text.length())
 			return text;
 		return text.substring(text.length() - count);
@@ -96,10 +103,7 @@ public class Right implements Function {
 			return null;
 
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(String.class);
-		else
-			possibleNextArgs.add(Long.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 		
 		return possibleNextArgs;
 	}

@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Round implements Function {
@@ -60,9 +61,8 @@ public class Round implements Function {
 	 *  @return Double.class or null if there are not 2 args or the args are not of type Double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2
-		    || (argTypes[0] != Double.class && argTypes[0] != Long.class)
-		    || (argTypes[1] != Double.class && argTypes[1] != Long.class))
+		if (argTypes.length != 2 || !FunctionUtil.isScalarArgType(argTypes[0])
+		    || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return Double.class;
@@ -75,11 +75,22 @@ public class Round implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = (args[0].getClass() == Double.class) ? (Double)args[0] : (Long)args[0];
+		final double number;
+		try {
+			number = FunctionUtil.getArgAsDouble(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[0] + "\" to a number in a call to ROUND()!");
+		}
 		final double absNumber = Math.abs(number);
-		final double numDigits = (args[1].getClass() == Double.class) ? Math.round((Double)args[1] - 0.5) : (Long)args[1];
-		final double shift = Math.pow(10.0, numDigits);
 
+		final double numDigits;
+		try {
+			numDigits = FunctionUtil.getArgAsLong(args[1]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to an integer in a call to ROUND()!");
+		}
+
+		final double shift = Math.pow(10.0, numDigits);
 		final double roundedAbsNumber = Math.round(absNumber * shift) / shift;
 		return number > 0.0 ? roundedAbsNumber : -roundedAbsNumber;
 	}
