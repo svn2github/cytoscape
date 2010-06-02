@@ -30,7 +30,6 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
 

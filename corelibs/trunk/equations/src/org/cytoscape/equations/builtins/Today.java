@@ -32,7 +32,6 @@ package org.cytoscape.equations.builtins;
 
 import java.text.DateFormat;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 

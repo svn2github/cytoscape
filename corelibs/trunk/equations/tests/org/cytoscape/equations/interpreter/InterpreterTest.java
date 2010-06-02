@@ -1004,6 +1004,7 @@ public class InterpreterTest extends TestCase {
 
 		assertTrue(compiler.compile("=COS(0.785398163)", attribNameToTypeMap));
 		final Interpreter interpreter4 = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
-                assertEquals(new Double(0.7071067814675859), interpreter4.run());
+		final Double result = (Double)interpreter4.run();
+                assertEquals(0.7071067814675859, result.doubleValue(), 1.0e-13);
 	}
 }

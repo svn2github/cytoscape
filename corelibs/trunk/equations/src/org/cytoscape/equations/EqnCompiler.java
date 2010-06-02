@@ -33,7 +33,6 @@ package org.cytoscape.equations;
 import java.util.Map;
 import java.util.Stack;
 import org.cytoscape.equations.EqnParser;
-import org.cytoscape.equations.interpreter.Instruction;
 import org.cytoscape.equations.parse_tree.Node;
 
 

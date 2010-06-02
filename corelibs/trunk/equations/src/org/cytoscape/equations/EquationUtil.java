@@ -37,10 +37,6 @@
 package org.cytoscape.equations;
 
 
-import java.util.List;
-import java.util.Map;
-
-
 public class EquationUtil {
 	/**
 	 *  @return "attribName" written as am attribute reference with a leading $-sign

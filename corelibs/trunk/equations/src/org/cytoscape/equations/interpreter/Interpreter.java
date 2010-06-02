@@ -32,7 +32,6 @@ package org.cytoscape.equations.interpreter;
 
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.Function;
-import org.cytoscape.equations.parse_tree.*;
 import java.util.EmptyStackException;
 import java.util.Map;
 import java.util.Stack;

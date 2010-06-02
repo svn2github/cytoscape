@@ -33,10 +33,8 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.FunctionUtil;
-import org.cytoscape.equations.EquationUtil;
 
 
 public class Mode implements Function {

@@ -33,7 +33,6 @@ package org.cytoscape.equations.builtins;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import junit.framework.*;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Parser;

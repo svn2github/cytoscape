@@ -31,7 +31,6 @@ package org.cytoscape.equations.parse_tree;
 
 
 import java.util.Stack;
-import org.cytoscape.equations.interpreter.Instruction;
 
 
 /**
