@@ -58,7 +58,7 @@ import java.util.Set;
 /**
  * XXX FIXME XXX Description 
  */
-public class GroupNamespace extends AbstractCommandHandler {
+public class GroupNamespace extends AbstractGraphObjectHandler {
 
 	// Group commands
 	static final String LIST = "list";
@@ -165,7 +165,7 @@ public class GroupNamespace extends AbstractCommandHandler {
 		// Create a group
 		if (command.equals(CREATE)) {
 			CyGroup group = null;
-			List<CyNode> nodeList = NodeListUtils.getNodeList(Cytoscape.getCurrentNetwork(),result, args);
+			List<CyNode> nodeList = getNodeList(Cytoscape.getCurrentNetwork(),result, args);
 			if (result.getErrors() != null && result.getErrors().size() > 0)
 				return result;
 
@@ -198,14 +198,14 @@ public class GroupNamespace extends AbstractCommandHandler {
 
 		// Add a node (or nodes) to a group
 		} else if (command.equals(ADD)) {
-			List<CyNode> nodeList = NodeListUtils.getNodeList(Cytoscape.getCurrentNetwork(),result, args);
+			List<CyNode> nodeList = getNodeList(Cytoscape.getCurrentNetwork(),result, args);
 			for (CyNode node: nodeList)
 				group.addNode(node);
 			result.addMessage("group: added "+nodeList.size()+" nodes to group: "+group);
 
 		// Remove a node (or nodes) from a group
 		} else if (command.equals(REMOVE)) {
-			List<CyNode> nodeList = NodeListUtils.getNodeList(Cytoscape.getCurrentNetwork(),result, args);
+			List<CyNode> nodeList = getNodeList(Cytoscape.getCurrentNetwork(),result, args);
 			for (CyNode node: nodeList)
 				group.removeNode(node);
 			result.addMessage("group: removed "+nodeList.size()+" nodes from group: "+group);
@@ -252,7 +252,7 @@ public class GroupNamespace extends AbstractCommandHandler {
 			List<CyNode> nodeList = group.getNodes();
 			result.addResult("nodeList", nodeList);
 			result.addMessage("Nodes for group '"+groupName+"': ");
-			result.addMessage("   "+NodeListUtils.formatNodeList(nodeList));
+			result.addMessage("   "+formatNodeList(nodeList));
 
 		// Get the current list of outer edges for a group
 		} else if (command.equals(GETOUTEREDGES)) {

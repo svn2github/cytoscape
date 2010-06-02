@@ -61,7 +61,7 @@ import coreCommands.namespaces.networkView.ExportNetworkView;
 /**
  * XXX FIXME XXX Description 
  */
-public class NetworkViewNamespace extends AbstractCommandHandler {
+public class NetworkViewNamespace extends AbstractGraphObjectHandler {
 	static String NETWORKVIEW = "networkview";
 
 	static String CREATE = "create";
@@ -186,7 +186,7 @@ public class NetworkViewNamespace extends AbstractCommandHandler {
 				result.addMessage("networkview: focused '"+net.getIdentifier()+"' on selected nodes/edges");
 			} else {
 				// get the list of nodes
-				List<CyNode> nodeList = NodeListUtils.getNodeList(net, result, args);
+				List<CyNode> nodeList = getNodeList(net, result, args);
 
 				// Remember our currently selected nodes and edges
 				List<CyNode>selNodes = new ArrayList(net.getSelectedNodes());
