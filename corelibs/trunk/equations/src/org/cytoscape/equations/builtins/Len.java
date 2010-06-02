@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Len implements Function {
@@ -73,7 +74,7 @@ public class Len implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final String text = args[0].toString();
+		final String text = FunctionUtil.getArgAsString(args[0]);
 		return (Double)(double)text.length();
 	}
 
@@ -90,7 +91,8 @@ public class Len implements Function {
 			return null;
 
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(String.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+		possibleNextArgs.add(List.class);
 		return possibleNextArgs;
 	}
 }

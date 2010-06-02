@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Ln implements Function {
@@ -60,7 +61,7 @@ public class Ln implements Function {
 	 *  @return Double.class or null if there are not 1 or 2 args or the args are not of type Double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || argTypes[0] != Double.class)
+		if (argTypes.length != 1 || !FunctionUtil.isScalarArgType(argTypes[0]))
 			return null;
 
 		return Double.class;
@@ -73,7 +74,13 @@ public class Ln implements Function {
 	 *  @throws IllegalArgumentException thrown if the argument is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = (Double)args[0];
+		final double number;
+		try {
+			number = FunctionUtil.getArgAsDouble(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[0] + "\" to a number in a call to LN()!");
+		}
+
 		if (number <= 0.0)
 			throw new IllegalArgumentException("LN() called with a number <= 0.0!");
 
@@ -91,8 +98,7 @@ public class Ln implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length == 0) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 

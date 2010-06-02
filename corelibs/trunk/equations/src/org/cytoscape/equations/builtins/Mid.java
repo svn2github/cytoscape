@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Mid implements Function {
@@ -60,10 +61,13 @@ public class Mid implements Function {
 	 *  @return String.class or null if the args passed in have the wrong arity or a type mismatch was found
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 3 || argTypes[0] != String.class
-		    || (argTypes[1] != Long.class && argTypes[1] != Double.class)
-		    || (argTypes[2] != Long.class && argTypes[2] != Double.class))
+		if (argTypes.length != 3)
 			return null;
+
+		for (final Class argType : argTypes) {
+			if (!FunctionUtil.isScalarArgType(argType))
+				return null;
+		}
 
 		return String.class;
 	}
@@ -75,9 +79,21 @@ public class Mid implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Boolean
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final String text = args[0].toString();
-		final int start = (int)Math.round((Double)args[1] - 0.5);
-		final int count = (int)Math.round((Double)args[2] - 0.5);
+		final String text = FunctionUtil.getArgAsString(args[0]);
+
+		final int start;
+		try {
+			start = (int)FunctionUtil.getArgAsLong(args[1]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to a start position in a call to MID()!");
+		}
+
+		final int count;
+		try {
+			count = (int)FunctionUtil.getArgAsLong(args[2]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[2] + "\" to a count in a call to MID()!");
+		}
 
 		if (start < 1)
 			throw new IllegalArgumentException("illegal start position in call to MID()!");
@@ -101,13 +117,8 @@ public class Mid implements Function {
 			return null;
 
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(String.class);
-		else {
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(Double.class);
-		}
-		
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+
 		return possibleNextArgs;
 	}
 }

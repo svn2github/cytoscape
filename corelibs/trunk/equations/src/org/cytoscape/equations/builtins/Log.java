@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Log implements Function {
@@ -64,7 +65,7 @@ public class Log implements Function {
 			return null;
 
 		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Long.class)
+			if (!FunctionUtil.isScalarArgType(argType))
 				return null;
 		}
 
@@ -78,12 +79,23 @@ public class Log implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double number = args[0].getClass() == Double.class ? (Double)args[0] : (Long)args[0];
+		final double number;
+		try {
+			number = FunctionUtil.getArgAsDouble(args[0]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[0] + "\" to a number in a call to LOG()!");
+		}
+
 		final double base;
 		if (args.length == 1)
 			base = 10.0;
-		else
-			base = args[1].getClass() == Double.class ? (Double)args[1] : (Long)args[1];
+		else {
+			try {
+				base = FunctionUtil.getArgAsDouble(args[1]);
+			} catch (final Exception e) {
+				throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to a base in a call to LOG()!");
+			}
+		}
 
 		if (number <= 0.0)
 			throw new IllegalArgumentException("LOG() called with a number <= 0.0!");
@@ -109,8 +121,7 @@ public class Log implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		if (leadingArgs.length < 2) {
 			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			if (leadingArgs.length == 1)
 				possibleNextArgs.add(null);
 			return possibleNextArgs;
