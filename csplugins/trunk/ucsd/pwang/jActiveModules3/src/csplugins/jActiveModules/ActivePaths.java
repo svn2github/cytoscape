@@ -242,7 +242,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		for (int i = 0; i < activePaths.length; i++) {
 			Component thePath = activePaths[i];
-			String pathName = "Path_" + runCount + "_" + (i + 1);
+			String pathName = "Module_" + runCount + "_" + (i + 1);
 			
 			// get nodes for this path
 			Vector nodeVect = (Vector) thePath.getDisplayNodes();
