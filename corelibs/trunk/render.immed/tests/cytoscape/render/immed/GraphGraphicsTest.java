@@ -185,7 +185,7 @@ public class GraphGraphicsTest extends TestCase {
 		long duration = (end - begin) + nodeDur;
 
 //		try {
-//			ImageIO.write(image,"PNG",new File("/tmp/homer-current.png"));
+//			ImageIO.write(image,"PNG",new File("/tmp/homer-current-" + rand.nextInt(100) + ".png"));
 //		} catch (IOException ioe) { ioe.printStackTrace(); }
 		return duration;
 	}
@@ -198,7 +198,7 @@ public class GraphGraphicsTest extends TestCase {
 		for ( int i = 0; i < numNodes; i++ ) {
 			float x = rand.nextFloat() * (rand.nextBoolean() ? size : -size); 
 			float y = rand.nextFloat() * (rand.nextBoolean() ? size : -size); 
-			currentGraphGraphics.drawNodeFull( (byte)(i % (int) GraphGraphics.s_last_shape), 
+			oldGraphGraphics.drawNodeFull( (byte)(i % (int) OldGraphGraphics.s_last_shape), 
 							x,
 							y,
 							(x + (rand.nextFloat() * nodeSizeFactor)),	
@@ -214,7 +214,7 @@ public class GraphGraphicsTest extends TestCase {
 
 		begin = System.nanoTime();
 		for ( int i = 0; i < numEdges; i++ ) {
-			currentGraphGraphics.drawEdgeFull(
+			oldGraphGraphics.drawEdgeFull(
 				(byte)((i % 7)-8),
 				rand.nextFloat() * (20f),
 				Color.red, 
@@ -223,19 +223,19 @@ public class GraphGraphicsTest extends TestCase {
 				Color.orange, 
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size),
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size), 
-				currentGraphGraphics.m_noAnchors,
+				oldGraphGraphics.m_noAnchors,
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size),
 				rand.nextFloat() * (rand.nextBoolean() ? size : -size), 
 				1f, 
-				edgeStroke, 
-				Color.green);
+				Color.green,
+				0f);
 		}
 		end = System.nanoTime();
 		
 		long duration = (end - begin) + nodeDur;
 
 //		try {
-//			ImageIO.write(image,"PNG",new File("/tmp/homer-old.png"));
+//			ImageIO.write(image,"PNG",new File("/tmp/homer-old-" + rand.nextInt(100) + ".png"));
 //		} catch (IOException ioe) { ioe.printStackTrace(); }
 		return duration;	
 	}
