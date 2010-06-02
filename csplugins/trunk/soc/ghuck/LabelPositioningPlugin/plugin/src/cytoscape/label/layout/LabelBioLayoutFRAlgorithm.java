@@ -38,14 +38,19 @@ import csplugins.layout.LayoutPartition;
 import csplugins.layout.Profile;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 import cytoscape.CyNode;
+import cytoscape.data.CyAttributes;
 import cytoscape.visual.LabelPosition;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.layout.CyLayouts;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.AbstractLayout;
 import cytoscape.logger.CyLogger;
 
 import java.awt.Dimension;
+
+import giny.view.NodeView;
 
 import java.util.*;
 
@@ -162,6 +167,8 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 
     private double label_attraction_multiplier = 0.1;
     private double label_repulsion_multiplier = 0.1;
+    private double label_attraction_constant;
+    private double label_repulsion_constant;
 
     /**
      * Whether Labels should be repositioned in their default positions 
@@ -463,7 +470,7 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
      * @param value the repulsion multiplier
      */
     public void setLabelRepulsionMultiplier(double am) {
-	repulsion_multiplier = am;
+	label_repulsion_multiplier = am;
     }
 
     /**
@@ -474,7 +481,7 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
      */
     public void setLabelRepulsionMultiplier(String value) {
 	Double val = new Double(value);
-	repulsion_multiplier = val.doubleValue();
+	label_repulsion_multiplier = val.doubleValue();
     }
     // <-- LABEL
 
@@ -669,22 +676,95 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 
 	Dimension initialLocation = null;
 
-	/* Get all of our profiles */
-	/*
-	  initProfile = new Profile();
-	  iterProfile = new Profile();
-	  repulseProfile = new Profile();
-	  attractProfile = new Profile();
-	  updateProfile = new Profile();
+	// Logs information about this task
+	logger.info("Laying out " + partition.nodeCount()
+		    + " nodes and " + partition.edgeCount() + " edges: ");
 
-	  initProfile.start();
-	*/
+	// LABEL -->
+
+
+	// Reset the label position of all nodes if necessary 
+	if (resetPosition) {
+	    resetNodeLabelPosition(nodeAtts, partition.getNodeList());
+	    return;
+	}
+
+	// Handle if defaultPercentage is not a valid percentage
+	if (defaultPercentage > 100.0) {
+	    defaultPercentage = 100.0;
+	} else if (defaultPercentage < 0.0) {
+	    defaultPercentage = 0.0;
+	}
+
+	// Ads all network nodes to list
+	allLayoutNodesArray.addAll(partition.getNodeList());
+	
+	LayoutNode labelNode;
+	LabelPosition lp = null; 
+	
+	// --- Create LayoutNodes and LayoutEdges for each node label ---
+	for (LayoutNode ln : allLayoutNodesArray) {
+	    
+	    // Create a new node
+	    labelNode = new LayoutNode(ln.getNodeView(), ln.getIndex());
+	    
+	    // Set labelNode's location to parent node's current label position
+	    nodeAtts = Cytoscape.getNodeAttributes();
+	    String labelPosition = (String) nodeAtts.getAttribute(ln.getNode().
+								  getIdentifier(), "node.labelPosition");
+	    
+	    if (labelPosition == null) {
+		lp = new LabelPosition();
+	    } else {
+		lp = LabelPosition.parse(labelPosition);
+	    }
+	    
+	    labelNode.setX(lp.getOffsetX() + ln.getNodeView().getXPosition());
+	    labelNode.setY(lp.getOffsetY() + ln.getNodeView().getYPosition());
+			
+	    // Add labelNode --> ln to labelToParentMap
+	    labelToParentMap.put(labelNode, ln);
+			
+	    // Create a new LayoutEdge between labelNode and its parent ln
+	    // Add this new LayoutEdge to allLayoutEdges
+	    LayoutEdge labelEdge = new LayoutEdge();
+	    labelEdge.addNodes(ln, labelNode);
+	    allLayoutEdgesArray.add(labelEdge);
+			
+	    /* Unlock labelNode if:
+	     * - algorithm is to be applied to the entire network
+	     * - algorithm is to be applied to the selected nodes only, and ln
+	     * is selected
+	     * 
+	     * Unlock ln if:
+	     * - either of the above conditions is true, and the user has
+	     * specified that the network nodes are to be moved as well
+	     * 
+	     * Lock labelNode and/or ln otherwise. */
+	    labelNode.lock();
+	    ln.lock();
+	    if (!selectedOnly 
+		|| network.getSelectedNodes().contains(ln.getNode())) {
+		labelNode.unLock();
+		if (moveNodes) {
+		    ln.unLock();
+		}
+	    }
+			
+	}
+		
+	// Adds all LabelNodes (who are the keys in labelToParentMap) to allLayoutNodesArray
+	allLayoutNodesArray.addAll(labelToParentMap.keySet());
+
+	// LABEL <--
+
 
 	// Calculate a bounded rectangle for our
 	// layout.  This is roughly the area of all
 	// nodes * 2
-	calculateSize();
+	calculateSize(); // TODO: Modify this. LABEL
 
+	// Logs information about this task
 	logger.info("Laying out " + partition.nodeCount()
 		    + " nodes and " + partition.edgeCount() + " edges: ");
 
@@ -696,7 +776,6 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 
 	// Initialize our temperature
 	double temp;
-
 	if (temperature == 0) {
 	    temp = Math.sqrt(this.width*this.height)/2;
 	} else {
@@ -718,12 +797,12 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 
 	// Calculate our edge weights
 	partition.calculateEdgeWeights();
-	// initProfile.done("Initialization completed in ");
-	taskMonitor.setStatus("Calculating new node positions");
+
+	// Set task monitor
+	taskMonitor.setStatus("Calculating new label/node positions");
 	taskMonitor.setPercentCompleted(1);
 
 	// Main algorithm
-	// iterProfile.start();
 	int iteration = 0;
 
 	for (iteration = 0; (iteration < nIterations) && !canceled; iteration++) {
@@ -733,7 +812,7 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	    if (debug || ((update_iterations > 0) && ((iteration % update_iterations) == 0))) {
 		if (iteration > 0) {
 		    // Actually move the pieces around
-		    for (LayoutNode v: partition.getNodeList()) {
+		    for (LayoutNode v: partition.getNodeList()) { // TODO: Change this! LABEL
 			// if this is locked, the move just resets X and Y
 			v.moveToLocation();
 			// logger.debug("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
@@ -749,11 +828,10 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 		}
 	    }
 
-	    taskMonitor.setStatus("Calculating new node positions - " + iteration);
+	    taskMonitor.setStatus("Calculating new label/node positions - " + iteration);
 	    taskMonitor.setPercentCompleted((int) Math.rint((iteration * 100) / nIterations));
 	}
 
-	// iterProfile.done("Iterations complete in ");
 	// logger.debug("Attraction calculation portion of iterations took "+attractProfile.getTotalTime()+"ms");
 	// logger.debug("Repulsion calculation portion of iterations took "+repulseProfile.getTotalTime()+"ms");
 	// logger.debug("Update portion of iterations took "+updateProfile.getTotalTime()+"ms");
@@ -761,12 +839,52 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 
 	// Actually move the pieces around
 	// Note that we reset our min/max values before we start this
-	// so we can get an accurate min/max for paritioning
-	partition.resetNodes();
+	// so we can get an accurate min/max for partitioning
+	partition.resetNodes(); 
 
-	for (LayoutNode v: partition.getNodeList()) {
-	    partition.moveNodeToLocation(v);
-	}
+
+
+// 	for (LayoutNode v: partition.getNodeList()) {  // TODO: Change this! LABEL
+// 	    partition.moveNodeToLocation(v);
+// 	}
+
+
+
+	// LABEL -->
+
+	// Update positions
+	lp = new LabelPosition(); 
+		
+        for (LayoutNode ln: allLayoutNodesArray) { 
+            
+            if (!ln.isLocked()) {
+                
+                if (labelToParentMap.containsKey(ln)) { // If it is a Label Node
+                	
+                    // Get ln and its parent positions
+                    NodeView lnNodeView = ln.getNodeView();
+                    nodeAtts = Cytoscape.getNodeAttributes();
+		    LayoutNode lParent = labelToParentMap.get(ln);
+
+                    // Reposition
+                    lp.setOffsetX(ln.getX() - lParent.getX());
+                    lp.setOffsetY(ln.getY() - lParent.getY());
+                    nodeAtts.setAttribute(lnNodeView.getNode().getIdentifier(),
+					  "node.labelPosition", lp.shortString());
+                    
+                } else { // ln is a network LayoutNode
+                	
+		    if (moveNodes && defaultPercentage != 0.0) { // unlocked
+			partition.moveNodeToLocation(ln);
+		    }
+                }
+            }
+        }
+
+
+	// <-- LABEL
+
+
 
 	// Not quite done, yet.  If we're only laying out selected nodes, we need
 	// to migrate the selected nodes back to their starting position
@@ -785,7 +903,16 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	    }
 	}
 
-	logger.info("Layout complete after " + iteration + " iterations");
+
+	// LABEL-LAYOUT -->
+    	networkView.updateView();
+    	networkView.redrawGraph(true, true);
+   
+	clear();		
+	// <-- LABEL-LAYOUT
+
+
+	logger.info("Label/Node layout complete after " + iteration + " iterations");
     }
 
     /**
@@ -801,14 +928,14 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 
 	// repulseProfile.start();
 	// Calculate repulsive forces
-	for (LayoutNode v: partition.getNodeList()) {
+	for (LayoutNode v: partition.getNodeList()) {  // TODO: Change this! LABEL
 	    if (!v.isLocked()) {
 		xAverage += v.getX()/partition.nodeCount();
 		yAverage += v.getY()/partition.nodeCount();
 	    }
 	}
 
-	for (LayoutNode v: partition.getNodeList()) {
+	for (LayoutNode v: partition.getNodeList()) {  // TODO: Change this! LABEL
 	    if (!v.isLocked()) {
 		calculateRepulsion(v);
 		if (gravity_constant != 0)
@@ -816,32 +943,18 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	    }
 	}
 
-	// repulseProfile.checkpoint();
 
-	// Dump the current displacements
-	// print_disp();
-
-	// attractProfile.start();
 	// Calculate attractive forces
 
-	/// for e in E do begin
-	for (LayoutEdge e: partition.getEdgeList()) {
+	for (LayoutEdge e: partition.getEdgeList()) {  // TODO: Change this! LABEL
 	    calculateAttraction(e);
 	}
-	/// end
-
-	// attractProfile.checkpoint();
-
-	// Dump the current displacements
-	// print_disp();
 
 	// Dampen & update
 	double xDispTotal = 0;
 	double yDispTotal = 0;
-	// updateProfile.start();
 
-	/// for v in V do begin
-	for (LayoutNode v: partition.getNodeList()) {
+	for (LayoutNode v: partition.getNodeList()) { // TODO: Change this! LABEL
 	    if (v.isLocked())
 		continue;
 
@@ -850,7 +963,6 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	    xDispTotal += Math.abs(v.getXDisp());
 	    yDispTotal += Math.abs(v.getYDisp());
 	}
-	/// end
 
 	// Translate back to the middle (or to the starting point,
 	// if we're dealing with a selected group
@@ -859,8 +971,6 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 		v.decrement(xAverage - (width / 2), yAverage - (height / 2));
 	    }
 	}
-
-	// updateProfile.checkpoint();
 
 	// Test our total x and y displacement to see if we've
 	// hit our completion criteria
@@ -922,7 +1032,7 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	double radius = v.getWidth() / 2;
 
 	/// for u in V do
-	for (LayoutNode u: partition.getNodeList()) {
+	for (LayoutNode u: partition.getNodeList()) { // TODO: Change this! LABEL
 	    double dx = v.getX() - u.getX();
 	    double dy = v.getY() - u.getY();
 
@@ -952,14 +1062,6 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	    if (Double.isNaN(fr)) {
 		fr = 500;
 	    }
-
-	    /*
-	      logger.debug("Repulsive force between "+v.getIdentifier()
-	      +" and "+u.getIdentifier()+" is "+force);
-	      logger.debug("   distance = "+deltaDistance);
-	      logger.debug("   incrementing "+v.getIdentifier()+" by ("+
-	      force+", "+force+")");
-	    */
 
 	    // Adjust the displacement.  In the case of doing selectedOnly,
 	    // we increase the force to enhance the discrimination power.
@@ -1033,9 +1135,6 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	double dx = v.getX() - xAverage;
 	double dy = v.getY() - yAverage;
 	double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
-	//double theta = Math.atan(dy/dx);
-	//double xSign = Math.signum(dx);
-	//double ySign = Math.signum(dy);
 	if(distance == 0) distance = EPSILON;
 	double phi = (1 +v.getDegree())/3;
 	double force = gravity_constant*distance*phi;
@@ -1100,13 +1199,12 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
      * a width and height based on the area covered by the existing graph.
      */
     private void calculateSize() {
-	// double spreadFactor = Math.max(spread_factor, edgeList.length/nodeList.length);
-	// LayoutNode v0 = (LayoutNode)nodeList.get(0); // Get the first vertex to get to the class variables
-	int nodeCount = partition.nodeCount();
+
+	int nodeCount = allLayoutNodesArray.size(); 
 	int unLockedNodes = nodeCount - partition.lockedNodeCount();
 	double spreadFactor = spread_factor;
-	double averageWidth = partition.getWidth() / partition.nodeCount();
-	double averageHeight = partition.getHeight() / partition.nodeCount();
+	double averageWidth = partition.getWidth() / nodeCount;
+	double averageHeight = partition.getHeight() / nodeCount;
 	double current_area = (partition.getMaxX() - partition.getMinX()) * (partition.getMaxY()
 									     - partition.getMinY());
 	double node_area = partition.getWidth() * partition.getHeight();
@@ -1120,36 +1218,24 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
 	} else {
 	    this.width = Math.sqrt(node_area) * spreadFactor;
 	    this.height = Math.sqrt(node_area) * spreadFactor;
-
-	    // logger.debug("spreadFactor = "+spreadFactor);
 	}
 
 	this.maxVelocity = Math.max(Math.max(averageWidth * 2, averageHeight * 2),
 				    Math.max(width, height) / maxVelocity_divisor);
 	this.maxDistance = Math.max(Math.max(averageWidth * 10, averageHeight * 10),
 				    Math.min(width, height) * max_distance_factor / 100);
-
-	// logger.debug("Size: "+width+" x "+height);
-	// logger.debug("maxDistance = "+maxDistance);
-	// logger.debug("maxVelocity = "+maxVelocity);
-	/*
-	 */
     }
 
     /**
      * Calculate the attraction and repulsion constants.
      */
-    private void calculateForces() { // TODO: MODIFY THIS      LABEL
+    private void calculateForces() { 
 	double force = Math.sqrt((this.height * this.width) / partition.nodeCount());
 	attraction_constant = force * attraction_multiplier;
 	repulsion_constant = force * repulsion_multiplier;
-	gravity_constant = gravity_multiplier;
-
-	/*
-	  logger.debug("attraction_constant = "+attraction_constant
-	  +", repulsion_constant = "+repulsion_constant
-	  +", gravity_constant = "+gravity_constant);
-	*/
+	label_attraction_constant = force * label_attraction_multiplier;
+	label_repulsion_constant = force * label_repulsion_multiplier;
+	gravity_constant = gravity_multiplier;  
     }
 
     /**
@@ -1195,6 +1281,19 @@ public class LabelBioLayoutFRAlgorithm extends LabelBioLayoutAlgorithm {
     	networkView.redrawGraph(true, true);
     }
 
-    
+    /**
+     * Clears all LayoutNodes and LayoutEdges
+     */
+    private void clear() { // LABEL-LAYOUT
+	allLayoutNodesArray.clear();
+	labelToParentMap.clear();
+	allLayoutEdgesArray.clear();
+    }
+
+
+
+
+
+
     // <-- LABEL
 }
