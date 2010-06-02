@@ -55,6 +55,12 @@ public class SemanticSummaryParameters
 	private List<CyNode> nodeList; //list of all CyNodes in network
 	private Integer networkNumNodes;
 	
+	//Name creation variables
+	private Integer cloudCount = 1;
+	private static final String CLOUDNAME = "Cloud";
+	private static final String SEPARATER = "_";
+	
+	
 	//private boolean isInitialized;//set to true when original data counts set
 	
 	//DO THESE GO HERE??
@@ -119,6 +125,18 @@ public class SemanticSummaryParameters
 		}
 	}
 	
+	/**
+	 * Returns the name for the next cloud for this network.
+	 * @return String - name of the next cloud
+	 */
+	public String getNextCloudName()
+	{
+		String name = CLOUDNAME + SEPARATER + cloudCount;
+		cloudCount++;
+		
+		return name;
+	}
+	
 
 	//GETTERS and SETTERS
 	
@@ -175,5 +193,20 @@ public class SemanticSummaryParameters
 	public Integer getMinFont()
 	{
 		return MINFONTSIZE;
+	}
+	
+	public Integer getCloudCount()
+	{
+		return cloudCount;
+	}
+	
+	public String getCloudName()
+	{
+		return CLOUDNAME;
+	}
+	
+	public String getSeparater()
+	{
+		return SEPARATER;
 	}
 }

@@ -135,7 +135,7 @@ public class CloudParameters
 			nodeName = nodeName.toLowerCase();
 			
 			//replace all punctuation with white spaces except ' and -
-			nodeName = nodeName.replaceAll("[\\p{Punct} && [^'-]", " ");
+			nodeName = nodeName.replaceAll("[\\p{Punct}] && [^'-]", " ");
 			
 			//Remove duplicate words, create set
 			String[] words = nodeName.split("\b");
@@ -210,7 +210,7 @@ public class CloudParameters
 			nodeName = nodeName.toLowerCase();
 			
 			//replace all punctuation with white spaces except ' and -
-			nodeName = nodeName.replaceAll("[\\p{Punct} && [^'-]", " ");
+			nodeName = nodeName.replaceAll("[\\p{Punct}] && [^'-]", " ");
 			
 			//Remove duplicate words, create set
 			String[] words = nodeName.split("\b");

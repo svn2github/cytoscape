@@ -167,7 +167,6 @@ public class CloudDisplayPanel extends JPanel
 		}
 	}
 	
-	
 
 	//Getters and Setters
 	

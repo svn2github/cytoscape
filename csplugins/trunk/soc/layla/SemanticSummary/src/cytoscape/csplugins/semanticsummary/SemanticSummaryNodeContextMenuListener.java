@@ -73,5 +73,6 @@ public class SemanticSummaryNodeContextMenuListener
 		}
 		
 		menu.add(new SemanticSummaryPluginAction());
+		menu.add(new CreateCloudAction());
 	}
 }
