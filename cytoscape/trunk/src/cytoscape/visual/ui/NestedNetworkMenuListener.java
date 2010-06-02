@@ -48,6 +48,8 @@ import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.dialogs.SetNestedNetworkDialog;
+import cytoscape.layout.CyLayoutAlgorithm;
+
 import javax.swing.JOptionPane;
 
 
@@ -139,6 +141,9 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 			CyNetworkView theView = Cytoscape.getNetworkView(nestedNetwork.getIdentifier());
 			if (theView == null || theView.getIdentifier() == null) {
 				theView = Cytoscape.createNetworkView(nestedNetwork);
+				CyLayoutAlgorithm alg = cytoscape.layout.CyLayouts.getLayout("force-directed");
+				theView.applyLayout(alg);
+
 			}
 
 			Cytoscape.getDesktop().setFocus(nestedNetwork.getIdentifier());
