@@ -34,12 +34,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import junit.framework.*;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Parser;
-import org.cytoscape.equations.builtins.*;
 
 
 public class InterpreterTest extends TestCase {
@@ -528,7 +526,6 @@ public class InterpreterTest extends TestCase {
 
 		attribNameToTypeMap.put("list2", List.class);
 		assertTrue(compiler.compile("=FIRST(${list2})", attribNameToTypeMap));
-		final List<Object> list2 = new ArrayList<Object>();
 		boolean succeeded;
 		try {
 			assertTrue(compiler.compile("=FIRST(${list2})", attribNameToTypeMap));
@@ -558,7 +555,6 @@ public class InterpreterTest extends TestCase {
 
 		attribNameToTypeMap.put("list2", List.class);
 		assertTrue(compiler.compile("=LAST(${list2})", attribNameToTypeMap));
-		final List<Object> list2 = new ArrayList<Object>();
 		boolean succeeded;
 		try {
 			assertTrue(compiler.compile("=LAST(${list2})", attribNameToTypeMap));

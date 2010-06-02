@@ -32,7 +32,6 @@ package org.cytoscape.equations;
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.*;
-import org.cytoscape.equations.builtins.*;
 
 
 public class AttribParserTest extends TestCase {

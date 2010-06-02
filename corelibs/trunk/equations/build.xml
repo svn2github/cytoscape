@@ -104,6 +104,8 @@
            classpathref="project.class.path"
            destdir="${build.dir}"
            debug="${debug}"
+	   source="1.5"
+	   target="1.5"
            deprecation="${deprecation}" 
            optimize="${optimize}"
            fork="${fork}">
