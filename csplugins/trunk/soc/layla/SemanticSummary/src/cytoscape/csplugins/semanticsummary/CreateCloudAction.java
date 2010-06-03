@@ -121,6 +121,7 @@ public class CreateCloudAction extends CytoscapeAction
 		//Add to list of clouds
 		params.addCloud(cloudParams.getCloudName(), cloudParams);
 		
+		cloudParams.updateRatios();
 		cloudParams.calculateFontSizes();
 		
 		CloudDisplayPanel cloudPanel =

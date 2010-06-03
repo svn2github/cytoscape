@@ -117,6 +117,11 @@ public class CloudParameters
 		if (countInitialized)
 			return;
 		
+		//Clear old counts
+		this.networkCounts = new HashMap<String, Integer>();
+		this.stringNodeMapping = new HashMap<String, List<CyNode>>();
+		
+		
 		//Retrieve needed variables from parent parameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
 		List<CyNode> networkNodes = networkParams.getNetworkNodes();
@@ -135,10 +140,10 @@ public class CloudParameters
 			nodeName = nodeName.toLowerCase();
 			
 			//replace all punctuation with white spaces except ' and -
-			nodeName = nodeName.replaceAll("[\\p{Punct}] && [^'-]", " ");
+			nodeName = nodeName.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
 			
 			//Remove duplicate words, create set
-			String[] words = nodeName.split("\b");
+			String[] words = nodeName.split("\\b+");
 			Set<String> wordSet = new HashSet<String>();
 	        for (String a : words)
 	            wordSet.add(a);
@@ -191,6 +196,9 @@ public class CloudParameters
 		if (!countInitialized)
 			this.initializeNetworkCounts();
 		
+		//Clear old counts
+		this.selectedCounts = new HashMap<String, Integer>();
+		
 		//Retrieve needed variables from parent parameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
 		
@@ -210,10 +218,10 @@ public class CloudParameters
 			nodeName = nodeName.toLowerCase();
 			
 			//replace all punctuation with white spaces except ' and -
-			nodeName = nodeName.replaceAll("[\\p{Punct}] && [^'-]", " ");
+			nodeName = nodeName.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
 			
 			//Remove duplicate words, create set
-			String[] words = nodeName.split("\b");
+			String[] words = nodeName.split("\\b+");
 			Set<String> wordSet = new HashSet<String>();
 	        for (String a : words)
 	            wordSet.add(a);
@@ -257,6 +265,9 @@ public class CloudParameters
 		//Check that selected counts are up to date
 		if(!selInitialized)
 			this.updateSelectedCounts();
+		
+		//Clear old counts
+		this.ratios = new HashMap<String, Double>();
 		
 		Double curMin = 0.0;
 		Double curMax = 0.0;
@@ -311,6 +322,9 @@ public class CloudParameters
 		if (!ratiosInitialized)
 			this.updateRatios();
 		
+		//Clear old fonts
+		this.cloudWords = new ArrayList<CloudWordInfo>();
+		
 		Set<String> words = ratios.keySet();
 		Iterator<String> iter = words.iterator();
 		while(iter.hasNext())
@@ -347,6 +361,10 @@ public class CloudParameters
 		//minFont to maxFont using a linear transformation
 		Integer maxFont = networkParams.getMaxFont();
 		Integer minFont = networkParams.getMinFont();
+		
+		//Check if maxRatio and minRatio are the same
+		if (maxRatio == minRatio)
+			return (maxFont - minFont)/2;
 		
 		Double slope = (maxFont - minFont)/(maxRatio - minRatio);
 		Double yIntercept = minFont - (slope*minRatio); //minRatio maps to minFont

@@ -67,58 +67,8 @@ public class CloudDisplayPanel extends JPanel
 		JScrollPane cloudScroll = new JScrollPane(tagCloudFlowPanel);
 		cloudScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(cloudScroll, BorderLayout.CENTER);
-		
-		
-		//TESTING DATA
-		//TODO - Remove this
-		JLabel first = new JLabel("First" + " ");
-		first.setFont(new Font("sansserif",Font.BOLD, 72));
-		tagCloudFlowPanel.add(first);
-		
-		JLabel second = new JLabel("Second" + " ");
-		second.setFont(new Font("sansserif",Font.BOLD, 32));
-		tagCloudFlowPanel.add(second);
-		
-		JLabel third = new JLabel("Third" + " ");
-		third.setFont(new Font("sansserif",Font.BOLD, 12));
-		tagCloudFlowPanel.add(third);
-		
-		JLabel fourth = new JLabel("Fourth" + " ");
-		fourth.setFont(new Font("sansserif",Font.PLAIN, 72));
-		tagCloudFlowPanel.add(fourth);
-		
-		JLabel fifth = new JLabel("Fifth" + " ");
-		fifth.setFont(new Font("sansserif",Font.PLAIN, 32));
-		tagCloudFlowPanel.add(fifth);
-		
-		JLabel sixth = new JLabel("Sixth" + " ");
-		sixth.setFont(new Font("sansserif",Font.PLAIN, 12));
-		tagCloudFlowPanel.add(sixth);
-		
-		JLabel seventh = new JLabel("First" + " ");
-		seventh.setFont(new Font("sansserif",Font.BOLD, 72));
-		tagCloudFlowPanel.add(seventh);
-		
-		JLabel eighth = new JLabel("Second" + " ");
-		eighth.setFont(new Font("sansserif",Font.BOLD, 32));
-		tagCloudFlowPanel.add(eighth);
-		
-		JLabel ninth = new JLabel("Third" + " ");
-		ninth.setFont(new Font("sansserif",Font.BOLD, 12));
-		tagCloudFlowPanel.add(ninth);
-		
-		JLabel tenth = new JLabel("Fourth" + " ");
-		tenth.setFont(new Font("sansserif",Font.PLAIN, 72));
-		tagCloudFlowPanel.add(tenth);
-		
-		JLabel eleventh = new JLabel("Fifth" + " ");
-		eleventh.setFont(new Font("sansserif",Font.PLAIN, 32));
-		tagCloudFlowPanel.add(eleventh);
-		
-		JLabel twelfth = new JLabel("Sixth" + " ");
-		twelfth.setFont(new Font("sansserif",Font.PLAIN, 12));
-		tagCloudFlowPanel.add(twelfth);
-		
+			
+	
 	}
 	
 	//METHODS
@@ -130,7 +80,7 @@ public class CloudDisplayPanel extends JPanel
 	 */
 	private JPanel initializeTagCloud()
 	{
-		JPanel panel = new JPanel(new ModifiedFlowLayout());
+		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,1));
 		return panel;
 	}
 	
@@ -139,8 +89,10 @@ public class CloudDisplayPanel extends JPanel
 	 */
 	private void clearCloud()
 	{
-		tagCloudFlowPanel = initializeTagCloud();
+		tagCloudFlowPanel.removeAll();
+		tagCloudFlowPanel.revalidate();
 		curCloud = null;
+		
 	}
 	
 	
@@ -165,6 +117,7 @@ public class CloudDisplayPanel extends JPanel
 			
 			tagCloudFlowPanel.add(curLabel);
 		}
+		tagCloudFlowPanel.revalidate();
 	}
 	
 
