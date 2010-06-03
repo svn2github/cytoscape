@@ -77,6 +77,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import java.util.Comparator;
+import cytoscape.util.swing.ColumnResizer;
 //import cytoscape.util.swing.CyCollapsiblePanel;
 
 
@@ -93,7 +94,7 @@ public class ActivePathsParameterPanel extends JPanel {
 	static String NONRANDOM = "Non-Random Starting Graph";
 	static String ANNEAL = "Anneal";
 	static String SEARCH = "Search";
-
+	
 	JPanel tStartPanel;
 	JPanel tEndPanel;
 	JTextField startNum;
@@ -216,6 +217,7 @@ public class ActivePathsParameterPanel extends JPanel {
 		this.findModulesButton.setEnabled(false); 
 		this.tblAttrSelection.addMouseListener(new ExprAttrsTableMouseListener());
 
+		ColumnResizer.adjustColumnPreferredWidths(this.tblAttrSelection);
 	}
 	
 	//private AttrSelectionPanel attrSelectionPanel;
@@ -613,6 +615,8 @@ public class ActivePathsParameterPanel extends JPanel {
 	private class NameColumnCellRenderer extends DefaultTableCellRenderer {
 		private javax.swing.ImageIcon icon = new ImageIcon(getClass().getResource("/images/exclamationpoint.jpg"));
 		private javax.swing.ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/empty.jpg"));
+		private String TOOLTIP_EXCLAIMATION="XXXXXXXX";
+		private String TOOLTIP_NONE="";
 
 		public Component getTableCellRendererComponent(JTable table,
                 Object value,
@@ -626,10 +630,12 @@ public class ActivePathsParameterPanel extends JPanel {
 			double max = Double.valueOf(table.getModel().getValueAt(row,2).toString());
 
 			if (Math.min(min,max) < 0 || Math.max(min, max) > 1){
-				setIcon(icon);				
+				setIcon(icon);
+				this.setToolTipText(this.TOOLTIP_EXCLAIMATION);
 			}
 			else {
 				setIcon(icon1);
+				this.setToolTipText(this.TOOLTIP_NONE);
 			}
 			if (isSelected){
 				this.setBackground(table.getSelectionBackground());
