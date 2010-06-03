@@ -344,7 +344,7 @@ public class ActivePathsParameterPanel extends JPanel {
 		nameColumn.setCellRenderer(new NameColumnCellRenderer());
 		
 		// give user the option to switch sig
-		TableColumn switchSigColumn = this.tblAttrSelection.getColumn("Reverse Sig");
+		TableColumn switchSigColumn = this.tblAttrSelection.getColumn("Reverse sig");
 		//switchSigColumn.setCellEditor(new CheckBoxCellEditor());
 		//switchSigColumn.setCellRenderer(new CheckBoxCellRenderer());
 		switchSigColumn.setCellRenderer(this.tblAttrSelection.getDefaultRenderer(Boolean.class));
@@ -557,7 +557,7 @@ public class ActivePathsParameterPanel extends JPanel {
 	
 	private class AttrSelectionTableModel extends AbstractTableModel {
 		Vector dataVect = null;
-		String[] columnNames = {"Name","Most sig", "Least Sig", "Reverse Sig", "Scaling"};
+		String[] columnNames = {"Name","Most sig", "Least sig", "Reverse sig", "Scaling"};
 		public AttrSelectionTableModel(Vector pDataVect){
 			dataVect = pDataVect;
 		}
