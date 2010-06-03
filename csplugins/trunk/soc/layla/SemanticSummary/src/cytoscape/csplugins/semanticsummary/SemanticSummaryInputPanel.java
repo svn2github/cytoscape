@@ -33,6 +33,9 @@ package cytoscape.csplugins.semanticsummary;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -61,6 +64,9 @@ public class SemanticSummaryInputPanel extends JPanel
 {
 	
 	//VARIABLES
+	
+	DecimalFormat decFormat; //used in formatted text fields
+	
 	//TODO
 	//Collapsible panels
 	//CollapsiblePanel parameters;
@@ -78,6 +84,8 @@ public class SemanticSummaryInputPanel extends JPanel
 	
 	//Text Fields
 	private JFormattedTextField maxWordsTextField;
+	private JFormattedTextField netWeightTextField;
+	
 	
 	//instruction text
 	//TODO
@@ -89,6 +97,9 @@ public class SemanticSummaryInputPanel extends JPanel
 	//CONSTRUCTORS
 	public SemanticSummaryInputPanel()
 	{
+		decFormat = new DecimalFormat();
+		decFormat.setParseIntegerOnly(false);
+		
 		//TODO	
 		setLayout(new BorderLayout());
 		
@@ -243,8 +254,22 @@ public class SemanticSummaryInputPanel extends JPanel
 		maxWordsPanel.add(maxWordsLabel, BorderLayout.WEST);
 		maxWordsPanel.add(maxWordsTextField, BorderLayout.EAST);
 		
+		//Network Weight Factor
+		JLabel netWeightLabel = new JLabel("Network Weight Factor");
+		netWeightTextField = new JFormattedTextField(decFormat);
+		netWeightTextField.setColumns(3);
+		//netWeightTextField.addPropertyChangeListener("value", listener);
+		netWeightTextField.setValue(1.0); //Set to 1 initially
+		
+		//Network Weight Factor Panel
+		JPanel netWeightPanel = new JPanel();
+		netWeightPanel.setLayout(new BorderLayout());
+		netWeightPanel.add(netWeightLabel,BorderLayout.WEST);
+		netWeightPanel.add(netWeightTextField,BorderLayout.EAST);
+		
 		//Add components to main panel
 		panel.add(maxWordsPanel);
+		panel.add(netWeightPanel);
 		
 		//Add to collapsible panel
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
@@ -324,5 +349,35 @@ public class SemanticSummaryInputPanel extends JPanel
 		panel.add(createButton);
 		
 		return panel;
+	}
+	
+	
+	/**
+	 * Handles setting for the text field parameters that are numbers.
+	 * Makes sure that the numbers make sense.
+	 */
+	private class FormattedTextFieldAction implements PropertyChangeListener
+	{
+		//METHOD
+		public void propertyChange(PropertyChangeEvent e)
+		{
+			JFormattedTextField source = (JFormattedTextField) e.getSource();
+			boolean invalid = false;
+			
+			if (source == netWeightTextField)
+			{
+				Number value = (Number) netWeightTextField.getValue();
+				if ((value != null) && (value.doubleValue() >= 0.0) && (value.doubleValue() <= 1))
+				{
+					//Update params here...hum...
+				}
+			}
+		}
+	}
+	
+	//Getters and Setters
+	public JFormattedTextField getNetWeightTextField()
+	{
+		return netWeightTextField;
 	}
 }

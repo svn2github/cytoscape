@@ -66,7 +66,7 @@ public class SemanticSummaryParameters
 	//DO THESE GO HERE??
 	private static final Integer NUMBINS = 7; //NEED TO DECIDE ON THIS
 	private static final Integer MINFONTSIZE = 12; //TODO
-	private static final Integer MAXFONTSIZE = 52; //TODO
+	private static final Integer MAXFONTSIZE = 56; //TODO
 	
 	//CONSTRUCTORS
 	

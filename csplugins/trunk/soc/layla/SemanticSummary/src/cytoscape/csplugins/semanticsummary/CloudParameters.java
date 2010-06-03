@@ -37,8 +37,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
+
+import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 
 import cytoscape.CyNode;
+import cytoscape.Cytoscape;
 
 /**
  * The CloudParameters class defines all of the variables that are
@@ -69,6 +74,8 @@ public class CloudParameters
 	private ArrayList<CloudWordInfo> cloudWords;
 	
 	private WordFilter filter;
+	
+	private Double netWeightFactor = 1.0;
 	
 	private Double minRatio;
 	private Double maxRatio;
@@ -143,10 +150,20 @@ public class CloudParameters
 			nodeName = nodeName.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
 			
 			//Remove duplicate words, create set
-			String[] words = nodeName.split("\\b+");
+			//String[] words = nodeName.split("\\b+");
+			//Set<String> wordSet = new HashSet<String>();
+	        //for (String a : words)
+	        //    wordSet.add(a);
+	        
+	        //Alternate solution
 			Set<String> wordSet = new HashSet<String>();
-	        for (String a : words)
-	            wordSet.add(a);
+	        StringTokenizer token = new StringTokenizer(nodeName);
+	        while (token.hasMoreTokens())
+	        {
+	        	String a = token.nextToken();
+	        	wordSet.add(a);
+	        }
+	        
 	        
 	        //Iterate through all words
 	        Iterator<String> wordIter = wordSet.iterator();
@@ -221,10 +238,19 @@ public class CloudParameters
 			nodeName = nodeName.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
 			
 			//Remove duplicate words, create set
-			String[] words = nodeName.split("\\b+");
+			//String[] words = nodeName.split("\\b+");
+			//Set<String> wordSet = new HashSet<String>();
+	        //for (String a : words)
+	        //    wordSet.add(a);
+	        
+	        //Alternate solution
 			Set<String> wordSet = new HashSet<String>();
-	        for (String a : words)
-	            wordSet.add(a);
+	        StringTokenizer token = new StringTokenizer(nodeName);
+	        while (token.hasMoreTokens())
+	        {
+	        	String a = token.nextToken();
+	        	wordSet.add(a);
+	        }
 	        
 	        //Iterate through all words
 	        Iterator<String> wordIter = wordSet.iterator();
@@ -277,6 +303,7 @@ public class CloudParameters
 		
 		//Iterate through to calculate ratios
 		Iterator<String> iter = words.iterator();
+		boolean initialized = false;
 		while (iter.hasNext())
 		{
 			String curWord = (String)iter.next();
@@ -284,22 +311,23 @@ public class CloudParameters
 			Integer selTotal = this.getSelectedNumNodes();
 			Integer selCount = selectedCounts.get(curWord);
 			Integer netCount = networkCounts.get(curWord);
+			Double newNetCount = Math.pow(netCount, netWeightFactor);
 			Integer netTotal = this.getNetworkParams().getNetworkNumNodes();
+			Double newNetTotal = Math.pow(netTotal, netWeightFactor);
 			
-			Integer numerator = selCount * netTotal;
-			Double numeratorDoub = numerator.doubleValue();
-			Integer denominator = selTotal * netCount;
-			Double denominatorDoub = denominator.doubleValue();
-			Double ratio = numeratorDoub/denominatorDoub;
+			Double numerator = selCount * newNetTotal;
+			Double denominator = selTotal * newNetCount;
+			Double ratio = numerator/denominator;
 			
 			ratios.put(curWord, ratio);
 			
 			//Update max/min ratios
-			if (curMax == 0.0)
+			if (!initialized)
+			{
 				curMax = ratio;
-			
-			if (curMin == 0.0)
 				curMin = ratio;
+				initialized = true;
+			}
 			
 			if (ratio > curMax)
 				curMax = ratio;
@@ -367,13 +395,40 @@ public class CloudParameters
 			return (maxFont - minFont)/2;
 		
 		Double slope = (maxFont - minFont)/(maxRatio - minRatio);
-		Double yIntercept = minFont - (slope*minRatio); //minRatio maps to minFont
+		Double yIntercept = maxFont - (slope*maxRatio); //maxRatio maps to maxFont
 		
 		//Round up to nearest Integer
 		Double temp = Math.ceil((slope*ratio) + yIntercept);
 		Integer fontSize = temp.intValue();
 		
+		System.out.println("Word:" + aWord + " Ratio:" + ratio + " Font: " + fontSize);
+		
 		return fontSize;
+	}
+	
+	/**
+	 * Retrieves values from Input panel and stores in correct places.
+	 * @return
+	 */
+	public void retrieveInputVals()
+	{
+		SemanticSummaryInputPanel inputPanel = 
+			SemanticSummaryManager.getInstance().getInputWindow();
+		
+		JFormattedTextField netWeightTextField = inputPanel.getNetWeightTextField();
+		
+		Number value = (Number) netWeightTextField.getValue();
+		if ((value != null) && (value.doubleValue() >= 0.0) && (value.doubleValue() <= 1))
+		{
+			netWeightFactor = value.doubleValue();
+		}
+		else
+		{
+			netWeightTextField.setValue(1.0);
+			netWeightFactor = 1.0;
+			String message = "The network weight factor must be greater than or equal to 0 and less than or equal to 1";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	
@@ -553,4 +608,15 @@ public class CloudParameters
 	{
 		ratiosInitialized = val;
 	}
+	
+	public Double getNetWeightFactor()
+	{
+		return netWeightFactor;
+	}
+	
+	public void setNetWeightFactor(Double val)
+	{
+		netWeightFactor = val;
+	}
+	
 }

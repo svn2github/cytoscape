@@ -54,6 +54,7 @@ public class CloudDisplayPanel extends JPanel
 	//VARIABLES
 	//TODO
 	JPanel tagCloudFlowPanel;//add JLabels here for words
+	JScrollPane cloudScroll;
 	CloudParameters curCloud;
 	
 	
@@ -64,7 +65,7 @@ public class CloudDisplayPanel extends JPanel
 		
 		//Create JPanel containing tag words
 		tagCloudFlowPanel = initializeTagCloud();
-		JScrollPane cloudScroll = new JScrollPane(tagCloudFlowPanel);
+		cloudScroll = new JScrollPane(tagCloudFlowPanel);
 		cloudScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(cloudScroll, BorderLayout.CENTER);
 			
@@ -91,6 +92,8 @@ public class CloudDisplayPanel extends JPanel
 	{
 		tagCloudFlowPanel.removeAll();
 		tagCloudFlowPanel.revalidate();
+		cloudScroll.revalidate();
+		tagCloudFlowPanel.updateUI();
 		curCloud = null;
 		
 	}
