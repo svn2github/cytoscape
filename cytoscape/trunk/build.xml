@@ -265,13 +265,13 @@
 		description="Compiles all source code.">
 		<javac 
 		       destdir="${build.classes}" 
-		       nowarn="on" 
+		       nowarn="off" 
 		       debug="true" 
 		       source="${java.target_version}" 
 		       target="${java.target_version}"
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="no">
+		       deprecation="yes">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 			<src path="${src.dir}" />
