@@ -1,5 +1,6 @@
 package org.idekerlab.PanGIAPlugin.ui;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -25,6 +26,8 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.cytopanels.CytoPanel;
 import org.idekerlab.PanGIAPlugin.ScalingMethodX;
 import org.idekerlab.PanGIAPlugin.utilities.CyCollapsiblePanel;
+
+import com.lowagie.text.Font;
 
 
 /**
@@ -251,7 +254,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         //ParamaterErrorLabel
         parameterErrorLabel.setText("");
-        //parameterErrorLabel.set
+        parameterErrorLabel.setForeground(Color.red);
+        parameterErrorLabel.setFont(parameterErrorLabel.getFont().deriveFont(Font.BOLD));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -454,9 +458,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         //TrainingPanel
         trainingPanel.setLayout(new java.awt.GridBagLayout());
-        trainingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Training"));
+        trainingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Annotation"));
         
-        trainingLabel.setText("Complex training:");
+        trainingLabel.setText("Annotation training:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -481,7 +485,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel.add(trainingCheckBox, gridBagConstraints);
         
         
-        annotationLabel.setText("Complex annotation:");
+        annotationLabel.setText("Annotation labeling:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -507,7 +511,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         
         
-        lbComplexFile.setText("Complex file:");
+        lbComplexFile.setText("Annotation file:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -545,7 +549,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
             }
         });
         
-        annotationThresholdLabel.setText("Annotation Threshold:");
+        annotationThresholdLabel.setText("Labeling Threshold:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -871,14 +875,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			return;
 		}
 		
-		
-		if (physicalNetwork == geneticNetwork)
-		{
-			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("<HTML>Error: Physical and genetic networks<BR>cannot be the same.</HTML>");
-			return;
-		}
-		
 		String physicalSelected = physicalEdgeAttribComboBox.getSelectedItem().toString();
 		if (!physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_INTEGER &&
 			     Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_FLOATING))
@@ -900,7 +896,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && complexFilePath.equals(""))
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Training requires a complex file.");
+			parameterErrorLabel.setText("Error: Annotation requires an annotation file.");
 			return;
 		}
 		
@@ -988,7 +984,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 				if (p<0 || p>1)
 				{
 					searchButton.setEnabled(false);
-					parameterErrorLabel.setText("<HTML>Error: Annotation threshold must<BR>fall in the range [0,1].</HTML>");
+					parameterErrorLabel.setText("<HTML>Error: Labeling threshold must<BR>fall in the range [0,1].</HTML>");
 					
 					return;
 				}
@@ -997,7 +993,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			catch (NumberFormatException e)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorLabel.setText("Error: Invalid value for Annotation Threshold.");
+				parameterErrorLabel.setText("Error: Invalid value for Labeling threshold.");
 				return;
 			}
 		}
