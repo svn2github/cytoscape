@@ -42,7 +42,7 @@ import java.util.*;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public class LabelBioLayoutFRAlgorithm extends BioLayoutFRAlgorithm {
+public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
     // LABEL -->    
 
