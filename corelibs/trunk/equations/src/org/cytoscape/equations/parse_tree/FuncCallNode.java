@@ -31,6 +31,8 @@ package org.cytoscape.equations.parse_tree;
 
 
 import java.util.Stack;
+
+import org.cytoscape.equations.CodeAndSourceLocation;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.interpreter.Instruction;
 
@@ -38,12 +40,14 @@ import org.cytoscape.equations.interpreter.Instruction;
 /**
  *  A node in the parse tree representing a function call.
  */
-public class FuncCallNode implements Node {
+public class FuncCallNode extends Node {
 	private final Function func;
 	final Class returnType;
 	private final Node[] args;
 
-	public FuncCallNode(final Function func, final Class returnType, final Node[] args) {
+	public FuncCallNode(final int sourceLocation, final Function func, final Class returnType, final Node[] args) {
+		super(sourceLocation);
+
 		if (func == null)
 			throw new IllegalArgumentException("function must not be null!");
 		if (returnType == null)
@@ -71,15 +75,15 @@ public class FuncCallNode implements Node {
 	public Node getRightChild() { return null; }
 
 	/**
-	 *  @return null, This return value for this node is only known at runtime!
+	 *  @return null, The return value for this node is only known at runtime!
 	 */
 	public Object getValue() { return null; }
 
-	public void genCode(final Stack<Object> codeStack) {
+	public void genCode(final Stack<CodeAndSourceLocation> codeStack) {
 		for (int i = args.length - 1; i >= 0; --i)
 			args[i].genCode(codeStack);
-		codeStack.push(args.length);
-		codeStack.push(func);
-		codeStack.push(Instruction.CALL);
+		codeStack.push(new CodeAndSourceLocation(args.length, -1));
+		codeStack.push(new CodeAndSourceLocation(func, -1));
+		codeStack.push(new CodeAndSourceLocation(Instruction.CALL, getSourceLocation()));
 	}
 }

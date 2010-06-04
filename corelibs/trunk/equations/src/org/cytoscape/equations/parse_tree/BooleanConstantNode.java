@@ -32,14 +32,20 @@ package org.cytoscape.equations.parse_tree;
 
 import java.util.Stack;
 
+import org.cytoscape.equations.CodeAndSourceLocation;
+
 
 /**
  *  A node in the parse tree representing an integer constant.
  */
-public class BooleanConstantNode implements Node {
+public class BooleanConstantNode extends Node {
 	private final boolean value;
 
-	public BooleanConstantNode(final boolean value) { this.value = value; }
+	public BooleanConstantNode(final int sourceLocation, final boolean value) {
+		super(sourceLocation);
+
+		this.value = value;
+	}
 
 	public String toString() { return "BooleanConstantNode: " + value; }
 
@@ -57,7 +63,7 @@ public class BooleanConstantNode implements Node {
 
 	public boolean getValue() { return value; }
 
-	public void genCode(final Stack<Object> codeStack) {
-		codeStack.push(value);
+	public void genCode(final Stack<CodeAndSourceLocation> codeStack) {
+		codeStack.push(new CodeAndSourceLocation(value, getSourceLocation()));
 	}
 }

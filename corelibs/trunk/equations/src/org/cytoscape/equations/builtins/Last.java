@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 
 
 public class Last implements Function {
@@ -60,7 +61,7 @@ public class Last implements Function {
 	 *  @return String.class or null if there is not exactly a single list argument
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || argTypes[0] != List.class)
+		if (argTypes.length != 1 || !FunctionUtil.isSomeKindOfList(argTypes[0]))
 			return null;
 
 		return String.class;

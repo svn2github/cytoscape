@@ -82,7 +82,7 @@ public interface Function {
 	 *  @throws ArithmeticException thrown if a numeric error, e.g. a division by zero occurred.
 	 *  @throws IllegalArgumentException thrown for any error that is not a numeric error, for example if a function only accepts positive numbers and a negative number was passed in.
 	 */
-	Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException;
+	Object evaluateFunction(final Object[] args) throws FunctionError;
 
 	/**
 	 *  Used with the equation builder.

@@ -29,7 +29,10 @@
 */
 package org.cytoscape.equations.parse_tree;
 
+
 import java.util.Stack;
+
+import org.cytoscape.equations.CodeAndSourceLocation;
 import org.cytoscape.equations.Token;
 import org.cytoscape.equations.interpreter.Instruction;
 
@@ -37,11 +40,13 @@ import org.cytoscape.equations.interpreter.Instruction;
 /**
  *  A node in the parse tree representing a unary operator application.
  */
-public class UnaryOpNode implements Node {
+public class UnaryOpNode extends Node {
 	private final Token operator;
 	private final Node operand;
 
-	public UnaryOpNode(final Token operator, final Node operand) {
+	public UnaryOpNode(final int sourceLocation, final Token operator, final Node operand) {
+		super(sourceLocation);
+
 		if (operand == null)
 			throw new IllegalArgumentException("operand must not be null!");
 
@@ -65,15 +70,15 @@ public class UnaryOpNode implements Node {
 
 	public Token getOperator() { return operator; }
 
-	public void genCode(final Stack<Object> codeStack) {
+	public void genCode(final Stack<CodeAndSourceLocation> codeStack) {
 		operand.genCode(codeStack);
 
 		switch (operator) {
 		case PLUS:
-			codeStack.push(Instruction.FUPLUS);
+			codeStack.push(new CodeAndSourceLocation(Instruction.FUPLUS, getSourceLocation()));
 			break;
 		case MINUS:
-			codeStack.push(Instruction.FUMINUS);
+			codeStack.push(new CodeAndSourceLocation(Instruction.FUMINUS, getSourceLocation()));
 			break;
 		default:
 			throw new IllegalStateException("invalid unary operation: " + operator + "!");

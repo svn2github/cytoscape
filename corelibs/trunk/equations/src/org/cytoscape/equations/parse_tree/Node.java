@@ -32,14 +32,26 @@ package org.cytoscape.equations.parse_tree;
 
 import java.util.Stack;
 
+import org.cytoscape.equations.CodeAndSourceLocation;
+
 
 /**
  *  A node in the parse tree.
  */
-public interface Node {
-	String toString(); // For debugging.
-	Class getType(); // The type of this node.
-	Node getLeftChild();
-	Node getRightChild();
-	void genCode(final Stack<Object> codeStack);
+public abstract class Node {
+	private final int sourceLocation; // What location the "source code" is this associated with.
+
+	public Node(final int sourceLocation) {
+		this.sourceLocation = sourceLocation;
+	}
+
+	public int getSourceLocation() {
+		return sourceLocation;
+	}
+
+	public abstract String toString(); // For debugging.
+	public abstract Class getType(); // The type of this node.
+	public abstract Node getLeftChild();
+	public abstract Node getRightChild();
+	public abstract void genCode(final Stack<CodeAndSourceLocation> codeStack);
 }

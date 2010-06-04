@@ -37,6 +37,7 @@ public class Equation {
 	final String equation;
 	final Set<String> attribReferences;
 	final Object[] code;
+	final int[] sourceLocations;
 	final Class type;
 
 	/**
@@ -45,10 +46,13 @@ public class Equation {
 	 *  @param code              the instruction sequence representing the compiled equation
 	 *  @param type              the type of the equation, String.class, Boolean.class or Double.class
 	 */
-	Equation(final String equation, final Set<String> attribReferences, final Object[] code, final Class type) {
+	Equation(final String equation, final Set<String> attribReferences, final Object[] code,
+	         final int[] sourceLocations, final Class type)
+	{
 		this.equation         = equation;
 		this.attribReferences = attribReferences;
 		this.code             = code;
+		this.sourceLocations  = sourceLocations;
 		this.type             = type;
 	}
 
@@ -64,5 +68,6 @@ public class Equation {
 
 	public Set<String> getAttribReferences() { return attribReferences; }
 	public Object[] getCode() { return code; }
+	public int[] getSourceLocations() { return sourceLocations; }
 	public Class getType() { return type; }
 }

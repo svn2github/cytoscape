@@ -30,15 +30,18 @@
 package org.cytoscape.equations.interpreter;
 
 
-import org.cytoscape.equations.Equation;
-import org.cytoscape.equations.Function;
 import java.util.EmptyStackException;
 import java.util.Map;
 import java.util.Stack;
 
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionError;
+
 
 public class Interpreter {
 	private final Object[] code;
+	private final int[] sourceLocations;
 	private final Stack<Object> argumentStack;
 	private final Map<String, IdentDescriptor> nameToDescriptorMap;
 
@@ -48,8 +51,9 @@ public class Interpreter {
 		if (equation == null || equation.getCode().length == 0)
 			throw new IllegalStateException("null or empty code!");
 
-		this.code = equation.getCode();
-		this.argumentStack = new Stack<Object>();
+		this.code                = equation.getCode();
+		this.sourceLocations     = equation.getSourceLocations();
+		this.argumentStack       = new Stack<Object>();
 		this.nameToDescriptorMap = nameToDescriptorMap;
 	}
 
@@ -61,8 +65,10 @@ public class Interpreter {
 	 *  @throws IllegalStateException thrown if an invalid interpreter internal state was reached
 	 */
 	public Object run() throws ArithmeticException, IllegalArgumentException, IllegalStateException {
+		int index = -1;
 		try {
-			for (final Object instrOrArg : code) {
+			for (index = 0; index < code.length; ++index) {
+				final Object instrOrArg = code[index];
 				if (instrOrArg instanceof Instruction) {
 					switch ((Instruction)instrOrArg) {
 					case FADD:
@@ -179,6 +185,8 @@ public class Interpreter {
 			}
 		} catch (final EmptyStackException e) {
 			throw new IllegalStateException("inconsistent number of stack entries detected!");
+		} catch (final FunctionError e) {
+			throw new IllegalStateException(e.getMessage());
 		}
 
 		if (argumentStack.size() != 1)
@@ -337,7 +345,7 @@ public class Interpreter {
 		argumentStack.push(bool1 != bool2);
 	}
 
-	private void call() throws EmptyStackException, IllegalStateException {
+	private void call() throws EmptyStackException, IllegalStateException, FunctionError {
 		// 1. get the function
 		final Object o = argumentStack.pop();
 		if (!(o instanceof Function))

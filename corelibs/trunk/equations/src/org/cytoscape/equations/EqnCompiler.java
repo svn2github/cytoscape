@@ -56,7 +56,7 @@ public class EqnCompiler {
 
 		final Node parseTree = parser.getParseTree();
 
-		final Stack<Object> codeStack = new Stack<Object>();
+		final Stack<CodeAndSourceLocation> codeStack = new Stack<CodeAndSourceLocation>();
 		try {
 			parseTree.genCode(codeStack);
 		} catch (final IllegalStateException e) {
@@ -65,9 +65,13 @@ public class EqnCompiler {
 		}
 
 		final Object[] code = new Object[codeStack.size()];
-		for (int i = code.length - 1; i >= 0; --i)
-			code[i] = codeStack.pop();
-		this.equation = new Equation(equation, parser.getVariableReferences(), code, parser.getType());
+		final int[] sourceLocations = new int[codeStack.size()];
+		for (int i = code.length - 1; i >= 0; --i) {
+			final CodeAndSourceLocation codeAndSourceLocation = codeStack.pop();
+			code[i]            = codeAndSourceLocation.getCode();
+			sourceLocations[i] = codeAndSourceLocation.getSourceLocation();
+		}
+		this.equation = new Equation(equation, parser.getVariableReferences(), code, sourceLocations, parser.getType());
 
 		errorMsg = null;
 		return true;

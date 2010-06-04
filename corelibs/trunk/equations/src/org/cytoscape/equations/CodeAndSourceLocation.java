@@ -1,5 +1,5 @@
 /*
-  File: FloatConstantNode.java
+  File: CodeAndSourceLocation.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -27,43 +27,21 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.equations.parse_tree;
-
-
-import java.util.Stack;
-
-import org.cytoscape.equations.CodeAndSourceLocation;
+package org.cytoscape.equations;
 
 
 /**
- *  A node in the parse tree representing an integer constant.
+ *  A node in the parse tree representing a binary operator.
  */
-public class FloatConstantNode extends Node {
-	private final double value;
+public class CodeAndSourceLocation {
+	private final Object code;
+	private final int sourceLocation;
 
-	public FloatConstantNode(final int sourceLocation, final double value) {
-		super(sourceLocation);
-
-		this.value = value;
+	public CodeAndSourceLocation(final Object code, final int sourceLocation) {
+		this.code            = code;
+		this.sourceLocation = sourceLocation;
 	}
 
-	public String toString() { return "FloatConstantNode: " + value; }
-
-	public Class getType() { return Double.class; }
-
-	/**
-	 *  @return null, This type of node never has any children!
-	 */
-	public Node getLeftChild() { return null; }
-
-	/**
-	 *  @return null, This type of node never has any children!
-	 */
-	public Node getRightChild() { return null; }
-
-	public double getValue() { return value; }
-
-	public void genCode(final Stack<CodeAndSourceLocation> codeStack) {
-		codeStack.push(new CodeAndSourceLocation(value, getSourceLocation()));
-	}
+	public Object getCode() { return code; }
+	public int getSourceLocation() { return sourceLocation; }
 }

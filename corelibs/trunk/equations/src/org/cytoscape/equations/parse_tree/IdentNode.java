@@ -31,18 +31,22 @@ package org.cytoscape.equations.parse_tree;
 
 
 import java.util.Stack;
+
+import org.cytoscape.equations.CodeAndSourceLocation;
 import org.cytoscape.equations.interpreter.Instruction;
 
 
 /**
  *  A node in the parse tree representing an attribute reference.
  */
-public class IdentNode implements Node {
+public class IdentNode extends Node {
 	private final String attribName;
 	private final Object defaultValue;
 	private final Class type;
 
-	public IdentNode(final String attribName, final Object defaultValue, final Class type) {
+	public IdentNode(final int sourceLocation, final String attribName, final Object defaultValue, final Class type) {
+		super(sourceLocation);
+
 		if (type == null)
 			throw new IllegalArgumentException("\"type\" must not be null!");
 		if (defaultValue != null && defaultValue.getClass() != type)
@@ -71,10 +75,10 @@ public class IdentNode implements Node {
 	public String getAttribName() { return attribName; }
 	public Object getDefaultValue() { return defaultValue; }
 
-	public void genCode(final Stack<Object> codeStack) {
+	public void genCode(final Stack<CodeAndSourceLocation> codeStack) {
 		if (defaultValue != null)
-			codeStack.push(defaultValue);
-		codeStack.push(attribName);
-		codeStack.push(defaultValue == null ? Instruction.AREF : Instruction.AREF2);
+			codeStack.push(new CodeAndSourceLocation(defaultValue, -1));
+		codeStack.push(new CodeAndSourceLocation(attribName, -1));
+		codeStack.push(new CodeAndSourceLocation(defaultValue == null ? Instruction.AREF : Instruction.AREF2, getSourceLocation()));
 	}
 }

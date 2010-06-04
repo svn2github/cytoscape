@@ -1,5 +1,5 @@
 /*
-  File: FloatConstantNode.java
+  File: FunctionError.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -27,43 +27,18 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.equations.parse_tree;
+package org.cytoscape.equations;
 
 
-import java.util.Stack;
+public class FunctionError extends Exception {
+	private static final long serialVersionUID = 0xDAEDEBECFAEF2134L;
+	private final int argNumber; // Which argument this error is associated with.
 
-import org.cytoscape.equations.CodeAndSourceLocation;
+	public FunctionError(final String message, final int argNumber) {
+		super(message);
 
-
-/**
- *  A node in the parse tree representing an integer constant.
- */
-public class FloatConstantNode extends Node {
-	private final double value;
-
-	public FloatConstantNode(final int sourceLocation, final double value) {
-		super(sourceLocation);
-
-		this.value = value;
+		this.argNumber = argNumber;
 	}
 
-	public String toString() { return "FloatConstantNode: " + value; }
-
-	public Class getType() { return Double.class; }
-
-	/**
-	 *  @return null, This type of node never has any children!
-	 */
-	public Node getLeftChild() { return null; }
-
-	/**
-	 *  @return null, This type of node never has any children!
-	 */
-	public Node getRightChild() { return null; }
-
-	public double getValue() { return value; }
-
-	public void genCode(final Stack<CodeAndSourceLocation> codeStack) {
-		codeStack.push(new CodeAndSourceLocation(value, getSourceLocation()));
-	}
+	public int getArgNumber() { return argNumber; }
 }

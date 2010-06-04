@@ -31,6 +31,8 @@ package org.cytoscape.equations.parse_tree;
 
 
 import java.util.Stack;
+
+import org.cytoscape.equations.CodeAndSourceLocation;
 import org.cytoscape.equations.Token;
 import org.cytoscape.equations.interpreter.Instruction;
 
@@ -38,11 +40,13 @@ import org.cytoscape.equations.interpreter.Instruction;
 /**
  *  A node in the parse tree representing a binary operator.
  */
-public class BinOpNode implements Node {
+public class BinOpNode extends Node {
 	private final Token operator;
 	private final Node lhs, rhs;
 
-	public BinOpNode(final Token operator, final Node lhs, final Node rhs) {
+	public BinOpNode(final int sourceLocation, final Token operator, final Node lhs, final Node rhs) {
+		super(sourceLocation);
+
 		if (lhs == null)
 			throw new IllegalArgumentException("left operand must not be null!");
 		if (rhs == null)
@@ -69,49 +73,55 @@ public class BinOpNode implements Node {
 
 	public Token getOperator() { return operator; }
 
-	public void genCode(final Stack<Object> codeStack) {
+	public void genCode(final Stack<CodeAndSourceLocation> codeStack) {
 		rhs.genCode(codeStack);
 		lhs.genCode(codeStack);
 
 		switch (operator) {
 		case CARET:
-			codeStack.push(Instruction.FPOW);
+			codeStack.push(new CodeAndSourceLocation(Instruction.FPOW, getSourceLocation()));
 			break;
 		case PLUS:
-			codeStack.push(Instruction.FADD);
+			codeStack.push(new CodeAndSourceLocation(Instruction.FADD, getSourceLocation()));
 			break;
 		case MINUS:
-			codeStack.push(Instruction.FSUB);
+			codeStack.push(new CodeAndSourceLocation(Instruction.FSUB, getSourceLocation()));
 			break;
 		case DIV:
-			codeStack.push(Instruction.FDIV);
+			codeStack.push(new CodeAndSourceLocation(Instruction.FDIV, getSourceLocation()));
 			break;
 		case MUL:
-			codeStack.push(Instruction.FMUL);
+			codeStack.push(new CodeAndSourceLocation(Instruction.FMUL, getSourceLocation()));
 			break;
 		case EQUAL:
-			codeStack.push(determineOpCode(Instruction.BEQLF, Instruction.BEQLS, Instruction.BEQLB));
+			codeStack.push(new CodeAndSourceLocation(determineOpCode(Instruction.BEQLF, Instruction.BEQLS, Instruction.BEQLB),
+			                                         getSourceLocation()));
 			break;
 		case NOT_EQUAL:
-			codeStack.push(determineOpCode(Instruction.BNEQLF, Instruction.BNEQLS, Instruction.BNEQLB));
+			codeStack.push(new CodeAndSourceLocation(determineOpCode(Instruction.BNEQLF, Instruction.BNEQLS, Instruction.BNEQLB),
+			                                         getSourceLocation()));
 			break;
 		case GREATER_THAN:
-			codeStack.push(determineOpCode(Instruction.BGTF, Instruction.BGTS, Instruction.BGTB));
+			codeStack.push(new CodeAndSourceLocation(determineOpCode(Instruction.BGTF, Instruction.BGTS, Instruction.BGTB),
+			                                         getSourceLocation()));
 			break;
 		case LESS_THAN:
-			codeStack.push(determineOpCode(Instruction.BLTF, Instruction.BLTS, Instruction.BLTB));
+			codeStack.push(new CodeAndSourceLocation(determineOpCode(Instruction.BLTF, Instruction.BLTS, Instruction.BLTB),
+			                                         getSourceLocation()));
 			break;
 		case GREATER_OR_EQUAL:
-			codeStack.push(determineOpCode(Instruction.BGTEF, Instruction.BGTES, Instruction.BGTEB));
+			codeStack.push(new CodeAndSourceLocation(determineOpCode(Instruction.BGTEF, Instruction.BGTES, Instruction.BGTEB),
+			                                         getSourceLocation()));
 			break;
 		case LESS_OR_EQUAL:
-			codeStack.push(determineOpCode(Instruction.BLTEF, Instruction.BLTES, Instruction.BLTEB));
+			codeStack.push(new CodeAndSourceLocation(determineOpCode(Instruction.BLTEF, Instruction.BLTES, Instruction.BLTEB),
+			                                         getSourceLocation()));
 			break;
 		case AMPERSAND:
-			codeStack.push(Instruction.SCONCAT);
+			codeStack.push(new CodeAndSourceLocation(Instruction.SCONCAT, getSourceLocation()));
 			break;
 		default:
-			throw new IllegalStateException("unknown operator: " + operator + "!");
+			throw new IllegalStateException(getSourceLocation() + ": unknown operator: " + operator + "!");
 		}
 	}
 
@@ -128,6 +138,6 @@ public class BinOpNode implements Node {
 		else if (booleanOpCode != null && operandType == Boolean.class)
 			return booleanOpCode;
 
-		throw new IllegalStateException("invalid LHS operand type for comparison: " + operandType + "!");
+		throw new IllegalStateException(lhs.getSourceLocation() + ": invalid LHS operand type for comparison: " + operandType + "!");
 	}
 }

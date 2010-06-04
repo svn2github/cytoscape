@@ -34,9 +34,10 @@ import java.io.StringReader;
 
 
 public class Tokeniser {
+	private final String equationAsString;
 	private Token previousToken;
 	private StringReader reader;
-	private int stringPos, errorPos;
+	private int tokenStartPos, previousTokenStartPos, currentPos;
 	private long previousIntConstant, currentIntConstant;
 	private String previousIdent, currentIdent;
 	private double previousFloatConstant, currentFloatConstant;
@@ -48,9 +49,10 @@ public class Tokeniser {
 	private boolean openingBraceSeen;
 
 	public Tokeniser(final String equationAsString) {
+		this.equationAsString = equationAsString;
 		previousToken = null;
 		reader = new StringReader(equationAsString);
-		stringPos = 0;
+		currentPos = -1;
 		putBackChar = false;
 		openingBraceSeen = false;
 	}
@@ -65,6 +67,7 @@ public class Tokeniser {
 			currentBooleanConstant = previousBooleanConstant;
 			currentStringConstant = previousStringConstant;
 			currentIdent = previousIdent;
+			tokenStartPos = previousTokenStartPos;
 
 			return retval;
 		}
@@ -73,8 +76,12 @@ public class Tokeniser {
 		while (nextCh != -1 && Character.isWhitespace((char)nextCh))
 			nextCh = getChar();
 
-		if (nextCh == -1)
+		tokenStartPos = currentPos;
+
+		if (nextCh == -1) {
+			tokenStartPos = equationAsString.length();
 			return Token.EOS;
+		}
 
 		final char ch = (char)nextCh;
 		switch (ch) {
@@ -147,6 +154,15 @@ public class Tokeniser {
 		previousBooleanConstant = currentBooleanConstant;
 		previousStringConstant = currentStringConstant;
 		previousIdent = currentIdent;
+		previousTokenStartPos = tokenStartPos;
+	}
+
+	/**
+	 *  @return the position where the current token started.  The position returned applies to the last token
+	 *          that was retrieved via the getToken() method.
+	 */
+	public int getStartPos() {
+		return tokenStartPos;
 	}
 
 	/**
@@ -194,8 +210,9 @@ public class Tokeniser {
 
 	private int getChar() {
 		final int retval;
-
+		
 		if (putBackChar) {
+			++currentPos;
 			retval = previousChar;
 			putBackChar = false;
 			return retval;
@@ -208,7 +225,7 @@ public class Tokeniser {
 		}
 
 		if (retval != -1)
-			++stringPos;
+			++currentPos;
 
 		return retval;
 	}
@@ -218,10 +235,10 @@ public class Tokeniser {
 			throw new IllegalStateException("can't unget two chars in a row!");
 		previousChar = ch;
 		putBackChar = true;
+		--currentPos;
 	}
 	
 	private Token parseStringConstant() {
-		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
 
@@ -264,7 +281,6 @@ public class Tokeniser {
 	}
 
 	private Token parseNumericConstant() {
-		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
 
@@ -338,7 +354,6 @@ public class Tokeniser {
 	 *  backslashes by doubling them.
 	 */
 	private Token parseIdentifier() {
-		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
 
@@ -377,7 +392,6 @@ public class Tokeniser {
 	}
 
 	private Token parseSimpleIdentifier() {
-		final int startPos = stringPos;
 		final int INITIAL_CAPACITY = 20;
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
 

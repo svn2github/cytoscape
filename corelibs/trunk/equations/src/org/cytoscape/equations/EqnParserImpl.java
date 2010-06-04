@@ -80,7 +80,7 @@ class EqnParserImpl implements EqnParser {
 		if (formula == null)
 			throw new NullPointerException("formula string must not be null!");
 		if (formula.length() < 1 || formula.charAt(0) != '=')
-			throw new NullPointerException("formula string must start with an equal sign!");
+			throw new NullPointerException("0: formula string must start with an equal sign!");
 
 		this.formula = formula;
 		this.variableNameToTypeMap = variableNameToTypeMap;
@@ -91,8 +91,9 @@ class EqnParserImpl implements EqnParser {
 		try {
 			parseTree = parseExpr();
 			final Token token = tokeniser.getToken();
+			final int tokenStartPos = tokeniser.getStartPos();
 			if (token != Token.EOS)
-				throw new IllegalStateException("premature end of expression: expected EOS, but found " + token + "!");
+				throw new IllegalStateException(tokenStartPos + ": premature end of expression: expected EOS, but found " + token + "!");
 		} catch (final IllegalStateException e) {
 			lastErrorMessage = e.getMessage();
 			return false;
@@ -137,16 +138,17 @@ class EqnParserImpl implements EqnParser {
 
 		for (;;) {
 			final Token token = tokeniser.getToken();
+			final int sourceLocation = tokeniser.getStartPos();
 			if (token == Token.PLUS || token == Token.MINUS || token == Token.AMPERSAND) {
 				final Node term = parseTerm();
 				if (token == Token.PLUS || token == Token.MINUS)
-					exprNode = handleBinaryArithmeticOp(token, exprNode, term);
-				else
-					exprNode = new BinOpNode(Token.AMPERSAND, exprNode, term);
+					exprNode = handleBinaryArithmeticOp(token, sourceLocation, exprNode, term);
+				else // String concatenation.
+					exprNode = new BinOpNode(sourceLocation, Token.AMPERSAND, exprNode, term);
 			}
 			else if (token.isComparisonOperator()) {
 				final Node term = parseTerm();
-				return handleComparisonOp(token, exprNode, term); // No chaining for comparison operators!
+				return handleComparisonOp(token, sourceLocation, exprNode, term); // No chaining for comparison operators!
 			} else {
 				tokeniser.ungetToken(token);
 				return exprNode;
@@ -162,9 +164,10 @@ class EqnParserImpl implements EqnParser {
 
 		for (;;) {
 			final Token token = tokeniser.getToken();
+			final int sourceLocation = tokeniser.getStartPos();
 			if (token == Token.MUL || token == Token.DIV) {
 				final Node powerNode = parsePower();
-				termNode = handleBinaryArithmeticOp(token, termNode, powerNode);
+				termNode = handleBinaryArithmeticOp(token, sourceLocation, termNode, powerNode);
 			}
 			else {
 				tokeniser.ungetToken(token);
@@ -180,9 +183,10 @@ class EqnParserImpl implements EqnParser {
 		Node powerNode = parseFactor();
 
 		final Token token = tokeniser.getToken();
+		final int sourceLocation = tokeniser.getStartPos();
 		if (token == Token.CARET) {
 			final Node rhs = parsePower();
-			powerNode = handleBinaryArithmeticOp(token, powerNode, rhs);
+			powerNode = handleBinaryArithmeticOp(token, sourceLocation, powerNode, rhs);
 		}
 		else
 			tokeniser.ungetToken(token);
@@ -195,27 +199,33 @@ class EqnParserImpl implements EqnParser {
 	 */
 	private Node parseFactor() {
 		Token token = tokeniser.getToken();
+		int sourceLocation = tokeniser.getStartPos();
 
 		// 1. a constant
 		if (token == Token.FLOAT_CONSTANT)
-			return new FloatConstantNode(tokeniser.getFloatConstant());
+			return new FloatConstantNode(sourceLocation, tokeniser.getFloatConstant());
 		else if (token == Token.STRING_CONSTANT)
-			return new StringConstantNode(tokeniser.getStringConstant());
+			return new StringConstantNode(sourceLocation, tokeniser.getStringConstant());
 		else if (token == Token.BOOLEAN_CONSTANT)
-			return new BooleanConstantNode(tokeniser.getBooleanConstant());
+			return new BooleanConstantNode(sourceLocation, tokeniser.getBooleanConstant());
 
 		// 2. a variable reference
 		if (token == Token.DOLLAR) {
+			final int varRefStartPos = sourceLocation;
 			token = tokeniser.getToken();
+			sourceLocation = tokeniser.getStartPos();
 			final boolean usingOptionalBraces = token == Token.OPEN_BRACE;
-			if (usingOptionalBraces)
+			if (usingOptionalBraces) {
 				token = tokeniser.getToken();
+				sourceLocation = tokeniser.getStartPos();
+			}
 			if (token != Token.IDENTIFIER)
-				throw new IllegalStateException("identifier expected!");
+				throw new IllegalStateException(sourceLocation + ": identifier expected!");
 
 			final Class varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 			if (varRefType == null)
-				throw new IllegalStateException("unknown variable reference name: \"" + tokeniser.getIdent() + "\"!");
+				throw new IllegalStateException(sourceLocation + ": unknown variable reference name: \""
+				                                + tokeniser.getIdent() + "\"!");
 			variableReferences.add(tokeniser.getIdent());
 
 			Object defaultValue = null;
@@ -225,8 +235,9 @@ class EqnParserImpl implements EqnParser {
 				// Do we have a default value?
 				if (token == Token.COLON) {
 					token = tokeniser.getToken();
+					sourceLocation = tokeniser.getStartPos();
 					if (token != Token.FLOAT_CONSTANT && token != Token.STRING_CONSTANT && token != Token.BOOLEAN_CONSTANT)
-						throw new IllegalStateException("expected default value for variable reference!");
+						throw new IllegalStateException(sourceLocation + ": expected default value for variable reference!");
 					switch (token) {
 					case FLOAT_CONSTANT:
 						defaultValue = new Double(tokeniser.getFloatConstant());
@@ -239,13 +250,14 @@ class EqnParserImpl implements EqnParser {
 						break;
 					}
 					token = tokeniser.getToken();
+					sourceLocation = tokeniser.getStartPos();
 				}
 
 				if (token != Token.CLOSE_BRACE)
-					throw new IllegalStateException("closing brace expected!");
+					throw new IllegalStateException(sourceLocation + ": closing brace expected!");
 			}
 
-			return new IdentNode(tokeniser.getIdent(), defaultValue, varRefType);
+			return new IdentNode(varRefStartPos, tokeniser.getIdent(), defaultValue, varRefType);
 		}
 
 		// 3. a parenthesised expression
@@ -253,7 +265,7 @@ class EqnParserImpl implements EqnParser {
 			final Node exprNode = parseExpr();
 			token = tokeniser.getToken();
 			if (token != Token.CLOSE_PAREN)
-				throw new IllegalStateException("'(' expected!");
+				throw new IllegalStateException(sourceLocation + ": '(' expected!");
 
 			return exprNode;
 		}
@@ -261,7 +273,7 @@ class EqnParserImpl implements EqnParser {
 		// 4. a unary operator
 		if (token == Token.PLUS || token == Token.MINUS) {
 			final Node factor = parseFactor();
-			return handleUnaryOp(token, factor);
+			return handleUnaryOp(sourceLocation, token, factor);
 		}
 
 		// 5. function call
@@ -271,16 +283,16 @@ class EqnParserImpl implements EqnParser {
 		}
 
 		if (token == Token.ERROR)
-			throw new IllegalStateException(tokeniser.getErrorMsg());
+			throw new IllegalStateException(sourceLocation + ": " + tokeniser.getErrorMsg());
 
-		throw new IllegalStateException("unexpected input token: " + token + "!");
+		throw new IllegalStateException(sourceLocation + ": unexpected input token: " + token + "!");
 	}
 
-	private Node handleUnaryOp(final Token operator, final Node operand) {
+	private Node handleUnaryOp(final int sourceLocation, final Token operator, final Node operand) {
 		if (operand.getType() == Boolean.class || operand.getType() == String.class)
-			throw new ArithmeticException("can't apply a unary " + operator.asString()
-			                              + " a boolean or string operand!");
-		return new UnaryOpNode(operator, operand);
+			throw new ArithmeticException(sourceLocation + ": can't apply a unary " + operator.asString()
+			                              + " a boolean, string or list operand!");
+		return new UnaryOpNode(sourceLocation, operator, operand);
 	}
 
 	/**
@@ -288,8 +300,9 @@ class EqnParserImpl implements EqnParser {
 	 */
 	private Node parseFunctionCall() {
 		Token token = tokeniser.getToken();
+		final int functionNameStartPos = tokeniser.getStartPos();
 		if (token != Token.IDENTIFIER)
-			throw new IllegalStateException();
+			throw new IllegalStateException(functionNameStartPos + ": function name expected!");
 
 		final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
 		if (functionNameCandidate.equals("DEFINED"))
@@ -297,17 +310,22 @@ class EqnParserImpl implements EqnParser {
 
 		final Function func = nameToFunctionMap.get(functionNameCandidate);
 		if (func == null)
-			throw new IllegalStateException("call to unknown function " + functionNameCandidate + "()!");
+			throw new IllegalStateException(functionNameStartPos + ": call to unknown function "
+			                                + functionNameCandidate + "()!");
 
 		token = tokeniser.getToken();
+		final int openParenPos = tokeniser.getStartPos();
 		if (token != Token.OPEN_PAREN)
-			throw new IllegalStateException("expected '(' after function name \"" + functionNameCandidate + "\"!");
+			throw new IllegalStateException(openParenPos + ": expected '(' after function name \""
+			                                + functionNameCandidate + "\"!");
 
 		// Parse the comma-separated argument list.
 		final ArrayList<Class> argTypes = new ArrayList<Class>();
 		ArrayList<Node> args = new ArrayList<Node>();
+		int sourceLocation;
 		for (;;) {
 			token = tokeniser.getToken();
+			sourceLocation = tokeniser.getStartPos();
 			if (token ==  Token.CLOSE_PAREN)
 				break;
 
@@ -317,55 +335,67 @@ class EqnParserImpl implements EqnParser {
 			args.add(exprNode);
 
 			token = tokeniser.getToken();
+			sourceLocation = tokeniser.getStartPos();
 			if (token != Token.COMMA)
 				break;
 		}
 
 		final Class returnType = func.validateArgTypes(argTypes.toArray(new Class[argTypes.size()]));
 		if (returnType == null)
-			throw new IllegalStateException("invalid number or type of arguments in call to "
+			throw new IllegalStateException((openParenPos + 1) + ": invalid number or type of arguments in call to "
 			                                + functionNameCandidate + "()!");
 
 		if (token != Token.CLOSE_PAREN)
-			throw new IllegalStateException("expected the closing parenthesis of a call to "
+			throw new IllegalStateException(sourceLocation + ": expected the closing parenthesis of a call to "
 			                                + functionNameCandidate + "!");
 
 		Node[] nodeArray = new Node[args.size()];
-		return new FuncCallNode(func, returnType, args.toArray(nodeArray));
+		return new FuncCallNode(functionNameStartPos, func, returnType, args.toArray(nodeArray));
 	}
 
 
 	/**
-	 *  Implements --> "(" ["{"] ident ["}"] ")".  If the opening brace is found a closing brace is also required.
+	 *  Implements --> "DEFINED" "(" ident ")".  If the opening brace is found a closing brace is also required.
 	 */
 	private Node parseDefined() {
 		Token token = tokeniser.getToken();
+		final int definedStart = tokeniser.getStartPos();
 		if (token != Token.OPEN_PAREN)
-			throw new IllegalStateException("\"(\" expected after \"DEFINED\"!");
+			throw new IllegalStateException(definedStart + ": \"(\" expected after \"DEFINED\"!");
+
 		token = tokeniser.getToken();
+		int sourceLocation = tokeniser.getStartPos();
 		Class varRefType;
 		if (token != Token.DOLLAR) {
 			if (token != Token.IDENTIFIER)
-				throw new IllegalStateException("variable reference expected after \"DEFINED(\"!");
+				throw new IllegalStateException(sourceLocation + ": variable reference expected after \"DEFINED(\"!");
 			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 		}
 		else {
 			token = tokeniser.getToken();
+			sourceLocation = tokeniser.getStartPos();
 			if (token != Token.OPEN_BRACE)
-				throw new IllegalStateException("\"{\" expected after \"DEFINED($\"!");
+				throw new IllegalStateException(sourceLocation + ": \"{\" expected after \"DEFINED($\"!");
+
 			token = tokeniser.getToken();
+			sourceLocation = tokeniser.getStartPos();
 			if (token != Token.IDENTIFIER)
-				throw new IllegalStateException("variable reference expected after \"DEFINED(${\"!");
+				throw new IllegalStateException(sourceLocation + ": variable reference expected after \"DEFINED(${\"!");
+
 			varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 			token = tokeniser.getToken();
+			sourceLocation = tokeniser.getStartPos();
 			if (token != Token.CLOSE_BRACE)
-				throw new IllegalStateException("\"}\" expected after after \"DEFINED(${" + tokeniser.getIdent() + "\"!");
+				throw new IllegalStateException(sourceLocation + ":\"}\" expected after after \"DEFINED(${"
+				                                + tokeniser.getIdent() + "\"!");
 		}
-		token = tokeniser.getToken();
-		if (token != Token.CLOSE_PAREN)
-			throw new IllegalStateException("missing \")\" in call to DEFINED()!");
 
-		return new BooleanConstantNode(varRefType != null);
+		token = tokeniser.getToken();
+		sourceLocation = tokeniser.getStartPos();
+		if (token != Token.CLOSE_PAREN)
+			throw new IllegalStateException(sourceLocation + ": missing \")\" in call to DEFINED()!");
+
+		return new BooleanConstantNode(definedStart, varRefType != null);
 	}
 
 	//
@@ -375,36 +405,36 @@ class EqnParserImpl implements EqnParser {
 	/**
 	 *  Deals w/ any necessary type conversions for any binary arithmetic operation on numbers.
 	 */
-	private Node handleBinaryArithmeticOp(final Token operator, final Node lhs, final Node rhs) {
+	private Node handleBinaryArithmeticOp(final Token operator, final int sourceLocation, final Node lhs, final Node rhs) {
 		// First operand is Double:
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, lhs, rhs);
+			return new BinOpNode(sourceLocation, operator, lhs, rhs);
 		if (lhs.getType() == Double.class
 		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, lhs, new FConvNode(rhs));
 
 		// First operand is Long:
 		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), rhs);
 		if (lhs.getType() == Long.class
 		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), new FConvNode(rhs));
 
 		// First operand is Boolean:
 		if (lhs.getType() == Boolean.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), rhs);
 		if (lhs.getType() == Boolean.class
 		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), new FConvNode(rhs));
 
 		// First operand is String:
 		if (lhs.getType() == String.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), rhs);
 		if (lhs.getType() == String.class
 		    && (rhs.getType() == Long.class || lhs.getType() == Boolean.class || lhs.getType() == String.class))
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), new FConvNode(rhs));
 
-		throw new ArithmeticException("incompatible operands for \""
+		throw new ArithmeticException(sourceLocation + ": incompatible operands for \""
 			                      + operator.asString() + "\"! (lhs="
 			                      + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                      + rhs.toString() + ":" + rhs.getType() + ")");
@@ -413,42 +443,42 @@ class EqnParserImpl implements EqnParser {
 	/**
 	 *  Deals w/ any necessary type conversions for any binary comparison operation.
 	 */
-	private Node handleComparisonOp(final Token operator, final Node lhs, final Node rhs) {
+	private Node handleComparisonOp(final Token operator, final int sourceLocation, final Node lhs, final Node rhs) {
 		// First operand is Double:
 		if (lhs.getType() == Double.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, lhs, rhs);
+			return new BinOpNode(sourceLocation, operator, lhs, rhs);
 		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, lhs, new FConvNode(rhs));
 		if (lhs.getType() == Double.class && rhs.getType() == Boolean.class)
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, lhs, new FConvNode(rhs));
 		if (lhs.getType() == Double.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, lhs, new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, lhs, new FConvNode(rhs));
 
 		// First operand is Long:
 		if (lhs.getType() == Long.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), rhs);
 		if (lhs.getType() == Long.class
 		    && (rhs.getType() == Long.class || rhs.getType() == Boolean.class || rhs.getType() == String.class))
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), new FConvNode(rhs));
 
 		// First operand is Boolean:
 		if (lhs.getType() == Boolean.class && rhs.getType() == Boolean.class)
-			return new BinOpNode(operator, lhs, rhs);
+			return new BinOpNode(sourceLocation, operator, lhs, rhs);
 		if (lhs.getType() == Boolean.class && rhs.getType() == Double.class)
-			return new BinOpNode(operator, new FConvNode(lhs), rhs);
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), rhs);
 		if (lhs.getType() == Boolean.class && rhs.getType() == Long.class)
-			return new BinOpNode(operator, new FConvNode(lhs), new FConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, new FConvNode(lhs), new FConvNode(rhs));
 		if (lhs.getType() == Boolean.class && rhs.getType() == String.class)
-			return new BinOpNode(operator, new SConvNode(lhs), rhs);
+			return new BinOpNode(sourceLocation, operator, new SConvNode(lhs), rhs);
 
 		// First operand is String:
 		if (lhs.getType() == String.class && rhs.getType() == String.class)
-			return new BinOpNode(operator, lhs, rhs);
+			return new BinOpNode(sourceLocation, operator, lhs, rhs);
 		if (lhs.getType() == String.class
 		    && (rhs.getType() == Double.class || rhs.getType() == Long.class || rhs.getType() == Boolean.class))
-			return new BinOpNode(operator, lhs, new SConvNode(rhs));
+			return new BinOpNode(sourceLocation, operator, lhs, new SConvNode(rhs));
 
-		throw new IllegalArgumentException("incompatible operands for \""
+		throw new IllegalArgumentException(sourceLocation + ": incompatible operands for \""
 			                           + operator.asString() + "\"! (lhs="
 			                           + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                           + rhs.toString() + ":" + rhs.getType() + ")");

@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionError;
 import org.cytoscape.equations.FunctionUtil;
 
 
@@ -73,13 +74,8 @@ public class Var implements Function {
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
-	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double[] numbers;
-		try {
-			numbers = FunctionUtil.getNumbers(args);
-		} catch (final Exception e) {
-			throw new IllegalArgumentException("in call to VAR(): " + e.getMessage());
-		}
+	public Object evaluateFunction(final Object[] args) throws FunctionError {
+		final double[] numbers = FunctionUtil.getNumbers(args);
 		if (numbers.length < 2)
 			throw new IllegalArgumentException("illegal list argument in call to VAR(): must have at least 2 numbers!");
 
@@ -96,14 +92,10 @@ public class Var implements Function {
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
+		possibleNextArgs.add(List.class);
 		if (leadingArgs.length > 1)
 			possibleNextArgs.add(null);
-
-		possibleNextArgs.add(List.class);
-		possibleNextArgs.add(Double.class);
-		possibleNextArgs.add(Long.class);
-		possibleNextArgs.add(Boolean.class);
-		possibleNextArgs.add(String.class);
 
 		return possibleNextArgs;
 	}

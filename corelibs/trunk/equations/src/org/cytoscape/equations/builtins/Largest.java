@@ -64,7 +64,7 @@ public class Largest implements Function {
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length != 2)
 			return null;
-		if (argTypes[0] != List.class || (argTypes[1] != Double.class && argTypes[1] != Long.class))
+		if (argTypes[0] != List.class || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return Double.class;
@@ -93,12 +93,16 @@ public class Largest implements Function {
 			}
 		}
 
-		final double d = FunctionUtil.getArgAsDouble(args[1]);
-		final long k = EquationUtil.doubleToLong(d);
+		final long k;
+		try {
+			k = FunctionUtil.getArgAsLong(args[1]);
+		} catch (final Exception e) {
+			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to an integer argument in a call to LARGEST()!");
+		}
 		if (k <= 0)
-			throw new IllegalArgumentException("invalid index " + d + " in a call to LARGEST()!");
+			throw new IllegalArgumentException("invalid index " + args[1] + " in a call to LARGEST()!");
 		if (k > array.length)
-			throw new IllegalArgumentException("index " + d + " is too large for a list w/ " + array.length + " elements in a call to LARGEST()!");
+			throw new IllegalArgumentException("index " + args[1] + " is too large for a list w/ " + array.length + " elements in a call to LARGEST()!");
 
 		return (Double)kthSmallest(array, array.length - (int)k);
 	}
@@ -177,10 +181,7 @@ public class Largest implements Function {
 		}
 
 		if (leadingArgs.length == 1) {
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(String.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 

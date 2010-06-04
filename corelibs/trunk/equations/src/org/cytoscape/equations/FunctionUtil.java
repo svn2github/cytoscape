@@ -286,17 +286,27 @@ public class FunctionUtil {
 	 *  @throws IllegalArgumentException if any scalar argument cannot be converted to a double or any list
 	 *          argument contains an element that cannot be converted to a number.
 	 */
-	static public double[] getNumbers(final Object[] args) {
+	static public double[] getNumbers(final Object[] args) throws FunctionError {
 		final List<Double> numbers = new ArrayList<Double>();
 
-		for (final Object arg : args) {
+		for (int i = 0; i < args.length; ++i) {
+			final Object arg = args[i];
 			if (arg instanceof List) {
 				final List list = (List)arg;
-				for (final Object listElement : list)
-					numbers.add(convertToDouble(listElement));
+				for (final Object listElement : list) {
+					final Double d = convertToDouble(listElement);
+					if (d == null)
+						throw new FunctionError("can't convert list element \"" + listElement
+						                        + "\" to a number!", i);
+					numbers.add(d);
+				}
 			}
-			else
-				numbers.add(convertToDouble(arg));
+			else {
+				final Double d = convertToDouble(arg);
+				if (d == null)
+					throw new FunctionError("can't convert \"" + arg + "\" to a number!", i);
+				numbers.add(d);
+			}
 		}
 
 		final double[] doubles = new double[numbers.size()];
@@ -313,17 +323,27 @@ public class FunctionUtil {
 	 *  @throws IllegalArgumentException if any scalar argument cannot be converted to a boolean or any list
 	 *          argument contains an element that cannot be converted to a number.
 	 */
-	static public boolean[] getBooleans(final Object[] args) {
+	static public boolean[] getBooleans(final Object[] args) throws FunctionError {
 		final List<Boolean> booleans = new ArrayList<Boolean>();
 
-		for (final Object arg : args) {
+		for (int i = 0; i < args.length; ++i) {
+			final Object arg = args[i];
 			if (arg instanceof List) {
 				final List list = (List)arg;
-				for (final Object listElement : list)
-					booleans.add(convertToBoolean(listElement));
+				for (final Object listElement : list) {
+					final Boolean b = convertToBoolean(listElement);
+					if (b == null)
+						throw new FunctionError("can't convert list element \"" + listElement
+						                        + "\" to a boolean value!", i);
+					booleans.add(b);
+				}
 			}
-			else
-				booleans.add(convertToBoolean(arg));
+			else {
+				final Boolean b = convertToBoolean(arg);
+				if (b == null)
+					throw new FunctionError("can't convert \"" + arg + "\" to a boolean number!", i);
+				booleans.add(b);
+			}
 		}
 
 		final boolean[] retval = new boolean[booleans.size()];
@@ -335,8 +355,7 @@ public class FunctionUtil {
 	}
 
 	/**
-	 *  @return "arg" converted to a Double, if possible
-	 *  @throws IllegalArgumentException if the argument cannot be converted to a Double
+	 *  @return "arg" converted to a Double, if possible, else null
 	 */
 	static private Double convertToDouble(final Object arg) {
 		if (arg.getClass() == Double.class)
@@ -349,18 +368,17 @@ public class FunctionUtil {
 			try {
 				return Double.valueOf((String)arg);
 			} catch (final Exception e) {
-				throw new IllegalArgumentException("can't convert \"" + arg + "\" to a floating point number!");
+				return null;
 			}
 		}
 		if (arg.getClass() == Boolean.class)
 			return Double.valueOf((Boolean)arg ? 1.0 : 0.0);
 
-		throw new IllegalArgumentException("can't convert argument to a floating point number!");
+		return null;
 	}
 
 	/**
-	 *  @return "arg" converted to a Boolean, if possible
-	 *  @throws IllegalArgumentException if the argument cannot be converted to a Double
+	 *  @return "arg" converted to a Boolean, if possible. else null
 	 */
 	static private Boolean convertToBoolean(final Object arg) {
 		if (arg.getClass() == Double.class)
@@ -375,11 +393,11 @@ public class FunctionUtil {
 				return true;
 			if (s.equalsIgnoreCase("false"))
 				return false;
-			throw new IllegalArgumentException("can't convert \"" + arg + "\" to a floating point number!");
+			return null;
 		}
 		if (arg.getClass() == Boolean.class)
 			return (Boolean)arg;
 
-		throw new IllegalArgumentException("can't convert argument to a boolean!");
+		return null;
 	}
 }

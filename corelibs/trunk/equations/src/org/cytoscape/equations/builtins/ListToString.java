@@ -61,7 +61,8 @@ public class ListToString implements Function {
 	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double or Long
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || !FunctionUtil.isSomeKindOfList(argTypes[0]) || argTypes[1] != String.class)
+		if (argTypes.length != 2 || !FunctionUtil.isSomeKindOfList(argTypes[0])
+		    || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return String.class;
@@ -73,7 +74,7 @@ public class ListToString implements Function {
 	 */
 	public Object evaluateFunction(final Object[] args) {
 		final List list = (List)args[0];
-		final String separator = (String)args[1];
+		final String separator = FunctionUtil.getArgAsString(args[1]);
 
 		final StringBuilder result = new StringBuilder();
 		int count = 0;
@@ -101,7 +102,7 @@ public class ListToString implements Function {
 			return possibleNextArgs;
 		}
 		else if (leadingArgs.length == 1) {
-			possibleNextArgs.add(String.class);
+			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 			return possibleNextArgs;
 		}
 
