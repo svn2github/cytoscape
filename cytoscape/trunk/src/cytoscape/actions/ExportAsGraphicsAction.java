@@ -68,6 +68,14 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 
 	public void actionPerformed(ActionEvent e)
 	{
+
+		final CyNetworkView v = Cytoscape.getCurrentNetworkView();
+		if ( v == null || v == Cytoscape.getNullNetworkView() ) {
+			logger.error("No network view exists to export!");
+			return;
+		}
+
+
 		final ExportAsGraphicsFileChooser chooser = new ExportAsGraphicsFileChooser(FILTERS);
 
 		ActionListener listener = new ActionListener()
@@ -135,7 +143,7 @@ class ExportTask
                     try {
                         exporter.export(view, stream);
                     }
-                    catch (IOException e) {
+                    catch (Exception e) {
                         monitor.setException(e, "Could not complete export of network");
                     }
                 }

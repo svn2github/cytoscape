@@ -45,6 +45,7 @@ import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JSeparator;
 import javax.swing.JOptionPane;
+import javax.swing.Action;
 
 import org.jdesktop.swingx.JXTitledSeparator;
 
@@ -95,6 +96,7 @@ public class CyMenus implements GraphViewChangeListener {
 	JButton zoomOutButton;
 	JButton zoomSelectedButton;
 	JButton zoomDisplayAllButton;
+	JButton snapshotButton;
 	JButton showAllButton;
 	JButton hideSelectedButton;
 	JButton annotationButton;
@@ -585,6 +587,17 @@ public class CyMenus implements GraphViewChangeListener {
 		                                               .getResource("images/ximian/stock_zoom-1.png")));
 		zoomDisplayAllButton.setToolTipText("Zoom out to display all of current Network");
 		zoomDisplayAllButton.setBorderPainted(false);
+
+		toolBar.addSeparator();
+
+		ExportAsGraphicsAction eag = new ExportAsGraphicsAction();
+		eag.putValue(Action.NAME, null);
+		snapshotButton = toolBar.add(eag);
+		snapshotButton.setToolTipText("Export current network view as graphics");
+		snapshotButton.setIcon(new ImageIcon(Cytoscape.class.getResource("images/ximian/tango-32-camera-photo.png")));
+
+		snapshotButton.setBorderPainted(false);
+		snapshotButton.setRolloverEnabled(true);
 
 		toolBar.addSeparator();
 
