@@ -1,0 +1,5 @@
+<index version="1.0">
+  <indexitem text="This is an example topic." target="Topic">
+    <indexitem text="This is a sub-topic." target="SubTopic"/>
+  </indexitem>
+</index>

@@ -84,20 +84,32 @@
 		   target="1.5"
            fork="${fork}">
        <compilerarg line="-Xlint:all -Xlint:-path"/>
-     </javac>
-     <echo message="Successfully ran compile task!"/>
+    </javac>
+    <echo message="Successfully ran compile task!"/>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Copy the help-related files                                         -->
+  <!-- =================================================================== -->
+  <target name="help" 
+	  unless="helpIsUpToDate">
+    <mkdir dir="${build.dir}/help"/>
+    <!-- Copy the JavaHelp system files and html source over to build area -->
+    <echo>Copying JavaHelp files: helpset, html files, images</echo>
+    <copy todir="${build.dir}/help">
+      <fileset dir="${basedir}/help" />
+    </copy>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Creates the project jar file                                        -->
   <!-- =================================================================== -->
   <target name="jar" 
-          depends="compile" >
+          depends="compile,help" >
 	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/PanGIAPlugin"/>
 	<copy file="${resources.dir}/${visualstyle.props}" todir="${build.dir}/resources"/>
   	<copy todir="${build.dir}/images">
-	    <fileset dir="${images.dir}"/> 
+	    <fileset dir="${images.dir}"/>
 	</copy>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
