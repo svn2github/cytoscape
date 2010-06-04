@@ -81,6 +81,8 @@ public class CreateCloudAction extends CytoscapeAction
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		
 		//Unable to proceed if either of these is null
+		//TODO - This never happens since network and view will be special
+		//empty CyNetwork(View)
 		if (network == null || view == null)
 		{return;}
 		

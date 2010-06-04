@@ -340,10 +340,15 @@ public class SemanticSummaryInputPanel extends JPanel
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout());
 		
+		//Create buttons
 		JButton deleteButton = new JButton("Delete");
 		JButton updateButton = new JButton("Update");
 		JButton createButton = new JButton("Create");
 		
+		//Add actions to buttons
+		createButton.addActionListener(new CreateCloudAction());
+		
+		//Add buttons to panel
 		panel.add(deleteButton);
 		panel.add(updateButton);
 		panel.add(createButton);
@@ -352,6 +357,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	}
 	
 	
+	//TODO - Remove?
 	/**
 	 * Handles setting for the text field parameters that are numbers.
 	 * Makes sure that the numbers make sense.

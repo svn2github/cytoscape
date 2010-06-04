@@ -148,14 +148,8 @@ public class CloudParameters
 			
 			//replace all punctuation with white spaces except ' and -
 			nodeName = nodeName.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
-			
-			//Remove duplicate words, create set
-			//String[] words = nodeName.split("\\b+");
-			//Set<String> wordSet = new HashSet<String>();
-	        //for (String a : words)
-	        //    wordSet.add(a);
 	        
-	        //Alternate solution
+	        //Separate into non repeating set of words
 			Set<String> wordSet = new HashSet<String>();
 	        StringTokenizer token = new StringTokenizer(nodeName);
 	        while (token.hasMoreTokens())
@@ -236,14 +230,8 @@ public class CloudParameters
 			
 			//replace all punctuation with white spaces except ' and -
 			nodeName = nodeName.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
-			
-			//Remove duplicate words, create set
-			//String[] words = nodeName.split("\\b+");
-			//Set<String> wordSet = new HashSet<String>();
-	        //for (String a : words)
-	        //    wordSet.add(a);
 	        
-	        //Alternate solution
+	        //Separate into non repeating set of words
 			Set<String> wordSet = new HashSet<String>();
 	        StringTokenizer token = new StringTokenizer(nodeName);
 	        while (token.hasMoreTokens())
@@ -308,6 +296,12 @@ public class CloudParameters
 		{
 			String curWord = (String)iter.next();
 			
+			/* Ratio: (selCount/selTotal)/((netCount/netTotal)^netWeightFactor)
+			 * But, to avoid underflow from small probabilities we calculate it as follows:
+			 * (selCount * (netTotal^netWeightFactor))/(selTotal * (netCount^netWeightFactor))
+			 * This is the same as the original definition of ratio, just with some
+			 * different algebra.
+			 */
 			Integer selTotal = this.getSelectedNumNodes();
 			Integer selCount = selectedCounts.get(curWord);
 			Integer netCount = networkCounts.get(curWord);

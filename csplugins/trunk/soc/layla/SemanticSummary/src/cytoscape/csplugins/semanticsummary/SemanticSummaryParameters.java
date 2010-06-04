@@ -64,7 +64,6 @@ public class SemanticSummaryParameters
 	//private boolean isInitialized;//set to true when original data counts set
 	
 	//DO THESE GO HERE??
-	private static final Integer NUMBINS = 7; //NEED TO DECIDE ON THIS
 	private static final Integer MINFONTSIZE = 12; //TODO
 	private static final Integer MAXFONTSIZE = 56; //TODO
 	
@@ -107,6 +106,32 @@ public class SemanticSummaryParameters
 			clouds.remove(name);
 	}
 	
+	/**
+	 * Returns true if the particular cloud named is contained in this
+	 * SemanticSummaryParameters object.
+	 * @return true if the specified cloud is contained in this object.
+	 */
+	public boolean containsCloud(String name)
+	{
+		if (clouds.containsKey(name))
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Returns the specified cloudParameters if it is contained in this object.
+	 * Or returns, null if the cloud is not contained.
+	 * @param String - name of the CloudParameters to return.
+	 * @return CloudParameters associated with the given name.
+	 */
+	public CloudParameters getCloud(String name)
+	{
+		if (this.containsCloud(name))
+			return clouds.get(name);
+		else
+			return null;	
+	}
 	/**
 	 * Tells all the contained clouds that the network has changed and that
 	 * they need to re-initialize.
@@ -178,11 +203,6 @@ public class SemanticSummaryParameters
 	public void setNetworkNumNodes(Integer num)
 	{
 		networkNumNodes = num;
-	}
-	
-	public Integer getNumBins()
-	{
-		return NUMBINS;
 	}
 	
 	public Integer getMaxFont()

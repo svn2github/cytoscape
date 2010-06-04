@@ -1,5 +1,5 @@
 /*
- File: WordFilterUnitTest.java
+ File: AllTests.java
 
  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,50 +30,26 @@
 
 package cytoscape.csplugins.semanticsummary.test;
 
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+public class AllTests {
 
-import cytoscape.csplugins.semanticsummary.WordFilter;
-
-/**
- * This class tests the functionality of the WordFilter class.
- * @author Layla Oesper
- * @version 1.0
- *
- */
-
-public class WordFilterUnitTest extends TestCase {
+	/**
+	 * The main test suite for SemanticSummaryPlugin
+	 */
 	
-	WordFilter curFilter = new WordFilter();
-
-	@Test
-	public void testContains() {
-		assertTrue(curFilter.contains("a")); // First in Stop list
-		assertTrue(curFilter.contains("zero")); //Last in Stop list
-		assertTrue(curFilter.contains("kegg")); //First in Flagged list
-		assertTrue(curFilter.contains("nci")); //Last in Flagged
-		assertTrue(curFilter.contains("react"));//Other
-		assertFalse(curFilter.contains("layla"));//not in list
-		assertFalse(curFilter.contains("A"));//capitalization
-	}
-
-	@Test
-	public void testAdd() {
-		assertFalse(curFilter.contains("layla"));
-		curFilter.add("layla");
-		assertTrue(curFilter.contains("layla"));
-	}
-
-	@Test
-	public void testRemove() {
-		assertTrue(curFilter.contains("a"));
-		curFilter.remove("a");
-		assertFalse(curFilter.contains("a"));
-		curFilter.remove("not_Contained");
-		assertFalse(curFilter.contains("not_contained"));
+	public static Test suite() 
+	{
+		//Add all classes here to test
+		Class[] testClasses = {
+				SemanticSummaryParametersUnitTest.class,
+				WordFilterUnitTest.class};
+		
+		TestSuite suite = new TestSuite(testClasses);
+		suite.setName("SemanticSummaryPlugin Test");
+		
+		return suite;
 	}
 
 }
