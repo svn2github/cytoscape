@@ -167,6 +167,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		
 		this.jTabbedPane1.addChangeListener(new MyChangeListener());
 		this.tfSearch.setToolTipText(HOWTOSEARCH);
+		
+		// by default, show all the plugins
+		this.versionCheck.setSelected(true);
 	}
 
 	class MyChangeListener implements ChangeListener {
