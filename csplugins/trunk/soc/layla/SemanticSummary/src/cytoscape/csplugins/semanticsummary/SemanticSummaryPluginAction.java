@@ -62,7 +62,7 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 	 */
 	public SemanticSummaryPluginAction()
 	{
-		super("Semantic Summary");
+		super("Settings");
 	}
 	
 	//METHODS

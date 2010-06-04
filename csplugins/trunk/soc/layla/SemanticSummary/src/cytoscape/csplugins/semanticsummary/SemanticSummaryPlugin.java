@@ -35,6 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JMenu;
+
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -60,13 +62,15 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 	
 	public SemanticSummaryPlugin()
 	{
-		//New action for response to menu selection
-		SemanticSummaryPluginAction action = new SemanticSummaryPluginAction();
+		//New actions for response to menu selections
+		SemanticSummaryPluginAction settings = new SemanticSummaryPluginAction();
+		CreateCloudAction create = new CreateCloudAction();
+		settings.setPreferredMenu("Plugins.Semantic Network Summary");
+		create.setPreferredMenu("Plugins.Semantic Network Summary");
 	
 		//Add to Plugin Menu
-		action.setPreferredMenu("Plugins");
-		Cytoscape.getDesktop().getCyMenus().addAction(action);
-		
+		Cytoscape.getDesktop().getCyMenus().addAction(settings);
+		Cytoscape.getDesktop().getCyMenus().addAction(create);
 		
 		//Add to right click menus
 		

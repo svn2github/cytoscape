@@ -401,7 +401,8 @@ public class CloudParameters
 		Double temp = Math.ceil((slope*ratio) + yIntercept);
 		Integer fontSize = temp.intValue();
 		
-		System.out.println("Word:" + aWord + " Ratio:" + ratio + " Font: " + fontSize);
+		//Debug code //TODO - remove
+		//System.out.println("Word:" + aWord + " Ratio:" + ratio + " Font: " + fontSize);
 		
 		return fontSize;
 	}

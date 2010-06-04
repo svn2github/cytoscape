@@ -71,8 +71,6 @@ public class SemanticSummaryNodeContextMenuListener
 		{
 			menu = new JPopupMenu();
 		}
-		
-		menu.add(new SemanticSummaryPluginAction());
 		menu.add(new CreateCloudAction());
 	}
 }

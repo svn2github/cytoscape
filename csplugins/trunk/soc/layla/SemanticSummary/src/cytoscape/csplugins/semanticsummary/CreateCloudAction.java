@@ -72,7 +72,9 @@ public class CreateCloudAction extends CytoscapeAction
 	 */
 	public void actionPerformed(ActionEvent ae)
 	{
-		//Another listener will initialize the Semantic Summary Panels
+		//Initialize the Semantic Summary Panels
+		SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
+		init.actionPerformed(ae);
 		
 		//Retrieve current network and view
 		CyNetwork network = Cytoscape.getCurrentNetwork();
