@@ -1,18 +1,17 @@
-@ECHO OFF
+@echo off
 
 :: Generates the Cytoscape.vmoptions file based on whether
 :: we're dealing with a 32 bit or 64 bit JVM.
 
-java -version 2>&1 | FINDSTR /I 64-Bit > %TMP%\MATCH.TXT
-FOR /F %%A in ('DIR %TMP%\MATCH.TXT') DO (
-	IF %%~zA LSS 1 GOTO 32bit
-)
+if exist findstr.out del findstr.out
+java -version 2>&1 | findstr /I 64-Bit > findstr.out
+for /f %%i in ('dir /b findstr.out') do if %%~zi equ 0 goto 32bit
 
 
 :64bit
 	echo -Xms20m >  Cytoscape.vmoptions 
 	echo -Xmx20g >> Cytoscape.vmoptions 
-	GOTO shared
+	goto shared
 
 
 :32bit
@@ -23,3 +22,4 @@ FOR /F %%A in ('DIR %TMP%\MATCH.TXT') DO (
 	echo -Dswing.aatext=true               >> Cytoscape.vmoptions
 	echo -Dawt.useSystemAAFontSettings=lcd >> Cytoscape.vmoptions
 
+	del findstr.out
