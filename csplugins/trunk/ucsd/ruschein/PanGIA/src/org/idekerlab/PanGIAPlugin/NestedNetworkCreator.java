@@ -105,7 +105,7 @@ public class NestedNetworkCreator {
 	private static final String EDGE_SCORE = MODULE_FINDER_PREFIX + "edge score";
 	private static final String EDGE_PVALUE = MODULE_FINDER_PREFIX + "p-value";
 	
-	private static final String COMPLEX_INTERACTION_TYPE = "complex-complex";
+	private static final String COMPLEX_INTERACTION_TYPE = "module-module";
 	
 	private CyNetwork overviewNetwork = null;
 	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
@@ -147,7 +147,7 @@ public class NestedNetworkCreator {
 		final Set<CyNode> selectedNodes = new HashSet<CyNode>();
 
 		overviewNetwork = Cytoscape.createNetwork(
-				findNextAvailableNetworkName("Complex Search Results: "
+				findNextAvailableNetworkName("Module Search Results: "
 						+ new java.util.Date()),
 				/* create_view = */false);
 		networkAttr.setAttribute(overviewNetwork.getIdentifier(), 
@@ -168,7 +168,7 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
-				final String nodeName = findNextAvailableNodeName("Complex" + nodeIndex);
+				final String nodeName = findNextAvailableNodeName("Module" + nodeIndex);
 				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs);
 				++nodeIndex;
 			}
@@ -176,7 +176,7 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> targetModule = edge.target().value();
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
-				final String nodeName = findNextAvailableNodeName("Complex"	+ nodeIndex);
+				final String nodeName = findNextAvailableNodeName("Module"	+ nodeIndex);
 				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs);
 				++nodeIndex;
 			}
@@ -290,9 +290,22 @@ public class NestedNetworkCreator {
 	private CyNode makeOverviewNode(final String nodeName,
 			final TypedLinkNodeModule<String, BFEdge> module,
 			final CyAttributes nodeAttribs) {
-		final CyNode newNode = Cytoscape.getCyNode(nodeName, /* create = */true);
+		
+		
+		final CyNode newNode = Cytoscape.getCyNode(nodeName, true); // create=true
 		moduleToCyNodeMap.put(module, newNode);
+		
+		
+		/* How to make newNode a subnode of overviewNetwork??
+		CyNode newNode = Cytoscape.getCyNode(nodeName);
+		if (newNode==null)
+		{
+			Cytoscape.createNetwork(nodeName, overviewNetwork, false);
+			newNode = Cytoscape.getCyNode(nodeName,true);
+		}*/
+		
 		overviewNetwork.addNode(newNode);
+		
 		final Set<String> genes = module.getMemberValues();
 		final Integer geneCount = Integer.valueOf(genes.size());
 		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT, geneCount);

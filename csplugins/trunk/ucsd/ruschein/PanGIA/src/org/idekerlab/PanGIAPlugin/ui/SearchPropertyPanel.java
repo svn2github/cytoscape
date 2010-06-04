@@ -593,7 +593,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// Run search algorithm
 
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.displayCancelButton(true);
 		jTaskConfig.displayCloseButton(true);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.displayTimeElapsed(true);
@@ -874,6 +874,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			parameterErrorLabel.setText("Error: Must choose a genetic network.");
 			return;
 		}
+		
+		if (physicalNetwork==geneticNetwork && geneticAttrName.equals(physicalAttrName))
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("<HTML>Error: Cannot choose the same<BR>networks and attributes.</HTML>");
+			return;
+		}
+		
 		
 		String physicalSelected = physicalEdgeAttribComboBox.getSelectedItem().toString();
 		if (!physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_INTEGER &&

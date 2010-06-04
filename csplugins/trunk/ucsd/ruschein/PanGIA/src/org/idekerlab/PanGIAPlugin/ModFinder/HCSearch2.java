@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.idekerlab.PanGIAPlugin.SearchTask;
 import org.idekerlab.PanGIAPlugin.data.DoubleVector;
 import org.idekerlab.PanGIAPlugin.networks.SFEdge;
 import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
@@ -20,6 +21,7 @@ import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 import org.idekerlab.PanGIAPlugin.utilities.MemoryReporter;
 import org.idekerlab.PanGIAPlugin.utilities.ThreadPriorityFactory;
 
+import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
 
@@ -30,7 +32,7 @@ public class HCSearch2 {
 	 */
 	public static TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> search(
 		SFNetwork pnet, SFNetwork gnet, HCScoringFunction sfunc, final TaskMonitor taskMonitor,
-		final float percentAllocated)
+		final float percentAllocated, SearchTask parentTask)
 	{
 		// The scoring function needs to load several lookup matricies for the
 		// network data.
@@ -42,6 +44,8 @@ public class HCSearch2 {
 
 		TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = constructBaseNetwork(
 				pnet, gnet);
+		
+		if (parentTask.needsToHalt()) return null;
 
 		System.gc();
 		MemoryReporter.reportMemoryUsage();
@@ -50,6 +54,8 @@ public class HCSearch2 {
 		taskMonitor.setStatus("2. Obtaining primary scores.");
 		computePrimaryScores(results, sfunc);
 
+		if (parentTask.needsToHalt()) return null;
+		
 		System.gc();
 		MemoryReporter.reportMemoryUsage();
 
@@ -72,6 +78,8 @@ public class HCSearch2 {
 				System.gc();
 				MemoryReporter.reportMemoryUsage();
 			}
+			
+			if (parentTask.needsToHalt()) return null;
 
 			// Identify the best physical edge to merge
 			Iterator<TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge>> edgei = results

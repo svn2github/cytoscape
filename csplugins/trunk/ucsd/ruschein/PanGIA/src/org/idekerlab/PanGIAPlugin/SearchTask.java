@@ -52,8 +52,10 @@ public class SearchTask implements Task {
 
 	public void run() {
 		taskMonitor.setPercentCompleted(1);
-		taskMonitor.setStatus("Searching for complexes...");
-
+		taskMonitor.setStatus("Searching for modules...");
+		
+		if (needsToHalt) return;
+		
 		/***
 		 * TODO: Annotation
 		 * Use absolute value for training?
@@ -74,6 +76,8 @@ public class SearchTask implements Task {
 									     parameters.getGeneticEdgeAttrName(),
 									     parameters.getGeneticScalingMethod());
 		
+		if (needsToHalt) return;
+		
 		//Apply the degree filter
 		int degreeFilter = parameters.getPhysicalNetworkFilterDegree();
 		if (degreeFilter!=-1)
@@ -83,10 +87,14 @@ public class SearchTask implements Task {
 			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(pnodes, degreeFilter));
 		}
 		
+		if (needsToHalt) return;
+		
 		//Load trainingComplexes
 		List<SNodeModule> trainingComplexes = null;
 		if (parameters.getComplexTraining() || parameters.getComplexAnnotation())
 			trainingComplexes = SNodeModule.loadComplexes(parameters.getComplexFile());
+		
+		if (needsToHalt) return;
 		
 		//Perform training
 		if (parameters.getComplexTraining())
@@ -94,7 +102,8 @@ public class SearchTask implements Task {
 			physicalNetwork = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
 			geneticNetwork = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
 		}
-			
+		
+		if (needsToHalt) return;
 		
 		//Initialize the scoring function
 		final HCScoringFunction hcScoringFunction =
@@ -103,16 +112,22 @@ public class SearchTask implements Task {
 		                       (float)parameters.getAlphaMultiplier());
 		hcScoringFunction.Initialize(physicalNetwork, geneticNetwork);
 
+		if (needsToHalt) return;
+		
 		//Run the clustering algorithm
 		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results =
 			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction,
-			                 taskMonitor, SEARCH_PERCENTAGE);
-		final double pValueThreshold = parameters.getPValueThreshold();
-		final int numberOfSamples = parameters.getNumberOfSamples();
+			                 taskMonitor, SEARCH_PERCENTAGE, this);
+		
+		if (needsToHalt) return;
 		
 		//Compute significance
+		final double pValueThreshold = parameters.getPValueThreshold();
+		final int numberOfSamples = parameters.getNumberOfSamples();
 		computeSig(results, geneticNetwork, pValueThreshold, numberOfSamples, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
 
+		if (needsToHalt) return;
+		
 		//Annotate complexes
 		Map<TypedLinkNodeModule<String, BFEdge>,String> module_name = null;
 		System.out.println("PARAM: "+parameters.getComplexTraining()+", "+parameters.getComplexAnnotation()+", "+parameters.getAnnotationThreshold());
@@ -138,9 +153,10 @@ public class SearchTask implements Task {
 				
 				if (bestNode!=null && bestScore>=parameters.getAnnotationThreshold()) module_name.put(bestNode, complex.getID());
 			}
-			System.out.println("Number of complex annotation matches: "+module_name.size());
+			System.out.println("Number of module annotation matches: "+module_name.size());
 		}
 		
+		if (needsToHalt) return;
 		
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
@@ -150,7 +166,7 @@ public class SearchTask implements Task {
 			                         pNet, gNet, pValueThreshold, taskMonitor,
 			                         100.0f - COMPUTE_SIG_PERCENTAGE, module_name);
 
-		setStatus("Search finished!\n\n" + "Number of complexes = "
+		setStatus("Search finished!\n\n" + "Number of modules = "
 		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
 		          + HCSearch2.report(results));
 
@@ -199,6 +215,10 @@ public class SearchTask implements Task {
 		needsToHalt = true;
 	}
 
+	public boolean needsToHalt() {
+		return needsToHalt;
+	}	
+	
 	public void setTaskMonitor(TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
 	}
@@ -223,7 +243,7 @@ public class SearchTask implements Task {
 	}
 
 	//This function compute a p-value for each edge in the complex-complex network
-	private static void computeSig(final TypedLinkNetwork<TypedLinkNodeModule<String,BFEdge>,BFEdge> results, SFNetwork gnet,
+	private void computeSig(final TypedLinkNetwork<TypedLinkNodeModule<String,BFEdge>,BFEdge> results, SFNetwork gnet,
 	                               final double pValueThreshold, final int numberOfSamples, final TaskMonitor taskMonitor, final float startProgressPercentage,
 	                               final float endProgressPercentage)
 	{
@@ -246,6 +266,8 @@ public class SearchTask implements Task {
 		for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> edge : results.edgeIterator()) {
 			++currentEdgeNum;
 
+			if (needsToHalt) return;
+			
 			// Find number of edges and sum of edge values in the hyperedge
 			int numGeneticLinks = 0;
 			double sumOfGeneticValues=0.0;
@@ -265,6 +287,7 @@ public class SearchTask implements Task {
 				double[] dist = new double[numberOfSamples];
 				
 				for (int i = 0; i < numberOfSamples; i++) {
+					if (needsToHalt) return;
 					double permVal = allEdgeValues.sample(numGeneticLinks, false).sum();
 					dist[i] = permVal;
 				}
