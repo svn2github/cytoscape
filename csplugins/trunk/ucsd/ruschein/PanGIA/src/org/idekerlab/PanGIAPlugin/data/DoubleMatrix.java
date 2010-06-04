@@ -60,7 +60,6 @@ public class DoubleMatrix extends DataMatrix{
 	
 	/**
 	 * Gets the reference to the data;
-	 * @return
 	 */
 	public double[][] getData()
 	{
@@ -1366,7 +1365,6 @@ public class DoubleMatrix extends DataMatrix{
 	/**
 	 * Modifies the original matrix.
 	 * @param x
-	 * @return
 	 */
 	public static double[][] pseudoInverse(double[][] x)
 	{
@@ -2332,7 +2330,6 @@ public class DoubleMatrix extends DataMatrix{
 	/**
 	 * Uses the same permutation for each row to maintain row correlations.
 	 * @param m
-	 * @return
 	 */
 	public static double[][] permuteRows(double[][] m)
 	{

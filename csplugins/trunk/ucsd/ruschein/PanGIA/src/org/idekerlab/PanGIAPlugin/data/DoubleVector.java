@@ -1034,7 +1034,6 @@ public class DoubleVector extends DataVector {
 	 * Assumes you know the exact mean (so sqrt(sum/n) NOT sqrt(sum/(n-1))
 	 * @param data
 	 * @param mean
-	 * @return
 	 */
 	public static double std2(double[] data, double mean)
 	{
@@ -2464,7 +2463,6 @@ public class DoubleVector extends DataVector {
 	/**
 	 * Returns the Euclidean length of v
 	 * @param v
-	 * @return
 	 */
 	public static double length(double[] v)
 	{

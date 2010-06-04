@@ -22,7 +22,6 @@ public class LeastSquaresRegression
 	 * Performs a separate least-squares regression for each row in y
 	 * @param x
 	 * @param y
-	 * @return
 	 */
 	public static double[][] leastSquaresRegression(double[][] x, double[][] y)
 	{

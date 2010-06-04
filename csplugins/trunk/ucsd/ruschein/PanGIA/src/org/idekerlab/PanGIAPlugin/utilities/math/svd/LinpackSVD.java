@@ -23,8 +23,6 @@ public class LinpackSVD extends SVD {
  * ------------------------ */
 
    /** Construct the singular value decomposition
-   @param A    Rectangular matrix
-   @return     Structure to access U, S and V.
    */
 
 	public LinpackSVD (double[][] M, boolean wantv, boolean multiThreaded)
@@ -34,8 +32,7 @@ public class LinpackSVD extends SVD {
 			//Check for xxT necessity
 			boolean xxt = M[0].length>M.length;
 			if (xxt)
-				if (multiThreaded) M = DoubleMatrix.xxT_MultiThreaded(M);
-				else M = DoubleMatrix.xxT(M);
+				M = DoubleMatrix.xxT(M);
 			
 			//Remove 0 columns
 			double tol = 1e-100;

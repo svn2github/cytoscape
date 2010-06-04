@@ -111,7 +111,6 @@ public abstract class AbstractSingleLinearModelD extends AbstractLinearModelD
 	/***
 	 * Produces a model with a reduced number of eigenterms
 	 * The number of eigenterms is based on the percentVariance (0-1) and will never be more than maxPC 
-	 * @param numPC - number of eigenterms to use
 	 */
 	public LogisticModelD deriveEigenMarkerLogisticSubmodel(double percentVariance, int maxVec)
 	{	
