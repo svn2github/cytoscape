@@ -15,6 +15,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.ThemeInfo;
+import java.util.List;
 
 public class PluginIndex {
 
@@ -41,8 +44,27 @@ public class PluginIndex {
 	    
 	    for (int i=0; i<allPluginVect.size(); i++ ){
 	    	Vector aPlugin = (Vector) allPluginVect.elementAt(i);
-	    	DownloadableInfo info = (DownloadableInfo) aPlugin.elementAt(2);
-	    	addDoc(w, info.getDescription(), "description");
+
+	    	if (aPlugin.elementAt(2) instanceof PluginInfo){
+		    	PluginInfo info = (PluginInfo) aPlugin.elementAt(2);
+		    	
+		    	List<PluginInfo.AuthorInfo> authorInfo = info.getAuthors();
+		    	String authorNames = "";
+		    	String institutionNames = "";
+		    	for (int j=0; j<authorInfo.size(); j++){
+		    		PluginInfo.AuthorInfo oneAuthor = authorInfo.get(j);
+		    		authorNames += " " + oneAuthor.getAuthor();
+		    		institutionNames += " " + oneAuthor.getInstitution();
+		    	}
+		    	String wholeText = info.getName() + " " + info.getDescription() + " "+ authorNames + " "+ institutionNames;
+		    	
+		    	addDoc(w, wholeText, "default");	    		
+	    	}
+	    	else {
+	    		// This could be a themeInfo
+	    		DownloadableInfo  downloadableInfo = (DownloadableInfo) aPlugin.elementAt(2);
+	    		addDoc(w, downloadableInfo.getDescription(), "default");
+	    	}
 	    }
 	    
 	    w.close();
@@ -71,7 +93,7 @@ public class PluginIndex {
 		// The index does exist, do the search now
 		Directory index = (Directory) indexTracker.get(index_id);
 		
-	    Query q = new QueryParser(Version.LUCENE_30, "description", analyzer).parse(querystr);
+	    Query q = new QueryParser(Version.LUCENE_30, "default", analyzer).parse(querystr);
 
 	    // search
 	    int hitsPerPage = 1000;
