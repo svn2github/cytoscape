@@ -20,7 +20,6 @@
     <property name="root.dir" value="."/>
     <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
-    <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
     <property name="src.dir" value="${root.dir}/src"/>
     <property name="tests.dir" value="${root.dir}/tests"/>
@@ -38,9 +37,6 @@
 
     <!-- Define the class path - Defaults to everything in the lib.dir -->
     <path id="project.class.path">
-      <fileset dir="${lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
       <fileset dir="${cytoscape.dir}">
         <include name="*.jar"/>
       </fileset>
@@ -52,9 +48,6 @@
     <!-- Define the junit class path - It needs to find what we just built --> 
     <path id="junit.class.path" >
       <fileset dir="${root.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
       <fileset dir="${cytoscape.dir}">
@@ -101,12 +94,6 @@
   <!-- =================================================================== -->
   <target name="jar" 
           depends="compile" >
-    <mkdir dir="${lib.dir}"/>
-    <unzip dest="${build.dir}">
-      <fileset dir="${lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
-    </unzip>
 	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/idekerlab/PanGIAPlugin"/>
 	<copy file="${resources.dir}/${visualstyle.props}" todir="${build.dir}/resources"/>
   	<copy todir="${build.dir}/images">
