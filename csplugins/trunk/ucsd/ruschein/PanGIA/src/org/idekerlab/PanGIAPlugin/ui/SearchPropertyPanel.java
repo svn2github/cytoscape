@@ -809,7 +809,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		parameters.setAnnotationThreshold(Double.valueOf(annotationThresholdTextField.getText()));
 		parameters.setComplexAnnotation(annotationCheckBox.isSelected());
 		parameters.setComplexTraining(trainingCheckBox.isSelected());
-		parameters.setAnnotationAttrName(annotationAttribComboBox.getSelectedItem().toString());
+		
+		if (annotationAttribComboBox.getSelectedItem()==null) parameters.setAnnotationAttrName("");
+		else parameters.setAnnotationAttrName(annotationAttribComboBox.getSelectedItem().toString());
 		
 		return true;
 	}
