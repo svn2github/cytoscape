@@ -65,14 +65,12 @@ public class SearchTask implements Task {
 		
 		
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
-		addEdgeType(physicalInputNetwork, InteractionType.Physical);
 		
 		SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork,
 									      parameters.getPhysicalEdgeAttrName(),
 									      parameters.getPhysicalScalingMethod());
 
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
-		addEdgeType(geneticInputNetwork, InteractionType.Genetic);
 		
 		SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork,
 									     parameters.getGeneticEdgeAttrName(),
@@ -391,14 +389,6 @@ public class SearchTask implements Task {
 		return outputNetwork;
 	}
 	
-	private void addEdgeType(final CyNetwork inputNetwork, final InteractionType edgeType) {
-		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		final List<CyEdge> edgeList = inputNetwork.edgesList();
-		
-		for(CyEdge edge: edgeList)
-			edgeAttr.setAttribute(edge.getIdentifier(), EDGE_TYPE_ATTR_NAME, edgeType.name());
-	}
-
 	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethodX scalingMethod,
 					      final StringBuilder errorMessage)
 	{
