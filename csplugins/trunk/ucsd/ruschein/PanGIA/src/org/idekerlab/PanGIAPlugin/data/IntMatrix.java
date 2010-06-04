@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.idekerlab.PanGIAPlugin.utilities.ByteConverter;
-import org.idekerlab.PanGIAPlugin.data.matrixMath.*;
 
 
 public class IntMatrix extends DataMatrix{

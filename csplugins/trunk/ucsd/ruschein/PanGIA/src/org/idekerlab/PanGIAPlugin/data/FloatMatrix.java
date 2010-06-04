@@ -3,12 +3,7 @@ package org.idekerlab.PanGIAPlugin.data;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
-
 import org.idekerlab.PanGIAPlugin.utilities.ByteConversion;
-import org.idekerlab.PanGIAPlugin.utilities.ThreadPriorityFactory;
-import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
-import org.idekerlab.PanGIAPlugin.data.matrixMath.*;
 
 public class FloatMatrix extends DataMatrix{
 
@@ -1344,26 +1339,6 @@ public class FloatMatrix extends DataMatrix{
 		
 		return out;
 		
-	}
-	
-	public FloatMatrix xxT_MultiThreaded()
-	{
-		FloatMatrix out = new FloatMatrix(this.numRows(),this.numRows());
-		
-		ExecutorService exec = Executors.newCachedThreadPool(new ThreadPriorityFactory(Thread.MIN_PRIORITY));
-		
-		for (int i=0;i<this.numRows();i++)
-			exec.execute(new XXTRunner(data,out.data,i));
-				
-		exec.shutdown();
-		
-		try
-		{
-			exec.awaitTermination(3000000, TimeUnit.SECONDS);
-			if (!exec.isTerminated()) System.out.println("Did not fully terminate!");
-		}catch (InterruptedException e) {System.out.println(e);exec.shutdownNow();}
-		
-		return out;
 	}
 	
 	public static float[] meanByRow(float[][] m)

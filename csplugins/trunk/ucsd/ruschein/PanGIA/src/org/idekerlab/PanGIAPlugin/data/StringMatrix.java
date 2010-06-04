@@ -1,13 +1,8 @@
 package org.idekerlab.PanGIAPlugin.data;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.idekerlab.PanGIAPlugin.data.matrixMath.*;
 
 public class StringMatrix extends DataMatrix{
 

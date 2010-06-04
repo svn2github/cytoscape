@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
-import org.idekerlab.PanGIAPlugin.data.matrixMath.*;
 import org.idekerlab.PanGIAPlugin.utilities.math.svd.*;
 
 import java.util.concurrent.*;
@@ -1305,30 +1303,7 @@ public class DoubleMatrix extends DataMatrix{
 		return out;
 	}
 	
-	public DoubleMatrix xxT_MultiThreaded()
-	{
-		return new DoubleMatrix(DoubleMatrix.xxT_MultiThreaded(data));
-	}
 	
-	public static double[][] xxT_MultiThreaded(double[][] data)
-	{
-		double[][] out = new double[data.length][data.length];
-		
-		ExecutorService exec = Executors.newCachedThreadPool(new org.idekerlab.PanGIAPlugin.utilities.ThreadPriorityFactory(Thread.MIN_PRIORITY));
-		
-		for (int i=0;i<data.length;i++)
-			exec.execute(new XXTRunner(data,out,i));
-				
-		exec.shutdown();
-		
-		try
-		{
-			exec.awaitTermination(30, TimeUnit.DAYS);
-			if (!exec.isTerminated()) System.out.println("Did not fully terminate!");
-		}catch (InterruptedException e) {System.out.println(e);exec.shutdownNow();}
-		
-		return out;
-	}
 	
 	public DoubleVector xTy(DoubleVector y)
 	{
@@ -1360,11 +1335,6 @@ public class DoubleMatrix extends DataMatrix{
 	{
 		if (data.length==0) return 0;
 		return data[0].length;
-	}
-	
-	public CholeskyDecomposition cholesky()
-	{
-		return new CholeskyDecomposition(this);
 	}
 	
 	public DoubleMatrix transpose()
