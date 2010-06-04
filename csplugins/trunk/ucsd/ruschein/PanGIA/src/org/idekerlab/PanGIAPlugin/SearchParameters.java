@@ -22,7 +22,7 @@ public final class SearchParameters {
 	
 	private boolean complexTraining;
 	private boolean complexAnnotation;
-	private String complexFile;
+	private String annotationAttrName;
 	private double annotationThreshold;
 	
 	public SearchParameters() {
@@ -136,14 +136,14 @@ public final class SearchParameters {
 		return complexAnnotation;
 	}
 	
-	public void setComplexFile(String value)
+	public void setAnnotationAttrName(String value)
 	{
-		this.complexFile = value;
+		this.annotationAttrName = value;
 	}
 	
-	public String getComplexFile()
+	public String getAnnotationAttrName()
 	{
-		return complexFile;
+		return annotationAttrName;
 	}
 	
 	public void setAnnotationThreshold(double value)

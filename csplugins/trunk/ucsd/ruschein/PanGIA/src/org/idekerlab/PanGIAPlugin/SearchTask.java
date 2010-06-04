@@ -1,6 +1,7 @@
 package org.idekerlab.PanGIAPlugin;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
 import org.idekerlab.PanGIAPlugin.networks.SNodeModule;
 import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.*;
+import org.idekerlab.PanGIAPlugin.utilities.collections.HashMapUtil;
 import org.idekerlab.PanGIAPlugin.utilities.collections.SetUtil;
 
 import cytoscape.CyEdge;
@@ -92,7 +94,19 @@ public class SearchTask implements Task {
 		//Load trainingComplexes
 		List<SNodeModule> trainingComplexes = null;
 		if (parameters.getComplexTraining() || parameters.getComplexAnnotation())
-			trainingComplexes = SNodeModule.loadComplexes(parameters.getComplexFile());
+		{
+			final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+			Map<String,Set<String>> annot_node = new HashMap<String,Set<String>>(1000);
+			
+			for (String gnode : geneticNetwork.nodeIterator())
+				for (Object annot : nodeAttr.getListAttribute(gnode, parameters.getAnnotationAttrName()))
+					HashMapUtil.updateMapSet(annot_node, annot.toString(), gnode);
+			
+			trainingComplexes = new ArrayList<SNodeModule>(annot_node.size());
+			
+			for (String annot : annot_node.keySet())
+				trainingComplexes.add(new SNodeModule(annot,annot_node.get(annot)));
+		}
 		
 		if (needsToHalt) return;
 		

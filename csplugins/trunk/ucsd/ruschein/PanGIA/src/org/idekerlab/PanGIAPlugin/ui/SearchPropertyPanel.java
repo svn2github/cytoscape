@@ -336,8 +336,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         annotationCheckBox = new JCheckBox();
         annotationLabel = new JLabel();
         lbComplexFile = new javax.swing.JLabel();
-        complexFileTextField = new javax.swing.JTextField();
-        complexFileButton = new javax.swing.JButton();
+        annotationAttribComboBox = new javax.swing.JComboBox();
         annotationThresholdLabel = new JLabel();
         annotationThresholdTextField = new JTextField();
 
@@ -464,7 +463,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         trainingPanel.add(trainingLabel, gridBagConstraints);
         
@@ -511,49 +510,29 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         
         
-        lbComplexFile.setText("Annotation file:");
+        lbComplexFile.setText("Annotation attribute:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(lbComplexFile, gridBagConstraints);
         
-        complexFileTextField.setText("");
-        complexFileTextField.setPreferredSize(new java.awt.Dimension(80, 30));
-        complexFileTextField.setEditable(false);
-        complexFileTextField.setEnabled(false);
+        annotationAttribComboBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
-        //gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
-        trainingPanel.add(complexFileTextField, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        trainingPanel.add(annotationAttribComboBox, gridBagConstraints);
         
-        complexFileButton.setText("...");
-        complexFileButton.setPreferredSize(new java.awt.Dimension(25, 25));
-        complexFileButton.setEnabled(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 3;
-        //gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
-        trainingPanel.add(complexFileButton, gridBagConstraints);
-        
-        complexFileButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	complexFileButtonActionPerformed(evt);
-            }
-        });
         
         annotationThresholdLabel.setText("Labeling Threshold:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         trainingPanel.add(annotationThresholdLabel, gridBagConstraints);
         
@@ -571,14 +550,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         pnlParameter.add(trainingPanel, gridBagConstraints);
         
         //Placeholder
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -624,6 +603,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		updateSearchButtonState();
 	}
 	
+	/*
 	private void complexFileButtonActionPerformed(java.awt.event.ActionEvent evt)
 	{
 		JFileChooser complexFileChooser = new JFileChooser();
@@ -644,7 +624,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}
 		
 		updateSearchButtonState();
-	}
+	}*/
 	
 	private void trainingCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
 	{
@@ -653,16 +633,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	
 	private void annotationCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
 	{
-		if (trainingCheckBox.isSelected() || annotationCheckBox.isSelected())
-		{
-			complexFileTextField.setEnabled(true);
-		    complexFileButton.setEnabled(true);
-		}else
-		{
-			complexFileTextField.setEnabled(false);
-		    complexFileButton.setEnabled(false);
-		}
-		
+		annotationAttribComboBox.setEnabled(trainingCheckBox.isSelected() || annotationCheckBox.isSelected());
 		annotationThresholdTextField.setEnabled(annotationCheckBox.isSelected());
 		
 		updateSearchButtonState();
@@ -705,9 +676,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private JCheckBox annotationCheckBox;
     private JLabel annotationLabel;
     private javax.swing.JLabel lbComplexFile;
-    private javax.swing.JTextField complexFileTextField;
-    private javax.swing.JButton complexFileButton;
-    private String complexFilePath = "";
+    private javax.swing.JComboBox annotationAttribComboBox;
     private JLabel annotationThresholdLabel;
     private JTextField annotationThresholdTextField;
     
@@ -727,13 +696,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// Save current selection
 		final Object geneticSelected = geneticEdgeAttribComboBox.getSelectedItem();
 		final Object physicalSelected = physicalEdgeAttribComboBox.getSelectedItem();
+		final Object annotSelected = annotationAttribComboBox.getSelectedItem();
 
 		// Reset the children
 		geneticEdgeAttribComboBox.removeAllItems();
 		physicalEdgeAttribComboBox.removeAllItems();
+		annotationAttribComboBox.removeAllItems();
 
 		physicalEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
 		geneticEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
+		
 		
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		final Set<String> edgeAttrNames = new TreeSet<String>(Arrays
@@ -744,7 +716,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		for (String name : edgeAttrNames) {
 			// Use only double or int attributes
 			final byte attribType = edgeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
-			if (attribType == MultiHashMapDefinition.TYPE_FLOATING_POINT || attribType == MultiHashMapDefinition.TYPE_INTEGER) {
+			if ((attribType == MultiHashMapDefinition.TYPE_FLOATING_POINT || attribType == MultiHashMapDefinition.TYPE_INTEGER) && edgeAttr.getUserVisible(name)) {
 				geneticEdgeAttribComboBox.addItem(name);
 				physicalEdgeAttribComboBox.addItem(name);
 				if (name.equals(geneticSelected))
@@ -753,11 +725,31 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 					isPhysicalSelectedExist = true;
 			}
 		}
+		
+		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		final Set<String> nodeAttrNames = new TreeSet<String>(Arrays
+								      .asList(nodeAttr.getAttributeNames()));
+		
+		
+		
+		boolean isAnnotSelectedExist = false;
+		for (String name : nodeAttrNames) {
+			// Use only string attributes
+			final byte attribType = nodeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
+			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !name.equals("canonicalName")) {
+				annotationAttribComboBox.addItem(name);
+				if (name.equals(geneticSelected))
+					isAnnotSelectedExist = true;
+			}
+		}
 
 		if (isGeneticSelectedExist)
 			geneticEdgeAttribComboBox.setSelectedItem(geneticSelected);
 		if (isPhysicalSelectedExist)
 			physicalEdgeAttribComboBox.setSelectedItem(physicalSelected);
+		
+		if (isAnnotSelectedExist)
+			annotationAttribComboBox.setSelectedItem(annotSelected);
 
 		updateSearchButtonState();
 	}
@@ -817,7 +809,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		parameters.setAnnotationThreshold(Double.valueOf(annotationThresholdTextField.getText()));
 		parameters.setComplexAnnotation(annotationCheckBox.isSelected());
 		parameters.setComplexTraining(trainingCheckBox.isSelected());
-		parameters.setComplexFile(complexFilePath);
+		parameters.setAnnotationAttrName(annotationAttribComboBox.getSelectedItem().toString());
 		
 		return true;
 	}
@@ -901,10 +893,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			return;
 		}
 		
-		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && complexFilePath.equals(""))
+		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Annotation requires an annotation file.");
+			parameterErrorLabel.setText("<HTML>Error: Annotation requires an<BR>annotation node attribute.</HTML>");
 			return;
 		}
 		
