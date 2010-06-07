@@ -80,7 +80,7 @@ public class CloudDisplayPanel extends JPanel
 	/**
 	 * Clears all words from the CloudDisplay.
 	 */
-	private void clearCloud()
+	public void clearCloud()
 	{
 		tagCloudFlowPanel.removeAll();
 		tagCloudFlowPanel.revalidate();

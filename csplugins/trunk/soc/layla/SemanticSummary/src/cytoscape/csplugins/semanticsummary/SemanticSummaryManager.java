@@ -188,6 +188,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		}
 		
 		getInputWindow().setNetworkList(curNetwork);
+		getCloudWindow().clearCloud();
 	}
 	/**
 	 * Returns instance of SemanticSummaryParameters for the networkID

@@ -70,6 +70,8 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 	{
 		this.loadInputPanel();
 		this.loadCloudPanel();
+		
+		SemanticSummaryManager.getInstance().setupCurrentNetwork();
 	}
 	
 	/**
@@ -109,8 +111,6 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 			index = cytoPanel.indexOfComponent(inputWindow);
 			cytoPanel.setSelectedIndex(index);
 		}//end else
-		
-		SemanticSummaryManager.getInstance().setupCurrentNetwork();
 	}//end loadInputPanel() method
 	
 	
