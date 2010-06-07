@@ -109,6 +109,8 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 			index = cytoPanel.indexOfComponent(inputWindow);
 			cytoPanel.setSelectedIndex(index);
 		}//end else
+		
+		SemanticSummaryManager.getInstance().setupCurrentNetwork();
 	}//end loadInputPanel() method
 	
 	

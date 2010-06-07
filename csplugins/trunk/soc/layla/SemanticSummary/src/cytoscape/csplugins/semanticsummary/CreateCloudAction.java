@@ -128,6 +128,12 @@ public class CreateCloudAction extends CytoscapeAction
 		
 		cloudPanel.updateCloudDisplay(cloudParams);
 		
+		//Update list of clouds
+		SemanticSummaryInputPanel inputPanel = 
+			SemanticSummaryManager.getInstance().getInputWindow();
+		
+		inputPanel.setNetworkList(params);
+		
 		//TODO - Finish this
 			
 	}

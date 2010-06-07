@@ -28,6 +28,14 @@ import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -39,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
@@ -60,24 +69,24 @@ public class SemanticSummaryInputPanel extends JPanel
 	DecimalFormat decFormat; //used in formatted text fields
 	
 	//TODO
-	//Collapsible panels
-	//CollapsiblePanel parameters;
-	//CollapsiblePanel semanticAnalysis;
-	//CollapsiblePanel displaySettings;
-	//CollapsiblePanel exclusionList;
 	
 	//Parameters
 	private SemanticSummaryParameters networkParams;
 	private CloudParameters cloudParams;
 	
-	//Radio Buttons
-	//private JRadioButton nodeName;
-	//private JRadioButton nodeAttribute;
-	
 	//Text Fields
 	private JFormattedTextField maxWordsTextField;
 	private JFormattedTextField netWeightTextField;
 	
+	//JLabels
+	private JLabel networkLabel;
+	
+	//JListData
+	private DefaultListModel listValues;
+	
+	
+	private static final int DEF_ROW_HEIGHT = 20;
+
 	
 	//instruction text
 	//TODO
@@ -127,30 +136,33 @@ public class SemanticSummaryInputPanel extends JPanel
 	public JPanel createCloudListPanel()
 	{
 		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
+		//panel.setLayout(new BorderLayout());
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		//Name of the network
 		JPanel networkPanel = new JPanel();
 		networkPanel.setLayout(new BorderLayout());
-		JLabel networkLabel = new JLabel("Network 1");
-		networkPanel.add(networkLabel,BorderLayout.WEST);
+		networkLabel = new JLabel();
+		networkPanel.add(networkLabel, BorderLayout.CENTER);
 		
 		//List of Clouds
-		DefaultListModel listValues = new DefaultListModel();
+		listValues = new DefaultListModel();
 		
 		//TODO
 		//ADD VALUES TO CLOUD LIST HERE
-		listValues.addElement("Cloud 1");//TEMP CODE
-		listValues.addElement("Cloud 2");//TEMP CODE
+		//listValues.addElement("Cloud 1");//TEMP CODE
+		//listValues.addElement("Cloud 2");//TEMP CODE
 		JList cloudList = new JList(listValues);
 		cloudList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		cloudList.setSelectedIndex(0);
 		cloudList.setVisibleRowCount(10);
+		cloudList.setFixedCellHeight(DEF_ROW_HEIGHT);
 		JScrollPane listScrollPane = new JScrollPane(cloudList);
 		
 		//Add to panel
-		panel.add(networkPanel,BorderLayout.NORTH);
-		panel.add(listScrollPane,BorderLayout.SOUTH);
+		panel.add(networkPanel);
+		panel.add(listScrollPane);
+		
 		
 		return panel;
 	}
@@ -319,6 +331,39 @@ public class SemanticSummaryInputPanel extends JPanel
 		return collapsiblePanel;
 	}
 	
+	/**
+	 * Sets the list of clouds to be for the supplied network.
+	 * @param SemanticSummaryParameter - parameter for the network to display.
+	 */
+	public void setNetworkList(SemanticSummaryParameters params)
+	{
+		//clear current values
+		networkLabel.setText("");
+		listValues.clear();
+		
+		//Set new current values
+		networkLabel.setText(params.getNetworkName());
+		
+		List<String> clouds = new ArrayList<String>(params.getClouds().keySet());
+		Collections.sort(clouds);
+		
+		Iterator<String> iter = clouds.iterator();
+		while(iter.hasNext())
+		{
+			String curCloud = iter.next();
+			listValues.addElement(curCloud);
+		}
+		
+		
+		//Reset defaults
+		//netWeightTextField.setValue(1.0); //make retrieve default
+		
+		//Set parameters
+		networkParams = params;
+		cloudParams = null;
+		
+		this.updateUI();
+	}
 	
 	
 	/**
@@ -377,5 +422,15 @@ public class SemanticSummaryInputPanel extends JPanel
 	public JFormattedTextField getNetWeightTextField()
 	{
 		return netWeightTextField;
+	}
+	
+	public JLabel getNetworkLabel()
+	{
+		return networkLabel;
+	}
+	
+	public DefaultListModel getListValues()
+	{
+		return listValues;
 	}
 }

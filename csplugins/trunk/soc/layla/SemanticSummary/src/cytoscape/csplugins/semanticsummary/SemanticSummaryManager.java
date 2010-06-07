@@ -27,6 +27,8 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 /**
  * The SemanticSummaryManager class is a singleton class that manages
@@ -49,6 +51,10 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	private SemanticSummaryInputPanel inputWindow;
 	private CloudDisplayPanel cloudWindow;
 	
+	//Keep track of current network and cloud
+	private SemanticSummaryParameters curNetwork;
+	private CloudParameters curCloud;
+	
 	//CONSTRUCTOR
 	/**
 	 * This is a private constructor that is only called by the getInstance()
@@ -58,8 +64,6 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	{
 		cyNetworkList = new HashMap<String, SemanticSummaryParameters>();
 		
-		//TODO
-		//Create and add panels in correct locations
 	}
 	
 	//METHODS
@@ -107,6 +111,30 @@ public class SemanticSummaryManager implements PropertyChangeListener
 			return false;
 	}
 	
+	
+	/**
+	 * Sets up the Manager with the current network.
+	 */
+	public void setupCurrentNetwork()
+	{
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		String networkID = network.getIdentifier();
+		
+		if(isSemanticSummary(networkID))
+			curNetwork = getParameters(networkID);
+		else
+		{
+			SemanticSummaryParameters params = new SemanticSummaryParameters();
+			params.setNetworkName(networkID);
+			params.setNetworkNodes(network.nodesList());
+			params.setNetworkNumNodes(network.getNodeCount());
+			SemanticSummaryManager.getInstance().registerNetwork(network, params);
+			
+			curNetwork = params;
+		}
+		
+		getInputWindow().setNetworkList(curNetwork);
+	}
 	/**
 	 * Returns instance of SemanticSummaryParameters for the networkID
 	 * supplied, if it exists.
@@ -155,6 +183,42 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	public void setCloudDisplayWindow(CloudDisplayPanel cloudWindow)
 	{
 		this.cloudWindow = cloudWindow;
+	}
+	
+	/**
+	 * Get the parameters for the current network.
+	 * @return SemanticSummaryParameters - the current network
+	 */
+	public SemanticSummaryParameters getCurNetwork()
+	{
+		return curNetwork;
+	}
+	
+	/**
+	 * Set the current network parameters.
+	 * @param SemanticSummaryParameters - the current network.
+	 */
+	public void setCurNetwork(SemanticSummaryParameters params)
+	{
+		curNetwork = params;
+	}
+	
+	/**
+	 * Get the parameters of the current cloud.
+	 * @return CloudParameters - the current cloud
+	 */
+	public CloudParameters getCurCloud()
+	{
+		return curCloud;
+	}
+	
+	/**
+	 * Sets the current cloud.
+	 * @param CloudParameters - the current cloud.
+	 */
+	public void setCurCloud(CloudParameters params)
+	{
+		curCloud = params;
 	}
 	
 	
