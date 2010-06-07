@@ -1,4 +1,5 @@
 
+
 package cytoscape.layout.label;
 
 import csplugins.layout.LayoutEdge;
@@ -23,6 +24,7 @@ import giny.view.NodeView;
 
 import java.util.*;
 
+import java.lang.Thread;
 
 
 // TODO: Change this Javadoc description 
@@ -44,12 +46,6 @@ import java.util.*;
  */
 public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
-    // LABEL -->    
-
-    private double label_attraction_multiplier = 0.1;
-    private double label_repulsion_multiplier = 0.1;
-    private double label_attraction_constant;
-    private double label_repulsion_constant;
 
     /**
      * Whether Labels should be repositioned in their default positions 
@@ -88,20 +84,22 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
     ArrayList<LayoutEdge> allLayoutEdgesArray = new ArrayList<LayoutEdge>();
 
 
-    // <-- LABEL
 
     /**
      * This is the constructor for the bioLayout algorithm.
      */
     public LabelBioLayoutFRAlgorithm(boolean supportEdgeWeights) {
-	super();
+
+	super(supportEdgeWeights);
+	
 	logger = CyLogger.getLogger(LabelBioLayoutFRAlgorithm.class);
 
 	supportWeights = supportEdgeWeights;
 
-	displacementArray = new ArrayList<Double>(100);
 	this.initializeProperties();
     }
+
+
 
     /**
      * Required methods (and overrides) for AbstractLayout
@@ -141,17 +139,12 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      * the values as appropriates.
      */
     public void initializeProperties() {
+
 	super.initializeProperties();
 
-	/**
-	 * Adds Tunables
-	 */
-
-	// LABEL -->
-
 	layoutProperties.add(new Tunable("labels_settings", 
-					 "Algorithm's label specific settings",
-					 Tunable.GROUP, new Integer(5))); 
+					 "Label specific settings",
+					 Tunable.GROUP, new Integer(3))); 
 
 	layoutProperties.add(new Tunable("resetPosition", 
 					 "Reset the label position of all nodes",
@@ -164,15 +157,6 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	layoutProperties.add(new Tunable("defaultPercentage", 
 					 "Default Percentage (%) [For how long nodes are going to be allowed to move]",
 					 Tunable.DOUBLE, new Double(defaultPercentage)));
-
-	layoutProperties.add(new Tunable("label-repulsion_multiplier",
-					 "Multiplier to calculate the repulsion force between labels and nodes",
-					 Tunable.DOUBLE, new Double(0.01)));
-
-	layoutProperties.add(new Tunable("label-attraction_multiplier",
-					 "Divisor to calculate the attraction force between nodes and their labels",
-					 Tunable.DOUBLE, new Double(0.01)));
-	// <-- LABEL
 
 	// We've now set all of our tunables, so we can read the property 
 	// file now and adjust as appropriate
@@ -196,9 +180,8 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      * @param force whether or not to force the update
      */
     public void updateSettings(boolean force) {
-	super.updateSettings(force);
 
-	// LABEL -->
+	super.updateSettings(force);
 
 	Tunable t = layoutProperties.get("resetPosition");
 	if ((t != null) && (t.valueChanged() || force))
@@ -211,40 +194,19 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	t = layoutProperties.get("defaultPercentage");
 	if ((t != null) && (t.valueChanged() || force))
 	    defaultPercentage = ((Double) t.getValue()).doubleValue();
-
-	t = layoutProperties.get("label-repulsion_multiplier");
-	if ((t != null) && (t.valueChanged() || force)) {
-	    setLabelRepulsionMultiplier(t.getValue().toString());
-	    if (t.valueChanged())
-		layoutProperties.setProperty(t.getName(), t.getValue().toString());
-	}
-
-	t = layoutProperties.get("label-attraction_multiplier");
-	if ((t != null) && (t.valueChanged() || force)) {
-	    setLabelAttractionMultiplier(t.getValue().toString());
-	    if (t.valueChanged())
-		layoutProperties.setProperty(t.getName(), t.getValue().toString());
-	}
-
-	// <-- LABEL
-
     }
 
     /**
      * Perform a layout
      */
     public void layoutPartion(LayoutPartition partition) {
-	this.partition = partition;
-
+	
 	Dimension initialLocation = null;
 
 	// Logs information about this task
 	logger.info("Laying out partition " + partition.getPartitionNumber() + " which has "+ partition.nodeCount()
 		    + " nodes and " + partition.edgeCount() + " edges: ");
 
-
-
-	// LABEL -->
 
 	// Reset the label position of all nodes if necessary 
 	if (resetPosition) {
@@ -258,6 +220,11 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	} else if (defaultPercentage < 0.0) {
 	    defaultPercentage = 0.0;
 	}
+
+
+
+
+
 
 	// Ads all network nodes to list
 	allLayoutNodesArray.addAll(partition.getNodeList());
@@ -319,18 +286,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// Adds all LabelNodes (who are the keys in labelToParentMap) to allLayoutNodesArray
 	allLayoutNodesArray.addAll(labelToParentMap.keySet());
 
-	// LABEL <--
-
-
-
-
-	// LABEL -->
-
-	updatePositions();
-
-	// <-- LABEL
-
-
+	updatePositions(partition);
 
 	// Not quite done, yet.  If we're only laying out selected nodes, we need
 	// to migrate the selected nodes back to their starting position
@@ -354,7 +310,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
    
 	clear();		
 
-	logger.info("Label/Node layout of partition " + partition.getPartitionNumber() + " complete after " + iteration + " iterations");
+	logger.info("Label/Node layout of partition " + partition.getPartitionNumber() + " complete");
     }
     public void resetNodeLabelPosition(CyAttributes nodeAtts, List<LayoutNode> nodeList) {
 	for(LayoutNode n : nodeList) {
@@ -378,7 +334,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
     /**
      * Updates the position of labels and nodes
      */
-    private void updatePositions() {
+    private void updatePositions(LayoutPartition part) {
 
 	LabelPosition lp = new LabelPosition(); 
 		
@@ -402,7 +358,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
                 } else { // ln is a network LayoutNode
                 	
 		    if (moveNodes && defaultPercentage != 0.0) { // unlocked
-			partition.moveNodeToLocation(ln);
+			part.moveNodeToLocation(ln);
 		    }
                 }
             }

@@ -59,7 +59,7 @@ import javax.swing.JPanel;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public abstract class LabelBioLayoutAlgorithm extends AbstractGraphPartition {
+public abstract class ModifiedBioLayoutAlgorithm extends AbstractGraphPartition {
     /**
      * Properties
      */
@@ -105,7 +105,7 @@ public abstract class LabelBioLayoutAlgorithm extends AbstractGraphPartition {
     /**
      * This is the constructor for the bioLayout algorithm.
      */
-    public LabelBioLayoutAlgorithm() {
+    public ModifiedBioLayoutAlgorithm() {
 	super();
 
 	if (edgeWeighter == null)
@@ -242,7 +242,6 @@ public abstract class LabelBioLayoutAlgorithm extends AbstractGraphPartition {
 	if (supportWeights) {
 	    edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
 	}
-
     }
 
     /**
