@@ -96,7 +96,7 @@ public class CreateCloudAction extends CytoscapeAction
 		else
 		{
 			params = new SemanticSummaryParameters();
-			params.setNetworkName(networkID);
+			params.setNetworkName(network.getTitle());
 			params.setNetworkNodes(network.nodesList());
 			params.setNetworkNumNodes(network.getNodeCount());
 			SemanticSummaryManager.getInstance().registerNetwork(network, params);
@@ -104,7 +104,6 @@ public class CreateCloudAction extends CytoscapeAction
 		
 		//Create CloudParameters
 		CloudParameters cloudParams = new CloudParameters();
-		cloudParams.setCloudName(networkID);
 		cloudParams.setCloudName(params.getNextCloudName()); 
 		cloudParams.setNetworkParams(params);
 		
@@ -132,7 +131,8 @@ public class CreateCloudAction extends CytoscapeAction
 		SemanticSummaryInputPanel inputPanel = 
 			SemanticSummaryManager.getInstance().getInputWindow();
 		
-		inputPanel.setNetworkList(params);
+		//inputPanel.setNetworkList(params);
+		inputPanel.setSelectedCloud(cloudParams);
 		
 		//TODO - Finish this
 			

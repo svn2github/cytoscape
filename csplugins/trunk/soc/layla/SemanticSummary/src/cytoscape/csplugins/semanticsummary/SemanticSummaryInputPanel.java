@@ -83,7 +83,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	
 	//JListData
 	private DefaultListModel listValues;
-	
+	private JList cloudList;
 	
 	private static final int DEF_ROW_HEIGHT = 20;
 
@@ -152,7 +152,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		//ADD VALUES TO CLOUD LIST HERE
 		//listValues.addElement("Cloud 1");//TEMP CODE
 		//listValues.addElement("Cloud 2");//TEMP CODE
-		JList cloudList = new JList(listValues);
+		cloudList = new JList(listValues);
 		cloudList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		cloudList.setSelectedIndex(0);
 		cloudList.setVisibleRowCount(10);
@@ -363,6 +363,22 @@ public class SemanticSummaryInputPanel extends JPanel
 		cloudParams = null;
 		
 		this.updateUI();
+	}
+	
+	/**
+	 * Sets the selected cloud to be one supplied.
+	 * @params CloudParameters - cloud to be selected in list.
+	 */
+	public void setSelectedCloud(CloudParameters params)
+	{
+		SemanticSummaryParameters parent = params.getNetworkParams();
+		setNetworkList(parent);
+		
+		cloudParams = params;
+		int index = listValues.lastIndexOf(params.getCloudName());
+		
+		cloudList.setSelectedIndex(index);
+		
 	}
 	
 	

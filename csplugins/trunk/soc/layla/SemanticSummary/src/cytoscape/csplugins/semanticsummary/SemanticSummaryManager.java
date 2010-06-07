@@ -29,6 +29,7 @@ import java.util.HashMap;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 
 /**
  * The SemanticSummaryManager class is a singleton class that manages
@@ -64,6 +65,14 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	{
 		cyNetworkList = new HashMap<String, SemanticSummaryParameters>();
 		
+		//ADD LISTENERS HERE
+		
+		//catch network creation/destruction events
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		
+		//catch network selection/focus events
+		Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport()
+		.addPropertyChangeListener(this);
 	}
 	
 	//METHODS
@@ -84,9 +93,54 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	 */
 	public void propertyChange(PropertyChangeEvent event)
 	{
-		//TODO
+		//network destroyed, remove it from our list along with clouds
+		if(event.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED))
+		{
+			networkDestroyed((String) event.getNewValue());
+		}
+		else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED))
+		{
+			setupCurrentNetwork();
+		}
+		else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED))
+		{
+			setupCurrentNetwork();
+		}
+		else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED))
+		{
+			setupCurrentNetwork();
+		}
+		else if (event.getPropertyName().equals(Cytoscape.NETWORK_TITLE_MODIFIED))
+		{
+			CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+			String networkID = cyNetwork.getIdentifier();
+			if (isSemanticSummary(networkID))
+			{
+				SemanticSummaryParameters currentParams = getParameters(networkID);
+				currentParams.setNetworkName(cyNetwork.getTitle());
+			}
+		}
 	}
 	
+	/**
+	 * Removes the CyNetwork from our list if it has just been destroyed.
+	 * @param String - networkID of the destroyed CyNetwork
+	 */
+	private void networkDestroyed(String networkID)
+	{
+		//Retrieve parameters and remove if it exists
+		if (isSemanticSummary(networkID))
+		{
+			SemanticSummaryParameters currentParams = getParameters(networkID);
+			cyNetworkList.remove(networkID);
+			
+			//Check if this was the last network displayed
+			if (currentParams.equals(curNetwork))
+			{
+				setupCurrentNetwork();
+			}
+		}
+	}
 	
 	/**
 	 * Register a new network into the manager.
@@ -125,7 +179,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		else
 		{
 			SemanticSummaryParameters params = new SemanticSummaryParameters();
-			params.setNetworkName(networkID);
+			params.setNetworkName(network.getTitle());
 			params.setNetworkNodes(network.nodesList());
 			params.setNetworkNumNodes(network.getNodeCount());
 			SemanticSummaryManager.getInstance().registerNetwork(network, params);
