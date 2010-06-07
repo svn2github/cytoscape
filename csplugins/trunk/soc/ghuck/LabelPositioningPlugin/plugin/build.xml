@@ -2,19 +2,20 @@
 <!-- Plugin build file     -->
 <!-- =================================================================== -->
 
-<project name="Label Layout Plugin" default="jar" basedir=".">
+<project name="Label Layout Plugin" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <property name="plugin_name" value="LabelLayoutPlugin"/>
-    <property name="plugin_class" value="cytoscape.layout.label.LabelLayoutPlugin"/>  	  	
-    <property name="package_path" value="cytoscape/layout/label"/>  	  	
-    <property name="project.jar" value="${plugin_name}.jar"/>  	
+    <property name="plugin_class" value="cytoscape.layout.label.LabelLayoutPlugin"/>
+    <property name="package_path" value="cytoscape/layout/label"/> 
+    <property name="project.jar" value="${plugin_name}.jar"/> 
+    <property name="test.jar" value="${plugin_name}-test.jar"/>
     <property name="version" value="0.01"/>
     <property name="year" value="2010"/>
-  	
+
     <echo message="Building plugin ${plugin_name} version ${version}..."/>
 
     <!-- Define the plugin directories -->
@@ -23,12 +24,20 @@
     <property name="build.dir" value="${root.dir}/build"/>
     <property name="manifest.dir" value="${root.dir}/manifest"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
+    <property name="tests.dir" value="${root.dir}/tests"/>
+    <property name="junit.report.dir" value="${build.dir}/junit-reports" />
+    <property name="junit.log.dir" value="${build.dir}/junit-logs" />
 
 
     <!-- Define the Cytoscape directories -->
     <property name="cytoscape.dir" value="/Users/gerardohuck/Cytoscape"/>
-    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
+    <!--
+    <property name="cytoscape.dir" value="../../../../../cytoscape"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/core"/>
+    -->
+    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+
 
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>
@@ -36,8 +45,8 @@
     <property name="deprecation" value="on"/>
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
-  	
-    <!-- Check the availability of some files -->  	
+
+    <!-- Check the availability of some files -->  
     <available file="${cytoscape.dir}/cytoscape.jar" property="cytoscape.present"/> 
     <available file="${root.dir}/plugin.props" property="plugin.prop.present"/>
     <available file="${root.dir}/License.txt" property="license.present"/>
@@ -53,6 +62,23 @@
         <include name="**/*.jar"/>
       </fileset>
     </path>
+
+    <!-- Define the junit class path - It needs to find what we just built -->
+    <path id="junit.class.path" >
+      <pathelement path="${project.class.path}/"/>
+      <pathelement location="${test.jar}"/>
+      <fileset dir="${lib.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+    </path>
+
+    <!-- Make sure tests is in the right place -->
+    <condition property="tests.ok">
+      <and>
+        <available file="${tests.dir}" />
+      </and>
+    </condition>
+
   </target>
 
   <!-- =================================================================== -->
@@ -78,7 +104,7 @@
   <!-- =================================================================== -->
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile, copy_plugin_prop, copy_license"  >  	
+  <target name="jar" depends="compile, copy_plugin_prop, copy_license"  > 
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
       <fileset dir="${build.dir}" includes="**"/>
@@ -86,33 +112,110 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- If plugin.prop exist, copy it to build directory  -->	
+  <!-- If plugin.prop exist, copy it to build directory  -->
   <!-- =================================================================== -->
   <target name="copy_plugin_prop" if="plugin.prop.present">
-    <copy todir="${build.dir}/${package_path}" file="${root.dir}/plugin.props"/>	
+    <copy todir="${build.dir}/${package_path}" file="${root.dir}/plugin.props"/>
   </target>
 
   <!-- =================================================================== -->
-  <!-- If License.txt exist, copy it to build directory  -->	
+  <!-- If License.txt exist, copy it to build directory  -->
   <!-- =================================================================== -->
   <target name="copy_license" if="license.present">
-    <copy todir="${build.dir}/" file="${root.dir}/License.txt"/>	
+    <copy todir="${build.dir}/" file="${root.dir}/License.txt"/>
   </target>
 
   <!-- =================================================================== -->
   <!-- Copy jar file to Cytoscape plugin folder                            -->
   <!-- =================================================================== -->
-  <target name="copy_jar" depends="jar">
+  <target name="copy_jar" depends="test">
     <copy todir="${cytoscape.plugin.dir}/" file="${root.dir}/${project.jar}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- An alias target for compiling everything and running all tests.     -->
+  <!-- =================================================================== -->
+  <target name="all" depends="test">
   </target>
 
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
   <target name="clean" depends="init">
-  	<delete dir="${build.dir}"/>
-	<delete file="${root.dir}/${project.jar}"/>
+    <delete dir="${build.dir}"/>
+    <delete file="${root.dir}/${project.jar}"/>
+    <delete file="${root.dir}/${test.jar}"/>
   </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the tests                                                  -->
+  <!-- Note that this compilation occurs AFTER the distribution jar has    -->
+  <!-- been created, so that the tests aren't distributed.                 -->
+  <!-- =================================================================== -->
+  <target name="compile-tests"
+          depends="jar" 
+          if="tests.ok">
+    <javac srcdir="${tests.dir}"
+           classpathref="junit.class.path"
+           destdir="${build.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}">
+      <compilerarg line="-Xlint:all -Xlint:-path"/>
+    </javac>
+    <echo message="Successfully ran compile-tests task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the project-tests.jar file                                  -->
+  <!-- =================================================================== -->
+  <target name="jar-tests"
+          depends="compile-tests"
+          if="tests.ok">
+    <jar jarfile="${test.jar}"
+         basedir="${build.dir}" >
+    </jar>
+    <echo message="Successfully ran jar-tests task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Runs the unit tests.                                                -->
+  <!-- =================================================================== -->
+  <target name="test"
+          depends="jar-tests"
+          if="tests.ok">
+    <mkdir dir="${junit.log.dir}"/>
+    <junit printsummary="yes"
+           haltonfailure="no"
+           maxmemory="256m" >
+      <classpath refid="junit.class.path"/>
+      <formatter type="plain" 
+                 usefile="true" />
+      <formatter type="xml" 
+                 usefile="true" />
+      <batchtest fork="yes" 
+                 todir="${junit.log.dir}" 
+                 failureProperty="junit.test.failure"
+                 errorProperty="junit.test.failure">
+        <fileset dir="${tests.dir}"
+                 includes="**/*Test.java"
+                 excludes="**/AllTests.java" />
+      </batchtest>
+    </junit>
+    <mkdir dir="${junit.report.dir}"/>
+    <junitreport todir="${junit.report.dir}">
+      <fileset dir="${junit.log.dir}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${junit.report.dir}"/>
+    </junitreport>
+    <fail message="TEST FAILURE!!! Details: ${junit.report.dir}/index.html"
+          if="junit.test.failure"/>
+    <echo message="Successfully ran test task!"/>
+  </target>
+
+
 
 </project>
 
