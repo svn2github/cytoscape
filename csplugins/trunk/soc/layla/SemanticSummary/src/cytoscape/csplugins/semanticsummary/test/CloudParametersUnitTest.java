@@ -27,8 +27,11 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +39,10 @@ import org.junit.Test;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.csplugins.semanticsummary.CloudParameters;
+import cytoscape.csplugins.semanticsummary.CloudWordInfo;
 import cytoscape.csplugins.semanticsummary.SemanticSummaryParameters;
 
-public class CloudParametersUnitTest {
+public class CloudParametersUnitTest extends TestCase {
 	
 	//Variables
 	String cloudName = "CloudName";
@@ -54,9 +58,9 @@ public class CloudParametersUnitTest {
 		
 		//Create a set of CyNodes
 		List<CyNode> allNodes = new ArrayList<CyNode>();
-		CyNode node1 = Cytoscape.getCyNode("Node one", true);
-		CyNode node2 = Cytoscape.getCyNode("Node two", true);
-		CyNode node3 = Cytoscape.getCyNode("ONE", true);
+		CyNode node1 = Cytoscape.getCyNode("Node onenode", true);
+		CyNode node2 = Cytoscape.getCyNode("Node twonode", true);
+		CyNode node3 = Cytoscape.getCyNode("ONENODE", true);
 		CyNode node4 = Cytoscape.getCyNode("Double double", true);//only one count
 		CyNode punctNode1 = Cytoscape.getCyNode("Node with punctuation.", true);
 		CyNode punctNode2 = Cytoscape.getCyNode("Node with non-stripped punctuation", true);
@@ -76,9 +80,9 @@ public class CloudParametersUnitTest {
 		
 		//Create set of selected Nodes
 		Set<CyNode> selNodes = new HashSet<CyNode>();
-		CyNode node5 = Cytoscape.getCyNode("Node one", true);
-		CyNode node6 = Cytoscape.getCyNode("Node two", true);
-		CyNode node7 = Cytoscape.getCyNode("ONE", true);
+		CyNode node5 = Cytoscape.getCyNode("Node onenode", true);
+		CyNode node6 = Cytoscape.getCyNode("Node twonode", true);
+		CyNode node7 = Cytoscape.getCyNode("ONENODE", true);
 		CyNode node8 = Cytoscape.getCyNode("Double double", true);//only one count
 		CyNode node9 = Cytoscape.getCyNode("Reactome_node to strip lots from.", true);
 		CyNode punctNode3 = Cytoscape.getCyNode("Node with punctuation.", true);
@@ -114,31 +118,136 @@ public class CloudParametersUnitTest {
 
 	@Test
 	public void testInitializeNetworkCounts() {
+		
+		//Test flags
+		assertFalse(cloudParams.getCountInitialized());
+		assertFalse(cloudParams.getSelInitialized());
+		assertFalse(cloudParams.getRatiosInitialized());
+		
 		cloudParams.initializeNetworkCounts();
 		
+		//Test network counts
 		HashMap<String,Integer> counts = cloudParams.getNetworkCounts();
 		assertEquals((Integer)counts.get("node"),new Integer(9));
-		//TODO - finish
+		assertEquals((Integer)counts.get("onenode"),new Integer(4));
+		assertEquals((Integer)counts.get("twonode"),new Integer(2));
+		assertEquals((Integer)counts.get("double"),new Integer(2));
+		assertEquals((Integer)counts.get("punctuation"),new Integer(4));
+		assertEquals((Integer)counts.get("non-stripped"),new Integer(2));
+		assertEquals((Integer)counts.get("strip"),new Integer(1));
+		assertEquals((Integer)counts.get("with"),null);
+		assertEquals((Integer)counts.get("reactome"),null);
+		
+		//Test mappings
+		HashMap<String, List<CyNode>> mapping = cloudParams.getStringNodeMapping();
+		
+		//Single node in list
+		List<CyNode> nodeList = mapping.get("strip");
+		Iterator<CyNode> iter = nodeList.iterator();
+		while (iter.hasNext())
+		{
+			CyNode curNode = (CyNode)iter.next();
+			assertEquals(curNode.toString(),"Reactome_node to strip lots from.");
+		}
+		
+		//Multiple nodes in list
+		int count = 0;
+		nodeList = mapping.get("twonode");
+		Iterator<CyNode> iter2 = nodeList.iterator();
+		while (iter2.hasNext())
+		{
+			CyNode curNode = (CyNode)iter2.next();
+			assertEquals(curNode.toString(),"Node twonode");
+			count++;
+		}
+		assertEquals(count,2);//make sure we have 2 nodes in list
+		
+		//Test flags
+		assertTrue(cloudParams.getCountInitialized());
+		assertFalse(cloudParams.getSelInitialized());
+		assertFalse(cloudParams.getRatiosInitialized());
 	}
 
 	@Test
 	public void testUpdateSelectedCounts() {
-		fail("Not yet implemented");
+		
+		//Test flags
+		assertFalse(cloudParams.getCountInitialized());
+		assertFalse(cloudParams.getSelInitialized());
+		assertFalse(cloudParams.getRatiosInitialized());
+		
+		cloudParams.updateSelectedCounts();
+		
+		//Test selected counts
+		HashMap<String,Integer> counts = cloudParams.getSelectedCounts();
+		assertEquals((Integer)counts.get("node"),new Integer(5));
+		assertEquals((Integer)counts.get("onenode"),new Integer(2));
+		assertEquals((Integer)counts.get("twonode"),new Integer(1));
+		assertEquals((Integer)counts.get("double"),new Integer(1));
+		assertEquals((Integer)counts.get("punctuation"),new Integer(2));
+		assertEquals((Integer)counts.get("non-stripped"),new Integer(1));
+		assertEquals((Integer)counts.get("strip"),new Integer(1));
+		assertEquals((Integer)counts.get("with"),null);
+		assertEquals((Integer)counts.get("reactome"),null);
+		
+		//Test flags
+		assertTrue(cloudParams.getCountInitialized());
+		assertTrue(cloudParams.getSelInitialized());
+		assertFalse(cloudParams.getRatiosInitialized());
 	}
 
 	@Test
 	public void testUpdateRatios() {
-		fail("Not yet implemented");
+		
+		//Test flags
+		assertFalse(cloudParams.getCountInitialized());
+		assertFalse(cloudParams.getSelInitialized());
+		assertFalse(cloudParams.getRatiosInitialized());
+		
+		cloudParams.updateRatios();
+		
+		//Test Ratios (with default k = 1)
+		HashMap<String,Double> ratios = cloudParams.getRatios();
+		assertEquals((Double)ratios.get("node"),new Double((5.0*13)/(7*9)));
+		assertEquals((Double)ratios.get("onenode"),new Double((2.0*13)/(7*4)));
+		assertEquals((Double)ratios.get("twonode"),new Double((1.0*13)/(7*2)));
+		assertEquals((Double)ratios.get("double"),new Double((1.0*13)/(7*2)));
+		assertEquals((Double)ratios.get("punctuation"),new Double((2.0*13)/(7*4)));
+		assertEquals((Double)ratios.get("non-stripped"),new Double((1.0*13)/(7*2)));
+		assertEquals((Double)ratios.get("strip"),new Double((1.0*13)/(7*1)));
+		assertEquals((Double)ratios.get("with"),null);
+		assertEquals((Double)ratios.get("reactome"),null);
+		
+		assertEquals(cloudParams.getMaxRatio(),new Double((1.0*13)/(7*1)));
+		assertEquals(cloudParams.getMinRatio(),new Double((13.0/14)));
+		
+		//Test flags
+		assertTrue(cloudParams.getCountInitialized());
+		assertTrue(cloudParams.getSelInitialized());
+		assertTrue(cloudParams.getRatiosInitialized());
 	}
 
 	@Test
 	public void testCalculateFontSizes() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRetrieveInputVals() {
-		fail("Not yet implemented");
+		
+		//Test flags
+		assertFalse(cloudParams.getCountInitialized());
+		assertFalse(cloudParams.getSelInitialized());
+		assertFalse(cloudParams.getRatiosInitialized());
+		
+		cloudParams.calculateFontSizes();
+		ArrayList<CloudWordInfo> cloudWords = cloudParams.getCloudWordInfoList();
+		
+		//Check that first and last entries have max and min sizes
+		assertEquals(cloudWords.get(0).getFontSize(),
+				new Integer(parentParams.getMaxFont()));
+		assertEquals(cloudWords.get(cloudWords.size() - 1).getFontSize(),
+				new Integer(parentParams.getMinFont()));
+		
+		//Test flags
+		assertTrue(cloudParams.getCountInitialized());
+		assertTrue(cloudParams.getSelInitialized());
+		assertTrue(cloudParams.getRatiosInitialized());
 	}
 
 }

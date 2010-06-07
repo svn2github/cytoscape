@@ -36,7 +36,8 @@ public class AllTests {
 		//Add all classes here to test
 		Class[] testClasses = {
 				SemanticSummaryParametersUnitTest.class,
-				WordFilterUnitTest.class};
+				WordFilterUnitTest.class,
+				CloudParametersUnitTest.class};
 		
 		TestSuite suite = new TestSuite(testClasses);
 		suite.setName("SemanticSummaryPlugin Test");
