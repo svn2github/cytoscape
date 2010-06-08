@@ -70,10 +70,6 @@ public class SemanticSummaryInputPanel extends JPanel
 	
 	//TODO
 	
-	//Parameters
-	private SemanticSummaryParameters networkParams;
-	private CloudParameters cloudParams;
-	
 	//Text Fields
 	private JFormattedTextField maxWordsTextField;
 	private JFormattedTextField netWeightTextField;
@@ -149,10 +145,6 @@ public class SemanticSummaryInputPanel extends JPanel
 		//List of Clouds
 		listValues = new DefaultListModel();
 		
-		//TODO
-		//ADD VALUES TO CLOUD LIST HERE
-		//listValues.addElement("Cloud 1");//TEMP CODE
-		//listValues.addElement("Cloud 2");//TEMP CODE
 		cloudList = new JList(listValues);
 		cloudList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		cloudList.setSelectedIndex(0);
@@ -269,8 +261,8 @@ public class SemanticSummaryInputPanel extends JPanel
 		JLabel netWeightLabel = new JLabel("Network Weight Factor");
 		netWeightTextField = new JFormattedTextField(decFormat);
 		netWeightTextField.setColumns(3);
-		//netWeightTextField.addPropertyChangeListener("value", listener);
-		netWeightTextField.setValue(1.0); //Set to 1 initially
+		netWeightTextField.setValue(SemanticSummaryManager.getInstance().
+				getDefaultNetWeight()); //Set to default initially
 		
 		//Network Weight Factor Panel
 		JPanel netWeightPanel = new JPanel();
@@ -356,6 +348,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		//Add actions to buttons
 		createButton.addActionListener(new CreateCloudAction());
+		deleteButton.addActionListener(new DeleteCloudAction());
 		
 		//Add buttons to panel
 		panel.add(deleteButton);
@@ -371,6 +364,8 @@ public class SemanticSummaryInputPanel extends JPanel
 	 */
 	public void setNetworkList(SemanticSummaryParameters params)
 	{
+		//TODO - add check to see if network has changed?
+		
 		//clear current values
 		networkLabel.setText("");
 		listValues.clear();
@@ -388,39 +383,25 @@ public class SemanticSummaryInputPanel extends JPanel
 			listValues.addElement(curCloud);
 		}
 		
-		//Set parameters
-		networkParams = params;
-		cloudParams = null;
+		//Update Manager variables
+		SemanticSummaryManager.getInstance().setCurNetwork(params);
+		SemanticSummaryManager.getInstance().setCurCloud(null);
 		
 		this.updateUI();
 	}
 	
 	/**
-	 * Loads the values from a specified cloud and sets it as the current cloud.
+	 * Loads the values from a specified cloud in the user supplied parameters
+	 * and sets it as the current cloud.
 	 * Assumes that parent list is already updated.
 	 * @param CloudParameters - of the cloud to load.
 	 */
 	public void loadCurrentCloud(CloudParameters params)
 	{
 		netWeightTextField.setValue(params.getNetWeightFactor());
-		cloudParams = params;
+		SemanticSummaryManager.getInstance().setCurCloud(params);
 	}
 	
-	/**
-	 * Sets the selected cloud to be one supplied.
-	 * @params CloudParameters - cloud to be selected in list.
-	 */
-	public void setSelectedCloud(CloudParameters params)
-	{
-		SemanticSummaryParameters parent = params.getNetworkParams();
-		setNetworkList(parent);
-		
-		cloudParams = params;
-		int index = listValues.lastIndexOf(params.getCloudName());
-		
-		cloudList.setSelectedIndex(index);
-		
-	}
 	
 	/**
 	 * Adds the cloud to the list and sets it to be the selected cloud.
@@ -432,8 +413,8 @@ public class SemanticSummaryInputPanel extends JPanel
 		ListSelectionModel listSelectionModel = cloudList.getSelectionModel();
 		listSelectionModel.removeListSelectionListener(handler);
 		
-		//Update params and add to list
-		cloudParams = params;
+		//Update current cloud and add to list
+		SemanticSummaryManager.getInstance().setCurCloud(params);
 		String cloudName = params.getCloudName();
 		listValues.addElement(cloudName);
 		int index = listValues.lastIndexOf(cloudName);
