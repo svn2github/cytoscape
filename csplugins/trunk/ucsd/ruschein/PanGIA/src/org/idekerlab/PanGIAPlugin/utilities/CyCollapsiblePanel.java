@@ -45,6 +45,11 @@ import java.net.URL;
  * Date: Nov 29, 2006
  * Time: 5:34:46 PM
  * Description: The user-triggered collapsable panel containing the component (trigger) in the titled border
+ * 
+ * 
+ * Updated by: Gregory Hannum
+ * June 7, 2010
+ * Added override for setToolTipText(String text), applying the tip to the titleComponent so that the tool-tip is visible on the entire component.
  */
 
 /**
@@ -406,5 +411,11 @@ public class CyCollapsiblePanel extends JPanel {
             }
             return compR;
         }
+    }
+    
+    public void setToolTipText(String text)
+    {
+    	super.setToolTipText(text);
+    	titleComponent.setToolTipText(text);
     }
 }

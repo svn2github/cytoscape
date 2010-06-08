@@ -170,6 +170,7 @@ public class NestedNetworkCreator {
 			if (sourceNode == null) {
 				final String nodeName = findNextAvailableNodeName("Module" + nodeIndex);
 				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs);
+				//moduleToCyNodeMap.put(sourceModule, sourceNode);
 				++nodeIndex;
 			}
 
@@ -178,6 +179,7 @@ public class NestedNetworkCreator {
 			if (targetNode == null) {
 				final String nodeName = findNextAvailableNodeName("Module"	+ nodeIndex);
 				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs);
+				//moduleToCyNodeMap.put(targetModule, targetNode);
 				++nodeIndex;
 			}
 			
@@ -237,11 +239,11 @@ public class NestedNetworkCreator {
 			final int gConnectedness = geneticNetwork.getConnectedness(
 					sourceModule.asStringSet(), targetModule.asStringSet());
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					"genetic link count", Integer.valueOf(gConnectedness));
+					"genetic interaction count", Integer.valueOf(gConnectedness));
 			final int pConnectedness = physicalNetwork.getConnectedness(
 					sourceModule.asStringSet(), targetModule.asStringSet());
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					"physical link count", Integer.valueOf(pConnectedness));
+					"physical interaction count", Integer.valueOf(pConnectedness));
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "source size",
 					Integer.valueOf(sourceModule.size()));
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "target size",
@@ -295,8 +297,8 @@ public class NestedNetworkCreator {
 		final CyNode newNode = Cytoscape.getCyNode(nodeName, true); // create=true
 		moduleToCyNodeMap.put(module, newNode);
 		
-		
-		/* How to make newNode a subnode of overviewNetwork??
+		/*
+		// How to make newNode a subnode of overviewNetwork??
 		CyNode newNode = Cytoscape.getCyNode(nodeName);
 		if (newNode==null)
 		{

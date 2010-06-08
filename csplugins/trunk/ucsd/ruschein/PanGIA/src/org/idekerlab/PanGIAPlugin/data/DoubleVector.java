@@ -360,7 +360,7 @@ public class DoubleVector extends DataVector {
 		int count;
 		for(count=0; count<this.size(); count++)
 		{
-			if(score<data[count])
+			if(score<=data[count])
 				break;
 		}
 		return (count==(this.size()) ? (1/(double)this.size()) : (1.0-((double)(count)/this.size())));

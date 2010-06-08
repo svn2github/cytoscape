@@ -80,4 +80,9 @@ public class NetworkSelectorPanelX extends JPanel implements
 	public void addItemListener(final ItemListener newListener) {
 		networkComboBox.addItemListener(newListener);
 	}
+
+	public void setComboBoxToolTip(String text)
+	{
+		networkComboBox.setToolTipText(text);
+	}
 }

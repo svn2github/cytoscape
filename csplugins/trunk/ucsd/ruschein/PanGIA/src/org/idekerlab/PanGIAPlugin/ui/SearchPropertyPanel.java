@@ -42,7 +42,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final double DEF_ALPHA_MUL = 1.0;
 	private static final String DEF_DEGREE = "";
 	private static final double DEF_CUTOFF = 20.0;
-	private static final double DEF_PVALUE_THRESHOLD = 0.05;
+	private static final double DEF_PVALUE_THRESHOLD = 95;
 	private static final int DEF_NUMBER_OF_SAMPLES = 10000;
 	private static final String DEFAULT_ATTRIBUTE = "none";
 	
@@ -67,6 +67,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 		// Add parameter panel to collapsibilePanel
 		CyCollapsiblePanel collapsiblePanel = new CyCollapsiblePanel("Advanced");
+		collapsiblePanel.setToolTipText("Set advanced search options.");
 		collapsiblePanel.getContentPane().add(pnlParameter);
 
 		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -77,13 +78,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		this.parameterPanel.add(collapsiblePanel, gridBagConstraints);
          
 		// Set the button size the same
-		closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
-		aboutButton.setPreferredSize(new java.awt.Dimension(67, 23));
-		closeButton.setPreferredSize(new java.awt.Dimension(67, 23));
-		searchButton.setPreferredSize(new java.awt.Dimension(67, 23));
+		closeButton.setPreferredSize(new java.awt.Dimension(75, 23));
+		aboutButton.setPreferredSize(new java.awt.Dimension(75, 23));
+		helpButton.setPreferredSize(new java.awt.Dimension(75, 23));
+		searchButton.setPreferredSize(new java.awt.Dimension(75, 23));
 		 
 		// about button is a place holder for now, hide it
-		this.aboutButton.setVisible(false);
+		this.aboutButton.setVisible(true);
 		
 		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition()
 			.addDataDefinitionListener(this);
@@ -140,13 +141,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         topPane.setLayout(new java.awt.GridBagLayout());
 
         topPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Physical Network"));
+        topPane.setToolTipText("Specify information relating to the physical interaction network.");
         physicalEdgeLabel.setText("Attribute:");
+        physicalEdgeLabel.setToolTipText("Choose an edge attribute representing the physical interaction scores.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         topPane.add(physicalEdgeLabel, gridBagConstraints);
 
+        physicalEdgeAttribComboBox.setToolTipText("Choose an edge attribute representing the physical interaction scores.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -156,10 +160,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         topPane.add(physicalEdgeAttribComboBox, gridBagConstraints);
 
         lbPhysicalNetwork.setText("Network:");
+        lbPhysicalNetwork.setToolTipText("Choose a network which contains edges representing physical interactions.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
         topPane.add(lbPhysicalNetwork, gridBagConstraints);
 
+        physicalNetworkPanel.setComboBoxToolTip("Choose a network which contains edges representing physical interactions.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -167,12 +173,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         topPane.add(physicalNetworkPanel, gridBagConstraints);
 
         lbPhysicalScale.setText("Scale:");
+        lbPhysicalScale.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         topPane.add(lbPhysicalScale, gridBagConstraints);
 
+        phyScalingMethodComboBox.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -188,15 +196,18 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         add(topPane, gridBagConstraints);
 
         edgeAttributePanel.setLayout(new java.awt.GridBagLayout());
-
         edgeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Genetic Network"));
+        edgeAttributePanel.setToolTipText("Specify information relating to the genetic interaction network.");
+
         geneticEdgeLabel.setText("Attribute:");
+        geneticEdgeLabel.setToolTipText("Choose an edge attribute representing the genetic interaction scores.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 5);
         edgeAttributePanel.add(geneticEdgeLabel, gridBagConstraints);
 
+        geneticEdgeAttribComboBox.setToolTipText("Choose an edge attribute representing the genetic interaction scores.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -206,10 +217,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeAttributePanel.add(geneticEdgeAttribComboBox, gridBagConstraints);
 
         lbGeneticNetwork.setText("Network:");
+        lbGeneticNetwork.setToolTipText("Choose a network which contains edges representing genetic interactions.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         edgeAttributePanel.add(lbGeneticNetwork, gridBagConstraints);
 
+        geneticNetworkPanel.setComboBoxToolTip("Choose a network which contains edges representing genetic interactions.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -218,12 +231,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeAttributePanel.add(geneticNetworkPanel, gridBagConstraints);
 
         lbGeneticScale.setText("Scale:");
+        lbGeneticScale.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         edgeAttributePanel.add(lbGeneticScale, gridBagConstraints);
 
+        genScalingMethodComboBox.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -256,6 +271,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         parameterErrorLabel.setText("");
         parameterErrorLabel.setForeground(Color.red);
         parameterErrorLabel.setFont(parameterErrorLabel.getFont().deriveFont(Font.BOLD));
+        parameterErrorLabel.setToolTipText("This issue must be addressed before a search can be performed.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -265,6 +281,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         //Button panel
         buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         helpButton.setText("Help");
+        helpButton.setToolTipText("Get help with PanGIA.");
         helpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 helpButtonActionPerformed(evt);
@@ -274,6 +291,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         buttonPanel.add(helpButton);
 
         aboutButton.setText("About");
+        aboutButton.setToolTipText("Learn more about PanGIA.");
         aboutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 aboutButtonActionPerformed(evt);
@@ -283,6 +301,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         buttonPanel.add(aboutButton);
 
         closeButton.setText("Close");
+        closeButton.setToolTipText("Close the PanGIA plugin.");
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
@@ -292,6 +311,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         buttonPanel.add(closeButton);
 
         searchButton.setText("Search");
+        searchButton.setToolTipText("Perform a PanGIA search using the specified options.");
         searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchButtonActionPerformed(evt);
@@ -353,14 +373,18 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         //ScorePanel
         scorePanel.setLayout(new java.awt.GridBagLayout());
 
-        scorePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Score Parameters"));
-        alphaLabel.setText("Alpha:");
+        scorePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search Parameters"));
+        scorePanel.setToolTipText("Specify parameters relating to the search procedure.");
+        
+        alphaLabel.setText("Alpha Exponent:");
+        alphaLabel.setToolTipText("The exponent for rewarding module size. (reward = multiplier * moduleSize^exponent)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
         scorePanel.add(alphaLabel, gridBagConstraints);
 
         alphaMultiplierLabel.setText("Alpha Multiplier:");
+        alphaMultiplierLabel.setToolTipText("The multiplier for rewarding module size. (reward = multiplier * moduleSize^exponent)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
@@ -368,6 +392,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         scorePanel.add(alphaMultiplierLabel, gridBagConstraints);
 
         degreeLabel.setText("Network filter degree (optional):");
+        degreeLabel.setToolTipText("Remove nodes in the physical network which are distant from any node in the genetic network. The maximum distance allowed is the filter degree. (ex. 1 means the physical node, or any of its neighbors, must be present in the genetic network)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -376,7 +401,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         alphaTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         alphaTextField.addKeyListener(textFieldKeyListener);
-
+        alphaTextField.setToolTipText(alphaLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
@@ -384,7 +409,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         alphaMultiplierTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         alphaMultiplierTextField.addKeyListener(textFieldKeyListener);
-
+        alphaMultiplierTextField.setToolTipText(alphaMultiplierLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -393,6 +418,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         degreeTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         degreeTextField.addKeyListener(textFieldKeyListener);
+        degreeTextField.setToolTipText(degreeLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -412,15 +438,17 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         //EdgeFilteringPanel
         edgeFilteringPanel.setLayout(new java.awt.GridBagLayout());
-
+        edgeFilteringPanel.setToolTipText("Specify options for filtering PanGIA results.");
         edgeFilteringPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Filtering"));
+        
         pValueThresholdLabel.setText("Percentile Threshold:");
+        pValueThresholdLabel.setToolTipText("The percentile above which edges should be included in the results.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
 
-        pValueThresholdTextField.setText("0.05");
+        pValueThresholdTextField.setToolTipText("The percentile above which edges should be included in the results.");
         pValueThresholdTextField.addKeyListener(textFieldKeyListener);
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         pValueThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 25));
@@ -434,6 +462,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.add(lbPlaceHolder2, gridBagConstraints);
 
         lbNumberOfSamples.setText("Number of samples:");
+        lbNumberOfSamples.setToolTipText("The number of random samples to be used in estimating edge score percentiles.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
@@ -441,6 +470,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.add(lbNumberOfSamples, gridBagConstraints);
 
         numberOfSamplesTextField.setText("10000");
+        numberOfSamplesTextField.setToolTipText("The number of random samples to be used in estimating edge score percentiles.");
         numberOfSamplesTextField.addKeyListener(textFieldKeyListener);
         numberOfSamplesTextField.setPreferredSize(new java.awt.Dimension(70, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -458,8 +488,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         //TrainingPanel
         trainingPanel.setLayout(new java.awt.GridBagLayout());
         trainingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Annotation"));
+        trainingPanel.setToolTipText("Specify options for module training and annotation.");
         
         trainingLabel.setText("Annotation training:");
+        trainingLabel.setToolTipText("Train the edge attribute scores against a reference annotation.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -469,6 +501,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         
         trainingCheckBox.setSelected(false);
+        trainingCheckBox.setToolTipText(trainingLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -485,6 +518,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         
         annotationLabel.setText("Annotation labeling:");
+        annotationLabel.setToolTipText("Label the modules using a reference annotation.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -493,6 +527,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel.add(annotationLabel, gridBagConstraints);
         
         annotationCheckBox.setSelected(false);
+        annotationCheckBox.setToolTipText(annotationLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -511,6 +546,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         
         lbComplexFile.setText("Annotation attribute:");
+        lbComplexFile.setToolTipText("Select the node attribute which provides annotation information.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -519,6 +555,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel.add(lbComplexFile, gridBagConstraints);
         
         annotationAttribComboBox.setEnabled(false);
+        annotationAttribComboBox.setToolTipText(lbComplexFile.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
@@ -529,6 +566,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         
         annotationThresholdLabel.setText("Labeling Threshold:");
+        annotationThresholdLabel.setToolTipText("Choose a threshold based on the Jaccard overlap score for annotating modules.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -537,6 +575,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel.add(annotationThresholdLabel, gridBagConstraints);
         
         annotationThresholdTextField.setText("0.8");
+        annotationThresholdTextField.setToolTipText("Choose a threshold based on the Jaccard overlap score for annotating modules.");
         annotationThresholdTextField.addKeyListener(textFieldKeyListener);
         annotationThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         annotationThresholdTextField.setEnabled(false);
@@ -944,10 +983,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		try
 		{
 			double p = Double.parseDouble(pValueThresholdTextField.getText());
-			if (p<0 || p>1)
+			if (p<0 || p>100)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorLabel.setText("<HTML>Error: Percentile threshold must<BR>fall in the range [0,1].</HTML>");
+				parameterErrorLabel.setText("<HTML>Error: Percentile threshold must<BR>fall in the range [0,100].</HTML>");
 				return;
 			}
 		

@@ -134,7 +134,7 @@ public class SearchTask implements Task {
 		if (needsToHalt) return;
 		
 		//Compute significance
-		final double pValueThreshold = parameters.getPValueThreshold();
+		final double pValueThreshold = 1-parameters.getPValueThreshold()/100;
 		final int numberOfSamples = parameters.getNumberOfSamples();
 		computeSig(results, geneticNetwork, pValueThreshold, numberOfSamples, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
 
@@ -277,7 +277,13 @@ public class SearchTask implements Task {
 		final Set<TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge>> deleteSet = new HashSet<TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge>>();
 		for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> edge : results.edgeIterator()) {
 			++currentEdgeNum;
-
+			
+			if (!edge.value().isType(InteractionType.Genetic))
+			{
+				deleteSet.add(edge);
+				continue;
+			}
+			
 			if (needsToHalt) return;
 			
 			// Find number of edges and sum of edge values in the hyperedge
@@ -290,7 +296,7 @@ public class SearchTask implements Task {
 				++numGeneticLinks;
 			}
             
-			// No need to sample
+			
 			double pVal;
 			if (numLinks2empiricalDist.containsKey(numGeneticLinks)) {
 				//How to save p-value?
@@ -309,13 +315,21 @@ public class SearchTask implements Task {
 				numLinks2empiricalDist.put(numGeneticLinks, temp);
 
 				// Where to save pval
-				pVal = temp.getEmpiricalValueFromSortedDist(sumOfGeneticValues);
+				pVal = temp.getEmpiricalValueFromSortedDist(sumOfGeneticValues);	
 			}
 
 			if (pVal < pValueThreshold)
 				edge.value().setLinkMerge((float)pVal);
 			else
 				deleteSet.add(edge);
+			
+			if (pVal<pValueThreshold)
+			{
+				System.out.println("WHOA!!!");
+				System.out.println(pVal);
+				System.out.println(numGeneticLinks);
+				System.out.println(numLinks2empiricalDist.get(numGeneticLinks));
+			}
 
 			final float permutationsFraction = (float)currentEdgeNum / TOTAL_NUM_EDGES;
 			final float percentCompleted = startProgressPercentage + (endProgressPercentage - startProgressPercentage) * permutationsFraction;
