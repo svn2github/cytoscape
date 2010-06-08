@@ -615,7 +615,9 @@ public class ActivePathsParameterPanel extends JPanel {
 	private class NameColumnCellRenderer extends DefaultTableCellRenderer {
 		private javax.swing.ImageIcon icon = new ImageIcon(getClass().getResource("/images/exclamationpoint.jpg"));
 		private javax.swing.ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/empty.jpg"));
-		private String TOOLTIP_EXCLAIMATION="XXXXXXXX";
+		private String TOOLTIP_EXCLAIMATION="<html>jActiveModules requires that any numeric node attribute<br>"+
+			"used as a search parameter have a value between 0 and 1.<br>"+
+			"This attribute will be automatically adjusted using the<br>specified scaling approach</html>";
 		private String TOOLTIP_NONE="";
 
 		public Component getTableCellRendererComponent(JTable table,
