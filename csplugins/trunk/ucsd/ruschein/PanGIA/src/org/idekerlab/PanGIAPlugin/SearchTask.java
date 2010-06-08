@@ -134,10 +134,19 @@ public class SearchTask implements Task {
 		if (needsToHalt) return;
 		
 		//Compute significance
-		final double pValueThreshold = 1-parameters.getPValueThreshold()/100;
-		final int numberOfSamples = parameters.getNumberOfSamples();
-		computeSig(results, geneticNetwork, pValueThreshold, numberOfSamples, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
-
+		final double pValueThreshold;
+		if (!Double.isNaN(parameters.getPValueThreshold()))
+		{
+			pValueThreshold = 1-parameters.getPValueThreshold()/100;
+			final int numberOfSamples = parameters.getNumberOfSamples();
+			computeSig(results, geneticNetwork, pValueThreshold, numberOfSamples, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
+		}else 
+		{
+			for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> edge : results.edgeIterator())
+				edge.value().setLinkMerge(.5f);
+			pValueThreshold = 1;
+		}
+		
 		if (needsToHalt) return;
 		
 		//Annotate complexes
@@ -323,14 +332,6 @@ public class SearchTask implements Task {
 			else
 				deleteSet.add(edge);
 			
-			if (pVal<pValueThreshold)
-			{
-				System.out.println("WHOA!!!");
-				System.out.println(pVal);
-				System.out.println(numGeneticLinks);
-				System.out.println(numLinks2empiricalDist.get(numGeneticLinks));
-			}
-
 			final float permutationsFraction = (float)currentEdgeNum / TOTAL_NUM_EDGES;
 			final float percentCompleted = startProgressPercentage + (endProgressPercentage - startProgressPercentage) * permutationsFraction;
 			taskMonitor.setPercentCompleted(Math.round(percentCompleted));

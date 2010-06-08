@@ -91,6 +91,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 		updateAttributeLists();
 		updateScalingMethods();
+		updateFilteringOptions(null);
 
 		// Set defaults
 		this.alphaTextField.setText(Double.toString(DEF_ALPHA));
@@ -214,6 +215,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        geneticEdgeAttribComboBox.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	updateFilteringOptions(evt);
+            }
+        });
+        
         edgeAttributePanel.add(geneticEdgeAttribComboBox, gridBagConstraints);
 
         lbGeneticNetwork.setText("Network:");
@@ -547,6 +554,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         lbComplexFile.setText("Annotation attribute:");
         lbComplexFile.setToolTipText("Select the node attribute which provides annotation information.");
+        lbComplexFile.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -567,6 +575,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         annotationThresholdLabel.setText("Labeling Threshold:");
         annotationThresholdLabel.setToolTipText("Choose a threshold based on the Jaccard overlap score for annotating modules.");
+        annotationThresholdLabel.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -672,8 +681,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	
 	private void annotationCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
 	{
-		annotationAttribComboBox.setEnabled(trainingCheckBox.isSelected() || annotationCheckBox.isSelected());
+		boolean needAttrib = trainingCheckBox.isSelected() || annotationCheckBox.isSelected();
+		
+		annotationAttribComboBox.setEnabled(needAttrib);
+		lbComplexFile.setEnabled(needAttrib);
+		
 		annotationThresholdTextField.setEnabled(annotationCheckBox.isSelected());
+		annotationThresholdLabel.setEnabled(annotationCheckBox.isSelected());
 		
 		updateSearchButtonState();
 	}
@@ -839,8 +853,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if (degree.length() > 0) parameters.setPhysicalNetworkFilterDegree(Integer.parseInt(degree));
 		else parameters.setPhysicalNetworkFilterDegree(-1);
 
-		final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
-		parameters.setPValueThreshold(pValueThreshold);
+		if (pValueThresholdTextField.isEnabled())
+		{
+			final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
+			parameters.setPValueThreshold(pValueThreshold);
+		}else parameters.setPValueThreshold(Double.NaN);
 
 		final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
 		parameters.setNumberOfSamples(numberOfSamples);
@@ -872,6 +889,25 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	public void setContainer(final Container container) {
 		this.container = container;
+	}
+	
+	public void updateFilteringOptions(java.awt.event.ActionEvent evt)
+	{
+		final String geneticAttrName = (String)geneticEdgeAttribComboBox.getSelectedItem();
+		
+		if (geneticAttrName==null || geneticAttrName.equals(DEFAULT_ATTRIBUTE))
+		{
+			lbNumberOfSamples.setEnabled(false);
+		    numberOfSamplesTextField.setEnabled(false);
+		    pValueThresholdLabel.setEnabled(false);
+		    pValueThresholdTextField.setEnabled(false);
+		}else
+		{
+			lbNumberOfSamples.setEnabled(true);
+		    numberOfSamplesTextField.setEnabled(true);
+		    pValueThresholdLabel.setEnabled(true);
+		    pValueThresholdTextField.setEnabled(true);
+		}
 	}
 
 	private void updateSearchButtonState() {
