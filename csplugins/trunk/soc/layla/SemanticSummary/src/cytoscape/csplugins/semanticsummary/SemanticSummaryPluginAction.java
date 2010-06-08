@@ -68,17 +68,21 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 	 */
 	public void actionPerformed(ActionEvent ae)
 	{
-		this.loadInputPanel();
+		boolean loaded = this.loadInputPanel();
 		this.loadCloudPanel();
 		
-		SemanticSummaryManager.getInstance().setupCurrentNetwork();
+		if (!loaded)
+			SemanticSummaryManager.getInstance().setupCurrentNetwork();
 	}
 	
 	/**
-	 * Loads the InputPanel or brings it into the forefront.
+	 * Loads the InputPanel or brings it into the forefront.  Returns false
+	 * if this is the first time that the input panel has been loaded.
 	 */
-	public void loadInputPanel()
+	public boolean loadInputPanel()
 	{
+		boolean loaded = false;
+		
 		int index = 0;
 		
 		CytoscapeDesktop desktop = Cytoscape.getDesktop();
@@ -110,7 +114,10 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 			//Move to front of display
 			index = cytoPanel.indexOfComponent(inputWindow);
 			cytoPanel.setSelectedIndex(index);
+			loaded = true;
 		}//end else
+		
+		return loaded;
 	}//end loadInputPanel() method
 	
 	

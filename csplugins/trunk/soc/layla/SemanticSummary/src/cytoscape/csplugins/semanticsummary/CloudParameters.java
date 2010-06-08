@@ -470,7 +470,15 @@ public class CloudParameters
 	
 	public void setSelectedNodes(Set<CyNode> nodes)
 	{
-		selectedNodes = nodes;
+		//Copy nodes individually, so that when Set updates, this set
+		//stays constant
+		Iterator<CyNode> iter = nodes.iterator();
+		while (iter.hasNext())
+		{
+			CyNode curNode = iter.next();
+			selectedNodes.add(curNode);
+		}
+		
 		selInitialized = false; //So we update when SelectedNodes change
 		ratiosInitialized = false; //need to update ratios
 	}

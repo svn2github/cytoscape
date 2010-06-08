@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -56,6 +57,9 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	private SemanticSummaryParameters curNetwork;
 	private CloudParameters curCloud;
 	
+	//Default Values for User Input
+	private Double defaultNetWeight;
+	
 	//CONSTRUCTOR
 	/**
 	 * This is a private constructor that is only called by the getInstance()
@@ -73,6 +77,8 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		//catch network selection/focus events
 		Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport()
 		.addPropertyChangeListener(this);
+		
+		defaultNetWeight = 1.0;
 	}
 	
 	//METHODS
@@ -167,7 +173,8 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	
 	
 	/**
-	 * Sets up the Manager with the current network.
+	 * Sets up the Manager with the current network.  Clears cloud and
+	 * sets user input panel to defaults.
 	 */
 	public void setupCurrentNetwork()
 	{
@@ -188,6 +195,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		}
 		
 		getInputWindow().setNetworkList(curNetwork);
+		getInputWindow().setUserDefaults();
 		getCloudWindow().clearCloud();
 	}
 	/**
@@ -274,6 +282,11 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	public void setCurCloud(CloudParameters params)
 	{
 		curCloud = params;
+	}
+	
+	public Double getDefaultNetWeight()
+	{
+		return defaultNetWeight;
 	}
 	
 	

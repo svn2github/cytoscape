@@ -113,6 +113,7 @@ public class CloudDisplayPanel extends JPanel
 			tagCloudFlowPanel.add(curLabel);
 		}
 		tagCloudFlowPanel.revalidate();
+		this.updateUI();
 	}
 	
 
