@@ -3,6 +3,8 @@ package org.idekerlab.PanGIAPlugin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.help.HelpSet;
+import java.net.URL;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -11,6 +13,7 @@ import org.idekerlab.PanGIAPlugin.ui.SearchPropertyPanel;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.view.CyHelpBroker;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
@@ -35,13 +38,29 @@ public class PanGIAPlugin extends CytoscapePlugin {
 
 	public PanGIAPlugin() {
 		this.vsObserver = new VisualStyleObserver();
-		
+		addHelp();
 		final JMenuItem menuItem = new JMenuItem(PLUGIN_NAME);
 		menuItem.addActionListener(new PluginAction());
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
 				"Plugins.Module Finders...").add(menuItem);
 	}
-	
+
+	/**
+	 *  Hook plugin help into the Cytoscape main help system:
+	 */
+	private void addHelp() {
+		final String HELP_SET_NAME = "/help/jhelpset";
+		final ClassLoader classLoader = PanGIAPlugin.class.getClassLoader();
+		URL helpSetURL;
+		try {
+			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
+			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
+			if (!CyHelpBroker.addHelpSet(newHelpSet))
+				System.err.println("PanGIA: Failed to add help set!");
+		} catch (final Exception e) {
+			System.err.println("PanGIA: Could not find help set: \"" + HELP_SET_NAME + "!");
+		}
+	}
 
 	class PluginAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {

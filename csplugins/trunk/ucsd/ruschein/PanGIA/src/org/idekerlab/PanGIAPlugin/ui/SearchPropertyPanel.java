@@ -23,6 +23,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.view.CyHelpBroker;
 import cytoscape.view.cytopanels.CytoPanel;
 import org.idekerlab.PanGIAPlugin.ScalingMethodX;
 import org.idekerlab.PanGIAPlugin.utilities.CyCollapsiblePanel;
@@ -288,12 +289,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         //Button panel
         buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         helpButton.setText("Help");
-        helpButton.setToolTipText("Get help with PanGIA.");
-        helpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                helpButtonActionPerformed(evt);
-            }
-        });
+        helpButton.setToolTipText("Get help for PanGIA.");
+	CyHelpBroker.getHelpBroker().enableHelpOnButton(helpButton, "Topic", null);
 
         buttonPanel.add(helpButton);
 
@@ -629,10 +626,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		jTaskConfig.setModal(true);
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		TaskManager.executeTask(new SearchTask(parameters), jTaskConfig);
-	}
-
-	private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
 	}
 
 
