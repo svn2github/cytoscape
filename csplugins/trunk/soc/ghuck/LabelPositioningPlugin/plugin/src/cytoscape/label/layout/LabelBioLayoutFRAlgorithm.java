@@ -2,9 +2,9 @@
 
 package cytoscape.layout.label;
 
-import csplugins.layout.LayoutEdge;
-import csplugins.layout.LayoutNode;
-import csplugins.layout.LayoutPartition;
+// import csplugins.layout.LayoutEdge;
+// import csplugins.layout.LayoutNode;
+// import csplugins.layout.LayoutPartition;
 import csplugins.layout.Profile;
 
 import cytoscape.Cytoscape;
@@ -27,23 +27,6 @@ import java.util.*;
 import java.lang.Thread;
 
 
-// TODO: Change this Javadoc description 
-
-/**
- * Lays out the nodes in a graph using a modification of the Fruchterman-Rheingold
- * algorithm.
- * <p>
- * The basic layout algorithm follows from the paper:
- * <em>"Graph Drawing by Force-Directed Placement"</em>
- * by Thomas M.J. Fruchterman and Edward M. Reingold.
- * <p>
- * The algorithm has been modified to take into account edge weights, which
- * allows for its use for laying out similarity networks, which are useful
- * for biological problems.
- *
- * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
- * @version 0.9
- */
 public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
 
@@ -207,7 +190,6 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	logger.info("Laying out partition " + partition.getPartitionNumber() + " which has "+ partition.nodeCount()
 		    + " nodes and " + partition.edgeCount() + " edges: ");
 
-
 	// Reset the label position of all nodes if necessary 
 	if (resetPosition) {
 	    resetNodeLabelPosition(nodeAtts, partition.getNodeList());
@@ -221,11 +203,6 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	    defaultPercentage = 0.0;
 	}
 
-
-
-
-
-
 	// Ads all network nodes to list
 	allLayoutNodesArray.addAll(partition.getNodeList());
 	
@@ -235,20 +212,20 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// --- Create LayoutNodes and LayoutEdges for each node label ---
 	for (LayoutNode ln : allLayoutNodesArray) {
 	    
-	    // Create a new node
+	    // Create a new node (with same NodeView and Index that it's parent node)
 	    labelNode = new LayoutNode(ln.getNodeView(), ln.getIndex());
 	    
 	    // Set labelNode's location to parent node's current label position
 	    nodeAtts = Cytoscape.getNodeAttributes();
 	    String labelPosition = (String) nodeAtts.getAttribute(ln.getNode().
 								  getIdentifier(), "node.labelPosition");
-	    
+	
 	    if (labelPosition == null) {
 		lp = new LabelPosition();
 	    } else {
 		lp = LabelPosition.parse(labelPosition);
 	    }
-	    
+     
 	    labelNode.setX(lp.getOffsetX() + ln.getNodeView().getXPosition());
 	    labelNode.setY(lp.getOffsetY() + ln.getNodeView().getYPosition());
 			

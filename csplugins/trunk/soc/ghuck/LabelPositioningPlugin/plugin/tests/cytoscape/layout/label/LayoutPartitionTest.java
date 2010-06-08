@@ -1,4 +1,3 @@
-
 package cytoscape.layout.label;
 
 import static org.junit.Assert.*;
