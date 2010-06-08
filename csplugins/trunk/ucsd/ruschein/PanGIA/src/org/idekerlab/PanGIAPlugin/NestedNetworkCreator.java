@@ -295,16 +295,8 @@ public class NestedNetworkCreator {
 		
 		
 		final CyNode newNode = Cytoscape.getCyNode(nodeName, true); // create=true
-		moduleToCyNodeMap.put(module, newNode);
 		
-		/*
-		// How to make newNode a subnode of overviewNetwork??
-		CyNode newNode = Cytoscape.getCyNode(nodeName);
-		if (newNode==null)
-		{
-			Cytoscape.createNetwork(nodeName, overviewNetwork, false);
-			newNode = Cytoscape.getCyNode(nodeName,true);
-		}*/
+		moduleToCyNodeMap.put(module, newNode);
 		
 		overviewNetwork.addNode(newNode);
 		
@@ -333,7 +325,7 @@ public class NestedNetworkCreator {
 			return null;
 
 		// First, create network without view.
-		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName, false);
+		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName, overviewNetwork, false);
 		
 		networkAttr.setAttribute(nestedNetwork.getIdentifier(), 
 				VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
