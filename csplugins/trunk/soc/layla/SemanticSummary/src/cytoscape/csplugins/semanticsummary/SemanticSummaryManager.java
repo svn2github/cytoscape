@@ -213,6 +213,15 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	}
 	
 	/**
+	 * Returns the hashmap of all the SemanticSummaryParameters.
+	 * @return HashMap of all the SemanticSummaryParameters for all networks.
+	 */
+	public HashMap<String, SemanticSummaryParameters> getCyNetworkList()
+	{
+		return cyNetworkList;
+	}
+	
+	/**
 	 * Returns a reference to the SemanticSummaryInputPanel (WEST)
 	 * @return SemanticSummaryInputPanel
 	 */

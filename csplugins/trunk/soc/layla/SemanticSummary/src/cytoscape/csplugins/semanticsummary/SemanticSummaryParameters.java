@@ -70,6 +70,42 @@ public class SemanticSummaryParameters
 		this.nodeList = new ArrayList<CyNode>();
 	}
 	
+	/**
+	 * Constructor to create SemanticSummaryParameters from a cytoscape property file
+	 * while restoring a session.  Property file is created when the session is saved.
+	 * @param propFile - the name of the property file as a String
+	 */
+	public SemanticSummaryParameters(String propFile)
+	{
+		this();
+		
+		//Create a hashmap to contain all the values in the rpt file
+		HashMap<String, String> props = new HashMap<String,String>();
+		
+		String[] lines = propFile.split("\n");
+		
+		for (int i = 0; i < lines.length; i++)
+		{
+			String line = lines[i];
+			String[] tokens = line.split("\t");
+			//there should be two values in each line
+			if(tokens.length == 2)
+				props.put(tokens[0],tokens[1]);
+		}
+		
+		this.networkName = props.get("NetworkName");
+		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
+		this.cloudCount = new Integer(props.get("CloudCount"));
+		
+		String[] nodes = props.get("NodeList").split(",");
+		for (int i = 0; i < nodes.length; i++)
+		{
+			String nodeName = nodes[i];
+			//TODO - Finish
+		}
+		
+	}
+	
 	
 	//METHODS
 	
@@ -152,6 +188,48 @@ public class SemanticSummaryParameters
 		cloudCount++;
 		
 		return name;
+	}
+	
+	/**
+	 * String representation of SemanticSummaryParameters.
+	 * It is used to store the persistent Attributes as a property file.
+	 * @return - String representation of this object
+	 */
+	public String toString()
+	{
+		StringBuffer paramVariables = new StringBuffer();
+		
+		paramVariables.append("NetworkName\t" + networkName + "\n");
+		paramVariables.append("NetworkNumNodes\t" + networkNumNodes + "\n");
+		paramVariables.append("CloudCount\t" + cloudCount + "\n");
+		
+		//List of Nodes as a comma delimeted list
+		StringBuffer output = new StringBuffer();
+		for (int i = 0; i < nodeList.size(); i++)
+		{
+			output.append(nodeList.get(i).toString() + ",");
+		}
+		
+		paramVariables.append("NodeList\t" + output.toString() + "\n");
+		
+		return paramVariables.toString();
+	}
+	
+	/**
+	 * Goes through Hashmap and prints all of the objects it contains.
+	 * @param map - any type of hashmap
+	 * @return string representation of the hash with "key tab object newline" representation
+	 */
+	public String printHashMap(HashMap map)
+	{
+		StringBuffer result = new StringBuffer();
+		
+		for (Iterator iter = map.keySet().iterator(); iter.hasNext(); )
+		{
+			Object key = iter.next();
+			result.append(key.toString() + "\t" + map.get(key).toString() + "\n");
+		}
+		return result.toString();
 	}
 	
 

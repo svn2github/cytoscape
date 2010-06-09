@@ -93,14 +93,39 @@ public class CloudParameters
 	}
 	
 	/**
-	 * Constructor that includes the name for the cloud.
-	 * @param String - name for the cloud.
+	 * Constructor to create CloudParameters from a cytoscape property file
+	 * while restoring a session.  Property file is created when the session is saved.
+	 * @param propFile - the name of the property file as a String
 	 */
-	public CloudParameters(String name)
+	public CloudParameters(String propFile)
 	{
 		this();
-		this.cloudName = name;
+		
+		//Create a hashmap to contain all the values in the rpt file
+		HashMap<String, String> props = new HashMap<String,String>();
+		
+		String[] lines = propFile.split("\n");
+		
+		for (int i = 0; i < lines.length; i++)
+		{
+			String line = lines[i];
+			String[] tokens = line.split("\t");
+			//there should be two values in each line
+			if(tokens.length == 2)
+				props.put(tokens[0],tokens[1]);
+		}
+		
+		this.cloudName = props.get("CloudName");
+		this.networkName = props.get("NetworkName");
+		this.attributeName = props.get("AttributeName");
+		this.selectedNumNodes = new Integer(props.get("SelectedNumNodes"));
+		this.netWeightFactor = new Double(props.get("NetWeightFactor"));
+		this.countInitialized = Boolean.parseBoolean(props.get("CountInitialized"));
+		this.selInitialized = Boolean.parseBoolean(props.get("SelInitialized"));
+		
+		//TODO - deal with selectedNodes List
 	}
+		
 	
 	//METHODS
 	
@@ -418,6 +443,35 @@ public class CloudParameters
 		}
 	}
 	
+	/**
+	 * String representation of CloudParameters.
+	 * It is used to store the persistent Attributes as a property file.
+	 * @return - String representation of this object
+	 */
+	public String toString()
+	{
+		StringBuffer paramVariables = new StringBuffer();
+		
+		paramVariables.append("CloudName\t" + cloudName + "\n");
+		paramVariables.append("NetworkName\t" + networkName + "\n");
+		paramVariables.append("AttributeName\t" + attributeName + "\n");
+		
+		//List of Nodes as a comma delimited list
+		StringBuffer output = new StringBuffer();
+		for (Iterator iter = selectedNodes.iterator(); iter.hasNext(); )
+		{
+			Object node = iter.next();
+			output.append(node.toString() + ",");
+		}
+		paramVariables.append("SelectedNodes\t" + output.toString() + "\n");
+		
+		paramVariables.append("SelectedNumNodes\t" + selectedNumNodes + "\n");
+		paramVariables.append("NetWeightFactor\t" + netWeightFactor + "\n");
+		paramVariables.append("CountInitialized\t" + countInitialized + "\n");
+		paramVariables.append("SelInitialized\t" + selInitialized + "\n");
+		
+		return paramVariables.toString();
+	}
 	
 	//Getters and Setters
 	public String getCloudName()
