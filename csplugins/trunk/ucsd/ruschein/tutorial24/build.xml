@@ -2,14 +2,14 @@
 <!-- Plugin build file     -->
 <!-- =================================================================== -->
 
-<project name="tutorial23" default="jar" basedir=".">
+<project name="tutorial24" default="jar" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
-    <property name="plugin_name" value="tutorial23"/>
-    <property name="plugin_class" value="cytoscape.tutorial23.Tutorial23"/>  	  	
+    <property name="plugin_name" value="tutorial24"/>
+    <property name="plugin_class" value="cytoscape.tutorial24.Tutorial24"/>  	  	
     <property name="project.jar" value="${plugin_name}.jar"/>  	
     <property name="version" value="1.0"/>
     <property name="year" value="2010"/>
@@ -25,7 +25,7 @@
     <property name="lib.dir" value="${root.dir}/lib"/>
 
     <!-- Define the Cytoscape directories -->
-    <property name="cytoscape.dir" value="../../../../eqn_attribs"/>
+    <property name="cytoscape.dir" value="../../../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 
@@ -82,7 +82,7 @@
 
   <!-- If plugin.prop exist, copy it to build directory  -->	
   <target name="copy_plugin_prop" if="plugin.prop.present">
-		<copy todir="${build.dir}/cytoscape/tutorial23" file="${root.dir}/plugin.props"/>	
+		<copy todir="${build.dir}/cytoscape/tutorial24" file="${root.dir}/plugin.props"/>	
   </target>
 
   <!-- If there are any image files, copy them to build directory  -->	
