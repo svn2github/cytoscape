@@ -69,9 +69,22 @@
   </target>
 
   <!-- =================================================================== -->
+  <!-- Copy the help-related files                                         -->
+  <!-- =================================================================== -->
+  <target name="help" 
+	  unless="helpIsUpToDate">
+    <mkdir dir="${build.dir}/help"/>
+    <!-- Copy the JavaHelp system files and html source over to build area -->
+    <echo>Copying JavaHelp files: helpset, html files, images</echo>
+    <copy todir="${build.dir}/help">
+      <fileset dir="${basedir}/help" />
+    </copy>
+  </target>
+
+  <!-- =================================================================== -->
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile, copy_plugin_prop, copy_images"  >
+  <target name="jar" depends="compile, copy_plugin_prop, copy_images, help"  >
   	
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
