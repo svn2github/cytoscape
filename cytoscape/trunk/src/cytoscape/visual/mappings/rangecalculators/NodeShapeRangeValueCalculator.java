@@ -14,7 +14,7 @@ public class NodeShapeRangeValueCalculator implements
 		parser = new NodeShapeParser();
 	}
 
-	@Override
+	
 	public NodeShape getRange(Object attrValue) {
 		if (attrValue instanceof String) {
 			NodeShape obj = parser.parseStringValue((String) attrValue);
@@ -24,7 +24,7 @@ public class NodeShapeRangeValueCalculator implements
 		return null;
 	}
 
-	@Override
+
 	public boolean isCompatible(Class<?> type) {
 		if(type.isAssignableFrom(NodeShape.class))
 			return true;

@@ -14,7 +14,7 @@ public class CustomGraphicsRangeValueCalculator implements
 		parser = new GraphicsParser();
 	}
 
-	@Override
+
 	public CyCustomGraphics<?> getRange(Object attrValue) {
 		if (attrValue instanceof String) {
 			CyCustomGraphics<?> obj = parser.parseStringValue((String) attrValue);
@@ -24,7 +24,7 @@ public class CustomGraphicsRangeValueCalculator implements
 		return null;
 	}
 
-	@Override
+	
 	public boolean isCompatible(Class<?> type) {
 		if(CyCustomGraphics.class.isAssignableFrom(type))
 			return true;

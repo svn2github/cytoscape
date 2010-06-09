@@ -15,7 +15,7 @@ public class TexturePaintFactory implements PaintFactory {
 		this.img = img;
 	}
 
-	@Override
+
 	public Paint getPaint(Rectangle2D bound) {
 		return new TexturePaint(img, bound);
 	}

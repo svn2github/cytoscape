@@ -177,13 +177,13 @@ public class TestLabel implements Label {
 		return justify;
 	}
 
-	@Override
+
 	public ObjectPosition getPosition() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public void setPosition(ObjectPosition arg0) {
 		// TODO Auto-generated method stub
 		

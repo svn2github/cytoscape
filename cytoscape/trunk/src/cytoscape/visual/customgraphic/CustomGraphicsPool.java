@@ -195,7 +195,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		return this.imageHomeDirectory;
 	}
 
-	@Override
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		// Persist images
 		System.out.println("Saving images...");

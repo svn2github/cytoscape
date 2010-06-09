@@ -17,7 +17,7 @@ public class ColorRangeValueCalculator implements RangeValueCalculator<Paint> {
 		parser = new ColorParser();
 	}
 	
-	@Override
+
 	public Color getRange(Object attrValue) {
 
 		// OK, try returning the attrValue itself
@@ -31,7 +31,7 @@ public class ColorRangeValueCalculator implements RangeValueCalculator<Paint> {
 	}
 
 
-	@Override
+	
 	public boolean isCompatible(Class<?> type) {
 		if(Paint.class.isAssignableFrom(type))
 			return true;

@@ -15,19 +15,19 @@ public class CustomGraphicsPropertyImpl<T> implements
 	}
 	
 	
-	@Override
+
 	public T getDefaultValue() {
 		return defaultValue;
 	}
 
 	
-	@Override
+
 	public T getValue() {
 		return value;
 	}
 
 	
-	@Override
+
 	public void setValue(Object value) {
 		if(this.value.getClass().isAssignableFrom(value.getClass()) == false)
 			throw new IllegalArgumentException("The value type is not compatible.");

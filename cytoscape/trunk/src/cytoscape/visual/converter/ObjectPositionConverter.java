@@ -4,7 +4,7 @@ import giny.view.ObjectPosition;
 
 public class ObjectPositionConverter implements ValueToStringConverter {
 
-	@Override
+
 	public String toString(Object value) {
 		if(value instanceof ObjectPosition)
 			return ((ObjectPosition) value).shortString();
@@ -12,7 +12,7 @@ public class ObjectPositionConverter implements ValueToStringConverter {
 			return "";
 	}
 
-	@Override
+	
 	public Class<?> getType() {
 		return ObjectPosition.class;
 	}

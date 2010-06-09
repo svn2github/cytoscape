@@ -173,7 +173,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 
 	}
 
-	@Override
+
 	public void stateChanged(ChangeEvent e) {
 		System.out.println("###### Change Event: " + e);
 	}

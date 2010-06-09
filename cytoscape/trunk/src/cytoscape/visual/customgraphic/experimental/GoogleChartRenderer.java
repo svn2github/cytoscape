@@ -22,7 +22,7 @@ public class GoogleChartRenderer<T extends Collection<?>> implements CustomGraph
 	}
 	
 	
-	@Override
+
 	public CyCustomGraphics<?> create(T value) {
 		for(Object v: value) {
 			

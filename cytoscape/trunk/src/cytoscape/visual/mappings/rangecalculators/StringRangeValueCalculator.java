@@ -6,7 +6,7 @@ import cytoscape.visual.mappings.RangeValueCalculator;
 
 public class StringRangeValueCalculator implements RangeValueCalculator<String> {
 
-	@Override
+	
 	public String getRange(Object attrValue) {
 		if (attrValue instanceof List<?>) {
 			final List<?> list = (List<?>) attrValue;
@@ -32,7 +32,7 @@ public class StringRangeValueCalculator implements RangeValueCalculator<String> 
 			return attrValue.toString();
 	}
 
-	@Override
+
 	public boolean isCompatible(Class<?> type) {
 		
 		System.out.println(type + " is assignable from " + String.class.toString());

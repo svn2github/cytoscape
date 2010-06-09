@@ -310,7 +310,7 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 
 
 	// End of variables declaration
-	@Override
+
 	public void valueChanged(ListSelectionEvent e) {
 		// TODO Auto-generated method stub
 

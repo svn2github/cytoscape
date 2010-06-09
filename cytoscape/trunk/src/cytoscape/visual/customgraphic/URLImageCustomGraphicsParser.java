@@ -24,7 +24,7 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 	 * </ul>
 	 * 
 	 */
-	@Override
+
 	public CyCustomGraphics<?> getInstance(String entryStr) {
 		// Check this is URL or not
 		if(entryStr == null) return null;
@@ -57,13 +57,13 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 		return true;
 	}
 
-	@Override
+
 	public String getVizMapPropsString(CyCustomGraphics<?> customGraphics) {
 
 		return customGraphics.toString();
 	}
 
-	@Override
+	
 	public Class<? extends CyCustomGraphics<?>> getTargetClass() {
 		return TARGET_CLASS;
 	}

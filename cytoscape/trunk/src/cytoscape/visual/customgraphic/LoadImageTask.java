@@ -14,7 +14,7 @@ public class LoadImageTask implements Callable<BufferedImage> {
 		this.imageURL = imageURL;
 	}
 
-	@Override
+
 	public BufferedImage call() throws Exception {
 		if (imageURL == null)
 			throw new IllegalStateException("URL string cannot be null.");

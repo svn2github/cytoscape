@@ -33,38 +33,38 @@ public abstract class AbstractMapping<V> extends SubjectBase implements
 	}
 	
 	
-	@Override
+	
 	abstract public void applyProperties(Properties props, String baseKey,
 			ValueParser<V> parser);
 	
 	
-	@Override
+	
 	abstract public Properties getProperties(String baseKey);
 
 	
-	@Override
+	
 	public abstract V calculateRangeValue(Map<String, Object> attrBundle);
 
 	
-	@Override
+	
 	public Class<?>[] getAcceptedDataClasses() {
 		return this.acceptedClasses;
 	}
 
 	
-	@Override
+
 	public String getControllingAttributeName() {
 		return this.controllingAttrName;
 	}
 	
 	
-	@Override
+	
 	public Class<V> getRangeClass() {
 		return this.rangeClass;
 	}
 
 
-	@Override
+	
 	public void setControllingAttributeName(String controllingAttrName) {
 		this.controllingAttrName = controllingAttrName;
 	}
@@ -73,7 +73,7 @@ public abstract class AbstractMapping<V> extends SubjectBase implements
 	abstract public Object clone();
 	
 	
-	@Override
+	
 	public JPanel getLegend(VisualPropertyType type) {
 		return getDummyPanel();
 	}

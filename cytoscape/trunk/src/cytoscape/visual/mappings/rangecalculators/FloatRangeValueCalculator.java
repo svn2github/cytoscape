@@ -12,7 +12,7 @@ public class FloatRangeValueCalculator implements RangeValueCalculator<Float> {
 		parser = new FloatParser();
 	}
 
-	@Override
+	
 	public Float getRange(Object attrValue) {
 		if (attrValue instanceof Number) {
 			final Number num = (Number) attrValue;
@@ -23,7 +23,7 @@ public class FloatRangeValueCalculator implements RangeValueCalculator<Float> {
 		return null;
 	}
 
-	@Override
+	
 	public boolean isCompatible(Class<?> type) {
 		if (type.isAssignableFrom(Float.class))
 			return true;

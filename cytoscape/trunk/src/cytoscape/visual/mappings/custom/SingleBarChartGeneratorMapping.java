@@ -50,7 +50,7 @@ public class SingleBarChartGeneratorMapping extends
 	}
 	
 
-	@Override
+
 	public Component getMappingEditor() {
 		return null;
 	}

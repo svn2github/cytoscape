@@ -22,7 +22,7 @@ public class ColorPaintFactory implements PaintFactory {
 		return this.color;
 	}
 	
-	@Override
+
 	public Paint getPaint(Rectangle2D arg0) {
 		return color;
 	}

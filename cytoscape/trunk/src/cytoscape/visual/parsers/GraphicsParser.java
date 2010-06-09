@@ -26,7 +26,7 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 		// TODO: dynamically add parsers using listener.
 	}
 
-	@Override
+
 	public CyCustomGraphics<?> parseStringValue(String value) {
 		return parse(value);
 	}

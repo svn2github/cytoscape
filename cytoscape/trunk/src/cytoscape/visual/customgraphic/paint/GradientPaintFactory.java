@@ -17,7 +17,7 @@ public class GradientPaintFactory implements PaintFactory {
 		this.c2 = c2;
 	}
 	
-	@Override
+
 	public Paint getPaint(Rectangle2D bound) {
 		return new GradientPaint((float)bound.getWidth()/2, 0, c2,
 				(float)bound.getWidth()/2, (float)bound.getHeight()/2, c1);

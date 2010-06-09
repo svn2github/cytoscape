@@ -4,7 +4,7 @@ import java.awt.Font;
 
 public class FontConverter implements ValueToStringConverter {
 
-	@Override
+	
 	public String toString(Object value) {
 		if (value instanceof Font)
 			return getFontStringValue((Font) value);
@@ -12,7 +12,7 @@ public class FontConverter implements ValueToStringConverter {
 			return "";
 	}
 
-	@Override
+
 	public Class<?> getType() {
 		return Font.class;
 	}

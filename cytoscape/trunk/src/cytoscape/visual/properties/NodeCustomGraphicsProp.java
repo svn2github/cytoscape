@@ -257,7 +257,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty implements Ch
 		return this.cgReferenceMap.get(dv);
 	}
 
-	@Override
+
 	public void stateChanged(ChangeEvent e) {
 		System.out.println("*******  Got VS Change! " + e.getSource());
 		for(DNodeView dv: this.cgReferenceMap.keySet()) {
@@ -267,7 +267,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty implements Ch
 		this.cgReferenceMap = new HashMap<DNodeView, Set<CustomGraphic>>();
 	}
 
-	@Override
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		// Add lister AFTER Cytoscape initialization.
 		Cytoscape.getVisualMappingManager().addChangeListener(this);

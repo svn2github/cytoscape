@@ -16,7 +16,7 @@ public class RangeValueCalculatorFactoryImpl implements
 		calcs = new HashSet<RangeValueCalculator<?>>();
 	}
 	
-	@Override
+	
 	public <T extends RangeValueCalculator<?>> T getRangeValueCalculator(
 			Class<?> type) {
 		
@@ -37,7 +37,7 @@ public class RangeValueCalculatorFactoryImpl implements
 		return (T) calc;
 	}
 
-	@Override
+
 	public void registerRVC(RangeValueCalculator<?> rvc) {
 		calcs.add(rvc);
 	}

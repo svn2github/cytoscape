@@ -18,7 +18,7 @@ public class SaveImageTask implements Callable<String>{
 		this.image = image;
 	}
 
-	@Override
+
 	public String call() throws Exception {
 		
 		if (!fileName.endsWith(".png"))

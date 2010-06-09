@@ -48,7 +48,7 @@ public class CustomGraphicsCellRenderer extends JPanel implements
 		panelMap = new HashMap<CyCustomGraphics<?>, Component>();
 	}
 
-	@Override
+
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 

@@ -11,7 +11,7 @@ public class SimpleVectorBarBuilder implements CustomGraphicsBuilder {
 		this.targetPropName = targetPropName;
 	}
 
-	@Override
+
 	public CyCustomGraphics<?> getGraphics(Object data) {
 		final CyCustomGraphics<?> graphics = new GradientRectangleCustomGraphics();
 		graphics.getProps().get(targetPropName).setValue(data);

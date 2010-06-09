@@ -14,7 +14,7 @@ public class ObjectPositionParser implements ValueParser<ObjectPosition> {
 	private static final Pattern P = Pattern
 			.compile("^([NSEWC]{1,2}+),([NSEWC]{1,2}+),([clr]{1}+),(-?\\d+(.\\d+)?),(-?\\d+(.\\d+)?)$");
 
-	@Override
+
 	public ObjectPosition parseStringValue(String value) {
 		return parse(value);
 	}

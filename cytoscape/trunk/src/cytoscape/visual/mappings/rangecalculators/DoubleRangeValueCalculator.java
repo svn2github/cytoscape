@@ -12,7 +12,7 @@ public class DoubleRangeValueCalculator implements RangeValueCalculator<Double> 
 		parser = new DoubleParser();
 	}
 
-	@Override
+	
 	public Double getRange(Object attrValue) {
 		if (attrValue instanceof Number) {
 			final Number num = (Number) attrValue;
@@ -23,7 +23,7 @@ public class DoubleRangeValueCalculator implements RangeValueCalculator<Double> 
 		return null;
 	}
 
-	@Override
+
 	public boolean isCompatible(Class<?> type) {
 		if (type.isAssignableFrom(Double.class))
 			return true;

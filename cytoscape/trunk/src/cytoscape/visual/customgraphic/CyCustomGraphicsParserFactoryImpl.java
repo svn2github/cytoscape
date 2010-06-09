@@ -12,7 +12,7 @@ public class CyCustomGraphicsParserFactoryImpl implements
 		parserMap = new HashMap<Class<? extends CyCustomGraphics<?>>, CyCustomGraphicsParser>();
 	}
 	
-	@Override
+
 	public CyCustomGraphicsParser getParser(String customGraphicsClassName) {
 		if(customGraphicsClassName == null || customGraphicsClassName.trim().length() == 0)
 			return null;
@@ -31,7 +31,7 @@ public class CyCustomGraphicsParserFactoryImpl implements
 		return parserMap.get(cgClass);
 	}
 
-	@Override
+
 	public void registerParser(Class<? extends CyCustomGraphics<?>> cgClass,
 			CyCustomGraphicsParser parser) {
 		

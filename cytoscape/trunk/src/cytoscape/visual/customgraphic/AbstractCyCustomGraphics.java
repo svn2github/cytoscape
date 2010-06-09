@@ -37,37 +37,37 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 		this.position = new ObjectPositionImpl();
 	}
 	
-	@Override
+	
 	public Collection<CustomGraphic> getCustomGraphics() {
 		return cgList;
 	}
 
-	@Override
+	
 	public String getDisplayName() {
 		return displayName;
 	}
 	
-	@Override
+	
 	public void setDisplayName(final String displayName) {
 		this.displayName = displayName;
 	}
 
-	@Override
+	
 	public Image getImage() {
 		return null;
 	}
 
-	@Override
+
 	public Image resizeImage(int width, int height) {
 		return null;
 	}
 
-	@Override
+	
 	public Collection<String> getTags() {
 		return tags;
 	}
 	
-	@Override
+	
 	public Map<String, CustomGraphicsProperty<?>> getProps() {
 		return this.props;
 	}
@@ -76,12 +76,12 @@ public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<Custo
 		// By default, do nothing.
 	}
 
-	@Override
+
 	public ObjectPosition getPosition() {
 		return position;
 	}
 
-	@Override
+
 	public void setPosition(final ObjectPosition position) {
 		this.position = position;
 	}
