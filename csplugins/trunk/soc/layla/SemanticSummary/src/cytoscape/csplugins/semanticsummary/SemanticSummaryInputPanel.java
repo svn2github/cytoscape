@@ -150,6 +150,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		cloudList.setSelectedIndex(0);
 		cloudList.setVisibleRowCount(10);
 		cloudList.setFixedCellHeight(DEF_ROW_HEIGHT);
+		cloudList.addMouseListener(new CloudListMouseListener());
 		
 		//Setup Selection Listener
 		ListSelectionModel listSelectionModel = cloudList.getSelectionModel();
@@ -449,5 +450,10 @@ public class SemanticSummaryInputPanel extends JPanel
 	public DefaultListModel getListValues()
 	{
 		return listValues;
+	}
+	
+	public JList getCloudList()
+	{
+		return cloudList;
 	}
 }

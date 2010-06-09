@@ -23,8 +23,16 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JLabel;
+
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 /**
  * The CloudWordInfo class defines information pertaining to a particular
@@ -79,6 +87,29 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 		label.setFont(new Font("sansserif",Font.BOLD, this.getFontSize()));
 		
 		//TODO - add listener stuff here
+		label.addMouseListener(new MouseAdapter() 
+		{
+			public void mouseClicked(MouseEvent me)
+			{
+				JLabel clickedLabel = (JLabel)me.getComponent();
+				String word = clickedLabel.getText();
+				
+				CloudParameters cloudParams = SemanticSummaryManager.getInstance().
+				getCurCloud();
+				
+				//Get all nodes containing this word
+				List<CyNode> nodes = cloudParams.getStringNodeMapping().get(word);
+				
+				CyNetwork network = Cytoscape.getCurrentNetwork();
+				network.unselectAllNodes();
+				network.unselectAllEdges();
+				network.setSelectedNodeState(nodes, true);
+				
+				//Redraw the graph with selected nodes
+				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				view.redrawGraph(false, true);
+			}
+		});
 		
 		return label;
 	}
