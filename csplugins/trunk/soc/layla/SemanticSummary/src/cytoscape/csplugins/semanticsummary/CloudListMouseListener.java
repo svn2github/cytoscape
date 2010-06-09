@@ -150,7 +150,6 @@ public class CloudListMouseListener extends MouseAdapter
 			}//end while true loop
 			
 			//Set new cloud title stuffs here
-			//TODO
 			CloudParameters cloudParams = SemanticSummaryManager.getInstance()
 			.getCurCloud();
 			

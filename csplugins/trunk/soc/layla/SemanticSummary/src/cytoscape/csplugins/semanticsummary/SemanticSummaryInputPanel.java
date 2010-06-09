@@ -350,6 +350,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		//Add actions to buttons
 		createButton.addActionListener(new CreateCloudAction());
 		deleteButton.addActionListener(new DeleteCloudAction());
+		updateButton.addActionListener(new UpdateCloudAction());
 		
 		//Add buttons to panel
 		panel.add(deleteButton);
