@@ -56,6 +56,7 @@ import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.HeatMapView;
 import clusterMaker.ui.NewNetworkView;
+import clusterMaker.ui.NestedNetworkView;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
@@ -128,6 +129,12 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		NewNetworkView viz2 = new NewNetworkView();
 		item = new JMenuItem(viz2.getName());
 		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz2));
+		menu.add(item);
+
+		// Add the nested network visualization
+		NestedNetworkView viz3 = new NestedNetworkView();
+		item = new JMenuItem(viz3.getName());
+		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz3));
 		menu.add(item);
 		
 		// Catch new network loaded and change events so we can update our visualization menus
