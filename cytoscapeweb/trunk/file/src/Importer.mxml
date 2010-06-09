@@ -20,6 +20,7 @@
             private var _fr:FileReference;
             private var _typeFilter:String = "*;*.*";
             private var _typeDescription:String = "Any file";
+            private var _binary:Boolean = false;
 
             public function callExternalInterface(functionName:String, argument:*=undefined):* {
                 if (ExternalInterface.available) {
@@ -42,6 +43,9 @@
                 });
                 ExternalInterface.addCallback("typeDescription", function(desc:String):void {
                     _typeDescription = desc;
+                });
+                ExternalInterface.addCallback("binary", function(binary:Boolean):void {
+                    _binary = binary;
                 });
                 callExternalInterface("_onReady");
             }
@@ -79,18 +83,16 @@
             private function onLoadComplete(e:Event):void {
                 //get the data from the file as a ByteArray
                 var data:ByteArray = _fr.data;
-                var bytes:Array = [];
-
-                //read the bytes of the file as a string
-                var string:String = data.toString();
+                var dataObj:Object = { metadata: metadata() };
                 
-                //read bytes as primitive
-                while (data.bytesAvailable > 0) {
-                    bytes.push(data.readByte());
+                if (_binary) {
+                    var bytes:Array = [];
+                    while (data.bytesAvailable > 0) { bytes.push(data.readByte()); }
+                    dataObj.bytes = bytes;
+                } else {
+                    dataObj.string = data.toString();
                 }
-                
-                var dataObj:Object = { bytes: bytes, string: string, metadata: metadata() };
-                
+
                 //fire fopen
                 callExternalInterface("_onComplete", dataObj);
                 

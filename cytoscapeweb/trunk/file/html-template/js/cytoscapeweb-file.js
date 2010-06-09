@@ -136,6 +136,9 @@
         
 		_onStart: function(metadata){
         	// when data starts opening
+        	if (this.options.binary) {
+        		this.swf().binary(this.options.binary(metadata));
+        	}
         	if (this.options.start) {
         		this.options.start(metadata);
         	}
