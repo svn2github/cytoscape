@@ -77,6 +77,28 @@ public class PropUtil {
 	}
 
 	/**
+	 * Will return a float for the specified property key only if the
+	 * value exists and is properly formatted as an float.  Otherwise
+	 * it will return the defaultValue.
+	 */
+	public static float getFloat(Properties props, String key, float defaultValue) {
+		String val = props.getProperty(key);
+
+		if (val == null)
+			return defaultValue;
+
+		float ret = defaultValue;
+
+		try {
+			ret = Float.parseFloat(val);
+		} catch (Exception e) {
+			logger.warn("Property value for "+key+" must be a float");
+		}
+
+		return ret;
+	}
+
+	/**
 	 * Will return a boolean for the specified property key only if the
 	 * value exists and if the string matches "true", "false", "yes", or "no"
 	 * in a case insensitive manner.  Otherwise it will return the defaultValue.
