@@ -653,6 +653,8 @@ public class CyAttributesImpl implements CyAttributes {
 			return getListAttribute(id,attributeName);
 		else if ( type == TYPE_SIMPLE_MAP )
 			return getMapAttribute(id,attributeName);
+		else if ( type == TYPE_UNDEFINED || type == TYPE_COMPLEX )
+			return null;
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
 		if ( attribValue == null )
