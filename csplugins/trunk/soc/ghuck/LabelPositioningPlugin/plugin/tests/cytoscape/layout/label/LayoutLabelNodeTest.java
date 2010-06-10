@@ -9,16 +9,21 @@ import cytoscape.data.CyAttributes;
 import cytoscape.visual.LabelPosition;
 import cytoscape.Cytoscape;
 
+import cytoscape.view.*;
+import giny.view.*;
+
 public class LayoutLabelNodeTest extends LayoutAbstractNodeTest {
 
     LayoutLabelNode node1, node2,node3;
     LayoutNode parentNode1;
+    CyNodeView nodeView1;
 
     @Before public void setUp() {
 	node1 = new LayoutLabelNode();
 	node2 = new LayoutLabelNode();
-	parentNode1 = new LayoutNode();
-	node3 = new LayoutLabelNode(parentNode1);
+	//	nodeView1 = new CyNodeView();
+	//parentNode1 = new LayoutNode(nodeView1, 1);
+	//node3 = new LayoutLabelNode(parentNode1);
     }
 
 

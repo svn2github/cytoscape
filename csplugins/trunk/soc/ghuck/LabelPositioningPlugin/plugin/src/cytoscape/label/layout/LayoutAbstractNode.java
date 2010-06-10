@@ -18,7 +18,6 @@ import java.util.*;
 public abstract class LayoutAbstractNode {
 
     // static (class) variables
-    static int lockedNodes = 0;
     static final double EPSILON = 0.0000001D;
 
 
@@ -36,17 +35,17 @@ public abstract class LayoutAbstractNode {
 
 
     // static methods
-    /**
-     * Returns the number of locked nodes.  This is a static that is incremented whenever
-     * lock() is called and decremented whenever unlock() is called.  It is useful for some
-     * algorithms that only want to get the number of unlocked nodes for the purposes of their
-     * layout loops.
-     *
-     * @return        the number of unlocked nodes.
-     */
-    public static int lockedNodeCount() {
-	return lockedNodes;
-    }
+//     /**
+//      * Returns the number of locked nodes.  This is a static that is incremented whenever
+//      * lock() is called and decremented whenever unlock() is called.  It is useful for some
+//      * algorithms that only want to get the number of unlocked nodes for the purposes of their
+//      * layout loops.
+//      *
+//      * @return        the number of unlocked nodes.
+//      */
+//     public static int lockedNodeCount() {
+// 	return lockedNodes;
+//     }
 
 
     // instance methods
@@ -109,7 +108,6 @@ public abstract class LayoutAbstractNode {
      */
     public void lock() {
 	isLocked = true;
-	lockedNodes += 1;
     }
 	
     /**
@@ -119,7 +117,6 @@ public abstract class LayoutAbstractNode {
      */
     public void unLock() {
 	isLocked = false;
-	lockedNodes -= 1;
     }
 
     /**

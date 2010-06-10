@@ -53,17 +53,16 @@ import java.util.Random;
  */
 public class LayoutNode extends LayoutAbstractNode {
     // static (class) variables
-    // private static int lockedNodes = 0;
     // static final double EPSILON = 0.0000001D;
 
     // instance variables
-
-//     private double x;
-//     private double y;
-//     private double dispX;
-//     private double dispY;
-//    private boolean isLocked = false;
-
+    
+    //     private double x;
+    //     private double y;
+    //     private double dispX;
+    //     private double dispY;
+    //     private boolean isLocked = false;
+    
     private CyNode node;
     private NodeView nodeView;
     private int index;
