@@ -72,9 +72,6 @@ public class GoogleLineChart implements Function {
 		if ( !FunctionUtil.isSomeKindOfList(argTypes[1]) )
 			return null;
 
-//		if ( !FunctionUtil.isSomeKindOfList(argTypes[1]) )
-//			return null;
-
 		return String.class;
 	}
 
@@ -106,57 +103,25 @@ public class GoogleLineChart implements Function {
 		final String title = FunctionUtil.getArgAsString(args[0]);
 		final double[] data1 = extractDoubles( args[1] );
 
-
-        Line line1 = Plots.newLine(Data.newData(data1), Color.newColor("CA3D05"), "Data 1");
-        line1.setLineStyle(LineStyle.newLineStyle(3, 1, 0));
-//        line1.addShapeMarkers(Shape.DIAMOND, Color.newColor("CA3D05"), 12);
-//        line1.addShapeMarkers(Shape.DIAMOND, Color.WHITE, 8);
-
-//        Line line2 = Plots.newLine(Data.newData(competition), SKYBLUE, "Competition.com");
-//        line2.setLineStyle(LineStyle.newLineStyle(3, 1, 0));
-//        line2.addShapeMarkers(Shape.DIAMOND, SKYBLUE, 12);
-//        line2.addShapeMarkers(Shape.DIAMOND, Color.WHITE, 8);
-
+        Line line1 = Plots.newLine(Data.newData(data1), Color.RED);
+        line1.setLineStyle(LineStyle.newLineStyle(5, 1, 0));
+        line1.addShapeMarkers(Shape.DIAMOND, Color.BLACK, 10);
 
         // Defining chart.
-//        LineChart chart = GCharts.newLineChart(line1, line2);
         LineChart chart = GCharts.newLineChart(line1);
-        chart.setSize(100, 100);
-        chart.setTitle(title, WHITE, 10);
-//        chart.addHorizontalRangeMarker(40, 60, Color.newColor(RED, 30));
-//        chart.addVerticalRangeMarker(70, 90, Color.newColor(GREEN, 30));
-//        chart.setGrid(25, 25, 3, 2);
+        chart.setSize(200, 200);
+        chart.setTitle(title, BLACK, 14);
 
         // Defining axis info and styles
-        AxisStyle axisStyle = AxisStyle.newAxisStyle(BLACK, 8, AxisTextAlignment.CENTER);
+        AxisStyle axisStyle = AxisStyle.newAxisStyle(BLACK, 12, AxisTextAlignment.CENTER);
+
         AxisLabels xAxis = AxisLabelsFactory.newAxisLabels("a", "b", "c", "d", "e", "f", "g");
         xAxis.setAxisStyle(axisStyle);
-
-//        AxisLabels xAxis2 = AxisLabelsFactory.newAxisLabels("2007", "2007", "2008", "2008", "2008");
-//        xAxis2.setAxisStyle(axisStyle);
-
-//        AxisLabels xAxis3 = AxisLabelsFactory.newAxisLabels("Month", 50.0);
-//        xAxis3.setAxisStyle(AxisStyle.newAxisStyle(WHITE, 14, AxisTextAlignment.CENTER));
-
-        AxisLabels yAxis = AxisLabelsFactory.newAxisLabels("", "1", "2", "3", "4");
-        yAxis.setAxisStyle(axisStyle);
-
-//        AxisLabels yAxis2 = AxisLabelsFactory.newAxisLabels("Hits", 50.0);
-//        yAxis2.setAxisStyle(AxisStyle.newAxisStyle(WHITE, 14, AxisTextAlignment.CENTER));
-//        yAxis2.setAxisStyle(axisStyle);
-
-        // Adding axis info to chart.
         chart.addXAxisLabels(xAxis);
-//        chart.addXAxisLabels(xAxis2);
-//        chart.addXAxisLabels(xAxis3);
-        chart.addYAxisLabels(yAxis);
-//        chart.addYAxisLabels(yAxis2);
 
-        // Defining background and chart fills.
-//        chart.setBackgroundFill(Fills.newSolidFill(Color.newColor("1F1D1D")));
-//        LinearGradientFill fill = Fills.newLinearGradientFill(0, Color.newColor("363433"), 100);
-//        fill.addColorAndOffset(Color.newColor("2E2B2A"), 0);
-//        chart.setAreaFill(fill);
+        AxisLabels yAxis = AxisLabelsFactory.newAxisLabels("0", "25", "50", "75", "100");
+        yAxis.setAxisStyle(axisStyle);
+        chart.addYAxisLabels(yAxis);
 
 		return chart.toURLString(); 
 	}

@@ -104,7 +104,7 @@
 		<fileset dir="${resources.dir}/testData" includes="*" />
 	</copy>
 -->
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/equation/internal"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/equations/internal"/>
     <unjar dest="${build.dir}">
       <fileset dir="${lib.dir}">
         <include name="*.jar" />
