@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<jxb:bindings version="1.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+
+	<jxb:bindings
+		schemaLocation="http://www.ncbi.nlm.nih.gov/entrez/eutils/soap/v2.0/efetch_gene.xsd"
+		node="/xs:schema">
+
+
+		<jxb:schemaBindings>
+			<jxb:package name="gov.nih.ncbi.soap.eutils.gene" />
+		</jxb:schemaBindings>
+
+
+		<jxb:bindings
+			node="//xs:element[@name='BioSource_genome']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="bioSource_genome_value" />
+		</jxb:bindings>
+
+		<jxb:bindings
+			node="//xs:element[@name='BioSource_origin']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="bioSource_origin_value" />
+		</jxb:bindings>
+
+		<jxb:bindings
+			node="//xs:element[@name='Align-def_align-type']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="align-def_align-type_value" />
+		</jxb:bindings>
+
+
+		<jxb:bindings
+			node="//xs:element[@name='Gene-commentary_type']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="gene-commentary_type_value" />
+		</jxb:bindings>
+
+
+		<jxb:bindings
+			node="//xs:element[@name='SubSource_subtype']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="subSource_subtype_value" />
+		</jxb:bindings>
+
+		<jxb:bindings
+			node="//xs:element[@name='Gene-track_status']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="gene-track_status_value" />
+		</jxb:bindings>
+
+		<jxb:bindings
+			node="//xs:element[@name='Entrezgene_type']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="entrezgene_type_value" />
+		</jxb:bindings>
+
+		<jxb:bindings
+			node="//xs:element[@name='OrgMod_subtype']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="orgMod_subtype_value" />
+		</jxb:bindings>
+
+
+		<jxb:bindings
+			node="//xs:element[@name='TaxElement_fixed-level']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="taxElement_fixed-level_value" />
+		</jxb:bindings>
+
+
+		<jxb:bindings
+			node="//xs:element[@name='PubStatus']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="pubStatus_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='Medline-entry_status']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="medline-entry_status_value" />
+		</jxb:bindings>
+
+
+
+		<jxb:bindings
+			node="//xs:element[@name='MolInfo_biomol']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="molInfo_biomol_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='MolInfo_tech']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="molInfo_tech_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='Seq-annot_db']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="seq-annot_db_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='Seq-gap_type']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="seq-gap_type_value" />
+		</jxb:bindings>
+
+		<jxb:bindings
+			node="//xs:element[@name='MolInfo_completeness']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="molInfo_completeness_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='Medline-field_type']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="medline-field_type_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='DocRef_type']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="docRef_type_value" />
+		</jxb:bindings>
+
+
+		<jxb:bindings
+			node="//xs:element[@name='Seq-gap_linkage']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="seq-gap_linkage_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='Pubdesc_reftype']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="pubdesc_reftype_value" />
+		</jxb:bindings>
+		<jxb:bindings
+			node="//xs:element[@name='SeqTable-column-info_field-id']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name='value']">
+			<jxb:property name="seqTable-column-info_field-id_value" />
+		</jxb:bindings>
+
+
+	</jxb:bindings>
+
+</jxb:bindings>
