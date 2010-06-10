@@ -126,7 +126,7 @@ public class Average implements Function {
 		if (count == 0.0)
 			throw new IllegalArgumentException("can't take the average of an empty list!");
 
-		return FunctionUtil.numericallySafeSum(FunctionUtil.arrayListToArray(a)) / count;
+		return FunctionUtil.numericallySafeSum(FunctionUtil.listToArray(a)) / count;
 	}
 
 	/**

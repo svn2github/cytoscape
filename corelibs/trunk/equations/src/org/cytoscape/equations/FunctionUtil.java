@@ -226,9 +226,9 @@ public class FunctionUtil {
 	}
 
 	/**
-	 *  Converts an ArrayList<Double> to a regular double[]
+	 *  Converts a List<Double> to a regular double[]
 	 */
-	static public double[] arrayListToArray(final ArrayList<Double> a) {
+	static public double[] listToArray(final List<Double> a) {
 		final double[] x = new double[a.size()];
 		int i = 0;
 		for (double d : a)
