@@ -1030,6 +1030,7 @@ public final class GraphRenderer {
 	
 	private static final void renderNodeHigh(final FixedGraph graph, final GraphGraphics grafx, final int node, final float[] floatBuff1, final double[] doubleBuff1, final double[] doubleBuff2, final NodeDetails nodeDetails, final int lodBits) {
 		if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
+						
 			// Compute visual attributes that do not depend on LOD.
 			final byte shape = nodeDetails.shape(node);
 			final Paint fillPaint = nodeDetails.fillPaint(node);
@@ -1065,7 +1066,7 @@ public final class GraphRenderer {
 				doubleBuff1[2] = floatBuff1[2];
 				doubleBuff1[3] = floatBuff1[3];
 				lemma_computeAnchor(NodeDetails.ANCHOR_CENTER, doubleBuff1, doubleBuff2);
-				grafx.drawCustomGraphicFull(nestedNetworkPaint.getAnchorRect(),  (float)doubleBuff2[0],  (float)doubleBuff2[1], nestedNetworkPaint); 
+				grafx.drawCustomGraphicFull(nestedNetworkPaint.getAnchorRect(), (float)doubleBuff2[0],  (float)doubleBuff2[1], nestedNetworkPaint); 
 			}
 
 			// draw custom graphics on top of nested networks 
@@ -1085,7 +1086,7 @@ public final class GraphRenderer {
 					doubleBuff1[1] = floatBuff1[1];
 					doubleBuff1[2] = floatBuff1[2];
 					doubleBuff1[3] = floatBuff1[3];
-					lemma_computeAnchor(cg.getAnchor(), doubleBuff1, doubleBuff2);
+					lemma_computeAnchor(NodeDetails.ANCHOR_CENTER, doubleBuff1, doubleBuff2);
 					grafx.drawCustomGraphicFull(cg.getShape(), (float) (doubleBuff2[0] + offsetVectorX), (float) (doubleBuff2[1] + offsetVectorY),
 								    cg.getPaint());
 					graphicInx++;
