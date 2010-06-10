@@ -647,11 +647,16 @@ public class CyAttributesImpl implements CyAttributes {
 	public Object getAttribute(final String id, final String attributeName) {
 		lastEquationError = null;
 
-		final byte type = mmapDef.getAttributeValueType(attributeName);
-		if (type < 0)
-			return null;
+		final byte type = getType(attributeName); 
 
-		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		final Object attribValue;
+		if ( type == TYPE_SIMPLE_LIST )
+			attribValue = getListAttribute(id,attributeName);
+		else if ( type == TYPE_SIMPLE_MAP )
+			attribValue = getMapAttribute(id,attributeName);
+		else 
+			attribValue = mmap.getAttributeValue(id, attributeName, null);
+
 		if (attribValue instanceof Equation) {
 			final StringBuilder errorMessage = new StringBuilder();
 			final Object equationValue = evalEquation(id, attributeName, (Equation)attribValue,
