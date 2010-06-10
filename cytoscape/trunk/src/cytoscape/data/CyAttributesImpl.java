@@ -1029,6 +1029,10 @@ public class CyAttributesImpl implements CyAttributes {
 	 *  @return the equation associated with an attribute or null if there is no equation associated with it
 	 */
 	public Equation getEquation(final String id, final String attributeName) {
+		// This check is necessary for when "attributeName" does not actually refer to an attribute!
+		if (getType(attributeName) == TYPE_UNDEFINED)
+			return null;
+
 		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
 		if (dimTypes.length != 0)
 			return null;
