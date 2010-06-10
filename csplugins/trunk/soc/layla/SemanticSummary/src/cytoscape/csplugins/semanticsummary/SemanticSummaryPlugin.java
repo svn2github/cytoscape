@@ -117,6 +117,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 	 * 
 	 * @param pFileList - pointer to the set of files to be added to the session
 	 */
+	/*
 	public void saveSessionStateFiles(List<File> pFileList)
 	{
 		//Create an empty file on system temp directory
@@ -198,12 +199,14 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 			pFileList.add(session_prop_file);
 		}//end network iterator
 	}//end save session method
+	*/
 	
 	/**
 	 * Restore Semantic Summaries
 	 * 
 	 * @param pStateFileList - list of files associated with the session
 	 */
+	/*
 	public void restoreSessionState(List<File> pStateFileList)
 	{
 		if ((pStateFileList == null) || (pStateFileList.size() == 0))
@@ -242,6 +245,6 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		}
 		
 	}//end restore session method
-	
+	*/
 	
 }
