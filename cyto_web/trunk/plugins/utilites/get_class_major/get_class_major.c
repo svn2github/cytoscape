@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	printf("%u\n", ntohs(version));
+	printf("%hu\n", ntohs(version));
 
 	return EXIT_SUCCESS;
 }
