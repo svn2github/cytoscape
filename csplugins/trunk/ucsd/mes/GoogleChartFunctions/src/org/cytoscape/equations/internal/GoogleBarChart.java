@@ -38,24 +38,24 @@ import cytoscape.util.ScalingMethod;
 import static com.googlecode.charts4j.Color.*;
 import com.googlecode.charts4j.*;
 
-class GoogleLineChart implements Function {
+class GoogleBarChart implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "GLINECHART"; }
+	public String getName() { return "GBARCHART"; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Creates a line chart URL based on the supplied arguments."; }
+	public String getFunctionSummary() { return "Creates a bar chart URL based on the supplied arguments."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"GLINECHART(title,list)\""; }
+	public String getUsageDescription() { return "Call this with \"GBARCHART(title,list)\""; }
 
 	public Class getReturnType() { return String.class; }
 
@@ -80,14 +80,13 @@ class GoogleLineChart implements Function {
 		final String title = FunctionUtil.getArgAsString(args[0]);
 		final double[] data1 = DataUtil.extractDoubles( args[1] );
 
-        Line line1 = Plots.newLine(Data.newData(data1), Color.RED);
-        line1.setLineStyle(LineStyle.newLineStyle(5, 1, 0));
-        line1.addShapeMarkers(Shape.DIAMOND, Color.BLACK, 10);
+        BarChartPlot bar1 = Plots.newBarChartPlot(Data.newData(data1), Color.BLUE);
 
         // Defining chart.
-        LineChart chart = GCharts.newLineChart(line1);
+        BarChart chart = GCharts.newBarChart(bar1);
         chart.setSize(200, 200);
         chart.setTitle(title, BLACK, 14);
+		chart.setSpaceBetweenGroupsOfBars(1);
 
         // Defining axis info and styles
         AxisStyle axisStyle = AxisStyle.newAxisStyle(BLACK, 12, AxisTextAlignment.CENTER);

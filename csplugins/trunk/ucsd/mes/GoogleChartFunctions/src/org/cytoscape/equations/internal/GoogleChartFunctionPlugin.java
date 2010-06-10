@@ -44,8 +44,8 @@ import org.cytoscape.equations.Parser;
 public class GoogleChartFunctionPlugin extends CytoscapePlugin {
 
 	public GoogleChartFunctionPlugin() {
-		System.out.println("registering Google line chart function");
 		Parser.getParser().registerFunction( new GoogleLineChart() ); 
+		Parser.getParser().registerFunction( new GoogleBarChart() ); 
 	}
 }
 
