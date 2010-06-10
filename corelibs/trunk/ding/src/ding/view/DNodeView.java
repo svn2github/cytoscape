@@ -1495,4 +1495,12 @@ public class DNodeView implements NodeView, Label {
 
 		return graphicsPositions.get(cg);
 	}
+
+	public ObjectPosition getLabelPosition() {
+		return labelPosition;
+	}
+
+	public void setLabelPosition(final ObjectPosition position) {		
+		this.labelPosition = position;
+	}
 }
