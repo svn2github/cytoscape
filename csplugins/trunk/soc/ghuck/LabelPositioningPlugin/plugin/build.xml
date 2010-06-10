@@ -67,6 +67,10 @@
     <path id="junit.class.path" >
       <pathelement path="${project.class.path}/"/>
       <pathelement location="${test.jar}"/>
+
+      <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+      <pathelement path="${java.class.path}/"/>
+
       <fileset dir="${lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
