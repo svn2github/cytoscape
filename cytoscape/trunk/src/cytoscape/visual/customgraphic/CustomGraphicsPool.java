@@ -215,7 +215,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 
-		System.out.println("Saving finihsed");
+		System.out.println("Saving finished");
 	}
-
 }
