@@ -47,6 +47,7 @@ import java.awt.Image;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
@@ -55,6 +56,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -1972,10 +1976,22 @@ public final class GraphGraphics {
 			checkDispatchThread();
 			checkCleared();
 		}
-
+		
 		m_g2d.translate(xOffset, yOffset);
-		m_g2d.setPaint(paint);
-		m_g2d.fill(shape);
+		if(paint instanceof TexturePaint) {
+			final BufferedImage be = ((TexturePaint) paint).getImage();
+			final double scaleX = shape.getBounds2D().getWidth()/be.getWidth();
+			final double scaleY = shape.getBounds2D().getHeight()/be.getHeight();
+			// TODO: Currently, scaling uses best-quality algorithm (BICUBIC).
+			// Need to provide user option to switch between quality VS speed.
+			m_g2d.drawImage(be,
+					new AffineTransformOp(AffineTransform.getScaleInstance(scaleX,scaleY), AffineTransformOp.TYPE_BICUBIC), 
+					shape.getBounds().x, shape.getBounds().y);
+		} else {
+			m_g2d.setPaint(paint);
+			m_g2d.fill(shape);
+		}
+
 		m_g2d.setTransform(m_currNativeXform);
 	}
 
