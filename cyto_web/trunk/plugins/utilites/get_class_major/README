@@ -1,0 +1,3 @@
+A statically linked utility for the extraction of major version numbers from Java class files.
+This is being used from within PHP where due to security related access permissions it is
+difficult to execute programs with arbitrary dynamic library requirements.
