@@ -649,13 +649,14 @@ public class CyAttributesImpl implements CyAttributes {
 
 		final byte type = getType(attributeName); 
 
-		final Object attribValue;
 		if ( type == TYPE_SIMPLE_LIST )
-			attribValue = getListAttribute(id,attributeName);
+			return getListAttribute(id,attributeName);
 		else if ( type == TYPE_SIMPLE_MAP )
-			attribValue = getMapAttribute(id,attributeName);
-		else 
-			attribValue = mmap.getAttributeValue(id, attributeName, null);
+			return getMapAttribute(id,attributeName);
+
+		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
+		if ( attribValue == null )
+			return null;
 
 		if (attribValue instanceof Equation) {
 			final StringBuilder errorMessage = new StringBuilder();
@@ -675,11 +676,9 @@ public class CyAttributesImpl implements CyAttributes {
 			if (type == MultiHashMapDefinition.TYPE_STRING)
 				return equationValue.toString();
 			return equationValue;
-		}
-		else {
-			lastEquationError = null;
-			return attribValue;
-		}
+		} 
+
+		return attribValue;
 	}
 
 	/**
