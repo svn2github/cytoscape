@@ -174,37 +174,24 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		switch (type) {
 			case CyAttributeBrowserTable.SELECTED_NODE:
 				newColor = gac.getDefaultNodeSelectionColor();
-
 				break;
-
 			case CyAttributeBrowserTable.SELECTED_EDGE:
 				newColor = gac.getDefaultEdgeSelectionColor();
-
 				break;
-
 			default:
 				newColor = null;
-
 				break;
 		}
 
 		return newColor;
 	}
 
-	protected void setColorSwitch(final boolean flag) {
-		if (flag) {
-			props.setProperty("colorSwitch", "on");
-		} else {
-			props.setProperty("colorSwitch", "off");
-		}
+	protected void setColorSwitch(final boolean on) {
+		props.setProperty("colorSwitch", on ? "on" : "off");
 	}
 
 	protected boolean getColorSwitch() {
-		if (props.getProperty("colorSwitch").equals("on")) {
-			return true;
-		} else {
-			return false;
-		}
+		return props.getProperty("colorSwitch").equals("on");
 	}
 
 	/**
@@ -429,24 +416,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final byte type, final String id, final String attrName) {
-		final Object attribValue;
-		switch (type) {
-		case CyAttributes.TYPE_INTEGER:
-		case CyAttributes.TYPE_FLOATING:
-		case CyAttributes.TYPE_BOOLEAN:
-		case CyAttributes.TYPE_STRING:
-			attribValue = data.getAttribute(id, attrName);
-			break;
-		case CyAttributes.TYPE_SIMPLE_LIST:
-			attribValue = data.getListAttribute(id, attrName);
-			break;
-		case CyAttributes.TYPE_SIMPLE_MAP:
-			attribValue = data.getMapAttribute(id, attrName);
-			break;
-		default:
-			return null;
-		}
-
+		final Object attribValue = data.getAttribute(id, attrName);
 		final Equation equation = data.getEquation(id, attrName);
 		if (attribValue == null && equation == null)
 			return null;
@@ -456,20 +426,18 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		if (errorMessage != null)
 			errorMessage = "#ERROR(" + errorMessage + ")";
 
-		if (type == CyAttributes.TYPE_INTEGER)
+		switch (type) {
+		case CyAttributes.TYPE_INTEGER:
+		case CyAttributes.TYPE_FLOATING:
+		case CyAttributes.TYPE_STRING:
+		case CyAttributes.TYPE_BOOLEAN:
 			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
-		else if (type == CyAttributes.TYPE_FLOATING)
-			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
-		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
-		else if (type == CyAttributes.TYPE_STRING)
-			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
-		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
+		case CyAttributes.TYPE_SIMPLE_LIST:
+		case CyAttributes.TYPE_SIMPLE_MAP:
 			return new ValidatedObjectAndEditString(attribValue);
-		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return new ValidatedObjectAndEditString(attribValue);
-
-		return null;
+		default:
+			return null;
+		}
 	}
 
 	/**
@@ -650,6 +618,11 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		final boolean editIsValid = edit.isValid();
 
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
+//		final String attribName = attributeNames.get(colIdx);
+System.err.print("attributeNames: ");for (String name : attributeNames)System.err.print(name+",");System.err.println();
+//final int actualColIdx = findColumn(attribName);
+//System.err.println("actualColIdx="+actualColIdx);
+//System.err.println("colIdx="+colIdx);
 		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
 		if (this.objectType != NETWORK)
 			setDataTableRow(rowIdx);
@@ -663,19 +636,28 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 *  Helper method for updateCell().
 	 */
 	void setDataTableRow(final int rowIdx) {
+/*
+System.err.println("rowIdx="+rowIdx);
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
+System.err.println("rowVector.size()="+rowVector.size());
 		final int noOfColumns = attributeNames.size();
 		final String id = graphObjects.get(rowIdx).getIdentifier();
 		for (int colIdx = 0; colIdx < noOfColumns; ++colIdx) {
+System.err.println("colIdx="+colIdx);
 			final String attribName = attributeNames.get(colIdx);
+System.err.println("attribName="+attribName);
 			if (attribName.equals(AttributeBrowser.ID))
 				continue;
 
 			final byte type = data.getType(attribName);
 			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
-			if (objectAndEditString != null)
-				rowVector.setElementAt(objectAndEditString, colIdx);
+			if (objectAndEditString != null) {
+				final int actualColIdx = findColumn(attribName);
+System.err.println("actualColIdx="+actualColIdx);
+				rowVector.setElementAt(objectAndEditString, actualColIdx);
+			}
 		}
+*/
 	}
 
 	/**

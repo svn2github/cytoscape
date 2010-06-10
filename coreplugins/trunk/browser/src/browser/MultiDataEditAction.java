@@ -324,33 +324,25 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		new_values = new ArrayList(objects.size());
 		old_values = new ArrayList(objects.size());
 
-		// System.out.println("####FROM: " + attributeFrom);
-		// System.out.println("####TO: " + attributeTo);
 		for (final Object o : objects) {
 			final GraphObject go = (GraphObject)o;
 
-			Object value = null;
-			if (fromType == CyAttributes.TYPE_SIMPLE_LIST)
-				value = attrData.getListAttribute(go.getIdentifier(), attributeFrom);
-			else if (fromType == CyAttributes.TYPE_SIMPLE_MAP)
-				value = attrData.getMapAttribute(go.getIdentifier(), attributeFrom);
-			else {
-				final Equation equation = attrData.getEquation(go.getIdentifier(), attributeFrom);
-				if (equation != null) {
-					attrData.setAttribute(go.getIdentifier(), attributeTo, equation);
-					new_values.add(equation);
-					old_values.add(null);
-					continue;
-				}
-
-				value = attrData.getAttribute(go.getIdentifier(), attributeFrom);
+			final Equation equation = attrData.getEquation(go.getIdentifier(), attributeFrom);
+			if (equation != null) {
+				attrData.setAttribute(go.getIdentifier(), attributeTo, equation);
+				new_values.add(equation);
+				old_values.add(null);
+				continue;
 			}
+
+			Object value = attrData.getAttribute(go.getIdentifier(), attributeFrom);
 			new_values.add(value);
 
+			// Translate from Integer to Double?
 			if ((fromType == CyAttributes.TYPE_INTEGER) && (toType == CyAttributes.TYPE_FLOATING))
 				value = new Double((Integer)value);
-			setAttributeValue(go.getIdentifier(), attributeTo, value);
 
+			setAttributeValue(go.getIdentifier(), attributeTo, value);
 			old_values.add(null);
 		}
 	}

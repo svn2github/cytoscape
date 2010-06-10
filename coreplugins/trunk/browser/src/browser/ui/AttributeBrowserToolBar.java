@@ -565,7 +565,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		if (formulaBuilderButton == null) {
 			formulaBuilderButton = new JButton();
 			formulaBuilderButton.setBorder(null);
-			formulaBuilderButton.setText("fx");
+			formulaBuilderButton.setIcon(new ImageIcon(AttributeBrowser.class.getResource("images/fx.png")));
 			formulaBuilderButton.setToolTipText("Function Builder");
 			formulaBuilderButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
 
