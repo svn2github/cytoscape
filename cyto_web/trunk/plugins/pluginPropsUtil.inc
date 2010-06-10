@@ -353,6 +353,8 @@ function getPluginProps($zipFileName) {
 function validateManifestFile($zipFileName) {
 	$retValue = false;
 	$javaVersion_tooHigh = false;
+	$pluginClassName ="";
+
 	$zip = zip_open($zipFileName);
 	if ($zip) {
 		while ($zip_entry = zip_read($zip)) {
@@ -369,16 +371,10 @@ function validateManifestFile($zipFileName) {
 						$cur_line = $all_Lines[$i];
 						if ((!empty($cur_line))&& stristr($cur_line,'Cytoscape-Plugin') == $cur_line) {
 							//echo "MANIFEST.MF: Found attribute Cytoscape-Plugin<br>";
+
+							$pluginClassName = substr($cur_line, 17);
+
 							$retValue = true;
-							//break;
-						}	
-						if ((!empty($cur_line))&& stristr($cur_line,'Created-By') == $cur_line) {
-							//echo "MANIFEST.MF: Found attribute Created-By<br>";
-							// check Java Version
-							$javaVersion = substr($cur_line, 12,3); //example: Created-By: 1.5.0_12-b04 (Sun Microsystems Inc.)
-							if (trim($javaVersion >1.5)) {
-								$javaVersion_tooHigh = true;
-							}
 						}	
 					}
 				}
@@ -391,6 +387,12 @@ function validateManifestFile($zipFileName) {
 		//failed to open the zip file
 	}
 
+	$version = getJavaVersion($zipFileName, $pluginClassName);
+
+	if ($version > 49){ // 49 is the jdk version (java platform version 1.5)
+		$javaVersion_tooHigh = true;
+	}
+
 	if ($retValue == false && $javaVersion_tooHigh == false) {
 	?>
 	<br><b>Error</b>: MANIFEST.MF is either missing or the attribute Cytoscape-Plugin is not defined.	
@@ -400,16 +402,57 @@ function validateManifestFile($zipFileName) {
 	}
 
 	if ($javaVersion_tooHigh == true) {
+
 		?>
 	<br><b>Error</b>: Plugin should be compiled with Java 1.5 or less.	
                 <br><br>			
 		<?php
 		$retValue = false;
+
 	}
-
-
 
 	return $retValue;
 } // end of validateManifestFile()
+
+
+// Get the version of java class
+function getJavaVersion($jarFileName, $javaClassName) {
+
+	$tokens = explode('.', trim($javaClassName));
+	$baseClassName = $tokens[count($tokens)-1];
+
+	$zip = zip_open($jarFileName);
+	
+	if ($zip) {
+		while ($zipcontent = zip_read($zip)) {
+			$zip_entry_name = zip_entry_name($zipcontent);
+			
+			if (strstr($zip_entry_name, '/'.$baseClassName.'.class')){
+				
+				if (zip_entry_open($zip, $zipcontent)){ 
+					$content = zip_entry_read($zipcontent,1024);
+					// save the content in file 					
+					// Open the file and erase the contents if any  
+					$fp = fopen("./_tmp/tmp.class", "w");  
+					fwrite($fp, $content);  
+					fclose($fp);  
+					
+					zip_entry_close($zipcontent);
+				}
+				break;				
+			}
+		}
+		zip_close($zip);
+	}
+	else {
+		//failed to open the zip file
+		return -1;
+	}
+	
+	$cmd = "./get_class_major ./_tmp/tmp.class";
+	$result =shell_exec($cmd);
+
+	return $result;
+}
 
 ?> 
