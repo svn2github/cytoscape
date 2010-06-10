@@ -247,14 +247,36 @@ public interface NodeView  {
    */
   public void setToolTip ( String tip );
 
+  /**
+   * Returns current label position as ObjkectPosition object.
+   * 
+   * @return label position as ObjectPosition
+   */
+  public ObjectPosition getLabelPosition();
+  
+  
+  /**
+   * Set current label position.
+   * 
+   * @param position
+   */
+  public void setLabelPosition(final ObjectPosition position);
+  
+  
+  @Deprecated
   public void setLabelOffsetX(double x);
+  @Deprecated
   public void setLabelOffsetY(double y);
+  @Deprecated
   public void setNodeLabelAnchor(int position);
-
+  @Deprecated
   public double getLabelOffsetX();
+  @Deprecated
   public double getLabelOffsetY();
+  @Deprecated
   public int getNodeLabelAnchor();
 
+  
   public double getLabelWidth();
   public void setLabelWidth(double width);
 
