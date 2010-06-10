@@ -1093,6 +1093,7 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeAttributePair(String name, Object value) throws IOException {
+		System.out.println("####### Name = " + name + ", Value = " + value);
 		writer.write(" "+name+"="+quote(value.toString()));
 	}
 

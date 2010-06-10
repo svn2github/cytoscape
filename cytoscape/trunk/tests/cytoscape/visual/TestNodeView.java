@@ -39,6 +39,7 @@ import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.Label;
 import giny.view.NodeView;
+import giny.view.ObjectPosition;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -75,6 +76,8 @@ public class TestNodeView implements NodeView {
 	boolean nestedNetworkVisible = true;
 
 	int rootGraphIndex;
+	
+	private ObjectPosition labelPosition;
 
 	/**
 	 * Creates a new TestNodeView object.
@@ -538,6 +541,14 @@ public class TestNodeView implements NodeView {
 	
 	public void showNestedNetwork(final boolean makeVisible) {
 		nestedNetworkVisible = makeVisible;
+	}
+
+	public ObjectPosition getLabelPosition() {
+		return this.labelPosition;
+	}
+
+	public void setLabelPosition(final ObjectPosition labelPosition) {
+		this.labelPosition = labelPosition;
 	}
 
 }
