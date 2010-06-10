@@ -48,8 +48,9 @@ import javax.swing.JPanel;
 // Cytoscape imports
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -63,6 +64,17 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyEdgeView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
 
 import giny.view.EdgeView;
 
@@ -335,13 +347,70 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 		}
 
+		// Set the maximize on create property
+		String max = CytoscapeInit.getProperties().getProperty("maximizeViewOnCreate");
+		CytoscapeInit.getProperties().setProperty("maximizeViewOnCreate", "true");
+
 		// Create the network view
 		CyNetworkView view = Cytoscape.createNetworkView(parentNet);
 		view.applyLayout(alg);
 
+		// Now create a reasonable visual map for our new network
+		VisualStyle newStyle = createNewStyle(view.getVisualStyle(), "-nested");
+		view.applyVizmapper(newStyle);
+
+		// Focus it and fit it
+		view.fitContent();
+
+		// Reset back to the user's preference
+		CytoscapeInit.getProperties().setProperty("maximizeViewOnCreate", max);
+
 		Cytoscape.setCurrentNetwork(parentNet.getIdentifier());
 		Cytoscape.setCurrentNetworkView(view.getIdentifier());
 		return;
+	}
+
+	private VisualStyle createNewStyle(VisualStyle parent, String suffix) { 
+		boolean newStyle = false;
+		VisualStyle style = null;
+
+		// Get our current vizmap
+		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+		CalculatorCatalog calculatorCatalog = manager.getCalculatorCatalog();
+
+		// Create a new vizmap
+		Set<String> styles = calculatorCatalog.getVisualStyleNames();
+		if (styles.contains(parent.getName()+suffix))
+			style = calculatorCatalog.getVisualStyle(parent.getName()+suffix);
+		else {
+			style = new VisualStyle(parent, parent.getName()+suffix);
+			newStyle = true;
+		}
+
+		// Set a new node size style
+		DiscreteMapping nodeSize = new DiscreteMapping(new Double(35), "has_nested_network", ObjectMapping.NODE_MAPPING);
+		nodeSize.putMapValue("yes", new Double(100));
+   	Calculator sizeCalculator = new BasicCalculator("Node Size Calculator",
+		                                                 nodeSize, VisualPropertyType.NODE_SIZE);
+		// Set a new node shape style
+		DiscreteMapping nodeShape = new DiscreteMapping(NodeShape.ELLIPSE, "has_nested_network", ObjectMapping.NODE_MAPPING);
+		nodeShape.putMapValue("yes", NodeShape.ROUND_RECT);
+   	Calculator shapeCalculator = new BasicCalculator("Node Shape Calculator",
+		                                                 nodeShape, VisualPropertyType.NODE_SHAPE);
+
+		// We don't want to mess up the user's color scheme, but it's probably safe to change
+		// the default color...
+
+		NodeAppearanceCalculator nodeAppCalc = style.getNodeAppearanceCalculator();
+   	nodeAppCalc.setCalculator(sizeCalculator);
+   	nodeAppCalc.setCalculator(shapeCalculator);
+		style.setNodeAppearanceCalculator(nodeAppCalc);
+
+		if (newStyle) {
+			calculatorCatalog.addVisualStyle(style);
+			manager.setVisualStyle(style);
+		} 
+		return style;
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 

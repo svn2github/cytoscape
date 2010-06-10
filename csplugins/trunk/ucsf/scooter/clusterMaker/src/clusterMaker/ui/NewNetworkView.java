@@ -62,6 +62,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyEdgeView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
