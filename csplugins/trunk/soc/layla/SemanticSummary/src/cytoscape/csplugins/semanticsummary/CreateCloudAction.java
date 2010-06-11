@@ -113,8 +113,6 @@ public class CreateCloudAction extends CytoscapeAction
 				nodeNames.add(curName);
 			}
 			params.setNetworkNodes(nodeNames);
-			
-			params.setNetworkNumNodes(network.getNodeCount());
 			SemanticSummaryManager.getInstance().registerNetwork(network, params);
 		}
 		
@@ -122,6 +120,7 @@ public class CreateCloudAction extends CytoscapeAction
 		CloudParameters cloudParams = new CloudParameters();
 		cloudParams.setCloudName(params.getNextCloudName()); 
 		cloudParams.setNetworkParams(params);
+		cloudParams.setNetworkNumNodes(network.getNodeCount());
 		
 		//Get list of node ID's
 		Set<CyNode> nodes = network.getSelectedNodes();

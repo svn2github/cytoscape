@@ -45,7 +45,6 @@ public class SemanticSummaryParameters
 	private String networkName;
 	private HashMap<String, CloudParameters> clouds; //list of network's clouds
 	private List<String> nodeList; //list of the IDs of all the nodes in the network
-	private Integer networkNumNodes;
 	
 	//Name creation variables
 	private Integer cloudCount = 1;
@@ -92,16 +91,17 @@ public class SemanticSummaryParameters
 		}
 		
 		this.networkName = props.get("NetworkName");
-		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
 		this.cloudCount = new Integer(props.get("CloudCount"));
 		
+		//Rebuild List
 		String[] nodes = props.get("NodeList").split(",");
+		ArrayList<String> nodeNameList = new ArrayList<String>();
 		for (int i = 0; i < nodes.length; i++)
 		{
 			String nodeName = nodes[i];
-			//TODO - Finish
+			nodeNameList.add(nodeName);
 		}
-		
+		this.nodeList = nodeNameList;
 	}
 	
 	
@@ -198,7 +198,6 @@ public class SemanticSummaryParameters
 		StringBuffer paramVariables = new StringBuffer();
 		
 		paramVariables.append("NetworkName\t" + networkName + "\n");
-		paramVariables.append("NetworkNumNodes\t" + networkNumNodes + "\n");
 		paramVariables.append("CloudCount\t" + cloudCount + "\n");
 		
 		//List of Nodes as a comma delimited list
@@ -229,6 +228,7 @@ public class SemanticSummaryParameters
 		}
 		return result.toString();
 	}
+	
 	
 
 	//GETTERS and SETTERS
@@ -261,16 +261,6 @@ public class SemanticSummaryParameters
 	public void setNetworkNodes(List<String> nodes)
 	{
 		nodeList = nodes;
-	}
-	
-	public Integer getNetworkNumNodes()
-	{
-		return networkNumNodes;
-	}
-
-	public void setNetworkNumNodes(Integer num)
-	{
-		networkNumNodes = num;
 	}
 	
 	public Integer getMaxFont()

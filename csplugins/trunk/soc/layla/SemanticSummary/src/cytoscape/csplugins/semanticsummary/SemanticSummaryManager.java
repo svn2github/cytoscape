@@ -207,7 +207,6 @@ public class SemanticSummaryManager implements PropertyChangeListener
 			}
 			params.setNetworkNodes(nodeNames);
 			
-			params.setNetworkNumNodes(network.getNodeCount());
 			SemanticSummaryManager.getInstance().registerNetwork(network, params);
 			
 			curNetwork = params;

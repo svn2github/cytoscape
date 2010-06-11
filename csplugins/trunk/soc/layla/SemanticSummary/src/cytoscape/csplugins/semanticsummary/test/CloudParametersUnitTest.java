@@ -111,7 +111,6 @@ public class CloudParametersUnitTest extends TestCase {
 			nodeNames.add(iter.next().toString());
 		
 		parentParams.setNetworkNodes(nodeNames);
-		parentParams.setNetworkNumNodes(13);
 		
 		List<String> selNodeNames = new ArrayList<String>();
 		for(Iterator iter = selNodes.iterator(); iter.hasNext();)
@@ -119,6 +118,7 @@ public class CloudParametersUnitTest extends TestCase {
 		
 		cloudParams.setSelectedNodes(selNodeNames);
 		cloudParams.setSelectedNumNodes(7);
+		cloudParams.setNetworkNumNodes(13);
 		
 		//Register Cloud
 		parentParams.addCloud(cloudName, cloudParams);

@@ -100,7 +100,6 @@ public class UpdateCloudAction extends CytoscapeAction
 		}
 		
 		cloudParams.setSelectedNodes(nodeNames);
-		
 		cloudParams.setSelectedNumNodes(nodeNames.size());
 		
 

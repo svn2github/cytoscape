@@ -60,6 +60,7 @@ public class CloudParameters
 	
 	private List<String> selectedNodes; //set of selected nodes for cloud
 	private Integer selectedNumNodes;
+	private Integer networkNumNodes;
 	
 	private HashMap<String, List<String>> stringNodeMapping;
 	private HashMap<String, Integer> networkCounts; // counts for whole network
@@ -124,11 +125,21 @@ public class CloudParameters
 		this.networkName = props.get("NetworkName");
 		this.attributeName = props.get("AttributeName");
 		this.selectedNumNodes = new Integer(props.get("SelectedNumNodes"));
+		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
 		this.netWeightFactor = new Double(props.get("NetWeightFactor"));
 		this.countInitialized = Boolean.parseBoolean(props.get("CountInitialized"));
 		this.selInitialized = Boolean.parseBoolean(props.get("SelInitialized"));
 		
-		//TODO - deal with selectedNodes List
+		//Rebuild List
+		String[] nodes = props.get("NodeList").split(",");
+		ArrayList<String> nodeNameList = new ArrayList<String>();
+		for (int i = 0; i < nodes.length; i++)
+		{
+			String nodeName = nodes[i];
+			nodeNameList.add(nodeName);
+		}
+		this.selectedNodes = nodeNameList;
+		
 	}
 		
 	
@@ -386,7 +397,7 @@ public class CloudParameters
 			Integer selCount = selectedCounts.get(curWord);
 			Integer netCount = networkCounts.get(curWord);
 			Double newNetCount = Math.pow(netCount, netWeightFactor);
-			Integer netTotal = this.getNetworkParams().getNetworkNumNodes();
+			Integer netTotal = this.getNetworkNumNodes();
 			Double newNetTotal = Math.pow(netTotal, netWeightFactor);
 			
 			Double numerator = selCount * newNetTotal;
@@ -542,12 +553,84 @@ public class CloudParameters
 		}
 		paramVariables.append("SelectedNodes\t" + output.toString() + "\n");
 		
+		paramVariables.append("NetworkNumNodes\t" + networkNumNodes + "\n");
 		paramVariables.append("SelectedNumNodes\t" + selectedNumNodes + "\n");
 		paramVariables.append("NetWeightFactor\t" + netWeightFactor + "\n");
 		paramVariables.append("CountInitialized\t" + countInitialized + "\n");
 		paramVariables.append("SelInitialized\t" + selInitialized + "\n");
 		
 		return paramVariables.toString();
+	}
+	
+	/**
+	 * Goes through Hashmap and prints all of the objects it contains.
+	 * @param map - any type of hashmap
+	 * @return string representation of the hash with "key tab object newline" representation
+	 */
+	public String printHashMap(HashMap map)
+	{
+		StringBuffer result = new StringBuffer();
+		
+		for (Iterator iter = map.keySet().iterator(); iter.hasNext(); )
+		{
+			Object key = iter.next();
+			result.append(key.toString() + "\t" + map.get(key).toString() + "\n");
+		}
+		return result.toString();
+	}
+	
+	
+	/**
+	 * This method repopulates a properly specified Hashmap from the given file and type.
+	 * @param fileInput - file name where the has map is stored
+	 * @param type - the type of hashmap in the file.  The hashes are repopulated
+	 * based on the property file stored in the session file.  The property file
+	 * specifieds the type of objects contained in each file and this is needed in order
+	 * to create the proper has in the current set of parameters.
+	 * types are Counts(1) and Mapping(2)
+	 * @return properly constructed Hashmap repopulated from the specified file.
+	 */
+	public HashMap repopulateHashmap(String fileInput, int type)
+	{
+		//Hashmap to contain values from the file
+		HashMap newMap;
+		
+		//Counts (network or selected)
+		if (type == 1)
+			newMap = new HashMap<String, Integer>();
+		//Mapping
+		else if (type == 2)
+			newMap = new HashMap<String, List<String>>();
+		else
+			newMap = new HashMap();
+		
+		String [] lines = fileInput.split("\n");
+		
+		for (int i = 0; i < lines.length; i++)
+		{
+			String line = lines[i];
+			String [] tokens = line.split("\t");
+			
+			//the first token is the key and the rest is the object
+			//Different types have different data
+			
+			//Counts
+			if (type == 1)
+				newMap.put(tokens[0], Integer.parseInt(tokens[1]));
+			
+			//Mapping
+			if (type == 2)
+			{
+				//Create List
+				String [] nodes = tokens[1].split(",");
+				ArrayList nodeNames = new ArrayList<String>();
+				for (int j =0; j < nodes.length; j++)
+					nodeNames.add(nodes[j]);
+				
+				newMap.put(tokens[0], nodeNames);
+			}
+		}//end line loop
+		return newMap;
 	}
 	
 	//Getters and Setters
@@ -671,6 +754,16 @@ public class CloudParameters
 	public void setCloudWordInfoList(ArrayList<CloudWordInfo> words)
 	{
 		cloudWords = words;
+	}
+	
+	public Integer getNetworkNumNodes()
+	{
+		return networkNumNodes;
+	}
+
+	public void setNetworkNumNodes(Integer num)
+	{
+		networkNumNodes = num;
 	}
 	
 	public WordFilter getFilter()
