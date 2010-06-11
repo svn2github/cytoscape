@@ -51,7 +51,6 @@ import java.util.Properties;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.visual.converter.ValueToStringConverterManager;
-import cytoscape.visual.parsers.ObjectToString;
 import cytoscape.visual.parsers.ValueParser;
 
 
@@ -265,7 +264,7 @@ public class Appearance {
         if (value == null)
             return null;
 
-        ValueParser p = type.getValueParser(); 
+        ValueParser<?> p = type.getValueParser(); 
 
         Object ret = null;
         if (p != null)

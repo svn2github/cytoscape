@@ -59,8 +59,6 @@ public class DiscretePropertySetter {
 
 			children.add(valProp);
 			
-			System.out.println(valProp.getDisplayName() + ": editor>>>>>>>>>>>>>>>>" + editorFactory
-					.getPropertyEditor(type.getDataType()));
 			rendReg.registerRenderer(valProp, rendFactory.getCellRenderer(type.getDataType()));
 			editorReg.registerEditor(valProp, editorFactory
 					.getPropertyEditor(type.getDataType()));

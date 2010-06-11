@@ -196,6 +196,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     protected void copyDefaultAppearance(AppearanceCalculator toCopy) {
         defaultAppearance = (NodeAppearance) (((NodeAppearanceCalculator) toCopy).getDefaultAppearance().clone());
     }
+    
 
     /**
      * @deprecated Use VisualStyle.getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead.

@@ -111,11 +111,6 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 
 		currentCG.clear();
 		currentCG.addAll(newList);
-
-//		System.out.println(VisualPropertyType
-//				.getCustomGraphicsPositionType(index)
-//				+ ": Number of registered Custom Graphics: "
-//				+ dv.getNumCustomGraphics());
 	}
 
 	/**

@@ -37,6 +37,10 @@
 
 package cytoscape.visual;
 
+import java.util.Properties;
+
+import cytoscape.visual.converter.ValueToStringConverterManager;
+
 /**
  * Objects of this class hold data describing the appearance of a Node.
  */
@@ -51,9 +55,34 @@ public class NodeAppearance extends Appearance {
 
 	private VisualPropertyDependency dep;
 
+	public Object clone() {
+		NodeAppearance ga = new NodeAppearance();
+		ga.copy(this);
+		return ga;
+	}
+
+	public Properties getDefaultProperties(final String baseKey) {
+
+		Properties props = new Properties();
+
+		for (VisualPropertyType type : VisualPropertyType.values()) {
+			if(!type.isNodeProp())
+				continue;
+			
+			String key = type.getDefaultPropertyKey(baseKey);
+			String value = ValueToStringConverterManager.manager
+					.toString(vizProps.get(type));
+			if (key != null && value != null) {
+				props.setProperty(key, value);
+			}
+		}
+
+		return props;
+	}
+
 	/**
-	 * @deprecated This exists only for backwards compatibility.  Do not use it!
-     * Will be removed Jan 2011.
+	 * @deprecated This exists only for backwards compatibility. Do not use it!
+	 *             Will be removed Jan 2011.
 	 */
 	@Deprecated
 	NodeAppearance(VisualPropertyDependency dep) {
@@ -61,31 +90,29 @@ public class NodeAppearance extends Appearance {
 		this.dep = dep;
 	}
 
-
-	public Object clone() {
-		NodeAppearance ga = new NodeAppearance();
-		ga.copy(this);
-		return ga;
+	/**
+	 * Returns whether or not the node height and width are locked.
+	 * 
+	 * @return Whether or not the node height and width are locked.
+	 * @deprecated Use
+	 *             VisualStyle.getDependency().check(VisualPropertyDependency
+	 *             .Definition.NODE_SIZE_LOCKED) instead. Will be removed Jan
+	 *             2011.
+	 */
+	@Deprecated
+	public boolean getNodeSizeLocked() {
+		return dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
 	}
 
-    /**
-     * Returns whether or not the node height and width are locked.
-     * @return Whether or not the node height and width are locked.     
-     * @deprecated Use VisualStyle.getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead. 
-     * Will be removed Jan 2011.
-     */
-    @Deprecated
-    public boolean getNodeSizeLocked() {
-        return dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
-    }
-
-    /**
-     * Sets whether or not the node height and width are locked.     
-     * @deprecated Use VisualStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead. 
-     * Will be removed Jan 2011.
-     */
-    @Deprecated
-    public void setNodeSizeLocked(boolean b) {
-       	dep.set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b); 
-    }
+	/**
+	 * Sets whether or not the node height and width are locked.
+	 * 
+	 * @deprecated Use
+	 *             VisualStyle.getDependency().set(VisualPropertyDependency.Definition
+	 *             .NODE_SIZE_LOCKED,b) instead. Will be removed Jan 2011.
+	 */
+	@Deprecated
+	public void setNodeSizeLocked(boolean b) {
+		dep.set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED, b);
+	}
 }

@@ -80,8 +80,6 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		
 		if(originalImage == null)
 			throw new IOException("Could not create an image from this location: " + imageLocation.toString());
-		
-		System.out.println("######## Image Created: " + originalImage);
 	}
 
 	@Override

@@ -35,11 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
+
 package cytoscape.visual;
 
 
@@ -78,10 +74,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 
 //----------------------------------------------------------------------------
@@ -222,9 +220,8 @@ public class CalculatorIO {
 	public static Properties getProperties(CalculatorCatalog catalog) {
 		final Properties newProps = new Properties();
 
-		for (Calculator c : catalog.getCalculators()) {
+		for (Calculator c : catalog.getCalculators())
 			newProps.putAll(c.getProperties());
-		}
 
 		// visual styles
 		final Set<String> visualStyleNames = catalog.getVisualStyleNames();
@@ -253,7 +250,7 @@ public class CalculatorIO {
 				// e.printStackTrace();
 			}
 		}
-
+		
 		return newProps;
 	}
 

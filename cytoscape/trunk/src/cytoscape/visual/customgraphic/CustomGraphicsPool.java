@@ -100,11 +100,14 @@ public class CustomGraphicsPool extends SubjectBase implements
 					if (file.toString().endsWith("png") == false)
 						continue;
 					
-					System.out.println("Before Procsessing: " +  file.getName());
 					final String fileName = file.getName();
 					final String key = fileName.split("\\.")[0];
 					final String value = prop.getProperty(key);
-					final String name = value.split(",")[2];
+					String[] nameParts = value.split(",");
+					if(nameParts == null || nameParts.length<2)
+						continue;
+					
+					final String name = nameParts[2];
 					System.out.println("Procsessing: " +  fileName + ", " + name);
 					
 					Future<BufferedImage> f = cs.submit(new LoadImageTask(file.toURI().toURL()));
@@ -198,7 +201,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		// Persist images
-		System.out.println("Saving images...");
+		System.out.println("Saving images to .cytoscape/images folder...");
 
 		// Create Task
 		final PersistImageTask task = new PersistImageTask(imageHomeDirectory);

@@ -666,7 +666,7 @@ public enum VisualPropertyType {
 		}
 	}
 
-	public ValueParser getValueParser() {
+	public ValueParser<?> getValueParser() {
 		return valueParser;
 	}
 	

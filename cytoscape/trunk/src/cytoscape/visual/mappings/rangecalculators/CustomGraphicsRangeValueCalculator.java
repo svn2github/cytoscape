@@ -18,7 +18,6 @@ public class CustomGraphicsRangeValueCalculator implements
 	public CyCustomGraphics<?> getRange(Object attrValue) {
 		if (attrValue instanceof String) {
 			CyCustomGraphics<?> obj = parser.parseStringValue((String) attrValue);
-			System.out.println("Parsed Graphics ======= " + obj);
 			return obj;
 		}
 		return null;

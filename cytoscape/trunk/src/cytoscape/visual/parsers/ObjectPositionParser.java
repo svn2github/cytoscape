@@ -28,6 +28,7 @@ public class ObjectPositionParser implements ValueParser<ObjectPosition> {
 	 * @return DOCUMENT ME!
 	 */
 	private ObjectPosition parse(final String value) {
+		
 		final Matcher m = P.matcher(value);
 
 		if (m.matches()) {

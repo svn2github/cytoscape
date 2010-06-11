@@ -3,6 +3,8 @@ package cytoscape.visual.converter;
 import java.util.HashMap;
 import java.util.Map;
 
+import ding.view.ObjectPositionImpl;
+
 
 /**
  * Replacement for ObjectToString.
@@ -34,9 +36,8 @@ public class ValueToStringConverterManager {
 	public String toString(final Object value) {
 		if(value == null)
 			return "";
-		
-		final ValueToStringConverter converter = this.converters.get(value.getClass());
-		
+				
+		final ValueToStringConverter converter = this.converters.get(value.getClass());		
 		if(converter == null)
 			return value.toString();
 		else
@@ -52,6 +53,8 @@ public class ValueToStringConverterManager {
 		
 		final ObjectPositionConverter objectPosition = new ObjectPositionConverter();
 		converters.put(objectPosition.getType(), objectPosition);
+		// This is a hack...  Need to use interface as the key for complete solution.
+		converters.put(ObjectPositionImpl.class, objectPosition);
 		
 		final FontConverter font = new FontConverter();
 		converters.put(font.getType(), font);

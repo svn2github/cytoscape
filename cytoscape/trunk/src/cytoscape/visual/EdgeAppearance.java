@@ -37,6 +37,10 @@
 
 package cytoscape.visual;
 
+import java.util.Properties;
+
+import cytoscape.visual.converter.ValueToStringConverterManager;
+
 /**
  * Objects of this class hold data describing the appearance of an Edge.
  */
@@ -53,5 +57,24 @@ public class EdgeAppearance extends Appearance {
 		EdgeAppearance ga = new EdgeAppearance();
 		ga.copy(this);
 		return ga;
+	}
+	
+	public Properties getDefaultProperties(final String baseKey) {
+
+		Properties props = new Properties();
+
+		for (VisualPropertyType type : VisualPropertyType.values()) {
+			if(type.isNodeProp())
+				continue;
+			
+			String key = type.getDefaultPropertyKey(baseKey);
+			String value = ValueToStringConverterManager.manager
+					.toString(vizProps.get(type));
+			if (key != null && value != null) {
+				props.setProperty(key, value);
+			}
+		}
+
+		return props;
 	}
 }

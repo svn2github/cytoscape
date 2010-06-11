@@ -13,6 +13,8 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
 
 public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	
+	private static final String NULL_CG = "cytoscape.visual.customgraphic.NullCustomGraphics";
+	
 	// Maybe injected from outside if we use DI framework.
 	private final CyCustomGraphicsParserFactory parserFactory;
 	
@@ -32,7 +34,8 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	}
 	
 	private CyCustomGraphics<?> parse(String value) {
-		if(value == null) return null;
+		if(value == null || value.equals(NULL_CG))
+			return null;
 		
 		// Special case:  URL String.
 		try {
@@ -44,11 +47,10 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 			}
 			return graphics;
 		} catch (IOException e) {
-			e.printStackTrace();
-			
+			System.out.println("Invalid URL found. Ignore: " + value);
 		}
 		
-		System.out.println("@@@@@@@@@@@Not Valid URL: " + value);
+		
 		
 		final String[] parts = value.split(",");
 		// Extract class

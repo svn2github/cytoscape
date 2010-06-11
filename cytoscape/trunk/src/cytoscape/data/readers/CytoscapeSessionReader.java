@@ -359,11 +359,6 @@ public class CytoscapeSessionReader {
 	private void createCustomGraphics() throws IOException {
 		final Properties imageProps = new Properties();
 		imageProps.load(URLUtil.getBasicInputStream(imagePropsURL));
-		Set<Entry<Object, Object>> entry = imageProps.entrySet();
-		for(Entry<Object, Object> e: entry) {
-			System.out.println("================= Prop = " + e.getKey() + ", " + e.getValue());
-		}
-		
 		
 		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		// Reset the pool
@@ -375,8 +370,8 @@ public class CytoscapeSessionReader {
 			String[] parts = propEntry.split(",");
 			graphics.setDisplayName(parts[parts.length-1]);
 			
-			System.out.println("New Graphics Name ========>>>>> " + hash);
-			System.out.println("New Graphics Display Name ========>>>>> " + graphics.getDisplayName());
+//			System.out.println("New Graphics Name ========>>>>> " + hash);
+//			System.out.println("New Graphics Display Name ========>>>>> " + graphics.getDisplayName());
 			pool.addGraphics(Integer.parseInt(hash), graphics);
 		}
 	}
