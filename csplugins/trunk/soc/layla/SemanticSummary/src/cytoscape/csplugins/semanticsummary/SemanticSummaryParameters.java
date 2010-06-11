@@ -94,7 +94,9 @@ public class SemanticSummaryParameters
 		this.cloudCount = new Integer(props.get("CloudCount"));
 		
 		//Rebuild List
-		String[] nodes = props.get("NodeList").split(",");
+		String value = props.get("NodeList");
+		System.out.println(value);
+		String[] nodes = value.split(",");
 		ArrayList<String> nodeNameList = new ArrayList<String>();
 		for (int i = 0; i < nodes.length; i++)
 		{

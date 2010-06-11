@@ -156,7 +156,6 @@ public class CreateCloudAction extends CytoscapeAction
 		//inputPanel.setNetworkList(params);
 		inputPanel.addNewCloud(cloudParams);
 		
-		//TODO - Finish this
 			
 	}
 }

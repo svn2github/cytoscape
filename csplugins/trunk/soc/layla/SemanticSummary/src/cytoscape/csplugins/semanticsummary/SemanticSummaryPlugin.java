@@ -50,6 +50,10 @@ import ding.view.DGraphView;
 public class SemanticSummaryPlugin extends CytoscapePlugin 
 {
 	
+	//Variables
+	private static final String netNameSep = "SemanticSummaryNetworkSeparator";
+	private static final String cloudNameSep = "SemanticSummaryCloudSeparator";
+	
 	//CONSTRUCTORS
 	
 	/**
@@ -105,9 +109,14 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		StringBuffer sb = new StringBuffer();
 		sb.append("For every node in the current network, this plugin ");
 		sb.append("displays a word cloud semantic summary of the selected ");
-		sb.append("cyNode attribute.  The node name is the defuault ");
+		sb.append("cyNode attribute.  The node ID is the defuault ");
 		sb.append("attribute.");
 		return sb.toString();
+	}
+	
+	public void onCytoscapeExit()
+	{
+		//Needs to be overridden here
 	}
 	
 	/**
@@ -117,7 +126,6 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 	 * 
 	 * @param pFileList - pointer to the set of files to be added to the session
 	 */
-	/*
 	public void saveSessionStateFiles(List<File> pFileList)
 	{
 		//Create an empty file on system temp directory
@@ -135,7 +143,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 			SemanticSummaryParameters params = networks.get(networkID);
 			
 			//property file
-			File session_prop_file = new File(tmpDir, networkID + ".props");
+			File session_prop_file = new File(tmpDir, netNameSep + networkID + netNameSep + ".props");
 			
 			//write out files.
 			try 
@@ -152,39 +160,38 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					for (Iterator j=all_clouds.keySet().iterator(); j.hasNext();)
 					{
 						String cloud_name = j.next().toString();
-						String old_cloud_name = cloud_name;
-						//Cloud names that contain periods will cause problems
-						if (cloud_name.contains("."))
-							cloud_name.replace('.', '_');
 						
-						CloudParameters cloud = all_clouds.get(old_cloud_name);
+						CloudParameters cloud = all_clouds.get(cloud_name);
 						
 						//File for CloudParameters
-						File current_cloud = new File(tmpDir, networkID + "." + cloud_name + ".CLOUD.txt");
+						File current_cloud = new File(tmpDir, netNameSep + networkID + netNameSep + 
+								cloudNameSep + cloud_name + cloudNameSep + ".CLOUDS.txt");
 						BufferedWriter subCloud1Writer = new BufferedWriter(new FileWriter(current_cloud));
 						subCloud1Writer.write(cloud.toString());
 						subCloud1Writer.close();
 						pFileList.add(current_cloud);
 						
 						//File for String/Word Mapping
-						//I DONT THINK THAT THIS WORKS!
-						File current_mapping = new File(tmpDir, networkID + "." + cloud_name + ".MAPPING.txt");
+						File current_mapping = new File(tmpDir, netNameSep + networkID + netNameSep + 
+								cloudNameSep + cloud_name + cloudNameSep + ".MAPPING.txt");
 						BufferedWriter subCloud2Writer = new BufferedWriter(new FileWriter(current_mapping));
-						subCloud2Writer.write(params.printHashMap(cloud.getStringNodeMapping()));
+						subCloud2Writer.write(cloud.printHashMap(cloud.getStringNodeMapping()));
 						subCloud2Writer.close();
 						pFileList.add(current_mapping);
 						
 						//File for Network Counts
-						File current_net_counts = new File(tmpDir, networkID + "." + cloud_name + ".NETCOUNTS.txt");
+						File current_net_counts = new File(tmpDir, netNameSep + networkID + netNameSep + 
+								cloudNameSep + cloud_name + cloudNameSep + ".NETCOUNTS.txt");
 						BufferedWriter subCloud3Writer = new BufferedWriter(new FileWriter(current_net_counts));
-						subCloud3Writer.write(params.printHashMap(cloud.getNetworkCounts()));
+						subCloud3Writer.write(cloud.printHashMap(cloud.getNetworkCounts()));
 						subCloud3Writer.close();
 						pFileList.add(current_net_counts);
 						
 						//File for Selected Counts
-						File current_sel_counts = new File(tmpDir, networkID + "." + cloud_name + ".SELCOUNTS.txt");
+						File current_sel_counts = new File(tmpDir, netNameSep + networkID + netNameSep + 
+								cloudNameSep + cloud_name + cloudNameSep + ".SELCOUNTS.txt");
 						BufferedWriter subCloud4Writer = new BufferedWriter(new FileWriter(current_sel_counts));
-						subCloud4Writer.write(params.printHashMap(cloud.getSelectedCounts()));
+						subCloud4Writer.write(cloud.printHashMap(cloud.getSelectedCounts()));
 						subCloud4Writer.close();
 						pFileList.add(current_sel_counts);
 						
@@ -199,14 +206,13 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 			pFileList.add(session_prop_file);
 		}//end network iterator
 	}//end save session method
-	*/
 	
 	/**
 	 * Restore Semantic Summaries
 	 * 
 	 * @param pStateFileList - list of files associated with the session
 	 */
-	/*
+
 	public void restoreSessionState(List<File> pStateFileList)
 	{
 		if ((pStateFileList == null) || (pStateFileList.size() == 0))
@@ -231,13 +237,106 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					//Given the file with all the parameters, create a new parameters
 					SemanticSummaryParameters params = new SemanticSummaryParameters(fullText);
 					
-					//Get the network name
-					String param_name = params.getNetworkName();
+					//Get the networkID from the props file
+					String[] fullname = prop_file.getName().split(netNameSep);
+					String props_name = fullname[1];
 					
-					//TODO - Finish this!
+					//Register network
+					SemanticSummaryManager.getInstance().registerNetwork(Cytoscape.getNetwork(props_name), params);
 					
 				}//end if .props file
 			}//end loop through all props files
+			
+			//Go through the prop files to create the clouds
+			for (int i = 0; i < pStateFileList.size(); i++)
+			{
+				File prop_file = pStateFileList.get(i);
+				
+				if (prop_file.getName().contains(".CLOUDS.txt"))
+				{
+					TextFileReader reader = new TextFileReader(prop_file.getAbsolutePath());
+					reader.read();
+					String fullText = reader.getText();
+					
+					//Given the file with all the parameters, create a new parameters
+					CloudParameters params = new CloudParameters(fullText);
+					
+					//Get the networkID from the props file
+					String[] fullname = prop_file.getName().split(netNameSep);
+					String net_name = fullname[1];
+					
+					//Get the cloudID from the props file
+					String[] fullname2 = prop_file.getName().split(cloudNameSep);
+					String cloud_name = fullname2[1];
+					
+					//Get the Network Parameters
+					SemanticSummaryParameters networkParams = 
+						SemanticSummaryManager.getInstance().getCyNetworkList().get(net_name);
+					
+					params.setNetworkParams(networkParams);
+					networkParams.addCloud(cloud_name, params);
+					
+				}//end if .CLOUDS.txt file
+			}//end loop through all props files
+			
+			
+			//Go through the remaining files to update the clouds
+			for (int i = 0; i < pStateFileList.size(); i++)
+			{
+				File prop_file = pStateFileList.get(i);
+				
+				if (prop_file.getName().contains(".CLOUDS.txt") ||
+						prop_file.getName().contains(".props"))
+					continue;
+				
+				TextFileReader reader = new TextFileReader(prop_file.getAbsolutePath());
+				reader.read();
+				String fullText = reader.getText();
+				
+				//Get the networkID from the props file
+				String[] fullname = prop_file.getName().split(netNameSep);
+				String net_name = fullname[1];
+				
+				//Get the cloudID from the props file
+				String[] fullname2 = prop_file.getName().split(cloudNameSep);
+				String cloud_name = fullname2[1];
+				
+				//Get the Network Parameters
+				SemanticSummaryParameters networkParams = 
+					SemanticSummaryManager.getInstance().getCyNetworkList().get(net_name);
+				
+				//Get the Cloud Parameters
+				CloudParameters cloudParams = networkParams.getCloud(cloud_name);
+				
+				if (prop_file.getName().contains(".MAPPING.txt"))
+				{
+					//Recreate the HashMap and store
+					HashMap<String, List<String>> mappings = 
+						cloudParams.repopulateHashmap(fullText,2);
+					cloudParams.setStringNodeMapping(mappings);
+				}//end if .MAPPING.txt file
+				
+				if (prop_file.getName().contains(".NETCOUNTS.txt"))
+				{
+					//Recreate the HashMap and store
+					HashMap<String,Integer> netCounts = cloudParams.repopulateHashmap(fullText, 1);
+					cloudParams.setNetworkCounts(netCounts);
+				}
+				
+				if (prop_file.getName().contains(".SELCOUNTS.txt"))
+				{
+					//Recreate the HashMap and store
+					HashMap<String, Integer> selCounts = cloudParams.repopulateHashmap(fullText, 1);
+					cloudParams.setSelectedCounts(selCounts);
+				}
+			}//end loop through all props files
+			
+			//Register any action Listeners for the networks
+			//TODO
+			
+			//Initialize the panel appropriately
+			SemanticSummaryManager.getInstance().setupCurrentNetwork();
+			
 		}//end try
 		catch (Exception e)
 		{
@@ -245,6 +344,5 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		}
 		
 	}//end restore session method
-	*/
 	
 }

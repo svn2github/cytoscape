@@ -53,7 +53,6 @@ public class CloudParameters
 
 	//VARIABLES
 	private String cloudName;
-	private String networkName;
 	private String attributeName;
 	
 	private SemanticSummaryParameters networkParams; //parent network
@@ -122,7 +121,6 @@ public class CloudParameters
 		}
 		
 		this.cloudName = props.get("CloudName");
-		this.networkName = props.get("NetworkName");
 		this.attributeName = props.get("AttributeName");
 		this.selectedNumNodes = new Integer(props.get("SelectedNumNodes"));
 		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
@@ -131,7 +129,7 @@ public class CloudParameters
 		this.selInitialized = Boolean.parseBoolean(props.get("SelInitialized"));
 		
 		//Rebuild List
-		String[] nodes = props.get("NodeList").split(",");
+		String[] nodes = (props.get("SelectedNodes")).split(",");
 		ArrayList<String> nodeNameList = new ArrayList<String>();
 		for (int i = 0; i < nodes.length; i++)
 		{
@@ -541,7 +539,6 @@ public class CloudParameters
 		StringBuffer paramVariables = new StringBuffer();
 		
 		paramVariables.append("CloudName\t" + cloudName + "\n");
-		paramVariables.append("NetworkName\t" + networkName + "\n");
 		paramVariables.append("AttributeName\t" + attributeName + "\n");
 		
 		//List of Nodes as a comma delimited list
@@ -644,15 +641,6 @@ public class CloudParameters
 		cloudName = name;
 	}
 	
-	public String getNetworkName()
-	{
-		return networkName;
-	}
-	
-	public void setNetworkName(String name)
-	{
-		networkName = name;
-	}
 	
 	public String getAttributeName()
 	{
