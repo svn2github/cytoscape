@@ -491,13 +491,13 @@ public class CloudParameters
 		Number value = (Number) netWeightTextField.getValue();
 		if ((value != null) && (value.doubleValue() >= 0.0) && (value.doubleValue() <= 1))
 		{
-			netWeightFactor = value.doubleValue();
+			setNetWeightFactor(value.doubleValue()); //sets all necessary flags
 		}
 		else
 		{
 			Double defaultNetWeight = SemanticSummaryManager.getInstance().getDefaultNetWeight();
 			netWeightTextField.setValue(defaultNetWeight);
-			netWeightFactor = defaultNetWeight;
+			setNetWeightFactor(defaultNetWeight);
 			String message = "The network weight factor must be greater than or equal to 0 and less than or equal to 1";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
 		}
@@ -505,7 +505,14 @@ public class CloudParameters
 		//Attribute
 		Object attribute = inputPanel.getCMBAttributes().getSelectedItem();
 		if (attribute instanceof String)
-			attributeName = (String) attribute;
+			setAttributeName((String) attribute);
+		else
+		{
+			setAttributeName(SemanticSummaryManager.getInstance().getDefaultAttName());
+			inputPanel.getCMBAttributes().setSelectedItem(attributeName);
+			String message = "You must select a valid String attribute or use the node ID.";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	/**
@@ -566,10 +573,16 @@ public class CloudParameters
 	
 	public void setAttributeName(String name)
 	{
+		//Set flags if it is changing
+		if (!attributeName.equals(name))
+		{
+			countInitialized = false;
+			selInitialized = false;
+			ratiosInitialized = false;
+		}
+		
 		attributeName = name;
-		countInitialized = false; //need to recalculate counts
-		selInitialized = false; // need to recalculate
-		ratiosInitialized = false; // need to recalculate
+
 	}
 	
 	public SemanticSummaryParameters getNetworkParams()
@@ -730,6 +743,10 @@ public class CloudParameters
 	
 	public void setNetWeightFactor(Double val)
 	{
+		//Reset flags if net Weight changes
+		if (!netWeightFactor.equals(val))
+			ratiosInitialized = false;
+		
 		netWeightFactor = val;
 	}
 	
