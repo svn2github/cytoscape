@@ -80,7 +80,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.Color;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.Dimension;
 
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
@@ -170,8 +169,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		
 		// by default, show all the plugins
 		this.versionCheck.setSelected(false);
+		
+		this.btnEditSite.setEnabled(false);
+		this.btnDeleteSite.setEnabled(false);
 	}
-
+	
+	
 	class MyChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e){
 			int width = PluginManageDialog.this.jTabbedPane1.getSize().width;
@@ -1425,6 +1428,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 			JList list = (JList) ev.getSource();
 			if (list.getSelectedIndices().length == 0){
+				// If nothing is selected, disable Edit/Delete button
+				PluginManageDialog.this.btnEditSite.setEnabled(false);
+				PluginManageDialog.this.btnDeleteSite.setEnabled(false);
 				return;
 			}
 
@@ -1434,9 +1440,20 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				clickCount = 0;
 				return;
 			}
-			
+
 			DataSource dataSource = (DataSource) list.getSelectedValue();
 			
+			if (dataSource.getName().equalsIgnoreCase("Cytoscape")){
+				// Cytoscape is the default site, user should never edit/delete it
+				PluginManageDialog.this.btnEditSite.setEnabled(false);
+				PluginManageDialog.this.btnDeleteSite.setEnabled(false);			
+			}
+			else {
+				PluginManageDialog.this.btnEditSite.setEnabled(true);
+				PluginManageDialog.this.btnDeleteSite.setEnabled(true);
+			}
+
+			//If download site is changed, update the plugin tree 
 			String urlStr = dataSource.getHref();
 			if (!PluginManageDialog.this.currentPluginSiteURL.equalsIgnoreCase(urlStr)){
 				PluginManageDialog.this.currentPluginSiteURL = urlStr;
@@ -1445,7 +1462,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 	
-	
+
 	public static void main(String[] args) {
 		PluginManageDialog pd = new PluginManageDialog();
         //pd.setSiteName("Testing");
