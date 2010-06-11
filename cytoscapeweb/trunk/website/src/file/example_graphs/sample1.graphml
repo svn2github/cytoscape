@@ -56,6 +56,11 @@
       <data key="label">A08</data>
       <data key="shape">HEXAGON</data>
     </node>
+    <node id="a09">
+      <data key="weight">0.45</data>
+      <data key="label">A09</data>
+      <data key="shape">VEE</data>
+    </node>
  
     <edge target="a01" source="a02" directed="true">
       <data key="network">25</data>
@@ -137,9 +142,16 @@
     <edge target="a04" source="a08">
       <data key="network">14</data>
       <data key="weight">0.2</data>
-      <data key="label">a04 (2) a08</data>
+      <data key="label">a04 (14) a08</data>
       <data key="sourceArrowShape">T</data>
       <data key="targetArrowShape">T</data>
+    </edge>
+    <edge target="a09" source="a04">
+      <data key="network">2</data>
+      <data key="weight">0.8</data>
+      <data key="label">a09 (2) a04</data>
+      <data key="sourceArrowShape">T</data>
+      <data key="targetArrowShape">arrow</data>
     </edge>
   </graph>
 </graphml>

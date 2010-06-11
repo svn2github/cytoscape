@@ -35,7 +35,7 @@ $(function(){
             completionIcon: completion,
             label: label,
             valid: function(str){
-                return str.match( /^(([a-z]|[A-Z])+)(@)(([a-z]|[A-Z])+)(\.)(([a-z]|[A-Z])+)$/ );
+                return str.match( /^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/ );
             },
             errorMessage: function(str){
                 if( str == "" ){

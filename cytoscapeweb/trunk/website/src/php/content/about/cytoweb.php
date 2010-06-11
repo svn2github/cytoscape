@@ -4,7 +4,7 @@
 
 <p>Cytoscape Web was initially developed at the
 <a href="http://www.utoronto.ca/" rel="external">University of Toronto</a>, in
-the <a href="http://tdccbr.med.utoronto.ca/" rel="external">Donnelly Centre for Cellular and Biomolecular Research</a>,
+the <a href="http://www.thedonnellycentre.utoronto.ca/" rel="external">Donnelly Centre for Cellular and Biomolecular Research</a>,
 in the labs of <a href="http://baderlab.org/" rel="external">Gary Bader</a> and
 <a href="http://morrislab.med.utoronto.ca/" rel="external">Quaid Morris</a>.
 Cytoscape Web development is funded by <a href="http://www.genomecanada.ca/" rel="external">Genome Canada</a>, through the

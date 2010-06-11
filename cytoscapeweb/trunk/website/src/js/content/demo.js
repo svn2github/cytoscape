@@ -337,7 +337,6 @@ $(function(){
     	dispose();
     	
         var description;
-        
         options = opt;
         
         if(opt.name) {
@@ -651,8 +650,7 @@ $(function(){
             var vis = viss[i];
             $("#visual_style").append("<li class=\"ui-menu-checkable\"><label>" + vis_name + "</label></li>");
         }
-        
-        
+
         // add examples to menu
         /*
         for(var i in example){
@@ -707,8 +705,7 @@ $(function(){
                     break;
                 }
             },
-           
-                       
+       
             onMenuItemCheck: function(li){
                 switch( li.attr("id") ) {
                 case "show_node_labels":
@@ -753,13 +750,18 @@ $(function(){
                 swfPath: path("swf/Importer"),
                 flashInstallerPath: path("swf/playerProductInstall"),
                 data: function(data){
+        			var network = data.string;
 					var new_graph_options = {
-						network: data.string,
+						network: network,
 					    name: data.metadata.name,
 					    description: "",
 					    visualStyle: GRAPH_STYLES["Default"],
 					    nodeLabelsVisible: true
 					};
+					if (network.indexOf("</graphml>") === -1 && network.indexOf("</graph>") > -1) {
+						// XGMML...
+						new_graph_options.layout = "Preset";
+					}
 					open_graph(new_graph_options);
 				},
 	            ready: function(){
@@ -768,8 +770,9 @@ $(function(){
 	            typeFilter: function(){
 	                return "*.graphml;*.xgmml;*.xml;*.sif";
 	            },
-	            typeDescription: function(){
-	            	return "Network file";
+	            binary: function(metadata){
+	            	return false; // to return data.string and not data.bytes
+	            	// TODO: if CYS support, check metadata.name.indexOf(".cys")
 	            }
             };
             
@@ -1019,6 +1022,8 @@ $(function(){
             	cw.removeListener("click", "nodes", clickNodeToAddEdge);
             	if (cw.node(_srcId)) {
             		cw.addEdge({ source: _srcId, target: evt.target.data.id }, true);
+            		dirty_graph_state();
+            		update_with_loader();
             	}
             	_srcId = null;
             }
@@ -1262,7 +1267,6 @@ $(function(){
             	_srcId = evt.target.data.id;
             	cw.removeListener("click", "nodes", clickNodeToAddEdge);
             	cw.addListener("click", "nodes", clickNodeToAddEdge);
-            	dirty_graph_state();
             });
         	
         	var items = cw.selected();
@@ -1834,7 +1838,7 @@ $(function(){
                 case "non-empty string":
                     return value != null && value != "";
                 case "node shape":
-                    return value.match(/^(ellipse)|(diamond)|(rectangle)|(triangle)|(hexagon)|(roundrect)|(parallelogram)|(octagon)|(v)$/i);
+                    return value.match(/^(ellipse)|(diamond)|(rectangle)|(triangle)|(hexagon)|(roundrect)|(parallelogram)|(octagon)|(vee)|(v)$/i);
                 case "edge shape":
                     return value.match(/^(circle)|(diamond)|(delta)|(arrow)|(T)|(none)$/i);
             }
@@ -2339,10 +2343,9 @@ $(function(){
                 node_shape_picker = $('<div id="node_shape_picker" class="shape_picker floating_widget"></div>');
                 $("body").append(node_shape_picker);
                 
-                var types = [ "ellipse", "triangle", "diamond", "rectangle", "roundrect", "parallelogram",  "hexagon", "octagon" ];
+                var types = [ "ellipse", "triangle", "diamond", "rectangle", "roundrect", "parallelogram",  "hexagon", "octagon", "vee" ];
                 for(var i in types){
                     var type = types[i];
-                
                     $(node_shape_picker).append('<div class="shape ' + type + '" shape="' + type + '"></div>');
                 }
                 
@@ -2388,7 +2391,7 @@ $(function(){
                 edge_shape_picker = $('<div id="edge_shape_picker" class="shape_picker floating_widget"></div>');
                 $("body").append(edge_shape_picker);
                 
-                var types = [ "circle", "diamond", "delta", "t", "none" ];
+                var types = [ "delta", "arrow", "diamond", "circle", "t", "none" ];
                 for(var i in types){
                     var type = types[i];
                 

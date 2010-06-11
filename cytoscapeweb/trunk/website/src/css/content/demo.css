@@ -137,19 +137,28 @@ input[type=button].ui-state-default { cursor: pointer; }
 .farbtastic .marker {  width: 17px;  height: 17px;  margin: -8px 0 0 -8px;  overflow: hidden;   background: url("../../img/farbtastic/marker.png") no-repeat; }
 
 /* shape picker */
-#node_shape_picker { width: 240px; padding: 5px; }
+#node_shape_picker { width: 180px; padding: 5px; }
 #edge_shape_picker { width: 180px; padding: 5px; }
-.shape_picker .shape { width: 50px; height: 50px; background-color: #fff; background-position: center center; background-repeat: no-repeat; float: left; margin: 5px; cursor: pointer; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
-.shape_picker .shape.rectangle { background-image: url("../../img/icons/shapes/rectangle.png"); }
-.shape_picker .shape.roundrect { background-image: url("../../img/icons/shapes/roundrect.png"); }
-.shape_picker .shape.diamond { background-image: url("../../img/icons/shapes/diamond.png"); }
-.shape_picker .shape.ellipse, .shape_picker .shape.circle { background-image: url("../../img/icons/shapes/ellipse.png"); }
-.shape_picker .shape.hexagon { background-image: url("../../img/icons/shapes/hexagon.png"); }
-.shape_picker .shape.triangle { background-image: url("../../img/icons/shapes/triangle.png"); }
-.shape_picker .shape.delta { background-image: url("../../img/icons/shapes/delta.png"); }
-.shape_picker .shape.parallelogram { background-image: url("../../img/icons/shapes/parallelogram.png"); }
-.shape_picker .shape.octagon { background-image: url("../../img/icons/shapes/octagon.png"); }
-.shape_picker .shape.t { background-image: url("../../img/icons/shapes/t.png"); }
+.shape_picker .shape { width: 50px; height: 50px; float: left; margin: 5px; cursor: pointer; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+
+#node_shape_picker .shape { background: #fff url("../../img/icons/shapes/node_shapes.png") center center no-repeat; }
+#node_shape_picker .shape.parallelogram { background-position: 0 0; }
+#node_shape_picker .shape.ellipse { background-position: -50px 0; }
+#node_shape_picker .shape.triangle { background-position: -100px 0; }
+#node_shape_picker .shape.octagon { background-position: -150px 0; }
+#node_shape_picker .shape.diamond { background-position: -200px 0; }
+#node_shape_picker .shape.roundrect { background-position: -250px 0; }
+#node_shape_picker .shape.rectangle { background-position: -300px 0; }
+#node_shape_picker .shape.hexagon { background-position: -350px 0; }
+#node_shape_picker .shape.vee { background-position: -400px 0; }
+
+#edge_shape_picker .shape { background: #fff url("../../img/icons/shapes/arrow_shapes.png") center center no-repeat; }
+#edge_shape_picker .shape.diamond { background-position: 0 0; }
+#edge_shape_picker .shape.delta { background-position: -50px 0; }
+#edge_shape_picker .shape.arrow { background-position: -100px 0; }
+#edge_shape_picker .shape.circle { background-position: -150px 0; }
+#edge_shape_picker .shape.t { background-position: -200px 0; }
+#edge_shape_picker .shape.none { background-position: -250px 0; }
 
 /* resizing panes */
 .ui-layout-resizer { display: block; background: url("../../img/layout/grip.png") #fff; cursor: w-resize; }
