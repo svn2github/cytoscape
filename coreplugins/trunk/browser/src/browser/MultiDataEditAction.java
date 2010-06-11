@@ -245,7 +245,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	} // initEdit
 
 	private static boolean eqnTypeIsCompatibleWithAttrType(final Class eqnType, final byte attType) {
-		if (eqnType == Integer.class) {
+		if (eqnType == Integer.class || eqnType == Long.class) {
 			if (attType != CyAttributes.TYPE_INTEGER && attType != CyAttributes.TYPE_FLOATING
 			    && attType != CyAttributes.TYPE_BOOLEAN && attType != CyAttributes.TYPE_STRING)
 				return false;
@@ -499,7 +499,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			// get the current value and set the old_value to it
 			final String s = (String) attrData.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(s);
-			
+
 			if (s == null && action != SET)
 				continue;
 
@@ -526,7 +526,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 						new_v = s.replaceAll(vals[0], vals[1]);
 					else
 						new_v = s.concat(input);
-				
+
 				} else if (action == ActionName.TO_LOWER) {
 					new_v = s.toLowerCase();
 				} else if (action == ActionName.TO_UPPER) {

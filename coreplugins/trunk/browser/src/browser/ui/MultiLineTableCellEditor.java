@@ -140,17 +140,17 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 				System.err.println("table is null");
 				return;
 			}
-				
+
 			if (table.isEditing()) {
 				Rectangle cellRect = table.getCellRect(table.getEditingRow(),
 				                                       table.getEditingColumn(), false);
 				Dimension prefSize = getPreferredSize();
 				putClientProperty(UPDATE_BOUNDS, Boolean.TRUE);
-				setBounds(getX(), getY(), Math.max(cellRect.width, prefSize.width),
+				setBounds(getX(), getY(), Math.min(cellRect.width, prefSize.width),
 				          Math.max(cellRect.height + prefSize.height, prefSize.height));
 				putClientProperty(UPDATE_BOUNDS, Boolean.FALSE);
 				validate();
-			} 
+			}
 		}
 
 		//
@@ -181,7 +181,7 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 				return;
 			}
 
-			// We want to insert a newline of Enter+Alt or Enter+Alt+Meta have been pressed:
+			// We want to insert a newline if Enter+Alt or Enter+Alt+Meta have been pressed:
 			final int OPTION_AND_COMMAND = 12; // On Mac to emulate Excel.
 			if (modifiers == KeyEvent.VK_ALT || modifiers == OPTION_AND_COMMAND) {
 				final int caretPosition = this.getCaretPosition();

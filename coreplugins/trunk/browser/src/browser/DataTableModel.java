@@ -533,7 +533,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 *  @param newValue    the new value to be set
 	 *  @param colIdx      the index of the column that will be updated
 	 *  @param skipRowIdx  a row with matching this index will not be updated
-	 *  
+	 *
 	 */
 	public void updateColumn(final Object newValue, final int colIdx, final int skipRowIdx) {
 		final int keyIndex = getKeyIndex();
@@ -571,10 +571,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			keyIndex = 0;
 			columnOffset = 1;
 		} else {
-			for (int i = 0; i < attributeNames.size(); i++) {
-				if (attributeNames.get(i).equals(AttributeBrowser.ID)) {
+			for (int i = 0; i < columnIdentifiers.size(); i++) {
+				if (columnIdentifiers.get(i).equals(AttributeBrowser.ID)) {
 					keyIndex = i;
-
 					break;
 				}
 			}
