@@ -61,7 +61,7 @@ public class CloudParameters
 	private List<String> selectedNodes; //set of selected nodes for cloud
 	private Integer selectedNumNodes;
 	
-	private HashMap<String, List<CyNode>> stringNodeMapping;
+	private HashMap<String, List<String>> stringNodeMapping;
 	private HashMap<String, Integer> networkCounts; // counts for whole network
 	private HashMap<String, Integer> selectedCounts; // counts for selected nodes
 	private HashMap<String, Double> ratios;
@@ -86,7 +86,7 @@ public class CloudParameters
 	public CloudParameters()
 	{
 		this.selectedNodes = new ArrayList<String>();
-		this.stringNodeMapping = new HashMap<String, List<CyNode>>();
+		this.stringNodeMapping = new HashMap<String, List<String>>();
 		this.networkCounts = new HashMap<String, Integer>();
 		this.selectedCounts = new HashMap<String, Integer>();
 		this.ratios = new HashMap<String, Double>();
@@ -148,7 +148,7 @@ public class CloudParameters
 		
 		//Clear old counts
 		this.networkCounts = new HashMap<String, Integer>();
-		this.stringNodeMapping = new HashMap<String, List<CyNode>>();
+		this.stringNodeMapping = new HashMap<String, List<String>>();
 		
 		
 		//Retrieve needed variables from parent parameters
@@ -221,17 +221,17 @@ public class CloudParameters
 				{
 					//If this word has not been encountered, or not encountered
 					//in this node, add it to our mappings and counts
-					HashMap<String, List<CyNode>> curMapping = this.getStringNodeMapping();
+					HashMap<String, List<String>> curMapping = this.getStringNodeMapping();
 				
 					//If we have not encountered this word, add it to the mapping
 					if (!curMapping.containsKey(curWord))
 					{
-						curMapping.put(curWord, new ArrayList<CyNode>());
+						curMapping.put(curWord, new ArrayList<String>());
 						networkCounts.put(curWord, 0);
 					}
 					
 					//Add node to mapping, update counts
-					curMapping.get(curWord).add(curNode);
+					curMapping.get(curWord).add(curNode.toString());
 					Integer num = networkCounts.get(curWord);
 					num = num + 1;
 					networkCounts.put(curWord, num);
@@ -623,12 +623,12 @@ public class CloudParameters
 		selectedNumNodes = num;
 	}
 	
-	public HashMap<String, List<CyNode>> getStringNodeMapping()
+	public HashMap<String, List<String>> getStringNodeMapping()
 	{
 		return stringNodeMapping;
 	}
 	
-	public void setStringNodeMapping(HashMap<String, List<CyNode>> mapping)
+	public void setStringNodeMapping(HashMap<String, List<String>> mapping)
 	{
 		stringNodeMapping = mapping;
 	}

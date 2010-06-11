@@ -148,24 +148,26 @@ public class CloudParametersUnitTest extends TestCase {
 		assertEquals((Integer)counts.get("reactome"),null);
 		
 		//Test mappings
-		HashMap<String, List<CyNode>> mapping = cloudParams.getStringNodeMapping();
+		HashMap<String, List<String>> mapping = cloudParams.getStringNodeMapping();
 		
 		//Single node in list
-		List<CyNode> nodeList = mapping.get("strip");
-		Iterator<CyNode> iter = nodeList.iterator();
+		List<String> nodeList = mapping.get("strip");
+		Iterator<String> iter = nodeList.iterator();
 		while (iter.hasNext())
 		{
-			CyNode curNode = (CyNode)iter.next();
+			String curNodeName = (String)iter.next();
+			CyNode curNode = Cytoscape.getCyNode(curNodeName);
 			assertEquals(curNode.toString(),"Reactome_node to strip lots from.");
 		}
 		
 		//Multiple nodes in list
 		int count = 0;
 		nodeList = mapping.get("twonode");
-		Iterator<CyNode> iter2 = nodeList.iterator();
+		Iterator<String> iter2 = nodeList.iterator();
 		while (iter2.hasNext())
 		{
-			CyNode curNode = (CyNode)iter2.next();
+			String curNodeName = (String)iter2.next();
+			CyNode curNode = Cytoscape.getCyNode(curNodeName);
 			assertEquals(curNode.toString(),"Node twonode");
 			count++;
 		}

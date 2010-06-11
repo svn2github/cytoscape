@@ -25,6 +25,8 @@ package cytoscape.csplugins.semanticsummary;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -98,7 +100,16 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 				getCurCloud();
 				
 				//Get all nodes containing this word
-				List<CyNode> nodes = cloudParams.getStringNodeMapping().get(word);
+				List<String> nodeNames = cloudParams.getStringNodeMapping().get(word);
+				List<CyNode> nodes = new ArrayList<CyNode>();
+				
+				for(Iterator<String> iter = nodeNames.iterator(); iter.hasNext();)
+				{
+					String curNodeName = iter.next();
+					CyNode curNode = Cytoscape.getCyNode(curNodeName);
+					nodes.add(curNode);
+				}
+				
 				
 				CyNetwork network = Cytoscape.getCurrentNetwork();
 				network.unselectAllNodes();
