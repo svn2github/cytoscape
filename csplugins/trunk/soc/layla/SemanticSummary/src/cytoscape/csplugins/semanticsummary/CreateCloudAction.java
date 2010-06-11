@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -122,11 +123,18 @@ public class CreateCloudAction extends CytoscapeAction
 		cloudParams.setCloudName(params.getNextCloudName()); 
 		cloudParams.setNetworkParams(params);
 		
-		//TODO - CHOICE HERE
-		//cloudParams.setSelectedNodes(view.getSelectedNodes());
-		cloudParams.setSelectedNodes(network.getSelectedNodes());
+		//Get list of node ID's
+		Set<CyNode> nodes = network.getSelectedNodes();
+		List<String> nodeNames = new ArrayList<String>();
+		for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+		{
+			CyNode curNode = iter.next();
+			String curName = curNode.toString();
+			nodeNames.add(curName);
+		}
 		
-		cloudParams.setSelectedNumNodes(network.getNodeCount());
+		cloudParams.setSelectedNodes(nodeNames);
+		cloudParams.setSelectedNumNodes(nodeNames.size());
 		
 		//Add to list of clouds
 		params.addCloud(cloudParams.getCloudName(), cloudParams);

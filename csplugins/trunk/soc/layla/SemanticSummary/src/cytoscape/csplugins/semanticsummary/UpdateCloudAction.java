@@ -24,10 +24,15 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
@@ -85,9 +90,20 @@ public class UpdateCloudAction extends CytoscapeAction
 		}
 		
 		//New set of selected nodes
-		cloudParams.setSelectedNodes(network.getSelectedNodes());
-		cloudParams.setSelectedNumNodes(network.getNodeCount());
+		Set<CyNode> nodes = network.getSelectedNodes();
+		List<String> nodeNames = new ArrayList<String>();
+		for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+		{
+			CyNode curNode = iter.next();
+			String curName = curNode.toString();
+			nodeNames.add(curName);
+		}
 		
+		cloudParams.setSelectedNodes(nodeNames);
+		
+		cloudParams.setSelectedNumNodes(nodeNames.size());
+		
+
 		//Retrieve values from input panel
 		cloudParams.retrieveInputVals();
 		

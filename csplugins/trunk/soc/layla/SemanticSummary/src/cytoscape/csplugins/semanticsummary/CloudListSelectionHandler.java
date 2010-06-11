@@ -24,6 +24,7 @@ package cytoscape.csplugins.semanticsummary;
 
 import giny.view.NodeView;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -90,7 +91,15 @@ public class CloudListSelectionHandler implements ListSelectionListener
 			updateCloudDisplay(cloudParams);
 			
 			//Highlight selected nodes
-			Set<CyNode> selNodes = cloudParams.getSelectedNodes();
+			List<String> selNodeNames = cloudParams.getSelectedNodes();
+			Set<CyNode> selNodes = new HashSet<CyNode>();
+			
+			for(Iterator<String> iter = selNodeNames.iterator(); iter.hasNext();)
+			{
+				String curNodeID = (String)iter.next();
+				selNodes.add(Cytoscape.getCyNode(curNodeID));
+			}
+			
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			network.unselectAllNodes();
 			network.unselectAllEdges();

@@ -58,7 +58,7 @@ public class CloudParameters
 	
 	private SemanticSummaryParameters networkParams; //parent network
 	
-	private Set<CyNode> selectedNodes; //set of selected nodes for cloud
+	private List<String> selectedNodes; //set of selected nodes for cloud
 	private Integer selectedNumNodes;
 	
 	private HashMap<String, List<CyNode>> stringNodeMapping;
@@ -85,7 +85,7 @@ public class CloudParameters
 	 */
 	public CloudParameters()
 	{
-		this.selectedNodes = new HashSet<CyNode>();
+		this.selectedNodes = new ArrayList<String>();
 		this.stringNodeMapping = new HashMap<String, List<CyNode>>();
 		this.networkCounts = new HashMap<String, Integer>();
 		this.selectedCounts = new HashMap<String, Integer>();
@@ -264,13 +264,16 @@ public class CloudParameters
 		//Retrieve needed variables from parent parameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
 		
-		Set<CyNode> selectedNodes = this.getSelectedNodes();
+		List<String> selectedNodes = this.getSelectedNodes();
+		
 		
 		//Iterate to retrieve Cynodes
-		Iterator<CyNode> iter = selectedNodes.iterator();
+		Iterator<String> iter = selectedNodes.iterator();
 		while(iter.hasNext())
 		{
-			CyNode curNode = (CyNode)iter.next();
+			
+			String curNodeID = (String)iter.next();
+			CyNode curNode = Cytoscape.getCyNode(curNodeID);
 			
 			//Retrieve value based on attribute
 			String nodeValue;
@@ -597,21 +600,14 @@ public class CloudParameters
 		networkParams = params;
 	}
 	
-	public Set<CyNode> getSelectedNodes()
+	public List<String> getSelectedNodes()
 	{
 		return selectedNodes;
 	}
 	
-	public void setSelectedNodes(Set<CyNode> nodes)
+	public void setSelectedNodes(List<String> nodes)
 	{
-		//Copy nodes individually, so that when Set updates, this set
-		//stays constant
-		Iterator<CyNode> iter = nodes.iterator();
-		while (iter.hasNext())
-		{
-			CyNode curNode = iter.next();
-			selectedNodes.add(curNode);
-		}
+		selectedNodes = nodes;
 		
 		selInitialized = false; //So we update when SelectedNodes change
 		ratiosInitialized = false; //need to update ratios
