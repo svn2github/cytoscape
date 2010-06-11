@@ -169,7 +169,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		this.tfSearch.setToolTipText(HOWTOSEARCH);
 		
 		// by default, show all the plugins
-		this.versionCheck.setSelected(true);
+		this.versionCheck.setSelected(false);
 	}
 
 	class MyChangeListener implements ChangeListener {
@@ -413,7 +413,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 				hiddenCat.add(PluginNode);
 				hiddenNodes.put(Category, hiddenCat);
-				if (versionCheck.isSelected())
+				if (!versionCheck.isSelected())
 					treeModel.addNodeToParent(Category, PluginNode);
 			} else {
 				treeModel.addNodeToParent(Category, PluginNode);
@@ -427,7 +427,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	// allow for outdated versions
 	private void versionCheckItemStateChanged(java.awt.event.ItemEvent evt) {
 		TreePath[] SelectedPaths = pluginTree.getSelectionPaths();
-		if (evt.getStateChange() == ItemEvent.SELECTED) {
+		if (evt.getStateChange() == ItemEvent.DESELECTED) {
 			pluginTree.collapsePath( new TreePath(availableNode.getPath()) );
 			availableNode.removeChildren();
 			for (TreeNode Category : hiddenNodes.keySet()) {
@@ -436,7 +436,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				}
 				treeModel.addNodeToParent(availableNode, Category);
 			}
-		} else if (evt.getStateChange() == ItemEvent.DESELECTED) {
+		} else if (evt.getStateChange() == ItemEvent.SELECTED) {
 			
 			for (TreeNode Category : hiddenNodes.keySet()) {
 				for (TreeNode Plugin: hiddenNodes.get(Category)) {
@@ -920,7 +920,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 5, 0);
         jPanel3.add(availablePluginsLabel, gridBagConstraints);
 
-        versionCheck.setText("Show outdated Plugins");
+        versionCheck.setText("Show only plugins verified to work in this release");
+
         versionCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         versionCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
         versionCheck.addItemListener(new java.awt.event.ItemListener() {
@@ -1109,15 +1110,15 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {
     
     	try {
-     		Vector  filteredPluginVector = PluginIndex.getSearchResult(this.tfSearch.getText().trim(),this.versionCheck.isSelected(), downloadLocText.getText());
+     		Vector  filteredPluginVector = PluginIndex.getSearchResult(this.tfSearch.getText().trim(),!this.versionCheck.isSelected(), downloadLocText.getText());
     		
      		if (filteredPluginVector == null){
     			// The index does not exist, build it now
     			
     			//This will create new index for the AllPluginVector
-    	    	PluginIndex.setAllPluginVector(this.getAllPluginVector(), this.versionCheck.isSelected(), downloadLocText.getText());
+    	    	PluginIndex.setAllPluginVector(this.getAllPluginVector(), !this.versionCheck.isSelected(), downloadLocText.getText());
     	    	// After the index is created, we can do searching against the index
-    			filteredPluginVector = PluginIndex.getSearchResult(this.tfSearch.getText().trim(),this.versionCheck.isSelected(), downloadLocText.getText());
+    			filteredPluginVector = PluginIndex.getSearchResult(this.tfSearch.getText().trim(),!this.versionCheck.isSelected(), downloadLocText.getText());
     		}
        	
         	updateTreeModel(filteredPluginVector);
