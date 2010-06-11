@@ -104,20 +104,22 @@ public class NodeLabelColorProp extends AbstractVisualProperty {
 	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null) || o instanceof Color == false)
 			return;
-		final Color color = (Color) o;
-		// Check dependency. Sync size or not.
+
+		Color color = (Color) o;
+
+		// Check dependency. Sync color or not.
 		boolean sync = false;
 		if (dep != null) {
-			sync = dep.check(NODE_LABLE_COLOR_FROM_NODE_COLOR);
+			if ( dep.check(NODE_LABLE_COLOR_FROM_NODE_COLOR) ) {
+				color = ColorUtil.getComplementaryColor((Color) nv.getUnselectedPaint());
+			}
 		}
 
 		final Label nodelabel = nv.getLabel();
 		
-		
-		if(sync) {
-			nodelabel.setTextPaint(ColorUtil.getComplementaryColor((Color) nv.getUnselectedPaint()));
-		} else if (!color.equals(nodelabel.getTextPaint()))
+		if (!color.equals(nodelabel.getTextPaint())) {
 			nodelabel.setTextPaint(color);
+		}
 	}
 
 	/**
