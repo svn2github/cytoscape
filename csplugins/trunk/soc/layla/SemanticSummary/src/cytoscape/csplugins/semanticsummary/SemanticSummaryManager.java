@@ -59,6 +59,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	
 	//Default Values for User Input
 	private Double defaultNetWeight;
+	private String defaultAttName;
 	
 	//CONSTRUCTOR
 	/**
@@ -79,6 +80,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		.addPropertyChangeListener(this);
 		
 		defaultNetWeight = 1.0;
+		defaultAttName = "nodeID";
 	}
 	
 	//METHODS
@@ -125,6 +127,10 @@ public class SemanticSummaryManager implements PropertyChangeListener
 				SemanticSummaryParameters currentParams = getParameters(networkID);
 				currentParams.setNetworkName(cyNetwork.getTitle());
 			}
+		}
+		else if (event.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED))
+		{
+			inputWindow.refreshAttributeCMB();
 		}
 	}
 	
@@ -196,6 +202,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		
 		getInputWindow().setNetworkList(curNetwork);
 		getInputWindow().setUserDefaults();
+		getInputWindow().refreshAttributeCMB();
 		getCloudWindow().clearCloud();
 	}
 	/**
@@ -296,6 +303,11 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	public Double getDefaultNetWeight()
 	{
 		return defaultNetWeight;
+	}
+	
+	public String getDefaultAttName()
+	{
+		return defaultAttName;
 	}
 	
 	

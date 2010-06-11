@@ -23,8 +23,13 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -36,10 +41,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -47,9 +56,13 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.util.swing.WidestStringComboBoxModel;
+import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
 import cytoscape.view.CytoscapeDesktop;
 
 /**
@@ -74,6 +87,9 @@ public class SemanticSummaryInputPanel extends JPanel
 	private JFormattedTextField maxWordsTextField;
 	private JFormattedTextField netWeightTextField;
 	
+	//JComboBox
+	JComboBox cmbAttributes;
+	
 	//JLabels
 	private JLabel networkLabel;
 	
@@ -83,6 +99,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	private CloudListSelectionHandler handler;
 	
 	private static final int DEF_ROW_HEIGHT = 20;
+	private static final String DEFAULT_ATTRIBUTE = "nodeID";
 
 	
 	//instruction text
@@ -112,6 +129,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		//Put the Options in a scroll pane
 		CollapsiblePanel optionsPanel = createOptionsPanel();
 		JScrollPane optionsScroll = new JScrollPane(optionsPanel);
+		optionsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		//Add button to bottom
 		JPanel bottomPanel = createBottomPanel();
@@ -201,6 +219,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
 		
+				
 		return collapsiblePanel;
 	}
 	
@@ -215,22 +234,54 @@ public class SemanticSummaryInputPanel extends JPanel
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0,1));
 		
-		JRadioButton name = new JRadioButton("Node Name");
 		
 		JPanel attributePanel = new JPanel();
-		attributePanel.setLayout(new BorderLayout());
+		//attributePanel.setLayout(new BorderLayout());
+		attributePanel.setLayout(new GridBagLayout());
+
+		JLabel nodeAttributeLabel = new JLabel("Node ID/Attribute: ");
 		
-		JRadioButton attribute = new JRadioButton("Attribute");
-		JFormattedTextField attributeVal = new JFormattedTextField();
-		attributeVal.setEditable(false);
-		attributeVal.setColumns(10);
-		attributePanel.add(attribute,BorderLayout.WEST);
-		attributePanel.add(attributeVal,BorderLayout.EAST);
+		WidestStringComboBoxModel wscbm = new WidestStringComboBoxModel();
+		cmbAttributes = new JComboBox(wscbm);
+		cmbAttributes.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
+		cmbAttributes.setEditable(false);
+	    Dimension d = cmbAttributes.getPreferredSize();
+	    cmbAttributes.setPreferredSize(new Dimension(15, d.height));
+
 		
-		panel.add(name);
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(10,5,0,0);
+		attributePanel.add(nodeAttributeLabel, gridBagConstraints);
+		//attributePanel.setPreferredSize
+		
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new Insets(10, 10, 0, 10);
+		attributePanel.add(cmbAttributes, gridBagConstraints);
+		
+		JLabel placeHolder = new JLabel();
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridwidth = 3;
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		attributePanel.add(placeHolder, gridBagConstraints);
+
+		
+		refreshAttributeCMB();
+		
+		//attributePanel.add(nodeAttributeLabel, BorderLayout.WEST);
+		//attributePanel.add(cmbAttributes, BorderLayout.EAST);
+		
 		panel.add(attributePanel);
-		
-		//TODO - add listeners and attribute selections
 		
 		collapsiblePanel.getContentPane().add(panel,BorderLayout.NORTH);
 		return collapsiblePanel;
@@ -401,6 +452,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	public void loadCurrentCloud(CloudParameters params)
 	{
 		netWeightTextField.setValue(params.getNetWeightFactor());
+		cmbAttributes.setSelectedItem(params.getAttributeName());
 		SemanticSummaryManager.getInstance().setCurCloud(params);
 	}
 	
@@ -433,8 +485,111 @@ public class SemanticSummaryInputPanel extends JPanel
 	public void setUserDefaults()
 	{
 		netWeightTextField.setValue(SemanticSummaryManager.getInstance().getDefaultNetWeight());
+		cmbAttributes.setSelectedItem(SemanticSummaryManager.getInstance().getDefaultAttName());
 		this.updateUI();
 	}
+	
+
+	/**
+	 * Attribute Value selector listener
+	 * @param evt
+	 */
+	/*
+	public void selectAttributeValueButtonActionPerformed(
+			java.awt.event.ActionEvent evt)
+	{
+		//Create and display list of attributes to select from
+		
+	}
+	*/
+	
+	/**
+	 * Update the attribute list in the attribute combobox.
+	 */
+	private void updateCMBAttributes()
+	{
+		DefaultComboBoxModel cmb;
+		
+		cmb = ((DefaultComboBoxModel)cmbAttributes.getModel());
+		cmb.removeAllElements();
+		cmb.addElement(DEFAULT_ATTRIBUTE);
+		
+		Vector<Object>av;
+		
+		av = getCyAttributesList("node");
+		for (int i=0; i < av.size(); i++)
+		{
+			cmb.addElement(av.elementAt(i));
+		}
+	}
+	
+	
+	/**
+	 * Refreshes the list of attributes
+	 */
+	public void refreshAttributeCMB()
+	{
+		updateCMBAttributes();
+		CloudParameters curCloud = SemanticSummaryManager.getInstance().getCurCloud();
+		String curAttribute;
+		if (curCloud == null)
+			curAttribute = SemanticSummaryManager.getInstance().getDefaultAttName();
+		else
+			curAttribute = curCloud.getAttributeName();
+		
+		cmbAttributes.setSelectedItem(curAttribute);
+		cmbAttributes.repaint();
+		
+	}
+	
+	
+	/*
+	 * Get the list of attribute names for either "node" or "edge". The attribute names will be
+	 * prefixed either with "node." or "edge.". Those attributes whose data type is not
+	 * "String" will be excluded
+	 */
+	private Vector<Object> getCyAttributesList(String pType) {
+		Vector<String> attributeList = new Vector<String>();
+		CyAttributes attributes = null;
+		
+		if (pType.equalsIgnoreCase("node")) {
+			attributes = Cytoscape.getNodeAttributes();
+			
+		}
+		else if (pType.equalsIgnoreCase("edge")){
+			attributes = Cytoscape.getEdgeAttributes();			
+		}
+				
+		String[] attributeNames = attributes.getAttributeNames();
+
+		if (attributeNames != null) {
+			//  Show all attributes, with type of String or Number
+			for (int i = 0; i < attributeNames.length; i++) {
+				int type = attributes.getType(attributeNames[i]);
+				
+				//  only show user visible attributes,with type = String
+				if (!attributes.getUserVisible(attributeNames[i])) {
+					continue;
+				}
+				if (type == CyAttributes.TYPE_STRING) {
+					attributeList.add(attributeNames[i]);
+				}
+			} //for loop
+		
+			//  Alphabetical sort
+			Collections.sort(attributeList);
+		}
+
+		// type conversion
+		Vector<Object> retList = new Vector<Object>();
+
+		for (int i=0; i<attributeList.size(); i++) {
+			retList.add(attributeList.elementAt(i));
+		}
+		return retList;
+	}
+
+	
 	
 	
 	//Getters and Setters
@@ -456,5 +611,10 @@ public class SemanticSummaryInputPanel extends JPanel
 	public JList getCloudList()
 	{
 		return cloudList;
+	}
+	
+	public JComboBox getCMBAttributes()
+	{
+		return cmbAttributes;
 	}
 }
