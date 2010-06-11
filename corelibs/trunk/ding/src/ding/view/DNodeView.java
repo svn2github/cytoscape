@@ -1102,7 +1102,6 @@ public class DNodeView implements NodeView, Label {
 				retVal = false;
 			else {
 				retVal = _customGraphics.add(cg);
-				System.out.println("\t\t* Add by addGraphics: " + cg);
 			}
 		}
 		ensureContentChanged();
@@ -1481,7 +1480,6 @@ public class DNodeView implements NodeView, Label {
 
 		CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p,
 				this, cg);
-		System.out.println(removeTest + "\t\t* Add by setPosition: " + cg);
 		
 		_customGraphics.add(newCg);
 		graphicsPositions.put(newCg, p);
