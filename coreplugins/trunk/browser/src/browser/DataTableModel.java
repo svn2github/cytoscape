@@ -503,16 +503,12 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		}
 
 		if (objectType != null) {
-			if (colIndex == 0) {
+			if (colIndex == 0)
 				return false;
-			} else if (objectType == HashMap.class) {
-				return false;
-			} else {
+			else
 				return true;
-			}
-		} else {
+		} else
 			return false;
-		}
 	}
 
 	/**
@@ -618,11 +614,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		final boolean editIsValid = edit.isValid();
 
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
-//		final String attribName = attributeNames.get(colIdx);
-System.err.print("attributeNames: ");for (String name : attributeNames)System.err.print(name+",");System.err.println();
-//final int actualColIdx = findColumn(attribName);
-//System.err.println("actualColIdx="+actualColIdx);
-//System.err.println("colIdx="+colIdx);
 		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
 		if (this.objectType != NETWORK)
 			setDataTableRow(rowIdx);
@@ -636,16 +627,11 @@ System.err.print("attributeNames: ");for (String name : attributeNames)System.er
 	 *  Helper method for updateCell().
 	 */
 	void setDataTableRow(final int rowIdx) {
-/*
-System.err.println("rowIdx="+rowIdx);
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
-System.err.println("rowVector.size()="+rowVector.size());
 		final int noOfColumns = attributeNames.size();
 		final String id = graphObjects.get(rowIdx).getIdentifier();
 		for (int colIdx = 0; colIdx < noOfColumns; ++colIdx) {
-System.err.println("colIdx="+colIdx);
-			final String attribName = attributeNames.get(colIdx);
-System.err.println("attribName="+attribName);
+			final String attribName = (String)columnIdentifiers.get(colIdx);
 			if (attribName.equals(AttributeBrowser.ID))
 				continue;
 
@@ -653,11 +639,9 @@ System.err.println("attribName="+attribName);
 			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
 			if (objectAndEditString != null) {
 				final int actualColIdx = findColumn(attribName);
-System.err.println("actualColIdx="+actualColIdx);
 				rowVector.setElementAt(objectAndEditString, actualColIdx);
 			}
 		}
-*/
 	}
 
 	/**
