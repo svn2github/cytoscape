@@ -99,7 +99,6 @@ public class SemanticSummaryInputPanel extends JPanel
 	private CloudListSelectionHandler handler;
 	
 	private static final int DEF_ROW_HEIGHT = 20;
-	private static final String DEFAULT_ATTRIBUTE = "nodeID";
 
 	
 	//instruction text
@@ -212,7 +211,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		CollapsiblePanel exclusionList = createExclusionListPanel();
 		exclusionList.setCollapsed(true);
 		
-		//TODO - Finish
+		//Add all Panels
 		panel.add(semAnalysis);
 		panel.add(displaySettings);
 		panel.add(exclusionList);
@@ -236,7 +235,6 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		
 		JPanel attributePanel = new JPanel();
-		//attributePanel.setLayout(new BorderLayout());
 		attributePanel.setLayout(new GridBagLayout());
 
 		JLabel nodeAttributeLabel = new JLabel("Node ID/Attribute: ");
@@ -255,8 +253,6 @@ public class SemanticSummaryInputPanel extends JPanel
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.insets = new Insets(10,5,0,0);
 		attributePanel.add(nodeAttributeLabel, gridBagConstraints);
-		//attributePanel.setPreferredSize
-		
 		
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -265,21 +261,8 @@ public class SemanticSummaryInputPanel extends JPanel
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new Insets(10, 10, 0, 10);
 		attributePanel.add(cmbAttributes, gridBagConstraints);
-		
-		JLabel placeHolder = new JLabel();
-		gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 3;
-		gridBagConstraints.fill = GridBagConstraints.BOTH;
-		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.weighty = 1.0;
-		attributePanel.add(placeHolder, gridBagConstraints);
-
-		
-		refreshAttributeCMB();
-		
-		//attributePanel.add(nodeAttributeLabel, BorderLayout.WEST);
-		//attributePanel.add(cmbAttributes, BorderLayout.EAST);
+	    
+	    refreshAttributeCMB();
 		
 		panel.add(attributePanel);
 		
@@ -490,18 +473,6 @@ public class SemanticSummaryInputPanel extends JPanel
 	}
 	
 
-	/**
-	 * Attribute Value selector listener
-	 * @param evt
-	 */
-	/*
-	public void selectAttributeValueButtonActionPerformed(
-			java.awt.event.ActionEvent evt)
-	{
-		//Create and display list of attributes to select from
-		
-	}
-	*/
 	
 	/**
 	 * Update the attribute list in the attribute combobox.
@@ -512,7 +483,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		cmb = ((DefaultComboBoxModel)cmbAttributes.getModel());
 		cmb.removeAllElements();
-		cmb.addElement(DEFAULT_ATTRIBUTE);
+		cmb.addElement(SemanticSummaryManager.getInstance().getDefaultAttName());
 		
 		Vector<Object>av;
 		

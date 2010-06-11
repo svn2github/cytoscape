@@ -24,9 +24,13 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
@@ -69,8 +73,6 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	private SemanticSummaryManager()
 	{
 		cyNetworkList = new HashMap<String, SemanticSummaryParameters>();
-		
-		//ADD LISTENERS HERE
 		
 		//catch network creation/destruction events
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -193,7 +195,18 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		{
 			SemanticSummaryParameters params = new SemanticSummaryParameters();
 			params.setNetworkName(network.getTitle());
-			params.setNetworkNodes(network.nodesList());
+			
+			//Set list of node names with strings
+			List<CyNode> nodes = network.nodesList();
+			List<String> nodeNames = new ArrayList<String>();
+			for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+			{
+				CyNode curNode = iter.next();
+				String curName = curNode.toString();
+				nodeNames.add(curName);
+			}
+			params.setNetworkNodes(nodeNames);
+			
 			params.setNetworkNumNodes(network.getNodeCount());
 			SemanticSummaryManager.getInstance().registerNetwork(network, params);
 			

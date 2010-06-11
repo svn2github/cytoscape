@@ -23,11 +23,15 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
@@ -97,7 +101,18 @@ public class CreateCloudAction extends CytoscapeAction
 		{
 			params = new SemanticSummaryParameters();
 			params.setNetworkName(network.getTitle());
-			params.setNetworkNodes(network.nodesList());
+			
+			//Get list of node ID's
+			List<CyNode> nodes = network.nodesList();
+			List<String> nodeNames = new ArrayList<String>();
+			for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+			{
+				CyNode curNode = iter.next();
+				String curName = curNode.toString();
+				nodeNames.add(curName);
+			}
+			params.setNetworkNodes(nodeNames);
+			
 			params.setNetworkNumNodes(network.getNodeCount());
 			SemanticSummaryManager.getInstance().registerNetwork(network, params);
 		}

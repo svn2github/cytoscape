@@ -44,7 +44,7 @@ public class SemanticSummaryParameters
 	//VARIABLES
 	private String networkName;
 	private HashMap<String, CloudParameters> clouds; //list of network's clouds
-	private List<CyNode> nodeList; //list of all CyNodes in network
+	private List<String> nodeList; //list of the IDs of all the nodes in the network
 	private Integer networkNumNodes;
 	
 	//Name creation variables
@@ -53,11 +53,9 @@ public class SemanticSummaryParameters
 	private static final String SEPARATER = "_";
 	
 	
-	//private boolean isInitialized;//set to true when original data counts set
-	
-	//DO THESE GO HERE??
-	private static final Integer MINFONTSIZE = 12; //TODO
-	private static final Integer MAXFONTSIZE = 56; //TODO
+	//Font Size Values
+	private static final Integer MINFONTSIZE = 12; 
+	private static final Integer MAXFONTSIZE = 56;
 	
 	//CONSTRUCTORS
 	
@@ -67,7 +65,7 @@ public class SemanticSummaryParameters
 	public SemanticSummaryParameters()
 	{
 		this.clouds = new HashMap<String,CloudParameters>();
-		this.nodeList = new ArrayList<CyNode>();
+		this.nodeList = new ArrayList<String>();
 	}
 	
 	/**
@@ -203,7 +201,7 @@ public class SemanticSummaryParameters
 		paramVariables.append("NetworkNumNodes\t" + networkNumNodes + "\n");
 		paramVariables.append("CloudCount\t" + cloudCount + "\n");
 		
-		//List of Nodes as a comma delimeted list
+		//List of Nodes as a comma delimited list
 		StringBuffer output = new StringBuffer();
 		for (int i = 0; i < nodeList.size(); i++)
 		{
@@ -255,12 +253,12 @@ public class SemanticSummaryParameters
 		clouds = cloudMap;
 	}
 	
-	public List<CyNode> getNetworkNodes()
+	public List<String> getNetworkNodes()
 	{
 		return nodeList;
 	}
 	
-	public void setNetworkNodes(List<CyNode> nodes)
+	public void setNetworkNodes(List<String> nodes)
 	{
 		nodeList = nodes;
 	}

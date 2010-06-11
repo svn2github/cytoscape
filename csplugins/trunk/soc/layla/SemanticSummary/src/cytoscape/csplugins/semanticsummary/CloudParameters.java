@@ -153,13 +153,15 @@ public class CloudParameters
 		
 		//Retrieve needed variables from parent parameters
 		SemanticSummaryParameters networkParams = this.getNetworkParams();
-		List<CyNode> networkNodes = networkParams.getNetworkNodes();
+		List<String> networkNodes = networkParams.getNetworkNodes();
 		
 		//Iterate to retrieve CyNodes
-		Iterator<CyNode> iter = networkNodes.iterator();
+		Iterator<String> iter = networkNodes.iterator();
 		while(iter.hasNext())
 		{
-			CyNode curNode = (CyNode)iter.next();
+			String curNodeID = (String)iter.next();
+			CyNode curNode = Cytoscape.getCyNode(curNodeID);
+			
 			
 			//Retrieve value based on attribute
 			String nodeValue;

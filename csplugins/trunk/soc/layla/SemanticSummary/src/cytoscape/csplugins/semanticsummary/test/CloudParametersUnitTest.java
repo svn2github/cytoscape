@@ -106,7 +106,11 @@ public class CloudParametersUnitTest extends TestCase {
 		selNodes.add(punctNode4);
 		
 		//Set Lists in Params
-		parentParams.setNetworkNodes(allNodes);
+		List<String> nodeNames = new ArrayList<String>();
+		for(Iterator iter = allNodes.iterator(); iter.hasNext();)
+			nodeNames.add(iter.next().toString());
+		
+		parentParams.setNetworkNodes(nodeNames);
 		parentParams.setNetworkNumNodes(13);
 		cloudParams.setSelectedNodes(selNodes);
 		cloudParams.setSelectedNumNodes(7);
