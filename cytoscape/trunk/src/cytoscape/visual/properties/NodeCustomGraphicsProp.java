@@ -14,8 +14,6 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,13 +21,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Icon;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
@@ -37,23 +34,18 @@ import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 import ding.view.DNodeView;
 
-public class NodeCustomGraphicsProp extends AbstractVisualProperty implements ChangeListener, PropertyChangeListener {
+public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	private static final CyCustomGraphics<CustomGraphic> NULL = new NullCustomGraphics();
-
-//	private final List<CustomGraphic> currentCG;
-	
 	private final int index;
-	
-	private Map<DNodeView, Set<CustomGraphic>> cgReferenceMap;
+
+	// Manages view to Custom Graphics mapping.
+	private Map<DNodeView, Set<CustomGraphic>> currentMap;
 
 	public NodeCustomGraphicsProp(final Integer index) {
 		super();
-		this.index = index-1;
-//		this.currentCG = new ArrayList<CustomGraphic>();
-		
-		cgReferenceMap = new HashMap<DNodeView, Set<CustomGraphic>>();
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED, this);
+		this.index = index - 1;
+		currentMap = new HashMap<DNodeView, Set<CustomGraphic>>();
 	}
 
 	@Override
@@ -137,9 +129,6 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty implements Ch
 		return VisualPropertyType.getCustomGraphicsType(index);
 	}
 
-	/**
-	 * Apply ALL custom graphics 1 through 9.
-	 */
 	public void applyToNodeView(NodeView nv, Object o,
 			VisualPropertyDependency dep) {
 
@@ -147,29 +136,35 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty implements Ch
 		if (nv == null || nv instanceof DNodeView == false)
 			return;
 
+		// Assume this is a Ding Node View.
 		final DNodeView dv = (DNodeView) nv;
-				
-		// If not necessary to update, ignore.
+
+		// Remove old layers
+		Set<CustomGraphic> targets = currentMap.get(dv);
+		if (targets != null) {
+			for (CustomGraphic cg : targets)
+				dv.removeCustomGraphic(cg);
+
+			targets.clear();
+			targets = null;
+		}
+
+		// For these cases, remove current layers.
 		if (o == null || o instanceof CyCustomGraphics<?> == false
 				|| o instanceof NullCustomGraphics) {
+			currentMap.remove(dv);
 			return;
 		}
-		
+		targets = new HashSet<CustomGraphic>();
 		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
 		final Collection<CustomGraphic> layers = (Collection<CustomGraphic>) graphics
 				.getCustomGraphics();
-		
-		Set<CustomGraphic> currentCG = this.cgReferenceMap.get(dv);
-		if(currentCG != null && currentCG.size() != 0) {
-			// Remove all of those
-			for(CustomGraphic cg: currentCG)
-				dv.removeCustomGraphic(cg);
-		}
-		currentCG = new HashSet<CustomGraphic>();
 
 		// No need to update
-		if (layers == null || layers.size() == 0)
+		if (layers == null || layers.size() == 0) {
+			currentMap.remove(dv);
 			return;
+		}
 
 		// Check dependency. Sync size or not.
 		boolean sync = false;
@@ -179,16 +174,15 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty implements Ch
 
 		for (CustomGraphic cg : layers) {
 			if (sync) {
-				final CustomGraphic resized = syncSize(cg, dv,
-						dep);
+				final CustomGraphic resized = syncSize(cg, dv, dep);
 				dv.addCustomGraphic(resized);
-				currentCG.add(resized);
+				targets.add(resized);
 			} else {
 				dv.addCustomGraphic(cg);
-				currentCG.add(cg);
+				targets.add(cg);
 			}
 		}
-		this.cgReferenceMap.put(dv, currentCG);
+		this.currentMap.put(dv, targets);
 	}
 
 	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv,
@@ -251,25 +245,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty implements Ch
 
 		return customGraphicsIcons;
 	}
-	
-	
+
 	protected Set<CustomGraphic> getCurrentCustomGraphics(DNodeView dv) {
-		return this.cgReferenceMap.get(dv);
-	}
-
-
-	public void stateChanged(ChangeEvent e) {
-		System.out.println("*******  Got VS Change! " + e.getSource());
-		for(DNodeView dv: this.cgReferenceMap.keySet()) {
-			dv.removeAllCustomGraphics();
-		}
-		this.cgReferenceMap.clear();
-		this.cgReferenceMap = new HashMap<DNodeView, Set<CustomGraphic>>();
-	}
-
-
-	public void propertyChange(PropertyChangeEvent evt) {
-		// Add lister AFTER Cytoscape initialization.
-		Cytoscape.getVisualMappingManager().addChangeListener(this);
+		return this.currentMap.get(dv);
 	}
 }
