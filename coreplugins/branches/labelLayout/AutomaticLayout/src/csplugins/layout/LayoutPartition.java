@@ -73,36 +73,36 @@ import java.util.Collection;
  * @version 0.9
  */
 public class LayoutPartition {
-	private ArrayList<LayoutNode> nodeList;
-	private ArrayList<LayoutEdge> edgeList;
-	private static HashMap<CyNode, LayoutNode> nodeToLayoutNode = null;
-	private static IntIntHash nodesSeenMap = null;
-	private static IntIntHash edgesSeenMap = null;
-	private int nodeIndex = 0;
-	private int partitionNumber = 0;
-	private EdgeWeighter edgeWeighter = null;
+	protected ArrayList<LayoutNode> nodeList;
+	protected ArrayList<LayoutEdge> edgeList;
+	protected static HashMap<CyNode, LayoutNode> nodeToLayoutNode = null;
+	protected static IntIntHash nodesSeenMap = null;
+	protected static IntIntHash edgesSeenMap = null;
+	protected int nodeIndex = 0;
+	protected int partitionNumber = 0;
+	protected EdgeWeighter edgeWeighter = null;
 
 	// Keep track of the node min and max values
-	private double maxX = -100000;
-	private double maxY = -100000;
-	private double minX = 100000;
-	private double minY = 100000;
-	private double width = 0;
-	private double height = 0;
+	protected double maxX = -100000;
+	protected double maxY = -100000;
+	protected double minX = 100000;
+	protected double minY = 100000;
+	protected double width = 0;
+	protected double height = 0;
 
 	// Keep track of average location
-	private double averageX = 0;
-	private double averageY = 0;
+	protected double averageX = 0;
+	protected double averageY = 0;
 
 	// Keep track of the number of locked nodes we have in
 	// this partition
-	private int lockedNodes = 0;
+	protected int lockedNodes = 0;
 
-	private CyLogger logger = null;
+	protected CyLogger logger = null;
 
-	// private constants
-	private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
-	private static final int m_NODE_HAS_BEEN_SEEN = 1;
+	// protected constants
+	protected static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
+	protected static final int m_NODE_HAS_BEEN_SEEN = 1;
 
 	/**
 	 * LayoutPartition: use this constructor to create an empty LayoutPartition.
@@ -519,9 +519,9 @@ public class LayoutPartition {
 	}
 
 	/**
-	 * Private routines
+	 * Protected routines
 	 */
-	private void nodeListInitialize(CyNetwork network, CyNetworkView networkView,
+	protected void nodeListInitialize(CyNetwork network, CyNetworkView networkView,
 	                                Collection<CyNode> nodeSet) {
 		int nodeIndex = 0;
 		this.nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
@@ -539,7 +539,7 @@ public class LayoutPartition {
 		}
 	}
 
-	private void edgeListInitialize(CyNetwork network, CyNetworkView networkView) {
+	protected void edgeListInitialize(CyNetwork network, CyNetworkView networkView) {
 		for (CyEdge edge: (List<CyEdge>)network.edgesList()) {
 
 			CyNode source = (CyNode) edge.getSource();
@@ -567,12 +567,12 @@ public class LayoutPartition {
 	 * contained data.  Useful to call this after a partition has been created
 	 * and filled.  This is used by the static method LayoutPartition.partition
 	 */
-	private void trimToSize() {
+	protected void trimToSize() {
 		nodeList.trimToSize();
 		edgeList.trimToSize();
 	}
 
-	private void updateMinMax(double x, double y) {
+	protected void updateMinMax(double x, double y) {
 		minX = Math.min(minX, x);
 		minY = Math.min(minY, y);
 		maxX = Math.max(maxX, x);
@@ -581,7 +581,7 @@ public class LayoutPartition {
 		averageY += y;
 	}
 
-	private void updateWeights(LayoutEdge newEdge) {
+	protected void updateWeights(LayoutEdge newEdge) {
 		if (edgeWeighter != null) {
 			edgeWeighter.setWeight(newEdge);
 		}
@@ -704,7 +704,7 @@ public class LayoutPartition {
 	  * @param node                        The node to search for connected nodes.
 	  * @param partition the partition we're laying out
 	  */
-	private static void traverse(CyNetwork network, CyNetworkView networkView,
+	protected static void traverse(CyNetwork network, CyNetworkView networkView,
 	                             IntObjHash nodesToViews, CyNode node,
 	                             LayoutPartition partition) {
 		int nodeIndex = node.getRootGraphIndex();
