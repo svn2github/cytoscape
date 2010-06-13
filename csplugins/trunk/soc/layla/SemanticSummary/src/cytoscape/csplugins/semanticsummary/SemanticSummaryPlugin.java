@@ -142,9 +142,10 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		{
 			String networkID = iter.next().toString();
 			SemanticSummaryParameters params = networks.get(networkID);
+			String networkName = params.getNetworkName();
 			
 			//property file
-			File session_prop_file = new File(tmpDir, netNameSep + networkID + netNameSep + ".props");
+			File session_prop_file = new File(tmpDir, netNameSep + networkName + netNameSep + ".props");
 			
 			//write out files.
 			try 
@@ -165,7 +166,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						CloudParameters cloud = all_clouds.get(cloud_name);
 						
 						//File for CloudParameters
-						File current_cloud = new File(tmpDir, netNameSep + networkID + netNameSep + 
+						File current_cloud = new File(tmpDir, netNameSep + networkName + netNameSep + 
 								cloudNameSep + cloud_name + cloudNameSep + ".CLOUDS.txt");
 						BufferedWriter subCloud1Writer = new BufferedWriter(new FileWriter(current_cloud));
 						subCloud1Writer.write(cloud.toString());
@@ -173,7 +174,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						pFileList.add(current_cloud);
 						
 						//File for String/Word Mapping
-						File current_mapping = new File(tmpDir, netNameSep + networkID + netNameSep + 
+						File current_mapping = new File(tmpDir, netNameSep + networkName + netNameSep + 
 								cloudNameSep + cloud_name + cloudNameSep + ".MAPPING.txt");
 						BufferedWriter subCloud2Writer = new BufferedWriter(new FileWriter(current_mapping));
 						subCloud2Writer.write(cloud.printHashMap(cloud.getStringNodeMapping()));
@@ -181,7 +182,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						pFileList.add(current_mapping);
 						
 						//File for Network Counts
-						File current_net_counts = new File(tmpDir, netNameSep + networkID + netNameSep + 
+						File current_net_counts = new File(tmpDir, netNameSep + networkName + netNameSep + 
 								cloudNameSep + cloud_name + cloudNameSep + ".NETCOUNTS.txt");
 						BufferedWriter subCloud3Writer = new BufferedWriter(new FileWriter(current_net_counts));
 						subCloud3Writer.write(cloud.printHashMap(cloud.getNetworkCounts()));
@@ -189,7 +190,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						pFileList.add(current_net_counts);
 						
 						//File for Selected Counts
-						File current_sel_counts = new File(tmpDir, netNameSep + networkID + netNameSep + 
+						File current_sel_counts = new File(tmpDir, netNameSep + networkName + netNameSep + 
 								cloudNameSep + cloud_name + cloudNameSep + ".SELCOUNTS.txt");
 						BufferedWriter subCloud4Writer = new BufferedWriter(new FileWriter(current_sel_counts));
 						subCloud4Writer.write(cloud.printHashMap(cloud.getSelectedCounts()));
@@ -197,7 +198,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						pFileList.add(current_sel_counts);
 						
 						//File for Ratios
-						File current_ratios = new File(tmpDir, netNameSep + networkID + netNameSep +
+						File current_ratios = new File(tmpDir, netNameSep + networkName + netNameSep +
 								cloudNameSep + cloud_name + cloudNameSep + ".RATIOS.txt");
 						BufferedWriter subCloud5Writer = new BufferedWriter(new FileWriter(current_ratios));
 						subCloud5Writer.write(cloud.printHashMap(cloud.getRatios()));
@@ -224,6 +225,9 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 
 	public void restoreSessionState(List<File> pStateFileList)
 	{
+		
+		SemanticSummaryManager.getInstance(); //Initialize the manager
+		
 		if ((pStateFileList == null) || (pStateFileList.size() == 0))
 		{
 			return; //no previous state to restore

@@ -149,10 +149,10 @@ public class SemanticSummaryManager implements PropertyChangeListener
 			cyNetworkList.remove(networkID);
 			
 			//Check if this was the last network displayed
-			if (currentParams.equals(curNetwork))
-			{
-				setupCurrentNetwork();
-			}
+			//if (currentParams.equals(curNetwork))
+			//{
+			//	setupCurrentNetwork();
+			//}
 		}
 	}
 	
@@ -163,8 +163,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	 */
 	public void registerNetwork(CyNetwork cyNetwork, SemanticSummaryParameters params)
 	{
-		if(!cyNetworkList.containsKey(cyNetwork.getIdentifier()))
-			cyNetworkList.put(cyNetwork.getIdentifier(), params);
+		cyNetworkList.put(cyNetwork.getIdentifier(), params);
 	}
 	
 	/**
@@ -189,7 +188,14 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
 		
-		if(isSemanticSummary(networkID))
+		//Null current network
+		if (network.equals(Cytoscape.getNullNetwork()))
+		{
+			curNetwork = new SemanticSummaryParameters();
+			curNetwork.setNetworkName("No Network Loaded");
+		}
+		
+		else if(isSemanticSummary(networkID))
 			curNetwork = getParameters(networkID);
 		else
 		{
