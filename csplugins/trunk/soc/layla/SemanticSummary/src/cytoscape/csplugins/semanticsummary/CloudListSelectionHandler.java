@@ -94,10 +94,11 @@ public class CloudListSelectionHandler implements ListSelectionListener
 			List<String> selNodeNames = cloudParams.getSelectedNodes();
 			Set<CyNode> selNodes = new HashSet<CyNode>();
 			
-			for(Iterator<String> iter = selNodeNames.iterator(); iter.hasNext();)
+			for(int i = 0; i< selNodeNames.size(); i++)
 			{
-				String curNodeID = (String)iter.next();
-				selNodes.add(Cytoscape.getCyNode(curNodeID));
+				String curNodeID = selNodeNames.get(i);
+				CyNode curNode = Cytoscape.getCyNode(curNodeID);
+				selNodes.add(curNode);
 			}
 			
 			CyNetwork network = Cytoscape.getCurrentNetwork();

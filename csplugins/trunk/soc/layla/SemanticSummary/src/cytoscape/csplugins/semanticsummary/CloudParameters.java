@@ -78,6 +78,9 @@ public class CloudParameters
 	private boolean selInitialized = false; //true when selected counts initialized
 	private boolean ratiosInitialized = false; //true when ratios are computed
 	
+	//String Delimeters
+	private static final String NODEDELIMITER = "CloudParamNodeDelimiter";
+	
 	//CONSTRUCTORS
 	
 	/**
@@ -127,9 +130,12 @@ public class CloudParameters
 		this.netWeightFactor = new Double(props.get("NetWeightFactor"));
 		this.countInitialized = Boolean.parseBoolean(props.get("CountInitialized"));
 		this.selInitialized = Boolean.parseBoolean(props.get("SelInitialized"));
+		this.maxRatio = new Double(props.get("MaxRatio"));
+		this.minRatio = new Double(props.get("MinRatio"));
 		
 		//Rebuild List
-		String[] nodes = (props.get("SelectedNodes")).split(",");
+		String value = props.get("SelectedNodes");
+		String[] nodes = value.split(NODEDELIMITER);
 		ArrayList<String> nodeNameList = new ArrayList<String>();
 		for (int i = 0; i < nodes.length; i++)
 		{
@@ -543,11 +549,11 @@ public class CloudParameters
 		
 		//List of Nodes as a comma delimited list
 		StringBuffer output = new StringBuffer();
-		for (Iterator iter = selectedNodes.iterator(); iter.hasNext(); )
+		for (int i = 0; i < selectedNodes.size(); i++)
 		{
-			Object node = iter.next();
-			output.append(node.toString() + ",");
+			output.append((selectedNodes.get(i)).toString() + NODEDELIMITER);
 		}
+		
 		paramVariables.append("SelectedNodes\t" + output.toString() + "\n");
 		
 		paramVariables.append("NetworkNumNodes\t" + networkNumNodes + "\n");
@@ -555,6 +561,8 @@ public class CloudParameters
 		paramVariables.append("NetWeightFactor\t" + netWeightFactor + "\n");
 		paramVariables.append("CountInitialized\t" + countInitialized + "\n");
 		paramVariables.append("SelInitialized\t" + selInitialized + "\n");
+		paramVariables.append("MinRatio\t" + minRatio + "\n");
+		paramVariables.append("MaxRatio\t" + maxRatio + "\n");
 		
 		return paramVariables.toString();
 	}
@@ -571,7 +579,30 @@ public class CloudParameters
 		for (Iterator iter = map.keySet().iterator(); iter.hasNext(); )
 		{
 			Object key = iter.next();
-			result.append(key.toString() + "\t" + map.get(key).toString() + "\n");
+			Object value = map.get(key);
+			StringBuffer stringValue = new StringBuffer();
+			
+			if (value instanceof List)
+			{
+				List valueList = (List)value;
+				for(int i = 0; i < valueList.size(); i++)
+				{
+					String name = (String)valueList.get(i);
+					stringValue.append(name + NODEDELIMITER);
+				}
+			}
+			else if (value instanceof Integer)
+			{
+				stringValue.append(value.toString());
+			}
+			else if (value instanceof Double)
+			{
+				stringValue.append(value.toString());
+			}
+			else
+				stringValue.append(value.toString());
+			
+			result.append(key.toString() + "\t" + stringValue.toString() + "\n");
 		}
 		return result.toString();
 	}
@@ -598,6 +629,9 @@ public class CloudParameters
 		//Mapping
 		else if (type == 2)
 			newMap = new HashMap<String, List<String>>();
+		//Ratios
+		else if (type == 3)
+			newMap = new HashMap<String, Double>();
 		else
 			newMap = new HashMap();
 		
@@ -619,13 +653,17 @@ public class CloudParameters
 			if (type == 2)
 			{
 				//Create List
-				String [] nodes = tokens[1].split(",");
+				String [] nodes = tokens[1].split(NODEDELIMITER);
 				ArrayList nodeNames = new ArrayList<String>();
 				for (int j =0; j < nodes.length; j++)
 					nodeNames.add(nodes[j]);
 				
 				newMap.put(tokens[0], nodeNames);
 			}
+			
+			//Ratios
+			if (type == 3)
+				newMap.put(tokens[0], Double.parseDouble(tokens[1]));
 		}//end line loop
 		return newMap;
 	}

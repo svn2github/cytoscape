@@ -56,6 +56,9 @@ public class SemanticSummaryParameters
 	private static final Integer MINFONTSIZE = 12; 
 	private static final Integer MAXFONTSIZE = 56;
 	
+	//String Delimeters
+	private static final String NODEDELIMITER = "SSParamNodeDelimiter";
+	
 	//CONSTRUCTORS
 	
 	/**
@@ -95,8 +98,7 @@ public class SemanticSummaryParameters
 		
 		//Rebuild List
 		String value = props.get("NodeList");
-		System.out.println(value);
-		String[] nodes = value.split(",");
+		String[] nodes = value.split(NODEDELIMITER);
 		ArrayList<String> nodeNameList = new ArrayList<String>();
 		for (int i = 0; i < nodes.length; i++)
 		{
@@ -206,7 +208,7 @@ public class SemanticSummaryParameters
 		StringBuffer output = new StringBuffer();
 		for (int i = 0; i < nodeList.size(); i++)
 		{
-			output.append(nodeList.get(i).toString() + ",");
+			output.append(nodeList.get(i).toString() + NODEDELIMITER);
 		}
 		
 		paramVariables.append("NodeList\t" + output.toString() + "\n");

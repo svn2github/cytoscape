@@ -22,6 +22,7 @@
 
 package cytoscape.csplugins.semanticsummary;
 
+import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -195,6 +196,14 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						subCloud4Writer.close();
 						pFileList.add(current_sel_counts);
 						
+						//File for Ratios
+						File current_ratios = new File(tmpDir, netNameSep + networkID + netNameSep +
+								cloudNameSep + cloud_name + cloudNameSep + ".RATIOS.txt");
+						BufferedWriter subCloud5Writer = new BufferedWriter(new FileWriter(current_ratios));
+						subCloud5Writer.write(cloud.printHashMap(cloud.getRatios()));
+						subCloud5Writer.close();
+						pFileList.add(current_ratios);
+						
 						
 					}//end iteration over clouds
 				}//end if clouds exist for network
@@ -329,12 +338,40 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					HashMap<String, Integer> selCounts = cloudParams.repopulateHashmap(fullText, 1);
 					cloudParams.setSelectedCounts(selCounts);
 				}
+				
+				if (prop_file.getName().contains(".RATIOS.txt"))
+				{
+					//Recreate the Ratios and store
+					HashMap<String, Double> ratios = cloudParams.repopulateHashmap(fullText, 3);
+					cloudParams.setRatios(ratios);
+				}
 			}//end loop through all props files
+			
+			//Last thing is to recreate wordCloudInfo for font sizes
+			HashMap<String, SemanticSummaryParameters> cyNetworks = 
+				SemanticSummaryManager.getInstance().getCyNetworkList();
+			
+			for(Iterator<String> iter = cyNetworks.keySet().iterator(); iter.hasNext();)
+			{
+				SemanticSummaryParameters curNetworkParams = cyNetworks.get(iter.next());
+				
+				HashMap<String, CloudParameters> clouds = 
+					curNetworkParams.getClouds();
+				
+				for(Iterator<String> iter2 = clouds.keySet().iterator(); iter2.hasNext();)
+				{
+					CloudParameters currentCloud = clouds.get(iter2.next());
+					currentCloud.calculateFontSizes();
+				}
+			}
 			
 			//Register any action Listeners for the networks
 			//TODO
 			
 			//Initialize the panel appropriately
+			SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
+			init.loadInputPanel();
+			init.loadCloudPanel();
 			SemanticSummaryManager.getInstance().setupCurrentNetwork();
 			
 		}//end try
