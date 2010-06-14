@@ -183,12 +183,12 @@ public class CloudParameters
 			{
 				Component desktop = Cytoscape.getDesktop();
 				JOptionPane.showMessageDialog(desktop, "Node no longer exists: " + curNodeID);
-				return;
+				continue;
 			}
 			
 			String nodeValue = this.getNodeAttributeVal(curNode);
 			if (nodeValue == null) // problem with nodes or attributes
-				return;
+				continue;
 			
 			Set<String> wordSet = this.processNodeString(nodeValue);
 	        
@@ -612,7 +612,7 @@ public class CloudParameters
 	private String getNodeAttributeVal(CyNode curNode)
 	{
 		//Retrieve value based on attribute
-		String nodeValue;
+		String nodeValue = "";
 		
 		//if we should use the ID
 		if (this.attributeName.equals("nodeID"))
@@ -626,8 +626,28 @@ public class CloudParameters
 			CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
 			Object attribute = cyNodeAttrs.getAttribute(curNode.getIdentifier(), attributeName);
 			
+			if (attribute == null)//nothing set for this attribute
+				return null;
+			
+			//String
 			if (attribute instanceof String)
 				nodeValue = (String)attribute;
+			
+			//List of Strings
+			else if (attribute instanceof List)
+			{
+				List attList = (List)attribute;
+				for (Iterator iter = attList.iterator(); iter.hasNext();)
+				{
+					Object curObj = iter.next();
+					if (curObj instanceof String)
+					{
+						//Turn list into space separated string
+						String curObjString = (String)curObj;
+						nodeValue = nodeValue + curObjString + " ";
+					}
+				}
+			}
 			else
 			{
 				//Don't currently handle non string attributes

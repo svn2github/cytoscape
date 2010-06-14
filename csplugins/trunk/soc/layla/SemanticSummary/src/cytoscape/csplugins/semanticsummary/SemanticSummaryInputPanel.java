@@ -541,7 +541,16 @@ public class SemanticSummaryInputPanel extends JPanel
 				if (!attributes.getUserVisible(attributeNames[i])) {
 					continue;
 				}
+				
+				// Filter out vizmap attributes
+				if (attributeNames[i].contains("vizmap"))
+					continue;
+				
 				if (type == CyAttributes.TYPE_STRING) {
+					attributeList.add(attributeNames[i]);
+				}
+				else if (type == CyAttributes.TYPE_SIMPLE_LIST)
+				{
 					attributeList.add(attributeNames[i]);
 				}
 			} //for loop

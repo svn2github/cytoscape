@@ -23,6 +23,7 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -31,6 +32,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 import cytoscape.Cytoscape;
@@ -53,7 +55,13 @@ public class CloudListMouseListener extends MouseAdapter
 		{
 			rightClickList(e);
 		}
+		
+		else if (SwingUtilities.isLeftMouseButton(e))
+		{
+			leftClickList(e);
+		}
 	}
+	
 	
 	//TODO
 	private void rightClickList(MouseEvent e)
@@ -62,6 +70,26 @@ public class CloudListMouseListener extends MouseAdapter
 		JPopupMenu menu = new JPopupMenu();
 		menu.add(new ChangeCloudNameAction());
 		menu.show(e.getComponent(), e.getX(), e.getY());
+	}
+	
+	private void leftClickList(MouseEvent e)
+	{
+		Point selPoint = new Point(e.getX(), e.getY());
+		
+		//Get current name
+		JList cloudList = SemanticSummaryManager.getInstance().
+		getInputWindow().getCloudList();
+		
+		int selIndex = cloudList.getSelectedIndex();
+		
+		int clickIndex = cloudList.locationToIndex(selPoint);
+		
+		if (selIndex == clickIndex)
+		{
+			cloudList.clearSelection();
+			cloudList.setSelectedIndex(selIndex);
+		}
+	
 	}
 	
 	public class ChangeCloudNameAction extends CytoscapeAction
