@@ -153,7 +153,10 @@ $(function(){
     $("body").html('\
                         <div id="header" class="slice">\
                             <a href="/"><div id="logo"></div></a>\
-                            <div class="text">Try out the features of Cytoscape Web to see how you would use it in your site!</div>\
+                            <div class="text">\
+                            	<h1>Demo</h1>\
+                            	<div class="text">Try out some features of Cytoscape Web to see how you would use it in your site!</div>\
+                            </div>\
                         </div>\
                         <div id="cytoweb">\
                             <div id="menu"></div>\
