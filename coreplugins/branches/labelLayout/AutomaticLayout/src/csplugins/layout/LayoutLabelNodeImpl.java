@@ -9,7 +9,7 @@ import cytoscape.view.*;
 import java.util.*;
 
 
-public class LayoutLabelNode extends LayoutAbstractNode {
+public class LayoutLabelNodeImpl extends LayoutNode {
 
     // -- static (class) variables --
     // static final double EPSILON = 0.0000001D;
@@ -21,12 +21,12 @@ public class LayoutLabelNode extends LayoutAbstractNode {
     //  protected double dispX;
     //  protected double dispY;
 
-    protected LayoutNode parent;
+    protected LayoutNodeImpl parent;
 
     /**
      * Empty constructor
      */
-    public LayoutLabelNode() {
+    public LayoutLabelNodeImpl() {
     }
 
     /**
@@ -34,7 +34,7 @@ public class LayoutLabelNode extends LayoutAbstractNode {
      *
      * @param parent The parent LayoutNode for this LayoutLabelNode
      */
-    public LayoutLabelNode(LayoutNode parent) {
+    public LayoutLabelNodeImpl(LayoutNodeImpl parent) {
 	this.parent = parent;
 	this.setX(parent.getX());
 	this.setY(parent.getY());

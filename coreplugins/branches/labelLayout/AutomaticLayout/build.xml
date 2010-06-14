@@ -21,10 +21,10 @@
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
     <property name="layout.root.dir" value="."/>
-    <property name="cytoscape.dir" value="../../cytoscape"/>
+    <property name="cytoscape.dir" value="/Users/gerardohuck/Cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
-    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/core"/>
-    <property name="csplugins.dir" value="../../csplugins"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/"/>
+    <property name="csplugins.dir" value="../"/>
 
     <!-- Define the directories -->
     <property name="layout.root.dir" value="./"/>
@@ -95,10 +95,18 @@
         includes="**"/>
     </jar>
   </target>
-
+  
+  <!-- =================================================================== -->
+  <!-- Copy jar file to Cytoscape plugin folder                            -->
+  <!-- =================================================================== -->
+  <target name="copy_jar" depends="layout">
+    <copy todir="${cytoscape.plugin.dir}/" file="${layout.root.dir}/${layout.jar}"/>
+  </target>
+  
+  <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="layout"/>
+  <target name="all" depends="copy_jar"/>
 
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
