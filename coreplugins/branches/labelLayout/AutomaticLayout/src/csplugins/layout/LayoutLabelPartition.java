@@ -20,6 +20,7 @@ import java.awt.Dimension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,13 +35,47 @@ import java.util.Collection;
 /**
  * The LayoutLabelPartition class ....
  *
- * @author <a href="mailto:ghuck@gmail.com">Gerardo Huck</a>
+ * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
  * @version 0.1
  */
 public class LayoutLabelPartition extends LayoutPartition {
 
+    protected Map <LayoutNode,LayoutNode> labelToParentMap;
+    protected ArrayList<LayoutNode> allLayoutNodesArray;
+    protected ArrayList<LayoutEdge> allLayoutEdgesArray;
+
     public LayoutLabelPartition(int nodeCount, int edgeCount) {
 	super(nodeCount, edgeCount);
+    }
+
+
+    public LayoutLabelPartition createLabelPartition(LayoutPartition part) {
+
+	// Create new empty partition
+	LayoutLabelPartition newPart = new LayoutLabelPartition(part.size(),
+								part.getEdgeList().size());
+
+	// Copy fields from part
+	newPart.nodeList = (ArrayList<LayoutNode>) part.nodeList.clone();
+	newPart.edgeList = (ArrayList<LayoutEdge>) part.edgeList.clone();
+	newPart.nodeToLayoutNode = (HashMap<CyNode,LayoutNode>) part.nodeToLayoutNode.clone();
+	newPart.partitionNumber = part.partitionNumber;
+	newPart.edgeWeighter = part.edgeWeighter;
+
+	newPart.maxX = part.maxX;
+	newPart.maxY = part.maxY;
+	newPart.minX = part.minX;
+	newPart.minY = part.minY;
+	newPart.width = part.width;
+	newPart.height = part.height;
+	
+	newPart.averageX = part.averageX;
+	newPart.averageY = part.averageY;
+	
+	newPart.lockedNodes = part.lockedNodes;
+
+	// Returns the already initialized label layoutPartition
+	return newPart;
     }
 
 }

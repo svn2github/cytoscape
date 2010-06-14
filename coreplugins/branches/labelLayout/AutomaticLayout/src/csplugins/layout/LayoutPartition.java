@@ -192,7 +192,7 @@ public class LayoutPartition {
 	 */
 	protected void addNode(NodeView nv, boolean locked) {
 		CyNode node = (CyNode) nv.getNode();
-		LayoutNode v = new LayoutNode(nv, nodeIndex++);
+		LayoutNode v = new LayoutNodeImpl(nv, nodeIndex++);
 		nodeList.add(v);
 		nodeToLayoutNode.put(node, v);
 
