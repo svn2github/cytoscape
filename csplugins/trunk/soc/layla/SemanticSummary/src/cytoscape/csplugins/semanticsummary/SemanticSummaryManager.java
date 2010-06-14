@@ -24,16 +24,10 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
 /**
@@ -48,9 +42,7 @@ import cytoscape.view.CytoscapeDesktop;
 public class SemanticSummaryManager implements PropertyChangeListener 
 {
 	//VARIABLES
-	
 	private static SemanticSummaryManager manager = null;
-	
 	private HashMap<String, SemanticSummaryParameters> cyNetworkList;
 	
 	//Create only one instance of the input and cloud panels
@@ -81,6 +73,7 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport()
 		.addPropertyChangeListener(this);
 		
+		
 		defaultNetWeight = 1.0;
 		defaultAttName = "nodeID";
 	}
@@ -108,6 +101,10 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		{
 			networkDestroyed((String) event.getNewValue());
 		}
+		else if (event.getPropertyName().equals(Cytoscape.NETWORK_CREATED))
+		{
+			setupCurrentNetwork();
+		}
 		else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED))
 		{
 			setupCurrentNetwork();
@@ -128,11 +125,20 @@ public class SemanticSummaryManager implements PropertyChangeListener
 			{
 				SemanticSummaryParameters currentParams = getParameters(networkID);
 				currentParams.setNetworkName(cyNetwork.getTitle());
+				
+				//Update Input Panel 
+				SemanticSummaryManager.getInstance().getInputWindow().
+				getNetworkLabel().setText(currentParams.getNetworkName());
 			}
 		}
 		else if (event.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED))
 		{
 			inputWindow.refreshAttributeCMB();
+		}
+		
+		else if (event.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED))
+		{
+			networkModified();
 		}
 	}
 	
@@ -145,18 +151,29 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		//Retrieve parameters and remove if it exists
 		if (isSemanticSummary(networkID))
 		{
-			SemanticSummaryParameters currentParams = getParameters(networkID);
 			cyNetworkList.remove(networkID);
-			
-			//Check if this was the last network displayed
-			//if (currentParams.equals(curNetwork))
-			//{
-			//	setupCurrentNetwork();
-			//}
 		}
 	}
 	
 	/**
+	 * Updates any current Network parameters that the network has changed, and 
+	 * notifies clouds that they need to be recomputed.
+	 *@param String - networkID of the modified CyNetwork
+	 */
+	private void networkModified()
+	{
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		String networkID = network.getIdentifier();
+		
+		//Retrieve parameters and mark modified
+		if (isSemanticSummary(networkID))
+		{
+			SemanticSummaryParameters params = this.getParameters(networkID);
+			params.updateParameters(network);
+		}
+	}
+	
+	/*
 	 * Register a new network into the manager.
 	 * @param CyNetwork - the CyNetwork we are adding.
 	 * @param SemanticSummaryParameters - parameters for the network.
@@ -195,24 +212,16 @@ public class SemanticSummaryManager implements PropertyChangeListener
 			curNetwork.setNetworkName("No Network Loaded");
 		}
 		
+		//Already Registered
 		else if(isSemanticSummary(networkID))
 			curNetwork = getParameters(networkID);
+		
+		//Need to create new
 		else
 		{
 			SemanticSummaryParameters params = new SemanticSummaryParameters();
-			params.setNetworkName(network.getTitle());
-			
-			//Set list of node names with strings
-			List<CyNode> nodes = network.nodesList();
-			List<String> nodeNames = new ArrayList<String>();
-			for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
-			{
-				CyNode curNode = iter.next();
-				String curName = curNode.toString();
-				nodeNames.add(curName);
-			}
-			params.setNetworkNodes(nodeNames);
-			
+			params.updateParameters(network);
+
 			SemanticSummaryManager.getInstance().registerNetwork(network, params);
 			
 			curNetwork = params;

@@ -101,7 +101,6 @@ public class UpdateCloudAction extends CytoscapeAction
 		
 		cloudParams.setSelectedNodes(nodeNames);
 		cloudParams.setSelectedNumNodes(nodeNames.size());
-		
 
 		//Retrieve values from input panel
 		cloudParams.retrieveInputVals();

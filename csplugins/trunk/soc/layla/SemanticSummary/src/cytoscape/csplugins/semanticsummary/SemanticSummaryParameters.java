@@ -21,6 +21,7 @@
  */
 
 package cytoscape.csplugins.semanticsummary;
+import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 
 import java.util.HashMap;
@@ -225,12 +226,38 @@ public class SemanticSummaryParameters
 	{
 		StringBuffer result = new StringBuffer();
 		
-		for (Iterator iter = map.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<String> iter = map.keySet().iterator(); iter.hasNext(); )
 		{
 			Object key = iter.next();
 			result.append(key.toString() + "\t" + map.get(key).toString() + "\n");
 		}
 		return result.toString();
+	}
+	
+	
+	/**
+	 * This method updates the parameters associated with a network to be current.
+	 * Specifically, this includes updating the list of nodes included
+	 * in the Parameters.
+	 * @param CyNetwork to update the parameters based on.
+	 */
+	public void updateParameters(CyNetwork network)
+	{
+		this.setNetworkName(network.getTitle());
+		
+		//Get list of node ID's
+		List<CyNode> nodes = network.nodesList();
+		List<String> nodeNames = new ArrayList<String>();
+		for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+		{
+			CyNode curNode = iter.next();
+			String curName = curNode.toString();
+			nodeNames.add(curName);
+		}
+		this.setNetworkNodes(nodeNames);
+		
+		//Let clouds know that this network has changed
+		this.networkChanged();
 	}
 	
 	

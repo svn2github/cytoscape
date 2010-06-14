@@ -90,29 +90,34 @@ public class CloudListSelectionHandler implements ListSelectionListener
 			SemanticSummaryManager.getInstance().getCloudWindow().
 			updateCloudDisplay(cloudParams);
 			
-			//Highlight selected nodes
-			List<String> selNodeNames = cloudParams.getSelectedNodes();
-			Set<CyNode> selNodes = new HashSet<CyNode>();
 			
-			for(int i = 0; i< selNodeNames.size(); i++)
+			//Highlight selected nodes if view exists
+			
+			if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 			{
-				String curNodeID = selNodeNames.get(i);
-				CyNode curNode = Cytoscape.getCyNode(curNodeID);
-				selNodes.add(curNode);
+				List<String> selNodeNames = cloudParams.getSelectedNodes();
+				Set<CyNode> selNodes = new HashSet<CyNode>();
+			
+				for(int i = 0; i< selNodeNames.size(); i++)
+				{
+					String curNodeID = selNodeNames.get(i);
+					CyNode curNode = Cytoscape.getCyNode(curNodeID);
+					selNodes.add(curNode);
+				}
+			
+				CyNetwork network = Cytoscape.getCurrentNetwork();
+				network.unselectAllNodes();
+				network.unselectAllEdges();
+				network.setSelectedNodeState(selNodes, true);
+			
+				//Redraw the graph with selected nodes
+				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				view.redrawGraph(false, true);
+			
+				//Move windows to the forefront
+				SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
+				init.loadCloudPanel();
 			}
-			
-			CyNetwork network = Cytoscape.getCurrentNetwork();
-			network.unselectAllNodes();
-			network.unselectAllEdges();
-			network.setSelectedNodeState(selNodes, true);
-			
-			//Redraw the graph with selected nodes
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			view.redrawGraph(false, true);
-			
-			//Move windows to the forefront
-			SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
-			init.loadCloudPanel();
 		}
 	}
 }

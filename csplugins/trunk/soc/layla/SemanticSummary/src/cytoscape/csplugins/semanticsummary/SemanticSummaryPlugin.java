@@ -22,7 +22,6 @@
 
 package cytoscape.csplugins.semanticsummary;
 
-import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,7 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.JMenu;
 
 import cytoscape.data.readers.TextFileReader;
 import cytoscape.plugin.CytoscapePlugin;
@@ -75,17 +73,17 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		
 		//Add to right click menus
 		
-		//Newly created networks
+		//Newly created networks - right click stuff
 		SemanticSummaryNetworkListener netListener = 
 			new SemanticSummaryNetworkListener();
 		
 		Cytoscape.getSwingPropertyChangeSupport().
 		addPropertyChangeListener(netListener);
 		
-		//Loaded networks
-		Set networkSet = Cytoscape.getNetworkSet();
+		//Loaded networks - right click stuff
+		Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
 		
-		for (Iterator iter = networkSet.iterator(); iter.hasNext();)
+		for (Iterator<CyNetwork> iter = networkSet.iterator(); iter.hasNext();)
 		{
 			CyNetwork network = (CyNetwork)iter.next();
 			
@@ -159,7 +157,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				{
 					HashMap<String, CloudParameters> all_clouds = params.getClouds();
 					
-					for (Iterator j=all_clouds.keySet().iterator(); j.hasNext();)
+					for (Iterator<String> j=all_clouds.keySet().iterator(); j.hasNext();)
 					{
 						String cloud_name = j.next().toString();
 						
@@ -355,6 +353,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 			HashMap<String, SemanticSummaryParameters> cyNetworks = 
 				SemanticSummaryManager.getInstance().getCyNetworkList();
 			
+			//Loop through Network Parameters
 			for(Iterator<String> iter = cyNetworks.keySet().iterator(); iter.hasNext();)
 			{
 				SemanticSummaryParameters curNetworkParams = cyNetworks.get(iter.next());
@@ -362,6 +361,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				HashMap<String, CloudParameters> clouds = 
 					curNetworkParams.getClouds();
 				
+				//Loop through Cloud Parameters
 				for(Iterator<String> iter2 = clouds.keySet().iterator(); iter2.hasNext();)
 				{
 					CloudParameters currentCloud = clouds.get(iter2.next());

@@ -130,6 +130,7 @@ public class CloudParameters
 		this.netWeightFactor = new Double(props.get("NetWeightFactor"));
 		this.countInitialized = Boolean.parseBoolean(props.get("CountInitialized"));
 		this.selInitialized = Boolean.parseBoolean(props.get("SelInitialized"));
+		this.ratiosInitialized = Boolean.parseBoolean(props.get("RatiosInitialized"));
 		this.maxRatio = new Double(props.get("MaxRatio"));
 		this.minRatio = new Double(props.get("MinRatio"));
 		
@@ -175,55 +176,21 @@ public class CloudParameters
 		while(iter.hasNext())
 		{
 			String curNodeID = (String)iter.next();
+			
 			CyNode curNode = Cytoscape.getCyNode(curNodeID);
 			
-			
-			//Retrieve value based on attribute
-			String nodeValue;
-			
-			//if we should use the ID
-			if (this.attributeName.equals("nodeID"))
+			if (curNode == null)
 			{
-				nodeValue = curNode.toString();
+				Component desktop = Cytoscape.getDesktop();
+				JOptionPane.showMessageDialog(desktop, "Node no longer exists: " + curNodeID);
+				return;
 			}
 			
-			//Use a different attribute
-			else
-			{
-				CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
-				Object attribute = cyNodeAttrs.getAttribute(curNode.getIdentifier(), attributeName);
-				
-				if (attribute instanceof String)
-					nodeValue = (String)attribute;
-				else
-				{
-					//Don't currently handle non string attributes
-					//This code should currently never be accessed
-					
-					Component desktop = Cytoscape.getDesktop();
-					
-					JOptionPane.showMessageDialog(desktop, 
-					"Current implementation does not handle non-String attributes.");
-					return;
-				}
-				
-			}
+			String nodeValue = this.getNodeAttributeVal(curNode);
+			if (nodeValue == null) // problem with nodes or attributes
+				return;
 			
-			//Only deal with lower case
-			nodeValue = nodeValue.toLowerCase();
-			
-			//replace all punctuation with white spaces except ' and -
-			nodeValue = nodeValue.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
-	        
-	        //Separate into non repeating set of words
-			Set<String> wordSet = new HashSet<String>();
-	        StringTokenizer token = new StringTokenizer(nodeValue);
-	        while (token.hasMoreTokens())
-	        {
-	        	String a = token.nextToken();
-	        	wordSet.add(a);
-	        }
-	        
+			Set<String> wordSet = this.processNodeString(nodeValue);
 	        
 	        //Iterate through all words
 	        Iterator<String> wordIter = wordSet.iterator();
@@ -276,11 +243,8 @@ public class CloudParameters
 		//Clear old counts
 		this.selectedCounts = new HashMap<String, Integer>();
 		
-		//Retrieve needed variables from parent parameters
-		SemanticSummaryParameters networkParams = this.getNetworkParams();
 		
 		List<String> selectedNodes = this.getSelectedNodes();
-		
 		
 		//Iterate to retrieve Cynodes
 		Iterator<String> iter = selectedNodes.iterator();
@@ -290,50 +254,20 @@ public class CloudParameters
 			String curNodeID = (String)iter.next();
 			CyNode curNode = Cytoscape.getCyNode(curNodeID);
 			
-			//Retrieve value based on attribute
-			String nodeValue;
 			
-			//if we should use the ID
-			if (this.attributeName.equals("nodeID"))
+			if (curNode == null)
 			{
-				nodeValue = curNode.toString();
+				Component desktop = Cytoscape.getDesktop();
+				JOptionPane.showMessageDialog(desktop, "Node no longer exists: " + curNodeID);
+				return;
 			}
 			
-			//Use a different attribute
-			else
-			{
-				CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
-				Object attribute = cyNodeAttrs.getAttribute(curNode.getIdentifier(), attributeName);
-				
-				if (attribute instanceof String)
-					nodeValue = (String)attribute;
-				else
-				{
-					//Don't currently handle non string attributes
-					//This code should currently never be accessed
-					
-					Component desktop = Cytoscape.getDesktop();
-					
-					JOptionPane.showMessageDialog(desktop, 
-					"Current implementation does not handle non-String attributes.");
-					return;
-				}
-			}
-				
-			//Only deal with lower case
-			nodeValue = nodeValue.toLowerCase();
+			String nodeValue = this.getNodeAttributeVal(curNode);
+			if (nodeValue == null) // problem with nodes or attributes
+				return;
 			
-			//replace all punctuation with white spaces except ' and -
-			nodeValue = nodeValue.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
+			Set<String> wordSet = this.processNodeString(nodeValue);
 	        
-	        //Separate into non repeating set of words
-			Set<String> wordSet = new HashSet<String>();
-	        StringTokenizer token = new StringTokenizer(nodeValue);
-	        while (token.hasMoreTokens())
-	        {
-	        	String a = token.nextToken();
-	        	wordSet.add(a);
-	        }
 	        
 	        //Iterate through all words
 	        Iterator<String> wordIter = wordSet.iterator();
@@ -561,6 +495,7 @@ public class CloudParameters
 		paramVariables.append("NetWeightFactor\t" + netWeightFactor + "\n");
 		paramVariables.append("CountInitialized\t" + countInitialized + "\n");
 		paramVariables.append("SelInitialized\t" + selInitialized + "\n");
+		paramVariables.append("RatiosInitialized\t" + ratiosInitialized + "\n");
 		paramVariables.append("MinRatio\t" + minRatio + "\n");
 		paramVariables.append("MaxRatio\t" + maxRatio + "\n");
 		
@@ -667,6 +602,73 @@ public class CloudParameters
 		}//end line loop
 		return newMap;
 	}
+	
+	/**
+	 * This method takes in the ID of a node and returns the string that is associated
+	 * with that node and the current attribute of this CloudParameters.
+	 * @param CyNode - node we are interested in 
+	 * @return String - value stored in the current attribute for the given node.
+	 */
+	private String getNodeAttributeVal(CyNode curNode)
+	{
+		//Retrieve value based on attribute
+		String nodeValue;
+		
+		//if we should use the ID
+		if (this.attributeName.equals("nodeID"))
+		{
+			nodeValue = curNode.toString();
+		}
+		
+		//Use a different attribute
+		else
+		{
+			CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
+			Object attribute = cyNodeAttrs.getAttribute(curNode.getIdentifier(), attributeName);
+			
+			if (attribute instanceof String)
+				nodeValue = (String)attribute;
+			else
+			{
+				//Don't currently handle non string attributes
+				//This code should currently never be accessed
+				Component desktop = Cytoscape.getDesktop();
+				
+				JOptionPane.showMessageDialog(desktop, 
+				"Current implementation does not handle non-String attributes.");
+				return null;
+			}//end else
+		}//end else
+		
+		return nodeValue;
+	}//end method
+	
+	/**
+	 * This method takes in a string from a node and processes it to lower case, removes
+	 * punctuation and separates the words into a set.
+	 * @param String from a node that we are processing.
+	 * @return Set of distinct words.
+	 */
+	private Set<String> processNodeString(String nodeValue)
+	{
+		//Only deal with lower case
+		nodeValue = nodeValue.toLowerCase();
+		
+		//replace all punctuation with white spaces except ' and -
+		nodeValue = nodeValue.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
+        
+        //Separate into non repeating set of words
+		Set<String> wordSet = new HashSet<String>();
+        StringTokenizer token = new StringTokenizer(nodeValue);
+        while (token.hasMoreTokens())
+        {
+        	String a = token.nextToken();
+        	wordSet.add(a);
+        }
+        
+        return wordSet;
+	}
+	
 	
 	//Getters and Setters
 	public String getCloudName()

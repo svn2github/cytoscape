@@ -180,7 +180,6 @@ public class SemanticSummaryInputPanel extends JPanel
 		panel.add(networkPanel);
 		panel.add(listScrollPane);
 		
-		
 		return panel;
 	}
 	
