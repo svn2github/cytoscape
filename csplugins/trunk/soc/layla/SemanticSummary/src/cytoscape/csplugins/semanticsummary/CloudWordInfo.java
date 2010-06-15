@@ -22,6 +22,7 @@
 
 package cytoscape.csplugins.semanticsummary;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -120,6 +121,31 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 					//Redraw the graph with selected nodes
 					CyNetworkView view = Cytoscape.getCurrentNetworkView();
 					view.redrawGraph(false, true);
+				}
+			}
+			
+			public void mouseEntered(MouseEvent me)
+			{
+				JLabel clickedLabel = (JLabel)me.getComponent();
+				String word = clickedLabel.getText();
+				
+				if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
+				{
+					clickedLabel.setForeground(Color.BLUE);
+					clickedLabel.repaint();
+				}
+				
+			}
+			
+			public void mouseExited(MouseEvent me)
+			{
+				JLabel clickedLabel = (JLabel)me.getComponent();
+				String word = clickedLabel.getText();
+				
+				if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
+				{
+					clickedLabel.setForeground(Color.BLACK);
+					clickedLabel.repaint();
 				}
 			}
 		});

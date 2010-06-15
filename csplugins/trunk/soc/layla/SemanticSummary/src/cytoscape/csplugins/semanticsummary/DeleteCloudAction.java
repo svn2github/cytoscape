@@ -76,13 +76,17 @@ public class DeleteCloudAction extends CytoscapeAction
 			SemanticSummaryManager.getInstance().setupCurrentNetwork();
 			
 			//Clear Selected Nodes
-			CyNetwork network = Cytoscape.getCurrentNetwork();
-			network.unselectAllNodes();
-			network.unselectAllEdges();
+			//CyNetwork network = Cytoscape.getCurrentNetwork();
+			//network.unselectAllNodes();
+			//network.unselectAllEdges();
 			
 			//Redraw the graph with selected nodes
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			view.redrawGraph(false, true);
+			//CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			//view.redrawGraph(false, true);
+			
+			SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
+			init.loadCloudPanel();
+			init.loadInputPanel();
 		}
 	}
 }

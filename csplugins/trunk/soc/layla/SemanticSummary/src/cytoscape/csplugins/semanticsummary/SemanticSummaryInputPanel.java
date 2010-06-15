@@ -23,28 +23,20 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -53,17 +45,14 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.table.DefaultTableModel;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.swing.WidestStringComboBoxModel;
 import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
-import cytoscape.view.CytoscapeDesktop;
 
 /**
  * The SemanticSummaryInputPanel class defines the panel that appears for 
@@ -81,7 +70,6 @@ public class SemanticSummaryInputPanel extends JPanel
 	
 	DecimalFormat decFormat; //used in formatted text fields
 	
-	//TODO
 	
 	//Text Fields
 	private JFormattedTextField maxWordsTextField;
@@ -150,14 +138,14 @@ public class SemanticSummaryInputPanel extends JPanel
 	public JPanel createCloudListPanel()
 	{
 		JPanel panel = new JPanel();
-		//panel.setLayout(new BorderLayout());
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setLayout(new BorderLayout());
 		
 		//Name of the network
 		JPanel networkPanel = new JPanel();
-		networkPanel.setLayout(new BorderLayout());
+		networkPanel.setLayout(new FlowLayout());
 		networkLabel = new JLabel();
-		networkPanel.add(networkLabel, BorderLayout.CENTER);
+		networkPanel.add(networkLabel);
 		
 		//List of Clouds
 		listValues = new DefaultListModel();
@@ -173,12 +161,11 @@ public class SemanticSummaryInputPanel extends JPanel
 		ListSelectionModel listSelectionModel = cloudList.getSelectionModel();
 		handler = new CloudListSelectionHandler();
 		listSelectionModel.addListSelectionListener(handler);
-		
 		JScrollPane listScrollPane = new JScrollPane(cloudList);
 		
 		//Add to panel
-		panel.add(networkPanel);
-		panel.add(listScrollPane);
+		panel.add(networkPanel, BorderLayout.NORTH);
+		panel.add(listScrollPane, BorderLayout.CENTER);
 		
 		return panel;
 	}
