@@ -2,16 +2,22 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<meta name="robots" content="noindex" />
 	<title>Cytoscape 2.x Plugins</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/cytoscape.css">
 	<link rel="shortcut icon" href="images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
 <div id="topbar">
-	<div class="title">Cytoscape 2.x Plugins</div>
+	<div class="title">Cytoscape 2.x Old Plugins</div>
 </div>
 
-<? include "nav.php"; ?>
+<div id="warning">
+  <p>&nbsp;</p>
+  <p><font color="#FF0000" size="+3">Warning: This is old plugin page of Cytoscape. The new page is at <a href="http://cytoscape.org/plugins.php">http://cytoscape.org/plugins.php</a><a href="http://cytoscape.org/plugins"></a></font></p>
+  <p>&nbsp;</p>
+</div>
+
 <br>
 <div id="indent">
 	<big><b>About Cytoscape Plugins:</b></big>
@@ -731,7 +737,7 @@ Cytoscape.
 					[<a href="http://profs.sci.univr.it/~scardoni/">PeSca 2.0</a>]				
 					<br/>
 					[<a href="http://www.petterlini.it/pesca/">PeSca 1.0</a>]				
-					</td>
+			  </td>
 			</tr>
 			<tr>
 				<td colspan="4">
