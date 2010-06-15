@@ -25,6 +25,9 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package cytoscape.util;
+
+
 import cytoscape.CytoscapeInit;
 
 import java.io.BufferedReader;
@@ -33,17 +36,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.List;
 import java.util.LinkedList;
 
 
 /**
- *  A class to keep track of a short list of recently opened files.
+ *  A class to keep track of a short list of recently opened URLs.
  */
 public class RecentlyOpenedTracker {
 	private static final int MAX_TRACK_COUNT = 5;
 	private final String trackerFileName;
-	private final LinkedList<String> fileNames;
+	private final LinkedList<URL> trackerURLs;
 
 	/**
 	 *  Creates a "recently opened" file tracker.
@@ -53,33 +57,37 @@ public class RecentlyOpenedTracker {
 	 */
 	public RecentlyOpenedTracker(final String trackerFileName) throws IOException {
 		this.trackerFileName = trackerFileName;
-		fileNames = new LinkedList<String>();
+		trackerURLs = new LinkedList<URL>();
+
 		final File input = new File(CytoscapeInit.getConfigVersionDirectory(), trackerFileName);
+		if (!input.exists())
+			input.createNewFile();
+
 		final BufferedReader reader = new BufferedReader(new FileReader(input));
 		String line;
-		while ((line = reader.readLine()) != null && fileNames.size() < MAX_TRACK_COUNT) {
-			final String newFileName = line.trim();
-			if (newFileName.length() > 0)
-				fileNames.addLast(newFileName);
+		while ((line = reader.readLine()) != null && trackerURLs.size() < MAX_TRACK_COUNT) {
+			final String newURL = line.trim();
+			if (newURL.length() > 0)
+				trackerURLs.addLast(new URL(newURL));
 		}
 	}
 
 	/**
 	 *  @returns the current list of recently opened file names
 	 */
-	@SuppressWarnings("unchecked") public List<String> getRecentlyOpenedFiles() {
-		 return (List<String>)fileNames.clone();
+	@SuppressWarnings("unchecked") public synchronized List<URL> getRecentlyOpenedURLs() {
+		 return (List<URL>)trackerURLs.clone();
 	}
 
 	/**
-	 *  Adds "newFileName" to the list of recently opened file names and trims the list if it has
+	 *  Adds "newURL" to the list of recently opened file names and trims the list if it has
 	 *  exceeded its maximum length.
 	 */
-	public void addFileName(final String newFileName) {
-		fileNames.remove(newFileName);
-		if (fileNames.size() == MAX_TRACK_COUNT)
-			fileNames.removeLast();
-		fileNames.addFirst(newFileName);
+	public synchronized void add(final URL newURL) {
+		trackerURLs.remove(newURL);
+		if (trackerURLs.size() == MAX_TRACK_COUNT)
+			trackerURLs.removeLast();
+		trackerURLs.addFirst(newURL);
 	}
 
 	/**
@@ -87,8 +95,18 @@ public class RecentlyOpenedTracker {
 	 */
 	public void writeOut() throws FileNotFoundException {
 		final PrintWriter writer = new PrintWriter(new File(CytoscapeInit.getConfigVersionDirectory(), trackerFileName));
-		for (final String fileName : fileNames)
-			writer.println(fileName);
+		for (final URL trackerURL : trackerURLs)
+			writer.println(trackerURL.toString());
 		writer.close();
+	}
+
+	/**
+	 *  @return the last addition or null if there are no URLs
+	 */
+	public synchronized URL getMostRecentAddition() {
+		if (trackerURLs.isEmpty())
+			return null;
+		else
+			return trackerURLs.getFirst();
 	}
 }

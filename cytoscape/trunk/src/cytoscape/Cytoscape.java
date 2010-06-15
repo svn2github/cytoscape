@@ -85,6 +85,7 @@ import cytoscape.init.CyInitParams;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.util.FileUtil;
+import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
@@ -227,7 +228,7 @@ public abstract class Cytoscape {
 	 * internet have been changed.
 	 */
 	public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
-	
+
 	/**
 	 * Fired every time a nested network is assigned to a node.
 	 * This event contains the following values:
@@ -237,7 +238,7 @@ public abstract class Cytoscape {
 	 * </ul>
 	 */
 	public static final String NESTED_NETWORK_CREATED = "NESTED_NETWORK_CREATED";
-	
+
 	/**
 	 * Fired every time a nested network is removed from a node.
 	 */
@@ -392,6 +393,11 @@ public abstract class Cytoscape {
 	private static Bookmarks bookmarks;
 
 	/**
+	 * Used by session reader.
+	 */
+	private static RecentlyOpenedTracker recentlyOpenedSessions = null;
+
+	/**
 	 * A null CyNetwork to give when there is no Current Network
 	 */
 	protected static CyNetwork nullNetwork = getRootGraph()
@@ -427,7 +433,7 @@ public abstract class Cytoscape {
 	 * this from here.
 	 * Don't initialize this until it is to be used.
 	 */
-	protected static VisualMappingManager VMM = null; 
+	protected static VisualMappingManager VMM = null;
 
 	protected static CyLogger logger = CyLogger.getLogger(Cytoscape.class);
 
@@ -482,8 +488,13 @@ public abstract class Cytoscape {
 				    // Cytoscape to a new session:
 				    getDesktop().setVisible (false);
 				    // get rid of existing data:
-				    Cytoscape.createNewSession ();
+				    Cytoscape.createNewSession();
 				} else {
+					try {
+						getRecentlyOpenedSessionTracker().writeOut();
+					} catch (final IOException e) {
+						System.err.println("failed to save recent session URLs!");
+					}
 					System.exit(returnVal);
 				}
 			} else {
@@ -903,7 +914,7 @@ public abstract class Cytoscape {
 			selectedNetworkViews.add(cv);
 	}
 
-	
+
 	/**
 	 * Returns the list of selected networks.
 	 */
@@ -917,7 +928,7 @@ public abstract class Cytoscape {
 		return (List<CyNetwork>) selectedNetworks.clone();
 	}
 
-	
+
 	/**
 	 * Sets the list of selected networks.
 	 */
@@ -961,7 +972,7 @@ public abstract class Cytoscape {
 			//logger.info("- SUCCEED setting current network " + id);
 			currentNetworkID = id;
 
-			// reset selected networks 
+			// reset selected networks
 			selectedNetworks.clear();
 			selectedNetworks.add((CyNetwork) (getNetworkMap().get(id)));
 		}
@@ -976,7 +987,7 @@ public abstract class Cytoscape {
 			//logger.info("= SUCCEED setting current network VIEW " + id);
 			currentNetworkViewID = id;
 
-			// reset selected network views 
+			// reset selected network views
 			selectedNetworkViews.clear();
 			selectedNetworkViews.add((CyNetworkView) (getNetworkViewMap().get(id)));
 
@@ -1111,7 +1122,7 @@ public abstract class Cytoscape {
 		}
 
 		updateNestedNetworkNodes(network);
-		
+
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		network = null;
@@ -1122,8 +1133,8 @@ public abstract class Cytoscape {
 		if ((currentNetworkID != null) && (currentNetworkViewID == null))
 			getDesktop().setFocus(currentNetworkID);
 	}
-	
-	
+
+
 	private static void updateNestedNetworkNodes(final GraphPerspective destroyedNetwork) {
 		for (final CyNode node: (List<CyNode>)Cytoscape.getRootGraph().nodesList()) {
 			if (node.getNestedNetwork() == destroyedNetwork) {
@@ -1140,14 +1151,14 @@ public abstract class Cytoscape {
 			return;
 
 		getSelectedNetworkViews().remove(view);
-		
+
 		final String viewID = view.getIdentifier();
-		
+
 		if (viewID.equals(currentNetworkViewID)) {
 			if (getNetworkViewMap().size() <= 0)
 				currentNetworkViewID = null;
 			else {
-				// depending on which randomly chosen currentNetworkID we get, 
+				// depending on which randomly chosen currentNetworkID we get,
 				// we may or may not have a view for it.
 				CyNetworkView newCurr = getNetworkViewMap().get(currentNetworkID);
 
@@ -1157,13 +1168,13 @@ public abstract class Cytoscape {
 					currentNetworkViewID = null;
 			}
 		}
-		
+
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_DESTROYED, null, view);
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		getNetworkViewMap().remove(viewID);
 		view = null;
-		
+
 		// so that a network will be selected.
 		if (currentNetworkID != null)
 			getDesktop().setFocus(currentNetworkID);
@@ -1435,7 +1446,7 @@ public abstract class Cytoscape {
 		if (reader instanceof NestedNetworkReader) {
 			// This is a reader which creates multiple networks.
 			final List<CyNetwork> networks = ((NestedNetworkReader)reader).getNetworks();
-			
+
 			// Turn views off for performance
 			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
 			for (CyNetwork network : networks) {
@@ -1445,14 +1456,14 @@ public abstract class Cytoscape {
 				}
 			}
 			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
-			
+
 			return networks.get(0); // Root network.
 		} else {
 			// get the RootGraph indices of the nodes and
 			// edges that were just created
 			final int[] nodes = reader.getNodeIndicesArray();
 			final int[] edges = reader.getEdgeIndicesArray();
-		
+
 			if (nodes == null) {
 				logger.warn("Network reader didn't return any nodes");
 			}
@@ -1733,7 +1744,7 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout, VisualStyle vs) {			
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout, VisualStyle vs) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}
@@ -1744,7 +1755,7 @@ public abstract class Cytoscape {
 
 		final DingNetworkView view = new DingNetworkView(network, title);
 		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		
+
 		view.setIdentifier(network.getIdentifier());
 		view.setTitle(network.getTitle());
 		getNetworkViewMap().put(network.getIdentifier(), view);
@@ -1760,13 +1771,13 @@ public abstract class Cytoscape {
 		if (layout == null) {
 			layout = CyLayouts.getDefaultLayout();
 		}
-		
+
 		vmm.setNetworkView(view);
 		vmm.applyAppearances();
 		layout.doLayout(view);
 		view.setGraphLOD(new CyGraphLOD());
 		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
-		
+
 		return view;
 	}
 
@@ -1900,21 +1911,21 @@ public abstract class Cytoscape {
 		final String[] nodeAttrNames = nodeAttributes.getAttributeNames();
 		for (String name: nodeAttrNames)
 			nodeAttributes.deleteAttribute(name);
-		
+
 		// Clear edge attributes
 		final String[] edgeAttrNames = edgeAttributes.getAttributeNames();
 		for (String name: edgeAttrNames)
 			edgeAttributes.deleteAttribute(name);
-		
+
 		// Clear network attributes
 		final String[] networkAttrNames = networkAttributes.getAttributeNames();
 		for(String name: networkAttrNames)
 			networkAttributes.deleteAttribute(name);
-		
+
 		// Reset Ontology Server
 		buildOntologyServer();
 		setOntologyRootID(null);
-		
+
 		setCurrentSessionFileName(null);
 		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 		cytoscapeRootGraph = null;
@@ -1966,5 +1977,19 @@ public abstract class Cytoscape {
 	 */
 	public static void setBookmarks(Bookmarks pBookmarks) {
 		bookmarks = pBookmarks;
+	}
+
+	public synchronized static RecentlyOpenedTracker getRecentlyOpenedSessionTracker() {
+		if (recentlyOpenedSessions == null) {
+			final String trackerFileName = "sessions.tracker";
+			try {
+				recentlyOpenedSessions = new RecentlyOpenedTracker(trackerFileName);
+			} catch (final IOException e) {
+				System.err.println(e);
+				logger.warn("Failed to load \"" + trackerFileName + "\"!");
+			}
+		}
+
+		return recentlyOpenedSessions;
 	}
 }
