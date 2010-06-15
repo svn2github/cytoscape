@@ -39,6 +39,9 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 	private static final CyCustomGraphics<CustomGraphic> NULL = new NullCustomGraphics();
 	private final int index;
 
+	// The factor by which to shrink scaled images so that they'll fit within nodes.
+	private static final double SHRINK = 0.9;
+
 	// Manages view to Custom Graphics mapping.
 	private Map<DNodeView, Set<CustomGraphic>> currentMap;
 
@@ -205,16 +208,16 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 		final AffineTransform scale;
 		if (whLock) {
-			scale = AffineTransform.getScaleInstance(nodeW / cgW, nodeH / cgH);
+			scale = AffineTransform.getScaleInstance(SHRINK * nodeW / cgW, SHRINK * nodeH / cgH);
 		} else {
 			// Case 1: node height value is larger than width
 			if (nodeW >= nodeH) {
-				scale = AffineTransform.getScaleInstance((nodeW / cgW)
-						* (nodeH / nodeW), nodeH / cgH);
+				scale = AffineTransform.getScaleInstance(SHRINK * (nodeW / cgW)
+						* (nodeH / nodeW), SHRINK * nodeH / cgH);
 				// scale = AffineTransform.getScaleInstance(nodeH/nodeW, 1);
 			} else {
-				scale = AffineTransform.getScaleInstance(nodeW / cgW,
-						(nodeH / cgH) * (nodeW / nodeH));
+				scale = AffineTransform.getScaleInstance(SHRINK * nodeW / cgW,
+						SHRINK * (nodeH / cgH) * (nodeW / nodeH));
 				// scale = AffineTransform.getScaleInstance(1, nodeW/nodeH);
 			}
 
