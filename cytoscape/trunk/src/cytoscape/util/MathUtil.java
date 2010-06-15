@@ -56,8 +56,8 @@ public class MathUtil {
 		final double absX2 = Math.abs(x2);
 
 		if (x1 != 0.0)
-			return Math.abs(x1 - x2) / Math.abs(x1) < 1.0e-10;
+			return Math.abs(x1 - x2) / Math.abs(x1) < 1.0e-12;
 		else
-			return Math.abs(x1 - x2) / Math.abs(x2) < 1.0e-10;
+			return Math.abs(x1 - x2) / Math.abs(x2) < 1.0e-12;
 	}
 }
