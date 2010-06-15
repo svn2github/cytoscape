@@ -22,6 +22,9 @@
 
 package cytoscape.csplugins.semanticsummary;
 
+import giny.view.GraphViewChangeEvent;
+import giny.view.GraphViewChangeListener;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -140,7 +143,12 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		{
 			networkModified();
 		}
+		else if (event.getPropertyName().equals(Cytoscape.NETWORK_LOADED))
+		{
+			System.out.println("Network Loaded!");
+		}
 	}
+	
 	
 	/**
 	 * Removes the CyNetwork from our list if it has just been destroyed.

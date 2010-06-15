@@ -30,6 +30,8 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanelState;
 
 
 /**
@@ -104,6 +106,10 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 			//Move to front of display
 			index = cytoPanel.indexOfComponent(inputWindow);
 			cytoPanel.setSelectedIndex(index);
+			
+			//Create Listener for when this panel moves to the front
+			cytoPanel.addCytoPanelListener(new InputPanelSelectListener(index));
+			
 		}//end if not loaded
 		
 		else
@@ -162,4 +168,29 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 		}//end else
 	}//end loadCloudPanel() method
 	
+	public class InputPanelSelectListener implements CytoPanelListener
+	{
+		public InputPanelSelectListener(int index)
+		{
+			//super();
+		}
+		public void onComponentSelected(int ComponentIndex)
+		{
+			SemanticSummaryManager.getInstance().setupCurrentNetwork();
+		}
+		public void onComponentAdded(int arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		public void onComponentRemoved(int arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		public void onStateChange(CytoPanelState arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
 }
+
+
