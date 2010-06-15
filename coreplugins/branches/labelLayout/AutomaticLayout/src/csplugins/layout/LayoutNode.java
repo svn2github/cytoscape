@@ -4,6 +4,8 @@ import cytoscape.*;
 
 import cytoscape.view.*;
 
+import giny.view.*;
+
 import java.util.*;
 
 /**
@@ -26,13 +28,67 @@ public abstract class LayoutNode {
     protected double y;
     protected double dispX;
     protected double dispY;
+    protected ArrayList<LayoutNode> neighbors = null;
+    protected int index = -1;
+
+    // instance methods
+
+
+    // !!!! This methods MUST be overriden by subclasses !!!!
+
 
     /**
-     * This method MUST be overriden by subclasses
+     * 
      */
     public abstract void moveToLocation();
 
-    // instance methods
+    /**
+     * Accessor function to return the CyNode associated with
+     * this LayoutNode.
+     *
+     * @return    CyNode that is associated with this LayoutNode
+     */
+    public abstract CyNode getNode();
+
+    /**
+     * Accessor function to return the NodeView associated with
+     * this LayoutNode.
+     *
+     * @return    NodeView that is associated with this LayoutNode
+     */
+    public abstract NodeView getNodeView();
+
+    /**
+     * Return the width of this node
+     *
+     * @return        width of this node
+     */
+    public abstract double getWidth();
+
+    /**
+     * Return the height of this node
+     *
+     * @return        height of this node
+     */
+    public abstract double getHeight();
+
+    /**
+     * Return the node's identifier.
+     *
+     * @return        String containing the node's identifier
+     */
+    public abstract String getIdentifier();
+
+    /**
+     * Return a string representation of the node
+     *
+     * @return        String containing the node's identifier and location
+     */
+    public abstract String toString();
+
+    // End of abstract methods
+
+
     /**
      * Set the location of this LayoutNode.  Note that this only
      * sets the location -- it does not actually move the node to
@@ -200,7 +256,7 @@ public abstract class LayoutNode {
      * @param    otherNode    the node to measure the distance to
      * @return        the euclidean distance from this node to otherNode
      */
-    public double distance(LayoutAbstractNode otherNode) {
+    public double distance(LayoutNode otherNode) {
 	double deltaX = this.x - otherNode.getX();
 	double deltaY = this.y - otherNode.getY();
 
@@ -220,5 +276,69 @@ public abstract class LayoutNode {
 
 	return Math.max(EPSILON, Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)));
     }
+
+    /**
+     * Convenience function to keep track of neighbors of this node.  This can be
+     * used to improve the performance of algorithms that try to determine the edge
+     * partners of nodes.
+     *
+     * @param    v    LayoutNode that is a neighbor of this LayoutNode
+     */
+    public void addNeighbor(LayoutNode v) {
+	this.neighbors.add(v);
+    }
+
+    /**
+     * Convenience function to return the list of neighbors (connected nodes) of this node.
+     *
+     * @return        List of all of the neighbors (nodes with shared edges) of this node.
+     */
+    public List<LayoutNode> getNeighbors() {
+	return this.neighbors;
+    }
+
+    /**
+     * Return the node's degree (i.e. number of nodes it's connected to).
+     *
+     * @return        Degree of this node
+     */
+    public double getDegree() {
+	return (double)neighbors.size();
+    }
+
+    /**
+     * Return a string representation of the node's displacement
+     *
+     * @return        String containing the node's X,Y displacement
+     */
+    public String printDisp() {
+	String ret = new String("" + dispX + ", " + dispY);
+
+	return ret;
+    }
+
+    /**
+     * Return a string representation of the node's location
+     *
+     * @return        String containing the node's X,Y location
+     */
+    public String printLocation() {
+	String ret = new String("" + x + ", " + y);
+
+	return ret;
+    }
+
+    /**
+     * Returns the index of this LayoutNode.  This is <em>not</em> the same as the
+     * rootGraphIndex of the node.  Its primarily used by LayoutPartition to keep
+     * track of the offset in the node array that holds this LayoutNode.
+     *
+     * @return        The index of this node
+     * @see    LayoutPartition
+     */
+    public int getIndex() {
+	return this.index;
+    }
+
 
 }

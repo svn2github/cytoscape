@@ -62,10 +62,8 @@ public class LayoutNodeImpl extends LayoutNode {
     //     private double dispY;
     //     private boolean isLocked = false;
     
-    private CyNode node;
-    private NodeView nodeView;
-    private int index;
-    private ArrayList<LayoutNode> neighbors = null;
+    protected CyNode node;
+    protected NodeView nodeView;
 
     /**
      * Empty constructor
@@ -109,38 +107,6 @@ public class LayoutNodeImpl extends LayoutNode {
     }
 
     /**
-     * Convenience function to keep track of neighbors of this node.  This can be
-     * used to improve the performance of algorithms that try to determine the edge
-     * partners of nodes.
-     *
-     * @param    v    LayoutNode that is a neighbor of this LayoutNode
-     */
-    public void addNeighbor(LayoutNode v) {
-	this.neighbors.add(v);
-    }
-
-    /**
-     * Convenience function to return the list of neighbors (connected nodes) of this node.
-     *
-     * @return        List of all of the neighbors (nodes with shared edges) of this node.
-     */
-    public List<LayoutNode> getNeighbors() {
-	return this.neighbors;
-    }
-
-    /**
-     * Returns the index of this LayoutNode.  This is <em>not</em> the same as the
-     * rootGraphIndex of the node.  Its primarily used by LayoutPartition to keep
-     * track of the offset in the node array that holds this LayoutNode.
-     *
-     * @return        The index of this node
-     * @see    LayoutPartition
-     */
-    public int getIndex() {
-	return this.index;
-    }
-
-    /**
      * Return the width of this node
      *
      * @return        width of this node
@@ -172,24 +138,6 @@ public class LayoutNodeImpl extends LayoutNode {
     }
 
     /**
-     * Return the node's identifier.
-     *
-     * @return        String containing the node's identifier
-     */
-    public String getIdentifier() {
-	return node.getIdentifier();
-    }
-
-    /**
-     * Return the node's degree (i.e. number of nodes it's connected to).
-     *
-     * @return        Degree of this node
-     */
-    public double getDegree() {
-	return (double)neighbors.size();
-    }
-
-    /**
      * Return a string representation of the node
      *
      * @return        String containing the node's identifier and location
@@ -199,25 +147,14 @@ public class LayoutNodeImpl extends LayoutNode {
     }
 
     /**
-     * Return a string representation of the node's displacement
+     * Return the node's identifier.
      *
-     * @return        String containing the node's X,Y displacement
+     * @return        String containing the node's identifier
      */
-    public String printDisp() {
-	String ret = new String("" + dispX + ", " + dispY);
-
-	return ret;
+    public String getIdentifier() {
+	return node.getIdentifier();
     }
 
-    /**
-     * Return a string representation of the node's location
-     *
-     * @return        String containing the node's X,Y location
-     */
-    public String printLocation() {
-	String ret = new String("" + x + ", " + y);
 
-	return ret;
-    }
 
 }

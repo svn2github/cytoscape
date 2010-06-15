@@ -24,7 +24,7 @@
     <property name="cytoscape.dir" value="/Users/gerardohuck/Cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/"/>
-    <property name="csplugins.dir" value="../"/>
+    <property name="csplugins.dir" value="./src/csplugins"/>
 
     <!-- Define the directories -->
     <property name="layout.root.dir" value="./"/>

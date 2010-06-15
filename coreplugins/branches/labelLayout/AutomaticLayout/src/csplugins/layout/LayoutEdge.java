@@ -186,11 +186,11 @@ public class LayoutEdge {
 		String source = "undefined";
 		String target = "undefined";
 
-		if (v1 != null)
-			source = v1.getIdentifier();
+		if (v1 != null && (v1.getClass().getName() == "LayoutNodeImpl") )
+		    source = ((LayoutNodeImpl) v1).getIdentifier();
 
-		if (v2 != null)
-			target = v2.getIdentifier();
+		if (v2 != null && (v2.getClass().getName() == "LayoutNodeImpl") )
+		    target = ((LayoutNodeImpl) v2).getIdentifier();
 
 		return "Edge " + edge.getIdentifier() + " connecting " + source + " and " + target
 		       + " with weight " + weight;
