@@ -36,7 +36,7 @@ import java.util.AbstractCollection;
 /**
  *  Used to scale a list of values to [a,b]
  */
-interface Scaler {
+public interface Scaler {
 	double[] scale(final double values[], final double a, final double b) throws IllegalArgumentException;
 	double[] scale(final AbstractCollection<Double> values, final double a, final double b) throws IllegalArgumentException;
 
