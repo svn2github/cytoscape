@@ -35,9 +35,9 @@ enum PDBMoleculeType {
 
 	BIO("bio","BIO"),
 	ASR("asr","ASR"),
-	BIO_1("bio_1","BIO1"),
-	BIO_2("bio_2","BIO2"),
-	BIO_3("bio_3","BIO3"),
+//	BIO_1("bio_1","BIO1"),
+//	BIO_2("bio_2","BIO2"),
+//	BIO_3("bio_3","BIO3"),
 	;
 
 	private String type;
