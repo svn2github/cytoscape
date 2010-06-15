@@ -29,6 +29,8 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 //import cytoscape.util.ProbabilityScaler;
 //import cytoscape.util.ScalingMethod;
+import org.idekerlab.PanGIAPlugin.util.Scaler;
+import org.idekerlab.PanGIAPlugin.util.ScalerFactory;
 
 
 /**
@@ -407,10 +409,35 @@ public class SearchTask implements Task {
 	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethodX scalingMethod,
 					      final StringBuilder errorMessage)
 	{
-		float[] scaledEdgeAttribValues = ProbabilityScaler.scale(edgeAttribValues, scalingMethod,
-									 errorMessage);
-		if (scaledEdgeAttribValues == null || scalingMethod == ScalingMethodX.NONE)
-			return scaledEdgeAttribValues;
+		if (scalingMethod == ScalingMethodX.NONE)
+			return edgeAttribValues;
+
+		if (scalingMethod == ScalingMethodX.LINEAR_LOWER || scalingMethod == ScalingMethodX.RANK_LOWER) {
+			for (int i = 0; i < edgeAttribValues.length; ++i)
+				edgeAttribValues[i] = -edgeAttribValues[i];
+		}
+
+		final String scalingType;
+		float from, to;
+		if (scalingMethod == ScalingMethodX.LINEAR_LOWER || scalingMethod == ScalingMethodX.LINEAR_UPPER) {
+			final float EPS = 0.25f / edgeAttribValues.length;
+			from = 0.5f - EPS;
+			to   = 1.0f - EPS;
+			scalingType = "linear";
+		} else if (scalingMethod == ScalingMethodX.RANK_LOWER || scalingMethod == ScalingMethodX.RANK_UPPER) {
+			from = 0.5f;
+			to   = 1.0f;
+			scalingType = "rank";
+		} else
+			throw new IllegalArgumentException("unknown scaling method: " + scalingMethod);
+		
+		float[] scaledEdgeAttribValues;
+		try {
+			scaledEdgeAttribValues = ScalerFactory.getScaler(scalingType).scale(edgeAttribValues, from, to);
+		} catch (final IllegalArgumentException e) {
+			errorMessage.append(e.getMessage());
+			return null;
+		}
 
 		// Generate log-likelihood values:
 		for (int i = 0; i < scaledEdgeAttribValues.length; ++i) {
