@@ -34,18 +34,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.equations.internal; 
-
-import cytoscape.Cytoscape;
-import cytoscape.plugin.CytoscapePlugin;
+package org.cytoscape.equations.internal.googlechart; 
 
 import org.cytoscape.equations.Parser;
+
+import cytoscape.plugin.CytoscapePlugin;
 
 public class GoogleChartFunctionPlugin extends CytoscapePlugin {
 
 	public GoogleChartFunctionPlugin() {
-		Parser.getParser().registerFunction( new GoogleLineChart() ); 
-		Parser.getParser().registerFunction( new GoogleBarChart() ); 
+		Parser.getParser().registerFunction( new GoogleLineChart() );
+		Parser.getParser().registerFunction( new GoogleBarChart() );
+		Parser.getParser().registerFunction( new GoogleBarChartFull() );
+		Parser.getParser().registerFunction( new GoogleLineChartFull() );
 	}
 }
 

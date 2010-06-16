@@ -24,37 +24,61 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.equations.internal;
+ */
+package org.cytoscape.equations.internal.googlechart;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import cytoscape.util.ProbabilityScaler;
 import cytoscape.util.ScalingMethod;
 
-import java.util.List;
-
 class DataUtil {
+	
+	private static final String DELIMITER = ",";
 
-	private DataUtil() {};
+	private DataUtil() {
+	};
 
 	/**
-	 *  @param o An object presumed to be a List of Double values.
-	 *  @return an array of primitive doubles scaled between 0 and 100. 
+	 * @param o
+	 *            An object presumed to be a List of Double values.
+	 * @return an array of primitive doubles scaled between 0 and 100.
 	 */
 	static double[] extractDoubles(Object o) {
-		List<Double> ld = (List<Double>)o;
+		
+		List<Double> ld = (List<Double>) o;
 
 		float[] data = new float[ld.size()];
 		int i = 0;
-		for ( Double d : ld )
+		for (Double d : ld)
 			data[i++] = d.floatValue();
 
-		float[] data2 = ProbabilityScaler.scale((float[])data,ScalingMethod.LINEAR_LOWER,new StringBuilder());
+		float[] data2 = ProbabilityScaler.scale((float[]) data,
+				ScalingMethod.LINEAR_LOWER, new StringBuilder());
 		double[] ret = new double[data2.length];
 		i = 0;
 		for (float f : data2)
-			ret[i++] = 100.0 * f;  // scaled by 100 for Google
+			ret[i++] = 100.0 * f; // scaled by 100 for Google
 
-		return ret; 
+		return ret;
+	}
+	
+	static List<List<Double>> extractDoubleLists(Object val) {
+		final List<String> originalList = (List<String>) val;
+		
+		final List<List<Double>> result = new ArrayList<List<Double>>();
+		
+		for(final String arg : originalList) {
+			final String[] parts = arg.split(DELIMITER);
+			final List<Double> lineData = new ArrayList<Double>();
+			for(String number: parts) {
+				lineData.add(Double.parseDouble(number));
+			}
+			
+			result.add(lineData);
+		}
+		
+		return result;
 	}
 }

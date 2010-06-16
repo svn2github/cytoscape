@@ -19,7 +19,7 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
+    <property name="cytoscape.dir" value="${root.dir}/../cytoscape28"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
     <property name="src.dir" value="${root.dir}/src"/>
@@ -104,7 +104,7 @@
 		<fileset dir="${resources.dir}/testData" includes="*" />
 	</copy>
 -->
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/equations/internal"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/equations/internal/googlechart"/>
     <unjar dest="${build.dir}">
       <fileset dir="${lib.dir}">
         <include name="*.jar" />
@@ -116,7 +116,7 @@
                includes="**"/>
       <manifest>
         <attribute name="Cytoscape-Plugin"
-	           value="org.cytoscape.equations.internal.GoogleChartFunctionPlugin"/>
+	           value="org.cytoscape.equations.internal.googlechart.GoogleChartFunctionPlugin"/>
       </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>

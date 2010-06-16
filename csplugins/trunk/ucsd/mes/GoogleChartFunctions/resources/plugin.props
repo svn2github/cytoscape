@@ -11,7 +11,7 @@ pluginName=Google Chart API Functions
 pluginDescription=Functions that create images via the Google Chart API
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.1
+pluginVersion=0.01
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.8

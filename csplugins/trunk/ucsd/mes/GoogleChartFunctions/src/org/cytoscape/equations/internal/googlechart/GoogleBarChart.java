@@ -25,20 +25,29 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.equations.internal;
+package org.cytoscape.equations.internal.googlechart;
 
+
+import static com.googlecode.charts4j.Color.BLACK;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.FunctionUtil;
-import cytoscape.util.ProbabilityScaler;
-import cytoscape.util.ScalingMethod;
 
-import static com.googlecode.charts4j.Color.*;
-import com.googlecode.charts4j.*;
+import com.googlecode.charts4j.AxisLabels;
+import com.googlecode.charts4j.AxisLabelsFactory;
+import com.googlecode.charts4j.AxisStyle;
+import com.googlecode.charts4j.AxisTextAlignment;
+import com.googlecode.charts4j.BarChart;
+import com.googlecode.charts4j.BarChartPlot;
+import com.googlecode.charts4j.Color;
+import com.googlecode.charts4j.Data;
+import com.googlecode.charts4j.GCharts;
+import com.googlecode.charts4j.Plots;
 
-class GoogleBarChart implements Function {
+class GoogleBarChart extends AbstractGoogleChartFunction {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,15 +58,14 @@ class GoogleBarChart implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Creates a bar chart URL based on the supplied arguments."; }
+	public String getFunctionSummary() { return "Creates a bar chart URL based on the supplied arguments (simplified version)."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
 	public String getUsageDescription() { return "Call this with \"GBARCHART(title,list)\""; }
-
-	public Class getReturnType() { return String.class; }
+	
 
 	/**
 	 *  @return String.class or null if the args passed in have the wrong arity or a type mismatch was found
