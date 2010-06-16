@@ -37,6 +37,9 @@ public class ActiveModulesUI extends CytoscapePlugin {
 
 	private ActivePathsParameterPanel mainPanel;
 
+	public static String JACTIVEMODULES_TOP_N_MODULE = "jactivemodules_top_n_modules";
+	public static String JACTIVEMODULES_TOP_N_MODULE_DEFAULT = "5";
+	
 	public ActiveModulesUI() {
 		final JMenuItem menuItem = new JMenuItem("jActiveModules...");
 		menuItem.addActionListener(new SetParametersAction());
