@@ -42,26 +42,22 @@ public class LayoutLabelNodeImpl extends LayoutNode {
     }
 	
     public void moveToLocation() {
-
- // 	CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-// 	String labelPosition = (String) nodeAtts.getAttribute(parent.getNode().getIdentifier(), 
-// 							      "node.labelPosition");
-// 	LabelPosition lp = LabelPosition.parse(labelPosition);
+	
+	// make sure parent is where it should be
+	parent.moveToLocation(); 
 
 	ObjectPosition labelPosition = parent.getNodeView().getLabelPosition();
 
-// 	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
+ 	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
 
-// 	    this.setX(lp.getOffsetX() + parent.getNodeView().getXPosition());
-// 	    this.setY(lp.getOffsetY() + parent.getNodeView().getYPosition());
+	    this.setX(labelPosition.getOffsetX() + parent.getX());
+	    this.setY(labelPosition.getOffsetY() + parent.getY());
 
-// 	} else { // If node is unlocked set labels offsets properly	
-
-// 	    parent.moveToLocation(); // make sure parent is where it should be
+	} else { // If node is unlocked set labels offsets properly	
 	    	    
-// 	    lp.setOffsetX(this.getX() - parent.getX());
-// 	    lp.setOffsetY(this.getY() - parent.getY());
-//	} 
+	    labelPosition.setOffsetX(this.getX() - parent.getX());
+	    labelPosition.setOffsetY(this.getY() - parent.getY());
+	} 
     }
 
 
