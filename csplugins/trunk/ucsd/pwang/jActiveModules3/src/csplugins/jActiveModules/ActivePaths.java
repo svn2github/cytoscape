@@ -180,6 +180,23 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		newView.setVisualStyle(overviewVS.getName());
 		Cytoscape.getVisualMappingManager().setVisualStyle(overviewVS);
 		newView.redrawGraph(false, true);
+		
+		// Create view for top n modules
+		int n = Integer.valueOf(CytoscapeInit.getProperties().getProperty(ActiveModulesUI.JACTIVEMODULES_TOP_N_MODULE)).intValue();
+		
+		 if (n> subnetworks.length){
+			 n = subnetworks.length;
+		 }
+
+		 for (int i=0; i<n; i++){
+				CyNetworkView theView = Cytoscape.createNetworkView(subnetworks[i]);
+				newView.setVisualStyle(moduleVS.getName());
+				Cytoscape.getVisualMappingManager().setVisualStyle(moduleVS);
+				theView.redrawGraph(false, true);
+				
+				CyLayoutAlgorithm alg = cytoscape.layout.CyLayouts.getLayout("force-directed");
+				theView.applyLayout(alg);
+		 }
 	}
 	
 
