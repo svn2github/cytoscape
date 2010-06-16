@@ -30,7 +30,7 @@
 package cytoscape.util;
 
 
-import java.util.AbstractCollection;
+import java.util.Collection;
 
 
 /**
@@ -39,7 +39,7 @@ import java.util.AbstractCollection;
 public abstract class AbstractScaler implements Scaler {
 	public abstract double[] scale(final double values[], final double a, final double b) throws IllegalArgumentException;
 
-	public final double[] scale(final AbstractCollection<Double> values, final double a,
+	public final double[] scale(final Collection<Double> values, final double a,
 				    final double b) throws IllegalArgumentException
 	{
 		// Convert the collection to an array:
@@ -51,9 +51,11 @@ public abstract class AbstractScaler implements Scaler {
 		return scale(array, a, b);
 	}
 
-	public abstract float[] scale(final float values[], final float a, final float b) throws IllegalArgumentException;
+	public final float[] scale(final float values[], final float a, final float b) throws IllegalArgumentException {
+		return doubleToFloatArray(scale(floatToDoubleArray(values), (double)a, (double)b));
+	}
 
-	public final float[] scale(final AbstractCollection<Float> values, final float a,
+	public final float[] scale(final Collection<Float> values, final float a,
 				   final float b) throws IllegalArgumentException
 	{
 		// Convert the collection to an array:
@@ -63,5 +65,21 @@ public abstract class AbstractScaler implements Scaler {
 			array[i++] = f;
 
 		return scale(array, a, b);
+	}
+
+	private double[] floatToDoubleArray(final float[] floatArray) {
+		final double[] doubleArray = new double[floatArray.length];
+		for (int i = 0; i < floatArray.length; ++i)
+			doubleArray[i] = floatArray[i];
+
+		return doubleArray;
+	}
+
+	private float[] doubleToFloatArray(final double[] doubleArray) {
+		final float[] floatArray = new float[doubleArray.length];
+		for (int i = 0; i < doubleArray.length; ++i)
+			floatArray[i] = (float)doubleArray[i];
+
+		return floatArray;
 	}
 }

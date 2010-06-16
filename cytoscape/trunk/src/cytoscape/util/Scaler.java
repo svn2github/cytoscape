@@ -30,7 +30,7 @@
 package cytoscape.util;
 
 
-import java.util.AbstractCollection;
+import java.util.Collection;
 
 
 /**
@@ -38,10 +38,10 @@ import java.util.AbstractCollection;
  */
 public interface Scaler {
 	double[] scale(final double values[], final double a, final double b) throws IllegalArgumentException;
-	double[] scale(final AbstractCollection<Double> values, final double a, final double b) throws IllegalArgumentException;
+	double[] scale(final Collection<Double> values, final double a, final double b) throws IllegalArgumentException;
 
 	float[] scale(final float values[], final float a, final float b) throws IllegalArgumentException;
-	float[] scale(final AbstractCollection<Float> values, final float a, final float b) throws IllegalArgumentException;
+	float[] scale(final Collection<Float> values, final float a, final float b) throws IllegalArgumentException;
 }
 
 
