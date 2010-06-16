@@ -115,6 +115,40 @@
 		these items don't exist in the typical public maven repos; we could
 		add these directly to Nexus if desired
 	-->
+	<repositories>
+
+		<!-- SpringSource OSGi Bundle Repository -->
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+		<!-- Repo. of PAX project -->
+		<repository>
+			<id>ops4j.releases</id>
+			<url>http://repository.ops4j.org/maven2/</url>
+		</repository>
+
+		<!-- L2fProd Maven Repository -->
+		<repository>
+			<id>l2fprod-maven-repo</id>
+			<name>L2FProd.com Maven Repository</name>
+			<url>http://www.l2fprod.com/maven2/</url>
+		</repository>
+
+	</repositories>
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -186,6 +220,7 @@
 					<reportSet>
 						<reports>
 							<report>javadoc</report>
+							<!-- <report>test-javadoc</report> -->
 						</reports>
 					</reportSet>
 				</reportSets>
