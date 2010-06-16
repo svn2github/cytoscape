@@ -325,9 +325,9 @@
 		<module>phoebe.dnd</module>
 		<module>wrappers</module>
 		<module>application</module>
-		<module>quickfind</module>
 		<!--<module>table.import</module>--> 
 		<!--
+		<module>quickfind</module>
 			<module>webservice</module> <module>vizmap-gui</module>
 			<module>cpath</module>
 			<module>merge</module> <module>math.xform</module>
