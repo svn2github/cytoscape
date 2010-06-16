@@ -103,14 +103,19 @@ public class CloudDisplayPanel extends JPanel
 		curCloud = params;
 		
 		//Loop through to create labels and add them
+		int count = 0;
+		
 		ArrayList<CloudWordInfo> wordInfo = curCloud.getCloudWordInfoList();
 		Iterator<CloudWordInfo> iter = wordInfo.iterator();
-		while(iter.hasNext())
+		
+		//Loop while more words exist and we are under the max
+		while(iter.hasNext() && (count < params.getMaxWords()))
 		{
 			CloudWordInfo curWordInfo = iter.next();
 			JLabel curLabel = curWordInfo.createCloudLabel();
 			
 			tagCloudFlowPanel.add(curLabel);
+			count++;
 		}
 		tagCloudFlowPanel.revalidate();
 		this.updateUI();

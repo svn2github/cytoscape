@@ -65,7 +65,8 @@ public class DeleteCloudAction extends CytoscapeAction
 		CloudParameters cloudParams = SemanticSummaryManager.getInstance().getCurCloud();
 		
 		//Delete if cloud is not null
-		if (cloudParams != null)
+		if (cloudParams != null && 
+				cloudParams != SemanticSummaryManager.getInstance().getNullCloudParamters())
 		{
 			String cloudName = cloudParams.getCloudName();
 			
@@ -74,15 +75,6 @@ public class DeleteCloudAction extends CytoscapeAction
 			
 			//Update Current network
 			SemanticSummaryManager.getInstance().setupCurrentNetwork();
-			
-			//Clear Selected Nodes
-			//CyNetwork network = Cytoscape.getCurrentNetwork();
-			//network.unselectAllNodes();
-			//network.unselectAllEdges();
-			
-			//Redraw the graph with selected nodes
-			//CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			//view.redrawGraph(false, true);
 			
 			SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
 			init.loadCloudPanel();

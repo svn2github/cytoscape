@@ -22,15 +22,16 @@
 
 package cytoscape.csplugins.semanticsummary;
 
-import giny.view.GraphViewChangeEvent;
-import giny.view.GraphViewChangeListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.data.attr.MultiHashMapListener;
 import cytoscape.view.CytoscapeDesktop;
 
 /**
@@ -42,7 +43,7 @@ import cytoscape.view.CytoscapeDesktop;
  *
  */
 
-public class SemanticSummaryManager implements PropertyChangeListener 
+public class SemanticSummaryManager implements PropertyChangeListener, MultiHashMapListener 
 {
 	//VARIABLES
 	private static SemanticSummaryManager manager = null;
@@ -59,6 +60,11 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	//Default Values for User Input
 	private Double defaultNetWeight;
 	private String defaultAttName;
+	private Integer defaultMaxWords;
+	
+	//Null Values for params
+	private SemanticSummaryParameters nullSemanticSummary;
+	private CloudParameters nullCloudParameters;
 	
 	//CONSTRUCTOR
 	/**
@@ -68,6 +74,10 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	private SemanticSummaryManager()
 	{
 		cyNetworkList = new HashMap<String, SemanticSummaryParameters>();
+		nullSemanticSummary = new SemanticSummaryParameters();
+		nullSemanticSummary.setNetworkName("No Network Loaded");
+		//nullCloudParameters = new CloudParameters();
+		//nullCloudParameters.setCloudName("Null Cloud");
 		
 		//catch network creation/destruction events
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -76,9 +86,14 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport()
 		.addPropertyChangeListener(this);
 		
+		//catch attribute changes
+		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(this);
+		
+		curNetwork = nullSemanticSummary;
 		
 		defaultNetWeight = 1.0;
 		defaultAttName = "nodeID";
+		defaultMaxWords = 250;
 	}
 	
 	//METHODS
@@ -142,10 +157,6 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		else if (event.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED))
 		{
 			networkModified();
-		}
-		else if (event.getPropertyName().equals(Cytoscape.NETWORK_LOADED))
-		{
-			System.out.println("Network Loaded!");
 		}
 	}
 	
@@ -212,12 +223,18 @@ public class SemanticSummaryManager implements PropertyChangeListener
 	{
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
+		String newNetworkName = network.getTitle();
+		String oldNetworkName = curNetwork.getNetworkName();
+		JList cloudList = getInputWindow().getCloudList();
+		Object selected = cloudList.getSelectedValue();
+		String CloudName = curCloud.getCloudName();
+		
 		
 		//Null current network
 		if (network.equals(Cytoscape.getNullNetwork()))
 		{
-			curNetwork = new SemanticSummaryParameters();
-			curNetwork.setNetworkName("No Network Loaded");
+			curNetwork = nullSemanticSummary;
+			curCloud = nullCloudParameters;
 		}
 		
 		//Already Registered
@@ -235,10 +252,34 @@ public class SemanticSummaryManager implements PropertyChangeListener
 			curNetwork = params;
 		}
 		
+		//Update cloud list and update attributes
 		getInputWindow().setNetworkList(curNetwork);
-		getInputWindow().setUserDefaults();
 		getInputWindow().refreshAttributeCMB();
-		getCloudWindow().clearCloud();
+		
+		//If network has not changed, keep the same row highlighted
+		if (newNetworkName.equals(oldNetworkName) && (selected != null))
+		{
+			//Turn off listener while doing work
+			ListSelectionModel listSelectionModel = cloudList.getSelectionModel();
+			CloudListSelectionHandler handler = getInputWindow().getCloudListSelectionHandler();
+			listSelectionModel.removeListSelectionListener(handler);
+			
+			//Reset selected Value
+			String selectedValue = (String)selected;
+			getInputWindow().getCloudList().setSelectedValue(selectedValue, true);
+			
+			//Turn listener back on
+			listSelectionModel.addListSelectionListener(handler);
+			
+			//Ensure current cloud has not changed
+			if (curNetwork.containsCloud(CloudName))
+				curCloud = curNetwork.getCloud(CloudName);
+		}
+		else //If network has changed, clear cloud and load defaults
+		{
+			getCloudWindow().clearCloud();
+			getInputWindow().setUserDefaults();
+		}
 	}
 	/**
 	 * Returns instance of SemanticSummaryParameters for the networkID
@@ -253,6 +294,17 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		else
 			return null;
 	}
+	
+	/**
+	 * Setup the nullCloudParameters for the manager now that it is initialized.
+	 */
+	public void setupNullCloudParams()
+	{
+		nullCloudParameters = new CloudParameters();
+		nullCloudParameters.setCloudName("Null Cloud");
+		curCloud = nullCloudParameters;
+	}
+	
 	
 	/**
 	 * Returns the hashmap of all the SemanticSummaryParameters.
@@ -345,5 +397,36 @@ public class SemanticSummaryManager implements PropertyChangeListener
 		return defaultAttName;
 	}
 	
+	public Integer getDefaultMaxWords()
+	{
+		return defaultMaxWords;
+	}
+	
+	public SemanticSummaryParameters getNullSemanticSummary()
+	{
+		return nullSemanticSummary;
+	}
+	
+	public CloudParameters getNullCloudParamters()
+	{
+		return nullCloudParameters;
+	}
+
+	public void allAttributeValuesRemoved(String objectKey, String attributeName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void attributeValueAssigned(String objectKey, String attributeName, Object[] keyIntoValue,
+			Object oldAttributeValue, Object newAttributeValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void attributeValueRemoved(String objectKey, String attributeName, Object[] keyIntoValue,
+			Object attributeValue) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

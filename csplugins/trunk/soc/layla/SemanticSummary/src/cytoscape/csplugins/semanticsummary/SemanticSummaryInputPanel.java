@@ -29,7 +29,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -44,6 +47,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -68,7 +72,8 @@ public class SemanticSummaryInputPanel extends JPanel
 	
 	//VARIABLES
 	
-	DecimalFormat decFormat; //used in formatted text fields
+	DecimalFormat decFormat; //used in formatted text fields with decimals
+	NumberFormat intFormat; //used in formatted text fields with integers
 	
 	
 	//Text Fields
@@ -102,6 +107,9 @@ public class SemanticSummaryInputPanel extends JPanel
 		decFormat = new DecimalFormat();
 		decFormat.setParseIntegerOnly(false);
 		
+		intFormat = NumberFormat.getIntegerInstance();
+		intFormat.setParseIntegerOnly(true);
+		
 		//TODO	
 		setLayout(new BorderLayout());
 		
@@ -129,7 +137,6 @@ public class SemanticSummaryInputPanel extends JPanel
 	}
 	
 	//METHODS
-	//TODO - add any button listener methods necessary
 	
 	/**
 	 * Creates the cloud list panel for the currently selected network.
@@ -269,8 +276,11 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		//Max words input
 		JLabel maxWordsLabel = new JLabel("Max Num of Words");
-		maxWordsTextField = new JFormattedTextField();
-		maxWordsTextField.setColumns(10);
+		maxWordsTextField = new JFormattedTextField(intFormat);
+		maxWordsTextField.setColumns(3);
+		maxWordsTextField.setValue(SemanticSummaryManager.getInstance().
+				getDefaultMaxWords()); //Set to default initially
+		maxWordsTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
 		//Max words panel
 		JPanel maxWordsPanel = new JPanel();
@@ -284,6 +294,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		netWeightTextField.setColumns(3);
 		netWeightTextField.setValue(SemanticSummaryManager.getInstance().
 				getDefaultNetWeight()); //Set to default initially
+		netWeightTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
 		//Network Weight Factor Panel
 		JPanel netWeightPanel = new JPanel();
@@ -386,7 +397,6 @@ public class SemanticSummaryInputPanel extends JPanel
 	 */
 	public void setNetworkList(SemanticSummaryParameters params)
 	{
-		//TODO - add check to see if network has changed?
 		
 		//clear current values
 		networkLabel.setText("");
@@ -407,7 +417,8 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		//Update Manager variables
 		SemanticSummaryManager.getInstance().setCurNetwork(params);
-		SemanticSummaryManager.getInstance().setCurCloud(null);
+		SemanticSummaryManager.getInstance().setCurCloud(
+				SemanticSummaryManager.getInstance().getNullCloudParamters());
 		
 		this.updateUI();
 	}
@@ -422,6 +433,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	{
 		netWeightTextField.setValue(params.getNetWeightFactor());
 		cmbAttributes.setSelectedItem(params.getAttributeName());
+		maxWordsTextField.setValue(params.getMaxWords());
 		SemanticSummaryManager.getInstance().setCurCloud(params);
 	}
 	
@@ -455,6 +467,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	{
 		netWeightTextField.setValue(SemanticSummaryManager.getInstance().getDefaultNetWeight());
 		cmbAttributes.setSelectedItem(SemanticSummaryManager.getInstance().getDefaultAttName());
+		maxWordsTextField.setValue(SemanticSummaryManager.getInstance().getDefaultMaxWords());
 		this.updateUI();
 	}
 	
@@ -564,6 +577,11 @@ public class SemanticSummaryInputPanel extends JPanel
 		return netWeightTextField;
 	}
 	
+	public JFormattedTextField getMaxWordsTextField()
+	{
+		return maxWordsTextField;
+	}
+	
 	public JLabel getNetworkLabel()
 	{
 		return networkLabel;
@@ -582,5 +600,62 @@ public class SemanticSummaryInputPanel extends JPanel
 	public JComboBox getCMBAttributes()
 	{
 		return cmbAttributes;
+	}
+	
+	public CloudListSelectionHandler getCloudListSelectionHandler()
+	{
+		return handler;
+	}
+	
+	
+	/**
+	 * Private Class to ensure that text fields are being set properly
+	 */
+	private class FormattedTextFieldAction implements PropertyChangeListener
+	{
+		public void propertyChange(PropertyChangeEvent e)
+		{
+			JFormattedTextField source = (JFormattedTextField) e.getSource();
+			
+			String message = "The value you have entered is invalid. \n";
+			boolean invalid = false;
+			
+			//Net Weight Text Field
+			if (source == netWeightTextField)
+			{
+				Number value = (Number) netWeightTextField.getValue();
+				if ((value != null) && (value.doubleValue() >= 0.0) && (value.doubleValue() <= 1))
+				{
+					//All is well - leave it be
+				}
+				else
+				{
+					Double defaultNetWeight = SemanticSummaryManager.getInstance().getDefaultNetWeight();
+					netWeightTextField.setValue(defaultNetWeight);
+					message += "The network weight factor must be greater than or equal to 0 and less than or equal to 1";
+					invalid = true;
+				}
+			}// end Net Weight Factor
+			
+			//Max Words
+			else if (source == maxWordsTextField)
+			{
+				Number value = (Number) maxWordsTextField.getValue();
+				if ((value != null) && (value.intValue() >= 0))
+				{
+					//All is well - do nothing
+				}
+				else
+				{
+					Integer defaultMaxWords = SemanticSummaryManager.getInstance().getDefaultMaxWords();
+					maxWordsTextField.setValue(defaultMaxWords);
+					message += "The maximum number of words to display must be greater than or equal to 0.";
+					invalid = true;
+				}
+			}// end max Words
+			
+			if (invalid)
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 }

@@ -60,6 +60,7 @@ public class CloudParameters
 	private List<String> selectedNodes; //set of selected nodes for cloud
 	private Integer selectedNumNodes;
 	private Integer networkNumNodes;
+	private Integer maxWords;
 	
 	private HashMap<String, List<String>> stringNodeMapping;
 	private HashMap<String, Integer> networkCounts; // counts for whole network
@@ -133,6 +134,7 @@ public class CloudParameters
 		this.ratiosInitialized = Boolean.parseBoolean(props.get("RatiosInitialized"));
 		this.maxRatio = new Double(props.get("MaxRatio"));
 		this.minRatio = new Double(props.get("MinRatio"));
+		this.maxWords = new Integer(props.get("MaxWords"));
 		
 		//Rebuild List
 		String value = props.get("SelectedNodes");
@@ -467,6 +469,23 @@ public class CloudParameters
 			String message = "You must select a valid String attribute or use the node ID.";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
 		}
+		
+		//Max Words
+		JFormattedTextField maxWordsTextField = inputPanel.getMaxWordsTextField();
+		
+		value = (Number) maxWordsTextField.getValue();
+		if ((value != null) && (value.intValue() >= 0))
+		{
+			setMaxWords(value.intValue()); 
+		}
+		else
+		{
+			Integer defaultMaxWords = SemanticSummaryManager.getInstance().getDefaultMaxWords();
+			maxWordsTextField.setValue(defaultMaxWords);
+			setMaxWords(defaultMaxWords);
+			String message = "The maximum number of words to display must be greater than or equal to 0.";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	/**
@@ -498,6 +517,7 @@ public class CloudParameters
 		paramVariables.append("RatiosInitialized\t" + ratiosInitialized + "\n");
 		paramVariables.append("MinRatio\t" + minRatio + "\n");
 		paramVariables.append("MaxRatio\t" + maxRatio + "\n");
+		paramVariables.append("MaxWords\t" + maxWords + "\n");
 		
 		return paramVariables.toString();
 	}
@@ -887,6 +907,16 @@ public class CloudParameters
 			ratiosInitialized = false;
 		
 		netWeightFactor = val;
+	}
+	
+	public Integer getMaxWords()
+	{
+		return maxWords;
+	}
+	
+	public void setMaxWords(Integer val)
+	{
+		maxWords = val;
 	}
 	
 }

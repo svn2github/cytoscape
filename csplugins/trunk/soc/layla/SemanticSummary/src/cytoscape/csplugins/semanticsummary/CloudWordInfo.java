@@ -111,15 +111,18 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 					nodes.add(curNode);
 				}
 				
-				if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
+				CyNetwork network = Cytoscape.getCurrentNetwork();
+				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				if (view.getNetwork().equals(network))
+				//if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
-					CyNetwork network = Cytoscape.getCurrentNetwork();
+					//CyNetwork network = Cytoscape.getCurrentNetwork();
 					network.unselectAllNodes();
 					network.unselectAllEdges();
 					network.setSelectedNodeState(nodes, true);
 				
 					//Redraw the graph with selected nodes
-					CyNetworkView view = Cytoscape.getCurrentNetworkView();
+					//CyNetworkView view = Cytoscape.getCurrentNetworkView();
 					view.redrawGraph(false, true);
 				}
 			}
@@ -129,7 +132,10 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 				JLabel clickedLabel = (JLabel)me.getComponent();
 				String word = clickedLabel.getText();
 				
-				if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
+				CyNetwork network = Cytoscape.getCurrentNetwork();
+				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				if (view.getNetwork().equals(network))
+				//if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
 					clickedLabel.setForeground(Color.BLUE);
 					clickedLabel.repaint();
