@@ -224,12 +224,16 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 	public void restoreSessionState(List<File> pStateFileList)
 	{
 		
-		SemanticSummaryManager.getInstance(); //Initialize the manager
-		
 		if ((pStateFileList == null) || (pStateFileList.size() == 0))
 		{
 			return; //no previous state to restore
 		}
+		
+		//Initialize and load panels
+		SemanticSummaryManager.getInstance(); //Initialize the manager
+		SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
+		init.loadInputPanel();
+		init.loadCloudPanel();
 		
 		try
 		{
@@ -373,9 +377,6 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 			//TODO
 			
 			//Initialize the panel appropriately
-			SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
-			init.loadInputPanel();
-			init.loadCloudPanel();
 			SemanticSummaryManager.getInstance().setupCurrentNetwork();
 			
 		}//end try

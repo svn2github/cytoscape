@@ -24,8 +24,10 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JList;
 import javax.swing.SwingConstants;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -180,11 +182,10 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 	{
 		public InputPanelSelectListener(int index)
 		{
-			//super();
 		}
 		public void onComponentSelected(int ComponentIndex)
 		{
-			SemanticSummaryManager.getInstance().setupCurrentNetwork();
+			SemanticSummaryManager.getInstance().refreshCurrentNetworkList();
 		}
 		public void onComponentAdded(int arg0) {
 			// TODO Auto-generated method stub

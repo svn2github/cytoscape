@@ -142,8 +142,6 @@ public class CreateCloudAction extends CytoscapeAction
 			SemanticSummaryManager.getInstance().getInputWindow();
 		
 		//inputPanel.setNetworkList(params);
-		inputPanel.addNewCloud(cloudParams);
-		
-			
+		inputPanel.addNewCloud(cloudParams);	
 	}
 }

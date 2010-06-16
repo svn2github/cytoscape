@@ -502,7 +502,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		updateCMBAttributes();
 		CloudParameters curCloud = SemanticSummaryManager.getInstance().getCurCloud();
 		String curAttribute;
-		if (curCloud == null)
+		if (curCloud == SemanticSummaryManager.getInstance().getNullCloudParamters())
 			curAttribute = SemanticSummaryManager.getInstance().getDefaultAttName();
 		else
 			curAttribute = curCloud.getAttributeName();

@@ -25,11 +25,14 @@ package cytoscape.csplugins.semanticsummary;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.attr.MultiHashMapListener;
 import cytoscape.view.CytoscapeDesktop;
@@ -223,13 +226,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 	{
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
-		String newNetworkName = network.getTitle();
-		String oldNetworkName = curNetwork.getNetworkName();
-		JList cloudList = getInputWindow().getCloudList();
-		Object selected = cloudList.getSelectedValue();
-		String CloudName = curCloud.getCloudName();
-		
-		
+
 		//Null current network
 		if (network.equals(Cytoscape.getNullNetwork()))
 		{
@@ -254,7 +251,49 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		
 		//Update cloud list and update attributes
 		getInputWindow().setNetworkList(curNetwork);
+		getCloudWindow().clearCloud();
+		getInputWindow().setUserDefaults();
 		getInputWindow().refreshAttributeCMB();
+
+	}
+	
+	/**
+	 * Refreshes the current network list to be up to date.  Called whenever
+	 * the tab in the control panel changes.
+	 */
+	public void refreshCurrentNetworkList()
+	{
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		String networkID = network.getIdentifier();
+		String newNetworkName = network.getTitle();
+		String oldNetworkName = curNetwork.getNetworkName();
+		JList cloudList = getInputWindow().getCloudList();
+		Object selected = cloudList.getSelectedValue();
+		String CloudName = curCloud.getCloudName();
+		
+		
+		//Null current network
+		if (network.equals(Cytoscape.getNullNetwork()))
+		{
+			curNetwork = nullSemanticSummary;
+			curCloud = nullCloudParameters;
+		}
+		
+		//Already Registered
+		else if(isSemanticSummary(networkID))
+			curNetwork = getParameters(networkID);
+		
+		//Need to create new
+		else
+		{
+			SemanticSummaryParameters params = new SemanticSummaryParameters();
+			params.updateParameters(network);
+			SemanticSummaryManager.getInstance().registerNetwork(network, params);
+			curNetwork = params;
+		}
+		
+		//Update cloud list and update attributes
+		getInputWindow().setNetworkList(curNetwork);//Clear cur cloud
 		
 		//If network has not changed, keep the same row highlighted
 		if (newNetworkName.equals(oldNetworkName) && (selected != null))
@@ -275,10 +314,12 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 			if (curNetwork.containsCloud(CloudName))
 				curCloud = curNetwork.getCloud(CloudName);
 		}
-		else //If network has changed, clear cloud and load defaults
+		else if (!newNetworkName.equals(oldNetworkName))
 		{
-			getCloudWindow().clearCloud();
 			getInputWindow().setUserDefaults();
+			getInputWindow().refreshAttributeCMB();
+			getCloudWindow().clearCloud();
+			
 		}
 	}
 	/**
@@ -419,7 +460,27 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 
 	public void attributeValueAssigned(String objectKey, String attributeName, Object[] keyIntoValue,
 			Object oldAttributeValue, Object newAttributeValue) {
-		// TODO Auto-generated method stub
+
+		CyNode curNode = Cytoscape.getCyNode(objectKey, false);
+		if (curNode != null)
+		{
+			HashMap<String, SemanticSummaryParameters> networks = 
+				SemanticSummaryManager.getInstance().getCyNetworkList();
+			
+			Set<String> names = networks.keySet();
+			for (Iterator<String> iter = names.iterator(); iter.hasNext();)
+			{
+				String curNetwork = iter.next();
+				SemanticSummaryParameters params = networks.get(curNetwork);
+				String networkName = params.getNetworkName();
+				CyNetwork cyNetwork = Cytoscape.getNetwork(networkName);
+				
+				if (cyNetwork.containsNode(curNode))
+				{
+					params.networkChanged();
+				}
+			}
+		}
 		
 	}
 
