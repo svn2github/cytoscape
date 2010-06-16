@@ -29,6 +29,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
+import csplugins.jActiveModules.util.Scaler;
+import csplugins.jActiveModules.util.ScalerFactory;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -377,18 +379,37 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		if (nullCount == inputValues.length)
 			return null;
 
-		final float[] unscaledValues = new float[inputValues.length - nullCount];
+		final double[] unscaledValues = new double[inputValues.length - nullCount];
 		int i = 0;
 		for (final Double inputValue : inputValues) {
 			if (inputValue != null)
-				unscaledValues[i++] = (float)(double)inputValue;
+				unscaledValues[i++] = inputValue;
 		}
 
-		final StringBuilder errorMessage = new StringBuilder();
-		final float[] scaledValues = ProbabilityScaler.scale(unscaledValues, scalingMethod,
-								     errorMessage);
-		if (scaledValues == null) {
-			logger.warn("Scaling failed: " + errorMessage.toString());
+		if (scalingMethod == ScalingMethodX.RANK_LOWER || scalingMethod == ScalingMethodX.LINEAR_LOWER) {
+			for (int k = 0; k < unscaledValues.length; ++k)
+				unscaledValues[k] = -unscaledValues[k];
+		}
+
+		final String type;
+		final double from, to;
+		if (scalingMethod == ScalingMethodX.RANK_LOWER || scalingMethod == ScalingMethodX.RANK_UPPER) {
+			from = 0.0;
+			to   = 1.0;
+			type = "rank";
+		} else if (scalingMethod == ScalingMethodX.LINEAR_LOWER || scalingMethod == ScalingMethodX.LINEAR_UPPER) {
+			final double EPS = 0.5 / unscaledValues.length;
+			from = 0.0 + EPS;
+			to   = 1.0 - EPS;
+			type = "linear";
+		} else
+			throw new IllegalArgumentException("unknown scaling method: " + scalingMethod);
+
+		final double[] scaledValues;
+		try {
+			scaledValues = ScalerFactory.getScaler(type).scale(unscaledValues, from, to);
+		} catch (final IllegalArgumentException e) {
+			logger.warn("Scaling failed: " + e.getMessage());
 			return null;
 		}
 
@@ -399,7 +420,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			if (inputValue == null)
 				outputValues[k++] = null;
 			else
-				outputValues[k++] = (double)scaledValues[i++];
+				outputValues[k++] = scaledValues[i++];
 		}
 
 		return outputValues;

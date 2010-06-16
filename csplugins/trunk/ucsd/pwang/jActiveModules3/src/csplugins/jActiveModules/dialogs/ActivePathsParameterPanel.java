@@ -55,15 +55,19 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.jdesktop.layout.GroupLayout;
 import javax.swing.JTable;
+
 import csplugins.jActiveModules.ActiveModulesUI;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.util.swing.NetworkSelectorPanel;
-import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.logger.CyLogger;
+import cytoscape.view.CyHelpBroker;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.util.swing.NetworkSelectorPanel;
+
 import java.awt.Component;
 import javax.swing.table.TableColumn;
 import javax.swing.JComboBox;
@@ -294,11 +298,7 @@ public class ActivePathsParameterPanel extends JPanel {
         buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         helpButton.setText("Help");
         helpButton.setPreferredSize(new java.awt.Dimension(67, 23));
-        helpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                helpButtonActionPerformed(evt);
-            }
-        });
+	CyHelpBroker.getHelpBroker().enableHelpOnButton(helpButton, "jActiveModules", null);
 
         buttonPanel.add(helpButton);
 
@@ -320,12 +320,6 @@ public class ActivePathsParameterPanel extends JPanel {
         add(buttonPanel, gridBagConstraints);
 
     }// </editor-fold>                        
-    
-
-
-    private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
-    	// TODO add your handling code here:
-    }                                          
 
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JSplitPane jSplitPane1;
@@ -663,11 +657,6 @@ public class ActivePathsParameterPanel extends JPanel {
 	private void addButtonEventListeners() {
 
         helpButton.setPreferredSize(new java.awt.Dimension(67, 23));
-        helpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                helpDialog.setVisible(true);
-            }
-        });
 
         aboutButton.setPreferredSize(new java.awt.Dimension(67, 23));
         aboutButton.setVisible(false); // just place holder now

@@ -21,7 +21,6 @@
 	
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
-  	<property name="build.classes" value="${build.dir}/classes"/>
         <property name="doc.dir" value="doc"/>
 	
 	<!-- Global "magic" property for <javac> -->
@@ -29,7 +28,6 @@
 	
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
-		<pathelement path="${build.classes}"/>	
 		<pathelement path="${cyto.dir}/build/classes"/>
 		<fileset dir="${cyto.lib.dir}">
 			<include name="**/*.jar"/>
@@ -42,7 +40,6 @@
   	<!-- Target to create the build directories prior to compilation -->
   	<target name="prepare">
     		<mkdir dir="${build.dir}"/>
-    		<mkdir dir="${build.classes}"/>
                 <mkdir dir="${doc.dir}"/>
   	</target>
 
@@ -64,39 +61,49 @@
           </javadoc>
        </target>
 
+	<!-- =================================================================== -->
+	<!-- Copy the help-related files                                         -->
+	<!-- =================================================================== -->
+	<target name="help" 
+		unless="helpIsUpToDate">
+	  <mkdir dir="${build.dir}/help"/>
+	  <!-- Copy the JavaHelp system files and html source over to build area -->
+	  <echo>Copying JavaHelp files: helpset, html files, images</echo>
+	  <copy todir="${build.dir}/help">
+	    <fileset dir="${basedir}/help" />
+	  </copy>
+	</target>
         
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare" 
 		description="Compiles all PlugIn source code.">
-                <javac debug="Yes" 
-			srcdir="${src.dir}" 
-			destdir="${build.classes}"
-			deprecation="yes"
-			excludes="**/bak/**">
-			<classpath refid="classpath"/>
-		</javac>
+          <javac debug="Yes" 
+		 srcdir="${src.dir}" 
+		 destdir="${build.dir}"
+		 deprecation="yes"
+		 excludes="**/bak/**">
+	    <classpath refid="classpath"/>
+	  </javac>
 	</target>
-  	
-	<!--  Create PlugIn Jar File (Unobfuscated) -->
-   	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
-           <unzip dest="${build.classes}">
-	   	<fileset dir="${lib.dir}" includes="*"/>
-	   </unzip>
-	   <copy todir="${build.classes}/csplugins/jActiveModules" file="${resources.dir}/plugin.props"/>
-	   <copy todir="${build.classes}" file="${resources.dir}/help.html"/>
-	   <copy todir="${build.classes}" file="${resources.dir}/jActiveModules_VS.props" />
-   	   <copy todir="${build.classes}/images">
-   	   	         <fileset dir="${images.dir}"/> 
-   	   </copy>
-	   <jar destfile="${build.dir}/${plugin.name}.jar">
-			<manifest>
-			<attribute name="Cytoscape-Plugin" value="csplugins.jActiveModules.ActiveModulesUI"/>
-			</manifest>
-			<fileset dir="${build.classes}"/>
-		</jar>
-		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+
+	<!-- =================================================================== -->
+	<!-- Creates the project jar file                                        -->
+	<!-- =================================================================== -->
+   	<target name="jar" depends="compile,help" description="Creates PlugIn Jar File.">
+	  <copy file="${resources.dir}/plugin.props" todir="${build.dir}/csplugins/jActiveModules"/>
+	  <copy todir="${build.dir}" file="${resources.dir}/jActiveModules_VS.props" />
+  	  <copy todir="${build.dir}/images">
+	    <fileset dir="${images.dir}"/>
+	  </copy>
+	  <jar destfile="jActiveModules.jar" >
+	    <fileset dir="${build.dir}"
+		     includes="**"/>
+	    <manifest>
+	      <attribute name="Cytoscape-Plugin" value="csplugins.jActiveModules.ActiveModulesUI"/>
+	    </manifest>
+	  </jar>
+	  <echo message="Successfully ran jar task!"/>
 	</target>
 
    	<target name="all" depends="jar,doc" description="Creates plugin jar and API documentation"/> 
-
 </project>

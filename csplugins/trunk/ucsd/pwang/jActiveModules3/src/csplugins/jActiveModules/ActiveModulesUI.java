@@ -1,13 +1,12 @@
-//ActiveModulesUI.java
-//------------------------------------------------------------------------------
 package csplugins.jActiveModules;
 
-//------------------------------------------------------------------------------
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 
+import javax.help.HelpSet;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -16,21 +15,22 @@ import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import csplugins.jActiveModules.dialogs.ActivePathsParameterPanel;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.logger.CyLogger;
+import cytoscape.view.CyHelpBroker;
 
-//------------------------------------------------------------------------------
+
 /**
  * UI for Active Modules. Manages the various menu items
  */
 public class ActiveModulesUI extends CytoscapePlugin {
-
 	protected ActivePaths activePaths;
 	protected ActivePathFinderParameters apfParams;
 	protected ThreadExceptionHandler xHandler;
@@ -40,7 +40,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	public ActiveModulesUI() {
 		final JMenuItem menuItem = new JMenuItem("jActiveModules...");
 		menuItem.addActionListener(new SetParametersAction());
-		
+
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().
 			getMenu("Plugins.Module Finders...").add(menuItem);
 
@@ -55,6 +55,26 @@ public class ActiveModulesUI extends CytoscapePlugin {
 				.addDataDefinitionListener(acl);
 		xHandler = new ThreadExceptionHandler();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
+
+		addHelp();
+	}
+
+	/**
+	 *  Hook plugin help into the Cytoscape main help system:
+	 */
+	private void addHelp() {
+		final String HELP_SET_NAME = "/help/jhelpset";
+		final ClassLoader classLoader = ActiveModulesUI.class.getClassLoader();
+		URL helpSetURL;
+		final CyLogger logger = CyLogger.getLogger(ActiveModulesUI.class);
+		try {
+			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
+			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
+			if (!CyHelpBroker.addHelpSet(newHelpSet))
+				logger.warn("Failed to add help set!");
+		} catch (final Exception e) {
+			logger.warn("Could not find help set: \"" + HELP_SET_NAME + "!");
+		}
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -76,7 +96,6 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	 * jActiveModules, wiht a gui interface
 	 */
 	protected class SetParametersAction extends AbstractAction {
-		
 		private static final long serialVersionUID = -7836213413255212288L;
 
 		public SetParametersAction() {
