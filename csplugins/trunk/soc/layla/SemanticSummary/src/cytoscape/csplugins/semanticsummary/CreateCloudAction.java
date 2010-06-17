@@ -83,7 +83,7 @@ public class CreateCloudAction extends CytoscapeAction
 		{return;}
 		
 		//If no nodes are selected
-		if (view.getSelectedNodes().size() == 0)
+		if (network.getSelectedNodes().size() == 0)
 		{
 			JOptionPane.showMessageDialog(view.getComponent(), 
 					"Please select one or more nodes.");

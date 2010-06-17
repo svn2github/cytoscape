@@ -277,7 +277,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		//Max words input
 		JLabel maxWordsLabel = new JLabel("Max Num of Words");
 		maxWordsTextField = new JFormattedTextField(intFormat);
-		maxWordsTextField.setColumns(3);
+		maxWordsTextField.setColumns(10);
 		maxWordsTextField.setValue(SemanticSummaryManager.getInstance().
 				getDefaultMaxWords()); //Set to default initially
 		maxWordsTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
@@ -368,7 +368,6 @@ public class SemanticSummaryInputPanel extends JPanel
 	 */
 	private JPanel createBottomPanel()
 	{
-		//TODO - add listeners to all of the buttons
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout());

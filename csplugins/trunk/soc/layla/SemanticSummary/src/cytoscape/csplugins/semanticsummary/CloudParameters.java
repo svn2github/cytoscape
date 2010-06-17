@@ -644,27 +644,30 @@ public class CloudParameters
 		else
 		{
 			CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
-			Object attribute = cyNodeAttrs.getAttribute(curNode.getIdentifier(), attributeName);
 			
-			if (attribute == null)//nothing set for this attribute
-				return null;
-			
-			//String
-			if (attribute instanceof String)
-				nodeValue = (String)attribute;
-			
-			//List of Strings
-			else if (attribute instanceof List)
+			if (cyNodeAttrs.getType(attributeName)== CyAttributes.TYPE_STRING)
 			{
-				List attList = (List)attribute;
-				for (Iterator iter = attList.iterator(); iter.hasNext();)
+				nodeValue = cyNodeAttrs.getStringAttribute(curNode.getIdentifier(), attributeName);
+			}
+			
+			else if (cyNodeAttrs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
+			{
+				List attribute = cyNodeAttrs.getListAttribute(curNode.getIdentifier(), attributeName);
+				
+				if (attribute == null)
+					return null;
+				
+				else
 				{
-					Object curObj = iter.next();
-					if (curObj instanceof String)
+					for (Iterator iter = attribute.iterator(); iter.hasNext();)
 					{
-						//Turn list into space separated string
-						String curObjString = (String)curObj;
-						nodeValue = nodeValue + curObjString + " ";
+						Object curObj = iter.next();
+						if (curObj instanceof String)
+						{
+							//Turn list into space separated string
+							String curObjString = (String)curObj;
+							nodeValue = nodeValue + curObjString + " ";
+						}//
 					}
 				}
 			}
