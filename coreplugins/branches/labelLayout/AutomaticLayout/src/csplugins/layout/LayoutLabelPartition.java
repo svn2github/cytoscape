@@ -4,6 +4,7 @@ import cytoscape.logger.CyLogger;
 
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutLabelNodeImpl;
 import csplugins.layout.Profile;
 import csplugins.layout.EdgeWeighter;
 
@@ -104,7 +105,7 @@ public class LayoutLabelPartition extends LayoutPartition {
 	for (LayoutNode ln: nodeList ) {
 
 	    // Creates a new LabelNode, child of ln
-	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl((LayoutNodeImpl) ln);
+	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl((LayoutNodeImpl) ln, ln.getIndex() + nodeList.size());
 
 	    /* Unlock labelNode if:
 	     * - algorithm is to be applied to the entire network
@@ -194,5 +195,15 @@ public class LayoutLabelPartition extends LayoutPartition {
     public Map<LayoutNode,LayoutNode> getLabelToParentMap() {
 	return labelToParentMap;
     }
+
+    /**
+     * Returns a list with all the LayoutLabelNodes
+     */
+    public ArrayList<LayoutNode> getLabelNodes() {
+	ArrayList<LayoutNode> array = new ArrayList<LayoutNode> ();
+	array.addAll(labelToParentMap.keySet());
+	return array;
+    }
+
 
 }

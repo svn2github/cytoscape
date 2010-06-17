@@ -1,7 +1,9 @@
 package csplugins.layout;
 
 import cytoscape.*;
-//import cytoscape.visual.LabelPosition;
+
+import cytoscape.logger.CyLogger;
+
 import cytoscape.data.CyAttributes;
 import cytoscape.view.*;
 
@@ -22,6 +24,8 @@ public class LayoutLabelNodeImpl extends LayoutNode {
     //  protected double dispX;
     //  protected double dispY;
 
+    protected CyLogger logger = null;
+
     protected LayoutNodeImpl parent;
 
     /**
@@ -35,10 +39,13 @@ public class LayoutLabelNodeImpl extends LayoutNode {
      *
      * @param parent The parent LayoutNode for this LayoutLabelNode
      */
-    public LayoutLabelNodeImpl(LayoutNodeImpl parent) {
+    public LayoutLabelNodeImpl(LayoutNodeImpl parent, int index) {
 	this.parent = parent;
 	this.setX(parent.getX());
 	this.setY(parent.getY());
+	this.neighbors = new ArrayList<LayoutNode>();
+	this.index = index;
+	logger = CyLogger.getLogger(LayoutLabelNodeImpl.class);
     }
 	
     public void moveToLocation() {
@@ -46,17 +53,33 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	// make sure parent is where it should be
 	parent.moveToLocation(); 
 
-	ObjectPosition labelPosition = parent.getNodeView().getLabelPosition();
+	logger.info("moved parent node of label node #" + index);
+
+	ObjectPosition labelPosition;
+	try {
+	    labelPosition = parent.getNodeView().getLabelPosition();
+	} catch(Exception e) {
+	    logger.info("error while getting ObjectPosition:" + e.getMessage() );
+	    return;
+	}
+
+	logger.info("Got ObjectPosition from parent");
 
  	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
+
+	    logger.info("Label node was locked");
 
 	    this.setX(labelPosition.getOffsetX() + parent.getX());
 	    this.setY(labelPosition.getOffsetY() + parent.getY());
 
 	} else { // If node is unlocked set labels offsets properly	
 	    	    
+	    logger.info("Label node was unlocked");
+
 	    labelPosition.setOffsetX(this.getX() - parent.getX());
 	    labelPosition.setOffsetY(this.getY() - parent.getY());
+	
+	    logger.info("Label node was moved!");
 	} 
     }
 
