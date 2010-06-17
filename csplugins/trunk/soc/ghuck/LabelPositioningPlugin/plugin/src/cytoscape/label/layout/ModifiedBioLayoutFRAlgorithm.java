@@ -515,7 +515,7 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
     /**
      * Perform a layout
      */
-    public void layoutPartion(LayoutPartition partition) {
+    public void layoutPartition(LayoutPartition partition) {
 	this.partition = partition;
 
 	Dimension initialLocation = null;

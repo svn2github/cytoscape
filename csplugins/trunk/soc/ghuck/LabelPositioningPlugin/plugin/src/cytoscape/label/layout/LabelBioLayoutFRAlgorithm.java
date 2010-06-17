@@ -2,15 +2,15 @@
 
 package cytoscape.layout.label;
 
-// import csplugins.layout.LayoutEdge;
-// import csplugins.layout.LayoutNode;
-// import csplugins.layout.LayoutPartition;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.LayoutLabelPartition;
 import csplugins.layout.Profile;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
-import cytoscape.visual.LabelPosition;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.CyLayouts;
@@ -21,6 +21,7 @@ import cytoscape.logger.CyLogger;
 import java.awt.Dimension;
 
 import giny.view.NodeView;
+import giny.view.*;
 
 import java.util.*;
 
@@ -34,11 +35,6 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      * Whether Labels should be repositioned in their default positions 
      */
     private boolean resetPosition = false;
-
-    /**
-     * The percentage of numIterations in which network nodes will also be moved
-     */
-    private double defaultPercentage = 80.0; 
     
     /**
      * Whether network nodes will be moved or not 
@@ -46,28 +42,12 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
     private boolean moveNodes = false;
 
     /**
-     *
+     * Coefficient to determine label edge weights
      */
-    private CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); 
-   
-    /**
-     * Maps a label LayoutNode to its parent node's LayoutNode
-     */
-    private Map<LayoutNode, LayoutNode> labelToParentMap = 
-	new HashMap<LayoutNode, LayoutNode>();
+    private double weightCoefficient = 2.0;
+
+
     
-    /**
-     * List of all LayoutNodes; including network and label nodes
-     */
-    ArrayList<LayoutNode> allLayoutNodesArray = new ArrayList<LayoutNode>();
-
-    /**
-     * List of all LayoutEdges; including network and label edges
-     */
-    ArrayList<LayoutEdge> allLayoutEdgesArray = new ArrayList<LayoutEdge>();
-
-
-
     /**
      * This is the constructor for the bioLayout algorithm.
      */
@@ -81,12 +61,6 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
 	this.initializeProperties();
     }
-
-
-
-    /**
-     * Required methods (and overrides) for AbstractLayout
-     */
 
     /**
      * Return the "name" of this algorithm.  This is meant
@@ -115,8 +89,6 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	    return "Force-Directed Label Layout (Label BioLayout)";
     }
 
-
-
     /**
      * Reads all of our properties from the cytoscape properties map and sets
      * the values as appropriates.
@@ -137,9 +109,9 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 					 "Allow nodes to move",
 					 Tunable.BOOLEAN, new Boolean(false)));
 
-	layoutProperties.add(new Tunable("defaultPercentage", 
-					 "Default Percentage (%) [For how long nodes are going to be allowed to move]",
-					 Tunable.DOUBLE, new Double(defaultPercentage)));
+	layoutProperties.add(new Tunable("weightCoefficient", 
+					 "weightCoefficient",
+					 Tunable.DOUBLE, new Double(2.0)));
 
 	// We've now set all of our tunables, so we can read the property 
 	// file now and adjust as appropriate
@@ -174,9 +146,9 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	if ((t != null) && (t.valueChanged() || force))
 	    moveNodes = ((Boolean) t.getValue()).booleanValue();
 
-	t = layoutProperties.get("defaultPercentage");
+	t = layoutProperties.get("weightCoefficient");
 	if ((t != null) && (t.valueChanged() || force))
-	    defaultPercentage = ((Double) t.getValue()).doubleValue();
+	    weightCoefficient = ((Double) t.getValue()).doubleValue();
     }
 
     /**
@@ -184,164 +156,45 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      */
     public void layoutPartion(LayoutPartition partition) {
 	
-	Dimension initialLocation = null;
-
 	// Logs information about this task
 	logger.info("Laying out partition " + partition.getPartitionNumber() + " which has "+ partition.nodeCount()
 		    + " nodes and " + partition.edgeCount() + " edges: ");
 
+	// Create new Label partition
+	LayoutPartition newPartition = new LayoutLabelPartition(partition,
+								     weightCoefficient,
+								     moveNodes,
+								     selectedOnly);
+
+	logger.info("New partition succesfully created!");
+
+	if (canceled)
+	    return;
+
 	// Reset the label position of all nodes if necessary 
 	if (resetPosition) {
-	    resetNodeLabelPosition(nodeAtts, partition.getNodeList());
+	    //	    resetNodeLabelPosition(nodeAtts, partition.getNodeList());
 	    return;
 	}
 
-	// Handle if defaultPercentage is not a valid percentage
-	if (defaultPercentage > 100.0) {
-	    defaultPercentage = 100.0;
-	} else if (defaultPercentage < 0.0) {
-	    defaultPercentage = 0.0;
-	}
 
-	// Ads all network nodes to list
-	allLayoutNodesArray.addAll(partition.getNodeList());
+	ArrayList<LayoutNode> array = ((LayoutLabelPartition) newPartition).getLabelNodes();
 	
-	LayoutNode labelNode;
-	LabelPosition lp = null; 
-	
-	// --- Create LayoutNodes and LayoutEdges for each node label ---
-	for (LayoutNode ln : allLayoutNodesArray) {
-	    
-	    // Create a new node (with same NodeView and Index that it's parent node)
-	    labelNode = new LayoutNode(ln.getNodeView(), ln.getIndex());
-	    
-	    // Set labelNode's location to parent node's current label position
-	    nodeAtts = Cytoscape.getNodeAttributes();
-	    String labelPosition = (String) nodeAtts.getAttribute(ln.getNode().
-								  getIdentifier(), "node.labelPosition");
-	
-	    if (labelPosition == null) {
-		lp = new LabelPosition();
-	    } else {
-		lp = LabelPosition.parse(labelPosition);
-	    }
-     
-	    labelNode.setX(lp.getOffsetX() + ln.getNodeView().getXPosition());
-	    labelNode.setY(lp.getOffsetY() + ln.getNodeView().getYPosition());
-			
-	    // Add labelNode --> ln to labelToParentMap
-	    labelToParentMap.put(labelNode, ln);
-			
-	    // Create a new LayoutEdge between labelNode and its parent ln
-	    // Add this new LayoutEdge to allLayoutEdges
-	    LayoutEdge labelEdge = new LayoutEdge();
-	    labelEdge.addNodes(ln, labelNode);
-	    allLayoutEdgesArray.add(labelEdge);
-			
-	    /* Unlock labelNode if:
-	     * - algorithm is to be applied to the entire network
-	     * - algorithm is to be applied to the selected nodes only, and ln
-	     * is selected
-	     * 
-	     * Unlock ln if:
-	     * - either of the above conditions is true, and the user has
-	     * specified that the network nodes are to be moved as well
-	     * 
-	     * Lock labelNode and/or ln otherwise. */
-	    labelNode.lock();
-	    ln.lock();
-	    if (!selectedOnly 
-		|| network.getSelectedNodes().contains(ln.getNode())) {
-		labelNode.unLock();
-		if (moveNodes) {
-		    ln.unLock();
-		}
-	    }
-			
+	logger.info(array.size() + "label nodes were created");
+
+	for(LayoutNode node: array) {
+	    logger.info("incrementing position of node #" + node.getIndex());
+	    node.increment(5.0,5.0);
+	    logger.info("moving node #" + node.getIndex());
+	    node.moveToLocation();
 	}
-		
-	// Adds all LabelNodes (who are the keys in labelToParentMap) to allLayoutNodesArray
-	allLayoutNodesArray.addAll(labelToParentMap.keySet());
+	logger.info("labels moved +5.0,+5.0");
+	
 
-	updatePositions(partition);
-
-	// Not quite done, yet.  If we're only laying out selected nodes, we need
-	// to migrate the selected nodes back to their starting position
-	if (selectedOnly) {
-	    double xDelta = 0.0;
-	    double yDelta = 0.0;
-	    Dimension finalLocation = partition.getAverageLocation();
-	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
-
-	    for (LayoutNode v: partition.getNodeList()) {
-		if (!v.isLocked()) {
-		    v.decrement(xDelta, yDelta);
-		    partition.moveNodeToLocation(v);
-		}
-	    }
-	}
-
-    	networkView.updateView();
-    	networkView.redrawGraph(true, true);
-   
-	clear();		
+	// Layout the new partition using the parent class layout algorithm
+	//	super.layoutPartition(newPartition);
 
 	logger.info("Label/Node layout of partition " + partition.getPartitionNumber() + " complete");
-    }
-    public void resetNodeLabelPosition(CyAttributes nodeAtts, List<LayoutNode> nodeList) {
-	for(LayoutNode n : nodeList) {
-	    if (nodeAtts.hasAttribute(n.getIdentifier(), "node.labelPosition")) {
-		nodeAtts.deleteAttribute(n.getIdentifier(), "node.labelPosition");
-	    }
-	}
-    	networkView.updateView();
-    	networkView.redrawGraph(true, true);
-    }
-
-    /**
-     * Clears all LayoutNodes and LayoutEdges
-     */
-    private void clear() { // LABEL-LAYOUT
-	allLayoutNodesArray.clear();
-	labelToParentMap.clear();
-	allLayoutEdgesArray.clear();
-    }
-
-    /**
-     * Updates the position of labels and nodes
-     */
-    private void updatePositions(LayoutPartition part) {
-
-	LabelPosition lp = new LabelPosition(); 
-		
-        for (LayoutNode ln: allLayoutNodesArray) { 
-            
-            if (!ln.isLocked()) {
-                
-                if (labelToParentMap.containsKey(ln)) { // If it is a Label Node
-                	
-                    // Get ln and its parent positions
-                    NodeView lnNodeView = ln.getNodeView();
-                    nodeAtts = Cytoscape.getNodeAttributes();
-		    LayoutNode lParent = labelToParentMap.get(ln);
-
-                    // Reposition
-                    lp.setOffsetX(ln.getX() - lParent.getX());
-                    lp.setOffsetY(ln.getY() - lParent.getY());
-                    nodeAtts.setAttribute(lnNodeView.getNode().getIdentifier(),
-					  "node.labelPosition", lp.shortString());
-                    
-                } else { // ln is a network LayoutNode
-                	
-		    if (moveNodes && defaultPercentage != 0.0) { // unlocked
-			part.moveNodeToLocation(ln);
-		    }
-                }
-            }
-        }
-
-
     }
 
 

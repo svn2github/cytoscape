@@ -37,10 +37,12 @@ import cytoscape.logger.CyLogger;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutNodeImpl;
 import csplugins.layout.EdgeWeighter;
 import csplugins.layout.algorithms.graphPartition.*;
 
 import giny.view.NodeView;
+import giny.view.*;
 
 import prefuse.util.force.*;
 
@@ -379,7 +381,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	// --- Create LayoutNodes and LayoutEdges for each node label ---
 	for (LayoutNode ln : allLayoutNodes) {
 	    
-	    labelNode = new LayoutNode(ln.getNodeView(), ln.getIndex());
+	    labelNode = new LayoutNodeImpl(ln.getNodeView(), ln.getIndex());
 	    
 	    // Set labelNode's location to parent node's current label position
 	    nodeAtts = Cytoscape.getNodeAttributes();
