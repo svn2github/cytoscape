@@ -43,10 +43,13 @@ import cytoscape.plugin.CytoscapePlugin;
 public class GoogleChartFunctionPlugin extends CytoscapePlugin {
 
 	public GoogleChartFunctionPlugin() {
-		Parser.getParser().registerFunction( new GoogleLineChart() );
-		Parser.getParser().registerFunction( new GoogleBarChart() );
-		Parser.getParser().registerFunction( new GoogleBarChartFull() );
-		Parser.getParser().registerFunction( new GoogleLineChartFull() );
+		Parser.getParser().registerFunction( new GoogleBarChartFunction() );
+		Parser.getParser().registerFunction( new GoogleLineChartFunction() );
+		Parser.getParser().registerFunction( new GoogleRadarChartFunction() );
+		Parser.getParser().registerFunction( new GooglePieChartFunction() );
+		Parser.getParser().registerFunction( new GoogleQRCodeFunction() );
+		Parser.getParser().registerFunction( new GoogleMapFunction() );
+		
 	}
 }
 

@@ -1,4 +1,4 @@
-package org.cytoscape.equations.internal.googlechart;
+package org.cytoscape.equations.internal.googlechart.util;
 
 import java.util.ArrayList;
 import java.util.List;
