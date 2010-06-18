@@ -30,9 +30,6 @@ package org.cytoscape.equations.internal.googlechart.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import cytoscape.util.ProbabilityScaler;
-import cytoscape.util.ScalingMethod;
-
 public class DataUtil {
 	
 	private static final String DELIMITER = ",";
@@ -40,30 +37,30 @@ public class DataUtil {
 	private DataUtil() {
 	};
 
-	
-	/**
-	 * @param o
-	 *            An object presumed to be a List of Double values.
-	 * @return an array of primitive doubles scaled between 0 and 100.
-	 */
-	public static double[] extractDoubles(Object o) {
-		
-		List<Double> ld = (List<Double>) o;
-
-		float[] data = new float[ld.size()];
-		int i = 0;
-		for (Double d : ld)
-			data[i++] = d.floatValue();
-
-		float[] data2 = ProbabilityScaler.scale((float[]) data,
-				ScalingMethod.LINEAR_LOWER, new StringBuilder());
-		double[] ret = new double[data2.length];
-		i = 0;
-		for (float f : data2)
-			ret[i++] = 100.0 * f; // scaled by 100 for Google
-
-		return ret;
-	}
+//	
+//	/**
+//	 * @param o
+//	 *            An object presumed to be a List of Double values.
+//	 * @return an array of primitive doubles scaled between 0 and 100.
+//	 */
+//	public static double[] extractDoubles(Object o) {
+//		
+//		List<Double> ld = (List<Double>) o;
+//
+//		float[] data = new float[ld.size()];
+//		int i = 0;
+//		for (Double d : ld)
+//			data[i++] = d.floatValue();
+//
+//		float[] data2 = ProbabilityScaler.scale((float[]) data,
+//				ScalingMethod.LINEAR_LOWER, new StringBuilder());
+//		double[] ret = new double[data2.length];
+//		i = 0;
+//		for (float f : data2)
+//			ret[i++] = 100.0 * f; // scaled by 100 for Google
+//
+//		return ret;
+//	}
 
 	
 	public static List<List<Double>> extractDoubleLists(Object val) {
