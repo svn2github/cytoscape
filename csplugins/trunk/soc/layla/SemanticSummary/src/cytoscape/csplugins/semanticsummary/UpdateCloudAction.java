@@ -23,8 +23,10 @@
 
 package cytoscape.csplugins.semanticsummary;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -81,27 +83,73 @@ public class UpdateCloudAction extends CytoscapeAction
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		
-		//If no nodes are selected
-		if (network.getSelectedNodes().size() == 0)
-		{
-			JOptionPane.showMessageDialog(view.getComponent(), 
-					"Please select one or more nodes.");
-			return;
-		}
-		
-		//New set of selected nodes
+		//Get set of selected and compare to saved
 		Set<CyNode> nodes = network.getSelectedNodes();
-		List<String> nodeNames = new ArrayList<String>();
-		for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
-		{
-			CyNode curNode = iter.next();
-			String curName = curNode.toString();
-			nodeNames.add(curName);
-		}
+		Boolean isDifferent = checkSelectionChange(cloudParams, nodes);
 		
-		cloudParams.setSelectedNodes(nodeNames);
-		cloudParams.setSelectedNumNodes(nodeNames.size());
-
+		//If List is changed
+		if (isDifferent)
+		{
+			//Ask to continue or revert
+			Component parent = Cytoscape.getDesktop();
+			int value = JOptionPane.NO_OPTION;
+			Object[] options = { "Continue", "Revert"};
+			
+			value = JOptionPane.showOptionDialog(parent,
+					"Network node selection has changed from when the cloud was created. " +
+					"Continue with the current selection or revert to the original selection?",
+					"Node Selection Changed",
+					JOptionPane.WARNING_MESSAGE,
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					null,
+					options,
+					options[0]);
+			
+			if (value == JOptionPane.YES_OPTION)
+			{
+			
+				//If no nodes are selected
+				if (nodes.size() == 0)
+				{
+					JOptionPane.showMessageDialog(view.getComponent(), 
+					"Please select one or more nodes.");
+					return;
+				}
+			
+				//New set of selected nodes
+				List<String> nodeNames = new ArrayList<String>();
+				for(Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+				{
+					CyNode curNode = iter.next();
+					String curName = curNode.toString();
+					nodeNames.add(curName);
+				}
+			
+				cloudParams.setSelectedNodes(nodeNames);
+				cloudParams.setSelectedNumNodes(nodeNames.size());
+			}//end of updating selection
+			else if (value == JOptionPane.NO_OPTION)
+			{
+				//Update network view with old set of selected nodes
+				List<String> selNodeNames = cloudParams.getSelectedNodes();
+				Set<CyNode> selNodes = new HashSet<CyNode>();
+			
+				for(int i = 0; i< selNodeNames.size(); i++)
+				{
+					String curNodeID = selNodeNames.get(i);
+					CyNode curNode = Cytoscape.getCyNode(curNodeID);
+					selNodes.add(curNode);
+				}
+				
+				network.unselectAllNodes();
+				network.unselectAllEdges();
+				network.setSelectedNodeState(selNodes, true);
+				
+				//Redraw the graph with selected nodes
+				view.redrawGraph(false, true);
+			}
+		}//end if network selection has changed
+		
 		//Retrieve values from input panel
 		cloudParams.retrieveInputVals();
 		
@@ -112,6 +160,34 @@ public class UpdateCloudAction extends CytoscapeAction
 			SemanticSummaryManager.getInstance().getCloudWindow();
 		
 		cloudPanel.updateCloudDisplay(cloudParams);
+	}
+	
+	/**
+	 * Checks whether the set of selected nodes stored in the cloudParameters
+	 * is different from the list provided.
+	 */
+	private boolean checkSelectionChange(CloudParameters params, Set<CyNode> nodes)
+	{
+		Boolean isChanged = false;
+		List<String> oldNames = params.getSelectedNodes();
 		
+		//If lists are different size, they can't be the same
+		if (oldNames.size() != nodes.size())
+			return true;
+		
+		else
+		{
+			//Since they are the same size, just need to check for subset
+			for (Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+			{
+				String nodeName = iter.next().getIdentifier();
+				if (!oldNames.contains(nodeName))
+				{
+					isChanged = true;
+					break;
+				}
+			}
+		}
+		return isChanged;
 	}
 }

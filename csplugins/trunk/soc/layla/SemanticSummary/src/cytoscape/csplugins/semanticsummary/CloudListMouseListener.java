@@ -159,7 +159,7 @@ public class CloudListMouseListener extends MouseAdapter
 				else if (isCloudNameTaken(newName))
 				{
 					value = JOptionPane.showOptionDialog(parent,
-							"That cloud name alread exists, try again.",
+							"That cloud name already exists, try again.",
 							"Duplicate Cloud Name",
 							JOptionPane.WARNING_MESSAGE,
 							JOptionPane.YES_NO_CANCEL_OPTION,
