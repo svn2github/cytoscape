@@ -57,13 +57,14 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 
 	ObjectPosition labelPosition;
 	try {
-	    labelPosition = parent.getNodeView().getLabelPosition();
+	    NodeView nodeView = parent.getNodeView();
+	    logger.info("Node View adquired!");
+	    labelPosition = nodeView.getLabelPosition();
+	    logger.info("Got ObjectPosition from parent");
 	} catch(Exception e) {
 	    logger.info("error while getting ObjectPosition:" + e.getMessage() );
 	    return;
 	}
-
-	logger.info("Got ObjectPosition from parent");
 
  	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
 
