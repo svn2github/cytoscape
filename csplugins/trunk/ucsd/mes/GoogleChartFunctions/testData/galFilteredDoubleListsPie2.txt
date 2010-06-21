@@ -1,0 +1,331 @@
+?	26,31,28,13,2	Type 1,Type 2,Type 3,Type 4,Type 5	1,15,15,10,19,18,14,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	26,23,22,4,25	Type 1,Type 2,Type 3,Type 4,Type 5
+YAL003W	23,14,7,51,5	Type 1,Type 2,Type 3,Type 4,Type 5	11,16,6,1,2,15,2,7,14,5,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	12,9,10,12,11,16,11,13,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YAL030W	29,10,13,2,22,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	38,21,41	Type 1,Type 2,Type 3	21,39,13,27	Type 1,Type 2,Type 3,Type 4
+YAL038W	15,15,2,14,3,4,6,4,1,25,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	48,52	Type 1,Type 2	10,35,22,33	Type 1,Type 2,Type 3,Type 4
+YAL040C	64,36	Type 1,Type 2	13,87	Type 1,Type 2	7,41,52	Type 1,Type 2,Type 3
+YAR007C	38,29,33	Type 1,Type 2,Type 3	49,51	Type 1,Type 2	3,57,40	Type 1,Type 2,Type 3
+YBL005W	10,11,4,35,30,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	10,2,67,21	Type 1,Type 2,Type 3,Type 4	7,14,9,8,8,16,1,21,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YBL021C	16,18,11,10,17,11,0,4,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	30,10,40,20	Type 1,Type 2,Type 3,Type 4	4,14,12,11,17,13,14,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YBL026W	3,4,15,12,2,13,15,5,2,9,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	1,17,8,15,4,9,10,16,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	16,10,17,15,7,7,15,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YBL050W	9,20,21,9,13,13,7,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	9,2,6,21,3,24,9,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	20,80	Type 1,Type 2
+YBL069W	33,67	Type 1,Type 2	2,27,8,8,26,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	14,45,41	Type 1,Type 2,Type 3
+YBL079W	6,9,31,54	Type 1,Type 2,Type 3,Type 4	1,6,18,21,16,5,11,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	13,17,2,15,10,20,8,3,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YBR018C	29,27,17,27	Type 1,Type 2,Type 3,Type 4	11,13,13,15,10,4,14,4,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	12,13,13,13,2,6,4,0,16,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YBR019C	17,8,10,31,34	Type 1,Type 2,Type 3,Type 4,Type 5	26,10,9,25,12,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	5,6,28,61	Type 1,Type 2,Type 3,Type 4
+YBR020W	27,26,30,7,10	Type 1,Type 2,Type 3,Type 4,Type 5	6,11,11,5,13,13,18,1,10,6,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	90,10	Type 1,Type 2
+YBR043C	12,4,13,7,16,6,9,33	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	1,22,1,20,3,21,9,9,1,0,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	42,29,29	Type 1,Type 2,Type 3
+YBR045C	42,11,42,5	Type 1,Type 2,Type 3,Type 4	10,10,18,10,6,2,9,6,5,12,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	21,0,16,21,12,13,3,0,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YBR050C	7,9,14,4,13,11,8,17,4,3,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	98,2	Type 1,Type 2	17,29,15,13,26	Type 1,Type 2,Type 3,Type 4,Type 5
+YBR072W	19,16,13,15,2,6,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	9,13,5,5,9,10,15,5,5,11,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	19,7,1,22,5,20,3,8,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YBR093C	3,10,18,20,3,4,8,4,9,14,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	15,7,22,22,6,20,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	4,65,31	Type 1,Type 2,Type 3
+YBR109C	2,1,13,12,12,16,16,10,13,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	0,15,23,21,41	Type 1,Type 2,Type 3,Type 4,Type 5	9,13,15,8,5,22,1,5,9,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YBR112C	0,25,1,13,10,22,20,0,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	4,18,4,20,19,19,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	35,35,12,18	Type 1,Type 2,Type 3,Type 4
+YBR118W	16,10,17,2,0,14,17,9,6,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	7,33,49,11	Type 1,Type 2,Type 3,Type 4	10,16,12,13,18,19,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YBR135W	35,11,11,17,1,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	15,4,5,2,17,24,9,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	24,6,24,5,1,20,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YBR155W	33,12,33,22	Type 1,Type 2,Type 3,Type 4	6,13,11,3,10,13,13,13,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	20,27,13,28,12	Type 1,Type 2,Type 3,Type 4,Type 5
+YBR160W	8,10,8,9,16,4,9,14,16,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	5,24,7,3,15,22,4,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	5,13,9,9,8,2,11,5,14,13,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YBR170C	7,27,9,22,28,0,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	9,8,10,13,2,7,14,12,12,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	16,43,15,18,8	Type 1,Type 2,Type 3,Type 4,Type 5
+YBR190W	7,8,5,7,23,17,11,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	9,13,5,17,9,16,11,0,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	31,39,30	Type 1,Type 2,Type 3
+YBR217W	12,10,6,20,5,7,20,2,5,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	23,3,13,26,35	Type 1,Type 2,Type 3,Type 4,Type 5	2,17,21,26,12,17,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YBR248C	14,10,11,8,5,16,2,13,11,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	9,5,22,36,28	Type 1,Type 2,Type 3,Type 4,Type 5	17,3,6,23,19,17,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YBR274W	20,12,4,4,21,22,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	6,42,19,33	Type 1,Type 2,Type 3,Type 4	28,3,17,34,18	Type 1,Type 2,Type 3,Type 4,Type 5
+YCL030C	0,7,22,7,13,18,6,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	13,4,7,18,15,5,15,10,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	3,8,9,21,4,17,4,3,13,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YCL032W	13,6,14,1,8,11,4,5,15,1,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	23,27,12,16,22	Type 1,Type 2,Type 3,Type 4,Type 5	19,39,9,23,7,3	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YCL040W	23,26,17,34	Type 1,Type 2,Type 3,Type 4	0,15,8,17,15,15,0,12,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	25,51,24	Type 1,Type 2,Type 3
+YCL067C	25,3,15,33,6,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	2,2,19,12,19,21,3,14,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	16,10,3,14,10,13,12,10,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YCR012W	31,69	Type 1,Type 2	15,32,34,12,5,2	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	4,12,1,12,4,8,14,9,10,9,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YCR084C	36,4,4,14,29,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	15,4,16,6,14,2,5,25,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	10,7,1,13,11,14,16,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YCR086W	37,47,16	Type 1,Type 2,Type 3	13,17,11,11,18,11,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	34,0,38,28	Type 1,Type 2,Type 3,Type 4
+YDL013W	9,13,12,0,8,15,17,7,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	13,14,7,16,0,15,9,11,4,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	1,13,11,5,11,13,4,4,11,13,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YDL014W	8,13,13,9,14,10,12,6,6,2,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	2,20,8,14,12,24,4,6,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	32,43,25	Type 1,Type 2,Type 3
+YDL023C	24,33,43	Type 1,Type 2,Type 3	13,29,24,34	Type 1,Type 2,Type 3,Type 4	20,6,12,16,8,16,7,1,4,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YDL030W	36,64	Type 1,Type 2	23,15,15,13,18,1,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	32,25,24,11,8	Type 1,Type 2,Type 3,Type 4,Type 5
+YDL063C	20,2,14,11,5,12,13,10,1,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	32,34,14,5,9,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	41,31,28	Type 1,Type 2,Type 3
+YDL075W	17,30,53	Type 1,Type 2,Type 3	34,30,36	Type 1,Type 2,Type 3	1,31,7,32,29	Type 1,Type 2,Type 3,Type 4,Type 5
+YDL078C	64,36	Type 1,Type 2	12,12,4,15,16,3,11,2,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	15,16,6,16,15,17,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDL081C	0,14,8,3,17,3,16,5,6,3,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	7,4,20,2,10,12,3,5,22,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	63,37	Type 1,Type 2
+YDL088C	37,49,14	Type 1,Type 2,Type 3	14,7,15,16,12,10,11,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	17,0,17,23,15,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YDL113C	7,20,4,23,11,30,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	16,15,6,11,17,13,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	3,14,12,10,11,18,15,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YDL130W	10,3,12,2,15,0,8,12,16,3,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	9,19,11,7,15,7,9,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	13,19,13,16,16,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YDL194W	23,17,7,4,17,5,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	12,49,36,3	Type 1,Type 2,Type 3,Type 4	22,21,6,13,14,9,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDL215C	7,15,19,2,5,4,8,20,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	21,32,47	Type 1,Type 2,Type 3	32,13,33,22	Type 1,Type 2,Type 3,Type 4
+YDL236W	10,10,38,0,22,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	1,35,25,24,15	Type 1,Type 2,Type 3,Type 4,Type 5	24,29,15,32	Type 1,Type 2,Type 3,Type 4
+YDR009W	1,10,1,16,16,12,21,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	5,29,9,22,30,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	72,28	Type 1,Type 2
+YDR032C	55,45	Type 1,Type 2	13,13,1,21,8,20,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	21,17,12,10,12,10,5,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YDR050C	20,5,2,1,38,2,12,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	12,27,26,35	Type 1,Type 2,Type 3,Type 4	0,20,16,10,2,8,5,7,16,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YDR070C	15,20,10,7,6,17,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	40,46,14	Type 1,Type 2,Type 3	12,6,13,24,16,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YDR100W	21,17,20,21,21	Type 1,Type 2,Type 3,Type 4,Type 5	7,11,33,22,27	Type 1,Type 2,Type 3,Type 4,Type 5	15,18,7,13,13,14,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDR103W	29,33,19,19	Type 1,Type 2,Type 3,Type 4	19,15,23,23,10,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	36,27,37	Type 1,Type 2,Type 3
+YDR142C	46,2,0,13,20,0,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	15,9,17,19,2,2,0,18,9,0,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	9,19,15,14,14,18,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDR146C	41,18,41	Type 1,Type 2,Type 3	8,7,2,12,17,20,3,1,10,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	30,35,35	Type 1,Type 2,Type 3
+YDR167W	15,25,0,9,35,10,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	11,3,11,1,14,14,12,7,14,4,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	8,9,12,4,18,25,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDR171W	77,23	Type 1,Type 2	44,35,0,21	Type 1,Type 2,Type 3,Type 4	17,2,11,27,27,8,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDR174W	7,0,14,14,6,13,12,16,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	15,23,22,11,16,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	30,24,45,1	Type 1,Type 2,Type 3,Type 4
+YDR184C	35,4,10,31,20	Type 1,Type 2,Type 3,Type 4,Type 5	10,23,35,32	Type 1,Type 2,Type 3,Type 4	14,12,7,10,12,4,14,13,2,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YDR244W	8,44,48	Type 1,Type 2,Type 3	8,1,20,18,11,8,1,8,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	34,43,23	Type 1,Type 2,Type 3
+YDR277C	2,12,18,2,10,1,16,39	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	15,13,22,31,5,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	17,54,29	Type 1,Type 2,Type 3
+YDR299W	0,17,34,5,27,9,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	22,16,20,23,19	Type 1,Type 2,Type 3,Type 4,Type 5	9,15,8,19,10,20,7,7,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YDR309C	32,14,8,22,24	Type 1,Type 2,Type 3,Type 4,Type 5	18,27,14,19,22	Type 1,Type 2,Type 3,Type 4,Type 5	4,28,3,22,33,5,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDR311W	1,11,9,14,12,17,10,0,11,5,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	4,19,11,16,1,3,8,14,1,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	8,21,14,14,23,5,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDR323C	4,42,54	Type 1,Type 2,Type 3	11,5,18,7,16,16,21,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	8,9,11,21,12,17,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YDR335W	3,3,9,7,0,7,23,7,22,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	19,15,5,3,15,19,15,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	4,71,25	Type 1,Type 2,Type 3
+YDR354W	62,38	Type 1,Type 2	13,12,23,3,7,9,9,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	13,25,3,29,30	Type 1,Type 2,Type 3,Type 4,Type 5
+YDR382W	81,19	Type 1,Type 2	8,6,41,2,43	Type 1,Type 2,Type 3,Type 4,Type 5	14,1,6,13,3,12,21,4,6,12,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YDR395W	3,41,34,12,10	Type 1,Type 2,Type 3,Type 4,Type 5	38,23,39	Type 1,Type 2,Type 3	21,11,8,13,13,11,4,10,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YDR412W	10,7,12,10,11,14,13,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	3,15,5,21,27,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	7,7,14,9,9,22,19,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YDR429C	29,15,29,21,0,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	0,9,30,16,12,33	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	56,11,2,31	Type 1,Type 2,Type 3,Type 4
+YDR461W	25,2,6,9,3,6,8,13,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	0,26,11,26,9,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	26,16,18,10,21,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YEL009C	19,14,8,4,8,8,13,13,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	11,0,2,6,7,19,10,5,10,11,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	82,18	Type 1,Type 2
+YEL015W	64,36	Type 1,Type 2	2,14,10,0,0,6,18,18,19,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	9,13,18,21,11,10,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YEL039C	22,2,4,0,11,15,17,4,13,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	6,2,7,26,0,0,22,13,7,1,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	21,8,8,16,28,9,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YEL041W	5,0,31,1,37,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	52,48	Type 1,Type 2	52,48	Type 1,Type 2
+YER040W	27,10,10,32,8,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	23,67,10	Type 1,Type 2,Type 3	17,20,24,39	Type 1,Type 2,Type 3,Type 4
+YER052C	4,12,10,17,0,5,15,13,4,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	17,15,2,15,6,14,3,14,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	21,3,14,26,6,30	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YER054C	5,8,2,10,11,16,12,4,6,15,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	1,12,4,9,4,22,1,23,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	19,18,4,2,8,7,7,18,5,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YER056CA	7,18,11,17,0,1,10,2,18,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	28,19,39,14	Type 1,Type 2,Type 3,Type 4	23,25,16,8,13,8,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YER062C	8,1,16,14,18,12,13,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	11,5,3,10,14,15,8,17,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	18,16,12,54	Type 1,Type 2,Type 3,Type 4
+YER065C	4,4,5,17,10,0,20,4,16,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	15,3,14,18,8,5,18,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	23,1,11,27,8,30	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YER074W	21,51,28	Type 1,Type 2,Type 3	44,16,26,14	Type 1,Type 2,Type 3,Type 4	8,1,13,16,10,20,3,12,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YER079W	0,17,17,9,14,6,16,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	5,21,18,18,3,26,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	28,36,36	Type 1,Type 2,Type 3
+YER081W	28,5,8,35,24	Type 1,Type 2,Type 3,Type 4,Type 5	6,24,49,7,14	Type 1,Type 2,Type 3,Type 4,Type 5	0,5,1,15,14,15,11,2,12,11,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YER090W	9,16,3,6,3,11,1,11,13,7,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	31,12,3,1,7,29,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	15,25,20,29,11	Type 1,Type 2,Type 3,Type 4,Type 5
+YER102W	15,32,22,31	Type 1,Type 2,Type 3,Type 4	12,4,24,12,1,11,18,6,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	50,32,18	Type 1,Type 2,Type 3
+YER103W	22,19,16,9,34	Type 1,Type 2,Type 3,Type 4,Type 5	6,9,7,19,22,15,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	37,10,21,32	Type 1,Type 2,Type 3,Type 4
+YER110C	1,10,13,10,12,12,11,0,12,10,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	11,6,3,2,12,10,2,12,12,17,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	1,38,61	Type 1,Type 2,Type 3
+YER111C	17,11,18,6,13,7,13,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	1,0,5,14,7,8,4,15,19,15,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	3,8,1,0,15,9,16,9,17,11,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YER112W	80,5,15	Type 1,Type 2,Type 3	10,10,2,4,11,17,12,21,0,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	47,41,12	Type 1,Type 2,Type 3
+YER116C	33,34,33	Type 1,Type 2,Type 3	23,13,21,14,7,0,1,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	21,26,17,9,27	Type 1,Type 2,Type 3,Type 4,Type 5
+YER124C	2,5,15,22,6,27,9,6,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	6,8,33,11,42	Type 1,Type 2,Type 3,Type 4,Type 5	8,4,4,19,9,3,6,8,6,12,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YER133W	8,13,13,7,20,16,1,2,12,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	7,9,30,18,36	Type 1,Type 2,Type 3,Type 4,Type 5	16,4,33,31,16	Type 1,Type 2,Type 3,Type 4,Type 5
+YER143W	8,7,1,18,9,19,12,3,7,2,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	53,47	Type 1,Type 2	30,1,41,28	Type 1,Type 2,Type 3,Type 4
+YER145C	94,6	Type 1,Type 2	11,7,15,11,9,13,13,4,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	16,16,2,11,1,11,6,16,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YER179W	73,27	Type 1,Type 2	9,10,14,14,7,7,0,15,13,1,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	0,16,18,11,19,8,6,6,5,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YFL017C	11,89	Type 1,Type 2	17,7,16,25,5,17,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	0,12,32,2,32,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YFL026W	10,1,9,0,16,5,14,18,7,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	43,5,15,37	Type 1,Type 2,Type 3,Type 4	12,33,6,12,37	Type 1,Type 2,Type 3,Type 4,Type 5
+YFL038C	8,9,10,16,13,12,12,12,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	2,28,30,30,6,4	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	20,7,21,24,0,1,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YFL039C	6,19,13,17,19,4,12,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	20,10,15,4,0,0,17,6,10,4,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	17,9,16,18,14,15,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YFR014C	23,17,22,6,9,10,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	15,7,3,14,4,1,16,2,18,13,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	17,14,0,17,8,5,12,16,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YFR034C	13,28,32,27	Type 1,Type 2,Type 3,Type 4	72,28	Type 1,Type 2	31,8,19,19,10,10,3	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YFR037C	25,16,30,3,26	Type 1,Type 2,Type 3,Type 4,Type 5	19,23,11,3,7,37	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	15,8,0,6,14,15,4,9,15,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YGL008C	15,7,17,8,2,15,4,11,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	22,11,15,8,22,12,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	41,21,19,3,16	Type 1,Type 2,Type 3,Type 4,Type 5
+YGL013C	16,15,3,19,14,9,1,1,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	12,86,2	Type 1,Type 2,Type 3	26,10,15,0,27,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YGL035C	6,12,16,0,6,13,1,15,17,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	9,0,38,36,17	Type 1,Type 2,Type 3,Type 4,Type 5	10,7,18,1,15,13,9,12,10,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YGL044C	16,13,28,43	Type 1,Type 2,Type 3,Type 4	19,6,18,15,29,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	11,33,28,28	Type 1,Type 2,Type 3,Type 4
+YGL073W	49,26,25	Type 1,Type 2,Type 3	11,9,18,21,5,8,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	34,8,27,20,11	Type 1,Type 2,Type 3,Type 4,Type 5
+YGL097W	27,26,23,24	Type 1,Type 2,Type 3,Type 4	12,12,16,11,9,4,3,5,5,18,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	5,13,2,14,5,12,14,9,3,15,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YGL106W	21,79	Type 1,Type 2	7,93	Type 1,Type 2	11,0,18,13,4,2,10,17,3,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YGL115W	85,13,2	Type 1,Type 2,Type 3	6,19,14,6,12,10,3,5,12,4,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	71,29	Type 1,Type 2
+YGL122C	23,28,17,32	Type 1,Type 2,Type 3,Type 4	23,22,25,20,10	Type 1,Type 2,Type 3,Type 4,Type 5	29,15,43,13	Type 1,Type 2,Type 3,Type 4
+YGL134W	21,17,22,13,2,5,0,9,3,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	17,13,18,1,6,5,7,4,15,0,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	27,20,3,12,14,0,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YGL153W	12,19,19,9,9,14,10,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	17,10,27,7,5,11,12,0,4,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	38,5,36,21	Type 1,Type 2,Type 3,Type 4
+YGL161C	2,15,16,6,16,1,6,1,7,12,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	4,18,5,14,12,18,3,12,3,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	14,12,8,4,9,5,6,14,8,11,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YGL166W	19,5,25,22,29	Type 1,Type 2,Type 3,Type 4,Type 5	6,37,31,26	Type 1,Type 2,Type 3,Type 4	5,14,9,0,14,14,10,13,5,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YGL202W	5,18,5,8,19,5,10,9,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	13,22,21,27,17	Type 1,Type 2,Type 3,Type 4,Type 5	16,11,6,3,7,11,14,14,1,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YGL208W	18,63,1,18	Type 1,Type 2,Type 3,Type 4	27,7,11,11,20,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	0,13,7,14,15,11,11,9,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YGL229C	24,4,1,31,13,2,21,4	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	7,7,31,33,5,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	8,5,7,2,0,27,17,26,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YGL237C	31,67,2	Type 1,Type 2,Type 3	9,14,21,12,6,21,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	47,45,8	Type 1,Type 2,Type 3
+YGR009C	10,0,90	Type 1,Type 2,Type 3	72,28	Type 1,Type 2	5,15,21,14,16,8,8,7,1,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YGR014W	14,26,5,16,6,14,14,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	4,15,3,4,4,16,5,0,12,21,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	13,30,29,24,4	Type 1,Type 2,Type 3,Type 4,Type 5
+YGR019W	6,12,33,49	Type 1,Type 2,Type 3,Type 4	15,21,10,3,9,21,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	11,10,15,20,6,17,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YGR046W	12,7,7,11,12,10,2,7,8,9,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	0,8,12,12,11,7,9,5,8,10,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	6,5,27,1,14,13,1,0,2,31	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YGR048W	22,22,3,39,7,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	2,17,8,3,13,16,7,15,7,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	34,17,46,3	Type 1,Type 2,Type 3,Type 4
+YGR058W	26,1,73	Type 1,Type 2,Type 3	11,4,7,59,19	Type 1,Type 2,Type 3,Type 4,Type 5	4,22,1,22,4,9,25,7,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YGR074W	2,9,6,26,0,4,2,25,15,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	20,48,32	Type 1,Type 2,Type 3	10,21,4,14,4,1,2,16,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YGR085C	9,9,21,23,6,0,32	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	23,29,35,13	Type 1,Type 2,Type 3,Type 4	4,9,12,14,4,5,2,13,15,2,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YGR088W	12,15,73	Type 1,Type 2,Type 3	9,3,8,17,2,14,17,8,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	39,61	Type 1,Type 2
+YGR108W	4,11,12,13,2,2,5,5,19,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	10,7,12,14,2,1,25,19,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	12,14,12,6,19,1,13,9,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YGR136W	7,18,9,7,13,13,3,4,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	50,39,7,4	Type 1,Type 2,Type 3,Type 4	5,21,0,11,22,41	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YGR203W	5,36,20,6,18,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	5,10,11,21,5,11,20,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	7,17,26,19,31	Type 1,Type 2,Type 3,Type 4,Type 5
+YGR218W	13,14,11,15,3,13,2,16,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	1,33,2,64	Type 1,Type 2,Type 3,Type 4	0,0,0,22,17,12,13,4,4,15,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YGR254W	13,6,22,4,22,8,20,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	36,55,9	Type 1,Type 2,Type 3	20,12,11,18,3,36	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YHR005C	21,18,1,11,8,14,4,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	6,28,24,27,1,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	4,4,11,11,13,5,8,14,15,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YHR030C	17,10,16,25,32	Type 1,Type 2,Type 3,Type 4,Type 5	9,0,6,14,7,9,18,14,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	59,2,39	Type 1,Type 2,Type 3
+YHR053C	24,44,32	Type 1,Type 2,Type 3	66,34	Type 1,Type 2	39,61	Type 1,Type 2
+YHR055C	0,7,18,15,0,9,16,17,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	3,25,15,57	Type 1,Type 2,Type 3,Type 4	4,10,8,10,13,9,3,10,8,8,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YHR071W	13,4,15,13,5,18,7,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	53,47	Type 1,Type 2	16,8,10,2,8,14,11,0,18,5,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YHR084W	4,11,8,9,6,7,14,11,12,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	10,12,11,14,6,12,9,0,6,11,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	52,42,6	Type 1,Type 2,Type 3
+YHR115C	13,17,4,7,17,13,4,0,10,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	39,61	Type 1,Type 2	6,3,38,12,12,16,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YHR135C	8,2,14,16,7,4,7,10,15,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	10,28,9,9,2,27,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	10,9,14,3,10,11,15,7,1,3,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YHR141C	20,0,19,18,12,10,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	4,21,7,32,28,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	12,13,16,1,0,8,8,9,15,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YHR171W	6,2,21,57,14	Type 1,Type 2,Type 3,Type 4,Type 5	13,14,12,16,16,18,6,0,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	7,17,19,32,25	Type 1,Type 2,Type 3,Type 4,Type 5
+YHR174W	6,10,24,21,12,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	42,58	Type 1,Type 2	14,14,6,8,10,6,7,5,0,9,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YHR179W	21,12,18,6,15,20,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	36,14,31,7,12	Type 1,Type 2,Type 3,Type 4,Type 5	24,38,7,31	Type 1,Type 2,Type 3,Type 4
+YHR198C	6,17,19,6,26,15,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	1,4,3,8,18,5,12,8,8,33	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	16,5,3,23,8,16,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YIL015W	14,29,33,24	Type 1,Type 2,Type 3,Type 4	10,16,36,5,33	Type 1,Type 2,Type 3,Type 4,Type 5	14,17,13,9,9,14,0,6,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YIL045W	0,1,15,3,7,20,11,7,19,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	16,7,12,11,15,2,3,19,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	17,8,23,3,3,13,7,9,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YIL052C	7,16,7,15,12,4,8,15,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	49,7,5,39	Type 1,Type 2,Type 3,Type 4	17,9,10,16,2,12,8,0,17,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YIL061C	13,4,15,7,13,17,8,8,6,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	12,24,1,9,27,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	11,0,15,13,17,8,16,11,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YIL069C	16,7,4,13,13,3,4,20,10,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	6,29,4,0,26,8,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	34,30,36	Type 1,Type 2,Type 3
+YIL070C	17,14,10,4,8,12,2,16,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	16,3,14,20,7,3,8,7,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	12,1,9,9,24,23,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YIL074C	13,60,27	Type 1,Type 2,Type 3	14,18,15,18,9,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	52,10,38	Type 1,Type 2,Type 3
+YIL105C	1,38,0,39,4,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	20,19,32,12,17	Type 1,Type 2,Type 3,Type 4,Type 5	6,15,20,15,15,4,13,7,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YIL113W	7,10,4,12,12,6,4,15,5,12,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	7,15,23,22,33	Type 1,Type 2,Type 3,Type 4,Type 5	41,34,20,5	Type 1,Type 2,Type 3,Type 4
+YIL133C	12,0,19,10,14,9,8,16,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	37,63	Type 1,Type 2	26,25,12,37	Type 1,Type 2,Type 3,Type 4
+YIL143C	30,26,27,12,5	Type 1,Type 2,Type 3,Type 4,Type 5	8,12,1,13,15,2,4,16,10,10,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	21,16,10,3,5,3,27,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YIL160C	0,10,10,15,13,15,3,15,1,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	26,11,21,1,4,26,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	44,43,13	Type 1,Type 2,Type 3
+YIL162W	13,20,16,27,0,3,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	30,2,30,29,9	Type 1,Type 2,Type 3,Type 4,Type 5	91,9	Type 1,Type 2
+YIR009W	12,32,22,34	Type 1,Type 2,Type 3,Type 4	24,11,26,17,22	Type 1,Type 2,Type 3,Type 4,Type 5	24,6,0,16,17,6,20,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YJL013C	84,16	Type 1,Type 2	45,44,11	Type 1,Type 2,Type 3	10,37,3,3,16,31	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YJL030W	13,25,6,11,20,17,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	32,12,32,24	Type 1,Type 2,Type 3,Type 4	17,9,19,13,18,14,2,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YJL036W	2,27,16,25,23,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	99,1	Type 1,Type 2	9,8,4,4,18,7,9,0,18,17,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YJL089W	3,8,12,3,11,4,13,13,6,13,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	27,29,9,18,3,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	7,17,21,8,0,22,5,15,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YJL157C	31,34,35	Type 1,Type 2,Type 3	11,4,4,27,14,3,22,9,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	1,14,14,2,19,19,22,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YJL159W	14,16,11,14,11,9,8,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	1,8,5,5,10,10,1,11,14,35	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	1,10,10,12,5,8,19,11,5,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YJL190C	2,67,1,30	Type 1,Type 2,Type 3,Type 4	23,15,21,41	Type 1,Type 2,Type 3,Type 4	21,16,19,3,8,33	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YJL194W	89,11	Type 1,Type 2	20,10,26,14,8,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	30,1,47,22	Type 1,Type 2,Type 3,Type 4
+YJL203W	26,24,7,17,15,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	0,19,16,29,7,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	16,5,6,3,9,10,10,13,2,10,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YJL219W	20,8,0,26,46	Type 1,Type 2,Type 3,Type 4,Type 5	8,20,3,10,13,12,13,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	62,38	Type 1,Type 2
+YJR022W	40,27,0,33	Type 1,Type 2,Type 3,Type 4	4,13,6,18,3,15,2,15,3,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	0,7,10,21,8,20,10,13,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YJR048W	3,11,9,7,9,14,13,8,11,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	11,15,11,16,0,8,15,5,4,4,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	2,1,17,8,14,7,17,10,8,3,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YJR060W	20,21,10,35,14	Type 1,Type 2,Type 3,Type 4,Type 5	5,14,0,13,6,10,10,8,14,0,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	0,10,0,24,12,6,17,22,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YJR066W	0,18,10,16,1,10,20,1,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	18,82	Type 1,Type 2	0,0,8,14,3,8,17,13,13,2,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YJR109C	27,32,6,4,31	Type 1,Type 2,Type 3,Type 4,Type 5	15,15,22,21,6,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	16,5,14,10,2,16,1,8,2,13,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YKL001C	32,68	Type 1,Type 2	10,11,10,20,14,12,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	10,9,5,13,13,15,13,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YKL012W	11,89	Type 1,Type 2	14,14,8,0,3,4,24,3,21,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	33,25,22,20	Type 1,Type 2,Type 3,Type 4
+YKL028W	4,10,6,13,27,36,4	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	15,12,16,5,16,8,1,7,3,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	7,25,12,12,12,6,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YKL074C	9,19,7,20,19,0,11,1,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	18,66,16	Type 1,Type 2,Type 3	21,12,17,24,26	Type 1,Type 2,Type 3,Type 4,Type 5
+YKL101W	11,5,20,14,15,20,8,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	7,7,1,3,25,13,0,9,17,9,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	7,4,12,14,12,6,8,15,4,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YKL109W	0,35,57,8	Type 1,Type 2,Type 3,Type 4	4,12,10,0,13,1,8,17,8,6,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	3,21,12,6,19,25,1,8,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YKL161C	15,5,19,16,13,1,2,11,0,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	39,11,50	Type 1,Type 2,Type 3	10,12,14,7,16,4,6,5,10,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YKL204W	4,7,4,16,5,12,14,21,11,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	70,30	Type 1,Type 2	7,4,7,0,21,11,10,16,0,9,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YKL211C	51,37,12	Type 1,Type 2,Type 3	42,58	Type 1,Type 2	27,21,24,28	Type 1,Type 2,Type 3,Type 4
+YKR026C	34,55,0,11	Type 1,Type 2,Type 3,Type 4	31,10,9,33,17	Type 1,Type 2,Type 3,Type 4,Type 5	26,15,31,15,13	Type 1,Type 2,Type 3,Type 4,Type 5
+YKR097W	48,52	Type 1,Type 2	64,36	Type 1,Type 2	21,7,7,18,13,14,8,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YKR099W	11,26,31,32	Type 1,Type 2,Type 3,Type 4	21,20,11,17,31	Type 1,Type 2,Type 3,Type 4,Type 5	6,4,3,5,17,6,0,14,9,9,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YLL019C	4,12,22,29,33	Type 1,Type 2,Type 3,Type 4,Type 5	21,24,25,16,0,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	85,15	Type 1,Type 2
+YLL021W	6,1,22,9,17,3,16,16,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	95,5	Type 1,Type 2	44,28,28	Type 1,Type 2,Type 3
+YLL028W	12,8,14,1,17,2,7,10,20,3,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	12,10,9,14,12,3,10,12,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	20,13,15,5,0,11,14,17,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YLR044C	3,2,12,9,5,12,12,14,10,15,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	24,10,8,30,20,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	36,64	Type 1,Type 2
+YLR075W	25,4,2,11,16,18,6,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	68,25,7	Type 1,Type 2,Type 3	3,6,0,2,29,31,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YLR081W	16,3,41,40	Type 1,Type 2,Type 3,Type 4	28,29,13,30	Type 1,Type 2,Type 3,Type 4	56,1,43	Type 1,Type 2,Type 3
+YLR109W	5,6,10,17,4,13,7,12,2,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	17,1,8,11,6,19,25,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	23,32,4,32,9	Type 1,Type 2,Type 3,Type 4,Type 5
+YLR116W	25,75	Type 1,Type 2	35,7,26,23,9	Type 1,Type 2,Type 3,Type 4,Type 5	1,11,5,7,18,18,11,3,3,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YLR117C	17,3,0,3,8,18,1,6,6,18,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	34,66	Type 1,Type 2	15,8,11,2,3,13,14,6,9,0,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YLR134W	20,15,27,17,9,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	18,9,12,5,3,13,8,19,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	9,5,12,14,4,3,8,13,14,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YLR153C	18,9,1,8,15,17,3,6,4,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	19,27,11,10,33	Type 1,Type 2,Type 3,Type 4,Type 5	3,12,13,9,10,9,12,13,12,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YLR175W	9,20,8,22,18,0,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	68,32	Type 1,Type 2	13,0,2,15,12,4,3,4,17,19,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YLR191W	56,44	Type 1,Type 2	15,15,6,7,12,9,4,15,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	3,10,9,3,2,22,12,0,12,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YLR197W	5,15,13,16,4,10,13,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	18,10,13,13,46	Type 1,Type 2,Type 3,Type 4,Type 5	18,1,13,14,8,17,4,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YLR214W	19,8,19,3,9,11,2,20,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	75,25	Type 1,Type 2	20,4,14,21,20,5,3,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YLR229C	49,51	Type 1,Type 2	29,3,8,27,14,15,4	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	12,18,14,4,4,7,13,0,12,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YLR249W	23,32,32,13	Type 1,Type 2,Type 3,Type 4	37,14,49	Type 1,Type 2,Type 3	12,17,10,1,1,12,15,12,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YLR256W	26,25,16,33	Type 1,Type 2,Type 3,Type 4	20,26,20,17,1,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	13,14,9,12,12,8,5,8,7,1,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YLR258W	62,38	Type 1,Type 2	18,12,8,7,19,36	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	53,47	Type 1,Type 2
+YLR264W	78,2,20	Type 1,Type 2,Type 3	29,22,34,15	Type 1,Type 2,Type 3,Type 4	15,16,2,27,25,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YLR284C	40,3,22,35	Type 1,Type 2,Type 3,Type 4	41,16,43	Type 1,Type 2,Type 3	2,19,16,5,3,13,9,3,17,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YLR293C	36,48,16	Type 1,Type 2,Type 3	7,4,13,12,0,16,5,15,17,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	13,13,17,10,22,19,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YLR310C	10,10,4,15,16,14,18,2,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	4,18,21,18,13,3,0,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	71,29	Type 1,Type 2
+YLR319C	7,16,12,21,16,14,5,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	15,5,5,32,21,13,5,4	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	47,53	Type 1,Type 2
+YLR321C	14,10,17,13,12,4,12,9,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	38,62	Type 1,Type 2	8,38,54	Type 1,Type 2,Type 3
+YLR340W	5,7,20,21,19,10,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	19,81	Type 1,Type 2	99,1	Type 1,Type 2
+YLR345W	8,3,18,14,24,3,9,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	20,39,41	Type 1,Type 2,Type 3	18,12,18,13,11,16,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YLR362W	9,7,4,9,14,16,10,11,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	55,45	Type 1,Type 2	26,10,6,8,5,10,0,1,11,11,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YLR377C	12,15,0,16,1,17,16,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	21,7,4,16,0,6,1,17,20,2,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	10,29,5,15,28,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YLR432W	30,42,28	Type 1,Type 2,Type 3	7,7,3,0,12,1,16,19,15,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	14,17,13,11,17,16,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YLR452C	11,24,37,28	Type 1,Type 2,Type 3,Type 4	1,1,17,8,1,9,23,13,11,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	26,6,8,11,5,17,4,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YML007W	6,23,18,12,19,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	40,27,33	Type 1,Type 2,Type 3	24,18,36,13,9	Type 1,Type 2,Type 3,Type 4,Type 5
+YML024W	0,6,6,2,20,19,19,8,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	32,0,15,4,23,10,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	18,17,0,16,9,1,12,0,11,8,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YML032C	8,14,0,15,8,5,9,1,9,15,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	53,47	Type 1,Type 2	4,23,13,5,24,27,4	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YML051W	18,82	Type 1,Type 2	18,14,15,12,10,0,15,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	32,24,40,4	Type 1,Type 2,Type 3,Type 4
+YML054C	14,1,6,14,16,16,16,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	41,30,29	Type 1,Type 2,Type 3	15,29,3,35,1,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YML064C	60,10,30	Type 1,Type 2,Type 3	15,6,7,3,5,4,8,17,16,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	7,5,22,7,17,7,10,4,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YML074C	12,42,46	Type 1,Type 2,Type 3	24,26,8,16,26	Type 1,Type 2,Type 3,Type 4,Type 5	15,19,11,10,21,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YML114C	12,3,37,33,15	Type 1,Type 2,Type 3,Type 4,Type 5	20,5,10,7,2,25,8,15,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	40,21,19,6,4,2,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YML123C	32,28,4,29,7	Type 1,Type 2,Type 3,Type 4,Type 5	36,30,34	Type 1,Type 2,Type 3	8,23,1,5,26,37	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YMR005W	69,31	Type 1,Type 2	23,6,19,15,4,0,0,20,4,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	12,14,14,15,12,11,2,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YMR021C	6,11,7,5,0,13,1,12,12,16,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	19,8,18,20,16,6,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	8,35,8,28,3,12,6	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YMR043W	37,14,10,39	Type 1,Type 2,Type 3,Type 4	0,8,23,19,29,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	46,54	Type 1,Type 2
+YMR044W	22,16,12,22,28	Type 1,Type 2,Type 3,Type 4,Type 5	9,3,14,16,12,6,12,6,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	1,12,2,35,50	Type 1,Type 2,Type 3,Type 4,Type 5
+YMR058W	20,3,1,21,17,0,18,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	15,4,7,12,2,15,15,5,12,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	4,8,29,14,14,31	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YMR108W	3,17,20,18,15,15,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	7,15,12,10,12,6,0,13,0,10,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	39,61	Type 1,Type 2
+YMR117C	2,25,10,1,22,8,2,2,3,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	19,19,0,20,10,8,8,3,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	29,31,12,18,10	Type 1,Type 2,Type 3,Type 4,Type 5
+YMR138W	5,32,13,18,23,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	35,8,29,28	Type 1,Type 2,Type 3,Type 4	35,19,32,6,8	Type 1,Type 2,Type 3,Type 4,Type 5
+YMR146C	2,11,4,14,22,6,26,2,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	41,59	Type 1,Type 2	9,14,21,0,19,19,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YMR183C	1,15,9,10,13,5,7,4,6,10,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	7,10,10,30,16,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	22,16,19,18,14,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YMR186W	0,56,19,25	Type 1,Type 2,Type 3,Type 4	2,7,18,15,10,3,0,12,9,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	66,34	Type 1,Type 2
+YMR255W	20,7,18,9,9,4,18,3,7,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	8,92	Type 1,Type 2	14,29,2,23,16,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YMR291W	5,7,13,0,26,23,5,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	45,55	Type 1,Type 2	13,16,16,3,5,21,18,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YMR300C	17,3,36,38,6	Type 1,Type 2,Type 3,Type 4,Type 5	15,28,37,3,17	Type 1,Type 2,Type 3,Type 4,Type 5	27,42,4,3,24	Type 1,Type 2,Type 3,Type 4,Type 5
+YMR309C	1,13,4,10,6,8,0,14,16,12,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	22,20,24,1,5,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	0,13,9,17,11,1,5,3,17,16,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YMR311C	62,38	Type 1,Type 2	11,12,13,0,6,9,7,11,12,12,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	43,57	Type 1,Type 2
+YNL036W	28,0,10,40,22	Type 1,Type 2,Type 3,Type 4,Type 5	13,15,16,5,2,10,7,3,14,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	47,25,28	Type 1,Type 2,Type 3
+YNL047C	19,13,0,13,11,20,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	8,12,20,27,7,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	19,16,19,21,1,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNL050C	6,94	Type 1,Type 2	33,8,0,12,20,19,1,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	35,27,38	Type 1,Type 2,Type 3
+YNL069C	15,51,32,2	Type 1,Type 2,Type 3,Type 4	9,55,12,24	Type 1,Type 2,Type 3,Type 4	17,69,3,11	Type 1,Type 2,Type 3,Type 4
+YNL091W	12,1,7,26,26,5,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	15,14,12,21,16,8,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	13,16,15,11,10,35	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNL098C	10,8,12,11,10,10,8,1,7,12,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	23,15,22,1,5,24,2,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	11,0,14,10,9,13,0,8,7,13,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YNL113W	17,23,15,24,21	Type 1,Type 2,Type 3,Type 4,Type 5	15,16,9,3,18,8,19,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	14,20,21,18,11,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNL116W	17,14,1,13,3,14,16,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	14,7,16,7,13,11,15,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	11,12,8,37,32	Type 1,Type 2,Type 3,Type 4,Type 5
+YNL117W	5,24,20,10,3,38	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	43,57	Type 1,Type 2	40,5,0,22,28,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNL135C	10,10,23,1,2,29,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	11,31,36,22	Type 1,Type 2,Type 3,Type 4	14,6,12,34,14,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNL145W	20,47,13,20	Type 1,Type 2,Type 3,Type 4	1,20,5,7,17,23,12,8,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	39,26,4,7,6,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNL154C	9,14,14,15,6,14,5,4,8,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	5,8,26,61	Type 1,Type 2,Type 3,Type 4	1,7,12,19,16,15,11,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YNL164C	17,30,13,2,11,8,2,0,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	9,41,50	Type 1,Type 2,Type 3	20,40,4,8,28	Type 1,Type 2,Type 3,Type 4,Type 5
+YNL167C	14,43,28,15	Type 1,Type 2,Type 3,Type 4	1,15,9,0,2,18,28,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	32,29,39	Type 1,Type 2,Type 3
+YNL189W	12,4,1,8,13,4,10,16,9,16,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	4,20,7,10,9,17,2,5,18,1,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	23,0,11,23,34,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNL199C	9,6,7,14,2,9,8,7,15,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	28,14,33,25	Type 1,Type 2,Type 3,Type 4	13,0,4,17,19,18,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YNL214W	27,13,21,26,13	Type 1,Type 2,Type 3,Type 4,Type 5	18,82	Type 1,Type 2	12,16,14,3,2,15,25,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YNL216W	9,10,6,2,12,12,8,11,11,12,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	58,42	Type 1,Type 2	28,16,6,8,5,25,2,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YNL236W	25,25,17,1,1,17,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	0,31,22,11,13,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	25,6,21,20,28	Type 1,Type 2,Type 3,Type 4,Type 5
+YNL301C	8,15,8,6,10,10,10,15,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	2,18,15,15,10,17,3,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	2,15,28,18,21,3,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YNL307C	37,9,54	Type 1,Type 2,Type 3	3,97	Type 1,Type 2	20,8,13,7,14,5,33	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YNL311C	18,31,27,24	Type 1,Type 2,Type 3,Type 4	81,19	Type 1,Type 2	4,4,7,12,20,8,3,3,19,12,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YNL312W	30,19,10,8,7,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	2,29,41,28	Type 1,Type 2,Type 3,Type 4	34,15,20,20,1,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNR007C	22,14,1,2,9,20,4,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	50,50	Type 1,Type 2	17,24,6,11,19,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YNR050C	10,1,15,5,11,10,3,11,6,10,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	5,6,19,6,5,7,19,16,0,4,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	14,12,18,14,6,1,13,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YNR053C	11,8,11,10,8,11,12,6,7,4,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	19,20,10,5,14,6,14,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	30,41,8,21	Type 1,Type 2,Type 3,Type 4
+YOL016C	6,12,11,16,16,16,16,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	4,8,1,16,17,4,17,14,0,6,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	4,9,10,18,19,2,3,13,15,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YOL051W	35,5,29,31	Type 1,Type 2,Type 3,Type 4	16,10,24,0,2,3,14,6,8,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	4,52,44	Type 1,Type 2,Type 3
+YOL058W	9,12,16,3,16,4,5,7,13,5,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	1,24,23,52	Type 1,Type 2,Type 3,Type 4	15,18,9,8,19,8,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YOL059W	8,2,8,3,6,14,24,5,21,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	18,16,15,2,1,17,1,11,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	25,4,24,22,25	Type 1,Type 2,Type 3,Type 4,Type 5
+YOL086C	14,12,9,16,17,15,7,1,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	16,6,11,12,11,8,4,11,16,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	9,0,10,7,17,8,17,19,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YOL120C	35,10,38,17	Type 1,Type 2,Type 3,Type 4	0,19,14,2,1,18,14,11,5,11,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	50,18,32	Type 1,Type 2,Type 3
+YOL123W	4,21,1,26,21,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	23,34,7,36	Type 1,Type 2,Type 3,Type 4	6,68,26	Type 1,Type 2,Type 3
+YOL127W	12,6,10,5,11,6,9,10,2,11,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	45,55	Type 1,Type 2	69,31	Type 1,Type 2
+YOL136C	62,38	Type 1,Type 2	11,21,14,27,8,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	1,19,9,22,17,8,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YOL149W	10,19,18,35,8,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	21,14,14,3,5,7,10,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	5,25,15,17,16,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YOL156W	5,14,11,22,19,2,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	8,92	Type 1,Type 2	20,16,3,9,20,9,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YOR036W	9,13,17,0,4,10,11,18,5,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	2,13,24,17,4,14,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	31,12,57	Type 1,Type 2,Type 3
+YOR039W	25,22,20,0,10,15,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	23,3,20,28,21,5	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	7,17,17,10,9,13,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YOR089C	38,62	Type 1,Type 2	10,8,18,18,5,3,17,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	34,66	Type 1,Type 2
+YOR120W	4,2,0,16,18,7,16,9,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	5,15,6,5,14,11,19,5,2,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	43,26,1,5,25	Type 1,Type 2,Type 3,Type 4,Type 5
+YOR167C	16,24,32,28	Type 1,Type 2,Type 3,Type 4	5,5,18,3,16,1,17,11,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	16,6,8,2,8,14,15,13,1,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YOR178C	5,3,15,15,7,6,16,3,16,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	10,12,1,27,10,40	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	17,0,16,15,14,5,20,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YOR202W	17,2,50,31	Type 1,Type 2,Type 3,Type 4	12,13,25,19,31	Type 1,Type 2,Type 3,Type 4,Type 5	16,4,13,6,7,9,14,12,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YOR204W	24,23,17,12,15,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	41,23,36	Type 1,Type 2,Type 3	79,21	Type 1,Type 2
+YOR212W	36,29,12,6,17	Type 1,Type 2,Type 3,Type 4,Type 5	3,15,8,11,18,13,9,1,0,4,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	62,32,6	Type 1,Type 2,Type 3
+YOR215C	48,52	Type 1,Type 2	0,4,6,6,21,30,1,13,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	9,12,16,0,13,8,5,11,8,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YOR264W	23,77	Type 1,Type 2	4,11,17,18,16,7,1,4,15,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	2,13,9,10,10,14,14,10,1,9,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YOR290C	72,28	Type 1,Type 2	25,4,34,8,29	Type 1,Type 2,Type 3,Type 4,Type 5	18,7,21,25,14,2,2,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YOR303W	14,21,19,1,3,3,21,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	12,1,10,18,6,6,13,3,9,14,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	58,4,38	Type 1,Type 2,Type 3
+YOR310C	35,65	Type 1,Type 2	7,16,8,6,13,12,5,4,2,9,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	4,2,14,3,22,2,18,4,16,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YOR315W	14,18,9,6,14,3,16,5,5,1,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	52,48	Type 1,Type 2	5,4,17,12,8,4,11,11,6,0,22	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YOR326W	47,11,42	Type 1,Type 2,Type 3	20,4,38,38	Type 1,Type 2,Type 3,Type 4	14,13,16,4,12,13,6,4,2,0,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YOR327C	24,47,18,11	Type 1,Type 2,Type 3,Type 4	9,25,61,5	Type 1,Type 2,Type 3,Type 4	13,13,19,20,1,7,3,5,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YOR355W	7,13,13,16,6,11,2,8,14,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	41,59	Type 1,Type 2	11,14,14,2,1,7,6,10,9,14,12	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YOR361C	1,9,18,6,2,7,13,9,16,3,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	25,35,40	Type 1,Type 2,Type 3	83,17	Type 1,Type 2
+YOR362C	30,16,13,11,9,5,16	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	16,13,8,0,3,15,11,8,0,19,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	49,51	Type 1,Type 2
+YPL031C	9,0,0,27,18,18,28	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	19,13,25,14,29	Type 1,Type 2,Type 3,Type 4,Type 5	16,0,15,23,19,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YPL075W	49,51	Type 1,Type 2	22,78	Type 1,Type 2	29,19,31,21	Type 1,Type 2,Type 3,Type 4
+YPL089C	1,7,15,11,1,14,9,13,12,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	13,2,13,16,1,0,16,8,12,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	4,13,5,1,21,9,16,2,29	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YPL111W	14,3,17,9,25,8,3,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	14,10,4,7,13,5,12,4,12,10,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	13,15,6,11,6,13,17,1,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YPL131W	19,20,21,40	Type 1,Type 2,Type 3,Type 4	4,13,2,17,12,34,10,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	23,21,27,20,9	Type 1,Type 2,Type 3,Type 4,Type 5
+YPL149W	11,12,17,14,17,5,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	1,10,8,4,10,16,11,15,15,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	10,12,7,29,17,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YPL201C	22,23,17,20,5,0,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	40,60	Type 1,Type 2	34,8,16,42	Type 1,Type 2,Type 3,Type 4
+YPL211W	10,29,2,10,16,7,4,14,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	59,35,6	Type 1,Type 2,Type 3	7,4,7,6,5,16,12,8,8,6,21	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YPL222W	17,16,18,14,24,11	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	2,16,10,18,13,8,11,2,20	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	15,2,1,3,22,11,7,21,9,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YPL240C	2,11,18,22,17,16,14	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	1,1,9,18,15,23,7,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	8,14,11,7,10,11,9,7,10,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10
+YPL248C	11,15,9,5,5,19,11,10,0,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	24,9,29,16,22	Type 1,Type 2,Type 3,Type 4,Type 5	48,25,1,26	Type 1,Type 2,Type 3,Type 4
+YPR010C	7,15,2,9,4,13,8,13,15,5,9	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	33,67	Type 1,Type 2	6,19,31,8,1,35	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YPR035W	14,35,15,36	Type 1,Type 2,Type 3,Type 4	5,18,8,4,13,12,3,11,18,8	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	59,41	Type 1,Type 2
+YPR041W	21,14,0,9,18,9,3,1,25	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	7,2,10,16,15,14,5,13,11,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	68,32	Type 1,Type 2
+YPR048W	17,22,11,9,18,0,23	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	38,23,39	Type 1,Type 2,Type 3	8,22,16,1,11,12,30	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7
+YPR062W	16,12,0,1,5,8,21,20,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	13,12,5,2,12,15,14,3,6,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10	2,4,9,15,5,8,4,3,17,15,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YPR080W	67,33	Type 1,Type 2	38,9,53	Type 1,Type 2,Type 3	5,25,22,10,12,0,9,17	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YPR102C	19,12,1,4,16,16,5,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	20,3,17,9,25,26	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	12,15,18,16,15,24	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
+YPR110C	18,30,52	Type 1,Type 2,Type 3	2,39,43,16	Type 1,Type 2,Type 3,Type 4	12,15,10,6,6,6,4,16,9,1,15	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11
+YPR113W	13,6,10,14,13,10,5,11,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9	48,6,46	Type 1,Type 2,Type 3	22,4,11,0,5,11,22,12,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9
+YPR119W	20,9,9,13,18,8,13,10	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8	28,23,3,29,17	Type 1,Type 2,Type 3,Type 4,Type 5	6,14,8,27,21,10,7,7	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8
+YPR124W	30,23,22,25	Type 1,Type 2,Type 3,Type 4	11,21,13,23,32	Type 1,Type 2,Type 3,Type 4,Type 5	5,28,28,31,8	Type 1,Type 2,Type 3,Type 4,Type 5
+YPR145W	5,15,5,8,19,6,8,7,13,1,13	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7,Type 8,Type 9,Type 10,Type 11	0,29,7,13,24,27	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	63,37	Type 1,Type 2
+YPR167	33,15,17,1,0,34	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6	3,0,17,11,27,23,19	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6,Type 7	18,8,20,18,18,18	Type 1,Type 2,Type 3,Type 4,Type 5,Type 6
