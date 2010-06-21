@@ -65,6 +65,7 @@ public class CloudParameters
 	private HashMap<String, List<String>> stringNodeMapping;
 	private HashMap<String, Integer> networkCounts; // counts for whole network
 	private HashMap<String, Integer> selectedCounts; // counts for selected nodes
+	private HashMap<String, Integer> pairCounts;
 	private HashMap<String, Double> ratios;
 	private ArrayList<CloudWordInfo> cloudWords;
 	
@@ -93,6 +94,7 @@ public class CloudParameters
 		this.stringNodeMapping = new HashMap<String, List<String>>();
 		this.networkCounts = new HashMap<String, Integer>();
 		this.selectedCounts = new HashMap<String, Integer>();
+		this.pairCounts = new HashMap<String, Integer>();
 		this.ratios = new HashMap<String, Double>();
 		this.cloudWords = new ArrayList<CloudWordInfo>();
 		this.filter = new WordFilter();
@@ -269,7 +271,7 @@ public class CloudParameters
 				return;
 			
 			Set<String> wordSet = this.processNodeString(nodeValue);
-	        
+			String lastWord = ""; //Used for calculating pair counts
 	        
 	        //Iterate through all words
 	        Iterator<String> wordIter = wordSet.iterator();
@@ -280,7 +282,9 @@ public class CloudParameters
 				//Check filters
 				if (!filter.contains(curWord))
 				{
-					Integer curCount = 0; //if never encountered before
+					//Add to selected Counts
+					
+					Integer curCount = 0; 
 					
 					if (selectedCounts.containsKey(curWord))
 						curCount = selectedCounts.get(curWord);
@@ -290,6 +294,22 @@ public class CloudParameters
 					
 					//Add updated count to HashMap
 					selectedCounts.put(curWord, curCount);
+					
+					//Add to pair counts
+					if (!lastWord.equals(""))
+					{
+						Integer curPairCount = 0;
+						String pairName = lastWord + " " + curWord;
+						
+						if (pairCounts.containsKey(pairName))
+							curPairCount = pairCounts.get(pairName);
+						
+						curPairCount = curPairCount + 1;
+						pairCounts.put(pairName, curPairCount);
+					}
+					
+					//Update curWord to be LastWord
+					lastWord = curWord;
 					
 				}//end filter if
 			}// word iterator
@@ -805,6 +825,16 @@ public class CloudParameters
 	public void setSelectedCounts(HashMap<String, Integer> counts)
 	{
 		selectedCounts = counts;
+	}
+	
+	public HashMap<String,Integer> getPairCounts()
+	{
+		return pairCounts;
+	}
+	
+	public void setPairCounts(HashMap<String, Integer> counts)
+	{
+		pairCounts = counts;
 	}
 	
 	public HashMap<String,Double> getRatios()
