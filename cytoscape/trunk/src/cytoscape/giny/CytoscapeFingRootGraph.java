@@ -36,8 +36,6 @@
 */
 package cytoscape.giny;
 
-import com.sosnoski.util.hashmap.StringIntHashMap;
-
 import cytoscape.*;
 
 import cytoscape.util.intr.*;
@@ -49,14 +47,16 @@ import giny.model.Edge;
 import giny.model.Node;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.HashMap;
 
 
 /**
  *
  */
 public class CytoscapeFingRootGraph extends FingExtensibleRootGraph implements CytoscapeRootGraph {
-	StringIntHashMap node_name_index_map;
-	StringIntHashMap edge_name_index_map;
+	Map<String,Integer> node_name_index_map;
+	Map<String,Integer> edge_name_index_map;
 
 	/**
 	 * Creates a new CytoscapeFingRootGraph object.
@@ -64,8 +64,8 @@ public class CytoscapeFingRootGraph extends FingExtensibleRootGraph implements C
 	public CytoscapeFingRootGraph() {
 		super(new CyNodeDepot(), new CyEdgeDepot());
 
-		node_name_index_map = new StringIntHashMap();
-		edge_name_index_map = new StringIntHashMap();
+		node_name_index_map = new HashMap<String,Integer>();
+		edge_name_index_map = new HashMap<String,Integer>();
 	}
 
 	/**
@@ -151,11 +151,11 @@ public class CytoscapeFingRootGraph extends FingExtensibleRootGraph implements C
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public cytoscape.CyNode getNode(String identifier) {
-		if (node_name_index_map.containsKey(identifier))
-			return (cytoscape.CyNode) getNode(node_name_index_map.get(identifier));
+	public CyNode getNode(String identifier) {
+		Integer nodeId = node_name_index_map.get(identifier);
+		if ( nodeId != null )
+			return (CyNode) getNode(nodeId.intValue());
 		else
-
 			return null;
 	}
 
@@ -166,11 +166,11 @@ public class CytoscapeFingRootGraph extends FingExtensibleRootGraph implements C
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public cytoscape.CyEdge getEdge(String identifier) {
-		if (edge_name_index_map.containsKey(identifier))
-			return (cytoscape.CyEdge) getEdge(edge_name_index_map.get(identifier));
+	public CyEdge getEdge(String identifier) {
+		Integer edgeId = edge_name_index_map.get(identifier);
+		if ( edgeId != null )
+			return (CyEdge) getEdge(edgeId.intValue());
 		else
-
 			return null;
 	}
 
@@ -184,7 +184,7 @@ public class CytoscapeFingRootGraph extends FingExtensibleRootGraph implements C
 		if (index == 0) {
 			node_name_index_map.remove(identifier);
 		} else {
-			node_name_index_map.add(identifier, index);
+			node_name_index_map.put(identifier, index);
 		}
 	}
 
@@ -198,7 +198,7 @@ public class CytoscapeFingRootGraph extends FingExtensibleRootGraph implements C
 		if (index == 0) {
 			edge_name_index_map.remove(identifier);
 		} else {
-			edge_name_index_map.add(identifier, index);
+			edge_name_index_map.put(identifier, index);
 		}
 	}
 }

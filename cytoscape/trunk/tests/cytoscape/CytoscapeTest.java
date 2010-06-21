@@ -74,6 +74,7 @@ public class CytoscapeTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void tearDown() throws Exception {
+		cytoNetwork = null;
 	}
 
 	/**
@@ -237,6 +238,42 @@ public class CytoscapeTest extends TestCase {
 
 		// make sure we got the node we created
 		assertNotNull(Cytoscape.getCyEdge(a, c, attr, "pd", false, true));
+	}
+
+	public void testGetCyEdgeWithBadNodeStrings() throws Exception {
+		cytoNetwork = Cytoscape.createNetworkFromFile("testData/directedGraph.sif");
+		final int numEdges = Cytoscape.getRootGraph().getEdgeCount();
+		final int numNodes = Cytoscape.getRootGraph().getNodeCount();
+
+		// valid source, target, interaction, should create a new edge
+		CyEdge e1 = Cytoscape.getCyEdge("a", "missing edge name" , "b", "asdfasdf");
+		assertEquals( e1.getIdentifier(), "a (asdfasdf) b" );
+		assertEquals( numEdges + 1, Cytoscape.getRootGraph().getEdgeCount() );
+		assertEquals( numNodes, Cytoscape.getRootGraph().getNodeCount() );
+
+		// non-existant source, valid target, interaction, should add new node and new edge 
+		CyEdge e2 = Cytoscape.getCyEdge("missing source", "missing edge name" , "b", "zz");
+		assertEquals( e2.getIdentifier(), "missing source (zz) b" );
+		assertEquals( numEdges + 2, Cytoscape.getRootGraph().getEdgeCount() );
+		assertEquals( numNodes + 1, Cytoscape.getRootGraph().getNodeCount() );
+
+		// valid source, non-existant target, interaction, should add new node and new edge 
+		CyEdge e3 = Cytoscape.getCyEdge("a", "missing edge name" , "missing target", "zz");
+		assertEquals( e3.getIdentifier(), "a (zz) missing target" );
+		assertEquals( numEdges + 3, Cytoscape.getRootGraph().getEdgeCount() );
+		assertEquals( numNodes + 2, Cytoscape.getRootGraph().getNodeCount() );
+
+		// null source, valid target, interaction, should return null
+		CyEdge e4 = Cytoscape.getCyEdge(null, "missing edge name" , "b", "zz");
+		assertNull( e4 );
+
+		// valid source, null target, interaction, should return null
+		CyEdge e5 = Cytoscape.getCyEdge("a", "missing edge name" , null, "zz");
+		assertNull( e5 );
+
+		// final checks
+		assertEquals( numEdges + 3, Cytoscape.getRootGraph().getEdgeCount() );
+		assertEquals( numNodes + 2, Cytoscape.getRootGraph().getNodeCount() );
 	}
 
 	public void testSetNestedNetworkAndGetNestedNetwork() throws Exception {

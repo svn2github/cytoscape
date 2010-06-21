@@ -782,12 +782,24 @@ public abstract class Cytoscape {
 		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 
 		if (edge != null) {
+			System.out.println("returning existing edge " + edge_name);
 			return edge;
 		}
 
+			System.out.println("creating new edge (missing: " + edge_name + ") " + source_alias + " (" + interaction_type + ") " + target_alias );
 		// edge does not exist, create one
-		CyNode source = getCyNode(source_alias);
-		CyNode target = getCyNode(target_alias);
+		if ( source_alias == null || source_alias.equals("") ) {
+			logger.warn("Attempting to get CyEdge with null or empty source node identifier.");
+			return null;
+		}
+
+		if ( target_alias == null || target_alias.equals("") ) {
+			logger.warn("Attempting to get CyEdge with null or empty target node identifier.");
+			return null;
+		}
+
+		CyNode source = getCyNode(source_alias,true);
+		CyNode target = getCyNode(target_alias,true);
 
 		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
 	}
