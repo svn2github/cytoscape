@@ -6,6 +6,12 @@ import java.util.List;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.FunctionError;
 
+/**
+ * Generate QR Code for a given string value.
+ * 
+ * @author kono
+ *
+ */
 public class GoogleQRCodeFunction implements Function {
 
 	private static final String BASE_URL = "http://chart.apis.google.com/chart?cht=qr&chs=200x200&choe=UTF-8&chl=";
