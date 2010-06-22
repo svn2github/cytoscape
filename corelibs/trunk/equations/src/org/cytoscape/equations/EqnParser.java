@@ -44,6 +44,11 @@ public interface EqnParser {
 	public void registerFunction(final Function func) throws IllegalArgumentException;
 
 	/**
+	 *  @return the function associated with the name "functionName" or null if no such function exists
+	 */
+	public Function getFunction(final String functionName);
+
+	/**
 	 *  @return the set of currently registered functions
 	 */
 	public Set<Function> getRegisteredFunctions();

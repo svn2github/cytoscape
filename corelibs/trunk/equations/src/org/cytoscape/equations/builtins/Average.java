@@ -78,7 +78,7 @@ public class Average implements Function {
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final double[] numbers;
 		try {
-			numbers = FunctionUtil.getNumbers(args);
+			numbers = FunctionUtil.getDoubles(args);
 		} catch (final FunctionError e) {
 			throw new IllegalArgumentException("bad argument(s) in a call to AVERAGE(): " + e.getMessage());
 		}

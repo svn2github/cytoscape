@@ -87,16 +87,20 @@ class Framework {
 		}
 
 		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		final Object actualResult;
 		try {
-			final Object actualResult = interpreter.run();
-			if (!areEqual(actualResult, expectedResult)) {
-				System.err.println("[" + equation + "] expected: " + expectedResult + ", found: " + actualResult);
-				return false;
-			} else
-				return true;
+			actualResult = interpreter.run();
 		} catch (final Exception e) {
+			System.err.println("caught runtime error: " + e.getMessage());
 			return false;
 		}
+
+		if (!areEqual(actualResult, expectedResult)) {
+			System.err.println("[" + equation + "] expected: " + expectedResult + ", found: " + actualResult);
+			return false;
+		}
+
+		return true;
 	}
 
 	static boolean executeTest(final String equation, final Object expectedResult) {
@@ -181,6 +185,18 @@ class Framework {
 	private static boolean areEqual(final Object o1, final Object o2) {
 		if (o1 instanceof Double && o2 instanceof Double)
 			return almostEqual((Double)o1, (Double)o2);
+		else if (o1 instanceof List && o2 instanceof List) {
+			final List l1 = (List)o1;
+			final List l2 = (List)o2;
+			if (l1.size() != l2.size())
+				return false;
+
+			for (int i = 0; i < l1.size(); ++i) {
+				if (!areEqual(l1.get(i), l2.get(i)))
+					return false;
+			}
+			return true;
+		}
 		else
 			return o1.equals(o2);
 	}

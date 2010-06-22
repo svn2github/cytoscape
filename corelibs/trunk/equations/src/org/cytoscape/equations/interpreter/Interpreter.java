@@ -34,9 +34,13 @@ import java.util.EmptyStackException;
 import java.util.Map;
 import java.util.Stack;
 
+import org.cytoscape.equations.BooleanList;
+import org.cytoscape.equations.DoubleList;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.FunctionError;
+import org.cytoscape.equations.LongList;
+import org.cytoscape.equations.StringList;
 
 
 public class Interpreter {
@@ -193,7 +197,9 @@ public class Interpreter {
 			throw new IllegalStateException("invalid argument stack size " + argumentStack.size() + ", must be 1!");
 		final Object retVal = argumentStack.peek();
 		final Class retValClass = retVal.getClass();
-		if (retValClass == Double.class || retValClass == String.class || retValClass == Boolean.class || retValClass == Long.class)
+		if (retValClass == Double.class || retValClass == String.class || retValClass == Boolean.class || retValClass == Long.class
+		    || retValClass == DoubleList.class || retValClass == BooleanList.class || retValClass == LongList.class
+		    || retValClass == StringList.class)
 			return retVal;
 
 		throw new IllegalStateException("illegal result type at end of interpretation: " + retValClass + "!");

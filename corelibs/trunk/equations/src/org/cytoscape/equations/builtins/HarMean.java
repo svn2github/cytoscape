@@ -82,7 +82,7 @@ public class HarMean implements Function {
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final double[] numbers;
 		try {
-			numbers = FunctionUtil.getNumbers(args);
+			numbers = FunctionUtil.getDoubles(args);
 		} catch (final FunctionError e) {
 			throw new IllegalArgumentException("bad argument in a call to HARMEAN(): " + e.getMessage());
 		}

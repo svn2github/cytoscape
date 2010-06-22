@@ -1,5 +1,5 @@
 /*
-  File: Median.java
+  File: IList.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -31,66 +31,56 @@ package org.cytoscape.equations.builtins;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.FunctionUtil;
+import org.cytoscape.equations.LongList;
 
 
-public class Median implements Function {
+public class IList implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
 	 */
-	public String getName() { return "MEDIAN"; }
+	public String getName() { return "ILIST"; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns the median of a list of numbers."; }
+	public String getFunctionSummary() { return "Returns a list of whole numbers (a.k.a. integers)."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"MEDIAN(arg1[,arg2,...,argN])\""; }
+	public String getUsageDescription() { return "Call this with \"ILIST(arg1[,arg2,...,argN])\""; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class getReturnType() { return LongList.class; }
 
 	/**
-	 *  @return Double.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
+	 *  @return LongList.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length == 0) // No empty argument list!
-			return null;
-
-		return Double.class;
+		return LongList.class;
 	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
-	 *  @return the result of the function evaluation which is the median of the elements in the single list argument or the median of the one or more double arguments
+	 *  @return the result of the function evaluation which is the maximum of the elements in the single list argument or the maximum of the one or more double arguments
 	 *  @throws ArithmeticException 
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final double[] numbers;
+		final long[] numbers;
 		try {
-			numbers = FunctionUtil.getDoubles(args);
+			numbers = FunctionUtil.getLongs(args);
 		} catch (final Exception e) {
-			throw new IllegalArgumentException("can't convert an argument or list element to a number in a call to MEDIAN()!");
+			throw new IllegalArgumentException("can't convert an argument or a list element to an integer in a call to ILIST()!");
 		}
 
-		if (numbers.length == 0)
-			throw new IllegalArgumentException("can't calculate the median of an empty list!");
-
-		Arrays.sort(numbers);
-
-		if ((numbers.length % 2) == 1)
-			return numbers[numbers.length / 2];
-		else
-			return (numbers[numbers.length / 2 - 1] + numbers[numbers.length / 2]) / 2.0;
+		return new LongList(numbers);
 	}
 
 	/**

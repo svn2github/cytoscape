@@ -69,6 +69,13 @@ class EqnParserImpl implements EqnParser {
 		registeredFunctions.add(func);
 	}
 
+	/**
+	 *  @return the function associated with the name "functionName" or null if no such function exists
+	 */
+	public Function getFunction(final String functionName) {
+		return nameToFunctionMap.get(functionName);
+	}
+
 	public Set<Function> getRegisteredFunctions() { return registeredFunctions; }
 
 	/**

@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import junit.framework.*;
 import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EqnParser;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Parser;
 
@@ -188,7 +189,10 @@ public class InterpreterTest extends TestCase {
 	}
 
 	public void testFunctionWithBadRuntimeReturnType() throws Exception {
-		Parser.getParser().registerFunction(new BadReturnFunction());
+		final EqnParser eqnParser = Parser.getParser();
+		final Function badReturnFunction = new BadReturnFunction();
+		if (eqnParser.getFunction(badReturnFunction.getName()) == null) // Avoid duplicate registration!
+			eqnParser.registerFunction(badReturnFunction);
 
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		assertTrue(compiler.compile("=BAD()", attribNameToTypeMap));

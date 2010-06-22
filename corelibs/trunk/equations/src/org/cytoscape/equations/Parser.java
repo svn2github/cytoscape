@@ -49,6 +49,7 @@ public class Parser {
 			eqnParser.registerFunction(new And());
 			eqnParser.registerFunction(new ATan2());
 			eqnParser.registerFunction(new Average());
+			eqnParser.registerFunction(new BList());
 			eqnParser.registerFunction(new Combin());
 			eqnParser.registerFunction(new Cos());
 			eqnParser.registerFunction(new Cosh());
@@ -56,9 +57,11 @@ public class Parser {
 			eqnParser.registerFunction(new Degrees());
 			eqnParser.registerFunction(new Exp());
 			eqnParser.registerFunction(new First());
+			eqnParser.registerFunction(new FList());
 			eqnParser.registerFunction(new GeoMean());
 			eqnParser.registerFunction(new HarMean());
 			eqnParser.registerFunction(new If());
+			eqnParser.registerFunction(new IList());
 			eqnParser.registerFunction(new Largest());
 			eqnParser.registerFunction(new LCase());
 			eqnParser.registerFunction(new Last());
@@ -87,6 +90,7 @@ public class Parser {
 			eqnParser.registerFunction(new Sign());
 			eqnParser.registerFunction(new Sin());
 			eqnParser.registerFunction(new Sinh());
+			eqnParser.registerFunction(new SList());
 			eqnParser.registerFunction(new StDev());
 			eqnParser.registerFunction(new Sqrt());
 			eqnParser.registerFunction(new Substitute());

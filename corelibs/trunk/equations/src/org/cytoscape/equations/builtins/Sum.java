@@ -76,7 +76,7 @@ public class Sum implements Function {
 	public Object evaluateFunction(final Object[] args) {
 		final double[] numbers;
 		try {
-			numbers = FunctionUtil.getNumbers(args);
+			numbers = FunctionUtil.getDoubles(args);
 		} catch (final Exception e) {
 			throw new IllegalArgumentException("in a call to SUM(): could not convert one of the arguments to a number or list of numbers!");
 		}

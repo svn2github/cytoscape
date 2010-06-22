@@ -133,11 +133,13 @@ public class FunctionUtil {
 			return l == 0L ? false : true;
 		}
 		if (arg.getClass() == String.class) {
-			try {
-				return Boolean.parseBoolean((String)arg);
-			} catch (final Exception e) {
-				throw new IllegalArgumentException("can't convert \"" + arg + "\" to a boolean!");
-			}
+			final String argAsString = (String)arg;
+
+			if (argAsString.equalsIgnoreCase(Boolean.valueOf(true).toString()))
+				return true;
+			if (argAsString.equalsIgnoreCase(Boolean.valueOf(false).toString()))
+				return false;
+			throw new IllegalArgumentException("can't convert \"" + argAsString + "\" to a boolean!");
 		}
 		if (arg.getClass() == Boolean.class)
 			return (Boolean)arg;
@@ -252,6 +254,14 @@ public class FunctionUtil {
 			return true;
 		if (listClassCandidate == ArrayList.class)
 			return true;
+		if (listClassCandidate == DoubleList.class)
+			return true;
+		if (listClassCandidate == StringList.class)
+			return true;
+		if (listClassCandidate == LongList.class)
+			return true;
+		if (listClassCandidate == BooleanList.class)
+			return true;
 		if (listClassCandidate == Vector.class)
 			return true;
 		if (listClassCandidate == Stack.class)
@@ -286,7 +296,7 @@ public class FunctionUtil {
 	 *  @throws IllegalArgumentException if any scalar argument cannot be converted to a double or any list
 	 *          argument contains an element that cannot be converted to a number.
 	 */
-	static public double[] getNumbers(final Object[] args) throws FunctionError {
+	static public double[] getDoubles(final Object[] args) throws FunctionError {
 		final List<Double> numbers = new ArrayList<Double>();
 
 		for (int i = 0; i < args.length; ++i) {
@@ -315,6 +325,63 @@ public class FunctionUtil {
 			doubles[index++] = d;
 
 		return doubles;
+	}
+
+	/**
+	 *  Attempts to convert all arguments, including Lists to a uniform array of longs.
+	 *
+	 *  @throws IllegalArgumentException if any scalar argument cannot be converted to a long or any list
+	 *          argument contains an element that cannot be converted to a number.
+	 */
+	static public long[] getLongs(final Object[] args) throws FunctionError {
+		final List<Long> numbers = new ArrayList<Long>();
+
+		for (int i = 0; i < args.length; ++i) {
+			final Object arg = args[i];
+			if (arg instanceof List) {
+				final List list = (List)arg;
+				for (final Object listElement : list) {
+					final Long l = convertToLong(listElement);
+					if (l == null)
+						throw new FunctionError("can't convert list element \"" + listElement
+						                        + "\" to an integer!", i);
+					numbers.add(l);
+				}
+			}
+			else {
+				final Long l = convertToLong(arg);
+				if (l == null)
+					throw new FunctionError("can't convert \"" + arg + "\" to an integer!", i);
+				numbers.add(l);
+			}
+		}
+
+		final long[] longs = new long[numbers.size()];
+		int index = 0;
+		for (final Long l : numbers)
+			longs[index++] = l;
+
+		return longs;
+	}
+
+	/**
+	 *  Converts all arguments, including Lists to a uniform array of strings.
+	 */
+	static public String[] getStrings(final Object[] args) {
+		final List<String> strings = new ArrayList<String>();
+
+		for (final Object arg : args) {
+			if (arg instanceof List) {
+				final List list = (List)arg;
+				for (final Object listElement : list)
+					strings.add(getArgAsString(listElement));
+			}
+			else
+				strings.add(getArgAsString(arg));
+		}
+
+		final String[] retVal = new String[strings.size()];
+		return strings.toArray(retVal);
 	}
 
 	/**
@@ -373,6 +440,29 @@ public class FunctionUtil {
 		}
 		if (arg.getClass() == Boolean.class)
 			return Double.valueOf((Boolean)arg ? 1.0 : 0.0);
+
+		return null;
+	}
+
+	/**
+	 *  @return "arg" converted to a Long, if possible, else null
+	 */
+	static private Long convertToLong(final Object arg) {
+		if (arg.getClass() == Double.class)
+			return EquationUtil.doubleToLong((Double)arg);
+		if (arg.getClass() == Long.class)
+			return (Long)arg;
+		if (arg.getClass() == Integer.class)
+			return (long)(Integer)arg;
+		if (arg.getClass() == String.class) {
+			try {
+				return Long.valueOf((String)arg);
+			} catch (final Exception e) {
+				return null;
+			}
+		}
+		if (arg.getClass() == Boolean.class)
+			return Long.valueOf((Boolean)arg ? 1L : 0L);
 
 		return null;
 	}

@@ -76,7 +76,7 @@ public class StDev implements Function {
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final double[] numbers;
 		try {
-			numbers = FunctionUtil.getNumbers(args);
+			numbers = FunctionUtil.getDoubles(args);
 		} catch (final Exception e) {
 			throw new IllegalArgumentException("could not convert an argument or list element to a number in a call to STDEV()!");
 		}

@@ -77,7 +77,7 @@ public class Mode implements Function {
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final double[] x;
 		try {
-			x = FunctionUtil.getNumbers(args);
+			x = FunctionUtil.getDoubles(args);
 		} catch (final Exception e) {
 			throw new IllegalArgumentException("non-numeric argument or list element in a call to MODE()!");
 		}

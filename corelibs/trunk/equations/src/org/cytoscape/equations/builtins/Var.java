@@ -75,7 +75,7 @@ public class Var implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
 	public Object evaluateFunction(final Object[] args) throws FunctionError {
-		final double[] numbers = FunctionUtil.getNumbers(args);
+		final double[] numbers = FunctionUtil.getDoubles(args);
 		if (numbers.length < 2)
 			throw new IllegalArgumentException("illegal list argument in call to VAR(): must have at least 2 numbers!");
 
