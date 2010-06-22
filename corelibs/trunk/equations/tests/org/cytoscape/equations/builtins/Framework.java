@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Parser;
@@ -88,7 +89,7 @@ class Framework {
 		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
 		try {
 			final Object actualResult = interpreter.run();
-			if (!actualResult.equals(expectedResult)) {
+			if (!areEqual(actualResult, expectedResult)) {
 				System.err.println("[" + equation + "] expected: " + expectedResult + ", found: " + actualResult);
 				return false;
 			} else
@@ -145,5 +146,42 @@ class Framework {
 	static boolean executeTestExpectFailure(final String equation) {
 		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
 		return executeTestExpectFailure(equation, variablesAndValues);
+	}
+
+	/**
+	 *  @return the unbiased exponent of a double-precision IEEE floating point number
+	 */
+	private static long getExponent(final double f) {
+		final long EXPONENT_MASK = 0x7FFFF00000000000L;
+		final long bits = Double.doubleToLongBits(f) & EXPONENT_MASK;
+		final int BIAS = 1023;
+		final int BIT_OFFSET = 52;
+		return (bits >> BIT_OFFSET) - BIAS;
+	}
+
+	private static boolean almostEqual(final double x1, final double x2) {
+		if (x1 == x2)
+			return true;
+
+		if (Math.signum(x1) != Math.signum(x2))
+			return false;
+
+		if (getExponent(x1) != getExponent(x2))
+			return false;
+
+		final double absX1 = Math.abs(x1);
+		final double absX2 = Math.abs(x2);
+
+		if (x1 != 0.0)
+			return Math.abs(x1 - x2) / Math.abs(x1) < 1.0e-12;
+		else
+			return Math.abs(x1 - x2) / Math.abs(x2) < 1.0e-12;
+	}
+
+	private static boolean areEqual(final Object o1, final Object o2) {
+		if (o1 instanceof Double && o2 instanceof Double)
+			return almostEqual((Double)o1, (Double)o2);
+		else
+			return o1.equals(o2);
 	}
 }
