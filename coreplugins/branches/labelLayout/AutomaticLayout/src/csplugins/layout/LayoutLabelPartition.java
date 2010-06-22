@@ -126,7 +126,7 @@ public class LayoutLabelPartition extends LayoutPartition {
 		lockedNodes++;
 	    }
 
-	    // Add labelNode -> ln 
+	    // Add labelNode -> parentNode to Map
 	    labelToParentMap.put(labelNode, ln);
 
 	    // Creates label Edge: ln <---> labelNode
@@ -165,7 +165,7 @@ public class LayoutLabelPartition extends LayoutPartition {
 	    }
 	}
 
-	// Value which will be used as weight
+	// Value which will be used as weight for all label edges
 	double weight = maxWeight *  weightCoefficient;
 
 	// Set all labelEdge weights
