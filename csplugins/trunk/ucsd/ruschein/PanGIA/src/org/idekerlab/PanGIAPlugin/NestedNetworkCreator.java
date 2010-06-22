@@ -1,13 +1,13 @@
 package org.idekerlab.PanGIAPlugin;
 
 
+import java.net.URL;
 import java.util.*;
 
 import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkEdge;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNodeModule;
-
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -20,6 +20,7 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PropUtil;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 
 /**
@@ -32,7 +33,7 @@ class NetworkAndScore implements Comparable<NetworkAndScore> {
 	private final double score;
 	private final int index;
 	private static int nextIndex;
-
+	
 	NetworkAndScore(final String nodeName, final Set<String> genes,
 			final double score)
 	{
@@ -114,6 +115,9 @@ public class NestedNetworkCreator {
 			.getProperties(), "moduleNetworkViewCreationThreshold", 0);
 	private final PriorityQueue<NetworkAndScore> networksOrderedByScores = new PriorityQueue(
 			100);
+
+	VisualStyle moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().
+								getVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
 
 	/**
 	 * Instantiates an overview network of complexes (modules) and one nested
@@ -355,8 +359,14 @@ public class NestedNetworkCreator {
 			nestedNetwork.addEdge(edge);
 
 		if (createNetworkView) {
-			Cytoscape.createNetworkView(nestedNetwork);
-			applyNetworkLayout(nestedNetwork, null, null);
+			CyNetworkView theView = Cytoscape.createNetworkView(nestedNetwork);
+			
+			theView.setVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
+			Cytoscape.getVisualMappingManager().setVisualStyle(moduleVS);
+			theView.redrawGraph(false, true);
+			
+			CyLayoutAlgorithm alg = cytoscape.layout.CyLayouts.getLayout("force-directed");
+			theView.applyLayout(alg);			
 		}
 
 		return nestedNetwork;
