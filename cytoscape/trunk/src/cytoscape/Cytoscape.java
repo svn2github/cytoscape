@@ -782,11 +782,9 @@ public abstract class Cytoscape {
 		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 
 		if (edge != null) {
-			System.out.println("returning existing edge " + edge_name);
 			return edge;
 		}
 
-			System.out.println("creating new edge (missing: " + edge_name + ") " + source_alias + " (" + interaction_type + ") " + target_alias );
 		// edge does not exist, create one
 		if ( source_alias == null || source_alias.equals("") ) {
 			logger.warn("Attempting to get CyEdge with null or empty source node identifier.");
