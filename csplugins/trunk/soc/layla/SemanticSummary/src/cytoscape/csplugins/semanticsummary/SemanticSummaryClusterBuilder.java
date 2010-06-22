@@ -23,6 +23,8 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +43,7 @@ public class SemanticSummaryClusterBuilder
 	//VARIABLES
 	private CloudParameters params;
 	private ArrayList<String> words;
+	private ArrayList<WordPair> priorityQueue;
 	private ArrayList<ArrayList<String>> clusters;
 	private ArrayList<CloudWordInfo> cloudWords;
 	
@@ -67,30 +70,54 @@ public class SemanticSummaryClusterBuilder
 			}
 		}
 		
-		clusters = new ArrayList<ArrayList<String>>();
+		priorityQueue = new ArrayList<WordPair>();
 		cloudWords = new ArrayList<CloudWordInfo>();
+		
+		//Initialize as singletons
+		clusters = new ArrayList<ArrayList<String>>();
+		for (Iterator<String> iter = words.iterator(); iter.hasNext();)
+		{
+			//Create a list for each word and add to main list
+			String curWord = iter.next();
+			ArrayList<String> curList = new ArrayList<String>();
+			curList.add(curWord);
+			clusters.add(curList);
+		}
 	}
 	
 	//METHODS
+	/**
+	 * Creates the priority queue of all the pairs of words that appear in the
+	 * implicit CloudParameters.
+	 */
+	public void createPriorityQueue()
+	{
+		//Re-initialize or clear
+		priorityQueue = new ArrayList<WordPair>();
+		
+		Set<String> pairNames = params.getSelectedPairCounts().keySet();
+		for (Iterator<String> iter = pairNames.iterator(); iter.hasNext();)
+		{
+			String curName = iter.next();
+			String first = curName.split(" ")[0];
+			String second = curName.split(" ")[1];
+			
+			WordPair curPair = new WordPair(first, second, params);
+			curPair.calculateProbability();
+			priorityQueue.add(curPair);
+		}
+		
+		//Sort the Priority Queue so items with the largest probability are first
+		Collections.sort(priorityQueue);
+		Collections.reverse(priorityQueue);
+	}
 	
 	/**
-	 * Creates a matrix containing the counts of all pairs of words
-	 * that appear next to each other in the selected nodes in the 
-	 * CloudParameters for this object.  The entry in the (i,j) space in 
-	 * the matrix counts, is how many times the pair of words associated
-	 * with i and j appear in a selected node in that order.
+	 * Removes elements from the priority queue if they are no longer possibilities.
+	 * @param String - first element
+	 * @param String - second element
 	 */
-	public void calculatePairCounts()
-	{
-		//Loop through for all words appearing in selected nodes
-		for (int i = 0; i < words.size(); i++)
-		{
-			String firstWord = words.get(i);
-			
-			//Retrieve the set of nodes containing the i'th word
-			List<String> nodes = params.getStringNodeMapping().get(firstWord);
-		}
-	}
+	//TODO
 	
 	//Getters and Setters
 	public void setCloudParameters(CloudParameters cloudParams)

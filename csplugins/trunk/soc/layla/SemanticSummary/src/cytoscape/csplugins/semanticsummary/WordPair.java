@@ -32,10 +32,10 @@ package cytoscape.csplugins.semanticsummary;
 public class WordPair implements Comparable
 {
 	//VARIABLES
-	String firstWord;
-	String secondWord;
-	Double probability;
-	CloudParameters params;
+	private String firstWord;
+	private String secondWord;
+	private Double probability;
+	private CloudParameters params;
 	
 	//CONSTRUCTOR
 	/**
@@ -69,7 +69,7 @@ public class WordPair implements Comparable
 		Integer firstCount = params.getSelectedCounts().get(firstWord);
 		Integer secondCount = params.getSelectedCounts().get(secondWord);
 		String pairName = firstWord + " " + secondWord;
-		Integer pairCount = params.getPairCounts().get(pairName);
+		Integer pairCount = params.getSelectedPairCounts().get(pairName);
 		
 		Integer numerator = pairCount * total;
 		Double doubleNumerator = numerator.doubleValue();
@@ -96,11 +96,24 @@ public class WordPair implements Comparable
 			return 1;
 		else //They are the same - so now compare with ratios
 		{
-			//TODO - Finish a check on the ratios now.
-		}
-		
-		return 0; //when in doubt, return 0
-	}
+			//Assumes that Ratios have been calculated
+			String firstWordPair = this.getWordPairing();
+			String secondWordPair = second.getWordPairing();
+			
+			Double firstRatio = this.getCloudParameters().getPairRatios().get(firstWordPair);
+			Double secondRatio = second.getCloudParameters().getPairRatios().get(secondWordPair);
+			
+			if (firstRatio < secondRatio)
+				return -1;
+			else if (firstRatio > secondRatio)
+				return 1;
+			else
+				//Third level of tie break - alphabetical of words
+			{
+				return firstWordPair.compareTo(secondWordPair);
+			}
+		}//end probability else
+	}//end compareTo
 	
 	//Getters and Setters
 	public void setFirstWord(String aWord)
@@ -136,6 +149,11 @@ public class WordPair implements Comparable
 	public Double getProbability()
 	{
 		return probability;
+	}
+	
+	public String getWordPairing()
+	{
+		return firstWord + " " + secondWord;
 	}
 
 }

@@ -65,8 +65,10 @@ public class CloudParameters
 	private HashMap<String, List<String>> stringNodeMapping;
 	private HashMap<String, Integer> networkCounts; // counts for whole network
 	private HashMap<String, Integer> selectedCounts; // counts for selected nodes
-	private HashMap<String, Integer> pairCounts;
+	private HashMap<String, Integer> networkPairCounts;
+	private HashMap<String, Integer> selectedPairCounts;
 	private HashMap<String, Double> ratios;
+	private HashMap<String, Double> pairRatios;
 	private ArrayList<CloudWordInfo> cloudWords;
 	
 	private WordFilter filter;
@@ -94,8 +96,10 @@ public class CloudParameters
 		this.stringNodeMapping = new HashMap<String, List<String>>();
 		this.networkCounts = new HashMap<String, Integer>();
 		this.selectedCounts = new HashMap<String, Integer>();
-		this.pairCounts = new HashMap<String, Integer>();
+		this.networkPairCounts = new HashMap<String, Integer>();
+		this.selectedPairCounts = new HashMap<String, Integer>();
 		this.ratios = new HashMap<String, Double>();
+		this.pairRatios = new HashMap<String, Double>();
 		this.cloudWords = new ArrayList<CloudWordInfo>();
 		this.filter = new WordFilter();
 		
@@ -195,6 +199,7 @@ public class CloudParameters
 				continue;
 			
 			Set<String> wordSet = this.processNodeString(nodeValue);
+			String lastWord = ""; //Used for calculating pair counts
 	        
 	        //Iterate through all words
 	        Iterator<String> wordIter = wordSet.iterator();
@@ -221,6 +226,23 @@ public class CloudParameters
 					Integer num = networkCounts.get(curWord);
 					num = num + 1;
 					networkCounts.put(curWord, num);
+					
+					
+					//Add to pair counts
+					if (!lastWord.equals(""))
+					{
+						Integer curPairCount = 0;
+						String pairName = lastWord + " " + curWord;
+						
+						if (networkPairCounts.containsKey(pairName))
+							curPairCount = networkPairCounts.get(pairName);
+						
+						curPairCount = curPairCount + 1;
+						networkPairCounts.put(pairName, curPairCount);
+					}
+					
+					//Update curWord to be LastWord
+					lastWord = curWord;
 					
 				}//end filter if
 			}// word iterator
@@ -301,11 +323,11 @@ public class CloudParameters
 						Integer curPairCount = 0;
 						String pairName = lastWord + " " + curWord;
 						
-						if (pairCounts.containsKey(pairName))
-							curPairCount = pairCounts.get(pairName);
+						if (selectedPairCounts.containsKey(pairName))
+							curPairCount = selectedPairCounts.get(pairName);
 						
 						curPairCount = curPairCount + 1;
-						pairCounts.put(pairName, curPairCount);
+						selectedPairCounts.put(pairName, curPairCount);
 					}
 					
 					//Update curWord to be LastWord
@@ -331,6 +353,7 @@ public class CloudParameters
 		if(!selInitialized)
 			this.updateSelectedCounts();
 		
+		//SINGLE COUNTS
 		//Clear old counts
 		this.ratios = new HashMap<String, Double>();
 		
@@ -383,6 +406,40 @@ public class CloudParameters
 		
 		this.setMaxRatio(curMax);
 		this.setMinRatio(curMin);
+		
+		//PAIR COUNTS
+		//Clear old counts
+		this.pairRatios = new HashMap<String, Double>();
+		
+		//Get all word pairs appearing in selected nodes
+		words = selectedPairCounts.keySet();
+		
+		//Iterate through to calculate ratios
+		Iterator<String> pairIter = words.iterator();
+		boolean pairInitialized = false;
+		while (pairIter.hasNext())
+		{
+			String curWord = (String)iter.next();
+			
+			/* Ratio: (selCount/selTotal)/((netCount/netTotal)^netWeightFactor)
+			 * But, to avoid underflow from small probabilities we calculate it as follows:
+			 * (selCount * (netTotal^netWeightFactor))/(selTotal * (netCount^netWeightFactor))
+			 * This is the same as the original definition of ratio, just with some
+			 * different algebra.
+			 */
+			Integer selTotal = this.getSelectedNumNodes();
+			Integer selPairCount = selectedPairCounts.get(curWord);
+			Integer netPairCount = networkPairCounts.get(curWord);
+			Double newNetCount = Math.pow(netPairCount, netWeightFactor);
+			Integer netTotal = this.getNetworkNumNodes();
+			Double newNetTotal = Math.pow(netTotal, netWeightFactor);
+			
+			Double numerator = selPairCount * newNetTotal;
+			Double denominator = selTotal * newNetCount;
+			Double ratio = numerator/denominator;
+			
+			pairRatios.put(curWord, ratio);
+		}
 		
 		ratiosInitialized = true;
 	}
@@ -827,14 +884,24 @@ public class CloudParameters
 		selectedCounts = counts;
 	}
 	
-	public HashMap<String,Integer> getPairCounts()
+	public HashMap<String,Integer> getSelectedPairCounts()
 	{
-		return pairCounts;
+		return selectedPairCounts;
 	}
 	
-	public void setPairCounts(HashMap<String, Integer> counts)
+	public void setSelectedPairCounts(HashMap<String, Integer> counts)
 	{
-		pairCounts = counts;
+		selectedPairCounts = counts;
+	}
+	
+	public HashMap<String,Integer> getNetworkPairCounts()
+	{
+		return networkPairCounts;
+	}
+	
+	public void setNetworkPairCounts(HashMap<String, Integer> counts)
+	{
+		networkPairCounts = counts;
 	}
 	
 	public HashMap<String,Double> getRatios()
@@ -845,6 +912,16 @@ public class CloudParameters
 	public void setRatios(HashMap<String, Double> r)
 	{
 		ratios = r;
+	}
+	
+	public HashMap<String,Double> getPairRatios()
+	{
+		return pairRatios;
+	}
+	
+	public void setPairRatios(HashMap<String, Double> r)
+	{
+		pairRatios = r;
 	}
 	
 	public ArrayList<CloudWordInfo> getCloudWordInfoList()
