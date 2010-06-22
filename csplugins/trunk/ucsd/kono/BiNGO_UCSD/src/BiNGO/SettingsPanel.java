@@ -34,12 +34,23 @@ package BiNGO;
  * * needed for the settings panel.   
  **/
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
-import java.util.Properties;
 import java.io.IOException;
-import BiNGO.GOlorize.*;
+import java.util.Properties;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /******************************************************************
  * SettingsPanel.java:       Steven Maere & Karel Heymans (c) March 2005
@@ -67,11 +78,11 @@ public class SettingsPanel extends JPanel {
     /**
      * the height of the panel
      */
-    private final int DIM_HEIGHT = 600;
+    private static final int DIM_HEIGHT = 700;
     /**
      * the width of the panel
      */
-    private final int DIM_WIDTH = 550;
+    private static final int DIM_WIDTH = 550;
     /**
      * the BiNGO directory path
      */
@@ -243,7 +254,7 @@ public class SettingsPanel extends JPanel {
                         "BiNGO settings",
                         0,
                         0,
-                        new Font("BiNGO settings", Font.BOLD, 16),
+                        new Font("BiNGO Settings", Font.PLAIN, 16),
                         Color.black));
 
         // Layout with GridBagLayout.

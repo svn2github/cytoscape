@@ -34,94 +34,85 @@ package BiNGO;
  * * Description: BiNGO is a Cytoscape plugin for the functional annotation of gene clusters.          
  **/
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.io.File;
+
+import javax.swing.JFrame;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.File;
-
-
 /**
  * *****************************************************************
- * BiNGOplugin.java     Steven Maere & Karel Heymans (c) March 2005
- * ----------------
+ * BiNGOplugin.java Steven Maere & Karel Heymans (c) March 2005 ----------------
  * <p/>
- * Main class of the BiNGO plugin ; extends the CytoscapePlugin class from Cytoscape.
+ * Main class of the BiNGO plugin ; extends the CytoscapePlugin class from
+ * Cytoscape.
  * <p/>
+ * 
+ * Refactored by Keiichiro Ono for Cytoscape 2.7.0+
+ * 
  * ******************************************************************
  */
 
-
 public class BiNGOplugin extends CytoscapePlugin {
 
-    /*--------------------------------------------------------------
-    FIELDS.
-    --------------------------------------------------------------*/
+	private static final String PLUGIN_VERSION = "2.40";
 
-    String bingoDir;
+	private static final String MAIN_MENU = "Plugins";
+	private static final String CURRENT_WORKING_DIRECTORY = "user.dir";
 
-    /*--------------------------------------------------------------
-    CONSTRUCTOR.
-    --------------------------------------------------------------*/
+	private String bingoDir;
 
+	public BiNGOplugin() {
+		// create a new action to respond to menu activation
+		final BiNGOpluginAction action = new BiNGOpluginAction();
 
-    public BiNGOplugin() {
-        //create a new action to respond to menu activation
-        BiNGOpluginAction action = new BiNGOpluginAction();
-        //set the preferred menu
-        action.setPreferredMenu("Plugins");
-        //and add it to the menus
-        Cytoscape.getDesktop().getCyMenus().addAction(action);
-        String tmp = System.getProperty("user.dir");
-        bingoDir = new File(tmp, "plugins").toString();
-    }
+		// set the preferred menu
+		action.setPreferredMenu(MAIN_MENU);
 
-    /*--------------------------------------------------------------
-    METHODS.
-    --------------------------------------------------------------*/
+		// and add it to the menus
+		Cytoscape.getDesktop().getCyMenus().addAction(action);
+		String cwd = System.getProperty(CURRENT_WORKING_DIRECTORY);
+		bingoDir = new File(cwd, "plugins").toString();
+	}
 
-    /*--------------------------------------------------------------
-      INTERNAL LISTENER-CLASS.
-    --------------------------------------------------------------*/
+	class BiNGOpluginAction extends CytoscapeAction {
 
-    // INTERNAL LISTENER-CLASS : This listener-class gets attached to the menu item.
+		private static final long serialVersionUID = 5389627389023778048L;
 
-    public class BiNGOpluginAction extends CytoscapeAction {
+		// The constructor sets the text that should appear on the menu item.
+		public BiNGOpluginAction() {
+			super("Start BiNGO " + PLUGIN_VERSION);
+		}
 
-        // The constructor sets the text that should appear on the menu item.
+		/**
+		 * This method opens the BiNGO settingspanel upon selection of the menu
+		 * item and opens the settingspanel for BiNGO.
+		 * 
+		 * @param event
+		 *            event triggered when BiNGO menu item clicked.
+		 */
 
-        public BiNGOpluginAction() {
-            super("BiNGO 2.3");
-        }
+		public void actionPerformed(ActionEvent event) {
 
-        /**
-         * This method opens the BiNGO settingspanel upon selection of the menu item
-         * and opens the settingspanel for BiNGO.
-         *
-         * @param event event triggered when BiNGO menu item clicked.
-         */
-
-        public void actionPerformed(ActionEvent event) {
-
-            JFrame window = new JFrame("BiNGO Settings");
-            SettingsPanel settingsPanel = new SettingsPanel(bingoDir);
-            //window.setJMenuBar(new HelpMenuBar(settingsPanel).getHelpMenuBar());
-            window.getContentPane().add(settingsPanel);
-            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            window.pack();
-            Dimension screenSize =
-                    Toolkit.getDefaultToolkit().getScreenSize();
-            // for central position of the settingspanel.
-            window.setLocation(screenSize.width / 2 - (window.getWidth() / 2),
-                    screenSize.height / 2 - (window.getHeight() / 2));
-            window.setVisible(true);
-            window.setResizable(true);
-
-        }
-
-    }
+			final JFrame window = new JFrame("BiNGO Settings");
+			final SettingsPanel settingsPanel = new SettingsPanel(bingoDir);
+			// window.setJMenuBar(new
+			// HelpMenuBar(settingsPanel).getHelpMenuBar());
+			window.getContentPane().add(settingsPanel);
+			window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			window.pack();
+			
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			// for central position of the settingspanel.
+			window.setLocation(screenSize.width / 2 - (window.getWidth() / 2),
+					screenSize.height / 2 - (window.getHeight() / 2));
+			window.setVisible(true);
+			window.setResizable(true);
+		}
+	}
 }

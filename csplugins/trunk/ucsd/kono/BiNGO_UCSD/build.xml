@@ -7,14 +7,14 @@
     <tstamp/>
     <property name="name" value="BiNGO"/>
     <property name="plugin.class" value="BiNGO.BiNGOplugin"/>
-    <property name="version" value=""/>
+    <property name="version" value="2.40"/>
 
     <echo message="Building ${name} version ${version} ..."/>
 
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>
-    <property name="optimize" value="off"/>
-    <property name="deprecation" value="off"/>
+    <property name="optimize" value="on"/>
+    <property name="deprecation" value="on"/>
     <property name="fork" value="false"/>
 
     <!-- Define the directories -->

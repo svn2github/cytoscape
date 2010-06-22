@@ -1,4 +1,4 @@
-This is BiNGO version 2.0
+This is BiNGO version 2.40
 
 Annotations version : Default Annotations version : parsed from the files gene2go, gene2unigene, 
 and gene_info, available from the NCBI at ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/

@@ -50,7 +50,7 @@ import java.awt.event.*;
 import cytoscape.Cytoscape ;
 import cytoscape.view.CytoscapeDesktop ;
 
-public class TestCalculator implements Runnable{
+public class TestCalculator implements Runnable {
 
 	//Fields
 
