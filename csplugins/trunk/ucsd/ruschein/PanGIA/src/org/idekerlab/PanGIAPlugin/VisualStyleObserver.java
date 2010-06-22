@@ -24,15 +24,14 @@ public class VisualStyleObserver implements PropertyChangeListener {
 	
 	private static final URL visualStypePropLocation = PanGIAPlugin.class.getResource("/resources/PanGIAVS.props");
 	
-	private static final String VS_OVERVIEW_NAME = "Complex Overview Style";
-	private static final String VS_MODULE_NAME = "Module Style";
+	public static final String VS_OVERVIEW_NAME = "PanGIA Overview Style";
+	public static final String VS_MODULE_NAME = "PanGIA Module Style";
 	
 	private VisualStyle overviewVS;
 	private VisualStyle moduleVS;
 	
 	private Map<String, VisualStyle> styleMap;
 
-		
 	VisualStyleObserver() {
 		styleMap = new HashMap<String, VisualStyle>();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
