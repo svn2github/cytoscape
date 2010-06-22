@@ -51,6 +51,7 @@ import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
 /**
@@ -71,6 +72,8 @@ public class TheVisualStyle {
 	private static final Color NADA = Color.white;
 	private static final Color COL_MIN = new Color(255, 255, 0);
 	private static final Color COL_MAX = new Color(255, 127, 0);
+	
+	private static final Double DEF_NODE_SIZE = 50d;
 
 	// Name of analyzed network
 	private String networkName;
@@ -124,23 +127,31 @@ public class TheVisualStyle {
 				Color.white);
 
 		// Display NODE_LABEL as a label
-		final PassThroughMapping<String, String> m = new PassThroughMapping<String, String>(
-				String.class, NODE_LABEL);
+		//TODO: Replace when 2.8 released.
+//		final PassThroughMapping<String, String> m = new PassThroughMapping<String, String>(
+//				String.class, NODE_LABEL);
+		final PassThroughMapping m = new PassThroughMapping("", NODE_LABEL);
 		final Calculator nlc = new BasicCalculator("Node Description_"
 				+ networkName, m, VisualPropertyType.NODE_LABEL);
 		style.getNodeAppearanceCalculator().setCalculator(nlc);
 
 		// Gradient node color mapping
-		final ContinuousMapping<Double, Color> colorMapping = new ContinuousMapping<Double, Color>(
-				Color.class, NODE_COLOR);
-		final BoundaryRangeValues<Color> colbrVal1 = new BoundaryRangeValues<Color>();
+		//TODO: Replace when 2.8 released.
+//		final ContinuousMapping<Double, Color> colorMapping = new ContinuousMapping<Double, Color>(
+//				Color.class, NODE_COLOR);
+		final ContinuousMapping colorMapping = new ContinuousMapping(
+				NADA, ObjectMapping.NODE_MAPPING);
+		colorMapping.setControllingAttributeName(NODE_COLOR, network, false);
+		//TODO: Add generics parameter when 2.8 released.
+		final BoundaryRangeValues colbrVal1 = new BoundaryRangeValues();
 		double cols = -(Math.log(alpha) / Math.log(10));
 		colbrVal1.lesserValue = NADA;
 		colbrVal1.equalValue = COL_MIN;
 		colbrVal1.greaterValue = COL_MIN;
 		colorMapping.addPoint(cols, colbrVal1);
-
-		final BoundaryRangeValues<Color> colbrVal2 = new BoundaryRangeValues<Color>();
+		
+		//TODO: Add generics parameter when 2.8 released.
+		final BoundaryRangeValues colbrVal2 = new BoundaryRangeValues();
 		cols = -(Math.log(alpha) / Math.log(10)) + 5.0;
 		colbrVal2.lesserValue = COL_MAX;
 		colbrVal2.equalValue = COL_MAX;
@@ -153,17 +164,20 @@ public class TheVisualStyle {
 		style.getNodeAppearanceCalculator().setCalculator(colorCalculator);
 
 		// Node Size Mapping
-		final ContinuousMapping<Double, Double> wMapping = new ContinuousMapping<Double, Double>(
-				Double.class, NODE_SIZE);
-		final ContinuousMapping<Double, Double> hMapping = new ContinuousMapping<Double, Double>(
-				Double.class, NODE_SIZE);
+		//TODO: Update when 2.8 released.
+		final ContinuousMapping wMapping = new ContinuousMapping(
+				DEF_NODE_SIZE, ObjectMapping.NODE_MAPPING);
+		wMapping.setControllingAttributeName(NODE_SIZE, network, false);
+		final ContinuousMapping hMapping = new ContinuousMapping(
+				DEF_NODE_SIZE, ObjectMapping.NODE_MAPPING);
+		hMapping.setControllingAttributeName(NODE_SIZE, network, false);
 
 		// The following code defines the range of values
 
-		BoundaryRangeValues<Double> brVals;
+		BoundaryRangeValues brVals;
 		int j;
 		for (j = 0; j <= 1; j++) {
-			brVals = new BoundaryRangeValues<Double>();
+			brVals = new BoundaryRangeValues();
 			final double size = 380d * j + 20d;
 			final double s = 99 * j + 1;
 			brVals.lesserValue = size;
