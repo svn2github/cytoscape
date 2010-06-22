@@ -681,7 +681,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     /**
      * Generates and returns multiples of the double specified in the 
      * constructor.
-     * @author vmui & jbalogh & ghuck
+     * @author vmui & jbalogh 
      *
      */
 

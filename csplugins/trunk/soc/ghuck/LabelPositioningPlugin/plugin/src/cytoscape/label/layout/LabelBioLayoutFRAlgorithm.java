@@ -4,6 +4,7 @@ package cytoscape.layout.label;
 
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutLabelNodeImpl;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutLabelPartition;
 import csplugins.layout.Profile;
@@ -102,7 +103,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 					 Tunable.GROUP, new Integer(3))); 
 
 	layoutProperties.add(new Tunable("resetPosition", 
-					 "Reset the label position of all nodes",
+					 "Reset label positions",
 					 Tunable.BOOLEAN, new Boolean(false)));
 
 	layoutProperties.add(new Tunable("moveNodes", 
@@ -155,46 +156,60 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      * Perform a layout
      */
     public void layoutPartion(LayoutPartition partition) {
+
+	if (canceled)
+	    return;
 	
 	// Logs information about this task
 	logger.info("Laying out partition " + partition.getPartitionNumber() + " which has "+ partition.nodeCount()
 		    + " nodes and " + partition.edgeCount() + " edges: ");
 
 	// Create new Label partition
-	LayoutPartition newPartition = new LayoutLabelPartition(partition,
+	LayoutLabelPartition newPartition = new LayoutLabelPartition(partition,
 								     weightCoefficient,
 								     moveNodes,
 								     selectedOnly);
 
-	logger.info("New partition succesfully created!");
+	// logger.info("New partition succesfully created!");
 
 	if (canceled)
 	    return;
 
 	// Reset the label position of all nodes if necessary 
 	if (resetPosition) {
-	    //	    resetNodeLabelPosition(nodeAtts, partition.getNodeList());
+	    resetNodeLabelPosition(newPartition);
 	    return;
 	}
 
-
-	ArrayList<LayoutNode> array = ((LayoutLabelPartition) newPartition).getLabelNodes();
-	
-	logger.info(array.size() + "label nodes were created");
-
-	for(LayoutNode node: array) {
-	    logger.info("incrementing position of node #" + node.getIndex());
-	    node.increment(5.0,5.0);
-	    logger.info("moving node #" + node.getIndex());
-	    node.moveToLocation();
-	}
-	logger.info("labels moved +5.0,+5.0");
-	
-
 	// Layout the new partition using the parent class layout algorithm
-	//	super.layoutPartition(newPartition);
+	super.layoutPartition(newPartition);
+
+	// redraw the network so that the new label positions are visible
+	networkView.updateView();
+    	networkView.redrawGraph(true, true);
 
 	logger.info("Label/Node layout of partition " + partition.getPartitionNumber() + " complete");
+    }
+
+
+    /**
+     * Moves labels to the same position in which their parent nodes are
+     */
+    protected void resetNodeLabelPosition(LayoutLabelPartition part) {
+
+	logger.info("Reseting labels position");
+
+	// Go through all labels setting their position to be the same as their parent's
+	ArrayList<LayoutLabelNodeImpl> array = ((LayoutLabelPartition) part).getLabelNodes();
+	
+	for(LayoutLabelNodeImpl node: array) {
+	    node.setLocation(node.getParentX(),node.getParentY());
+	    node.moveToLocation();
+	}
+	
+	// redraw the network so that the new label positions are visible
+	networkView.updateView();
+    	networkView.redrawGraph(true, true);
     }
 
 
