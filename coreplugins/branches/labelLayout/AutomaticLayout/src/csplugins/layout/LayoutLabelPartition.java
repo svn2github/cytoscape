@@ -41,7 +41,7 @@ import java.util.Collection;
  */
 public class LayoutLabelPartition extends LayoutPartition {
 
-    protected Map <LayoutNode,LayoutNode> labelToParentMap;
+    protected Map <LayoutLabelNodeImpl,LayoutNode> labelToParentMap;
     protected ArrayList<LayoutNode> allLayoutNodesArray;
     protected ArrayList<LayoutEdge> allLayoutEdgesArray;
 
@@ -85,7 +85,7 @@ public class LayoutLabelPartition extends LayoutPartition {
 	this.lockedNodes = part.lockedNodes;
 
 	// Initialize 'label' fields
-	labelToParentMap = new HashMap<LayoutNode,LayoutNode>(part.size());
+	labelToParentMap = new HashMap<LayoutLabelNodeImpl,LayoutNode>(part.size());
        	allLayoutNodesArray = new ArrayList<LayoutNode>(part.size());
 	allLayoutEdgesArray = new ArrayList<LayoutEdge>(part.size());
 	
@@ -111,23 +111,19 @@ public class LayoutLabelPartition extends LayoutPartition {
 	     * - algorithm is to be applied to the entire network
 	     * - algorithm is to be applied to the selected nodes only, and ln
 	     * is selected
-	     * 
-	     * Unlock ln if:
-	     * - either of the above conditions is true, and the user has
-	     * specified that the network nodes are to be moved as well
-	     * 
-	     * Lock labelNode and/or ln otherwise. */
+	     */
 	    if (!selectedOnly || !(ln.isLocked()) ) {
 		
 		labelNode.unLock();
-
-		if (!moveNodes && ln.isLocked()) {
-		    ln.unLock();
-		    lockedNodes--;
-		} 
 	    } else {
 		    labelNode.lock();
 		    lockedNodes++;
+	    }
+
+	    // Lock ln if it is unlocked but nodes are not allowed to move
+	    if (!moveNodes && !ln.isLocked()) {
+		ln.lock();
+		lockedNodes++;
 	    }
 
 	    // Add labelNode -> ln 
@@ -192,15 +188,15 @@ public class LayoutLabelPartition extends LayoutPartition {
     }
 
 
-    public Map<LayoutNode,LayoutNode> getLabelToParentMap() {
+    public Map<LayoutLabelNodeImpl,LayoutNode> getLabelToParentMap() {
 	return labelToParentMap;
     }
 
     /**
      * Returns a list with all the LayoutLabelNodes
      */
-    public ArrayList<LayoutNode> getLabelNodes() {
-	ArrayList<LayoutNode> array = new ArrayList<LayoutNode> ();
+    public ArrayList<LayoutLabelNodeImpl> getLabelNodes() {
+	ArrayList<LayoutLabelNodeImpl> array = new ArrayList<LayoutLabelNodeImpl> ();
 	array.addAll(labelToParentMap.keySet());
 	return array;
     }

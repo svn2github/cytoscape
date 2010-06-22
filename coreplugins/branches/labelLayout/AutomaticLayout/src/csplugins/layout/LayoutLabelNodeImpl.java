@@ -14,9 +14,6 @@ import java.util.*;
 
 public class LayoutLabelNodeImpl extends LayoutNode {
 
-    // -- static (class) variables --
-    // static final double EPSILON = 0.0000001D;
-
     // -- Instance variables inherited from superclass --
     //  protected boolean isLocked = false;
     //  protected double x;
@@ -41,13 +38,28 @@ public class LayoutLabelNodeImpl extends LayoutNode {
      */
     public LayoutLabelNodeImpl(LayoutNodeImpl parent, int index) {
 	this.parent = parent;
-	this.setX(parent.getX());
-	this.setY(parent.getY());
+
+	ObjectPosition labelPosition;
+	try {
+	    NodeView nodeView = parent.getNodeView();
+	    labelPosition = nodeView.getLabelPosition();
+	    this.setX(labelPosition.getOffsetX() + parent.getX());
+	    this.setY(labelPosition.getOffsetY() + parent.getY());	    
+	} catch(Exception e) {
+	    logger.info("error while getting ObjectPosition:" + e.getMessage() );
+	    this.setX(parent.getX());
+	    this.setY(parent.getY());
+	}
+      
 	this.neighbors = new ArrayList<LayoutNode>();
 	this.index = index;
 	logger = CyLogger.getLogger(LayoutLabelNodeImpl.class);
     }
-	
+
+    /**
+     * Moves a label node to the (X,Y) position that is already defined if it is unlocked.
+     * Otherwise, updates the (X,Y) fields in order to reflect its real position.
+     */
     public void moveToLocation() {
 	
 	// make sure parent is where it should be
@@ -58,9 +70,7 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	ObjectPosition labelPosition;
 	try {
 	    NodeView nodeView = parent.getNodeView();
-	    logger.info("Node View adquired!");
 	    labelPosition = nodeView.getLabelPosition();
-	    logger.info("Got ObjectPosition from parent");
 	} catch(Exception e) {
 	    logger.info("error while getting ObjectPosition:" + e.getMessage() );
 	    return;
@@ -75,12 +85,12 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 
 	} else { // If node is unlocked set labels offsets properly	
 	    	    
-	    logger.info("Label node was unlocked");
+	     logger.info("Label node was unlocked");
 
 	    labelPosition.setOffsetX(this.getX() - parent.getX());
 	    labelPosition.setOffsetY(this.getY() - parent.getY());
 	
-	    logger.info("Label node was moved!");
+	     logger.info("Label node was moved!");
 	} 
     }
 
@@ -123,11 +133,11 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	return parent.nodeView.getHeight();
     }
 
-    protected double getParentX() {
+    public double getParentX() {
 	return parent.getX();
     }
 
-    protected double getParentY() {
+    public double getParentY() {
 	return parent.getY();
     }
 
