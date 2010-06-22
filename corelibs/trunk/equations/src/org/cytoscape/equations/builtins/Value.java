@@ -46,13 +46,13 @@ public class Value implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Converts a string to a number."; }
+	public String getFunctionSummary() { return "Converts a string or a number to a number."; }
 
 	/**
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"VALUE(text)\""; }
+	public String getUsageDescription() { return "Call this with \"VALUE(text_or_number)\""; }
 
 	public Class getReturnType() { return Double.class; }
 
@@ -60,7 +60,7 @@ public class Value implements Function {
 	 *  @return Double.class or null if there is not exactly a single argument of type String.class
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || argTypes[0] != String.class)
+		if (argTypes.length != 1 || (argTypes[0] != String.class && argTypes[0] != Double.class && argTypes[0] != Long.class))
 			return null;
 
 		return Double.class;
@@ -73,6 +73,11 @@ public class Value implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
+		if (args[0].getClass() == Double.class)
+			return (Double)args[0];
+		if (args[0].getClass() == Long.class)
+			return (double)(Long)args[0];
+
 		try {
 			return Double.parseDouble((String)args[0]);
 		} catch (final NumberFormatException e) {

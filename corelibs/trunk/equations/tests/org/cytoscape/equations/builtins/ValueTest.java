@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: ValueTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,14 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class ValueTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=VALUE(-1.3)", Double.valueOf(-1.3)));
+		assertTrue(Framework.executeTest("=VALUE(50000)", Double.valueOf(50000)));
+		assertTrue(Framework.executeTest("=VALUE(+1.3)", Double.valueOf(+1.3)));
+		assertTrue(Framework.executeTest("=VALUE(-3)", Double.valueOf(-3.0)));
+		assertTrue(Framework.executeTestExpectFailure("=VALUE(\"XYZ\")"));
+		assertTrue(Framework.executeTest("=VALUE(\"50\")", Double.valueOf(50)));
+		assertTrue(Framework.executeTest("=VALUE(\"-8.9e99\")", Double.valueOf(-8.9e99)));
 	}
 }

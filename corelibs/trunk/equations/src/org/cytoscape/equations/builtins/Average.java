@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionError;
 import org.cytoscape.equations.FunctionUtil;
 
 
@@ -65,16 +66,6 @@ public class Average implements Function {
 		if (argTypes.length == 0)
 			return null;
 
-		// A single List argument is valid.
-		if (argTypes.length == 1 && argTypes[0] == List.class)
-			return Double.class;
-
-		// Any number of numeric arguments are valid.
-		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Long.class)
-				return null;
-		}
-
 		return Double.class;
 	}
 
@@ -85,48 +76,17 @@ public class Average implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the arguments is not of type Double
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		double count = 0.0;
-
-		final ArrayList<Double> a = new ArrayList<Double>();
-		if (args.length == 1 && args[0] instanceof List) {
-			final List list = (List)args[0];
-
-			for (final Object listEntry : list) {
-				final Class listEntryType = listEntry.getClass();
-				final double value;
-				if (listEntryType == Double.class)
-					value = (Double)listEntry;
-				else if (listEntryType == Long.class)
-					value = (Long)listEntry;
-				else if (listEntryType == Integer.class)
-					value = (Integer)listEntry;
-				else if (listEntryType == String.class) {
-					try {
-						value = Double.parseDouble((String)listEntry);
-					} catch (final NumberFormatException e) {
-						throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to AVERAGE()!");
-					}
-				}
-				else
-					throw new IllegalArgumentException("can't convert a list element to a number while evaluating a call to AVERAGE()!");
-
-				a.add(value);
-				++count;
-			}
-		} else { // We expect any number of numeric args.
-			for (final Object arg : args) {
-				if (arg instanceof Double)
-					a.add((Double)arg);
-				else // Must be a Long.
-					a.add((double)(long)(Long)arg);
-				++count;
-			}
+		final double[] numbers;
+		try {
+			numbers = FunctionUtil.getNumbers(args);
+		} catch (final FunctionError e) {
+			throw new IllegalArgumentException("bad argument(s) in a call to AVERAGE(): " + e.getMessage());
 		}
-			
-		if (count == 0.0)
-			throw new IllegalArgumentException("can't take the average of an empty list!");
 
-		return FunctionUtil.numericallySafeSum(FunctionUtil.listToArray(a)) / count;
+		if (numbers.length == 0)
+			throw new IllegalArgumentException("need at least one number in a call to AVERAGE()!");
+
+		return FunctionUtil.numericallySafeSum(numbers) / numbers.length;
 	}
 
 	/**
@@ -138,14 +98,9 @@ public class Average implements Function {
 	 *           set indicates that no further arguments are valid.
 	 */
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length == 1 && leadingArgs[0] == List.class)
-			return null;
-
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(Double.class);
-		possibleNextArgs.add(Long.class);
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(List.class);
+		possibleNextArgs.add(List.class);
+		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
 		if (leadingArgs.length > 0)
 			possibleNextArgs.add(null);
 

@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: SignTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,15 +30,29 @@
 package org.cytoscape.equations.builtins;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class SignTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		variablesAndValues.put("POS", Long.valueOf(+11));
+		variablesAndValues.put("NEG", Long.valueOf(-12));
+		variablesAndValues.put("ZERO", Long.valueOf(0));
+		assertTrue(Framework.executeTest("=SIGN(0.0)", Double.valueOf(0)));
+		assertTrue(Framework.executeTest("=SIGN(9)", Double.valueOf(1)));
+		assertTrue(Framework.executeTest("=SIGN(-1e22)", Double.valueOf(-1)));
+		assertTrue(Framework.executeTest("=SIGN($POS)", variablesAndValues, Double.valueOf(+1)));
+		assertTrue(Framework.executeTest("=SIGN($NEG)", variablesAndValues, Double.valueOf(-1)));
+		assertTrue(Framework.executeTest("=SIGN($ZERO)", variablesAndValues, Double.valueOf(0)));
+		assertTrue(Framework.executeTest("=SIGN(true)", Double.valueOf(1)));
+		assertTrue(Framework.executeTest("=SIGN(false)", Double.valueOf(0)));
+		assertTrue(Framework.executeTest("=SIGN(\"1e22\")", Double.valueOf(1)));
+		assertTrue(Framework.executeTest("=SIGN(\"-9.0\")", Double.valueOf(-1)));
+		assertTrue(Framework.executeTest("=SIGN(\"0.0\")", Double.valueOf(0)));
+		assertTrue(Framework.executeTestExpectFailure("=SIGN(\"Fred\")"));
 	}
 }

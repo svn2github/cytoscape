@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: CosTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,13 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class CosTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=COS("+Math.PI+"/6)", Double.valueOf(0.8660254037844387)));
+		assertTrue(Framework.executeTest("=COS(RADIANS(60))", Double.valueOf(0.5000000000000001)));
+		assertTrue(Framework.executeTest("=COS(RADIANS(-30))", Double.valueOf(0.8660254037844387)));
+		assertTrue(Framework.executeTest("=COS(0.785398163)", Double.valueOf(0.7071067814675859)));
+		assertTrue(Framework.executeTest("=COS(\"0.0\")", Double.valueOf(1)));
+		assertTrue(Framework.executeTestExpectFailure("=COS(\"abc\")"));
 	}
 }

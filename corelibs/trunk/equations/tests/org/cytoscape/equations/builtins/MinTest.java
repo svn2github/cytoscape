@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: MinTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,15 +30,28 @@
 package org.cytoscape.equations.builtins;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class MinTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+                final List<Object> numbers = new ArrayList<Object>();
+                numbers.add(Double.valueOf(1.0));
+                numbers.add(Integer.valueOf(2));
+                numbers.add(Double.valueOf(3.0));
+                numbers.add("4.0");
+                numbers.add(Double.valueOf(5.0));
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		variablesAndValues.put("numbers", numbers);
+		assertTrue(Framework.executeTest("=MIN($numbers)", variablesAndValues, Double.valueOf(1.0)));
+		assertTrue(Framework.executeTest("=MIN(-2,-3,-4.35)", Double.valueOf(-4.35)));
+		assertTrue(Framework.executeTest("=MIN(-1.3)", Double.valueOf(-1.3)));
+		assertTrue(Framework.executeTest("=MIN(0.0)", Double.valueOf(0.0)));
+		assertTrue(Framework.executeTestExpectFailure("=MIN()"));
 	}
 }

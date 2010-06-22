@@ -33,6 +33,7 @@ package org.cytoscape.equations.builtins;
 import java.util.ArrayList;
 import java.util.List;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionError;
 import org.cytoscape.equations.FunctionUtil;
 
 
@@ -61,8 +62,13 @@ public class HarMean implements Function {
 	 *  @return Double.class if the argument types make it at least conceivable that no less than 2 numbers are being passed in
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length == 0 || (argTypes.length == 1 && argTypes[0] != List.class))
+		if (argTypes.length == 0)
 			return null;
+
+		for (final Class argType : argTypes) {
+			if (!FunctionUtil.isScalarArgType(argType) && ! FunctionUtil.isSomeKindOfList(argType))
+				return null;
+		}
 
 		return Double.class;
 	}
@@ -74,47 +80,33 @@ public class HarMean implements Function {
 	 *  @throws IllegalArgumentException thrown if any of the members of the single List argument cannot be converted to a number
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
-		final ArrayList<Double> a = new ArrayList<Double>();
-		for (int i = 0; i < args.length; ++i) {
-			if (args[i] instanceof List) {
-				final List list = (List)(args[i]);
-				for (final Object listElement : list) {
-					try {
-						final double d = FunctionUtil.getArgAsDouble(listElement);
-						if (d <= 0.0)
-							throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
-											   " argument in call to HARMEAN() is not a list of positive numbers!");
-						a.add(d);
-					} catch (final IllegalArgumentException e) {
-						throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
-										   " element in call to HARMEAN() is not a list of numbers: "
-										   + e.getMessage());
-					}
-				}
-			} else {
-				try {
-					final double d = FunctionUtil.getArgAsDouble(args[i]);
-					if (d <= 0.0)
-						throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
-										   " element in call to HARMEAN() must be positive!");
-					
-					a.add(d);
-				} catch (final IllegalArgumentException e) {
-					throw new IllegalArgumentException(FunctionUtil.getOrdinal(i) +
-									   " element in call to HARMEAN() is not a number: "
-									   + e.getMessage());
-				}
-			}
+		final double[] numbers;
+		try {
+			numbers = FunctionUtil.getNumbers(args);
+		} catch (final FunctionError e) {
+			throw new IllegalArgumentException("bad argument in a call to HARMEAN(): " + e.getMessage());
 		}
 
-		if (a.size() < 2)
+		if (!isPositiveArray(numbers))
+			throw new IllegalArgumentException("at least one argument to HARMEAN() is not positive!");
+
+		if (numbers.length < 2)
 			throw new IllegalArgumentException("illegal arguments in call to HARMEAN(): must have at least 2 numbers!");
 
 		double sum = 0.0;
-		for (double d : a)
+		for (double d : numbers)
 			sum += 1.0 / d;
 
-		return a.size() / sum;
+		return numbers.length / sum;
+	}
+
+	private boolean isPositiveArray(final double[] numbers) {
+		for (final double d : numbers) {
+			if (d <= 0.0)
+				return false;
+		}
+
+		return true;
 	}
 
 	/**

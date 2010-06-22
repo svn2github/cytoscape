@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: HarMeanTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,15 +30,29 @@
 package org.cytoscape.equations.builtins;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class HarMeanTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+                final List<Object> numbers = new ArrayList<Object>();
+		numbers.add(new Double(4.0));
+                numbers.add(new Long(5L));
+                numbers.add(new Double(8.0));
+                numbers.add(new Double(7.0));
+                numbers.add(new Long(11L));
+                numbers.add(new Long(4L));
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		variablesAndValues.put("list", numbers);
+		assertTrue(Framework.executeTest("=HARMEAN($list, 3)", variablesAndValues, Double.valueOf(5.028375962061728)));
+		assertTrue(Framework.executeTest("=HARMEAN(3.0,3,\"3.0\")", Double.valueOf(3.0)));
+		assertTrue(Framework.executeTestExpectFailure("=HARMEAN()"));
+		assertTrue(Framework.executeTestExpectFailure("=HARMEAN(1.0)"));
+		assertTrue(Framework.executeTestExpectFailure("=HARMEAN(1.0, -2)"));
 	}
 }

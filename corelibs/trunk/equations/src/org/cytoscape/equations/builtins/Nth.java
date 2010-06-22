@@ -61,7 +61,7 @@ public class Nth implements Function {
 	 *  @return String.class or null if the arguments are not a string followed by a number
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || argTypes[0] != List.class || !FunctionUtil.isScalarArgType(argTypes[1]))
+		if (argTypes.length != 2 || !FunctionUtil.isSomeKindOfList(argTypes[0]) || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return String.class;

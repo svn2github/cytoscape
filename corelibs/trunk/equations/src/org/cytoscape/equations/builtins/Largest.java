@@ -64,7 +64,7 @@ public class Largest implements Function {
 	public Class validateArgTypes(final Class[] argTypes) {
 		if (argTypes.length != 2)
 			return null;
-		if (argTypes[0] != List.class || !FunctionUtil.isScalarArgType(argTypes[1]))
+		if (!FunctionUtil.isSomeKindOfList(argTypes[0]) || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return Double.class;

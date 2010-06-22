@@ -82,6 +82,13 @@ public class Combin implements Function {
 		final long N = FunctionUtil.getArgAsLong(args[0]);
 		final long K = FunctionUtil.getArgAsLong(args[1]);
 
+		if (N < 0)
+			throw new IllegalArgumentException("1st argument to COMBIN() must not be negative!");
+		if (K < 0)
+			throw new IllegalArgumentException("2nd argument to COMBIN() must not be negative!");
+		if (N < K)
+			throw new IllegalArgumentException("2nd argument to COMBIN() must not be less than 1st argument!");
+
 		// Check boundary cases:
 		if (K < 0L || K > N)
 			return (Long)0L;

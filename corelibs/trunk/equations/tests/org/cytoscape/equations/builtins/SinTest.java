@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: SinTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,12 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class SinTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=SIN("+Math.PI+"/6)", Double.valueOf(0.49999999999999994)));
+		assertTrue(Framework.executeTest("=SIN(RADIANS(60))", Double.valueOf(0.8660254037844386)));
+		assertTrue(Framework.executeTest("=SIN(RADIANS(-30))", Double.valueOf(-0.49999999999999994)));
+		assertTrue(Framework.executeTest("=SIN(\"0.0\")", Double.valueOf(0)));
+		assertTrue(Framework.executeTestExpectFailure("=SIN(\"abc\")"));
 	}
 }

@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: NormDistTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,10 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class NormDistTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=NORMDIST( 50, 40, 20, FALSE)", Double.valueOf(0.017603266338214976)));
+		assertTrue(Framework.executeTest("=NORMDIST( 0.8, 1, 0.3, TRUE)", Double.valueOf(0.25249253754692297)));
+		assertTrue(Framework.executeTestExpectFailure("=NORMDIST( 0.8, 1, -0.3, TRUE)"));
 	}
 }

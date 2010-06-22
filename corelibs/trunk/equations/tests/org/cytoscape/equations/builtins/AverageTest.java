@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: AverageTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,15 +30,25 @@
 package org.cytoscape.equations.builtins;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class AverageTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+                final List<Double> numbers = new ArrayList<Double>();
+                numbers.add(1.0);
+                numbers.add(2.0);
+                numbers.add(3.0);
+                numbers.add(4.0);
+                numbers.add(5.0);
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		variablesAndValues.put("numbers", numbers);
+		assertTrue(Framework.executeTest("=AVERAGE($numbers)", variablesAndValues, Double.valueOf(3.0)));
+		assertTrue(Framework.executeTest("=AVERAGE(1,2,3.0,4,5)", Double.valueOf(3.0)));
 	}
 }

@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: RoundTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,11 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class RoundTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=ROUND(2.15, 1)", Double.valueOf(2.2)));
+		assertTrue(Framework.executeTest("=ROUND(2.149,1)", Double.valueOf(2.1)));
+		assertTrue(Framework.executeTest("=ROUND(-1.475,2)", Double.valueOf(-1.48)));
+		assertTrue(Framework.executeTest("=ROUND(21.5, -1)", Double.valueOf(20.0)));
 	}
 }

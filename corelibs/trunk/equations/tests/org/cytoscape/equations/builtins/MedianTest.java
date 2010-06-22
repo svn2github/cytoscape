@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: MedianTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,11 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class MedianTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=MEDIAN(3,2,5,1,4)", Double.valueOf(3.0)));
+		assertTrue(Framework.executeTest("=MEDIAN(1,2,4,3)", Double.valueOf(2.5)));
+		assertTrue(Framework.executeTest("=MEDIAN(2.0)", Double.valueOf(2.0)));
+		assertTrue(Framework.executeTestExpectFailure("=MEDIAN()"));
 	}
 }

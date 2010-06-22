@@ -35,8 +35,8 @@ import junit.framework.*;
 
 public class ATan2Test extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ATAN2(1,1)", new Double(0.7853981633974483)));
-		assertTrue(Framework.executeTest("=ATAN2(-1,-1)", new Double(-2.356194490192345)));
-		assertFalse(Framework.executeTest("=ATAN2(0,0)", new Double(0.0)));
+		assertTrue(Framework.executeTest("=ATAN2(1,1)", Double.valueOf(0.7853981633974483)));
+		assertTrue(Framework.executeTest("=ATAN2(-1,-1)", Double.valueOf(-2.356194490192345)));
+		assertTrue(Framework.executeTestExpectFailure("=ATAN2(0,0)"));
 	}
 }

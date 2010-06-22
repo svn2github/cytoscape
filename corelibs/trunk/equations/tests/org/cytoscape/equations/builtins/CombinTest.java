@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: CombinTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,14 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class CombinTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=COMBIN(100,0)", Long.valueOf(1)));
+		assertTrue(Framework.executeTest("=COMBIN(8,2)", Long.valueOf(28L)));
+		assertTrue(Framework.executeTestExpectFailure("=COMBIN(\"X\",3)"));
+		assertTrue(Framework.executeTestExpectFailure("=COMBIN(3,\"X\")"));
+		assertTrue(Framework.executeTestExpectFailure("=COMBIN(-1, 2)"));
+		assertTrue(Framework.executeTestExpectFailure("=COMBIN(2, -1)"));
+		assertTrue(Framework.executeTestExpectFailure("=COMBIN(2, 3)"));
 	}
 }

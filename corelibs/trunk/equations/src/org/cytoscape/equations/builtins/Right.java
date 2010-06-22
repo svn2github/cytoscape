@@ -53,7 +53,7 @@ public class Right implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of how to use this function
 	 */
-	public String getUsageDescription() { return "Call this with \"RIGHT(text, count)\""; }
+	public String getUsageDescription() { return "Call this with \"RIGHT(text[, count])\""; }
 
 	public Class getReturnType() { return String.class; }
 
@@ -61,8 +61,10 @@ public class Right implements Function {
 	 *  @return String.class or null if the args passed in have the wrong arity or a type mismatch was found
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || !FunctionUtil.isScalarArgType(argTypes[0])
-		    || !FunctionUtil.isScalarArgType(argTypes[1]))
+		if (argTypes.length == 1)
+			return String.class;
+
+		if (argTypes.length != 2 || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
 		return String.class;
@@ -77,14 +79,18 @@ public class Right implements Function {
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final String text = FunctionUtil.getArgAsString(args[0]);
 		final int count;
-		try {
-			count = (int)FunctionUtil.getArgAsLong(args[1]);
-		} catch (final Exception e) {
-			throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to an integer in a call to RIGHT()!");
+		if (args.length == 1)
+			count = 1;
+		else {
+			try {
+				count = (int)FunctionUtil.getArgAsLong(args[1]);
+			} catch (final Exception e) {
+				throw new IllegalArgumentException("can't convert \"" + args[1] + "\" to an integer in a call to RIGHT()!");
+			}
+			if (count < 0)
+				throw new IllegalArgumentException("illegal character count in a call to RIGHT()!");
 		}
 
-		if (count < 0)
-			throw new IllegalArgumentException("illegal character count in a call to RIGHT()!");
 		if (count >= text.length())
 			return text;
 		return text.substring(text.length() - count);

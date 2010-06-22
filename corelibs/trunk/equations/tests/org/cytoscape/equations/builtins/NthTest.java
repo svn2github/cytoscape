@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: NthTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,15 +30,33 @@
 package org.cytoscape.equations.builtins;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class NthTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+                final List<Object> list1 = new ArrayList<Object>();
+                list1.add(3.0);
+                list1.add(new Integer(2));
+                list1.add(5.0);
+                list1.add(new String("1"));
+                list1.add(4.0);
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		variablesAndValues.put("list1", list1);
+		assertTrue(Framework.executeTest("=NTH(${list1}, 3)", variablesAndValues, "5.0"));
+                final List<Object> list2 = new ArrayList<Object>();
+                list2.add(1.0);
+                list2.add(new Integer(2));
+                list2.add(4.0);
+                list2.add(new String("3"));
+		variablesAndValues.put("list2", list2);
+		assertTrue(Framework.executeTest("=NTH(${list2}, 4)", variablesAndValues, "3"));
+		assertTrue(Framework.executeTestExpectFailure("=NTH(${list2}, 5)"));
+		assertTrue(Framework.executeTestExpectFailure("=NTH(${list2}, 0)"));
 	}
 }

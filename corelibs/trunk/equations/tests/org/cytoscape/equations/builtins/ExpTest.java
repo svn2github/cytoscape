@@ -1,5 +1,5 @@
 /*
-  File: ACosTest.java
+  File: ExpTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,12 +33,10 @@ package org.cytoscape.equations.builtins;
 import junit.framework.*;
 
 
-public class ACosTest extends TestCase {
+public class ExpTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=ACOS(-1)", Double.valueOf(Math.PI)));
-		assertTrue(Framework.executeTest("=ACOS(0)", Double.valueOf(Math.PI/2.0)));
-		assertTrue(Framework.executeTest("=ACOS(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974484)));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(-1.01)"));
-		assertTrue(Framework.executeTestExpectFailure("=ACOS(+1.01)"));
+		assertTrue(Framework.executeTest("=EXP(-4.0)", Double.valueOf(0.01831563888873418)));
+		assertTrue(Framework.executeTest("=EXP(0.0)", Double.valueOf(1.0)));
+		assertTrue(Framework.executeTest("=EXP(+1.3)", Double.valueOf(3.6692966676192444)));
 	}
 }

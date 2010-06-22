@@ -57,6 +57,10 @@ class Framework {
 		Parser.getParser().registerFunction(new BadReturnFunction());
 	}
 
+	/**
+	 *  Execute a test that should succeed at compile time and runtime.
+	 *  @return true if the test compiled and ran and produced the expected result
+	 */
 	static boolean executeTest(final String equation, final Map<String, Object> variablesAndValues, final Object expectedResult) {
 		final Map<String, Class> varNameToTypeMap = new HashMap<String, Class>();
 		for (final String variableName : variablesAndValues.keySet())
@@ -97,5 +101,49 @@ class Framework {
 	static boolean executeTest(final String equation, final Object expectedResult) {
 		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
 		return executeTest(equation, variablesAndValues, expectedResult);
+	}
+
+	/**
+	 *  Excecute a test that should fail at either compile time or runtime.
+	 *  @return true if the test fails at compile time or runtime, otherwise false
+	 *
+	 */
+	static boolean executeTestExpectFailure(final String equation, final Map<String, Object> variablesAndValues) {
+		final Map<String, Class> varNameToTypeMap = new HashMap<String, Class>();
+		for (final String variableName : variablesAndValues.keySet())
+			varNameToTypeMap.put(variableName, variablesAndValues.get(variableName).getClass());
+		
+		try {
+			if (!compiler.compile(equation, varNameToTypeMap)) {
+				System.err.println("Error while compiling \"" + equation + "\": " + compiler.getLastErrorMsg());
+				return true;
+			}
+		} catch (final Exception e) {
+			System.err.println("Error while compiling \"" + equation + "\": " + e.getMessage());
+			return true;
+		}
+
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		try {
+			for (final String variableName : variablesAndValues.keySet())
+				nameToDescriptorMap.put(variableName, new IdentDescriptor(variablesAndValues.get(variableName)));
+		} catch (final Exception e) {
+			System.err.println("Error while processing variables for \"" + equation + "\": " + e.getMessage());
+			return true;
+		}
+
+		final Interpreter interpreter = new Interpreter(compiler.getEquation(), nameToDescriptorMap);
+		try {
+			final Object result = interpreter.run();
+			// We should never get here!
+			return false;
+		} catch (final Exception e) {
+			return true;
+		}
+	}
+
+	static boolean executeTestExpectFailure(final String equation) {
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		return executeTestExpectFailure(equation, variablesAndValues);
 	}
 }

@@ -38,7 +38,7 @@ public class ASinTest extends TestCase {
 		assertTrue(Framework.executeTest("=ASIN(-1)", Double.valueOf(-Math.PI/2.0)));
 		assertTrue(Framework.executeTest("=ASIN(0)", Double.valueOf(0.0)));
 		assertTrue(Framework.executeTest("=ASIN(" + (1.0 / Math.sqrt(2.0)) + ")", Double.valueOf(0.7853981633974482)));
-		assertFalse(Framework.executeTest("=ASIN(-1.01)", Double.valueOf(0.0)));
-		assertFalse(Framework.executeTest("=ASIN(+1.01)", Double.valueOf(0.0)));
+		assertTrue(Framework.executeTestExpectFailure("=ASIN(-1.01)"));
+		assertTrue(Framework.executeTestExpectFailure("=ASIN(+1.01)"));
 	}
 }
