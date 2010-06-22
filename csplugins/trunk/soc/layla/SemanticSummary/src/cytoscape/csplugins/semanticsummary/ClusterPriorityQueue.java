@@ -131,7 +131,10 @@ public class ClusterPriorityQueue
 				String curFirst = curPair.getFirstWord();
 				String curSecond = curPair.getSecondWord();
 				
-				if (firstWord.equals(curFirst) || secondWord.equals(curSecond))
+				//Remove all pairs with words in the same position as the removed
+				//and the inverse of the removed
+				if (firstWord.equals(curFirst) || secondWord.equals(curSecond) ||
+						(firstWord.equals(curSecond) && secondWord.equals(curFirst)))
 					toRemove.add(curPair);
 			}
 			
