@@ -28,6 +28,9 @@ public class NetworkSelectorPanelX extends JPanel implements
 		this.setLayout(new BorderLayout());
 		networkComboBox = new JComboBox();
 
+		//limit the length of combobox if the network name is too long
+		networkComboBox.setPreferredSize(new java.awt.Dimension(networkComboBox.getPreferredSize().width, networkComboBox.getPreferredSize().height));
+		
 		add(networkComboBox, BorderLayout.CENTER);
 		updateNetworkList();
 		
