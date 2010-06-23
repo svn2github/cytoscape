@@ -40,6 +40,10 @@ import cytoscape.util.TopoGraphNode;
 import cytoscape.util.TopologicalSort;
 
 import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.DoubleList;
+import org.cytoscape.equations.LongList;
+import org.cytoscape.equations.StringList;
+import org.cytoscape.equations.BooleanList;
 import org.cytoscape.equations.interpreter.IdentDescriptor;
 import org.cytoscape.equations.interpreter.Interpreter;
 
@@ -744,13 +748,6 @@ public class CyAttributesImpl implements CyAttributes {
 		return b;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param list DOCUMENT ME!
-	 */
 	public void setListAttribute(String id, String attributeName, List list) {
 		if (id == null)
 			throw new IllegalArgumentException("id is null");
@@ -823,6 +820,53 @@ public class CyAttributesImpl implements CyAttributes {
 		}
 	}
 
+	public void setListAttribute(final String id, final String attributeName, final Equation equation) {
+		if (id == null)
+			throw new IllegalArgumentException("id is null");
+
+		if (attributeName == null)
+			throw new IllegalArgumentException("attributeName is null");
+
+		if (equation == null)
+			throw new IllegalArgumentException("equation is null");
+
+		final byte type;
+		final Class returnType = equation.getType();
+		if (returnType == DoubleList.class)
+			type = TYPE_FLOATING;
+		else if (returnType == LongList.class)
+			type = TYPE_INTEGER;
+		else if (returnType == BooleanList.class)
+			type = TYPE_BOOLEAN;
+		else if (returnType == StringList.class)
+			type = TYPE_STRING;
+		else
+			throw new IllegalArgumentException("objects in list are of unrecognized type");
+
+		final byte valType = mmapDef.getAttributeValueType(attributeName);
+		if (valType < 0) {
+			mmapDef.defineAttribute(attributeName, type,
+			                        new byte[] { MultiHashMapDefinition.TYPE_INTEGER });
+		} else {
+			if (valType != type) {
+				throw new IllegalArgumentException("existing definition for attributeName '"
+				                                   + attributeName
+				                                   + "' is a TYPE_SIMPLE_LIST that stores other value types");
+			}
+
+			final byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+
+			if ((keyTypes.length != 1) || (keyTypes[0] != MultiHashMapDefinition.TYPE_INTEGER)) {
+				throw new IllegalArgumentException("existing definition for attributeName '"
+				                                   + attributeName + "' is not of TYPE_SIMPLE_LIST");
+			}
+		}
+
+		mmap.removeAllAttributeValues(id, attributeName);
+		final Object[] key = new Object[] { new Integer(-1) };
+		mmap.setAttributeValue(id, attributeName, equation, key);
+	}
+
 	// deprecated
 	/**
 	 *  DOCUMENT ME!
@@ -854,6 +898,19 @@ public class CyAttributesImpl implements CyAttributes {
 		if ((keyTypes.length != 1) || (keyTypes[0] != MultiHashMapDefinition.TYPE_INTEGER)) {
 			throw new ClassCastException("attributeName '" + attributeName
 			                             + "' is not of TYPE_SIMPLE_LIST");
+		}
+
+		final Object equation = mmap.getAttributeValue(id, attributeName, new Object[] { new Integer(-1) });
+		if (equation != null) {
+			final StringBuilder errorMessage = new StringBuilder();
+			final Object equationValue = evalEquation(id, attributeName, (Equation)equation,
+			                                          errorMessage);
+			if (equationValue == null) {
+				lastEquationError = errorMessage.toString();
+				return null;
+			}
+
+			return (List)equationValue;
 		}
 
 		final ArrayList returnThis = new ArrayList();
@@ -1030,11 +1087,17 @@ public class CyAttributesImpl implements CyAttributes {
 	 */
 	public Equation getEquation(final String id, final String attributeName) {
 		// This check is necessary for when "attributeName" does not actually refer to an attribute!
-		if (getType(attributeName) == TYPE_UNDEFINED)
+		final byte type = getType(attributeName);
+		if (type == TYPE_UNDEFINED)
 			return null;
 
+		if (type == TYPE_SIMPLE_LIST) {
+			final Object equation = mmap.getAttributeValue(id, attributeName, new Object[] { new Integer(-1) });
+			return (equation == null) ? null : (Equation)equation;
+		}
+
 		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
-		if (dimTypes.length != 0)
+		if (dimTypes.length > 0)
 			return null;
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);

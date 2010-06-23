@@ -603,6 +603,39 @@ public interface CyAttributes {
 	    throws IllegalArgumentException;
 
 	/**
+	 * Sets a simple list of attributes.
+	 * <p/>
+	 * <P>A simple list is defined as follows:
+	 * <UL>
+	 * <LI>All items within the list are of the same type, and are chosen
+	 * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
+	 * <CODE>Double</CODE> or <CODE>String</CODE>.
+	 * </UL>
+	 * <P>
+	 * If the above requirements are not met, an IllegalArgumentException
+	 * will be thrown.
+	 * <P>
+	 * Implementation note:   calling this method results in many calls to the
+	 * MultiHashMap back-end data store.  For example, if you have
+	 * five elements in a List, the implementation code makes five calls to
+	 * the MultiHashMap.  Therefore, if you are listening to MultiHashMap
+	 * events, you will be notified of five separate events, rather than one
+	 * global list event.
+	 *
+	 * @param id   unique identifier.
+	 * @param list attribute name.
+	 * @param list List Object.
+	 * @param equation      an attribute equation
+	 * @throws IllegalArgumentException Simple List requirements have not
+	 *                                  been met, or this attribute has already
+	 *                                  been defined with a data type, and this
+	 *                                  data type is not of type:
+	 *                                  TYPE_SIMPLE_LIST.
+	 */
+	public void setListAttribute(final String id, final String attributeName, final Equation equation)
+	    throws IllegalArgumentException;
+
+	/**
 	 * @deprecated Use {@link CyAttributes#getListAttribute getListAttribute()} instead. Will be removed 11/2007.
 	 */
 	public List getAttributeList(String id, String attributeName) throws ClassCastException;
