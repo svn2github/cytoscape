@@ -88,7 +88,7 @@ public class Nth implements Function {
 		final Object listElement = list.get(index - 1);
 		final Object retVal = FunctionUtil.translateObjectType(listElement);
 		if (retVal == null)
-			throw new IllegalArgumentException("bad list element type: " + listElement.getClass() + "!");
+			throw new IllegalArgumentException("bad list element type: " + listElement.getClass() + " in a call to NTH()!");
 
 		return retVal;
 	}

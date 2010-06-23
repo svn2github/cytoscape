@@ -48,7 +48,7 @@ public class LastTest extends TestCase {
                 list1.add(4.0);
 		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
 		variablesAndValues.put("list1", list1);
-		assertTrue(Framework.executeTest("=LAST(${list1})", variablesAndValues, "4.0"));
+		assertTrue(Framework.executeTest("=LAST(${list1})", variablesAndValues, Double.valueOf(4.0)));
                 final List<Object> list2 = new ArrayList<Object>();
 		variablesAndValues.put("list2", list2);
 		assertTrue(Framework.executeTestExpectFailure("=LAST(${list2})"));

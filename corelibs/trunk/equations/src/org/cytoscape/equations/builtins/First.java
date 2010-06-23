@@ -64,7 +64,7 @@ public class First implements Function {
 		if (argTypes.length != 1 || !FunctionUtil.isSomeKindOfList(argTypes[0]))
 			return null;
 
-		return String.class;
+		return Object.class;
 	}
 
 	/**
@@ -78,7 +78,12 @@ public class First implements Function {
 		if (list.isEmpty())
 			throw new IllegalArgumentException("can't get the first argument of an empty list in a call to FIRST()!");
 
-		return list.get(0).toString();
+		final Object firstElement = list.get(0);
+		final Object retVal = FunctionUtil.translateObjectType(firstElement);
+		if (retVal == null)
+			throw new IllegalArgumentException("bad list element type: " + firstElement.getClass() + " in a call to FIRST()!");
+
+		return retVal;
 	}
 
 	/**

@@ -64,7 +64,7 @@ public class Last implements Function {
 		if (argTypes.length != 1 || !FunctionUtil.isSomeKindOfList(argTypes[0]))
 			return null;
 
-		return String.class;
+		return Object.class;
 	}
 
 	/**
@@ -78,7 +78,12 @@ public class Last implements Function {
 		if (list.isEmpty())
 			throw new IllegalArgumentException("can't get the last argument of an empty list in a call to LAST()!");
 
-		return list.get(list.size() - 1).toString();
+		final Object lastElement = list.get(list.size() - 1);
+		final Object retVal = FunctionUtil.translateObjectType(lastElement);
+		if (retVal == null)
+			throw new IllegalArgumentException("bad list element type: " + lastElement.getClass() + " in a call to LAST()!");
+
+		return retVal;
 	}
 
 	/**
