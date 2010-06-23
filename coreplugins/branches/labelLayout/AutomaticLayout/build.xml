@@ -57,6 +57,24 @@
         <include name="**/*.jar"/>
       </fileset>
     </path>
+
+    <!-- Define the junit class path - It needs to find what we just built -->
+    <path id="junit.class.path" >
+      <pathelement path="${project.class.path}/"/>
+      <pathelement location="${test.jar}"/>
+
+      <fileset dir="${lib.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+    </path>
+
+    <!-- Make sure tests is in the right place -->
+    <condition property="tests.ok">
+      <and>
+        <available file="${tests.dir}" />
+      </and>
+    </condition>
+
   </target>
 
   <!-- =================================================================== -->
@@ -99,7 +117,7 @@
   <!-- =================================================================== -->
   <!-- Copy jar file to Cytoscape plugin folder                            -->
   <!-- =================================================================== -->
-  <target name="copy_jar" depends="layout">
+  <target name="copy_jar" depends="test">
     <copy todir="${cytoscape.plugin.dir}/" file="${layout.root.dir}/${layout.jar}"/>
   </target>
   
@@ -114,6 +132,74 @@
   <target name="clean" depends="init-layout">
     <delete dir="${layout.classes.dir}"/>
     <delete file="${layout.jar}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the tests                                                  -->
+  <!-- Note that this compilation occurs AFTER the distribution jar has    -->
+  <!-- been created, so that the tests aren't distributed.                 -->
+  <!-- =================================================================== -->
+  <target name="compile-tests"
+          depends="layout" 
+          if="tests.ok">
+    <javac srcdir="${tests.dir}"
+           classpathref="junit.class.path"
+           destdir="${build.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}">
+      <compilerarg line="-Xlint:all -Xlint:-path"/>
+    </javac>
+    <echo message="Successfully ran compile-tests task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the project-tests.jar file                                  -->
+  <!-- =================================================================== -->
+  <target name="jar-tests"
+          depends="compile-tests"
+          if="tests.ok">
+    <jar jarfile="${test.jar}"
+         basedir="${build.dir}" >
+    </jar>
+    <echo message="Successfully ran jar-tests task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Runs the unit tests.                                                -->
+  <!-- =================================================================== -->
+  <target name="test"
+          depends="jar-tests"
+          if="tests.ok">
+    <mkdir dir="${junit.log.dir}"/>
+    <junit printsummary="yes"
+           haltonfailure="no"
+           maxmemory="256m" >
+      <classpath refid="junit.class.path"/>
+      <formatter type="plain" 
+                 usefile="true" />
+      <formatter type="xml" 
+                 usefile="true" />
+      <batchtest fork="yes" 
+                 todir="${junit.log.dir}" 
+                 failureProperty="junit.test.failure"
+                 errorProperty="junit.test.failure">
+        <fileset dir="${tests.dir}"
+                 includes="**/*Test.java"
+                 excludes="**/AllTests.java" />
+      </batchtest>
+    </junit>
+    <mkdir dir="${junit.report.dir}"/>
+    <junitreport todir="${junit.report.dir}">
+      <fileset dir="${junit.log.dir}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${junit.report.dir}"/>
+    </junitreport>
+    <fail message="TEST FAILURE!!! Details: ${junit.report.dir}/index.html"
+          if="junit.test.failure"/>
+    <echo message="Successfully ran test task!"/>
   </target>
 
 </project>
