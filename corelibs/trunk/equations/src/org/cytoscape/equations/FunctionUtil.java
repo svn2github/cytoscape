@@ -490,4 +490,32 @@ public class FunctionUtil {
 
 		return null;
 	}
+
+	/**
+	 *  Tries to map "input" to one of Double, Long, Boolean or String.
+	 *  @return null if the translation failed, the input object if no translation was necessary or a new object if a successful translation was possible
+	 */
+	static public Object translateObjectType(final Object input) {
+		final Class type = input.getClass();
+		if (type == Double.class || type == Long.class || type == Boolean.class || type == String.class)
+			return input;
+
+		if (type == Float.class)
+			return new Double((Float)input);
+
+		if (type == Integer.class)
+			return new Long((Integer)input);
+
+		if (type == Short.class)
+			return new Long((Short)input);
+
+		if (type == Byte.class)
+			return new Long((Byte)input);
+
+		if (type == Character.class)
+			return new Long((Character)input);
+
+		// Couldn't map the input to anything useful:
+		return null;
+	}
 }

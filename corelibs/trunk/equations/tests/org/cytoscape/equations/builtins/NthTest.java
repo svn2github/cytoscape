@@ -48,7 +48,8 @@ public class NthTest extends TestCase {
                 list1.add(4.0);
 		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
 		variablesAndValues.put("list1", list1);
-		assertTrue(Framework.executeTest("=NTH(${list1}, 3)", variablesAndValues, "5.0"));
+		assertTrue(Framework.executeTest("=NTH(${list1}, 3)", variablesAndValues, Double.valueOf(5.0)));
+		assertTrue(Framework.executeTest("=NTH(${list1}, 2)", variablesAndValues, Long.valueOf(2)));
                 final List<Object> list2 = new ArrayList<Object>();
                 list2.add(1.0);
                 list2.add(new Integer(2));

@@ -64,7 +64,7 @@ public class Nth implements Function {
 		if (argTypes.length != 2 || !FunctionUtil.isSomeKindOfList(argTypes[0]) || !FunctionUtil.isScalarArgType(argTypes[1]))
 			return null;
 
-		return String.class;
+		return Object.class;
 	}
 
 	/**
@@ -85,7 +85,12 @@ public class Nth implements Function {
 		if (index <= 0 || index > list.size())
 			throw new IllegalArgumentException("illegal list index in call to NTH()!");
 
-		return list.get(index - 1).toString();
+		final Object listElement = list.get(index - 1);
+		final Object retVal = FunctionUtil.translateObjectType(listElement);
+		if (retVal == null)
+			throw new IllegalArgumentException("bad list element type: " + listElement.getClass() + "!");
+
+		return retVal;
 	}
 
 	/**
