@@ -670,7 +670,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
 	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
-		// TODO add your handling code here:	    
+		
+		JOptionPane pane = new JOptionPane("PanGIA is f@$%ing sweet!", JOptionPane.PLAIN_MESSAGE);
+		pane.createDialog(null,"About PanGIA v1.0").setVisible(true);
+		
 	}                                           
 
 	private void alphaTextFieldActionPerformed(java.awt.event.KeyEvent evt) {
