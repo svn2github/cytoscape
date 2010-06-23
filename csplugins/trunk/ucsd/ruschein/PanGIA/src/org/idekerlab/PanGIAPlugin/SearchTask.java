@@ -32,9 +32,10 @@ import cytoscape.task.TaskMonitor;
 import org.idekerlab.PanGIAPlugin.util.Scaler;
 import org.idekerlab.PanGIAPlugin.util.ScalerFactory;
 
+import javax.swing.*;
 
 /**
- * @author kono, ruschein
+ * @author kono, ruschein, ghannum
  */
 public class SearchTask implements Task {
 	
@@ -148,6 +149,39 @@ public class SearchTask implements Task {
 		}
 		
 		if (needsToHalt) return;
+		
+		//Check for problems
+        boolean groupedOnce = false;
+        Set<TypedLinkNode<TypedLinkNodeModule<String, BFEdge>,BFEdge>> goodNodes = new HashSet<TypedLinkNode<TypedLinkNodeModule<String, BFEdge>,BFEdge>>(1000);
+        for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : results.edges())
+        {
+                float pval = edge.value().linkMerge();
+                if (pval<pValueThreshold)
+                {
+                        goodNodes.add(edge.source());
+                        goodNodes.add(edge.target());
+                }
+                
+                if (edge.source().value().size()>1 || edge.target().value().size()>1)
+                        groupedOnce = true;
+        }
+        
+        if (goodNodes.size()==0)
+        {
+                JOptionPane.showMessageDialog(null, "PanGIA was not able to identify any modules. Either all of the nodes were grouped into a single module, or no edge passed the filter. Please verify that:\n1. Edge scores are appropriate.\n2. Edge filtering is not set too high, and that there are sufficient samples.\n3. Search parameters do not over-reward large modules.");
+                this.halt();
+        }else if (!groupedOnce)
+        {
+                JOptionPane.showMessageDialog(null, "PanGIA was not able to merge nodes into modules. Please verify that:\n1. Edge scores are appropriate.\n2. Search parameters do not under-reward large modules.");
+                this.halt();
+        }
+        else if (goodNodes.size()>=500)
+        {
+                Object[] options = {"Yes","No"};
+                int a = JOptionPane.showOptionDialog(null, "PanGIA found "+goodNodes.size()+" modules. This may take considerable resources to render. Do you wish to continue?", "PanGIA results", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                if (a==1) this.halt();
+        }
+
 		
 		//Annotate complexes
 		Map<TypedLinkNodeModule<String, BFEdge>,String> module_name = null;
