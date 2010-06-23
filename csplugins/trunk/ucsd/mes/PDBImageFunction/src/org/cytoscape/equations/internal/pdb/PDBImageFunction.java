@@ -81,8 +81,11 @@ class PDBImageFunction implements Function {
 
 		final String pdbId = FunctionUtil.getArgAsString(args[0]).trim().toLowerCase();
 
-		return "http://www.rcsb.org/pdb/images/" + pdbId + "_" + type.getType() + "_" + 
-		       size.getSize() + ".jpg?bioNum=1";
+		if ( pdbId.matches("\\w+") )
+			return "http://www.rcsb.org/pdb/images/" + pdbId + "_" + type.getType() + "_" + 
+		   	    size.getSize() + ".jpg?bioNum=1";
+		else
+			return "";
 	}
 
 	/**
