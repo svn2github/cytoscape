@@ -109,6 +109,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.logger.CyLogger;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.util.SwingWorker;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.CyNetworkView;
@@ -1960,9 +1962,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * If not exist, create new one.
 		 */
 		if (newCalc == null) {
-			newCalc = getNewCalculator(type, newMapName, newCalcName, attrName.toString());
-			//newCalc.getMapping(0).setControllingAttributeName((String) attrName);
-			vmm.getCalculatorCatalog().addCalculator(newCalc);
+			// Use task since this may take a white if it's a new image passthrough mapping.
+			NewMappingBuilder.createNewCalculator(type, newMapName, newCalcName, attrName.toString());
+			newCalc = vmm.getCalculatorCatalog().getCalculator(type, newCalcName);
 		}
 
 		newCalc.getMapping(0).setControllingAttributeName((String) attrName);
@@ -1989,10 +1991,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			final String oldCalcName = type.getName() + "-" + oldMappingTypeName;
 
-			if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null) {
-				final Calculator newC = getNewCalculator(type, oldMappingTypeName, oldCalcName, attrName.toString());
-				vmm.getCalculatorCatalog().addCalculator(newC);
-			}
+			if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null)
+				NewMappingBuilder.createNewCalculator(type, oldMappingTypeName, oldCalcName, attrName.toString());
 		}
 
 		Property parent = prop.getParentProperty();
@@ -2014,8 +2014,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (propertyMap.get(vmm.getVisualStyle().getName()) != null) {
 			propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
 		}
-
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		
+		// This redraw may take a while, so run as a task.
+		redraw(Cytoscape.getCurrentNetworkView());
 		parent = null;
 	}
 
@@ -2041,45 +2042,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 	}
 
-	private Calculator getNewCalculator(final VisualPropertyType type, final String newMappingName,
-	                                    final String newCalcName, final String controllingAttrName) {
-		System.out.println("######## Mapper = " + newMappingName);
+	
+	private void redraw(final CyNetworkView view) {
+		// Create Task
+		RedrawTask task = new RedrawTask(view);
+		// Configure JTask Dialog Pop-Up Box
+		final JTaskConfig jTaskConfig = new JTaskConfig();
 
-		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
+		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
 
-		Class<?> mapperClass = catalog.getMapping(newMappingName);
-
-		if (mapperClass == null)
-			return null;
-
-		// create the selected mapper
-		final Class<?>[] conTypes = { Class.class, String.class };
-		Constructor<?> mapperCon;
-
-		try {
-			mapperCon = mapperClass.getConstructor(conTypes);
-		} catch (NoSuchMethodException exc) {
-			// Should not happen...
-			logger.warn("Invalid mapper " + mapperClass.getName());
-			return null;
-		}
-
-		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
-
-		System.out.println("Creating Mapping: !!!!!! defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
-
-		final Object[] invokeArgs = { defaultObj.getClass(), controllingAttrName};
-		ObjectMapping<?> mapper = null;
-
-		try {
-			mapper = (ObjectMapping<?>) mapperCon.newInstance(invokeArgs);
-		} catch (Exception exc) {
-			logger.warn("Error creating mapping");
-			return null;
-		}
-
-		return new BasicCalculator(newCalcName, mapper, type);
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
 	}
+	
 
 	/**
 	 * DOCUMENT ME!
