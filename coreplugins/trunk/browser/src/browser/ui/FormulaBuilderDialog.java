@@ -154,9 +154,6 @@ public class FormulaBuilderDialog extends JDialog {
 		functionComboBox = new JComboBox();
 		final Dimension desiredWidthAndHeight = new Dimension(600, 40);
 		functionComboBox.setPreferredSize(desiredWidthAndHeight);
-		functionComboBox.setMinimumSize(desiredWidthAndHeight);
-		functionComboBox.setSize(desiredWidthAndHeight);
-		functionComboBox.setMaximumSize(desiredWidthAndHeight);
 		contentPane.add(functionComboBox);
 		functionComboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
