@@ -49,7 +49,7 @@ public class BList implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns a list of booelan values."; }
+	public String getFunctionSummary() { return "Returns a list of boolean values."; }
 
 	/**
 	 *  Used to provide help for users.
@@ -60,7 +60,7 @@ public class BList implements Function {
 	public Class getReturnType() { return BooleanList.class; }
 
 	/**
-	 *  @return BooleanList.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
+	 *  @return BooleanList.class
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		return BooleanList.class;

@@ -60,7 +60,7 @@ public class IList implements Function {
 	public Class getReturnType() { return LongList.class; }
 
 	/**
-	 *  @return LongList.class or null if there is not exactly a single list argument, or one or more arguments which might be converted to double
+	 *  @return LongList.class
 	 */
 	public Class validateArgTypes(final Class[] argTypes) {
 		return LongList.class;
