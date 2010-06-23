@@ -64,7 +64,7 @@ public class Len implements Function {
 		if (argTypes.length != 1)
 			return null;
 
-		return String.class;
+		return Long.class;
 	}
 
 	/**
