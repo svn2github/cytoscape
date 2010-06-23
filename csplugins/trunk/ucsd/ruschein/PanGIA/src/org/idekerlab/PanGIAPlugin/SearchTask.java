@@ -93,7 +93,7 @@ public class SearchTask implements Task {
 		
 		//Load trainingComplexes
 		List<SNodeModule> trainingComplexes = null;
-		if (parameters.getComplexTraining() || parameters.getComplexAnnotation())
+		if (parameters.getComplexTrainingPhysical() || parameters.getComplexTrainingGenetic() || parameters.getComplexAnnotation())
 		{
 			final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 			Map<String,Set<String>> annot_node = new HashMap<String,Set<String>>(1000);
@@ -111,11 +111,9 @@ public class SearchTask implements Task {
 		if (needsToHalt) return;
 		
 		//Perform training
-		if (parameters.getComplexTraining())
-		{
-			physicalNetwork = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
-			geneticNetwork = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
-		}
+		if (parameters.getComplexTrainingPhysical()) physicalNetwork = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
+		if (parameters.getComplexTrainingGenetic()) geneticNetwork = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
+		
 		
 		if (needsToHalt) return;
 		
@@ -153,7 +151,7 @@ public class SearchTask implements Task {
 		
 		//Annotate complexes
 		Map<TypedLinkNodeModule<String, BFEdge>,String> module_name = null;
-		System.out.println("PARAM: "+parameters.getComplexTraining()+", "+parameters.getComplexAnnotation()+", "+parameters.getAnnotationThreshold());
+		System.out.println("PARAM: "+parameters.getComplexTrainingPhysical()+", "+parameters.getComplexTrainingPhysical()+", "+parameters.getComplexAnnotation()+", "+parameters.getAnnotationThreshold());
 		
 		if (parameters.getComplexAnnotation())
 		{

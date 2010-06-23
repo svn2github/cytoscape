@@ -20,7 +20,8 @@ public final class SearchParameters {
 	private double pValueThreshold;
 	private int numberOfSamples;
 	
-	private boolean complexTraining;
+	private boolean complexTrainingPhysical;
+	private boolean complexTrainingGenetic;
 	private boolean complexAnnotation;
 	private String annotationAttrName;
 	private double annotationThreshold;
@@ -116,14 +117,24 @@ public final class SearchParameters {
 		return numberOfSamples;
 	}
 	
-	public void setComplexTraining(boolean value)
+	public void setComplexTrainingPhysical(boolean value)
 	{
-		this.complexTraining = value;
+		this.complexTrainingPhysical = value;
 	}
 	
-	public boolean getComplexTraining()
+	public boolean getComplexTrainingPhysical()
 	{
-		return complexTraining;
+		return complexTrainingPhysical;
+	}
+	
+	public void setComplexTrainingGenetic(boolean value)
+	{
+		this.complexTrainingGenetic = value;
+	}
+	
+	public boolean getComplexTrainingGenetic()
+	{
+		return complexTrainingGenetic;
 	}
 	
 	public void setComplexAnnotation(boolean value)

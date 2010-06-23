@@ -355,8 +355,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         lbNumberOfSamples = new javax.swing.JLabel();
         numberOfSamplesTextField = new javax.swing.JTextField();
         lbPlaceHolder3 = new javax.swing.JLabel();
-        trainingCheckBox = new JCheckBox();
+        trainingCheckBoxPhysical = new JCheckBox();
+        trainingCheckBoxGenetic = new JCheckBox();
         trainingLabel = new JLabel();
+        trainingLabelPhysical = new JLabel();
+        trainingLabelGenetic = new JLabel();
         annotationCheckBox = new JCheckBox();
         annotationLabel = new JLabel();
         lbComplexFile = new javax.swing.JLabel();
@@ -503,23 +506,53 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         trainingPanel.add(trainingLabel, gridBagConstraints);
         
-        
-        trainingCheckBox.setSelected(false);
-        trainingCheckBox.setToolTipText(trainingLabel.getToolTipText());
+        trainingCheckBoxPhysical.setSelected(false);
+        trainingCheckBoxPhysical.setToolTipText(trainingLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        trainingCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        trainingCheckBoxPhysical.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	trainingCheckBoxActionPerformed(evt);
             }
         });
+        trainingPanel.add(trainingCheckBoxPhysical, gridBagConstraints);
         
-        trainingPanel.add(trainingCheckBox, gridBagConstraints);
+        trainingLabelPhysical.setText("Physical");
+        trainingLabelPhysical.setToolTipText("Train the edge attribute scores against a reference annotation.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 5, 0);
+        trainingPanel.add(trainingLabelPhysical, gridBagConstraints);
         
+        trainingCheckBoxGenetic.setSelected(false);
+        trainingCheckBoxGenetic.setToolTipText(trainingLabel.getToolTipText());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        trainingCheckBoxGenetic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	trainingCheckBoxActionPerformed(evt);
+            }
+        });
+        trainingPanel.add(trainingCheckBoxGenetic, gridBagConstraints);
+        
+        trainingLabelGenetic.setText("Genetic");
+        trainingLabelGenetic.setToolTipText("Train the edge attribute scores against a reference annotation.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 5, 0);
+        trainingPanel.add(trainingLabelGenetic, gridBagConstraints);
         
         annotationLabel.setText("Annotation labeling:");
         annotationLabel.setToolTipText("Label the modules using a reference annotation.");
@@ -674,7 +707,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	
 	private void annotationCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
 	{
-		boolean needAttrib = trainingCheckBox.isSelected() || annotationCheckBox.isSelected();
+		boolean needAttrib = trainingCheckBoxPhysical.isSelected() || trainingCheckBoxGenetic.isSelected() || annotationCheckBox.isSelected();
 		
 		annotationAttribComboBox.setEnabled(needAttrib);
 		lbComplexFile.setEnabled(needAttrib);
@@ -717,8 +750,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JLabel lbGeneticNetwork;
     private javax.swing.JLabel lbPhysicalNetwork;
     private javax.swing.JPanel trainingPanel;
-    private JCheckBox trainingCheckBox;
+    private JCheckBox trainingCheckBoxPhysical;
+    private JCheckBox trainingCheckBoxGenetic;
     private JLabel trainingLabel;
+    private JLabel trainingLabelPhysical;
+    private JLabel trainingLabelGenetic;
     private JCheckBox annotationCheckBox;
     private JLabel annotationLabel;
     private javax.swing.JLabel lbComplexFile;
@@ -857,7 +893,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		
 		parameters.setAnnotationThreshold(Double.valueOf(annotationThresholdTextField.getText()));
 		parameters.setComplexAnnotation(annotationCheckBox.isSelected());
-		parameters.setComplexTraining(trainingCheckBox.isSelected());
+		parameters.setComplexTrainingPhysical(trainingCheckBoxPhysical.isSelected());
+		parameters.setComplexTrainingGenetic(trainingCheckBoxGenetic.isSelected());
 		
 		if (annotationAttribComboBox.getSelectedItem()==null) parameters.setAnnotationAttrName("");
 		else parameters.setAnnotationAttrName(annotationAttribComboBox.getSelectedItem().toString());
@@ -963,7 +1000,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			return;
 		}
 		
-		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
+		if ((annotationCheckBox.isSelected() || trainingCheckBoxPhysical.isSelected() || trainingCheckBoxGenetic.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
 		{
 			searchButton.setEnabled(false);
 			parameterErrorLabel.setText("<HTML>Error: Annotation requires an<BR>annotation node attribute.</HTML>");

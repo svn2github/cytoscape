@@ -55,8 +55,7 @@ public class PanGIAPlugin extends CytoscapePlugin {
 		try {
 			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
 			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
-			if (!CyHelpBroker.addHelpSet(newHelpSet))
-				System.err.println("PanGIA: Failed to add help set!");
+			CyHelpBroker.getHelpSet().add(newHelpSet);
 		} catch (final Exception e) {
 			System.err.println("PanGIA: Could not find help set: \"" + HELP_SET_NAME + "!");
 		}
