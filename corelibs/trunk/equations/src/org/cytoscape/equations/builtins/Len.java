@@ -75,7 +75,7 @@ public class Len implements Function {
 	 */
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final String text = FunctionUtil.getArgAsString(args[0]);
-		return (Double)(double)text.length();
+		return (Long)(long)text.length();
 	}
 
 	/**

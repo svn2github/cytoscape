@@ -35,7 +35,7 @@ import junit.framework.*;
 
 public class LenTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=LEN(\"baboon\")", Double.valueOf(6.0)));
-		assertTrue(Framework.executeTest("=LEN(\"\")", Double.valueOf(0.0)));
+		assertTrue(Framework.executeTest("=LEN(\"baboon\")", Long.valueOf(6)));
+		assertTrue(Framework.executeTest("=LEN(\"\")", Long.valueOf(0)));
 	}
 }
