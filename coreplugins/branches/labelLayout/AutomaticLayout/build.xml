@@ -10,7 +10,7 @@
     <property name="layout.version" value="0.1"/>
     <property name="layout.year" value="2006"/>
     <property name="layout.jar" value="AutomaticLayout.jar"/>
-
+    <property name="test.jar" value="${layour.name}-test.jar"/>
 
     <echo message="Building ${layout.name} version ${layout.version}."/>
 
@@ -38,6 +38,9 @@
     <!-- Subdirectory for test reports -->
     <property name="layout.tests.reports.dir" value="${layout.root.dir}/reports/tests" />
     <property name="resources.dir" value="${layout.root.dir}/resources" />
+    <property name="tests.dir" value="${layout.root.dir}/tests"/>
+    <property name="junit.log.dir" value="${layout.root.dir}/junit-logs" />
+
 
     <!-- Define excludes for layout compile and javadoc -->
     <property name="layout.excludes" value="**/notyet/*"/>
@@ -60,10 +63,10 @@
 
     <!-- Define the junit class path - It needs to find what we just built -->
     <path id="junit.class.path" >
-      <pathelement path="${project.class.path}/"/>
+      <pathelement path="${layout.project.class.path}/"/>
       <pathelement location="${test.jar}"/>
 
-      <fileset dir="${lib.dir}">
+      <fileset dir="${layout.lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
     </path>
@@ -144,7 +147,7 @@
           if="tests.ok">
     <javac srcdir="${tests.dir}"
            classpathref="junit.class.path"
-           destdir="${build.dir}"
+           destdir="${layout.classes.dir}"
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
@@ -161,7 +164,7 @@
           depends="compile-tests"
           if="tests.ok">
     <jar jarfile="${test.jar}"
-         basedir="${build.dir}" >
+         basedir="${layout.classes.dir}" >
     </jar>
     <echo message="Successfully ran jar-tests task!"/>
   </target>
