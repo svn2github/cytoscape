@@ -93,10 +93,17 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JPopupMenu attributeSelectionPopupMenu = null;
 	private JScrollPane jScrollPane = null;
 	private JPopupMenu jPopupMenu1 = null;
-	private JMenuItem jMenuItem = null;
-	private JMenuItem jMenuItem1 = null;
-	private JMenuItem jMenuItem2 = null;
-	private JMenuItem jMenuItem3 = null;
+
+	private JMenuItem jMenuItemStringAttribute = null;
+	private JMenuItem jMenuItemIntegerAttribute = null;
+	private JMenuItem jMenuItemFloatingPointAttribute = null;
+	private JMenuItem jMenuItemBooleanAttribute = null;
+
+	private JMenuItem jMenuItemStringListAttribute = null;
+	private JMenuItem jMenuItemIntegerListAttribute = null;
+	private JMenuItem jMenuItemFloatingPointListAttribute = null;
+	private JMenuItem jMenuItemBooleanListAttribute = null;
+
 	private JToolBar jToolBar = null;
 	private JButton selectButton = null;
 	private CheckBoxJList attributeList = null;
@@ -118,7 +125,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 		this.tableModel = tableModel;
 		this.table      = table;
-		this.attributes = graphObjectType.getAssociatedAttribute();
+		this.attributes = graphObjectType.getAssociatedAttributes();
 		this.objectType = graphObjectType;
 		this.attrModel  = a_model;
 		this.orderedCol = orderedCol;
@@ -197,89 +204,169 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JPopupMenu getJPopupMenu1() {
 		if (jPopupMenu1 == null) {
 			jPopupMenu1 = new JPopupMenu();
-			jPopupMenu1.add(getJMenuItem1());
-			jPopupMenu1.add(getJMenuItem());
-			jPopupMenu1.add(getJMenuItem2());
-			jPopupMenu1.add(getJMenuItem3());
+			jPopupMenu1.add(getJMenuItemIntegerAttribute());
+			jPopupMenu1.add(getJMenuItemStringAttribute());
+			jPopupMenu1.add(getJMenuItemFloatingPointAttribute());
+			jPopupMenu1.add(getJMenuItemBooleanAttribute());
+			jPopupMenu1.add(getJMenuItemIntegerListAttribute());
+			jPopupMenu1.add(getJMenuItemStringListAttribute());
+			jPopupMenu1.add(getJMenuItemFloatingPointListAttribute());
+			jPopupMenu1.add(getJMenuItemBooleanListAttribute());
 		}
 
 		return jPopupMenu1;
 	}
 
 	/**
-	 * This method initializes jMenuItem
+	 * This method initializes jMenuItemStringAttribute
 	 *
 	 * @return javax.swing.JMenuItem
 	 */
-	private JMenuItem getJMenuItem() {
-		if (jMenuItem == null) {
-			jMenuItem = new JMenuItem();
-			jMenuItem.setText("String Attribute");
-			jMenuItem.addActionListener(new java.awt.event.ActionListener() {
+	private JMenuItem getJMenuItemStringAttribute() {
+		if (jMenuItemStringAttribute == null) {
+			jMenuItemStringAttribute = new JMenuItem();
+			jMenuItemStringAttribute.setText("String Attribute");
+			jMenuItemStringAttribute.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						createNewAttribute("String");
 					}
 				});
 		}
 
-		return jMenuItem;
+		return jMenuItemStringAttribute;
 	}
 
 	/**
-	 * This method initializes jMenuItem1
+	 * This method initializes jMenuItemIntegerAttribute
 	 *
 	 * @return javax.swing.JMenuItem
 	 */
-	private JMenuItem getJMenuItem1() {
-		if (jMenuItem1 == null) {
-			jMenuItem1 = new JMenuItem();
-			jMenuItem1.setText("Integer Attribute");
-			jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+	private JMenuItem getJMenuItemIntegerAttribute() {
+		if (jMenuItemIntegerAttribute == null) {
+			jMenuItemIntegerAttribute = new JMenuItem();
+			jMenuItemIntegerAttribute.setText("Integer Attribute");
+			jMenuItemIntegerAttribute.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						createNewAttribute("Integer");
 					}
 				});
 		}
 
-		return jMenuItem1;
+		return jMenuItemIntegerAttribute;
 	}
 
 	/**
-	 * This method initializes jMenuItem2
+	 * This method initializes jMenuItemFloatingPointAttribute
 	 *
 	 * @return javax.swing.JMenuItem
 	 */
-	private JMenuItem getJMenuItem2() {
-		if (jMenuItem2 == null) {
-			jMenuItem2 = new JMenuItem();
-			jMenuItem2.setText("Floating Point Attribute");
-			jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+	private JMenuItem getJMenuItemFloatingPointAttribute() {
+		if (jMenuItemFloatingPointAttribute == null) {
+			jMenuItemFloatingPointAttribute = new JMenuItem();
+			jMenuItemFloatingPointAttribute.setText("Floating Point Attribute");
+			jMenuItemFloatingPointAttribute.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						createNewAttribute("Floating Point");
 					}
 				});
 		}
 
-		return jMenuItem2;
+		return jMenuItemFloatingPointAttribute;
 	}
 
 	/**
-	 * This method initializes jMenuItem3
+	 * This method initializes jMenuItemBooleanAttribute
 	 *
 	 * @return javax.swing.JMenuItem
 	 */
-	private JMenuItem getJMenuItem3() {
-		if (jMenuItem3 == null) {
-			jMenuItem3 = new JMenuItem();
-			jMenuItem3.setText("Boolean Attribute");
-			jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+	private JMenuItem getJMenuItemBooleanAttribute() {
+		if (jMenuItemBooleanAttribute == null) {
+			jMenuItemBooleanAttribute = new JMenuItem();
+			jMenuItemBooleanAttribute.setText("Boolean Attribute");
+			jMenuItemBooleanAttribute.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						createNewAttribute("Boolean");
 					}
 				});
 		}
 
-		return jMenuItem3;
+		return jMenuItemBooleanAttribute;
+	}
+
+	/**
+	 * This method initializes jMenuItemStringListAttribute
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
+	private JMenuItem getJMenuItemStringListAttribute() {
+		if (jMenuItemStringListAttribute == null) {
+			jMenuItemStringListAttribute = new JMenuItem();
+			jMenuItemStringListAttribute.setText("String List Attribute");
+			jMenuItemStringListAttribute.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						createNewAttribute("String List");
+					}
+				});
+		}
+
+		return jMenuItemStringListAttribute;
+	}
+
+	/**
+	 * This method initializes jMenuItemIntegerListAttribute
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
+	private JMenuItem getJMenuItemIntegerListAttribute() {
+		if (jMenuItemIntegerListAttribute == null) {
+			jMenuItemIntegerListAttribute = new JMenuItem();
+			jMenuItemIntegerListAttribute.setText("Integer List Attribute");
+			jMenuItemIntegerListAttribute.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						createNewAttribute("Integer List");
+					}
+				});
+		}
+
+		return jMenuItemIntegerListAttribute;
+	}
+
+	/**
+	 * This method initializes jMenuItemFloatingPointListAttribute
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
+	private JMenuItem getJMenuItemFloatingPointListAttribute() {
+		if (jMenuItemFloatingPointListAttribute == null) {
+			jMenuItemFloatingPointListAttribute = new JMenuItem();
+			jMenuItemFloatingPointListAttribute.setText("Floating Point List Attribute");
+			jMenuItemFloatingPointListAttribute.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						createNewAttribute("Floating Point List");
+					}
+				});
+		}
+
+		return jMenuItemFloatingPointListAttribute;
+	}
+
+	/**
+	 * This method initializes jMenuItemBooleanListAttribute
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
+	private JMenuItem getJMenuItemBooleanListAttribute() {
+		if (jMenuItemBooleanListAttribute == null) {
+			jMenuItemBooleanListAttribute = new JMenuItem();
+			jMenuItemBooleanListAttribute.setText("Boolean List Attribute");
+			jMenuItemBooleanListAttribute.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent e) {
+						createNewAttribute("Boolean List");
+					}
+				});
+		}
+
+		return jMenuItemBooleanListAttribute;
 	}
 
 	/**
@@ -741,62 +828,58 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	// Create a whole new attribute and set a default value.
 	//
 	private void createNewAttribute(final String type) {
-		final String[] existingAttrs = CyAttributesUtils.getVisibleAttributeNames(attributes)
-		                                                .toArray(new String[0]);
-		boolean dupFlag = true;
-
-		String name = null;
-
-		while (dupFlag == true) {
-			name = JOptionPane.showInputDialog(this, "Please enter new attribute name: ",
-			                                   "Create New " + type + " Attribute",
-			                                   JOptionPane.QUESTION_MESSAGE);
-
-			if (existingAttrs.length == 0) {
-				dupFlag = false;
-
-				break;
-			} else {
-				for (int i = 0; i < existingAttrs.length; i++) {
-					if (existingAttrs[i].equals(name) == false) {
-						dupFlag = false;
-					} else if (existingAttrs[i].equals(name)) {
-						JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-						                              "Attribute " + name + " already exists.",
-						                              "Error!", JOptionPane.ERROR_MESSAGE);
-						dupFlag = true;
-
-						break;
-					}
-				}
+		final String[] existingAttrs = CyAttributesUtils.getVisibleAttributeNames(attributes).toArray(new String[0]);
+		String newAttribName = null;
+		do {
+			newAttribName = JOptionPane.showInputDialog(this, "Please enter new attribute name: ",
+								    "Create New " + type + " Attribute",
+								    JOptionPane.QUESTION_MESSAGE);
+			if (Arrays.binarySearch(existingAttrs, newAttribName) >= 0) {
+				newAttribName = null;
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+							      "Attribute " + newAttribName + " already exists.",
+							      "Error!", JOptionPane.ERROR_MESSAGE);
 			}
-		}
+		} while (newAttribName == null);
 
-		if (name != null) {
-			final String testVal = "dummy";
+		final String testVal = "dummy";
 
-			if (type.equals("String")) {
-				attributes.setAttribute(testVal, name, new String());
-			} else if (type.equals("Floating Point")) {
-				attributes.setAttribute(testVal, name, new Double(0));
-			} else if (type.equals("Integer")) {
-				attributes.setAttribute(testVal, name, new Integer(0));
-			} else if (type.equals("Boolean")) {
-				attributes.setAttribute(testVal, name, new Boolean(false));
-			} else {
-				attributes.setAttribute(testVal, name, new String());
-			}
+		if (type.equals("String"))
+			attributes.setAttribute(testVal, newAttribName, new String());
+		else if (type.equals("Floating Point"))
+			attributes.setAttribute(testVal, newAttribName, new Double(0));
+		else if (type.equals("Integer"))
+			attributes.setAttribute(testVal, newAttribName, new Integer(0));
+		else if (type.equals("Boolean"))
+			attributes.setAttribute(testVal, newAttribName, new Boolean(false));
+		else if (type.equals("String List")) {
+			final List<String> newStringList = new ArrayList<String>();
+			newStringList.add("dummy");
+			attributes.setListAttribute(testVal, newAttribName, newStringList);
+		} else if (type.equals("Floating Point List")) {
+			final List<Double> newDoubleList = new ArrayList<Double>();
+			newDoubleList.add(0.0);
+			attributes.setListAttribute(testVal, newAttribName, newDoubleList);
+		} else if (type.equals("Integer List")) {
+			final List<Long> newLongList = new ArrayList<Long>();
+			newLongList.add(1L);
+			attributes.setListAttribute(testVal, newAttribName, newLongList);
+		} else if (type.equals("Boolean List")) {
+			final List<Boolean> newBooleanList = new ArrayList<Boolean>();
+			newBooleanList.add(true);
+			attributes.setListAttribute(testVal, newAttribName, newBooleanList);
+		} else
+			throw new IllegalArgumentException("unknown attribute type \"" + type + "\"!");
 
-			attributes.deleteAttribute(testVal, name);
+		attributes.deleteAttribute(testVal, newAttribName);
 
-			// Update list selection
-			orderedCol.add(name);
-			Cytoscape.getSwingPropertyChangeSupport()
-			         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		// Update list selection
+		orderedCol.add(newAttribName);
+		Cytoscape.getSwingPropertyChangeSupport()
+			.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
-			tableModel.setTableData(null, orderedCol);
-		}
+		tableModel.setTableData(null, orderedCol);
 	}
 
 	/**

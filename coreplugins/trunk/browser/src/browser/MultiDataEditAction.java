@@ -180,7 +180,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 	public void initEdit() {
 		// get proper Global CytoscapeData object
-		attrData = graphObjectType.getAssociatedAttribute();
+		attrData = graphObjectType.getAssociatedAttributes();
 
 		if (action == COPY) {
 			copyAtt();

@@ -98,9 +98,9 @@ public class ModPanel extends JPanel implements ActionListener {
 	 */
 	public ModPanel(final DataTableModel tableModel, final DataObjectType graphObjectType) {
 		// get proper Global CytoscapeData object
-		this.attrData = graphObjectType.getAssociatedAttribute();
+		this.attrData = graphObjectType.getAssociatedAttributes();
 
-		this.data = graphObjectType.getAssociatedAttribute();
+		this.data = graphObjectType.getAssociatedAttributes();
 		this.tableModel = tableModel;
 		this.objectType = graphObjectType;
 

@@ -126,9 +126,10 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @param attributeNames  DOCUMENT ME!
 	 * @param type  DOCUMENT ME!
 	 */
-	public DataTableModel(final List<GraphObject> graph_objects, List<String> attributeNames,
-	                      DataObjectType type) {
-		this.data = type.getAssociatedAttribute();
+	public DataTableModel(final List<GraphObject> graph_objects, final List<String> attributeNames,
+	                      final DataObjectType type)
+	{
+		this.data = type.getAssociatedAttributes();
 		this.graphObjects = graph_objects;
 		this.attributeNames = attributeNames;
 		this.objectType = type;

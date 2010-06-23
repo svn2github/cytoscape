@@ -65,7 +65,7 @@ public enum DataObjectType {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyAttributes getAssociatedAttribute() {
+	public CyAttributes getAssociatedAttributes() {
 		if (this == NODES)
 			return Cytoscape.getNodeAttributes();
 		else if (this == EDGES)

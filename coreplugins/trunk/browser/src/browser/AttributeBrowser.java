@@ -170,9 +170,8 @@ public class AttributeBrowser implements TableColumnModelListener {
 	 *            DOCUMENT ME!
 	 */
 	private AttributeBrowser(final DataObjectType panelType) {
-
 		// set up CytoscapeData Object and GraphObject Type
-		this.attrData = panelType.getAssociatedAttribute();
+		this.attrData = panelType.getAssociatedAttributes();
 		this.panelType = panelType;
 		this.orderedColumn = new ArrayList<String>();
 

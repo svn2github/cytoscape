@@ -125,7 +125,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 		if (newValue == null)
 			return;
 
-		final CyAttributes attrs = objectType.getAssociatedAttribute();
+		final CyAttributes attrs = objectType.getAssociatedAttributes();
 
 		// Error message for the popup dialog.
 		String errMessage = null;
@@ -266,10 +266,15 @@ public class DataEditAction extends AbstractUndoableEdit {
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// Deal with equations first:
 			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
-				attrs.deleteAttribute(id, attrName);
-				showErrorWindow("Error in attribute \"" + attrName
-						+ "\": no equations are supported for lists!");
+				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+				if (equation == null) {
+					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
+					attrs.deleteAttribute(id, attrName);
+					return;
+				}
+ 				attrs.setListAttribute(id, attrName, equation);
+				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
+				valid = true;
 				return;
 			}
 

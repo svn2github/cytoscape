@@ -118,7 +118,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		setFont(normalFont);
 		setBackground(table.getBackground());
 
-		final CyAttributes attribs = type.getAssociatedAttribute();
+		final CyAttributes attribs = type.getAssociatedAttributes();
 
 		if (attribs == null)
 			return this;

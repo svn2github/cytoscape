@@ -61,12 +61,16 @@ import browser.DataTableModel;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
+import org.cytoscape.equations.BooleanList;
+import org.cytoscape.equations.DoubleList;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.EqnParser;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.EquationUtil;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.LongList;
 import org.cytoscape.equations.Parser;
+import org.cytoscape.equations.StringList;
 
 import giny.model.GraphObject;
 
@@ -92,7 +96,6 @@ public class FormulaBuilderDialog extends JDialog {
 	private JPanel argumentPanel = null;
 	private JButton addButton = null;
 	private JButton undoButton = null;
-	private JButton doneButton = null;
 	private JComboBox attribNamesComboBox = null;
 	private JTextField constantValuesTextField = null;
 	private JLabel applyToLabel = null;
@@ -142,13 +145,18 @@ public class FormulaBuilderDialog extends JDialog {
 		initOkButton(contentPane);
 		initCancelButton(contentPane);
 
-		setSize(646, 342);
+		setSize(614, 342);
 
 		initLayout(groupLayout);
 	}
 
 	private void initFunctionComboBox(final Container contentPane) {
 		functionComboBox = new JComboBox();
+		final Dimension desiredWidthAndHeight = new Dimension(600, 40);
+		functionComboBox.setPreferredSize(desiredWidthAndHeight);
+		functionComboBox.setMinimumSize(desiredWidthAndHeight);
+		functionComboBox.setSize(desiredWidthAndHeight);
+		functionComboBox.setMaximumSize(desiredWidthAndHeight);
 		contentPane.add(functionComboBox);
 		functionComboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -183,35 +191,45 @@ public class FormulaBuilderDialog extends JDialog {
 	 *  @returns the type of the attribute "attribName" translated into the language of attribute equations or null
 	 */
 	private Class getAttributeType(final String attribName) {
-		final byte type = tableObjectType.getAssociatedAttribute().getType(attribName);
+		final byte type = tableObjectType.getAssociatedAttributes().getType(attribName);
 		switch (type) {
-		case MultiHashMapDefinition.TYPE_BOOLEAN:
+		case CyAttributes.TYPE_BOOLEAN:
 			return Boolean.class;
-		case MultiHashMapDefinition.TYPE_FLOATING_POINT:
+		case CyAttributes.TYPE_FLOATING:
 			return Double.class;
-		case MultiHashMapDefinition.TYPE_INTEGER:
+		case CyAttributes.TYPE_INTEGER:
 			return Long.class;
-		case MultiHashMapDefinition.TYPE_STRING:
+		case CyAttributes.TYPE_STRING:
 			return String.class;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return List.class;
 		default:
 			return null;
 		}
 	}
 
 	private boolean returnTypeIsCompatible(final Class requiredType, final Class returnType) {
-		if (returnType == Object.class || requiredType == String.class)
-			return true;
-
 		if (returnType == requiredType)
 			return true;
 
-		if (requiredType == Boolean.class && returnType != String.class)
+		if (requiredType == String.class)
 			return true;
 
-		if (requiredType == Double.class && returnType == Long.class)
+		if (requiredType == Boolean.class
+		    && (returnType == Double.class || returnType == Long.class || returnType == Object.class))
 			return true;
 
-		if (requiredType == Long.class && returnType == Double.class)
+		if (requiredType == Double.class
+		    && (returnType == Long.class || returnType == Boolean.class || returnType == String.class || returnType == Object.class))
+			return true;
+
+		if (requiredType == Long.class
+		    && (returnType == Double.class || returnType == Boolean.class || returnType == String.class || returnType == Object.class))
+			return true;
+
+		if (requiredType == List.class
+		    && (returnType == DoubleList.class || returnType == BooleanList.class
+			|| returnType == LongList.class || returnType == StringList.class))
 			return true;
 
 		return false;
@@ -281,22 +299,6 @@ public class FormulaBuilderDialog extends JDialog {
 			});
 		argumentPanel.add(undoButton);
 		undoButton.setEnabled(false);
-
-		doneButton = new JButton("Done");
-		doneButton.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-					final String currentFormula = formulaTextField.getText();
-					formulaTextField.setText(currentFormula + ")");
-
-					addButton.setEnabled(false);
-					undoButton.setEnabled(false);
-					doneButton.setEnabled(false);
-					okButton.setEnabled(true);
-				}
-			});
-
-		argumentPanel.add(doneButton);
-		doneButton.setEnabled(false);
 	}
 
 	private void initApplyToLabel(final Container contentPane) {
@@ -461,16 +463,13 @@ public class FormulaBuilderDialog extends JDialog {
 			formulaTextField.setText(currentFormula + ")");
 
 			addButton.setEnabled(false);
-			doneButton.setEnabled(false);
 			okButton.setEnabled(true);
 		}
 		else if (possibleNextArgTypes.contains(null)) {
-			doneButton.setEnabled(true);
 			okButton.setEnabled(true);
 		}
 		else {
 			addButton.setEnabled(true);
-			doneButton.setEnabled(false);
 			okButton.setEnabled(false);
 		}
 
@@ -481,6 +480,7 @@ public class FormulaBuilderDialog extends JDialog {
 		String formula = formulaTextField.getText();
 		if (formula.charAt(formula.length() - 1) != ')')
 			formula = formula + ")";
+
 		final int cellColum = table.getSelectedColumn();
 		final String attribName = tableModel.getColumnName(cellColum);
 		final CyAttributes attribs = tableModel.getCyAttributes();
@@ -578,7 +578,6 @@ public class FormulaBuilderDialog extends JDialog {
 		usageLabel.setText(function.getUsageDescription());
 		updateAttribNamesComboBox();
 		addButton.setEnabled(zeroArgumentFunction ? false : true);
-		doneButton.setEnabled(false);
 		okButton.setEnabled(zeroArgumentFunction);
 	}
 
@@ -588,10 +587,10 @@ public class FormulaBuilderDialog extends JDialog {
 					     .add(functionComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					     .add(usageLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					     .add(argumentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					     .add(formulaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
 						       .add(applyToLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						       .add(applyToComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					     .add(formulaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					     .add(groupLayout.createParallelGroup(GroupLayout.BASELINE)
 						       .add(okButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						       .add(cancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
