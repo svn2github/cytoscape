@@ -290,7 +290,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         helpButton.setText("Help");
         helpButton.setToolTipText("Get help for PanGIA.");
-	CyHelpBroker.getHelpBroker().enableHelpOnButton(helpButton, "Topic", null);
+        CyHelpBroker.getHelpBroker().enableHelpOnButton(helpButton, "Topic", null);
 
         buttonPanel.add(helpButton);
 
