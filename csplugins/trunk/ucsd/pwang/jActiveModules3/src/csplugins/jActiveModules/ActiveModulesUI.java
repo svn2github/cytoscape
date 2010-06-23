@@ -73,8 +73,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 		try {
 			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
 			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
-			if (!CyHelpBroker.addHelpSet(newHelpSet))
-				logger.warn("Failed to add help set!");
+			CyHelpBroker.getHelpSet().add(newHelpSet);
 		} catch (final Exception e) {
 			logger.warn("Could not find help set: \"" + HELP_SET_NAME + "!");
 		}
