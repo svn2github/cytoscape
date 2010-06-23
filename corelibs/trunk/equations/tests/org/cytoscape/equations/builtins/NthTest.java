@@ -57,6 +57,7 @@ public class NthTest extends TestCase {
                 list2.add(new String("3"));
 		variablesAndValues.put("list2", list2);
 		assertTrue(Framework.executeTest("=NTH(${list2}, 4)", variablesAndValues, "3"));
+		assertTrue(Framework.executeTest("=NTH(FLIST(2,3.4,5,7), 2)", Double.valueOf(3.4)));
 		assertTrue(Framework.executeTestExpectFailure("=NTH(${list2}, 5)"));
 		assertTrue(Framework.executeTestExpectFailure("=NTH(${list2}, 0)"));
 	}
