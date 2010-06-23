@@ -346,17 +346,26 @@ public class NestedNetworkCreator {
 			nodes.add(node);
 		}
 
+		
+		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
+				
 		// Add the edges induced by "origPhysNetwork" to our new nested network.
 		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork
 			.getConnectingEdges(getIntersectingNodes(origPhysNetwork, nodes));
 		for (final CyEdge edge : edges)
+		{
 			nestedNetwork.addEdge(edge);
+			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "Module Finder.Interaction Type", "Physical");
+		}
 
 		// Add the edges induced by "origGenNetwork" to our new nested network.
 		edges = (List<CyEdge>) origGenNetwork
 			.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
 		for (final CyEdge edge : edges)
+		{
 			nestedNetwork.addEdge(edge);
+			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "Module Finder.Interaction Type", "Genetic");
+		}
 
 		if (createNetworkView) {
 			CyNetworkView theView = Cytoscape.createNetworkView(nestedNetwork);
