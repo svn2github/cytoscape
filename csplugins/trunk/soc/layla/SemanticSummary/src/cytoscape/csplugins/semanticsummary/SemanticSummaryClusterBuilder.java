@@ -22,6 +22,7 @@
 
 package cytoscape.csplugins.semanticsummary;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public class SemanticSummaryClusterBuilder
 	private Double cutoff;
 	private ArrayList<CloudWordInfo> cloudWords;
 	boolean initialized;
+	private final static Integer NUMCOLORS = 8;
 	
 	//CONSTRUCTORS
 	
@@ -108,6 +110,65 @@ public class SemanticSummaryClusterBuilder
 		}//end while
 	}
 	
+	/**
+	 * Maps a cluster number (based on its index in clusters) to the color that will
+	 * be used to display that cluster in the Semantic Summary.
+	 * @assumes that the cluster number provided is a valid number.
+	 * @param cluster number
+	 */
+	private Color getClusterColor(Integer clusterNum)
+	{
+		Integer rem = clusterNum % NUMCOLORS;
+		Color textColor;
+		
+        switch (rem) 
+        {
+            case 0:  textColor = Color.BLACK; break;
+            case 1:  textColor = Color.CYAN; break;
+            case 2:  textColor = Color.GRAY; break;
+            case 3:  textColor = Color.GREEN; break;
+            case 4:  textColor = Color.MAGENTA; break;
+            case 5:  textColor = Color.ORANGE; break;
+            case 6:  textColor = Color.PINK; break;
+            case 7:  textColor = Color.RED; break;
+            default: textColor = Color.BLACK;break; //Black by default
+        }
+        return textColor;
+	}
+	
+	/**
+	 * Builds an array of CloudWords based on the current state of clustering
+	 * for this CloudParameters.
+	 */
+	public void buildCloudWords()
+	{
+		if (!initialized)
+			return;
+		
+		//Clear old values
+		cloudWords = new ArrayList<CloudWordInfo>();
+		
+		for(int i = 0; i < clusters.getClusters().size(); i++)
+		{
+			ArrayList<String> curCluster = clusters.getClusters().get(i);
+			Color clusterColor = getClusterColor(i);
+			
+			//Iterate through the words
+			for (int j = 0; j < curCluster.size(); j++)
+			{
+				String curWord = curCluster.get(j);
+				Integer fontSize = params.calculateFontSize(curWord);
+				CloudWordInfo curInfo = new CloudWordInfo(curWord, fontSize);
+				curInfo.setCloudParameters(params);
+				curInfo.setTextColor(clusterColor);
+				curInfo.setCluster(i);
+				
+				//Add to list
+				cloudWords.add(curInfo);
+			}//End iterate through cluster
+		}//End iterate through list of clusters
+	}//end method
+	
 	//Getters and Setters
 	public void setCloudParameters(CloudParameters cloudParams)
 	{
@@ -157,6 +218,11 @@ public class SemanticSummaryClusterBuilder
 	public boolean getInitialized()
 	{
 		return initialized;
+	}
+	
+	public Integer getNumColors()
+	{
+		return NUMCOLORS;
 	}
 	
 

@@ -74,6 +74,7 @@ public class CloudParameters
 	private WordFilter filter;
 	
 	private Double netWeightFactor;
+	private Double clusterCutoff;
 	
 	private Double minRatio;
 	private Double maxRatio;
@@ -105,6 +106,7 @@ public class CloudParameters
 		
 		this.netWeightFactor = SemanticSummaryManager.getInstance().getDefaultNetWeight();
 		this.attributeName = SemanticSummaryManager.getInstance().getDefaultAttName();
+		this.clusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
 	}
 	
 	/**
@@ -135,6 +137,7 @@ public class CloudParameters
 		this.selectedNumNodes = new Integer(props.get("SelectedNumNodes"));
 		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
 		this.netWeightFactor = new Double(props.get("NetWeightFactor"));
+		this.clusterCutoff = new Double(props.get("ClusterCutoff"));
 		this.countInitialized = Boolean.parseBoolean(props.get("CountInitialized"));
 		this.selInitialized = Boolean.parseBoolean(props.get("SelInitialized"));
 		this.ratiosInitialized = Boolean.parseBoolean(props.get("RatiosInitialized"));
@@ -172,6 +175,7 @@ public class CloudParameters
 		
 		//Clear old counts
 		this.networkCounts = new HashMap<String, Integer>();
+		this.networkPairCounts = new HashMap<String, Integer>();
 		this.stringNodeMapping = new HashMap<String, List<String>>();
 		
 		
@@ -268,6 +272,7 @@ public class CloudParameters
 		
 		//Clear old counts
 		this.selectedCounts = new HashMap<String, Integer>();
+		this.selectedPairCounts = new HashMap<String, Integer>();
 		
 		
 		List<String> selectedNodes = this.getSelectedNodes();
@@ -447,6 +452,8 @@ public class CloudParameters
 	/**
 	 * Calculates the proper font size for words in the selected nodes.
 	 */
+	//Comment out for now, while I create a new method
+	/*
 	public void calculateFontSizes()
 	{
 		if (!ratiosInitialized)
@@ -470,6 +477,25 @@ public class CloudParameters
 		Collections.sort(cloudWords);
 		Collections.reverse(cloudWords);
 	}
+	*/
+	/**
+	 * Creates a cloud clustering object and clusters based on the parameter
+	 * in this CloudParameters.
+	 */
+	public void calculateFontSizes()
+	{
+		if (!ratiosInitialized)
+			this.updateRatios();
+		
+		//Clear old fonts
+		this.cloudWords = new ArrayList<CloudWordInfo>();
+		
+		SemanticSummaryClusterBuilder builder = new SemanticSummaryClusterBuilder();
+		builder.initialize(this);
+		builder.clusterData(this.getClusterCutoff());
+		builder.buildCloudWords();
+		cloudWords = builder.getCloudWords();
+	}
 	
 	
 	/**
@@ -479,7 +505,7 @@ public class CloudParameters
 	 * is in the selected nodes.
 	 * @return Integer - the calculated font size for the specified word.
 	 */
-	private Integer calculateFontSize(String aWord)
+	public Integer calculateFontSize(String aWord)
 	{
 		//Sanity check
 		if (!ratios.containsKey(aWord))
@@ -563,6 +589,23 @@ public class CloudParameters
 			String message = "The maximum number of words to display must be greater than or equal to 0.";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
 		}
+		
+		//Cluster Cutoff
+		JFormattedTextField clusterCutoffTextField = inputPanel.getClusterCutoffTextField();
+		
+		value = (Number) clusterCutoffTextField.getValue();
+		if ((value != null) && (value.doubleValue() >= 0.0))
+		{
+			setClusterCutoff(value.doubleValue()); //sets all necessary flags
+		}
+		else
+		{
+			Double defaultClusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
+			clusterCutoffTextField.setValue(defaultClusterCutoff);
+			setClusterCutoff(defaultClusterCutoff);
+			String message = "The cluster cutoff must be greater than or equal to 0";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	/**
@@ -589,6 +632,7 @@ public class CloudParameters
 		paramVariables.append("NetworkNumNodes\t" + networkNumNodes + "\n");
 		paramVariables.append("SelectedNumNodes\t" + selectedNumNodes + "\n");
 		paramVariables.append("NetWeightFactor\t" + netWeightFactor + "\n");
+		paramVariables.append("ClusterCutoff\t" + clusterCutoff + "\n");
 		paramVariables.append("CountInitialized\t" + countInitialized + "\n");
 		paramVariables.append("SelInitialized\t" + selInitialized + "\n");
 		paramVariables.append("RatiosInitialized\t" + ratiosInitialized + "\n");
@@ -1019,6 +1063,21 @@ public class CloudParameters
 			ratiosInitialized = false;
 		
 		netWeightFactor = val;
+	}
+	
+	public Double getClusterCutoff()
+	{
+		return clusterCutoff;
+	}
+	
+	public void setClusterCutoff(Double val)
+	{
+		//Rest flags if it changes
+		if (!clusterCutoff.equals(val))
+			//TODO - SOMETHING HERE
+			;
+		clusterCutoff = val;
+		
 	}
 	
 	public Integer getMaxWords()

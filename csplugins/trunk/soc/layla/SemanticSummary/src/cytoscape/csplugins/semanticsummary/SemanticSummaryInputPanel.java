@@ -79,6 +79,7 @@ public class SemanticSummaryInputPanel extends JPanel
 	//Text Fields
 	private JFormattedTextField maxWordsTextField;
 	private JFormattedTextField netWeightTextField;
+	private JFormattedTextField clusterCutoffTextField;
 	
 	//JComboBox
 	JComboBox cmbAttributes;
@@ -302,9 +303,25 @@ public class SemanticSummaryInputPanel extends JPanel
 		netWeightPanel.add(netWeightLabel,BorderLayout.WEST);
 		netWeightPanel.add(netWeightTextField,BorderLayout.EAST);
 		
+		//Clustering Cutoff
+		JLabel clusterCutoffLabel = new JLabel("Clustering Cutoff");
+		clusterCutoffTextField = new JFormattedTextField(decFormat);
+		clusterCutoffTextField.setColumns(3);
+		clusterCutoffTextField.setValue(SemanticSummaryManager.
+				getInstance().getDefaultClusterCutoff()); //Set to default initially
+		clusterCutoffTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
+		
+		//Clustering Cutoff Panel
+		JPanel clusterCutoffPanel = new JPanel();
+		clusterCutoffPanel.setLayout(new BorderLayout());
+		clusterCutoffPanel.add(clusterCutoffLabel, BorderLayout.WEST);
+		clusterCutoffPanel.add(clusterCutoffTextField, BorderLayout.EAST);
+		
+		
 		//Add components to main panel
 		panel.add(maxWordsPanel);
 		panel.add(netWeightPanel);
+		panel.add(clusterCutoffPanel);
 		
 		//Add to collapsible panel
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
@@ -433,6 +450,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		netWeightTextField.setValue(params.getNetWeightFactor());
 		cmbAttributes.setSelectedItem(params.getAttributeName());
 		maxWordsTextField.setValue(params.getMaxWords());
+		clusterCutoffTextField.setValue(params.getClusterCutoff());
 		SemanticSummaryManager.getInstance().setCurCloud(params);
 	}
 	
@@ -467,6 +485,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		netWeightTextField.setValue(SemanticSummaryManager.getInstance().getDefaultNetWeight());
 		cmbAttributes.setSelectedItem(SemanticSummaryManager.getInstance().getDefaultAttName());
 		maxWordsTextField.setValue(SemanticSummaryManager.getInstance().getDefaultMaxWords());
+		clusterCutoffTextField.setValue(SemanticSummaryManager.getInstance().getDefaultClusterCutoff());
 		this.updateUI();
 	}
 	
@@ -581,6 +600,11 @@ public class SemanticSummaryInputPanel extends JPanel
 		return maxWordsTextField;
 	}
 	
+	public JFormattedTextField getClusterCutoffTextField()
+	{
+		return clusterCutoffTextField;
+	}
+	
 	public JLabel getNetworkLabel()
 	{
 		return networkLabel;
@@ -652,6 +676,22 @@ public class SemanticSummaryInputPanel extends JPanel
 					invalid = true;
 				}
 			}// end max Words
+			
+			else if (source == clusterCutoffTextField)
+			{
+				Number value = (Number) clusterCutoffTextField.getValue();
+				if ((value != null) && (value.doubleValue() >= 0.0))
+				{
+					//All is well - leave it be
+				}
+				else
+				{
+					Double defaultClusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
+					clusterCutoffTextField.setValue(defaultClusterCutoff);
+					message += "The cluster cutoff must be greater than or equal to 0";
+					invalid = true;
+				}
+			}
 			
 			if (invalid)
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);

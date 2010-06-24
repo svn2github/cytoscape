@@ -51,6 +51,8 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 	String word;
 	Integer fontSize;
 	CloudParameters params;
+	Color textColor;
+	Integer cluster;
 	
 	//CONSTRUCTORS
 	
@@ -63,6 +65,8 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 	{
 		word = aWord;
 		fontSize = size;
+		textColor = Color.BLACK;
+		cluster = 0;
 	}
 	
 	//METHODS
@@ -88,8 +92,9 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 	{
 		JLabel label = new JLabel(this.getWord());
 		label.setFont(new Font("sansserif",Font.BOLD, this.getFontSize()));
+		label.setForeground(textColor);
 		
-		//TODO - add listener stuff here
+		//Listener stuff
 		label.addMouseListener(new MouseAdapter() 
 		{
 			public void mouseClicked(MouseEvent me)
@@ -150,7 +155,7 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 				
 				if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
-					clickedLabel.setForeground(Color.BLACK);
+					clickedLabel.setForeground(textColor);
 					clickedLabel.repaint();
 				}
 			}
@@ -188,5 +193,25 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 	public CloudParameters getCloudParameters()
 	{
 		return params;
+	}
+	
+	public Color getTextColor()
+	{
+		return textColor;
+	}
+	
+	public void setTextColor(Color col)
+	{
+		textColor = col;
+	}
+	
+	public Integer getCluster()
+	{
+		return cluster;
+	}
+	
+	public void setCluster(Integer clusterNum)
+	{
+		cluster = clusterNum;
 	}
 }

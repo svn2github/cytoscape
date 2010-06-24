@@ -64,6 +64,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 	private Double defaultNetWeight;
 	private String defaultAttName;
 	private Integer defaultMaxWords;
+	private Double defaultClusterCutoff;
 	
 	//Null Values for params
 	private SemanticSummaryParameters nullSemanticSummary;
@@ -97,6 +98,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		defaultNetWeight = 1.0;
 		defaultAttName = "nodeID";
 		defaultMaxWords = 250;
+		defaultClusterCutoff = 1.0;
 	}
 	
 	//METHODS
@@ -441,6 +443,11 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 	public Integer getDefaultMaxWords()
 	{
 		return defaultMaxWords;
+	}
+	
+	public Double getDefaultClusterCutoff()
+	{
+		return defaultClusterCutoff;
 	}
 	
 	public SemanticSummaryParameters getNullSemanticSummary()
