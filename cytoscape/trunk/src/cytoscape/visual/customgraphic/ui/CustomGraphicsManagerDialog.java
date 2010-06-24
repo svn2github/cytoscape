@@ -15,18 +15,9 @@ import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * CustomGraphicsManagerDialog.java
- *
- * Created on 2010/03/15, 9:09:20
- */
 
 /**
+ * Main UI for managing on-memory library of Custom Graphics
  * 
  * @author kono
  */

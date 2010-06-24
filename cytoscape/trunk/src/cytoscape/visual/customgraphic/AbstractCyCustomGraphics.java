@@ -15,6 +15,8 @@ import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
 import ding.view.ObjectPositionImpl;
 
 public abstract class AbstractCyCustomGraphics implements CyCustomGraphics<CustomGraphic>, Taggable {
+	
+	protected static final String LIST_DELIMITER = "|";
 
 	protected Collection<CustomGraphic> cgList;
 	protected String displayName;

@@ -25,7 +25,7 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
 	private BufferedImage originalImage;
 	private BufferedImage scaledImage;
-	
+
 	private URL sourceUrl;
 
 	public URLImageCustomGraphics(String url) throws IOException {
@@ -34,18 +34,18 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		createImage(url);
 		buildCustomGraphics(originalImage);
 	}
-	
-	
+
 	/**
 	 * 
-	 * @param name - display name of this object.  NOT UNIQUE!
+	 * @param name
+	 *            - display name of this object. NOT UNIQUE!
 	 * @param img
 	 */
 	public URLImageCustomGraphics(String name, BufferedImage img) {
 		super(name);
-		if(img == null)
+		if (img == null)
 			throw new IllegalArgumentException("Image cannot be null.");
-		
+
 		this.tags.add(DEF_TAG);
 		this.originalImage = img;
 		buildCustomGraphics(originalImage);
@@ -53,7 +53,7 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
 	private void buildCustomGraphics(BufferedImage targetImg) {
 		cgList.clear();
-		
+
 		Rectangle2D bound = null;
 		Paint paint = null;
 		final int imageW = targetImg.getWidth();
@@ -71,15 +71,17 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 	}
 
 	private void createImage(String url) throws IOException {
-		if(url == null)
+		if (url == null)
 			throw new IllegalStateException("URL string cannot be null.");
-		
+
 		final URL imageLocation = new URL(url);
 		sourceUrl = imageLocation;
 		originalImage = ImageIO.read(imageLocation);
-		
-		if(originalImage == null)
-			throw new IOException("Could not create an image from this location: " + imageLocation.toString());
+
+		if (originalImage == null)
+			throw new IOException(
+					"Could not create an image from this location: "
+							+ imageLocation.toString());
 	}
 
 	@Override
@@ -104,27 +106,35 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		buildCustomGraphics(scaledImage);
 		return scaledImage;
 	}
-	
+
 	public Image resetImage() {
-		if(scaledImage != null) {
+		if (scaledImage != null) {
 			scaledImage.flush();
 			scaledImage = null;
 		}
 		buildCustomGraphics(originalImage);
 		return originalImage;
 	}
-	
-	
+
 	/**
 	 * This will be used to save this Visual Property.
 	 */
 	public String toString() {
-		return this.getClass().getName() + "," + this.hashCode() + "," + this.displayName;
+		String tagStr = "";
+		// Build tags as a string
+		if (tags.size() != 0) {
+			final StringBuilder builder = new StringBuilder();
+			for (String tag : tags)
+				builder.append(tag + LIST_DELIMITER);
+			String temp = builder.toString();
+			tagStr = temp.substring(0, temp.length()-1);
+		}
+		return this.getClass().getName() + "," + this.hashCode() + ","
+				+ this.displayName + "," + tagStr;
 	}
-	
-	
+
 	public URL getSourceURL() {
 		return this.sourceUrl;
 	}
-	
+
 }

@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -95,6 +97,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		if (this.imageHomeDirectory != null && imageHomeDirectory.isDirectory()) {
 			final File[] imageFiles = imageHomeDirectory.listFiles();
 			final Map<Future<BufferedImage>, String> fMap = new HashMap<Future<BufferedImage>, String>();
+			final Map<Future<BufferedImage>, Set<String>> metatagMap = new HashMap<Future<BufferedImage>, Set<String>>();
 			try {
 				for (File file : imageFiles) {
 					if (file.toString().endsWith("png") == false)
@@ -103,15 +106,24 @@ public class CustomGraphicsPool extends SubjectBase implements
 					final String fileName = file.getName();
 					final String key = fileName.split("\\.")[0];
 					final String value = prop.getProperty(key);
-					String[] nameParts = value.split(",");
-					if(nameParts == null || nameParts.length<2)
+					
+					final String[] imageProps = value.split(",");
+					if(imageProps == null || imageProps.length<2)
 						continue;
 					
-					final String name = nameParts[2];
-					System.out.println("Procsessing: " +  fileName + ", " + name);
+					final String name = imageProps[2];
+					final String tagStr = imageProps[3];
+					System.out.println("Procsessing Image Data: " +  fileName + ", " + name + "," + tagStr);
 					
 					Future<BufferedImage> f = cs.submit(new LoadImageTask(file.toURI().toURL()));
 					fMap.put(f, name);
+					
+					final Set<String> tags = new TreeSet<String>();
+					String[] tagParts = tagStr.split("\\" + AbstractCyCustomGraphics.LIST_DELIMITER);
+					for(String tag: tagParts)
+						tags.add(tag.trim());
+					
+					metatagMap.put(f, tags);
 				}
 				for (File file : imageFiles) {
 					if (file.toString().endsWith("png") == false)
@@ -122,6 +134,9 @@ public class CustomGraphicsPool extends SubjectBase implements
 						continue;
 					
 					final CyCustomGraphics<?> cg = new URLImageCustomGraphics(fMap.get(f), image);
+					if(cg instanceof Taggable)
+						((Taggable) cg).getTags().addAll(metatagMap.get(f));
+					
 					graphicsMap.put(cg.hashCode(), cg );
 				}
 

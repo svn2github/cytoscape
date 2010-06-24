@@ -3,6 +3,7 @@ package cytoscape.visual.customgraphic.ui;
 import java.awt.Image;
 import java.util.Collection;
 
+import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -17,9 +18,13 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphics;
  * 
  * @author kono
  */
-public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
+public class CustomGraphicsDetailPanel extends JPanel implements
 		ListSelectionListener {
 
+	private static final long serialVersionUID = -412539582192509545L;
+
+	private static final String TAG_DELIMITER = ",";
+	
 	private CyCustomGraphics<?> cg;
 
 	/** Creates new form CustomGraphicsDetailPanel */
@@ -212,6 +217,7 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 		if(newName != null && newName.trim().length() != 0)
 			cg.setDisplayName(this.nameTextField.getText());
 	}
+	
 
 	private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		if (cg == null || cg.getImage() == null)
@@ -283,11 +289,17 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 	}
 
 	private void tagsTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
-		
+		final String tagStr = this.tagTextField.getText();
+		if(tagStr != null && tagStr.trim().length() != 0) {
+			if(cg instanceof Taggable) {
+				final String[] tags = tagStr.split(TAG_DELIMITER);
+				for(String tag:tags)
+					((Taggable) cg).getTags().add(tag.trim());
+			}			
+		}
 	}
 	
 	private void optionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
 	
 	
@@ -312,7 +324,6 @@ public class CustomGraphicsDetailPanel extends javax.swing.JPanel implements
 	// End of variables declaration
 
 	public void valueChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
 
 		if (!(e.getSource() instanceof CustomGraphicsBrowser)
 				|| e.getValueIsAdjusting())
