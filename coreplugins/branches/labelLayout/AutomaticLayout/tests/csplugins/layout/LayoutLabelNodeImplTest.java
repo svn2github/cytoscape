@@ -15,11 +15,13 @@ import giny.view.*;
 public class LayoutLabelNodeImplTest extends LayoutNodeTest {
 
     LayoutLabelNodeImpl node1, node2,node3;
-    LayoutNode parentNode1;
+    LayoutNodeImpl parentNode1;
+    NodeView nodeView1;
 
     @Before public void setUp() {
 	node1 = new LayoutLabelNodeImpl();
 	node2 = new LayoutLabelNodeImpl();
+	
     }
 
 
@@ -47,8 +49,12 @@ public class LayoutLabelNodeImplTest extends LayoutNodeTest {
 	super.testDistance(node1, node2, 0.4, -3.5, 2345.2, 234.3);
     }
 
-    @Test public void testMoveToLocation() {
-
+    // TODO: Use nodes properly created for this test
+    @Test public void testMoveToLocation1() {
+	node1.lock();
+	super.testMoveToLocation1(node1,4.6,7.1);
+	node2.unLock();
+	super.testMoveToLocation1(node2,6.564,12.143);
     }
 
 }

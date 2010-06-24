@@ -11,7 +11,7 @@ public class LayoutNodeTest {
 
     static final double EPSILON = 0.0000001D;
 
-    // This doesn't do anything, but if it doesn't exist an error happens 
+    // This doesn't do anything but if it doesn't exist, an error happens 
     @Test public void doNothing() {
     }
 
@@ -61,5 +61,22 @@ public class LayoutNodeTest {
 	double d = Math.sqrt((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1));
 	assertEquals(d, node1.distance(node2), EPSILON);
     }
+
+    public void testMoveToLocation1(LayoutNode node, 
+				    double x, 
+				    double y) {
+	node.moveToLocation();
+	double oldX = node.getX();
+	double oldY = node.getY();
+	node.setLocation(x,y);
+	if(node.isLocked()) {
+	    assertEquals(oldX,node.getX(),EPSILON);
+	    assertEquals(oldY,node.getY(),EPSILON);
+	} else {
+	    assertEquals(x,node.getX(),EPSILON);
+	    assertEquals(y,node.getY(),EPSILON);
+	}
+    }
+
 
 }

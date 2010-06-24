@@ -21,7 +21,7 @@
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
     <property name="layout.root.dir" value="."/>
-    <property name="cytoscape.dir" value="../../cytoscape"/>
+    <property name="cytoscape.dir" value="/users/gerardohuck/Cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/"/>
     <property name="csplugins.dir" value="./src/csplugins"/>
