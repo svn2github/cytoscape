@@ -220,7 +220,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				renderGraph(m_grafx,/* setLastRenderDetail = */ true);
+				renderGraph(m_grafx,/* setLastRenderDetail = */ true, m_lod[0]);
 				contentChanged = m_view.m_contentChanged;
 				m_view.m_contentChanged = false;
 				viewportChanged = m_view.m_viewportChanged;
@@ -275,7 +275,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void print(Graphics g) {
 		final Image img = new ImageImposter(g, getWidth(), getHeight());
-		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false);
+		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false, m_view.m_printLOD);
 		// g.drawImage(img, 0, 0, null);
 	}
 
@@ -286,7 +286,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void printNoImposter(Graphics g) {
 		final Image img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false);
+		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false, m_view.m_printLOD);
 		// g.drawImage(img, 0, 0, null);
 	}
 
@@ -1442,14 +1442,14 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	/**
 	 *  @param setLastRenderDetail if true, "m_lastRenderDetail" will be updated, otherwise it will not be updated.
 	 */
-	private void renderGraph(GraphGraphics graphics, final boolean setLastRenderDetail) {
+	private void renderGraph(GraphGraphics graphics, final boolean setLastRenderDetail, final GraphLOD lod) {
 		final int alpha = (m_isOpaque) ? 255 : 0; // Set color alpha based on opacity setting
 		final Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
 							m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
 			final int lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
-									       m_view.m_spacial, m_lod[0],
+									       m_view.m_spacial, lod,
 									       m_view.m_nodeDetails,
 									       m_view.m_edgeDetails, m_hash,
 									       graphics, backgroundColor, m_xCenter,
