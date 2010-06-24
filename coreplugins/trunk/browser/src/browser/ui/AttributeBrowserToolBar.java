@@ -658,6 +658,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 			formulaBuilderButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
+						// Do not allow opening of the formula builder dialog while a cell is being edited!
+						if (table.getCellEditor() != null)
+							return;
+
 						final int cellRow = table.getSelectedRow();
 						final int cellColum = table.getSelectedColumn();
 						if (cellRow != -1 && cellColum != -1 && tableModel.isCellEditable(cellRow, cellColum)) {
