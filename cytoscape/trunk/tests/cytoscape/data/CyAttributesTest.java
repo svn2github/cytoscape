@@ -222,7 +222,7 @@ public class CyAttributesTest extends TestCase {
 
 		// Try setting the list as null; this should fail
 		try {
-			cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, null);
+			cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, (List)null);
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
