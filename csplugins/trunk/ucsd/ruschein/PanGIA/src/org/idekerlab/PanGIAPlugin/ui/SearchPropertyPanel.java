@@ -533,11 +533,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingCheckBoxGenetic.setSelected(false);
         trainingCheckBoxGenetic.setToolTipText(trainingLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 90, 5, 0);
         trainingCheckBoxGenetic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	trainingCheckBoxActionPerformed(evt);
@@ -548,10 +548,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingLabelGenetic.setText("Genetic");
         trainingLabelGenetic.setToolTipText("Train the edge attribute scores against a reference annotation.");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 20, 5, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 110, 5, 0);
         trainingPanel.add(trainingLabelGenetic, gridBagConstraints);
         
         annotationLabel.setText("Annotation labeling:");
