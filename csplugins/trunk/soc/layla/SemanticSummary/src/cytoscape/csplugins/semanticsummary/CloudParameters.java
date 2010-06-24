@@ -198,7 +198,7 @@ public class CloudParameters
 			if (nodeValue == null) // problem with nodes or attributes
 				continue;
 			
-			Set<String> wordSet = this.processNodeString(nodeValue);
+			List<String> wordSet = this.processNodeString(nodeValue);
 			String lastWord = ""; //Used for calculating pair counts
 	        
 	        //Iterate through all words
@@ -292,7 +292,7 @@ public class CloudParameters
 			if (nodeValue == null) // problem with nodes or attributes
 				return;
 			
-			Set<String> wordSet = this.processNodeString(nodeValue);
+			List<String> wordSet = this.processNodeString(nodeValue);
 			String lastWord = ""; //Used for calculating pair counts
 	        
 	        //Iterate through all words
@@ -419,7 +419,7 @@ public class CloudParameters
 		boolean pairInitialized = false;
 		while (pairIter.hasNext())
 		{
-			String curWord = (String)iter.next();
+			String curWord = (String)pairIter.next();
 			
 			/* Ratio: (selCount/selTotal)/((netCount/netTotal)^netWeightFactor)
 			 * But, to avoid underflow from small probabilities we calculate it as follows:
@@ -765,11 +765,11 @@ public class CloudParameters
 	
 	/**
 	 * This method takes in a string from a node and processes it to lower case, removes
-	 * punctuation and separates the words into a set.
+	 * punctuation and separates the words into a non repeated list.
 	 * @param String from a node that we are processing.
 	 * @return Set of distinct words.
 	 */
-	private Set<String> processNodeString(String nodeValue)
+	private List<String> processNodeString(String nodeValue)
 	{
 		//Only deal with lower case
 		nodeValue = nodeValue.toLowerCase();
@@ -778,12 +778,14 @@ public class CloudParameters
 		nodeValue = nodeValue.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
         
         //Separate into non repeating set of words
-		Set<String> wordSet = new HashSet<String>();
+		List<String> wordSet = new ArrayList<String>();
+		//Set<String> wordSet = new HashSet<String>();
         StringTokenizer token = new StringTokenizer(nodeValue);
         while (token.hasMoreTokens())
         {
         	String a = token.nextToken();
-        	wordSet.add(a);
+        	if (!wordSet.contains(a))
+        		wordSet.add(a);
         }
         
         return wordSet;

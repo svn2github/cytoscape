@@ -203,6 +203,30 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						subCloud5Writer.close();
 						pFileList.add(current_ratios);
 						
+						//File for NetworkPair Counts
+						File current_net_pairCounts = new File(tmpDir, netNameSep + networkName + netNameSep + 
+								cloudNameSep + cloud_name + cloudNameSep + ".NETPAIRCOUNTS.txt");
+						BufferedWriter subCloud6Writer = new BufferedWriter(new FileWriter(current_net_pairCounts));
+						subCloud6Writer.write(cloud.printHashMap(cloud.getNetworkPairCounts()));
+						subCloud6Writer.close();
+						pFileList.add(current_net_pairCounts);
+						
+						//File for SelectedPair Counts
+						File current_sel_pairCounts = new File(tmpDir, netNameSep + networkName + netNameSep + 
+								cloudNameSep + cloud_name + cloudNameSep + ".SELPAIRCOUNTS.txt");
+						BufferedWriter subCloud7Writer = new BufferedWriter(new FileWriter(current_sel_pairCounts));
+						subCloud7Writer.write(cloud.printHashMap(cloud.getSelectedPairCounts()));
+						subCloud7Writer.close();
+						pFileList.add(current_sel_pairCounts);
+						
+						//File for Ratios
+						File current_pairRatios = new File(tmpDir, netNameSep + networkName + netNameSep +
+								cloudNameSep + cloud_name + cloudNameSep + ".PAIRRATIOS.txt");
+						BufferedWriter subCloud8Writer = new BufferedWriter(new FileWriter(current_pairRatios));
+						subCloud8Writer.write(cloud.printHashMap(cloud.getPairRatios()));
+						subCloud8Writer.close();
+						pFileList.add(current_pairRatios);
+						
 						
 					}//end iteration over clouds
 				}//end if clouds exist for network
@@ -338,6 +362,13 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					cloudParams.setNetworkCounts(netCounts);
 				}
 				
+				if (prop_file.getName().contains(".NETPAIRCOUNTS.txt"))
+				{
+					//Recreate the HashMap and store
+					HashMap<String,Integer> netPairCounts = cloudParams.repopulateHashmap(fullText, 1);
+					cloudParams.setNetworkPairCounts(netPairCounts);
+				}
+				
 				if (prop_file.getName().contains(".SELCOUNTS.txt"))
 				{
 					//Recreate the HashMap and store
@@ -345,11 +376,25 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					cloudParams.setSelectedCounts(selCounts);
 				}
 				
+				if (prop_file.getName().contains(".SELPAIRCOUNTS.txt"))
+				{
+					//Recreate the HashMap and store
+					HashMap<String, Integer> selPairCounts = cloudParams.repopulateHashmap(fullText, 1);
+					cloudParams.setSelectedPairCounts(selPairCounts);
+				}
+				
 				if (prop_file.getName().contains(".RATIOS.txt"))
 				{
 					//Recreate the Ratios and store
 					HashMap<String, Double> ratios = cloudParams.repopulateHashmap(fullText, 3);
 					cloudParams.setRatios(ratios);
+				}
+				
+				if (prop_file.getName().contains(".PAIRRATIOS.txt"))
+				{
+					//Recreate the Ratios and store
+					HashMap<String, Double> pairRatios = cloudParams.repopulateHashmap(fullText, 3);
+					cloudParams.setPairRatios(pairRatios);
 				}
 			}//end loop through all props files
 			
