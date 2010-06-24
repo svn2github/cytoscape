@@ -89,6 +89,23 @@ public class SearchTask implements Task {
 			Set<String> pnodes = physicalNetwork.getNodes();
 			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(pnodes, degreeFilter));
 		}
+				
+		if (needsToHalt) return;
+		
+		//Check for problems
+		if (physicalNetwork.numEdges()==0)
+		{
+			JOptionPane.showMessageDialog(null, "No edges were found in the physical network. Please verify that the network has edges and that the edge attribute is appropriate.");
+			this.halt();
+			return;
+		}else if (geneticNetwork.numEdges()==0)
+		{
+			JOptionPane.showMessageDialog(null, "No edges were found in the genetic network. Please verify that the network has edges and that the edge attribute is appropriate.");
+			this.halt();
+			return;
+		}
+		
+		System.out.println("Number of edges: "+physicalNetwork.numEdges()+", "+geneticNetwork.numEdges());
 		
 		if (needsToHalt) return;
 		
@@ -182,6 +199,7 @@ public class SearchTask implements Task {
                 if (a==1) this.halt();
         }
 
+        if (needsToHalt) return;
 		
 		//Annotate complexes
 		Map<TypedLinkNodeModule<String, BFEdge>,String> module_name = null;

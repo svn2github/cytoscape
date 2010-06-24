@@ -656,7 +656,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		jTaskConfig.displayTimeElapsed(true);
 		jTaskConfig.displayTimeRemaining(false);
 		jTaskConfig.setAutoDispose(false);
-		jTaskConfig.setModal(true);
+		jTaskConfig.setModal(false);
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		TaskManager.executeTask(new SearchTask(parameters), jTaskConfig);
 	}
