@@ -10,7 +10,7 @@
     <property name="layout.version" value="0.1"/>
     <property name="layout.year" value="2006"/>
     <property name="layout.jar" value="AutomaticLayout.jar"/>
-    <property name="test.jar" value="${layour.name}-test.jar"/>
+    <property name="test.jar" value="AutomaticLayout-test.jar"/>
 
     <echo message="Building ${layout.name} version ${layout.version}."/>
 
@@ -21,25 +21,26 @@
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
     <property name="layout.root.dir" value="."/>
-    <property name="cytoscape.dir" value="/Users/gerardohuck/Cytoscape"/>
+    <property name="cytoscape.dir" value="../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/"/>
     <property name="csplugins.dir" value="./src/csplugins"/>
 
     <!-- Define the directories -->
     <property name="layout.root.dir" value="./"/>
+    <property name="layout.build.dir" value="${layout.root.dir}/build"/>
     <property name="layout.src.dir" value="${layout.root.dir}/src"/>
     <property name="layout.lib.dir" value="${layout.root.dir}/lib"/>
-    <property name="layout.classes.dir" value="${layout.root.dir}/classes"/>
+    <property name="layout.classes.dir" value="${layout.build.dir}/classes"/>
     <property name="layout.javadoc.dir" value="${javadoc.dir}/layout"/>
     <property name="layout.resources.dir" value="${layout.root.dir}/resources"/>
     <property name="layout.manifest.dir" value="${layout.root.dir}/manifest"/>
     <property name="layout.packages" value="layout.*"/>
     <!-- Subdirectory for test reports -->
-    <property name="layout.tests.reports.dir" value="${layout.root.dir}/reports/tests" />
+    <property name="junit.report.dir" value="${layout.build.dir}/reports/tests" />
     <property name="resources.dir" value="${layout.root.dir}/resources" />
     <property name="tests.dir" value="${layout.root.dir}/tests"/>
-    <property name="junit.log.dir" value="${layout.root.dir}/junit-logs" />
+    <property name="junit.log.dir" value="${layout.build.dir}/junit-logs" />
 
 
     <!-- Define excludes for layout compile and javadoc -->
@@ -49,7 +50,6 @@
 
     <path id="layout.project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
-      <pathelement location="/cellar/users/slotia/pre-coreplugins/LayoutCommon/LayoutCommon.jar"/>
       <fileset dir="${cytoscape.lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
@@ -63,12 +63,17 @@
 
     <!-- Define the junit class path - It needs to find what we just built -->
     <path id="junit.class.path" >
-      <pathelement path="${layout.project.class.path}/"/>
-      <pathelement location="${test.jar}"/>
-
+      <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+      <fileset dir="${cytoscape.lib.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
       <fileset dir="${layout.lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
+      <fileset dir="${cytoscape.plugin.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+      <pathelement location="${test.jar}"/>
     </path>
 
     <!-- Make sure tests is in the right place -->
@@ -87,6 +92,7 @@
 
    <echo message=" COMPILE layout "/>
 
+    <mkdir dir="${layout.build.dir}"/>
     <mkdir dir="${layout.classes.dir}"/>
     <javac srcdir="${layout.src.dir}"
            excludes="${layout.excludes}"
@@ -133,8 +139,9 @@
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
   <target name="clean" depends="init-layout">
-    <delete dir="${layout.classes.dir}"/>
+    <delete dir="${layout.build.dir}"/>
     <delete file="${layout.jar}"/>
+    <delete file="${test.jar}"/>
   </target>
 
   <!-- =================================================================== -->
