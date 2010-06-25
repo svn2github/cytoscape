@@ -82,12 +82,24 @@ public class Equation {
 	public static Equation getErrorEquation(final String equation, final String errorMessage) {
 		final EqnCompiler compiler = new EqnCompiler();
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-		if (!compiler.compile("=ERROR(\"" + errorMessage + "\")", attribNameToTypeMap))
+		if (!compiler.compile("=ERROR(\"" + escapeQuotes(errorMessage) + "\")", attribNameToTypeMap))
 			throw new IllegalStateException("internal error in Equation.getErrorEquation().  This should *never* happen!");
 
 		final Equation errorEquation = compiler.getEquation();
 
 		return new Equation(equation, errorEquation.attribReferences, errorEquation.code,
 		                    errorEquation.sourceLocations, errorEquation.type);
+	}
+
+	private static  String escapeQuotes(final String s) {
+		final StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < s.length(); ++i) {
+			final char ch = s.charAt(i);
+			if (ch == '"')
+				builder.append('\\');
+			builder.append(ch);
+		}
+
+		return builder.toString();
 	}
 }
