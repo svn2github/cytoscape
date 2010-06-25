@@ -838,6 +838,9 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			newAttribName = JOptionPane.showInputDialog(this, "Please enter new attribute name: ",
 								    "Create New " + type + " Attribute",
 								    JOptionPane.QUESTION_MESSAGE);
+			if (newAttribName == null)
+				return;
+
 			if (Arrays.binarySearch(existingAttrs, newAttribName) >= 0) {
 				newAttribName = null;
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
