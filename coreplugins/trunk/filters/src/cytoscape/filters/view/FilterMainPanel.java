@@ -96,7 +96,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * 
  */
 public class FilterMainPanel extends JPanel implements ActionListener,
-		ItemListener,SelectEventListener, PropertyChangeListener {
+		ItemListener,SelectEventListener, PropertyChangeListener, CytoPanelListener {
 
     // String constants used for seperator entries in the attribute combobox
     private static final String filtersSeperator = "-- Filters --";
@@ -474,7 +474,34 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		btnSelectAll.addActionListener(this);
 		btnDeSelect.addActionListener(this);
+		
+		// This is used for syn of feednack panel
+		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
+		.getCytoPanel(SwingConstants.WEST);
+		cytoPanelWest.addCytoPanelListener(this);
+		
 	}
+
+	//CytoPanelListener
+	public void onComponentAdded(int count){}
+	public void onComponentRemoved(int count) {}
+	public void onComponentSelected(int componentIndex){
+		// Add selection listener for the feedback table
+	
+		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
+		.getCytoPanel(SwingConstants.WEST);
+		int _index = cytoPanelWest.indexOfComponent("Filters");		
+		if (_index != componentIndex)
+			return;
+				
+		//FiltersPanel is selected
+		if (Cytoscape.getCurrentNetwork() == null)
+			return;
+
+		Cytoscape.getCurrentNetwork().addSelectEventListener(this);			
+	}
+	public void onStateChange(CytoPanelState newState){} 
+	//////End of CytoPanelListener///////
 
 	public void initCMBSelectFilter(){
 		ComboBoxModel theModel = new FilterSelectWidestStringComboBoxModel(allFilterVect);
