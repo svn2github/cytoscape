@@ -82,7 +82,7 @@ public class Equation {
 	public static Equation getErrorEquation(final String equation, final String errorMessage) {
 		final EqnCompiler compiler = new EqnCompiler();
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-		if (!compiler.compile("=ERROR(" + errorMessage + ")", attribNameToTypeMap))
+		if (!compiler.compile("=ERROR(\"" + errorMessage + "\")", attribNameToTypeMap))
 			throw new IllegalStateException("internal error in Equation.getErrorEquation().  This should *never* happen!");
 
 		final Equation errorEquation = compiler.getEquation();
