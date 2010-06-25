@@ -30,15 +30,17 @@
 package org.cytoscape.equations;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 
 public class Equation {
-	final String equation;
-	final Set<String> attribReferences;
-	final Object[] code;
-	final int[] sourceLocations;
-	final Class type;
+	private String equation;
+	private final Set<String> attribReferences;
+	private final Object[] code;
+	private final int[] sourceLocations;
+	private final Class type;
 
 	/**
 	 *  @param equation          the string representing this equation
@@ -70,4 +72,22 @@ public class Equation {
 	public Object[] getCode() { return code; }
 	public int[] getSourceLocations() { return sourceLocations; }
 	public Class getType() { return type; }
+
+	/**
+	 *  A factory method that returns an Equation that always fails at runtime.
+	 *
+	 *  @param equation      an arbitrary string that is usually a syntactically invalid equation
+	 *  @param errorMessage  the runtime error message that the returned equation will produce
+	 */
+	public static Equation getErrorEquation(final String equation, final String errorMessage) {
+		final EqnCompiler compiler = new EqnCompiler();
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		if (!compiler.compile("=ERROR(" + errorMessage + ")", attribNameToTypeMap))
+			throw new IllegalStateException("internal error in Equation.getErrorEquation().  This should *never* happen!");
+
+		final Equation retVal = compiler.getEquation();
+		retVal.equation = equation;
+
+		return retVal;
+	}
 }
