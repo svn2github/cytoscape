@@ -105,7 +105,7 @@ public class LayoutLabelPartition extends LayoutPartition {
 	for (LayoutNode ln: nodeList ) {
 
 	    // Creates a new LabelNode, child of ln
-	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl((LayoutNodeImpl) ln, ln.getIndex() + nodeList.size());
+	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl(ln.getNodeView(), ln.getIndex() + nodeList.size());
 
 	    /* Unlock labelNode if:
 	     * - algorithm is to be applied to the entire network

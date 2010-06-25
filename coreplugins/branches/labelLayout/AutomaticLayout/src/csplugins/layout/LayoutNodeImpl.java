@@ -51,10 +51,8 @@ import java.util.Random;
  * these are often wrapped by LayoutPartition methods.
  */
 public class LayoutNodeImpl extends LayoutNode {
-    // static (class) variables
-    // static final double EPSILON = 0.0000001D;
 
-    // instance variables
+    // -- instance variables --
     
     //     private double x;
     //     private double y;
@@ -62,7 +60,7 @@ public class LayoutNodeImpl extends LayoutNode {
     //     private double dispY;
     //     private boolean isLocked = false;
     
-    protected CyNode node;
+
     protected NodeView nodeView;
 
     /**
@@ -79,21 +77,10 @@ public class LayoutNodeImpl extends LayoutNode {
      */
     public LayoutNodeImpl(NodeView nodeView, int index) {
 	this.nodeView = nodeView;
-	this.node = (CyNode) nodeView.getNode();
 	this.index = index;
 	this.x = nodeView.getXPosition();
 	this.y = nodeView.getYPosition();
 	this.neighbors = new ArrayList<LayoutNode>();
-    }
-
-    /**
-     * Accessor function to return the CyNode associated with
-     * this LayoutNode.
-     *
-     * @return    CyNode that is associated with this LayoutNode
-     */
-    public CyNode getNode() {
-	return this.node;
     }
 
     /**
@@ -152,7 +139,7 @@ public class LayoutNodeImpl extends LayoutNode {
      * @return        String containing the node's identifier
      */
     public String getIdentifier() {
-	return node.getIdentifier();
+	return this.nodeView.getNode().getIdentifier();
     }
 
 

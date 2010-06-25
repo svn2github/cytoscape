@@ -75,8 +75,8 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 		Collections.sort(nodes,
 		            new Comparator<LayoutNode>() {
 				public int compare(LayoutNode o1, LayoutNode o2) {
-					final Node node1 = o1.getNode();
-					final Node node2 = o2.getNode();
+				    final Node node1 = o1.getNodeView().getNode();
+					final Node node2 = o2.getNodeView().getNode();
 					final int d1 = Cytoscape.getCurrentNetwork().getDegree(node1.getRootGraphIndex());
 					final int d2 = Cytoscape.getCurrentNetwork().getDegree(node2.getRootGraphIndex());
 					nodeAttr.setAttribute(node1.getIdentifier(), DEGREE, d1);

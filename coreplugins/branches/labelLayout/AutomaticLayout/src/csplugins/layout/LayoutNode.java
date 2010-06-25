@@ -43,14 +43,6 @@ public abstract class LayoutNode {
     public abstract void moveToLocation();
 
     /**
-     * Accessor function to return the CyNode associated with
-     * this LayoutNode.
-     *
-     * @return    CyNode that is associated with this LayoutNode
-     */
-    public abstract CyNode getNode();
-
-    /**
      * Accessor function to return the NodeView associated with
      * this LayoutNode.
      *
@@ -147,7 +139,7 @@ public abstract class LayoutNode {
      * layout is being executed.
      */
     public void lock() {
-	isLocked = true;
+	this.isLocked = true;
     }
 	
     /**
@@ -156,7 +148,7 @@ public abstract class LayoutNode {
      * layout is being executed.  The "unlocked" state is the default.
      */
     public void unLock() {
-	isLocked = false;
+	this.isLocked = false;
     }
 
     /**
@@ -165,7 +157,7 @@ public abstract class LayoutNode {
      * @return        true if locked, false if unlocked.
      */
     public boolean isLocked() {
-	return isLocked;
+	return this.isLocked;
     }
 
     /**

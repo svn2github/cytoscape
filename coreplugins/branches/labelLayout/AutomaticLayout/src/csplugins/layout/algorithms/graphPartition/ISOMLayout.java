@@ -252,7 +252,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 
 		while (nodeIter.hasNext()) {
 			LayoutNode node = (LayoutNode) nodeIter.next();
-			int rootGraphIndex = node.getNode().getRootGraphIndex();
+			int rootGraphIndex = node.getNodeView().getNode().getRootGraphIndex();
 
 			nodeIndexToLayoutIndex.put(rootGraphIndex, node.getIndex());
 
@@ -286,7 +286,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 		Iterator nodeIter = partition.nodeIterator();
 
 		while (nodeIter.hasNext()) {
-			int nodeIndex = ((LayoutNode) nodeIter.next()).getNode().getRootGraphIndex();
+			int nodeIndex = ((LayoutNode) nodeIter.next()).getNodeView().getNode().getRootGraphIndex();
 			ISOMVertexData ivd = getISOMVertexData(nodeIndex);
 			ivd.distance = 0;
 			ivd.visited = false;
