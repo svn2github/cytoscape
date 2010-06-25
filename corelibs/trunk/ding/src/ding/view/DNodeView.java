@@ -154,7 +154,7 @@ public class DNodeView implements NodeView, Label {
 	private boolean nestedNetworkVisible = true;
 
 	// New feature from Cytoscape 2.8: Consolidated label position information
-	private ObjectPosition labelPosition = ObjectPositionImpl.DEFAULT_POSITION;
+	private ObjectPosition labelPosition = new ObjectPositionImpl();
 
 	// New feature from Cytoscape 2.8: Custom Graphics positions
 	private Map<CustomGraphic, ObjectPosition> graphicsPositions;
