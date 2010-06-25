@@ -1442,14 +1442,15 @@ public class DNodeView implements NodeView, Label {
 		nestedNetworkVisible = makeVisible;
 	}
 
+	// from Label interface
 	public ObjectPosition getPosition() {
 		return labelPosition;
 	}
 
+	// from Label interface
 	public void setPosition(final ObjectPosition p) {
 		this.labelPosition = p;
 		updateLabelPosition();
-
 	}
 
 	private void updateLabelPosition() {
@@ -1494,11 +1495,13 @@ public class DNodeView implements NodeView, Label {
 		return graphicsPositions.get(cg);
 	}
 
+	// from NodeView interface
 	public ObjectPosition getLabelPosition() {
 		return labelPosition;
 	}
 
-	public void setLabelPosition(final ObjectPosition position) {		
-		this.labelPosition = position;
+	// from NodeView interface
+	public void setLabelPosition(final ObjectPosition position) {
+		setPosition(position);
 	}
 }
