@@ -55,6 +55,7 @@ public class Parser {
 			eqnParser.registerFunction(new Cosh());
 			eqnParser.registerFunction(new Count());
 			eqnParser.registerFunction(new Degrees());
+			eqnParser.registerFunction(new org.cytoscape.equations.builtins.Error());
 			eqnParser.registerFunction(new Exp());
 			eqnParser.registerFunction(new First());
 			eqnParser.registerFunction(new FList());
