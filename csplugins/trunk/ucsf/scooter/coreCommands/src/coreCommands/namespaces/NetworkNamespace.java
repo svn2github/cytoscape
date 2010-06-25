@@ -45,6 +45,8 @@ import cytoscape.command.CyCommandResult;
 import coreCommands.namespaces.network.CreateNetwork;
 import coreCommands.namespaces.network.ExportNetwork;
 import coreCommands.namespaces.network.ImportNetwork;
+import coreCommands.namespaces.network.AddNodeNetwork;
+import coreCommands.namespaces.network.AddEdgeNetwork;
 
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
@@ -162,6 +164,8 @@ public class NetworkNamespace extends AbstractCommandHandler {
 		CyCommandHandler net = new NetworkNamespace(ns);
 
 		// Now register the more complicated commands
+		new AddEdgeNetwork(ns);
+		new AddNodeNetwork(ns);
 		new CreateNetwork(ns);
 		new ExportNetwork(ns);
 		new ImportNetwork(ns);

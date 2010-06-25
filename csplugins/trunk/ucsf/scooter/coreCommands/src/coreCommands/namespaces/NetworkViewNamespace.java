@@ -167,7 +167,7 @@ public class NetworkViewNamespace extends AbstractGraphObjectHandler {
 		} else if (command.equals(MAKECURRENT)) {
 			Cytoscape.setCurrentNetworkView(net.getIdentifier());
 			result.addMessage("networkview: set network view for "+net.getIdentifier()+" as current");
-		} else if (command.equals("fit")) {
+		} else if (command.equals(FIT)) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
 			view.fitContent();
 			result.addMessage("networkview: fit view to content for "+net.getIdentifier());

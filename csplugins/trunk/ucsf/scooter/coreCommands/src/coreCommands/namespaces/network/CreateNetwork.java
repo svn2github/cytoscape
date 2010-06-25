@@ -32,17 +32,21 @@
  */
 package coreCommands.namespaces.network;
 
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
-import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandNamespace;
 import cytoscape.command.CyCommandResult;
 
+import cytoscape.data.Semantics;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
+
+import coreCommands.namespaces.AbstractGraphObjectHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,16 +57,20 @@ import java.util.Map;
 /**
  * XXX FIXME XXX Description 
  */
-public class CreateNetwork extends AbstractCommandHandler {
+public class CreateNetwork extends AbstractGraphObjectHandler {
 	static String NETWORK = "network";
 
 	// Commands
 	static String CREATE = "create";
 
 	// Arguments
-	static String NAME = "name";
 	static String CREATEVIEW = "createview";
+	static String DIRECTED = "directed";
+	static String EDGETYPE = "edgetype";
+	static String NAME = "name";
 	static String PARENT = "parent";
+	static String SOURCELIST = "sourcelist";
+	static String TARGETLIST = "targetlist";
 
 	public CreateNetwork(CyCommandNamespace ns) {
 		super(ns);
@@ -72,6 +80,10 @@ public class CreateNetwork extends AbstractCommandHandler {
 		addArgument(CREATE, NAME, "NewNetwork");
 		addArgument(CREATE, CREATEVIEW, "true");
 		addArgument(CREATE, PARENT);
+		addArgument(CREATE, TARGETLIST);
+		addArgument(CREATE, SOURCELIST);
+		addArgument(CREATE, EDGETYPE, "pp");
+		addArgument(CREATE, DIRECTED, "true");
 	}
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
@@ -105,10 +117,38 @@ public class CreateNetwork extends AbstractCommandHandler {
 		}
 
 		CyNetwork net = Cytoscape.createNetwork(netName, parent, createView);
-		if (net == null)
+		if (net == null) {
 			result.addError("network: unable to create new network "+netName);
-		else
-			result.addMessage("network: created new network "+netName);
+			return result;
+		}
+
+		// See if we have source and target
+		String sourceList = getArg(command, SOURCELIST, args);
+		String targetList = getArg(command, TARGETLIST, args);
+		String edgeType = getArg(command, EDGETYPE, args);
+		boolean directed = Boolean.getBoolean(getArg(command, DIRECTED, args));
+		if (sourceList != null || targetList != null || edgeType != null) {
+			if (sourceList == null || targetList == null)
+				throw new CyCommandException("network: both 'targetlist' and 'sourcelist' must be specified");
+
+			String[] sourceNodes = sourceList.split(",");
+			String[] targetNodes = targetList.split(",");
+			if (sourceNodes.length != targetNodes.length)
+				throw new CyCommandException("network: 'targetlist' and 'sourcelist' must have the same number of nodes");
+			
+			for (int nodeIndex = 0; nodeIndex < sourceNodes.length; nodeIndex++) {
+				CyNode source = Cytoscape.getCyNode(sourceNodes[nodeIndex], true);
+				CyNode target = Cytoscape.getCyNode(targetNodes[nodeIndex], true);
+
+				CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, edgeType, true, directed);
+
+				net.addNode(source);
+				net.addNode(target);
+				net.addEdge(edge);
+			}
+
+			result.addMessage("Created network "+netName+" with "+sourceNodes.length+" edges");
+		}
 
 		return result;
 	}

@@ -100,7 +100,22 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
  	 * @return the list of CyNode objects we found that matched the arguments
  	 */
 	protected List<CyNode> getNodeList(CyNetwork net, CyCommandResult result, 
-	                                          Map<String, Object> args) {
+	                                   Map<String, Object> args) {
+		return getNodeList(net, result, args, false);
+	}
+
+	/**
+ 	 * This method is used to handle both <b>nodelist</b> and <b>node</b> parameters.
+ 	 *
+ 	 * @param net the network we are currently dealing with
+ 	 * @param result the CyCommandResult to store our values in
+ 	 * @param args the argument list we're use to look for <b>nodelist</b> and
+ 	 * <b>node</b> arguments.
+ 	 * @param create if true, create the node if it doesn't exist
+ 	 * @return the list of CyNode objects we found that matched the arguments
+ 	 */
+	protected List<CyNode> getNodeList(CyNetwork net, CyCommandResult result, 
+	                                   Map<String, Object> args, boolean create) {
 		if (args == null || args.size() == 0)
 			return null;
 
@@ -111,16 +126,16 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
 			if (nodes[0].equals(SELECTED)) {
 				Set<CyNode> selectedNodes = net.getSelectedNodes();
 				for (CyNode node: selectedNodes) {
-					addNode(net, node.getIdentifier(), retList, result);
+					addNode(net, node.getIdentifier(), retList, result, create);
 				}
 			} else {
 				for (int nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
-					addNode(net, nodes[nodeIndex], retList, result);
+					addNode(net, nodes[nodeIndex], retList, result, create);
 				}
 			}
 		} else if (args.containsKey(NODE)) {
 			String nodeName = args.get(NODE).toString();
-			addNode(net, nodeName, retList, result);
+			addNode(net, nodeName, retList, result, create);
 		} else {
 			return null;
 		}
@@ -137,8 +152,9 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
 		return result;
 	}
 
-	protected void addNode(CyNetwork net, String nodeName, List<CyNode> list, CyCommandResult result) {
-		CyNode node = Cytoscape.getCyNode(nodeName, false);
+	protected void addNode(CyNetwork net, String nodeName, List<CyNode> list, 
+	                       CyCommandResult result, boolean create) {
+		CyNode node = Cytoscape.getCyNode(nodeName, create);
 		if (node == null) 
 			result.addError(namespace.getNamespaceName()+": can't find node "+nodeName);
 		else
@@ -157,7 +173,22 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
  	 * @return the list of CyEdge objects we found that matched the arguments
  	 */
 	protected List<CyEdge> getEdgeList(CyNetwork net, CyCommandResult result, 
-	                                          Map<String, Object> args) {
+	                                   Map<String, Object> args) {
+		return getEdgeList(net, result, args, false);
+	}
+
+	/**
+ 	 * This method is used to handle both <b>edgelist</b> and <b>edge</b> parameters.
+ 	 *
+ 	 * @param net the network we are currently dealing with
+ 	 * @param result the CyCommandResult to store our values in
+ 	 * @param args the argument list we're use to look for <b>edgelist</b> and
+ 	 * <b>edge</b> arguments.
+ 	 * @param create if true, create the edge if it doesn't exist
+ 	 * @return the list of CyEdge objects we found that matched the arguments
+ 	 */
+	protected List<CyEdge> getEdgeList(CyNetwork net, CyCommandResult result, 
+	                                   Map<String, Object> args, boolean create) {
 		if (args == null || args.size() == 0)
 			return null;
 
@@ -168,24 +199,25 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
 			if (edges[0].equals(SELECTED)) {
 				Set<CyEdge> selectedEdges = net.getSelectedEdges();
 				for (CyEdge edge: selectedEdges) {
-					addEdge(net, edge.getIdentifier(), retList, result);
+					addEdge(net, edge.getIdentifier(), retList, result, create);
 				}
 			} else {
 				for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++) {
-					addEdge(net, edges[edgeIndex], retList, result);
+					addEdge(net, edges[edgeIndex], retList, result, create);
 				}
 			}
 		} else if (args.containsKey(EDGE)) {
 			String edgeName = args.get(EDGE).toString();
-			addEdge(net, edgeName, retList, result);
+			addEdge(net, edgeName, retList, result, create);
 		} else {
 			return null;
 		}
 		return retList;
 	}
 
-	protected void addEdge(CyNetwork net, String edgeName, List<CyEdge> list, CyCommandResult result) {
-		CyEdge edge = getCyEdge(edgeName);
+	protected void addEdge(CyNetwork net, String edgeName, List<CyEdge> list, 
+	                       CyCommandResult result, boolean create) {
+		CyEdge edge = getCyEdge(edgeName, create);
 		if (edge == null) 
 			result.addError(namespace.getNamespaceName()+": can't find edge "+edgeName);
 		else
@@ -193,15 +225,15 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
 		return;
 	}
 
-	protected CyEdge getCyEdge(String edgeName) {
+	protected CyEdge getCyEdge(String edgeName, boolean create) {
 		// An edge name consists of "source (type) destination"
 		String comp[] = edgeName.split("[()]");
 		// comp[0] = source, comp[2] = destination, and comp[1] = interaction
-		CyNode source = Cytoscape.getCyNode(comp[0].trim(), false);
+		CyNode source = Cytoscape.getCyNode(comp[0].trim(), create);
 		if (source == null) return null;
-		CyNode target = Cytoscape.getCyNode(comp[2].trim(), false);
+		CyNode target = Cytoscape.getCyNode(comp[2].trim(), create);
 		if (target == null) return null;
-		CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, comp[1].trim(), false);
+		CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, comp[1].trim(), create);
 		return edge;
 	}
 

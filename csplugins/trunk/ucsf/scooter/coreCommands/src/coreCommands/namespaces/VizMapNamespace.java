@@ -75,6 +75,7 @@ public class VizMapNamespace extends AbstractCommandHandler {
 
 		// Define our subcommands
 		addDescription(APPLY, "Apply the named visual style to the current (or named) network");
+		addArgument(APPLY);
 		addArgument(APPLY, STYLE, "default");
 		addArgument(APPLY, NETWORK, CURRENT);
 
@@ -88,7 +89,7 @@ public class VizMapNamespace extends AbstractCommandHandler {
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
-		if (command.equals(STYLE)) {
+		if (command.equals(APPLY)) {
 			// We want to apply a vizmap to the current network
 			if (args.containsKey(STYLE))
 				styleName = args.get(STYLE).toString();
