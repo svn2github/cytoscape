@@ -385,7 +385,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	    
 	    // Set labelNode's location to parent node's current label position
 	    nodeAtts = Cytoscape.getNodeAttributes();
-	    String labelPosition = (String) nodeAtts.getAttribute(ln.getNode().
+	    String labelPosition = (String) nodeAtts.getAttribute(ln.getNodeView().getNode().
 								  getIdentifier(), "node.labelPosition");
 
 	    if (labelPosition == null) {
@@ -419,7 +419,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	    labelNode.lock();
 	    ln.lock();
 	    if (!selectedOnly 
-		|| network.getSelectedNodes().contains(ln.getNode())) {
+		|| network.getSelectedNodes().contains(ln.getNodeView().getNode())) {
 		labelNode.unLock();
 		if (moveNodes) {
 		    ln.unLock();
