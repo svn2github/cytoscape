@@ -190,7 +190,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
-				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
+				final Object attrValue = attrs.getAttribute(id, attrName);
+				String errorMessage = attrs.getLastEquationError();
+				if (errorMessage != null)
+					errorMessage = "#ERROR(" + errorMessage + ")";
+				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
 				valid = true;
 				return;
 			}
@@ -226,7 +230,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setAttribute(id, attrName, equation);
-				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
+				final Object attrValue = attrs.getAttribute(id, attrName);
+				String errorMessage = attrs.getLastEquationError();
+				if (errorMessage != null)
+					errorMessage = "#ERROR(" + errorMessage + ")";
+				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
 				valid = true;
 				return;
 			}
@@ -256,6 +264,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 				}
  				attrs.setAttribute(id, attrName, equation);
 				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
+				final Object attrValue = attrs.getAttribute(id, attrName);
+				String errorMessage = attrs.getLastEquationError();
+				if (errorMessage != null)
+					errorMessage = "#ERROR(" + errorMessage + ")";
+				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
 				valid = true;
 				return;
 			}
@@ -273,7 +286,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 					return;
 				}
  				attrs.setListAttribute(id, attrName, equation);
-				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
+				final Object attrValue = attrs.getAttribute(id, attrName);
+				String errorMessage = attrs.getLastEquationError();
+				if (errorMessage != null)
+					errorMessage = "#ERROR(" + errorMessage + ")";
+				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
 				valid = true;
 				return;
 			}
