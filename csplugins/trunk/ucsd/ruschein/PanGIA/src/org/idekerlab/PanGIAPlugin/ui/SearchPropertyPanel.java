@@ -32,7 +32,7 @@ import com.lowagie.text.Font;
 
 
 /**
- * @author kono
+ * @author kono, ghannum
  * 
  * 5/25/10: Removed restrictions on machine-generated sections. (Greg) 
  */

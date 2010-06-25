@@ -14,6 +14,7 @@ import org.idekerlab.PanGIAPlugin.ui.SearchPropertyPanel;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyHelpBroker;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
@@ -43,6 +44,8 @@ public class PanGIAPlugin extends CytoscapePlugin {
 		menuItem.addActionListener(new PluginAction());
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
 				"Plugins.Module Finders...").add(menuItem);
+		
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_CREATED,new PanGIANetworkListener());
 	}
 
 	/**
