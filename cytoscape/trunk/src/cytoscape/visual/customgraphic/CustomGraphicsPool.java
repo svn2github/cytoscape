@@ -40,7 +40,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	private final Map<Integer, CyCustomGraphics<?>> graphicsMap = new ConcurrentHashMap<Integer, CyCustomGraphics<?>>();
 	private final Map<URL, Integer> sourceMap = new ConcurrentHashMap<URL, Integer>();
-	
 
 	// Null Object
 	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
@@ -63,7 +62,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 		restoreImages();
 	}
 
-	
 	/**
 	 * Restore images from .cytoscape dir.
 	 */
@@ -102,28 +100,35 @@ public class CustomGraphicsPool extends SubjectBase implements
 				for (File file : imageFiles) {
 					if (file.toString().endsWith("png") == false)
 						continue;
-					
+
 					final String fileName = file.getName();
 					final String key = fileName.split("\\.")[0];
 					final String value = prop.getProperty(key);
-					
+
 					final String[] imageProps = value.split(",");
-					if(imageProps == null || imageProps.length<2)
+					if (imageProps == null || imageProps.length < 2)
 						continue;
-					
+
 					final String name = imageProps[2];
-					final String tagStr = imageProps[3];
-					System.out.println("Procsessing Image Data: " +  fileName + ", " + name + "," + tagStr);
-					
-					Future<BufferedImage> f = cs.submit(new LoadImageTask(file.toURI().toURL()));
+
+					Future<BufferedImage> f = cs.submit(new LoadImageTask(file
+							.toURI().toURL()));
 					fMap.put(f, name);
+
+					String tagStr = null;
+					if (imageProps.length > 3) {
+						tagStr = imageProps[3];
+						final Set<String> tags = new TreeSet<String>();
+						String[] tagParts = tagStr.split("\\"
+								+ AbstractCyCustomGraphics.LIST_DELIMITER);
+						for (String tag : tagParts)
+							tags.add(tag.trim());
+
+						metatagMap.put(f, tags);
+					}
 					
-					final Set<String> tags = new TreeSet<String>();
-					String[] tagParts = tagStr.split("\\" + AbstractCyCustomGraphics.LIST_DELIMITER);
-					for(String tag: tagParts)
-						tags.add(tag.trim());
-					
-					metatagMap.put(f, tags);
+					System.out.println("Procsessing Image Data: " + fileName
+							+ ", " + name + "," + tagStr);
 				}
 				for (File file : imageFiles) {
 					if (file.toString().endsWith("png") == false)
@@ -132,12 +137,13 @@ public class CustomGraphicsPool extends SubjectBase implements
 					final BufferedImage image = f.get();
 					if (image == null)
 						continue;
-					
-					final CyCustomGraphics<?> cg = new URLImageCustomGraphics(fMap.get(f), image);
-					if(cg instanceof Taggable)
+
+					final CyCustomGraphics<?> cg = new URLImageCustomGraphics(
+							fMap.get(f), image);
+					if (cg instanceof Taggable && metatagMap.get(f) != null)
 						((Taggable) cg).getTags().addAll(metatagMap.get(f));
-					
-					graphicsMap.put(cg.hashCode(), cg );
+
+					graphicsMap.put(cg.hashCode(), cg);
 				}
 
 			} catch (IOException ioe) {
@@ -166,9 +172,9 @@ public class CustomGraphicsPool extends SubjectBase implements
 		graphicsMap.put(hash, graphics);
 		this.fireStateChanged();
 	}
-	
-	
-	public void addGraphics(Integer hash, CyCustomGraphics<?> graphics, URL source) {
+
+	public void addGraphics(Integer hash, CyCustomGraphics<?> graphics,
+			URL source) {
 		sourceMap.put(source, hash);
 		addGraphics(hash, graphics);
 	}
@@ -180,9 +186,9 @@ public class CustomGraphicsPool extends SubjectBase implements
 	public CyCustomGraphics<?> get(Integer hash) {
 		return graphicsMap.get(hash);
 	}
-	
+
 	public CyCustomGraphics<?> get(URL sourceURL) {
-		if(sourceMap.get(sourceURL) != null)
+		if (sourceMap.get(sourceURL) != null)
 			return graphicsMap.get(sourceMap.get(sourceURL));
 		else
 			return null;
@@ -191,7 +197,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	public Collection<CyCustomGraphics<?>> getAll() {
 		return graphicsMap.values();
 	}
-	
+
 	public void removeAll() {
 		this.graphicsMap.clear();
 	}
@@ -199,20 +205,20 @@ public class CustomGraphicsPool extends SubjectBase implements
 	public CyCustomGraphics<?> getNullGraphics() {
 		return NULL;
 	}
-	
+
 	public Properties getMetadata() {
 		graphicsMap.remove(NULL.hashCode());
 		final Properties props = new Properties();
-		for(final CyCustomGraphics<?> graphics : graphicsMap.values())
-			props.setProperty(Integer.toString(graphics.hashCode()), graphics.toString());
+		for (final CyCustomGraphics<?> graphics : graphicsMap.values())
+			props.setProperty(Integer.toString(graphics.hashCode()), graphics
+					.toString());
 		graphicsMap.put(NULL.hashCode(), NULL);
-		return props; 
+		return props;
 	}
-	
+
 	public File getImageFileLocation() {
 		return this.imageHomeDirectory;
 	}
-
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		// Persist images
