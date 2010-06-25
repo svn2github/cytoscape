@@ -36,7 +36,7 @@ import java.util.Set;
 
 
 public class Equation {
-	private String equation;
+	private final String equation;
 	private final Set<String> attribReferences;
 	private final Object[] code;
 	private final int[] sourceLocations;
@@ -85,9 +85,9 @@ public class Equation {
 		if (!compiler.compile("=ERROR(" + errorMessage + ")", attribNameToTypeMap))
 			throw new IllegalStateException("internal error in Equation.getErrorEquation().  This should *never* happen!");
 
-		final Equation retVal = compiler.getEquation();
-		retVal.equation = equation;
+		final Equation errorEquation = compiler.getEquation();
 
-		return retVal;
+		return new Equation(equation, errorEquation.attribReferences, errorEquation.code,
+		                    errorEquation.sourceLocations, errorEquation.type);
 	}
 }
