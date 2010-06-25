@@ -67,9 +67,11 @@ public class CyAttributesReader {
 	private boolean doDecoding;
 	final Map<String, Map<String, Class>> idsToAttribNameToTypeMapMap;
 	private List<AttribEquation> attribEquations; // This is where we collect equations for later addition.
+	private final CyLogger logger;
 
 
 	CyAttributesReader() {
+		logger = CyLogger.getLogger(CyAttributesReader.class);
 		lineNum = 0;
 		doDecoding = Boolean.valueOf(System.getProperty(DECODE_PROPERTY, "true"));
 		idsToAttribNameToTypeMapMap = new HashMap<String, Map<String, Class>>();
@@ -122,9 +124,13 @@ public class CyAttributesReader {
 			if (compiler.compile(attribEquation.getEquation(), attribNameToTypeMap))
 				cyAttrs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(), compiler.getEquation(),
 				                     attribEquation.getDataType());
-			else
-				throw new IllegalStateException("bad equation on line " + attribEquation.getLineNumber()
-				                                + ": " + compiler.getLastErrorMsg());
+			else {
+				final String errorMessage = compiler.getLastErrorMsg();
+				logger.warn("bad equation on line " + attribEquation.getLineNumber() + ": " + errorMessage);
+				final Equation errorEquation = Equation.getErrorEquation(attribEquation.getEquation(), errorMessage);
+				cyAttrs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(), errorEquation,
+				                     attribEquation.getDataType());
+			}
 		}
 	}
 
@@ -372,7 +378,7 @@ public class CyAttributesReader {
 			else
 				message = "failed parsing attributes file at line: " + lineNum
 					+ " with exception: " + e.getMessage();
-			CyLogger.getLogger(CyAttributesReader.class).warn(message, e);
+			logger.warn(message, e);
 			throw new IOException(message);
 		}
 	}
@@ -384,7 +390,7 @@ public class CyAttributesReader {
 			}
 			catch (IllegalArgumentException iae) {
 				if (!badDecode) {
-					CyLogger.getLogger(CyAttributesReader.class).info(MessageFormat.format(badDecodeMessage, lineNum), iae);
+					logger.info(MessageFormat.format(badDecodeMessage, lineNum), iae);
 					badDecode = true;
 				}
 			}

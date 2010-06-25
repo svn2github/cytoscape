@@ -44,6 +44,7 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.logger.CyLogger;
 
 import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Equation;
 
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -636,11 +637,17 @@ class XGMMLParser extends DefaultHandler {
 		attribNameToTypeMap.put("ID", String.class);
 		final EqnCompiler compiler = new EqnCompiler();
 		for (final AttribEquation attribEquation : attribEquations) {
-			if (!(compiler.compile(attribEquation.getEquation(), attribNameToTypeMap)))
-				throw new IllegalStateException("failed to compile an equation in an XGMML input file ("
-				                                + compiler.getLastErrorMsg() + ")!");
-			attribs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(),
-			                     compiler.getEquation(), attribEquation.getDataType());
+			if (compiler.compile(attribEquation.getEquation(), attribNameToTypeMap))
+				attribs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(),
+						     compiler.getEquation(), attribEquation.getDataType());
+			else {
+				final String errorMessage = compiler.getLastErrorMsg();
+				logger.warn("failed to compile an equation in an XGMML input file ("
+					    + errorMessage + ")!");
+				final Equation errorEquation = Equation.getErrorEquation(attribEquation.getEquation(), errorMessage);
+				attribs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(),
+						     errorEquation, attribEquation.getDataType());
+			}
 		}
 	}
 
