@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
@@ -33,6 +34,8 @@ import cytoscape.visual.customgraphic.experimental.GradientRectangleCustomGraphi
 public class CustomGraphicsPool extends SubjectBase implements
 		PropertyChangeListener {
 
+	private static final CyLogger logger = CyLogger.getLogger();
+	
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 8;
 
@@ -82,16 +85,12 @@ public class CustomGraphicsPool extends SubjectBase implements
 			prop.load(new FileInputStream(new File(imageHomeDirectory,
 					METADATA_FILE)));
 			System.out.println("Image prop loaded!");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("Image metadata not found!");
-			return;
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			System.out.println("Image metadata not found!");
+		} catch (Exception e) {
+			logger.warning("Custom Graphics Metadata was not found.  This is normal for the first time.");
+			// Restore process is not necessary.
 			return;
 		}
-
+		
 		if (this.imageHomeDirectory != null && imageHomeDirectory.isDirectory()) {
 			final File[] imageFiles = imageHomeDirectory.listFiles();
 			final Map<Future<BufferedImage>, String> fMap = new HashMap<Future<BufferedImage>, String>();

@@ -6,16 +6,30 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.PaintFactory;
 import cytoscape.visual.customgraphic.paint.TexturePaintFactory;
 
 public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
+
+	private static BufferedImage DEF_IMAGE;
+	
+	static  {
+		try {
+			DEF_IMAGE =ImageIO.read(Cytoscape.class.getResource("images/ximian/stock_dialog-warning-32.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	private static final String DEF_TAG = "bitmap image";
 	// Defining padding
 	private static final double PAD = 10;
@@ -70,18 +84,23 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		cgList.add(cg);
 	}
 
-	private void createImage(String url) throws IOException {
+	private void createImage(String url) throws MalformedURLException {
 		if (url == null)
 			throw new IllegalStateException("URL string cannot be null.");
 
-		final URL imageLocation = new URL(url);
+		URL imageLocation = new URL(url);
+		
 		sourceUrl = imageLocation;
-		originalImage = ImageIO.read(imageLocation);
+		try {
+			originalImage = ImageIO.read(imageLocation);
+		} catch (IOException e) {
+			originalImage = DEF_IMAGE;
+			CyLogger.getLogger().warn("Broken Image found.  Default is used instead.");
+		}
 
-		if (originalImage == null)
-			throw new IOException(
-					"Could not create an image from this location: "
-							+ imageLocation.toString());
+		if (originalImage == null) {
+			originalImage = DEF_IMAGE;
+		}
 	}
 
 	@Override
