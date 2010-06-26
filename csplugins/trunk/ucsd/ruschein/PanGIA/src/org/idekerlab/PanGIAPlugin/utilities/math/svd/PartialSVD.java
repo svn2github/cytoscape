@@ -3,7 +3,7 @@ package org.idekerlab.PanGIAPlugin.utilities.math.svd;
 
 public class PartialSVD extends SVD
 {
-	private final double epsilon = 1e-8;
+	private static final double epsilon = 1e-8;
 	
 	public PartialSVD(double[][] M, int k)
 	{

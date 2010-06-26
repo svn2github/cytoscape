@@ -728,7 +728,7 @@ public class ByteMatrix extends DataMatrix{
 		
 		sum = sum / (valcount - 1);
 		
-		return java.lang.Math.sqrt(.5);
+		return sum;
 	}
 	
 	public DoubleVector stdByRow()

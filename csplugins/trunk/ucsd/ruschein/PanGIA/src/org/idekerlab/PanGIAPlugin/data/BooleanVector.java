@@ -111,7 +111,7 @@ public class BooleanVector extends DataVector {
 		return out;
 	}
 	
-	public synchronized void add(boolean val)
+	public void add(boolean val)
 	{
 		if (data.length==0) data = new boolean[10];
 		else if (this.size==data.length)	data = BooleanVector.resize(data,data.length*2);
@@ -125,7 +125,7 @@ public class BooleanVector extends DataVector {
 		this.add(Boolean.valueOf(val));
 	}
 	
-	public synchronized void addAll(boolean[] vals)
+	public void addAll(boolean[] vals)
 	{
 		if (data.length<this.size+vals.length) data = BooleanVector.resize(data,data.length+vals.length);
 		
@@ -133,7 +133,7 @@ public class BooleanVector extends DataVector {
 			this.add(d);
 	}
 	
-	public synchronized void addAll(Collection<Boolean> vals)
+	public void addAll(Collection<Boolean> vals)
 	{
 		if (data.length<this.size+vals.size()) data = BooleanVector.resize(data,data.length+vals.size());
 		
@@ -141,7 +141,7 @@ public class BooleanVector extends DataVector {
 			this.add(d);
 	}
 	
-	public synchronized void addAll(BooleanVector vals)
+	public void addAll(BooleanVector vals)
 	{
 		if (data.length<this.size+vals.size()) data = BooleanVector.resize(data,data.length+vals.size());
 		

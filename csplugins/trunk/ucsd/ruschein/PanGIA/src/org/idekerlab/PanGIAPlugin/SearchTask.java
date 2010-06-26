@@ -275,7 +275,7 @@ public class SearchTask implements Task {
 
 		int sharedNodeCount =0;
 		for (int i=0; i< nodeIndicesB.length; i++){
-			if (hashSet.contains(new Integer(nodeIndicesB[i]))){
+			if (hashSet.contains(Integer.valueOf(nodeIndicesB[i]))){
 				sharedNodeCount++;
 			}
 		}

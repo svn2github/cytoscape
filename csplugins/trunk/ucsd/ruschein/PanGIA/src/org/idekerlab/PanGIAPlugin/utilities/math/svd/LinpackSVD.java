@@ -172,7 +172,7 @@ public class LinpackSVD extends SVD {
 				e[j] = A[k][j];
 			}
 			
-			if (wantu & (k < nct))
+			if (wantu && (k < nct))
 			{
 				// Place the transformation in U for subsequent back
 				// multiplication.
@@ -203,7 +203,7 @@ public class LinpackSVD extends SVD {
 				
 				e[k] = -e[k];
 				
-				if ((k+1 < m) & (e[k] != 0.0))
+				if ((k+1 < m) && (e[k] != 0.0))
 				{
 	
 					// Apply the transformation.

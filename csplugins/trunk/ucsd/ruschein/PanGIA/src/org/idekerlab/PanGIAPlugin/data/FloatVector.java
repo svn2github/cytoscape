@@ -271,7 +271,7 @@ public class FloatVector extends DataVector {
 	}
 
 	public void set(int i, Integer val) {
-		data[i] = new Float(val);
+		data[i] = Float.valueOf(val);
 	}
 
 	public void set(List<Integer> indices, float val) {

@@ -52,7 +52,7 @@ public class SNodeModule implements java.lang.Iterable<String>, Comparable<SNode
 		if (c instanceof SNodeModule)
 		{
 			SNodeModule other = (SNodeModule)c;
-			if (other.id == this.id && other.members.equals(this.members)) return true;
+			if (other.id.equals(this.id) && other.members.equals(this.members)) return true;
 			else return false;
 		}else return false;
 	}
