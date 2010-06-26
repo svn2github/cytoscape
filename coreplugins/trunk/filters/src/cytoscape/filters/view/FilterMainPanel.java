@@ -926,7 +926,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 						return;
 					}
 				}
-				theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
+				
+				if(isNullAttribute(cmbAttributes.getSelectedItem().toString())){
+					JOptionPane.showMessageDialog(this, "All the values for this attribute are NULL!", "Can not create filter", JOptionPane.ERROR_MESSAGE); 
+				}
+				else {
+					theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
+				}
 			}
 			if (_btn == btnSelectAll){
 				Cytoscape.getCurrentNetwork().selectAllNodes();
@@ -1062,6 +1068,43 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		updateInteractionMenuItemStatus();
 	}
 
+	// Check if all the values for an attribute are NULL
+	private boolean isNullAttribute(String selectedItem){
+		
+		boolean retValue = true;
+		
+		String attributeType = selectedItem.substring(0,4);// "node" or "edge"
+		String attributeName = selectedItem.substring(5);
+				
+		CyAttributes attributes = null;
+		if (attributeType.equalsIgnoreCase("node")){
+			attributes = Cytoscape.getNodeAttributes();
+			int[] nodeIndices = Cytoscape.getCurrentNetwork().getNodeIndicesArray();
+			for (int i=0; i<nodeIndices.length; i++){
+				String nodeID = Cytoscape.getRootGraph().getNode(nodeIndices[i]).getIdentifier();
+				Object valueObj = attributes.getAttribute(nodeID, attributeName);
+				if (valueObj != null){
+					retValue = false;
+					break;
+				}
+			}
+		}
+		else {// edge
+			attributes = Cytoscape.getEdgeAttributes();			
+			int[] edgeIndices = Cytoscape.getCurrentNetwork().getEdgeIndicesArray();
+			for (int i=0; i<edgeIndices.length; i++){
+				String edgeID = Cytoscape.getRootGraph().getEdge(edgeIndices[i]).getIdentifier();
+				Object valueObj = attributes.getAttribute(edgeID, attributeName);
+				if (valueObj != null){
+					retValue = false;
+					break;
+				}
+			}
+		}
+
+		return retValue;
+	}
+	
 	private void updateInteractionMenuItemStatus() {
 		//Disable interactionMenuItem if there is no other filters to depend on
 		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0) {
