@@ -54,7 +54,7 @@ public class Error implements Function {
 	 */
 	public String getUsageDescription() { return "Call this with \"ERROR(message)\""; }
 
-	public Class getReturnType() { return String.class; }
+	public Class getReturnType() { return Object.class; }
 
 	/**
 	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double or Long
@@ -63,7 +63,7 @@ public class Error implements Function {
 		if (argTypes.length != 1 || argTypes[0] != String.class)
 			return null;
 
-		return String.class;
+		return Object.class;
 	}
 
 	/**

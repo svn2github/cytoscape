@@ -77,9 +77,10 @@ public class Equation {
 	 *  A factory method that returns an Equation that always fails at runtime.
 	 *
 	 *  @param equation      an arbitrary string that is usually a syntactically invalid equation
+	 *  @param type          the return type of the error equation
 	 *  @param errorMessage  the runtime error message that the returned equation will produce
 	 */
-	public static Equation getErrorEquation(final String equation, final String errorMessage) {
+	public static Equation getErrorEquation(final String equation, final Class type, final String errorMessage) {
 		final EqnCompiler compiler = new EqnCompiler();
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 		if (!compiler.compile("=ERROR(\"" + escapeQuotes(errorMessage) + "\")", attribNameToTypeMap))
@@ -88,7 +89,7 @@ public class Equation {
 		final Equation errorEquation = compiler.getEquation();
 
 		return new Equation(equation, errorEquation.attribReferences, errorEquation.code,
-		                    errorEquation.sourceLocations, errorEquation.type);
+		                    errorEquation.sourceLocations, type);
 	}
 
 	private static  String escapeQuotes(final String s) {
