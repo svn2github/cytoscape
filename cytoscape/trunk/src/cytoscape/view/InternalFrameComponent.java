@@ -38,22 +38,17 @@ package cytoscape.view;
 
 
 // imports
-import ding.view.DGraphView;
-import ding.view.DingCanvas;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Component;
-import java.awt.Rectangle;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.image.BufferedImage;
 
-import javax.swing.JLabel;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
-import javax.swing.ImageIcon;
+
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
 
 
 /**
@@ -63,8 +58,15 @@ import javax.swing.ImageIcon;
  * by the DGraphView class.
  */
 public class InternalFrameComponent extends JComponent implements Printable {
+	
+	private static final long serialVersionUID = -6037450600865410121L;
+
 	/**
 	 * z-order enumeration
+	 * 
+	 * TODO: this breaks resize-handle on Mac OS X.
+	 * 	Need to do some research on this layring order.
+	 * 
 	 */
 	private static enum ZOrder {
 		BACKGROUND_PANE,
