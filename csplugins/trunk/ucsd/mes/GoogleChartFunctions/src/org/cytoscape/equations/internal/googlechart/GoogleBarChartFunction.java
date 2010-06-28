@@ -57,9 +57,7 @@ public class GoogleBarChartFunction extends AbstractGoogleChartFunction {
 			final BarChartPlot bar = Plots.newBarChartPlot(
 					com.googlecode.charts4j.DataUtil.scaleWithinRange(min, max,
 							data), colors.get(colorIndex));
-			if(min<0 && max<=0)
-				bar.setZeroLine(100);
-			else if( min<0 )
+			if(min<0 && max>=0)
 				bar.setZeroLine(50);
 			else
 				bar.setZeroLine(0);
