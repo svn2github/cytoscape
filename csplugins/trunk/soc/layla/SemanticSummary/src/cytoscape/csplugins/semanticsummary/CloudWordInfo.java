@@ -142,7 +142,7 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 				if (view.getNetwork().equals(network))
 				//if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
-					clickedLabel.setForeground(Color.BLUE);
+					clickedLabel.setForeground(Color.CYAN);
 					clickedLabel.repaint();
 				}
 				
