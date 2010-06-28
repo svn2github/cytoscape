@@ -144,6 +144,7 @@ public final class GraphRenderer {
 	                                    final GraphGraphics grafx, final Paint bgPaint,
 	                                    final double xCenter, final double yCenter,
 	                                    final double scaleFactor) {
+		
 		nodeBuff.empty(); // Make sure we keep our promise.
 
 		// Define the visible window in node coordinate space.
@@ -427,11 +428,6 @@ public final class GraphRenderer {
 								                 ? null : edgeDetails.targetArrowPaint(edge));
 							}
 
-							// Compute dash length.
-//							final float dashLength = (((lodBits & LOD_DASHED_EDGES) == 0) ? 0.0f
-//							                                                              : edgeDetails
-//							                                                                .segmentDashLength(edge));
-
 							// Compute the anchors to use when rendering edge.
 							final EdgeAnchors anchors = (((lodBits & LOD_EDGE_ANCHORS) == 0) ? null
 							                                                                 : edgeDetails
@@ -446,10 +442,7 @@ public final class GraphRenderer {
 							final float srcYAdj = floatBuff3[1];
 							final float trgXAdj = floatBuff4[0];
 							final float trgYAdj = floatBuff4[1];
-//							grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint, trgArrow,
-//							                   trgArrowSize, trgArrowPaint, srcXAdj, srcYAdj,
-//							                   anchors, trgXAdj, trgYAdj, thickness, segPaint,
-//							                   dashLength);
+
 							grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint, trgArrow,
 							                   trgArrowSize, trgArrowPaint, srcXAdj, srcYAdj,
 							                   anchors, trgXAdj, trgYAdj, thickness, edgeStroke, segPaint);
@@ -1028,7 +1021,21 @@ public final class GraphRenderer {
 	}
 	
 	
-	private static final void renderNodeHigh(final FixedGraph graph, final GraphGraphics grafx, final int node, final float[] floatBuff1, final double[] doubleBuff1, final double[] doubleBuff2, final NodeDetails nodeDetails, final int lodBits) {
+	/**
+	 * Render node view with details, including custom graphics.
+	 * 
+	 * @param graph
+	 * @param grafx
+	 * @param node
+	 * @param floatBuff1
+	 * @param doubleBuff1
+	 * @param doubleBuff2
+	 * @param nodeDetails
+	 * @param lodBits
+	 */
+	private static final void renderNodeHigh(final FixedGraph graph, final GraphGraphics grafx, 
+			final int node, final float[] floatBuff1, final double[] doubleBuff1, final double[] doubleBuff2, 
+			final NodeDetails nodeDetails, final int lodBits) {
 		if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
 						
 			// Compute visual attributes that do not depend on LOD.

@@ -492,7 +492,12 @@ public class NodeDetails {
 		return 100.0;
 	}
 	
-	
+	/**
+	 * Child class should ovrride this method to render correct Nexted Network Image.
+	 * 
+	 * @param node
+	 * @return
+	 */
 	public TexturePaint getNestedNetworkTexturePaint(final int node) {
 		return null;
 	}
