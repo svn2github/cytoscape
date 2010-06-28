@@ -329,16 +329,39 @@ public final class GraphGraphics {
 		m_g2d.setPaint(bgPaint);
 		m_g2d.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
 		m_g2d.setComposite(origComposite);
+		
+		// For detailed view, render high quality image as much as possible.
+		
+		// Antialiasing is ON
 		m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		// Rendering quality is HIGH.
 		m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-				RenderingHints.VALUE_RENDER_SPEED);
+				RenderingHints.VALUE_RENDER_QUALITY);
+		
+		// High quality alpha blending is ON.
+		m_g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+				RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		
+		// High quality color rendering is ON.
+		m_g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+				RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		
+		m_g2d.setRenderingHint(RenderingHints.KEY_DITHERING,
+				RenderingHints.VALUE_DITHER_ENABLE);
+		
+		m_g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		
+		// Text antialiasing is ON.
 		m_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		m_g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 		m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
 				RenderingHints.VALUE_STROKE_PURE);
+		
 		m_g2d.setStroke(new BasicStroke(0.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f));
 
 		m_currXform.setToTranslation(0.5d * image.getWidth(null), 0.5d * image
@@ -1979,14 +2002,9 @@ public final class GraphGraphics {
 		
 		m_g2d.translate(xOffset, yOffset);
 		if(paint instanceof TexturePaint) {
-			final BufferedImage be = ((TexturePaint) paint).getImage();
-			final double scaleX = shape.getBounds2D().getWidth()/be.getWidth();
-			final double scaleY = shape.getBounds2D().getHeight()/be.getHeight();
-			// TODO: Currently, scaling uses best-quality algorithm (BICUBIC).
-			// Need to provide user option to switch between quality VS speed.
-			m_g2d.drawImage(be,
-					new AffineTransformOp(AffineTransform.getScaleInstance(scaleX,scaleY), AffineTransformOp.TYPE_BICUBIC), 
-					shape.getBounds().x, shape.getBounds().y);
+			final BufferedImage bImg = ((TexturePaint) paint).getImage();
+			m_g2d.drawImage(bImg,
+					shape.getBounds().x, shape.getBounds().y, shape.getBounds().width, shape.getBounds().height, null);
 		} else {
 			m_g2d.setPaint(paint);
 			m_g2d.fill(shape);
