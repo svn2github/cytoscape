@@ -28,21 +28,21 @@
 package browser.ui;
 
 
+import browser.DataObjectType;
+import browser.DataTableModel;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinition;
+
+import giny.model.GraphObject;
+
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -54,12 +54,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-import browser.DataObjectType;
-import browser.DataTableModel;
+import java.text.BreakIterator;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMapDefinition;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 import org.cytoscape.equations.BooleanList;
 import org.cytoscape.equations.DoubleList;
@@ -71,8 +77,6 @@ import org.cytoscape.equations.Function;
 import org.cytoscape.equations.LongList;
 import org.cytoscape.equations.Parser;
 import org.cytoscape.equations.StringList;
-
-import giny.model.GraphObject;
 
 import org.jdesktop.layout.GroupLayout;
 
@@ -236,7 +240,7 @@ public class FormulaBuilderDialog extends JDialog {
 		usageLabel = new JLabel();
 		contentPane.add(usageLabel);
 		if (function != null)
-			usageLabel.setText(function.getUsageDescription());
+			wrapLabelText(usageLabel, function.getUsageDescription());
 	}
 
 	private void initFormulaTextField(final Container contentPane) {
@@ -570,7 +574,7 @@ public class FormulaBuilderDialog extends JDialog {
 		function = stringToFunctionMap.get(funcName);
 		final boolean zeroArgumentFunction = getPossibleNextArgumentTypes() == null;
 		formulaTextField.setText("=" + function.getName() + (zeroArgumentFunction ? "()" : "("));
-		usageLabel.setText(function.getUsageDescription());
+		wrapLabelText(usageLabel, function.getUsageDescription());
 		updateAttribNamesComboBox();
 		addButton.setEnabled(zeroArgumentFunction ? false : true);
 		okButton.setEnabled(zeroArgumentFunction);
@@ -642,5 +646,34 @@ public class FormulaBuilderDialog extends JDialog {
 			else
 				/* We intentionally ignore everything else! */;
 		}
+	}
+
+	private void wrapLabelText(final JLabel label, final String text) {
+		final FontMetrics fm = label.getFontMetrics(label.getFont());
+		final Container container = label.getParent();
+		final int containerWidth = container.getWidth();
+
+		final BreakIterator boundary = BreakIterator.getWordInstance();
+		boundary.setText(text);
+
+		final StringBuilder trial = new StringBuilder();
+		final StringBuilder real = new StringBuilder("<html>");
+
+		int start = boundary.first();
+		for (int end = boundary.next(); end != BreakIterator.DONE; start = end, end = boundary.next()) {
+			final String word = text.substring(start, end);
+			trial.append(word);
+			int trialWidth = SwingUtilities.computeStringWidth(fm, trial.toString());
+			if (trialWidth > containerWidth) {
+				trial.setLength(0);
+				trial.append(word);
+				real.append("<br>");
+			}
+			real.append(word);
+		}
+
+		real.append("</html>");
+
+		label.setText(real.toString());
 	}
 }
