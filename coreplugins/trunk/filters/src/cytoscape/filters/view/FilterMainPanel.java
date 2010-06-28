@@ -91,6 +91,7 @@ import cytoscape.util.swing.WidestStringProvider;
 import javax.swing.ComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import cytoscape.data.CyAttributesUtils;
 
 /**
  * 
@@ -927,7 +928,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					}
 				}
 				
-				if(isNullAttribute(cmbAttributes.getSelectedItem().toString())){
+				String attributeType = cmbAttributes.getSelectedItem().toString().substring(0,4);// "node" or "edge"
+				String attributeName = cmbAttributes.getSelectedItem().toString().substring(5);
+
+				if(CyAttributesUtils.isNullAttribute(attributeType, attributeName)){
 					JOptionPane.showMessageDialog(this, "All the values for this attribute are NULL!", "Can not create filter", JOptionPane.ERROR_MESSAGE); 
 				}
 				else {
@@ -1066,43 +1070,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		} // JMenuItem event
 		
 		updateInteractionMenuItemStatus();
-	}
-
-	// Check if all the values for an attribute are NULL
-	private boolean isNullAttribute(String selectedItem){
-		
-		boolean retValue = true;
-		
-		String attributeType = selectedItem.substring(0,4);// "node" or "edge"
-		String attributeName = selectedItem.substring(5);
-				
-		CyAttributes attributes = null;
-		if (attributeType.equalsIgnoreCase("node")){
-			attributes = Cytoscape.getNodeAttributes();
-			int[] nodeIndices = Cytoscape.getCurrentNetwork().getNodeIndicesArray();
-			for (int i=0; i<nodeIndices.length; i++){
-				String nodeID = Cytoscape.getRootGraph().getNode(nodeIndices[i]).getIdentifier();
-				Object valueObj = attributes.getAttribute(nodeID, attributeName);
-				if (valueObj != null){
-					retValue = false;
-					break;
-				}
-			}
-		}
-		else {// edge
-			attributes = Cytoscape.getEdgeAttributes();			
-			int[] edgeIndices = Cytoscape.getCurrentNetwork().getEdgeIndicesArray();
-			for (int i=0; i<edgeIndices.length; i++){
-				String edgeID = Cytoscape.getRootGraph().getEdge(edgeIndices[i]).getIdentifier();
-				Object valueObj = attributes.getAttribute(edgeID, attributeName);
-				if (valueObj != null){
-					retValue = false;
-					break;
-				}
-			}
-		}
-
-		return retValue;
 	}
 	
 	private void updateInteractionMenuItemStatus() {
