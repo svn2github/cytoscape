@@ -630,6 +630,24 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 
+	private Class mapCytoscapeAttribTypeToEqnType(final byte attribType) {
+		switch (attribType) {
+		case CyAttributes.TYPE_BOOLEAN:
+			return Boolean.class;
+		case CyAttributes.TYPE_INTEGER:
+			return Long.class;
+		case CyAttributes.TYPE_FLOATING:
+			return Double.class;
+		case CyAttributes.TYPE_STRING:
+			return String.class;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return List.class;
+		default:
+			throw new IllegalStateException("can't map Cytoscape type " + attribType + " to equation return type!");
+		}
+	}
+
+
 	private void compileAndAddEquationAttribs(final List<AttribEquation> attribEquations,
 	                                          final Map<String, Class> attribNameToTypeMap,
 	                                          final CyAttributes attribs)
@@ -644,7 +662,10 @@ class XGMMLParser extends DefaultHandler {
 				final String errorMessage = compiler.getLastErrorMsg();
 				logger.warn("failed to compile an equation in an XGMML input file ("
 					    + errorMessage + ")!");
-				final Equation errorEquation = Equation.getErrorEquation(attribEquation.getEquation(), errorMessage);
+				final Equation errorEquation =
+					Equation.getErrorEquation(attribEquation.getEquation(),
+					                          mapCytoscapeAttribTypeToEqnType(attribEquation.getDataType()),
+					                          errorMessage);
 				attribs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(),
 						     errorEquation, attribEquation.getDataType());
 			}

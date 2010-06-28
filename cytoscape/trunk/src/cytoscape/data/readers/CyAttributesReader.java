@@ -92,6 +92,23 @@ public class CyAttributesReader {
 		ar.addEquations(cyAttrs);
 	}
 
+	private Class mapCytoscapeAttribTypeToEqnType(final byte attribType) {
+		switch (attribType) {
+		case CyAttributes.TYPE_BOOLEAN:
+			return Boolean.class;
+		case CyAttributes.TYPE_INTEGER:
+			return Long.class;
+		case CyAttributes.TYPE_FLOATING:
+			return Double.class;
+		case CyAttributes.TYPE_STRING:
+			return String.class;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return List.class;
+		default:
+			throw new IllegalStateException("can't map Cytoscape type " + attribType + " to equation return type!");
+		}
+	}
+
 	private void addEquations(final CyAttributes cyAttrs) {
 		final EqnCompiler compiler = new EqnCompiler();
 		final String[] allAttribNames = cyAttrs.getAttributeNames();
@@ -99,17 +116,7 @@ public class CyAttributesReader {
 		int index = 0;
 		for (final String attribName : allAttribNames) {
 			final byte type = cyAttrs.getType(attribName);
-			if (type == CyAttributes.TYPE_BOOLEAN)
-				allTypes[index] = Boolean.class;
-			else if (type == CyAttributes.TYPE_INTEGER)
-				allTypes[index] = Long.class;
-			else if (type == CyAttributes.TYPE_FLOATING)
-				allTypes[index] = Double.class;
-			else if (type == CyAttributes.TYPE_STRING)
-				allTypes[index] = String.class;
-			else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-				allTypes[index] = List.class;
-			++index;
+			allTypes[index++] = mapCytoscapeAttribTypeToEqnType(type);
 		}
 
 		for (final AttribEquation attribEquation : attribEquations) {
@@ -127,7 +134,9 @@ public class CyAttributesReader {
 			else {
 				final String errorMessage = compiler.getLastErrorMsg();
 				logger.warn("bad equation on line " + attribEquation.getLineNumber() + ": " + errorMessage);
-				final Equation errorEquation = Equation.getErrorEquation(attribEquation.getEquation(), errorMessage);
+				final Class eqnType = mapCytoscapeAttribTypeToEqnType(attribEquation.getDataType());
+				final Equation errorEquation = Equation.getErrorEquation(attribEquation.getEquation(),
+											 eqnType, errorMessage);
 				cyAttrs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(), errorEquation,
 				                     attribEquation.getDataType());
 			}
