@@ -167,7 +167,7 @@ public class EqnAttrTracker {
 		case CyAttributes.TYPE_SIMPLE_LIST:
 			return List.class;
 		default:
-			throw new IllegalStateException("can't map Cytoscape type " + attribType + " to equation return type!");
+			return null;
 		}
 	}
 
