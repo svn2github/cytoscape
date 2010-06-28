@@ -35,7 +35,12 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.data.attr.MultiHashMapListener;
 
+import org.cytoscape.equations.BooleanList;
+import org.cytoscape.equations.DoubleList;
 import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.FunctionUtil;
+import org.cytoscape.equations.LongList;
+import org.cytoscape.equations.StringList;
 
 import java.util.HashMap;
 
@@ -445,19 +450,23 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 
 		switch (def.valueType) { // I'm wondering what the most efficient way of doing this is.
 			case MultiHashMapDefinition.TYPE_BOOLEAN:
-				if ((actualType == Boolean.class) || (isEquation && (actualType == Long.class || actualType == Double.class)))
+				if (actualType == Boolean.class
+				    || (isEquation && (actualType == Long.class || actualType == Double.class || actualType == BooleanList.class)))
 					break;
 				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Boolean!");
 			case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-				if ((actualType == Double.class) || (isEquation && (actualType == Long.class || actualType == Boolean.class)))
+				if (actualType == Double.class
+				    || (isEquation && (actualType == Long.class || actualType == Boolean.class || actualType == DoubleList.class)))
 					break;
 				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Double!");
 			case MultiHashMapDefinition.TYPE_INTEGER:
-				if ((actualType == Integer.class) || (isEquation && (actualType == Double.class || actualType == Boolean.class || actualType == Long.class)))
+				if (actualType == Integer.class
+				    || (isEquation && (actualType == Double.class || actualType == Boolean.class
+				                       || actualType == Long.class || actualType == LongList.class)))
 					break;
 				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Integer!");
 			case MultiHashMapDefinition.TYPE_STRING:
-				if ((actualType == String.class) || isEquation)
+				if (actualType == String.class || isEquation)
 					break;
 				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
 		}
@@ -469,11 +478,31 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 				                                   + "' has no keyspace"
 				                                   + " defined, yet keyIntoValue is not empty");
 			}
+			if (FunctionUtil.isSomeKindOfList(actualType))
+				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
 		} else { // Keyspace is not empty.
 			final int keyIntoValueLength = ((keyIntoValue == null) ? 0 : keyIntoValue.length);
-
-			if (def.keyTypes.length != keyIntoValueLength) {
+			if (def.keyTypes.length != keyIntoValueLength)
 				throw new IllegalArgumentException("keyIntoValue has incorrect dimensionality");
+			if (isEquation) {
+				switch (def.valueType) {
+				case MultiHashMapDefinition.TYPE_BOOLEAN:
+					if (actualType != BooleanList.class)
+						throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
+					break;
+				case MultiHashMapDefinition.TYPE_FLOATING_POINT:
+					if (actualType != DoubleList.class)
+						throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
+					break;
+				case MultiHashMapDefinition.TYPE_INTEGER:
+					if (actualType != LongList.class)
+						throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
+					break;
+				case MultiHashMapDefinition.TYPE_STRING:
+					if (actualType != StringList.class)
+						throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected String!");
+					break;
+				}			
 			}
 		}
 
