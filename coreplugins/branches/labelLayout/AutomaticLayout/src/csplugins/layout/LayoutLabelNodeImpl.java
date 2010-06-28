@@ -1,9 +1,8 @@
 package csplugins.layout;
 
 import cytoscape.*;
-
+import cytoscape.visual.LabelPosition;
 import cytoscape.logger.CyLogger;
-
 import cytoscape.data.CyAttributes;
 import cytoscape.view.*;
 
@@ -22,9 +21,10 @@ public class LayoutLabelNodeImpl extends LayoutNode {
     //  protected double dispY;
 
     protected CyLogger logger = null;
-
     protected NodeView parentNodeView;
-    protected ObjectPosition labelPosition;
+    protected LabelPosition lp = null;
+    protected CyAttributes nodeAtts = null;
+    //    protected ObjectPosition labelPosition;
 
     /**
      * Empty constructor
@@ -40,18 +40,29 @@ public class LayoutLabelNodeImpl extends LayoutNode {
     public LayoutLabelNodeImpl(NodeView parentNodeView, int index) {
 	logger = CyLogger.getLogger(LayoutLabelNodeImpl.class);
 	this.parentNodeView = parentNodeView;
-	labelPosition = parentNodeView.getLabelPosition();
-
-	logger.info("Offset = " + labelPosition.getOffsetX() + ", " + labelPosition.getOffsetY() );
+	
+	//labelPosition = parentNodeView.getLabelPosition();
+	
+	// Set labelNode's location to parent node's current label position
+	nodeAtts = Cytoscape.getNodeAttributes();
+	String labelPosition = (String) nodeAtts.getAttribute(parentNodeView.getNode().
+							      getIdentifier(), "node.labelPosition");
+	
+	if (labelPosition == null) {
+	    lp = new LabelPosition();
+	} else {
+	    lp = LabelPosition.parse(labelPosition);
+	}
+	
 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
+	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
 
-	this.setX(labelPosition.getOffsetX() + parentNodeView.getXPosition());
-	this.setY(labelPosition.getOffsetY() + parentNodeView.getYPosition());	    
+	this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
+	this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
 	this.neighbors = new ArrayList<LayoutNode>();
 	this.index = index;
 
 	logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
-	logger.info("Parent placed in: " + parentNodeView.getXPosition() + ", " + parentNodeView.getYPosition() );
     }
 
     /**
@@ -61,21 +72,25 @@ public class LayoutLabelNodeImpl extends LayoutNode {
      */
     public void moveToLocation() {
 	
- 	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
+	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
 
 	    logger.info(this.toString() + " was locked");
 
-	    this.setX(labelPosition.getOffsetX() + parentNodeView.getXPosition());
-	    this.setY(labelPosition.getOffsetY() + parentNodeView.getYPosition());
+	    this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
+	    this.setY(lp.getOffsetY() + parentNodeView.getYPosition());
 
 	} else { // If node is unlocked set labels offsets properly	
 	    	    
 	    logger.info(this.toString() + " was unlocked");
 
-	    labelPosition.setOffsetX(this.getX() - parentNodeView.getXPosition());
-	    labelPosition.setOffsetY(this.getY() - parentNodeView.getYPosition());
-	
-	     logger.info("Label node was moved!");
+	    lp.setOffsetX(this.getX() - parentNodeView.getXPosition());
+	    lp.setOffsetY(this.getY() - parentNodeView.getYPosition());
+
+	    nodeAtts.setAttribute(parentNodeView.getNode().getIdentifier(),
+					  "node.labelPosition", lp.shortString());
+
+
+	    logger.info("Label node was moved!");
 	} 
     }
 
