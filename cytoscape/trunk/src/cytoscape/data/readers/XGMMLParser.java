@@ -1458,8 +1458,12 @@ class XGMMLParser extends DefaultHandler {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			currentAttributeID = name;
-			if (id != null && cyAtts.hasAttribute(id, name))
-				cyAtts.deleteAttribute(id,name);
+			if (id != null && cyAtts.hasAttribute(id, name)) {
+				if (equation)
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, List.class);
+				else
+					cyAtts.deleteAttribute(id,name);
+			}
 
 			listAttrHolder = new ArrayList();
 
