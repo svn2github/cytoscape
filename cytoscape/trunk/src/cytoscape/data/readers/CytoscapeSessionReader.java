@@ -1,14 +1,7 @@
 /*
  File: CytoscapeSessionReader.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -396,7 +389,10 @@ public class CytoscapeSessionReader {
 		Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
 
 		try {
+			final EqnAttrTracker eqnAttrTracker = Cytoscape.getEqnAttrTracker();
+			eqnAttrTracker.reset();
 			unzipSessionFromURL(true);
+			eqnAttrTracker.addAllEquations();
 		} catch (cytoscape.visual.DuplicateCalculatorNameException dcne) {
 			logger.warn("Duplicate VS name found.  It will be ignored...", dcne);
 		}
@@ -507,7 +503,7 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	private void unzipSessionFromURL(boolean loadVizmap) throws IOException, JAXBException, Exception {
+	private void unzipSessionFromURL(final boolean loadVizmap) throws IOException, JAXBException, Exception {
 		extractEntry();
 		logger.info("extractEntry: " + (System.currentTimeMillis() - start) + " msec.");
 
@@ -681,14 +677,13 @@ public class CytoscapeSessionReader {
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 		InputStream is = null;
 
-        try {
+		try {
 			is = URLUtil.getBasicInputStream(cysessionFileURL);
-            session = (Cysession) unmarshaller.unmarshal(is);
-        }
-        finally {
-            if (is != null) {
+			session = (Cysession) unmarshaller.unmarshal(is);
+		}
+		finally {
+			if (is != null)
 				is.close();
-            }
 		}
 
 		/*
@@ -698,15 +693,13 @@ public class CytoscapeSessionReader {
 		sessionID = session.getId();
 		netMap = new HashMap<String, Network>();
 
-		for (Network curNet : session.getNetworkTree().getNetwork()) {
+		for (Network curNet : session.getNetworkTree().getNetwork())
 			netMap.put(curNet.getId(), curNet);
-		}
 
 		walkTree(netMap.get(NETWORK_ROOT), null, cysessionFileURL);
 	}
 
 	private void restoreDesktopState() {
-
 		// Restore Desktop size
 		Cytoscape.getDesktop()
 		         .setSize(session.getSessionState().getDesktop().getDesktopSize().getWidth()
@@ -725,18 +718,18 @@ public class CytoscapeSessionReader {
 		                              .getComponents();
 
 		for (int i = 0; i < desktopFrames.length; i++) {
-            Component cmp;
+			Component cmp;
 
-            cmp = desktopFrames[i];
-            if (cmp instanceof JInternalFrame) {
-                JInternalFrame frame = (JInternalFrame)cmp;
-                NetworkFrame nFrame = frameMap.get(frame.getTitle());
+			cmp = desktopFrames[i];
+			if (cmp instanceof JInternalFrame) {
+				JInternalFrame frame = (JInternalFrame)cmp;
+				NetworkFrame nFrame = frameMap.get(frame.getTitle());
 
-                if (nFrame != null) {
-                    frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
-                    frame.setLocation(nFrame.getX().intValue(), nFrame.getY().intValue());
-                }
-            }
+				if (nFrame != null) {
+					frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
+					frame.setLocation(nFrame.getX().intValue(), nFrame.getY().intValue());
+				}
+			}
 		}
 	}
 
@@ -750,7 +743,8 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 */
 	private void walkTree(final Network currentNetwork, final CyNetwork parent,
-	                      final Object sessionSource) throws JAXBException, IOException {
+			      final Object sessionSource) throws JAXBException, IOException
+	{
 		// Get the list of children under this root
 		final List<Child> children = currentNetwork.getChild();
 
@@ -796,14 +790,12 @@ public class CytoscapeSessionReader {
 
 					reader = new XGMMLReader(networkStream);
 					new_network = Cytoscape.createNetwork(reader, false, parent);
-				}
-				finally {
-					if (networkStream != null) {
+				} finally {
+					if (networkStream != null)
 						networkStream.close();
-					}
 				}
-			} catch (Exception e) {
-				String message = "Unable to read XGMML file: "+childNet.getFilename()+".  "+e.getMessage();
+			} catch (final Exception e) {
+				final String message = "Unable to read XGMML file: " + childNet.getFilename() + ".  " + e.getMessage();
 				logger.error(message, e);
 				Cytoscape.destroyNetwork(new_network);
 				if (taskMonitor != null)
@@ -864,9 +856,8 @@ public class CytoscapeSessionReader {
 				setSelectedEdges(new_network, (SelectedEdges) childNet.getSelectedEdges());
 
 				// Load child networks
-				if (childNet.getChild().size() != 0) {
+				if (childNet.getChild().size() != 0)
 					walkTree(childNet, new_network, sessionSource);
-				}
 			}
 		}
 	}

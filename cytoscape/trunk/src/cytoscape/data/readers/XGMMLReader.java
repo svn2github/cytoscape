@@ -303,7 +303,6 @@ public class XGMMLReader extends AbstractGraphReader {
 					pa.setErrorHandler(parser);
 					pa.parse(new InputSource(networkStream));
 					networkName = parser.getNetworkName();
-					parser.compileAndAddEquationAttribs();
 				} catch (OutOfMemoryError oe) {
 					/*
 					 * It's not generally a good idea to catch OutOfMemoryErrors, but in

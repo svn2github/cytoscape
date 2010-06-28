@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.writers.CyAttributesWriter;
@@ -64,7 +65,6 @@ public class CyAttributesReader {
 	private int lineNum;
 	private boolean doDecoding;
 	final Map<String, Map<String, Class>> idsToAttribNameToTypeMapMap;
-	private List<AttribEquation> attribEquations; // This is where we collect equations for later addition.
 	private final CyLogger logger;
 
 
@@ -73,7 +73,6 @@ public class CyAttributesReader {
 		lineNum = 0;
 		doDecoding = Boolean.valueOf(System.getProperty(DECODE_PROPERTY, "true"));
 		idsToAttribNameToTypeMapMap = new HashMap<String, Map<String, Class>>();
-		attribEquations = new ArrayList<AttribEquation>();
 	}
 
 	/**
@@ -87,7 +86,6 @@ public class CyAttributesReader {
 	public static void loadAttributes(final CyAttributes cyAttrs, final Reader fileIn) throws IOException {
 		CyAttributesReader ar = new CyAttributesReader();
 		ar.loadAttributesInternal(cyAttrs, fileIn);
-		ar.addEquations(cyAttrs);
 	}
 
 	private Class mapCytoscapeAttribTypeToEqnType(final byte attribType) {
@@ -105,52 +103,6 @@ public class CyAttributesReader {
 		default:
 			return null;
 		}
-	}
-
-	private void addEquations(final CyAttributes cyAttrs) {
-		final EqnCompiler compiler = new EqnCompiler();
-		final String[] allAttribNames = cyAttrs.getAttributeNames();
-		final Class[] allTypes = new Class[allAttribNames.length];
-		int index = 0;
-		for (final String attribName : allAttribNames) {
-			final byte type = cyAttrs.getType(attribName);
-			allTypes[index++] = mapCytoscapeAttribTypeToEqnType(type);
-		}
-
-		for (final AttribEquation attribEquation : attribEquations) {
-			Map<String, Class> attribNameToTypeMap = idsToAttribNameToTypeMapMap.get(attribEquation.getID());
-			if (attribNameToTypeMap == null)
-				attribNameToTypeMap = new HashMap<String, Class>();
-			for (int i = 0; i < allAttribNames.length; ++i) {
-				if (allTypes[i] != null)
-					attribNameToTypeMap.put(allAttribNames[i], allTypes[i]);
-			}
-
-			if (compiler.compile(attribEquation.getEquation(), attribNameToTypeMap))
-				cyAttrs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(), compiler.getEquation(),
-				                     attribEquation.getDataType());
-			else {
-				final String errorMessage = compiler.getLastErrorMsg();
-				logger.warn("bad equation on line " + attribEquation.getLineNumber() + ": " + errorMessage);
-				final Class eqnType = mapCytoscapeAttribTypeToEqnType(attribEquation.getDataType());
-				final Equation errorEquation = Equation.getErrorEquation(attribEquation.getEquation(),
-											 eqnType, errorMessage);
-				cyAttrs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(), errorEquation,
-				                     attribEquation.getDataType());
-			}
-		}
-	}
-
-	/**
-	 *  Helper function for loadAttributesInternal().
-	 */
-	private void updateMapToMaps(final String id, final String attribName, final Class attribType,
-	                             final Map<String, Map<String, Class>> idsToAttribNameToTypeMapMap)
-	{
-		Map<String, Class> attribNameToTypeMap = idsToAttribNameToTypeMapMap.get(id);
-		if (attribNameToTypeMap == null)
-			attribNameToTypeMap = new HashMap<String, Class>();
-		attribNameToTypeMap.put(attribName, attribType);
 	}
 
 	/**
@@ -303,7 +255,6 @@ public class CyAttributesReader {
 						}
 					}
 
-					updateMapToMaps(key, attributeName, List.class, idsToAttribNameToTypeMapMap);
 					cyAttrs.setListAttribute(key, attributeName, elmsBuff);
 				} else { // Not a list.
 					val = decodeString(val);
@@ -336,39 +287,40 @@ public class CyAttributesReader {
 					}
 
 					if (equation) {
-						final Class javaType;
+						final Class eqnReturnType;
 						switch (type) {
-						case MultiHashMapDefinition.TYPE_INTEGER:
-							javaType = Long.class;
+						case CyAttributes.TYPE_INTEGER:
+							eqnReturnType = Long.class;
 							break;
-						case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-							javaType = Double.class;
+						case CyAttributes.TYPE_FLOATING:
+							eqnReturnType = Double.class;
 							break;
-						case MultiHashMapDefinition.TYPE_BOOLEAN:
-							javaType = Boolean.class;
+						case CyAttributes.TYPE_BOOLEAN:
+							eqnReturnType = Boolean.class;
 							break;
-						case MultiHashMapDefinition.TYPE_STRING:
-							javaType = String.class;
+						case CyAttributes.TYPE_STRING:
+							eqnReturnType = String.class;
+							break;
+						case CyAttributes.TYPE_SIMPLE_LIST:
+							eqnReturnType = List.class;
 							break;
 						default:
-							throw new IllegalStateException("don't know which type to register on line " + lineNum + "!");
+							final String message = "don't know which equation return type to register on line " + lineNum + "!";
+							System.err.println(message);
+							logger.warn(message);
+							continue;
 						}
-						updateMapToMaps(key, attributeName, javaType, idsToAttribNameToTypeMapMap);
-						attribEquations.add(new AttribEquation(key, attributeName, val, type, lineNum));
+						final EqnAttrTracker eqnAttrTracker = Cytoscape.getEqnAttrTracker();
+						eqnAttrTracker.recordEquation(cyAttrs, key, attributeName, val, eqnReturnType);
 					}
-					else if (type == MultiHashMapDefinition.TYPE_INTEGER) {
-						updateMapToMaps(key, attributeName, Long.class, idsToAttribNameToTypeMapMap);
+					else if (type == MultiHashMapDefinition.TYPE_INTEGER)
 						cyAttrs.setAttribute(key, attributeName, new Integer(val));
-					} else if (type == MultiHashMapDefinition.TYPE_BOOLEAN) {
-						updateMapToMaps(key, attributeName, Boolean.class, idsToAttribNameToTypeMapMap);
+					else if (type == MultiHashMapDefinition.TYPE_BOOLEAN)
 						cyAttrs.setAttribute(key, attributeName, new Boolean(val));
-					} else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
-						updateMapToMaps(key, attributeName, Double.class, idsToAttribNameToTypeMapMap);
+					else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT)
 						cyAttrs.setAttribute(key, attributeName, new Double(val));
-					} else {
-						updateMapToMaps(key, attributeName, String.class, idsToAttribNameToTypeMapMap);
+					else
 						cyAttrs.setAttribute(key, attributeName, val);
-					}
 				}
 			}
 		} catch (Exception e) {

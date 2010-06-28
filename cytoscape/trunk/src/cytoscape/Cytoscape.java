@@ -1,14 +1,7 @@
 /*
  File: Cytoscape.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -71,6 +64,7 @@ import cytoscape.data.ImportHandler;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
+import cytoscape.data.readers.EqnAttrTracker;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.NestedNetworkReader;
 import cytoscape.data.servers.BioDataServer;
@@ -449,6 +443,14 @@ public abstract class Cytoscape {
 	 */
 	public static CyNetwork getNullNetwork() {
 		return nullNetwork;
+	}
+
+	private static EqnAttrTracker eqnAttrTracker = null;
+
+	public static EqnAttrTracker getEqnAttrTracker() {
+		if (eqnAttrTracker == null)
+			eqnAttrTracker = new EqnAttrTracker();
+		return eqnAttrTracker;
 	}
 
 	/**

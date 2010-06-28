@@ -43,9 +43,6 @@ import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.logger.CyLogger;
 
-import org.cytoscape.equations.EqnCompiler;
-import org.cytoscape.equations.Equation;
-
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.Attributes;
@@ -118,78 +115,6 @@ enum ObjectType {
 
 
 class XGMMLParser extends DefaultHandler {
-	private enum AttrClass {
-		NODES(Cytoscape.getNodeAttributes()),
-		EDGES(Cytoscape.getEdgeAttributes()),
-		NETWORKS(Cytoscape.getNetworkAttributes());
-
-		private CyAttributes attribs;
-
-		AttrClass(final CyAttributes attribs) { this.attribs = attribs; }
-
-		CyAttributes getAttribs() { return attribs; }
-	};
-
-	class AttrNameToTypeMaps {
-		private final Map<String, Class> attribNameToTypeMapForNodes;
-		private final Map<String, Class> attribNameToTypeMapForEdges;
-		private final Map<String, Class> attribNameToTypeMapForNetworks;
-
-		AttrNameToTypeMaps() {
-			attribNameToTypeMapForNodes    = new HashMap<String, Class>();
-			attribNameToTypeMapForEdges    = new HashMap<String, Class>();
-			attribNameToTypeMapForNetworks = new HashMap<String, Class>();
-		}
-
-		void put(final String attrName, final Class attrType, final AttrClass attrClass) {
-			switch (attrClass) {
-			case NODES:
-				attribNameToTypeMapForNodes.put(attrName, attrType);
-				break;
-			case EDGES:
-				attribNameToTypeMapForEdges.put(attrName, attrType);
-				break;
-			case NETWORKS:
-				attribNameToTypeMapForNetworks.put(attrName, attrType);
-				break;
-			}
-		}
-
-		Map<String, Class> getAttribNameToTypeMapForNodes() { return attribNameToTypeMapForNodes; }
-		Map<String, Class> getAttribNameToTypeMapForEdges() { return attribNameToTypeMapForEdges; }
-		Map<String, Class> getAttribNameToTypeMapForNetworks() { return attribNameToTypeMapForNetworks; }
-	}
-
-	class AttrEqnLists {
-		private final List<AttribEquation> nodeEquations;
-		private final List<AttribEquation> edgeEquations;
-		private final List<AttribEquation> networkEquations;
-
-		AttrEqnLists() {
-			nodeEquations    = new ArrayList<AttribEquation>();
-			edgeEquations    = new ArrayList<AttribEquation>();
-			networkEquations = new ArrayList<AttribEquation>();
-		}
-
-		void add(final AttribEquation equation, final AttrClass attrClass) {
-			switch (attrClass) {
-			case NODES:
-				nodeEquations.add(equation);
-				break;
-			case EDGES:
-				edgeEquations.add(equation);
-				break;
-			case NETWORKS:
-				networkEquations.add(equation);
-				break;
-			}
-		}
-
-		List<AttribEquation> getNodeEquations() { return nodeEquations; }
-		List<AttribEquation> getEdgeEquations() { return edgeEquations; }
-		List<AttribEquation> getNetworkEquations() { return networkEquations; }
-	}
-
 	final static String XLINK = "http://www.w3.org/1999/xlink";
 	final static String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	final static String DUBLINCORE = "http://purl.org/dc/elements/1.1/";
@@ -245,10 +170,7 @@ class XGMMLParser extends DefaultHandler {
 	private ParseState attState = ParseState.NONE;
 	private String currentAttributeID = null;
 	private CyAttributes currentAttributes = null;
-	private AttrClass currentAttrClass = null;
 	private	String objectTarget = null;
-	private AttrNameToTypeMaps attrNameToTypeMaps;
-	private AttrEqnLists attrEqnLists;
 
 	/* Complex attribute data */
 	private int level = 0;
@@ -267,6 +189,8 @@ class XGMMLParser extends DefaultHandler {
 	private String edgeBendX = null;
 	/* Y handle */
 	private String edgeBendY = null;
+
+	private EqnAttrTracker eqnAttrTracker = null;
 
 	/**
 	 * Main parse table. This table controls the state machine, and follows
@@ -586,8 +510,7 @@ class XGMMLParser extends DefaultHandler {
 		nodeGraphicsMap = new HashMap();
 		edgeGraphicsMap = new HashMap();
 		idMap = new HashMap();
-		attrNameToTypeMaps = new AttrNameToTypeMaps();
-		attrEqnLists = new AttrEqnLists();
+		eqnAttrTracker = Cytoscape.getEqnAttrTracker();
 	}
 
 
@@ -617,19 +540,6 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 
-	void compileAndAddEquationAttribs() {
-		compileAndAddEquationAttribs(attrEqnLists.getNodeEquations(),
-		                             attrNameToTypeMaps.getAttribNameToTypeMapForNodes(),
-		                             Cytoscape.getNodeAttributes());
-		compileAndAddEquationAttribs(attrEqnLists.getEdgeEquations(),
-		                             attrNameToTypeMaps.getAttribNameToTypeMapForEdges(),
-		                             Cytoscape.getEdgeAttributes());
-		compileAndAddEquationAttribs(attrEqnLists.getNetworkEquations(),
-		                             attrNameToTypeMaps.getAttribNameToTypeMapForNetworks(),
-		                             Cytoscape.getNetworkAttributes());
-	}
-
-
 	private Class mapCytoscapeAttribTypeToEqnType(final byte attribType) {
 		switch (attribType) {
 		case CyAttributes.TYPE_BOOLEAN:
@@ -644,31 +554,6 @@ class XGMMLParser extends DefaultHandler {
 			return List.class;
 		default:
 			throw new IllegalStateException("can't map Cytoscape type " + attribType + " to equation return type!");
-		}
-	}
-
-
-	private void compileAndAddEquationAttribs(final List<AttribEquation> attribEquations,
-	                                          final Map<String, Class> attribNameToTypeMap,
-	                                          final CyAttributes attribs)
-	{
-		attribNameToTypeMap.put("ID", String.class);
-		final EqnCompiler compiler = new EqnCompiler();
-		for (final AttribEquation attribEquation : attribEquations) {
-			if (compiler.compile(attribEquation.getEquation(), attribNameToTypeMap))
-				attribs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(),
-						     compiler.getEquation(), attribEquation.getDataType());
-			else {
-				final String errorMessage = compiler.getLastErrorMsg();
-				logger.warn("failed to compile an equation in an XGMML input file ("
-					    + errorMessage + ")!");
-				final Equation errorEquation =
-					Equation.getErrorEquation(attribEquation.getEquation(),
-					                          mapCytoscapeAttribTypeToEqnType(attribEquation.getDataType()),
-					                          errorMessage);
-				attribs.setAttribute(attribEquation.getID(), attribEquation.getAttrName(),
-						     errorEquation, attribEquation.getDataType());
-			}
 		}
 	}
 
@@ -891,7 +776,6 @@ class XGMMLParser extends DefaultHandler {
 	class HandleNetworkAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			currentAttributes = Cytoscape.getNetworkAttributes();
-			currentAttrClass = AttrClass.NETWORKS;
 			attState = current;
 			ParseState nextState = current;
 			// Look for "special" network attributes
@@ -964,7 +848,6 @@ class XGMMLParser extends DefaultHandler {
 			}
 
 			currentAttributes = Cytoscape.getNodeAttributes();
-			currentAttrClass = AttrClass.NODES;
 			objectTarget = currentNode.getIdentifier();
 
 			ParseState nextState = handleAttribute(atts, currentAttributes, objectTarget);
@@ -1042,20 +925,7 @@ class XGMMLParser extends DefaultHandler {
 	class handleEdgeAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			attState = current;
-			// logger.debug("Edge attribute: "+printAttribute(atts));
-			/*
-			if (atts.getValue("name").startsWith("edge.")) {
-				// Yes, add it to our nodeGraphicsMap
-				String name = atts.getValue("name").substring(5);
-				String value = atts.getValue("value");
-				if (!edgeGraphicsMap.containsKey(currentEdge)) {
-					edgeGraphicsMap.put(currentEdge, new AttributesImpl());
-				} 
-				((AttributesImpl)edgeGraphicsMap.get(currentEdge)).addAttribute("", "", name, "string", value);
-			}
-			*/
 			currentAttributes = Cytoscape.getEdgeAttributes();
-			currentAttrClass = AttrClass.EDGES;
 			if (currentEdge != null)
 				objectTarget = currentEdge.getIdentifier();
 			else
@@ -1071,7 +941,6 @@ class XGMMLParser extends DefaultHandler {
 
 	class handleEdgeGraphics implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			// logger.debug("Atts for "+currentEdge.getIdentifier()+": "+printAttributes(atts));
 			if (tag.equals("graphics")) {
 				if (edgeGraphicsMap.containsKey(currentEdge)) {
 					addAttributes(edgeGraphicsMap.get(currentEdge),atts);
@@ -1550,36 +1419,32 @@ class XGMMLParser extends DefaultHandler {
 		switch (objType) {
 		case BOOLEAN:
 			if (obj != null && name != null && id != null) {
-				attrNameToTypeMaps.put(name, Boolean.class, currentAttrClass);
 				if (equation)
-					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_BOOLEAN), currentAttrClass);
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, Boolean.class);
 				else
 					cyAtts.setAttribute(id, name, (Boolean)obj);
 			}
 			break;
 		case REAL:
 			if (obj != null && name != null && id != null) {
-				attrNameToTypeMaps.put(name, Double.class, currentAttrClass);
 				if (equation)
-					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_FLOATING_POINT), currentAttrClass);
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, Double.class);
 				else
 					cyAtts.setAttribute(id, name, (Double)obj);
 			}
 			break;
 		case INTEGER:
 			if (obj != null && name != null && id != null) {
-				attrNameToTypeMaps.put(name, Long.class, currentAttrClass);
 				if (equation)
-					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_INTEGER), currentAttrClass);
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, Long.class);
 				else
 					cyAtts.setAttribute(id, name, (Integer)obj);
 			}
 			break;
 		case STRING:
 			if (obj != null && name != null && id != null) {
-				attrNameToTypeMaps.put(name, String.class, currentAttrClass);
 				if (equation)
-					attrEqnLists.add(new AttribEquation(id, name, (String)obj, MultiHashMapDefinition.TYPE_STRING), currentAttrClass);
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, String.class);
 				else
 					cyAtts.setAttribute(id, name, (String)obj);
 			}
@@ -1593,22 +1458,16 @@ class XGMMLParser extends DefaultHandler {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			currentAttributeID = name;
-			if (id != null && cyAtts.hasAttribute(id, name)) {
+			if (id != null && cyAtts.hasAttribute(id, name))
 				cyAtts.deleteAttribute(id,name);
-				if (name != null)
-					attrNameToTypeMaps.put(name, List.class, currentAttrClass);
-			}
 
 			listAttrHolder = new ArrayList();
 
 			return ParseState.LISTATT;
 		case MAP:
 			currentAttributeID = name;
-			if (id != null && cyAtts.hasAttribute(id, name)) {
+			if (id != null && cyAtts.hasAttribute(id, name))
 				cyAtts.deleteAttribute(id,name);
-				if (name != null)
-                                        attrNameToTypeMaps.put(name, Map.class, currentAttrClass);
-			}
 
 			mapAttrHolder = new HashMap();
 
