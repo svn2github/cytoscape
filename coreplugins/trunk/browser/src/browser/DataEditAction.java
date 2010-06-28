@@ -34,8 +34,12 @@ import browser.util.AttrUtil;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
+import org.cytoscape.equations.BooleanList;
 import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.DoubleList;
 import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.LongList;
+import org.cytoscape.equations.StringList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,13 +147,17 @@ public class DataEditAction extends AbstractUndoableEdit {
 					attrs.deleteAttribute(id, attrName);
 					return;
 				}
-				if (equation.getType() == String.class) {
+
+				final Class returnType = equation.getType();
+				if (returnType != Long.class && returnType != Double.class && returnType != Boolean.class) {
 					showErrorWindow("Error in attribute \"" + attrName
-					                + "\": equation is of type String but should be of type Integer!");
+					                + "\": equation is of type " + getLastDotComponent(returnType.toString())
+                                                        + " but should be of type Integer!");
 					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
 					attrs.deleteAttribute(id, attrName);
 					return;
 				}
+
  				attrs.setAttribute(id, attrName, equation);
 				final Object attrValue = attrs.getAttribute(id, attrName);
 				String errorMessage = attrs.getLastEquationError();
@@ -182,13 +190,17 @@ public class DataEditAction extends AbstractUndoableEdit {
 					attrs.deleteAttribute(id, attrName);
 					return;
 				}
-				if (equation.getType() == String.class) {
+
+				final Class returnType = equation.getType();
+				if (returnType != Double.class && returnType != Long.class && returnType != Boolean.class) {
 					showErrorWindow("Error in attribute \"" + attrName
-					                + "\": equation is of type String but should be of type Floating Point!");
+					                + "\": equation is of type " + getLastDotComponent(returnType.toString())
+					                + " but should be of type Floating Point!");
 					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
 					attrs.deleteAttribute(id, attrName);
 					return;
 				}
+
  				attrs.setAttribute(id, attrName, equation);
 				final Object attrValue = attrs.getAttribute(id, attrName);
 				String errorMessage = attrs.getLastEquationError();
@@ -222,13 +234,17 @@ public class DataEditAction extends AbstractUndoableEdit {
 					attrs.deleteAttribute(id, attrName);
 					return;
 				}
-				if (equation.getType() == String.class) {
+
+				final Class returnType = equation.getType();
+				if (returnType != Boolean.class && returnType != Long.class && returnType != Double.class) {
 					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
 					attrs.deleteAttribute(id, attrName);
 					showErrorWindow("Error in attribute \"" + attrName
-					                + "\": equation is of type String but should be of type Boolean!");
+					                + "\": equation is of type " + getLastDotComponent(returnType.toString())
+                                                        + " but should be of type Boolean!");
 					return;
 				}
+
  				attrs.setAttribute(id, attrName, equation);
 				final Object attrValue = attrs.getAttribute(id, attrName);
 				String errorMessage = attrs.getLastEquationError();
@@ -336,6 +352,18 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 			return;
 		}
+	}
+
+	/**
+	 *  Assumes that "s" consists of components separated by dots.
+	 *  @returns the last component of "s" or all of "s" if there are no dots
+	 */
+	private static String getLastDotComponent(final String s) {
+		final int lastDotPos = s.lastIndexOf('.');
+		if (lastDotPos == -1)
+			return s;
+
+		return s.substring(lastDotPos + 1);
 	}
 
 	/** Does some rudimentary list syntax checking and returns the number of items in "listCandidate."

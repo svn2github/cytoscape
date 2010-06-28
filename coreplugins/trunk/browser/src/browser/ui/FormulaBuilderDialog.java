@@ -363,9 +363,9 @@ public class FormulaBuilderDialog extends JDialog {
 
 	/**
 	 *  Assumes that "s" consists of components separated by dots.
-	 *  @returns the last component of "s"
+	 *  @returns the last component of "s" or all of "s" if there are no dots
 	 */
-	private String getLastDotComponent(final String s) {
+	private static String getLastDotComponent(final String s) {
 		final int lastDotPos = s.lastIndexOf('.');
 		if (lastDotPos == -1)
 			return s;
