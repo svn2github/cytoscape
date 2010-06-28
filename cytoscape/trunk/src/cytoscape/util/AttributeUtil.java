@@ -5,7 +5,11 @@ import cytoscape.data.CyAttributes;
 
 public class AttributeUtil {
 
-	// Check if all the values for an attribute are NULL
+	/**
+	 * Check if all the values for an attribute are NULL.
+	 * @param attributeType     "node" or "edge"
+	 * @param attributeName  	attribute name.
+	 */
 	public static boolean isNullAttribute(String attributeType, String attributeName){
 		
 		boolean retValue = true;
