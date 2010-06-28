@@ -54,6 +54,9 @@ import javax.swing.JComponent;
  * and ding.view.ArbitraryGraphicsCanvas.
  */
 public abstract class DingCanvas extends JComponent {
+	
+	private static final long serialVersionUID = 4138104679262169265L;
+
 	/**
 	 * ref to image we maintain
 	 */

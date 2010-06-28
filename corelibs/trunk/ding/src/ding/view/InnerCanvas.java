@@ -34,7 +34,6 @@ import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -87,6 +86,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
                                                        PhoebeCanvasDroppable, KeyListener,
                                                        MouseWheelListener {
 
+	private static final long serialVersionUID = 6219424955453507079L;
+
 	final double[] m_ptBuff = new double[2];
 	final float[] m_extentsBuff2 = new float[4];
 	final float[] m_floatBuff1 = new float[2];
@@ -97,7 +98,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	final IntStack m_stack = new IntStack();
 	final IntStack m_stack2 = new IntStack();
 	final Object m_lock;
+	
 	DGraphView m_view;
+	
 	final GraphLOD[] m_lod = new GraphLOD[1];
 	final IntHash m_hash;
 	GraphGraphics m_grafx;
@@ -112,46 +115,33 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	
 	private boolean NodeMovement = true;
 
-	//final boolean[] m_printingTextAsShape = new boolean[1];
-
 	/**
 	 * String used to compare against os.name System property -
 	 * to determine if we are running on Windows platform.
 	 */
-	static final String MAC_OS_ID = "mac";
+	private static final String MAC_OS_ID = "mac";
 
-	private DropTarget dropTarget;
-	private String CANVAS_DROP = "CanvasDrop";
+	private final DropTarget dropTarget;
 
 	//  for turning selection rectangle on and off
 	private boolean selecting = true;
 
-	/**
-	 * DOCUMENT ME!
-	 */
+	
 	public Vector listeners = new Vector();
-
-	/**
-	 * AJK: 01/12/07
-	 * Transfer handler components -- contain transfer handlers
-	 * N.B. -- don't use this code -- just a quick fix that will be replaced in
-	 * Cytosape 2.5.
-	 */
 	private Vector transferComponents = new Vector();
 
-	//       AJK: 04/02/06 END
-	// AJK: 04/27/06 for context menus
-
+	
 	/**
-	 * DOCUMENT ME!
+	 * Listeners for node right-click menu
 	 */
 	public Vector nodeContextMenuListeners = new Vector();
-
+	
 	/**
-	 * DOCUMENT ME!
+	 * Listeners for edge right-click menu.
 	 */
 	public Vector edgeContextMenuListeners = new Vector();
 
+	
 	InnerCanvas(Object lock, DGraphView view) {
 		super();
 		m_lock = lock;
@@ -164,7 +154,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		m_xCenter = 0.0d;
 		m_yCenter = 0.0d;
 		m_scaleFactor = 1.0d;
-		//m_printingTextAsShape[0] = true;
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
@@ -236,8 +225,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			g.drawImage(m_img, 0, 0, null);
 		}
 
-		// AJK: 01/14/2007 only draw selection rectangle when selection flag is on
-		//        if (m_selectionRect != null) {
 		if ((m_selectionRect != null) && (this.isSelecting())) {
 			final Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.red);
@@ -260,7 +247,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Paint this component using Java2D.
 	 *
 	 * @param g DOCUMENT ME!
 	 */
@@ -269,14 +256,15 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * This print method will be used by Image Export functions.
 	 *
-	 * @param g DOCUMENT ME!
+	 * @param g Usually Graphics2D object for drawing network view as image.
+	 * 
 	 */
-	public void print(Graphics g) {
-		final Image img = new ImageImposter(g, getWidth(), getHeight());
-		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false, m_view.m_printLOD);
-		// g.drawImage(img, 0, 0, null);
+	public void print(Graphics g) {		
+		renderGraph(new GraphGraphics(
+				new ImageImposter(g, getWidth(), getHeight()), false), 
+				/* setLastRenderDetail = */ false, m_view.m_printLOD);
 	}
 
 	/**
@@ -1110,7 +1098,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
-	// AJK: 04/02/06 BEGIN
 
 	/**
 	 * default dragEnter handler.  Accepts the drag.
@@ -1193,20 +1180,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	protected synchronized void processPhoebeCanvasDropEvent(PhoebeCanvasDropEvent event) {
 		Enumeration e = listeners.elements();
 
-		//        // AJK: 12/08/06 oy, what a hack.  try to send transferable to transferhandler
-		//        //               of cytoscapeDesktopPane
-		//        Transferable t = event.getTransferable();
-		//        TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
-		//        getDesktopPane().getTransferHandler();
-		//        if (th != null)
-		//        {
-		//        	th.importData(Cytoscape.getDesktop().getNetworkViewManager().
-		//        getDesktopPane(), t);
-		//        }
-		//        // AJK: 12/08/06 END       
-
-		//      // AJK: 01/14/07 oy, what a hack.  try to send transferable to transferhandler
-		//      //               of cytoscapeDesktopPane
 		Transferable t = event.getTransferable();
 		TransferHandler th;
 		JComponent jComp;
@@ -1390,8 +1363,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public boolean isSelecting() {
 		return selecting;
 	}
-
-	// 
+	
 
 	/**
 	 * Called to get the tranform matrix used by the inner canvas
@@ -1443,7 +1415,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 *  @param setLastRenderDetail if true, "m_lastRenderDetail" will be updated, otherwise it will not be updated.
 	 */
 	private void renderGraph(GraphGraphics graphics, final boolean setLastRenderDetail, final GraphLOD lod) {
-		final int alpha = (m_isOpaque) ? 255 : 0; // Set color alpha based on opacity setting
+		// Set color alpha based on opacity setting
+		final int alpha = (m_isOpaque) ? 255 : 0;
+		
 		final Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
 							m_backgroundColor.getBlue(), alpha);
 

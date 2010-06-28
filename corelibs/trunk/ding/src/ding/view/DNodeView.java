@@ -1372,6 +1372,7 @@ public class DNodeView implements NodeView, Label {
 		}
 	}
 
+	
 	TexturePaint getNestedNetworkTexturePaint() {
 		synchronized (graphView.m_lock) {
 			++nestedNetworkPaintingDepth;
