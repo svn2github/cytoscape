@@ -1,48 +1,42 @@
 package cytoscape.actions;
 
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import javax.swing.event.MenuEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.event.MenuEvent;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.InternalFrameComponent;
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.util.CyFileFilter;
-
-import cytoscape.task.ui.JTaskConfig;
+import cytoscape.dialogs.ExportAsGraphicsFileChooser;
+import cytoscape.dialogs.ExportBitmapOptionsDialog;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.export.Exporter;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.util.export.BitmapExporter;
+import cytoscape.util.export.Exporter;
 import cytoscape.util.export.PDFExporter;
-import cytoscape.util.export.SVGExporter;
 import cytoscape.util.export.PSExporter;
-import cytoscape.dialogs.ExportBitmapOptionsDialog;
-import cytoscape.dialogs.ExportAsGraphicsFileChooser;
-
-import cytoscape.logger.CyLogger;
-
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.Calculator;
+import cytoscape.util.export.SVGExporter;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.InternalFrameComponent;
 
 
 /**
  * Action for exporting a network view to bitmap or vector graphics.
  * @author Samad Lotia
  */
-public class ExportAsGraphicsAction extends CytoscapeAction
-{
+public class ExportAsGraphicsAction extends CytoscapeAction {
+	
+	private static final long serialVersionUID = -5887102279435784342L;
+	
 	private static ExportFilter BMP_FILTER = new BitmapExportFilter("bmp", "BMP");
 	private static ExportFilter JPG_FILTER = new BitmapExportFilter("jpg", "JPEG");
 	private static ExportFilter PDF_FILTER = new PDFExportFilter();
@@ -50,17 +44,18 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 	private static ExportFilter SVG_FILTER = new SVGExportFilter();
 	private static ExportFilter EPS_FILTER = new PSExportFilter("eps", "EPS");
 	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, EPS_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
+	
 	protected static CyLogger logger = CyLogger.getLogger(ExportAsGraphicsAction.class);
 
-	private static String TITLE = "Network View as Graphics";
+	private static String TITLE = "Current Network View as Graphics";
 
-	public ExportAsGraphicsAction()
-	{
+	public ExportAsGraphicsAction() {
 		super(TITLE + "...");
 		setPreferredMenu("File.Export");
 		setAcceleratorCombo(KeyEvent.VK_P, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
 	}
 
+	
 	public void menuSelected(MenuEvent e)
 	{
 		enableForNetworkAndView();
