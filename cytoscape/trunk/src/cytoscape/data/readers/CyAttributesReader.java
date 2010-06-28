@@ -29,6 +29,7 @@
 */
 package cytoscape.data.readers;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -52,9 +53,6 @@ import java.net.URLDecoder;
 import java.text.MessageFormat;
 
 
-/**
- *
- */
 public class CyAttributesReader {
 	public static final String DECODE_PROPERTY = "cytoscape.decode.attributes";
 	private static final String badDecodeMessage =
@@ -105,7 +103,7 @@ public class CyAttributesReader {
 		case CyAttributes.TYPE_SIMPLE_LIST:
 			return List.class;
 		default:
-			throw new IllegalStateException("can't map Cytoscape type " + attribType + " to equation return type!");
+			return null;
 		}
 	}
 
