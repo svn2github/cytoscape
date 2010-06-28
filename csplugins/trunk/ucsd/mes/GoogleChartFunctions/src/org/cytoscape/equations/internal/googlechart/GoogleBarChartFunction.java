@@ -59,8 +59,7 @@ public class GoogleBarChartFunction extends AbstractGoogleChartFunction {
 							data), colors.get(colorIndex));
 			if(min<0 && max>=0)
 				bar.setZeroLine(50);
-			else
-				bar.setZeroLine(0);
+			
 			bars.add(bar);
 			colorIndex++;
 		}
