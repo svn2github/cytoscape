@@ -57,7 +57,12 @@ public class GoogleBarChartFunction extends AbstractGoogleChartFunction {
 			final BarChartPlot bar = Plots.newBarChartPlot(
 					com.googlecode.charts4j.DataUtil.scaleWithinRange(min, max,
 							data), colors.get(colorIndex));
-			bar.setZeroLine(50);
+			if(min<0 && max<=0)
+				bar.setZeroLine(100);
+			else if( min<0 )
+				bar.setZeroLine(50);
+			else
+				bar.setZeroLine(0);
 			bars.add(bar);
 			colorIndex++;
 		}
@@ -72,20 +77,7 @@ public class GoogleBarChartFunction extends AbstractGoogleChartFunction {
 
 		if (title.trim().length() != 0)
 			((AbstractGraphChart) chart).setTitle(title);
-		//
-		// if(axis) {
-		// // Setup Axis label
-		// AxisStyle axisStyle = AxisStyle.newAxisStyle(Color.DARKGRAY, 12,
-		// AxisTextAlignment.CENTER);
-		//
-		// final Double center = (Math.abs(max)-Math.abs(min))/2;
-		// AxisLabels yAxis = AxisLabelsFactory.newAxisLabels(min.toString(),
-		// center.toString(), max.toString());
-		// yAxis.setAxisStyle(axisStyle);
-		//
-		// ((AbstractAxisChart) chart).addYAxisLabels(yAxis);
-		// return chart.toURLString() + extraArgs;
-		// } else
+		
 		return chart.toURLString() + extraArgs;
 	}
 }
