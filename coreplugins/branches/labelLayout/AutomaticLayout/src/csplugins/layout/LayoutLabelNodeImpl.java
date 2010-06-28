@@ -54,15 +54,15 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	    lp = LabelPosition.parse(labelPosition);
 	}
 	
-	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
-	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
+// 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
+// 	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
 
 	this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
 	this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
 	this.neighbors = new ArrayList<LayoutNode>();
 	this.index = index;
 
-	logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
+	//	logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
     }
 
     /**
@@ -74,23 +74,22 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	
 	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
 
-	    logger.info(this.toString() + " was locked");
+	    //	    logger.info(this.toString() + " was locked");
 
 	    this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
 	    this.setY(lp.getOffsetY() + parentNodeView.getYPosition());
 
 	} else { // If node is unlocked set labels offsets properly	
 	    	    
-	    logger.info(this.toString() + " was unlocked");
+	    //	    logger.info(this.toString() + " was unlocked");
 
 	    lp.setOffsetX(this.getX() - parentNodeView.getXPosition());
 	    lp.setOffsetY(this.getY() - parentNodeView.getYPosition());
 
 	    nodeAtts.setAttribute(parentNodeView.getNode().getIdentifier(),
-					  "node.labelPosition", lp.shortString());
+	    			  "node.labelPosition", lp.shortString());
 
-
-	    logger.info("Label node was moved!");
+	    //	    logger.info("Label node was moved!");
 	} 
     }
 
