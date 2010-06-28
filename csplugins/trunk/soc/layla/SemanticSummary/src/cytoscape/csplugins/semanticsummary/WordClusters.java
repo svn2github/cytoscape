@@ -23,6 +23,7 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ import java.util.Set;
 public class WordClusters 
 {
 	//VARIABLES
-	private ArrayList<ArrayList<String>> clusters;
+	private ArrayList<SingleWordCluster> clusters;
 	private CloudParameters params;
 	boolean initialized;
 	
@@ -50,7 +51,7 @@ public class WordClusters
 	 */
 	public WordClusters()
 	{
-		clusters = new ArrayList<ArrayList<String>>();
+		clusters = new ArrayList<SingleWordCluster>();
 		params = new CloudParameters();
 		initialized = false;
 	}
@@ -72,12 +73,13 @@ public class WordClusters
 		Set<String> words = params.getSelectedCounts().keySet();
 		
 		//Initialize as singletons
-		clusters = new ArrayList<ArrayList<String>>();
+		clusters = new ArrayList<SingleWordCluster>();
 		for (Iterator<String> iter = words.iterator(); iter.hasNext();)
 		{
 			//Create a list for each word and add to main list
 			String curWord = iter.next();
-			ArrayList<String> curList = new ArrayList<String>();
+			SingleWordCluster curList = new SingleWordCluster();
+			curList.initialize(cloudParams);
 			curList.add(curWord);
 			clusters.add(curList);
 		}
@@ -97,46 +99,51 @@ public class WordClusters
 		
 		String firstWord = aPair.getFirstWord();
 		String secondWord = aPair.getSecondWord();
-		ArrayList<String> firstList = null;
-		ArrayList<String> secondList = null;
+		SingleWordCluster firstCluster = null;
+		SingleWordCluster secondCluster = null;
 		
-		for(Iterator<ArrayList<String>> iter = clusters.iterator(); iter.hasNext();)
+		for(Iterator<SingleWordCluster> iter = clusters.iterator(); iter.hasNext();)
 		{
-			ArrayList<String> curList = iter.next();
-			if (curList != null)
+			SingleWordCluster curCluster = iter.next();
+			if (curCluster != null)
 			{
 				//Find the Lists that have the first word at the end, and the second word at
 				//the beginning
 				
+				ArrayList<String> curList = curCluster.getWordList();
 				int size = curList.size();
 				String firstItem = curList.get(0);
 				String lastItem = curList.get(size - 1);
 				
 				if(firstItem.equals(secondWord))
-					secondList = curList;
+					secondCluster = curCluster;
 				
 				if(lastItem.equals(firstWord))
-					firstList = curList;
+					firstCluster = curCluster;
 			}//end non null
 		}//end iterator
 		
-		ArrayList<String> newList = new ArrayList<String>();
+		SingleWordCluster newCluster = new SingleWordCluster();
+		newCluster.initialize(params);
+		ArrayList<String> firstList = firstCluster.getWordList();
+		ArrayList<String> secondList = secondCluster.getWordList();
+		
 		for (int i = 0; i< firstList.size(); i++)
 		{
 			String curWord = firstList.get(i);
-			newList.add(curWord);
+			newCluster.add(curWord);
 		}
 		
 		for (int i = 0; i< secondList.size(); i++)
 		{
 			String curWord = secondList.get(i);
-			newList.add(curWord);
+			newCluster.add(curWord);
 		}
 		
 		//Remove old lists and add new
-		clusters.remove(firstList);
-		clusters.remove(secondList);
-		clusters.add(newList);
+		clusters.remove(firstCluster);
+		clusters.remove(secondCluster);
+		clusters.add(newCluster);
 	}
 	
 	/**
@@ -150,42 +157,54 @@ public class WordClusters
 		boolean isValid = false;
 		String firstWord = aPair.getFirstWord();
 		String secondWord = aPair.getSecondWord();
-		ArrayList<String> firstList = null;
-		ArrayList<String> secondList = null;
+		SingleWordCluster firstCluster = null;
+		SingleWordCluster secondCluster = null;
 		
-		for(Iterator<ArrayList<String>> iter = clusters.iterator(); iter.hasNext();)
+		for(Iterator<SingleWordCluster> iter = clusters.iterator(); iter.hasNext();)
 		{
-			ArrayList<String> curList = iter.next();
-			if (curList != null)
+			SingleWordCluster curCluster = iter.next();
+			if (curCluster != null)
 			{
 				//Find the Lists that have the first word at the end, and the second word at
 				//the beginning
 				
+				ArrayList<String> curList = curCluster.getWordList();
 				int size = curList.size();
 				String firstItem = curList.get(0);
 				String lastItem = curList.get(size - 1);
 				
 				if(firstItem.equals(secondWord))
-					secondList = curList;
+					secondCluster = curCluster;
 				
 				if(lastItem.equals(firstWord))
-					firstList = curList;
+					firstCluster = curCluster;
 			}//end non null
 		}//end iterator
 		
-		if (firstList != null && secondList != null && (!firstList.equals(secondList)))
+		if (firstCluster != null && secondCluster != null && (!firstCluster.equals(secondCluster)))
 			isValid = true;
 		
 		return isValid;
 	}
 	
+	/**
+	 * Sorts the clusters in decreasing size of the sum of the font sizes
+	 * for each cluster.
+	 * @return
+	 */
+	public void orderClusters()
+	{
+		Collections.sort(clusters);
+		Collections.reverse(clusters);
+	}
+	
 	//Getters and Setters
-	public ArrayList<ArrayList<String>> getClusters()
+	public ArrayList<SingleWordCluster> getClusters()
 	{
 		return clusters;
 	}
 	
-	public void setClusters(ArrayList<ArrayList<String>> clusterSet)
+	public void setClusters(ArrayList<SingleWordCluster> clusterSet)
 	{
 		clusters = clusterSet;
 	}

@@ -108,6 +108,9 @@ public class SemanticSummaryClusterBuilder
 			curPair = queue.remove();
 			clusters.combineClusters(curPair);
 		}//end while
+		
+		//Sort Clusters
+		clusters.orderClusters();
 	}
 	
 	/**
@@ -150,13 +153,14 @@ public class SemanticSummaryClusterBuilder
 		
 		for(int i = 0; i < clusters.getClusters().size(); i++)
 		{
-			ArrayList<String> curCluster = clusters.getClusters().get(i);
+			SingleWordCluster curCluster = clusters.getClusters().get(i);
+			ArrayList<String> curList = curCluster.getWordList();
 			Color clusterColor = getClusterColor(i);
 			
 			//Iterate through the words
-			for (int j = 0; j < curCluster.size(); j++)
+			for (int j = 0; j < curList.size(); j++)
 			{
-				String curWord = curCluster.get(j);
+				String curWord = curList.get(j);
 				Integer fontSize = params.calculateFontSize(curWord);
 				CloudWordInfo curInfo = new CloudWordInfo(curWord, fontSize);
 				curInfo.setCloudParameters(params);
