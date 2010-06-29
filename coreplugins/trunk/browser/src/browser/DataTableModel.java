@@ -408,11 +408,12 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns a validated object and edit string which is a data structure used to display values or error messages in a
+	 *  browser cell.
 	 *
-	 * @param type DOCUMENT ME!
-	 * @param id DOCUMENT ME!
-	 * @param att DOCUMENT ME!
+	 * @param type      the expected data type for the attribute
+	 * @param id        the key representing the particular  node/edge/network
+	 * @param attrName  which attribute we're dealing with
 	 *
 	 * @return  DOCUMENT ME!
 	 */
