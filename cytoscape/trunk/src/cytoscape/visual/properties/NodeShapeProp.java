@@ -34,19 +34,16 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.ui.icon.NodeIcon;
-
-import cytoscape.visual.VisualPropertyDependency;
-
 import giny.view.NodeView;
 
 import java.util.Map;
-import java.util.Properties;
 
 import javax.swing.Icon;
+
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.NodeIcon;
 
 
 /**
@@ -78,7 +75,7 @@ public class NodeShapeProp extends AbstractVisualProperty {
 	 */
 	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon((NodeShape)value);
-		icon.setBottomPadding(-2);
+		icon.setBottomPadding(-3);
 
 		return icon;
 	}

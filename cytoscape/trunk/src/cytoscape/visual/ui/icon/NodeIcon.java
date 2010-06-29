@@ -34,10 +34,7 @@
 */
 package cytoscape.visual.ui.icon;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
+import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -49,6 +46,9 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import cytoscape.Cytoscape;
+import cytoscape.visual.NodeShape;
+
 
 /**
  * Icon for node shapes.
@@ -59,6 +59,9 @@ import java.awt.geom.Rectangle2D;
  *
  */
 public class NodeIcon extends VisualPropertyIcon {
+	
+	private static final long serialVersionUID = -7589422578478706397L;
+	
 	protected Shape newShape;
 	protected Graphics2D g2d;
 
@@ -66,11 +69,11 @@ public class NodeIcon extends VisualPropertyIcon {
 	 * Creates a new NodeIcon object.
 	 */
 	public NodeIcon() {
-		this(((NodeShape) (VisualPropertyType.NODE_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
+		this(((NodeShape) (NODE_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
 		                                                                     .getVisualStyle())))
 		                                                               .getShape(),
 		     DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE,
-		     ((NodeShape) (VisualPropertyType.NODE_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
+		     ((NodeShape) (NODE_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
 		                                                                     .getVisualStyle())))
 		                                                                   .getShapeName(),
 		     DEFAULT_ICON_COLOR);
@@ -126,6 +129,14 @@ public class NodeIcon extends VisualPropertyIcon {
 		super.setIconHeight(height);
 		adjustShape();
 	}
+	
+	public int getIconWidth() {
+		return width;
+	}
+	
+	public int getIconHeight() {
+		return height;
+	}
 
 	private void adjustShape() {
 		final double shapeWidth = shape.getBounds2D().getWidth();
@@ -169,6 +180,7 @@ public class NodeIcon extends VisualPropertyIcon {
 
 		// AA on
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
 		g2d.translate(0, bottomPad);
 

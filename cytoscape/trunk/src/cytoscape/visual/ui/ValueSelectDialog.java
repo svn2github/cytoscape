@@ -56,6 +56,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -87,12 +88,12 @@ public class ValueSelectDialog extends JDialog {
 	
 	private boolean canceled = false;
 	
-	private static final int WIDTH = 400;
+	private static final int WIDTH = 480;
 	private final int height;
 	
 	private final String listTitle;
 	
-	private static final int ICON_CELL_HEIGHT = 150;
+	private static final int ICON_CELL_HEIGHT = 140;
 
 	/**
 	 * Static method to show dialog and get a value from user.
@@ -130,6 +131,9 @@ public class ValueSelectDialog extends JDialog {
 		} else {
 			this.listTitle = type.getName();
 		}
+		
+		mainPanel.setTitle(listTitle);
+		
 		// get original value and set the selected item.
 		if ( type.isNodeProp() )
 			originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
@@ -280,7 +284,6 @@ public class ValueSelectDialog extends JDialog {
 				continue;
 			}
 			icons.add(icon);
-			
 			orderedKeyList.add(key);
 			model.addElement(icon.getName());
 		}
@@ -299,6 +302,8 @@ public class ValueSelectDialog extends JDialog {
 		private final Color SELECTED_COLOR = new Color(30, 30, 80, 25);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 120);
 		private final List<Icon> icons;
+		
+		private final Border DROPHSADOW = new DropShadowBorder();
 
 		public IconCellRenderer(List<Icon> icons) {
 			this.icons = icons;
@@ -312,20 +317,19 @@ public class ValueSelectDialog extends JDialog {
 			if(value != null)
 				setText(value.toString());
 			
-			icon.setLeftPadding(25);
-			
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
+			icon.setLeftPadding(30);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(30);
+			this.setIconTextGap(60);
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
 			
-			setPreferredSize(new Dimension(icon.getIconWidth()+200, icon.getIconHeight() + 20));
-			this.setBorder(new DropShadowBorder());
+			setPreferredSize(new Dimension(icon.getIconWidth()+300, icon.getIconHeight() + 20));
+			this.setBorder(DROPHSADOW);
 
 			return this;
 		}

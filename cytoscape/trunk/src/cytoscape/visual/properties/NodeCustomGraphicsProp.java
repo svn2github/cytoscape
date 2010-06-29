@@ -124,19 +124,23 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 				int shorterDim = 0;
 
 				Image scaledImg;
-				if (originalW > originalH) {
+				if(originalW<=ICON_SIZE && originalH<=ICON_SIZE) {
+					int xLocation = 8 + (int)(ICON_SIZE/2) - ((int)originalW/2); 
+					int yLocation = 3 + (int)(ICON_SIZE/2) - ((int)originalH/2); 
+					g2d.drawImage(originalImg, xLocation, yLocation, null);
+				} else if (originalW > originalH) {
 					ratio = originalH / originalW;
 					shorterDim = (int) (ICON_SIZE * ratio);
 					scaledImg = originalImg.getScaledInstance(ICON_SIZE,
 							shorterDim, Image.SCALE_AREA_AVERAGING);
-					g2d.drawImage(scaledImg, 5,
+					g2d.drawImage(scaledImg, 8,
 							3 + (ICON_SIZE - shorterDim) / 2, null);
 				} else {
 					ratio = originalW / originalH;
 					shorterDim = (int) (ICON_SIZE * ratio);
 					scaledImg = originalImg.getScaledInstance(shorterDim,
 							ICON_SIZE, Image.SCALE_AREA_AVERAGING);
-					g2d.drawImage(scaledImg, 5, 3, null);
+					g2d.drawImage(scaledImg, 8, 3, null);
 				}
 
 			}
