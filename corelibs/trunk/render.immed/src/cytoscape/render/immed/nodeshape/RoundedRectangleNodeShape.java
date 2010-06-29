@@ -50,8 +50,10 @@ public class RoundedRectangleNodeShape extends AbstractNodeShape {
 	}
 
 	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
-		final float arcSize = Math.min(xMax - xMin, yMax - yMin) / 3.0f;
-		rect.setRoundRect(xMin, yMin, xMax - xMin, yMax - yMin, arcSize, arcSize);
+		final float w = xMax - xMin;
+		final float h = yMax - yMin;
+		final float arcSize = Math.min(w, h) / 4f;
+		rect.setRoundRect(xMin, yMin, w, h, arcSize, arcSize);
 		return rect;
 	}
 }

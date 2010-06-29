@@ -36,7 +36,6 @@ package cytoscape.render.immed;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.Stroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.EventQueue;
@@ -47,6 +46,7 @@ import java.awt.Image;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -56,15 +56,30 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import cytoscape.render.immed.arrow.*;
-import cytoscape.render.immed.nodeshape.*;
+import cytoscape.render.immed.arrow.Arrow;
+import cytoscape.render.immed.arrow.ArrowheadArrow;
+import cytoscape.render.immed.arrow.DeltaArrow;
+import cytoscape.render.immed.arrow.DiamondArrow;
+import cytoscape.render.immed.arrow.DiscArrow;
+import cytoscape.render.immed.arrow.HalfBottomArrow;
+import cytoscape.render.immed.arrow.HalfTopArrow;
+import cytoscape.render.immed.arrow.NoArrow;
+import cytoscape.render.immed.arrow.TeeArrow;
+import cytoscape.render.immed.nodeshape.DiamondNodeShape;
+import cytoscape.render.immed.nodeshape.EllipseNodeShape;
+import cytoscape.render.immed.nodeshape.HexagonNodeShape;
+import cytoscape.render.immed.nodeshape.LegacyCustomNodeShape;
+import cytoscape.render.immed.nodeshape.NodeShape;
+import cytoscape.render.immed.nodeshape.OctagonNodeShape;
+import cytoscape.render.immed.nodeshape.ParallelogramNodeShape;
+import cytoscape.render.immed.nodeshape.RectangleNodeShape;
+import cytoscape.render.immed.nodeshape.RoundedRectangleNodeShape;
+import cytoscape.render.immed.nodeshape.TriangleNodeShape;
+import cytoscape.render.immed.nodeshape.VeeNodeShape;
 
 /**
  * The purpose of this class is to make the proper calls on a Graphics2D object
