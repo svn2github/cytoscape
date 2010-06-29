@@ -55,19 +55,19 @@ public abstract class AbstractGoogleChartFunction implements Function {
 			dataSets.add((List<Double>) args[i]);
 		}
 		
-		if(i<argLength)
+		if (i<argLength)
 			title = args[i].toString();
 		i++;
-		if(i<argLength)
+		if (i<argLength)
 			width = ((Double)FunctionUtil.getArgAsDouble(args[i])).intValue();
 		i++;
-		if(i<argLength)
+		if (i<argLength)
 			height = ((Double)FunctionUtil.getArgAsDouble(args[i])).intValue();
 		i++;
-		if(i<argLength)
+		if (i<argLength)
 			extraArgs = args[i].toString();
 		
-		if(colors == null)
+		if (colors == null)
 			colors = ColorUtil.getColors(args.length - MINIMUM_NUM_ARGUMENTS + 1);
 	}
 	
@@ -85,17 +85,17 @@ public abstract class AbstractGoogleChartFunction implements Function {
 			return null;
 		
 		// First list
-		if(!FunctionUtil.isSomeKindOfList(argTypes[2]))
+		if (!FunctionUtil.isSomeKindOfList(argTypes[2]))
 			return null;
 		// Only one List data
-		if(MINIMUM_NUM_ARGUMENTS == argTypes.length)
+		if (MINIMUM_NUM_ARGUMENTS == argTypes.length)
 			return String.class;
 		
 		int nextArg = MINIMUM_NUM_ARGUMENTS;
 		int argLen = argTypes.length;
 		while(FunctionUtil.isSomeKindOfList(argTypes[nextArg])) {
 			nextArg++;
-			if(nextArg == argLen)
+			if (nextArg == argLen)
 				return String.class;
 		}
 		
@@ -103,21 +103,21 @@ public abstract class AbstractGoogleChartFunction implements Function {
 		if (argTypes[nextArg] != String.class)
 			return null;
 		nextArg++;
-		if(nextArg == argTypes.length)
+		if (nextArg == argTypes.length)
 			return String.class;
 		
 		// Check width option
 		if (argTypes[nextArg] != Long.class && argTypes[nextArg] != Double.class)
 			return null;
 		nextArg++;
-		if(nextArg == argTypes.length)
+		if (nextArg == argTypes.length)
 			return String.class;
 		
 		// Check height option
 		if (argTypes[nextArg] != Long.class && argTypes[nextArg] != Double.class)
 			return null;
 		nextArg++;
-		if(nextArg == argTypes.length)
+		if (nextArg == argTypes.length)
 			return String.class;
 		
 		// Check optional arguments
@@ -141,17 +141,17 @@ public abstract class AbstractGoogleChartFunction implements Function {
 	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
 		final List<Class> possibleNextArgs = new ArrayList<Class>();
 		
-		if(leadingArgs.length == 0 || leadingArgs.length == 1) {
+		if (leadingArgs.length == 0 || leadingArgs.length == 1) {
 			possibleNextArgs.add(Long.class);
 			possibleNextArgs.add(Double.class);
 			return possibleNextArgs;
 		}
-		if(leadingArgs.length == 2) {
+		if (leadingArgs.length == 2) {
 			possibleNextArgs.add(List.class);
 			return possibleNextArgs;
 		}
 			
-		if(leadingArgs[leadingArgs.length - 1] == List.class) {
+		if (leadingArgs[leadingArgs.length - 1] == List.class) {
 			possibleNextArgs.add(List.class);
 			possibleNextArgs.add(String.class);
 			possibleNextArgs.add(null);
@@ -159,8 +159,8 @@ public abstract class AbstractGoogleChartFunction implements Function {
 		}
 		
 		// Prev. arg was title or extra
-		if(leadingArgs[leadingArgs.length - 1] == String.class) {
-			if(leadingArgs[leadingArgs.length - 2] == List.class) { // Title
+		if (leadingArgs[leadingArgs.length - 1] == String.class) {
+			if (leadingArgs[leadingArgs.length - 2] == List.class) { // Title
 				possibleNextArgs.add(Long.class);
 				possibleNextArgs.add(Double.class);
 				possibleNextArgs.add(null);
@@ -169,9 +169,20 @@ public abstract class AbstractGoogleChartFunction implements Function {
 				return null;
 			}
 		}
+
+		// Prev. arg was height
+		if (leadingArgs.length >= 6
+		    && (leadingArgs[leadingArgs.length - 1] == Double.class || leadingArgs[leadingArgs.length - 1] == Long.class)
+		    && (leadingArgs[leadingArgs.length - 2] == Double.class || leadingArgs[leadingArgs.length - 2] == Long.class)
+		    && leadingArgs[leadingArgs.length - 3] == String.class)
+		{
+			possibleNextArgs.add(String.class);
+			possibleNextArgs.add(null);
+			return possibleNextArgs;
+		}
 		
 		// Prev. arg was width
-		if(leadingArgs[leadingArgs.length - 1] == Double.class || leadingArgs[leadingArgs.length - 1] == Long.class) {
+		if (leadingArgs[leadingArgs.length - 1] == Double.class || leadingArgs[leadingArgs.length - 1] == Long.class) {
 			possibleNextArgs.add(Long.class);
 			possibleNextArgs.add(Double.class);
 			possibleNextArgs.add(null);
@@ -182,7 +193,7 @@ public abstract class AbstractGoogleChartFunction implements Function {
 	}
 	
 	protected void applyAppearences() {
-		if(chart == null)
+		if (chart == null)
 			throw new IllegalStateException("GChart object should be initialized before calling this method.");
 		
 		chart.setSize(width, height);
