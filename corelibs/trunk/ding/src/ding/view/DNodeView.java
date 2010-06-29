@@ -478,14 +478,6 @@ public class DNodeView implements NodeView, Label {
 			graphView.m_spacial.insert(m_inx, xMin, graphView.m_extentsBuff[1],
 					xMax, graphView.m_extentsBuff[3]);
 
-			final double w = ((double) xMax) - xMin;
-			final double h = ((double) graphView.m_extentsBuff[3])
-					- graphView.m_extentsBuff[1];
-
-			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-					&& (getShape() == NodeView.ROUNDED_RECTANGLE))
-				setShape(NodeView.RECTANGLE);
-
 			graphView.m_contentChanged = true;
 
 			return true;
@@ -533,14 +525,6 @@ public class DNodeView implements NodeView, Label {
 			graphView.m_spacial.delete(m_inx);
 			graphView.m_spacial.insert(m_inx, graphView.m_extentsBuff[0], yMin,
 					graphView.m_extentsBuff[2], yMax);
-
-			final double w = ((double) graphView.m_extentsBuff[2])
-					- graphView.m_extentsBuff[0];
-			final double h = ((double) yMax) - yMin;
-
-			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-					&& (getShape() == NodeView.ROUNDED_RECTANGLE))
-				setShape(NodeView.RECTANGLE);
 
 			graphView.m_contentChanged = true;
 
@@ -898,18 +882,6 @@ public class DNodeView implements NodeView, Label {
 	public void setShape(final int shape) {
 		synchronized (graphView.m_lock) {
 			byte nativeShape = GinyUtil.getNativeNodeType(shape);
-
-			// special case
-			if (shape == NodeView.ROUNDED_RECTANGLE) {
-				final double width = getWidth();
-				final double height = getHeight();
-
-				if (!(Math.max(width, height) < (1.99d * Math
-						.min(width, height))))
-					nativeShape = GraphGraphics.SHAPE_RECTANGLE;
-				else
-					nativeShape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
-			}
 
 			graphView.m_nodeDetails.overrideShape(m_inx, nativeShape);
 			graphView.m_contentChanged = true;
