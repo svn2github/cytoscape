@@ -36,9 +36,9 @@ package org.cytoscape.event;
 
 
 /**
- * All Cytoscape events should extend this interface.  The events
- * should add additional methods to provide access to the information
- * relevant to the event.
+ * All Cytoscape events should extend this interface.  An implementing
+ * event can add additional methods to provide access to information
+ * relevant to that specific event.
  */
 public interface CyEvent<T> {
 	/**
@@ -49,6 +49,7 @@ public interface CyEvent<T> {
 
 	/**
 	 * The Class of the listener that is expected to handle this event. 
+	 * @return The Class of the listener that is expected to handle this event. 
 	 */
 	Class getListenerClass();
 }
