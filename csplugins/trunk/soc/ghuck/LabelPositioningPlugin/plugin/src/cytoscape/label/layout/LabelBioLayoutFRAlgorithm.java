@@ -182,15 +182,15 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	}
 
 	// Layout the new partition using the parent class layout algorithm
-	super.layoutPartition(newPartition);
+	//	super.layoutPartition(newPartition);
 
 	// Move labels to a random position near their parents
-// 	for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {
-// 	    logger.info("moving label of node " + node.getIdentifier());
-// 	    node.increment(100 * Math.random(), 100 * Math.random());
-// 	    node.moveToLocation();    
-// 	    logger.info("label moved!");	    
-// 	}
+	for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {
+	    logger.info("moving label of node " + node.getIdentifier());
+	    node.increment(100 * Math.random(), 100 * Math.random());
+	    node.moveToLocation();    
+	    logger.info("label moved!");	    
+	}
 
 	// redraw the network so that the new label positions are visible
 	networkView.updateView();

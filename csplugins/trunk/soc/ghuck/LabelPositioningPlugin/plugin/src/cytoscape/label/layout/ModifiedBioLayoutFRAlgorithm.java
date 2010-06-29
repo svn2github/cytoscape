@@ -171,32 +171,32 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
      * Required methods (and overrides) for AbstractLayout
      */
 
-    /**
-     * Return the "name" of this algorithm.  This is meant
-     * to be used by programs for deciding which algorithm to
-     * use.  toString() should be used for the human-readable
-     * name.
-     *
-     * @return the algorithm name
-     */
+//     /**
+//      * Return the "name" of this algorithm.  This is meant
+//      * to be used by programs for deciding which algorithm to
+//      * use.  toString() should be used for the human-readable
+//      * name.
+//      *
+//      * @return the algorithm name
+//      */
 //     public String getName() {
 // 	return "LabelModified-Fruchterman-Rheingold";
 //     }
 
-    /**
-     * Return the "title" of this algorithm.  This is meant
-     * to be used for titles and labels that represent this
-     * algorithm.
-     *
-     * @return the human-readable algorithm name
-     */
-    public String toString() {
-	if (supportWeights)
-	    return "(Label Modified) Edge-Weighted Force-Directed (BioLayout)";
-	else
+//     /**
+//      * Return the "title" of this algorithm.  This is meant
+//      * to be used for titles and labels that represent this
+//      * algorithm.
+//      *
+//      * @return the human-readable algorithm name
+//      */
+//     public String toString() {
+// 	if (supportWeights)
+// 	    return "(Label Modified) Edge-Weighted Force-Directed (BioLayout)";
+// 	else
 
-	    return "(Label Modified) Force-Directed (BioLayout)";
-    }
+// 	    return "(Label Modified) Force-Directed (BioLayout)";
+//     }
 
     /**
      * Sets the number of iterations
