@@ -663,9 +663,13 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 							return;
 
 						final int cellRow = table.getSelectedRow();
-						final int cellColum = table.getSelectedColumn();
-						if (cellRow != -1 && cellColum != -1 && tableModel.isCellEditable(cellRow, cellColum)) {
-							final String columnName = tableModel.getColumnName(cellColum);
+						final int cellColumn = table.getSelectedColumn();
+						if (cellRow == -1 || cellColumn == -1 || !tableModel.isCellEditable(cellRow, cellColumn))
+							JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+							                              "Can't enter a formula w/o a selected cell!",
+							                              "Information", JOptionPane.INFORMATION_MESSAGE);
+						else {
+							final String columnName = tableModel.getColumnName(cellColumn);
 							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 							Util.initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
 							formulaBuilderDialog =

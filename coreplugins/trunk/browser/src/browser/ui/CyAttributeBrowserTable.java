@@ -431,7 +431,11 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				public void actionPerformed(final ActionEvent e) {
 					final int cellRow = table.getSelectedRow();
 					final int cellColumn = table.getSelectedColumn();
-					if (cellRow != -1 && cellColumn != -1 && tableModel.isCellEditable(cellRow, cellColumn)) {
+					if (cellRow == -1 || cellColumn == -1 || !tableModel.isCellEditable(cellRow, cellColumn))
+						JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+						                              "Can't enter a formula w/o a selected cell!",
+						                              "Information", JOptionPane.INFORMATION_MESSAGE);
+					else {
 						final String columnName = tableModel.getColumnName(cellColumn);
 						final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
 						initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
