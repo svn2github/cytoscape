@@ -1,0 +1,24 @@
+<p>
+    This release adds the "V" node shape and the "ARROW" arrow shape (to improve the compatibility with Cytoscape),
+    and the ability to draw <a href="http://en.wikipedia.org/wiki/Loop_%28graph_theory%29" rel="external">loops</a>.
+    It has improved XGMML import/export and some bug fixes, too.
+</p>
+<div class="relase_details">
+    <ul class="new_features">
+        <li><span class="bug_id">2230</span>: Add support for loops (edges).</li>
+        <li><span class="bug_id">2241</span>: Implement "V" node shape.</li>
+        <li><span class="bug_id">2268</span>: Add mouseX mouseY info to mouse events.</li>
+        <li><span class="bug_id">2271</span>: Add the "ARROW" arrow shape.</li>
+    </ul>
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2239</span>: Node and edge attribute keys not needed when dynamically adding nodes and edges.</li>
+        <li><span class="bug_id">2242</span>: Overlapping nodes on Circle/Radial layouts when "angleWidth" is negative.</li>
+        <li><span class="bug_id">2258</span>: Incorrect Preset layout when zoom is not 100%.</li>
+        <li><span class="bug_id">2256</span>: Error on XGMML import when node/edge tag has unsupported attributes.</li>
+        <li><span class="bug_id">2270</span>: Dragging node or using drag-selection triggers click event.</li>
+        <li><span class="bug_id">2272</span>: Default tooltips can be too wide or long.</li>
+    </ul>
+    <ul class="other_changes">
+        <li>Some improvements for XGMML import/export, such as better "list" data type handling, and "labelanchor" graphics attribute support.</li>
+    </ul>
+</div>

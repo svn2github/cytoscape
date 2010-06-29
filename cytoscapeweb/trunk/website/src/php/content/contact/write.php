@@ -46,7 +46,7 @@
         <?php } else { ?>
     
             <h1>Contact form</h1>
-        
+        	<p>If you have ideas on how to improve Cytoscape Web or you would like to report a bug, we would greatly appreciate your feedback.</p>
             <p>Please note that the <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a> is the preferred method of communication, as you will get a faster response there compared to here.</p>
             
         <?php } ?>
@@ -83,11 +83,7 @@
 <div class="right">
 	
 	<h1>What can I write here?</h1>
-	
-	<p class="warning"><strong>Do not use this form to ask questions on how to use Cytoscape Web.</strong>  That information can be found in the <a href="/documentation">documentation</a> or asked in the <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a>.</p>
-	
-	<p>This form is a way for you to contact the developers of Cytoscape Web.  However, you will probably get a slower response to your query here as compared to the <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a>.</p>
-	
-	<p>If you have ideas on how to improve Cytoscape Web or you would like to report a bug, we would greatly appreciate your feedback.</p>
-	
+	<p>This form is a way for you to contact the developers of Cytoscape Web.</p>
+	<p class="warning"><strong>Please do not use this form to ask questions on how to use Cytoscape Web.</strong>  That information can be asked in the <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a> and found in the <a href="/documentation">documentation</a>.</p>
+
 </div>

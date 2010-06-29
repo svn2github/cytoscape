@@ -70,7 +70,7 @@ iframe { display: block; }
 #search_input { float: left; }
 #search_button { cursor: pointer; float: left; width: 22px; height: 100%; background: #aeaeae url("../img/layout/go.png") no-repeat center center; border-radius: 0; -moz-border-radius: 0; -webkit-border-radius: 0; }
 .warning {  background-color: #fffff0; border: 1px solid #ffff00; }
-.warning strong { text-transform: uppercase; font-weight: bold; }
+.warning strong { font-weight: bold; }
 
 /* copyright */
 #copyright { text-align: right; font-size: 80%; color: #c6c6c6; float: right; width: 100%; margin-top: -2em; }
