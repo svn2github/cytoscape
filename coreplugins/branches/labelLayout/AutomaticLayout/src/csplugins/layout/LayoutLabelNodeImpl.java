@@ -45,8 +45,6 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	logger = CyLogger.getLogger(LayoutLabelNodeImpl.class);
 	this.parentNodeView = parentNodeView;
 	
-	//labelPosition = parentNodeView.getLabelPosition();
-
 	// Set labelNode's location to parent node's current label position
  	nodeAtts = Cytoscape.getNodeAttributes();
  	String labelPosition = (String) nodeAtts.getAttribute(parentNodeView.getNode().getIdentifier(), 
@@ -57,14 +55,11 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	} else {
 	    ValueParser<ObjectPosition> parser = 
 		(ValueParser<ObjectPosition>) VisualPropertyType.NODE_LABEL_POSITION.getValueParser();
-	    
 	    lp = parser.parseStringValue(labelPosition);
-	    //	    lp = LabelPosition.parse(labelPosition);
 	}
 	
 // 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
 // 	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
-
 
 	this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
 	this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
@@ -80,6 +75,8 @@ public class LayoutLabelNodeImpl extends LayoutNode {
      * Note that moving the parent node will affect the position of this label node.
      */
     public void moveToLocation() {
+
+	lp = new ObjectPositionImpl();
 	
 	if (this.isLocked()) { // If node is locked, adjust X and Y to its current location
 

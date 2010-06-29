@@ -105,7 +105,8 @@ public class LayoutLabelPartition extends LayoutPartition {
 	for (LayoutNode ln: nodeList ) {
 
 	    // Creates a new LabelNode, child of ln
-	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl(ln.getNodeView(), ln.getIndex() + nodeList.size());
+	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl(ln.getNodeView(), 
+								    ln.getIndex() + nodeList.size() );
 
 	    /* Unlock labelNode if:
 	     * - algorithm is to be applied to the entire network
@@ -113,8 +114,10 @@ public class LayoutLabelPartition extends LayoutPartition {
 	     * is selected
 	     */
 	    if (!selectedOnly || !(ln.isLocked()) ) {
-		
 		labelNode.unLock();
+		updateMinMax(labelNode.getX(), labelNode.getY());
+		this.width += labelNode.getWidth();
+		this.height += labelNode.getHeight();
 	    } else {
 		    labelNode.lock();
 		    lockedNodes++;
