@@ -1,0 +1,465 @@
+Date: 22/06/10
+
+////////////////////////////////////////////////////////////////
+// Helper class to generate and manipulate mesh needed for GBEB 
+// Model
+////////////////////////////////////////////////////////////////
+public class Mesh extends Sprite
+{		
+	_grid:Array; 			  //stores the array of Shapes
+	_bounds:Rectangle = new Rectangle(); // stores the bound of the visualisation
+	_data:Data;
+	_mesh:Data = new Data(); //stores the actual edges and nodes of the points for the mesh
+	
+	gridSize:int = 20; // size of initial bounding grid, in pixel
+	
+	//corrected to account for boundary conditions where some very very small parts of the mesh is not filled by grids
+	_boundsHeight:Number = _bounds.y + gridSize * numGridsY; 
+	_boundsWidth:Number = _bounds.x + gridSize * numGridsX; 
+ 
+	public function Mesh (data:Data):void
+	{	//assign variables
+	}
+		
+		
+	// Follows the step below to generate a Mesh
+	// 1. Generate a uniform grid of 20pix per grid for the entire bound
+	// 2. For each grid, detect what edges are inside and store them in shape | There is no need to
+	// store nodes at all. 
+	// 2b. Calculate the primary direction (polar angle) of each shape. Note: Instead of using 
+	// kernel density estimator, I would be using a more empirical method
+	// 3. For each shape
+	//		3a Merge shape w/ neighbour if resulting primarily difference of this.shape.primaryAngle
+	//		and neighbour.shape.primaryAngle is < 15 
+	//		3b How to detect neighbour? - Sharing rectangular coordinates
+	// Repeat until 3a and 3b are exhausted for all Shapes
+	// 4. Obtain _meshEdges (1 for each Shape), and their respective nodes. 
+	//		4b. Merge nodes that are too close together. ( < x pix )
+	//		4c. Add additional nodes if necessary. (?depends on check by eqn smooth eqn) - necessary?
+	// 5. For each edge in _data, check for their intersection with mesh's edge and record these 
+	// intersection points as CPand their CP - this is actually quite a challenge. 
+	//warning: potential problems, nodes lying on edges.
+		
+		public function generateMesh(resolution:int, bounds:Rectangle):void 
+		{
+			generateGrid(); //create a mesh based on angle resolution
+			assignDataToGrid();
+			_grid = mergeShape(angleResolution); 
+		}		
+		//////////////////////////////////////////////
+		//Step 1: function to generate the grid from scratch	
+		//////////////////////////////////////////////
+		public function generateGrid():void
+		{
+			if(_bounds == new Rectangle() ) return void;
+
+			while( _counterX <= _numGridsX )
+			{
+				while( _counterY <= _numGridsY )
+				{
+					
+					//create a grids that are of x pixels in size and assign them (x,y) indices and add them into Shapes
+					
+					__grid.x = _x + _counterX * _gridSize;
+					__grid.y = _y + _counterY * _gridSize;
+					
+					__grid.width = ( _counterX != _numGridsX ? _gridSize : (_bounds.width - _counterX * _gridSize  ) );
+					__grid.height = ( _counterY != _numGridsY ? _gridSize : (_bounds.height - _counterY * _gridSize ) );
+					
+					
+					_shape.gridIndex.push(point);
+					_shape.storedGrids.push(__grid);
+					_newGrid.push(_shape);
+					
+				}
+				
+			}	
+			
+			_grid = _newGrid;
+			
+			return void;
+		}
+		
+		
+		//////////////////////////////////////////////
+		///Step 2.0: this group of functions are used to handle the assignment of data to shapes)
+		//! Assigns of coordinates of start and end (flare reference x1, y1, x2, y2)for each EdgeSprite.
+		//! must be called when display is change in order to get the updated location of the edges. 
+		// There is no need to maniplulate nodes. 
+		//////////////////////////////////////////////
+					public function assignDataToGrid(d:Data = null):void
+					{
+						if(d != null) _data = d;
+							
+						if(_grid.length == 0) return;
+						
+						for each (var edge:EdgeSprite in _data.edges)
+						{
+		
+							for each(var _shape:Shape in _grid) 
+							{
+								
+								for each (var __grid:Rectangle in _shape.storedGrids)
+								{
+									
+									if(testIntersection(__grid, new Point(edge.x1, edge.y1), new Point(edge.x2, edge.y2)))
+									{
+										_shape.storedDataEdges.push(edge);
+										_shape.computeDirection();
+									}
+								}
+								
+							}
+							
+						}// end of huge for loop
+						
+						// Do I need to pop in the nodes? Apparently, it seems to serve no function as of now. 
+					
+						
+					} 
+		
+		
+			
+					
+					
+					///////////////////////////////////////////////////////
+					// Step 2.1: Function to compute intersection of any line (represented by 2 endpoints of the line) and a grid. Returns true if there is any intersection. 
+					//	More: Makes use of the the fact that for the intersection of a line with vertical or horizontal lines of a grid, 
+					//  the x/y of the ver/hor lines are fixed, thus there is no need to solve simultaneous eqn. Uses basic geometric algebra
+					// saves computational time as not all intersections have to be computed.
+					////////////////////////////////////////////////////////
+					private function testIntersection(rec:Rectangle, p1:Point, p2:Point):Boolean
+					{
+						var intersects:Boolean = false;
+						
+						//trace("Mesh: testIntersection: Rec :", rec.topLeft, rec.bottomRight, " | Points ",p1, p2);
+						
+						if(intersectsVertical(rec.topLeft, bottomLeft(rec), p1, p2)) return true; //checks against left vertical
+						if(intersectsVertical(topRight(rec), rec.bottomRight, p1, p2)) return true; //checks against right vertical
+						if(intersectsHorizontal(rec.topLeft, topRight(rec), p1, p2)) return true; //checks against right vertical
+						if(intersectsHorizontal(bottomLeft(rec), rec.bottomRight, p1, p2)) return true; //checks against right vertical
+						
+						return false;
+					}
+					private function intersectsVertical(vp1:Point, vp2:Point, p1:Point, p2:Point):Boolean
+					{
+						var _x:Number = vp1.x;
+						if( (_x >= p1.x && _x <= p2.x) || (_x >= p2.x && _x <= p1.x)) //checks if the x-coor is within the interval of the line
+						{
+							var _y:Number = (( (p2.y - p1.y) / (p2.x - p1.x)	) * ( _x - p1.x)) + p1.y;	 
+							if( (_y >= vp1.y && _y <= vp2.y) || (_y >= vp2.y && _y <= vp1.y)) //checks if the calculated y-coor is within the interval of the vertical line	
+							{	//trace("Mesh: IntersectsVertical: " + p1, p2 + " intersects with " + vp1 + " at " + new Point(_x, _y));
+								return true;
+							}
+						}	
+						return false;
+					}
+					private function intersectsHorizontal(vp1:Point, vp2:Point, p1:Point, p2:Point):Boolean
+					{
+						var _y:Number = vp1.y; 
+						if( (_y >= p1.y && _y <= p2.y) || (_y >= p2.y && _y <= p1.y)) //checks if the y-coor is within the interval of the line
+						{						
+							var _x:Number = (( (p2.x - p1.x) / (p2.y - p1.y)	) * ( _y - p1.y)) + p1.x; 
+							
+							if( (_x >= vp1.x && _x <= vp2.x) || (_x >= vp2.x && _x <= vp1.x)) //checks if the calculated x-coor is within the interval of the horizontal line	
+							{	//trace("Mesh: IntersectsHorizontal: " + p1, p2 + " intersects with " + vp1 + " at " + new Point(_x, _y));
+								return true;
+							}
+						}	
+						return false;
+					}
+					
+					//I have to do this because flash.geom.rec does not have a refernce readily available;
+					private function bottomLeft(rec:Rectangle):Point
+					{
+						return new Point(rec.left, rec.top + rec.height);
+					}
+					private function topRight(rec:Rectangle):Point
+					{
+						return new Point(rec.left + rec.width, rec.top);
+					}
+					
+		
+	//////////////////////////////////////////////
+	/// Step 3a: function merge shape if they are neighouring ( both shapes have at least 1
+	///  common vertical or horizontal edge) and if their angle difference is 
+	/// less than angleResolution
+	/// I should probably write this under Shape
+	//////////////////////////////////////////////	
+		
+	function mergeShapeUsingPrimaryDirections(grid:Array,angleResolution:int):Array
+	{
+	
+		var repeat:Boolean = true; //boolean indication if the program should run through all the grids again
+	
+		var iterationIndexArray:Array = new Array(); //this array stores the index of the shapes that 
+									//needs to be iterated through by the merged Shapes function
+	
+		for each (s1:Shape in _grid)
+		{
+			if(s1.direction != -1)
+			{
+				iterationIndexArray.push(s1.gridIndex[0]); //pushing the first index automatically refers to the whole shape
+			}
+		}
+	
+	
+		while(iterationIndexArray[0] != null) //while there might be shapes that needs to be merged
+		{		
+			var s1:Shape = returnShapeFromIndex(iterationIndexArray.shift()); //assigns s1 to the shape referenced by the point at the beginning of the array
+			//continue if shape has no major direction 
+		
+			var neigbourShapes:Array = new Array();
+			var neigboursIndex = s1.getneigboursIndex();
+			
+			while(neighboursIndex.length != 0)
+			{
+				neigbourShapes.push(grid(getShapeFromPoint(neighboursIndex.pop())));
+			}
+		
+			if(shape.direction = -1) skip;
+			
+			for each (s1:Shape in neigbourShapes)
+			{
+				//if(s2 === s1) continue; //get neighbours could mess up?
+				
+				//check if neighbouring shape also shares the same direction. If so the shapes can be merged. 
+				if (Math.abs(s1.direction - s2.direction) <= angleResolution)
+				{
+					mergeShape(s1, s2);
+					iterationIndexArray.push(s1.gridIndex[0]); //adds the shape back to the Iteration array since it is changed. 
+				}
+			}
+			//need to settle flagging problem to optimise runtime. (=
+		}
+	} 
+	
+	//////////////////////////////////////////////
+	//Step 3a.1 function to get the neighbours of a particular Shape given its index
+	//////////////////////////////////////////////
+	function getNeighboursIndex(shape:Shape):Array
+	{
+		var neighboursIndex:Array = new Array{};
+		
+		for each (p:Point in shape.gridIndex)
+		{
+			if((p.x - 1) >= 0 && returnShapeFromIndex(newPoint (p.x-1, p.y)) !== shape) 
+				neigboursIndexArray.push(new Point(p.x-1, p.y);
+			if((p.y - 1) >= 0 && returnShapeFromIndex(newPoint (p.x, p.y - 1)) !== shape) 
+				neigboursIndexArray.push(new Point(p.x-1, p.y);
+			if((p.x + 1) <= numGridsX && returnShapeFromIndex(newPoint (p.x+1, p.y)) !== shape) 
+				neigboursIndexArray.push(new Point(p.x+1, p.y);
+			if((p.y + 1) <= numGridsY && returnShapeFromIndex(newPoint (p.x, p.y +1)) !== shape) 
+				neigboursIndexArray.push(new Point(p.x, p.y+1);		
+		}
+		
+		return neighboursArray;
+	}
+	
+	//////////////////////////////////////////////
+	//Step 3b When the shapes are merged together, only 1 shape will remain. The grids in the mesh will all reference
+	//to the remaining shape
+	//////////////////////////////////////////////
+	function mergeShape(s1:Shape, s2:Shape):Shape //s2 will destroyed
+	{
+		if(s1 == null && s2 == null) return null;
+		if(s2 == null) return s1;
+		if(s1 == null) return s2;
+		
+		
+		while(s2.storedDataEdges.length != 0)
+		{
+			//transfers the edges from s2 to s1
+			s1.storedDataEdges.push(s2.storedDataEdges.pop());
+		}
+		
+		//transfer storedGrid Index
+		
+		s1.computeDirections(); //Warning the resulting shape might not be strongly clustered!!!!!
+		
+		
+		for each ( p:point in s2.gridIndex)
+		{
+			grid[indexFromPoint(p)] = s1;
+		}
+	
+		return s1;
+	}
+	
+	//////////////////////////////////////////////
+	// Step 4a. Obtain _meshEdges (1 for each Shape), and their respective nodes. 
+	// The direction variable in each shape with a majority direction gives the gradient of the mesh edge passing through the particular shape.
+	// The Mesh edge needs an intersection point within the shape and this intersection point is precisely the 
+	// centroid of the shape. 
+	//////////////////////////////////////////////
+	
+	function generateMeshEdges():void
+	{
+		if(_grid == null) return;
+	
+		var centroid:Point = new Point(0,0); //Stores the "centre of area (mass) for a 2d shape
+		var gradient:Number = -1 / Math.tan((s1.direction / 180) * Math.PI); 
+	
+		for each (s1:Shape in _grid)
+		{
+			if(s1.direction == -1) continue;
+			
+			//only shapes with a main direction will continue until here. 
+			centroid = findCentroid(s1);
+			generateLineFromPointAndGradient(centroid, gradient);
+		
+		}
+	
+	}
+	
+	//this function is usually very complication if the Shapes are irregular. However, since I have 
+	//define the primitive shape as a square a very special case of shapes, this function becomes 
+	//quite simple. (=
+	function findCentroid(s:Shape):Point
+	{
+		if(s == null) return null;
+		
+		var numPoints:int = 0; 
+		var xIndex:Number = 0;
+		var yIndex:Number = 0;
+		
+		for each (p:Point in s.gridIndex)
+		{
+			xIndex += p.x;
+			yIndex += p.y;
+			
+			numPoints++;
+		}
+		
+		if(numPoints == 0) return null; 
+		
+		//check if centroid lies within the Area of the shape?
+	
+		return new Point(returnXYFromIndex( xIndex / numPoints, yIndex / numPoints));
+	}
+	
+	//this function takes in the point in which the line passes through, and the gradient of the lines
+	//and return a straight EdgeSprite that is defined by the the bottom left (source coordinates) to the top-right (target corrdinates),
+	//where the source and target are the intersection of the line with the boundies of the graph
+	function generateLineFromPointAndGradient(p:Point, gradient:Number): EdgeSprite
+	{
+		var pointsArray:Array = new Array(); //temp storage for the target and source
+		var edgeSprite:EdgeSprite = new EdgeSprite();
+		
+		//boundary conditions
+		if (gradient == Number.Positive_Infinity || gradient == Number.Negative_Infinity)
+		{
+			if(Math.abs(p1.x - _bounds.x) <= 0.01)
+			{
+				pointsArray.push(new Point(_bounds.x, _bounds.y));
+				pointsArray.push(new Point((_boundsWidth), (_boundsHeight)));
+			} else {
+				pointsArray.push(new Point(p.x, _bounds.y))
+				pointsArray.push(new Point(p.x, _boundsHeight)
+			}		
+		} else if (gradient == 0) 
+		{
+			if(Math.abs(p1.y - _bounds.y) <= 0.01)
+			{
+				pointsArray.push(new Point(_bounds.x, _bounds.y));
+				pointsArray.push(new Point((_boundsWidth), _bounds.y));
+			} else {
+				pointsArray.push(new Point(_bounds.x, p.y))
+				pointsArray.push(new Point(_boundsWidth, p.y)
+			}
+		} else {
+			
+			pointsArray.push(intersectionWithVertical(_bounds.x, p.x, p.y, gradient)); //with left boundary
+			pointsArray.push(intersectionWithVertical(_boundsWidth, p.x, p.y, gradient)); //with right boundary
+			pointsArray.push(intersectionWithHorizontal(_bounds.y, p.y, p.x, gradient)); //with top boundary
+			pointsArray.push(intersectionWithHorizontal(_boundsHeight, p.y, p.x, gradient)); //with bottom boundary
+		}
+		
+		if (pointsArray.length == 2)
+		{
+			edgeSprite.x1 = pointsArray[0].x;
+			edgeSprite.y1 = pointsArray[0].y;
+			edgeSprite.x2 = pointsArray[0].x;
+			edgeSprite.y2 = pointsArray[0].y;
+			
+		} else {
+			trace("Mesh: MeshEdge Generator: PointsArray.length != 2");
+		}
+		
+		return edgeSprite;
+	}
+	
+		//Does it handle the case where gradient = 0 or infinity?
+		function intersectionWithVertical(xBoundary:Number, x1:Number, y1:Number, gradient:Number):Point
+		{
+			var yCoor:Number = gradient * ( xBoundary - x1) + y1; //stores the y coordinate of the intersection point with the vertical boundary
+
+			if( yCoor >= _bounds.y && yCoor <= _boundsHeight)  //if intersects directly at the corner, the vertial function will return the points
+			{
+				return new Point(xBoundary, yCoor);
+			}
+			
+			return null;
+		}
+		
+		function intersectionWithHorizontal(yBoundary:Number, y1:Number, x1, Number, gradient:Number):Number
+		{
+			gradient = 1/gradient;
+			
+			var xCoor:Number = gradient * (yBoundary - y1) + x1;
+			
+			if( xCoor > _bounds.x && xCoor < _boundsWidth)  //if intersects directly at the corner, the vertial function will return the points
+			{
+				return new Point(xCoor, yBoundary);
+			}
+			
+			return null;
+		}
+	//		4b. Merge nodes that are too close together. ( < x pix )
+	//		4c. Add additional nodes if necessary. (?depends on check by eqn smooth eqn) - necessary?
+	
+	
+	
+	////////////////////////////////
+	// Helper functions
+	////////////////////////////////
+	
+
+	public function returnShape(x:int, y:int):Shape
+	{ 
+		if(numGridsX == -1 || numGridsY == -1) return null;
+						
+			var gridX:int = Math.floor(( x - _bounds.x) / gridSize );
+			var gridY:int = Math.floor(( y - _bounds.y) / gridSize );
+						
+			return (_grid[gridY * (numGridsX - 1 )+ gridX] as Shape); //remove the -20 after trials
+	}
+	
+	public function returnShapeFromIndex(p:Point):Shape
+	{
+		return (_grid[p.y * (numGridsX - 1 )+ p.x] as Shape); //remove the -20 after trials
+	}
+				
+	public function indexFromPoint(p:Point):int
+	{
+		return p.x + p.y * (numGridsX - 1);
+	}
+	
+	//returns the actual (x,y) coordinate from index, returns the top-left point of the grid. 
+	//May return any intermediate value if the Point p given is not any integer. 
+	public function returnXYFromIndex(p:Point):Point 
+	{
+		return new Point( (p.x * gridSize) + _bounds.x , (p.y * gridSize) + _bounds.y );
+	}
+	
+	public function retrunIndexFromXY(x:Number, y:Number):Point
+	{
+		x = Math.Floor( (x - _bounds.x) / _gridSize);
+		y = Math.Floor( (y - _bounds.y) / _gridSize);
+	
+		return new Point(x, y);
+	}
+	
+
+		
+	}// end of class

@@ -1,0 +1,6 @@
+Name	ID	Age
+Tomithy	3	23
+Kingstong	2	22
+Berlinda	1	21
+Gek Siang	4	58
+Dad	5	63

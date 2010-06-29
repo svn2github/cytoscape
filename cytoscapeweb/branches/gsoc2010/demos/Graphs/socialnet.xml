@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml>
+<graph edgedefault="undirected">
+ 
+<!-- data schema -->
+<key id="name" for="node" attr.name="name" attr.type="string"/>
+<key id="gender" for="node" attr.name="gender" attr.type="string"/>
+  
+<!-- nodes -->  
+<node id="1">
+ <data key="name">Jo</data>
+ <data key="gender">M</data>
+ </node>
+<node id="2">
+ <data key="name">Ed</data>
+ <data key="gender">M</data>
+</node>
+<node id="3">
+ <data key="name">Christian</data>
+ <data key="gender">M</data>
+</node>
+<node id="4">
+ <data key="name">Emily</data>
+ <data key="gender">F</data>
+</node>
+<node id="5">
+ <data key="name">Adam</data>
+ <data key="gender">M</data>
+</node>
+<node id="6">
+ <data key="name">Cynthia</data>
+ <data key="gender">F</data>
+</node>
+<node id="7">
+ <data key="name">Joylette</data>
+ <data key="gender">F</data>
+</node>
+<node id="8">
+ <data key="name">Amanda</data>
+ <data key="gender">F</data>
+</node>
+<node id="9">
+ <data key="name">Nathaniel</data>
+ <data key="gender">M</data>
+</node>
+<node id="10">
+ <data key="name">Bryan</data>
+ <data key="gender">M</data>
+</node>
+<node id="11">
+ <data key="name">Tamara</data>
+ <data key="gender">F</data>
+</node>
+<node id="12">
+ <data key="name">Ashley</data>
+ <data key="gender">F</data>
+</node>
+<node id="13">
+ <data key="name">Ryan</data>
+ <data key="gender">M</data>
+</node>
+<node id="14">
+ <data key="name">Alan</data>
+ <data key="gender">M</data>
+</node>
+<node id="15">
+ <data key="name">Chris</data>
+ <data key="gender">M</data>
+</node>
+<node id="16">
+ <data key="name">Holly</data>
+ <data key="gender">F</data>
+</node>
+<node id="17">
+ <data key="name">Patrick</data>
+ <data key="gender">M</data>
+</node>
+<node id="18">
+ <data key="name">Fernando</data>
+ <data key="gender">M</data>
+</node>
+<node id="19">
+ <data key="name">Corey</data>
+ <data key="gender">M</data>
+</node>
+<node id="20">
+ <data key="name">Ben</data>
+ <data key="gender">M</data>
+</node>
+<node id="21">
+ <data key="name">Non</data>
+ <data key="gender">M</data>
+</node>
+
+<!-- edges -->
+<edge source="1" target="2"></edge>
+<edge source="1" target="3"></edge>
+<edge source="1" target="4"></edge>
+<edge source="12" target="5"></edge>
+<edge source="17" target="6"></edge>
+<edge source="1" target="7"></edge>
+<edge source="1" target="8"></edge>
+<edge source="1" target="9"></edge>
+<edge source="2" target="5"></edge>
+<edge source="2" target="8"></edge>
+<edge source="2" target="10"></edge>
+<edge source="3" target="5"></edge>
+<edge source="3" target="8"></edge>
+<edge source="3" target="10"></edge>
+<edge source="3" target="17"></edge>
+<edge source="5" target="8"></edge>
+<edge source="5" target="10"></edge>
+<edge source="6" target="14"></edge>
+<edge source="7" target="8"></edge>
+<edge source="7" target="10"></edge>
+<edge source="8" target="10"></edge>
+<edge source="8" target="14"></edge>
+<edge source="8" target="17"></edge>
+<edge source="8" target="18"></edge>
+<edge source="8" target="21"></edge>
+<edge source="10" target="17"></edge>
+<edge source="11" target="12"></edge>
+<edge source="13" target="19"></edge>
+<edge source="14" target="15"></edge>
+<edge source="14" target="18"></edge>
+<edge source="14" target="21"></edge>
+<edge source="15" target="16"></edge>
+<edge source="15" target="18"></edge>
+<edge source="15" target="21"></edge>
+<edge source="19" target="20"></edge>
+<edge source="21" target="10"></edge>
+<edge source="21" target="11"></edge>
+<edge source="21" target="12"></edge>
+<edge source="21" target="13"></edge>
+<edge source="12" target="14"></edge>
+<edge source="17" target="15"></edge>
+<edge source="8" target="16"></edge>
+<edge source="19" target="17"></edge>
+<edge source="19" target="18"></edge>
+<edge source="13" target="19"></edge>
+<edge source="11" target="20"></edge>
+<edge source="12" target="21"></edge>
+
+</graph>
+</graphml>

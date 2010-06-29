@@ -1,0 +1,95 @@
+//Pseudo code for Geometry Based Edge Bundling
+//Inspired by Paper by Wei Wei et al.
+//With major references made to Flare and Actionscript
+// DISCLAIMER: I still have to test majority of these codes out. 
+
+
+////////////////////////////////////////////////////////////////
+// Controller and main implementation class for GBEB.
+// Implements Mesh as Model and Flare.Visualisation as View
+////////////////////////////////////////////////////////////////
+class GBEB extends Sprite
+{
+	var _bounds:Rectangle //
+	var _mesh:Data // Using Flare data class to store edges and control points (CP) of mesh and nodes 
+				   // of the mesh. 
+	var _vis:Visualisation //Another visualization class invoke to display mesh on screen
+	var _meshResolution:int = 100 //Stores the resolution of the Mesh. defined as number of meshnodes.
+	var mesh:Mesh
+						
+
+	function GBEB (d:Data, bounds:Rectangle): void 
+	{
+		//suggested empricial method of determining meshResolution. Is
+		_meshResoltuion = int(Math.root(d.edges.length + d.nodes.length)); 
+		
+		_bounds = bounds;
+		
+		_mesh = Mesh.generateMesh(d, _meshResolution, _bounds);
+		
+		//adding event handlers
+		1. To set resolution
+		2. To adjust meshEdges
+		3. To adjust colours	
+		4. To adjust opacity
+		5. To re-compute mesh 
+		6. Listen to Stage.RESIZE and change bounds
+		
+	}
+
+	function showMesh(); //TODO
+	function hideMesh(); //TODO
+	function adjustColour(); //TODO
+	function adjustOpacity(); //TODO
+	function recomputeMesh(); //TODO - during the adjustments
+	
+}
+
+package GBEB
+{
+	import flare.vis.data.Data;
+	
+	import flash.display.Sprite;
+	import flash.geom.Rectangle;
+	//import flare.
+
+	//no Resize Event done yet
+	public class GBEB extends Sprite
+	{
+		private var _meshResolution:int = 100; //Stores the resolution of the Mesh. defined as number of meshnodes.
+		private var _meshData:Data;// Using Flare data class to store edges and control points (CP) of mesh and nodes of the mesh. 
+		
+		private var _dataDisplay:DataDisplay = new DataDisplay();
+		public var _mesh:Mesh;
+		
+		private var bounds:Rectangle = new Rectangle(0,0, 700, 500);
+		
+		public function GBEB(d:Data, _mainBounds:Rectangle = null) 
+		{
+			
+			_meshResolution = int(Math.sqrt(d.edges.length + d.nodes.length)); 
+			
+			_mesh = new Mesh(d); 
+			
+			addChild(_mesh);
+			addChild(_dataDisplay);
+			
+			
+			
+			trace("Mesh Resolution = " + _meshResolution);
+		}	
+		
+		public function updateBounds(passedInBounds:Rectangle):void
+		{
+			bounds = passedInBounds;
+			_dataDisplay.updateBounds(bounds);
+			_mesh.generateMesh(_meshResolution, bounds);
+			
+			trace("GBEB : bounds.width:" + bounds.width + " | bounds.height: " + bounds.height);
+
+		}
+	}
+}
+
+
+
