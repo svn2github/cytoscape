@@ -409,6 +409,28 @@ public class CyAttributesTest extends TestCase {
 		assertNull(cyAttributes.getLastEquationError());
 	}
 
+	public void testGetListElementType() {
+		final List<Integer> iList = new ArrayList<Integer>();
+		iList.add(2);
+		cyAttributes.setListAttribute("ID", "ilist", iList);
+		assertEquals(CyAttributes.TYPE_INTEGER, cyAttributes.getListElementType("ilist"));
+
+		final List<Double> fList = new ArrayList<Double>();
+		fList.add(2.5);
+		cyAttributes.setListAttribute("ID", "flist", fList);
+		assertEquals(CyAttributes.TYPE_FLOATING, cyAttributes.getListElementType("flist"));
+
+		final List<String> sList = new ArrayList<String>();
+		sList.add("xyz");
+		cyAttributes.setListAttribute("ID", "slist", sList);
+		assertEquals(CyAttributes.TYPE_STRING, cyAttributes.getListElementType("slist"));
+
+		final List<Boolean> bList = new ArrayList<Boolean>();
+		bList.add(true);
+		cyAttributes.setListAttribute("ID", "blist", bList);
+		assertEquals(CyAttributes.TYPE_BOOLEAN, cyAttributes.getListElementType("blist"));
+	}
+
 	/**
 	 * Runs just this one unit test.
 	 */

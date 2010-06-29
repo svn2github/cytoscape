@@ -549,6 +549,14 @@ public interface CyAttributes {
 	public byte getType(String attributeName);
 
 	/**
+	 * Gets the member data type of the specified simple list attribute.
+	 *
+	 * @param attributeName the name of a simple list attribute
+	 * @return one of: TYPE_BOOLEAN, TYPE_INTEGER, TYPE_FLOATING, TYPE_STRING
+	 */
+	public byte getListElementType(final String attributeName);
+
+	/**
 	 * Deletes the id/attributeName pair.
 	 *
 	 * @param id            unique identifier.

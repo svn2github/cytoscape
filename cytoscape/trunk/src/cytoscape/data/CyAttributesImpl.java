@@ -722,6 +722,24 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
+	 * Gets the member data type of the specified simple list attribute.
+	 *
+	 * @param attributeName the name of a simple list attribute
+	 * @return one of: TYPE_BOOLEAN, TYPE_INTEGER, TYPE_FLOATING, TYPE_STRING
+	 */
+	public byte getListElementType(final String attributeName) {
+		final byte valType = mmapDef.getAttributeValueType(attributeName);
+		if (valType < 0)
+			throw new IllegalArgumentException("'" + attributeName + "' is not a simple list attribute!");
+
+		final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+		if (dimTypes.length != 1 || dimTypes[0] != MultiHashMapDefinition.TYPE_INTEGER)
+			throw new IllegalArgumentException("'" + attributeName + "' is not a simple list attribute!");
+
+		return valType;
+	}
+
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param id DOCUMENT ME!
