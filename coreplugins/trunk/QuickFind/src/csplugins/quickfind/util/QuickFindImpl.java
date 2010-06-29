@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import cytoscape.data.CyAttributesUtils;
 
 
 /**
@@ -158,7 +159,9 @@ class QuickFindImpl implements QuickFind {
 	 * @param network DOCUMENT ME!
 	 */
 	public synchronized void removeNetwork(CyNetwork network) {
-		networkMap.remove(networkMap);
+		if (networkMap.containsKey(network)){
+			networkMap.remove(networkMap);
+		}
 
 		// Notify all listeners of remove event
 		for (int i = 0; i < listenerList.size(); i++) {
@@ -175,7 +178,10 @@ class QuickFindImpl implements QuickFind {
 	 * @return  DOCUMENT ME!
 	 */
 	public synchronized GenericIndex getIndex(CyNetwork network) {
-		return (GenericIndex) networkMap.get(network);
+		if (networkMap.containsKey(network)){
+			return (GenericIndex) networkMap.get(network);	
+		}
+		return null;
 	}
 
 	/**
@@ -191,7 +197,18 @@ class QuickFindImpl implements QuickFind {
 	public synchronized GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType,
 	                                                String controllingAttribute,
 	                                                TaskMonitor taskMonitor) {
-        Date start = new Date();
+        
+		// If all the values for the controllingAttribute are NULL, return null
+		String _type = "node";
+		if (indexType == QuickFind.INDEX_EDGES){
+			_type = "edge";
+		}
+		if (cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
+			return null;
+		}
+		
+		//
+		Date start = new Date();
         if ((indexType != QuickFind.INDEX_NODES) && (indexType != QuickFind.INDEX_EDGES)) {
 			throw new IllegalArgumentException("indexType must be set to: "
 			                                   + "QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES");
@@ -331,6 +348,18 @@ class QuickFindImpl implements QuickFind {
 	private void indexNetwork(CyNetwork network, int indexType, CyAttributes attributes,
 	                          int attributeType, String controllingAttribute, GenericIndex index,
 	                          TaskMonitor taskMonitor) {
+		
+		// If all the values for the controllingAttribute are NULL, add a null index
+		String _type = "node";
+		if (indexType == QuickFind.INDEX_EDGES){
+			_type = "edge";
+		}
+		if (cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
+			networkMap.put(network, null);
+			return;
+		}
+		
+		//
 		Date start = new Date();
 		Iterator iterator;
 
@@ -377,6 +406,16 @@ class QuickFindImpl implements QuickFind {
 	private GenericIndex createIndex(int indexType, int attributeType, String controllingAttribute) {
 		GenericIndex index;
 
+		// If all the values for the controllingAttribute are NULL, return null
+		String _type = "node";
+		if (indexType == QuickFind.INDEX_EDGES){
+			_type = "edge";
+		}
+		if (cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
+			return null;
+		}
+		
+		//
 		if ((attributeType == CyAttributes.TYPE_INTEGER)
 		    || (attributeType == CyAttributes.TYPE_FLOATING)) {
 			index = IndexFactory.createDefaultNumberIndex(indexType);
