@@ -157,6 +157,8 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      */
     public void layoutPartion(LayoutPartition partition) {
 
+	Dimension initialLocation = null;
+
 	if (canceled)
 	    return;
 	
@@ -172,6 +174,14 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
 	logger.info("New partition succesfully created!");
 
+	// Figure out our starting point - This will be used when:
+	// 1- Laying out labels off all nodes
+	// - and- 
+	// 2- (normal) Nodes are not allowed to move
+	if (!selectedOnly && !moveNodes) {
+	    initialLocation = newPartition.getAverageLocation();
+	}
+
 	if (canceled)
 	    return;
 
@@ -182,15 +192,40 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	}
 
 	// Layout the new partition using the parent class layout algorithm
-	//	super.layoutPartition(newPartition);
+	super.layoutPartition(newPartition);
 
 	// Move labels to a random position near their parents
-	for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {
-	    logger.info("moving label of node " + node.getIdentifier());
-	    node.increment(100 * Math.random(), 100 * Math.random());
-	    node.moveToLocation();    
-	    logger.info("label moved!");	    
+	// for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {
+// 	    logger.info("moving label of node " + node.getIdentifier());
+// 	    node.increment(100 * Math.random(), 100 * Math.random());
+// 	    node.moveToLocation();    
+// 	    logger.info("label moved!");	    
+// 	}
+
+
+	// Not quite done, yet. We may need to migrate labels back to their starting position
+	// This will be necessary if:
+	// 1- Laying out only selected nodes
+	// - or- 
+	// 2- (normal) Nodes are not allowed to move
+	if (selectedOnly || !moveNodes) {
+	    logger.info("moving back labels (and possibly nodes) to their location");
+
+	    double xDelta = 0.0;
+	    double yDelta = 0.0;
+	    Dimension finalLocation = newPartition.getAverageLocation();
+	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+
+	    for (LayoutNode v: newPartition.getNodeList()) {
+		if (!v.isLocked()) {
+		    v.decrement(xDelta, yDelta);
+		    newPartition.moveNodeToLocation(v);
+		}
+	    }
 	}
+
+
 
 	// redraw the network so that the new label positions are visible
 	networkView.updateView();

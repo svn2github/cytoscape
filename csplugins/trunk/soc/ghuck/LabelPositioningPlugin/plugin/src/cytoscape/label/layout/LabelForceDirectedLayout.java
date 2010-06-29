@@ -28,7 +28,9 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.CyNode;
-import cytoscape.visual.LabelPosition;
+import cytoscape.visual.parsers.*;
+import cytoscape.visual.VisualPropertyType;
+
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.LayoutProperties;
@@ -44,6 +46,7 @@ import csplugins.layout.algorithms.graphPartition.*;
 import giny.view.NodeView;
 import giny.view.*;
 
+import ding.view.ObjectPositionImpl;
 
 import prefuse.util.force.*;
 
@@ -360,10 +363,10 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	// Reset the label position of all nodes - LABEL-LAYOUT
 	if (resetPosition) {
 	    resetNodeLabelPosition(nodeAtts, part.getNodeList());
-	    return; // Finishes the execution of this layout algorithm
+	    return;
 	}
 	
-	LabelPosition lp = null; // LABEL-LAYOUT
+	ObjectPosition lp = null; // LABEL-LAYOUT
 	
 	// LABEL-LAYOUT
 	node_sim.clear();
@@ -390,9 +393,11 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 								  getIdentifier(), "node.labelPosition");
 
 	    if (labelPosition == null) {
-		lp = new LabelPosition();
+		lp = new ObjectPositionImpl();
 	    } else {
-		lp = LabelPosition.parse(labelPosition);
+		ValueParser<ObjectPosition> parser = 
+		    (ValueParser<ObjectPosition>) VisualPropertyType.NODE_LABEL_POSITION.getValueParser();
+		lp = parser.parseStringValue(labelPosition);
 	    }
 			
 	    labelNode.setX(lp.getOffsetX() + ln.getNodeView().getXPosition());
@@ -530,8 +535,9 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		
 
 	// --- Update positions ---
-	lp = new LabelPosition(); // LABEL-LAYOUT
-		
+	// lp = new LabelPosition(); // LABEL-LAYOUT
+	lp = new ObjectPositionImpl();
+
         for (LayoutNode ln: allLayoutNodes) { // LABEL-LAYOUT
             
             if (!ln.isLocked()) {

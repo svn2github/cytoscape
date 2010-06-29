@@ -615,20 +615,20 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 
 	// Not quite done, yet.  If we're only laying out selected nodes, we need
 	// to migrate the selected nodes back to their starting position
-	if (selectedOnly) {
-	    double xDelta = 0.0;
-	    double yDelta = 0.0;
-	    Dimension finalLocation = partition.getAverageLocation();
-	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+// 	if (selectedOnly) {
+// 	    double xDelta = 0.0;
+// 	    double yDelta = 0.0;
+// 	    Dimension finalLocation = partition.getAverageLocation();
+// 	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+// 	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
 
-	    for (LayoutNode v: partition.getNodeList()) {
-		if (!v.isLocked()) {
-		    v.decrement(xDelta, yDelta);
-		    partition.moveNodeToLocation(v);
-		}
-	    }
-	}
+// 	    for (LayoutNode v: partition.getNodeList()) {
+// 		if (!v.isLocked()) {
+// 		    v.decrement(xDelta, yDelta);
+// 		    partition.moveNodeToLocation(v);
+// 		}
+// 	    }
+// 	}
 
 	logger.info("Layout complete after " + iteration + " iterations");
     }
