@@ -84,7 +84,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		try {
 			prop.load(new FileInputStream(new File(imageHomeDirectory,
 					METADATA_FILE)));
-			System.out.println("Image prop loaded!");
+			logger.info("Custom Graphics Image property file loaded from: " + imageHomeDirectory );
 		} catch (Exception e) {
 			logger.warning("Custom Graphics Metadata was not found.  This is normal for the first time.");
 			// Restore process is not necessary.
@@ -125,9 +125,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 						metatagMap.put(f, tags);
 					}
-					
-					System.out.println("Procsessing Image Data: " + fileName
-							+ ", " + name + "," + tagStr);
 				}
 				for (File file : imageFiles) {
 					if (file.toString().endsWith("png") == false)
@@ -163,7 +160,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 		long endTime = System.currentTimeMillis();
 		double sec = (endTime - startTime) / (1000.0);
-		System.out.println("Image Loading Finished in " + sec + " sec.");
+		logger.info("Image loading process finished in " + sec + " sec.");
 
 	}
 

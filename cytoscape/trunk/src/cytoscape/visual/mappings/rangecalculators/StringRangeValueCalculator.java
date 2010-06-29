@@ -34,14 +34,9 @@ public class StringRangeValueCalculator implements RangeValueCalculator<String> 
 
 
 	public boolean isCompatible(Class<?> type) {
-		
-		System.out.println(type + " is assignable from " + String.class.toString());
 		if(String.class.isAssignableFrom(type))
 			return true;
 		else
 			return false;
 	}
-
-	
-
 }

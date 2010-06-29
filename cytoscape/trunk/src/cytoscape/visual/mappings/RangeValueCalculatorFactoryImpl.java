@@ -5,11 +5,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import cytoscape.logger.CyLogger;
+
 public class RangeValueCalculatorFactoryImpl implements
 		RangeValueCalculatorFactory {
 	
 	private final Map<Class<?>, RangeValueCalculator<?>> calcMap;
 	private final Set<RangeValueCalculator<?>> calcs;
+	
+	private static final CyLogger logger = CyLogger.getLogger();
 
 	public RangeValueCalculatorFactoryImpl() {
 		calcMap = new HashMap<Class<?>, RangeValueCalculator<?>>();
@@ -27,13 +31,12 @@ public class RangeValueCalculatorFactoryImpl implements
 				if(c.isCompatible(type)) {
 					calcMap.put(type, c);
 					calc = c;
-					System.out.println("-------- returning RVC: " + calc);
 					return (T) calc;
 				}
 			}
 		}
 		
-		System.out.println("-------- Could not find RVC: " + calc);
+		logger.warn("Could not find RVC: " + calc);
 		return (T) calc;
 	}
 

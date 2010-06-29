@@ -54,15 +54,19 @@ import javax.swing.ImageIcon;
  *
  */
 public abstract class VisualPropertyIcon extends ImageIcon {
+	
+	private static final long serialVersionUID = 8512931880283553107L;
+
 	/**
 	 * Default icon color.
 	 */
 	public static final Color DEFAULT_ICON_COLOR = Color.DARK_GRAY;
 
 	/**
-	 *
+	 * Default icon size for Visual Properties
 	 */
 	public static final int DEFAULT_ICON_SIZE = 32;
+	
 	protected int height;
 	protected int width;
 	protected Color color;

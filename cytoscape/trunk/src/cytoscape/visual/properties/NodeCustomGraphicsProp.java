@@ -26,7 +26,6 @@ import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
@@ -57,10 +56,20 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 			private static final long serialVersionUID = 403672612403499816L;
 			private static final int ICON_SIZE = 128;
+			
 
+			private String name = null;
+			
 			@Override
 			public String getName() {
-				return Integer.toString(value.hashCode());
+				if(name == null) {
+					if(value != null && value instanceof CyCustomGraphics<?>)
+						name = ((CyCustomGraphics<?>)value).getDisplayName();
+					else
+						name = "Unknown Custom Graphics";
+				}
+				
+				return name;
 			}
 
 			public void paintIcon(Component c, Graphics g, int x, int y) {
@@ -92,7 +101,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 			private void drawDefaultIcon(Component c) {
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
 				g2d.setColor(Color.DARK_GRAY);
-				g2d.drawString("?", c.getX() + 7,
+				g2d.drawString(" ? ", c.getX() + 7,
 						(int) ((c.getHeight() / 2) + 7));
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
 			}
