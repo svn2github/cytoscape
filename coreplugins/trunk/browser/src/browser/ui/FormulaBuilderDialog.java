@@ -569,6 +569,8 @@ public class FormulaBuilderDialog extends JDialog {
 		    || funcName.equals(FUNC_SELECTION_MESSAGE))
 			return;
 
+		functionComboBox.removeItem(FUNC_SELECTION_MESSAGE);
+
 		attribNamesComboBox.setEnabled(true);
 		constantValuesTextField.setEnabled(true);
 		applyToComboBox.setEnabled(true);
