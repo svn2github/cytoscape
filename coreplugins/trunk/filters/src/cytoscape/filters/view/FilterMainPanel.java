@@ -229,7 +229,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		} 
 		
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
-		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
+		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
+		    || e.getPropertyName().equals(Cytoscape.NETWORK_TITLE_MODIFIED)) {
 			updateFeedbackTableModel();
 		}
 
@@ -270,7 +271,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private void updateFeedbackTableModel(){		
 		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-		tblFeedBack.getModel().setValueAt(cyNetwork.getIdentifier(), 0, 0);
+		tblFeedBack.getModel().setValueAt(cyNetwork.getTitle(), 0, 0);
 
 		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size() + ")";
 		tblFeedBack.getModel().setValueAt(nodeStr, 0, 1);
@@ -472,6 +473,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_CREATED, this);
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED, this);
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
 
 		btnSelectAll.addActionListener(this);
 		btnDeSelect.addActionListener(this);
