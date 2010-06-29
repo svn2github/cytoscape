@@ -1,10 +1,10 @@
 /* overall style */
 body.demo { left: 0; width: 100%; margin: 0; line-height: 1; }
 #header-resizer { height: 0; width: 0; }
-body.demo #logo { margin-left: 1em; margin-right: 5em; }
-body.demo #header .text { margin: 0; }
-body.demo #header .text * { text-align: left; }
-body.demo #header h1 { clear: none; padding: 0; margin-top: 0.7em; border-bottom: 0px solid; }
+body.demo #logo { margin-left: 1em; }
+body.demo #header .message { padding: 0.2em 0.2em 0 0.2em; margin: 0.5em; position: absolute; bottom: 0; left: 210px; background-color: #fffff0; border: 1px solid #ffff00; }
+body.demo #header .message * { text-align: left; }
+body.demo #header .title { text-transform: uppercase; font-weight: bold; }
 body.demo #page, body.demo #copyright, body.demo #navigation_links, body.demo #search, body.demo #content, body.demo #footer { display: none; }
 #cytoweb, #side { border: 1px #cfcfcf solid; -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; }
 .ui-dialog { -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; }

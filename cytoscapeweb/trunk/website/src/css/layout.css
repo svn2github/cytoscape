@@ -62,14 +62,15 @@ iframe { display: block; }
 /* cytoweb logo */
 #logo { float: left; height: 72px; width: 188px; margin: 8px; background: url("../img/layout/cytoscape_web_logo.png") no-repeat; }
 #logo div { padding: 10px 0 0 78px; color: #000000; font-size: 1.75em; font-family: Tahoma,Gill Sans,Arial,sans-serif; line-height: 1; }
-#search { float: right; height: 22px; margin: 30px 0 0 0; border: #c1c1c1 solid 1px; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+#search { display: none; float: right; height: 22px; margin: 30px 0 0 0; border: #c1c1c1 solid 1px; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 #search.focus { -moz-box-shadow: 0 0 5px #0b94b1; -webkit-box-shadow: 0 0 5px #0b94b1; box-shadow: 0 0 5px #0b94b1; }
 #search input:focus { -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
 #search input { background-color: #ffffff; padding: 0.25em; outline: none; border: none; color: #c1c1c1; border: 0; }
 #search input:focus { color: #000000; }
 #search_input { float: left; }
 #search_button { cursor: pointer; float: left; width: 22px; height: 100%; background: #aeaeae url("../img/layout/go.png") no-repeat center center; border-radius: 0; -moz-border-radius: 0; -webkit-border-radius: 0; }
-
+.warning {  background-color: #fffff0; border: 1px solid #ffff00; }
+.warning strong { text-transform: uppercase; font-weight: bold; }
 
 /* copyright */
 #copyright { text-align: right; font-size: 80%; color: #c6c6c6; float: right; width: 100%; margin-top: -2em; }
@@ -115,7 +116,7 @@ iframe { display: block; }
 	#content.side .right .nav a:hover { text-decoration: underline; }
 	#content.side .right .nav li.selected { background-color: #0b94b1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 	#content.side .right .nav li.selected a { color: #ffffff; }
-	#next_section_link { padding: 25px; margin: 2em -25px -25px -25px; cursor: pointer; }
-	#prev_section_link { padding: 25px; margin: -25px; cursor: pointer; }
-	#prev_section_link a, #next_section_link a { text-decoration: none; }
-	#prev_section_link:hover a, #next_section_link:hover a { text-decoration: underline; }
+	#next_section_link { padding: 25px; margin: 2em -25px -25px -25px; cursor: pointer; display: block; }
+	#prev_section_link { padding: 25px; margin: -25px; cursor: pointer;  display: block; }
+	#prev_section_link, #next_section_link { text-decoration: none; }
+	#prev_section_link:hover, #next_section_link:hovera { text-decoration: underline; }

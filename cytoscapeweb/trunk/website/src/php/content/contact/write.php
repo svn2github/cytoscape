@@ -47,7 +47,7 @@
     
             <h1>Contact form</h1>
         
-            <p>If you have any questions or comments, please contact us via the form below.</p>
+            <p>Please note that the <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a> is the preferred method of communication, as you will get a faster response there compared to here.</p>
             
         <?php } ?>
     
@@ -81,26 +81,13 @@
 </div>
 
 <div class="right">
-
-    <h1>Discussion Group</h1>
-    
-    <p>The Cytoscape Web <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a> is the main forum for users to share questions, solutions and new ideas.</p>
-    
-    <h1>Reporting software bugs</h1>
-    
-    <p>The best way to report a bug to us is to <a href="http://cbio.mskcc.org/cytoscape/bugs" rel="external">use our bug tracker</a>.  However, if you find it difficult to use the bug tracker, feel free to use the contact form on this page to contact us about the bug.</p>
-    
-    <p>Though we greatly appreciate it when you point out a bug, several pieces of information are required to fix it, including</p>
-    
-    <ul>
-        <li>how to reproduce the bug;</li>
-        <li>what part of the API the bug affects;</li>
-        <li>a description of the bug as compared to the behaviour you expected.</li>
-    </ul>
-    
-    <h1>Other feedback</h1>
-    
-    <p>Any other feedback that you provide is greatly appreciated.  To make sure that we get the most out of your feedback, please make sure to provide your name and email address so we can get back to you if need be.</p>
-    
-
+	
+	<h1>What can I write here?</h1>
+	
+	<p class="warning"><strong>Do not use this form to ask questions on how to use Cytoscape Web.</strong>  That information can be found in the <a href="/documentation">documentation</a> or asked in the <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a>.</p>
+	
+	<p>This form is a way for you to contact the developers of Cytoscape Web.  However, you will probably get a slower response to your query here as compared to the <a href="http://groups.google.com/group/cytoscapeweb-discuss" rel="external">discussion group</a>.</p>
+	
+	<p>If you have ideas on how to improve Cytoscape Web or you would like to report a bug, we would greatly appreciate your feedback.</p>
+	
 </div>

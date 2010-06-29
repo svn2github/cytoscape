@@ -8,9 +8,13 @@ $(window).load(function(){
     ul_root.append(li_show_all);
     li_show_all.append(a_show_all);
      
+    function make_id(name){
+    	return "section/" + name.replace(/\s/g, "_").replace(/\_\(.+/, "");
+    }
+     
     function create_level(ul, h) {
         var name = (h.attr("name") != undefined ? h.attr("name") : h.text());
-        var id = (h.attr("id") != undefined ? h.attr("id") : "");
+        var id = make_id( h.text() );
         var a = $('<a href="#' + id + '" name="' + name + '">' + name + '</a>');
         var li = $("<li></li>");
         var tag;
@@ -50,26 +54,24 @@ $(window).load(function(){
             var prev = h.prevAll(tags + ":first");
             var prev_name = (prev.attr("name") != undefined ? prev.attr("name") : prev.text());
             if( prev.size() > 0 ) {
-                h.before("<div id=\"prev_section_link\"><a href=\"#\">Previous section: <em>" + prev_name + "</em></a></div>");
+                h.before("<a id=\"prev_section_link\" href=\"#" + make_id(prev_name) + "\">Previous section: <em>" + prev_name + "</em></a>");
             }
             
             $("#prev_section_link").bind("click", function(){
-                $("#content .right .selected").prev().find("a").trigger("click");
+                $("#content .right .selected").prev().find("a").click();
             });
             
             var next = h.nextAll(tags + ":first");
             var next_name = (next.attr("name") != undefined ? next.attr("name") : next.text());
             if( next.size() > 0 ) {
-                next.before("<div id=\"next_section_link\"><a href=\"#\">Next section: <em>" + next_name + "</em></a></div>");
+                next.before("<a id=\"next_section_link\" href=\"#" + make_id(next_name) + "\">Next section: <em>" + next_name + "</em></a>");
             }
             
             $("#next_section_link").bind("click", function(){
-                $("#content .right .selected").next().find("a").trigger("click");
+                $("#content .right .selected").next().find("a").click();
             });
             
             fix_height();
-            
-            return false;
         });
     }
     
@@ -103,8 +105,6 @@ $(window).load(function(){
          $("#content .left").children().show();
          $("#next_section_link").remove();
          $("#prev_section_link").remove();
-         
-         return false;
     });
     
     $("#content .right a").click(function(){
@@ -140,4 +140,6 @@ $(window).load(function(){
         
         $("#content .right a[href=" + match + "]").click();
     }
+    
+    
 });

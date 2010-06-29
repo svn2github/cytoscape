@@ -1,7 +1,7 @@
 <div id="main">
 	<div id="about">
 	    <div id="use_line">
-	        <span>Easily embed interactive networks in your website, like this:</span>
+	        <span>Easily embed interactive networks in your website with Cytoscape Web.</span>
 	    </div>
 	    
 	    <div id="example">
@@ -27,7 +27,7 @@
 	    </div>
 	    
 	    <div class="link">
-	        <a href="/demo"><div id="live_demo" class="button">View live demo</div></a>
+	        <a href="/demo"><div id="live_demo" class="button">View showcase demo</div></a>
 	    </div>
 	    
 	    <div class="link">

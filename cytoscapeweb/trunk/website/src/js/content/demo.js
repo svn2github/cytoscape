@@ -153,9 +153,9 @@ $(function(){
     $("body").html('\
                         <div id="header" class="slice">\
                             <a href="/"><div id="logo"></div></a>\
-                            <div class="text">\
-                            	<h1>Demo</h1>\
-                            	<div class="text">Try out some features of Cytoscape Web to see how you would use it in your site!</div>\
+                            <div class="message">\
+                            	<div class="title">Feature showcase demo</div>\
+                            	<p>This is a feature showcase of Cytoscape Web.  It is a separate application built around the Cytoscape Web visualization.  Because this showcase is complex, you may experience issues, such as slowdowns, on older or less efficient browsers.</p>\
                             </div>\
                         </div>\
                         <div id="cytoweb">\
@@ -502,6 +502,8 @@ $(function(){
     create_save();
     
     $("#cytoweb_container").bind("available", function(){
+    	dirty_attributes_cache();
+    
         update_background();
         update_menu();
         update_info(); 
@@ -987,8 +989,9 @@ $(function(){
     }
     
 
-    //  ] Info for selected objects
+    //  [info] for selected objects
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    
     
     // Update the info tab with selection information after the graph has loaded
     function update_info(){
@@ -1223,25 +1226,44 @@ $(function(){
             
         }
         
+        
+        var need_to_update = false;
         function update_with_loader(){
         	if (! $("#info").hasClass("ui-tabs-hide")){
-	        	show_msg_on_tabs({
+        		need_to_update = false;
+        		
+	            
+	            $.thread({
+					worker: function(params){
+						update();
+				
+						hide_msg({
+							target: $("#side")
+						});
+					}
+				});
+        	} else {
+        		need_to_update = true;
+        	}
+        	
+        }
+        
+        $("#info_link").bind("click", function(){
+        	if( need_to_update ){
+        	
+        		show_msg_on_tabs({
 	                type: "loading",
 	                message: "Please wait while the data is updated."
 	            });
+        		
+				var interval = setInterval(function(){
+					if (! $("#info").hasClass("ui-tabs-hide")){
+						update_with_loader();
+						clearInterval(interval);
+					}
+				}, 100);
         	}
-        	$.thread({
-                worker: function(params){
-                    update();
-            
-                    if (! $("#info").hasClass("ui-tabs-hide")){
-	                    hide_msg({
-	                        target: $("#side")
-	                    });
-                    }
-                }
-            });
-        }
+        });
         
         function updateContextMenu(){
         	var cw = $("#cytoweb_container").cw();
@@ -1262,9 +1284,8 @@ $(function(){
             })
         	.addContextMenuItem("Add new node", function(evt) {
         		cw.addNode(evt.mouseX, evt.mouseY, { }, true);
-        		dirty_graph_state();
         		updateContextMenu();
-        		update_with_loader();
+        		dirty_graph_state();
         	})
         	.addContextMenuItem("Add new edge (then click the target node...)", "nodes", function(evt) {
             	_srcId = evt.target.data.id;
@@ -1461,7 +1482,7 @@ $(function(){
     function update_vizmapper(){
         var parent = $("#vizmapper");
         parent.empty();
-        
+
         $("#vizmapper_header").empty();
         $("#vizmapper_header").append('<div id="vizmapper_tabs"><ul></ul></div>');
         
@@ -1752,7 +1773,9 @@ $(function(){
             ]
         };
         
-        var cached_style = $("#cytoweb_container").cw().visualStyle();
+        var cached_style = cw.visualStyle();
+        
+        
         
         function get_property(variable){
             var style = cached_style;
@@ -1788,6 +1811,9 @@ $(function(){
             }
             
             cached_style = $.extend( true, cached_style, style );
+            
+            console.log(cached_style);
+            
             $("#cytoweb_container").cw().visualStyle(cached_style);
             update_background();
         }
