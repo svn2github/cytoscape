@@ -25,7 +25,6 @@ public class ColorUtil {
 			final java.awt.Color awtColor = new java.awt.Color(java.awt.Color.HSBtoRGB(hue, 1f, 1f));
 			final String colorString = Integer.toHexString(awtColor.getRGB());
 			final String withoutAlpha = colorString.substring(2, colorString.length());
-			System.out.println("Color Generated: " + withoutAlpha);
 			colors.add(Color.newColor(withoutAlpha, 100 ) );
 		}
 		
