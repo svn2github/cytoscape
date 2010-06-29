@@ -872,9 +872,9 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			newDoubleList.add(0.0);
 			attributes.setListAttribute(testVal, newAttribName, newDoubleList);
 		} else if (type.equals("Integer List")) {
-			final List<Long> newLongList = new ArrayList<Long>();
-			newLongList.add(1L);
-			attributes.setListAttribute(testVal, newAttribName, newLongList);
+			final List<Integer> newIntList = new ArrayList<Integer>();
+			newIntList.add(0);
+			attributes.setListAttribute(testVal, newAttribName, newIntList);
 		} else if (type.equals("Boolean List")) {
 			final List<Boolean> newBooleanList = new ArrayList<Boolean>();
 			newBooleanList.add(true);
