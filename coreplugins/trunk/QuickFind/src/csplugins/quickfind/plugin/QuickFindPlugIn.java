@@ -258,8 +258,10 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 		GenericIndex index = quickFind.getIndex(cyNetwork);
-		quickFindToolBar.setIndex(index);
-		quickFindToolBar.enableAllQuickFindButtons();
+		if (index != null){
+			quickFindToolBar.setIndex(index);
+			quickFindToolBar.enableAllQuickFindButtons();			
+		}
 	}
 
 	/**
