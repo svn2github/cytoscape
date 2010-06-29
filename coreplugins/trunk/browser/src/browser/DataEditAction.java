@@ -38,6 +38,7 @@ import org.cytoscape.equations.BooleanList;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.DoubleList;
 import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.LongList;
 import org.cytoscape.equations.StringList;
 
@@ -136,222 +137,250 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 		// Change object to String
 		final String newValueStr = newValue.toString().trim();
+
 		final byte targetType = attrs.getType(attrName);
+		if (targetType == CyAttributes.TYPE_INTEGER)
+			handleInteger(newValueStr, attrs, id);
+		else if (targetType == CyAttributes.TYPE_FLOATING)
+			handleDouble(newValueStr, attrs, id);
+		else if (targetType == CyAttributes.TYPE_BOOLEAN)
+			handleBoolean(newValueStr, attrs, id);
+		else if (targetType == CyAttributes.TYPE_STRING)
+			handleString(newValueStr, attrs, id);
+		else if (targetType == CyAttributes.TYPE_SIMPLE_LIST)
+			handleList(newValueStr, attrs, id);
+		else if (targetType == CyAttributes.TYPE_SIMPLE_MAP)
+			handleMap(newValueStr, attrs, id);
+	}
 
-		if (targetType == CyAttributes.TYPE_INTEGER) {
-			// Deal with equations first:
-			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null) {
-					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
-					attrs.deleteAttribute(id, attrName);
-					return;
-				}
-
-				final Class returnType = equation.getType();
-				if (returnType != Long.class && returnType != Double.class && returnType != Boolean.class) {
-					showErrorWindow("Error in attribute \"" + attrName
-					                + "\": equation is of type " + getLastDotComponent(returnType.toString())
-                                                        + " but should be of type Integer!");
-					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
-					attrs.deleteAttribute(id, attrName);
-					return;
-				}
-
- 				attrs.setAttribute(id, attrName, equation);
-				final Object attrValue = attrs.getAttribute(id, attrName);
-				String errorMessage = attrs.getLastEquationError();
-				if (errorMessage != null)
-					errorMessage = "#ERROR(" + errorMessage + ")";
-				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
-				valid = true;
-				return;
-			}
-
-			Integer newIntVal;
-			try {
-				newIntVal = Integer.valueOf(newValueStr);
-				attrs.setAttribute(id, attrName, newIntVal);
-				objectAndEditString = new ValidatedObjectAndEditString(newIntVal);
-				valid = true;
-			} catch (final Exception e) {
-				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+	private void handleInteger(final String newValueStr, final CyAttributes attrs, final String id) {
+		// Deal with equations first:
+		if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+			final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+			if (equation == null) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
 				attrs.deleteAttribute(id, attrName);
-				showErrorWindow("Attribute " + attrName
-				                + " should be an Integer (or the number is too big/small).");
-				return;
-			}
-		} else if (targetType == CyAttributes.TYPE_FLOATING) {
-			// Deal with equations first:
-			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null) {
-					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
-					attrs.deleteAttribute(id, attrName);
-					return;
-				}
-
-				final Class returnType = equation.getType();
-				if (returnType != Double.class && returnType != Long.class && returnType != Boolean.class) {
-					showErrorWindow("Error in attribute \"" + attrName
-					                + "\": equation is of type " + getLastDotComponent(returnType.toString())
-					                + " but should be of type Floating Point!");
-					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
-					attrs.deleteAttribute(id, attrName);
-					return;
-				}
-
- 				attrs.setAttribute(id, attrName, equation);
-				final Object attrValue = attrs.getAttribute(id, attrName);
-				String errorMessage = attrs.getLastEquationError();
-				if (errorMessage != null)
-					errorMessage = "#ERROR(" + errorMessage + ")";
-				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
-				valid = true;
 				return;
 			}
 
-			Double newDblVal;
-			try {
-				newDblVal = Double.valueOf(newValueStr);
-				attrs.setAttribute(id, attrName, newDblVal);
-				objectAndEditString = new ValidatedObjectAndEditString(newDblVal);
-				valid = true;
-			} catch (final Exception e) {
-				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
-				attrs.deleteAttribute(id, attrName);
-				showErrorWindow("Attribute " + attrName
-				                + " should be a floating point number (or the number is too big/small).");
-
-				return;
-			}
-		} else if (targetType == CyAttributes.TYPE_BOOLEAN) {
-			// Deal with equations first:
-			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null) {
-					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
-					attrs.deleteAttribute(id, attrName);
-					return;
-				}
-
-				final Class returnType = equation.getType();
-				if (returnType != Boolean.class && returnType != Long.class && returnType != Double.class) {
-					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
-					attrs.deleteAttribute(id, attrName);
-					showErrorWindow("Error in attribute \"" + attrName
-					                + "\": equation is of type " + getLastDotComponent(returnType.toString())
-                                                        + " but should be of type Boolean!");
-					return;
-				}
-
- 				attrs.setAttribute(id, attrName, equation);
-				final Object attrValue = attrs.getAttribute(id, attrName);
-				String errorMessage = attrs.getLastEquationError();
-				if (errorMessage != null)
-					errorMessage = "#ERROR(" + errorMessage + ")";
-				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
-				valid = true;
-				return;
-			}
-
-			Boolean newBoolVal = false;
-			try {
-				newBoolVal = Boolean.valueOf(newValueStr);
-				attrs.setAttribute(id, attrName, newBoolVal);
-				objectAndEditString = new ValidatedObjectAndEditString(newBoolVal);
-				valid = true;
-			} catch (final Exception e) {
-				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
-				attrs.deleteAttribute(id, attrName);
-				showErrorWindow("Attribute " + attrName + " should be a boolean value (true/false).");
-				return;
-			}
-		} else if (targetType == CyAttributes.TYPE_STRING) {
-			final String newStrVal = replaceCStyleEscapes(newValueStr);
-
-			// Deal with equations first:
-			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				final Equation equation = parseEquation(newStrVal, attrs, id, attrName);
-				if (equation == null) {
-					objectAndEditString = new ValidatedObjectAndEditString(null, newStrVal, "#PARSE");
-					attrs.deleteAttribute(id, attrName);
-					return;
-				}
- 				attrs.setAttribute(id, attrName, equation);
-				objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
-				final Object attrValue = attrs.getAttribute(id, attrName);
-				String errorMessage = attrs.getLastEquationError();
-				if (errorMessage != null)
-					errorMessage = "#ERROR(" + errorMessage + ")";
-				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
-				valid = true;
-				return;
-			}
-
-			attrs.setAttribute(id, attrName, newStrVal);
-			objectAndEditString = new ValidatedObjectAndEditString(newStrVal);
-			valid = true;
-		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
-			// Deal with equations first:
-			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
-				if (equation == null) {
-					objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
-					attrs.deleteAttribute(id, attrName);
-					return;
-				}
- 				attrs.setListAttribute(id, attrName, equation);
-				final Object attrValue = attrs.getAttribute(id, attrName);
-				String errorMessage = attrs.getLastEquationError();
-				if (errorMessage != null)
-					errorMessage = "#ERROR(" + errorMessage + ")";
-				objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
-				valid = true;
-				return;
-			}
-
-			final String escapedString = replaceCStyleEscapes(newValueStr);
-			final List origList = attrs.getListAttribute(id, attrName);
-
-			List newList = null;
-			if (origList.isEmpty() || origList.get(0).getClass() == String.class)
-				newList = parseStringListValue(escapedString);
-			else if (origList.get(0).getClass() == Double.class)
-				newList = parseDoubleListValue(escapedString);
-			else if (origList.get(0).getClass() == Integer.class)
-				newList = parseIntegerListValue(escapedString);
-			else if (origList.get(0).getClass() == Boolean.class)
-				newList = parseBooleanListValue(escapedString);
-			else
-				throw new ClassCastException("can't determined List type!");
-
-			if (newList == null) {
-				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
-				attrs.deleteAttribute(id, attrName);
-				showErrorWindow("Invalid list!");
-				return;
-			}
-			else {
-				attrs.setListAttribute(id, attrName, newList);
-				objectAndEditString = new ValidatedObjectAndEditString(escapedString);
-				valid = true;
-			}
-		} else if (targetType == CyAttributes.TYPE_SIMPLE_MAP) {
-			// Deal with equations first:
-			if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
-				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
-				attrs.deleteAttribute(id, attrName);
+			final Class returnType = equation.getType();
+			if (returnType != Long.class && returnType != Double.class && returnType != Boolean.class) {
 				showErrorWindow("Error in attribute \"" + attrName
-						+ "\": no equations are supported for maps!");
+						+ "\": equation is of type " + getLastDotComponent(returnType.toString())
+						+ " but should be of type Integer!");
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+				attrs.deleteAttribute(id, attrName);
 				return;
 			}
 
-			errMessage = "Map editing is not supported in this version.";
-			showErrorWindow(errMessage);
-
+			attrs.setAttribute(id, attrName, equation);
+			final Object attrValue = attrs.getAttribute(id, attrName);
+			String errorMessage = attrs.getLastEquationError();
+			if (errorMessage != null)
+				errorMessage = "#ERROR(" + errorMessage + ")";
+			objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
+			valid = true;
 			return;
 		}
+
+		Integer newIntVal;
+		try {
+			newIntVal = Integer.valueOf(newValueStr);
+			attrs.setAttribute(id, attrName, newIntVal);
+			objectAndEditString = new ValidatedObjectAndEditString(newIntVal);
+			valid = true;
+		} catch (final Exception e) {
+			objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+			attrs.deleteAttribute(id, attrName);
+			showErrorWindow("Attribute " + attrName
+					+ " should be an Integer (or the number is too big/small).");
+		}
+	}
+
+	private void handleDouble(final String newValueStr, final CyAttributes attrs, final String id) {
+		// Deal with equations first:
+		if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+			final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+			if (equation == null) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
+				attrs.deleteAttribute(id, attrName);
+				return;
+			}
+
+			final Class returnType = equation.getType();
+			if (returnType != Double.class && returnType != Long.class && returnType != Boolean.class) {
+				showErrorWindow("Error in attribute \"" + attrName
+						+ "\": equation is of type " + getLastDotComponent(returnType.toString())
+						+ " but should be of type Floating Point!");
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+				attrs.deleteAttribute(id, attrName);
+				return;
+			}
+
+			attrs.setAttribute(id, attrName, equation);
+			final Object attrValue = attrs.getAttribute(id, attrName);
+			String errorMessage = attrs.getLastEquationError();
+			if (errorMessage != null)
+				errorMessage = "#ERROR(" + errorMessage + ")";
+			objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
+			valid = true;
+			return;
+		}
+
+		Double newDblVal;
+		try {
+			newDblVal = Double.valueOf(newValueStr);
+			attrs.setAttribute(id, attrName, newDblVal);
+			objectAndEditString = new ValidatedObjectAndEditString(newDblVal);
+			valid = true;
+		} catch (final Exception e) {
+			objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+			attrs.deleteAttribute(id, attrName);
+			showErrorWindow("Attribute " + attrName
+					+ " should be a floating point number (or the number is too big/small).");
+		}
+	}
+
+	private void handleBoolean(final String newValueStr, final CyAttributes attrs, final String id) {
+		// Deal with equations first:
+		if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+			final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+			if (equation == null) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
+				attrs.deleteAttribute(id, attrName);
+				return;
+			}
+
+			final Class returnType = equation.getType();
+			if (returnType != Boolean.class && returnType != Long.class && returnType != Double.class) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+				attrs.deleteAttribute(id, attrName);
+				showErrorWindow("Error in attribute \"" + attrName
+						+ "\": equation is of type " + getLastDotComponent(returnType.toString())
+						+ " but should be of type Boolean!");
+				return;
+			}
+
+			attrs.setAttribute(id, attrName, equation);
+			final Object attrValue = attrs.getAttribute(id, attrName);
+			String errorMessage = attrs.getLastEquationError();
+			if (errorMessage != null)
+				errorMessage = "#ERROR(" + errorMessage + ")";
+			objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
+			valid = true;
+			return;
+		}
+
+		Boolean newBoolVal = false;
+		try {
+			newBoolVal = Boolean.valueOf(newValueStr);
+			attrs.setAttribute(id, attrName, newBoolVal);
+			objectAndEditString = new ValidatedObjectAndEditString(newBoolVal);
+			valid = true;
+		} catch (final Exception e) {
+			objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+			attrs.deleteAttribute(id, attrName);
+			showErrorWindow("Attribute " + attrName + " should be a boolean value (true/false).");
+		}
+	}
+
+	private void handleString(final String newValueStr, final CyAttributes attrs, final String id) {
+		final String newStrVal = replaceCStyleEscapes(newValueStr);
+
+		// Deal with equations first:
+		if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+			final Equation equation = parseEquation(newStrVal, attrs, id, attrName);
+			if (equation == null) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newStrVal, "#PARSE");
+				attrs.deleteAttribute(id, attrName);
+				return;
+			}
+
+			attrs.setAttribute(id, attrName, equation);
+			objectAndEditString = new ValidatedObjectAndEditString(attrs.getAttribute(id, attrName), equation.toString());
+			final Object attrValue = attrs.getAttribute(id, attrName);
+			String errorMessage = attrs.getLastEquationError();
+			if (errorMessage != null)
+				errorMessage = "#ERROR(" + errorMessage + ")";
+			objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
+			valid = true;
+			return;
+		}
+
+		attrs.setAttribute(id, attrName, newStrVal);
+		objectAndEditString = new ValidatedObjectAndEditString(newStrVal);
+		valid = true;
+	}
+
+	private void handleList(final String newValueStr, final CyAttributes attrs, final String id) {
+		// Deal with equations first:
+		if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+			final Equation equation = parseEquation(newValueStr, attrs, id, attrName);
+			if (equation == null) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#PARSE");
+				attrs.deleteAttribute(id, attrName);
+				return;
+			}
+
+			final Class returnType = equation.getType();
+			if (!FunctionUtil.isSomeKindOfList(returnType)) {
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+				attrs.deleteAttribute(id, attrName);
+				showErrorWindow("Error in attribute \"" + attrName
+						+ "\": equation is of type " + getLastDotComponent(returnType.toString())
+						+ " but should be of type List!");
+				return;
+			}
+
+			attrs.setListAttribute(id, attrName, equation);
+			final Object attrValue = attrs.getAttribute(id, attrName);
+			String errorMessage = attrs.getLastEquationError();
+			if (errorMessage != null)
+				errorMessage = "#ERROR(" + errorMessage + ")";
+			objectAndEditString = new ValidatedObjectAndEditString(attrValue, newValueStr, errorMessage);
+			valid = true;
+			return;
+		}
+
+		final String escapedString = replaceCStyleEscapes(newValueStr);
+		final List origList = attrs.getListAttribute(id, attrName);
+
+		List newList = null;
+		if (origList.isEmpty() || origList.get(0).getClass() == String.class)
+			newList = parseStringListValue(escapedString);
+		else if (origList.get(0).getClass() == Double.class)
+			newList = parseDoubleListValue(escapedString);
+		else if (origList.get(0).getClass() == Integer.class)
+			newList = parseIntegerListValue(escapedString);
+		else if (origList.get(0).getClass() == Boolean.class)
+			newList = parseBooleanListValue(escapedString);
+		else
+			throw new ClassCastException("can't determined List type!");
+
+		if (newList == null) {
+			objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+			attrs.deleteAttribute(id, attrName);
+			showErrorWindow("Invalid list!");
+			return;
+		}
+		else {
+			attrs.setListAttribute(id, attrName, newList);
+			objectAndEditString = new ValidatedObjectAndEditString(escapedString);
+			valid = true;
+		}
+	}
+
+	private void handleMap(final String newValueStr, final CyAttributes attrs, final String id) {
+		// Deal with equations first:
+		if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
+			objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
+			attrs.deleteAttribute(id, attrName);
+			showErrorWindow("Error in attribute \"" + attrName
+					+ "\": no equations are supported for maps!");
+			return;
+		}
+
+		showErrorWindow("Map editing is not supported in this version.");
 	}
 
 	/**
