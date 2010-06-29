@@ -69,7 +69,7 @@ public class NetworkSelectorPanelX extends JPanel implements
 
 		final String propName = evt.getPropertyName();
 
-		if (propName.equals(Cytoscape.NETWORK_CREATED))
+		if (propName.equals(Cytoscape.NETWORK_CREATED)||propName.equals(Cytoscape.NETWORK_TITLE_MODIFIED))
 			updateNetworkList();
 		else if (propName.equals(Cytoscape.NETWORK_DESTROYED))
 			networkComboBox.removeItem(Cytoscape.getNetwork(
