@@ -21,12 +21,16 @@ public class NetworkSelectorPanel extends JPanel implements
 {
 	private static final long serialVersionUID = 8694272457769377810L;
 	
-	private final JComboBox networkComboBox;
+	protected final JComboBox networkComboBox;
 
 	public NetworkSelectorPanel() {
 		super();
 		this.setLayout(new BorderLayout());
 		networkComboBox = new JComboBox();
+
+		//This should help to limit the length of combobox if the network name is too long
+		networkComboBox.setPreferredSize(new java.awt.Dimension(networkComboBox.getPreferredSize().width, 
+				networkComboBox.getPreferredSize().height));
 
 		add(networkComboBox, BorderLayout.CENTER);
 		updateNetworkList();
@@ -67,9 +71,10 @@ public class NetworkSelectorPanel extends JPanel implements
 	public void propertyChange(PropertyChangeEvent evt) {
 
 		final String propName = evt.getPropertyName();
-
-		if (propName.equals(Cytoscape.NETWORK_CREATED))
+		
+		if (propName.equals(Cytoscape.NETWORK_CREATED)||propName.equals(Cytoscape.NETWORK_TITLE_MODIFIED)){
 			updateNetworkList();
+		}
 		else if (propName.equals(Cytoscape.NETWORK_DESTROYED))
 			networkComboBox.removeItem(Cytoscape.getNetwork(
 					(String) evt.getNewValue()).getTitle());
