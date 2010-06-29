@@ -352,6 +352,9 @@ public class FormulaBuilderDialog extends JDialog {
 		errorMessage.append(getLastDotComponent(expressionType.toString()));
 		errorMessage.append(") valid types are: ");
 		for (int i = 0; i < validArgTypes.size(); ++i) {
+			if (validArgTypes.get(i) == null)
+				continue;
+
 			errorMessage.append(getLastDotComponent(validArgTypes.get(i).toString()));
 			if (i < validArgTypes.size() - 1)
 				errorMessage.append(',');
