@@ -332,6 +332,20 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 
+			final byte listElementType = attrs.getListElementType(attrName);
+			if (returnType == DoubleList.class && listElementType != CyAttributes.TYPE_FLOATING
+			    || returnType == LongList.class && listElementType != CyAttributes.TYPE_INTEGER
+			    || returnType == StringList.class && listElementType != CyAttributes.TYPE_STRING
+			    || returnType == BooleanList.class && listElementType != CyAttributes.TYPE_BOOLEAN)
+			{
+				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
+				attrs.deleteAttribute(id, attrName);
+				showErrorWindow("Error in attribute \"" + attrName
+						+ "\": equation is of type " + getLastDotComponent(returnType.toString())
+						+ " which is the wrong type of list!");
+				return;
+			}
+
 			attrs.setListAttribute(id, attrName, equation);
 			final Object attrValue = attrs.getAttribute(id, attrName);
 			String errorMessage = attrs.getLastEquationError();
