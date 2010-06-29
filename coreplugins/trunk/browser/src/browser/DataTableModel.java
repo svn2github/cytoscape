@@ -432,8 +432,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		case CyAttributes.TYPE_FLOATING:
 		case CyAttributes.TYPE_STRING:
 		case CyAttributes.TYPE_BOOLEAN:
-			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		case CyAttributes.TYPE_SIMPLE_LIST:
+			return new ValidatedObjectAndEditString(attribValue, equationFormula, errorMessage);
 		case CyAttributes.TYPE_SIMPLE_MAP:
 			return new ValidatedObjectAndEditString(attribValue);
 		default:
@@ -616,7 +616,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
 		rowVector.setElementAt(edit.getValidatedObjectAndEditString(), colIdx);
 		if (this.objectType != NETWORK)
-			setDataTableRow(rowIdx);
+			setDataTableRow(rowIdx, colIdx);
 		else
 			setDataTableColumn();
 
@@ -626,11 +626,14 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	/**
 	 *  Helper method for updateCell().
 	 */
-	void setDataTableRow(final int rowIdx) {
+	void setDataTableRow(final int rowIdx, final int skipIdx) {
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
-		final int noOfColumns = attributeNames.size();
+		final int noOfColumns = attributeNames.contains(AttributeBrowser.ID) ? attributeNames.size() : attributeNames.size() + 1;
 		final String id = graphObjects.get(rowIdx).getIdentifier();
 		for (int colIdx = 0; colIdx < noOfColumns; ++colIdx) {
+			if (colIdx == skipIdx)
+				continue;
+
 			final String attribName = (String)columnIdentifiers.get(colIdx);
 			if (attribName.equals(AttributeBrowser.ID))
 				continue;
