@@ -154,8 +154,9 @@ $(function(){
                         <div id="header" class="slice">\
                             <a href="/"><div id="logo"></div></a>\
                             <div class="message">\
-                            	<div class="title">Feature showcase demo</div>\
-                            	<p>This is a feature showcase of Cytoscape Web.  It is a separate application built around the Cytoscape Web visualization.  Because this showcase is complex, you may experience issues, such as slowdowns, on older or less efficient browsers.</p>\
+                            	<h2>Feature Showcase Demo</h2>\
+                            	<p>This is a separate demo application, built around the Cytoscape Web visualization.\
+                            	   <br/>Because this showcase is complex, you may experience issues, such as slowdowns, on older or less efficient browsers.</p>\
                             </div>\
                         </div>\
                         <div id="cytoweb">\
@@ -1811,8 +1812,6 @@ $(function(){
             }
             
             cached_style = $.extend( true, cached_style, style );
-            
-            console.log(cached_style);
             
             $("#cytoweb_container").cw().visualStyle(cached_style);
             update_background();
