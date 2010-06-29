@@ -107,8 +107,6 @@ public class ObjectPlacerControl extends JPanel implements ActionListener,
 			nodeAnchors.setSelectedIndex(-1);
 		else
 			nodeAnchors.setSelectedItem(nodeAnchor.getName());
-
-		System.out.println("** Anc = " + labelAnchors + ", " + labelAnchor);
 		
 		if (labelAnchor.equals(NONE))
 			labelAnchors.setSelectedIndex(-1);

@@ -198,7 +198,6 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 		final Object[] toBeRemoved = browser.getSelectedValues();
 		for(Object g: toBeRemoved) {
 			final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) g;
-			System.out.println("\tRemove: " + cg.toString());
 			browser.removeCustomGraphics(cg);
 			pool.removeGraphics(cg.hashCode());
 		}

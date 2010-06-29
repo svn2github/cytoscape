@@ -106,7 +106,6 @@ public class NNFParser {
 			network.addEdge(edge);
 		} else {
 			// Invalid number of columns.
-			System.out.println("Invalid line found: Length = " + length);
 			return false;
 		}
 

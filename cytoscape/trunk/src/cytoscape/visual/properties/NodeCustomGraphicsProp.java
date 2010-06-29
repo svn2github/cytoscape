@@ -79,6 +79,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 				// AA on
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 						RenderingHints.VALUE_ANTIALIAS_ON);
+				g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+						RenderingHints.VALUE_RENDER_QUALITY);
 
 				this.setIconHeight(ICON_SIZE + 6);
 
@@ -96,6 +98,14 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 					}
 				}
 
+			}
+			
+			public int getIconWidth() {
+				return ICON_SIZE;
+			}
+			
+			public int getIconHeight() {
+				return ICON_SIZE;
 			}
 
 			private void drawDefaultIcon(Component c) {

@@ -347,7 +347,6 @@ public class CytoscapeSessionReader {
 
 	private void restoreCustomGraphics(final String entryName, final URL imageURL) throws IOException {
 		final String[] ent = entryName.split(System.getProperty("file.separator"));
-		System.out.println("\n\n" + entryName + "\n\n");
 		final String displayName = ent[ent.length-1];
 		String name = displayName.split("\\.")[0];
 
@@ -368,8 +367,6 @@ public class CytoscapeSessionReader {
 			String[] parts = propEntry.split(",");
 			graphics.setDisplayName(parts[parts.length-1]);
 
-//			System.out.println("New Graphics Name ========>>>>> " + hash);
-//			System.out.println("New Graphics Display Name ========>>>>> " + graphics.getDisplayName());
 			pool.addGraphics(Integer.parseInt(hash), graphics);
 		}
 	}

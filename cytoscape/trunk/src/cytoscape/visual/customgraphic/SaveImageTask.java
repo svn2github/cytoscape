@@ -32,7 +32,6 @@ public class SaveImageTask implements Callable<String>{
 			e.printStackTrace();
 		}
 		
-		System.out.println("Done: " + file.toString());
 		return file.toString();
 	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParser;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactory;
@@ -14,6 +15,8 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
 public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	
 	private static final String NULL_CG = "cytoscape.visual.customgraphic.NullCustomGraphics";
+	
+	private static final CyLogger logger = CyLogger.getLogger();
 	
 	// Maybe injected from outside if we use DI framework.
 	private final CyCustomGraphicsParserFactory parserFactory;
@@ -47,7 +50,7 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 			}
 			return graphics;
 		} catch (IOException e) {
-			System.out.println("Invalid URL found. Ignore: " + value);
+			logger.warn("Invalid URL found. This will be ignored: " + value);
 		}
 		
 		

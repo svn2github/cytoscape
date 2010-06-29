@@ -33,7 +33,6 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 			return null;
 		}
 
-		System.out.println("VALID Class ======= " + entry[1] + ", " + entry[2]);
 		final String imageName = entry[1];
 		CyCustomGraphics<?> cg = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool().get(Integer.parseInt(imageName));
@@ -44,14 +43,12 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 	private boolean validate(final String entryStr) {
 		entry = entryStr.split(",");
 		if (entry == null || entry.length < 3) {
-			System.out.println("!!!!! INVALID ======= " + entryStr);
 			return false;
 		}
 
 		// Check class name
 		if (entry[0].trim().equals(
 				URLImageCustomGraphics.class.getCanonicalName()) == false) {
-			System.out.println("!!!!! INVALID2 ======= " + entryStr);
 			return false;
 		}
 		return true;

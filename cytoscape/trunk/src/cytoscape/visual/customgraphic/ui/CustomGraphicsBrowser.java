@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -136,13 +135,11 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 							.getTransferData(DataFlavor.javaFileListFlavor);
 
 					for (File file : fileList) {
-						System.out.println("\tGOT image file: " + file.toString());
 						addCustomGraphics(file.toURI().toURL().toString());
 					}
 					gotData = true;
 				} else if (trans.isDataFlavorSupported(urlFlavor)) {
 					URL url = (URL) trans.getTransferData(urlFlavor);
-					System.out.println("got URL " + url);
 					// Add image
 					addCustomGraphics(url.toString());
 					gotData = true;
@@ -151,18 +148,17 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 							.getTransferData(DataFlavor.stringFlavor);
 					
 					URL url = new URL(s);
-					System.out.println("!!This is URL text " + url.toString());
 					addCustomGraphics(url.toString());
 					gotData = true;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				System.out.println("gotData is " + gotData);
 				dtde.dropComplete(gotData);
 			}
 		}
 
+		// This is for debugging
 		private void dumpDataFlavors(Transferable trans) {
 			System.out.println("Flavors:");
 			DataFlavor[] flavors = trans.getTransferDataFlavors();

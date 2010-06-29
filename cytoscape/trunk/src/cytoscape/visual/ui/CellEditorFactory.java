@@ -151,8 +151,6 @@ public class CellEditorFactory {
 	public PropertyEditor getPropertyEditor(final Class<?> type) {
 		final PropertyEditor editor = this.editorMap.get(type);
 		if (editor == null) {
-			System.out.println("Could not find editor for >>>>>>>>>>>>>>>> "
-					+ type);
 			return null;
 		} else
 			return editor;

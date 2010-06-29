@@ -218,7 +218,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		// Persist images
-		System.out.println("Saving images to .cytoscape/images folder...");
+		logger.info("Saving images to: " + imageHomeDirectory);
 
 		// Create Task
 		final PersistImageTask task = new PersistImageTask(imageHomeDirectory);
@@ -235,6 +235,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 
-		System.out.println("Saving finished");
+		logger.info("Image saving process finished.");
 	}
 }

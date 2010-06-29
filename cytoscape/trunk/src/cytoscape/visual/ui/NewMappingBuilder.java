@@ -26,7 +26,6 @@ public class NewMappingBuilder {
 			final String newMappingName, final String newCalcName,
 			final String controllingAttrName) {
 		
-		System.out.println("## Creating new Mapping: " + newMappingName);
 		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 

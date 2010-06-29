@@ -312,14 +312,14 @@ public class ValueSelectDialog extends JDialog {
 			if(value != null)
 				setText(value.toString());
 			
-			icon.setLeftPadding(15);
+			icon.setLeftPadding(25);
 			
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(130);
+			this.setIconTextGap(30);
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());

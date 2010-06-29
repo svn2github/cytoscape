@@ -745,18 +745,12 @@ public abstract class Cytoscape {
 		if (create && attribute instanceof String && attribute.equals(Semantics.INTERACTION)) {
 			// create the edge
 			int rootEdge = Cytoscape.getRootGraph().createEdge(source, target);
-			// System.out.println("Created edge: "+rootEdge+"from "+source.getRootGraphIndex()+" to "+target.getRootGraphIndex());
-
-			//CyEdge edge = (CyEdge) Cytoscape.getRootGraph()
-			//                                .getEdge(Cytoscape.getRootGraph()
-			//                                                  .createEdge(source, target));
 			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(rootEdge);
 
 			// create the edge id
 			String edge_name = CyEdge.createIdentifier(source.getIdentifier(),
 			                                           (String) attribute_value,
 			                                           target.getIdentifier());
-			// System.out.println("Setting ID for edge: "+edge_name);
 			edge.setIdentifier(edge_name);
 
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, (String) attribute_value);

@@ -18,7 +18,6 @@ public class NodeShapeRangeValueCalculator implements
 	public NodeShape getRange(Object attrValue) {
 		if (attrValue instanceof String) {
 			NodeShape obj = parser.parseStringValue((String) attrValue);
-			System.out.println("Parsed OBj ======= " + obj);
 			return obj;
 		}
 		return null;

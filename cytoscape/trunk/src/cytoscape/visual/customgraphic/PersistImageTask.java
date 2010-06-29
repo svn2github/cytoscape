@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
@@ -18,6 +19,8 @@ public class PersistImageTask implements Task {
 
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 4;
+	
+	private static final CyLogger logger = CyLogger.getLogger();
 
 	/**
 	 * Constructor.<br>
@@ -27,7 +30,6 @@ public class PersistImageTask implements Task {
 	 */
 	protected PersistImageTask(File location) {
 		this.location = location;
-		// Create session writer object
 	}
 
 	/**
@@ -41,8 +43,6 @@ public class PersistImageTask implements Task {
 		final File[] files = location.listFiles();
 		for (File old : files)
 			old.delete();
-
-		System.out.println("Old files deleted");
 
 		final long startTime = System.currentTimeMillis();
 		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
@@ -85,8 +85,7 @@ public class PersistImageTask implements Task {
 
 		long endTime = System.currentTimeMillis();
 		double sec = (endTime - startTime) / (1000.0);
-		System.out.println("Image Saving Finished in " + sec + " sec.");
-
+		logger.info("Image saving process finished in " + sec + " sec.");
 	}
 
 	/**

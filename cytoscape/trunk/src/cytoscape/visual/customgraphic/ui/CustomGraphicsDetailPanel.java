@@ -246,8 +246,6 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 		final String width = widthTextField.getText();
 		final String height = heightTextField.getText();
 
-		System.out.println("Changing size to " + this.widthTextField.getText()
-				+ ", " + this.heightTextField.getText());
 
 		final Image currentImage = cg.getImage();
 		if (currentImage == null)
