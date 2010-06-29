@@ -654,14 +654,14 @@ public class CyAttributesImpl implements CyAttributes {
 		final byte type = getType(attributeName); 
 
 		if ( type == TYPE_SIMPLE_LIST )
-			return getListAttribute(id,attributeName);
+			return getListAttribute(id, attributeName);
 		else if ( type == TYPE_SIMPLE_MAP )
-			return getMapAttribute(id,attributeName);
+			return getMapAttribute(id, attributeName);
 		else if ( type == TYPE_UNDEFINED || type == TYPE_COMPLEX )
 			return null;
 
 		final Object attribValue = mmap.getAttributeValue(id, attributeName, null);
-		if ( attribValue == null )
+		if (attribValue == null)
 			return null;
 
 		if (attribValue instanceof Equation) {
@@ -868,37 +868,20 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	// deprecated
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public List getAttributeList(String id, String attributeName) {
 		return getListAttribute(id, attributeName);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List getListAttribute(String id, String attributeName) {
+	public List getListAttribute(final String id, final String attributeName) {
 		lastEquationError = null;
 
 		if (mmapDef.getAttributeValueType(attributeName) < 0)
 			return null;
 
 		final byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
-		if ((keyTypes.length != 1) || (keyTypes[0] != MultiHashMapDefinition.TYPE_INTEGER)) {
+		if ((keyTypes.length != 1) || (keyTypes[0] != MultiHashMapDefinition.TYPE_INTEGER))
 			throw new ClassCastException("attributeName '" + attributeName
 			                             + "' is not of TYPE_SIMPLE_LIST");
-		}
 
 		final Object equation = mmap.getAttributeValue(id, attributeName, new Object[] { new Integer(-1) });
 		if (equation != null) {
@@ -908,6 +891,15 @@ public class CyAttributesImpl implements CyAttributes {
 			if (equationValue == null) {
 				lastEquationError = errorMessage.toString();
 				return null;
+			}
+
+			// Map back to Integer from Long, if necessary:
+			if (equationValue instanceof LongList) {
+				final List<Integer> intList = new ArrayList<Integer>();
+				for (final Long l : (LongList)equationValue)
+					intList.add((int)(long)l);
+
+				return intList;
 			}
 
 			return (List)equationValue;
