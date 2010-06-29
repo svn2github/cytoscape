@@ -150,9 +150,5 @@ public class CyNetworkNaming {
 		}
 
 		network.setTitle(name);
-		CyNetworkTitleChange old_value = new CyNetworkTitleChange(network.getIdentifier(), pname);
-		CyNetworkTitleChange new_value = new CyNetworkTitleChange(network.getIdentifier(), name);
-		
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_TITLE_MODIFIED, old_value, new_value);
 	}
 }
