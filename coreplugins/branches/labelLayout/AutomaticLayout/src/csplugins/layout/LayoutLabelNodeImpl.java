@@ -1,10 +1,14 @@
 package csplugins.layout;
 
 import cytoscape.*;
-import cytoscape.visual.LabelPosition;
+//import cytoscape.visual.LabelPosition;
 import cytoscape.logger.CyLogger;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.*;
+import cytoscape.visual.parsers.*;
+import cytoscape.visual.VisualPropertyType;
+
+import ding.view.ObjectPositionImpl;
 
 import giny.view.*;
 
@@ -22,7 +26,7 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 
     protected CyLogger logger = null;
     protected NodeView parentNodeView;
-    protected LabelPosition lp = null;
+    protected ObjectPosition lp;
     protected CyAttributes nodeAtts = null;
     //    protected ObjectPosition labelPosition;
 
@@ -42,20 +46,25 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	this.parentNodeView = parentNodeView;
 	
 	//labelPosition = parentNodeView.getLabelPosition();
-	
+
 	// Set labelNode's location to parent node's current label position
-	nodeAtts = Cytoscape.getNodeAttributes();
-	String labelPosition = (String) nodeAtts.getAttribute(parentNodeView.getNode().
-							      getIdentifier(), "node.labelPosition");
-	
-	if (labelPosition == null) {
-	    lp = new LabelPosition();
+ 	nodeAtts = Cytoscape.getNodeAttributes();
+ 	String labelPosition = (String) nodeAtts.getAttribute(parentNodeView.getNode().getIdentifier(), 
+							      "node.labelPosition");	
+
+ 	if (labelPosition == null) {
+	    lp = new ObjectPositionImpl();
 	} else {
-	    lp = LabelPosition.parse(labelPosition);
+	    ValueParser<ObjectPosition> parser = 
+		(ValueParser<ObjectPosition>) VisualPropertyType.NODE_LABEL_POSITION.getValueParser();
+	    
+	    lp = parser.parseStringValue(labelPosition);
+	    //	    lp = LabelPosition.parse(labelPosition);
 	}
 	
 // 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
 // 	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
+
 
 	this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
 	this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
