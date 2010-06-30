@@ -303,7 +303,7 @@ $(function(){
             // show header for selected tab
             
             var panel_id = $(ui.panel).attr("id");
-            $("#side .header").not("#" + panel_id + "_header").hide();
+            $("#side_header > .header").not("#" + panel_id + "_header").hide();
             
             var header = $("#" + panel_id + "_header");
             if( header.is(":empty") ){
