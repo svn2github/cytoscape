@@ -1,2 +1,9 @@
+table, table * { border-spacing: 0; }
+table td, table th { margin: 0; padding: 0.25em 0.25em; }
 table td { font-size: 0.8em; text-align: right; }
+table th.empty { border-color: transparent; }
+table .hcol, table .hcol.empty { border-right: 1px solid #000000; padding-right: 0.5em; }
+table .hrow { border-bottom: 1px solid #000000; padding-left: 1em; text-align: right; }
 table th { text-align: center; }
+table th small { font-size: 0.7em; font-weight: normal; display: block; }
+table .rtitle { text-align: right; }
