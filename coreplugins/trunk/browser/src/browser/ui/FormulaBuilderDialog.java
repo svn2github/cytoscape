@@ -93,7 +93,7 @@ enum ApplicationDomain {
 
 
 public class FormulaBuilderDialog extends JDialog {
-	private String columnName;
+	private String targetAttrName;
 	private JComboBox functionComboBox = null;
 	private JLabel usageLabel = null;
 	private JTextField formulaTextField = null;
@@ -121,12 +121,12 @@ public class FormulaBuilderDialog extends JDialog {
 	public FormulaBuilderDialog(final DataTableModel tableModel, final JTable table,
 	                            final DataObjectType tableObjectType, final Frame parent,
 	                            final Map<String, Class> attribNamesAndTypes,
-	                            final String columnName)
+	                            final String targetAttrName)
 	{
 		super(parent);
-		this.setTitle("Creating a formula for: " + columnName);
+		this.setTitle("Creating a formula for: " + targetAttrName);
 
-		this.columnName = columnName;
+		this.targetAttrName = targetAttrName;
 		this.stringToFunctionMap = new HashMap<String, Function>();
 		this.attribNamesAndTypes = attribNamesAndTypes;
 		this.leadingArgs = new ArrayList<Class>();
@@ -177,7 +177,7 @@ public class FormulaBuilderDialog extends JDialog {
 
 		Arrays.sort(functionNames);
 
-		final Class requestedReturnType = getAttributeType(columnName);
+		final Class requestedReturnType = getAttributeType(targetAttrName);
 		functionComboBox.addItem(FUNC_SELECTION_MESSAGE);
 		for (final String functionName : functionNames) {
 			if (returnTypeIsCompatible(requestedReturnType, stringToFunctionMap.get(functionName).getReturnType()))
@@ -312,7 +312,7 @@ public class FormulaBuilderDialog extends JDialog {
 		if (selectedCellRow >= 0)
 			applyToComboBox.addItem(ApplicationDomain.CURRENT_CELL);
 		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
-		if (!selectedGraphObjects.isEmpty())
+		if (selectedGraphObjects != null && !selectedGraphObjects.isEmpty())
 			applyToComboBox.addItem(ApplicationDomain.CURRENT_SELECTION);
 		applyToComboBox.addItem(ApplicationDomain.ENTIRE_ATTRIBUTE);
 

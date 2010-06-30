@@ -62,6 +62,8 @@ import browser.AttributeBrowser;
 import browser.AttributeModel;
 import browser.DataObjectType;
 import browser.DataTableModel;
+import browser.ValidatedObjectAndEditString;
+
 import cytoscape.Cytoscape;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
@@ -669,12 +671,12 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 							                              "Can't enter a formula w/o a selected cell!",
 							                              "Information", JOptionPane.INFORMATION_MESSAGE);
 						else {
-							final String columnName = tableModel.getColumnName(cellColumn);
+							final String attrName = getAttribName(cellRow, cellColumn);
 							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-							Util.initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+							Util.initAttribNameToTypeMap(objectType, attrName, attribNameToTypeMap);
 							formulaBuilderDialog =
 								new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
-								                         attribNameToTypeMap, columnName);
+								                         attribNameToTypeMap, attrName);
 							formulaBuilderDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 							formulaBuilderDialog.setVisible(true);
 						}
@@ -683,6 +685,13 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		}
 
 		return formulaBuilderButton;
+	}
+
+	private String getAttribName(final int cellRow, final int cellColumn) {
+		if (objectType == NETWORK)
+			return ((ValidatedObjectAndEditString)(tableModel.getValueAt(cellRow, 0))).getValidatedObject().toString();
+		else
+			return tableModel.getColumnName(cellColumn);
 	}
 
 	protected void editMetadata() {
@@ -708,11 +717,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		matrixAction.actionPerformed(null);
 	}
 
-	/**
-	 * This method initializes jButton
-	 *
-	 * @return javax.swing.JButton
-	 */
 	private JButton getDeleteButton() {
 		if (deleteAttributeButton == null) {
 			deleteAttributeButton = new JButton();
@@ -733,7 +737,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		return deleteAttributeButton;
 	}
 
-	private void removeAttribute(MouseEvent e) {
+	private void removeAttribute(final MouseEvent e) {
 		final String[] attrArray = getAttributeArray();
 		Arrays.sort(attrArray);
 
@@ -743,22 +747,19 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		dDialog.pack();
 		dDialog.setLocationRelativeTo(jToolBar);
 		dDialog.setVisible(true);
-		attrModel.sortAtttributes();
+		attrModel.sortAttributes();
 
 		final List<String> atNames = new ArrayList<String>();
-		for(String attName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
+		for (String attName: CyAttributesUtils.getVisibleAttributeNames(attributes))
 			atNames.add(attName);
-		}
 		final List<String> toBeRemoved = new ArrayList<String>();
-		for(String colName: orderedCol) {
-			if(atNames.contains(colName) == false) {
+		for (String colName: orderedCol) {
+			if (atNames.contains(colName) == false)
 				toBeRemoved.add(colName);
-			}
 		}
 		
-		for(String rem: toBeRemoved) {
+		for (String rem: toBeRemoved)
 			orderedCol.remove(rem);
-		}
 
 		tableModel.setTableData(null, orderedCol);
 		AttributeBrowser.firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null, objectType);
@@ -766,11 +767,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	}
 	
 
-	/**
-	 * This method initializes jList1
-	 *
-	 * @return javax.swing.JList
-	 */
 	private JList getSelectedAttributeList() {
 		if (attributeList == null) {
 			attributeList = new CheckBoxJList();
