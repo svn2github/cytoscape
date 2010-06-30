@@ -229,12 +229,13 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// make sure nodes are where they should be
 	for(LayoutNode node: newPartition.getLabelToParentMap().values() ) {
 	    node.moveToLocation();
-	    logger.info( getIdentifier() + node.printLocation() );
+	    logger.info( node.getIdentifier() + node.printLocation() );
 	}
 
 	// make sure that all labels are where they should be 
 	for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {	
 	    node.moveToLocation();
+	    logger.info( node.getIdentifier() + node.printLocation() );
 	}
 
 	// redraw the network so that the new label positions are visible
