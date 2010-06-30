@@ -208,24 +208,34 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// 1- Laying out only selected nodes
 	// - or- 
 	// 2- (normal) Nodes are not allowed to move
-	if (selectedOnly || !moveNodes) {
-	    logger.info("moving back labels (and possibly nodes) to their location");
+// 	if (selectedOnly || !moveNodes) {
+// 	    logger.info("moving back labels (and possibly nodes) to their location");
 
-	    double xDelta = 0.0;
-	    double yDelta = 0.0;
-	    Dimension finalLocation = newPartition.getAverageLocation();
-	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+// 	    double xDelta = 0.0;
+// 	    double yDelta = 0.0;
+// 	    Dimension finalLocation = newPartition.getAverageLocation();
+// 	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+// 	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
 
-	    for (LayoutNode v: newPartition.getNodeList()) {
-		if (!v.isLocked()) {
-		    v.decrement(xDelta, yDelta);
-		    newPartition.moveNodeToLocation(v);
-		}
-	    }
+// 	    for (LayoutNode v: newPartition.getNodeList()) {
+// 		if (!v.isLocked()) {
+// 		    v.decrement(xDelta, yDelta);
+// 		    newPartition.moveNodeToLocation(v);
+// 		}
+// 	    }
+// 	}
+
+
+	// make sure nodes are where they should be
+	for(LayoutNode node: newPartition.getLabelToParentMap().values() ) {
+	    node.moveToLocation();
+	    logger.info( getIdentifier() + node.printLocation() );
 	}
 
-
+	// make sure that all labels are where they should be 
+	for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {	
+	    node.moveToLocation();
+	}
 
 	// redraw the network so that the new label positions are visible
 	networkView.updateView();
