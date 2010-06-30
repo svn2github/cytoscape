@@ -46,7 +46,9 @@ public class WordFilter
 	
 	//VARIABLES
 	
-	private HashSet<String> words = new HashSet<String>(); //Filtered words
+	private HashSet<String> stopWords = new HashSet<String>(); //Stop words
+	private HashSet<String> flaggedWords = new HashSet<String>();//Flagged words
+	private HashSet<String> addedWords = new HashSet<String>();
 	final static public String stopWordFile = "StopWords.txt";
 	final static public String flaggedWordFile = "FlaggedWords.txt";
 	final static public String separator = "/";
@@ -66,8 +68,8 @@ public class WordFilter
 		String stopPath = resources + separator + stopWordFile;
 		String flaggedPath = resources + separator + flaggedWordFile;
 		
-		this.initialize(stopPath);
-		this.initialize(flaggedPath);
+		this.initialize(stopPath, stopWords);
+		this.initialize(flaggedPath, flaggedWords);
 	}
 	
 	
@@ -81,9 +83,13 @@ public class WordFilter
 	 */
 	public boolean contains(String aWord)
 	{
-		if (words.contains(aWord))
+		if (stopWords.contains(aWord))
 			return true;
-		else
+		else if (flaggedWords.contains(aWord))
+			return true;
+		else if (addedWords.contains(aWord))
+			return true;
+		else 
 			return false;
 	}
 	
@@ -94,7 +100,7 @@ public class WordFilter
 	 */
 	public void add(String aWord)
 	{
-		words.add(aWord);
+		addedWords.add(aWord);
 	}
 	
 	/**
@@ -104,8 +110,12 @@ public class WordFilter
 	 */
 	public void remove(String aWord)
 	{
-		if (this.contains(aWord))
-			words.remove(aWord);
+		if (stopWords.contains(aWord))
+			stopWords.remove(aWord);
+		else if (flaggedWords.contains(aWord))
+			flaggedWords.remove(aWord);
+		else if (addedWords.contains(aWord))
+			addedWords.remove(aWord);	
 	}
 	
 	/**
@@ -115,7 +125,7 @@ public class WordFilter
 	 * @param resourcePath - location, relative to this class of the .txt file
 	 * containing list of words to add to this filter.
 	 */
-	private void initialize(String resourcePath)
+	private void initialize(String resourcePath, HashSet<String> wordSet)
 	{
 		URL myURL = SemanticSummaryPlugin.class.getResource(resourcePath);
 		String path = myURL.getPath();
@@ -132,7 +142,7 @@ public class WordFilter
 		for (int i = 0; i < lines.length; i++)
 		{
 			String curWord = lines[i];
-			this.add(curWord);
+			wordSet.add(curWord);
 		}//end for loop
 	}
 	
@@ -142,8 +152,11 @@ public class WordFilter
 	 * 
 	 * @return String - list of words in this WordFilter.
 	 */
+	
+	/*
 	public String toString()
 	{
+		
 		String listOfWords = "";
 		
 		//Iterate through to retrieve words
@@ -155,5 +168,22 @@ public class WordFilter
 		}
 		
 		return listOfWords;
+	}
+	*/
+	
+	//Getters and Setters
+	public HashSet<String> getStopWords()
+	{
+		return stopWords;
+	}
+	
+	public HashSet<String> getFlaggedWords()
+	{
+		return flaggedWords;
+	}
+	
+	public HashSet<String> getAddedWords()
+	{
+		return addedWords;
 	}
 }

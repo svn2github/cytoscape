@@ -73,7 +73,7 @@ public class CloudDisplayPanel extends JPanel
 	 */
 	private JPanel initializeTagCloud()
 	{
-		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,1));
+		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
 		return panel;
 	}
 	

@@ -143,5 +143,8 @@ public class CreateCloudAction extends CytoscapeAction
 		
 		//inputPanel.setNetworkList(params);
 		inputPanel.addNewCloud(cloudParams);	
+		
+		//Update the list of filter words
+		inputPanel.refreshRemovalCMB();
 	}
 }

@@ -29,6 +29,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -52,6 +56,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.text.MaskFormatter;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -67,7 +72,8 @@ import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
  * @version 1.0
  */
 
-public class SemanticSummaryInputPanel extends JPanel
+public class SemanticSummaryInputPanel extends JPanel implements ItemListener, 
+			ActionListener
 {
 	
 	//VARIABLES
@@ -80,9 +86,11 @@ public class SemanticSummaryInputPanel extends JPanel
 	private JFormattedTextField maxWordsTextField;
 	private JFormattedTextField netWeightTextField;
 	private JFormattedTextField clusterCutoffTextField;
+	private JFormattedTextField addWordTextField;
 	
 	//JComboBox
 	JComboBox cmbAttributes;
+	JComboBox cmbRemoval;
 	
 	//JLabels
 	private JLabel networkLabel;
@@ -91,6 +99,15 @@ public class SemanticSummaryInputPanel extends JPanel
 	private DefaultListModel listValues;
 	private JList cloudList;
 	private CloudListSelectionHandler handler;
+	
+	//Buttons
+	private JButton removeWordButton;
+	private JButton addWordButton;
+	
+	//String Constants for Separators in remove word combo box
+	private static final String addedSeparator = "--Added Words--";
+	private static final String flaggedSeparator = "--Flagged Words--";
+	private static final String stopSeparator = "--Stop Words--";
 	
 	private static final int DEF_ROW_HEIGHT = 20;
 
@@ -245,7 +262,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
-		gridBagConstraints.insets = new Insets(10,5,0,0);
+		gridBagConstraints.insets = new Insets(5,0,0,0);
 		attributePanel.add(nodeAttributeLabel, gridBagConstraints);
 		
 		gridBagConstraints = new GridBagConstraints();
@@ -253,7 +270,7 @@ public class SemanticSummaryInputPanel extends JPanel
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new Insets(10, 10, 0, 10);
+		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
 		attributePanel.add(cmbAttributes, gridBagConstraints);
 	    
 	    refreshAttributeCMB();
@@ -342,36 +359,104 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		//Add Word
 		JLabel addWordLabel = new JLabel("Add Word");
-		JFormattedTextField addWordTextField = new JFormattedTextField();
+		addWordTextField = new JFormattedTextField();
 		addWordTextField.setColumns(15);
 		
-		//Add Word panel
-		JPanel addWordPanel = new JPanel();
-		addWordPanel.setLayout(new BorderLayout());
-		addWordPanel.add(addWordLabel, BorderLayout.WEST);
-		addWordPanel.add(addWordTextField, BorderLayout.EAST);
+		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
+		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+			addWordTextField.setEditable(false);
+		else
+			addWordTextField.setEditable(true);
 		
-		//Remove Word
+		addWordTextField.setValue("");
+		addWordTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
+		addWordButton = new JButton();
+		addWordButton.setText("Add");
+		addWordButton.setEnabled(false);
+		
+		//Word panel
+		JPanel wordPanel = new JPanel();
+		wordPanel.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(5,0,0,0);
+		wordPanel.add(addWordLabel, gridBagConstraints);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new Insets(5,10,0,10);
+		wordPanel.add(addWordTextField, gridBagConstraints);
+		
+		//Button stuff
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.anchor = GridBagConstraints.EAST;
+		gridBagConstraints.insets = new Insets(5,0,0,0);
+		wordPanel.add(addWordButton, gridBagConstraints);
+		
+		
+		// Word Removal Label
 		JLabel removeWordLabel = new JLabel("Remove Word");
-		JFormattedTextField removeWordTextField = new JFormattedTextField();
-		removeWordTextField.setColumns(15);
 		
-		//Remove Word Panel
-		JPanel removeWordPanel = new JPanel();
-		removeWordPanel.setLayout(new BorderLayout());
-		removeWordPanel.add(removeWordLabel, BorderLayout.WEST);
-		removeWordPanel.add(removeWordTextField, BorderLayout.EAST);
+		//Word Removal Combo Box
+		WidestStringComboBoxModel wscbm = new WidestStringComboBoxModel();
+		cmbRemoval = new JComboBox(wscbm);
+		cmbRemoval.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
+		cmbRemoval.setEditable(false);
+	    Dimension d = cmbRemoval.getPreferredSize();
+	    cmbRemoval.setPreferredSize(new Dimension(15, d.height));
+	    cmbRemoval.addItemListener(this);
+
+	    //Word Removal Button
+	    removeWordButton = new JButton();
+	    removeWordButton.setText("Remove");
+	    removeWordButton.setEnabled(false);
+	    removeWordButton.addActionListener(this);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(5,0,0,0);
+		wordPanel.add(removeWordLabel, gridBagConstraints);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new Insets(5, 10, 0, 10);
+		wordPanel.add(cmbRemoval, gridBagConstraints);
+		
+		//Button stuff
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.anchor = GridBagConstraints.EAST;
+		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+		wordPanel.add(removeWordButton, gridBagConstraints);
+
 		
 		//Export Text Button
 		JButton exportTextButton = new JButton("txt export");
-		JPanel exportTextPanel = new JPanel();
-		exportTextPanel.setLayout(new BorderLayout());
-		exportTextPanel.add(exportTextButton, BorderLayout.WEST);
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.anchor = GridBagConstraints.EAST;
+		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+		wordPanel.add(exportTextButton, gridBagConstraints);
+		
+		refreshRemovalCMB();
 		
 		//Add components to main panel
-		panel.add(addWordPanel);
-		panel.add(removeWordPanel);
-		panel.add(exportTextPanel);
+		panel.add(wordPanel);
 		
 		//Add to collapsible panel
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
@@ -451,7 +536,15 @@ public class SemanticSummaryInputPanel extends JPanel
 		cmbAttributes.setSelectedItem(params.getAttributeName());
 		maxWordsTextField.setValue(params.getMaxWords());
 		clusterCutoffTextField.setValue(params.getClusterCutoff());
+		addWordTextField.setValue("");
+		
+		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+			addWordTextField.setEditable(false);
+		else
+			addWordTextField.setEditable(true);
+		
 		SemanticSummaryManager.getInstance().setCurCloud(params);
+		this.refreshRemovalCMB();
 	}
 	
 	
@@ -489,7 +582,94 @@ public class SemanticSummaryInputPanel extends JPanel
 		this.updateUI();
 	}
 	
-
+	/**
+	 * Update the remove word list in the remove combobox.
+	 */
+	private void updateCMBRemoval()
+	{
+		DefaultComboBoxModel cmb;
+		cmb = ((DefaultComboBoxModel)cmbRemoval.getModel());
+		cmb.removeAllElements();
+		
+		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
+		WordFilter curFilter = params.getFilter();
+		
+		//Check if we are dealing with the Null CloudParameters
+		Boolean isNull = false;
+		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+				isNull = true;
+		
+		//Added words
+		cmb.addElement(addedSeparator);
+		
+		if (!isNull)
+		{	
+			//Add alphabetically order list of words
+			ArrayList<String> addedList = new ArrayList<String>();
+			for(Iterator<String> iter = curFilter.getAddedWords().iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				addedList.add(curWord);
+			}
+			
+			Collections.sort(addedList);
+			for (int i = 0; i < addedList.size(); i++)
+			{
+				String curWord = addedList.get(i);
+				cmb.addElement(curWord);
+			}
+		}
+		
+		//Flagged words
+		cmb.addElement(flaggedSeparator);
+		
+		if (!isNull)
+		{
+			ArrayList<String> flaggedList = new ArrayList<String>();
+			for(Iterator<String> iter = curFilter.getFlaggedWords().iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				flaggedList.add(curWord);
+			}
+			
+			Collections.sort(flaggedList);
+			for (int i = 0; i < flaggedList.size(); i++)
+			{
+				String curWord = flaggedList.get(i);
+				cmb.addElement(curWord);
+			}
+		}
+		
+		//Stop words
+		cmb.addElement(stopSeparator);
+		
+		if (!isNull)
+		{
+			ArrayList<String> stopList = new ArrayList<String>();
+			for(Iterator<String> iter = curFilter.getStopWords().iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				stopList.add(curWord);
+			}
+			
+			Collections.sort(stopList);
+			for (int i = 0; i < stopList.size(); i++)
+			{
+				String curWord = stopList.get(i);
+				cmb.addElement(curWord);
+			}
+		}
+	}
+	
+	/**
+	 * Refreshes the list of words that can be removed from the exclusion list.
+	 */
+	public void refreshRemovalCMB()
+	{
+		updateCMBRemoval();
+		cmbRemoval.repaint();
+	}
+	
 	
 	/**
 	 * Update the attribute list in the attribute combobox.
@@ -527,7 +707,6 @@ public class SemanticSummaryInputPanel extends JPanel
 		
 		cmbAttributes.setSelectedItem(curAttribute);
 		cmbAttributes.repaint();
-		
 	}
 	
 	
@@ -586,6 +765,105 @@ public class SemanticSummaryInputPanel extends JPanel
 		return retList;
 	}
 
+	/**
+	 * Handles the activation of the add/remove buttons for the word
+	 * exclusion list.
+	 * @param ItemEvent - event that triggered this reaction.
+	 */
+	public void itemStateChanged(ItemEvent e)
+	{
+		Object source = e.getSource();
+		
+		if (source instanceof JComboBox)
+		{
+			JComboBox cmb = (JComboBox) source;
+			if (cmb == cmbRemoval)
+			{
+				Object selectObject = cmbRemoval.getSelectedItem();
+				if (selectObject != null)
+				{
+					String selectItem = selectObject.toString();
+					if (selectItem.equalsIgnoreCase(addedSeparator) || 
+							selectItem.equalsIgnoreCase(flaggedSeparator) ||
+							selectItem.equalsIgnoreCase(stopSeparator))
+						removeWordButton.setEnabled(false);
+						else
+							removeWordButton.setEnabled(true);
+				}//end if not null
+			}//end if cmbRemoval
+		}//end if combo box
+	}
+	
+	/**
+	 * Handles button presses in the Input Panel.
+	 * @param ActionEvent - event that triggered this method.
+	 */
+	public void actionPerformed(ActionEvent e)
+	{
+		Object _actionObject = e.getSource();
+		
+		//Handle button events
+		if (_actionObject instanceof JButton)
+		{
+			JButton _btn = (JButton)_actionObject;
+			
+			if (_btn == removeWordButton)
+			{
+				//Get Selected word
+				Object selectObject = cmbRemoval.getSelectedItem();
+				if (selectObject != null)
+				{
+					String selectItem = selectObject.toString();
+					if (!selectItem.equalsIgnoreCase(addedSeparator) || 
+							!selectItem.equalsIgnoreCase(flaggedSeparator) ||
+							!selectItem.equalsIgnoreCase(stopSeparator))
+					{
+						CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
+						WordFilter curFilter = params.getFilter();
+						
+						//Remove from filter
+						curFilter.remove(selectItem);
+						
+						//Reset Flags
+						params.setCountInitialized(false);
+						params.setSelInitialized(false);
+						params.setRatiosInitialized(false);
+						
+						//Refresh word removal list
+						this.refreshRemovalCMB();
+					}//end if appropriate selection
+				}//end if not null selected
+			}//end remove word button
+			
+			if (_btn == addWordButton)
+			{
+				String value = (String)addWordTextField.getValue();
+				if (value.matches("[\\w]*"))
+				{ 
+					//add value to cloud parameters filter and update
+					CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
+					WordFilter curFilter = params.getFilter();
+					curFilter.add(value);
+					
+					//Reset flags
+					params.setCountInitialized(false);
+					params.setSelInitialized(false);
+					params.setRatiosInitialized(false);
+					
+					//Refresh view
+					this.refreshRemovalCMB();
+					addWordTextField.setText(null);
+				}
+				else
+				{
+					addWordTextField.setSelectionStart(0);
+					addWordTextField.setSelectionEnd(value.length());
+					String message = "You can only add a word that contains letters or numbers and no spaces";
+					JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		}//end button	
+	}
 	
 	
 	
@@ -623,6 +901,11 @@ public class SemanticSummaryInputPanel extends JPanel
 	public JComboBox getCMBAttributes()
 	{
 		return cmbAttributes;
+	}
+	
+	public JComboBox getCMBRemoval()
+	{
+		return cmbRemoval;
 	}
 	
 	public CloudListSelectionHandler getCloudListSelectionHandler()
@@ -689,6 +972,28 @@ public class SemanticSummaryInputPanel extends JPanel
 					Double defaultClusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
 					clusterCutoffTextField.setValue(defaultClusterCutoff);
 					message += "The cluster cutoff must be greater than or equal to 0";
+					invalid = true;
+				}
+			}
+			
+			else if (source == addWordTextField)
+			{
+				String value = (String)addWordTextField.getValue();
+				if (value.equals(""))
+				{ 
+					addWordButton.setEnabled(false);
+				}
+				else if (value.matches("[\\w]*"))
+				{
+					if (!SemanticSummaryManager.getInstance().getCurCloud().
+							equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+						addWordButton.setEnabled(true);
+				}
+				else
+				{
+					addWordTextField.setValue("");
+					addWordButton.setEnabled(false);
+					message += "You can only add a word that contains letters or numbers and no spaces";
 					invalid = true;
 				}
 			}
