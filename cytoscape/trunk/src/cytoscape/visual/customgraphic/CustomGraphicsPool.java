@@ -108,8 +108,10 @@ public class CustomGraphicsPool extends SubjectBase implements
 					if (imageProps == null || imageProps.length < 2)
 						continue;
 
-					final String name = imageProps[2];
-
+					String name = imageProps[2];
+					if(name.contains("___"))
+						name = name.replace("___", ",");
+					
 					Future<BufferedImage> f = cs.submit(new LoadImageTask(file
 							.toURI().toURL()));
 					fMap.put(f, name);
@@ -163,20 +165,20 @@ public class CustomGraphicsPool extends SubjectBase implements
 		logger.info("Image loading process finished in " + sec + " sec.");
 
 	}
+	
 
-	public void addGraphics(Integer hash, CyCustomGraphics<?> graphics) {
+	public void addGraphics(Integer hash, CyCustomGraphics<?> graphics,
+			URL source) {
+		if(source != null)
+			sourceMap.put(source, hash);
 		graphicsMap.put(hash, graphics);
 		this.fireStateChanged();
 	}
 
-	public void addGraphics(Integer hash, CyCustomGraphics<?> graphics,
-			URL source) {
-		sourceMap.put(source, hash);
-		addGraphics(hash, graphics);
-	}
-
 	public void removeGraphics(Integer id) {
-		graphicsMap.remove(id);
+		final CyCustomGraphics<?> cg = graphicsMap.get(id);
+		if(cg != null && cg != NULL)
+			graphicsMap.remove(id);
 	}
 
 	public CyCustomGraphics<?> get(Integer hash) {
@@ -196,6 +198,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	public void removeAll() {
 		this.graphicsMap.clear();
+		this.graphicsMap.put(NULL.hashCode(), NULL);
 	}
 
 	public CyCustomGraphics<?> getNullGraphics() {

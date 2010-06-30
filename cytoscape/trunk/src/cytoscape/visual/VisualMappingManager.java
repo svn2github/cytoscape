@@ -270,10 +270,10 @@ public class VisualMappingManager extends SubjectBase {
 		List<VisualPropertyType> bypassedVPs = getBypassedVPs("NODE", Cytoscape
 				.getNodeAttributes());
 
-		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
-			NodeView nodeView = (NodeView) i.next();
-			Node node = nodeView.getNode();
-
+		final Iterator<NodeView> itr = network_view.getNodeViewsIterator();
+		while (itr.hasNext()) {
+			final NodeView nodeView = itr.next();
+			final Node node = nodeView.getNode();			
 			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node,
 					network, bypassedVPs);
 			myNodeApp.applyAppearance(nodeView, activeVS.getDependency());

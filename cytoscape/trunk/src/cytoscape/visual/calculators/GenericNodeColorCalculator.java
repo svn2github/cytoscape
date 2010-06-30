@@ -36,18 +36,10 @@
  */
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.Appearance;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.ObjectMapping;
-
-import giny.model.Node;
-
-import java.awt.Color;
-
 import java.util.Properties;
+
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.ObjectMapping;
 
 
 /**

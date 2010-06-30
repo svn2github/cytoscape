@@ -102,13 +102,12 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 		CyCustomGraphics<CustomGraphic> cg = null;
 		try {
 			cg = new URLImageCustomGraphics(urlStr);
+			if (cg != null) {
+				pool.addGraphics(cg.hashCode(), cg, new URL(urlStr));
+				model.addElement(cg);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-
-		if (cg != null) {
-			pool.addGraphics(cg.hashCode(), cg);
-			model.addElement(cg);
 		}
 	}
 	

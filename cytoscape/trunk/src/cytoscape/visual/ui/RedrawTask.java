@@ -14,7 +14,7 @@ public class RedrawTask implements Task {
 	}
 
 	public void run() {
-		taskMonitor.setStatus("Updating network view ...");
+		taskMonitor.setStatus("Updating network view.  Please wait...");
 		taskMonitor.setPercentCompleted(-1);
 
 		try {
@@ -26,7 +26,6 @@ public class RedrawTask implements Task {
 		}
 
 		taskMonitor.setPercentCompleted(100);
-
 	}
 
 	public void halt() {

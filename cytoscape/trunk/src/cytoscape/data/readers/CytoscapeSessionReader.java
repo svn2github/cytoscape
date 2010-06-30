@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -86,8 +87,10 @@ import cytoscape.util.PercentUtil;
 import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.Taggable;
 import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
 /**
@@ -97,12 +100,12 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphics;
  * This class accept input as URL only! If it is a file, use File.toURL() to get
  * platform dependent file URL.
  * </p>
- *
+ * 
  * @version 1.0
  * @since Cytoscape 2.3
  * @see cytoscape.data.readers.XGMMLReader
  * @author kono
- *
+ * 
  */
 public class CytoscapeSessionReader {
 	/**
@@ -129,8 +132,6 @@ public class CytoscapeSessionReader {
 	 *
 	 */
 	public static final String CY_PROPS = "cytoscape.props";
-
-
 
 	/**
 	 *
@@ -168,14 +169,14 @@ public class CytoscapeSessionReader {
 
 	/**
 	 * Constructor for remote file (specified by an URL)<br>
-	 *
+	 * 
 	 * @param sourceName
 	 * @throws IOException
-	 *
-	 * This is for remote session file (URL).
+	 * 
+	 *             This is for remote session file (URL).
 	 */
-	public CytoscapeSessionReader(final URL sourceName, final TaskMonitor monitor)
-	    throws IOException {
+	public CytoscapeSessionReader(final URL sourceName,
+			final TaskMonitor monitor) throws IOException {
 		this.sourceURL = sourceName;
 
 		if (sourceName.getProtocol().equals("file"))
@@ -195,132 +196,153 @@ public class CytoscapeSessionReader {
 
 		this.logger = CyLogger.getLogger(CytoscapeSessionReader.class);
 
-		final RecentlyOpenedTracker sessionTracker = Cytoscape.getRecentlyOpenedSessionTracker();
+		final RecentlyOpenedTracker sessionTracker = Cytoscape
+				.getRecentlyOpenedSessionTracker();
 		if (sessionTracker != null)
 			sessionTracker.add(sourceName);
 	}
 
 	/**
 	 * Creates a new CytoscapeSessionReader object.
-	 *
-	 * @param fileName  DOCUMENT ME!
-	 * @param monitor  DOCUMENT ME!
-	 *
-	 * @throws IOException  DOCUMENT ME!
+	 * 
+	 * @param fileName
+	 *            DOCUMENT ME!
+	 * @param monitor
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws IOException
+	 *             DOCUMENT ME!
 	 */
-	public CytoscapeSessionReader(final String fileName, final TaskMonitor monitor)
-	    throws IOException {
+	public CytoscapeSessionReader(final String fileName,
+			final TaskMonitor monitor) throws IOException {
 		this(new File(fileName).toURL(), monitor);
 	}
 
 	/**
 	 * Constructor.<br>
 	 * Create reader from file name.
-	 *
+	 * 
 	 * @param fileName
 	 * @throws IOException
 	 */
 	public CytoscapeSessionReader(final String fileName) throws IOException {
-		this(new File(fileName).toURL(), (TaskMonitor)null);
+		this(new File(fileName).toURL(), (TaskMonitor) null);
 	}
 
 	/**
 	 * Creates a new CytoscapeSessionReader object.
-	 *
-	 * @param sourceName  DOCUMENT ME!
-	 *
-	 * @throws IOException  DOCUMENT ME!
+	 * 
+	 * @param sourceName
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws IOException
+	 *             DOCUMENT ME!
 	 */
 	public CytoscapeSessionReader(final URL sourceName) throws IOException {
-		this(sourceName, (TaskMonitor)null);
+		this(sourceName, (TaskMonitor) null);
 	}
 
 	/**
 	 * Extract Zip entries in the remote file
-	 *
+	 * 
 	 * @param sourceName
 	 * @throws IOException
 	 */
 	private void extractEntry() throws IOException {
 		/*
 		 * This is an important part!
-		 *
+		 * 
 		 * We can create InputStream directly from URL, but it does not work
 		 * always due to the cashing mechanism in URLConnection.
-		 *
+		 * 
 		 * By default, URLConnection creates a cash for session file name. This
 		 * will be used even after we saved the session. Due to the conflict
 		 * between cashed name and new saved session name (generated from system
 		 * time), session reader cannot find the entry in the zip file. To avoid
 		 * this problem, we shoud turn off the cashing mechanism by using:
-		 *
+		 * 
 		 * URLConnection.setDefaultUseCaches(false)
-		 *
+		 * 
 		 * This is a "sticky" parameter for all URLConnections and we have to
 		 * set this only once.
-		 *
 		 */
 		final URLConnection juc = sourceURL.openConnection();
 		juc.setDefaultUseCaches(false);
 
 		ZipInputStream zis = null;
 
-        try {
+		try {
 			zis = new ZipInputStream(juc.getInputStream());
-            networkURLs = new HashMap();
+			networkURLs = new HashMap();
 
-            // Extract list of entries
-            ZipEntry zen = null;
-            String entryName = null;
+			// Extract list of entries
+			ZipEntry zen = null;
+			String entryName = null;
 
-            while ((zen = zis.getNextEntry()) != null) {
-                entryName = zen.getName();
+			while ((zen = zis.getNextEntry()) != null) {
+				entryName = zen.getName();
 
-                if (entryName.contains("/plugins/")) {
-                    extractPluginEntry(entryName);
-                } else if (entryName.endsWith(CYSESSION)) {
-                    cysessionFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                } else if (entryName.endsWith(VIZMAP_PROPS)) {
-                    vizmapFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                } else if (entryName.endsWith(CY_PROPS)) {
-                    cytoscapePropsURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                } else if (entryName.endsWith(XGMML_EXT)) {
-                    // entryName should only contain one "/" character seperating the session directory from the file name
-                    // All other "/" are eliminated by CytoscapeSessionWriter.getValidFileName
-                    // URLEncoding the remainder of entryName makes sure the URL is valid
-                    // without the need to eliminate additional characters when creating the filename.
-                    // Spaces require special treatment, need to be encoded as "%20" not "+"
-                    int sp;
-                    String entryDir;
-                    String entryRest;
+				if (entryName.contains("/plugins/")) {
+					extractPluginEntry(entryName);
+				} else if (entryName.endsWith(CYSESSION)) {
+					cysessionFileURL = new URL("jar:" + sourceURL.toString()
+							+ "!/" + entryName);
+				} else if (entryName.endsWith(VIZMAP_PROPS)) {
+					vizmapFileURL = new URL("jar:" + sourceURL.toString()
+							+ "!/" + entryName);
+				} else if (entryName.endsWith(CY_PROPS)) {
+					cytoscapePropsURL = new URL("jar:" + sourceURL.toString()
+							+ "!/" + entryName);
+				} else if (entryName.endsWith(XGMML_EXT)) {
+					// entryName should only contain one "/" character
+					// seperating the session directory from the file name
+					// All other "/" are eliminated by
+					// CytoscapeSessionWriter.getValidFileName
+					// URLEncoding the remainder of entryName makes sure the URL
+					// is valid
+					// without the need to eliminate additional characters when
+					// creating the filename.
+					// Spaces require special treatment, need to be encoded as
+					// "%20" not "+"
+					int sp;
+					String entryDir;
+					String entryRest;
 
-                    entryDir = "";
-                    entryRest = entryName;
-                    sp = entryName.indexOf("/");
-                    if (sp != -1) {
-                        entryDir = entryRest.substring(0, sp + 1);
-                        entryRest = entryRest.substring(sp + 1);
-                    }
+					entryDir = "";
+					entryRest = entryName;
+					sp = entryName.indexOf("/");
+					if (sp != -1) {
+						entryDir = entryRest.substring(0, sp + 1);
+						entryRest = entryRest.substring(sp + 1);
+					}
 
-                    URL networkURL = new URL("jar:" + sourceURL.toString() + "!/" + entryDir + URLEncoder.encode(entryRest, "UTF-8").replace("+", "%20"));
-                    networkURLs.put(entryName, networkURL);
-                    networkCounter++;
-                } else if (entryName.endsWith(BOOKMARKS_FILE)) {
-                    bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                } else if(entryName.endsWith(".png")) {
-                		//image
-                		final URL imageURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                		restoreCustomGraphics(entryName, imageURL);
-                } else if(entryName.endsWith(CustomGraphicsPool.METADATA_FILE)) {
-                		imagePropsURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
-                } else
-                    logger.warn("Unknown entry found in session zip file: " + entryName);
-            } // while loop
-        }
-        finally {
-    		if (zis != null) {
+					URL networkURL = new URL("jar:"
+							+ sourceURL.toString()
+							+ "!/"
+							+ entryDir
+							+ URLEncoder.encode(entryRest, "UTF-8").replace(
+									"+", "%20"));
+					networkURLs.put(entryName, networkURL);
+					networkCounter++;
+				} else if (entryName.endsWith(BOOKMARKS_FILE)) {
+					bookmarksFileURL = new URL("jar:" + sourceURL.toString()
+							+ "!/" + entryName);
+				} else if (entryName.endsWith(".png")) {
+					// image
+					final URL imageURL = new URL("jar:" + sourceURL.toString()
+							+ "!/" + entryName);
+					restoreCustomGraphics(entryName, imageURL);
+				} else if (entryName.endsWith(CustomGraphicsPool.METADATA_FILE)) {
+					imagePropsURL = new URL("jar:" + sourceURL.toString()
+							+ "!/" + entryName);
+				} else
+					logger.warn("Unknown entry found in session zip file: "
+							+ entryName);
+			} // while loop
+		} finally {
+			if (zis != null) {
 				zis.close();
-            }
+			}
 		}
 	}
 
@@ -345,9 +367,11 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	private void restoreCustomGraphics(final String entryName, final URL imageURL) throws IOException {
-		final String[] ent = entryName.split(System.getProperty("file.separator"));
-		final String displayName = ent[ent.length-1];
+	private void restoreCustomGraphics(final String entryName,
+			final URL imageURL) throws IOException {
+		final String[] ent = entryName.split(System
+				.getProperty("file.separator"));
+		final String displayName = ent[ent.length - 1];
 		String name = displayName.split("\\.")[0];
 
 		imageMap.put(name, imageURL);
@@ -357,31 +381,55 @@ public class CytoscapeSessionReader {
 		final Properties imageProps = new Properties();
 		imageProps.load(URLUtil.getBasicInputStream(imagePropsURL));
 
-		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
+				.getCustomGraphicsPool();
 		// Reset the pool
 		pool.removeAll();
 
-		for(String hash :imageMap.keySet()) {
-			final CyCustomGraphics<?> graphics = new URLImageCustomGraphics(imageMap.get(hash).toString());
+		for (String hash : imageMap.keySet()) {
+			final CyCustomGraphics<?> graphics = new URLImageCustomGraphics(
+					imageMap.get(hash).toString());
 			final String propEntry = imageProps.getProperty(hash);
 			String[] parts = propEntry.split(",");
-			graphics.setDisplayName(parts[parts.length-1]);
+			String name = parts[parts.length - 2];
+			if (name.contains("___"))
+				name = name.replace("___", ",");
+			graphics.setDisplayName(name);
 
-			pool.addGraphics(Integer.parseInt(hash), graphics);
+			String tagStr = null;
+			if (parts.length > 3 && graphics instanceof Taggable) {
+				tagStr = parts[3];
+				final Set<String> tags = new TreeSet<String>();
+				String[] tagParts = tagStr.split("\\"
+						+ AbstractCyCustomGraphics.LIST_DELIMITER);
+				for (String tag : tagParts)
+					tags.add(tag.trim());
+				((Taggable) graphics).getTags().addAll(tags);
+			}
+
+			try {
+				final URL nameAsURL = new URL(name);
+				// The name is URL. Use as its source.
+				pool.addGraphics(Integer.parseInt(hash), graphics, nameAsURL);
+			} catch (MalformedURLException e) {
+				pool.addGraphics(Integer.parseInt(hash), graphics, null);
+			}
 		}
 	}
 
 	/**
 	 * Read a session file.
-	 *
+	 * 
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
 	public void read() throws IOException, JAXBException, Exception {
 		start = System.currentTimeMillis();
 
-		// All listeners should listen to this event to ignore unnecessary events!
-		Cytoscape.firePropertyChange(Integer.toString(Cytoscape.SESSION_OPENED), null, true);
+		// All listeners should listen to this event to ignore unnecessary
+		// events!
+		Cytoscape.firePropertyChange(
+				Integer.toString(Cytoscape.SESSION_OPENED), null, true);
 
 		Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
 
@@ -391,36 +439,46 @@ public class CytoscapeSessionReader {
 			unzipSessionFromURL(true);
 			eqnAttrTracker.addAllEquations();
 		} catch (cytoscape.visual.DuplicateCalculatorNameException dcne) {
-			logger.warn("Duplicate VS name found.  It will be ignored...", dcne);
+			logger
+					.warn("Duplicate VS name found.  It will be ignored...",
+							dcne);
 		}
 
-		//logger.debug("unzipSessionFromURL: " + (System.currentTimeMillis() - start) + " msec.");
+		// logger.debug("unzipSessionFromURL: " + (System.currentTimeMillis() -
+		// start) + " msec.");
 		if (session.getSessionState().getDesktop() != null) {
 			restoreDesktopState();
 
-			//logger.debug("restoreDesktopState: " + (System.currentTimeMillis() - start) + " msec.");
+			// logger.debug("restoreDesktopState: " +
+			// (System.currentTimeMillis() - start) + " msec.");
 		}
 
 		if (session.getSessionState().getServer() != null) {
 			restoreOntologyServerStatus();
-			//logger.debug("restoreOntologyServerStatus: " + (System.currentTimeMillis() - start) + " msec.");
+			// logger.debug("restoreOntologyServerStatus: " +
+			// (System.currentTimeMillis() - start) + " msec.");
 		}
 
-		//restoreNestedNetworkLinks();
+		// restoreNestedNetworkLinks();
 
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
-		//logger.debug("fire attrs and network loaded: " + (System.currentTimeMillis() - start) + " msec.");
+		// logger.debug("fire attrs and network loaded: " +
+		// (System.currentTimeMillis() - start) + " msec.");
 
 		// Send signal to plugins
-		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE, pluginFileListMap, null);
-		//logger.debug("fire restore_plugin_state: " + (System.currentTimeMillis() - start) + " msec.");
+		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE,
+				pluginFileListMap, null);
+		// logger.debug("fire restore_plugin_state: " +
+		// (System.currentTimeMillis() - start) + " msec.");
 		deleteTmpPluginFiles();
-		//logger.debug("deleteTmpPluginFiles: " + (System.currentTimeMillis() - start) + " msec.");
+		// logger.debug("deleteTmpPluginFiles: " + (System.currentTimeMillis() -
+		// start) + " msec.");
 
 		// Send message with list of loaded networks.
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null,
+				networkList);
 
 		// Restore listener for VizMapper.
 		if (Cytoscape.getDesktop() != null) {
@@ -428,53 +486,55 @@ public class CytoscapeSessionReader {
 			// Cleanup view
 			final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
 
-			if ((curView != null) && (curView.equals(Cytoscape.getNullNetworkView()) == false)) {
+			if ((curView != null)
+					&& (curView.equals(Cytoscape.getNullNetworkView()) == false)) {
 				curView.setVisualStyle(lastVSName);
 				Cytoscape.getVisualMappingManager().setNetworkView(curView);
-				Cytoscape.getVisualMappingManager().setVisualStyle(curView.getVisualStyle());
-				//TODO: is this necessary?
-				//curView.redrawGraph(false, true);
+				Cytoscape.getVisualMappingManager().setVisualStyle(
+						curView.getVisualStyle());
+				// TODO: is this necessary?
+				// curView.redrawGraph(false, true);
 			}
 
 			Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
 		}
 
-		logger.info("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");
+		logger.info("Session loaded in " + (System.currentTimeMillis() - start)
+				+ " msec.");
 	}
-
 
 	/**
 	 * Restore nested network references.
 	 */
 	private void restoreNestedNetworkLinks() {
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-		final List<String> attrNames = Arrays.asList(nodeAttr.getAttributeNames());
+		final List<String> attrNames = Arrays.asList(nodeAttr
+				.getAttributeNames());
 		// Do nothing if nested network does not exists in this session.
-		if(!attrNames.contains(CyNode.NESTED_NETWORK_ID_ATTR))
+		if (!attrNames.contains(CyNode.NESTED_NETWORK_ID_ATTR))
 			return;
 
 		final Map<String, String> titleToIdMap = createNetworkTitleToIDMap();
-		for (final CyNetwork network:Cytoscape.getNetworkSet()) {
-			for (final CyNode node:(List<CyNode>)network.nodesList()) {
-				final String nestedNetworkTitle = nodeAttr.getStringAttribute(node.getIdentifier(),
-														     CyNode.NESTED_NETWORK_ID_ATTR);
+		for (final CyNetwork network : Cytoscape.getNetworkSet()) {
+			for (final CyNode node : (List<CyNode>) network.nodesList()) {
+				final String nestedNetworkTitle = nodeAttr.getStringAttribute(
+						node.getIdentifier(), CyNode.NESTED_NETWORK_ID_ATTR);
 				if (nestedNetworkTitle != null)
-					node.setNestedNetwork(Cytoscape.getNetwork(titleToIdMap.get(nestedNetworkTitle)));
+					node.setNestedNetwork(Cytoscape.getNetwork(titleToIdMap
+							.get(nestedNetworkTitle)));
 			}
 		}
 	}
-
 
 	private Map<String, String> createNetworkTitleToIDMap() {
 		final Map<String, String> titleToIdMap = new HashMap<String, String>();
 
 		Set<CyNetwork> networks = Cytoscape.getNetworkSet();
-		for (CyNetwork network:networks) {
+		for (CyNetwork network : networks) {
 			titleToIdMap.put(network.getTitle(), network.getIdentifier());
 		}
 		return titleToIdMap;
 	}
-
 
 	// Delete tmp files (the plugin state files) to cleanup
 	private void deleteTmpPluginFiles() {
@@ -496,28 +556,33 @@ public class CytoscapeSessionReader {
 
 	/**
 	 * Decompress session file
-	 *
+	 * 
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	private void unzipSessionFromURL(final boolean loadVizmap) throws IOException, JAXBException, Exception {
+	private void unzipSessionFromURL(final boolean loadVizmap)
+			throws IOException, JAXBException, Exception {
 		extractEntry();
-		logger.info("extractEntry: " + (System.currentTimeMillis() - start) + " msec.");
+		logger.info("extractEntry: " + (System.currentTimeMillis() - start)
+				+ " msec.");
 
 		/*
-		 * Check the contents.  If broken/invalid, throw exception.
+		 * Check the contents. If broken/invalid, throw exception.
 		 */
-		if ((cysessionFileURL == null) || (vizmapFileURL == null) || (cytoscapePropsURL == null)) {
-			IOException e = new IOException("Session file is broken or this is not a session file.");
+		if ((cysessionFileURL == null) || (vizmapFileURL == null)
+				|| (cytoscapePropsURL == null)) {
+			IOException e = new IOException(
+					"Session file is broken or this is not a session file.");
 			throw e;
 		}
 
-		if(imagePropsURL != null)
+		if (imagePropsURL != null)
 			createCustomGraphics();
 
 		if (loadVizmap) {
 			// restore vizmap.props
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null, vizmapFileURL);
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null,
+					vizmapFileURL);
 		}
 		// Restore bookmarks
 		if (bookmarksFileURL != null) {
@@ -525,12 +590,13 @@ public class CytoscapeSessionReader {
 			Cytoscape.setBookmarks(bookmarks);
 		}
 
-		 /*
-		  * Even though cytoscapePropsURL is probably a local URL, error on the
-		  * side of caution and use URLUtil to get the input stream (which
-		  * handles proxy servers and cached pages):
-		  */
-		CytoscapeInit.getProperties().load(URLUtil.getBasicInputStream(cytoscapePropsURL));
+		/*
+		 * Even though cytoscapePropsURL is probably a local URL, error on the
+		 * side of caution and use URLUtil to get the input stream (which
+		 * handles proxy servers and cached pages):
+		 */
+		CytoscapeInit.getProperties().load(
+				URLUtil.getBasicInputStream(cytoscapePropsURL));
 		loadCySession();
 
 		// restore plugin state files
@@ -558,7 +624,9 @@ public class CytoscapeSessionReader {
 
 			for (String URLstr : URLstrList) {
 				int index = URLstr.lastIndexOf("/");
-				String fileName = System.getProperty("java.io.tmpdir")+File.separator+pluginName + "_" + URLstr.substring(index + 1);
+				String fileName = System.getProperty("java.io.tmpdir")
+						+ File.separator + pluginName + "_"
+						+ URLstr.substring(index + 1);
 
 				theFile = new File(fileName);
 
@@ -568,7 +636,8 @@ public class CytoscapeSessionReader {
 
 					// InputStream is = theURL.openStream();
 					// Even though theURL derives from a File, error on the
-					// side of caution and use URLUtil to get the input stream (which
+					// side of caution and use URLUtil to get the input stream
+					// (which
 					// handles proxy servers and cached pages):
 					InputStream is = null;
 
@@ -591,20 +660,17 @@ public class CytoscapeSessionReader {
 									out.write(inputLine);
 									out.newLine();
 								}
-							}
-							finally {
+							} finally {
 								if (out != null) {
 									out.close();
 								}
 							}
-						}
-						finally {
+						} finally {
 							if (in != null) {
 								in.close();
 							}
 						}
-					}
-					finally {
+					} finally {
 						if (is != null) {
 							is.close();
 						}
@@ -635,34 +701,36 @@ public class CytoscapeSessionReader {
 
 		try {
 			// InputStream is = pBookmarksFileURL.openStream();
-			// Use URLUtil to get the InputStream since we might be using a proxy server
+			// Use URLUtil to get the InputStream since we might be using a
+			// proxy server
 			// and because pages may be cached:
-			final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE_NAME,
-			                                                        this.getClass().getClassLoader());
+			final JAXBContext jaxbContext = JAXBContext.newInstance(
+					BOOKMARK_PACKAGE_NAME, this.getClass().getClassLoader());
 			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 			InputStream is = null;
 
-            try {
+			try {
 				is = URLUtil.getBasicInputStream(pBookmarksFileURL);
-                theBookmark = (Bookmarks) unmarshaller.unmarshal(is);
-            }
-            finally {
-                if (is != null) {
-                    is.close();
-                }
-            }
+				theBookmark = (Bookmarks) unmarshaller.unmarshal(is);
+			} finally {
+				if (is != null) {
+					is.close();
+				}
+			}
 		} catch (FileNotFoundException e1) {
-			logger.warn("Can not find bookmark file in "+pBookmarksFileURL.toString(), e1);
+			logger.warn("Can not find bookmark file in "
+					+ pBookmarksFileURL.toString(), e1);
 		} catch (IOException e2) {
-			logger.warn("Can not read bookmark file from "+pBookmarksFileURL.toString(), e2);
+			logger.warn("Can not read bookmark file from "
+					+ pBookmarksFileURL.toString(), e2);
 		} catch (JAXBException e3) {
-			logger.warn("XML parse err in bookmark file in "+pBookmarksFileURL.toString(), e3);
+			logger.warn("XML parse err in bookmark file in "
+					+ pBookmarksFileURL.toString(), e3);
 		}
 
 		return theBookmark;
 	}
-
 
 	private void loadCySession() throws JAXBException, IOException, Exception {
 		// InputStream is = cysessionFileURL.openStream();
@@ -670,15 +738,14 @@ public class CytoscapeSessionReader {
 		// side of caution and use URLUtil to get the input stream (which
 		// handles proxy servers and cached pages):
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
-		                                                        this.getClass().getClassLoader());
+				this.getClass().getClassLoader());
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 		InputStream is = null;
 
 		try {
 			is = URLUtil.getBasicInputStream(cysessionFileURL);
 			session = (Cysession) unmarshaller.unmarshal(is);
-		}
-		finally {
+		} finally {
 			if (is != null)
 				is.close();
 		}
@@ -698,33 +765,35 @@ public class CytoscapeSessionReader {
 
 	private void restoreDesktopState() {
 		// Restore Desktop size
-		Cytoscape.getDesktop()
-		         .setSize(session.getSessionState().getDesktop().getDesktopSize().getWidth()
-		                         .intValue(),
-		                  session.getSessionState().getDesktop().getDesktopSize().getHeight()
-		                         .intValue());
+		Cytoscape.getDesktop().setSize(
+				session.getSessionState().getDesktop().getDesktopSize()
+						.getWidth().intValue(),
+				session.getSessionState().getDesktop().getDesktopSize()
+						.getHeight().intValue());
 
-		final List<NetworkFrame> frames = session.getSessionState().getDesktop().getNetworkFrames()
-		                          .getNetworkFrame();
+		final List<NetworkFrame> frames = session.getSessionState()
+				.getDesktop().getNetworkFrames().getNetworkFrame();
 		final Map<String, NetworkFrame> frameMap = new HashMap<String, NetworkFrame>();
 
-		for(NetworkFrame netFrame: frames)
+		for (NetworkFrame netFrame : frames)
 			frameMap.put(netFrame.getFrameID(), netFrame);
 
-		Component[] desktopFrames = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane()
-		                              .getComponents();
+		Component[] desktopFrames = Cytoscape.getDesktop()
+				.getNetworkViewManager().getDesktopPane().getComponents();
 
 		for (int i = 0; i < desktopFrames.length; i++) {
 			Component cmp;
 
 			cmp = desktopFrames[i];
 			if (cmp instanceof JInternalFrame) {
-				JInternalFrame frame = (JInternalFrame)cmp;
+				JInternalFrame frame = (JInternalFrame) cmp;
 				NetworkFrame nFrame = frameMap.get(frame.getTitle());
 
 				if (nFrame != null) {
-					frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
-					frame.setLocation(nFrame.getX().intValue(), nFrame.getY().intValue());
+					frame.setSize(nFrame.getWidth().intValue(), nFrame
+							.getHeight().intValue());
+					frame.setLocation(nFrame.getX().intValue(), nFrame.getY()
+							.intValue());
 				}
 			}
 		}
@@ -732,7 +801,7 @@ public class CytoscapeSessionReader {
 
 	/**
 	 * Load the root network and then create its children.<br>
-	 *
+	 * 
 	 * @param currentNetwork
 	 * @param parent
 	 * @param sessionSource
@@ -740,8 +809,7 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 */
 	private void walkTree(final Network currentNetwork, final CyNetwork parent,
-			      final Object sessionSource) throws JAXBException, IOException
-	{
+			final Object sessionSource) throws JAXBException, IOException {
 		// Get the list of children under this root
 		final List<Child> children = currentNetwork.getChild();
 
@@ -759,10 +827,13 @@ public class CytoscapeSessionReader {
 			String targetNwUrlName = sessionID + "/" + childNet.getFilename();
 			targetNetworkURL = (URL) networkURLs.get(targetNwUrlName);
 
-			// handle the unlikely event that the stored network is corrupted with a bad filename (bug fix)
+			// handle the unlikely event that the stored network is corrupted
+			// with a bad filename (bug fix)
 			if (targetNetworkURL == null) {
-				logger.error("Session file corrupt: Filename " + childNet.getFilename()
-				                      + " does not correspond to a network of that name in session file");
+				logger
+						.error("Session file corrupt: Filename "
+								+ childNet.getFilename()
+								+ " does not correspond to a network of that name in session file");
 				continue;
 			}
 
@@ -779,20 +850,23 @@ public class CytoscapeSessionReader {
 			// styles defined) force the vsbSwitch off
 			prop.setProperty("visualStyleBuilder", "off");
 
-			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
+			jarConnection = (JarURLConnection) targetNetworkURL
+					.openConnection();
 			try {
 				InputStream networkStream = null;
 				try {
 					networkStream = (InputStream) jarConnection.getContent();
 
 					reader = new XGMMLReader(networkStream);
-					new_network = Cytoscape.createNetwork(reader, false, parent);
+					new_network = Cytoscape
+							.createNetwork(reader, false, parent);
 				} finally {
 					if (networkStream != null)
 						networkStream.close();
 				}
 			} catch (final Exception e) {
-				final String message = "Unable to read XGMML file: " + childNet.getFilename() + ".  " + e.getMessage();
+				final String message = "Unable to read XGMML file: "
+						+ childNet.getFilename() + ".  " + e.getMessage();
 				logger.error(message, e);
 				Cytoscape.destroyNetwork(new_network);
 				if (taskMonitor != null)
@@ -810,13 +884,14 @@ public class CytoscapeSessionReader {
 
 			if ((taskMonitor != null) && (networkCounter >= 20)) {
 				netIndex++;
-				taskMonitor.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100))
-															 .intValue());
+				taskMonitor
+						.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100))
+								.intValue());
 			}
 
 			if (new_network != null) {
-				logger.info("XGMMLReader " + new_network.getIdentifier() + ": " +
-							(System.currentTimeMillis() - start) + " msec.");
+				logger.info("XGMMLReader " + new_network.getIdentifier() + ": "
+						+ (System.currentTimeMillis() - start) + " msec.");
 
 				networkList.add(new_network.getIdentifier());
 
@@ -831,26 +906,35 @@ public class CytoscapeSessionReader {
 
 					lastVSName = vsName;
 
-					curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
-															 reader.getLayoutAlgorithm());
+					curNetView = Cytoscape
+							.createNetworkView(new_network, new_network
+									.getTitle(), reader.getLayoutAlgorithm());
 
-					//logger.debug("createNetworkView "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+					// logger.debug("createNetworkView "+new_network.getIdentifier()+": "
+					// + (System.currentTimeMillis() - start) + " msec.");
 					curNetView.setVisualStyle(vsName);
 
-					Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
+					Cytoscape.getVisualMappingManager().setNetworkView(
+							curNetView);
 					Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 
-					//logger.debug("setVisualStyle stuff "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+					// logger.debug("setVisualStyle stuff "+new_network.getIdentifier()+": "
+					// + (System.currentTimeMillis() - start) + " msec.");
 					reader.doPostProcessing(new_network);
-					//logger.debug("doPostProcessing "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+					// logger.debug("doPostProcessing "+new_network.getIdentifier()+": "
+					// + (System.currentTimeMillis() - start) + " msec.");
 
 					// Set hidden nodes + edges
-					setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
-					setHiddenEdges(curNetView, (HiddenEdges) childNet.getHiddenEdges());
+					setHiddenNodes(curNetView, (HiddenNodes) childNet
+							.getHiddenNodes());
+					setHiddenEdges(curNetView, (HiddenEdges) childNet
+							.getHiddenEdges());
 				}
 
-				setSelectedNodes(new_network, (SelectedNodes) childNet.getSelectedNodes());
-				setSelectedEdges(new_network, (SelectedEdges) childNet.getSelectedEdges());
+				setSelectedNodes(new_network, (SelectedNodes) childNet
+						.getSelectedNodes());
+				setSelectedEdges(new_network, (SelectedEdges) childNet
+						.getSelectedEdges());
 
 				// Load child networks
 				if (childNet.getChild().size() != 0)
@@ -859,7 +943,8 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	private void setSelectedNodes(final CyNetwork network, final SelectedNodes selected) {
+	private void setSelectedNodes(final CyNetwork network,
+			final SelectedNodes selected) {
 		if (selected == null) {
 			return;
 		}
@@ -869,13 +954,15 @@ public class CytoscapeSessionReader {
 
 		while (it.hasNext()) {
 			final Node selectedNode = (Node) it.next();
-			selectedNodeList.add(Cytoscape.getCyNode(selectedNode.getId(), false));
+			selectedNodeList.add(Cytoscape.getCyNode(selectedNode.getId(),
+					false));
 		}
 
 		network.setSelectedNodeState(selectedNodeList, true);
 	}
 
-	private void setHiddenNodes(final CyNetworkView view, final HiddenNodes hidden) {
+	private void setHiddenNodes(final CyNetworkView view,
+			final HiddenNodes hidden) {
 		if (hidden == null) {
 			return;
 		}
@@ -884,12 +971,14 @@ public class CytoscapeSessionReader {
 
 		while (it.hasNext()) {
 			final Node hiddenNodeObject = (Node) it.next();
-			final CyNode hiddenNode = Cytoscape.getCyNode(hiddenNodeObject.getId(), false);
+			final CyNode hiddenNode = Cytoscape.getCyNode(hiddenNodeObject
+					.getId(), false);
 			view.hideGraphObject(view.getNodeView(hiddenNode));
 		}
 	}
 
-	private void setHiddenEdges(final CyNetworkView view, final HiddenEdges hidden) {
+	private void setHiddenEdges(final CyNetworkView view,
+			final HiddenEdges hidden) {
 		if (hidden == null) {
 			return;
 		}
@@ -906,7 +995,8 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	private void setSelectedEdges(final CyNetwork network, final SelectedEdges selected) {
+	private void setSelectedEdges(final CyNetwork network,
+			final SelectedEdges selected) {
 		if (selected == null) {
 			return;
 		}
@@ -916,7 +1006,8 @@ public class CytoscapeSessionReader {
 		final Iterator it = selected.getEdge().iterator();
 
 		while (it.hasNext()) {
-			final cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it.next();
+			final cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it
+					.next();
 			targetEdge = getCyEdge(selectedEdge);
 
 			if (targetEdge != null) {
@@ -944,8 +1035,8 @@ public class CytoscapeSessionReader {
 
 		// If all 3 parameters are available, try to get CyEdge
 		if (((source != null) & (target != null)) && (interaction != null)) {
-			targetEdge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction,
-			                                 false, true);
+			targetEdge = Cytoscape.getCyEdge(source, target,
+					Semantics.INTERACTION, interaction, false, true);
 		}
 
 		// If CyEdge is still null, try to get one from ID
@@ -957,9 +1048,10 @@ public class CytoscapeSessionReader {
 				target = Cytoscape.getCyNode(parts[2], false);
 				interaction = parts[1].substring(1, parts[1].length() - 1);
 
-				if ((source != null) && (target != null) && (interaction != null)) {
-					targetEdge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION,
-					                                 interaction, false, true);
+				if ((source != null) && (target != null)
+						&& (interaction != null)) {
+					targetEdge = Cytoscape.getCyEdge(source, target,
+							Semantics.INTERACTION, interaction, false, true);
 				}
 			}
 		}
@@ -969,7 +1061,7 @@ public class CytoscapeSessionReader {
 
 	/**
 	 * Extract Session Note test field in cysession.xml
-	 *
+	 * 
 	 * @return Session Note
 	 */
 	public String getCysessionNote() {
@@ -978,15 +1070,15 @@ public class CytoscapeSessionReader {
 
 	/**
 	 * Restore list of ontology servers
-	 *
+	 * 
 	 * @throws MalformedURLException
-	 *
+	 * 
 	 */
 	private void restoreOntologyServerStatus() throws MalformedURLException {
 		Map<String, URL> newMap = new HashMap<String, URL>();
 
-		List<Ontology> servers = session.getSessionState().getServer().getOntologyServer()
-		                                .getOntology();
+		List<Ontology> servers = session.getSessionState().getServer()
+				.getOntologyServer().getOntology();
 		String targetCyNetworkID = null;
 		String curator = null;
 		String description = null;
@@ -995,10 +1087,9 @@ public class CytoscapeSessionReader {
 			newMap.put(server.getName(), new URL(server.getHref()));
 			targetCyNetworkID = getNetworkIdFromTitle(server.getName());
 
-			cytoscape.data.ontology.Ontology onto = new cytoscape.data.ontology.Ontology(server.getName(),
-			                                                                             curator,
-			                                                                             description,
-			                                                                             Cytoscape.getNetwork(targetCyNetworkID));
+			cytoscape.data.ontology.Ontology onto = new cytoscape.data.ontology.Ontology(
+					server.getName(), curator, description, Cytoscape
+							.getNetwork(targetCyNetworkID));
 			Cytoscape.getOntologyServer().addOntology(onto);
 		}
 
@@ -1019,54 +1110,61 @@ public class CytoscapeSessionReader {
 	}
 
 	/**
-	 * The CytoscapeSessionReader class reopens the session file each time it accesses or reads one of
-	 * the files contained within the session file (which is just a zip container). This is fine for
-	 * local files, but if you refer to a remote URL, it means that the session file is downloaded once
-	 * for each file accessed -- that's 4-5 times on average, and performance suffers immensely.
-	 *
-	 * This method will attempt to create a local temporary file and copy the contents of the remote URL
-	 * into the temporary file. It returns the URL for the local temporary file. Note that the file is
-	 * marked "deleteOnExit", which means that if the JVM exits normally, it will be cleaned up automatically.
-	 *
-	 * The method returns either the local file URL, or the original remote URL if there was a problem in
-	 * creating the local file.
-	 *
+	 * The CytoscapeSessionReader class reopens the session file each time it
+	 * accesses or reads one of the files contained within the session file
+	 * (which is just a zip container). This is fine for local files, but if you
+	 * refer to a remote URL, it means that the session file is downloaded once
+	 * for each file accessed -- that's 4-5 times on average, and performance
+	 * suffers immensely.
+	 * 
+	 * This method will attempt to create a local temporary file and copy the
+	 * contents of the remote URL into the temporary file. It returns the URL
+	 * for the local temporary file. Note that the file is marked
+	 * "deleteOnExit", which means that if the JVM exits normally, it will be
+	 * cleaned up automatically.
+	 * 
+	 * The method returns either the local file URL, or the original remote URL
+	 * if there was a problem in creating the local file.
+	 * 
 	 * @param remoteURL
 	 * @return
 	 */
 	private URL temporaryLocalFileURL(final URL remoteURL) {
 		try {
-			// We need a unique local filename for the temporary file - which seems like a
+			// We need a unique local filename for the temporary file - which
+			// seems like a
 			// logical job for Java's UUID class...
-			File tempFile = File.createTempFile(java.util.UUID.randomUUID().toString(), ".cys");
+			File tempFile = File.createTempFile(java.util.UUID.randomUUID()
+					.toString(), ".cys");
 			tempFile.deleteOnExit();
 
 			byte[] buffer = new byte[100000];
-			java.io.OutputStream localContent = new java.io.FileOutputStream(tempFile);
+			java.io.OutputStream localContent = new java.io.FileOutputStream(
+					tempFile);
 
-            try {
-                // java.io.InputStream   remoteContent  = remoteURL.openStream();
-                // Use URLUtil to get the InputStream since we might be using a proxy server
-                // and because pages may be cached:
-                java.io.InputStream remoteContent = URLUtil.getBasicInputStream(remoteURL);
+			try {
+				// java.io.InputStream remoteContent = remoteURL.openStream();
+				// Use URLUtil to get the InputStream since we might be using a
+				// proxy server
+				// and because pages may be cached:
+				java.io.InputStream remoteContent = URLUtil
+						.getBasicInputStream(remoteURL);
 
-                try {
-                    for (int nBytes = remoteContent.read(buffer); nBytes > 0;
-                         nBytes = remoteContent.read(buffer)) {
-                        localContent.write(buffer, 0, nBytes);
-                    }
-                }
-                finally {
-                    if (remoteContent != null) {
-                        remoteContent.close();
-                    }
-                }
-            }
-            finally {
-                if (localContent != null) {
-                    localContent.close();
-                }
-            }
+				try {
+					for (int nBytes = remoteContent.read(buffer); nBytes > 0; nBytes = remoteContent
+							.read(buffer)) {
+						localContent.write(buffer, 0, nBytes);
+					}
+				} finally {
+					if (remoteContent != null) {
+						remoteContent.close();
+					}
+				}
+			} finally {
+				if (localContent != null) {
+					localContent.close();
+				}
+			}
 
 			return tempFile.toURL();
 		} catch (FileNotFoundException e) {
@@ -1076,10 +1174,12 @@ public class CytoscapeSessionReader {
 			// If the provided URL is bad, this will happen
 			logger.error("Bad URL provided: " + remoteURL.toString(), e);
 		} catch (IOException e) {
-			// Any problem read or writing from either the remoteURL or the tempFile
-			logger.error("I/O error while cacheing URL data",e);
+			// Any problem read or writing from either the remoteURL or the
+			// tempFile
+			logger.error("I/O error while cacheing URL data", e);
 		}
 
-		return remoteURL; // if we can't make a local copy for some reason, work with the remote.
+		return remoteURL; // if we can't make a local copy for some reason, work
+							// with the remote.
 	}
 }

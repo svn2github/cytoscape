@@ -4,11 +4,10 @@ import java.awt.Color;
 import java.awt.Paint;
 
 import cytoscape.visual.mappings.RangeValueCalculator;
-import cytoscape.visual.mappings.RangeValueCalculatorType;
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.ValueParser;
 
-@RangeValueCalculatorType
+
 public class ColorRangeValueCalculator implements RangeValueCalculator<Paint> {
 	
 	private final ValueParser<Color> parser;

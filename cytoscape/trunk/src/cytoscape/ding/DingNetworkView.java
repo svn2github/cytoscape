@@ -37,6 +37,8 @@ package cytoscape.ding;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,6 +51,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.util.PropUtil;
 import cytoscape.view.CyEdgeView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
@@ -56,12 +59,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.FlagAndSelectionHandler;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import cytoscape.util.PropUtil;
 import ding.view.DGraphView;
-import ding.view.EdgeContextMenuListener;
-import ding.view.NodeContextMenuListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 
 /**
@@ -69,6 +67,7 @@ import java.beans.PropertyChangeListener;
  * 
  */
 public class DingNetworkView extends DGraphView implements CyNetworkView, PropertyChangeListener {
+	
 	private String title;
 	private boolean vizmapEnabled = true;
 	private HashMap clientData = new HashMap();

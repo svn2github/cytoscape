@@ -45,8 +45,10 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -264,13 +266,15 @@ public class ValueSelectDialog extends JDialog {
 	 * Key SHOULD be enum.
 	 */
 	private void setList() {
-		final List<Icon> icons = new ArrayList<Icon>();
 		orderedKeyList = new ArrayList();
 
 		model = new DefaultListModel();
 		iconList.setModel(model);
 
 		VisualPropertyIcon icon;
+		
+		final Map<String, Icon> name2icon = new HashMap<String, Icon>(); 
+		final Map<String, Object> name2value = new HashMap<String, Object>(); 
 
 		for (Object key : iconMap.keySet()) {
 			icon = (VisualPropertyIcon) iconMap.get(key);
@@ -283,12 +287,25 @@ public class ValueSelectDialog extends JDialog {
 				// Maybe supported in future versions...
 				continue;
 			}
-			icons.add(icon);
-			orderedKeyList.add(key);
-			model.addElement(icon.getName());
+
+			final String keyName = icon.getName();
+			if(name2icon.containsKey(keyName)) {
+				name2icon.put(keyName+key.hashCode(), icon);
+				name2value.put(keyName+key.hashCode(), key);
+			} else {
+				name2icon.put(keyName, icon);
+				name2value.put(keyName, key);
+			}
+		}
+		
+		TreeSet<String> sortedSet = new TreeSet<String>(name2icon.keySet());
+		
+		for(String key:sortedSet) {
+			orderedKeyList.add(name2value.get(key));
+			model.addElement(name2icon.get(key));
 		}
 
-		iconList.setCellRenderer(new IconCellRenderer(icons));
+		iconList.setCellRenderer(new IconCellRenderer());
 		iconList.repaint();
 	}
 
@@ -301,21 +318,19 @@ public class ValueSelectDialog extends JDialog {
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 14);
 		private final Color SELECTED_COLOR = new Color(30, 30, 80, 25);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 120);
-		private final List<Icon> icons;
 		
 		private final Border DROPHSADOW = new DropShadowBorder();
 
-		public IconCellRenderer(List<Icon> icons) {
-			this.icons = icons;
+		public IconCellRenderer() {
 			setOpaque(true);
 		}
 
 		public Component getListCellRendererComponent(JList list, Object value, int index,
 		                                              boolean isSelected, boolean cellHasFocus) {
-			final VisualPropertyIcon icon = (VisualPropertyIcon) icons.get(index);
+			final VisualPropertyIcon icon = (VisualPropertyIcon) value;
 
 			if(value != null)
-				setText(value.toString());
+				setText(icon.getName());
 			
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);

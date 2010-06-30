@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -188,7 +189,12 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 			if (img != null) {
 				final CyCustomGraphics<CustomGraphic> cg = new URLImageCustomGraphics(
 						file.toString(), img);
-				pool.addGraphics(cg.hashCode(), cg);
+				try {
+					pool.addGraphics(cg.hashCode(), cg, file.toURI().toURL());
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+					continue;
+				}
 				((DefaultListModel) browser.getModel()).addElement(cg);
 			}
 		}

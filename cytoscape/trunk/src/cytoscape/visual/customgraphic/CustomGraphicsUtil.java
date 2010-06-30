@@ -2,6 +2,7 @@ package cytoscape.visual.customgraphic;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 
 import cytoscape.Cytoscape;
@@ -14,11 +15,12 @@ public class CustomGraphicsUtil {
 			final CyCustomGraphics<CustomGraphic> graphics;
 			try {
 				graphics = new URLImageCustomGraphics(urlStr);
+				if(graphics != null)
+					Cytoscape.getVisualMappingManager().getCustomGraphicsPool().
+					addGraphics(graphics.hashCode(), graphics, new URL(urlStr));
 			} catch (IOException e) {
 				continue;
 			}
-			if(graphics != null)
-				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics.hashCode(), graphics);
 		}
 	}
 

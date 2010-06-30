@@ -1,7 +1,6 @@
 package cytoscape.visual.customgraphic.experimental;
 
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Image;
 import java.awt.geom.RoundRectangle2D;
 
@@ -9,14 +8,13 @@ import javax.swing.ImageIcon;
 
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.render.stateful.NodeDetails;
 import cytoscape.render.stateful.PaintFactory;
 import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
 import cytoscape.visual.customgraphic.CustomGraphicsPropertyImpl;
 import cytoscape.visual.customgraphic.paint.GradientPaintFactory;
 
 /**
- * Proof of concept code. Generate images dynamically from attributes.
+ * Proof of concept code to generate Custom Graphics dynamically as vector graphics.
  * 
  * @author kono
  * 
@@ -35,7 +33,9 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 	private final CustomGraphicsProperty<Color> c1;
 	private final CustomGraphicsProperty<Color> c2;
 	
-	private static ImageIcon DEF_ICON = new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_dialog-warning-32.png"));
+	// Default image Icon.
+	private static final ImageIcon DEF_ICON = 
+		new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_dialog-warning-32.png"));
 
 	public GradientRectangleCustomGraphics() {
 		super(NAME);
@@ -48,7 +48,7 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 		this.props.put(HEIGHT, h);
 		this.props.put(COLOR1, c1);
 		this.props.put(COLOR2, c2);
-		this.tags.add("vector image");
+		this.tags.add("vector image, gradient");
 		
 		update();
 	}
@@ -56,9 +56,9 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 	
 	@Override
 	public void update() {
+		// First, remove all layers.
 		cgList.clear();
-//		final GradientPaint gradient = new GradientPaint(w.getValue()/2, 0, c2.getValue(),
-//				w.getValue()/2, h.getValue()/2, c1.getValue());
+		
 		final PaintFactory paintFactory = new GradientPaintFactory(c1.getValue(), c2.getValue());
 		final RoundRectangle2D bound = new RoundRectangle2D.Double(-w.getValue() / 2, -h.getValue() / 2,
 																	w.getValue(), h.getValue(), 20, 20);
@@ -72,6 +72,7 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 		return DEF_ICON.getImage();
 	}
 
+	
 	@Override
 	public Image resizeImage(int width, int height) {
 		this.w.setValue((float)width);
@@ -80,5 +81,4 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 		
 		return DEF_ICON.getImage();
 	}
-
 }

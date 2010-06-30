@@ -19,14 +19,12 @@ import cytoscape.visual.customgraphic.paint.TexturePaintFactory;
 
 public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
-
 	private static BufferedImage DEF_IMAGE;
 	
 	static  {
 		try {
 			DEF_IMAGE =ImageIO.read(Cytoscape.class.getResource("images/ximian/stock_dialog-warning-32.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -134,23 +132,7 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		buildCustomGraphics(originalImage);
 		return originalImage;
 	}
-
-	/**
-	 * This will be used to save this Visual Property.
-	 */
-	public String toString() {
-		String tagStr = "";
-		// Build tags as a string
-		if (tags.size() != 0) {
-			final StringBuilder builder = new StringBuilder();
-			for (String tag : tags)
-				builder.append(tag + LIST_DELIMITER);
-			String temp = builder.toString();
-			tagStr = temp.substring(0, temp.length()-1);
-		}
-		return this.getClass().getName() + "," + this.hashCode() + ","
-				+ this.displayName + "," + tagStr;
-	}
+	
 
 	public URL getSourceURL() {
 		return this.sourceUrl;

@@ -36,6 +36,42 @@
  */
 package cytoscape.data.writers;
 
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
+import java.awt.Component;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.imageio.ImageIO;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingConstants;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.stream.XMLStreamException;
+
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import cytoscape.CyEdge;
@@ -43,11 +79,8 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.bookmarks.Bookmarks;
-
 import cytoscape.data.Semantics;
-
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
 import cytoscape.generated.Cytopanel;
@@ -72,15 +105,11 @@ import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.generated.Server;
 import cytoscape.generated.SessionState;
-
 import cytoscape.util.BookmarksUtil;
-
 import cytoscape.util.swing.JTreeTable;
-
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
-
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
@@ -89,52 +118,6 @@ import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.ImageUtil;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
-
-import giny.view.EdgeView;
-import giny.view.NodeView;
-
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.image.RenderedImage;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.io.IOException;
-
-import java.math.BigInteger;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.imageio.ImageIO;
-import javax.swing.JInternalFrame;
-import javax.swing.SwingConstants;
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 
 
 /**
@@ -176,11 +159,6 @@ public class CytoscapeSessionWriter {
 	// Number of Cytopanels. Currently, we have 3 panels.
 	private static final int CYTOPANEL_COUNT = 3;
 
-	// Number of setting files in the cys file.
-	// For now, we have cysession.xml, vizmap.prop, cytoscape.prop, and
-	// bookmarks.
-	private static final int SETTING_FILE_COUNT = 4;
-
 	// Name of CySession file.
 	private static final String CYSESSION_FILE_NAME = "cysession.xml";
 	private static final String VIZMAP_FILE = "session_vizmap.props";
@@ -202,7 +180,6 @@ public class CytoscapeSessionWriter {
 
 	// File name for the session
 	private String sessionFileName = null;
-	private String[] targetFileNames;
 	private Bookmarks bookmarks;
 	private Set<CyNetwork> networks;
 	private HashMap networkMap;
@@ -389,8 +366,8 @@ public class CytoscapeSessionWriter {
 		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		// Collect all custom graphics
 		final Collection<CyCustomGraphics<?>> customGraphics = pool.getAll();
-		// Add metadata about images
 		
+		// Add metadata file to the session file
 		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsPool.METADATA_FILE));
 		pool.getMetadata().store(zos, "Image Metadata");
 		
