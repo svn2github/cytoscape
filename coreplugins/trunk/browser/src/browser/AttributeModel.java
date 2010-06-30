@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -75,7 +68,7 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 		this.attributes = data;
 		this.validAttrTypes = validAttrTypes;
 		data.getMultiHashMapDefinition().addDataDefinitionListener(this);
-		sortAtttributes();
+		sortAttributes();
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
 	}
@@ -96,14 +89,14 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	public void propertyChange(PropertyChangeEvent e) {
 		// This will handle the case for the change of attribute userVisibility
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED)){
-			sortAtttributes();
+			sortAttributes();
 		}
 	}
 	
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void sortAtttributes() {
+	public void sortAttributes() {
 		attributeNames = new ArrayList<String>();
 		for (String attrName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
 			if (attributes.getUserVisible(attrName)
@@ -164,7 +157,7 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	 * @param attributeName DOCUMENT ME!
 	 */
 	public void attributeDefined(String attributeName) {
-		sortAtttributes();
+		sortAttributes();
 	}
 
 	/**
@@ -173,7 +166,7 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	 * @param attributeName DOCUMENT ME!
 	 */
 	public void attributeUndefined(String attributeName) {
-		sortAtttributes();
+		sortAttributes();
 	}
 
 	// implements ListModel
