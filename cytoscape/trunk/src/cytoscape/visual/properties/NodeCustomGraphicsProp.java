@@ -109,11 +109,11 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 			}
 
 			private void drawDefaultIcon(Component c) {
-				g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 34));
 				g2d.setColor(Color.DARK_GRAY);
-				g2d.drawString(" ? ", c.getX() + 7,
+				g2d.drawString(" Empty ", c.getX() + 25,
 						(int) ((c.getHeight() / 2) + 7));
-				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
 			}
 
 			private void scaleImage(final Image originalImg) {
