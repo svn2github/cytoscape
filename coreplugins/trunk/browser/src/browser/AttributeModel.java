@@ -94,13 +94,12 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	}
 	
 	/**
-	 *  DOCUMENT ME!
+	 *  Sets "attributeNames" to the sorted list of user-visible attribute names with supported data types.
 	 */
 	public void sortAttributes() {
 		attributeNames = new ArrayList<String>();
-		for (String attrName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
-			if (attributes.getUserVisible(attrName)
-			    && validAttrTypes.contains(attributes.getType(attrName)))
+		for (final String attrName : CyAttributesUtils.getVisibleAttributeNames(attributes)) {
+			if (validAttrTypes.contains(attributes.getType(attrName)))
 				attributeNames.add(attrName);
 		}
 		Collections.sort(attributeNames);
@@ -109,11 +108,7 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param i DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 *  @return the i-th attribute name
 	 */
 	public Object getElementAt(int i) {
 		if (i > attributeNames.size())
@@ -123,9 +118,7 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 *  @return the number of attribute names
 	 */
 	public int getSize() {
 		return attributeNames.size();
