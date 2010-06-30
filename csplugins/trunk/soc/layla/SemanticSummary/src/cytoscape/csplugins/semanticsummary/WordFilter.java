@@ -24,8 +24,10 @@ package cytoscape.csplugins.semanticsummary;
 import cytoscape.data.readers.TextFileReader;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -128,8 +130,17 @@ public class WordFilter
 	private void initialize(String resourcePath, HashSet<String> wordSet)
 	{
 		URL myURL = SemanticSummaryPlugin.class.getResource(resourcePath);
-		String path = myURL.getPath();
-		path = path.replaceAll("%20", " "); //fix spaces
+		File f;
+		try
+		{
+			f = new File(myURL.toURI());
+		}
+		catch (URISyntaxException e)
+		{
+			f = new File(myURL.getPath());
+		}
+		
+		String path = f.getAbsolutePath();
 		
 		//Read file and retrieve all lines
 		TextFileReader reader = new TextFileReader(path);

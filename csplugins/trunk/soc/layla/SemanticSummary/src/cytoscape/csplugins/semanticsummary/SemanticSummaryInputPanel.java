@@ -54,6 +54,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.MaskFormatter;
@@ -86,7 +87,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	private JFormattedTextField maxWordsTextField;
 	private JFormattedTextField netWeightTextField;
 	private JFormattedTextField clusterCutoffTextField;
-	private JFormattedTextField addWordTextField;
+	private JTextField addWordTextField;
 	
 	//JComboBox
 	JComboBox cmbAttributes;
@@ -368,11 +369,12 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		else
 			addWordTextField.setEditable(true);
 		
-		addWordTextField.setValue("");
+		addWordTextField.setText("");
 		addWordTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		addWordButton = new JButton();
 		addWordButton.setText("Add");
 		addWordButton.setEnabled(false);
+		addWordButton.addActionListener(this);
 		
 		//Word panel
 		JPanel wordPanel = new JPanel();
@@ -536,12 +538,18 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbAttributes.setSelectedItem(params.getAttributeName());
 		maxWordsTextField.setValue(params.getMaxWords());
 		clusterCutoffTextField.setValue(params.getClusterCutoff());
-		addWordTextField.setValue("");
+		addWordTextField.setText("");
 		
 		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+			{
 			addWordTextField.setEditable(false);
+			addWordButton.setEnabled(false);
+			}
 		else
+		{
 			addWordTextField.setEditable(true);
+			addWordButton.setEnabled(true);
+		}
 		
 		SemanticSummaryManager.getInstance().setCurCloud(params);
 		this.refreshRemovalCMB();
@@ -837,12 +845,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			
 			if (_btn == addWordButton)
 			{
-				String value = (String)addWordTextField.getValue();
-				if (value.matches("[\\w]*"))
+				String value = (String)addWordTextField.getText();
+				if (value.matches(""))
+					return;
+				
+				else if (value.matches("[\\w]*"))
 				{ 
 					//add value to cloud parameters filter and update
 					CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
 					WordFilter curFilter = params.getFilter();
+					value.toLowerCase();
 					curFilter.add(value);
 					
 					//Reset flags
@@ -858,6 +870,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				{
 					addWordTextField.setSelectionStart(0);
 					addWordTextField.setSelectionEnd(value.length());
+					addWordTextField.updateUI();
 					String message = "You can only add a word that contains letters or numbers and no spaces";
 					JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
 				}
@@ -881,6 +894,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public JFormattedTextField getClusterCutoffTextField()
 	{
 		return clusterCutoffTextField;
+	}
+
+	public JTextField getAddWordTextField()
+	{
+		return addWordTextField;
+	}
+
+	public JButton getAddWordButton()
+	{
+		return addWordButton;
 	}
 	
 	public JLabel getNetworkLabel()
@@ -978,23 +1001,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			
 			else if (source == addWordTextField)
 			{
-				String value = (String)addWordTextField.getValue();
-				if (value.equals(""))
+				String value = (String)addWordTextField.getText();
+				if (value.equals("") || value.matches("[\\w]*"))
 				{ 
-					addWordButton.setEnabled(false);
-				}
-				else if (value.matches("[\\w]*"))
-				{
-					if (!SemanticSummaryManager.getInstance().getCurCloud().
-							equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
-						addWordButton.setEnabled(true);
+					//All is well, leave it be
 				}
 				else
 				{
-					addWordTextField.setValue("");
-					addWordButton.setEnabled(false);
-					message += "You can only add a word that contains letters or numbers and no spaces";
-					invalid = true;
+					//addWordTextField.setValue("");
+					//message += "You can only add a word that contains letters or numbers and no spaces";
+					//invalid = true;
 				}
 			}
 			

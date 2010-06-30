@@ -146,5 +146,9 @@ public class CreateCloudAction extends CytoscapeAction
 		
 		//Update the list of filter words
 		inputPanel.refreshRemovalCMB();
+		
+		//Enable adding of words to exclusion list
+		inputPanel.getAddWordTextField().setEditable(true);
+		inputPanel.getAddWordButton().setEnabled(true);
 	}
 }

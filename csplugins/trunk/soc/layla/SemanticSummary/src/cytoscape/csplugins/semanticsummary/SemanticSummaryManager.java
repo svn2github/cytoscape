@@ -256,6 +256,9 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		getCloudWindow().clearCloud();
 		getInputWindow().setUserDefaults();
 		getInputWindow().refreshAttributeCMB();
+		getInputWindow().refreshRemovalCMB();
+		
+		getInputWindow().loadCurrentCloud(curCloud);
 
 	}
 	

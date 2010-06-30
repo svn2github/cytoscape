@@ -107,6 +107,7 @@ public class CloudParameters
 		this.netWeightFactor = SemanticSummaryManager.getInstance().getDefaultNetWeight();
 		this.attributeName = SemanticSummaryManager.getInstance().getDefaultAttName();
 		this.clusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
+		this.maxWords = SemanticSummaryManager.getInstance().getDefaultMaxWords();
 	}
 	
 	/**
