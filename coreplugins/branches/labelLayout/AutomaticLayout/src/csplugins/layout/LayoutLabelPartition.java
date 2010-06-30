@@ -103,10 +103,18 @@ public class LayoutLabelPartition extends LayoutPartition {
     protected void initializeLabels() {	
 
 	for (LayoutNode ln: nodeList ) {
-
+	   
 	    // Creates a new LabelNode, child of ln
-	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl(ln.getNodeView(), 
-								    ln.getIndex() + nodeList.size() );
+	    NodeView nv = ln.getNodeView();
+	    int ind = ln.getIndex() + nodeList.size();
+	    
+	    // wonder how this is even possible
+	    if (nv == null) {
+		logger.error("Found a layout node without a NodeView!");
+		continue;
+	    }
+	   
+	    LayoutLabelNodeImpl labelNode = new LayoutLabelNodeImpl(nv, ind);
 
 	    /* Unlock labelNode if:
 	     * - algorithm is to be applied to the entire network
