@@ -5,7 +5,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -38,20 +37,31 @@ public class CustomGraphicsPool extends SubjectBase implements
 	
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 8;
+	
+	private static final String IMAGE_DIR_NAME = "images";
 
 	private final ExecutorService imageLoaderService;
 
 	private final Map<Integer, CyCustomGraphics<?>> graphicsMap = new ConcurrentHashMap<Integer, CyCustomGraphics<?>>();
+	
+	// URL to hash code map.  For images associated with URL.
 	private final Map<URL, Integer> sourceMap = new ConcurrentHashMap<URL, Integer>();
 
 	// Null Object
 	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
+	
+	// Sample dynamic graphics
 	private static final CyCustomGraphics<?> GR = new GradientRectangleCustomGraphics();
 
 	public static final String METADATA_FILE = "image_metadata.props";
 
 	private File imageHomeDirectory;
 
+	
+	/**
+	 * Creates an image pool object and restore existing images from user resource
+	 * directory.
+	 */
 	public CustomGraphicsPool() {
 		// For loading images in parallel.
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
@@ -74,12 +84,13 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 		// User config directory
 		this.imageHomeDirectory = new File(CytoscapeInit.getConfigDirectory(),
-				"images");
+				IMAGE_DIR_NAME);
 
 		imageHomeDirectory.mkdir();
 
 		long startTime = System.currentTimeMillis();
 
+		// Load metadata first.
 		final Properties prop = new Properties();
 		try {
 			prop.load(new FileInputStream(new File(imageHomeDirectory,
@@ -181,11 +192,11 @@ public class CustomGraphicsPool extends SubjectBase implements
 			graphicsMap.remove(id);
 	}
 
-	public CyCustomGraphics<?> get(Integer hash) {
+	public CyCustomGraphics<?> getByID(Integer hash) {
 		return graphicsMap.get(hash);
 	}
 
-	public CyCustomGraphics<?> get(URL sourceURL) {
+	public CyCustomGraphics<?> getBySourceURL(URL sourceURL) {
 		if (sourceMap.get(sourceURL) != null)
 			return graphicsMap.get(sourceMap.get(sourceURL));
 		else
@@ -198,6 +209,8 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	public void removeAll() {
 		this.graphicsMap.clear();
+		
+		// Null Graphics should not be removed.
 		this.graphicsMap.put(NULL.hashCode(), NULL);
 	}
 

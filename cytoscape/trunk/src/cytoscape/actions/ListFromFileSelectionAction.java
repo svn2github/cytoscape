@@ -40,27 +40,21 @@
 // $Author$
 package cytoscape.actions;
 
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.event.MenuEvent;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.Semantics;
-
-import cytoscape.util.*;
-
-import cytoscape.view.CyNetworkView;
-
-import giny.view.*;
-
-import java.awt.event.ActionEvent;
-
-import java.io.*;
-
-import java.util.*;
-
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-
-import javax.swing.event.MenuEvent;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.FileUtil;
 
 
 /**

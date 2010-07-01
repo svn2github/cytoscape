@@ -320,8 +320,6 @@ public abstract class Cytoscape {
 	 */
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
-	@Deprecated
-	private static BioDataServer bioDataServer;
 
 	/**
 	 * New ontology server. This will replace BioDataServer.
@@ -333,8 +331,6 @@ public abstract class Cytoscape {
 	 */
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
-	// global flag to indicate if Squiggle is turned on
-	//	private static boolean squiggleEnabled = false;
 
 	/**
 	 * The shared RootGraph between all Networks
@@ -380,8 +376,6 @@ public abstract class Cytoscape {
 	/**
 	 * Used by session writer. If this is null, session writer opens the file
 	 * chooser. Otherwise, overwrite the file.
-	 *
-	 * KONO: 02/23/2006
 	 */
 	private static String currentSessionFileName;
 	private static Bookmarks bookmarks;
@@ -420,7 +414,7 @@ public abstract class Cytoscape {
 	/**
 	 * A null CyNetworkView to give when there is no Current NetworkView
 	 */
-	protected static CyNetworkView nullNetworkView = new DingNetworkView(nullNetwork, "null");
+	protected static final CyNetworkView nullNetworkView = new DingNetworkView(nullNetwork, "null");
 
 	/*
 	 * VMM should be tied to Cytoscape, not to Desktop. Developers should call
@@ -1640,29 +1634,6 @@ public abstract class Cytoscape {
 		}
 	}
 
-	/**
-	 * A BioDataServer should be loadable from a file systems file or from a
-	 * URL.
-	 */
-	public static BioDataServer loadBioDataServer(String location) {
-		try {
-			bioDataServer = new BioDataServer(location);
-		} catch (Exception e) {
-			logger.warn("Could not Load BioDataServer from: " + location, e);
-
-			return null;
-		}
-
-		return bioDataServer;
-	}
-
-	/**
-	 * @return the BioDataServer that was loaded, should not be null, but not
-	 *         contain any data.
-	 */
-	public static BioDataServer getBioDataServer() {
-		return bioDataServer;
-	}
 
 	/**
 	 * This will replace the bioDataServer.

@@ -65,6 +65,10 @@ import java.util.TreeSet;
  *
  * This class also defines some static methods for assigning these attributes to
  * a network, given the objects that serve as the source for this information.
+ * 
+ * This is a logacy code.  Use CANONICAL_NAME and INTERACTION only.
+ * Other values and functions are not in use Cytoscape.
+ * 
  */
 public class Semantics {
 
@@ -76,67 +80,73 @@ public class Semantics {
 	 * in the past is officially no longer supported!
 	 */
 	public static final String CANONICAL_NAME = "canonicalName";
-
 	
-	// KONO:04/19/2006 From v2.3, the following two terms will be used only by
-	// Gene Ontology Server.
-	//  - The basic meaning is same as above, but canonical name will be
-	// replaced by the node id. - Aliases are no longer String object. It's a
-	// list now.
+	/**
+	 * Represents edge type attribute.
+	 */
+	public static final String INTERACTION = "interaction";
+
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String GO_COMMON_NAME = "GO Common Name";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String GO_ALIASES = "GO Aliases";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String SPECIES = "species";
 
-	/**
-	 *
-	 */
-	public static final String INTERACTION = "interaction";
+	
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String MOLECULE_TYPE = "molecule_type";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String PROTEIN = "protein";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String DNA = "DNA";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String RNA = "RNA";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String MOLECULAR_FUNCTION = "molecular_function";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String BIOLOGICAL_PROCESS = "biological_process";
 
 	/**
 	 *
 	 */
+	@Deprecated
 	public static final String CELLULAR_COMPONENT = "cellular_component";
 
 	/**
@@ -154,9 +164,10 @@ public class Semantics {
 	 * names should be created node identifiers.
 	 *
 	 */
+	@Deprecated
 	public static void applyNamingServices(final CyNetwork network) {
 		assignSpecies(network);
-		assignCommonNames(network, Cytoscape.getBioDataServer());
+		//assignCommonNames(network, Cytoscape.getBioDataServer());
 	}
 
 	/**
@@ -171,6 +182,7 @@ public class Semantics {
 	 *
 	 * This method does nothing at all if either argument is null.
 	 */
+	@Deprecated
 	public static void assignSpecies(final CyNetwork network) {
 		if (network == null) {
 			return;
@@ -201,6 +213,7 @@ public class Semantics {
 	 * the species attribute in the node attributes of the supplied network and
 	 * returns a Set containing every unique value found.
 	 */
+	@Deprecated
 	public static Set getSpeciesInNetwork(final CyNetwork network) {
 		final Set returnSet = new HashSet();
 
@@ -239,6 +252,7 @@ public class Semantics {
 	 *            the given BioDataServer ( NOTE: if null, then the general
 	 *            Cytoscape BioDataServer will be used ( settable with -b ) ).
 	 */
+	@Deprecated
 	public static void assignNodeAliases(final CyNode node, String species, BioDataServer bds) {
 		final String nodeID = node.getIdentifier();
 		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -262,10 +276,10 @@ public class Semantics {
 			nodeAttributes.setAttribute(nodeID, SPECIES, species);
 		}
 
-		// Get Gene Ontology Server
-		if (bds == null) {
-			bds = Cytoscape.getBioDataServer();
-		}
+//		// Get Gene Ontology Server
+//		if (bds == null) {
+//			bds = Cytoscape.getBioDataServer();
+//		}
 
 		// return if no deafult BioDataServer
 		if (bds == null) {
@@ -346,6 +360,7 @@ public class Semantics {
 	 * canonical name, this method does nothing if no synonyms for that name can
 	 * be provided by the bioDataServer.
 	 */
+	@Deprecated
 	public static void assignCommonNames(final CyNetwork network, final BioDataServer bioDataServer) {
 		if ((network == null) || (bioDataServer == null)) {
 			return;
@@ -423,6 +438,7 @@ public class Semantics {
 	 * The network and cytoscapeObj arguments may be null, which simply limits
 	 * the tests that can be done to find synonyms.
 	 */
+	@Deprecated
 	public static boolean areSynonyms(final String firstName, final String secondName,
 	                                  final CyNetwork network) {
 		if ((firstName == null) || (secondName == null)) {
@@ -463,7 +479,11 @@ public class Semantics {
 	 * using the return value of getDefaultSpecies if needed. If a species can
 	 * be determined, then use the BioDataServer to add all the synonyms that
 	 * are registered for the name argument.
+	 * 
+	 * @deprecated: Do not use this method.  Synonym is no longer exist in Cytoscape.
+	 * 
 	 */
+	@Deprecated
 	public static List getAllSynonyms(final String name, final CyNetwork network) {
 		final List returnList = new ArrayList();
 
@@ -487,20 +507,6 @@ public class Semantics {
 		}
 
 		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-
-		if (species != null) {
-			BioDataServer bds = Cytoscape.getBioDataServer();
-
-			if (bds != null)
-				returnList.addAll(Arrays.asList(bds.getAllCommonNames(species, name)));
-
-			// we assume that this list of synonyms from the bioDataServer
-			// includes
-			// any canonical and common names registered with the node
-			// attributes,
-			// so we don't have to get a canonical name from the bioDataServer
-			// and go back to the node attributes to check those attributes
-		}
 
 		return returnList;
 	}

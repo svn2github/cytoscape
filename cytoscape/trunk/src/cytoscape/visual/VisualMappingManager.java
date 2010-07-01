@@ -95,10 +95,11 @@ public class VisualMappingManager extends SubjectBase {
 	private VisualStyle activeVS; // the currently active visual style
 
 	// reusable appearance objects
-	private NodeAppearance myNodeApp = new NodeAppearance();
-	private EdgeAppearance myEdgeApp = new EdgeAppearance();
-	private GlobalAppearance myGlobalApp = new GlobalAppearance();
+	private final NodeAppearance myNodeApp = new NodeAppearance();
+	private final EdgeAppearance myEdgeApp = new EdgeAppearance();
+	private final GlobalAppearance myGlobalApp = new GlobalAppearance();
 
+	// Default VS name.  This one cannot be removed.
 	private static final String DEF_STYLE_NAME = "default";
 
 	// New in Cytoscape 2.8: Pool of available custom graphics
@@ -114,8 +115,11 @@ public class VisualMappingManager extends SubjectBase {
 	 *            DOCUMENT ME!
 	 */
 	public VisualMappingManager(final CyNetworkView networkView) {
+		
+		//TODO: Why this parameter is required to instantiate this manager?
 		this.networkView = networkView;
-
+		
+		// Creates a repository of static images.
 		pool = new CustomGraphicsPool();
 
 		// New in 2.8: dynamically manages object mappings.
@@ -137,7 +141,6 @@ public class VisualMappingManager extends SubjectBase {
 			vs = catalog.getVisualStyle(DEF_STYLE_NAME);
 
 		setVisualStyle(vs);
-
 	}
 	
 

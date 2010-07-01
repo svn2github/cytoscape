@@ -52,7 +52,11 @@ import java.util.Vector;
  * three ontologies (biological process, molecular function, cellular component)
  * of the Gene Ontology project. Other ontologies should work nicely with this
  * class as well.
+ * 
+ * @deprecated Use regular CyAttributes for annotation.
+ * 
  */
+@Deprecated
 public class OntologyTerm implements Serializable {
 	String name;
 	int id;

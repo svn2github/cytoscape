@@ -38,9 +38,9 @@
 // Ontology.java
 package cytoscape.data.annotation;
 
-import java.io.*;
-
-import java.util.*;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Vector;
 
 
 /**
@@ -53,7 +53,11 @@ import java.util.*;
  *  methods are provided so that, for instance, the full leaf-to-root biological
  *  process hierarchies which may exist for a given gene are conveniently
  *  returned.
+ *  
+ *  @deprecated Use regular CyAttributes for annotation.
+ *  
  */
+@Deprecated
 public class Ontology implements Serializable {
 	protected String curator; // KEGG, GO, ...
 	protected String ontologyType; // biological process, metabolic pathway, ...

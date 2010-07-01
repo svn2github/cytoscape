@@ -38,9 +38,7 @@
 // OntologyDescription.java
 package cytoscape.data.annotation;
 
-import java.io.*;
-
-import java.util.*;
+import java.io.Serializable;
 
 
 /**
@@ -52,7 +50,11 @@ import java.util.*;
  *  It will perhaps prove most useful when some data source (a biodata server,
  *  for example) contains a number of ontologies, and needs to communicate
  *  a summary of these to a client.
+ *  
+ *  @deprecated Use regular CyAttributes for annotation.
+ *  
  */
+@Deprecated
 public class OntologyDescription implements Serializable {
 	protected String curator; // KEGG, GO, ...
 	protected String ontologyType; // biological process, metabolic pathway, ...

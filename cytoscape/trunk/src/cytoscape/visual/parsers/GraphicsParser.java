@@ -43,7 +43,7 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 		// Special case:  URL String.
 		try {
 			final URL url = new URL(value);
-			CyCustomGraphics<?> graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().get(url);
+			CyCustomGraphics<?> graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().getBySourceURL(url);
 			if(graphics == null) {
 				graphics = new URLImageCustomGraphics(url.toString());
 				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics.hashCode(), graphics, url);
