@@ -39,6 +39,7 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 	//VARIABLES
 	private ArrayList<String> wordList;
 	private Integer totalSum;
+	private Integer numItems;
 	private CloudParameters params;
 	private boolean initialized;
 	
@@ -51,6 +52,7 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 	{
 		wordList = new ArrayList<String>();
 		totalSum = 0;
+		numItems = 0;
 		params = new CloudParameters();
 		initialized = false;
 	}
@@ -80,6 +82,7 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 		
 		Integer fontSize = params.calculateFontSize(aWord);
 		totalSum = totalSum + fontSize;
+		numItems = numItems + 1;
 		wordList.add(aWord);
 	}
 	
@@ -95,10 +98,30 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 		
 		Integer fontSize = params.calculateFontSize(aWord);
 		totalSum = totalSum - fontSize;
+		numItems = numItems - 1;
 		wordList.remove(aWord);
 		
 		return aWord;
 	}
+	
+	/**
+	 * Computes the value of sum/sqrt(N) for this SingleWordCluster.
+	 * @return Double - the value of sum/sqrt(N)
+	 */
+	public Double computeRootMean()
+	{
+		//Return 0 if sum or num items is 0
+		if (totalSum == 0 || numItems == 0)
+		{
+			return 0.0;
+		}
+		else
+		{
+			return totalSum/Math.pow(numItems,0.5);
+		}
+		
+	}
+	
 	
 	
 	/**
@@ -108,8 +131,11 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 	 */
 	public int compareTo(SingleWordCluster o) 
 	{
-		Integer thisCount = this.getTotalSum();
-		Integer compareCount = o.getTotalSum();
+		//Integer thisCount = this.getTotalSum();
+		//Integer compareCount = o.getTotalSum();
+		
+		Double thisCount = this.computeRootMean();
+		Double compareCount = o.computeRootMean();
 		
 		if (thisCount < compareCount)
 			{return -1;}
@@ -135,6 +161,11 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 	public Integer getTotalSum()
 	{
 		return totalSum;
+	}
+	
+	public Integer getNumItems()
+	{
+		return numItems;
 	}
 
 }

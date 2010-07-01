@@ -25,6 +25,7 @@ package cytoscape.csplugins.semanticsummary;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JLabel;
@@ -73,7 +74,8 @@ public class CloudDisplayPanel extends JPanel
 	 */
 	private JPanel initializeTagCloud()
 	{
-		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
+		//JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
+		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,20,15));
 		return panel;
 	}
 	
@@ -96,6 +98,7 @@ public class CloudDisplayPanel extends JPanel
 	 * are defined for in params.
 	 * @param CloudParameters - parameters of the cloud we want to display.
 	 */
+	/*
 	public void updateCloudDisplay(CloudParameters params)
 	{
 		//clear old info
@@ -117,6 +120,60 @@ public class CloudDisplayPanel extends JPanel
 			tagCloudFlowPanel.add(curLabel);
 			count++;
 		}
+		tagCloudFlowPanel.revalidate();
+		this.updateUI();
+	}
+	*/
+	
+	/**
+	 * Updates the tagCloudFlowPanel to include all of the words at the size they
+	 * are defined for in params.
+	 * @param CloudParameters - parameters of the cloud we want to display.
+	 */
+	public void updateCloudDisplay(CloudParameters params)
+	{
+		//clear old info
+		this.clearCloud();
+		curCloud = params;
+		
+		//Loop through to create labels and add them
+		int count = 0;
+		
+		HashMap<Integer,JPanel> clusters = new HashMap<Integer, JPanel>();
+		ArrayList<CloudWordInfo> wordInfo = curCloud.getCloudWordInfoList();
+		Iterator<CloudWordInfo> iter = wordInfo.iterator();
+		
+		//Loop while more words exist and we are under the max
+		while(iter.hasNext() && (count < params.getMaxWords()))
+		{
+			CloudWordInfo curWordInfo = iter.next();
+			Integer clusterNum = curWordInfo.getCluster();
+			JLabel curLabel = curWordInfo.createCloudLabel();
+			
+			//Retrieve proper Panel
+			JPanel curPanel;
+			if (clusters.containsKey(clusterNum))
+			{
+				curPanel = clusters.get(clusterNum);
+			}
+			else
+			{
+				curPanel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
+			}
+			
+			curPanel.add(curLabel);
+			clusters.put(clusterNum, curPanel);
+			count++;
+		}
+		
+		//Add all clusters to flow panel
+		for(Iterator<Integer> iter2 = clusters.keySet().iterator(); iter2.hasNext();)
+		{
+			Integer clusterNum = iter2.next();
+			JPanel curPanel = clusters.get(clusterNum);
+			tagCloudFlowPanel.add(curPanel);
+		}
+		
 		tagCloudFlowPanel.revalidate();
 		this.updateUI();
 	}
