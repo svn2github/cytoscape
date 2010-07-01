@@ -161,6 +161,12 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
 	if (canceled)
 	    return;
+
+	// Reset the label position of all nodes if necessary 
+	if (resetPosition) {
+	    resetNodeLabelPosition(partition);
+	    return;
+	}
 	
 	// Logs information about this task
 	logger.info("Laying out partition " + partition.getPartitionNumber() + " which has "+ partition.nodeCount()
@@ -184,12 +190,6 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
 	if (canceled)
 	    return;
-
-	// Reset the label position of all nodes if necessary 
-	if (resetPosition) {
-	    resetNodeLabelPosition(newPartition);
-	    return;
-	}
 
 	// Layout the new partition using the parent class layout algorithm
 	super.layoutPartition(newPartition);
@@ -249,16 +249,22 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
     /**
      * Moves labels to the same position in which their parent nodes are
      */
-    protected void resetNodeLabelPosition(LayoutLabelPartition part) {
+    protected void resetNodeLabelPosition(LayoutPartition part) {
 
 	logger.info("Reseting labels position");
 
+	CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+
 	// Go through all labels setting their position to be the same as their parent's
-	ArrayList<LayoutLabelNodeImpl> array = ((LayoutLabelPartition) part).getLabelNodes();
+	List<LayoutNode> array = part.getNodeList();
+
 	
-	for(LayoutLabelNodeImpl node: array) {
-	    node.setLocation(node.getParentX(),node.getParentY());
-	    node.moveToLocation();
+	for(LayoutNode node: array) {
+	    if (!selectedOnly || !node.isLocked()) {
+		if (nodeAtts.hasAttribute(node.getIdentifier(), "node.labelPosition")) {
+		    nodeAtts.deleteAttribute(node.getIdentifier(), "node.labelPosition");
+		}
+	    }
 	}
 	
 	// redraw the network so that the new label positions are visible
