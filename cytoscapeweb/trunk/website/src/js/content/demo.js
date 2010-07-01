@@ -46,6 +46,9 @@ $(function(){
     // versions
     var MIN_FLASH_VERSION = 10;
     
+    // Cytoscape Web instance
+    var vis;
+    
     // Path util
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -183,7 +186,6 @@ $(function(){
     
     $("#side_content > .content").each(function(){
         var id = $(this).attr("id");
-        
         $("#side_header").append('<div id="' + id + '_header" class="header"></div>');
     });
     
@@ -202,8 +204,7 @@ $(function(){
     // So, we put an overlay to get the events, so Flash doesn't steal it.  Show the overlay to
     // prevent event stealing, but hide it when finished or it will block the page.
     $("body").append('<div id="overlay"></div>');
-    
-       
+
     $("body").addClass("demo");
 
     var side_min_size = SIDE_BAR_MIN_SIZE;
@@ -219,17 +220,13 @@ $(function(){
             spacing_open: 0,
 		    togglerLength_open: 0,
 		    contentIgnoreSelector: "span"
-
         },
-        
         north: {
             paneSelector: "#header"
         },
-        
         center: {
             paneSelector: "#cytoweb"
         },
-        
         east: {
             paneSelector: "#side",
             minSize: parseInt(side_min_size),
@@ -251,9 +248,7 @@ $(function(){
             onresize: function(){
                 cytoweb_layout.resizeAll();
             }
-
         }
-
     });
     
     $("input[type=button].ui-state-default").live("mouseover", function(){
@@ -315,38 +310,93 @@ $(function(){
             layout.resizeContent("east"); 
         }
     });
-    
-
 
     // [dispose]
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
     function dispose(){
-	    if($("#cytoweb_container").cw() != null) {
-	    	$("#cytoweb_container").cw()
-	    	  .removeListener("select")
+	    if(vis != null) {
+	    	vis.removeListener("select")
 	          .removeListener("deselect")  
 	    	  .removeListener("click", "nodes")
 	          .removeListener("dblClick", "nodes")
 	          .removeListener("dblClick", "edges")
 	          .removeListener("layout");
 	    }
+	    //if (default_options) { default_options.visualStyle = undefined; }
     }
     
     // [open] Create examples and utility function to open new graphs
     ////////////////////////////////////////////////////////////////////////////////////////////////
-       
+    var options;
+    
+    var default_options = {
+        panZoomControlVisible: true,
+		edgesMerged: false,
+		nodeLabelsVisible: true,
+		edgeLabelsVisible: false,
+		nodeTooltipsEnabled: true,
+		edgeTooltipsEnabled: true,
+		swfPath: path("swf/CytoscapeWeb"),
+		flashInstallerPath: path("swf/playerProductInstall"),
+		useProxy: false
+    };
+    
+    // example graphs    
+    var examples = {
+        shapes: {
+            name: "Shapes example",
+            description: "A graph that contains all possible shapes for nodes and arrows",
+            url: path("file/example_graphs/sample1.graphml"),
+            visualStyleName: "Shapes",
+            visualStyle: GRAPH_STYLES["Shapes"],
+            nodeLabelsVisible: false
+        },
+        peterson: {
+            name: "Petersen example",
+            description: "The Petersen graph",
+            url: path("file/example_graphs/petersen.xgmml"),
+            visualStyleName: "Circles",
+            visualStyle: GRAPH_STYLES["Circles"],
+            nodeLabelsVisible: false
+        },
+        disconnected: {
+            name: "Disconnected example",
+            description: "A graph that contains several, disconnected components",
+            url: path("file/example_graphs/sample2.graphml"),
+            visualStyleName: "Dark",
+            visualStyle: GRAPH_STYLES["Dark"],
+            nodeLabelsVisible: false
+        },
+        genetics: {
+            name: "Genetics example",
+            description: "A modified graph from GeneMANIA with different visual styles",
+            url: path("file/example_graphs/sample3.graphml"),
+            visualStyleName: "Diamonds",
+            visualStyle: GRAPH_STYLES["Diamonds"],
+            nodeLabelsVisible: false
+        },
+        pathguide: {
+            name: "Pathguide example",
+            description: "An interaction of databases exported from Cytoscape",
+            url: path("file/example_graphs/sample4.xgmml"),
+            visualStyleName: "Cytoscape",
+            visualStyle: GRAPH_STYLES["Cytoscape"],
+            nodeLabelsVisible: true
+        }
+    };
+    
     // utility for opening a graph
     function open_graph(opt){
     	dispose();
     	
         var description;
-        options = opt;
+        options = $.extend({}, default_options, opt);
         
-        if(opt.name) {
-            description = opt.name;
-        } else if(opt.url){
-            var partsOfFile = opt.url.split("/");
+        if(options.name) {
+            description = options.name;
+        } else if(options.url){
+            var partsOfFile = options.url.split("/");
             description = partsOfFile[partsOfFile.length-1];
         }
         
@@ -362,18 +412,22 @@ $(function(){
                 message: "Please wait while the network data loads.",
                 heading: description
             });
-            
         }
         
-        $("#cytoweb_container").cw().addListener("error", onDrawError);
+        vis.addListener("error", onDrawError);
         
+        function isXgmml(xml) {
+        	return xml.indexOf("</graphml>") === -1 && xml.indexOf("</graph>") > -1;
+        }
+
         if( options.url != undefined ) {
             $.ajax({
                 url: options.url,
                 
                 success: function(data){
-                    opt.network = data;
-                    $("#cytoweb_container").cw().draw( opt );
+            		options.network = data;
+            		if (isXgmml(options.network)) { options.layout = "Preset"; }
+                    vis.draw(options);
                 },
                 
                 error: function(){
@@ -390,77 +444,10 @@ $(function(){
                 }
             });
         } else {
-            $("#cytoweb_container").cw().draw( opt );
+        	if (isXgmml(options.network)) { options.layout = "Preset"; }
+            vis.draw(options);
         }
     } 
-    
-    // example graphs
-    var default_options = {
-        panZoomControlVisible: true,
-		edgesMerged: false,
-		nodeLabelsVisible: true,
-		edgeLabelsVisible: false,
-		nodeTooltipsEnabled: true,
-		edgeTooltipsEnabled: true,
-		swfPath: path("swf/CytoscapeWeb"),
-		flashInstallerPath: path("swf/playerProductInstall"),
-		useProxy: false
-    };
-    
-    var example = {
-        
-        shapes: {
-            name: "Shapes example",
-            description: "A graph that contains all possible shapes for nodes and arrows",
-            url: path("file/example_graphs/sample1.graphml"),
-            visualStyleName: "Shapes",
-            visualStyle: GRAPH_STYLES["Shapes"],
-            nodeLabelsVisible: false
-        },
-        
-        peterson: {
-            name: "Petersen example",
-            description: "The Petersen graph",
-            url: path("file/example_graphs/petersen.xgmml"),
-            visualStyleName: "Circles",
-            visualStyle: GRAPH_STYLES["Circles"],
-            nodeLabelsVisible: false
-        },
-        
-        disconnected: {
-            name: "Disconnected example",
-            description: "A graph that contains several, disconnected components",
-            url: path("file/example_graphs/sample2.graphml"),
-            visualStyleName: "Dark",
-            visualStyle: GRAPH_STYLES["Dark"],
-            nodeLabelsVisible: false
-        },
-
-        genetics: {
-            name: "Genetics example",
-            description: "A modified graph from GeneMANIA with different visual styles",
-            url: path("file/example_graphs/sample3.graphml"),
-            visualStyleName: "Diamonds",
-            visualStyle: GRAPH_STYLES["Diamonds"],
-            nodeLabelsVisible: false
-        },
-        
-        pathguide: {
-            name: "Pathguide example",
-            description: "An interaction of databases exported from Cytoscape",
-            url: path("file/example_graphs/sample4.xgmml"),
-            visualStyleName: "Cytoscape",
-            visualStyle: GRAPH_STYLES["Cytoscape"],
-            nodeLabelsVisible: true
-        }
-
-    };
-    
-    // first example is default
-    for(var opt in example) {
-        var options = $.extend(default_options, example[opt]);
-        break;
-    }
     
     $("*").live("available", function(){
         $(this).data("available", true);
@@ -485,15 +472,15 @@ $(function(){
             heading: "Area unavailable",
             message: "This area is unavailable when the graph file can not be loaded."
         });
-        cw.removeListener("error", onDrawError);
+        vis.removeListener("error", onDrawError);
 	}
     
     // create cytoweb
-    var cw = $("#cytoweb_container").cytoscapeweb(options);
+    vis = $("#cytoweb_container").cytoscapeweb(default_options);
 
     // call back for when the graph is opened and fully loaded
-    cw.ready(function(){
-    	cw.removeListener("error", onDrawError);
+    vis.ready(function(){
+    	vis.removeListener("error", onDrawError);
         $("#cytoweb_container").trigger("available");
     });
     
@@ -504,29 +491,68 @@ $(function(){
     
     $("#cytoweb_container").bind("available", function(){
     	dirty_attributes_cache();
-    
+
         update_background();
         update_menu();
-        update_info(); 
-        update_vizmapper();
+        update_info();
+//        update_vizmapper(); // lazy initialization, instead...
         update_filter();
-       
+        
+        dirty_vizmapper();
+
         hide_msg({
             type: "loading",
             target: $("body")
         });
         
-        $("#vizmapper_link").click();
+        //$("#vizmapper_link").click();
         $("#examples_link").click();
         
         $(window).trigger("resize");
+
+        var style = vis.visualStyle();
         
-// TODO: remove this workaround! After opening an XGMML net, loading graphml does not apply correct styles
-        cw.visualStyle(cw.visualStyle());
+        // Let's simplify the style and make the creation of the visual styles tab faster.
+        // It just removes discrete mappers that have the same value for all elements,
+        // and sets that value as default.
+//        for (var group in style) {
+//        	if (group === "nodes" || group === "edges") {
+//        		var props = style[group];
+//        		
+//        		for (var pname in props) {
+//        			var p = props[pname];
+//        			
+//        			if (p.hasOwnProperty("discreteMapper")) {
+//        				var entries = p.discreteMapper.entries;
+//        				var value, same = true;
+//        				
+//        				$.each(entries, function(i, e) {
+//        					if (i === 0) {
+//        						value = e.value;
+//        					} else if (value != e.value) {
+//        						same = false;
+//        						return false;
+//        					}
+//        				});
+//        				
+//        				if (same) {
+//        					props[pname] = value; 
+//        				}
+//        			}
+//        		}
+//        	}
+//        }
+        
+        // TODO: remove this workaround! After opening an XGMML net, loading graphml does not apply correct styles
+        vis.visualStyle(style);
     });
 
-    open_graph(options);
-    
+    // first example is default
+    for(var opt in examples) {
+    	open_graph(examples[opt]);
+        break;
+    }
+
     // [settings] Layout settings
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -596,7 +622,7 @@ $(function(){
 		    		else if (typeof o.value === "number") { v = Number(v); }
 		    		options[id] = v;
 		    	}
-				$("#cytoweb_container").cw().layout({ name: layout_id, options: options });
+				vis.layout({ name: layout_id, options: options });
 			});
 			
 			$("#settings").dialog({ autoOpen: false, resizable: false, width: 430 });
@@ -655,16 +681,7 @@ $(function(){
             var vis_name = i;
             var vis = viss[i];
             $("#visual_style").append("<li class=\"ui-menu-checkable\"><label>" + vis_name + "</label></li>");
-        }
-
-        // add examples to menu
-        /*
-        for(var i in example){
-            var id = i;
-            var name = example[i].name;
-            $("#open_example").append("<li example_id=\"" + id + "\"><label>" + name + "</label></li>");
-        }
-        */  
+        } 
              
         // create the menu and add handlers for when items are selected
         $("#menu").menu({
@@ -672,11 +689,11 @@ $(function(){
             onMenuItemClick: function(li){
                 switch( li.attr("id") || li.parent().attr("id") ) {
                 case "layout_style":
-                    $("#cytoweb_container").cw().layout( li.attr("layout_id") );
+                	$("#cytoweb_container").cw().layout( li.attr("layout_id") );
                     break;
                     
                 case "visual_style":
-                    $("#cytoweb_container").cw().visualStyle( viss[ li.text() ] );
+                	$("#cytoweb_container").cw().visualStyle( viss[ li.text() ] );
                     update_background();
                     
                     show_msg_on_tabs({
@@ -698,7 +715,7 @@ $(function(){
                 
                 case "recalculate_layout":
                 	var layout = $("#cytoweb_container").cw().layout();
-                    $("#cytoweb_container").cw().layout(layout);
+                	$("#cytoweb_container").cw().layout(layout);
                     break;
                     
                 case "layout_settings":
@@ -706,7 +723,7 @@ $(function(){
                 	break;
                 
                 case "open_example":
-                    var ex = example[li.attr("example_id")];
+                    var ex = examples[li.attr("example_id")];
                     open_graph(ex);
                     break;
                 }
@@ -715,13 +732,13 @@ $(function(){
             onMenuItemCheck: function(li){
                 switch( li.attr("id") ) {
                 case "show_node_labels":
-                    $("#cytoweb_container").cw().nodeLabelsVisible(true);
+                	$("#cytoweb_container").cw().nodeLabelsVisible(true);
                     break;
                 case "show_edge_labels":
                 	$("#cytoweb_container").cw().edgeLabelsVisible(true);
                 	break;
                 case "merge_edges":
-                    $("#cytoweb_container").cw().edgesMerged(true);
+                	$("#cytoweb_container").cw().edgesMerged(true);
                     break;
                 }
             },
@@ -729,13 +746,13 @@ $(function(){
             onMenuItemUncheck: function(li){
                 switch( li.attr("id") ) {
                 case "show_node_labels":
-                    $("#cytoweb_container").cw().nodeLabelsVisible(false);
+                	$("#cytoweb_container").cw().nodeLabelsVisible(false);
                     break;
                 case "show_edge_labels":
                 	$("#cytoweb_container").cw().edgeLabelsVisible(false);
                 	break;
                 case "merge_edges":
-                    $("#cytoweb_container").cw().edgesMerged(false);
+                	$("#cytoweb_container").cw().edgesMerged(false);
                     break;
                 }
             }
@@ -764,10 +781,7 @@ $(function(){
 					    visualStyle: GRAPH_STYLES["Default"],
 					    nodeLabelsVisible: true
 					};
-					if (network.indexOf("</graphml>") === -1 && network.indexOf("</graph>") > -1) {
-						// XGMML...
-						new_graph_options.layout = "Preset";
-					}
+
 					open_graph(new_graph_options);
 				},
 	            ready: function(){
@@ -879,7 +893,7 @@ $(function(){
                     flashInstallerPath: path("swf/playerProductInstall"),
                     base64: isImage,
                 	data: function(){
-                		return $("#cytoweb_container").cw()[fn]();
+                		return vis[fn]();
                     },
                     fileName: function() {
                     	return default_file_name(fn);
@@ -930,9 +944,9 @@ $(function(){
     function update_menu(){
         // add initial state of check marks
         var check = {};
-        check["merge_edges"] = $("#cytoweb_container").cw().edgesMerged();
-        check["show_node_labels"] = $("#cytoweb_container").cw().nodeLabelsVisible();
-        check["show_edge_labels"] = $("#cytoweb_container").cw().edgeLabelsVisible();
+        check["merge_edges"] = vis.edgesMerged();
+        check["show_node_labels"] = vis.nodeLabelsVisible();
+        check["show_edge_labels"] = vis.edgeLabelsVisible();
         
         for( var i in check ){
             var id = i;
@@ -948,7 +962,7 @@ $(function(){
         // add initial state of one check marks
         $("#layout_style").find(".ui-menu-check-icon").removeClass("ui-menu-checked");
         
-        var layout = $("#cytoweb_container").cw().layout();
+        var layout = vis.layout();
         $("#layout_style").find("[layout_id=" + layout.name + "]").find(".ui-menu-check-icon").addClass("ui-menu-checked");
      
         $("#visual_style").find(".ui-menu-check-icon").removeClass("ui-menu-checked");
@@ -980,13 +994,12 @@ $(function(){
         center: {
             paneSelector: "#cytoweb_container"
         }
-        
     });
     
    
     // update background to match cytoweb component
     function update_background(){
-        $("#cytoweb").css("background-color", $("#cytoweb_container").cw().visualStyle().global.backgroundColor );
+        $("#cytoweb").css("background-color", vis.visualStyle().global.backgroundColor );
     }
     
 
@@ -1000,7 +1013,7 @@ $(function(){
         update();
         updateContextMenu();
         
-        $("#cytoweb_container").cw().addListener("select", function(){
+        vis.addListener("select", function(){
         	setTimeout(function(){
         		update_with_loader();
         		updateContextMenu();
@@ -1020,15 +1033,15 @@ $(function(){
         })
         .addListener("layout", function(evt){
         	$("#layout_style .ui-menu-check-icon").removeClass("ui-menu-checked");
-        	$("#layout_style .ui-menu-checkable[layout_id="+evt.value+"] .ui-menu-check-icon").addClass("ui-menu-checked");
+        	$("#layout_style .ui-menu-checkable[layout_id="+evt.value.name+"] .ui-menu-check-icon").addClass("ui-menu-checked");
         });
         
         var _srcId;
         function clickNodeToAddEdge(evt) {
             if (_srcId != null) {
-            	cw.removeListener("click", "nodes", clickNodeToAddEdge);
-            	if (cw.node(_srcId)) {
-            		cw.addEdge({ source: _srcId, target: evt.target.data.id }, true);
+            	vis.removeListener("click", "nodes", clickNodeToAddEdge);
+            	if (vis.node(_srcId)) {
+            		vis.addEdge({ source: _srcId, target: evt.target.data.id }, true);
             		dirty_graph_state();
             		update_with_loader();
             	}
@@ -1037,10 +1050,8 @@ $(function(){
         }
         
         function update(){
-
-        	
-            var edges = $("#cytoweb_container").cw().selected("edges");
-            var nodes = $("#cytoweb_container").cw().selected("nodes");
+            var edges = vis.selected("edges");
+            var nodes = vis.selected("nodes");
             var container = $("#info");
             
             container.html(""); // clear info area
@@ -1148,7 +1159,7 @@ $(function(){
                     var td = $(this);
                     var td_width = width[i];
                     var id = td.parents("tr:first").attr("name");
-                    var ele = $("#cytoweb_container").cw()[group.substring(0, 4)](id);
+                    var ele = vis[group.substring(0, 4)](id);
                     var param_name = td.attr("name");
                     
                     switch( param_name ){
@@ -1179,7 +1190,7 @@ $(function(){
                             var data = {};
                             data[param_name] = val;
                             ele.data[param_name] = val;
-                            $("#cytoweb_container").cw().updateData(group, [ id ], data);
+                            vis.updateData(group, [ id ], data);
                         });
                     } else {
                         var keypress_timeout = undefined;
@@ -1214,7 +1225,7 @@ $(function(){
                                 var data = {};
                                 data[param_name] = val;
                                 ele.data[param_name] = val;
-                                $("#cytoweb_container").cw().updateData(group, [ id ], data);
+                                vis.updateData(group, [ id ], data);
                                 dirty_graph_state();
                             }
                         })
@@ -1246,7 +1257,6 @@ $(function(){
         	} else {
         		need_to_update = true;
         	}
-        	
         }
         
         $("#info_link").bind("click", function(){
@@ -1267,45 +1277,44 @@ $(function(){
         });
         
         function updateContextMenu(){
-        	var cw = $("#cytoweb_container").cw();
-        	cw.removeAllContextMenuItems();
+        	vis.removeAllContextMenuItems();
         	
-            cw.addContextMenuItem("Delete node", "nodes", function(evt) {
-            	cw.removeNode(evt.target, true);
-            	cw.removeListener("click", "nodes", clickNodeToAddEdge);
+            vis.addContextMenuItem("Delete node", "nodes", function(evt) {
+            	vis.removeNode(evt.target, true);
+            	vis.removeListener("click", "nodes", clickNodeToAddEdge);
             	dirty_graph_state();
             	updateContextMenu();
             	update_with_loader();
             })
             .addContextMenuItem("Delete edge", "edges", function(evt) {
-            	cw.removeEdge(evt.target, true);
+            	vis.removeEdge(evt.target, true);
             	updateContextMenu();
             	dirty_graph_state();
             	update_with_loader();
             })
         	.addContextMenuItem("Add new node", function(evt) {
-        		cw.addNode(evt.mouseX, evt.mouseY, { }, true);
+        		vis.addNode(evt.mouseX, evt.mouseY, { }, true);
         		updateContextMenu();
         		dirty_graph_state();
         	})
         	.addContextMenuItem("Add new edge (then click the target node...)", "nodes", function(evt) {
             	_srcId = evt.target.data.id;
-            	cw.removeListener("click", "nodes", clickNodeToAddEdge);
-            	cw.addListener("click", "nodes", clickNodeToAddEdge);
+            	vis.removeListener("click", "nodes", clickNodeToAddEdge);
+            	vis.addListener("click", "nodes", clickNodeToAddEdge);
             });
         	
-        	var items = cw.selected();
+        	var items = vis.selected();
         	if (items.length > 0) {
-        		cw.addContextMenuItem("Delete selected", function(evt) {
-                    //var items = cw.selected();
-        			cw.removeElements(items, true);
-        			cw.removeListener("click", "nodes", clickNodeToAddEdge);
+        		vis.addContextMenuItem("Delete selected", function(evt) {
+                    //var items = vis.selected();
+        			vis.removeElements(items, true);
+        			vis.removeListener("click", "nodes", clickNodeToAddEdge);
                     dirty_graph_state();
                     updateContextMenu();
                     update_with_loader();
                 });
         	} else {
-        		cw.removeContextMenuItem("Delete selected");
+        		vis.removeContextMenuItem("Delete selected");
         	}		
         }
         
@@ -1322,14 +1331,14 @@ $(function(){
         dirty_filter();
     }
     
+    var attribute_cache;
+    
     function dirty_attributes_cache(){
         attribute_cache = undefined;
     }
-    
-    var attribute_cache;
+
     function get_attributes(){
-        var attr = {
-        };
+        var attr = {};
         
         if( attribute_cache ){
             return $.extend(true, {}, attribute_cache);
@@ -1356,7 +1365,7 @@ $(function(){
         
         // attributes are data within cytoweb (e.g. nodes.data, edges.data)
         function build_attr(group_name){
-            var group = $("#cytoweb_container").cw()[group_name]();
+            var group = vis[group_name]();
             attr[group_name] = {};
             
             // add values, types, etc to attr
@@ -1454,6 +1463,9 @@ $(function(){
     $("#vizmapper_link").click(function(){
         if( vizmapper_dirty ){
             rebuild_dirty_vizmapper();
+// TODO: remove this workaround ############            
+            $("#vizmapper_header").show();
+// ##########################################
         }
     });
     
@@ -1475,10 +1487,7 @@ $(function(){
                 });
             }
         });
-        
-        
     }
-    
     
     function update_vizmapper(){
         var parent = $("#vizmapper");
@@ -1774,20 +1783,17 @@ $(function(){
             ]
         };
         
-        var cached_style = cw.visualStyle();
-        
-        
-        
+        var cached_style = vis.visualStyle();
+
         function get_property(variable){
-            var style = cached_style;
-    
             var objs = variable.split(".");
-            var property = style;
+            var property = cached_style;
+            
             for(var i in objs){
                 var obj = objs[i];
                 property = property[obj];
             }
-            
+
             return property;
         }
         
@@ -1813,7 +1819,7 @@ $(function(){
             
             cached_style = $.extend( true, cached_style, style );
             
-            $("#cytoweb_container").cw().visualStyle(cached_style);
+            vis.visualStyle(cached_style);
             update_background();
         }
         
@@ -1978,8 +1984,7 @@ $(function(){
                 var map_section = $('<div class="map_section ui-corner-bottom"></div>');
                 div.append(map_section);
                 map_section.hide();
-                
-                
+                 
                 var selector = $('\
                 <div class="selector"><ul>\
                     <li class="title"><label class="title">Select attribute to map</label>\
@@ -2017,7 +2022,6 @@ $(function(){
                     }
                 }
                 
-                
                 function open_map_section(){
                     map_section.show();
                     map_button.find(".ui-icon").removeClass(map_button_open_map_class).addClass(map_button_close_map_class);
@@ -2040,7 +2044,7 @@ $(function(){
                 var continuous = $('<div class="continuous ui-corner-bottom"></div>');
                 map_section.append(continuous);
                 continuous.hide();
-                   
+                
                 var continuous_max = $('<input type="text" class="continuous_max"/>');
                 continuous.append('<label class="continuous_max_name">High</span></label>');
                 continuous.append(continuous_max);
@@ -2073,9 +2077,7 @@ $(function(){
                 continuous_min.bind("valid", function(){                
                     apply_continuous_mapping_from_inputs();
                 });
-                
-                
-                
+
                 var line = $('<div class="line"></div>');
                 continuous.append(line);
                 line.append('<div class="ui-state-disabled arrow_top"><div class="ui-icon ui-icon-arrowthickstop-1-n"></div></div>');
@@ -2120,7 +2122,6 @@ $(function(){
                 for(var i in attr_group_names){
                     var name = attr_group_names[i];
                     var attribute = attr_group[name];
-                    
                     create_discrete(name);
                 }
                 
@@ -2241,11 +2242,9 @@ $(function(){
                 }
             }
         }
+
         print_group_set(properties.groups, 1);
-        
-        
-        
-        
+
         // utility for pickers
         function position_at_input(picker, input){
             $(picker).css({
@@ -2452,7 +2451,8 @@ $(function(){
         vizmapper_dirty = false;
         
         $("#vizmapper").trigger("available");
-    }
+        
+    } // End update_vizmapper
     
     // [filters] Generation of the filters tab
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2503,13 +2503,13 @@ $(function(){
         var cached_elements = {};
         cached_elements.nodes = function(){
             if(cached_elements.cached_nodes == undefined){
-                cached_elements.cached_nodes = $("#cytoweb_container").cw().nodes();
+                cached_elements.cached_nodes = vis.nodes();
             }
             return cached_elements.cached_nodes;
         }
         cached_elements.edges = function(){
             if(cached_elements.cached_edges == undefined){
-                cached_elements.cached_edges = $("#cytoweb_container").cw().edges();
+                cached_elements.cached_edges = vis.edges();
             }
             return cached_elements.cached_edges;
         }
@@ -2581,7 +2581,7 @@ $(function(){
             
             parent.bind("filter" + group_name, function(){         
                 
-                $("#cytoweb_container").cw().filter(group_name, function(ele){
+                vis.filter(group_name, function(ele){
                     
                     for(var j in ele.data){
                         var ele_attr_name = j;
@@ -2977,7 +2977,6 @@ $(function(){
         } // end append_group
         
         
-        
         for(var i in attr){
             var group = attr[i];
             var group_name = i;
@@ -2986,7 +2985,7 @@ $(function(){
         
         $("#filter_tabs").tabs();
         
-        $("#cytoweb_container").cw().removeFilter();
+        vis.removeFilter();
         
         filter_dirty = false;
         
@@ -2997,8 +2996,8 @@ $(function(){
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // create examples in side tab (static -- does not change on new graph load)
-    for(var id in example){
-        var ex = example[id];
+    for(var id in examples){
+        var ex = examples[id];
 		var entry = $( '<div class="entry ' + id + '" example_id="' + id + '">\
 		                   <label class="name">' + ex.name + '</label>\
 		                       <div class="icon"></div>\
@@ -3006,7 +3005,7 @@ $(function(){
 		                </div>' );
                     
         entry.click(function(){
-            open_graph( example[ $(this).attr("example_id") ] );
+            open_graph( examples[ $(this).attr("example_id") ] );
         });
                     
         $("#examples").append(entry);

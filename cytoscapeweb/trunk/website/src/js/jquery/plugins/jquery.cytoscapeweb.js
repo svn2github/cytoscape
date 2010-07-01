@@ -71,8 +71,7 @@
                 var vis = new org.cytoscapeweb.Visualization(id, options);
                 $.cytoscapeweb.vis[id] = vis;
                 $.cytoscapeweb.opts[id] = options;               
-                
-                //vis.draw(options);
+
                 return_value = vis;
             }
             
@@ -81,7 +80,7 @@
         return (return_value != undefined) ? (return_value) : (this.each(function(){}));
 
     };
-    
+
     // short name
     $.fn.cw = $.fn.cytoscapeweb;
     
