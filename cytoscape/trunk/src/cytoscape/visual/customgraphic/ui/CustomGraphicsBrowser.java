@@ -168,7 +168,6 @@ public class CustomGraphicsBrowser extends JXList implements PropertyChangeListe
 
 	}
 
-	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		// Clear the model, and build new List from current pool of graphics
 		model.removeAllElements();
