@@ -86,6 +86,12 @@ public class CloudParameters
 	//String Delimeters
 	private static final String NODEDELIMITER = "CloudParamNodeDelimiter";
 	
+	//Default Values for User Input
+	private Double defaultNetWeight = 1.0;
+	private String defaultAttName = "nodeID";
+	private Integer defaultMaxWords = 250;
+	private Double defaultClusterCutoff = 1.0;
+	
 	//CONSTRUCTORS
 	
 	/**
@@ -104,10 +110,10 @@ public class CloudParameters
 		this.cloudWords = new ArrayList<CloudWordInfo>();
 		this.filter = new WordFilter();
 		
-		this.netWeightFactor = SemanticSummaryManager.getInstance().getDefaultNetWeight();
-		this.attributeName = SemanticSummaryManager.getInstance().getDefaultAttName();
-		this.clusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
-		this.maxWords = SemanticSummaryManager.getInstance().getDefaultMaxWords();
+		this.netWeightFactor = this.getDefaultNetWeight();
+		this.attributeName = this.getDefaultAttName();
+		this.clusterCutoff = this.getDefaultClusterCutoff();
+		this.maxWords = this.getDefaultMaxWords();
 	}
 	
 	/**
@@ -555,7 +561,6 @@ public class CloudParameters
 		}
 		else
 		{
-			Double defaultNetWeight = SemanticSummaryManager.getInstance().getDefaultNetWeight();
 			netWeightTextField.setValue(defaultNetWeight);
 			setNetWeightFactor(defaultNetWeight);
 			String message = "The network weight factor must be greater than or equal to 0 and less than or equal to 1";
@@ -568,7 +573,7 @@ public class CloudParameters
 			setAttributeName((String) attribute);
 		else
 		{
-			setAttributeName(SemanticSummaryManager.getInstance().getDefaultAttName());
+			setAttributeName(defaultAttName);
 			inputPanel.getCMBAttributes().setSelectedItem(attributeName);
 			String message = "You must select a valid String attribute or use the node ID.";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
@@ -584,7 +589,6 @@ public class CloudParameters
 		}
 		else
 		{
-			Integer defaultMaxWords = SemanticSummaryManager.getInstance().getDefaultMaxWords();
 			maxWordsTextField.setValue(defaultMaxWords);
 			setMaxWords(defaultMaxWords);
 			String message = "The maximum number of words to display must be greater than or equal to 0.";
@@ -601,7 +605,6 @@ public class CloudParameters
 		}
 		else
 		{
-			Double defaultClusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
 			clusterCutoffTextField.setValue(defaultClusterCutoff);
 			setClusterCutoff(defaultClusterCutoff);
 			String message = "The cluster cutoff must be greater than or equal to 0";
@@ -1089,6 +1092,26 @@ public class CloudParameters
 	public void setMaxWords(Integer val)
 	{
 		maxWords = val;
+	}
+	
+	public Double getDefaultNetWeight()
+	{
+		return defaultNetWeight;
+	}
+	
+	public String getDefaultAttName()
+	{
+		return defaultAttName;
+	}
+	
+	public Integer getDefaultMaxWords()
+	{
+		return defaultMaxWords;
+	}
+	
+	public Double getDefaultClusterCutoff()
+	{
+		return defaultClusterCutoff;
 	}
 	
 }

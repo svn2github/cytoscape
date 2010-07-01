@@ -227,6 +227,14 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						subCloud8Writer.close();
 						pFileList.add(current_pairRatios);
 						
+						//File for Filter
+						File current_filter = new File(tmpDir, netNameSep + networkName + netNameSep +
+								cloudNameSep + cloud_name + cloudNameSep + ".FILTER.txt");
+						BufferedWriter subCloud9Writer = new BufferedWriter(new FileWriter(current_filter));
+						subCloud9Writer.write(cloud.getFilter().toString());
+						subCloud9Writer.close();
+						pFileList.add(current_filter);
+						
 						
 					}//end iteration over clouds
 				}//end if clouds exist for network
@@ -396,6 +404,14 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					HashMap<String, Double> pairRatios = cloudParams.repopulateHashmap(fullText, 3);
 					cloudParams.setPairRatios(pairRatios);
 				}
+				
+				if (prop_file.getName().contains(".FILTER.txt"))
+				{
+					//Recreate the Filter and set pointer in cloud
+					WordFilter curFilter = new WordFilter(fullText);
+					cloudParams.setFilter(curFilter);
+				}
+				
 			}//end loop through all props files
 			
 			//Last thing is to recreate wordCloudInfo for font sizes

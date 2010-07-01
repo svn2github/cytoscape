@@ -290,6 +290,9 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Display Settings");
 		
+		//Used to retrieve defaults
+		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
+		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0,1));
 		
@@ -297,8 +300,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JLabel maxWordsLabel = new JLabel("Max Num of Words");
 		maxWordsTextField = new JFormattedTextField(intFormat);
 		maxWordsTextField.setColumns(10);
-		maxWordsTextField.setValue(SemanticSummaryManager.getInstance().
-				getDefaultMaxWords()); //Set to default initially
+		maxWordsTextField.setValue(params.getDefaultMaxWords()); //Set to default initially
 		maxWordsTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
 		//Max words panel
@@ -311,8 +313,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JLabel netWeightLabel = new JLabel("Network Weight Factor");
 		netWeightTextField = new JFormattedTextField(decFormat);
 		netWeightTextField.setColumns(3);
-		netWeightTextField.setValue(SemanticSummaryManager.getInstance().
-				getDefaultNetWeight()); //Set to default initially
+		netWeightTextField.setValue(params.getDefaultNetWeight()); //Set to default initially
 		netWeightTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
 		//Network Weight Factor Panel
@@ -325,8 +326,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JLabel clusterCutoffLabel = new JLabel("Clustering Cutoff");
 		clusterCutoffTextField = new JFormattedTextField(decFormat);
 		clusterCutoffTextField.setColumns(3);
-		clusterCutoffTextField.setValue(SemanticSummaryManager.
-				getInstance().getDefaultClusterCutoff()); //Set to default initially
+		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff()); //Set to default initially
 		clusterCutoffTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
 		//Clustering Cutoff Panel
@@ -583,10 +583,12 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	public void setUserDefaults()
 	{
-		netWeightTextField.setValue(SemanticSummaryManager.getInstance().getDefaultNetWeight());
-		cmbAttributes.setSelectedItem(SemanticSummaryManager.getInstance().getDefaultAttName());
-		maxWordsTextField.setValue(SemanticSummaryManager.getInstance().getDefaultMaxWords());
-		clusterCutoffTextField.setValue(SemanticSummaryManager.getInstance().getDefaultClusterCutoff());
+		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
+		
+		netWeightTextField.setValue(params.getDefaultNetWeight());
+		cmbAttributes.setSelectedItem(params.getDefaultAttName());
+		maxWordsTextField.setValue(params.getDefaultMaxWords());
+		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff());
 		this.updateUI();
 	}
 	
@@ -688,7 +690,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		
 		cmb = ((DefaultComboBoxModel)cmbAttributes.getModel());
 		cmb.removeAllElements();
-		cmb.addElement(SemanticSummaryManager.getInstance().getDefaultAttName());
+		cmb.addElement(SemanticSummaryManager.getInstance().
+				getNullCloudParamters().getDefaultAttName());
 		
 		Vector<Object>av;
 		
@@ -709,7 +712,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		CloudParameters curCloud = SemanticSummaryManager.getInstance().getCurCloud();
 		String curAttribute;
 		if (curCloud == SemanticSummaryManager.getInstance().getNullCloudParamters())
-			curAttribute = SemanticSummaryManager.getInstance().getDefaultAttName();
+			curAttribute = curCloud.getDefaultAttName();
 		else
 			curAttribute = curCloud.getAttributeName();
 		
@@ -946,6 +949,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		{
 			JFormattedTextField source = (JFormattedTextField) e.getSource();
 			
+			CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
+			
 			String message = "The value you have entered is invalid. \n";
 			boolean invalid = false;
 			
@@ -959,7 +964,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				}
 				else
 				{
-					Double defaultNetWeight = SemanticSummaryManager.getInstance().getDefaultNetWeight();
+					Double defaultNetWeight = params.getDefaultNetWeight();
 					netWeightTextField.setValue(defaultNetWeight);
 					message += "The network weight factor must be greater than or equal to 0 and less than or equal to 1";
 					invalid = true;
@@ -976,7 +981,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				}
 				else
 				{
-					Integer defaultMaxWords = SemanticSummaryManager.getInstance().getDefaultMaxWords();
+					Integer defaultMaxWords = params.getDefaultMaxWords();
 					maxWordsTextField.setValue(defaultMaxWords);
 					message += "The maximum number of words to display must be greater than or equal to 0.";
 					invalid = true;
@@ -992,7 +997,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				}
 				else
 				{
-					Double defaultClusterCutoff = SemanticSummaryManager.getInstance().getDefaultClusterCutoff();
+					Double defaultClusterCutoff = params.getDefaultClusterCutoff();
 					clusterCutoffTextField.setValue(defaultClusterCutoff);
 					message += "The cluster cutoff must be greater than or equal to 0";
 					invalid = true;

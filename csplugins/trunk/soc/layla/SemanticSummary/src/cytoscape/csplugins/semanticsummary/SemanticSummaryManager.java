@@ -60,11 +60,6 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 	private SemanticSummaryParameters curNetwork;
 	private CloudParameters curCloud;
 	
-	//Default Values for User Input
-	private Double defaultNetWeight;
-	private String defaultAttName;
-	private Integer defaultMaxWords;
-	private Double defaultClusterCutoff;
 	
 	//Null Values for params
 	private SemanticSummaryParameters nullSemanticSummary;
@@ -80,8 +75,8 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		cyNetworkList = new HashMap<String, SemanticSummaryParameters>();
 		nullSemanticSummary = new SemanticSummaryParameters();
 		nullSemanticSummary.setNetworkName("No Network Loaded");
-		//nullCloudParameters = new CloudParameters();
-		//nullCloudParameters.setCloudName("Null Cloud");
+		nullCloudParameters = new CloudParameters();
+		nullCloudParameters.setCloudName("Null Cloud");
 		
 		//catch network creation/destruction events
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -94,11 +89,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(this);
 		
 		curNetwork = nullSemanticSummary;
-		
-		defaultNetWeight = 1.0;
-		defaultAttName = "nodeID";
-		defaultMaxWords = 250;
-		defaultClusterCutoff = 1.0;
+		curCloud = nullCloudParameters;
 	}
 	
 	//METHODS
@@ -431,26 +422,6 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 	public void setCurCloud(CloudParameters params)
 	{
 		curCloud = params;
-	}
-	
-	public Double getDefaultNetWeight()
-	{
-		return defaultNetWeight;
-	}
-	
-	public String getDefaultAttName()
-	{
-		return defaultAttName;
-	}
-	
-	public Integer getDefaultMaxWords()
-	{
-		return defaultMaxWords;
-	}
-	
-	public Double getDefaultClusterCutoff()
-	{
-		return defaultClusterCutoff;
 	}
 	
 	public SemanticSummaryParameters getNullSemanticSummary()

@@ -23,12 +23,11 @@
 package cytoscape.csplugins.semanticsummary;
 import cytoscape.data.readers.TextFileReader;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -57,6 +56,9 @@ public class WordFilter
 	final static public String resources = "resources";
 	final static public String newline = "\n";
 	
+	//String Delimeters
+	private static final String DELIMITER = "WordFilterDelimiter";
+	
 	
 	//CONSTRUCTORS
 	
@@ -72,6 +74,65 @@ public class WordFilter
 		
 		this.initialize(stopPath, stopWords);
 		this.initialize(flaggedPath, flaggedWords);
+	}
+	
+	/**
+	 * Constructor to create WordFilter from a cytoscape property file
+	 * while restoring a session.  Property file is created when the session is saved.
+	 * @param propFile - the contents of the property file as a String
+	 */
+	public WordFilter(String propFile)
+	{
+		
+		//Create a hashmap to contain all the values in the rpt file
+		HashMap<String, String> props = new HashMap<String,String>();
+		
+		String[] lines = propFile.split("\n");
+		
+		for (int i = 0; i < lines.length; i++)
+		{
+			String line = lines[i];
+			String[] tokens = line.split("\t");
+			//there should be two values in each line
+			if(tokens.length == 2)
+				props.put(tokens[0],tokens[1]);
+		}
+		
+		//Rebuild Stop List
+		String value = props.get("StopWords");
+		if (value != null)
+		{
+			String[] words = value.split(DELIMITER);
+			for (int i = 0; i < words.length; i++)
+			{
+				String curWord = words[i];
+				stopWords.add(curWord);
+			}
+		}
+		
+		//Rebuild flagged List
+		value = props.get("FlaggedWords");
+		if (value != null)
+		{
+			String[] words = value.split(DELIMITER);
+			for (int i = 0; i < words.length; i++)
+			{
+				String curWord = words[i];
+				flaggedWords.add(curWord);
+			}
+		}
+		
+		//Rebuild added List
+		value = props.get("AddedWords");
+		if (value != null)
+		{
+			String[] words = value.split(DELIMITER);
+			for (int i = 0; i < words.length; i++)
+			{
+				String curWord = words[i];
+				addedWords.add(curWord);
+			}
+		}
 	}
 	
 	
@@ -164,23 +225,48 @@ public class WordFilter
 	 * @return String - list of words in this WordFilter.
 	 */
 	
-	/*
 	public String toString()
 	{
+		StringBuffer filterVariables = new StringBuffer();
 		
-		String listOfWords = "";
-		
-		//Iterate through to retrieve words
-		Iterator<String> iter = words.iterator();
-		while (iter.hasNext())
+		//List of stop words as a delimited list
+		StringBuffer output = new StringBuffer();
+		if (stopWords.size()> 0)
 		{
-			String curWord = iter.next();
-			listOfWords = listOfWords + curWord + newline;
+			for (Iterator<String> iter = stopWords.iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				output.append(curWord + DELIMITER);
+			}
+			filterVariables.append("StopWords\t" + output.toString() + "\n");
 		}
 		
-		return listOfWords;
+		//List of flagged words as a delimeted list
+		output = new StringBuffer();
+		if (flaggedWords.size()> 0)
+		{
+			for (Iterator<String> iter = flaggedWords.iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				output.append(curWord + DELIMITER);
+			}
+			filterVariables.append("FlaggedWords\t" + output.toString() + "\n");
+		}
+		
+		//List of flagged words as a delimeted list
+		output = new StringBuffer();
+		if (addedWords.size()>0)
+		{
+			for (Iterator<String> iter = addedWords.iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				output.append(curWord + DELIMITER);
+			}
+			filterVariables.append("AddedWords\t" + output.toString() + "\n");
+		}
+		
+		return filterVariables.toString();
 	}
-	*/
 	
 	//Getters and Setters
 	public HashSet<String> getStopWords()
