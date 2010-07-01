@@ -2,7 +2,7 @@
 <div class="left">
 	<h1>Introduction</h1>
 	<p>Cytoscape Web works best with small to medium sized networks, generally with up to a few hundred nodes and edges.
-	   Larger networks can be visualized, but the user interaction can become slug-gish around 2000 elements &#8212; 800 nodes and 1200 edges for example.</p>
+	   Larger networks can be visualized, but the user interaction can become sluggish around 2000 elements &#8212; 800 nodes and 1200 edges for example.</p>
 	<p>Notice from the table bellow that the use of the force-directed layout is the major bottleneck in the initial rendering of a typical network.
 	   Also overall performance is dependant upon the client website implementation and the end user configuration.</p>
 	
@@ -200,7 +200,7 @@
 <p>Time to render a network with 2400 elements (800 nodes and 1600 edges), using different layout algorithms on supported operating systems and browsers.<p>
 
 <hr/>
-<p>* Tests executed on an <i>Apple MacBook</i> computer with:
+<p>Tests executed on an <i>Apple MacBook</i> computer with:
 <ul>
 	<li>GHz Intel Core 2 Duo processor</li>
 	<li>4 GB RAM</li>
