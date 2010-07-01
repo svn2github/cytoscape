@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +40,9 @@ public class CustomGraphicsPool extends SubjectBase implements
 	private static final int NUM_THREADS = 8;
 	
 	private static final String IMAGE_DIR_NAME = "images";
+	
+	// For image I/O, PNG is used as bitmap image format.
+	private static final String IMAGE_EXT = "png";
 
 	private final ExecutorService imageLoaderService;
 
@@ -67,7 +71,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		graphicsMap.put(NULL.hashCode(), NULL);
-		graphicsMap.put(GR.hashCode(), GR);
+		//graphicsMap.put(GR.hashCode(), GR);
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
 				Cytoscape.CYTOSCAPE_EXIT, this);
@@ -76,7 +80,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	}
 
 	/**
-	 * Restore images from .cytoscape dir.
+	 * Restore images from .cytoscape/images dir.
 	 */
 	private void restoreImages() {
 		final CompletionService<BufferedImage> cs = new ExecutorCompletionService<BufferedImage>(
@@ -108,7 +112,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 			final Map<Future<BufferedImage>, Set<String>> metatagMap = new HashMap<Future<BufferedImage>, Set<String>>();
 			try {
 				for (File file : imageFiles) {
-					if (file.toString().endsWith("png") == false)
+					if (file.toString().endsWith(IMAGE_EXT) == false)
 						continue;
 
 					final String fileName = file.getName();
@@ -140,7 +144,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 					}
 				}
 				for (File file : imageFiles) {
-					if (file.toString().endsWith("png") == false)
+					if (file.toString().endsWith(IMAGE_EXT) == false)
 						continue;
 					final Future<BufferedImage> f = cs.take();
 					final BufferedImage image = f.get();
@@ -153,6 +157,14 @@ public class CustomGraphicsPool extends SubjectBase implements
 						((Taggable) cg).getTags().addAll(metatagMap.get(f));
 
 					graphicsMap.put(cg.hashCode(), cg);
+					
+					try {
+						final URL source = new URL(fMap.get(f));
+						if(source != null)
+							sourceMap.put(source, cg.hashCode());
+					} catch (MalformedURLException me) {
+						continue;
+					}
 				}
 
 			} catch (IOException ioe) {
@@ -174,64 +186,120 @@ public class CustomGraphicsPool extends SubjectBase implements
 		long endTime = System.currentTimeMillis();
 		double sec = (endTime - startTime) / (1000.0);
 		logger.info("Image loading process finished in " + sec + " sec.");
-
+		logger.info("Currently,  " +  (graphicsMap.size()-1) + " images are available.");
 	}
 	
 
-	public void addGraphics(Integer hash, CyCustomGraphics<?> graphics,
-			URL source) {
+	/**
+	 * Add a custom graphics to current session.
+	 * 
+	 * @param hash: Hasn code of image object
+	 * @param graphics: Actual custom graphics object
+	 * @param source: Source URL of graphics (if exists.  Can be null)
+	 */
+	public void addGraphics(final Integer hash, final CyCustomGraphics<?> graphics,
+			final URL source) {
+		if(graphics == null || hash == null)
+			throw new IllegalArgumentException("Custom Graphics and its ID should not be null.");
+		
+		// Souce URL is an optional field.
 		if(source != null)
 			sourceMap.put(source, hash);
+		
 		graphicsMap.put(hash, graphics);
+		
+		// Fire event to update other GUI components.
 		this.fireStateChanged();
 	}
 
-	public void removeGraphics(Integer id) {
+	/**
+	 * Remove graphics from current session (memory).
+	 * 
+	 * @param id: ID of graphics (hash code)
+	 */
+	public void removeGraphics(final Integer id) {
 		final CyCustomGraphics<?> cg = graphicsMap.get(id);
 		if(cg != null && cg != NULL)
 			graphicsMap.remove(id);
 	}
+	
 
+	/**
+	 * Get a Custom Graphics by integer ID.
+	 * 
+	 * @param hash Hash code of Custom Graphics object
+	 * 
+	 * @return Custom Graphics if exists.  Otherwise, null.
+	 * 
+	 */
 	public CyCustomGraphics<?> getByID(Integer hash) {
 		return graphicsMap.get(hash);
 	}
 
+	/**
+	 * Get Custom Graphics by source URL.
+	 * Images without source cannot be retreved by this method.
+	 * 
+	 * @param sourceURL
+	 * @return
+	 */
 	public CyCustomGraphics<?> getBySourceURL(URL sourceURL) {
-		if (sourceMap.get(sourceURL) != null)
-			return graphicsMap.get(sourceMap.get(sourceURL));
+		final Integer hash = sourceMap.get(sourceURL);
+		if (hash != null)
+			return graphicsMap.get(hash);
 		else
 			return null;
 	}
 
+	/**
+	 * Get a collection of all Custom Graphics in current session.
+	 *
+	 * @return
+	 */
 	public Collection<CyCustomGraphics<?>> getAll() {
 		return graphicsMap.values();
 	}
 
+	
+	/**
+	 * Remove all custom graphics from memory.
+	 */
 	public void removeAll() {
 		this.graphicsMap.clear();
+		this.sourceMap.clear();
 		
 		// Null Graphics should not be removed.
 		this.graphicsMap.put(NULL.hashCode(), NULL);
 	}
 
+	
 	public CyCustomGraphics<?> getNullGraphics() {
 		return NULL;
 	}
 
+	/**
+	 * Convert current list of custom graphics into Property object.
+	 * 
+	 * @return
+	 */
 	public Properties getMetadata() {
+		// Null graphics object should not be in this property.
 		graphicsMap.remove(NULL.hashCode());
+		
 		final Properties props = new Properties();
+		// Use hash code as the key, and value will be a string returned by toString() method.
+		// This means all CyCustomGraphics implementations should have a special toString method.
 		for (final CyCustomGraphics<?> graphics : graphicsMap.values())
 			props.setProperty(Integer.toString(graphics.hashCode()), graphics
 					.toString());
 		graphicsMap.put(NULL.hashCode(), NULL);
 		return props;
 	}
+	
 
-	public File getImageFileLocation() {
-		return this.imageHomeDirectory;
-	}
-
+	/**
+	 * Save images to local disk when exiting from Cytoscape.
+	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		// Persist images
 		logger.info("Saving images to: " + imageHomeDirectory);

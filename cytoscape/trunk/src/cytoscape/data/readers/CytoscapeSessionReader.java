@@ -410,7 +410,11 @@ public class CytoscapeSessionReader {
 			try {
 				final URL nameAsURL = new URL(name);
 				// The name is URL. Use as its source.
-				pool.addGraphics(Integer.parseInt(hash), graphics, nameAsURL);
+				final CyCustomGraphics<?> currentValue = pool.getBySourceURL(nameAsURL);
+				
+				// Add only if the graphics does not exist in memory.
+				if(currentValue == null)
+					pool.addGraphics(Integer.parseInt(hash), graphics, nameAsURL);
 			} catch (MalformedURLException e) {
 				pool.addGraphics(Integer.parseInt(hash), graphics, null);
 			}

@@ -1,28 +1,8 @@
 package cytoscape.visual.customgraphic;
 
 import java.awt.Image;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collection;
-
-import cytoscape.Cytoscape;
-import cytoscape.render.stateful.CustomGraphic;
 
 public class CustomGraphicsUtil {
-
-	public static void generateCustomGraphics(final Collection<String> urlList) {
-		for (final String urlStr : urlList) {
-			final CyCustomGraphics<CustomGraphic> graphics;
-			try {
-				graphics = new URLImageCustomGraphics(urlStr);
-				if(graphics != null)
-					Cytoscape.getVisualMappingManager().getCustomGraphicsPool().
-					addGraphics(graphics.hashCode(), graphics, new URL(urlStr));
-			} catch (IOException e) {
-				continue;
-			}
-		}
-	}
 
 	public static Image getResizedImage(Image original, final Integer w, final Integer h, boolean keepAspectRatio) {
 		if(original == null)

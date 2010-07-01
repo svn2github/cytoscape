@@ -6,6 +6,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -13,8 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.JXList;
 
@@ -30,7 +30,7 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphics;
  * 
  * @author kono
  */
-public class CustomGraphicsBrowser extends JXList implements ChangeListener {
+public class CustomGraphicsBrowser extends JXList implements PropertyChangeListener {
 
 	private static final long serialVersionUID = -8342056297304400824L;
 
@@ -61,7 +61,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 		initComponents();
 		addAllImages();
 
-		pool.addChangeListener(this);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED, this);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 	
 
 	/**
-	 * Dra
+	 * D & D
 	 * 
 	 * @author kono
 	 * 
@@ -168,9 +168,13 @@ public class CustomGraphicsBrowser extends JXList implements ChangeListener {
 
 	}
 
-
-	public void stateChanged(ChangeEvent e) {
-		System.out.println("###### Change Event: " + e);
+	@Override
+	public void propertyChange(PropertyChangeEvent e) {
+		// Clear the model, and build new List from current pool of graphics
+		model.removeAllElements();
+		model.clear();
+		
+		addAllImages();
 	}
 
 }
