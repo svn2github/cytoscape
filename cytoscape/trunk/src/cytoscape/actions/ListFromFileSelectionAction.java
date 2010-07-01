@@ -35,16 +35,14 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// $Revision$
-// $Date$
-// $Author$
 package cytoscape.actions;
+
+import giny.model.Node;
 
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -52,20 +50,22 @@ import javax.swing.event.MenuEvent;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 
 
 /**
- *
+ * Select nodes from a text list of node IDs.
  */
 public class ListFromFileSelectionAction extends CytoscapeAction {
+	
+	private static final long serialVersionUID = 2309144834195371889L;
+
 	/**
 	 * Creates a new ListFromFileSelectionAction object.
 	 */
 	public ListFromFileSelectionAction() {
-		super("From File...");
+		super("From ID List File...");
 		setPreferredMenu("Select.Nodes");
 	}
 
@@ -75,21 +75,22 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final boolean cancelSelectionAction = !selectFromFile();
+		selectFromFile();
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean selectFromFile() {
 		final String fileName;
 
 		try {
-			fileName = FileUtil.getFile("Load Gene Selection File", FileUtil.LOAD).toString();
+			fileName = FileUtil.getFile("Load ID List", FileUtil.LOAD).toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
 			return false;
 		}
 
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		final CyNetwork network = Cytoscape.getCurrentNetwork();
 		final HashSet<String> fileNodes = new HashSet<String>();
 
 		try {
@@ -101,15 +102,16 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 				String s;
 
 				while ((s = bin.readLine()) != null) {
-					String trimName = s.trim();
+					final String trimedName = s.trim();
 
-					if (trimName.length() > 0)
-						fileNodes.add(trimName);
+					if (trimedName.length() > 0)
+						fileNodes.add(trimedName);
 				}
 			}
 			finally {
 				if (bin != null) {
 					bin.close();
+					bin = null;
 				}
 			}
 		} catch (Exception e) {
@@ -126,30 +128,16 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 
 		// loop through all the node of the graph
 		// selecting those in the file
-		List nodeList = network.nodesList();
-		giny.model.Node[] nodes = (giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
+		final List<Node> nodeList = network.nodesList();
 
 		int selectCount = 0;
-		for (int i = 0; i < nodes.length; i++) {
-			giny.model.Node node = nodes[i];
-			boolean selected = false;
-			String canonicalName = node.getIdentifier();
-			List synonyms = Semantics.getAllSynonyms(canonicalName, network);
-
-			for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
-				if (fileNodes.contains((String) synI.next())) {
-					selected = true;
-					++selectCount;
-					break;
-				}
-			}
-
-			if (selected)
-				network.setSelectedNodeState(node, true);
+		for (Node node: nodeList) {
+			network.setSelectedNodeState(node, true);
+			selectCount++;
 		}
 
 		if (selectCount == 0) {
-			JOptionPane.showMessageDialog(null, "No nodes listed in \"" + fileName + "\" were found in the current network view!",
+			JOptionPane.showMessageDialog(null, "No nodes listed in \"" + fileName + "\" were found in the current network!",
 			                              "Information",
 			                              JOptionPane.INFORMATION_MESSAGE);
 			return false;
