@@ -1,12 +1,14 @@
 package cytoscape.visual.customgraphic.experimental;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 
-import javax.swing.ImageIcon;
-
-import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.PaintFactory;
 import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
@@ -33,10 +35,8 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 	private final CustomGraphicsProperty<Color> c1;
 	private final CustomGraphicsProperty<Color> c2;
 	
-	// Default image Icon.
-	private static final ImageIcon DEF_ICON = 
-		new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_dialog-warning-32.png"));
-
+	private Image rendered;
+	
 	public GradientRectangleCustomGraphics() {
 		super(NAME);
 		w = new CustomGraphicsPropertyImpl<Float>(60f);
@@ -49,7 +49,7 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 		this.props.put(COLOR1, c1);
 		this.props.put(COLOR2, c2);
 		this.tags.add("vector image, gradient");
-		
+		rendered = new RenderedGradientBox(w.getValue().intValue(), h.getValue().intValue(), BufferedImage.TYPE_INT_ARGB);
 		update();
 	}
 
@@ -66,12 +66,9 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 		cgList.add(cg);
 	}
 
-
-	@Override
 	public Image getImage() {
-		return DEF_ICON.getImage();
+		return rendered;
 	}
-
 	
 	@Override
 	public Image resizeImage(int width, int height) {
@@ -79,6 +76,22 @@ public class GradientRectangleCustomGraphics extends AbstractCyCustomGraphics {
 		this.h.setValue((float)height);
 		update();
 		
-		return DEF_ICON.getImage();
+		return rendered;
+	}
+	
+	class RenderedGradientBox extends BufferedImage {
+
+		public RenderedGradientBox(int width, int height, int imageType) {
+			super(width, height, imageType);
+			// TODO Auto-generated constructor stub
+		}
+		
+		public void update() {
+			Graphics2D g = (Graphics2D) this.getGraphics();
+			g.setPaint(Color.red);
+			g.fillRect(0, 0, getWidth(), getHeight());
+		}
+		
+		
 	}
 }

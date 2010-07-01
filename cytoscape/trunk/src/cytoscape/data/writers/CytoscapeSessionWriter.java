@@ -118,6 +118,7 @@ import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.ImageUtil;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
+import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 
 
 /**
@@ -373,7 +374,9 @@ public class CytoscapeSessionWriter {
 		
 		for(CyCustomGraphics<?> cg: customGraphics) {
 			final Image img = cg.getImage();
-			if(img != null && cg instanceof NullCustomGraphics == false) {
+			// For now, save URLImage only.
+			// TODO: how can we handle Dynamic Images?
+			if(img != null && cg instanceof NullCustomGraphics == false && cg instanceof URLImageCustomGraphics) {
 				final int hash = cg.hashCode();
 				zos.putNextEntry(new ZipEntry(sessionDir + "images/" + hash + ".png"));
 				ImageIO.write(ImageUtil.toBufferedImage(img), "PNG", zos);

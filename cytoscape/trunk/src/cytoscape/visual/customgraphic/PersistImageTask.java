@@ -52,6 +52,8 @@ public class PersistImageTask implements Task {
 				.newFixedThreadPool(NUM_THREADS);
 
 		for (CyCustomGraphics<?> cg : pool.getAll()) {
+			
+			// Save ONLY bitmap image Custom Graphics.
 			if (cg instanceof NullCustomGraphics
 					|| cg instanceof URLImageCustomGraphics == false)
 				continue;
