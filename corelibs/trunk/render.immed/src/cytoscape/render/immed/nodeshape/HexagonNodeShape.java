@@ -37,32 +37,31 @@ package cytoscape.render.immed.nodeshape;
 
 import cytoscape.render.immed.GraphGraphics;
 
-import java.awt.geom.GeneralPath;
-import java.awt.Shape;
+public class HexagonNodeShape extends LegacyCustomNodeShape {
 
-public class HexagonNodeShape extends AbstractNodeShape {
+	private static final double[] coords = new double[12]; 
 
-	private final GeneralPath path; 
+	static {
+		// 1x1 square centered around 0,0
+		final double min = -0.5;
+		final double max = 0.5;
+
+		// defines a right triangle found within the hexagon
+		final double x = (max - min)/4.0;             // horizontal
+		final double z = x * 2.0;                     // hypotenuse
+		final double y = z * Math.sin(Math.PI/3.0);   // vertical
+		
+		// X coordinates              Y coordinates
+		coords[0]  = min;             coords[1]  = min + z;
+		coords[2]  = min + x;         coords[3]  = min + z + y; 
+		coords[4]  = min + x + z;     coords[5]  = min + z + y; 
+		coords[6]  = max;             coords[7]  = min + z; 
+		coords[8]  = min + x + z;     coords[9]  = max - z - y; 
+		coords[10] = min + x;         coords[11] = max - z - y; 
+	}
 
 	public HexagonNodeShape() {
-		super(GraphGraphics.SHAPE_HEXAGON);
-		path = new GeneralPath(); 
-	}
-		
-	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
-
-		path.reset();
-
-		path.moveTo(((2.0f * xMin) + xMax) / 3.0f, yMin);
-		path.lineTo(((2.0f * xMax) + xMin) / 3.0f, yMin);
-		path.lineTo(xMax, (yMin + yMax) / 2.0f);
-		path.lineTo(((2.0f * xMax) + xMin) / 3.0f, yMax);
-		path.lineTo(((2.0f * xMin) + xMax) / 3.0f, yMax);
-		path.lineTo(xMin, (yMin + yMax) / 2.0f);
-
-		path.closePath();
-
-		return path;
+		super(coords, GraphGraphics.SHAPE_HEXAGON);
 	}
 }
 
