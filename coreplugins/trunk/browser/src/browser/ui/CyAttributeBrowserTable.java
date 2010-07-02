@@ -180,31 +180,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public JPopupMenu getContextMenu() {
-		if (rightClickPopupMenu == null) {
-			rightClickPopupMenu = getPopupMenu();
-		}
 
-		return rightClickPopupMenu;
-	}
-
-	/**
-	 *
-	 */
 	protected static final String LS = System.getProperty("line.separator");
 
-	// this is the only one that's actually used
-	/**
-	 * Creates a new JSortTable object.
-	 *
-	 * @param model  DOCUMENT ME!
-	 * @param objectType  DOCUMENT ME!
-	 */
 	public CyAttributeBrowserTable(DataTableModel model, DataObjectType objectType) {
 		super(model);
 		logger = CyLogger.getLogger(CyAttributeBrowserTable.class);
@@ -400,9 +378,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	/**
 	 * This method initializes rightClickPopupMenu
 	 *
-	 * @return javax.swing.JPopupMenu
+	 * @return the inilialised pop-up menu
 	 */
-	private JPopupMenu getPopupMenu() {
+	public JPopupMenu getPopupMenu() {
 		if (rightClickPopupMenu != null)
 			return rightClickPopupMenu;
 
@@ -708,6 +686,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					final int column = getColumnModel().getColumnIndexAtX(e.getX());
 					final int row = e.getY() / getRowHeight();
 
+					// Bail out if we're dealing w/ network attributes or we are at the ID column:
+					if (objectType == NETWORK || column == getIdColumn())
+
 					// Make sure the column and row we're clicking on actually exists!
 					if (column >= tableModel.getColumnCount() || row >= tableModel.getRowCount())
 						return;
@@ -728,8 +709,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						
 						showListContents(e);
 
-						if ((row >= getRowCount()) || (row < 0) || (column >= getColumnCount())
-						    || (column < 0))
+						if (row >= getRowCount() || row < 0 || column >= getColumnCount() || column < 0)
 							return;
 
 						if (objectAndEditString != null && objectAndEditString.getValidatedObject() != null
@@ -978,8 +958,12 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		}
 	}
 
-	private void getCellContentView(Byte type, final Object[] listItems, String idField,
-	                                MouseEvent e) {
+	private void getCellContentView(final Byte type, final Object[] listItems, final String idField,
+	                                final MouseEvent e)
+	{
+		final int column = getColumnModel().getColumnIndexAtX(e.getX());
+		final int row = e.getY() / getRowHeight();
+
 		JMenu curItem = null;
 
 		String dispName;
@@ -1069,27 +1053,27 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final int[] colsselected = this.getSelectedColumns();
 
 		// Return if no cell is selected.
-		if ((numcols == 0) && (numrows == 0)) {
+		if (numcols == 0 && numrows == 0)
 			return null;
-		}
 
-		if (!((((numrows - 1) == (rowsselected[rowsselected.length - 1] - rowsselected[0]))
-		      && (numrows == rowsselected.length))
-		    && (((numcols - 1) == (colsselected[colsselected.length - 1] - colsselected[0]))
-		       && (numcols == colsselected.length)))) {
+		if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0]
+		       && numrows == rowsselected.length)
+		      && (numcols - 1 == colsselected[colsselected.length - 1] - colsselected[0]
+			  && numcols == colsselected.length))) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Invalid Copy Selection",
 			                              "Invalid Copy Selection", JOptionPane.ERROR_MESSAGE);
 
 			return null;
 		}
 
-		Object tempCell = null;
-
 		for (int i = 0; i < numrows; i++) {
 			for (int j = 0; j < numcols; j++) {
-				tempCell = this.getValueAt(rowsselected[i], colsselected[j]);
+				final Object cellValue = this.getValueAt(rowsselected[i], colsselected[j]);
+				if (cellValue == null)
+					continue;
 
-				sbf.append(tempCell);
+				final String cellText = ((ValidatedObjectAndEditString)cellValue).getEditString();
+				sbf.append(cellText);
 
 				if (j < (numcols - 1))
 					sbf.append("\t");

@@ -158,7 +158,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 	}
 
 	protected void addMenuItem(Component newItem) {
-		attributeTable.getContextMenu().add(newItem);
+		attributeTable.getPopupMenu().add(newItem);
 	}
 
 	/**
