@@ -111,7 +111,7 @@
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Piet Molenaar</td>
     <td>Maital Ashkenazi</td>
-    <td>Daniel Abel</td>
+    <td><a href="http://hal.elte.hu/~abeld">Daniel Abel</a></td>
     <td>Noel Ruddock</td>
    </tr>
 
