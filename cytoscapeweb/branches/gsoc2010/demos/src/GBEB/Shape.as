@@ -30,8 +30,7 @@ package GBEB
 			gridIndex = new Array();
 			storedDataEdges = new Array();
 			storedDataNodes = new Array();
-			storedGrids = new Array();			
-			
+			storedGrids = new Array();		
 		}
 		
 		

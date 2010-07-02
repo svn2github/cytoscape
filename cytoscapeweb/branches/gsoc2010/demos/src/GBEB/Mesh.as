@@ -35,8 +35,6 @@ package GBEB
 		{
 			_data = data;
 			_grid = new Array();
-			
-			trace("Hi");
 		}
 		
 		
@@ -209,16 +207,18 @@ package GBEB
 						
 						//trace("Mesh: testIntersection: Rec :", rec.topLeft, rec.bottomRight, " | Points ",p1, p2);
 						
-						if(intersectsVertical(rec.topLeft, bottomLeft(rec), p1, p2)) return true; //checks against left vertical
-						if(intersectsVertical(topRight(rec), rec.bottomRight, p1, p2)) return true; //checks against right vertical
-						if(intersectsHorizontal(rec.topLeft, topRight(rec), p1, p2)) return true; //checks against right vertical
-						if(intersectsHorizontal(bottomLeft(rec), rec.bottomRight, p1, p2)) return true; //checks against right vertical
+						if(intersectsVertical(rec.topLeft, bottomLeft(rec), p1, p2) != null) return true; //checks against left vertical
+						if(intersectsVertical(topRight(rec), rec.bottomRight, p1, p2) != null) return true; //checks against right vertical
+						if(intersectsHorizontal(rec.topLeft, topRight(rec), p1, p2)!= null) return true; //checks against top horizontal
+						if(intersectsHorizontal(bottomLeft(rec), rec.bottomRight, p1, p2)!= null) return true; //checks against bottom horizontal
 						
 						//are there special cases in which there is glancing contact?
 						
 						return false;
 					}
-					private function intersectsVertical(vp1:Point, vp2:Point, p1:Point, p2:Point):Boolean
+					
+					//Notes: These intersection functions only check for eqaulity in the vertical intersection (meaning checking for corners). Hence, it prevents any multiple counting
+					private function intersectsVertical(vp1:Point, vp2:Point, p1:Point, p2:Point):Point
 					{
 						var _x:Number = vp1.x;
 						if( (_x >= p1.x && _x <= p2.x) || (_x >= p2.x && _x <= p1.x)) //checks if the x-coor is within the interval of the line
@@ -226,24 +226,24 @@ package GBEB
 							var _y:Number = (( (p2.y - p1.y) / (p2.x - p1.x)	) * ( _x - p1.x)) + p1.y;	 
 							if( (_y >= vp1.y && _y <= vp2.y) || (_y >= vp2.y && _y <= vp1.y)) //checks if the calculated y-coor is within the interval of the vertical line	
 							{	//trace("Mesh: IntersectsVertical: " + p1, p2 + " intersects with " + vp1 + " at " + new Point(_x, _y));
-								return true;
+								return new Point(_x, _y);
 							}
 						}	
-						return false;
+						return null;
 					}
-					private function intersectsHorizontal(vp1:Point, vp2:Point, p1:Point, p2:Point):Boolean
+					private function intersectsHorizontal(vp1:Point, vp2:Point, p1:Point, p2:Point):Point
 					{
 						var _y:Number = vp1.y; 
 						if( (_y >= p1.y && _y <= p2.y) || (_y >= p2.y && _y <= p1.y)) //checks if the y-coor is within the interval of the line
 						{						
 							var _x:Number = (( (p2.x - p1.x) / (p2.y - p1.y)	) * ( _y - p1.y)) + p1.x; 
 							
-							if( (_x >= vp1.x && _x <= vp2.x) || (_x >= vp2.x && _x <= vp1.x)) //checks if the calculated x-coor is within the interval of the horizontal line	
+							if( (_x > vp1.x && _x < vp2.x) || (_x > vp2.x && _x < vp1.x)) //checks if the calculated x-coor is within the interval of the horizontal line	
 							{	//trace("Mesh: IntersectsHorizontal: " + p1, p2 + " intersects with " + vp1 + " at " + new Point(_x, _y));
-								return true;
+								return new Point(_x, _y);
 							}
 						}	
-						return false;
+						return null;
 					}
 					
 					//I have to do this because flash.geom.rec does not have a refernce readily available;
