@@ -184,7 +184,8 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// 1- Laying out labels off all nodes
 	// - and- 
 	// 2- (normal) Nodes are not allowed to move
-	if (!selectedOnly && !moveNodes) {
+	if (selectedOnly || !moveNodes) {
+	    newPartition.recalculateStatistics();
 	    initialLocation = newPartition.getAverageLocation();
 	}
 
@@ -194,36 +195,29 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// Layout the new partition using the parent class layout algorithm
 	super.layoutPartition(newPartition);
 
-	// Move labels to a random position near their parents
-	// for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {
-// 	    logger.info("moving label of node " + node.getIdentifier());
-// 	    node.increment(100 * Math.random(), 100 * Math.random());
-// 	    node.moveToLocation();    
-// 	    logger.info("label moved!");	    
-// 	}
-
-
 	// Not quite done, yet. We may need to migrate labels back to their starting position
 	// This will be necessary if:
 	// 1- Laying out only selected nodes
 	// - or- 
 	// 2- (normal) Nodes are not allowed to move
-// 	if (selectedOnly || !moveNodes) {
-// 	    logger.info("moving back labels (and possibly nodes) to their location");
+	if (selectedOnly || !moveNodes) {
+	    logger.info("moving back labels (and possibly nodes) to their location");
 
-// 	    double xDelta = 0.0;
-// 	    double yDelta = 0.0;
-// 	    Dimension finalLocation = newPartition.getAverageLocation();
-// 	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-// 	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+	    newPartition.recalculateStatistics();
+	    Dimension finalLocation = newPartition.getAverageLocation();
+	    double xDelta = 0.0;
+	    double yDelta = 0.0;
+	 
+	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
 
-// 	    for (LayoutNode v: newPartition.getNodeList()) {
-// 		if (!v.isLocked()) {
-// 		    v.decrement(xDelta, yDelta);
-// 		    newPartition.moveNodeToLocation(v);
-// 		}
-// 	    }
-// 	}
+	    for (LayoutNode v: newPartition.getNodeList()) {
+		if (!v.isLocked()) {
+		    v.decrement(xDelta, yDelta);
+		    newPartition.moveNodeToLocation(v);
+		}
+	    }
+	}
 
 
 	// make sure nodes are where they should be
