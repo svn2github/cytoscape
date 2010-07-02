@@ -1,0 +1,12 @@
+StructureViz commands:
+	structureviz alignStructures reference="id" structureList="list"
+	structureviz close model="model#"|pdbid="id"|modbase="id"
+	structureviz exit
+	structureviz listResidues model="model#"|modebaseid="id"|pdbid="id"
+	structureviz listStructures
+	structureviz openstructure pdbid="id"|modbase="id" [node="nodeName"]
+	structureviz selectResidues nodeList="list"|node="node" attribute="attrName"|residues="residueList"
+	structureviz selectStructures nodeList="list"|node="node" model="model#"|modebaseid="id"|pdbid="id"
+	structureviz send command="command"
+	structureviz showdialog
+	

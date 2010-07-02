@@ -35,7 +35,7 @@ package structureViz.model;
 import java.util.List;
 import java.util.ArrayList;
 
-import cytoscape.*;
+import cytoscape.CyNode;
 
 /**
  * The Structure class provides a link between the Chimera data
@@ -113,7 +113,7 @@ public class Structure {
 	 */
 	public String getIdentifier() {
 		if (cytoscapeNode == null)
-			return null;
+			return "(none)";
 		return cytoscapeNode.getIdentifier();
 	}
 

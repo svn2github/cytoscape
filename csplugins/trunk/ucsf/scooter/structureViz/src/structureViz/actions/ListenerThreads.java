@@ -35,7 +35,10 @@ package structureViz.actions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.*;
+
+import cytoscape.logger.CyLogger;
 
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraChain;
@@ -54,7 +57,8 @@ class ListenerThreads extends Thread
 	private BufferedReader lineReader = null;
 	private Chimera chimeraObject = null;
 	private Process chimera = null;
-	private List replyLog = null;
+	private Map<String,List<String>> replyLog = null;
+	private CyLogger logger;
 
 	/**
 	 * Create a new listener thread to read the responses from Chimera
@@ -63,10 +67,11 @@ class ListenerThreads extends Thread
 	 * @param log a handle to a List to post the responses to
 	 * @param chimeraObject a handle to the Chimera Object
 	 */
-	ListenerThreads(Process chimera, List log, Chimera chimeraObject) {
+	ListenerThreads(Process chimera, Chimera chimeraObject, CyLogger logger) {
 		this.chimera = chimera;
-		this.replyLog = log;
 		this.chimeraObject = chimeraObject;
+		this.logger = logger;
+		replyLog = new HashMap<String, List<String>>();
  	 	// Get a line-oriented reader
   	readChan = chimera.getInputStream();
 		lineReader = new BufferedReader(new InputStreamReader(readChan));
@@ -79,17 +84,38 @@ class ListenerThreads extends Thread
 		// System.out.println("ReplyLogListener running");
 		while (true) {
 			try {
-				List reply = getReply();
-				synchronized (replyLog) {
-					if (reply.size() > 0) {
-						replyLog.addAll(reply);
-					}
-					replyLog.notifyAll();
-				}
+				chimeraRead();
 			} catch (IOException e) {
+				logger.info("UCSF Chimera has exited: "+e.getMessage());
 				return;
 			}
 		}
+	}
+
+	public List<String> getResponse(String command) {
+		List<String> reply;
+		// System.out.println("getResponse: "+command);
+		while (!replyLog.containsKey(command)) {
+			try {
+				Thread.currentThread().sleep(100);
+			} catch (InterruptedException e) { }
+		}
+
+		synchronized (replyLog) {
+			reply = replyLog.get(command);
+			// System.out.println("getResponse ("+command+") = "+reply);
+			replyLog.remove(command);
+		}
+		return reply;
+	}
+
+	public void clearResponse(String command) {
+		try {
+			Thread.currentThread().sleep(100);
+		} catch (InterruptedException e) { }
+		if (replyLog.containsKey(command))
+			replyLog.remove(command);
+		return;
 	}
 
   /**
@@ -97,34 +123,62 @@ class ListenerThreads extends Thread
 	 *
 	 * @return a List containing the replies from Chimera
    */
-   private List getReply() throws IOException {
+   private void chimeraRead() throws IOException {
  	 	if (chimera == null)
- 	 		return null;
+ 	 		return;
 
+		String line = null;
+		while ((line = lineReader.readLine()) != null) {
+			// System.out.println("From Chimera-->"+line);
+			if (line.startsWith("CMD")) {
+				chimeraCommandRead(line.substring(4));
+			} else if (line.startsWith("ModelChanged: ")) {
+				(new ModelUpdater()).start();
+			} else if (line.startsWith("SelectionChanged: ")) {
+				(new SelectionUpdater()).start();
+			}
+		}
+		return;
+	}
+
+	private void chimeraCommandRead(String command) throws IOException {
 		// Generally -- looking for:
 		// 	CMD command
 		//   ........
 		//	END
 		// We return the text in between
-		ArrayList reply = new ArrayList();
+		List<String> reply = new ArrayList<String>();
+		boolean updateModels = false;
+		boolean updateSelection = false;
 		String line = null;
-		while ((line = lineReader.readLine()) != null) {
-			// System.out.println("From Chimera: "+line);
-			if (line.startsWith("END")) {
-				break;
+
+		synchronized (replyLog) {
+			while ((line = lineReader.readLine()) != null) {
+				// System.out.println("From Chimera (CMD) -->"+line);
+				if (line.startsWith("CMD")) {
+					logger.error("Got unexpected command from Chimera: "+line);
+
+				} else if (line.startsWith("END")) {
+					break;
+				}
+				if (line.startsWith("ModelChanged: ")) {
+					updateModels = true;
+				} else if (line.startsWith("SelectionChanged: ")) {
+					updateSelection = true;
+				} else if (line.length() == 0) {
+					continue;
+				} else if (!line.startsWith("CMD")) {
+					reply.add(line);
+				}
 			}
-			if (line.startsWith("ModelChanged: ")) {
-				(new ModelUpdater()).start();
-			} else if (line.startsWith("SelectionChanged: ")) {
-				// Start up the updater on a separate thread
-				(new SelectionUpdater()).start();
-			} else if (line.length() == 0) {
-				continue;
-			} else if (!line.startsWith("CMD")) {
-				reply.add(line);
-			}
+			replyLog.put(command, reply);
 		}
-		return reply;
+		if (updateModels)
+			(new ModelUpdater()).start();
+		if (updateSelection)
+			(new SelectionUpdater()).start();
+
+		return;
 	}
 
 	/**

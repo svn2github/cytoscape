@@ -101,6 +101,15 @@ public class ModelNavigatorDialog
 	private ChimeraTreeModel treeModel;
 	private JMenu alignMenu;
 
+	public static ModelNavigatorDialog LaunchModelNavigator(Frame parent, Chimera chimera) {
+		ModelNavigatorDialog mnDialog = new ModelNavigatorDialog(Cytoscape.getDesktop(), chimera);
+		mnDialog.pack();
+		mnDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+		mnDialog.setVisible(true);
+		chimera.setDialog(mnDialog);
+		return mnDialog;
+	}
+
 	/**
 	 * Create a new ModelNavigatorDialog.
 	 *
@@ -108,7 +117,7 @@ public class ModelNavigatorDialog
 	 * @param object the Chimera interface object associated with
 	 * this dialog
 	 */
-	public ModelNavigatorDialog (Frame parent, Chimera object) {
+	protected ModelNavigatorDialog (Frame parent, Chimera object) {
 		// super(parent, false);
 		super(Cytoscape.getDesktop(), "Cytoscape Molecular Structure Navigator");
 		chimeraObject = object;
@@ -291,11 +300,12 @@ public class ModelNavigatorDialog
 	 * @param selectionList the List of ChimeraStructuralObjects to be selected
 	 */
 	public void updateSelection(List<ChimeraStructuralObject> selectionList) {
+		// System.out.println("Model Navigator Panel: updateSelection ("+selectionList+")");
 		TreePath path = null;
 		this.ignoreSelection = true;
+		// Need to clear currently selected objects
 		clearSelectionState();
 		navigationTree.clearSelection();
-		// Need to clear currently selected objects
 		for (ChimeraStructuralObject selectedObject: selectionList) {
 			path = (TreePath)selectedObject.getUserData();
 			navigationTree.addSelectionPath(path);

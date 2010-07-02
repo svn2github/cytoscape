@@ -150,7 +150,7 @@ public class Align {
 				matchList.add((ChimeraStructuralObject)match);
 		}
 		align((ChimeraStructuralObject)reference, matchList);
-		chimeraObject.command("focus");
+		chimeraObject.chimeraSend("focus");
 		if (createEdges)
 			setAllAttributes(reference, matchList);
 	}
@@ -166,10 +166,10 @@ public class Align {
 		results = new HashMap();
 
 		for (ChimeraStructuralObject match: models) {
-			Iterator matchResult = singleAlign(reference, match);
+			List<String> matchResult = singleAlign(reference, match);
 			results.put(match.toString(), parseResults(matchResult));
 		}
-		chimeraObject.command("focus");
+		chimeraObject.chimeraSend("focus");
 		if (createEdges)
 			setAllAttributes(reference, models);
 	}
@@ -192,11 +192,11 @@ public class Align {
 			// System.out.println(match);
 			ChimeraModel model = match.getChimeraModel();
 			modelList.add(model);
-			Iterator matchResult = singleAlign(reference, match);
+			List<String> matchResult = singleAlign(reference, match);
 			// System.out.println("Saving results for: "+model.getModelName());
 			results.put(model.getModelName(), parseResults(matchResult));
 		}
-		chimeraObject.command("focus");
+		chimeraObject.chimeraSend("focus");
 		if (createEdges)
 			setAllAttributes(reference, modelList);
 	}
@@ -208,7 +208,7 @@ public class Align {
 	 * @param match the ChimeraModel to align to the reference
 	 * @return an Iterator over the results
 	 */
-	private Iterator singleAlign(ChimeraStructuralObject reference, ChimeraStructuralObject match) {
+	private List<String> singleAlign(ChimeraStructuralObject reference, ChimeraStructuralObject match) {
 		String command = "matchmaker "+reference.toSpec()+" "+match.toSpec();
 		if (reference instanceof ChimeraChain || match instanceof ChimeraChain)
 			command = command + " pair ss";
@@ -225,11 +225,10 @@ public class Align {
 	 * @param lineIter the iterator over the lines of responses from Chimera
 	 * @return the array of floats containing the results from a single alignment
 	 */
-	private float[] parseResults(Iterator lineIter) {
+	private float[] parseResults(List<String> resultsList) {
 		float[] results = new float[3];
 		int index = -1;
-		while (lineIter.hasNext()) {
-			String line = (String)lineIter.next();
+		for (String line: resultsList) {
 			// System.out.println(line);
 			if ((index = line.indexOf("score = ")) > 0) {
 				Float score = new Float(line.substring(index+8));

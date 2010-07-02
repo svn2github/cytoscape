@@ -455,7 +455,7 @@ public class ActionPopupMenu extends JPopupMenu {
 			}
 			for (int i=0; i<commandList.length; i++) {
 					// System.out.println("To Chimera: "+commandList[i]);
-					chimeraObject.command(commandList[i]);
+					chimeraObject.chimeraSend(commandList[i]);
 			}
 			if (postCommand == CLEAR_SELECTION) {
 				navTree.clearSelection();

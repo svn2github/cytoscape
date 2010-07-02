@@ -33,9 +33,11 @@
 package structureViz.actions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.io.*;
 import javax.swing.JOptionPane;
@@ -69,27 +71,34 @@ public class Chimera {
    */
   // Chimera process
   static Process chimera;
-	static private ArrayList<String> replyLog;
-	static private ArrayList<ChimeraModel> models;
-	static private HashMap<Float,ChimeraModel> modelHash;
+	static private List<ChimeraModel> models;
+	static private Map<Float,ChimeraModel> modelHash;
 	static private ListenerThreads listener;
 	static private CyNetworkView networkView;
 	static private ModelNavigatorDialog mnDialog = null;
 	static private AlignStructuresDialog alDialog = null;
+	static Chimera staticPointer = null;
+	static CyLogger logger;
+
+	static public Chimera GetChimeraInstance(CyNetworkView networkView, CyLogger logger) {
+		if (staticPointer != null) {
+			staticPointer.setNetworkView(networkView);
+		} else {
+			staticPointer = new Chimera(networkView, logger);
+		}
+		return staticPointer;
+	}
     
 	/**
 	 * Create the Chimera object
 	 *
 	 * @param networkView the current CyNetworkView 
 	 */
-  public Chimera(CyNetworkView networkView) {
-  	/**
-  	 * Null constructor, for now
-  	 */
-		replyLog = new ArrayList();
-		models = new ArrayList();
-		modelHash = new HashMap();
+  protected Chimera(CyNetworkView networkView, CyLogger logger) {
+		models = new ArrayList<ChimeraModel>();
+		modelHash = new HashMap<Float,ChimeraModel>();
 		this.networkView = networkView;
+		this.logger = logger;
   }
 
 	/**
@@ -100,11 +109,36 @@ public class Chimera {
 	public List<ChimeraModel> getChimeraModels () { return models; }
 
 	/**
+ 	 * Return the list of open structures in this instance of Chimera
+ 	 *
+ 	 * @return list of Structures
+ 	 */
+	public List<Structure> getOpenStructs() {
+		List<Structure>st = new ArrayList<Structure>();
+		if (this.models == null)
+			return st;
+
+		for (ChimeraModel model: models) {
+			Structure structure = model.getStructure();
+			if (structure != null)
+				st.add(structure);
+		}
+		return st;
+	}
+
+	/**
 	 * Return our network view
 	 *
 	 * @return the network view we were created with
 	 */
 	public CyNetworkView getNetworkView () { return networkView; }
+
+	/**
+	 * Set our network view
+	 *
+	 * @param networkView the network view to switch to
+	 */
+	public void setNetworkView (CyNetworkView networkView) { this.networkView = networkView; }
 
 	/**
 	 * Provide a handle to the ModelNavigatorDialog that is currently
@@ -202,54 +236,54 @@ public class Chimera {
    * @throws IOException
  */
   public boolean launch() throws IOException {
-  		// See if we already have a chimera instance running
-  		if (chimera == null) {
-  			// No, get one started
+ 		// See if we already have a chimera instance running
+		if (isLaunched() == true)
+			return true;
+  		
+ 		// No, get one started
+		// Figure out our fallback
+		String osPath = "";
+		String os = System.getProperty("os.name");
+		if (os.startsWith("Linux")) {
+			osPath = "/usr/local/chimera/bin/";
+		} else if (os.startsWith("Windows")) {
+			osPath = "\\Program Files\\Chimera\\bin\\";
+		} else if (os.startsWith("Mac")) {
+			osPath = "/Applications/Chimera.app/Contents/MacOS/";
+		}
 
-				// Figure out our fallback
-				String osPath = "";
-				String os = System.getProperty("os.name");
-				if (os.startsWith("Linux")) {
-					osPath = "/usr/local/chimera/bin/";
-				} else if (os.startsWith("Windows")) {
-					osPath = "\\Program Files\\Chimera\\bin\\";
-				} else if (os.startsWith("Mac")) {
-					osPath = "/Applications/Chimera.app/Contents/MacOS/";
-				}
+		// Get the path
+		String path = CyChimera.getProperty("chimeraPath");
+		if (path != null) {
+			path = path+"chimera";
+		} else {
+			path = "chimera";
+		}
+		CyLogger.getLogger(Chimera.class).info("Path: "+path);
 
-				// Get the path
-				String path = CyChimera.getProperty("chimeraPath");
-				if (path != null) {
-					path = path+"chimera";
-				} else {
-					path = "chimera";
-				}
-				CyLogger.getLogger(Chimera.class).info("Path: "+path);
+		try {
+ 			List <String> args = new ArrayList<String>();
+ 			args.add(path);
+ 			args.add("--start");
+ 			args.add("ReadStdin");
+ 			ProcessBuilder pb = new ProcessBuilder(args);
+ 			chimera = pb.start();
+		} catch (Exception e) {
+ 			List <String> args = new ArrayList<String>();
+ 			args.add(osPath+"chimera");
+ 			args.add("--start");
+ 			args.add("ReadStdin");
+ 			ProcessBuilder pb = new ProcessBuilder(args);
+ 			chimera = pb.start();
+		}
 
-				try {
-  				List <String> args = new ArrayList<String>();
-  				args.add(path);
-  				args.add("--start");
-  				args.add("ReadStdin");
-  				ProcessBuilder pb = new ProcessBuilder(args);
-  				chimera = pb.start();
-				} catch (Exception e) {
-  				List <String> args = new ArrayList<String>();
-  				args.add(osPath+"chimera");
-  				args.add("--start");
-  				args.add("ReadStdin");
-  				ProcessBuilder pb = new ProcessBuilder(args);
-  				chimera = pb.start();
-				}
-  		} 
-			// Start up a listener
-			listener = new ListenerThreads(chimera, replyLog, this);
-			listener.start();
+		// Start up a listener
+		listener = new ListenerThreads(chimera, this, logger);
+		listener.start();
 
-			// Ask Chimera to give us updates
-			this.command("listen start models; listen start selection");
-
-      return true;
+		// Ask Chimera to give us updates
+		chimeraSend("listen start models; listen start selection");
+		return true;
   }
   
   /**
@@ -260,11 +294,11 @@ public class Chimera {
   public void open(Structure structure) {
 		structure.setModelNumber(Structure.getNextModel());
 		if (structure.getType() == Structure.StructureType.MODBASE_MODEL)
-			this.command("listen stop models; listen stop selection; open "+structure.modelNumber()+" modbase:"+structure.name());
+			chimeraSend("listen stop models; listen stop selection; open "+structure.modelNumber()+" modbase:"+structure.name());
 		else if (structure.getType() == Structure.StructureType.SMILES)
-			this.command("listen stop models; listen stop selection; open "+structure.modelNumber()+" smiles:"+structure.name());
+			chimeraSend("listen stop models; listen stop selection; open "+structure.modelNumber()+" smiles:"+structure.name());
 		else
-			this.command("listen stop models; listen stop selection; open "+structure.modelNumber()+" "+structure.name());
+			chimeraSend("listen stop models; listen stop selection; open "+structure.modelNumber()+" "+structure.name());
 
 		// Now, figure out exactly what model # we got
 		List<ChimeraModel> modelList = getModelInfoList(structure);
@@ -276,7 +310,7 @@ public class Chimera {
 
 			// Get our properties (default color scheme, etc.)
 			// Make the molecule look decent
-			this.command("repr stick #"+newModel.getModelNumber());
+			chimeraSend("repr stick #"+newModel.getModelNumber());
 
 			if (structure.getType() != Structure.StructureType.SMILES) {
 				// Create the information we need for the navigator
@@ -285,14 +319,16 @@ public class Chimera {
 
 			// Add it to our list of models
 			models.add(newModel);
-			//System.out.println("Added "+newModel.toString()+" to list");
 
 			// Add it to the hash table
 			modelHash.put(new Float(newModel.getModelNumber()),newModel);
 		}
 
-		this.command("focus");
-		this.command("listen start models; listen start selection");
+		chimeraSend("focus");
+		chimeraSend("listen start models; listen start selection");
+
+		if (mnDialog != null)
+			mnDialog.modelChanged();
 
   	return;
   }
@@ -304,14 +340,14 @@ public class Chimera {
 	 */
 	public void close(Structure structure) {
 		float model = structure.modelNumber();
-		this.command("listen stop models; listen stop select; close #"+model);
+		chimeraSend("listen stop models; listen stop select; close #"+model);
 		
 		ChimeraModel chimeraModel = (ChimeraModel)modelHash.get(new Float(model));
 		if (chimeraModel != null) {
 			models.remove(chimeraModel);
 			modelHash.remove(new Float(model));
 		}
-		this.command("listen start models; listen start select");
+		chimeraSend("listen start models; listen start select");
 		return;
 	}
 
@@ -321,15 +357,14 @@ public class Chimera {
 	 * @param command the selection command to pass to Chimera
 	 */
 	public void select(String command) {
-		this.command("listen stop select; "+command+"; listen start select");
+		chimeraSend("listen stop select; "+command+"; listen start select");
 	}
 
-	public Iterator commandReply(String text) {
-		synchronized (replyLog) {
-			replyLog.clear();
-		}
-		this.command(text);
-		return replyLog.iterator();
+	public List<String> commandReply(String text) {
+		List<String> r = chimeraSend(text);
+		if (r == null) 
+			r = new ArrayList<String>();
+		return r;
 	}
 
   /**
@@ -337,28 +372,23 @@ public class Chimera {
 	 *
    * @param text the text to pass to Chimera
    */
-  public void command(String text) {
+  public List<String> chimeraSend(String command) {
   	if (chimera == null)
-  		return;
+  		return null;
 
-		// System.out.println("To Chimera --> "+text);
-		text = text.concat("\n");
+		// System.out.println("To Chimera --> "+command);
+		listener.clearResponse(command);
+		String text = command.concat("\n");
 
-		synchronized (replyLog) {
-			try {
-  			// send the command
-  			chimera.getOutputStream().write(text.getBytes());
-  			chimera.getOutputStream().flush();
-			} catch (IOException e) {
-				CyLogger.getLogger(Chimera.class).warning("Unable to execute command: "+text);
-			}
-
-			try {
-				// System.out.print("Waiting on replyLog for: "+text);
-				replyLog.wait();
-			} catch (InterruptedException e) {}
+		try {
+  		// send the command
+  		chimera.getOutputStream().write(text.getBytes());
+  		chimera.getOutputStream().flush();
+		} catch (IOException e) {
+			CyLogger.getLogger(Chimera.class).warning("Unable to execute command: "+text);
 		}
-		return;
+
+		return listener.getResponse(command);
   }
   
   /**
@@ -368,7 +398,7 @@ public class Chimera {
   public void exit() {
   	if (chimera == null)
   		return;
-  	this.command("stop really");
+  	chimeraSend("stop really");
   	chimera.destroy();
   	chimera = null;
 		models = null;
@@ -383,7 +413,7 @@ public class Chimera {
 		HashMap newHash = new HashMap();
 
 		// Stop all of our listeners while we try to handle this
-		this.command("listen stop select; listen stop models");
+		chimeraSend("listen stop select; listen stop models");
 
 		// Get all of the open models
 		List<ChimeraModel> newModelList = getModelList();
@@ -422,7 +452,7 @@ public class Chimera {
 		modelHash = newHash;
 
 		// Restart all of our listeners
-		this.command("listen start models; listen start select");
+		chimeraSend("listen start models; listen start select");
 
 		// Done
 	}
@@ -431,14 +461,16 @@ public class Chimera {
 	 * Inform our interface that the model has changed
 	 */
 	public void modelChanged() {
-		mnDialog.modelChanged();
+		if (mnDialog != null)
+			mnDialog.modelChanged();
 	}
 
 	/**
 	 * Inform our interface that the selection has changed
 	 */
 	public void updateSelection(List selectionList) {
-		mnDialog.updateSelection(selectionList);
+		if (mnDialog != null)
+			mnDialog.updateSelection(selectionList);
 	}
 
 	/**
@@ -450,20 +482,15 @@ public class Chimera {
 	public void updateSelection() {
 		HashMap<Float,ChimeraModel>modelSelHash = new HashMap();
 		ArrayList<ChimeraStructuralObject>selectionList = new ArrayList();
-		// System.out.println("updateSelection()");
 
 		// Execute the command to get the list of models with selections
-		Iterator lineIter = commandReply("lists level molecule");
-		while (lineIter.hasNext()) {
-			String modelLine = (String)lineIter.next();
+		for (String modelLine: commandReply("lists level molecule")) {
 			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
 			modelSelHash.put(new Float(chimeraModel.getModelNumber()), chimeraModel);
 		}
 
 		// Now get the residue-level data
-		lineIter = commandReply("lists level residue");
-		while (lineIter.hasNext()) {
-			String inputLine = (String)lineIter.next();
+		for (String inputLine: commandReply("lists level residue")) {
 			ChimeraResidue r = new ChimeraResidue(inputLine);
 			Float modelNumber = new Float(r.getModelNumber());
 			if (modelSelHash.containsKey(modelNumber)) {
@@ -513,9 +540,7 @@ public class Chimera {
 	 */
 	public List getPresets() {
 		ArrayList<String>presetList = new ArrayList<String>();
-		Iterator<String> presetIter = this.commandReply ("preset list");
-		while (presetIter.hasNext()) {
-			String preset = presetIter.next();
+		for (String preset: commandReply ("preset list")) {
 			preset = preset.substring(7); // Skip over the "Preset"
 			preset = preset.replaceFirst("\"", "(");
 			preset = preset.replaceFirst("\"", ")");
@@ -531,11 +556,10 @@ public class Chimera {
 	 * @return List of ChimeraModel's
 	 */
 	private List getModelList() {
-		ArrayList<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
-		Iterator modelIter = this.commandReply ("listm type molecule");
-		synchronized (replyLog) {
-			while (modelIter.hasNext()) {
-				String modelLine = (String)modelIter.next();
+		List<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
+		List<String> list = commandReply("listm type molecule");
+		if (list != null) {
+			for (String modelLine: list) {
 				ChimeraModel chimeraModel = new ChimeraModel(modelLine);
 				modelList.add(chimeraModel);
 			}
@@ -555,9 +579,7 @@ public class Chimera {
 		int modelNumber = structure.modelNumber();
 		List<ChimeraModel>infoList = new ArrayList();
 
-		Iterator modelIter = this.commandReply ("listm type molecule spec #"+modelNumber);
-		while (modelIter.hasNext()) {
-			String modelLine = (String)modelIter.next();
+		for (String modelLine: commandReply("listm type molecule spec #"+modelNumber)) {
 			// System.out.println("ModelList: "+modelLine);
 			if (modelLine.contains("id #"+modelNumber)) {
 				// System.out.println("Found: "+name);
@@ -580,9 +602,9 @@ public class Chimera {
 	 * @return the default model Color for this model in Chimera
 	 */
 	private Color getModelColor(ChimeraModel model) {
-		replyLog.clear();
-		this.command ("listm type molecule attr color spec "+model.toSpec());
-		String inputLine = (String)replyLog.get(0);
+		List<String> colorLine = chimeraSend ("listm type molecule attr color spec "+model.toSpec());
+		if (colorLine == null) return null;
+		String inputLine = (String)colorLine.get(0);
 		int colorStart = inputLine.indexOf("color ");
 		String colorString = inputLine.substring(colorStart+6);
 		String[] rgbStrings = colorString.split(",");
@@ -610,9 +632,7 @@ public class Chimera {
 		float modelNumber = model.getModelNumber();
 
 		// Get the list -- it will be in the reply log
-		Iterator resIter = this.commandReply ("listr spec #"+modelNumber);
-		while (resIter.hasNext()) {
-			String inputLine = (String)resIter.next();
+		for (String inputLine: commandReply ("listr spec #"+modelNumber)) {
 			ChimeraResidue r = new ChimeraResidue(inputLine);
 			if (r.getModelNumber() == modelNumber) {
 				model.addResidue(r);
