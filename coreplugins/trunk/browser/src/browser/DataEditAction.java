@@ -285,13 +285,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 	}
 
 	private void handleString(final String newValueStr, final CyAttributes attrs, final String id) {
-System.err.println("Entering handleString w/ newValueStr="+newValueStr);
 		final String newStrVal = replaceCStyleEscapes(newValueStr);
 
 		// Deal with equations first:
 		if (newValueStr != null && newValueStr.length() >= 2 && newValueStr.charAt(0) == '=') {
 			final Equation equation = parseEquation(newStrVal, attrs, id, attrName);
-System.err.println("\tequation="+equation);
 			if (equation == null) {
 				objectAndEditString = new ValidatedObjectAndEditString(null, newStrVal, "#PARSE");
 				attrs.deleteAttribute(id, attrName);

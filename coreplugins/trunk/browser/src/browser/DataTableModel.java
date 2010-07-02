@@ -585,7 +585,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	}
 
 	private DataEditAction updateCell(final int keyIndex, final int rowIdx, final int colIdx, final Object newValue) {
-System.err.println("Entering updateCell(), rowIdx="+rowIdx+", colIdx="+colIdx+", newValue="+newValue);
 		final DataEditAction edit;
 		if (this.objectType != NETWORK) {
 			// This edit is for node or edge.
@@ -601,12 +600,10 @@ System.err.println("Entering updateCell(), rowIdx="+rowIdx+", colIdx="+colIdx+",
 			                          getValueAt(rowIdx, colIdx), newValue, objectType);
 		} else {
 			final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(rowIdx, 0);
-System.err.println("objectAndEditString="+objectAndEditString);
 			if (objectAndEditString == null)
 				return null;
 
 			final Object validatedObject = objectAndEditString.getValidatedObject();
-System.err.println("validatedObject="+validatedObject);
 			if (validatedObject == null)
 				return null;
 
