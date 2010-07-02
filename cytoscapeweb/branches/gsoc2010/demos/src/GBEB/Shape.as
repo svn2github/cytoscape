@@ -92,7 +92,7 @@ package GBEB
 			if(stronglyClustered)
 			{
 				direction = angleArrayDirectionIdx * bandwidth; 
-				trace("Shape " + gridIndex[0] + " :Direction " + direction); // should shift by 1.5 to get middle of bandwidth, but I dont think this level of accuracy is necessary
+				//trace("Shape " + gridIndex[0] + " :Direction " + direction); // should shift by 1.5 to get middle of bandwidth, but I dont think this level of accuracy is necessary
 				return direction; 
 			} 
 				

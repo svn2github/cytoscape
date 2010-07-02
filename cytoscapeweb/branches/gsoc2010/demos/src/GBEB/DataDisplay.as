@@ -5,10 +5,14 @@ package GBEB
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.utils.Timer;
+	
+	import org.osmf.events.TimeEvent;
 
 
 
@@ -20,11 +24,12 @@ package GBEB
 		private var _textFieldMouseTracker:TextField = new TextField();
 		private var _mesh:Mesh; 
 		private var _currentShape:Shape;
+		private var _timer:Timer = new Timer(1000);
+		private var _counter:int = 0;
 		
 		private var _displayContainer:Sprite = new Sprite();
 		private var _meshContainer:Sprite = new Sprite();
 		private var _highlightShapeContainer:Sprite = new Sprite();
-		
 		
 		public function DataDisplay()
 		{
@@ -36,9 +41,17 @@ package GBEB
 			//addChild(_textFieldGridTracker);
 			addEventListener(MouseEvent.MOUSE_MOVE, mouseTracker,true);
 			
+			/*_timer.start();
+			_timer.addEventListener(TimerEvent.TIMER, function tick(e:TimerEvent):void 
+			{
+				trace("DataDisplay: Timer: " + _counter++);
+				
+			});*/
+			//add timer (=
+				
 			addChild(_displayContainer);
 			trace("DataDisplay added");
-		}
+		} 
 		
 		private function redraw():void
 		{
@@ -159,21 +172,27 @@ package GBEB
 			private function highlightShapeFxn(shape:Shape):void
 			{
 			
-				
-				for each ( var g:Rectangle in shape.storedGrids)
+				while(_highlightShapeContainer.numChildren != 0) 	
+				{	
+					_highlightShapeContainer.removeChildAt(0);
+				}
+					
+				for each ( var p:Point in shape.gridIndex)
 				{
+					var Coor:Point = _mesh.returnXYFromIndex(p);
+					
+					
 					var visGrid:Sprite = new Sprite();
 					visGrid.graphics.beginFill(0x000000, 0);
-					visGrid.graphics.lineStyle(0.4, 0x00FF00,0.5);
-					visGrid.graphics.drawRect(g.x, g.y, g.width, g.height);
+					visGrid.graphics.lineStyle(0.4, 0x00FF00, 1);
+					visGrid.graphics.drawRect(Coor.x, Coor.y, _mesh.gridSize, _mesh.gridSize);
 					visGrid.graphics.endFill();
 					
-					//trace("DataDisplay: HighlightShape: Wow!");
-					
+					//The lines that define the grids may not be asthetically pleasing but it will have to do for now. (=
 					_highlightShapeContainer.addChild(visGrid);
 				}
 				
-				//_displayContainer.addChild(_highlightShapeContainer);
+				_displayContainer.addChild(_highlightShapeContainer);
 			}
 	
 	}// end of class
