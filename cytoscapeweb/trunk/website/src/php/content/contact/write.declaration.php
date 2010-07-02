@@ -4,7 +4,7 @@
     
     $content_style="half_and_half";
     
-    $email_file = "php/content/contact/write.email.php";
+    $email_file = "php/content/contact.email.php";
     $email_var = "\$address_to_send_email";
     
     if ( !(@include("php/content/contact.email.php")) ) {

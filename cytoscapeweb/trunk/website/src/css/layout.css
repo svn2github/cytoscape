@@ -91,7 +91,7 @@ iframe { display: block; }
 #page_navigation a:hover { text-decoration: underline; }
 
 /* page layouts */
-#content { clear: both; float: left; }
+#content { clear: both; float: left; width: 950px; }
 
 	/* full space layout */
 	#content.full { padding: 25px; }
