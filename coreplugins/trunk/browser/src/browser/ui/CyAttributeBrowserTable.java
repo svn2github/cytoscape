@@ -1099,6 +1099,14 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final String rowId = tableModel.getRowId(tableRow);
 		final CyAttributes attribs = tableModel.getCyAttributes();
 
+		// Check for copying of an empty cell:
+		if (attribs.getAttribute(rowId, attribName) == null) {
+			if (JOptionPane.showConfirmDialog(null, "Are you sure you want to copy an empty value?",
+			                                  "Confirmation", JOptionPane.YES_NO_OPTION)
+			    != JOptionPane.YES_OPTION)
+				return;
+		}
+
 		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
 		final StringBuilder errorMessage = new StringBuilder();
 		for (final GraphObject graphObject : selectedGraphObjects)
@@ -1116,6 +1124,14 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final String attribName = tableModel.getColumnName(tableColumn);
 		final String rowId = tableModel.getRowId(tableRow);
 		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		// Check for copying of an empty cell:
+		if (attribs.getEquation(rowId, attribName) == null) {
+			if (JOptionPane.showConfirmDialog(null, "Are you sure you want to copy an empty equation?",
+			                                  "Confirmation", JOptionPane.YES_NO_OPTION)
+			    != JOptionPane.YES_OPTION)
+				return;
+		}
 
 		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
 		final StringBuilder errorMessage = new StringBuilder();
@@ -1136,6 +1152,15 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final String attribName = tableModel.getColumnName(tableColumn);
 		final String rowId = tableModel.getRowId(tableRow);
 		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		// Check for copying of an empty cell:
+		if (attribs.getAttribute(rowId, attribName) == null) {
+			if (JOptionPane.showConfirmDialog(null, "Are you sure you want to copy an empty value?",
+			                                  "Confirmation", JOptionPane.YES_NO_OPTION)
+			    != JOptionPane.YES_OPTION)
+				return;
+		}
+
 		final Iterable<String> ids = objectType.getAssociatedIdentifiers();
 		final StringBuilder errorMessage = new StringBuilder();
 		for (final String id : ids)
@@ -1155,6 +1180,15 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		final String attribName = tableModel.getColumnName(tableColumn);
 		final String rowId = tableModel.getRowId(tableRow);
 		final CyAttributes attribs = tableModel.getCyAttributes();
+
+		// Check for copying of an empty cell:
+		if (attribs.getEquation(rowId, attribName) == null) {
+			if (JOptionPane.showConfirmDialog(null, "Are you sure you want to copy an empty equation?",
+			                                  "Confirmation", JOptionPane.YES_NO_OPTION)
+			    != JOptionPane.YES_OPTION)
+				return;
+		}
+
 		final Iterable<String> ids = objectType.getAssociatedIdentifiers();
 		final StringBuilder errorMessage = new StringBuilder();
 		for (final String id : ids)
