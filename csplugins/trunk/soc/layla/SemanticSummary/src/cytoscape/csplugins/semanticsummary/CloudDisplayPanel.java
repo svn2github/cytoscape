@@ -55,7 +55,6 @@ public class CloudDisplayPanel extends JPanel
 {
 	
 	//VARIABLES
-	//TODO
 	JPanel tagCloudFlowPanel;//add JLabels here for words
 	JScrollPane cloudScroll;
 	CloudParameters curCloud;
@@ -82,7 +81,7 @@ public class CloudDisplayPanel extends JPanel
 	 */
 	private JPanel initializeTagCloud()
 	{
-		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,30,15));
+		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,30,25));
 		return panel;
 	}
 	
@@ -132,8 +131,7 @@ public class CloudDisplayPanel extends JPanel
 			}
 			else
 			{
-				curPanel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
-				curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
+				curPanel = new JPanel(new ModifiedClusterFlowLayout(ModifiedFlowLayout.CENTER,10,0));
 			}
 			
 			curPanel.add(curLabel);
@@ -146,11 +144,14 @@ public class CloudDisplayPanel extends JPanel
 		{
 			Integer clusterNum = iter2.next();
 			JPanel curPanel = clusters.get(clusterNum);
+			curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
 			tagCloudFlowPanel.add(curPanel);
 		}
 		
 		tagCloudFlowPanel.revalidate();
+		this.revalidate();
 		this.updateUI();
+		this.repaint();
 	}
 	
 

@@ -28,19 +28,23 @@ import java.awt.*;
  * A modified version of FlowLayout that allows containers using this
  * Layout to behave in a reasonable manner when placed inside a
  * JScrollPane
+ * 
+ * Also modified so that the preferred width is the width of the largest contained
+ * component.
    
  * @author Babu Kalakrishnan
+ * @author Layla Oesper
  */
-public class ModifiedFlowLayout extends FlowLayout {
-	  public ModifiedFlowLayout() {
+public class ModifiedClusterFlowLayout extends FlowLayout {
+	  public ModifiedClusterFlowLayout() {
 	     super();
 	  }
 
-	  public ModifiedFlowLayout(int align) {
+	  public ModifiedClusterFlowLayout(int align) {
 	     super(align);
 	  }
 
-	  public ModifiedFlowLayout(int align, int hgap, int vgap) {
+	  public ModifiedClusterFlowLayout(int align, int hgap, int vgap) {
 	     super(align, hgap, vgap);
 	  }
 	  
@@ -58,19 +62,22 @@ public class ModifiedFlowLayout extends FlowLayout {
 	     synchronized (target.getTreeLock()) {
 	        int hgap = getHgap();
 	        int vgap = getVgap();
-	        int w = target.getWidth();
+	        //int w = target.getWidth();
 
 	        // Let this behave like a regular FlowLayout (single row)
 	        // if the container hasn't been assigned any size yet
-	        if (w == 0)
-	           w = Integer.MAX_VALUE;
 	        
 	        Insets insets = target.getInsets();
 	        if (insets == null)
 	           insets = new Insets(0, 0, 0, 0);
 	        int reqdWidth = 0;
 	        
-	        int maxwidth = w - (insets.left + insets.right + hgap * 2);
+	        int maxwidth = this.getMaxWidth(target);
+	        maxwidth = maxwidth - 2*hgap;
+	        
+	        if (maxwidth == 0)
+	        	maxwidth = Integer.MAX_VALUE - insets.left - insets.right;
+	        
 	        int n = target.getComponentCount();
 	        int x = 0;
 	        int y = insets.top + vgap; // FlowLayout starts by adding vgap, so do that here too.
@@ -80,7 +87,7 @@ public class ModifiedFlowLayout extends FlowLayout {
 	           Component c = target.getComponent(i);
 	           if (c.isVisible()) {
 	              Dimension d = c.getPreferredSize();
-	              if ((x == 0) || ((x + hgap + d.width) <= maxwidth)) {
+	              if ((x == 0) || ((x + d.width) <= maxwidth)) {
 	                 // fits in current row.
 	                 if (x > 0) {
 	                    x += hgap;
@@ -127,4 +134,22 @@ public class ModifiedFlowLayout extends FlowLayout {
 	     }
 	  }//computeSize
 	  
+	  
+	  private int getMaxWidth(Container target)
+	  {
+		  int maxWidth = 0;
+		  int n = target.getComponentCount();
+		  for (int i = 0; i < n; i++) 
+		  {
+	           Component c = target.getComponent(i);
+	           if (c.isVisible()) 
+	           {
+	        	   int curWidth = c.getPreferredSize().width;
+	        	   maxWidth = Math.max(curWidth, maxWidth);
+	           }
+		  }
+		  return maxWidth;
+	  }
+	  
+
 	}//ModifiedFlowLayout
