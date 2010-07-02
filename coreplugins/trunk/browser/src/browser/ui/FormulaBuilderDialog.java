@@ -440,7 +440,7 @@ public class FormulaBuilderDialog extends JDialog {
 		if (!leadingArgs.isEmpty()) // Not the first argument => we need a comma!
 			formula.append(',');
 		final String constExpr = constantValuesTextField.getText();
-		if (constExpr != null && !constExpr.isEmpty()) {
+		if (constExpr != null && constExpr.length() > 0) {
 			final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
 			final Class exprType;
 			if ((exprType = expressionIsValid(possibleArgTypes, constExpr)) == null)
