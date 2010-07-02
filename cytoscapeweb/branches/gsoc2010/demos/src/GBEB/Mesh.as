@@ -35,6 +35,8 @@ package GBEB
 		{
 			_data = data;
 			_grid = new Array();
+			
+			trace("Hi");
 		}
 		
 		
