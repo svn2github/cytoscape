@@ -1113,6 +1113,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		if (tableRow == -1 || tableColumn == -1)
 			return;
 
+System.err.println("tableRow="+tableRow+", tableColumn="+tableColumn);
 		final String attribName = tableModel.getColumnName(tableColumn);
 		final String rowId = tableModel.getRowId(tableRow);
 		final CyAttributes attribs = tableModel.getCyAttributes();
@@ -1123,6 +1124,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
 							attribName, /* copyEquation = */ true, errorMessage);
 		final Equation equation = attribs.getEquation(rowId, attribName);
+System.err.println("equation="+equation);
 		tableModel.updateColumn(equation != null ? equation : attribs.getAttribute(rowId, attribName),
 		                        tableColumn, tableRow);
 	}
