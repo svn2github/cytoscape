@@ -272,11 +272,6 @@ public class CyAttributesUtils {
 	                                    final String attribName, final boolean copyEquation,
 	                                    final StringBuilder errorMessage)
 	{
-System.err.println("Entering copyAttribute()");
-System.err.println("\tsourceId="+sourceId);
-System.err.println("\ttargetId="+targetId);
-System.err.println("\tattribName="+attribName);
-System.err.println("\tcopyEquation="+copyEquation);
 		// Self-copy is a supported no-op!
 		if (sourceId.equals(targetId))
 			return true;
