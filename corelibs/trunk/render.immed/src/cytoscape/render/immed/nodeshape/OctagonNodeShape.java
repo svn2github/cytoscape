@@ -42,6 +42,9 @@ import java.awt.Shape;
 
 public class OctagonNodeShape extends AbstractNodeShape {
 
+	private static final float SQRT2 = (float)Math.sqrt(2.0);
+	private static final float SQRT2plus2 = 2.0f + SQRT2; 
+
 	private final GeneralPath path; 
 
 	public OctagonNodeShape() {
@@ -51,16 +54,24 @@ public class OctagonNodeShape extends AbstractNodeShape {
 		
 	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
 
-		path.reset();
+		// If bounding box is square, then these eqns will create an
+		// equilateral octagon.  If not, the sides will be scaled nicely.
+		final float xx = (xMax - xMin)/SQRT2plus2;
+		final float xz = xx * SQRT2; 
 
-		path.moveTo(((2.0f * xMin) + xMax) / 3.0f, yMin);
-		path.lineTo(((2.0f * xMax) + xMin) / 3.0f, yMin);
-		path.lineTo(xMax, ((2.0f * yMin) + yMax) / 3.0f);
-		path.lineTo(xMax, ((2.0f * yMax) + yMin) / 3.0f);
-		path.lineTo(((2.0f * xMax) + xMin) / 3.0f, yMax);
-		path.lineTo(((2.0f * xMin) + xMax) / 3.0f, yMax);
-		path.lineTo(xMin, ((2.0f * yMax) + yMin) / 3.0f);
-		path.lineTo(xMin, ((2.0f * yMin) + yMax) / 3.0f);
+		final float yx = (yMax - yMin)/SQRT2plus2;
+		final float yz = yx * SQRT2; 
+
+		path.reset();
+		
+		path.moveTo( xMin,           yMin + yx );
+		path.lineTo( xMin,           yMin + yx + yz ); 
+		path.lineTo( xMin + xx,      yMax );
+		path.lineTo( xMin + xx + xz, yMax );
+		path.lineTo( xMax,           yMin + yx + yz ); 
+		path.lineTo( xMax,           yMin + yx ); 
+		path.lineTo( xMin + xx + xz, yMin ); 
+		path.lineTo( xMin + xx,      yMin ); 
 
 		path.closePath();
 
