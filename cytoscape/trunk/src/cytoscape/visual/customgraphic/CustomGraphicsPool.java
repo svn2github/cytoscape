@@ -71,7 +71,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		graphicsMap.put(NULL.hashCode(), NULL);
-		//graphicsMap.put(GR.hashCode(), GR);
+		graphicsMap.put(GR.hashCode(), GR);
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
 				Cytoscape.CYTOSCAPE_EXIT, this);
