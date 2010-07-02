@@ -23,15 +23,25 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 /**
  * The CloudDisplayPanel class defines the panel that displays a Semantic 
@@ -61,8 +71,6 @@ public class CloudDisplayPanel extends JPanel
 		cloudScroll = new JScrollPane(tagCloudFlowPanel);
 		cloudScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(cloudScroll, BorderLayout.CENTER);
-			
-	
 	}
 	
 	//METHODS
@@ -74,8 +82,7 @@ public class CloudDisplayPanel extends JPanel
 	 */
 	private JPanel initializeTagCloud()
 	{
-		//JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
-		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,20,15));
+		JPanel panel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,30,15));
 		return panel;
 	}
 	
@@ -91,39 +98,6 @@ public class CloudDisplayPanel extends JPanel
 		curCloud = null;
 		
 	}
-	
-	
-	/**
-	 * Updates the tagCloudFlowPanel to include all of the words at the size they
-	 * are defined for in params.
-	 * @param CloudParameters - parameters of the cloud we want to display.
-	 */
-	/*
-	public void updateCloudDisplay(CloudParameters params)
-	{
-		//clear old info
-		this.clearCloud();
-		curCloud = params;
-		
-		//Loop through to create labels and add them
-		int count = 0;
-		
-		ArrayList<CloudWordInfo> wordInfo = curCloud.getCloudWordInfoList();
-		Iterator<CloudWordInfo> iter = wordInfo.iterator();
-		
-		//Loop while more words exist and we are under the max
-		while(iter.hasNext() && (count < params.getMaxWords()))
-		{
-			CloudWordInfo curWordInfo = iter.next();
-			JLabel curLabel = curWordInfo.createCloudLabel();
-			
-			tagCloudFlowPanel.add(curLabel);
-			count++;
-		}
-		tagCloudFlowPanel.revalidate();
-		this.updateUI();
-	}
-	*/
 	
 	/**
 	 * Updates the tagCloudFlowPanel to include all of the words at the size they
@@ -159,6 +133,7 @@ public class CloudDisplayPanel extends JPanel
 			else
 			{
 				curPanel = new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
+				curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
 			}
 			
 			curPanel.add(curLabel);

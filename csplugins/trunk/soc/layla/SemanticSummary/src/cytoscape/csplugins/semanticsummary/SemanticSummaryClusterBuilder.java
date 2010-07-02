@@ -126,23 +126,16 @@ public class SemanticSummaryClusterBuilder
 		
         switch (rem) 
         {
-           /*
-        	case 0:  textColor = Color.BLACK; break;
-            case 1:  textColor = Color.RED; break;
-            case 2:  textColor = Color.GREEN; break;
-            case 3:  textColor = Color.ORANGE; break;
-            case 4:  textColor = Color.BLUE; break;
-            case 5:  textColor = Color.MAGENTA; break;
-            case 6:  textColor = Color.GRAY; break;
-            default: textColor = Color.BLACK;break; //Black by default
-            */
-        	
         	case 0:  textColor = Color.BLACK; break;
         	case 1:  textColor = new Color(204,0,0); break;
-        	case 2:  textColor = new Color(0,153,0); break;
+        	//case 2:  textColor = new Color(0,153,0); break;
+        	case 2:  textColor = new Color(0,110,0); break;
         	case 3:  textColor = new Color(255,179,0); break;
-        	case 4:  textColor = new Color(0,0,204); break;
-        	case 5:  textColor = new Color(255,0,204); break;
+        	//case 3:  textColor = new Color(220,130,0); break;
+        	//case 4:  textColor = new Color(0,0,204); break;
+        	case 4:  textColor = new Color(0,0,160); break;
+        	//case 5:  textColor = new Color(255,0,204); break;
+        	case 5: textColor = new Color(130, 32, 130); break;
         	case 6:  textColor = Color.GRAY; break;
         	default: textColor = Color.BLACK;break; //Black by default
         

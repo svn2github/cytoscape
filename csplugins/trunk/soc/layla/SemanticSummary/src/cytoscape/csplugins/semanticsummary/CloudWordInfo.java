@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
 import cytoscape.CyNetwork;
@@ -143,12 +144,12 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 				if (view.getNetwork().equals(network))
 				//if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
-					clickedLabel.setForeground(Color.CYAN);
+					clickedLabel.setForeground(new Color(0,200,255));
 					clickedLabel.repaint();
 				}
 				
 			}
-			
+	
 			public void mouseExited(MouseEvent me)
 			{
 				JLabel clickedLabel = (JLabel)me.getComponent();
