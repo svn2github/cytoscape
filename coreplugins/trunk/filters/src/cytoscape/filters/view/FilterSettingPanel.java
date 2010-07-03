@@ -456,7 +456,11 @@ public class FilterSettingPanel extends JPanel {
 		            	theDialog.setVisible(true);
 		            	adjustBoundValues(boundVect, "double");
 		            	model.setValueRange(new Double(boundVect.elementAt(0)),new Double(boundVect.elementAt(1)), (Double) model.getMinValue(), (Double) model.getMaxValue());
-					}	 
+					}
+					
+					//Update the selection on screen
+					theFilter.setNetwork(Cytoscape.getCurrentNetwork());
+					FilterUtil.doSelection(theFilter);					
 				}
 			}
 		}
