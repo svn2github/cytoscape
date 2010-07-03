@@ -29,7 +29,8 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
-import cytoscape.visual.customgraphic.experimental.GradientRectangleCustomGraphics;
+import cytoscape.visual.customgraphic.experimental.GradientOvalLayer;
+import cytoscape.visual.customgraphic.experimental.GradientRoundRectangleLayer;
 
 public class CustomGraphicsPool extends SubjectBase implements
 		PropertyChangeListener {
@@ -55,7 +56,8 @@ public class CustomGraphicsPool extends SubjectBase implements
 	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
 	
 	// Sample dynamic graphics
-	private static final CyCustomGraphics<?> GR = new GradientRectangleCustomGraphics();
+	private static final CyCustomGraphics<?> ROUND_RECT_GR = new GradientRoundRectangleLayer();
+	private static final CyCustomGraphics<?> OVAL_GR = new GradientOvalLayer();
 
 	public static final String METADATA_FILE = "image_metadata.props";
 
@@ -71,7 +73,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		graphicsMap.put(NULL.hashCode(), NULL);
-		graphicsMap.put(GR.hashCode(), GR);
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
 				Cytoscape.CYTOSCAPE_EXIT, this);
@@ -183,6 +184,10 @@ public class CustomGraphicsPool extends SubjectBase implements
 			e.printStackTrace();
 		}
 
+		// Add vector image samples
+		graphicsMap.put(ROUND_RECT_GR.hashCode(), ROUND_RECT_GR);
+		graphicsMap.put(OVAL_GR.hashCode(), OVAL_GR);
+		
 		long endTime = System.currentTimeMillis();
 		double sec = (endTime - startTime) / (1000.0);
 		logger.info("Image loading process finished in " + sec + " sec.");
@@ -207,9 +212,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 			sourceMap.put(source, hash);
 		
 		graphicsMap.put(hash, graphics);
-		
-		// Fire event to update other GUI components.
-		this.fireStateChanged();
 	}
 
 	/**
@@ -270,6 +272,10 @@ public class CustomGraphicsPool extends SubjectBase implements
 		
 		// Null Graphics should not be removed.
 		this.graphicsMap.put(NULL.hashCode(), NULL);
+		
+		// Add vector image samples
+		graphicsMap.put(ROUND_RECT_GR.hashCode(), ROUND_RECT_GR);
+		graphicsMap.put(OVAL_GR.hashCode(), OVAL_GR);
 	}
 
 	

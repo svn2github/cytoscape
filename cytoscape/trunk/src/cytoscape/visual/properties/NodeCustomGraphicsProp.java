@@ -29,6 +29,7 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
+import cytoscape.visual.customgraphic.experimental.VectorCustomGraphics;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 import ding.view.DNodeView;
@@ -200,7 +201,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 		for (CustomGraphic cg : layers) {
 			if (sync) {
-				final CustomGraphic resized = syncSize(cg, dv, dep);
+				final CustomGraphic resized = syncSize(graphics, cg, dv, dep);
 				dv.addCustomGraphic(resized);
 				targets.add(resized);
 			} else {
@@ -211,7 +212,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		this.currentMap.put(dv, targets);
 	}
 
-	private CustomGraphic syncSize(final CustomGraphic cg, final DNodeView dv,
+	private CustomGraphic syncSize(CyCustomGraphics<?> graphics, final CustomGraphic cg, final DNodeView dv,
 			final VisualPropertyDependency dep) {
 
 		final double nodeW = dv.getWidth();
@@ -232,6 +233,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		final AffineTransform scale;
 		if (whLock) {
 			scale = AffineTransform.getScaleInstance(SHRINK * nodeW / cgW, SHRINK * nodeH / cgH);
+		} else if(graphics instanceof VectorCustomGraphics) {
+			scale = AffineTransform.getScaleInstance(0.98 * nodeW / cgW, 0.98 * nodeH / cgH);
 		} else {
 			// Case 1: node height value is larger than width
 			if (nodeW >= nodeH) {

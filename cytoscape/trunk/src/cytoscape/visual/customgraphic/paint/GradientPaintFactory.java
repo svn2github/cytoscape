@@ -11,6 +11,8 @@ public class GradientPaintFactory implements PaintFactory {
 	
 	private Color c1;
 	private Color c2;
+	
+	private Paint paint;
 
 	public GradientPaintFactory(Color c1, Color c2) {
 		this.c1 = c1;
@@ -19,8 +21,10 @@ public class GradientPaintFactory implements PaintFactory {
 	
 
 	public Paint getPaint(Rectangle2D bound) {
-		return new GradientPaint((float)bound.getWidth()/2, 0, c2,
+		paint =  new GradientPaint((float)bound.getWidth()/2, 0, c2,
 				(float)bound.getWidth()/2, (float)bound.getHeight()/2, c1);
+		
+		return paint;
 	}
 
 }

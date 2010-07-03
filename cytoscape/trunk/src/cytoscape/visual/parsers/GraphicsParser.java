@@ -9,6 +9,7 @@ import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParser;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactory;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactoryImpl;
+import cytoscape.visual.customgraphic.DefaultCyCustomGraphicsParser;
 import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
 
@@ -21,12 +22,16 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	// Maybe injected from outside if we use DI framework.
 	private final CyCustomGraphicsParserFactory parserFactory;
 	
+	
+	private final CyCustomGraphicsParser defaultParser;
+	
 	public GraphicsParser() {
 		super();
 		
 		parserFactory = new CyCustomGraphicsParserFactoryImpl();
 		// Register default parser
 		parserFactory.registerParser(URLImageCustomGraphics.class, new URLImageCustomGraphicsParser());
+		defaultParser = new DefaultCyCustomGraphicsParser();
 		
 		// TODO: dynamically add parsers using listener.
 	}
@@ -52,18 +57,16 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 		} catch (IOException e) {
 			logger.warn("Invalid URL found. This will be ignored: " + value);
 		}
-		
-		
-		
+				
 		final String[] parts = value.split(",");
 		// Extract class
-		String className = parts[0];
+		final String className = parts[0];
 		final CyCustomGraphicsParser parser = parserFactory.getParser(className);
 		
-		if(parser == null)		
-			return null;
-		
-		return parser.getInstance(value);
+		if(parser == null) 
+			return defaultParser.getInstance(value);
+		else
+			return parser.getInstance(value);
 	}
 
 }
