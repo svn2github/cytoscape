@@ -4,7 +4,6 @@ import cytoscape.Cytoscape;
 
 public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 
-	@Override
 	public CyCustomGraphics<?> getInstance(String entry) {
 		// Check this is URL or not
 		if (entry == null)
@@ -41,12 +40,10 @@ public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 		return cg;
 	}
 
-	@Override
 	public Class<? extends CyCustomGraphics<?>> getTargetClass() {
 		return null;
 	}
 
-	@Override
 	public String getVizMapPropsString(CyCustomGraphics<?> customGraphics) {
 		// TODO Auto-generated method stub
 		return null;
