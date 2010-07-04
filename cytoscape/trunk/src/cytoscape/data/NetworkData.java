@@ -582,9 +582,8 @@ public abstract class NetworkData {
 			double result = getNodeAttributeDoubleValue(node_index,
 			                                            (String) (getNodeAttIDToAttNameMap()
 			                                                          .get(att_id)));
-
-			if (result == Double.NaN)
-				return new Double(Double.NaN);
+			if (Double.isNaN(result))
+				return Double.NaN;
 
 			return new Double(result);
 		} else if (att_type == STRING_TYPE) {
