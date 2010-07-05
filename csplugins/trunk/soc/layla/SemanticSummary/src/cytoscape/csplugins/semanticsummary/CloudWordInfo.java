@@ -55,6 +55,7 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 	CloudParameters params;
 	Color textColor;
 	Integer cluster;
+	Integer wordNum;
 	
 	//CONSTRUCTORS
 	
@@ -69,12 +70,14 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 		fontSize = size;
 		textColor = Color.BLACK;
 		cluster = 0;
+		wordNum = 0;
 	}
 	
 	//METHODS
 	
 	/**
-	 * Compares two CloudWordInfo objects based on their fontSize.
+	 * Compares two CloudWordInfo objects based on their fontSize.  Then, based
+	 * on cluster number, then based on wordNum, and then alphabetically.
 	 * @param CloudWordInfo - object to compare
 	 * @return true if 
 	 */
@@ -83,7 +86,31 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 		Integer first = this.getFontSize();
 		Integer second = c.getFontSize();
 		
-		return first.compareTo(second);
+		//switch order since we want to sort biggest to smallest
+		int result = second.compareTo(first);
+		
+		if (result == 0)
+		{
+			first = this.getCluster();
+			second = c.getCluster();
+			result = first.compareTo(second);
+			
+			if (result == 0)
+			{
+				first = this.getWordNumber();
+				second = c.getWordNumber();
+				result = first.compareTo(second);
+				
+				if (result == 0)
+				{
+					String firstString = this.getWord();
+					String secondString = c.getWord();
+					result = firstString.compareTo(secondString);
+				}//end string compare
+			}//end word number compare
+		}//end cluster compare
+		
+		return result;
 	}
 	
 	/**
@@ -215,5 +242,15 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 	public void setCluster(Integer clusterNum)
 	{
 		cluster = clusterNum;
+	}
+	
+	public Integer getWordNumber()
+	{
+		return wordNum;
+	}
+	
+	public void setWordNumber(Integer num)
+	{
+		wordNum = num;
 	}
 }

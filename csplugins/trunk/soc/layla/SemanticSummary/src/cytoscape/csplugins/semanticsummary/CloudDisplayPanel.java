@@ -31,6 +31,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -109,6 +110,25 @@ public class CloudDisplayPanel extends JPanel
 		this.clearCloud();
 		curCloud = params;
 		
+		//Create a list of the words to include based on MaxWords parameters
+		ArrayList<CloudWordInfo> copy = new ArrayList<CloudWordInfo>();
+		ArrayList<CloudWordInfo> original = curCloud.getCloudWordInfoList();
+		
+		for (int i = 0; i < original.size(); i++)
+		{
+			CloudWordInfo curInfo = original.get(i);
+			copy.add(curInfo);
+		}
+		Collections.sort(copy);
+		
+		Integer max = params.getMaxWords();
+		Integer numWords = copy.size();
+		if (max < numWords)
+		{
+			copy.subList(max, numWords).clear();
+		}
+		
+		
 		//Loop through to create labels and add them
 		int count = 0;
 		
@@ -120,23 +140,32 @@ public class CloudDisplayPanel extends JPanel
 		while(iter.hasNext() && (count < params.getMaxWords()))
 		{
 			CloudWordInfo curWordInfo = iter.next();
-			Integer clusterNum = curWordInfo.getCluster();
-			JLabel curLabel = curWordInfo.createCloudLabel();
 			
-			//Retrieve proper Panel
-			JPanel curPanel;
-			if (clusters.containsKey(clusterNum))
+			//Check that word in in our range
+			if (copy.contains(curWordInfo))
 			{
-				curPanel = clusters.get(clusterNum);
-			}
-			else
-			{
-				curPanel = new JPanel(new ModifiedClusterFlowLayout(ModifiedFlowLayout.CENTER,10,0));
-			}
+				Integer clusterNum = curWordInfo.getCluster();
+				JLabel curLabel = curWordInfo.createCloudLabel();
 			
-			curPanel.add(curLabel);
-			clusters.put(clusterNum, curPanel);
-			count++;
+				//Retrieve proper Panel
+				JPanel curPanel;
+				if (clusters.containsKey(clusterNum))
+				{
+					curPanel = clusters.get(clusterNum);
+				}
+				else
+				{
+					curPanel = new JPanel(new ModifiedClusterFlowLayout(ModifiedFlowLayout.CENTER,10,0));
+					if (params.getDisplayStyle().equals("Gray Boxes"))
+					{
+						curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
+					}
+				}
+			
+				curPanel.add(curLabel);
+				clusters.put(clusterNum, curPanel);
+				count++;
+			}
 		}
 		
 		//Add all clusters to flow panel
@@ -144,7 +173,7 @@ public class CloudDisplayPanel extends JPanel
 		{
 			Integer clusterNum = iter2.next();
 			JPanel curPanel = clusters.get(clusterNum);
-			curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
+			//curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
 			tagCloudFlowPanel.add(curPanel);
 		}
 		

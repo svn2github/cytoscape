@@ -48,19 +48,22 @@ import cytoscape.data.CyAttributes;
  *
  */
 
-public class CloudParameters 
+public class CloudParameters implements Comparable
 {
 
 	//VARIABLES
 	private String cloudName;
 	private String attributeName;
+	private String displayStyle;
 	
 	private SemanticSummaryParameters networkParams; //parent network
 	
 	private List<String> selectedNodes; //set of selected nodes for cloud
+	
 	private Integer selectedNumNodes;
 	private Integer networkNumNodes;
 	private Integer maxWords;
+	private Integer cloudNum; //Used to order the clouds for each network
 	
 	private HashMap<String, List<String>> stringNodeMapping;
 	private HashMap<String, Integer> networkCounts; // counts for whole network
@@ -91,6 +94,7 @@ public class CloudParameters
 	private String defaultAttName = "nodeID";
 	private Integer defaultMaxWords = 250;
 	private Double defaultClusterCutoff = 1.0;
+	private String defaultStyle = "Standard";
 	
 	//CONSTRUCTORS
 	
@@ -141,6 +145,7 @@ public class CloudParameters
 		
 		this.cloudName = props.get("CloudName");
 		this.attributeName = props.get("AttributeName");
+		this.displayStyle = props.get("DisplayStyle");
 		this.selectedNumNodes = new Integer(props.get("SelectedNumNodes"));
 		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
 		this.netWeightFactor = new Double(props.get("NetWeightFactor"));
@@ -151,6 +156,7 @@ public class CloudParameters
 		this.maxRatio = new Double(props.get("MaxRatio"));
 		this.minRatio = new Double(props.get("MinRatio"));
 		this.maxWords = new Integer(props.get("MaxWords"));
+		this.cloudNum = new Integer(props.get("CloudNum"));
 		
 		//Rebuild List
 		String value = props.get("SelectedNodes");
@@ -610,6 +616,18 @@ public class CloudParameters
 			String message = "The cluster cutoff must be greater than or equal to 0";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
 		}
+		
+		//Style
+		Object style = inputPanel.getCMBStyle().getSelectedItem();
+		if (style instanceof String)
+			setDisplayStyle((String) style);
+		else
+		{
+			setDisplayStyle(defaultStyle);
+			inputPanel.getCMBStyle().setSelectedItem(defaultStyle);
+			String message = "You must select one of the available styles.";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	/**
@@ -623,6 +641,7 @@ public class CloudParameters
 		
 		paramVariables.append("CloudName\t" + cloudName + "\n");
 		paramVariables.append("AttributeName\t" + attributeName + "\n");
+		paramVariables.append("DisplayStyle\t" + displayStyle + "\n");
 		
 		//List of Nodes as a comma delimited list
 		StringBuffer output = new StringBuffer();
@@ -643,6 +662,7 @@ public class CloudParameters
 		paramVariables.append("MinRatio\t" + minRatio + "\n");
 		paramVariables.append("MaxRatio\t" + maxRatio + "\n");
 		paramVariables.append("MaxWords\t" + maxWords + "\n");
+		paramVariables.append("CloudNum\t" + cloudNum + "\n");
 		
 		return paramVariables.toString();
 	}
@@ -837,6 +857,26 @@ public class CloudParameters
         }
         
         return wordSet;
+	}
+	
+	/**
+	 * Compares two CloudParameters objects based on the order in which they
+	 * were created.
+	 * @param CloudParameters object to compare this object to
+	 * @return
+	 */
+	public int compareTo(Object o) 
+	{
+		if (o instanceof CloudParameters)
+		{
+			CloudParameters compare = (CloudParameters)o;
+			
+			Integer thisCount = this.getCloudNum();
+			Integer compareCount = compare.getCloudNum();
+			return thisCount.compareTo(compareCount);
+		}
+		else
+			return 0;
 	}
 	
 	
@@ -1114,4 +1154,28 @@ public class CloudParameters
 		return defaultClusterCutoff;
 	}
 	
+	public String getDefaultDisplayStyle()
+	{
+		return defaultStyle;
+	}
+	
+	public Integer getCloudNum()
+	{
+		return cloudNum;
+	}
+	
+	public void setCloudNum(Integer num)
+	{
+		cloudNum = num;
+	}	
+	
+	public String getDisplayStyle()
+	{
+		return displayStyle;
+	}
+	
+	public void setDisplayStyle(String style)
+	{
+		displayStyle = style;
+	}
 }

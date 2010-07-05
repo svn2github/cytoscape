@@ -106,6 +106,7 @@ public class CreateCloudAction extends CytoscapeAction
 		
 		//Create CloudParameters
 		CloudParameters cloudParams = new CloudParameters();
+		cloudParams.setCloudNum(params.getCloudCount());
 		cloudParams.setCloudName(params.getNextCloudName()); 
 		cloudParams.setNetworkParams(params);
 		cloudParams.setNetworkNumNodes(network.getNodeCount());

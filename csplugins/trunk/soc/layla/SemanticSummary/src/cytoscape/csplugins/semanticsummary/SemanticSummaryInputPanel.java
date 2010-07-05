@@ -92,6 +92,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	//JComboBox
 	JComboBox cmbAttributes;
 	JComboBox cmbRemoval;
+	JComboBox cmbStyle;
 	
 	//JLabels
 	private JLabel networkLabel;
@@ -164,7 +165,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public JPanel createCloudListPanel()
 	{
 		JPanel panel = new JPanel();
-		//panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setLayout(new BorderLayout());
 		
 		//Name of the network
@@ -223,10 +223,15 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		CollapsiblePanel exclusionList = createExclusionListPanel();
 		exclusionList.setCollapsed(true);
 		
+		//Cloud Layout
+		CollapsiblePanel cloudLayout = createCloudLayoutPanel();
+		cloudLayout.setCollapsed(true);
+		
 		//Add all Panels
 		panel.add(semAnalysis);
 		panel.add(displaySettings);
 		panel.add(exclusionList);
+		panel.add(cloudLayout);
 		
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
 		
@@ -447,13 +452,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 
 		
 		//Export Text Button
-		JButton exportTextButton = new JButton("txt export");
-		gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridx = 2;
-		gridBagConstraints.anchor = GridBagConstraints.EAST;
-		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-		wordPanel.add(exportTextButton, gridBagConstraints);
+		//JButton exportTextButton = new JButton("txt export");
+		//gridBagConstraints = new GridBagConstraints();
+		//gridBagConstraints.gridy = 2;
+		//gridBagConstraints.gridx = 2;
+		//gridBagConstraints.anchor = GridBagConstraints.EAST;
+		//gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+		//Comment out for the time being until we decide if this is needed
+		//wordPanel.add(exportTextButton, gridBagConstraints);
 		
 		refreshRemovalCMB();
 		
@@ -465,6 +471,55 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		
 		return collapsiblePanel;
 	}
+	
+	/**
+	 * Creates a CollapsiblePanel that holds the Cloud Layout information.
+	 * @return CollapsiblePanel - cloud Layout panel interface.
+	 */
+	private CollapsiblePanel createCloudLayoutPanel()
+	{
+		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Cloud Layout");
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0,1));
+		
+		
+		JPanel cloudLayoutPanel = new JPanel();
+		cloudLayoutPanel.setLayout(new GridBagLayout());
+
+		JLabel cloudStyleLabel = new JLabel("Style: ");
+		
+		WidestStringComboBoxModel wscbm = new WidestStringComboBoxModel();
+		cmbStyle = new JComboBox(wscbm);
+		cmbStyle.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
+		cmbStyle.setEditable(false);
+	    Dimension d = cmbStyle.getPreferredSize();
+	    cmbStyle.setPreferredSize(new Dimension(15, d.height));
+
+		
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(5,0,0,0);
+		cloudLayoutPanel.add(cloudStyleLabel, gridBagConstraints);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
+		cloudLayoutPanel.add(cmbStyle, gridBagConstraints);
+	    
+	    buildStyleCMB();
+		
+		panel.add(cloudLayoutPanel);
+		
+		collapsiblePanel.getContentPane().add(panel,BorderLayout.NORTH);
+		return collapsiblePanel;
+	}
+	
 	
 	/**
 	 * Utility to create a panel for the buttons at the bottom of the Semantic 
@@ -508,13 +563,15 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		//Set new current values
 		networkLabel.setText(params.getNetworkName());
 		
-		List<String> clouds = new ArrayList<String>(params.getClouds().keySet());
+		//Ensure list is in order of creation
+		List<CloudParameters> clouds = new ArrayList<CloudParameters>(params.getClouds().values());
 		Collections.sort(clouds);
 		
-		Iterator<String> iter = clouds.iterator();
-		while(iter.hasNext())
+		Iterator<CloudParameters> iter = clouds.iterator();
+		while (iter.hasNext())
 		{
-			String curCloud = iter.next();
+			CloudParameters curParam = iter.next();
+			String curCloud = curParam.getCloudName();
 			listValues.addElement(curCloud);
 		}
 		
@@ -720,6 +777,19 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbAttributes.repaint();
 	}
 	
+	/**
+	 * Builds the combo box of cloud style choices
+	 */
+	private void buildStyleCMB()
+	{
+		DefaultComboBoxModel cmb;
+		
+		cmb = ((DefaultComboBoxModel)cmbStyle.getModel());
+		cmb.removeAllElements();
+		cmb.addElement(SemanticSummaryManager.getInstance().getNullCloudParamters().getDefaultDisplayStyle());
+		cmb.addElement("Gray Boxes");
+		cmbStyle.repaint();
+	}
 	
 	/*
 	 * Get the list of attribute names for either "node" or "edge". The attribute names will be
@@ -933,6 +1003,12 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		return cmbRemoval;
 	}
+	
+	public JComboBox getCMBStyle()
+	{
+		return cmbStyle;
+	}
+	
 	
 	public CloudListSelectionHandler getCloudListSelectionHandler()
 	{

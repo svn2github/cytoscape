@@ -155,6 +155,9 @@ public class SemanticSummaryClusterBuilder
 		//Clear old values
 		cloudWords = new ArrayList<CloudWordInfo>();
 		
+		//Word count
+		Integer wordCount = 0;
+		
 		for(int i = 0; i < clusters.getClusters().size(); i++)
 		{
 			SingleWordCluster curCluster = clusters.getClusters().get(i);
@@ -170,6 +173,8 @@ public class SemanticSummaryClusterBuilder
 				curInfo.setCloudParameters(params);
 				curInfo.setTextColor(clusterColor);
 				curInfo.setCluster(i);
+				curInfo.setWordNumber(wordCount);
+				wordCount++;
 				
 				//Add to list
 				cloudWords.add(curInfo);
