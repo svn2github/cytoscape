@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -169,7 +172,9 @@ public class CloudDisplayPanel extends JPanel
 		}
 		
 		//Add all clusters to flow panel
-		for(Iterator<Integer> iter2 = clusters.keySet().iterator(); iter2.hasNext();)
+		SortedSet<Integer> sortedSet = new TreeSet<Integer>(clusters.keySet());
+		
+		for(Iterator<Integer> iter2 = sortedSet.iterator(); iter2.hasNext();)
 		{
 			Integer clusterNum = iter2.next();
 			JPanel curPanel = clusters.get(clusterNum);

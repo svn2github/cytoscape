@@ -201,7 +201,6 @@ public class WordFilter
 		
 		try
 		{
-	
 			//Read file and retrieve all lines
 			TextJarReader reader = new TextJarReader(myURL.toString());
 			reader.read();
@@ -218,7 +217,32 @@ public class WordFilter
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			//If we are running not from a jar file
+			File f;
+			try
+			{
+				f = new File(myURL.toURI());
+			}
+			catch (URISyntaxException ex)
+			{
+				f = new File(myURL.getPath());
+			}
+			
+			String path = f.getAbsolutePath();
+			
+			//Read file and retrieve all lines
+			TextFileReader reader = new TextFileReader(path);
+			reader.read();
+			String fullText = reader.getText();
+		
+			String[] lines = fullText.split("\n");
+		
+			//Each line should be a word, add to filter
+			for (int i = 0; i < lines.length; i++)
+			{
+				String curWord = lines[i];
+				wordSet.add(curWord);
+			}//end for loop
 		}
 		
 	}
