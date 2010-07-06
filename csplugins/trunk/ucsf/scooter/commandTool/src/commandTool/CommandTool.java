@@ -39,6 +39,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,7 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
 import javax.swing.filechooser.FileFilter;
@@ -67,7 +72,7 @@ import commandTool.ui.CommandToolDialog;
 
 public class CommandTool extends CytoscapePlugin implements ActionListener,PropertyChangeListener {
 	private CyLogger logger = null;
-	private List<File> scriptList = new ArrayList();
+	private List<Reader> scriptList = new ArrayList();
 	private final static String WINDOW = "window";
 	private final static String RUN = "run";
 	private final static String SETTINGS = "settings";
@@ -136,8 +141,8 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 		CommandTool.setMessageHandlerContext(mHandler);
 
 		// If we have any script files open -- process them now.
-		for (File file: scriptList) {
-			CommandHandler.handleCommandFile(file, null);
+		for (Reader reader: scriptList) {
+			CommandHandler.handleCommandFile(reader, null);
 		} 
 	}
 
@@ -145,18 +150,28 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 		// See if there are any scripts
 		for (int arg = 0; arg < args.length; arg++) {
 			if (args[arg].equals("-S")) {
-				// Yup, put it in our file list
-				// logger.debug("Opening file: "+args[arg+1]);
-				File file = new File(args[++arg]);
-				if (file == null) {
-					// Display an error
-					logger.error("Unable to open file: "+args[arg]);
+				// Is this the "special" arg for stdin?
+				if (args[arg+1].equals("stdin")) {
+						scriptList.add(new InputStreamReader(System.in));
 				} else {
-					scriptList.add(file);
+					try {
+						// logger.debug("Opening file: "+args[arg+1]);
+						File file = new File(args[++arg]);
+						if (file == null) {
+							// Display an error
+							logger.error("Unable to open file: "+args[arg]);
+						} else {
+							scriptList.add(new FileReader(file));
+						}
+					} catch (FileNotFoundException f) {
+						logger.error("Unable to open file: "+args[arg]);
+					}
 				}
-				Cytoscape.getPropertyChangeSupport()
-				         .addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED, this);
-				initialized = false;
+				if (initialized) {
+					Cytoscape.getPropertyChangeSupport()
+					         .addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED, this);
+					initialized = false;
+				}
 			}
 		}
 		return;
@@ -182,7 +197,12 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 				// Run it
 				LogMessageHandler mHandler = new LogMessageHandler(logger);
 				CommandTool.setMessageHandlerContext(mHandler);
-				CommandHandler.handleCommandFile(chooser.getSelectedFile(), null);
+				try {
+					CommandHandler.handleCommandFile(new FileReader(chooser.getSelectedFile()), null);
+				} catch (FileNotFoundException f) {
+					JOptionPane.showMessageDialog(chooser, "Can't find file: "+chooser.getSelectedFile(),
+					                                "File Not Found",JOptionPane.ERROR_MESSAGE);
+				}
 				lastDirectory = chooser.getSelectedFile().getParent();
 			}
 		} else if (command.equals(SETTINGS)) {

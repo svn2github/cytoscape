@@ -34,7 +34,7 @@ package commandTool.handlers;
 
 import java.io.File;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 
@@ -54,9 +54,9 @@ import commandTool.CommandTool;
 public class CommandHandler {
 
 	// TODO: use args to do variable substitution
-	public static void handleCommandFile(File inputFile, Map<String,Object>args) {
+	public static void handleCommandFile(Reader inputReader, Map<String,Object>args) {
 		try {
-			BufferedReader input = new BufferedReader(new FileReader(inputFile));
+			BufferedReader input = new BufferedReader(inputReader);
 			try {
 				String line = null;
 				while ((line = input.readLine()) != null) {
@@ -72,6 +72,11 @@ public class CommandHandler {
 
 	public static void handleCommand(MessageHandler resultsText, String input) {
 		CyCommandResult results = null;
+		if (input.length() == 0) return;
+		if (input.startsWith("#")) {
+			resultsText.appendMessage(input);
+			return;
+		}
 
 		try {
 			// Handle our built-ins

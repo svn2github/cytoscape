@@ -33,6 +33,8 @@
 package commandTool.handlers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 import java.util.Collection;
 import java.util.List;
@@ -72,11 +74,15 @@ public class CommandToolHandler extends AbstractCommandHandler {
 			throw new RuntimeException(RUN+" command requires a 'file' argument");
 
 		File inputFile = null;
-		inputFile = new File(args.get(FILE).toString());
-		CommandHandler.handleCommandFile(inputFile, args);
-
 		CyCommandResult result = new CyCommandResult();
-		result.addMessage("Completed execution of "+inputFile.toString());
+		try {
+			inputFile = new File(args.get(FILE).toString());
+			CommandHandler.handleCommandFile(new FileReader(inputFile), args);
+
+			result.addMessage("Completed execution of "+inputFile.toString());
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("Unable to open file "+inputFile.toString());
+		}
 		return result;
 	}
 }
