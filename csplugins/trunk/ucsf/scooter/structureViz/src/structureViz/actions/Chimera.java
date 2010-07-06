@@ -77,6 +77,7 @@ public class Chimera {
 	static private CyNetworkView networkView;
 	static private ModelNavigatorDialog mnDialog = null;
 	static private AlignStructuresDialog alDialog = null;
+	static private List<ChimeraStructuralObject>selectionList = null;
 	static Chimera staticPointer = null;
 	static CyLogger logger;
 
@@ -99,6 +100,7 @@ public class Chimera {
 		modelHash = new HashMap<Float,ChimeraModel>();
 		this.networkView = networkView;
 		this.logger = logger;
+		selectionList = new ArrayList<ChimeraStructuralObject>();
   }
 
 	/**
@@ -217,6 +219,24 @@ public class Chimera {
 				return model;
 		}
 		return null;
+	}
+
+	/**
+ 	 * Return the list of currently selected structural objects
+ 	 *
+ 	 * @return selection list
+ 	 */
+	public List<ChimeraStructuralObject> getSelectionList() {
+		return selectionList;
+	}
+
+	/**
+ 	 * Clear the list of selected objects
+ 	 */
+	public void clearSelectionList() {
+		for (ChimeraStructuralObject cso: selectionList) {
+			cso.setSelected(false);
+		}
 	}
 
 	/**
@@ -346,6 +366,7 @@ public class Chimera {
 		if (chimeraModel != null) {
 			models.remove(chimeraModel);
 			modelHash.remove(new Float(model));
+			selectionList.remove(chimeraModel);
 		}
 		chimeraSend("listen start models; listen start select");
 		return;
@@ -468,7 +489,7 @@ public class Chimera {
 	/**
 	 * Inform our interface that the selection has changed
 	 */
-	public void updateSelection(List selectionList) {
+	public void updateSelection(List<ChimeraStructuralObject> selectionList) {
 		if (mnDialog != null)
 			mnDialog.updateSelection(selectionList);
 	}
@@ -481,7 +502,7 @@ public class Chimera {
 	 */
 	public void updateSelection() {
 		HashMap<Float,ChimeraModel>modelSelHash = new HashMap();
-		ArrayList<ChimeraStructuralObject>selectionList = new ArrayList();
+		clearSelectionList();
 
 		// Execute the command to get the list of models with selections
 		for (String modelLine: commandReply("lists level molecule")) {
@@ -509,17 +530,20 @@ public class Chimera {
 				    dataModel.getStructure().getType() == Structure.StructureType.SMILES) {
 					// Select the entire model
 					selectionList.add(dataModel);
+					dataModel.setSelected(true);
 				} else {
 					for (ChimeraChain selectedChain: selectedModel.getChains()) {
 						ChimeraChain dataChain = dataModel.getChain(selectedChain.getChainId());
 						if (selectedChain.getResidueCount() == dataChain.getResidueCount()) {
 							selectionList.add(dataChain);
+							dataChain.setSelected(true);
 						} else {
 							// Need to select individual residues
 							for (ChimeraResidue res: selectedChain.getResidues()) {
 								String residueIndex = res.getIndex();
 								ChimeraResidue residue = dataChain.getResidue(residueIndex);
 								selectionList.add(residue);
+								residue.setSelected(true);
 							} // resIter.hasNext
 						}
 					} // chainIter.hasNext()

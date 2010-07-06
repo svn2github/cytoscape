@@ -33,12 +33,14 @@
 package structureViz.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
@@ -48,6 +50,7 @@ import cytoscape.logger.CyLogger;
 
 import structureViz.actions.Chimera;
 import structureViz.model.ChimeraModel;
+import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.Structure;
 
 enum Command {
@@ -64,8 +67,8 @@ enum Command {
 	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist=selected"),
 	FOCUS("focus", "Focus on a structure or part of a structure","structurelist=selected"),
 	HIDE("hide", "Hide parts of a structure", "structurelist=selected"),
-	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=selected"), 
-	LISTRES("list residues", "List the residues in a structure", "structurelist=selected|chain=all"),
+	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
+	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",""),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
 	SELECT("select", "Select a structure or parts of a structure", "structurelist"),
@@ -116,10 +119,12 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		CyCommandResult result = new CyCommandResult();
 
 		// Launch Chimera
-		Chimera chimera = Chimera.GetChimeraInstance(Cytoscape.getCurrentNetworkView(), logger);
+		this.chimera = Chimera.GetChimeraInstance(Cytoscape.getCurrentNetworkView(), logger);
 		if (!chimera.isLaunched() && !launchChimera(result, chimera))
 			return result; // Oops!  Didn't launch
 
+		List<Structure> structureList = getStructureList(command, args);
+		// System.out.println("Structurelist = "+structureList);
 
 		// Main command cascade
 		if (Command.ALIGNSTRUCTURES.equals(command)) {
@@ -127,6 +132,7 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			//
 			// CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
 			//
+			return StructureCommands.closeCommand(chimera, result, structureList);
 		} else if (Command.COLOR.equals(command)) {
 		} else if (Command.DEPICT.equals(command)) {
 		} else if (Command.EXIT.equals(command)) {
@@ -139,13 +145,21 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		} else if (Command.FOCUS.equals(command)) {
 		} else if (Command.HIDE.equals(command)) {
 		} else if (Command.LISTCHAINS.equals(command)) {
+			//
+			// LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
+			//
+			return StructureCommands.listChains(chimera, result, structureList);
 		} else if (Command.LISTRES.equals(command)) {
+			//
+			// LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain=all"),
+			//
+			String chains = getArg(command, "chain", args);
+			return StructureCommands.listResidues(chimera, result, structureList, chains);
 		} else if (Command.LISTSTRUCTURES.equals(command)) {
 			//
 			// LISTSTRUCTURES("list structures", "List all of the open structures",""),
 			//
 			List<ChimeraModel> models = chimera.getChimeraModels();
-			System.out.println("Models = "+models);
 			result.addResult("modelList", models);
 			for (ChimeraModel model: models) {
 				result.addMessage(model.toString());
@@ -160,9 +174,9 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			String nodelist = getArg(command, "nodeList", args);
 
 			if (nodelist != null) {
+				// return StructureCommands.openCommand(chimera, result, nodelist);
 			} else
 				return StructureCommands.openCommand(chimera, result, pdb, modbaseid, smiles);
-
 		} else if (Command.SELECT.equals(command)) {
 		} else if (Command.SEND.equals(command)) {
 			//
@@ -181,10 +195,74 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	}
 
 	/**
- 	 * Return the list of structures corresponding to the passed arguments
+ 	 * Return the list of structures corresponding to the passed arguments.  A
+ 	 * structure can be specified by it's model number (#N), it's name, or the
+ 	 * name of the node it's associated with.  It can also refer to the currently
+ 	 * selected model or list of models
  	 */
-	private List<Structure> getStructureList(String command, Map<String,Object>args) {
-		return null;
+	private List<Structure> getStructureList(String command, Map<String,Object>args) throws CyCommandException {
+		String structureSpec = getArg(command, "structurelist", args);
+		if (structureSpec == null)
+			return null;
+
+		List<Structure> structureList = new ArrayList<Structure>();
+
+		// Special case: structurelist="selected"
+		if ("selected".equals(structureSpec)) {
+			List<ChimeraStructuralObject> selectionList = chimera.getSelectionList();
+			for (ChimeraStructuralObject model: selectionList) {
+				if (model instanceof ChimeraModel)
+					structureList.add(((ChimeraModel)model).getStructure());
+			}
+			return structureList;
+		} else if ("all".equals(structureSpec)) {
+			return chimera.getOpenStructs();
+		}
+
+		String[] structureArray = structureSpec.split(",");
+		for (String structure: structureArray) {
+			Structure st = getStructureFromSpec(structure);
+			if (st != null)
+				structureList.add(st);
+		}
+		return structureList;
+	}
+
+	/**
+ 	 * Return a Structure when given a structureSpec, which can either be a model
+ 	 * number, a node name, or a model name.
+ 	 */
+	private Structure getStructureFromSpec(String spec) throws CyCommandException {
+		ChimeraModel m = null;
+		try {
+			if (spec.startsWith("#")) {
+				try {
+					float f = Float.parseFloat(spec.substring(1));
+					m = chimera.getModel(f);
+					if (m == null) {
+						throw new CyCommandException("No open model: "+f);
+					}
+				} catch (NumberFormatException e) {
+					throw new CyCommandException("Model numbers must be numeric");
+				}
+			} else {
+				m = chimera.getModel(spec);
+				if (m == null) {
+					// See if we have a node by that name
+					CyNode n = Cytoscape.getCyNode(spec, false);
+					if (n != null) {
+						for (Structure struct: chimera.getOpenStructs()) {
+							if (struct.node() == n)
+								return struct;
+						}
+					}
+					throw new CyCommandException("No open model: "+spec);
+				}
+			}
+		} catch (Exception e) {
+			throw new CyCommandException("Exception: "+e);
+		}
+		return m.getStructure();
 	}
 
 	private void addCommand(String command, String description, String argString) {

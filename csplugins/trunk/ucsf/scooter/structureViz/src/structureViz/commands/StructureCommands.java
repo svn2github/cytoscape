@@ -32,12 +32,18 @@
  */
 package structureViz.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 
 import structureViz.actions.Chimera;
+import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
+import structureViz.model.ChimeraResidue;
 import structureViz.model.Structure;
 
 /**
@@ -71,5 +77,94 @@ public class StructureCommands {
 
 		result.addMessage("Opened "+model);
 		return result;
+	}
+
+	static public CyCommandResult closeCommand(Chimera chimera, CyCommandResult result, 
+	                                           List<Structure> structureList) throws CyCommandException {
+		if(structureList == null)
+			throw new CyCommandException("close: structurelist must be specified");
+
+		if(structureList.size() == 0)
+			result.addMessage("Nothing to close");
+		else {
+			for (Structure s: structureList) {
+				result.addMessage("Closed "+s);
+				chimera.close(s);
+			}
+		}
+		return result;
+	}
+
+	static public CyCommandResult listChains(Chimera chimera, CyCommandResult result, 
+	                                         List<Structure> structureList) throws CyCommandException {
+
+		List<ChimeraChain> chainList = getChainList(chimera, structureList);
+		List<String> chainStrings = new ArrayList<String>();
+
+		for (ChimeraChain chain: chainList) {
+				result.addMessage(chain.toString());
+				chainStrings.add(chain.toString());
+		}
+		result.addResult("ChainList",chainStrings);
+		return result;
+	}
+
+	static public CyCommandResult listResidues(Chimera chimera, CyCommandResult result, 
+	                                           List<Structure> structureList, String chains) throws CyCommandException {
+		List<String> chainSpecs = new ArrayList<String>();
+		List<String> residueList = new ArrayList<String>();
+
+		if (chains != null)
+			chainSpecs = Arrays.asList(chains.split(","));
+
+		List<ChimeraChain> chainList = getChainList(chimera, structureList);
+		for (ChimeraChain chain: chainList) {
+			String chainName = "Model: "+chain.getChimeraModel().getModelName();
+			if (chain.getChainId().equals("_"))
+				chainName += " Chain: (no ID)";
+			else
+				chainName += " Chain: "+chain.getChainId();
+
+			if (chainSpecs.size() > 0) {
+				boolean found = false;
+				for (String cs: chainSpecs) {
+					if (chain.getChainId().equals(cs)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) continue;
+			}
+			// OK, we've got a chain, now get the residues
+			for (ChimeraResidue residue: chain.getResidues()) {
+				String residueName = chainName+" Residue: "+residue.toString();
+				result.addMessage(residueName);
+				residueList.add(residueName);
+			}
+
+		}
+		result.addResult("ResidueList",residueList);
+		return result;
+	}
+
+	static private List<ChimeraChain> getChainList(Chimera chimera, List<Structure>structureList) {
+		List<ChimeraModel> modelList = new ArrayList<ChimeraModel>();
+
+		if (structureList == null)
+			modelList = chimera.getChimeraModels();
+		else {
+			for (ChimeraModel model: chimera.getChimeraModels()) {
+				if (structureList.contains(model.getStructure()))
+					modelList.add(model);
+			}
+		}
+
+		List<ChimeraChain> chainList = new ArrayList<ChimeraChain>();
+		for (ChimeraModel model: modelList) {
+			for (ChimeraChain chain: model.getChains()) {
+				chainList.add(chain);
+			}
+		}
+		return chainList;
 	}
 }
