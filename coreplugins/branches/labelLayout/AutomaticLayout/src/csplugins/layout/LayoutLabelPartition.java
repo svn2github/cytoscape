@@ -48,6 +48,7 @@ public class LayoutLabelPartition extends LayoutPartition {
     protected double weightCoefficient = 1.0;
     protected boolean moveNodes = false;
     protected boolean selectedOnly = false;
+    protected boolean isWeighted = false;
 
     public LayoutLabelPartition(int nodeCount, int edgeCount) {
 	super(nodeCount, edgeCount);
@@ -57,13 +58,15 @@ public class LayoutLabelPartition extends LayoutPartition {
     public LayoutLabelPartition(LayoutPartition part, 
 				double weightCoefficient, 
 				boolean moveNodes, 
-				boolean selectedOnly) {
+				boolean selectedOnly,
+				boolean isWeighted) {
 
 	super(part.size(), part.getEdgeList().size());
 
 	this.weightCoefficient = weightCoefficient;
 	this.moveNodes = moveNodes;
 	this.selectedOnly = selectedOnly;
+	this.isWeighted = isWeighted;
 
 	// Copy fields from part
 	this.nodeList = (ArrayList<LayoutNode>) part.nodeList.clone();
@@ -154,42 +157,50 @@ public class LayoutLabelPartition extends LayoutPartition {
     }
 
     public void calculateEdgeWeights() {
+	Double weight = null;
 	
 	// -- First set labelEdges weights --
+	if (this.isWeighted) {
+	    // Calculate maximum preexisting weight
+	    Double maxWeight = new Double(Double.MIN_VALUE);
 
-	// Calculate maximum preexisting weight
-	Double maxWeight = new Double(Double.MIN_VALUE);
+	    ListIterator<LayoutEdge>iter = edgeList.listIterator();
 
-	ListIterator<LayoutEdge>iter = edgeList.listIterator();
-
-	while (iter.hasNext()) {
-	    LayoutEdge edge = iter.next();
+	    while (iter.hasNext()) {
+		LayoutEdge edge = iter.next();
 	    
-	    // Only consider non label edges
-	    if (labelToParentMap.keySet().contains(edge.getSource()) || 
-		labelToParentMap.keySet().contains(edge.getTarget()) ) {
-		continue;
+		// Only consider non label edges
+		if (labelToParentMap.keySet().contains(edge.getSource()) || 
+		    labelToParentMap.keySet().contains(edge.getTarget()) ) {
+		    continue;
+		}
+
+		if (  edge.getWeight() > maxWeight ) {
+		    maxWeight = edge.getWeight();
+		}
 	    }
 
-	    if (  edge.getWeight() > maxWeight ) {
-		maxWeight = edge.getWeight();
-	    }
+	    // Value which will be used as weight for all label edges
+	    weight = maxWeight *  weightCoefficient;
+	} 
+	else { // if (!this.isWeighted)
+	    weight = weightCoefficient;
 	}
-
-	// Value which will be used as weight for all label edges
-	double weight = maxWeight *  weightCoefficient;
-
+	
 	// Set all labelEdge weights
 	ListIterator<LayoutEdge>iter2 = edgeList.listIterator();
 
 	while (iter2.hasNext()) {
 	    LayoutEdge edge = iter2.next();
 	    
-	    // Only consider label edges
 	    if (labelToParentMap.keySet().contains(edge.getSource()) || 
-		labelToParentMap.keySet().contains(edge.getTarget()) ) {
-		
+		labelToParentMap.keySet().contains(edge.getTarget()) ) {		
+		// set label edges weights
 		edge.setWeight(weight);		
+	    } else{ // non label edge (normal one)
+		if (!this.isWeighted){
+		    edge.setWeight(1.0);
+		}
 	    }
 	}
 
@@ -211,6 +222,9 @@ public class LayoutLabelPartition extends LayoutPartition {
 	array.addAll(labelToParentMap.keySet());
 	return array;
     }
+
+    
+
 
 
 }

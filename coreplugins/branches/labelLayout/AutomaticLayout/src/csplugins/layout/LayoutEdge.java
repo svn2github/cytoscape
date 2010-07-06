@@ -185,6 +185,7 @@ public class LayoutEdge {
 	public String toString() {
 		String source = "undefined";
 		String target = "undefined";
+		String edgeId = "undefined";
 
 		if (v1 != null && (v1.getClass().getName() == "LayoutNodeImpl") )
 		    source = ((LayoutNodeImpl) v1).getIdentifier();
@@ -192,7 +193,10 @@ public class LayoutEdge {
 		if (v2 != null && (v2.getClass().getName() == "LayoutNodeImpl") )
 		    target = ((LayoutNodeImpl) v2).getIdentifier();
 
-		return "Edge " + edge.getIdentifier() + " connecting " + source + " and " + target
+		if (this.edge != null)
+		    edgeId = edge.getIdentifier();
+
+		return "Edge " + edgeId + " connecting " + source + " and " + target
 		       + " with weight " + weight;
 	}
 }

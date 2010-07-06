@@ -201,8 +201,6 @@ public class LayoutPartition {
 	    lockedNodes++;
 	} else {
 	    updateMinMax(nv.getXPosition(), nv.getYPosition());
-	    // this.width += Math.sqrt(nv.getWidth());
-	    // this.height += Math.sqrt(nv.getHeight());
 	    this.width += nv.getWidth();
 	    this.height += nv.getHeight();
 	}
@@ -314,7 +312,8 @@ public class LayoutPartition {
 	    } else if (edgeWeighter != null && edgeWeighter.normalizeWeight(edge) == false)
 		iter.remove();
 
-	    // logger.debug("Edge "+edge.getEdge().getIdentifier()+" now has weight "+edge.getWeight());
+	    //logger.debug("Edge "+edge.getEdge().getIdentifier()+" now has weight "+edge.getWeight());
+	    logger.info( edge.toString() + " now has weight "+edge.getWeight());
 	}
     }
 
@@ -479,6 +478,16 @@ public class LayoutPartition {
 	result.setSize(averageX / nodes, averageY / nodes);
 
 	return result;
+    }
+
+    /**
+     * Recalcultares max, min and average values from scratch 
+     */
+    public void recalculateStatistics() {
+	this.resetNodes();
+	for (LayoutNode n: this.getNodeList()) 
+	    if (!n.isLocked()) 
+		updateMinMax(n.getX(), n.getY());
     }
 
     /**
