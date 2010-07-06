@@ -1,5 +1,4 @@
 /**
-* Copyright (C) Victoria Mui, 2008
 * Copyright (C) Gerardo Huck, 2010
 *
 * This program is free software: you can redistribute it and/or modify
@@ -17,7 +16,6 @@
 *
 */
 
-
 package cytoscape.layout.label;
 
 import cytoscape.plugin.CytoscapePlugin;
@@ -28,8 +26,6 @@ import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.Cytoscape;
 
-import cytoscape.view.CyNetworkView;
-import cytoscape.ding.DingNetworkView;
 import cytoscape.layout.CyLayouts;
 
 import giny.view.NodeView;
@@ -40,7 +36,7 @@ import cytoscape.view.CyNodeView;
  * Takes the current network and reorganizes it so that the new network is more
  * readable.  This will be done through the repositioning of network labels,
  * and subtle repositioning of nodes.
- * @author Victoria Mui, Gerardo Huck
+ * @author Gerardo Huck
  *
  */
 public class LabelLayoutPlugin extends CytoscapePlugin {
@@ -63,8 +59,10 @@ public class LabelLayoutPlugin extends CytoscapePlugin {
 		CyLayouts.addLayout(new LabelBioLayoutKKAlgorithm(true), 
 				"Label Layouts");
 
+		// Adds LabelNewForceDirectedLayout to the Layout menu under "Label Layouts".
+		CyLayouts.addLayout(new LabelNewForceDirectedLayout(true), 
+				"Label Layouts");
 
 	}
        	
-
  }
