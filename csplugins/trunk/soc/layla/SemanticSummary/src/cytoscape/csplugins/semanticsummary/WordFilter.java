@@ -21,15 +21,22 @@
  */
 
 package cytoscape.csplugins.semanticsummary;
+import cytoscape.Cytoscape;
 import cytoscape.data.readers.TextFileReader;
+import cytoscape.data.readers.TextJarReader;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import javax.swing.JOptionPane;
 
 
 /**
@@ -191,31 +198,29 @@ public class WordFilter
 	private void initialize(String resourcePath, HashSet<String> wordSet)
 	{
 		URL myURL = SemanticSummaryPlugin.class.getResource(resourcePath);
-		File f;
+		
 		try
 		{
-			f = new File(myURL.toURI());
+	
+			//Read file and retrieve all lines
+			TextJarReader reader = new TextJarReader(myURL.toString());
+			reader.read();
+			String fullText = reader.getText();
+		
+			String[] lines = fullText.split("\n");
+		
+			//Each line should be a word, add to filter
+			for (int i = 0; i < lines.length; i++)
+			{
+				String curWord = lines[i];
+				wordSet.add(curWord);
+			}//end for loop
 		}
-		catch (URISyntaxException e)
+		catch (Exception e)
 		{
-			f = new File(myURL.getPath());
+			e.printStackTrace();
 		}
 		
-		String path = f.getAbsolutePath();
-		
-		//Read file and retrieve all lines
-		TextFileReader reader = new TextFileReader(path);
-		reader.read();
-		String fullText = reader.getText();
-		
-		String[] lines = fullText.split("\n");
-		
-		//Each line should be a word, add to filter
-		for (int i = 0; i < lines.length; i++)
-		{
-			String curWord = lines[i];
-			wordSet.add(curWord);
-		}//end for loop
 	}
 	
 	/**

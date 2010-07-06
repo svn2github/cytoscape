@@ -123,7 +123,6 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 	}
 	
 	
-	
 	/**
 	 * Compares two SingleWordClusters based on the totalSum of the font sizes,
 	 * and then breaks ties based upon alphabetical sorting of the words
