@@ -101,6 +101,7 @@ public class GMLReader extends AbstractGraphReader {
 	protected static final String COMMENT = "comment";
 	protected static final String VERSION = "Version";
 	protected static final String CREATOR = "Creator";
+	protected static final String TITLE = "Title";
 
 	// Graph Tags
 	protected static final String GRAPH = "graph";
@@ -348,6 +349,7 @@ public class GMLReader extends AbstractGraphReader {
 	}
 
 	protected void initializeStructures() {
+		title = null;
 		nodes = new IntArrayList();
 		sources = new IntArrayList();
 		targets = new IntArrayList();
@@ -532,6 +534,9 @@ public class GMLReader extends AbstractGraphReader {
 
 			if (keyVal.key.equals(GRAPH))
 				readGraph((List<KeyValue>) keyVal.value);
+				
+			if (keyVal.key.equals(TITLE))
+				title = (String)keyVal.value;
 		}
 	}
 
