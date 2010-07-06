@@ -262,6 +262,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbAttributes.setEditable(false);
 	    Dimension d = cmbAttributes.getPreferredSize();
 	    cmbAttributes.setPreferredSize(new Dimension(15, d.height));
+	    cmbAttributes.setToolTipText("Define which node value to use for semantic analysis");
 
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -308,6 +309,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		maxWordsTextField.setValue(params.getDefaultMaxWords()); //Set to default initially
 		maxWordsTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
+		StringBuffer buf = new StringBuffer();
+		buf.append("<html>" + "Sets a limit on the number of words to display in the cloud" + "<br>");
+		buf.append("<b>Acceptable Values:</b> greater than or equal to 0" + "</html>");
+		maxWordsTextField.setToolTipText(buf.toString());
+		
 		//Max words panel
 		JPanel maxWordsPanel = new JPanel();
 		maxWordsPanel.setLayout(new BorderLayout());
@@ -321,6 +327,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		netWeightTextField.setValue(params.getDefaultNetWeight()); //Set to default initially
 		netWeightTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
+		buf = new StringBuffer();
+		buf.append("<html>" + "Determines how much emphasis to give the entire network in relation to the selected nodes" + "<br>");
+		buf.append("<b>Acceptable Values:</b> greater than or equal to 0 and less than or equal to 1" + "</html>");
+		netWeightTextField.setToolTipText(buf.toString());
+		
 		//Network Weight Factor Panel
 		JPanel netWeightPanel = new JPanel();
 		netWeightPanel.setLayout(new BorderLayout());
@@ -333,6 +344,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		clusterCutoffTextField.setColumns(3);
 		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff()); //Set to default initially
 		clusterCutoffTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
+		
+		buf = new StringBuffer();
+		buf.append("<html>" + "Only word pairs with probability greater than or equal to the Clustering Cutoff will be considered when clustering" + "<br>");
+		buf.append("<b>Acceptable Values:</b> greater than or equal to 0" + "</html>");
+		clusterCutoffTextField.setToolTipText(buf.toString());
 		
 		//Clustering Cutoff Panel
 		JPanel clusterCutoffPanel = new JPanel();
@@ -376,6 +392,12 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		
 		addWordTextField.setText("");
 		addWordTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
+		
+		StringBuffer buf = new StringBuffer();
+		buf.append("<html>" + "Allows for specification of an additional word to be excluded when doing semantic analysis" + "<br>");
+		buf.append("<b>Acceptable Values:</b> Only alpha numeric values - no spaces allowed" + "</html>");
+		addWordTextField.setToolTipText(buf.toString());
+		
 		addWordButton = new JButton();
 		addWordButton.setText("Add");
 		addWordButton.setEnabled(false);
@@ -420,6 +442,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	    Dimension d = cmbRemoval.getPreferredSize();
 	    cmbRemoval.setPreferredSize(new Dimension(15, d.height));
 	    cmbRemoval.addItemListener(this);
+	    cmbRemoval.setToolTipText("Allows for selection a word to remove from the semantic analysis exclusion list");
 
 	    //Word Removal Button
 	    removeWordButton = new JButton();
@@ -495,6 +518,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbStyle.setEditable(false);
 	    Dimension d = cmbStyle.getPreferredSize();
 	    cmbStyle.setPreferredSize(new Dimension(15, d.height));
+	    cmbStyle.setToolTipText("Visual style for the cloud layout");
 
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
