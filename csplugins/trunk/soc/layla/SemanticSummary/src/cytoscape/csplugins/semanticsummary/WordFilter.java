@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import javax.swing.JOptionPane;
 
@@ -206,14 +207,13 @@ public class WordFilter
 			reader.read();
 			String fullText = reader.getText();
 		
-			String[] lines = fullText.split("\n");
-		
-			//Each line should be a word, add to filter
-			for (int i = 0; i < lines.length; i++)
+			StringTokenizer token = new StringTokenizer(fullText);
+			while(token.hasMoreTokens())
 			{
-				String curWord = lines[i];
+				String curWord = token.nextToken();
 				wordSet.add(curWord);
-			}//end for loop
+			}
+
 		}
 		catch (Exception e)
 		{
