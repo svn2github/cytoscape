@@ -28,7 +28,7 @@ import java.util.*;
 import java.lang.Thread;
 
 
-public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
+public class LabelBioLayoutKKAlgorithm extends ModifiedBioLayoutKKAlgorithm {
 
 
     /**
@@ -51,11 +51,11 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
     /**
      * This is the constructor for the bioLayout algorithm.
      */
-    public LabelBioLayoutFRAlgorithm(boolean supportEdgeWeights) {
+    public LabelBioLayoutKKAlgorithm(boolean supportEdgeWeights) {
 
 	super(supportEdgeWeights);
 	
-	logger = CyLogger.getLogger(LabelBioLayoutFRAlgorithm.class);
+	logger = CyLogger.getLogger(LabelBioLayoutKKAlgorithm.class);
 
 	supportWeights = supportEdgeWeights;
 
@@ -71,7 +71,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      * @return the algorithm name
      */
     public String getName() {
-	return "Fruchterman-Rheingold-Label-Layout";
+	return "Kamada-Kawai-Label-Layout";
     }
 
     /**
@@ -83,10 +83,10 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      */
     public String toString() {
 	if (supportWeights)
-	    return "Edge-Weighted Force-Directed Label Layout (FR Label BioLayout)";
+	    return "Edge-Weighted Force-Directed Label Layout (KK Label BioLayout)";
 	else
 
-	    return "Force-Directed Label Layout (FR Label BioLayout)";
+	    return "Force-Directed Label Layout (KK Label BioLayout)";
     }
 
     /**
