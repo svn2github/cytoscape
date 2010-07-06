@@ -56,7 +56,8 @@ import cytoscape.view.CyNetworkView;
  */
 public abstract class AbstractGraphReader implements GraphReader {
 	protected String fileName;
-
+	protected String title=null; // network title
+	
 	/**
 	 * Creates a new AbstractGraphReader object.
 	 *
@@ -99,7 +100,10 @@ public abstract class AbstractGraphReader implements GraphReader {
 	public String getNetworkName() {
 		String t = "";
 
-		if (fileName != null) {
+		if (title != null){
+			t = title;
+		}
+		else if (fileName != null) {
 			File tempFile = new File(fileName);
 			t = tempFile.getName();
 
