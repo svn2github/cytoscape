@@ -83,7 +83,7 @@ public class GMLWriter {
 
 	/**
 	 * Given an object tree given in oldList, update it with the information
-	 * provided in network and optionall view (if view is not null). The GML
+	 * provided in network and optional view (if view is not null). The GML
 	 * spec requires that we remember all information provided in the original
 	 * gml file. Therefore, we pass in the old object tree as oldList, as
 	 * execute functions which will update that data structure. We would also
@@ -108,22 +108,27 @@ public class GMLWriter {
 
 		/*
 		 * We are going to make sure the keys graph,creator,and version are
-		 * present and update them fi they are already present
+		 * present and update them if they are already present
 		 */
 		KeyValue graph = null;
 
 		/*
 		 * We are going to make sure the keys graph,creator,and version are
-		 * present and update them fi they are already present
+		 * present and update them if they are already present
 		 */
 		KeyValue creator = null;
 
 		/*
 		 * We are going to make sure the keys graph,creator,and version are
-		 * present and update them fi they are already present
+		 * present and update them if they are already present
 		 */
 		KeyValue version = null;
 		KeyValue keyVal = null;
+
+		/*
+		 * Network title
+		 */
+		KeyValue title = null;
 
 		for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
 			keyVal = it.next();
@@ -150,6 +155,11 @@ public class GMLWriter {
 		if (graph == null) {
 			graph = new KeyValue(GMLReader.GRAPH, new Vector());
 			oldList.add(graph);
+		}
+
+		if (title == null) {
+			title = new KeyValue(GMLReader.TITLE, network.getTitle());
+			oldList.add(title);
 		}
 
 		/*
