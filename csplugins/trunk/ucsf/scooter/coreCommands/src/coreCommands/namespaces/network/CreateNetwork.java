@@ -128,23 +128,29 @@ public class CreateNetwork extends AbstractGraphObjectHandler {
 		String edgeType = getArg(command, EDGETYPE, args);
 		boolean directed = Boolean.getBoolean(getArg(command, DIRECTED, args));
 		if (sourceList != null || targetList != null || edgeType != null) {
-			if (sourceList == null || targetList == null)
-				throw new CyCommandException("network: both 'targetlist' and 'sourcelist' must be specified");
+			if (targetList != null && sourceList == null)
+				throw new CyCommandException("network: if 'targetlist' is specified, 'sourcelist' must be specified");
 
 			String[] sourceNodes = sourceList.split(",");
-			String[] targetNodes = targetList.split(",");
-			if (sourceNodes.length != targetNodes.length)
+			String[] targetNodes = null;
+
+			if (targetList != null)
+				targetNodes = targetList.split(",");
+
+			if (targetList != null && (sourceNodes.length != targetNodes.length))
 				throw new CyCommandException("network: 'targetlist' and 'sourcelist' must have the same number of nodes");
 			
 			for (int nodeIndex = 0; nodeIndex < sourceNodes.length; nodeIndex++) {
 				CyNode source = Cytoscape.getCyNode(sourceNodes[nodeIndex], true);
-				CyNode target = Cytoscape.getCyNode(targetNodes[nodeIndex], true);
-
-				CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, edgeType, true, directed);
-
 				net.addNode(source);
-				net.addNode(target);
-				net.addEdge(edge);
+
+				if (targetNodes != null) {
+					CyNode target = Cytoscape.getCyNode(targetNodes[nodeIndex], true);
+
+					CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, edgeType, true, directed);
+					net.addNode(target);
+					net.addEdge(edge);
+				}
 			}
 
 			result.addMessage("Created network "+netName+" with "+sourceNodes.length+" edges");
