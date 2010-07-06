@@ -23,7 +23,7 @@ import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
-import cytoscape.visual.customgraphic.URLImageCustomGraphics;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 /**
  * Display list of images available as custom graphics
@@ -103,7 +103,7 @@ public class CustomGraphicsBrowser extends JXList implements PropertyChangeListe
 		try {
 			cg = new URLImageCustomGraphics(urlStr);
 			if (cg != null) {
-				pool.addGraphics(cg.hashCode(), cg, new URL(urlStr));
+				pool.addGraphics(cg, new URL(urlStr));
 				model.addElement(cg);
 			}
 		} catch (Exception e) {

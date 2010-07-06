@@ -1,4 +1,4 @@
-package cytoscape.visual.customgraphic.experimental;
+package cytoscape.visual.customgraphic.impl.vector;
 
 import java.awt.Color;
 import java.awt.Graphics;

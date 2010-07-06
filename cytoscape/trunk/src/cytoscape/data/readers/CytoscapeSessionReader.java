@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -88,8 +89,9 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.IDGenerator;
 import cytoscape.visual.customgraphic.Taggable;
-import cytoscape.visual.customgraphic.URLImageCustomGraphics;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 /**
  * Reader to load CYtoscape Session file (.cys).<br>
@@ -374,20 +376,23 @@ public class CytoscapeSessionReader {
 
 		imageMap.put(name, imageURL);
 	}
+	
 
 	private void createCustomGraphics() throws IOException {
+		
+		// Restore metadata
 		final Properties imageProps = new Properties();
 		imageProps.load(URLUtil.getBasicInputStream(imagePropsURL));
 
+		// Remove all custom graphics
 		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
-		// Reset the pool
 		pool.removeAll();
 
-		for (String hash : imageMap.keySet()) {
-			final CyCustomGraphics<?> graphics = new URLImageCustomGraphics(
-					imageMap.get(hash).toString());
-			final String propEntry = imageProps.getProperty(hash);
+		for (String id : imageMap.keySet()) {
+			final CyCustomGraphics<?> graphics = new URLImageCustomGraphics(Long.parseLong(id),
+					imageMap.get(id).toString());
+			final String propEntry = imageProps.getProperty(id);
 			String[] parts = propEntry.split(",");
 			String name = parts[parts.length - 2];
 			if (name.contains("___"))
@@ -412,11 +417,15 @@ public class CytoscapeSessionReader {
 				
 				// Add only if the graphics does not exist in memory.
 				if(currentValue == null)
-					pool.addGraphics(Integer.parseInt(hash), graphics, nameAsURL);
+					pool.addGraphics(graphics, nameAsURL);
 			} catch (MalformedURLException e) {
-				pool.addGraphics(Integer.parseInt(hash), graphics, null);
+				pool.addGraphics(graphics, null);
 			}
 		}
+		
+		// Reset the counter
+		Long currentMax = pool.getIDSet().last();
+		IDGenerator.getIDGenerator().initCounter(currentMax+1);
 	}
 
 	/**

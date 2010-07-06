@@ -12,6 +12,7 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 public class PersistImageTask implements Task {
 	private File location;
@@ -61,7 +62,7 @@ public class PersistImageTask implements Task {
 			final Image img = cg.getImage();
 			if (img != null) {
 				try {
-					exService.submit(new SaveImageTask(location, Integer.toString(cg.hashCode()),
+					exService.submit(new SaveImageTask(location, cg.getIdentifier().toString(),
 							ImageUtil.toBufferedImage(img)));
 				} catch (Exception e) {
 					e.printStackTrace();

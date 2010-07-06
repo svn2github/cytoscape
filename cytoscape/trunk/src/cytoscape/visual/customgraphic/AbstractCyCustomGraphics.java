@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
+import cytoscape.visual.customgraphic.impl.vector.CustomGraphicsProperty;
 import ding.view.ObjectPositionImpl;
 
 public abstract class AbstractCyCustomGraphics implements
@@ -20,7 +20,13 @@ public abstract class AbstractCyCustomGraphics implements
 	protected static final String DELIMITER = ",";
 	public static final String LIST_DELIMITER = "|";
 
+	// Unique ID
+	protected final Long id;
+	
+	// Layers of Ding Custom Graphic objects.
 	protected Collection<CustomGraphic> cgList;
+	
+	// Human readable name
 	protected String displayName;
 	protected CyCustomGraphicsParser parser;
 
@@ -31,7 +37,14 @@ public abstract class AbstractCyCustomGraphics implements
 	// For tags
 	protected final SortedSet<String> tags;
 
-	public AbstractCyCustomGraphics(String displayName) {
+	public AbstractCyCustomGraphics(final String displayName) {
+		this(IDGenerator.getIDGenerator().getNextId(), displayName);
+	}
+	
+	
+	public AbstractCyCustomGraphics(final Long id, final String displayName) {
+		this.id = id;
+		
 		this.cgList = new ArrayList<CustomGraphic>();
 		this.displayName = displayName;
 
@@ -40,7 +53,13 @@ public abstract class AbstractCyCustomGraphics implements
 
 		this.position = new ObjectPositionImpl();
 	}
+	
+	
+	public Long getIdentifier() {
+		return id;
+	}
 
+	
 	public Collection<CustomGraphic> getCustomGraphics() {
 		return cgList;
 	}
@@ -99,7 +118,7 @@ public abstract class AbstractCyCustomGraphics implements
 			name = displayName.replace(",", "___");
 		}
 
-		return this.getClass().getName() + DELIMITER + this.hashCode()
+		return this.getClass().getName() + DELIMITER + this.getIdentifier()
 				+ DELIMITER + name + DELIMITER + tagStr;
 	}
 

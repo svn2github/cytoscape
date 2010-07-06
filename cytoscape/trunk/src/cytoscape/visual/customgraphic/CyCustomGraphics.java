@@ -6,9 +6,19 @@ import java.awt.Image;
 import java.util.Collection;
 import java.util.Map;
 
-import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
+import cytoscape.visual.customgraphic.impl.vector.CustomGraphicsProperty;
 
 public interface CyCustomGraphics <T> {
+	
+	/**
+	 * Immutable session-unique identifier of image generated in constructor.
+	 * 
+	 * NOT globally unique.
+	 * 
+	 * @return
+	 */
+	public Long getIdentifier();
+	
 	/**
 	 * Display name is a simple description of this image object.
 	 * 

@@ -14,7 +14,7 @@ import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
-import cytoscape.visual.customgraphic.URLImageCustomGraphics;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 
 /**
@@ -190,7 +190,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 				final CyCustomGraphics<CustomGraphic> cg = new URLImageCustomGraphics(
 						file.toString(), img);
 				try {
-					pool.addGraphics(cg.hashCode(), cg, file.toURI().toURL());
+					pool.addGraphics(cg, file.toURI().toURL());
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 					continue;
@@ -205,7 +205,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 		for(Object g: toBeRemoved) {
 			final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) g;
 			browser.removeCustomGraphics(cg);
-			pool.removeGraphics(cg.hashCode());
+			pool.removeGraphics(cg.getIdentifier());
 		}
 	}
 

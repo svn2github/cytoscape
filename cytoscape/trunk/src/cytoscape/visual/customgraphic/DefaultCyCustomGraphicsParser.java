@@ -16,7 +16,7 @@ public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 		final String className = parts[0];
 
 		CyCustomGraphics<?> cg = Cytoscape.getVisualMappingManager()
-				.getCustomGraphicsPool().getByID(Integer.parseInt(parts[1]));
+				.getCustomGraphicsPool().getByID(Long.parseLong(parts[1]));
 		
 		if(cg == null) {
 			// Create new one by reflection
@@ -25,7 +25,7 @@ public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 				cg = (CyCustomGraphics<?>) cls.newInstance();
 				cg.setDisplayName(parts[2]);
 				Cytoscape.getVisualMappingManager()
-				.getCustomGraphicsPool().addGraphics(cg.hashCode(), cg, null);
+				.getCustomGraphicsPool().addGraphics(cg, null);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (InstantiationException e) {

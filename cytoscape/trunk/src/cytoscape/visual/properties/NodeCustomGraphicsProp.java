@@ -29,7 +29,7 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
-import cytoscape.visual.customgraphic.experimental.VectorCustomGraphics;
+import cytoscape.visual.customgraphic.impl.vector.VectorCustomGraphics;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 import ding.view.DNodeView;

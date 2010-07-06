@@ -10,8 +10,8 @@ import cytoscape.visual.customgraphic.CyCustomGraphicsParser;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactory;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactoryImpl;
 import cytoscape.visual.customgraphic.DefaultCyCustomGraphicsParser;
-import cytoscape.visual.customgraphic.URLImageCustomGraphics;
 import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	
@@ -51,7 +51,7 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 			CyCustomGraphics<?> graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().getBySourceURL(url);
 			if(graphics == null) {
 				graphics = new URLImageCustomGraphics(url.toString());
-				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics.hashCode(), graphics, url);
+				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics, url);
 			}
 			return graphics;
 		} catch (IOException e) {

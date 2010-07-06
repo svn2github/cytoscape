@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,14 +30,15 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
-import cytoscape.visual.customgraphic.experimental.GradientOvalLayer;
-import cytoscape.visual.customgraphic.experimental.GradientRoundRectangleLayer;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
+import cytoscape.visual.customgraphic.impl.vector.GradientOvalLayer;
+import cytoscape.visual.customgraphic.impl.vector.GradientRoundRectangleLayer;
 
 public class CustomGraphicsPool extends SubjectBase implements
 		PropertyChangeListener {
 
 	private static final CyLogger logger = CyLogger.getLogger();
-	
+		
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 8;
 	
@@ -47,10 +49,10 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	private final ExecutorService imageLoaderService;
 
-	private final Map<Integer, CyCustomGraphics<?>> graphicsMap = new ConcurrentHashMap<Integer, CyCustomGraphics<?>>();
+	private final Map<Long, CyCustomGraphics<?>> graphicsMap = new ConcurrentHashMap<Long, CyCustomGraphics<?>>();
 	
 	// URL to hash code map.  For images associated with URL.
-	private final Map<URL, Integer> sourceMap = new ConcurrentHashMap<URL, Integer>();
+	private final Map<URL, Long> sourceMap = new ConcurrentHashMap<URL, Long>();
 
 	// Null Object
 	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
@@ -69,10 +71,11 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * directory.
 	 */
 	public CustomGraphicsPool() {
+		
 		// For loading images in parallel.
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
-		graphicsMap.put(NULL.hashCode(), NULL);
+		graphicsMap.put(NULL.getIdentifier(), NULL);
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
 				Cytoscape.CYTOSCAPE_EXIT, this);
@@ -80,6 +83,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		restoreImages();
 	}
 
+	
 	/**
 	 * Restore images from .cytoscape/images dir.
 	 */
@@ -157,12 +161,12 @@ public class CustomGraphicsPool extends SubjectBase implements
 					if (cg instanceof Taggable && metatagMap.get(f) != null)
 						((Taggable) cg).getTags().addAll(metatagMap.get(f));
 
-					graphicsMap.put(cg.hashCode(), cg);
+					graphicsMap.put(cg.getIdentifier(), cg);
 					
 					try {
 						final URL source = new URL(fMap.get(f));
 						if(source != null)
-							sourceMap.put(source, cg.hashCode());
+							sourceMap.put(source, cg.getIdentifier());
 					} catch (MalformedURLException me) {
 						continue;
 					}
@@ -185,8 +189,8 @@ public class CustomGraphicsPool extends SubjectBase implements
 		}
 
 		// Add vector image samples
-		graphicsMap.put(ROUND_RECT_GR.hashCode(), ROUND_RECT_GR);
-		graphicsMap.put(OVAL_GR.hashCode(), OVAL_GR);
+		graphicsMap.put(ROUND_RECT_GR.getIdentifier(), ROUND_RECT_GR);
+		graphicsMap.put(OVAL_GR.getIdentifier(), OVAL_GR);
 		
 		long endTime = System.currentTimeMillis();
 		double sec = (endTime - startTime) / (1000.0);
@@ -202,16 +206,16 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * @param graphics: Actual custom graphics object
 	 * @param source: Source URL of graphics (if exists.  Can be null)
 	 */
-	public void addGraphics(final Integer hash, final CyCustomGraphics<?> graphics,
+	public void addGraphics(final CyCustomGraphics<?> graphics,
 			final URL source) {
-		if(graphics == null || hash == null)
+		if(graphics == null)
 			throw new IllegalArgumentException("Custom Graphics and its ID should not be null.");
 		
 		// Souce URL is an optional field.
 		if(source != null)
-			sourceMap.put(source, hash);
+			sourceMap.put(source, graphics.getIdentifier());
 		
-		graphicsMap.put(hash, graphics);
+		graphicsMap.put(graphics.getIdentifier(), graphics);
 	}
 
 	/**
@@ -219,7 +223,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * 
 	 * @param id: ID of graphics (hash code)
 	 */
-	public void removeGraphics(final Integer id) {
+	public void removeGraphics(final Long id) {
 		final CyCustomGraphics<?> cg = graphicsMap.get(id);
 		if(cg != null && cg != NULL)
 			graphicsMap.remove(id);
@@ -234,8 +238,8 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * @return Custom Graphics if exists.  Otherwise, null.
 	 * 
 	 */
-	public CyCustomGraphics<?> getByID(Integer hash) {
-		return graphicsMap.get(hash);
+	public CyCustomGraphics<?> getByID(Long id) {
+		return graphicsMap.get(id);
 	}
 
 	/**
@@ -246,9 +250,9 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * @return
 	 */
 	public CyCustomGraphics<?> getBySourceURL(URL sourceURL) {
-		final Integer hash = sourceMap.get(sourceURL);
-		if (hash != null)
-			return graphicsMap.get(hash);
+		final Long id = sourceMap.get(sourceURL);
+		if (id != null)
+			return graphicsMap.get(id);
 		else
 			return null;
 	}
@@ -271,11 +275,11 @@ public class CustomGraphicsPool extends SubjectBase implements
 		this.sourceMap.clear();
 		
 		// Null Graphics should not be removed.
-		this.graphicsMap.put(NULL.hashCode(), NULL);
+		this.graphicsMap.put(NULL.getIdentifier(), NULL);
 		
 		// Add vector image samples
-		graphicsMap.put(ROUND_RECT_GR.hashCode(), ROUND_RECT_GR);
-		graphicsMap.put(OVAL_GR.hashCode(), OVAL_GR);
+		graphicsMap.put(ROUND_RECT_GR.getIdentifier(), ROUND_RECT_GR);
+		graphicsMap.put(OVAL_GR.getIdentifier(), OVAL_GR);
 	}
 
 	
@@ -290,15 +294,15 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 */
 	public Properties getMetadata() {
 		// Null graphics object should not be in this property.
-		graphicsMap.remove(NULL.hashCode());
+		graphicsMap.remove(NULL.getIdentifier());
 		
 		final Properties props = new Properties();
 		// Use hash code as the key, and value will be a string returned by toString() method.
 		// This means all CyCustomGraphics implementations should have a special toString method.
 		for (final CyCustomGraphics<?> graphics : graphicsMap.values())
-			props.setProperty(Integer.toString(graphics.hashCode()), graphics
+			props.setProperty(graphics.getIdentifier().toString(), graphics
 					.toString());
-		graphicsMap.put(NULL.hashCode(), NULL);
+		graphicsMap.put(NULL.getIdentifier(), NULL);
 		return props;
 	}
 	
@@ -326,5 +330,10 @@ public class CustomGraphicsPool extends SubjectBase implements
 		TaskManager.executeTask(task, jTaskConfig);
 
 		logger.info("Image saving process finished.");
+	}
+	
+
+	public SortedSet<Long> getIDSet() {
+		return new TreeSet<Long>(graphicsMap.keySet());
 	}
 }

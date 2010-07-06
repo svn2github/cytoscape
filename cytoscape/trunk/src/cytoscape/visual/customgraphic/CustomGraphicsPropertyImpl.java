@@ -1,6 +1,6 @@
 package cytoscape.visual.customgraphic;
 
-import cytoscape.visual.customgraphic.experimental.CustomGraphicsProperty;
+import cytoscape.visual.customgraphic.impl.vector.CustomGraphicsProperty;
 
 
 public class CustomGraphicsPropertyImpl<T> implements

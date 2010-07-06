@@ -12,7 +12,7 @@ import org.jdesktop.swingx.JXImageView;
 import cytoscape.Cytoscape;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.Taggable;
-import cytoscape.visual.customgraphic.URLImageCustomGraphics;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 /**
  * 

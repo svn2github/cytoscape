@@ -1,4 +1,4 @@
-package cytoscape.visual.customgraphic;
+package cytoscape.visual.customgraphic.impl.bitmap;
 
 import java.awt.Image;
 import java.awt.Paint;
@@ -15,6 +15,8 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.PaintFactory;
+import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
+import cytoscape.visual.customgraphic.ImageUtil;
 import cytoscape.visual.customgraphic.paint.TexturePaintFactory;
 
 public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
@@ -40,8 +42,17 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 
 	private URL sourceUrl;
 
+	
 	public URLImageCustomGraphics(String url) throws IOException {
 		super(url);
+		this.tags.add(DEF_TAG);
+		createImage(url);
+		buildCustomGraphics(originalImage);
+	}
+	
+	
+	public URLImageCustomGraphics(Long id, String url) throws IOException {
+		super(id, url);
 		this.tags.add(DEF_TAG);
 		createImage(url);
 		buildCustomGraphics(originalImage);
