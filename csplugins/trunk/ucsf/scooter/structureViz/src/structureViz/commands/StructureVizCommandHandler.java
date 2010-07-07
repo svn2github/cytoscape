@@ -74,6 +74,8 @@ enum Command {
 	LISTSTRUCTURES("list structures", "List all of the open structures",""),
 	// MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
+	RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
+	                   "structurelist|atomspec"),
 	// ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
 	SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec"),
 	SEND("send", "Send a command to chimera", "command"),
@@ -217,6 +219,18 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 				// return StructureCommands.openCommand(chimera, result, nodelist);
 			} else
 				return StructureCommands.openCommand(chimera, result, pdb, modbaseid, smiles);
+		} else if (Command.RAINBOW.equals(command)) {
+			//
+			// RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
+	    //                    "structurelist|atomspec"),
+			//
+			if (structureList != null) {
+				result = DisplayCommands.rainbowStructure(chimera, result, structureList);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = DisplayCommands.rainbowSpecList(chimera, result, specList);
+			}
 		} else if (Command.SELECT.equals(command)) {
 		} else if (Command.SEND.equals(command)) {
 			//

@@ -43,4 +43,8 @@ public class DisplayActions {
 	public static List<String> colorAction(Chimera chimera, String atomSpec, String color, String type) {
 		return chimera.commandReply("color "+color+type+" "+atomSpec);
 	}
+
+	public static List<String> rainbowAction(Chimera chimera, String atomSpec) {
+		return chimera.commandReply("rainbow "+atomSpec);
+	}
 }

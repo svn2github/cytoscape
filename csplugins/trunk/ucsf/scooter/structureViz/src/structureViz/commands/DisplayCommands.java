@@ -69,32 +69,59 @@ public class DisplayCommands {
 				if (c != null && c.size() > 0) 
 					colorResult.addAll(c);
 				else
-					result.addMessage("Colored "+cso+" residues "+residueColor);
+					colorResult.add("Colored "+cso+" residues "+residueColor);
 			}
 			if (labelColor != null && labelColor.length() > 0) {
 				List<String> c = DisplayActions.colorAction(chimera, atomSpec, labelColor, ",l");
 				if (c != null && c.size() > 0) 
 					colorResult.addAll(c);
 				else
-					result.addMessage("Colored "+cso+" labels "+labelColor);
+					colorResult.add("Colored "+cso+" labels "+labelColor);
 			}
 			if (ribbonColor != null && ribbonColor.length() > 0) {
 				List<String> c = DisplayActions.colorAction(chimera, atomSpec, ribbonColor, ",r");
 				if (c != null && c.size() > 0) 
 					colorResult.addAll(c);
 				else
-					result.addMessage("Colored "+cso+" ribbons "+ribbonColor);
+					colorResult.add("Colored "+cso+" ribbons "+ribbonColor);
 			}
 			if (surfaceColor != null && surfaceColor.length() > 0) {
 				List<String> c = DisplayActions.colorAction(chimera, atomSpec, surfaceColor, ",s");
 				if (c != null && c.size() > 0) 
 					colorResult.addAll(c);
 				else
-					result.addMessage("Colored "+cso+" surfaces "+surfaceColor);
+					colorResult.add("Colored "+cso+" surfaces "+surfaceColor);
 			}
 			for (String s: colorResult)
 				result.addMessage(s);
 		}
+		return result;
+	}
+
+	static public CyCommandResult rainbowStructure(Chimera chimera, CyCommandResult result, 
+	                                               List<Structure>structureList) {
+		List<ChimeraStructuralObject> objList = new ArrayList<ChimeraStructuralObject>();
+		for (Structure st: structureList) {
+			objList.add(chimera.getChimeraModel(st.modelNumber()));
+		}
+		return rainbowSpecList(chimera, result, objList);
+	}
+
+	static public CyCommandResult rainbowSpecList(Chimera chimera, CyCommandResult result, 
+	                                              List<ChimeraStructuralObject>specList) {
+		for (ChimeraStructuralObject cso: specList) {
+			List<String> colorResult = new ArrayList<String>();
+			String atomSpec = cso.toSpec();
+			List<String> c = DisplayActions.rainbowAction(chimera, atomSpec);
+			if (c != null && c.size() > 0) 
+				colorResult.addAll(c);
+			else
+				colorResult.add("Colored "+cso+" rainbow");
+
+			for (String s: colorResult)
+				result.addMessage(s);
+		}
+
 		return result;
 	}
 
