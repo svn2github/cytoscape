@@ -1,0 +1,6 @@
+network create createview=true name="Test" sourcelist="node0"
+node set attribute node="node0" name="pdbFileName" value="1bna"
+structureviz open structure pdbid="1yti"
+structureviz open structure pdbid="1bna"
+structureviz color atomspec="1yti.I" residues="red"
+structureviz rainbow atomspec="1yti.A"
