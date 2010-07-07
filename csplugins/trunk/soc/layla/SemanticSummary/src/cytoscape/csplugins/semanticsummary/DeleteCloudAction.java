@@ -66,7 +66,7 @@ public class DeleteCloudAction extends CytoscapeAction
 		
 		//Delete if cloud is not null
 		if (cloudParams != null && 
-				cloudParams != SemanticSummaryManager.getInstance().getNullCloudParamters())
+				cloudParams != SemanticSummaryManager.getInstance().getNullCloudParameters())
 		{
 			String cloudName = cloudParams.getCloudName();
 			

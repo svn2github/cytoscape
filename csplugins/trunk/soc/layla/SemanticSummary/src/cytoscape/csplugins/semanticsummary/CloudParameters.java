@@ -118,6 +118,7 @@ public class CloudParameters implements Comparable
 		this.attributeName = this.getDefaultAttName();
 		this.clusterCutoff = this.getDefaultClusterCutoff();
 		this.maxWords = this.getDefaultMaxWords();
+		this.displayStyle = this.getDefaultDisplayStyle();
 	}
 	
 	/**
@@ -503,11 +504,30 @@ public class CloudParameters implements Comparable
 		//Clear old fonts
 		this.cloudWords = new ArrayList<CloudWordInfo>();
 		
-		SemanticSummaryClusterBuilder builder = new SemanticSummaryClusterBuilder();
-		builder.initialize(this);
-		builder.clusterData(this.getClusterCutoff());
-		builder.buildCloudWords();
-		cloudWords = builder.getCloudWords();
+		if (displayStyle.equals("No Clustering"))
+		{
+			Set<String> words = ratios.keySet();
+			Iterator<String> iter = words.iterator();
+			while(iter.hasNext())
+			{
+				String curWord = (String)iter.next();
+				Integer fontSize = calculateFontSize(curWord);
+				CloudWordInfo curInfo = new CloudWordInfo(curWord, fontSize);
+				curInfo.setCloudParameters(this);
+				cloudWords.add(curInfo);
+			}//end while loop
+			
+			//Sort cloudWords in reverse order by fontsize
+			Collections.sort(cloudWords);
+		}
+		else
+		{
+			SemanticSummaryClusterBuilder builder = new SemanticSummaryClusterBuilder();
+			builder.initialize(this);
+			builder.clusterData(this.getClusterCutoff());
+			builder.buildCloudWords();
+			cloudWords = builder.getCloudWords();
+		}
 	}
 	
 	

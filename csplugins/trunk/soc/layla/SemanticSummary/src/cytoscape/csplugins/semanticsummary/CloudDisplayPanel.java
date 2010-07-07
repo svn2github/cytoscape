@@ -95,6 +95,7 @@ public class CloudDisplayPanel extends JPanel
 	public void clearCloud()
 	{
 		tagCloudFlowPanel.removeAll();
+		tagCloudFlowPanel.setLayout(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER, 30, 25));
 		tagCloudFlowPanel.revalidate();
 		cloudScroll.revalidate();
 		tagCloudFlowPanel.updateUI();
@@ -158,7 +159,17 @@ public class CloudDisplayPanel extends JPanel
 				}
 				else
 				{
+					if (params.getDisplayStyle().equals("No Clustering"))
+					{
+						//curPanel =  new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
+						curPanel = tagCloudFlowPanel;
+						curPanel.setLayout(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER, 10, 0));
+					}
+					else
+					{
 					curPanel = new JPanel(new ModifiedClusterFlowLayout(ModifiedFlowLayout.CENTER,10,0));
+					}
+					
 					if (params.getDisplayStyle().equals("Gray Boxes"))
 					{
 						curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
@@ -178,8 +189,9 @@ public class CloudDisplayPanel extends JPanel
 		{
 			Integer clusterNum = iter2.next();
 			JPanel curPanel = clusters.get(clusterNum);
-			//curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
-			tagCloudFlowPanel.add(curPanel);
+			
+			if (!curPanel.equals(tagCloudFlowPanel))
+				tagCloudFlowPanel.add(curPanel);
 		}
 		
 		tagCloudFlowPanel.revalidate();

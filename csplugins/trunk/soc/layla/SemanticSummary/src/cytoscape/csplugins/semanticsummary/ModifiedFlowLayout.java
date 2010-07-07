@@ -80,7 +80,7 @@ public class ModifiedFlowLayout extends FlowLayout {
 	           Component c = target.getComponent(i);
 	           if (c.isVisible()) {
 	              Dimension d = c.getPreferredSize();
-	              if ((x == 0) || ((x + hgap + d.width) <= maxwidth)) {
+	              if ((x == 0) || ((x + d.width) <= maxwidth)) {
 	                 // fits in current row.
 	                 if (x > 0) {
 	                    x += hgap;
@@ -126,5 +126,27 @@ public class ModifiedFlowLayout extends FlowLayout {
 	        return new Dimension(0, 0);
 	     }
 	  }//computeSize
+	  
+	  
+	  private int getMaxWidth(Container target)
+	  {
+		  int maxWidth = 0;
+		  int n = target.getComponentCount();
+		  for (int i = 0; i < n; i++) 
+		  {
+	           Component c = target.getComponent(i);
+	           if (c.isVisible()) 
+	           {
+	        	  int curWidth = c.getPreferredSize().width;
+	        	  if (maxWidth == 0)
+	        		  maxWidth = maxWidth + curWidth;
+	        	  else
+	        	  {
+	        		  maxWidth = maxWidth + curWidth + getHgap();
+	        	  }
+	           }
+		  }
+		  return maxWidth;
+	  }
 	  
 	}//ModifiedFlowLayout

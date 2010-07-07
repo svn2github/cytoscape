@@ -429,7 +429,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		return nullSemanticSummary;
 	}
 	
-	public CloudParameters getNullCloudParamters()
+	public CloudParameters getNullCloudParameters()
 	{
 		return nullCloudParameters;
 	}

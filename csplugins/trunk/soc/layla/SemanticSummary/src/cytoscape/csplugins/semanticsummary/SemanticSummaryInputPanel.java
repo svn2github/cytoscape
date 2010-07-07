@@ -385,7 +385,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		addWordTextField.setColumns(15);
 		
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
 			addWordTextField.setEditable(false);
 		else
 			addWordTextField.setEditable(true);
@@ -602,7 +602,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		//Update Manager variables
 		SemanticSummaryManager.getInstance().setCurNetwork(params);
 		SemanticSummaryManager.getInstance().setCurCloud(
-				SemanticSummaryManager.getInstance().getNullCloudParamters());
+				SemanticSummaryManager.getInstance().getNullCloudParameters());
 		
 		this.updateUI();
 	}
@@ -619,9 +619,10 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbAttributes.setSelectedItem(params.getAttributeName());
 		maxWordsTextField.setValue(params.getMaxWords());
 		clusterCutoffTextField.setValue(params.getClusterCutoff());
+		cmbStyle.setSelectedItem(params.getDisplayStyle());
 		addWordTextField.setText("");
 		
-		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
 			{
 			addWordTextField.setEditable(false);
 			addWordButton.setEnabled(false);
@@ -670,6 +671,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbAttributes.setSelectedItem(params.getDefaultAttName());
 		maxWordsTextField.setValue(params.getDefaultMaxWords());
 		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff());
+		cmbStyle.setSelectedItem(params.getDefaultDisplayStyle());
 		this.updateUI();
 	}
 	
@@ -687,7 +689,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		
 		//Check if we are dealing with the Null CloudParameters
 		Boolean isNull = false;
-		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParamters()))
+		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
 				isNull = true;
 		
 		//Added words
@@ -772,7 +774,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmb = ((DefaultComboBoxModel)cmbAttributes.getModel());
 		cmb.removeAllElements();
 		cmb.addElement(SemanticSummaryManager.getInstance().
-				getNullCloudParamters().getDefaultAttName());
+				getNullCloudParameters().getDefaultAttName());
 		
 		Vector<Object>av;
 		
@@ -792,7 +794,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		updateCMBAttributes();
 		CloudParameters curCloud = SemanticSummaryManager.getInstance().getCurCloud();
 		String curAttribute;
-		if (curCloud == SemanticSummaryManager.getInstance().getNullCloudParamters())
+		if (curCloud == SemanticSummaryManager.getInstance().getNullCloudParameters())
 			curAttribute = curCloud.getDefaultAttName();
 		else
 			curAttribute = curCloud.getAttributeName();
@@ -810,8 +812,10 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		
 		cmb = ((DefaultComboBoxModel)cmbStyle.getModel());
 		cmb.removeAllElements();
-		cmb.addElement(SemanticSummaryManager.getInstance().getNullCloudParamters().getDefaultDisplayStyle());
+		cmb.addElement(SemanticSummaryManager.getInstance().getNullCloudParameters().getDefaultDisplayStyle());
 		cmb.addElement("Gray Boxes");
+		cmb.addElement("No Clustering");
+		cmbStyle.setSelectedItem(SemanticSummaryManager.getInstance().getNullCloudParameters().getDefaultDisplayStyle());
 		cmbStyle.repaint();
 	}
 	
