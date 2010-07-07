@@ -347,7 +347,7 @@ public class Tokeniser {
 	}
 
 	/**
-	 *  Looks for an attribute name.  ute names in formulas cannot contain '}', ':', ',' nor
+	 *  Looks for an attribute name.  Attribute names in formulas must not contain '}', ':', ',' nor
 	 *  '(' or ')'.  In order to allow a '}' or a ':' in an attribute name, it has to be esacped with a
 	 *  backslash.  Any backslash in an identifier a.k.a. attribute name implies that the next
 	 *  input character will be included in the identifier this also allows for embedding
@@ -396,7 +396,7 @@ public class Tokeniser {
 		final StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
 
 		int ch;
-		while ((ch = getChar()) != -1 && (Character.isLetter((char)ch) || Character.isDigit((char)ch)))
+		while ((ch = getChar()) != -1 && (Character.isLetter((char)ch) || Character.isDigit((char)ch) || (char)ch == '_'))
 			builder.append((char)ch);
 		ungetChar(ch);
 

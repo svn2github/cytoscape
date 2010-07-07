@@ -50,5 +50,9 @@ public class SumTest extends TestCase {
 
 		assertTrue(Framework.executeTest("=SUM($LIST,\"5\",2.2)", variablesAndValues, Double.valueOf(25.5)));
 		assertTrue(Framework.executeTest("=SUM()", Double.valueOf(0.0)));
+
+		final List<Object> emptyList = new ArrayList<Object>();
+		variablesAndValues.put("EMPTY_LIST", emptyList);
+		assertTrue(Framework.executeTest("=SUM($EMPTY_LIST,0.0)", variablesAndValues, Double.valueOf(0.0)));
 	}
 }

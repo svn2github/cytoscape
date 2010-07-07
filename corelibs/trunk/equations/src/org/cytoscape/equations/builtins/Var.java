@@ -30,14 +30,18 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionError;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Var implements Function {
+public class Var extends AbstractFunction {
+	public Var() {
+		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.FLOATS, "numbers", "Two or more floating point numbers.") });
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -50,23 +54,7 @@ public class Var implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the sample variance of a list(s) of numbers."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"VAR(numbers1[,numbers2,...,numbersN])\""; }
-
 	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @return Double.class if the argument types make it at least conceivable that no less than 2 numbers are being passed in
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length == 0)
-			return null;
-
-		return Double.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be a list followed by a numeric argument
@@ -80,23 +68,5 @@ public class Var implements Function {
 			throw new IllegalArgumentException("illegal list argument in call to VAR(): must have at least 2 numbers!");
 
 		return FunctionUtil.calcSampleVariance(numbers);
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
-		possibleNextArgs.add(List.class);
-		if (leadingArgs.length > 1)
-			possibleNextArgs.add(null);
-
-		return possibleNextArgs;
 	}
 }

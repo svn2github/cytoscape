@@ -1,5 +1,5 @@
 /*
-  File: UCaseTest.java
+  File: AndTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,14 +30,30 @@
 package org.cytoscape.equations.builtins;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.*;
 
 
-public class UCaseTest extends TestCase {
+public class AndTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=UCASE(\"\")", ""));
-		assertTrue(Framework.executeTest("=UCASE(\"lower\")", "LOWER"));
-		assertTrue(Framework.executeTest("=UCASE(\"UPPER\")", "UPPER"));
-		assertTrue(Framework.executeTest("=UCASE(\"MiXeD\")", "MIXED"));
+		final List<Object> list = new ArrayList<Object>();
+		list.add("false");
+		list.add(Long.valueOf(0L));
+		list.add(Double.valueOf(1.3));
+
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		variablesAndValues.put("LIST", list);
+
+		assertTrue(Framework.executeTest("=AND($LIST,\"false\",FALSE)", variablesAndValues, Boolean.valueOf(false)));
+		assertTrue(Framework.executeTest("=AND()", Boolean.valueOf(true)));
+		assertTrue(Framework.executeTest("=AND(TRUE)", variablesAndValues, Boolean.valueOf(true)));
+		assertTrue(Framework.executeTest("=AND(FALSE)", variablesAndValues, Boolean.valueOf(false)));
+		assertTrue(Framework.executeTest("=AND(FALSE,FALSE)", variablesAndValues, Boolean.valueOf(false)));
+		assertTrue(Framework.executeTest("=AND(FALSE,TRUE)", variablesAndValues, Boolean.valueOf(false)));
+		assertTrue(Framework.executeTest("=AND(TRUE,TRUE)", variablesAndValues, Boolean.valueOf(true)));
 	}
 }

@@ -64,13 +64,13 @@ public class Parser {
 			eqnParser.registerFunction(new If());
 			eqnParser.registerFunction(new IList());
 			eqnParser.registerFunction(new Largest());
-			eqnParser.registerFunction(new LCase());
 			eqnParser.registerFunction(new Last());
 			eqnParser.registerFunction(new Left());
 			eqnParser.registerFunction(new Len());
 			eqnParser.registerFunction(new ListToString());
 			eqnParser.registerFunction(new Ln());
 			eqnParser.registerFunction(new Log());
+			eqnParser.registerFunction(new Lower());
 			eqnParser.registerFunction(new Max());
 			eqnParser.registerFunction(new Median());
 			eqnParser.registerFunction(new Mid());
@@ -100,7 +100,7 @@ public class Parser {
 			eqnParser.registerFunction(new Tanh());
 			eqnParser.registerFunction(new Today());
 			eqnParser.registerFunction(new Trunc());
-			eqnParser.registerFunction(new UCase());
+			eqnParser.registerFunction(new Upper());
 			eqnParser.registerFunction(new Value());
 			eqnParser.registerFunction(new Var());
 		}

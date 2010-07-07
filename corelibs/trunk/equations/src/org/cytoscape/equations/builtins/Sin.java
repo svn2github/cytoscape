@@ -30,13 +30,19 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Sin implements Function {
+public class Sin extends AbstractFunction {
+	public Sin() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.FLOAT, "number", "An angle in radians."),
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,23 +55,7 @@ public class Sin implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the sine of an angle given in radians."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"SIN(radians)\""; }
-
 	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double, Long, String or Boolean
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || !FunctionUtil.isScalarArgType(argTypes[0]))
-			return null;
-
-		return Double.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long
@@ -74,23 +64,5 @@ public class Sin implements Function {
 	public Object evaluateFunction(final Object[] args) {
 		final double angleInRadians = FunctionUtil.getArgAsDouble(args[0]);
 		return Math.sin(angleInRadians);
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length == 0) {
-			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
-			return possibleNextArgs;
-		}
-
-		return null;
 	}
 }

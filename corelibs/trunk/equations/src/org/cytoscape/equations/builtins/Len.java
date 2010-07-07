@@ -30,13 +30,19 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Len implements Function {
+public class Len extends AbstractFunction {
+	public Len() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.STRING, "text", "The source text."),
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,23 +55,7 @@ public class Len implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the length of a string."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"LEN(text)\""; }
-
 	public Class getReturnType() { return Long.class; }
-
-	/**
-	 *  @return String.class or null if the args passed in have the wrong arity or a type mismatch was found
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1)
-			return null;
-
-		return Long.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
@@ -76,23 +66,5 @@ public class Len implements Function {
 	public Object evaluateFunction(final Object[] args) throws IllegalArgumentException, ArithmeticException {
 		final String text = FunctionUtil.getArgAsString(args[0]);
 		return (Long)(long)text.length();
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length != 0)
-			return null;
-
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
-		possibleNextArgs.add(List.class);
-		return possibleNextArgs;
 	}
 }

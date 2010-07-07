@@ -30,13 +30,19 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Or implements Function {
+public class Or extends AbstractFunction {
+	public Or() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.OPT_BOOLS, "truth_values", "Zero or more truth values or lists of truth values."),
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,23 +55,7 @@ public class Or implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the logical disjunction of any number of boolean values."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"OR(logical_expr1,logical_expr2,...,logical_exprN)\"."; }
-
 	public Class getReturnType() { return Boolean.class; }
-
-	/**
-	 *  @return Boolean.class or null if there are 0 args or the args are not all of type Boolean
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length == 0)
-			return null;
-
-		return Boolean.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must all be of type Boolean
@@ -87,23 +77,5 @@ public class Or implements Function {
 		}
 
 		return false;
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
-		possibleNextArgs.add(List.class);
-		if (leadingArgs.length > 0)
-			possibleNextArgs.add(null);
-
-		return possibleNextArgs;
 	}
 }

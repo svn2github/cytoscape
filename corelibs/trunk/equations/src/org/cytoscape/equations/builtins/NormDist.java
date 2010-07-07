@@ -30,13 +30,22 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class NormDist implements Function {
+public class NormDist extends AbstractFunction {
+	public NormDist() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.FLOAT, "x", "Argument."),
+				new ArgDescriptor(ArgType.FLOAT, "mean", "The mean of the function."),
+				new ArgDescriptor(ArgType.FLOAT, "stddev", "The standard deviation of the function."),
+				new ArgDescriptor(ArgType.BOOL, "cumulative?", "If true we return the CDF, otherwise we return the pdf.")
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,28 +58,7 @@ public class NormDist implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the Normal Probability Density Function or the Cumulative Normal Distribution Function."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"NORMDIST(x,mean,stddev,cumulative?)\""; }
-
 	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @return Double.class or null if there are 2 args or the args are not of type Double, Long, Boolean or String
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 4)
-			return null;
-
-		for (final Class argType : argTypes) {
-			if (!FunctionUtil.isScalarArgType(argType))
-				return null;
-		}
-
-		return Double.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
@@ -110,24 +98,6 @@ public class NormDist implements Function {
 		}
 		else
 			return (Double)pdf(x, mu, sigma);
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length < 4) {
-			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
-			return possibleNextArgs;
-		}
-
-		return null;
 	}
 
 	/**

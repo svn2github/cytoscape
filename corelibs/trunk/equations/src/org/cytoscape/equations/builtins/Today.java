@@ -33,12 +33,17 @@ package org.cytoscape.equations.builtins;
 import java.text.DateFormat;
 
 import java.util.Calendar;
-import java.util.List;
 
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 
 
-public class Today implements Function {
+public class Today extends AbstractFunction {
+	public Today() {
+		super(new ArgDescriptor[] { });
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -51,23 +56,7 @@ public class Today implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns today's date."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"TODAY()\""; }
-
 	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @return String.class or null if there any arguments provided
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 0)
-			return null;
-
-		return String.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long
@@ -83,17 +72,5 @@ public class Today implements Function {
 		catch (final Exception e) {
 			throw new IllegalStateException("failed to get today's date: " + e.getMessage());
 		}
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		return null;
 	}
 }

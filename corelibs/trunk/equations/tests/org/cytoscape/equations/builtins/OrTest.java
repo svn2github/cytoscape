@@ -1,5 +1,5 @@
 /*
-  File: LCaseTest.java
+  File: OrTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,14 +30,29 @@
 package org.cytoscape.equations.builtins;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.*;
 
 
-public class LCaseTest extends TestCase {
+public class OrTest extends TestCase {
 	public void testAll() throws Exception {
-		assertTrue(Framework.executeTest("=LCASE(\"\")", ""));
-		assertTrue(Framework.executeTest("=LCASE(\"lower\")", "lower"));
-		assertTrue(Framework.executeTest("=LCASE(\"UPPER\")", "upper"));
-		assertTrue(Framework.executeTest("=LCASE(\"MiXeD\")", "mixed"));
+		final List<Object> list = new ArrayList<Object>();
+		list.add("false");
+		list.add(Long.valueOf(0L));
+		list.add(Double.valueOf(1.3));
+
+		final Map<String, Object> variablesAndValues = new HashMap<String, Object>();
+		variablesAndValues.put("LIST", list);
+
+		assertTrue(Framework.executeTest("=OR($LIST,\"false\",FALSE)", variablesAndValues, Boolean.valueOf(true)));
+		assertTrue(Framework.executeTest("=OR()", Boolean.valueOf(false)));
+		assertTrue(Framework.executeTest("=OR(TRUE)", variablesAndValues, Boolean.valueOf(true)));
+		assertTrue(Framework.executeTest("=OR(FALSE)", variablesAndValues, Boolean.valueOf(false)));
+		assertTrue(Framework.executeTest("=OR(FALSE,FALSE)", variablesAndValues, Boolean.valueOf(false)));
+		assertTrue(Framework.executeTest("=OR(FALSE,TRUE)", variablesAndValues, Boolean.valueOf(true)));
 	}
 }

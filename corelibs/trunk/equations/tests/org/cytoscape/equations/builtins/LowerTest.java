@@ -1,5 +1,5 @@
 /*
-  File: Sign.java
+  File: LowerTest.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,46 +30,14 @@
 package org.cytoscape.equations.builtins;
 
 
-import org.cytoscape.equations.AbstractFunction;
-import org.cytoscape.equations.ArgDescriptor;
-import org.cytoscape.equations.ArgType;
-import org.cytoscape.equations.FunctionUtil;
+import junit.framework.*;
 
 
-public class Sign extends AbstractFunction {
-	public Sign() {
-		super(new ArgDescriptor[] {
-				new ArgDescriptor(ArgType.FLOAT, "number", "Any number."),
-			});
-	}
-
-	/**
-	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
-	 *  @return the name by which you must call the function when used in an attribute equation.
-	 */
-	public String getName() { return "SIGN"; }
-
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of what this function does
-	 */
-	public String getFunctionSummary() { return "Implements the signum function.  Returns -1,0,+1 based on the number being negative, zero, or positive."; }
-
-	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @param args the function arguments which must be one object of type Double, Long, Boolean or
-	 *         a String that can be converted to a number
-	 *  @return the result of the function evaluation which is the signum of the first argument
-	 */
-	public Object evaluateFunction(final Object[] args) {
-		double number;
-		try {
-			number = FunctionUtil.getArgAsDouble(args[0]);
-		} catch (final Exception e) {
-			throw new IllegalArgumentException("SIGN: " + e.getMessage());
-		}
-
-		return Math.signum(number);
+public class LowerTest extends TestCase {
+	public void testAll() throws Exception {
+		assertTrue(Framework.executeTest("=LOWER(\"\")", ""));
+		assertTrue(Framework.executeTest("=LOWER(\"lower\")", "lower"));
+		assertTrue(Framework.executeTest("=LOWER(\"UPPER\")", "upper"));
+		assertTrue(Framework.executeTest("=LOWER(\"MiXeD\")", "mixed"));
 	}
 }

@@ -30,13 +30,22 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import org.cytoscape.equations.Function;
+
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Nth implements Function {
+public class Nth extends AbstractFunction {
+	public Nth() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.STRICT_ANY_LIST, "list", "A list of objects."),
+				new ArgDescriptor(ArgType.INT, "index", "An index into the list."),
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,23 +58,7 @@ public class Nth implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the n-th entry in a list."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"NTH(list, index)\""; }
-
 	public Class getReturnType() { return Object.class; }
-
-	/**
-	 *  @return String.class or null if the arguments are not a string followed by a number
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2 || !FunctionUtil.isSomeKindOfList(argTypes[0]) || !FunctionUtil.isScalarArgType(argTypes[1]))
-			return null;
-
-		return Object.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be a list followed by a number
@@ -91,26 +84,5 @@ public class Nth implements Function {
 			throw new IllegalArgumentException("bad list element type: " + listElement.getClass() + " in a call to NTH()!");
 
 		return retVal;
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length > 1)
-			return null;
-
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(List.class);
-		else
-			FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
-		
-		return possibleNextArgs;
 	}
 }

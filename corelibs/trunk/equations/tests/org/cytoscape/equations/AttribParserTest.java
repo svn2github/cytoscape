@@ -96,10 +96,10 @@ public class AttribParserTest extends TestCase {
 		assertFalse(parser.parse("=NOT(true, true)", attribNameToTypeMap));
 	}
 
-	public void testUCASEandLCASE() throws Exception {
+	public void testUPPERandLOWER() throws Exception {
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-		assertTrue(parser.parse("=UCASE(\"Fred\")", attribNameToTypeMap));
-		assertTrue(parser.parse("=\"bozo\"&LCASE(\"UPPER\")", attribNameToTypeMap));
+		assertTrue(parser.parse("=UPPER(\"Fred\")", attribNameToTypeMap));
+		assertTrue(parser.parse("=\"bozo\"&LOWER(\"UPPER\")", attribNameToTypeMap));
 	}
 
 	public void testBracelessAttribReferences() throws Exception {

@@ -30,12 +30,20 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 
 
-public class If implements Function {
+public class If extends AbstractFunction {
+	public If() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.BOOL, "condition", "A logical test expression."),
+				new ArgDescriptor(ArgType.ANY, "value_if_true", "The return value if the test expression evaluates to true."),
+				new ArgDescriptor(ArgType.ANY, "value_if_false", "The return value if the test expression evaluates to false."),
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -48,29 +56,7 @@ public class If implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns one of two alternatives based on a boolean value."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"IF(condition, value_if_true, value_if_false)\""; }
-
 	public Class getReturnType() { return Object.class; }
-
-	/**
-	 *  @return whatever is compatible type of the if-value and else-value or null if the two types are incompatible
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 3 || argTypes[0] != Boolean.class)
-			return null;
-
-		// Both if- and else- values must either be the same type or one of them has to be a string:
-		if (argTypes[1] == argTypes[2])
-			return argTypes[1];
-		else if (argTypes[1] == String.class || argTypes[2] == String.class)
-			return String.class;
-		else
-			return null;
-	}
 
 	/**
 	 *  @param args the function arguments
@@ -85,30 +71,5 @@ public class If implements Function {
 			return args[condition ? 1 : 2];
 		else
 			return args[condition ? 1 : 2].toString();
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length > 2)
-			return null;
-
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		if (leadingArgs.length == 0)
-			possibleNextArgs.add(Boolean.class);
-		else if (leadingArgs.length > 0) {
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(String.class);
-		}
-
-		return possibleNextArgs;
 	}
 }
