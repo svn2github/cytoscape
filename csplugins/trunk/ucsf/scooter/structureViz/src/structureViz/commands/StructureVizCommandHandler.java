@@ -49,31 +49,35 @@ import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 
 import structureViz.actions.Chimera;
+import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
+import structureViz.model.ChimeraResidue;
 import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.Structure;
 
 enum Command {
   ALIGNSTRUCTURES("alignstructures", 
 	                "Perform sequence-driven structural superposition on a group of structures", 
-	                "reference|structureList=selected"),
+	                "reference|structureList|referencechain|chainlist"),
 	CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
 	COLOR("color", "Color part of all of a structure",
-	               "chain|residues|labels|ribbons|surfaces|structurelist=selected"),
+	               "residues|labels|ribbons|surfaces|structurelist|atomspec"),
 	DEPICT("depict", "Change the depiction of a structure",
-	                 "preset=Interactive1|style=stick|ribbonstyle=round|surfacestyle=solid|transparency=0|structurelist=selected"),
+	                 "preset|style=stick|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
 	EXIT("exit", "Exit Chimera",""),
 	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist=selected"),
 	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist=selected"),
-	FOCUS("focus", "Focus on a structure or part of a structure","structurelist=selected"),
-	HIDE("hide", "Hide parts of a structure", "structurelist=selected"),
+	FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec=selected"),
+	HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected"),
 	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",""),
+	// MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
-	SELECT("select", "Select a structure or parts of a structure", "structurelist"),
+	// ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
+	SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec"),
 	SEND("send", "Send a command to chimera", "command"),
-	SHOW("show", "Show parts of a structure", "structurelist");
+	SHOW("show", "Show parts of a structure", "structurelist|atomspec");
 
   private String command = null;
   private String argList = null;
@@ -99,6 +103,16 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	CyLogger logger;
 	Chimera chimera = null;
 
+	public static final String ATOMSPEC = "atomspec";
+	public static final String CHAIN = "chain";
+	public static final String LABELS = "labels";
+	public static final String MODELLIST = "modelList";
+	public static final String RESIDUES = "residues";
+	public static final String RIBBONS = "ribbons";
+	public static final String SELECTED = "selected";
+	public static final String STRUCTURELIST = "structureList";
+	public static final String SURFACES = "surfaces";
+
 	public StructureVizCommandHandler(String namespace, CyLogger logger) {
 		super(CyCommandManager.reserveNamespace(namespace));
 
@@ -123,7 +137,8 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		if (!chimera.isLaunched() && !launchChimera(result, chimera))
 			return result; // Oops!  Didn't launch
 
-		List<Structure> structureList = getStructureList(command, args);
+		String structureSpec = getArg(command, STRUCTURELIST, args);
+		List<Structure> structureList = CommandUtils.getStructureList(structureSpec, chimera);
 		// System.out.println("Structurelist = "+structureList);
 
 		// Main command cascade
@@ -134,7 +149,32 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			//
 			return StructureCommands.closeCommand(chimera, result, structureList);
 		} else if (Command.COLOR.equals(command)) {
+			//
+			// COLOR("color", "Color part of all of a structure",
+	    //                "residues|labels|ribbons|surfaces|structurelist|atomspec"),
+			//
+			String residues = getArg(command, RESIDUES, args);
+			String labels = getArg(command, LABELS, args);
+			String ribbons = getArg(command, RIBBONS, args);
+			String surfaces = getArg(command, SURFACES, args);
+			if (structureList != null) {
+				result = DisplayCommands.colorStructure(chimera, result, structureList, residues, labels, ribbons, surfaces);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = DisplayCommands.colorSpecList(chimera, result, specList, residues, labels, ribbons, surfaces);
+			}
 		} else if (Command.DEPICT.equals(command)) {
+			//
+			// DEPICT("depict", "Change the depiction of a structure",
+	    //        "preset=Interactive1|style=stick|ribbonstyle=round|surfacestyle=solid|transparency=0|structurelist=selected"),
+			//
+
+			// String preset = getArg(command,"preset",args);
+			// if (preset != null)
+			// 	return DisplayCommands.preset(chimera, result, preset);
+
+			
 		} else if (Command.EXIT.equals(command)) {
 			//
 			// EXIT("exit", "Exit Chimera",""),
@@ -192,77 +232,6 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		}
 
 		return result;
-	}
-
-	/**
- 	 * Return the list of structures corresponding to the passed arguments.  A
- 	 * structure can be specified by it's model number (#N), it's name, or the
- 	 * name of the node it's associated with.  It can also refer to the currently
- 	 * selected model or list of models
- 	 */
-	private List<Structure> getStructureList(String command, Map<String,Object>args) throws CyCommandException {
-		String structureSpec = getArg(command, "structurelist", args);
-		if (structureSpec == null)
-			return null;
-
-		List<Structure> structureList = new ArrayList<Structure>();
-
-		// Special case: structurelist="selected"
-		if ("selected".equals(structureSpec)) {
-			List<ChimeraStructuralObject> selectionList = chimera.getSelectionList();
-			for (ChimeraStructuralObject model: selectionList) {
-				if (model instanceof ChimeraModel)
-					structureList.add(((ChimeraModel)model).getStructure());
-			}
-			return structureList;
-		} else if ("all".equals(structureSpec)) {
-			return chimera.getOpenStructs();
-		}
-
-		String[] structureArray = structureSpec.split(",");
-		for (String structure: structureArray) {
-			Structure st = getStructureFromSpec(structure);
-			if (st != null)
-				structureList.add(st);
-		}
-		return structureList;
-	}
-
-	/**
- 	 * Return a Structure when given a structureSpec, which can either be a model
- 	 * number, a node name, or a model name.
- 	 */
-	private Structure getStructureFromSpec(String spec) throws CyCommandException {
-		ChimeraModel m = null;
-		try {
-			if (spec.startsWith("#")) {
-				try {
-					float f = Float.parseFloat(spec.substring(1));
-					m = chimera.getModel(f);
-					if (m == null) {
-						throw new CyCommandException("No open model: "+f);
-					}
-				} catch (NumberFormatException e) {
-					throw new CyCommandException("Model numbers must be numeric");
-				}
-			} else {
-				m = chimera.getModel(spec);
-				if (m == null) {
-					// See if we have a node by that name
-					CyNode n = Cytoscape.getCyNode(spec, false);
-					if (n != null) {
-						for (Structure struct: chimera.getOpenStructs()) {
-							if (struct.node() == n)
-								return struct;
-						}
-					}
-					throw new CyCommandException("No open model: "+spec);
-				}
-			}
-		} catch (Exception e) {
-			throw new CyCommandException("Exception: "+e);
-		}
-		return m.getStructure();
 	}
 
 	private void addCommand(String command, String description, String argString) {

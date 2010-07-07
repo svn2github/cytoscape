@@ -282,6 +282,8 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		String chainId = residue.getChainId();
 		if (chainId != null) {
 			addResidue(chainId, residue);
+		} else {
+			addResidue("_", residue);
 		}
 		// Put it in our map so that we can return it in order
 		residues.put(residue.getIndex(), residue);

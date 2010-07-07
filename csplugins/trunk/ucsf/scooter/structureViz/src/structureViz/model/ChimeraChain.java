@@ -146,7 +146,31 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 */
 	public ChimeraResidue getResidue(String residueIndex) {
 		Integer index = new Integer(residueIndex);
-		return residueList.get(index);
+		if (residueList.containsKey(index))
+			return residueList.get(index);
+		return null;
+	}
+
+	/**
+ 	 * Get a list of residues as a residue range
+ 	 *
+ 	 * @param residueRange String representation of the residue range
+ 	 * @return the List of ChimeraResidues represented by the range
+ 	 */
+	public List<ChimeraResidue> getResidueRange(String residueRange) {
+		String[] range = residueRange.split("-",2);
+		if (range[1] == null || range[1].length() == 0) {
+			range[1] = range[0];
+		}
+		List<ChimeraResidue> resultRange = new ArrayList<ChimeraResidue>();
+		int start = Integer.parseInt(range[0]);
+		int end = Integer.parseInt(range[1]);
+		for (int i = start; i < end; i++) {
+			Integer index = Integer.valueOf(i);
+			if (residueList.containsKey(index))
+				resultRange.add(residueList.get(index));
+		}
+		return resultRange;
 	}
 
 	/**

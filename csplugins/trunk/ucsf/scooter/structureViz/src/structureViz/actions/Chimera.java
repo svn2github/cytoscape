@@ -111,6 +111,28 @@ public class Chimera {
 	public List<ChimeraModel> getChimeraModels () { return models; }
 
 	/**
+ 	 * Return a specific chimera model based on the model number
+ 	 *
+ 	 * @param model model number
+ 	 * @return the corresponding model
+ 	 */
+	public ChimeraModel getChimeraModel (Float model) {
+		if (modelHash.containsKey(model))
+			return modelHash.get(model);
+		return null;
+	}
+
+	/**
+ 	 * Return a specific chimera model based on the model number
+ 	 *
+ 	 * @param model model number
+ 	 * @return the corresponding model
+ 	 */
+	public ChimeraModel getChimeraModel (int model) {
+		return getChimeraModel(Float.valueOf((float)model));
+	}
+
+	/**
  	 * Return the list of open structures in this instance of Chimera
  	 *
  	 * @return list of Structures
