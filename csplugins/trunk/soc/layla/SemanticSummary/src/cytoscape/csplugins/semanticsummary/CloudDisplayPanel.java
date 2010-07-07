@@ -159,7 +159,7 @@ public class CloudDisplayPanel extends JPanel
 				}
 				else
 				{
-					if (params.getDisplayStyle().equals("No Clustering"))
+					if (params.getDisplayStyle().equals(CloudDisplayStyles.NO_CLUSTERING))
 					{
 						//curPanel =  new JPanel(new ModifiedFlowLayout(ModifiedFlowLayout.CENTER,10,0));
 						curPanel = tagCloudFlowPanel;
@@ -170,7 +170,7 @@ public class CloudDisplayPanel extends JPanel
 					curPanel = new JPanel(new ModifiedClusterFlowLayout(ModifiedFlowLayout.CENTER,10,0));
 					}
 					
-					if (params.getDisplayStyle().equals("Gray Boxes"))
+					if (params.getDisplayStyle().equals(CloudDisplayStyles.CLUSTERED_BOXES))
 					{
 						curPanel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(10,10,10,10)));
 					}

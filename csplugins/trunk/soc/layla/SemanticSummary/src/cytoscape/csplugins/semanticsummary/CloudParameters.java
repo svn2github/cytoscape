@@ -94,7 +94,7 @@ public class CloudParameters implements Comparable
 	private String defaultAttName = "nodeID";
 	private Integer defaultMaxWords = 250;
 	private Double defaultClusterCutoff = 1.0;
-	private String defaultStyle = "Standard";
+	private String defaultStyle = CloudDisplayStyles.DEFAULT_STYLE;
 	
 	//CONSTRUCTORS
 	
@@ -504,7 +504,7 @@ public class CloudParameters implements Comparable
 		//Clear old fonts
 		this.cloudWords = new ArrayList<CloudWordInfo>();
 		
-		if (displayStyle.equals("No Clustering"))
+		if (displayStyle.equals(CloudDisplayStyles.NO_CLUSTERING))
 		{
 			Set<String> words = ratios.keySet();
 			Iterator<String> iter = words.iterator();
@@ -517,7 +517,7 @@ public class CloudParameters implements Comparable
 				cloudWords.add(curInfo);
 			}//end while loop
 			
-			//Sort cloudWords in reverse order by fontsize
+			//Sort cloudWords in order by fontsize
 			Collections.sort(cloudWords);
 		}
 		else

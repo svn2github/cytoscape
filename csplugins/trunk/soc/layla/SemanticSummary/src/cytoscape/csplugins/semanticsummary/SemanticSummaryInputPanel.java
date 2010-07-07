@@ -810,12 +810,21 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		DefaultComboBoxModel cmb;
 		
+		/*
 		cmb = ((DefaultComboBoxModel)cmbStyle.getModel());
 		cmb.removeAllElements();
 		cmb.addElement(SemanticSummaryManager.getInstance().getNullCloudParameters().getDefaultDisplayStyle());
 		cmb.addElement("Gray Boxes");
 		cmb.addElement("No Clustering");
 		cmbStyle.setSelectedItem(SemanticSummaryManager.getInstance().getNullCloudParameters().getDefaultDisplayStyle());
+		cmbStyle.repaint();
+		*/
+		cmb = ((DefaultComboBoxModel)cmbStyle.getModel());
+		cmb.removeAllElements();
+		cmb.addElement(CloudDisplayStyles.CLUSTERED_STANDARD);
+		cmb.addElement(CloudDisplayStyles.CLUSTERED_BOXES);
+		cmb.addElement(CloudDisplayStyles.NO_CLUSTERING);
+		cmbStyle.setSelectedItem(CloudDisplayStyles.DEFAULT_STYLE);
 		cmbStyle.repaint();
 	}
 	
