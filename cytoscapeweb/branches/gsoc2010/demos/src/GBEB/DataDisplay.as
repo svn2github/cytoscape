@@ -11,8 +11,6 @@ package GBEB
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.utils.Timer;
-	
-	import org.osmf.events.TimeEvent;
 
 
 
