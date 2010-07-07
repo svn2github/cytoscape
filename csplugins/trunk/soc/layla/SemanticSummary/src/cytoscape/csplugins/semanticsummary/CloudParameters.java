@@ -552,7 +552,7 @@ public class CloudParameters implements Comparable
 		Integer minFont = networkParams.getMinFont();
 		
 		//Check if maxRatio and minRatio are the same
-		if (maxRatio == minRatio)
+		if (maxRatio.equals(minRatio))
 			return (maxFont - minFont)/2;
 		
 		Double slope = (maxFont - minFont)/(maxRatio - minRatio);
