@@ -40,7 +40,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 	private final int index;
 
 	// The factor by which to shrink scaled images so that they'll fit within nodes.
-	private static final double SHRINK = 0.9;
+	//private static final double fit = 0.9;
 
 	// Manages view to Custom Graphics mapping.
 	private Map<DNodeView, Set<CustomGraphic>> currentMap;
@@ -91,7 +91,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 				} else {
 					final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
 
-					Image originalImg = cg.getImage();
+					Image originalImg = cg.getRenderedImage();
 					if (originalImg == null)
 						drawDefaultIcon(c);
 					else {
@@ -185,7 +185,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		targets = new HashSet<CustomGraphic>();
 		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
 		final Collection<CustomGraphic> layers = (Collection<CustomGraphic>) graphics
-				.getCustomGraphics();
+				.getLayers();
 
 		// No need to update
 		if (layers == null || layers.size() == 0) {
@@ -231,19 +231,19 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		final boolean whLock = dep.check(NODE_SIZE_LOCKED);
 
 		final AffineTransform scale;
-		if (whLock) {
-			scale = AffineTransform.getScaleInstance(SHRINK * nodeW / cgW, SHRINK * nodeH / cgH);
-		} else if(graphics instanceof VectorCustomGraphics) {
-			scale = AffineTransform.getScaleInstance(0.98 * nodeW / cgW, 0.98 * nodeH / cgH);
+		final float fit = graphics.getFitRatio();
+		
+		if (whLock || graphics instanceof VectorCustomGraphics) {
+			scale = AffineTransform.getScaleInstance(fit * nodeW / cgW, fit * nodeH / cgH);
 		} else {
 			// Case 1: node height value is larger than width
 			if (nodeW >= nodeH) {
-				scale = AffineTransform.getScaleInstance(SHRINK * (nodeW / cgW)
-						* (nodeH / nodeW), SHRINK * nodeH / cgH);
+				scale = AffineTransform.getScaleInstance(fit * (nodeW / cgW)
+						* (nodeH / nodeW), fit * nodeH / cgH);
 				// scale = AffineTransform.getScaleInstance(nodeH/nodeW, 1);
 			} else {
-				scale = AffineTransform.getScaleInstance(SHRINK * nodeW / cgW,
-						SHRINK * (nodeH / cgH) * (nodeW / nodeH));
+				scale = AffineTransform.getScaleInstance(fit * nodeW / cgW,
+						fit * (nodeH / cgH) * (nodeW / nodeH));
 				// scale = AffineTransform.getScaleInstance(1, nodeW/nodeH);
 			}
 

@@ -59,7 +59,7 @@ public class PersistImageTask implements Task {
 					|| cg instanceof URLImageCustomGraphics == false)
 				continue;
 
-			final Image img = cg.getImage();
+			final Image img = cg.getRenderedImage();
 			if (img != null) {
 				try {
 					exService.submit(new SaveImageTask(location, cg.getIdentifier().toString(),

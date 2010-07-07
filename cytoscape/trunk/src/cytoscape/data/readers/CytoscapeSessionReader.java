@@ -86,7 +86,7 @@ import cytoscape.util.PercentUtil;
 import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
+import cytoscape.visual.customgraphic.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.IDGenerator;
@@ -404,7 +404,7 @@ public class CytoscapeSessionReader {
 				tagStr = parts[3];
 				final Set<String> tags = new TreeSet<String>();
 				String[] tagParts = tagStr.split("\\"
-						+ AbstractCyCustomGraphics.LIST_DELIMITER);
+						+ AbstractDCustomGraphics.LIST_DELIMITER);
 				for (String tag : tagParts)
 					tags.add(tag.trim());
 				((Taggable) graphics).getTags().addAll(tags);
@@ -424,7 +424,7 @@ public class CytoscapeSessionReader {
 		}
 		
 		// Reset the counter
-		Long currentMax = pool.getIDSet().last();
+		final Long currentMax = pool.getIDSet().last();
 		IDGenerator.getIDGenerator().initCounter(currentMax+1);
 	}
 

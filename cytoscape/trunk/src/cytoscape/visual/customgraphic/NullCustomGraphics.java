@@ -7,7 +7,7 @@ package cytoscape.visual.customgraphic;
  * @author kono
  * 
  */
-public class NullCustomGraphics extends AbstractCyCustomGraphics {
+public class NullCustomGraphics extends AbstractDCustomGraphics {
 
 	private static final String NAME = "[ Remove Graphics ]";
 

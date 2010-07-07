@@ -14,7 +14,6 @@ public class GradientOvalLayer extends GradientLayerCustomGraphics {
 
 	public GradientOvalLayer() {
 		super(NAME);
-		// TODO Auto-generated constructor stub
 	}
 	
 	protected void renderImage(Graphics graphics) {
@@ -22,18 +21,16 @@ public class GradientOvalLayer extends GradientLayerCustomGraphics {
 		
 		final Graphics2D g2d = (Graphics2D) graphics;
 		// Render
+		update();
 		g2d.setPaint(paintFactory.getPaint(bound.getBounds2D()));
 		g2d.fillOval(rendered.getMinX(), rendered.getMinY(), 
-				rendered.getWidth(), rendered.getHeight());
+				width, height);
 	}
-	
 	
 	public void update() {
 		// First, remove all layers.
 		cgList.clear();
-		
-		bound = new Ellipse2D.Double(-w.getValue() / 2, -h.getValue() / 2,
-																	w.getValue(), h.getValue());
+		bound = new Ellipse2D.Double(-width / 2, -height / 2, width, height);
 		paintFactory = new GradientPaintFactory(c1.getValue(), c2.getValue());
 		final CustomGraphic cg = new CustomGraphic(bound, paintFactory);
 		cgList.add(cg);

@@ -220,7 +220,7 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 	
 
 	private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		if (cg == null || cg.getImage() == null)
+		if (cg == null || cg.getRenderedImage() == null)
 			return;
 
 		if (cg instanceof URLImageCustomGraphics) {
@@ -230,6 +230,8 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 			final int h = image.getHeight(null);
 			widthTextField.setText(Integer.toString(w));
 			heightTextField.setText(Integer.toString(h));
+			cg.setWidth(w);
+			cg.setHeight(h);
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
 	}
@@ -247,7 +249,7 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 		final String height = heightTextField.getText();
 
 
-		final Image currentImage = cg.getImage();
+		final Image currentImage = cg.getRenderedImage();
 		if (currentImage == null)
 			return;
 
@@ -270,17 +272,23 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 
 		float ratio;
 		int converted;
-		if (lock == false)
-			imageViewPanel.setImage(cg.resizeImage(w, h));
-		else if (isWidth) {
+		if (lock == false) {
+			cg.setWidth(w);
+			cg.setHeight(h);
+			imageViewPanel.setImage(cg.getRenderedImage());
+		} else if (isWidth) {
 			ratio = ((float) currentH) / ((float) currentW);
 			converted = (int) (w * ratio);
-			imageViewPanel.setImage(cg.resizeImage(w, converted));
+			cg.setWidth(w);
+			cg.setHeight(converted);
+			imageViewPanel.setImage(cg.getRenderedImage());
 			heightTextField.setText(Integer.toString(converted));
 		} else {
 			ratio = ((float) currentW) / ((float) currentH);
 			converted = (int) (h * ratio);
-			imageViewPanel.setImage(cg.resizeImage(converted, h));
+			cg.setWidth(converted);
+			cg.setHeight(h);
+			imageViewPanel.setImage(cg.getRenderedImage());
 			widthTextField.setText(Integer.toString(converted));
 		}
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
@@ -341,7 +349,7 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 			return;
 		}
 			
-		final Image img = cg.getImage();
+		final Image img = cg.getRenderedImage();
 
 		// Set up detail panel
 		imageViewPanel.setImage(img);

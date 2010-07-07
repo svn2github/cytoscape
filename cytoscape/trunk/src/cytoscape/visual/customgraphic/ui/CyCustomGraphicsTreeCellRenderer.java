@@ -22,7 +22,7 @@ public class CyCustomGraphicsTreeCellRenderer extends DefaultTreeCellRenderer {
 			final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) image;
 
 			this.setText("");
-			this.setIcon(new ImageIcon(cg.getImage()));
+			this.setIcon(new ImageIcon(cg.getRenderedImage()));
 		}
 			
 		return this;

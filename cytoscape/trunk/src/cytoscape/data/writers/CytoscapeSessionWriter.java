@@ -373,7 +373,7 @@ public class CytoscapeSessionWriter {
 		pool.getMetadata().store(zos, "Image Metadata");
 		
 		for(CyCustomGraphics<?> cg: customGraphics) {
-			final Image img = cg.getImage();
+			final Image img = cg.getRenderedImage();
 			// For now, save URLImage only.
 			// TODO: how can we handle Dynamic Images?
 			if(img != null && cg instanceof NullCustomGraphics == false && cg instanceof URLImageCustomGraphics) {

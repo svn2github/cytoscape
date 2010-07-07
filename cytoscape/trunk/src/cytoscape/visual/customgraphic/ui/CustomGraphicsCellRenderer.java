@@ -80,7 +80,7 @@ public class CustomGraphicsCellRenderer extends JPanel implements
 
 	private JPanel createImagePanel(final CyCustomGraphics<?> cg,
 			boolean selected) {
-		final Image image = cg.getImage();
+		final Image image = cg.getRenderedImage();
 		if (image == null)
 			return this;
 

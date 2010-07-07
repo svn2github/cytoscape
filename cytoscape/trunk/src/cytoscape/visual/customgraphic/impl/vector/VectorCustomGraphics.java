@@ -1,7 +1,8 @@
 package cytoscape.visual.customgraphic.impl.vector;
 
+import java.util.Map;
+
 public interface VectorCustomGraphics {
 	
-	public void update(int x, int y, int width, int height);
-
+	public Map<String, CustomGraphicsProperty<?>> getGraphicsProps();
 }

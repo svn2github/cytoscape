@@ -1,8 +1,6 @@
 package cytoscape.visual.customgraphic.impl.bitmap;
 
 import java.awt.Image;
-import java.awt.Paint;
-import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -15,11 +13,11 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.PaintFactory;
-import cytoscape.visual.customgraphic.AbstractCyCustomGraphics;
+import cytoscape.visual.customgraphic.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.ImageUtil;
 import cytoscape.visual.customgraphic.paint.TexturePaintFactory;
 
-public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
+public class URLImageCustomGraphics extends AbstractDCustomGraphics {
 
 	private static BufferedImage DEF_IMAGE;
 	
@@ -30,10 +28,8 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 			e.printStackTrace();
 		}
 	}
+	
 	private static final String DEF_TAG = "bitmap image";
-	// Defining padding
-	private static final double PAD = 10;
-	private static final double R = 28;
 
 	private CustomGraphic cg;
 
@@ -78,15 +74,10 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 		cgList.clear();
 
 		Rectangle2D bound = null;
-		Paint paint = null;
-		final int imageW = targetImg.getWidth();
-		final int imageH = targetImg.getHeight();
+		width = targetImg.getWidth();
+		height = targetImg.getHeight();
 
-		final Shape background = new java.awt.geom.RoundRectangle2D.Double(
-				-imageW / 2d - PAD, -imageH / 2d - PAD, imageW + PAD * 2d,
-				imageH + PAD * 2d, R, R);
-
-		bound = new Rectangle2D.Double(-imageW / 2, -imageH / 2, imageW, imageH);
+		bound = new Rectangle2D.Double(-width / 2, -height / 2, width, height);
 		final PaintFactory paintFactory = new TexturePaintFactory(targetImg);
 
 		cg = new CustomGraphic(bound, paintFactory);
@@ -113,15 +104,24 @@ public class URLImageCustomGraphics extends AbstractCyCustomGraphics {
 	}
 
 	@Override
-	public Image getImage() {
-		if (scaledImage == null)
+	public Image getRenderedImage() {
+		
+		if (width == originalImage.getWidth() && height == originalImage.getHeight()) {
 			return originalImage;
-		else
-			return scaledImage;
+		}
+		
+		if(scaledImage == null) {
+			resizeImage(width, height);
+		} else if (scaledImage.getWidth() != width || scaledImage.getHeight() != height) {
+			resizeImage(width, height);
+		} 
+		
+		return scaledImage;
 	}
 
-	@Override
-	public Image resizeImage(int width, int height) {
+	
+	
+	private Image resizeImage(int width, int height) {
 		final Image img = originalImage.getScaledInstance(width, height,
 				Image.SCALE_AREA_AVERAGING);
 		try {

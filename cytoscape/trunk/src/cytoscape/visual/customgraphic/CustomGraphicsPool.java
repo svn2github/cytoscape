@@ -141,7 +141,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 						tagStr = imageProps[3];
 						final Set<String> tags = new TreeSet<String>();
 						String[] tagParts = tagStr.split("\\"
-								+ AbstractCyCustomGraphics.LIST_DELIMITER);
+								+ AbstractDCustomGraphics.LIST_DELIMITER);
 						for (String tag : tagParts)
 							tags.add(tag.trim());
 

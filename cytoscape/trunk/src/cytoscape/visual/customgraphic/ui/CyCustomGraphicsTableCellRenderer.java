@@ -24,7 +24,7 @@ public class CyCustomGraphicsTableCellRenderer extends DefaultTableCellRenderer 
 		final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
 
 		this.setText(cg.getDisplayName());
-		this.setIcon(new ImageIcon(cg.getImage()));
+		this.setIcon(new ImageIcon(cg.getRenderedImage()));
 		return this;
 
 	}

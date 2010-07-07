@@ -22,6 +22,7 @@ public class GradientRoundRectangleLayer extends GradientLayerCustomGraphics {
 		
 		final Graphics2D g2d = (Graphics2D) graphics;
 		// Render
+		update();
 		g2d.setPaint(paintFactory.getPaint(bound.getBounds2D()));
 		g2d.fillRoundRect(rendered.getMinX(), rendered.getMinY(), 
 				rendered.getWidth(), rendered.getHeight(), r, r);
@@ -32,9 +33,9 @@ public class GradientRoundRectangleLayer extends GradientLayerCustomGraphics {
 		// First, remove all layers.
 		cgList.clear();
 		
-		r = (int)(Math.min(w.getValue(), h.getValue())*0.3);
-		bound = new RoundRectangle2D.Double(-w.getValue() / 2, -h.getValue() / 2,
-																	w.getValue(), h.getValue(), r, r);
+		r = (int)(Math.min(width, height)/4f);
+		bound = new RoundRectangle2D.Double(-width / 2, -height / 2,
+																	width, height, r, r);
 		paintFactory = new GradientPaintFactory(c1.getValue(), c2.getValue());
 		final CustomGraphic cg = new CustomGraphic(bound, paintFactory);
 		cgList.add(cg);

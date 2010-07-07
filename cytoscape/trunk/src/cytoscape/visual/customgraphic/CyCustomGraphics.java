@@ -4,9 +4,6 @@ import giny.view.ObjectPosition;
 
 import java.awt.Image;
 import java.util.Collection;
-import java.util.Map;
-
-import cytoscape.visual.customgraphic.impl.vector.CustomGraphicsProperty;
 
 public interface CyCustomGraphics <T> {
 	
@@ -15,34 +12,51 @@ public interface CyCustomGraphics <T> {
 	 * 
 	 * NOT globally unique.
 	 * 
-	 * @return
+	 * @return Immutable ID as Long.
 	 */
 	public Long getIdentifier();
 	
 	/**
 	 * Display name is a simple description of this image object.
 	 * 
-	 * May not be unique.
+	 * May not be unique and mutable.
 	 * 
 	 * @return display name as String.
 	 */
 	public String getDisplayName();
 	public void setDisplayName(final String displayName);
 	
-	public Collection<T> getCustomGraphics();
-	
-	public Image getImage();
-	public Image resizeImage(int width, int height);
 	
 	/**
-	 * Map of properties, i.e., details of this object.
-	 * Key is the property name, and Value is prop object.
+	 * Get layers belongs to this object.
+	 * In current Implementation, ti's always Ding's CustomGraphic object.
+	 * 
+	 * @return Collection of layer objects (in this version, it's CustomGraphics in Ding)
+	 * 
+	 */
+	public Collection<T> getLayers();
+	
+	/**
+	 * Return size of current object.
 	 * 
 	 * @return
 	 */
-	public Map<String, CustomGraphicsProperty<?>> getProps();
+	public int getWidth();
+	public int getHeight();
 	
-	public void update();
+	public void setWidth(final int width);
+	public void setHeight(final int height);
+	
+	public float getFitRatio();
+	public void setFitRatio(float ratio);
+	
+	/**
+	 * From layers of graphics objects, render scaled Image object. 
+	 * 
+	 * @return rendered image object.
+	 */
+	public Image getRenderedImage();
+
 	
 	/**
 	 * Set posiiton of this graphics.
