@@ -41,6 +41,7 @@ import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 
 import structureViz.actions.Chimera;
+import structureViz.actions.CyChimera;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
@@ -50,6 +51,23 @@ import structureViz.model.Structure;
  * 
  */
 public class StructureCommands {
+
+	static public CyCommandResult openCommand(Chimera chimera, CyCommandResult result, 
+	                                          String nodelist) throws CyCommandException {
+		String [] nodes = nodelist.split(",");
+		for (String node: nodes) {
+			System.out.println("Node: "+node);
+			String structureNames = CyChimera.getStructureName(node.trim());
+			System.out.println("StructureNames: "+structureNames);
+			if (structureNames != null) {
+				for (String struct: structureNames.split(",")) {
+					result = openCommand(chimera, result, struct, null, null);
+				}
+			}
+		}
+		return result;
+	}
+
 
 	static public CyCommandResult openCommand(Chimera chimera, CyCommandResult result, 
 	                                          String pdb, String modbase, String smiles) 

@@ -47,6 +47,7 @@ import structureViz.actions.Chimera;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
+import structureViz.model.ChimeraSelectedObject;
 import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.Structure;
 
@@ -143,7 +144,8 @@ public class CommandUtils {
 
 		// Special case: "selected"
 		if (specString.equals(StructureVizCommandHandler.SELECTED)) {
-			return chimera.getSelectionList();
+			specList.add(new ChimeraSelectedObject());
+			return specList;
 		}
 
 		String[] specArray = specString.split(",");

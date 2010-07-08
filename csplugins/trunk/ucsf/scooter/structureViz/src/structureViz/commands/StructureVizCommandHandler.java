@@ -59,24 +59,26 @@ enum Command {
   ALIGNSTRUCTURES("alignstructures", 
 	                "Perform sequence-driven structural superposition on a group of structures", 
 	                "reference|structureList|referencechain|chainlist"),
+	CLEARCLASHES("clear clashes", "Clear clashes", ""),
+	CLEARHBONDS("clear hbonds", "Clear hydrogen bonds", ""),
 	CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
 	COLOR("color", "Color part of all of a structure",
-	               "residues|labels|ribbons|surfaces|structurelist|atomspec"),
+	               "preset|residues|labels|ribbons|surfaces|structurelist|atomspec"),
 	DEPICT("depict", "Change the depiction of a structure",
-	                 "preset|style=stick|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
+	                 "preset|style|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
 	EXIT("exit", "Exit Chimera",""),
-	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist=selected"),
-	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist=selected"),
-	FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec=selected"),
+	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous"),
+	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist|atomspec=selected"),
+	FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec"),
 	HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected"),
 	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",""),
-	// MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
+	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
 	RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
 	                   "structurelist|atomspec"),
-	// ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
+	ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
 	SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec"),
 	SEND("send", "Send a command to chimera", "command"),
 	SHOW("show", "Show parts of a structure", "structurelist|atomspec");
@@ -107,13 +109,20 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 
 	public static final String ATOMSPEC = "atomspec";
 	public static final String CHAIN = "chain";
+	public static final String CONTINUOUS = "continuous";
 	public static final String LABELS = "labels";
 	public static final String MODELLIST = "modelList";
+	public static final String NODELIST = "nodeList";
+	public static final String PRESET = "preset";
 	public static final String RESIDUES = "residues";
 	public static final String RIBBONS = "ribbons";
+	public static final String RIBBONSTYLE = "ribbonstyle";
 	public static final String SELECTED = "selected";
 	public static final String STRUCTURELIST = "structureList";
+	public static final String STYLE = "style";
 	public static final String SURFACES = "surfaces";
+	public static final String SURFACESTYLE = "surfacestyle";
+	public static final String TRANSPARENCY = "transparency";
 
 	public StructureVizCommandHandler(String namespace, CyLogger logger) {
 		super(CyCommandManager.reserveNamespace(namespace));
@@ -145,16 +154,36 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 
 		// Main command cascade
 		if (Command.ALIGNSTRUCTURES.equals(command)) {
+
+		//
+		// CLEARCLASHES("clear clashes", "Clear clashes"),
+		//
+		} else if (Command.CLEARCLASHES.equals(command)) {
+				result = AnalysisCommands.clearClashes(chimera, result);
+
+		//
+		// CLEARHBONDS("clear hbonds", "Clear hydrogen bonds"),
+		//
+		} else if (Command.CLEARHBONDS.equals(command)) {
+				result = AnalysisCommands.clearHBonds(chimera, result);
+
+		//
+		// CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
+		//
 		} else if (Command.CLOSE.equals(command)) {
-			//
-			// CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
-			//
 			return StructureCommands.closeCommand(chimera, result, structureList);
+
+		//
+		// COLOR("color", "Color part of all of a structure",
+	  //                "residues|labels|ribbons|surfaces|structurelist|atomspec"),
+		//
 		} else if (Command.COLOR.equals(command)) {
-			//
-			// COLOR("color", "Color part of all of a structure",
-	    //                "residues|labels|ribbons|surfaces|structurelist|atomspec"),
-			//
+
+			// See if we have a preset given.  If so, it overrides everything else
+			String preset = getArg(command,PRESET,args);
+			if (preset != null)
+				return DisplayCommands.preset(chimera, result, preset);
+
 			String residues = getArg(command, RESIDUES, args);
 			String labels = getArg(command, LABELS, args);
 			String ribbons = getArg(command, RIBBONS, args);
@@ -166,64 +195,141 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
 				result = DisplayCommands.colorSpecList(chimera, result, specList, residues, labels, ribbons, surfaces);
 			}
+
+		//
+		// DEPICT("depict", "Change the depiction of a structure",
+	  //        "preset|style|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
+		//
 		} else if (Command.DEPICT.equals(command)) {
-			//
-			// DEPICT("depict", "Change the depiction of a structure",
-	    //        "preset=Interactive1|style=stick|ribbonstyle=round|surfacestyle=solid|transparency=0|structurelist=selected"),
-			//
+			String preset = getArg(command,PRESET,args);
+			if (preset != null)
+				return DisplayCommands.preset(chimera, result, preset);
 
-			// String preset = getArg(command,"preset",args);
-			// if (preset != null)
-			// 	return DisplayCommands.preset(chimera, result, preset);
+			String style = getArg(command,STYLE,args);
+			String surfacestyle = getArg(command,SURFACESTYLE,args);
+			String ribbonstyle = getArg(command,RIBBONSTYLE,args);
+			String trans = getArg(command,TRANSPARENCY,args);
+			if (structureList != null) {
+				result = DisplayCommands.depictStructure(chimera, result, structureList, style, 
+				                                         ribbonstyle, surfacestyle, trans);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC,args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = DisplayCommands.depictSpecList(chimera, result, specList, style,
+				                                        ribbonstyle, surfacestyle, trans);
+			}
 
-			
+		//
+		// EXIT("exit", "Exit Chimera",""),
+		//
 		} else if (Command.EXIT.equals(command)) {
-			//
-			// EXIT("exit", "Exit Chimera",""),
-			//
 			chimera.exit();
+
+		//
+		// FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous"),
+		//
 		} else if (Command.FINDCLASHES.equals(command)) {
+			String continuous = getArg(command, CONTINUOUS, args);
+			if (structureList != null) {
+				result = AnalysisCommands.findClashesStructure(chimera, result, structureList, continuous);
+			} else  {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = AnalysisCommands.findClashesSpecList(chimera, result, specList, continuous);
+			}
+		//
+		// FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist|atomspec=selected"),
+		//
 		} else if (Command.FINDHBONDS.equals(command)) {
+			String continuous = getArg(command, CONTINUOUS, args);
+			if (structureList != null) {
+				result = AnalysisCommands.findHBondsStructure(chimera, result, structureList);
+			} else  {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = AnalysisCommands.findHBondsSpecList(chimera, result, specList);
+			}
+
+		//
+		// FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec=selected"),
+		//
 		} else if (Command.FOCUS.equals(command)) {
+			if (structureList != null) {
+				result = DisplayCommands.focusStructure(chimera, result, structureList);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec, chimera);
+				result = DisplayCommands.focusSpecList(chimera, result, specList);
+			}
+
+		//
+		// HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected"),
+		//
 		} else if (Command.HIDE.equals(command)) {
+			if (structureList != null) {
+				result = DisplayCommands.displayStructure(chimera, result, structureList, true);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = DisplayCommands.displaySpecList(chimera, result, specList, true);
+			}
+
+		//
+		// LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
+		//
 		} else if (Command.LISTCHAINS.equals(command)) {
-			//
-			// LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
-			//
 			return StructureCommands.listChains(chimera, result, structureList);
+
+		//
+		// LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain=all"),
+		//
 		} else if (Command.LISTRES.equals(command)) {
-			//
-			// LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain=all"),
-			//
 			String chains = getArg(command, "chain", args);
 			return StructureCommands.listResidues(chimera, result, structureList, chains);
+
+		//
+		// LISTSTRUCTURES("list structures", "List all of the open structures",""),
+		//
 		} else if (Command.LISTSTRUCTURES.equals(command)) {
-			//
-			// LISTSTRUCTURES("list structures", "List all of the open structures",""),
-			//
 			List<ChimeraModel> models = chimera.getChimeraModels();
 			result.addResult("modelList", models);
 			for (ChimeraModel model: models) {
 				result.addMessage(model.toString());
 			}
+
+		//
+		// OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
+		//
 		} else if (Command.OPENSTRUCTURE.equals(command)) {
-			//
-			// OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
-			//
 			String pdb = getArg(command, "pdbid", args);
 			String modbaseid = getArg(command, "modbaseid", args);
 			String smiles = getArg(command, "smiles", args);
 			String nodelist = getArg(command, "nodeList", args);
+			if (pdb == null && modbaseid == null && smiles == null && nodelist == null)
+				throw new CyCommandException("One of nodeList, pdbid, modbaseid, or smiles must be specified");
 
 			if (nodelist != null) {
-				// return StructureCommands.openCommand(chimera, result, nodelist);
+				return StructureCommands.openCommand(chimera, result, nodelist);
 			} else
 				return StructureCommands.openCommand(chimera, result, pdb, modbaseid, smiles);
+
+		//
+		// MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
+		//
+		} else if (Command.MOVE.equals(command)) {
+			String x = getArg(command, "x", args);
+			String y = getArg(command, "y", args);
+			String z = getArg(command, "z", args);
+
+			if (x == null && y == null && z == null)
+				throw new CyCommandException("One of x, y, or z must be specified");
+
+			result = DisplayCommands.moveStructure(chimera, result, x, y, z, structureList);
+		//
+		// RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
+    //                    "structurelist|atomspec"),
+		//
 		} else if (Command.RAINBOW.equals(command)) {
-			//
-			// RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
-	    //                    "structurelist|atomspec"),
-			//
 			if (structureList != null) {
 				result = DisplayCommands.rainbowStructure(chimera, result, structureList);
 			} else {
@@ -231,18 +337,55 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
 				result = DisplayCommands.rainbowSpecList(chimera, result, specList);
 			}
+
+		//
+		// ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
+		//
+		} else if (Command.ROTATE.equals(command)) {
+			String x = getArg(command, "x", args);
+			String y = getArg(command, "y", args);
+			String z = getArg(command, "z", args);
+			String center = getArg(command, "center", args);
+
+			if (x == null && y == null && z == null)
+				throw new CyCommandException("One of x, y, or z must be specified");
+			
+			result = DisplayCommands.rotateStructure(chimera, result, x, y, z, center, structureList);
+
+		//
+		// SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec"),
+		//
 		} else if (Command.SELECT.equals(command)) {
+			if (structureList != null) {
+				result = DisplayCommands.selectStructure(chimera, result, structureList);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = DisplayCommands.selectSpecList(chimera, result, specList);
+			}
+
+		//
+		// SEND("send", "Send a command to chimera", "command"),
+		//
 		} else if (Command.SEND.equals(command)) {
-			//
-			// SEND("send", "Send a command to chimera", "command"),
-			//
 			String com = getArg(command, "command", args);
 			if (com == null)
 				throw new CyCommandException("send command requires a command argument");
 			for (String reply: chimera.commandReply(com)) {
 				result.addMessage(reply);
 			}
+
+		//
+		// SHOW("show", "Show parts of a structure", "structurelist|atomspec");
+		//
 		} else if (Command.SHOW.equals(command)) {
+			if (structureList != null) {
+				result = DisplayCommands.displayStructure(chimera, result, structureList, false);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = DisplayCommands.displaySpecList(chimera, result, specList, false);
+			}
 		}
 
 		return result;

@@ -159,6 +159,7 @@ public class CyChimera {
 		return structureList;
 	}
 
+
 	/**
 	 * Return the list of structures associated with a
 	 * Cytoscape node as a String.  
@@ -168,6 +169,17 @@ public class CyChimera {
 	 */
 	public static String getStructureName(CyNode node) {
     String nodeID = node.getIdentifier();
+		return getStructureName(nodeID);
+	}
+
+	/**
+	 * Return the list of structures associated with a
+	 * Cytoscape node as a String.  
+	 *
+	 * @param node Node ID to use to look for PDB structure attribute
+	 * @return a comma-separated String of PDB structures
+	 */
+	public static String getStructureName(String nodeID) {
 		for (int key = 0; key < structureKeys.length; key++) {
 			if (structureKeys[key] == null) continue;
      	if (cyAttributes.hasAttribute(nodeID, structureKeys[key])) {

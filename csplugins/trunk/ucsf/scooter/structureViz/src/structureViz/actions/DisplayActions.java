@@ -41,10 +41,78 @@ import structureViz.actions.Chimera;
  */
 public class DisplayActions {
 	public static List<String> colorAction(Chimera chimera, String atomSpec, String color, String type) {
-		return chimera.commandReply("color "+color+type+" "+atomSpec);
+		return chimera.commandReply(addAtomSpec("color "+color+type,atomSpec));
 	}
 
 	public static List<String> rainbowAction(Chimera chimera, String atomSpec) {
-		return chimera.commandReply("rainbow "+atomSpec);
+		return chimera.commandReply(addAtomSpec("rainbow",atomSpec));
+	}
+
+	public static List<String> presetAction(Chimera chimera, String preset) {
+		return chimera.commandReply("preset apply "+preset);
+	}
+
+	public static List<String> displayAction(Chimera chimera, String atomSpec, boolean hide) {
+		String command = "display";
+		if (hide) command = "~display";
+		return chimera.commandReply(addAtomSpec("command",atomSpec));
+	}
+
+	public static List<String> focusAction(Chimera chimera, String atomSpec) {
+		return chimera.commandReply(addAtomSpec("focus",atomSpec));
+	}
+
+	public static List<String> selectAction(Chimera chimera, String atomSpec) {
+		return chimera.commandReply(addAtomSpec("select",atomSpec));
+	}
+
+	public static List<String> depictAtomsAction(Chimera chimera, String atomSpec, String depiction) {
+		if (depiction.equals("none"))
+			return displayAction(chimera, atomSpec, true);
+
+		return chimera.commandReply(addAtomSpec("repr "+depiction, atomSpec));
+	}
+
+	public static List<String> depictRibbonsAction(Chimera chimera, String atomSpec, String depiction) {
+		if (depiction.equals("none"))
+			return chimera.commandReply(addAtomSpec("~ribbon",atomSpec));
+
+		String reprCommand = addAtomSpec("ribrepr "+depiction, atomSpec);
+		String ribbonCommand = addAtomSpec(";ribbon", atomSpec);
+		return chimera.commandReply(reprCommand+ribbonCommand);
+	}
+
+	public static List<String> depictSurfacesAction(Chimera chimera, String atomSpec, String depiction, int transparency) {
+		if (depiction.equals("none"))
+			return chimera.commandReply(addAtomSpec("~surface",atomSpec));
+
+		String reprCommand = addAtomSpec("surfrepr "+depiction, atomSpec);
+		String surfaceCommand = addAtomSpec(";surface", atomSpec);
+		if (transparency >= 0) {
+			String transparencyCommand = addAtomSpec(";surfacetransparency "+transparency+"%", atomSpec);
+			return chimera.commandReply(reprCommand+transparencyCommand+surfaceCommand);
+		}
+		return chimera.commandReply(reprCommand+surfaceCommand);
+	}
+
+	public static	List<String> moveAxisAction(Chimera chimera, String modelSpec, String axis, Double d) {
+		if (modelSpec == null)
+			return chimera.commandReply("move "+axis+" "+d);
+		else
+			return chimera.commandReply("move "+axis+" "+d+" models "+modelSpec);
+	}
+
+	public static	List<String> rotateAxisAction(Chimera chimera, String modelSpec, String axis, Double angle, String center) {
+		String command = "turn "+axis+" "+angle;
+		if (modelSpec != null) command += " models "+modelSpec;
+		if (center != null) command += " center "+center;
+		return chimera.commandReply(command);
+	}
+
+	private static String addAtomSpec(String command, String atomSpec) {
+		if (atomSpec != null) {
+			return command+" "+atomSpec;
+		}
+		return command;
 	}
 }
