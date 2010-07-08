@@ -19,11 +19,11 @@ public class CustomGraphicsCellRenderer extends DefaultCellRenderer {
 	
 	private static final long serialVersionUID = 381040361846340312L;
 	
-	private Map<CyCustomGraphics<?>, Icon> iconMap;
+	private Map<CyCustomGraphics, Icon> iconMap;
 	
 	public CustomGraphicsCellRenderer() {
 		super();
-		iconMap = new HashMap<CyCustomGraphics<?>, Icon>();
+		iconMap = new HashMap<CyCustomGraphics, Icon>();
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value,
@@ -39,8 +39,8 @@ public class CustomGraphicsCellRenderer extends DefaultCellRenderer {
 			label.setForeground(table.getForeground());
 		}
 
-		if ((value != null) && value instanceof CyCustomGraphics<?>) {
-			final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
+		if ((value != null) && value instanceof CyCustomGraphics) {
+			final CyCustomGraphics cg = (CyCustomGraphics) value;
 			final Icon icon = iconMap.get(cg);
 			if(icon == null && cg.getRenderedImage() != null)
 				label.setIcon(new ImageIcon(CustomGraphicsUtil.getResizedImage(cg.getRenderedImage(), 96, null, true)));

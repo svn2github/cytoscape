@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
 
 import cytoscape.render.stateful.CustomGraphic;
+import cytoscape.visual.customgraphic.Layer;
+import cytoscape.visual.customgraphic.impl.DLayer;
 import cytoscape.visual.customgraphic.paint.GradientPaintFactory;
 
 public class GradientRoundRectangleLayer extends GradientLayerCustomGraphics {
@@ -38,7 +40,8 @@ public class GradientRoundRectangleLayer extends GradientLayerCustomGraphics {
 																	width, height, r, r);
 		paintFactory = new GradientPaintFactory(c1.getValue(), c2.getValue());
 		final CustomGraphic cg = new CustomGraphic(bound, paintFactory);
-		layers.add(cg);
+		final Layer layer = new DLayer(cg, 1);
+		layers.add(layer);
 	}
 
 }

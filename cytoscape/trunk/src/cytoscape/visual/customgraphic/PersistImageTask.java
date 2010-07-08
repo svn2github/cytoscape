@@ -52,7 +52,7 @@ public class PersistImageTask implements Task {
 		final ExecutorService exService = Executors
 				.newFixedThreadPool(NUM_THREADS);
 
-		for (CyCustomGraphics<?> cg : pool.getAll()) {
+		for (CyCustomGraphics cg : pool.getAll()) {
 			
 			// Save ONLY bitmap image Custom Graphics.
 			if (cg instanceof NullCustomGraphics

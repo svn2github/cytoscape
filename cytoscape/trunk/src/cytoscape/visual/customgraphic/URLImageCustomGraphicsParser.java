@@ -11,7 +11,7 @@ import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
  */
 public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 
-	private static final Class<? extends CyCustomGraphics<?>> TARGET_CLASS = URLImageCustomGraphics.class;
+	private static final Class<? extends CyCustomGraphics> TARGET_CLASS = URLImageCustomGraphics.class;
 	private String entry[];
 
 	/**
@@ -26,7 +26,7 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 	 * 
 	 */
 
-	public CyCustomGraphics<?> getInstance(String entryStr) {
+	public CyCustomGraphics getInstance(String entryStr) {
 		// Check this is URL or not
 		if(entryStr == null) return null;
 		
@@ -35,7 +35,7 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 		}
 
 		final String imageName = entry[1];
-		CyCustomGraphics<?> cg = Cytoscape.getVisualMappingManager()
+		CyCustomGraphics cg = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool().getByID(Long.parseLong(imageName));
 		cg.setDisplayName(entry[2]);
 		return cg;
@@ -56,13 +56,13 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 	}
 
 
-	public String getVizMapPropsString(CyCustomGraphics<?> customGraphics) {
+	public String getVizMapPropsString(CyCustomGraphics customGraphics) {
 
 		return customGraphics.toString();
 	}
 
 	
-	public Class<? extends CyCustomGraphics<?>> getTargetClass() {
+	public Class<? extends CyCustomGraphics> getTargetClass() {
 		return TARGET_CLASS;
 	}
 

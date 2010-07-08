@@ -30,6 +30,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.visual.SubjectBase;
+import cytoscape.visual.customgraphic.impl.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 import cytoscape.visual.customgraphic.impl.vector.GradientOvalLayer;
 import cytoscape.visual.customgraphic.impl.vector.GradientRoundRectangleLayer;
@@ -49,17 +50,17 @@ public class CustomGraphicsPool extends SubjectBase implements
 
 	private final ExecutorService imageLoaderService;
 
-	private final Map<Long, CyCustomGraphics<?>> graphicsMap = new ConcurrentHashMap<Long, CyCustomGraphics<?>>();
+	private final Map<Long, CyCustomGraphics> graphicsMap = new ConcurrentHashMap<Long, CyCustomGraphics>();
 	
 	// URL to hash code map.  For images associated with URL.
 	private final Map<URL, Long> sourceMap = new ConcurrentHashMap<URL, Long>();
 
 	// Null Object
-	private static final CyCustomGraphics<?> NULL = NullCustomGraphics.getNullObject();
+	private static final CyCustomGraphics NULL = NullCustomGraphics.getNullObject();
 	
 	// Sample dynamic graphics
-	private static final CyCustomGraphics<?> ROUND_RECT_GR = new GradientRoundRectangleLayer();
-	private static final CyCustomGraphics<?> OVAL_GR = new GradientOvalLayer();
+	private static final CyCustomGraphics ROUND_RECT_GR = new GradientRoundRectangleLayer();
+	private static final CyCustomGraphics OVAL_GR = new GradientOvalLayer();
 
 	public static final String METADATA_FILE = "image_metadata.props";
 
@@ -156,7 +157,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 					if (image == null)
 						continue;
 
-					final CyCustomGraphics<?> cg = new URLImageCustomGraphics(
+					final CyCustomGraphics cg = new URLImageCustomGraphics(
 							fMap.get(f), image);
 					if (cg instanceof Taggable && metatagMap.get(f) != null)
 						((Taggable) cg).getTags().addAll(metatagMap.get(f));
@@ -206,7 +207,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * @param graphics: Actual custom graphics object
 	 * @param source: Source URL of graphics (if exists.  Can be null)
 	 */
-	public void addGraphics(final CyCustomGraphics<?> graphics,
+	public void addGraphics(final CyCustomGraphics graphics,
 			final URL source) {
 		if(graphics == null)
 			throw new IllegalArgumentException("Custom Graphics and its ID should not be null.");
@@ -224,7 +225,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * @param id: ID of graphics (hash code)
 	 */
 	public void removeGraphics(final Long id) {
-		final CyCustomGraphics<?> cg = graphicsMap.get(id);
+		final CyCustomGraphics cg = graphicsMap.get(id);
 		if(cg != null && cg != NULL)
 			graphicsMap.remove(id);
 	}
@@ -238,7 +239,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * @return Custom Graphics if exists.  Otherwise, null.
 	 * 
 	 */
-	public CyCustomGraphics<?> getByID(Long id) {
+	public CyCustomGraphics getByID(Long id) {
 		return graphicsMap.get(id);
 	}
 
@@ -249,7 +250,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * @param sourceURL
 	 * @return
 	 */
-	public CyCustomGraphics<?> getBySourceURL(URL sourceURL) {
+	public CyCustomGraphics getBySourceURL(URL sourceURL) {
 		final Long id = sourceMap.get(sourceURL);
 		if (id != null)
 			return graphicsMap.get(id);
@@ -262,7 +263,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 *
 	 * @return
 	 */
-	public Collection<CyCustomGraphics<?>> getAll() {
+	public Collection<CyCustomGraphics> getAll() {
 		return graphicsMap.values();
 	}
 
@@ -294,7 +295,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 		final Properties props = new Properties();
 		// Use hash code as the key, and value will be a string returned by toString() method.
 		// This means all CyCustomGraphics implementations should have a special toString method.
-		for (final CyCustomGraphics<?> graphics : graphicsMap.values())
+		for (final CyCustomGraphics graphics : graphicsMap.values())
 			props.setProperty(graphics.getIdentifier().toString(), graphics
 					.toString());
 		graphicsMap.put(NULL.getIdentifier(), NULL);

@@ -6,18 +6,18 @@ import cytoscape.visual.parsers.GraphicsParser;
 import cytoscape.visual.parsers.ValueParser;
 
 public class CustomGraphicsRangeValueCalculator implements
-		RangeValueCalculator<CyCustomGraphics<?>> {
+		RangeValueCalculator<CyCustomGraphics> {
 	
-	private ValueParser<CyCustomGraphics<?>> parser;
+	private ValueParser<CyCustomGraphics> parser;
 	
 	public CustomGraphicsRangeValueCalculator() {
 		parser = new GraphicsParser();
 	}
 
 
-	public CyCustomGraphics<?> getRange(Object attrValue) {
+	public CyCustomGraphics getRange(Object attrValue) {
 		if (attrValue instanceof String) {
-			CyCustomGraphics<?> obj = parser.parseStringValue((String) attrValue);
+			CyCustomGraphics obj = parser.parseStringValue((String) attrValue);
 			return obj;
 		}
 		return null;

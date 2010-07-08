@@ -4,7 +4,7 @@ import cytoscape.Cytoscape;
 
 public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 
-	public CyCustomGraphics<?> getInstance(String entry) {
+	public CyCustomGraphics getInstance(String entry) {
 		// Check this is URL or not
 		if (entry == null)
 			return null;
@@ -16,14 +16,14 @@ public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 		final String className = parts[0];
 		final Long id = Long.parseLong(parts[1]);
 
-		CyCustomGraphics<?> cg = Cytoscape.getVisualMappingManager()
+		CyCustomGraphics cg = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool().getByID(id);
 		
 		if(cg == null) {
 			// Create new one by reflection
 			try {
 				final Class<?> cls = Class.forName(className);
-				cg = (CyCustomGraphics<?>) cls.newInstance();
+				cg = (CyCustomGraphics) cls.newInstance();
 				cg.setDisplayName(parts[2]);
 				Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool().addGraphics(cg, null);
@@ -44,11 +44,11 @@ public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 		return cg;
 	}
 
-	public Class<? extends CyCustomGraphics<?>> getTargetClass() {
+	public Class<? extends CyCustomGraphics> getTargetClass() {
 		return null;
 	}
 
-	public String getVizMapPropsString(CyCustomGraphics<?> customGraphics) {
+	public String getVizMapPropsString(CyCustomGraphics customGraphics) {
 		// TODO Auto-generated method stub
 		return null;
 	}

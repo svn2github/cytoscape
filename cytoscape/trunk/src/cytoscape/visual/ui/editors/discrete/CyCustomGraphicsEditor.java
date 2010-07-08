@@ -19,7 +19,7 @@ public class CyCustomGraphicsEditor extends
 	
 	private CustomGraphicsCellRenderer cellRenderer;
 	private JButton button;
-	private CyCustomGraphics<?> graphics;
+	private CyCustomGraphics graphics;
 
 	/**
 	 * Creates a new CyLabelPositionLabelEditor object.
@@ -42,7 +42,7 @@ public class CyCustomGraphicsEditor extends
 		button.setText("X");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CyCustomGraphics<?> old = graphics;
+				CyCustomGraphics old = graphics;
 				cellRenderer.setValue(null);
 				graphics = null;
 				firePropertyChange(old, null);
@@ -67,16 +67,16 @@ public class CyCustomGraphicsEditor extends
 	 *            DOCUMENT ME!
 	 */
 	public void setValue(Object value) {
-		graphics = (CyCustomGraphics<?>) value;
+		graphics = (CyCustomGraphics) value;
 		cellRenderer.setValue(value);
 	}
 
 	protected void editLabelPosition() {
-		final CyCustomGraphics<?> newVal = (CyCustomGraphics<?>) ValueSelectDialog
+		final CyCustomGraphics newVal = (CyCustomGraphics) ValueSelectDialog
 			.showDialog(VisualPropertyType.NODE_CUSTOM_GRAPHICS_1, Cytoscape.getDesktop());
 
 		if (newVal != null) {
-			final CyCustomGraphics<?> old = graphics;
+			final CyCustomGraphics old = graphics;
 
 			setValue(newVal);
 			firePropertyChange(old, newVal);

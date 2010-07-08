@@ -16,12 +16,12 @@ public class CyCustomGraphicsTableCellRenderer extends DefaultTableCellRenderer 
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		
-		if (value instanceof CyCustomGraphics<?> == false && value != null) {
+		if (value instanceof CyCustomGraphics == false && value != null) {
 			this.setText(value.toString());
 			return this;
 		}
 
-		final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
+		final CyCustomGraphics cg = (CyCustomGraphics) value;
 
 		this.setText(cg.getDisplayName());
 		this.setIcon(new ImageIcon(cg.getRenderedImage()));

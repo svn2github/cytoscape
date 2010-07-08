@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cytoscape.render.stateful.PaintFactory;
-import cytoscape.visual.customgraphic.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.CustomGraphicsPropertyImpl;
+import cytoscape.visual.customgraphic.impl.AbstractDCustomGraphics;
 
 /**
  * Proof of concept code to generate Custom Graphics dynamically as vector graphics.

@@ -14,9 +14,9 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +28,7 @@ import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.Layer;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
 import cytoscape.visual.customgraphic.impl.vector.VectorCustomGraphics;
 import cytoscape.visual.ui.icon.NodeIcon;
@@ -59,8 +60,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 			@Override
 			public String getName() {
 				if (name == null) {
-					if (value != null && value instanceof CyCustomGraphics<?>)
-						name = ((CyCustomGraphics<?>) value).getDisplayName();
+					if (value != null && value instanceof CyCustomGraphics)
+						name = ((CyCustomGraphics) value).getDisplayName();
 					else
 						name = "Unknown Custom Graphics";
 				}
@@ -81,10 +82,10 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 				this.setIconHeight(ICON_SIZE + 6);
 
 				if (value == null
-						|| value instanceof CyCustomGraphics<?> == false) {
+						|| value instanceof CyCustomGraphics == false) {
 					drawDefaultIcon(c);
 				} else {
-					final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
+					final CyCustomGraphics cg = (CyCustomGraphics) value;
 
 					Image originalImg = cg.getRenderedImage();
 					if (originalImg == null)
@@ -179,15 +180,15 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 		// For these cases, remove current layers.
 		if (customGraphics == null
-				|| customGraphics instanceof CyCustomGraphics<?> == false
+				|| customGraphics instanceof CyCustomGraphics == false
 				|| customGraphics instanceof NullCustomGraphics) {
 			currentMap.remove(dv);
 			return;
 		}
 
 		targets = new HashSet<CustomGraphic>();
-		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) customGraphics;
-		final Collection<CustomGraphic> layers = (Collection<CustomGraphic>) graphics
+		final CyCustomGraphics graphics = (CyCustomGraphics) customGraphics;
+		final List<Layer> layers = (List<Layer>) graphics
 				.getLayers();
 
 		// No need to update
@@ -202,7 +203,9 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 			sync = dep.check(NODE_CUSTOM_GRAPHICS_SIZE_SYNC);
 		}
 
-		for (CustomGraphic cg : layers) {
+		for (Layer layer : layers) {
+			// Assume it's a Ding layer
+			final CustomGraphic cg = (CustomGraphic) layer.getLayerObject();
 			if (sync) {
 				final CustomGraphic resized = syncSize(graphics, cg, dv, dep);
 				dv.addCustomGraphic(resized);
@@ -215,7 +218,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		this.currentMap.put(dv, targets);
 	}
 
-	private CustomGraphic syncSize(CyCustomGraphics<?> graphics,
+	private CustomGraphic syncSize(CyCustomGraphics graphics,
 			final CustomGraphic cg, final DNodeView dv,
 			final VisualPropertyDependency dep) {
 
@@ -270,7 +273,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		final Map<Object, Icon> customGraphicsIcons = new HashMap<Object, Icon>();
 		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
-		for (CyCustomGraphics<?> graphics : pool.getAll()) {
+		for (CyCustomGraphics graphics : pool.getAll()) {
 			VisualPropertyIcon icon = (VisualPropertyIcon) getIcon(graphics);
 			icon.setName(graphics.getDisplayName());
 

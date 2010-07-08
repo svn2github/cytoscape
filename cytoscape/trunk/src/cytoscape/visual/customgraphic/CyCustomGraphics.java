@@ -3,12 +3,10 @@ package cytoscape.visual.customgraphic;
 import giny.view.ObjectPosition;
 
 import java.awt.Image;
-import java.util.Collection;
+import java.util.List;
 
-public interface CyCustomGraphics <T> {
-	
-	// Maybe CyCustomGraphics <T extends Layer> ?
-	
+public interface CyCustomGraphics {
+		
 	/**
 	 * Immutable session-unique identifier of image generated in constructor.
 	 * 
@@ -38,11 +36,12 @@ public interface CyCustomGraphics <T> {
 	/**
 	 * Get layers belongs to this object.
 	 * In current Implementation, ti's always Ding's CustomGraphic object.
+	 * Ordered by Z-Order value.
 	 * 
 	 * @return Collection of layer objects (in this version, it's CustomGraphics in Ding)
 	 * 
 	 */
-	public Collection<T> getLayers();
+	public List<Layer> getLayers();
 	
 	
 	/**

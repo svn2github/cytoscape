@@ -187,7 +187,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 			}
 
 			if (img != null) {
-				final CyCustomGraphics<CustomGraphic> cg = new URLImageCustomGraphics(
+				final CyCustomGraphics cg = new URLImageCustomGraphics(
 						file.toString(), img);
 				try {
 					pool.addGraphics(cg, file.toURI().toURL());
@@ -203,7 +203,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 	private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		final Object[] toBeRemoved = browser.getSelectedValues();
 		for(Object g: toBeRemoved) {
-			final CyCustomGraphics<?> cg = (CyCustomGraphics<?>) g;
+			final CyCustomGraphics cg = (CyCustomGraphics) g;
 			browser.removeCustomGraphics(cg);
 			pool.removeGraphics(cg.getIdentifier());
 		}

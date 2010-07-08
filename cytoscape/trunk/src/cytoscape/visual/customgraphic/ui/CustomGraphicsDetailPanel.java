@@ -25,7 +25,7 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 
 	private static final String TAG_DELIMITER = ",";
 	
-	private CyCustomGraphics<?> cg;
+	private CyCustomGraphics cg;
 
 	/** Creates new form CustomGraphicsDetailPanel */
 	public CustomGraphicsDetailPanel() {
@@ -338,7 +338,7 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 		final CustomGraphicsBrowser browser = (CustomGraphicsBrowser) e
 				.getSource();
 
-		cg = (CyCustomGraphics<?>) browser.getSelectedValue();
+		cg = (CyCustomGraphics) browser.getSelectedValue();
 		if(cg == null) {
 			imageViewPanel.setImage((Image)null);
 			heightTextField.setText(null);

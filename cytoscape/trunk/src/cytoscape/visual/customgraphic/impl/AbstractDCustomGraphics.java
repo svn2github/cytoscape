@@ -1,22 +1,23 @@
-package cytoscape.visual.customgraphic;
+package cytoscape.visual.customgraphic.impl;
 
 import giny.view.ObjectPosition;
 
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import cytoscape.render.stateful.CustomGraphic;
-import ding.view.DNodeView;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.CyCustomGraphicsParser;
+import cytoscape.visual.customgraphic.IDGenerator;
+import cytoscape.visual.customgraphic.Layer;
+import cytoscape.visual.customgraphic.Taggable;
 import ding.view.ObjectPositionImpl;
 
 public abstract class AbstractDCustomGraphics implements
-		CyCustomGraphics<CustomGraphic>, Taggable {
+		CyCustomGraphics, Taggable {
 
 	protected static final String DELIMITER = ",";
 	public static final String LIST_DELIMITER = "|";
@@ -27,7 +28,7 @@ public abstract class AbstractDCustomGraphics implements
 	protected final Long id;
 	
 	// Layers of Ding Custom Graphic objects.
-	protected Collection<CustomGraphic> layers;
+	protected List<Layer> layers;
 	
 	// Human readable name
 	protected String displayName;
@@ -58,7 +59,7 @@ public abstract class AbstractDCustomGraphics implements
 	public AbstractDCustomGraphics(final Long id, final String displayName) {
 		this.id = id;
 		
-		this.layers = new ArrayList<CustomGraphic>();
+		this.layers = new ArrayList<Layer>();
 		this.displayName = displayName;
 
 		this.tags = new TreeSet<String>();
@@ -87,7 +88,7 @@ public abstract class AbstractDCustomGraphics implements
 	}
 
 	
-	public Collection<CustomGraphic> getLayers() {
+	public List<Layer> getLayers() {
 		return layers;
 	}
 

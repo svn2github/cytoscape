@@ -8,12 +8,12 @@ import cytoscape.logger.CyLogger;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParser;
 import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactory;
-import cytoscape.visual.customgraphic.CyCustomGraphicsParserFactoryImpl;
 import cytoscape.visual.customgraphic.DefaultCyCustomGraphicsParser;
 import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
+import cytoscape.visual.customgraphic.impl.CyCustomGraphicsParserFactoryImpl;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
-public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
+public class GraphicsParser implements ValueParser<CyCustomGraphics> {
 	
 	private static final String NULL_CG = "cytoscape.visual.customgraphic.NullCustomGraphics";
 	
@@ -37,18 +37,18 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics<?>> {
 	}
 
 
-	public CyCustomGraphics<?> parseStringValue(String value) {
+	public CyCustomGraphics parseStringValue(String value) {
 		return parse(value);
 	}
 	
-	private CyCustomGraphics<?> parse(String value) {
+	private CyCustomGraphics parse(String value) {
 		if(value == null || value.equals(NULL_CG))
 			return null;
 		
 		// Special case:  URL String.
 		try {
 			final URL url = new URL(value);
-			CyCustomGraphics<?> graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().getBySourceURL(url);
+			CyCustomGraphics graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().getBySourceURL(url);
 			if(graphics == null) {
 				graphics = new URLImageCustomGraphics(url.toString());
 				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics, url);

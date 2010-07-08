@@ -2,14 +2,21 @@ package cytoscape.visual.customgraphic;
 
 
 /**
- * This should be in the giny level.
+ * Wrapper for actual implementations of layers.
+ * In current version, it's always CustomGraphic 
  * 
  * @author kono
  *
  */
 public interface Layer {
 	
+	/**
+	 * Each layer has immutable Z-Order value for rendering.
+	 * This method returens the value as int.
+	 * 
+	 * @return
+	 */
 	public int getZorder();
-	public void setZOrder(final int zOrder);
-
+	
+	public Object getLayerObject();
 }

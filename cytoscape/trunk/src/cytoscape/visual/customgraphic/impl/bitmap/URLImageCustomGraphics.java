@@ -13,8 +13,9 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.render.stateful.PaintFactory;
-import cytoscape.visual.customgraphic.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.ImageUtil;
+import cytoscape.visual.customgraphic.impl.AbstractDCustomGraphics;
+import cytoscape.visual.customgraphic.impl.DLayer;
 import cytoscape.visual.customgraphic.paint.TexturePaintFactory;
 
 public class URLImageCustomGraphics extends AbstractDCustomGraphics {
@@ -81,7 +82,10 @@ public class URLImageCustomGraphics extends AbstractDCustomGraphics {
 		final PaintFactory paintFactory = new TexturePaintFactory(targetImg);
 
 		cg = new CustomGraphic(bound, paintFactory);
-		layers.add(cg);
+		
+		// This object is always one layer, so simply add without sorting.
+		DLayer layer = new DLayer(cg, 1);
+		layers.add(layer);
 	}
 
 	private void createImage(String url) throws MalformedURLException {

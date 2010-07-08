@@ -366,13 +366,13 @@ public class CytoscapeSessionWriter {
 	private void zipCustomGraphics() throws IOException, InterruptedException {
 		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		// Collect all custom graphics
-		final Collection<CyCustomGraphics<?>> customGraphics = pool.getAll();
+		final Collection<CyCustomGraphics> customGraphics = pool.getAll();
 		
 		// Add metadata file to the session file
 		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsPool.METADATA_FILE));
 		pool.getMetadata().store(zos, "Image Metadata");
 		
-		for(CyCustomGraphics<?> cg: customGraphics) {
+		for(CyCustomGraphics cg: customGraphics) {
 			final Image img = cg.getRenderedImage();
 			// For now, save URLImage only.
 			// TODO: how can we handle Dynamic Images?

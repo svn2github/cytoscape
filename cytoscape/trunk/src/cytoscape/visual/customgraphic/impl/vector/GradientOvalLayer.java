@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 
 import cytoscape.render.stateful.CustomGraphic;
+import cytoscape.visual.customgraphic.Layer;
+import cytoscape.visual.customgraphic.impl.DLayer;
 import cytoscape.visual.customgraphic.paint.GradientPaintFactory;
 
 public class GradientOvalLayer extends GradientLayerCustomGraphics {
@@ -33,7 +35,9 @@ public class GradientOvalLayer extends GradientLayerCustomGraphics {
 		bound = new Ellipse2D.Double(-width / 2, -height / 2, width, height);
 		paintFactory = new GradientPaintFactory(c1.getValue(), c2.getValue());
 		final CustomGraphic cg = new CustomGraphic(bound, paintFactory);
-		layers.add(cg);
+		
+		DLayer layer = new DLayer(cg, 1);
+		layers.add(layer);
 	}
 
 }

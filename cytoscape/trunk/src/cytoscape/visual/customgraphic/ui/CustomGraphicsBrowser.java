@@ -82,7 +82,7 @@ public class CustomGraphicsBrowser extends JXList implements PropertyChangeListe
 	}// </editor-fold>
 	
 	
-	public void removeCustomGraphics(final CyCustomGraphics<?> cg) {
+	public void removeCustomGraphics(final CyCustomGraphics cg) {
 		model.removeElement(cg);
 	}
 
@@ -90,16 +90,16 @@ public class CustomGraphicsBrowser extends JXList implements PropertyChangeListe
 	 * Add on-memory images to Model.
 	 */
 	private void addAllImages() {
-		final Collection<CyCustomGraphics<?>> graphics = pool.getAll();
+		final Collection<CyCustomGraphics> graphics = pool.getAll();
 
-		for (CyCustomGraphics<?> cg : graphics) {
+		for (CyCustomGraphics cg : graphics) {
 			if (cg instanceof NullCustomGraphics == false)
 				model.addElement(cg);
 		}
 	}
 
 	private void addCustomGraphics(final String urlStr) {
-		CyCustomGraphics<CustomGraphic> cg = null;
+		CyCustomGraphics cg = null;
 		try {
 			cg = new URLImageCustomGraphics(urlStr);
 			if (cg != null) {

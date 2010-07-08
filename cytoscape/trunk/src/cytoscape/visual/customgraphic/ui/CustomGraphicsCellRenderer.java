@@ -42,10 +42,10 @@ public class CustomGraphicsCellRenderer extends JPanel implements
 	
 	private static final Dimension CELL_SIZE = new Dimension(200, 150);
 
-	private final Map<CyCustomGraphics<?>, Component> panelMap;
+	private final Map<CyCustomGraphics, Component> panelMap;
 
 	public CustomGraphicsCellRenderer() {
-		panelMap = new HashMap<CyCustomGraphics<?>, Component>();
+		panelMap = new HashMap<CyCustomGraphics, Component>();
 	}
 
 
@@ -53,8 +53,8 @@ public class CustomGraphicsCellRenderer extends JPanel implements
 			int index, boolean isSelected, boolean cellHasFocus) {
 
 		JPanel target = null;
-		if (value != null && value instanceof CyCustomGraphics<?>) {
-			CyCustomGraphics<?> cg = (CyCustomGraphics<?>) value;
+		if (value != null && value instanceof CyCustomGraphics) {
+			CyCustomGraphics cg = (CyCustomGraphics) value;
 			target = (JPanel) panelMap.get(cg);
 			if (target == null) {
 				target = createImagePanel(cg, isSelected);
@@ -78,7 +78,7 @@ public class CustomGraphicsCellRenderer extends JPanel implements
 		return target;
 	}
 
-	private JPanel createImagePanel(final CyCustomGraphics<?> cg,
+	private JPanel createImagePanel(final CyCustomGraphics cg,
 			boolean selected) {
 		final Image image = cg.getRenderedImage();
 		if (image == null)

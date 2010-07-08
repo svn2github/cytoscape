@@ -86,11 +86,11 @@ import cytoscape.util.PercentUtil;
 import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.customgraphic.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.CustomGraphicsPool;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.IDGenerator;
 import cytoscape.visual.customgraphic.Taggable;
+import cytoscape.visual.customgraphic.impl.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 import cytoscape.visual.parsers.GraphicsParser;
 
@@ -391,7 +391,7 @@ public class CytoscapeSessionReader {
 		pool.removeAll();
 
 		for (String id : imageMap.keySet()) {
-			final CyCustomGraphics<?> graphics = new URLImageCustomGraphics(Long.parseLong(id),
+			final CyCustomGraphics graphics = new URLImageCustomGraphics(Long.parseLong(id),
 					imageMap.get(id).toString());
 			final String propEntry = imageProps.getProperty(id);
 			
@@ -418,7 +418,7 @@ public class CytoscapeSessionReader {
 			try {
 				final URL nameAsURL = new URL(name);
 				// The name is URL. Use as its source.
-				final CyCustomGraphics<?> currentValue = pool.getBySourceURL(nameAsURL);
+				final CyCustomGraphics currentValue = pool.getBySourceURL(nameAsURL);
 				
 				// Add only if the graphics does not exist in memory.
 				if(currentValue == null)
