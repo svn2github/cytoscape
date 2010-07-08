@@ -114,7 +114,7 @@ import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CustomGraphicsManager;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.ImageUtil;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
@@ -364,12 +364,12 @@ public class CytoscapeSessionWriter {
 	
 	
 	private void zipCustomGraphics() throws IOException, InterruptedException {
-		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
 		// Collect all custom graphics
 		final Collection<CyCustomGraphics> customGraphics = pool.getAll();
 		
 		// Add metadata file to the session file
-		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsPool.METADATA_FILE));
+		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsManager.METADATA_FILE));
 		pool.getMetadata().store(zos, "Image Metadata");
 		
 		for(CyCustomGraphics cg: customGraphics) {

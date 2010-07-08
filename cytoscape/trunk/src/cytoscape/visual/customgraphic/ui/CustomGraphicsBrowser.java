@@ -20,7 +20,7 @@ import org.jdesktop.swingx.JXList;
 
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CustomGraphicsManager;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
@@ -35,7 +35,7 @@ public class CustomGraphicsBrowser extends JXList implements PropertyChangeListe
 	private static final long serialVersionUID = -8342056297304400824L;
 
 	private DefaultListModel model;
-	private final CustomGraphicsPool pool;
+	private final CustomGraphicsManager pool;
 	
 	// For drag and drop
 	private static DataFlavor urlFlavor;

@@ -35,7 +35,7 @@ import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 import cytoscape.visual.customgraphic.impl.vector.GradientOvalLayer;
 import cytoscape.visual.customgraphic.impl.vector.GradientRoundRectangleLayer;
 
-public class CustomGraphicsPool extends SubjectBase implements
+public class CustomGraphicsManager extends SubjectBase implements
 		PropertyChangeListener {
 
 	private static final CyLogger logger = CyLogger.getLogger();
@@ -71,7 +71,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	 * Creates an image pool object and restore existing images from user resource
 	 * directory.
 	 */
-	public CustomGraphicsPool() {
+	public CustomGraphicsManager() {
 		
 		// For loading images in parallel.
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);

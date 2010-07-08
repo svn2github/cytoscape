@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -86,13 +85,12 @@ import cytoscape.util.PercentUtil;
 import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CustomGraphicsManager;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.IDGenerator;
 import cytoscape.visual.customgraphic.Taggable;
 import cytoscape.visual.customgraphic.impl.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
-import cytoscape.visual.parsers.GraphicsParser;
 
 /**
  * Reader to load CYtoscape Session file (.cys).<br>
@@ -141,7 +139,7 @@ public class CytoscapeSessionReader {
 	private static final String BOOKMARKS_FILE = "session_bookmarks.xml";
 	private static final String NETWORK_ROOT = "Network Root";
 	private URL sourceURL;
-	private HashMap networkURLs = null;
+	private Map networkURLs = null;
 	private URL cysessionFileURL = null;
 	private URL vizmapFileURL = null;
 	private URL cytoscapePropsURL = null;
@@ -159,7 +157,6 @@ public class CytoscapeSessionReader {
 
 	// Task monitor
 	private TaskMonitor taskMonitor = null;
-	private PercentUtil percentUtil;
 	private float networkCounter = 0;
 	private float netIndex = 0;
 	private long start;
@@ -191,9 +188,6 @@ public class CytoscapeSessionReader {
 		imageMap = new HashMap<String, URL>();
 
 		this.taskMonitor = monitor;
-		if (monitor != null) {
-			percentUtil = new PercentUtil(1);
-		}
 
 		this.logger = CyLogger.getLogger(CytoscapeSessionReader.class);
 
@@ -329,11 +323,11 @@ public class CytoscapeSessionReader {
 					bookmarksFileURL = new URL("jar:" + sourceURL.toString()
 							+ "!/" + entryName);
 				} else if (entryName.endsWith(".png")) {
-					// image
+					// All bitmap images are saved as PNG files.
 					final URL imageURL = new URL("jar:" + sourceURL.toString()
 							+ "!/" + entryName);
 					restoreCustomGraphics(entryName, imageURL);
-				} else if (entryName.endsWith(CustomGraphicsPool.METADATA_FILE)) {
+				} else if (entryName.endsWith(CustomGraphicsManager.METADATA_FILE)) {
 					imagePropsURL = new URL("jar:" + sourceURL.toString()
 							+ "!/" + entryName);
 				} else
@@ -386,7 +380,7 @@ public class CytoscapeSessionReader {
 		imageProps.load(URLUtil.getBasicInputStream(imagePropsURL));
 
 		// Remove all custom graphics
-		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
+		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
 		pool.removeAll();
 

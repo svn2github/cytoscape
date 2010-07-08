@@ -46,7 +46,7 @@ public class PersistImageTask implements Task {
 			old.delete();
 
 		final long startTime = System.currentTimeMillis();
-		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
+		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
 
 		final ExecutorService exService = Executors
@@ -79,7 +79,7 @@ public class PersistImageTask implements Task {
 		}
 
 		try {
-			pool.getMetadata().store(new FileOutputStream(new File(location, CustomGraphicsPool.METADATA_FILE)),
+			pool.getMetadata().store(new FileOutputStream(new File(location, CustomGraphicsManager.METADATA_FILE)),
 					"Image Metadata");
 		} catch (IOException e) {
 			taskMonitor.setException(e, "Could not save image metadata.");

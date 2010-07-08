@@ -12,7 +12,7 @@ import javax.swing.JFileChooser;
 
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CustomGraphicsManager;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
@@ -33,7 +33,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 	private final CustomGraphicsDetailPanel detail;
 	
 	// Manager object for on-memory graphics.
-	private final CustomGraphicsPool pool;
+	private final CustomGraphicsManager pool;
 
 	/** Creates new form CustomGraphicsManagerDialog */
 	public CustomGraphicsManagerDialog(java.awt.Frame parent, boolean modal) {

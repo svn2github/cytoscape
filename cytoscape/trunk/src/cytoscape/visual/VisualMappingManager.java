@@ -53,7 +53,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CustomGraphicsManager;
 import cytoscape.visual.mappings.RangeValueCalculatorFactory;
 import cytoscape.visual.mappings.RangeValueCalculatorFactoryImpl;
 import cytoscape.visual.mappings.rangecalculators.ColorRangeValueCalculator;
@@ -103,7 +103,7 @@ public class VisualMappingManager extends SubjectBase {
 	private static final String DEF_STYLE_NAME = "default";
 
 	// New in Cytoscape 2.8: Pool of available custom graphics
-	private final CustomGraphicsPool pool;
+	private final CustomGraphicsManager pool;
 
 	// New in 2.8: Dynamically manage mappings
 	private final RangeValueCalculatorFactory rvcFactory;
@@ -120,7 +120,7 @@ public class VisualMappingManager extends SubjectBase {
 		this.networkView = networkView;
 		
 		// Creates a repository of static images.
-		pool = new CustomGraphicsPool();
+		pool = new CustomGraphicsManager();
 
 		// New in 2.8: dynamically manages object mappings.
 		rvcFactory = new RangeValueCalculatorFactoryImpl();
@@ -442,7 +442,7 @@ public class VisualMappingManager extends SubjectBase {
 		myEdgeApp.applyAppearance(edgeView, activeVS.getDependency());
 	}
 
-	public CustomGraphicsPool getCustomGraphicsPool() {
+	public CustomGraphicsManager getCustomGraphicsPool() {
 		return pool;
 	}
 	

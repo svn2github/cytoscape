@@ -26,7 +26,7 @@ import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CustomGraphicsManager;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.Layer;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
@@ -271,7 +271,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 	public Map<Object, Icon> getIconSet() {
 		final Map<Object, Icon> customGraphicsIcons = new HashMap<Object, Icon>();
-		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager()
+		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsPool();
 		for (CyCustomGraphics graphics : pool.getAll()) {
 			VisualPropertyIcon icon = (VisualPropertyIcon) getIcon(graphics);
