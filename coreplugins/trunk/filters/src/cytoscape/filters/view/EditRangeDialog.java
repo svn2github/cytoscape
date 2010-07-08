@@ -22,7 +22,7 @@ public class EditRangeDialog extends JDialog implements ActionListener {
         
         dataType = pDataType;
         
-        String message = lbPleaseEnterBoundValues.getText()+ " (" + pBoundsVect.elementAt(2).toString()+ "~" +pBoundsVect.elementAt(3).toString() + "):";
+        String message = lbPleaseEnterBoundValues.getText()+ " (" + pBoundsVect.elementAt(2).toString()+ " ~ " +pBoundsVect.elementAt(3).toString() + "):";
         lbPleaseEnterBoundValues.setText(message);
         
         boundValueVect = pBoundsVect;
@@ -48,10 +48,16 @@ public class EditRangeDialog extends JDialog implements ActionListener {
 		if (dataType.equalsIgnoreCase("int")) {			
 	    	try {
 	    		int lowBound = Integer.parseInt(lowBoundStr);
-	    		int highBound = Integer.parseInt(highBoundStr);
+	    		int highBound = Integer.parseInt(highBoundStr);	    		
 	    		if (lowBound > highBound) {
 	    			return false;
-	    		}	 
+	    		}
+	    		
+	    		int minValue = Integer.parseInt(this.boundValueVect.elementAt(2));
+	    		int maxValue = Integer.parseInt(this.boundValueVect.elementAt(3));
+	    		if (lowBound > maxValue || highBound < minValue){
+	    			return false;
+	    		}	    		
 	    	} 
 	    	catch (NumberFormatException nfe) {
 	    			return false;
@@ -63,7 +69,13 @@ public class EditRangeDialog extends JDialog implements ActionListener {
 	    		double highBound = Double.parseDouble(highBoundStr);
 	    		if (lowBound > highBound) {
 	    			return false;
-	    		}	 	    		
+	    		}
+	    		
+	    		double minValue = Double.parseDouble(this.boundValueVect.elementAt(2));
+	    		double maxValue = Double.parseDouble(this.boundValueVect.elementAt(3));
+	    		if (lowBound > maxValue || highBound < minValue){
+	    			return false;
+	    		}	    		
 	    	} 
 	    	catch (NumberFormatException nfe) {
 	    			return false;
