@@ -294,7 +294,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	private CollapsiblePanel createDisplaySettingsPanel()
 	{
-		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Display Settings");
+		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Advanced Parameters");
 		
 		//Used to retrieve defaults
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
@@ -321,14 +321,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		maxWordsPanel.add(maxWordsTextField, BorderLayout.EAST);
 		
 		//Network Weight Factor
-		JLabel netWeightLabel = new JLabel("Network Weight Factor");
+		JLabel netWeightLabel = new JLabel("Network Normalization");
 		netWeightTextField = new JFormattedTextField(decFormat);
 		netWeightTextField.setColumns(3);
 		netWeightTextField.setValue(params.getDefaultNetWeight()); //Set to default initially
 		netWeightTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
 		buf = new StringBuffer();
-		buf.append("<html>" + "Determines how much emphasis to give the entire network in relation to the selected nodes" + "<br>");
+		buf.append("<html>" + "Determines how much weight to give the whole network when normalizing the selected nodes" + "<br>");
 		buf.append("<b>Acceptable Values:</b> greater than or equal to 0 and less than or equal to 1" + "</html>");
 		netWeightTextField.setToolTipText(buf.toString());
 		
@@ -339,14 +339,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		netWeightPanel.add(netWeightTextField,BorderLayout.EAST);
 		
 		//Clustering Cutoff
-		JLabel clusterCutoffLabel = new JLabel("Clustering Cutoff");
+		JLabel clusterCutoffLabel = new JLabel("Word Aggregation Cutoff");
 		clusterCutoffTextField = new JFormattedTextField(decFormat);
 		clusterCutoffTextField.setColumns(3);
 		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff()); //Set to default initially
 		clusterCutoffTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
 		buf = new StringBuffer();
-		buf.append("<html>" + "Only word pairs with probability greater than or equal to the Clustering Cutoff will be considered when clustering" + "<br>");
+		buf.append("<html>" + "Cutoff for placing two words in the same cluster - ratio of the observed joint probability of the words to their joint probability if the words appeared independently of each other" + "<br>");
 		buf.append("<b>Acceptable Values:</b> greater than or equal to 0" + "</html>");
 		clusterCutoffTextField.setToolTipText(buf.toString());
 		
