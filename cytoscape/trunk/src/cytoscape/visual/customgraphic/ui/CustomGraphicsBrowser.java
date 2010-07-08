@@ -56,7 +56,7 @@ public class CustomGraphicsBrowser extends JXList implements PropertyChangeListe
 	 * @throws IOException
 	 */
 	public CustomGraphicsBrowser() throws IOException {
-		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsManager();
 
 		initComponents();
 		addAllImages();

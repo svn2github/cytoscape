@@ -38,7 +38,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 	/** Creates new form CustomGraphicsManagerDialog */
 	public CustomGraphicsManagerDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
-		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsManager();
 		initComponents();
 		try {
 			browser = new CustomGraphicsBrowser();

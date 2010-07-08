@@ -36,7 +36,7 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 
 		final String imageName = entry[1];
 		CyCustomGraphics cg = Cytoscape.getVisualMappingManager()
-				.getCustomGraphicsPool().getByID(Long.parseLong(imageName));
+				.getCustomGraphicsManager().getByID(Long.parseLong(imageName));
 		cg.setDisplayName(entry[2]);
 		return cg;
 	}

@@ -272,7 +272,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 	public Map<Object, Icon> getIconSet() {
 		final Map<Object, Icon> customGraphicsIcons = new HashMap<Object, Icon>();
 		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager()
-				.getCustomGraphicsPool();
+				.getCustomGraphicsManager();
 		for (CyCustomGraphics graphics : pool.getAll()) {
 			VisualPropertyIcon icon = (VisualPropertyIcon) getIcon(graphics);
 			icon.setName(graphics.getDisplayName());

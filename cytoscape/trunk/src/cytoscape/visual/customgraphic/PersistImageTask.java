@@ -47,7 +47,7 @@ public class PersistImageTask implements Task {
 
 		final long startTime = System.currentTimeMillis();
 		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager()
-				.getCustomGraphicsPool();
+				.getCustomGraphicsManager();
 
 		final ExecutorService exService = Executors
 				.newFixedThreadPool(NUM_THREADS);

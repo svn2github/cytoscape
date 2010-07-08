@@ -28,7 +28,7 @@ public abstract class GradientLayerCustomGraphics extends AbstractDCustomGraphic
 	// Bound of this graphics
 	protected Shape bound;
 	
-	private static final float FIT = 1.0f;
+	private static final float FIT = 0.9f;
 	
 	protected static final String COLOR1 = "Color 1";
 	protected static final String COLOR2 = "Color 2";
@@ -39,8 +39,8 @@ public abstract class GradientLayerCustomGraphics extends AbstractDCustomGraphic
 	// Pre-Rendered image for icon.
 	protected BufferedImage rendered;
 	
-	private static final Color transparentWhite = new Color(255, 255, 255, 150);
-	private static final Color transparentBlack = new Color(150, 150, 150, 100);
+	private static final Color transparentWhite = new Color(255, 255, 255, 100);
+	private static final Color transparentBlack = new Color(100, 100, 100, 100);
 	
 	private static final int DEF_W = 100;
 	private static final int DEF_H = 100;

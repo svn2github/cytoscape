@@ -442,7 +442,7 @@ public class VisualMappingManager extends SubjectBase {
 		myEdgeApp.applyAppearance(edgeView, activeVS.getDependency());
 	}
 
-	public CustomGraphicsManager getCustomGraphicsPool() {
+	public CustomGraphicsManager getCustomGraphicsManager() {
 		return pool;
 	}
 	

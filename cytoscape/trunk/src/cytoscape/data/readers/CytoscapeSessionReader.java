@@ -323,11 +323,13 @@ public class CytoscapeSessionReader {
 					bookmarksFileURL = new URL("jar:" + sourceURL.toString()
 							+ "!/" + entryName);
 				} else if (entryName.endsWith(".png")) {
+					
 					// All bitmap images are saved as PNG files.
 					final URL imageURL = new URL("jar:" + sourceURL.toString()
 							+ "!/" + entryName);
-					restoreCustomGraphics(entryName, imageURL);
+					loadBitmapImageFiles(entryName, imageURL);
 				} else if (entryName.endsWith(CustomGraphicsManager.METADATA_FILE)) {
+					// This is the image property file.
 					imagePropsURL = new URL("jar:" + sourceURL.toString()
 							+ "!/" + entryName);
 				} else
@@ -362,42 +364,55 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	private void restoreCustomGraphics(final String entryName,
-			final URL imageURL) throws IOException {
+	
+	private void loadBitmapImageFiles(final String entryName,
+			final URL imageFileURL) throws IOException {
 		final String[] ent = entryName.split(System
 				.getProperty("file.separator"));
 		final String displayName = ent[ent.length - 1];
 		String name = displayName.split("\\.")[0];
 
-		imageMap.put(name, imageURL);
+		imageMap.put(name, imageFileURL);
 	}
 	
 
-	private void createCustomGraphics() throws IOException {
+	private void restoreCustomGraphics() throws IOException {
 		
 		// Restore metadata
 		final Properties imageProps = new Properties();
 		imageProps.load(URLUtil.getBasicInputStream(imagePropsURL));
 
-		// Remove all custom graphics
-		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager()
-				.getCustomGraphicsPool();
-		pool.removeAll();
+		// Remove all custom graphics from current session
+		final CustomGraphicsManager manager = Cytoscape.getVisualMappingManager()
+				.getCustomGraphicsManager();
+		manager.removeAll();
 
+		// First, restore image-based custom graphics
 		for (String id : imageMap.keySet()) {
+			
+			// Create Custom Graphics with specified ID.
 			final CyCustomGraphics graphics = new URLImageCustomGraphics(Long.parseLong(id),
 					imageMap.get(id).toString());
-			final String propEntry = imageProps.getProperty(id);
 			
-			// Remove image prop.
+			// This property contains display name and tags.
+			final String propEntry = imageProps.getProperty(id);
+			if(propEntry == null)
+				continue;
+			
+			// Remove this prop.
 			imageProps.remove(id);
 			
-			String[] parts = propEntry.split(",");
+			// Split string into blocks.
+			// This line should have: class Name, ID, name, tags.
+			final String[] parts = propEntry.split(",");
 			String name = parts[parts.length - 2];
 			if (name.contains("___"))
 				name = name.replace("___", ",");
+			
+			// Set display name
 			graphics.setDisplayName(name);
 
+			// Restore tags
 			String tagStr = null;
 			if (parts.length > 3 && graphics instanceof Taggable) {
 				tagStr = parts[3];
@@ -406,19 +421,24 @@ public class CytoscapeSessionReader {
 						+ AbstractDCustomGraphics.LIST_DELIMITER);
 				for (String tag : tagParts)
 					tags.add(tag.trim());
+				
+				// Add all restored tags.
 				((Taggable) graphics).getTags().addAll(tags);
 			}
 
+			
+			// If name is a valid URL, store as data source.
 			try {
 				final URL nameAsURL = new URL(name);
 				// The name is URL. Use as its source.
-				final CyCustomGraphics currentValue = pool.getBySourceURL(nameAsURL);
+				final CyCustomGraphics currentValue = manager.getBySourceURL(nameAsURL);
 				
 				// Add only if the graphics does not exist in memory.
 				if(currentValue == null)
-					pool.addGraphics(graphics, nameAsURL);
+					manager.addGraphics(graphics, nameAsURL);
 			} catch (MalformedURLException e) {
-				pool.addGraphics(graphics, null);
+				// Name is not an URL.  These should be added always.
+				manager.addGraphics(graphics, null);
 			}
 		}
 		
@@ -426,15 +446,22 @@ public class CytoscapeSessionReader {
 		System.out.println("Need to restore non-image graphics: " + imageProps.size());
 		
 		//TODO: Fix vector images
-//		for(Object key:imageProps.keySet()) {
-//			System.out.println("Key = " + key +", val = " + imageProps.getProperty(key.toString()));
-//			CyCustomGraphics<?> nonImage = parser.parseStringValue(imageProps.getProperty(key.toString()));
-//			pool.addGraphics(nonImage, null);
-//		}
-		
+
 		// Reset the counter
-		final Long currentMax = pool.getIDSet().last();
+		final Long currentMax = manager.getIDSet().last();
 		IDGenerator.getIDGenerator().initCounter(currentMax+1);
+	}
+	
+	private void restoreNonImageGraphics(final Properties imageProps, final CustomGraphicsManager manager) {
+		
+		
+		for(Object key:imageProps.keySet()) {
+//			System.out.println("Key = " + key +", val = " + imageProps.getProperty(key.toString()));
+//			final CyCustomGraphics cg = parser.parseStringValue(imageProps.getProperty(key.toString()));
+//			
+//			if(cg != null)
+//				manager.addGraphics(cg, null);
+		}
 	}
 	
 
@@ -597,8 +624,9 @@ public class CytoscapeSessionReader {
 			throw e;
 		}
 
+		// Need to restore custom graphics BEFORE Visual Styles.
 		if (imagePropsURL != null)
-			createCustomGraphics();
+			restoreCustomGraphics();
 
 		if (loadVizmap) {
 			// restore vizmap.props

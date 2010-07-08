@@ -48,10 +48,10 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics> {
 		// Special case:  URL String.
 		try {
 			final URL url = new URL(value);
-			CyCustomGraphics graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsPool().getBySourceURL(url);
+			CyCustomGraphics graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsManager().getBySourceURL(url);
 			if(graphics == null) {
 				graphics = new URLImageCustomGraphics(url.toString());
-				Cytoscape.getVisualMappingManager().getCustomGraphicsPool().addGraphics(graphics, url);
+				Cytoscape.getVisualMappingManager().getCustomGraphicsManager().addGraphics(graphics, url);
 			}
 			return graphics;
 		} catch (IOException e) {
