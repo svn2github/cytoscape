@@ -25,7 +25,7 @@
     <property name="lib.dir" value="${root.dir}/lib"/>
 
     <!-- Define the Cytoscape directories -->
-    <property name="cytoscape.dir" value="../../../../eqn_attribs"/>
+    <property name="cytoscape.dir" value="../../../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 

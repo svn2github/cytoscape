@@ -4,14 +4,15 @@
 package cytoscape.tutorial23;
 
 
-import cytoscape.data.eqn_attribs.AttribParser;
-import cytoscape.data.eqn_attribs.Parser;
 import cytoscape.plugin.CytoscapePlugin;
+
+import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.Parser;
 
 
 public class Tutorial23 extends CytoscapePlugin {
 	public Tutorial23() {
-		final AttribParser theParser = Parser.getParser();
+		final EqnParser theParser = Parser.getParser();
 		theParser.registerFunction(new IXor());
 	}	
 }
