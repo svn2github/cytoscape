@@ -30,13 +30,19 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class ACos implements Function {
+public class ACos extends AbstractFunction {
+	public ACos() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.FLOAT, "argument", "A number between -1 and +1, inclusive.")
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,23 +55,7 @@ public class ACos implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the arccosine of a number."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"ACOS(number)\""; }
-
 	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @return Double.class or null if there is not exactly 1 arg or the arg is not of type Double, Long, String or Boolean
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || !FunctionUtil.isScalarArgType(argTypes[0]))
-			return null;
-
-		return Double.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long
@@ -76,26 +66,5 @@ public class ACos implements Function {
 		if (arg < -1.0 || arg > 1.0)
 			throw new IllegalArgumentException("the argument to ACOS() must be in [-1,+1]!");
 		return Math.acos(arg);
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length == 0) {
-			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(String.class);
-			possibleNextArgs.add(Boolean.class);
-			return possibleNextArgs;
-		}
-
-		return null;
 	}
 }

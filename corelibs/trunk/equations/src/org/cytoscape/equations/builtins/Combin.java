@@ -30,13 +30,20 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Combin implements Function {
+public class Combin extends AbstractFunction {
+	public Combin() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.INT, "n", "The total number of objects."),
+				new ArgDescriptor(ArgType.INT, "k", "The size of the selected subset."),
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -49,28 +56,7 @@ public class Combin implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns of combinations of n objects, with k chosen at any one time."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"COMBIN(n, k)\""; }
-
 	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @return Double.class or null if there are 2 args or the args are not of type Double, Long, Boolean or String
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 2)
-			return null;
-
-		for (final Class argType : argTypes) {
-			if (argType != Double.class && argType != Long.class && argType != String.class && argType != Boolean.class)
-				return null;
-		}
-
-		return Long.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
@@ -94,27 +80,6 @@ public class Combin implements Function {
 			return (Long)0L;
 
 		return (Long)combinations(N, K);
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length < 2) {
-			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(Double.class);
-			possibleNextArgs.add(Long.class);
-			possibleNextArgs.add(Boolean.class);
-			possibleNextArgs.add(String.class);
-			return possibleNextArgs;
-		}
-
-		return null;
 	}
 
 	/**

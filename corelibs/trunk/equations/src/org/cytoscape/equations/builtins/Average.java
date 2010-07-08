@@ -30,14 +30,20 @@
 package org.cytoscape.equations.builtins;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
 import org.cytoscape.equations.FunctionError;
 import org.cytoscape.equations.FunctionUtil;
 
 
-public class Average implements Function {
+public class Average extends AbstractFunction {
+	public Average() {
+		super(new ArgDescriptor[] {
+				new ArgDescriptor(ArgType.FLOATS, "numbers", "One or more numbers and/or lists of numbers.")
+			});
+	}
+
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -50,24 +56,7 @@ public class Average implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns the average of a group of numbers."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"AVERAGE(list)\" or \"AVERAGE(arg1,arg2,...,argN)\""; }
-
 	public Class getReturnType() { return Double.class; }
-
-	/**
-	 *  @return Double.class or null if there is not either exactly a single list argument nor a list of numeric arguments
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		// An empty argument list is invalid.
-		if (argTypes.length == 0)
-			return null;
-
-		return Double.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double
@@ -87,23 +76,5 @@ public class Average implements Function {
 			throw new IllegalArgumentException("need at least one number in a call to AVERAGE()!");
 
 		return FunctionUtil.numericallySafeSum(numbers) / numbers.length;
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		final List<Class> possibleNextArgs = new ArrayList<Class>();
-		possibleNextArgs.add(List.class);
-		FunctionUtil.addScalarArgumentTypes(possibleNextArgs);
-		if (leadingArgs.length > 0)
-			possibleNextArgs.add(null);
-
-		return possibleNextArgs;
 	}
 }
