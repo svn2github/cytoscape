@@ -30,16 +30,19 @@
 package org.cytoscape.EquationFunctions.functions;
 
 
-import java.util.ArrayList;
-import java.util.List;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
+import org.cytoscape.equations.AbstractFunction;
 
+public class SourceID extends AbstractFunction {
+	public SourceID() {
+		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.STRICT_STRING, "edge_ID", "An ID identifying an edge.") });
+	}
 
-public class SourceID implements Function {
 	/**
 	 *  Used to parse the function string.  This name is treated in a case-insensitive manner!
 	 *  @return the name by which you must call the function when used in an attribute equation.
@@ -50,25 +53,9 @@ public class SourceID implements Function {
 	 *  Used to provide help for users.
 	 *  @return a description of what this function does
 	 */
-	public String getFunctionSummary() { return "Returns source ID  of an edge."; }
-
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"SOURCEID(edge_ID)\""; }
+	public String getFunctionSummary() { return "Returns source ID of an edge."; }
 
 	public Class getReturnType() { return Long.class; }
-
-	/**
-	 *  @return String.class or null if there is not exactly 1 arg or the arg is not of type String
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || (argTypes[0] != String.class))
-			return null;
-
-		return Long.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long
@@ -82,23 +69,5 @@ public class SourceID implements Function {
 			throw new IllegalArgumentException("\"" + edgeID + "\" is not a valid edge identifier!");
 		
 		return edge.getSource().getIdentifier();
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length == 0) {
-			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(String.class);
-			return possibleNextArgs;
-		}
-
-		return null;
 	}
 }

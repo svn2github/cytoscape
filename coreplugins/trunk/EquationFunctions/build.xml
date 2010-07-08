@@ -25,7 +25,7 @@
     <property name="EquationFunctions.root.dir" value="."/>
     <property name="EquationFunctions.lib.dir" value="${EquationFunctions.root.dir}/lib"/>
     
-    <property name="cytoscape.dir" value="../../eqn_attribs"/>
+    <property name="cytoscape.dir" value="../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 
