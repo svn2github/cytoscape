@@ -343,7 +343,7 @@ public class FilterSettingPanel extends JPanel {
 			if (_obj instanceof JRangeSliderExtended) {
 				_range = (JRangeSliderExtended) _obj;
 				_model = (NumberRangeModel) _range.getModel();
-				toolTipText = _model.getLowValue() + " - " + _model.getHighValue() + " Double-click to edit"; 
+				toolTipText = _model.getLowValue() + " ~ " + _model.getHighValue() + " Double-click to edit"; 
 				_range.setToolTipText(toolTipText);
 			}
 		}
