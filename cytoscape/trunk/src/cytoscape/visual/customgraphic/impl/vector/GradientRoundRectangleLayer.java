@@ -31,14 +31,14 @@ public class GradientRoundRectangleLayer extends GradientLayerCustomGraphics {
 	
 	public void update() {
 		// First, remove all layers.
-		cgList.clear();
+		layers.clear();
 		
 		r = (int)(Math.min(width, height)/4f);
 		bound = new RoundRectangle2D.Double(-width / 2, -height / 2,
 																	width, height, r, r);
 		paintFactory = new GradientPaintFactory(c1.getValue(), c2.getValue());
 		final CustomGraphic cg = new CustomGraphic(bound, paintFactory);
-		cgList.add(cg);
+		layers.add(cg);
 	}
 
 }

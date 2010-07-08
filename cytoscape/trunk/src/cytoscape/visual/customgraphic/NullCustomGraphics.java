@@ -1,5 +1,6 @@
 package cytoscape.visual.customgraphic;
 
+
 /**
  * Null object for Custom Graphics.
  * This is used to reset custom graphics on node views.
@@ -8,6 +9,12 @@ package cytoscape.visual.customgraphic;
  * 
  */
 public class NullCustomGraphics extends AbstractDCustomGraphics {
+	
+	static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
+	
+	public static CyCustomGraphics<?> getNullObject() {
+		return NULL;
+	}
 
 	private static final String NAME = "[ Remove Graphics ]";
 
@@ -16,7 +23,6 @@ public class NullCustomGraphics extends AbstractDCustomGraphics {
 	}
 	
 	
-	@Override
 	public String toString() {
 		return this.getClass().getCanonicalName();
 	}

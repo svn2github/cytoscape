@@ -55,7 +55,7 @@ public class CustomGraphicsPool extends SubjectBase implements
 	private final Map<URL, Long> sourceMap = new ConcurrentHashMap<URL, Long>();
 
 	// Null Object
-	private static final CyCustomGraphics<?> NULL = new NullCustomGraphics();
+	private static final CyCustomGraphics<?> NULL = NullCustomGraphics.getNullObject();
 	
 	// Sample dynamic graphics
 	private static final CyCustomGraphics<?> ROUND_RECT_GR = new GradientRoundRectangleLayer();
@@ -280,11 +280,6 @@ public class CustomGraphicsPool extends SubjectBase implements
 		// Add vector image samples
 		graphicsMap.put(ROUND_RECT_GR.getIdentifier(), ROUND_RECT_GR);
 		graphicsMap.put(OVAL_GR.getIdentifier(), OVAL_GR);
-	}
-
-	
-	public CyCustomGraphics<?> getNullGraphics() {
-		return NULL;
 	}
 
 	/**

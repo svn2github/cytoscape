@@ -36,11 +36,7 @@ import ding.view.DNodeView;
 
 public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
-	private static final CyCustomGraphics<CustomGraphic> NULL = new NullCustomGraphics();
 	private final int index;
-
-	// The factor by which to shrink scaled images so that they'll fit within nodes.
-	//private static final double fit = 0.9;
 
 	// Manages view to Custom Graphics mapping.
 	private Map<DNodeView, Set<CustomGraphic>> currentMap;
@@ -57,19 +53,18 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 			private static final long serialVersionUID = 403672612403499816L;
 			private static final int ICON_SIZE = 128;
-			
 
 			private String name = null;
-			
+
 			@Override
 			public String getName() {
-				if(name == null) {
-					if(value != null && value instanceof CyCustomGraphics<?>)
-						name = ((CyCustomGraphics<?>)value).getDisplayName();
+				if (name == null) {
+					if (value != null && value instanceof CyCustomGraphics<?>)
+						name = ((CyCustomGraphics<?>) value).getDisplayName();
 					else
 						name = "Unknown Custom Graphics";
 				}
-				
+
 				return name;
 			}
 
@@ -100,11 +95,11 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 				}
 
 			}
-			
+
 			public int getIconWidth() {
 				return ICON_SIZE;
 			}
-			
+
 			public int getIconHeight() {
 				return ICON_SIZE;
 			}
@@ -125,9 +120,11 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 				int shorterDim = 0;
 
 				Image scaledImg;
-				if(originalW<=ICON_SIZE && originalH<=ICON_SIZE) {
-					int xLocation = 8 + (int)(ICON_SIZE/2) - ((int)originalW/2); 
-					int yLocation = 3 + (int)(ICON_SIZE/2) - ((int)originalH/2); 
+				if (originalW <= ICON_SIZE && originalH <= ICON_SIZE) {
+					int xLocation = 8 + (int) (ICON_SIZE / 2)
+							- ((int) originalW / 2);
+					int yLocation = 3 + (int) (ICON_SIZE / 2)
+							- ((int) originalH / 2);
 					g2d.drawImage(originalImg, xLocation, yLocation, null);
 				} else if (originalW > originalH) {
 					ratio = originalH / originalW;
@@ -156,8 +153,12 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		return VisualPropertyType.getCustomGraphicsType(index);
 	}
 
-	public void applyToNodeView(NodeView nv, Object o,
-			VisualPropertyDependency dep) {
+	/**
+	 * Apply current Custom Graphics to a node view.
+	 * 
+	 */
+	public void applyToNodeView(final NodeView nv, final Object customGraphics,
+			final VisualPropertyDependency dep) {
 
 		// Ignore if view does not exist
 		if (nv == null || nv instanceof DNodeView == false)
@@ -166,7 +167,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		// Assume this is a Ding Node View.
 		final DNodeView dv = (DNodeView) nv;
 
-		// Remove old layers
+		// Remove current layers associated with this Custom Graphics
 		Set<CustomGraphic> targets = currentMap.get(dv);
 		if (targets != null) {
 			for (CustomGraphic cg : targets)
@@ -177,13 +178,15 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		}
 
 		// For these cases, remove current layers.
-		if (o == null || o instanceof CyCustomGraphics<?> == false
-				|| o instanceof NullCustomGraphics) {
+		if (customGraphics == null
+				|| customGraphics instanceof CyCustomGraphics<?> == false
+				|| customGraphics instanceof NullCustomGraphics) {
 			currentMap.remove(dv);
 			return;
 		}
+
 		targets = new HashSet<CustomGraphic>();
-		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) o;
+		final CyCustomGraphics<?> graphics = (CyCustomGraphics<?>) customGraphics;
 		final Collection<CustomGraphic> layers = (Collection<CustomGraphic>) graphics
 				.getLayers();
 
@@ -212,7 +215,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 		this.currentMap.put(dv, targets);
 	}
 
-	private CustomGraphic syncSize(CyCustomGraphics<?> graphics, final CustomGraphic cg, final DNodeView dv,
+	private CustomGraphic syncSize(CyCustomGraphics<?> graphics,
+			final CustomGraphic cg, final DNodeView dv,
 			final VisualPropertyDependency dep) {
 
 		final double nodeW = dv.getWidth();
@@ -232,9 +236,10 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 
 		final AffineTransform scale;
 		final float fit = graphics.getFitRatio();
-		
+
 		if (whLock || graphics instanceof VectorCustomGraphics) {
-			scale = AffineTransform.getScaleInstance(fit * nodeW / cgW, fit * nodeH / cgH);
+			scale = AffineTransform.getScaleInstance(fit * nodeW / cgW, fit
+					* nodeH / cgH);
 		} else {
 			// Case 1: node height value is larger than width
 			if (nodeW >= nodeH) {
@@ -242,8 +247,8 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 						* (nodeH / nodeW), fit * nodeH / cgH);
 				// scale = AffineTransform.getScaleInstance(nodeH/nodeW, 1);
 			} else {
-				scale = AffineTransform.getScaleInstance(fit * nodeW / cgW,
-						fit * (nodeH / cgH) * (nodeW / nodeH));
+				scale = AffineTransform.getScaleInstance(fit * nodeW / cgW, fit
+						* (nodeH / cgH) * (nodeW / nodeH));
 				// scale = AffineTransform.getScaleInstance(1, nodeW/nodeH);
 			}
 
@@ -258,7 +263,7 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 	 * @return DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {
-		return NULL;
+		return NullCustomGraphics.getNullObject();
 	}
 
 	public Map<Object, Icon> getIconSet() {

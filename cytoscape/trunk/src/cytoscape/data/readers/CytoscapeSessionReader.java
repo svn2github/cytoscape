@@ -92,6 +92,7 @@ import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.IDGenerator;
 import cytoscape.visual.customgraphic.Taggable;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
+import cytoscape.visual.parsers.GraphicsParser;
 
 /**
  * Reader to load CYtoscape Session file (.cys).<br>
@@ -393,6 +394,10 @@ public class CytoscapeSessionReader {
 			final CyCustomGraphics<?> graphics = new URLImageCustomGraphics(Long.parseLong(id),
 					imageMap.get(id).toString());
 			final String propEntry = imageProps.getProperty(id);
+			
+			// Remove image prop.
+			imageProps.remove(id);
+			
 			String[] parts = propEntry.split(",");
 			String name = parts[parts.length - 2];
 			if (name.contains("___"))
@@ -423,10 +428,21 @@ public class CytoscapeSessionReader {
 			}
 		}
 		
+		// Restore NON-image graphics
+		System.out.println("Need to restore non-image graphics: " + imageProps.size());
+		
+		//TODO: Fix vector images
+//		for(Object key:imageProps.keySet()) {
+//			System.out.println("Key = " + key +", val = " + imageProps.getProperty(key.toString()));
+//			CyCustomGraphics<?> nonImage = parser.parseStringValue(imageProps.getProperty(key.toString()));
+//			pool.addGraphics(nonImage, null);
+//		}
+		
 		// Reset the counter
 		final Long currentMax = pool.getIDSet().last();
 		IDGenerator.getIDGenerator().initCounter(currentMax+1);
 	}
+	
 
 	/**
 	 * Read a session file.

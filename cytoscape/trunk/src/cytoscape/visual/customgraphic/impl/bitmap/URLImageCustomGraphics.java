@@ -71,7 +71,7 @@ public class URLImageCustomGraphics extends AbstractDCustomGraphics {
 	}
 
 	private void buildCustomGraphics(BufferedImage targetImg) {
-		cgList.clear();
+		layers.clear();
 
 		Rectangle2D bound = null;
 		width = targetImg.getWidth();
@@ -81,7 +81,7 @@ public class URLImageCustomGraphics extends AbstractDCustomGraphics {
 		final PaintFactory paintFactory = new TexturePaintFactory(targetImg);
 
 		cg = new CustomGraphic(bound, paintFactory);
-		cgList.add(cg);
+		layers.add(cg);
 	}
 
 	private void createImage(String url) throws MalformedURLException {

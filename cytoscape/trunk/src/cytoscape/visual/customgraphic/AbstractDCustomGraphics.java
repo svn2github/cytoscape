@@ -5,10 +5,14 @@ import giny.view.ObjectPosition;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import cytoscape.render.stateful.CustomGraphic;
+import ding.view.DNodeView;
 import ding.view.ObjectPositionImpl;
 
 public abstract class AbstractDCustomGraphics implements
@@ -23,7 +27,7 @@ public abstract class AbstractDCustomGraphics implements
 	protected final Long id;
 	
 	// Layers of Ding Custom Graphic objects.
-	protected Collection<CustomGraphic> cgList;
+	protected Collection<CustomGraphic> layers;
 	
 	// Human readable name
 	protected String displayName;
@@ -38,15 +42,23 @@ public abstract class AbstractDCustomGraphics implements
 	// For tags
 	protected final SortedSet<String> tags;
 
+
 	public AbstractDCustomGraphics(final String displayName) {
 		this(IDGenerator.getIDGenerator().getNextId(), displayName);
 	}
 	
 	
+	/**
+	 * Create new object for a given ID.
+	 * Used when restoring session.
+	 * 
+	 * @param id
+	 * @param displayName
+	 */
 	public AbstractDCustomGraphics(final Long id, final String displayName) {
 		this.id = id;
 		
-		this.cgList = new ArrayList<CustomGraphic>();
+		this.layers = new ArrayList<CustomGraphic>();
 		this.displayName = displayName;
 
 		this.tags = new TreeSet<String>();
@@ -76,7 +88,7 @@ public abstract class AbstractDCustomGraphics implements
 
 	
 	public Collection<CustomGraphic> getLayers() {
-		return cgList;
+		return layers;
 	}
 
 	public String getDisplayName() {
@@ -104,6 +116,7 @@ public abstract class AbstractDCustomGraphics implements
 	public void setPosition(final ObjectPosition position) {
 		this.position = position;
 	}
+	
 
 	// This will be used prop file.
 	public String toString() {

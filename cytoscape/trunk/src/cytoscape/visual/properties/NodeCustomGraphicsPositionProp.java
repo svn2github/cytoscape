@@ -80,19 +80,21 @@ public class NodeCustomGraphicsPositionProp extends AbstractVisualProperty {
 	 * 
 	 * @param nv
 	 *            - NodeView. Currently, only supports DNodeView implementation.
-	 * @param o
+	 * @param position
 	 *            This should be an ObjectPosition.
 	 */
-	public void applyToNodeView(NodeView nv, Object o,
+	public void applyToNodeView(NodeView nv, Object position,
 			VisualPropertyDependency dep) {
 
 		// This implementation is for Ding only.
-		if ((o == null) || (nv == null) || o instanceof ObjectPosition == false
+		if ((position == null) || (nv == null) || position instanceof ObjectPosition == false
 				|| nv instanceof DNodeView == false)
 			return;
 
-		final ObjectPosition p = (ObjectPosition) o;
+		final ObjectPosition p = (ObjectPosition) position;
 		final DNodeView dv = (DNodeView) nv;
+		
+		// This property depends on Custom Graphics Prop.
 		final NodeCustomGraphicsProp customGraphicsProp = (NodeCustomGraphicsProp) VisualPropertyType
 				.getCustomGraphicsType(index).getVisualProperty();
 

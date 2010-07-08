@@ -7,6 +7,8 @@ import java.util.Collection;
 
 public interface CyCustomGraphics <T> {
 	
+	// Maybe CyCustomGraphics <T extends Layer> ?
+	
 	/**
 	 * Immutable session-unique identifier of image generated in constructor.
 	 * 
