@@ -146,9 +146,7 @@ public abstract class AbstractFunction implements Function {
 			}
 
 			if (!currentArgDescriptor.isCompatibleWith(argType))
-{System.err.println("actual argument type is " + argType);
 				return false;
-}
 			else if (currentArgDescriptor.acceptsMultipleArgs())
 				++currentArgCount;
 			else // We have a single matching argument and need to move on to the next arg descriptor.
