@@ -486,17 +486,17 @@ public abstract class Cytoscape {
 				    // get rid of existing data:
 				    Cytoscape.createNewSession();
 				} else {
-					try {
-						getRecentlyOpenedSessionTracker().writeOut();
-					} catch (final IOException e) {
-						System.err.println("failed to save recent session URLs!");
-					}
 					System.exit(returnVal);
 				}
 			} else {
 				return;
 			}
 		} else {
+			try {
+				getRecentlyOpenedSessionTracker().writeOut();
+			} catch (final IOException e) {
+				System.err.println("failed to save recent session URLs!");
+			}
 			logger.info("Cytoscape Exiting....");
 			System.exit(returnVal);
 		}

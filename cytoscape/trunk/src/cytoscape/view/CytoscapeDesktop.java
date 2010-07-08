@@ -612,6 +612,12 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			}
 			catch (IOException ioe){
 			}
+
+			try {
+				Cytoscape.getRecentlyOpenedSessionTracker().writeOut();
+			} catch (final IOException ioe) {
+				System.err.println("failed to save recent session URLs!");
+			}
 		}
 	}
 
