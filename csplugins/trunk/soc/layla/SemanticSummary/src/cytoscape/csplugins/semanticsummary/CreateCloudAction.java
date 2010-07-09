@@ -96,7 +96,13 @@ public class CreateCloudAction extends CytoscapeAction
 		
 		//Get SemanticSummaryParameters or Register if necessary
 		if(SemanticSummaryManager.getInstance().isSemanticSummary(networkID))
+		{
 			params = SemanticSummaryManager.getInstance().getParameters(networkID);
+			
+			//Update if necessary
+			if (params.networkChanged(network));
+				params.updateParameters(network);
+		}
 		else
 		{
 			params = new SemanticSummaryParameters();

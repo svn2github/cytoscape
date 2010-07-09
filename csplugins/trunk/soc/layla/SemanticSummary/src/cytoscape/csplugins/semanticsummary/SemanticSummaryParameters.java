@@ -261,6 +261,41 @@ public class SemanticSummaryParameters
 	}
 	
 	
+	/**
+	 * This method will check to see if the list of nodes in this object are
+	 * up to date with the supplied network.  It returns true only if the network
+	 * is different than the parameters.
+	 * @return boolean - whether or not this network has changed.
+	 */
+	public boolean networkChanged(CyNetwork network)
+	{
+		List<CyNode> nodes = network.nodesList();
+		
+		Boolean isChanged = false;
+		List<String> oldNames = this.getNetworkNodes();
+		
+		//If lists are different size, they can't be the same
+		if (oldNames.size() != nodes.size())
+			return true;
+		
+		else
+		{
+			//Since they are the same size, just need to check for subset
+			for (Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
+			{
+				String nodeName = iter.next().getIdentifier();
+				if (!oldNames.contains(nodeName))
+				{
+					isChanged = true;
+					break;
+				}
+			}
+		}
+		return isChanged;
+		
+	}
+	
+	
 
 	//GETTERS and SETTERS
 	

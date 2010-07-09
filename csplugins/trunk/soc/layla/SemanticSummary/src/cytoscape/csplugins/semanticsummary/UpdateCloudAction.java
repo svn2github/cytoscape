@@ -83,6 +83,10 @@ public class UpdateCloudAction extends CytoscapeAction
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		
+		//Update network if necessary
+		if (networkParams.networkChanged(network));
+			networkParams.updateParameters(network);
+		
 		//Get set of selected and compare to saved
 		Set<CyNode> nodes = network.getSelectedNodes();
 		Boolean isDifferent = checkSelectionChange(cloudParams, nodes);
