@@ -210,8 +210,9 @@ public class CytoscapeSessionReader {
 	 *             DOCUMENT ME!
 	 */
 	public CytoscapeSessionReader(final String fileName,
-			final TaskMonitor monitor) throws IOException {
-		this(new File(fileName).toURL(), monitor);
+			final TaskMonitor monitor) throws IOException
+	{
+		this(new File(fileName.replace("%", "%25")).toURL(), monitor);
 	}
 
 	/**
@@ -222,7 +223,7 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 */
 	public CytoscapeSessionReader(final String fileName) throws IOException {
-		this(new File(fileName).toURL(), (TaskMonitor) null);
+		this(new File(fileName.replace("%", "%25")).toURL(), (TaskMonitor) null);
 	}
 
 	/**
