@@ -103,4 +103,19 @@ public class AnalysisCommands extends AbstractCommands {
 		return result;
 	}
 
+	static public CyCommandResult alignStructures(Chimera chimera, CyCommandResult result, 
+	                                              List<Structure>referenceStruct, 
+	                                              List<Structure>structureList) {
+		// Do the alignment
+
+		return result;
+	}
+
+	static public CyCommandResult alignChains(Chimera chimera, CyCommandResult result, 
+	                                          List<ChimeraStructuralObject>reference, 
+	                                          List<ChimeraStructuralObject>chainList) {
+		// Make sure everything is a chain
+		// Do the alignment
+		return result;
+	}
 }

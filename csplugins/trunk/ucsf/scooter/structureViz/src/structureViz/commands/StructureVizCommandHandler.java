@@ -58,7 +58,10 @@ import structureViz.model.Structure;
 enum Command {
   ALIGNSTRUCTURES("alignstructures", 
 	                "Perform sequence-driven structural superposition on a group of structures", 
-	                "reference|structureList|referencechain|chainlist"),
+	                "reference|structurelist"),
+  ALIGNCHAINS("alignchains", 
+	            "Perform sequence-driven structural superposition on a group of structures by chain", 
+	            "referencechain|chainlist"),
 	CLEARCLASHES("clear clashes", "Clear clashes", ""),
 	CLEARHBONDS("clear hbonds", "Clear hydrogen bonds", ""),
 	CLEARSELECT("clear selection", "Clear all selection", ""),
@@ -76,7 +79,7 @@ enum Command {
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",""),
 	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
-	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
+	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist"),
 	RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
 	                   "structurelist|atomspec"),
 	ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
@@ -110,11 +113,14 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 
 	public static final String ATOMSPEC = "atomspec";
 	public static final String CHAIN = "chain";
+	public static final String CHAINLIST = "chainlist";
 	public static final String CONTINUOUS = "continuous";
 	public static final String LABELS = "labels";
-	public static final String MODELLIST = "modelList";
-	public static final String NODELIST = "nodeList";
+	public static final String MODELLIST = "modellist";
+	public static final String NODELIST = "nodelist";
 	public static final String PRESET = "preset";
+	public static final String REFERENCE = "reference";
+	public static final String REFERENCECHAIN = "referencechain";
 	public static final String RESIDUES = "residues";
 	public static final String RIBBONS = "ribbons";
 	public static final String RIBBONSTYLE = "ribbonstyle";
@@ -161,7 +167,36 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		List<Structure> structureList = CommandUtils.getStructureList(structureSpec, chimera);
 
 		// Main command cascade
+
+		//
+		// ALIGNSTRUCTURES("alignstructures", 
+	  //                 "Perform sequence-driven structural superposition on a group of structures", 
+	  //                 "reference|structurelist"),
+	  //
 		if (Command.ALIGNSTRUCTURES.equals(command)) {
+			String reference = getArg(command,REFERENCE, args);
+			if (reference != null && structureList == null)
+				throw new CyCommandException("Need a list of structures to compare against "+reference);
+			if (reference == null)
+				throw new CyCommandException("Must specify a reference structure");
+			List<Structure> referenceStruct = CommandUtils.getStructureList(reference, chimera);
+			result = AnalysisCommands.alignStructures(chimera, result, referenceStruct, structureList);	
+			
+		//
+		// ALIGNCHAINS("alignchains", 
+	  //             "Perform sequence-driven structural superposition on a group of structures by chain", 
+	  //             "referencechain|chainlist"),
+		//
+		} else if (Command.ALIGNCHAINS.equals(command)) {
+			String reference = getArg(command,REFERENCECHAIN, args);
+			String chainlist = getArg(command,CHAINLIST, args);
+			if (reference != null && chainlist == null)
+				throw new CyCommandException("Need a list of chains to compare against "+reference);
+			if (reference == null)
+				throw new CyCommandException("Must specify a reference chain");
+			List<ChimeraStructuralObject> referenceCSO = CommandUtils.getSpecList(reference,chimera);
+			List<ChimeraStructuralObject> chainList = CommandUtils.getSpecList(chainlist,chimera);
+			result = AnalysisCommands.alignChains(chimera, result, referenceCSO, chainList);	
 
 		//
 		// CLEARCLASHES("clear clashes", "Clear clashes"),
@@ -320,15 +355,15 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			}
 
 		//
-		// OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodeList"),
+		// OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist"),
 		//
 		} else if (Command.OPENSTRUCTURE.equals(command)) {
 			String pdb = getArg(command, "pdbid", args);
 			String modbaseid = getArg(command, "modbaseid", args);
 			String smiles = getArg(command, "smiles", args);
-			String nodelist = getArg(command, "nodeList", args);
+			String nodelist = getArg(command, NODELIST, args);
 			if (pdb == null && modbaseid == null && smiles == null && nodelist == null)
-				throw new CyCommandException("One of nodeList, pdbid, modbaseid, or smiles must be specified");
+				throw new CyCommandException("One of nodelist, pdbid, modbaseid, or smiles must be specified");
 
 			if (nodelist != null) {
 				return StructureCommands.openCommand(chimera, result, nodelist);
