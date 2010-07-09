@@ -456,7 +456,7 @@ public class CytoscapeInit {
 
 					final File shortName = new File(sessionFile);
 					final String absolutePath = shortName.getAbsolutePath();
-					final URL sessionURL = new URL("file://" + escapePercentSign(absolutePath));
+					final URL sessionURL = new URL("file://" + absolutePath.replace("%", "%25"));
 					reader = new CytoscapeSessionReader(sessionURL);
 					sessionName = shortName.getName();
 				}
@@ -476,21 +476,6 @@ public class CytoscapeInit {
 		}
 
 		return false;
-	}
-
-	/**
-	 *  @return 
-	 */
-	private String escapePercentSign(final String rawString) {
-		final StringBuilder cookedString = new StringBuilder(rawString.length());
-		for (int i = 0; i < rawString.length(); ++i) {
-			final char ch = rawString.charAt(i);
-			if (ch == '%')
-				cookedString.append("%25");
-			else
-				cookedString.append(ch);
-		}
-		return cookedString.toString();
 	}
 
 	private static void initProperties() {
