@@ -158,6 +158,11 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 					//Redraw the graph with selected nodes
 					//CyNetworkView view = Cytoscape.getCurrentNetworkView();
 					view.redrawGraph(false, true);
+					
+					//Bring panels to the front
+					SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
+					init.loadCloudPanel();
+					init.loadInputPanel();
 				}
 			}
 			
