@@ -55,12 +55,6 @@ public class URLImageCustomGraphicsParser implements CyCustomGraphicsParser {
 		return true;
 	}
 
-
-	public String getVizMapPropsString(CyCustomGraphics customGraphics) {
-
-		return customGraphics.toString();
-	}
-
 	
 	public Class<? extends CyCustomGraphics> getTargetClass() {
 		return TARGET_CLASS;

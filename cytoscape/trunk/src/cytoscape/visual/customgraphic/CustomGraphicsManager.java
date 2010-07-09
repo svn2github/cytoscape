@@ -39,44 +39,45 @@ public class CustomGraphicsManager extends SubjectBase implements
 		PropertyChangeListener {
 
 	private static final CyLogger logger = CyLogger.getLogger();
-		
+
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 8;
-	
+
 	private static final String IMAGE_DIR_NAME = "images";
-	
+
 	// For image I/O, PNG is used as bitmap image format.
 	private static final String IMAGE_EXT = "png";
 
 	private final ExecutorService imageLoaderService;
 
 	private final Map<Long, CyCustomGraphics> graphicsMap = new ConcurrentHashMap<Long, CyCustomGraphics>();
-	
-	// URL to hash code map.  For images associated with URL.
+
+	// URL to hash code map. For images associated with URL.
 	private final Map<URL, Long> sourceMap = new ConcurrentHashMap<URL, Long>();
 
 	// Null Object
-	private static final CyCustomGraphics NULL = NullCustomGraphics.getNullObject();
-	
-	// Sample dynamic graphics
-	private static final CyCustomGraphics ROUND_RECT_GR = new GradientRoundRectangleLayer();
-	private static final CyCustomGraphics OVAL_GR = new GradientOvalLayer();
+	private static final CyCustomGraphics NULL = NullCustomGraphics
+			.getNullObject();
+
+	// Default vectors
+	private static final Class<?>[] DEF_VECTORS = {
+			GradientRoundRectangleLayer.class, GradientOvalLayer.class };
 
 	public static final String METADATA_FILE = "image_metadata.props";
 
 	private File imageHomeDirectory;
 
-	
 	/**
-	 * Creates an image pool object and restore existing images from user resource
-	 * directory.
+	 * Creates an image pool object and restore existing images from user
+	 * resource directory.
 	 */
 	public CustomGraphicsManager() {
-		
+
 		// For loading images in parallel.
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		graphicsMap.put(NULL.getIdentifier(), NULL);
+		restoreDefaultVectorImageObjects();
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
 				Cytoscape.CYTOSCAPE_EXIT, this);
@@ -84,7 +85,6 @@ public class CustomGraphicsManager extends SubjectBase implements
 		restoreImages();
 	}
 
-	
 	/**
 	 * Restore images from .cytoscape/images dir.
 	 */
@@ -105,13 +105,14 @@ public class CustomGraphicsManager extends SubjectBase implements
 		try {
 			prop.load(new FileInputStream(new File(imageHomeDirectory,
 					METADATA_FILE)));
-			logger.info("Custom Graphics Image property file loaded from: " + imageHomeDirectory );
+			logger.info("Custom Graphics Image property file loaded from: "
+					+ imageHomeDirectory);
 		} catch (Exception e) {
 			logger.warning("Custom Graphics Metadata was not found.  This is normal for the first time.");
 			// Restore process is not necessary.
 			return;
 		}
-		
+
 		if (this.imageHomeDirectory != null && imageHomeDirectory.isDirectory()) {
 			final File[] imageFiles = imageHomeDirectory.listFiles();
 			final Map<Future<BufferedImage>, String> fMap = new HashMap<Future<BufferedImage>, String>();
@@ -130,9 +131,9 @@ public class CustomGraphicsManager extends SubjectBase implements
 						continue;
 
 					String name = imageProps[2];
-					if(name.contains("___"))
+					if (name.contains("___"))
 						name = name.replace("___", ",");
-					
+
 					Future<BufferedImage> f = cs.submit(new LoadImageTask(file
 							.toURI().toURL()));
 					fMap.put(f, name);
@@ -163,10 +164,10 @@ public class CustomGraphicsManager extends SubjectBase implements
 						((Taggable) cg).getTags().addAll(metatagMap.get(f));
 
 					graphicsMap.put(cg.getIdentifier(), cg);
-					
+
 					try {
 						final URL source = new URL(fMap.get(f));
-						if(source != null)
+						if (source != null)
 							sourceMap.put(source, cg.getIdentifier());
 					} catch (MalformedURLException me) {
 						continue;
@@ -189,54 +190,72 @@ public class CustomGraphicsManager extends SubjectBase implements
 			e.printStackTrace();
 		}
 
-		// Add vector image samples
-		graphicsMap.put(ROUND_RECT_GR.getIdentifier(), ROUND_RECT_GR);
-		graphicsMap.put(OVAL_GR.getIdentifier(), OVAL_GR);
-		
 		long endTime = System.currentTimeMillis();
 		double sec = (endTime - startTime) / (1000.0);
 		logger.info("Image loading process finished in " + sec + " sec.");
-		logger.info("Currently,  " +  (graphicsMap.size()-1) + " images are available.");
+		logger.info("Currently,  " + (graphicsMap.size() - 1)
+				+ " images are available.");
 	}
-	
+
+	private void restoreDefaultVectorImageObjects() {
+
+		for (Class<?> cls : DEF_VECTORS) {
+
+			try {
+				Object obj = cls.newInstance();
+				if (obj instanceof CyCustomGraphics) {
+					graphicsMap.put( ((CyCustomGraphics) obj).getIdentifier(), (CyCustomGraphics) obj);
+				}
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+	}
 
 	/**
 	 * Add a custom graphics to current session.
 	 * 
-	 * @param hash: Hasn code of image object
-	 * @param graphics: Actual custom graphics object
-	 * @param source: Source URL of graphics (if exists.  Can be null)
+	 * @param hash
+	 *            : Hasn code of image object
+	 * @param graphics
+	 *            : Actual custom graphics object
+	 * @param source
+	 *            : Source URL of graphics (if exists. Can be null)
 	 */
-	public void addGraphics(final CyCustomGraphics graphics,
-			final URL source) {
-		if(graphics == null)
-			throw new IllegalArgumentException("Custom Graphics and its ID should not be null.");
-		
+	public void addGraphics(final CyCustomGraphics graphics, final URL source) {
+		if (graphics == null)
+			throw new IllegalArgumentException(
+					"Custom Graphics and its ID should not be null.");
+
 		// Souce URL is an optional field.
-		if(source != null)
+		if (source != null)
 			sourceMap.put(source, graphics.getIdentifier());
-		
+
 		graphicsMap.put(graphics.getIdentifier(), graphics);
 	}
 
 	/**
 	 * Remove graphics from current session (memory).
 	 * 
-	 * @param id: ID of graphics (hash code)
+	 * @param id
+	 *            : ID of graphics (hash code)
 	 */
 	public void removeGraphics(final Long id) {
 		final CyCustomGraphics cg = graphicsMap.get(id);
-		if(cg != null && cg != NULL)
+		if (cg != null && cg != NULL)
 			graphicsMap.remove(id);
 	}
-	
 
 	/**
 	 * Get a Custom Graphics by integer ID.
 	 * 
-	 * @param hash Hash code of Custom Graphics object
+	 * @param hash
+	 *            Hash code of Custom Graphics object
 	 * 
-	 * @return Custom Graphics if exists.  Otherwise, null.
+	 * @return Custom Graphics if exists. Otherwise, null.
 	 * 
 	 */
 	public CyCustomGraphics getByID(Long id) {
@@ -244,8 +263,8 @@ public class CustomGraphicsManager extends SubjectBase implements
 	}
 
 	/**
-	 * Get Custom Graphics by source URL.
-	 * Images without source cannot be retreved by this method.
+	 * Get Custom Graphics by source URL. Images without source cannot be
+	 * retreved by this method.
 	 * 
 	 * @param sourceURL
 	 * @return
@@ -260,27 +279,23 @@ public class CustomGraphicsManager extends SubjectBase implements
 
 	/**
 	 * Get a collection of all Custom Graphics in current session.
-	 *
+	 * 
 	 * @return
 	 */
 	public Collection<CyCustomGraphics> getAll() {
 		return graphicsMap.values();
 	}
 
-	
 	/**
 	 * Remove all custom graphics from memory.
 	 */
 	public void removeAll() {
 		this.graphicsMap.clear();
 		this.sourceMap.clear();
-		
+
 		// Null Graphics should not be removed.
 		this.graphicsMap.put(NULL.getIdentifier(), NULL);
-		
-		// Add vector image samples
-		graphicsMap.put(ROUND_RECT_GR.getIdentifier(), ROUND_RECT_GR);
-		graphicsMap.put(OVAL_GR.getIdentifier(), OVAL_GR);
+
 	}
 
 	/**
@@ -291,17 +306,18 @@ public class CustomGraphicsManager extends SubjectBase implements
 	public Properties getMetadata() {
 		// Null graphics object should not be in this property.
 		graphicsMap.remove(NULL.getIdentifier());
-		
+
 		final Properties props = new Properties();
-		// Use hash code as the key, and value will be a string returned by toString() method.
-		// This means all CyCustomGraphics implementations should have a special toString method.
+		// Use hash code as the key, and value will be a string returned by
+		// toString() method.
+		// This means all CyCustomGraphics implementations should have a special
+		// toString method.
 		for (final CyCustomGraphics graphics : graphicsMap.values())
-			props.setProperty(graphics.getIdentifier().toString(), graphics
-					.toString());
+			props.setProperty(graphics.getIdentifier().toString(),
+					graphics.toString());
 		graphicsMap.put(NULL.getIdentifier(), NULL);
 		return props;
 	}
-	
 
 	/**
 	 * Save images to local disk when exiting from Cytoscape.
@@ -327,7 +343,6 @@ public class CustomGraphicsManager extends SubjectBase implements
 
 		logger.info("Image saving process finished.");
 	}
-	
 
 	public SortedSet<Long> getIDSet() {
 		return new TreeSet<Long>(graphicsMap.keySet());

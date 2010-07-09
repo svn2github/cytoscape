@@ -61,6 +61,9 @@ public abstract class GradientLayerCustomGraphics extends AbstractDCustomGraphic
 		this.props.put(COLOR2, c2);
 		this.tags.add("vector image, gradient");
 		this.fitRatio = FIT;
+		
+		// Render it for static icons.
+		getRenderedImage();
 	}
 
 	
