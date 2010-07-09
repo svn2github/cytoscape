@@ -91,6 +91,7 @@ import cytoscape.visual.customgraphic.IDGenerator;
 import cytoscape.visual.customgraphic.Taggable;
 import cytoscape.visual.customgraphic.impl.AbstractDCustomGraphics;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
+import cytoscape.visual.parsers.GraphicsParser;
 
 /**
  * Reader to load CYtoscape Session file (.cys).<br>
@@ -405,6 +406,9 @@ public class CytoscapeSessionReader {
 			// Split string into blocks.
 			// This line should have: class Name, ID, name, tags.
 			final String[] parts = propEntry.split(",");
+			if(parts.length < 3)
+				continue;
+			
 			String name = parts[parts.length - 2];
 			if (name.contains("___"))
 				name = name.replace("___", ",");
@@ -446,7 +450,8 @@ public class CytoscapeSessionReader {
 		System.out.println("Need to restore non-image graphics: " + imageProps.size());
 		
 		//TODO: Fix vector images
-
+		restoreNonImageGraphics(imageProps, manager);
+		
 		// Reset the counter
 		final Long currentMax = manager.getIDSet().last();
 		IDGenerator.getIDGenerator().initCounter(currentMax+1);
@@ -456,13 +461,17 @@ public class CytoscapeSessionReader {
 		
 		
 		for(Object key:imageProps.keySet()) {
-//			System.out.println("Key = " + key +", val = " + imageProps.getProperty(key.toString()));
-//			final CyCustomGraphics cg = parser.parseStringValue(imageProps.getProperty(key.toString()));
-//			
-//			if(cg != null)
-//				manager.addGraphics(cg, null);
+			final String value = imageProps.getProperty(key.toString());
+			
+			System.out.println("Key = " + key +", val = " + value);
+			final CyCustomGraphics cg = parser.parseStringValue(imageProps.getProperty(key.toString()));
+			System.out.println("CG result = " + cg);
+			if(cg != null)
+				manager.addGraphics(cg, null);
 		}
 	}
+	
+	private final GraphicsParser parser = new GraphicsParser();
 	
 
 	/**

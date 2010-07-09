@@ -1,5 +1,8 @@
 package cytoscape.visual.customgraphic;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import cytoscape.Cytoscape;
 
 public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
@@ -15,15 +18,19 @@ public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 		
 		final String className = parts[0];
 		final Long id = Long.parseLong(parts[1]);
+		final String name = parts[2];
 
-		CyCustomGraphics cg = Cytoscape.getVisualMappingManager()
-				.getCustomGraphicsManager().getByID(id);
+//		CyCustomGraphics cg = Cytoscape.getVisualMappingManager()
+//				.getCustomGraphicsManager().getByID(id);
 		
+		
+		CyCustomGraphics cg = null;
 		if(cg == null) {
 			// Create new one by reflection
 			try {
 				final Class<?> cls = Class.forName(className);
-				cg = (CyCustomGraphics) cls.newInstance();
+				final Constructor<?> ct = cls.getConstructor(Long.class, String.class);
+				cg = (CyCustomGraphics) ct.newInstance(id, name);
 				cg.setDisplayName(parts[2]);
 				Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsManager().addGraphics(cg, null);
@@ -38,6 +45,18 @@ public class DefaultCyCustomGraphicsParser implements CyCustomGraphicsParser {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		

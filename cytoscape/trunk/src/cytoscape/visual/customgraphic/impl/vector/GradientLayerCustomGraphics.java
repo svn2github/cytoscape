@@ -48,8 +48,8 @@ public abstract class GradientLayerCustomGraphics extends AbstractDCustomGraphic
 	protected final Map<String, CustomGraphicsProperty<?>> props;
 
 	
-	public GradientLayerCustomGraphics(final String name) {
-		super(name);
+	public GradientLayerCustomGraphics(final Long id, final String name) {
+		super(id, name);
 		width = DEF_W;
 		height = DEF_H;
 		props = new HashMap<String, CustomGraphicsProperty<?>>();

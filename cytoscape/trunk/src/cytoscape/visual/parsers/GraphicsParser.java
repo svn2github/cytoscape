@@ -22,7 +22,6 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics> {
 	// Maybe injected from outside if we use DI framework.
 	private final CyCustomGraphicsParserFactory parserFactory;
 	
-	
 	private final CyCustomGraphicsParser defaultParser;
 	
 	public GraphicsParser() {
@@ -41,32 +40,55 @@ public class GraphicsParser implements ValueParser<CyCustomGraphics> {
 		return parse(value);
 	}
 	
+	
+	/**
+	 * Parse given string.
+	 * 
+	 * Syntax 1: (URL)
+	 * Syntax 2: (Class Name, ID, Name, Tags)
+	 * 
+	 * @param value
+	 * @return
+	 */
 	private CyCustomGraphics parse(String value) {
 		if(value == null || value.equals(NULL_CG))
 			return null;
 		
-		// Special case:  URL String.
+		// Syntax 1:  URL String.
 		try {
 			final URL url = new URL(value);
 			CyCustomGraphics graphics = Cytoscape.getVisualMappingManager().getCustomGraphicsManager().getBySourceURL(url);
 			if(graphics == null) {
+				// Currently not in the Manager.  Need to create new instance.
 				graphics = new URLImageCustomGraphics(url.toString());
+				// Use URL as display name
+				graphics.setDisplayName(value);
+				
+				// Register to manager.
 				Cytoscape.getVisualMappingManager().getCustomGraphicsManager().addGraphics(graphics, url);
 			}
 			return graphics;
 		} catch (IOException e) {
-			logger.warn("Invalid URL found. This will be ignored: " + value);
+			
+			// Syntax 2:
+			final String[] parts = value.split(",");
+			if(parts.length<4)
+				return null;
+			
+			// Extract class name
+			final String className = parts[0];
+			
+			// Get class-specific parser
+			final CyCustomGraphicsParser parser = parserFactory.getParser(className);
+			
+			if(parser == null) 
+				return defaultParser.getInstance(value);
+			else
+				return parser.getInstance(value);
+			
 		}
-				
-		final String[] parts = value.split(",");
-		// Extract class
-		final String className = parts[0];
-		final CyCustomGraphicsParser parser = parserFactory.getParser(className);
-		
-		if(parser == null) 
-			return defaultParser.getInstance(value);
-		else
-			return parser.getInstance(value);
 	}
+	
+	
 
 }
