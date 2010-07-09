@@ -52,23 +52,25 @@ public class DisplayActions {
 		return chimera.commandReply("preset apply "+preset);
 	}
 
-	public static List<String> displayAction(Chimera chimera, String atomSpec, boolean hide) {
+	public static List<String> displayAction(Chimera chimera, String atomSpec, String structSpec, boolean hide) {
 		String command = "display";
 		if (hide) command = "~display";
-		return chimera.commandReply(addAtomSpec("command",atomSpec));
+		return chimera.commandReply(addAtomSpec(command,atomSpec,structSpec));
 	}
 
 	public static List<String> focusAction(Chimera chimera, String atomSpec) {
 		return chimera.commandReply(addAtomSpec("focus",atomSpec));
 	}
 
-	public static List<String> selectAction(Chimera chimera, String atomSpec) {
-		return chimera.commandReply(addAtomSpec("select",atomSpec));
+	public static List<String> selectAction(Chimera chimera, String atomSpec, String structSpec, boolean clear) {
+		String command = "select";
+		if (clear) command = "~select";
+		return chimera.commandReply(addAtomSpec(command,atomSpec,structSpec));
 	}
 
 	public static List<String> depictAtomsAction(Chimera chimera, String atomSpec, String depiction) {
 		if (depiction.equals("none"))
-			return displayAction(chimera, atomSpec, true);
+			return displayAction(chimera, atomSpec, null, true);
 
 		return chimera.commandReply(addAtomSpec("repr "+depiction, atomSpec));
 	}
@@ -107,6 +109,15 @@ public class DisplayActions {
 		if (modelSpec != null) command += " models "+modelSpec;
 		if (center != null) command += " center "+center;
 		return chimera.commandReply(command);
+	}
+
+	private static String addAtomSpec(String command, String atomSpec, String structSpec) {
+		String com = addAtomSpec(command, atomSpec);
+		if (atomSpec != null)
+			com += " & "+structSpec;
+		else
+			com += " "+structSpec;
+		return com;
 	}
 
 	private static String addAtomSpec(String command, String atomSpec) {

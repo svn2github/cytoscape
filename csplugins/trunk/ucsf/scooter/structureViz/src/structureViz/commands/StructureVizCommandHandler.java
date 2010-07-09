@@ -61,6 +61,7 @@ enum Command {
 	                "reference|structureList|referencechain|chainlist"),
 	CLEARCLASHES("clear clashes", "Clear clashes", ""),
 	CLEARHBONDS("clear hbonds", "Clear hydrogen bonds", ""),
+	CLEARSELECT("clear selection", "Clear all selection", ""),
 	CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
 	COLOR("color", "Color part of all of a structure",
 	               "preset|residues|labels|ribbons|surfaces|structurelist|atomspec"),
@@ -70,7 +71,7 @@ enum Command {
 	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous"),
 	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist|atomspec=selected"),
 	FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec"),
-	HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected"),
+	HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected|structuretype"),
 	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",""),
@@ -79,9 +80,9 @@ enum Command {
 	RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
 	                   "structurelist|atomspec"),
 	ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
-	SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec"),
+	SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec|structuretype"),
 	SEND("send", "Send a command to chimera", "command"),
-	SHOW("show", "Show parts of a structure", "structurelist|atomspec");
+	SHOW("show", "Show parts of a structure", "structurelist|atomspec|structuretype");
 
   private String command = null;
   private String argList = null;
@@ -118,7 +119,8 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	public static final String RIBBONS = "ribbons";
 	public static final String RIBBONSTYLE = "ribbonstyle";
 	public static final String SELECTED = "selected";
-	public static final String STRUCTURELIST = "structureList";
+	public static final String STRUCTURELIST = "structurelist";
+	public static final String STRUCTURETYPE = "structuretype";
 	public static final String STYLE = "style";
 	public static final String SURFACES = "surfaces";
 	public static final String SURFACESTYLE = "surfacestyle";
@@ -143,6 +145,13 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
                                                       throws CyCommandException, RuntimeException {
 		CyCommandResult result = new CyCommandResult();
 
+		// Check all args to handle any errors
+		List<String> legalArgs = getArguments(command);
+		for (String arg: args.keySet()) {
+			if (!legalArgs.contains(arg))
+				throw new RuntimeException("structureviz "+command+": unknown argument: "+arg);
+		}
+
 		// Launch Chimera
 		this.chimera = Chimera.GetChimeraInstance(Cytoscape.getCurrentNetworkView(), logger);
 		if (!chimera.isLaunched() && !launchChimera(result, chimera))
@@ -150,7 +159,6 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 
 		String structureSpec = getArg(command, STRUCTURELIST, args);
 		List<Structure> structureList = CommandUtils.getStructureList(structureSpec, chimera);
-		// System.out.println("Structurelist = "+structureList);
 
 		// Main command cascade
 		if (Command.ALIGNSTRUCTURES.equals(command)) {
@@ -166,6 +174,19 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		//
 		} else if (Command.CLEARHBONDS.equals(command)) {
 				result = AnalysisCommands.clearHBonds(chimera, result);
+
+		//
+		// CLEARSELECT("clear selection", "Clear all selection", ""),
+		//
+		} else if (Command.CLEARSELECT.equals(command)) {
+			String structSpec = getArg(command,STRUCTURETYPE, args);
+			if (structureList != null) {
+				result = DisplayCommands.selectStructure(chimera, result, structureList, structSpec, true);
+			} else {
+				String atomSpec = getArg(command,ATOMSPEC, args);
+				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
+				result = DisplayCommands.selectSpecList(chimera, result, specList, structSpec, true);
+			}
 
 		//
 		// CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
@@ -266,12 +287,13 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		// HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected"),
 		//
 		} else if (Command.HIDE.equals(command)) {
+			String structSpec = getArg(command,STRUCTURETYPE, args);
 			if (structureList != null) {
-				result = DisplayCommands.displayStructure(chimera, result, structureList, true);
+				result = DisplayCommands.displayStructure(chimera, result, structureList, structSpec, true);
 			} else {
 				String atomSpec = getArg(command,ATOMSPEC, args);
 				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
-				result = DisplayCommands.displaySpecList(chimera, result, specList, true);
+				result = DisplayCommands.displaySpecList(chimera, result, specList, structSpec, true);
 			}
 
 		//
@@ -356,12 +378,13 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		// SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec"),
 		//
 		} else if (Command.SELECT.equals(command)) {
+			String structSpec = getArg(command,STRUCTURETYPE, args);
 			if (structureList != null) {
-				result = DisplayCommands.selectStructure(chimera, result, structureList);
+				result = DisplayCommands.selectStructure(chimera, result, structureList, structSpec, false);
 			} else {
 				String atomSpec = getArg(command,ATOMSPEC, args);
 				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
-				result = DisplayCommands.selectSpecList(chimera, result, specList);
+				result = DisplayCommands.selectSpecList(chimera, result, specList, structSpec, false);
 			}
 
 		//
@@ -379,12 +402,13 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		// SHOW("show", "Show parts of a structure", "structurelist|atomspec");
 		//
 		} else if (Command.SHOW.equals(command)) {
+			String structSpec = getArg(command,STRUCTURETYPE, args);
 			if (structureList != null) {
-				result = DisplayCommands.displayStructure(chimera, result, structureList, false);
+				result = DisplayCommands.displayStructure(chimera, result, structureList, structSpec, false);
 			} else {
 				String atomSpec = getArg(command,ATOMSPEC, args);
 				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
-				result = DisplayCommands.displaySpecList(chimera, result, specList, false);
+				result = DisplayCommands.displaySpecList(chimera, result, specList, structSpec, false);
 			}
 		}
 
@@ -392,6 +416,9 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	}
 
 	private void addCommand(String command, String description, String argString) {
+		// Add the description first
+		addDescription(command, description);
+
 		if (argString == null) {
 			addArgument(command);
 			return;

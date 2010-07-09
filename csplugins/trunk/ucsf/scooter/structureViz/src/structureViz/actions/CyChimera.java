@@ -180,6 +180,7 @@ public class CyChimera {
 	 * @return a comma-separated String of PDB structures
 	 */
 	public static String getStructureName(String nodeID) {
+		if (cyAttributes == null) cyAttributes = Cytoscape.getNodeAttributes();
 		for (int key = 0; key < structureKeys.length; key++) {
 			if (structureKeys[key] == null) continue;
      	if (cyAttributes.hasAttribute(nodeID, structureKeys[key])) {

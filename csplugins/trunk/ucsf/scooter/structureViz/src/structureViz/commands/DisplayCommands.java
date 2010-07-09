@@ -114,16 +114,22 @@ public class DisplayCommands extends AbstractCommands {
 	}
 
 	static public CyCommandResult displayStructure(Chimera chimera, CyCommandResult result, 
-	                                               List<Structure>structureList, boolean hide) { 
-		return displaySpecList(chimera, result, specListFromStructureList(chimera, structureList), hide);
+	                                               List<Structure>structureList, String structSpec, boolean hide) 
+	                                                                                         throws CyCommandException { 
+		return displaySpecList(chimera, result, specListFromStructureList(chimera, structureList), structSpec, hide);
 	}
 
 	static public CyCommandResult displaySpecList(Chimera chimera, CyCommandResult result, 
-	                                              List<ChimeraStructuralObject>specList, boolean hide) {
+	                                              List<ChimeraStructuralObject>specList, String structSpec, boolean hide) 
+	                                                                                         throws CyCommandException {
+		checkStructSpec(structSpec);
 		for (ChimeraStructuralObject cso: specList) {
 			String atomSpec = cso.toSpec();
-			List<String> c = DisplayActions.displayAction(chimera, atomSpec, hide);
-			result = addReplies(result, c, "Hid "+cso);
+			List<String> c = DisplayActions.displayAction(chimera, atomSpec, structSpec, hide);
+			if (hide)
+				result = addReplies(result, c, "Hid "+cso);
+			else
+				result = addReplies(result, c, "Showing "+cso);
 		}
 
 		return result;
@@ -152,21 +158,29 @@ public class DisplayCommands extends AbstractCommands {
 	}
 
 	static public CyCommandResult selectStructure(Chimera chimera, CyCommandResult result, 
-	                                               List<Structure>structureList) {
-		return selectSpecList(chimera, result, specListFromStructureList(chimera, structureList));
+	                                               List<Structure>structureList, String structSpec, boolean clear) 
+	                                                                                         throws CyCommandException {
+		return selectSpecList(chimera, result, specListFromStructureList(chimera, structureList), structSpec, clear);
 	}
 
 	static public CyCommandResult selectSpecList(Chimera chimera, CyCommandResult result, 
-	                                             List<ChimeraStructuralObject>specList) {
+	                                             List<ChimeraStructuralObject>specList, String structSpec, boolean clear) 
+	                                                                                         throws CyCommandException {
+		checkStructSpec(structSpec);
 		if (specList == null || specList.size() == 0) {
-			List<String> c = DisplayActions.selectAction(chimera, null);
-			result = addReplies(result, c, "Selected entire scene");
+			if (structSpec == null) {
+				List<String> c = DisplayActions.selectAction(chimera, null, null, clear);
+				result = addReplies(result, c, "Selected entire scene");
+			} else {
+				List<String> c = DisplayActions.selectAction(chimera, null, structSpec, clear);
+				result = addReplies(result, c, "Selected "+structSpec+" in entire scene");
+			}
 			return result;
 		}
 
 		for (ChimeraStructuralObject cso: specList) {
 			String atomSpec = cso.toSpec();
-			List<String> c = DisplayActions.selectAction(chimera, atomSpec);
+			List<String> c = DisplayActions.selectAction(chimera, atomSpec, structSpec, clear);
 			result = addReplies(result, c, "Selected "+cso);
 		}
 
@@ -275,6 +289,22 @@ public class DisplayCommands extends AbstractCommands {
 		if (d == null) throw new CyCommandException("Value for "+axis+" must be a floating point value");
 		List<String> c = DisplayActions.rotateAxisAction(chimera, modelSpec, axis, d, center);
 		addReplies(result, c, "Rotated "+modelSpec+" "+d+" degrees in the "+axis+" direction");
+	}
+
+	static private void checkStructSpec(String structSpec) throws CyCommandException {
+		// Legal structure designations
+		String[] legalStructSpec = {"full","minimal", "ions","ligand","main","nucleic acid","protein","helix","strand","turn",
+		                            "with CA/C1'", "without CA/C1'","solvent"};
+
+		if (structSpec == null) return;
+
+		String legalList = "";
+		for (String s: legalStructSpec) legalList += ","+s;
+
+		if (!legalArgument(structSpec, legalStructSpec))
+			throw new CyCommandException("structuretype specification "+structSpec+
+			                             " is unknown.  Legal values are: ["+legalList.substring(1)+"]");
+		return;
 	}
 
 }
