@@ -175,8 +175,17 @@ public class UpdateCloudAction extends CytoscapeAction
 		Boolean isChanged = false;
 		List<String> oldNames = params.getSelectedNodes();
 		
+		//Create a hash set to make this call more efficient when check for contains
+		HashSet<String> oldNamesHash = new HashSet<String>();
+		
+		for (int i = 0; i < oldNames.size(); i++)
+		{
+			String curNode = oldNames.get(i);
+			oldNamesHash.add(curNode);
+		}
+		
 		//If lists are different size, they can't be the same
-		if (oldNames.size() != nodes.size())
+		if (oldNamesHash.size() != nodes.size())
 			return true;
 		
 		else
@@ -185,7 +194,7 @@ public class UpdateCloudAction extends CytoscapeAction
 			for (Iterator<CyNode> iter = nodes.iterator(); iter.hasNext();)
 			{
 				String nodeName = iter.next().getIdentifier();
-				if (!oldNames.contains(nodeName))
+				if (!oldNamesHash.contains(nodeName))
 				{
 					isChanged = true;
 					break;
