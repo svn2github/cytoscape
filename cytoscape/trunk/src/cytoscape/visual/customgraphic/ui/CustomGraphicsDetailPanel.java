@@ -214,7 +214,7 @@ public class CustomGraphicsDetailPanel extends JPanel implements
 
 	private void nameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
 		final String newName = this.nameTextField.getText();
-		if(newName != null && newName.trim().length() != 0)
+		if (newName != null && newName.trim().length() != 0 && cg != null)
 			cg.setDisplayName(this.nameTextField.getText());
 	}
 	
