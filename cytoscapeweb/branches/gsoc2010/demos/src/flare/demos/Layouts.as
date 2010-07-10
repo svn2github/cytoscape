@@ -174,7 +174,11 @@ package flare.demos
 				removeChild(_GBEB);
 				trace ("Layouts: Tracing sequences! " + name);
 
-				if(_GBEB != null) _GBEB = null;
+				if(_GBEB != null) 
+				{
+					_GBEB.cleanup();
+					_GBEB = null;
+				}
 				_GBEB = new GBEB(vis.data);
 				addChild(_GBEB);
 				_GBEB.updateBounds(bounds);
@@ -221,12 +225,12 @@ package flare.demos
 					update: true,
 					ctrl: new DragControl(NodeSprite)
 				},
-				{
+				/*{
 					name: "Indent",
 					op: new IndentedTreeLayout(20),
 					param: {layoutAnchor: new Point(350,40)},
 					straighten: true
-				},
+				}, */
 				{
 					name: "Radial",
 					op: new RadialTreeLayout(50, false),
@@ -237,8 +241,8 @@ package flare.demos
 					op: new CircleLayout(null, null, true),
 					param: {angleWidth: -2*Math.PI},
 					ctrl: new DragControl(NodeSprite)
-				},
-				{
+				}//,
+			/*	{
 					name: "Dendrogram",
 					op: new DendrogramLayout(),
 					nodes: {alpha: 0, visible: false},
@@ -272,7 +276,7 @@ package flare.demos
 					param: {angleWidth: -2*Math.PI},
 					nodes: {shape: Shapes.WEDGE, lineColor: 0xffffffff},
 					edges: {alpha: 0, visible:false}
-				}
+				} */
 			];
 			
 			// default values
