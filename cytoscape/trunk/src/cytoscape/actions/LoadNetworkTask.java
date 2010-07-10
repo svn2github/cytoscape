@@ -231,7 +231,7 @@ public class LoadNetworkTask implements Task {
 			((JTask) taskMonitor).setCancel(false);
 		}
 
-		taskMonitor.setStatus("Reading in Network Data...");
+		taskMonitor.setStatus("Loading Network Data...");
 
 		// Remove unnecessary listeners:
 		if ((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
@@ -361,6 +361,6 @@ public class LoadNetworkTask implements Task {
 			return new String("Loading Network(s)");
 		}
 		
-		return new String("Loaded Network");
+		return new String("Loading Network");
 	}
 }
