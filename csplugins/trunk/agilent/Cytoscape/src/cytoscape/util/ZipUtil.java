@@ -57,6 +57,8 @@ import java.util.zip.ZipOutputStream;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.Task;
 import cytoscape.task.ui.JTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Compression-related methods mainly for Session Writer.<br>
@@ -160,46 +162,62 @@ public class ZipUtil {
 		// FileInputStream fileIS;
 		final CRC32 crc32 = new CRC32();
 		final byte[] rgb = new byte[5000];
-		final ZipOutputStream zipOS = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipArchiveName)));
+		BufferedOutputStream bos = null;
 
-		// Tuning performance
-		zipOS.setMethod(ZipOutputStream.DEFLATED);
+		try {
+			ZipOutputStream zipOS = null;
+			
+			bos = new BufferedOutputStream(new FileOutputStream(zipArchiveName));
+			try {
+				zipOS = new ZipOutputStream(bos);
+				// Tuning performance
+				zipOS.setMethod(ZipOutputStream.DEFLATED);
 
-		if ((compressionLevel >= 0) && (compressionLevel <= 9)) {
-			zipOS.setLevel(compressionLevel);
-		} else {
-			zipOS.setLevel(DEF_COMPRESSION_LEVEL);
-		}
+				if ((compressionLevel >= 0) && (compressionLevel <= 9)) {
+					zipOS.setLevel(compressionLevel);
+				} else {
+					zipOS.setLevel(DEF_COMPRESSION_LEVEL);
+				}
 
-		String targetName = "";
+				String targetName = "";
 
-		for (int i = 0; i < fileCount; i++) {
-			final File file = new File(inputFileDir + inputFiles[i]);
-			targetName = sessionDirName + FS + inputFiles[i];
-			addEntryToZip(file, targetName, zipOS, crc32, rgb);
-		}
+				for (int i = 0; i < fileCount; i++) {
+					final File file = new File(inputFileDir + inputFiles[i]);
+					targetName = sessionDirName + FS + inputFiles[i];
+					addEntryToZip(file, targetName, zipOS, crc32, rgb);
+				}
 
-		if ((pluginFileMap != null) && (pluginFileMap.size() > 0)) {
-			Set<String> pluginSet = pluginFileMap.keySet();
+				if ((pluginFileMap != null) && (pluginFileMap.size() > 0)) {
+					Set<String> pluginSet = pluginFileMap.keySet();
 
-			for (String pluginName : pluginSet) {
-				List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
+					for (String pluginName : pluginSet) {
+						List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
 
-				if ((theFileList == null) || (theFileList.size() == 0))
-					continue;
+						if ((theFileList == null) || (theFileList.size() == 0))
+							continue;
 
-				for (File theFile : theFileList) {
-					if ((theFile == null) || (!theFile.exists()))
-						continue;
+						for (File theFile : theFileList) {
+							if ((theFile == null) || (!theFile.exists()))
+								continue;
 
-					targetName = sessionDirName + FS + "plugins" + FS + pluginName + FS
-					             + theFile.getName();
-					addEntryToZip(theFile, targetName, zipOS, crc32, rgb);
+							targetName = sessionDirName + FS + "plugins" + FS + pluginName + FS
+										 + theFile.getName();
+							addEntryToZip(theFile, targetName, zipOS, crc32, rgb);
+						}
+					}
+				}
+			}
+			finally {
+				if (zipOS != null) {
+					zipOS.close();
 				}
 			}
 		}
-
-		zipOS.close();
+		finally {
+			if (bos != null) {
+				bos.close();
+			}
+		}
 
 		// final double stop = System.currentTimeMillis();
 		// final double diff = stop - start;
@@ -223,29 +241,47 @@ public class ZipUtil {
 		int numRead;
 
 		// Set CRC
-		FileInputStream fileIS = new FileInputStream(srcFile);
+		FileInputStream fileIS = null;
 
-		while ((numRead = fileIS.read(rgb)) > -1) {
-			crc32.update(rgb, 0, numRead);
-		}
+        try {
+			fileIS = new FileInputStream(srcFile);
+            while ((numRead = fileIS.read(rgb)) > -1) {
+                crc32.update(rgb, 0, numRead);
+            }
+        }
+        finally {
+            if (fileIS != null) {
+                fileIS.close();
+            }
+        }
 
-		fileIS.close();
+		fileIS = null;
+        try {
+			final ZipEntry zipEntry = new ZipEntry(targetName);
+			zipEntry.setSize(srcFile.length());
+			zipEntry.setTime(srcFile.lastModified());
+			zipEntry.setCrc(crc32.getValue());
+			zipOS.putNextEntry(zipEntry);
 
-		final ZipEntry zipEntry = new ZipEntry(targetName);
-		zipEntry.setSize(srcFile.length());
-		zipEntry.setTime(srcFile.lastModified());
-		zipEntry.setCrc(crc32.getValue());
-		zipOS.putNextEntry(zipEntry);
+            // Write the file
+            try {
+				fileIS = new FileInputStream(srcFile);
 
-		// Write the file
-		fileIS = new FileInputStream(srcFile);
-
-		while ((numRead = fileIS.read(rgb)) > -1) {
-			zipOS.write(rgb, 0, numRead);
-		}
-
-		fileIS.close();
-		zipOS.closeEntry();
+                while ((numRead = fileIS.read(rgb)) > -1) {
+                    zipOS.write(rgb, 0, numRead);
+                }
+            }
+            finally {
+                if (fileIS != null) {
+                    fileIS.close();
+                }
+            }
+        }
+        finally {
+            if (zipOS != null) {
+                zipOS.closeEntry();
+            }
+        }
 	}
 
 	/**
@@ -265,23 +301,88 @@ public class ZipUtil {
 	 *            clutter from the zip file.
 	 * @return An InputStream of the zip entry identified by the regular
 	 *         expression or null if nothing matches.
+     * @throws IOexception
+     * @deprecated
 	 */
+    @Deprecated
 	public static InputStream readFile(String zipName, String fileNameRegEx)
 	    throws IOException {
 		final ZipFile sessionZipFile = new ZipFile(zipName);
-		final Enumeration zipEntries = sessionZipFile.entries();
+        final Enumeration zipEntries = sessionZipFile.entries();
 
-		while (zipEntries.hasMoreElements()) {
-			final ZipEntry zent = (ZipEntry) zipEntries.nextElement();
+        try {
+            while (zipEntries.hasMoreElements()) {
+                final ZipEntry zent = (ZipEntry) zipEntries.nextElement();
 
-			if (zent.getName().matches(fileNameRegEx)) {
-				return sessionZipFile.getInputStream(zent);
-			}
-		}
-		sessionZipFile.close();
+                if (zent.getName().matches(fileNameRegEx)) {
+                    return sessionZipFile.getInputStream(zent);
+                }
+            }
+        }
+        catch (Exception e) {
+            // This is not an ideal way to address bug 1988 for this method,
+            // as sessionZipFile must remain open for the stream on the entry
+            // to be usable.
+            // Therefore sessionZipFile can only be closed explicitly when an
+            // exception has occured.
+            // More importantly sessionZipFile cannot otherwise be closed and
+            // so will remain open until the finalize is called on it.
+            // This is the reason for deprecating this method for one that
+            // allows the enclosing method to timely close the ZipFile object
+            // and otherwise properly manage it's lifetime.
+            if (sessionZipFile != null) {
+                sessionZipFile.close();
+            }
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            }
+            else if (e instanceof IOException) {
+                throw (IOException)e;
+            }
+            else {
+                throw new RuntimeException(e);
+            }
+        }
+
 		return null;
 	}
 	
+	/**
+	 * Reads a file contained within a zip file and returns an InputStream for the
+	 * specific file you want from within the zip file.
+	 *
+	 * @param sessionZipFile
+	 *            The ZipFile in which to look for an entry matching
+     *            fileNameRegEx.
+	 * @param fileNameRegEx
+	 *            A regular expression that identifies the file to be read. In
+	 *            general this should just be the file name you're looking for.
+	 *            If more than one file matches the regular expression, only the
+	 *            first will be returned. If you're looking for a specific file
+	 *            remeber to build your regular expression correctly. For
+	 *            example, if you're looking for the file 'vizmap.props', make
+	 *            your regular expression '.*vizmap.props' to accomodate any
+	 *            clutter from the zip file.
+	 * @return An InputStream of the zip entry identified by the regular
+	 *         expression or null if nothing matches.
+     * @throws IOexception
+	 */
+	public static InputStream readFile(ZipFile sessionZipFile, String fileNameRegEx)
+	    throws IOException {
+		//final ZipFile sessionZipFile = new ZipFile(zipName);
+        final Enumeration zipEntries = sessionZipFile.entries();
+
+        while (zipEntries.hasMoreElements()) {
+            final ZipEntry zent = (ZipEntry) zipEntries.nextElement();
+
+            if (zent.getName().matches(fileNameRegEx)) {
+                return sessionZipFile.getInputStream(zent);
+            }
+        }
+
+		return null;
+	}
+
 	/**
 	 * Reads zip file, returns a list of all entries that match the given 
 	 * regular expression
@@ -292,18 +393,32 @@ public class ZipUtil {
 	 */
 	public static List<ZipEntry> getAllFiles(String zipName, String fileNameRegEx) throws IOException {
 		List<ZipEntry> Matching = new ArrayList<ZipEntry>();
-		
-		ZipFile Zip = new ZipFile(zipName);
-		Enumeration Entries = Zip.entries();
-		
-		while (Entries.hasMoreElements()) {
-			ZipEntry CurrentEntry = (ZipEntry) Entries.nextElement();
-			if (CurrentEntry.getName().matches(fileNameRegEx)) {
-				Matching.add(CurrentEntry);
-			}
-		}
-	Zip.close();
-	return Matching;
+        Pattern p;
+		Matcher m;
+
+        p = Pattern.compile(fileNameRegEx);
+        m = p.matcher("");
+
+		ZipFile Zip = null;
+        try {
+			Zip = new ZipFile(zipName);
+            Enumeration Entries = Zip.entries();
+
+            while (Entries.hasMoreElements()) {
+                ZipEntry CurrentEntry = (ZipEntry) Entries.nextElement();
+                m.reset(CurrentEntry.getName());
+                if (m.matches()) {
+                    Matching.add(CurrentEntry);
+                }
+            }
+        }
+        finally {
+            if (Zip != null) {
+                Zip.close();
+            }
+        }
+
+        return Matching;
 	}
 
 
@@ -326,65 +441,86 @@ public class ZipUtil {
 		int progressCount = 0;
 		double percent = 0.0d;
 		
-		ZipFile Zip = new ZipFile(zipName);
-		Enumeration Entries = Zip.entries();
-		int BUFFER = 2048;
-		
-		while(Entries.hasMoreElements()) {
-			ZipEntry CurrentEntry = (ZipEntry)Entries.nextElement();
-			File ZipFile = new File(unzipDir + CurrentEntry.getName());
-			if (!CurrentEntry.isDirectory()) {
-				if (ZipFile.getParent() != null) {
-					File ParentDirs = new File(ZipFile.getParent());
-					
-					if (!ParentDirs.exists()) {
-						ParentDirs.mkdirs();
+		ZipFile Zip = null;
+        try {
+			Zip = new ZipFile(zipName);
+            Enumeration Entries = Zip.entries();
+            int BUFFER = 2048;
+
+            while(Entries.hasMoreElements()) {
+                ZipEntry CurrentEntry = (ZipEntry)Entries.nextElement();
+                File ZipFile = new File(unzipDir + CurrentEntry.getName());
+                if (!CurrentEntry.isDirectory()) {
+                    if (ZipFile.getParent() != null) {
+                        File ParentDirs = new File(ZipFile.getParent());
+
+                        if (!ParentDirs.exists()) {
+                            ParentDirs.mkdirs();
+                        }
+                    }
+                } else { // entry is directory, create and move on
+                    if (!ZipFile.exists()) {
+                        ZipFile.mkdirs();
+                    }
+                    continue;
+                }
+
+                InputStream zis = null;
+                try {
+					zis = Zip.getInputStream(CurrentEntry);
+                    maxCount = zis.available();
+
+					BufferedOutputStream dest = null;
+
+					try {
+						dest = new BufferedOutputStream(new FileOutputStream(ZipFile), BUFFER);
+						// write the files to the disk
+						int count;
+						byte[] data = new byte[BUFFER];
+
+						while ((count = zis.read(data, 0, BUFFER)) != -1) {
+							dest.write(data, 0, count);
+							//  Report on Progress
+							if (taskMonitor != null) {
+								percent = ((double) progressCount / maxCount) * 100.0;
+								if (maxCount == -1) { // file size unknown
+									percent = -1;
+								}
+
+								JTask jTask = (JTask) taskMonitor;
+								// TODO erm...how?
+								if (jTask.haltRequested()) { //abort
+									taskMonitor.setStatus("Canceling the unzip ...");
+									taskMonitor.setPercentCompleted(100);
+									break;
+								}
+								taskMonitor.setPercentCompleted((int) percent);
+							}
+						}
+
+						dest.flush();
 					}
-				}
-			} else { // entry is directory, create and move on
-				if (!ZipFile.exists()) {
-					ZipFile.mkdirs();
-				}
-				continue;
-			}
-
-			InputStream zis = Zip.getInputStream(CurrentEntry);
-			maxCount = zis.available();
-			
-			FileOutputStream fos = new FileOutputStream(ZipFile);
-			BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
-
-			// write the files to the disk
-			int count;
-			byte[] data = new byte[BUFFER];
-
-			while ((count = zis.read(data, 0, BUFFER)) != -1) {
-				dest.write(data, 0, count);
-				//  Report on Progress
-				if (taskMonitor != null) {
-					percent = ((double) progressCount / maxCount) * 100.0;
-					if (maxCount == -1) { // file size unknown
-						percent = -1;
+					finally {
+						if (dest != null) {
+							dest.close();
+						}
 					}
+                }
+                finally {
+                    if (zis != null) {
+                        zis.close();
+                    }
+                }
 
-					JTask jTask = (JTask) taskMonitor;
-					// TODO erm...how?
-					if (jTask.haltRequested()) { //abort
-						taskMonitor.setStatus("Canceling the unzip ...");
-						taskMonitor.setPercentCompleted(100);
-						break;
-					}
-					taskMonitor.setPercentCompleted((int) percent);
-				}
-			}
+                UnzippedFiles.add(ZipFile.getAbsolutePath());
+            }
+        }
+        finally {
+            if (Zip != null) {
+                Zip.close();
+            }
+        }
 
-			dest.flush();
-			dest.close();
-			zis.close();
-			
-			UnzippedFiles.add(ZipFile.getAbsolutePath());
-		}
-		Zip.close();
 		return UnzippedFiles;
 	}
 

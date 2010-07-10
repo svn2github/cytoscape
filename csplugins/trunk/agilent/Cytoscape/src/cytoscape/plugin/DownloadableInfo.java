@@ -36,6 +36,7 @@
 package cytoscape.plugin;
 
 import java.net.URL;
+import java.io.IOException;
 
 import cytoscape.util.URLUtil;
 import cytoscape.logger.CyLogger;
@@ -44,14 +45,17 @@ import cytoscape.CytoscapeVersion;
 import static cytoscape.plugin.PluginVersionUtils.versionOk;
 import static cytoscape.plugin.PluginVersionUtils.getNewerVersion;
 
-
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class DownloadableInfo {
-  private static CyLogger logger = CyLogger.getLogger(DownloadableInfo.class);	
+	private static CyLogger logger = CyLogger.getLogger(DownloadableInfo.class);
 
-  protected String versionMatch = PluginVersionUtils.versionMatch;
+	protected String versionMatch = PluginVersionUtils.versionMatch;
+
 	protected String versionSplit = PluginVersionUtils.versionSplit;
 
 	private String releaseDate;
@@ -63,7 +67,6 @@ public abstract class DownloadableInfo {
 	private String description;
 
 	private String objVersion;
-
 
 	private String downloadURL = "";
 
@@ -77,24 +80,21 @@ public abstract class DownloadableInfo {
 
 	private Set<String> compatibleCyVersions;
 
-	private DownloadableInfo parentObj = null;
+	private DownloadableInfo parentObj; 
 
 	public DownloadableInfo() {
-    compatibleCyVersions = new HashSet<String>();
+		this(null,null);
 	}
 
-	public DownloadableInfo(String ID) {
-		this.uniqueID = ID;
-		compatibleCyVersions = new HashSet<String>();
+	public DownloadableInfo(String id) {
+		this(id, null);
 	}
 
-	public DownloadableInfo(String ID, DownloadableInfo ParentObj) {
-		this.uniqueID = ID;
-		this.parentObj = ParentObj;
-		compatibleCyVersions = new HashSet<String>();
+	public DownloadableInfo(String id, DownloadableInfo parentObj) {
+		this.uniqueID = id;
+		this.parentObj = parentObj;
+		this.compatibleCyVersions = new HashSet<String>();
 	}
-
-	/* --- SET --- */
 
 	/**
 	 * Sets the license information for the plugin. Not required.
@@ -133,8 +133,8 @@ public abstract class DownloadableInfo {
 		this.category = cat.toString();
 	}
 
-	public void setParent(DownloadableInfo ParentObj) {
-		this.parentObj = ParentObj;
+	public void setParent(DownloadableInfo parentObj) {
+		this.parentObj = parentObj;
 	}
 
 	/**
@@ -297,38 +297,46 @@ public abstract class DownloadableInfo {
 
 	/**
 	 * @return Compatible Cytocape version of this object.
-   *
-   * BUG: THIS IS WRONG, I need to be getting the version that MATCHES the current version
-   * not the one that is newest!!
-   *
+	 *
+	 * BUG: THIS IS WRONG, I need to be getting the version that MATCHES the current version
+	 * not the one that is newest!!
+	 *
 	 */
 	public String getCytoscapeVersion() {
+
+		//Bug fix, if currentVersion matches one of compatible versions of Cytosape, just return current version
+		for (String v : this.compatibleCyVersions) {
+			if (isCytoscapeVersionCurrent(v)){
+				return v;
+			}
+		}		
+
 		String currentPluginVersion = null;
-    String all = "";
-    for (String v : this.compatibleCyVersions) {
-      all += v + " ";      
+		String all = "";
+		for (String v : this.compatibleCyVersions) {
+			all += v + " ";      
 
-      if (currentPluginVersion != null) {
+			if (currentPluginVersion != null) {
 				currentPluginVersion = getNewerVersion(v, currentPluginVersion);
-        // compare to cytoscape version
-        if ( isCytoscapeVersionCurrent(currentPluginVersion) )
-          return currentPluginVersion; 
-      }
-      else {
+				// compare to cytoscape version
+				if ( isCytoscapeVersionCurrent(currentPluginVersion) )
+					return currentPluginVersion; 
+			}
+			else {
 				currentPluginVersion = v;
-      }
-    }
+			}
+		}
 
-    logger.debug(getName() +": Compatible: " + all + " cyvers: " + currentPluginVersion
-        + "(cyversion " + cytoscape.CytoscapeVersion.version +")");
+		logger.debug(getName() +": Compatible: " + all + " cyvers: " + currentPluginVersion
+				+ "(cyversion " + cytoscape.CytoscapeVersion.version +")");
 		return currentPluginVersion;
 	}
 
   /**
 	 * @return All compatible Cytoscape versions.
 	 */
-	public java.util.List<String> getCytoscapeVersions() {
-		return new java.util.ArrayList<String>(this.compatibleCyVersions);
+	public List<String> getCytoscapeVersions() {
+		return new ArrayList<String>(this.compatibleCyVersions);
 	}
 
 	protected boolean containsVersion(String cyVersion) {
@@ -386,14 +394,19 @@ public abstract class DownloadableInfo {
 	 *         specifies a bugfix version)
 	 */
   private boolean isCytoscapeVersionCurrent(String pluginVersion) {
-    String[] CyVersion = new cytoscape.CytoscapeVersion().getFullVersion().split(versionSplit);
-    String[] PlVersion = pluginVersion.split(versionSplit);
+  	if (pluginVersion == null )
+		return false;
 
-    for (int i = 0; i < PlVersion.length; i++) {
-      if (Integer.valueOf(CyVersion[i]).intValue() != Integer.valueOf(
-          PlVersion[i]).intValue())
+    String[] cyVersion = new CytoscapeVersion().getFullVersion().split(versionSplit);
+    String[] plVersion = pluginVersion.split(versionSplit);
+
+	if ( cyVersion.length < plVersion.length )
+		return false;
+
+    for (int i = 0; i < plVersion.length; i++) 
+      if (Integer.valueOf(cyVersion[i]).intValue() != Integer.valueOf(plVersion[i]).intValue())
         return false;
-    }
+
     return true;
   }
 
@@ -415,7 +428,13 @@ public abstract class DownloadableInfo {
  *      it is compatible with all bug fix versions.
  */
   public boolean isPluginCompatibleWithCurrent() {
-    boolean compatible = false;
+
+	  if (this.getCategory() != null && this.getCategory().equalsIgnoreCase("Core")){
+		  // core plugins already compatible with current version
+		  return true;
+	  }
+	  
+	boolean compatible = false;
     CytoscapeVersion cv = new CytoscapeVersion();
     for (String pluginVersion: compatibleCyVersions) {
       String[] cyVersion = cv.getFullVersion().split(versionSplit);
@@ -423,7 +442,7 @@ public abstract class DownloadableInfo {
       if ( PluginVersionUtils.isVersion(pluginVersion, PluginVersionUtils.MINOR) ) {
           cyVersion = new String[]{cyVersion[0], cyVersion[1]};
         }
-      logger.debug("Comparing versions: " + java.util.Arrays.toString(cyVersion) + " : " + java.util.Arrays.toString(plVersion));
+      logger.debug("Comparing versions: " + Arrays.toString(cyVersion) + " : " + Arrays.toString(plVersion));
 
       if (compareVersions(cyVersion, plVersion)) {
         compatible = true;
@@ -522,16 +541,15 @@ public abstract class DownloadableInfo {
 	 * Fetches and keeps a plugin license if one is available.
 	 */
 	protected class License {
-		private java.net.URL url;
-
+		private URL url;
 		private String text;
 
-		public License(java.net.URL Url) {
-			url = Url;
+		public License(URL url) {
+			this.url = url;
 		}
 
-		public License(String LicenseText) {
-			text = LicenseText;
+		public License(String licenseText) {
+			text = licenseText;
 		}
 
 		/**
@@ -544,13 +562,12 @@ public abstract class DownloadableInfo {
 			if (text == null) {
 				try {
 					text = URLUtil.download(url);
-				} catch (java.io.IOException E) {
-					DownloadableInfo.logger.warn("Unable to get license: "+E.toString());
+				} catch (Exception e) {
+					DownloadableInfo.logger.warn("Unable to get license: "+e.toString());
+					text = "No license found"; 
 				}
 			}
 			return text;
 		}
-
 	}
-
 }

@@ -296,7 +296,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		// handle focus event
-		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
+		if (CytoscapeDesktop.NETWORK_VIEW_FOCUS.equals(e.getPropertyName())) {
 			//logger.info("NetworkViewManager got NETWORK_VIEW_FOCUS " + e.getSource().getClass().getName());
 			String network_id = (String) e.getNewValue();
 			e = null;
@@ -313,12 +313,12 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			}
 		}
 		// handle putting a newly created CyNetworkView into a Container
-		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+		else if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(e.getPropertyName())) {
 			CyNetworkView new_view = (CyNetworkView) e.getNewValue();
 			//logger.info("NetworkViewManager got NETWORK_VIEW_CREATED " + e.getSource().getClass().getName() + ", view = " + new_view);
 			createContainer(new_view);
 			e = null;
-		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
+		} else if (CytoscapeDesktop.NETWORK_VIEW_DESTROYED.equals(e.getPropertyName())) {
 			//logger.info("NetworkViewManager got NETWORK_VIEW_DEST");
 			CyNetworkView view = (CyNetworkView) e.getNewValue();
 			removeView(view);

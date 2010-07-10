@@ -34,7 +34,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-
 import java.util.EventObject;
 
 import javax.swing.JComponent;
@@ -65,6 +64,9 @@ import javax.swing.tree.TreePath;
  * @author Scott Violet
  */
 public class JTreeTable extends JTable {
+	
+	private static final long serialVersionUID = -505249707913524363L;
+	
 	/** A subclass of JTree. */
 	protected TreeTableCellRenderer tree;
 

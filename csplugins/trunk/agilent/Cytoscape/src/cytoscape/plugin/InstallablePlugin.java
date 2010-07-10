@@ -19,15 +19,25 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
 import cytoscape.logger.CyLogger;
+import java.util.zip.ZipFile;
 
 /**
  * @author skillcoy
  * 
  */
 public class InstallablePlugin implements Installable {
-  private static CyLogger logger = CyLogger.getLogger(InstallablePlugin.class);
 
-  private PluginInfo infoObj;
+	/**
+	 * @deprecated This was only ever used internally, so now it is package 
+	 * protected and part of JarUtil.  Use that one as an alternative.
+	 * Will be removed Jan 2010.
+	 */
+	@Deprecated
+	public static final String MATCH_JAR_REGEXP = JarUtil.MATCH_JAR_REGEXP;
+
+	private static CyLogger logger = CyLogger.getLogger(InstallablePlugin.class);
+
+	private PluginInfo infoObj;
 
 	public InstallablePlugin(PluginInfo obj) {
 		this.infoObj = obj;
@@ -72,7 +82,7 @@ public class InstallablePlugin implements Installable {
 		URLUtil.download(infoObj.getObjectUrl(), Download, taskMonitor);
 
 		try {
-			String ClassName = getPluginClass(Download.getAbsolutePath(),
+			String ClassName = JarUtil.getPluginClass(Download.getAbsolutePath(),
 					infoObj.getFileType());
 
 			if (ClassName != null) {
@@ -257,57 +267,4 @@ public class InstallablePlugin implements Installable {
 	private String createFileName(PluginInfo Obj) {
 		return Obj.getName() + "." + Obj.getFileType().toString();
 	}
-
-	/*
-	 * Iterate through all class files, return the subclass of CytoscapePlugin.
-	 * Similar to CytoscapeInit, however only plugins with manifest files that
-	 * describe the class of the CytoscapePlugin are valid.
-	 */
-	private String getPluginClass(String FileName, PluginInfo.FileType Type)
-			throws IOException {
-		String PluginClassName = null;
-
-		switch (Type) {
-		case JAR:
-			JarFile Jar = new JarFile(FileName);
-			PluginClassName = getManifestAttribute(Jar.getManifest());
-			Jar.close();
-			break;
-
-		case ZIP:
-			List<ZipEntry> Entries = ZipUtil
-					.getAllFiles(FileName, "\\w+\\.jar");
-			if (Entries.size() <= 0) {
-				String[] FilePath = FileName.split("/");
-				FileName = FilePath[FilePath.length - 1];
-				throw new IOException(
-						FileName
-								+ " does not contain any jar files or is not a zip file.");
-			}
-
-			for (ZipEntry Entry : Entries) {
-				String EntryName = Entry.getName();
-
-				InputStream is = ZipUtil.readFile(FileName, EntryName);
-				JarInputStream jis = new JarInputStream(is);
-				PluginClassName = getManifestAttribute(jis.getManifest());
-				jis.close();
-				is.close();
-			}
-		}
-		;
-		return PluginClassName;
-	}
-
-	/*
-	 * Gets the manifest file value for the Cytoscape-Plugin attribute
-	 */
-	private String getManifestAttribute(Manifest m) {
-		String Value = null;
-		if (m != null) {
-			Value = m.getMainAttributes().getValue("Cytoscape-Plugin");
-		}
-		return Value;
-	}
-
 }

@@ -392,15 +392,17 @@ public class CyLogger {
 	}
 
 	private String getStack(Throwable t) {
-		String message = null;
+		if ( t == null )
+			return "";
+		String message = "\nCaused by:\n";
 		if (t.getMessage() != null)
-			message = t.getMessage() + "\n    "+t.toString();
+			message += t.getMessage();
 		else
-			message = t.toString();
+			message += t.toString();
 		StackTraceElement[] stackArray = t.getStackTrace();
 		for (int i = 0; stackArray != null && i < stackArray.length; i++) {
 			message += "\n      at "+stackArray[i].toString();
 		}
-		return message;
+		return message + "\n" + getStack(t.getCause());
 	}
 }

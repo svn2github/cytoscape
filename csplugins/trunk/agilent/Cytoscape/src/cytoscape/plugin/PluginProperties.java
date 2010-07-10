@@ -4,6 +4,8 @@
 package cytoscape.plugin;
 import cytoscape.logger.CyLogger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -57,8 +59,16 @@ public class PluginProperties extends Properties {
 	 * @param fileName
 	 */
 	PluginProperties(String fileName) throws IOException {
-		java.io.FileInputStream fis = new java.io.FileInputStream( new java.io.File(fileName) );
-		readPluginProperties(fis);
+		FileInputStream fis = null;
+        try {
+			fis = new FileInputStream(new File(fileName));
+            readPluginProperties(fis);
+        }
+        finally {
+            if (fis != null) {
+                fis.close();
+            }
+        }
 	}
 	
 	/**
@@ -145,16 +155,17 @@ public class PluginProperties extends Properties {
 		if (containsKey(PluginProperty.DOWNLOAD_URL.getPropertyKey())) {
 			pi.setDownloadableURL(getProperty(PluginProperty.DOWNLOAD_URL.getPropertyKey()));
 		}
-		
-		if (containsKey(PluginProperty.AUTHORS.getPropertyKey())) {
+
+		if (containsKey(PluginProperty.AUTHORS.getPropertyKey()) || containsKey("pluginAuthorsIntsitutions")) {
 			// split up the value and add each
 			String AuthorProp = getProperty(PluginProperty.AUTHORS.getPropertyKey());
 
-      // bug fix, misspelled the property file key but need to be sure anyone who used the
-      // misspelling is taken care of for now
-      if (AuthorProp == null) 
-        AuthorProp = getProperty("pluginAuthorsIntsitutions");
-      String[] AuthInst = AuthorProp.split(";");
+			// bug fix, misspelled the property file key but need to be sure anyone who used the
+			// misspelling is taken care of for now
+			if (AuthorProp == null) 
+				AuthorProp = getProperty("pluginAuthorsIntsitutions");
+
+			String[] AuthInst = AuthorProp.split(";");
 
 			for (String ai: AuthInst) {
 				String[] CurrentAI = ai.split(":");
@@ -165,7 +176,7 @@ public class PluginProperties extends Properties {
 				pi.addAuthor(CurrentAI[0], CurrentAI[1]);
 			}
 		}
-		
+
 		if (containsKey(PluginProperty.RELEASE_DATE.getPropertyKey())) {
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 		}

@@ -36,16 +36,11 @@
 */
 package cytoscape.layout;
 
-import cytoscape.CytoscapeInit;
-import cytoscape.layout.algorithms.GridNodeLayout;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+
+import cytoscape.CytoscapeInit;
+import cytoscape.layout.algorithms.GridNodeLayout;
 
 
 /**
@@ -55,6 +50,8 @@ import java.util.Set;
 public class CyLayouts {
 	private static HashMap<String, CyLayoutAlgorithm> layoutMap;
 	private static HashMap<CyLayoutAlgorithm, String> menuNameMap;
+	
+	private static final String DEFAULT_LAYOUT_PROP = "layout.default";
 
 	static {
 		new CyLayouts();
@@ -122,7 +119,7 @@ public class CyLayouts {
 	 */
 	public static CyLayoutAlgorithm getDefaultLayout() {
 		// See if the user has set the layout.default property
-		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
+		String defaultLayout = CytoscapeInit.getProperties().getProperty(DEFAULT_LAYOUT_PROP);
 
 		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
 			defaultLayout = "grid";

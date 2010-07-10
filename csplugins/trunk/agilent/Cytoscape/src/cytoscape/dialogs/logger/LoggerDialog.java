@@ -1,10 +1,10 @@
 package cytoscape.dialogs.logger;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.logger.CyLogHandler;
 import cytoscape.logger.LogLevel;
-
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +13,8 @@ import java.util.Set;
 
 import javax.swing.*;
 
-
 /** Singleton dialog */
-public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler {
+public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler,PropertyChangeListener {
     private static LoggerDialog dialog;
     private Map<LogLevel, List<String>> messageMap;
     private Map<LogLevel, JScrollPane> logTabMap;
@@ -30,6 +29,8 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler {
     protected LoggerDialog(JFrame owner) {
         super(owner, false);
         init();
+        
+        Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
     }
 
     public static LoggerDialog getLoggerDialog() {
@@ -240,6 +241,25 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler {
         super.setVisible(vis);
     }
 
+    
+	/**
+	 * Property change listener - to clear the console panel after load of new Session.
+	 *
+	 * @param event PropertyChangeEvent
+	 */
+	public void propertyChange(PropertyChangeEvent event) {
+	
+		if (event.getPropertyName().equalsIgnoreCase(Cytoscape.SESSION_LOADED)){
+			// perform the same action as clearButton
+			try {
+				this.clearButtonActionPerformed(null);
+			}
+			catch (Exception e){
+			}
+		}
+	}
+	
+    
     /* -------------------------------------- */
     public static void main(String[] args) {
         LoggerDialog dialog = LoggerDialog.getLoggerDialog();

@@ -36,23 +36,6 @@
  */
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CyNetworkTitleChange;
-import cytoscape.logger.CyLogger;
-import cytoscape.actions.CreateNetworkViewAction;
-
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
-
-import cytoscape.util.CyNetworkNaming;
-
-import cytoscape.util.swing.AbstractTreeTableModel;
-import cytoscape.util.swing.JTreeTable;
-import cytoscape.util.swing.TreeTableModel;
-
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -60,52 +43,84 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import javax.swing.BoxLayout;
 import javax.swing.InputMap;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.ToolTipManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import cytoscape.CyNetwork;
+import cytoscape.CyNetworkTitleChange;
+import cytoscape.Cytoscape;
+import cytoscape.actions.ApplyVisualStyleAction;
+import cytoscape.actions.CreateNetworkViewAction;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.swing.JTreeTable;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+
 
 /**
- *
+ * GUI component for managing network list in current session.
  */
 public class NetworkPanel extends JPanel implements PropertyChangeListener, TreeSelectionListener,
-                                                    SelectEventListener {
-	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
-	protected static CyLogger logger = CyLogger.getLogger(NetworkPanel.class);
+                                                    SelectEventListener, ChangeListener {
+	
+	private static final long serialVersionUID = -7102083850894612840L;
+	
+	private static final int DEF_DEVIDER_LOCATION = 280;
+	private static final int PANEL_PREFFERED_WIDTH = 250;
+
+	private static final int DEF_ROW_HEIGHT = 20;
+	
+	// Make this panel as a source of events.
+	private final SwingPropertyChangeSupport pcs;
+		
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
+	
 	private JPanel navigatorPanel;
+	
+	private JPanel networkTreePanel;
+		
 	private JPopupMenu popup;
 	private PopupActionListener popupActionListener;
+
 	private JMenuItem createViewItem;
 	private JMenuItem destroyViewItem;
 	private JMenuItem destroyNetworkItem;
 	private JMenuItem editNetworkTitle;
+	private JMenuItem applyVisualStyleMenu;
+	
 	private BiModalJSplitPane split;
+	
 	private final NetworkTreeTableModel treeTableModel;
 	private final CytoscapeDesktop cytoscapeDesktop;
 
@@ -120,7 +135,9 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 
 		root = new NetworkTreeNode("Network Root", "root");
 		treeTableModel = new NetworkTreeTableModel(root);
+		
 		treeTable = new JTreeTable(treeTableModel);
+		treeTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		initialize();
 
 		/*
@@ -135,12 +152,24 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			}
 		}
 		
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
+		pcs = new SwingPropertyChangeSupport(this);
+		
+		// Make this a prop change listener for Cytoscape global events.
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
+		
+		// For listening to adding/removing Visual Style events.
+		Cytoscape.getVisualMappingManager().addChangeListener(this);
 	}
 
-	protected void initialize() {
+	/**
+	 * Initialize GUI components
+	 */
+	private void initialize() {
 		setLayout(new BorderLayout());
-		setPreferredSize(new Dimension(180, 700));
+		setPreferredSize(new Dimension(PANEL_PREFFERED_WIDTH, 700));
+		
+		networkTreePanel = new JPanel();
+		networkTreePanel.setLayout(new BoxLayout(networkTreePanel, BoxLayout.Y_AXIS));
 
 		treeTable.getTree().addTreeSelectionListener(this);
 		treeTable.getTree().setRootVisible(false);
@@ -149,21 +178,20 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 
 		treeTable.getTree().setCellRenderer(new TreeCellRenderer());
 
-		treeTable.getColumn("Network").setPreferredWidth(100);
-		treeTable.getColumn("Nodes").setPreferredWidth(45);
-		treeTable.getColumn("Edges").setPreferredWidth(45);
+		resetTable();
 
 		navigatorPanel = new JPanel();
 		navigatorPanel.setMinimumSize(new Dimension(180, 180));
 		navigatorPanel.setMaximumSize(new Dimension(180, 180));
 		navigatorPanel.setPreferredSize(new Dimension(180, 180));
 
-		JScrollPane scroll = new JScrollPane(treeTable);
+		final JScrollPane scroll = new JScrollPane(treeTable);
 
+		networkTreePanel.add(scroll);
 		split = new BiModalJSplitPane(cytoscapeDesktop, JSplitPane.VERTICAL_SPLIT,
-		                              BiModalJSplitPane.MODE_SHOW_SPLIT, scroll, navigatorPanel);
+		                              BiModalJSplitPane.MODE_SHOW_SPLIT, networkTreePanel, navigatorPanel);
 		split.setResizeWeight(1);
-
+		split.setDividerLocation(DEF_DEVIDER_LOCATION);
 		add(split);
 
 		// this mouse listener listens for the right-click event and will show
@@ -177,6 +205,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		createViewItem = new JMenuItem(PopupActionListener.CREATE_VIEW);
 		destroyViewItem = new JMenuItem(PopupActionListener.DESTROY_VIEW);
 		destroyNetworkItem = new JMenuItem(PopupActionListener.DESTROY_NETWORK);
+		applyVisualStyleMenu = new JMenu(PopupActionListener.APPLY_VISUAL_STYLE);
 
 		// action listener which performs the tasks associated with the popup
 		// listener
@@ -185,12 +214,24 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		createViewItem.addActionListener(popupActionListener);
 		destroyViewItem.addActionListener(popupActionListener);
 		destroyNetworkItem.addActionListener(popupActionListener);
+		applyVisualStyleMenu.addActionListener(popupActionListener);
 		popup.add(editNetworkTitle);
 		popup.add(createViewItem);
 		popup.add(destroyViewItem);
 		popup.add(destroyNetworkItem);
+		popup.addSeparator();
+		popup.add(applyVisualStyleMenu);
 	}
-
+	
+	
+	private void resetTable() {
+		treeTable.getColumn(ColumnTypes.NETWORK.getDisplayName()).setPreferredWidth(170);
+		treeTable.getColumn(ColumnTypes.NODES.getDisplayName()).setPreferredWidth(45);
+		treeTable.getColumn(ColumnTypes.EDGES.getDisplayName()).setPreferredWidth(45);
+		treeTable.setRowHeight(DEF_ROW_HEIGHT);
+	}
+	
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -235,7 +276,9 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 */
 	public void removeNetwork(final String network_id) {
 		final NetworkTreeNode node = getNetworkNode(network_id);
-		final Enumeration children = node.children();
+		if (node == null) return;
+		
+		final Enumeration<NetworkTreeNode> children = node.children();
 		NetworkTreeNode child = null;
 		final List removed_children = new ArrayList();
 
@@ -255,8 +298,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		treeTable.doLayout();
 	}
 
-	// JBK added updateTitle
-	// 11-13-05
+	
 	/**
 	 * update a network title
 	 */
@@ -281,9 +323,11 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param event DOCUMENT ME!
 	 */
 	public void onSelectEvent(SelectEvent event) {
+		// TODO is this the right method to call?
 		treeTable.getTree().updateUI();
 	}
 
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -356,35 +400,25 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 
 	/**
-	 * @deprecated No longer used.  If you need to fire focus, call CytoscapeDesktop.setFocus().
-	 * will be removed 11/2008.
-	 */
-	@Deprecated
-	public void fireFocus(String network_id) {
-	}
-
-	/**
 	 * This method highlights a network in the NetworkPanel. 
 	 *
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		// logger.info("NetworkPanel: valueChanged - " + e.getSource().getClass().getName());
-		JTree mtree = treeTable.getTree();
+		// TODO: Every time user select a network name, this method will be called 3 times! 
+		
+		final JTree mtree = treeTable.getTree();
 
 		// sets the "current" network based on last node in the tree selected
-		NetworkTreeNode node = (NetworkTreeNode) mtree.getLastSelectedPathComponent();
-		if ( node == null || node.getUserObject() == null ) {
-			// logger.info("NetworkPanel: null node - returning");
+		final NetworkTreeNode node = (NetworkTreeNode) mtree.getLastSelectedPathComponent();
+		if ( node == null || node.getUserObject() == null )
 			return;
-		}
-
-		// logger.info("NetworkPanel: firing NETWORK_VIEW_FOCUS");
+		
 		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
-	                                                   null, (String) node.getNetworkID()));
+	            null, (String) node.getNetworkID()));
 
 		// creates a list of all selected networks 
-		List<String> networkList = new LinkedList<String>();
+		final List<String> networkList = new LinkedList<String>();
 		try {
 			for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
 				NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
@@ -392,14 +426,13 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 					networkList.add( n.getNetworkID() );
 			}
 		} catch (Exception ex) { 
-			logger.warn("Exception handling network panel change: "+ex.getMessage());
-			// ex.printStackTrace();
+			CyLogger.getLogger().warn("Exception handling network panel change: "+ex.getMessage());
+			ex.printStackTrace();
 		}
 
 		if ( networkList.size() > 0 ) {
-			// logger.info("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
-			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
-		                                                   null, networkList));
+			Cytoscape.setSelectedNetworks(networkList);
+			Cytoscape.setSelectedNetworkViews(networkList);
 		} 
 	}
 
@@ -409,14 +442,14 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+		if (Cytoscape.NETWORK_CREATED.equals(e.getPropertyName())) {
 			addNetwork((String) e.getNewValue(), (String) e.getOldValue());
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+		} else if (Cytoscape.NETWORK_DESTROYED.equals(e.getPropertyName())) {
 			removeNetwork((String) e.getNewValue());
-		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
+		} else if (CytoscapeDesktop.NETWORK_VIEW_FOCUSED.equals(e.getPropertyName())) {
 			if ( e.getSource() != this )
 				focusNetworkNode((String) e.getNewValue());
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
+		} else if (Cytoscape.NETWORK_TITLE_MODIFIED.equals(e.getPropertyName())) {
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
 			String newID = cyNetworkTitleChange.getNetworkIdentifier();
 			//String newTitle = cyNetworkTitleChange.getNetworkTitle();
@@ -424,134 +457,12 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			// Network "0" is the default and does not appear in the netowrk panel
 			if (_network != null && !_network.getIdentifier().equals("0")) 
 				updateTitle(_network);				
+		} else if(Cytoscape.CYTOSCAPE_INITIALIZED.equals(e.getPropertyName())) {
+			updateVSMenu();
 		}
 	}
-
-	/**
-	 * Inner class that extends the AbstractTreeTableModel
-	 */
-	class NetworkTreeTableModel extends AbstractTreeTableModel {
-		String[] columns = { "Network", "Nodes", "Edges" };
-		Class[] columns_class = { TreeTableModel.class, String.class, String.class };
-
-		public NetworkTreeTableModel(Object root) {
-			super(root);
-		}
-
-		public Object getChild(Object parent, int index) {
-			Enumeration tree_node_enum = ((DefaultMutableTreeNode) getRoot())
-			                                                                                                                                                                                                                                                                                                                                                                                                   .breadthFirstEnumeration();
-
-			while (tree_node_enum.hasMoreElements()) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_node_enum.nextElement();
-
-				if (node == parent) {
-					return node.getChildAt(index);
-				}
-			}
-
-			return null;
-		}
-
-		public int getChildCount(Object parent) {
-			Enumeration tree_node_enum = ((DefaultMutableTreeNode) getRoot())
-			                                                                                                                                                                                                                                                                                                                                                                                                                  .breadthFirstEnumeration();
-
-			while (tree_node_enum.hasMoreElements()) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_node_enum.nextElement();
-
-				if (node == parent) {
-					return node.getChildCount();
-				}
-			}
-
-			return 0;
-		}
-
-		public int getColumnCount() {
-			return columns.length;
-		}
-
-		public String getColumnName(int column) {
-			return columns[column];
-		}
-
-		public Class getColumnClass(int column) {
-			return columns_class[column];
-		}
-
-		public Object getValueAt(Object node, int column) {
-			if (column == 0)
-				return ((DefaultMutableTreeNode) node).getUserObject();
-			else if (column == 1) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
-
-				return "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size()
-				       + ")";
-			} else if (column == 2) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
-
-				return "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()
-				       + ")";
-			}
-
-			return "";
-		}
-
-		// Brad
-		public void setValueAt(Object aValue, Object node, int column) {
-			if (column == 0) {
-				((DefaultMutableTreeNode) node).setUserObject(aValue);
-			} else
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-				                              "Error: assigning value at in NetworkPanel");
-
-			// This function is not used to set node and edge values.
-		}
-	}
-
-	public class NetworkTreeNode extends DefaultMutableTreeNode {
-		protected String network_uid;
-
-		public NetworkTreeNode(Object userobj, String id) {
-			super(userobj.toString());
-			network_uid = id;
-		}
-
-		protected void setNetworkID(String id) {
-			network_uid = id;
-		}
-
-		protected String getNetworkID() {
-			return network_uid;
-		}
-	}
-
-	private class TreeCellRenderer extends DefaultTreeCellRenderer {
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
-		                                              boolean expanded, boolean leaf, int row,
-		                                              boolean hasFocus) {
-			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-
-			if (hasView(value)) {
-				setBackgroundNonSelectionColor(java.awt.Color.green.brighter());
-				setBackgroundSelectionColor(java.awt.Color.green.darker());
-			} else {
-				setBackgroundNonSelectionColor(java.awt.Color.red.brighter());
-				setBackgroundSelectionColor(java.awt.Color.red.darker());
-			}
-
-			return this;
-		}
-
-		private boolean hasView(Object value) {
-			NetworkTreeNode node = (NetworkTreeNode) value;
-			setToolTipText(Cytoscape.getNetwork(node.getNetworkID()).getTitle());
-
-			return Cytoscape.viewExists(node.getNetworkID());
-		}
-	}
-
+	
+	
 	/**
 	 * This class listens to mouse events from the TreeTable, if the mouse event
 	 * is one that is canonically associated with a popup menu (ie, a right
@@ -567,9 +478,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			maybeShowPopup(e);
 		}
 
-		/**
-		 * Don't know why you need both of these, but this is how they did it in
-		 * the example
+		/*
+		 * On windows, popup is triggered by this method, not the above one
 		 */
 		public void mouseReleased(MouseEvent e) {
 			maybeShowPopup(e);
@@ -583,39 +493,63 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			// check for the popup type
 			if (e.isPopupTrigger()) {
 				// get the row where the mouse-click originated
-				int row = treeTable.rowAtPoint(e.getPoint());
+				final int[] selected = treeTable.getSelectedRows();
 
-				if (row != -1) {
-					JTree tree = treeTable.getTree();
-					TreePath treePath = tree.getPathForRow(row);
-					String networkID = (String) ((NetworkTreeNode) treePath.getLastPathComponent())
-					                   .getNetworkID();
-
-					CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
-
-					if (cyNetwork != null) {
-						// disable or enable specific options with respect to
-						// the actual network
-						// that is selected
-						if (Cytoscape.viewExists(networkID)) {
-							// disable the view creation item
-							createViewItem.setEnabled(false);
-							destroyViewItem.setEnabled(true);
-						} // end of if ()
-						else {
-							createViewItem.setEnabled(true);
-							destroyViewItem.setEnabled(false);
-						} // end of else
-						  // let the actionlistener know which network it should
-						  // be operating
-						  // on when (if) it is called
-
-						popupActionListener.setActiveNetwork(cyNetwork);
-						// display the popup
-						popup.show(e.getComponent(), e.getX(), e.getY());
+				if (selected != null && selected.length != 0) {
+					boolean enableViewRelatedMenu = false;
+					final int selectedItemCount = selected.length;
+					CyNetwork cyNetwork = null;
+					final JTree tree = treeTable.getTree();
+					for (int i = 0; i<selectedItemCount; i++) {
+						
+						final TreePath treePath = tree.getPathForRow(selected[i]);
+						final String networkID = (String) ((NetworkTreeNode) treePath.getLastPathComponent())
+						                   .getNetworkID();
+	
+						cyNetwork = Cytoscape.getNetwork(networkID);
+						if(Cytoscape.viewExists(networkID)) {
+							enableViewRelatedMenu = true;
+						}
 					}
+					
+					// Edit title command will be enabled only when ONE network is selected.
+					if (selectedItemCount == 1) {
+						editNetworkTitle.setEnabled(true);
+						popupActionListener.setActiveNetwork(cyNetwork);
+					} else
+						editNetworkTitle.setEnabled(false);
+					
+					if (enableViewRelatedMenu) {
+						// At least one selected network has a view.
+						createViewItem.setEnabled(true);
+						destroyViewItem.setEnabled(true);
+						applyVisualStyleMenu.setEnabled(true);
+					} else {
+						// None of the selected networks has view.
+						createViewItem.setEnabled(true);
+						destroyViewItem.setEnabled(false);
+						applyVisualStyleMenu.setEnabled(false);
+					}
+
+					popup.show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
+		}
+	}
+
+	public void stateChanged(ChangeEvent e) {		
+		updateVSMenu();
+	}
+	
+	
+	private void updateVSMenu() {
+		applyVisualStyleMenu.removeAll();
+		
+		final Set<String> vsNames = new TreeSet<String>(Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames());
+		for (String name: vsNames) {
+			final JMenuItem styleMenu = new JMenuItem(name);
+			styleMenu.setAction(new ApplyVisualStyleAction(name));
+			applyVisualStyleMenu.add(styleMenu);
 		}
 	}
 }
@@ -626,7 +560,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
  * performing actions related to destroying and creating views, and destroying
  * the network.
  */
-class PopupActionListener implements ActionListener {
+class PopupActionListener implements ActionListener  {
 	/**
 	 * Constants for JMenuItem labels
 	 */
@@ -646,6 +580,8 @@ class PopupActionListener implements ActionListener {
 	 *
 	 */
 	public static final String EDIT_TITLE = "Edit Network Title";
+	
+	public static final String APPLY_VISUAL_STYLE = "Apply Visual Style";
 
 	/**
 	 * This is the network which originated the mouse-click event (more
@@ -660,24 +596,31 @@ class PopupActionListener implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		final String label = ((JMenuItem) ae.getSource()).getText();
 
-		// Figure out the appropriate action
-		if (label == DESTROY_VIEW) {
-			Cytoscape.destroyNetworkView(cyNetwork);
-		} // end of if ()
-		else if (label == CREATE_VIEW) {
-			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork);
-		} // end of if ()
-		else if (label == DESTROY_NETWORK) {
-			Cytoscape.destroyNetwork(cyNetwork);
-		} // end of if ()
-		else if (label == EDIT_TITLE) {
+		if (DESTROY_VIEW.equals(label)) {
+			final List<CyNetwork> selected = Cytoscape.getSelectedNetworks();	
+			for (final CyNetwork network: selected) {
+				final CyNetworkView targetView = Cytoscape.getNetworkView(network.getIdentifier());
+				if (targetView != Cytoscape.getNullNetworkView()) {
+					Cytoscape.destroyNetworkView(targetView);
+				}
+			}
+		} else if (CREATE_VIEW.equals(label)) {
+			final List<CyNetwork> selected = Cytoscape.getSelectedNetworks();	
+			
+			for(CyNetwork network: selected) {
+				if (!Cytoscape.viewExists(network.getIdentifier()))
+					CreateNetworkViewAction.createViewFromCurrentNetwork(network);
+			}
+		} else if (DESTROY_NETWORK.equals(label)) {
+			final List<CyNetwork> selected = Cytoscape.getSelectedNetworks();	
+			for (CyNetwork network: selected)
+				Cytoscape.destroyNetwork(network);
+		} else if (EDIT_TITLE.equals(label)) {
 			CyNetworkNaming.editNetworkTitle(cyNetwork);
 			Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
-		} // end of if ()
-		else {
-			// throw an exception here?
-			NetworkPanel.logger.warn("Unexpected network panel popup option");
-		} // end of else
+		} else {
+			CyLogger.getLogger().warn("Unexpected network panel popup option");
+		}
 	}
 
 	/**

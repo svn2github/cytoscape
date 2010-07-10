@@ -49,7 +49,9 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import java.util.*;
 
@@ -69,14 +71,14 @@ public class PluginTracker {
 	 *            Xml file name
 	 * @param Dir
 	 *            directory to to write xml file
-	 * @throws java.io.IOException
+	 * @throws IOException
 	 */
-	protected PluginTracker(File Dir, String FileName) throws java.io.IOException, TrackerException {
+	protected PluginTracker(File Dir, String FileName) throws IOException, TrackerException {
 		installFile = new File(Dir, FileName);
 		init();
 	}
 	
-	protected PluginTracker(File file) throws java.io.IOException, TrackerException {
+	protected PluginTracker(File file) throws IOException, TrackerException {
 		installFile = file;
 		init();
 	}
@@ -91,7 +93,7 @@ public class PluginTracker {
 	/*
 	 * Sets up the xml doc for tracking.
 	 */
-	private void init() throws java.io.IOException, TrackerException {
+	private void init() throws IOException, TrackerException {
 		corruptedElements = new HashSet<Element>();
 		
 		if (PluginManager.usingWebstartManager()) { 
@@ -102,20 +104,43 @@ public class PluginTracker {
 		if (installFile.exists() && installFile.length() > 0) {
 			SAXBuilder Builder = new SAXBuilder(false);
 			try {
-				trackerDoc = Builder.build(installFile);
+				FileInputStream is = null;
+
+				try {
+					is = new FileInputStream(installFile);
+					trackerDoc = Builder.build(is, installFile.toURI().toURL().toString());
+				} finally {
+					if (is != null) {
+						is.close();
+					}
+				}
 				removeMissingIdEntries();
 				write();
-			} catch (JDOMException jde) {
+				validateTrackerDoc();
+			} catch (Exception jde) {
 				installFile.delete();
 				createCleanDoc();
-				throw new TrackerException("Plugin tracking file is corrupted.  Please reinstall your plugins. Deleting " + 
-						installFile.getAbsolutePath(), jde);
+				throw new TrackerException("Plugin tracking file is corrupted.  Please reinstall your plugins. Deleting " + installFile.getAbsolutePath(), jde);
 			} finally {
 				createPluginTable();
 			}
 		} else {
 			createCleanDoc();
 			createPluginTable();
+		}
+	}
+
+	/**
+	 * Will throw an exception if the tracker document doesn't contain the necessary
+	 * elements. The goal is to force a dummy plugin table to be created.  
+	 */
+	private void validateTrackerDoc() {
+		for (PluginStatus ps: PluginStatus.values()) {
+			// several of these calls could also produce an NPE
+			Iterator<Element> iter = trackerDoc.getRootElement().getChild(ps.getTagName()).getChildren().iterator();
+			if ( iter == null )
+				throw new NullPointerException("corrupted tracker file");
+
 		}
 	}
 
@@ -342,12 +367,13 @@ public class PluginTracker {
 			return null;
 		}
 	}
-	
+
 	private void createPluginTable() {
-		this.infoObjMap = new java.util.HashMap<String, Element>();
+		this.infoObjMap = new HashMap<String, Element>();
 		for (PluginStatus ps: PluginStatus.values()) {
-			// TODO how should a missing status tag be handled?  Probably the entire file 
-			// is bad and should be reinitialized
+			// A missing status tag should probably not happen because we check for that in
+			// validateTrackerDoc(). Only if createCleanDoc() fails to produce something usable
+			// will we run into problems here.
 			Iterator<Element> iter = trackerDoc.getRootElement().getChild(ps.getTagName()).getChildren().iterator();
 
 			while (iter.hasNext()) {
@@ -393,10 +419,17 @@ public class PluginTracker {
 		
 		try {
 			XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
-			FileWriter Writer = new FileWriter(installFile);
-			out.output(trackerDoc, Writer);
-			Writer.close();
-		} catch (java.io.IOException E) {
+			FileWriter writer = null;
+            try {
+				writer = new FileWriter(installFile);
+                out.output(trackerDoc, writer);
+            }
+            finally {
+                if (writer != null) {
+                    writer.close();
+                }
+            }
+		} catch (IOException E) {
 			logger.warn("Error writing plugin status file "+E.toString());
 		}
 	}

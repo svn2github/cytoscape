@@ -64,6 +64,7 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * @author skillcoy
@@ -412,14 +413,12 @@ public class PluginManager {
 
 	// TODO would be better to fix how initializedPlugins are tracked...
 	private void cleanCurrentList() {
-		List<DownloadableInfo> CurrentList = this
-				.getDownloadables(PluginStatus.CURRENT);
+		List<DownloadableInfo> CurrentList = getDownloadables(PluginStatus.CURRENT);
 		for (DownloadableInfo info : CurrentList) {
 			if (info.getType().equals(DownloadableType.PLUGIN)) {
 				PluginInfo pInfo = (PluginInfo) info;
 				if (!initializedPlugins.containsKey(pInfo.getPluginClassName())) {
-					pluginTracker
-							.removeDownloadable(info, PluginStatus.CURRENT);
+					pluginTracker.removeDownloadable(info, PluginStatus.CURRENT);
 				}
 			}
 		}
@@ -429,8 +428,7 @@ public class PluginManager {
 	 * Sets all plugins on the "install" list to "current"
 	 */
 	public void install() {
-		for (DownloadableInfo info : this
-				.getDownloadables(PluginStatus.INSTALL)) {
+		for (DownloadableInfo info : getDownloadables(PluginStatus.INSTALL)) {
 			install(info);
 		}
 	}
@@ -470,30 +468,21 @@ public class PluginManager {
 	 *             If this method is called from a webstart instance
 	 */
 	public void delete() throws ManagerException {
-		String ErrorMsg = "Failed to completely delete the following installed components:\n";
-		boolean deleteError = false;
-		List<DownloadableInfo> ToDelete = pluginTracker
-				.getDownloadableListByStatus(PluginStatus.DELETE);
+		List<DownloadableInfo> toDelete = pluginTracker.getDownloadableListByStatus(
+		                                                             PluginStatus.DELETE);
 
-		for (DownloadableInfo infoObj : ToDelete) {
+		for (DownloadableInfo infoObj : toDelete) {
 			Installable ins = infoObj.getInstallable();
 
 			try {
 				if (ins.uninstall()) {
-					pluginTracker.removeDownloadable(infoObj,
-							PluginStatus.DELETE);
-					pluginTracker.removeDownloadable(infoObj,
-							PluginStatus.CURRENT);
+					pluginTracker.removeDownloadable(infoObj, PluginStatus.DELETE);
+					pluginTracker.removeDownloadable(infoObj, PluginStatus.CURRENT);
 				} // TODO um.....XXXX
-			} catch (ManagerException me) {
-				deleteError = true;
-				ErrorMsg += infoObj.getName() + " v"
-						+ infoObj.getObjectVersion() + "\n";
-				// me.printStackTrace();
-			}
-
-			if (deleteError) {
-				throw new ManagerException(ErrorMsg);
+			} catch (Exception me) {
+				throw new ManagerException( 
+				          "Failed to completely delete the following installed components:\n" + 
+						  infoObj.getName() + " v" + infoObj.getObjectVersion() + "\n", me);
 			}
 		}
 	}
@@ -795,9 +784,10 @@ public class PluginManager {
 						}
 					}
 				}
-			} catch (MalformedURLException mue) {
-				// mue.printStackTrace();
-				loadingErrors.add(mue);
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("problem loading plugin: "+currentPlugin,t));
 			}
 		}
 		// now load the plugins in the appropriate manner
@@ -832,8 +822,10 @@ public class PluginManager {
 		for (URL url : urls) {
 			try {
 				addClassPath(url);
-			} catch (Exception e) {
-				loadingErrors.add(new IOException("Classloader Error: " + url));
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("Classloader Error: " + url, t));
 			}
 		}
 
@@ -860,7 +852,7 @@ public class PluginManager {
 				}
 
 				// try to get class name from the manifest file
-				String className = getPluginClass(jar.getName(),
+				String className = JarUtil.getPluginClass(jar.getName(),
 						PluginInfo.FileType.JAR);
 
 				if (className != null) {
@@ -913,15 +905,10 @@ public class PluginManager {
 				if (totalPlugins == 0) {
 					logger.info("No plugin found in specified jar - assuming it's a library.");
 				}
-			} catch (IOException ioe) {
-				// ioe.printStackTrace();
-				loadingErrors.add(ioe);
-			} catch (ClassNotFoundException cne) {
-				// cne.printStackTrace();
-				loadingErrors.add(cne);
-			} catch (PluginException pe) {
-				// pe.printStackTrace();
-				loadingErrors.add(pe);
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("problem loading plugin URL: " + urls[i], t));
 			}
 		}
 	}
@@ -937,12 +924,10 @@ public class PluginManager {
 			try {
 				Class rclass = Class.forName(resource);
 				loadPlugin(rclass, null, true);
-			} catch (ClassNotFoundException cne) {
-				// cne.printStackTrace();
-				loadingErrors.add(cne);
-			} catch (PluginException pe) {
-				// pe.printStackTrace();
-				loadingErrors.add(pe);
+			// Catching Throwable because Errors (e.g. NoClassDefFoundError) could 
+			// cause Cytoscape to crash, which plugins should definitely not do.  
+			} catch (Throwable t) {
+				loadingErrors.add(new PluginException("problem loading plugin resource: " + resource, t));
 			}
 		}
 	}
@@ -991,57 +976,6 @@ public class PluginManager {
 			uString = "jar:file:" + urlString + "!/";
 		}
 		return new URL(uString);
-	}
-
-	/*
-	 * Iterate through all class files, return the subclass of CytoscapePlugin.
-	 * Only plugins with manifest files that describe the class of the
-	 * CytoscapePlugin are valid.
-	 */
-	private String getPluginClass(String FileName, PluginInfo.FileType Type)
-			throws IOException {
-		String PluginClassName = null;
-
-		switch (Type) {
-		case JAR:
-			JarFile Jar = new JarFile(FileName);
-			PluginClassName = getManifestAttribute(Jar.getManifest());
-			Jar.close();
-			break;
-
-		case ZIP:
-			List<ZipEntry> Entries = ZipUtil
-					.getAllFiles(FileName, "\\w+\\.jar");
-			if (Entries.size() <= 0) {
-				String[] FilePath = FileName.split("/");
-				FileName = FilePath[FilePath.length - 1];
-				throw new IOException(
-						FileName
-								+ " does not contain any jar files or is not a zip file.");
-			}
-
-			for (ZipEntry Entry : Entries) {
-				String EntryName = Entry.getName();
-
-				InputStream is = ZipUtil.readFile(FileName, EntryName);
-				JarInputStream jis = new JarInputStream(is);
-				PluginClassName = getManifestAttribute(jis.getManifest());
-				jis.close();
-				is.close();
-			}
-		}
-		return PluginClassName;
-	}
-
-	/*
-	 * Gets the manifest file value for the Cytoscape-Plugin attribute
-	 */
-	private String getManifestAttribute(Manifest m) {
-		String Value = null;
-		if (m != null) {
-			Value = m.getMainAttributes().getValue("Cytoscape-Plugin");
-		}
-		return Value;
 	}
 
 	/**

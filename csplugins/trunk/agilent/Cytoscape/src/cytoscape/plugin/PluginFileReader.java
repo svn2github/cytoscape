@@ -42,11 +42,20 @@ public class PluginFileReader {
 			JDOMException {
 		downloadUrl = Url;
 
-		InputStream is = URLUtil.getInputStream(new URL(downloadUrl));
+		InputStream is = null;
 
-		// would be nice to validate later
-		SAXBuilder Builder = new SAXBuilder(false);
-		document = Builder.build(is);
+        try {
+			URL dlUrl = new URL(downloadUrl);
+			is = URLUtil.getInputStream(dlUrl);
+            // would be nice to validate later
+            SAXBuilder Builder = new SAXBuilder(false);
+            document = Builder.build(is, dlUrl.toString());
+        }
+        finally {
+            if (is != null) {
+                is.close();
+            }
+        }
 
 		// don't use this xsd it's no longer valid
 		// InputStream is = URLUtil.getInputStream( new URL(downloadUrl) );

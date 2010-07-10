@@ -36,15 +36,14 @@ package cytoscape.ding;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.logger.CyLogger;
+import cytoscape.util.PropUtil;
 
 import cytoscape.render.stateful.GraphLOD;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Properties;
 
 
 /**
@@ -62,8 +61,6 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	protected int edgeArrowThreshold;
 	protected int edgeLabelThreshold;
 
-	protected static CyLogger logger = CyLogger.getLogger(CyGraphLOD.class);
-
 	/**
 	 * Creates a new CyGraphLOD object.
 	 */
@@ -78,7 +75,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
+		if (Cytoscape.PREFERENCES_UPDATED.equals(e.getPropertyName())) {
 			init();
 
 			java.util.Map networkViewMap = cytoscape.Cytoscape.getNetworkViewMap();
@@ -91,59 +88,28 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	}
 
 	protected void init() {
-		coarseDetailThreshold = getInt("render.coarseDetailThreshold", 2000);
-		nodeBorderThreshold = getInt("render.nodeBorderThreshold", 200);
-		nodeLabelThreshold = getInt("render.nodeLabelThreshold", 100);
-		edgeArrowThreshold = getInt("render.edgeArrowThreshold", 300);
-		edgeLabelThreshold = getInt("render.edgeLabelThreshold", 120);
-
-		/*
-		        CyLogger.getLogger().info("(re)initializing level of detail (LOD)");
-		        CyLogger.getLogger().info("  coarseDetailThreshold: " + coarseDetailThreshold);
-		        CyLogger.getLogger().info("  nodeBorderThreshold: " + nodeBorderThreshold);
-		        CyLogger.getLogger().info("  nodeLabelThreshold: " + nodeLabelThreshold);
-		        CyLogger.getLogger().info("  edgeArrowThreshold: " + edgeArrowThreshold);
-		        CyLogger.getLogger().info("  edgeLabelThreshold: " + edgeLabelThreshold);
-		*/
-
-		//Cytoscape.getCurrentNetworkView().updateView();
+		Properties p = CytoscapeInit.getProperties();
+		coarseDetailThreshold = PropUtil.getInt(p,"render.coarseDetailThreshold", 2000);
+		nodeBorderThreshold = PropUtil.getInt(p,"render.nodeBorderThreshold", 200);
+		nodeLabelThreshold = PropUtil.getInt(p,"render.nodeLabelThreshold", 100);
+		edgeArrowThreshold = PropUtil.getInt(p,"render.edgeArrowThreshold", 300);
+		edgeLabelThreshold = PropUtil.getInt(p,"render.edgeLabelThreshold", 120);
 	}
 
+	/**
+	 * @deprecated Use PropUtil.getInt(..) instead.  Leaving Feb 2011.
+	 */
+	@Deprecated
 	protected int getInt(String key, int defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
-
-		if (val == null)
-			return defaultValue;
-
-		int ret = defaultValue;
-
-		try {
-			ret = Integer.parseInt(val);
-		} catch (Exception e) {
-			logger.warn("Property value for "+key+" must be an integer");
-		}
-
-		return ret;
+		return PropUtil.getInt(CytoscapeInit.getProperties(),key,defaultValue);
 	}
 
+	/**
+	 * @deprecated Use PropUtil.getBoolean(..) instead.  Leaving Feb 2011.
+	 */
+	@Deprecated
 	protected boolean getBoolean(String key, boolean defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
-
-		if (val == null)
-			return defaultValue;
-
-		boolean ret = defaultValue;
-
-		try {
-			if (Pattern.compile("true", Pattern.CASE_INSENSITIVE).matcher(val).matches())
-				ret = true;
-			else
-				ret = false;
-		} catch (Exception e) {
-			logger.warn("Property value for "+key+" must be a boolean");
-		}
-
-		return ret;
+		return PropUtil.getBoolean(CytoscapeInit.getProperties(),key,defaultValue);
 	}
 
 	/**
