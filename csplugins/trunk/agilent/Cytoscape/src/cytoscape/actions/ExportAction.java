@@ -36,9 +36,9 @@
 */
 
 //-------------------------------------------------------------------------
-// $Revision: 9736 $
-// $Date: 2007-03-19 17:25:45 -0700 (Mon, 19 Mar 2007) $
-// $Author: mes $
+// $Revision: 19327 $
+// $Date: 2010-02-12 14:01:44 -0800 (Fri, 12 Feb 2010) $
+// $Author: ruschein $
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
@@ -53,8 +53,6 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
 import org.freehep.util.export.ExportDialog;
-
-import phoebe.util.*;
 
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
@@ -72,7 +70,7 @@ public class ExportAction extends CytoscapeAction {
 	/**
 	 *
 	 */
-	public final static String MENU_LABEL = "Export As...";
+	public final static String MENU_LABEL = "Export as...";
 
 	/**
 	 * Creates a new ExportAction object.

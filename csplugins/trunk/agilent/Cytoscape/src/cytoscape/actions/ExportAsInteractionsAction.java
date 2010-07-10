@@ -35,9 +35,9 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// $Revision: 9825 $
-// $Date: 2007-03-29 14:43:22 -0700 (Thu, 29 Mar 2007) $
-// $Author: mes $
+// $Revision: 19167 $
+// $Date: 2010-02-03 14:58:10 -0800 (Wed, 03 Feb 2010) $
+// $Author: pwang $
 package cytoscape.actions;
 
 import cytoscape.CyNetwork;
@@ -90,7 +90,6 @@ public class ExportAsInteractionsAction extends CytoscapeAction {
 		setPreferredMenu("File.Export");
 	}
 
-	// MLC 09/19/05 BEGIN:
 	/**
 	 * User-initiated action to save the current network in SIF format
 	 * to a user-specified file.  If successfully saved, fires a
@@ -105,11 +104,19 @@ public class ExportAsInteractionsAction extends CytoscapeAction {
 	 * @param e ActionEvent Object.
 	 */
 
-	// MLC 09/19/05 END.
 	public void actionPerformed(ActionEvent e) {
+		
+		CyFileFilter cyFileFilter = new CyFileFilter("sif");
+		
+		String suggestedFileName = Cytoscape.getCurrentNetwork().getIdentifier();
+		if (!suggestedFileName.endsWith(".sif")){
+			suggestedFileName = suggestedFileName+ ".sif";
+		}
+
+		File suggestedFile = new File(suggestedFileName);
+				
 		// get the file name
-		File file = FileUtil.getFile("Save Network as Interactions", FileUtil.SAVE,
-		                             new CyFileFilter[] {  });
+		File file = FileUtil.getFile("Save Network as Interactions", FileUtil.SAVE, cyFileFilter, suggestedFile);
 
 		if (file != null) {
 			String fileName = file.getAbsolutePath();
@@ -164,10 +171,17 @@ class SaveAsSifTask implements Task {
 				throw new IllegalArgumentException("Network is empty.");
 			}
 
-			FileWriter f = new FileWriter(fileName);
-			CyNetwork netToSave = Cytoscape.getCurrentNetwork();
-			InteractionWriter.writeInteractions(netToSave, f, taskMonitor);
-			f.close();
+            CyNetwork netToSave = Cytoscape.getCurrentNetwork();
+			FileWriter f = null;
+            try {
+                f = new FileWriter(fileName);
+                InteractionWriter.writeInteractions(netToSave, f, taskMonitor);
+            }
+            finally {
+                if (f != null) {
+                    f.close();
+                }
+            }
 
 			Object[] ret_val = new Object[3];
 			ret_val[0] = netToSave;

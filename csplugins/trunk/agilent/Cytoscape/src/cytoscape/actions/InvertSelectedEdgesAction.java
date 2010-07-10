@@ -36,9 +36,9 @@
  */
 
 //-------------------------------------------------------------------------
-// $Revision: 11118 $
-// $Date: 2007-07-24 14:42:07 -0700 (Tue, 24 Jul 2007) $
-// $Author: mes $
+// $Revision: 19327 $
+// $Date: 2010-02-12 14:01:44 -0800 (Fri, 12 Feb 2010) $
+// $Author: ruschein $
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
@@ -66,7 +66,7 @@ public class InvertSelectedEdgesAction extends CytoscapeAction {
 	 * Creates a new InvertSelectedEdgesAction object.
 	 */
 	public InvertSelectedEdgesAction() {
-		super("Invert edge selection");
+		super("Invert Edge Selection");
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_I, ActionEvent.ALT_MASK);
 	}

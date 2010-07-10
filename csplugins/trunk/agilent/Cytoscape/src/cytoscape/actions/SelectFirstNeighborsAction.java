@@ -36,9 +36,9 @@
  */
 
 //-------------------------------------------------------------------------
-// $Revision: 11118 $
-// $Date: 2007-07-24 14:42:07 -0700 (Tue, 24 Jul 2007) $
-// $Author: mes $
+// $Revision: 19327 $
+// $Date: 2010-02-12 14:01:44 -0800 (Fri, 12 Feb 2010) $
+// $Author: ruschein $
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
@@ -71,7 +71,7 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	 * Creates a new SelectFirstNeighborsAction object.
 	 */
 	public SelectFirstNeighborsAction() {
-		super("First neighbors of selected nodes");
+		super("First Neighbors of Selected Nodes");
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(KeyEvent.VK_6, ActionEvent.CTRL_MASK);
 	}

@@ -36,23 +36,21 @@
  */
 
 //-------------------------------------------------------------------------
-// $Revision: 11122 $
-// $Date: 2007-07-24 14:58:38 -0700 (Tue, 24 Jul 2007) $
-// $Author: mes $
+// $Revision: 18003 $
+// $Date: 2009-09-17 15:39:42 -0700 (Thu, 17 Sep 2009) $
+// $Author: kono $
 //------------------------------------------------------------------------------
 package cytoscape.actions;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CyNetworkView;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
-import javax.swing.event.MenuEvent;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 
 
 //------------------------------------------------------------------------------
@@ -60,7 +58,10 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class SetVisualPropertiesAction extends CytoscapeAction {
-	private static String title = "Open VizMapper\u2122";
+	
+	private static final long serialVersionUID = 3340562148562666874L;
+	
+	private static final String title = "Open VizMapper\u2122";
 
 	/**
 	 * Creates a new SetVisualPropertiesAction object.
@@ -100,6 +101,14 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(1);
+		CytoPanel targetPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+		
+		targetPanel.setSelectedIndex(1);
+		
+		// If Control Panel is hidden, display it.
+		CytoPanelState curState = targetPanel.getState();
+
+		if (curState == CytoPanelState.HIDE)
+			targetPanel.setState(CytoPanelState.DOCK);
 	}
 }

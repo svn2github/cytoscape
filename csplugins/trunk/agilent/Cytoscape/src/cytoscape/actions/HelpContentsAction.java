@@ -72,7 +72,11 @@ public class HelpContentsAction extends CytoscapeAction {
 			try {
 			csh = new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker());
 			} catch (Exception ex) {
-				JOptionPane.showMessageDialog(null, "Help cannot be started. Please see the manual onthe Cytoscape website instead: http://cytoscape.org.", "ERROR", JOptionPane.ERROR_MESSAGE);		
+				JOptionPane.showMessageDialog(
+					null,
+					"Help cannot be started. Please see the manual on the Cytoscape website instead: http://cytoscape.org.",
+					"ERROR",
+					JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}

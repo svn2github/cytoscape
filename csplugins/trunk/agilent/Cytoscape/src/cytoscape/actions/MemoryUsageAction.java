@@ -1,5 +1,5 @@
 /*
-  File: HideSelectedEdgesAction.java
+  File: MemoryUsageAction.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -29,43 +29,42 @@
 */
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.MemoryReporter;
 
-//-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
-import javax.swing.event.MenuEvent;
 
-//-------------------------------------------------------------------------
-/**
- *
- */
-public class HideSelectedEdgesAction extends CytoscapeAction {
-	public static final String MENU_LABEL = "Hide Edge Selection";
-
+public class MemoryUsageAction extends CytoscapeAction {
 	/**
-	 * Creates a new HideSelectedEdgesAction object.
+	 * Creates a new MemoryUsageAction object and hooks it into the menu system.
 	 */
-	public HideSelectedEdgesAction() {
-		super(MENU_LABEL);
-		setPreferredMenu("Select.Edges");
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H, ActionEvent.ALT_MASK);
+	public MemoryUsageAction() {
+		super("Memory Usage...");
+		setPreferredMenu("Help");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 *  Show memory usage freport.
 	 */
-	public void actionPerformed(ActionEvent e) {
-		GinyUtils.hideSelectedEdges(Cytoscape.getCurrentNetworkView());
+	public void actionPerformed(final ActionEvent e) {
+		final StringBuilder msg =
+			new StringBuilder("used:           " + roundToNearestMiB(MemoryReporter.getUsedMemory()) + "MiB\n");
+		final long maximum = MemoryReporter.getMaxMemory();
+		if (maximum == -1L)
+			msg.append("maximum:   not available!");
+		else
+			msg.append("maximum:   " + roundToNearestMiB(maximum) + "MiB\n");
+		msg.append("committed:  " + roundToNearestMiB(MemoryReporter.getCommittedMemory()) + "MiB\n");
+
+		JOptionPane.showMessageDialog(null, msg.toString(), "Memory Usage",
+		                              JOptionPane.INFORMATION_MESSAGE);
 	}
 
-    public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
-    }
+	private long roundToNearestMiB(final long noOfBytes) {
+		return (noOfBytes + 512L * 1024L) / (1024L * 1024L);
+	}
 }

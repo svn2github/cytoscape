@@ -72,12 +72,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
-
+import cytoscape.data.readers.NNFReader;
 
 /**
  * Task to load a new network.
  */
 public class LoadNetworkTask implements Task {
+	private static long taskLoadStart = 0; // "0" means that it has not bene initialised!
+
 	/**
 	 *  Load a network from a url.  The reader code will attempt to determine
 	 *  the format of the network (GML, XGMML, SIF) from the HTTP content-type
@@ -121,6 +123,7 @@ public class LoadNetworkTask implements Task {
 	 *                        after it has been read in (provided that a view was created).
 	 */
 	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		taskLoadStart = System.nanoTime();
 		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm);
 		setupTask(task, skipMessage, true);
 	}
@@ -137,6 +140,7 @@ public class LoadNetworkTask implements Task {
 	 *                        after it has been read in (provided that a view was created).
 	 */
 	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		taskLoadStart = System.nanoTime();
 		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm);
 		setupTask(task, skipMessage, true);
 	}
@@ -241,19 +245,7 @@ public class LoadNetworkTask implements Task {
 
 			taskMonitor.setStatus("Creating Cytoscape Network...");
 
-			CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
-
-			// Are we supposed to lay this out?
-			CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-
-			if ((layoutAlgorithm != null) && (view != null)) {
-				// Yes, do it
-				// Layouts are, in general cancelable
-				((JTask) taskMonitor).setCancel(true);
-				taskMonitor.setStatus("Performing layout...");
-				layoutAlgorithm.doLayout(view, taskMonitor);
-				taskMonitor.setStatus("Layout complete");
-			}
+			final CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
 			Object[] ret_val = new Object[2];
 			ret_val[0] = cyNetwork;
@@ -294,16 +286,24 @@ public class LoadNetworkTask implements Task {
 	/**
 	 * Inform User of Network Stats.
 	 */
-
-	// Mod. by Kei 08/26/2005
-	//
-	// For the new GML format import function, added some messages
-	// for the users.
-	//
 	private void informUserOfGraphStats(CyNetwork newNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
+		
+		String msg = "";
+		if (reader instanceof NNFReader){
+			final NNFReader theReader = (NNFReader) reader;
+			msg += "Successfully loaded "+ theReader.getNetworks().size() + " nested networks from " + name;
 
+			if (taskLoadStart != 0) // Display how long it took to load the NNs.
+				msg += " in " + (System.nanoTime() - taskLoadStart + 500000L) / 1000000L + "ms.";
+			else
+				msg += ".";
+
+			taskMonitor.setStatus(msg);
+			return;
+		}
+		
 		// Give the user some confirmation
 		sb.append("Successfully loaded network from:  ");
 		sb.append(name);
@@ -315,7 +315,7 @@ public class LoadNetworkTask implements Task {
 		                                                              .getProperty("viewThreshold"))) {
 			sb.append("Network is under "
 			          + CytoscapeInit.getProperties().getProperty("viewThreshold")
-			          + " nodes.  A view will be automatically created.");
+			          + " nodes.  A view has been created automatically.");
 		} else {
 			sb.append("Network is over "
 			          + CytoscapeInit.getProperties().getProperty("viewThreshold")
@@ -357,6 +357,10 @@ public class LoadNetworkTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Loading Network");
+		if (reader instanceof NNFReader){
+			return new String("Loading Network(s)");
+		}
+		
+		return new String("Loaded Network");
 	}
 }

@@ -70,7 +70,7 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 	 * Creates a new SelectAdjacentEdgesAction object.
 	 */
 	public SelectAdjacentEdgesAction() {
-		super("Select adjacent edges");
+		super("Select Adjacent Edges");
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_E, ActionEvent.ALT_MASK);
 	}

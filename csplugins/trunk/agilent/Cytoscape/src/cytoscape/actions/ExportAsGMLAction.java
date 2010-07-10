@@ -35,13 +35,13 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// $Revision: 13393 $
-// $Date: 2008-03-07 17:10:51 -0800 (Fri, 07 Mar 2008) $
-// $Author: scooter $
+// $Revision: 19168 $
+// $Date: 2010-02-03 15:14:58 -0800 (Wed, 03 Feb 2010) $
+// $Author: pwang $
 
-// $Revision: 13393 $
-// $Date: 2008-03-07 17:10:51 -0800 (Fri, 07 Mar 2008) $
-// $Author: scooter $
+// $Revision: 19168 $
+// $Date: 2010-02-03 15:14:58 -0800 (Wed, 03 Feb 2010) $
+// $Author: pwang $
 package cytoscape.actions;
 
 import cytoscape.CyNetwork;
@@ -115,7 +115,17 @@ public class ExportAsGMLAction extends CytoscapeAction {
 		String name;
 
 		try {
-			name = FileUtil.getFile("Export Network as GML", FileUtil.SAVE, new CyFileFilter[] {  })
+			
+			CyFileFilter cyFileFilter = new CyFileFilter("gml");
+			
+			String suggestedFileName = Cytoscape.getCurrentNetwork().getIdentifier();
+			if (!suggestedFileName.endsWith(".gml")){
+				suggestedFileName = suggestedFileName+ ".gml";
+			}
+
+			File suggestedFile = new File(suggestedFileName);
+			
+			name = FileUtil.getFile("Export Network as GML", FileUtil.SAVE, cyFileFilter, suggestedFile)
 			               .toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
@@ -230,13 +240,21 @@ class ExportAsGMLTask implements Task {
 	 *             Error Writing to File.
 	 */
 	private void saveGraph() throws IOException {
-		FileWriter fileWriter = new FileWriter(fileName);
+		FileWriter fileWriter = null;
 		List list = new Vector();
 
-		GMLWriter gmlWriter = new GMLWriter();
-		gmlWriter.writeGML(network, view, list);
-		GMLParser.printList(list, fileWriter);
-		fileWriter.close();
+        try {
+            fileWriter = new FileWriter(fileName);
+
+            GMLWriter gmlWriter = new GMLWriter();
+            gmlWriter.writeGML(network, view, list);
+            GMLParser.printList(list, fileWriter);
+        }
+        finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
 
 		Object[] ret_val = new Object[3];
 		ret_val[0] = network;

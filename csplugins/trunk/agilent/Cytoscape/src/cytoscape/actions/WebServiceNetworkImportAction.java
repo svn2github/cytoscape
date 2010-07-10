@@ -10,7 +10,7 @@ public class WebServiceNetworkImportAction extends CytoscapeAction {
 	 * Creates a new FitContentAction object.
 	 */
 	public WebServiceNetworkImportAction() {
-		super("Network from web services...");
+		super("Network from Web Services...");
 		setPreferredMenu("File.Import");
 	}
 

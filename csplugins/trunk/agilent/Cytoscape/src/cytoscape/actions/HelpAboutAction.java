@@ -36,6 +36,7 @@
 */
 package cytoscape.actions;
 
+import cytoscape.Cytoscape;
 import cytoscape.util.CreditScreen;
 import cytoscape.util.CytoscapeAction;
 
@@ -98,13 +99,13 @@ public class HelpAboutAction extends CytoscapeAction {
 					               + " Allan Kuchinsky\n" + " Nerius Landys\n"
 					               + " Willem Ligtenberg\n" + " Samad Lotia\n"
 					               + " Andrew Markiel\n" + " James McIninch\n" + " Keiichiro Ono\n"
-					               + " Owen Ozier\n" + " David Reiss\n" + " Chris Sander\n"
+					               + " Owen Ozier\n" + " David Reiss\n" + "Johannes Ruscheinski\n" + " Chris Sander\n"
 					               + " Paul Shannon\n" + " Robert Sheridan\n"
 					               + " Benno Shwikowski\n" + " Mike Smoot\n" + " James Taylor\n"
-					               + " Aditya Vailaya\n" + " Jonathan Wang\n" + " Chris Workman\n";
+					               + " Aditya Vailaya\n" + " Jonathan Wang\n" + "Peng-Liang Wang\n" + " Chris Workman\n";
 
-					CreditScreen.showCredits(getClass()
-					                             .getResource("/cytoscape/images/CytoscapeCredits.png"),
+					CreditScreen.showCredits(Cytoscape.class
+					                             .getResource("images/CytoscapeCredits.png"),
 					                         lines);
 				}
 			});

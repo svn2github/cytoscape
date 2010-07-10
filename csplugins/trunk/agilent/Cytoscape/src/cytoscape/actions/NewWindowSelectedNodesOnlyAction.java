@@ -36,9 +36,9 @@
  */
 
 //-------------------------------------------------------------------------
-// $Revision: 12508 $
-// $Date: 2007-12-10 08:43:21 -0800 (Mon, 10 Dec 2007) $
-// $Author: Piet Molenaar $
+// $Revision: 19327 $
+// $Date: 2010-02-12 14:01:44 -0800 (Fri, 12 Feb 2010) $
+// $Author: ruschein $
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
@@ -71,7 +71,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
 	public NewWindowSelectedNodesOnlyAction() {
-		super("From selected nodes, all edges");
+		super("From Selected Nodes, All Edges");
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 	}

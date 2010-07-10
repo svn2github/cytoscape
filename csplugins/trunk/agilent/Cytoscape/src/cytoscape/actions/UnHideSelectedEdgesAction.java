@@ -36,9 +36,9 @@
 */
 
 //-------------------------------------------------------------------------
-// $Revision: 9905 $
-// $Date: 2007-04-05 17:38:32 -0700 (Thu, 05 Apr 2007) $
-// $Author: mes $
+// $Revision: 19327 $
+// $Date: 2010-02-12 14:01:44 -0800 (Fri, 12 Feb 2010) $
+// $Author: ruschein $
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
@@ -62,7 +62,7 @@ public class UnHideSelectedEdgesAction extends CytoscapeAction {
 	 * Creates a new UnHideSelectedEdgesAction object.
 	 */
 	public UnHideSelectedEdgesAction() {
-		super("Show all edges");
+		super("Show All Edges");
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H,
 		                    ActionEvent.ALT_MASK | ActionEvent.SHIFT_MASK);

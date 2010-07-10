@@ -36,9 +36,9 @@
  */
 
 //-------------------------------------------------------------------------
-// $Revision: 11118 $
-// $Date: 2007-07-24 14:42:07 -0700 (Tue, 24 Jul 2007) $
-// $Author: mes $
+// $Revision: 19327 $
+// $Date: 2010-02-12 14:01:44 -0800 (Fri, 12 Feb 2010) $
+// $Author: ruschein $
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
@@ -60,7 +60,7 @@ public class SelectAllEdgesAction extends CytoscapeAction {
 	 * Creates a new SelectAllEdgesAction object.
 	 */
 	public SelectAllEdgesAction() {
-		super("Select all edges");
+		super("Select All Edges");
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK);
 	}

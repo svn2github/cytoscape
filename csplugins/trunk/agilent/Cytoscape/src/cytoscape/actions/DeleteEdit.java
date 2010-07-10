@@ -56,16 +56,11 @@ class DeleteEdit extends CyAbstractEdit {
 		
 	}
 
-	// AJK: 03082008 DeleteAction to be reenabled upon undo
 	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd,	DeleteAction deleteAction) {
 		this (net, nodeInd, edgeInd);
 		this.deleteAction = deleteAction;
 	}
-	
-	
-	
-	
-		
+
 
 	public void redo() {
 		super.redo();
@@ -74,8 +69,7 @@ class DeleteEdit extends CyAbstractEdit {
 		net.hideNodes(nodes);
 		CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());				
 		netView.redrawGraph(true, true);
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
-        // AJK: 03082008 disable DeleteAction 
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, netView, net);
         deleteAction.setEnabled(false);
 	}
 
@@ -93,8 +87,7 @@ class DeleteEdit extends CyAbstractEdit {
 			}
 		}
 		netView.redrawGraph(true, true);
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
-        // AJK: 03082008 re-enable DeleteAction 
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, netView, net);
         deleteAction.setEnabled(true);
 	}
 }

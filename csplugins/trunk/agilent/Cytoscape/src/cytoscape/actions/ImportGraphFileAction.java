@@ -35,9 +35,9 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-// $Revision: 15335 $
-// $Date: 2008-12-04 14:14:18 -0800 (Thu, 04 Dec 2008) $
-// $Author: kono $
+// $Revision: 19327 $
+// $Date: 2010-02-12 14:01:44 -0800 (Fri, 12 Feb 2010) $
+// $Author: ruschein $
 package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
@@ -73,7 +73,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	 *            WindowMenu Object.
 	 */
 	public ImportGraphFileAction(CyMenus windowMenu) {
-		super("Network (multiple file types)...");
+		super("Network (Multiple File Types)...");
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK);
 		this.windowMenu = windowMenu;

@@ -35,8 +35,8 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// $Revision: 9565 $
-// $Date: 2007-02-13 11:36:50 -0800 (Tue, 13 Feb 2007) $
+// $Revision: 19142 $
+// $Date: 2010-02-02 12:57:16 -0800 (Tue, 02 Feb 2010) $
 // $Author: mes $
 package cytoscape.actions;
 
@@ -93,7 +93,7 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 		                                                                  true);
 		amd.pack();
 		amd.setLocationRelativeTo(Cytoscape.getDesktop());
-		amd.show();
+		amd.setVisible(true);
 
 		if (amd.getStatus() == false) {
 			return;

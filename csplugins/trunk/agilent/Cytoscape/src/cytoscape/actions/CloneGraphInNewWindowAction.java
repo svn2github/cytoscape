@@ -36,8 +36,8 @@
  */
 
 //-------------------------------------------------------------------------
-// $Revision: 12149 $
-// $Date: 2007-11-13 10:25:00 -0800 (Tue, 13 Nov 2007) $
+// $Revision: 20335 $
+// $Date: 2010-05-27 13:36:38 -0700 (Thu, 27 May 2010) $
 // $Author: mes $
 //-------------------------------------------------------------------------
 package cytoscape.actions;
@@ -48,6 +48,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.CyNetworkNaming;
 
 import giny.model.Node;
 import giny.view.NodeView;
@@ -74,7 +75,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 * Creates a new CloneGraphInNewWindowAction object.
 	 */
 	public CloneGraphInNewWindowAction() {
-		super("Clone current network");
+		super("Clone Current Network");
 		setPreferredMenu("File.New.Network");
 	}
 
@@ -87,12 +88,11 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 		CyNetwork origNet = Cytoscape.getCurrentNetwork();
 		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
+		String newName = CyNetworkNaming.getSuggestedNetworkTitle(origNet.getTitle() + " copy");
 
 		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
 		                                                origNet.getEdgeIndicesArray(),
-		                                                origNet.getTitle() + " copy", 
-														null,
-														true);
+		                                                newName, null, true);
 
 		// only clone the view if one actually exists
 		if ( origView == null || origView == Cytoscape.getNullNetworkView() )

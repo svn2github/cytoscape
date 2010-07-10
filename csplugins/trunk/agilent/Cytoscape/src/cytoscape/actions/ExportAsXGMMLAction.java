@@ -87,7 +87,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 	 * Creates a new ExportAsXGMMLAction object.
 	 */
 	public ExportAsXGMMLAction() {
-		super("Network and attributes as XGMML...");
+		super("Network and Attributes as XGMML...");
 		setPreferredMenu("File.Export");
 	}
 
@@ -263,13 +263,17 @@ class ExportAsXGMMLTask implements Task {
 	    throws IOException, JAXBException, URISyntaxException, XMLStreamException,
 	               FactoryConfigurationError {
 		// final FileWriter fileWriter = new FileWriter(fileName);
-		OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
-		final XGMMLWriter writer = new XGMMLWriter(network, view);
+		OutputStreamWriter fileWriter = null;
 
 		try {
+            fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
+            final XGMMLWriter writer = new XGMMLWriter(network, view);
+            
 			writer.write(fileWriter);
 		} finally {
-			fileWriter.close();
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
 		}
 
 		final Object[] ret_val = new Object[3];

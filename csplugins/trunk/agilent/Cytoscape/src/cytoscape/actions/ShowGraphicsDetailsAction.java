@@ -92,6 +92,7 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 		} else {
 			((DingNetworkView)currView).setGraphLOD(new CyGraphAllLOD());
 		}
+		currView.redrawGraph(true,false);
 	}
 
 	/**
