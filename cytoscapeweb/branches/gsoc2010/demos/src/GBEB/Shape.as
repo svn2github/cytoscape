@@ -1,6 +1,8 @@
 package GBEB
 {
 	import flare.vis.data.EdgeSprite;
+	
+	import flash.geom.Point;
 
 	public class Shape
 	{
@@ -11,6 +13,8 @@ package GBEB
 		public var storedDataEdges:Array;
 		public var direction:Number = -1; //stores the main direction of edges that are inside the Shape. -1 if there is no main distance
 		public var stronglyClustered:Boolean; //flag to indicate if the edges are strongly clustered within this Shape
+		public var centroid:Point; //Stores the "centre of area (mass) for a 2d shape
+		public var meshEdge:EdgeSprite;
 		
 		
 		private const bandwidth:int = 3; //bandwidth of KDE
@@ -99,24 +103,85 @@ package GBEB
 			return -1;
 		}
 		
-		//return the polarCoor of an Edge Sprite with a max diff of 180 degrees
-		private function getPolarCoor180(e:EdgeSprite):Number
-		{ 
-			var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
-			angle = Math.round(angle / Math.PI * 180); //working in degrees	
-			angle = (angle < 0 ? 0 - angle : 180 - angle);
-			//trace("Shape: getPolar: " + e.source.data["name"] + " to " + e.target.data["name"] + " | angle = " + angle);
-			return angle; 
+				//return the polarCoor of an Edge Sprite with a max diff of 180 degrees
+				private function getPolarCoor180(e:EdgeSprite):Number
+				{ 
+					var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
+					angle = Math.round(angle / Math.PI * 180); //working in degrees	
+					angle = (angle < 0 ? 0 - angle : 180 - angle);
+					//trace("Shape: getPolar: " + e.source.data["name"] + " to " + e.target.data["name"] + " | angle = " + angle);
+					return angle; 
+				}
+		
+				//return the polarCoor of an Edge Sprite with a max diff of 90 degrees
+				private function getPolarCoor90(e:EdgeSprite):Number
+				{ 
+					var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
+					angle = Math.round(angle / Math.PI * 180); //working in degrees
+					angle = ( angle < 0 ? angle + 180 : angle); // inverts the direction for -ve regions
+					//angle = ( angle > 90 ? 180 - angle : angle); // gets the acute angle
+					return angle;
+				}
+		
+		//adds controlPoint to meshEdge of a shape. This function is called x times if the dataEdge cuts across x number of shapes. 
+		public function addControlPoint():void
+		{
+			var intersectionPointsArray:Array = new Array();
+			var intersectionPoint:Point;
+			var controlPoint:Point; 
+			
+			var a:Point, b:Point; //a,b stores the end points of the meshEdge of each shape
+			var e:Point, f:Point; //e,f stores the end points of the each dataEdge					
+			
+			a = new Point(meshEdge.source.x, meshEdge.source.y);
+			b = new Point(meshEdge.target.x, meshEdge.target.y);
+			
+			for each (var dataEdge:EdgeSprite in storedDataEdges)
+			{
+				e = new Point(dataEdge.source.x, dataEdge.source.y);
+				f = new Point(dataEdge.target.x, dataEdge.target.y);
+				
+				intersectionPoint = GBEB.GeometryUtil.lineIntersectLine(a, b, e, f);
+				
+				if(intersectionPoint != null)
+				{
+					intersectionPointsArray.push(intersectionPoint);
+				}
+				
+			}
+			
+			if(intersectionPointsArray.length != 0)
+			{
+				controlPoint = findControlPointFromIntersectionPoints(intersectionPointsArray)
+			} else {
+				trace("Shape: addControlPoints: " + (gridIndex[0] as Point).toString() + " has no controlPoint");
+			}
+			
+			for each (var dataEdge:EdgeSprite in storedDataEdges)
+			{
+				var prop:* = dataEdge.props.GBEBProperty;		
+				
+				(prop as GBEBProperty).addControlPoint(controlPoint); 
+			}
+			
+			return;
 		}
 		
-		//return the polarCoor of an Edge Sprite with a max diff of 90 degrees
-		private function getPolarCoor90(e:EdgeSprite):Number
-		{ 
-			var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
-			angle = Math.round(angle / Math.PI * 180); //working in degrees
-			angle = ( angle < 0 ? angle + 180 : angle); // inverts the direction for -ve regions
-			//angle = ( angle > 90 ? 180 - angle : angle); // gets the acute angle
-			return angle;
+		private function findControlPointFromIntersectionPoints(intersectionPointsArray:Array):Point
+		{
+			var avgX:Number = 0;
+			var avgY:Number = 0;
+			var numPoints:int = intersectionPointsArray.length;
+			
+			for each (var p:Point in intersectionPointsArray)
+			{
+				avgX += p.x;
+				avgY += p.y;
+			}
+			
+			return new Point( (avgX / numPoints), (avgY / numPoints));
 		}
-	}
+		
+		
+	}//end of class
 }
