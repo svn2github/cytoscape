@@ -492,8 +492,8 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 
 		try {
 			BufferedReader br = null;
-
-			is = url.openStream();
+			final URLConnection connection = url.openConnection();
+			is = connection.getInputStream();
 			try {
 				br = new BufferedReader(new InputStreamReader(is));
 				header = parseHeader(br);
