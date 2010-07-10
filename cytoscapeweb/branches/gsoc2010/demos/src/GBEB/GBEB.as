@@ -63,6 +63,7 @@ package GBEB
 
 		}
 					//these indented functions are use to create a visualisation for GBEB
+					//by cloning an overlay is created, allowing the inspection of the quality of the graph
 					private function bundle(e:EdgeSprite):void
 					{
 						_bundler.render(e);
