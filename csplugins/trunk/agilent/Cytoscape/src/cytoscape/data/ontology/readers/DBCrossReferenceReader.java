@@ -96,26 +96,25 @@ public class DBCrossReferenceReader {
 		URL resource = getClass().getResource(DBXREF_RESOURCE_FILE);
 		// BufferedReader bufRd = new BufferedReader(new InputStreamReader(resource.openStream()));
 		// Use URLUtil to get the InputStream since we might be using a proxy server and because pages may be cached:
-		BufferedReader bufRd = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream (resource)));
+		BufferedReader bufRd = null;
 		String line;
 
-		while ((line = bufRd.readLine()) != null) {
-			// Read header
-			if (line.startsWith(ABBREVIATION.toString())) {
-				int colonInx = line.indexOf(':');
-				String abb = line.substring(colonInx + 1).trim();
-				readEntry(abb, bufRd);
-			}
-		}
-
-		try {
-			if (bufRd != null) {
-				bufRd.close();
-			}
-		} catch (IOException ioe) {
-		} finally {
-			bufRd = null;
-		}
+        try {
+            bufRd = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream (resource)));
+            while ((line = bufRd.readLine()) != null) {
+                // Read header
+                if (line.startsWith(ABBREVIATION.toString())) {
+                    int colonInx = line.indexOf(':');
+                    String abb = line.substring(colonInx + 1).trim();
+                    readEntry(abb, bufRd);
+                }
+            }
+        }
+        finally {
+            if (bufRd != null) {
+                bufRd.close();
+            }
+        }
 	}
 
 	/**

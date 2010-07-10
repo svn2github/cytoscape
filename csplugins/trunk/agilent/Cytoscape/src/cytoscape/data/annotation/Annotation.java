@@ -69,7 +69,12 @@ import java.util.Vector;
  *
  * Thus the combination of an annotation (the present class) with an ontology
  * provides a means to richly and flexibly describe an object.
+ * 
+ * 
+ * @deprecated Use regular CyAttributes for annotation.
+ * 
  */
+@Deprecated
 public class Annotation implements Serializable {
 	protected Ontology ontology;
 	protected String curator;

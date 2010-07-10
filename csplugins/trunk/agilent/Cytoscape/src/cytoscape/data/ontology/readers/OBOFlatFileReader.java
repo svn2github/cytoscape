@@ -55,6 +55,8 @@ import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.XREF;
 import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
 
+import cytoscape.logger.CyLogger;
+
 import cytoscape.util.URLUtil;
 
 import giny.model.Edge;
@@ -202,49 +204,63 @@ public class OBOFlatFileReader implements OntologyReader {
 	 * @throws IOException
 	 */
 	public void readOntology() throws IOException {
-		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(inputStream));
-		String line;
-
-		String key;
-		String val;
-		int colonInx;
-
-		while ((line = bufRd.readLine()) != null) {
-			// Read header
-			if (line.startsWith(TERM_TAG)) {
-				readEntry(bufRd);
-
-				break;
-			} else if (line.length() != 0) {
-				colonInx = line.indexOf(':');
-
-				if (colonInx == -1)
-					continue;
-
-				key = line.substring(0, colonInx).trim();
-				val = line.substring(colonInx + 1).trim();
-				header.put(key, val);
-			}
-		}
-
-		while ((line = bufRd.readLine()) != null) {
-			// Read header
-			if (line.startsWith(TERM_TAG)) {
-				readEntry(bufRd);
-			}
-		}
-
 		try {
-			if (inputStream != null) {
-				inputStream.close();
+			try {
+				BufferedReader bufRd = null;
+				String line;
+
+				String key;
+				String val;
+				int colonInx;
+
+				try {
+					bufRd = new BufferedReader(new InputStreamReader(inputStream));
+					while ((line = bufRd.readLine()) != null) {
+						// Read header
+						if (line.startsWith(TERM_TAG)) {
+							readEntry(bufRd);
+
+							break;
+						} else if (line.length() != 0) {
+							colonInx = line.indexOf(':');
+
+							if (colonInx == -1)
+								continue;
+
+							key = line.substring(0, colonInx).trim();
+							val = line.substring(colonInx + 1).trim();
+							header.put(key, val);
+						}
+					}
+
+					while ((line = bufRd.readLine()) != null) {
+						// Read header
+						if (line.startsWith(TERM_TAG)) {
+							readEntry(bufRd);
+						}
+					}
+
+				}
+				finally {
+						if (bufRd != null) {
+							bufRd.close();
+						}
+				}
 			}
-		} catch (IOException ioe) {
-		} finally {
+			finally {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			}
+
+			buildDag();
+			setAttributeDescriptions();
+		}
+		catch (IOException ioe) {
+		}
+		finally {
 			inputStream = null;
 		}
-
-		buildDag();
-		setAttributeDescriptions();
 	}
 
 	/**
@@ -276,6 +292,13 @@ public class OBOFlatFileReader implements OntologyReader {
 				break;
 
 			colonInx = line.indexOf(':');
+			if (colonInx == -1) {
+				// Hmm.... this shouldn't happen, but if it does,
+				// just skip this line and try to recover
+				CyLogger.getLogger(OBOFlatFileReader.class).warn("Illegal format in ontology file for "+name+" ... continuing");
+				continue;
+			}
+
 			key = line.substring(0, colonInx).trim();
 			val = line.substring(colonInx + 1).trim();
 

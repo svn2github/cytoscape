@@ -36,19 +36,12 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-
-import giny.model.RootGraph;
-
 import giny.view.GraphView;
 
 import java.io.IOException;
+
+import cytoscape.CyNetwork;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 
 /**
@@ -63,14 +56,6 @@ public interface GraphReader {
 	 * @throws IOException IO Errors.
 	 */
 	public void read() throws IOException;
-
-	/**
-	 * Lays out the graph.
-	 *
-	 * @param myView
-	 * @deprecated Use getLayoutAlgorithm().doLayout(view) instead. Will be removed 5/2008.
-	 */
-	public void layout(GraphView myView);
 
 	/**
 	 * Returns the CyLayoutAlgorithm used to layout the graph

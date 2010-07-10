@@ -52,6 +52,7 @@ import java.io.*;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Vector;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -75,8 +76,21 @@ public class OntologyXmlReader {
 
 	private void read() throws Exception {
 		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(xmlFile);
-		Element root = doc.getRootElement();
+		InputStream is = null;
+		Document doc;
+		Element root;
+
+		try {
+			is = new FileInputStream(xmlFile);
+			doc = builder.build(is, xmlFile.toURI().toURL().toString());
+		}
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
+
+		root = doc.getRootElement();
 
 		String curator = root.getAttributeValue("curator");
 		String ontologyType = root.getAttributeValue("type");

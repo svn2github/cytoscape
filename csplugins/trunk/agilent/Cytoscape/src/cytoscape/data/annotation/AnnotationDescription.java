@@ -47,7 +47,11 @@ import java.io.Serializable;
  * useful when some data source (a biodata server, for example) contains a
  * number of ontologies, and needs to communicate a summary of these to a
  * client.
+ * 
+ *  @deprecated Use regular CyAttributes for annotation.
+ *  
  */
+@Deprecated
 public class AnnotationDescription implements Serializable {
 	protected String species; // halopbacterium sp, saccharomyces cerevisiae, ...
 	protected String curator; // KEGG, GO, ...

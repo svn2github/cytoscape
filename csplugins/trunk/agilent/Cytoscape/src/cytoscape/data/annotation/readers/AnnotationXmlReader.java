@@ -82,8 +82,21 @@ public class AnnotationXmlReader {
 
 	private void read() throws Exception {
 		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(xmlFile);
-		Element root = doc.getRootElement();
+		InputStream is = null;
+		Document doc;
+		Element root;
+
+		try {
+			is = new FileInputStream(xmlFile);
+			doc = builder.build(is, xmlFile.toURI().toURL().toString());
+		}
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
+
+		root = doc.getRootElement();
 
 		String species = root.getAttributeValue("species");
 		String ontologyXmlFileName = root.getAttributeValue("ontology");

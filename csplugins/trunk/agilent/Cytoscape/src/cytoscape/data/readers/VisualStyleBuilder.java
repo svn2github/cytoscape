@@ -40,6 +40,7 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.data.CyAttributes;
 import cytoscape.visual.*;
+import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_SIZE_LOCKED;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;
 
@@ -127,7 +128,7 @@ public class VisualStyleBuilder {
 		if (backgroundColor != null)
 			gac.setDefaultBackgroundColor(backgroundColor);
 
-		nac.setNodeSizeLocked(nodeSizeLocked);
+		currentStyle.getDependency().set(NODE_SIZE_LOCKED, nodeSizeLocked);
 
 		processCounts();
 

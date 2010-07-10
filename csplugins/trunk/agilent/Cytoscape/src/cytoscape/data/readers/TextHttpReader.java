@@ -71,7 +71,8 @@ public class TextHttpReader {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public int read() throws Exception {
-		sb.append(getPage(uri));
+		// Start with an empty StringBuffer in case this method is called more than once.
+		sb = new StringBuffer(getPage(uri));
 
 		return sb.length();
 	} // read
@@ -117,29 +118,56 @@ public class TextHttpReader {
 		int characterCount = 0;
 		StringBuffer result = new StringBuffer();
 
-		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		// Ensure we are reading the real content from url,
-		// and not some out-of-date cached content:
-		urlConnection.setUseCaches(false);
-		int responseCode = urlConnection.getResponseCode();
-		String contentType = urlConnection.getContentType();
+		HttpURLConnection urlConnection = null;
 
-		int contentLength = urlConnection.getContentLength();
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
 
-		String contentEncoding = urlConnection.getContentEncoding();
+            // Ensure we are reading the real content from url,
+            // and not some out-of-date cached content:
+            urlConnection.setUseCaches(false);
+            int responseCode = urlConnection.getResponseCode();
+            String contentType = urlConnection.getContentType();
 
-		if (responseCode != HttpURLConnection.HTTP_OK)
-			throw new IOException("\nHTTP response code: " + responseCode);
+            int contentLength = urlConnection.getContentLength();
 
-		BufferedReader theHTML = new BufferedReader(new InputStreamReader(urlConnection
-		                                                                                                                              .getInputStream()));
-		String thisLine;
+            String contentEncoding = urlConnection.getContentEncoding();
 
-		while ((thisLine = theHTML.readLine()) != null) {
-			result.append(thisLine);
-			result.append("\n");
-		}
+            if (responseCode != HttpURLConnection.HTTP_OK)
+                throw new IOException("\nHTTP response code: " + responseCode);
 
+            String thisLine;
+            InputStream connStrm = null;
+
+            try {
+				BufferedReader theHTML = null;
+
+                connStrm = urlConnection.getInputStream();
+				try {
+					theHTML = new BufferedReader(new InputStreamReader(connStrm));
+					while ((thisLine = theHTML.readLine()) != null) {
+						result.append(thisLine);
+						result.append("\n");
+					}
+				}
+				finally {
+					if (theHTML != null) {
+						theHTML.close();
+					}
+				}
+            }
+            finally {
+                if (connStrm != null) {
+                    connStrm.close();
+                }
+            }
+        }
+        finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        
 		return result.toString();
 	} // getPage
 } // TextReader

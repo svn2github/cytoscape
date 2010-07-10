@@ -103,11 +103,16 @@ public class AnnotationFlatFileReader {
 
 		String curLine = null;
 
-		while (null != (curLine = rd.readLine())) {
-			extractedLines.add(curLine);
-		}
-
-		rd.close();
+        try {
+    		while (null != (curLine = rd.readLine())) {
+        		extractedLines.add(curLine);
+            }
+        }
+        finally {
+            if (rd != null) {
+                rd.close();
+            }
+        }
 
 		Object[] entireFile = extractedLines.toArray();
 		lines = new String[entireFile.length];

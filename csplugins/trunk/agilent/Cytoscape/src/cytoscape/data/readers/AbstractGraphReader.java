@@ -40,8 +40,10 @@ import giny.view.GraphView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
@@ -54,7 +56,8 @@ import cytoscape.view.CyNetworkView;
  */
 public abstract class AbstractGraphReader implements GraphReader {
 	protected String fileName;
-
+	protected String title=null; // network title
+	
 	/**
 	 * Creates a new AbstractGraphReader object.
 	 *
@@ -97,9 +100,27 @@ public abstract class AbstractGraphReader implements GraphReader {
 	public String getNetworkName() {
 		String t = "";
 
-		if (fileName != null) {
+		if (title != null){
+			t = title;
+		}
+		else if (fileName != null) {
 			File tempFile = new File(fileName);
 			t = tempFile.getName();
+
+			// Remove the file extension '.sif' or '.gml' or '.xgmml' as network title
+			// 1. determine the extension of file
+			String ext = "";			
+			int dotIndex = t.lastIndexOf(".");			
+			if (dotIndex != -1){
+				ext = t.substring(dotIndex+1);
+			}
+			
+			// 2. check if the file ext is one of the pre-defined exts
+			Set extSets = (Set) Cytoscape.getImportHandler().getAllExtensions();			
+			if (extSets.contains(ext)){
+				// if the file ext is pre-defined, remove it from network title
+				t = t.substring(0, dotIndex);
+			}
 		}
 
 		return CyNetworkNaming.getSuggestedNetworkTitle(t);
@@ -126,10 +147,4 @@ public abstract class AbstractGraphReader implements GraphReader {
 	public void setTaskMonitor(TaskMonitor monitor) {
 	}
 
-	/**
-	 * @deprecated Use getLayoutAlgorithm().doLayout(view) instead. Will be removed 5/2008.
-	 */
-	public void layout(GraphView view) {
-		getLayoutAlgorithm().doLayout((CyNetworkView)view);
-	}
 }

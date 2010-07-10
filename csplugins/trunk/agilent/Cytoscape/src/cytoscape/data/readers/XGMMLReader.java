@@ -93,6 +93,7 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.logger.CyLogger;
 import ding.view.DGraphView;
 
+import java.io.PushbackInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -130,6 +131,8 @@ public class XGMMLReader extends AbstractGraphReader {
 	protected static final String OCTAGON = "octagon";
 	protected static final String PARALELLOGRAM = "parallelogram";
 	protected static final String TRIANGLE = "triangle";
+	protected static final String VEE = "vee";
+	protected static final String ROUNDED_RECTANGLE = "rounded_rectangle";
 
 	// XGMML shapes (these should be mapped to Cytoscape shapes
 	protected static final String BOX = "box"; // Map to rectangle
@@ -158,18 +161,19 @@ public class XGMMLReader extends AbstractGraphReader {
 	private int nextID = 0; // Used to assign ID's to nodes that didn't have them
 	private CyLogger logger = null;
 
+
 	/**
 	 * Constructor.<br>
 	 * This is for local XGMML file.
 	 *
-	 * @param fileName
-	 *            File name of local XGMML file.
+	 * @param fileName  File name of local XGMML file.
 	 * @throws FileNotFoundException
 	 *
 	 */
-	public XGMMLReader(String fileName) {
+	public XGMMLReader(final String fileName) {
 		this(fileName, null);
 	}
+
 
 	/**
 	 * Constructor.<br>
@@ -184,6 +188,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		this.networkStream = is;
 		initialize();
 	}
+
 
 	/**
 	 * Constructor.<br>
@@ -200,6 +205,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		initialize();
 	}
 
+
 	/**
 	 * Creates a new XGMMLReader object.
 	 *
@@ -214,6 +220,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		initialize();
 	}
 
+
 	/**
  	 * Sets the task monitor we want to use
  	 *
@@ -224,9 +231,16 @@ public class XGMMLReader extends AbstractGraphReader {
 		percentUtil = new PercentUtil(3);
 	}
 
+
 	private void initialize() {
 		logger = CyLogger.getLogger(XGMMLReader.class);
+
+		final boolean attemptRepair = Boolean.getBoolean("cytoscape.xgmml.repair.bare.ampersands");
+		if (attemptRepair) {
+			networkStream = new RepairBareAmpersandsInputStream(networkStream, 512);
+		}
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -245,6 +259,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
+
 	/**
 	 * Actual method to read XGMML documents.
 	 *
@@ -257,58 +272,63 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void readXGMML() throws SAXException, IOException {
 		// Performance check
-		final long start = System.currentTimeMillis();
-		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
-		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
+//		final long start = System.currentTimeMillis();
+//		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
+//		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
+//		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
 
 //		logger.debug("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
 //		logger.debug("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
 //		logger.debug("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
 //		logger.debug("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
-		
+
 		try {
-			/*
-			 * Read the file and map the entire XML document into data
-			 * structure.
-			 */
-			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted(-1);
-				taskMonitor.setStatus("Reading XGMML data...");
-			}
+			try {
+				try {
+					/*
+					 * Read the file and map the entire XML document into data
+					 * structure.
+					 */
+					if (taskMonitor != null) {
+						taskMonitor.setPercentCompleted(-1);
+						taskMonitor.setStatus("Reading XGMML data...");
+					}
 
-			// Get our parser
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp = spf.newSAXParser();
-			ParserAdapter pa = new ParserAdapter(sp.getParser());
-			parser = new XGMMLParser();
-			pa.setContentHandler(parser);
-			pa.setErrorHandler(parser);
-			pa.parse(new InputSource(networkStream));
-			networkName = parser.getNetworkName();
-
-		} catch (OutOfMemoryError oe) {
-			/*
-			 * It's not generally a good idea to catch OutOfMemoryErrors, but in
-			 * this case, where we know the culprit (a file that is too large),
-			 * we can at least try to degrade gracefully.
-			 */
-			System.gc();
-			throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
-		} catch (ParserConfigurationException e) {
-		} catch (SAXParseException e) {
-			logger.error("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'", e);
-			throw e;
-		} finally {
-			if (networkStream != null) {
-				networkStream.close();
-				networkStream = null;
+					// Get our parser
+					SAXParserFactory spf = SAXParserFactory.newInstance();
+					SAXParser sp = spf.newSAXParser();
+					ParserAdapter pa = new ParserAdapter(sp.getParser());
+					parser = new XGMMLParser();
+					pa.setContentHandler(parser);
+					pa.setErrorHandler(parser);
+					pa.parse(new InputSource(networkStream));
+					networkName = parser.getNetworkName();
+				} catch (OutOfMemoryError oe) {
+					/*
+					 * It's not generally a good idea to catch OutOfMemoryErrors, but in
+					 * this case, where we know the culprit (a file that is too large),
+					 * we can at least try to degrade gracefully.
+					 */
+					System.gc();
+					throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
+				} catch (ParserConfigurationException e) {
+				} catch (SAXParseException e) {
+					logger.error("XGMMLParser: fatal parsing error on line " + e.getLineNumber() + " -- '" + e.getMessage() + "'", e);
+					throw e;
+				}
+			} finally {
+				if (networkStream != null) {
+					networkStream.close();
+				}
 			}
 		}
+		finally {
+			networkStream = null;
+		}
 
-		heapUsage = mbean.getHeapMemoryUsage();
-		nonHeapUsage = mbean.getNonHeapMemoryUsage();
-		long memend = Runtime.getRuntime().freeMemory();
+//		heapUsage = mbean.getHeapMemoryUsage();
+//		nonHeapUsage = mbean.getNonHeapMemoryUsage();
+//		long memend = Runtime.getRuntime().freeMemory();
 
 //		logger.debug("============= Total time for " + networkName + " = "
 //		                   + (System.currentTimeMillis() - start));
@@ -318,13 +338,16 @@ public class XGMMLReader extends AbstractGraphReader {
 //			                   + "KB");
 	}
 
+
 	public int[] getNodeIndicesArray() {
 		return parser.getNodeIndicesArray();
 	}
 
+
 	public int[] getEdgeIndicesArray() {
 		return parser.getEdgeIndicesArray();
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -335,6 +358,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		return networkName;
 	}
 
+
 	/**
 	 * @return Returns the networkName.
 	 * @uml.property name="networkName"
@@ -342,6 +366,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	public String getNetworkName() {
 		return networkName;
 	}
+
 
 	/**
 	 * getLayoutAlgorithm is called to get the Layout Algorithm that will be used
@@ -354,10 +379,18 @@ public class XGMMLReader extends AbstractGraphReader {
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
 			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+				
+				// Set 'networkView' as currentView, so that 
+				//the VisualStyle created for this view will be applied to this 'networkView' only
+				if (networkView != null && networkView.getIdentifier() != null){
+					Cytoscape.setCurrentNetworkView(networkView.getIdentifier());
+				}
+				
 				layout(networkView);
 			}
 		};
 	}
+
 
 	/**
 	 * layout the graph based on the graphic attributes
@@ -372,27 +405,23 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		// Create our visual style creator.  We use the vsbSwitch to tell the style builder
 		// whether to create the override attributes or not
-		boolean buildStyle = true;
-		if (vsbSwitch != null && vsbSwitch.equals("off"))
-			buildStyle = false;
+		final boolean buildStyle = vsbSwitch == null || vsbSwitch.equals("on");
 
 		VisualStyleBuilder graphStyle = new VisualStyleBuilder(parser.getNetworkName(), false);
 
-		// Set background clolor
+		// Set background color
 		if (parser.getBackgroundColor() != null) {
 			myView.setBackgroundPaint(parser.getBackgroundColor());
 			graphStyle.setBackgroundColor(parser.getBackgroundColor());
 		}
 
-		// Layout nodes
 		layoutNodes(myView, graphStyle, buildStyle);
-
-		// Layout edges
 		layoutEdges(myView, graphStyle, buildStyle);
 
 		if (buildStyle)
 			graphStyle.buildStyle();
 	}
+
 
 	/**
 	 * Layout nodes if view is available.
@@ -402,15 +431,13 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param graphStyle the visual style creator object
 	 * @param buildStyle if true, build the graphical style
 	 */
-	private void layoutNodes(final GraphView myView, 
-	                         final VisualStyleBuilder graphStyle, 
-	                         boolean buildStyle) {
+	private void layoutNodes(final GraphView myView, final VisualStyleBuilder graphStyle, boolean buildStyle) {
 		String label = null;
 		int tempid = 0;
 		NodeView view = null;
 		HashMap<CyNode, Attributes> nodeGraphicsMap = parser.getNodeGraphics();
 
-		for (CyNode node: nodeGraphicsMap.keySet()) {
+		for (CyNode node : nodeGraphicsMap.keySet()) {
 			view = myView.getNodeView(node.getRootGraphIndex());
 
 			if ((label != null) && (view != null)) {
@@ -426,6 +453,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
+
 	/**
 	 * Extract node graphics information from JAXB object.<br>
 	 *
@@ -437,11 +465,8 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param buildStyle if true, build the graphical style
 	 *
 	 */
-	private void layoutNodeGraphics(final Attributes graphics, 
-	                                final NodeView nodeView,
-	                                final VisualStyleBuilder graphStyle,
+	private void layoutNodeGraphics(final Attributes graphics, final NodeView nodeView, final VisualStyleBuilder graphStyle,
 	                                final boolean buildStyle) {
-
 		// The identifier of this node
 		String nodeID = nodeView.getNode().getIdentifier();
 
@@ -469,6 +494,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			// nodeView.setHeight(h);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_HEIGHT, ""+h);
 		}
+
 		if (buildStyle && w != 0.0) {
 			// nodeView.setWidth(w);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_WIDTH, ""+w);
@@ -526,23 +552,21 @@ public class XGMMLReader extends AbstractGraphReader {
 		String type = XGMMLParser.getAttribute(graphics,"type");
 		if (buildStyle && type != null) {
 			if (type.equals("rhombus"))
-				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,"parallelogram");
+				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE, "parallelogram");
 			else
-				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,type);
+				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE, type);
 		}
 	}
+
 
 	/**
 	 * Layout edges if view is available.
 	 *
-	 * @param myView
-	 *            GINY's graph view object for the current network.
+	 * @param myView GINY's graph view object for the current network.
 	 * @param graphStyle the visual style creator object
 	 * @param buildStyle if true, build the graphical style
 	 */
-	private void layoutEdges(final GraphView myView, 
-	                         final VisualStyleBuilder graphStyle,
-	                         final boolean buildStyle) {
+	private void layoutEdges(final GraphView myView, final VisualStyleBuilder graphStyle, final boolean buildStyle) {
 		String label = null;
 		int tempid = 0;
 		EdgeView view = null;
@@ -561,6 +585,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
+
 	/**
 	 * Layout an edge using the stored graphics attributes
 	 *
@@ -570,49 +595,40 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *            Actual edge view for the target edge.
 	 *
 	 */
-	private void layoutEdgeGraphics(final Attributes graphics, 
-	                                final EdgeView edgeView,
-	                                final VisualStyleBuilder graphStyle,
+	private void layoutEdgeGraphics(final Attributes graphics, final EdgeView edgeView, final VisualStyleBuilder graphStyle,
 	                                final boolean buildStyle) {
-	/*
-		logger.debug("LayoutEdgeGraphics: ");
-		for (int i = 0; i < graphics.getLength(); i++) {
-			logger.debug(graphics.getQName(i)+"="+graphics.getValue(i)+" ");
-		}
-		logger.debug();
-	*/
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		String edgeID = edgeView.getEdge().getIdentifier();
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"width") != null) {
-			String lineWidth = XGMMLParser.getAttribute(graphics,"width");
+		if (buildStyle && XGMMLParser.getAttribute(graphics, "width") != null) {
+			String lineWidth = XGMMLParser.getAttribute(graphics, "width");
 			// edgeView.setStrokeWidth(lineWidth);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_WIDTH, lineWidth);
 		}
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"fill") != null) {
+		if (buildStyle && XGMMLParser.getAttribute(graphics, "fill") != null) {
 			String edgeColor = XGMMLParser.getAttribute(graphics, "fill");
 			// edgeView.setUnselectedPaint(edgeColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_COLOR, edgeColor);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"sourceArrow", CY_NAMESPACE) != null) {
-			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics,"sourceArrow", CY_NAMESPACE);
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "sourceArrow", CY_NAMESPACE) != null) {
+			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics, "sourceArrow", CY_NAMESPACE);
 			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
 			String arrowName = shape.getName();
 			// edgeView.setSourceEdgeEnd(arrowType);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"targetArrow", CY_NAMESPACE) != null) {
-			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics,"targetArrow", CY_NAMESPACE);
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "targetArrow", CY_NAMESPACE) != null) {
+			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics, "targetArrow", CY_NAMESPACE);
 			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
 			String arrowName = shape.getName();
 			// edgeView.setTargetEdgeEnd(arrowType);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"sourceArrowColor", CY_NAMESPACE) != null) {
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "sourceArrowColor", CY_NAMESPACE) != null) {
 			String arrowColor = XGMMLParser.getAttributeNS(graphics, "sourceArrowColor", CY_NAMESPACE);
 			// edgeView.setSourceEdgeEndPaint(arrowColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW_COLOR, arrowColor);
@@ -624,12 +640,12 @@ public class XGMMLReader extends AbstractGraphReader {
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW_COLOR, arrowColor);
 		}
 
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"edgeLineType", CY_NAMESPACE) != null) {
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "edgeLineType", CY_NAMESPACE) != null) {
 			String value = XGMMLParser.getAttributeNS(graphics, "edgeLineType", CY_NAMESPACE);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_STYLE, value);
 		}
 
-		if (XGMMLParser.getAttributeNS(graphics,"curved", CY_NAMESPACE) != null) {
+		if (XGMMLParser.getAttributeNS(graphics, "curved", CY_NAMESPACE) != null) {
 			String value = XGMMLParser.getAttributeNS(graphics, "curved", CY_NAMESPACE);
 			if (value.equals("STRAIGHT_LINES")) {
 				edgeView.setLineType(EdgeView.STRAIGHT_LINES);
@@ -639,7 +655,6 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 
 	 	if (XGMMLParser.getAttribute(graphics,"edgeHandleList") != null) {
-			// logger.debug("See edgeHandleList");
 			String handles[] = XGMMLParser.getAttribute(graphics, "edgeHandleList").split(";");
 			for (int i = 0; i < handles.length; i++) {
 				String points[] = handles[i].split(",");
@@ -652,16 +667,17 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param network DOCUMENT ME!
 	 */
-	public void doPostProcessing(CyNetwork network) {
+	public void doPostProcessing(final CyNetwork network) {
 		parser.setMetaData(network);
 
 		// Get the view.  Note that for large networks this might be the null view
-		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Now that we have a network, handle the groups
 		// This is done here rather than in layout because layout is
@@ -674,10 +690,10 @@ public class XGMMLReader extends AbstractGraphReader {
 
 			CyGroup newGroup = null;
 			String viewer = null;
-			for (CyNode groupNode: groupMap.keySet()) {
+
+			for (CyNode groupNode : groupMap.keySet()) {
 				List<CyNode> childList = groupMap.get(groupNode);
-				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
-				                                           CyGroup.GROUP_VIEWER_ATTR);
+				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(), CyGroup.GROUP_VIEWER_ATTR);
 
 				// Note that we need to leave the group node in the network so that the saved
 				// location information (if there is any) can be utilized by the group viewer.
@@ -705,9 +721,12 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 		}
 
-		if (view == Cytoscape.getNullNetworkView())
+		if (view == null || view == Cytoscape.getNullNetworkView())
 			return;
-
+		
+		// Apply visual style before updateView().
+		Cytoscape.getVisualMappingManager().applyAppearances();
+		
 		// set view zoom
 		final Double zoomLevel = parser.getGraphViewZoomLevel();
 
@@ -719,7 +738,86 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (center != null)
 			((DGraphView) view).setCenter(center.getX(), center.getY());
+	}
 
-		Cytoscape.getVisualMappingManager().applyAppearances();
+
+	private class RepairBareAmpersandsInputStream extends PushbackInputStream {
+		private final byte[] encodedAmpersand = new byte[]{'a', 'm', 'p', ';'};
+		public RepairBareAmpersandsInputStream(InputStream in) {
+			super(in);
+		}
+
+		public RepairBareAmpersandsInputStream(InputStream in, int size) {
+			super(in, size);
+		}
+
+
+		@Override
+		public int read() throws IOException {
+			int c;
+
+			c = super.read();
+			if (c == (int)'&') {
+				byte[] b = new byte[7];
+				int cnt;
+
+				cnt = read(b);
+				if (cnt > 0) {
+					boolean isEntity;
+					int i;
+
+					isEntity = false;
+					i = 0;
+					while ((i < cnt) && (!isEntity)) {
+						isEntity = (b[i] == ';');
+						i++;
+					}
+
+					byte[] pb = new byte[cnt];
+					for (int p = 0; p < cnt; p++) {
+						pb[p] = b[p];
+					}
+					unread(pb);
+
+					if (!isEntity) {
+						unread(encodedAmpersand);
+					}
+				}
+			}
+
+			return c;
+		}
+
+
+		@Override
+		public int read(byte[] b, int off, int len) throws IOException {
+			if (b == null) {
+				throw new NullPointerException();
+			} else if (off < 0 || len < 0 || len > b.length - off) {
+				throw new IndexOutOfBoundsException();
+			} else if (len == 0) {
+				return 0;
+			}
+
+			int cnt;
+			int c = -1;
+
+			cnt = 0;
+			while (cnt < len) {
+				c = read();
+				if (c == -1) {
+					break;
+				}
+				b[off] = (byte)c;
+				off++;
+				cnt++;
+			}
+
+			if ((c == -1) && (cnt == 0)) {
+				cnt = -1;
+			}
+
+			return cnt;
+		}
 	}
 }

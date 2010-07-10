@@ -1,15 +1,7 @@
 /*
  File: XGMMLParser.java
 
- Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute of Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
- - University of California San Francisco
+ Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,7 +26,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
@@ -66,9 +58,11 @@ import java.util.List;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
+
 interface Handler {
 	public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException;
 }
+
 
 enum ParseState {
 	NONE("none"), 
@@ -77,8 +71,8 @@ enum ParseState {
 	NODEATT("Node Attribute"), 
 	EDGEATT("Edge Attribute"), 
 	// Types of attributes that require special handling
-  LISTATT("List Attribute"), 
-  LISTELEMENT("List Element"), 
+	LISTATT("List Attribute"), 
+	LISTELEMENT("List Element"), 
 	MAPATT("Map Attribute"), 
 	MAPELEMENT("Map Element"), 
 	COMPLEXATT("Complex Attribute"), 
@@ -88,7 +82,7 @@ enum ParseState {
 	EDGEBEND("Edge Bend"), 
 	EDGEHANDLE("Edge Handle"), 
 	EDGEHANDLEATT("Edge Handle Attribute"), 
-  NODE("Node Element"), 
+	NODE("Node Element"), 
 	EDGE("Edge Element"), 
 	GROUP("Group"), 
 	GRAPH("Graph Element"), 
@@ -100,7 +94,9 @@ enum ParseState {
 	public String toString() { return name; }
 };
 
-enum RDFTags {FORMAT,TYPE,DESC,DATE,SOURCE,IDENTIFIER};
+
+enum RDFTags { FORMAT, TYPE, DESC, DATE, SOURCE, IDENTIFIER};
+
 
 enum ObjectType {
 	NONE("none"), 
@@ -116,6 +112,7 @@ enum ObjectType {
 	private ObjectType (String s) { name = s; }
 	public String toString() { return name; }
 };
+
 
 class XGMMLParser extends DefaultHandler {
 	final static String XLINK = "http://www.w3.org/1999/xlink";
@@ -193,6 +190,8 @@ class XGMMLParser extends DefaultHandler {
 	/* Y handle */
 	private String edgeBendY = null;
 
+	private EqnAttrTracker eqnAttrTracker = null;
+
 	/**
 	 * Main parse table. This table controls the state machine, and follows
 	 * the standard format for a state machine:
@@ -200,8 +199,8 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	final Object[][] startParseTable = {
 		// Initial state.  It's all noise until we see our <graph> tag
-		{ParseState.NONE, "graph", ParseState.GRAPH, new handleGraph()},
-		{ParseState.GRAPH, "att", ParseState.NETATT, new handleNetworkAttribute()},
+		{ParseState.NONE, "graph", ParseState.GRAPH, new HandleGraph()},
+		{ParseState.GRAPH, "att", ParseState.NETATT, new HandleNetworkAttribute()},
 		{ParseState.NETATT, "rdf", ParseState.RDF, null},
 		// RDF tags -- most of the data for the RDF tags comes from the CData
 		{ParseState.RDF, "description", ParseState.RDFDESC, new handleRDF()},
@@ -256,11 +255,12 @@ class XGMMLParser extends DefaultHandler {
 		{ParseState.EDGEBEND, "att", ParseState.EDGEBEND, new handleEdgeHandleList()},
 		// Special handling for complex attributes
 		{ParseState.COMPLEXATT, "att", ParseState.COMPLEXATT, new handleComplexAttributeDone()},
-		{ParseState.GRAPH, "graph", ParseState.NONE, new handleGraphDone()},
+		{ParseState.GRAPH, "graph", ParseState.NONE, new HandleGraphDone()},
 
 		{ParseState.LISTATT, "att", ParseState.NONE, new handleListAttributeDone()},
 		{ParseState.MAPATT, "att", ParseState.NONE, new handleMapAttributeDone()},
-    };
+	};
+
 
 	/********************************************************************
 	 * Routines to handle attributes
@@ -276,7 +276,7 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static String getAttributeValue(Attributes atts, String key) {
+	static String getAttributeValue(final Attributes atts, final String key) {
 		String name = atts.getValue("name");
 		if (name == null)
 			name = atts.getValue("label");
@@ -287,47 +287,50 @@ class XGMMLParser extends DefaultHandler {
 		return null;
 	}
 
+
 	/**
-	 * Return the double attribute value for the attribute indicated by "key".  If
-	 * no such attribute exists, return null.  In particular, this routine looks
-	 * for an attribute with a <b>name</b> or <b>label</b> of <i>key</i> and 
-	 * returns the <b>value</b> of that attribute.
+	 * Return the double attribute value for the attribute indicated by "key".  If no such attribute exists, we throw a SAXParseException.
+	 * In particular, this routine looks for an attribute with a <b>name</b> or <b>label</b> of <i>key</i> and  returns the <b>value</b>
+	 * of that attribute.
 	 *
 	 * @param atts the attributes
 	 * @param key the specific attribute to get
-	 * @return the value for "key" or null if no such attribute exists
+	 * @return the value for "key."
+	 * @throws SAXParseException if we either can't find the requested attribute or if its value cannot be converted to a double.
 	 */
-	double getDoubleAttributeValue(Attributes atts, String key) throws SAXParseException {
-		String attribute = getAttributeValue(atts, key);
+	double getDoubleAttributeValue(final Attributes atts, final String key) throws SAXParseException {
+		final String attribute = getAttributeValue(atts, key);
 		if (attribute == null)
 			return 0.0;
 		try {
-			return (new Double(attribute)).doubleValue();
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to a DOUBLE", locator);
+			return Double.parseDouble(attribute);
+		} catch (final Exception e) {
+			throw new SAXParseException("Unable to convert '" + attribute + "' to a DOUBLE", locator);
 		}
 	}
 
+
 	/**
-	 * Return the Color attribute value for the attribute indicated by "key".  If
-	 * no such attribute exists, return null.  In particular, this routine looks
-	 * for an attribute with a <b>name</b> or <b>label</b> of <i>key</i> and 
-	 * returns the <b>value</b> of that attribute.
+	 * Return the typed attribute value for the passed attribute.  In this case,
+	 * the caller has already determined that this is the correct attribute and
+	 * we just lookup the value.  This routine is responsible for type conversion
+	 * consistent with the passed argument.
 	 *
+	 * @param type the ObjectType of the value
 	 * @param atts the attributes
-	 * @param key the specific attribute to get
-	 * @return the value for "key" or null if no such attribute exists
+	 * @return the value of the attribute in the appropriate type or a string if the value starts with an equal sign
 	 */
-	Color getColorAttributeValue(Attributes atts, String key) throws SAXParseException{
-		String attribute = getAttributeValue(atts, key);
-		if (attribute == null)
-			return null;
+	Object getTypedAttributeValueOrEquation(final ObjectType type, final Attributes atts) throws SAXParseException {
+		final String value = atts.getValue("value");
+		if (value != null && value.length() >= 2 && value.charAt(0) == '=') // Must be an equation!
+			return value;
 		try {
-			return new Color(Integer.parseInt(attribute.substring(1), 16));
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to a color", locator);
+			return getTypedValue(type, value);
+		} catch (final Exception e) {
+			throw new SAXParseException("Unable to convert '" + value + "' to type " + type.toString(), locator);
 		}
 	}
+
 
 	/**
 	 * Return the typed attribute value for the passed attribute.  In this case,
@@ -339,16 +342,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param atts the attributes
 	 * @return the value of the attribute in the appropriate type
 	 */
-	Object getTypedAttributeValue(ObjectType type, Attributes atts) throws SAXParseException {
-		String value = atts.getValue("value");
-		Object obj = null;
+	Object getTypedAttributeValue(final ObjectType type, final Attributes atts) throws SAXParseException {
+		final String value = atts.getValue("value");
 		try {
 			return getTypedValue(type, value);
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+value+"' to type "+type.toString(),
-			                            locator);
+		} catch (final Exception e) {
+			throw new SAXParseException("Unable to convert '" + value + "' to type " + type.toString(), locator);
 		}
 	}
+
 
 	/**
 	 * Return the typed value for the passed value.
@@ -383,7 +385,6 @@ class XGMMLParser extends DefaultHandler {
 			return new ArrayList();
 		case MAP:
 			return new HashMap();
-		// case COMPLEX:
 		}
 		return null;
 	}
@@ -509,7 +510,9 @@ class XGMMLParser extends DefaultHandler {
 		nodeGraphicsMap = new HashMap();
 		edgeGraphicsMap = new HashMap();
 		idMap = new HashMap();
+		eqnAttrTracker = Cytoscape.getEqnAttrTracker();
 	}
+
 
 	/********************************************************************
 	 * Interface routines.  These routines are called by the XGMMLReader
@@ -523,6 +526,7 @@ class XGMMLParser extends DefaultHandler {
 		return array;
 	}
 
+
 	int[] getEdgeIndicesArray() {
 		int[] array = new int[edgeList.size()];
 		for (int i = 0; i < edgeList.size(); i++)
@@ -530,17 +534,39 @@ class XGMMLParser extends DefaultHandler {
 		return array;
 	}
 
+
 	String getNetworkName() {
 		return networkName;
 	}
+
+
+	private Class mapCytoscapeAttribTypeToEqnType(final byte attribType) {
+		switch (attribType) {
+		case CyAttributes.TYPE_BOOLEAN:
+			return Boolean.class;
+		case CyAttributes.TYPE_INTEGER:
+			return Long.class;
+		case CyAttributes.TYPE_FLOATING:
+			return Double.class;
+		case CyAttributes.TYPE_STRING:
+			return String.class;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return List.class;
+		default:
+			throw new IllegalStateException("can't map Cytoscape type " + attribType + " to equation return type!");
+		}
+	}
+
 
 	HashMap<CyNode, Attributes> getNodeGraphics() {
 		return nodeGraphicsMap;
 	}
 
+
 	HashMap<CyEdge, Attributes> getEdgeGraphics() {
 		return edgeGraphicsMap;
 	}
+
 
 	Color getBackgroundColor() {
 		if (backgroundColor == null) 
@@ -548,9 +574,11 @@ class XGMMLParser extends DefaultHandler {
 		return new Color(Integer.parseInt(backgroundColor.substring(1), 16));
 	}
 
+
 	double getGraphViewZoomLevel() {
 		return graphZoom;
 	}
+
 
 	Point2D getGraphViewCenter() {
 		if (graphCenterX == 0.0 && graphCenterY == 0.0) 
@@ -558,9 +586,11 @@ class XGMMLParser extends DefaultHandler {
 		return new Point2D.Double(graphCenterX, graphCenterY);
 	}
 
+
 	HashMap<CyNode, List<CyNode>> getGroupMap() {
 		return groupMap;
 	}
+
 
 	void setMetaData(CyNetwork network) {
 		MetadataParser mdp = new MetadataParser(network);
@@ -580,6 +610,7 @@ class XGMMLParser extends DefaultHandler {
 			mdp.setMetadata(MetadataEntries.IDENTIFIER, RDFIdentifier);
 	}
 
+
 	/********************************************************************
 	 * Handler routines.  The following routines are called directly from
 	 * the SAX parser.
@@ -594,24 +625,21 @@ class XGMMLParser extends DefaultHandler {
 	 * @param qName the tag with the namespace prefix
 	 * @param atts the Attributes list from the tag
 	 */
-   public void startElement(String namespace, 
-                           String localName, 
-                           String qName,
-                           Attributes atts) throws SAXException {
+	public void startElement(String namespace, String localName, String qName, Attributes atts) throws SAXException {
+		/*
+		  logger.debug("startElement("+namespace+", "+localName+", "+qName+", ");
+		  for (int i = 0; i < atts.getLength(); i++) {
+		  logger.debug(atts.getQName(i)+"="+atts.getValue(i)+" ");
+		  }
+		  logger.debug(")");
+		*/
 
-			/*
-			logger.debug("startElement("+namespace+", "+localName+", "+qName+", ");
-			for (int i = 0; i < atts.getLength(); i++) {
-				logger.debug(atts.getQName(i)+"="+atts.getValue(i)+" ");
-			}
-			logger.debug(")");
-			*/
+		ParseState nextState = handleState(startParseTable, parseState, localName, atts);
 
-			ParseState nextState = handleState(startParseTable, parseState, localName, atts);
+		stateStack.push(parseState);
+		parseState = nextState;
+	}
 
-			stateStack.push(parseState);
-			parseState = nextState;
-   }
 
 	/**
 	 * endElement is called whenever the SAX parser sees an end tag.  We
@@ -622,12 +650,13 @@ class XGMMLParser extends DefaultHandler {
 	 * @param qName the tag with the namespace prefix
 	 */
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-			// logger.debug("endElement("+uri+", "+localName+", "+qName+")");
+		// logger.debug("endElement("+uri+", "+localName+", "+qName+")");
 
-			handleState(endParseTable, parseState, localName, null);
+		handleState(endParseTable, parseState, localName, null);
 
-			parseState = stateStack.pop();
+		parseState = stateStack.pop();
 	}
+
 
 	/**
 	 * characters is called to handle CData
@@ -640,6 +669,7 @@ class XGMMLParser extends DefaultHandler {
 		currentCData = new String(ch, start, length);
 	}
 
+
 	/**
  	 * fatalError -- handle a fatal parsing error
  	 *
@@ -650,6 +680,7 @@ class XGMMLParser extends DefaultHandler {
 		throw new SAXException(err);
 	}
 
+
 	/**
  	 * error -- handle a parsing error
  	 *
@@ -658,6 +689,7 @@ class XGMMLParser extends DefaultHandler {
 	public void error(SAXParseException e) {
 		logger.warn("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
 	}
+
    
 	/**
  	 * Set the document locator to help us construct our own exceptions
@@ -667,6 +699,7 @@ class XGMMLParser extends DefaultHandler {
 	public void setDocumentLocator(Locator locator) {
 		this.locator = locator;
 	}
+
 
 	/********************************************************************
 	 * Private parser routines.  The following routines are used to 
@@ -685,8 +718,7 @@ class XGMMLParser extends DefaultHandler {
 	 *             be passed to the handler
 	 * @return the new state
 	 */
-	private ParseState handleState(Object[][]table, ParseState currentState, 
-	                               String tag, Attributes atts) throws SAXException {
+	private ParseState handleState(Object[][] table, ParseState currentState, String tag, Attributes atts) throws SAXException {
 		// If our element table ever gets long, we may want to make
 		// this more efficient with a hash or something
 		for (int i = 0; i < table.length; i++) {
@@ -706,7 +738,7 @@ class XGMMLParser extends DefaultHandler {
 	 * called by the state mechine.
 	 *******************************************************************/
 
-	class handleGraph implements Handler {
+	class HandleGraph implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			String name = getLabel(atts);
 			if (name != null) 
@@ -715,11 +747,12 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	/**
-	 * handleGraphDone is called when we finish parsing the entire XGMML file.  This allows us to do
+	 * HandleGraphDone is called when we finish parsing the entire XGMML file.  This allows us to do
 	 * deal with some cleanup line creating all of our groups, etc.
 	 */
-	class handleGraphDone implements Handler {
+	class HandleGraphDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			// Resolve any unresolve node references
 			if (nodeLinks != null) {
@@ -739,7 +772,8 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
-	class handleNetworkAttribute implements Handler {
+
+	class HandleNetworkAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			currentAttributes = Cytoscape.getNetworkAttributes();
 			attState = current;
@@ -768,6 +802,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleNode implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			String id = atts.getValue("id");
@@ -786,6 +821,7 @@ class XGMMLParser extends DefaultHandler {
 			return current;
 		}
 	}
+
 
 	class handleNodeAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -821,6 +857,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	/**
 	 * handleNodeGraphics builds the objects that will remember the node graphic
 	 * information until we do the actual layout.  Unfortunately, the way the
@@ -848,6 +885,7 @@ class XGMMLParser extends DefaultHandler {
 			return current;
 		}
 	}
+
 
 	class handleEdge implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -883,22 +921,10 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleEdgeAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-
 			attState = current;
-			// logger.debug("Edge attribute: "+printAttribute(atts));
-			/*
-			if (atts.getValue("name").startsWith("edge.")) {
-				// Yes, add it to our nodeGraphicsMap
-				String name = atts.getValue("name").substring(5);
-				String value = atts.getValue("value");
-				if (!edgeGraphicsMap.containsKey(currentEdge)) {
-					edgeGraphicsMap.put(currentEdge, new AttributesImpl());
-				} 
-				((AttributesImpl)edgeGraphicsMap.get(currentEdge)).addAttribute("", "", name, "string", value);
-			}
-			*/
 			currentAttributes = Cytoscape.getEdgeAttributes();
 			if (currentEdge != null)
 				objectTarget = currentEdge.getIdentifier();
@@ -912,9 +938,9 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleEdgeGraphics implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			// logger.debug("Atts for "+currentEdge.getIdentifier()+": "+printAttributes(atts));
 			if (tag.equals("graphics")) {
 				if (edgeGraphicsMap.containsKey(currentEdge)) {
 					addAttributes(edgeGraphicsMap.get(currentEdge),atts);
@@ -938,6 +964,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleGroup implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (groupMap == null) groupMap = new HashMap<CyNode, List<CyNode>>();
@@ -948,6 +975,7 @@ class XGMMLParser extends DefaultHandler {
 			return current;
 		}
 	}
+
 
 	class handleGroupNode implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -978,7 +1006,7 @@ class XGMMLParser extends DefaultHandler {
 				List<CyNode>nodeList = groupMap.get(currentGroupNode);
 				nodeList.add(node);
 			} else {
-				// Remember it for later -- we'll fix this up in handleGraphDone
+				// Remember it for later -- we'll fix this up in HandleGraphDone
 				if (!nodeLinks.containsKey(currentGroupNode)) {
 					nodeLinks.put(currentGroupNode, new ArrayList<String>());
 				}
@@ -991,25 +1019,26 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	/**
 	 * Routines to handle edge bends.  There are two different formats for edge bends.  The original
 	 * XGMML code encoded edge bends as:
-   * <att name="edgeBend">
-   *    <att name="handle">
-   *       <att value="15277.6748046875" name="x"/>
-   *       <att value="17113.919921875" name="y"/>
-   *   </att>
-   *    <att name="handle">
-   *       <att value="15277.6748046875" name="x"/>
-   *       <att value="17113.919921875" name="y"/>
-   *   </att>
-   * </att>
+	 * <att name="edgeBend">
+	 *    <att name="handle">
+	 *       <att value="15277.6748046875" name="x"/>
+	 *       <att value="17113.919921875" name="y"/>
+	 *   </att>
+	 *    <att name="handle">
+	 *       <att value="15277.6748046875" name="x"/>
+	 *       <att value="17113.919921875" name="y"/>
+	 *   </att>
+	 * </att>
 	 *
 	 * In version 1.1, which was simplified to:
-   * <att name="edgeBend">
-   *    <att name="handle" x="15277.6748046875" y="17113.919921875" />
-   *    <att name="handle" x="15277.6748046875" y="17113.919921875" />
-   * </att>
+	 * <att name="edgeBend">
+	 *    <att name="handle" x="15277.6748046875" y="17113.919921875" />
+	 *    <att name="handle" x="15277.6748046875" y="17113.919921875" />
+	 * </att>
 	 */
 
 	/**
@@ -1019,7 +1048,6 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	class handleEdgeHandle implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-
 			if (documentVersion == 1.0) {
 				// This is the outer "handle" attribute
 				if (!getAttribute(atts, "name").equals("handle")) {
@@ -1052,6 +1080,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleEdgeHandleDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (edgeBendX != null && edgeBendY != null && handleList != null) {
@@ -1062,6 +1091,7 @@ class XGMMLParser extends DefaultHandler {
 			return current;
 		}
 	}
+
 
 	class handleEdgeHandleList implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1076,13 +1106,13 @@ class XGMMLParser extends DefaultHandler {
 				}
 				// logger.debug("Setting edgeHandleList to: "+list);
 				// Add this as a graphics attribute to the end of our list
-				((AttributesImpl)edgeGraphicsMap.get(currentEdge)).
-						addAttribute("", "", "edgeHandleList", "string", list);
+				((AttributesImpl)edgeGraphicsMap.get(currentEdge)).addAttribute("", "", "edgeHandleList", "string", list);
 				handleList = null;
 			}
 			return current;
 		}
 	}
+
 
 	class handleGroupDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1096,7 +1126,9 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	private List listAttrHolder;
+
 
 	class handleListAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1115,15 +1147,15 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleListAttributeDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-
 			try {
 				if (listAttrHolder != null) {
 					currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttrHolder);
 					listAttrHolder = null;
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				String err = "XGMML attribute handling error for attribute '"+currentAttributeID+"' and object '"+objectTarget+"': "+e.getMessage();
 				throw new SAXException(err);
 			}
@@ -1131,7 +1163,9 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	private Map mapAttrHolder;
+
 
 	class handleMapAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1151,6 +1185,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleMapAttributeDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 
@@ -1166,6 +1201,7 @@ class XGMMLParser extends DefaultHandler {
 			return current;
 		}
 	}
+
 
 	/**
 	 * handleComplexAttribute attempts to read an arbitrarily complex attribute
@@ -1247,6 +1283,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleComplexAttributeDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (level == 0) {
@@ -1262,6 +1299,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	/* 
 	 * The following routines all handle the RDF data. All of them
 	 * except handleRDF are called by the endElement handler.  At
@@ -1275,12 +1313,14 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleRDFType implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			RDFType = currentCData;
 			return current;
 		}
 	}
+
 
 	class handleRDFDescription implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1289,12 +1329,14 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleRDFIdentifier implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			RDFIdentifier = currentCData;
 			return current;
 		}
 	}
+
 
 	class handleRDFDate implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1303,12 +1345,14 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleRDFTitle implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			RDFTitle = currentCData;
 			return current;
 		}
 	}
+
 
 	class handleRDFSource implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1317,12 +1361,14 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+
 	class handleRDFFormat implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			RDFFormat = currentCData;
 			return current;
 		}
 	}
+
 
 	public static String printAttributes(Attributes atts) {
 		String str = " ";
@@ -1331,6 +1377,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 		return str;
 	}
+
 
 	/********************************************************************
 	 * Utility routines.  The following routines are utilities that are
@@ -1345,43 +1392,62 @@ class XGMMLParser extends DefaultHandler {
 		return att.getValue("id");
 	}
 
-	private ParseState handleAttribute(Attributes atts, 
-	                                   CyAttributes cyAtts,
-		                                 String id) throws SAXException {
+
+	private ParseState handleAttribute(Attributes atts, CyAttributes cyAtts, String id) throws SAXException {
 		String name = atts.getValue("name");
 		ObjectType objType = getType(atts.getValue("type"));
-		Object obj = getTypedAttributeValue(objType, atts);
+		Object obj = getTypedAttributeValueOrEquation(objType, atts);
 
 		// Set up defaults
 		boolean hidden = false;
 		boolean editable = true;
+		boolean equation = false;
+
 		String hString = atts.getValue("cy:hidden");
-		if (hString != null) {
+		if (hString != null)
 			hidden = Boolean.parseBoolean(hString);
-		}
 
 		String eString = atts.getValue("cy:editable");
-		if (hString != null) {
+		if (hString != null)
 			editable = Boolean.parseBoolean(hString);
-		}
+
+		String eqString = atts.getValue("cy:equation");
+		if (eqString != null)
+			equation = Boolean.parseBoolean(eqString);
 
 
 		switch (objType) {
 		case BOOLEAN:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (Boolean)obj);
+			if (obj != null && name != null && id != null) {
+				if (equation)
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, Boolean.class);
+				else
+					cyAtts.setAttribute(id, name, (Boolean)obj);
+			}
 			break;
 		case REAL:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (Double)obj);
+			if (obj != null && name != null && id != null) {
+				if (equation)
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, Double.class);
+				else
+					cyAtts.setAttribute(id, name, (Double)obj);
+			}
 			break;
 		case INTEGER:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (Integer)obj);
+			if (obj != null && name != null && id != null) {
+				if (equation)
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, Long.class);
+				else
+					cyAtts.setAttribute(id, name, (Integer)obj);
+			}
 			break;
 		case STRING:
-			if (obj != null && name != null)
-				if (id != null) cyAtts.setAttribute(id, name, (String)obj);
+			if (obj != null && name != null && id != null) {
+				if (equation)
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, String.class);
+				else
+					cyAtts.setAttribute(id, name, (String)obj);
+			}
 			break;
 
 		// We need to be *very* careful.  Because we duplicate attributes for
@@ -1392,8 +1458,12 @@ class XGMMLParser extends DefaultHandler {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			currentAttributeID = name;
-			if (id != null && cyAtts.hasAttribute(id, name))
-				cyAtts.deleteAttribute(id,name);
+			if (id != null && cyAtts.hasAttribute(id, name)) {
+				if (equation)
+					eqnAttrTracker.recordEquation(cyAtts, id, name, (String)obj, List.class);
+				else
+					cyAtts.deleteAttribute(id,name);
+			}
 
 			listAttrHolder = new ArrayList();
 
@@ -1425,8 +1495,10 @@ class XGMMLParser extends DefaultHandler {
 			cyAtts.setUserVisible(name,false);
 		if (!editable)
 			cyAtts.setUserEditable(name,false);
+
 		return ParseState.NONE;
 	}
+
 
 	/**
 	 * Determines if attribute name already exists in multihashmap def.
@@ -1451,6 +1523,7 @@ class XGMMLParser extends DefaultHandler {
 		return false;
 	}
 
+
 	/**
 	 * Defines a cyattribute for the complex attribute based on its keyspace.
 	 *
@@ -1463,13 +1536,13 @@ class XGMMLParser extends DefaultHandler {
 	 * @param numKeys -
 	 *            the number of keys to discover
 	 */
-	private void defineComplexAttribute(final String attributeName, final CyAttributes attributes,
-	                                    byte[] attributeDefinition) {
+	private void defineComplexAttribute(final String attributeName, final CyAttributes attributes, byte[] attributeDefinition) {
 		// if necessary, init attribute definition
 		MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
 
 		mhmd.defineAttribute(attributeName, valueType, attributeDefinition);
 	}
+
 
 	/**
 	 * Given an ObjectType, method returns a MultiHashMapDefinition byte
@@ -1496,7 +1569,6 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 
-
 	private CyNode createUniqueNode (String label, String id) throws SAXException {
 		if (label != null) {
 			if (id == null)
@@ -1514,6 +1586,7 @@ class XGMMLParser extends DefaultHandler {
 		return node;
 	}
 
+
 	private CyEdge createEdge (CyNode source, CyNode target, 
                              String interaction, String label) throws SAXException {
 		// OK create it
@@ -1521,6 +1594,7 @@ class XGMMLParser extends DefaultHandler {
 		edgeList.add(edge);
 		return edge;
 	}
+
 
 	private CyEdge createEdge (String source, String target, String interaction, String label) {
 		// Make sure the target and destination nodes exist
@@ -1541,6 +1615,7 @@ class XGMMLParser extends DefaultHandler {
 		return edge;
 	}
 
+
 	private void addAttributes(Attributes attI, Attributes atts) {
 		String localName = null;
 		String qName = null;
@@ -1556,6 +1631,7 @@ class XGMMLParser extends DefaultHandler {
 			((AttributesImpl)attI).addAttribute(uri, localName, qName,type, value);
 		}
 	}
+
 
 	private ObjectType getType(String type) {
 		if (type == null)
@@ -1577,15 +1653,4 @@ class XGMMLParser extends DefaultHandler {
 
 		return ObjectType.NONE;
 	}
-
-/*
-	private String printAttribute(Attributes atts) {
-		String name = atts.getValue("name");
-		String value = atts.getValue("value");
-		String type = atts.getValue("type");
-		if (type == null) type = "string";
-		String str = "<att name=\""+name+"\" type=\""+type+"\" value=\""+value+"\">";
-		return str;
-	}
-*/
 }

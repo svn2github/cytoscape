@@ -33,94 +33,82 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.data.readers;
 
-import cytoscape.util.FileUtil;
-import cytoscape.logger.CyLogger;
-
-import java.io.FileReader;
 import java.io.FilterReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
-
 import java.text.ParseException;
-
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cytoscape.util.FileUtil;
 
 /**
- * The purpose of hte class is to translate gml into an object tree, and print out an object treee
- * into GML
+ * The purpose of this class is to translate GML into an object tree, and print
+ * out an object tree into GML
  */
 public class GMLParser {
 	/**
 	 * This character begsin and ends a string literal in a GML file
 	 */
-	static int QUOTE_CHAR = '"';
+	private static final int QUOTE_CHAR = '"';
 
 	/**
 	 * String versio of above
 	 */
-	static String QUOTE_STRING = "\"";
+	private static final String QUOTE_STRING = "\"";
 
 	/**
 	 * This regex pattern will match a valid key
 	 */
-	static Pattern keyPattern = Pattern.compile("\\w+");
-	;
+	private static final Pattern keyPattern = Pattern.compile("\\w+");;
 
 	/**
 	 * This regex pattern will match a valid integer
 	 */
-	static Pattern integerPattern = Pattern.compile("(\\+|\\-){0,1}\\d+");
-	;
+	private static final Pattern integerPattern = Pattern.compile("(\\+|\\-){0,1}\\d+");;
 
 	/**
 	 * This regex pattern will match a valid real (double)
 	 */
-	static Pattern realPattern = Pattern.compile("(\\+|\\-){0,1}\\d+\\.\\d+((E|e)(\\+|\\-){0,1}\\d+){0,1}");
-	;
+	private static final Pattern realPattern = Pattern
+			.compile("(\\+|\\-){0,1}\\d+\\.\\d+((E|e)(\\+|\\-){0,1}\\d+){0,1}");;
 
-	/*
-	 * This string opens a list
-	 */
-	static String LIST_OPEN = "[";
+	// opens a list
+	private static final String LIST_OPEN = "[";
 
-	/**
-	 * This string close a list
-	 */
-	static String LIST_CLOSE = "]";
-	StreamTokenizer tokenizer;
+	// close a list
+	private static final String LIST_CLOSE = "]";
+	
+	private StreamTokenizer tokenizer;
 
 	/**
-	 * Constructor has to initialize the relevenat
-	 * regular expression patterns
+	 * Constructor has to initialize the relevenat regular expression patterns
 	 */
-	public GMLParser(StreamTokenizer tokenizer) {
+	public GMLParser(final StreamTokenizer tokenizer) {
 		this.tokenizer = tokenizer;
 	}
 
 	/**
 	 * Make a stream tokenizer out of the given this file and read in the file
 	 */
-	public GMLParser(String file) throws IOException, Exception {
+	public GMLParser(final String file) throws IOException, Exception {
 		this(FileUtil.getInputStream(file));
 	}
 
 	/**
 	 * Make a stream tokenizer out of the given this file and read in the file
 	 */
-	public GMLParser(InputStream stream) throws IOException, Exception {
-		tokenizer = new StreamTokenizer(new FilterNewlineReader(new InputStreamReader(stream)));
+	public GMLParser(final InputStream stream) throws IOException, Exception {
+		tokenizer = new StreamTokenizer(new FilterNewlineReader(
+				new InputStreamReader(stream)));
 
 		tokenizer.resetSyntax();
 		tokenizer.commentChar('#');
@@ -136,36 +124,36 @@ public class GMLParser {
 		tokenizer.nextToken();
 	}
 
+	
 	/**
-	 * Public method to print out a given object tree(list)
-	 * using the supplied filewriter
+	 * Public method to print out a given object tree(list) using the supplied
+	 * filewriter
 	 */
-	public static void printList(List list, Writer writer) throws IOException {
+	public static void printList(final List<KeyValue> list, final Writer writer) throws IOException {
 		printList(list, "", writer);
 	}
 
+	
 	/**
 	 * Protected recurive helper method to print out an object tree
 	 */
-	protected static void printList(List list, String indent, Writer writer)
-	    throws IOException {
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			KeyValue keyVal = (KeyValue) it.next();
-
-			if (keyVal.value instanceof List) {
-				//  If the value is a list, print that list recursively
-				//  surrounded by the list open and close characters
+	protected static void printList(final List<KeyValue> list, final String indent, final Writer writer)
+			throws IOException {
+		for (KeyValue keyVal: list) {
+			if (keyVal.value instanceof List<?>) {
+				// If the value is a list, print that list recursively
+				// surrounded by the list open and close characters
 				writer.write(indent + keyVal.key + "\t");
 				writer.write(LIST_OPEN + "\n");
-				printList((List) keyVal.value, indent + "\t", writer);
+				printList((List<KeyValue>) keyVal.value, indent + "\t", writer);
 				writer.write(indent + LIST_CLOSE + "\n");
 			} else if (keyVal.value instanceof String) {
-				//  Surround a string with the quote characters
+				// Surround a string with the quote characters
 				writer.write(indent + keyVal.key + "\t");
 				writer.write(QUOTE_STRING + keyVal.value + QUOTE_STRING + "\n");
 			} else if (keyVal.value instanceof Double) {
-				//  If the double contains a non-number, we will refuse to write
-				//  it out because the result will be invalid gml
+				// If the double contains a non-number, we will refuse to write
+				// it out because the result will be invalid gml
 				Double value = (Double) keyVal.value;
 
 				if (!(value.isNaN() || value.isInfinite())) {
@@ -173,8 +161,8 @@ public class GMLParser {
 					writer.write(keyVal.value + "\n");
 				}
 			} else if (keyVal.value instanceof Integer) {
-				//  Everything else (Integer, double) relies upon the default
-				//  toString() method  of the object
+				// Everything else (Integer, double) relies upon the default
+				// toString() method of the object
 				writer.write(indent + keyVal.key + "\t");
 				writer.write(keyVal.value + "\n");
 			}
@@ -184,22 +172,25 @@ public class GMLParser {
 	/**
 	 * A list consists of zero or more paris of keys and values
 	 */
-	public Vector parseList() throws IOException, ParseException {
-		Vector result = new Vector();
+	public List<KeyValue> parseList() throws IOException, ParseException {
+		final List<KeyValue> result = new ArrayList<KeyValue>();
 
+		String key;
+		Object value;
 		while (isKey()) {
-			String key = parseKey();
+			key = parseKey();
 
-			if (key == null) {
+			if (key == null)
 				throw new ParseException("Bad key", tokenizer.lineno());
-			}
 
 			tokenizer.nextToken();
 
-			Object value = parseValue();
+			value = parseValue();
 
 			if (value == null) {
-				throw new ParseException("Bad value associated with key " + key, tokenizer.lineno());
+				throw new ParseException(
+						"Bad value associated with key " + key, tokenizer
+								.lineno());
 			}
 
 			result.add(new KeyValue(key, value));
@@ -214,7 +205,7 @@ public class GMLParser {
 	 */
 	private boolean isKey() {
 		/*
-		 * A key must be some kind of wrod
+		 * A key must be some kind of word
 		 */
 		if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
 			return false;
@@ -224,47 +215,45 @@ public class GMLParser {
 	}
 
 	/**
-	 * An integer consists of hte characters [0-9]
-	 * Assuming hte precondition that we have already checked
-	 * for the end of file
+	 * An integer consists of hte characters [0-9] Assuming hte precondition
+	 * that we have already checked for the end of file
 	 */
 	private boolean isInteger() {
 		return integerPattern.matcher(tokenizer.sval).matches();
 	}
 
 	/**
-	 * A real consists of 1 or more digits followed by a ., followed by one or more digits
-	 * and an optional mantissa. Assuming the preconiditon that we have already
-	 * checked for hte end of file
+	 * A real consists of 1 or more digits followed by a ., followed by one or
+	 * more digits and an optional mantissa. Assuming the preconiditon that we
+	 * have already checked for hte end of file
 	 */
 	private boolean isReal() {
 		return realPattern.matcher(tokenizer.sval).matches();
 	}
 
 	/**
-	 * A string consits of a string that begins and ends with the quote character
-	 * The streamtokenizer will basically check for this for me, so I just
-	 * have to check the token type and see if it is a quote char
-	 * It's also not supposed ot have a couple things in it, but I don't really
-	 * have a check for that.
+	 * A string consits of a string that begins and ends with the quote
+	 * character The streamtokenizer will basically check for this for me, so I
+	 * just have to check the token type and see if it is a quote char It's also
+	 * not supposed ot have a couple things in it, but I don't really have a
+	 * check for that.
 	 */
-	private boolean isString() {
+	private boolean isQuatedString() {
 		return tokenizer.ttype == QUOTE_CHAR;
 	}
 
 	/**
-	 * A list starts with the list open character
-	 * I'm assuming I get some white space before and
-	 * after the list delimiter, that might not actually
-	 * be true according to the spec
+	 * A list starts with the list open character I'm assuming I get some white
+	 * space before and after the list delimiter, that might not actually be
+	 * true according to the spec
 	 */
 	private boolean isList() {
 		return tokenizer.sval.equals(LIST_OPEN);
 	}
 
 	/**
-	 * Verify that the current value is a key,
-	 * and then return the key that is found
+	 * Verify that the current value is a key, and then return the key that is
+	 * found
 	 */
 	private String parseKey() {
 		if (isKey()) {
@@ -275,50 +264,46 @@ public class GMLParser {
 	}
 
 	/**
-	 * Parse out a value, it can be a integer,real,string, or a list. Assume is has already been found
-	 * to not be the end of file
+	 * Parse out a value, it can be a integer,real,string, or a list. Assume is
+	 * has already been found to not be the end of file
 	 */
 	private Object parseValue() throws IOException, ParseException {
-		Object result = null;
 
-		if (tokenizer.ttype == StreamTokenizer.TT_EOL) {
-			return result;
-		}
+		if (tokenizer.ttype == StreamTokenizer.TT_EOL)
+			return null;
 
-		if (isString()) {
+		if (isQuatedString())
 			return tokenizer.sval;
-		}
 
-		if (isInteger()) {
-			return new Integer(tokenizer.sval);
-		}
+		if (isInteger())
+			return Integer.parseInt(tokenizer.sval);
 
-		if (isReal()) {
-			return new Double(tokenizer.sval);
-		}
+		if (isReal())
+			return Double.parseDouble(tokenizer.sval);
 
 		if (isList()) {
 			tokenizer.nextToken();
 
-			List list = parseList();
+			final List<KeyValue> list = parseList();
 
 			if (!tokenizer.sval.equals(LIST_CLOSE)) {
-				throw new ParseException("Unterminated list", tokenizer.lineno());
+				throw new ParseException("Unterminated list", tokenizer
+						.lineno());
 			}
-
 			return list;
 		}
-
-		return result;
+		
+		// Treat as a regular string value.
+		return tokenizer.sval;
 	}
 
 	/**
 	 * This misery exists to overcome a bug in the java.io.StreamTokenizer lib.
 	 * the problem is that StreamTokenizer treats newlines as end-of-quotes,
-	 * which means you can't have quoted strings over multiple lines.  This,
-	 * however, violates the GML grammar.  So, since the grammar treats newlines
-	 * and spaces the same, we just turn all newlines and carriage returns
-	 * into spaces.  Fortunately for us, StreamTokenizer only calls the read() method.
+	 * which means you can't have quoted strings over multiple lines. This,
+	 * however, violates the GML grammar. So, since the grammar treats newlines
+	 * and spaces the same, we just turn all newlines and carriage returns into
+	 * spaces. Fortunately for us, StreamTokenizer only calls the read() method.
 	 */
 	private class FilterNewlineReader extends FilterReader {
 		public FilterNewlineReader(Reader r) {

@@ -1,14 +1,7 @@
 /*
   File: CyAttributesReader.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,22 +29,52 @@
 */
 package cytoscape.data.readers;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.writers.CyAttributesWriter;
 import cytoscape.logger.CyLogger;
 
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Equation;
 
-// I hate writing parsing code.  Grumble grumble grumble.
-/**
- *
- */
+import java.net.URLDecoder;
+import java.text.MessageFormat;
+
+
 public class CyAttributesReader {
+	public static final String DECODE_PROPERTY = "cytoscape.decode.attributes";
+	private static final String badDecodeMessage =
+		"Trouble when decoding attribute value, first occurence line no. {0}" +
+		"\nIgnore if attributes file was created before 2.6.3 or wasn't creatad by Cytoscape." +
+		"\nUse -Dcytoscape.decode.attributes=false when starting Cytoscape to turn off decoding.";
+
+	private boolean badDecode;
+	private int lineNum;
+	private boolean doDecoding;
+	final Map<String, Map<String, Class>> idsToAttribNameToTypeMapMap;
+	private final CyLogger logger;
+
+
+	CyAttributesReader() {
+		logger = CyLogger.getLogger(CyAttributesReader.class);
+		lineNum = 0;
+		doDecoding = Boolean.valueOf(System.getProperty(DECODE_PROPERTY, "true"));
+		idsToAttribNameToTypeMapMap = new HashMap<String, Map<String, Class>>();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -60,9 +83,41 @@ public class CyAttributesReader {
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	public static void loadAttributes(CyAttributes cyAttrs, Reader fileIn)
-	    throws IOException {
-		int lineNum = 0;
+	public static void loadAttributes(final CyAttributes cyAttrs, final Reader fileIn) throws IOException {
+		CyAttributesReader ar = new CyAttributesReader();
+		ar.loadAttributesInternal(cyAttrs, fileIn);
+	}
+
+	private Class mapCytoscapeAttribTypeToEqnType(final byte attribType) {
+		switch (attribType) {
+		case CyAttributes.TYPE_BOOLEAN:
+			return Boolean.class;
+		case CyAttributes.TYPE_INTEGER:
+			return Long.class;
+		case CyAttributes.TYPE_FLOATING:
+			return Double.class;
+		case CyAttributes.TYPE_STRING:
+			return String.class;
+		case CyAttributes.TYPE_SIMPLE_LIST:
+			return List.class;
+		default:
+			return null;
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param cyAttrs DOCUMENT ME!
+	 * @param fileIn DOCUMENT ME!
+	 *
+	 * @throws IOException DOCUMENT ME!
+	 */
+	public void loadAttributesInternal(CyAttributes cyAttrs, Reader fileIn)
+		throws IOException
+	{
+		badDecode = false;
+		boolean guessedAttrType = false; // We later set this to true if we have to guess the attribute type.
 
 		try {
 			final BufferedReader reader;
@@ -131,79 +186,45 @@ public class CyAttributesReader {
 				final String line = reader.readLine();
 				lineNum++;
 
-				if (line == null) {
+				if (line == null)
 					break;
-				}
 
+				// Empty line?
 				if ("".equals(line.trim())) {
 					continue;
 				}
 
 				int inx = line.indexOf('=');
-				final String key = line.substring(0, inx).trim();
+				String key = line.substring(0, inx).trim();
 				String val = line.substring(inx + 1).trim();
+				final boolean equation = val.startsWith("=");
 
-				if (firstLine && val.startsWith("(")) {
+				key = decodeString(key);
+
+				if (firstLine && val.startsWith("("))
 					list = true;
-				}
 
 				if (list) {
 					// Chop away leading '(' and trailing ')'.
 					val = val.substring(1).trim();
 					val = val.substring(0, val.length() - 1).trim();
 
-					// Home-grown parsing (ughh) to handle escape sequences.
+					String[] elms = val.split("::");
 					final ArrayList elmsBuff = new ArrayList();
 
-					while (val.length() > 0) {
-						final StringBuilder elmBuff = new StringBuilder();
-						int inx2;
-
-						for (inx2 = 0; inx2 < val.length(); inx2++) {
-							char ch = val.charAt(inx2);
-
-							if (ch == ':') {
-								inx2++;
-								inx2++;
-
-								break;
-							} else if (ch == '\\') {
-								if ((inx2 + 1) < val.length()) {
-									inx2++;
-
-									char ch2 = val.charAt(inx2);
-
-									if (ch2 == 'n') {
-										elmBuff.append('\n');
-									} else if (ch2 == 't') {
-										elmBuff.append('\t');
-									} else if (ch2 == 'b') {
-										elmBuff.append('\b');
-									} else if (ch2 == 'r') {
-										elmBuff.append('\r');
-									} else if (ch2 == 'f') {
-										elmBuff.append('\f');
-									} else {
-										elmBuff.append(ch2);
-									}
-								} else {
-									/* val ends in '\' - just ignore it. */ }
-							} else {
-								elmBuff.append(ch);
-							}
-						}
-
-						elmsBuff.add(new String(elmBuff));
-						val = val.substring(inx2);
+					for (String vs : elms) {
+						vs = decodeString(vs);
+						vs = decodeSlashEscapes(vs);
+						elmsBuff.add(vs);
 					}
 
 					if (firstLine) {
 						if (type < 0) {
+							guessedAttrType = true;
 							while (true) {
 								try {
 									new Integer((String) elmsBuff.get(0));
 									type = MultiHashMapDefinition.TYPE_INTEGER;
-
 									break;
 								} catch (Exception e) {
 								}
@@ -211,18 +232,10 @@ public class CyAttributesReader {
 								try {
 									new Double((String) elmsBuff.get(0));
 									type = MultiHashMapDefinition.TYPE_FLOATING_POINT;
-
 									break;
 								} catch (Exception e) {
 								}
-
-								//               try {
-								//                 new Boolean((String) elmsBuff.get(0));
-								//                 type = MultiHashMapDefinition.TYPE_BOOLEAN;
-								//                 break; }
-								//               catch (Exception e) {}
 								type = MultiHashMapDefinition.TYPE_STRING;
-
 								break;
 							}
 						}
@@ -244,49 +257,16 @@ public class CyAttributesReader {
 
 					cyAttrs.setListAttribute(key, attributeName, elmsBuff);
 				} else { // Not a list.
-					     // Do the escaping thing.
-
-					final StringBuilder elmBuff = new StringBuilder();
-					int inx2;
-
-					for (inx2 = 0; inx2 < val.length(); inx2++) {
-						char ch = val.charAt(inx2);
-
-						if (ch == '\\') {
-							if ((inx2 + 1) < val.length()) {
-								inx2++;
-
-								char ch2 = val.charAt(inx2);
-
-								if (ch2 == 'n') {
-									elmBuff.append('\n');
-								} else if (ch2 == 't') {
-									elmBuff.append('\t');
-								} else if (ch2 == 'b') {
-									elmBuff.append('\b');
-								} else if (ch2 == 'r') {
-									elmBuff.append('\r');
-								} else if (ch2 == 'f') {
-									elmBuff.append('\f');
-								} else {
-									elmBuff.append(ch2);
-								}
-							} else {
-								/* val ends in '\' - just ignore it. */ }
-						} else {
-							elmBuff.append(ch);
-						}
-					}
-
-					val = new String(elmBuff);
+					val = decodeString(val);
+					val = decodeSlashEscapes(val);
 
 					if (firstLine) {
 						if (type < 0) {
+							guessedAttrType = true;
 							while (true) {
 								try {
 									new Integer(val);
 									type = MultiHashMapDefinition.TYPE_INTEGER;
-
 									break;
 								} catch (Exception e) {
 								}
@@ -294,18 +274,11 @@ public class CyAttributesReader {
 								try {
 									new Double(val);
 									type = MultiHashMapDefinition.TYPE_FLOATING_POINT;
-
 									break;
 								} catch (Exception e) {
 								}
 
-								//               try {
-								//                 new Boolean(val);
-								//                 type = MultiHashMapDefinition.TYPE_BOOLEAN;
-								//                 break; }
-								//               catch (Exception e) {}
 								type = MultiHashMapDefinition.TYPE_STRING;
-
 								break;
 							}
 						}
@@ -313,22 +286,119 @@ public class CyAttributesReader {
 						firstLine = false;
 					}
 
-					if (type == MultiHashMapDefinition.TYPE_INTEGER) {
-						cyAttrs.setAttribute(key, attributeName, new Integer(val));
-					} else if (type == MultiHashMapDefinition.TYPE_BOOLEAN) {
-						cyAttrs.setAttribute(key, attributeName, new Boolean(val));
-					} else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
-						cyAttrs.setAttribute(key, attributeName, new Double(val));
-					} else {
-						cyAttrs.setAttribute(key, attributeName, val);
+					if (equation) {
+						final Class eqnReturnType;
+						switch (type) {
+						case CyAttributes.TYPE_INTEGER:
+							eqnReturnType = Long.class;
+							break;
+						case CyAttributes.TYPE_FLOATING:
+							eqnReturnType = Double.class;
+							break;
+						case CyAttributes.TYPE_BOOLEAN:
+							eqnReturnType = Boolean.class;
+							break;
+						case CyAttributes.TYPE_STRING:
+							eqnReturnType = String.class;
+							break;
+						case CyAttributes.TYPE_SIMPLE_LIST:
+							eqnReturnType = List.class;
+							break;
+						default:
+							final String message = "don't know which equation return type to register on line " + lineNum + "!";
+							System.err.println(message);
+							logger.warn(message);
+							continue;
+						}
+						final EqnAttrTracker eqnAttrTracker = Cytoscape.getEqnAttrTracker();
+						eqnAttrTracker.recordEquation(cyAttrs, key, attributeName, val, eqnReturnType);
 					}
+					else if (type == MultiHashMapDefinition.TYPE_INTEGER)
+						cyAttrs.setAttribute(key, attributeName, new Integer(val));
+					else if (type == MultiHashMapDefinition.TYPE_BOOLEAN)
+						cyAttrs.setAttribute(key, attributeName, new Boolean(val));
+					else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT)
+						cyAttrs.setAttribute(key, attributeName, new Double(val));
+					else
+						cyAttrs.setAttribute(key, attributeName, val);
 				}
 			}
 		} catch (Exception e) {
-			String message = "failed parsing attributes file at line: " + lineNum
-			                 + " with exception: " + e.getMessage();
-			CyLogger.getLogger(CyAttributesReader.class).warn(message, e);
+			String message;
+			if (guessedAttrType) {
+				message = "failed parsing attributes file at line: " + lineNum
+					+ " with exception: " + e.getMessage()
+					+ " This is most likely due to a missing attribute type on the first line.\n"
+					+ "Attribute type should be one of the following: "
+					+ "(class=String), (class=Boolean), (class=Integer), or (class=Double). "
+					+ "(\"Double\" stands for a floating point a.k.a. \"decimal\" number.)"
+					+ " This should be added to end of the first line.";
+			}
+			else
+				message = "failed parsing attributes file at line: " + lineNum
+					+ " with exception: " + e.getMessage();
+			logger.warn(message, e);
 			throw new IOException(message);
 		}
+	}
+
+	private String decodeString(String in) throws IOException {
+		if (doDecoding) {
+			try {
+				in = URLDecoder.decode(in, CyAttributesWriter.ENCODING_SCHEME);
+			}
+			catch (IllegalArgumentException iae) {
+				if (!badDecode) {
+					logger.info(MessageFormat.format(badDecodeMessage, lineNum), iae);
+					badDecode = true;
+				}
+			}
+		}
+
+		return in;
+	}
+
+	private static String decodeSlashEscapes(String in) {
+		final StringBuilder elmBuff = new StringBuilder();
+		int inx2;
+
+		for (inx2 = 0; inx2 < in.length(); inx2++) {
+			char ch = in.charAt(inx2);
+
+			if (ch == '\\') {
+				if ((inx2 + 1) < in.length()) {
+					inx2++;
+
+					char ch2 = in.charAt(inx2);
+
+					if (ch2 == 'n') {
+						elmBuff.append('\n');
+					} else if (ch2 == 't') {
+						elmBuff.append('\t');
+					} else if (ch2 == 'b') {
+						elmBuff.append('\b');
+					} else if (ch2 == 'r') {
+						elmBuff.append('\r');
+					} else if (ch2 == 'f') {
+						elmBuff.append('\f');
+					} else {
+						elmBuff.append(ch2);
+					}
+				} else {
+					/* val ends in '\' - just ignore it. */ }
+			} else {
+				elmBuff.append(ch);
+			}
+		}
+
+		return elmBuff.toString();
+	}
+
+	public boolean isDoDecoding() {
+		return doDecoding;
+	}
+
+	public void setDoDecoding(boolean doDec) {
+		doDecoding = doDec;
 	}
 }

@@ -37,8 +37,8 @@
 
 // InteractionsReader:  from semi-structured text file, into an array of Interactions
 //------------------------------
-// $Revision: 13685 $
-// $Date: 2008-04-01 18:57:10 -0700 (Tue, 01 Apr 2008) $
+// $Revision: 20380 $
+// $Date: 2010-06-01 13:04:00 -0700 (Tue, 01 Jun 2010) $
 // $Author: kono $
 //------------------------------
 package cytoscape.data.readers;
@@ -86,10 +86,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * A Vector that holds all of the Interactions
 	 */
 	protected List<Interaction> allInteractions = new ArrayList<Interaction>();
-	@Deprecated
-	private BioDataServer dataServer;
-	@Deprecated
-	private String species;
 	
 	private String zip_entry;
 	private boolean is_zip = false;
@@ -119,7 +115,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	 */
 	public InteractionsReader(String filename) {
 		this(filename, null);
-		this.inputStream = FileUtil.getInputStream(filename);
 	}
 
 	/**
@@ -129,9 +124,8 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @param monitor An optional task monitor.  May be null.
 	 */
 	public InteractionsReader(String filename, TaskMonitor monitor) {
-		super(filename);
+		this(FileUtil.getInputStream(filename), filename);
 		this.taskMonitor = monitor;
-		this.inputStream = FileUtil.getInputStream(filename);
 	}
 
 	/**
@@ -157,33 +151,7 @@ public class InteractionsReader extends AbstractGraphReader {
 		this.taskMonitor = monitor;
 	}
 
-	/**
-	 * layout calls the default CyLayoutAlgorithm but forces it to use our
-	 * own taskMonitor.
-	 *
-	 * @param networkView the view of the network we want to layout
-	 * @deprecated Use getLayoutAlgorithm() instead. Gone 5/2008.
-	 */
-	public void layout(CyNetworkView networkView) {
-		getLayoutAlgorithm().doLayout(networkView, taskMonitor);
-	}
 
-	// ----------------------------------------------------------------------------------------
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param canonicalize This parameter does not in use from 2.5.
-	 *
-	 * @throws IOException DOCUMENT ME!
-	 * 
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void read(boolean canonicalize) throws IOException {
-		read();
-	}
-
-	// -----------------------------------------------------------------------------------------
 	/**
 	 * Calls read(false)
 	 */
@@ -191,7 +159,15 @@ public class InteractionsReader extends AbstractGraphReader {
 		String rawText;
 
 		if (!is_zip) {
-			rawText = FileUtil.getInputString(inputStream);
+            try {
+                rawText = FileUtil.getInputString(inputStream);
+            }
+            finally {
+                if (inputStream != null) {
+                		inputStream.close();	
+                		inputStream = null;		
+                }
+            }
 		} else {
 			rawText = zip_entry;
 		}
@@ -250,25 +226,7 @@ public class InteractionsReader extends AbstractGraphReader {
 		return allInteractions.toArray(new Interaction[0]);
 	}
 
-	/*
-	 * KONO: 5/4/2006 "Canonical Name" is no longer used in Cytoscape. Use ID
-	 * instead.
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	protected String canonicalizeName(String name) {
-		String canonicalName = name;
-
-		if (dataServer != null) {
-			canonicalName = dataServer.getCanonicalName(species, name);
-
-			if (canonicalName == null) {
-				canonicalName = name;
-			}
-		}
-
-		return canonicalName;
-	} // canonicalizeName
+	
 
 	// -------------------------------------------------------------------------------------------
 	protected void createRootGraphFromInteractionData() {
