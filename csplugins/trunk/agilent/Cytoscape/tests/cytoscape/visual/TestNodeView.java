@@ -39,6 +39,7 @@ import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.Label;
 import giny.view.NodeView;
+import giny.view.ObjectPosition;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -71,11 +72,22 @@ public class TestNodeView implements NodeView {
 	double label_offset_x = 0.0;
 	double label_offset_y = 0.0;
 	int node_label_anchor = 0;
+	double label_width = 100.0;
+	boolean nestedNetworkVisible = true;
+
+	int rootGraphIndex;
+	
+	private ObjectPosition labelPosition;
 
 	/**
 	 * Creates a new TestNodeView object.
 	 */
 	public TestNodeView() {
+		this(1);
+	}
+
+	public TestNodeView(int index) {
+		rootGraphIndex = 1;
 	}
 
 	/**
@@ -102,7 +114,7 @@ public class TestNodeView implements NodeView {
 	 * @return  DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
-		return 1;
+		return rootGraphIndex;
 	}
 
 	/**
@@ -111,7 +123,7 @@ public class TestNodeView implements NodeView {
 	 * @return  DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
-		return 1;
+		return rootGraphIndex;
 	}
 
 	/**
@@ -513,4 +525,30 @@ public class TestNodeView implements NodeView {
 	public int getNodeLabelAnchor() {
 		return node_label_anchor;
 	}
+
+	public double getLabelWidth() {
+		return label_width;
+	}
+
+	public void setLabelWidth(double w) {
+		label_width = w;
+	}
+
+
+	public boolean nestedNetworkIsVisible() {
+		return nestedNetworkVisible;
+	}
+	
+	public void showNestedNetwork(final boolean makeVisible) {
+		nestedNetworkVisible = makeVisible;
+	}
+
+	public ObjectPosition getLabelPosition() {
+		return this.labelPosition;
+	}
+
+	public void setLabelPosition(final ObjectPosition labelPosition) {
+		this.labelPosition = labelPosition;
+	}
+
 }

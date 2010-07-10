@@ -36,9 +36,9 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 12939 $
-// $Date: 2008-02-04 15:40:55 -0800 (Mon, 04 Feb 2008) $
-// $Author: kono $
+// $Revision: 18025 $
+// $Date: 2009-09-22 03:29:21 -0700 (Tue, 22 Sep 2009) $
+// $Author: noelr $
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
@@ -78,9 +78,16 @@ public class VizMapPropertiesTest extends TestCase {
 
 		try {
 			String propsFile = "testData/old_vizmap.props";
-			InputStream is = new FileInputStream(propsFile);
-			props.load(is);
-			is.close();
+			InputStream is = null;
+            try {
+				is = new FileInputStream(propsFile);
+                props.load(is);
+            }
+            finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 

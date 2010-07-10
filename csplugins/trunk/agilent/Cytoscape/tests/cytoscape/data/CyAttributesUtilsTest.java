@@ -1,14 +1,7 @@
 /*
   File: CyAttributesUtilsTest.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -50,6 +43,10 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
 import giny.model.GraphObject;
+
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Equation;
+
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -226,6 +223,12 @@ public class CyAttributesUtilsTest extends TestCase {
 		attrs.setAttribute(goID, "IntegerTest", new Integer(6));
 		attrs.setAttribute(goID, "DoubleTest", new Double(5.0));
 
+		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
+		final EqnCompiler compiler = new EqnCompiler();
+		compiler.compile("=ABS(-13) + 12.3", attribNameToTypeMap);
+		final Equation equation = compiler.getEquation();
+		attrs.setAttribute(goID, "EquationTest", equation);
+
 		List<String> listTestValue = new ArrayList<String>();
 		listTestValue.add("list test value1");
 		listTestValue.add("list test value2");
@@ -387,5 +390,47 @@ public class CyAttributesUtilsTest extends TestCase {
 		                                                                          new Integer(1),
 		                                                                          new Integer(0)
 		                                                                      })));
+	}
+
+	public void testCopyAttribute2() {
+		final CyAttributes attribs = Cytoscape.getNodeAttributes();
+		final String sourceId = "testNode1";
+		final String targetId = "testNode2";
+		final StringBuilder errorMessage = new StringBuilder();
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "BooleanTest",
+		                                           /* copyEquation = */false, errorMessage));
+		assertEquals(attribs.getBooleanAttribute(sourceId, "BooleanTest"),
+		             attribs.getBooleanAttribute(targetId, "BooleanTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "IntegerTest",
+		                                           /* copyEquation = */false, errorMessage));
+		assertEquals(attribs.getIntegerAttribute(sourceId, "IntegerTest"),
+		             attribs.getIntegerAttribute(targetId, "IntegerTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "DoubleTest",
+		                                           /* copyEquation = */false, errorMessage));
+		assertEquals(attribs.getDoubleAttribute(sourceId, "DoubleTest"),
+		             attribs.getDoubleAttribute(targetId, "DoubleTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "StringTest",
+		                                           /* copyEquation = */false, errorMessage));
+		assertEquals(attribs.getStringAttribute(sourceId, "StringTest"),
+		             attribs.getStringAttribute(targetId, "StringTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "ListTest",
+		                                           /* copyEquation = */false, errorMessage));
+		assertEquals(attribs.getListAttribute(sourceId, "ListTest"),
+		             attribs.getListAttribute(targetId, "ListTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "MapTest",
+		                                           /* copyEquation = */false, errorMessage));
+		assertEquals(attribs.getMapAttribute(sourceId, "MapTest"),
+		             attribs.getMapAttribute(targetId, "MapTest"));
+
+		assertTrue(CyAttributesUtils.copyAttribute(attribs, sourceId, targetId, "EquationTest",
+		                                           /* copyEquation = */true, errorMessage));
+		assertEquals(attribs.getEquation(sourceId, "EquationTest"),
+		             attribs.getEquation(targetId, "EquationTest"));
 	}
 }

@@ -58,7 +58,7 @@ import java.util.*;
  *
  */
 public class GraphSetUtilsTest extends TestCase {
-	protected List networklist;
+	protected List<CyNetwork> networklist;
 	protected int a;
 	protected int b;
 	protected int c;
@@ -79,7 +79,7 @@ public class GraphSetUtilsTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void setUp() throws Exception {
-		networklist = new ArrayList();
+		networklist = new ArrayList<CyNetwork>();
 
 		RootGraph root = Cytoscape.getRootGraph();
 		a = root.createNode();
@@ -177,6 +177,46 @@ public class GraphSetUtilsTest extends TestCase {
 		assertNull(x.getEdge(bd));
 	} // testDifference
 
+	public void testDifference2() {
+		CyNetwork x = GraphSetUtils.createDifferenceGraph2(networklist, true, "difference2");
+
+		assertTrue(x.containsNode(x.getNode(a)));
+		assertNull(x.getNode(b));
+		assertNull(x.getNode(c));
+		assertNull(x.getNode(d));
+		assertNull(x.getNode(e));
+
+		assertNull(x.getEdge(ab));
+		assertNull(x.getEdge(bc));
+		assertNull(x.getEdge(ac));
+		assertNull(x.getEdge(be));
+		assertNull(x.getEdge(bd));
+	} // testDifference2
+
+	public void testDifference_2() {
+		CyNetwork x = GraphSetUtils.createDifferenceGraph(createNetworks_2(), true, "difference");
+
+		assertTrue(x.containsNode(x.getNode(c)));
+		assertTrue(x.containsNode(x.getNode(a)));
+		assertTrue(x.containsNode(x.getNode(b)));
+
+		assertNull(x.getEdge(ab));
+		assertTrue(x.containsEdge(x.getEdge(ac)));
+		assertTrue(x.containsEdge(x.getEdge(bc)));
+	} // testDifference
+
+	public void testDifference2_2() {
+		CyNetwork x = GraphSetUtils.createDifferenceGraph2(createNetworks_2(), true, "difference2");
+
+		assertTrue(x.containsNode(x.getNode(c)));
+		assertNull(x.getNode(a));
+		assertNull(x.getNode(b));
+
+		assertNull(x.getEdge(ab));
+		assertNull(x.getEdge(ac));
+		assertNull(x.getEdge(bc));
+	} // testDifference2_2
+
 	/**
 	 *  DOCUMENT ME!
 	 */
@@ -194,4 +234,21 @@ public class GraphSetUtilsTest extends TestCase {
 		assertTrue(y.containsNode(y.getNode(d)));
 		assertTrue(y.containsNode(y.getNode(e)));
 	} // testUnion
+
+	/**
+	 *  Creates the networks for testDifference_2() and testDifference2_2().
+	 */
+	private List<CyNetwork> createNetworks_2() {
+		int[] nodes1 = new int[] { a, b, c };
+		int[] nodes2 = new int[] { a, b };
+
+		int[] edges1 = new int[] { ab, bc, ac };
+		int[] edges2 = new int[] { ab };
+
+		final List<CyNetwork> result = new ArrayList<CyNetwork>();
+		result.add(Cytoscape.createNetwork(nodes1, edges1, "graph1"));
+		result.add(Cytoscape.createNetwork(nodes2, edges2, "graph2"));
+
+		return result;
+	}
 }

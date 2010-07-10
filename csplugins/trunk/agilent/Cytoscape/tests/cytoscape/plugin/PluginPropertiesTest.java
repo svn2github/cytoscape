@@ -30,14 +30,14 @@ public class PluginPropertiesTest extends TestCase {
 		super.tearDown();
 	}
 
-	/**
-	 * Test method for {@link cytoscape.plugin.PluginProperties#fillPluginInfoObject(cytoscape.plugin.PluginInfo)}.
-	 */
-	public void testNoMatchingCyVersion() throws cytoscape.plugin.ManagerException {
-		cytoscape.CytoscapeInit.getProperties().setProperty("cytoscape.version.number", "2.4");
-		PluginInfo info = pp.fillPluginInfoObject(null);
-		assertEquals(info.getCytoscapeVersion(), "2.4");
-	}
+	//**
+	// * Test method for {@link cytoscape.plugin.PluginProperties#fillPluginInfoObject(cytoscape.plugin.PluginInfo)}.
+	 //*/
+	//public void testNoMatchingCyVersion() throws cytoscape.plugin.ManagerException {
+	//	cytoscape.CytoscapeInit.getProperties().setProperty("cytoscape.version.number", "2.4");
+	//	PluginInfo info = pp.fillPluginInfoObject(null);
+	//	assertEquals(info.getCytoscapeVersion(), "2.4");
+	//}
 
 	public void testMatchingCyVersion() throws cytoscape.plugin.ManagerException {
 		cytoscape.CytoscapeInit.getProperties().setProperty("cytoscape.version.number", "2.3.3");

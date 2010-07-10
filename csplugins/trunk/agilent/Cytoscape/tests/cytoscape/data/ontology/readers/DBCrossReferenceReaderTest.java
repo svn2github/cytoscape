@@ -144,16 +144,31 @@ public class DBCrossReferenceReaderTest extends TestCase {
 		 */
 		uc.setReadTimeout(5000);
 
-		InputStream is = uc.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String s;
 		StringBuffer sb = new StringBuffer();
+		InputStream is = null;
+		
+		try {
+			is = uc.getInputStream();
 
-		while ((s = reader.readLine()) != null) {
-			sb.append(s);
+			BufferedReader reader = null;
+
+			try {
+				String s;
+
+				reader = new BufferedReader(new InputStreamReader(is));
+				while ((s = reader.readLine()) != null) {
+					sb.append(s);
+				}
+			}
+			finally {
+				reader.close();
+			}
 		}
-
-		reader.close();
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 
 		return sb.toString();
 	}

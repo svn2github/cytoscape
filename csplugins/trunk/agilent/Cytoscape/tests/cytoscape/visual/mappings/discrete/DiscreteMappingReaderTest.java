@@ -36,9 +36,9 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 9565 $
-// $Date: 2007-02-13 11:36:50 -0800 (Tue, 13 Feb 2007) $
-// $Author: mes $
+// $Revision: 20380 $
+// $Date: 2010-06-01 13:04:00 -0700 (Tue, 01 Jun 2010) $
+// $Author: kono $
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.discrete;
 
@@ -55,6 +55,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 
@@ -78,7 +79,7 @@ public class DiscreteMappingReaderTest extends TestCase {
 		String attribute = reader.getControllingAttributeName();
 		assertEquals("canonicalName", attribute);
 
-		TreeMap map = reader.getMap();
+		SortedMap map = reader.getMap();
 
 		//  Test a few of the mapping elements.
 		Color color = (Color) map.get("A");
@@ -154,7 +155,7 @@ public class DiscreteMappingReaderTest extends TestCase {
 		String attribute = reader.getControllingAttributeName();
 		assertEquals("controlling attr name", "homer", attribute);
 
-		TreeMap map = reader.getMap();
+		SortedMap map = reader.getMap();
 
 		Color color = (Color) map.get(new Integer(1));
 		assertEquals(new Color(204, 255, 255), color);

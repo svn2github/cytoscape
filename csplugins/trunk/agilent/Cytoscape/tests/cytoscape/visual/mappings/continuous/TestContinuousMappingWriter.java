@@ -44,9 +44,11 @@ import cytoscape.visual.parsers.ValueParser;
 
 import junit.framework.TestCase;
 
+import java.awt.Color;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -62,12 +64,21 @@ public class TestContinuousMappingWriter extends TestCase {
 		//  Read in a Properties File
 		String baseKey = "nodeColorCalculator.RedGreen2.mapping";
 		ValueParser parser = new ColorParser();
-		InputStream in = TestContinuousMappingReader.getDataFile();
 		Properties properties = new Properties();
-		properties.load(in);
+		InputStream in = null;
+		
+        try {
+			in = TestContinuousMappingReader.getDataFile();
+            properties.load(in);
+        }
+        finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 
 		ContinuousMappingReader reader = new ContinuousMappingReader(properties, baseKey, parser);
-		ArrayList points = reader.getPoints();
+		List<ContinuousMappingPoint<Double, Color>> points = reader.getPoints();
 
 		//  Now write out a set of Propeties.
 		ContinuousMappingWriter writer = new ContinuousMappingWriter(points, baseKey,

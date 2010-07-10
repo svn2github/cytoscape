@@ -1,10 +1,39 @@
 <HTML>
 <HEAD>
-<TITLE>Cytoscape-AG Release Notes (version 0.04)</TITLE>
+<TITLE>Cytoscape-AG Release Notes (version 0.05)</TITLE>
 </HEAD>
 <BODY>
 
-<H1>Cytoscape-AG Release Notes (version 0.04)</H1>
+<H1>Cytoscape-AG Release Notes (version 0.05)</H1>
+Following is a list of the modifications (see comments with "MLC 07/08/10"):
+<OL>
+<LI>Added more behavior for AGMode that is set by the runstring parameter ("A").
+<OL type=a>
+<LI>We now also stop attempts to update the vizMapper panel (which doesn't exist) when visual styles are added or change.
+  <P>Cytoscape 2.7+ has different code for this that requires the additional change. Changes were made in cytoscape.visual.ui.VizMapperMainPanel.java.</P></LI>
+<LI>Stopped popup menus items for Nested Network, Hide Node, and Hide Edge from appearing.
+<P>Changes were made in cytoscape.view.CytoscapeDesktop.java.</P></LI>
+</OL>
+<LI>Updated to use Cytoscape 2.7+ code (dated 07/07/10).
+  <P>This includes all libraries and plugins updated. Library differences from v0.04 include:
+    <OL type=a>
+      <LI>Removed jsr173_1.0_api.jar</LI>
+      <LI>Removed lucene-1.4.3.jar</LI>
+      <LI>Removed phoebe.jar</LI>
+      <LI>Removed swingx-2006_10_27.jar</LI>
+      <LI>Removed wizard.jar</LI>
+      <LI>Added equations.jar.</LI>
+      <LI>Added jar173_api.jar.</LI>
+      <LI>Added lucene-core-3.0.1.jar.</LI>
+      <LI>Added mimepull.jar</LI>
+      <LI>Added phoebe.dnd.jar</LI>
+      <LI>Added swingx-1.0.jar</LI>
+      <LI>Added swingx-beaninfo-1.0.jar</LI>
+      <LI>Added woodstox.jar</LI>
+    </OL>
+</OL>
+
+<H2>Cytoscape-AG Release Notes (version 0.04)</H2>
 Following is a list of the modifications (see comments with "MLC 02/02/10"):
 <OL>
 <LI>Changed EMBEDDED_WINDOW mode to not dispose of the CytoscapeDesktop on exit.
@@ -60,7 +89,7 @@ viewer and birds eye viewer accessable independent of the rest of the
 Cytoscape UI.  Following is a list of the modifications (see comments
 with "MLC 12/08/09"):
 <OL>
-<LI> "Lobotomized" the plugin manager.to stop remembering previously loaded plugins.
+<LI> "Lobotomized" the plugin manager to stop remembering previously loaded plugins.
 <P>This is necessary to ensure only the plugins given in the command
 line of this version of Cytoscape are used for the parent
 application. This stops unwanted interactions in between an existing
@@ -95,7 +124,7 @@ remember what plugins were loaded in passed runs of Cytoscape.
 
 </OL>
 
-<SMALL><EM>This page was last updated: 02/02/10</EM></SMALL>
+<SMALL><EM>This page was last updated: 07/08/10</EM></SMALL>
 
 </BODY>
 </HTML>

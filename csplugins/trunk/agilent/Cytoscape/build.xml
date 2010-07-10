@@ -59,9 +59,10 @@
 	     This is primarily to support windows versioning.  Do NOT add 
 	     letters, "beta", etc.  to version.num.  
 	     Extra information can, however, be added to version. -->
-	<property name="version.num" value="2.6.3" />
+	<property name="version.num" value="2.8.0" />
 	<property name="version" value="${version.num}" />
 	<property name="dirname.release.dir" value="cytoscape-v${version}" />
+	<property name="java.target_version" value="1.5" />
 
 	<!-- Web Start Directory -->
 	<property name="webstart.dir" value="${build.dir}/webstart" />
@@ -107,8 +108,6 @@
 		<fileset dir="${buildlib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<fileset dir="${basedir}/extra-jars"/>
-
 	</path>
 
 	<!-- ======================================================= -->
@@ -173,15 +172,10 @@
 		<copy todir="${build.classes}/cytoscape/generated">
 			<fileset dir="${src.dir}/cytoscape/generated" includes="*.properties" />
 		</copy>
-		<!--
-		<copy todir="${build.classes}/cytoscape/generated2">
-			<fileset dir="${src.dir}/cytoscape/generated2" includes="*.properties" />
-		</copy>
-		-->
+
 		<copy todir="${build.classes}/cytoscape/bookmarks">
 			<fileset dir="${src.dir}/cytoscape/bookmarks" includes="*.properties" />
 		</copy>
-
 	</target>
 
 
@@ -207,15 +201,6 @@
 		<!-- copy over images -->
 		<copy todir="${build.classes}/cytoscape/images">
 			<fileset dir="${basedir}/images" />
-		</copy>
-		<copy todir="${build.classes}/cytoscape/view/images">
-			<fileset dir="${basedir}/images" />
-		</copy>
-		<copy todir="${build.classes}/cytoscape/dialogs/images">
-			<fileset dir="${src.dir}/cytoscape/dialogs/images" />
-		</copy>
-		<copy todir="${build.classes}/cytoscape/visual/ui/images">
-			<fileset dir="${src.dir}/cytoscape/visual/ui/images" />
 		</copy>
 
 
@@ -282,11 +267,11 @@
 		       destdir="${build.classes}" 
 		       nowarn="off" 
 		       debug="true" 
-		       source="1.5" 
-		       target="1.5"
+		       source="${java.target_version}" 
+		       target="${java.target_version}"
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="yes">
+		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 			<src path="${src.dir}" />
@@ -303,7 +288,6 @@
 		<echo>Copying resources/ directory to build</echo>
 		<copy todir="${build.classes}/cytoscape/resources">
 			<fileset dir="${basedir}/resources" />
-			<fileset file="${basedir}/resources/props/tax_report.txt" />
 		</copy>
 
 
@@ -425,7 +409,7 @@
 		         source="1.5" 
 		         breakiterator="true" 
 		         Windowtitle="Cytoscape ${version} API" 
-		         header="Cytoscape ${version} (c) 2006,2007 ISB, MSKCC, UCSD" 
+		         header="Cytoscape ${version} (c) 2006-2010 ISB, MSKCC, UCSD" 
 		         footer="www.cytoscape.org" 
 		         classpathref="classpath" 
 		         access="public">
@@ -460,15 +444,16 @@
 		</path>
 		<pathconvert property="manifest.classpath.string"
 			     pathsep=" ">
-			<path refid="manifest.classpath"/>
+			<path refid="manifest.classpath" />
 			<chainedmapper>
 				<flattenmapper/>
-				<globmapper from="*" to="lib/*" handledirsep="yes"/>
+				<globmapper from="*" to="lib/*" handledirsep="yes" />
 			</chainedmapper>
 		</pathconvert>
 		<manifest file="${manifest.file}">
-			<attribute name="Main-Class" value="cytoscape.CyMain"/>
-			<attribute name="Class-Path" value="${manifest.classpath.string}"/>
+			<attribute name="Main-Class" value="cytoscape.CyMain" />
+			<attribute name="Class-Path" value="${manifest.classpath.string}" />
+			<attribute name="Java-Version" value="${java.target_version}" />
 		</manifest>
 	</target>
 
@@ -717,7 +702,7 @@
 			<fileset dir="${lib.dir}" includes="*.jar" />
 		</copy>
 
-		<!-- Copy over start scripts -->
+
 		<echo>
             ---------------------------------------
             Copying over all OS-specific scripts.
@@ -725,19 +710,19 @@
 		</echo>
 		<copy file="resources/bin/cytoscape.bat" todir="${release.dir}" />
 		<copy file="resources/bin/cytoscape.sh" todir="${release.dir}" />
-		<chmod perm="+x" file="${release.dir}/cytoscape.bat" />
+		<copy file="resources/bin/gen_vmoptions.sh" todir="${release.dir}" />
+		<copy file="resources/bin/gen_vmoptions.bat" todir="${release.dir}" />
 		<chmod perm="+x" file="${release.dir}/cytoscape.sh" />
+		<chmod perm="+x" file="${release.dir}/gen_vmoptions.sh" />
+
 
 		<echo>
-            ---------------------------------------
+            ------------------------------------------------------
             Copying over user documentation and Cytoscape License.
-            ---------------------------------------
-    </echo>
-
+            ------------------------------------------------------
+    		</echo>
 		<copy file="docs/LICENSE.txt" todir="${release.dir}" />
 		<copy file="docs/LICENSE.html" todir="${release.dir}" />
-
-
 		<mkdir dir="${release.dir}/docs"/>
 	        <filter token="version" value="${version}"/>
 		<copy file="docs/INSTALL.txt" todir="${release.dir}/docs" filtering="true"/>
@@ -754,13 +739,12 @@
 			<fileset dir="docs/images"/>
 		</copy>
 
-		<!-- Copy over Sample Data Files -->
+
 		<echo>
             ---------------------------------------
             Copying over sample data files.
             ---------------------------------------
 		</echo>
-
 		<copy file="testData/README_SAMPLE_DATA.txt" todir="${release.dir}/sampleData" />
 		<copy file="testData/BINDyeast.sif" todir="${release.dir}/sampleData" />
 		<copy file="testData/BINDhuman.sif" todir="${release.dir}/sampleData" />
@@ -781,6 +765,7 @@
 		<copy file="testData/human_interactome_may07_small.tab.gz" todir="${release.dir}/sampleData" />
 		<copy file="testData/Apoptosis_BioPAX.xml" todir="${release.dir}/sampleData" />
 		<copy file="testData/sampleStyles.props" todir="${release.dir}/sampleData" />
+		<copy file="testData/NNFData/Sample.nnf" todir="${release.dir}/sampleData" />
 		
 		<!-- Copy over Third Party Licenses -->
 		<echo>
@@ -1044,7 +1029,6 @@
 	        </echo>
 		<copy file="${basedir}/resources/props/cytoscape.props" tofile="${webstart.dir}/cytoscape.props" />
 		<copy file="${basedir}/resources/props/vizmap.props" tofile="${webstart.dir}/vizmap.props" />
-		<copy file="${basedir}/resources/props/tax_report.txt" tofile="${webstart.dir}/tax_report.txt" />
 
 		<!-- Copy over Webstart PlugIns -->
 		<echo>

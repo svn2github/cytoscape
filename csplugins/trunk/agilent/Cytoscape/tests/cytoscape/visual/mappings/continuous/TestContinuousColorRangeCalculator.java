@@ -52,6 +52,8 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -64,17 +66,27 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testCalculator1() throws Exception {
-		InputStream in = getMapper1Props();
-		Properties props = getProperties(in);
+        Properties props = null;
+		InputStream in = null;
+		
+        try {
+			in = getMapper1Props();
+            props = getProperties(in);
+        }
+        finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 
-		ValueParser parser = new ColorParser();
-		ContinuousMappingReader reader = new ContinuousMappingReader(props,
+		ValueParser<Color> parser = new ColorParser();
+		ContinuousMappingReader<Double, Color> reader = new ContinuousMappingReader<Double, Color>(props,
 		                                                             "nodeColorCalculator.Sample.mapping",
 		                                                             parser);
-		ArrayList points = reader.getPoints();
+		List<ContinuousMappingPoint<Double, Color>> points = reader.getPoints();
 
 		//  Create some sample values...
-		HashMap bundle = new HashMap();
+		Map<String, Object> bundle = new HashMap<String, Object>();
 		double[] values = { -1.0, 0.07, 2.0, 4.0, 5.0, 10.0 };
 
 		for (int i = 0; i < values.length; i++) {
@@ -82,7 +94,7 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 			bundle.put(key, new Double(values[i]));
 		}
 
-		ContinuousRangeCalculator calc = new ContinuousRangeCalculator(points,
+		ContinuousRangeCalculator<Double, Color> calc = new ContinuousRangeCalculator<Double, Color>(points,
 		                                                               reader.getInterpolator(),
 		                                                               bundle);
 
@@ -101,14 +113,24 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testCalculator2() throws Exception {
-		InputStream in = getMapper2Props();
-		Properties props = getProperties(in);
+		Properties props = null;
+		InputStream in = null;
+		
+        try {
+			in = getMapper2Props();
+            props = getProperties(in);
+        }
+        finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 
 		ValueParser parser = new ColorParser();
 		ContinuousMappingReader reader = new ContinuousMappingReader(props,
 		                                                             "nodeColorCalculator.Sample.mapping",
 		                                                             parser);
-		ArrayList points = reader.getPoints();
+		List<ContinuousMappingPoint<Double, Color>> points = reader.getPoints();
 
 		//  Create some sample values...
 		HashMap bundle = new HashMap();
