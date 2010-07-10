@@ -38,9 +38,9 @@
 // ThesaurusFlatFileReader.java
 
 // ------------------------------------------------------------------------------
-// $Revision: 14809 $
-// $Date: 2008-09-01 18:13:15 -0700 (Mon, 01 Sep 2008) $
-// $Author: scooter $
+// $Revision: 17791 $
+// $Date: 2009-08-12 09:52:17 -0700 (Wed, 12 Aug 2009) $
+// $Author: noelr $
 // ------------------------------------------------------------------------------
 package cytoscape.data.synonyms.readers;
 
@@ -123,13 +123,18 @@ public class ThesaurusFlatFileReader {
 
 		String curLine = null;
 
-		while (null != (curLine = rd.readLine())) {
-			extractedLines.add(curLine);
+        try {
+            while (null != (curLine = rd.readLine())) {
+                extractedLines.add(curLine);
 
-			// CyLogger.getLogger().info( curLine );
-		}
-
-		rd.close();
+    			// CyLogger.getLogger().info( curLine );
+        	}
+        }
+        finally {
+            if (rd != null) {
+                rd.close();
+            }
+        }
 
 		Object[] entireFile = extractedLines.toArray();
 		lines = new String[entireFile.length];

@@ -36,6 +36,42 @@
  */
 package cytoscape.data.writers;
 
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
+import java.awt.Component;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.imageio.ImageIO;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingConstants;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.stream.XMLStreamException;
+
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import cytoscape.CyEdge;
@@ -43,11 +79,8 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.bookmarks.Bookmarks;
-
 import cytoscape.data.Semantics;
-
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
 import cytoscape.generated.Cytopanel;
@@ -72,61 +105,20 @@ import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.generated.Server;
 import cytoscape.generated.SessionState;
-
 import cytoscape.util.BookmarksUtil;
-
 import cytoscape.util.swing.JTreeTable;
-
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
-
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-
-import giny.view.EdgeView;
-import giny.view.NodeView;
-
-import java.awt.Component;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.io.IOException;
-
-import java.math.BigInteger;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.SwingConstants;
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
+import cytoscape.visual.customgraphic.CustomGraphicsPool;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.ImageUtil;
+import cytoscape.visual.customgraphic.NullCustomGraphics;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 
 /**
@@ -168,11 +160,6 @@ public class CytoscapeSessionWriter {
 	// Number of Cytopanels. Currently, we have 3 panels.
 	private static final int CYTOPANEL_COUNT = 3;
 
-	// Number of setting files in the cys file.
-	// For now, we have cysession.xml, vizmap.prop, cytoscape.prop, and
-	// bookmarks.
-	private static final int SETTING_FILE_COUNT = 4;
-
 	// Name of CySession file.
 	private static final String CYSESSION_FILE_NAME = "cysession.xml";
 	private static final String VIZMAP_FILE = "session_vizmap.props";
@@ -194,7 +181,6 @@ public class CytoscapeSessionWriter {
 
 	// File name for the session
 	private String sessionFileName = null;
-	private String[] targetFileNames;
 	private Bookmarks bookmarks;
 	private Set<CyNetwork> networks;
 	private HashMap networkMap;
@@ -241,18 +227,33 @@ public class CytoscapeSessionWriter {
 	 *
 	 */
 	public void writeSessionToDisk() throws Exception {
-		
-		zos = new ZipOutputStream(new FileOutputStream(sessionFileName)); 
+		FileOutputStream fos = null;
 
-		for (CyNetwork network : networks)
-			zipNetwork(network);
-		zipCySession();
-		zipVizmapProps();
-		zipCytoscapeProps();
-		zipBookmarks();
-		zipFileListMap();
+		try {
+			fos = new FileOutputStream(sessionFileName);
+			try {
+				zos = new ZipOutputStream(fos);
 
-		zos.close();
+				for (CyNetwork network : networks)
+					zipNetwork(network);
+				zipCySession();
+				zipVizmapProps();
+				zipCytoscapeProps();
+				zipBookmarks();
+				zipFileListMap();
+				zipCustomGraphics();
+			}
+			finally {
+				if (zos != null) {
+					zos.close();
+				}
+			}
+		}
+		finally {
+			if (fos != null) {
+				fos.close();
+			}
+		}
 
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
 	}
@@ -338,8 +339,6 @@ public class CytoscapeSessionWriter {
 
 		Writer writer = new OutputStreamWriter( zos );
 		CalculatorIO.storeCatalog(catalog, writer);
-
-		zos.closeEntry();
 	}
 
 	/**
@@ -350,8 +349,6 @@ public class CytoscapeSessionWriter {
 		zos.putNextEntry(new ZipEntry(sessionDir + CYPROP_FILE) );
 
 		CytoscapeInit.getProperties().store(zos, "Cytoscape Property File");
-
-		zos.closeEntry();
 	}
 
 	/**
@@ -363,8 +360,28 @@ public class CytoscapeSessionWriter {
 
 		bookmarks = Cytoscape.getBookmarks();
 		BookmarksUtil.saveBookmark(bookmarks, zos);
-
-		zos.closeEntry();
+	}
+	
+	
+	private void zipCustomGraphics() throws IOException, InterruptedException {
+		final CustomGraphicsPool pool = Cytoscape.getVisualMappingManager().getCustomGraphicsPool();
+		// Collect all custom graphics
+		final Collection<CyCustomGraphics<?>> customGraphics = pool.getAll();
+		
+		// Add metadata file to the session file
+		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsPool.METADATA_FILE));
+		pool.getMetadata().store(zos, "Image Metadata");
+		
+		for(CyCustomGraphics<?> cg: customGraphics) {
+			final Image img = cg.getRenderedImage();
+			// For now, save URLImage only.
+			// TODO: how can we handle Dynamic Images?
+			if(img != null && cg instanceof NullCustomGraphics == false && cg instanceof URLImageCustomGraphics) {
+				final Long id= cg.getIdentifier();
+				zos.putNextEntry(new ZipEntry(sessionDir + "images/" + id + ".png"));
+				ImageIO.write(ImageUtil.toBufferedImage(img), "PNG", zos);
+			}
+		}
 	}
 
 	/**
@@ -380,18 +397,13 @@ public class CytoscapeSessionWriter {
 		String xgmmlFile = getValidFileName( network.getTitle() + XGMML_EXT );
 		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
-		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
-		Writer writer = new OutputStreamWriter(zos, "UTF-8");
+		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile));
 
+		Writer writer = new OutputStreamWriter(zos, "UTF-8");
 		// Write the XGMML file *without* our graphics attributes
 		// We'll let the Vizmapper handle those
 		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
 		xgmmlWriter.write(writer);
-
-		zos.closeEntry();
-
-		writer = null;
-		xgmmlWriter = null;
 	}
 
 	/**
@@ -419,9 +431,6 @@ public class CytoscapeSessionWriter {
 		zos.putNextEntry(new ZipEntry(sessionDir + CYSESSION_FILE_NAME) );
 
 		m.marshal(session, zos);
-
-		zos.closeEntry();
-		m = null;
 		session = null;
 	}
 
@@ -455,13 +464,19 @@ public class CytoscapeSessionWriter {
 					                               "/" + theFile.getName() ) );
 
 					// copy the file contents to the zip output stream
-					FileInputStream fileIS = new FileInputStream(theFile);
-					int numRead = 0;
-			        while ((numRead = fileIS.read(buf)) > -1)
-		            	zos.write(buf, 0, numRead);
-					fileIS.close();
-
-					zos.closeEntry();
+					FileInputStream fileIS = null;
+					try {
+						fileIS = new FileInputStream(theFile);
+						int numRead = 0;
+						while ((numRead = fileIS.read(buf)) > -1) {
+							zos.write(buf, 0, numRead);
+						}
+					}
+					finally {
+						if (fileIS != null) {
+							fileIS.close();
+						}
+					}
 				}
 			}
 		}

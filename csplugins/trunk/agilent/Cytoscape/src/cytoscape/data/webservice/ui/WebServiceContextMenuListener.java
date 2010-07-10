@@ -56,7 +56,7 @@ public class WebServiceContextMenuListener implements PropertyChangeListener {
 	 * @param evt DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evt.getPropertyName())) {
 			if (cMenu == null)
 				cMenu = new WebServiceContextMenu();
 

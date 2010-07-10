@@ -40,8 +40,10 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -56,9 +58,13 @@ public class CyAttributesWriter {
 	 *
 	 */
 	public static String newline = System.getProperty("line.separator");
+    public static final String ENCODE_PROPERTY = "cytoscape.encode.attributes";
+
+    public static final String ENCODING_SCHEME = "UTF-8";
 	private final CyAttributes cyAttributes;
 	private final String attributeName;
 	private Writer fileWriter;
+    private boolean doEncoding;
 
 	/**
 	 * Creates a new CyAttributesWriter2 object.
@@ -72,7 +78,8 @@ public class CyAttributesWriter {
 		this.cyAttributes = attributes;
 		this.attributeName = attributeName;
 		this.fileWriter = fileWriter;
-	}
+        doEncoding = Boolean.valueOf(System.getProperty(ENCODE_PROPERTY, "true"));
+    }
 
 	/**
 	 * Write out the state for the given attributes
@@ -103,51 +110,132 @@ public class CyAttributesWriter {
 		else
 			className = "java.lang.String";
 
-		fileWriter.write(attributeName + " (class=" + className + ")" + newline);
+        try {
+            fileWriter.write(attributeName + " (class=" + className + ")" + newline);
 
-		final MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
+            final MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
 
-		if (attributeMap != null) {
-			final Iterator<String> keys = cyAttributes.getMultiHashMap().getObjectKeys(attributeName);
+            if (attributeMap != null) {
+                final Iterator<String> keys = cyAttributes.getMultiHashMap().getObjectKeys(attributeName);
 
-			String key;
-			Object value;
-			Iterator objIt;
-			StringBuilder result = new StringBuilder();
+                String key;
+                Object value;
+                Iterator objIt;
+                String vs;
+                StringBuilder result = new StringBuilder();
 
-			while (keys.hasNext()) {
-				key = keys.next();
+                while (keys.hasNext()) {
+                    key = keys.next();
 
-				if (cyAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
-					value = cyAttributes.getListAttribute(key, attributeName);
-				else
-					value = cyAttributes.getAttribute(key, attributeName);
-					
+                    if (cyAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
+                        value = cyAttributes.getListAttribute(key, attributeName);
+                    else
+                        value = cyAttributes.getAttribute(key, attributeName);
 
-				if (value != null) {
-					if (value instanceof List) {
-						result.append(key + " = ");
+                    key = encodeString(key);
 
-						if (((Collection) value).size() > 0) {
-							objIt = ((Collection) value).iterator();
-							result.append("(" + objIt.next());
+                    if (value != null) {
+                        if (value instanceof List) {
+                            result.append(key + " = ");
 
-							while (objIt.hasNext())
-								result.append("::" + objIt.next());
+                            if (((Collection) value).size() > 0) {
+                                Object o;
 
-							result.append(")" + newline);
-							fileWriter.write(result.toString());
-							result = new StringBuilder();
-						}
-					} else
-						fileWriter.write(key + " = " + value + newline);
-				}
-			}
+                                objIt = ((Collection) value).iterator();
+                                result.append("(");
+                                o = objIt.next();
+                                vs = o.toString();
+                                vs = slashEncodeString(vs);
+                                vs = encodeString(vs);
+                                result.append(vs);
 
-			fileWriter.flush();
-		}
+                                while (objIt.hasNext()) {
 
-		fileWriter.close();
-		fileWriter = null;
+                                    o = objIt.next();
+                                    vs = o.toString();
+                                    vs = slashEncodeString(vs);
+                                    vs = encodeString(vs);
+                                    result.append("::" + vs);
+                                }
+                                result.append(")" + newline);
+                                fileWriter.write(result.toString());
+                                result = new StringBuilder();
+                            }
+                        } else {
+                            vs = value.toString();
+                            vs = slashEncodeString(vs);
+                            vs = encodeString(vs);
+                            fileWriter.write(key + " = " + vs + newline);
+                        }
+                    }
+                }
+
+                fileWriter.flush();
+            }
+        }
+        finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
 	}
+
+    private String encodeString(String in) throws UnsupportedEncodingException {
+        if (doEncoding) {
+            in = URLEncoder.encode(in, ENCODING_SCHEME);
+        }
+
+        return in;
+    }
+
+    private static String slashEncodeString(String in) {
+        StringBuilder sb;
+
+        sb = new StringBuilder(in.length());
+        for (int i = 0; i < in.length(); i++) {
+            char c;
+
+            c = in.charAt(i);
+            switch (c) {
+                case '\n': {
+                    sb.append("\\n");
+                    break;
+                }
+                case '\t': {
+                    sb.append("\\t");
+                    break;
+                }
+                case '\b': {
+                    sb.append("\\b");
+                    break;
+                }
+                case '\r': {
+                    sb.append("\\r");
+                    break;
+                }
+                case '\f': {
+                    sb.append("\\f");
+                    break;
+                }
+                case '\\': {
+                    sb.append("\\\\");
+                    break;
+                }
+                default : {
+                    sb.append(c);
+                    break;
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public boolean isDoEncoding() {
+        return doEncoding;
+    }
+
+    public void setDoEncoding(boolean doEnc) {
+        doEncoding = doEnc;
+    }
 }

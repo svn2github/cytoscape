@@ -1,8 +1,22 @@
-REM Simple Cytoscape batch script for windows/dos
-REM (c) Trey Ideker June 21, 2002; Owen Ozier March 06, 2003
-REM
-REM Runs Cytoscape from its jar file with GO data loaded
+:: Simple Cytoscape batch script for windows/dos
+:: (c) Trey Ideker June 21, 2002; Owen Ozier March 06, 2003
+::
+:: Runs Cytoscape from its jar file with GO data loaded
 
-java -Dswing.aatext=true -Xss5M -Xmx512M -jar cytoscape.jar cytoscape.CyMain -p plugins %*
+@echo off
+
+:: Create the Cytoscape.vmoptions file, if it doesn't exist.
+IF EXIST "Cytoscape.vmoptions" GOTO vmoptionsFileExists
+CALL gen_vmoptions.bat
+:vmoptionsFileExists
+
+:: Read vmoptions, one per line.
+setLocal EnableDelayedExpansion
+for /f "tokens=* delims= " %%a in (Cytoscape.vmoptions) do (
+set /a N+=1
+set opt!N!=%%a
+)
+
+java !opt1! !opt2! !opt3! !opt4! !opt5! !opt6! !opt7! !opt8! !opt9! -jar ..\..\cytoscape.jar -p plugins %*
 
 

@@ -106,8 +106,8 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 
 		List<JMenuItem> context = null;
 		// MLC 01/31/10 BEGIN:
-		// final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
-		List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+		// final List<WebServiceClient<?>> clients = WebServiceClientManager.getAllClients();
+		List<WebServiceClient<?>> clients = WebServiceClientManager.getAllClients();
 
 		if (CyMain.isWikiPathwaysNoContextMenusMode ()) {
 		    // We remove the popup menus from "WikiPathways
@@ -131,7 +131,7 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 		// MLC 01/31/10 END.
 
 
-		for (WebServiceClient client : clients) {
+		for (WebServiceClient<?> client : clients) {
 			if (client instanceof WebServiceClientGUI) {
 				if (view instanceof NodeView)
 					context = ((WebServiceClientGUI) client).getNodeContextMenuItems((NodeView) view);
@@ -154,11 +154,11 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 		if(view instanceof NodeView) {
 		    // MLC 01/31/10 BEGIN:
 		    if ((!CyMain.isWikiPathwaysNoContextMenusMode ()) ||
-			(nodeRootMenu.getItemCount() > 0)) {
+		            (nodeRootMenu.getItemCount() > 0)) {
 			// MLC 01/31/10 END.
 			menu.add(this.nodeRootMenu);
 			if(nodeRootMenu.getItemCount() == 0)
-			    nodeRootMenu.setEnabled(false);
+				nodeRootMenu.setEnabled(false);
 			// MLC 01/31/10:
 		    }
 		} else {
@@ -168,7 +168,7 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 			// MLC 01/31/10 END.
 			menu.add(this.edgeRootMenu);
 			if(edgeRootMenu.getItemCount() == 0)
-			    edgeRootMenu.setEnabled(false);
+				edgeRootMenu.setEnabled(false);
 			// MLC 01/31/10:
 		    }
 		}

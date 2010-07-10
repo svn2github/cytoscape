@@ -1,14 +1,7 @@
 /*
  File: XGMMLWriter.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,32 +29,6 @@
  */
 package cytoscape.data.writers;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CyEdgeView;
-
-import cytoscape.visual.LineStyle;
-
-import ding.view.DGraphView;
-import ding.view.DingCanvas;
-
-import giny.model.RootGraph;
-
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -71,20 +38,35 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.geom.Point2D;
-
 import java.io.IOException;
 import java.io.Writer;
-import java.io.UnsupportedEncodingException;
-
-import java.math.BigInteger;
-
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
+
+import javax.xml.bind.JAXBException;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.LineStyle;
+
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
+
+import org.cytoscape.equations.Equation;
+
 
 enum GraphicsType {
 	ARC("arc"),
@@ -93,28 +75,31 @@ enum GraphicsType {
 	LINE("line"),
 	OVAL("oval"), 
 	POLYGON("polygon"),
-  RECTANGLE("rectangle"),
-  TEXT("text"),
-  BOX("box"),
-  CIRCLE("circle"),
-  VER_ELLIPSIS("ver_ellipsis"),
-  HOR_ELLIPSIS("hor_ellipsis"),
-  RHOMBUS("rhombus"),
-  TRIANGLE("triangle"),
-  PENTAGON("pentagon"),
-  HEXAGON("hexagon"),
-  OCTAGON("octagon"),
-  ELLIPSE("ellipse"),
-  DIAMOND("diamond"),
-  PARALLELOGRAM("parallelogram"),
-  ROUNDED_RECTANGLE("rounded_rectangle");
-  private final String value;
+	RECTANGLE("rectangle"),
+	TEXT("text"),
+	BOX("box"),
+	CIRCLE("circle"),
+	VER_ELLIPSIS("ver_ellipsis"),
+	HOR_ELLIPSIS("hor_ellipsis"),
+	RHOMBUS("rhombus"),
+	TRIANGLE("triangle"),
+	PENTAGON("pentagon"),
+	HEXAGON("hexagon"),
+	OCTAGON("octagon"),
+	ELLIPSE("ellipse"),
+	DIAMOND("diamond"),
+	PARALLELOGRAM("parallelogram"),
+	ROUNDED_RECTANGLE("rounded_rectangle"),
+	VEE("vee"),
+	;
 
-  GraphicsType(String v) {
-  	value = v;
-  }
+	private final String value;
+	
+	private GraphicsType(String v) {
+		value = v;
+	}
 
-	String value() {
+	public String value() {
 		return value;
 	}
 }
@@ -167,7 +152,8 @@ enum ObjectType {
  */
 public class XGMMLWriter {
 	// XML preamble information
-	private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
+    public static final String ENCODING = "UTF-8";
+	private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" standalone=\"yes\"?>";
 
 	private static final String[] NAMESPACES = {
 		"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"",
@@ -213,6 +199,11 @@ public class XGMMLWriter {
 	 */
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
+	/**
+	 *
+	 */
+	public static final String ENCODE_PROPERTY = "cytoscape.encode.xgmml.attributes";
+
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
 	private CyAttributes networkAttributes;
@@ -228,6 +219,8 @@ public class XGMMLWriter {
 	private int depth = 0; // XML depth
 	private String indentString = "";
 	private Writer writer = null;
+
+	private boolean doFullEncoding;
 
 	/**
 	 * Constructor.<br>
@@ -255,9 +248,16 @@ public class XGMMLWriter {
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
 		networkAttNames = networkAttributes.getAttributeNames();
+
+		Arrays.sort(nodeAttNames);
+		Arrays.sort(edgeAttNames);
+		Arrays.sort(networkAttNames);
+
 		// Create our indent string (480 blanks);
 		for (int i = 0; i < 20; i++) 
 			indentString += "                        ";
+
+        doFullEncoding = Boolean.valueOf(System.getProperty(ENCODE_PROPERTY, "true"));
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class XGMMLWriter {
 	 */
 	private void writePreamble() throws IOException {
 		writeElement(XML_STRING+"\n");
-		writeElement("<graph label=\""+network.getTitle()+"\" "); 
+		writeElement("<graph label="+quote(network.getTitle())+" ");
 		for (int ns = 0; ns < NAMESPACES.length; ns++)
 			writer.write(NAMESPACES[ns]+" ");
 		writer.write(" directed=\"1\">\n");
@@ -372,7 +372,7 @@ public class XGMMLWriter {
 		java.util.Date now = new java.util.Date();
 		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
-		writeElement("<dc:title>"+network.getTitle()+"</dc:title>\n");
+		writeElement("<dc:title>"+encode(network.getTitle())+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
 		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
@@ -471,8 +471,10 @@ public class XGMMLWriter {
 			depth--; writeElement("</att>\n");
 		}
 
-		// Output the node graphics if we have a view
-		writeNodeGraphics(node, (NodeView)networkView.getNodeView(node));
+        if (networkView != null) {
+            // Output the node graphics if we have a view
+            writeNodeGraphics(node, (NodeView)networkView.getNodeView(node));
+        }
 
 		depth--;
 		writeElement("</node>\n");
@@ -495,14 +497,15 @@ public class XGMMLWriter {
 	 */
 	private void writeNodeGraphics(CyNode node, NodeView nodeView) throws IOException {
 
-		/*
-		 * In case node is hidden, we cannot get the show and extract node
-		 * view.
-		 */
+		
 		if (nodeView == null) return;
 
+		// In case node is hidden, we temporarily show the node view
+		// and then hide it later on.
+		boolean rehideNode = false;
 		if (nodeView.getWidth() == -1) {
 			networkView.showGraphObject(nodeView);
+			rehideNode = true;
 		}
 
 		writeElement("<graphics");
@@ -557,6 +560,9 @@ public class XGMMLWriter {
 		}
 
 		writer.write("/>\n");
+
+		if ( rehideNode )
+			networkView.hideGraphObject(nodeView);
 	}
 
 	private void writeGroups() throws IOException {
@@ -657,8 +663,10 @@ public class XGMMLWriter {
 				writeAttribute(curEdge.getIdentifier(), edgeAttributes, edgeAttNames[att]);
 		}
 
-		// Write the edge graphics
-		writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
+        if (networkView != null) {
+            // Write the edge graphics
+            writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
+        }
 
 		depth--;
 		writeElement("</edge>\n");
@@ -725,6 +733,7 @@ public class XGMMLWriter {
 		writeElement("</graphics>\n");
 	}
 
+	
 	/**
 	 * Creates an attribute to write into XGMML file.
 	 *
@@ -739,38 +748,64 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeAttribute(final String id, final CyAttributes attributes,
-	                            final String attributeName) throws IOException {
+	                            final String attributeName) throws IOException
+	{
 		// create an attribute and its type
 		final byte attType = attributes.getType(attributeName);
 		String value = null;
 		String type = null;
-		boolean editable = attributes.getUserEditable(attributeName);
-		boolean hidden = !attributes.getUserVisible(attributeName);
+		final boolean editable = attributes.getUserEditable(attributeName);
+		final boolean hidden = !attributes.getUserVisible(attributeName);
+		final Equation equation = attributes.getEquation(id, attributeName);
 
 		// process float
 		if (attType == CyAttributes.TYPE_FLOATING) {
-			Double dAttr = attributes.getDoubleAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.REAL, equation.toString(),
+				                          true, hidden, editable);
+			else {
+				final Double dAttr = attributes.getDoubleAttribute(id, attributeName);
+				writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true, hidden, editable);
+			}
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
-			Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.INTEGER, equation.toString(),
+				                          true, hidden, editable);
+			else {
+				final Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
+				writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true, hidden, editable);
+			}
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
-			String sAttr = attributes.getStringAttribute(id, attributeName);
-			// Protect tabs and returns
-			if (sAttr != null) {
-				sAttr = sAttr.replace("\n", "\\n");
-				sAttr = sAttr.replace("\t", "\\t");
-			} 
-			writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.STRING, equation.toString(),
+				                          true, hidden, editable);
+			else {
+				String sAttr = attributes.getStringAttribute(id, attributeName);
+				// Protect tabs and returns
+				if (sAttr != null) {
+					sAttr = sAttr.replace("\n", "\\n");
+					sAttr = sAttr.replace("\t", "\\t");
+				}
+				if (attributeName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
+					// This is a special attribute for nested network.
+					sAttr = Cytoscape.getNetwork(sAttr).getTitle();
+				}
+				writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true, hidden, editable);
+			}
 		}
 		// process boolean
 		else if (attType == CyAttributes.TYPE_BOOLEAN) {
-			Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true, hidden, editable);
+			if (equation != null)
+				writeEquationAttributeXML(attributeName, ObjectType.BOOLEAN, equation.toString(),
+				                          true, hidden, editable);
+			else {
+				final Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
+				writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true, hidden, editable);
+			}
 		}
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
@@ -955,16 +990,17 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttributeXML(String name, ObjectType type, 
-	                               Object value, boolean end) throws IOException {
+	private void writeAttributeXML(final String name, final ObjectType type, final Object value,
+	                               final boolean end) throws IOException
+	{
 		if (name == null && type == null)
 			writeElement("</att>\n");
 		else {
-			writeElement("<att type="+quote(type.toString()));
+			writeElement("<att type=" + quote(type.toString()));
 			if (name != null)
-				writer.write(" name="+quote(name));
+				writer.write(" name=" + quote(name));
 			if (value != null)
-				writer.write(" value="+quote(value.toString()));
+				writer.write(" value=" + quote(value.toString()));
 			if (end)
 				writer.write("/>\n");
 			else
@@ -984,17 +1020,56 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttributeXML(String name, ObjectType type, 
-	                               Object value, boolean end,
-	                               boolean hidden, boolean editable) throws IOException {
+	private void writeAttributeXML(final String name, final ObjectType type, 
+	                               final Object value, final boolean end,
+	                               final boolean hidden, final boolean editable) throws IOException
+	{
 		if (name == null && type == null)
 			writeElement("</att>\n");
 		else {
-			writeElement("<att type="+quote(type.toString()));
+			writeElement("<att type=" + quote(type.toString()));
 			if (name != null)
-				writer.write(" name="+quote(name));
+				writer.write(" name=" + quote(name));
 			if (value != null)
-				writer.write(" value="+quote(value.toString()));
+				writer.write(" value=" + quote(value.toString()));
+
+			// Only output hidden and editable if they differ from the default.
+			if (hidden)
+				writer.write(" cy:hidden=\"true\"");
+			if (!editable)
+				writer.write(" cy:editable=\"false\"");
+
+			if (end)
+				writer.write("/>\n");
+			else
+				writer.write(">\n");
+		}
+	}
+
+	/**
+	 * writeEquationAttributeXML outputs an XGMML attribute
+	 *
+	 * @param name is the name of the attribute we are outputting
+	 * @param type is the XGMML type of the attribute
+	 * @param equation is the textual representation of the formula we're outputting
+	 * @param end is a flag to tell us if the attribute should include a tag end
+	 * @param hidden is a flag to tell us if the attribute should be hidden
+	 * @param editable is a flag to tell us if the attribute should be user editable
+	 *
+	 * @throws IOException
+	 */
+	private void writeEquationAttributeXML(final String name, final ObjectType type,
+	                                       final String equation, final boolean end,
+	                                       final boolean hidden, final boolean editable) throws IOException
+	{
+		if (name == null && type == null)
+			writeElement("</att>\n");
+		else {
+			writeElement("<att type=" + quote(type.toString()));
+			if (name != null)
+				writer.write(" name=" + quote(name));
+			writer.write(" value=" + quote(equation));
+			writer.write(" cy:equation=\"true\"");
 
 			// Only output hidden and editable if they differ from the default.
 			if (hidden)
@@ -1018,7 +1093,7 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeAttributePair(String name, Object value) throws IOException {
-		writer.write(" "+name+"=\""+value.toString()+"\"");
+		writer.write(" "+name+"="+quote(value.toString()));
 	}
 
 	/**
@@ -1067,6 +1142,9 @@ public class XGMMLWriter {
 
 			case NodeView.TRIANGLE:
 				return GraphicsType.TRIANGLE;
+
+			case NodeView.VEE:
+				return GraphicsType.VEE;
 
 			default:
 				return null;
@@ -1147,30 +1225,73 @@ public class XGMMLWriter {
 	}
 
 	/**
+	 * encode returns a quoted string appropriate for use as an XML attribute
+	 *
+	 * @param str the string to encode
+	 * @return the encoded string
+	 */
+	private String encode(String str) {
+		// Find and replace any "magic", control, non-printable etc. characters
+        // For maximum safety, everything other than printable ASCII (0x20 thru 0x7E) is converted into a character entity
+        
+        StringBuilder sb;
+        
+        sb = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            char c;
+
+            c = str.charAt(i);
+            if ((c < ' ') || (c > '~'))
+            {
+                if (doFullEncoding) {
+                    sb.append("&#x");
+                    sb.append(Integer.toHexString((int)c));
+                    sb.append(";");
+                }
+                else {
+                    sb.append(c);
+                }
+            }
+            else if (c == '"') {
+                sb.append("&quot;");
+            }
+            else if (c == '\'') {
+                sb.append("&apos;");
+            }
+            else if (c == '&') {
+                sb.append("&amp;");
+            }
+            else if (c == '<') {
+                sb.append("&lt;");
+            }
+            else if (c == '>') {
+                sb.append("&gt;");
+            }
+            else {
+                sb.append(c);
+            }
+        }
+
+		return sb.toString();
+	}
+
+	/**
 	 * quote returns a quoted string appropriate for use as an XML attribute
 	 *
 	 * @param str the string to quote
 	 * @return the quoted string
 	 */
 	private String quote(String str) {
-		// Find and replace any "magic" characters
-		if (str.contains("&")) {
-			str = str.replaceAll("&", "&amp;");
-		}
-		if (str.contains("\"")) {
-			str = str.replaceAll("\"", "&quot;");
-		}
-		if (str.contains("'")) {
-			str = str.replaceAll("\'", "&apos;");
-		}
-		if (str.contains("<")) {
-			str = str.replaceAll("<", "&lt;");
-		}
-		if (str.contains(">")) {
-			str = str.replaceAll(">", "&gt;");
-		}
-		return "\""+str+"\"";
-	}
+        return '"' + encode(str) + '"';
+    }
+
+    public boolean isDoFullEncoding() {
+        return doFullEncoding;
+    }
+
+    public void setDoFullEncoding(boolean doFullEnc) {
+        doFullEncoding = doFullEnc;
+    }
 
 	/**
 	 * Determines if object has key in multihashmap

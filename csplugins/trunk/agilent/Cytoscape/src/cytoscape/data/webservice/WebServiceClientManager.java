@@ -68,8 +68,8 @@ public class WebServiceClientManager {
 
 	// List of loaded clients in Cytoscape.
 	// Key is 
-	private static Map<String, WebServiceClient> clients;
-	private static Map<String, WebServiceClient> clientNameMap;
+	private static Map<String, WebServiceClient<?>> clients;
+	private static Map<String, WebServiceClient<?>> clientNameMap;
 
 	// Handles events between core and web service clients.
 	private static CyWebServiceEventSupport cwseSupport;
@@ -79,8 +79,8 @@ public class WebServiceClientManager {
 	}
 
 	private WebServiceClientManager() {
-		clients = new HashMap<String, WebServiceClient>();
-		clientNameMap = new HashMap<String, WebServiceClient>();
+		clients = new HashMap<String, WebServiceClient<?>>();
+		clientNameMap = new HashMap<String, WebServiceClient<?>>();
 
 		cwseSupport = new CyWebServiceEventSupport();
 	}
@@ -90,11 +90,9 @@ public class WebServiceClientManager {
 	 *
 	 * @param client DOCUMENT ME!
 	 */
-	public static void registerClient(final WebServiceClient client) {
-		if (client == null) {
+	public static synchronized void registerClient(final WebServiceClient<?> client) {
+		if (client == null)
 			return;
-		}
-
 		clients.put(client.getDisplayName(), client);
 		clientNameMap.put(client.getClientID(), client);
 	}
@@ -104,8 +102,8 @@ public class WebServiceClientManager {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static List<WebServiceClient> getAllClients() {
-		final List<WebServiceClient> clientList = new ArrayList<WebServiceClient>();
+	public static List<WebServiceClient<?>> getAllClients() {
+		final List<WebServiceClient<?>> clientList = new ArrayList<WebServiceClient<?>>();
 
 		for (String key : clients.keySet()) {
 			clientList.add(clients.get(key));
