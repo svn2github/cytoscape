@@ -24,9 +24,12 @@ package flare.demos.util
 		private var _callBack:Function;
 		
 		//for "GraphML files
-		private var _urlGML:String = "/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
+		//private var _urlGML:String = "/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
+		
 		//private var _urlGML:String = "/Users/Tomithy/Desktop/GSOC/Datasets/simplegraph.xml";
-			
+		//private var _urlGML:String = "/Users/Tomithy/Desktop/GSOC/Datasets/sample1.graphml";	
+		private var _urlGML:String = "/Users/Tomithy/Desktop/GSOC/Datasets/sample3.graphml";
+		
 		//for "tab" files
 		private var _urlTab:String = "/Users/Tomithy/Desktop/GSOC/Datasets/Family.txt";
 	
