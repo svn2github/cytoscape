@@ -33,46 +33,45 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //----------------------------------------------------------------------------
-// $Revision: 10002 $
-// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 20380 $
+// $Date: 2010-06-01 13:04:00 -0700 (Tue, 01 Jun 2010) $
 // $Author: kono $
 //----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 
-import cytoscape.util.Misc;
-
-//----------------------------------------------------------------------------
 import java.awt.Color;
 
+import cytoscape.util.ColorUtil;
 
-//----------------------------------------------------------------------------
+
 /**
  * Parses a String into a Color object.
  */
-public class ColorParser
-    implements ValueParser {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Object parseStringValue(String value) {
-        return parseColor(value);
-    }
+public class ColorParser implements ValueParser<Color> {
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param value
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public Color parseStringValue(String value) {
+		return parseColor(value);
+	}
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Color parseColor(String value) {
-        return Misc.parseRGBText(value);
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param value
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public Color parseColor(String value) {
+        return ColorUtil.parseColorText(value);
     }
 }

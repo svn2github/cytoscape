@@ -36,9 +36,9 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.FontParser;
-
 import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 import giny.view.Label;
@@ -94,7 +94,7 @@ public class EdgeFontFaceProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 
@@ -102,24 +102,6 @@ public class EdgeFontFaceProp extends AbstractVisualProperty {
 
 		if (!((Font) o).equals(nodelabel.getFont()))
 			nodelabel.setFont((Font) o);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_FONT_FACE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FontParser()).parseFont(s);
-		else
-
-			return null;
 	}
 
 	/**

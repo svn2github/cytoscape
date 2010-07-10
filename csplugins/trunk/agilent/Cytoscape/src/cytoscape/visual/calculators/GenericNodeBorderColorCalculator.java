@@ -44,19 +44,20 @@ import cytoscape.visual.mappings.ObjectMapping;
 import java.util.Properties;
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericNodeBorderColorCalculator extends GenericNodeColorCalculator
-    implements NodeColorCalculator {
+class GenericNodeBorderColorCalculator extends BasicCalculator {
     /**
      * Creates a new GenericNodeBorderColorCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericNodeBorderColorCalculator(String name, ObjectMapping m) {
+    GenericNodeBorderColorCalculator(String name, ObjectMapping m) {
         super(name, m, NODE_BORDER_COLOR);
     }
 
@@ -67,8 +68,7 @@ public class GenericNodeBorderColorCalculator extends GenericNodeColorCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericNodeBorderColorCalculator(String name, Properties props,
-        String baseKey) {
+    GenericNodeBorderColorCalculator(String name, Properties props, String baseKey) {
         super(name, props, baseKey, NODE_BORDER_COLOR);
     }
 }

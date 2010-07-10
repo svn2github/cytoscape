@@ -34,13 +34,15 @@
  */
 package cytoscape.visual.properties;
 
+import static cytoscape.visual.VisualPropertyDependency.Definition.*;
 import cytoscape.Cytoscape;
 
+import cytoscape.util.ColorUtil;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.ColorParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.Label;
 import giny.view.NodeView;
@@ -99,32 +101,25 @@ public class NodeLabelColorProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
-		if ((o == null) || (nv == null))
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
+		if ((o == null) || (nv == null) || o instanceof Color == false)
 			return;
 
-		Label nodelabel = nv.getLabel();
+		Color color = (Color) o;
 
-		if (!((Color) o).equals(nodelabel.getTextPaint()))
-			nodelabel.setTextPaint((Color) o);
-	}
+		// Check dependency. Sync color or not.
+		boolean sync = false;
+		if (dep != null) {
+			if ( dep.check(NODE_LABLE_COLOR_FROM_NODE_COLOR) ) {
+				color = ColorUtil.getComplementaryColor((Color) nv.getUnselectedPaint());
+			}
+		}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LABEL_COLOR.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ColorParser()).parseColor(s);
-		else
-
-			return null;
+		final Label nodelabel = nv.getLabel();
+		
+		if (!color.equals(nodelabel.getTextPaint())) {
+			nodelabel.setTextPaint(color);
+		}
 	}
 
 	/**

@@ -36,8 +36,8 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 10005 $
-// $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 20380 $
+// $Date: 2010-06-01 13:04:00 -0700 (Tue, 01 Jun 2010) $
 // $Author: kono $
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.continuous;
@@ -139,7 +139,7 @@ public class PointTextListener extends FocusAdapter {
     private void checkNextPoint(double newValue) {
         try {
             ContinuousMappingPoint nextPoint = cm.getPoint(index + 1);
-            double nextValue = nextPoint.getValue();
+            double nextValue = nextPoint.getValue().doubleValue();
 
             if (newValue > nextValue)
                 throw new IllegalArgumentException(newValue +
@@ -159,7 +159,7 @@ public class PointTextListener extends FocusAdapter {
 
         try {
             ContinuousMappingPoint prevPoint = cm.getPoint(index - 1);
-            double previousValue = prevPoint.getValue();
+            double previousValue = prevPoint.getValue().doubleValue();
 
             if (newValue < previousValue)
                 throw new IllegalArgumentException(newValue +

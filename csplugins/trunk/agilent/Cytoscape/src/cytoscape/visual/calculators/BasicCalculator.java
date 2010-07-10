@@ -42,18 +42,11 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import java.util.Properties;
 
 import cytoscape.visual.VisualPropertyType;
-
 import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.visual.mappings.ObjectMapping;
-
-import cytoscape.visual.parsers.ValueParser;
-
-import java.util.Map;
-import java.util.Properties;
 
 
 
@@ -70,7 +63,7 @@ public class BasicCalculator extends AbstractCalculator {
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public BasicCalculator(String name, ObjectMapping m, VisualPropertyType type) {
+    public BasicCalculator(String name, ObjectMapping<?> m, VisualPropertyType type) {
         super(name, m, type);
     }
 

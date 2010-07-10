@@ -38,9 +38,10 @@ import cytoscape.visual.*;
 
 import cytoscape.visual.ui.icon.*;
 import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
 
 import javax.swing.Icon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 import java.util.Properties;
@@ -66,7 +67,7 @@ public class EdgeToolTipProp extends AbstractVisualProperty {
 		return null;
 	}
 	
-    public void applyToEdgeView(EdgeView ev, Object o) {
+    public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 	
@@ -87,15 +88,6 @@ public class EdgeToolTipProp extends AbstractVisualProperty {
         buf.append(((String)o).replaceAll("\\n", "<br>"));
         buf.append("</Font></div></body></html>");
         ev.setToolTip(buf.toString());
-    }
-
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_TOOLTIP.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return s;
-        else
-            return null;
     }
 
     public Object getDefaultAppearanceObject() { return ""; }

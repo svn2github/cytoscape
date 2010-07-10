@@ -35,29 +35,8 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//------------------------------------------------------------------------------
-// $Revision: 14060 $
-// $Date: 2008-05-20 13:13:18 -0700 (Tue, 20 May 2008) $
-// $Author: skillcoyne $
-//------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.dialogs.GridBagGroup;
-import cytoscape.dialogs.MiscGB;
-
-import cytoscape.visual.Appearance;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.visual.mappings.ObjectMapping;
-
-//------------------------------------------------------------------------------
 import giny.model.Edge;
 import giny.model.GraphObject;
 import giny.model.Node;
@@ -65,7 +44,6 @@ import giny.model.Node;
 import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +59,19 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.dialogs.GridBagGroup;
+import cytoscape.dialogs.MiscGB;
+import cytoscape.visual.Appearance;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.MappingFactory;
+import cytoscape.visual.mappings.ObjectMapping;
 
-//------------------------------------------------------------------------------
+
 /**
- * AbstractCalculator is the top of the tree for the Calculator classes. <b>DO
- * NOT</b> extend this class directly! All calculators should extend one of
- * {@link NodeCalculator} or {@link EdgeCalculator} TODO this shouldn't be
- * public
  */
 public abstract class AbstractCalculator implements Calculator {
 
@@ -95,7 +79,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * Vector of all mappings contained by this calculator. Usually small.
 	 * Contains ObjectMapping objects.
 	 */
-	protected Vector<ObjectMapping> mappings = new Vector<ObjectMapping>(4, 2);
+	protected Vector<ObjectMapping<?>> mappings = new Vector<ObjectMapping<?>>(4, 2);
 
 	/**
 	 * The domain classes accepted by the mappings underlying this calculator.
@@ -123,22 +107,6 @@ public abstract class AbstractCalculator implements Calculator {
 	 */
 	protected transient ChangeEvent changeEvent;
 
-	/**
-	 * Create a calculator with the specified object mapping and name. The
-	 * object mapping is used to determine what classes of attribute data this
-	 * calculator can map from. If the object mapping is null, no filtration on
-	 * the attribute data is performed.
-	 *
-	 * @param m
-	 *            Object mapping for this calculator, or null
-	 * @param name
-	 *            Name of this calculator
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public AbstractCalculator(String name, ObjectMapping m, Class c) {
-		this(name, m, VisualPropertyType.NODE_FILL_COLOR);
-	}
 
 	/**
 	 * Creates a new AbstractCalculator object.
@@ -178,7 +146,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 *
 	 * @return Vector of all mappings contained in this calculator
 	 */
-	public Vector<ObjectMapping> getMappings() {
+	public Vector<ObjectMapping<?>> getMappings() {
 		return mappings;
 	}
 
@@ -293,14 +261,6 @@ public abstract class AbstractCalculator implements Calculator {
 	}
 
 	/**
-	 * @deprecated Just use getProperties() - baseKey is already known by the
-	 *             calculator. This will be removed 10/2007.
-	 */
-	public Properties getProperties(String baseKey) {
-		return getProperties();
-	}
-
-	/**
 	 * updateAttribute is called when the currently selected attribute changes.
 	 * Any changes needed in the mapping UI should be performed at this point.
 	 * Use {@link #updateAttribute(String, CyNetwork, int)} for best
@@ -345,7 +305,7 @@ public abstract class AbstractCalculator implements Calculator {
 	void updateAttribute(String attrName, CyNetwork network, int mIndex)
 	    throws ArrayIndexOutOfBoundsException {
 		ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
-		m.setControllingAttributeName(attrName, network, false);
+		m.setControllingAttributeName(attrName);
 
 		// fireStateChanged();
 	}
@@ -357,7 +317,10 @@ public abstract class AbstractCalculator implements Calculator {
 	 *            Parent JDialog for the UI
 	 * @param network
 	 *            CyNetwork object containing underlying graph data
+	 *            
+	 * @deprecated Will be removed next release (2.8 or 3.0)
 	 */
+	@Deprecated 
 	public JPanel getUI(JDialog parent, CyNetwork network) {
 		return getUI(type.isNodeProp() ? Cytoscape.getNodeAttributes() : Cytoscape.getEdgeAttributes(),
 		             parent, network);
@@ -372,14 +335,20 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param attr
 	 *            CyAttributes to look up attributes from
 	 * @return UI with controlling attribute selection facilities
+	 * 
+	 * @deprecated will be removed in the next release (2.8 or 3.0)
 	 */
+	@Deprecated
 	protected JPanel getUI(CyAttributes attr, JDialog parent, CyNetwork network) {
 		return new CalculatorUI(attr, parent, network);
 	}
 
 	/**
 	 * UI class for the calculator.
+	 * 
+	 * @deprecated Do not use.  This UI was replaced by new VizMap GUI.
 	 */
+	@Deprecated
 	protected class CalculatorUI extends JPanel {
 		/**
 		 * Remember the grid bag group in case the mapper UI needs to be
@@ -585,11 +554,11 @@ public abstract class AbstractCalculator implements Calculator {
 	 *            The attribute name returned from the CyNode or CyEdge.
 	 * @return Map of the attribute names to values.
 	 */
-	protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
+	protected Map<String, Object> getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
 		return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
 	}
 
-	protected Map getAttrBundle(String canonicalName) {
+	protected Map<String, Object> getAttrBundle(final String canonicalName) {
 		return getAttrBundle(canonicalName,
 		                     type.isNodeProp() ? Cytoscape.getNodeAttributes()
 		                                       : Cytoscape.getEdgeAttributes());
@@ -636,9 +605,8 @@ public abstract class AbstractCalculator implements Calculator {
 			return null;
 
 		final String nodeID = obj.getIdentifier();
-		final Map attrBundle = getAttrBundle(nodeID);
+		final Map<String, Object> attrBundle = getAttrBundle(nodeID);
 		attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());
-
 		return getMapping(0).calculateRangeValue(attrBundle);
 	}
 
@@ -656,36 +624,4 @@ public abstract class AbstractCalculator implements Calculator {
 		return type;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public byte getType() {
-		return type.getType();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String getPropertyLabel() {
-		return type.getPropertyLabel();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String getTypeName() {
-		return type.toString();
-	}
 }

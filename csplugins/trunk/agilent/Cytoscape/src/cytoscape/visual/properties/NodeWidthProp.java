@@ -36,9 +36,9 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.DoubleParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.NodeView;
 
@@ -56,6 +56,11 @@ import javax.swing.Icon;
  *
  */
 public class NodeWidthProp extends AbstractVisualProperty {
+
+	public NodeWidthProp() {
+		validator = new GTZeroValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -94,8 +99,11 @@ public class NodeWidthProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
+			return;
+
+		if ( dep != null && dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) )
 			return;
 
 		double width = ((Number) o).doubleValue();
@@ -108,27 +116,16 @@ public class NodeWidthProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_WIDTH.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new DoubleParser()).parseDouble(s);
-		else
-
-			return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {
 		return new Double(70.0);
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		if ( dep == null )
+			return false;
+	
+		return dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
 	}
 }

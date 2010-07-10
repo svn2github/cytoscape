@@ -1,7 +1,6 @@
 package cytoscape.visual.calculators;
 
 
-//import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
 import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -17,19 +16,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeTargetArrowColorCalculator extends EdgeCalculator {
+class GenericEdgeTargetArrowColorCalculator extends BasicCalculator {
     /**
      * Creates a new GenericEdgeTargetArrowColorCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericEdgeTargetArrowColorCalculator(String name, ObjectMapping m) {
-        super(name, m, Color.class, EDGE_TGTARROW_COLOR);
+    GenericEdgeTargetArrowColorCalculator(String name, ObjectMapping m) {
+        super(name, m, EDGE_TGTARROW_COLOR);
     }
 
     /**
@@ -39,9 +40,8 @@ public class GenericEdgeTargetArrowColorCalculator extends EdgeCalculator {
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericEdgeTargetArrowColorCalculator(String name, Properties props,
-        String baseKey) {
-		super(name, props, baseKey, new ColorParser(), Color.black, EDGE_TGTARROW_COLOR);
+    GenericEdgeTargetArrowColorCalculator(String name, Properties props, String baseKey) {
+		super(name, props, baseKey, EDGE_TGTARROW_COLOR);
     }
 
 }

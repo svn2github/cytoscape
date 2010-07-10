@@ -33,89 +33,52 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
-//----------------------------------------------------------------------------
-// $Revision: 11413 $
-// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
-// $Author: kono $
-//----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 
-
-//----------------------------------------------------------------------------
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.ShapeNodeRealizer;
 
-
-//----------------------------------------------------------------------------
 /**
  * Parses a String into a yFiles shape, which is represented by a byte
- * identifier. The return value here is a Byte object wrapping the
- * primitive byte identifier.
+ * identifier. The return value here is a Byte object wrapping the primitive
+ * byte identifier.
  */
-public class NodeShapeParser
-    implements ValueParser {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Object parseStringValue(String value) {
-        return parseNodeShapeEnum(value);
-    }
+public class NodeShapeParser implements ValueParser<NodeShape> {
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param value
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public NodeShape parseStringValue(String value) {
+		return parseNodeShapeEnum(value);
+	}
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public Byte parseNodeShape(String value) {
-        return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param value
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public NodeShape parseNodeShapeEnum(String value) {
+		return NodeShape.parseNodeShapeText(value);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public NodeShape parseNodeShapeEnum(String value) {
-        return NodeShape.parseNodeShapeText(value);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param shape
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public static boolean isValidShape(NodeShape shape) {
+		return NodeShape.isValidShape(shape);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param shape DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public static boolean isValidShape(NodeShape shape) {
-        return NodeShape.isValidShape(shape);
-    }
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param shape DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static boolean isValidShape(byte shape) {
-        final NodeShape nShape = ShapeNodeRealizer.getNodeShape(shape);
-
-        return NodeShape.isValidShape(nShape);
-    }
 }

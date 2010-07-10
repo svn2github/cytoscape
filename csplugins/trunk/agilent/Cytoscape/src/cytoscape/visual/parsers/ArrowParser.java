@@ -36,8 +36,8 @@
  */
 
 //----------------------------------------------------------------------------
-// $Revision: 10002 $
-// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 20380 $
+// $Date: 2010-06-01 13:04:00 -0700 (Tue, 01 Jun 2010) $
 // $Author: kono $
 //----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
@@ -53,7 +53,7 @@ import cytoscape.visual.Arrow;
  * Parses a String into a yFiles Arrow object.
  */
 public class ArrowParser
-    implements ValueParser {
+    implements ValueParser<Arrow> {
     /**
      * DOCUMENT ME!
      *
@@ -62,7 +62,7 @@ public class ArrowParser
      *
      * @return DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Arrow parseStringValue(String value) {
         return parseArrow(value);
     }
 

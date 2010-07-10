@@ -35,20 +35,8 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision: 10326 $
-// $Date: 2007-05-23 14:30:29 -0700 (Wed, 23 May 2007) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.parsers.ValueParser;
-import cytoscape.visual.VisualPropertyType;
-
-
-//----------------------------------------------------------------------------
 import java.util.Map;
 import java.util.Properties;
 
@@ -56,8 +44,11 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
+import cytoscape.CyNetwork;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.ValueParser;
 
-//----------------------------------------------------------------------------
+
 /**
  * Mappings should implement this interface. Mappings are classes that map from
  * a value stored in the edge attributes or node attributes HashMap in
@@ -70,19 +61,26 @@ import javax.swing.event.ChangeListener;
  * the mapper should map to, CyNetwork is the CyNetwork object representing the network
  * displayed in Cytoscape, and the byte is one of {@link #EDGE_MAPPING} or
  * {@link #NODE_MAPPING}.
+ * 
+ * K - Key attribute value.  Can be any type (for this implementation, number, string, boolean, list, or map).
+ * V - Mapped visual value, such as color, node shape, etc.
+ * 
  */
-public interface ObjectMapping extends Cloneable {
-    /**
-     *
-     */
+public interface ObjectMapping<V> extends Cloneable {
+    
+	@Deprecated // Use attribute name to determine mapping type.
     public static final byte EDGE_MAPPING = 0;
-
-    /**
-     *
-     */
+	@Deprecated
     public static final byte NODE_MAPPING = 1;
 
-    Class getRangeClass();
+	
+	/**
+	 * Class of mapped object.  For example, if this is an Node Color mapping,
+	 * this value is Color.class.
+	 * 
+	 * @return
+	 */
+    public Class<V> getRangeClass();
 
     /**
      * Return the classes that the ObjectMapping can map from, eg. the contents
@@ -97,21 +95,37 @@ public interface ObjectMapping extends Cloneable {
      *
      * @return Array of accepted attribute data class types
      */
-    Class[] getAcceptedDataClasses();
+    public Class<?>[] getAcceptedDataClasses();
 
     /**
      * Set the controlling attribute name. The current mappings will be unchanged
      * if preserveMapping is true and cleared otherwise. The network argument is
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
+     * 
+     * Do not use this method.  None of the network, preserveMapping parameters are used in Cytoscape.
+     * 
+     * @deprecated Will be removed in 2.8. Use setControllingAttributeName(final String controllingAttrName) instead.
+     * 
      */
-    void setControllingAttributeName(String attrName, CyNetwork network,
+    @Deprecated
+    public void setControllingAttributeName(String attrName, CyNetwork network,
         boolean preserveMapping);
 
+    
+    /**
+     * Set controlling attribute of this mapping.
+     * 
+     * @param controllingAttrName - name of the attribute associated with this mapping.
+     * 
+     */
+    public void setControllingAttributeName(final String controllingAttrName);
+    
+    
     /**
      * Get the controlling attribute name
      */
-    String getControllingAttributeName();
+    public String getControllingAttributeName();
 
     /**
      * Add a ChangeListener to the mapping. When the state underlying the
@@ -135,21 +149,31 @@ public interface ObjectMapping extends Cloneable {
      */
     public void removeChangeListener(ChangeListener l);
 
-    Object calculateRangeValue(Map attrBundle);
+    /**
+     * Create a mapped visual representation from the given attribute value.
+     * 
+     * @param attrBundle
+     * @return
+     */
+    public V calculateRangeValue(final Map<String, Object> attrBundle);
 
-    JPanel getUI(JDialog parent, CyNetwork network);
+    public JPanel getLegend(VisualPropertyType type);
 
-	/**
-	 * @deprecated Use getLegend(VisualPropertyType) instead.  Gone 5/2008.
-	 */
-	@Deprecated
-    JPanel getLegend(String s, byte type);
+    public Object clone();
 
-    JPanel getLegend(VisualPropertyType type);
+    public void applyProperties(Properties props, String baseKey, ValueParser<V> parser);
 
-    Object clone();
-
-    void applyProperties(Properties props, String baseKey, ValueParser parser);
-
-    Properties getProperties(String baseKey);
+    public Properties getProperties(String baseKey);
+    
+    /**
+     * Do not use this method.  Will be removed in next release (2.8)
+     * 
+     * It was for old VizMape GUI which was removed in 2.5.
+     * 
+     * @param parent
+     * @param network
+     * @return
+     */
+    @Deprecated
+    public JPanel getUI(JDialog parent, CyNetwork network);
 }

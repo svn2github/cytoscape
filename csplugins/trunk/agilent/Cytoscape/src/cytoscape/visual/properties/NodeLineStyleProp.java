@@ -38,13 +38,13 @@ import cytoscape.Cytoscape;
 
 import cytoscape.visual.*;
 
-import cytoscape.visual.parsers.*;
-
 import cytoscape.visual.ui.icon.*;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.NodeView;
 
-import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -79,12 +79,9 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
 				super.paintIcon(c, g, x, y);
-
-				final BasicStroke stroke = (BasicStroke) ((LineStyle) value)
-				                                                                    .getStroke(((Number) VisualPropertyType.NODE_LINE_WIDTH
-				                                                                                .getDefault(Cytoscape.getVisualMappingManager()
-				                                                                                                     .getVisualStyle()))
-				                                                                               .floatValue());
+				
+				final float width = ((Number) VisualPropertyType.NODE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).floatValue();
+				final Stroke stroke = ((LineStyle) value).getStroke(width);
 				g2d.setStroke(stroke);
 				g2d.setColor(Color.DARK_GRAY);
 				g2d.translate(15, 4);
@@ -116,31 +113,14 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
 
-		if (((LineStyle) o).getDashDef() != (((BasicStroke) nv.getBorder()).getDashArray())) {
 			nv.setBorder(((LineStyle) o).getStroke(nv.getBorderWidth()));
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LINE_STYLE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new LineStyleParser()).parseLineStyle(s);
-		else
-
-			return null;
+//		if (((LineStyle) o).getDashDef() != (((BasicStroke) nv.getBorder()).getDashArray())) {
+//			nv.setBorder(((LineStyle) o).getStroke(nv.getBorderWidth()));
+//		}
 	}
 
 	/**

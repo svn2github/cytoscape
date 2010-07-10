@@ -35,11 +35,6 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//------------------------------------------------------------------------------
-// $Revision: 11413 $
-// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
-// $Author: kono $
-//------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
@@ -61,13 +56,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
 
-//------------------------------------------------------------------------------
 /**
- * Calculator specifies a super-interface for all calculator interfaces. <b>DO
- * NOT</b> create classes that only implement Calculator! When writing
- * calculators, you <b>MUST</b> extend one of {@link NodeCalculator} or
- * {@link EdgeCalculator} and implement one of the 11 attribute calculator
- * interfaces.
  */
 public interface Calculator extends Cloneable {
 
@@ -80,7 +69,10 @@ public interface Calculator extends Cloneable {
      *            Parent JDialog for the UI
      * @param network
      *            CyNetwork object containing underlying graph data
+     *            
+     * @deprecated replaced by new VizMap GUI components.  Will be removed in 2.8 or 3.0
      */
+	@Deprecated
     JPanel getUI(JDialog parent, CyNetwork network);
 
     /**
@@ -136,33 +128,6 @@ public interface Calculator extends Cloneable {
      */
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public byte getType();
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public String getTypeName();
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public String getPropertyLabel();
-
-    /**
      *
      * This method replaces the three methods above.
      *
@@ -193,7 +158,7 @@ public interface Calculator extends Cloneable {
      *
      * @return DOCUMENT ME!
      */
-    public Vector<ObjectMapping> getMappings();
+    public Vector<ObjectMapping<?>> getMappings();
 
     /**
      * DOCUMENT ME!
@@ -202,5 +167,5 @@ public interface Calculator extends Cloneable {
      *
      * @return DOCUMENT ME!
      */
-    public ObjectMapping getMapping(int i);
+    public ObjectMapping<?> getMapping(int i);
 }

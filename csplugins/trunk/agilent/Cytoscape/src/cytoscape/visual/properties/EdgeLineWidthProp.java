@@ -37,13 +37,12 @@ package cytoscape.visual.properties;
 import cytoscape.Cytoscape;
 
 import cytoscape.visual.LineStyle;
-import cytoscape.visual.LineType;
 import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 
-import cytoscape.visual.parsers.FloatParser;
-
 import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 
@@ -60,6 +59,11 @@ import javax.swing.Icon;
  *
  */
 public class EdgeLineWidthProp extends AbstractVisualProperty {
+
+	public EdgeLineWidthProp() {
+		validator = new GTZeroValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -89,38 +93,17 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 
-		if (ev.getStrokeWidth() != ((Number)o).floatValue()) {
-			final BasicStroke oldValue = (BasicStroke) ev.getStroke();
-			final Stroke newLine = new BasicStroke(((Number)o).floatValue(), oldValue.getEndCap(), oldValue.getLineJoin(),
-					oldValue.getMiterLimit(), oldValue.getDashArray(), oldValue.getDashPhase() );
-		
-			//CyLogger.getLogger().info("*** o = " + o + ", new w = " + ev.getStrokeWidth());
-			
-			ev.setStroke(newLine);
-			//CyLogger.getLogger().info("Changed w = " + ev.getStrokeWidth());
+		float width = ((Number)o).floatValue();
+		if (ev.getStrokeWidth() != width) {
+			final Stroke oldStroke = ev.getStroke();
+			final Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(width);
+			ev.setStroke(newStroke);
+			ev.setStrokeWidth(width);
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_LINE_WIDTH.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s);
-		else
-
-			return null;
 	}
 
 	/**

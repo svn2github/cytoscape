@@ -36,8 +36,8 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 10002 $
-// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 20380 $
+// $Date: 2010-06-01 13:04:00 -0700 (Tue, 01 Jun 2010) $
 // $Author: kono $
 //----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
@@ -48,7 +48,7 @@ package cytoscape.visual.parsers;
  * Parses a String into a Double object.
  */
 public class DoubleParser
-    implements ValueParser {
+    implements ValueParser<Double> {
     /**
      *  DOCUMENT ME!
      *
@@ -56,7 +56,7 @@ public class DoubleParser
      *
      * @return  DOCUMENT ME!
      */
-    public Object parseStringValue(String value) {
+    public Double parseStringValue(String value) {
         return parseDouble(value);
     }
 

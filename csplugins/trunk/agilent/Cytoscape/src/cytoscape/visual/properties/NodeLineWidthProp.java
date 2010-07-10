@@ -36,9 +36,10 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.FloatParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.LineStyle;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.NodeView;
 
@@ -58,6 +59,11 @@ import javax.swing.Icon;
  *
  */
 public class NodeLineWidthProp extends AbstractVisualProperty {
+
+	public NodeLineWidthProp() {
+		validator = new GTEZeroValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -96,36 +102,16 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
 
-		if (nv.getBorderWidth() != ((Number) o).floatValue()) {
-			final BasicStroke oldValue = (BasicStroke) nv.getBorder();
-			final Stroke newLine = new BasicStroke(((Number) o).floatValue(), oldValue.getEndCap(),
-			                                       oldValue.getLineJoin(),
-			                                       oldValue.getMiterLimit(),
-			                                       oldValue.getDashArray(), oldValue.getDashPhase());
-			nv.setBorder(newLine);
+		float width =((Number) o).floatValue();
+		if (nv.getBorderWidth() != width ) {
+			final Stroke oldStroke = nv.getBorder();
+			final Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(width);
+			nv.setBorder(newStroke);
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LINE_WIDTH.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s);
-		else
-
-			return null;
 	}
 
 	/**

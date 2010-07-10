@@ -69,18 +69,6 @@ public class LegendTable extends JPanel {
 	/**
 	 * Creates a new LegendTable object.
 	 *
-	 * @param data DOCUMENT ME!
-	 * @param b DOCUMENT ME!
-	 * @deprecated Use VisualPropertyType constructor instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public LegendTable(Object[][] data, byte b) {
-		this(data, VisualPropertyType.getVisualPorpertyType(b));
-	}
-
-	/**
-	 * Creates a new LegendTable object.
-	 *
 	 * @param data  DOCUMENT ME!
 	 * @param vpt  DOCUMENT ME!
 	 */
@@ -118,36 +106,6 @@ public class LegendTable extends JPanel {
 		icon.setLeftPadding(5);
 
 		return icon;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public static JPanel getHeader() {
-		final JPanel titles = new JPanel();
-		final JLabel[] labels = new JLabel[2];
-		labels[0] = new JLabel("Visual");
-		labels[1] = new JLabel("Attribute Value");
-
-		for (int i = 0; i < labels.length; i++) {
-			labels[i].setVerticalAlignment(SwingConstants.CENTER);
-			labels[i].setVerticalTextPosition(SwingConstants.CENTER);
-			labels[i].setHorizontalTextPosition(SwingConstants.LEADING);
-			labels[i].setForeground(Color.DARK_GRAY);
-		}
-
-		titles.setLayout(new GridLayout(1, 2));
-		titles.setAlignmentX(0);
-		titles.setBackground(Color.white);
-
-		titles.add(labels[0]);
-		titles.add(labels[1]);
-
-		return titles;
 	}
 
 	/**

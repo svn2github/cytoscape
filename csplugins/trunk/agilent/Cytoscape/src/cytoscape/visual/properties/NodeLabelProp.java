@@ -38,6 +38,8 @@ import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.NodeIcon;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.Label;
 import giny.view.NodeView;
 
@@ -98,7 +100,7 @@ public class NodeLabelProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
 
@@ -106,24 +108,6 @@ public class NodeLabelProp extends AbstractVisualProperty {
 
 		if (!((String) o).equals(nodelabel.getText()))
 			nodelabel.setText((String) o);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LABEL.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return s;
-		else
-
-			return null;
 	}
 
 	/**

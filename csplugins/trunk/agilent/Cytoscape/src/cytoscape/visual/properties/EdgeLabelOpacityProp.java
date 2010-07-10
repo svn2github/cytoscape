@@ -1,5 +1,7 @@
 package cytoscape.visual.properties;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.EdgeView;
 
 import java.awt.Color;
@@ -11,10 +13,14 @@ import java.util.Properties;
 import javax.swing.Icon;
 
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
 public class EdgeLabelOpacityProp extends AbstractVisualProperty {
+	
+	public EdgeLabelOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -51,7 +57,7 @@ public class EdgeLabelOpacityProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 
@@ -63,24 +69,6 @@ public class EdgeLabelOpacityProp extends AbstractVisualProperty {
 			ev.getLabel().setTextPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
 			                                oldPaint.getBlue(), newTp));
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_LABEL_OPACITY.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s).intValue();
-		else
-
-			return null;
 	}
 
 	/**

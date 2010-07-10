@@ -36,17 +36,15 @@
  */
 
 //----------------------------------------------------------------------------
-// $Revision: 11413 $
-// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
-// $Author: kono $
+// $Revision: 18686 $
+// $Date: 2009-12-07 13:56:52 -0800 (Mon, 07 Dec 2009) $
+// $Author: mes $
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.Appearance;
-import cytoscape.visual.LineType;
-import cytoscape.visual.parsers.LineTypeParser;
 
 import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
 
@@ -58,20 +56,21 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeLineTypeCalculator extends EdgeCalculator
-    implements EdgeLineTypeCalculator {
+class GenericEdgeLineTypeCalculator extends BasicCalculator {
     /**
      * Creates a new GenericEdgeLineTypeCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
-        super(name, m, LineType.class, EDGE_LINETYPE);
+    GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
+        super(name, m,  EDGE_LINETYPE);
     }
 
     /**
@@ -81,26 +80,7 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericEdgeLineTypeCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1, EDGE_LINETYPE);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public LineType calculateEdgeLineType(Edge e, CyNetwork n) {
-        final Appearance ea = new Appearance();
-        apply(ea, e, n);
-
-        return (LineType)ea.get(type);
+    GenericEdgeLineTypeCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, EDGE_LINETYPE);
     }
 }

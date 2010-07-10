@@ -36,38 +36,20 @@
  */
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.Appearance;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.ObjectMapping;
-
-import giny.model.Node;
-
-import java.awt.Color;
-
 import java.util.Properties;
+
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.ObjectMapping;
 
 
 /**
- * Doubly Deprecated! Use NodeFillColor or NodeBorderColor instead. 
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. Will be removed 5/2008.
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
  */
-@Deprecated
-public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
-    implements NodeColorCalculator {
-
-    protected String getClassName() {
-        if (type == VisualPropertyType.NODE_FILL_COLOR)
-            return "cytoscape.visual.calculators.GenericNodeFillColorCalculator";
-
-        if (type == VisualPropertyType.NODE_BORDER_COLOR)
-            return "cytoscape.visual.calculators.GenericNodeBorderColorCalculator";
-
-        return getClass().getName();
-    }
+class GenericNodeColorCalculator extends BasicCalculator {
 
     /**
      * Creates a new GenericNodeColorCalculator object.
@@ -75,10 +57,8 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      * 
-     * @deprecated Will be removed 5/2008
      */
-    @Deprecated
-    public GenericNodeColorCalculator(String name, ObjectMapping m) {
+    GenericNodeColorCalculator(String name, ObjectMapping m) {
         this(name, m, VisualPropertyType.NODE_FILL_COLOR);
     }
 
@@ -89,7 +69,7 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericNodeColorCalculator(String name, ObjectMapping m, VisualPropertyType type) {
+    GenericNodeColorCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
     }
 
@@ -100,10 +80,8 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      * 
-     * @deprecated Will be removed 5/2008
      */
-    @Deprecated
-    public GenericNodeColorCalculator(String name, Properties props, String baseKey) {
+    GenericNodeColorCalculator(String name, Properties props, String baseKey) {
         this(name, props, baseKey, VisualPropertyType.NODE_FILL_COLOR);
     }
 
@@ -115,7 +93,7 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      * @param baseKey DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericNodeColorCalculator(String name, Properties props,
+    GenericNodeColorCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, type);
     }

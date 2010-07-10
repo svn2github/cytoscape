@@ -36,9 +36,9 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.ColorParser;
-
 import cytoscape.visual.ui.icon.NodeIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.NodeView;
 
@@ -81,30 +81,12 @@ public class NodeBorderColorProp extends AbstractVisualProperty {
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
 
 		if (!((Color) o).equals(nv.getBorderPaint()))
 			nv.setBorderPaint((Color) o);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_BORDER_COLOR.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ColorParser()).parseColor(s);
-		else
-
-			return null;
 	}
 
 	/**

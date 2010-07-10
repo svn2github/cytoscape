@@ -39,9 +39,9 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.ColorParser;
-
 import cytoscape.visual.ui.icon.ArrowIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 
@@ -52,6 +52,8 @@ import java.util.Properties;
 
 import javax.swing.Icon;
 
+import cytoscape.visual.VisualPropertyDependency;
+import static cytoscape.visual.VisualPropertyDependency.Definition.*;
 
 /**
  *
@@ -75,7 +77,7 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 		final ArrowShape arrowShape = (ArrowShape) VisualPropertyType.EDGE_TGTARROW_SHAPE
 		                                                                    .getDefault(Cytoscape.getVisualMappingManager()
 		                                                                                         .getVisualStyle());
-		final ArrowIcon icon = new ArrowIcon(arrowShape.getShape());
+		final ArrowIcon icon = new ArrowIcon(arrowShape);
 		icon.setColor((Color) value);
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
@@ -89,32 +91,19 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 
-		final Paint newTargetArrowColor = ((Color) o);
+		if ( dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE) ) {
+			if (ev.getUnselectedPaint() != ev.getTargetEdgeEndPaint())
+				ev.setTargetEdgeEndPaint(ev.getUnselectedPaint());
+		} else {
+			final Paint newTargetArrowColor = ((Color) o);
 
-		if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
-			ev.setTargetEdgeEndPaint(newTargetArrowColor);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_TGTARROW_COLOR.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ColorParser()).parseColor(s);
-		else
-
-			return null;
+			if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
+				ev.setTargetEdgeEndPaint(newTargetArrowColor);
+		}
 	}
 
 	/**
@@ -124,5 +113,9 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return Color.black;
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		return (dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE)); 
 	}
 }

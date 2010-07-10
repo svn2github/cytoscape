@@ -36,8 +36,8 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 10005 $
-// $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 20380 $
+// $Date: 2010-06-01 13:04:00 -0700 (Tue, 01 Jun 2010) $
 // $Author: kono $
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.discrete;
@@ -45,14 +45,14 @@ package cytoscape.visual.mappings.discrete;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.SortedMap;
 
 
 /**
  * Range Calculator for the Discrete Mapper.
  */
-public class DiscreteRangeCalculator {
-    private TreeMap map;
+public class DiscreteRangeCalculator<T, V> {
+    private SortedMap<T, V> map;
     private String attrName;
 
     /**
@@ -60,7 +60,7 @@ public class DiscreteRangeCalculator {
      * @param map Discrete Map.
      * @param attrName Controlling Attribute Name.
      */
-    public DiscreteRangeCalculator(TreeMap map, String attrName) {
+    public DiscreteRangeCalculator(SortedMap<T,V> map, String attrName) {
         this.map = map;
         this.attrName = attrName;
     }
@@ -70,7 +70,7 @@ public class DiscreteRangeCalculator {
      * @param attrBundle Attribute Bundle.
      * @return Object.
      */
-    public Object calculateRangeValue(Map attrBundle) {
+    public V calculateRangeValue(Map<String, Object> attrBundle) {
         if ((attrBundle == null) || (attrName == null))
             return null;
 

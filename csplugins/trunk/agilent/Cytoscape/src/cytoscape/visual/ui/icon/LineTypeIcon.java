@@ -36,8 +36,8 @@ package cytoscape.visual.ui.icon;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.LineType;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.LineStyle;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -57,7 +57,7 @@ import javax.swing.SwingUtilities;
  * @author $author$
   */
 public class LineTypeIcon extends VisualPropertyIcon {
-	private BasicStroke stroke;
+	private Stroke stroke;
 	protected Graphics2D g2d;
 
 	// If not null, this message will be shown over the icon.
@@ -69,27 +69,14 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * Creates a new LineTypeIcon object.
 	 */
 	public LineTypeIcon() {
-		this((BasicStroke) ((LineType) VisualPropertyType.EDGE_LINETYPE.getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                    .getVisualStyle()))
-		     .getStroke(), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
-		     ((LineType) VisualPropertyType.EDGE_LINETYPE
-		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).getType().toString(),
+		this(((LineStyle) VisualPropertyType.EDGE_LINE_STYLE.getDefault(Cytoscape.getVisualMappingManager() .getVisualStyle()))
+		     .getStroke(2f), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
+		     ((LineStyle) VisualPropertyType.EDGE_LINE_STYLE
+		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).toString(),
 		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
 		                                                               .getVisualStyle()));
 	}
 
-	/**
-	 * Creates a new LineTypeIcon object.
-	 *
-	 * @param lineType  DOCUMENT ME!
-	 */
-	public LineTypeIcon(Object lineType) {
-		this((BasicStroke) ((LineType) lineType).getStroke(), DEFAULT_ICON_SIZE * 3,
-		     DEFAULT_ICON_SIZE,
-		     ((LineType) lineType).getType().toString(),
-		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
-		                                                               .getVisualStyle()));
-	}
 	
 	public LineTypeIcon(cytoscape.visual.LineStyle style) {
 		this(style.getStroke(2f), DEFAULT_ICON_SIZE * 3,
@@ -106,7 +93,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 */
 	public LineTypeIcon(Stroke stroke, int width, int height, String name) {
 		super(null, width, height, name);
-		this.stroke = (BasicStroke) stroke;
+		this.stroke = stroke;
 	}
 
 	/**
@@ -121,21 +108,9 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	public LineTypeIcon(Stroke stroke, int width, int height, String name, Color color) {
 		super(null, width, height, name, color);
 
-		final float lineWidth = ((Number) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                         .getVisualStyle()))
-		                        .floatValue();
+		final float lineWidth = ((Number) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager() .getVisualStyle())) .floatValue();
 
-		final BasicStroke st = (BasicStroke) stroke;
-		/*
-		 * Define a stroke for the line segment icon
-		 */
-		if ((st != null) && (st.getDashArray() != null)) {
-			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-			                              st.getMiterLimit(), st.getDashArray(),
-			                              st.getDashPhase());
-		} else {
-			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
-		}
+		this.stroke = stroke;
 	}
 
 	/**
@@ -156,16 +131,6 @@ public class LineTypeIcon extends VisualPropertyIcon {
 
 		float[] dashDef = null;
 
-		//        if (stroke.getDashArray() != null)
-		//            dashDef = stroke.getDashArray();
-		//
-		//        final BasicStroke lineStroke = new BasicStroke(
-		//                stroke.getLineWidth(),
-		//                BasicStroke.CAP_BUTT,
-		//                BasicStroke.JOIN_MITER,
-		//                10.0f,
-		//                dashDef,
-		//                0.0f);
 		g2d.setStroke(stroke);
 		g2d.draw(new Line2D.Double(20, (height + 20) / 2, width, (height + 20) / 2));
 

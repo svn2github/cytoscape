@@ -39,9 +39,10 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.ColorParser;
-
 import cytoscape.visual.ui.icon.ArrowIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
+import static cytoscape.visual.VisualPropertyDependency.Definition.*;
 
 import giny.view.EdgeView;
 
@@ -73,9 +74,9 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 	 */
 	public Icon getIcon(final Object value) {
 		final ArrowShape arrow = (ArrowShape) VisualPropertyType.EDGE_SRCARROW_SHAPE
-		                                                                    .getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                         .getVisualStyle());
-		final ArrowIcon icon = new ArrowIcon(arrow.getShape());
+		                               .getDefault(Cytoscape.getVisualMappingManager()
+		                               .getVisualStyle());
+		final ArrowIcon icon = new ArrowIcon(arrow);
 		icon.setColor((Color) value);
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
@@ -89,32 +90,20 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 
-		final Paint newSourceArrowColor = ((Color) o);
+		if ( dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE) ) {
+			if (ev.getUnselectedPaint() != ev.getSourceEdgeEndPaint())
+				ev.setSourceEdgeEndPaint(ev.getUnselectedPaint());
 
-		if (newSourceArrowColor != ev.getSourceEdgeEndPaint())
-			ev.setSourceEdgeEndPaint(newSourceArrowColor);
-	}
+		} else {
+			final Paint newSourceArrowColor = ((Color) o);
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_SRCARROW_COLOR.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ColorParser()).parseColor(s);
-		else
-
-			return null;
+			if (newSourceArrowColor != ev.getSourceEdgeEndPaint())
+				ev.setSourceEdgeEndPaint(newSourceArrowColor);
+		}
 	}
 
 	/**
@@ -124,5 +113,9 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return Color.black;
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		return ( dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE) );
 	}
 }

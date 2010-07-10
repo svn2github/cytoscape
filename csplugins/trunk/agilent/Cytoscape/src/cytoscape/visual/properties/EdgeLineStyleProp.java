@@ -34,6 +34,8 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.EdgeView;
 
 import java.awt.BasicStroke;
@@ -44,7 +46,6 @@ import javax.swing.Icon;
 
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.LineStyleParser;
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
 
@@ -88,31 +89,14 @@ public class EdgeLineStyleProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
-
-		if (((LineStyle) o).getDashDef() != (((BasicStroke) ev.getStroke()).getDashArray())) {
-			ev.setStroke(((LineStyle) o).getStroke(ev.getStrokeWidth()));
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_LINE_STYLE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new LineStyleParser()).parseLineStyle(s);
-		else
-
-			return null;
+		
+		ev.setStroke(((LineStyle)o).getStroke(ev.getStrokeWidth()));
+//		if (((LineStyle) o).getDashDef() != (((BasicStroke) ev.getStroke()).getDashArray())) {
+//			ev.setStroke(((LineStyle) o).getStroke(ev.getStrokeWidth()));
+//		}
 	}
 
 	/**

@@ -47,11 +47,13 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericEdgeTargetArrowShapeCalculator extends EdgeCalculator {
+class GenericEdgeTargetArrowShapeCalculator extends BasicCalculator {
 	/**
 	 * Creates a new GenericEdgeTargetArrowShapeCalculator object.
 	 *
@@ -59,8 +61,8 @@ public class GenericEdgeTargetArrowShapeCalculator extends EdgeCalculator {
 	 * @param m DOCUMENT ME!
 	 * @param type DOCUMENT ME!
 	 */
-	public GenericEdgeTargetArrowShapeCalculator(String name, ObjectMapping m) {
-		super(name, m, ArrowShape.class, EDGE_TGTARROW_SHAPE);
+	GenericEdgeTargetArrowShapeCalculator(String name, ObjectMapping m) {
+		super(name, m, EDGE_TGTARROW_SHAPE);
 	}
 
 	/**
@@ -71,7 +73,7 @@ public class GenericEdgeTargetArrowShapeCalculator extends EdgeCalculator {
 	 * @param baseKey DOCUMENT ME!
 	 * @param type DOCUMENT ME!
 	 */
-	public GenericEdgeTargetArrowShapeCalculator(String name, Properties props, String baseKey) {
-		super(name, props, baseKey, new ArrowShapeParser(), ArrowShape.NONE, EDGE_TGTARROW_SHAPE);
+	GenericEdgeTargetArrowShapeCalculator(String name, Properties props, String baseKey) {
+		super(name, props, baseKey, EDGE_TGTARROW_SHAPE);
 	}
 }

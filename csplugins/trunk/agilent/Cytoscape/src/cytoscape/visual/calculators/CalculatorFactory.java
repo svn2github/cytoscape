@@ -36,14 +36,11 @@
  */
 package cytoscape.visual.calculators;
 
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.logger.CyLogger;
-
 import java.lang.reflect.Constructor;
-
 import java.util.Properties;
+
+import cytoscape.logger.CyLogger;
+import cytoscape.visual.VisualPropertyType;
 
 
 /**
@@ -53,16 +50,6 @@ import java.util.Properties;
  */
 public class CalculatorFactory {
 	private static CyLogger logger = CyLogger.getLogger(CalculatorFactory.class);
-
-    /**
-     * @deprecated Use othe newCalculator - we don't need the base interface
-     *             class name any more. Will be removed 10/2007.
-     */
-	@Deprecated
-    public static Calculator newCalculator(String name, Properties calcProps,
-        String baseKey, String intClassName) {
-        return newCalculator(name, calcProps, baseKey);
-    }
 
 	/**
 	 * Creates a caclculator defined by the type identified by the ".visualPropertyType" 
@@ -148,34 +135,6 @@ public class CalculatorFactory {
                 className + " could not be created");
 
         return calculator;
-    }
-
-    /**
-     * Creates a new default Calculator based on type.
-	 * @deprecated Use new BasicCalculator(name,mapper,type) instead. Gone 5/2008.
-     */
-    @Deprecated
-    public static Calculator newDefaultCalculator(byte t, String calcName, ObjectMapping mapper) {
-		VisualPropertyType type = VisualPropertyType.getVisualPorpertyType(t);
-		return new BasicCalculator(calcName,mapper,type);
-    }
-
-    /**
-     * Returns the type name for calculators of a given type.
-	 * @deprecated Use VisualPropertyType.getName() instead. Gone 5/2008.
-     */
-    @Deprecated
-    public static String getTypeName(byte type) {
-        return VisualPropertyType.getVisualPorpertyType(type).getName();
-    }
-
-    /**
-     * Returns the property label for calculators of a given type.
-	 * @deprecated Use VisualPropertyType.getPropertyLabel(). Will be removed 4/2008
-     */
-    @Deprecated
-    public static String getPropertyLabel(byte type) {
-        return VisualPropertyType.getVisualPorpertyType(type).getPropertyLabel();
     }
 
     // utility method to create a constructor based on the params

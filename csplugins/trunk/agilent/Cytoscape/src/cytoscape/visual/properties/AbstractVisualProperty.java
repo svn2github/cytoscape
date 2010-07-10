@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.visual.VisualProperty;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -54,6 +55,9 @@ import javax.swing.Icon;
  *
  */
 public abstract class AbstractVisualProperty implements VisualProperty {
+
+	protected ValueValidator validator = null;
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -110,8 +114,13 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 *
 	 * @param nv DOCUMENT ME!
 	 * @param o DOCUMENT ME!
+	 * @param dep DOCUMENT ME!
 	 */
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
+	}
+
 	public void applyToNodeView(NodeView nv, Object o) {
+		applyToNodeView(nv,o,null);
 	}
 
 	/**
@@ -119,8 +128,13 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 *
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
+	 * @param dep DOCUMENT ME!
 	 */
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
+	}
+
 	public void applyToEdgeView(EdgeView ev, Object o) {
+		applyToEdgeView(ev,o,null);
 	}
 
 	/**
@@ -132,7 +146,12 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Object parseProperty(Properties props, String baseKey) {
-		return null;
+		final VisualPropertyType type = getType();
+        String s = props.getProperty(type.getDefaultPropertyKey(baseKey));
+        if (s != null)
+            return type.getValueParser().parseStringValue(s);
+        else
+            return null;
 	}
 
 	/**
@@ -142,5 +161,16 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return null;
+	}
+
+	public boolean constrained(VisualPropertyDependency dep) {
+		return false;
+	}
+
+	public boolean isValidValue(Object value) {
+		if ( validator == null )
+			return true;
+		else
+			return validator.isValid(value);
 	}
 }

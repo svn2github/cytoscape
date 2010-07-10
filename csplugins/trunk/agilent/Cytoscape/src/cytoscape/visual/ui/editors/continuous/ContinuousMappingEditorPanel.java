@@ -86,6 +86,9 @@ import javax.swing.event.ChangeListener;
  * @author kono
   */
 public abstract class ContinuousMappingEditorPanel extends JDialog implements PropertyChangeListener {
+	
+	private static final long serialVersionUID = -2558647616344119220L;
+
 	// Tell vizMapper main whic editor is disabled/enabled.
 	/**
 	 * DOCUMENT ME!
@@ -105,11 +108,15 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected VisualPropertyType type;
 	protected Calculator calculator;
 	protected ContinuousMapping mapping;
-	protected ArrayList<ContinuousMappingPoint> allPoints;
+	protected List<ContinuousMappingPoint> allPoints;
 	private SpinnerNumberModel spinnerModel;
 	protected Object below;
 	protected Object above;
+	
+	private CyAttributes attrs;
+	
 	protected static ContinuousMappingEditorPanel editor;
+	
 	protected double lastSpinnerNumber = 0;
 
 	/** Creates new form ContinuousMapperEditorPanel */
@@ -231,6 +238,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		pivotLabel.setText("Pivot:");
 
 		addButton.setText("Add");
+		addButton.setPreferredSize(new Dimension(100, 10));
 		addButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		addButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -239,6 +247,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			});
 
 		deleteButton.setText("Delete");
+		deleteButton.setPreferredSize(new Dimension(100, 10));
 		deleteButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -248,6 +257,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 		// New in 2.6
 		minMaxButton.setText("Min/Max");
+		minMaxButton.setPreferredSize(new Dimension(100, 10));
 		minMaxButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		minMaxButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -305,12 +315,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                                                                                               Short.MAX_VALUE)
 		                                                                                              .add(minMaxButton,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   62,
+		                                                                                                   100,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                              .add(addButton,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   55,
+		                                                                                                   100,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                              .add(deleteButton)
@@ -325,10 +335,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                            .add(minMaxButton)
 		                                                                                            .add(deleteButton)
-		                                                                                            .add(addButton,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		                                                                                            .add(addButton)));
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(mainPanel);
 		mainPanel.setLayout(layout);
@@ -389,7 +396,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	protected void minMaxButtonActionPerformed(ActionEvent evt) {
 		final Double[] newVal = MinMaxDialog.getMinMax(EditorValueRangeTracer.getTracer().getMin(type),
-		                                         EditorValueRangeTracer.getTracer().getMax(type));
+		                                         EditorValueRangeTracer.getTracer().getMax(type), attrs, mapping.getControllingAttributeName());
 
 		if (newVal == null)
 			return;
@@ -406,14 +413,13 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	abstract protected void addButtonActionPerformed(java.awt.event.ActionEvent evt);
 
 	private void initRangeValues() {
-		final CyAttributes attr;
 
 		if (type.isNodeProp()) {
-			attr = Cytoscape.getNodeAttributes();
+			attrs = Cytoscape.getNodeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getNodeAppearanceCalculator().getCalculator(type);
 		} else {
-			attr = Cytoscape.getEdgeAttributes();
+			attrs = Cytoscape.getEdgeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getEdgeAppearanceCalculator().getCalculator(type);
 		}
@@ -427,10 +433,10 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
 
-			final MultiHashMap mhm = attr.getMultiHashMap();
+			final MultiHashMap mhm = attrs.getMultiHashMap();
 
 			List<String> attrNames = new ArrayList<String>();
-			Collections.addAll(attrNames, attr.getAttributeNames());
+			Collections.addAll(attrNames, attrs.getAttributeNames());
 
 			if (attrNames.contains(controllingAttrName) == false)
 				return;
@@ -439,15 +445,20 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			if (EditorValueRangeTracer.getTracer().getRange(type) == 0) {
 				final CountedIterator it = mhm.getObjectKeys(controllingAttrName);
 				Object key;
-				Double maxValue = Double.NEGATIVE_INFINITY;
-				Double minValue = Double.POSITIVE_INFINITY;
+				double maxValue = Double.NEGATIVE_INFINITY;
+				double minValue = Double.POSITIVE_INFINITY;
 
 				while (it.hasNext()) {
-					key = it.next();
+					final String id = (String)it.next();
+					final Object attrValue = attrs.getAttribute(id, controllingAttrName);
 
-					Double val = Double.parseDouble(mhm.getAttributeValue((String) key,
-					                                                      controllingAttrName, null)
-					                                   .toString());
+					final double val;
+					if (attrValue.getClass() == Double.class)
+						val = (Double)attrValue;
+					else if (attrValue.getClass() == Integer.class)
+						val = (Integer)attrValue;
+					else
+						val = Double.parseDouble(attrValue.toString());
 
 					if (val > maxValue)
 						maxValue = val;
@@ -494,8 +505,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected BelowAndAbovePanel belowPanel;
 
 	protected int getSelectedPoint(int selectedIndex) {
-		final List<Thumb> thumbs = slider.getModel().getSortedThumbs();
-		Thumb selected = slider.getModel().getThumbAt(selectedIndex);
+		final List<Thumb<?>> thumbs = slider.getModel().getSortedThumbs();
+		Thumb<?> selected = slider.getModel().getThumbAt(selectedIndex);
 		int i;
 
 		for (i = 0; i < thumbs.size(); i++) {

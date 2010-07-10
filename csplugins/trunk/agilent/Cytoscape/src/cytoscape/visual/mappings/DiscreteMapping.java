@@ -33,288 +33,214 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
-//----------------------------------------------------------------------------
-// $Revision: 10990 $
-// $Date: 2007-07-18 12:06:43 -0700 (Wed, 18 Jul 2007) $
-// $Author: kono $
-//----------------------------------------------------------------------------
+ */
 package cytoscape.visual.mappings;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
-import cytoscape.CyNetwork;
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.ShapeNodeRealizer;
-import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.discrete.DiscreteLegend;
 import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
 import cytoscape.visual.mappings.discrete.DiscreteMappingWriter;
 import cytoscape.visual.mappings.discrete.DiscreteRangeCalculator;
-import cytoscape.visual.mappings.discrete.DiscreteUI;
 import cytoscape.visual.parsers.ValueParser;
 
-
 /**
- * Implements a lookup table mapping data to values of a particular class.
- * The data value is extracted from a bundle of attributes by using a
- * specified data attribute name.
+ * Implements a lookup table mapping data to values of a particular class. The
+ * data value is extracted from a bundle of attributes by using a specified data
+ * attribute name.
  */
-public class DiscreteMapping extends SubjectBase implements ObjectMapping {
-	Object defaultObj; // the default value held by this mapping
-	Class rangeClass; // the valid range class for this mapping
-	String attrName; // the name of the controlling data attribute
-	protected byte mapType; //  node or edge; specifies which attributes
-	                        //  to use.
-	private TreeMap treeMap; //  contains the actual map elements (sorted)
-	private Object lastKey;
+public class DiscreteMapping<K, V> extends AbstractMapping<V> {
+
+	private static final Class<?>[] ACCEPTED_CLASSES = { String.class,
+			Number.class, Integer.class, Double.class, Float.class, Long.class,
+			Short.class, NodeShape.class, List.class, Boolean.class };
+
+	private SortedMap<K, V> treeMap; // contains the actual map
+												// elements (sorted)
+	private K lastKey;
 
 	/**
 	 * Constructor.
-	 * @param defObj Default Object.
-	 * @param mapType Map Type, ObjectMapping.EDGE_MAPPING or
-	 * ObjectMapping.NODE_MAPPING.
+	 * 
+	 * @param defObj
+	 *            Default Object.
+	 * @param mapType
+	 *            Map Type, ObjectMapping.EDGE_MAPPING or
+	 *            ObjectMapping.NODE_MAPPING.
 	 */
+	@Deprecated
 	public DiscreteMapping(Object defObj, byte mapType) {
 		this(defObj, null, mapType);
 	}
 
 	/**
 	 * Constructor.
-	 * @param defObj Default Object.
-	 * @param attrName Controlling Attribute Name.
-	 * @param mapType Map Type, ObjectMapping.EDGE_MAPPING or
-	 * ObjectMapping.NODE_MAPPING.
-	*/
+	 * 
+	 * @param defObj
+	 *            Default Object.
+	 * @param attrName
+	 *            Controlling Attribute Name.
+	 * @param mapType
+	 *            Map Type, ObjectMapping.EDGE_MAPPING or
+	 *            ObjectMapping.NODE_MAPPING.
+	 */
+	@Deprecated
 	public DiscreteMapping(Object defObj, String attrName, byte mapType) {
-		treeMap = new TreeMap();
+		this((Class<V>)defObj.getClass(), attrName);
+	}
 
-		// TODO 
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (defObj instanceof Byte) {
-			defObj = ShapeNodeRealizer.getNodeShape(((Byte) defObj).byteValue());
-		}
-
-		this.defaultObj = defObj;
-		this.rangeClass = defObj.getClass();
-
-		if ((mapType != ObjectMapping.EDGE_MAPPING) && (mapType != ObjectMapping.NODE_MAPPING))
-			throw new IllegalArgumentException("Unknown mapping type " + mapType);
-
-		this.mapType = mapType;
-
-		if (attrName != null)
-			setControllingAttributeName(attrName, null, false);
+	public DiscreteMapping(final Class<V> rangeClass,
+			final String controllingAttrName) {
+		super(rangeClass, controllingAttrName);
+		this.treeMap = new TreeMap<K, V>();
+		this.acceptedClasses = ACCEPTED_CLASSES;
 	}
 
 	/**
 	 * Clones the Object.
+	 * 
 	 * @return DiscreteMapping Object.
 	 */
 	public Object clone() {
-		final DiscreteMapping clone = new DiscreteMapping(defaultObj, attrName, mapType);
+		final DiscreteMapping<K, V> clone = new DiscreteMapping<K, V>(rangeClass,
+				controllingAttrName);
 
-		//  Copy over all listeners...
-		for (ChangeListener listener : observers) {
+		// Copy over all listeners...
+		for (ChangeListener listener : observers)
 			clone.addChangeListener(listener);
-		}
 
-		clone.putAll((TreeMap) treeMap.clone());
+		// Copy key-value pairs
+		for (K key : this.treeMap.keySet())
+			clone.treeMap.put(key, this.treeMap.get(key));
 
 		return clone;
 	}
 
 	/**
 	 * Gets Value for Specified Key.
-	 * @param key String Key.
+	 * 
+	 * @param key
+	 *            String Key.
 	 * @return Object.
 	 */
-	public Object getMapValue(Object key) {
+	public V getMapValue(K key) {
 		return treeMap.get(key);
 	}
 
 	/**
 	 * Puts New Key/Value in Map.
-	 * @param key Key Object.
-	 * @param value Value Object.
+	 * 
+	 * @param key
+	 *            Key Object.
+	 * @param value
+	 *            Value Object.
 	 */
-	public void putMapValue(Object key, Object value) {
+	public void putMapValue(K key, V value) {
 		lastKey = key;
 
-		// TODO 
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (value instanceof Byte) {
-			value = ShapeNodeRealizer.getNodeShape(((Byte) value).byteValue());
-		}
 		treeMap.put(key, value);
 		fireStateChanged();
 	}
 
 	/**
 	 * Gets the Last Modified Key.
+	 * 
 	 * @return Key Object.
 	 */
-	public Object getLastKeyModified() {
+	public K getLastKeyModified() {
 		return lastKey;
 	}
 
 	/**
 	 * Adds All Members of Specified Map.
-	 * @param map Map.
+	 * 
+	 * @param map
+	 *            Map.
 	 */
-	public void putAll(Map<Object, Object> map) {
+	public void putAll(Map<K, V> map) {
 		treeMap.putAll(map);
 	}
 
-	// AJK: 05/05/06 BEGIN
 	/**
 	 * gets all map values
-	 *
+	 * 
 	 */
-	public Map getAll() {
+	public Map<K, V> getAll() {
 		return treeMap;
-	}
-
-	// AJK: 05/05/06 END
-
-	/**
-	 * Gets the Range Class.
-	 * Required by the ObjectMapping interface.
-	 * @return Class object.
-	 */
-	public Class getRangeClass() {
-		return rangeClass;
-	}
-
-	/**
-	 * Gets Accepted Data Classes.
-	 * Required by the ObjectMapping interface.
-	 * @return ArrayList of Class objects.
-	 */
-	public Class[] getAcceptedDataClasses() {
-		Class[] ret = {
-		                  String.class, Number.class, Integer.class, Double.class, Float.class,
-		                  Long.class, Short.class, NodeShape.class, List.class
-		              };
-
-		return ret;
-	}
-
-	/**
-	 * Gets the Name of the Controlling Attribute.
-	 * Required by the ObjectMapping interface.
-	 * @return Attribue Name.
-	 */
-	public String getControllingAttributeName() {
-		return attrName;
-	}
-
-	/**
-	 * Call whenever the controlling attribute changes. If preserveMapping
-	 * is true, all the currently stored mappings are unchanged; otherwise
-	 * all the mappings are cleared. In either case, this method calls
-	 * {@link #getUI} to rebuild the UI for this mapping, which in turn calls
-	 * loadKeys to load the current data values for the new attribute.
-	 * <p>
-	 * Called by event handler from AbstractCalculator
-	 * {@link cytoscape.visual.calculators.AbstractCalculator}.
-	 *
-	 * @param    attrName    The name of the new attribute to map to
-	 */
-	public void setControllingAttributeName(String attrName, CyNetwork n, boolean preserveMapping) {
-		this.attrName = attrName;
-
-		if (preserveMapping == false) {
-			treeMap = new TreeMap();
-		}
 	}
 
 	/**
 	 * Customizes this object by applying mapping defintions described by the
-	 * supplied Properties argument.
-	 * Required by the ObjectMapping interface.
-	 * @param props Properties Object.
-	 * @param baseKey Base Key for finding properties.
-	 * @param parser ValueParser Object.
+	 * supplied Properties argument. Required by the ObjectMapping interface.
+	 * 
+	 * @param props
+	 *            Properties Object.
+	 * @param baseKey
+	 *            Base Key for finding properties.
+	 * @param parser
+	 *            ValueParser Object.
 	 */
-	public void applyProperties(Properties props, String baseKey, ValueParser parser) {
-		DiscreteMappingReader reader = new DiscreteMappingReader(props, baseKey, parser);
-		String contValue = reader.getControllingAttributeName();
+	public void applyProperties(Properties props, String baseKey,
+			ValueParser<V> parser) {
+		final DiscreteMappingReader reader = new DiscreteMappingReader(props,
+				baseKey, parser);
+		final String contValue = reader.getControllingAttributeName();
 
 		if (contValue != null)
-			setControllingAttributeName(contValue, null, false);
+			setControllingAttributeName(contValue);
 
 		this.treeMap = reader.getMap();
 	}
 
 	/**
 	 * Returns a Properties object with entries suitable for customizing this
-	 * object via the applyProperties method.
-	 * Required by the ObjectMapping interface.
-	 * @param baseKey Base Key for creating properties.
+	 * object via the applyProperties method. Required by the ObjectMapping
+	 * interface.
+	 * 
+	 * @param baseKey
+	 *            Base Key for creating properties.
 	 * @return Properties Object.
 	 */
 	public Properties getProperties(String baseKey) {
-		DiscreteMappingWriter writer = new DiscreteMappingWriter(attrName, baseKey, treeMap);
+		final DiscreteMappingWriter writer = new DiscreteMappingWriter(
+				controllingAttrName, baseKey, treeMap);
 
 		return writer.getProperties();
 	}
 
 	/**
-	 * Calculates the Range Value.
-	 * Required by the ObjectMapping interface.
-	 * @param attrBundle A Bundle of Attributes.
+	 * Calculates the Range Value. Required by the ObjectMapping interface.
+	 * 
+	 * @param attrBundle
+	 *            A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public Object calculateRangeValue(Map attrBundle) {
-		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(treeMap, attrName);
+	public V calculateRangeValue(Map<String, Object> attrBundle) {
+		final DiscreteRangeCalculator<K, V> calculator = new DiscreteRangeCalculator<K, V>(
+				treeMap, controllingAttrName);
 
 		return calculator.calculateRangeValue(attrBundle);
 	}
 
 	/**
-	 * Gets the UI Object Associated with the Mapper.
-	 * Required by the ObjectMapping interface.
-	 * @param parent Parent Dialog.
-	 * @param network CyNetwork.
-	 * @return JPanel Object.
-	 */
-	public JPanel getUI(JDialog parent, CyNetwork network) {
-		DiscreteUI ui = new DiscreteUI(parent, network, attrName, defaultObj, mapType, this);
-
-		return ui;
-	}
-
-	/**
-	 * Returns a JPanel containing a legend for this mapping.
-	 * @param visualAttr The name of the visual attribute using this mapping.
-	 * @return JPanel Object.
-	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public JPanel getLegend(String visualAttr, byte b) {
-		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vpt DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param vpt
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public JPanel getLegend(VisualPropertyType vpt) {
-		return new DiscreteLegend(treeMap, attrName, vpt);
+		return new DiscreteLegend(treeMap, controllingAttrName, vpt);
 	}
+
 }

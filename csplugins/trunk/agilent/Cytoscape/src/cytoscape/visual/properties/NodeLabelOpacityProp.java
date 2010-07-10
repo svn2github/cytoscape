@@ -1,5 +1,7 @@
 package cytoscape.visual.properties;
 
+import cytoscape.visual.VisualPropertyDependency;
+
 import giny.view.NodeView;
 
 import java.awt.BasicStroke;
@@ -13,11 +15,15 @@ import javax.swing.Icon;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.ui.icon.LineTypeIcon;
 import cytoscape.visual.ui.icon.NodeIcon;
 
 public class NodeLabelOpacityProp extends AbstractVisualProperty {
+
+	public NodeLabelOpacityProp() {
+		validator = new OpacityValidator();
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -66,7 +72,7 @@ public class NodeLabelOpacityProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToNodeView(NodeView nv, Object o) {
+	public void applyToNodeView(NodeView nv, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (nv == null))
 			return;
 
@@ -78,24 +84,6 @@ public class NodeLabelOpacityProp extends AbstractVisualProperty {
 			nv.getLabel().setTextPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
 			                                oldPaint.getBlue(), newTp));
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.NODE_LABEL_OPACITY.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new FloatParser()).parseFloat(s).intValue();
-		else
-
-			return null;
 	}
 
 	/**

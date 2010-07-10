@@ -43,15 +43,11 @@ import java.awt.Font;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
-
-import org.jdesktop.swingx.border.DropShadowBorder;
 
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.LegendTable;
@@ -67,20 +63,6 @@ public class DiscreteLegend extends JPanel {
 	private static final Color TITLE_COLOR = new Color(10, 200, 255);
 	private static final Border BORDER = new MatteBorder(0, 6, 3, 0, Color.DARK_GRAY);
 	
-	/**
-	 * Creates a new DiscreteLegend object.
-	 *
-	 * @param legendMap  DOCUMENT ME!
-	 * @param visualAttr  DOCUMENT ME!
-	 * @param dataAttr  DOCUMENT ME!
-	 * @param b  DOCUMENT ME!
-	 * @deprecated Use VisualPropertyType constructor instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr, byte b) {
-		this(legendMap, dataAttr, VisualPropertyType.getVisualPorpertyType(b));
-	}
-
 	/**
 	 * Creates a new DiscreteLegend object.
 	 *

@@ -34,6 +34,8 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
+import giny.view.ObjectPosition;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -63,6 +65,7 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 import cytoscape.visual.ui.LabelPlacerGraphic;
+import cytoscape.visual.ui.ObjectPlacerGraphic;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
@@ -549,22 +552,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		return icons;
 	}
 
-//	private Shape getIcon(Object key) {
-//		final BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_RGB);
-//
-//		final Graphics2D gfx = image.createGraphics();
-//		Map icons = type.getVisualProperty().getIconSet();
-//		JLabel label = new JLabel();
-//		label.setIcon((Icon) icons.get(key));
-//		label.setText("test1");
-//		gfx.setBackground(Color.white);
-//		gfx.setColor(Color.red);
-//		gfx.drawString("Test1", 0, 0);
-//
-//		//		label.paint(gfx);
-//		return ((VisualPropertyIcon) icons.get(key)).getShape();
-//	}
-
 	/*
 	 * Draw icon object based on the given data type.
 	 */
@@ -636,8 +623,8 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 			case NODE_LABEL_POSITION:
 
-				final LabelPlacerGraphic lp = new LabelPlacerGraphic((LabelPosition) key,
-				                                                     (int) (size * 1.5), false);
+				final ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) key,
+				                                                     (int) (size * 1.5), false, type.getName(), null, null);
 				lp.paint(g);
 
 				break;
@@ -646,11 +633,12 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			case NODE_TOOLTIP:
 			case EDGE_LABEL:
 			case EDGE_TOOLTIP:
+			case NODE_SHOW_NESTED_NETWORK:
 				if(key != null) {
 					g.drawString(key.toString(), 0, g.getFont().getSize()*2);
 				}
 				break;
-
+				
 			default:
 				break;
 		}

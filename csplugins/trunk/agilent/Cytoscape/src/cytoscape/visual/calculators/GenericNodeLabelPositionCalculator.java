@@ -35,42 +35,30 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision: 8189 $
-// $Date: 2006-09-13 13:51:38 -0700 (Wed, 13 Sep 2006) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
-
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.Appearance;
 
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
 
-import cytoscape.visual.mappings.ObjectMapping;
-
-import cytoscape.visual.parsers.LabelPositionParser;
-
-import giny.model.Node;
-
 import java.util.Properties;
 
+import cytoscape.visual.mappings.ObjectMapping;
+
 /**
- * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
- * Will be hidden, although probably not removed, in 5/2008.
+ * This class exists ONLY to support legacy file formats. A VERY BAD PERSON
+ * decided to use the class name to identify calculators in property files,
+ * thus forever forcing us to keep these classes around.  
+ *
+ * <b>DO NOT USE THIS CLASS!!!</b>
   */
-@Deprecated
-public class GenericNodeLabelPositionCalculator extends NodeCalculator {
+class GenericNodeLabelPositionCalculator extends BasicCalculator {
     /**
      * Creates a new GenericNodeLabelPositionCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericNodeLabelPositionCalculator(String name, ObjectMapping m) {
-        super(name, m, LabelPosition.class, NODE_LABEL_POSITION);
+    GenericNodeLabelPositionCalculator(String name, ObjectMapping<?> m) {
+        super(name, m, NODE_LABEL_POSITION);
     }
 
     /**
@@ -80,10 +68,8 @@ public class GenericNodeLabelPositionCalculator extends NodeCalculator {
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericNodeLabelPositionCalculator(String name, Properties props,
-        String baseKey) {
-        super(name, props, baseKey, new LabelPositionParser(),
-            LabelPosition.DEFAULT, NODE_LABEL_POSITION);
+    GenericNodeLabelPositionCalculator(String name, Properties props, String baseKey) {
+        super(name, props, baseKey, NODE_LABEL_POSITION);
     }
 
 }

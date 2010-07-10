@@ -37,9 +37,9 @@ package cytoscape.visual.properties;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.parsers.ArrowShapeParser;
-
 import cytoscape.visual.ui.icon.ArrowIcon;
+
+import cytoscape.visual.VisualPropertyDependency;
 
 import giny.view.EdgeView;
 
@@ -77,7 +77,7 @@ public class EdgeTargetArrowShapeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getIcon(final Object value) {
-		final ArrowIcon icon = new ArrowIcon(((ArrowShape) value).getShape());
+		final ArrowIcon icon = new ArrowIcon((ArrowShape) value);
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
 
@@ -90,7 +90,7 @@ public class EdgeTargetArrowShapeProp extends AbstractVisualProperty {
 	 * @param ev DOCUMENT ME!
 	 * @param o DOCUMENT ME!
 	 */
-	public void applyToEdgeView(EdgeView ev, Object o) {
+	public void applyToEdgeView(EdgeView ev, Object o, VisualPropertyDependency dep) {
 		if ((o == null) || (ev == null))
 			return;
 
@@ -99,24 +99,6 @@ public class EdgeTargetArrowShapeProp extends AbstractVisualProperty {
 		if (newTargetEnd != ev.getTargetEdgeEnd()) {
 			ev.setTargetEdgeEnd(newTargetEnd);
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty(VisualPropertyType.EDGE_TGTARROW_SHAPE.getDefaultPropertyKey(baseKey));
-
-		if (s != null)
-			return (new ArrowShapeParser()).parseArrowShape(s);
-		else
-
-			return null;
 	}
 
 	/**
