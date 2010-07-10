@@ -36,8 +36,6 @@
 */
 package cytoscape.data.readers;
 
-import giny.view.GraphView;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -48,7 +46,6 @@ import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
-import cytoscape.view.CyNetworkView;
 
 
 /**
