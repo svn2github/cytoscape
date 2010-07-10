@@ -44,6 +44,7 @@ import cytoscape.logger.CyLogger;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 
+import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
@@ -59,6 +60,9 @@ import java.util.Set;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -401,10 +405,10 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 		// code added to support layered canvas for each CyNetworkView
 		if (view instanceof DGraphView) {
-			InternalFrameComponent internalFrameComp = new InternalFrameComponent(iframe
-			                                                                                                                                                                                                                                                                                                                                                                                                                                   .getLayeredPane(),
-			                                                                      (DGraphView) view);
-			iframe.setContentPane(internalFrameComp);
+			final InternalFrameComponent internalFrameComp = 
+				new InternalFrameComponent(iframe.getLayeredPane(), (DGraphView) view);
+
+			iframe.getContentPane().add(internalFrameComp);
 			internalFrameComponentMap.put(view.getNetwork().getIdentifier(), internalFrameComp);
 		} else {
 			logger.info("NetworkViewManager.createContainer() - DGraphView not found!");
@@ -413,12 +417,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 		iframe.pack();
 
-		//iframe.setSize(400, 400);
-		// create cascade iframe
 		int x = 0;
-
-		//iframe.setSize(400, 400);
-		// create cascade iframe
 		int y = 0;
 		JInternalFrame refFrame = null;
 		JInternalFrame[] allFrames = desktopPane.getAllFrames();

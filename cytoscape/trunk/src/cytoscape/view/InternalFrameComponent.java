@@ -74,13 +74,13 @@ public class InternalFrameComponent extends JComponent implements Printable {
 		FOREGROUND_PANE;
 		int layer() {
 			if (this == BACKGROUND_PANE)
-				return -30000;
+				return 10;
 
 			if (this == NETWORK_PANE)
-				return 0;
+				return 20;
 
 			if (this == FOREGROUND_PANE)
-				return 301;
+				return 30;
 
 			return 0;
 		}
@@ -194,9 +194,6 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 * top - bottom: foreground, network, background
 	 */
 	private void initLayeredPane() {
-		// remove all canvases from layered pane
-		layeredPane.removeAll();
-
 		// foreground followed by network followed by background
 		layeredPane.add(backgroundCanvas, new Integer(ZOrder.BACKGROUND_PANE.layer()));
 		layeredPane.add(networkCanvas, new Integer(ZOrder.NETWORK_PANE.layer()));
