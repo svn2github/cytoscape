@@ -162,7 +162,7 @@ public class ImportHandler {
 	 */
 	public GraphReader getReader(String fileName) {
 		//  check if fileType is available
-		for (CyFileFilter cff : cyFileFilters) {			
+		for (CyFileFilter cff : cyFileFilters) {
 			if (cff.accept(fileName))
 				return cff.getReader(fileName);
 		}
@@ -210,9 +210,10 @@ public class ImportHandler {
 			contentType = contentType.substring(0, cend);
 
 		for (CyFileFilter cff: cyFileFilters) {
-			if (cff.accept(url, contentType)) {
+			final boolean accept = cff.accept(url, contentType);
+			if (accept) {
 				// CyLogger.getLogger().info("Found reader: "+cff.getDescription());
-				GraphReader reader = cff.getReader(url, conn);
+				final GraphReader reader = cff.getReader(url, conn);
 
 				// Does the reader support the url,connection constructor?
 				if (reader != null) {
@@ -241,7 +242,6 @@ public class ImportHandler {
 			}
 		}
 
-		// CyLogger.getLogger().info("No reader for: "+url.toString());
 		return null;
 	}
 
