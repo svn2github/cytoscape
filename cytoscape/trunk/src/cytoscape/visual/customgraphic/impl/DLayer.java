@@ -13,7 +13,6 @@ public class DLayer implements Layer {
 		this.zOrder = zOrder;
 	}
 
-	@Override
 	public int getZorder() {
 		return zOrder;
 	}
