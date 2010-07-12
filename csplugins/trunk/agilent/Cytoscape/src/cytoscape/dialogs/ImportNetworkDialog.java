@@ -389,6 +389,7 @@ public class ImportNetworkDialog extends JDialog
 			networkFileTextField.setToolTipText(tooltip.toString());
 
 			importButton.setEnabled(true);
+			importButton.requestFocusInWindow();
 		}
 	}
 

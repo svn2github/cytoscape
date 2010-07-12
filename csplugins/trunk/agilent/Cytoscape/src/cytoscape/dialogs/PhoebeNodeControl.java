@@ -40,8 +40,6 @@ import giny.model.*;
 
 import giny.view.*;
 
-import phoebe.*;
-
 import java.awt.*;
 import java.awt.event.*;
 
