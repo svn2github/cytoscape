@@ -54,6 +54,10 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualProperty;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.converter.ValueToStringConverterManager;
 import cytoscape.visual.parsers.ObjectToString;
 
 
@@ -117,7 +121,7 @@ abstract class VizMapBypass {
 					if (obj == null)
 						return;
 
-					String val = ObjectToString.getStringValue(obj);
+					String val = ValueToStringConverterManager.manager.toString(obj);
 					attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
 					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 					BypassHack.finished();
@@ -125,18 +129,12 @@ abstract class VizMapBypass {
 			});
 
 		menu.add(jmi);
-		
-		// Check node size lock state 
-		if(type.equals(VisualPropertyType.NODE_SIZE)) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
-				jmi.setEnabled(false);
-			}
-		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
-				jmi.setEnabled(false);
-			}
-		}
 
+		final VisualPropertyDependency dep = 
+		             Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
+
+		jmi.setEnabled( !(type.getVisualProperty().constrained(dep)) ); 
+		
 		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
 		                                             type.getBypassAttrName());
 

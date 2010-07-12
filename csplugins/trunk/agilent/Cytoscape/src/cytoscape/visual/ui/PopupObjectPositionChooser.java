@@ -36,20 +36,12 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.LabelPosition;
-import cytoscape.Cytoscape;
-import cytoscape.visual.parsers.ObjectToString;
-import cytoscape.visual.VisualPropertyType;
-
-import giny.view.Label;
 import giny.model.GraphObject;
+import giny.view.ObjectPosition;
 
-
-import java.awt.Dialog;
-import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -58,69 +50,71 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.converter.ValueToStringConverterManager;
+import ding.view.ObjectPositionImpl;
 
 /**
  *
  */
-public class PopupLabelPositionChooser extends JDialog implements PropertyChangeListener {
-	protected LabelPosition lp;
-	protected LabelPosition newlp;
+public class PopupObjectPositionChooser extends JDialog implements
+		PropertyChangeListener {
+
+	private static final long serialVersionUID = 7146654020668346430L;
+
+	private ObjectPosition position;
+	private ObjectPosition newPosition;
+	
+	private VisualPropertyType targetType;
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param f DOCUMENT ME!
-	 * @param pos DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param f
+	 *            DOCUMENT ME!
+	 * @param pos
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public static LabelPosition showDialog(Dialog f, LabelPosition pos) {
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f, true, pos);
+	public static ObjectPosition showDialog(final Window parent,
+			final ObjectPosition pos, final VisualPropertyType type) {
+		final PopupObjectPositionChooser placer = new PopupObjectPositionChooser(
+				parent, pos, type);
 
-		return placer.getLabelPosition();
+		return placer.getObjectPosition();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param f DOCUMENT ME!
-	 * @param pos DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static LabelPosition showDialog(Frame f, LabelPosition pos) {
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f, true, pos);
-
-		return placer.getLabelPosition();
-	}
-
-	private PopupLabelPositionChooser(Frame f, boolean modal, LabelPosition pos) {
-		super(f, modal);
+	private PopupObjectPositionChooser(final Window parent,
+			final ObjectPosition pos, VisualPropertyType type) {
+		super();
+		this.targetType = type;
+		this.setModal(true);
+		this.setLocationRelativeTo(parent);
 		init(pos);
 	}
 
-	private PopupLabelPositionChooser(Dialog f, boolean modal, LabelPosition pos) {
-		super(f, modal);
-		init(pos);
-	}
-
-	private void init(LabelPosition pos) {
+	private void init(ObjectPosition pos) {
 		if (pos == null)
-			lp = new LabelPosition(Label.NONE, Label.NONE, Label.JUSTIFY_CENTER, 0.0, 0.0);
+			position = new ObjectPositionImpl();
 		else
-			lp = pos;
+			position = pos;
 
-		newlp = new LabelPosition(lp);
+		newPosition = new ObjectPositionImpl(position);
 
-		setTitle("Select Label Placement");
+		setTitle("Select " + targetType.getName());
 
 		JPanel placer = new JPanel();
 		placer.setLayout(new BoxLayout(placer, BoxLayout.Y_AXIS));
-		placer.setOpaque(true); //content panes must be opaque
+		placer.setOpaque(true); // content panes must be opaque
 
-		//Set up and connect the gui components.
-		LabelPlacerGraphic graphic = new LabelPlacerGraphic(new LabelPosition(lp));
-		LabelPlacerControl control = new LabelPlacerControl(new LabelPosition(lp));
+		// Set up and connect the gui components.
+		ObjectPlacerGraphic graphic = new ObjectPlacerGraphic(
+				new ObjectPositionImpl(position), null, true, targetType.getName(), null,
+				null);
+		ObjectPlacerControl control = new ObjectPlacerControl(
+				new ObjectPositionImpl(position));
 
 		control.addPropertyChangeListener(graphic);
 		control.addPropertyChangeListener(this);
@@ -134,19 +128,19 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 		JPanel buttonPanel = new JPanel();
 		final JButton ok = new JButton("OK");
 		ok.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					lp = newlp;
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				position = newPosition;
+				dispose();
+			}
+		});
 		ok.addActionListener(control);
 
 		final JButton cancel = new JButton("Cancel");
 		cancel.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 
 		buttonPanel.add(ok);
 		buttonPanel.add(cancel);
@@ -157,26 +151,31 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 		setVisible(true);
 	}
 
-	private LabelPosition getLabelPosition() {
-		return lp;
+	private ObjectPosition getObjectPosition() {
+		return position;
 	}
 
 	/**
 	 * Handles all property changes that the panel listens for.
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		String type = e.getPropertyName();
+		final String type = e.getPropertyName();
 
-		if (type.equals("LABEL_POSITION_CHANGED")) {
-			newlp = (LabelPosition) e.getNewValue();
+		if (type.equals(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED)
+				&& e.getNewValue() instanceof ObjectPosition) {
+
+			newPosition = (ObjectPosition) e.getNewValue();
 
 			// horrible, horrible hack
 			GraphObject go = BypassHack.getCurrentObject();
-			if ( go != null ) {
-				String val = ObjectToString.getStringValue(newlp);
-				Cytoscape.getNodeAttributes().setAttribute(go.getIdentifier(), 
-				                   VisualPropertyType.NODE_LABEL_POSITION.getBypassAttrName(), val);
-				Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			if (go != null) {
+				String val = ValueToStringConverterManager.manager.toString(newPosition);
+				Cytoscape.getNodeAttributes().setAttribute(
+						go.getIdentifier(),
+						VisualPropertyType.NODE_LABEL_POSITION
+								.getBypassAttrName(), val);
+				Cytoscape.getVisualMappingManager().getNetworkView()
+						.redrawGraph(false, true);
 			}
 		}
 	}

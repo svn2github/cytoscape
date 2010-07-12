@@ -34,16 +34,21 @@
 */
 package cytoscape.visual.ui;
 
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
 import static cytoscape.visual.VisualPropertyType.*;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.geom.Point2D;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -53,9 +58,10 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
+import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.NodeShape;
@@ -64,18 +70,32 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
- *
+ * Visual Property selector for discrete values
+ * 
  * @author kono
  */
 public class ValueSelectDialog extends JDialog {
 	
+	private static final long serialVersionUID = 1201804212862509435L;
+	
+	// Target visual property.
 	private final VisualPropertyType type;
-	private Map shapeMap;
+	
+	// Map from actual value to its icon.
+	private Map<Object, Icon> iconMap;
+	
 	private List orderedKeyList;
 	
 	private Object originalValue;
 	
 	private boolean canceled = false;
+	
+	private static final int WIDTH = 480;
+	private final int height;
+	
+	private final String listTitle;
+	
+	private static final int ICON_CELL_HEIGHT = 140;
 
 	/**
 	 * Static method to show dialog and get a value from user.
@@ -84,23 +104,43 @@ public class ValueSelectDialog extends JDialog {
 	 * @param parent
 	 * @return
 	 */
-	public static Object showDialog(VisualPropertyType type, JDialog parent) {
+	public static Object showDialog(final VisualPropertyType type, final Window parent) {
 	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, parent, true);
+		
+		dialog.setLocationRelativeTo(parent);
 		dialog.setVisible(true);
 		return dialog.getValue();
 	}
 
-	private ValueSelectDialog(VisualPropertyType type, JDialog parent, boolean modal) {
+	private ValueSelectDialog(VisualPropertyType type, Window parent, boolean modal) {
 		super(Cytoscape.getDesktop(), modal);
+		final Toolkit toolkit = this.getToolkit();
+		final Dimension screenSize = toolkit.getScreenSize();
+		height = (int)(screenSize.getHeight() * 0.7);
+		
 		this.type = type;
-		shapeMap = this.type.getVisualProperty().getIconSet();
-		initComponents();
 
+		iconMap = this.type.getVisualProperty().getIconSet();
+		initComponents();
 		setList();
 		
-		// get original value and sete the selected item.
-		originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
+		// Special case handling
+		// TODO: Create more user-friendly GUI only for Custom Graphics.
+		if(type.equals(NODE_CUSTOM_GRAPHICS_1)) {
+			this.iconList.setFixedCellHeight(ICON_CELL_HEIGHT);
+			this.listTitle = "Custom Graphics";
+		} else {
+			this.listTitle = type.getName();
+		}
+		
+		mainPanel.setTitle(listTitle);
+		
+		// get original value and set the selected item.
+		if ( type.isNodeProp() )
+			originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
+		else 
+			originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getEdgeAppearanceCalculator().getDefaultAppearance().get(type);
 	}
 
 	/**
@@ -113,18 +153,15 @@ public class ValueSelectDialog extends JDialog {
 	private void initComponents() {
 		mainPanel = new org.jdesktop.swingx.JXTitledPanel();
 		iconListScrollPane = new javax.swing.JScrollPane();
-		iconList = new javax.swing.JList();
+		iconList = new JXList(true);
+		
 		applyButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Select New Value");
-		mainPanel.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-		                                                   new Color(Color.gray.getRed(),
-		                                                             Color.gray.getGreen(),
-		                                                             Color.gray.getBlue(), 100),
-		                                                   new Point2D.Double(.8d, 0), Color.WHITE));
-		mainPanel.setTitle(type.getName());
+
+		mainPanel.setTitle(listTitle);
 		mainPanel.setTitleFont(new java.awt.Font("SansSerif", 1, 14));
 
 		iconList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -161,13 +198,13 @@ public class ValueSelectDialog extends JDialog {
 		                                                                      .addContainerGap())
 		                                                  .add(iconListScrollPane,
 		                                                       org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                       291, Short.MAX_VALUE));
+		                                                       WIDTH, Short.MAX_VALUE));
 		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
 		                                                     mainPanelLayout.createSequentialGroup()
 		                                                                    .add(iconListScrollPane,
 		                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                         312,
+		                                                                         height,
 		                                                                         Short.MAX_VALUE)
 		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                    .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -201,7 +238,7 @@ public class ValueSelectDialog extends JDialog {
 	// Variables declaration - do not modify
 	private javax.swing.JButton applyButton;
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JList iconList;
+	private JXList iconList;
 	private javax.swing.JScrollPane iconListScrollPane;
 	private org.jdesktop.swingx.JXTitledPanel mainPanel;
 	private DefaultListModel model;
@@ -229,16 +266,18 @@ public class ValueSelectDialog extends JDialog {
 	 * Key SHOULD be enum.
 	 */
 	private void setList() {
-		List<Icon> icons = new ArrayList<Icon>();
 		orderedKeyList = new ArrayList();
 
 		model = new DefaultListModel();
 		iconList.setModel(model);
 
 		VisualPropertyIcon icon;
+		
+		final Map<String, Icon> name2icon = new HashMap<String, Icon>(); 
+		final Map<String, Object> name2value = new HashMap<String, Object>(); 
 
-		for (Object key : shapeMap.keySet()) {
-			icon = (VisualPropertyIcon) shapeMap.get(key);
+		for (Object key : iconMap.keySet()) {
+			icon = (VisualPropertyIcon) iconMap.get(key);
 
 			if(type == EDGE_SRCARROW_SHAPE || type == EDGE_TGTARROW_SHAPE) {
 				icon.setIconWidth(icon.getIconWidth()*3);
@@ -248,44 +287,64 @@ public class ValueSelectDialog extends JDialog {
 				// Maybe supported in future versions...
 				continue;
 			}
-			icons.add(icon);
-			orderedKeyList.add(key);
-			model.addElement(icon.getName());
+
+			final String keyName = icon.getName();
+			if(name2icon.containsKey(keyName)) {
+				name2icon.put(keyName+key.hashCode(), icon);
+				name2value.put(keyName+key.hashCode(), key);
+			} else {
+				name2icon.put(keyName, icon);
+				name2value.put(keyName, key);
+			}
+		}
+		
+		TreeSet<String> sortedSet = new TreeSet<String>(name2icon.keySet());
+		
+		for(String key:sortedSet) {
+			orderedKeyList.add(name2value.get(key));
+			model.addElement(name2icon.get(key));
 		}
 
-		iconList.setCellRenderer(new IconCellRenderer(icons));
+		iconList.setCellRenderer(new IconCellRenderer());
 		iconList.repaint();
 	}
 
+	
 	public class IconCellRenderer extends JLabel implements ListCellRenderer {
+		
+		private static final long serialVersionUID = -7235212695832080213L;
+		
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 18);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 14);
 		private final Color SELECTED_COLOR = new Color(30, 30, 80, 25);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 120);
-		private final List<Icon> icons;
+		
+		private final Border DROPHSADOW = new DropShadowBorder();
 
-		public IconCellRenderer(List<Icon> icons) {
-			this.icons = icons;
+		public IconCellRenderer() {
 			setOpaque(true);
 		}
 
 		public Component getListCellRendererComponent(JList list, Object value, int index,
 		                                              boolean isSelected, boolean cellHasFocus) {
-			final VisualPropertyIcon icon = (VisualPropertyIcon) icons.get(index);
+			final VisualPropertyIcon icon = (VisualPropertyIcon) value;
 
-			setText(value.toString());
-			icon.setLeftPadding(15);
+			if(value != null)
+				setText(icon.getName());
+			
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
+			icon.setLeftPadding(30);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(35);
+			this.setIconTextGap(60);
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
-			setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 20));
-			this.setBorder(new DropShadowBorder());
+			
+			setPreferredSize(new Dimension(icon.getIconWidth()+300, icon.getIconHeight() + 20));
+			this.setBorder(DROPHSADOW);
 
 			return this;
 		}

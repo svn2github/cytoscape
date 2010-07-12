@@ -158,6 +158,7 @@ public class DefaultViewPanel extends JPanel {
 		((DGraphView) view).getCanvas()
 		 .setSize(new Dimension((int) panelSize.getWidth() - PADDING,
 		                        (int) panelSize.getHeight() - PADDING));
+		// TODO: This is not always necessary.
 		view.fitContent();
 
 		final Component canvas = view.getComponent();
@@ -169,6 +170,7 @@ public class DefaultViewPanel extends JPanel {
 		this.add(canvas);
 
 		canvas.setLocation(PADDING / 2, PADDING / 2);
+		
 		Cytoscape.getVisualMappingManager().applyAppearances();
 
 		canvas.setBackground(background);

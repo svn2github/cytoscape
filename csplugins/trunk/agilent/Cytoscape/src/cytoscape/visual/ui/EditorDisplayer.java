@@ -36,21 +36,24 @@
 
 package cytoscape.visual.ui;
 
+import giny.view.ObjectPosition;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Window;
 
-import javax.swing.JDialog;
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
@@ -75,39 +78,52 @@ public enum EditorDisplayer {
 	DISCRETE_NUMBER(JOptionPane.class, "showInputDialog",
 	                new Class[] { Component.class, Object.class },
 	                new Object[] { Cytoscape.getDesktop(), "Please enter new numeric value:" },
-	                Number.class), 
+	                Number.class),
+	DISCRETE_BOOLEAN(JOptionPane.class, "showInputDialog",
+			new Class[] { Component.class, Object.class, String.class, int.class, 
+							Icon.class, Object[].class, Object.class},
+	    	    new Object[] { Cytoscape.getDesktop(), "Please select:", "Select true or false", 
+							JOptionPane.QUESTION_MESSAGE, null, new Object[] {true, false}, Boolean.TRUE}, 
+			Boolean.class), 
 	DISCRETE_STRING(JOptionPane.class, "showInputDialog",
 	                new Class[] { Component.class, Object.class },
 	                new Object[] { Cytoscape.getDesktop(), "Please enter new text value:" },
 	                String.class), 
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
-	               new Class[] { VisualPropertyType.class, JDialog.class },
+	               new Class[] { VisualPropertyType.class, Window.class },
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
+	DISCRETE_CUSTOM_GRAPHICS(ValueSelectDialog.class, "showDialog",
+	    	               new Class[] { VisualPropertyType.class, Window.class },
+	    	               new Object[] { VisualPropertyType.NODE_CUSTOM_GRAPHICS_1, null }, CyCustomGraphics.class),                
 	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
-	                     new Class[] { VisualPropertyType.class, JDialog.class },
+	                     new Class[] { VisualPropertyType.class, Window.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
-	                   new Class[] { VisualPropertyType.class, JDialog.class },
-	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class), 
-	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
-	                        new Class[] { Frame.class, LabelPosition.class },
-	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
+	                   new Class[] { VisualPropertyType.class, Window.class },
+	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class),
+	DISCRETE_NODE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
+	    	               new Class[] { VisualPropertyType.class, Window.class },
+	    	               new Object[] { VisualPropertyType.NODE_LINE_STYLE, null }, LineStyle.class),
+	DISCRETE_OBJECT_POSITION(PopupObjectPositionChooser.class, "showDialog",
+	                        new Class[] { Window.class, ObjectPosition.class, VisualPropertyType.class },
+	                        new Object[] { Cytoscape.getDesktop(), null, null}, ObjectPosition.class), 
 	CONTINUOUS_COLOR(GradientEditorPanel.class, "showDialog",
 	                 new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
-	                 new Object[] { 450, 180, "Gradient Editor", null }, Color.class), 
+	                 new Object[] { 420, 250, "Gradient Editor", null }, Color.class), 
 	CONTINUOUS_CONTINUOUS(C2CMappingEditor.class, "showDialog",
 	                      new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
-	                      new Object[] { 450, 250, "Continuous-Continuous Editor", null },
+	                      new Object[] { 420, 250, "Continuous-Continuous Editor", null },
 	                      Number.class), 
 	CONTINUOUS_DISCRETE(C2DMappingEditor.class, "showDialog",
 	                    new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
-	                    new Object[] { 450, 200, "Continuous-Discrete Editor", null }, Object.class);
-	private Class chooserClass;
+	                    new Object[] { 420, 250, "Continuous-Discrete Editor", null }, Object.class);
+	
+	private Class<?> chooserClass;
 	private String command;
-	private Class[] paramTypes;
+	private Class<?>[] paramTypes;
 	private Object[] parameters;
-	private Class compatibleClass;
-
+	private Class<?> compatibleClass;
+		
 	/**
 	 * Defines editor type.
 	 */
@@ -116,8 +132,11 @@ public enum EditorDisplayer {
 		DISCRETE,
 		PASSTHROUGH;
 	}
-	private EditorDisplayer(Class chooserClass, String command, Class[] paramTypes,
-	                        Object[] parameters, Class compatibleClass) {
+	
+	
+	private EditorDisplayer(final Class<?> chooserClass, String command, Class<?>[] paramTypes,
+	                        Object[] parameters, Class<?> compatibleClass) {
+		
 		this.chooserClass = chooserClass;
 		this.command = command;
 		this.paramTypes = paramTypes;
@@ -130,7 +149,7 @@ public enum EditorDisplayer {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class getActionClass() {
+	public Class<?> getActionClass() {
 		return chooserClass;
 	}
 
@@ -148,7 +167,7 @@ public enum EditorDisplayer {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class[] getParamTypes() {
+	public Class<?>[] getParamTypes() {
 		return this.paramTypes;
 	}
 
@@ -166,13 +185,15 @@ public enum EditorDisplayer {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class getCompatibleClass() {
+	public Class<?> getCompatibleClass() {
 		return this.compatibleClass;
 	}
 
 	public void setParameters(Object[] param) {
 		this.parameters = param;
 	}
+	
+
 
 	/**
 	 * Returns proper editor displayer object based on visual property type.
@@ -182,21 +203,31 @@ public enum EditorDisplayer {
 	 * @return DOCUMENT ME!
 	 */
 	public static EditorDisplayer getEditor(final VisualPropertyType type, final EditorType editor) {
-		final Class dataType = type.getDataType();
+		final Class<?> dataType = type.getDataType();
+		
 		for (EditorDisplayer command : values()) {
-			if ((dataType == command.getCompatibleClass())
-			    && (((editor == EditorType.CONTINUOUS)
-			        && command.toString().startsWith(EditorType.CONTINUOUS.name()))
-			       || ((editor == EditorType.DISCRETE)
-			          && command.toString().startsWith(EditorType.DISCRETE.name()))))
+			if ( (dataType == command.getCompatibleClass())
+			    && ((editor == EditorType.CONTINUOUS)
+			        && command.toString().startsWith(EditorType.CONTINUOUS.name()) )) {
 				return command;
+			} else if ( (dataType == command.getCompatibleClass()) && (editor == EditorType.DISCRETE)
+			          && command.toString().startsWith(EditorType.DISCRETE.name())) {
+				
+				// Check special case
+				if (command.equals(DISCRETE_LINE_STYLE) || command.equals(DISCRETE_NODE_LINE_STYLE)) {
+					if (type.equals(VisualPropertyType.EDGE_LINE_STYLE))
+						return DISCRETE_LINE_STYLE;
+					else
+						return DISCRETE_NODE_LINE_STYLE;
+				} else {
+					return command;
+				}
+			}
 		}
-
 		
 		/*
 		 * if not found in the loop above, this might be a C2DEditor.
 		 */
-		
-		return EditorDisplayer.CONTINUOUS_DISCRETE;
+		return CONTINUOUS_DISCRETE;
 	}
 }

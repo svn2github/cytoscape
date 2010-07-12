@@ -34,24 +34,6 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.logger.CyLogger;
-import cytoscape.util.CyColorChooser;
-
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
-
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -66,21 +48,41 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.border.LineBorder;
+
+import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.border.DropShadowBorder;
+
+import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.CyColorChooser;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualPropertyDependency.Definition;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -101,8 +103,14 @@ import javax.swing.SwingConstants;
  * @author kono
  */
 public class DefaultAppearenceBuilder extends JDialog {
+	
+	private static final Dimension PANEL_SIZE = new Dimension(500, 27);
+	
+	private static final long serialVersionUID = 596165395462496156L;
+	
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
+	
 	private static CyLogger logger = CyLogger.getLogger(DefaultAppearenceBuilder.class);
 
 	// This editor should be a singleton.
@@ -143,12 +151,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 			dab = new DefaultAppearenceBuilder(parent, true);
 
 		dab.setLocationRelativeTo(parent);
-		dab.setSize(900, 400);
-		
-		dab.lockNodeSizeCheckBox.setSelected(Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                              .getNodeAppearanceCalculator()
-		                                              .getNodeSizeLocked());
-		dab.lockSize();
+		dab.setSize(900, 450);
+
+		dab.buildList();
+
 		dab.mainView.updateView();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
@@ -165,11 +171,11 @@ public class DefaultAppearenceBuilder extends JDialog {
 		if (dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
 
-		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+		//Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
 		                                            .getDefaultBackgroundColor());
-		dab.mainView.updateView();
+		dab.buildList();
 
 		return dab.getPanel();
 	}
@@ -185,21 +191,24 @@ public class DefaultAppearenceBuilder extends JDialog {
 		jXPanel1 = new org.jdesktop.swingx.JXPanel();
 		mainView = DefaultViewPanel.getDefaultViewPanel();
 		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
-		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
-		nodeScrollPane = new javax.swing.JScrollPane();
+		defaultObjectTabbedPane = new JTabbedPane();
+
+		nodeScrollPane = new JScrollPane();
+		edgeScrollPane = new JScrollPane();
+		globalScrollPane = new JScrollPane();
+		dependencyScrollPane = new JScrollPane();
+
 		nodeList = new JXList();
 		edgeList = new JXList();
-		edgeScrollPane = new javax.swing.JScrollPane();
-		globalScrollPane = new javax.swing.JScrollPane();
-		lockNodeSizeCheckBox = new javax.swing.JCheckBox();
-		applyButton = new javax.swing.JButton();
-
 		globalList = new JXList();
 
-		cancelButton = new javax.swing.JButton();
-		cancelButton.setVisible(false);
+		initDependencyPanel();
 
-		lockNodeSizeCheckBox.setOpaque(false);
+		applyButton = new JButton();
+
+
+		cancelButton = new JButton();
+		cancelButton.setVisible(false);
 
 		nodeList.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -219,10 +228,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 				}
 			});
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Default Appearance for "
 		         + Cytoscape.getVisualMappingManager().getVisualStyle().getName());
-		mainView.setBorder(new javax.swing.border.LineBorder(java.awt.Color.darkGray, 1, true));
+		mainView.setBorder(new LineBorder(java.awt.Color.darkGray, 1, true));
 
 		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(mainView);
 		mainView.setLayout(jXPanel2Layout);
@@ -232,24 +241,20 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                              .add(0, 237, Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
-		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-		                                                        new Color(Color.gray.getRed(),
-		                                                                  Color.gray.getGreen(),
-		                                                                  Color.gray.getBlue(), 100),
-		                                                        new Point2D.Double(.8d, 0),
-		                                                        Color.WHITE));
 		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
-		jXTitledPanel1.setMinimumSize(new java.awt.Dimension(300, 27));
-		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
-		defaultObjectTabbedPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+		jXTitledPanel1.setMinimumSize(PANEL_SIZE);
+		jXTitledPanel1.setPreferredSize(PANEL_SIZE);
+		defaultObjectTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
 		nodeScrollPane.setViewportView(nodeList);
 		edgeScrollPane.setViewportView(edgeList);
 		globalScrollPane.setViewportView(globalList);
+		dependencyScrollPane.setViewportView(dependencyPanel);
 
 		defaultObjectTabbedPane.addTab("Node", nodeScrollPane);
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
 		defaultObjectTabbedPane.addTab("Global", globalScrollPane);
+		defaultObjectTabbedPane.addTab("Dependencies", dependencyScrollPane);
 
 		org.jdesktop.layout.GroupLayout jXTitledPanel1Layout = new org.jdesktop.layout.GroupLayout(jXTitledPanel1
 		                                                                                           .getContentContainer());
@@ -262,19 +267,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                          .add(defaultObjectTabbedPane,
 		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                               243, Short.MAX_VALUE));
-
-		lockNodeSizeCheckBox.setFont(new java.awt.Font("SansSerif", 1, 12));
-		lockNodeSizeCheckBox.setText("Lock Node Width/Height");
-		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		lockNodeSizeCheckBox.setSelected(Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                          .getNodeAppearanceCalculator().getNodeSizeLocked());
-		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					Cytoscape.getDesktop().getVizMapperUI().switchNodeSizeLock(lockNodeSizeCheckBox.isSelected());
-					lockSize();
-				}
-			});
 
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
@@ -301,10 +293,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                   .addContainerGap()
 		                                                                   .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                                                      .add(jXPanel1Layout.createSequentialGroup()
-		                                                                                                         .add(lockNodeSizeCheckBox,
-		                                                                                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                              138,
-		                                                                                                              Short.MAX_VALUE)
 		                                                                                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                                         .add(cancelButton)
 		                                                                                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -316,7 +304,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                   .add(jXTitledPanel1,
 		                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                        198, Short.MAX_VALUE)
+		                                                                        350, Short.MAX_VALUE)
 		                                                                   .add(12, 12, 12)));
 		jXPanel1Layout.setVerticalGroup(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                              .add(org.jdesktop.layout.GroupLayout.TRAILING,
@@ -335,7 +323,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                                                            Short.MAX_VALUE)
 		                                                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                                       .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                                                          .add(lockNodeSizeCheckBox)
 		                                                                                                                          .add(cancelButton)
 		                                                                                                                          .add(applyButton))))
 		                                                                 .addContainerGap()));
@@ -369,15 +356,15 @@ public class DefaultAppearenceBuilder extends JDialog {
 			try {
 				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list.getSelectedValue(),
 				                                                    this);
+				
 				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
 			} catch (Exception e1) {
 				logger.warn("Unable to show VizMapper value select dialog!", e1);
+				e1.printStackTrace();
 			}
 
 			buildList();
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-			mainView.updateView();
-			mainView.repaint();
 		}
 	}
 
@@ -408,17 +395,19 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	// Variables declaration - do not modify
-	private javax.swing.JButton applyButton;
-	private javax.swing.JButton cancelButton;
-	private javax.swing.JCheckBox lockNodeSizeCheckBox;
-	private javax.swing.JScrollPane nodeScrollPane;
-	private javax.swing.JScrollPane edgeScrollPane;
-	private javax.swing.JScrollPane globalScrollPane;
-	private javax.swing.JTabbedPane defaultObjectTabbedPane;
+	private JButton applyButton;
+	private JButton cancelButton;
+	private JScrollPane nodeScrollPane;
+	private JScrollPane edgeScrollPane;
+	private JScrollPane globalScrollPane;
+	private JScrollPane dependencyScrollPane;
+	private JTabbedPane defaultObjectTabbedPane;
 	private JXList nodeList;
 	private JXList edgeList;
 	private JXList globalList;
+	private JPanel dependencyPanel;
 	private org.jdesktop.swingx.JXPanel jXPanel1;
+	private Map<Definition,JCheckBox> dependencyCheckBoxMap; 
 
 	//	private org.jdesktop.swingx.JXPanel jXPanel2;
 	private org.jdesktop.swingx.JXTitledPanel jXTitledPanel1;
@@ -435,6 +424,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * DOCUMENT ME!
 	 */
 	private void buildList() {
+
+		syncDependencies();
+
 		List<Icon> nodeIcons = new ArrayList<Icon>();
 		List<Icon> edgeIcons = new ArrayList<Icon>();
 		List<Icon> globalIcons = new ArrayList<Icon>();
@@ -479,6 +471,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			gModel.addElement(name);
 		}
 
+
 		nodeList.setCellRenderer(new VisualPropCellRenderer(nodeIcons));
 		edgeList.setCellRenderer(new VisualPropCellRenderer(edgeIcons));
 		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));
@@ -487,25 +480,60 @@ public class DefaultAppearenceBuilder extends JDialog {
 		mainView.repaint();
 	}
 
-	private void lockSize() {
-		if (lockNodeSizeCheckBox.isSelected()) {
-			NODE_PROPS.remove(NODE_WIDTH);
-			NODE_PROPS.remove(NODE_HEIGHT);
-			NODE_PROPS.add(NODE_SIZE);
-			Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator()
-			         .setNodeSizeLocked(true);
-		} else {
-			NODE_PROPS.add(NODE_WIDTH);
-			NODE_PROPS.add(NODE_HEIGHT);
-			NODE_PROPS.remove(NODE_SIZE);
-			Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator()
-			         .setNodeSizeLocked(false);
+	private void syncDependencies() {
+		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
+
+		// sync properties with dependencies
+		for ( VisualPropertyType type : VisualPropertyType.values() ) {
+			if ( !type.isAllowed() ) 
+				continue;
+
+			if ( type.isNodeProp() ) {
+				if ( type.getVisualProperty().constrained(dep) ) 
+					NODE_PROPS.remove(type);
+				else 
+					NODE_PROPS.add(type);
+			} else {
+				if ( type.getVisualProperty().constrained(dep) ) 
+					EDGE_PROPS.remove(type);
+				else
+					EDGE_PROPS.add(type);
+			}
 		}
 
-		buildList();
-		mainView.updateView();
-		repaint();
+		// apply dependencies to checkboxes
+		for ( Definition def : dependencyCheckBoxMap.keySet() ) 
+			dependencyCheckBoxMap.get(def).setSelected( dep.check( def ) ); 
 	}
+
+	private void initDependencyPanel() {
+		dependencyPanel = new JPanel();
+		dependencyCheckBoxMap = new HashMap<Definition,JCheckBox>();
+		dependencyPanel.setLayout(new BoxLayout(dependencyPanel, BoxLayout.Y_AXIS));
+		final VisualPropertyDependency dep = Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
+
+		for (final Definition def : Definition.values()) {
+			final JCheckBox dCheck = new JCheckBox();
+			dCheck.setSelected( dep.check( def ) ); 
+			dCheck.setFont(new java.awt.Font("SansSerif", 1, 12));
+			dCheck.setText(def.getTitle());
+			dCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+			dCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			dependencyPanel.add(dCheck);
+			dependencyCheckBoxMap.put(def,dCheck);
+			dCheck.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						final VisualPropertyDependency deps = Cytoscape.getVisualMappingManager().getVisualStyle().getDependency();
+						deps.set(def,dCheck.isSelected());
+						Cytoscape.getDesktop().getVizMapperUI().syncDependencyStates(deps,def);
+						buildList();
+						mainView.updateView();
+						repaint();
+					}
+				});
+		}
+	}
+
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
@@ -534,7 +562,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(55);
+			this.setIconTextGap(120);
 
 			if (value instanceof VisualPropertyType
 			    && (((VisualPropertyType) value).getDataType() == String.class)) {
@@ -550,7 +578,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
 
 			if (icon != null) {
-				setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
+				setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 12));
 			}
 
 			this.setBorder(new DropShadowBorder());

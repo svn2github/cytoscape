@@ -1,5 +1,5 @@
 /*
- File: VizMapBypassNetworkListener.java
+ File: HideNodeSelectionMenuListener.java
 
  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -26,34 +26,65 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CyNetworkView;
+import ding.view.NodeContextMenuListener;
+import giny.view.NodeView;
 
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 
 /**
  * Adds NodeView and EdgeView vizmap bypass listeners to network views as
  * the views are created.
  */
-public class VizMapBypassNetworkListener implements PropertyChangeListener {
+public class HideNodeListener implements PropertyChangeListener {
 	/**
 	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
-	 * node and edge context menu listeners to the view.
-	 * @param evnt The event we're hearing.
+	 * a HideNodeContextMenuListener context menu listener to the view.
+	 * @param evnt The event we're being notified of.
 	 */
 	public void propertyChange(final PropertyChangeEvent evnt) {
 		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evnt.getPropertyName())) {
-			final NodeBypassMenuListener nodeBypassMenuListener = new NodeBypassMenuListener();
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(nodeBypassMenuListener);
-
-			final EdgeBypassMenuListener edgeBypassMenuListener = new EdgeBypassMenuListener();
-			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edgeBypassMenuListener);
+			final HideNodeContextMenuListener l = new HideNodeContextMenuListener();
+			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(l);
 		}
+	}
+}
+
+
+class HideNodeContextMenuListener extends AbstractAction implements NodeContextMenuListener {
+	private NodeView nodeView;
+
+	public HideNodeContextMenuListener() {
+	}
+
+	/**
+	 * @param nodeView The clicked NodeView
+	 * @param menu popup menu to add the Bypass menu
+	 */
+	public void addNodeContextMenuItems(final NodeView nodeView, final JPopupMenu menu) {
+		if (menu == null)
+			return;
+
+		this.nodeView = nodeView;
+		final JMenuItem newMenuItem = new JMenuItem("Hide Node");
+		newMenuItem.addActionListener(this);
+		menu.add(newMenuItem);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		final CyNetworkView currentNetworkView = Cytoscape.getCurrentNetworkView();
+		currentNetworkView.hideGraphObject(nodeView);
+		currentNetworkView.updateView();
 	}
 }

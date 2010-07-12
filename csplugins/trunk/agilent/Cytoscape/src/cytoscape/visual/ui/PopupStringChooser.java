@@ -41,8 +41,15 @@ import java.awt.Component;
 import javax.swing.JOptionPane;
 
 
-/** An input dialog for strings, ints, and doubles. */
+/** 
+ * An input dialog for strings, ints, and doubles. 
+ */
 public class PopupStringChooser {
+
+	// from ValueDisplayer
+    private static final byte DOUBLE = 4;
+    private static final byte INT = 6;
+
     /**
      *  DOCUMENT ME!
      *
@@ -66,7 +73,7 @@ inputLoop:
                 return null;
             else {
                 switch (type) {
-                case ValueDisplayer.DOUBLE:
+                case DOUBLE:
 
                     try {
                         input = new Double(Double.parseDouble(ret));
@@ -80,7 +87,7 @@ inputLoop:
                         continue inputLoop;
                     }
 
-                case ValueDisplayer.INT:
+                case INT:
 
                     try {
                         input = new Integer(Integer.parseInt(ret));

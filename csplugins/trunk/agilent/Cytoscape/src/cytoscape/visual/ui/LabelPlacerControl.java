@@ -36,27 +36,32 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.LabelPosition;
-import cytoscape.logger.CyLogger;
-
 import giny.view.Label;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-import java.beans.*;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.border.*;
+import cytoscape.logger.CyLogger;
+import cytoscape.visual.LabelPosition;
 
 
 /**
  * A group of widgets that specifies the placement of
  * node labels.
+ * 
+ * Deprecated.  Will be removed 03/2011
+ * @deprecated
  */
+@Deprecated
 class LabelPlacerControl extends JPanel
     implements ActionListener, PropertyChangeListener {
     private LabelPosition lp;
@@ -72,8 +77,7 @@ class LabelPlacerControl extends JPanel
         super();
 
         if (pos == null)
-            lp = new LabelPosition(Label.NONE, Label.NONE,
-                    Label.JUSTIFY_CENTER, 0.0, 0.0);
+            lp = new LabelPosition();
         else
             lp = pos;
 
@@ -198,7 +202,7 @@ class LabelPlacerControl extends JPanel
         if (!changed)
             return; // nothing we care about has changed
 
-        firePropertyChange("LABEL_POSITION_CHANGED", null, lp);
+        firePropertyChange(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED, null, lp);
     }
 
     private double getOffset(JTextField jtf) {
@@ -222,7 +226,7 @@ class LabelPlacerControl extends JPanel
     public void propertyChange(PropertyChangeEvent e) {
         String type = e.getPropertyName();
 
-        if (type.equals("LABEL_POSITION_CHANGED")) {
+        if (type.equals(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED)) {
             lp = (LabelPosition) e.getNewValue();
             applyPosition();
         }

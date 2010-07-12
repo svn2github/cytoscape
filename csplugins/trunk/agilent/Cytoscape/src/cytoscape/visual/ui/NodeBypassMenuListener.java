@@ -72,9 +72,6 @@ class NodeBypassMenuListener implements NodeContextMenuListener {
 		final String nodeID = nodeView.getNode().getIdentifier();
 		final JLabel nodeLabel = new JLabel(nodeID);
 
-		if (menu == null)
-			menu = new JPopupMenu();
-
 		nodeLabel.setForeground(new Color(10, 50, 250, 150));
 		nodeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
 		nodeLabel.setBorder(new EmptyBorder(5, 10, 5, 5));

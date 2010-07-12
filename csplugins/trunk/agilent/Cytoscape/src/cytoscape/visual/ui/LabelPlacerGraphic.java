@@ -36,8 +36,6 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.LabelPosition;
-
 import giny.view.Label;
 
 import java.awt.BasicStroke;
@@ -53,17 +51,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Point2D;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
+import cytoscape.visual.LabelPosition;
+
 
 /**
  * A drag and drop graphic that allows users to set the placement
  * of node labels.
+ * 
+ * Deprecated.  Use ObjectPlacerGraphic instead.  Will be removed 03/2011
+ * 
+ * @deprecated
  */
+@Deprecated
 public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener {
 	private LabelPosition lp;
 
@@ -159,7 +163,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 		super();
 
 		if (pos == null)
-			lp = new LabelPosition(Label.NONE, Label.NONE, Label.JUSTIFY_CENTER, 0.0, 0.0);
+			lp = new LabelPosition();
 		else
 			lp = pos;
 
@@ -413,7 +417,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 				lp.setOffsetY(yOffset);
 				lp.setLabelAnchor(bestLabelX + (3 * bestLabelY));
 				lp.setTargetAnchor(bestNodeX + (3 * bestNodeY));
-				firePropertyChange("LABEL_POSITION_CHANGED", null, lp);
+				firePropertyChange(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED, null, lp);
 
 				repaint();
 				beenDragged = false;
@@ -479,7 +483,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	public void propertyChange(PropertyChangeEvent e) {
 		String type = e.getPropertyName();
 
-		if (type.equals("LABEL_POSITION_CHANGED")) {
+		if (type.equals(ObjectPlacerGraphic.OBJECT_POSITION_CHANGED)) {
 			lp = (LabelPosition) e.getNewValue();
 			applyPosition();
 			repaint();

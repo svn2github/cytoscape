@@ -1,7 +1,14 @@
 /*
  File: VizMapBypassNetworkListener.java
 
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -41,19 +48,16 @@ import java.beans.PropertyChangeListener;
  * Adds NodeView and EdgeView vizmap bypass listeners to network views as
  * the views are created.
  */
-public class VizMapBypassNetworkListener implements PropertyChangeListener {
+public class NestedNetworkListener implements PropertyChangeListener {
 	/**
 	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
-	 * node and edge context menu listeners to the view.
+	 * SetNestedNetwork context menu listeners to the view.
 	 * @param evnt The event we're hearing.
 	 */
-	public void propertyChange(final PropertyChangeEvent evnt) {
+	public void propertyChange(PropertyChangeEvent evnt) {
 		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evnt.getPropertyName())) {
-			final NodeBypassMenuListener nodeBypassMenuListener = new NodeBypassMenuListener();
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(nodeBypassMenuListener);
-
-			final EdgeBypassMenuListener edgeBypassMenuListener = new EdgeBypassMenuListener();
-			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edgeBypassMenuListener);
+			NestedNetworkMenuListener l = new NestedNetworkMenuListener();
+			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(l);
 		}
 	}
 }
