@@ -44,6 +44,7 @@ import cytoscape.task.ui.JTask;
 
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.GMLFileFilter;
+import cytoscape.util.NNFFileFilter;
 import cytoscape.util.ProxyHandler;
 import cytoscape.util.SIFFileFilter;
 import cytoscape.util.XGMMLFileFilter;
@@ -100,7 +101,7 @@ public class ImportHandler {
 	 * Constructor.
 	 */
 	public ImportHandler() {
-		//  By default, register SIF, XGMML and GML File Filters
+		//  By default, register SIF, XGMML, NNF, and GML File Filters
 		init();
 	}
 
@@ -111,6 +112,7 @@ public class ImportHandler {
 		addFilter(new SIFFileFilter());
 		addFilter(new XGMMLFileFilter());
 		addFilter(new GMLFileFilter());
+		addFilter(new NNFFileFilter());
 	}
 
 	/**
@@ -475,41 +477,50 @@ public class ImportHandler {
 		BufferedReader in = null;
 
 		out = new BufferedWriter(new FileWriter(tmpFile));
-		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        try {
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            try {
+                String inputLine = null;
+                double percent = 0.0d;
 
-		String inputLine = null;
-		double percent = 0.0d;
+                while ((inputLine = in.readLine()) != null) {
+                    progressCount += inputLine.length();
 
-		while ((inputLine = in.readLine()) != null) {
-			progressCount += inputLine.length();
+                    //  Report on Progress
+                    if (taskMonitor != null) {
+                        percent = ((double) progressCount / maxCount) * 100.0;
 
-			//  Report on Progress
-			if (taskMonitor != null) {
-				percent = ((double) progressCount / maxCount) * 100.0;
+                        if (maxCount == -1) { // file size unknown
+                            percent = -1;
+                        }
 
-				if (maxCount == -1) { // file size unknown
-					percent = -1;
-				}
+                        JTask jTask = (JTask) taskMonitor;
 
-				JTask jTask = (JTask) taskMonitor;
+                        if (jTask.haltRequested()) { //abort
+                            tmpFile = null;
+                            taskMonitor.setStatus("Canceling the download task ...");
+                            taskMonitor.setPercentCompleted(100);
 
-				if (jTask.haltRequested()) { //abort
-					tmpFile = null;
-					taskMonitor.setStatus("Canceling the download task ...");
-					taskMonitor.setPercentCompleted(100);
+                            break;
+                        }
 
-					break;
-				}
-
-				taskMonitor.setPercentCompleted((int) percent);
-			}
-
-			out.write(inputLine);
-			out.newLine();
+                        taskMonitor.setPercentCompleted((int) percent);
+                    }
+                    out.write(inputLine);
+                    out.newLine();
+                }
+            }
+            finally {
+                if (in != null) {
+                    in.close();
+                }
+            }
 		}
-
-		in.close();
-		out.close();
+        finally {
+            if (out != null) {
+                out.close();
+            }
+        }
 
 		return tmpFile;
 	} // End of downloadFromURL()

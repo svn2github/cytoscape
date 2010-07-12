@@ -183,7 +183,7 @@ public class AttributeSaverDialog extends JDialog {
 					final JFileChooser myChooser = new JFileChooser(CytoscapeInit.getMRUD());
 					myChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-					if (myChooser.showOpenDialog(Cytoscape.getDesktop()) == JFileChooser.APPROVE_OPTION) {
+					if (myChooser.showSaveDialog(Cytoscape.getDesktop()) == JFileChooser.APPROVE_OPTION) {
 						state.setSaveDirectory(myChooser.getSelectedFile());
 						CytoscapeInit.setMRUD(myChooser.getSelectedFile());
 

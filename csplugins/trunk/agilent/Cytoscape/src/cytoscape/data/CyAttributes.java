@@ -1,14 +1,7 @@
 /*
   File: CyAttributes.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -38,6 +31,7 @@ package cytoscape.data;
 
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import org.cytoscape.equations.Equation;
 
 import java.util.List;
 import java.util.Map;
@@ -473,6 +467,22 @@ public interface CyAttributes {
 	    throws IllegalArgumentException;
 
 	/**
+	 *  @param id            unique identifier.
+	 *  @param attributeName attribute name.
+	 *  @param equation      an attribute equation
+	 */
+	public void setAttribute(final String id, final String attributeName, final Equation equation);
+
+	/**
+	 *  @param id            unique identifier.
+	 *  @param attributeName attribute name.
+	 *  @param equation      an attribute equation
+	 *  @param dataType      must be one of MultiHashMapDefinition.TYPE_{BOOLEAN,STRING,INTEGER, or FLOATING_POINT}
+	 */
+	public void setAttribute(final String id, final String attributeName, final Equation equation,
+	                         final byte dataType);
+
+	/**
 	 * Gets a Boolean value at the specified id/attributeName.
 	 *
 	 * @param id            unique identifier.
@@ -539,6 +549,14 @@ public interface CyAttributes {
 	public byte getType(String attributeName);
 
 	/**
+	 * Gets the member data type of the specified simple list attribute.
+	 *
+	 * @param attributeName the name of a simple list attribute
+	 * @return one of: TYPE_BOOLEAN, TYPE_INTEGER, TYPE_FLOATING, TYPE_STRING
+	 */
+	public byte getListElementType(final String attributeName);
+
+	/**
 	 * Deletes the id/attributeName pair.
 	 *
 	 * @param id            unique identifier.
@@ -559,12 +577,6 @@ public interface CyAttributes {
 	 * @return true indicates attribute was successfully reset.
 	 */
 	public boolean deleteAttribute(String attributeName);
-
-	/**
-	 * @deprecated Use {@link CyAttributes#setListAttribute setListAttribute()} instead. Will be removed 11/2007.
-	 */
-	public void setAttributeList(String id, String attributeName, List list)
-	    throws IllegalArgumentException;
 
 	/**
 	 * Sets a simple list of attributes.
@@ -596,6 +608,39 @@ public interface CyAttributes {
 	 *                                  TYPE_SIMPLE_LIST.
 	 */
 	public void setListAttribute(String id, String attributeName, List list)
+	    throws IllegalArgumentException;
+
+	/**
+	 * Sets a simple list of attributes.
+	 * <p/>
+	 * <P>A simple list is defined as follows:
+	 * <UL>
+	 * <LI>All items within the list are of the same type, and are chosen
+	 * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
+	 * <CODE>Double</CODE> or <CODE>String</CODE>.
+	 * </UL>
+	 * <P>
+	 * If the above requirements are not met, an IllegalArgumentException
+	 * will be thrown.
+	 * <P>
+	 * Implementation note:   calling this method results in many calls to the
+	 * MultiHashMap back-end data store.  For example, if you have
+	 * five elements in a List, the implementation code makes five calls to
+	 * the MultiHashMap.  Therefore, if you are listening to MultiHashMap
+	 * events, you will be notified of five separate events, rather than one
+	 * global list event.
+	 *
+	 * @param id   unique identifier.
+	 * @param list attribute name.
+	 * @param list List Object.
+	 * @param equation      an attribute equation
+	 * @throws IllegalArgumentException Simple List requirements have not
+	 *                                  been met, or this attribute has already
+	 *                                  been defined with a data type, and this
+	 *                                  data type is not of type:
+	 *                                  TYPE_SIMPLE_LIST.
+	 */
+	public void setListAttribute(final String id, final String attributeName, final Equation equation)
 	    throws IllegalArgumentException;
 
 	/**
@@ -635,12 +680,6 @@ public interface CyAttributes {
 	 *                            is not of type:  TYPE_SIMPLE_LIST.
 	 */
 	public List getListAttribute(String id, String attributeName) throws ClassCastException;
-
-	/**
-	 * @deprecated Use {@link CyAttributes#setMapAttribute setMapAttribute()} instead. Will be removed 11/2007.
-	 */
-	public void setAttributeMap(String id, String attributeName, Map map)
-	    throws IllegalArgumentException;
 
 	/**
 	 * Sets a 'simple' map of attribute values.
@@ -741,4 +780,18 @@ public interface CyAttributes {
 	 * @return MultiHashMapDefinition Object.
 	 */
 	public MultiHashMapDefinition getMultiHashMapDefinition();
+
+	/**
+	 *  @return the equation associated with an attribute or null if there is no equation associated with it
+	 */
+	public Equation getEquation(final String id, final String attributeName);
+
+	/**
+	 *  Returns any attribute-equation related error message after a call to getAttribute() or
+	 *  getXXXAttribute().  N.B., the last error message will be cached!
+	 *
+	 *  @return an error message or null if the last call to getAttribute() did not result in an
+	 *           equation related error
+	 */
+	public String getLastEquationError();
 }

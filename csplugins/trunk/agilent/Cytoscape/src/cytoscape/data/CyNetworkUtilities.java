@@ -35,9 +35,9 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// $Revision: 14060 $
-// $Date: 2008-05-20 13:13:18 -0700 (Tue, 20 May 2008) $
-// $Author: skillcoyne $
+// $Revision: 18025 $
+// $Date: 2009-09-22 03:29:21 -0700 (Tue, 22 Sep 2009) $
+// $Author: noelr $
 package cytoscape.data;
 
 import ViolinStrings.Strings;
@@ -97,15 +97,21 @@ public class CyNetworkUtilities {
 
 		try {
 			File file = new File(filename);
-			FileWriter fout = new FileWriter(file);
+			FileWriter fout = null;
 
-			for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
-				String nodeUID = node.getIdentifier();
-				fout.write(nodeUID + lineSep);
-			} // for i
-
-			fout.close();
+            try {
+				fout = new FileWriter(file);
+                for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
+                    CyNode node = (CyNode) i.next();
+                    String nodeUID = node.getIdentifier();
+                    fout.write(nodeUID + lineSep);
+                } // for i
+            }
+            finally {
+                if (fout != null) {
+                    fout.close();
+                }
+            }
 
 			return true;
 		} catch (IOException e) {
@@ -136,17 +142,23 @@ public class CyNetworkUtilities {
 
 		try {
 			File file = new File(filename);
-			FileWriter fout = new FileWriter(file);
+			FileWriter fout = null;
 
-			for (Iterator i = network.nodesIterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
-				// String canonicalName = nodeAttributes.getCanonicalName(node);
-				//String canonicalName = nodeAttributes.getStringAttribute(node
-				//		.getIdentifier(), "canonicalName");
-				fout.write(node.getIdentifier() + lineSep);
-			} // for i
-
-			fout.close();
+            try {
+				fout = new FileWriter(file);
+                for (Iterator i = network.nodesIterator(); i.hasNext();) {
+                    CyNode node = (CyNode) i.next();
+                    // String canonicalName = nodeAttributes.getCanonicalName(node);
+                    //String canonicalName = nodeAttributes.getStringAttribute(node
+                    //		.getIdentifier(), "canonicalName");
+                    fout.write(node.getIdentifier() + lineSep);
+                } // for i
+            }
+            finally {
+                if (fout != null) {
+                    fout.close();
+                }
+            }
 
 			return true;
 		} catch (IOException e) {
