@@ -44,7 +44,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
     /**
      * Coefficient to determine label edge weights
      */
-    private double weightCoefficient = 2.0;
+    private double weightCoefficient = 10.0;
 
 
     
@@ -111,7 +111,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
 	layoutProperties.add(new Tunable("weightCoefficient", 
 					 "weightCoefficient",
-					 Tunable.DOUBLE, new Double(2.0)));
+					 Tunable.DOUBLE, new Double(weightCoefficient)));
 
 	// We've now set all of our tunables, so we can read the property 
 	// file now and adjust as appropriate
