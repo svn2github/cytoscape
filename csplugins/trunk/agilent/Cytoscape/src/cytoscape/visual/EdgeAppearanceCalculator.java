@@ -35,36 +35,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision: 11579 $
-// $Date: 2007-09-17 16:43:04 -0700 (Mon, 17 Sep 2007) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual;
-
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.EdgeArrowCalculator;
-import cytoscape.visual.calculators.EdgeColorCalculator;
-import cytoscape.visual.calculators.EdgeFontFaceCalculator;
-import cytoscape.visual.calculators.EdgeFontSizeCalculator;
-import cytoscape.visual.calculators.EdgeLabelCalculator;
-import cytoscape.visual.calculators.EdgeLineTypeCalculator;
-import cytoscape.visual.calculators.EdgeToolTipCalculator;
-
-import cytoscape.visual.mappings.ObjectMapping;
 
 import giny.model.Edge;
 
-import java.awt.Color;
-import java.awt.Font;
-
+import java.util.List;
 import java.util.Properties;
 
+import cytoscape.CyNetwork;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ObjectMapping;
 
-//----------------------------------------------------------------------------
+
 /**
  * This class calculates the appearance of an Edge. It holds a default value and
  * a (possibly null) calculator for each visual attribute.
@@ -72,11 +55,18 @@ import java.util.Properties;
 public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	private EdgeAppearance defaultAppearance = new EdgeAppearance();
 
+	/** 
+	 * @deprecated Use VisualStyle.getEdgeAppearanceCalculator() or new EdgeAppearanceCalculator( VisualStyle.getDependency() );  Will be removed Jan 2010.
+	 */
+	@Deprecated
+	public EdgeAppearanceCalculator() {
+		super(new VisualPropertyDependencyImpl());
+	}
 	/**
 	 * Creates a new EdgeAppearanceCalculator object.
 	 */
-	public EdgeAppearanceCalculator() {
-		super();
+	public EdgeAppearanceCalculator(VisualPropertyDependency deps) {
+		super(deps);
 	}
 
 	/**
@@ -91,8 +81,8 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * calling applyProperties with the supplied arguments.
 	 */
 	public EdgeAppearanceCalculator(String name, Properties eacProps, String baseKey,
-	                                CalculatorCatalog catalog) {
-		super(name, eacProps, baseKey, catalog, new EdgeAppearance());
+	                                CalculatorCatalog catalog, VisualPropertyDependency deps) {
+		super(name, eacProps, baseKey, catalog, new EdgeAppearance(), deps);
 		defaultAppearance = (EdgeAppearance) tmpDefaultAppearance;
 	}
 
@@ -100,7 +90,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * Create deep copy of the object.
 	 */
 	public Object clone() {
-		final EdgeAppearanceCalculator copy = new EdgeAppearanceCalculator();
+		final EdgeAppearanceCalculator copy = new EdgeAppearanceCalculator(deps);
 
 		// Copy defaults
 		final EdgeAppearance defAppr = new EdgeAppearance();
@@ -129,7 +119,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 */
 	public EdgeAppearance calculateEdgeAppearance(Edge edge, CyNetwork network) {
 		EdgeAppearance appr = (EdgeAppearance) defaultAppearance.clone();
-		calculateEdgeAppearance(appr, edge, network);
+		calculateEdgeAppearance(appr,edge,network,VisualPropertyType.getEdgeVisualPropertyList());
 
 		return appr;
 	}
@@ -141,12 +131,16 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * new values.
 	 */
 	public void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, CyNetwork network) {
+		calculateEdgeAppearance(appr,edge,network,VisualPropertyType.getEdgeVisualPropertyList());
+	}
+
+	void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, CyNetwork network, List<VisualPropertyType> bypassedVPs) {
 		appr.copy(defaultAppearance); // set default values
 
 		for (Calculator c : calcs)
 			c.apply(appr, edge, network);
 
-		appr.applyBypass(edge);
+		appr.applyBypass(edge,bypassedVPs);
 	}
 
 	/**

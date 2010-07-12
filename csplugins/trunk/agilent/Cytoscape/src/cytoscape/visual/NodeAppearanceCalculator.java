@@ -36,17 +36,15 @@
  */
 package cytoscape.visual;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.calculators.*;
-import cytoscape.visual.mappings.ObjectMapping;
-
 import giny.model.Node;
 
-import java.awt.Color;
-import java.awt.Font;
-
+import java.util.List;
 import java.util.Properties;
+
+import cytoscape.CyNetwork;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ObjectMapping;
 
 
 /**
@@ -56,11 +54,20 @@ import java.util.Properties;
 public class NodeAppearanceCalculator extends AppearanceCalculator {
     private NodeAppearance defaultAppearance = new NodeAppearance();
 
+	/**
+	 * @deprecated Use VisualStyle.getNodeAppearanceCalculator() or new NodeAppearancCalculator( VisualStyle.getDependency() ) instead. Will be removed
+	 * January 2011.
+	 */
+	@Deprecated
+    public NodeAppearanceCalculator() {
+		super(new VisualPropertyDependencyImpl());
+	}
+
     /**
      * Creates a new NodeAppearanceCalculator object.
      */
-    public NodeAppearanceCalculator() {
-        super();
+    public NodeAppearanceCalculator(VisualPropertyDependency deps) {
+        super(deps);
     }
 
     /**
@@ -68,8 +75,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * calling applyProperties with the supplied arguments.
      */
     public NodeAppearanceCalculator(String name, Properties nacProps,
-        String baseKey, CalculatorCatalog catalog) {
-        super(name, nacProps, baseKey, catalog, new NodeAppearance());
+        String baseKey, CalculatorCatalog catalog, VisualPropertyDependency deps) {
+        super(name, nacProps, baseKey, catalog, new NodeAppearance(), deps);
         defaultAppearance = (NodeAppearance) tmpDefaultAppearance;
     }
 
@@ -86,8 +93,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * CyNetwork. A new NodeApperance object will be created.
      */
     public NodeAppearance calculateNodeAppearance(Node node, CyNetwork network) {
-        NodeAppearance appr = new NodeAppearance();
-        calculateNodeAppearance(appr, node, network);
+        NodeAppearance appr = new NodeAppearance(deps);
+        calculateNodeAppearance(appr,node,network,VisualPropertyType.getNodeVisualPropertyList());
 
         return appr;
     }
@@ -96,14 +103,13 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * Create deep copy of the object.
      */
     public Object clone() {
-    	final NodeAppearanceCalculator copy = new NodeAppearanceCalculator();
+    	final NodeAppearanceCalculator copy = new NodeAppearanceCalculator(deps);
     	
     	// Copy defaults
     	final NodeAppearance defAppr = new NodeAppearance();
     	for(VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList()) {
     		defAppr.set(type, defaultAppearance.get(type));
     	}
-    	defAppr.setNodeSizeLocked(defaultAppearance.getNodeSizeLocked());
     	copy.setDefaultAppearance(defAppr);
     	
     	//Copy mappings
@@ -122,14 +128,19 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * CyNetwork. The supplied NodeAppearance object will be changed to hold the
      * new values.
      */
-    public void calculateNodeAppearance(NodeAppearance appr, Node node,
-        CyNetwork network) {
+    public void calculateNodeAppearance(NodeAppearance appr, Node node, CyNetwork network) {
+		calculateNodeAppearance(appr,node,network,VisualPropertyType.getNodeVisualPropertyList());
+	}
+
+
+    void calculateNodeAppearance(NodeAppearance appr, Node node,
+        CyNetwork network, List<VisualPropertyType> bypassedVPs) {
         appr.copy(defaultAppearance); // set defaults and node lock state
 
         for (Calculator nc : calcs)
             nc.apply(appr, node, network);
 
-        appr.applyBypass(node);
+        appr.applyBypass(node,bypassedVPs);
     }
 
     /**
@@ -185,25 +196,21 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     protected void copyDefaultAppearance(AppearanceCalculator toCopy) {
         defaultAppearance = (NodeAppearance) (((NodeAppearanceCalculator) toCopy).getDefaultAppearance().clone());
     }
+    
 
-    // probably shouldn't be here now
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * @deprecated Use VisualStyle.getDependency().check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED) instead.
+	 * Will be removed Jan 2011.
      */
     public boolean getNodeSizeLocked() {
-        return defaultAppearance.getNodeSizeLocked();
+        return deps.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
     }
 
-    // probably shouldn't be here now
     /**
-     * DOCUMENT ME!
-     *
-     * @param b DOCUMENT ME!
+     * @deprecated Use VisualStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b) instead.
+	 * Will be removed Jan 2011.
      */
     public void setNodeSizeLocked(boolean b) {
-        defaultAppearance.setNodeSizeLocked(b);
+       	deps.set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,b);
     }
-
 }

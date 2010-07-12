@@ -34,6 +34,8 @@
  */
 package cytoscape.visual;
 
+import giny.view.ObjectPosition;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +43,23 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.converter.ValueToStringConverterManager;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.parsers.ArrowShapeParser;
+import cytoscape.visual.parsers.BooleanParser;
+import cytoscape.visual.parsers.ColorParser;
+import cytoscape.visual.parsers.DoubleParser;
+import cytoscape.visual.parsers.FloatParser;
+import cytoscape.visual.parsers.FontParser;
+import cytoscape.visual.parsers.GraphicsParser;
+import cytoscape.visual.parsers.LineStyleParser;
+import cytoscape.visual.parsers.NodeShapeParser;
+import cytoscape.visual.parsers.ObjectPositionParser;
+import cytoscape.visual.parsers.StringParser;
+import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.properties.EdgeColorProp;
 import cytoscape.visual.properties.EdgeFontFaceProp;
 import cytoscape.visual.properties.EdgeFontSizeProp;
@@ -49,21 +67,21 @@ import cytoscape.visual.properties.EdgeLabelColorProp;
 import cytoscape.visual.properties.EdgeLabelOpacityProp;
 import cytoscape.visual.properties.EdgeLabelPositionProp;
 import cytoscape.visual.properties.EdgeLabelProp;
+import cytoscape.visual.properties.EdgeLabelWidthProp;
 import cytoscape.visual.properties.EdgeLineStyleProp;
-import cytoscape.visual.properties.EdgeLineTypeProp;
 import cytoscape.visual.properties.EdgeLineWidthProp;
 import cytoscape.visual.properties.EdgeOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowColorProp;
 import cytoscape.visual.properties.EdgeSourceArrowOpacityProp;
-import cytoscape.visual.properties.EdgeSourceArrowProp;
 import cytoscape.visual.properties.EdgeSourceArrowShapeProp;
 import cytoscape.visual.properties.EdgeTargetArrowColorProp;
 import cytoscape.visual.properties.EdgeTargetArrowOpacityProp;
-import cytoscape.visual.properties.EdgeTargetArrowProp;
 import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
 import cytoscape.visual.properties.EdgeToolTipProp;
 import cytoscape.visual.properties.NodeBorderColorProp;
 import cytoscape.visual.properties.NodeBorderOpacityProp;
+import cytoscape.visual.properties.NodeCustomGraphicsPositionProp;
+import cytoscape.visual.properties.NodeCustomGraphicsProp;
 import cytoscape.visual.properties.NodeFillColorProp;
 import cytoscape.visual.properties.NodeFontFaceProp;
 import cytoscape.visual.properties.NodeFontSizeProp;
@@ -72,15 +90,15 @@ import cytoscape.visual.properties.NodeLabelColorProp;
 import cytoscape.visual.properties.NodeLabelOpacityProp;
 import cytoscape.visual.properties.NodeLabelPositionProp;
 import cytoscape.visual.properties.NodeLabelProp;
+import cytoscape.visual.properties.NodeLabelWidthProp;
 import cytoscape.visual.properties.NodeLineStyleProp;
-import cytoscape.visual.properties.NodeLineTypeProp;
 import cytoscape.visual.properties.NodeLineWidthProp;
 import cytoscape.visual.properties.NodeOpacityProp;
 import cytoscape.visual.properties.NodeShapeProp;
+import cytoscape.visual.properties.NodeShowNestedNetworkProp;
 import cytoscape.visual.properties.NodeSizeProp;
 import cytoscape.visual.properties.NodeToolTipProp;
 import cytoscape.visual.properties.NodeWidthProp;
-import cytoscape.visual.parsers.*;
 import cytoscape.visual.ui.EditorDisplayer;
 import cytoscape.visual.ui.EditorDisplayer.EditorType;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
@@ -104,9 +122,10 @@ public enum VisualPropertyType {
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", 
 	                  Color.class, new NodeBorderColorProp(), new ColorParser(), true, true ), 
+	// exists only for backwards compatibility
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-	              "defaultNodeLineType", LineType.class,
-	              new NodeLineTypeProp(), new LineTypeParser(), true, false ), 
+	              "defaultNodeLineType", LineStyle.class,
+	              new NodeLineStyleProp(), new LineStyleParser(), true, false ), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
 	           NodeShape.class, new NodeShapeProp(),
 			   new NodeShapeParser(), true, true), 
@@ -136,19 +155,22 @@ public enum VisualPropertyType {
 				 new StringParser(), true, true), 
 	NODE_LABEL_POSITION("Node Label Position", "nodeLabelPositionCalculator", "node.labelPosition",
 	                    "defaultNodeLabelPosition", 
-	                    LabelPosition.class, new NodeLabelPositionProp(), new LabelPositionParser(), true, true), 
+	                    ObjectPosition.class, new NodeLabelPositionProp(), new ObjectPositionParser(), true, true), 
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           Color.class, new EdgeColorProp(),
 			   new ColorParser(), false, true), 
+	// exists only for backwards compatibility
 	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-	              "defaultEdgeLineType", LineType.class,
-	              new EdgeLineTypeProp(), new LineTypeParser(), false, false), 
+	              "defaultEdgeLineType", LineStyle.class,
+	              new EdgeLineStyleProp(), new LineStyleParser(), false, false), 
+	// exists only for backwards compatibility
 	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
-	              "defaultEdgeSourceArrow", Arrow.class,
-	              new EdgeSourceArrowProp(), new ArrowParser(), false, false), 
+	              "defaultEdgeSourceArrow", ArrowShape.class,
+	              new EdgeSourceArrowShapeProp(), new ArrowShapeParser(), false, false), 
+	// exists only for backwards compatibility
 	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
-	              "defaultEdgeTargetArrow", Arrow.class,
-	              new EdgeTargetArrowProp(), new ArrowParser(), false, false), 
+	              "defaultEdgeTargetArrow", ArrowShape.class,
+	              new EdgeTargetArrowShapeProp(), new ArrowShapeParser(), false, false), 
 	EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
 	           String.class, new EdgeLabelProp(),
 			   new StringParser(), false, true), 
@@ -221,9 +243,96 @@ public enum VisualPropertyType {
 	// Not yet implemented in version 2.5
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
 	                    "defaultEdgeLabelPosition", null, new EdgeLabelPositionProp(),
-						new LabelPositionParser(), false, false),
-						
-	;
+						new ObjectPositionParser(), false, false),
+
+	NODE_LABEL_WIDTH("Node Label Width", "nodeLabelWidthCalculator", "node.labelWidth",
+	                 "defaultNodeLabelWidth", Number.class, new NodeLabelWidthProp(),
+	                 new FloatParser(), true, true),
+	EDGE_LABEL_WIDTH("Edge Label Width", "edgeLabelWidthCalculator", "edge.labelWidth",
+	                 "defaultEdgeLabelWidth", Number.class, new EdgeLabelWidthProp(),
+	                 new FloatParser(), false, true),
+	
+	NODE_SHOW_NESTED_NETWORK("Node Show Nested Network", "nodeShowNestedNetwork", 
+	                         "node.showNestedNetwork", "defaultNodeShowNestedNetwork", 
+	                         Boolean.class, new NodeShowNestedNetworkProp(),
+	                         new BooleanParser(), true, true),
+	                         
+	// New in Cytoscape 2.8: Custom Graphic Visual Prop.
+	NODE_CUSTOM_GRAPHICS_1("Node Custom Graphics 1", "nodeCustomGraphics1", 
+             "node.customGraphics1", "defaultNodeCustomGraphics1", 
+             CyCustomGraphics.class, new NodeCustomGraphicsProp(1),
+             new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_2("Node Custom Graphics 2", "nodeCustomGraphics2", 
+	    	    	                         "node.customGraphics2", "defaultNodeCustomGraphics2", 
+	    	    	                         CyCustomGraphics.class, new NodeCustomGraphicsProp(2),
+	    	    	                         new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_3("Node Custom Graphics 3", "nodeCustomGraphics3", 
+	    	    	    	           "node.customGraphics3", "defaultNodeCustomGraphics3", 
+	    	    	    	           CyCustomGraphics.class, new NodeCustomGraphicsProp(3),
+	    	    	    	           new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_4("Node Custom Graphics 4", "nodeCustomGraphics4", 
+	    	    	    	    	       "node.customGraphics4", "defaultNodeCustomGraphics4", 
+	    	    	    	    	       CyCustomGraphics.class, new NodeCustomGraphicsProp(4),
+	    	    	    	    	       new GraphicsParser(), true, true),    	    	                         
+	NODE_CUSTOM_GRAPHICS_5("Node Custom Graphics 5", "nodeCustomGraphics5", 
+	    	    	    	   	    	   "node.customGraphics5", "defaultNodeCustomGraphics5", 
+	    	    	    	   	    	   CyCustomGraphics.class, new NodeCustomGraphicsProp(5),
+	    	    	    	   	    	   new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_6("Node Custom Graphics 6", "nodeCustomGraphics6", 
+	    	    	    	   	"node.customGraphics6", "defaultNodeCustomGraphics6", 
+	    	    	    	   	CyCustomGraphics.class, new NodeCustomGraphicsProp(6),
+	    	    	    	   	new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_7("Node Custom Graphics 7", "nodeCustomGraphics7", 
+	    	    	    	   	    	   "node.customGraphics7", "defaultNodeCustomGraphics7", 
+	    	    	    	   	    	   CyCustomGraphics.class, new NodeCustomGraphicsProp(7),
+	    	    	    	   	    	   new GraphicsParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_8("Node Custom Graphics 8", "nodeCustomGraphics8", 
+	    	    	    	   	    	   "node.customGraphics8", "defaultNodeCustomGraphics8", 
+	    	    	    	   	    	   CyCustomGraphics.class, new NodeCustomGraphicsProp(8),
+	    	    	    	   	    	   new GraphicsParser(), true, true), 
+	NODE_CUSTOM_GRAPHICS_9("Node Custom Graphics 9", "nodeCustomGraphics9", 
+	 	    	    	    	   	   "node.customGraphics9", "defaultNodeCustomGraphics9", 
+	 	    	    	    	   	   CyCustomGraphics.class, new NodeCustomGraphicsProp(9),
+	 	    	    	    	   	   new GraphicsParser(), true, true),
+	 	    	    	    	   	   
+	NODE_CUSTOM_GRAPHICS_POSITION_1("Node Custom Graphics Position 1", "nodeCustomGraphicsPosition1", 
+             "node.customGraphicsPosition1", "defaultNodeCustomGraphicsPosition1", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(1),
+             new ObjectPositionParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION_2("Node Custom Graphics Position 2", "nodeCustomGraphicsPosition2", 
+             "node.customGraphicsPosition2", "defaultNodeCustomGraphicsPosition2", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(2),
+             new ObjectPositionParser(), true, true),    	                        
+	NODE_CUSTOM_GRAPHICS_POSITION_3("Node Custom Graphics Position 3", "nodeCustomGraphicsPosition3", 
+             "node.customGraphicsPosition3", "defaultNodeCustomGraphicsPosition3", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(3),
+             new ObjectPositionParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION_4("Node Custom Graphics Position 4", "nodeCustomGraphicsPosition4", 
+	         "node.customGraphicsPosition4", "defaultNodeCustomGraphicsPosition4", 
+	         ObjectPosition.class, new NodeCustomGraphicsPositionProp(4),
+	         new ObjectPositionParser(), true, true),	    	                         
+	NODE_CUSTOM_GRAPHICS_POSITION_5("Node Custom Graphics Position 5", "nodeCustomGraphicsPosition5", 
+         "node.customGraphicsPosition5", "defaultNodeCustomGraphicsPosition5", 
+         ObjectPosition.class, new NodeCustomGraphicsPositionProp(5),
+         new ObjectPositionParser(), true, true),
+	NODE_CUSTOM_GRAPHICS_POSITION_6("Node Custom Graphics Position 6", "nodeCustomGraphicsPosition6", 
+	         "node.customGraphicsPosition6", "defaultNodeCustomGraphicsPosition6", 
+	         ObjectPosition.class, new NodeCustomGraphicsPositionProp(6),
+	         new ObjectPositionParser(), true, true),
+    NODE_CUSTOM_GRAPHICS_POSITION_7("Node Custom Graphics Position 7", "nodeCustomGraphicsPosition7", 
+             "node.customGraphicsPosition7", "defaultNodeCustomGraphicsPosition7", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(7),
+             new ObjectPositionParser(), true, true),
+    NODE_CUSTOM_GRAPHICS_POSITION_8("Node Custom Graphics Position 8", "nodeCustomGraphicsPosition8", 
+             "node.customGraphicsPosition8", "defaultNodeCustomGraphicsPosition8", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(8),
+             new ObjectPositionParser(), true, true),
+    NODE_CUSTOM_GRAPHICS_POSITION_9("Node Custom Graphics Position 9", "nodeCustomGraphicsPosition9", 
+             "node.customGraphicsPosition9", "defaultNodeCustomGraphicsPosition9", 
+             ObjectPosition.class, new NodeCustomGraphicsPositionProp(9),
+             new ObjectPositionParser(), true, true);
+	
+	
 	/*
 	 * String returned by toString() method.
 	 */
@@ -241,9 +350,9 @@ public enum VisualPropertyType {
 	private String defaultPropertyLabel;
 
 	// Data type for the actual visual property.
-	private Class dataType;
+	private Class<?> dataType;
 	private VisualProperty vizProp;
-	private ValueParser valueParser;
+	private ValueParser<?> valueParser;
 
 	// indicates whether or not property is for a node or edge
 	private boolean isNodeProp;
@@ -255,12 +364,14 @@ public enum VisualPropertyType {
 	// display to users.
 	private boolean isAllowed;
 
+	private static final CyLogger logger = CyLogger.getLogger(VisualPropertyType.class);
+
 	/*
 	 * private constructor to put name into this enum.
 	 */
 	private VisualPropertyType(final String calcName, final String propertyLabel,
 	                           final String bypassAttrName, final String defaultPropertyLabel,
-	                           final Class dataType, final VisualProperty vizProp, 
+	                           final Class<?> dataType, final VisualProperty vizProp, 
 							   final ValueParser valueParser, final boolean isNodeProp,
 							   final boolean isAllowed) {
 		this.calcName = calcName;
@@ -323,41 +434,11 @@ public enum VisualPropertyType {
 	}
 
 	/**
-	 * Return position in thie enum as byte.<br>
-	 * Will be used as type.
-	 *
-	 * DO NOT USE THIS. This is only for backward compatibility.<br>
-	 * Replace your "byte" with is emum!
-	 *
-	 * @return byte type
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public byte getType() {
-		return (byte) ordinal();
-	}
-
-	/**
-	 * DO NOT USE THIS. This is only for backward compatibility.
-	 *
-	 * @param type
-	 * @return
-	 * @deprecated Will be removed 5/2008.
-	 */
-	@Deprecated
-	public static VisualPropertyType getVisualPorpertyType(byte type) {
-		/*
-		 * Type is always equal to ordinal.
-		 */
-		return values()[type];
-	}
-
-	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Class getDataType() {
+	public Class<?> getDataType() {
 		return dataType;
 	}
 
@@ -415,51 +496,37 @@ public enum VisualPropertyType {
 		return list;
 	}
 
-	private Object showEditor(EditorDisplayer action)
+	private Object showEditor(final EditorDisplayer action)
 	    throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
 	               SecurityException, NoSuchMethodException {
-		Method method = action.getActionClass()
-		                      .getMethod(action.getCommand(), action.getParamTypes());
 		
+		// Special case:
+		if(EditorDisplayer.DISCRETE_OBJECT_POSITION == action) {
+			action.setParameters(new Object[] {Cytoscape.getDesktop(), this.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle()), this});
+		}
+		
+		final Method method = action.getActionClass()
+		                      .getMethod(action.getCommand(), action.getParamTypes());
 		
 		Object ret = method.invoke(null, action.getParameters());
 
-		// This is an editor.
-		if ((ret != null) && ret instanceof ContinuousMappingEditorPanel)
+		if ( ret == null )
+			return null;
+		
+		// special handling for continuous editors
+		if ( ret instanceof ContinuousMappingEditorPanel) 
 			return ret;
-		
-		else if ((ret != null) && this == EDGE_LINE_WIDTH) {
-			try {
-				ret = Float.valueOf(((String)ret));
-			} catch (NumberFormatException e){
-				ret = 1f;
-			}
-		} else if ((ret != null) && (action.getCompatibleClass() != ret.getClass())) {
-			try {
-				ret = Double.parseDouble(ret.toString());
-			} catch (NumberFormatException e){
-				ret = 1d;
-			}
-			
-			
-		}
-		
-		// If size, it should be greater than 0.  Otherwise, 1 will be set.
-		if((this.name()).toUpperCase().endsWith("WIDTH") || (this.name()).toUpperCase().endsWith("SIZE")) {
-			if(((Number)ret).doubleValue() < 0) {
-				ret = 1f;
-			}
-		}
-		
-		if((this.name()).toUpperCase().endsWith("OPACITY")) {
-			if (((Number)ret).doubleValue() > 255) {
-				ret = 255d;
-			} else if(((Number)ret).doubleValue() < 0) {
-				ret = 0d;
-			}
-		}
 
-		return ret;
+		// convert strings to objects of expected types
+		else if ( ret instanceof String )
+			ret = valueParser.parseStringValue((String)ret);
+
+		if ( vizProp.isValidValue(ret) )
+			return ret;
+		else {
+			logger.warn("Invalid value specified for " + toString() + " : " + ret);
+			return null;
+		}
 	}
 
 	/**
@@ -507,9 +574,9 @@ public enum VisualPropertyType {
 
 	/**
 	 * Gets the current default value for this type in the specified
-	     * visual style. Returns null if the style is null.
-	     * @param style The visual style we want to get the default for.
-	     * @return the default object for this type and the specified style.
+	 * visual style. Returns null if the style is null.
+	 * @param style The visual style we want to get the default for.
+	 * @return the default object for this type and the specified style.
 	 */
 	public Object getDefault(VisualStyle style) {
 		if (style == null)
@@ -528,13 +595,21 @@ public enum VisualPropertyType {
 	/**
 	 * Sets the default value for the visual attribute for this type
 	 * in the specified visual style. No-op if either arg is null.
-	     * @param style The visual style to be set.
-	     * @param c The new default value.
+	 * @param style The visual style to be set.
+	 * @param c The new default value.
 	 */
 	public void setDefault(VisualStyle style, Object c) {
 		if ((style == null) || (c == null))
 			return;
 
+		
+		
+		if ( !vizProp.isValidValue( c ) ) {
+			logger.warn("Invalid default value specified for " + toString() + " : " + c);
+			return;
+		}
+		
+		
 		if (isNodeProp()) {
 			NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
 			NodeAppearance na = nodeCalc.getDefaultAppearance();
@@ -550,10 +625,10 @@ public enum VisualPropertyType {
 
 	/**
 	 * Gets the current calculator for the visual attribute for this type
-	     * and the specified visual style.  This may be null if no calculator
-	     * is currently specified. Returns null if the style is null.
-	     * @param style The style we're getting the calculator for.
-	     * @return the current calculator for this style and type
+	 * and the specified visual style.  This may be null if no calculator
+	 * is currently specified. Returns null if the style is null.
+	 * @param style The style we're getting the calculator for.
+	 * @return the current calculator for this style and type
 	 */
 	public Calculator getCurrentCalculator(VisualStyle style) {
 		if (style == null)
@@ -569,10 +644,10 @@ public enum VisualPropertyType {
 	/**
 	 * Sets the current calculator for the visual attribute for this type
 	 * and the specified visual style. If the new calculator is null, then
-	     * the calculator for this type will be removed. This method does
+	 * the calculator for this type will be removed. This method does
 	 * nothing if the first argument specifying the visual style is null.
-	     * @param style The style to set the calculator for.
-	     * @param c The calculator to set.
+	 * @param style The style to set the calculator for.
+	 * @param c The calculator to set.
 	 */
 	public void setCurrentCalculator(VisualStyle style, Calculator c) {
 		if (style == null)
@@ -591,7 +666,28 @@ public enum VisualPropertyType {
 		}
 	}
 
-	public ValueParser getValueParser() {
+	public ValueParser<?> getValueParser() {
 		return valueParser;
+	}
+	
+	
+	///////////// For multiple Custom Graphics Properties //////////////////
+	private static final VisualPropertyType[] CUSTOM_GRAPHICS_PROPS = {
+		NODE_CUSTOM_GRAPHICS_1, NODE_CUSTOM_GRAPHICS_2, NODE_CUSTOM_GRAPHICS_3, NODE_CUSTOM_GRAPHICS_4,
+		NODE_CUSTOM_GRAPHICS_5, NODE_CUSTOM_GRAPHICS_6, NODE_CUSTOM_GRAPHICS_7, NODE_CUSTOM_GRAPHICS_8,
+		NODE_CUSTOM_GRAPHICS_9 };
+	private static final VisualPropertyType[] CUSTOM_GRAPHICS_POSITION_PROPS = {
+		NODE_CUSTOM_GRAPHICS_POSITION_1, NODE_CUSTOM_GRAPHICS_POSITION_2,
+		NODE_CUSTOM_GRAPHICS_POSITION_3, NODE_CUSTOM_GRAPHICS_POSITION_4,
+		NODE_CUSTOM_GRAPHICS_POSITION_5, NODE_CUSTOM_GRAPHICS_POSITION_6,
+		NODE_CUSTOM_GRAPHICS_POSITION_7, NODE_CUSTOM_GRAPHICS_POSITION_8,
+		NODE_CUSTOM_GRAPHICS_POSITION_9 };	
+	
+	public static VisualPropertyType getCustomGraphicsType(int index) {
+		return CUSTOM_GRAPHICS_PROPS[index];
+	}
+	
+	public static VisualPropertyType getCustomGraphicsPositionType(int index) {
+		return CUSTOM_GRAPHICS_POSITION_PROPS[index];
 	}
 }

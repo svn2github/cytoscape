@@ -35,32 +35,11 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision: 10555 $
-// $Date: 2007-06-21 11:35:22 -0700 (Thu, 21 Jun 2007) $
-// $Author: kono $
-//----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_FACE;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
-import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
-import static cytoscape.visual.VisualPropertyType.NODE_OPACITY;
-import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
-import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
-import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
-import giny.view.NodeView;
+import java.util.Properties;
 
-import java.awt.Color;
-import java.awt.Font;
-
+import cytoscape.visual.converter.ValueToStringConverterManager;
 
 /**
  * Objects of this class hold data describing the appearance of a Node.
@@ -74,256 +53,66 @@ public class NodeAppearance extends Appearance {
 		super();
 	}
 
-	/**
-	 * Clone.
-	 */
-    public Object clone() {
+	private VisualPropertyDependency dep;
+
+	public Object clone() {
 		NodeAppearance ga = new NodeAppearance();
 		ga.copy(this);
 		return ga;
 	}
 
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public Color getFillColor() {
-        return (Color)(super.get(NODE_FILL_COLOR));
-    }
+	public Properties getDefaultProperties(final String baseKey) {
 
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setFillColor(Color c) {
-		set(NODE_FILL_COLOR,c);
-    }
-    
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public Color getBorderColor() {
-        return (Color)(get(NODE_BORDER_COLOR));
-    }
+		Properties props = new Properties();
 
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setBorderColor(Color c) {
-		set(NODE_BORDER_COLOR,c);
-    }
+		for (VisualPropertyType type : VisualPropertyType.values()) {
+			if(!type.isNodeProp())
+				continue;
+			
+			String key = type.getDefaultPropertyKey(baseKey);
+			String value = ValueToStringConverterManager.manager
+					.toString(vizProps.get(type));
+			if (key != null && value != null) {
+				props.setProperty(key, value);
+			}
+		}
 
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public LineType getBorderLineType() {
-       	return (LineType)(get(NODE_LINETYPE));
-    }
+		return props;
+	}
 
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setBorderLineType(LineType lt) {
-		set(NODE_LINETYPE,lt);
-    }
+	/**
+	 * @deprecated This exists only for backwards compatibility. Do not use it!
+	 *             Will be removed Jan 2011.
+	 */
+	@Deprecated
+	NodeAppearance(VisualPropertyDependency dep) {
+		super();
+		this.dep = dep;
+	}
 
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public byte getShape() {
-		return (byte)(((NodeShape)(get(NODE_SHAPE))).ordinal());
-    }
+	/**
+	 * Returns whether or not the node height and width are locked.
+	 * 
+	 * @return Whether or not the node height and width are locked.
+	 * @deprecated Use
+	 *             VisualStyle.getDependency().check(VisualPropertyDependency
+	 *             .Definition.NODE_SIZE_LOCKED) instead. Will be removed Jan
+	 *             2011.
+	 */
+	@Deprecated
+	public boolean getNodeSizeLocked() {
+		return dep.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED);
+	}
 
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public NodeShape getNodeShape() {
-       	return (NodeShape)(get(NODE_SHAPE));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setShape(byte s) {
-		set(NODE_SHAPE,NodeShape.getNodeShape(ShapeNodeRealizer.getGinyShape(s)));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setNodeShape(NodeShape s) {
-		set(NODE_SHAPE,s);
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public double getWidth() {
-        if (nodeSizeLocked)
-            return ((Double)(get(NODE_SIZE))).doubleValue();
-        else
-            return ((Double)(get(NODE_WIDTH))).doubleValue();
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     * Sets only the height variable.
-     */
-    public void setJustWidth(double d) {
-		set(NODE_WIDTH,new Double(d));
-    }
-
-    /**
-     * Sets the width variable, but also the size variable if the node size is
-     * locked. This is to support deprecated code that used setting width/height
-     * for setting uniform size as well.
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setWidth(double d) {
-		set(NODE_WIDTH,new Double(d));
-
-        if (nodeSizeLocked)
-			set(NODE_SIZE,new Double(d));
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public double getHeight() {
-        if (nodeSizeLocked)
-            return ((Double)(get(NODE_SIZE))).doubleValue();
-        else
-            return ((Double)(get(NODE_HEIGHT))).doubleValue();
-    }
-
-    /**
-     * Sets only the height variable.
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setJustHeight(double d) {
-		set(NODE_HEIGHT,new Double(d));
-    }
-
-    /**
-     * Sets the height variable, but also the size variable if the node size is
-     * locked. This is to support deprecated code that used setting width/height
-     * for setting uniform size as well.
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setHeight(double d) {
-		set(NODE_HEIGHT,new Double(d));
-
-        if (nodeSizeLocked)
-			set(NODE_SIZE,new Double(d));
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public double getSize() {
-        return ((Double)(get(NODE_SIZE))).doubleValue();
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setSize(double s) {
-		set(NODE_SIZE,new Double(s));
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public String getLabel() {
-        return (String)(get(NODE_LABEL));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setLabel(String s) {
-		set(NODE_LABEL,s);
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public String getToolTip() {
-        return (String)(get(NODE_TOOLTIP));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setToolTip(String s) {
-		set(NODE_TOOLTIP,s);
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public Font getFont() {
-        return (Font)(get(NODE_FONT_FACE));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setFont(Font f) {
-		set(NODE_FONT_FACE,f);
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public float getFontSize() {
-        return ((Number)(get(NODE_FONT_SIZE))).floatValue();
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setFontSize(float f) {
-		set(NODE_FONT_SIZE,new Float(f));
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public Color getLabelColor() {
-        return (Color)(get(NODE_LABEL_COLOR));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setLabelColor(Color c) {
-		set(NODE_LABEL_COLOR,c);
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public LabelPosition getLabelPosition() {
-        return (LabelPosition)(get(NODE_LABEL_POSITION));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-    public void setLabelPosition(LabelPosition c) {
-		set(NODE_LABEL_POSITION,c);
-    }
-
-    /**
-     * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-     */
-    public Object get(byte b) {
-	        return get(VisualPropertyType.getVisualPorpertyType(b));
-    }
-
-    /**
-     * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-     */
-	public void set(byte b, Object o) {
-		set(VisualPropertyType.getVisualPorpertyType(b),o);
+	/**
+	 * Sets whether or not the node height and width are locked.
+	 * 
+	 * @deprecated Use
+	 *             VisualStyle.getDependency().set(VisualPropertyDependency.Definition
+	 *             .NODE_SIZE_LOCKED,b) instead. Will be removed Jan 2011.
+	 */
+	@Deprecated
+	public void setNodeSizeLocked(boolean b) {
+		dep.set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED, b);
 	}
 }

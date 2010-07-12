@@ -35,11 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision: 14809 $
-// $Date: 2008-09-01 18:13:15 -0700 (Mon, 01 Sep 2008) $
-// $Author: scooter $
-//----------------------------------------------------------------------------
+
 package cytoscape.visual;
 
 
@@ -78,10 +74,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 
 //----------------------------------------------------------------------------
@@ -121,9 +119,16 @@ public class CalculatorIO {
 	 * calculators are reasonably human-readable.
 	 */
 	public static void storeCatalog(CalculatorCatalog catalog, File outFile) throws IOException {
-		final Writer writer = new FileWriter(outFile);
-		storeCatalog(catalog, writer);
-		writer.close();
+		Writer writer = null;
+        try {
+			writer = new FileWriter(outFile);
+            storeCatalog(catalog, writer);
+        }
+        finally {
+			if (writer != null) {
+				writer.close();
+			}
+        }
 	}
 
 	/**
@@ -151,18 +156,18 @@ public class CalculatorIO {
 		// get a Properties description of the catalog
 		final Properties props = getProperties(catalog);
 
-		// and dump it to a buffer of bytes
-		buffer = new ByteArrayOutputStream();
-		props.store(buffer, header.toString());
-
-		// convert the bytes to a String we can read from
-		reader = new BufferedReader(new StringReader(buffer.toString()));
-
 		// read all the lines and store them in a container object
 		// store the header lines separately so they don't get sorted
 		final List<String> headerLines = new ArrayList<String>();
 		final List<String> lines = new ArrayList<String>();
 
+		// and dump it to a buffer of bytes
+		buffer = new ByteArrayOutputStream();
+		props.store(buffer, header.toString());
+		buffer.close();
+
+		// convert the bytes to a String we can read from
+		reader = new BufferedReader(new StringReader(buffer.toString()));
 		String oneLine = reader.readLine();
 
 		while (oneLine != null) {
@@ -185,10 +190,8 @@ public class CalculatorIO {
 
 			oneLine = reader.readLine();
 		}
-
-		buffer.close();
 		reader.close();
-
+		
 		// now sort all the non-header lines
 		Collections.sort(lines);
 
@@ -217,9 +220,8 @@ public class CalculatorIO {
 	public static Properties getProperties(CalculatorCatalog catalog) {
 		final Properties newProps = new Properties();
 
-		for (Calculator c : catalog.getCalculators()) {
+		for (Calculator c : catalog.getCalculators())
 			newProps.putAll(c.getProperties());
-		}
 
 		// visual styles
 		final Set<String> visualStyleNames = catalog.getVisualStyleNames();
@@ -248,7 +250,7 @@ public class CalculatorIO {
 				// e.printStackTrace();
 			}
 		}
-
+		
 		return newProps;
 	}
 
@@ -515,9 +517,10 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
-			vs.setNodeAppearanceCalculator(new NodeAppearanceCalculator(name, nacNames.get(name),
-			                                                            nodeAppearanceBaseKey + "."
-			                                                            + name, catalog));
+			vs.getNodeAppearanceCalculator().applyProperties(name, nacNames.get(name),
+			                                                 nodeAppearanceBaseKey + "."
+			                                                 + name, catalog);
+			             
 		}
 
 		Map<String, Properties> eacNames = calcNames.get(edgeAppearanceBaseKey);
@@ -531,9 +534,9 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
-			vs.setEdgeAppearanceCalculator(new EdgeAppearanceCalculator(name, eacNames.get(name),
-			                                                            edgeAppearanceBaseKey + "."
-			                                                            + name, catalog));
+			vs.getEdgeAppearanceCalculator().applyProperties(name, eacNames.get(name),
+			                                                 edgeAppearanceBaseKey + "."
+			                                                 + name, catalog);
 		}
 
 		Map<String, Properties> gacNames = calcNames.get(globalAppearanceBaseKey);
@@ -547,10 +550,9 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
-			vs.setGlobalAppearanceCalculator(new GlobalAppearanceCalculator(name,
-			                                                                gacNames.get(name),
-			                                                                globalAppearanceBaseKey
-			                                                                + "." + name, catalog));
+			vs.getGlobalAppearanceCalculator().applyProperties(name, gacNames.get(name),
+			                                                   globalAppearanceBaseKey
+			                                                   + "." + name, catalog);
 		}
 
 		// now store the visual styles in the catalog

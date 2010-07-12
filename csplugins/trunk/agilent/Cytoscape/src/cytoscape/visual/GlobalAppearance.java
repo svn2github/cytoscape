@@ -36,9 +36,9 @@
  */
 
 //----------------------------------------------------------------------------
-// $Revision: 11413 $
-// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
-// $Author: kono $
+// $Revision: 18674 $
+// $Date: 2009-12-04 17:49:26 -0800 (Fri, 04 Dec 2009) $
+// $Author: mes $
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
@@ -84,8 +84,6 @@ public class GlobalAppearance {
 	}
 
 	private Color backgroundColor;
-	@Deprecated
-	private Color sloppySelectionColor;
 	private Color nodeSelectionColor;
 	private Color nodeReverseSelectionColor;
 	private Color edgeSelectionColor;
@@ -117,28 +115,6 @@ public class GlobalAppearance {
 	 */
 	public void setBackgroundColor(Color c) {
 		backgroundColor = c;
-	}
-
-	/**
-	 *  Do not use this.
-	 *
-	 * @return  DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Color getSloppySelectionColor() {
-		return sloppySelectionColor;
-	}
-
-	/**
-	 *  Do not use this.
-	 *
-	 * @param c DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void setSloppySelectionColor(Color c) {
-		sloppySelectionColor = c;
 	}
 
 	/**

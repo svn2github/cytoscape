@@ -39,16 +39,17 @@ package cytoscape.visual;
 import giny.view.Label;
 
 import java.text.DecimalFormat;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cytoscape.logger.CyLogger;
 
-
 /**
- *
+ * Deprecated. Use ObjectPosition instead. Will be removed 03/2011
+ * 
+ * @deprecated
  */
+@Deprecated
 public class LabelPosition {
 	/**
 	 *
@@ -141,8 +142,9 @@ public class LabelPosition {
 
 	/**
 	 * Creates a new LabelPosition object.
-	 *
-	 * @param lp  DOCUMENT ME!
+	 * 
+	 * @param lp
+	 *            DOCUMENT ME!
 	 */
 	public LabelPosition(LabelPosition lp) {
 		targetAnchor = lp.getTargetAnchor();
@@ -154,12 +156,17 @@ public class LabelPosition {
 
 	/**
 	 * Creates a new LabelPosition object.
-	 *
-	 * @param targ  DOCUMENT ME!
-	 * @param lab  DOCUMENT ME!
-	 * @param just  DOCUMENT ME!
-	 * @param x  DOCUMENT ME!
-	 * @param y  DOCUMENT ME!
+	 * 
+	 * @param targ
+	 *            DOCUMENT ME!
+	 * @param lab
+	 *            DOCUMENT ME!
+	 * @param just
+	 *            DOCUMENT ME!
+	 * @param x
+	 *            DOCUMENT ME!
+	 * @param y
+	 *            DOCUMENT ME!
 	 */
 	public LabelPosition(int targ, int lab, int just, double x, double y) {
 		targetAnchor = targ;
@@ -170,101 +177,107 @@ public class LabelPosition {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getLabelAnchor() {
 		return labelAnchor;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getTargetAnchor() {
 		return targetAnchor;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getJustify() {
 		return justify;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public double getOffsetX() {
 		return xOffset;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public double getOffsetY() {
 		return yOffset;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param b DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 *            DOCUMENT ME!
 	 */
 	public void setLabelAnchor(int b) {
 		labelAnchor = b;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param b DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 *            DOCUMENT ME!
 	 */
 	public void setTargetAnchor(int b) {
 		targetAnchor = b;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param b DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 *            DOCUMENT ME!
 	 */
 	public void setJustify(int b) {
 		justify = b;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param d DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param d
+	 *            DOCUMENT ME!
 	 */
 	public void setOffsetX(double d) {
 		xOffset = d;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param d DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param d
+	 *            DOCUMENT ME!
 	 */
 	public void setOffsetY(double d) {
 		yOffset = d;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param lp DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param lp
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean equals(Object lp) {
 		if (lp == null)
@@ -305,71 +318,72 @@ public class LabelPosition {
 
 			return true;
 		} else {
-			CyLogger.getLogger().info("not lp");
-
 			return false;
 		}
 	}
 
+	
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param b DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static String convert(int b) {
 		switch (b) {
-			case (Label.NORTH):
-				return northName;
+		case (Label.NORTH):
+			return northName;
 
-			case (Label.SOUTH):
-				return southName;
+		case (Label.SOUTH):
+			return southName;
 
-			case (Label.EAST):
-				return eastName;
+		case (Label.EAST):
+			return eastName;
 
-			case (Label.WEST):
-				return westName;
+		case (Label.WEST):
+			return westName;
 
-			case (Label.NORTHWEST):
-				return northWestName;
+		case (Label.NORTHWEST):
+			return northWestName;
 
-			case (Label.NORTHEAST):
-				return northEastName;
+		case (Label.NORTHEAST):
+			return northEastName;
 
-			case (Label.SOUTHWEST):
-				return southWestName;
+		case (Label.SOUTHWEST):
+			return southWestName;
 
-			case (Label.SOUTHEAST):
-				return southEastName;
+		case (Label.SOUTHEAST):
+			return southEastName;
 
-			case (Label.CENTER):
-				return centerName;
+		case (Label.CENTER):
+			return centerName;
 
-			case (Label.NONE):
-				return noName;
+		case (Label.NONE):
+			return noName;
 
-			case (Label.JUSTIFY_CENTER):
-				return justifyCenterName;
+		case (Label.JUSTIFY_CENTER):
+			return justifyCenterName;
 
-			case (Label.JUSTIFY_LEFT):
-				return justifyLeftName;
+		case (Label.JUSTIFY_LEFT):
+			return justifyLeftName;
 
-			case (Label.JUSTIFY_RIGHT):
-				return justifyRightName;
+		case (Label.JUSTIFY_RIGHT):
+			return justifyRightName;
 
-			default:
-				return null;
+		default:
+			return null;
 		}
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param s DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param s
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static int convert(String s) {
 		if (northName.equals(s) || nName.equals(s))
@@ -402,9 +416,9 @@ public class LabelPosition {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static String[] getJustifyNames() {
 		String[] s = { justifyLeftName, justifyCenterName, justifyRightName };
@@ -413,23 +427,21 @@ public class LabelPosition {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static String[] getAnchorNames() {
-		String[] s = {
-		                 northWestName, northName, northEastName, westName, centerName, eastName,
-		                 southWestName, southName, southEastName
-		             };
+		String[] s = { northWestName, northName, northEastName, westName,
+				centerName, eastName, southWestName, southName, southEastName };
 
 		return s;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -443,9 +455,9 @@ public class LabelPosition {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String shortString() {
 		DecimalFormat df = new DecimalFormat();
@@ -466,14 +478,16 @@ public class LabelPosition {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param value
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public static LabelPosition parse(String value) {
-		Pattern p = Pattern.compile("^([NSEWC]{1,2}+),([NSEWC]{1,2}+),([clr]{1}+),(-?\\d+(.\\d+)?),(-?\\d+(.\\d+)?)$");
+		Pattern p = Pattern
+				.compile("^([NSEWC]{1,2}+),([NSEWC]{1,2}+),([clr]{1}+),(-?\\d+(.\\d+)?),(-?\\d+(.\\d+)?)$");
 		Matcher m = p.matcher(value);
 
 		if (m.matches()) {
@@ -492,46 +506,46 @@ public class LabelPosition {
 
 	protected static String getShortName(int x) {
 		switch (x) {
-			case (Label.NORTH):
-				return nName;
+		case (Label.NORTH):
+			return nName;
 
-			case (Label.SOUTH):
-				return sName;
+		case (Label.SOUTH):
+			return sName;
 
-			case (Label.EAST):
-				return eName;
+		case (Label.EAST):
+			return eName;
 
-			case (Label.WEST):
-				return wName;
+		case (Label.WEST):
+			return wName;
 
-			case (Label.NORTHWEST):
-				return nwName;
+		case (Label.NORTHWEST):
+			return nwName;
 
-			case (Label.NORTHEAST):
-				return neName;
+		case (Label.NORTHEAST):
+			return neName;
 
-			case (Label.SOUTHWEST):
-				return swName;
+		case (Label.SOUTHWEST):
+			return swName;
 
-			case (Label.SOUTHEAST):
-				return seName;
+		case (Label.SOUTHEAST):
+			return seName;
 
-			case (Label.CENTER):
-				return cName;
+		case (Label.CENTER):
+			return cName;
 
-			case (Label.JUSTIFY_CENTER):
-				return justifyCName;
+		case (Label.JUSTIFY_CENTER):
+			return justifyCName;
 
-			case (Label.JUSTIFY_LEFT):
-				return justifyLName;
+		case (Label.JUSTIFY_LEFT):
+			return justifyLName;
 
-			case (Label.JUSTIFY_RIGHT):
-				return justifyRName;
+		case (Label.JUSTIFY_RIGHT):
+			return justifyRName;
 
-			default:
-				CyLogger.getLogger().info("don't recognize type: " + x);
+		default:
+			CyLogger.getLogger().info("don't recognize type: " + x);
 
-				return "x";
+			return "x";
 		}
 	}
 
