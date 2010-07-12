@@ -1,14 +1,7 @@
 /*
  File: CytoscapeInit.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,42 +29,42 @@
  */
 package cytoscape;
 
-import cytoscape.data.readers.CytoscapeSessionReader;
-
-import cytoscape.dialogs.logger.LoggerDialog;
-
-import cytoscape.init.CyInitParams;
-
-import cytoscape.logger.LogLevel;
-import cytoscape.logger.CyLogger;
-import cytoscape.logger.ConsoleLogger;
-
-import cytoscape.plugin.PluginManager;
-
-import cytoscape.util.FileUtil;
-
-import cytoscape.util.shadegrown.WindowUtilities;
-
 import java.awt.Cursor;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import java.net.MalformedURLException;
 import java.net.URL;
-
-//import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-//import java.util.Set;
 import javax.swing.ImageIcon;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
+import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.dialogs.logger.LoggerDialog;
+import cytoscape.init.CyInitParams;
+import cytoscape.logger.ConsoleLogger;
+import cytoscape.logger.CyLogger;
+import cytoscape.logger.LogLevel;
+import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.ThemeInfo;
+import cytoscape.plugin.ManagerException;
+import cytoscape.plugin.Category;
+import cytoscape.plugin.PluginStatus;
+import cytoscape.util.FileUtil;
+import cytoscape.util.NestedNetworkViewUpdater;
+import cytoscape.util.shadegrown.WindowUtilities;
+import cytoscape.view.CyNetworkView;
+
+import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.Parser;
 
 
 /**
@@ -111,6 +104,7 @@ public class CytoscapeInit {
 	private static Properties properties;
 	private static Properties visualProperties;
 	private static CyLogger logger = null;
+	private static NestedNetworkViewUpdater nestedNetworkViewUpdater;
 
 	static {
 		logger = CyLogger.getLogger(CytoscapeInit.class);
@@ -127,6 +121,8 @@ public class CytoscapeInit {
 	// Error message
 	private static String ErrorMsg = "";
 
+	private PluginManager mgr;
+
 	/**
 	 * Creates a new CytoscapeInit object.
 	 */
@@ -136,8 +132,7 @@ public class CytoscapeInit {
 	/**
 	 * Cytoscape Init must be initialized using the command line arguments.
 	 *
-	 * @param args
-	 *            the arguments from the command line
+	 * @param params  the arguments from the command line
 	 * @return false, if we fail to initialize for some reason
 	 */
 	public boolean init(CyInitParams params) {
@@ -159,20 +154,23 @@ public class CytoscapeInit {
 
 			// Build the OntologyServer.
 			Cytoscape.buildOntologyServer();
+			
+			// Instantiate a NestedNetworkViewUpdater
+			nestedNetworkViewUpdater = new NestedNetworkViewUpdater();
+			
+			// AJK: 02/22/2010 make Semantics.INTERACTION not user Editable
+			CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+			edgeAttrs.setUserEditable(Semantics.INTERACTION, false);
 
-			// get the manager so it can test for webstart before menus are
-			// created (little hacky)
-			PluginManager.getPluginManager();
+			initPluginManager();
 
 			// see if we are in headless mode
 			// show splash screen, if appropriate
 
-			/*
-			 * Initialize as GUI mode
-			 */
+			// Initialize as GUI mode
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				final ImageIcon image = new ImageIcon(this.getClass()
+				final ImageIcon image = new ImageIcon(Cytoscape.class
 				                                          .getResource(SPLASH_SCREEN_LOCATION));
 				WindowUtilities.showSplash(image, 8000);
 
@@ -187,9 +185,7 @@ public class CytoscapeInit {
 				// Register the logger dialog as a log handler
 				logger.addLogHandler(LoggerDialog.getLoggerDialog(), LogLevel.LOG_DEBUG);
 
-				/*
-				 * Create Desktop. This includes Vizmapper GUI initialization.
-				 */
+				// Create Desktop. This includes Vizmapper GUI initialization.
 				Cytoscape.getDesktop();
 
 				// set the wait cursor
@@ -203,85 +199,10 @@ public class CytoscapeInit {
 
 			logger.info("init mode: " + initParams.getMode());
 
-			PluginManager mgr = PluginManager.getPluginManager();
-
-			try {
-				logger.info("Updating plugins...");
-				mgr.delete();
-			} catch (cytoscape.plugin.ManagerException me) {
-				logger.warn("Error updating plugins: "+me.getMessage(), me);
-			}
-
-			mgr.install();
-
 			logger.info("loading plugins....");
-
-			/*
-			 * TODO smart plugin loading. If there are multiple of the same
-			 * plugin (this will only work in the .cytoscape directory) load the
-			 * newest version first. Should be able to examine the directories
-			 * for this information. All installed plugins are named like
-			 * 'MyPlugin-1.0' currently this isn't necessary as old version are
-			 * not kept around
-			 */
-			List<String> InstalledPlugins = new ArrayList<String>();
-			// load from those listed on the command line
-			InstalledPlugins.addAll(initParams.getPlugins());
-
-			// MLC 01/21/10 BEGIN:
-			// // Get all directories where plugins have been installed
-			// // going to have to be a little smart...themes contain their plugins
-			// // in subdirectories
-			//    List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
-			List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins  = null;
-			if (CyMain.isLobomizedPluginManagerMode ()) {
-			    //    We lobotomize the plugin manager to only
-			    //    load what is on the command line--no
-			    //    previously remembered plugins:
-			    // MLC: We just make an empty list:
-			    MgrInstalledPlugins = new ArrayList<cytoscape.plugin.DownloadableInfo>(0);
-			} else {
-			    // Get all directories where plugins have been installed
-			    // going to have to be a little smart...themes contain their plugins
-			    // in subdirectories
-			    MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
-			}
-			// MLC 01/21/10 END.
-			for (cytoscape.plugin.DownloadableInfo dInfo : MgrInstalledPlugins) {
-				if (dInfo.getCategory().equals(cytoscape.plugin.Category.CORE.getCategoryText()))
-					continue;
-
-				switch (dInfo.getType()) { // TODO get rid of switches
-					case PLUGIN:
-						InstalledPlugins.add(((cytoscape.plugin.PluginInfo) dInfo)
-						                                                                                                                                                                                                    .getInstallLocation());
-
-						break;
-
-					case THEME:
-
-						cytoscape.plugin.ThemeInfo tInfo = (cytoscape.plugin.ThemeInfo) dInfo;
-
-						for (cytoscape.plugin.PluginInfo plugin : tInfo.getPlugins()) {
-							InstalledPlugins.add(plugin.getInstallLocation());
-						}
-
-						break;
-				}
-			}
-
-			mgr.loadPlugins(InstalledPlugins);
-
-			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
-
-			for (Throwable t : pluginLoadingErrors) {
-				logger.warn("Plugin loading error: "+t.toString(),t);
-			}
-
-			mgr.clearErrorList();
+			loadPlugins();
 
 			logger.info("loading session...");
-
 			boolean sessionLoaded = false;
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
@@ -321,7 +242,7 @@ public class CytoscapeInit {
 		long endtime = System.currentTimeMillis() - begintime;
 		logger.info("Cytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
-
+		
 		return true;
 	}
 
@@ -358,16 +279,14 @@ public class CytoscapeInit {
 	}
 
 	/**
-	 * @param mrud
-	 *            the most recently used directory
+	 * @param mrud_new  the most recently used directory
 	 */
 	public static void setMRUD(File mrud_new) {
 		mrud = mrud_new;
 	}
 
 	/**
-	 * @param mruf
-	 *            the most recently used file
+	 * @param mruf_new  the most recently used file
 	 */
 	public static void setMRUF(File mruf_new) {
 		mruf = mruf_new;
@@ -379,9 +298,9 @@ public class CytoscapeInit {
 	 * @return the directory ".cytoscape/[cytoscape version]
 	 */
 	public static File getConfigVersionDirectory() {
-		File Parent = getConfigDirectory();
+		final File parent = getConfigDirectory();
 
-		File VersionDir = new File(Parent, (new CytoscapeVersion()).getMajorVersion());
+		File VersionDir = new File(parent, (new CytoscapeVersion()).getMajorVersion());
 		VersionDir.mkdir();
 
 		return VersionDir;
@@ -393,7 +312,6 @@ public class CytoscapeInit {
 	 * @return the directory ".cytoscape" in the users home directory.
 	 */
 	public static File getConfigDirectory() {
-		File dir = null;
 
 		try {
 			String dirName = properties.getProperty("alternative.config.dir",
@@ -444,7 +362,15 @@ public class CytoscapeInit {
 		return visualProperties;
 	}
 
-	private static void loadStaticProperties(String defaultName, Properties props) {
+    /**
+     * Load the Properties found in a given given file into a given Properties object.
+     * @param defaultName the name of the properties file to use (.e.g., "cytoscape.props").
+     * @param props the Properties object in which to insert the
+     * property information found within defaultName.
+     */
+	public static void loadStaticProperties(String defaultName, Properties props) {
+	    // TODO: This should probably be removed, since if
+	    //       props==null, then the props set here will be lost:
 		if (props == null) {
 			logger.info("input props is null");
 			props = new Properties();
@@ -547,7 +473,7 @@ public class CytoscapeInit {
 		    // MLC 12/08/09:
 		    if (!CyMain.isAGMode()) {
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
-		    // MLC 12/08/09:
+			// MLC 12/08/09:
 		    }
 		    System.gc();
 		}
@@ -578,11 +504,13 @@ public class CytoscapeInit {
 		 * Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus(); Add a
 		 * listener that will apply vizmaps every time attributes change
 		 */
-		PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
+		final PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 					// apply vizmaps
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					final CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
+					if (currentView != Cytoscape.getNullNetworkView())
+						Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 				}
 			}
 		};
@@ -635,12 +563,100 @@ public class CytoscapeInit {
 			                                              .toArray(new String[] {  }),
 			                         (String[]) initParams.getEdgeAttributeFiles()
 			                                              .toArray(new String[] {  }));
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			logger.error("failure loading specified attributes: "+ex.getMessage(), ex);
 		}
 	}
 
 	private void initVizmapper() {
 		Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
+	}
+	
+	/** 
+	 * This is separated from the rest of the plugin manager because by getting 
+	 * the manager early, it can test for webstart before menus are created. 
+	 * This is a little hacky.
+	 */
+	private void initPluginManager() {
+		try {
+			mgr = PluginManager.getPluginManager();
+		} catch (Throwable tp) {
+			logger.warn("Failed to start plugin manager.", tp);
+		}
+	}
+
+	private void loadPlugins() {
+		try {
+			try {
+				logger.info("Updating plugins...");
+				mgr.delete();
+			} catch (ManagerException me) {
+				logger.warn("Error updating plugins: "+me.getMessage(), me);
+			}
+
+			mgr.install();
+
+			//
+			// TODO smart plugin loading. If there are multiple of the same
+			// plugin (this will only work in the .cytoscape directory) load the
+			// newest version first. Should be able to examine the directories
+			// for this information. All installed plugins are named like
+			// 'MyPlugin-1.0' currently this isn't necessary as old version are
+			// not kept around
+			//
+			List<String> installedPlugins = new ArrayList<String>();
+
+			// load from those listed on the command line
+			installedPlugins.addAll(initParams.getPlugins());
+
+			// MLC 01/21/10 BEGIN:
+			// // Get all directories where plugins have been installed
+			// // going to have to be a little smart...themes contain their plugins
+			// // in subdirectories
+			List<DownloadableInfo> mgrInstalledPlugins  = null;
+			if (CyMain.isLobomizedPluginManagerMode ()) {
+			    //    We lobotomize the plugin manager to only
+			    //    load what is on the command line--no
+			    //    previously remembered plugins:
+			    // MLC: We just make an empty list:
+			    mgrInstalledPlugins = new ArrayList<cytoscape.plugin.DownloadableInfo>(0);
+			} else {
+			    // Get all directories where plugins have been installed
+			    // going to have to be a little smart...themes contain their plugins
+			    // in subdirectories
+			    mgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
+			}
+			// for (DownloadableInfo dInfo : mgr.getDownloadables(PluginStatus.CURRENT)) {
+			for (DownloadableInfo dInfo : mgrInstalledPlugins) {
+			// MLC 01/21/10 END.
+				if (dInfo.getCategory().equals(Category.CORE.getCategoryText()))
+					continue;
+
+				// TODO get rid of switches
+				switch (dInfo.getType()) { 
+					case PLUGIN:
+						installedPlugins.add(((PluginInfo) dInfo).getInstallLocation());
+
+						break;
+
+					case THEME:
+						ThemeInfo tInfo = (ThemeInfo) dInfo;
+						for (PluginInfo plugin : tInfo.getPlugins()) 
+							installedPlugins.add(plugin.getInstallLocation());
+
+						break;
+				}
+			}
+
+			mgr.loadPlugins(installedPlugins);
+
+			for (Throwable t : mgr.getLoadingErrors()) 
+				logger.warn("Plugin loading error: "+t.toString(),t);
+
+			mgr.clearErrorList();
+
+		} catch (Exception e) {
+			logger.error("Plugin system initialization error: "+e.toString(),e);
+		}
 	}
 }

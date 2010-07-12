@@ -1,14 +1,7 @@
 /*
  File: Cytoscape.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -39,8 +32,10 @@
 package cytoscape;
 
 import giny.model.Edge;
+import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.GraphView;
+import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
@@ -69,22 +64,29 @@ import cytoscape.data.ImportHandler;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
+import cytoscape.data.readers.EqnAttrTracker;
 import cytoscape.data.readers.GraphReader;
+import cytoscape.data.readers.NestedNetworkReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.data.servers.OntologyServer;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 import cytoscape.init.CyInitParams;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.util.FileUtil;
+import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.logger.CyLogger;
+import ding.view.DGraphView;
+import ding.view.DNodeView;
 
 
 /**
@@ -222,6 +224,21 @@ public abstract class Cytoscape {
 	public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
 
 	/**
+	 * Fired every time a nested network is assigned to a node.
+	 * This event contains the following values:
+	 * <ul>
+	 * 	<li>oldValue - CyNode whose nested network was set.
+	 * 	<li>newValue - The network assigned to the node above.
+	 * </ul>
+	 */
+	public static final String NESTED_NETWORK_CREATED = "NESTED_NETWORK_CREATED";
+
+	/**
+	 * Fired every time a nested network is removed from a node.
+	 */
+	public static final String NESTED_NETWORK_DESTROYED = "NESTED_NETWORK_DESTROYED";
+
+	/**
 	 * When creating a network, use one of the standard suffixes to have it
 	 * parsed correctly<BR>
 	 * <ul>
@@ -303,8 +320,6 @@ public abstract class Cytoscape {
 	 */
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
-	@Deprecated
-	private static BioDataServer bioDataServer;
 
 	/**
 	 * New ontology server. This will replace BioDataServer.
@@ -316,8 +331,6 @@ public abstract class Cytoscape {
 	 */
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
-	// global flag to indicate if Squiggle is turned on
-	//	private static boolean squiggleEnabled = false;
 
 	/**
 	 * The shared RootGraph between all Networks
@@ -363,11 +376,14 @@ public abstract class Cytoscape {
 	/**
 	 * Used by session writer. If this is null, session writer opens the file
 	 * chooser. Otherwise, overwrite the file.
-	 *
-	 * KONO: 02/23/2006
 	 */
 	private static String currentSessionFileName;
 	private static Bookmarks bookmarks;
+
+	/**
+	 * Used by session reader.
+	 */
+	private static RecentlyOpenedTracker recentlyOpenedSessions = null;
 
 	/**
 	 * A null CyNetwork to give when there is no Current Network
@@ -398,14 +414,14 @@ public abstract class Cytoscape {
 	/**
 	 * A null CyNetworkView to give when there is no Current NetworkView
 	 */
-	protected static CyNetworkView nullNetworkView = new DingNetworkView(nullNetwork, "null");
+	protected static final CyNetworkView nullNetworkView = new DingNetworkView(nullNetwork, "null");
 
 	/*
 	 * VMM should be tied to Cytoscape, not to Desktop. Developers should call
 	 * this from here.
 	 * Don't initialize this until it is to be used.
 	 */
-	protected static VisualMappingManager VMM = null; 
+	protected static VisualMappingManager VMM = null;
 
 	protected static CyLogger logger = CyLogger.getLogger(Cytoscape.class);
 
@@ -421,6 +437,14 @@ public abstract class Cytoscape {
 	 */
 	public static CyNetwork getNullNetwork() {
 		return nullNetwork;
+	}
+
+	private static EqnAttrTracker eqnAttrTracker = null;
+
+	public static EqnAttrTracker getEqnAttrTracker() {
+		if (eqnAttrTracker == null)
+			eqnAttrTracker = new EqnAttrTracker();
+		return eqnAttrTracker;
 	}
 
 	/**
@@ -448,7 +472,6 @@ public abstract class Cytoscape {
 				if ((mode == CyInitParams.EMBEDDED_WINDOW) ||
 				    CyMain.isAGMode()) {
 				// MLC 12/08/09 END.
-				    // MLC 02/02/10 BEGIN:
 				    // Don't system exit since we are running as part
 				    // of a bigger application. We would like to just
 				    // do getDesktop().dispose(), but then you cannot
@@ -463,15 +486,15 @@ public abstract class Cytoscape {
 				    // from previous usage is there. So our approach is to
 				    // just make the existing desktop not visible and reset
 				    // Cytoscape to a new session:
-				    // // don't system exit since we are running as part
-				    // // of a bigger application. Instead, dispose of the
-				    // // desktop.
-				    // getDesktop().dispose();
 				    getDesktop().setVisible (false);
 				    // get rid of existing data:
-				    Cytoscape.createNewSession ();
-				    // MLC 02/02/10 END.
+				    Cytoscape.createNewSession();
 				} else {
+					try {
+						getRecentlyOpenedSessionTracker().writeOut();
+					} catch (final IOException e) {
+						System.err.println("failed to save recent session URLs!");
+					}
 					System.exit(returnVal);
 				}
 			} else {
@@ -719,9 +742,8 @@ public abstract class Cytoscape {
 
 		if (create && attribute instanceof String && attribute.equals(Semantics.INTERACTION)) {
 			// create the edge
-			CyEdge edge = (CyEdge) Cytoscape.getRootGraph()
-			                                .getEdge(Cytoscape.getRootGraph()
-			                                                  .createEdge(source, target));
+			int rootEdge = Cytoscape.getRootGraph().createEdge(source, target);
+			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(rootEdge);
 
 			// create the edge id
 			String edge_name = CyEdge.createIdentifier(source.getIdentifier(),
@@ -758,8 +780,18 @@ public abstract class Cytoscape {
 		}
 
 		// edge does not exist, create one
-		CyNode source = getCyNode(source_alias);
-		CyNode target = getCyNode(target_alias);
+		if ( source_alias == null || source_alias.equals("") ) {
+			logger.warn("Attempting to get CyEdge with null or empty source node identifier.");
+			return null;
+		}
+
+		if ( target_alias == null || target_alias.equals("") ) {
+			logger.warn("Attempting to get CyEdge with null or empty target node identifier.");
+			return null;
+		}
+
+		CyNode source = getCyNode(source_alias,true);
+		CyNode target = getCyNode(target_alias,true);
 
 		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
 	}
@@ -823,15 +855,12 @@ public abstract class Cytoscape {
 
 	/**
 	 * @return a CyNetworkView for the given ID, if one exists, otherwise
-	 *         returns null
+	 *         returns NullNetworkView
 	 */
 	public static CyNetworkView getNetworkView(String network_id) {
 		if ((network_id == null) || !(getNetworkViewMap().containsKey(network_id)))
 			return nullNetworkView;
-
-		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(network_id);
-
-		return nview;
+		return  (CyNetworkView) getNetworkViewMap().get(network_id);
 	}
 
 	/**
@@ -850,16 +879,15 @@ public abstract class Cytoscape {
 		    || !(getNetworkViewMap().containsKey(currentNetworkViewID)))
 			return nullNetworkView;
 
-		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(currentNetworkViewID);
-
-		return nview;
+		return getNetworkViewMap().get(currentNetworkViewID);
 	}
 
 	/**
 	 * Returns the list of currently selected networks.
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<CyNetworkView> getSelectedNetworkViews() {
-		CyNetworkView view = getCurrentNetworkView();
+		final CyNetworkView view = getCurrentNetworkView();
 
 		if (!selectedNetworkViews.contains(view))
 			selectedNetworkViews.add(view);
@@ -876,32 +904,34 @@ public abstract class Cytoscape {
 		if (viewIDs == null)
 			return;
 
+		CyNetworkView nview;
 		for (String id : viewIDs) {
-			CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(id);
+			nview = getNetworkViewMap().get(id);
 
-			if (nview != null) {
+			if (nview != null && nview != nullNetworkView)
 				selectedNetworkViews.add(nview);
-			}
 		}
 
-		CyNetworkView cv = getCurrentNetworkView();
+		final CyNetworkView cv = getCurrentNetworkView();
 
-		if (!selectedNetworkViews.contains(cv)) {
+		if ((cv != nullNetworkView) && !selectedNetworkViews.contains(cv))
 			selectedNetworkViews.add(cv);
-		}
 	}
+
 
 	/**
 	 * Returns the list of selected networks.
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<CyNetwork> getSelectedNetworks() {
-		CyNetwork curr = getCurrentNetwork();
+		final CyNetwork curNet = getCurrentNetwork();
 
-		if (!selectedNetworks.contains(curr))
-			selectedNetworks.add(curr);
+		if (!selectedNetworks.contains(curNet))
+			selectedNetworks.add(curNet);
 
 		return (List<CyNetwork>) selectedNetworks.clone();
 	}
+
 
 	/**
 	 * Sets the list of selected networks.
@@ -913,14 +943,14 @@ public abstract class Cytoscape {
 			return;
 
 		for (String id : ids) {
-			CyNetwork n = (CyNetwork) getNetworkMap().get(id);
+			final CyNetwork n = getNetworkMap().get(id);
 
 			if ((n != null) && (n != nullNetwork)) {
 				selectedNetworks.add(n);
 			}
 		}
 
-		CyNetwork cn = getCurrentNetwork();
+		final CyNetwork cn = getCurrentNetwork();
 
 		if (!selectedNetworks.contains(cn)) {
 			selectedNetworks.add(cn);
@@ -946,7 +976,7 @@ public abstract class Cytoscape {
 			//logger.info("- SUCCEED setting current network " + id);
 			currentNetworkID = id;
 
-			// reset selected networks 
+			// reset selected networks
 			selectedNetworks.clear();
 			selectedNetworks.add((CyNetwork) (getNetworkMap().get(id)));
 		}
@@ -961,7 +991,7 @@ public abstract class Cytoscape {
 			//logger.info("= SUCCEED setting current network VIEW " + id);
 			currentNetworkViewID = id;
 
-			// reset selected network views 
+			// reset selected network views
 			selectedNetworkViews.clear();
 			selectedNetworkViews.add((CyNetworkView) (getNetworkViewMap().get(id)));
 
@@ -1095,6 +1125,8 @@ public abstract class Cytoscape {
 			}
 		}
 
+		updateNestedNetworkNodes(network);
+
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		network = null;
@@ -1106,22 +1138,31 @@ public abstract class Cytoscape {
 			getDesktop().setFocus(currentNetworkID);
 	}
 
+
+	private static void updateNestedNetworkNodes(final GraphPerspective destroyedNetwork) {
+		for (final CyNode node: (List<CyNode>)Cytoscape.getRootGraph().nodesList()) {
+			if (node.getNestedNetwork() == destroyedNetwork) {
+				node.setNestedNetwork(null);
+			}
+		}
+	}
+
 	/**
-	 * destroys the networkview, including any layout information
+	 * Destroys the network view.
 	 */
 	public static void destroyNetworkView(CyNetworkView view) {
 		if ((view == null) || (view == nullNetworkView))
 			return;
 
 		getSelectedNetworkViews().remove(view);
+
 		final String viewID = view.getIdentifier();
-		
 
 		if (viewID.equals(currentNetworkViewID)) {
 			if (getNetworkViewMap().size() <= 0)
 				currentNetworkViewID = null;
 			else {
-				// depending on which randomly chosen currentNetworkID we get, 
+				// depending on which randomly chosen currentNetworkID we get,
 				// we may or may not have a view for it.
 				CyNetworkView newCurr = getNetworkViewMap().get(currentNetworkID);
 
@@ -1131,51 +1172,48 @@ public abstract class Cytoscape {
 					currentNetworkViewID = null;
 			}
 		}
-		
+
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_DESTROYED, null, view);
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		getNetworkViewMap().remove(viewID);
 		view = null;
-		
+
 		// so that a network will be selected.
 		if (currentNetworkID != null)
 			getDesktop().setFocus(currentNetworkID);
 	}
 
-	/**
-	 * destroys the networkview, including any layout information
-	 */
-	public static void destroyNetworkView(String network_view_id) {
-		destroyNetworkView((CyNetworkView) getNetworkViewMap().get(network_view_id));
-	}
 
 	/**
 	 * destroys the networkview, including any layout information
 	 */
-	public static void destroyNetworkView(CyNetwork network) {
+	public static void destroyNetworkView(final String networkViewID) {
+		destroyNetworkView(getNetworkViewMap().get(networkViewID));
+	}
+
+
+	/**
+	 * destroys the networkview, including any layout information
+	 */
+	public static void destroyNetworkView(final CyNetwork network) {
 		destroyNetworkView(getNetworkViewMap().get(network.getIdentifier()));
 	}
 
-	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent,
-	                                 boolean create_view) {
+
+	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent, boolean create_view) {
 		getNetworkMap().put(network.getIdentifier(), network);
 		network.setTitle(title);
 
-		String parentID = null;
-
-		if (parent != null) {
-			parentID = parent.getIdentifier();
-		}
-
+		String parentID = (parent != null) ? parentID = parent.getIdentifier() : null;
 		firePropertyChange(NETWORK_CREATED, parentID, network.getIdentifier());
 
-		if ((network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                            .getProperty("viewThreshold")))
-		    && create_view) {
+		final String propVal = CytoscapeInit.getProperties().getProperty("viewThreshold");
+		if (create_view && propVal != null && (network.getNodeCount() < Integer.parseInt(propVal))) {
 			createNetworkView(network);
 		}
 	}
+
 
 	/**
 	 * Creates a new, empty Network.
@@ -1391,8 +1429,7 @@ public abstract class Cytoscape {
 	 * @param create_view
 	 *            whether or not a view will be created
 	 */
-	public static CyNetwork createNetwork(final GraphReader reader, final boolean create_view,
-	                                      final CyNetwork parent) {
+	public static CyNetwork createNetwork(final GraphReader reader, final boolean create_view, final CyNetwork parent) {
 		if (reader == null) {
 			throw new RuntimeException("Couldn't read specified file.");
 		}
@@ -1409,39 +1446,54 @@ public abstract class Cytoscape {
 			throw new RuntimeException(e);
 		}
 
-		final String title = reader.getNetworkName();
+		// Create the network if any nodes/edges exists in the file.
+		if (reader instanceof NestedNetworkReader) {
+			// This is a reader which creates multiple networks.
+			final List<CyNetwork> networks = ((NestedNetworkReader)reader).getNetworks();
 
-		// get the RootGraph indices of the nodes and
-		// edges that were just created
-		final int[] nodes = reader.getNodeIndicesArray();
-		final int[] edges = reader.getEdgeIndicesArray();
+			// Turn views off for performance
+			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
+			for (CyNetwork network : networks) {
+				getNetworkMap().put(network.getIdentifier(), network);
+				if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties() .getProperty("viewThreshold")))) {
+					createNetworkView(network);
+				}
+			}
+			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
 
-		if (nodes == null) {
-			logger.warn("Network reader didn't return any nodes");
+			return networks.get(0); // Root network.
+		} else {
+			// get the RootGraph indices of the nodes and
+			// edges that were just created
+			final int[] nodes = reader.getNodeIndicesArray();
+			final int[] edges = reader.getEdgeIndicesArray();
+
+			if (nodes == null) {
+				logger.warn("Network reader didn't return any nodes");
+			}
+
+			if (edges == null) {
+				logger.warn("Network reader didn't return any edges");
+			}
+
+			// Change the identifier
+			final String title = reader.getNetworkName();
+			final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+			network.setIdentifier(title);
+
+			// network.putClientData(READER_CLIENT_KEY, reader);
+			addNetwork(network, title, parent, false);
+
+			if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+										      .getProperty("viewThreshold")))) {
+				createNetworkView(network, title, reader.getLayoutAlgorithm());
+			}
+
+			// Execute any necessary post-processing.
+			reader.doPostProcessing(network);
+
+			return network;
 		}
-
-		if (edges == null) {
-			logger.warn("Network reader didn't return any edges");
-		}
-
-		// Create the network
-		final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		// Change the identifier
-		network.setIdentifier(title);
-
-		// network.putClientData(READER_CLIENT_KEY, reader);
-		addNetwork(network, title, parent, false);
-
-		if (create_view
-		    && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                               .getProperty("viewThreshold")))) {
-			createNetworkView(network, title, reader.getLayoutAlgorithm());
-		}
-
-		// Execute any necessary post-processing.
-		reader.doPostProcessing(network);
-
-		return network;
 	}
 
 	// --------------------//
@@ -1541,8 +1593,16 @@ public abstract class Cytoscape {
 		if (nodeAttrLocations != null) {
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
 				try {
-					InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(nodeAttrLocations[i]));
-					CyAttributesReader.loadAttributes(nodeAttributes, reader);
+					InputStreamReader reader = null;
+					try {
+						reader = new InputStreamReader(FileUtil.getInputStream(nodeAttrLocations[i]));
+						CyAttributesReader.loadAttributes(nodeAttributes, reader);
+					}
+					finally {
+						if (reader != null) {
+							reader.close();
+						}
+					}
 					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
 					// e.printStackTrace();
@@ -1557,8 +1617,16 @@ public abstract class Cytoscape {
 		if (edgeAttrLocations != null) {
 			for (int j = 0; j < edgeAttrLocations.length; ++j) {
 				try {
-					InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(edgeAttrLocations[j]));
-					CyAttributesReader.loadAttributes(edgeAttributes, reader);
+					InputStreamReader reader = null;
+                    try {
+						reader = new InputStreamReader(FileUtil.getInputStream(edgeAttrLocations[j]));
+                        CyAttributesReader.loadAttributes(edgeAttributes, reader);
+                    }
+                    finally {
+                        if (reader != null) {
+                            reader.close();
+                        }
+                    }
 					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
 					// e.printStackTrace();
@@ -1570,29 +1638,6 @@ public abstract class Cytoscape {
 		}
 	}
 
-	/**
-	 * A BioDataServer should be loadable from a file systems file or from a
-	 * URL.
-	 */
-	public static BioDataServer loadBioDataServer(String location) {
-		try {
-			bioDataServer = new BioDataServer(location);
-		} catch (Exception e) {
-			logger.warn("Could not Load BioDataServer from: " + location, e);
-
-			return null;
-		}
-
-		return bioDataServer;
-	}
-
-	/**
-	 * @return the BioDataServer that was loaded, should not be null, but not
-	 *         contain any data.
-	 */
-	public static BioDataServer getBioDataServer() {
-		return bioDataServer;
-	}
 
 	/**
 	 * This will replace the bioDataServer.
@@ -1661,8 +1706,7 @@ public abstract class Cytoscape {
 	 * @param layout
 	 *            the CyLayoutAlgorithm to use to lay this out by default
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title,
-	                                              CyLayoutAlgorithm layout) {
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout) {
 		return createNetworkView(network, title, layout, null);
 	}
 
@@ -1681,8 +1725,7 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title,
-	                                              CyLayoutAlgorithm layout, VisualStyle vs) {
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout, VisualStyle vs) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}
@@ -1692,7 +1735,8 @@ public abstract class Cytoscape {
 		}
 
 		final DingNetworkView view = new DingNetworkView(network, title);
-		view.setGraphLOD(new CyGraphLOD());
+		final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+
 		view.setIdentifier(network.getIdentifier());
 		view.setTitle(network.getTitle());
 		getNetworkViewMap().put(network.getIdentifier(), view);
@@ -1700,22 +1744,20 @@ public abstract class Cytoscape {
 
 		if (vs != null) {
 			view.setVisualStyle(vs.getName());
-			getVisualMappingManager().setVisualStyle(vs);
-			getVisualMappingManager().setNetworkView(view);
+			vmm.setVisualStyle(vs);
+		} else {
+			view.setVisualStyle(vmm.getVisualStyle().getName());
 		}
 
 		if (layout == null) {
 			layout = CyLayouts.getDefaultLayout();
 		}
 
-		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
-		                             view);
-
+		vmm.setNetworkView(view);
+		vmm.applyAppearances();
 		layout.doLayout(view);
-
-		view.fitContent();
-
-		view.redrawGraph(false, true);
+		view.setGraphLOD(new CyGraphLOD());
+		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
 
 		return view;
 	}
@@ -1834,6 +1876,12 @@ public abstract class Cytoscape {
 	 * Clear all networks and attributes and start a new session.
 	 */
 	public static void createNewSession() {
+		// Clear groups
+		List<CyGroup>groups = CyGroupManager.getGroupList();
+		for (CyGroup group: groups) {
+			CyGroupManager.removeGroup(group);
+		}
+
 		// Destroy all networks
 		Set<CyNetwork> netSet = getNetworkSet();
 
@@ -1844,21 +1892,21 @@ public abstract class Cytoscape {
 		final String[] nodeAttrNames = nodeAttributes.getAttributeNames();
 		for (String name: nodeAttrNames)
 			nodeAttributes.deleteAttribute(name);
-		
+
 		// Clear edge attributes
 		final String[] edgeAttrNames = edgeAttributes.getAttributeNames();
 		for (String name: edgeAttrNames)
 			edgeAttributes.deleteAttribute(name);
-		
+
 		// Clear network attributes
 		final String[] networkAttrNames = networkAttributes.getAttributeNames();
 		for(String name: networkAttrNames)
 			networkAttributes.deleteAttribute(name);
-		
+
 		// Reset Ontology Server
 		buildOntologyServer();
 		setOntologyRootID(null);
-		
+
 		setCurrentSessionFileName(null);
 		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 		cytoscapeRootGraph = null;
@@ -1910,5 +1958,19 @@ public abstract class Cytoscape {
 	 */
 	public static void setBookmarks(Bookmarks pBookmarks) {
 		bookmarks = pBookmarks;
+	}
+
+	public synchronized static RecentlyOpenedTracker getRecentlyOpenedSessionTracker() {
+		if (recentlyOpenedSessions == null) {
+			final String trackerFileName = "sessions.tracker";
+			try {
+				recentlyOpenedSessions = new RecentlyOpenedTracker(trackerFileName);
+			} catch (final IOException e) {
+				System.err.println(e);
+				logger.warn("Failed to load \"" + trackerFileName + "\"!");
+			}
+		}
+
+		return recentlyOpenedSessions;
 	}
 }

@@ -36,27 +36,33 @@
 */
 package cytoscape;
 
-import cytoscape.giny.CytoscapeFingRootGraph;
-
-import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
-
-import giny.model.*;
+import giny.model.GraphPerspective;
+import giny.model.RootGraph;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cytoscape.giny.CytoscapeFingRootGraph;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 
-// Package visible class.
+
 /**
  *
  */
 public class CyNode implements giny.model.Node {
+	public static final String NESTED_NETWORK_ID_ATTR = "nested_network_id";
+	public static final String NESTED_NETWORK_IS_VISIBLE_ATTR = "nested_network_is_visible";
+	public static final String HAS_NESTED_NETWORK_ATTR = "has_nested_network";
+	public static final String PARENT_NODES_ATTR = "parent_nodes";
+
 	// Variables specific to public get/set methods.
 	CytoscapeFingRootGraph m_rootGraph = null;
 	int m_rootGraphIndex = 0;
 	String m_identifier = null;
 	ArrayList<CyGroup> groupList = null;
+
+	private GraphPerspective nestedNetwork;
 
 	/**
 	 * Creates a new CyNode object.
@@ -64,11 +70,13 @@ public class CyNode implements giny.model.Node {
 	 * @param root  DOCUMENT ME!
 	 * @param rootGraphIndex  DOCUMENT ME!
 	 */
-	public CyNode(RootGraph root, int rootGraphIndex) {
+	public CyNode(final RootGraph root, final int rootGraphIndex) {
 		this.m_rootGraph = (CytoscapeFingRootGraph) root;
 		this.m_rootGraphIndex = rootGraphIndex;
 		this.m_identifier = new Integer(m_rootGraphIndex).toString();
+		this.nestedNetwork = null;
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -79,6 +87,7 @@ public class CyNode implements giny.model.Node {
 		return m_rootGraph.createGraphPerspective(m_rootGraph.getNodeMetaChildIndicesArray(m_rootGraphIndex),
 		                                          m_rootGraph.getEdgeMetaChildIndicesArray(m_rootGraphIndex));
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -103,6 +112,7 @@ public class CyNode implements giny.model.Node {
 		return true;
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -111,6 +121,7 @@ public class CyNode implements giny.model.Node {
 	public RootGraph getRootGraph() {
 		return m_rootGraph;
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -121,6 +132,7 @@ public class CyNode implements giny.model.Node {
 		return m_rootGraphIndex;
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -130,6 +142,7 @@ public class CyNode implements giny.model.Node {
 		return m_identifier;
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -137,7 +150,7 @@ public class CyNode implements giny.model.Node {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setIdentifier(String new_id) {
+	public boolean setIdentifier(final String new_id) {
 		if (new_id == null) {
 			m_rootGraph.setNodeIdentifier(m_identifier, 0);
 		} else {
@@ -149,12 +162,13 @@ public class CyNode implements giny.model.Node {
 		return true;
 	}
 
+
 	/**
 	 * Add this node to the specified group.
 	 *
 	 * @param group CyGroup to add this group to
 	 */
-	public void addToGroup(CyGroup group) {
+	public void addToGroup(final CyGroup group) {
 		// We want to create this lazily to avoid any unnecessary performance/memory
 		// hits on CyNodes!
 		if (groupList == null)
@@ -166,18 +180,20 @@ public class CyNode implements giny.model.Node {
 			group.addNode(this);
 	}
 
+
 	/**
 	 * Remove this node from the specified group.
 	 *
 	 * @param group CyGroup to remove this group from
 	 */
-	public void removeFromGroup(CyGroup group) {
+	public void removeFromGroup(final CyGroup group) {
 		groupList.remove(group);
 		groupList.trimToSize();
 
 		if (group.contains(this))
 			group.removeNode(this);
 	}
+
 
 	/**
 	 * Return the list of groups this node is a member of
@@ -187,6 +203,7 @@ public class CyNode implements giny.model.Node {
 	public List<CyGroup> getGroups() {
 		return groupList;
 	}
+
 
 	/**
 	 * Check to see if this node is a member of the requested group
@@ -201,6 +218,7 @@ public class CyNode implements giny.model.Node {
 		return groupList.contains(group);
 	}
 
+
 	/**
 	 * Check to see if this node is a group
 	 *
@@ -210,6 +228,7 @@ public class CyNode implements giny.model.Node {
 		return CyGroupManager.isaGroup(this);
 	}
 
+
 	/**
 	 * Return the "name" of a node
 	 *
@@ -218,4 +237,75 @@ public class CyNode implements giny.model.Node {
 	public String toString() {
 		return getIdentifier();
 	}
+
+
+	/**
+	 * Assign a graph perspective reference to this node.
+	 */
+	public void setNestedNetwork(final GraphPerspective graphPerspective) {
+		// Sanity check.
+		if (graphPerspective == this.nestedNetwork)
+			return;
+
+		final GraphPerspective oldNestedNetwork = this.nestedNetwork;
+		final String nodeID = this.getIdentifier();
+
+		// create a Node Attribute "nested.network.id" for this Node
+		final String networkID = ((CyNetwork)(graphPerspective == null ? this.nestedNetwork : graphPerspective)).getIdentifier();
+		this.nestedNetwork = graphPerspective;
+
+		// create or update Network Attribute "parent.node.name.list" for the Network
+		final String[] attributeNames = Cytoscape.getNetworkAttributes().getAttributeNames();
+		boolean attrFound = false;
+		for (final String name : attributeNames) {
+			if (name.equals(PARENT_NODES_ATTR)) {
+				attrFound = true;
+				break;
+			}
+		}
+		List<String> parentNodeList;
+		if (!attrFound) {
+			parentNodeList = new ArrayList<String>();
+			parentNodeList.add(nodeID);
+		} else {
+			parentNodeList = (List<String>) Cytoscape.getNetworkAttributes().getListAttribute(networkID, PARENT_NODES_ATTR);
+			if (this.nestedNetwork != null) {
+				parentNodeList.add(nodeID);
+			} else {
+				parentNodeList.remove(nodeID);
+			}
+		}
+		Cytoscape.getNetworkAttributes().setListAttribute(networkID, PARENT_NODES_ATTR, parentNodeList);
+
+		// tag or untag the node as having a nested network
+		if (graphPerspective != null) {
+			Cytoscape.getNodeAttributes().setAttribute(nodeID, HAS_NESTED_NETWORK_ATTR, "yes");
+			Cytoscape.getNodeAttributes().setAttribute(nodeID, NESTED_NETWORK_IS_VISIBLE_ATTR, new Boolean(true));
+			Cytoscape.getNodeAttributes().setAttribute(nodeID, NESTED_NETWORK_ID_ATTR, networkID);
+		} else {
+			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, HAS_NESTED_NETWORK_ATTR);
+			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, NESTED_NETWORK_IS_VISIBLE_ATTR);
+			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, NESTED_NETWORK_ID_ATTR);
+		}
+
+		// Let listeners know that the previous nested network was removed
+		if (oldNestedNetwork != null)
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_DESTROYED, this, oldNestedNetwork);
+
+		// Let listeners know nested network was assigned to this node.
+		if (this.nestedNetwork != null) {
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.NESTED_NETWORK_CREATED, this, graphPerspective);
+		}
+	}
+
+
+	/**
+	 * Return the currently set graph perspective (may be null) associated with this node.
+	 *
+	 *  @return a network reference or null.
+	 */
+	public GraphPerspective getNestedNetwork() {
+		return nestedNetwork;
+	}
+
 }

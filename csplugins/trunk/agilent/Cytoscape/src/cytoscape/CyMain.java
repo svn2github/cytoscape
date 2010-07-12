@@ -1,14 +1,7 @@
 /*
  File: CyMain.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -63,6 +56,7 @@ import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
 
+
 /**
  * This is the main startup class for Cytoscape. This parses the command line
  * and implements CyInitParams so that it can be used to initialize cytoscape.
@@ -108,6 +102,7 @@ public class CyMain implements CyInitParams {
     // Temporary mode to be removed after certain bug fixes:
     static private boolean WMode;
     // MLC 01/31/10 END.
+
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -119,13 +114,7 @@ public class CyMain implements CyInitParams {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (System.getProperty("os.name").startsWith("Mac")) {
-			/*
-			 * By kono 4/2/2007 Fix Application name for Mac.
-			 */
-			final CytoscapeVersion ver = new CytoscapeVersion();
-			final String version = ver.getVersion();
-			System.setProperty(
-					"com.apple.mrj.application.apple.menu.about.name", version);
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Cytoscape");
 		}
 
 		CyMain app = new CyMain(args);
@@ -270,15 +259,13 @@ public class CyMain implements CyInitParams {
 
 		if (line.hasOption("H")) {
 			mode = CyInitParams.TEXT;
-		}
 		// MLC 12/08/09 BEGIN:
-		else if (line.hasOption("E")) {
+		} else if (line.hasOption("E")) {
 		    // Note that we don't set the look and feel here
 		    // since the parent app will want to do that:
 			mode = CyInitParams.EMBEDDED_WINDOW;
-		} 
 		// MLC 12/08/09 END.
-		else {
+		} else {
 			mode = CyInitParams.GUI;
 			setupLookAndFeel();
 		}
@@ -360,8 +347,6 @@ public class CyMain implements CyInitParams {
 	/**
 	 * Provides access to the session file parsed from arguments intercepted by
 	 * CyStartupListener
-	 * 
-	 * @return sessionFile
 	 */
 	public static void setSessionFile(String sf) {
 		sessionFile = sf;
@@ -373,35 +358,39 @@ public class CyMain implements CyInitParams {
 				/*
 				 * For Windows: just use platform default look & feel.
 				 */
-				UIManager
-						.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			} else if (LookUtils.IS_OS_MAC) {
 				/*
-				 * For Mac: move menue bar to OS X default bar (next to Apple
+				 * For Mac: move menu bar to OS X default bar (next to Apple
 				 * icon)
 				 */
-				System.setProperty("apple.laf.useScreenMenuBar", "true");				
+				System.setProperty("apple.laf.useScreenMenuBar", "true");
 				
 			} else {
-				/*
-				 * For Unix platforms, use JGoodies Looks
-				 */
-				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-				// UIManager.setLookAndFeel(new NimbusLookAndFeel());
-				Plastic3DLookAndFeel.set3DEnabled(true);
-				Plastic3DLookAndFeel
+				final JavaVersion javaVersion = JavaVersion.getJavaVersion();
+				if (javaVersion.getMajor() >= 2 || javaVersion.getMinor() > 6
+				    || (javaVersion.getMinor() == 6 && javaVersion.getUpdate() >= 10))
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+				else {
+					/*
+					 * For Unix platforms, use JGoodies Looks
+					 */
+					UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+					Plastic3DLookAndFeel.set3DEnabled(true);
+					Plastic3DLookAndFeel
 						.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
-				Plastic3DLookAndFeel
+					Plastic3DLookAndFeel
 						.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
-				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
+					Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
 
-				Options.setDefaultIconSize(new Dimension(18, 18));
-				Options.setHiResGrayFilterEnabled(true);
-				Options.setPopupDropShadowEnabled(true);
-				Options.setUseSystemFonts(true);
+					Options.setDefaultIconSize(new Dimension(18, 18));
+					Options.setHiResGrayFilterEnabled(true);
+					Options.setPopupDropShadowEnabled(true);
+					Options.setUseSystemFonts(true);
 
-				UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
+					UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+					UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
+				}
 			}
 		} catch (Exception e) {
 			logger.warn("Can't set look & feel:" + e.getMessage(), e);
@@ -438,27 +427,33 @@ public class CyMain implements CyInitParams {
 		Properties props = new Properties();
 		Properties argProps = new Properties();
 
-		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$")
-				.matcher("");
+		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$").matcher("");
 
 		for (int i = 0; i < potentialProps.length; i++) {
 			propPattern.reset(potentialProps[i]);
 
 			// check to see if the string is a key value pair
 			if (propPattern.matches()) {
-				argProps
-						.setProperty(propPattern.group(1), propPattern.group(3));
+				argProps.setProperty(propPattern.group(1), propPattern.group(3));
 
 				// otherwise assume it's a file/url
 			} else {
 				try {
-					InputStream in = FileUtil.getInputStream(potentialProps[i]);
+					InputStream in = null;
 
-					if (in != null)
-						props.load(in);
-					else
-						logger.info("Couldn't load property: "
-								+ potentialProps[i]);
+                    try {
+						in = FileUtil.getInputStream(potentialProps[i]);
+                        if (in != null)
+                            props.load(in);
+                        else
+                            logger.info("Couldn't load property: "
+                                    + potentialProps[i]);
+                    }
+                    finally {
+                        if (in != null) {
+                            in.close();
+                        }
+                    }
 				} catch (IOException e) {
 					logger.warn("Couldn't load property '"+ potentialProps[i] + "' from file: "+e.getMessage(), e);
 				}
