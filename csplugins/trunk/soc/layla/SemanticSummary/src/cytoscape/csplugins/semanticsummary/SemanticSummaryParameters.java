@@ -61,6 +61,8 @@ public class SemanticSummaryParameters
 	//String Delimeters
 	private static final String NODEDELIMITER = "SSParamNodeDelimiter";
 	
+	private WordFilter filter;
+	
 	//CONSTRUCTORS
 	
 	/**
@@ -70,6 +72,7 @@ public class SemanticSummaryParameters
 	{
 		this.clouds = new HashMap<String,CloudParameters>();
 		this.nodeList = new ArrayList<String>();
+		this.filter = new WordFilter();
 	}
 	
 	/**
@@ -362,5 +365,15 @@ public class SemanticSummaryParameters
 	public String getSeparater()
 	{
 		return SEPARATER;
+	}
+	
+	public WordFilter getFilter()
+	{
+		return filter;
+	}
+	
+	public void setFilter(WordFilter aFilter)
+	{
+		filter = aFilter;
 	}
 }

@@ -74,7 +74,6 @@ public class CloudParameters implements Comparable
 	private HashMap<String, Double> pairRatios;
 	private ArrayList<CloudWordInfo> cloudWords;
 	
-	private WordFilter filter;
 	
 	private Double netWeightFactor;
 	private Double clusterCutoff;
@@ -112,7 +111,6 @@ public class CloudParameters implements Comparable
 		this.ratios = new HashMap<String, Double>();
 		this.pairRatios = new HashMap<String, Double>();
 		this.cloudWords = new ArrayList<CloudWordInfo>();
-		this.filter = new WordFilter();
 		
 		this.netWeightFactor = this.getDefaultNetWeight();
 		this.attributeName = this.getDefaultAttName();
@@ -226,6 +224,7 @@ public class CloudParameters implements Comparable
 				String curWord = wordIter.next();
 				
 				//Check filters
+				WordFilter filter = networkParams.getFilter();
 				if (!filter.contains(curWord))
 				{
 					//If this word has not been encountered, or not encountered
@@ -321,6 +320,7 @@ public class CloudParameters implements Comparable
 				String curWord = wordIter.next();
 				
 				//Check filters
+				WordFilter filter = networkParams.getFilter();
 				if (!filter.contains(curWord))
 				{
 					//Add to selected Counts
@@ -1054,16 +1054,6 @@ public class CloudParameters implements Comparable
 		networkNumNodes = num;
 	}
 	
-	public WordFilter getFilter()
-	{
-		return filter;
-	}
-	
-	public void setFilter(WordFilter aFilter)
-	{
-		filter = aFilter;
-	}
-
 	
 	public Double getMinRatio()
 	{

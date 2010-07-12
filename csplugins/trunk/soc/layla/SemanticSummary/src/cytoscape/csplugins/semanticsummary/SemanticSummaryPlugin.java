@@ -152,6 +152,12 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				writer.write(params.toString());
 				writer.close();
 				
+				File current_filter = new File(tmpDir, netNameSep + networkName + netNameSep + ".FILTER.txt");
+				BufferedWriter filterWriter = new BufferedWriter(new FileWriter(current_filter));
+				filterWriter.write(params.getFilter().toString());
+				filterWriter.close();
+				pFileList.add(current_filter);
+				
 				//Loop on Clouds
 				if (!params.getClouds().isEmpty())
 				{
@@ -227,15 +233,6 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 						subCloud8Writer.close();
 						pFileList.add(current_pairRatios);
 						
-						//File for Filter
-						File current_filter = new File(tmpDir, netNameSep + networkName + netNameSep +
-								cloudNameSep + cloud_name + cloudNameSep + ".FILTER.txt");
-						BufferedWriter subCloud9Writer = new BufferedWriter(new FileWriter(current_filter));
-						subCloud9Writer.write(cloud.getFilter().toString());
-						subCloud9Writer.close();
-						pFileList.add(current_filter);
-						
-						
 					}//end iteration over clouds
 				}//end if clouds exist for network
 			}//end try
@@ -294,7 +291,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				}//end if .props file
 			}//end loop through all props files
 			
-			//Go through the prop files to create the clouds
+			//Go through the prop files to create the clouds and set filters
 			for (int i = 0; i < pStateFileList.size(); i++)
 			{
 				File prop_file = pStateFileList.get(i);
@@ -324,6 +321,25 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					networkParams.addCloud(cloud_name, params);
 					
 				}//end if .CLOUDS.txt file
+				
+				if (prop_file.getName().contains(".FILTER.txt"))
+				{
+					TextFileReader reader = new TextFileReader(prop_file.getAbsolutePath());
+					reader.read();
+					String fullText = reader.getText();
+					
+					//Get the networkID from the props file
+					String[] fullname = prop_file.getName().split(netNameSep);
+					String net_name = fullname[1];
+					
+					//Get the Network Parameters
+					SemanticSummaryParameters networkParams = 
+						SemanticSummaryManager.getInstance().getCyNetworkList().get(net_name);
+					
+					//Recreate the Filter and set pointer in cloud
+					WordFilter curFilter = new WordFilter(fullText);
+					networkParams.setFilter(curFilter);
+				}
 			}//end loop through all props files
 			
 			
@@ -333,7 +349,8 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				File prop_file = pStateFileList.get(i);
 				
 				if (prop_file.getName().contains(".CLOUDS.txt") ||
-						prop_file.getName().contains(".props"))
+						prop_file.getName().contains(".props") || 
+						prop_file.getName().contains(".FILTER.txt"))
 					continue;
 				
 				TextFileReader reader = new TextFileReader(prop_file.getAbsolutePath());
@@ -405,12 +422,6 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					cloudParams.setPairRatios(pairRatios);
 				}
 				
-				if (prop_file.getName().contains(".FILTER.txt"))
-				{
-					//Recreate the Filter and set pointer in cloud
-					WordFilter curFilter = new WordFilter(fullText);
-					cloudParams.setFilter(curFilter);
-				}
 				
 			}//end loop through all props files
 			

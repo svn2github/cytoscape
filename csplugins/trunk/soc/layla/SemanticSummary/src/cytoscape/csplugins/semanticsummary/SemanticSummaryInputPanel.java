@@ -685,7 +685,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmb.removeAllElements();
 		
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-		WordFilter curFilter = params.getFilter();
+		SemanticSummaryParameters networkParams = params.getNetworkParams();
+		WordFilter curFilter = networkParams.getFilter();
 		
 		//Check if we are dealing with the Null CloudParameters
 		Boolean isNull = false;
@@ -937,7 +938,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 							!selectItem.equalsIgnoreCase(stopSeparator))
 					{
 						CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-						WordFilter curFilter = params.getFilter();
+						SemanticSummaryParameters networkParams = params.getNetworkParams();
+						WordFilter curFilter = networkParams.getFilter();
 						
 						//Remove from filter
 						curFilter.remove(selectItem);
@@ -963,7 +965,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				{ 
 					//add value to cloud parameters filter and update
 					CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-					WordFilter curFilter = params.getFilter();
+					SemanticSummaryParameters networkParams = params.getNetworkParams();
+					WordFilter curFilter = networkParams.getFilter();
 					value.toLowerCase();
 					curFilter.add(value);
 					

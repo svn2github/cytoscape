@@ -77,6 +77,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		nullSemanticSummary.setNetworkName("No Network Loaded");
 		nullCloudParameters = new CloudParameters();
 		nullCloudParameters.setCloudName("Null Cloud");
+		nullCloudParameters.setNetworkParams(nullSemanticSummary);
 		
 		//catch network creation/destruction events
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
