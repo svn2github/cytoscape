@@ -187,16 +187,31 @@ public class LayoutEdge {
 		String target = "undefined";
 		String edgeId = "undefined";
 
-		if (v1 != null && (v1.getClass().getName() == "LayoutNodeImpl") )
+		if (v1 != null && (v1.getType() == "normal") )
 		    source = ((LayoutNodeImpl) v1).getIdentifier();
 
-		if (v2 != null && (v2.getClass().getName() == "LayoutNodeImpl") )
-		    target = ((LayoutNodeImpl) v2).getIdentifier();
+		if (v2 != null && (v2.getType() == "normal") )
+		    target = v2.getIdentifier();
 
 		if (this.edge != null)
 		    edgeId = edge.getIdentifier();
 
 		return "Edge " + edgeId + " connecting " + source + " and " + target
 		       + " with weight " + weight;
+	}
+
+	/**
+	 * Return a string representation of the type of this layoutEdge.
+	 *
+	 * @return    A String containting "normal" if both nodes are "normal", 
+	 * and "label" if any node is a label layout node
+	 */
+	public String getType() {
+	    if( (v1 != null && v1.getType() == "label") 
+		|| (v2 != null && v2.getType() == "label") ) {
+		return "label";
+	    } else {
+		return "normal";
+	    }
 	}
 }

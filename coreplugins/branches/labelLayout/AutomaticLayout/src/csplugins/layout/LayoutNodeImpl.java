@@ -134,6 +134,15 @@ public class LayoutNodeImpl extends LayoutNode {
     }
 
     /**
+     * Return a string with the "type" of the node ("normal", "label")
+     *
+     * @return        String containing the node's type
+     */
+    public String getType() {
+	return "normal";
+    }
+
+    /**
      * Return the node's identifier.
      *
      * @return        String containing the node's identifier

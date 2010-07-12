@@ -96,7 +96,7 @@ public class LayoutLabelPartition extends LayoutPartition {
 	this.initializeLabels();
 
 	// Calculate weights for this partition using an overriding method
-	this.calculateEdgeWeights();
+	//	this.calculateEdgeWeights();
     }
 
     /**
@@ -104,6 +104,9 @@ public class LayoutLabelPartition extends LayoutPartition {
      * LayoutLabelPartition to layout labels, such as Label nodes creation, etc.
      */
     protected void initializeLabels() {	
+
+	edgeWeighter.setLabelWeightCoefficient(weightCoefficient);
+	edgeWeighter.calculateMaxWeight();
 
 	for (LayoutNode ln: nodeList ) {
 	   
@@ -147,8 +150,13 @@ public class LayoutLabelPartition extends LayoutPartition {
 	    LayoutEdge labelEdge = new LayoutEdge();
 	    labelEdge.addNodes(ln, labelNode);
 
+	    // This takes care of the weight of this edge
+	    updateWeights(labelEdge);
+
 	    // Adds it to edgeList
 	    edgeList.add(labelEdge);
+
+
 	}
 
 	// Adds all LabelNodes to nodeList

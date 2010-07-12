@@ -78,6 +78,13 @@ public abstract class LayoutNode {
      */
     public abstract String toString();
 
+    /**
+     * Return a string with the "type" of the node ("normal", "label")
+     *
+     * @return        String containing the node's type
+     */
+    public abstract String getType();
+
     // End of abstract methods
 
 

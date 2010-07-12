@@ -47,14 +47,14 @@ import cytoscape.logger.CyLogger;
 import cytoscape.data.CyAttributes;
 
 enum WeightTypes {
-	GUESS("Heuristic"),
-	LOG("-Log(value)"),
-	DISTANCE("1 - normalized value"),
-	WEIGHT("normalized value");
-
-	private String name;
-	private WeightTypes(String str) { name=str; }
-	public String toString() { return name; }
+    GUESS("Heuristic"),
+    LOG("-Log(value)"),
+    DISTANCE("1 - normalized value"),
+    WEIGHT("normalized value");
+    
+    private String name;
+    private WeightTypes(String str) { name=str; }
+    public String toString() { return name; }
 }
 
 /**
@@ -62,240 +62,299 @@ enum WeightTypes {
  * about how to interpret weights in an weighted layout.
  */
 public class EdgeWeighter {
-	WeightTypes type = WeightTypes.GUESS;
-	double minWeightCutoff = 0;
-	double maxWeightCutoff = Double.MAX_VALUE;
-	final static double EPSILON = .001;
+    WeightTypes type = WeightTypes.GUESS;
+    double minWeightCutoff = 0;
+    double maxWeightCutoff = Double.MAX_VALUE;
+    final static double EPSILON = .001;
 
-	// Default normalization bounds
-	final static double LOWER_BOUND = .1f;
-	final static double UPPER_BOUND = .9f;
+    // Default normalization bounds
+    final static double LOWER_BOUND = .1f;
+    final static double UPPER_BOUND = .9f;
 
-	double lowerBounds = LOWER_BOUND;
-	double upperBounds = UPPER_BOUND;
+    double lowerBounds = LOWER_BOUND;
+    double upperBounds = UPPER_BOUND;
 
-	double maxWeight = -1000000;
-	double minWeight = 1000000;
-	double maxLogWeight = -1000000;
-	double minLogWeight = 1000000;
+    double maxWeight = -1000000;
+    double minWeight = 1000000;
+    double maxLogWeight = -1000000;
+    double minLogWeight = 1000000;
+    double maxWeightSnapshot = -1000000;
 
-	double logWeightCeiling = 1028;
-	boolean logOverflow = false;
+    double labelWeightCoefficient = 1.0;
 
-	private CyLogger logger = null;
+    double logWeightCeiling = 1028;
+    boolean logOverflow = false;
 
-	// These are just here for efficiency reasons
-	double normalFactor = Double.MAX_VALUE;
+    private CyLogger logger = null;
 
-	String weightAttribute = null;
+    // These are just here for efficiency reasons
+    double normalFactor = Double.MAX_VALUE;
 
-	static WeightTypes[] weightChoices = {WeightTypes.GUESS,
-	                                      WeightTypes.LOG,
-	                                      WeightTypes.DISTANCE,
-	                                      WeightTypes.WEIGHT};
+    String weightAttribute = null;
 
-	Tunable[] weightList = null;
+    static WeightTypes[] weightChoices = {WeightTypes.GUESS,
+					  WeightTypes.LOG,
+					  WeightTypes.DISTANCE,
+					  WeightTypes.WEIGHT};
 
-	public EdgeWeighter() {
-		logger = CyLogger.getLogger(EdgeWeighter.class);
-	}
+    Tunable[] weightList = null;
+
+
+
+    public EdgeWeighter() {
+	logger = CyLogger.getLogger(EdgeWeighter.class);
+    }
 	
-	public void getWeightTunables(LayoutProperties props, List initialAttributes) {
-		props.add(new Tunable("edge_weight_group","Edge Weight Settings",
-		                      Tunable.GROUP, new Integer(4)));
-		props.add(new Tunable("edge_attribute",
-			            	      "The edge attribute that contains the weights",
-			            	      Tunable.EDGEATTRIBUTE, "weight",
+    public void getWeightTunables(LayoutProperties props, List initialAttributes) {
+	props.add(new Tunable("edge_weight_group","Edge Weight Settings",
+			      Tunable.GROUP, new Integer(4)));
+	props.add(new Tunable("edge_attribute",
+			      "The edge attribute that contains the weights",
+			      Tunable.EDGEATTRIBUTE, "weight",
                   	      (Object) initialAttributes, (Object) null,
                   	      Tunable.NUMERICATTRIBUTE));
-		props.add(new Tunable("weight_type", "How to interpret weight values",
+	props.add(new Tunable("weight_type", "How to interpret weight values",
                   	      Tunable.LIST, new Integer(0),
                   	      (Object) weightChoices, (Object) null, 0));
-		props.add(new Tunable("min_weight", "The minimum edge weight to consider",
+	props.add(new Tunable("min_weight", "The minimum edge weight to consider",
                   	      Tunable.DOUBLE, new Double(0)));
-		props.add(new Tunable("max_weight", "The maximum edge weight to consider",
+	props.add(new Tunable("max_weight", "The maximum edge weight to consider",
                   	      Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
-	}
+    }
 
-	public void updateSettings(LayoutProperties layoutProperties, boolean force) {
-		boolean resetRequired = false;
+    public void updateSettings(LayoutProperties layoutProperties, boolean force) {
+	boolean resetRequired = false;
   	Tunable t = layoutProperties.get("min_weight");
-    if ((t != null) && (t.valueChanged() || force)) {
-    	minWeightCutoff = ((Double) t.getValue()).doubleValue();
-			resetRequired = true;
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-    t = layoutProperties.get("max_weight"); 
-    if ((t != null) && (t.valueChanged() || force)) {
-    	maxWeightCutoff = ((Double) t.getValue()).doubleValue();
-			resetRequired = true;
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-    t = layoutProperties.get("edge_attribute");
-    if ((t != null) && (t.valueChanged() || force)) {
-    	weightAttribute = (t.getValue().toString());
-			resetRequired = true;
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-		t = layoutProperties.get("weight_type");
-		if ((t != null) && (t.valueChanged() || force)) {
-			type = weightChoices[((Integer) t.getValue()).intValue()];
-			resetRequired = true;
-			if (t.valueChanged())
-				layoutProperties.setProperty(t.getName(), t.getValue().toString());
-		}
-
-		if (resetRequired) 
-			reset();
-
+	if ((t != null) && (t.valueChanged() || force)) {
+	    minWeightCutoff = ((Double) t.getValue()).doubleValue();
+	    resetRequired = true;
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	public void reset() {
-		maxWeight = -1000000;
-		minWeight = 1000000;
-		maxLogWeight = -1000000;
-		minLogWeight = 1000000;
-		normalFactor = Double.MAX_VALUE;
-		logOverflow = false;
+	t = layoutProperties.get("max_weight"); 
+	if ((t != null) && (t.valueChanged() || force)) {
+	    maxWeightCutoff = ((Double) t.getValue()).doubleValue();
+	    resetRequired = true;
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	public void setWeightType(WeightTypes type) {
-		this.type = type;
+	t = layoutProperties.get("edge_attribute");
+	if ((t != null) && (t.valueChanged() || force)) {
+	    weightAttribute = (t.getValue().toString());
+	    resetRequired = true;
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	public void setNormalizedBounds(double lowerBound, double upperBound) {
-		this.lowerBounds = lowerBound;
-		this.upperBounds = upperBound;
+	t = layoutProperties.get("weight_type");
+	if ((t != null) && (t.valueChanged() || force)) {
+	    type = weightChoices[((Integer) t.getValue()).intValue()];
+	    resetRequired = true;
+	    if (t.valueChanged())
+		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
-	public void setWeight(LayoutEdge layoutEdge) {
-		CyEdge edge = layoutEdge.getEdge();
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		double eValue = 0.5;
+	if (resetRequired) 
+	    reset();
 
-		// logger.debug("Setting weight for "+layoutEdge+" using "+weightAttribute);
+    }
 
-		if ((weightAttribute != null)
-		    && edgeAttributes.hasAttribute(edge.getIdentifier(), weightAttribute)) {
-			if (edgeAttributes.getType(weightAttribute) == CyAttributes.TYPE_INTEGER) {
-				Integer val = edgeAttributes.getIntegerAttribute(edge.getIdentifier(),
-				                                                 weightAttribute);
-				eValue = (double) val.intValue();
-			} else {
-				Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(),
-				                                               weightAttribute);
-				eValue = val.doubleValue();
-			}
-		}
-		layoutEdge.setWeight(eValue);
-		minWeight = Math.min(minWeight,eValue);
-		maxWeight = Math.max(maxWeight,eValue);
-		if (type == WeightTypes.GUESS || type == WeightTypes.LOG) {
-			double logWeight;
-			if (eValue == 0) {
-				logWeight = logWeightCeiling;
-				logOverflow = true;
-			} else {
-				logWeight = Math.min(-Math.log10(eValue), logWeightCeiling);
-			}
-			minLogWeight = Math.min(minLogWeight,logWeight);
-			maxLogWeight = Math.max(maxLogWeight,logWeight);
-			layoutEdge.setLogWeight(logWeight);
-		}
+    public void reset() {
+	maxWeight = -1000000;
+	minWeight = 1000000;
+	maxLogWeight = -1000000;
+	minLogWeight = 1000000;
+	normalFactor = Double.MAX_VALUE;
+	logOverflow = false;
+    }
+
+    public void setWeightType(WeightTypes type) {
+	this.type = type;
+    }
+
+    public void setNormalizedBounds(double lowerBound, double upperBound) {
+	this.lowerBounds = lowerBound;
+	this.upperBounds = upperBound;
+    }
+
+    /**
+     *
+     */
+    public void setLabelWeightCoefficient(double labelWeightCoefficient) {
+	this.labelWeightCoefficient = labelWeightCoefficient;
+    }
+
+    /**
+     *
+     */
+    public void setWeight(LayoutEdge layoutEdge) {
+	// if any of the nodes are label nodes
+	if (layoutEdge.getType() == "label") {
+	    setWeightLabelEdge(layoutEdge);
+	} else {
+	    setWeightNormalEdge(layoutEdge);
+	}
+    }
+	
+    /**
+     *
+     */ 
+    public void calculateMaxWeight() {
+	this.maxWeightSnapshot = this.maxWeight;
+    }
+
+    /**
+     *
+     */ 
+    public void setWeightLabelEdge(LayoutEdge layoutEdge) {
+	logger.info("Setting weight for label edge: "+layoutEdge+" using "+ weightAttribute);	
+
+	double eValue = labelWeightCoefficient * maxWeightSnapshot;
+
+	layoutEdge.setWeight(eValue);
+	minWeight = Math.min(minWeight,eValue);
+	maxWeight = Math.max(maxWeight,eValue);
+
+	if (type == WeightTypes.GUESS || type == WeightTypes.LOG) {
+	    double logWeight;
+	    if (eValue == 0) {
+		logWeight = logWeightCeiling;
+		logOverflow = true;
+	    } else {
+		logWeight = Math.min(-Math.log10(eValue), logWeightCeiling);
+	    }
+
+	    minLogWeight = Math.min(minLogWeight,logWeight);
+	    maxLogWeight = Math.max(maxLogWeight,logWeight);
+	    layoutEdge.setLogWeight(logWeight);
+	}
+    }
+
+    public void setWeightNormalEdge(LayoutEdge layoutEdge) {
+	CyEdge edge = layoutEdge.getEdge();
+	CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+	double eValue = 0.5;
+
+	// logger.debug("Setting weight for "+layoutEdge+" using "+weightAttribute);
+	logger.info("Setting weight for "+layoutEdge+" using "+weightAttribute);
+
+	if ((weightAttribute != null)
+	    && edgeAttributes.hasAttribute(edge.getIdentifier(), weightAttribute)) {
+	    if (edgeAttributes.getType(weightAttribute) == CyAttributes.TYPE_INTEGER) {
+		Integer val = edgeAttributes.getIntegerAttribute(edge.getIdentifier(),
+								 weightAttribute);
+		eValue = (double) val.intValue();
+	    } else {
+		Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(),
+							       weightAttribute);
+		eValue = val.doubleValue();
+	    }
+	}
+	layoutEdge.setWeight(eValue);
+	minWeight = Math.min(minWeight,eValue);
+	maxWeight = Math.max(maxWeight,eValue);
+	if (type == WeightTypes.GUESS || type == WeightTypes.LOG) {
+	    double logWeight;
+	    if (eValue == 0) {
+		logWeight = logWeightCeiling;
+		logOverflow = true;
+	    } else {
+		logWeight = Math.min(-Math.log10(eValue), logWeightCeiling);
+	    }
+	    minLogWeight = Math.min(minLogWeight,logWeight);
+	    maxLogWeight = Math.max(maxLogWeight,logWeight);
+	    layoutEdge.setLogWeight(logWeight);
+	}
+    }
+
+    public boolean normalizeWeight(LayoutEdge edge) {
+	// If all of our weights are the same we should
+	// normalize everything to 0.5
+	if (minWeight == maxWeight) {
+	    edge.setWeight(0.5);
+	    return true;
 	}
 
-	public boolean normalizeWeight(LayoutEdge edge) {
-		// If all of our weights are the same we should
-		// normalize everything to 0.5
-		if (minWeight == maxWeight) {
-			edge.setWeight(0.5);
-			return true;
-		}
-
-		// We need to handle the special case of a weight of 0.0 when
-		// we're doing logs.  When we set the value, we set it to
-		// logWeightCeiling as a placeholder, but we really want to
-		// just set it to a value somewhat larger than the maximum
-		if (logOverflow) {
-			maxLogWeight = maxLogWeight+5;
-			logOverflow = false;
-		}
-
-		if ((edge.getWeight() < minWeightCutoff) ||	
-		    (edge.getWeight() > maxWeightCutoff))
-			return false;
-
-		double weight = 0;
-
-		switch (this.type) {
-		case GUESS:
-			// logger.debug("Heuristic: ");
-			if (Math.abs(maxLogWeight-minLogWeight) > 3) {
-				weight = edge.getLogWeight();
-				// logger.debug("Log weight = "+weight);
-				if (weight == logWeightCeiling)
-					weight = maxLogWeight+1;
-				weight = logNormalize(weight);
-				// logger.debug(" normalized weight = "+weight);
-			} else {
-				weight = normalize(edge.getWeight());
-			}
-			break;
-	  case LOG:
-			// logger.debug("Log: ");
-			weight = edge.getLogWeight();
-			// logger.debug("Log weight = "+weight);
-			if (weight == logWeightCeiling)
-				weight = maxLogWeight+1;
-			weight = logNormalize(weight);
-			// logger.debug(" normalized weight = "+weight);
-			break;
-	  case DISTANCE:
-			// logger.debug("Distance");
-			weight = edge.getWeight();
-			weight = (lowerBounds + upperBounds) - normalize(weight);
-			break;
-	  case WEIGHT:
-			// logger.debug("Weight");
-			weight = normalize(edge.getWeight());
-			break;
-		}
-
-		edge.setWeight(weight);
-
-		// We're now normalized to the range 0-1, so we can safely
-		// ignore really small weights since they should be very far away
-		//if (weight < EPSILON)
-		//	return false;
-
-		return true;
+	// We need to handle the special case of a weight of 0.0 when
+	// we're doing logs.  When we set the value, we set it to
+	// logWeightCeiling as a placeholder, but we really want to
+	// just set it to a value somewhat larger than the maximum
+	if (logOverflow) {
+	    maxLogWeight = maxLogWeight+5;
+	    logOverflow = false;
 	}
 
-	private double logNormalize(double weight) {
-		if (normalFactor == Double.MAX_VALUE) {
-			normalFactor = (upperBounds-lowerBounds)/(maxLogWeight-minLogWeight);
-		}
-		return (weight-minLogWeight)*normalFactor+lowerBounds;
+	if ((edge.getWeight() < minWeightCutoff) ||	
+	    (edge.getWeight() > maxWeightCutoff))
+	    return false;
+
+	double weight = 0;
+
+	switch (this.type) {
+	case GUESS:
+	    // logger.debug("Heuristic: ");
+	    if (Math.abs(maxLogWeight-minLogWeight) > 3) {
+		weight = edge.getLogWeight();
+		// logger.debug("Log weight = "+weight);
+		if (weight == logWeightCeiling)
+		    weight = maxLogWeight+1;
+		weight = logNormalize(weight);
+		// logger.debug(" normalized weight = "+weight);
+	    } else {
+		weight = normalize(edge.getWeight());
+	    }
+	    break;
+	case LOG:
+	    // logger.debug("Log: ");
+	    weight = edge.getLogWeight();
+	    // logger.debug("Log weight = "+weight);
+	    if (weight == logWeightCeiling)
+		weight = maxLogWeight+1;
+	    weight = logNormalize(weight);
+	    // logger.debug(" normalized weight = "+weight);
+	    break;
+	case DISTANCE:
+	    // logger.debug("Distance");
+	    weight = edge.getWeight();
+	    weight = (lowerBounds + upperBounds) - normalize(weight);
+	    break;
+	case WEIGHT:
+	    // logger.debug("Weight");
+	    weight = normalize(edge.getWeight());
+	    break;
 	}
 
-	private double normalize(double weight) {
-		if (normalFactor == Double.MAX_VALUE) {
-			normalFactor = (upperBounds-lowerBounds)/(maxWeight-minWeight);
-		}
-		return (weight-minWeight)*normalFactor+lowerBounds;
-	}
+	edge.setWeight(weight);
 
-	public void setMaxWeightCutoff(double maxWeight) {
-		maxWeightCutoff = maxWeight;
-	}
+	// We're now normalized to the range 0-1, so we can safely
+	// ignore really small weights since they should be very far away
+	//if (weight < EPSILON)
+	//	return false;
 
-	public void setMinWeightCutoff(double minWeight) {
-		minWeightCutoff = minWeight;
+	return true;
+    }
+
+    private double logNormalize(double weight) {
+	if (normalFactor == Double.MAX_VALUE) {
+	    normalFactor = (upperBounds-lowerBounds)/(maxLogWeight-minLogWeight);
 	}
+	return (weight-minLogWeight)*normalFactor+lowerBounds;
+    }
+
+    private double normalize(double weight) {
+	if (normalFactor == Double.MAX_VALUE) {
+	    normalFactor = (upperBounds-lowerBounds)/(maxWeight-minWeight);
+	}
+	return (weight-minWeight)*normalFactor+lowerBounds;
+    }
+
+    public void setMaxWeightCutoff(double maxWeight) {
+	maxWeightCutoff = maxWeight;
+    }
+
+    public void setMinWeightCutoff(double minWeight) {
+	minWeightCutoff = minWeight;
+    }
 }

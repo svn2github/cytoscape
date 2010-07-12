@@ -58,15 +58,15 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	    lp = parser.parseStringValue(labelPosition);
 	}
 	
-// 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
-// 	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
+	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
+	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
 
 	this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
 	this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
 	this.neighbors = new ArrayList<LayoutNode>();
 	this.index = index;
 
-	//	logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
+	logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
     }
 
     /**
@@ -142,6 +142,15 @@ public class LayoutLabelNodeImpl extends LayoutNode {
      */
     public String toString() {
 	return "Label of Node: " + getIdentifier() + " at " + printLocation();
+    }
+
+    /**
+     * Return a string with the "type" of the node ("normal", "label")
+     *
+     * @return        String containing the node's type
+     */
+    public String getType() {
+	return "label";
     }
 
     /**
