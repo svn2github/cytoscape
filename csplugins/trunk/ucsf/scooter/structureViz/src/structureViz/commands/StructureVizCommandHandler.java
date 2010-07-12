@@ -58,10 +58,10 @@ import structureViz.model.Structure;
 enum Command {
   ALIGNSTRUCTURES("alignstructures", 
 	                "Perform sequence-driven structural superposition on a group of structures", 
-	                "reference|structurelist"),
+	                "reference|structurelist|showsequences=false|createedges=false|assignattributes=true"),
   ALIGNCHAINS("alignchains", 
 	            "Perform sequence-driven structural superposition on a group of structures by chain", 
-	            "referencechain|chainlist"),
+	            "referencechain|chainlist|showsequences=false|createedges=false|assignattributes=true"),
 	CLEARCLASHES("clear clashes", "Clear clashes", ""),
 	CLEARHBONDS("clear hbonds", "Clear hydrogen bonds", ""),
 	CLEARSELECT("clear selection", "Clear all selection", ""),
@@ -111,10 +111,12 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	CyLogger logger;
 	Chimera chimera = null;
 
+	public static final String ASSIGNATTRIBUTES = "assignattributes";
 	public static final String ATOMSPEC = "atomspec";
 	public static final String CHAIN = "chain";
 	public static final String CHAINLIST = "chainlist";
 	public static final String CONTINUOUS = "continuous";
+	public static final String CREATEEDGES = "createedges";
 	public static final String LABELS = "labels";
 	public static final String MODELLIST = "modellist";
 	public static final String NODELIST = "nodelist";
@@ -125,6 +127,7 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	public static final String RIBBONS = "ribbons";
 	public static final String RIBBONSTYLE = "ribbonstyle";
 	public static final String SELECTED = "selected";
+	public static final String SHOWSEQUENCES = "showsequences";
 	public static final String STRUCTURELIST = "structurelist";
 	public static final String STRUCTURETYPE = "structuretype";
 	public static final String STYLE = "style";
@@ -171,7 +174,7 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		//
 		// ALIGNSTRUCTURES("alignstructures", 
 	  //                 "Perform sequence-driven structural superposition on a group of structures", 
-	  //                 "reference|structurelist"),
+	  //                 "reference|structurelist|showsequences=false|createedges=false|assignattributes=true"),
 	  //
 		if (Command.ALIGNSTRUCTURES.equals(command)) {
 			String reference = getArg(command,REFERENCE, args);
@@ -180,12 +183,19 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			if (reference == null)
 				throw new CyCommandException("Must specify a reference structure");
 			List<Structure> referenceStruct = CommandUtils.getStructureList(reference, chimera);
-			result = AnalysisCommands.alignStructures(chimera, result, referenceStruct, structureList);	
+			if (referenceStruct == null || referenceStruct.size() != 1)
+				throw new CyCommandException("Only one reference structure may be specified");
+			boolean showSequences = getBooleanArg(command, SHOWSEQUENCES, args);
+			boolean createEdges = getBooleanArg(command, CREATEEDGES, args);
+			boolean assignAttributes = getBooleanArg(command, ASSIGNATTRIBUTES, args);
+			result = AnalysisCommands.alignStructures(chimera, result, referenceStruct.get(0), 
+			                                          structureList, showSequences, createEdges, 
+			                                          assignAttributes);	
 			
 		//
 		// ALIGNCHAINS("alignchains", 
 	  //             "Perform sequence-driven structural superposition on a group of structures by chain", 
-	  //             "referencechain|chainlist"),
+	  //             "referencechain|chainlist|showsequences=false|createedges=false|assignattributes=true"),
 		//
 		} else if (Command.ALIGNCHAINS.equals(command)) {
 			String reference = getArg(command,REFERENCECHAIN, args);
@@ -196,7 +206,13 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 				throw new CyCommandException("Must specify a reference chain");
 			List<ChimeraStructuralObject> referenceCSO = CommandUtils.getSpecList(reference,chimera);
 			List<ChimeraStructuralObject> chainList = CommandUtils.getSpecList(chainlist,chimera);
-			result = AnalysisCommands.alignChains(chimera, result, referenceCSO, chainList);	
+			if (referenceCSO.size() != 1)
+				throw new CyCommandException("Only one reference chain may be specified");
+			boolean showSequences = getBooleanArg(command, SHOWSEQUENCES, args);
+			boolean createEdges = getBooleanArg(command, CREATEEDGES, args);
+			boolean assignAttributes = getBooleanArg(command, ASSIGNATTRIBUTES, args);
+			result = AnalysisCommands.alignChains(chimera, result, referenceCSO.get(0), chainList,
+			                                      showSequences, createEdges, assignAttributes);	
 
 		//
 		// CLEARCLASHES("clear clashes", "Clear clashes"),
@@ -448,6 +464,15 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		}
 
 		return result;
+	}
+
+	private boolean getBooleanArg(String command, String arg, Map<String, Object>args) {
+		String com = getArg(command, arg, args);
+		if (com == null || com.length() == 0) return false;
+		boolean b = false;
+		b = Boolean.parseBoolean(com);
+		// throw new CyCommandException(arg+" must be 'true' or 'false'");
+		return b;
 	}
 
 	private void addCommand(String command, String description, String argString) {

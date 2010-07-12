@@ -63,7 +63,7 @@ import structureViz.model.ChimeraStructuralObject;
  * requests to align structures.
  */
 public class Align {
-	private static final String[] attributeKeys = {"RMSD","AlignmentScore","AlignedResidues"};
+	public static final String[] attributeKeys = {"RMSD","AlignmentScore","AlignedResidues"};
 
 	/**
 	 * Array offset to the RMSD result

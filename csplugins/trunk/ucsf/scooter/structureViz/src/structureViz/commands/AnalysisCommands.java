@@ -38,23 +38,44 @@ import java.util.List;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandResult;
 
+import structureViz.actions.Align;
 import structureViz.actions.AnalysisActions;
 import structureViz.actions.Chimera;
 import structureViz.actions.DisplayActions;
+import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.Structure;
 
 /**
- * 
+ * The analysis commands for structureViz
  */
 public class AnalysisCommands extends AbstractCommands {
 
+	/**
+	 * This is called to handle the "find clashes" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @param structureList the structureList we're looking to find clashes between
+	 * @param continuous the continuous flag
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult findClashesStructure(Chimera chimera, CyCommandResult result, 
 	                                                 List<Structure>structureList, String continuous) {
-		return findClashesSpecList(chimera, result, specListFromStructureList(chimera, structureList), continuous);
+		return findClashesSpecList(chimera, result, 
+		                           specListFromStructureList(chimera, structureList), continuous);
 	}
 
+	/**
+	 * This is called to handle the "find clashes" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @param specList the specList we're looking to find clashes between
+	 * @param continuous the continuous flag
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult findClashesSpecList(Chimera chimera, CyCommandResult result, 
 	                                            List<ChimeraStructuralObject>specList, String continuous) { 
 		boolean cont = false;
@@ -73,17 +94,41 @@ public class AnalysisCommands extends AbstractCommands {
 		return addReplies(result, c, "Finding clashes for "+atomSpec);
 	}
 
+	/**
+	 * This is called to handle the "clear clashes" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult clearClashes(Chimera chimera, CyCommandResult result) {
 		List<String> c = AnalysisActions.clearClashAction(chimera);
 		result = addReplies(result, c, "Cleared clashes");
 		return result;
 	}
 
+	/**
+	 * This is called to handle the "find hbonds" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @param structureList the structureList we're looking to find clashes between
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult findHBondsStructure(Chimera chimera, CyCommandResult result, 
 	                                                 List<Structure>structureList) {
 		return findHBondsSpecList(chimera, result, specListFromStructureList(chimera, structureList));
 	}
 
+	/**
+	 * This is called to handle the "find hbonds" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @param specList the specList we're looking to find clashes between
+	 * @param continuous the continuous flag
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult findHBondsSpecList(Chimera chimera, CyCommandResult result, 
 	                                            List<ChimeraStructuralObject>specList) { 
 		String atomSpec = "";
@@ -97,25 +142,95 @@ public class AnalysisCommands extends AbstractCommands {
 		return addReplies(result, c, "Finding HBonds for "+atomSpec);
 	}
 
+	/**
+	 * This is called to handle the "clear hbonds" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult clearHBonds(Chimera chimera, CyCommandResult result) {
 		List<String> c = AnalysisActions.clearHBondAction(chimera);
 		result = addReplies(result, c, "Cleared hydrogen bonds");
 		return result;
 	}
 
+	/**
+	 * This is called to handle the "align structures" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @param referenceStruct the reference structure
+	 * @param structureList the list of structures to align to the reference
+	 * @param showSequences show the resulting pairwise alignments
+	 * @param createEdges create edges in Cytoscape corresponding to the alignments
+	 * @param assignAttributes assign edge attributes with the alignment results
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult alignStructures(Chimera chimera, CyCommandResult result, 
-	                                              List<Structure>referenceStruct, 
-	                                              List<Structure>structureList) {
+	                                              Structure referenceStruct, 
+	                                              List<Structure> structures,
+			                                          boolean showSequences, boolean createEdges,
+	                                              boolean assignAttributes) {
 		// Do the alignment
-
-		return result;
+		Align align = getAlign(chimera, showSequences, createEdges, assignAttributes);
+		align.align(referenceStruct, structures);
+		List<ChimeraStructuralObject>specList = specListFromStructureList(chimera, structures);
+		return getAlignResults(align, result, specList);
 	}
 
+	/**
+	 * This is called to handle the "align chains" command.
+	 *
+	 * @param chimera the Chimera object
+	 * @param result the CyCommandResult
+	 * @param referenceChain the reference chain
+	 * @param structureList the list of chains to align to the reference
+	 * @param showSequences show the resulting pairwise alignments
+	 * @param createEdges create edges in Cytoscape corresponding to the alignments
+	 * @param assignAttributes assign edge attributes with the alignment results
+	 * @return the updated CyCommandResult
+	 */
 	static public CyCommandResult alignChains(Chimera chimera, CyCommandResult result, 
-	                                          List<ChimeraStructuralObject>reference, 
-	                                          List<ChimeraStructuralObject>chainList) {
+	                                          ChimeraStructuralObject referenceChain, 
+	                                          List<ChimeraStructuralObject>chainList,
+			                                      boolean showSequences, boolean createEdges,
+	                                          boolean assignAttributes)
+	                                          throws CyCommandException {
 		// Make sure everything is a chain
+		if (!(referenceChain instanceof ChimeraChain))
+			throw new CyCommandException("Reference chain must be a chain specification");
+
+		for (ChimeraStructuralObject obj: chainList) {
+			if (!(obj instanceof ChimeraChain))
+				throw new CyCommandException("Chains to align must be chain specifications");
+		}
 		// Do the alignment
+		Align align = getAlign(chimera, showSequences, createEdges, assignAttributes);
+		align.align(referenceChain, chainList);
+		return getAlignResults(align, result, chainList);
+	}
+
+	private static Align getAlign(Chimera chimera, boolean showSequences, boolean createEdges,
+	                              boolean assignAttributes) {
+		Align align = new Align(chimera);
+		align.setCreateEdges(assignAttributes);
+		align.setCreateNewEdges(createEdges);
+		align.setShowSequence(showSequences);
+		return align;
+	}
+
+	private static CyCommandResult getAlignResults(Align align, CyCommandResult result,
+	                                               List<ChimeraStructuralObject> matchList) {
+		for (ChimeraStructuralObject obj: matchList) {
+			float[] matchResults = align.getResults(obj.toString());
+			String resultMessage = "Alignment results for "+obj.toString()+": ";
+			for (int i = 0; i < 3; i++) {
+				resultMessage += Align.attributeKeys[i]+"="+matchResults[i];
+			}
+			result.addMessage(resultMessage);
+			result.addResult(obj.toString(), ""+matchResults[0]+","+matchResults[1]+","+matchResults[2]);
+		}
 		return result;
 	}
 }
