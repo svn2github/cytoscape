@@ -2180,7 +2180,10 @@ public class DGraphView implements GraphView, Printable {
 	}
 
 	/**
-	 * Extents of the nodes.
+	 *  Extents of the view. After the call extentsBuff[0] will be xmin, extentsBuff[1] will be ymin,
+	 *  extentsBuff[2] will be xmax, extentsBuff[3] will be ymax.
+	 *
+	 *  @return true if the extends were successfully retrieved, else false
 	 */
 	public boolean getExtents(double[] extentsBuff) {
 		synchronized (m_lock) {
