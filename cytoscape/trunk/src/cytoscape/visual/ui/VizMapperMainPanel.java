@@ -158,6 +158,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	
 	private static final Color UNUSED_COLOR = new Color(100, 100, 100, 50);
 	
+	private static final int ROW_HEIGHT = 20;
+	private static final int ROW_HEIGHT_POSITION = 50;
+	private static final int ROW_HEIGHT_GRAPHICS = 100;
+	
 	public enum DefaultEditor {
 		NODE,
 		EDGE,
@@ -942,7 +946,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			});
 
 		PropertySheetTable table = visualPropertySheetPanel.getTable();
-		table.setRowHeight(25);
+		table.setRowHeight(ROW_HEIGHT);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setCategoryBackground(new Color(10, 10, 50, 20));
 		table.setCategoryForeground(Color.black);
@@ -983,14 +987,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 
-			if ((shownProp != null) && (shownProp.getParentProperty() != null)) {
+			if ((shownProp != null) && (shownProp.getParentProperty() != null) && !shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
+				final String parentText = shownProp.getParentProperty().getDisplayName();
+				
 				// This is graphics cell. Need larger cell.
-				if(shownProp.getParentProperty().getDisplayName()
-		                .equals(NODE_LABEL_POSITION.getName()))
-					table.setRowHeight(i, 50);
+				if(parentText.contains("Position"))
+					table.setRowHeight(i, ROW_HEIGHT_POSITION);
 				else if(shownProp.getParentProperty().getDisplayName()
 		                .startsWith("Node Custom Graphics"))
-					table.setRowHeight(i, 100);
+					table.setRowHeight(i, ROW_HEIGHT_GRAPHICS);
 					
 			} else if ((shownProp != null) && shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
 				// This is a Continuous Icon cell.
@@ -1008,7 +1013,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						             .getCalculator(((VisualPropertyType) type)).getMapping(0);
 
 					if (mapping instanceof ContinuousMapping<?, ?>) {
-						table.setRowHeight(i, 100);
+						table.setRowHeight(i, ROW_HEIGHT_GRAPHICS);
 
 						int wi = table.getCellRect(0, 1, true).width;
 						final ImageIcon icon = ContinuousMappingEditorPanel.getIcon(wi, 70,
