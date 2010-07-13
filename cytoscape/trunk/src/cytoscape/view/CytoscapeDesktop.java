@@ -40,6 +40,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -95,9 +96,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected int returnVal;
 
 	// Default sizes of components
-	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(980, 720);
-	private static final int DEF_DEVIDER_LOCATION = 325;
-	private static final int DEF_DATAPANEL_DEVIDER_LOCATION = 410;
+	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(1000, 720);
+	private static final int DEF_CONTROL_PANEL_WIDTH = 400;
+	private static final int DEF_DATAPANEL_HEIGHT = 300;
+	
+	private static final int DEVIDER_SIZE = 4;
 
 	/**
 	 *
@@ -203,6 +206,19 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	// Overview Window;
 	private BirdsEyeViewHandler bevh;
+	
+	// These values will be calculated based on start-up window size.
+	private int defaultControlPanelWidth;
+	private int defaultDataPanelHeight;
+	
+	// Desktop and Result Panel
+	private BiModalJSplitPane topRightPane;
+	
+	// Desktop and Data Panel
+	private BiModalJSplitPane rightPane;
+	
+	// Network Panel and Desktop
+	private BiModalJSplitPane masterPane;
 
 
 	/**
@@ -286,15 +302,12 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		cyMenus.initializeMenus();
 
 		// create the CytoscapeDesktop
-		final BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
+		masterPane = setupCytoPanels(networkPanel, networkViewManager);
 
 		// note - proper networkViewManager has been properly selected in
 		// setupCytoPanels()
 		main_panel.add(masterPane, BorderLayout.CENTER);
 		main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
-		
-		// Set the width of Cytopanel West
-		masterPane.setDividerLocation(DEF_DEVIDER_LOCATION);
 		
 		// Remove status bar.
 		initStatusBar(main_panel);
@@ -316,8 +329,17 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			});
 
 		setContentPane(main_panel);
-		pack();
+		
 		setSize(DEF_DESKTOP_SIZE);
+		pack();
+		
+		// Calculate panel sizes based on current window size.
+		calculateProperPanelSize();
+		
+		// Set the width of Cytopanel West
+		masterPane.setDividerLocation(defaultControlPanelWidth);
+		rightPane.setDividerLocation(getSize().height - defaultDataPanelHeight);
+		masterPane.setDividerSize(DEVIDER_SIZE);
 		
 		// Set desktop location
 		setDesktopLocation();
@@ -325,6 +347,19 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// show the Desktop
 		setVisible(true);
 		toFront();
+	}
+	
+	
+	private void calculateProperPanelSize() {
+		final Dimension windowSize = this.getSize();
+		
+		this.defaultControlPanelWidth = (int)(windowSize.width * 0.4);
+		if(defaultControlPanelWidth>DEF_CONTROL_PANEL_WIDTH)
+			defaultControlPanelWidth = DEF_CONTROL_PANEL_WIDTH;
+		
+		this.defaultDataPanelHeight = (int)(windowSize.getHeight()*0.3);
+		if(defaultDataPanelHeight > DEF_DATAPANEL_HEIGHT)
+			defaultControlPanelWidth = DEF_DATAPANEL_HEIGHT;
 	}
 
 	private void setDesktopLocation(){
@@ -345,11 +380,12 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	
 	private void initStatusBar(JPanel panel) {
 		statusBar = new JLabel();
-		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
-		statusBar.setForeground(new Color(75, 75, 75));
+		statusBar.setFont(new Font("SansSerif", Font.PLAIN, 10));
+		statusBar.setBorder(new EmptyBorder(0, 7, 0, 7));
+		statusBar.setForeground(new Color(40, 40, 40));
 		panel.add(statusBar, BorderLayout.SOUTH);
 		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version
-		                + "              Right-click + drag  to  ZOOM             Middle-click + drag  to  PAN");
+		                + "              Right-click + drag to ZOOM             Middle-click + drag to PAN");
 	}
 
 	/**
@@ -445,25 +481,23 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return vizmapperUI;
 	}
 
-	// ----------------------------------------//
-	// Focus Management
 
 	/**
 	 * @param style
 	 *            the NEW VisualStyle
 	 * @return the OLD VisualStyle
+	 * 
+	 * @deprecated use VisualMappingManager.setVisualStyle(VisualStyle style) instead.
 	 */
+	@Deprecated
 	public VisualStyle setVisualStyle(VisualStyle style) {
-		//
-		//				VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
-		//				                                              .getSelectedItem();
-		//		
+		
 		vmm.setVisualStyle(style);
 
-		//vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
 		return null;
 	}
 
+	
 	protected void updateFocus(String network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
 		final CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
@@ -662,12 +696,12 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *            to load on left side (CytoPanel West).
 	 * @return BiModalJSplitPane Object.
 	 */
-	protected BiModalJSplitPane setupCytoPanels(NetworkPanel networkPanel,
+	private BiModalJSplitPane setupCytoPanels(NetworkPanel networkPanel,
 	                                            NetworkViewManager networkViewManager) {
 		// bimodals that our Cytopanels Live within
-		final BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
-		final BiModalJSplitPane rightPane = createRightPane(topRightPane);
-		final BiModalJSplitPane masterPane = createMasterPane(networkPanel, rightPane);
+		topRightPane = createTopRightPane(networkViewManager);
+		rightPane = createRightPane(topRightPane);
+		masterPane = createMasterPane(networkPanel, rightPane);
 		createBottomLeft();
 
 		return masterPane;
@@ -677,7 +711,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		cytoPanelSouthWest = new CytoPanelImp(SwingConstants.SOUTH_WEST, JTabbedPane.TOP,
 	                                                             CytoPanelState.HIDE);
 
-		BiModalJSplitPane split = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
+		final BiModalJSplitPane split = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
 		                              BiModalJSplitPane.MODE_HIDE_SPLIT, new JPanel(),
 		                              cytoPanelSouthWest);
 		split.setResizeWeight(0);
@@ -685,6 +719,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		cytoPanelSouthWest.setMinimumSize(new Dimension(180, 230));
 		cytoPanelSouthWest.setMaximumSize(new Dimension(180, 230));
 		cytoPanelSouthWest.setPreferredSize(new Dimension(180, 230));
+		
+		split.setDividerSize(DEVIDER_SIZE);
 
 		new ToolCytoPanelListener( split, (CytoPanelImp)cytoPanelWest, cytoPanelSouthWest );
 	}
@@ -700,19 +736,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// create cytopanel with tabs along the top
 		cytoPanelEast = new CytoPanelImp(SwingConstants.EAST, JTabbedPane.TOP, CytoPanelState.HIDE);
 
-		// determine proper network view manager component
-		Component networkViewComp = null;
-
-		networkViewComp = (Component) networkViewManager.getDesktopPane();
-
 		// create the split pane - we show this on startup
-		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
+		final BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
 		                                                    BiModalJSplitPane.MODE_HIDE_SPLIT,
-		                                                    networkViewComp, cytoPanelEast);
+		                                                    networkViewManager.getDesktopPane(), cytoPanelEast);
 
 		// set the cytopanelcontainer
 		cytoPanelEast.setCytoPanelContainer(splitPane);
-
+		
 		// set the resize weight - left component gets extra space
 		splitPane.setResizeWeight(1.0);
 
@@ -731,15 +762,16 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// create cytopanel with tabs along the bottom
 		cytoPanelSouth = new CytoPanelImp(SwingConstants.SOUTH, JTabbedPane.BOTTOM,
 		                                  CytoPanelState.HIDE);
-
+		
 		// create the split pane - hidden by default
 		final BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
 		                                                    BiModalJSplitPane.MODE_HIDE_SPLIT,
 		                                                    topRightPane, cytoPanelSouth);
-		splitPane.setDividerLocation(DEF_DATAPANEL_DEVIDER_LOCATION);
 
 		// set the cytopanel container
 		cytoPanelSouth.setCytoPanelContainer(splitPane);
+		
+		splitPane.setDividerSize(DEVIDER_SIZE);
 
 		// set resize weight - top component gets all the extra space.
 		splitPane.setResizeWeight(1.0);
@@ -768,10 +800,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		                  networkPanel, "Cytoscape Network List");
 
 		// create the split pane - hidden by default
-		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
+		final BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
 		                                                    BiModalJSplitPane.MODE_SHOW_SPLIT,
 		                                                    cytoPanelWest, rightPane);
-
+		splitPane.setDividerSize(DEVIDER_SIZE);
+		
 		// set the cytopanel container
 		cytoPanelWest.setCytoPanelContainer(splitPane);
 

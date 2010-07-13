@@ -92,10 +92,13 @@ import javax.swing.event.ChangeListener;
  * @author Ethan Cerami, Benjamin Gross
  */
 public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
+	
+	private static final long serialVersionUID = 8431678873343221338L;
+
 	/**
 	 * The JTabbedPane we hide.
 	 */
-	private JTabbedPane tabbedPane;
+	private final JTabbedPane tabbedPane;
 
 	/**
 	 * Our state.
@@ -593,12 +596,12 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// add label and button components to yet another panel, 
 		// so we can layout properly
-		JPanel floatDockPanel = new JPanel(new BorderLayout());
+		final JPanel floatDockPanel = new JPanel(new BorderLayout());
 
 		// set float dock panel attributes
 		floatDockPanel.add(floatLabel, BorderLayout.WEST);
 		floatDockPanel.add(floatButton, BorderLayout.EAST);
-		floatDockPanel.setBorder(new EmptyBorder(2, 2, 2, 6));
+		floatDockPanel.setBorder(new EmptyBorder(0, 1, 0, 1));
 		floatDockPanel.setBackground(FLOAT_PANEL_COLOR);
 
 		// set preferred size - we can use float or dock icon diminsions - they are the same
@@ -612,6 +615,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// use the border layout for this CytoPanel
 		setLayout(new BorderLayout());
+		tabbedPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		add(floatDockPanel, BorderLayout.NORTH);
 		add(tabbedPane, BorderLayout.CENTER);
 	}
