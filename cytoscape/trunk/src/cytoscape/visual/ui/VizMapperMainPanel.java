@@ -989,13 +989,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if ((shownProp != null) && (shownProp.getParentProperty() != null) && !shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
 				final String parentText = shownProp.getParentProperty().getDisplayName();
-				
-				// This is graphics cell. Need larger cell.
-				if(parentText.contains("Position"))
-					table.setRowHeight(i, ROW_HEIGHT_POSITION);
-				else if(shownProp.getParentProperty().getDisplayName()
+				final String displayName = shownProp.getDisplayName();
+				if(displayName.equals("Mapping Type") == false) {
+					// This is graphics icon cell. Need larger cell.
+					if(parentText.contains("Position"))
+						table.setRowHeight(i, ROW_HEIGHT_POSITION);
+					else if(shownProp.getParentProperty().getDisplayName()
 		                .startsWith("Node Custom Graphics"))
-					table.setRowHeight(i, ROW_HEIGHT_GRAPHICS);
+						table.setRowHeight(i, ROW_HEIGHT_GRAPHICS);
+				}
 					
 			} else if ((shownProp != null) && shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
 				// This is a Continuous Icon cell.
