@@ -35,12 +35,23 @@
  */
 package cytoscape.visual.properties;
 
+
+/**
+ * Check given vale is in valid opacity value range.
+ * 
+ * @author kono
+ *
+ */
 class OpacityValidator implements ValueValidator {
-	public boolean isValid(Object value) {
+	
+	private static final double MIN_OPACITY = 0;
+	private static final double MAX_OPACITY = 255;
+	
+	public boolean isValid(Object value) {		
 		if ( value != null && 
 		     value instanceof Number && 
-		     ((Number) value).doubleValue() >= 0.0 &&
-			 ((Number) value).doubleValue() <= 255.0 )
+		     ((Number) value).doubleValue() >= MIN_OPACITY &&
+			 ((Number) value).doubleValue() <= MAX_OPACITY )
 			return true;
 		else
 			return false;

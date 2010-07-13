@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.visual.ui.editors.discrete;
 
 import java.awt.event.FocusEvent;
@@ -44,13 +44,12 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
 import cytoscape.Cytoscape;
 
-
 /**
  *
  */
 public class CyDoublePropertyEditor extends DoublePropertyEditor {
-	private Object currentValue;
-	private Object selected;
+
+	private Object selectedCell;
 
 	/**
 	 * Creates a new CyStringPropertyEditor object.
@@ -59,32 +58,22 @@ public class CyDoublePropertyEditor extends DoublePropertyEditor {
 		super();
 
 		((JTextField) editor).addFocusListener(new FocusListener() {
-				public void focusGained(FocusEvent e) {
-					final Item item = (Item) Cytoscape.getDesktop().getVizMapperUI().getSelectedItem();
-					selected = item.getProperty().getDisplayName();
-					setCurrentValue();
-				}
+			public void focusGained(FocusEvent e) {
+				final Item item = (Item) Cytoscape.getDesktop()
+						.getVizMapperUI().getSelectedItem();
+				selectedCell = item.getProperty().getDisplayName();
+			}
 
-				public void focusLost(FocusEvent arg0) {
-					checkChange();
-				}
-			});
+			public void focusLost(FocusEvent ev) {
+				validate();
+			}
+		});
 	}
 
-	private void setCurrentValue() {
-		this.currentValue = super.getValue();
-	}
-
-	private void checkChange() {
-		Number newValue = (Number) super.getValue();
-
-		if (newValue.doubleValue() <= 0) {
-			newValue = 0;
-			currentValue = 0;
-			((JTextField) editor).setText("0");
-			editor.repaint();
-		}
-
-		firePropertyChange(selected, newValue);
+	// Currently, all of the VP values are positive.
+	private void validate() {
+		final Object val = super.getValue();
+		if (val instanceof Number)
+			firePropertyChange(selectedCell, val);
 	}
 }

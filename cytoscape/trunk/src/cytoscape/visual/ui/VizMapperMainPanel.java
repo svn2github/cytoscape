@@ -1903,10 +1903,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			return;
 		}
-		if (type.getDataType() == Number.class) {
-			if ((((Number) newValue).doubleValue() == 0)
-			    || (newValue instanceof Number && type.toString().endsWith("OPACITY")
-			       && (((Number) newValue).doubleValue() > 255))) {
+		if (type.getDataType() == Number.class && newValue instanceof Number) {
+			// Validate Discrete Mapping Value
+			
+			if (type.getVisualProperty().isValidValue(newValue) == false) {
+				
+				// Out of range.  Use current value.
 				int shownPropCount = table.getRowCount();
 				Property p = null;
 				Object val = null;
@@ -1919,7 +1921,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 						if ((val != null) && val.equals(key.toString())) {
 							p.setValue(((DiscreteMapping) mapping).getMapValue(key));
-
 							return;
 						}
 					}

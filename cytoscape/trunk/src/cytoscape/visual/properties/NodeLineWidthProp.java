@@ -34,25 +34,20 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.LineStyle;
-
-import cytoscape.visual.VisualPropertyDependency;
-
 import giny.view.NodeView;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Stroke;
 
-import java.util.Properties;
-
 import javax.swing.Icon;
+
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.NodeIcon;
 
 
 /**
