@@ -171,7 +171,7 @@ public class BioDataServerUtil {
 
 		if (txName == null) {
 			txName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-			logger.info("Warning: Cannot recognize speices.  Speices field is set to defaultSpeciesName ("
+			logger.info("Warning: Cannot recognize species.  Species field is set to defaultSpeciesName ("
 			                   + txName + ")");
 			logger.info("Warning: Please check your tax_report.txt file.");
 		}
