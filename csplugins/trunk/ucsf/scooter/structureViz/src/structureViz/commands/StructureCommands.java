@@ -46,6 +46,7 @@ import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
 import structureViz.model.Structure;
+import structureViz.ui.ModelNavigatorDialog;
 
 /**
  * 
@@ -53,7 +54,7 @@ import structureViz.model.Structure;
 public class StructureCommands {
 
 	static public CyCommandResult openCommand(Chimera chimera, CyCommandResult result, 
-	                                          String nodelist) throws CyCommandException {
+	                                          String nodelist, boolean showDialog) throws CyCommandException {
 		String [] nodes = nodelist.split(",");
 		for (String node: nodes) {
 			System.out.println("Node: "+node);
@@ -61,7 +62,7 @@ public class StructureCommands {
 			System.out.println("StructureNames: "+structureNames);
 			if (structureNames != null) {
 				for (String struct: structureNames.split(",")) {
-					result = openCommand(chimera, result, struct, null, null);
+					result = openCommand(chimera, result, struct, null, null, showDialog);
 				}
 			}
 		}
@@ -70,7 +71,7 @@ public class StructureCommands {
 
 
 	static public CyCommandResult openCommand(Chimera chimera, CyCommandResult result, 
-	                                          String pdb, String modbase, String smiles) 
+	                                          String pdb, String modbase, String smiles, boolean showDialog) 
 	                                                 throws CyCommandException {
 
 		if (pdb != null && (modbase != null || smiles != null))
@@ -92,6 +93,10 @@ public class StructureCommands {
 
 		// To make sure, see if we can get the Chimera model
 		ChimeraModel model = chimera.getModel(name);
+
+		if (showDialog) {
+			chimera.launchDialog();
+		}
 
 		result.addMessage("Opened "+model);
 		return result;

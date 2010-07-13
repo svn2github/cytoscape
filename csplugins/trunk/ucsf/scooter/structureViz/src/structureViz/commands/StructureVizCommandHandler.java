@@ -56,10 +56,10 @@ import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.Structure;
 
 enum Command {
-  ALIGNSTRUCTURES("alignstructures", 
+  ALIGNSTRUCTURES("align structures", 
 	                "Perform sequence-driven structural superposition on a group of structures", 
 	                "reference|structurelist|showsequences=false|createedges=false|assignattributes=true"),
-  ALIGNCHAINS("alignchains", 
+  ALIGNCHAINS("align chains", 
 	            "Perform sequence-driven structural superposition on a group of structures by chain", 
 	            "referencechain|chainlist|showsequences=false|createedges=false|assignattributes=true"),
 	CLEARCLASHES("clear clashes", "Clear clashes", ""),
@@ -79,7 +79,7 @@ enum Command {
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",""),
 	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
-	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist"),
+	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist|showdialog=false"),
 	RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
 	                   "structurelist|atomspec"),
 	ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
@@ -128,6 +128,7 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	public static final String RIBBONSTYLE = "ribbonstyle";
 	public static final String SELECTED = "selected";
 	public static final String SHOWSEQUENCES = "showsequences";
+	public static final String SHOWDIALOG = "showdialog";
 	public static final String STRUCTURELIST = "structurelist";
 	public static final String STRUCTURETYPE = "structuretype";
 	public static final String STYLE = "style";
@@ -371,20 +372,21 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			}
 
 		//
-		// OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist"),
+		// OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist|showdialog=false"),
 		//
 		} else if (Command.OPENSTRUCTURE.equals(command)) {
 			String pdb = getArg(command, "pdbid", args);
 			String modbaseid = getArg(command, "modbaseid", args);
 			String smiles = getArg(command, "smiles", args);
+			boolean showDialog = getBooleanArg(command, SHOWDIALOG, args);
 			String nodelist = getArg(command, NODELIST, args);
 			if (pdb == null && modbaseid == null && smiles == null && nodelist == null)
 				throw new CyCommandException("One of nodelist, pdbid, modbaseid, or smiles must be specified");
 
 			if (nodelist != null) {
-				return StructureCommands.openCommand(chimera, result, nodelist);
+				return StructureCommands.openCommand(chimera, result, nodelist, showDialog);
 			} else
-				return StructureCommands.openCommand(chimera, result, pdb, modbaseid, smiles);
+				return StructureCommands.openCommand(chimera, result, pdb, modbaseid, smiles, showDialog);
 
 		//
 		// MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),

@@ -180,6 +180,13 @@ public class Chimera {
 	 */
 	public ModelNavigatorDialog getDialog() { return mnDialog; }
 
+	public void launchDialog() {
+		if (mnDialog == null) {
+			mnDialog = ModelNavigatorDialog.LaunchModelNavigator(Cytoscape.getDesktop(), this);
+		}
+		mnDialog.setVisible(true);
+	}
+
 	/**
 	 * Provide a handle to the AlignStructuresDialog that is currently
 	 * up.  This does not necessarily need to be in the Chimera object,

@@ -102,7 +102,8 @@ public class ModelNavigatorDialog
 	private JMenu alignMenu;
 
 	public static ModelNavigatorDialog LaunchModelNavigator(Frame parent, Chimera chimera) {
-		ModelNavigatorDialog mnDialog = new ModelNavigatorDialog(Cytoscape.getDesktop(), chimera);
+		if (parent == null) parent = Cytoscape.getDesktop();
+		ModelNavigatorDialog mnDialog = new ModelNavigatorDialog(parent, chimera);
 		mnDialog.pack();
 		mnDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 		mnDialog.setVisible(true);
