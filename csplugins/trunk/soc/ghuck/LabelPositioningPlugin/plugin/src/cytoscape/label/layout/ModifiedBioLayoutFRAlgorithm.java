@@ -74,11 +74,11 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
      * The multipliers and computed result for the
      * attraction and repulsion values.
      */
-    private double attraction_multiplier = .3;
+    private double attraction_multiplier = 1.0;
     private double attraction_constant;
-    private double repulsion_multiplier = 0.04;
+    private double repulsion_multiplier = 0.01;
     private double repulsion_constant;
-    private double gravity_multiplier = 1;
+    private double gravity_multiplier = 0.1;
     private double gravity_constant;
 
     /**
@@ -401,13 +401,13 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 					 Tunable.GROUP, new Integer(9)));
 	layoutProperties.add(new Tunable("repulsion_multiplier",
 					 "Multiplier to calculate the repulsion force",
-					 Tunable.DOUBLE, new Double(0.04)));
+					 Tunable.DOUBLE, new Double(1.0)));
 	layoutProperties.add(new Tunable("attraction_multiplier",
 					 "Divisor to calculate the attraction force",
-					 Tunable.DOUBLE, new Double(0.03)));
+					 Tunable.DOUBLE, new Double(0.01)));
 	layoutProperties.add(new Tunable("gravity_multiplier",
 					 "Multiplier to calculate the gravity force",
-					 Tunable.DOUBLE, new Double(1)));
+					 Tunable.DOUBLE, new Double(0.1)));
 	layoutProperties.add(new Tunable("iterations", "Number of iterations", Tunable.INTEGER,
 					 new Integer(500)));
 	layoutProperties.add(new Tunable("temperature", "Initial temperature", Tunable.DOUBLE,
@@ -549,9 +549,9 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	}
 
 	// Figure out our starting point
-	if (selectedOnly) {
-	    initialLocation = partition.getAverageLocation();
-	}
+// 	if (selectedOnly) {
+// 	    initialLocation = partition.getAverageLocation();
+// 	}
 
 	// Randomize our points, if any points lie
 	// outside of our bounds
@@ -699,11 +699,11 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 
 	// Translate back to the middle (or to the starting point,
 	// if we're dealing with a selected group
-	if (!selectedOnly) {
-	    for (LayoutNode v: partition.getNodeList()) {
-		v.decrement(xAverage - (width / 2), yAverage - (height / 2));
-	    }
-	}
+// 	if (!selectedOnly) {
+// 	    for (LayoutNode v: partition.getNodeList()) {
+// 		v.decrement(xAverage - (width / 2), yAverage - (height / 2));
+// 	    }
+// 	}
 
 	// updateProfile.checkpoint();
 

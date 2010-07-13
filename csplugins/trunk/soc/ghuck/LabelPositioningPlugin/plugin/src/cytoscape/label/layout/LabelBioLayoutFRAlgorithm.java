@@ -184,7 +184,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// 1- Laying out labels off all nodes
 	// - and- 
 	// 2- (normal) Nodes are not allowed to move
-	if (selectedOnly || !moveNodes) {
+	if (selectedOnly && moveNodes) {
 	    newPartition.recalculateStatistics();
 	    initialLocation = newPartition.getAverageLocation();
 	}
@@ -200,7 +200,8 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// 1- Laying out only selected nodes
 	// - or- 
 	// 2- (normal) Nodes are not allowed to move
-	if (selectedOnly || !moveNodes) {
+
+ 	if (selectedOnly && moveNodes) {
 	    logger.info("moving back labels (and possibly nodes) to their location");
 
 	    newPartition.recalculateStatistics();
@@ -223,13 +224,13 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// make sure nodes are where they should be
 	for(LayoutNode node: newPartition.getLabelToParentMap().values() ) {
 	    node.moveToLocation();
-	    logger.info( node.getIdentifier() + node.printLocation() );
+	    // logger.info( node.getIdentifier() + node.printLocation() );
 	}
 
 	// make sure that all labels are where they should be 
 	for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {	
 	    node.moveToLocation();
-	    logger.info( node.getIdentifier() + node.printLocation() );
+	    // logger.info( node.getIdentifier() + node.printLocation() );
 	}
 
 	// redraw the network so that the new label positions are visible
