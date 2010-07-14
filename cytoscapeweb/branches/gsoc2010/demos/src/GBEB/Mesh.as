@@ -13,12 +13,14 @@ package GBEB
 	// Helper class to generate and manipulate mesh needed for GBEB 
 	// Model
 	////////////////////////////////////////////////////////////////
-	public class Mesh extends Sprite
+	public class Mesh
 	{		
 		public var grid:Array; 			  //stores the array of Shapes
 		public var gridSize:int = 20; // size of initial bounding grid, in pixel
 		public var _mesh:Data = new Data(); //stores the actual edges and nodes of the points for the mesh
 		public var nonRedundantShapeIndexArray:Array = new Array(); // Stores Shape that actually contain meshEdges and have a general direction
+		public var isMeshGenerated:Boolean = false; //indicates if the GBEB Mesh has been fully generated.
+		
 		private var _data:Data;	
 		private var _meshEdgeArray:Array; //Stores the array of meshEdges for processing
 		private var _bounds:Rectangle = new Rectangle(); // stores the bound of the visualisation
@@ -90,6 +92,8 @@ package GBEB
 		//warning: potential problems, nodes lying on edges.
 		public function generateMesh(resolution:int, bounds:Rectangle):void //to return Data
 		{
+			isMeshGenerated = false;
+			
 			_bounds = bounds;
 			
 			generateGrid();
@@ -112,6 +116,9 @@ package GBEB
 			//_data.edges.visit(updateEdges);
 			//_data.edges.visit(checkEdges, checkIfAdam);
 			//trace("Mesh: Testing testIntersection: " + testIntersection(new Rectangle(-1,-1,5,5), new Point(2,2), new Point(10,5))); //testing the intersection of glancing contact
+		
+		
+			isMeshGenerated = true;
 		}
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////
