@@ -41,6 +41,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -58,13 +59,12 @@ import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-import cytoscape.visual.ui.LabelPlacerGraphic;
 import cytoscape.visual.ui.ObjectPlacerGraphic;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
@@ -74,34 +74,34 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
  *
  * @author $author$
   */
-public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackRenderer {
+public class DiscreteTrackRenderer<T> extends JComponent implements VizMapperTrackRenderer {
+	
+	private static final long serialVersionUID = 5024551458030362213L;
+	
 	/*
 	 * Constants for diagram.
 	 */
-	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
+	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final int ICON_SIZE = VisualPropertyIcon.DEFAULT_ICON_SIZE;
-	private int SMALL_ICON_SIZE = 20;
+	private static final int ICON_SIZE_CG = 50;
+	
 	private static final Color ICON_COLOR = new Color(10, 100, 255, 200);
-	private static int TRACK_HEIGHT = 70;
 	private static final int THUMB_WIDTH = 12;
 	private static final int V_PADDING = 20;
-	private static int ARROW_BAR_Y_POSITION = TRACK_HEIGHT + 50;
-
-//	private double valueRange;
-//	private double minValue;
-//	private double maxValue;
-	private Object below;
-	private Object above;
-	private VisualPropertyType type;
+	
+	private int trackHeight = 70;
+	private int arrowBarYPosition = trackHeight + 50;
+	private int smallIconSize = 20;
+	
+	private T below;
+	private T above;
+	private final VisualPropertyType type;
 	private String title;
 
 	// Mainly for Icons
-	private List<Object> rangeObjects;
-	private Object lastObject;
+	private List<T> rangeObjects;
 
-	// HTML document fot tooltip text.
-	private List<String> rangeTooltips;
-	private JXMultiThumbSlider slider;
+	private JXMultiThumbSlider<T> slider;
 
 	/**
 	 * Creates a new DiscreteTrackRenderer object.
@@ -112,8 +112,8 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @param below  DOCUMENT ME!
 	 * @param above  DOCUMENT ME!
 	 */
-	public DiscreteTrackRenderer(VisualPropertyType type,
-	                             Object below, Object above) {
+	public DiscreteTrackRenderer(final VisualPropertyType type,
+	                             T below, T above) {
 
 		this.below = below;
 		this.above = above;
@@ -133,24 +133,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		this.setForeground(Color.white);
 	}
 
-	/**
-	 * Creates a new DiscreteTrackRenderer object.
-	 *
-	 * @param minValue DOCUMENT ME!
-	 * @param maxValue DOCUMENT ME!
-	 * @param lastRegionObject DOCUMENT ME!
-	 * @param cm DOCUMENT ME!
-	 */
-	public DiscreteTrackRenderer(Object lastRegionObject,
-	                             ContinuousMapping cm) {
-		rangeObjects = new ArrayList<Object>();
-		rangeTooltips = new ArrayList<String>();
-
-		this.lastObject = lastRegionObject;
-
-		this.setBackground(Color.white);
-		this.setForeground(Color.white);
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -163,8 +145,8 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	}
 
 	protected void paintComponent(Graphics gfx) {
-		TRACK_HEIGHT = slider.getHeight() - 100;
-		ARROW_BAR_Y_POSITION = TRACK_HEIGHT + 50;
+		trackHeight = slider.getHeight() - 100;
+		arrowBarYPosition = trackHeight + 50;
 
 		// Turn AA on
 		Graphics2D g = (Graphics2D) gfx;
@@ -179,7 +161,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
 		
 		//		 get the list of tumbs
-		List<Thumb> stops = slider.getModel().getSortedThumbs();
+		final List<Thumb<T>> stops = slider.getModel().getSortedThumbs();
 
 		int numPoints = stops.size();
 
@@ -192,7 +174,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		 */
 		int i = 0;
 
-		for (Thumb thumb : stops) {
+		for (Thumb<T> thumb : stops) {
 			objectValues[i] = thumb.getObject();
 			fractions[i] = thumb.getPosition();
 			i++;
@@ -203,33 +185,33 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		 */
 		g.setStroke(new BasicStroke(1.0f));
 		g.setColor(Color.black);
-		g.drawLine(0, ARROW_BAR_Y_POSITION, track_width, ARROW_BAR_Y_POSITION);
+		g.drawLine(0, arrowBarYPosition, track_width, arrowBarYPosition);
 
 		Polygon arrow = new Polygon();
-		arrow.addPoint(track_width, ARROW_BAR_Y_POSITION);
-		arrow.addPoint(track_width - 20, ARROW_BAR_Y_POSITION - 8);
-		arrow.addPoint(track_width - 20, ARROW_BAR_Y_POSITION);
+		arrow.addPoint(track_width, arrowBarYPosition);
+		arrow.addPoint(track_width - 20, arrowBarYPosition - 8);
+		arrow.addPoint(track_width - 20, arrowBarYPosition);
 		g.fill(arrow);
 
 		g.setColor(Color.gray);
-		g.drawLine(0, ARROW_BAR_Y_POSITION, 15, ARROW_BAR_Y_POSITION - 30);
-		g.drawLine(15, ARROW_BAR_Y_POSITION - 30, 25, ARROW_BAR_Y_POSITION - 30);
+		g.drawLine(0, arrowBarYPosition, 15, arrowBarYPosition - 30);
+		g.drawLine(15, arrowBarYPosition - 30, 25, arrowBarYPosition - 30);
 
 		g.setFont(SMALL_FONT);
-		g.drawString("Min=" + minValue, 28, ARROW_BAR_Y_POSITION - 25);
+		g.drawString("Min=" + minValue, 28, arrowBarYPosition - 25);
 
-		g.drawLine(track_width, ARROW_BAR_Y_POSITION, track_width - 15, ARROW_BAR_Y_POSITION + 30);
-		g.drawLine(track_width - 15, ARROW_BAR_Y_POSITION + 30, track_width - 25,
-		           ARROW_BAR_Y_POSITION + 30);
+		g.drawLine(track_width, arrowBarYPosition, track_width - 15, arrowBarYPosition + 30);
+		g.drawLine(track_width - 15, arrowBarYPosition + 30, track_width - 25,
+		           arrowBarYPosition + 30);
 
 		final String maxStr = "Max=" + maxValue;
 		int strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
-		g.drawString(maxStr, track_width - strWidth - 26, ARROW_BAR_Y_POSITION + 35);
+		g.drawString(maxStr, track_width - strWidth - 26, arrowBarYPosition + 35);
 
 		g.setFont(SMALL_FONT);
 		g.setColor(Color.black);
 		strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
-		g.drawString(title, (track_width / 2) - (strWidth / 2), ARROW_BAR_Y_POSITION + 35);
+		g.drawString(title, (track_width / 2) - (strWidth / 2), arrowBarYPosition + 35);
 
 		/*
 		 * If no points, just draw empty box.
@@ -237,7 +219,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		if (numPoints == 0) {
 			g.setColor(BORDER_COLOR);
 			g.setStroke(new BasicStroke(1.5f));
-			g.drawRect(0, 5, track_width, TRACK_HEIGHT);
+			g.drawRect(0, 5, track_width, trackHeight);
 
 			return;
 		}
@@ -248,7 +230,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		 * Fill background
 		 */
 		g.setColor(Color.white);
-		g.fillRect(0, 5, track_width, TRACK_HEIGHT);
+		g.fillRect(0, 5, track_width, trackHeight);
 
 		rangeObjects = buildIconArray(stops.size() + 1);
 
@@ -260,6 +242,11 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		int iconLocX;
 		int iconLocY;
 
+		final int iconSize;
+		if(type.getDataType().equals(CyCustomGraphics.class))
+			iconSize = ICON_SIZE_CG;
+		else
+			iconSize = ICON_SIZE;
 		/*
 		 * Draw separators and icons
 		 */
@@ -270,7 +257,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			g.setColor(Color.black);
 			g.setStroke(STROKE1);
 
-			g.drawLine(newX, 5, newX, TRACK_HEIGHT + 4);
+			g.drawLine(newX, 5, newX, trackHeight + 4);
 
 			g.setColor(Color.DARK_GRAY);
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
@@ -283,48 +270,42 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			int borderVal = track_width - newX;
 
 			if (((i % 2) == 0) && (flipLimit < borderVal)) {
-				g.drawLine(newX, ARROW_BAR_Y_POSITION, newX + 20, ARROW_BAR_Y_POSITION - 15);
-				g.drawLine(newX + 20, ARROW_BAR_Y_POSITION - 15, newX + 30,
-				           ARROW_BAR_Y_POSITION - 15);
+				g.drawLine(newX, arrowBarYPosition, newX + 20, arrowBarYPosition - 15);
+				g.drawLine(newX + 20, arrowBarYPosition - 15, newX + 30,
+				           arrowBarYPosition - 15);
 				g.setColor(Color.black);
-				g.drawString(valueString, newX + 33, ARROW_BAR_Y_POSITION - 11);
+				g.drawString(valueString, newX + 33, arrowBarYPosition - 11);
 			} else if (((i % 2) == 1) && (flipLimit < borderVal)) {
-				g.drawLine(newX, ARROW_BAR_Y_POSITION, newX + 20, ARROW_BAR_Y_POSITION + 15);
-				g.drawLine(newX + 20, ARROW_BAR_Y_POSITION + 15, newX + 30,
-				           ARROW_BAR_Y_POSITION + 15);
+				g.drawLine(newX, arrowBarYPosition, newX + 20, arrowBarYPosition + 15);
+				g.drawLine(newX + 20, arrowBarYPosition + 15, newX + 30,
+				           arrowBarYPosition + 15);
 				g.setColor(Color.black);
-				g.drawString(valueString, newX + 33, ARROW_BAR_Y_POSITION + 19);
+				g.drawString(valueString, newX + 33, arrowBarYPosition + 19);
 			} else if (((i % 2) == 0) && (flipLimit >= borderVal)) {
-				g.drawLine(newX, ARROW_BAR_Y_POSITION, newX - 20, ARROW_BAR_Y_POSITION - 15);
-				g.drawLine(newX - 20, ARROW_BAR_Y_POSITION - 15, newX - 30,
-				           ARROW_BAR_Y_POSITION - 15);
+				g.drawLine(newX, arrowBarYPosition, newX - 20, arrowBarYPosition - 15);
+				g.drawLine(newX - 20, arrowBarYPosition - 15, newX - 30,
+				           arrowBarYPosition - 15);
 				g.setColor(Color.black);
-				g.drawString(valueString, newX - 90, ARROW_BAR_Y_POSITION - 11);
+				g.drawString(valueString, newX - 90, arrowBarYPosition - 11);
 			} else {
-				g.drawLine(newX, ARROW_BAR_Y_POSITION, newX - 20, ARROW_BAR_Y_POSITION + 15);
-				g.drawLine(newX - 20, ARROW_BAR_Y_POSITION + 15, newX - 30,
-				           ARROW_BAR_Y_POSITION + 15);
+				g.drawLine(newX, arrowBarYPosition, newX - 20, arrowBarYPosition + 15);
+				g.drawLine(newX - 20, arrowBarYPosition + 15, newX - 30,
+				           arrowBarYPosition + 15);
 				g.setColor(Color.black);
-				g.drawString(valueString, newX - 90, ARROW_BAR_Y_POSITION + 19);
+				g.drawString(valueString, newX - 90, arrowBarYPosition + 19);
 			}
 
 			g.setColor(Color.black);
-			g.fillOval(newX - 3, ARROW_BAR_Y_POSITION - 3, 6, 6);
+			g.fillOval(newX - 3, arrowBarYPosition - 3, 6, 6);
 
-			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (ICON_SIZE / 2));
-			iconLocY = ((TRACK_HEIGHT) / 2) - (ICON_SIZE / 2) + 5;
+			
+			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (iconSize / 2));
+			iconLocY = ((trackHeight) / 2) - (iconSize / 2) + 5;
 
-			//			if (ICON_SIZE < (newX - p1.getX()))
-			//				g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
-			if (i == 0) {
-				drawIcon(below, g, iconLocX, iconLocY, ICON_SIZE);
-
-				//				g.drawString(below.toString(), iconLocX, iconLocY);
-			} else {
-				drawIcon(objectValues[i], g, iconLocX, iconLocY, ICON_SIZE);
-
-				//				g.drawString(objectValues[i].toString(), iconLocX, iconLocY);
-			}
+			if (i == 0)
+				drawIcon(below, g, iconLocX, iconLocY, iconSize);
+			else
+				drawIcon(objectValues[i], g, iconLocX, iconLocY, iconSize);
 
 			p1.setLocation(p2);
 		}
@@ -334,17 +315,16 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		 */
 		p2.setLocation(track_width, 5);
 
-		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (ICON_SIZE / 2));
-		iconLocY = ((TRACK_HEIGHT) / 2) - (ICON_SIZE / 2) + 5;
-		//		g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
-		//		g.drawString(above.toString(), iconLocX, iconLocY);
-		drawIcon(above, g, iconLocX, iconLocY, ICON_SIZE);
+		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (iconSize / 2));
+		iconLocY = ((trackHeight) / 2) - (iconSize / 2) + 5;
+	
+		drawIcon(above, g, iconLocX, iconLocY, iconSize);
 		/*
 		 * Finally, draw border line (rectangle)
 		 */
 		g.setColor(BORDER_COLOR);
 		g.setStroke(new BasicStroke(1.5f));
-		g.drawRect(0, 5, track_width, TRACK_HEIGHT);
+		g.drawRect(0, 5, track_width, trackHeight);
 
 		g.translate(-THUMB_WIDTH / 2, -12);
 	}
@@ -356,18 +336,13 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public JComponent getRendererComponent(JXMultiThumbSlider slider) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public JComponent getRendererComponent( JXMultiThumbSlider slider) {
 		this.slider = slider;
-
 		return this;
 	}
 
-	protected List getRanges() {
-		List range = new ArrayList();
-
-		return range;
-	}
-
+	
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -380,14 +355,14 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		int oldX = 0;
 		int newX;
 
-		final List<Thumb> stops = slider.getModel().getSortedThumbs();
+		final List<Thumb<T>> stops = slider.getModel().getSortedThumbs();
 
 		int i = 1;
 
-		for (Thumb thumb : stops) {
+		for (Thumb<T> thumb : stops) {
 			newX = (int) (slider.getWidth() * (thumb.getPosition() / 100));
 
-			if ((oldX <= x) && (x <= newX) && (V_PADDING < y) && (y < (V_PADDING + TRACK_HEIGHT)))
+			if ((oldX <= x) && (x <= newX) && (V_PADDING < y) && (y < (V_PADDING + trackHeight)))
 				return "This is region " + i;
 
 			i++;
@@ -395,7 +370,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		}
 
 		if ((oldX <= x) && (x <= slider.getWidth()) && (V_PADDING < y)
-		    && (y < (V_PADDING + TRACK_HEIGHT)))
+		    && (y < (V_PADDING + trackHeight)))
 			return "Last Area: " + oldX + " - " + slider.getWidth() + " (x, y) = " + x + ", " + y;
 
 		return null;
@@ -435,22 +410,22 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		int oldX = 0;
 		int newX;
 
-		final List<Thumb> stops = slider.getModel().getSortedThumbs();
-		Thumb thumb;
+		final List<Thumb<T>> stops = slider.getModel().getSortedThumbs();
+		Thumb<T> thumb;
 		int i;
 
 		for (i = 0; i < stops.size(); i++) {
 			thumb = stops.get(i);
 			newX = (int) (slider.getWidth() * (thumb.getPosition() / 100));
 
-			if ((oldX <= x) && (x <= newX) && (V_PADDING < y) && (y < (V_PADDING + TRACK_HEIGHT)))
+			if ((oldX <= x) && (x <= newX) && (V_PADDING < y) && (y < (V_PADDING + trackHeight)))
 				return i;
 
 			oldX = newX + 1;
 		}
 
 		if ((oldX <= x) && (x <= slider.getWidth()) && (V_PADDING < y)
-		    && (y < (V_PADDING + TRACK_HEIGHT)))
+		    && (y < (V_PADDING + trackHeight)))
 			return i;
 
 		// Invalid range
@@ -473,6 +448,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		// Turn Anti-alias on
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
 		final int leftSpace = 2;
 		int trackHeight = iconHeight - 15;
@@ -503,9 +479,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			return new ImageIcon(bi);
 		}
 
-		float[] fractions = new float[pointCount + 2];
-		double[] values = new double[pointCount];
-
 		Object[] objValues = new Object[pointCount + 2];
 
 		objValues[0] = points.get(0).getRange().lesserValue;
@@ -521,21 +494,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				objValues[i + 1] = points.get(i).getRange().equalValue;
 		}
 
-		//List<ImageIcon> iconList = buildIconArray(objValues);
-		final Point2D start = new Point2D.Float(10, 0);
-		final Point2D end = new Point2D.Float(trackWidth, trackHeight);
-
-		//		int i=1;
-		//		
-		//		g2.setFont(new Font("SansSerif", Font.BOLD, 9));
-		//		int strWidth;
-		//		for(ContinuousMappingPoint point: points) {
-		//			String p = Double.toString(point.getValue());
-		//			g2.setColor(Color.black);
-		//			strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), p);
-		//			g2.drawString(p, fractions[i]*iconWidth - strWidth/2, iconHeight -7);
-		//			i++;
-		//		}
 		return new ImageIcon(bi);
 	}
 
@@ -556,11 +514,17 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * Draw icon object based on the given data type.
 	 */
 	private void drawIcon(Object key, Graphics2D g, int x, int y, final int size) {
+		if(key == null)
+			return;
+		
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
 		g.translate(x, y);
 		g.setColor(ICON_COLOR);
 		g.setStroke(STROKE2);
 
+		// Special drawing code for shapes.
 		switch (type) {
 			case NODE_SHAPE:
 
@@ -620,27 +584,27 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				g.translate(0, size * 0.25);
 
 				break;
-
-			case NODE_LABEL_POSITION:
-
-				final ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) key,
-				                                                     (int) (size * 1.5), false, type.getName(), null, null);
-				lp.paint(g);
-
-				break;
-
-			case NODE_LABEL:
-			case NODE_TOOLTIP:
-			case EDGE_LABEL:
-			case EDGE_TOOLTIP:
-			case NODE_SHOW_NESTED_NETWORK:
-				if(key != null) {
-					g.drawString(key.toString(), 0, g.getFont().getSize()*2);
-				}
-				break;
 				
 			default:
 				break;
+		}
+		
+		
+		if(type.getDataType().equals(ObjectPosition.class)) {
+			// Object Positions
+			
+			final ObjectPlacerGraphic lp = new ObjectPlacerGraphic((ObjectPosition) key,
+			                                                     (int) (size * 1.5), false, type.getName(), null, null);
+			lp.paint(g);
+		} else if(type.getDataType().equals(CyCustomGraphics.class)) {
+			// Custom Graphics
+			final CyCustomGraphics cg = (CyCustomGraphics) key;
+			final Image rendered = cg.getRenderedImage();
+			if(rendered != null)
+				g.drawImage(rendered, 0, 0, size, size, null);
+		} else {
+			// Draw as String.
+			g.drawString(key.toString(), 0, g.getFont().getSize()*2);
 		}
 
 		g.translate(-x, -y);
@@ -672,6 +636,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		// Turn AA on.
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
 		// Fill background
 		g.setColor(Color.white);
@@ -685,13 +650,13 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		int trackHeight = iconHeight - 8;
 		if(detail) {
 			trackHeight = iconHeight - 30;
-			SMALL_ICON_SIZE = (int) (trackHeight * 0.5);
+			smallIconSize = (int) (trackHeight * 0.5);
 		} else {
 			trackHeight = iconHeight - 8;
 		}
 
 		//		 get the list of tumbs
-		List<Thumb> stops = slider.getModel().getSortedThumbs();
+		final List<Thumb<T>> stops = slider.getModel().getSortedThumbs();
 
 		int numPoints = stops.size();
 
@@ -738,13 +703,13 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			newX = (int) (track_width * (fractions[i] / 100));
 
 			p2.setLocation(newX, 0);
-			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (SMALL_ICON_SIZE / 2));
-			iconLocY = ((trackHeight) / 2) - (SMALL_ICON_SIZE / 2);
+			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (smallIconSize / 2));
+			iconLocY = ((trackHeight) / 2) - (smallIconSize / 2);
 
 			if (i == 0) {
-				drawIcon(below, g, iconLocX, iconLocY, SMALL_ICON_SIZE);
+				drawIcon(below, g, iconLocX, iconLocY, smallIconSize);
 			} else {
-				drawIcon(objectValues[i], g, iconLocX, iconLocY, SMALL_ICON_SIZE);
+				drawIcon(objectValues[i], g, iconLocX, iconLocY, smallIconSize);
 			}
 
 			g.setColor(Color.DARK_GRAY);
@@ -759,9 +724,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		 */
 		p2.setLocation(track_width, 0);
 
-		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (SMALL_ICON_SIZE / 2));
-		iconLocY = ((trackHeight) / 2) - (SMALL_ICON_SIZE / 2);
-		drawIcon(above, g, iconLocX, iconLocY, SMALL_ICON_SIZE);
+		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (smallIconSize / 2));
+		iconLocY = ((trackHeight) / 2) - (smallIconSize / 2);
+		drawIcon(above, g, iconLocX, iconLocY, smallIconSize);
 
 		/*
 		 * Finally, draw border line (rectangle)
