@@ -75,7 +75,7 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 	/** Creates new form URLimportAdvancedDialog */
 	public ProxyServerDialog(JFrame pParent) {
 		super(pParent, true);
-		this.setTitle("Proxy Server Setting");
+		this.setTitle("Proxy Server Settings");
 		this.setLocationRelativeTo(pParent);
 
 		initComponents();
@@ -202,7 +202,7 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 		chbUseProxy.addItemListener(this);
 
 		pack();
-		setSize(new Dimension(400, 200));
+		setSize(new Dimension(400, 210));
 	} // </editor-fold>
 
 	private void initValues() {
