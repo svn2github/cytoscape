@@ -1,5 +1,8 @@
 package GBEB
 {
+	import flare.util.Shapes;
+	import flare.vis.Visualization;
+	import flare.vis.data.Data;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.operator.encoder.PropertyEncoder;
 	import flare.vis.operator.label.Labeler;
@@ -97,6 +100,14 @@ package GBEB
 			
 			_textFieldMouseTracker.text += displayMeshData(e.stageX, e.stageY);
 			
+			if(e.stageX <= _bounds.x + 12 || e.stageX >= _bounds.x + _bounds.width - 12
+			|| e.stageY <= _bounds.y + 12 || e.stageY == _bounds.y + _bounds.height -12 )
+			{
+				_textFieldMouseTracker.visible = false;
+				trace("Mouse Tracker: Bounds: " + _bounds.toString() + " OB | " , e.stageX, e.stageY);
+			} else {
+				_textFieldMouseTracker.visible = true;
+			}
 			
 		}
 
@@ -132,6 +143,8 @@ package GBEB
 				var shapeInfo:String;	
 				
 				_currentShape = _mesh.returnShape(mouseX, mouseY);
+				
+				cleanupDisplayHighlights();
 				
 				if(_currentShape != null)
 				{	
@@ -172,6 +185,26 @@ package GBEB
 				
 			}
 			
+			
+			//////////////////////////////////////////////////////////////////////////////////////////////
+			//This function cleans up all the highlight containers when the mouse moves to other areas of the display/
+			/////////////////////////////////////////////////////////////////////////////////////////////
+			public function cleanupDisplayHighlights():void
+			{
+				
+				while(_highlightShapeContainer.numChildren > 0) 	
+				{	
+					_highlightShapeContainer.removeChildAt(0);
+				} 
+				
+				while(_visEdgesContainer.numChildren > 0)
+				{
+					_visEdgesContainer.removeChildAt(0);
+				} 	
+				
+				if(_displayContainer.contains(_visCentroid)) _displayContainer.removeChild(_visCentroid);
+			}
+			
 			public function displayGrids():void
 			{
 				if(_mesh == null) return;
@@ -210,10 +243,7 @@ package GBEB
 			
 				//trace("DD :XX: "+ _highlightShapeContainer.numChildren);
 				
-				while(_highlightShapeContainer.numChildren > 0) 	
-				{	
-					_highlightShapeContainer.removeChildAt(0);
-				} 
+				
 					
 				for each ( var p:Point in shape.gridIndex)
 				{
@@ -236,8 +266,6 @@ package GBEB
 			private function displayCentroidFxn(s:Shape):void
 			{	
 				if(s.centroid == null) return;
-
-				if(_displayContainer.contains(_visCentroid)) _displayContainer.removeChild(_visCentroid);
 			
 				_visCentroid = new Sprite();
 			
@@ -253,11 +281,7 @@ package GBEB
 				var e:EdgeSprite = s.meshEdge;
 								
 				if( e == null) return "";
-				
-				while(_visEdgesContainer.numChildren > 0)
-				{
-					_visEdgesContainer.removeChildAt(0);
-				} 				
+						
 				//trace("DataDisplay: " + e.name + " :: " + s.meshEdge.x1, s.meshEdge.x2, s.meshEdge.y1); //  .x1, e.y1, " | ", e.x2, e.y2, e.target.x);
 
 				var visEdge:Sprite = new Sprite();
