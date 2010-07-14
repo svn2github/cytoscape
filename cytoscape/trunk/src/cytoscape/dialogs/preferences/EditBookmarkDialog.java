@@ -1,274 +1,267 @@
 package cytoscape.dialogs.preferences;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URL;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
 import cytoscape.util.BookmarksUtil;
+import cytoscape.util.URLUtil;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
-public class EditBookmarkDialog extends JDialog implements ActionListener {
-	//private String name_orig = null;
-	private String name;
-	private String URLstr;
-	private JDialog parent;
-	private Bookmarks theBookmarks;
-	private String categoryName;
-	private URL bookmarkURL;
-	private String mode = "new"; // new/edit
-	private DataSource dataSource = null;
-	
-	/** Creates new form NewBookmarkDialog */
-	public EditBookmarkDialog(JDialog parent, boolean modal, Bookmarks pBookmarks,
-	                          String categoryName, String pMode, DataSource pDataSource) {
+
+/**
+ * @author ruschein
+ */
+public class EditBookmarkDialog extends JDialog {
+	private JButton cancelButton;
+	private JLabel categoryLabel;
+	private JLabel jLabel1;
+	private JLabel jLabel3;
+	private JLabel jLabel4;
+	private JTextField nameTextField;
+	private JButton okButton;
+	private JTextField urlTextField;
+
+	private final JDialog parent;
+	private final Bookmarks bookmarks;
+	private final String categoryName;
+	private final String mode;
+	private DataSource dataSource;
+
+	/** Creates new form EditBookmarkDialog */
+	public EditBookmarkDialog(final JDialog parent, final boolean modal, final Bookmarks bookmarks,
+                                  final String categoryName, final String mode, final DataSource dataSource)
+	{
 		super(parent, modal);
+
 		this.parent = parent;
-		this.theBookmarks = pBookmarks;
+		this.bookmarks = bookmarks;
 		this.categoryName = categoryName;
-		this.mode = pMode;
-		this.dataSource = pDataSource;
-		
+		this.mode = mode;
+		this.dataSource = dataSource;
+
 		initComponents();
+		categoryLabel.setText(categoryName);
 
-		lbCategoryValue.setText(categoryName);
-
-		if (pMode.equalsIgnoreCase("new")) {
-			this.setTitle("Add new bookmark");
-		}
-
-		if (pMode.equalsIgnoreCase("edit")) {
-			this.setTitle("Edit bookmark");
-			tfName.setText(dataSource.getName());
-			tfURL.setText(dataSource.getHref());
+		if (mode.equalsIgnoreCase("new"))
+			setTitle("Add New Bookmark");
+		else {
+			setTitle("Edit Bookmark");
+			nameTextField.setText(dataSource.getName());
+			urlTextField.setText(dataSource.getHref());
 		}
 	}
 
 	public DataSource getDataSource(){
 		return dataSource;
 	}
-	
-	private boolean isValidateURL(String urlStr){
-		try {
-			new URL(urlStr);	
-		}
-		catch (MalformedURLException ex){
-			return false;
-		}
-		return true;
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-		Object _actionObject = e.getSource();
 
-		// handle Button events
-		if (_actionObject instanceof JButton) {
-			JButton _btn = (JButton) _actionObject;
-
-			if ((_btn == btnOK) && (mode.equalsIgnoreCase("new"))) {
-				name = tfName.getText();
-				URLstr = tfURL.getText();
-
-				if (name.trim().equals("") || URLstr.trim().equals("")) {
-					String msg = "Please provide a name/URL!";
-					// display info dialog
-					JOptionPane.showMessageDialog(parent, msg, "Warning",
-					                              JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-
-				if (!this.isValidateURL(URLstr)){
-					JOptionPane.showMessageDialog(parent, "Invalid URL", "Warning",
-                            JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				
-				DataSource theDataSource = new DataSource();
-				theDataSource.setName(name);
-				theDataSource.setHref(URLstr);
-
-				if (BookmarksUtil.isInBookmarks(bookmarkURL, categoryName, theDataSource)) {
-					String msg = "Bookmark already existed!";
-					// display info dialog
-					JOptionPane.showMessageDialog(parent, msg, "Warning",
-					                              JOptionPane.INFORMATION_MESSAGE);
-
-					return;
-				}
-
-				BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);
-				this.dispose();
-				dataSource = theDataSource;
-			}
-
-			if ((_btn == btnOK) && (mode.equalsIgnoreCase("edit"))) {
-				name = tfName.getText().trim();
-				URLstr = tfURL.getText();
-				
-				if (name.trim().equals("")) {
-					String msg = "The name field is empty!";
-					// display info dialog
-					JOptionPane.showMessageDialog(parent, msg, "Warning",
-					                              JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				
-				if (URLstr.trim().equals("")) {
-					String msg = "URL is empty!";
-					// display info dialog
-					JOptionPane.showMessageDialog(parent, msg, "Warning",
-					                              JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				
-				// There is no change, do nothing
-				if (this.dataSource.getName().equalsIgnoreCase(name) && this.dataSource.getHref().equalsIgnoreCase(URLstr.trim())){
-					this.dispose();
-					return;
-				}
-				
-				if (!this.isValidateURL(URLstr)){
-					JOptionPane.showMessageDialog(parent, "Invalid URL", "Warning",
-                            JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				
-				if (!this.name.equalsIgnoreCase(this.dataSource.getName())){
-					// The bookmark name has been changed
-					DataSource newDataSource = new DataSource();
-					newDataSource.setName(name);
-					newDataSource.setHref(URLstr);
-
-					if (BookmarksUtil.isInBookmarks(theBookmarks, categoryName, newDataSource)){
-						// The bookmark name must be unique
-						JOptionPane.showMessageDialog(parent, "Bookmark with this name already existed!", "Warning",
-						                              JOptionPane.INFORMATION_MESSAGE);
-						return;
-					}
-					
-					// first delete the old one, then add (note: name is key of DataSource)
-					BookmarksUtil.deleteBookmark(theBookmarks, categoryName, dataSource);
-					BookmarksUtil.saveBookmark(theBookmarks, categoryName, newDataSource);
-				}
-				else { // The bookmark name has not been changed
-										
-					// first delete the old one, then add (note: name is key of DataSource)
-					BookmarksUtil.deleteBookmark(theBookmarks, categoryName, dataSource);
-					
-					dataSource.setHref(URLstr);
-					BookmarksUtil.saveBookmark(theBookmarks, categoryName, dataSource);						
-				}
-
-				this.dispose();
-			} else if (_btn == btnCancel) {
-				this.dispose();
-			}
-		}
-	} // End of actionPerformed()
-
-	/**
-	 * This method is called from within the constructor to initialize the
-	 * form. WARNING: Do NOT modify this code. The content of this method is
+	/** This method is called from within the constructor to
+	 * initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is
 	 * always regenerated by the Form Editor.
 	 */
+	@SuppressWarnings("unchecked")
+		private void initComponents() {
 
-	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
-	private void initComponents() {
-		java.awt.GridBagConstraints gridBagConstraints;
+		jLabel1 = new JLabel();
+		categoryLabel = new JLabel();
+		jLabel3 = new JLabel();
+		jLabel4 = new JLabel();
+		nameTextField = new JTextField();
+		urlTextField = new JTextField();
+		okButton = new JButton();
+		cancelButton = new JButton();
 
-		lbName = new javax.swing.JLabel();
-		tfName = new javax.swing.JTextField();
-		lbURL = new javax.swing.JLabel();
-		tfURL = new javax.swing.JTextField();
-		jPanel1 = new javax.swing.JPanel();
-		btnOK = new javax.swing.JButton();
-		btnCancel = new javax.swing.JButton();
-		lbCategory = new javax.swing.JLabel();
-		lbCategoryValue = new javax.swing.JLabel();
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setTitle("Edit Bookmark");
 
-		getContentPane().setLayout(new java.awt.GridBagLayout());
+		jLabel1.setText("Category:");
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		lbName.setText("Name:");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-		getContentPane().add(lbName, gridBagConstraints);
+		categoryLabel.setText("******************");
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-		getContentPane().add(tfName, gridBagConstraints);
+		jLabel3.setText("Name:");
 
-		lbURL.setText("URL:");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-		getContentPane().add(lbURL, gridBagConstraints);
+		jLabel4.setText("URL:");
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-		getContentPane().add(tfURL, gridBagConstraints);
+		okButton.setText("Ok");
+		okButton.setSelected(true);
+		okButton.addActionListener(new ActionListener() {
+				public void actionPerformed(final ActionEvent evt) {
+					if (mode.equalsIgnoreCase("new"))
+						okButtonNewActionPerformed(evt);
+					else
+						okButtonEditActionPerformed(evt);
+				}
+			});
 
-		btnOK.setText("OK");
-		btnOK.setPreferredSize(new java.awt.Dimension(65, 23));
-		jPanel1.add(btnOK);
+		cancelButton.setText("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+				public void actionPerformed(final ActionEvent evt) {
+					cancelButtonActionPerformed(evt);
+				}
+			});
 
-		btnCancel.setText("Cancel");
-		jPanel1.add(btnCancel);
-
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridwidth = 2;
-		gridBagConstraints.insets = new java.awt.Insets(20, 20, 20, 20);
-		getContentPane().add(jPanel1, gridBagConstraints);
-
-		lbCategory.setText("Category:");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints.insets = new java.awt.Insets(20, 10, 10, 0);
-		getContentPane().add(lbCategory, gridBagConstraints);
-
-		lbCategoryValue.setText("network");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints.insets = new java.awt.Insets(20, 10, 10, 0);
-		getContentPane().add(lbCategoryValue, gridBagConstraints);
-
-		btnOK.addActionListener(this);
-		btnCancel.addActionListener(this);
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setHorizontalGroup(
+					  layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+					  .add(layout.createSequentialGroup()
+					       .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+						    .add(layout.createSequentialGroup()
+							 .add(32, 32, 32)
+							 .add(jLabel1)
+							 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+						    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+							 .addContainerGap(42, Short.MAX_VALUE)
+							 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+							      .add(jLabel4)
+							      .add(jLabel3))
+							 .add(20, 20, 20)))
+					       .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+						    .add(categoryLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 112, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+						    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+							 .add(org.jdesktop.layout.GroupLayout.LEADING, urlTextField)
+							 .add(org.jdesktop.layout.GroupLayout.LEADING, nameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
+							 .add(layout.createSequentialGroup()
+							      .add(441, 441, 441)
+							      .add(okButton)
+							      .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+							      .add(cancelButton))))
+					       .addContainerGap())
+					  );
+		layout.setVerticalGroup(
+					layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+					.add(layout.createSequentialGroup()
+					     .add(22, 22, 22)
+					     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+						  .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 16, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+						  .add(categoryLabel))
+					     .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+					     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+						  .add(nameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+						  .add(jLabel3))
+					     .add(28, 28, 28)
+					     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+						  .add(jLabel4)
+						  .add(urlTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+					     .add(18, 18, 18)
+					     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+						  .add(cancelButton)
+						  .add(okButton))
+					     .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					);
 
 		pack();
-	} // </editor-fold>
+	}
 
-	// Variables declaration - do not modify
-	private javax.swing.JButton btnCancel;
-	private javax.swing.JButton btnOK;
-	private javax.swing.JPanel jPanel1;
-	private javax.swing.JLabel lbCategory;
-	private javax.swing.JLabel lbCategoryValue;
-	private javax.swing.JLabel lbName;
-	private javax.swing.JLabel lbURL;
-	private javax.swing.JTextField tfName;
-	private javax.swing.JTextField tfURL;
+	private void okButtonNewActionPerformed(final ActionEvent evt) {
+		final String name = nameTextField.getText().trim();
+		final String urlCandidate = urlTextField.getText().trim();
 
-	// End of variables declaration
+		if (name.equals("") || urlCandidate.equals("")) {
+			JOptionPane.showMessageDialog(parent, "Please provide a name and URL!", "Warning",
+						      JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
 
+		final URL url;
+		if (URLUtil.isValid(urlCandidate)) {
+			try {
+				url = new URL(urlCandidate);
+			} catch (final MalformedURLException e) {
+				throw new IllegalStateException("We should never get here!");
+			}
+		} else {
+			JOptionPane.showMessageDialog(parent, "Invalid URL!", "Warning",
+						      JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+				
+		final DataSource theDataSource = new DataSource();
+		theDataSource.setName(name);
+		theDataSource.setHref(urlCandidate);
+
+		
+		if (BookmarksUtil.isInBookmarks(url, categoryName, theDataSource)) {
+			JOptionPane.showMessageDialog(parent, "Duplicate bookmark!", "Warning",
+						      JOptionPane.INFORMATION_MESSAGE);
+
+			return;
+		}
+
+		BookmarksUtil.saveBookmark(bookmarks, categoryName, theDataSource);
+		dataSource = theDataSource;
+
+		dispose();
+	}
+
+	private void okButtonEditActionPerformed(final ActionEvent evt) {
+		final String name = nameTextField.getText().trim();
+		final String url = urlTextField.getText().trim();
+
+		if (name.equals("") || url.equals("")) {
+			JOptionPane.showMessageDialog(parent, "Please provide a name and URL!", "Warning",
+						      JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
+		if (!URLUtil.isValid(url)){
+			JOptionPane.showMessageDialog(parent, "Invalid URL!", "Warning",
+						      JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+				
+		// There is no change, do nothing
+		if (dataSource.getName().equalsIgnoreCase(name) && this.dataSource.getHref().equalsIgnoreCase(url)){
+			dispose();
+			return;
+		}
+				
+		if (!URLUtil.isValid(url)){
+			JOptionPane.showMessageDialog(parent, "Invalid URL", "Warning",
+						      JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+				
+		if (!name.equalsIgnoreCase(dataSource.getName())) {
+			// The bookmark name has been changed
+			DataSource newDataSource = new DataSource();
+			newDataSource.setName(name);
+			newDataSource.setHref(url);
+
+			if (BookmarksUtil.isInBookmarks(bookmarks, categoryName, newDataSource)){
+				// The bookmark name must be unique
+				JOptionPane.showMessageDialog(parent, "Bookmark with this name already existed!", "Warning",
+							      JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+					
+			// first delete the old one, then add (note: name is key of DataSource)
+			BookmarksUtil.deleteBookmark(bookmarks, categoryName, dataSource);
+			BookmarksUtil.saveBookmark(bookmarks, categoryName, newDataSource);
+		}
+		else { // The bookmark name has not been changed		
+			// first delete the old one, then add (note: name is key of DataSource)
+			BookmarksUtil.deleteBookmark(bookmarks, categoryName, dataSource);
+					
+			dataSource.setHref(url);
+			BookmarksUtil.saveBookmark(bookmarks, categoryName, dataSource);						
+		}
+
+		dispose();
+	}
+
+	private void cancelButtonActionPerformed(final ActionEvent evt) {
+		dispose();
+	}
 }

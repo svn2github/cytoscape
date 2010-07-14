@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -275,7 +268,6 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 				EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this, true, theBookmarks,
 				                                                         bookmarkCategory, "new",
 				                                                         null);
-				theNewDialog.setSize(300, 250);
 				theNewDialog.setLocationRelativeTo(this);
 
 				theNewDialog.setVisible(true);
@@ -285,7 +277,6 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 				EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this, true, theBookmarks,
 				                                                          bookmarkCategory, "edit",
 				                                                          theDataSource);
-				theEditDialog.setSize(300, 250);
 				theEditDialog.setLocationRelativeTo(this);
 
 				theEditDialog.setVisible(true);

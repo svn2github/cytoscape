@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -151,35 +152,20 @@ public class URLUtil {
 	 * @throws IOException
 	 */
 	public static void download(String urlString, File downloadFile,
-			TaskMonitor taskMonitor) throws IOException {
-        boolean stop = false;
+			TaskMonitor taskMonitor) throws IOException
+	{
+		boolean stop = false;
 
 		try {
 			URL url = new URL(urlString);
 			InputStream is = null;
 
 			try {
-	//          Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
 				int maxCount = 0; // -1 if unknown
 				int progressCount = 0;
-	//          if (CytoProxyHandler == null) {
-					URLConnection conn = getURLConnection(url);
-					//URLConnection conn = url.openConnection();
-					// Ensure we are reading the real content from url,
-					// and not some out-of-date cached content:
-					//conn.setUseCaches(false);
-					maxCount = conn.getContentLength();
-					is = conn.getInputStream();
-	//  		} else {
-	//      		URLConnection conn = url.openConnection(CytoProxyHandler);
-	//          	// Ensure we are reading the real content from url,
-	//              // and not some out-of-date cached content:
-	//      		conn.setUseCaches(false);
-	//          	conn.setConnectTimeout(msConnectionTimeout);
-	//
-	//              maxCount = conn.getContentLength();
-	//  			is = conn.getInputStream();
-	//      	}
+				URLConnection conn = getURLConnection(url);
+				maxCount = conn.getContentLength();
+				is = conn.getInputStream();
 				FileOutputStream os = null;
 				try {
 					os = new FileOutputStream(downloadFile);
@@ -211,18 +197,14 @@ public class URLUtil {
 						os.close();
 					}
 				}
-			}
-			finally {
-				if (is != null) {
+			} finally {
+				if (is != null)
 					is.close();
-				}
 			}
+		} finally {
+			if (stop)
+				downloadFile.delete();
 		}
-        finally {
-            if (stop) {
-                downloadFile.delete();
-            }
-        }
 	}
 
 	/**
@@ -237,18 +219,27 @@ public class URLUtil {
 		StringBuffer buffer = new StringBuffer();
 		int c;
 
-        try {
+		try {
 			is = getInputStream(source);
-            while ((c = is.read()) != -1) {
-                buffer.append((char) c);
-            }
-        }
-        finally {
-            if (is != null) {
-                is.close();
-            }
-        }
+			while ((c = is.read()) != -1) {
+				buffer.append((char) c);
+			}
+		}
+		finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 
 		return buffer.toString();
+	}
+
+	public static boolean isValid(final String urlCandidate) {
+		try {
+			new URL(urlCandidate);	
+			return true;
+		} catch (final MalformedURLException e) {
+			return false;
+		}
 	}
 }

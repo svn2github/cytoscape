@@ -1,13 +1,6 @@
 /*
  File: PluginManageDialog.java 
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -1056,8 +1049,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     	DataSource theDataSource = (DataSource) this.lstDownloadSites.getSelectedValue();
     	EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this, true, theBookmarks,
     			bookmarkCategory, "edit", theDataSource);
-    	
-    	theEditDialog.setSize(350, 250);
     	theEditDialog.setLocationRelativeTo(this);
 
     	theEditDialog.setVisible(true);
@@ -1068,8 +1059,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private void btnAddSiteActionPerformed(java.awt.event.ActionEvent evt) {                                           
     	EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this, true, theBookmarks,
     			bookmarkCategory, "new", null);
-    	
-    	theNewDialog.setSize(350, 250);
     	theNewDialog.setLocationRelativeTo(this);
     	theNewDialog.setVisible(true);
     	theNewDialog.getDataSource();
