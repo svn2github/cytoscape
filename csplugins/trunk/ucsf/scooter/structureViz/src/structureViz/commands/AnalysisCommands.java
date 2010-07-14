@@ -172,11 +172,14 @@ public class AnalysisCommands extends AbstractCommands {
 	                                              List<Structure> structures,
 			                                          boolean showSequences, boolean createEdges,
 	                                              boolean assignAttributes) {
+		try {
 		// Do the alignment
 		Align align = getAlign(chimera, showSequences, createEdges, assignAttributes);
 		align.align(referenceStruct, structures);
 		List<ChimeraStructuralObject>specList = specListFromStructureList(chimera, structures);
-		return getAlignResults(align, result, specList);
+		result =  getAlignResults(align, result, specList);
+		} catch (Exception e) { e.printStackTrace(); }
+		return result;
 	}
 
 	/**
@@ -223,12 +226,15 @@ public class AnalysisCommands extends AbstractCommands {
 	private static CyCommandResult getAlignResults(Align align, CyCommandResult result,
 	                                               List<ChimeraStructuralObject> matchList) {
 		for (ChimeraStructuralObject obj: matchList) {
-			float[] matchResults = align.getResults(obj.toString());
-			String resultMessage = "Alignment results for "+obj.toString()+": ";
+			float[] matchResults;
+			if (obj instanceof ChimeraModel)
+				matchResults = align.getResults(((ChimeraModel)obj).getModelName());
+			else
+				matchResults = align.getResults(obj.toString());
+			result.addMessage("Alignment results for "+obj.toString()+": ");
 			for (int i = 0; i < 3; i++) {
-				resultMessage += Align.attributeKeys[i]+"="+matchResults[i];
+				result.addMessage("     "+Align.attributeKeys[i]+"="+matchResults[i]);
 			}
-			result.addMessage(resultMessage);
 			result.addResult(obj.toString(), ""+matchResults[0]+","+matchResults[1]+","+matchResults[2]);
 		}
 		return result;

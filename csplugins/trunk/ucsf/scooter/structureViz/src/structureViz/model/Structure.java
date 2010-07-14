@@ -88,6 +88,13 @@ public class Structure {
 	public CyNode node() {return this.cytoscapeNode;}
 
 	/**
+	 * Set the CyNode this structure is associated with
+	 *
+	 * @param node the CyNode this structure is an attribute of
+	 */
+	public void setNode(CyNode node) {this.cytoscapeNode = node;}
+
+	/**
 	 * Get the modelNumber for this structure
 	 *
 	 * @return the model number as a float

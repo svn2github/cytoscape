@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
@@ -56,13 +58,18 @@ public class StructureCommands {
 	static public CyCommandResult openCommand(Chimera chimera, CyCommandResult result, 
 	                                          String nodelist, boolean showDialog) throws CyCommandException {
 		String [] nodes = nodelist.split(",");
-		for (String node: nodes) {
-			System.out.println("Node: "+node);
-			String structureNames = CyChimera.getStructureName(node.trim());
-			System.out.println("StructureNames: "+structureNames);
+		for (String nodeName: nodes) {
+			CyNode node = Cytoscape.getCyNode(nodeName);
+			String structureNames = CyChimera.getStructureName(nodeName.trim());
 			if (structureNames != null) {
 				for (String struct: structureNames.split(",")) {
 					result = openCommand(chimera, result, struct, null, null, showDialog);
+					// Get the model we created
+					ChimeraModel model = chimera.getModel(struct);
+					Structure modelStruct = model.getStructure();
+					// Now, associate the node with the structure
+					if (node != null)
+						modelStruct.setNode(node);
 				}
 			}
 		}

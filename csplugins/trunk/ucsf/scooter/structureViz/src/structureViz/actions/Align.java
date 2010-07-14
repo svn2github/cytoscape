@@ -132,7 +132,9 @@ public class Align {
 	 * @return the array of 3 float results
 	 */
 	public float[] getResults(String modelName) {
-		return (float [])results.get(modelName);
+		if (results.containsKey(modelName))
+			return (float [])results.get(modelName);
+		return null;
 	}
 
 	/**
@@ -193,7 +195,6 @@ public class Align {
 			ChimeraModel model = match.getChimeraModel();
 			modelList.add(model);
 			List<String> matchResult = singleAlign(reference, match);
-			// System.out.println("Saving results for: "+model.getModelName());
 			results.put(model.getModelName(), parseResults(matchResult));
 		}
 		chimeraObject.chimeraSend("focus");
@@ -280,6 +281,9 @@ public class Align {
 		CyNetwork network = chimeraObject.getNetworkView().getNetwork();
 		CyNode source = from.getStructure().node();
 		CyNode target = to.getStructure().node();
+		if (source == null || target == null) {
+			return;
+		}
 		CyEdge edge = null;
 		ArrayList nodeList = new ArrayList(2);
 		nodeList.add(source);
