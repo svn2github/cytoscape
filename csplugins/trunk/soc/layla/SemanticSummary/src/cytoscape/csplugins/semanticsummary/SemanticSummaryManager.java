@@ -222,7 +222,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		String networkID = network.getIdentifier();
 
 		//Null current network
-		if (network.equals(Cytoscape.getNullNetwork()))
+		if (network.equals(Cytoscape.getNullNetwork())|| network == null)
 		{
 			curNetwork = nullSemanticSummary;
 			curCloud = nullCloudParameters;
@@ -270,7 +270,7 @@ public class SemanticSummaryManager implements PropertyChangeListener, MultiHash
 		
 		
 		//Null current network
-		if (network.equals(Cytoscape.getNullNetwork()))
+		if (network.equals(Cytoscape.getNullNetwork()) || network == null)
 		{
 			curNetwork = nullSemanticSummary;
 			curCloud = nullCloudParameters;
