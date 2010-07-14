@@ -541,7 +541,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		// These are saved in the exported XGMML, but it's not clear how they get set
 		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE) != null) {
 			String nodeLabelFont = XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
+		
+			String[] items = nodeLabelFont.split("-"); // e.g. nodeLabelFont = "Arial-0-24"
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_SIZE, items[2]);
 		}
 
 		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE) != null) {
