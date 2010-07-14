@@ -6,6 +6,7 @@ package GBEB
 	
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
+	import flash.system.SecurityDomain;
 
 	//import flare.
 
@@ -19,6 +20,7 @@ package GBEB
 		
 		public var _mesh:Mesh;
 		private var _dataDisplay:DataDisplay;
+	
 		private var _GBEBContainer:Sprite = new Sprite();
 		private var _bundler:Bundler = new Bundler();
 		
@@ -30,13 +32,13 @@ package GBEB
 			
 			_meshResolution = int(Math.sqrt(d.edges.length + d.nodes.length)); 
 			_mesh = new Mesh(d); 
-			addChild(_mesh);
+			//addChild(_mesh);
 			
 			_dataDisplay = new DataDisplay(d);
 			addChild(_dataDisplay);
 			
 			addChild(_GBEBContainer);
-			
+				
 			trace("Mesh Resolution = " + _meshResolution);
 		}	
 		
@@ -97,11 +99,21 @@ package GBEB
 			_dataDisplay = null;
 			
 			_mesh.cleanup();
-			removeChild(_mesh);
+			//removeChild(_mesh);
 			_mesh = null;
 			
 			_meshData = null;
+		}
+		
+		public function redrawMesh():void
+		{
+			if(_data == null) throw new Error("Data is null!"); 
 			
+			_mesh.cleanup();
+			//removeChild(_mesh);
+		
+			_mesh = new Mesh(_data);
+			//addChild(_mesh);
 		}
 		
 		
