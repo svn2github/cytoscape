@@ -83,10 +83,11 @@ import javax.swing.table.TableCellRenderer;
  *
  */
 public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer {
-	/**
-	 * 
-	 */
+	
+	private static final long serialVersionUID = -8441554470062692796L;
+	
 	public static final int PARAMETER_NOT_EXIST = -1;
+	
 	private final static String DEF_LIST_DELIMITER = PIPE.toString();
 	private int keyInFile;
 	private List<Integer> aliases;

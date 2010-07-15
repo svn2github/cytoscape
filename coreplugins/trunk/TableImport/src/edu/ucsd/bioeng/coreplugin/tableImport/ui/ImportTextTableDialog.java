@@ -2733,7 +2733,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			rightMessage = "File Size Unknown (Remote Data Source)";
 		}
 
-		setStatusBar("Key Matched: "
+		setStatusBar("Key-Value Matched: "
 		             + previewPanel.checkKeyMatch(primaryKeyComboBox.getSelectedIndex()),
 		             centerMessage, rightMessage);
 	}

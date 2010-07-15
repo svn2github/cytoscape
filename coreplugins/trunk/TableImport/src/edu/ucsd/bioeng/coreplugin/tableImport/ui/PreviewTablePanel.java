@@ -79,6 +79,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
@@ -150,11 +151,11 @@ public class PreviewTablePanel extends JPanel {
 	 * GUI Components
 	 */
 	private JLabel legendLabel;
-	private javax.swing.JLabel aliasLabel;
-	private javax.swing.JLabel primaryKeyLabel;
+	private JLabel aliasLabel;
+	private JLabel primaryKeyLabel;
 	private JLabel ontologyTermLabel;
 	private JLabel taxonomyLabel;
-	private javax.swing.JLabel instructionLabel;
+	private JLabel instructionLabel;
 	private JLabel rightArrowLabel;
 	private JLabel fileTypeLabel;
 	private JScrollPane previewScrollPane;
@@ -740,7 +741,6 @@ public class PreviewTablePanel extends JPanel {
 			logger.debug("Sheet name = " + wb.getSheetName(0) + ", ROW = "
 					+ sheet.rowIterator().hasNext());
 
-			logger.debug("TS = " + sheet.toString());
 			newModel = parseExcel(sourceURL, size, curRenderer, sheet,
 					startLine);
 
@@ -1119,13 +1119,15 @@ public class PreviewTablePanel extends JPanel {
 	 * @param targetColumn
 	 * @return
 	 */
-	public int checkKeyMatch(int targetColumn) {
-		final List fileKeyList = Arrays
-				.asList(((DefaultListModel) keyPreviewList.getModel())
-						.toArray());
+	public int checkKeyMatch(final int targetColumn) {
+		final DefaultListModel listModel = (DefaultListModel) keyPreviewList.getModel();
+		final Object[] data = listModel.toArray();
+		
+		final List<Object> fileKeyList = Arrays.asList(data);
+		
 		int matched = 0;
 
-		TableModel curModel = getPreviewTable().getModel();
+		final TableModel curModel = getPreviewTable().getModel();
 
 		try {
 			curModel.getValueAt(0, targetColumn);
@@ -1133,12 +1135,12 @@ public class PreviewTablePanel extends JPanel {
 			return 0;
 		}
 
-		for (int i = 0; i < curModel.getRowCount(); i++) {
-			if (fileKeyList.contains(curModel.getValueAt(i, targetColumn))) {
+		final int rowCount = curModel.getRowCount();
+		for (int i = 0; i < rowCount; i++) {
+			final Object val = curModel.getValueAt(i, targetColumn);			 
+			if (val != null && fileKeyList.contains(val))
 				matched++;
-			}
 		}
-
 		return matched;
 	}
 
