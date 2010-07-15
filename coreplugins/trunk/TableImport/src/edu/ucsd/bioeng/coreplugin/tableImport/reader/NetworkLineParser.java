@@ -81,50 +81,45 @@ public class NetworkLineParser {
 	public void parseEntry(String[] parts) {
 		final Edge edge = addNodeAndEdge(parts);
 
-		if (edge != null) {
+		if (edge != null)
 			addEdgeAttributes(edge, parts);
-		}
 	}
 
+	
 	private Edge addNodeAndEdge(final String[] parts) {
-		final Node source;
 		
-		if (nmp.getSourceIndex().equals(-1) == false && (nmp.getSourceIndex() <= (parts.length - 1)) && (parts[nmp.getSourceIndex()] != null)) {
-			source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()].trim(), true);
-			nodeList.add(source.getRootGraphIndex());
-		} else {
-			source = null;
-		}
-		
-		final Node target;
-
-		if (nmp.getTargetIndex().equals(-1) == false && (nmp.getTargetIndex() <= (parts.length - 1)) && (parts[nmp.getTargetIndex()] != null)) {
-			target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()].trim(), true);
-			nodeList.add(target.getRootGraphIndex());
-		} else {
-			target = null;
-		}
+		final Node source = createNode(parts, nmp.getSourceIndex());
+		final Node target = createNode(parts, nmp.getTargetIndex());		
 		
 		// Single column nodes list.  Just add nodes.
-		if(source == null || target == null) {
-			// do not create edge.
+		if(source == null || target == null)
 			return null;
-		}
 
 		final String interaction;
 
 		if ((nmp.getInteractionIndex() == -1) || (nmp.getInteractionIndex() > (parts.length - 1))
 		    || (parts[nmp.getInteractionIndex()] == null)) {
 			interaction = nmp.getDefaultInteraction();
-		} else {
-			interaction = parts[nmp.getInteractionIndex()].trim();
-		}
+		} else
+			interaction = parts[nmp.getInteractionIndex()];
 
 		final Edge edge;
 		edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
 		edgeList.add(edge.getRootGraphIndex());
 		
 		return edge;
+	}
+	
+	
+	private Node createNode(final String[] parts, final Integer nodeIndex) {
+		final Node node;
+		if (nodeIndex.equals(-1) == false && (nodeIndex <= (parts.length - 1)) && (parts[nodeIndex] != null)) {
+			node = Cytoscape.getCyNode(parts[nodeIndex], true);
+			nodeList.add(node.getRootGraphIndex());
+		} else
+			node = null;
+		
+		return node;
 	}
 
 	private void addEdgeAttributes(final Edge edge, final String[] parts) {
