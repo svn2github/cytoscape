@@ -104,14 +104,18 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
  */
 public class DefaultAppearenceBuilder extends JDialog {
 	
-	private static final Dimension PANEL_SIZE = new Dimension(500, 27);
-	
 	private static final long serialVersionUID = 596165395462496156L;
+	
+	// Default dialog size for Default Appearence Builder.
+	private static final int VIEW_WIDTH = 350;
+	private static final int LIST_WIDTH = 550;
+	
+	private static final Dimension DIALOG_SIZE = new Dimension(900, 500);
 	
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
 	
-	private static CyLogger logger = CyLogger.getLogger(DefaultAppearenceBuilder.class);
+	private static final CyLogger logger = CyLogger.getLogger(DefaultAppearenceBuilder.class);
 
 	// This editor should be a singleton.
 	private static DefaultAppearenceBuilder dab = null;
@@ -127,7 +131,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @param parent DOCUMENT ME!
 	 * @param modal DOCUMENT ME!
 	 */
-	public DefaultAppearenceBuilder(Frame parent, boolean modal) {
+	private DefaultAppearenceBuilder(final Frame parent, final boolean modal) {
 		super(parent, modal);
 		initComponents();
 		buildList();
@@ -139,6 +143,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			});
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -146,17 +151,16 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static JPanel showDialog(Frame parent) {
+	static JPanel showDialog(Frame parent) {
 		if (dab == null)
 			dab = new DefaultAppearenceBuilder(parent, true);
 
-		dab.setLocationRelativeTo(parent);
-		dab.setSize(900, 450);
+		dab.setSize(DIALOG_SIZE);
 
 		dab.buildList();
 
 		dab.mainView.updateView();
-		dab.setLocationRelativeTo(Cytoscape.getDesktop());
+		dab.setLocationRelativeTo(parent);
 		dab.setVisible(true);
 
 		return dab.getPanel();
@@ -167,11 +171,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static JPanel getDefaultView(String vsName) {
+	static final JPanel getDefaultView(String vsName) {
 		if (dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
 
-		//Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
 		                                            .getDefaultBackgroundColor());
@@ -231,7 +234,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Default Appearance for "
 		         + Cytoscape.getVisualMappingManager().getVisualStyle().getName());
-		mainView.setBorder(new LineBorder(java.awt.Color.darkGray, 1, true));
+		
+		mainView.setPreferredSize(new Dimension(VIEW_WIDTH, 300));
+		mainView.setBorder(new LineBorder(Color.darkGray, 1, true));
 
 		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(mainView);
 		mainView.setLayout(jXPanel2Layout);
@@ -241,9 +246,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                              .add(0, 237, Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
-		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
-		jXTitledPanel1.setMinimumSize(PANEL_SIZE);
-		jXTitledPanel1.setPreferredSize(PANEL_SIZE);
+		jXTitledPanel1.setTitleFont(new Font("SansSerif", Font.BOLD, 12));
+		jXTitledPanel1.setPreferredSize(new Dimension(LIST_WIDTH, 300));
 		defaultObjectTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
 		nodeScrollPane.setViewportView(nodeList);
@@ -276,15 +280,14 @@ public class DefaultAppearenceBuilder extends JDialog {
 					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 					dispose();
 				}
-			});
+		});
 
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					// TODO Auto-generated method stub
 					dispose();
 				}
-			});
+		});
 
 		org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(jXPanel1);
 		jXPanel1.setLayout(jXPanel1Layout);
@@ -304,7 +307,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                   .add(jXTitledPanel1,
 		                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                        350, Short.MAX_VALUE)
+		                                                                        500, Short.MAX_VALUE)
 		                                                                   .add(12, 12, 12)));
 		jXPanel1Layout.setVerticalGroup(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                              .add(org.jdesktop.layout.GroupLayout.TRAILING,
@@ -326,18 +329,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                                                                          .add(cancelButton)
 		                                                                                                                          .add(applyButton))))
 		                                                                 .addContainerGap()));
-
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(jXPanel1,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(jXPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   Short.MAX_VALUE));
+		this.getContentPane().add(jXPanel1);
 		pack();
 	} // </editor-fold>
 
@@ -535,7 +527,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 
-	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
+	static class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
+		
+		private static final long serialVersionUID = -4980971466313937239L;
+		
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
 		private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
@@ -590,7 +585,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 	/*
 	 * Draw global color icon
 	 */
-	class GlobalIcon extends VisualPropertyIcon {
+	static class GlobalIcon extends VisualPropertyIcon {
+		
+		private static final long serialVersionUID = -2292185584380604923L;
+
 		public GlobalIcon(String name, Color color) {
 			super(name, color);
 		}

@@ -11,7 +11,10 @@ import com.l2fprod.common.propertysheet.DefaultProperty;
  *
  */
 public class VizMapperProperty extends DefaultProperty {
-    private Object hiddenObject;
+    
+	private static final long serialVersionUID = -9103147252041414576L;
+	
+	private Object hiddenObject;
 
     /**
      * DOCUMENT ME!

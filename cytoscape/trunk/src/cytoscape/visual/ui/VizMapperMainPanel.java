@@ -168,6 +168,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		GLOBAL;
 	}
 
+	// Context menu items
 	private static JPopupMenu menu;
 	private static JMenuItem delete;
 	private static JMenuItem rainbow1;
@@ -211,7 +212,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	/*
 	 * Visual mapping manager. All parameters should be taken from here.
 	 */
-	private VisualMappingManager vmm;
+	private final VisualMappingManager vmm;
 
 	/*
 	 * Keeps Properties in the browser.
@@ -220,10 +221,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	// Keeps current discrete mappings.  NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer = new HashMap<String, Map<Object, Object>>();
-        // MLC 03/31/08:
-        // lastVSName is currently used as an efficiency hack to ignore the expensive need
-        // to update the visual style when the existing style is already that style:
+
 	private String lastVSName = null;
+
 	private JScrollPane noMapListScrollPane;
 	private List<VisualPropertyType> noMapping;
 	private JPanel buttonPanel;
@@ -234,9 +234,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private boolean ignore = false;
 	private CyLogger logger = CyLogger.getLogger(VizMapperMainPanel.class);
 
-
 	private Set<VizMapperProperty> hiddenProperties = new HashSet<VizMapperProperty>();
 
+	
 	/** Creates new form AttributeOrientedPanel */
 	private VizMapperMainPanel() {
 		vmm = Cytoscape.getVisualMappingManager();
@@ -244,6 +244,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		propertyMap = new HashMap<String, List<Property>>();
 		setMenu();
+		menu.addPopupMenuListener(this);
 
 		// Need to register listener here, instead of CytoscapeDesktop.
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -287,7 +288,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param deps The VisualPropertyDependencies that will be queried.
 	 * @param def The VisualPropertyDependency.Definition in question.
 	 */
-	protected void syncDependencyStates(VisualPropertyDependency deps, Definition def) {
+	void syncDependencyStates(VisualPropertyDependency deps, Definition def) {
 		dependencyMenuItems.get(def).setSelected(deps.check(def));
 
 		updateDependencyStates(deps);
@@ -417,8 +418,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					editSelectedCells();
 				}
 			});
-		// add.addActionListener(l)
-		// select.setIcon(vmIcon);
+	
 		menu = new JPopupMenu();
 		generateValues.add(rainbow1);
 		generateValues.add(rainbow2);
@@ -447,9 +447,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		menu.add(dependencies);
 
 		delete.setEnabled(false);
-		menu.addPopupMenuListener(this);
 	}
 
+	
 	private void setupDependencyMenus(JMenu parentMenu) {
 		for ( final Definition def : Definition.values() ) {
 			final JCheckBoxMenuItem item = new JCheckBoxMenuItem(def.getTitle());
@@ -2568,7 +2568,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private class GenerateValueListener extends AbstractAction {
-		private final int MAX_COLOR = 256 * 256 * 256;
+	
+		private static final long serialVersionUID = -4852790777403019117L;
+
+		private static final int MAX_COLOR = 256 * 256 * 256;
+		
 		private DiscreteMapping dm;
 		protected static final int RAINBOW1 = 1;
 		protected static final int RAINBOW2 = 2;

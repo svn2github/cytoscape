@@ -87,8 +87,12 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 	}
 
 
-	class SetNestedNetworkMenuItemAction extends AbstractAction {
-		NodeView nodeView;
+	private static final class SetNestedNetworkMenuItemAction extends AbstractAction {
+		
+		private static final long serialVersionUID = 8460477959913047234L;
+		
+		private final NodeView nodeView;
+		
 		public SetNestedNetworkMenuItemAction(NodeView nodeView) {
 			super("Set Nested Network");
 			this.nodeView = nodeView;
@@ -102,8 +106,12 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 	}
 
 
-	class DeleteNestedNetworkMenuItemAction extends AbstractAction {
-		NodeView nodeView;
+	static class DeleteNestedNetworkMenuItemAction extends AbstractAction {
+		
+		private static final long serialVersionUID = -1413503506096197791L;
+		
+		private final NodeView nodeView;
+		
 		public DeleteNestedNetworkMenuItemAction(NodeView nodeView) {
 			super("Delete Nested Network");
 			this.nodeView = nodeView;
@@ -124,8 +132,12 @@ class NestedNetworkMenuListener implements NodeContextMenuListener {
 	}
 
 
-	class GotoNestedNetworkMenuItemAction extends AbstractAction {
-		NodeView nodeView;
+	private static final class GotoNestedNetworkMenuItemAction extends AbstractAction {
+		
+		private static final long serialVersionUID = -2090577740180052939L;
+		
+		private final NodeView nodeView;
+		
 		public GotoNestedNetworkMenuItemAction(NodeView nodeView) {
 			super("Go to Nested Network");
 			this.nodeView = nodeView;

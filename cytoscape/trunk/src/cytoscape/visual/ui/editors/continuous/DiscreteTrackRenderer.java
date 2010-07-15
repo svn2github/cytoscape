@@ -646,14 +646,13 @@ public class DiscreteTrackRenderer<T> extends JComponent implements VizMapperTra
 		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
 
-		int track_width = iconWidth;
-		int trackHeight = iconHeight - 8;
+		final int track_width = iconWidth;
+		final int trackHeight;
 		if(detail) {
 			trackHeight = iconHeight - 30;
 			smallIconSize = (int) (trackHeight * 0.5);
-		} else {
+		} else
 			trackHeight = iconHeight - 8;
-		}
 
 		//		 get the list of tumbs
 		final List<Thumb<T>> stops = slider.getModel().getSortedThumbs();

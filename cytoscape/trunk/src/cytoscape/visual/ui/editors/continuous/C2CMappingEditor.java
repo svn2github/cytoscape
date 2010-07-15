@@ -177,8 +177,6 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		// Add a new white thumb in the min.
 		slider.getModel().addThumb(position, value);
 
-		// Update continuous mapping
-		final Double newVal = maxValue;
 
 		// Pick Up first point.
 		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);

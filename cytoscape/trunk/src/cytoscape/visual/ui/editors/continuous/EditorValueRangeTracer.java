@@ -44,13 +44,14 @@ import java.util.Map;
  *
  */
 public class EditorValueRangeTracer {
-	private static EditorValueRangeTracer tracer;
+	
+	private static final EditorValueRangeTracer tracer;
 
 	static {
 		tracer = new EditorValueRangeTracer();
 	}
 
-	private final class Range {
+	private static final class Range {
 		private Double min;
 		private Double max;
 
