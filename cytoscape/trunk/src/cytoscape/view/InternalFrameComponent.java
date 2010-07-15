@@ -1,14 +1,7 @@
 /*
   File: InternalFrameComponent.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -187,6 +180,19 @@ public class InternalFrameComponent extends JComponent implements Printable {
 		
 		networkCanvas.print(g);
 		foregroundCanvas.print(g);
+	}
+
+	/**
+	 *  This method is used by image export libraries.   This method is required for export formats that
+	 *  do not support transparency because otherwise the foreground layer will obscure a network.
+	 */
+	public void printWithoutForeground(Graphics g) {
+		backgroundCanvas.print(g);
+		
+		// This is a work-around, otherwise we lose backgroundCanvas color
+		networkCanvas.setBackground(backgroundCanvas.getBackground());
+		
+		networkCanvas.print(g);
 	}
 
 	/**
