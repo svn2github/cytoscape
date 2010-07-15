@@ -4,8 +4,6 @@ $(function(){
         var matches = $(this).attr("href").match(/\#(.+)/);
         
         $("#content .right a[href=" + matches[0] + "]").click();
-        
-        return false;
     });
   
 });

@@ -37,9 +37,9 @@
             $cat = $api->cls_name_to_cat_name[$cls_name];
             
             if( $cat == $category_name ){
-                return '<a class="class_link direct" href="#' . short_cls_name($cls_name) . '">' . short_cls_name($cls_name) . '</a>';
+                return '<a class="class_link direct" href="#section/' . short_cls_name($cls_name) . '">' . short_cls_name($cls_name) . '</a>';
             } else {
-                return '<a class="class_link" href="/documentation/' . $api->cls_name_to_cat_name[$cls_name] . '#' . short_cls_name($cls_name) . '">' . short_cls_name($cls_name) . '</a>';
+                return '<a class="class_link" href="/documentation/' . $api->cls_name_to_cat_name[$cls_name] . '#section/' . short_cls_name($cls_name) . '">' . short_cls_name($cls_name) . '</a>';
             }
         } else {
             return short_cls_name($cls_name);
@@ -56,9 +56,9 @@
         
         global $category_name;
         if( $cat == $category_name ){
-            return  '<a class="function_link direct" href="#' . $fn_name . '">' . $fn_name . '</a>';
+            return  '<a class="function_link direct" href="#section/' . $fn_name . '">' . $fn_name . '</a>';
         } else {
-            return  '<a href="/documentation/' . $api->cls_name_to_cat_name[$cls_name] . '#' . $fn_name . '">' . short_cls_name($cls_name) . ' :: ' . $fn_name . '</a>';
+            return  '<a href="/documentation/' . $api->cls_name_to_cat_name[$cls_name] . '#section/' . $fn_name . '">' . short_cls_name($cls_name) . ' :: ' . $fn_name . '</a>';
         }
     }
     
