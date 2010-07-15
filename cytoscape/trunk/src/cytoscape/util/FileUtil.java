@@ -1,14 +1,7 @@
 /*
   File: FileUtil.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -42,7 +35,12 @@ import cytoscape.logger.CyLogger;
 
 import cytoscape.task.TaskMonitor;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.FileDialog;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -56,8 +54,9 @@ import java.net.URL;
 import java.util.Iterator;
 
 import javax.swing.JFileChooser;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
-import java.awt.Component;
+
 
 /**
  * Provides a platform-dependent way to open files. Mainly
@@ -65,6 +64,52 @@ import java.awt.Component;
  * instead of the Swing FileChooser.
  */
 public abstract class FileUtil {
+	/**
+	 *  This class exists to work around a bug in JFileChooser that will allow editing of
+	 *  file and directory names even when LOAD has been specified.
+	 */
+	static class NoEditFileChooser extends JFileChooser {
+		public NoEditFileChooser(final File start) {
+			super(start);
+			
+			final JList list = findFileList(this);
+			for (MouseListener l : list.getMouseListeners()) {
+				if (l.getClass().getName().indexOf("FilePane") >= 0) {
+					list.removeMouseListener(l);
+					list.addMouseListener(new MyMouseListener(l));
+				}
+			}
+		}
+
+		private JList findFileList(final Component comp) {
+			if (comp instanceof JList)
+				return (JList)comp;
+
+			if (comp instanceof Container) {
+				for (Component child : ((Container)comp).getComponents()) {
+					JList list = findFileList(child);
+					if (list != null)
+						return list;	
+				}
+			}
+
+			return null;
+		}
+
+		private class MyMouseListener extends MouseAdapter {
+			MyMouseListener(final MouseListener listenerChain) {
+				m_listenerChain = listenerChain;
+			}
+			
+			public void mouseClicked(final MouseEvent event) {
+				if (event.getClickCount() > 1)
+					m_listenerChain.mouseClicked(event);
+			}
+			
+			private MouseListener m_listenerChain;
+		}
+	}
+
 	protected static CyLogger logger = CyLogger.getLogger(FileUtil.class);
 
 	/**
@@ -337,7 +382,7 @@ public abstract class FileUtil {
 			return null;
 		} else {
 			// this is not a mac, use the Swing based file dialog
-			JFileChooser chooser = new JFileChooser(start);
+			final JFileChooser chooser = (load_save_custom == LOAD) ? new NoEditFileChooser(start) : new JFileChooser(start);
 
 			if (multiselect && selectedFiles != null){
 				chooser.setSelectedFiles(selectedFiles);					
