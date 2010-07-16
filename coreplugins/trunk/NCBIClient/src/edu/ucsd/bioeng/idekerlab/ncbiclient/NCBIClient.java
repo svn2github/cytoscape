@@ -299,8 +299,8 @@ public class NCBIClient extends
 			return;
 		}
 
-		int resSize = Integer.parseInt(result.getCount());
-		System.out.println("Number of Result from Entrez Gene = " + resSize);
+		final String count = result.getCount();
+		final int resSize = (count == null) ? 0 : Integer.parseInt(count);
 
 		if (e.getNextMove() != null) {
 			Cytoscape.firePropertyChange(WSResponseType.SEARCH_FINISHED
