@@ -1,4 +1,33 @@
+/**
+* Copyright (C) Gerardo Huck, 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published 
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*  
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*  
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*/
 
+
+/** 
+ * This algorithms uses a node layout algorithm as a Label layout one, by creating fake nodes 
+ * (representing the labels). This creation is implemented in the csplugins.layout package, 
+ * and returns a partition which is passed to the previously existing algorithm as an argument
+ * for the layout.
+ * 
+ * It was done as part of Google Summer of Code 2010.
+ * Mentor: Mike Smoot
+ * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
+ * @version 0.1
+ */
 package cytoscape.layout.label;
 
 import csplugins.layout.LayoutEdge;
@@ -178,7 +207,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 								     selectedOnly,
 								     supportWeights);
 
-	logger.info("New partition succesfully created!");
+	//	logger.info("New partition succesfully created!");
 
 	// Figure out our starting point - This will be used when:
 	// 1- Laying out labels off all nodes
@@ -198,8 +227,8 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// Not quite done, yet. We may need to migrate labels back to their starting position
 	// This will be necessary if:
 	// 1- Laying out only selected nodes
-	// - or- 
-	// 2- (normal) Nodes are not allowed to move
+	// - and - 
+	// 2- (normal) Nodes are allowed to move
 
  	if (selectedOnly && moveNodes) {
 	    logger.info("moving back labels (and possibly nodes) to their location");

@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /**
  * Copyright (c) 2006 The Regents of the University of California.
  * All rights reserved.
@@ -31,7 +30,11 @@
  *
  */
 
-package cytoscape.layout.label;
+/**
+ * Copyright (c) 2010 Gerardo Huck
+ */
+
+package cytoscape.layout.label; // LABEL
 
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
@@ -50,8 +53,11 @@ import java.lang.Thread;
 
 
 /**
- * Lays out the nodes in a graph using a modification of the Fruchterman-Rheingold
- * algorithm.
+ * This is a modified version of the BioLayoutFRAlgorithm class, to be used as 
+ * at laying out labels. (this class is extended by LabelBioLayoutFRAlgorithm)
+ * 
+ * Lays out the labels (and maybe nodes as well) in a graph using a modification of the 
+ * Fruchterman-Rheingold algorithm.
  * <p>
  * The basic layout algorithm follows from the paper:
  * <em>"Graph Drawing by Force-Directed Placement"</em>
@@ -61,10 +67,14 @@ import java.lang.Thread;
  * allows for its use for laying out similarity networks, which are useful
  * for biological problems.
  *
+ *
+ * Changes made are marked with "LABEL"
+ * 
+ * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm {
+public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
     /**
      * Sets the number of iterations for each update
      */
@@ -74,11 +84,11 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
      * The multipliers and computed result for the
      * attraction and repulsion values.
      */
-    private double attraction_multiplier = 1.0;
+    private double attraction_multiplier = 1.0; // LABEL
     private double attraction_constant;
-    private double repulsion_multiplier = 0.01;
+    private double repulsion_multiplier = 0.001; // LABEL
     private double repulsion_constant;
-    private double gravity_multiplier = 0.1;
+    private double gravity_multiplier = 0.0; // LABEL
     private double gravity_constant;
 
     /**
@@ -164,12 +174,14 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 
 	displacementArray = new ArrayList<Double>(100);
 
-	//	this.initializeProperties();
+	//	this.initializeProperties(); // LABEL
     }
 
     /**
      * Required methods (and overrides) for AbstractLayout
      */
+
+    // LABEL -->
 
 //     /**
 //      * Return the "name" of this algorithm.  This is meant
@@ -197,6 +209,8 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 
 // 	    return "(Label Modified) Force-Directed (BioLayout)";
 //     }
+
+// <-- LABEL
 
     /**
      * Sets the number of iterations
@@ -425,11 +439,11 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 					 Tunable.DOUBLE, new Double(20.0)));
 	// We've now set all of our tunables, so we can read the property 
 	// file now and adjust as appropriate
-	// layoutProperties.initializeProperties();
+	// layoutProperties.initializeProperties(); // LABEL
 
 	// Finally, update everything.  We need to do this to update
 	// any of our values based on what we read from the property file
-	// updateSettings(true);
+	// updateSettings(true); // LABEL
 
     }
 
@@ -548,10 +562,15 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	    temp = Math.sqrt(this.width*this.height) * this.temperature/100;
 	}
 
+
+// LABEL -->
+
 	// Figure out our starting point
 // 	if (selectedOnly) {
 // 	    initialLocation = partition.getAverageLocation();
 // 	}
+
+// <-- LABEL
 
 	// Randomize our points, if any points lie
 	// outside of our bounds
@@ -613,6 +632,9 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	    partition.moveNodeToLocation(v);
 	}
 
+
+// LABEL -->
+
 	// Not quite done, yet.  If we're only laying out selected nodes, we need
 	// to migrate the selected nodes back to their starting position
 // 	if (selectedOnly) {
@@ -629,6 +651,9 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 // 		}
 // 	    }
 // 	}
+
+// <-- LABEL
+
 
 	logger.info("Layout complete after " + iteration + " iterations");
     }
@@ -685,7 +710,6 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	double yDispTotal = 0;
 	// updateProfile.start();
 
-	/// for v in V do begin
 	for (LayoutNode v: partition.getNodeList()) {
 	    if (v.isLocked())
 		continue;
@@ -695,7 +719,9 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	    xDispTotal += Math.abs(v.getXDisp());
 	    yDispTotal += Math.abs(v.getYDisp());
 	}
-	/// end
+
+
+// LABEL -->
 
 	// Translate back to the middle (or to the starting point,
 	// if we're dealing with a selected group
@@ -704,6 +730,8 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 // 		v.decrement(xAverage - (width / 2), yAverage - (height / 2));
 // 	    }
 // 	}
+
+// <-- LABEL
 
 	// updateProfile.checkpoint();
 

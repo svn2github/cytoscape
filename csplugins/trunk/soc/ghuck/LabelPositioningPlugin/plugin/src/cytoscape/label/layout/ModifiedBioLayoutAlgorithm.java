@@ -30,7 +30,11 @@
  *
  */
 
-package cytoscape.layout.label;
+/**
+ * Copyright (c) 2010 Gerardo Huck
+ */
+
+package cytoscape.layout.label; // LABEL
 
 import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutNode;
@@ -51,15 +55,20 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-// TODO: Change this Javadoc description 
-
 /**
- * Superclass for the two bioLayout algorithms (KK and FR).
+ * (Modified) Superclass for the two bioLayout algorithms (KK and FR).
+ * 
+ * This is a modified version of the BioLayoutAlgorithm class, to be used as 
+ * superclass for the label layout by KK and FR flavors.
  *
+ * Changes made are marked with "LABEL"
+ * 
+ * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public abstract class ModifiedBioLayoutAlgorithm extends AbstractGraphPartition {
+
+public abstract class ModifiedBioLayoutAlgorithm extends AbstractGraphPartition { // LABEL
     /**
      * Properties
      */
