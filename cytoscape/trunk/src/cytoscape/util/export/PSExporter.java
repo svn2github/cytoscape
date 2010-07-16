@@ -58,7 +58,7 @@ public class PSExporter implements Exporter {
 		              Boolean.toString(!exportTextAsFont)); 
 
 		PSGraphics2D g = new PSGraphics2D(stream,ifc); 
-		g.setMultiPage(false); // true for PS file
+		g.setMultiPage(false);
 		g.setProperties(p); 
 
 		g.startExport(); 
