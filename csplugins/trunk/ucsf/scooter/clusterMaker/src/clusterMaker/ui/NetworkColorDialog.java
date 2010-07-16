@@ -493,6 +493,7 @@ public class NetworkColorDialog extends JDialog
 
 			// Get the currently selected array indices
 			int[] selectedAttributes = arraySelection.getSelectedIndexes();
+			arraySelection.deselectAllIndexes();
 
 			// Disable the Cytoscape selection
 			arraySelection.notifyObservers(Boolean.TRUE);
