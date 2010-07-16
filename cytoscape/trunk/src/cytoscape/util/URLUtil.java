@@ -101,7 +101,14 @@ public class URLUtil {
 					"getBasicInputStream was given a null 'source' argument.");
 		}
 		URLConnection uc = getURLConnection(source);
-		return uc.getInputStream();
+
+		final InputStream is;
+		try {
+			is = uc.getInputStream();
+		} catch (final Exception e) {
+			throw new IllegalStateException("Failed to get input stream for \"" + source + "\"!");
+		}
+		return is;
 	}
 
 	/**

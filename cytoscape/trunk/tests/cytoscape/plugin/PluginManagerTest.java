@@ -145,7 +145,7 @@ public class PluginManagerTest extends TestCase {
 		String Url = "http://google.com/x.xml";
 		try {
 			mgr.inquire(Url);
-		} catch (java.io.IOException e) {
+		} catch (IllegalStateException e) {
 			assertNotNull(e);
 		}
 
