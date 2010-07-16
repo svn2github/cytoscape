@@ -118,7 +118,7 @@ public class InternalFrameComponent extends JComponent implements Printable {
 
 	/**
 	 * Our implementation of Component setBounds().  If we don't do this, the
-	 * individual canvas do not get rendered.
+	 * individual canvasses do not get rendered.
 	 *
 	 * @param x int
 	 * @param y int
@@ -140,11 +140,11 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 * @param pageFormat PageFormat (size and orientation of the page being drawn)
 	 * @param pageIndex int (the zero based index of the page being drawn)
 	 *
-	 * @return PAGE_EXISTS if teh page is rendered or NO_SUCH_PAGE if pageIndex specifies non-existent page
+	 * @return PAGE_EXISTS if the page is rendered or NO_SUCH_PAGE if pageIndex specifies non-existent page
 	 * @throws PrinterException
 	 */
-	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-	    throws PrinterException {
+	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException
+	{
 		if (pageIndex == 0) {
 			((Graphics2D) graphics).translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 			
