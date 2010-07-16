@@ -61,6 +61,7 @@ public class CommandHandler {
 				String line = null;
 				while ((line = input.readLine()) != null) {
 					line = line.trim();
+					CommandTool.getMessageHandlerContext().appendCommand(line);
 					handleCommand(CommandTool.getMessageHandlerContext(), line);
 				}
 			} 
@@ -72,11 +73,7 @@ public class CommandHandler {
 
 	public static void handleCommand(MessageHandler resultsText, String input) {
 		CyCommandResult results = null;
-		if (input.length() == 0) return;
-		if (input.startsWith("#")) {
-			resultsText.appendMessage(input);
-			return;
-		}
+		if (input.length() == 0 || input.startsWith("#")) return;
 
 		try {
 			// Handle our built-ins

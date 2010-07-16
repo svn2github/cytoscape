@@ -37,19 +37,23 @@ public class StdMessageHandler implements MessageHandler {
 	}
 
 	public void appendCommand(String s) {
-		System.out.println(s);
+		System.out.println("Command: "+s);
 	}
 
 	public void appendError(String s) {
-		System.err.println(s);
+		System.err.println("ERROR:  "+s);
 	}
 
 	public void appendResult(String s) {
-		System.out.println(s);
+		if (s == null || s.length() == 0)
+			return;
+		System.out.println("-->    "+s);
 	}
 
 	public void appendMessage(String s) {
-		System.out.println(s);
+		if (s == null || s.length() == 0)
+			return;
+		System.out.println("-->    "+s);
 	}
 
 }
