@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.MenuEvent;
@@ -51,15 +52,34 @@ public class ExportAsGraphicsAction extends CytoscapeAction {
 
 	private static final String TITLE = "Current Network View as Graphics";
 
-	public static ExportFilter[] getFilters() {
-		return FILTERS;
+	private ExportAsGraphicsFileChooser chooser;
+	private String defaultFileExt;
+
+	public ExportAsGraphicsAction() {
+		this("PDF");
 	}
 	
-	public ExportAsGraphicsAction() {
+	
+	public ExportAsGraphicsAction(final String fileExtension) {
 		super(TITLE + "...");
 		setPreferredMenu("File.Export");
 		setAcceleratorCombo(KeyEvent.VK_P, ActionEvent.CTRL_MASK
 				| ActionEvent.SHIFT_MASK);
+		
+		this.defaultFileExt = fileExtension;
+	}
+	
+	
+	private ExportFilter getFilter(final String ext) {
+		for(ExportFilter filter: FILTERS) {
+			final Set<String> exts = filter.getExtensionSet();
+			for(String ex: exts) {
+				if(ex.equalsIgnoreCase(ext))
+					return filter;
+			}
+		}
+		
+		return null;
 	}
 
 	
@@ -76,12 +96,16 @@ public class ExportAsGraphicsAction extends CytoscapeAction {
 			return;
 		}
 
-		final ExportAsGraphicsFileChooser chooser = new ExportAsGraphicsFileChooser(FILTERS, JPG_FILTER);
+		final ExportFilter filter = getFilter(defaultFileExt);
+		if(filter == null)
+			chooser = new ExportAsGraphicsFileChooser(FILTERS, PDF_FILTER);
+		else
+			chooser = new ExportAsGraphicsFileChooser(FILTERS, filter);
+		
 
 		final ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				ExportFilter filter = (ExportFilter) chooser
-						.getSelectedFormat();
+				ExportFilter filter = (ExportFilter) chooser.getSelectedFormat();
 				filter.setExportTextAsFont(chooser.getExportTextAsFont());
 
 				File file = chooser.getSelectedFile();
@@ -200,22 +224,24 @@ class PDFExportFilter extends ExportFilter {
 }
 
 class BitmapExportFilter extends ExportFilter {
-	private String extension;
-
+	
+	private final String extension;
+	
 	public BitmapExportFilter(String extension, String description) {
 		super(extension, description);
 		this.extension = extension;
 	}
 
 	public void export(final CyNetworkView view, final FileOutputStream stream) {
+		
+		
 		final InternalFrameComponent ifc = Cytoscape.getDesktop()
 				.getNetworkViewManager().getInternalFrameComponent(view);
-		final ExportBitmapOptionsDialog dialog = new ExportBitmapOptionsDialog(
-				ifc.getWidth(), ifc.getHeight());
+		final ExportBitmapOptionsDialog dialog = new ExportBitmapOptionsDialog(ifc.getWidth(), ifc.getHeight());
+		
 		ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BitmapExporter exporter = new BitmapExporter(extension,
-						dialog.getZoom());
+				BitmapExporter exporter = new BitmapExporter(extension, dialog.getZoom());
 				dialog.dispose();
 				ExportTask.run("Exporting to " + extension, exporter, view,
 						stream);

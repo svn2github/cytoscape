@@ -14,13 +14,12 @@ import cytoscape.view.InternalFrameComponent;
  * Bitmap exporter by the ImageIO class.
  * @author Samad Lotia
  */
-public class BitmapExporter implements Exporter
-{
+public class BitmapExporter implements Exporter {
+	
 	private String extension;
 	private double scale;
 
-	public BitmapExporter(String extension, double scale)
-	{
+	public BitmapExporter(String extension, double scale) {
 		this.extension = extension;
 		this.scale = scale;
 

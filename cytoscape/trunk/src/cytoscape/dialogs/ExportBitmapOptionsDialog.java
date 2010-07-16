@@ -12,8 +12,9 @@ import cytoscape.Cytoscape;
  * Options dialog for exporting to bitmap images.
  * @author Samad Lotia
  */
-public class ExportBitmapOptionsDialog extends JDialog
-{
+public class ExportBitmapOptionsDialog extends JDialog {
+	
+	private static final long serialVersionUID = 5333484131669731753L;
 	private JFormattedTextField zoomField;
 	private JFormattedTextField widthInPixelsField;
 	private JFormattedTextField heightInPixelsField;
@@ -32,11 +33,12 @@ public class ExportBitmapOptionsDialog extends JDialog
 	 * @param imageHeight The image height to be exported
 	 * @param listener The action will be called when the "OK" button is clicked
 	 */
-	public ExportBitmapOptionsDialog(int imageWidth, int imageHeight)
-	{
+	public ExportBitmapOptionsDialog(int imageWidth, int imageHeight) {
 		super(Cytoscape.getDesktop(), "Export Bitmap Options");
+		
 		this.originalWidth = imageWidth;
 		this.originalHeight = imageHeight;
+		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		Container content = getContentPane();
 
@@ -183,7 +185,7 @@ public class ExportBitmapOptionsDialog extends JDialog
 		c.fill = GridBagConstraints.NONE;
 		sizePanel.add(resolutionLabel, c);
 
-		Integer[] resolutions = { new Integer(72), new Integer(100), new Integer(150), new Integer(300) };
+		final Integer[] resolutions = { 72, 100, 150, 300, 600 };
 		resolutionComboBox = new JComboBox(resolutions);
 		resolutionComboBox.addActionListener(zoomListener);
 		c.gridx = 1;			c.gridy = 7;
@@ -224,7 +226,8 @@ public class ExportBitmapOptionsDialog extends JDialog
 		setLocationRelativeTo(Cytoscape.getDesktop());
 		pack();
 	}
-
+	
+	
 	public double getZoom()
 	{
 		return ((Number) zoomField.getValue()).doubleValue() / 100.0;
@@ -245,9 +248,9 @@ public class ExportBitmapOptionsDialog extends JDialog
 		int newHeight = (int) (newZoom * originalHeight);
 		widthInPixelsField.setValue(new Integer(newWidth));
 		heightInPixelsField.setValue(new Integer(newHeight));
-		double dpi = ((Number) resolutionComboBox.getSelectedItem()).doubleValue();
-		double newWidthInches = newWidth / dpi;
-		double newHeightInches = newHeight / dpi;
+		final double dpi = ((Number) resolutionComboBox.getSelectedItem()).doubleValue();
+		final double newWidthInches = newWidth / dpi;
+		final double newHeightInches = newHeight / dpi;
 		widthInInchesField.setValue(new Double(newWidthInches));
 		heightInInchesField.setValue(new Double(newHeightInches));
 	}

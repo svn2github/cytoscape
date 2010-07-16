@@ -23,6 +23,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.Calculator;
 
@@ -34,6 +35,8 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 	
 	private static final long serialVersionUID = 4895622023575071394L;
 	
+	private final String SEPARATOR = System.getProperty("file.separator");
+	
 	private static final Dimension DIALOG_SIZE = new Dimension(650, 165);
 
 	private File selectedFile;
@@ -41,6 +44,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 
 	private boolean exportTextAsFont = !(Boolean.getBoolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")));
 	
+	@Deprecated
 	public ExportAsGraphicsFileChooser(final CyFileFilter[] formats) {
 		this(formats, null);
 	}
@@ -75,10 +79,26 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		formatComboBox.addItemListener(new FormatItemListener());
 		
 		removeFile();
+		
+		setDefaultFileName();
 
 		setLocationRelativeTo(Cytoscape.getDesktop());
 		pack();
+		okButton.requestFocusInWindow();
 	}
+	
+	
+	private void setDefaultFileName() {
+		final File recentDir = CytoscapeInit.getMRUD();
+		final CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		
+		final String title = view.getTitle();
+		
+		this.selectedFile = new File(recentDir.toString() + SEPARATOR + title);
+		this.updateExtension();
+		this.filePathField.setText(selectedFile.toString());
+	}
+	
 
 	// This is a work-around, because ItemEvent is received twice in MyItemListener.
 	private static int eventCount =0;
@@ -99,12 +119,11 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 					chooseFileButton.setEnabled(false);
 			}
 			else {
-				if (selectedFile !=null) {
-					okButton.setEnabled(true);					
-				}
-				else {
+				if (selectedFile !=null)
+					okButton.setEnabled(true);
+				else
 					okButton.setEnabled(false);
-				}
+				
 				chooseFileButton.setEnabled(true);
 			}
 		}		
@@ -180,8 +199,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 	}
 
 	
-	protected void assignFile(File file)
-	{
+	protected void assignFile(File file) {
 		selectedFile = file;
 		filePathField.setText(selectedFile.getPath());
 		okButton.setEnabled(true);
@@ -190,15 +208,15 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		}
 	}
 
-	protected void removeFile()
-	{
+	
+	protected void removeFile() {
 		selectedFile = null;
 		filePathField.setText("");
 		okButton.setEnabled(false);
 	}
 
-	protected void updateExtension()
-	{
+	
+	private void updateExtension() {
 		if (selectedFile == null)
 			return;
 
@@ -220,6 +238,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		}
 	}
 
+	
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if (obj instanceof JButton) {
@@ -231,7 +250,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 				this.dispose();
 			}
 			else if (btn == chooseFileButton) {
-				CyFileFilter filter = getSelectedFormat();
+				final CyFileFilter filter = getSelectedFormat();
 				String extension = "." + (String) filter.getExtensionSet().iterator().next();
 				CyFileFilter[] filters = new CyFileFilter[1];
 				filters[0] = filter;
@@ -269,9 +288,11 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		}
 	}
 	
+	
 	public boolean getExportTextAsFont() {
 		return exportTextAsFont;
 	}
+	
 	
     /** This method is called from within the constructor to
      * initialize the form.

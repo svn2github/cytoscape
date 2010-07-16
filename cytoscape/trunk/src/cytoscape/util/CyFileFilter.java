@@ -412,7 +412,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	/**
 	 * Returns the Set of file extension names.
 	 */
-	public Set getExtensionSet() {
+	public Set<String> getExtensionSet() {
 		return filters.keySet();
 	}
 

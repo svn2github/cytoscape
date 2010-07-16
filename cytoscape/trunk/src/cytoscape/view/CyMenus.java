@@ -389,7 +389,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		addAction(new ExportNodeAttributesAction());
 		addAction(new ExportEdgeAttributesAction());
 		addAction(new ExportVizmapAction());
-		addAction(new ExportAsGraphicsAction());
+		addAction(new ExportAsGraphicsAction("PDF"));
 
 		fileMenu.add(new JSeparator());
 		addAction(new PrintAction());
@@ -609,7 +609,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 
 		toolBar.addSeparator();
 
-		final ExportAsGraphicsAction eag = new ExportAsGraphicsAction();
+		final ExportAsGraphicsAction eag = new ExportAsGraphicsAction("PNG");
 		eag.putValue(Action.NAME, null);
 		snapshotButton = toolBar.add(eag);
 		snapshotButton.setToolTipText("Export current network view as graphics");
