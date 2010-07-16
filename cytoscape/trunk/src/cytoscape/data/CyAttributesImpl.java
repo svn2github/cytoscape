@@ -66,6 +66,7 @@ public class CyAttributesImpl implements CyAttributes {
 	private Set userNonEditableSet;
 
 	private String lastEquationError = null;
+	private Set<String> currentlyActiveAttributes = new TreeSet<String>();
 
 	protected static final CyLogger logger = CyLogger.getLogger(Cytoscape.class);
 
@@ -1129,6 +1130,13 @@ public class CyAttributesImpl implements CyAttributes {
 	private Object evalEquation(final String id, final String attribName, final Equation equation,
 	                            final StringBuilder errorMessage)
 	{
+		if (currentlyActiveAttributes.contains(attribName)) {
+			currentlyActiveAttributes.clear();
+			errorMessage.append("Recursive equation evaluation of \"" + attribName + "\"!");
+			return null;
+		} else
+			currentlyActiveAttributes.add(attribName);
+
 		final Collection<String> attribReferences = equation.getAttribReferences();
 
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
@@ -1140,6 +1148,7 @@ public class CyAttributesImpl implements CyAttributes {
 
 			final Object attribValue = getAttribute(id, attribRef);
 			if (attribValue == null) {
+				currentlyActiveAttributes.clear();
 				errorMessage.append("Missing value for referenced attribute \"" + attribRef + "\"!");
 				logger.warn("Missing value for \"" + attribRef
 				            + "\" while evaluating an equation (ID:" + id
@@ -1150,6 +1159,7 @@ public class CyAttributesImpl implements CyAttributes {
 			try {
 				nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
 			} catch (final Exception e) {
+				currentlyActiveAttributes.clear();
 				errorMessage.append("Bad attribute reference to \"" + attribRef + "\"!");
 				logger.warn("Bad attribute reference to \"" + attribRef
 				            + "\" while evaluating an equation (ID:" + id
@@ -1160,8 +1170,11 @@ public class CyAttributesImpl implements CyAttributes {
 
 		final Interpreter interpreter = new Interpreter(equation, nameToDescriptorMap);
 		try {
-			return interpreter.run();
+			final Object result = interpreter.run();
+			currentlyActiveAttributes.remove(attribName);
+			return result;
 		} catch (final Exception e) {
+			currentlyActiveAttributes.clear();
 			errorMessage.append(e.getMessage());
 			logger.warn("Error while evaluating an equation: " + e.getMessage() + " (ID:"
 			            + id + ", attribute name:" + attribName + ")");
