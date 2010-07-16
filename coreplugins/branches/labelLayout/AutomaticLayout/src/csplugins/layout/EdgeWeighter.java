@@ -30,6 +30,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
+/**
+* Copyright (C) Gerardo Huck, 2010
+*/
+
 package csplugins.layout;
 
 import java.lang.Math;
@@ -209,7 +214,7 @@ public class EdgeWeighter {
      *
      */ 
     public void setWeightLabelEdge(LayoutEdge layoutEdge) {
-	logger.info("Setting weight for label edge: "+layoutEdge+" using "+ weightAttribute);	
+	//	logger.info("Setting weight for label edge: "+layoutEdge+" using "+ weightAttribute);	
 
 	double eValue = labelWeightCoefficient * maxWeightSnapshot;
 
@@ -238,7 +243,7 @@ public class EdgeWeighter {
 	double eValue = 0.5;
 
 	// logger.debug("Setting weight for "+layoutEdge+" using "+weightAttribute);
-	logger.info("Setting weight for "+layoutEdge+" using "+weightAttribute);
+	// logger.info("Setting weight for "+layoutEdge+" using "+weightAttribute);
 
 	if ((weightAttribute != null)
 	    && edgeAttributes.hasAttribute(edge.getIdentifier(), weightAttribute)) {

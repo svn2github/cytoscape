@@ -30,6 +30,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
+/**
+* Copyright (C) Gerardo Huck, 2010
+*/
+
 package csplugins.layout;
 
 import csplugins.layout.LayoutNode;

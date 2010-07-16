@@ -1,7 +1,34 @@
+/**
+* Copyright (C) Gerardo Huck, 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published 
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*  
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*  
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*/
+
+
+/** 
+ * This class represents the fake nodes used to layout labels.
+ * 
+ * It was done as part of Google Summer of Code 2010.
+ * Mentor: Mike Smoot
+ * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
+ * @version 0.1
+ */
+
 package csplugins.layout;
 
 import cytoscape.*;
-//import cytoscape.visual.LabelPosition;
 import cytoscape.logger.CyLogger;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.*;
@@ -28,7 +55,6 @@ public class LayoutLabelNodeImpl extends LayoutNode {
     protected NodeView parentNodeView;
     protected ObjectPosition lp;
     protected CyAttributes nodeAtts = null;
-    //    protected ObjectPosition labelPosition;
 
     /**
      * Empty constructor
@@ -52,21 +78,23 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 
  	if (labelPosition == null) {
 	    lp = new ObjectPositionImpl();
+	    // logger.info("Created new ObjectPosition!");
 	} else {
 	    ValueParser<ObjectPosition> parser = 
 		(ValueParser<ObjectPosition>) VisualPropertyType.NODE_LABEL_POSITION.getValueParser();
 	    lp = parser.parseStringValue(labelPosition);
+	    // logger.info("ObjectPosition succesfully parsed!");
 	}
 	
-	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
-	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
+// 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
+// 	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
 
 	this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
 	this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
 	this.neighbors = new ArrayList<LayoutNode>();
 	this.index = index;
 
-	logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
+	// logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
     }
 
     /**
