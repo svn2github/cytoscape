@@ -28,135 +28,126 @@ import cytoscape.util.export.SVGExporter;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 
-
 /**
  * Action for exporting a network view to bitmap or vector graphics.
+ * 
  * @author Samad Lotia
  */
 public class ExportAsGraphicsAction extends CytoscapeAction {
-	
+
 	private static final long serialVersionUID = -5887102279435784342L;
-	
-	private static ExportFilter BMP_FILTER = new BitmapExportFilter("bmp", "BMP");
-	private static ExportFilter JPG_FILTER = new BitmapExportFilter("jpg", "JPEG");
-	private static ExportFilter PDF_FILTER = new PDFExportFilter();
-	private static ExportFilter PNG_FILTER = new BitmapExportFilter("png", "PNG");
-	private static ExportFilter SVG_FILTER = new SVGExportFilter();
-	private static ExportFilter EPS_FILTER = new PSExportFilter("eps", "EPS");
-	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, EPS_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
-	
-	protected static CyLogger logger = CyLogger.getLogger(ExportAsGraphicsAction.class);
 
-	private static String TITLE = "Current Network View as Graphics";
+	private static final ExportFilter BMP_FILTER = new BitmapExportFilter("bmp", "BMP");
+	private static final ExportFilter JPG_FILTER = new BitmapExportFilter("jpg", "JPEG");
+	private static final ExportFilter PDF_FILTER = new PDFExportFilter();
+	private static final ExportFilter PNG_FILTER = new BitmapExportFilter("png", "PNG");
+	private static final ExportFilter SVG_FILTER = new SVGExportFilter();
+	private static final ExportFilter EPS_FILTER = new PSExportFilter("eps","EPS");
 
+	private final static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER,
+			EPS_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
+
+	static final CyLogger logger = CyLogger.getLogger(ExportAsGraphicsAction.class);
+
+	private static final String TITLE = "Current Network View as Graphics";
+
+	public static ExportFilter[] getFilters() {
+		return FILTERS;
+	}
+	
 	public ExportAsGraphicsAction() {
 		super(TITLE + "...");
 		setPreferredMenu("File.Export");
-		setAcceleratorCombo(KeyEvent.VK_P, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
+		setAcceleratorCombo(KeyEvent.VK_P, ActionEvent.CTRL_MASK
+				| ActionEvent.SHIFT_MASK);
 	}
 
 	
-	public void menuSelected(MenuEvent e)
-	{
+	public void menuSelected(MenuEvent e) {
 		enableForNetworkAndView();
 	}
 
-	public void actionPerformed(ActionEvent e)
-	{
+	
+	public void actionPerformed(ActionEvent e) {
 
 		final CyNetworkView v = Cytoscape.getCurrentNetworkView();
-		if ( v == null || v == Cytoscape.getNullNetworkView() ) {
+		if (v == null || v == Cytoscape.getNullNetworkView()) {
 			logger.error("No network view exists to export!");
 			return;
 		}
 
+		final ExportAsGraphicsFileChooser chooser = new ExportAsGraphicsFileChooser(FILTERS, JPG_FILTER);
 
-		final ExportAsGraphicsFileChooser chooser = new ExportAsGraphicsFileChooser(FILTERS);
-
-		ActionListener listener = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent event)
-			{
-				ExportFilter filter = (ExportFilter) chooser.getSelectedFormat();
+		final ActionListener listener = new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				ExportFilter filter = (ExportFilter) chooser
+						.getSelectedFormat();
 				filter.setExportTextAsFont(chooser.getExportTextAsFont());
-				
+
 				File file = chooser.getSelectedFile();
-				
+
 				chooser.dispose();
 
 				FileOutputStream stream = null;
-				try
-				{
+				try {
 					stream = new FileOutputStream(file);
-				}
-				catch (Exception exp)
-				{
-					JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
-														"Could not create file " + file.getName()
-														+ "\n\nError: " + exp.getMessage());
+				} catch (Exception exp) {
+					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+							"Could not create file " + file.getName()
+									+ "\n\nError: " + exp.getMessage());
 					return;
 				}
-				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				final CyNetworkView view = Cytoscape.getCurrentNetworkView();
 				filter.export(view, stream);
 			}
 		};
 		chooser.addActionListener(listener);
 		chooser.setVisible(true);
-	}	
+	}
 }
 
-
-class ExportTask
-{
-	public static void run(	final String title,
-				final Exporter exporter,
-				final CyNetworkView view,
-				final FileOutputStream stream)
-	{
+class ExportTask {
+	public static void run(final String title, final Exporter exporter,
+			final CyNetworkView view, final FileOutputStream stream) {
 		// Create the Task
-		Task task = new Task()
-		{
+		Task task = new Task() {
 			TaskMonitor monitor;
 
-			public String getTitle()
-			{
+			public String getTitle() {
 				return title;
 			}
 
-			public void setTaskMonitor(TaskMonitor monitor)
-			{
+			public void setTaskMonitor(TaskMonitor monitor) {
 				this.monitor = monitor;
 			}
 
-			public void halt()
-			{
+			public void halt() {
 			}
 
-			public void run()
-			{
-                try {
-                    try {
-                        exporter.export(view, stream);
-                    }
-                    catch (Exception e) {
-                        monitor.setException(e, "Could not complete export of network");
-                    }
-                }
-                finally {
-                    if (stream != null) {
-                        try {
-                            stream.close();
-                        }
-                        catch (IOException ioe) {
-                            ExportAsGraphicsAction.logger.warn("Unable to close the stream: "+ioe.getMessage(), ioe);
-                        }
-                    }
-                }
+			public void run() {
+				try {
+					try {
+						exporter.export(view, stream);
+					} catch (Exception e) {
+						monitor.setException(e,
+								"Could not complete export of network");
+					}
+				} finally {
+					if (stream != null) {
+						try {
+							stream.close();
+						} catch (IOException ioe) {
+							ExportAsGraphicsAction.logger.warn(
+									"Unable to close the stream: "
+											+ ioe.getMessage(), ioe);
+						}
+					}
+				}
 			}
 		};
-		
+
 		// Execute the task
-		JTaskConfig jTaskConfig = new JTaskConfig();
+		final JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.displayCancelButton(false);
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(false);
@@ -169,70 +160,65 @@ class ExportTask
 	}
 }
 
-abstract class ExportFilter extends CyFileFilter
-{
+abstract class ExportFilter extends CyFileFilter {
+	
 	protected boolean exportTextAsFont = false;
-	public ExportFilter(String extension, String description)
-	{
+
+	public ExportFilter(String extension, String description) {
 		super(extension, description);
 	}
 
-	public boolean isExtensionListInDescription()
-	{
+	public boolean isExtensionListInDescription() {
 		return true;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return getDescription();
 	}
 
 	public void setExportTextAsFont(boolean pExportTextAsFont) {
 		exportTextAsFont = pExportTextAsFont;
 	}
-	
+
 	public boolean getExportTextAsFont() {
 		return exportTextAsFont;
 	}
-	
+
 	public abstract void export(CyNetworkView view, FileOutputStream stream);
 }
 
-class PDFExportFilter extends ExportFilter
-{
-	public PDFExportFilter()
-	{
+class PDFExportFilter extends ExportFilter {
+	public PDFExportFilter() {
 		super("pdf", "PDF");
 	}
-	public void export(final CyNetworkView view, final FileOutputStream stream)
-	{
+
+	public void export(final CyNetworkView view, final FileOutputStream stream) {
 		PDFExporter exporter = new PDFExporter();
 		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to PDF", exporter, view, stream);
 	}
 }
 
-class BitmapExportFilter extends ExportFilter
-{
+class BitmapExportFilter extends ExportFilter {
 	private String extension;
 
-	public BitmapExportFilter(String extension, String description)
-	{
+	public BitmapExportFilter(String extension, String description) {
 		super(extension, description);
 		this.extension = extension;
 	}
 
-	public void export(final CyNetworkView view, final FileOutputStream stream)
-	{
-		final InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
-		final ExportBitmapOptionsDialog dialog = new ExportBitmapOptionsDialog(ifc.getWidth(), ifc.getHeight());
-		ActionListener listener = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				BitmapExporter exporter = new BitmapExporter(extension, dialog.getZoom());
+	public void export(final CyNetworkView view, final FileOutputStream stream) {
+		final InternalFrameComponent ifc = Cytoscape.getDesktop()
+				.getNetworkViewManager().getInternalFrameComponent(view);
+		final ExportBitmapOptionsDialog dialog = new ExportBitmapOptionsDialog(
+				ifc.getWidth(), ifc.getHeight());
+		ActionListener listener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BitmapExporter exporter = new BitmapExporter(extension,
+						dialog.getZoom());
 				dialog.dispose();
-				ExportTask.run("Exporting to " + extension, exporter, view, stream);
+				ExportTask.run("Exporting to " + extension, exporter, view,
+						stream);
 			}
 		};
 		dialog.addActionListener(listener);
@@ -240,33 +226,26 @@ class BitmapExportFilter extends ExportFilter
 	}
 }
 
-class SVGExportFilter extends ExportFilter
-{
-	public SVGExportFilter()
-	{
+class SVGExportFilter extends ExportFilter {
+	public SVGExportFilter() {
 		super("svg", "SVG");
 	}
 
-	public void export(final CyNetworkView view, final FileOutputStream stream)
-	{
-		SVGExporter exporter = new SVGExporter();
+	public void export(final CyNetworkView view, final FileOutputStream stream) {
+		final SVGExporter exporter = new SVGExporter();
 		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to SVG", exporter, view, stream);
 	}
 }
 
-class PSExportFilter extends ExportFilter
-{
-	public PSExportFilter(String extension, String description)
-	{
+class PSExportFilter extends ExportFilter {
+	public PSExportFilter(String extension, String description) {
 		super(extension, description);
 	}
 
-	public void export(final CyNetworkView view, final FileOutputStream stream)
-	{
-		PSExporter exporter = new PSExporter();
+	public void export(final CyNetworkView view, final FileOutputStream stream) {
+		final PSExporter exporter = new PSExporter();
 		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to EPS", exporter, view, stream);
 	}
 }
-

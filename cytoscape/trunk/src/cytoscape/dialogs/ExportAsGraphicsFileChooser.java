@@ -1,18 +1,28 @@
 package cytoscape.dialogs;
 
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
+import com.lowagie.text.Font;
+
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.util.FileUtil;
 import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.Calculator;
 
@@ -20,17 +30,28 @@ import cytoscape.visual.calculators.Calculator;
  * Dialog that chooses file to export to.
  * @author Samad Lotia
  */
-public class ExportAsGraphicsFileChooser extends JDialog implements ActionListener
-{
-	protected File selectedFile;
+public class ExportAsGraphicsFileChooser extends JDialog implements ActionListener {
+	
+	private static final long serialVersionUID = 4895622023575071394L;
+	
+	private static final Dimension DIALOG_SIZE = new Dimension(650, 165);
 
-	private boolean exportTextAsFont = !(new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue());
+	private File selectedFile;
+	private CyFileFilter selectedFilter;
 
-	public ExportAsGraphicsFileChooser(CyFileFilter[] formats)
-	{
+	private boolean exportTextAsFont = !(Boolean.getBoolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")));
+	
+	public ExportAsGraphicsFileChooser(final CyFileFilter[] formats) {
+		this(formats, null);
+	}
+
+	public ExportAsGraphicsFileChooser(final CyFileFilter[] formats, final CyFileFilter defaultFilter) {
+		
 		super(Cytoscape.getDesktop(), "Export Network View as Graphics");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
+		this.selectedFilter = defaultFilter;
+		
 		initComponents();
 		
 		setModal(true);
@@ -44,9 +65,14 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		chkExportTextAsFont.setSelected(exportTextAsFont);
 				
 		formatComboBox.setModel(new DefaultComboBoxModel(formats));
-		formatComboBox.setSelectedIndex(0);
 		
-		formatComboBox.addItemListener(new MyItemListener());
+		if(selectedFilter == null) {
+			formatComboBox.setSelectedIndex(0);
+			this.selectedFilter = (CyFileFilter) formatComboBox.getSelectedItem();
+		} else 
+			formatComboBox.setSelectedItem(defaultFilter);
+		
+		formatComboBox.addItemListener(new FormatItemListener());
 		
 		removeFile();
 
@@ -57,7 +83,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 	// This is a work-around, because ItemEvent is received twice in MyItemListener.
 	private static int eventCount =0;
 
-	private class MyItemListener implements ItemListener {
+	private class FormatItemListener implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			// Ignore double event
 			eventCount++;
@@ -68,7 +94,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 			
 			if (formatComboBox.getSelectedItem().toString().equalsIgnoreCase("EPS (*.eps)") && useTransparency()) {
 				JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
-							"Could not export in EPS format, because transparency is used in the visual style!");
+							"Could not export in EPS format, because transparency is used in the Visual Style!");
 					okButton.setEnabled(false);
 					chooseFileButton.setEnabled(false);
 			}
@@ -139,21 +165,21 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		return false;
 	}
 
-	public CyFileFilter getSelectedFormat()
-	{
+	public CyFileFilter getSelectedFormat() {
 		return (CyFileFilter) formatComboBox.getSelectedItem();
 	}
 
-	public File getSelectedFile()
-	{
+	
+	public File getSelectedFile() {
 		return selectedFile;
 	}
 
-	public void addActionListener(ActionListener l)
-	{
+	
+	public void addActionListener(ActionListener l) {
 		okButton.addActionListener(l);
 	}
 
+	
 	protected void assignFile(File file)
 	{
 		selectedFile = file;
@@ -254,6 +280,9 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">                          
     private void initComponents() {
+    		this.setMinimumSize(DIALOG_SIZE);
+    		this.setPreferredSize(DIALOG_SIZE);
+    		
         java.awt.GridBagConstraints gridBagConstraints;
 
         selectFileLabel = new javax.swing.JLabel();
@@ -271,10 +300,11 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         selectFileLabel.setText("File to export to:");
+        selectFileLabel.setFont(new java.awt.Font("SansSerif", Font.BOLD, 12));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
+        gridBagConstraints.insets = new java.awt.Insets(20, 10, 10, 0);
         getContentPane().add(selectFileLabel, gridBagConstraints);
 
         filePathField.setEditable(false);
@@ -298,20 +328,23 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
         getContentPane().add(formatLabel, gridBagConstraints);
 
         formatComboBox.setPreferredSize(new java.awt.Dimension(120, 22));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
         getContentPane().add(formatComboBox, gridBagConstraints);
 
+        final Dimension buttonSize = new Dimension(100, 25);
         okButton.setText("OK");
+        okButton.setPreferredSize(buttonSize);
         btnPanel.add(okButton);
 
         cancelButton.setText("Cancel");
+        cancelButton.setPreferredSize(buttonSize);
         btnPanel.add(cancelButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -319,7 +352,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(15, 0, 15, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 350, 15, 0);
         getContentPane().add(btnPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -336,10 +369,9 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 20, 10, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 0, 0);
         getContentPane().add(chkExportTextAsFont, gridBagConstraints);
 
-       // pack();
     }// </editor-fold>                        
 	
     // Variables declaration - do not modify                     
