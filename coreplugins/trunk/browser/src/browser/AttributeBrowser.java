@@ -82,6 +82,8 @@ import cytoscape.view.cytopanels.CytoPanelState;
  */
 public class AttributeBrowser implements TableColumnModelListener {
 	
+	private static final Dimension PANEL_SIZE = new Dimension(400, 300);
+	
 	protected static Object pcsO = new Object();
 	protected static PropertyChangeSupport pcs = new SwingPropertyChangeSupport(pcsO);
 	
@@ -94,9 +96,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 		final PropertyChangeEvent e = new PropertyChangeEvent(pcsO, property_type, old_value, new_value);
 		getPropertyChangeSupport().firePropertyChange(e);
 	}
-	/**
-	 *
-	 */
+	
 	public static final String ID = "ID";
 
 	/**
@@ -189,7 +189,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 		// the attribute table display: CytoPanel 2, horizontal SOUTH panel.
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
-		mainPanel.setPreferredSize(new Dimension(400, 200));
+		mainPanel.setPreferredSize(PANEL_SIZE);
 		mainPanel.setBorder(null);
 
 		// If this is a network attribute browser, do not allow to swap

@@ -22,8 +22,13 @@ import giny.view.NodeView;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -42,21 +47,23 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -64,16 +71,18 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+
+import org.cytoscape.equations.Equation;
 
 import browser.AttributeBrowser;
-import browser.AttributeBrowserPlugin;
 import browser.DataObjectType;
 import browser.DataTableModel;
 import browser.SortTableModel;
 import browser.ValidatedObjectAndEditString;
 import browser.util.HyperLinkOut;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -92,21 +101,6 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
-
-import org.cytoscape.equations.Equation;
-
-import javax.swing.JViewport;
-import javax.swing.table.TableCellEditor;
-import java.awt.Window;
-import java.awt.Rectangle;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.KeyboardFocusManager;
-import java.util.EventObject;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import java.util.Set;
-import java.util.Iterator;
 
 
 /**
@@ -196,10 +190,11 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 	// Initialize some attributes of this table
 	private void initialize() {
-		this.setSize(400, 200);
+		this.setSize(400, 300);
 		this.setCellSelectionEnabled(true);
 		this.getPopupMenu();
 		this.getHeaderPopupMenu();
+		
 
 		setKeyStroke();
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -1199,7 +1194,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		                        tableColumn, tableRow);
 	}
 
-	private void adjustColWidth(){
+	private void adjustColWidth() {
+				
 		final HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
 		
 		// Save the width if it does not exist
@@ -1247,8 +1243,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		if(ignore) return;
 		
 		
-		if(e.getPropertyName().equals(AttributeBrowser.RESTORE_COLUMN) && e.getNewValue() != null && e.getNewValue().equals(objectType)) {
-			//ColumnResizer.adjustColumnPreferredWidths(this);
+		if(e.getPropertyName().equals(AttributeBrowser.RESTORE_COLUMN) && 
+				e.getNewValue() != null && e.getNewValue().equals(objectType)) {
 			this.adjustColWidth();
 			return;
 		}
@@ -1294,6 +1290,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				} else {
 					// Network Attribute
 					tableModel.setTableData(null, null);
+					adjustColWidth();
 				}
 			}
 
@@ -1360,6 +1357,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * @param arg0 DOCUMENT ME!
 	 */
 	public void onSelectEvent(SelectEvent event) {
+		if(this.objectType.equals(NETWORK))
+			return;
+		
 		if ((objectType == NODES)
 		    && ((event.getTargetType() == SelectEvent.SINGLE_NODE)
 		       || (event.getTargetType() == SelectEvent.NODE_SET))) {

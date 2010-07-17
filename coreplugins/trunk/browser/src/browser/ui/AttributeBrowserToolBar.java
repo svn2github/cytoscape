@@ -80,6 +80,9 @@ import java.util.HashMap;
  *  Define toolbar for Attribute Browser.
  */
 public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener {
+	
+	private static final long serialVersionUID = -508393701912596399L;
+	
 	private final CyAttributes attributes;
 	private DataTableModel tableModel;
 	private final JTable table;
@@ -106,7 +109,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JMenuItem jMenuItemFloatingPointListAttribute = null;
 	private JMenuItem jMenuItemBooleanListAttribute = null;
 
-	private JToolBar jToolBar = null;
+	private JToolBar browserToolBar = null;
 	private JButton selectButton = null;
 	private CheckBoxJList attributeList = null;
 	private JList attrDeletionList = null;
@@ -121,8 +124,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	public AttributeBrowserToolBar(final DataTableModel tableModel, final CyAttributeBrowserTable table,
 	                               final AttributeModel a_model, final List<String> orderedCol,
-	                               final DataObjectType graphObjectType)
-	{
+	                               final DataObjectType graphObjectType) {
 		super();
 
 		this.tableModel = tableModel;
@@ -140,7 +142,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private void initializeGUI() {
 		this.setLayout(new BorderLayout());
 
-		this.setPreferredSize(new java.awt.Dimension(210, 29));
+		this.setPreferredSize(new Dimension(210, 32));
 		this.add(getJToolBar(), java.awt.BorderLayout.CENTER);
 
 		getAttributeSelectionPopupMenu();
@@ -191,7 +193,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
-			jScrollPane.setPreferredSize(new Dimension(300, 200));
+			jScrollPane.setPreferredSize(new Dimension(600, 300));
 			jScrollPane.setViewportView(getSelectedAttributeList());
 		}
 
@@ -377,20 +379,20 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	 * @return javax.swing.JToolBar
 	 */
 	private JToolBar getJToolBar() {
-		if (jToolBar == null) {
-			jToolBar = new JToolBar();
-			jToolBar.addMouseListener(new MouseAdapter() {
+		if (browserToolBar == null) {
+			browserToolBar = new JToolBar();
+			browserToolBar.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					AttributeBrowser.getPropertyChangeSupport().firePropertyChange(AttributeBrowser.CLEAR_INTERNAL_SELECTION, null, objectType);
 				}
 			});
-			jToolBar.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			jToolBar.setPreferredSize(new java.awt.Dimension(200, 28));
-			jToolBar.setFloatable(false);
-			jToolBar.setOrientation(JToolBar.HORIZONTAL);
+			browserToolBar.setMargin(new java.awt.Insets(0, 0, 3, 0));
+			browserToolBar.setPreferredSize(new Dimension(200, 30));
+			browserToolBar.setFloatable(false);
+			browserToolBar.setOrientation(JToolBar.HORIZONTAL);
 
-			final GroupLayout buttonBarLayout = new GroupLayout(jToolBar);
-			jToolBar.setLayout(buttonBarLayout);
+			final GroupLayout buttonBarLayout = new GroupLayout(browserToolBar);
+			browserToolBar.setLayout(buttonBarLayout);
 
 			// Layout information.
 			if (objectType == NODES) {
@@ -565,7 +567,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			}
 		}
 
-		return jToolBar;
+		return browserToolBar;
 	}
 
 	/**
@@ -745,7 +747,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		                                                  attributeType, tableModel);
 
 		dDialog.pack();
-		dDialog.setLocationRelativeTo(jToolBar);
+		dDialog.setLocationRelativeTo(browserToolBar);
 		dDialog.setVisible(true);
 		attrModel.sortAttributes();
 
