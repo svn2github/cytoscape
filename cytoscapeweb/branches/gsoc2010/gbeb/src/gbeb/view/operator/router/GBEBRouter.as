@@ -8,8 +8,10 @@ package gbeb.view.operator.router {
     import flare.vis.operator.Operator;
     
     import flash.display.Graphics;
+    import flash.events.MouseEvent;
     import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.text.TextField;
     
     import gbeb.util.GeometryUtil;
 
@@ -41,6 +43,9 @@ package gbeb.view.operator.router {
         private var areaHits:int = 0;
         private var cycles:int = 0;
         private var breakpointCounter:int = 0;
+				private var mouseMoveCounter:int = 0;
+				private var runCounter:int = 0;
+				private var operateCounter:int = 0;
 
 
         public var gridSize:int = 20; // size of initial bounding grid, in pixel
@@ -86,11 +91,14 @@ package gbeb.view.operator.router {
         
         /** @inheritDoc */
         public override function operate(t:Transitioner=null):void {
-            // TODO
+            
+					trace("GBEBRouter.Operate: Update and Mesh functions Called! Counter:" + operateCounter++);
+					// TODO
             updateMesh();
             
             // Just to debug:
             redrawMesh();
+						
         }
         
         /**
@@ -134,6 +142,7 @@ package gbeb.view.operator.router {
                 addControlPointsToAll();
                 
                 displayGrids();
+								trace("GBEBRouter: Update and Mesh Called! Counter:" + runCounter++);
             }
         }
 
@@ -198,8 +207,8 @@ package gbeb.view.operator.router {
                 edge.y1 = edge.source.y;
                 edge.y2 = edge.target.y;
                 
-                trace((edge.source.data["name"]), " (" + edge.x1 + "," +  edge.y1 + ") ", " | " 
-                        + edge.target.data["name"] + " ( " + edge.x2 + "," + edge.y2 + ")"); 
+               /* trace((edge.source.data["name"]), " (" + edge.x1 + "," +  edge.y1 + ") ", " | " 
+                        + edge.target.data["name"] + " ( " + edge.x2 + "," + edge.y2 + ")");  */
 
                 for each (shape in _grid) {
                     for each (var __grid:Rectangle in shape.storedGrids) {
@@ -249,7 +258,6 @@ package gbeb.view.operator.router {
         // Step 3a: function merge shape if they are neighouring ( both shapes have at least 1
         //  common vertical or horizontal edge) and if their angle difference is 
         // less than angleResolution
-        // I should probably write this under Shape
         protected function mergeShapeUsingPrimaryDirections():Array {
             var repeat:Boolean = true; //boolean indication if the program should run through all the grids again
             
@@ -265,7 +273,7 @@ package gbeb.view.operator.router {
                 }
             }
             
-            trace("Mesh: mergeShapeUsingPrimaryDirections is running...Iterative Index: " + iterationIndexArray.length);
+            trace("Mesh: mergeShapeUsingPrimaryDirections is running...Shapes to be merged: " + iterationIndexArray.length);
             
             // while there might be shapes that needs to be merged
             while(iterationIndexArray[0] != null) {
@@ -940,17 +948,18 @@ package gbeb.view.operator.router {
                     graphics.endFill();
                 }
                 
-                /*trace("Mesh: Display Shape: Drawing..." + g.x);
-                addEventListener(MouseEvent.MOUSE_MOVE, function mouseoverGrid(e:MouseEvent):void{
+                //trace("Mesh: Display Shape: Drawing..." + g.x);
+                /*visualization.addEventListener(MouseEvent.MOUSE_MOVE, function mouseoverGrid(e:MouseEvent):void{
                 
+									trace("Hi! Mouse Moving..." + e.stageX, e.stageY, mouseMoveCounter++);
+									
                 //_displayContainer.removeChildAt(_displayContainer.numChildren - 1);
                 
                 var _textFieldGridTracker:TextField = new TextField();
                 _textFieldGridTracker.x = e.stageX; _textFieldGridTracker.y = e.stageY + 20;
                 _textFieldGridTracker.text = shape.gridIndex + " has " + shape.storedDataEdges.length + " edges";
-                _displayContainer.addChild(_textFieldGridTracker);
-                trace("Hi");
-                }); */              
+                visualization.addChild(_textFieldGridTracker); 
+                });          */    
             }
         }
         
