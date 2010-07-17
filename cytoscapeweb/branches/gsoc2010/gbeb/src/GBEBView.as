@@ -14,6 +14,7 @@ package
     import flare.vis.data.Tree;
     import flare.vis.events.SelectionEvent;
     import flare.vis.operator.encoder.PropertyEncoder;
+    import flare.vis.operator.layout.BundledEdgeRouter;
     import flare.vis.operator.layout.CircleLayout;
     
     import flash.display.Sprite;
@@ -30,7 +31,7 @@ package
     import gbeb.view.operator.router.GBEBRouter;
     import gbeb.view.render.BundleRenderer;
     
-    [SWF(backgroundColor="#ffffff", frameRate="30")]
+    [SWF(width="1000",height="700", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
     {  
         private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
@@ -41,6 +42,9 @@ package
         private var _fmt:TextFormat = new TextFormat("_sans", 7);
         private var _focus:NodeSprite;
         private var _appBounds:Rectangle;
+				
+				//testing Variables
+				private var addEventCounter:int = 0;
         
         
         public function GBEBView() {
@@ -61,11 +65,14 @@ package
                     var data:Data = buildData(obj);
                     visualize(data);
                     _bar = null;
+										trace("GBEBView: Checking URL Loader!");
                 });
         }
         
         private function visualize(data:Data):void {    
-            // prepare data with default settings
+            
+					
+					// prepare data with default settings
             data.nodes.setProperties({
                 shape: Shapes.CIRCLE,
                 alpha: 0.2,
@@ -82,30 +89,23 @@ package
  
             _vis = new Visualization(data);
             _vis.continuousUpdates = false;
+						
+						addChild(_vis);
  
             this.addEventListener(Event.ADDED, function(evt:Event):void {
                 // place around circle by tree structure, radius mapped to depth
                 _vis.operators.add(new CircleLayout("depth", null, false));
                 CircleLayout(_vis.operators.last).startRadiusFraction = 3/5;
-            
+												
 //              _vis.operators.add(new RadialTreeLayout(80));
-//              RadialTreeLayout(_vis.operators.last).autoScale = true;
-
-// TODO: replace by GBEB Router:
-// ##############################################################            
-                // bundle edges to route along the tree structure
-//               _vis.operators.add(new BundledEdgeRouter(0.95));
-    
-                var bounds:Rectangle = new Rectangle(0, 0, width, height);
-                _vis.operators.add(new GBEBRouter(bounds, 0.95));
-    
+//              RadialTreeLayout(_vis.operators.last).autoScale = true;							
                 // set the edge alpha values
                 // longer edge, lighter alpha: 1/(2*numCtrlPoints)
                 _vis.operators.add(new PropertyEncoder({ alpha: edgeAlpha }, Data.EDGES));
-// ############################################################## 
-            
+           
                 // update
                 _vis.update();
+								
                 
                 // show all dependencies on single-click
                 var linkType:int = NodeSprite.OUT_LINKS;
@@ -138,13 +138,25 @@ package
                 var hov:HoverControl = new HoverControl(NodeSprite, HoverControl.DONT_MOVE, highlight, unhighlight);
                 _vis.controls.add(hov);
                 
-                // compute the layout
+                // compute the layout		
                 if (_bounds) resize(_bounds);
+								
+								
+								// TODO: replace by GBEB Router:
+								// ##############################################################            
+								// bundle edges to route along the tree structure
+								//_vis.operators.add(new BundledEdgeRouter(0.95));
+								
+								//var bounds:Rectangle = new Rectangle(0, 0, width, height);
+								_vis.operators.add(new GBEBRouter(_bounds, 0.95));
+								trace("GBEBView: how many times is this called?" + addEventCounter++);
+								_vis.update();
+								// ############################################################## 
             });
             
            // define the visualization
-            
-            addChild(_vis);
+						
+						
         }
         
         /** Add highlight to a node and connected edges/nodes */
