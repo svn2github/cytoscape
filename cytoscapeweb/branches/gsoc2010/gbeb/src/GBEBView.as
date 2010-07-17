@@ -43,8 +43,8 @@ package
         private var _focus:NodeSprite;
         private var _appBounds:Rectangle;
 				
-				//testing Variables
-				private var addEventCounter:int = 0;
+		//testing Variables
+		private var addEventCounter:int = 0;
         
         
         public function GBEBView() {
@@ -88,11 +88,11 @@ package
             });
  
             _vis = new Visualization(data);
-            _vis.continuousUpdates = false;
-						
-						addChild(_vis);
+            //_vis.continuousUpdates = false;
+            addChild(_vis);
  
-            this.addEventListener(Event.ADDED, function(evt:Event):void {
+            if (_bounds) resize(_bounds);
+ 
                 // place around circle by tree structure, radius mapped to depth
                 _vis.operators.add(new CircleLayout("depth", null, false));
                 CircleLayout(_vis.operators.last).startRadiusFraction = 3/5;
@@ -103,9 +103,17 @@ package
                 // longer edge, lighter alpha: 1/(2*numCtrlPoints)
                 _vis.operators.add(new PropertyEncoder({ alpha: edgeAlpha }, Data.EDGES));
            
-                // update
-                _vis.update();
-								
+                // TODO: replace by GBEB Router:
+                // ##############################################################            
+                // bundle edges to route along the tree structure
+                //_vis.operators.add(new BundledEdgeRouter(0.95));
+                
+                //var bounds:Rectangle = new Rectangle(0, 0, width, height);
+                _vis.operators.add(new GBEBRouter(_bounds, 0.95));
+                trace("GBEBView: how many times is this called?" + addEventCounter++);
+                // ############################################################## 
+				
+				_vis.update();
                 
                 // show all dependencies on single-click
                 var linkType:int = NodeSprite.OUT_LINKS;
@@ -137,26 +145,6 @@ package
                 // add mouse-over highlight
                 var hov:HoverControl = new HoverControl(NodeSprite, HoverControl.DONT_MOVE, highlight, unhighlight);
                 _vis.controls.add(hov);
-                
-                // compute the layout		
-                if (_bounds) resize(_bounds);
-								
-								
-								// TODO: replace by GBEB Router:
-								// ##############################################################            
-								// bundle edges to route along the tree structure
-								//_vis.operators.add(new BundledEdgeRouter(0.95));
-								
-								//var bounds:Rectangle = new Rectangle(0, 0, width, height);
-								_vis.operators.add(new GBEBRouter(_bounds, 0.95));
-								trace("GBEBView: how many times is this called?" + addEventCounter++);
-								_vis.update();
-								// ############################################################## 
-            });
-            
-           // define the visualization
-						
-						
         }
         
         /** Add highlight to a node and connected edges/nodes */
