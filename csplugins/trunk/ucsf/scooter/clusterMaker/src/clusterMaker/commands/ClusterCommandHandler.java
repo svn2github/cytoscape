@@ -161,7 +161,7 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 
 			ClusterTask clusterTask = new ClusterTask(alg, null);
 			TaskManager.executeTask( clusterTask,
-			                         ClusterTask.getDefaultTaskConfig() );
+			                         ClusterTask.getDefaultTaskConfig(false) );
 			// Now, wait until cluster is complete.
 			while (!clusterTask.done()) {
 				Thread.yield();

@@ -113,13 +113,25 @@ public class ClusterTask implements Task {
 	 * @return a default JTaskConfig object.
 	 */
 	public static JTaskConfig getDefaultTaskConfig() {
+		return ClusterTask.getDefaultTaskConfig(true);
+	}
+
+	/**
+	 * This method returns a default TaskConfig object.
+	 * @param includeClose whether to include the close button
+	 * @return a default JTaskConfig object.
+	 */
+	public static JTaskConfig getDefaultTaskConfig(boolean includeClose) {
 		JTaskConfig result = new JTaskConfig();
 
 		result.displayCancelButton(true);
-		result.displayCloseButton(true);
+		result.displayCloseButton(includeClose);
 		result.displayStatus(true);
 		result.displayTimeElapsed(false);
-		result.setAutoDispose(false);
+		if (includeClose)
+			result.setAutoDispose(false);
+		else
+			result.setAutoDispose(true);
 		result.setModal(true);
 		result.setOwner(Cytoscape.getDesktop());
 
