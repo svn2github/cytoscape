@@ -61,8 +61,6 @@ import javax.swing.text.MaskFormatter;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.util.swing.WidestStringComboBoxModel;
-import cytoscape.util.swing.WidestStringComboBoxPopupMenuListener;
 
 /**
  * The SemanticSummaryInputPanel class defines the panel that appears for 
