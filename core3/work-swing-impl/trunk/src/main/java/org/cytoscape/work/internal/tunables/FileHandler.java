@@ -42,7 +42,7 @@ public class FileHandler extends AbstractGuiHandler {
 	private JSeparator titleSeparator;
 	private MouseClic mouseClic;
 	private GroupLayout layout;
-	private enum Type {NETWORK,SESSION,ATTRIBUTES};
+	private enum Type {NETWORK,SESSION,ATTRIBUTES,DEFAULT};
 	private Type type;	
 	//private FileUtil flUtil;
 	
@@ -124,9 +124,19 @@ public class FileHandler extends AbstractGuiHandler {
     
     //set the type of file that will be imported depending on the "Param" Tunable annotation of the file
     private void setFileType(Tunable tunable){
-    	for(Param s :tunable.flag())if(s.equals(Param.network))type = Type.NETWORK;
-		for(Param s :tunable.flag())if(s.equals(Param.session))type = Type.SESSION;
-		for(Param s :tunable.flag())if(s.equals(Param.attributes))type = Type.ATTRIBUTES;    	
+    	for(Param s :tunable.flag()) {
+			if(s.equals(Param.network)) {
+				type = Type.NETWORK;
+				return;
+			} else if(s.equals(Param.session)) {
+				type = Type.SESSION;
+				return;
+			} else if(s.equals(Param.attributes)) {
+				type = Type.ATTRIBUTES;    	
+				return;
+			}
+		}
+		type = Type.DEFAULT;
     }    
 
     
