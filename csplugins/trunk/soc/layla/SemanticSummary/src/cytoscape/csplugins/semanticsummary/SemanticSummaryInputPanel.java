@@ -112,13 +112,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	private static final int DEF_ROW_HEIGHT = 20;
 
 	
-	//instruction text
-	//TODO
-	
-	//tool tips
-	//TODO
-	
-	
 	//CONSTRUCTORS
 	public SemanticSummaryInputPanel()
 	{
@@ -140,7 +133,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JScrollPane cloudListScroll = new JScrollPane(cloudList);
 		
 		//Put the Options in a scroll pane
-		CollapsiblePanel optionsPanel = createOptionsPanel();
+		JPanel optionsPanel = createOptionsPanel();
 		JScrollPane optionsScroll = new JScrollPane(optionsPanel);
 		optionsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
@@ -201,7 +194,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 * 
 	 * @return collapsiblePanel - main panel with cloud parameters
 	 */
-	public CollapsiblePanel createOptionsPanel()
+	//public CollapsiblePanel createOptionsPanel()
+	public JPanel createOptionsPanel()
 	{
 		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Cloud Parameters");
 		collapsiblePanel.setCollapsed(false);
@@ -217,9 +211,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		CollapsiblePanel displaySettings = createDisplaySettingsPanel();
 		displaySettings.setCollapsed(true);
 		
-		//Word Exclusion
-		CollapsiblePanel exclusionList = createExclusionListPanel();
-		exclusionList.setCollapsed(true);
 		
 		//Cloud Layout
 		CollapsiblePanel cloudLayout = createCloudLayoutPanel();
@@ -228,13 +219,33 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		//Add all Panels
 		panel.add(semAnalysis);
 		panel.add(displaySettings);
-		panel.add(exclusionList);
 		panel.add(cloudLayout);
 		
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
 		
+		//Network Level Panel
+		CollapsiblePanel collapsiblePanel2 = new CollapsiblePanel("Network Parameters");
+		collapsiblePanel2.setCollapsed(false);
+		
+		JPanel networkPanel = new JPanel();
+		networkPanel.setLayout(new BoxLayout(networkPanel, BoxLayout.Y_AXIS));
+		
+		//Word Exclusion
+		CollapsiblePanel exclusionList = createExclusionListPanel();
+		exclusionList.setCollapsed(true);
+		
+		networkPanel.add(exclusionList);
+		
+		//Add to collapsible panel
+		collapsiblePanel2.getContentPane().add(networkPanel, BorderLayout.NORTH);
+		
+		//Container Panel for Cloud and Network parameters
+		JPanel newPanel = new JPanel();
+		newPanel.setLayout(new BorderLayout());
+		newPanel.add(collapsiblePanel, BorderLayout.NORTH);
+		newPanel.add(collapsiblePanel2, BorderLayout.CENTER);
 				
-		return collapsiblePanel;
+		return newPanel;
 	}
 	
 	/**
@@ -243,7 +254,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	private CollapsiblePanel createSemAnalysisPanel()
 	{
-		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Semantic Analysis");
+		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Attribute Choice");
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0,1));
@@ -292,7 +303,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	private CollapsiblePanel createDisplaySettingsPanel()
 	{
-		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Advanced Parameters");
+		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Advanced");
 		
 		//Used to retrieve defaults
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
