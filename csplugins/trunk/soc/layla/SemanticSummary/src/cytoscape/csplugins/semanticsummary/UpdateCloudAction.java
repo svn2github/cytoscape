@@ -84,7 +84,7 @@ public class UpdateCloudAction extends CytoscapeAction
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		
 		//Update network if necessary
-		if (networkParams.networkChanged(network));
+		if (networkParams.networkHasChanged(network));
 			networkParams.updateParameters(network);
 		
 		//Get set of selected and compare to saved

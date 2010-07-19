@@ -100,7 +100,7 @@ public class CreateCloudAction extends CytoscapeAction
 			params = SemanticSummaryManager.getInstance().getParameters(networkID);
 			
 			//Update if necessary
-			if (params.networkChanged(network));
+			if (params.networkHasChanged(network));
 				params.updateParameters(network);
 		}
 		else

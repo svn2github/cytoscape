@@ -89,7 +89,7 @@ public class CloudParameters implements Comparable
 	private static final String NODEDELIMITER = "CloudParamNodeDelimiter";
 	
 	//Default Values for User Input
-	private Double defaultNetWeight = 1.0;
+	private Double defaultNetWeight = 0.5;
 	private String defaultAttName = "nodeID";
 	private Integer defaultMaxWords = 250;
 	private Double defaultClusterCutoff = 1.0;

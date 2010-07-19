@@ -271,7 +271,7 @@ public class SemanticSummaryParameters
 	 * is different than the parameters.
 	 * @return boolean - whether or not this network has changed.
 	 */
-	public boolean networkChanged(CyNetwork network)
+	public boolean networkHasChanged(CyNetwork network)
 	{
 		List<CyNode> nodes = network.nodesList();
 		

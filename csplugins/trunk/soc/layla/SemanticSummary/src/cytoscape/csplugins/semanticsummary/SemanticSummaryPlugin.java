@@ -142,6 +142,11 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 			SemanticSummaryParameters params = networks.get(networkID);
 			String networkName = params.getNetworkName();
 			
+			//Update the network if it has changed
+			CyNetwork network = Cytoscape.getNetwork(networkID);
+			if (params.networkHasChanged(network));
+				params.updateParameters(network);
+			
 			//property file
 			File session_prop_file = new File(tmpDir, netNameSep + networkName + netNameSep + ".props");
 			
