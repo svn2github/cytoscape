@@ -427,31 +427,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					cloudParams.setPairRatios(pairRatios);
 				}
 				
-				
 			}//end loop through all props files
-			
-			//Last thing is to recreate wordCloudInfo for font sizes
-			HashMap<String, SemanticSummaryParameters> cyNetworks = 
-				SemanticSummaryManager.getInstance().getCyNetworkList();
-			
-			//Loop through Network Parameters
-			for(Iterator<String> iter = cyNetworks.keySet().iterator(); iter.hasNext();)
-			{
-				SemanticSummaryParameters curNetworkParams = cyNetworks.get(iter.next());
-				
-				HashMap<String, CloudParameters> clouds = 
-					curNetworkParams.getClouds();
-				
-				//Loop through Cloud Parameters
-				for(Iterator<String> iter2 = clouds.keySet().iterator(); iter2.hasNext();)
-				{
-					CloudParameters currentCloud = clouds.get(iter2.next());
-					currentCloud.calculateFontSizes();
-				}
-			}
-			
-			//Register any action Listeners for the networks
-			//TODO
 			
 			//Initialize the panel appropriately
 			SemanticSummaryManager.getInstance().setupCurrentNetwork();

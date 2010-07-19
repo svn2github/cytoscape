@@ -28,6 +28,7 @@ import java.awt.FontMetrics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,14 +51,29 @@ import cytoscape.view.CyNetworkView;
 public class CloudWordInfo implements Comparable<CloudWordInfo>
 {
 	//VARIABLES
-	String word;
-	Integer fontSize;
-	CloudParameters params;
-	Color textColor;
-	Integer cluster;
-	Integer wordNum;
+	private String word;
+	private Integer fontSize;
+	private CloudParameters params;
+	private Color textColor;
+	private Integer cluster;
+	private Integer wordNum;
+	
+	//String Delimeters
+	private static final String FIRSTDELIMITER = "TabbedEquivalent";
+	private static final String SECONDDELIMITER = "NewLineEquivalent";
 	
 	//CONSTRUCTORS
+	
+	/**
+	 * Creates a blank CloudWordInfo Object.
+	 */
+	public CloudWordInfo()
+	{
+		fontSize = 0;
+		textColor = Color.BLACK;
+		cluster = 0;
+		wordNum = 0;
+	}
 	
 	/**
 	 * Creates a blank CloudWordInfo Object for the specified word.
@@ -71,6 +87,36 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 		textColor = Color.BLACK;
 		cluster = 0;
 		wordNum = 0;
+	}
+	
+	/**
+	 * Constructor to create CloudWordInfo from a cytoscape property file
+	 * while restoring a session.  Property file is created when the session is saved.
+	 * @param propFile - the name of the property file as a String
+	 */
+	public CloudWordInfo(String propFile)
+	{
+		this();
+		
+		//Create a hashmap to contain all the values in the rpt file
+		HashMap<String, String> props = new HashMap<String,String>();
+		
+		String[] lines = propFile.split(SECONDDELIMITER);
+		
+		for (int i = 0; i < lines.length; i++)
+		{
+			String line = lines[i];
+			String[] tokens = line.split(FIRSTDELIMITER);
+			//there should be two values in each line
+			if(tokens.length == 2)
+				props.put(tokens[0],tokens[1]);
+		}
+		
+		this.word = props.get("Word");
+		this.fontSize = new Integer(props.get("FontSize"));
+		this.cluster = new Integer(props.get("Cluster"));
+		this.wordNum = new Integer(props.get("WordNum"));
+		this.textColor = new Color(new Integer(props.get("TextColor")), true);	
 	}
 	
 	//METHODS
@@ -196,6 +242,24 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 		});
 		
 		return label;
+	}
+	
+	/**
+	 * String representation of CloudWordInfo.
+	 * It is used to store the persistent attributes when a session is saved.
+	 * @return - String representation of this object
+	 */
+	public String toString()
+	{
+		StringBuffer paramVariables = new StringBuffer();
+		
+		paramVariables.append("Word" + FIRSTDELIMITER + word + SECONDDELIMITER);
+		paramVariables.append("FontSize" + FIRSTDELIMITER + fontSize + SECONDDELIMITER);
+		paramVariables.append("Cluster" + FIRSTDELIMITER + cluster + SECONDDELIMITER);
+		paramVariables.append("WordNum" + FIRSTDELIMITER + wordNum + SECONDDELIMITER);
+		paramVariables.append("TextColor" + FIRSTDELIMITER + textColor.getRGB() + SECONDDELIMITER);
+		
+		return paramVariables.toString();
 	}
 	
 	//Getters and Setters

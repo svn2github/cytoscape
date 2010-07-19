@@ -87,6 +87,7 @@ public class CloudParameters implements Comparable
 	
 	//String Delimeters
 	private static final String NODEDELIMITER = "CloudParamNodeDelimiter";
+	private static final String WORDDELIMITER = "CloudParamWordDelimiter";
 	
 	//Default Values for User Input
 	private Double defaultNetWeight = 0.5;
@@ -157,7 +158,7 @@ public class CloudParameters implements Comparable
 		this.maxWords = new Integer(props.get("MaxWords"));
 		this.cloudNum = new Integer(props.get("CloudNum"));
 		
-		//Rebuild List
+		//Rebuild List of Nodes
 		String value = props.get("SelectedNodes");
 		String[] nodes = value.split(NODEDELIMITER);
 		ArrayList<String> nodeNameList = new ArrayList<String>();
@@ -168,6 +169,18 @@ public class CloudParameters implements Comparable
 		}
 		this.selectedNodes = nodeNameList;
 		
+		//Rebuild CloudWords
+		String value2 = props.get("CloudWords");
+		String[] words = value2.split(WORDDELIMITER);
+		ArrayList<CloudWordInfo> cloudWordList = new ArrayList<CloudWordInfo>();
+		for (int i = 0; i < words.length; i++)
+		{
+			String wordInfo = words[i];
+			CloudWordInfo curInfo = new CloudWordInfo(wordInfo);
+			curInfo.setCloudParameters(this);
+			cloudWordList.add(curInfo);
+		}
+		this.cloudWords = cloudWordList;
 	}
 		
 	
@@ -683,6 +696,15 @@ public class CloudParameters implements Comparable
 		paramVariables.append("MaxRatio\t" + maxRatio + "\n");
 		paramVariables.append("MaxWords\t" + maxWords + "\n");
 		paramVariables.append("CloudNum\t" + cloudNum + "\n");
+		
+		//List of Nodes as a comma delimited list
+		StringBuffer output2 = new StringBuffer();
+		for (int i = 0; i < cloudWords.size(); i++)
+		{
+			output2.append(cloudWords.get(i).toString() + WORDDELIMITER);
+		}
+		
+		paramVariables.append("CloudWords\t" + output2.toString() + "\n");
 		
 		return paramVariables.toString();
 	}
