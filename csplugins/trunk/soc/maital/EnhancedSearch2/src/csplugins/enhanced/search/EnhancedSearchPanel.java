@@ -70,7 +70,7 @@ public class EnhancedSearchPanel extends JPanel {
 
 	private JLabel label;
 
-	private static final String ESP_LABEL = "ESP 2.9.0:  ";
+	private static final String ESP_LABEL = "ESP 3.0.1:  ";
 
 	private static final String SEARCH_MENU_ITEM = "Search";
 

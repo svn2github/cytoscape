@@ -44,23 +44,23 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 
-import csplugins.quickfind.util.CyAttributesUtil;
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
-import csplugins.enhanced.search.util.NumberUtils;
+import csplugins.quickfind.util.CyAttributesUtil;
 
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.NumericField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.NumberTools;
 
 
 public class EnhancedSearchIndex {
 
 	public static final String INDEX_FIELD = "id";
-
 	public static final int MAX_FIELD_LENGTH = 50000;
+    private static StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
 	RAMDirectory idx;
 
@@ -74,9 +74,9 @@ public class EnhancedSearchIndex {
 
 	private void BuildIndex(RAMDirectory idx, CyNetwork network) {
 		try {
-			// Make a writer to create the index
-			IndexWriter writer = new IndexWriter(idx, new StandardAnalyzer(),
-					true);
+
+		    // Make a writer to create the index
+			IndexWriter writer = new IndexWriter(idx, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
 
 			// Set the number of terms to be indexed for a field.
 			// writer.setMaxFieldLength(MAX_FIELD_LENGTH);
@@ -125,7 +125,7 @@ public class EnhancedSearchIndex {
 
 		Document doc = new Document();
 		doc.add(new Field(INDEX_FIELD, identifier, Field.Store.YES,
-				Field.Index.TOKENIZED));
+				Field.Index.ANALYZED));
 
 		String[] attrNameArray = attributes.getAttributeNames();
 		for (int i = 0; i < attrNameArray.length; i++) {
@@ -142,28 +142,23 @@ public class EnhancedSearchIndex {
 				byte valueType = attributes.getType(attrName);
 
 				if (valueType == CyAttributes.TYPE_BOOLEAN) {
-					String attrValue = attributes.getBooleanAttribute(
-							identifier, attrName).toString();
+					String attrValue = attributes.getBooleanAttribute(identifier, attrName).toString();
 					doc.add(new Field(attrIndexingName, attrValue,
-							Field.Store.NO, Field.Index.UN_TOKENIZED));
+							Field.Store.NO, Field.Index.NOT_ANALYZED));
 
 				} else if (valueType == CyAttributes.TYPE_INTEGER) {
-					String attrValue = NumberTools.longToString(attributes.getIntegerAttribute(
-							identifier, attrName));
-					doc.add(new Field(attrIndexingName, attrValue,
-							Field.Store.NO, Field.Index.UN_TOKENIZED));
+					Integer attrValue = attributes.getIntegerAttribute(identifier, attrName);
+					doc.add(new NumericField(attrIndexingName).setIntValue(attrValue));
 				
 				} else if (valueType == CyAttributes.TYPE_FLOATING) {
-					String attrValue = NumberUtils.double2sortableStr(attributes.getDoubleAttribute(
-							identifier, attrName));
-					doc.add(new Field(attrIndexingName, attrValue,
-							Field.Store.NO, Field.Index.UN_TOKENIZED));
+					Double attrValue = attributes.getDoubleAttribute(identifier, attrName);
+					doc.add(new NumericField(attrIndexingName).setDoubleValue(attrValue));
 				
 				} else if (valueType == CyAttributes.TYPE_STRING) {
 					String attrValue = attributes.getStringAttribute(
 							identifier, attrName);
 					doc.add(new Field(attrIndexingName, attrValue,
-							Field.Store.NO, Field.Index.TOKENIZED));
+							Field.Store.NO, Field.Index.ANALYZED));
 
 				} else if (valueType == CyAttributes.TYPE_SIMPLE_LIST
 						|| valueType == CyAttributes.TYPE_SIMPLE_MAP) {
@@ -179,7 +174,7 @@ public class EnhancedSearchIndex {
 							String attrValue = valueList[j];
 
 							doc.add(new Field(attrIndexingName, attrValue,
-									Field.Store.NO, Field.Index.TOKENIZED));
+									Field.Store.NO, Field.Index.ANALYZED));
 						}
 					}
 				} else if (valueType == CyAttributes.TYPE_COMPLEX) {

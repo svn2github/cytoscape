@@ -66,7 +66,7 @@ public class IndexAndSearchTask implements Task {
 	 * @param query
 	 *            Query string.
 	 */
-	IndexAndSearchTask(CyNetwork network, String query) {
+	public IndexAndSearchTask(CyNetwork network, String query) {
 		this.network = network;
 		this.query = query;
 	}

@@ -91,11 +91,6 @@
         <java classname="cytoscape.CyMain" classpathref="compile.classpath"
             fork="true" maxmemory="1000M">
             <arg line="-p ${cytoscape.dir}/plugins/core"/>
-            <!--arg line="-N ${testData.dir}/network.sif -n ${testData.dir}/AGI.NA -n ${testData.dir}/Chromosome.NA 
-            	-n ${testData.dir}/DesiccationResponse.NA -n ${testData.dir}/GeneTitle.NA 
-            	-n ${testData.dir}/GOBiologicalProcess.NA -n ${testData.dir}/GOCellularComponent.NA 
-            	-n ${testData.dir}/GOMolecularFunction.NA -e ${testData.dir}/interaction.EA 
-            	-e ${testData.dir}/weight.EA -p ${cytoscape.dir}/plugins/core"/-->
         </java>
     </target>
 

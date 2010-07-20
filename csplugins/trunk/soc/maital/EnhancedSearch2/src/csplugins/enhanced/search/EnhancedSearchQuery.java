@@ -40,12 +40,15 @@ import java.util.ArrayList;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
 import csplugins.enhanced.search.util.CustomMultiFieldQueryParser;
@@ -54,10 +57,9 @@ import csplugins.enhanced.search.util.AttributeFields;
 public class EnhancedSearchQuery {
 
 	private IdentifiersCollector hitCollector = null;
-
 	private RAMDirectory idx;
-
 	private Searcher searcher;
+    private static StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
 	public EnhancedSearchQuery(RAMDirectory index) {
 		idx = index;
@@ -91,7 +93,7 @@ public class EnhancedSearchQuery {
 
 		// Build a Query object.
 		// CustomMultiFieldQueryParser is used to support range queries on numerical attribute fields.
-		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(attFields, new StandardAnalyzer());
+		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(Version.LUCENE_30, attFields, analyzer);
 
 		try {
 			// Execute query
@@ -137,7 +139,7 @@ public class EnhancedSearchQuery {
 }
 
 
-class IdentifiersCollector extends HitCollector {
+class IdentifiersCollector extends Collector {
 
 	public static final String INDEX_FIELD = "id";
 
@@ -149,7 +151,7 @@ class IdentifiersCollector extends HitCollector {
 		this.searcher = searcher;
 	}
 
-	public void collect(int id, float score) {
+	public void collect(int id) {
 		try {
 			Document doc = searcher.doc(id);
 			String currID = doc.get(INDEX_FIELD);
@@ -165,6 +167,24 @@ class IdentifiersCollector extends HitCollector {
 
 	public ArrayList<String> getHits() {
 		return hitsIdentifiers;
+	}
+
+	@Override
+	public boolean acceptsDocsOutOfOrder() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setNextReader(IndexReader arg0, int arg1) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setScorer(Scorer arg0) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
