@@ -12,10 +12,10 @@ pluginName=SemanticSummary
 pluginDescription=Create and display a tag cloud semantic summary of selected nodes in a network.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.0
+pluginVersion=0.5
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.7
+cytoscapeVersion=2.6.3,2.7
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Analysis
@@ -24,9 +24,12 @@ pluginCategory=Analysis
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Layla Oesper;University of Wisconsin - Madison
+pluginAuthorsIntsitutions=Layla Oesper;Brown University
+
+# URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
+projectURL=http://baderlab.org/GSoC2010_SoftwareDownload
 
 
 # Date this plugin/plugin version was released
-#releaseDate=September 1, 2010
+#releaseDate=July 20, 2010
 
