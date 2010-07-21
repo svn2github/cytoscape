@@ -14,7 +14,6 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -39,7 +38,6 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	private final CyNetworkViewFactory cyNetworkViewFactory;
 	private final CyRootNetworkFactory cyRootNetworkFactory;
 	private final CySessionManager cySessionManager;
-	private final EditorManager editorManager;
 	private final PresentationFactory presentationFactory;
 	private final TaskManager taskManager;
 	private final VisualMappingManager visualMappingManager;
@@ -58,7 +56,6 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
                      	CyNetworkViewFactory cyNetworkViewFactory,
                      	CyRootNetworkFactory cyRootNetworkFactory,
                      	CySessionManager cySessionManager,
-                     	EditorManager editorManager,
                      	PresentationFactory presentationFactory,
                      	TaskManager taskManager,
                      	VisualMappingManager visualMappingManager
@@ -71,7 +68,6 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.cyRootNetworkFactory = cyRootNetworkFactory;
 		this.cySessionManager = cySessionManager;
-		this.editorManager = editorManager;
 		this.presentationFactory = presentationFactory;
 		this.taskManager = taskManager;
 		this.visualMappingManager = visualMappingManager;
@@ -97,8 +93,6 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	public CyRootNetworkFactory getCyRootNetworkFactory() { return cyRootNetworkFactory; } 
 
 	public CySessionManager getCySessionManager() { return cySessionManager; } 
-
-	public EditorManager getEditorManager() { return editorManager; } 
 
 	public PresentationFactory getPresentationFactory() { return presentationFactory; }
 

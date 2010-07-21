@@ -16,11 +16,19 @@
 	<context:annotation-config/>
 	
 
+	<!-- constructor args are in alphabetical order! -->
 	<bean id="cyPluginAdapter" class="org.cytoscape.plugin.internal.CyPluginAdapterImpl">
-		<constructor-arg ref="cyNetworkFactoryRef" />
 		<constructor-arg ref="cyDataTableFactoryRef" />
+		<constructor-arg ref="cyEventHelperRef" />
+		<constructor-arg ref="cyLayoutsRef" />
+		<constructor-arg ref="cyNetworkFactoryRef" />
+		<constructor-arg ref="cyNetworkManagerRef" />
 		<constructor-arg ref="cyNetworkViewFactoryRef" />
+		<constructor-arg ref="cyRootNetworkFactoryRef" />
+		<constructor-arg ref="cySessionManagerRef" />
+		<constructor-arg ref="presentationFactoryRef" />
 		<constructor-arg ref="taskManagerRef" />
+		<constructor-arg ref="visualMappingManagerRef" />
 	</bean>
 
 	<bean id="pluginLoaderTaskFactory" class="org.cytoscape.plugin.internal.PluginLoaderTaskFactory">

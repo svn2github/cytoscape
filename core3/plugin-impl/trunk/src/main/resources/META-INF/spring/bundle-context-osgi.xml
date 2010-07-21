@@ -6,21 +6,54 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<!-- Individual Service -->
+	<!-- 
+	     Keep services in alphabetical order to maintain sanity and
+	     make service reference names the class name with a lower case
+		 first letter and with "Ref" as a suffix. 
+	 -->
+
+	<osgi:reference id="cyDataTableFactoryRef" 
+	    interface="org.cytoscape.model.CyDataTableFactory">
+	</osgi:reference>
+
+	<osgi:reference id="cyEventHelperRef" 
+		interface="org.cytoscape.event.CyEventHelper">
+	</osgi:reference>
+
+	<osgi:reference id="cyLayoutsRef" 
+		interface="org.cytoscape.view.layout.CyLayouts">
+	</osgi:reference>
+
 	<osgi:reference id="cyNetworkFactoryRef" 
 	    interface="org.cytoscape.model.CyNetworkFactory">
 	</osgi:reference>
 	
-	<osgi:reference id="cyDataTableFactoryRef" 
-	    interface="org.cytoscape.model.CyDataTableFactory">
+	<osgi:reference id="cyNetworkManagerRef" 
+		interface="org.cytoscape.session.CyNetworkManager">
 	</osgi:reference>
-	
+
 	<osgi:reference id="cyNetworkViewFactoryRef" 
 	    interface="org.cytoscape.view.model.CyNetworkViewFactory">
 	</osgi:reference>
-	
+
+	<osgi:reference id="cyRootNetworkFactoryRef" 
+		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
+	</osgi:reference>
+
+	<osgi:reference id="cySessionManagerRef" 
+		interface="org.cytoscape.session.CySessionManager">
+	</osgi:reference>
+
+	<osgi:reference id="presentationFactoryRef" 
+		interface="org.cytoscape.view.presentation.PresentationFactory">
+	</osgi:reference>
+
 	<osgi:reference id="taskManagerRef" 
 	    interface="org.cytoscape.work.TaskManager">
+	</osgi:reference>
+
+	<osgi:reference id="visualMappingManagerRef" 
+		interface="org.cytoscape.view.vizmap.VisualMappingManager">
 	</osgi:reference>
 
 
