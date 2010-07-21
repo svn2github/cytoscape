@@ -8,7 +8,6 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.work.TaskManager;
@@ -110,16 +109,6 @@ public interface CyPluginAdapter {
 	 */
 	VisualMappingManager getVisualMappingManager();
 
-
-	//
-	// vizmap-gui api
-	//
-
-	/**
-	 * Returns an instance of {@link EditorManager}.
-	 * @return an instance of {@link EditorManager}.
-	 */
-	EditorManager getEditorManager();
 
 	//
 	// layout api
