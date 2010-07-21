@@ -35,9 +35,9 @@ package
     [SWF(width="800",height="600", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
     {  
-        //private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
+        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
-				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
+				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
         private var _bar:ProgressBar;
