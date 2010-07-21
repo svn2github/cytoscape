@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+	<!-- Individual Service -->
+	<osgi:reference id="cyNetworkFactoryRef" 
+	    interface="org.cytoscape.model.CyNetworkFactory">
+	</osgi:reference>
+	
+	<osgi:reference id="cyDataTableFactoryRef" 
+	    interface="org.cytoscape.model.CyDataTableFactory">
+	</osgi:reference>
+	
+	<osgi:reference id="cyNetworkViewFactoryRef" 
+	    interface="org.cytoscape.view.model.CyNetworkViewFactory">
+	</osgi:reference>
+	
+	<osgi:reference id="taskManagerRef" 
+	    interface="org.cytoscape.work.TaskManager">
+	</osgi:reference>
+
+
+    <osgi:service id="pluginLoaderTaskFactoryService" ref="pluginLoaderTaskFactory"
+	        interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+	            <entry key="title" value="Load Plugin..." />
+	            <entry key="preferredMenu" value="File.Import" />
+        </osgi:service-properties>
+    </osgi:service>
+
+
+</beans>
