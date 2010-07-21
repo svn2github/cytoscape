@@ -143,6 +143,18 @@ package gbeb.view.operator.router {
                 
                 displayGrids();
 								trace("GBEBRouter: Update and Mesh Called! Counter:" + runCounter++);
+								
+								
+								trace("GBEB Router: Let's see if the bundling mechnanism is working...");
+								/*data.edges.visit(function (e:EdgeSprite):void {
+									var controlPoints:Array = e.props.$controlPointsArray;
+									
+									if(controlPoints.length <= 0 ) return;
+									
+									GeometryUtil.drawCPDirectedCurves(e.graphics, controlPoints);
+									
+								}); */
+								data.edges.visit(GeometryUtil.changeToDerivedPoints);
             }
         }
 
@@ -919,13 +931,15 @@ package gbeb.view.operator.router {
             for each (edge in edges) {
                 cpArray = edge.controlPoints;
                 
+								//trace("GBEB Router: Drawing Edge!");
+								
                 if (cpArray == null || cpArray.length <= 0) continue;
                 
                 for each ( var cp:Point in cpArray) {
                     if (cp == null) continue;
-                    
+                    //trace("GBEB Router: Drawing Edge!");
                     vis.graphics.beginFill(0x00FF00,1);
-                    vis.graphics.drawCircle(cp.x, cp.y, 3);
+                    vis.graphics.drawCircle(cp.x, cp.y, 5);
                     vis.graphics.endFill();
                 }
             }
@@ -936,7 +950,11 @@ package gbeb.view.operator.router {
         // DEBUG ONLY:
         
         private function displayGrids():void {
-            if (visualization == null) return;
+           
+						var displayCentroid:Boolean = true;
+					
+					
+						if (visualization == null) return;
             var graphics:Graphics = visualization.graphics;
             graphics.clear();
             
@@ -946,6 +964,7 @@ package gbeb.view.operator.router {
                     graphics.lineStyle(0.2,0xFF0000,0.5);
                     graphics.drawRect(r.x, r.y, r.width, r.height);
                     graphics.endFill();
+			
                 }
                 
                 //trace("Mesh: Display Shape: Drawing..." + g.x);
@@ -960,6 +979,8 @@ package gbeb.view.operator.router {
                 _textFieldGridTracker.text = shape.gridIndex + " has " + shape.storedDataEdges.length + " edges";
                 visualization.addChild(_textFieldGridTracker); 
                 });          */    
+								
+								
             }
         }
         

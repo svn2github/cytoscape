@@ -160,10 +160,10 @@ package gbeb.view.operator.router
 			
 			for each (dataEdge in storedDataEdges) {
 				var ctrl:Array = dataEdge.props.$controlPointsArray;
-				
 				if (ctrl == null) ctrl = [];
 				ctrl.push(controlPoint);
 			}
+
 		}
 		
 		private function findControlPointFromIntersectionPoints(intersectionPointsArray:Array):Point

@@ -26,15 +26,19 @@ package
     import flash.net.URLRequest;
     import flash.text.TextFormat;
     import flash.utils.Dictionary;
-    
+
     import gbeb.view.components.ProgressBar;
     import gbeb.view.operator.router.GBEBRouter;
     import gbeb.view.render.BundleRenderer;
     
-    [SWF(width="1000",height="700", backgroundColor="#ffffff", frameRate="30")]
+
+    [SWF(width="800",height="600", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
     {  
-        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
+        //private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
+				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
+				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
+				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
         private var _bar:ProgressBar;
         private var _bounds:Rectangle;
@@ -145,6 +149,7 @@ package
                 // add mouse-over highlight
                 var hov:HoverControl = new HoverControl(NodeSprite, HoverControl.DONT_MOVE, highlight, unhighlight);
                 _vis.controls.add(hov);
+
         }
         
         /** Add highlight to a node and connected edges/nodes */
