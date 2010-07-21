@@ -19,9 +19,12 @@
 	<bean id="cyNetworkManager" class="org.cytoscape.session.internal.NetworkManager">
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
+
 	<bean id="cyNetworkNaming" class="org.cytoscape.session.internal.CyNetworkNamingImpl">
 		<constructor-arg ref="cyNetworkManager" />
 	</bean>
 
+	<bean id="cySessionManager" class="org.cytoscape.session.internal.CySessionManagerImpl">
+	</bean>
 
 </beans>
