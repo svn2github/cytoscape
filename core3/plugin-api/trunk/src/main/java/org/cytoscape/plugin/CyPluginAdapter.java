@@ -7,31 +7,31 @@ import org.cytoscape.work.TaskManager;
 
 
 /**
- * A Java-only api providing access to cytoscape functionality.
+ * A Java-only api providing access to Cytoscape functionality.
  */
 public interface CyPluginAdapter {
 
 	/**
-	 * Returns an instance of CyNetworkFactory.
-	 * @return an instance of CyNetworkFactory.
+	 * Returns an instance of {@link CyNetworkFactory}.
+	 * @return an instance of {@link CyNetworkFactory}.
 	 */
 	CyNetworkFactory getCyNetworkFactory(); 
 
 	/**
-	 * Returns an instance of CyNetworkFactory.
-	 * @return an instance of CyNetworkFactory.
+	 * Returns an instance of {@link CyDataTableFactory}.
+	 * @return an instance of {@link CyDataTableFactory}.
 	 */
 	CyDataTableFactory getCyDataTableFactory(); 
 
 	/**
-	 * Returns an instance of CyNetworkFactory.
-	 * @return an instance of CyNetworkFactory.
+	 * Returns an instance of {@link CyNetworkViewFactory}.
+	 * @return an instance of {@link CyNetworkViewFactory}.
 	 */
 	CyNetworkViewFactory getCyNetworkViewFactory();
 
 	/**
-	 * Returns an instance of CyNetworkFactory.
-	 * @return an instance of CyNetworkFactory.
+	 * Returns an instance of {@link TaskManager}.
+	 * @return an instance of {@link TaskManager}.
 	 */
 	TaskManager getTaskManager();
 }
