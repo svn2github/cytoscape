@@ -119,6 +119,8 @@ public class CloudParametersUnitTest extends TestCase {
 		cloudParams.setSelectedNodes(selNodeNames);
 		cloudParams.setSelectedNumNodes(7);
 		cloudParams.setNetworkNumNodes(13);
+		cloudParams.setNetWeightFactor(1.0);
+		cloudParams.setDisplayStyle("No Clustering");
 		
 		//Register Cloud
 		parentParams.addCloud(cloudName, cloudParams);
@@ -227,7 +229,7 @@ public class CloudParametersUnitTest extends TestCase {
 		
 		cloudParams.updateRatios();
 		
-		//Test Ratios (with default k = 1)
+		//Test Ratios (with k = 1)
 		HashMap<String,Double> ratios = cloudParams.getRatios();
 		assertEquals((Double)ratios.get("node"),new Double((5.0*13)/(7*9)));
 		assertEquals((Double)ratios.get("onenode"),new Double((2.0*13)/(7*4)));
