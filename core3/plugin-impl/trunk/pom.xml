@@ -104,14 +104,22 @@
 
   <dependencies>
 
+    <!-- dependencies needed to implement this code -->	
     <dependency>
       <groupId>org.cytoscape</groupId>
-      <artifactId>model-api</artifactId>
+      <artifactId>plugin-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
-      <artifactId>plugin-api</artifactId>
+      <artifactId>core-task-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- dependencies needed for CyPluginAdapter -->	
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>model-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -125,9 +133,29 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>core-task-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>vizmap-api</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>vizmap-gui-api</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>session-api</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>presentation-api</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>layout-api</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
